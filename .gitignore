@@ -118,6 +118,7 @@
 /ui-vaadin-widgetset/.classpath
 /ui-vaadin-widgetset/.settings
 /ui-vaadin-widgetset/.checkstyle
+/ui-vaadin-widgetset/src/main/resources/VAADIN/widgetsets
 
 # /ui-webapp/
 /ui-webapp/target
@@ -130,3 +131,4 @@
 /ui-webapp/.classpath
 /ui-webapp/.settings
 /ui-webapp/.checkstyle
+/ui-webapp/src

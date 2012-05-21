@@ -21,37 +21,6 @@
         <artifactId>maven-compiler-plugin</artifactId>
       </plugin>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>gwt-maven-plugin</artifactId>
-        <version>2.3.0-1</version>
-        <configuration>
-          <compileSourcesArtifacts>
-            <compileSourcesArtifact>javax.validation:validation-api</compileSourcesArtifact>
-          </compileSourcesArtifacts>
-          <!-- put the created resources on the classpath -->
-          <webappDirectory>target/classes/VAADIN/widgetsets</webappDirectory>
-          <!-- the target/classes directory is cleaned regularly. You can use mvn
-            gwt:compile -Dgwt.inplace to store the output in the resource folder -->
-          <warSourceDirectory>src/main/resources/VAADIN/widgetsets</warSourceDirectory>
-          <!-- this is not a webapp -->
-          <noServer>true</noServer>
-         <inplace>true</inplace>
-          <module>info.magnolia.m5admincentral.M5AdminCentralWidgetset</module>
-          <!-- <draftCompile>true</draftCompile> -->
-          <!-- <style>PRETTY</style> -->
-          <runTarget>.magnolia/admin-central</runTarget>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>resources</goal>
-              <goal>compile</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
         <groupId>org.mortbay.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
         <configuration>
