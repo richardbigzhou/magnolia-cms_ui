@@ -174,17 +174,13 @@ public class VMainLauncher extends FlowPanel {
         }
     } 
     
-    @Override
-    public void setWidth(String width) {
-        Integer pxWidth = JQueryWrapper.parseInt(width);
-        if (pxWidth != null && pxWidth != getOffsetWidth()) {
-            final ShellAppType type = getActiveShellType();
-            if (type != null) {
-                updateDivetPosition(type, false);   
-            }   
-        }
+    final void updateDivet() {
+        final ShellAppType type = getActiveShellType();
+        if (type != null) {
+            doUpdateDivetPosition(type, false);
+        }  
     }
-    
+
     private ShellAppType getActiveShellType() {
         final Iterator<Entry<ShellAppType, Widget>> it = controlsMap.entrySet().iterator();
         while (it.hasNext()) {
@@ -221,12 +217,12 @@ public class VMainLauncher extends FlowPanel {
         if (currentActive != null) {
             controlsMap.get(currentActive).removeStyleName("active");
         }
-        updateDivetPosition(type, currentActive != null);
+        doUpdateDivetPosition(type, currentActive != null);
         final Widget w = controlsMap.get(type);
         w.addStyleName("active");
     }
 
-    private void updateDivetPosition(final ShellAppType type, boolean animated) {
+    private void doUpdateDivetPosition(final ShellAppType type, boolean animated) {
         final Widget w = controlsMap.get(type);
         int divetPos = w.getAbsoluteLeft() + (w.getOffsetWidth() / 2) - divetWrapper.getOffsetWidth() / 2;
         divet.setVisible(true);

@@ -201,8 +201,12 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
 
     @Override
     public void setWidth(String width) {
+        Integer pxWidth = JQueryWrapper.parseInt(width);
+        boolean widthChanged = pxWidth != null && pxWidth != getOffsetWidth();
         super.setWidth(width);
-        mainAppLauncher.setWidth(width);
+        if (widthChanged) {
+            mainAppLauncher.updateDivet();   
+        }
     }
 
     @Override

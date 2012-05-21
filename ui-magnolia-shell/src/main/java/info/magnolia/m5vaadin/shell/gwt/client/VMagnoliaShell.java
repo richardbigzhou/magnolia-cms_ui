@@ -46,6 +46,7 @@ import org.vaadin.rpc.client.Method;
 
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
@@ -61,7 +62,7 @@ import com.vaadin.terminal.gwt.client.VConsole;
  * Vaadin implementation of MagnoliaShell client side.
  */
 @SuppressWarnings("serial")
-public class VMagnoliaShell extends Composite implements Container, ClientSideHandler, VMagnoliaShellView.Presenter {
+public class VMagnoliaShell extends Composite implements HasWidgets, Container, ClientSideHandler, VMagnoliaShellView.Presenter {
 
     protected String paintableId;
 
@@ -188,10 +189,8 @@ public class VMagnoliaShell extends Composite implements Container, ClientSideHa
     public void updateCaption(Paintable component, UIDL uidl) {}
 
     @Override
-    public boolean requestLayout(Set<Paintable> children) {
-        return false;
-    }
-
+    public boolean requestLayout(Set<Paintable> children) {return false;}
+    
     @Override
     public RenderSpace getAllocatedSpace(Widget child) {
         if (hasChildComponent(child)) {
@@ -205,5 +204,31 @@ public class VMagnoliaShell extends Composite implements Container, ClientSideHa
         if (child instanceof Paintable) {
             client.unregisterPaintable((Paintable)child);
         }
+    }
+    
+    @Override
+    public void setWidth(String width) {
+        view.asWidget().setWidth(width);
+        super.setWidth(width);
+    }
+
+    @Override
+    public void add(Widget w) {
+        view.add(w);
+    }
+
+    @Override
+    public void clear() {
+        view.clear();
+    }
+
+    @Override
+    public Iterator<Widget> iterator() {
+        return view.iterator();
+    }
+
+    @Override
+    public boolean remove(Widget w) {
+        return view.remove(w);
     }
 }
