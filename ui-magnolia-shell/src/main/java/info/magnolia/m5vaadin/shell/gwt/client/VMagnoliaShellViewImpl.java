@@ -135,7 +135,7 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
                 final String fragment = event.getValue();
                 final FragmentDTO dto = FragmentDTO.fromFragment(fragment);
                 if (dto.getType() == FragmentType.SHELL_APP) {
-                    eventBus.fireEvent(new ShellAppNavigationEvent(ShellAppType.valueOf(dto.getId()), dto.getParam()));
+                    eventBus.fireEvent(new ShellAppNavigationEvent(ShellAppType.resolveType(dto.getId()), dto.getParam()));
                 } else {
                     presenter.loadApp(dto.getPath());
                 }

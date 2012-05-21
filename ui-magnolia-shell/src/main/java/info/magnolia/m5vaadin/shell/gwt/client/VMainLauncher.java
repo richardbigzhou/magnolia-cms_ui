@@ -105,6 +105,16 @@ public class VMainLauncher extends FlowPanel {
             }
             return ShellAppType.APPLAUNCHER.name();
         }
+
+        public static ShellAppType resolveType(String id) {
+            ShellAppType result = null;
+            try {
+                result = ShellAppType.valueOf(id);
+            } catch (Exception e) {
+                return ShellAppType.APPLAUNCHER;
+            }
+            return result;
+        }
     };
   
     private int expandedHeight = 0;

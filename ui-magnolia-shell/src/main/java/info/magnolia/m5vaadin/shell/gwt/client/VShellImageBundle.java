@@ -44,7 +44,7 @@ import com.google.gwt.resources.client.ImageResource;
  */
 public interface VShellImageBundle extends ClientBundle {
     
-    final static String imgPath = "info/magnolia/m5vaadin/shell/gwt/MagnoliaShell/img/";
+    final static String imgPath = "info/magnolia/m5vaadin/shell/gwt/public/MagnoliaShell/img/";
     
     final static VShellImageBundle BUNDLE = GWT.create(VShellImageBundle.class);
     
