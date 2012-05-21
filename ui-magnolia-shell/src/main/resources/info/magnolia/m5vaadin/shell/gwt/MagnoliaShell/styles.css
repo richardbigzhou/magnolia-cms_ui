@@ -1,0 +1,43 @@
+/* Widget specific CSS goes here */
+/* When renaming this directory, update the path in the widgetset GWT module (.gwt.xml) */
+
+.btn-shell > span {
+	display: block;
+	padding-top: 45px;
+}
+
+.btn-shell:hover,.btn-shell.active {
+	color: white;
+}
+
+.v-shell-app {
+	position: absolute;
+	bottom: 0px;
+	overflow: hidden;
+	top: 100px !important;
+	width: 100%;
+	text-align: center;
+}
+
+#btn-appslauncher {
+ 	background: url("img/icons/nav-appslauncher-off.png") no-repeat scroll center top transparent;
+}
+
+#btn-appslauncher:hover, #btn-appslauncher.active {
+ 	background: url("img/icons/nav-appslauncher-on.png") no-repeat scroll center top transparent;
+}
+
+#btn-pulse{
+ 	background: url("img/icons/nav-pulse-off.png") no-repeat scroll center top transparent;
+}
+
+#btn-pulse:hover, #btn-pulse.active{
+ 	background: url("img/icons/nav-pulse-on.png") no-repeat scroll center top transparent;
+}
+
+#btn-favorites{
+ 	background: url("img/icons/nav-favorites-off.png") no-repeat scroll center top transparent;
+}
+#btn-favorites:hover, #btn-favorites.active{
+ 	background: url("img/icons/nav-favorites-on.png") no-repeat scroll center top transparent;
+}

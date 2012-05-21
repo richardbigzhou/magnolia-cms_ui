@@ -1,0 +1,267 @@
+@import url(../reindeer/styles.css);
+@import url(splitfeed.css);
+@import url(pulse-activity-entry.css);
+@import url(dialog.css);
+
+@font-face{
+    font-family: DinRound;
+    src: url("dinroundmedium.woff") format("woff");
+    font-weight:bold;
+}
+
+.v-magnolia-shell {
+    background: -moz-linear-gradient(center top, #77A42F 0%, #A9BE2E 100%) repeat scroll 0 0 transparent;
+    color: #444444;
+    font-family: sans-serif;
+    font-size: 13px;
+    overflow: hidden;
+    line-height: 1.4;
+}
+
+#logo {
+    left: 28px;
+    position: absolute;
+    top: 14px;
+    width: 150px;
+    text-align: left;
+}
+
+#main-launcher {
+    color: green;
+    text-align: center;
+    color: white;
+    overflow: hidden;
+    background-color: #689600;
+    color: #48630A;
+    height: 80px;
+    z-index: 400;
+}
+
+#main-launcher .btn-shell {
+    margin-top: 3px;
+    margin-left: 15px;
+    margin-right: 15px;
+    color: #48630A;
+    display: inline-block;
+    font-size: 13px;
+    width: 50px;
+    height: 70px;
+    border: none;
+    text-align: center;
+    vertical-align: top;
+}
+
+#divet {
+    width: 20px;
+    height: 10px;
+    top: 70px;
+    position: absolute;
+}
+
+.close {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+}
+
+button.action-close {
+    background: url("img/icon-close-16.png") no-repeat scroll 2px 2px transparent;
+    border: medium none;
+    display: inline-block;
+    height: 20px;
+    margin: 0;
+    padding: 2px;
+    vertical-align: text-top;
+    width: 20px;
+}
+
+.btn-shell:hover,.btn-shell.active {
+    color: white !important;
+}
+
+.btn-shell > span {
+    display: block;
+    padding-top: 45px;
+}
+
+.v-shell-vieport {
+	position: absolute;
+	overflow: hidden;
+	top: 80px;
+	width: 100%;
+	bottom: 0;
+}
+
+.v-shell-notification {
+	width: 100%;
+	position: absolute;
+	z-index: 1200;
+	text-align: center;
+	vertical-align: middle;
+	font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
+}
+
+.v-shell-notification.warning {
+	background: none repeat scroll 0 0 #FFBF28; 
+	bottom:0;
+	height: 30px;
+}
+
+.v-shell-notification.error {
+    background: none repeat scroll 0 0 #9A3333;
+    color: white;
+    height: 30px;
+    top: 80px;
+}
+
+#modality-curtain {
+    position: absolute;
+    filter: alpha(opacity = 50);
+    opacity: 0.5;
+    background: none repeat scroll 0 0 #77A42F;
+    height: 100%;
+    right: 0;
+    bottom: 0;
+    top:80px;
+    left:0;
+    z-index:200;
+}
+
+.clearfix:before, .clearfix:after { content: ""; display: table; }
+.clearfix:after { clear: both; }
+.clearfix { *zoom: 1; }
+
+
+
+/*APP LAUNCHER RELATED STYLES*/
+.v-csslayout-app-list > .v-csslayout-margin {
+    padding-top: 30px;
+    padding-bottom: 25px;
+}
+
+.app-launcher {
+    min-width: 350px;
+    max-width: 600px;
+}
+
+.app-launcher > .v-csslayout-margin .app-list:FIRST-CHILD {
+    border: 0;
+}
+
+.app-list {
+    border-top: 2px solid #689611;
+}
+
+.app-list.edit {
+    border: none;
+}
+
+.app-list .item {
+    border-radius: 3px 3px 3px 3px;
+    color: white;
+    background: none; /* added to shared */
+    border: none; /* added to shared */
+    cursor: pointer;
+    float: left;
+    font-size: 12px;
+    margin: 0 0 0 20px;
+    padding: 5px;
+    text-align: center;
+    width: 80px;
+    height: 82px;
+}
+
+.app-list .v-label {
+    margin-bottom: 10px;
+    line-height: 1.4;
+}
+
+.app-list .item > span {
+    display: block;
+}
+
+.app-list .v-nativebutton > .v-icon {
+    margin-right: 0 !important;
+    margin-left: 3px !important;
+}
+
+.app-list .item:first-of-type {
+    margin-left: 0;
+}
+
+.app-list .item:hover {
+    background-color: #AABF2F;
+    color: white;
+    text-decoration: none;
+}
+
+.app-list .app-group-title {
+    color: #557722;
+    font-size: 18px;
+    font-weight: normal;
+    text-transform: uppercase;
+    text-align: left;
+}
+/*END OF APP LAUNCHER RELATED STYLES*/
+
+
+
+/*SHELL TAB SHEET RELATED STYLES*/
+
+.v-shell-tab {
+    background-color: #FFFFFF;
+}
+
+.v-shell-tab-close {
+    background: url("img/icon-close-16.png") no-repeat scroll 2px 2px transparent;
+}
+
+.v-shell-tab-notification {
+    background: url("img/message-circle-pulse-tab.png") no-repeat scroll 0 0 transparent;
+}
+
+/*END OF SHELL TAB SHEET RELATED STYLES*/
+
+
+/*FAVORITES RELATED STYLES*/
+
+.v-split-feed .v-entry-icon.newpages {
+    background: url("img/icon-favorites-new-page.png") no-repeat scroll 0 0 transparent;
+}
+
+.v-split-feed .v-entry-icon.shortcuts {
+    background: url("img/icon-favorites-shortcut.png") no-repeat scroll 0 0 transparent;
+}
+
+/*END OF FAVORITES RELATED STYLES*/
+
+/*PULSE RELATED STYLES*/
+.v-pulse .v-feed-title-link {
+    width: 16px;
+    height: 16px;
+    border: 0;
+    background: url("img/icon-rss.png") no-repeat scroll 0 0 transparent;
+}
+
+.v-pulse .category-separartor {
+    color: #000000;
+    display: inline-block;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 15px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/*END OF PULSE RELATED STYLES*/
+
+.activity-item .status.green {
+    background: url("img/icon-status-green.png") no-repeat scroll 0 0 transparent;
+    min-height: 16px;
+    min-width: 16px;
+}
+
+.activity-item .status.red {
+    background: url("img/icon-status-red.png") no-repeat scroll 0 0 transparent;
+    min-height: 16px;
+    min-width: 16px;
+}

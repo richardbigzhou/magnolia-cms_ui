@@ -23,6 +23,16 @@
       <version>${magnoliaVersion}</version>
       <type>pom</type>
     </dependency>
+    <dependency>
+      <groupId>info.magnolia</groupId>
+      <artifactId>ui-admin-central</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia</groupId>
+      <artifactId>ui-vaadin-widgetset</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
 
   <build>

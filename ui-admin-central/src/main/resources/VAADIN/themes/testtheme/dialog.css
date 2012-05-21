@@ -1,0 +1,13 @@
+.dialog-panel {
+    background: none repeat scroll 0 0 #E6E6E6;
+    border: medium none;
+    left: 50%;
+    margin: auto auto auto -360px;
+    opacity: 0;
+    padding: 0;
+    position: absolute;
+    top: 45px;
+    width: 720px;
+    height: 250px;
+    z-index: 1000;
+}
