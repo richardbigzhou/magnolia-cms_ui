@@ -116,13 +116,30 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
         this.client = client;
         this.paintableId = uidl.getId();
         
-        updateShellAppViewport(uidl, client);
-        updateAppViewport(uidl, client);
+        updateShellAppViewport(uidl);
+        updateAppViewport(uidl);
+        updateDialogViewport(uidl);
         
         proxy.update(this, uidl, client);
     }
     
-    private void updateAppViewport(UIDL uidl, ApplicationConnection client) {
+    private void updateDialogViewport(UIDL uidl) {
+        final UIDL tagUidl = uidl.getChildByTagName("dialogViewport");
+        if (tagUidl != null) {
+            final UIDL viewportUidl = tagUidl.getChildUIDL(0);
+            final Paintable p = client.getPaintable(viewportUidl);
+            if (p instanceof VShellViewport) {
+                final VShellViewport dialogViewport = (VShellViewport)p;
+                view.updateDialogs(dialogViewport);
+                p.updateFromUIDL(viewportUidl, client);
+                if (dialogViewport.getWidgetCount() == 0) {
+                    view.removeDialogViewport();   
+                }
+            }
+        }
+    }
+
+    private void updateAppViewport(UIDL uidl) {
         final UIDL tagUidl = uidl.getChildByTagName("appViewport");
         if (tagUidl != null) {
             final UIDL viewportUidl = tagUidl.getChildUIDL(0);
@@ -134,7 +151,7 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
         }
     }
     
-    private void updateShellAppViewport(UIDL uidl, ApplicationConnection client) {
+    private void updateShellAppViewport(UIDL uidl) {
         final UIDL tagUidl = uidl.getChildByTagName("shellAppViewport");
         if (tagUidl != null) {
             final UIDL viewportUidl = tagUidl.getChildUIDL(0);

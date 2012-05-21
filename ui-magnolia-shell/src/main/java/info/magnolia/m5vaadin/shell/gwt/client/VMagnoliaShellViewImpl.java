@@ -63,27 +63,33 @@ import com.google.web.bindery.event.shared.EventBus;
  * 
  */
 public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellView {
-    
-    private static int Z_INDEX_LO = 100;
-
-    private static int Z_INDEX_HI = 300;
 
     public static final String CLASSNAME = "v-magnolia-shell";
 
-    private VMainLauncher mainAppLauncher;
+    private final static int FADE_SPEED = 300;
 
-    private Element root = DOM.createDiv();
+    private final static int SLIDE_SPEED = 500;
 
-    private VShellViewport shellAppViewport = null;
+    private static int Z_INDEX_HI = 300;
 
-    private VShellViewport appViewport = null;
+    private static int Z_INDEX_LO = 100;
 
     private VShellViewport activeViewport = null;
 
+    private VShellViewport appViewport = null;
+
+    private VShellViewport shellAppViewport = null;
+    
+    private VShellViewport dialogViewport = null;
+
     private HandlerRegistration fragmentHandlerRegistration;
 
-    private Presenter presenter;
+    private Element root = DOM.createDiv();
+    
+    private VMainLauncher mainAppLauncher;
 
+    private Presenter presenter;
+    
     private EventBus eventBus;
 
     public VMagnoliaShellViewImpl(final EventBus eventBus) {
@@ -96,36 +102,6 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
         bindEventHandlers();
     }
 
-    protected void switchViewports(boolean appViewportOnTop) {
-        shellAppViewport.getElement().getStyle().setZIndex(appViewportOnTop ? Z_INDEX_LO : Z_INDEX_HI);
-        appViewport.getElement().getStyle().setZIndex(appViewportOnTop ? Z_INDEX_HI : Z_INDEX_LO);
-        if (appViewportOnTop) {
-            activeViewport = appViewport;
-            mainAppLauncher.deactivateControls();
-        } else {
-            activeViewport = shellAppViewport;
-            if (appViewport.hasContent()) {
-                shellAppViewport.showCurtain();
-            } else {
-                shellAppViewport.hideCurtain();
-            }
-        }
-    };
-
-    private final ShellNavigationHandler navHandler = new ShellNavigationHandler() {
-        @Override
-        public void onShellAppNavigation(ShellAppNavigationEvent event) {
-            presenter.loadShellApp(event.getType(), event.getParameters());
-        }
-
-        @Override
-        public void onAppActivated(AppActivatedEvent event) {
-            final String fragment = (event.isShellApp() ? "shell:" : "app:") + event.getToken();
-            switchViewports(!event.isShellApp());
-            History.newItem(fragment, false);
-        }
-    };
-    
     private void bindEventHandlers() {
         eventBus.addHandler(ShellAppNavigationEvent.TYPE, navHandler);
         eventBus.addHandler(AppActivatedEvent.TYPE, navHandler);
@@ -143,12 +119,8 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
         });
     }
 
-    @Override
-    protected void onUnload() {
-        super.onUnload();
-        if (fragmentHandlerRegistration != null) {
-            fragmentHandlerRegistration.removeHandler();
-        }
+    private void doUpdateViewport(VShellViewport oldViewport, VShellViewport newViewport) {
+        replaceWidget(oldViewport, newViewport);
     }
 
     @Override
@@ -162,28 +134,15 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
     }
 
     @Override
-    public void updateAppViewport(VShellViewport viewport) {
-        viewport.getElement().setId("app-viewport");
-        doUpdateViewport(appViewport, viewport);
-        appViewport = viewport;
-        appViewport.setContentAnimationDelegate(appViewportAnimationDelegate);
+    public boolean hasDialogs() {
+        return dialogViewport != null && dialogViewport.getWidgetCount() > 0;
     }
-
-    protected void replaceWidget(final Widget oldWidget, final Widget newWidget) {
-        if (oldWidget != null) {
-            remove(oldWidget);
-        }
-        add(newWidget, root);
-    }
-
+    
     @Override
-    public void updateShellAppViewport(VShellViewport viewport) {
-        viewport.getElement().setId("shell-app-viewport");
-        doUpdateViewport(shellAppViewport, viewport);
-        shellAppViewport = viewport;
-        shellAppViewport.setContentAnimationDelegate(shellAppViewportAnimationDelegate);
-        if (activeViewport == null) {
-            activeViewport = shellAppViewport;
+    protected void onUnload() {
+        super.onUnload();
+        if (fragmentHandlerRegistration != null) {
+            fragmentHandlerRegistration.removeHandler();
         }
     }
 
@@ -193,10 +152,23 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
         return super.remove(w);
     }
 
-    private void doUpdateViewport(VShellViewport oldViewport, VShellViewport newViewport) {
-        if (oldViewport != newViewport) {
-            replaceWidget(oldViewport, newViewport);
+    @Override
+    public void removeDialogViewport() {
+        if (dialogViewport != null) {
+            remove(dialogViewport);
         }
+    }
+    
+    protected void replaceWidget(final Widget oldWidget, final Widget newWidget) {
+        if (oldWidget != null) {
+            remove(oldWidget);
+        }
+        add(newWidget, root);
+    }
+
+    @Override
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
     }
 
     @Override
@@ -205,7 +177,7 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
         boolean widthChanged = pxWidth != null && pxWidth != getOffsetWidth();
         super.setWidth(width);
         if (widthChanged) {
-            mainAppLauncher.updateDivet();   
+            mainAppLauncher.updateDivet();
         }
     }
 
@@ -223,52 +195,54 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
         add(msg, getElement());
     }
 
-    private final static int FADE_SPEED = 300;
-
-    private final static int SLIDE_SPEED = 500;
-
-    private final ContentAnimationDelegate shellAppViewportAnimationDelegate = new ContentAnimationDelegate() {
-        @Override
-        public void show(final Widget widget, final Callbacks callbacks) {
-            if (widget != null) {
-                JQueryWrapper.select(widget.getElement()).fadeIn(FADE_SPEED, callbacks);
+    protected void switchViewports(boolean appViewportOnTop) {
+        shellAppViewport.getElement().getStyle().setZIndex(appViewportOnTop ? Z_INDEX_LO : Z_INDEX_HI);
+        appViewport.getElement().getStyle().setZIndex(appViewportOnTop ? Z_INDEX_HI : Z_INDEX_LO);
+        if (appViewportOnTop) {
+            activeViewport = appViewport;
+            mainAppLauncher.deactivateControls();
+        } else {
+            activeViewport = shellAppViewport;
+            if (appViewport.hasContent()) {
+                shellAppViewport.showCurtain();
+            } else {
+                shellAppViewport.hideCurtain();
             }
         }
+    }
 
-        @Override
-        public void hide(Widget w, Callbacks callbacks) {
-            JQueryWrapper.select(w.getElement()).fadeOut(FADE_SPEED, callbacks);
-        }
-    };
-
-    private final ContentAnimationDelegate appViewportAnimationDelegate = new ContentAnimationDelegate() {
-        @Override
-        public void show(final Widget widget, final Callbacks callbacks) {
-            if (widget != null) {
-                JQueryWrapper.select(widget).slideDown(SLIDE_SPEED, callbacks);
-            }
-        }
-
-        @Override
-        public void hide(Widget w, Callbacks callbacks) {
-            JQueryWrapper.select(w).fadeOut(FADE_SPEED, callbacks);
-        }
-    };
-
-    private JQueryCallback relayoutCallback = new JQueryCallback() {
-        @Override
-        public void execute(JQueryWrapper query) {
-            if (activeViewport != null) {
-                presenter.updateViewportLayout(activeViewport);
-            }
+    @Override
+    public void updateAppViewport(VShellViewport viewport) {
+        if (appViewport != viewport) {
+            doUpdateViewport(appViewport, viewport);
+            appViewport = viewport;
+            appViewport.setForceContentAlign(false);
+            appViewport.setContentAnimationDelegate(slidingDelegate);
         }
     };
 
     @Override
-    public void setPresenter(Presenter presenter) {
-        this.presenter = presenter;
-    };
+    public void updateDialogs(VShellViewport viewport) {
+        if (dialogViewport != viewport) {
+            doUpdateViewport(dialogViewport, viewport);
+            dialogViewport = viewport;
+            dialogViewport.getElement().getStyle().setZIndex(100000);
+            dialogViewport.setContentAnimationDelegate(fadingDelegate);
+        }
+    }
 
+    @Override
+    public void updateShellAppViewport(VShellViewport viewport) {
+        if (shellAppViewport != viewport) {
+            doUpdateViewport(shellAppViewport, viewport);
+            shellAppViewport = viewport;
+            shellAppViewport.setContentAnimationDelegate(fadingDelegate);
+            if (activeViewport == null) {
+                activeViewport = shellAppViewport;
+            }   
+        }
+    }
+    
     private class ErrorMessage extends VShellMessage {
 
         public ErrorMessage(final MessageType type, String text) {
@@ -290,6 +264,11 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
             }));
         }
 
+        private int errorMessageCount() {
+            return JQueryWrapper.select(".error").get().length();
+        };
+
+        @Override
         public void hide() {
             if (errorMessageCount() < 2) {
                 final JQueryWrapper jq = JQueryWrapper.select(activeViewport);
@@ -300,11 +279,58 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
                 presenter.updateViewportLayout(activeViewport);
             }
             super.hide();
-        };
-
-        private int errorMessageCount() {
-            return JQueryWrapper.select(".error").get().length();
         }
     }
-   
+    
+    private final ContentAnimationDelegate slidingDelegate = new ContentAnimationDelegate() {
+        @Override
+        public void hide(Widget w, Callbacks callbacks) {
+            JQueryWrapper.select(w).fadeOut(FADE_SPEED, callbacks);
+        }
+
+        @Override
+        public void show(final Widget widget, final Callbacks callbacks) {
+            if (widget != null) {
+                JQueryWrapper.select(widget).slideDown(SLIDE_SPEED, callbacks);
+            }
+        }
+    };
+
+    private final ContentAnimationDelegate fadingDelegate = new ContentAnimationDelegate() {
+        @Override
+        public void hide(Widget w, Callbacks callbacks) {
+            JQueryWrapper.select(w.getElement()).fadeOut(FADE_SPEED, callbacks);
+        }
+
+        @Override
+        public void show(final Widget widget, final Callbacks callbacks) {
+            if (widget != null) {
+                JQueryWrapper.select(widget.getElement()).fadeIn(FADE_SPEED, callbacks);
+            }
+        }
+    };
+    
+    private final ShellNavigationHandler navHandler = new ShellNavigationHandler() {
+        @Override
+        public void onAppActivated(AppActivatedEvent event) {
+            final String fragment = (event.isShellApp() ? "shell:" : "app:") + event.getToken();
+            switchViewports(!event.isShellApp());
+            History.newItem(fragment, false);
+        }
+
+        @Override
+        public void onShellAppNavigation(ShellAppNavigationEvent event) {
+            presenter.loadShellApp(event.getType(), event.getParameters());
+        }
+    };
+    
+    private JQueryCallback relayoutCallback = new JQueryCallback() {
+        @Override
+        public void execute(JQueryWrapper query) {
+            if (activeViewport != null) {
+                presenter.updateViewportLayout(activeViewport);
+            }
+        }
+    };
+
 }

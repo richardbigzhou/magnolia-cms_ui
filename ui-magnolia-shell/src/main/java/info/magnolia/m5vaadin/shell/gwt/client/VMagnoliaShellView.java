@@ -54,6 +54,8 @@ public interface VMagnoliaShellView extends HasWidgets, IsWidget {
     void updateAppViewport(VShellViewport viewport);
     
     void updateShellAppViewport(VShellViewport viewport);
+    
+    void updateDialogs(VShellViewport dialogViewport);
 
     void setPresenter(final Presenter presenter);
     
@@ -73,4 +75,8 @@ public interface VMagnoliaShellView extends HasWidgets, IsWidget {
         
         void destroyChild(final Widget child);
     }
+
+    boolean hasDialogs();
+
+    void removeDialogViewport();
 }

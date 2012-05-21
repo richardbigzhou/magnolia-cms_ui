@@ -87,18 +87,21 @@ public class DeckLayout extends AbstractComponentContainer {
         if (!children.contains(c)) {
             children.add(c);
         }
+        requestRepaint();
     }
 
     @Override
     public void removeComponent(Component c) {
         super.removeComponent(c);
         children.remove(c);
+        requestRepaint();
     }
 
     @Override
     public void removeAllComponents() {
         super.removeAllComponents();
         children.clear();
+        requestRepaint();
     }
 
     @Override
