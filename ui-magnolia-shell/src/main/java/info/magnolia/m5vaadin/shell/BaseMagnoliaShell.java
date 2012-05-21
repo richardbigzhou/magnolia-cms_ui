@@ -207,6 +207,7 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
 
     protected void removeDialog(Component dialog) {
         dialogViewport.removeComponent(dialog);
+        requestRepaint();
     }
     
     protected void addDialog(Component dialog) {
