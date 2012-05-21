@@ -33,8 +33,9 @@
  */
 package info.magnolia.m5vaadin.shell;
 
+import javax.inject.Singleton;
+
 import info.magnolia.m5vaadin.IsVaadinComponent;
-import info.magnolia.objectfactory.annotation.SessionScoped;
 import info.magnolia.ui.framework.event.HandlerRegistration;
 import info.magnolia.ui.framework.shell.ConfirmationHandler;
 import info.magnolia.ui.framework.shell.FragmentChangedHandler;
@@ -48,7 +49,7 @@ import com.vaadin.terminal.ExternalResource;
  *
  */
 @SuppressWarnings("serial")
-@SessionScoped
+@Singleton
 public class MagnoliaShell extends BaseMagnoliaShell implements Shell {
 
     @Override

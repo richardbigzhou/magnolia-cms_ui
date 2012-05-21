@@ -51,6 +51,7 @@ import info.magnolia.m5admincentral.shellapp.applauncher.AppLauncherPlace;
 import info.magnolia.m5admincentral.shellapp.favorites.FavoritesPlace;
 import info.magnolia.m5admincentral.shellapp.pulse.PulsePlace;
 import info.magnolia.m5vaadin.shell.MagnoliaShell;
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.place.Place;
 import info.magnolia.ui.framework.place.PlaceController;
@@ -74,7 +75,8 @@ public class MagnoliaShellPresenter implements MagnoliaShellView.Presenter {
 
     @Inject
     public MagnoliaShellPresenter(final MagnoliaShellView view, final EventBus bus, final AppRegistry appRegistry,
-            final AppController appController, final PlaceController controller, final DialogPresenterFactory dialogPresenterFactory) {
+            final AppController appController, final PlaceController controller, final DialogPresenterFactory dialogPresenterFactory,
+            ComponentProvider componentProvider) {
         super();
         this.view = view;
         this.view.setPresenter(this);
@@ -103,10 +105,10 @@ public class MagnoliaShellPresenter implements MagnoliaShellView.Presenter {
             appRegistry.registerAppDescription(descriptor.getName(), descriptor);   
         }
 
-        final ShellAppActivityManager shellAppManager = new ShellAppActivityManager(new ShellAppActivityMapper(), bus);
+        final ShellAppActivityManager shellAppManager = new ShellAppActivityManager(new ShellAppActivityMapper(componentProvider), bus);
         shellAppManager.setViewPort(view.getRoot().getShellAppViewport());
 
-        final AppActivityManager appManager = new AppActivityManager(new AppActivityMapper(appRegistry, appController), bus);
+        final AppActivityManager appManager = new AppActivityManager(new AppActivityMapper(appRegistry, appController, componentProvider), bus);
         appManager.setViewPort(view.getRoot().getAppViewport());
 
         final PlaceHistoryMapper placeHistoryMapper = new PlaceHistoryMapperImpl(getSupportedPlaces(appRegistry));

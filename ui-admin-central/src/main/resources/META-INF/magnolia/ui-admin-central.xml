@@ -7,8 +7,16 @@
 
   <version>${project.version}</version>
 
-   <components>
+  <components>
     <id>main</id>
+    <component>
+      <type>info.magnolia.m5admincentral.app.AppRegistry</type>
+      <implementation>info.magnolia.m5admincentral.app.AppRegistryImpl</implementation>
+    </component>
+  </components>
+
+   <components>
+    <id>m5-admin-central</id>
     <component>
       <type>info.magnolia.ui.framework.event.EventBus</type>
       <implementation>info.magnolia.ui.framework.event.SimpleEventBus</implementation>
@@ -28,10 +36,6 @@
     <component>
       <type>info.magnolia.ui.framework.shell.Shell</type>
       <implementation>info.magnolia.m5vaadin.shell.MagnoliaShell</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.m5admincentral.app.AppRegistry</type>
-      <implementation>info.magnolia.m5admincentral.app.AppRegistryImpl</implementation>
     </component>
     <component>
       <type>info.magnolia.m5admincentral.app.AppController</type>

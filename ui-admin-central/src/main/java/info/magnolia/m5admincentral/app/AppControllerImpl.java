@@ -33,7 +33,7 @@
  */
 package info.magnolia.m5admincentral.app;
 
-import info.magnolia.objectfactory.Components;
+import info.magnolia.objectfactory.ComponentProvider;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -51,12 +51,14 @@ import com.google.inject.Inject;
 public class AppControllerImpl implements AppController {
 
     private AppRegistry appRegistry;
+    private ComponentProvider componentProvider;
 
     private Map<String, AppLifecycle> runningApps = new HashMap<String, AppLifecycle>();
 
     @Inject
-    public AppControllerImpl(AppRegistry appRegistry) {
+    public AppControllerImpl(AppRegistry appRegistry, ComponentProvider componentProvider) {
         this.appRegistry = appRegistry;
+        this.componentProvider = componentProvider;
     }
 
     @Override
@@ -74,7 +76,7 @@ public class AppControllerImpl implements AppController {
         AppLifecycle lifecycle = runningApps.get(name);
         if (lifecycle == null) {
             AppDescriptor descriptor = appRegistry.getAppDescriptor(name);
-            lifecycle = Components.newInstance(descriptor.getAppClass());
+            lifecycle = componentProvider.newInstance(descriptor.getAppClass());
             lifecycle.start();
             runningApps.put(name, lifecycle);
         }

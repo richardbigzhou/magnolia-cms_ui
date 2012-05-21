@@ -39,7 +39,7 @@ import info.magnolia.m5admincentral.shellapp.favorites.FavoritesActivity;
 import info.magnolia.m5admincentral.shellapp.favorites.FavoritesPlace;
 import info.magnolia.m5admincentral.shellapp.pulse.PulseActivity;
 import info.magnolia.m5admincentral.shellapp.pulse.PulsePlace;
-import info.magnolia.objectfactory.Components;
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.framework.activity.Activity;
 import info.magnolia.ui.framework.activity.ActivityMapper;
 import info.magnolia.ui.framework.place.Place;
@@ -54,17 +54,16 @@ import java.util.Map;
 @SuppressWarnings("serial")
 public class ShellAppActivityMapper implements ActivityMapper {
 
-    public ShellAppActivityMapper() {
-        super();
-    }
+    private ComponentProvider componentProvider;
 
-    private final Map<Class<? extends Place>, Activity> activityToPlace = new HashMap<Class<? extends Place>, Activity>() {
-        {
-            put(AppLauncherPlace.class, Components.newInstance(AppLauncherActivity.class));
-            put(PulsePlace.class, Components.newInstance(PulseActivity.class));
-            put(FavoritesPlace.class, Components.newInstance(FavoritesActivity.class));
-        }
-    };
+    private final Map<Class<? extends Place>, Activity> activityToPlace = new HashMap<Class<? extends Place>, Activity>();
+
+    public ShellAppActivityMapper(ComponentProvider componentProvider) {
+        this.componentProvider = componentProvider;
+        activityToPlace.put(AppLauncherPlace.class, componentProvider.newInstance(AppLauncherActivity.class));
+        activityToPlace.put(PulsePlace.class, componentProvider.newInstance(PulseActivity.class));
+        activityToPlace.put(FavoritesPlace.class, componentProvider.newInstance(FavoritesActivity.class));
+    }
 
     @Override
     public Activity getActivity(final Place place) {

@@ -36,7 +36,7 @@ package info.magnolia.m5admincentral.framework;
 import info.magnolia.m5admincentral.app.AppController;
 import info.magnolia.m5admincentral.app.AppDescriptor;
 import info.magnolia.m5admincentral.app.AppRegistry;
-import info.magnolia.objectfactory.Components;
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.framework.activity.Activity;
 import info.magnolia.ui.framework.activity.ActivityMapper;
 import info.magnolia.ui.framework.place.Place;
@@ -50,14 +50,14 @@ import com.google.inject.Inject;
 public class AppActivityMapper implements ActivityMapper {
 
     private AppRegistry appRegistry;
-
     private AppController appController;
+    private ComponentProvider componentProvider;
 
     @Inject
-    public AppActivityMapper(final AppRegistry registry, final AppController appController) {
-        super();
+    public AppActivityMapper(AppRegistry appRegistry, AppController appController, ComponentProvider componentProvider) {
+        this.appRegistry = appRegistry;
         this.appController = appController;
-        this.appRegistry = registry;
+        this.componentProvider = componentProvider;
     }
 
     @Override
@@ -66,7 +66,7 @@ public class AppActivityMapper implements ActivityMapper {
             if (descriptor.getActivityMappings().containsKey(place.getClass())) {
                 final Class<? extends Activity> clazz = descriptor.getActivityMappings().get(place.getClass());
                 appController.startIfNotAlreadyRunning(descriptor.getName());
-                return Components.newInstance(clazz);
+                return componentProvider.newInstance(clazz);
             }
         }
         return null;

@@ -35,19 +35,19 @@ package info.magnolia.m5admincentral.dialog;
 
 import info.magnolia.m5admincentral.dialog.builder.DialogBuilder;
 import info.magnolia.m5vaadin.shell.MagnoliaShell;
-import info.magnolia.objectfactory.annotation.SessionScoped;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 import info.magnolia.ui.model.dialog.registry.DialogDefinitionRegistry;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /**
  * Implementation of {@link DialogPresenterFactory}.
  *
  * @version $Id$
  */
-@SessionScoped
+@Singleton
 public class DialogPresenterFactoryImpl implements DialogPresenterFactory {
 
     private DialogDefinitionRegistry dialogDefinitionRegistry;
