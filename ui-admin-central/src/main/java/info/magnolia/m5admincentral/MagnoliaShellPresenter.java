@@ -35,6 +35,8 @@ package info.magnolia.m5admincentral;
 
 import info.magnolia.m5admincentral.app.AppController;
 import info.magnolia.m5admincentral.app.AppDescriptor;
+import info.magnolia.m5admincentral.app.AppLifecycleEvent;
+import info.magnolia.m5admincentral.app.AppLifecycleEventHandler;
 import info.magnolia.m5admincentral.app.AppRegistry;
 import info.magnolia.m5admincentral.app.dialog.DialogTestActivity;
 import info.magnolia.m5admincentral.app.dialog.DialogTestApp;
@@ -108,13 +110,21 @@ public class MagnoliaShellPresenter implements MagnoliaShellView.Presenter {
         final ShellAppActivityManager shellAppManager = new ShellAppActivityManager(new ShellAppActivityMapper(componentProvider), bus);
         shellAppManager.setViewPort(view.getRoot().getShellAppViewport());
 
-        final AppActivityManager appManager = new AppActivityManager(new AppActivityMapper(appRegistry, appController, componentProvider), bus);
+        final AppActivityManager appManager = new AppActivityManager(new AppActivityMapper(appController, componentProvider), bus);
         appManager.setViewPort(view.getRoot().getAppViewport());
 
         final PlaceHistoryMapper placeHistoryMapper = new PlaceHistoryMapperImpl(getSupportedPlaces(appRegistry));
         final PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(placeHistoryMapper, view.getRoot());
 
         historyHandler.register(controller, bus, new AppLauncherPlace("test"));
+        
+        bus.addHandler(AppLifecycleEvent.class, new AppLifecycleEventHandler.Adapter() {
+            @Override
+            public void onAppFocus(AppLifecycleEvent event) {
+                view.getRoot().appFocused();
+                
+            }
+        });
     }
 
     public void start(final Window window) {

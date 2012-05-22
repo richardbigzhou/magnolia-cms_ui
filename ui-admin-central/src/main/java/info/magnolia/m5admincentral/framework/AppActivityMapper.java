@@ -36,7 +36,6 @@ package info.magnolia.m5admincentral.framework;
 import info.magnolia.m5admincentral.app.AppController;
 import info.magnolia.m5admincentral.app.AppDescriptor;
 import info.magnolia.m5admincentral.app.AppLifecycle;
-import info.magnolia.m5admincentral.app.AppRegistry;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.framework.activity.Activity;
 import info.magnolia.ui.framework.activity.ActivityMapper;
@@ -56,8 +55,6 @@ import com.google.inject.Inject;
  */
 @SuppressWarnings("serial")
 public class AppActivityMapper implements ActivityMapper {
-
-    private AppRegistry appRegistry;
     
     private AppController appController;
     
@@ -66,8 +63,7 @@ public class AppActivityMapper implements ActivityMapper {
     private Map<AppDescriptor, AppContext> contextMap = new HashMap<AppDescriptor, AppContext>();
     
     @Inject
-    public AppActivityMapper(AppRegistry appRegistry, AppController appController, ComponentProvider componentProvider) {
-        this.appRegistry = appRegistry;
+    public AppActivityMapper(AppController appController, ComponentProvider componentProvider) {
         this.appController = appController;
         this.componentProvider = componentProvider;
     }

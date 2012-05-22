@@ -33,6 +33,8 @@
  */
 package info.magnolia.m5admincentral.framework;
 
+import info.magnolia.m5admincentral.app.AppLifecycleEvent;
+import info.magnolia.m5admincentral.app.AppLifecycleEventHandler;
 import info.magnolia.ui.framework.activity.Activity;
 import info.magnolia.ui.framework.activity.ActivityManager;
 import info.magnolia.ui.framework.activity.ActivityMapper;
@@ -53,17 +55,16 @@ public class AppActivityManager extends ActivityManager {
     public AppActivityManager(final AppActivityMapper mapper, final EventBus eventBus) {
         super(mapper, eventBus);
         this.mapper = mapper;
-        eventBus.addHandler(AppStartEvent.class, new AppStartEventHandler() {
+        eventBus.addHandler(AppLifecycleEvent.class, new AppLifecycleEventHandler.Adapter() {
+            
             @Override
-            public void onAppStart(AppStartEvent event) {
-                mapper.registerAppStart(event.getLifecycle());
+            public void onStartApp(AppLifecycleEvent event) {
+                mapper.registerAppStart(event.getApp());
             }
-        });
-        
-        eventBus.addHandler(AppStopEvent.class, new AppStopEventHandler() {
+            
             @Override
-            public void onAppStop(AppStopEvent event) {
-                mapper.uregisterApp(event.getLifecycle());
+            public void onStopApp(AppLifecycleEvent event) {
+                mapper.uregisterApp(event.getApp());
             }
         });
     }
