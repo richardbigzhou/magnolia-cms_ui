@@ -57,4 +57,14 @@ public class PagesActivity extends AbstractActivity {
     public void start(ViewPort viewPort, EventBus eventBus) {
         viewPort.setView(view);
     }
+    
+    @Override
+    public String mayStop() {
+        return super.mayStop();
+    }
+    
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
 }

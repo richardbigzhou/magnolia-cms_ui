@@ -40,6 +40,8 @@ package info.magnolia.m5admincentral.app;
  */
 public interface AppController {
 
+    AppDescriptor getAppDescriptor(final AppLifecycle app);
+    
     void startIfNotAlreadyRunning(String name);
 
     void startIfNotAlreadyRunningThenFocus(String name);

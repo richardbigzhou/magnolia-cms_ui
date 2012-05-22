@@ -108,4 +108,8 @@ public class AppDescriptor {
     public Map<Class<? extends Place>, Class<? extends Activity>> getActivityMappings() {
         return activityMappings;
     }
+    
+    public Class<? extends Activity> getMappedActivityClass(final Class<? extends Place> placeClass) {
+        return activityMappings.get(placeClass);
+    }
 }

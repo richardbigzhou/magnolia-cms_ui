@@ -50,9 +50,22 @@ public class AppActivityManager extends ActivityManager {
 
     private ActivityMapper mapper;
 
-    public AppActivityManager(final ActivityMapper mapper, final EventBus eventBus) {
+    public AppActivityManager(final AppActivityMapper mapper, final EventBus eventBus) {
         super(mapper, eventBus);
         this.mapper = mapper;
+        eventBus.addHandler(AppStartEvent.class, new AppStartEventHandler() {
+            @Override
+            public void onAppStart(AppStartEvent event) {
+                mapper.registerAppStart(event.getLifecycle());
+            }
+        });
+        
+        eventBus.addHandler(AppStopEvent.class, new AppStopEventHandler() {
+            @Override
+            public void onAppStop(AppStopEvent event) {
+                mapper.uregisterApp(event.getLifecycle());
+            }
+        });
     }
 
     @Override
