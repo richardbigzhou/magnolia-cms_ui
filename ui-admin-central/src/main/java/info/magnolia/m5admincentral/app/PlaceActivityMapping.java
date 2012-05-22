@@ -31,47 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.m5admincentral.framework;
+package info.magnolia.m5admincentral.app;
 
-import info.magnolia.m5admincentral.app.AppController;
-import info.magnolia.m5admincentral.app.AppDescriptor;
-import info.magnolia.m5admincentral.app.AppRegistry;
-import info.magnolia.m5admincentral.app.PlaceActivityMapping;
-import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.framework.activity.Activity;
-import info.magnolia.ui.framework.activity.ActivityMapper;
 import info.magnolia.ui.framework.place.Place;
 
-import com.google.inject.Inject;
-
 /**
- * AppActivityMapper.
+ * Mapping for associating a place with an activity.
+ *
  * @version $Id$
  */
-public class AppActivityMapper implements ActivityMapper {
+public class PlaceActivityMapping {
 
-    private AppRegistry appRegistry;
-    private AppController appController;
-    private ComponentProvider componentProvider;
+    private Class<? extends Place> place;
+    private Class<? extends Activity> activity;
 
-    @Inject
-    public AppActivityMapper(AppRegistry appRegistry, AppController appController, ComponentProvider componentProvider) {
-        this.appRegistry = appRegistry;
-        this.appController = appController;
-        this.componentProvider = componentProvider;
+    public Class<? extends Place> getPlace() {
+        return place;
     }
 
-    @Override
-    public Activity getActivity(final Place place) {
-        for (final AppDescriptor descriptor : appRegistry.getAppDescriptors()) {
-            for (PlaceActivityMapping mapping : descriptor.getActivityMappings()) {
-                if (mapping.getPlace().equals(place.getClass())) {
-                    final Class<? extends Activity> clazz = mapping.getActivity();
-                    appController.startIfNotAlreadyRunning(descriptor.getName());
-                    return componentProvider.newInstance(clazz);
-                }
-            }
-        }
-        return null;
+    public void setPlace(Class<? extends Place> place) {
+        this.place = place;
+    }
+
+    public Class<? extends Activity> getActivity() {
+        return activity;
+    }
+
+    public void setActivity(Class<? extends Activity> activity) {
+        this.activity = activity;
     }
 }

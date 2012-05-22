@@ -31,33 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.m5admincentral.app;
+package info.magnolia.m5admincentral.module;
 
-import java.util.Collection;
+import info.magnolia.module.DefaultModuleVersionHandler;
 
 /**
- * Registry of available apps.
- *
- * Discover available apps
- *
- * They belong to groups: content and manage etc.
- *
- * How do you switch between apps?
- *  hub-n-spoke so clicking an app that's running activates its activity/place
- *
- * How is the app notified to close?
+ * VersionHandler for the Admin Central module.
  *
  * @version $Id$
  */
-public interface AppRegistry {
-
-    public Collection<AppDescriptor> getAppDescriptors();
-
-    public AppDescriptor getAppDescriptor(String name);
-
-    public void registerAppDescription(String name, AppDescriptor descriptor);
-
-    public AppDescriptor unregisterAppDescription(String name);
-
-    public boolean isAppDescriptionRegistered(String name);
+public class AdminCentralModuleVersionHandler extends DefaultModuleVersionHandler {
 }
