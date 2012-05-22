@@ -33,19 +33,19 @@
  */
 package info.magnolia.m5vaadin.shell;
 
-import javax.inject.Singleton;
-
 import info.magnolia.m5vaadin.IsVaadinComponent;
 import info.magnolia.ui.framework.event.HandlerRegistration;
 import info.magnolia.ui.framework.shell.ConfirmationHandler;
 import info.magnolia.ui.framework.shell.FragmentChangedHandler;
 import info.magnolia.ui.framework.shell.Shell;
 
+import javax.inject.Singleton;
+
 import com.vaadin.terminal.ExternalResource;
 
 /**
  * Actual implementation of MagnoliaShell that can serve actual apps and shell apps.
- * @author p4elkin
+ * @author apchelintcev
  *
  */
 @SuppressWarnings("serial")
@@ -104,6 +104,10 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell {
     }
 
     public void openDialog(IsVaadinComponent dialog) {
-        getWindow().addComponent(dialog.asVaadinComponent());
+        addDialog(dialog.asVaadinComponent());
+    }
+    
+    public void removeDialog(IsVaadinComponent dialog) {
+        removeDialog(dialog.asVaadinComponent());
     }
 }

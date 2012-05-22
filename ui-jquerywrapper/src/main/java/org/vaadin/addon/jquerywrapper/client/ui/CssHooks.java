@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,52 +31,32 @@
  * intact.
  *
  */
-package info.magnolia.m5vaadin.shell.gwt.client;
+package org.vaadin.addon.jquerywrapper.client.ui;
 
-import info.magnolia.m5vaadin.shell.gwt.client.VMainLauncher.ShellAppType;
-import info.magnolia.m5vaadin.shell.gwt.client.VShellMessage.MessageType;
-
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.core.client.JavaScriptObject;
 
 /**
- * The view interface for MagnoliaShell (implemented by GWT part of MagnoliaShell).
+ * Css hook JQuery API wrapper.
  * @author apchelintcev
  *
  */
-public interface VMagnoliaShellView extends HasWidgets, IsWidget {
-    
-    int getViewportHeight();
+public class CssHooks extends JavaScriptObject {
 
-    int getViewportWidth();
-    
-    void updateAppViewport(VShellViewport viewport);
-    
-    void updateShellAppViewport(VShellViewport viewport);
-    
-    void updateDialogs(VShellViewport dialogViewport);
-
-    void setPresenter(final Presenter presenter);
-    
-    void showMessage(final MessageType type, String text); 
-    
-    /**
-     * Presenter. Meant for Vaadin part of MagnoliaShell.
-     * @author apchelintcev
-     */
-    interface Presenter {
-        
-        void loadApp(final String fragment);
-        
-        void loadShellApp(final ShellAppType shellAppType, String string);
-
-        void updateViewportLayout(VShellViewport activeViewport);
-        
-        void destroyChild(final Widget child);
+    protected  CssHooks() {
     }
-
-    boolean hasDialogs();
-
-    void removeDialogViewport();
+    
+    public native static final CssHooks create() /*-{
+        return $wnd.jQuery.cssHooks;
+    }-*/;
+    
+    public final native void addHook(final String property, CssHookHandler handler) /*-{
+        this.property = {
+            get: function(elem, computed, extra) {
+                handler.@org.vaadin.addon.jquerywrapper.client.ui.CssHookHandler::get(Lcom/google/gwt/user/client/Element;Ljava/lang/String;)(elem, computed);
+            },
+            set: function(elem, value) {
+                handler.@org.vaadin.addon.jquerywrapper.client.ui.CssHookHandler::set(Lcom/google/gwt/user/client/Element;Ljava/lang/String;)(elem, value);
+            } 
+        }
+    }-*/;
 }

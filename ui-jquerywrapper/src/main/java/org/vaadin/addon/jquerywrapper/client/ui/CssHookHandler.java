@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,52 +31,19 @@
  * intact.
  *
  */
-package info.magnolia.m5vaadin.shell.gwt.client;
+package org.vaadin.addon.jquerywrapper.client.ui;
 
-import info.magnolia.m5vaadin.shell.gwt.client.VMainLauncher.ShellAppType;
-import info.magnolia.m5vaadin.shell.gwt.client.VShellMessage.MessageType;
+import com.google.gwt.user.client.Element;
 
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
- * The view interface for MagnoliaShell (implemented by GWT part of MagnoliaShell).
+ * Css hook callback. Fired when the target property got/set.
  * @author apchelintcev
  *
  */
-public interface VMagnoliaShellView extends HasWidgets, IsWidget {
-    
-    int getViewportHeight();
+public interface CssHookHandler {
 
-    int getViewportWidth();
+    void get(final Element el, final String value);
     
-    void updateAppViewport(VShellViewport viewport);
-    
-    void updateShellAppViewport(VShellViewport viewport);
-    
-    void updateDialogs(VShellViewport dialogViewport);
-
-    void setPresenter(final Presenter presenter);
-    
-    void showMessage(final MessageType type, String text); 
-    
-    /**
-     * Presenter. Meant for Vaadin part of MagnoliaShell.
-     * @author apchelintcev
-     */
-    interface Presenter {
-        
-        void loadApp(final String fragment);
-        
-        void loadShellApp(final ShellAppType shellAppType, String string);
-
-        void updateViewportLayout(VShellViewport activeViewport);
-        
-        void destroyChild(final Widget child);
-    }
-
-    boolean hasDialogs();
-
-    void removeDialogViewport();
+    void set(final Element el, final String value);
 }

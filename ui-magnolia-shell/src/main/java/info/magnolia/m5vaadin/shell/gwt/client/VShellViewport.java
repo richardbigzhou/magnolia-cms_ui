@@ -38,8 +38,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.vaadin.addon.jquerywrapper.client.ui.Callbacks;
-import org.vaadin.addon.jquerywrapper.client.ui.JQueryWrapper;
 import org.vaadin.addon.jquerywrapper.client.ui.JQueryCallback;
+import org.vaadin.addon.jquerywrapper.client.ui.JQueryWrapper;
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Display;
@@ -56,6 +56,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.Container;
+import com.vaadin.terminal.gwt.client.ContainerResizedListener;
 import com.vaadin.terminal.gwt.client.Paintable;
 import com.vaadin.terminal.gwt.client.RenderSpace;
 import com.vaadin.terminal.gwt.client.UIDL;
@@ -66,7 +67,7 @@ import com.vaadin.terminal.gwt.client.UIDL;
  * @author apchelintcev
  * 
  */
-public class VShellViewport extends ComplexPanel implements Container {
+public class VShellViewport extends ComplexPanel implements Container, ContainerResizedListener {
 
     /**
      * Viewports might have different ways of displaying the content. 
@@ -96,6 +97,8 @@ public class VShellViewport extends ComplexPanel implements Container {
     private List<Paintable> paintables = new LinkedList<Paintable>();
     
     private ContentAnimationDelegate animationDelegate;
+    
+    private boolean forceContentAlign = true;
     
     public VShellViewport() {
         super();
@@ -150,7 +153,10 @@ public class VShellViewport extends ComplexPanel implements Container {
                     if (idx == 0) {
                         setWidgetVisible(w);
                     }
-                    updateChildPosition(w);
+                    
+                    if (forceContentAlign) {
+                        alignChild(w);   
+                    }
                 }   
             } else {
                 visibleWidget = null;
@@ -163,11 +169,10 @@ public class VShellViewport extends ComplexPanel implements Container {
         }
     }
     
-    private void updateChildPosition(Widget w) {
+    private void alignChild(Widget w) {
         final Element el = w.getElement();
         if (w.isAttached()) {
             final Style style = el.getStyle(); 
-            style.setPosition(Position.ABSOLUTE);
             style.setLeft(50, Unit.PCT);
             style.setMarginLeft(-el.getOffsetWidth() / 2, Unit.PX);
         }
@@ -185,20 +190,16 @@ public class VShellViewport extends ComplexPanel implements Container {
         if (hasChildComponent(w)) {
             hideCurrentContent();
             final Element el = w.getElement();
-            el.setId(paintableId + "-content");
-            el.appendChild(closeWrapper);
-            
             final Style style = el.getStyle();
-            style.setVisibility(Visibility.VISIBLE);
+            el.appendChild(closeWrapper);
             style.setDisplay(Display.NONE);
-            if (animationDelegate != null) {
-                animationDelegate.show(w, Callbacks.create(new JQueryCallback() {
-                    @Override
-                    public void execute(JQueryWrapper query) {
-                        visibleWidget = w;
-                    }
-                }));
-            }
+            style.setVisibility(Visibility.VISIBLE);
+            animationDelegate.show(w, Callbacks.create(new JQueryCallback() {
+                @Override
+                public void execute(JQueryWrapper query) {
+                    visibleWidget = w;
+                }
+            }));
         }
     }
     
@@ -209,9 +210,9 @@ public class VShellViewport extends ComplexPanel implements Container {
                 animationDelegate.hide(formerVisible, Callbacks.create(new JQueryCallback() {
                     @Override
                     public void execute(JQueryWrapper query) {
-                        formerVisible.getElement().setId("");
-                        formerVisible.getElement().getStyle().setDisplay(Display.BLOCK);
-                        formerVisible.getElement().getStyle().setVisibility(Visibility.HIDDEN);
+                        final Style style = formerVisible.getElement().getStyle(); 
+                        style.setVisibility(Visibility.HIDDEN);
+                        style.setDisplay(Display.BLOCK);
                     }
                 }));
             }
@@ -221,9 +222,6 @@ public class VShellViewport extends ComplexPanel implements Container {
     @Override
     public void setWidth(String width) {
         super.setWidth(width);
-        for (final Widget w : getChildren()) {
-            updateChildPosition(w);
-        }
     }
     
     @Override
@@ -276,8 +274,13 @@ public class VShellViewport extends ComplexPanel implements Container {
     protected void add(final Widget child, Element container) {
         if (child instanceof Paintable) {
             paintables.add((Paintable)child);
+            child.getElement().getStyle().setPosition(Position.ABSOLUTE);
             super.add(child, container);
         }
+    }
+    
+    public void setForceContentAlign(boolean forceContentAlign) {
+        this.forceContentAlign = forceContentAlign;
     }
     
     public void showCurtain() {
@@ -294,5 +297,14 @@ public class VShellViewport extends ComplexPanel implements Container {
 
     void setContentAnimationDelegate(final ContentAnimationDelegate animationDelegate) {
         this.animationDelegate = animationDelegate;
+    }
+
+    @Override
+    public void iLayout() {
+        if (forceContentAlign) {
+            for (final Widget w : getChildren()) {
+                alignChild(w);
+            }   
+        }
     }
 }

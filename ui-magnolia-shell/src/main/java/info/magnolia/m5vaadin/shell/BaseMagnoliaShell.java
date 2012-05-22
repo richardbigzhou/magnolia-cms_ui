@@ -52,6 +52,7 @@ import com.vaadin.terminal.PaintException;
 import com.vaadin.terminal.PaintTarget;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.ClientWidget;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.ClientWidget.LoadStyle;
 
 /**
@@ -68,6 +69,8 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
     private ShellViewport appViewport = new ShellViewport(this);
     
     private ShellViewport shellAppViewport = new ShellViewport(this);
+    
+    private ShellViewport dialogViewport = new ShellViewport(this);
     
     private ShellViewport activeViewport = null;
     
@@ -105,6 +108,10 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
         appViewport.paint(target);
         target.endTag("appViewport");
         
+        target.startTag("dialogViewport");
+        dialogViewport.paint(target);
+        target.endTag("dialogViewport");
+        
         proxy.paintContent(target);
     }
 
@@ -117,11 +124,11 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
     @Override
     public void attach() {
         super.attach();
-        
         shellAppViewport.attach();
+        dialogViewport.attach();
         appViewport.attach();
-        
         shellAppViewport.setParent(this);
+        dialogViewport.setParent(this);
         appViewport.setParent(this);
     }
     
@@ -129,6 +136,7 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
     public void detach() {
         super.detach();
         shellAppViewport.detach();
+        dialogViewport.detach();
         appViewport.detach();
     }
     
@@ -195,5 +203,14 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
     
     public void showWarning(String message) {
         proxy.call("showMessage", MessageType.WARNING.name(), message);
+    }
+
+    protected void removeDialog(Component dialog) {
+        dialogViewport.removeComponent(dialog);
+    }
+    
+    protected void addDialog(Component dialog) {
+        dialogViewport.addComponent(dialog);
+        requestRepaint();
     }
 }

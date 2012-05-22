@@ -35,6 +35,7 @@ package org.vaadin.addon.jquerywrapper.client.ui;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -154,6 +155,15 @@ public class JQueryWrapper extends JavaScriptObject {
     
     public final native void setCss(final String property, final String value) /*-{ 
         this.css(property, value);
+    }-*/;
+    
+    public final void setCss(JSONObject value) {
+        final JavaScriptObject jso = value.isObject().getJavaScriptObject();
+        setCss(jso);
+    };
+    
+    public final native void setCss(JavaScriptObject value) /*-{ 
+        this.css(value);
     }-*/;
     
     public final native void setCssPx(final String property, int pxVal) /*-{
