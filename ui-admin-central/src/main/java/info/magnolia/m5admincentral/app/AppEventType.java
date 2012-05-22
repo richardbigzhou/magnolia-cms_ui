@@ -31,41 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.m5admincentral.app.dialog;
+package info.magnolia.m5admincentral.app;
 
-
-import info.magnolia.m5admincentral.app.AbstractAppLifecycle;
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.place.PlaceController;
-
-import com.google.inject.Inject;
 
 /**
- * Pages app.
- *
+ * AppEvent Type enumaration.
+ * @author erichechinger
  * @version $Id$
+ *
  */
-public class DialogTestApp extends AbstractAppLifecycle {
-
-    @Inject
-    public DialogTestApp(PlaceController placeController, EventBus eventBus) {
-        super(placeController, eventBus);
-    }
-
-    @Override
-    public void start() {
-        super.start();
-        System.out.println("DialogApp started");
-    }
-
-    @Override
-    public void focus() {
-        placeController.goTo(new DialogTestPlace("foobar"));
-        System.out.println("DialogApp focused");
-    }
-
-    @Override
-    public void stop() {
-        super.stop();
-    }
+public enum AppEventType {
+    STOP_EVENT, START_EVENT, FOCUS_EVENT
 }

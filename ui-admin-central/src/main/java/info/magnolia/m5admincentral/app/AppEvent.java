@@ -31,41 +31,57 @@
  * intact.
  *
  */
-package info.magnolia.m5admincentral.app.dialog;
+package info.magnolia.m5admincentral.app;
 
+import info.magnolia.ui.framework.event.Event;
+import info.magnolia.ui.framework.event.EventHandler;
 
-import info.magnolia.m5admincentral.app.AbstractAppLifecycle;
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.place.PlaceController;
-
-import com.google.inject.Inject;
 
 /**
- * Pages app.
+ * App Event used to notify a Start or Stop event.
  *
+ * @author erichechinger
  * @version $Id$
+ *
  */
-public class DialogTestApp extends AbstractAppLifecycle {
+public class AppEvent implements Event<AppEvent.Handler>{
 
-    @Inject
-    public DialogTestApp(PlaceController placeController, EventBus eventBus) {
-        super(placeController, eventBus);
+
+    /**
+     * Listens to {@link AppEvent}s.
+     */
+    public interface Handler extends EventHandler {
+        void onStopApp(AppLifecycle app);
+        void onStartApp(AppLifecycle app);
+    }
+
+    private final AppLifecycle app;
+    private final AppEventType eventType;
+
+    public AppEvent(AppLifecycle app, AppEventType eventType) {
+        System.out.println("AppEvent: create Event for app type: "+app.getClass().getName()+ " and type" +eventType);
+        this.app = app;
+        this.eventType = eventType;
+    }
+
+    public AppLifecycle getApp() {
+        return app;
+    }
+
+    public AppEventType getEventType() {
+        return eventType;
     }
 
     @Override
-    public void start() {
-        super.start();
-        System.out.println("DialogApp started");
-    }
+    public void dispatch(Handler handler) {
+        if(eventType == null) {
+            return;
+        }
 
-    @Override
-    public void focus() {
-        placeController.goTo(new DialogTestPlace("foobar"));
-        System.out.println("DialogApp focused");
-    }
-
-    @Override
-    public void stop() {
-        super.stop();
+        if(eventType.equals(AppEventType.STOP_EVENT)) {
+            handler.onStopApp(app);
+        } else {
+            handler.onStartApp(app);
+        }
     }
 }
