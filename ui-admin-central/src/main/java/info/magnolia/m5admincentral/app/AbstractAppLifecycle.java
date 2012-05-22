@@ -31,41 +31,63 @@
  * intact.
  *
  */
-package info.magnolia.m5admincentral.app.dialog;
+package info.magnolia.m5admincentral.app;
 
-
-import info.magnolia.m5admincentral.app.AbstractAppLifecycle;
+import info.magnolia.ui.framework.event.Event;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.place.PlaceController;
 
-import com.google.inject.Inject;
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
- * Pages app.
- *
+ * Basic Implementation of the App lifecycle.
+ * Defined as Abstract: public void focus() not implemented.
+ * Create Events for start() and stop().
+ * @author erichechinger
  * @version $Id$
  */
-public class DialogTestApp extends AbstractAppLifecycle {
+public abstract class AbstractAppLifecycle implements AppLifecycle {
+    //Define Logger
+    private static Logger log = LoggerFactory.getLogger(AbstractAppLifecycle.class);
+    //Define Injected Classes
+    protected PlaceController placeController;
+    protected EventBus eventBus;
 
     @Inject
-    public DialogTestApp(PlaceController placeController, EventBus eventBus) {
-        super(placeController, eventBus);
+    public AbstractAppLifecycle(PlaceController placeController, EventBus eventBus) {
+        this.placeController = placeController;
+        this.eventBus = eventBus;
     }
 
     @Override
     public void start() {
-        super.start();
-        System.out.println("DialogApp started");
-    }
+        log.debug("App Start, will send Start Event");
+        //Create Start Event
+        Event<AppEvent.Handler> startAppEvent = new AppEvent(this, AppEventType.START_EVENT);
+        //Send Event to the EventBus
+        sendEvent(startAppEvent);
 
-    @Override
-    public void focus() {
-        placeController.goTo(new DialogTestPlace("foobar"));
-        System.out.println("DialogApp focused");
     }
 
     @Override
     public void stop() {
-        super.stop();
+        log.debug("App Stop, will send Stop Event");
+        //Create Stop Event
+        Event<AppEvent.Handler> stopAppEvent = new AppEvent(this, AppEventType.STOP_EVENT);
+        //Send Event to the EventBus
+        sendEvent(stopAppEvent);
     }
+
+    /**
+     * Send Event to the EventBuss.
+     */
+    private void sendEvent(Event<AppEvent.Handler>  event) {
+        log.debug("AppLifecycle: send Event "+event.getClass().getName());
+        eventBus.fireEvent(event);
+    }
+
 }

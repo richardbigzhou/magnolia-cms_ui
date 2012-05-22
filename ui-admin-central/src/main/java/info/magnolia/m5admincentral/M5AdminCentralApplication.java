@@ -33,6 +33,7 @@
  */
 package info.magnolia.m5admincentral;
 
+import info.magnolia.m5admincentral.dialog.registry.DummyDialogDefinitionManager;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.model.ModuleDefinition;
 import info.magnolia.objectfactory.Components;
@@ -73,9 +74,9 @@ public class M5AdminCentralApplication extends Application {
         builder.withConfiguration(configuration);
         builder.withParent((GuiceComponentProvider) Components.getComponentProvider());
         GuiceComponentProvider componentProvider = builder.build();
-        
-        //DummyDialogDefinitionManager dialogManager = componentProvider.newInstance(DummyDialogDefinitionManager.class);
-        //dialogManager.load();
+
+        DummyDialogDefinitionManager dialogManager = componentProvider.newInstance(DummyDialogDefinitionManager.class);
+        dialogManager.load();
         window = new Window("Magnolia shell test");
         window.setContent(new CssLayout(){
 
