@@ -64,12 +64,17 @@ public abstract class AbstractAppLifecycle implements AppLifecycle {
     }
 
     @Override
+    public void focus() {
+        log.debug("App focused");
+        sendEvent(new AppLifecycleEvent(this, AppEventType.FOCUS_EVENT));
+    }
+    
+    @Override
     public void start() {
         log.debug("App Start, will send Start Event");
         //Create Start Event
-        Event<AppEvent.Handler> startAppEvent = new AppEvent(this, AppEventType.START_EVENT);
         //Send Event to the EventBus
-        sendEvent(startAppEvent);
+        sendEvent(new AppLifecycleEvent(this, AppEventType.START_EVENT));
 
     }
 
@@ -77,15 +82,14 @@ public abstract class AbstractAppLifecycle implements AppLifecycle {
     public void stop() {
         log.debug("App Stop, will send Stop Event");
         //Create Stop Event
-        Event<AppEvent.Handler> stopAppEvent = new AppEvent(this, AppEventType.STOP_EVENT);
         //Send Event to the EventBus
-        sendEvent(stopAppEvent);
+        sendEvent(new AppLifecycleEvent(this, AppEventType.STOP_EVENT));
     }
 
     /**
      * Send Event to the EventBuss.
      */
-    private void sendEvent(Event<AppEvent.Handler>  event) {
+    private void sendEvent(Event<? extends AppLifecycleEventHandler>  event) {
         log.debug("AppLifecycle: send Event "+event.getClass().getName());
         eventBus.fireEvent(event);
     }

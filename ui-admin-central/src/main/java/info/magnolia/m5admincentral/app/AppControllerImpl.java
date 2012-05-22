@@ -35,10 +35,10 @@ package info.magnolia.m5admincentral.app;
 
 import info.magnolia.objectfactory.ComponentProvider;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.inject.Singleton;
+
+import org.apache.commons.collections.BidiMap;
+import org.apache.commons.collections.bidimap.DualHashBidiMap;
 
 import com.google.inject.Inject;
 
@@ -51,9 +51,10 @@ import com.google.inject.Inject;
 public class AppControllerImpl implements AppController {
 
     private AppRegistry appRegistry;
+    
     private ComponentProvider componentProvider;
 
-    private Map<String, AppLifecycle> runningApps = new HashMap<String, AppLifecycle>();
+    private BidiMap runningApps = new DualHashBidiMap(); 
 
     @Inject
     public AppControllerImpl(AppRegistry appRegistry, ComponentProvider componentProvider) {
@@ -73,13 +74,18 @@ public class AppControllerImpl implements AppController {
     }
 
     private AppLifecycle doStart(String name) {
-        AppLifecycle lifecycle = runningApps.get(name);
+        final AppDescriptor descriptor = appRegistry.getAppDescriptor(name);
+        AppLifecycle lifecycle = (AppLifecycle)runningApps.get(descriptor);
         if (lifecycle == null) {
-            AppDescriptor descriptor = appRegistry.getAppDescriptor(name);
             lifecycle = componentProvider.newInstance(descriptor.getAppClass());
+            runningApps.put(descriptor, lifecycle);
             lifecycle.start();
-            runningApps.put(name, lifecycle);
         }
         return lifecycle;
+    }
+
+    @Override
+    public AppDescriptor getAppDescriptor(AppLifecycle app) {
+        return (AppDescriptor)runningApps.getKey(app);
     }
 }

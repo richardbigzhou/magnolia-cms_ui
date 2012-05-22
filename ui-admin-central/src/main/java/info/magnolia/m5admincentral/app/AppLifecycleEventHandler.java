@@ -31,42 +31,37 @@
  * intact.
  *
  */
-package info.magnolia.m5admincentral.app.pages;
+package info.magnolia.m5admincentral.app;
 
+import info.magnolia.ui.framework.event.EventHandler;
 
-import info.magnolia.m5admincentral.app.AbstractAppLifecycle;
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.place.PlaceController;
-
-import com.google.inject.Inject;
 
 /**
- * Pages app.
- *
- * @version $Id$
+ * Listens to {@link AppLifecycleEvent}s.
  */
-public class PagesApp extends AbstractAppLifecycle {
+public interface AppLifecycleEventHandler extends EventHandler {
     
-    @Inject
-    public PagesApp(PlaceController placeController, EventBus eventBus) {
-        super(placeController, eventBus);
-    }
+    void onAppFocus(final AppLifecycleEvent event);
+    
+    void onStopApp(final AppLifecycleEvent event);
+    
+    void onStartApp(final AppLifecycleEvent event);
+    
+    /**
+     * Simple stub so in case not all the methods should be implemented - you can skip them.
+     *
+     */
+    public static class Adapter implements AppLifecycleEventHandler {
 
-    @Override
-    public void start() {
-        super.start();
-        System.out.println("PagesApp started");
-    }
+        @Override
+        public void onAppFocus(AppLifecycleEvent event) {}
 
-    @Override
-    public void focus() {
-        super.focus();
-        placeController.goTo(new PagesPlace("foobar"));
-        System.out.println("PagesApp focused");
-    }
+        @Override
+        public void onStopApp(AppLifecycleEvent event) {}
 
-    @Override
-    public void stop() {
-        super.stop();
+        @Override
+        public void onStartApp(AppLifecycleEvent event) {}
+        
     }
+    
 }

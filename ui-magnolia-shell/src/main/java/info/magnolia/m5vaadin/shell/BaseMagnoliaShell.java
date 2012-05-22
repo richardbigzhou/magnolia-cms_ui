@@ -214,4 +214,8 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
         dialogViewport.addComponent(dialog);
         requestRepaint();
     }
+    
+    public void appFocused() {
+        setActiveViewport(appViewport);
+    }
 }

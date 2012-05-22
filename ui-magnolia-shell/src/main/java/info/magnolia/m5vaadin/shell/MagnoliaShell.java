@@ -51,7 +51,7 @@ import com.vaadin.terminal.ExternalResource;
 @SuppressWarnings("serial")
 @Singleton
 public class MagnoliaShell extends BaseMagnoliaShell implements Shell {
-
+    
     @Override
     public void askForConfirmation(String message, ConfirmationHandler listener) {
     }
