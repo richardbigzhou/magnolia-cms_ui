@@ -33,15 +33,12 @@
  */
 package info.magnolia.m5admincentral.app;
 
-import info.magnolia.ui.framework.activity.Activity;
-import info.magnolia.ui.framework.place.Place;
-
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Describes an app.
- * 
+ *
  * @version $Id$
  */
 public class AppDescriptor {
@@ -56,19 +53,19 @@ public class AppDescriptor {
     private String icon;
 
     private String category;
-    
+
     private Class<? extends AppLifecycle> appClass;
 
-    private Map<Class<? extends Place>, Class<? extends Activity>> activityMappings = new HashMap<Class<? extends Place>, Class<? extends Activity>>();
+    private List<PlaceActivityMapping> activityMappings = new ArrayList<PlaceActivityMapping>();
 
     public String getCategory() {
         return category;
     }
-    
+
     public void setCategory(String category) {
         this.category = category;
     }
-    
+
     public String getName() {
         return name;
     }
@@ -101,12 +98,12 @@ public class AppDescriptor {
         this.appClass = appClass;
     }
 
-    public void addActivityMapping(Class<? extends Place> place, Class<? extends Activity> activity) {
-        activityMappings.put(place, activity);
+    public List<PlaceActivityMapping> getActivityMappings() {
+        return activityMappings;
     }
 
-    public Map<Class<? extends Place>, Class<? extends Activity>> getActivityMappings() {
-        return activityMappings;
+    public void addActivityMapping(PlaceActivityMapping mapping) {
+        activityMappings.add(mapping);
     }
     
     public Class<? extends Activity> getMappedActivityClass(final Class<? extends Place> placeClass) {

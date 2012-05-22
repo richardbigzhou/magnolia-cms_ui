@@ -33,31 +33,32 @@
  */
 package info.magnolia.m5admincentral.app;
 
-import java.util.Collection;
+import info.magnolia.ui.framework.activity.Activity;
+import info.magnolia.ui.framework.place.Place;
 
 /**
- * Registry of available apps.
- *
- * Discover available apps
- *
- * They belong to groups: content and manage etc.
- *
- * How do you switch between apps?
- *  hub-n-spoke so clicking an app that's running activates its activity/place
- *
- * How is the app notified to close?
+ * Mapping for associating a place with an activity.
  *
  * @version $Id$
  */
-public interface AppRegistry {
+public class PlaceActivityMapping {
 
-    public Collection<AppDescriptor> getAppDescriptors();
+    private Class<? extends Place> place;
+    private Class<? extends Activity> activity;
 
-    public AppDescriptor getAppDescriptor(String name);
+    public Class<? extends Place> getPlace() {
+        return place;
+    }
 
-    public void registerAppDescription(String name, AppDescriptor descriptor);
+    public void setPlace(Class<? extends Place> place) {
+        this.place = place;
+    }
 
-    public AppDescriptor unregisterAppDescription(String name);
+    public Class<? extends Activity> getActivity() {
+        return activity;
+    }
 
-    public boolean isAppDescriptionRegistered(String name);
+    public void setActivity(Class<? extends Activity> activity) {
+        this.activity = activity;
+    }
 }

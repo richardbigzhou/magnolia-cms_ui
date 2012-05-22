@@ -58,6 +58,10 @@ public class AppRegistryImpl implements AppRegistry {
         apps = Collections.synchronizedMap(new LinkedHashMap<String, AppDescriptor>());
     }
 
+    public void addAppDescriptor(AppDescriptor descriptor) {
+        this.apps.put(descriptor.getName(), descriptor);
+    }
+
     @Override
     public Collection<AppDescriptor> getAppDescriptors() {
         return apps.values();
@@ -92,7 +96,7 @@ public class AppRegistryImpl implements AppRegistry {
      * @throws IllegalArgumentException: In case of the Registry don't contains an App with this name.
      */
     @Override
-    public AppDescriptor unRegisterAppDescription(String name) {
+    public AppDescriptor unregisterAppDescription(String name) {
         if(!apps.containsKey(name)) {
             throw new IllegalArgumentException("Can't Un register this App's. No Apps define in Registery with name  \"" + name + "\".");
         }

@@ -4,14 +4,17 @@
   <name>ui-admin-central</name>
   <displayName>Magnolia Velvet Admin Central</displayName>
   <description>New Magnolia Administration GUI</description>
-
+  <versionHandler>info.magnolia.m5admincentral.module.AdminCentralModuleVersionHandler</versionHandler>
   <version>${project.version}</version>
 
   <components>
     <id>main</id>
     <component>
       <type>info.magnolia.m5admincentral.app.AppRegistry</type>
-      <implementation>info.magnolia.m5admincentral.app.AppRegistryImpl</implementation>
+      <workspace>config</workspace>
+      <path>/modules/ui-admin-central/apps/registry</path>
+      <observed>true</observed>
+      <scope>singleton</scope>
     </component>
   </components>
 

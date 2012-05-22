@@ -36,17 +36,11 @@ package info.magnolia.m5admincentral.framework;
 import info.magnolia.m5admincentral.app.AppController;
 import info.magnolia.m5admincentral.app.AppDescriptor;
 import info.magnolia.m5admincentral.app.AppLifecycle;
-import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.framework.activity.Activity;
-import info.magnolia.ui.framework.activity.ActivityMapper;
-import info.magnolia.ui.framework.place.Place;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
-import com.google.inject.Inject;
 
 /**
  * AppActivityMapper.

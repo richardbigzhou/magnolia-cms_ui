@@ -38,12 +38,7 @@ import info.magnolia.m5admincentral.app.AppDescriptor;
 import info.magnolia.m5admincentral.app.AppLifecycleEvent;
 import info.magnolia.m5admincentral.app.AppLifecycleEventHandler;
 import info.magnolia.m5admincentral.app.AppRegistry;
-import info.magnolia.m5admincentral.app.dialog.DialogTestActivity;
-import info.magnolia.m5admincentral.app.dialog.DialogTestApp;
-import info.magnolia.m5admincentral.app.dialog.DialogTestPlace;
-import info.magnolia.m5admincentral.app.pages.PagesActivity;
-import info.magnolia.m5admincentral.app.pages.PagesApp;
-import info.magnolia.m5admincentral.app.pages.PagesPlace;
+import info.magnolia.m5admincentral.app.PlaceActivityMapping;
 import info.magnolia.m5admincentral.dialog.DialogPresenterFactory;
 import info.magnolia.m5admincentral.framework.AppActivityManager;
 import info.magnolia.m5admincentral.framework.AppActivityMapper;
@@ -83,30 +78,6 @@ public class MagnoliaShellPresenter implements MagnoliaShellView.Presenter {
         this.view = view;
         this.view.setPresenter(this);
 
-        AppDescriptor descriptor = new AppDescriptor();
-        descriptor.setName("pages1");
-        descriptor.setLabel("Pages1");
-        descriptor.setIcon("img/icon-app-pages.png");
-        descriptor.setAppClass(PagesApp.class);
-        descriptor.setCategory("EDIT");
-        descriptor.addActivityMapping(PagesPlace.class, PagesActivity.class);
-
-        if (!appRegistry.isAppDescriptionRegistered(descriptor.getName())) {
-            appRegistry.registerAppDescription(descriptor.getName(), descriptor);   
-        }
-
-        descriptor = new AppDescriptor();
-        descriptor.setName("dialog");
-        descriptor.setLabel("Dialog");
-        descriptor.setIcon("img/icon-app-default.png");
-        descriptor.setAppClass(DialogTestApp.class);
-        descriptor.setCategory("MANAGE");
-        descriptor.addActivityMapping(DialogTestPlace.class, DialogTestActivity.class);
-
-        if (!appRegistry.isAppDescriptionRegistered(descriptor.getName())) {
-            appRegistry.registerAppDescription(descriptor.getName(), descriptor);   
-        }
-
         final ShellAppActivityManager shellAppManager = new ShellAppActivityManager(new ShellAppActivityMapper(componentProvider), bus);
         shellAppManager.setViewPort(view.getRoot().getShellAppViewport());
 
@@ -140,7 +111,9 @@ public class MagnoliaShellPresenter implements MagnoliaShellView.Presenter {
         places.add(PulsePlace.class);
         places.add(FavoritesPlace.class);
         for (AppDescriptor descriptor : appRegistry.getAppDescriptors()) {
-            places.addAll(descriptor.getActivityMappings().keySet());
+            for (PlaceActivityMapping mapping : descriptor.getActivityMappings()) {
+                places.add(mapping.getPlace());
+            }
         }
         return places.toArray(new Class[places.size()]);
     }
