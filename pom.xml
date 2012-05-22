@@ -20,6 +20,11 @@
     <vaadinVersion>6.7.7</vaadinVersion>
     <gwtVersion>2.3.0</gwtVersion>
   </properties>
+  <scm>
+    <connection>scm:git:http://git.magnolia-cms.com/magnolia_ui</connection>
+    <developerConnection>scm:git:https://git.magnolia-cms.com/magnolia_ui</developerConnection>
+    <url>http://git.magnolia-cms.com/gitweb/?p=magnolia_ui.git</url>
+  </scm>    
   <dependencyManagement>
     <dependencies>
       <dependency>

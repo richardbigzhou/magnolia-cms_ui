@@ -33,7 +33,8 @@
  */
 package info.magnolia.m5admincentral.app.assets;
 
-import info.magnolia.m5admincentral.app.AppLifecycle;
+import info.magnolia.m5admincentral.app.AbstractAppLifecycle;
+import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.place.PlaceController;
 
 import javax.inject.Inject;
@@ -43,17 +44,17 @@ import javax.inject.Inject;
  *
  * @version $Id$
  */
-public class AssetsApp implements AppLifecycle {
+public class AssetsApp extends AbstractAppLifecycle {
 
-    private PlaceController placeController;
 
     @Inject
-    public AssetsApp(PlaceController placeController) {
-        this.placeController = placeController;
+    public AssetsApp(PlaceController placeController, EventBus eventBus) {
+        super(placeController, eventBus);
     }
 
     @Override
     public void start() {
+        super.start();
         System.out.println("AssetsApp started");
     }
 
@@ -65,5 +66,6 @@ public class AssetsApp implements AppLifecycle {
 
     @Override
     public void stop() {
+        super.stop();
     }
 }
