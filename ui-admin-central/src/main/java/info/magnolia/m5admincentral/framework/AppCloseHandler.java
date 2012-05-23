@@ -31,48 +31,16 @@
  * intact.
  *
  */
-package info.magnolia.m5admincentral.app.pages;
+package info.magnolia.m5admincentral.framework;
 
-import info.magnolia.m5admincentral.MagnoliaShell;
-import info.magnolia.m5admincentral.framework.AppViewImpl;
-
-import javax.inject.Inject;
-
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
+import info.magnolia.ui.framework.event.EventHandler;
 
 /**
- * View implementation for the Pages app.
+ * Handles the {@link AppCloseEvent}.
+ * @author apchelintcev
  *
- * @version $Id$
  */
-@SuppressWarnings("serial")
-public class PagesViewImpl extends AppViewImpl implements PagesView {
-    
-    @Inject
-    public PagesViewImpl(final MagnoliaShell shell) {
-        final VerticalLayout tableContainer = new VerticalLayout();
-        tableContainer.addComponent(new Button("test", new Button.ClickListener() {
-            @Override
-            public void buttonClick(ClickEvent event) {
-                final VerticalLayout layout = new VerticalLayout();
-                layout.setSizeFull();
-                layout.addComponent(new Label("New tab opened"));
-                addTab(layout, "TestTab");
-            }
-        }));
-        addTab(tableContainer, "Pages");
-    }
+public interface AppCloseHandler extends EventHandler {
 
-    @Override
-    public String getName() {
-        return "Pages";
-    }
-
-    @Override
-    public void detachView() {
-        getPresenter().close();
-    }
+    void onAppClosed(final AppCloseEvent event);
 }

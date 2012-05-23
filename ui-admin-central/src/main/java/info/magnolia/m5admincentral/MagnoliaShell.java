@@ -31,27 +31,60 @@
  * intact.
  *
  */
-package info.magnolia.m5vaadin.shell;
+package info.magnolia.m5admincentral;
 
+import info.magnolia.m5admincentral.app.AppLifecycleEvent;
+import info.magnolia.m5admincentral.app.AppLifecycleEventHandler;
+import info.magnolia.m5admincentral.framework.AppView;
 import info.magnolia.m5vaadin.IsVaadinComponent;
+import info.magnolia.m5vaadin.shell.BaseMagnoliaShell;
+import info.magnolia.m5vaadin.shell.ShellViewport;
+import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.event.HandlerRegistration;
 import info.magnolia.ui.framework.shell.ConfirmationHandler;
 import info.magnolia.ui.framework.shell.FragmentChangedHandler;
 import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.framework.view.View;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import com.vaadin.terminal.ExternalResource;
 
 /**
- * Actual implementation of MagnoliaShell that can serve actual apps and shell apps.
+ * Admin shell.
  * @author apchelintcev
  *
  */
 @SuppressWarnings("serial")
 @Singleton
 public class MagnoliaShell extends BaseMagnoliaShell implements Shell {
-
+    
+    private EventBus eventBus;
+    
+    @Inject
+    public MagnoliaShell(final EventBus eventBus) {
+        super();
+        this.eventBus = eventBus;
+        this.eventBus.addHandler(AppLifecycleEvent.class, new AppLifecycleEventHandler.Adapter() {
+            @Override
+            public void onAppFocus(AppLifecycleEvent event) {
+                setActiveViewport(getAppViewport());;
+            }
+        });
+    }
+    
+    @Override
+    protected void closeCurrentApp() {
+        final ShellViewport appViewport = getAppViewport();
+        final View view = appViewport.getView();
+        if (view instanceof AppView) {
+            ((AppView)view).detachView();
+        }
+        super.closeCurrentApp();
+        setFragment("");
+    }
+    
     @Override
     public void askForConfirmation(String message, ConfirmationHandler listener) {
     }
@@ -80,11 +113,7 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell {
     @Override
     public void setFragment(String fragment) {
         final ShellViewport activeViewport = getActiveViewport();
-        if (activeViewport.isShellAppViewport()) {
-            proxy.call("shellAppActivated", fragment, activeViewport.getViewName());
-        } else {
-            proxy.call("appActivated", fragment, activeViewport.getViewName());
-        }
+        proxy.call("navigate", fragment, activeViewport.getViewName());
     }
 
     @Override
@@ -110,4 +139,5 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell {
     public void removeDialog(IsVaadinComponent dialog) {
         removeDialog(dialog.asVaadinComponent());
     }
+
 }

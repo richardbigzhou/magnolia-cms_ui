@@ -35,7 +35,6 @@ package info.magnolia.m5vaadin.shell.gwt.client;
 
 import info.magnolia.m5vaadin.shell.gwt.client.VMainLauncher.ShellAppType;
 import info.magnolia.m5vaadin.shell.gwt.client.VShellMessage.MessageType;
-import info.magnolia.m5vaadin.shell.gwt.client.event.AppActivatedEvent;
 
 import java.util.Iterator;
 import java.util.Set;
@@ -70,21 +69,19 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
     
     private ClientSideProxy proxy = new ClientSideProxy(this) {
         {
-            register("shellAppActivated", new Method() {
+            register("navigate", new Method() {
                 @Override
                 public void invoke(String methodName, Object[] params) {
                     final String historyToken = String.valueOf(params[0]);
                     final String title = String.valueOf(params[1]);
-                    eventBus.fireEvent(new AppActivatedEvent(true, historyToken, title));
+                    view.navigate(historyToken, title);
                 }
             });
-
-            register("appActivated", new Method() {
+            
+            register("activeViewportChanged", new Method() {
                 @Override
                 public void invoke(String methodName, Object[] params) {
-                    final String historyToken = String.valueOf(params[0]);
-                    final String title = String.valueOf(params[1]);
-                    eventBus.fireEvent(new AppActivatedEvent(false, historyToken, title));
+                    view.changeActiveViewport();
                 }
             });
             
@@ -224,6 +221,11 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
     }
     
     @Override
+    public void closeCurrentApp() {
+        proxy.call("closeCurrentApp");
+    }
+    
+    @Override
     public void setWidth(String width) {
         view.asWidget().setWidth(width);
         super.setWidth(width);
@@ -248,4 +250,5 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
     public boolean remove(Widget w) {
         return view.remove(w);
     }
+
 }

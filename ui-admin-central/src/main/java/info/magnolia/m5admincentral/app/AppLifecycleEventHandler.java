@@ -31,48 +31,37 @@
  * intact.
  *
  */
-package info.magnolia.m5admincentral.app.pages;
+package info.magnolia.m5admincentral.app;
 
-import info.magnolia.m5admincentral.MagnoliaShell;
-import info.magnolia.m5admincentral.framework.AppViewImpl;
+import info.magnolia.ui.framework.event.EventHandler;
 
-import javax.inject.Inject;
-
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
 
 /**
- * View implementation for the Pages app.
- *
- * @version $Id$
+ * Listens to {@link AppLifecycleEvent}s.
  */
-@SuppressWarnings("serial")
-public class PagesViewImpl extends AppViewImpl implements PagesView {
+public interface AppLifecycleEventHandler extends EventHandler {
     
-    @Inject
-    public PagesViewImpl(final MagnoliaShell shell) {
-        final VerticalLayout tableContainer = new VerticalLayout();
-        tableContainer.addComponent(new Button("test", new Button.ClickListener() {
-            @Override
-            public void buttonClick(ClickEvent event) {
-                final VerticalLayout layout = new VerticalLayout();
-                layout.setSizeFull();
-                layout.addComponent(new Label("New tab opened"));
-                addTab(layout, "TestTab");
-            }
-        }));
-        addTab(tableContainer, "Pages");
-    }
+    void onAppFocus(final AppLifecycleEvent event);
+    
+    void onStopApp(final AppLifecycleEvent event);
+    
+    void onStartApp(final AppLifecycleEvent event);
+    
+    /**
+     * Simple stub so in case not all the methods should be implemented - you can skip them.
+     *
+     */
+    public static class Adapter implements AppLifecycleEventHandler {
 
-    @Override
-    public String getName() {
-        return "Pages";
-    }
+        @Override
+        public void onAppFocus(AppLifecycleEvent event) {}
 
-    @Override
-    public void detachView() {
-        getPresenter().close();
+        @Override
+        public void onStopApp(AppLifecycleEvent event) {}
+
+        @Override
+        public void onStartApp(AppLifecycleEvent event) {}
+        
     }
+    
 }

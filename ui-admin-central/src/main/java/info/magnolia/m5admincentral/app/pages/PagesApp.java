@@ -46,9 +46,7 @@ import com.google.inject.Inject;
  * @version $Id$
  */
 public class PagesApp extends AbstractAppLifecycle {
-
-
-
+    
     @Inject
     public PagesApp(PlaceController placeController, EventBus eventBus) {
         super(placeController, eventBus);
@@ -62,6 +60,7 @@ public class PagesApp extends AbstractAppLifecycle {
 
     @Override
     public void focus() {
+        super.focus();
         placeController.goTo(new PagesPlace("foobar"));
         System.out.println("PagesApp focused");
     }

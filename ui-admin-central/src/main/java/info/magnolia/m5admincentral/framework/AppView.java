@@ -41,11 +41,21 @@ import com.vaadin.ui.ComponentContainer;
  * Interface for the app views.
  * @author apchelintcev
  *
- * @param <T>
  */
-public interface AppView<T extends AppView<T>> extends ShellView {
+public interface AppView extends ShellView {
 
     void addTab(final ComponentContainer cc, String caption);
     
     void closeTab(final ComponentContainer cc);
+    
+    void detachView();
+    
+    void setPresenter(final Presenter presenter);
+    
+    /**
+     * Presenter. 
+     */
+    public interface Presenter {
+        void close();
+    }
 }

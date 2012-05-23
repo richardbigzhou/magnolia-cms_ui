@@ -60,6 +60,7 @@ public class DialogTestApp extends AbstractAppLifecycle {
 
     @Override
     public void focus() {
+        super.focus();
         placeController.goTo(new DialogTestPlace("foobar"));
         System.out.println("DialogApp focused");
     }

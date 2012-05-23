@@ -88,12 +88,20 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
                 navigateToApp(String.valueOf(params[0]));
             }
         });
+        
+        
+        register("closeCurrentApp", new Method() {
+            @Override
+            public void invoke(String methodName, Object[] params) {
+                closeCurrentApp();
+            }
+        });
     }};
     
     public BaseMagnoliaShell() {
         super();
-        setImmediate(true);
         System.out.println("SHELL CREATED!");
+        setImmediate(true);
     }
     
     @Override
@@ -171,7 +179,10 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
     }
     
     protected void setActiveViewport(ShellViewport activeViewport) {
-        this.activeViewport = activeViewport;
+        if (this.activeViewport != activeViewport) {
+            this.activeViewport = activeViewport;  
+            proxy.call("activeViewportChanged");
+        }
     }
     
     protected void navigateToApp(String appFragment) {
@@ -213,5 +224,12 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
     protected void addDialog(Component dialog) {
         dialogViewport.addComponent(dialog);
         requestRepaint();
+    }
+    
+    protected void closeCurrentApp() {
+        appViewport.pop();
+        if (appViewport.isEmpty()) {
+            setActiveViewport(shellAppViewport);
+        }
     }
 }

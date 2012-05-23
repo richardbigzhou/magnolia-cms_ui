@@ -35,43 +35,90 @@ package info.magnolia.m5admincentral.framework;
 
 import info.magnolia.m5admincentral.app.AppController;
 import info.magnolia.m5admincentral.app.AppDescriptor;
-import info.magnolia.m5admincentral.app.AppRegistry;
-import info.magnolia.m5admincentral.app.PlaceActivityMapping;
+import info.magnolia.m5admincentral.app.AppLifecycle;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.framework.activity.Activity;
 import info.magnolia.ui.framework.activity.ActivityMapper;
 import info.magnolia.ui.framework.place.Place;
 
-import com.google.inject.Inject;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import javax.inject.Inject;
 
 /**
  * AppActivityMapper.
+ * 
  * @version $Id$
  */
+@SuppressWarnings("serial")
 public class AppActivityMapper implements ActivityMapper {
-
-    private AppRegistry appRegistry;
+    
     private AppController appController;
+    
     private ComponentProvider componentProvider;
 
+    private Map<AppDescriptor, AppContext> contextMap = new HashMap<AppDescriptor, AppContext>();
+    
     @Inject
-    public AppActivityMapper(AppRegistry appRegistry, AppController appController, ComponentProvider componentProvider) {
-        this.appRegistry = appRegistry;
+    public AppActivityMapper(AppController appController, ComponentProvider componentProvider) {
         this.appController = appController;
         this.componentProvider = componentProvider;
     }
 
     @Override
     public Activity getActivity(final Place place) {
-        for (final AppDescriptor descriptor : appRegistry.getAppDescriptors()) {
-            for (PlaceActivityMapping mapping : descriptor.getActivityMappings()) {
-                if (mapping.getPlace().equals(place.getClass())) {
-                    final Class<? extends Activity> clazz = mapping.getActivity();
-                    appController.startIfNotAlreadyRunning(descriptor.getName());
-                    return componentProvider.newInstance(clazz);
+        final Iterator<Map.Entry<AppDescriptor, AppContext>> it = contextMap.entrySet().iterator();
+        while (it.hasNext()) {
+            final Map.Entry<AppDescriptor, AppContext> entry = it.next();
+            final AppDescriptor descriptor = entry.getKey();
+            final AppContext context = entry.getValue();
+            final Class<? extends Activity> clazz = descriptor.getMappedActivityClass(place.getClass());
+            if (clazz != null) {
+                Activity activity = context.getActivityForPlace(place.getClass());
+                if (activity == null) {
+                    activity = componentProvider.newInstance(clazz);
+                    if (activity instanceof AppActivity) {
+                        ((AppActivity)activity).setName(descriptor.getName());
+                    }
+                    context.addActivityMapping(activity, place.getClass());
                 }
+                return activity;
             }
         }
         return null;
+    }
+
+    public void registerAppStart(final AppLifecycle lifecycle) {
+        final AppDescriptor descriptor = appController.getAppDescriptor(lifecycle);
+        AppContext context = contextMap.get(descriptor);
+        if (context == null) {
+            context = new AppContext();
+            contextMap.put(descriptor, context);
+        }
+    }
+
+    public void uregisterApp(final AppLifecycle lifecycle) {
+        final AppDescriptor descriptor = appController.getAppDescriptor(lifecycle);
+        contextMap.remove(descriptor);
+    }
+    
+    private static class AppContext implements Serializable {
+        
+        private Map<Class<? extends Place>, Activity> placeActivityMap = new HashMap<Class<? extends Place>, Activity>();
+        
+        public AppContext() {
+            super();
+        }
+        
+        public Activity getActivityForPlace(final Class<? extends Place> placeClass) {
+            return placeActivityMap.get(placeClass);
+        }
+        
+        public void addActivityMapping(final Activity activity, final Class<? extends Place> placeClass) {
+            placeActivityMap.put(placeClass, activity);
+        }
     }
 }

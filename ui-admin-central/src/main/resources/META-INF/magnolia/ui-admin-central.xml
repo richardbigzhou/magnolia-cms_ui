@@ -38,7 +38,7 @@
     </component>
     <component>
       <type>info.magnolia.ui.framework.shell.Shell</type>
-      <implementation>info.magnolia.m5vaadin.shell.MagnoliaShell</implementation>
+      <implementation>info.magnolia.m5admincentral.MagnoliaShell</implementation>
     </component>
     <component>
       <type>info.magnolia.m5admincentral.app.AppController</type>

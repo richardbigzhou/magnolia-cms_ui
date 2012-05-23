@@ -34,7 +34,6 @@
 package info.magnolia.m5admincentral.app;
 
 import info.magnolia.ui.framework.event.Event;
-import info.magnolia.ui.framework.event.EventHandler;
 
 
 /**
@@ -44,21 +43,12 @@ import info.magnolia.ui.framework.event.EventHandler;
  * @version $Id$
  *
  */
-public class AppEvent implements Event<AppEvent.Handler>{
-
-
-    /**
-     * Listens to {@link AppEvent}s.
-     */
-    public interface Handler extends EventHandler {
-        void onStopApp(AppLifecycle app);
-        void onStartApp(AppLifecycle app);
-    }
+public class AppLifecycleEvent implements Event<AppLifecycleEventHandler>{
 
     private final AppLifecycle app;
     private final AppEventType eventType;
 
-    public AppEvent(AppLifecycle app, AppEventType eventType) {
+    public AppLifecycleEvent(AppLifecycle app, AppEventType eventType) {
         System.out.println("AppEvent: create Event for app type: "+app.getClass().getName()+ " and type" +eventType);
         this.app = app;
         this.eventType = eventType;
@@ -73,15 +63,21 @@ public class AppEvent implements Event<AppEvent.Handler>{
     }
 
     @Override
-    public void dispatch(Handler handler) {
+    public void dispatch(AppLifecycleEventHandler handler) {
         if(eventType == null) {
             return;
         }
 
-        if(eventType.equals(AppEventType.STOP_EVENT)) {
-            handler.onStopApp(app);
-        } else {
-            handler.onStartApp(app);
+        switch (eventType) {
+        case START_EVENT:
+            handler.onStartApp(this);
+            break;
+        case FOCUS_EVENT:
+            handler.onAppFocus(this);
+            break;
+        case STOP_EVENT:
+            handler.onStopApp(this);
+            break;
         }
     }
 }
