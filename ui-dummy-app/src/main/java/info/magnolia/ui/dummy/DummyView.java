@@ -40,6 +40,6 @@ import info.magnolia.m5admincentral.framework.AppView;
  *
  * @version $Id$
  */
-public interface DummyView extends AppView<DummyView> {
+public interface DummyView extends AppView {
 
 }

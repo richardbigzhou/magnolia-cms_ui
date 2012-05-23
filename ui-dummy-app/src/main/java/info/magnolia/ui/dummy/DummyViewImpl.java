@@ -43,7 +43,7 @@ import info.magnolia.m5admincentral.framework.AppViewImpl;
  *
  * @version $Id$
  */
-public class DummyViewImpl extends AppViewImpl<DummyView> implements DummyView  {
+public class DummyViewImpl extends AppViewImpl implements DummyView  {
 
     public DummyViewImpl() {
 
@@ -56,5 +56,10 @@ public class DummyViewImpl extends AppViewImpl<DummyView> implements DummyView  
     @Override
     public String getName() {
         return "Dummy";
+    }
+
+    @Override
+    public void detachView() {
+        getPresenter().close();
     }
 }
