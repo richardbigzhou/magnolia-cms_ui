@@ -33,7 +33,6 @@
  */
 package info.magnolia.m5admincentral;
 
-import info.magnolia.m5vaadin.shell.MagnoliaShell;
 import info.magnolia.ui.framework.view.View;
 
 /**

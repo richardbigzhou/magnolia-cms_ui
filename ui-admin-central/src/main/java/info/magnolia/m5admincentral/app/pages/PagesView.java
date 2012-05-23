@@ -42,6 +42,12 @@ import info.magnolia.m5admincentral.framework.AppView;
  *
  * @version $Id$
  */
-public interface PagesView extends AppView<PagesView> {
+public interface PagesView extends AppView {
 
+    /**
+     * Presenter. 
+     */
+    public interface Presenter extends AppView.Presenter {
+        
+    }
 }

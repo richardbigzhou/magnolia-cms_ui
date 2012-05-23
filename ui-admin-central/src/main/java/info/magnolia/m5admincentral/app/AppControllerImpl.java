@@ -88,4 +88,29 @@ public class AppControllerImpl implements AppController {
     public AppDescriptor getAppDescriptor(AppLifecycle app) {
         return (AppDescriptor)runningApps.getKey(app);
     }
+
+    @Override
+    public AppLifecycle getLifecycleByName(String name) {
+        for (final Object obj : runningApps.keySet()) {
+            final AppDescriptor descriptor = (AppDescriptor)obj;
+            if (descriptor.getName().equals(name)) {
+                return (AppLifecycle)runningApps.get(obj);
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void stopApplication(String name) {
+        doStop(name);
+    }
+
+    private void doStop(String name) {
+        final AppDescriptor descriptor = appRegistry.getAppDescriptor(name);
+        AppLifecycle lifecycle = (AppLifecycle)runningApps.get(descriptor);
+        if (lifecycle != null) {
+            lifecycle.stop();
+            runningApps.remove(descriptor);
+        }
+    }
 }

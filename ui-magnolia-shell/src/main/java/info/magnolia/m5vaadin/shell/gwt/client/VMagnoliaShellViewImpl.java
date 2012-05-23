@@ -39,7 +39,9 @@ import info.magnolia.m5vaadin.shell.gwt.client.VShellMessage.MessageType;
 import info.magnolia.m5vaadin.shell.gwt.client.VShellViewport.ContentAnimationDelegate;
 import info.magnolia.m5vaadin.shell.gwt.client.event.AppActivatedEvent;
 import info.magnolia.m5vaadin.shell.gwt.client.event.ShellAppNavigationEvent;
+import info.magnolia.m5vaadin.shell.gwt.client.event.ViewportCloseEvent;
 import info.magnolia.m5vaadin.shell.gwt.client.event.handler.ShellNavigationHandler;
+import info.magnolia.m5vaadin.shell.gwt.client.event.handler.ViewportCloseHandler;
 
 import org.vaadin.addon.jquerywrapper.client.ui.AnimationSettings;
 import org.vaadin.addon.jquerywrapper.client.ui.Callbacks;
@@ -62,7 +64,7 @@ import com.google.web.bindery.event.shared.EventBus;
  * @author apchelintcev
  * 
  */
-public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellView {
+public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellView, ViewportCloseHandler {
 
     public static final String CLASSNAME = "v-magnolia-shell";
 
@@ -103,6 +105,7 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
     }
 
     private void bindEventHandlers() {
+        eventBus.addHandler(ViewportCloseEvent.TYPE, this);
         eventBus.addHandler(ShellAppNavigationEvent.TYPE, navHandler);
         eventBus.addHandler(AppActivatedEvent.TYPE, navHandler);
         fragmentHandlerRegistration = History.addValueChangeHandler(new ValueChangeHandler<String>() {
@@ -121,8 +124,14 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
 
     private void doUpdateViewport(VShellViewport oldViewport, VShellViewport newViewport) {
         replaceWidget(oldViewport, newViewport);
+        newViewport.setEventBus(eventBus);
     }
 
+    @Override
+    public void changeActiveViewport() {
+        switchViewports(activeViewport == shellAppViewport);
+    }
+    
     @Override
     public int getViewportHeight() {
         return getOffsetHeight() - mainAppLauncher.getExpandedHeight();
@@ -236,10 +245,7 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
         if (shellAppViewport != viewport) {
             doUpdateViewport(shellAppViewport, viewport);
             shellAppViewport = viewport;
-            shellAppViewport.setContentAnimationDelegate(fadingDelegate);
-            if (activeViewport == null) {
-                activeViewport = shellAppViewport;
-            }   
+            shellAppViewport.setContentAnimationDelegate(fadingDelegate);   
         }
     }
     
@@ -313,8 +319,8 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
     private final ShellNavigationHandler navHandler = new ShellNavigationHandler() {
         @Override
         public void onAppActivated(AppActivatedEvent event) {
-            final String fragment = (event.isShellApp() ? "shell:" : "app:") + event.getToken();
-            switchViewports(!event.isShellApp());
+            final String prefix = activeViewport == shellAppViewport ? "shell:" : "app:";
+            final String fragment = prefix + event.getToken();
             History.newItem(fragment, false);
         }
 
@@ -332,5 +338,20 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
             }
         }
     };
+
+    @Override
+    public void onViewportClose(ViewportCloseEvent event) {
+        final VShellViewport viewport = event.getViewport();
+        if (viewport == shellAppViewport) {
+            eventBus.fireEvent(new ShellAppNavigationEvent(mainAppLauncher.getNextShellAppType(), "")) ;   
+        } else if (viewport == appViewport) {
+            presenter.closeCurrentApp();
+        }
+    }
+
+    @Override
+    public void navigate(String historyToken, String title) {
+        eventBus.fireEvent(new AppActivatedEvent(activeViewport == shellAppViewport, historyToken, title));        
+    }
 
 }

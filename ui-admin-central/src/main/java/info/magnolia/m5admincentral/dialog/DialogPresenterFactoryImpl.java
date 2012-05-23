@@ -33,8 +33,8 @@
  */
 package info.magnolia.m5admincentral.dialog;
 
+import info.magnolia.m5admincentral.MagnoliaShell;
 import info.magnolia.m5admincentral.dialog.builder.DialogBuilder;
-import info.magnolia.m5vaadin.shell.MagnoliaShell;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 import info.magnolia.ui.model.dialog.registry.DialogDefinitionRegistry;

@@ -35,6 +35,7 @@ package info.magnolia.m5vaadin.shell;
 
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Map;
 
 import com.vaadin.terminal.PaintException;
 import com.vaadin.terminal.PaintTarget;
@@ -110,9 +111,25 @@ public class DeckLayout extends AbstractComponentContainer {
         addComponent(newComponent);
     }
 
+    @Override
+    public void changeVariables(Object source, Map<String, Object> variables) {
+        super.changeVariables(source, variables);
+    }
     
     @Override
     public Iterator<Component> getComponentIterator() {
         return children.iterator();
+    }
+    
+    public void pop() {
+        if (children.size() > 0) {
+            final Component currentVisible = children.poll();
+            removeComponent(currentVisible);
+            requestRepaint();
+        } 
+    }
+    
+    public boolean isEmpty() {
+        return children.isEmpty();
     }
 }

@@ -80,6 +80,9 @@ public class AppActivityMapper implements ActivityMapper {
                 Activity activity = context.getActivityForPlace(place.getClass());
                 if (activity == null) {
                     activity = componentProvider.newInstance(clazz);
+                    if (activity instanceof AppActivity) {
+                        ((AppActivity)activity).setName(descriptor.getName());
+                    }
                     context.addActivityMapping(activity, place.getClass());
                 }
                 return activity;

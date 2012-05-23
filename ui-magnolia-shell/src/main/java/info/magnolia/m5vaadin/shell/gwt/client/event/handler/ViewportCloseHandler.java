@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,48 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.m5admincentral.app.pages;
+package info.magnolia.m5vaadin.shell.gwt.client.event.handler;
 
-import info.magnolia.m5admincentral.MagnoliaShell;
-import info.magnolia.m5admincentral.framework.AppViewImpl;
+import info.magnolia.m5vaadin.shell.gwt.client.event.ViewportCloseEvent;
 
-import javax.inject.Inject;
+import com.google.gwt.event.shared.EventHandler;
 
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
 
 /**
- * View implementation for the Pages app.
+ * Handler of the {@link ViewportCloseEvent}.
+ * @author apchelintcev
  *
- * @version $Id$
  */
-@SuppressWarnings("serial")
-public class PagesViewImpl extends AppViewImpl implements PagesView {
-    
-    @Inject
-    public PagesViewImpl(final MagnoliaShell shell) {
-        final VerticalLayout tableContainer = new VerticalLayout();
-        tableContainer.addComponent(new Button("test", new Button.ClickListener() {
-            @Override
-            public void buttonClick(ClickEvent event) {
-                final VerticalLayout layout = new VerticalLayout();
-                layout.setSizeFull();
-                layout.addComponent(new Label("New tab opened"));
-                addTab(layout, "TestTab");
-            }
-        }));
-        addTab(tableContainer, "Pages");
-    }
-
-    @Override
-    public String getName() {
-        return "Pages";
-    }
-
-    @Override
-    public void detachView() {
-        getPresenter().close();
-    }
+public interface ViewportCloseHandler extends EventHandler {
+    void onViewportClose(final ViewportCloseEvent event);
 }

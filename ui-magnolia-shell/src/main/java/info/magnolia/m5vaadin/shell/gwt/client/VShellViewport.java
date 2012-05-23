@@ -33,6 +33,8 @@
  */
 package info.magnolia.m5vaadin.shell.gwt.client;
 
+import info.magnolia.m5vaadin.shell.gwt.client.event.ViewportCloseEvent;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -41,6 +43,8 @@ import org.vaadin.addon.jquerywrapper.client.ui.Callbacks;
 import org.vaadin.addon.jquerywrapper.client.ui.JQueryCallback;
 import org.vaadin.addon.jquerywrapper.client.ui.JQueryWrapper;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Position;
@@ -50,10 +54,10 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.EventBus;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.Container;
 import com.vaadin.terminal.gwt.client.ContainerResizedListener;
@@ -100,6 +104,8 @@ public class VShellViewport extends ComplexPanel implements Container, Container
     
     private boolean forceContentAlign = true;
     
+    private EventBus eventBus;
+    
     public VShellViewport() {
         super();
         setElement(container);
@@ -113,11 +119,16 @@ public class VShellViewport extends ComplexPanel implements Container, Container
             @Override
             public void onClick(ClickEvent event) {
                 if (closeWrapper.isOrHasChild((Element)event.getNativeEvent().getEventTarget().cast())) {
-                    History.back();
+                    eventBus.fireEvent(new ViewportCloseEvent(VShellViewport.this));
                 }
             }
         }, ClickEvent.getType());
         modalityCurtain.getStyle().setVisibility(Visibility.HIDDEN);
+    }
+    
+    
+    public void setEventBus(EventBus eventBus) {
+        this.eventBus = eventBus;
     }
     
     @Override
@@ -137,35 +148,32 @@ public class VShellViewport extends ComplexPanel implements Container, Container
         this.paintableId = uidl.getId();
         this.client = client;
         if (!client.updateComponent(this, uidl, true)) {
-            int idx = 0;
             final List<Paintable> orpanCandidates = new LinkedList<Paintable>(paintables);
             if (uidl.getChildCount() > 0) { 
+                int idx = 0;
                 for (;idx < uidl.getChildCount(); ++idx) {
                     final UIDL childUIdl = uidl.getChildUIDL(idx);
                     final Paintable paintable = client.getPaintable(childUIdl);
                     orpanCandidates.remove(paintable);
                     final Widget w = (Widget)paintable;
-                    ensureAdded(w);
+                    updatePosition(w);
                     paintable.updateFromUIDL(childUIdl, client);
-                    if (w != visibleWidget) {
-                        w.getElement().getStyle().setVisibility(Visibility.HIDDEN);   
-                    }   
-                    if (idx == 0) {
-                        setWidgetVisible(w);
-                    }
-                    
-                    if (forceContentAlign) {
-                        alignChild(w);   
-                    }
+                    if (forceContentAlign) {alignChild(w);}
+                    if (idx == 0) {setWidgetVisible(w);}
                 }   
             } else {
                 visibleWidget = null;
             }
 
-            for (final Paintable paintable : orpanCandidates) {
-                client.unregisterPaintable(paintable);
-                remove((Widget)paintable);
-            }
+            Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+                @Override
+                public void execute() {
+                    for (final Paintable paintable : orpanCandidates) {
+                        client.unregisterPaintable(paintable);
+                        remove((Widget)paintable);
+                    }
+                }
+            });
         }
     }
     
@@ -178,11 +186,14 @@ public class VShellViewport extends ComplexPanel implements Container, Container
         }
     }
 
-    private boolean ensureAdded(Widget w) {
+    private boolean updatePosition(Widget w) {
         boolean result = !hasChildComponent(w);
         if (result) {
             add(w, container);
         }
+        if (w != visibleWidget) {
+            w.getElement().getStyle().setVisibility(Visibility.HIDDEN);   
+        }   
         return result;
     }
 
@@ -201,6 +212,10 @@ public class VShellViewport extends ComplexPanel implements Container, Container
                 }
             }));
         }
+    }
+    
+    public Widget getVisibleWidget() {
+        return visibleWidget;
     }
     
     protected void hideCurrentContent() {

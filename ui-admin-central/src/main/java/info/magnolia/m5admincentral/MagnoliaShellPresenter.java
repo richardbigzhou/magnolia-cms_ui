@@ -35,8 +35,6 @@ package info.magnolia.m5admincentral;
 
 import info.magnolia.m5admincentral.app.AppController;
 import info.magnolia.m5admincentral.app.AppDescriptor;
-import info.magnolia.m5admincentral.app.AppLifecycleEvent;
-import info.magnolia.m5admincentral.app.AppLifecycleEventHandler;
 import info.magnolia.m5admincentral.app.AppRegistry;
 import info.magnolia.m5admincentral.app.PlaceActivityMapping;
 import info.magnolia.m5admincentral.dialog.DialogPresenterFactory;
@@ -47,7 +45,6 @@ import info.magnolia.m5admincentral.framework.ShellAppActivityMapper;
 import info.magnolia.m5admincentral.shellapp.applauncher.AppLauncherPlace;
 import info.magnolia.m5admincentral.shellapp.favorites.FavoritesPlace;
 import info.magnolia.m5admincentral.shellapp.pulse.PulsePlace;
-import info.magnolia.m5vaadin.shell.MagnoliaShell;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.place.Place;
@@ -89,13 +86,6 @@ public class MagnoliaShellPresenter implements MagnoliaShellView.Presenter {
 
         historyHandler.register(controller, bus, new AppLauncherPlace("test"));
         
-        bus.addHandler(AppLifecycleEvent.class, new AppLifecycleEventHandler.Adapter() {
-            @Override
-            public void onAppFocus(AppLifecycleEvent event) {
-                view.getRoot().appFocused();
-                
-            }
-        });
     }
 
     public void start(final Window window) {

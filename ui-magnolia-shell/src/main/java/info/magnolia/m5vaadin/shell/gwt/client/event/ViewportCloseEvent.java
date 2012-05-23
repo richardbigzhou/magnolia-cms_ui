@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,48 +31,37 @@
  * intact.
  *
  */
-package info.magnolia.m5admincentral.app.pages;
+package info.magnolia.m5vaadin.shell.gwt.client.event;
 
-import info.magnolia.m5admincentral.MagnoliaShell;
-import info.magnolia.m5admincentral.framework.AppViewImpl;
+import info.magnolia.m5vaadin.shell.gwt.client.VShellViewport;
+import info.magnolia.m5vaadin.shell.gwt.client.event.handler.ViewportCloseHandler;
 
-import javax.inject.Inject;
-
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
+import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * View implementation for the Pages app.
- *
- * @version $Id$
+ * Event fired when the viewport is closed.
+ * @author apchelintcev
  */
-@SuppressWarnings("serial")
-public class PagesViewImpl extends AppViewImpl implements PagesView {
+public class ViewportCloseEvent extends GwtEvent<ViewportCloseHandler>{
     
-    @Inject
-    public PagesViewImpl(final MagnoliaShell shell) {
-        final VerticalLayout tableContainer = new VerticalLayout();
-        tableContainer.addComponent(new Button("test", new Button.ClickListener() {
-            @Override
-            public void buttonClick(ClickEvent event) {
-                final VerticalLayout layout = new VerticalLayout();
-                layout.setSizeFull();
-                layout.addComponent(new Label("New tab opened"));
-                addTab(layout, "TestTab");
-            }
-        }));
-        addTab(tableContainer, "Pages");
+    public static final Type<ViewportCloseHandler> TYPE = new Type<ViewportCloseHandler>();
+    
+    private final VShellViewport viewport;
+    
+    public ViewportCloseEvent(final VShellViewport viewport) {
+        this.viewport = viewport;
+    }
+    
+    protected void dispatch(ViewportCloseHandler handler) {
+        handler.onViewportClose(this);
     }
 
     @Override
-    public String getName() {
-        return "Pages";
-    }
-
-    @Override
-    public void detachView() {
-        getPresenter().close();
+    public GwtEvent.Type<ViewportCloseHandler> getAssociatedType() {
+        return TYPE;
+    };
+    
+    public VShellViewport getViewport() {
+        return viewport;
     }
 }
