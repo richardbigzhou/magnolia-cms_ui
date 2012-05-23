@@ -56,19 +56,9 @@ public class AppDescriptor {
 
     private String icon;
 
-    private String category;
-
     private Class<? extends AppLifecycle> appClass;
 
     private List<PlaceActivityMapping> activityMappings = new ArrayList<PlaceActivityMapping>();
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
 
     public String getName() {
         return name;

@@ -12,9 +12,6 @@
   <sv:property sv:name="appClass" sv:type="String">
     <sv:value>info.magnolia.ui.dummy.DummyApp</sv:value>
   </sv:property>
-  <sv:property sv:name="category" sv:type="String">
-    <sv:value>MANAGE</sv:value>
-  </sv:property>
   <sv:property sv:name="icon" sv:type="String">
     <sv:value>img/icon-app-default.png</sv:value>
   </sv:property>
@@ -44,7 +41,7 @@
       <sv:value>2012-05-22T16:11:05.204+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-      <sv:value>2012-05-22T17:19:05.212+02:00</sv:value>
+      <sv:value>2012-05-23T17:09:24.984+02:00</sv:value>
     </sv:property>
   </sv:node>
   <sv:node sv:name="activityMappings">
@@ -77,7 +74,7 @@
         <sv:value>2012-05-22T16:12:21.691+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-        <sv:value>2012-05-22T17:18:34.914+02:00</sv:value>
+        <sv:value>2012-05-23T17:08:53.975+02:00</sv:value>
       </sv:property>
     </sv:node>
     <sv:node sv:name="mapping">
@@ -116,7 +113,7 @@
           <sv:value>2012-05-22T16:12:31.821+02:00</sv:value>
         </sv:property>
         <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-          <sv:value>2012-05-22T17:19:23.908+02:00</sv:value>
+          <sv:value>2012-05-23T17:08:53.975+02:00</sv:value>
         </sv:property>
       </sv:node>
     </sv:node>

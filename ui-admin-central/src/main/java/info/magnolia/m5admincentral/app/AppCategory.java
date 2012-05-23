@@ -31,30 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.m5admincentral.shellapp.applauncher;
+package info.magnolia.m5admincentral.app;
 
-import info.magnolia.m5admincentral.app.AppCategory;
-import info.magnolia.m5admincentral.app.AppDescriptor;
-import info.magnolia.m5vaadin.ShellAppView;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * View for the app launcher.
+ * Defines a category of apps in the app launcher and the apps that belong to it.
  *
  * @version $Id$
  */
-public interface AppLauncherView extends ShellAppView {
+public class AppCategory {
 
-    /**
-     * Presenter.
-     *
-     * @version $Id$
-     */
-    public interface Presenter {
+    private String label;
+    private List<AppDescriptor> apps = new ArrayList<AppDescriptor>();
 
-        void onAppInvoked(String name);
+    public String getLabel() {
+        return label;
     }
 
-    void setPresenter(Presenter presenter);
+    public void setLabel(String label) {
+        this.label = label;
+    }
 
-    void registerApp(final AppDescriptor descriptor, AppCategory category);
+    public List<AppDescriptor> getApps() {
+        return apps;
+    }
+
+    public void addApp(AppDescriptor descriptor) {
+        apps.add(descriptor);
+    }
 }
