@@ -34,6 +34,7 @@
 package info.magnolia.m5.dialog;
 
 
+
 import info.magnolia.m5.dialog.gwt.client.VDialog;
 import info.magnolia.m5vaadin.tabsheet.ShellTab;
 import info.magnolia.m5vaadin.tabsheet.ShellTabSheet;
@@ -53,12 +54,11 @@ import com.vaadin.ui.ComponentContainer;
  */
 @SuppressWarnings("serial")
 @ClientWidget(value=VDialog.class, loadStyle = LoadStyle.EAGER)
-public class Dialog extends AbstractComponent {
+public class VaadinDialog extends AbstractComponent {
 
-     private ShellTabSheet tabsheet = new ShellTabSheet();
+    private ShellTabSheet tabsheet = new ShellTabSheet();
 
-    public Dialog() {
-        this.tabsheet.setSizeFull();
+    public VaadinDialog() {
         setImmediate(true);
 
     }
@@ -79,7 +79,7 @@ public class Dialog extends AbstractComponent {
     public void addTab(ComponentContainer cc, String caption) {
         final ShellTab tab = new ShellTab(caption, cc);
         tabsheet.addComponent(tab);
-        tabsheet.setTabClosable(tab, true);
+        tabsheet.setTabClosable(tab, false);
         tabsheet.setActiveTab(tab);
     }
 

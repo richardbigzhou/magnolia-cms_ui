@@ -33,52 +33,40 @@
  */
 package info.magnolia.m5.dialog.gwt.client;
 
+import info.magnolia.m5vaadin.tabsheet.client.VShellTabSheet;
 
-import java.util.HashMap;
-
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.InlineLabel;
-import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.TabPanel;
-import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
+import com.vaadin.terminal.gwt.client.Paintable;
 
 /**
- * GWT implementation of MagnoliaShell client side (the view part basically).
- * @author apchelintcev
+ * VDialogView.
  *
+ * @author ejervidalo
  */
-public class VDialogGWT extends FlowPanel {
+public interface VDialogView extends IsWidget {
 
-    private TabPanel tabs = new TabPanel();
-    HashMap<String, Panel> tabMapping = new HashMap<String, Panel>();
+    /**
+     * Presenter. Meant for Vaadin part of MagnoliaShell.
+     */
+    interface Presenter {}
 
-    private FlowPanel header = new FlowPanel();
-    private FlowPanel actions = new FlowPanel();
-    public VDialogGWT() {
-        setStylePrimaryName("dialog-panel");
-        this.tabs.setStyleName("dialog-tabs");
-        this.actions.setStyleName("dialog-controls");
-        add(tabs);
-        add(actions);
-    }
+    Paintable getTabSheet();
 
-    void addTab(String name) {
-        Panel tabView = new FlowPanel();
+    /**
+     * @param tabsheet
+     */
+    void setTabSheet(VShellTabSheet tabsheet);
 
-        this.tabs.add(tabView, name);
-        tabMapping.put(name, tabView);
-    }
+    /**
+     * @param vDialog
+     */
+    void setPresenter(Presenter vDialog);
 
-    private void addActions() {
+    /**
+     * @param component
+     * @return
+     */
+    boolean hasChildComponent(Widget component);
 
-    }
-
-    void addField(String tabName, String fieldLabel) {
-        Panel tab = tabMapping.get(tabName);
-        InlineLabel label = new InlineLabel(fieldLabel);
-        TextBox input = new TextBox();
-        input.setText("Some Input");
-        tab.add(label);
-        tab.add(input);
-    }
 }

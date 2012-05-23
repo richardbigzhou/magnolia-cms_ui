@@ -31,37 +31,61 @@
  * intact.
  *
  */
-package info.magnolia.m5admincentral.dialog;
+package info.magnolia.m5.dialog.gwt.client;
 
-import info.magnolia.m5.dialog.VaadinDialog;
 
-import com.vaadin.ui.Component;
+import info.magnolia.m5vaadin.tabsheet.client.VShellTabSheet;
+
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.EventBus;
+import com.vaadin.terminal.gwt.client.Paintable;
 
 /**
- * DialogViewImpl.
+ * GWT implementation of MagnoliaShell client side (the view part basically).
+ * @author apchelintcev
  *
- * @author ejervidalo
  */
-public class DialogViewImpl extends VaadinDialog implements DialogView {
+public class VDialogViewImpl extends FlowPanel implements VDialogView {
 
+    private VShellTabSheet tabsheet;
     private Presenter presenter;
+    private EventBus eventBus;
 
-    public DialogViewImpl() {
+
+    public VDialogViewImpl(final EventBus eventBus) {
         super();
+        setStylePrimaryName("dialog-panel");
+        this.eventBus = eventBus;
+
     }
 
     @Override
-    public Component asVaadinComponent() {
-        // TODO Auto-generated method stub
-        return this;
-    }
-
-    /* (non-Javadoc)
-     * @see info.magnolia.m5admincentral.dialog.DialogView#setPresenter(info.magnolia.m5admincentral.dialog.DialogView.Presenter)
-     */
-    @Override
-    public void setPresenter(Presenter presenter) {
+    public void setPresenter(Presenter vDialog) {
         this.presenter = presenter;
+    }
+
+    @Override
+    public Paintable getTabSheet() {
+        return tabsheet;
+    }
+
+
+    @Override
+    public void setTabSheet(VShellTabSheet tabsheet) {
+        this.tabsheet = tabsheet;
+        add(tabsheet);
+    }
+
+    @Override
+    public boolean hasChildComponent(Widget component) {
+        boolean isChild = false;
+        for (Widget widget : getChildren()) {
+            if (component == widget) {
+                isChild = true;
+            }
+        }
+        return isChild;
     }
 
 }
