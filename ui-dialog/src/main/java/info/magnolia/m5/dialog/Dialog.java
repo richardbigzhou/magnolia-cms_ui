@@ -35,18 +35,16 @@ package info.magnolia.m5.dialog;
 
 
 import info.magnolia.m5.dialog.gwt.client.VDialog;
-
-import java.util.Map;
-
-import org.vaadin.rpc.ServerSideHandler;
-import org.vaadin.rpc.ServerSideProxy;
-import org.vaadin.rpc.client.Method;
+import info.magnolia.m5vaadin.tabsheet.ShellTab;
+import info.magnolia.m5vaadin.tabsheet.ShellTabSheet;
 
 import com.vaadin.terminal.PaintException;
 import com.vaadin.terminal.PaintTarget;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.ClientWidget;
 import com.vaadin.ui.ClientWidget.LoadStyle;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.ComponentContainer;
 
 /**
  * Server side implementation of the MagnoliaShell container.
@@ -55,77 +53,50 @@ import com.vaadin.ui.ClientWidget.LoadStyle;
  */
 @SuppressWarnings("serial")
 @ClientWidget(value=VDialog.class, loadStyle = LoadStyle.EAGER)
-public class Dialog extends AbstractComponent implements ServerSideHandler {
+public class Dialog extends AbstractComponent {
 
-
-    protected ServerSideProxy proxy = new ServerSideProxy(this) {{
-        register("save", new Method() {
-            @Override
-            public void invoke(String methodName, Object[] params) {
-                // do something
-            }
-        });
-
-        register("cancel", new Method() {
-            @Override
-            public void invoke(String methodName, Object[] params) {
-                // do something
-            }
-        });
-    }};
+     private ShellTabSheet tabsheet = new ShellTabSheet();
 
     public Dialog() {
-        super();
+        this.tabsheet.setSizeFull();
         setImmediate(true);
-    }
 
-    @Override
-    public void paintContent(PaintTarget target) throws PaintException {
-        super.paintContent(target);
-
-        proxy.paintContent(target);
-    }
-
-    @Override
-    public void changeVariables(Object source, Map<String, Object> variables) {
-        super.changeVariables(source, variables);
-        proxy.changeVariables(source, variables);
     }
 
     @Override
     public void attach() {
+        this.tabsheet.attach();
+        this.tabsheet.setParent(this);
         super.attach();
     }
 
     @Override
     public void detach() {
         super.detach();
+        this.tabsheet.detach();
     }
 
-    /* (non-Javadoc)
-     * @see org.vaadin.rpc.ServerSideHandler#initRequestFromClient()
-     */
+    public void addTab(ComponentContainer cc, String caption) {
+        final ShellTab tab = new ShellTab(caption, cc);
+        tabsheet.addComponent(tab);
+        tabsheet.setTabClosable(tab, true);
+        tabsheet.setActiveTab(tab);
+    }
+
+    public void closeTab(ComponentContainer c) {
+        tabsheet.removeComponent(c);
+    }
+
+    public Component asVaadinComponent() {
+        return this;
+    }
+
     @Override
-    public Object[] initRequestFromClient() {
-        return new Object[] {};
+    public void paintContent(PaintTarget target) throws PaintException {
+        super.paintContent(target);
+        target.startTag("dialogTabsheet");
+        this.tabsheet.paint(target);
+        target.endTag("dialogTabsheet");
     }
-
-    /* (non-Javadoc)
-     * @see org.vaadin.rpc.ServerSideHandler#callFromClient(java.lang.String, java.lang.Object[])
-     */
-    @Override
-    public void callFromClient(String method, Object[] params) {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void addTab(String tabName) {
-        proxy.call("addTab", tabName);
-    }
-
-    public void addField(String tabName, String fieldLabel) {
-        proxy.call("addField", tabName, fieldLabel);
-    }
-
 
 }

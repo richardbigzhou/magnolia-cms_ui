@@ -43,15 +43,16 @@ import com.google.gwt.event.shared.GwtEvent;
  * @author apchelintcev
  */
 public class ViewportCloseEvent extends GwtEvent<ViewportCloseHandler>{
-    
+
     public static final Type<ViewportCloseHandler> TYPE = new Type<ViewportCloseHandler>();
-    
+
     private final VShellViewport viewport;
-    
+
     public ViewportCloseEvent(final VShellViewport viewport) {
         this.viewport = viewport;
     }
-    
+
+    @Override
     protected void dispatch(ViewportCloseHandler handler) {
         handler.onViewportClose(this);
     }
@@ -60,7 +61,7 @@ public class ViewportCloseEvent extends GwtEvent<ViewportCloseHandler>{
     public GwtEvent.Type<ViewportCloseHandler> getAssociatedType() {
         return TYPE;
     };
-    
+
     public VShellViewport getViewport() {
         return viewport;
     }

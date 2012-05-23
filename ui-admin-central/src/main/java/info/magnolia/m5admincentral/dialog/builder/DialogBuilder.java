@@ -39,6 +39,8 @@ import info.magnolia.ui.model.dialog.definition.FieldDefinition;
 import info.magnolia.ui.model.dialog.definition.TabDefinition;
 
 import com.google.inject.Inject;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.TextArea;
 
 /**
  * DialogBuilder.
@@ -60,12 +62,15 @@ public class DialogBuilder {
 
         for (TabDefinition tabDefinition : dialogDefinition.getTabs()) {
             String tabName = tabDefinition.getName();
-            view.addTab(tabName);
+            Panel inputFields = new Panel();
+
             for (FieldDefinition field : tabDefinition.getFields()) {
-                view.addField(tabName, field.getLabel());
+                inputFields.addComponent(new TextArea());
             }
+
+            view.addTab(inputFields, tabName);
+
         }
-        view.addTab("testTab");
         return view;
 
     }

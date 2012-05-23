@@ -33,12 +33,16 @@
  */
 package info.magnolia.m5.dialog.gwt.client;
 
+import info.magnolia.m5vaadin.tabsheet.client.VShellTabSheet;
+
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
-import org.vaadin.rpc.client.ClientSideHandler;
-import org.vaadin.rpc.client.ClientSideProxy;
-import org.vaadin.rpc.client.Method;
-
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.Container;
@@ -51,92 +55,60 @@ import com.vaadin.terminal.gwt.client.UIDL;
  * Vaadin implementation of MagnoliaShell client side.
  */
 @SuppressWarnings("serial")
-public class VDialog extends VDialogGWT implements Container, ClientSideHandler {
+public class VDialog extends FlowPanel implements Container, HasWidgets {
 
     protected String paintableId;
 
-    protected ApplicationConnection client;
+    private List<Paintable> paintables = new LinkedList<Paintable>();
 
-    private ClientSideProxy proxy = new ClientSideProxy(this) {
-        {
-            register("addTab", new Method() {
-                @Override
-                public void invoke(String methodName, Object[] params) {
-                    addTab((String)params[0]);
-                }
-            });
-            register("addField", new Method() {
-                @Override
-                public void invoke(String methodName, Object[] params) {
-                    addField((String)params[0], (String)params[1]);
-                }
-            });
-        }
-    };
+    protected Element dialogView;
+
+    protected ApplicationConnection client;
+    private VShellTabSheet tabsheet;
+
+    //private ClientSideProxy proxy = new ClientSideProxy(this) {};
+
+    public VDialog() {
+        setStylePrimaryName("dialog-panel");
+        this.dialogView = getElement();
+
+    }
+
 
     @Override
     public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
         this.client = client;
         this.paintableId = uidl.getId();
+        if (client.updateComponent(this, uidl, true)) {
+            return;
+        }
+        updateTabs(uidl);
 
-        proxy.update(this, uidl, client);
+        //proxy.update(this, uidl, client);
     }
 
-
-    /* (non-Javadoc)
-     * @see com.vaadin.terminal.gwt.client.Container#hasChildComponent(com.google.gwt.user.client.ui.Widget)
-     */
-    @Override
-    public boolean hasChildComponent(Widget component) {
-        // TODO Auto-generated method stub
-        return false;
+    private void updateTabs(UIDL uidl) {
+        final UIDL tagUidl = uidl.getChildByTagName("dialogTabsheet");
+        if (tagUidl != null) {
+            final UIDL dialogUidl = tagUidl.getChildUIDL(0);
+            final Paintable p = client.getPaintable(dialogUidl);
+            if (p instanceof VShellTabSheet) {
+                VShellTabSheet tsheet = (VShellTabSheet)p;
+                if (tabsheet == null) {
+                    this.tabsheet = tsheet;
+                    add(tsheet);
+                }
+                tsheet.updateFromUIDL(dialogUidl, client);
+            }
+        }
     }
 
-    /* (non-Javadoc)
-     * @see com.vaadin.terminal.gwt.client.Container#updateCaption(com.vaadin.terminal.gwt.client.Paintable, com.vaadin.terminal.gwt.client.UIDL)
-     */
     @Override
-    public void updateCaption(Paintable component, UIDL uidl) {
-        // TODO Auto-generated method stub
-
-    }
-
-    /* (non-Javadoc)
-     * @see com.vaadin.terminal.gwt.client.Container#requestLayout(java.util.Set)
-     */
-    @Override
-    public boolean requestLayout(Set<Paintable> children) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    /* (non-Javadoc)
-     * @see com.vaadin.terminal.gwt.client.Container#getAllocatedSpace(com.google.gwt.user.client.ui.Widget)
-     */
-    @Override
-    public RenderSpace getAllocatedSpace(Widget child) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-
-    /* (non-Javadoc)
-     * @see org.vaadin.rpc.client.ClientSideHandler#initWidget(java.lang.Object[])
-     */
-    @Override
-    public boolean initWidget(Object[] params) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-
-    /* (non-Javadoc)
-     * @see org.vaadin.rpc.client.ClientSideHandler#handleCallFromServer(java.lang.String, java.lang.Object[])
-     */
-    @Override
-    public void handleCallFromServer(String method, Object[] params) {
-        // TODO Auto-generated method stub
-
+    protected void add(final Widget child, Element container) {
+        if (child instanceof VShellTabSheet) {
+            this.tabsheet = (VShellTabSheet)child;
+            super.add(child, container);
+        }
     }
 
 
@@ -149,6 +121,47 @@ public class VDialog extends VDialogGWT implements Container, ClientSideHandler 
 
     }
 
+
+    /* (non-Javadoc)
+     * @see com.vaadin.terminal.gwt.client.Container#hasChildComponent(com.google.gwt.user.client.ui.Widget)
+     */
+    @Override
+    public boolean hasChildComponent(Widget component) {
+        final Iterator<Widget> it = iterator();
+        boolean result = false;
+        while (it.hasNext() && !result) {
+            result = component == it.next();
+        }
+        return result;
+    }
+
+
+    /* (non-Javadoc)
+     * @see com.vaadin.terminal.gwt.client.Container#updateCaption(com.vaadin.terminal.gwt.client.Paintable, com.vaadin.terminal.gwt.client.UIDL)
+     */
+    @Override
+    public void updateCaption(Paintable component, UIDL uidl) {
+        // TODO Auto-generated method stub
+
+    }
+
+
+    /* (non-Javadoc)
+     * @see com.vaadin.terminal.gwt.client.Container#requestLayout(java.util.Set)
+     */
+    @Override
+    public boolean requestLayout(Set<Paintable> children) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public RenderSpace getAllocatedSpace(Widget child) {
+        if (hasChildComponent(child)) {
+            return new RenderSpace(getOffsetWidth(), getOffsetHeight());
+        }
+        return new RenderSpace();
+    }
 
 
 }

@@ -33,6 +33,8 @@
  */
 package info.magnolia.m5admincentral.dialog;
 
+import com.vaadin.ui.ComponentContainer;
+
 import info.magnolia.m5vaadin.IsVaadinComponent;
 
 
@@ -57,11 +59,6 @@ public interface DialogView extends IsVaadinComponent {
     /**
      * @param string
      */
-    void addTab(String string);
+    void addTab(ComponentContainer cc, String caption);
 
-    /**
-     * @param tabName
-     * @param label
-     */
-    void addField(String tabName, String label);
 }
