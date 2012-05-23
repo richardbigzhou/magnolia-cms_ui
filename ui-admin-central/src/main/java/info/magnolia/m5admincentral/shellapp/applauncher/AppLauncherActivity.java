@@ -33,6 +33,7 @@
  */
 package info.magnolia.m5admincentral.shellapp.applauncher;
 
+import info.magnolia.m5admincentral.app.AppCategory;
 import info.magnolia.m5admincentral.app.AppController;
 import info.magnolia.m5admincentral.app.AppDescriptor;
 import info.magnolia.m5admincentral.app.AppRegistry;
@@ -60,8 +61,10 @@ public class AppLauncherActivity extends AbstractActivity implements AppLauncher
         this.view = view;
         this.appController = appController;
         this.appRegistry = appRegistry;
-        for (AppDescriptor descriptor : appRegistry.getAppDescriptors()) {
-            view.registerApp(descriptor);
+        for (AppCategory category : appRegistry.getCategories()) {
+            for (AppDescriptor descriptor : category.getApps()) {
+                view.registerApp(descriptor, category);
+            }
         }
     }
 

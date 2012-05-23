@@ -33,11 +33,8 @@
  */
 package info.magnolia.m5admincentral.app;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
+import java.util.ArrayList;
+import java.util.List;
 import javax.inject.Singleton;
 
 /**
@@ -48,63 +45,38 @@ import javax.inject.Singleton;
 @Singleton
 public class AppRegistryImpl implements AppRegistry {
 
-    private final Map<String, AppDescriptor> apps;
+    private final List<AppCategory> categories = new ArrayList<AppCategory>();
 
-    /**
-     * Default constructor.
-     */
-    public AppRegistryImpl() {
-        // Synchronize the Map.
-        apps = Collections.synchronizedMap(new LinkedHashMap<String, AppDescriptor>());
+    public List<AppCategory> getCategories() {
+        return categories;
     }
 
-    public void addAppDescriptor(AppDescriptor descriptor) {
-        this.apps.put(descriptor.getName(), descriptor);
+    public void addCategory(AppCategory category) {
+        this.categories.add(category);
     }
 
-    @Override
-    public Collection<AppDescriptor> getAppDescriptors() {
-        return apps.values();
-    }
-
-    /**
-     *
-     * @throws IllegalArgumentException: If key don't exist.
-     */
     @Override
     public AppDescriptor getAppDescriptor(String name) {
-        if(!apps.containsKey(name)) {
-            throw new IllegalArgumentException("No App's registered with name \"" + name + "\".");
+        for (AppCategory category : categories) {
+            for (AppDescriptor descriptor : category.getApps()) {
+                if (descriptor.getName().equals(name)) {
+                    return descriptor;
+                }
+            }
         }
-        return apps.get(name);
-    }
 
-    /**
-     *
-     * @throws IllegalArgumentException: In case of the Registry already contains an App with the same name.
-     */
-    @Override
-    public void registerAppDescription(String key, AppDescriptor value) {
-        if(apps.containsKey(key)) {
-            throw new IllegalArgumentException("Can't register this App's. Another Apps is already registered with name \"" + key + "\".");
-        }
-        apps.put(key, value);
-    }
-
-    /**
-     *
-     * @throws IllegalArgumentException: In case of the Registry don't contains an App with this name.
-     */
-    @Override
-    public AppDescriptor unregisterAppDescription(String name) {
-        if(!apps.containsKey(name)) {
-            throw new IllegalArgumentException("Can't Un register this App's. No Apps define in Registery with name  \"" + name + "\".");
-        }
-        return apps.remove(name);
+        throw new IllegalArgumentException("No app registered with name \"" + name + "\".");
     }
 
     @Override
     public boolean isAppDescriptionRegistered(String name) {
-        return apps.containsKey(name);
+        for (AppCategory category : categories) {
+            for (AppDescriptor descriptor : category.getApps()) {
+                if (descriptor.getName().equals(name)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

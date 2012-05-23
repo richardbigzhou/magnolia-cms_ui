@@ -33,11 +33,11 @@
  */
 package info.magnolia.m5admincentral;
 
+import info.magnolia.m5admincentral.app.AppCategory;
 import info.magnolia.m5admincentral.app.AppController;
 import info.magnolia.m5admincentral.app.AppDescriptor;
 import info.magnolia.m5admincentral.app.AppRegistry;
 import info.magnolia.m5admincentral.app.PlaceActivityMapping;
-import info.magnolia.m5admincentral.dialog.DialogPresenterFactory;
 import info.magnolia.m5admincentral.framework.AppActivityManager;
 import info.magnolia.m5admincentral.framework.AppActivityMapper;
 import info.magnolia.m5admincentral.framework.ShellAppActivityManager;
@@ -69,8 +69,8 @@ public class MagnoliaShellPresenter implements MagnoliaShellView.Presenter {
 
     @Inject
     public MagnoliaShellPresenter(final MagnoliaShellView view, final EventBus bus, final AppRegistry appRegistry,
-            final AppController appController, final PlaceController controller, final DialogPresenterFactory dialogPresenterFactory,
-            ComponentProvider componentProvider) {
+                                  final AppController appController, final PlaceController controller,
+                                  ComponentProvider componentProvider) {
         super();
         this.view = view;
         this.view.setPresenter(this);
@@ -100,9 +100,11 @@ public class MagnoliaShellPresenter implements MagnoliaShellView.Presenter {
         places.add(AppLauncherPlace.class);
         places.add(PulsePlace.class);
         places.add(FavoritesPlace.class);
-        for (AppDescriptor descriptor : appRegistry.getAppDescriptors()) {
-            for (PlaceActivityMapping mapping : descriptor.getActivityMappings()) {
-                places.add(mapping.getPlace());
+        for (AppCategory category : appRegistry.getCategories()) {
+            for (AppDescriptor descriptor : category.getApps()) {
+                for (PlaceActivityMapping mapping : descriptor.getActivityMappings()) {
+                    places.add(mapping.getPlace());
+                }
             }
         }
         return places.toArray(new Class[places.size()]);

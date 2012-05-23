@@ -33,6 +33,7 @@
  */
 package info.magnolia.m5admincentral.shellapp.applauncher;
 
+import info.magnolia.m5admincentral.app.AppCategory;
 import info.magnolia.m5admincentral.app.AppDescriptor;
 import info.magnolia.m5vaadin.IsVaadinComponent;
 import info.magnolia.m5vaadin.shell.gwt.client.VMainLauncher.ShellAppType;
@@ -76,11 +77,11 @@ public class AppLauncherViewImpl implements AppLauncherView, IsVaadinComponent {
     }
 
     @Override
-    public void registerApp(final AppDescriptor descriptor) {
-        AppGroupComponent group = appGroupMap.get(descriptor.getCategory());
+    public void registerApp(final AppDescriptor descriptor, AppCategory category) {
+        AppGroupComponent group = appGroupMap.get(category.getLabel());
         if (group == null) {
-            group = new AppGroupComponent(descriptor.getCategory());
-            appGroupMap.put(descriptor.getCategory(), group);
+            group = new AppGroupComponent(category.getLabel());
+            appGroupMap.put(category.getLabel(), group);
             layout.addComponent(group);
         }
         group.addApp(descriptor);
