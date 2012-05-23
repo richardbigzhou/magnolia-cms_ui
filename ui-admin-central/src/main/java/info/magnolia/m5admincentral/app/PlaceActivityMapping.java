@@ -44,6 +44,7 @@ import info.magnolia.ui.framework.place.Place;
 public class PlaceActivityMapping {
 
     private Class<? extends Place> place;
+    
     private Class<? extends Activity> activity;
 
     public Class<? extends Place> getPlace() {

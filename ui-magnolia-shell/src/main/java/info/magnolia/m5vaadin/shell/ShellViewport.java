@@ -34,7 +34,6 @@
 package info.magnolia.m5vaadin.shell;
 
 import info.magnolia.m5vaadin.IsVaadinComponent;
-import info.magnolia.m5vaadin.ShellAppView;
 import info.magnolia.m5vaadin.ShellView;
 import info.magnolia.m5vaadin.shell.gwt.client.VShellViewport;
 import info.magnolia.ui.framework.view.View;
@@ -76,10 +75,6 @@ public class ShellViewport extends DeckLayout implements ViewPort {
     public String getCurrentShellFragment() {
         return currentShellFragment;
     }
-    
-    public boolean isShellAppViewport() {
-        return view != null && view instanceof ShellAppView;
-    }
 
     public String getViewName() {
         String result = "";
@@ -87,6 +82,10 @@ public class ShellViewport extends DeckLayout implements ViewPort {
             result = view.getName();
         }
         return result;
+    }
+    
+    public ShellView getView() {
+        return view;
     }
     
     @Override

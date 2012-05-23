@@ -43,15 +43,20 @@ import com.vaadin.ui.ComponentContainer;
 /**
  * Base class for app view implementations.
  * @author apchelintcev
- * @param <T>
  */
 @SuppressWarnings("serial")
-public abstract class AppViewImpl<T extends AppView<T>> implements AppView<T>, IsVaadinComponent {
+public abstract class AppViewImpl implements AppView, IsVaadinComponent {
     
     private ShellTabSheet tabsheet = new ShellTabSheet();
    
+    private Presenter presenter;
+    
     public AppViewImpl() {
         tabsheet.setSizeFull();
+    }
+    
+    protected Presenter getPresenter() {
+        return presenter;
     }
     
     @Override
@@ -70,6 +75,11 @@ public abstract class AppViewImpl<T extends AppView<T>> implements AppView<T>, I
     @Override
     public Component asVaadinComponent() {
         return tabsheet;
+    }
+    
+    @Override
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
     }
 
 }

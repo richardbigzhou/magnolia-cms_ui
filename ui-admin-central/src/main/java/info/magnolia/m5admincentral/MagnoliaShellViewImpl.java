@@ -34,7 +34,6 @@
 package info.magnolia.m5admincentral;
 
 import info.magnolia.m5vaadin.IsVaadinComponent;
-import info.magnolia.m5vaadin.shell.MagnoliaShell;
 
 import com.google.inject.Inject;
 import com.vaadin.ui.Component;

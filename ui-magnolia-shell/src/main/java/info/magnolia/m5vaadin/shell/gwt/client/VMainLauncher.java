@@ -38,8 +38,10 @@ import info.magnolia.m5vaadin.shell.gwt.client.event.ShellAppNavigationEvent;
 import info.magnolia.m5vaadin.shell.gwt.client.event.handler.ShellNavigationAdapter;
 import info.magnolia.m5vaadin.shell.gwt.client.event.handler.ShellNavigationHandler;
 
+import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -181,7 +183,7 @@ public class VMainLauncher extends FlowPanel {
         }  
     }
 
-    private ShellAppType getActiveShellType() {
+    public ShellAppType getActiveShellType() {
         final Iterator<Entry<ShellAppType, Widget>> it = controlsMap.entrySet().iterator();
         while (it.hasNext()) {
             final Entry<ShellAppType, Widget> entry = it.next();
@@ -262,5 +264,14 @@ public class VMainLauncher extends FlowPanel {
                 activateControl(ShellAppType.valueOf(event.getAppTitle()));
             }
         }
-    };   
+    };
+
+    public ShellAppType getNextShellAppType() {
+        final ShellAppType cur = getActiveShellType();
+        if (cur != null) {
+            final List<ShellAppType> values = Arrays.asList(ShellAppType.values()); 
+            return values.get(values.indexOf(cur) % values.size());    
+        }
+        return ShellAppType.APPLAUNCHER;
+    }
 }

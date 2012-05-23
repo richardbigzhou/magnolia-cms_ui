@@ -33,19 +33,14 @@
  */
 package info.magnolia.m5admincentral.app.pages;
 
+import info.magnolia.m5admincentral.MagnoliaShell;
 import info.magnolia.m5admincentral.framework.AppViewImpl;
-import info.magnolia.m5vaadin.IsVaadinComponent;
-import info.magnolia.m5vaadin.shell.MagnoliaShell;
 
 import javax.inject.Inject;
 
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.TextArea;
 import com.vaadin.ui.VerticalLayout;
 
 /**
@@ -54,7 +49,7 @@ import com.vaadin.ui.VerticalLayout;
  * @version $Id$
  */
 @SuppressWarnings("serial")
-public class PagesViewImpl extends AppViewImpl<PagesView> implements PagesView {
+public class PagesViewImpl extends AppViewImpl implements PagesView {
     
     @Inject
     public PagesViewImpl(final MagnoliaShell shell) {
@@ -66,30 +61,6 @@ public class PagesViewImpl extends AppViewImpl<PagesView> implements PagesView {
                 layout.setSizeFull();
                 layout.addComponent(new Label("New tab opened"));
                 addTab(layout, "TestTab");
-                
-                final TextArea tx = new TextArea();
-                tx.setWidth("400px");
-                tx.setHeight("400px");
-                
-                final IsVaadinComponent test = new IsVaadinComponent() {
-                    
-                    @Override
-                    public Component asVaadinComponent() {
-                        return tx;
-                    }
-                };
-                
-                tx.setImmediate(true);
-                tx.addListener(new ValueChangeListener() {
-                    @Override
-                    public void valueChange(ValueChangeEvent event) {
-                        final String value = String.valueOf(event.getProperty().getValue());
-                        if ("exit".equals(value)) {
-                            shell.removeDialog(test);
-                        }
-                    }
-                });
-                shell.openDialog(test);
             }
         }));
         addTab(tableContainer, "Pages");
@@ -98,5 +69,10 @@ public class PagesViewImpl extends AppViewImpl<PagesView> implements PagesView {
     @Override
     public String getName() {
         return "Pages";
+    }
+
+    @Override
+    public void detachView() {
+        getPresenter().close();
     }
 }
