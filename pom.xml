@@ -130,5 +130,6 @@
     <module>ui-tabsheet</module>
     <module>ui-dialog</module>
     <module>ui-webapp</module>
+    <module>ui-dummy-app</module>
   </modules>
 </project>

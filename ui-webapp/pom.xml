@@ -33,6 +33,11 @@
       <artifactId>ui-vaadin-widgetset</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>info.magnolia</groupId>
+      <artifactId>ui-dummy-app</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
 
   <build>
