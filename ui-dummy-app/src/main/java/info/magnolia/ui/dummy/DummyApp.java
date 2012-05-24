@@ -59,6 +59,7 @@ public class DummyApp extends AbstractAppLifecycle {
 
     @Override
     public void focus() {
+        super.focus();
         placeController.goTo(new DummyPlace("foobar"));
         System.out.println("DummyApp focused");
     }
