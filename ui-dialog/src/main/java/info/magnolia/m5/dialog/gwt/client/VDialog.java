@@ -35,14 +35,11 @@ package info.magnolia.m5.dialog.gwt.client;
 
 import info.magnolia.m5vaadin.tabsheet.client.VShellTabSheet;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.SimpleEventBus;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.Container;
@@ -52,25 +49,25 @@ import com.vaadin.terminal.gwt.client.UIDL;
 
 
 /**
- * Vaadin implementation of MagnoliaShell client side.
+ * Vaadin implementation of Dialog client side (Presenter).
  */
 @SuppressWarnings("serial")
-public class VDialog extends FlowPanel implements Container, HasWidgets {
+public class VDialog extends Composite implements Container, VDialogView.Presenter {
 
     protected String paintableId;
 
-    private List<Paintable> paintables = new LinkedList<Paintable>();
-
-    protected Element dialogView;
-
     protected ApplicationConnection client;
-    private VShellTabSheet tabsheet;
 
+    private final VDialogView view;
+
+    private final EventBus eventBus;
     //private ClientSideProxy proxy = new ClientSideProxy(this) {};
 
     public VDialog() {
-        setStylePrimaryName("dialog-panel");
-        this.dialogView = getElement();
+        eventBus = new SimpleEventBus();
+        this.view = new VDialogViewImpl(eventBus);
+        this.view.setPresenter(this);
+        initWidget(view.asWidget());
 
     }
 
@@ -93,65 +90,23 @@ public class VDialog extends FlowPanel implements Container, HasWidgets {
             final UIDL dialogUidl = tagUidl.getChildUIDL(0);
             final Paintable p = client.getPaintable(dialogUidl);
             if (p instanceof VShellTabSheet) {
-                VShellTabSheet tsheet = (VShellTabSheet)p;
-                if (tabsheet == null) {
-                    this.tabsheet = tsheet;
-                    add(tsheet);
+                VShellTabSheet tabsheet = (VShellTabSheet)p;
+                if (this.view.getTabSheet() == null) {
+                    this.view.setTabSheet(tabsheet);
                 }
-                tsheet.updateFromUIDL(dialogUidl, client);
+                tabsheet.updateFromUIDL(dialogUidl, client);
             }
         }
     }
 
     @Override
-    protected void add(final Widget child, Element container) {
-        if (child instanceof VShellTabSheet) {
-            this.tabsheet = (VShellTabSheet)child;
-            super.add(child, container);
-        }
-    }
+    public void replaceChildComponent(Widget oldComponent, Widget newComponent) {}
 
-
-    /* (non-Javadoc)
-     * @see com.vaadin.terminal.gwt.client.Container#replaceChildComponent(com.google.gwt.user.client.ui.Widget, com.google.gwt.user.client.ui.Widget)
-     */
     @Override
-    public void replaceChildComponent(Widget oldComponent, Widget newComponent) {
-        // TODO Auto-generated method stub
+    public void updateCaption(Paintable component, UIDL uidl) {}
 
-    }
-
-
-    /* (non-Javadoc)
-     * @see com.vaadin.terminal.gwt.client.Container#hasChildComponent(com.google.gwt.user.client.ui.Widget)
-     */
-    @Override
-    public boolean hasChildComponent(Widget component) {
-        final Iterator<Widget> it = iterator();
-        boolean result = false;
-        while (it.hasNext() && !result) {
-            result = component == it.next();
-        }
-        return result;
-    }
-
-
-    /* (non-Javadoc)
-     * @see com.vaadin.terminal.gwt.client.Container#updateCaption(com.vaadin.terminal.gwt.client.Paintable, com.vaadin.terminal.gwt.client.UIDL)
-     */
-    @Override
-    public void updateCaption(Paintable component, UIDL uidl) {
-        // TODO Auto-generated method stub
-
-    }
-
-
-    /* (non-Javadoc)
-     * @see com.vaadin.terminal.gwt.client.Container#requestLayout(java.util.Set)
-     */
     @Override
     public boolean requestLayout(Set<Paintable> children) {
-        // TODO Auto-generated method stub
         return false;
     }
 
@@ -163,5 +118,9 @@ public class VDialog extends FlowPanel implements Container, HasWidgets {
         return new RenderSpace();
     }
 
+    @Override
+    public boolean hasChildComponent(Widget component) {
+        return view.hasChildComponent(component);
+    }
 
 }

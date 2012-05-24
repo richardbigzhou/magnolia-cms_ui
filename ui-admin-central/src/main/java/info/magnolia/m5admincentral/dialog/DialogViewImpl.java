@@ -33,7 +33,7 @@
  */
 package info.magnolia.m5admincentral.dialog;
 
-import info.magnolia.m5.dialog.Dialog;
+import info.magnolia.m5.dialog.VaadinDialog;
 
 import com.vaadin.ui.Component;
 
@@ -42,7 +42,7 @@ import com.vaadin.ui.Component;
  *
  * @author ejervidalo
  */
-public class DialogViewImpl extends Dialog implements DialogView {
+public class DialogViewImpl extends VaadinDialog implements DialogView {
 
     private Presenter presenter;
 

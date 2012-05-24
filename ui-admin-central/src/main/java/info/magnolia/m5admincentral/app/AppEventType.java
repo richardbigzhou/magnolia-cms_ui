@@ -35,7 +35,7 @@ package info.magnolia.m5admincentral.app;
 
 
 /**
- * AppEvent Type enumaration.
+ * AppEvent Type enumeration.
  * @author erichechinger
  * @version $Id$
  *

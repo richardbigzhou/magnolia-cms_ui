@@ -132,3 +132,16 @@
 /ui-webapp/.settings
 /ui-webapp/.checkstyle
 /ui-webapp/src
+
+# /ui-dummy-app/
+/ui-dummy-app/target/
+/ui-dummy-app/*.iml
+/ui-dummy-app/*.ipr
+/ui-dummy-app/*.iws
+/ui-dummy-app/*.log
+/ui-dummy-app/.idea
+/ui-dummy-app/.project
+/ui-dummy-app/.classpath
+/ui-dummy-app/.settings
+/ui-dummy-app/.checkstyle
+

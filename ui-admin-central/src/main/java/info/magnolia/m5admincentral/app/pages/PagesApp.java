@@ -34,8 +34,7 @@
 package info.magnolia.m5admincentral.app.pages;
 
 
-import info.magnolia.m5admincentral.app.AbstractAppLifecycle;
-import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.m5admincentral.app.AppLifecycle;
 import info.magnolia.ui.framework.place.PlaceController;
 
 import com.google.inject.Inject;
@@ -45,28 +44,28 @@ import com.google.inject.Inject;
  *
  * @version $Id$
  */
-public class PagesApp extends AbstractAppLifecycle {
-    
+public class PagesApp implements AppLifecycle {
+
+    private PlaceController placeController;
+
     @Inject
-    public PagesApp(PlaceController placeController, EventBus eventBus) {
-        super(placeController, eventBus);
+    public PagesApp(PlaceController placeController) {
+        this.placeController = placeController;
     }
 
     @Override
     public void start() {
-        super.start();
         System.out.println("PagesApp started");
     }
 
     @Override
     public void focus() {
-        super.focus();
         placeController.goTo(new PagesPlace("foobar"));
         System.out.println("PagesApp focused");
     }
 
     @Override
     public void stop() {
-        super.stop();
+        System.out.println("PagesApp stopped");
     }
 }

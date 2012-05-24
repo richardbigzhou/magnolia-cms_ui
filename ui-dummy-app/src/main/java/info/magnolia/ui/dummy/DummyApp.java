@@ -33,27 +33,27 @@
  */
 package info.magnolia.ui.dummy;
 
-import javax.inject.Inject;
-
-import info.magnolia.m5admincentral.app.AbstractAppLifecycle;
-import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.m5admincentral.app.AppLifecycle;
 import info.magnolia.ui.framework.place.PlaceController;
+
+import javax.inject.Inject;
 
 /**
  * Dummy app.
  *
  * @version $Id$
  */
-public class DummyApp extends AbstractAppLifecycle {
+public class DummyApp implements AppLifecycle {
+
+    private PlaceController placeController;
 
     @Inject
-    public DummyApp(PlaceController placeController, EventBus eventBus) {
-        super(placeController, eventBus);
+    public DummyApp(PlaceController placeController) {
+        this.placeController = placeController;
     }
 
     @Override
     public void start() {
-        super.start();
         System.out.println("DummyApp started");
     }
 
@@ -65,6 +65,6 @@ public class DummyApp extends AbstractAppLifecycle {
 
     @Override
     public void stop() {
-        super.stop();
+        System.out.println("DummyApp stopped");
     }
 }

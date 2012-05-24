@@ -33,28 +33,30 @@
  */
 package info.magnolia.ui.dummy;
 
-import javax.inject.Inject;
-
-import info.magnolia.ui.framework.activity.AbstractActivity;
+import info.magnolia.m5admincentral.framework.AppActivity;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.view.ViewPort;
+
+import javax.inject.Inject;
 
 /**
  * Activity for the Dummy app.
  *
  * @version $Id$
  */
-public class DummyActivity extends AbstractActivity {
+public class DummyActivity extends AppActivity {
 
     private final DummyView view;
 
     @Inject
     public DummyActivity(DummyView view) {
+        super(view);
         this.view = view;
     }
 
     @Override
     public void start(ViewPort viewPort, EventBus eventBus) {
+        super.start(viewPort, eventBus);
         viewPort.setView(view);
     }
 }

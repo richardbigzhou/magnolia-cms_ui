@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,40 +31,61 @@
  * intact.
  *
  */
-package info.magnolia.m5admincentral.app.assets;
+package info.magnolia.m5.dialog.gwt.client;
 
-import info.magnolia.m5admincentral.app.AppLifecycle;
-import info.magnolia.ui.framework.place.PlaceController;
 
-import javax.inject.Inject;
+import info.magnolia.m5vaadin.tabsheet.client.VShellTabSheet;
+
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.EventBus;
+import com.vaadin.terminal.gwt.client.Paintable;
 
 /**
- * Assets app.
+ * GWT implementation of MagnoliaShell client side (the view part basically).
+ * @author apchelintcev
  *
- * @version $Id$
  */
-public class AssetsApp implements AppLifecycle {
+public class VDialogViewImpl extends FlowPanel implements VDialogView {
 
-    private PlaceController placeController;
+    private VShellTabSheet tabsheet;
+    private Presenter presenter;
+    private EventBus eventBus;
 
-    @Inject
-    public AssetsApp(PlaceController placeController) {
-        this.placeController = placeController;
+
+    public VDialogViewImpl(final EventBus eventBus) {
+        super();
+        setStylePrimaryName("dialog-panel");
+        this.eventBus = eventBus;
+
     }
 
     @Override
-    public void start() {
-        System.out.println("AssetsApp started");
+    public void setPresenter(Presenter vDialog) {
+        this.presenter = presenter;
     }
 
     @Override
-    public void focus() {
-        placeController.goTo(new AssetsPlace("foobar"));
-        System.out.println("AssetsApp focused");
+    public Paintable getTabSheet() {
+        return tabsheet;
+    }
+
+
+    @Override
+    public void setTabSheet(VShellTabSheet tabsheet) {
+        this.tabsheet = tabsheet;
+        add(tabsheet);
     }
 
     @Override
-    public void stop() {
-        System.out.println("AssetsApp stopped");
+    public boolean hasChildComponent(Widget component) {
+        boolean isChild = false;
+        for (Widget widget : getChildren()) {
+            if (component == widget) {
+                isChild = true;
+            }
+        }
+        return isChild;
     }
+
 }

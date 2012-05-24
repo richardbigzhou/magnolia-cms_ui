@@ -31,40 +31,24 @@
  * intact.
  *
  */
-package info.magnolia.m5admincentral.app.assets;
+package info.magnolia.m5admincentral.app;
 
-import info.magnolia.m5admincentral.app.AppLifecycle;
-import info.magnolia.ui.framework.place.PlaceController;
-
-import javax.inject.Inject;
 
 /**
- * Assets app.
+ * Utility Class for the App TestCases.
  *
- * @version $Id$
  */
-public class AssetsApp implements AppLifecycle {
+public class AppTestUtility {
 
-    private PlaceController placeController;
-
-    @Inject
-    public AssetsApp(PlaceController placeController) {
-        this.placeController = placeController;
-    }
-
-    @Override
-    public void start() {
-        System.out.println("AssetsApp started");
-    }
-
-    @Override
-    public void focus() {
-        placeController.goTo(new AssetsPlace("foobar"));
-        System.out.println("AssetsApp focused");
-    }
-
-    @Override
-    public void stop() {
-        System.out.println("AssetsApp stopped");
+    /**
+     * Create a AppDescriptor.
+     */
+    public static AppDescriptor createAppDescriptor(String startLibell, Class<? extends AppLifecycle> appClass) {
+        AppDescriptor res = new AppDescriptor();
+        res.setAppClass(appClass);
+        res.setIcon(startLibell+"_icon");
+        res.setLabel(startLibell+"_label");
+        res.setName(startLibell+"_name");
+        return res;
     }
 }
