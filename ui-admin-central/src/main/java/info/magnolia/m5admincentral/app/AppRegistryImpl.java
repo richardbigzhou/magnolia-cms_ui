@@ -34,8 +34,14 @@
 package info.magnolia.m5admincentral.app;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import javax.inject.Singleton;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Default AppRegistry implementation.
@@ -45,6 +51,8 @@ import javax.inject.Singleton;
 @Singleton
 public class AppRegistryImpl implements AppRegistry {
 
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
     private final List<AppCategory> categories = new ArrayList<AppCategory>();
 
     public List<AppCategory> getCategories() {
@@ -52,11 +60,43 @@ public class AppRegistryImpl implements AppRegistry {
     }
 
     public void addCategory(AppCategory category) {
+
+        // Filter out disabled apps and apps with identical names
+        Set<String> clearedNames = new HashSet<String>();
+        Iterator<AppDescriptor> iterator = category.getApps().iterator();
+        while (iterator.hasNext()) {
+            AppDescriptor descriptor = iterator.next();
+            if (!descriptor.isEnabled()) {
+                iterator.remove();
+            } else if (isAppDescriptionRegistered(descriptor.getName()) || clearedNames.contains(descriptor.getName())) {
+                logger.warn("App \"" + descriptor.getName() + "\" already registered will not be added twice");
+                iterator.remove();
+            } else {
+                clearedNames.add(descriptor.getName());
+            }
+        }
+
         this.categories.add(category);
     }
 
     @Override
     public AppDescriptor getAppDescriptor(String name) {
+        AppDescriptor descriptor = internalGetAppDescriptor(name);
+
+        if (descriptor == null) {
+            throw new IllegalArgumentException("No app registered with name \"" + name + "\".");
+        }
+
+        return descriptor;
+    }
+
+    @Override
+    public boolean isAppDescriptionRegistered(String name) {
+        AppDescriptor descriptor = internalGetAppDescriptor(name);
+        return descriptor != null;
+    }
+
+    private AppDescriptor internalGetAppDescriptor(String name) {
         for (AppCategory category : categories) {
             for (AppDescriptor descriptor : category.getApps()) {
                 if (descriptor.getName().equals(name)) {
@@ -64,19 +104,6 @@ public class AppRegistryImpl implements AppRegistry {
                 }
             }
         }
-
-        throw new IllegalArgumentException("No app registered with name \"" + name + "\".");
-    }
-
-    @Override
-    public boolean isAppDescriptionRegistered(String name) {
-        for (AppCategory category : categories) {
-            for (AppDescriptor descriptor : category.getApps()) {
-                if (descriptor.getName().equals(name)) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return null;
     }
 }
