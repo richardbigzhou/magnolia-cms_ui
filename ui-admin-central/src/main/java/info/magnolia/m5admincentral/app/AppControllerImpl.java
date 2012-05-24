@@ -34,11 +34,15 @@
 package info.magnolia.m5admincentral.app;
 
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.framework.event.Event;
+import info.magnolia.ui.framework.event.EventBus;
 
 import javax.inject.Singleton;
 
 import org.apache.commons.collections.BidiMap;
 import org.apache.commons.collections.bidimap.DualHashBidiMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 
@@ -50,16 +54,22 @@ import com.google.inject.Inject;
 @Singleton
 public class AppControllerImpl implements AppController {
 
+    private static Logger log = LoggerFactory.getLogger(AppControllerImpl.class);
+
     private AppRegistry appRegistry;
-    
+
     private ComponentProvider componentProvider;
 
-    private BidiMap runningApps = new DualHashBidiMap(); 
+    protected EventBus eventBus;
+
+    private BidiMap runningApps = new DualHashBidiMap();
+
 
     @Inject
-    public AppControllerImpl(AppRegistry appRegistry, ComponentProvider componentProvider) {
+    public AppControllerImpl(AppRegistry appRegistry, ComponentProvider componentProvider, EventBus eventBus) {
         this.appRegistry = appRegistry;
         this.componentProvider = componentProvider;
+        this.eventBus = eventBus;
     }
 
     @Override
@@ -71,6 +81,7 @@ public class AppControllerImpl implements AppController {
     public void startIfNotAlreadyRunningThenFocus(String name) {
         final AppLifecycle lifecycle = doStart(name);
         lifecycle.focus();
+        sendEvent(new AppLifecycleEvent(lifecycle, AppEventType.FOCUS_EVENT));
     }
 
     private AppLifecycle doStart(String name) {
@@ -78,8 +89,9 @@ public class AppControllerImpl implements AppController {
         AppLifecycle lifecycle = (AppLifecycle)runningApps.get(descriptor);
         if (lifecycle == null) {
             lifecycle = componentProvider.newInstance(descriptor.getAppClass());
-            runningApps.put(descriptor, lifecycle);
             lifecycle.start();
+            runningApps.put(descriptor, lifecycle);
+            sendEvent(new AppLifecycleEvent(lifecycle, AppEventType.START_EVENT));
         }
         return lifecycle;
     }
@@ -111,6 +123,15 @@ public class AppControllerImpl implements AppController {
         if (lifecycle != null) {
             lifecycle.stop();
             runningApps.remove(descriptor);
+            sendEvent(new AppLifecycleEvent(lifecycle, AppEventType.STOP_EVENT));
         }
+    }
+
+    /**
+     * Send Event to the EventBuss.
+     */
+    private void sendEvent(Event<? extends AppLifecycleEventHandler>  event) {
+        log.debug("AppControlelr: send Event "+event.getClass().getName());
+        eventBus.fireEvent(event);
     }
 }
