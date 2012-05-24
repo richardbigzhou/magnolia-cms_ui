@@ -54,6 +54,8 @@ public class AppDescriptor {
 
     private String label;
 
+    private boolean enabled = true;
+
     private String icon;
 
     private Class<? extends AppLifecycle> appClass;
@@ -74,6 +76,14 @@ public class AppDescriptor {
 
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     public String getIcon() {
