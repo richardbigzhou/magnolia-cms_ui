@@ -44,10 +44,5 @@ import info.magnolia.m5admincentral.framework.AppView;
  */
 public interface PagesView extends AppView {
 
-    /**
-     * Presenter. 
-     */
-    public interface Presenter extends AppView.Presenter {
-        
-    }
+
 }

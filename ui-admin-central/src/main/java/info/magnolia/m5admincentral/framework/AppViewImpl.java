@@ -55,10 +55,6 @@ public abstract class AppViewImpl implements AppView, IsVaadinComponent {
         tabsheet.setSizeFull();
     }
     
-    protected Presenter getPresenter() {
-        return presenter;
-    }
-    
     @Override
     public void addTab(ComponentContainer cc, String caption) {
         final ShellTab tab = new ShellTab(caption, cc);
@@ -80,6 +76,11 @@ public abstract class AppViewImpl implements AppView, IsVaadinComponent {
     @Override
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
+    }
+    
+    @Override
+    public String getName() {
+        return presenter.getName();
     }
 
 }

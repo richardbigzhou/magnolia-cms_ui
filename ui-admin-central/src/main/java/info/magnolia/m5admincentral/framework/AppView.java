@@ -47,15 +47,13 @@ public interface AppView extends ShellView {
     void addTab(final ComponentContainer cc, String caption);
     
     void closeTab(final ComponentContainer cc);
-    
-    void detachView();
-    
+ 
     void setPresenter(final Presenter presenter);
     
     /**
-     * Presenter. 
+     * Presenter.
      */
     public interface Presenter {
-        void close();
+        String getName();
     }
 }

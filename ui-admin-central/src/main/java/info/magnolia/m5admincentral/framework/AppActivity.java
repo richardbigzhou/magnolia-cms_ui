@@ -33,25 +33,16 @@
  */
 package info.magnolia.m5admincentral.framework;
 
-import info.magnolia.m5admincentral.app.AppController;
-import info.magnolia.m5admincentral.shellapp.applauncher.AppLauncherPlace;
 import info.magnolia.ui.framework.activity.AbstractActivity;
 import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.place.PlaceController;
 import info.magnolia.ui.framework.view.ViewPort;
-
-import javax.inject.Inject;
 
 /**
  * App activity.
  */
 public abstract class AppActivity extends AbstractActivity implements AppView.Presenter {
-
+    
     private String name;
-    
-    private AppController controller;
-    
-    private PlaceController placeController;
     
     private AppView view;
     
@@ -63,24 +54,9 @@ public abstract class AppActivity extends AbstractActivity implements AppView.Pr
         this.name = name;
     }
     
+    @Override
     public String getName() {
         return name;
-    }
-   
-    @Inject
-    public void setAppController(final AppController appController) {
-        this.controller = appController;
-    }
-    
-    @Inject
-    public void setPlaceController(final PlaceController placeController) {
-        this.placeController = placeController;
-    }
-    
-    @Override
-    public void close() {
-        controller.stopApplication(name);
-        placeController.goTo(new AppLauncherPlace("pulse"));
     }
     
     @Override

@@ -39,8 +39,6 @@ package info.magnolia.m5admincentral.app;
  * @version $Id$
  */
 public interface AppController {
-
-    AppLifecycle getLifecycleByName(final String name);
     
     AppDescriptor getAppDescriptor(final AppLifecycle app);
     
@@ -49,4 +47,6 @@ public interface AppController {
     void startIfNotAlreadyRunningThenFocus(String name);
 
     void stopApplication(String name);
+    
+    void stopCurrentApplication();
 }

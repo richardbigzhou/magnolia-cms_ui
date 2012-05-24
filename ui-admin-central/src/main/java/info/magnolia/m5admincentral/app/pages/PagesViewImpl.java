@@ -65,14 +65,4 @@ public class PagesViewImpl extends AppViewImpl implements PagesView {
         }));
         addTab(tableContainer, "Pages");
     }
-
-    @Override
-    public String getName() {
-        return "Pages";
-    }
-
-    @Override
-    public void detachView() {
-        getPresenter().close();
-    }
 }

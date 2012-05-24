@@ -66,7 +66,7 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
     protected String paintableId;
 
     protected ApplicationConnection client;
-    
+       
     private ClientSideProxy proxy = new ClientSideProxy(this) {
         {
             register("navigate", new Method() {

@@ -44,7 +44,7 @@ import javax.inject.Inject;
  *
  * @version $Id$
  */
-public class PagesActivity extends AppActivity implements PagesView.Presenter {
+public class PagesActivity extends AppActivity {
 
     private final PagesView view;
 

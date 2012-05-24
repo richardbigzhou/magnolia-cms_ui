@@ -35,11 +35,8 @@ package info.magnolia.m5admincentral.framework;
 
 import info.magnolia.m5admincentral.app.AppLifecycleEvent;
 import info.magnolia.m5admincentral.app.AppLifecycleEventHandler;
-import info.magnolia.ui.framework.activity.Activity;
 import info.magnolia.ui.framework.activity.ActivityManager;
-import info.magnolia.ui.framework.activity.ActivityMapper;
 import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.place.PlaceChangeEvent;
 import info.magnolia.ui.framework.place.PlaceChangeRequestEvent;
 
 /**
@@ -50,11 +47,8 @@ import info.magnolia.ui.framework.place.PlaceChangeRequestEvent;
  */
 public class AppActivityManager extends ActivityManager {
 
-    private ActivityMapper mapper;
-
     public AppActivityManager(final AppActivityMapper mapper, final EventBus eventBus) {
         super(mapper, eventBus);
-        this.mapper = mapper;
         eventBus.addHandler(AppLifecycleEvent.class, new AppLifecycleEventHandler.Adapter() {
             
             @Override
@@ -67,14 +61,6 @@ public class AppActivityManager extends ActivityManager {
                 mapper.uregisterApp(event.getApp());
             }
         });
-    }
-
-    @Override
-    public void onPlaceChange(PlaceChangeEvent event) {
-        final Activity activity = mapper.getActivity(event.getNewPlace());
-        if (activity != null) {
-            super.onPlaceChange(event);
-        }
     }
 
     @Override

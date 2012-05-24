@@ -33,14 +33,12 @@
  */
 package info.magnolia.m5admincentral.app.dialog;
 
+import info.magnolia.m5admincentral.framework.AppViewImpl;
 import info.magnolia.m5vaadin.IsVaadinComponent;
-import info.magnolia.m5vaadin.tabsheet.ShellTab;
-import info.magnolia.m5vaadin.tabsheet.ShellTabSheet;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 
 /**
@@ -49,34 +47,16 @@ import com.vaadin.ui.HorizontalLayout;
  * @version $Id$
  */
 @SuppressWarnings("serial")
-public class DialogTestViewImpl implements DialogTestView, IsVaadinComponent {
-
-    private ShellTabSheet layout = new ShellTabSheet();
+public class DialogTestViewImpl extends AppViewImpl implements DialogTestView, IsVaadinComponent {
 
     private HorizontalLayout content = new HorizontalLayout();
 
-    private Presenter presenter;
+    private DialogPresenter presenter;
 
     public DialogTestViewImpl() {
-        layout.setSizeFull();
-
         Button dialog = new Button("Open Dialog", new DialogListener());
         content.addComponent(dialog);
-
-        final ShellTab mainTab = layout.addTab("Dialog", content);
-
-        layout.setTabClosable(mainTab, true);
-
-    }
-
-    @Override
-    public Component asVaadinComponent() {
-        return layout;
-    }
-
-    @Override
-    public String getName() {
-        return "Pages";
+        addTab(content, "Dialog");
     }
 
     /**
@@ -93,7 +73,7 @@ public class DialogTestViewImpl implements DialogTestView, IsVaadinComponent {
     }
 
     @Override
-    public void setPresenter(Presenter presenter) {
+    public void setPresenter(DialogPresenter presenter) {
         this.presenter = presenter;
     }
 }

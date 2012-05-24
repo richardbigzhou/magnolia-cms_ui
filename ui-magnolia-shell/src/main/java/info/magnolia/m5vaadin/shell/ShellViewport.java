@@ -93,8 +93,8 @@ public class ShellViewport extends DeckLayout implements ViewPort {
         if (view != null && !(view instanceof ShellView)) {
             throw new RuntimeException("Wrong type of view");
         }
-        this.view = (ShellView)view;
         if (view != null){
+            this.view = (ShellView)view;
             if (view instanceof IsVaadinComponent) {
                 final Component c = ((IsVaadinComponent)view).asVaadinComponent();
                 if (c instanceof ComponentContainer) {
