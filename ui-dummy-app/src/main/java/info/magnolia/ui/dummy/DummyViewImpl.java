@@ -52,14 +52,4 @@ public class DummyViewImpl extends AppViewImpl implements DummyView  {
         tableContainer.addComponent(label);
         addTab(tableContainer, "Dummy");
     }
-
-    @Override
-    public String getName() {
-        return "Dummy";
-    }
-
-    @Override
-    public void detachView() {
-        getPresenter().close();
-    }
 }
