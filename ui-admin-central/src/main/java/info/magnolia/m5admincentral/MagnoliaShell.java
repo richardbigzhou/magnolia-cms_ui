@@ -116,7 +116,7 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell {
     @Override
     public void setFragment(String fragment) {
         final ShellViewport activeViewport = getActiveViewport();
-        proxy.call("navigate", fragment, activeViewport.getViewName());
+        proxy.call("navigate", fragment, activeViewport.getCurrentAppName());
     }
 
     @Override

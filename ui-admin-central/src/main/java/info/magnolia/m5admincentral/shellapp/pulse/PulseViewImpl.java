@@ -153,7 +153,7 @@ public class PulseViewImpl implements PulseView, IsVaadinComponent {
     }
 
     @Override
-    public String getName() {
+    public String getAppName() {
         return ShellAppType.PULSE.name();
     }
 

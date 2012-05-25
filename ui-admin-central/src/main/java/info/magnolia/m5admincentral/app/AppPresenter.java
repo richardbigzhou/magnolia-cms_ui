@@ -41,7 +41,7 @@ package info.magnolia.m5admincentral.app;
  */
 public interface AppPresenter<T extends AppPresenter<T>> {
 
-    String getName();
+    String getAppName();
     
     T getReference();
     

@@ -61,7 +61,7 @@ public abstract class AbstractAppActivity<T extends AppPresenter<T>> extends Abs
     }
 
     @Override
-    public String getName() {
+    public String getAppName() {
         return name;
     }
 

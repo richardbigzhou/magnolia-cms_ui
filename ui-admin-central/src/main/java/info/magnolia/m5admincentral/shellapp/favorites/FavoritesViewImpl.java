@@ -122,7 +122,7 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView,
     }
 
     @Override
-    public String getName() {
+    public String getAppName() {
         return ShellAppType.FAVORITE.name();
     }
 }

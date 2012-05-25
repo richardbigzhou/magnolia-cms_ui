@@ -128,7 +128,7 @@ public class AppLauncherViewImpl implements AppLauncherView, IsVaadinComponent {
     }
 
     @Override
-    public String getName() {
+    public String getAppName() {
         return ShellAppType.APPLAUNCHER.name();
     }
 }

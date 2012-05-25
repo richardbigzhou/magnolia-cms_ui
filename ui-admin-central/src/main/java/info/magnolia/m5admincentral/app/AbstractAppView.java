@@ -71,8 +71,8 @@ public abstract class AbstractAppView<T extends AppPresenter<T>> implements AppV
     }
     
     @Override
-    public String getName() {
-        return presenter.getName();
+    public String getAppName() {
+        return presenter.getAppName();
     }
     
     @Override

@@ -76,10 +76,10 @@ public class ShellViewport extends DeckLayout implements ViewPort {
         return currentShellFragment;
     }
 
-    public String getViewName() {
+    public String getCurrentAppName() {
         String result = "";
         if (view != null) {
-            result = view.getName();
+            result = view.getAppName();
         }
         return result;
     }
