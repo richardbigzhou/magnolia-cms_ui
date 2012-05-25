@@ -31,9 +31,9 @@
  * intact.
  *
  */
-package info.magnolia.m5vaadin.tabsheet;
+package info.magnolia.ui.widget.tabsheet;
 
-import info.magnolia.m5vaadin.tabsheet.client.VShellTab;
+import info.magnolia.ui.widget.tabsheet.client.VShellTab;
 
 import com.vaadin.terminal.PaintException;
 import com.vaadin.terminal.PaintTarget;

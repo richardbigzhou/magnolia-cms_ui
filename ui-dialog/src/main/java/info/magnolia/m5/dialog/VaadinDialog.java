@@ -36,8 +36,8 @@ package info.magnolia.m5.dialog;
 
 
 import info.magnolia.m5.dialog.gwt.client.VDialog;
-import info.magnolia.m5vaadin.tabsheet.ShellTab;
-import info.magnolia.m5vaadin.tabsheet.ShellTabSheet;
+import info.magnolia.ui.widget.tabsheet.ShellTab;
+import info.magnolia.ui.widget.tabsheet.ShellTabSheet;
 
 import com.vaadin.terminal.PaintException;
 import com.vaadin.terminal.PaintTarget;

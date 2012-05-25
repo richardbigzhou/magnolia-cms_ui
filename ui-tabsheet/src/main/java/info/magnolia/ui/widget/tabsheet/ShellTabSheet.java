@@ -31,10 +31,10 @@
  * intact.
  *
  */
-package info.magnolia.m5vaadin.tabsheet;
+package info.magnolia.ui.widget.tabsheet;
 
-import info.magnolia.m5vaadin.tabsheet.client.VShellTabSheet;
-import info.magnolia.m5vaadin.tabsheet.client.util.CollectionUtil;
+import info.magnolia.ui.widget.tabsheet.client.VShellTabSheet;
+import info.magnolia.ui.widget.tabsheet.client.util.CollectionUtil;
 
 import java.util.Iterator;
 import java.util.LinkedList;

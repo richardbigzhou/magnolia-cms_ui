@@ -38,7 +38,7 @@
         <artifactId>gwt-maven-plugin</artifactId>
         <configuration>
           <module>
-            info.magnolia.m5vaadin.tabsheet.M5TabsheetWidgetSet
+            info.magnolia.ui.widget.tabsheet.M5TabsheetWidgetSet
           </module>
           <style>PRETTY</style>
           <draftCompile>true</draftCompile>

@@ -34,8 +34,8 @@
 package info.magnolia.m5admincentral.app;
 
 import info.magnolia.m5vaadin.IsVaadinComponent;
-import info.magnolia.m5vaadin.tabsheet.ShellTab;
-import info.magnolia.m5vaadin.tabsheet.ShellTabSheet;
+import info.magnolia.ui.widget.tabsheet.ShellTab;
+import info.magnolia.ui.widget.tabsheet.ShellTabSheet;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;

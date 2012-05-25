@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.m5vaadin.tabsheet.client;
+package info.magnolia.ui.widget.tabsheet.client;
 
 
 import java.util.Set;

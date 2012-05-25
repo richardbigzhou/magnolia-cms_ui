@@ -38,8 +38,8 @@ import info.magnolia.m5admincentral.components.ActivityItem;
 import info.magnolia.m5admincentral.components.SplitFeed;
 import info.magnolia.m5vaadin.IsVaadinComponent;
 import info.magnolia.m5vaadin.shell.gwt.client.VMainLauncher.ShellAppType;
-import info.magnolia.m5vaadin.tabsheet.ShellTab;
-import info.magnolia.m5vaadin.tabsheet.ShellTabSheet;
+import info.magnolia.ui.widget.tabsheet.ShellTab;
+import info.magnolia.ui.widget.tabsheet.ShellTabSheet;
 
 import java.util.Date;
 

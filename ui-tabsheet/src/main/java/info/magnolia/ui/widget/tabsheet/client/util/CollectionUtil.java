@@ -31,16 +31,23 @@
  * intact.
  *
  */
-package info.magnolia.m5vaadin.tabsheet.client;
+package info.magnolia.ui.widget.tabsheet.client.util;
 
-import com.google.gwt.event.shared.EventHandler;
+import java.util.List;
 
 /**
- * Handler of the events fired when the tab is closed.
+ * Util class for the collections operations.
  * @author apchelintcev
  *
  */
-public interface TabCloseEventHandler extends EventHandler {
-    
-    void onTabClosed(final TabCloseEvent event);
+public class CollectionUtil {
+
+    public static <T> T getNext(final List<T> items, T item) {
+        int index = items.indexOf(item);
+        if (index >= 0) {
+            int nextIndex = (index + 1) % items.size();
+            return items.get(nextIndex);
+        }
+        return null;
+    }
 }
