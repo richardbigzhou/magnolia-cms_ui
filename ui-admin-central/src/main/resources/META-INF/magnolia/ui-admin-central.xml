@@ -132,7 +132,7 @@
   <servlets>
     <servlet>
       <name>AdminCentral</name>
-      <class>com.vaadin.terminal.gwt.server.ApplicationServlet</class>
+      <class>info.magnolia.ui.vaadin.integration.servlet.MultipleBrowserWindowsApplicationServlet</class>
       <mappings>
         <mapping>/.magnolia/admin-central</mapping>
         <mapping>/.magnolia/admin-central/*</mapping>
@@ -145,6 +145,10 @@
         <param>
           <name>widgetset</name>
           <value>info.magnolia.ui.vaadin.widgetset.MagnoliaWidgetset</value>
+        </param>
+        <param>
+          <name>theme</name>
+          <value>testtheme</value>
         </param>
       </params>
     </servlet>
