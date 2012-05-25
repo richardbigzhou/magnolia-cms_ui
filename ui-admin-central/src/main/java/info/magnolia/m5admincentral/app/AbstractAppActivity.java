@@ -55,11 +55,9 @@ public abstract class AbstractAppActivity<T extends AppPresenter<T>> extends Abs
         this.view = view;
     }
     
-    protected abstract T getThis();
-    
     @Override
     public void start(ViewPort viewPort, EventBus eventBus) {
-        view.setPresenter(getThis());
+        view.setPresenter(getReference());
         viewPort.setView(view);
     }
     

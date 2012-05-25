@@ -50,7 +50,7 @@ public class PagesActivity extends AbstractAppActivity<PagesPresenter> implement
     }
 
     @Override
-    protected PagesPresenter getThis() {
+    public PagesPresenter getReference() {
         return this;
     }
 }

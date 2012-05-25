@@ -43,4 +43,6 @@ public interface AppPresenter<T extends AppPresenter<T>> {
 
     String getName();
     
+    T getReference();
+    
 }

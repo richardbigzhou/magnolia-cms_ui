@@ -50,7 +50,7 @@ public class DummyActivity extends AbstractAppActivity<DummyPresenter> implement
     }
 
     @Override
-    protected DummyPresenter getThis() {
+    public DummyPresenter getReference() {
         return this;
     }
 }

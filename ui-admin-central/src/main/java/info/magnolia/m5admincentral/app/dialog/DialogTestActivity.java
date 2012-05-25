@@ -61,7 +61,7 @@ public class DialogTestActivity extends AbstractAppActivity<DialogTestPresenter>
     }
 
     @Override
-    protected DialogTestPresenter getThis() {
+    public DialogTestPresenter getReference() {
         return this;
     }
 }

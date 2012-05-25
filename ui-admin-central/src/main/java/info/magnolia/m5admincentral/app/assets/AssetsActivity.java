@@ -50,7 +50,7 @@ public class AssetsActivity extends AbstractAppActivity<AssetsAppPresenter> impl
     }
 
     @Override
-    protected AssetsAppPresenter getThis() {
+    public AssetsAppPresenter getReference() {
         return this;
     }
 }
