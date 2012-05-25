@@ -31,44 +31,19 @@
  * intact.
  *
  */
-package org.vaadin.addon.jquerywrapper.client.ui;
+package info.magnolia.ui.widget.jquerywrapper.client.ui;
 
-import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.user.client.Element;
+
 
 /**
- * Wrapper for JQuery Callbacks API.
+ * Css hook callback. Fired when the target property got/set.
  * @author apchelintcev
  *
  */
-public class Callbacks extends JavaScriptObject {
-    
-    protected Callbacks() {}
-    
-    public static Callbacks create(final JQueryCallback... callbacks) {
-        final Callbacks result = create();
-        for (final JQueryCallback callback : callbacks) {
-            result.add(callback);
-        }
-        return result;
-    }
-    
-    public static native Callbacks create() /*-{
-        return $wnd.jQuery.Callbacks();
-    }-*/;
-    
-    public final void add(final JQueryCallback callback) {
-        doAdd(JQueryFunction.create(callback));
-    }
-    
-    public final void remove(final JQueryCallback callback) {
-        doRemove(JQueryFunction.create(callback));
-    }
-    
-    private final native void doRemove(final JQueryFunction callback) /*-{
-        this.remove(callback);
-    }-*/;
+public interface CssHookHandler {
 
-    private final native void doAdd(final JQueryFunction callback) /*-{
-        this.add(callback);   
-    }-*/;
+    void get(final Element el, final String value);
+    
+    void set(final Element el, final String value);
 }

@@ -39,9 +39,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import org.vaadin.addon.jquerywrapper.client.ui.Callbacks;
-import org.vaadin.addon.jquerywrapper.client.ui.JQueryCallback;
-import org.vaadin.addon.jquerywrapper.client.ui.JQueryWrapper;
+import info.magnolia.ui.widget.jquerywrapper.client.ui.Callbacks;
+import info.magnolia.ui.widget.jquerywrapper.client.ui.JQueryCallback;
+import info.magnolia.ui.widget.jquerywrapper.client.ui.JQueryWrapper;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;

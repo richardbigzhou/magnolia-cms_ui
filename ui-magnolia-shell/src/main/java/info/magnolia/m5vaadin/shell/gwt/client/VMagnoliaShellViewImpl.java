@@ -43,10 +43,10 @@ import info.magnolia.m5vaadin.shell.gwt.client.event.ViewportCloseEvent;
 import info.magnolia.m5vaadin.shell.gwt.client.event.handler.ShellNavigationHandler;
 import info.magnolia.m5vaadin.shell.gwt.client.event.handler.ViewportCloseHandler;
 
-import org.vaadin.addon.jquerywrapper.client.ui.AnimationSettings;
-import org.vaadin.addon.jquerywrapper.client.ui.Callbacks;
-import org.vaadin.addon.jquerywrapper.client.ui.JQueryCallback;
-import org.vaadin.addon.jquerywrapper.client.ui.JQueryWrapper;
+import info.magnolia.ui.widget.jquerywrapper.client.ui.AnimationSettings;
+import info.magnolia.ui.widget.jquerywrapper.client.ui.Callbacks;
+import info.magnolia.ui.widget.jquerywrapper.client.ui.JQueryCallback;
+import info.magnolia.ui.widget.jquerywrapper.client.ui.JQueryWrapper;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;

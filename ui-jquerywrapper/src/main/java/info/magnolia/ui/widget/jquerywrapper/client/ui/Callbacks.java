@@ -31,22 +31,44 @@
  * intact.
  *
  */
-package org.vaadin.addon.jquerywrapper.client.ui;
+package info.magnolia.ui.widget.jquerywrapper.client.ui;
 
 import com.google.gwt.core.client.JavaScriptObject;
 
 /**
- * JS wrapper around JQuery callback.
+ * Wrapper for JQuery Callbacks API.
  * @author apchelintcev
  *
  */
-final class JQueryFunction extends JavaScriptObject {
+public class Callbacks extends JavaScriptObject {
     
-    protected JQueryFunction() {}
+    protected Callbacks() {}
     
-    public final static native JQueryFunction create(final JQueryCallback command) /*-{
-        return function(jQueryWrapper) {
-            command.@org.vaadin.addon.jquerywrapper.client.ui.JQueryCallback::execute(Lorg/vaadin/addon/jquerywrapper/client/ui/JQueryWrapper;)(jQueryWrapper);        
+    public static Callbacks create(final JQueryCallback... callbacks) {
+        final Callbacks result = create();
+        for (final JQueryCallback callback : callbacks) {
+            result.add(callback);
         }
-    }-*/;  
-};
+        return result;
+    }
+    
+    public static native Callbacks create() /*-{
+        return $wnd.jQuery.Callbacks();
+    }-*/;
+    
+    public final void add(final JQueryCallback callback) {
+        doAdd(JQueryFunction.create(callback));
+    }
+    
+    public final void remove(final JQueryCallback callback) {
+        doRemove(JQueryFunction.create(callback));
+    }
+    
+    private final native void doRemove(final JQueryFunction callback) /*-{
+        this.remove(callback);
+    }-*/;
+
+    private final native void doAdd(final JQueryFunction callback) /*-{
+        this.add(callback);   
+    }-*/;
+}

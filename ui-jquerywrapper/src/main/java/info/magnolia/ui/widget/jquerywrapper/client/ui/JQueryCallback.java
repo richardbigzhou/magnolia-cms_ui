@@ -31,32 +31,13 @@
  * intact.
  *
  */
-package org.vaadin.addon.jquerywrapper.client.ui;
-
-import com.google.gwt.core.client.JavaScriptObject;
+package info.magnolia.ui.widget.jquerywrapper.client.ui;
 
 /**
- * Css hook JQuery API wrapper.
- * @author apchelintcev
+ * Java callback for JQuery events/animations.
+ * @author p4elkin
  *
  */
-public class CssHooks extends JavaScriptObject {
-
-    protected  CssHooks() {
-    }
-    
-    public native static final CssHooks create() /*-{
-        return $wnd.jQuery.cssHooks;
-    }-*/;
-    
-    public final native void addHook(final String property, CssHookHandler handler) /*-{
-        this.property = {
-            get: function(elem, computed, extra) {
-                handler.@org.vaadin.addon.jquerywrapper.client.ui.CssHookHandler::get(Lcom/google/gwt/user/client/Element;Ljava/lang/String;)(elem, computed);
-            },
-            set: function(elem, value) {
-                handler.@org.vaadin.addon.jquerywrapper.client.ui.CssHookHandler::set(Lcom/google/gwt/user/client/Element;Ljava/lang/String;)(elem, value);
-            } 
-        }
-    }-*/;
+public interface JQueryCallback {
+    public void execute(final JQueryWrapper query);
 }

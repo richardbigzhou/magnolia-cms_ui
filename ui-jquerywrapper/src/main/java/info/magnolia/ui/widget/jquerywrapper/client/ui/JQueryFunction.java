@@ -31,13 +31,22 @@
  * intact.
  *
  */
-package org.vaadin.addon.jquerywrapper.client.ui;
+package info.magnolia.ui.widget.jquerywrapper.client.ui;
+
+import com.google.gwt.core.client.JavaScriptObject;
 
 /**
- * Java callback for JQuery events/animations.
- * @author p4elkin
+ * JS wrapper around JQuery callback.
+ * @author apchelintcev
  *
  */
-public interface JQueryCallback {
-    public void execute(final JQueryWrapper query);
-}
+final class JQueryFunction extends JavaScriptObject {
+    
+    protected JQueryFunction() {}
+    
+    public final static native JQueryFunction create(final JQueryCallback command) /*-{
+        return function(jQueryWrapper) {
+            command.@info.magnolia.ui.widget.jquerywrapper.client.ui.JQueryCallback::execute(Linfo/magnolia/ui/widget/jquerywrapper/client/ui/JQueryWrapper;)(jQueryWrapper);
+        }
+    }-*/;  
+};

@@ -2,6 +2,6 @@
   <!-- WS Compiler: manually edited -->
   <inherits name="com.vaadin.terminal.gwt.DefaultWidgetSet"/>
   <inherits name="org.vaadin.rpc.WidgetRPC"/>
-  <inherits name="org.vaadin.addon.jquerywrapper.JquerywrapperWidgetset"/>
+  <inherits name="info.magnolia.ui.widget.jquerywrapper.JquerywrapperWidgetset"/>
   <stylesheet src="dialog/styles.css"/>
 </module>

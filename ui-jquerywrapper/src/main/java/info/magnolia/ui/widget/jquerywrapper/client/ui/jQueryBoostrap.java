@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package org.vaadin.addon.jquerywrapper.client.ui;
+package info.magnolia.ui.widget.jquerywrapper.client.ui;
 
 /**
  * Calls JQuery noConflict on load.

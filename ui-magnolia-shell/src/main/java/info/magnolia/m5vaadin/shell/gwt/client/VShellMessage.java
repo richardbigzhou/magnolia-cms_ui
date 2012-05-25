@@ -33,9 +33,9 @@
  */
 package info.magnolia.m5vaadin.shell.gwt.client;
 
-import org.vaadin.addon.jquerywrapper.client.ui.Callbacks;
-import org.vaadin.addon.jquerywrapper.client.ui.JQueryWrapper;
-import org.vaadin.addon.jquerywrapper.client.ui.JQueryCallback;
+import info.magnolia.ui.widget.jquerywrapper.client.ui.Callbacks;
+import info.magnolia.ui.widget.jquerywrapper.client.ui.JQueryWrapper;
+import info.magnolia.ui.widget.jquerywrapper.client.ui.JQueryCallback;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Display;
