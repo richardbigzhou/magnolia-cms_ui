@@ -31,26 +31,45 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
+package info.magnolia.ui.admincentral.app.dialog;
 
-import info.magnolia.ui.admincentral.app.AbstractAppActivity;
-
-import javax.inject.Inject;
+import info.magnolia.ui.framework.place.Place;
+import info.magnolia.ui.framework.place.PlaceTokenizer;
+import info.magnolia.ui.framework.place.Prefix;
 
 /**
- * Activity for the Dummy app.
+ * Place for the Pages app.
  *
  * @version $Id$
  */
-public class DummyActivity extends AbstractAppActivity<DummyPresenter> implements DummyPresenter {
+@Prefix("dialog")
+public class DialogTestPlace extends Place {
 
-    @Inject
-    public DummyActivity(DummyView view) {
-        super(view);
+    /**
+     * Tokenizer for PagesPlace.
+     *
+     * @version $Id$
+     */
+    public static class Tokenizer implements PlaceTokenizer<DialogTestPlace> {
+
+        @Override
+        public DialogTestPlace getPlace(String token) {
+            return new DialogTestPlace(token);
+        }
+
+        @Override
+        public String getToken(DialogTestPlace place) {
+            return place.getPath();
+        }
     }
 
-    @Override
-    public DummyPresenter getReference() {
-        return this;
+    private String path;
+
+    public DialogTestPlace(String path) {
+        this.path = path;
+    }
+
+    public String getPath() {
+        return path;
     }
 }

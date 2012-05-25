@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.app.dummy;
 
-import info.magnolia.m5admincentral.app.AbstractAppView;
+import info.magnolia.ui.admincentral.app.AbstractAppView;
 
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;

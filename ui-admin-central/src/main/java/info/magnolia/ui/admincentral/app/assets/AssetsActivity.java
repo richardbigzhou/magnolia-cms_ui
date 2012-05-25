@@ -31,26 +31,26 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
+package info.magnolia.ui.admincentral.app.assets;
 
 import info.magnolia.ui.admincentral.app.AbstractAppActivity;
 
 import javax.inject.Inject;
 
 /**
- * Activity for the Dummy app.
+ * Activity for the Assets app.
  *
  * @version $Id$
  */
-public class DummyActivity extends AbstractAppActivity<DummyPresenter> implements DummyPresenter {
+public class AssetsActivity extends AbstractAppActivity<AssetsAppPresenter> implements AssetsAppPresenter {
 
     @Inject
-    public DummyActivity(DummyView view) {
+    public AssetsActivity(AssetsView view) {
         super(view);
     }
 
     @Override
-    public DummyPresenter getReference() {
+    public AssetsAppPresenter getReference() {
         return this;
     }
 }

@@ -31,26 +31,24 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
+package info.magnolia.ui.admincentral.framework;
 
-import info.magnolia.ui.admincentral.app.AbstractAppActivity;
 
-import javax.inject.Inject;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Activity for the Dummy app.
+ * Annotation that marks Activity method meaning it can handle the Place state 
+ * on Activity update. The signature of method should also contain one parameter 
+ * of the handled Place type.
+ * @author apchelintcev
  *
- * @version $Id$
  */
-public class DummyActivity extends AbstractAppActivity<DummyPresenter> implements DummyPresenter {
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface PlaceStateHandler {
 
-    @Inject
-    public DummyActivity(DummyView view) {
-        super(view);
-    }
-
-    @Override
-    public DummyPresenter getReference() {
-        return this;
-    }
 }

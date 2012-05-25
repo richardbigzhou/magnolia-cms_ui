@@ -31,26 +31,41 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
+package info.magnolia.ui.admincentral.app.dialog;
 
-import info.magnolia.ui.admincentral.app.AbstractAppActivity;
+import info.magnolia.ui.admincentral.app.AbstractAppView;
 
-import javax.inject.Inject;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.HorizontalLayout;
 
 /**
- * Activity for the Dummy app.
+ * View implementation for the Pages app.
  *
  * @version $Id$
  */
-public class DummyActivity extends AbstractAppActivity<DummyPresenter> implements DummyPresenter {
+@SuppressWarnings("serial")
+public class DialogTestViewImpl extends AbstractAppView<DialogTestPresenter> implements DialogTestView {
 
-    @Inject
-    public DummyActivity(DummyView view) {
-        super(view);
+    private HorizontalLayout content = new HorizontalLayout();
+
+    public DialogTestViewImpl() {
+        Button dialog = new Button("Open Dialog", new DialogListener());
+        content.addComponent(dialog);
+        addTab(content, "Dialog");
     }
 
-    @Override
-    public DummyPresenter getReference() {
-        return this;
+    /**
+     * Handler of Dialog events. 
+     *
+     */
+    class DialogListener implements ClickListener {
+
+        @Override
+        public void buttonClick(ClickEvent event) {
+            getPresenter().openDialog();
+        }
+
     }
 }

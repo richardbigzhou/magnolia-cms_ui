@@ -31,26 +31,16 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
-
-import info.magnolia.ui.admincentral.app.AbstractAppActivity;
-
-import javax.inject.Inject;
+package info.magnolia.ui.admincentral.shellapp.favorites;
 
 /**
- * Activity for the Dummy app.
+ * Represents a favorite.
  *
  * @version $Id$
  */
-public class DummyActivity extends AbstractAppActivity<DummyPresenter> implements DummyPresenter {
+public class Favorite {
 
-    @Inject
-    public DummyActivity(DummyView view) {
-        super(view);
-    }
-
-    @Override
-    public DummyPresenter getReference() {
-        return this;
-    }
+    private String id;
+    private String label;
+    private String location;
 }

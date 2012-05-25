@@ -4,13 +4,13 @@
   <name>ui-admin-central</name>
   <displayName>Magnolia Velvet Admin Central</displayName>
   <description>New Magnolia Administration GUI</description>
-  <versionHandler>info.magnolia.m5admincentral.module.AdminCentralModuleVersionHandler</versionHandler>
+  <versionHandler>info.magnolia.ui.admincentral.module.AdminCentralModuleVersionHandler</versionHandler>
   <version>${project.version}</version>
 
   <components>
     <id>main</id>
     <component>
-      <type>info.magnolia.m5admincentral.app.AppRegistry</type>
+      <type>info.magnolia.ui.admincentral.app.AppRegistry</type>
       <workspace>config</workspace>
       <path>/modules/ui-admin-central/apps/registry</path>
       <observed>true</observed>
@@ -29,64 +29,64 @@
       <implementation>info.magnolia.ui.framework.place.PlaceController</implementation>
     </component>
     <component>
-      <type>info.magnolia.m5admincentral.app.pages.PagesApp</type>
-      <implementation>info.magnolia.m5admincentral.app.pages.PagesApp</implementation>
+      <type>info.magnolia.ui.admincentral.app.pages.PagesApp</type>
+      <implementation>info.magnolia.ui.admincentral.app.pages.PagesApp</implementation>
     </component>
     <component>
-      <type>info.magnolia.m5admincentral.app.assets.AssetsApp</type>
-      <implementation>info.magnolia.m5admincentral.app.assets.AssetsApp</implementation>
+      <type>info.magnolia.ui.admincentral.app.assets.AssetsApp</type>
+      <implementation>info.magnolia.ui.admincentral.app.assets.AssetsApp</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.framework.shell.Shell</type>
-      <implementation>info.magnolia.m5admincentral.MagnoliaShell</implementation>
+      <implementation>info.magnolia.ui.admincentral.MagnoliaShell</implementation>
     </component>
     <component>
-      <type>info.magnolia.m5admincentral.app.AppController</type>
-      <implementation>info.magnolia.m5admincentral.app.AppControllerImpl</implementation>
+      <type>info.magnolia.ui.admincentral.app.AppController</type>
+      <implementation>info.magnolia.ui.admincentral.app.AppControllerImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.m5admincentral.shellapp.applauncher.AppLauncherView</type>
-      <implementation>info.magnolia.m5admincentral.shellapp.applauncher.AppLauncherViewImpl</implementation>
+      <type>info.magnolia.ui.admincentral.shellapp.applauncher.AppLauncherView</type>
+      <implementation>info.magnolia.ui.admincentral.shellapp.applauncher.AppLauncherViewImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.m5admincentral.shellapp.pulse.PulseView</type>
-      <implementation>info.magnolia.m5admincentral.shellapp.pulse.PulseViewImpl</implementation>
+      <type>info.magnolia.ui.admincentral.shellapp.pulse.PulseView</type>
+      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.PulseViewImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.m5admincentral.shellapp.favorites.FavoritesView</type>
-      <implementation>info.magnolia.m5admincentral.shellapp.favorites.FavoritesViewImpl</implementation>
+      <type>info.magnolia.ui.admincentral.shellapp.favorites.FavoritesView</type>
+      <implementation>info.magnolia.ui.admincentral.shellapp.favorites.FavoritesViewImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.m5admincentral.app.pages.PagesView</type>
-      <implementation>info.magnolia.m5admincentral.app.pages.PagesViewImpl</implementation>
+      <type>info.magnolia.ui.admincentral.app.pages.PagesView</type>
+      <implementation>info.magnolia.ui.admincentral.app.pages.PagesViewImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.m5admincentral.app.dialog.DialogTestView</type>
-      <implementation>info.magnolia.m5admincentral.app.dialog.DialogTestViewImpl</implementation>
+      <type>info.magnolia.ui.admincentral.app.dialog.DialogTestView</type>
+      <implementation>info.magnolia.ui.admincentral.app.dialog.DialogTestViewImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.m5admincentral.MagnoliaShellView</type>
-      <implementation>info.magnolia.m5admincentral.MagnoliaShellViewImpl</implementation>
+      <type>info.magnolia.ui.admincentral.MagnoliaShellView</type>
+      <implementation>info.magnolia.ui.admincentral.MagnoliaShellViewImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.m5admincentral.MagnoliaShellPresenter</type>
-      <implementation>info.magnolia.m5admincentral.MagnoliaShellPresenter</implementation>
+      <type>info.magnolia.ui.admincentral.MagnoliaShellPresenter</type>
+      <implementation>info.magnolia.ui.admincentral.MagnoliaShellPresenter</implementation>
     </component>
     <component>
-      <type>info.magnolia.m5admincentral.app.assets.AssetsView</type>
-      <implementation>info.magnolia.m5admincentral.app.assets.AssetsViewImpl</implementation>
+      <type>info.magnolia.ui.admincentral.app.assets.AssetsView</type>
+      <implementation>info.magnolia.ui.admincentral.app.assets.AssetsViewImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.m5admincentral.dialog.registry.DummyDialogDefinitionManager</type>
-      <implementation>info.magnolia.m5admincentral.dialog.registry.DummyDialogDefinitionManager</implementation>
+      <type>info.magnolia.ui.admincentral.dialog.registry.DummyDialogDefinitionManager</type>
+      <implementation>info.magnolia.ui.admincentral.dialog.registry.DummyDialogDefinitionManager</implementation>
     </component>
     <component>
-      <type>info.magnolia.m5admincentral.dialog.DialogPresenterFactory</type>
-      <implementation>info.magnolia.m5admincentral.dialog.DialogPresenterFactoryImpl</implementation>
+      <type>info.magnolia.ui.admincentral.dialog.DialogPresenterFactory</type>
+      <implementation>info.magnolia.ui.admincentral.dialog.DialogPresenterFactoryImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.m5admincentral.dialog.DialogView</type>
-      <implementation>info.magnolia.m5admincentral.dialog.DialogViewImpl</implementation>
+      <type>info.magnolia.ui.admincentral.dialog.DialogView</type>
+      <implementation>info.magnolia.ui.admincentral.dialog.DialogViewImpl</implementation>
     </component>
 
   </components>
@@ -140,7 +140,7 @@
       <params>
         <param>
           <name>application</name>
-          <value>info.magnolia.m5admincentral.M5AdminCentralApplication</value>
+          <value>info.magnolia.ui.admincentral.M5AdminCentralApplication</value>
         </param>
         <param>
           <name>widgetset</name>

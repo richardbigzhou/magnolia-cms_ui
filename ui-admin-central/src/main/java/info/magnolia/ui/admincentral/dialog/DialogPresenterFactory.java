@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,26 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
-
-import info.magnolia.ui.admincentral.app.AbstractAppActivity;
-
-import javax.inject.Inject;
+package info.magnolia.ui.admincentral.dialog;
 
 /**
- * Activity for the Dummy app.
+ * Creates {@link DialogPresenter} instances that are use to display a dialog.
  *
  * @version $Id$
  */
-public class DummyActivity extends AbstractAppActivity<DummyPresenter> implements DummyPresenter {
+public interface DialogPresenterFactory {
 
-    @Inject
-    public DummyActivity(DummyView view) {
-        super(view);
-    }
-
-    @Override
-    public DummyPresenter getReference() {
-        return this;
-    }
+    DialogPresenter createDialog(String dialogName);
 }

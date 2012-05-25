@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,26 +31,47 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
+package info.magnolia.ui.admincentral.dialog.builder;
 
-import info.magnolia.ui.admincentral.app.AbstractAppActivity;
+import info.magnolia.ui.admincentral.dialog.DialogView;
+import info.magnolia.ui.model.dialog.definition.DialogDefinition;
+import info.magnolia.ui.model.dialog.definition.FieldDefinition;
+import info.magnolia.ui.model.dialog.definition.TabDefinition;
 
-import javax.inject.Inject;
+import com.google.inject.Inject;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.TextArea;
 
 /**
- * Activity for the Dummy app.
+ * DialogBuilder.
  *
- * @version $Id$
+ * @author ejervidalo
  */
-public class DummyActivity extends AbstractAppActivity<DummyPresenter> implements DummyPresenter {
+public class DialogBuilder {
 
     @Inject
-    public DummyActivity(DummyView view) {
-        super(view);
-    }
+    DialogView view;
+    /**
+     * @param dialogDefinition
+     * @param dialogPresenter
+     * @return
+     */
+    public DialogView build(DialogDefinition dialogDefinition, DialogView.Presenter dialogPresenter) {
 
-    @Override
-    public DummyPresenter getReference() {
-        return this;
+        view.setPresenter(dialogPresenter);
+
+        for (TabDefinition tabDefinition : dialogDefinition.getTabs()) {
+            String tabName = tabDefinition.getName();
+            Panel inputFields = new Panel();
+
+            for (FieldDefinition field : tabDefinition.getFields()) {
+                inputFields.addComponent(new TextArea());
+            }
+
+            view.addTab(inputFields, tabName);
+
+        }
+        return view;
+
     }
 }

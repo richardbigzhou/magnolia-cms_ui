@@ -31,26 +31,51 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
+package info.magnolia.ui.admincentral.shellapp.applauncher;
 
-import info.magnolia.ui.admincentral.app.AbstractAppActivity;
+import info.magnolia.ui.admincentral.app.AppCategory;
+import info.magnolia.ui.admincentral.app.AppController;
+import info.magnolia.ui.admincentral.app.AppDescriptor;
+import info.magnolia.ui.admincentral.app.AppRegistry;
+import info.magnolia.ui.framework.activity.AbstractActivity;
+import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.view.ViewPort;
 
 import javax.inject.Inject;
 
 /**
- * Activity for the Dummy app.
- *
+ * Activity for the app launcher.
+ * 
  * @version $Id$
  */
-public class DummyActivity extends AbstractAppActivity<DummyPresenter> implements DummyPresenter {
+public class AppLauncherActivity extends AbstractActivity implements AppLauncherView.Presenter {
+
+    private AppLauncherView view;
+
+    private AppController appController;
+
+    private AppRegistry appRegistry;
 
     @Inject
-    public DummyActivity(DummyView view) {
-        super(view);
+    public AppLauncherActivity(AppLauncherView view, AppController appController, AppRegistry appRegistry) {
+        this.view = view;
+        this.appController = appController;
+        this.appRegistry = appRegistry;
+        for (AppCategory category : appRegistry.getCategories()) {
+            for (AppDescriptor descriptor : category.getApps()) {
+                view.registerApp(descriptor, category);
+            }
+        }
     }
 
     @Override
-    public DummyPresenter getReference() {
-        return this;
+    public void onAppInvoked(String name) {
+        appController.startIfNotAlreadyRunningThenFocus(name);
+    }
+
+    @Override
+    public void start(ViewPort viewPort, EventBus eventBus) {
+        view.setPresenter(this);
+        viewPort.setView(view);
     }
 }

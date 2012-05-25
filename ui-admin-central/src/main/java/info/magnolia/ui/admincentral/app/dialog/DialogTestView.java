@@ -31,26 +31,16 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
+package info.magnolia.ui.admincentral.app.dialog;
 
-import info.magnolia.ui.admincentral.app.AbstractAppActivity;
-
-import javax.inject.Inject;
+import info.magnolia.ui.admincentral.app.AppView;
 
 /**
- * Activity for the Dummy app.
+ * View for the Pages app.
  *
  * @version $Id$
  */
-public class DummyActivity extends AbstractAppActivity<DummyPresenter> implements DummyPresenter {
+public interface DialogTestView extends AppView<DialogTestPresenter> {
 
-    @Inject
-    public DummyActivity(DummyView view) {
-        super(view);
-    }
 
-    @Override
-    public DummyPresenter getReference() {
-        return this;
-    }
 }

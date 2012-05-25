@@ -31,26 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
-
-import info.magnolia.ui.admincentral.app.AbstractAppActivity;
-
-import javax.inject.Inject;
+package info.magnolia.ui.admincentral.shellapp.pulse;
 
 /**
- * Activity for the Dummy app.
+ * An entry in the activity stream for a user.
  *
  * @version $Id$
  */
-public class DummyActivity extends AbstractAppActivity<DummyPresenter> implements DummyPresenter {
+public class ActivityStreamEntry {
 
-    @Inject
-    public DummyActivity(DummyView view) {
-        super(view);
-    }
-
-    @Override
-    public DummyPresenter getReference() {
-        return this;
-    }
+    private String id;
+    private long timestamp;
+    private MessageType type;
+    private String label;
+    private String message;
 }

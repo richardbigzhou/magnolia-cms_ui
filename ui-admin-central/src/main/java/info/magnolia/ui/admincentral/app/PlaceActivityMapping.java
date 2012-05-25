@@ -31,26 +31,35 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
+package info.magnolia.ui.admincentral.app;
 
-import info.magnolia.ui.admincentral.app.AbstractAppActivity;
-
-import javax.inject.Inject;
+import info.magnolia.ui.framework.activity.Activity;
+import info.magnolia.ui.framework.place.Place;
 
 /**
- * Activity for the Dummy app.
+ * Mapping for associating a place with an activity.
  *
  * @version $Id$
  */
-public class DummyActivity extends AbstractAppActivity<DummyPresenter> implements DummyPresenter {
+public class PlaceActivityMapping {
 
-    @Inject
-    public DummyActivity(DummyView view) {
-        super(view);
+    private Class<? extends Place> place;
+    
+    private Class<? extends Activity> activity;
+
+    public Class<? extends Place> getPlace() {
+        return place;
     }
 
-    @Override
-    public DummyPresenter getReference() {
-        return this;
+    public void setPlace(Class<? extends Place> place) {
+        this.place = place;
+    }
+
+    public Class<? extends Activity> getActivity() {
+        return activity;
+    }
+
+    public void setActivity(Class<? extends Activity> activity) {
+        this.activity = activity;
     }
 }

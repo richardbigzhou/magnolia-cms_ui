@@ -31,26 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
-
-import info.magnolia.ui.admincentral.app.AbstractAppActivity;
-
-import javax.inject.Inject;
+package info.magnolia.ui.admincentral.shellapp.pulse;
 
 /**
- * Activity for the Dummy app.
+ * The type of message.
  *
  * @version $Id$
  */
-public class DummyActivity extends AbstractAppActivity<DummyPresenter> implements DummyPresenter {
+public enum MessageType {
 
-    @Inject
-    public DummyActivity(DummyView view) {
-        super(view);
-    }
-
-    @Override
-    public DummyPresenter getReference() {
-        return this;
-    }
+    ERROR, WARNING, INFO
 }

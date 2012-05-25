@@ -31,26 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
+package info.magnolia.ui.admincentral.app;
 
-import info.magnolia.ui.admincentral.app.AbstractAppActivity;
-
-import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Activity for the Dummy app.
+ * Defines a category of apps in the app launcher and the apps that belong to it.
  *
  * @version $Id$
  */
-public class DummyActivity extends AbstractAppActivity<DummyPresenter> implements DummyPresenter {
+public class AppCategory {
 
-    @Inject
-    public DummyActivity(DummyView view) {
-        super(view);
+    private String label;
+    private List<AppDescriptor> apps = new ArrayList<AppDescriptor>();
+
+    public String getLabel() {
+        return label;
     }
 
-    @Override
-    public DummyPresenter getReference() {
-        return this;
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public List<AppDescriptor> getApps() {
+        return apps;
+    }
+
+    public void addApp(AppDescriptor descriptor) {
+        apps.add(descriptor);
     }
 }

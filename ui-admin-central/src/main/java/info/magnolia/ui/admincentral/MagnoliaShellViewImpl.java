@@ -31,26 +31,46 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
+package info.magnolia.ui.admincentral;
 
-import info.magnolia.ui.admincentral.app.AbstractAppActivity;
+import info.magnolia.ui.widget.magnoliashell.IsVaadinComponent;
 
-import javax.inject.Inject;
+import com.google.inject.Inject;
+import com.vaadin.ui.Component;
 
 /**
- * Activity for the Dummy app.
- *
+ * Implementation of MagnoliaShellView.
  * @version $Id$
+ *
  */
-public class DummyActivity extends AbstractAppActivity<DummyPresenter> implements DummyPresenter {
+@SuppressWarnings("serial")
+public class MagnoliaShellViewImpl implements MagnoliaShellView, IsVaadinComponent{
+
+    private Presenter presenter;
+
+    private MagnoliaShell shell;
 
     @Inject
-    public DummyActivity(DummyView view) {
-        super(view);
+    public MagnoliaShellViewImpl(MagnoliaShell shell) {
+        this.shell = shell;
     }
 
     @Override
-    public DummyPresenter getReference() {
-        return this;
+    public MagnoliaShell getRoot() {
+        return shell;
+    }
+
+    @Override
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    public Presenter getPresenter() {
+        return presenter;
+    }
+
+    @Override
+    public Component asVaadinComponent() {
+        return getRoot();
     }
 }

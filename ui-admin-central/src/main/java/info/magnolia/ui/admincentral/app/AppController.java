@@ -31,26 +31,22 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
-
-import info.magnolia.ui.admincentral.app.AbstractAppActivity;
-
-import javax.inject.Inject;
+package info.magnolia.ui.admincentral.app;
 
 /**
- * Activity for the Dummy app.
+ * Manages apps running for a single user.
  *
  * @version $Id$
  */
-public class DummyActivity extends AbstractAppActivity<DummyPresenter> implements DummyPresenter {
+public interface AppController {
+    
+    AppDescriptor getAppDescriptor(final AppLifecycle app);
+    
+    void startIfNotAlreadyRunning(String name);
 
-    @Inject
-    public DummyActivity(DummyView view) {
-        super(view);
-    }
+    void startIfNotAlreadyRunningThenFocus(String name);
 
-    @Override
-    public DummyPresenter getReference() {
-        return this;
-    }
+    void stopApplication(String name);
+    
+    void stopCurrentApplication();
 }

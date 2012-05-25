@@ -31,26 +31,41 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
+package info.magnolia.ui.admincentral.app.dialog;
 
-import info.magnolia.ui.admincentral.app.AbstractAppActivity;
 
-import javax.inject.Inject;
+import info.magnolia.ui.admincentral.app.AppLifecycle;
+import info.magnolia.ui.framework.place.PlaceController;
+
+import com.google.inject.Inject;
 
 /**
- * Activity for the Dummy app.
+ * Pages app.
  *
  * @version $Id$
  */
-public class DummyActivity extends AbstractAppActivity<DummyPresenter> implements DummyPresenter {
+public class DialogTestApp implements AppLifecycle {
+
+    private PlaceController placeController;
 
     @Inject
-    public DummyActivity(DummyView view) {
-        super(view);
+    public DialogTestApp(PlaceController placeController) {
+       this.placeController = placeController;
     }
 
     @Override
-    public DummyPresenter getReference() {
-        return this;
+    public void start() {
+        System.out.println("DialogApp started");
+    }
+
+    @Override
+    public void focus() {
+        placeController.goTo(new DialogTestPlace("foobar"));
+        System.out.println("DialogApp focused");
+    }
+
+    @Override
+    public void stop() {
+        System.out.println("DialogApp stopped");
     }
 }

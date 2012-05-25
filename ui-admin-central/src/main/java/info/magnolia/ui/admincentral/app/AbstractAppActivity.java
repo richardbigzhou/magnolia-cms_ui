@@ -31,26 +31,42 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
+package info.magnolia.ui.admincentral.app;
 
-import info.magnolia.ui.admincentral.app.AbstractAppActivity;
-
-import javax.inject.Inject;
+import info.magnolia.ui.framework.activity.AbstractActivity;
+import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.view.ViewPort;
 
 /**
- * Activity for the Dummy app.
- *
- * @version $Id$
+ * Abstract presenter for app views.
+ * 
+ * @author p4elkin
+ * 
+ * @param <T>
  */
-public class DummyActivity extends AbstractAppActivity<DummyPresenter> implements DummyPresenter {
+public abstract class AbstractAppActivity<T extends AppPresenter<T>> extends AbstractActivity implements AppPresenter<T> {
 
-    @Inject
-    public DummyActivity(DummyView view) {
-        super(view);
+    private AppView<T> view;
+
+    private String name;
+
+    public AbstractAppActivity(AppView<T> view) {
+        this.view = view;
     }
 
     @Override
-    public DummyPresenter getReference() {
-        return this;
+    public void start(ViewPort viewPort, EventBus eventBus) {
+        view.setPresenter(getReference());
+        viewPort.setView(view);
     }
+
+    @Override
+    public String getAppName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
 }

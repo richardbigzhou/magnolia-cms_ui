@@ -31,26 +31,41 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
+package info.magnolia.ui.admincentral.framework;
 
-import info.magnolia.ui.admincentral.app.AbstractAppActivity;
-
-import javax.inject.Inject;
+import info.magnolia.ui.admincentral.app.AppLifecycleEvent;
+import info.magnolia.ui.admincentral.app.AppLifecycleEventHandler;
+import info.magnolia.ui.framework.activity.ActivityManager;
+import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.place.PlaceChangeRequestEvent;
 
 /**
- * Activity for the Dummy app.
- *
- * @version $Id$
+ * Activity manager responsible for the app management.
+ * 
+ * @author p4elkin
+ * 
  */
-public class DummyActivity extends AbstractAppActivity<DummyPresenter> implements DummyPresenter {
+public class AppActivityManager extends ActivityManager {
 
-    @Inject
-    public DummyActivity(DummyView view) {
-        super(view);
+    public AppActivityManager(final AppActivityMapper mapper, final EventBus eventBus) {
+        super(mapper, eventBus);
+        eventBus.addHandler(AppLifecycleEvent.class, new AppLifecycleEventHandler.Adapter() {
+            
+            @Override
+            public void onStartApp(AppLifecycleEvent event) {
+                mapper.registerAppStart(event.getApp());
+            }
+            
+            @Override
+            public void onStopApp(AppLifecycleEvent event) {
+                mapper.uregisterApp(event.getApp());
+            }
+        });
     }
 
     @Override
-    public DummyPresenter getReference() {
-        return this;
+    public void onPlaceChangeRequest(PlaceChangeRequestEvent event) {
+        super.onPlaceChangeRequest(event);
     }
+
 }

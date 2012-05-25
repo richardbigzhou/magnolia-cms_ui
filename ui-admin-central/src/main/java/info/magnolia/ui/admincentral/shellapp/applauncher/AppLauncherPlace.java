@@ -31,26 +31,45 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
+package info.magnolia.ui.admincentral.shellapp.applauncher;
 
-import info.magnolia.ui.admincentral.app.AbstractAppActivity;
-
-import javax.inject.Inject;
+import info.magnolia.ui.framework.place.Place;
+import info.magnolia.ui.framework.place.PlaceTokenizer;
+import info.magnolia.ui.framework.place.Prefix;
 
 /**
- * Activity for the Dummy app.
+ * Place for the app launcher.
  *
  * @version $Id$
  */
-public class DummyActivity extends AbstractAppActivity<DummyPresenter> implements DummyPresenter {
+@Prefix("applauncher")
+public class AppLauncherPlace extends Place {
 
-    @Inject
-    public DummyActivity(DummyView view) {
-        super(view);
+    /**
+     * Tokenizer for AppLauncherPlace.
+     *
+     * @version $Id$
+     */
+    public static class Tokenizer implements PlaceTokenizer<AppLauncherPlace> {
+
+        @Override
+        public AppLauncherPlace getPlace(String token) {
+            return new AppLauncherPlace(token);
+        }
+
+        @Override
+        public String getToken(AppLauncherPlace place) {
+            return place.getPath();
+        }
     }
 
-    @Override
-    public DummyPresenter getReference() {
-        return this;
+    private String path;
+
+    public AppLauncherPlace(String path) {
+        this.path = path;
+    }
+
+    public String getPath() {
+        return path;
     }
 }

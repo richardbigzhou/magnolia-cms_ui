@@ -31,26 +31,25 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
+package info.magnolia.ui.admincentral.app;
 
-import info.magnolia.ui.admincentral.app.AbstractAppActivity;
+import info.magnolia.ui.widget.magnoliashell.ShellView;
 
-import javax.inject.Inject;
+import com.vaadin.ui.ComponentContainer;
 
 /**
- * Activity for the Dummy app.
+ * Gen app view.
+ * @author p4elkin
  *
- * @version $Id$
+ * @param <T>
  */
-public class DummyActivity extends AbstractAppActivity<DummyPresenter> implements DummyPresenter {
+public interface AppView<T extends AppPresenter<T>> extends ShellView {
 
-    @Inject
-    public DummyActivity(DummyView view) {
-        super(view);
-    }
-
-    @Override
-    public DummyPresenter getReference() {
-        return this;
-    }
+    void addTab(final ComponentContainer cc, String caption);
+    
+    void closeTab(final ComponentContainer cc);
+    
+    void setPresenter(final T presenter);
+    
+    T getPresenter();
 }

@@ -31,26 +31,54 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
+package info.magnolia.ui.admincentral.app;
 
-import info.magnolia.ui.admincentral.app.AbstractAppActivity;
+import info.magnolia.ui.framework.event.Event;
 
-import javax.inject.Inject;
 
 /**
- * Activity for the Dummy app.
+ * App Event used to notify a Start or Stop event.
  *
+ * @author erichechinger
  * @version $Id$
+ *
  */
-public class DummyActivity extends AbstractAppActivity<DummyPresenter> implements DummyPresenter {
+public class AppLifecycleEvent implements Event<AppLifecycleEventHandler> {
 
-    @Inject
-    public DummyActivity(DummyView view) {
-        super(view);
+    private final AppLifecycle app;
+
+    private final AppEventType eventType;
+
+    public AppLifecycleEvent(AppLifecycle app, AppEventType eventType) {
+        System.out.println("AppEvent: create Event for app type: " + app.getClass().getName() + " and type" + eventType);
+        this.app = app;
+        this.eventType = eventType;
+    }
+
+    public AppLifecycle getApp() {
+        return app;
+    }
+
+    public AppEventType getEventType() {
+        return eventType;
     }
 
     @Override
-    public DummyPresenter getReference() {
-        return this;
+    public void dispatch(AppLifecycleEventHandler handler) {
+        if (eventType == null) {
+            return;
+        }
+
+        switch (eventType) {
+            case START_EVENT :
+                handler.onStartApp(this);
+                break;
+            case FOCUS_EVENT :
+                handler.onAppFocus(this);
+                break;
+            case STOP_EVENT :
+                handler.onStopApp(this);
+                break;
+        }
     }
 }

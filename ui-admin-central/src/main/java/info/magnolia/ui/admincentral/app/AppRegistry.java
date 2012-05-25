@@ -31,26 +31,25 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
+package info.magnolia.ui.admincentral.app;
 
-import info.magnolia.ui.admincentral.app.AbstractAppActivity;
-
-import javax.inject.Inject;
+import java.util.Collection;
 
 /**
- * Activity for the Dummy app.
+ * Registry of available apps.
  *
  * @version $Id$
  */
-public class DummyActivity extends AbstractAppActivity<DummyPresenter> implements DummyPresenter {
+public interface AppRegistry {
 
-    @Inject
-    public DummyActivity(DummyView view) {
-        super(view);
-    }
+    Collection<AppCategory> getCategories();
 
-    @Override
-    public DummyPresenter getReference() {
-        return this;
-    }
+    /**
+     * Returns the AppDescriptor for a given name.
+     *
+     * @throws IllegalArgumentException: If key don't exist.
+     */
+    AppDescriptor getAppDescriptor(String name);
+
+    boolean isAppDescriptionRegistered(String name);
 }

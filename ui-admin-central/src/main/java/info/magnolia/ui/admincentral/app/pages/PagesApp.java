@@ -31,26 +31,41 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
+package info.magnolia.ui.admincentral.app.pages;
 
-import info.magnolia.ui.admincentral.app.AbstractAppActivity;
 
-import javax.inject.Inject;
+import info.magnolia.ui.admincentral.app.AppLifecycle;
+import info.magnolia.ui.framework.place.PlaceController;
+
+import com.google.inject.Inject;
 
 /**
- * Activity for the Dummy app.
+ * Pages app.
  *
  * @version $Id$
  */
-public class DummyActivity extends AbstractAppActivity<DummyPresenter> implements DummyPresenter {
+public class PagesApp implements AppLifecycle {
+
+    private PlaceController placeController;
 
     @Inject
-    public DummyActivity(DummyView view) {
-        super(view);
+    public PagesApp(PlaceController placeController) {
+        this.placeController = placeController;
     }
 
     @Override
-    public DummyPresenter getReference() {
-        return this;
+    public void start() {
+        System.out.println("PagesApp started");
+    }
+
+    @Override
+    public void focus() {
+        placeController.goTo(new PagesPlace("foobar"));
+        System.out.println("PagesApp focused");
+    }
+
+    @Override
+    public void stop() {
+        System.out.println("PagesApp stopped");
     }
 }

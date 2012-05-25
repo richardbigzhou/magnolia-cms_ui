@@ -40,7 +40,7 @@
       <sv:value>51777bd0-c3c1-47d6-8539-1dfda20dfc68</sv:value>
     </sv:property>
     <sv:property sv:name="class" sv:type="String">
-      <sv:value>info.magnolia.m5admincentral.app.AppRegistryImpl</sv:value>
+      <sv:value>info.magnolia.ui.admincentral.app.AppRegistryImpl</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -166,7 +166,7 @@
               <sv:value>f20224db-a4fd-48c4-8c35-7104fb159c64</sv:value>
             </sv:property>
             <sv:property sv:name="appClass" sv:type="String">
-              <sv:value>info.magnolia.m5admincentral.app.pages.PagesApp</sv:value>
+              <sv:value>info.magnolia.ui.admincentral.app.pages.PagesApp</sv:value>
             </sv:property>
             <sv:property sv:name="icon" sv:type="String">
               <sv:value>img/icon-app-pages.png</sv:value>
@@ -238,13 +238,13 @@
                   <sv:value>c0ef565d-c3e5-4143-972a-39594d5b6497</sv:value>
                 </sv:property>
                 <sv:property sv:name="activity" sv:type="String">
-                  <sv:value>info.magnolia.m5admincentral.app.pages.PagesActivity</sv:value>
+                  <sv:value>info.magnolia.ui.admincentral.app.pages.PagesActivity</sv:value>
                 </sv:property>
                 <sv:property sv:name="jcr:createdBy" sv:type="String">
                   <sv:value>admin</sv:value>
                 </sv:property>
                 <sv:property sv:name="place" sv:type="String">
-                  <sv:value>info.magnolia.m5admincentral.app.pages.PagesPlace</sv:value>
+                  <sv:value>info.magnolia.ui.admincentral.app.pages.PagesPlace</sv:value>
                 </sv:property>
                 <sv:node sv:name="MetaData">
                   <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -342,7 +342,7 @@
               <sv:value>77878ec9-55e3-4a5d-9460-e23e998cefab</sv:value>
             </sv:property>
             <sv:property sv:name="appClass" sv:type="String">
-              <sv:value>info.magnolia.m5admincentral.app.dialog.DialogTestApp</sv:value>
+              <sv:value>info.magnolia.ui.admincentral.app.dialog.DialogTestApp</sv:value>
             </sv:property>
             <sv:property sv:name="icon" sv:type="String">
               <sv:value>img/icon-app-default.png</sv:value>
@@ -420,13 +420,13 @@
                   <sv:value>bfdd90f0-3000-4852-84b0-fe0f6059a6a8</sv:value>
                 </sv:property>
                 <sv:property sv:name="activity" sv:type="String">
-                  <sv:value>info.magnolia.m5admincentral.app.dialog.DialogTestActivity</sv:value>
+                  <sv:value>info.magnolia.ui.admincentral.app.dialog.DialogTestActivity</sv:value>
                 </sv:property>
                 <sv:property sv:name="jcr:createdBy" sv:type="String">
                   <sv:value>admin</sv:value>
                 </sv:property>
                 <sv:property sv:name="place" sv:type="String">
-                  <sv:value>info.magnolia.m5admincentral.app.dialog.DialogTestPlace</sv:value>
+                  <sv:value>info.magnolia.ui.admincentral.app.dialog.DialogTestPlace</sv:value>
                 </sv:property>
                 <sv:node sv:name="MetaData">
                   <sv:property sv:name="jcr:primaryType" sv:type="Name">

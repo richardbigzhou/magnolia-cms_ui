@@ -31,26 +31,30 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
+package info.magnolia.ui.admincentral.shellapp.applauncher;
 
-import info.magnolia.ui.admincentral.app.AbstractAppActivity;
-
-import javax.inject.Inject;
+import info.magnolia.ui.admincentral.app.AppCategory;
+import info.magnolia.ui.admincentral.app.AppDescriptor;
+import info.magnolia.ui.widget.magnoliashell.ShellAppView;
 
 /**
- * Activity for the Dummy app.
+ * View for the app launcher.
  *
  * @version $Id$
  */
-public class DummyActivity extends AbstractAppActivity<DummyPresenter> implements DummyPresenter {
+public interface AppLauncherView extends ShellAppView {
 
-    @Inject
-    public DummyActivity(DummyView view) {
-        super(view);
+    /**
+     * Presenter.
+     *
+     * @version $Id$
+     */
+    public interface Presenter {
+
+        void onAppInvoked(String name);
     }
 
-    @Override
-    public DummyPresenter getReference() {
-        return this;
-    }
+    void setPresenter(Presenter presenter);
+
+    void registerApp(final AppDescriptor descriptor, AppCategory category);
 }

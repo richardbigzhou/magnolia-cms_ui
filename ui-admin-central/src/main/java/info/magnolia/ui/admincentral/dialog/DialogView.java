@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,26 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
+package info.magnolia.ui.admincentral.dialog;
 
-import info.magnolia.ui.admincentral.app.AbstractAppActivity;
+import com.vaadin.ui.ComponentContainer;
 
-import javax.inject.Inject;
+import info.magnolia.ui.widget.magnoliashell.IsVaadinComponent;
+
 
 /**
- * Activity for the Dummy app.
+ * DialogView.
  *
- * @version $Id$
+ * @author ejervidalo
  */
-public class DummyActivity extends AbstractAppActivity<DummyPresenter> implements DummyPresenter {
+public interface DialogView extends IsVaadinComponent {
 
-    @Inject
-    public DummyActivity(DummyView view) {
-        super(view);
+    /**
+     * Presenter.
+     *
+     * @author ejervidalo
+     */
+    public interface Presenter {
+
     }
 
-    @Override
-    public DummyPresenter getReference() {
-        return this;
-    }
+    void setPresenter(Presenter presenter);
+
+    /**
+     * @param string
+     */
+    void addTab(ComponentContainer cc, String caption);
+
 }

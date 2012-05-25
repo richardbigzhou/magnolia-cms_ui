@@ -31,26 +31,26 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
+package info.magnolia.ui.admincentral;
 
-import info.magnolia.ui.admincentral.app.AbstractAppActivity;
-
-import javax.inject.Inject;
+import info.magnolia.ui.framework.view.View;
 
 /**
- * Activity for the Dummy app.
- *
+ * Interface of the main MagnoliaShell view.
  * @version $Id$
  */
-public class DummyActivity extends AbstractAppActivity<DummyPresenter> implements DummyPresenter {
+public interface MagnoliaShellView extends View {
 
-    @Inject
-    public DummyActivity(DummyView view) {
-        super(view);
-    }
+    void setPresenter(Presenter presenter);
 
-    @Override
-    public DummyPresenter getReference() {
-        return this;
+    MagnoliaShell getRoot();
+
+    /**
+     * Presenter interface that interacts with MagnoliaShell view.
+     * @version $Id$
+     */
+    public interface Presenter {
+
     }
 }
+

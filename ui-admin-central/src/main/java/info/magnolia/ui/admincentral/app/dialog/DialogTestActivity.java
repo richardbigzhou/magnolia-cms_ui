@@ -31,26 +31,37 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
+package info.magnolia.ui.admincentral.app.dialog;
 
 import info.magnolia.ui.admincentral.app.AbstractAppActivity;
+import info.magnolia.ui.admincentral.dialog.DialogPresenter;
+import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
 
 import javax.inject.Inject;
 
 /**
- * Activity for the Dummy app.
+ * Activity for the Pages app.
  *
  * @version $Id$
  */
-public class DummyActivity extends AbstractAppActivity<DummyPresenter> implements DummyPresenter {
+public class DialogTestActivity extends AbstractAppActivity<DialogTestPresenter> implements DialogTestPresenter {
+    
+    private DialogPresenterFactory factory;
 
     @Inject
-    public DummyActivity(DummyView view) {
+    public DialogTestActivity(DialogTestView view, DialogPresenterFactory factory) {
         super(view);
+        this.factory = factory;
     }
 
     @Override
-    public DummyPresenter getReference() {
+    public void openDialog() {
+        DialogPresenter presenter = factory.createDialog("testDialog");
+        presenter.showDialog();
+    }
+
+    @Override
+    public DialogTestPresenter getReference() {
         return this;
     }
 }

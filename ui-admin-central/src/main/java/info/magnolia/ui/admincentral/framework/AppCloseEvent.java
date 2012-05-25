@@ -31,26 +31,31 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
+package info.magnolia.ui.admincentral.framework;
 
-import info.magnolia.ui.admincentral.app.AbstractAppActivity;
-
-import javax.inject.Inject;
+import info.magnolia.ui.framework.event.Event;
+import info.magnolia.ui.framework.view.View;
 
 /**
- * Activity for the Dummy app.
+ * Fired when the app is closed form the Shell.
+ * @author apchelintcev
  *
- * @version $Id$
  */
-public class DummyActivity extends AbstractAppActivity<DummyPresenter> implements DummyPresenter {
+public class AppCloseEvent implements Event<AppCloseHandler> {
 
-    @Inject
-    public DummyActivity(DummyView view) {
-        super(view);
+    private final View appView;
+    
+    public AppCloseEvent(final View appView) {
+        this.appView = appView;
     }
-
+    
+    public View getAppView() {
+        return appView;
+    }
+    
     @Override
-    public DummyPresenter getReference() {
-        return this;
+    public void dispatch(AppCloseHandler handler) {
+        
     }
+
 }

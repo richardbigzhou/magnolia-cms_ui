@@ -31,26 +31,44 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
+package info.magnolia.ui.admincentral.shellapp.pulse;
 
-import info.magnolia.ui.admincentral.app.AbstractAppActivity;
-
-import javax.inject.Inject;
+import java.util.List;
 
 /**
- * Activity for the Dummy app.
+ * Manages users messages.
+ *
+ * needs persistence
+ *
+ * messages to all and messages to single user (to group as well?)
+ *
+ * server side push of messages? or poll
+ *
+ * - new work item !!
+ * - error
+ * - warning
+ * - informational
+ *
+ * messages need confirming to go away
+ *
+ * messages need unique ids
+ *
+ * messages to all need to go to all logged-in users
+ *  how will this class know who they are?
+ *  how is it distributed?
+ *  must be careful not to let this class keep references to inactive sessions/vaadin applications
  *
  * @version $Id$
  */
-public class DummyActivity extends AbstractAppActivity<DummyPresenter> implements DummyPresenter {
+public interface MessagesManager {
 
-    @Inject
-    public DummyActivity(DummyView view) {
-        super(view);
-    }
+    int getMessageCountForUser(String userId);
 
-    @Override
-    public DummyPresenter getReference() {
-        return this;
-    }
+    List<Message> getMessagesForUser(String userId);
+
+    void sendMessage(String userId, Message message);
+
+    void sendMessageToAllUsers(Message message);
+
+    void removeMessage(String id);
 }

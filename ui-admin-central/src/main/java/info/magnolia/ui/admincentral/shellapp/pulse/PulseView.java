@@ -31,26 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
+package info.magnolia.ui.admincentral.shellapp.pulse;
 
-import info.magnolia.ui.admincentral.app.AbstractAppActivity;
-
-import javax.inject.Inject;
+import info.magnolia.ui.widget.magnoliashell.ShellAppView;
 
 /**
- * Activity for the Dummy app.
+ * View for pulse.
  *
  * @version $Id$
  */
-public class DummyActivity extends AbstractAppActivity<DummyPresenter> implements DummyPresenter {
-
-    @Inject
-    public DummyActivity(DummyView view) {
-        super(view);
+public interface PulseView extends ShellAppView {
+    
+    /**
+     * PulseView presenter.
+     * @author apchelintcev
+     *
+     */
+    public interface Presenter {
+        void onPulseTabChanged(final String tabId);
     }
-
-    @Override
-    public DummyPresenter getReference() {
-        return this;
-    }
+    
+    String setCurrentPulseTab(final String tabId);
+    
+    public void setPresenter(final Presenter presenter);
 }

@@ -31,26 +31,40 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
+package info.magnolia.ui.admincentral.app.assets;
 
-import info.magnolia.ui.admincentral.app.AbstractAppActivity;
+import info.magnolia.ui.admincentral.app.AppLifecycle;
+import info.magnolia.ui.framework.place.PlaceController;
 
 import javax.inject.Inject;
 
 /**
- * Activity for the Dummy app.
+ * Assets app.
  *
  * @version $Id$
  */
-public class DummyActivity extends AbstractAppActivity<DummyPresenter> implements DummyPresenter {
+public class AssetsApp implements AppLifecycle {
+
+    private PlaceController placeController;
 
     @Inject
-    public DummyActivity(DummyView view) {
-        super(view);
+    public AssetsApp(PlaceController placeController) {
+        this.placeController = placeController;
     }
 
     @Override
-    public DummyPresenter getReference() {
-        return this;
+    public void start() {
+        System.out.println("AssetsApp started");
+    }
+
+    @Override
+    public void focus() {
+        placeController.goTo(new AssetsPlace("foobar"));
+        System.out.println("AssetsApp focused");
+    }
+
+    @Override
+    public void stop() {
+        System.out.println("AssetsApp stopped");
     }
 }

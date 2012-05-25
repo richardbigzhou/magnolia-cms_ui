@@ -31,26 +31,28 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
+package info.magnolia.ui.admincentral.app.assets;
 
-import info.magnolia.ui.admincentral.app.AbstractAppActivity;
+import info.magnolia.ui.admincentral.app.AbstractAppView;
 
-import javax.inject.Inject;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.VerticalLayout;
 
 /**
- * Activity for the Dummy app.
+ * View implementation for the Assets app.
  *
  * @version $Id$
  */
-public class DummyActivity extends AbstractAppActivity<DummyPresenter> implements DummyPresenter {
+@SuppressWarnings("serial")
+public class AssetsViewImpl extends AbstractAppView<AssetsAppPresenter> implements AssetsView {
 
-    @Inject
-    public DummyActivity(DummyView view) {
-        super(view);
+    private VerticalLayout layout = new VerticalLayout();
+
+    public AssetsViewImpl() {
+        Label label = new Label("<center>Assets App</center>", Label.CONTENT_XHTML);
+        layout.addComponent(label);
+        layout.setComponentAlignment(label, Alignment.TOP_CENTER);
     }
 
-    @Override
-    public DummyPresenter getReference() {
-        return this;
-    }
 }

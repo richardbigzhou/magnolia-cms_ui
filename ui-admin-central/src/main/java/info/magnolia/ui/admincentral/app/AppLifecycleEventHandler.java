@@ -31,26 +31,37 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
+package info.magnolia.ui.admincentral.app;
 
-import info.magnolia.ui.admincentral.app.AbstractAppActivity;
+import info.magnolia.ui.framework.event.EventHandler;
 
-import javax.inject.Inject;
 
 /**
- * Activity for the Dummy app.
- *
- * @version $Id$
+ * Listens to {@link AppLifecycleEvent}s.
  */
-public class DummyActivity extends AbstractAppActivity<DummyPresenter> implements DummyPresenter {
+public interface AppLifecycleEventHandler extends EventHandler {
+    
+    void onAppFocus(final AppLifecycleEvent event);
+    
+    void onStopApp(final AppLifecycleEvent event);
+    
+    void onStartApp(final AppLifecycleEvent event);
+    
+    /**
+     * Simple stub so in case not all the methods should be implemented - you can skip them.
+     *
+     */
+    public static class Adapter implements AppLifecycleEventHandler {
 
-    @Inject
-    public DummyActivity(DummyView view) {
-        super(view);
-    }
+        @Override
+        public void onAppFocus(AppLifecycleEvent event) {}
 
-    @Override
-    public DummyPresenter getReference() {
-        return this;
+        @Override
+        public void onStopApp(AppLifecycleEvent event) {}
+
+        @Override
+        public void onStartApp(AppLifecycleEvent event) {}
+        
     }
+    
 }

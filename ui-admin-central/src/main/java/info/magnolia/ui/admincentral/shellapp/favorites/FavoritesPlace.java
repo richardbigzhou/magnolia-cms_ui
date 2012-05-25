@@ -31,26 +31,45 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
+package info.magnolia.ui.admincentral.shellapp.favorites;
 
-import info.magnolia.ui.admincentral.app.AbstractAppActivity;
-
-import javax.inject.Inject;
+import info.magnolia.ui.framework.place.Place;
+import info.magnolia.ui.framework.place.PlaceTokenizer;
+import info.magnolia.ui.framework.place.Prefix;
 
 /**
- * Activity for the Dummy app.
+ * Place for favorites.
  *
  * @version $Id$
  */
-public class DummyActivity extends AbstractAppActivity<DummyPresenter> implements DummyPresenter {
+@Prefix("favorite")
+public class FavoritesPlace extends Place {
 
-    @Inject
-    public DummyActivity(DummyView view) {
-        super(view);
+    /**
+     * Tokenizer for FavoritesPlace.
+     *
+     * @version $Id$
+     */
+    public static class Tokenizer implements PlaceTokenizer<FavoritesPlace> {
+
+        @Override
+        public FavoritesPlace getPlace(String token) {
+            return new FavoritesPlace(token);
+        }
+
+        @Override
+        public String getToken(FavoritesPlace place) {
+            return place.getPath();
+        }
     }
 
-    @Override
-    public DummyPresenter getReference() {
-        return this;
+    private String path;
+
+    public FavoritesPlace(String path) {
+        this.path = path;
+    }
+
+    public String getPath() {
+        return path;
     }
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,26 +31,32 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
+package info.magnolia.ui.admincentral.dialog;
 
-import info.magnolia.ui.admincentral.app.AbstractAppActivity;
-
-import javax.inject.Inject;
+import info.magnolia.ui.admincentral.MagnoliaShell;
+import info.magnolia.ui.admincentral.dialog.builder.DialogBuilder;
+import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 
 /**
- * Activity for the Dummy app.
+ * DialogPresenter.
  *
- * @version $Id$
+ * @author ejervidalo
  */
-public class DummyActivity extends AbstractAppActivity<DummyPresenter> implements DummyPresenter {
+public class DialogPresenter implements DialogView.Presenter {
 
-    @Inject
-    public DummyActivity(DummyView view) {
-        super(view);
+    private DialogBuilder dialogBuilder;
+    private DialogDefinition dialogDefinition;
+    private DialogView dialogView;
+    private MagnoliaShell shell;
+
+    public DialogPresenter(DialogBuilder dialogBuilder, DialogDefinition dialogDefinition, MagnoliaShell shell) {
+        this.dialogBuilder = dialogBuilder;
+        this.dialogDefinition = dialogDefinition;
+        this.shell = shell;
     }
 
-    @Override
-    public DummyPresenter getReference() {
-        return this;
+    public void showDialog() {
+        dialogView = dialogBuilder.build(dialogDefinition, this);
+        shell.openDialog(dialogView);
     }
 }

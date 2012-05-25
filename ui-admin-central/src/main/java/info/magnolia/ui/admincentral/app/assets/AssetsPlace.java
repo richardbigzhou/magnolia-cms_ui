@@ -31,26 +31,45 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
+package info.magnolia.ui.admincentral.app.assets;
 
-import info.magnolia.ui.admincentral.app.AbstractAppActivity;
-
-import javax.inject.Inject;
+import info.magnolia.ui.framework.place.Place;
+import info.magnolia.ui.framework.place.PlaceTokenizer;
+import info.magnolia.ui.framework.place.Prefix;
 
 /**
- * Activity for the Dummy app.
+ * Place for the Assets app.
  *
  * @version $Id$
  */
-public class DummyActivity extends AbstractAppActivity<DummyPresenter> implements DummyPresenter {
+@Prefix("assets")
+public class AssetsPlace extends Place {
 
-    @Inject
-    public DummyActivity(DummyView view) {
-        super(view);
+    /**
+     * Tokenizer for AssetsPlace.
+     *
+     * @version $Id$
+     */
+    public static class Tokenizer implements PlaceTokenizer<AssetsPlace> {
+
+        @Override
+        public AssetsPlace getPlace(String token) {
+            return new AssetsPlace(token);
+        }
+
+        @Override
+        public String getToken(AssetsPlace place) {
+            return place.getPath();
+        }
     }
 
-    @Override
-    public DummyPresenter getReference() {
-        return this;
+    private String path;
+
+    public AssetsPlace(String path) {
+        this.path = path;
+    }
+
+    public String getPath() {
+        return path;
     }
 }

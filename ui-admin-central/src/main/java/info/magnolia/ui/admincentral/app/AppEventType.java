@@ -31,26 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
+package info.magnolia.ui.admincentral.app;
 
-import info.magnolia.ui.admincentral.app.AbstractAppActivity;
-
-import javax.inject.Inject;
 
 /**
- * Activity for the Dummy app.
- *
+ * AppEvent Type enumeration.
+ * @author erichechinger
  * @version $Id$
+ *
  */
-public class DummyActivity extends AbstractAppActivity<DummyPresenter> implements DummyPresenter {
-
-    @Inject
-    public DummyActivity(DummyView view) {
-        super(view);
-    }
-
-    @Override
-    public DummyPresenter getReference() {
-        return this;
-    }
+public enum AppEventType {
+    STOP_EVENT, START_EVENT, FOCUS_EVENT
 }

@@ -31,26 +31,38 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
+package info.magnolia.ui.admincentral.app.pages;
 
-import info.magnolia.ui.admincentral.app.AbstractAppActivity;
+import info.magnolia.ui.admincentral.app.AbstractAppView;
 
 import javax.inject.Inject;
 
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.VerticalLayout;
+
 /**
- * Activity for the Dummy app.
+ * View implementation for the Pages app.
  *
  * @version $Id$
  */
-public class DummyActivity extends AbstractAppActivity<DummyPresenter> implements DummyPresenter {
-
+@SuppressWarnings("serial")
+public class PagesViewImpl extends AbstractAppView<PagesPresenter> implements PagesView {
+    
     @Inject
-    public DummyActivity(DummyView view) {
-        super(view);
+    public PagesViewImpl() {
+        final VerticalLayout tableContainer = new VerticalLayout();
+        tableContainer.addComponent(new Button("test", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+                final VerticalLayout layout = new VerticalLayout();
+                layout.setSizeFull();
+                layout.addComponent(new Label("New tab opened"));
+                addTab(layout, "TestTab");
+            }
+        }));
+        addTab(tableContainer, "Pages");
     }
 
-    @Override
-    public DummyPresenter getReference() {
-        return this;
-    }
 }

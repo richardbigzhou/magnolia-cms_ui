@@ -31,26 +31,31 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
+package info.magnolia.ui.admincentral.shellapp.pulse;
 
-import info.magnolia.ui.admincentral.app.AbstractAppActivity;
-
-import javax.inject.Inject;
+import java.util.List;
 
 /**
- * Activity for the Dummy app.
+ * Manager for the users activity streams.
+ *
+ * need persistence
+ *
+ * need to clean up old entries
+ *
+ * can you post to more than one user? all? by group?
  *
  * @version $Id$
  */
-public class DummyActivity extends AbstractAppActivity<DummyPresenter> implements DummyPresenter {
+public interface ActivityStreamManager {
 
-    @Inject
-    public DummyActivity(DummyView view) {
-        super(view);
-    }
+    /**
+     * Returns the activity stream for a user, entries sorted most recent first.
+     */
+    List<ActivityStreamEntry> getActivityStreamForUser(String userId);
 
-    @Override
-    public DummyPresenter getReference() {
-        return this;
-    }
+    /**
+     * Adds the entry to the users activity stream, assigns an id and records the timestamp, any values for these fields
+     * already in the instance is ignored.
+     */
+    void postEntry(String userId, ActivityStreamEntry entry);
 }

@@ -31,26 +31,50 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
+package info.magnolia.ui.admincentral.shellapp.pulse;
 
-import info.magnolia.ui.admincentral.app.AbstractAppActivity;
-
-import javax.inject.Inject;
+import info.magnolia.ui.framework.place.Place;
+import info.magnolia.ui.framework.place.PlaceTokenizer;
+import info.magnolia.ui.framework.place.Prefix;
 
 /**
- * Activity for the Dummy app.
+ * Place for pulse.
  *
  * @version $Id$
  */
-public class DummyActivity extends AbstractAppActivity<DummyPresenter> implements DummyPresenter {
+@Prefix("pulse")
+public class PulsePlace extends Place {
 
-    @Inject
-    public DummyActivity(DummyView view) {
-        super(view);
+    /**
+     * Tokenizer for PulsePlace.
+     *
+     * @version $Id$
+     */
+    public static class Tokenizer implements PlaceTokenizer<PulsePlace> {
+
+        @Override
+        public PulsePlace getPlace(String token) {
+            final String[] subTokens = token.split("/");
+            return new PulsePlace(subTokens.length > 0 ? subTokens[0] : "");
+        }
+
+        @Override
+        public String getToken(PulsePlace place) {
+            return place.getCurrentPulseTab();
+        }
     }
 
-    @Override
-    public DummyPresenter getReference() {
-        return this;
+    private String currentPulseTab;
+
+    public PulsePlace(String currentTab) {
+        this.currentPulseTab = currentTab;
+    }
+
+    public String getCurrentPulseTab() {
+        return currentPulseTab;
+    }
+    
+    public void setCurrentPulseTab(String currentPulseTab) {
+        this.currentPulseTab = currentPulseTab;
     }
 }

@@ -31,26 +31,24 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
+package info.magnolia.ui.admincentral.app;
 
-import info.magnolia.ui.admincentral.app.AbstractAppActivity;
-
-import javax.inject.Inject;
 
 /**
- * Activity for the Dummy app.
+ * Utility Class for the App TestCases.
  *
- * @version $Id$
  */
-public class DummyActivity extends AbstractAppActivity<DummyPresenter> implements DummyPresenter {
+public class AppTestUtility {
 
-    @Inject
-    public DummyActivity(DummyView view) {
-        super(view);
-    }
-
-    @Override
-    public DummyPresenter getReference() {
-        return this;
+    /**
+     * Create a AppDescriptor.
+     */
+    public static AppDescriptor createAppDescriptor(String startLibell, Class<? extends AppLifecycle> appClass) {
+        AppDescriptor res = new AppDescriptor();
+        res.setAppClass(appClass);
+        res.setIcon(startLibell+"_icon");
+        res.setLabel(startLibell+"_label");
+        res.setName(startLibell+"_name");
+        return res;
     }
 }

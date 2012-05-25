@@ -31,26 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
-
-import info.magnolia.ui.admincentral.app.AbstractAppActivity;
-
-import javax.inject.Inject;
+package info.magnolia.ui.admincentral.app;
 
 /**
- * Activity for the Dummy app.
+ * Defines the lifecycle for an app.
  *
  * @version $Id$
  */
-public class DummyActivity extends AbstractAppActivity<DummyPresenter> implements DummyPresenter {
+public interface AppLifecycle {
 
-    @Inject
-    public DummyActivity(DummyView view) {
-        super(view);
-    }
+    /**
+     * Starts the app letting it do initialization, the app is not displayed.
+     */
+    void start();
 
-    @Override
-    public DummyPresenter getReference() {
-        return this;
-    }
+    /**
+     * Displays the app. The app will perform a place switch using the PlaceController to a place it provides.
+     */
+    void focus();
+
+    /**
+     * Stops the app.
+     */
+    void stop();
 }
