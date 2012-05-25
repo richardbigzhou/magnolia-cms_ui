@@ -33,7 +33,6 @@
  */
 package info.magnolia.m5admincentral.app.pages;
 
-import info.magnolia.m5admincentral.MagnoliaShell;
 import info.magnolia.m5admincentral.app.AbstractAppView;
 
 import javax.inject.Inject;
@@ -52,7 +51,7 @@ import com.vaadin.ui.VerticalLayout;
 public class PagesViewImpl extends AbstractAppView<PagesPresenter> implements PagesView {
     
     @Inject
-    public PagesViewImpl(final MagnoliaShell shell) {
+    public PagesViewImpl() {
         final VerticalLayout tableContainer = new VerticalLayout();
         tableContainer.addComponent(new Button("test", new Button.ClickListener() {
             @Override
