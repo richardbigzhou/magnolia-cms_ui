@@ -31,45 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.ui.dummy;
+package info.magnolia.ui.app.dummy;
 
-import info.magnolia.ui.framework.place.Place;
-import info.magnolia.ui.framework.place.PlaceTokenizer;
-import info.magnolia.ui.framework.place.Prefix;
+import info.magnolia.m5admincentral.app.AppView;
 
 /**
- * Place for the Dummy app.
+ * View for the Dummy app.
  *
  * @version $Id$
  */
-@Prefix("dummy")
-public class DummyPlace extends Place {
+public interface DummyView extends AppView<DummyPresenter> {
 
-    /**
-     * Tokenizer for DummyPlace.
-     *
-     * @version $Id$
-     */
-    public static class Tokenizer implements PlaceTokenizer<DummyPlace> {
-
-        @Override
-        public DummyPlace getPlace(String token) {
-            return new DummyPlace(token);
-        }
-
-        @Override
-        public String getToken(DummyPlace place) {
-            return place.getPath();
-        }
-    }
-
-    private String path;
-
-    public DummyPlace(String path) {
-        this.path = path;
-    }
-
-    public String getPath() {
-        return path;
-    }
 }

@@ -31,26 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.ui.dummy;
+package info.magnolia.ui.app.dummy;
 
-import info.magnolia.m5admincentral.app.AbstractAppView;
-
-import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
+import info.magnolia.m5admincentral.app.AppPresenter;
 
 /**
- * View implementation for the Dummy app.
+ * Dummy presenter.
+ * @author p4elkin
  *
- * @version $Id$
  */
-@SuppressWarnings("serial")
-public class DummyViewImpl extends AbstractAppView<DummyPresenter> implements DummyView  {
+public interface DummyPresenter extends AppPresenter<DummyPresenter> {
 
-    public DummyViewImpl() {
-        super();
-        final VerticalLayout tableContainer = new VerticalLayout();
-        Label label = new Label("<center>Dummy App</center>", Label.CONTENT_XHTML);
-        tableContainer.addComponent(label);
-        addTab(tableContainer, "Dummy");
-    }
 }

@@ -31,15 +31,40 @@
  * intact.
  *
  */
-package info.magnolia.ui.dummy;
+package info.magnolia.ui.app.dummy;
 
-import info.magnolia.m5admincentral.app.AppPresenter;
+import info.magnolia.m5admincentral.app.AppLifecycle;
+import info.magnolia.ui.framework.place.PlaceController;
+
+import javax.inject.Inject;
 
 /**
- * Dummy presenter.
- * @author p4elkin
+ * Dummy app.
  *
+ * @version $Id$
  */
-public interface DummyPresenter extends AppPresenter<DummyPresenter> {
+public class DummyApp implements AppLifecycle {
 
+    private PlaceController placeController;
+
+    @Inject
+    public DummyApp(PlaceController placeController) {
+        this.placeController = placeController;
+    }
+
+    @Override
+    public void start() {
+        System.out.println("DummyApp started");
+    }
+
+    @Override
+    public void focus() {
+        placeController.goTo(new DummyPlace("foobar"));
+        System.out.println("DummyApp focused");
+    }
+
+    @Override
+    public void stop() {
+        System.out.println("DummyApp stopped");
+    }
 }

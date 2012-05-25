@@ -10,7 +10,7 @@
     <sv:value>565f0a04-f8f8-4945-aaad-7a29c10a5512</sv:value>
   </sv:property>
   <sv:property sv:name="appClass" sv:type="String">
-    <sv:value>info.magnolia.ui.dummy.DummyApp</sv:value>
+    <sv:value>info.magnolia.ui.app.dummy.DummyApp</sv:value>
   </sv:property>
   <sv:property sv:name="icon" sv:type="String">
     <sv:value>img/icon-app-default.png</sv:value>
@@ -88,13 +88,13 @@
         <sv:value>2e4a749b-57b5-422b-9bf4-c73d68fdb238</sv:value>
       </sv:property>
       <sv:property sv:name="activity" sv:type="String">
-        <sv:value>info.magnolia.ui.dummy.DummyActivity</sv:value>
+        <sv:value>info.magnolia.ui.app.dummy.DummyActivity</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
       </sv:property>
       <sv:property sv:name="place" sv:type="String">
-        <sv:value>info.magnolia.ui.dummy.DummyPlace</sv:value>
+        <sv:value>info.magnolia.ui.app.dummy.DummyPlace</sv:value>
       </sv:property>
       <sv:node sv:name="MetaData">
         <sv:property sv:name="jcr:primaryType" sv:type="Name">

@@ -31,40 +31,45 @@
  * intact.
  *
  */
-package info.magnolia.ui.dummy;
+package info.magnolia.ui.app.dummy;
 
-import info.magnolia.m5admincentral.app.AppLifecycle;
-import info.magnolia.ui.framework.place.PlaceController;
-
-import javax.inject.Inject;
+import info.magnolia.ui.framework.place.Place;
+import info.magnolia.ui.framework.place.PlaceTokenizer;
+import info.magnolia.ui.framework.place.Prefix;
 
 /**
- * Dummy app.
+ * Place for the Dummy app.
  *
  * @version $Id$
  */
-public class DummyApp implements AppLifecycle {
+@Prefix("dummy")
+public class DummyPlace extends Place {
 
-    private PlaceController placeController;
+    /**
+     * Tokenizer for DummyPlace.
+     *
+     * @version $Id$
+     */
+    public static class Tokenizer implements PlaceTokenizer<DummyPlace> {
 
-    @Inject
-    public DummyApp(PlaceController placeController) {
-        this.placeController = placeController;
+        @Override
+        public DummyPlace getPlace(String token) {
+            return new DummyPlace(token);
+        }
+
+        @Override
+        public String getToken(DummyPlace place) {
+            return place.getPath();
+        }
     }
 
-    @Override
-    public void start() {
-        System.out.println("DummyApp started");
+    private String path;
+
+    public DummyPlace(String path) {
+        this.path = path;
     }
 
-    @Override
-    public void focus() {
-        placeController.goTo(new DummyPlace("foobar"));
-        System.out.println("DummyApp focused");
-    }
-
-    @Override
-    public void stop() {
-        System.out.println("DummyApp stopped");
+    public String getPath() {
+        return path;
     }
 }

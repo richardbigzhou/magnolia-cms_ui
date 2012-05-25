@@ -31,15 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.dummy;
+package info.magnolia.ui.app.dummy;
 
-import info.magnolia.m5admincentral.app.AppView;
+import info.magnolia.module.DefaultModuleVersionHandler;
 
 /**
- * View for the Dummy app.
- *
- * @version $Id$
+ * Version handler for Dummy app module.
  */
-public interface DummyView extends AppView<DummyPresenter> {
-
+public class DummyAppModuleVersionHandler extends DefaultModuleVersionHandler {
 }
