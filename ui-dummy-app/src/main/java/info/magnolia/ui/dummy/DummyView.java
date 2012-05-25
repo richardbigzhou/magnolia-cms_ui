@@ -33,13 +33,13 @@
  */
 package info.magnolia.ui.dummy;
 
-import info.magnolia.m5admincentral.framework.AppView;
+import info.magnolia.m5admincentral.app.AppView;
 
 /**
  * View for the Dummy app.
  *
  * @version $Id$
  */
-public interface DummyView extends AppView {
+public interface DummyView extends AppView<DummyPresenter> {
 
 }

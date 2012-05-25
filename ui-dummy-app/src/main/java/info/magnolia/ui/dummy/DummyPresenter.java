@@ -31,13 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.m5vaadin;
+package info.magnolia.ui.dummy;
+
+import info.magnolia.m5admincentral.app.AppPresenter;
 
 /**
- * Apps capable view.
- * @author apchelintcev
+ * Dummy presenter.
+ * @author p4elkin
  *
  */
-public interface AppView extends ShellView {
+public interface DummyPresenter extends AppPresenter<DummyPresenter> {
 
 }

@@ -31,27 +31,36 @@
  * intact.
  *
  */
-package info.magnolia.m5admincentral.framework;
+package info.magnolia.m5admincentral.app;
 
 import info.magnolia.ui.framework.activity.AbstractActivity;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.view.ViewPort;
 
+
 /**
- * App activity.
+ * Abstract presenter for app views.
+ * @author p4elkin
+ *
+ * @param <T>
  */
-public abstract class AppActivity extends AbstractActivity implements AppView.Presenter {
+public abstract class AbstractAppActivity<T extends AppPresenter<T>> extends AbstractActivity 
+    implements AppPresenter<T> {
+    
+    private AppView<T> view;
     
     private String name;
     
-    private AppView view;
-    
-    public AppActivity(final AppView view) {
+    public AbstractAppActivity(AppView<T> view) {
         this.view = view;
     }
     
-    public void setName(String name) {
-        this.name = name;
+    protected abstract T getThis();
+    
+    @Override
+    public void start(ViewPort viewPort, EventBus eventBus) {
+        view.setPresenter(getThis());
+        viewPort.setView(view);
     }
     
     @Override
@@ -59,8 +68,8 @@ public abstract class AppActivity extends AbstractActivity implements AppView.Pr
         return name;
     }
     
-    @Override
-    public void start(ViewPort viewPort, EventBus eventBus) {
-        view.setPresenter(this);
+    public void setName(String name) {
+        this.name = name;
     }
+
 }

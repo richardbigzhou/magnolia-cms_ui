@@ -33,8 +33,7 @@
  */
 package info.magnolia.m5admincentral.app.dialog;
 
-import info.magnolia.m5admincentral.framework.AppViewImpl;
-import info.magnolia.m5vaadin.IsVaadinComponent;
+import info.magnolia.m5admincentral.app.AbstractAppView;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -47,11 +46,9 @@ import com.vaadin.ui.HorizontalLayout;
  * @version $Id$
  */
 @SuppressWarnings("serial")
-public class DialogTestViewImpl extends AppViewImpl implements DialogTestView, IsVaadinComponent {
+public class DialogTestViewImpl extends AbstractAppView<DialogTestPresenter> implements DialogTestView {
 
     private HorizontalLayout content = new HorizontalLayout();
-
-    private DialogPresenter presenter;
 
     public DialogTestViewImpl() {
         Button dialog = new Button("Open Dialog", new DialogListener());
@@ -67,13 +64,8 @@ public class DialogTestViewImpl extends AppViewImpl implements DialogTestView, I
 
         @Override
         public void buttonClick(ClickEvent event) {
-            DialogTestViewImpl.this.presenter.openDialog();
+            getPresenter().openDialog();
         }
 
-    }
-
-    @Override
-    public void setPresenter(DialogPresenter presenter) {
-        this.presenter = presenter;
     }
 }

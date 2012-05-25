@@ -31,26 +31,60 @@
  * intact.
  *
  */
-package info.magnolia.ui.dummy;
+package info.magnolia.m5admincentral.app;
 
-import info.magnolia.m5admincentral.app.AbstractAppActivity;
+import info.magnolia.m5vaadin.IsVaadinComponent;
+import info.magnolia.m5vaadin.tabsheet.ShellTab;
+import info.magnolia.m5vaadin.tabsheet.ShellTabSheet;
 
-import javax.inject.Inject;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.ComponentContainer;
+
 
 /**
- * Activity for the Dummy app.
- *
- * @version $Id$
+ * App view impl.
+ * 
+ * @author p4elkin
+ * @param <T>
+ *            recursive generic param.
  */
-public class DummyActivity extends AbstractAppActivity<DummyPresenter> implements DummyPresenter {
+@SuppressWarnings("serial")
+public abstract class AbstractAppView<T extends AppPresenter<T>> implements AppView<T>, IsVaadinComponent {
 
-    @Inject
-    public DummyActivity(DummyView view) {
-        super(view);
+    private T presenter;
+
+    private ShellTabSheet tabsheet = new ShellTabSheet();
+    
+    @Override
+    public T getPresenter() {
+        return presenter;
     }
 
     @Override
-    protected DummyPresenter getThis() {
-        return this;
+    public void setPresenter(T presenter) {
+        this.presenter = presenter;
+    }
+    
+    @Override
+    public String getName() {
+        return presenter.getName();
+    }
+    
+    @Override
+    public void addTab(ComponentContainer cc, String caption) {
+        final ShellTab tab = new ShellTab(caption, cc);
+        tabsheet.addComponent(tab);
+        tabsheet.setTabClosable(tab, true);
+        tabsheet.setActiveTab(tab);
+    }
+
+    @Override
+    public void closeTab(ComponentContainer cc) {
+        tabsheet.removeComponent(cc);   
+    }
+    
+    @Override
+    public Component asVaadinComponent() {
+        return tabsheet;
     }
 }

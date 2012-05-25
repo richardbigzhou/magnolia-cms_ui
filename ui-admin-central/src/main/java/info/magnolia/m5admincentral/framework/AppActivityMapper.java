@@ -33,6 +33,7 @@
  */
 package info.magnolia.m5admincentral.framework;
 
+import info.magnolia.m5admincentral.app.AbstractAppActivity;
 import info.magnolia.m5admincentral.app.AppController;
 import info.magnolia.m5admincentral.app.AppDescriptor;
 import info.magnolia.m5admincentral.app.AppLifecycle;
@@ -80,8 +81,8 @@ public class AppActivityMapper implements ActivityMapper {
                 Activity activity = context.getActivityForPlace(place.getClass());
                 if (activity == null) {
                     activity = componentProvider.newInstance(clazz);
-                    if (activity instanceof AppActivity) {
-                        ((AppActivity)activity).setName(descriptor.getName());
+                    if (activity instanceof AbstractAppActivity) {
+                        ((AbstractAppActivity<?>)activity).setName(descriptor.getName());
                     }
                     context.addActivityMapping(activity, place.getClass());
                 }

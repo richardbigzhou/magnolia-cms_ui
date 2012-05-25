@@ -33,11 +33,9 @@
  */
 package info.magnolia.m5admincentral.app.assets;
 
-import info.magnolia.m5admincentral.framework.AppViewImpl;
-import info.magnolia.m5vaadin.IsVaadinComponent;
+import info.magnolia.m5admincentral.app.AbstractAppView;
 
 import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
@@ -47,7 +45,7 @@ import com.vaadin.ui.VerticalLayout;
  * @version $Id$
  */
 @SuppressWarnings("serial")
-public class AssetsViewImpl extends AppViewImpl implements AssetsView, IsVaadinComponent {
+public class AssetsViewImpl extends AbstractAppView<AssetsAppPresenter> implements AssetsView {
 
     private VerticalLayout layout = new VerticalLayout();
 
@@ -57,13 +55,4 @@ public class AssetsViewImpl extends AppViewImpl implements AssetsView, IsVaadinC
         layout.setComponentAlignment(label, Alignment.TOP_CENTER);
     }
 
-    @Override
-    public Component asVaadinComponent() {
-        return layout;
-    }
-
-    @Override
-    public String getName() {
-        return "Assets";
-    }
 }
