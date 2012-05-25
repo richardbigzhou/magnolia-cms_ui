@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.m5.dialog.gwt.client;
+package info.magnolia.ui.widget.dialog.gwt.client;
 
 import info.magnolia.ui.widget.tabsheet.client.VShellTabSheet;
 

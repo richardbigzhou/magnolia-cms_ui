@@ -31,11 +31,11 @@
  * intact.
  *
  */
-package info.magnolia.m5.dialog;
+package info.magnolia.ui.widget.dialog;
 
 
 
-import info.magnolia.m5.dialog.gwt.client.VDialog;
+import info.magnolia.ui.widget.dialog.gwt.client.VDialog;
 import info.magnolia.ui.widget.tabsheet.ShellTab;
 import info.magnolia.ui.widget.tabsheet.ShellTabSheet;
 

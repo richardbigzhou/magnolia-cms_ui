@@ -31,61 +31,42 @@
  * intact.
  *
  */
-package info.magnolia.m5.dialog.gwt.client;
-
+package info.magnolia.ui.widget.dialog.gwt.client;
 
 import info.magnolia.ui.widget.tabsheet.client.VShellTabSheet;
 
-import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.event.shared.EventBus;
 import com.vaadin.terminal.gwt.client.Paintable;
 
 /**
- * GWT implementation of MagnoliaShell client side (the view part basically).
- * @author apchelintcev
+ * VDialogView.
  *
+ * @author ejervidalo
  */
-public class VDialogViewImpl extends FlowPanel implements VDialogView {
+public interface VDialogView extends IsWidget {
 
-    private VShellTabSheet tabsheet;
-    private Presenter presenter;
-    private EventBus eventBus;
+    /**
+     * Presenter. Meant for Vaadin part of MagnoliaShell.
+     */
+    interface Presenter {}
 
+    Paintable getTabSheet();
 
-    public VDialogViewImpl(final EventBus eventBus) {
-        super();
-        setStylePrimaryName("dialog-panel");
-        this.eventBus = eventBus;
+    /**
+     * @param tabsheet
+     */
+    void setTabSheet(VShellTabSheet tabsheet);
 
-    }
+    /**
+     * @param vDialog
+     */
+    void setPresenter(Presenter vDialog);
 
-    @Override
-    public void setPresenter(Presenter vDialog) {
-        this.presenter = presenter;
-    }
-
-    @Override
-    public Paintable getTabSheet() {
-        return tabsheet;
-    }
-
-
-    @Override
-    public void setTabSheet(VShellTabSheet tabsheet) {
-        this.tabsheet = tabsheet;
-        add(tabsheet);
-    }
-
-    @Override
-    public boolean hasChildComponent(Widget component) {
-        boolean isChild = false;
-        for (Widget widget : getChildren()) {
-            if (component == widget) {
-                isChild = true;
-            }
-        }
-        return isChild;
-    }
+    /**
+     * @param component
+     * @return
+     */
+    boolean hasChildComponent(Widget component);
 
 }

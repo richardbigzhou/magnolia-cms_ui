@@ -31,42 +31,61 @@
  * intact.
  *
  */
-package info.magnolia.m5.dialog.gwt.client;
+package info.magnolia.ui.widget.dialog.gwt.client;
+
 
 import info.magnolia.ui.widget.tabsheet.client.VShellTabSheet;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.EventBus;
 import com.vaadin.terminal.gwt.client.Paintable;
 
 /**
- * VDialogView.
+ * GWT implementation of MagnoliaShell client side (the view part basically).
+ * @author apchelintcev
  *
- * @author ejervidalo
  */
-public interface VDialogView extends IsWidget {
+public class VDialogViewImpl extends FlowPanel implements VDialogView {
 
-    /**
-     * Presenter. Meant for Vaadin part of MagnoliaShell.
-     */
-    interface Presenter {}
+    private VShellTabSheet tabsheet;
+    private Presenter presenter;
+    private EventBus eventBus;
 
-    Paintable getTabSheet();
 
-    /**
-     * @param tabsheet
-     */
-    void setTabSheet(VShellTabSheet tabsheet);
+    public VDialogViewImpl(final EventBus eventBus) {
+        super();
+        setStylePrimaryName("dialog-panel");
+        this.eventBus = eventBus;
 
-    /**
-     * @param vDialog
-     */
-    void setPresenter(Presenter vDialog);
+    }
 
-    /**
-     * @param component
-     * @return
-     */
-    boolean hasChildComponent(Widget component);
+    @Override
+    public void setPresenter(Presenter vDialog) {
+        this.presenter = presenter;
+    }
+
+    @Override
+    public Paintable getTabSheet() {
+        return tabsheet;
+    }
+
+
+    @Override
+    public void setTabSheet(VShellTabSheet tabsheet) {
+        this.tabsheet = tabsheet;
+        add(tabsheet);
+    }
+
+    @Override
+    public boolean hasChildComponent(Widget component) {
+        boolean isChild = false;
+        for (Widget widget : getChildren()) {
+            if (component == widget) {
+                isChild = true;
+            }
+        }
+        return isChild;
+    }
 
 }

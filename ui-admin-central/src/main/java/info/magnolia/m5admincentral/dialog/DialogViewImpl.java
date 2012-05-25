@@ -33,7 +33,7 @@
  */
 package info.magnolia.m5admincentral.dialog;
 
-import info.magnolia.m5.dialog.VaadinDialog;
+import info.magnolia.ui.widget.dialog.VaadinDialog;
 
 import com.vaadin.ui.Component;
 

@@ -7,7 +7,7 @@
     <inherits name="info.magnolia.m5vaadin.shell.gwt.MagnoliaShellWidgetSet" />
     <inherits name="org.vaadin.addon.jquerywrapper.JquerywrapperWidgetset" />
     <inherits name="info.magnolia.ui.widget.tabsheet.M5TabsheetWidgetSet" />
-    <inherits name="info.magnolia.m5.dialog.gwt.DialogWidgetSet" />
+    <inherits name="info.magnolia.ui.widget.dialog.gwt.DialogWidgetSet" />
 
   <!--
    Uncomment the following to compile the widgetset for one browser only.
