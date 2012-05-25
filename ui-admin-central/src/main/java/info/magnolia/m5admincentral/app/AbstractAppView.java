@@ -55,6 +55,11 @@ public abstract class AbstractAppView<T extends AppPresenter<T>> implements AppV
 
     private ShellTabSheet tabsheet = new ShellTabSheet();
     
+    public AbstractAppView() {
+        super();
+        tabsheet.setSizeFull();
+    }
+    
     @Override
     public T getPresenter() {
         return presenter;
