@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,42 +31,44 @@
  * intact.
  *
  */
-package info.magnolia.m5admincentral.app;
+package info.magnolia.ui.vaadin.integration.widget;
 
-import info.magnolia.ui.framework.activity.AbstractActivity;
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.view.ViewPort;
+import info.magnolia.ui.vaadin.integration.widget.client.VAppButton;
+
+import com.vaadin.terminal.PaintException;
+import com.vaadin.terminal.PaintTarget;
+import com.vaadin.ui.ClientWidget;
+import com.vaadin.ui.ClientWidget.LoadStyle;
+import com.vaadin.ui.NativeButton;
 
 /**
- * Abstract presenter for app views.
- * 
- * @author p4elkin
- * 
- * @param <T>
+ * An extended button used in the AppLauncher.
+ * @author apchelintcev
+ *
  */
-public abstract class AbstractAppActivity<T extends AppPresenter<T>> extends AbstractActivity implements AppPresenter<T> {
-
-    private AppView<T> view;
-
-    private String name;
-
-    public AbstractAppActivity(AppView<T> view) {
-        this.view = view;
+@SuppressWarnings("serial")
+@ClientWidget(value = VAppButton.class, loadStyle = LoadStyle.EAGER)
+public class AppButton extends NativeButton {
+    
+    private boolean isActive;
+    
+    public AppButton(final String caption) {
+        super(caption);
+        addStyleName("v-appbutton");
     }
-
+    
+    public void setActive(boolean isActive) {
+        this.isActive = isActive;
+    }
+    
+    public boolean isActive() {
+        return isActive;
+    }
+    
     @Override
-    public void start(ViewPort viewPort, EventBus eventBus) {
-        view.setPresenter(getReference());
-        viewPort.setView(view);
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void paintContent(PaintTarget target) throws PaintException {
+        super.paintContent(target);
+        target.addAttribute("active", isActive);
     }
 
 }

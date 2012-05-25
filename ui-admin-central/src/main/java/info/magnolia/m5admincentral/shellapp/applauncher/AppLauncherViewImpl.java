@@ -37,6 +37,7 @@ import info.magnolia.m5admincentral.app.AppCategory;
 import info.magnolia.m5admincentral.app.AppDescriptor;
 import info.magnolia.m5vaadin.IsVaadinComponent;
 import info.magnolia.m5vaadin.shell.gwt.client.VMainLauncher.ShellAppType;
+import info.magnolia.ui.vaadin.integration.widget.AppButton;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -46,7 +47,6 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.NativeButton;
 
 /**
  * Default view implementation for the app launcher.
@@ -113,8 +113,9 @@ public class AppLauncherViewImpl implements AppLauncherView, IsVaadinComponent {
         }
 
         public void addApp(final AppDescriptor descriptor) {
-            final Button button = new NativeButton(descriptor.getLabel());
-            button.setStyleName("item");
+            final AppButton button = new AppButton(descriptor.getLabel());
+            button.setActive(true);
+            button.addStyleName("item");
             button.setIcon(new ThemeResource(descriptor.getIcon()));
             this.iconList.addComponent(button);
             button.addListener(new Button.ClickListener() {

@@ -265,3 +265,16 @@ button.action-close {
     min-height: 16px;
     min-width: 16px;
 }
+
+.v-appbutton {
+	position: relative;
+	text-align: center;
+}
+
+.v-appbutton .divet {
+	position: absolute;
+	height: 9px;
+    width: 9px;
+    left: 37px;
+    background: url("img/style-app-running.png") no-repeat scroll center bottom transparent;
+}

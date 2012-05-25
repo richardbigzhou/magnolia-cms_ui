@@ -33,6 +33,10 @@
  */
 package info.magnolia.ui.vaadin.integration.shell;
 
+import info.magnolia.ui.framework.shell.ConfirmationHandler;
+import info.magnolia.ui.vaadin.integration.view.MainWindow;
+import info.magnolia.ui.vaadin.integration.widget.Historian;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -43,9 +47,6 @@ import org.vaadin.dialogs.ConfirmDialog;
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.UriFragmentUtility;
 import com.vaadin.ui.Window.Notification;
-import info.magnolia.ui.framework.shell.ConfirmationHandler;
-import info.magnolia.ui.vaadin.integration.view.MainWindow;
-import info.magnolia.ui.vaadin.integration.widget.historian.Historian;
 
 
 /**

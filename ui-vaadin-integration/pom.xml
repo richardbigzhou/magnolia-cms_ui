@@ -56,10 +56,14 @@
         <version>2.3.1</version>
         <configuration>
           <archive>
+          	<index>true</index>
+            <manifest>
+              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+            </manifest>
             <manifestEntries>
               <!-- Package format version - do not change -->
               <Vaadin-Package-Version>1</Vaadin-Package-Version>
-              <Vaadin-Widgetsets>info.magnolia.ui.vaadin.integration.widget.historian.HistorianWidgetset</Vaadin-Widgetsets>
+              <Vaadin-Widgetsets>info.magnolia.ui.vaadin.integration.widget.VaadinIntegrationWidgetset</Vaadin-Widgetsets>
             </manifestEntries>
           </archive>
         </configuration>

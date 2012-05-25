@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,42 +31,41 @@
  * intact.
  *
  */
-package info.magnolia.m5admincentral.app;
+package info.magnolia.ui.vaadin.integration.widget.client;
 
-import info.magnolia.ui.framework.activity.AbstractActivity;
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.view.ViewPort;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
+import com.vaadin.terminal.gwt.client.ApplicationConnection;
+import com.vaadin.terminal.gwt.client.UIDL;
+import com.vaadin.terminal.gwt.client.ui.VNativeButton;
 
 /**
- * Abstract presenter for app views.
- * 
+ * Client side impl of AppButton.
  * @author p4elkin
- * 
- * @param <T>
+ *
  */
-public abstract class AbstractAppActivity<T extends AppPresenter<T>> extends AbstractActivity implements AppPresenter<T> {
+public class VAppButton extends VNativeButton {
 
-    private AppView<T> view;
-
-    private String name;
-
-    public AbstractAppActivity(AppView<T> view) {
-        this.view = view;
+    private Element divet = DOM.createDiv();
+    
+    public VAppButton() {
+        super();   
+        divet.addClassName("divet");
     }
-
+    
     @Override
-    public void start(ViewPort viewPort, EventBus eventBus) {
-        view.setPresenter(getReference());
-        viewPort.setView(view);
+    public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
+        super.updateFromUIDL(uidl, client);
+        if (uidl.hasAttribute("active")) {
+            setActive(uidl.getBooleanAttribute("active"));
+        }
     }
 
-    @Override
-    public String getName() {
-        return name;
+    private void setActive(boolean isActive) {
+        if (isActive && !getElement().isOrHasChild(divet)) {
+            getElement().appendChild(divet);
+        } else if (!isActive && getElement().isOrHasChild(divet)) {
+            getElement().removeChild(divet);
+        }
     }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
 }

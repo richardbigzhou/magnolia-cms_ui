@@ -31,12 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.widget.historian;
+package info.magnolia.ui.vaadin.integration.widget;
+
+import info.magnolia.ui.vaadin.integration.widget.client.VHistorian;
 
 import com.vaadin.ui.ClientWidget;
 import com.vaadin.ui.ClientWidget.LoadStyle;
 import com.vaadin.ui.UriFragmentUtility;
-import info.magnolia.ui.vaadin.integration.widget.historian.client.VHistorian;
 
 /**
  * Historian.

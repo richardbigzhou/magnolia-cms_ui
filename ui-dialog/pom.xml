@@ -90,6 +90,11 @@
     </dependency>
     <dependency>
       <groupId>info.magnolia</groupId>
+      <artifactId>ui-vaadin-integration</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia</groupId>
       <artifactId>ui-tabsheet</artifactId>
       <version>${project.version}</version>
     </dependency>

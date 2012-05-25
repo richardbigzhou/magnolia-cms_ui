@@ -3,7 +3,7 @@
 <module>
 	<!-- WS Compiler: manually edited -->
     <inherits name="com.vaadin.terminal.gwt.DefaultWidgetSet" />
-    <inherits name="info.magnolia.ui.vaadin.integration.widget.historian.HistorianWidgetset" />
+    <inherits name="info.magnolia.ui.vaadin.integration.widget.VaadinIntegrationWidgetset" />
     <inherits name="info.magnolia.m5vaadin.shell.gwt.MagnoliaShellWidgetSet" />
     <inherits name="org.vaadin.addon.jquerywrapper.JquerywrapperWidgetset" />
     <inherits name="info.magnolia.m5vaadin.tabsheet.M5TabsheetWidgetSet" />
