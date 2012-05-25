@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,25 +31,23 @@
  * intact.
  *
  */
-package info.magnolia.m5admincentral.app;
+package info.magnolia.ui.widget.magnoliashell.gwt.client.event.handler;
 
-import info.magnolia.ui.widget.magnoliashell.ShellView;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.event.AppActivatedEvent;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.event.ShellAppNavigationEvent;
 
-import com.vaadin.ui.ComponentContainer;
 
 /**
- * Gen app view.
- * @author p4elkin
+ * Helper class in case somebody doesn't want to implement all the methods of the interface.
+ * @author apchelintcev
  *
- * @param <T>
  */
-public interface AppView<T extends AppPresenter<T>> extends ShellView {
+public class ShellNavigationAdapter implements ShellNavigationHandler {
 
-    void addTab(final ComponentContainer cc, String caption);
-    
-    void closeTab(final ComponentContainer cc);
-    
-    void setPresenter(final T presenter);
-    
-    T getPresenter();
+    @Override
+    public void onShellAppNavigation(ShellAppNavigationEvent event) {}
+
+    @Override
+    public void onAppActivated(AppActivatedEvent event) {}
+
 }

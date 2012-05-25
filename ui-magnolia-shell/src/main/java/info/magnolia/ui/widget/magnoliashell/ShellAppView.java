@@ -31,25 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.m5admincentral.app;
-
-import info.magnolia.ui.widget.magnoliashell.ShellView;
-
-import com.vaadin.ui.ComponentContainer;
+package info.magnolia.ui.widget.magnoliashell;
 
 /**
- * Gen app view.
- * @author p4elkin
+ * Shell apps capable view.
+ * @author apchelintcev
  *
- * @param <T>
  */
-public interface AppView<T extends AppPresenter<T>> extends ShellView {
+public interface ShellAppView extends ShellView {
 
-    void addTab(final ComponentContainer cc, String caption);
-    
-    void closeTab(final ComponentContainer cc);
-    
-    void setPresenter(final T presenter);
-    
-    T getPresenter();
 }

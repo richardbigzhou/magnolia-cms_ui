@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,25 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.m5admincentral.app;
+package info.magnolia.ui.widget.magnoliashell.gwt.client.event.handler;
 
-import info.magnolia.ui.widget.magnoliashell.ShellView;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.event.ViewportCloseEvent;
 
-import com.vaadin.ui.ComponentContainer;
+import com.google.gwt.event.shared.EventHandler;
+
 
 /**
- * Gen app view.
- * @author p4elkin
+ * Handler of the {@link ViewportCloseEvent}.
+ * @author apchelintcev
  *
- * @param <T>
  */
-public interface AppView<T extends AppPresenter<T>> extends ShellView {
-
-    void addTab(final ComponentContainer cc, String caption);
-    
-    void closeTab(final ComponentContainer cc);
-    
-    void setPresenter(final T presenter);
-    
-    T getPresenter();
+public interface ViewportCloseHandler extends EventHandler {
+    void onViewportClose(final ViewportCloseEvent event);
 }

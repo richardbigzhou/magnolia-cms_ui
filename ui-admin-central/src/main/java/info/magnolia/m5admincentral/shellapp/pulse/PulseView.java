@@ -33,7 +33,7 @@
  */
 package info.magnolia.m5admincentral.shellapp.pulse;
 
-import info.magnolia.m5vaadin.ShellAppView;
+import info.magnolia.ui.widget.magnoliashell.ShellAppView;
 
 /**
  * View for pulse.

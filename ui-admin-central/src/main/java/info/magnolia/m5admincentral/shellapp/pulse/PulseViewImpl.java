@@ -36,8 +36,8 @@ package info.magnolia.m5admincentral.shellapp.pulse;
 
 import info.magnolia.m5admincentral.components.ActivityItem;
 import info.magnolia.m5admincentral.components.SplitFeed;
-import info.magnolia.m5vaadin.IsVaadinComponent;
-import info.magnolia.m5vaadin.shell.gwt.client.VMainLauncher.ShellAppType;
+import info.magnolia.ui.widget.magnoliashell.IsVaadinComponent;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
 import info.magnolia.ui.widget.tabsheet.ShellTab;
 import info.magnolia.ui.widget.tabsheet.ShellTabSheet;
 

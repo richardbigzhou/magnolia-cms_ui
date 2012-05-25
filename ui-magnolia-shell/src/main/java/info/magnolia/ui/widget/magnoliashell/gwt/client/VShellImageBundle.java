@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,25 +31,29 @@
  * intact.
  *
  */
-package info.magnolia.m5admincentral.app;
+package info.magnolia.ui.widget.magnoliashell.gwt.client;
 
-import info.magnolia.ui.widget.magnoliashell.ShellView;
-
-import com.vaadin.ui.ComponentContainer;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.resources.client.ImageResource;
 
 /**
- * Gen app view.
- * @author p4elkin
+ * Image bundle.
+ * @author apchelintcev
  *
- * @param <T>
  */
-public interface AppView<T extends AppPresenter<T>> extends ShellView {
-
-    void addTab(final ComponentContainer cc, String caption);
+public interface VShellImageBundle extends ClientBundle {
     
-    void closeTab(final ComponentContainer cc);
+    final static String imgPath = "info/magnolia/ui/widget/magnoliashell/gwt/public/MagnoliaShell/img/";
     
-    void setPresenter(final T presenter);
+    final static VShellImageBundle BUNDLE = GWT.create(VShellImageBundle.class);
     
-    T getPresenter();
+    @Source(imgPath + "logo-magnolia-120x30.png")
+    public ImageResource getLogo();
+    
+    @Source(imgPath + "style-divet-header-up-white.png")
+    public ImageResource getDivetWhite();
+    
+    @Source(imgPath + "style-divet-header-up-green.png")
+    public ImageResource getDivetGreen();
 }

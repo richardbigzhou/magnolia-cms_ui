@@ -31,25 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.m5admincentral.app;
+package info.magnolia.ui.widget.magnoliashell;
 
-import info.magnolia.ui.widget.magnoliashell.ShellView;
+import java.io.Serializable;
 
-import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.Component;
 
 /**
- * Gen app view.
- * @author p4elkin
+ * Stub interface just to resolve the compilation of the test. 
+ * @author apchelintcev
  *
- * @param <T>
  */
-public interface AppView<T extends AppPresenter<T>> extends ShellView {
-
-    void addTab(final ComponentContainer cc, String caption);
-    
-    void closeTab(final ComponentContainer cc);
-    
-    void setPresenter(final T presenter);
-    
-    T getPresenter();
+public interface IsVaadinComponent extends Serializable {
+    Component asVaadinComponent();
 }

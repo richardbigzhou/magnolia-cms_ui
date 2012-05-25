@@ -35,8 +35,8 @@ package info.magnolia.m5admincentral.shellapp.favorites;
 
 import info.magnolia.m5admincentral.components.SplitFeed;
 import info.magnolia.m5admincentral.components.SplitFeed.FeedSection;
-import info.magnolia.m5vaadin.IsVaadinComponent;
-import info.magnolia.m5vaadin.shell.gwt.client.VMainLauncher.ShellAppType;
+import info.magnolia.ui.widget.magnoliashell.IsVaadinComponent;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;

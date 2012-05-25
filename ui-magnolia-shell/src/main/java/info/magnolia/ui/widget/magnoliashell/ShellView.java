@@ -31,25 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.m5admincentral.app;
+package info.magnolia.ui.widget.magnoliashell;
 
-import info.magnolia.ui.widget.magnoliashell.ShellView;
-
-import com.vaadin.ui.ComponentContainer;
+import info.magnolia.ui.framework.view.View;
 
 /**
- * Gen app view.
- * @author p4elkin
+ * View used within MagnoliaShell.
+ * @author apchelintcev
  *
- * @param <T>
  */
-public interface AppView<T extends AppPresenter<T>> extends ShellView {
-
-    void addTab(final ComponentContainer cc, String caption);
+public interface ShellView extends View {
     
-    void closeTab(final ComponentContainer cc);
+    String getAppName();
     
-    void setPresenter(final T presenter);
-    
-    T getPresenter();
 }

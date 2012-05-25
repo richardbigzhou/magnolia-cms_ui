@@ -35,8 +35,8 @@ package info.magnolia.m5admincentral.shellapp.applauncher;
 
 import info.magnolia.m5admincentral.app.AppCategory;
 import info.magnolia.m5admincentral.app.AppDescriptor;
-import info.magnolia.m5vaadin.IsVaadinComponent;
-import info.magnolia.m5vaadin.shell.gwt.client.VMainLauncher.ShellAppType;
+import info.magnolia.ui.widget.magnoliashell.IsVaadinComponent;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
 import info.magnolia.ui.vaadin.integration.widget.AppButton;
 
 import java.util.HashMap;

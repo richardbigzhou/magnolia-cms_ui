@@ -35,7 +35,7 @@ package info.magnolia.m5admincentral.shellapp.applauncher;
 
 import info.magnolia.m5admincentral.app.AppCategory;
 import info.magnolia.m5admincentral.app.AppDescriptor;
-import info.magnolia.m5vaadin.ShellAppView;
+import info.magnolia.ui.widget.magnoliashell.ShellAppView;
 
 /**
  * View for the app launcher.

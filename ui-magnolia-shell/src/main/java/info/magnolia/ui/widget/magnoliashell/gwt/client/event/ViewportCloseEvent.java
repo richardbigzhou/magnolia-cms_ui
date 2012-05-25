@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,25 +31,38 @@
  * intact.
  *
  */
-package info.magnolia.m5admincentral.app;
+package info.magnolia.ui.widget.magnoliashell.gwt.client.event;
 
-import info.magnolia.ui.widget.magnoliashell.ShellView;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.VShellViewport;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.event.handler.ViewportCloseHandler;
 
-import com.vaadin.ui.ComponentContainer;
+import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * Gen app view.
- * @author p4elkin
- *
- * @param <T>
+ * Event fired when the viewport is closed.
+ * @author apchelintcev
  */
-public interface AppView<T extends AppPresenter<T>> extends ShellView {
+public class ViewportCloseEvent extends GwtEvent<ViewportCloseHandler>{
 
-    void addTab(final ComponentContainer cc, String caption);
-    
-    void closeTab(final ComponentContainer cc);
-    
-    void setPresenter(final T presenter);
-    
-    T getPresenter();
+    public static final Type<ViewportCloseHandler> TYPE = new Type<ViewportCloseHandler>();
+
+    private final VShellViewport viewport;
+
+    public ViewportCloseEvent(final VShellViewport viewport) {
+        this.viewport = viewport;
+    }
+
+    @Override
+    protected void dispatch(ViewportCloseHandler handler) {
+        handler.onViewportClose(this);
+    }
+
+    @Override
+    public GwtEvent.Type<ViewportCloseHandler> getAssociatedType() {
+        return TYPE;
+    };
+
+    public VShellViewport getViewport() {
+        return viewport;
+    }
 }

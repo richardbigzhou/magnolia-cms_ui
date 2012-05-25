@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,25 +31,22 @@
  * intact.
  *
  */
-package info.magnolia.m5admincentral.app;
+package info.magnolia.ui.widget.magnoliashell.gwt.client.event.handler;
 
-import info.magnolia.ui.widget.magnoliashell.ShellView;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.event.AppActivatedEvent;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.event.ShellAppNavigationEvent;
 
-import com.vaadin.ui.ComponentContainer;
+import com.google.gwt.event.shared.EventHandler;
 
 /**
- * Gen app view.
+ * Event handler for the header controls events. 
  * @author p4elkin
  *
- * @param <T>
  */
-public interface AppView<T extends AppPresenter<T>> extends ShellView {
+public interface ShellNavigationHandler extends EventHandler {
 
-    void addTab(final ComponentContainer cc, String caption);
+    void onShellAppNavigation(final ShellAppNavigationEvent event);
     
-    void closeTab(final ComponentContainer cc);
+    void onAppActivated(final AppActivatedEvent event);
     
-    void setPresenter(final T presenter);
-    
-    T getPresenter();
 }

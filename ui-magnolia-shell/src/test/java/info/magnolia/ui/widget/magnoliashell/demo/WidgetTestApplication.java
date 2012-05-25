@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,25 +31,30 @@
  * intact.
  *
  */
-package info.magnolia.m5admincentral.app;
+package info.magnolia.ui.widget.magnoliashell.demo;
 
-import info.magnolia.ui.widget.magnoliashell.ShellView;
-
-import com.vaadin.ui.ComponentContainer;
+import com.vaadin.Application;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 
 /**
- * Gen app view.
- * @author p4elkin
- *
- * @param <T>
+ * Test app for the shell development.
+ * 
+ * @author apchelintcev
+ * 
  */
-public interface AppView<T extends AppPresenter<T>> extends ShellView {
+@SuppressWarnings("serial")
+public class WidgetTestApplication extends Application {
+    
+    private Window window;
 
-    void addTab(final ComponentContainer cc, String caption);
-    
-    void closeTab(final ComponentContainer cc);
-    
-    void setPresenter(final T presenter);
-    
-    T getPresenter();
+    @Override
+    public void init() {
+        setTheme("testtheme");
+        window = new Window("Magnolia shell test");
+        window.getContent().setSizeFull();
+        ((VerticalLayout) window.getContent()).setMargin(false);
+        setMainWindow(window);
+    }
+   
 }

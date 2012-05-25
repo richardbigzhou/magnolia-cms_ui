@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,25 +31,56 @@
  * intact.
  *
  */
-package info.magnolia.m5admincentral.app;
+package info.magnolia.ui.widget.magnoliashell.gwt.client.event;
 
-import info.magnolia.ui.widget.magnoliashell.ShellView;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.event.handler.ShellNavigationHandler;
 
-import com.vaadin.ui.ComponentContainer;
+import com.google.gwt.event.shared.GwtEvent;
+
 
 /**
- * Gen app view.
- * @author p4elkin
+ * Shell app loaded event.
+ * @author apchelintcev
  *
- * @param <T>
  */
-public interface AppView<T extends AppPresenter<T>> extends ShellView {
+public class AppActivatedEvent extends GwtEvent<ShellNavigationHandler>{
 
-    void addTab(final ComponentContainer cc, String caption);
+    public static final Type<ShellNavigationHandler> TYPE = new Type<ShellNavigationHandler>();
     
-    void closeTab(final ComponentContainer cc);
+    private final boolean isShellApp;
     
-    void setPresenter(final T presenter);
+    private final String token;
     
-    T getPresenter();
+    private final String appTitle;
+    
+    
+    public AppActivatedEvent(boolean isShellApp, final String token, final String title) {
+        this.isShellApp = isShellApp;
+        this.token = token;
+        this.appTitle = title;
+    }
+    
+    
+    public String getAppTitle() {
+        return appTitle;
+    }
+    
+    public String getToken() {
+        return token;
+    }
+    
+    public boolean isShellApp() {
+        return isShellApp;
+    }
+    
+    @Override
+    public Type<ShellNavigationHandler> getAssociatedType() {
+        return TYPE;
+    }
+
+    @Override
+    protected void dispatch(ShellNavigationHandler handler) {
+        handler.onAppActivated(this);
+    }
+
 }

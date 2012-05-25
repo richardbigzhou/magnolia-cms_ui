@@ -35,7 +35,7 @@ package info.magnolia.m5admincentral.dialog;
 
 import com.vaadin.ui.ComponentContainer;
 
-import info.magnolia.m5vaadin.IsVaadinComponent;
+import info.magnolia.ui.widget.magnoliashell.IsVaadinComponent;
 
 
 /**

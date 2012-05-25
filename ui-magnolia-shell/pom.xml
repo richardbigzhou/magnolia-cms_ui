@@ -30,7 +30,7 @@
             </manifest>
             <manifestEntries>
               <Vaadin-Package-Version>1</Vaadin-Package-Version>
-              <Vaadin-Widgetsets>org.m5.magnolia.shell.gwt.MagnoliaShellWidgetSet</Vaadin-Widgetsets>
+              <Vaadin-Widgetsets>info.magnolia.ui.widget.magnoliashell.gwt.MagnoliaShellWidgetSet</Vaadin-Widgetsets>
             </manifestEntries>
           </archive>
         </configuration>

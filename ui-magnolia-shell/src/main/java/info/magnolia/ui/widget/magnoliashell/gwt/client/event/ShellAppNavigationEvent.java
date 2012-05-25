@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,25 +31,47 @@
  * intact.
  *
  */
-package info.magnolia.m5admincentral.app;
+package info.magnolia.ui.widget.magnoliashell.gwt.client.event;
 
-import info.magnolia.ui.widget.magnoliashell.ShellView;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.event.handler.ShellNavigationHandler;
 
-import com.vaadin.ui.ComponentContainer;
+import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * Gen app view.
- * @author p4elkin
- *
- * @param <T>
+ * Navigation event fired when the controls in the headers are triggered.
+ * 
+ * @author apchelintcev
+ * 
  */
-public interface AppView<T extends AppPresenter<T>> extends ShellView {
+public class ShellAppNavigationEvent extends GwtEvent<ShellNavigationHandler> {
+    
+    public static Type<ShellNavigationHandler> TYPE = new Type<ShellNavigationHandler>();
 
-    void addTab(final ComponentContainer cc, String caption);
+    private ShellAppType type;
     
-    void closeTab(final ComponentContainer cc);
+    private String parameters;
     
-    void setPresenter(final T presenter);
+    public ShellAppNavigationEvent(final ShellAppType type, final String token) {
+        this.parameters = token;
+        this.type = type;
+    }
     
-    T getPresenter();
+    @Override
+    protected void dispatch(ShellNavigationHandler handler) {
+        handler.onShellAppNavigation(this);
+    }
+
+    @Override
+    public GwtEvent.Type<ShellNavigationHandler> getAssociatedType() {
+        return TYPE;
+    }
+    
+    public ShellAppType getType() {
+        return type;
+    }
+    
+    public String getParameters() {
+        return parameters;
+    }
 }
