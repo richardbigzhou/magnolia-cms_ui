@@ -31,55 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.m5admincentral.framework;
+package info.magnolia.ui.dummy;
 
-import info.magnolia.m5vaadin.IsVaadinComponent;
-import info.magnolia.m5vaadin.tabsheet.ShellTab;
-import info.magnolia.m5vaadin.tabsheet.ShellTabSheet;
-
-import com.vaadin.ui.Component;
-import com.vaadin.ui.ComponentContainer;
+import info.magnolia.m5admincentral.app.AppPresenter;
 
 /**
- * Base class for app view implementations.
- * @author apchelintcev
+ * Dummy presenter.
+ * @author p4elkin
+ *
  */
-@SuppressWarnings("serial")
-public abstract class AppViewImpl implements AppView, IsVaadinComponent {
-    
-    private ShellTabSheet tabsheet = new ShellTabSheet();
-   
-    private Presenter presenter;
-    
-    public AppViewImpl() {
-        tabsheet.setSizeFull();
-    }
-    
-    protected Presenter getPresenter() {
-        return presenter;
-    }
-    
-    @Override
-    public void addTab(ComponentContainer cc, String caption) {
-        final ShellTab tab = new ShellTab(caption, cc);
-        tabsheet.addComponent(tab);
-        tabsheet.setTabClosable(tab, true);
-        tabsheet.setActiveTab(tab);
-    }
-
-    @Override
-    public void closeTab(ComponentContainer c) {
-        tabsheet.removeComponent(c);
-    }
-    
-    @Override
-    public Component asVaadinComponent() {
-        return tabsheet;
-    }
-    
-    @Override
-    public void setPresenter(Presenter presenter) {
-        this.presenter = presenter;
-    }
+public interface DummyPresenter extends AppPresenter<DummyPresenter> {
 
 }

@@ -31,60 +31,65 @@
  * intact.
  *
  */
-package info.magnolia.m5admincentral.framework;
+package info.magnolia.m5admincentral.app;
 
-import info.magnolia.m5admincentral.app.AppController;
-import info.magnolia.m5admincentral.shellapp.applauncher.AppLauncherPlace;
-import info.magnolia.ui.framework.activity.AbstractActivity;
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.place.PlaceController;
-import info.magnolia.ui.framework.view.ViewPort;
+import info.magnolia.m5vaadin.IsVaadinComponent;
+import info.magnolia.m5vaadin.tabsheet.ShellTab;
+import info.magnolia.m5vaadin.tabsheet.ShellTabSheet;
 
-import javax.inject.Inject;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.ComponentContainer;
+
 
 /**
- * App activity.
+ * App view impl.
+ * 
+ * @author p4elkin
+ * @param <T>
+ *            recursive generic param.
  */
-public abstract class AppActivity extends AbstractActivity implements AppView.Presenter {
+@SuppressWarnings("serial")
+public abstract class AbstractAppView<T extends AppPresenter<T>> implements AppView<T>, IsVaadinComponent {
 
-    private String name;
+    private T presenter;
+
+    private ShellTabSheet tabsheet = new ShellTabSheet();
     
-    private AppController controller;
-    
-    private PlaceController placeController;
-    
-    private AppView view;
-    
-    public AppActivity(final AppView view) {
-        this.view = view;
+    public AbstractAppView() {
+        super();
+        tabsheet.setSizeFull();
     }
     
-    public void setName(String name) {
-        this.name = name;
+    @Override
+    public T getPresenter() {
+        return presenter;
+    }
+
+    @Override
+    public void setPresenter(T presenter) {
+        this.presenter = presenter;
     }
     
+    @Override
     public String getName() {
-        return name;
-    }
-   
-    @Inject
-    public void setAppController(final AppController appController) {
-        this.controller = appController;
-    }
-    
-    @Inject
-    public void setPlaceController(final PlaceController placeController) {
-        this.placeController = placeController;
+        return presenter.getName();
     }
     
     @Override
-    public void close() {
-        controller.stopApplication(name);
-        placeController.goTo(new AppLauncherPlace("pulse"));
+    public void addTab(ComponentContainer cc, String caption) {
+        final ShellTab tab = new ShellTab(caption, cc);
+        tabsheet.addComponent(tab);
+        tabsheet.setTabClosable(tab, true);
+        tabsheet.setActiveTab(tab);
+    }
+
+    @Override
+    public void closeTab(ComponentContainer cc) {
+        tabsheet.removeComponent(cc);   
     }
     
     @Override
-    public void start(ViewPort viewPort, EventBus eventBus) {
-        view.setPresenter(this);
+    public Component asVaadinComponent() {
+        return tabsheet;
     }
 }

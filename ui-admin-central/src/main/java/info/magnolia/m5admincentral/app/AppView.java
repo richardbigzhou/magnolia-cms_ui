@@ -31,13 +31,25 @@
  * intact.
  *
  */
-package info.magnolia.m5vaadin;
+package info.magnolia.m5admincentral.app;
+
+import info.magnolia.m5vaadin.ShellView;
+
+import com.vaadin.ui.ComponentContainer;
 
 /**
- * Apps capable view.
- * @author apchelintcev
+ * Gen app view.
+ * @author p4elkin
  *
+ * @param <T>
  */
-public interface AppView extends ShellView {
+public interface AppView<T extends AppPresenter<T>> extends ShellView {
 
+    void addTab(final ComponentContainer cc, String caption);
+    
+    void closeTab(final ComponentContainer cc);
+    
+    void setPresenter(final T presenter);
+    
+    T getPresenter();
 }

@@ -33,9 +33,7 @@
  */
 package info.magnolia.m5admincentral.app.pages;
 
-import info.magnolia.m5admincentral.framework.AppActivity;
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.view.ViewPort;
+import info.magnolia.m5admincentral.app.AbstractAppActivity;
 
 import javax.inject.Inject;
 
@@ -44,29 +42,15 @@ import javax.inject.Inject;
  *
  * @version $Id$
  */
-public class PagesActivity extends AppActivity implements PagesView.Presenter {
-
-    private final PagesView view;
+public class PagesActivity extends AbstractAppActivity<PagesPresenter> implements PagesPresenter {
 
     @Inject
     public PagesActivity(PagesView view) {
         super(view);
-        this.view = view;
     }
 
     @Override
-    public void start(ViewPort viewPort, EventBus eventBus) {
-        super.start(viewPort, eventBus);
-        viewPort.setView(view);
-    }
-    
-    @Override
-    public String mayStop() {
-        return super.mayStop();
-    }
-    
-    @Override
-    public void onStop() {
-        super.onStop();
+    public PagesPresenter getReference() {
+        return this;
     }
 }

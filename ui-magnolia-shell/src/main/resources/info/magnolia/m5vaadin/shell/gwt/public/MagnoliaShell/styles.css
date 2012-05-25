@@ -4,6 +4,7 @@
 .btn-shell > span {
 	display: block;
 	padding-top: 45px;
+	font-family: DinRound,Arial;
 }
 
 .btn-shell:hover,.btn-shell.active {

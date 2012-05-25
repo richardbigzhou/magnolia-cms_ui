@@ -33,25 +33,14 @@
  */
 package info.magnolia.m5admincentral.app.dialog;
 
-import info.magnolia.m5vaadin.AppView;
-import info.magnolia.m5vaadin.IsVaadinComponent;
+import info.magnolia.m5admincentral.app.AppView;
 
 /**
  * View for the Pages app.
  *
  * @version $Id$
  */
-public interface DialogTestView extends AppView, IsVaadinComponent {
+public interface DialogTestView extends AppView<DialogTestPresenter> {
 
-    /**
-     * Presenter.
-     *
-     */
-    public interface Presenter {
-
-        void openDialog();
-    }
-
-    void setPresenter(Presenter presenter);
 
 }

@@ -199,7 +199,9 @@ public class VShellViewport extends ComplexPanel implements Container, Container
 
     protected void setWidgetVisible(final Widget w) {
         if (hasChildComponent(w)) {
-            hideCurrentContent();
+            if (w != visibleWidget) {
+                hideCurrentContent();   
+            }
             final Element el = w.getElement();
             final Style style = el.getStyle();
             el.appendChild(closeWrapper);

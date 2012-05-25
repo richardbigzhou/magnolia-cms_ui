@@ -34,19 +34,15 @@
 package info.magnolia.m5admincentral.app;
 
 /**
- * Manages apps running for a single user.
+ * App presenter interface.
+ * @author p4elkin
  *
- * @version $Id$
+ * @param <T>
  */
-public interface AppController {
-    
-    AppDescriptor getAppDescriptor(final AppLifecycle app);
-    
-    void startIfNotAlreadyRunning(String name);
+public interface AppPresenter<T extends AppPresenter<T>> {
 
-    void startIfNotAlreadyRunningThenFocus(String name);
-
-    void stopApplication(String name);
+    String getName();
     
-    void stopCurrentApplication();
+    T getReference();
+    
 }

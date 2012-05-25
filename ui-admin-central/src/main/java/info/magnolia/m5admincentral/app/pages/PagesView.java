@@ -33,7 +33,7 @@
  */
 package info.magnolia.m5admincentral.app.pages;
 
-import info.magnolia.m5admincentral.framework.AppView;
+import info.magnolia.m5admincentral.app.AppView;
 
 
 
@@ -42,12 +42,7 @@ import info.magnolia.m5admincentral.framework.AppView;
  *
  * @version $Id$
  */
-public interface PagesView extends AppView {
+public interface PagesView extends AppView<PagesPresenter> {
 
-    /**
-     * Presenter. 
-     */
-    public interface Presenter extends AppView.Presenter {
-        
-    }
+
 }

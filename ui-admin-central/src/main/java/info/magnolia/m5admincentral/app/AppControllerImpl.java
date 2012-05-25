@@ -37,6 +37,8 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.framework.event.Event;
 import info.magnolia.ui.framework.event.EventBus;
 
+import java.util.LinkedList;
+
 import javax.inject.Singleton;
 
 import org.apache.commons.collections.BidiMap;
@@ -59,11 +61,15 @@ public class AppControllerImpl implements AppController {
     private AppRegistry appRegistry;
 
     private ComponentProvider componentProvider;
-
+    
     protected EventBus eventBus;
 
+    /**
+     * AppDescriptor <-> AppLifecycle mapping.
+     */
     private BidiMap runningApps = new DualHashBidiMap();
 
+    private LinkedList<AppLifecycle> appHistory = new LinkedList<AppLifecycle>();
 
     @Inject
     public AppControllerImpl(AppRegistry appRegistry, ComponentProvider componentProvider, EventBus eventBus) {
@@ -80,7 +86,12 @@ public class AppControllerImpl implements AppController {
     @Override
     public void startIfNotAlreadyRunningThenFocus(String name) {
         final AppLifecycle lifecycle = doStart(name);
+        activateApp(lifecycle);
+    }
+
+    private void activateApp(final AppLifecycle lifecycle) {
         lifecycle.focus();
+        appHistory.offerFirst(lifecycle);
         sendEvent(new AppLifecycleEvent(lifecycle, AppEventType.FOCUS_EVENT));
     }
 
@@ -102,17 +113,6 @@ public class AppControllerImpl implements AppController {
     }
 
     @Override
-    public AppLifecycle getLifecycleByName(String name) {
-        for (final Object obj : runningApps.keySet()) {
-            final AppDescriptor descriptor = (AppDescriptor)obj;
-            if (descriptor.getName().equals(name)) {
-                return (AppLifecycle)runningApps.get(obj);
-            }
-        }
-        return null;
-    }
-
-    @Override
     public void stopApplication(String name) {
         doStop(name);
     }
@@ -122,8 +122,19 @@ public class AppControllerImpl implements AppController {
         AppLifecycle lifecycle = (AppLifecycle)runningApps.get(descriptor);
         if (lifecycle != null) {
             lifecycle.stop();
+            boolean wasPresentInHistory = true;
+            while (wasPresentInHistory) {   
+                wasPresentInHistory = appHistory.remove(lifecycle);
+            }
             runningApps.remove(descriptor);
             sendEvent(new AppLifecycleEvent(lifecycle, AppEventType.STOP_EVENT));
+            startLatestLoadedApp();
+        }
+    }
+
+    private void startLatestLoadedApp() {
+        if (!appHistory.isEmpty()) {
+            activateApp(appHistory.peek());
         }
     }
 
@@ -133,5 +144,13 @@ public class AppControllerImpl implements AppController {
     private void sendEvent(Event<? extends AppLifecycleEventHandler>  event) {
         log.debug("AppControlelr: send Event "+event.getClass().getName());
         eventBus.fireEvent(event);
+    }
+
+    @Override
+    public void stopCurrentApplication() {
+        final AppLifecycle app = appHistory.peek();
+        if (app != null) {
+            stopApplication(((AppDescriptor)runningApps.getKey(app)).getName());
+        }
     }
 }

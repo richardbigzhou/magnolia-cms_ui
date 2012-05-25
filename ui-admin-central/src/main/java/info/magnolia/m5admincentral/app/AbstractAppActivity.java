@@ -33,20 +33,41 @@
  */
 package info.magnolia.m5admincentral.app;
 
+import info.magnolia.ui.framework.activity.AbstractActivity;
+import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.view.ViewPort;
+
+
 /**
- * Manages apps running for a single user.
+ * Abstract presenter for app views.
+ * @author p4elkin
  *
- * @version $Id$
+ * @param <T>
  */
-public interface AppController {
+public abstract class AbstractAppActivity<T extends AppPresenter<T>> extends AbstractActivity 
+    implements AppPresenter<T> {
     
-    AppDescriptor getAppDescriptor(final AppLifecycle app);
+    private AppView<T> view;
     
-    void startIfNotAlreadyRunning(String name);
+    private String name;
+    
+    public AbstractAppActivity(AppView<T> view) {
+        this.view = view;
+    }
+    
+    @Override
+    public void start(ViewPort viewPort, EventBus eventBus) {
+        view.setPresenter(getReference());
+        viewPort.setView(view);
+    }
+    
+    @Override
+    public String getName() {
+        return name;
+    }
+    
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    void startIfNotAlreadyRunningThenFocus(String name);
-
-    void stopApplication(String name);
-    
-    void stopCurrentApplication();
 }

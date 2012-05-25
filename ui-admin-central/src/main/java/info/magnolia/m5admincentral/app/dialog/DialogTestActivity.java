@@ -33,11 +33,9 @@
  */
 package info.magnolia.m5admincentral.app.dialog;
 
+import info.magnolia.m5admincentral.app.AbstractAppActivity;
 import info.magnolia.m5admincentral.dialog.DialogPresenter;
 import info.magnolia.m5admincentral.dialog.DialogPresenterFactory;
-import info.magnolia.ui.framework.activity.AbstractActivity;
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.view.ViewPort;
 
 import javax.inject.Inject;
 
@@ -46,26 +44,24 @@ import javax.inject.Inject;
  *
  * @version $Id$
  */
-public class DialogTestActivity extends AbstractActivity implements DialogTestView.Presenter {
-
-    private final DialogTestView view;
+public class DialogTestActivity extends AbstractAppActivity<DialogTestPresenter> implements DialogTestPresenter {
+    
     private DialogPresenterFactory factory;
 
     @Inject
     public DialogTestActivity(DialogTestView view, DialogPresenterFactory factory) {
-        this.view = view;
+        super(view);
         this.factory = factory;
-    }
-
-    @Override
-    public void start(ViewPort viewPort, EventBus eventBus) {
-        viewPort.setView(view);
-        view.setPresenter(this);
     }
 
     @Override
     public void openDialog() {
         DialogPresenter presenter = factory.createDialog("testDialog");
         presenter.showDialog();
+    }
+
+    @Override
+    public DialogTestPresenter getReference() {
+        return this;
     }
 }

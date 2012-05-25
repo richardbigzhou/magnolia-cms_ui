@@ -33,13 +33,13 @@
  */
 package info.magnolia.m5admincentral.app.assets;
 
-import info.magnolia.m5vaadin.AppView;
+import info.magnolia.m5admincentral.app.AppView;
 
 /**
  * View for the Assets app.
  *
  * @version $Id$
  */
-public interface AssetsView extends AppView {
+public interface AssetsView extends AppView<AssetsAppPresenter> {
 
 }

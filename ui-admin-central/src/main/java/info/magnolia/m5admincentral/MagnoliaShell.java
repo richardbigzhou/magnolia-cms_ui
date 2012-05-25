@@ -33,18 +33,18 @@
  */
 package info.magnolia.m5admincentral;
 
+import info.magnolia.m5admincentral.app.AppController;
 import info.magnolia.m5admincentral.app.AppLifecycleEvent;
 import info.magnolia.m5admincentral.app.AppLifecycleEventHandler;
-import info.magnolia.m5admincentral.framework.AppView;
 import info.magnolia.m5vaadin.IsVaadinComponent;
 import info.magnolia.m5vaadin.shell.BaseMagnoliaShell;
 import info.magnolia.m5vaadin.shell.ShellViewport;
+import info.magnolia.m5vaadin.shell.gwt.client.VMainLauncher.ShellAppType;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.event.HandlerRegistration;
 import info.magnolia.ui.framework.shell.ConfirmationHandler;
 import info.magnolia.ui.framework.shell.FragmentChangedHandler;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.framework.view.View;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -58,31 +58,34 @@ import com.vaadin.terminal.ExternalResource;
  */
 @SuppressWarnings("serial")
 @Singleton
+
 public class MagnoliaShell extends BaseMagnoliaShell implements Shell {
     
     private EventBus eventBus;
     
+    private AppController appController;
+    
     @Inject
-    public MagnoliaShell(final EventBus eventBus) {
+    public MagnoliaShell(final EventBus eventBus, final AppController appController) {
         super();
         this.eventBus = eventBus;
+        this.appController = appController;
         this.eventBus.addHandler(AppLifecycleEvent.class, new AppLifecycleEventHandler.Adapter() {
             @Override
             public void onAppFocus(AppLifecycleEvent event) {
-                setActiveViewport(getAppViewport());;
+                setActiveViewport(getAppViewport());
             }
         });
     }
     
+    
     @Override
     protected void closeCurrentApp() {
-        final ShellViewport appViewport = getAppViewport();
-        final View view = appViewport.getView();
-        if (view instanceof AppView) {
-            ((AppView)view).detachView();
-        }
         super.closeCurrentApp();
-        setFragment("");
+        appController.stopCurrentApplication();
+        if (getAppViewport().isEmpty()) {
+            navigateToShellApp(ShellAppType.APPLAUNCHER.name().toLowerCase(), "");
+        }
     }
     
     @Override

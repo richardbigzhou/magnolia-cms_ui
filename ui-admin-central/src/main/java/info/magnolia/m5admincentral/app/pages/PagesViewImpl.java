@@ -33,8 +33,7 @@
  */
 package info.magnolia.m5admincentral.app.pages;
 
-import info.magnolia.m5admincentral.MagnoliaShell;
-import info.magnolia.m5admincentral.framework.AppViewImpl;
+import info.magnolia.m5admincentral.app.AbstractAppView;
 
 import javax.inject.Inject;
 
@@ -49,10 +48,10 @@ import com.vaadin.ui.VerticalLayout;
  * @version $Id$
  */
 @SuppressWarnings("serial")
-public class PagesViewImpl extends AppViewImpl implements PagesView {
+public class PagesViewImpl extends AbstractAppView<PagesPresenter> implements PagesView {
     
     @Inject
-    public PagesViewImpl(final MagnoliaShell shell) {
+    public PagesViewImpl() {
         final VerticalLayout tableContainer = new VerticalLayout();
         tableContainer.addComponent(new Button("test", new Button.ClickListener() {
             @Override
@@ -66,13 +65,4 @@ public class PagesViewImpl extends AppViewImpl implements PagesView {
         addTab(tableContainer, "Pages");
     }
 
-    @Override
-    public String getName() {
-        return "Pages";
-    }
-
-    @Override
-    public void detachView() {
-        getPresenter().close();
-    }
 }

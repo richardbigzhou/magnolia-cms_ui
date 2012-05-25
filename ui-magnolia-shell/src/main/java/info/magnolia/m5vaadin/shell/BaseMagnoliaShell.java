@@ -228,8 +228,5 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
     
     protected void closeCurrentApp() {
         appViewport.pop();
-        if (appViewport.isEmpty()) {
-            setActiveViewport(shellAppViewport);
-        }
     }
 }

@@ -33,28 +33,24 @@
  */
 package info.magnolia.m5admincentral.app.assets;
 
-import javax.inject.Inject;
+import info.magnolia.m5admincentral.app.AbstractAppActivity;
 
-import info.magnolia.ui.framework.activity.AbstractActivity;
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.view.ViewPort;
+import javax.inject.Inject;
 
 /**
  * Activity for the Assets app.
  *
  * @version $Id$
  */
-public class AssetsActivity extends AbstractActivity {
-
-    private final AssetsView view;
+public class AssetsActivity extends AbstractAppActivity<AssetsAppPresenter> implements AssetsAppPresenter {
 
     @Inject
     public AssetsActivity(AssetsView view) {
-        this.view = view;
+        super(view);
     }
 
     @Override
-    public void start(ViewPort viewPort, EventBus eventBus) {
-        viewPort.setView(view);
+    public AssetsAppPresenter getReference() {
+        return this;
     }
 }

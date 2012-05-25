@@ -31,22 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.m5admincentral.app;
+package info.magnolia.m5admincentral.app.pages;
+
+import info.magnolia.m5admincentral.app.AppPresenter;
 
 /**
- * Manages apps running for a single user.
+ * Pages presenter.
+ * @author p4elkin
  *
- * @version $Id$
  */
-public interface AppController {
-    
-    AppDescriptor getAppDescriptor(final AppLifecycle app);
-    
-    void startIfNotAlreadyRunning(String name);
+public interface PagesPresenter extends AppPresenter<PagesPresenter> {
 
-    void startIfNotAlreadyRunningThenFocus(String name);
-
-    void stopApplication(String name);
-    
-    void stopCurrentApplication();
 }
