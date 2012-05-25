@@ -7,8 +7,8 @@
     <version>5.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-  <artifactId>ui-vaadin-integration</artifactId>
-  <name>ui-vaadin-integration</name>
+  <artifactId>magnolia-ui-vaadin-integration</artifactId>
+  <name>magnolia-ui-vaadin-integration</name>
   <dependencies>
     <dependency>
       <groupId>info.magnolia</groupId>
@@ -17,7 +17,7 @@
     </dependency>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
-      <artifactId>ui-framework</artifactId>
+      <artifactId>magnolia-ui-framework</artifactId>
       <version>${project.version}</version>
       <type>jar</type>
       <scope>compile</scope>

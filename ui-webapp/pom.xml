@@ -8,7 +8,7 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>ui-webapp</artifactId>
-  <name>ui-webapp</name>
+  <name>magnolia-ui-webapp</name>
   <packaging>war</packaging>
   <dependencies>
     <dependency>
@@ -25,17 +25,17 @@
     </dependency>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
-      <artifactId>ui-admin-central</artifactId>
+      <artifactId>magnolia-ui-admin-central</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
-      <artifactId>ui-vaadin-widgetset</artifactId>
+      <artifactId>magnolia-ui-vaadin-widgetset</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
-      <artifactId>ui-dummy-app</artifactId>
+      <artifactId>magnolia-ui-app-dummy</artifactId>
       <version>${project.version}</version>
     </dependency>
   </dependencies>

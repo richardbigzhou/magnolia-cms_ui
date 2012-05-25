@@ -7,32 +7,32 @@
     <version>5.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-  <artifactId>ui-vaadin-widgetset</artifactId>
-  <name>ui-vaadin-widgetset</name>
+  <artifactId>magnolia-ui-vaadin-widgetset</artifactId>
+  <name>magnolia-ui-vaadin-widgetset</name>
   <dependencies>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
-      <artifactId>ui-vaadin-integration</artifactId>
+      <artifactId>magnolia-ui-vaadin-integration</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
-      <artifactId>ui-magnolia-shell</artifactId>
+      <artifactId>magnolia-ui-widget-magnolia-shell</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
-      <artifactId>ui-tabsheet</artifactId>
+      <artifactId>magnolia-ui-widget-tabsheet</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
-      <artifactId>ui-jquerywrapper</artifactId>
+      <artifactId>magnolia-ui-widget-jquery-wrapper</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
-      <artifactId>ui-dialog</artifactId>
+      <artifactId>magnolia-ui-widget-dialog</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>

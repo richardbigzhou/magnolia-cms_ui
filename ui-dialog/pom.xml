@@ -7,9 +7,9 @@
     <version>5.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-  <artifactId>ui-dialog</artifactId>
+  <artifactId>magnolia-ui-widget-dialog</artifactId>
   <packaging>jar</packaging>
-  <name>ui-dialog</name>
+  <name>magnolia-ui-widget-dialog</name>
   <build>
     <plugins>
       <plugin>
@@ -85,17 +85,17 @@
     </dependency>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
-      <artifactId>ui-jquerywrapper</artifactId>
+      <artifactId>magnolia-ui-widget-jquery-wrapper</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
-      <artifactId>ui-vaadin-integration</artifactId>
+      <artifactId>magnolia-ui-vaadin-integration</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
-      <artifactId>ui-tabsheet</artifactId>
+      <artifactId>magnolia-ui-widget-tabsheet</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>

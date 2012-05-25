@@ -7,8 +7,8 @@
     <version>5.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-  <artifactId>ui-framework</artifactId>
-  <name>ui-framework</name>
+  <artifactId>magnolia-ui-framework</artifactId>
+  <name>magnolia-ui-framework</name>
   <properties>
     <cloverCoverageThreshold>3</cloverCoverageThreshold>
   </properties>

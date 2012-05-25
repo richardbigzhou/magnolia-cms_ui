@@ -10,9 +10,9 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>ui-admin-central</artifactId>
+  <artifactId>magnolia-ui-admin-central</artifactId>
   <packaging>jar</packaging>
-  <name>ui-admin-central</name>
+  <name>magnolia-ui-admin-central</name>
 
   <build>
     <plugins>
@@ -53,7 +53,7 @@
 
     <dependency>
       <groupId>info.magnolia.ui</groupId>
-      <artifactId>ui-model</artifactId>
+      <artifactId>magnolia-ui-model</artifactId>
       <version>${project.version}</version>
     </dependency>
 
@@ -70,19 +70,19 @@
 
     <dependency>
       <groupId>info.magnolia.ui</groupId>
-      <artifactId>ui-magnolia-shell</artifactId>
+      <artifactId>magnolia-ui-widget-magnolia-shell</artifactId>
       <version>${project.version}</version>
     </dependency>
 
     <dependency>
       <groupId>info.magnolia.ui</groupId>
-      <artifactId>ui-tabsheet</artifactId>
+      <artifactId>magnolia-ui-widget-tabsheet</artifactId>
       <version>${project.version}</version>
     </dependency>
 
     <dependency>
       <groupId>info.magnolia.ui</groupId>
-      <artifactId>ui-dialog</artifactId>
+      <artifactId>magnolia-ui-widget-dialog</artifactId>
       <version>${project.version}</version>
     </dependency>
 

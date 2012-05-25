@@ -7,9 +7,9 @@
     <version>23</version>
   </parent>
   <groupId>info.magnolia.ui</groupId>
-  <artifactId>ui-project</artifactId>
+  <artifactId>magnolia-ui-project</artifactId>
   <version>5.0-SNAPSHOT</version>
-  <name>ui-project</name>
+  <name>magnolia-ui-project</name>
   <packaging>pom</packaging>
   <properties>
     <magnoliaEdition>Community Edition</magnoliaEdition>

@@ -9,9 +9,9 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>ui-tabsheet</artifactId>
+  <artifactId>magnolia-ui-widget-tabsheet</artifactId>
   <packaging>jar</packaging>
-  <name>ui-tabsheet</name>
+  <name>magnolia-ui-widget-tabsheet</name>
 
   <build>
     <plugins>
