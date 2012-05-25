@@ -76,6 +76,11 @@ public class MultipleBrowserWindowsApplicationServlet extends ApplicationServlet
     private final Window kickStartWindow = new Window() {
 
         @Override
+        public String getTheme() {
+            return theme;
+        }
+
+        @Override
         public String getCaption() {
             return caption;
         }
