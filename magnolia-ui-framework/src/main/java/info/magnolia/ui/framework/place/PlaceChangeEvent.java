@@ -36,16 +36,18 @@ package info.magnolia.ui.framework.place;
 import info.magnolia.ui.framework.event.Event;
 import info.magnolia.ui.framework.event.EventHandler;
 
-
 /**
- * Fired on UI navigation.
+ * Event fired when a place change occurs.
+ *
+ * @version $Id$
  */
 public class PlaceChangeEvent implements Event<PlaceChangeEvent.Handler> {
 
     /**
-     * Listens to {@link PlaceChangeEvent}s.
+     * Handler interface for {@link PlaceChangeEvent}.
      */
     public interface Handler extends EventHandler {
+
         void onPlaceChange(PlaceChangeEvent event);
     }
 
@@ -63,5 +65,4 @@ public class PlaceChangeEvent implements Event<PlaceChangeEvent.Handler> {
     public void dispatch(Handler handler) {
         handler.onPlaceChange(this);
     }
-
 }

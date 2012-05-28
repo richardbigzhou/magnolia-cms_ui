@@ -43,20 +43,15 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-
-/* FIXME should not implement a Vaadin specific interface
- An alternative
- * to using UriFragmentUtility would be to implement our own Vaadin widget (server and client sides)
- * to mimic GWT's {@link Historian}.
- * */
 /**
- * Monitors {@link PlaceChangeEvent}s and browser's history events and keep them in sync.
- * <p>
+ * Monitors the browser history for location changes and calls the {@link PlaceController} to initiate place changes
+ * accordingly, also listens for place change events on the EventBus and updates the browser history to match.
+ *
  * Inspired by {@link com.google.gwt.place.shared.PlaceHistoryHandler}
- * @author fgrilli
+ *
+ * @version $Id$
  */
-public class PlaceHistoryHandler implements FragmentChangedHandler {
+public class PlaceHistoryHandler {
 
     private static final Logger log = LoggerFactory.getLogger(PlaceHistoryHandler.class.getName());
 
@@ -68,41 +63,27 @@ public class PlaceHistoryHandler implements FragmentChangedHandler {
 
     private Shell shell;
 
-    /**
-     * Create a new PlaceHistoryHandler.
-     *
-     * @param mapper a {@link PlaceHistoryMapper} instance
-     */
     public PlaceHistoryHandler(PlaceHistoryMapper mapper, Shell shell) {
         this.mapper = mapper;
         this.shell = shell;
     }
 
     /**
-     * Handle the current history token. Typically called at application start, to ensure bookmark
-     * launches work.
-     */
-    public void handleCurrentHistory() {
-        String fragment = shell.getFragment();
-        handleHistoryToken(StringUtils.defaultString(fragment));
-    }
-
-    @Override
-    public void onFragmentChanged(FragmentChangedEvent event) {
-        String token = event.getFragment();
-        log.debug("fragmentChanged with token {}", token);
-        handleHistoryToken(token);
-    }
-
-    /**
      * Initialize this place history handler.
-     * @return
-     *
      */
     public HandlerRegistration register(PlaceController placeController, EventBus eventBus, Place defaultPlace) {
         this.placeController = placeController;
         this.defaultPlace = defaultPlace;
-        shell.addFragmentChangedHandler(this);
+
+        shell.addFragmentChangedHandler(new FragmentChangedHandler() {
+
+            @Override
+            public void onFragmentChanged(FragmentChangedEvent event) {
+                String token = event.getFragment();
+                log.debug("fragmentChanged with token {}", token);
+                handleHistoryToken(token);
+            }
+        });
 
         return eventBus.addHandler(PlaceChangeEvent.class, new PlaceChangeEvent.Handler() {
 
@@ -113,6 +94,14 @@ public class PlaceHistoryHandler implements FragmentChangedHandler {
                 shell.setFragment(tokenForPlace(newPlace));
             }
         });
+    }
+
+    /**
+     * Handle the current history token. Typically called at application start, to ensure bookmark launches work.
+     */
+    public void handleCurrentHistory() {
+        String fragment = shell.getFragment();
+        handleHistoryToken(StringUtils.defaultString(fragment));
     }
 
     private void handleHistoryToken(String token) {
@@ -131,6 +120,7 @@ public class PlaceHistoryHandler implements FragmentChangedHandler {
             log.warn("Unrecognized history token: {}, falling back to default place...", token);
             newPlace = defaultPlace;
         }
+
         log.debug("handleHistoryToken with place {}", newPlace);
         placeController.goTo(newPlace);
     }

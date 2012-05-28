@@ -40,9 +40,10 @@ import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.shell.ConfirmationHandler;
 import info.magnolia.ui.framework.shell.Shell;
 
-
 /**
- * In charge of the user's location in the app.
+ * Manages the user's place in the app and controls place changes.
+ *
+ * @version $Id$
  */
 @Singleton
 public class PlaceController {
@@ -77,6 +78,7 @@ public class PlaceController {
         eventBus.fireEvent(willChange);
         if (willChange.getWarning() != null) {
             shell.askForConfirmation(willChange.getWarning(), new ConfirmationHandler() {
+
                 @Override
                 public void onConfirm() {
                     goToWithoutChecks(newPlace);
@@ -90,7 +92,6 @@ public class PlaceController {
         else {
             goToWithoutChecks(newPlace);
         }
-
     }
 
     protected void goToWithoutChecks(final Place newPlace) {

@@ -34,21 +34,24 @@
 package info.magnolia.ui.framework.place;
 
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Indicates the prefix to use when the token written by
- * {@link PlaceTokenizer#getToken(Place)} is written to
- * {@link UriFragmentUtility#setFragment(String)}.
- * Implementations of {@link AbstractPlaceHistoryMapper} can look
- * for this annotation to retrieve the associated PlaceTokenizer.
- * <p>
- * Copied verbatim from {@link com.google.gwt.place.shared.Prefix}
+ * Annotation used on a {@link Place} implementation to indicate the prefix to use by its {@link PlaceTokenizer}.
+ *
+ * Inspired by {@link com.google.gwt.place.shared.Prefix}.
+ *
+ * @version $Id$
+ * @see Place
+ * @see PlaceTokenizer
  */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
+@Inherited
 public @interface Prefix {
-  String value();
+
+    String value();
 }

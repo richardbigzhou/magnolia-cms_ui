@@ -45,6 +45,9 @@ public interface EventBus {
 
     <H extends EventHandler> HandlerRegistration addHandler(Class<? extends Event<H>> eventClass, H handler);
 
+    /**
+     * Fires the event on the bus (synchronously).
+     */
     <H extends EventHandler> void fireEvent(Event<H> event);
 
 }

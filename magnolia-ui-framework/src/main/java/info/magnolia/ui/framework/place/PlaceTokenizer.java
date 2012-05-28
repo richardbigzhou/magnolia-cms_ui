@@ -34,15 +34,22 @@
 package info.magnolia.ui.framework.place;
 
 /**
- * Implemented by objects responsible for text serialization and deserialization
- * of Place objects.
- * <p>
- * Copied verbatim from {@link com.google.gwt.place.shared.PlaceTokenizer}
+ * Implemented by objects responsible for text serialization and deserialization of {@link Place} objects.
+ *
+ * Inspired by {@link com.google.gwt.place.shared.PlaceTokenizer}.
  *
  * @param <P>
+ * @version $Id$
  */
 public interface PlaceTokenizer<P extends Place> {
-  P getPlace(String token);
 
-  String getToken(P place);
+    /**
+     * Deserializes the text representation of the place.
+     */
+    P getPlace(String token);
+
+    /**
+     * Serializes the place to its text representation.
+     */
+    String getToken(P place);
 }

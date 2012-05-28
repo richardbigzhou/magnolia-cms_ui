@@ -10,7 +10,7 @@
   <artifactId>magnolia-ui-framework</artifactId>
   <name>magnolia-ui-framework</name>
   <properties>
-    <cloverCoverageThreshold>6</cloverCoverageThreshold>
+    <cloverCoverageThreshold>25</cloverCoverageThreshold>
   </properties>
   <dependencies>
     <dependency>
@@ -30,6 +30,11 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit-dep</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>

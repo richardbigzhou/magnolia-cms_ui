@@ -34,14 +34,21 @@
 package info.magnolia.ui.framework.place;
 
 /**
- * Maps {@link Place}s to/from tokens, used to configure a
- * {@link PlaceHistoryHandler}.
- * <p>
- * Copied verbatim from {@link com.google.gwt.place.shared.PlaceHistoryMapper}
+ * Maps {@link Place}s to/from tokens, used to configure a {@link PlaceHistoryHandler}.
+ *
+ * Inspired by {@link com.google.gwt.place.shared.PlaceHistoryMapper}.
+ *
+ * @version $Id$
  */
 public interface PlaceHistoryMapper {
 
-  Place getPlace(String token);
+    /**
+     * Returns the place represented by the token or null if the token is invalid or does not match a supported place.
+     */
+    Place getPlace(String token);
 
-  String getToken(Place place);
+    /**
+     * Returns the text representation of the place or null if there's no tokenizer for the place.
+     */
+    String getToken(Place place);
 }

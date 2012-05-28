@@ -36,20 +36,20 @@ package info.magnolia.ui.framework.place;
 import info.magnolia.ui.framework.event.Event;
 import info.magnolia.ui.framework.event.EventHandler;
 
-
 /**
- * Event thrown when the user may go to a new place in the app, or tries to leave it. Receivers can
- * call {@link #setWarning(String)} request that the user be prompted to confirm the change.
+ * Event fired when a place change is about to happen usually in response to user interaction. Handlers can call
+ * {@link #setWarning(String)} to request that the user be prompted to confirm the change.
+ *
+ * @version $Id$
  */
 public class PlaceChangeRequestEvent implements Event<PlaceChangeRequestEvent.Handler> {
 
     /**
-     * Listens to {@link PlaceChangeRequestEvent}s.
+     * Handler interface for {@link PlaceChangeRequestEvent}.
      */
     public interface Handler extends EventHandler{
 
         void onPlaceChangeRequest(PlaceChangeRequestEvent event);
-
     }
 
     private String warning;
