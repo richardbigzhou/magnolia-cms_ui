@@ -121,16 +121,16 @@
     </pluginManagement>
 </build>
   <modules>
-    <module>ui-framework</module>
-    <module>ui-model</module>
-    <module>ui-vaadin-integration</module>
-    <module>ui-vaadin-widgetset</module>
-    <module>ui-admin-central</module>
-    <module>ui-jquerywrapper</module>
-    <module>ui-magnolia-shell</module>
-    <module>ui-tabsheet</module>
-    <module>ui-dialog</module>
-    <module>ui-webapp</module>
-    <module>ui-dummy-app</module>
+    <module>magnolia-ui-framework</module>
+    <module>magnolia-ui-model</module>
+    <module>magnolia-ui-vaadin-integration</module>
+    <module>magnolia-ui-vaadin-widgetset</module>
+    <module>magnolia-ui-admin-central</module>
+    <module>magnolia-ui-widget-jquery-wrapper</module>
+    <module>magnolia-ui-widget-magnolia-shell</module>
+    <module>magnolia-ui-widget-tabsheet</module>
+    <module>magnolia-ui-widget-dialog</module>
+    <module>magnolia-ui-webapp</module>
+    <module>magnolia-ui-app-dummy</module>
   </modules>
 </project>
