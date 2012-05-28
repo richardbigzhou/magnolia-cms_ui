@@ -35,18 +35,20 @@ package info.magnolia.ui.framework.event;
 
 import java.util.ArrayList;
 import java.util.Collection;
-
 import javax.inject.Singleton;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * A very simplistic event bus.
- * Check event bus project: http://www.eventbus.org/
+ * Event bus implementation.
+ *
+ * Inspired by {@link com.google.gwt.event.shared.SimpleEventBus}.
+ *
+ * @version $Id$
+ * @see EventBus
  */
 @Singleton
 public class SimpleEventBus implements EventBus {

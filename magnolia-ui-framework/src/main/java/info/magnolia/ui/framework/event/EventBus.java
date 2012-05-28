@@ -34,9 +34,14 @@
 package info.magnolia.ui.framework.event;
 
 /**
- * Will dispatch fired {@link Event}s to the {@link EventHandler}s.
+ * Event bus which fires events to a set of registered handlers.
+ *
+ * @version $Id$
+ * @see Event
+ * @see EventHandler
+ * @see HandlerRegistration
  */
-public interface EventBus  {
+public interface EventBus {
 
     <H extends EventHandler> HandlerRegistration addHandler(Class<? extends Event<H>> eventClass, H handler);
 

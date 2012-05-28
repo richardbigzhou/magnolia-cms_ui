@@ -33,15 +33,18 @@
  */
 package info.magnolia.ui.framework.event;
 
-
 /**
- * A marker interface for events used in the {@link EventBus}.
- * @param <H> The handler the events will be dispatched to.
+ * Marker interface for events used in the {@link EventBus}.
+ *
+ * @param <H> The handler the events will be dispatched to
+ * @version $Id$
+ * @see EventBus
+ * @see EventHandler
  */
 public interface Event<H extends EventHandler> {
 
     /**
-     * Invokes the the handler and passes itself.
+     * Dispatches the event to a handler.
      */
     void dispatch(H handler);
 

@@ -37,10 +37,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Wraps an EventBus to hold on to any HandlerRegistrations, so that they can
- * easily all be cleared at once.
- * <p/>
+ * Wraps an EventBus to hold on to any HandlerRegistrations, so that they can easily all be cleared at once.
+ *
  * Inspired by {@link com.google.gwt.event.shared.ResettableEventBus}.
+ *
+ * @version $Id$
  */
 public class ResettableEventBus implements EventBus {
 
@@ -74,7 +75,7 @@ public class ResettableEventBus implements EventBus {
     /**
      * Remove all handlers that have been added through this wrapper.
      */
-    public synchronized void removeHandlers() {
+    public synchronized void reset() {
         for (HandlerRegistration registration : registrations) {
             registration.removeHandler();
         }

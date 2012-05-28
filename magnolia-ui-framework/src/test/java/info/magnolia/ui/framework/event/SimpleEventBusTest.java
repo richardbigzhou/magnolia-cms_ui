@@ -51,26 +51,6 @@ import org.junit.Test;
  */
 public class SimpleEventBusTest {
 
-    private static class TestEvent implements Event<TestEventHandler> {
-        @Override
-        public void dispatch(TestEventHandler handler) {
-            handler.handleEvent(this);
-        }
-    }
-
-    private static class TestEventHandler implements EventHandler {
-
-        private int invocationCount = 0;
-
-        public synchronized int getInvocationCount() {
-            return invocationCount;
-        }
-
-        public synchronized void handleEvent(TestEvent event) {
-            invocationCount++;
-        }
-    }
-
     private static class RemoveEventHandler extends TestEventHandler {
 
         HandlerRegistration handlerRegistration;

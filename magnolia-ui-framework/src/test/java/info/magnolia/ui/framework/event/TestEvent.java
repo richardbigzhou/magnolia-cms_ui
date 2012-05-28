@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,17 +34,12 @@
 package info.magnolia.ui.framework.event;
 
 /**
- * Registration returned when registering a handler with a {@link EventBus}. Used to remove the handler when its no
- * longer needed.
- *
- * @version $Id$
- * @see EventBus
- * @see EventHandler
- */
-public interface HandlerRegistration {
+* @version $Id$
+*/
+public class TestEvent implements Event<TestEventHandler> {
 
-    /**
-     * Removes the handler from the event bus.
-     */
-    void removeHandler();
+    @Override
+    public void dispatch(TestEventHandler handler) {
+        handler.handleEvent(this);
+    }
 }

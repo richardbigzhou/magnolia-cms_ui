@@ -34,8 +34,9 @@
 package info.magnolia.ui.framework.event;
 
 /**
- * A marker interface for listeners used in the {@link EventBus}.
- * @author fgrilli
+ * Marker interface for handlers used in the {@link EventBus}.
+ *
+ * @version $Id$
  */
 public interface EventHandler {
 
