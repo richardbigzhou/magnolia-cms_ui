@@ -31,36 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.tabsheet.client;
+package info.magnolia.ui.widget.tabsheet.gwt.client;
 
-import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.event.shared.EventHandler;
 
 /**
- * Event fired when the active tab in the tabsheet is changed.
+ * Handler of the active tab changed event.
  * @author apchelintcev
  *
  */
-public class ActiveTabChangedEvent extends GwtEvent<ActiveTabChangedHandler>{
-
-    public final static Type<ActiveTabChangedHandler> TYPE = new Type<ActiveTabChangedHandler>();
-    
-    private final VShellTab tab;
-    
-    public ActiveTabChangedEvent(final VShellTab tab) {
-        this.tab = tab;
-    }
-    
-    public VShellTab getTab() {
-        return tab;
-    }
-    
-    @Override
-    protected void dispatch(ActiveTabChangedHandler handler) {
-        handler.onActiveTabChanged(this);
-    }
-    
-    @Override
-    public GwtEvent.Type<ActiveTabChangedHandler> getAssociatedType() {
-        return TYPE;
-    }
+public interface ActiveTabChangedHandler extends EventHandler {
+    void onActiveTabChanged(final ActiveTabChangedEvent event);
 }

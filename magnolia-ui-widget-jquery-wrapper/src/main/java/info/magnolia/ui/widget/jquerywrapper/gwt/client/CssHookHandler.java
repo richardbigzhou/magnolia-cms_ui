@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,15 +31,19 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.tabsheet.client;
+package info.magnolia.ui.widget.jquerywrapper.gwt.client;
 
-import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.user.client.Element;
+
 
 /**
- * Handler of the active tab changed event.
+ * Css hook callback. Fired when the target property got/set.
  * @author apchelintcev
  *
  */
-public interface ActiveTabChangedHandler extends EventHandler {
-    void onActiveTabChanged(final ActiveTabChangedEvent event);
+public interface CssHookHandler {
+
+    void get(final Element el, final String value);
+    
+    void set(final Element el, final String value);
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,22 +31,36 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.jquerywrapper.client.ui;
+package info.magnolia.ui.widget.tabsheet.gwt.client;
 
-import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * JS wrapper around JQuery callback.
- * @author apchelintcev
+ * Event that is fired when the tab is closed.
+ * @author p4elkin
  *
  */
-final class JQueryFunction extends JavaScriptObject {
+public class TabCloseEvent extends GwtEvent<TabCloseEventHandler>{
+
+    public static Type<TabCloseEventHandler> TYPE = new Type<TabCloseEventHandler>();
     
-    protected JQueryFunction() {}
+    private VShellTab tab;
     
-    public final static native JQueryFunction create(final JQueryCallback command) /*-{
-        return function(jQueryWrapper) {
-            command.@info.magnolia.ui.widget.jquerywrapper.client.ui.JQueryCallback::execute(Linfo/magnolia/ui/widget/jquerywrapper/client/ui/JQueryWrapper;)(jQueryWrapper);
-        }
-    }-*/;  
-};
+    public TabCloseEvent(final VShellTab tab) {
+        this.tab = tab;
+    }
+    
+    public VShellTab getTab() {
+        return tab;
+    }
+    
+    @Override
+    protected void dispatch(TabCloseEventHandler handler) {
+        handler.onTabClosed(this);
+    }
+    
+    @Override
+    public GwtEvent.Type<TabCloseEventHandler> getAssociatedType() {
+        return TYPE;
+    }
+}

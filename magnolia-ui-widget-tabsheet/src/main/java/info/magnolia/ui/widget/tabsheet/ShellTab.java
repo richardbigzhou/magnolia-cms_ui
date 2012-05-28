@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.widget.tabsheet;
 
-import info.magnolia.ui.widget.tabsheet.client.VShellTab;
+import info.magnolia.ui.widget.tabsheet.gwt.client.VShellTab;
 
 import com.vaadin.terminal.PaintException;
 import com.vaadin.terminal.PaintTarget;

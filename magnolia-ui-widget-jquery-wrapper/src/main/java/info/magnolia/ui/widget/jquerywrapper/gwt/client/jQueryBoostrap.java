@@ -31,19 +31,23 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.jquerywrapper.client.ui;
-
-import com.google.gwt.user.client.Element;
-
+package info.magnolia.ui.widget.jquerywrapper.gwt.client;
 
 /**
- * Css hook callback. Fired when the target property got/set.
+ * Calls JQuery noConflict on load.
  * @author apchelintcev
  *
  */
-public interface CssHookHandler {
-
-    void get(final Element el, final String value);
+public class jQueryBoostrap {
     
-    void set(final Element el, final String value);
+    static {
+        startJQuery();
+    }
+
+    private native static void startJQuery() /*-{
+        $wnd.jQuery($doc).ready(
+                        function() {
+                            $wnd.jQuery.noConflict();
+                        });
+    }-*/;
 }

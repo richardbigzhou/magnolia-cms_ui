@@ -31,9 +31,9 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.tabsheet.client;
+package info.magnolia.ui.widget.tabsheet.gwt.client;
 
-import info.magnolia.ui.widget.tabsheet.client.util.CollectionUtil;
+import info.magnolia.ui.widget.tabsheet.gwt.client.util.CollectionUtil;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedList;

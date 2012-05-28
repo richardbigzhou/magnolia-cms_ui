@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.jquerywrapper.client.ui;
+package info.magnolia.ui.widget.jquerywrapper.gwt.client;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
@@ -67,11 +67,11 @@ public class JQueryWrapper extends JavaScriptObject {
     };
    
     public final native void animate(int duration, AnimationSettings settings) /*-{
-        var json = settings.@info.magnolia.ui.widget.jquerywrapper.client.ui.AnimationSettings::asJSO()();
+        var json = settings.@info.magnolia.ui.widget.jquerywrapper.gwt.client.AnimationSettings::asJSO()();
         var jq = this;
         this.animate(json, duration, function() {
             if (settings != null) {
-                settings.@info.magnolia.ui.widget.jquerywrapper.client.ui.AnimationSettings::getCallbacks()().fire(jq);
+                settings.@info.magnolia.ui.widget.jquerywrapper.gwt.client.AnimationSettings::getCallbacks()().fire(jq);
             }
         });
     }-*/;
@@ -173,7 +173,7 @@ public class JQueryWrapper extends JavaScriptObject {
     
     public final native Integer cssInt(final String property) /*-{ 
         var result = this.css(property);
-        return @info.magnolia.ui.widget.jquerywrapper.client.ui.JQueryWrapper::parseInt(Ljava/lang/String;)(result);
+        return @info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper::parseInt(Ljava/lang/String;)(result);
     }-*/;
     
     public native final Element get(int index) /*-{

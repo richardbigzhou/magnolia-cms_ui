@@ -34,7 +34,7 @@
 package info.magnolia.ui.widget.dialog.gwt.client;
 
 
-import info.magnolia.ui.widget.tabsheet.client.VShellTabSheet;
+import info.magnolia.ui.widget.tabsheet.gwt.client.VShellTabSheet;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;

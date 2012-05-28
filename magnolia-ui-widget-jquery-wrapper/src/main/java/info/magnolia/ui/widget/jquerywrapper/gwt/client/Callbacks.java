@@ -31,32 +31,44 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.jquerywrapper.client.ui;
+package info.magnolia.ui.widget.jquerywrapper.gwt.client;
 
 import com.google.gwt.core.client.JavaScriptObject;
 
 /**
- * Css hook JQuery API wrapper.
+ * Wrapper for JQuery Callbacks API.
  * @author apchelintcev
  *
  */
-public class CssHooks extends JavaScriptObject {
-
-    protected  CssHooks() {
+public class Callbacks extends JavaScriptObject {
+    
+    protected Callbacks() {}
+    
+    public static Callbacks create(final JQueryCallback... callbacks) {
+        final Callbacks result = create();
+        for (final JQueryCallback callback : callbacks) {
+            result.add(callback);
+        }
+        return result;
     }
     
-    public native static final CssHooks create() /*-{
-        return $wnd.jQuery.cssHooks;
+    public static native Callbacks create() /*-{
+        return $wnd.jQuery.Callbacks();
     }-*/;
     
-    public final native void addHook(final String property, CssHookHandler handler) /*-{
-        this.property = {
-            get: function(elem, computed, extra) {
-                handler.@info.magnolia.ui.widget.jquerywrapper.client.ui.CssHookHandler::get(Lcom/google/gwt/user/client/Element;Ljava/lang/String;)(elem, computed);
-            },
-            set: function(elem, value) {
-                handler.@info.magnolia.ui.widget.jquerywrapper.client.ui.CssHookHandler::set(Lcom/google/gwt/user/client/Element;Ljava/lang/String;)(elem, value);
-            } 
-        }
+    public final void add(final JQueryCallback callback) {
+        doAdd(JQueryFunction.create(callback));
+    }
+    
+    public final void remove(final JQueryCallback callback) {
+        doRemove(JQueryFunction.create(callback));
+    }
+    
+    private final native void doRemove(final JQueryFunction callback) /*-{
+        this.remove(callback);
+    }-*/;
+
+    private final native void doAdd(final JQueryFunction callback) /*-{
+        this.add(callback);   
     }-*/;
 }

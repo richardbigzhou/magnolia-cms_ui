@@ -31,44 +31,47 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.jquerywrapper.client.ui;
+package info.magnolia.ui.widget.jquerywrapper.gwt.client;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONString;
 
 /**
- * Wrapper for JQuery Callbacks API.
- * @author apchelintcev
+ * Helper class that holds the animation settings.
+ * @author p4elkin
  *
  */
-public class Callbacks extends JavaScriptObject {
+public class AnimationSettings {
     
-    protected Callbacks() {}
+    private final Map<String, Object> properties = new HashMap<String, Object>();
+   
+    private Callbacks callbacks = Callbacks.create();
     
-    public static Callbacks create(final JQueryCallback... callbacks) {
-        final Callbacks result = create();
-        for (final JQueryCallback callback : callbacks) {
-            result.add(callback);
+    public void setProperty(final String properyName, final Object value) {
+        properties.put(properyName, value);
+    }
+    
+    public void addCallback(final JQueryCallback callback) {
+        callbacks.add(callback);
+    }
+    
+    final JavaScriptObject getCallbacks() {
+        return callbacks;
+    }
+    
+    JavaScriptObject asJSO() {
+        final JSONObject parameter = new JSONObject();
+        if (properties !=null){
+        for (String key : properties.keySet()) {
+            String value = String.valueOf(properties.get(key));
+            parameter.put(key, new JSONString(value));
         }
-        return result;
+        }
+        return parameter.getJavaScriptObject();
     }
     
-    public static native Callbacks create() /*-{
-        return $wnd.jQuery.Callbacks();
-    }-*/;
-    
-    public final void add(final JQueryCallback callback) {
-        doAdd(JQueryFunction.create(callback));
-    }
-    
-    public final void remove(final JQueryCallback callback) {
-        doRemove(JQueryFunction.create(callback));
-    }
-    
-    private final native void doRemove(final JQueryFunction callback) /*-{
-        this.remove(callback);
-    }-*/;
-
-    private final native void doAdd(final JQueryFunction callback) /*-{
-        this.add(callback);   
-    }-*/;
 }

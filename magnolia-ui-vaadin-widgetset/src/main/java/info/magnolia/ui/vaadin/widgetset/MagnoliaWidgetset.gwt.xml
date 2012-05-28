@@ -3,10 +3,10 @@
 <module>
 	<!-- WS Compiler: manually edited -->
     <inherits name="com.vaadin.terminal.gwt.DefaultWidgetSet" />
-    <inherits name="info.magnolia.ui.vaadin.integration.widget.VaadinIntegrationWidgetset" />
+    <inherits name="info.magnolia.ui.vaadin.integration.widget.VaadinIntegrationWidgetSet" />
     <inherits name="info.magnolia.ui.widget.magnoliashell.gwt.MagnoliaShellWidgetSet" />
-    <inherits name="info.magnolia.ui.widget.jquerywrapper.JquerywrapperWidgetset" />
-    <inherits name="info.magnolia.ui.widget.tabsheet.M5TabsheetWidgetSet" />
+    <inherits name="info.magnolia.ui.widget.jquerywrapper.gwt.JQueryWrapperWidgetSet" />
+    <inherits name="info.magnolia.ui.widget.tabsheet.gwt.TabsheetWidgetSet" />
     <inherits name="info.magnolia.ui.widget.dialog.gwt.DialogWidgetSet" />
 
   <!--

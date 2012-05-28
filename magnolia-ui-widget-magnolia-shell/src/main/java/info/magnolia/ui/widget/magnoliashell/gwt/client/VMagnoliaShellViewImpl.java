@@ -43,10 +43,10 @@ import info.magnolia.ui.widget.magnoliashell.gwt.client.event.ViewportCloseEvent
 import info.magnolia.ui.widget.magnoliashell.gwt.client.event.handler.ShellNavigationHandler;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.event.handler.ViewportCloseHandler;
 
-import info.magnolia.ui.widget.jquerywrapper.client.ui.AnimationSettings;
-import info.magnolia.ui.widget.jquerywrapper.client.ui.Callbacks;
-import info.magnolia.ui.widget.jquerywrapper.client.ui.JQueryCallback;
-import info.magnolia.ui.widget.jquerywrapper.client.ui.JQueryWrapper;
+import info.magnolia.ui.widget.jquerywrapper.gwt.client.AnimationSettings;
+import info.magnolia.ui.widget.jquerywrapper.gwt.client.Callbacks;
+import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryCallback;
+import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;

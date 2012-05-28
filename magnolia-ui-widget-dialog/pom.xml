@@ -37,9 +37,7 @@
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
         <configuration>
-          <module>
-            info.magnolia.ui.widget.tabsheet.M5TabsheetWidgetSet
-          </module>
+          <module>info.magnolia.ui.widget.tabsheet.gwt.TabsheetWidgetSet</module>
           <style>PRETTY</style>
           <draftCompile>true</draftCompile>
           <compileReport>true</compileReport>

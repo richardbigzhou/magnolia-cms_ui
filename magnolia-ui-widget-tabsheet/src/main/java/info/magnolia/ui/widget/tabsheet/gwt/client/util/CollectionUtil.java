@@ -31,36 +31,23 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.tabsheet.client;
+package info.magnolia.ui.widget.tabsheet.gwt.client.util;
 
-import com.google.gwt.event.shared.GwtEvent;
+import java.util.List;
 
 /**
- * Event that is fired when the tab is closed.
- * @author p4elkin
+ * Util class for the collections operations.
+ * @author apchelintcev
  *
  */
-public class TabCloseEvent extends GwtEvent<TabCloseEventHandler>{
+public class CollectionUtil {
 
-    public static Type<TabCloseEventHandler> TYPE = new Type<TabCloseEventHandler>();
-    
-    private VShellTab tab;
-    
-    public TabCloseEvent(final VShellTab tab) {
-        this.tab = tab;
-    }
-    
-    public VShellTab getTab() {
-        return tab;
-    }
-    
-    @Override
-    protected void dispatch(TabCloseEventHandler handler) {
-        handler.onTabClosed(this);
-    }
-    
-    @Override
-    public GwtEvent.Type<TabCloseEventHandler> getAssociatedType() {
-        return TYPE;
+    public static <T> T getNext(final List<T> items, T item) {
+        int index = items.indexOf(item);
+        if (index >= 0) {
+            int nextIndex = (index + 1) % items.size();
+            return items.get(nextIndex);
+        }
+        return null;
     }
 }

@@ -45,8 +45,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import info.magnolia.ui.widget.jquerywrapper.client.ui.AnimationSettings;
-import info.magnolia.ui.widget.jquerywrapper.client.ui.JQueryWrapper;
+import info.magnolia.ui.widget.jquerywrapper.gwt.client.AnimationSettings;
+import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper;
 
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;

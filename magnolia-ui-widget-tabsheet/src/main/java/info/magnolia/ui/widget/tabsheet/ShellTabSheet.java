@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.widget.tabsheet;
 
-import info.magnolia.ui.widget.tabsheet.client.VShellTabSheet;
-import info.magnolia.ui.widget.tabsheet.client.util.CollectionUtil;
+import info.magnolia.ui.widget.tabsheet.gwt.client.VShellTabSheet;
+import info.magnolia.ui.widget.tabsheet.gwt.client.util.CollectionUtil;
 
 import java.util.Iterator;
 import java.util.LinkedList;

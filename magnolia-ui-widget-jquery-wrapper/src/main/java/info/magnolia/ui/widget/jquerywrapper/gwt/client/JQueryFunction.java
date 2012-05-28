@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,16 +31,22 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.tabsheet.client;
+package info.magnolia.ui.widget.jquerywrapper.gwt.client;
 
-import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.core.client.JavaScriptObject;
 
 /**
- * Handler of the events fired when the tab is closed.
+ * JS wrapper around JQuery callback.
  * @author apchelintcev
  *
  */
-public interface TabCloseEventHandler extends EventHandler {
+final class JQueryFunction extends JavaScriptObject {
     
-    void onTabClosed(final TabCloseEvent event);
-}
+    protected JQueryFunction() {}
+    
+    public final static native JQueryFunction create(final JQueryCallback command) /*-{
+        return function(jQueryWrapper) {
+            command.@info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryCallback::execute(Linfo/magnolia/ui/widget/jquerywrapper/gwt/client/JQueryWrapper;)(jQueryWrapper);
+        }
+    }-*/;  
+};

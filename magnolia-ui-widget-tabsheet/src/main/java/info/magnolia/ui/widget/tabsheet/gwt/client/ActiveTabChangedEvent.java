@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,23 +31,36 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.jquerywrapper.client.ui;
+package info.magnolia.ui.widget.tabsheet.gwt.client;
+
+import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * Calls JQuery noConflict on load.
+ * Event fired when the active tab in the tabsheet is changed.
  * @author apchelintcev
  *
  */
-public class jQueryBoostrap {
-    
-    static {
-        startJQuery();
-    }
+public class ActiveTabChangedEvent extends GwtEvent<ActiveTabChangedHandler>{
 
-    private native static void startJQuery() /*-{
-        $wnd.jQuery($doc).ready(
-                        function() {
-                            $wnd.jQuery.noConflict();
-                        });
-    }-*/;
+    public final static Type<ActiveTabChangedHandler> TYPE = new Type<ActiveTabChangedHandler>();
+    
+    private final VShellTab tab;
+    
+    public ActiveTabChangedEvent(final VShellTab tab) {
+        this.tab = tab;
+    }
+    
+    public VShellTab getTab() {
+        return tab;
+    }
+    
+    @Override
+    protected void dispatch(ActiveTabChangedHandler handler) {
+        handler.onActiveTabChanged(this);
+    }
+    
+    @Override
+    public GwtEvent.Type<ActiveTabChangedHandler> getAssociatedType() {
+        return TYPE;
+    }
 }

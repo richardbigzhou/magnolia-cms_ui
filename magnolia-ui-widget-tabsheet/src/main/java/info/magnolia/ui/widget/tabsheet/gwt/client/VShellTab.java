@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.tabsheet.client;
+package info.magnolia.ui.widget.tabsheet.gwt.client;
 
 
 import java.util.Set;

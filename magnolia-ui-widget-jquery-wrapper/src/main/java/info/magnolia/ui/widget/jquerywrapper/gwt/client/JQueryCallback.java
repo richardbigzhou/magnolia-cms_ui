@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.jquerywrapper.client.ui;
+package info.magnolia.ui.widget.jquerywrapper.gwt.client;
 
 /**
  * Java callback for JQuery events/animations.

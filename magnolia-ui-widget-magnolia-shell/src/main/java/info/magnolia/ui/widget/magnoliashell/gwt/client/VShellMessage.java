@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.widget.magnoliashell.gwt.client;
 
-import info.magnolia.ui.widget.jquerywrapper.client.ui.Callbacks;
-import info.magnolia.ui.widget.jquerywrapper.client.ui.JQueryWrapper;
-import info.magnolia.ui.widget.jquerywrapper.client.ui.JQueryCallback;
+import info.magnolia.ui.widget.jquerywrapper.gwt.client.Callbacks;
+import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper;
+import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryCallback;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Display;

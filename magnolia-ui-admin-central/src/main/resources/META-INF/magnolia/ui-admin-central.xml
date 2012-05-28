@@ -144,7 +144,7 @@
         </param>
         <param>
           <name>widgetset</name>
-          <value>info.magnolia.ui.vaadin.widgetset.MagnoliaWidgetset</value>
+          <value>info.magnolia.ui.vaadin.widgetset.MagnoliaWidgetSet</value>
         </param>
         <param>
           <name>theme</name>
