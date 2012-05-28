@@ -7,7 +7,7 @@
     <version>5.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-  <artifactId>ui-webapp</artifactId>
+  <artifactId>magnolia-ui-webapp</artifactId>
   <name>magnolia-ui-webapp</name>
   <packaging>war</packaging>
   <dependencies>
