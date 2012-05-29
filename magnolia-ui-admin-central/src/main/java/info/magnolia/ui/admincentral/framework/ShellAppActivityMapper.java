@@ -49,6 +49,7 @@ import java.util.Map;
 
 /**
  * ShellAppActivityMapper.
+ *
  * @version $Id$
  */
 @SuppressWarnings("serial")

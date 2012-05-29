@@ -38,8 +38,8 @@ import info.magnolia.ui.framework.view.View;
 
 /**
  * Fired when the app is closed form the Shell.
- * @author apchelintcev
  *
+ * @version $Id$
  */
 public class AppCloseEvent implements Event<AppCloseHandler> {
 

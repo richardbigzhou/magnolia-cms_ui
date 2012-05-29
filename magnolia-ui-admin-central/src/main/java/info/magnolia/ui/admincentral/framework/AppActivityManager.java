@@ -42,8 +42,7 @@ import info.magnolia.ui.framework.place.PlaceChangeRequestEvent;
 /**
  * Activity manager responsible for the app management.
  *
- * @author p4elkin
- *
+ * @version $Id$
  */
 public class AppActivityManager extends ActivityManager {
 

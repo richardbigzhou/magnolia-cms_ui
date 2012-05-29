@@ -52,6 +52,7 @@ import com.google.inject.Inject;
  * Default AppController implementation.
  *
  * Also responsible for the App Event triggering (Start/Stop/Focus App events).
+ *
  * @version $Id$
  */
 @Singleton
