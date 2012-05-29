@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module SYSTEM "module.dtd">
+<module>
+  <name>ui-contacts-app</name>
+  <displayName>UI Contacts App</displayName>
+  <description>UI Contacts App</description>
+  <versionHandler>info.magnolia.ui.app.contacts.ContactsAppModuleVersionHandler</versionHandler>
+  <version>${project.version}</version>
+
+  <components>
+    <id>m5-admin-central</id>
+    <component>
+      <type>info.magnolia.ui.app.contacts.ContactsView</type>
+      <implementation>info.magnolia.ui.app.contacts.ContactsViewImpl</implementation>
+    </component>
+  </components>
+
+  <dependencies>
+    <dependency>
+      <name>ui-admin-central</name>
+      <version>5.0/*</version>
+    </dependency>
+  </dependencies>
+</module>
