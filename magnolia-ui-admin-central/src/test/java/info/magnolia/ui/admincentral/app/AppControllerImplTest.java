@@ -314,7 +314,7 @@ public class AppControllerImplTest {
        @Override
        public void onAppFocus(AppLifecycleEvent event) {
            focusEvent = true;
-           appClassName = event.getApp().getClass().getSimpleName();
+           appClassName = event.getAppDescriptor().getAppClass().getSimpleName();;
        }
 
        @Override
@@ -322,7 +322,7 @@ public class AppControllerImplTest {
            stopEvent = true;
            startEvent = false;
            focusEvent = false;
-           appClassName = event.getApp().getClass().getSimpleName();
+           appClassName = event.getAppDescriptor().getAppClass().getSimpleName();;
        }
 
        @Override
@@ -330,7 +330,7 @@ public class AppControllerImplTest {
            startEvent = true;
            focusEvent = false;
            stopEvent = false;
-           appClassName = event.getApp().getClass().getSimpleName();
+           appClassName = event.getAppDescriptor().getAppClass().getSimpleName();;
        }
 
    }
