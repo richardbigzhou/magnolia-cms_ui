@@ -37,26 +37,23 @@ import info.magnolia.ui.framework.event.Event;
 
 
 /**
- * App Event used to notify a Start or Stop event.
- *
- * @author erichechinger
- * @version $Id$
+ * App Event used to notify a Start Stop or Focus event.
  *
  */
 public class AppLifecycleEvent implements Event<AppLifecycleEventHandler> {
 
-    private final AppLifecycle app;
+    private final AppDescriptor appDescriptor;
 
     private final AppEventType eventType;
 
-    public AppLifecycleEvent(AppLifecycle app, AppEventType eventType) {
+    public AppLifecycleEvent(AppDescriptor app, AppEventType eventType) {
         System.out.println("AppEvent: create Event for app type: " + app.getClass().getName() + " and type" + eventType);
-        this.app = app;
+        this.appDescriptor = app;
         this.eventType = eventType;
     }
 
-    public AppLifecycle getApp() {
-        return app;
+    public AppDescriptor getAppDescriptor() {
+        return appDescriptor;
     }
 
     public AppEventType getEventType() {

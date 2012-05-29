@@ -49,26 +49,26 @@ import com.vaadin.ui.NativeButton;
 @SuppressWarnings("serial")
 @ClientWidget(value = VAppButton.class, loadStyle = LoadStyle.EAGER)
 public class AppButton extends NativeButton {
-    
+
     private boolean isActive;
-    
+
     public AppButton(final String caption) {
         super(caption);
         addStyleName("v-appbutton");
     }
-    
+
     public void setActive(boolean isActive) {
         this.isActive = isActive;
     }
-    
+
     public boolean isActive() {
         return isActive;
     }
-    
+
     @Override
     public void paintContent(PaintTarget target) throws PaintException {
-        super.paintContent(target);
         target.addAttribute("active", isActive);
+        super.paintContent(target);
     }
 
 }
