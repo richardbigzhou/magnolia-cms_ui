@@ -36,13 +36,14 @@ package info.magnolia.ui.framework.activity;
 import info.magnolia.ui.framework.place.Place;
 
 /**
- * Finds the activity to run for a given {@link Place}, used to configure
- * an {@link ActivityManager}.
+ * Finds the activity to run for a given {@link Place}, used to configure an {@link ActivityManager}.
+ *
+ * @version $Id$
  */
 public interface ActivityMapper {
 
     /**
-     * Returns the activity to run for the given {@link Place}.
+     * Returns the activity to run for the given {@link Place}. Returns null if there's no activity mapped for the place.
      *
      * @param place a Place object
      */

@@ -47,13 +47,13 @@ import info.magnolia.ui.framework.place.PlaceHistoryMapperImpl;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.framework.view.ViewPort;
 
-
 /**
  * Builds an inner MVP container having its own {@link ActivityManager}, {@link PlaceController} and
  * {@link EventBus}. {@link PlaceChangeEvent} events are fired to the outer {@link PlaceController}
  * and vice versa.
  *
  * @param <A> the inner activity the container will delegate to.
+ * @version $Id$
  */
 public abstract class AbstractMVPSubContainer<A extends Activity> extends AbstractActivity {
 
