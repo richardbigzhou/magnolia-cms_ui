@@ -35,10 +35,11 @@ package info.magnolia.ui.framework.shell;
 
 import info.magnolia.ui.framework.event.EventHandler;
 
-
 /**
  * Called after the user has answered a confirmation dialog issued by
  * {@link Shell#askForConfirmation(String, ConfirmationHandler)}.
+ *
+ * @version $Id$
  */
 public interface ConfirmationHandler extends EventHandler {
 

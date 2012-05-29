@@ -33,14 +33,13 @@
  */
 package info.magnolia.ui.framework.shell;
 
-import info.magnolia.ui.framework.event.Event;
-
-
-
 /**
- * Fired if a URI fragment has changed.
+ * Fired when a URI fragment has changed.
+ *
+ * @version $Id$
  */
-public class FragmentChangedEvent implements Event<FragmentChangedHandler> {
+public class FragmentChangedEvent {
+
     private String fragment;
 
     public FragmentChangedEvent(String fragment) {
@@ -50,10 +49,4 @@ public class FragmentChangedEvent implements Event<FragmentChangedHandler> {
     public String getFragment() {
         return fragment;
     }
-
-    @Override
-    public void dispatch(FragmentChangedHandler handler) {
-        handler.onFragmentChanged(this);
-    }
-
 }

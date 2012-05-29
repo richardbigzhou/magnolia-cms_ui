@@ -37,6 +37,8 @@ import info.magnolia.ui.framework.event.HandlerRegistration;
 
 /**
  * Decouples the presenters and the Vaadin application. Provides methods to show messages and configuration dialogs.
+ *
+ * @version $Id$
  */
 public interface Shell {
 
@@ -88,6 +90,5 @@ public interface Shell {
     HandlerRegistration addFragmentChangedHandler(FragmentChangedHandler handler);
 
     Shell createSubShell(String id);
-
 
 }
