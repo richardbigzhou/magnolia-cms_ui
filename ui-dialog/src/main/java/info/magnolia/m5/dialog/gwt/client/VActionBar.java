@@ -33,48 +33,26 @@
  */
 package info.magnolia.m5.dialog.gwt.client;
 
-import info.magnolia.m5vaadin.tabsheet.client.VShellTabSheet;
-
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
-import com.vaadin.terminal.gwt.client.Paintable;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
- * VDialogView.
+ * VActionBar.
  *
  * @author ejervidalo
  */
-public interface VDialogView extends IsWidget {
+public class VActionBar extends FlowPanel {
 
-    /**
-     * Presenter. Meant for Vaadin part of MagnoliaShell.
-     */
-    interface Presenter {}
+    private final String CLASSNAME = "actions";
+    private final String ACTION_CLASSNAME = "btn-dialog";
+    public VActionBar () {
+        setStyleName(CLASSNAME);
+    }
 
-    Paintable getTabSheet();
-
-    /**
-     * @param vDialog
-     */
-    void setPresenter(Presenter vDialog);
-
-    /**
-     * @param component
-     * @return
-     */
-    boolean hasChildComponent(Widget component);
-
-    /**
-     * @param label
-     * @param action
-     */
-    void addAction(String label, String action);
-
-    /**
-     * @param tabsheet
-     */
-    void addTabSheet(VShellTabSheet tabsheet);
-
-
-
+    public void addButton(String label) {
+        Button button = new Button(label);
+        button.setStyleName(ACTION_CLASSNAME);
+        button.addStyleName(ACTION_CLASSNAME+label);
+        add(button);
+    }
 }

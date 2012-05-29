@@ -35,6 +35,11 @@ package info.magnolia.m5.dialog;
 
 
 
+import java.util.Map;
+
+import org.vaadin.rpc.ServerSideHandler;
+import org.vaadin.rpc.ServerSideProxy;
+
 import info.magnolia.m5.dialog.gwt.client.VDialog;
 import info.magnolia.m5vaadin.tabsheet.ShellTab;
 import info.magnolia.m5vaadin.tabsheet.ShellTabSheet;
@@ -54,10 +59,12 @@ import com.vaadin.ui.ComponentContainer;
  */
 @SuppressWarnings("serial")
 @ClientWidget(value=VDialog.class, loadStyle = LoadStyle.EAGER)
-public class VaadinDialog extends AbstractComponent {
+public class VaadinDialog extends AbstractComponent implements ServerSideHandler {
 
     private ShellTabSheet tabsheet = new ShellTabSheet();
 
+
+    protected ServerSideProxy proxy = new ServerSideProxy(this) {{}};
     public VaadinDialog() {
         setImmediate(true);
 
@@ -78,6 +85,7 @@ public class VaadinDialog extends AbstractComponent {
 
     public void addTab(ComponentContainer cc, String caption) {
         final ShellTab tab = new ShellTab(caption, cc);
+        tab.setSizeUndefined();
         tabsheet.addComponent(tab);
         tabsheet.setTabClosable(tab, false);
         tabsheet.setActiveTab(tab);
@@ -87,6 +95,15 @@ public class VaadinDialog extends AbstractComponent {
         tabsheet.removeComponent(c);
     }
 
+    public void addAction(String label, String action) {
+        proxy.call("addAction", label, action);
+    }
+
+    @Override
+    public void setCaption(String caption) {
+
+    }
+
     public Component asVaadinComponent() {
         return this;
     }
@@ -94,9 +111,30 @@ public class VaadinDialog extends AbstractComponent {
     @Override
     public void paintContent(PaintTarget target) throws PaintException {
         super.paintContent(target);
-        target.startTag("dialogTabsheet");
+        target.startTag("tabsheet");
         this.tabsheet.paint(target);
-        target.endTag("dialogTabsheet");
+        target.endTag("tabsheet");
+        proxy.paintContent(target);
+
+    }
+    @Override
+    public void changeVariables(Object source, Map<String, Object> variables) {
+        super.changeVariables(source, variables);
+        proxy.changeVariables(source, variables);
+    }
+
+    @Override
+    public Object[] initRequestFromClient() {
+        return new Object[] {};
+
+    }
+
+    /* (non-Javadoc)
+     * @see org.vaadin.rpc.ServerSideHandler#callFromClient(java.lang.String, java.lang.Object[])
+     */
+    @Override
+    public void callFromClient(String method, Object[] params) {
+        System.out.println("Client called " + method);
     }
 
 }

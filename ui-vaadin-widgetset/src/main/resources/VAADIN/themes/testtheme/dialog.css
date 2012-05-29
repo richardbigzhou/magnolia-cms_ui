@@ -1,3 +1,22 @@
+.dialog-header, .dialog-footer {
+    padding: 12px 16px 12px 25px;
+}
+.dialog-footer. .dialog-content {
+    border-top: 2px solid black;
+}
+
+.dialog-header {
+    background-color: #666666;
+}
+
+.dialog-header {
+    color: #AABF2E;
+    display: inline;
+    font-size: 18px;
+    line-height: 18px;
+    display: block;
+}
+
 .dialog-panel {
     background: none repeat scroll 0 0 #E6E6E6;
     border: medium none;
@@ -9,4 +28,19 @@
     width: 720px;
     height: 250px;
     z-index: 1000;
+}
+.dialog-footer {
+    background: none repeat scroll 0 0 #CCCCCC;
+    text-align: right;
+}
+
+button.btn-dialog-submit, button.btn-dialog-cancel, button.btn-dialog {
+    font-size: 12px;
+    margin-left: 5px;
+    padding: 4px 12px;
+    text-transform: uppercase;
+    cursor: pointer;
+    background: none repeat scroll 0 0 #666666;
+    border: medium none;
+    color: #FFFFFF;
 }
