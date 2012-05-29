@@ -35,12 +35,17 @@ package info.magnolia.ui.admincentral.shellapp.applauncher;
 
 import info.magnolia.ui.admincentral.app.AppCategory;
 import info.magnolia.ui.admincentral.app.AppDescriptor;
+import info.magnolia.ui.admincentral.app.AppLifecycleEvent;
+import info.magnolia.ui.admincentral.app.AppLifecycleEventHandler;
+import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.vaadin.integration.widget.AppButton;
 import info.magnolia.ui.widget.magnoliashell.IsVaadinComponent;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
-import info.magnolia.ui.vaadin.integration.widget.AppButton;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.inject.Inject;
 
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Button;
@@ -48,10 +53,10 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Label;
 
+
 /**
  * Default view implementation for the app launcher.
  *
- * @version $Id$
  */
 @SuppressWarnings("serial")
 public class AppLauncherViewImpl implements AppLauncherView, IsVaadinComponent {
@@ -62,8 +67,40 @@ public class AppLauncherViewImpl implements AppLauncherView, IsVaadinComponent {
 
     private final Map<String, AppGroupComponent> appGroupMap = new HashMap<String, AppGroupComponent>();
 
-    public AppLauncherViewImpl() {
+    // Keep a list of registered AppButton.
+    private final Map<AppDescriptor, AppButton> appButtons = new HashMap<AppDescriptor, AppButton>();
+
+    @Inject
+    public AppLauncherViewImpl(EventBus eventBus) {
         layout.addStyleName("app-launcher");
+        // Add Handler of type AppLifecycleEventHandler in order to catch stop
+        // and start App events.
+        eventBus.addHandler(AppLifecycleEvent.class,
+            new AppLifecycleEventHandler.Adapter() {
+
+                @Override
+                /**
+                 * Deactivate the visual triangle on the App Icon.
+                 */
+                public void onStopApp(AppLifecycleEvent event) {
+                    AppButton button = appButtons.get(event
+                        .getAppDescriptor());
+                    button.setActive(false);
+                    layout.requestRepaintAll();
+                }
+
+                @Override
+                /**
+                 * Activate the visual triangle on the App Icon.
+                 */
+                public void onStartApp(AppLifecycleEvent event) {
+                    AppButton button = appButtons.get(event
+                        .getAppDescriptor());
+                    button.setActive(true);
+                    layout.requestRepaintAll();
+                }
+
+            });
     }
 
     @Override
@@ -89,7 +126,8 @@ public class AppLauncherViewImpl implements AppLauncherView, IsVaadinComponent {
 
     /**
      * Block in the applauncher responsible for one app category.
-     *  @version $Id$
+     *
+     * @version $Id$
      */
     public class AppGroupComponent extends CssLayout {
 
@@ -114,16 +152,17 @@ public class AppLauncherViewImpl implements AppLauncherView, IsVaadinComponent {
 
         public void addApp(final AppDescriptor descriptor) {
             final AppButton button = new AppButton(descriptor.getLabel());
-            button.setActive(true);
             button.addStyleName("item");
             button.setIcon(new ThemeResource(descriptor.getIcon()));
             this.iconList.addComponent(button);
             button.addListener(new Button.ClickListener() {
+
                 @Override
                 public void buttonClick(Button.ClickEvent event) {
                     presenter.onAppInvoked(descriptor.getName());
                 }
             });
+            appButtons.put(descriptor, button);
         }
     }
 

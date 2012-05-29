@@ -41,24 +41,24 @@ import info.magnolia.ui.framework.place.PlaceChangeRequestEvent;
 
 /**
  * Activity manager responsible for the app management.
- * 
+ *
  * @author p4elkin
- * 
+ *
  */
 public class AppActivityManager extends ActivityManager {
 
     public AppActivityManager(final AppActivityMapper mapper, final EventBus eventBus) {
         super(mapper, eventBus);
         eventBus.addHandler(AppLifecycleEvent.class, new AppLifecycleEventHandler.Adapter() {
-            
+
             @Override
             public void onStartApp(AppLifecycleEvent event) {
-                mapper.registerAppStart(event.getApp());
+                mapper.registerAppStart(event.getAppDescriptor());
             }
-            
+
             @Override
             public void onStopApp(AppLifecycleEvent event) {
-                mapper.uregisterApp(event.getApp());
+                mapper.uregisterApp(event.getAppDescriptor());
             }
         });
     }

@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral;
 
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.app.AppCategory;
 import info.magnolia.ui.admincentral.app.AppController;
 import info.magnolia.ui.admincentral.app.AppDescriptor;
@@ -45,7 +46,6 @@ import info.magnolia.ui.admincentral.framework.ShellAppActivityMapper;
 import info.magnolia.ui.admincentral.shellapp.applauncher.AppLauncherPlace;
 import info.magnolia.ui.admincentral.shellapp.favorites.FavoritesPlace;
 import info.magnolia.ui.admincentral.shellapp.pulse.PulsePlace;
-import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.place.Place;
 import info.magnolia.ui.framework.place.PlaceController;
@@ -78,14 +78,14 @@ public class MagnoliaShellPresenter implements MagnoliaShellView.Presenter {
         final ShellAppActivityManager shellAppManager = new ShellAppActivityManager(new ShellAppActivityMapper(componentProvider), bus);
         shellAppManager.setViewPort(view.getRoot().getShellAppViewport());
 
-        final AppActivityManager appManager = new AppActivityManager(new AppActivityMapper(appController, componentProvider), bus);
+        final AppActivityManager appManager = new AppActivityManager(new AppActivityMapper(componentProvider), bus);
         appManager.setViewPort(view.getRoot().getAppViewport());
 
         final PlaceHistoryMapper placeHistoryMapper = new PlaceHistoryMapperImpl(getSupportedPlaces(appRegistry));
         final PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(placeHistoryMapper, view.getRoot());
 
         historyHandler.register(controller, bus, new AppLauncherPlace("test"));
-        
+
     }
 
     public void start(final Window window) {

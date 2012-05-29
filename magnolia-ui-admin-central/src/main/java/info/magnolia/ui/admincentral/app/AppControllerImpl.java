@@ -51,6 +51,7 @@ import com.google.inject.Inject;
 /**
  * Default AppController implementation.
  *
+ * Also responsible for the App Event triggering (Start/Stop/Focus App events).
  * @version $Id$
  */
 @Singleton
@@ -61,7 +62,7 @@ public class AppControllerImpl implements AppController {
     private AppRegistry appRegistry;
 
     private ComponentProvider componentProvider;
-    
+
     protected EventBus eventBus;
 
     /**
@@ -92,7 +93,7 @@ public class AppControllerImpl implements AppController {
     private void activateApp(final AppLifecycle lifecycle) {
         lifecycle.focus();
         appHistory.offerFirst(lifecycle);
-        sendEvent(new AppLifecycleEvent(lifecycle, AppEventType.FOCUS_EVENT));
+        sendEvent(new AppLifecycleEvent(getAppDescriptor(lifecycle), AppEventType.FOCUS_EVENT));
     }
 
     private AppLifecycle doStart(String name) {
@@ -102,7 +103,7 @@ public class AppControllerImpl implements AppController {
             lifecycle = componentProvider.newInstance(descriptor.getAppClass());
             lifecycle.start();
             runningApps.put(descriptor, lifecycle);
-            sendEvent(new AppLifecycleEvent(lifecycle, AppEventType.START_EVENT));
+            sendEvent(new AppLifecycleEvent(descriptor, AppEventType.START_EVENT));
         }
         return lifecycle;
     }
@@ -123,11 +124,11 @@ public class AppControllerImpl implements AppController {
         if (lifecycle != null) {
             lifecycle.stop();
             boolean wasPresentInHistory = true;
-            while (wasPresentInHistory) {   
+            while (wasPresentInHistory) {
                 wasPresentInHistory = appHistory.remove(lifecycle);
             }
             runningApps.remove(descriptor);
-            sendEvent(new AppLifecycleEvent(lifecycle, AppEventType.STOP_EVENT));
+            sendEvent(new AppLifecycleEvent(descriptor, AppEventType.STOP_EVENT));
             startLatestLoadedApp();
         }
     }
