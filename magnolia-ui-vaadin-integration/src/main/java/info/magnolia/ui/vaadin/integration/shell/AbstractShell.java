@@ -126,9 +126,4 @@ public abstract class AbstractShell implements Shell, com.vaadin.ui.UriFragmentU
 
     protected abstract UriFragmentUtility getUriFragmentUtility();
 
-    @Override
-    public Shell createSubShell(String id) {
-        return new SubShell(id, this);
-    }
-
 }
