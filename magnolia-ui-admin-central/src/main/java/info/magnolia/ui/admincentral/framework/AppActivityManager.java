@@ -57,7 +57,7 @@ public class AppActivityManager extends ActivityManager {
 
             @Override
             public void onStopApp(AppLifecycleEvent event) {
-                mapper.uregisterApp(event.getAppDescriptor());
+                mapper.unregisterApp(event.getAppDescriptor());
             }
         });
     }
