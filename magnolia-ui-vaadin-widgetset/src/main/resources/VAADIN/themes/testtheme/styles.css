@@ -2,6 +2,7 @@
 @import url(splitfeed.css);
 @import url(pulse-activity-entry.css);
 @import url(dialog.css);
+@import url(actionbar.css);
 
 @font-face{
     font-family: DinRound;

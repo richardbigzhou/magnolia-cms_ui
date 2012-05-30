@@ -130,6 +130,7 @@
     <module>magnolia-ui-widget-magnolia-shell</module>
     <module>magnolia-ui-widget-tabsheet</module>
     <module>magnolia-ui-widget-dialog</module>
+    <module>magnolia-ui-widget-actionbar</module>
     <module>magnolia-ui-webapp</module>
     <module>magnolia-ui-app-dummy</module>
   </modules>
