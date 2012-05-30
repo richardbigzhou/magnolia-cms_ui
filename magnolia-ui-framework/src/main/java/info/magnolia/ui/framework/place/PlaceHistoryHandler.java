@@ -39,7 +39,6 @@ import info.magnolia.ui.framework.shell.FragmentChangedEvent;
 import info.magnolia.ui.framework.shell.FragmentChangedHandler;
 import info.magnolia.ui.framework.shell.Shell;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -101,14 +100,14 @@ public class PlaceHistoryHandler {
      */
     public void handleCurrentHistory() {
         String fragment = shell.getFragment();
-        handleHistoryToken(StringUtils.defaultString(fragment));
+        handleHistoryToken(fragment);
     }
 
     private void handleHistoryToken(String token) {
 
         Place newPlace = null;
 
-        if ("".equals(token)) {
+        if (token == null || "".equals(token)) {
             newPlace = defaultPlace;
         }
 

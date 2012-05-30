@@ -91,14 +91,7 @@ public class PlaceControllerTest {
     public void testGoToWithConfirmedWarning() {
 
         // GIVEN
-        PlaceChangeRequestHandler requestHandler = new PlaceChangeRequestHandler() {
-
-            @Override
-            public void onPlaceChangeRequest(PlaceChangeRequestEvent event) {
-                event.setWarning("WARNING");
-                super.onPlaceChangeRequest(event);
-            }
-        };
+        PlaceChangeRequestHandler requestHandler = new PlaceChangeRequestHandlerThatWarns();
         PlaceChangeHandler changeHandler = new PlaceChangeHandler();
 
         SimpleEventBus eventBus = new SimpleEventBus();
@@ -144,13 +137,7 @@ public class PlaceControllerTest {
     public void testGoToWithCancelledWarning() {
 
         // GIVEN
-        PlaceChangeRequestHandler requestHandler = new PlaceChangeRequestHandler() {
-            @Override
-            public void onPlaceChangeRequest(PlaceChangeRequestEvent event) {
-                event.setWarning("WARNING");
-                super.onPlaceChangeRequest(event);
-            }
-        };
+        PlaceChangeRequestHandler requestHandler = new PlaceChangeRequestHandlerThatWarns();
         PlaceChangeHandler changeHandler = new PlaceChangeHandler();
 
         SimpleEventBus eventBus = new SimpleEventBus();
@@ -238,6 +225,15 @@ public class PlaceControllerTest {
         @Override
         public void onPlaceChange(PlaceChangeEvent event) {
             this.event = event;
+        }
+    }
+
+    private static class PlaceChangeRequestHandlerThatWarns extends PlaceChangeRequestHandler {
+
+        @Override
+        public void onPlaceChangeRequest(PlaceChangeRequestEvent event) {
+            event.setWarning("WARNING");
+            super.onPlaceChangeRequest(event);
         }
     }
 }

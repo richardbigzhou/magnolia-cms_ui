@@ -33,11 +33,9 @@
  */
 package info.magnolia.ui.admincentral.framework;
 
-import info.magnolia.ui.admincentral.app.AbstractAppActivity;
-import info.magnolia.ui.admincentral.app.AppController;
-import info.magnolia.ui.admincentral.app.AppDescriptor;
-import info.magnolia.ui.admincentral.app.AppLifecycle;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.admincentral.app.AbstractAppActivity;
+import info.magnolia.ui.admincentral.app.AppDescriptor;
 import info.magnolia.ui.framework.activity.Activity;
 import info.magnolia.ui.framework.activity.ActivityMapper;
 import info.magnolia.ui.framework.place.Place;
@@ -51,21 +49,18 @@ import javax.inject.Inject;
 
 /**
  * AppActivityMapper.
- * 
+ *
  * @version $Id$
  */
 @SuppressWarnings("serial")
 public class AppActivityMapper implements ActivityMapper {
-    
-    private AppController appController;
-    
+
     private ComponentProvider componentProvider;
 
     private Map<AppDescriptor, AppContext> contextMap = new HashMap<AppDescriptor, AppContext>();
-    
+
     @Inject
-    public AppActivityMapper(AppController appController, ComponentProvider componentProvider) {
-        this.appController = appController;
+    public AppActivityMapper(ComponentProvider componentProvider) {
         this.componentProvider = componentProvider;
     }
 
@@ -92,8 +87,7 @@ public class AppActivityMapper implements ActivityMapper {
         return null;
     }
 
-    public void registerAppStart(final AppLifecycle lifecycle) {
-        final AppDescriptor descriptor = appController.getAppDescriptor(lifecycle);
+    public void registerAppStart(final AppDescriptor descriptor) {
         AppContext context = contextMap.get(descriptor);
         if (context == null) {
             context = new AppContext();
@@ -101,23 +95,22 @@ public class AppActivityMapper implements ActivityMapper {
         }
     }
 
-    public void uregisterApp(final AppLifecycle lifecycle) {
-        final AppDescriptor descriptor = appController.getAppDescriptor(lifecycle);
+    public void uregisterApp(final AppDescriptor descriptor) {
         contextMap.remove(descriptor);
     }
-    
+
     private static class AppContext implements Serializable {
-        
+
         private Map<Class<? extends Place>, Activity> placeActivityMap = new HashMap<Class<? extends Place>, Activity>();
-        
+
         public AppContext() {
             super();
         }
-        
+
         public Activity getActivityForPlace(final Class<? extends Place> placeClass) {
             return placeActivityMap.get(placeClass);
         }
-        
+
         public void addActivityMapping(final Activity activity, final Class<? extends Place> placeClass) {
             placeActivityMap.put(placeClass, activity);
         }

@@ -31,42 +31,40 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.app.contacts;
 
-import java.util.ArrayList;
-import java.util.List;
+import info.magnolia.ui.admincentral.app.AppLifecycle;
+import info.magnolia.ui.framework.place.PlaceController;
+
+import javax.inject.Inject;
 
 /**
- * Defines a category of apps in the app launcher and the apps that belong to it.
+ * Dummy app.
  *
  * @version $Id$
  */
-public class AppCategory implements Comparable<AppCategory>{
+public class ContactsApp implements AppLifecycle {
 
-    private String label;
-    private List<AppDescriptor> apps = new ArrayList<AppDescriptor>();
+    private PlaceController placeController;
 
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    public List<AppDescriptor> getApps() {
-        return apps;
-    }
-
-    public void addApp(AppDescriptor descriptor) {
-        apps.add(descriptor);
+    @Inject
+    public ContactsApp(PlaceController placeController) {
+        this.placeController = placeController;
     }
 
     @Override
-    public int compareTo(AppCategory o) {
-        if(this.label == null || o.getLabel() == null) {
-            return 0;
-        }
-        return label.compareTo(o.getLabel());
+    public void start() {
+        System.out.println("ContactsApp started");
+    }
+
+    @Override
+    public void focus() {
+        placeController.goTo(new ContactsPlace("foobar"));
+        System.out.println("ContactsApp focused");
+    }
+
+    @Override
+    public void stop() {
+        System.out.println("ContactsApp stopped");
     }
 }

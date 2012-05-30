@@ -31,42 +31,45 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.app.contacts;
 
-import java.util.ArrayList;
-import java.util.List;
+import info.magnolia.ui.framework.place.Place;
+import info.magnolia.ui.framework.place.PlaceTokenizer;
+import info.magnolia.ui.framework.place.Prefix;
 
 /**
- * Defines a category of apps in the app launcher and the apps that belong to it.
+ * Place for the Contacts app.
  *
  * @version $Id$
  */
-public class AppCategory implements Comparable<AppCategory>{
+@Prefix("contacts")
+public class ContactsPlace extends Place {
 
-    private String label;
-    private List<AppDescriptor> apps = new ArrayList<AppDescriptor>();
+    /**
+     * Tokenizer for ContactsPlace.
+     *
+     * @version $Id$
+     */
+    public static class Tokenizer implements PlaceTokenizer<ContactsPlace> {
 
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    public List<AppDescriptor> getApps() {
-        return apps;
-    }
-
-    public void addApp(AppDescriptor descriptor) {
-        apps.add(descriptor);
-    }
-
-    @Override
-    public int compareTo(AppCategory o) {
-        if(this.label == null || o.getLabel() == null) {
-            return 0;
+        @Override
+        public ContactsPlace getPlace(String token) {
+            return new ContactsPlace(token);
         }
-        return label.compareTo(o.getLabel());
+
+        @Override
+        public String getToken(ContactsPlace place) {
+            return place.getPath();
+        }
+    }
+
+    private String path;
+
+    public ContactsPlace(String path) {
+        this.path = path;
+    }
+
+    public String getPath() {
+        return path;
     }
 }
