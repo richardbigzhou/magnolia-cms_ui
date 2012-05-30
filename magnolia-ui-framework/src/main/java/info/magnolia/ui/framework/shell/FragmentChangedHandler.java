@@ -33,12 +33,14 @@
  */
 package info.magnolia.ui.framework.shell;
 
+import info.magnolia.ui.framework.event.EventHandler;
+
 /**
  * Called when a URI fragment of {@link Shell} has changed.
  *
  * @version $Id$
  */
-public interface FragmentChangedHandler {
+public interface FragmentChangedHandler extends EventHandler {
 
     void onFragmentChanged(FragmentChangedEvent event);
 
