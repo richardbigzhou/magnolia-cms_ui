@@ -34,13 +34,14 @@
 package info.magnolia.ui.admincentral.app;
 
 
-import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -98,8 +99,25 @@ public class AppRegistryImplTest {
         assertEquals("Should have two AppCategorys",2, res.size());
     }
 
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testAddGetCategories_NoDuplicateAppsName() {
+        // GIVEN
 
-    @Ignore
+        // WHEN
+
+        // THEN
+        @SuppressWarnings("rawtypes")
+        List res = appRegistery.getCategories();
+        assertNotNull(res);
+        assertEquals("Should have two AppCategorys",2, res.size());
+        Collections.sort(res);
+        AppCategory cat = (AppCategory)res.get(0);
+        assertEquals("Should have two App",2, cat.getApps().size());
+        cat = (AppCategory)res.get(1);
+        assertEquals("Should have two App",0, cat.getApps().size());
+    }
+
     @Test
     public void testGetAppDescriptor() {
         // GIVEN
@@ -109,7 +127,7 @@ public class AppRegistryImplTest {
         // THEN
         AppDescriptor appDescriptor = appRegistery.getAppDescriptor("1_1_name");
         assertNotNull(appDescriptor);
-        assertEquals("Should be Equal to ",appDescriptor_1_1_cat_2, appDescriptor);
+        assertEquals("Should be Equal to ",appDescriptor_1_1_cat_1, appDescriptor);
 
     }
 
