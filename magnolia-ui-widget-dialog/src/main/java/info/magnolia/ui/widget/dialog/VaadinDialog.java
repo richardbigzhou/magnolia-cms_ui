@@ -35,20 +35,14 @@ package info.magnolia.ui.widget.dialog;
 
 
 
-<<<<<<< HEAD:ui-dialog/src/main/java/info/magnolia/m5/dialog/VaadinDialog.java
+import info.magnolia.ui.widget.dialog.gwt.client.VDialog;
+import info.magnolia.ui.widget.tabsheet.ShellTab;
+import info.magnolia.ui.widget.tabsheet.ShellTabSheet;
+
 import java.util.Map;
 
 import org.vaadin.rpc.ServerSideHandler;
 import org.vaadin.rpc.ServerSideProxy;
-
-import info.magnolia.m5.dialog.gwt.client.VDialog;
-import info.magnolia.m5vaadin.tabsheet.ShellTab;
-import info.magnolia.m5vaadin.tabsheet.ShellTabSheet;
-=======
-import info.magnolia.ui.widget.dialog.gwt.client.VDialog;
-import info.magnolia.ui.widget.tabsheet.ShellTab;
-import info.magnolia.ui.widget.tabsheet.ShellTabSheet;
->>>>>>> 603f79a668da2bb271978a721b524db9f1d77253:magnolia-ui-widget-dialog/src/main/java/info/magnolia/ui/widget/dialog/VaadinDialog.java
 
 import com.vaadin.terminal.PaintException;
 import com.vaadin.terminal.PaintTarget;
@@ -73,7 +67,8 @@ public class VaadinDialog extends AbstractComponent implements ServerSideHandler
     protected ServerSideProxy proxy = new ServerSideProxy(this) {{}};
     public VaadinDialog() {
         setImmediate(true);
-
+        addAction("save changes", "submit");
+        addAction("cancel", "cancel");
     }
 
     @Override

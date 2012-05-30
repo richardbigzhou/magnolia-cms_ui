@@ -36,6 +36,7 @@ package info.magnolia.ui.widget.dialog.gwt.client;
 
 import info.magnolia.ui.widget.tabsheet.gwt.client.VShellTabSheet;
 
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Button;
@@ -86,6 +87,10 @@ public class VDialogViewImpl extends FlowPanel implements VDialogView {
         this.presenter = presenter;
     }
 
+    public Presenter getPresenter() {
+        return presenter;
+    }
+
     @Override
     public VShellTabSheet getTabSheet() {
         return tabsheet;
@@ -114,6 +119,14 @@ public class VDialogViewImpl extends FlowPanel implements VDialogView {
         Button button = new Button(label);
         button.setStyleName(CLASSNAME_BUTTON);
         button.addStyleName(CLASSNAME_BUTTON + "-" +label);
+        button.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(com.google.gwt.event.dom.client.ClickEvent event) {
+                VDialogViewImpl.this.getPresenter();
+            }
+
+        });
         add(button, footer);
     }
 
@@ -121,4 +134,5 @@ public class VDialogViewImpl extends FlowPanel implements VDialogView {
         Label label = new Label(caption);
         add(label, header);
     }
+
 }

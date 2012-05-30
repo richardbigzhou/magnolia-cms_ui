@@ -35,6 +35,7 @@ package info.magnolia.ui.admincentral.dialog;
 
 import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.admincentral.dialog.builder.DialogBuilder;
+import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 
 /**
@@ -48,15 +49,21 @@ public class DialogPresenter implements DialogView.Presenter {
     private DialogDefinition dialogDefinition;
     private DialogView dialogView;
     private MagnoliaShell shell;
+    private EventBus eventBus;
 
-    public DialogPresenter(DialogBuilder dialogBuilder, DialogDefinition dialogDefinition, MagnoliaShell shell) {
+    public DialogPresenter(DialogBuilder dialogBuilder, DialogDefinition dialogDefinition, MagnoliaShell shell, EventBus eventBus) {
         this.dialogBuilder = dialogBuilder;
         this.dialogDefinition = dialogDefinition;
         this.shell = shell;
+        this.eventBus = eventBus;
     }
 
     public void showDialog() {
         dialogView = dialogBuilder.build(dialogDefinition, this);
         shell.openDialog(dialogView);
+    }
+
+    public void closeDialog() {
+        shell.removeDialog(dialogView);
     }
 }

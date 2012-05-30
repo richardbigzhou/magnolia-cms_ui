@@ -2,6 +2,7 @@
 @import url(splitfeed.css);
 @import url(pulse-activity-entry.css);
 @import url(dialog.css);
+@import url(tabsheet.css);
 
 @font-face{
     font-family: DinRound;
@@ -85,26 +86,26 @@ button.action-close {
 }
 
 .v-shell-vieport {
-	position: absolute;
-	overflow: hidden;
-	top: 80px;
-	width: 100%;
-	bottom: 0;
+    position: absolute;
+    overflow: hidden;
+    top: 80px;
+    width: 100%;
+    bottom: 0;
 }
 
 .v-shell-notification {
-	width: 100%;
-	position: absolute;
-	z-index: 1200;
-	text-align: center;
-	vertical-align: middle;
-	font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
+    width: 100%;
+    position: absolute;
+    z-index: 1200;
+    text-align: center;
+    vertical-align: middle;
+    font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
 }
 
 .v-shell-notification.warning {
-	background: none repeat scroll 0 0 #FFBF28; 
-	bottom:0;
-	height: 30px;
+    background: none repeat scroll 0 0 #FFBF28;
+    bottom:0;
+    height: 30px;
 }
 
 .v-shell-notification.error {
@@ -267,13 +268,13 @@ button.action-close {
 }
 
 .v-appbutton {
-	position: relative;
-	text-align: center;
+    position: relative;
+    text-align: center;
 }
 
 .v-appbutton .divet {
-	position: absolute;
-	height: 9px;
+    position: absolute;
+    height: 9px;
     width: 9px;
     left: 37px;
     background: url("img/style-app-running.png") no-repeat scroll center bottom transparent;
