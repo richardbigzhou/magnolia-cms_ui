@@ -41,7 +41,7 @@ import java.util.List;
  *
  * @version $Id$
  */
-public class AppCategory {
+public class AppCategory implements Comparable<AppCategory>{
 
     private String label;
     private List<AppDescriptor> apps = new ArrayList<AppDescriptor>();
@@ -60,5 +60,13 @@ public class AppCategory {
 
     public void addApp(AppDescriptor descriptor) {
         apps.add(descriptor);
+    }
+
+    @Override
+    public int compareTo(AppCategory o) {
+        if(this.label == null || o.getLabel() == null) {
+            return 0;
+        }
+        return label.compareTo(o.getLabel());
     }
 }
