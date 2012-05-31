@@ -34,6 +34,7 @@
 package info.magnolia.ui.admincentral.app;
 
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.admincentral.app.layout.AppLauncherLayout;
 import info.magnolia.ui.framework.event.Event;
 import info.magnolia.ui.framework.event.EventBus;
 
@@ -52,6 +53,7 @@ import com.google.inject.Inject;
  * Default AppController implementation.
  *
  * Also responsible for the App Event triggering (Start/Stop/Focus App events).
+ *
  * @version $Id$
  */
 @Singleton
@@ -59,7 +61,7 @@ public class AppControllerImpl implements AppController {
 
     private static Logger log = LoggerFactory.getLogger(AppControllerImpl.class);
 
-    private AppRegistry appRegistry;
+    private AppLauncherLayout appLauncherLayout;
 
     private ComponentProvider componentProvider;
 
@@ -73,8 +75,8 @@ public class AppControllerImpl implements AppController {
     private LinkedList<AppLifecycle> appHistory = new LinkedList<AppLifecycle>();
 
     @Inject
-    public AppControllerImpl(AppRegistry appRegistry, ComponentProvider componentProvider, EventBus eventBus) {
-        this.appRegistry = appRegistry;
+    public AppControllerImpl(AppLauncherLayout appLauncherLayout, ComponentProvider componentProvider, EventBus eventBus) {
+        this.appLauncherLayout = appLauncherLayout;
         this.componentProvider = componentProvider;
         this.eventBus = eventBus;
     }
@@ -97,7 +99,7 @@ public class AppControllerImpl implements AppController {
     }
 
     private AppLifecycle doStart(String name) {
-        final AppDescriptor descriptor = appRegistry.getAppDescriptor(name);
+        final AppDescriptor descriptor = appLauncherLayout.getAppDescriptor(name);
         AppLifecycle lifecycle = (AppLifecycle)runningApps.get(descriptor);
         if (lifecycle == null) {
             lifecycle = componentProvider.newInstance(descriptor.getAppClass());
@@ -119,7 +121,7 @@ public class AppControllerImpl implements AppController {
     }
 
     private void doStop(String name) {
-        final AppDescriptor descriptor = appRegistry.getAppDescriptor(name);
+        final AppDescriptor descriptor = appLauncherLayout.getAppDescriptor(name);
         AppLifecycle lifecycle = (AppLifecycle)runningApps.get(descriptor);
         if (lifecycle != null) {
             lifecycle.stop();
