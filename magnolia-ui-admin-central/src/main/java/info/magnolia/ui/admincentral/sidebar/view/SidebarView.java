@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,25 +31,21 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.admincentral.sidebar.view;
 
-import info.magnolia.ui.widget.magnoliashell.ShellView;
-
-import com.vaadin.ui.ComponentContainer;
-
+import info.magnolia.ui.framework.view.View;
 /**
- * Gen app view.
- * @author p4elkin
- *
- * @param <T>
+ * The sidebar view showing the list of available actions and a preview of the selected item.
  */
-public interface AppView<T extends AppPresenter<T>> extends ShellView {
+public interface SidebarView extends View {
+    /**
+     * Presenter that is called when the user selects a command.
+     */
+    public interface Presenter {
+        void onMenuItemSelected(String menuItemName);
+    }
 
-    void addTab(final ComponentContainer cc, String caption);
+    ActionListView getActionList();
 
-    void closeTab(final ComponentContainer cc);
-
-    void setPresenter(final T presenter);
-
-    T getPresenter();
+    void setPresenter(Presenter presenter);
 }

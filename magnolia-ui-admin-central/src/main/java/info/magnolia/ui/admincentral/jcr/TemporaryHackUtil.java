@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,25 +31,23 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.admincentral.jcr;
 
-import info.magnolia.ui.widget.magnoliashell.ShellView;
+import info.magnolia.cms.core.Content;
 
-import com.vaadin.ui.ComponentContainer;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
 
 /**
- * Gen app view.
- * @author p4elkin
+ * Collection of utilities temporarily needed as long as we have no clear vision of the future of
+ * our Content API.
  *
- * @param <T>
+ * @deprecated temporary
  */
-public interface AppView<T extends AppPresenter<T>> extends ShellView {
+public class TemporaryHackUtil {
 
-    void addTab(final ComponentContainer cc, String caption);
-
-    void closeTab(final ComponentContainer cc);
-
-    void setPresenter(final T presenter);
-
-    T getPresenter();
+    public static Content createHackContentFrom(Node node) throws RepositoryException {
+        return new HackContent(node);
+    }
 }

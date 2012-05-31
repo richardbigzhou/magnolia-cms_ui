@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,25 +31,16 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.admincentral.jcr.view.builder;
 
-import info.magnolia.ui.widget.magnoliashell.ShellView;
-
-import com.vaadin.ui.ComponentContainer;
+import info.magnolia.ui.admincentral.jcr.view.JcrView;
+import info.magnolia.ui.admincentral.jcr.view.JcrView.ViewType;
+import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 
 /**
- * Gen app view.
- * @author p4elkin
- *
- * @param <T>
+ * Used to transform tree or list and column definitions into components.
  */
-public interface AppView<T extends AppPresenter<T>> extends ShellView {
+public interface JcrViewBuilder {
 
-    void addTab(final ComponentContainer cc, String caption);
-
-    void closeTab(final ComponentContainer cc);
-
-    void setPresenter(final T presenter);
-
-    T getPresenter();
+    JcrView build(WorkbenchDefinition workbenchDefinition, ViewType type);
 }

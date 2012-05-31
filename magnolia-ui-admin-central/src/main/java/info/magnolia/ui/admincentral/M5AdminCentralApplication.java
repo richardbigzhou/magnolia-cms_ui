@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral;
 
-import info.magnolia.ui.admincentral.dialog.registry.DummyDialogDefinitionManager;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.model.ModuleDefinition;
 import info.magnolia.objectfactory.Components;
@@ -42,6 +41,7 @@ import info.magnolia.objectfactory.configuration.ComponentProviderConfigurationB
 import info.magnolia.objectfactory.configuration.InstanceConfiguration;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
+import info.magnolia.ui.admincentral.dialog.registry.DummyDialogDefinitionManager;
 
 import java.util.List;
 
@@ -67,6 +67,7 @@ public class M5AdminCentralApplication extends Application {
         List<ModuleDefinition> moduleDefinitions = Components.getComponent(ModuleRegistry.class).getModuleDefinitions();
         ComponentProviderConfiguration configuration = configurationBuilder.getComponentsFromModules("m5-admin-central", moduleDefinitions);
         configuration = configuration.clone();
+
         configuration.addComponent(InstanceConfiguration.valueOf(Application.class, this));
 
         // Create the component provider
@@ -74,7 +75,6 @@ public class M5AdminCentralApplication extends Application {
         builder.withConfiguration(configuration);
         builder.withParent((GuiceComponentProvider) Components.getComponentProvider());
         GuiceComponentProvider componentProvider = builder.build();
-
         DummyDialogDefinitionManager dialogManager = componentProvider.newInstance(DummyDialogDefinitionManager.class);
         dialogManager.load();
         window = new Window("Magnolia shell test");

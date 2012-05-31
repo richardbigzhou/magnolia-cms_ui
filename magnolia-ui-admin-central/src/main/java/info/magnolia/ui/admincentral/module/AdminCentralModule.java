@@ -31,65 +31,35 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.admincentral.module;
 
-import info.magnolia.ui.widget.magnoliashell.IsVaadinComponent;
-import info.magnolia.ui.widget.tabsheet.ShellTab;
-import info.magnolia.ui.widget.tabsheet.ShellTabSheet;
+import javax.inject.Inject;
 
-import com.vaadin.ui.Component;
-import com.vaadin.ui.ComponentContainer;
-
+import info.magnolia.module.ModuleLifecycle;
+import info.magnolia.module.ModuleLifecycleContext;
+import info.magnolia.ui.model.workbench.registry.ConfiguredWorkbenchDefinitionManager;
 
 /**
- * App view impl.
+ * TODO javadoc.
+ * @version $Id$
  *
- * @author p4elkin
- * @param <T>
- *            recursive generic param.
  */
-@SuppressWarnings("serial")
-public abstract class AbstractAppView<T extends AppPresenter<T>> implements AppView<T>, IsVaadinComponent {
+public class AdminCentralModule implements ModuleLifecycle {
+    private ConfiguredWorkbenchDefinitionManager workbenchDefinitionManager;
 
-    private T presenter;
-
-    private ShellTabSheet tabsheet = new ShellTabSheet();
-
-    public AbstractAppView() {
-        super();
-        tabsheet.setSizeFull();
+    @Inject
+    public AdminCentralModule(ConfiguredWorkbenchDefinitionManager workbenchDefinitionManager) {
+        this.workbenchDefinitionManager = workbenchDefinitionManager;
     }
 
     @Override
-    public T getPresenter() {
-        return presenter;
+    public void start(ModuleLifecycleContext moduleLifecycleContext) {
+        workbenchDefinitionManager.start();
     }
 
     @Override
-    public void setPresenter(T presenter) {
-        this.presenter = presenter;
+    public void stop(ModuleLifecycleContext moduleLifecycleContext) {
+
     }
 
-    @Override
-    public String getAppName() {
-        return presenter.getAppName();
-    }
-
-    @Override
-    public void addTab(ComponentContainer cc, String caption) {
-        final ShellTab tab = new ShellTab(caption, cc);
-        tabsheet.addComponent(tab);
-        tabsheet.setTabClosable(tab, true);
-        tabsheet.setActiveTab(tab);
-    }
-
-    @Override
-    public void closeTab(ComponentContainer cc) {
-        tabsheet.removeComponent(cc);
-    }
-
-    @Override
-    public Component asVaadinComponent() {
-        return tabsheet;
-    }
 }

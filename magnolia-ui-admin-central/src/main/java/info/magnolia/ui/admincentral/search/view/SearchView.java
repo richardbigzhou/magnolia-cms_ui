@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,25 +31,38 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.admincentral.search.view;
 
-import info.magnolia.ui.widget.magnoliashell.ShellView;
-
-import com.vaadin.ui.ComponentContainer;
+import info.magnolia.ui.admincentral.jcr.view.JcrView;
+import info.magnolia.ui.framework.view.View;
 
 /**
- * Gen app view.
- * @author p4elkin
+ * Search view interface.
+ * @author fgrilli
  *
- * @param <T>
  */
-public interface AppView<T extends AppPresenter<T>> extends ShellView {
+public interface SearchView extends View {
 
-    void addTab(final ComponentContainer cc, String caption);
+    /**
+     * Presenter interface for the search actions.
+     */
+    public interface Presenter {
+        void onStartSearch(SearchParameters searchParameters);
 
-    void closeTab(final ComponentContainer cc);
+        void onPerformSearch(SearchParameters searchParameters, JcrView jcrView);
 
-    void setPresenter(final T presenter);
+        void onAddFilter();
+    }
 
-    T getPresenter();
+    void setPresenter(Presenter presenter);
+
+    /**
+     * Updates the view by showing search results.
+     */
+    void update(SearchResult result);
+    /**
+     * Performs a search with the provided search parameters and updates the proper container.
+     */
+    void search(SearchParameters searchParameters, JcrView jcrView);
+
 }

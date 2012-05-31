@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,25 +31,48 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.admincentral.container;
 
-import info.magnolia.ui.widget.magnoliashell.ShellView;
-
-import com.vaadin.ui.ComponentContainer;
 
 /**
- * Gen app view.
- * @author p4elkin
+ * Definition for Properties.
  *
- * @param <T>
+ * @author dlipp
+ * @version $Id$
  */
-public interface AppView<T extends AppPresenter<T>> extends ShellView {
+public class PropertyDefinition {
+    private Object defaultValue;
+    private String propertyId;
+    private Class<?> type;
 
-    void addTab(final ComponentContainer cc, String caption);
+    public PropertyDefinition(String propertyId, Class<?> type,
+            Object defaultValue) {
+        setPropertyId(propertyId);
+        setType(type);
+        setDefaultValue(defaultValue);
+    }
 
-    void closeTab(final ComponentContainer cc);
+    public Object getDefaultValue() {
+        return defaultValue;
+    }
 
-    void setPresenter(final T presenter);
+    public String getPropertyId() {
+        return propertyId;
+    }
 
-    T getPresenter();
+    public Class<?> getType() {
+        return type;
+    }
+
+    public void setDefaultValue(Object defaultValue) {
+        this.defaultValue = defaultValue;
+    }
+
+    public void setPropertyId(String propertyId) {
+        this.propertyId = propertyId;
+    }
+
+    public void setType(Class<?> type) {
+        this.type = type;
+    }
 }

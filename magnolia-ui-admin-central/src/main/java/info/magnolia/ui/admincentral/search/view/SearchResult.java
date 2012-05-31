@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,25 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.admincentral.search.view;
 
-import info.magnolia.ui.widget.magnoliashell.ShellView;
-
-import com.vaadin.ui.ComponentContainer;
+import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
- * Gen app view.
- * @author p4elkin
+ * An object representing search results. Mostly used to update the UI with info related to the search just performed.
+ * @author fgrilli
  *
- * @param <T>
  */
-public interface AppView<T extends AppPresenter<T>> extends ShellView {
+public class SearchResult {
+    private long itemsFound = 0;
+    private String query;
 
-    void addTab(final ComponentContainer cc, String caption);
+    public SearchResult(String query, long itemsFound) {
+        this.query = query;
+        this.itemsFound = itemsFound;
+    }
+    public long getItemsFound() {
+        return itemsFound;
+    }
 
-    void closeTab(final ComponentContainer cc);
+    public String getQuery() {
+        return query;
+    }
 
-    void setPresenter(final T presenter);
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
+    }
 
-    T getPresenter();
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,25 +31,28 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.admincentral.toolbar.view;
 
-import info.magnolia.ui.widget.magnoliashell.ShellView;
-
-import com.vaadin.ui.ComponentContainer;
+import info.magnolia.ui.admincentral.search.view.SearchView;
+import info.magnolia.ui.framework.place.Place;
+import info.magnolia.ui.model.toolbar.ToolbarItemDefinition;
 
 /**
- * Gen app view.
- * @author p4elkin
+ * A toolbar for global functions (i.e. the clipboard, toggle view, etc.).
+ * @author fgrilli
  *
- * @param <T>
  */
-public interface AppView<T extends AppPresenter<T>> extends ShellView {
+public interface FunctionToolbarView extends SearchView {
+    /**
+     * Presenter that is called when the user selects an item in the toolbar.
+     */
+    public interface Presenter {
 
-    void addTab(final ComponentContainer cc, String caption);
+        void onToolbarItemSelection(ToolbarItemDefinition itemDefinition);
+    }
 
-    void closeTab(final ComponentContainer cc);
+    void setPresenter(Presenter presenter);
 
-    void setPresenter(final T presenter);
+    void update(Place newPlace);
 
-    T getPresenter();
 }

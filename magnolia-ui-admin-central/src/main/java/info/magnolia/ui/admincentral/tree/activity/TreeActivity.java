@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,25 +31,31 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.admincentral.tree.activity;
 
-import info.magnolia.ui.widget.magnoliashell.ShellView;
 
-import com.vaadin.ui.ComponentContainer;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+
+import info.magnolia.ui.admincentral.jcr.view.activity.AbstractJcrActivity;
+import info.magnolia.ui.admincentral.jcr.view.builder.JcrViewBuilderProvider;
+import info.magnolia.ui.admincentral.jcr.view.JcrView.ViewType;
+import info.magnolia.ui.framework.place.PlaceController;
+import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 
 /**
- * Gen app view.
- * @author p4elkin
+ * Activity for displaying a tree view.
  *
- * @param <T>
  */
-public interface AppView<T extends AppPresenter<T>> extends ShellView {
+@Singleton
+public class TreeActivity extends AbstractJcrActivity{
 
-    void addTab(final ComponentContainer cc, String caption);
+    @Inject
+    public TreeActivity(WorkbenchDefinition workbenchDefinition, JcrViewBuilderProvider jcrViewBuilderProvider, PlaceController placeController, Shell shell) {
+        super(workbenchDefinition, jcrViewBuilderProvider, placeController, shell);
+        jcrView = jcrViewBuilderProvider.getBuilder().build(workbenchDefinition, ViewType.TREE);
+    }
 
-    void closeTab(final ComponentContainer cc);
-
-    void setPresenter(final T presenter);
-
-    T getPresenter();
 }

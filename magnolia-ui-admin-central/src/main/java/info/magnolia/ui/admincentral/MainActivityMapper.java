@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,25 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.admincentral;
 
-import info.magnolia.ui.widget.magnoliashell.ShellView;
 
-import com.vaadin.ui.ComponentContainer;
+import info.magnolia.ui.framework.activity.ActivityMapper;
 
 /**
- * Gen app view.
- * @author p4elkin
- *
- * @param <T>
+ * Maps the main places to main activities.
  */
-public interface AppView<T extends AppPresenter<T>> extends ShellView {
-
-    void addTab(final ComponentContainer cc, String caption);
-
-    void closeTab(final ComponentContainer cc);
-
-    void setPresenter(final T presenter);
-
-    T getPresenter();
+public interface MainActivityMapper extends ActivityMapper {
 }

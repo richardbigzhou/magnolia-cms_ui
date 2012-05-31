@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,25 +31,38 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.admincentral.column;
 
-import info.magnolia.ui.widget.magnoliashell.ShellView;
+import info.magnolia.ui.model.column.definition.AbstractColumnDefinition;
 
-import com.vaadin.ui.ComponentContainer;
+import javax.jcr.Item;
+import javax.jcr.RepositoryException;
+
+import com.vaadin.ui.Component;
 
 /**
- * Gen app view.
- * @author p4elkin
+ * Defines a Column - e.g. for lists or trees.
  *
- * @param <T>
+ * @param <D>
+ *            type of the definition for this column.
+ * @author dlipp
  */
-public interface AppView<T extends AppPresenter<T>> extends ShellView {
+public interface Column<D extends AbstractColumnDefinition> {
 
-    void addTab(final ComponentContainer cc, String caption);
+    D getDefinition();
 
-    void closeTab(final ComponentContainer cc);
+    /**
+     * @return value to be displayed in the corresponding column (from the provided Node)
+     */
+    Component getComponent(Item item) throws RepositoryException;
 
-    void setPresenter(final T presenter);
+    void setComponent(Item item, Component newValue) throws RepositoryException;
 
-    T getPresenter();
+    int getWidth();
+
+    void setWidth(int newWidth);
+
+    String getLabel();
+
+    void setLabel(String newLabel);
 }

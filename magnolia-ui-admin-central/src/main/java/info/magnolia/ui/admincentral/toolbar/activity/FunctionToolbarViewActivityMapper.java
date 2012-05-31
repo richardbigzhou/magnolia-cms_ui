@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,25 +31,33 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.admincentral.toolbar.activity;
 
-import info.magnolia.ui.widget.magnoliashell.ShellView;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
-import com.vaadin.ui.ComponentContainer;
+import info.magnolia.ui.framework.activity.Activity;
+import info.magnolia.ui.framework.activity.ActivityMapper;
+import info.magnolia.ui.framework.place.Place;
 
 /**
- * Gen app view.
- * @author p4elkin
+ * Returns a {@link FunctionToolbarActivity} for a given place.
+ * @author fgrilli
  *
- * @param <T>
  */
-public interface AppView<T extends AppPresenter<T>> extends ShellView {
+@Singleton
+public class FunctionToolbarViewActivityMapper implements ActivityMapper {
 
-    void addTab(final ComponentContainer cc, String caption);
+    private FunctionToolbarActivity functionToolbarActivity;
 
-    void closeTab(final ComponentContainer cc);
+    @Inject
+    public FunctionToolbarViewActivityMapper(FunctionToolbarActivity functionToolbarActivity) {
+        this.functionToolbarActivity = functionToolbarActivity;
+    }
 
-    void setPresenter(final T presenter);
+    @Override
+    public Activity getActivity(Place place) {
+        return functionToolbarActivity;
+    }
 
-    T getPresenter();
 }

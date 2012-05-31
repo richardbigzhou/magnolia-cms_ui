@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,25 +31,38 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.admincentral.container;
 
-import info.magnolia.ui.widget.magnoliashell.ShellView;
+import java.util.Collection;
 
-import com.vaadin.ui.ComponentContainer;
+import javax.jcr.Item;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
+import com.vaadin.ui.Component;
 
 /**
- * Gen app view.
- * @author p4elkin
+ * Backing implementation for JcrContainer.
  *
- * @param <T>
+ * @author tmattsson
  */
-public interface AppView<T extends AppPresenter<T>> extends ShellView {
+public interface JcrContainerSource {
 
-    void addTab(final ComponentContainer cc, String caption);
+    Collection<Item> getChildren(Item item) throws RepositoryException;
 
-    void closeTab(final ComponentContainer cc);
+    Collection<Item> getRootItemIds() throws RepositoryException;
 
-    void setPresenter(final T presenter);
+    boolean isRoot(Item item) throws RepositoryException;
 
-    T getPresenter();
+    boolean hasChildren(Item item) throws RepositoryException;
+
+    Component getColumnComponent(String columnLabel, Item item) throws RepositoryException;
+
+    void setColumnComponent(String columnLabel, Item item, Component newValue) throws RepositoryException;
+
+    String getItemIcon(Item item) throws RepositoryException;
+
+    Item getItemByPath(String path) throws RepositoryException;
+
+    Node getNodeByIdentifier(String nodeIdentifier) throws RepositoryException;
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,25 +31,40 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
-
-import info.magnolia.ui.widget.magnoliashell.ShellView;
-
-import com.vaadin.ui.ComponentContainer;
+package info.magnolia.ui.admincentral.jcr.view.builder;
 
 /**
- * Gen app view.
- * @author p4elkin
+ * Defines a Mapping from a Definition to an specific implementation.
+ * @param <D> class of the definition
+ * @param <I> class of the implementation
  *
- * @param <T>
+ * @author dlipp
  */
-public interface AppView<T extends AppPresenter<T>> extends ShellView {
+public class DefinitionToImplementationMapping<D,I> {
 
-    void addTab(final ComponentContainer cc, String caption);
+    /**
+     * Class-name of definition.
+     */
+    private Class<D> definition;
 
-    void closeTab(final ComponentContainer cc);
+    /**
+     * Class-name of implementation.
+     */
+    private Class<I> implementation;
 
-    void setPresenter(final T presenter);
+    public void setDefinition(Class<D> definition) {
+        this.definition = definition;
+    }
 
-    T getPresenter();
+    public Class<D> getDefinition() {
+        return definition;
+    }
+
+    public void setImplementation(Class<I> implementation) {
+        this.implementation = implementation;
+    }
+
+    public Class<I> getImplementation() {
+        return implementation;
+    }
 }

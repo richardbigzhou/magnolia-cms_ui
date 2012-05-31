@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,25 +31,19 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.admincentral.sidebar.view;
 
-import info.magnolia.ui.widget.magnoliashell.ShellView;
+import info.magnolia.ui.admincentral.sidebar.view.SidebarView.Presenter;
+import info.magnolia.ui.model.menu.definition.MenuItemDefinition;
+import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
-import com.vaadin.ui.ComponentContainer;
+import java.util.List;
 
 /**
- * Gen app view.
- * @author p4elkin
+ * UI component that displays a list of actions available for the selected tree or list item.
  *
- * @param <T>
  */
-public interface AppView<T extends AppPresenter<T>> extends ShellView {
-
-    void addTab(final ComponentContainer cc, String caption);
-
-    void closeTab(final ComponentContainer cc);
-
-    void setPresenter(final T presenter);
-
-    T getPresenter();
+public interface ActionListView extends IsVaadinComponent{
+    void show(List<MenuItemDefinition> contextMenuItems);
+    void setPresenter(Presenter presenter);
 }

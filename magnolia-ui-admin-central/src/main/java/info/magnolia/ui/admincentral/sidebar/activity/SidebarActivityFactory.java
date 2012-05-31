@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,25 +31,30 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.admincentral.sidebar.activity;
 
-import info.magnolia.ui.widget.magnoliashell.ShellView;
-
-import com.vaadin.ui.ComponentContainer;
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.admincentral.workbench.place.ItemSelectedPlace;
+import info.magnolia.ui.framework.activity.Activity;
+import info.magnolia.ui.framework.activity.ActivityMapper;
+import info.magnolia.ui.framework.place.Place;
+import info.magnolia.ui.model.builder.FactoryBase;
 
 /**
- * Gen app view.
- * @author p4elkin
  *
- * @param <T>
+ * Returns the {@link Activity} to perform when the current selected item on a tree or list has changed.
+ * @author fgrilli
+ *
  */
-public interface AppView<T extends AppPresenter<T>> extends ShellView {
+public class SidebarActivityFactory extends FactoryBase<Place, Activity> implements ActivityMapper {
 
-    void addTab(final ComponentContainer cc, String caption);
+    public SidebarActivityFactory(ComponentProvider componentProvider) {
+        super(componentProvider);
+        addMapping(ItemSelectedPlace.class, SidebarActivity.class);
+    }
 
-    void closeTab(final ComponentContainer cc);
-
-    void setPresenter(final T presenter);
-
-    T getPresenter();
+    @Override
+    public Activity getActivity(final Place place) {
+        return this.create(place);
+    }
 }

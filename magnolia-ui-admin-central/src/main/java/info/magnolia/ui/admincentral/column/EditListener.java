@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,25 +31,22 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.admincentral.column;
 
-import info.magnolia.ui.widget.magnoliashell.ShellView;
+import java.lang.reflect.Method;
+import java.util.EventListener;
 
-import com.vaadin.ui.ComponentContainer;
+import com.vaadin.tools.ReflectTools;
+
 
 /**
- * Gen app view.
- * @author p4elkin
+ * A listener for edit events.
  *
- * @param <T>
  */
-public interface AppView<T extends AppPresenter<T>> extends ShellView {
+public interface EditListener extends EventListener {
 
-    void addTab(final ComponentContainer cc, String caption);
+    public static Method EVENT_METHOD = ReflectTools.findMethod(
+        EditListener.class, "edit", EditEvent.class);
 
-    void closeTab(final ComponentContainer cc);
-
-    void setPresenter(final T presenter);
-
-    T getPresenter();
+    void edit(EditEvent event);
 }

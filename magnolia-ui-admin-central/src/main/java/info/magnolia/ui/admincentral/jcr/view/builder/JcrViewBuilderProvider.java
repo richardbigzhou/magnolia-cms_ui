@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,25 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
-
-import info.magnolia.ui.widget.magnoliashell.ShellView;
-
-import com.vaadin.ui.ComponentContainer;
+package info.magnolia.ui.admincentral.jcr.view.builder;
 
 /**
- * Gen app view.
- * @author p4elkin
+ * Provides a JcrViewBuilder.
  *
- * @param <T>
+ * TODO: check whether this type should go to ui-model layer.
  */
-public interface AppView<T extends AppPresenter<T>> extends ShellView {
+public interface JcrViewBuilderProvider {
 
-    void addTab(final ComponentContainer cc, String caption);
-
-    void closeTab(final ComponentContainer cc);
-
-    void setPresenter(final T presenter);
-
-    T getPresenter();
+    JcrViewBuilder getBuilder();
 }

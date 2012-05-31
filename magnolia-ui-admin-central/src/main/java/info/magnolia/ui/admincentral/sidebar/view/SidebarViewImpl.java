@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,65 +31,59 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.admincentral.sidebar.view;
 
-import info.magnolia.ui.widget.magnoliashell.IsVaadinComponent;
-import info.magnolia.ui.widget.tabsheet.ShellTab;
-import info.magnolia.ui.widget.tabsheet.ShellTabSheet;
+import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
+
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaadin.ui.Component;
-import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.Panel;
 
 
 /**
- * App view impl.
+ * The sidebar view showing the list of available actions and a preview of the selected item.
  *
- * @author p4elkin
- * @param <T>
- *            recursive generic param.
  */
-@SuppressWarnings("serial")
-public abstract class AbstractAppView<T extends AppPresenter<T>> implements AppView<T>, IsVaadinComponent {
+public class SidebarViewImpl implements IsVaadinComponent, SidebarView {
 
-    private T presenter;
+    private static final Logger log = LoggerFactory.getLogger(SidebarViewImpl.class);
 
-    private ShellTabSheet tabsheet = new ShellTabSheet();
+    private ActionListView actionListView;
+    private Presenter presenter;
 
-    public AbstractAppView() {
-        super();
-        tabsheet.setSizeFull();
+    private Component root;
+
+    @Inject
+    public SidebarViewImpl(ActionListView actionListView) {
+        this.actionListView = actionListView;
+
+        Panel scrollPanel = new Panel();
+        scrollPanel.setStyleName("scroll");
+        scrollPanel.setScrollable(true);
+        scrollPanel.setImmediate(true);
+        scrollPanel.setSizeUndefined();
+
+
+        root = scrollPanel;
     }
 
     @Override
-    public T getPresenter() {
-        return presenter;
+    public ActionListView getActionList() {
+        return actionListView;
     }
 
     @Override
-    public void setPresenter(T presenter) {
+    public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
-    }
-
-    @Override
-    public String getAppName() {
-        return presenter.getAppName();
-    }
-
-    @Override
-    public void addTab(ComponentContainer cc, String caption) {
-        final ShellTab tab = new ShellTab(caption, cc);
-        tabsheet.addComponent(tab);
-        tabsheet.setTabClosable(tab, true);
-        tabsheet.setActiveTab(tab);
-    }
-
-    @Override
-    public void closeTab(ComponentContainer cc) {
-        tabsheet.removeComponent(cc);
+        actionListView.setPresenter(this.presenter);
     }
 
     @Override
     public Component asVaadinComponent() {
-        return tabsheet;
+        return root;
     }
 }

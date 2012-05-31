@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,25 +31,43 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.admincentral.column;
 
-import info.magnolia.ui.widget.magnoliashell.ShellView;
+import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.place.PlaceController;
+import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.model.column.definition.LabelColumnDefinition;
 
-import com.vaadin.ui.ComponentContainer;
+import java.io.Serializable;
+
+import javax.jcr.Item;
+import javax.jcr.RepositoryException;
+
+import com.vaadin.ui.Component;
 
 /**
- * Gen app view.
- * @author p4elkin
+ * Describes a column that contains the label of the item.
  *
- * @param <T>
+ * @author dlipp
+ * @author tmattsson
  */
-public interface AppView<T extends AppPresenter<T>> extends ShellView {
+public class LabelColumn extends AbstractEditableColumn<LabelColumnDefinition> implements Serializable {
 
-    void addTab(final ComponentContainer cc, String caption);
+    public LabelColumn(LabelColumnDefinition def, EventBus eventBus, PlaceController placeController, Shell shell) {
+        super(def, eventBus, placeController, shell);
+    }
 
-    void closeTab(final ComponentContainer cc);
+    @Override
+    protected Component getDefaultComponent(Item item) throws RepositoryException {
 
-    void setPresenter(final T presenter);
+        String path = item.isNode() ? "@name" : item.getName() + "@name";
 
-    T getPresenter();
+        return new EditableText(item, new PresenterImpl(), path) {
+
+            @Override
+            protected String getLabelText(Item item) throws RepositoryException {
+                return item.getName();
+            }
+        };
+    }
 }

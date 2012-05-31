@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,25 +31,39 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.admincentral.search.activity;
 
-import info.magnolia.ui.widget.magnoliashell.ShellView;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
-import com.vaadin.ui.ComponentContainer;
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.admincentral.search.place.SearchPlace;
+import info.magnolia.ui.admincentral.search.view.SearchParameters;
+import info.magnolia.ui.framework.activity.Activity;
+import info.magnolia.ui.framework.activity.ActivityMapper;
+import info.magnolia.ui.framework.place.Place;
+import info.magnolia.ui.model.builder.FactoryBase;
 
 /**
- * Gen app view.
- * @author p4elkin
+ * Search view activity mapper. A new search activity is started on {@link SearchPlace} change.
+ * @author fgrilli
  *
- * @param <T>
  */
-public interface AppView<T extends AppPresenter<T>> extends ShellView {
+@Singleton
+public class SearchActivityMapper extends FactoryBase<Place, Activity> implements ActivityMapper{
 
-    void addTab(final ComponentContainer cc, String caption);
+    @Inject
+    public SearchActivityMapper(ComponentProvider componentProvider) {
+        super(componentProvider);
+        addMapping(SearchPlace.class, SearchActivity.class);
+    }
 
-    void closeTab(final ComponentContainer cc);
+    @Override
+    public Activity getActivity(Place place) {
+        if(!(place instanceof SearchPlace)){
+            place = new SearchPlace(new SearchParameters());
+        }
+        return create(place);
+    }
 
-    void setPresenter(final T presenter);
-
-    T getPresenter();
 }

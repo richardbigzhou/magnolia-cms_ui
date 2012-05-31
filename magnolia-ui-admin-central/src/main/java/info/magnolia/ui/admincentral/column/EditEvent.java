@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,25 +31,19 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.admincentral.column;
 
-import info.magnolia.ui.widget.magnoliashell.ShellView;
+import com.vaadin.ui.Component;
 
-import com.vaadin.ui.ComponentContainer;
 
 /**
- * Gen app view.
- * @author p4elkin
- *
- * @param <T>
+ * Fired upon discarding or committing an edit.
+ * 
+ * @author mrichert
  */
-public interface AppView<T extends AppPresenter<T>> extends ShellView {
+public class EditEvent extends Component.Event {
 
-    void addTab(final ComponentContainer cc, String caption);
-
-    void closeTab(final ComponentContainer cc);
-
-    void setPresenter(final T presenter);
-
-    T getPresenter();
+    public EditEvent(Component source) {
+        super(source);
+    }
 }

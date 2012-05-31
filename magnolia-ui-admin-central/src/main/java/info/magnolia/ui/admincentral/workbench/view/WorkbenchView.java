@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,25 +31,22 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.admincentral.workbench.view;
 
-import info.magnolia.ui.widget.magnoliashell.ShellView;
+import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.framework.view.ViewPort;
+import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
-import com.vaadin.ui.ComponentContainer;
 
 /**
- * Gen app view.
- * @author p4elkin
- *
- * @param <T>
+ * The view to edit a workspace. Provides slots for the tree/list view, sidebar view (with actions and preview), search view and function toolbar.
  */
-public interface AppView<T extends AppPresenter<T>> extends ShellView {
+public interface WorkbenchView extends View, IsVaadinComponent{
 
-    void addTab(final ComponentContainer cc, String caption);
+    ViewPort getItemListViewPort();
 
-    void closeTab(final ComponentContainer cc);
+    ViewPort getSidebarViewPort();
 
-    void setPresenter(final T presenter);
+    ViewPort getFunctionToolbarViewPort();
 
-    T getPresenter();
 }

@@ -35,6 +35,7 @@ package info.magnolia.ui.admincentral.app;
 
 import info.magnolia.ui.framework.activity.Activity;
 import info.magnolia.ui.framework.place.Place;
+import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -61,6 +62,8 @@ public class AppDescriptor {
     private Class<? extends AppLifecycle> appClass;
 
     private List<PlaceActivityMapping> activityMappings = new ArrayList<PlaceActivityMapping>();
+
+    private List<WorkbenchDefinition> workbenches = new ArrayList<WorkbenchDefinition>();
 
     public String getName() {
         return name;
@@ -109,14 +112,18 @@ public class AppDescriptor {
     public void addActivityMapping(PlaceActivityMapping mapping) {
         activityMappings.add(mapping);
     }
-    
+
+    public void addWorkbench(WorkbenchDefinition workbenchDefinition) {
+        workbenches.add(workbenchDefinition);
+    }
+
     public Class<? extends Activity> getMappedActivityClass(final Class<? extends Place> placeClass) {
         final Iterator<PlaceActivityMapping> it = activityMappings.iterator();
         Class<? extends Activity> result = null;
         while (it.hasNext() && result == null) {
             final PlaceActivityMapping mapping = it.next();
             if (mapping.getPlace().equals(placeClass)) {
-                result = mapping.getActivity();   
+                result = mapping.getActivity();
             }
         }
         return result;

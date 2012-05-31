@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,25 +31,44 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.admincentral.workbench.event;
 
-import info.magnolia.ui.widget.magnoliashell.ShellView;
+import info.magnolia.ui.framework.event.Event;
+import info.magnolia.ui.framework.event.EventHandler;
 
-import com.vaadin.ui.ComponentContainer;
 
 /**
- * Gen app view.
- * @author p4elkin
- *
- * @param <T>
+ * Global event fired if content was changed, deleted, added.
+ * FIXME introduce more granular events
  */
-public interface AppView<T extends AppPresenter<T>> extends ShellView {
+public class ContentChangedEvent implements Event<ContentChangedEvent.Handler> {
 
-    void addTab(final ComponentContainer cc, String caption);
+    /**
+     * Handles {@link ContentChangedEvent} events.
+     */
+    public static interface Handler extends EventHandler {
+        void onContentChanged(ContentChangedEvent event);
+    }
 
-    void closeTab(final ComponentContainer cc);
+    private String workspace;
 
-    void setPresenter(final T presenter);
+    private String path;
 
-    T getPresenter();
+    @Override
+    public void dispatch(Handler handler) {
+        handler.onContentChanged(this);
+    }
+
+    public ContentChangedEvent(String workspace, String path) {
+        this.workspace = workspace;
+        this.path = path;
+    }
+
+    public String getWorkspace() {
+        return workspace;
+    }
+
+    public String getPath() {
+        return path;
+    }
 }

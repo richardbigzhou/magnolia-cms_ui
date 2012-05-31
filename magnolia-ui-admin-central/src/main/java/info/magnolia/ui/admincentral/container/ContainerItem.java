@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,65 +31,44 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.admincentral.container;
 
-import info.magnolia.ui.widget.magnoliashell.IsVaadinComponent;
-import info.magnolia.ui.widget.tabsheet.ShellTab;
-import info.magnolia.ui.widget.tabsheet.ShellTabSheet;
+import java.util.Collection;
 
-import com.vaadin.ui.Component;
-import com.vaadin.ui.ComponentContainer;
-
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
 
 /**
- * App view impl.
+ * Item as held by JcrContainer. Does not support modifications and delegates to JcrContainer for everything else.
  *
- * @author p4elkin
- * @param <T>
- *            recursive generic param.
  */
-@SuppressWarnings("serial")
-public abstract class AbstractAppView<T extends AppPresenter<T>> implements AppView<T>, IsVaadinComponent {
+public class ContainerItem implements Item {
 
-    private T presenter;
+    private ContainerItemId itemId;
+    private JcrContainer jcrContainer;
 
-    private ShellTabSheet tabsheet = new ShellTabSheet();
-
-    public AbstractAppView() {
-        super();
-        tabsheet.setSizeFull();
+    public ContainerItem(ContainerItemId itemId, JcrContainer jcrContainer) {
+        this.itemId = itemId;
+        this.jcrContainer = jcrContainer;
     }
 
     @Override
-    public T getPresenter() {
-        return presenter;
+    public Property getItemProperty(Object id) {
+        return jcrContainer.getContainerProperty(itemId, id);
     }
 
     @Override
-    public void setPresenter(T presenter) {
-        this.presenter = presenter;
+    public Collection<?> getItemPropertyIds() {
+        return jcrContainer.getContainerPropertyIds();
     }
 
     @Override
-    public String getAppName() {
-        return presenter.getAppName();
+    public boolean addItemProperty(Object id, Property property) throws UnsupportedOperationException {
+        throw new UnsupportedOperationException();
     }
 
     @Override
-    public void addTab(ComponentContainer cc, String caption) {
-        final ShellTab tab = new ShellTab(caption, cc);
-        tabsheet.addComponent(tab);
-        tabsheet.setTabClosable(tab, true);
-        tabsheet.setActiveTab(tab);
-    }
-
-    @Override
-    public void closeTab(ComponentContainer cc) {
-        tabsheet.removeComponent(cc);
-    }
-
-    @Override
-    public Component asVaadinComponent() {
-        return tabsheet;
+    public boolean removeItemProperty(Object id) throws UnsupportedOperationException {
+        throw new UnsupportedOperationException();
     }
 }

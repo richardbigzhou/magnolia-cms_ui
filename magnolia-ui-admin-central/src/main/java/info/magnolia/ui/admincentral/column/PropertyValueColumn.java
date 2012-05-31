@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,42 +31,46 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.admincentral.column;
 
-import info.magnolia.ui.framework.activity.AbstractActivity;
 import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.view.ViewPort;
+import info.magnolia.ui.framework.place.PlaceController;
+import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.model.column.definition.PropertyValueColumnDefinition;
+
+import java.io.Serializable;
+
+import javax.jcr.Item;
+import javax.jcr.Property;
+import javax.jcr.RepositoryException;
+
+import com.vaadin.ui.Component;
 
 /**
- * Abstract presenter for app views.
+ * Definition for a column that displays the value of a property.
  *
- * @author p4elkin
- *
- * @param <T>
+ * @version $Id$
  */
-public abstract class AbstractAppActivity<T extends AppPresenter<T>> extends AbstractActivity implements AppPresenter<T> {
+public class PropertyValueColumn extends AbstractEditableColumn<PropertyValueColumnDefinition> implements Serializable {
 
-    private AppView<T> view;
-
-    private String name;
-
-    public AbstractAppActivity(AppView<T> view) {
-        this.view = view;
+    public PropertyValueColumn(PropertyValueColumnDefinition def, EventBus eventBus, PlaceController placeController,
+            Shell shell) {
+        super(def, eventBus, placeController, shell);
     }
 
     @Override
-    public void start(ViewPort viewPort, EventBus eventBus) {
-        view.setPresenter(getReference());
-        viewPort.setView(view);
-    }
+    protected Component getDefaultComponent(Item item) throws RepositoryException {
+        if (item.isNode()) {
+            return EMPTY_LABEL;
+        }
 
-    @Override
-    public String getAppName() {
-        return name;
-    }
+        return new EditableText(item, new PresenterImpl(), item.getName()) {
 
-    public void setName(String name) {
-        this.name = name;
+            @Override
+            protected String getLabelText(Item item) throws RepositoryException {
+                Property property = (Property) item;
+                return property.getString();
+            }
+        };
     }
-
 }

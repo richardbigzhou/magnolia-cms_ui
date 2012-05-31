@@ -31,25 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.admincentral.setup;
 
-import info.magnolia.ui.widget.magnoliashell.ShellView;
-
-import com.vaadin.ui.ComponentContainer;
+import info.magnolia.module.DefaultModuleVersionHandler;
 
 /**
- * Gen app view.
- * @author p4elkin
+ * VersionHandler for the Admin Central module.
  *
- * @param <T>
+ * @version $Id$
  */
-public interface AppView<T extends AppPresenter<T>> extends ShellView {
-
-    void addTab(final ComponentContainer cc, String caption);
-
-    void closeTab(final ComponentContainer cc);
-
-    void setPresenter(final T presenter);
-
-    T getPresenter();
+public class AdminCentralModuleVersionHandler extends DefaultModuleVersionHandler {
 }

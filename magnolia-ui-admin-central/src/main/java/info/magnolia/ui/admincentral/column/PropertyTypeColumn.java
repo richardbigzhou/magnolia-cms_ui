@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,25 +31,38 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.admincentral.column;
 
-import info.magnolia.ui.widget.magnoliashell.ShellView;
+import info.magnolia.ui.model.column.definition.PropertyTypeColumnDefinition;
 
-import com.vaadin.ui.ComponentContainer;
+import java.io.Serializable;
+
+import javax.jcr.Item;
+import javax.jcr.Property;
+import javax.jcr.PropertyType;
+import javax.jcr.RepositoryException;
+
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Label;
 
 /**
- * Gen app view.
- * @author p4elkin
+ * Column that displays the type of a property.
  *
- * @param <T>
+ * @version $Id$
  */
-public interface AppView<T extends AppPresenter<T>> extends ShellView {
+public class PropertyTypeColumn extends AbstractColumn<PropertyTypeColumnDefinition> implements Serializable {
 
-    void addTab(final ComponentContainer cc, String caption);
+    public PropertyTypeColumn(PropertyTypeColumnDefinition def) {
+        super(def);
+    }
 
-    void closeTab(final ComponentContainer cc);
+    @Override
+    protected Component getDefaultComponent(Item item) throws RepositoryException {
+        if (item.isNode()) {
+            return EMPTY_LABEL;
+        }
 
-    void setPresenter(final T presenter);
-
-    T getPresenter();
+        Property property = (Property) item;
+        return new Label(PropertyType.nameFromValue(property.getType()));
+    }
 }

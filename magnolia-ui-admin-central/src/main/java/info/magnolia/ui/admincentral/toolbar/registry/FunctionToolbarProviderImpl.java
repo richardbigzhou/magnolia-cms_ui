@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,25 +31,33 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.admincentral.toolbar.registry;
 
-import info.magnolia.ui.widget.magnoliashell.ShellView;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
-import com.vaadin.ui.ComponentContainer;
+import info.magnolia.ui.model.toolbar.ToolbarDefinition;
+import info.magnolia.ui.model.toolbar.registry.ToolbarProvider;
+import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 
 /**
- * Gen app view.
- * @author p4elkin
  *
- * @param <T>
+ * Function toolbar provider. Function toolbars are configured per workbench, e.g. website, config, users, etc.
+ * @author fgrilli
+ *
  */
-public interface AppView<T extends AppPresenter<T>> extends ShellView {
+@Singleton
+public class FunctionToolbarProviderImpl implements ToolbarProvider {
 
-    void addTab(final ComponentContainer cc, String caption);
+    private WorkbenchDefinition configuration;
 
-    void closeTab(final ComponentContainer cc);
+    @Inject
+    public FunctionToolbarProviderImpl(WorkbenchDefinition configuration) {
+        this.configuration = configuration;
+    }
 
-    void setPresenter(final T presenter);
-
-    T getPresenter();
+    @Override
+    public ToolbarDefinition getToolbar() {
+        return configuration.getFunctionToolbar();
+    }
 }

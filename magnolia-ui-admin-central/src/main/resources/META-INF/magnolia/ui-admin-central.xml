@@ -4,7 +4,8 @@
   <name>ui-admin-central</name>
   <displayName>Magnolia Velvet Admin Central</displayName>
   <description>New Magnolia Administration GUI</description>
-  <versionHandler>info.magnolia.ui.admincentral.module.AdminCentralModuleVersionHandler</versionHandler>
+  <class>info.magnolia.ui.admincentral.module.AdminCentralModule</class>
+  <versionHandler>info.magnolia.ui.admincentral.setup.AdminCentralModuleVersionHandler</versionHandler>
   <version>${project.version}</version>
 
   <components>
@@ -15,6 +16,31 @@
       <path>/modules/ui-admin-central/apps/registry</path>
       <observed>true</observed>
       <scope>singleton</scope>
+    </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.jcr.view.builder.JcrViewBuilderProvider</type>
+      <workspace>config</workspace>
+      <path>/modules/ui-admin-central/test/jcrViewBuilderProvider</path>
+      <observed>true</observed>
+      <scope>singleton</scope>
+    </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.MainActivityMapper</type>
+      <workspace>config</workspace>
+      <path>/modules/ui-admin-central/mainActivityMapper</path>
+      <observed>true</observed>
+      <scope>singleton</scope>
+    </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory</type>
+      <workspace>config</workspace>
+      <path>/modules/ui-admin-central/workbenchActionFactory</path>
+      <observed>true</observed>
+      <scope>singleton</scope>
+    </component>
+    <component>
+      <type>info.magnolia.ui.model.workbench.registry.ConfiguredWorkbenchDefinitionManager</type>
+      <implementation>info.magnolia.ui.model.workbench.registry.ConfiguredWorkbenchDefinitionManager</implementation>
     </component>
   </components>
 
@@ -87,6 +113,15 @@
     <component>
       <type>info.magnolia.ui.admincentral.dialog.DialogView</type>
       <implementation>info.magnolia.ui.admincentral.dialog.DialogViewImpl</implementation>
+    </component>
+    <!-- workbench components. Register them under a separated id? -->
+    <component>
+      <type>info.magnolia.ui.admincentral.workbench.view.WorkbenchView</type>
+      <implementation>info.magnolia.ui.admincentral.workbench.view.WorkbenchViewImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.workbench.activity.ItemListActivityMapper</type>
+      <implementation>info.magnolia.ui.admincentral.workbench.activity.ItemListActivityMapper</implementation>
     </component>
 
   </components>

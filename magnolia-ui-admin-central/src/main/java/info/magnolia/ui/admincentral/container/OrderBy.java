@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,25 +31,28 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
-
-import info.magnolia.ui.widget.magnoliashell.ShellView;
-
-import com.vaadin.ui.ComponentContainer;
+package info.magnolia.ui.admincentral.container;
 
 /**
- * Gen app view.
- * @author p4elkin
+ * Represents a sorting rule to be applied to a query.
+ * @author fgrilli
  *
- * @param <T>
  */
-public interface AppView<T extends AppPresenter<T>> extends ShellView {
+public class OrderBy {
 
-    void addTab(final ComponentContainer cc, String caption);
+    private String property;
+    private boolean isAscending;
 
-    void closeTab(final ComponentContainer cc);
+    public OrderBy(String property, boolean isAscending) {
+       this.property = property;
+       this.isAscending = isAscending;
+    }
 
-    void setPresenter(final T presenter);
+    public String getProperty() {
+        return property;
+    }
 
-    T getPresenter();
+    public boolean isAscending() {
+        return isAscending;
+    }
 }
