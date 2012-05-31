@@ -33,13 +33,12 @@
  */
 package info.magnolia.ui.admincentral.app;
 
-
 /**
  * AppEvent Type enumeration.
- * @author erichechinger
- * @version $Id$
  *
+ * @version $Id$
  */
 public enum AppEventType {
+
     STOP_EVENT, START_EVENT, FOCUS_EVENT
 }

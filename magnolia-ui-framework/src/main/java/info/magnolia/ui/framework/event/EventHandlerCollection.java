@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,52 +31,48 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.shell;
+package info.magnolia.ui.framework.event;
 
-import info.magnolia.ui.framework.shell.ConfirmationHandler;
-import info.magnolia.ui.framework.shell.Shell;
-
-import com.vaadin.ui.UriFragmentUtility;
-
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * A shell working only with a sub fragment of the URL fragment. Used to build sub containers by using {@link info.magnolia.ui.framework.activity.AbstractMVPSubContainer}.
+ * Simple thread safe collection of handlers for a specific event.
  *
+ * @param <H> type of the event handler
+ * @param <E> type of the event
  * @version $Id$
  */
-@SuppressWarnings("serial")
-public class SubShell extends AbstractShell {
+public class EventHandlerCollection<H extends EventHandler, E extends Event<H>> {
 
-    private Shell parent;
+    private final List<H> handlers = new CopyOnWriteArrayList<H>();
 
-    public SubShell(String id, Shell parent) {
-        super(id);
-        this.parent = parent;
+    public HandlerRegistration add(final H handler) {
+        handlers.add(handler);
+        return new HandlerRegistration() {
+
+            @Override
+            public void removeHandler() {
+                remove(handler);
+            }
+        };
     }
 
-    @Override
-    public void askForConfirmation(String message, ConfirmationHandler listener) {
-        parent.askForConfirmation(message, listener);
+    public void remove(H handler) {
+        handlers.remove(handler);
     }
 
-    @Override
-    public void showNotification(String message) {
-        parent.showNotification(message);
+    public void dispatch(E event) {
+        for (H handler : handlers) {
+            event.dispatch(handler);
+        }
     }
 
-    @Override
-    public void showError(String message, Exception e) {
-        parent.showError(message, e);
+    public int size() {
+        return handlers.size();
     }
 
-    @Override
-    protected UriFragmentUtility getUriFragmentUtility() {
-        //FIXME we should obviously not cast, but also don't like to add the method to the clean interface
-        return ((AbstractShell)parent).getUriFragmentUtility();
-    }
-
-    @Override
-    public void openWindow(String uri, String windowName) {
-        parent.openWindow(uri, windowName);
+    public boolean isEmpty() {
+        return handlers.isEmpty();
     }
 }

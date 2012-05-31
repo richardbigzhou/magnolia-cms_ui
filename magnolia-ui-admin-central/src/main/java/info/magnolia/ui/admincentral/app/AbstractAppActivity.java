@@ -39,10 +39,9 @@ import info.magnolia.ui.framework.view.ViewPort;
 
 /**
  * Abstract presenter for app views.
- * 
- * @author p4elkin
- * 
+ *
  * @param <T>
+ * @version $Id$
  */
 public abstract class AbstractAppActivity<T extends AppPresenter<T>> extends AbstractActivity implements AppPresenter<T> {
 

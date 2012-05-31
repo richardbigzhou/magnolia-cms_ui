@@ -87,6 +87,12 @@
     </dependency>
 
     <dependency>
+      <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-widget-actionbar</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-user</artifactId>
     </dependency>

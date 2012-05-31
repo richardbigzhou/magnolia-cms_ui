@@ -35,9 +35,10 @@ package info.magnolia.ui.admincentral.app;
 
 import info.magnolia.ui.framework.event.EventHandler;
 
-
 /**
  * Listens to {@link AppLifecycleEvent}s.
+ *
+ * @version $Id$
  */
 public interface AppLifecycleEventHandler extends EventHandler {
     
@@ -50,6 +51,7 @@ public interface AppLifecycleEventHandler extends EventHandler {
     /**
      * Simple stub so in case not all the methods should be implemented - you can skip them.
      *
+     * @version $Id$
      */
     public static class Adapter implements AppLifecycleEventHandler {
 

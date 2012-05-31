@@ -35,8 +35,7 @@ package info.magnolia.ui.admincentral.dialog;
 
 import com.vaadin.ui.ComponentContainer;
 
-import info.magnolia.ui.widget.magnoliashell.IsVaadinComponent;
-
+import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 /**
  * DialogView.

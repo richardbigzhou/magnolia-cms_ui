@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.app;
 
-import info.magnolia.ui.widget.magnoliashell.IsVaadinComponent;
+import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 import info.magnolia.ui.widget.tabsheet.ShellTab;
 import info.magnolia.ui.widget.tabsheet.ShellTabSheet;
 
@@ -43,10 +43,9 @@ import com.vaadin.ui.ComponentContainer;
 
 /**
  * App view impl.
- * 
- * @author p4elkin
- * @param <T>
- *            recursive generic param.
+ *
+ * @param <T> recursive generic param.
+ * @version $Id$
  */
 @SuppressWarnings("serial")
 public abstract class AbstractAppView<T extends AppPresenter<T>> implements AppView<T>, IsVaadinComponent {
@@ -54,12 +53,12 @@ public abstract class AbstractAppView<T extends AppPresenter<T>> implements AppV
     private T presenter;
 
     private ShellTabSheet tabsheet = new ShellTabSheet();
-    
+
     public AbstractAppView() {
         super();
         tabsheet.setSizeFull();
     }
-    
+
     @Override
     public T getPresenter() {
         return presenter;
@@ -69,12 +68,12 @@ public abstract class AbstractAppView<T extends AppPresenter<T>> implements AppV
     public void setPresenter(T presenter) {
         this.presenter = presenter;
     }
-    
+
     @Override
     public String getAppName() {
         return presenter.getAppName();
     }
-    
+
     @Override
     public void addTab(ComponentContainer cc, String caption) {
         final ShellTab tab = new ShellTab(caption, cc);
@@ -85,9 +84,9 @@ public abstract class AbstractAppView<T extends AppPresenter<T>> implements AppV
 
     @Override
     public void closeTab(ComponentContainer cc) {
-        tabsheet.removeComponent(cc);   
+        tabsheet.removeComponent(cc);
     }
-    
+
     @Override
     public Component asVaadinComponent() {
         return tabsheet;

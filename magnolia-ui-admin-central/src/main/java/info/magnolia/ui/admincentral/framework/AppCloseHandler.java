@@ -37,8 +37,8 @@ import info.magnolia.ui.framework.event.EventHandler;
 
 /**
  * Handles the {@link AppCloseEvent}.
- * @author apchelintcev
  *
+ * @version $Id$
  */
 public interface AppCloseHandler extends EventHandler {
 

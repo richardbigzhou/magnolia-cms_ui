@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,17 +31,28 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.magnoliashell;
+package info.magnolia.ui.widget.actionbar.gwt.client;
 
-import java.io.Serializable;
-
-import com.vaadin.ui.Component;
+import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Stub interface just to resolve the compilation of the test. 
- * @author apchelintcev
+ *
+ * VActionbarView.
  *
  */
-public interface IsVaadinComponent extends Serializable {
-    Component asVaadinComponent();
+public interface VActionbarView extends HasWidgets, IsWidget {
+
+    /**
+     *
+     * Presenter.
+     */
+    interface Presenter {
+    }
+
+    void setPresenter(Presenter presenter);
+
+    boolean hasChildComponent(Widget component);
+
 }
