@@ -36,6 +36,7 @@ package info.magnolia.ui.admincentral.app;
 import info.magnolia.ui.framework.activity.Activity;
 import info.magnolia.ui.framework.place.Place;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -45,7 +46,12 @@ import java.util.List;
  *
  * @version $Id$
  */
-public class AppDescriptor {
+public class AppDescriptor implements Serializable {
+
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
     /**
      * unique identifier.
@@ -109,14 +115,14 @@ public class AppDescriptor {
     public void addActivityMapping(PlaceActivityMapping mapping) {
         activityMappings.add(mapping);
     }
-    
+
     public Class<? extends Activity> getMappedActivityClass(final Class<? extends Place> placeClass) {
         final Iterator<PlaceActivityMapping> it = activityMappings.iterator();
         Class<? extends Activity> result = null;
         while (it.hasNext() && result == null) {
             final PlaceActivityMapping mapping = it.next();
             if (mapping.getPlace().equals(placeClass)) {
-                result = mapping.getActivity();   
+                result = mapping.getActivity();
             }
         }
         return result;

@@ -1,25 +1,22 @@
 .v-shell-tabsheet {
-	position: relative;
+    position: relative;
 }
 
 .v-shell-tab {
-	position: absolute;
-	top: 26px;
-	left: 0;
-	bottom: 0;
+
 }
 
 .v-shell-tab-close {
-	position: absolute;
-	left: 4px;
-	top: 3px;
-	width: 20px;
-	height: 20px;
-	z-index: 1000;
+    position: absolute;
+    left: 4px;
+    top: 3px;
+    width: 20px;
+    height: 20px;
+    z-index: 1000;
 }
 
 .v-shell-tab-notification {
-	height: 22px;
+    height: 22px;
     position: absolute;
     right: 7px;
     top: 1px;
@@ -39,11 +36,11 @@
 }
 
 .nav {
-	position: relative;
-	top: 0;
-	left: 0;
-	height: 26px;
-	list-style: none outside none;
+    position: relative;
+    top: 0;
+    left: 0;
+    height: 26px;
+    list-style: none outside none;
     margin-bottom: 18px;
     margin-left: 0;
 }

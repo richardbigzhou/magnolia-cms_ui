@@ -39,8 +39,10 @@ import info.magnolia.ui.model.dialog.definition.FieldDefinition;
 import info.magnolia.ui.model.dialog.definition.TabDefinition;
 
 import com.google.inject.Inject;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.TextArea;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.VerticalLayout;
 
 /**
  * DialogBuilder.
@@ -62,10 +64,19 @@ public class DialogBuilder {
 
         for (TabDefinition tabDefinition : dialogDefinition.getTabs()) {
             String tabName = tabDefinition.getName();
-            Panel inputFields = new Panel();
+            VerticalLayout inputFields = new VerticalLayout();
 
             for (FieldDefinition field : tabDefinition.getFields()) {
-                inputFields.addComponent(new TextArea());
+                HorizontalLayout fieldContainer = new HorizontalLayout();
+                fieldContainer.setStyleName("field-container");
+                Label fieldLabel = new Label(field.getLabel());
+                fieldLabel.setStyleName("field-label");
+                TextField textField = new TextField();
+                textField.setStyleName("field-text");
+
+                fieldContainer.addComponent(fieldLabel);
+                fieldContainer.addComponent(textField);
+                inputFields.addComponent(fieldContainer);
             }
 
             view.addTab(inputFields, tabName);

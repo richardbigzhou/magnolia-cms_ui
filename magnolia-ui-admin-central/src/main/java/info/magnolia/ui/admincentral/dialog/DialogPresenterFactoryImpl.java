@@ -35,6 +35,7 @@ package info.magnolia.ui.admincentral.dialog;
 
 import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.admincentral.dialog.builder.DialogBuilder;
+import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 import info.magnolia.ui.model.dialog.registry.DialogDefinitionRegistry;
@@ -53,12 +54,14 @@ public class DialogPresenterFactoryImpl implements DialogPresenterFactory {
     private DialogDefinitionRegistry dialogDefinitionRegistry;
     private MagnoliaShell shell;
     private DialogBuilder dialogBuilder;
+    private EventBus eventBus;
 
     @Inject
-    public DialogPresenterFactoryImpl(DialogDefinitionRegistry dialogDefinitionRegistry, DialogBuilder dialogBuilder, MagnoliaShell shell) {
+    public DialogPresenterFactoryImpl(DialogDefinitionRegistry dialogDefinitionRegistry, DialogBuilder dialogBuilder, MagnoliaShell shell, EventBus eventBus) {
         this.dialogDefinitionRegistry = dialogDefinitionRegistry;
         this.dialogBuilder = dialogBuilder;
         this.shell = shell;
+        this.eventBus = eventBus;
     }
 
     @Override
@@ -75,6 +78,6 @@ public class DialogPresenterFactoryImpl implements DialogPresenterFactory {
             throw new IllegalArgumentException("No dialog definition registered for name [" + dialogName + "]");
         }
 
-        return new DialogPresenter(dialogBuilder, dialogDefinition, shell);
+        return new DialogPresenter(dialogBuilder, dialogDefinition, shell, eventBus);
     }
 }

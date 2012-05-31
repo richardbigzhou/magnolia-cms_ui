@@ -42,10 +42,13 @@ import info.magnolia.ui.admincentral.app.PlaceActivityMapping;
 import info.magnolia.ui.admincentral.framework.AppActivityManager;
 import info.magnolia.ui.admincentral.framework.AppActivityMapper;
 import info.magnolia.ui.admincentral.framework.ShellAppActivityManager;
-import info.magnolia.ui.admincentral.framework.ShellAppActivityMapper;
+import info.magnolia.ui.admincentral.shellapp.applauncher.AppLauncherActivity;
 import info.magnolia.ui.admincentral.shellapp.applauncher.AppLauncherPlace;
+import info.magnolia.ui.admincentral.shellapp.favorites.FavoritesActivity;
 import info.magnolia.ui.admincentral.shellapp.favorites.FavoritesPlace;
+import info.magnolia.ui.admincentral.shellapp.pulse.PulseActivity;
 import info.magnolia.ui.admincentral.shellapp.pulse.PulsePlace;
+import info.magnolia.ui.framework.activity.ActivityMapperImpl;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.place.Place;
 import info.magnolia.ui.framework.place.PlaceController;
@@ -75,7 +78,12 @@ public class MagnoliaShellPresenter implements MagnoliaShellView.Presenter {
         this.view = view;
         this.view.setPresenter(this);
 
-        final ShellAppActivityManager shellAppManager = new ShellAppActivityManager(new ShellAppActivityMapper(componentProvider), bus);
+        final ActivityMapperImpl shellAppActivityMapper = new ActivityMapperImpl(componentProvider);
+        shellAppActivityMapper.setLongLivingActivities(true);
+        shellAppActivityMapper.addMapping(AppLauncherPlace.class, AppLauncherActivity.class);
+        shellAppActivityMapper.addMapping(PulsePlace.class, PulseActivity.class);
+        shellAppActivityMapper.addMapping(FavoritesPlace.class, FavoritesActivity.class);
+        final ShellAppActivityManager shellAppManager = new ShellAppActivityManager(shellAppActivityMapper, bus);
         shellAppManager.setViewPort(view.getRoot().getShellAppViewport());
 
         final AppActivityManager appManager = new AppActivityManager(new AppActivityMapper(componentProvider), bus);

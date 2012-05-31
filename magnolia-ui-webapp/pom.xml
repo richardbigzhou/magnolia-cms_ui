@@ -38,6 +38,11 @@
       <artifactId>magnolia-ui-app-dummy</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-app-contacts</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
 
   <build>

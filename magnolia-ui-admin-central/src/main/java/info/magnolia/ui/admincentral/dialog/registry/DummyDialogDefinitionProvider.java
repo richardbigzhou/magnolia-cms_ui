@@ -65,15 +65,36 @@ public class DummyDialogDefinitionProvider implements DialogDefinitionProvider {
         TabDefinition tab1 = new TabDefinition();
         tab1.setName("Test Tab Name");
         FieldDefinition field = new FieldDefinition();
-        field.setLabel("Test Field");
+        field.setLabel("Test Field 1");
         tab1.addField(field);
+        FieldDefinition field2 = new FieldDefinition();
+        field2.setLabel("Test Field 2");
+        tab1.addField(field2);
+
+        FieldDefinition field3 = new FieldDefinition();
+        field3.setLabel("Test Field 2");
+        tab1.addField(field3);
+
+        tabs.add(tab1);
+
+        tab1 = new TabDefinition();
+
+        tab1.setName("Test Tab Name");
+        field = new FieldDefinition();
+        field.setLabel("Test Field 1");
+        tab1.addField(field);
+        field2 = new FieldDefinition();
+        field2.setLabel("Test Field 2");
+        tab1.addField(field2);
+
+        field3 = new FieldDefinition();
+        field3.setLabel("Test Field 2");
+        tab1.addField(field3);
 
         tabs.add(tab1);
 
         this.dialogDefinition.setTabs(tabs);
-        if (this.dialogDefinition != null) {
-            this.dialogDefinition.setId(id);
-        }
+
     }
 
     @Override

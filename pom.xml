@@ -133,5 +133,6 @@
     <module>magnolia-ui-widget-actionbar</module>
     <module>magnolia-ui-webapp</module>
     <module>magnolia-ui-app-dummy</module>
+    <module>magnolia-ui-app-contacts</module>
   </modules>
 </project>

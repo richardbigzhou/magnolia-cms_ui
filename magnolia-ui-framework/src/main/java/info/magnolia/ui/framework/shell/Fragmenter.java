@@ -42,6 +42,8 @@ import org.apache.commons.lang.StringUtils;
 /**
  * Allows to get sub fragments of a url fragment. Each fragment is separated with the
  * {@link #FRAGMENT_SEPARATOR} and has the format <code>id:subfragment</code>.
+ *
+ * @version $Id$
  */
 public class Fragmenter {
 
@@ -51,9 +53,8 @@ public class Fragmenter {
 
     private Map<String, String> fragments = new LinkedHashMap<String, String>();
 
-
     public Fragmenter(String fragment) {
-        if(fragment == null){
+        if (fragment == null) {
             return;
         }
         String[] subFragments = StringUtils.split(fragment, FRAGMENT_SEPARATOR);
@@ -73,7 +74,7 @@ public class Fragmenter {
      */
     public void setSubFragment(String id, String fragment) {
 
-        if(fragment == null){
+        if (fragment == null) {
             fragments.remove(id);
             return;
         }
@@ -89,8 +90,8 @@ public class Fragmenter {
             final String fragment = entry.getValue();
             str.append(id).append(ID_SEPARATOR).append(fragment).append(FRAGMENT_SEPARATOR);
         }
-        if(str.length()>0){
-            str.deleteCharAt(str.length()-1);
+        if (str.length() > 0) {
+            str.setLength(str.length() - FRAGMENT_SEPARATOR.length());
         }
         return str.toString();
     }

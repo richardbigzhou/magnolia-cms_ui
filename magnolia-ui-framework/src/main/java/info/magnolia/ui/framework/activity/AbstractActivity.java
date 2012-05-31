@@ -35,8 +35,8 @@ package info.magnolia.ui.framework.activity;
 
 /**
  * Simple Activity implementation that is always willing to stop.
- * @author fgrilli
  *
+ * @version $Id$
  */
 public abstract class AbstractActivity implements Activity {
 

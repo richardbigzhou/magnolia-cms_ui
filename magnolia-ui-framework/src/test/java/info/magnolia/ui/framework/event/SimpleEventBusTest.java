@@ -62,36 +62,24 @@ public class SimpleEventBusTest {
         }
     }
 
-    private static class InvocationOrderTestingHandler extends TestEventHandler {
-
-        int expectedOrder;
-        int actualOrder;
-        AtomicInteger counter;
-
-        public InvocationOrderTestingHandler(int expectedOrder, AtomicInteger counter) {
-            this.expectedOrder = expectedOrder;
-            this.counter = counter;
-        }
-
-        @Override
-        public void handleEvent(TestEvent event) {
-            super.handleEvent(event);
-            this.actualOrder = counter.getAndIncrement();
-        }
-    }
-
     @Test
     public void testAreHandlersInvokedInOrder() {
+
+        // GIVEN
         SimpleEventBus eventBus = new SimpleEventBus();
-        List<InvocationOrderTestingHandler> handlers = new ArrayList<InvocationOrderTestingHandler>();
+        List<InvocationOrderTestingEventHandler> handlers = new ArrayList<InvocationOrderTestingEventHandler>();
         AtomicInteger counter = new AtomicInteger(0);
         for (int i = 0; i < 1000; i++) {
-            InvocationOrderTestingHandler handler = new InvocationOrderTestingHandler(i, counter);
+            InvocationOrderTestingEventHandler handler = new InvocationOrderTestingEventHandler(i, counter);
             handlers.add(handler);
             eventBus.addHandler(TestEvent.class, handler);
         }
+
+        // WHEN
         eventBus.fireEvent(new TestEvent());
-        for (InvocationOrderTestingHandler handler : handlers) {
+
+        // THEN
+        for (InvocationOrderTestingEventHandler handler : handlers) {
             assertEquals(1, handler.getInvocationCount());
             assertEquals(handler.expectedOrder, handler.actualOrder);
         }
@@ -99,6 +87,8 @@ public class SimpleEventBusTest {
 
     @Test
     public void testHandlerAddedWhileDispatchingIsNotCalled() {
+
+        // GIVEN
         final SimpleEventBus eventBus = new SimpleEventBus();
         final TestEventHandler handler2 = new TestEventHandler();
         TestEventHandler handler1 = new TestEventHandler() {
@@ -109,13 +99,19 @@ public class SimpleEventBusTest {
             }
         };
         eventBus.addHandler(TestEvent.class, handler1);
+
+        // WHEN
         eventBus.fireEvent(new TestEvent());
+
+        // THEN
         assertEquals(1, handler1.getInvocationCount());
         assertEquals(0, handler2.getInvocationCount());
     }
 
     @Test
     public void testHandlerRemovedWhileDispatchingIsCalled() {
+
+        // GIVEN
         SimpleEventBus eventBus = new SimpleEventBus();
         RemoveEventHandler handler1 = new RemoveEventHandler();
         TestEventHandler handler2 = new TestEventHandler();
@@ -123,8 +119,10 @@ public class SimpleEventBusTest {
         eventBus.addHandler(TestEvent.class, handler1);
         handler1.handlerRegistration = eventBus.addHandler(TestEvent.class, handler2);
 
+        // WHEN
         eventBus.fireEvent(new TestEvent());
 
+        // THEN
         assertEquals(1, handler1.getInvocationCount());
         assertEquals(1, handler2.getInvocationCount());
     }
@@ -132,6 +130,7 @@ public class SimpleEventBusTest {
     @Test
     public void testMultipleRegistrationOfTheSameHandlerWillNotResultInMultipleInvocations() {
 
+        // GIVEN
         SimpleEventBus eventBus = new SimpleEventBus();
         TestEventHandler handler = new TestEventHandler();
         eventBus.addHandler(TestEvent.class, handler);
@@ -139,8 +138,10 @@ public class SimpleEventBusTest {
         eventBus.addHandler(TestEvent.class, handler);
         eventBus.addHandler(TestEvent.class, handler);
 
+        // WHEN
         eventBus.fireEvent(new TestEvent());
 
+        // THEN
         assertEquals(1, handler.getInvocationCount());
     }
 

@@ -42,8 +42,7 @@ import info.magnolia.ui.framework.place.PlaceChangeRequestEvent;
 /**
  * Activity manager responsible for the app management.
  *
- * @author p4elkin
- *
+ * @version $Id$
  */
 public class AppActivityManager extends ActivityManager {
 
@@ -58,7 +57,7 @@ public class AppActivityManager extends ActivityManager {
 
             @Override
             public void onStopApp(AppLifecycleEvent event) {
-                mapper.uregisterApp(event.getAppDescriptor());
+                mapper.unregisterApp(event.getAppDescriptor());
             }
         });
     }
