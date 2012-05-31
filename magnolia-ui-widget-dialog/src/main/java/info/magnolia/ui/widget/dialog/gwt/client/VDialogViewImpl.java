@@ -36,10 +36,14 @@ package info.magnolia.ui.widget.dialog.gwt.client;
 
 import info.magnolia.ui.widget.tabsheet.gwt.client.VShellTabSheet;
 
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
-import com.vaadin.terminal.gwt.client.Paintable;
 
 /**
  * GWT implementation of MagnoliaShell client side (the view part basically).
@@ -48,16 +52,34 @@ import com.vaadin.terminal.gwt.client.Paintable;
  */
 public class VDialogViewImpl extends FlowPanel implements VDialogView {
 
+    private Element header = DOM.createDiv();
+    private Element content = DOM.createDiv();
+    private Element footer = DOM.createDiv();
+
+    private Element root;
     private VShellTabSheet tabsheet;
     private Presenter presenter;
     private EventBus eventBus;
+    private String CLASSNAME = "dialog-panel";
+    private String CLASSNAME_HEADER = "dialog-header";
+    private String CLASSNAME_CONTENT = "dialog-content";
+    private String CLASSNAME_FOOTER = "dialog-footer";
 
+    private String CLASSNAME_BUTTON = "btn-dialog";
 
     public VDialogViewImpl(final EventBus eventBus) {
         super();
-        setStylePrimaryName("dialog-panel");
-        this.eventBus = eventBus;
+        setStylePrimaryName(CLASSNAME);
+        header.addClassName(CLASSNAME_HEADER);
+        content.addClassName(CLASSNAME_CONTENT);
+        footer.addClassName(CLASSNAME_FOOTER);
 
+        this.eventBus = eventBus;
+        this.root = getElement();
+        root.appendChild(header);
+        root.appendChild(content);
+        root.appendChild(footer);
+        setCaption("Edit page properties");
     }
 
     @Override
@@ -65,16 +87,20 @@ public class VDialogViewImpl extends FlowPanel implements VDialogView {
         this.presenter = presenter;
     }
 
+    public Presenter getPresenter() {
+        return presenter;
+    }
+
     @Override
-    public Paintable getTabSheet() {
+    public VShellTabSheet getTabSheet() {
         return tabsheet;
     }
 
 
     @Override
-    public void setTabSheet(VShellTabSheet tabsheet) {
+    public void addTabSheet(VShellTabSheet tabsheet) {
         this.tabsheet = tabsheet;
-        add(tabsheet);
+        add(tabsheet, content);
     }
 
     @Override
@@ -86,6 +112,27 @@ public class VDialogViewImpl extends FlowPanel implements VDialogView {
             }
         }
         return isChild;
+    }
+
+    @Override
+    public void addAction(String label, String action) {
+        Button button = new Button(label);
+        button.setStyleName(CLASSNAME_BUTTON);
+        button.addStyleName(CLASSNAME_BUTTON + "-" +label);
+        button.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(com.google.gwt.event.dom.client.ClickEvent event) {
+                VDialogViewImpl.this.getPresenter();
+            }
+
+        });
+        add(button, footer);
+    }
+
+    void setCaption(String caption) {
+        Label label = new Label(caption);
+        add(label, header);
     }
 
 }

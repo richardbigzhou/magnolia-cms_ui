@@ -37,6 +37,10 @@ import info.magnolia.ui.widget.tabsheet.gwt.client.VShellTabSheet;
 
 import java.util.Set;
 
+import org.vaadin.rpc.client.ClientSideHandler;
+import org.vaadin.rpc.client.ClientSideProxy;
+import org.vaadin.rpc.client.Method;
+
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.Composite;
@@ -46,13 +50,14 @@ import com.vaadin.terminal.gwt.client.Container;
 import com.vaadin.terminal.gwt.client.Paintable;
 import com.vaadin.terminal.gwt.client.RenderSpace;
 import com.vaadin.terminal.gwt.client.UIDL;
+import com.vaadin.terminal.gwt.client.VConsole;
 
 
 /**
  * Vaadin implementation of Dialog client side (Presenter).
  */
 @SuppressWarnings("serial")
-public class VDialog extends Composite implements Container, VDialogView.Presenter {
+public class VDialog extends Composite implements Container, VDialogView.Presenter, ClientSideHandler {
 
     protected String paintableId;
 
@@ -61,7 +66,18 @@ public class VDialog extends Composite implements Container, VDialogView.Present
     private final VDialogView view;
 
     private final EventBus eventBus;
-    //private ClientSideProxy proxy = new ClientSideProxy(this) {};
+    private ClientSideProxy proxy = new ClientSideProxy(this) {
+        {
+            register("addAction", new Method() {
+                @Override
+                public void invoke(String methodName, Object[] params) {
+                    final String label = String.valueOf(params[0]);
+                    final String action = String.valueOf(params[1]);
+                    view.addAction(label, action);
+                }
+            });
+        }
+    };
 
     public VDialog() {
         eventBus = new SimpleEventBus();
@@ -81,20 +97,20 @@ public class VDialog extends Composite implements Container, VDialogView.Present
         }
         updateTabs(uidl);
 
-        //proxy.update(this, uidl, client);
+        proxy.update(this, uidl, client);
     }
 
     private void updateTabs(UIDL uidl) {
-        final UIDL tagUidl = uidl.getChildByTagName("dialogTabsheet");
+        final UIDL tagUidl = uidl.getChildByTagName("tabsheet");
         if (tagUidl != null) {
             final UIDL dialogUidl = tagUidl.getChildUIDL(0);
             final Paintable p = client.getPaintable(dialogUidl);
             if (p instanceof VShellTabSheet) {
-                VShellTabSheet tabsheet = (VShellTabSheet)p;
-                if (this.view.getTabSheet() == null) {
-                    this.view.setTabSheet(tabsheet);
+                final VShellTabSheet tabsheet = (VShellTabSheet) p;
+                if (view.getTabSheet() == null) {
+                    view.addTabSheet(tabsheet);
                 }
-                tabsheet.updateFromUIDL(dialogUidl, client);
+                 this.view.getTabSheet().updateFromUIDL(dialogUidl, client);
             }
         }
     }
@@ -121,6 +137,16 @@ public class VDialog extends Composite implements Container, VDialogView.Present
     @Override
     public boolean hasChildComponent(Widget component) {
         return view.hasChildComponent(component);
+    }
+
+    @Override
+    public boolean initWidget(Object[] params) {
+        return false;
+    }
+
+    @Override
+    public void handleCallFromServer(String method, Object[] params) {
+        VConsole.error("Unhandled RPC call from server: " + method);
     }
 
 }

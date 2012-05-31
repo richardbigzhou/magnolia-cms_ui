@@ -28,3 +28,4 @@ src/main/java/META-INF
 /magnolia-ui-webapp/src/main/webapp/docroot/rssaggregator
 
 /magnolia-ui-vaadin-widgetset/src/main/resources/VAADIN/widgetsets
+magnolia-ui-webapp/src

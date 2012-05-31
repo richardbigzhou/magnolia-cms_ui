@@ -1,3 +1,22 @@
+.dialog-header, .dialog-footer {
+    padding: 12px 16px 12px 25px;
+}
+.dialog-footer, .dialog-content {
+    border-top: 2px solid black;
+}
+
+.dialog-header {
+    background-color: #666666;
+}
+
+.dialog-header {
+    color: #AABF2E;
+    display: inline;
+    font-size: 18px;
+    line-height: 18px;
+    display: block;
+}
+
 .dialog-panel {
     background: none repeat scroll 0 0 #E6E6E6;
     border: medium none;
@@ -7,6 +26,85 @@
     position: absolute;
     top: 45px;
     width: 720px;
-    height: 250px;
     z-index: 1000;
+}
+.dialog-footer {
+    background: none repeat scroll 0 0 #CCCCCC;
+    text-align: right;
+}
+
+button.btn-dialog-submit, button.btn-dialog-cancel, button.btn-dialog {
+    font-size: 12px;
+    margin-left: 5px;
+    padding: 4px 12px;
+    text-transform: uppercase;
+    cursor: pointer;
+    background: none repeat scroll 0 0 #666666;
+    border: medium none;
+    color: #FFFFFF;
+}
+
+.dialog-panel .v-shell-tab {
+    background-color: #E6E6E6;
+    padding: 12px 16px 12px 25px;
+}
+.dialog-panel ul.nav-tabs {
+    background-color: #CCCCCC;
+}
+
+.dialog-panel .nav > li.active > span, .dialog-panel .nav > li.active > span:hover {
+    background-color: #E6E6E6;
+}
+.dialog-panel .nav-tabs > li.active > span, .dialog-panel .nav-tabs > li.active > span:hover {
+    border-color: #999999 #999999 transparent;
+    border-style: solid;
+    border-width: 1px;
+}
+.dialog-panel .nav-tabs > li > span {
+    font-size: 14px;
+    border-color: #AAAAAA #AAAAAA #AAAAAA #BBBBBB;
+}
+
+.dialog-panel .nav-tabs > li > span:hover {
+    border-color: #E6E6E6;
+}
+.dialog-panel .nav > li > span:hover {
+    background-color: #DDDDDD;
+    text-decoration: none;
+}
+.dialog-panel .nav-tabs {
+    border-bottom: 1px solid #AAAAAA;
+}
+.nav-tabs > li > span.active, .nav-tabs > li > span:hover {
+    background-color: #E6E6E6;
+}
+
+.dialog-panel .field-label {
+    display: inline-block;
+    padding-right: 10px;
+    text-align: right;
+    width: 140px;
+}
+.dialog-panel .field-container {
+    padding-bottom: 20px;
+    color: #999999;
+}
+
+.dialog-panel input[type="text"], .dialog-panel textarea {
+    border: 1px solid #CCCCCC;
+    color: #999999;
+    display: inline-block;
+    height: 26px;
+    padding-left: 10px;
+    width: 425px;
+}
+
+.v-textfield, .v-textarea, .white .v-textfield, .white .v-textarea {
+    background: none #FFF;
+    color: #999999;
+    border-color: 1px solid #CCCCCC;
+    border-radius: 0;
+    height: 26px;
+    line-height: normal;
+    margin: 0;
 }
