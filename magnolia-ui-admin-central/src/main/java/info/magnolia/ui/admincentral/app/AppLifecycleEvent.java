@@ -47,7 +47,7 @@ public class AppLifecycleEvent implements Event<AppLifecycleEventHandler> {
     private final AppEventType eventType;
 
     public AppLifecycleEvent(AppDescriptor app, AppEventType eventType) {
-        System.out.println("AppEvent: create Event for app type: " + app.getClass().getName() + " and type" + eventType);
+        System.out.println("AppEvent: create Event for app type: " + app.getName() + " and type " + eventType);
         this.appDescriptor = app;
         this.eventType = eventType;
     }
