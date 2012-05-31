@@ -34,6 +34,10 @@
 package info.magnolia.ui.widget.tabsheet.gwt.client;
 
 
+import info.magnolia.ui.widget.tabsheet.gwt.client.event.ActiveTabChangedEvent;
+import info.magnolia.ui.widget.tabsheet.gwt.client.event.ActiveTabChangedHandler;
+import info.magnolia.ui.widget.tabsheet.gwt.client.event.TabCloseEvent;
+import info.magnolia.ui.widget.tabsheet.gwt.client.event.TabCloseEventHandler;
 import info.magnolia.ui.widget.tabsheet.gwt.client.util.CollectionUtil;
 
 import java.util.ArrayList;

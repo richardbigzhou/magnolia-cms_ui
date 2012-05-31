@@ -31,7 +31,9 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.tabsheet.gwt.client;
+package info.magnolia.ui.widget.tabsheet.gwt.client.event;
+
+import info.magnolia.ui.widget.tabsheet.gwt.client.VShellTab;
 
 import com.google.gwt.event.shared.GwtEvent;
 
@@ -43,22 +45,22 @@ import com.google.gwt.event.shared.GwtEvent;
 public class ActiveTabChangedEvent extends GwtEvent<ActiveTabChangedHandler>{
 
     public final static Type<ActiveTabChangedHandler> TYPE = new Type<ActiveTabChangedHandler>();
-    
+
     private final VShellTab tab;
-    
+
     public ActiveTabChangedEvent(final VShellTab tab) {
         this.tab = tab;
     }
-    
+
     public VShellTab getTab() {
         return tab;
     }
-    
+
     @Override
     protected void dispatch(ActiveTabChangedHandler handler) {
         handler.onActiveTabChanged(this);
     }
-    
+
     @Override
     public GwtEvent.Type<ActiveTabChangedHandler> getAssociatedType() {
         return TYPE;

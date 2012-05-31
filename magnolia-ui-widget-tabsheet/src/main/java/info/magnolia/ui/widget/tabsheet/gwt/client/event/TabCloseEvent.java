@@ -31,16 +31,38 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.tabsheet.gwt.client;
+package info.magnolia.ui.widget.tabsheet.gwt.client.event;
 
-import com.google.gwt.event.shared.EventHandler;
+import info.magnolia.ui.widget.tabsheet.gwt.client.VShellTab;
+
+import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * Handler of the events fired when the tab is closed.
- * @author apchelintcev
+ * Event that is fired when the tab is closed.
+ * @author p4elkin
  *
  */
-public interface TabCloseEventHandler extends EventHandler {
+public class TabCloseEvent extends GwtEvent<TabCloseEventHandler>{
+
+    public static Type<TabCloseEventHandler> TYPE = new Type<TabCloseEventHandler>();
     
-    void onTabClosed(final TabCloseEvent event);
+    private VShellTab tab;
+    
+    public TabCloseEvent(final VShellTab tab) {
+        this.tab = tab;
+    }
+    
+    public VShellTab getTab() {
+        return tab;
+    }
+    
+    @Override
+    protected void dispatch(TabCloseEventHandler handler) {
+        handler.onTabClosed(this);
+    }
+    
+    @Override
+    public GwtEvent.Type<TabCloseEventHandler> getAssociatedType() {
+        return TYPE;
+    }
 }

@@ -31,15 +31,16 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.tabsheet.gwt.client;
+package info.magnolia.ui.widget.tabsheet.gwt.client.event;
 
 import com.google.gwt.event.shared.EventHandler;
 
 /**
- * Handler of the active tab changed event.
+ * Handler of the events fired when the tab is closed.
  * @author apchelintcev
  *
  */
-public interface ActiveTabChangedHandler extends EventHandler {
-    void onActiveTabChanged(final ActiveTabChangedEvent event);
+public interface TabCloseEventHandler extends EventHandler {
+    
+    void onTabClosed(final TabCloseEvent event);
 }
