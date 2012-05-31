@@ -51,10 +51,10 @@ import org.vaadin.rpc.client.ClientSideProxy;
 import org.vaadin.rpc.client.Method;
 
 import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
-import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.event.shared.EventBus;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.Container;
 import com.vaadin.terminal.gwt.client.Paintable;
@@ -67,85 +67,39 @@ import com.vaadin.terminal.gwt.client.UIDL;
  *
  */
 @SuppressWarnings("serial")
-public class VShellTabSheet extends FlowPanel implements Container, ClientSideHandler {
+public class VShellTabSheet extends Composite implements VShellTabSheetView.Presenter, Container, ClientSideHandler {
 
     protected String paintableId;
-    
+
     protected ApplicationConnection client;
-    
-    private final VShellTabNavigator tabContainer = new VShellTabNavigator();
-    
+
     private final List<VShellTab> tabs = new LinkedList<VShellTab>();
-    
+
     private VShellTab activeTab = null;
-    
+
+    VShellTabSheetView view;
     private final EventBus eventBus = new SimpleEventBus();
-    
-    private ClientSideProxy proxy = new ClientSideProxy(this) {{
-        register("setActiveTab", new Method() {
-            @Override
-            public void invoke(String methodName, Object[] params) {
-                final VShellTab tab = getTabById(String.valueOf(params[0]));
-                if (tab != null) {
-                    eventBus.fireEvent(new ActiveTabChangedEvent(tab));
-                }
-            }
-        });
-        
-        register("closeTab", new Method() {
-            @Override
-            public void invoke(String methodName, Object[] params) {
-                
-            }
-        });
-        
-        register("setTabClosable", new Method() {
-            @Override
-            public void invoke(String methodName, Object[] params) {
-                setTabClosable(String.valueOf(params[0]), (Boolean)params[1]);
-            }
-        });
-        
-        register("updateTabNotification", new Method() {
-            @Override
-            public void invoke(String methodName, Object[] params) {
-                final VShellTab tab = getTabById(String.valueOf(params[0]));
-                if (tab != null) {
-                    tabContainer.updateTabNotification(tab, String.valueOf(params[1]));
-                }
-            }
-        });
-        
-        register("hideTabNotification", new Method() {
-            @Override
-            public void invoke(String methodName, Object[] params) {
-                final VShellTab tab = getTabById(String.valueOf(params[0]));
-                if (tab != null) {
-                    tabContainer.hideTabNotification(tab);   
-                }
-            }
-        });
-    }};
-    
+
     public VShellTabSheet() {
         super();
-        setStyleName("v-shell-tabsheet");
-        add(tabContainer);
+        this.view = new VShellTabSheetViewImpl(eventBus);
+
         eventBus.addHandler(TabCloseEvent.TYPE, new TabCloseEventHandler() {
             @Override
             public void onTabClosed(TabCloseEvent event) {
                 closeTab(event.getTab());
             }
         });
-        
+
         eventBus.addHandler(ActiveTabChangedEvent.TYPE, new ActiveTabChangedHandler() {
             @Override
             public void onActiveTabChanged(ActiveTabChangedEvent event) {
                 activateTab(event.getTab());
             }
         });
-    }    
-    
+        initWidget(view.asWidget());
+    }
+
     protected VShellTab getTabById(String tabId) {
         for (final VShellTab tab : tabs) {
             if (tab.getTabId().equals(tabId)) {
@@ -162,14 +116,14 @@ public class VShellTabSheet extends FlowPanel implements Container, ClientSideHa
             if (activeTab == tab) {
                 final VShellTab nextTab = CollectionUtil.getNext(tabs, tab);
                 if (nextTab != null) {
-                    doSetActiveTab(nextTab);   
+                    doSetActiveTab(nextTab);
                 }
             }
             tabs.remove(tab);
-            remove(tab);
+            view.remove(tab);
         }
     }
-    
+
     @Override
     public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
         this.paintableId = uidl.getId();
@@ -191,17 +145,17 @@ public class VShellTabSheet extends FlowPanel implements Container, ClientSideHa
                 final Paintable tab = client.getPaintable(tabUidl);
                 if (!tabs.contains(tab)) {
                     tabs.add((VShellTab)tab);
-                    add((Widget)tab);   
+                    view.add((Widget)tab);
                 }
                 tab.updateFromUIDL(tabUidl, client);
                 possibleTabsToOrphan.remove(tab);
             }
-            
+
             for (final VShellTab tabToOrphan : possibleTabsToOrphan) {
                 tabs.remove(tabToOrphan);
                 client.unregisterPaintable(tabToOrphan);
-                remove(tabToOrphan);
-            }    
+                view.remove(tabToOrphan);
+            }
         }
     }
 
@@ -216,7 +170,7 @@ public class VShellTabSheet extends FlowPanel implements Container, ClientSideHa
     @Override
     public void updateCaption(Paintable component, UIDL uidl) {
         if (component instanceof VShellTab) {
-            tabContainer.updateTab((VShellTab)component, uidl);   
+            view.getTabContainer().updateTab((VShellTab)component, uidl);
         }
     }
 
@@ -228,7 +182,7 @@ public class VShellTabSheet extends FlowPanel implements Container, ClientSideHa
     @Override
     public RenderSpace getAllocatedSpace(Widget child) {
         if (hasChildComponent(child)) {
-            return new RenderSpace(getOffsetWidth(), getOffsetHeight() - tabContainer.getOffsetHeight());
+            return new RenderSpace(getOffsetWidth(), getOffsetHeight() - view.getTabContainer().getOffsetHeight());
         }
         return new RenderSpace();
     }
@@ -240,16 +194,16 @@ public class VShellTabSheet extends FlowPanel implements Container, ClientSideHa
     private void setTabClosable(String tabId, boolean isClosable) {
         for (final VShellTab tab: tabs) {
             if (tab.getTabId().equals(tabId)) {
-                boolean isAlreadyClosable = tab.isClosable(); 
+                boolean isAlreadyClosable = tab.isClosable();
                 if (isAlreadyClosable != isClosable) {
                     tab.setClosable(isClosable);
-                    tabContainer.setTabClosable(tab, isClosable);
+                    view.getTabContainer().setTabClosable(tab, isClosable);
                     break;
                 }
             }
         }
     }
-    
+
     void activateTab(final VShellTab tab) {
         doSetActiveTab(tab);
         proxy.call("activateTab", tab.getTabId());
@@ -262,7 +216,7 @@ public class VShellTabSheet extends FlowPanel implements Container, ClientSideHa
         tab.getElement().getStyle().setDisplay(Display.BLOCK);
         activeTab = tab;
     }
-    
+
     @Override
     public boolean initWidget(Object[] params) {
         return false;
@@ -270,11 +224,58 @@ public class VShellTabSheet extends FlowPanel implements Container, ClientSideHa
 
     @Override
     public void handleCallFromServer(String method, Object[] params) {
-        
+
     }
 
     public EventBus getEventBus() {
         return eventBus;
     }
-    
+
+
+    private ClientSideProxy proxy = new ClientSideProxy(this) {{
+        register("setActiveTab", new Method() {
+            @Override
+            public void invoke(String methodName, Object[] params) {
+                final VShellTab tab = getTabById(String.valueOf(params[0]));
+                if (tab != null) {
+                    eventBus.fireEvent(new ActiveTabChangedEvent(tab));
+                }
+            }
+        });
+
+        register("closeTab", new Method() {
+            @Override
+            public void invoke(String methodName, Object[] params) {
+
+            }
+        });
+
+        register("setTabClosable", new Method() {
+            @Override
+            public void invoke(String methodName, Object[] params) {
+                setTabClosable(String.valueOf(params[0]), (Boolean)params[1]);
+            }
+        });
+
+        register("updateTabNotification", new Method() {
+            @Override
+            public void invoke(String methodName, Object[] params) {
+                final VShellTab tab = getTabById(String.valueOf(params[0]));
+                if (tab != null) {
+                    view.getTabContainer().updateTabNotification(tab, String.valueOf(params[1]));
+                }
+            }
+        });
+
+        register("hideTabNotification", new Method() {
+            @Override
+            public void invoke(String methodName, Object[] params) {
+                final VShellTab tab = getTabById(String.valueOf(params[0]));
+                if (tab != null) {
+                    view.getTabContainer().hideTabNotification(tab);
+                }
+            }
+        });
+    }};
+
 }

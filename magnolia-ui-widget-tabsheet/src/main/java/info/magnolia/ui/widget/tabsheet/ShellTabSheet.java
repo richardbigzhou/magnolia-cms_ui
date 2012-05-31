@@ -57,9 +57,9 @@ import com.vaadin.ui.VerticalLayout;
 
 /**
  * Simple lightweight tabsheet component.
- * 
+ *
  * @author apchelintcev
- * 
+ *
  */
 @SuppressWarnings("serial")
 @ClientWidget(value = VShellTabSheet.class, loadStyle = LoadStyle.EAGER)
@@ -142,7 +142,7 @@ public class ShellTabSheet extends AbstractComponentContainer implements ServerS
     }
 
     private void doAddTab(final ShellTab tab) {
-        super.addComponent(tab);
+        addComponent(tab);
         tab.setTabId(mapper.key(tab));
         tabs.add(tab);
         if (activeTab == null) {
@@ -161,7 +161,7 @@ public class ShellTabSheet extends AbstractComponentContainer implements ServerS
             activeTab = shellTab;
         }
     }
-    
+
     @Override
     public Iterator<Component> getComponentIterator() {
         return new Iterator<Component>() {
@@ -193,7 +193,7 @@ public class ShellTabSheet extends AbstractComponentContainer implements ServerS
     protected ShellTab getTabById(final String tabId) {
         return (ShellTab)mapper.get(tabId);
     }
-        
+
     public void hideTabNotification(final ShellTab tab) {
         proxy.call("hideTabNotification", tab.getTabId());
         tab.setNotification(null);
