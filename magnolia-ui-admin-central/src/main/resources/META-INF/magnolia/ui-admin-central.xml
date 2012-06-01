@@ -31,10 +31,6 @@
       <observed>true</observed>
       <scope>singleton</scope>
     </component>
-    <component>
-      <type>info.magnolia.ui.model.workbench.registry.ConfiguredWorkbenchDefinitionManager</type>
-      <implementation>info.magnolia.ui.model.workbench.registry.ConfiguredWorkbenchDefinitionManager</implementation>
-    </component>
   </components>
 
    <components>
@@ -107,8 +103,11 @@
       <type>info.magnolia.ui.admincentral.dialog.DialogView</type>
       <implementation>info.magnolia.ui.admincentral.dialog.DialogViewImpl</implementation>
     </component>
-    <!-- workbench components. Register them under a separated id? -->
-    <component>
+  </components>
+
+  <components>
+   <id>default-workbench</id>
+   <component>
       <type>info.magnolia.ui.admincentral.workbench.view.WorkbenchView</type>
       <implementation>info.magnolia.ui.admincentral.workbench.view.WorkbenchViewImpl</implementation>
     </component>
@@ -116,7 +115,10 @@
       <type>info.magnolia.ui.admincentral.workbench.activity.ItemListActivityMapper</type>
       <implementation>info.magnolia.ui.admincentral.workbench.activity.ItemListActivityMapper</implementation>
     </component>
-
+     <component>
+      <type>info.magnolia.ui.model.workbench.registry.ConfiguredWorkbenchDefinitionManager</type>
+      <implementation>info.magnolia.ui.model.workbench.registry.ConfiguredWorkbenchDefinitionManager</implementation>
+    </component>
   </components>
 
   <dependencies>

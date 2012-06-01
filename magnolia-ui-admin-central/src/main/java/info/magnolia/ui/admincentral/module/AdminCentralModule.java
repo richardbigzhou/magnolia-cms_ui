@@ -33,11 +33,8 @@
  */
 package info.magnolia.ui.admincentral.module;
 
-import javax.inject.Inject;
-
 import info.magnolia.module.ModuleLifecycle;
 import info.magnolia.module.ModuleLifecycleContext;
-import info.magnolia.ui.model.workbench.registry.ConfiguredWorkbenchDefinitionManager;
 
 /**
  * TODO javadoc.
@@ -45,16 +42,9 @@ import info.magnolia.ui.model.workbench.registry.ConfiguredWorkbenchDefinitionMa
  *
  */
 public class AdminCentralModule implements ModuleLifecycle {
-    private ConfiguredWorkbenchDefinitionManager workbenchDefinitionManager;
-
-    @Inject
-    public AdminCentralModule(ConfiguredWorkbenchDefinitionManager workbenchDefinitionManager) {
-        this.workbenchDefinitionManager = workbenchDefinitionManager;
-    }
 
     @Override
     public void start(ModuleLifecycleContext moduleLifecycleContext) {
-        workbenchDefinitionManager.start();
     }
 
     @Override

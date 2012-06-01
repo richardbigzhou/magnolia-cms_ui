@@ -37,7 +37,6 @@ import info.magnolia.ui.admincentral.jcr.view.JcrView;
 
 /**
  * List view interface.
- * @author fgrilli
  *
  */
 public interface ListView extends JcrView {
