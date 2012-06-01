@@ -49,7 +49,7 @@ import com.vaadin.terminal.gwt.client.UIDL;
  * @author apchelintcev
  *
  */
-public class VShellTab extends SimplePanel implements Container {
+public class VShellTabContent extends SimplePanel implements Container {
 
     protected String paintableId;
     
@@ -61,7 +61,7 @@ public class VShellTab extends SimplePanel implements Container {
     
     private boolean isClosable = false;
     
-    public VShellTab() {
+    public VShellTabContent() {
         super();
         setStyleName("v-shell-tab");
     }

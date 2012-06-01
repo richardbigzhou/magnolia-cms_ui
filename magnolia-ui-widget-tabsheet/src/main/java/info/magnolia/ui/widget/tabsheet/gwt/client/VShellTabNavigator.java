@@ -66,7 +66,7 @@ public class VShellTabNavigator extends ComplexPanel {
 
     private List<VShellTabLabel> tabLabels = new LinkedList<VShellTabLabel>();
 
-    private Map<VShellTab, VShellTabLabel> labelMap = new LinkedHashMap<VShellTab, VShellTabLabel>();
+    private Map<VShellTabContent, VShellTabLabel> labelMap = new LinkedHashMap<VShellTabContent, VShellTabLabel>();
 
     private EventBus eventBus;
 
@@ -102,7 +102,7 @@ public class VShellTabNavigator extends ComplexPanel {
         eventBus.addHandler(ActiveTabChangedEvent.TYPE, new ActiveTabChangedHandler() {
             @Override
             public void onActiveTabChanged(final ActiveTabChangedEvent event) {
-                final VShellTab tab = event.getTab();
+                final VShellTabContent tab = event.getTab();
                 final VShellTabLabel label = labelMap.get(tab);
                 if (label != null) {
                     for (final VShellTabLabel tabLabel : tabLabels) {
@@ -140,7 +140,7 @@ public class VShellTabNavigator extends ComplexPanel {
         return (VShellTabSheet)super.getParent();
     }
 
-    public void updateTab(final VShellTab component, final UIDL uidl) {
+    public void updateTab(final VShellTabContent component, final UIDL uidl) {
         VShellTabLabel label = labelMap.get(component);
         if (label == null) {
             label = new VShellTabLabel();
@@ -164,7 +164,7 @@ public class VShellTabNavigator extends ComplexPanel {
 
         private final Element text = DOM.createSpan();
 
-        private VShellTab tab;
+        private VShellTabContent tab;
 
         public VShellTabLabel() {
             super(DOM.createElement("li"));
@@ -177,11 +177,11 @@ public class VShellTabNavigator extends ComplexPanel {
             return closeElement.isOrHasChild(target);
         }
 
-        public void setTab(final VShellTab tab) {
+        public void setTab(final VShellTabContent tab) {
             this.tab = tab;
         }
 
-        public VShellTab getTab() {
+        public VShellTabContent getTab() {
             return tab;
         }
 
@@ -217,7 +217,7 @@ public class VShellTabNavigator extends ComplexPanel {
         }
     }
 
-    public void setTabClosable(final VShellTab tab, boolean isClosable) {
+    public void setTabClosable(final VShellTabContent tab, boolean isClosable) {
         final VShellTabLabel label = labelMap.get(tab);
         if (label != null) {
             label.setClosable(isClosable);
@@ -225,14 +225,14 @@ public class VShellTabNavigator extends ComplexPanel {
 
     }
 
-    public void updateTabNotification(final VShellTab tab, final String text) {
+    public void updateTabNotification(final VShellTabContent tab, final String text) {
         final VShellTabLabel label = labelMap.get(tab);
         if (label != null) {
             label.updateNotification(text);
         }
     }
 
-    public void hideTabNotification(final VShellTab tab) {
+    public void hideTabNotification(final VShellTabContent tab) {
         final VShellTabLabel label = labelMap.get(tab);
         if (label != null) {
             label.hideNotification();

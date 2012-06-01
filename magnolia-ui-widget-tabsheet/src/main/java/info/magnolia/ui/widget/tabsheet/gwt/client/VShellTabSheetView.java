@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.widget.tabsheet.gwt.client;
 
+import java.util.List;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -60,11 +62,22 @@ public interface VShellTabSheetView extends IsWidget {
     /**
      * @param tabToOrphan
      */
-    void remove(VShellTab tabToOrphan);
+    void remove(VShellTabContent tabToOrphan);
 
     /**
      * @return
      */
     VShellTabNavigator getTabContainer();
+
+    /**
+     * @param tabId
+     * @return
+     */
+    VShellTabContent getTabById(String tabId);
+
+    /**
+     * @return
+     */
+    List<VShellTabContent> getTabs();
 
 }

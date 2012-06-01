@@ -142,7 +142,7 @@ public class ShellTabSheet extends AbstractComponentContainer implements ServerS
     }
 
     private void doAddTab(final ShellTab tab) {
-        addComponent(tab);
+        super.addComponent(tab);
         tab.setTabId(mapper.key(tab));
         tabs.add(tab);
         if (activeTab == null) {

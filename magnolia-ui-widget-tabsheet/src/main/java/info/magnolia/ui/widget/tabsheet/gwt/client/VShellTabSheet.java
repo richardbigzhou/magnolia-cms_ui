@@ -42,7 +42,6 @@ import info.magnolia.ui.widget.tabsheet.gwt.client.util.CollectionUtil;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -73,9 +72,8 @@ public class VShellTabSheet extends Composite implements VShellTabSheetView.Pres
 
     protected ApplicationConnection client;
 
-    private final List<VShellTab> tabs = new LinkedList<VShellTab>();
 
-    private VShellTab activeTab = null;
+    private VShellTabContent activeTab = null;
 
     VShellTabSheetView view;
     private final EventBus eventBus = new SimpleEventBus();
@@ -100,26 +98,16 @@ public class VShellTabSheet extends Composite implements VShellTabSheetView.Pres
         initWidget(view.asWidget());
     }
 
-    protected VShellTab getTabById(String tabId) {
-        for (final VShellTab tab : tabs) {
-            if (tab.getTabId().equals(tabId)) {
-                return tab;
-            }
-        }
-        return null;
-    }
-
-    protected void closeTab(final VShellTab tab) {
+    protected void closeTab(final VShellTabContent tab) {
         if (tab != null) {
             client.unregisterPaintable(tab);
             proxy.call("closeTab", tab.getTabId());
             if (activeTab == tab) {
-                final VShellTab nextTab = CollectionUtil.getNext(tabs, tab);
+                final VShellTabContent nextTab = CollectionUtil.getNext(view.getTabs(), tab);
                 if (nextTab != null) {
                     doSetActiveTab(nextTab);
                 }
             }
-            tabs.remove(tab);
             view.remove(tab);
         }
     }
@@ -139,20 +127,20 @@ public class VShellTabSheet extends Composite implements VShellTabSheetView.Pres
         final UIDL tabsUidl = uidl.getChildByTagName("tabs");
         if (tabsUidl != null) {
             final Iterator<?> it = tabsUidl.getChildIterator();
-            final List<VShellTab> possibleTabsToOrphan = new ArrayList<VShellTab>(tabs);
+            final List<VShellTabContent> possibleTabsToOrphan = new ArrayList<VShellTabContent>(view.getTabs());
             while (it.hasNext()) {
                 final UIDL tabUidl = (UIDL)it.next();
                 final Paintable tab = client.getPaintable(tabUidl);
-                if (!tabs.contains(tab)) {
-                    tabs.add((VShellTab)tab);
+                if (!view.getTabs().contains(tab)) {
+                    view.getTabs().add((VShellTabContent)tab);
                     view.add((Widget)tab);
                 }
                 tab.updateFromUIDL(tabUidl, client);
                 possibleTabsToOrphan.remove(tab);
             }
 
-            for (final VShellTab tabToOrphan : possibleTabsToOrphan) {
-                tabs.remove(tabToOrphan);
+            for (final VShellTabContent tabToOrphan : possibleTabsToOrphan) {
+                view.getTabs().remove(tabToOrphan);
                 client.unregisterPaintable(tabToOrphan);
                 view.remove(tabToOrphan);
             }
@@ -164,13 +152,13 @@ public class VShellTabSheet extends Composite implements VShellTabSheetView.Pres
 
     @Override
     public boolean hasChildComponent(Widget component) {
-        return tabs.contains(component);
+        return view.getTabs().contains(component);
     }
 
     @Override
     public void updateCaption(Paintable component, UIDL uidl) {
-        if (component instanceof VShellTab) {
-            view.getTabContainer().updateTab((VShellTab)component, uidl);
+        if (component instanceof VShellTabContent) {
+            view.getTabContainer().updateTab((VShellTabContent)component, uidl);
         }
     }
 
@@ -192,7 +180,7 @@ public class VShellTabSheet extends Composite implements VShellTabSheetView.Pres
     }
 
     private void setTabClosable(String tabId, boolean isClosable) {
-        for (final VShellTab tab: tabs) {
+        for (final VShellTabContent tab: view.getTabs()) {
             if (tab.getTabId().equals(tabId)) {
                 boolean isAlreadyClosable = tab.isClosable();
                 if (isAlreadyClosable != isClosable) {
@@ -204,13 +192,13 @@ public class VShellTabSheet extends Composite implements VShellTabSheetView.Pres
         }
     }
 
-    void activateTab(final VShellTab tab) {
+    void activateTab(final VShellTabContent tab) {
         doSetActiveTab(tab);
         proxy.call("activateTab", tab.getTabId());
     }
 
-    private void doSetActiveTab(final VShellTab tab) {
-        for (final VShellTab shellTab : tabs) {
+    private void doSetActiveTab(final VShellTabContent tab) {
+        for (final VShellTabContent shellTab : view.getTabs()) {
             shellTab.getElement().getStyle().setDisplay(Display.NONE);
         }
         tab.getElement().getStyle().setDisplay(Display.BLOCK);
@@ -236,7 +224,7 @@ public class VShellTabSheet extends Composite implements VShellTabSheetView.Pres
         register("setActiveTab", new Method() {
             @Override
             public void invoke(String methodName, Object[] params) {
-                final VShellTab tab = getTabById(String.valueOf(params[0]));
+                final VShellTabContent tab = view.getTabById(String.valueOf(params[0]));
                 if (tab != null) {
                     eventBus.fireEvent(new ActiveTabChangedEvent(tab));
                 }
@@ -260,7 +248,7 @@ public class VShellTabSheet extends Composite implements VShellTabSheetView.Pres
         register("updateTabNotification", new Method() {
             @Override
             public void invoke(String methodName, Object[] params) {
-                final VShellTab tab = getTabById(String.valueOf(params[0]));
+                final VShellTabContent tab = view.getTabById(String.valueOf(params[0]));
                 if (tab != null) {
                     view.getTabContainer().updateTabNotification(tab, String.valueOf(params[1]));
                 }
@@ -270,7 +258,7 @@ public class VShellTabSheet extends Composite implements VShellTabSheetView.Pres
         register("hideTabNotification", new Method() {
             @Override
             public void invoke(String methodName, Object[] params) {
-                final VShellTab tab = getTabById(String.valueOf(params[0]));
+                final VShellTabContent tab = view.getTabById(String.valueOf(params[0]));
                 if (tab != null) {
                     view.getTabContainer().hideTabNotification(tab);
                 }

@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.widget.tabsheet;
 
-import info.magnolia.ui.widget.tabsheet.gwt.client.VShellTab;
+import info.magnolia.ui.widget.tabsheet.gwt.client.VShellTabContent;
 
 import com.vaadin.terminal.PaintException;
 import com.vaadin.terminal.PaintTarget;
@@ -47,7 +47,7 @@ import com.vaadin.ui.ComponentContainer;
  *
  */
 @SuppressWarnings("serial")
-@ClientWidget(value=VShellTab.class, loadStyle = LoadStyle.EAGER)
+@ClientWidget(value=VShellTabContent.class, loadStyle = LoadStyle.EAGER)
 public class ShellTab extends SimplePanel {
 
     private String tabId = null;
