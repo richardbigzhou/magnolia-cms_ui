@@ -8,7 +8,7 @@
   <version>${project.version}</version>
 
   <components>
-    <id>m5-admin-central</id>
+    <id>admin-central</id>
     <component>
       <type>info.magnolia.ui.app.contacts.ContactsView</type>
       <implementation>info.magnolia.ui.app.contacts.ContactsViewImpl</implementation>
