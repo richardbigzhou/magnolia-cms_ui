@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.app;
 
-import info.magnolia.ui.widget.magnoliashell.IsVaadinComponent;
+import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 import info.magnolia.ui.widget.tabsheet.ShellTab;
 import info.magnolia.ui.widget.tabsheet.ShellTabSheet;
 

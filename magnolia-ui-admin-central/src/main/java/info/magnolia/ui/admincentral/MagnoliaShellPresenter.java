@@ -33,6 +33,12 @@
  */
 package info.magnolia.ui.admincentral;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.google.inject.Inject;
+import com.vaadin.ui.Window;
+
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.app.AppCategory;
 import info.magnolia.ui.admincentral.app.AppController;
@@ -48,6 +54,7 @@ import info.magnolia.ui.admincentral.shellapp.favorites.FavoritesActivity;
 import info.magnolia.ui.admincentral.shellapp.favorites.FavoritesPlace;
 import info.magnolia.ui.admincentral.shellapp.pulse.PulseActivity;
 import info.magnolia.ui.admincentral.shellapp.pulse.PulsePlace;
+import info.magnolia.ui.framework.activity.ActivityManager;
 import info.magnolia.ui.framework.activity.ActivityMapperImpl;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.place.Place;
@@ -56,14 +63,9 @@ import info.magnolia.ui.framework.place.PlaceHistoryHandler;
 import info.magnolia.ui.framework.place.PlaceHistoryMapper;
 import info.magnolia.ui.framework.place.PlaceHistoryMapperImpl;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.google.inject.Inject;
-import com.vaadin.ui.Window;
-
 /**
  * Presenter meant to bootstrap the MagnoliaShell.
+ *
  * @version $Id$
  */
 public class MagnoliaShellPresenter implements MagnoliaShellView.Presenter {
@@ -86,14 +88,14 @@ public class MagnoliaShellPresenter implements MagnoliaShellView.Presenter {
         final ShellAppActivityManager shellAppManager = new ShellAppActivityManager(shellAppActivityMapper, bus);
         shellAppManager.setViewPort(view.getRoot().getShellAppViewport());
 
-        final AppActivityManager appManager = new AppActivityManager(new AppActivityMapper(componentProvider), bus);
+        final AppActivityMapper appActivityMapper = new AppActivityMapper(componentProvider, appRegistry, bus);
+        final ActivityManager appManager = new AppActivityManager(appActivityMapper, bus, appRegistry, appController);
         appManager.setViewPort(view.getRoot().getAppViewport());
 
         final PlaceHistoryMapper placeHistoryMapper = new PlaceHistoryMapperImpl(getSupportedPlaces(appRegistry));
         final PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(placeHistoryMapper, view.getRoot());
 
         historyHandler.register(controller, bus, new AppLauncherPlace("test"));
-
     }
 
     public void start(final Window window) {

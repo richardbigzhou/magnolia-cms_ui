@@ -91,6 +91,7 @@ public class ActivityManager implements PlaceChangeEvent.Handler, PlaceChangeReq
         Activity nextActivity = mapper.getActivity(newPlace);
 
         if (currentActivity.equals(nextActivity)) {
+            onPlaceChangeToCurrentActivity(currentActivity, newPlace);
             return;
         }
 
@@ -109,7 +110,15 @@ public class ActivityManager implements PlaceChangeEvent.Handler, PlaceChangeReq
 
         log.debug("starting activity: {}", currentActivity);
 
+        beforeActivityStarts(currentActivity, newPlace);
+
         currentActivity.start(viewPort, isolatedEventBus);
+    }
+
+    protected void onPlaceChangeToCurrentActivity(Activity currentActivity, Place newPlace) {
+    }
+
+    protected void beforeActivityStarts(Activity currentActivity, Place newPlace) {
     }
 
     public void setViewPort(ViewPort viewPort) {

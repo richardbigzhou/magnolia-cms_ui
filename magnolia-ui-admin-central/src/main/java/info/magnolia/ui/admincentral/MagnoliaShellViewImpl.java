@@ -33,10 +33,10 @@
  */
 package info.magnolia.ui.admincentral;
 
-import info.magnolia.ui.widget.magnoliashell.IsVaadinComponent;
-
 import com.google.inject.Inject;
 import com.vaadin.ui.Component;
+
+import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 /**
  * Implementation of MagnoliaShellView.
