@@ -55,7 +55,7 @@ import com.vaadin.ui.Window;
  * @version $Id$
  */
 @SuppressWarnings("serial")
-public class M5AdminCentralApplication extends Application {
+public class AdminCentralApplication extends Application {
     private Window window;
 
     @Override
