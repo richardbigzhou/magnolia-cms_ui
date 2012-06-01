@@ -117,7 +117,7 @@ public class AppControllerImpl implements AppController {
             lifecycle = componentProvider.newInstance(descriptor.getAppClass());
             lifecycle.start();
             runningApps.put(descriptor, lifecycle);
-            sendEvent(new AppLifecycleEvent(descriptor, AppEventType.START_EVENT));
+            sendEvent(new AppLifecycleEvent(descriptor, AppEventType.STARTED));
         }
         return lifecycle;
     }
@@ -125,7 +125,7 @@ public class AppControllerImpl implements AppController {
     private void doFocus(final AppLifecycle lifecycle) {
         lifecycle.focus();
         appHistory.offerFirst(lifecycle);
-        sendEvent(new AppLifecycleEvent(getAppDescriptor(lifecycle), AppEventType.FOCUS_EVENT));
+        sendEvent(new AppLifecycleEvent(getAppDescriptor(lifecycle), AppEventType.FOCUSED));
     }
 
     private void doStop(String name) {
@@ -138,7 +138,7 @@ public class AppControllerImpl implements AppController {
                 wasPresentInHistory = appHistory.remove(lifecycle);
             }
             runningApps.remove(descriptor);
-            sendEvent(new AppLifecycleEvent(descriptor, AppEventType.STOP_EVENT));
+            sendEvent(new AppLifecycleEvent(descriptor, AppEventType.STOPPED));
             focusLatestLoadedApp();
         }
     }

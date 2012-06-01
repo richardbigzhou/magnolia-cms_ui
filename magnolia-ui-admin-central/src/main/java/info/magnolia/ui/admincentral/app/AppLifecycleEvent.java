@@ -43,11 +43,9 @@ import info.magnolia.ui.framework.event.Event;
 public class AppLifecycleEvent implements Event<AppLifecycleEventHandler> {
 
     private final AppDescriptor appDescriptor;
-
     private final AppEventType eventType;
 
     public AppLifecycleEvent(AppDescriptor app, AppEventType eventType) {
-        System.out.println("AppEvent: create Event for app type: " + app.getName() + " and type " + eventType);
         this.appDescriptor = app;
         this.eventType = eventType;
     }
@@ -62,25 +60,26 @@ public class AppLifecycleEvent implements Event<AppLifecycleEventHandler> {
 
     @Override
     public void dispatch(AppLifecycleEventHandler handler) {
+
         if (eventType == null) {
             return;
         }
 
         switch (eventType) {
-            case START_EVENT :
-                handler.onStartApp(this);
+            case STARTED:
+                handler.onAppStarted(this);
                 break;
-            case FOCUS_EVENT :
-                handler.onAppFocus(this);
+            case FOCUSED:
+                handler.onAppFocused(this);
                 break;
-            case STOP_EVENT :
-                handler.onStopApp(this);
+            case STOPPED:
+                handler.onAppStopped(this);
                 break;
-            case REGISTER_EVENT :
-                handler.onRegisterApp(this);
+            case REGISTERED:
+                handler.onAppRegistered(this);
                 break;
-            case UNREGISTER_EVENT :
-                handler.onUnregisterApp(this);
+            case UNREGISTERED:
+                handler.onAppUnregistered(this);
                 break;
         }
     }

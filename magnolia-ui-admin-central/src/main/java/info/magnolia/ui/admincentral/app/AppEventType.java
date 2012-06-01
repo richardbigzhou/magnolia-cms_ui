@@ -40,5 +40,5 @@ package info.magnolia.ui.admincentral.app;
  */
 public enum AppEventType {
 
-    STOP_EVENT, START_EVENT, FOCUS_EVENT, REGISTER_EVENT, UNREGISTER_EVENT
+    REGISTERED, UNREGISTERED, STARTED, STOPPED, FOCUSED
 }

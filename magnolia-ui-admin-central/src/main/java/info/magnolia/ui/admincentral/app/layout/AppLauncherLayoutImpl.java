@@ -85,10 +85,10 @@ public class AppLauncherLayoutImpl implements AppLauncherLayout {
                      * Add App to Category.
                      */
                     @Override
-                    public void onRegisterApp(AppLifecycleEvent event) {
+                    public void onAppRegistered(AppLifecycleEvent event) {
                         if (hasToAddApp(event.getAppDescriptor())) {
                             handleCategory(event.getAppDescriptor());
-                            sendEvent(AppEventType.REGISTER_EVENT, event.getAppDescriptor());
+                            sendEvent(AppEventType.REGISTERED, event.getAppDescriptor());
                         }
                     }
 
@@ -98,10 +98,10 @@ public class AppLauncherLayoutImpl implements AppLauncherLayout {
                      * Remove App from Category.
                      */
                     @Override
-                    public void onUnregisterApp(AppLifecycleEvent event) {
+                    public void onAppUnregistered(AppLifecycleEvent event) {
                         if (isAppDescriptionRegistered(event.getAppDescriptor().getName())) {
                             removeAppFromCategory(event.getAppDescriptor());
-                            sendEvent(AppEventType.UNREGISTER_EVENT, event.getAppDescriptor());
+                            sendEvent(AppEventType.UNREGISTERED, event.getAppDescriptor());
                         }
                     }
 

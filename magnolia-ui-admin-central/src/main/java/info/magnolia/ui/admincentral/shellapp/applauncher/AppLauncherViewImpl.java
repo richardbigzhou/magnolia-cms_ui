@@ -87,7 +87,7 @@ public class AppLauncherViewImpl implements AppLauncherView, IsVaadinComponent {
                 /**
                  * Deactivate the visual triangle on the App Icon.
                  */
-                public void onStopApp(AppLifecycleEvent event) {
+                public void onAppStopped(AppLifecycleEvent event) {
                     AppButton button = appButtons.get(event
                         .getAppDescriptor().getName());
                     button.setActive(false);
@@ -98,7 +98,7 @@ public class AppLauncherViewImpl implements AppLauncherView, IsVaadinComponent {
                 /**
                  * Activate the visual triangle on the App Icon.
                  */
-                public void onStartApp(AppLifecycleEvent event) {
+                public void onAppStarted(AppLifecycleEvent event) {
                     AppButton button = appButtons.get(event
                         .getAppDescriptor().getName());
                     button.setActive(true);
@@ -109,7 +109,7 @@ public class AppLauncherViewImpl implements AppLauncherView, IsVaadinComponent {
                 /**
                  * Register an new App.
                  */
-                public void onRegisterApp(AppLifecycleEvent event) {
+                public void onAppRegistered(AppLifecycleEvent event) {
                     AppCategory category = new AppCategory();
                     category.setLabel(event.getAppDescriptor().getCategoryName());
                     registerApp(event.getAppDescriptor(), category);
@@ -120,7 +120,7 @@ public class AppLauncherViewImpl implements AppLauncherView, IsVaadinComponent {
                 /**
                  * Remove an App.
                  */
-                public void onUnregisterApp(AppLifecycleEvent event) {
+                public void onAppUnregistered(AppLifecycleEvent event) {
                     unregisterApp(event.getAppDescriptor());
                     layout.requestRepaintAll();
                 }

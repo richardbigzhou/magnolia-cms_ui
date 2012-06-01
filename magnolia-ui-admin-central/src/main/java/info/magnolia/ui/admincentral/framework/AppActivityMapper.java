@@ -70,7 +70,7 @@ public class AppActivityMapper extends ActivityMapperImpl {
         eventBus.addHandler(AppLifecycleEvent.class, new AppLifecycleEventHandler.Adapter() {
 
             @Override
-            public void onStopApp(AppLifecycleEvent event) {
+            public void onAppStopped(AppLifecycleEvent event) {
                 for (PlaceActivityMapping mapping : event.getAppDescriptor().getActivityMappings()) {
                     removeActivityInstanceForPlace(mapping.getPlace());
                 }

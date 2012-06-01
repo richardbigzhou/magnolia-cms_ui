@@ -116,13 +116,13 @@ public class AppDescriptorRegistry {
 
     public void register(AppDescriptorProvider provider) throws RegistrationException {
         registry.put(provider);
-        sendEvent(AppEventType.REGISTER_EVENT, Arrays.asList(provider.getAppDescriptor()));
+        sendEvent(AppEventType.REGISTERED, Arrays.asList(provider.getAppDescriptor()));
     }
 
     public void unregister(String id) throws RegistrationException {
         AppDescriptorProvider toRemove = registry.get(id);
         registry.remove(id);
-        sendEvent(AppEventType.UNREGISTER_EVENT, Arrays.asList(toRemove.getAppDescriptor()));
+        sendEvent(AppEventType.UNREGISTERED, Arrays.asList(toRemove.getAppDescriptor()));
     }
 
     @SuppressWarnings("unchecked")
@@ -134,17 +134,17 @@ public class AppDescriptorRegistry {
 
         //Handle Events
         if (CollectionUtils.isSubCollection(registeredIds, set)) {
-            // Add new AppDescriptor --> REGISTER_EVENT
-            sendEvent(AppEventType.REGISTER_EVENT,getAppDescriptorFromAppDescriptorProvider(CollectionUtils.disjunction(set, registeredIds),finalProviders));
+            // Add new AppDescriptor --> REGISTERED
+            sendEvent(AppEventType.REGISTERED,getAppDescriptorFromAppDescriptorProvider(CollectionUtils.disjunction(set, registeredIds),finalProviders));
         }
         else if (CollectionUtils.isSubCollection(set, registeredIds)) {
-            // Remove AppDescriptor --> UNREGISTER_EVENT
-            sendEvent(AppEventType.UNREGISTER_EVENT,getAppDescriptorFromAppDescriptorProvider(CollectionUtils.disjunction(registeredIds,set),initialProviders));
+            // Remove AppDescriptor --> UNREGISTERED
+            sendEvent(AppEventType.UNREGISTERED,getAppDescriptorFromAppDescriptorProvider(CollectionUtils.disjunction(registeredIds,set),initialProviders));
         }
         else {
-            // Add and Remove AppDescriptor --> REGISTER_EVENT & UNREGISTER_EVENT.
-            sendEvent(AppEventType.REGISTER_EVENT,getAppDescriptorFromAppDescriptorProvider(CollectionUtils.disjunction(set, registeredIds),finalProviders));
-            sendEvent(AppEventType.UNREGISTER_EVENT,getAppDescriptorFromAppDescriptorProvider(CollectionUtils.disjunction(registeredIds,set),initialProviders));
+            // Add and Remove AppDescriptor --> REGISTERED & UNREGISTERED.
+            sendEvent(AppEventType.REGISTERED,getAppDescriptorFromAppDescriptorProvider(CollectionUtils.disjunction(set, registeredIds),finalProviders));
+            sendEvent(AppEventType.UNREGISTERED,getAppDescriptorFromAppDescriptorProvider(CollectionUtils.disjunction(registeredIds,set),initialProviders));
         }
         return set;
     }

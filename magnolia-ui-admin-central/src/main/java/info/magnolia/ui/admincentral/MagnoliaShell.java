@@ -72,7 +72,7 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell {
         this.appController = appController;
         this.eventBus.addHandler(AppLifecycleEvent.class, new AppLifecycleEventHandler.Adapter() {
             @Override
-            public void onAppFocus(AppLifecycleEvent event) {
+            public void onAppFocused(AppLifecycleEvent event) {
                 setActiveViewport(getAppViewport());
             }
         });
