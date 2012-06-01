@@ -10,22 +10,9 @@
 
   <components>
     <id>main</id>
-    <!--
     <component>
-      <type>info.magnolia.ui.admincentral.app.AppRegistry</type>
-      <workspace>config</workspace>
-      <path>/modules/ui-admin-central/apps/registry</path>
-      <observed>true</observed>
-      <scope>singleton</scope>
-    </component>
-	-->
-    <component>
-      <type>info.magnolia.ui.framework.event.EventBus</type>
-      <implementation>info.magnolia.ui.framework.event.SimpleEventBus</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.admincentral.app.layout.AppLauncherLayout</type>
-      <implementation>info.magnolia.ui.admincentral.app.layout.AppLauncherLayoutImpl</implementation>
+      <type>info.magnolia.ui.framework.event.SystemEventBus</type>
+      <implementation>info.magnolia.ui.framework.event.SimpleSystemEventBus</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.admincentral.app.registry.ConfiguredAppDescriptorManager</type>
@@ -43,7 +30,15 @@
   </components>
 
    <components>
-    <id>m5-admin-central</id>
+    <id>admin-central</id>
+    <component>
+      <type>info.magnolia.ui.framework.event.EventBus</type>
+      <implementation>info.magnolia.ui.framework.event.SimpleEventBus</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.app.layout.AppLauncherLayout</type>
+      <implementation>info.magnolia.ui.admincentral.app.layout.AppLauncherLayoutImpl</implementation>
+    </component>
     <component>
       <type>info.magnolia.ui.framework.place.PlaceController</type>
       <implementation>info.magnolia.ui.framework.place.PlaceController</implementation>
@@ -159,7 +154,7 @@
       <params>
         <param>
           <name>application</name>
-          <value>info.magnolia.ui.admincentral.M5AdminCentralApplication</value>
+          <value>info.magnolia.ui.admincentral.AdminCentralApplication</value>
         </param>
         <param>
           <name>widgetset</name>
