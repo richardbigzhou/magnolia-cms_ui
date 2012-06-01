@@ -54,7 +54,7 @@ public class EventHandlerCollectionTest {
 
         // GIVEN
         EventHandlerCollection<TestEventHandler, TestEvent> collection = new EventHandlerCollection<TestEventHandler, TestEvent>();
-        TestEventHandler eventHandler = new TestEventHandler();
+        InvocationCountingTestEventHandler eventHandler = new InvocationCountingTestEventHandler();
 
         assertTrue(collection.isEmpty());
         assertEquals(0, collection.size());
@@ -76,7 +76,7 @@ public class EventHandlerCollectionTest {
 
         // GIVEN
         EventHandlerCollection<TestEventHandler, TestEvent> collection = new EventHandlerCollection<TestEventHandler, TestEvent>();
-        TestEventHandler eventHandler = new TestEventHandler();
+        InvocationCountingTestEventHandler eventHandler = new InvocationCountingTestEventHandler();
         collection.add(eventHandler);
         collection.dispatch(new TestEvent());
 
@@ -96,7 +96,7 @@ public class EventHandlerCollectionTest {
 
         // GIVEN
         EventHandlerCollection<TestEventHandler, TestEvent> collection = new EventHandlerCollection<TestEventHandler, TestEvent>();
-        TestEventHandler eventHandler = new TestEventHandler();
+        InvocationCountingTestEventHandler eventHandler = new InvocationCountingTestEventHandler();
         HandlerRegistration registration = collection.add(eventHandler);
 
         collection.dispatch(new TestEvent());
@@ -141,8 +141,8 @@ public class EventHandlerCollectionTest {
 
         // GIVEN
         final EventHandlerCollection<TestEventHandler, TestEvent> collection = new EventHandlerCollection<TestEventHandler, TestEvent>();
-        final TestEventHandler secondHandler = new TestEventHandler();
-        TestEventHandler firstHandler = new TestEventHandler() {
+        final InvocationCountingTestEventHandler secondHandler = new InvocationCountingTestEventHandler();
+        InvocationCountingTestEventHandler firstHandler = new InvocationCountingTestEventHandler() {
             @Override
             public synchronized void handleEvent(TestEvent event) {
                 super.handleEvent(event);
@@ -164,8 +164,8 @@ public class EventHandlerCollectionTest {
 
         // GIVEN
         final EventHandlerCollection<TestEventHandler, TestEvent> collection = new EventHandlerCollection<TestEventHandler, TestEvent>();
-        final TestEventHandler secondHandler = new TestEventHandler();
-        TestEventHandler firstHandler = new TestEventHandler() {
+        final InvocationCountingTestEventHandler secondHandler = new InvocationCountingTestEventHandler();
+        InvocationCountingTestEventHandler firstHandler = new InvocationCountingTestEventHandler() {
             @Override
             public synchronized void handleEvent(TestEvent event) {
                 super.handleEvent(event);
