@@ -31,18 +31,21 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.framework.app.registry;
+
+import info.magnolia.registry.RegistrationException;
+import info.magnolia.ui.framework.app.AppDescriptor;
 
 /**
- * App presenter interface.
+ * Provides a {@link AppDescriptor}.
  *
- * @param <T>
  * @version $Id$
  */
-public interface AppPresenter<T extends AppPresenter<T>> {
+public interface AppDescriptorProvider {
 
-    String getAppName();
+    public static final String DEFAULT_CATEGORY_NAME = "DEFAULT";
 
-    T getReference();
+    String getName();
 
+    AppDescriptor getAppDescriptor() throws RegistrationException;
 }

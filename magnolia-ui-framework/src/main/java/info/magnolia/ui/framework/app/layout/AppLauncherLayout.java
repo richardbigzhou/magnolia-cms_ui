@@ -31,12 +31,11 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.layout;
-
-import info.magnolia.ui.admincentral.app.AppCategory;
-import info.magnolia.ui.admincentral.app.AppDescriptor;
+package info.magnolia.ui.framework.app.layout;
 
 import java.util.Collection;
+
+import info.magnolia.ui.framework.app.AppDescriptor;
 
 /**
  * Registry of available apps.

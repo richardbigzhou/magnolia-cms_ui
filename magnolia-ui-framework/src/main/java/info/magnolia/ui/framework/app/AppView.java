@@ -31,11 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
-
-import info.magnolia.ui.widget.magnoliashell.ShellView;
-
-import com.vaadin.ui.ComponentContainer;
+package info.magnolia.ui.framework.app;
 
 /**
  * Generic app view.
@@ -45,11 +41,7 @@ import com.vaadin.ui.ComponentContainer;
  */
 public interface AppView<T extends AppPresenter<T>> extends ShellView {
 
-    void addTab(final ComponentContainer cc, String caption);
-    
-    void closeTab(final ComponentContainer cc);
-    
     void setPresenter(final T presenter);
-    
+
     T getPresenter();
 }

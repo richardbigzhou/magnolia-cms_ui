@@ -31,18 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.framework;
+package info.magnolia.ui.framework.app;
 
 import javax.inject.Inject;
 
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.admincentral.app.AppCategory;
-import info.magnolia.ui.admincentral.app.AppDescriptor;
-import info.magnolia.ui.admincentral.app.AppLifecycleEvent;
-import info.magnolia.ui.admincentral.app.AppLifecycleEventHandler;
-import info.magnolia.ui.admincentral.app.PlaceActivityMapping;
-import info.magnolia.ui.admincentral.app.layout.AppLauncherLayout;
 import info.magnolia.ui.framework.activity.ActivityMapperImpl;
+import info.magnolia.ui.framework.app.layout.AppCategory;
+import info.magnolia.ui.framework.app.layout.AppLauncherLayout;
 import info.magnolia.ui.framework.event.EventBus;
 
 /**

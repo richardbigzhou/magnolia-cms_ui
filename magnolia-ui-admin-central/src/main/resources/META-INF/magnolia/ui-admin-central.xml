@@ -15,36 +15,29 @@
       <implementation>info.magnolia.ui.framework.event.SimpleSystemEventBus</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.app.registry.ConfiguredAppDescriptorManager</type>
-      <implementation>info.magnolia.ui.admincentral.app.registry.ConfiguredAppDescriptorManager</implementation>
+      <type>info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptorManager</type>
+      <implementation>info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptorManager</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.app.registry.AppDescriptorRegistry</type>
-      <implementation>info.magnolia.ui.admincentral.app.registry.AppDescriptorRegistry</implementation>
+      <type>info.magnolia.ui.framework.app.registry.AppDescriptorRegistry</type>
+      <implementation>info.magnolia.ui.framework.app.registry.AppDescriptorRegistry</implementation>
     </component>
-
-
-
     <type-mapping>
-      <type>info.magnolia.ui.admincentral.app.AppDescriptor</type>
-      <implementation>info.magnolia.ui.admincentral.app.registry.ConfiguredAppDescriptor</implementation>
+      <type>info.magnolia.ui.framework.app.AppDescriptor</type>
+      <implementation>info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor</implementation>
     </type-mapping>
-
   </components>
 
    <components>
     <id>admin-central</id>
-
- 	<component>
+   	<component>
       <type>info.magnolia.ui.framework.event.EventBus</type>
       <implementation>info.magnolia.ui.framework.event.SimpleEventBus</implementation>
     </component>
-
     <component>
-      <type>info.magnolia.ui.admincentral.app.layout.AppLauncherLayout</type>
-      <implementation>info.magnolia.ui.admincentral.app.layout.AppLauncherLayoutImpl</implementation>
+      <type>info.magnolia.ui.framework.app.layout.AppLauncherLayout</type>
+      <implementation>info.magnolia.ui.framework.app.layout.AppLauncherLayoutImpl</implementation>
     </component>
-
     <component>
       <type>info.magnolia.ui.framework.place.PlaceController</type>
       <implementation>info.magnolia.ui.framework.place.PlaceController</implementation>
@@ -62,8 +55,8 @@
       <implementation>info.magnolia.ui.admincentral.MagnoliaShell</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.app.AppController</type>
-      <implementation>info.magnolia.ui.admincentral.app.AppControllerImpl</implementation>
+      <type>info.magnolia.ui.framework.app.AppController</type>
+      <implementation>info.magnolia.ui.framework.app.AppControllerImpl</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.admincentral.shellapp.applauncher.AppLauncherView</type>

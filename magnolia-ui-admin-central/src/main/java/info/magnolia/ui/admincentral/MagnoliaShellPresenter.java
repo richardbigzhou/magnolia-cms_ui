@@ -40,14 +40,14 @@ import com.google.inject.Inject;
 import com.vaadin.ui.Window;
 
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.admincentral.app.AppCategory;
-import info.magnolia.ui.admincentral.app.AppController;
-import info.magnolia.ui.admincentral.app.AppDescriptor;
-import info.magnolia.ui.admincentral.app.PlaceActivityMapping;
-import info.magnolia.ui.admincentral.app.layout.AppLauncherLayout;
-import info.magnolia.ui.admincentral.framework.AppActivityManager;
-import info.magnolia.ui.admincentral.framework.AppActivityMapper;
-import info.magnolia.ui.admincentral.framework.ShellAppActivityManager;
+import info.magnolia.ui.framework.activity.PlaceChangeNotifyingActivityManager;
+import info.magnolia.ui.framework.app.layout.AppCategory;
+import info.magnolia.ui.framework.app.AppController;
+import info.magnolia.ui.framework.app.AppDescriptor;
+import info.magnolia.ui.framework.app.PlaceActivityMapping;
+import info.magnolia.ui.framework.app.layout.AppLauncherLayout;
+import info.magnolia.ui.framework.app.AppActivityManager;
+import info.magnolia.ui.framework.app.AppActivityMapper;
 import info.magnolia.ui.admincentral.shellapp.applauncher.AppLauncherActivity;
 import info.magnolia.ui.admincentral.shellapp.applauncher.AppLauncherPlace;
 import info.magnolia.ui.admincentral.shellapp.favorites.FavoritesActivity;
@@ -85,7 +85,7 @@ public class MagnoliaShellPresenter implements MagnoliaShellView.Presenter {
         shellAppActivityMapper.addMapping(AppLauncherPlace.class, AppLauncherActivity.class);
         shellAppActivityMapper.addMapping(PulsePlace.class, PulseActivity.class);
         shellAppActivityMapper.addMapping(FavoritesPlace.class, FavoritesActivity.class);
-        final ShellAppActivityManager shellAppManager = new ShellAppActivityManager(shellAppActivityMapper, bus);
+        final PlaceChangeNotifyingActivityManager shellAppManager = new PlaceChangeNotifyingActivityManager(shellAppActivityMapper, bus);
         shellAppManager.setViewPort(view.getRoot().getShellAppViewport());
 
         final AppActivityMapper appActivityMapper = new AppActivityMapper(componentProvider, appLauncherLayout, bus);

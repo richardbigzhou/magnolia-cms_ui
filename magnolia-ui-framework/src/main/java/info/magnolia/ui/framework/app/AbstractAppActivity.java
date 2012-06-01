@@ -31,13 +31,43 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.magnoliashell;
+package info.magnolia.ui.framework.app;
+
+import info.magnolia.ui.framework.activity.AbstractActivity;
+import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.view.ViewPort;
 
 /**
- * Shell apps capable view.
- * @author apchelintcev
+ * Abstract presenter for app views.
  *
+ * @param <T>
+ * @version $Id$
  */
-public interface ShellAppView extends ShellView {
+public abstract class AbstractAppActivity<T extends AppPresenter<T>> extends AbstractActivity implements AppPresenter<T> {
+
+    private static final long serialVersionUID = 1L;
+
+    private AppView<T> view;
+
+    private String name;
+
+    public AbstractAppActivity(AppView<T> view) {
+        this.view = view;
+    }
+
+    @Override
+    public void start(ViewPort viewPort, EventBus eventBus) {
+        view.setPresenter(getReference());
+        viewPort.setView(view);
+    }
+
+    @Override
+    public String getAppName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
 }

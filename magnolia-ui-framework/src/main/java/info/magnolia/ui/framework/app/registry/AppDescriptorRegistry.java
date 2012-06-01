@@ -31,26 +31,25 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.registry;
-
-import info.magnolia.registry.RegistrationException;
-import info.magnolia.registry.RegistryMap;
-import info.magnolia.ui.admincentral.app.AppDescriptor;
-import info.magnolia.ui.admincentral.app.AppEventType;
-import info.magnolia.ui.admincentral.app.AppLifecycleEvent;
-import info.magnolia.ui.framework.event.SystemEventBus;
+package info.magnolia.ui.framework.app.registry;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import info.magnolia.registry.RegistrationException;
+import info.magnolia.registry.RegistryMap;
+import info.magnolia.ui.framework.app.AppDescriptor;
+import info.magnolia.ui.framework.app.AppEventType;
+import info.magnolia.ui.framework.app.AppLifecycleEvent;
+import info.magnolia.ui.framework.event.SystemEventBus;
 
 /**
  * The central registry of all {@link AppDescriptor}s.
@@ -102,12 +101,10 @@ public class AppDescriptorRegistry {
                 final AppDescriptor appDescriptor = provider.getAppDescriptor();
                 if (appDescriptor == null) {
                     logger.error("Provider's AppDescriptor is null: " + provider);
-                }
-                else {
+                } else {
                     descriptors.add(appDescriptor);
                 }
-            }
-            catch (RegistrationException e) {
+            } catch (RegistrationException e) {
                 logger.error("Failed to read AppDescriptor definition from " + provider + ".", e);
             }
         }
@@ -135,25 +132,23 @@ public class AppDescriptorRegistry {
         //Handle Events
         if (CollectionUtils.isSubCollection(registeredIds, set)) {
             // Add new AppDescriptor --> REGISTERED
-            sendEvent(AppEventType.REGISTERED,getAppDescriptorFromAppDescriptorProvider(CollectionUtils.disjunction(set, registeredIds),finalProviders));
-        }
-        else if (CollectionUtils.isSubCollection(set, registeredIds)) {
+            sendEvent(AppEventType.REGISTERED, getAppDescriptorFromAppDescriptorProvider(CollectionUtils.disjunction(set, registeredIds), finalProviders));
+        } else if (CollectionUtils.isSubCollection(set, registeredIds)) {
             // Remove AppDescriptor --> UNREGISTERED
-            sendEvent(AppEventType.UNREGISTERED,getAppDescriptorFromAppDescriptorProvider(CollectionUtils.disjunction(registeredIds,set),initialProviders));
-        }
-        else {
+            sendEvent(AppEventType.UNREGISTERED, getAppDescriptorFromAppDescriptorProvider(CollectionUtils.disjunction(registeredIds, set), initialProviders));
+        } else {
             // Add and Remove AppDescriptor --> REGISTERED & UNREGISTERED.
-            sendEvent(AppEventType.REGISTERED,getAppDescriptorFromAppDescriptorProvider(CollectionUtils.disjunction(set, registeredIds),finalProviders));
-            sendEvent(AppEventType.UNREGISTERED,getAppDescriptorFromAppDescriptorProvider(CollectionUtils.disjunction(registeredIds,set),initialProviders));
+            sendEvent(AppEventType.REGISTERED, getAppDescriptorFromAppDescriptorProvider(CollectionUtils.disjunction(set, registeredIds), finalProviders));
+            sendEvent(AppEventType.UNREGISTERED, getAppDescriptorFromAppDescriptorProvider(CollectionUtils.disjunction(registeredIds, set), initialProviders));
         }
         return set;
     }
 
     private Collection<AppDescriptor> getAppDescriptorFromAppDescriptorProvider(Collection<String> ids, Collection<AppDescriptorProvider> providers) throws RegistrationException {
-        ArrayList<AppDescriptor> res = new  ArrayList<AppDescriptor>();
-        for(String id:ids){
-            for(AppDescriptorProvider provider:providers){
-                if(provider.getName().equals(id)){
+        ArrayList<AppDescriptor> res = new ArrayList<AppDescriptor>();
+        for (String id : ids) {
+            for (AppDescriptorProvider provider : providers) {
+                if (provider.getName().equals(id)) {
                     res.add(provider.getAppDescriptor());
                     break;
                 }
@@ -166,7 +161,7 @@ public class AppDescriptorRegistry {
      * Send an event to the global event bus.
      */
     private void sendEvent(AppEventType eventType, Collection<AppDescriptor> appDescriptors) {
-        for (AppDescriptor appDescriptor:appDescriptors ) {
+        for (AppDescriptor appDescriptor : appDescriptors) {
             eventBus.fireEvent(new AppLifecycleEvent(appDescriptor, eventType));
         }
     }

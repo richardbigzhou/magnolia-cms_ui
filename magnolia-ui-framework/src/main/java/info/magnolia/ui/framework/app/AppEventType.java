@@ -31,48 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
-
-import info.magnolia.ui.framework.activity.Activity;
-import info.magnolia.ui.framework.place.Place;
-
-import java.io.Serializable;
-import java.util.List;
+package info.magnolia.ui.framework.app;
 
 /**
- * Describes an app.
+ * AppEvent Type enumeration.
  *
  * @version $Id$
  */
-public interface AppDescriptor extends Serializable {
+public enum AppEventType {
 
-    String getCategoryName();
-
-    void setCategoryName(String categoryName);
-
-    String getName();
-
-    void setName(String name);
-
-    String getLabel();
-
-    void setLabel(String label);
-
-    boolean isEnabled();
-
-    void setEnabled(boolean enabled);
-
-    String getIcon();
-
-    void setIcon(String icon);
-
-    Class<? extends AppLifecycle> getAppClass();
-
-    void setAppClass(Class<? extends AppLifecycle> appClass);
-
-    List<PlaceActivityMapping> getActivityMappings();
-
-    void addActivityMapping(PlaceActivityMapping mapping);
-
-    Class<? extends Activity> getMappedActivityClass(final Class<? extends Place> placeClass);
+    REGISTERED, UNREGISTERED, STARTED, STOPPED, FOCUSED
 }

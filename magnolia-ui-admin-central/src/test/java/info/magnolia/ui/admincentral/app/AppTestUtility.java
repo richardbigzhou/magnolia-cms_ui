@@ -33,7 +33,9 @@
  */
 package info.magnolia.ui.admincentral.app;
 
-import info.magnolia.ui.admincentral.app.registry.ConfiguredAppDescriptor;
+import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
+import info.magnolia.ui.framework.app.AppDescriptor;
+import info.magnolia.ui.framework.app.AppLifecycle;
 
 
 /**

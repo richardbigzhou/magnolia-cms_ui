@@ -31,57 +31,50 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.framework;
+package info.magnolia.ui.framework.app;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 import info.magnolia.ui.framework.activity.Activity;
 import info.magnolia.ui.framework.activity.ActivityManager;
-import info.magnolia.ui.framework.activity.ActivityMapper;
+import info.magnolia.ui.framework.activity.ActivityMapperImpl;
+import info.magnolia.ui.framework.app.layout.AppCategory;
+import info.magnolia.ui.framework.app.layout.AppLauncherLayout;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.place.Place;
 
 /**
- * Activity manager responsible for the top level apps management (shell apps).
+ * Activity manager responsible for the app management.
  *
  * @version $Id$
  */
-public class ShellAppActivityManager extends ActivityManager {
+public class AppActivityManager extends ActivityManager {
 
-    public ShellAppActivityManager(ActivityMapper mapper, EventBus eventBus) {
-        super(mapper, eventBus);
-    }
+    private AppController appController;
+    private final Map<Class<? extends Place>, String> placeToAppMapping = new HashMap<Class<? extends Place>, String>();
 
-    @Override
-    protected void onPlaceChangeToCurrentActivity(Activity currentActivity, Place newPlace) {
-        invokePlaceStateHandlerMethods(currentActivity, newPlace);
+    public AppActivityManager(ActivityMapperImpl appActivityMapper, EventBus eventBus, AppLauncherLayout appLauncherLayout, AppController appController) {
+        super(appActivityMapper, eventBus);
+        this.appController = appController;
+
+        // Build lookup table for place to app, see #beforeActivityStarts
+        for (AppCategory category : appLauncherLayout.getCategories()) {
+            for (AppDescriptor descriptor : category.getApps()) {
+                for (PlaceActivityMapping mapping : descriptor.getActivityMappings()) {
+                    placeToAppMapping.put(mapping.getPlace(), descriptor.getName());
+                }
+            }
+        }
     }
 
     @Override
     protected void beforeActivityStarts(Activity currentActivity, Place newPlace) {
-        invokePlaceStateHandlerMethods(currentActivity, newPlace);
-    }
 
-    private void invokePlaceStateHandlerMethods(Activity activity, Place place) {
-
-        // Calls all methods annotated with @PlaceStateHandler and passes the place as argument
-        final Method[] methods = activity.getClass().getMethods();
-        for (final Method method : methods) {
-            if (method.isAnnotationPresent(PlaceStateHandler.class)) {
-                final Class<?>[] params = method.getParameterTypes();
-                if (params.length == 1 && params[0].equals(place.getClass())) {
-                    try {
-                        method.invoke(activity, place);
-                    } catch (IllegalArgumentException e) {
-                        e.printStackTrace();
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    } catch (InvocationTargetException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
+        // Make sure the app for this place is running before the activity starts
+        String appName = placeToAppMapping.get(newPlace.getClass());
+        if (appName != null) {
+            appController.startIfNotAlreadyRunning(appName);
         }
     }
 }

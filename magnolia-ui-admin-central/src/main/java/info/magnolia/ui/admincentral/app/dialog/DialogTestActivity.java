@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.app.dialog;
 
-import info.magnolia.ui.admincentral.app.AbstractAppActivity;
+import info.magnolia.ui.framework.app.AbstractAppActivity;
 import info.magnolia.ui.admincentral.dialog.DialogPresenter;
 import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
 

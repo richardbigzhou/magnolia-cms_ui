@@ -31,56 +31,54 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.framework.app;
 
-import info.magnolia.ui.framework.event.Event;
+import info.magnolia.ui.framework.event.EventHandler;
 
 /**
- * App Event used to notify a Start Stop or Focus event.
+ * Listens to {@link AppLifecycleEvent}s.
  *
  * @version $Id$
  */
-public class AppLifecycleEvent implements Event<AppLifecycleEventHandler> {
+public interface AppLifecycleEventHandler extends EventHandler {
 
-    private final AppDescriptor appDescriptor;
-    private final AppEventType eventType;
+    void onAppFocused(final AppLifecycleEvent event);
 
-    public AppLifecycleEvent(AppDescriptor app, AppEventType eventType) {
-        this.appDescriptor = app;
-        this.eventType = eventType;
-    }
+    void onAppStopped(final AppLifecycleEvent event);
 
-    public AppDescriptor getAppDescriptor() {
-        return appDescriptor;
-    }
+    void onAppStarted(final AppLifecycleEvent event);
 
-    public AppEventType getEventType() {
-        return eventType;
-    }
+    void onAppRegistered(final AppLifecycleEvent event);
 
-    @Override
-    public void dispatch(AppLifecycleEventHandler handler) {
+    void onAppUnregistered(final AppLifecycleEvent event);
 
-        if (eventType == null) {
-            return;
+    /**
+     * Simple stub so in case not all the methods should be implemented - you can skip them.
+     *
+     * @version $Id$
+     */
+    public static class Adapter implements AppLifecycleEventHandler {
+
+        @Override
+        public void onAppFocused(AppLifecycleEvent event) {
         }
 
-        switch (eventType) {
-            case STARTED:
-                handler.onAppStarted(this);
-                break;
-            case FOCUSED:
-                handler.onAppFocused(this);
-                break;
-            case STOPPED:
-                handler.onAppStopped(this);
-                break;
-            case REGISTERED:
-                handler.onAppRegistered(this);
-                break;
-            case UNREGISTERED:
-                handler.onAppUnregistered(this);
-                break;
+        @Override
+        public void onAppStopped(AppLifecycleEvent event) {
         }
+
+        @Override
+        public void onAppStarted(AppLifecycleEvent event) {
+        }
+
+        @Override
+        public void onAppRegistered(AppLifecycleEvent event) {
+        }
+
+        @Override
+        public void onAppUnregistered(AppLifecycleEvent event) {
+        }
+
     }
+
 }

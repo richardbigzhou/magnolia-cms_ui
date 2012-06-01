@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.registry;
+package info.magnolia.ui.framework.app.registry;
 
 import javax.jcr.Node;
 
@@ -42,7 +42,7 @@ import info.magnolia.cms.util.ContentUtil;
 import info.magnolia.content2bean.Content2BeanException;
 import info.magnolia.content2bean.Content2BeanUtil;
 import info.magnolia.registry.RegistrationException;
-import info.magnolia.ui.admincentral.app.AppDescriptor;
+import info.magnolia.ui.framework.app.AppDescriptor;
 
 /**
  * ConfiguredAppDescriptorProvider that instantiates an AppDescriptor from a configuration node.

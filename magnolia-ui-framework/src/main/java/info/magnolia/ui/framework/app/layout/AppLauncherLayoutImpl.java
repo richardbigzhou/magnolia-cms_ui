@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.layout;
+package info.magnolia.ui.framework.app.layout;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -42,15 +42,13 @@ import javax.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import info.magnolia.ui.admincentral.app.AppCategory;
-import info.magnolia.ui.admincentral.app.AppDescriptor;
-import info.magnolia.ui.admincentral.app.AppEventType;
-import info.magnolia.ui.admincentral.app.AppLifecycleEvent;
-import info.magnolia.ui.admincentral.app.AppLifecycleEventHandler;
-import info.magnolia.ui.admincentral.app.registry.AppDescriptorRegistry;
+import info.magnolia.ui.framework.app.AppDescriptor;
+import info.magnolia.ui.framework.app.AppEventType;
+import info.magnolia.ui.framework.app.AppLifecycleEvent;
+import info.magnolia.ui.framework.app.AppLifecycleEventHandler;
+import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.event.SystemEventBus;
-
 
 /**
  * Default AppRegistry implementation.
@@ -79,33 +77,33 @@ public class AppLauncherLayoutImpl implements AppLauncherLayout {
         // Register for app registration events
         systemEventBus.addHandler(AppLifecycleEvent.class, new AppLifecycleEventHandler.Adapter() {
 
-                    /**
-                     * Propagate Event to the AppShell event bus if this app has to be
-                     * displayed to the User.
-                     * Add App to Category.
-                     */
-                    @Override
-                    public void onAppRegistered(AppLifecycleEvent event) {
-                        if (hasToAddApp(event.getAppDescriptor())) {
-                            handleCategory(event.getAppDescriptor());
-                            sendEvent(AppEventType.REGISTERED, event.getAppDescriptor());
-                        }
-                    }
+            /**
+             * Propagate Event to the AppShell event bus if this app has to be
+             * displayed to the User.
+             * Add App to Category.
+             */
+            @Override
+            public void onAppRegistered(AppLifecycleEvent event) {
+                if (hasToAddApp(event.getAppDescriptor())) {
+                    handleCategory(event.getAppDescriptor());
+                    sendEvent(AppEventType.REGISTERED, event.getAppDescriptor());
+                }
+            }
 
-                    /**
-                     * Propagate Event to the AppShell event bus if this app has to be
-                     * displayed to the User.
-                     * Remove App from Category.
-                     */
-                    @Override
-                    public void onAppUnregistered(AppLifecycleEvent event) {
-                        if (isAppDescriptionRegistered(event.getAppDescriptor().getName())) {
-                            removeAppFromCategory(event.getAppDescriptor());
-                            sendEvent(AppEventType.UNREGISTERED, event.getAppDescriptor());
-                        }
-                    }
+            /**
+             * Propagate Event to the AppShell event bus if this app has to be
+             * displayed to the User.
+             * Remove App from Category.
+             */
+            @Override
+            public void onAppUnregistered(AppLifecycleEvent event) {
+                if (isAppDescriptionRegistered(event.getAppDescriptor().getName())) {
+                    removeAppFromCategory(event.getAppDescriptor());
+                    sendEvent(AppEventType.UNREGISTERED, event.getAppDescriptor());
+                }
+            }
 
-                });
+        });
     }
 
     @Override

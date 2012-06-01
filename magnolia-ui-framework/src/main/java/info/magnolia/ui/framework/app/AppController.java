@@ -31,21 +31,22 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.registry;
-
-import info.magnolia.registry.RegistrationException;
-import info.magnolia.ui.admincentral.app.AppDescriptor;
+package info.magnolia.ui.framework.app;
 
 /**
- * Provides a {@link AppDescriptor}.
+ * Manages apps running for a single user.
  *
  * @version $Id$
  */
-public interface AppDescriptorProvider {
+public interface AppController {
 
-    public static final String DEFAULT_CATEGORY_NAME = "DEFAULT";
+    AppDescriptor getAppDescriptor(final AppLifecycle app);
 
-    String getName();
+    void startIfNotAlreadyRunning(String name);
 
-    AppDescriptor getAppDescriptor() throws RegistrationException;
+    void startIfNotAlreadyRunningThenFocus(String name);
+
+    void stopApplication(String name);
+
+    void stopCurrentApplication();
 }

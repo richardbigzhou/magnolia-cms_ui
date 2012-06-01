@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.app.contacts;
 
-import info.magnolia.ui.admincentral.app.AppView;
+import info.magnolia.ui.framework.app.AppView;
 
 /**
  * View for the Contacts app.

@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.widget.magnoliashell;
 
+import info.magnolia.ui.framework.app.ShellView;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VShellViewport;
 import info.magnolia.ui.framework.view.View;

@@ -31,14 +31,56 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.framework.app;
+
+import info.magnolia.ui.framework.event.Event;
 
 /**
- * AppEvent Type enumeration.
+ * App Event used to notify a Start Stop or Focus event.
  *
  * @version $Id$
  */
-public enum AppEventType {
+public class AppLifecycleEvent implements Event<AppLifecycleEventHandler> {
 
-    REGISTERED, UNREGISTERED, STARTED, STOPPED, FOCUSED
+    private final AppDescriptor appDescriptor;
+    private final AppEventType eventType;
+
+    public AppLifecycleEvent(AppDescriptor app, AppEventType eventType) {
+        this.appDescriptor = app;
+        this.eventType = eventType;
+    }
+
+    public AppDescriptor getAppDescriptor() {
+        return appDescriptor;
+    }
+
+    public AppEventType getEventType() {
+        return eventType;
+    }
+
+    @Override
+    public void dispatch(AppLifecycleEventHandler handler) {
+
+        if (eventType == null) {
+            return;
+        }
+
+        switch (eventType) {
+            case STARTED:
+                handler.onAppStarted(this);
+                break;
+            case FOCUSED:
+                handler.onAppFocused(this);
+                break;
+            case STOPPED:
+                handler.onAppStopped(this);
+                break;
+            case REGISTERED:
+                handler.onAppRegistered(this);
+                break;
+            case UNREGISTERED:
+                handler.onAppUnregistered(this);
+                break;
+        }
+    }
 }

@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.app.dummy;
 
-import info.magnolia.ui.admincentral.app.AppPresenter;
+import info.magnolia.ui.framework.app.AppPresenter;
 
 /**
  * Dummy presenter.

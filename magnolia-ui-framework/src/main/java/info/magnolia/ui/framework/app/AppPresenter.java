@@ -31,49 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
-
-import info.magnolia.ui.framework.event.EventHandler;
+package info.magnolia.ui.framework.app;
 
 /**
- * Listens to {@link AppLifecycleEvent}s.
+ * App presenter interface.
  *
+ * @param <T>
  * @version $Id$
  */
-public interface AppLifecycleEventHandler extends EventHandler {
+public interface AppPresenter<T extends AppPresenter<T>> {
 
-    void onAppFocused(final AppLifecycleEvent event);
+    String getAppName();
 
-    void onAppStopped(final AppLifecycleEvent event);
-
-    void onAppStarted(final AppLifecycleEvent event);
-
-    void onAppRegistered(final AppLifecycleEvent event);
-
-    void onAppUnregistered(final AppLifecycleEvent event);
-
-    /**
-     * Simple stub so in case not all the methods should be implemented - you can skip them.
-     *
-     * @version $Id$
-     */
-    public static class Adapter implements AppLifecycleEventHandler {
-
-        @Override
-        public void onAppFocused(AppLifecycleEvent event) {}
-
-        @Override
-        public void onAppStopped(AppLifecycleEvent event) {}
-
-        @Override
-        public void onAppStarted(AppLifecycleEvent event) {}
-
-        @Override
-        public void onAppRegistered(AppLifecycleEvent event) {}
-
-        @Override
-        public void onAppUnregistered(AppLifecycleEvent event) {}
-
-    }
+    T getReference();
 
 }

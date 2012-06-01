@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
-import info.magnolia.ui.widget.magnoliashell.ShellAppView;
+import info.magnolia.ui.framework.app.ShellAppView;
 
 /**
  * View for favorites.

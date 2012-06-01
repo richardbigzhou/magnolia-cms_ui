@@ -31,15 +31,10 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
-
-import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.admincentral.app.layout.AppLauncherLayout;
-import info.magnolia.ui.framework.event.Event;
-import info.magnolia.ui.framework.event.EventBus;
+package info.magnolia.ui.framework.app;
 
 import java.util.LinkedList;
-
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.apache.commons.collections.BidiMap;
@@ -47,7 +42,10 @@ import org.apache.commons.collections.bidimap.DualHashBidiMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.inject.Inject;
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.framework.app.layout.AppLauncherLayout;
+import info.magnolia.ui.framework.event.Event;
+import info.magnolia.ui.framework.event.EventBus;
 
 /**
  * Default AppController implementation.
@@ -150,7 +148,7 @@ public class AppControllerImpl implements AppController {
     }
 
     /**
-     * Send Event to the EventBuss.
+     * Send Event to the event bus.
      */
     private void sendEvent(Event<? extends AppLifecycleEventHandler> event) {
         log.debug("AppController: send Event " + event.getClass().getName());

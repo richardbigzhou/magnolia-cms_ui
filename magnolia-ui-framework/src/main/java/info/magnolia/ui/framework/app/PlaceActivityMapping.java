@@ -31,22 +31,35 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.framework.app;
+
+import info.magnolia.ui.framework.activity.Activity;
+import info.magnolia.ui.framework.place.Place;
 
 /**
- * Manages apps running for a single user.
+ * Mapping for associating a place with an activity.
  *
  * @version $Id$
  */
-public interface AppController {
-    
-    AppDescriptor getAppDescriptor(final AppLifecycle app);
-    
-    void startIfNotAlreadyRunning(String name);
+public class PlaceActivityMapping {
 
-    void startIfNotAlreadyRunningThenFocus(String name);
+    private Class<? extends Place> place;
 
-    void stopApplication(String name);
-    
-    void stopCurrentApplication();
+    private Class<? extends Activity> activity;
+
+    public Class<? extends Place> getPlace() {
+        return place;
+    }
+
+    public void setPlace(Class<? extends Place> place) {
+        this.place = place;
+    }
+
+    public Class<? extends Activity> getActivity() {
+        return activity;
+    }
+
+    public void setActivity(Class<? extends Activity> activity) {
+        this.activity = activity;
+    }
 }

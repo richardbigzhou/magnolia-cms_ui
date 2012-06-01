@@ -31,22 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.framework;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package info.magnolia.ui.framework.app;
 
 /**
- * Annotation that marks Activity method meaning it can handle the Place state 
- * on Activity update. The signature of method should also contain one parameter 
- * of the handled Place type.
+ * Shell apps capable view.
  *
  * @version $Id$
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface PlaceStateHandler {
+public interface ShellAppView extends ShellView {
 
 }

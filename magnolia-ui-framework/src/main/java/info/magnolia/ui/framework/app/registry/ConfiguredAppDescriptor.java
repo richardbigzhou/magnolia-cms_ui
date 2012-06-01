@@ -31,17 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.registry;
-
-import info.magnolia.ui.admincentral.app.AppDescriptor;
-import info.magnolia.ui.admincentral.app.AppLifecycle;
-import info.magnolia.ui.admincentral.app.PlaceActivityMapping;
-import info.magnolia.ui.framework.activity.Activity;
-import info.magnolia.ui.framework.place.Place;
+package info.magnolia.ui.framework.app.registry;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import info.magnolia.ui.framework.activity.Activity;
+import info.magnolia.ui.framework.app.AppDescriptor;
+import info.magnolia.ui.framework.app.AppLifecycle;
+import info.magnolia.ui.framework.app.PlaceActivityMapping;
+import info.magnolia.ui.framework.place.Place;
 
 /**
  * Describes an app.

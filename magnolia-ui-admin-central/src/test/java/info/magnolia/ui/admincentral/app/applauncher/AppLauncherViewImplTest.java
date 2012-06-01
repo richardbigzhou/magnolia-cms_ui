@@ -36,10 +36,10 @@ package info.magnolia.ui.admincentral.app.applauncher;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import info.magnolia.ui.admincentral.app.AppCategory;
-import info.magnolia.ui.admincentral.app.AppDescriptor;
-import info.magnolia.ui.admincentral.app.AppEventType;
-import info.magnolia.ui.admincentral.app.AppLifecycleEvent;
+import info.magnolia.ui.framework.app.layout.AppCategory;
+import info.magnolia.ui.framework.app.AppDescriptor;
+import info.magnolia.ui.framework.app.AppEventType;
+import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.admincentral.app.AppTestUtility;
 import info.magnolia.ui.admincentral.shellapp.applauncher.AppLauncherViewImpl;
 import info.magnolia.ui.admincentral.shellapp.applauncher.AppLauncherViewImpl.AppGroupComponent;

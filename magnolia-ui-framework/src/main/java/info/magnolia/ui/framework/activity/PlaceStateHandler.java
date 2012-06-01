@@ -31,35 +31,21 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.framework.activity;
 
-import info.magnolia.ui.framework.activity.Activity;
-import info.magnolia.ui.framework.place.Place;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Mapping for associating a place with an activity.
+ * Annotation that marks Activity method meaning it can handle the Place state on Activity update. The signature of
+ * method should also contain one parameter of the handled Place type.
  *
  * @version $Id$
  */
-public class PlaceActivityMapping {
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface PlaceStateHandler {
 
-    private Class<? extends Place> place;
-    
-    private Class<? extends Activity> activity;
-
-    public Class<? extends Place> getPlace() {
-        return place;
-    }
-
-    public void setPlace(Class<? extends Place> place) {
-        this.place = place;
-    }
-
-    public Class<? extends Activity> getActivity() {
-        return activity;
-    }
-
-    public void setActivity(Class<? extends Activity> activity) {
-        this.activity = activity;
-    }
 }

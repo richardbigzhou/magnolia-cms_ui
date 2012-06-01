@@ -37,7 +37,7 @@ import javax.inject.Inject;
 
 import info.magnolia.module.ModuleLifecycle;
 import info.magnolia.module.ModuleLifecycleContext;
-import info.magnolia.ui.admincentral.app.registry.ConfiguredAppDescriptorManager;
+import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptorManager;
 
 
 /**

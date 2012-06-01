@@ -31,43 +31,48 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.framework.app;
 
-import info.magnolia.ui.framework.activity.AbstractActivity;
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.view.ViewPort;
+import java.io.Serializable;
+import java.util.List;
+
+import info.magnolia.ui.framework.activity.Activity;
+import info.magnolia.ui.framework.place.Place;
 
 /**
- * Abstract presenter for app views.
+ * Describes an app.
  *
- * @param <T>
  * @version $Id$
  */
-public abstract class AbstractAppActivity<T extends AppPresenter<T>> extends AbstractActivity implements AppPresenter<T> {
+public interface AppDescriptor extends Serializable {
 
-    private static final long serialVersionUID = 1L;
+    String getCategoryName();
 
-    private AppView<T> view;
+    void setCategoryName(String categoryName);
 
-    private String name;
+    String getName();
 
-    public AbstractAppActivity(AppView<T> view) {
-        this.view = view;
-    }
+    void setName(String name);
 
-    @Override
-    public void start(ViewPort viewPort, EventBus eventBus) {
-        view.setPresenter(getReference());
-        viewPort.setView(view);
-    }
+    String getLabel();
 
-    @Override
-    public String getAppName() {
-        return name;
-    }
+    void setLabel(String label);
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    boolean isEnabled();
 
+    void setEnabled(boolean enabled);
+
+    String getIcon();
+
+    void setIcon(String icon);
+
+    Class<? extends AppLifecycle> getAppClass();
+
+    void setAppClass(Class<? extends AppLifecycle> appClass);
+
+    List<PlaceActivityMapping> getActivityMappings();
+
+    void addActivityMapping(PlaceActivityMapping mapping);
+
+    Class<? extends Activity> getMappedActivityClass(final Class<? extends Place> placeClass);
 }
