@@ -31,63 +31,29 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.tabsheet.gwt.client;
+package info.magnolia.ui.widget.tabsheet.gwt.client.event;
 
-import java.util.List;
-
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * VShellTabView.
+ * ShowAllTabEvent.
  *
  * @author ejervidalo
  */
-public interface VShellTabSheetView extends IsWidget {
+public class ShowAllTabEvent extends GwtEvent<ShowAllTabHandler> {
 
-    /**
-     * Presenter.
-     *
-     * @author ejervidalo
-     */
-    public interface Presenter {
+    public static Type<ShowAllTabHandler> TYPE = new Type<ShowAllTabHandler>();
 
+    @Override
+    public GwtEvent.Type<ShowAllTabHandler> getAssociatedType() {
+        return TYPE;
     }
 
-    /**
-     * @param tab
-     */
-    void add(Widget tab);
 
-    /**
-     * @return
-     */
-    VShellTabNavigator getTabContainer();
+    @Override
+    protected void dispatch(ShowAllTabHandler handler) {
+        handler.onShowAll(this);
 
-    /**
-     * @param tabId
-     * @return
-     */
-    VShellTabContent getTabById(String tabId);
-
-    /**
-     * @return
-     */
-    List<VShellTabContent> getTabs();
-
-    /**
-     * @param tab
-     */
-    void setActiveTab(VShellTabContent tab);
-
-    /**
-     * @param tabToOrphan
-     */
-    void removeTab(VShellTabContent tabToOrphan);
-
-    /**
-     *
-     */
-    void showAllTabContents();
+    }
 
 }

@@ -36,6 +36,8 @@ package info.magnolia.ui.widget.tabsheet.gwt.client;
 
 import info.magnolia.ui.widget.tabsheet.gwt.client.event.ActiveTabChangedEvent;
 import info.magnolia.ui.widget.tabsheet.gwt.client.event.ActiveTabChangedHandler;
+import info.magnolia.ui.widget.tabsheet.gwt.client.event.ShowAllTabEvent;
+import info.magnolia.ui.widget.tabsheet.gwt.client.event.ShowAllTabHandler;
 import info.magnolia.ui.widget.tabsheet.gwt.client.event.TabCloseEvent;
 import info.magnolia.ui.widget.tabsheet.gwt.client.event.TabCloseEventHandler;
 
@@ -92,6 +94,17 @@ public class VShellTabSheet extends Composite implements VShellTabSheetView.Pres
                 view.setActiveTab(event.getTab());
                 proxy.call("activateTab", event.getTab().getTabId());            }
         });
+
+        eventBus.addHandler(ShowAllTabEvent.TYPE, new ShowAllTabHandler() {
+
+            @Override
+            public void onShowAll(ShowAllTabEvent event) {
+                view.showAllTabContents();
+
+            }
+
+        });
+
         initWidget(view.asWidget());
     }
 
@@ -225,6 +238,13 @@ public class VShellTabSheet extends Composite implements VShellTabSheetView.Pres
             @Override
             public void invoke(String methodName, Object[] params) {
                 setTabClosable(String.valueOf(params[0]), (Boolean)params[1]);
+            }
+        });
+
+        register("addShowAllTab", new Method() {
+            @Override
+            public void invoke(String methodName, Object[] params) {
+                view.getTabContainer().showAllTab(params[0]);
             }
         });
 

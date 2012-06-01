@@ -67,6 +67,7 @@ public class VaadinDialog extends AbstractComponent implements ServerSideHandler
     protected ServerSideProxy proxy = new ServerSideProxy(this) {{}};
     public VaadinDialog() {
         setImmediate(true);
+        showAllTab();
         addAction("save changes", "submit");
         addAction("cancel", "cancel");
     }
@@ -94,6 +95,10 @@ public class VaadinDialog extends AbstractComponent implements ServerSideHandler
 
     public void closeTab(ComponentContainer c) {
         tabsheet.removeComponent(c);
+    }
+
+    public void showAllTab() {
+        tabsheet.showAllTab(true);
     }
 
     public void addAction(String label, String action) {

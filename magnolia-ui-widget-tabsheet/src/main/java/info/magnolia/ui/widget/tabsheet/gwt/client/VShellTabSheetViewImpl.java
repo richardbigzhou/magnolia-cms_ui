@@ -112,4 +112,14 @@ public class VShellTabSheetViewImpl extends FlowPanel implements VShellTabSheetV
     public List<VShellTabContent> getTabs() {
         return tabs;
     }
+
+    /* (non-Javadoc)
+     * @see info.magnolia.ui.widget.tabsheet.gwt.client.VShellTabSheetView#showAllTabContents()
+     */
+    @Override
+    public void showAllTabContents() {
+        for (VShellTabContent tab : tabs) {
+            tab.getElement().getStyle().setDisplay(Display.BLOCK);
+        }
+    }
 }

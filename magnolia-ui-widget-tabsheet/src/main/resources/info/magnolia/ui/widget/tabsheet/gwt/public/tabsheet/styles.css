@@ -138,6 +138,11 @@ ul.nav-tabs {
 .nav-tabs > li, .nav-pills > li {
     float: left;
 }
+
+.nav-tabs > li.show-all, .nav-pills > li.show-all {
+    float: right;
+}
+
 .nav-tabs {
     border-bottom: 1px solid #DDDDDD;
 }

@@ -35,6 +35,7 @@ package info.magnolia.ui.widget.tabsheet.gwt.client;
 
 import info.magnolia.ui.widget.tabsheet.gwt.client.event.ActiveTabChangedEvent;
 import info.magnolia.ui.widget.tabsheet.gwt.client.event.ActiveTabChangedHandler;
+import info.magnolia.ui.widget.tabsheet.gwt.client.event.ShowAllTabEvent;
 import info.magnolia.ui.widget.tabsheet.gwt.client.event.TabCloseEvent;
 import info.magnolia.ui.widget.tabsheet.gwt.client.event.TabCloseEventHandler;
 import info.magnolia.ui.widget.tabsheet.gwt.client.util.CollectionUtil;
@@ -68,14 +69,16 @@ public class VShellTabNavigator extends ComplexPanel {
 
     private Map<VShellTabContent, VShellTabLabel> labelMap = new LinkedHashMap<VShellTabContent, VShellTabLabel>();
 
-    private EventBus eventBus;
+    VShellShowAllTabLabel showAllTab;
+
+    EventBus eventBus;
 
     public VShellTabNavigator(EventBus eventBus) {
         this.eventBus = eventBus;
         setElement(tabList);
         setStyleName("nav");
         addStyleDependentName("tabs");
-        DOM.sinkEvents(getElement(), Event.MOUSEEVENTS);
+
     }
 
     @Override
@@ -85,19 +88,6 @@ public class VShellTabNavigator extends ComplexPanel {
     }
 
     private void bindHandlers() {
-        addDomHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                final Element target = (Element)event.getNativeEvent().getEventTarget().cast();
-                final VShellTabLabel label = Util.findWidget(target, VShellTabLabel.class);
-
-                if (label != null) {
-                    eventBus.fireEvent(label.isClosing(target) ?
-                            new TabCloseEvent(label.getTab()):
-                                new ActiveTabChangedEvent(label.getTab()));
-                }
-            }
-        }, ClickEvent.getType());
 
         eventBus.addHandler(ActiveTabChangedEvent.TYPE, new ActiveTabChangedHandler() {
             @Override
@@ -156,7 +146,37 @@ public class VShellTabNavigator extends ComplexPanel {
         label.updateCaption(uidl);
     }
 
-    private static class VShellTabLabel extends SimplePanel {
+    public void setTabClosable(final VShellTabContent tab, boolean isClosable) {
+        final VShellTabLabel label = labelMap.get(tab);
+        if (label != null) {
+            label.setClosable(isClosable);
+        }
+
+    }
+
+    public void updateTabNotification(final VShellTabContent tab, final String text) {
+        final VShellTabLabel label = labelMap.get(tab);
+        if (label != null) {
+            label.updateNotification(text);
+        }
+    }
+
+    public void hideTabNotification(final VShellTabContent tab) {
+        final VShellTabLabel label = labelMap.get(tab);
+        if (label != null) {
+            label.hideNotification();
+        }
+    }
+
+    /**
+     * @param object
+     */
+    public void showAllTab(Object object) {
+        showAllTab = new VShellShowAllTabLabel();
+        add(showAllTab, getElement());
+    }
+
+    private class VShellTabLabel extends SimplePanel {
 
         private final Element notificationBox = DOM.createDiv();
 
@@ -171,6 +191,29 @@ public class VShellTabNavigator extends ComplexPanel {
             closeElement.setClassName("v-shell-tab-close");
             notificationBox.setClassName("v-shell-tab-notification");
             getElement().appendChild(text);
+
+            DOM.sinkEvents(getElement(), Event.MOUSEEVENTS);
+
+        }
+
+        @Override
+        protected void onLoad() {
+            super.onLoad();
+            bindHandlers();
+        }
+
+        private void bindHandlers() {
+            addDomHandler(new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent event) {
+                    final Element target = (Element)event.getNativeEvent().getEventTarget().cast();
+
+                    eventBus.fireEvent(isClosing(target) ?
+                            new TabCloseEvent(getTab()):
+                                new ActiveTabChangedEvent(getTab()));
+
+                }
+            }, ClickEvent.getType());
         }
 
         public boolean isClosing(Element target) {
@@ -217,25 +260,34 @@ public class VShellTabNavigator extends ComplexPanel {
         }
     }
 
-    public void setTabClosable(final VShellTabContent tab, boolean isClosable) {
-        final VShellTabLabel label = labelMap.get(tab);
-        if (label != null) {
-            label.setClosable(isClosable);
+    private class VShellShowAllTabLabel extends SimplePanel {
+
+        private final Element text = DOM.createSpan();
+
+        public VShellShowAllTabLabel() {
+            super(DOM.createElement("li"));
+            addStyleName("show-all");
+            text.setInnerHTML("show all");
+            getElement().appendChild(text);
+
+        }
+
+        @Override
+        protected void onLoad() {
+            super.onLoad();
+            bindHandlers();
+        }
+
+        private void bindHandlers() {
+            addDomHandler(new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent event) {
+                    final Element target = (Element)event.getNativeEvent().getEventTarget().cast();
+                    eventBus.fireEvent(new ShowAllTabEvent());
+                }
+            }, ClickEvent.getType());
         }
 
     }
 
-    public void updateTabNotification(final VShellTabContent tab, final String text) {
-        final VShellTabLabel label = labelMap.get(tab);
-        if (label != null) {
-            label.updateNotification(text);
-        }
-    }
-
-    public void hideTabNotification(final VShellTabContent tab) {
-        final VShellTabLabel label = labelMap.get(tab);
-        if (label != null) {
-            label.hideNotification();
-        }
-    }
 }
