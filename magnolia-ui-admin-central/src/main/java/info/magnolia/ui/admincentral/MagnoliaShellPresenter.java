@@ -110,7 +110,7 @@ public class MagnoliaShellPresenter implements MagnoliaShellView.Presenter {
         places.add(AppLauncherPlace.class);
         places.add(PulsePlace.class);
         places.add(FavoritesPlace.class);
-        for (AppCategory category : appLauncherLayout.reloadCategories()) {
+        for (AppCategory category : appLauncherLayout.getCategories()) {
             for (AppDescriptor descriptor : category.getApps()) {
                 for (PlaceActivityMapping mapping : descriptor.getActivityMappings()) {
                     places.add(mapping.getPlace());
