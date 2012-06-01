@@ -55,7 +55,7 @@ import com.vaadin.ui.Window;
  * @version $Id$
  */
 @SuppressWarnings("serial")
-public class M5AdminCentralApplication extends Application {
+public class AdminCentralApplication extends Application {
     private Window window;
 
     @Override
@@ -65,7 +65,7 @@ public class M5AdminCentralApplication extends Application {
         // Read component configurations from module descriptors
         ComponentProviderConfigurationBuilder configurationBuilder = new ComponentProviderConfigurationBuilder();
         List<ModuleDefinition> moduleDefinitions = Components.getComponent(ModuleRegistry.class).getModuleDefinitions();
-        ComponentProviderConfiguration configuration = configurationBuilder.getComponentsFromModules("m5-admin-central", moduleDefinitions);
+        ComponentProviderConfiguration configuration = configurationBuilder.getComponentsFromModules("admin-central", moduleDefinitions);
         configuration = configuration.clone();
         configuration.addComponent(InstanceConfiguration.valueOf(Application.class, this));
 
