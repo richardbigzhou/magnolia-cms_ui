@@ -4,11 +4,13 @@
   <name>ui-admin-central</name>
   <displayName>Magnolia Velvet Admin Central</displayName>
   <description>New Magnolia Administration GUI</description>
+  <class>info.magnolia.ui.admincentral.module.AdminCentralModule</class>
   <versionHandler>info.magnolia.ui.admincentral.module.AdminCentralModuleVersionHandler</versionHandler>
   <version>${project.version}</version>
 
   <components>
     <id>main</id>
+    <!--
     <component>
       <type>info.magnolia.ui.admincentral.app.AppRegistry</type>
       <workspace>config</workspace>
@@ -16,14 +18,32 @@
       <observed>true</observed>
       <scope>singleton</scope>
     </component>
-  </components>
-
-   <components>
-    <id>m5-admin-central</id>
+	-->
     <component>
       <type>info.magnolia.ui.framework.event.EventBus</type>
       <implementation>info.magnolia.ui.framework.event.SimpleEventBus</implementation>
     </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.app.layout.AppLauncherLayout</type>
+      <implementation>info.magnolia.ui.admincentral.app.layout.AppLauncherLayoutImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.app.registry.ConfiguredAppDescriptorManager</type>
+      <implementation>info.magnolia.ui.admincentral.app.registry.ConfiguredAppDescriptorManager</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.app.registry.AppDescriptorRegistry</type>
+      <implementation>info.magnolia.ui.admincentral.app.registry.AppDescriptorRegistry</implementation>
+    </component>
+    <type-mapping>
+      <type>info.magnolia.ui.admincentral.app.AppDescriptor</type>
+      <implementation>info.magnolia.ui.admincentral.app.registry.ConfiguredAppDescriptor</implementation>
+    </type-mapping>
+
+  </components>
+
+   <components>
+    <id>m5-admin-central</id>
     <component>
       <type>info.magnolia.ui.framework.place.PlaceController</type>
       <implementation>info.magnolia.ui.framework.place.PlaceController</implementation>
@@ -88,7 +108,6 @@
       <type>info.magnolia.ui.admincentral.dialog.DialogView</type>
       <implementation>info.magnolia.ui.admincentral.dialog.DialogViewImpl</implementation>
     </component>
-
   </components>
 
   <dependencies>

@@ -33,16 +33,14 @@
  */
 package info.magnolia.ui.admincentral.framework;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 import info.magnolia.ui.framework.activity.Activity;
 import info.magnolia.ui.framework.activity.ActivityManager;
 import info.magnolia.ui.framework.activity.ActivityMapper;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.place.Place;
-import info.magnolia.ui.framework.place.PlaceChangeEvent;
-import info.magnolia.ui.framework.place.PlaceChangeRequestEvent;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 /**
  * Activity manager responsible for the top level apps management (shell apps).
@@ -51,41 +49,39 @@ import java.lang.reflect.Method;
  */
 public class ShellAppActivityManager extends ActivityManager {
 
-    private final ActivityMapper mapper;
-    
     public ShellAppActivityManager(ActivityMapper mapper, EventBus eventBus) {
         super(mapper, eventBus);
-        this.mapper = mapper;
     }
-    
+
     @Override
-    public void onPlaceChange(PlaceChangeEvent event) {
-        final Place place = event.getNewPlace();
-        final Activity activity = mapper.getActivity(place);
-        if (activity != null) {
-            final Method[] methods = activity.getClass().getMethods();
-            for (final Method method : methods) {
-                if (method.getAnnotation(PlaceStateHandler.class) != null) {
-                    final Class<?>[] params = method.getParameterTypes();
-                    if (params.length == 1 && params[0].equals(place.getClass())) {
-                        try {
-                            method.invoke(activity, place);
-                        } catch (IllegalArgumentException e) {
-                            e.printStackTrace();
-                        } catch (IllegalAccessException e) {
-                            e.printStackTrace();
-                        } catch (InvocationTargetException e) {
-                            e.printStackTrace();
-                        }
+    protected void onPlaceChangeToCurrentActivity(Activity currentActivity, Place newPlace) {
+        invokePlaceStateHandlerMethods(currentActivity, newPlace);
+    }
+
+    @Override
+    protected void beforeActivityStarts(Activity currentActivity, Place newPlace) {
+        invokePlaceStateHandlerMethods(currentActivity, newPlace);
+    }
+
+    private void invokePlaceStateHandlerMethods(Activity activity, Place place) {
+
+        // Calls all methods annotated with @PlaceStateHandler and passes the place as argument
+        final Method[] methods = activity.getClass().getMethods();
+        for (final Method method : methods) {
+            if (method.isAnnotationPresent(PlaceStateHandler.class)) {
+                final Class<?>[] params = method.getParameterTypes();
+                if (params.length == 1 && params[0].equals(place.getClass())) {
+                    try {
+                        method.invoke(activity, place);
+                    } catch (IllegalArgumentException e) {
+                        e.printStackTrace();
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    } catch (InvocationTargetException e) {
+                        e.printStackTrace();
                     }
                 }
             }
-            super.onPlaceChange(event);
         }
-    }
-    
-    @Override
-    public void onPlaceChangeRequest(PlaceChangeRequestEvent event) {
-        super.onPlaceChangeRequest(event);
     }
 }

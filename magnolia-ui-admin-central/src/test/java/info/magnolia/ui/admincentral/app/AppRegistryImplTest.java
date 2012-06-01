@@ -54,14 +54,14 @@ import org.junit.Test;
 public class AppRegistryImplTest {
 
 
-    private AppRegistryImpl appRegistery;
+    private AppRegistryImpl_NoMoreUsed appRegistery;
     private AppDescriptor appDescriptor_1_1_cat_1;
     private AppDescriptor appDescriptor_1_2_cat_1;
     private AppDescriptor appDescriptor_1_1_cat_2;
 
     @Before
     public void setUp() {
-        appRegistery = new AppRegistryImpl();
+        appRegistery = new AppRegistryImpl_NoMoreUsed();
         String cat_1 = "cat_1";
         AppCategory appCategory_1 = new AppCategory();
         appCategory_1.setLabel(cat_1);

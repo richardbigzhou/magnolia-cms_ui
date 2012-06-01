@@ -37,8 +37,6 @@ import info.magnolia.ui.framework.activity.Activity;
 import info.magnolia.ui.framework.place.Place;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -46,85 +44,35 @@ import java.util.List;
  *
  * @version $Id$
  */
-public class AppDescriptor implements Serializable {
+public interface AppDescriptor extends Serializable {
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = 1L;
+    public String getCategoryName();
 
-    /**
-     * unique identifier.
-     */
-    private String name;
+    public void setCategoryName(String categoryName);
 
-    private String label;
+    public String getName();
 
-    private boolean enabled = true;
+    public void setName(String name);
 
-    private String icon;
+    public String getLabel();
 
-    private Class<? extends AppLifecycle> appClass;
+    public void setLabel(String label);
 
-    private List<PlaceActivityMapping> activityMappings = new ArrayList<PlaceActivityMapping>();
+    public boolean isEnabled();
 
-    public String getName() {
-        return name;
-    }
+    public void setEnabled(boolean enabled);
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public String getIcon();
 
-    public String getLabel() {
-        return label;
-    }
+    public void setIcon(String icon);
 
-    public void setLabel(String label) {
-        this.label = label;
-    }
+    public Class<? extends AppLifecycle> getAppClass();
 
-    public boolean isEnabled() {
-        return enabled;
-    }
+    public void setAppClass(Class<? extends AppLifecycle> appClass);
 
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
+    public List<PlaceActivityMapping> getActivityMappings();
 
-    public String getIcon() {
-        return icon;
-    }
+    public void addActivityMapping(PlaceActivityMapping mapping);
 
-    public void setIcon(String icon) {
-        this.icon = icon;
-    }
-
-    public Class<? extends AppLifecycle> getAppClass() {
-        return appClass;
-    }
-
-    public void setAppClass(Class<? extends AppLifecycle> appClass) {
-        this.appClass = appClass;
-    }
-
-    public List<PlaceActivityMapping> getActivityMappings() {
-        return activityMappings;
-    }
-
-    public void addActivityMapping(PlaceActivityMapping mapping) {
-        activityMappings.add(mapping);
-    }
-
-    public Class<? extends Activity> getMappedActivityClass(final Class<? extends Place> placeClass) {
-        final Iterator<PlaceActivityMapping> it = activityMappings.iterator();
-        Class<? extends Activity> result = null;
-        while (it.hasNext() && result == null) {
-            final PlaceActivityMapping mapping = it.next();
-            if (mapping.getPlace().equals(placeClass)) {
-                result = mapping.getActivity();
-            }
-        }
-        return result;
-    }
+    public Class<? extends Activity> getMappedActivityClass(final Class<? extends Place> placeClass);
 }

@@ -45,6 +45,8 @@ import info.magnolia.ui.framework.view.ViewPort;
  */
 public abstract class AbstractAppActivity<T extends AppPresenter<T>> extends AbstractActivity implements AppPresenter<T> {
 
+    private static final long serialVersionUID = 1L;
+
     private AppView<T> view;
 
     private String name;

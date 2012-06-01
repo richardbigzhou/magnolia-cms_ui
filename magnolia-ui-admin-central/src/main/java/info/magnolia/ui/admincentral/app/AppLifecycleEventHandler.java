@@ -41,13 +41,16 @@ import info.magnolia.ui.framework.event.EventHandler;
  * @version $Id$
  */
 public interface AppLifecycleEventHandler extends EventHandler {
-    
+
     void onAppFocus(final AppLifecycleEvent event);
-    
+
     void onStopApp(final AppLifecycleEvent event);
-    
+
     void onStartApp(final AppLifecycleEvent event);
-    
+
+    void onRegisterApp(final AppLifecycleEvent event);
+
+    void onUnregisterApp(final AppLifecycleEvent event);
     /**
      * Simple stub so in case not all the methods should be implemented - you can skip them.
      *
@@ -63,7 +66,13 @@ public interface AppLifecycleEventHandler extends EventHandler {
 
         @Override
         public void onStartApp(AppLifecycleEvent event) {}
-        
+
+        @Override
+        public void onRegisterApp(AppLifecycleEvent event) {}
+
+        @Override
+        public void onUnregisterApp(AppLifecycleEvent event) {}
+
     }
-    
+
 }

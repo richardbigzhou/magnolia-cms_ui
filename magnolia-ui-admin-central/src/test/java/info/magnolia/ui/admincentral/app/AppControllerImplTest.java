@@ -39,6 +39,7 @@ import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.admincentral.app.layout.AppLauncherLayoutImpl;
 import info.magnolia.ui.framework.event.SimpleEventBus;
 
 import org.junit.After;
@@ -52,7 +53,7 @@ import org.junit.Test;
  */
 public class AppControllerImplTest {
 
-    private AppRegistryImpl appRegistery;
+    private AppLauncherLayoutImpl appRegistery;
     private AppControllerImpl appController;
     private TestAppLifecycleEventHandler appLifecycleEventHandler;
     private AppDescriptor appDescriptor_1_1_cat_1;
@@ -83,7 +84,7 @@ public class AppControllerImplTest {
      * App are inner class TestAppLifecycle_1 & 2
      */
      private void initAppRegistry() {
-         appRegistery = new AppRegistryImpl();
+         appRegistery = new AppLauncherLayoutImpl();
          //Register App 1_1 on cat_1
          String cat_1 = "cat_1";
          AppCategory appCategory_1 = new AppCategory();

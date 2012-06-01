@@ -76,6 +76,12 @@ public class AppLifecycleEvent implements Event<AppLifecycleEventHandler> {
             case STOP_EVENT :
                 handler.onStopApp(this);
                 break;
+            case REGISTER_EVENT :
+                handler.onRegisterApp(this);
+                break;
+            case UNREGISTER_EVENT :
+                handler.onUnregisterApp(this);
+                break;
         }
     }
 }

@@ -33,83 +33,48 @@
  */
 package info.magnolia.ui.admincentral.framework;
 
-import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.admincentral.app.AbstractAppActivity;
-import info.magnolia.ui.admincentral.app.AppDescriptor;
-import info.magnolia.ui.framework.activity.Activity;
-import info.magnolia.ui.framework.activity.ActivityMapper;
-import info.magnolia.ui.framework.place.Place;
-
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.inject.Inject;
+
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.admincentral.app.AppCategory;
+import info.magnolia.ui.admincentral.app.AppDescriptor;
+import info.magnolia.ui.admincentral.app.AppLifecycleEvent;
+import info.magnolia.ui.admincentral.app.AppLifecycleEventHandler;
+import info.magnolia.ui.admincentral.app.PlaceActivityMapping;
+import info.magnolia.ui.admincentral.app.layout.AppLauncherLayout;
+import info.magnolia.ui.framework.activity.ActivityMapperImpl;
+import info.magnolia.ui.framework.event.EventBus;
 
 /**
  * AppActivityMapper.
  *
  * @version $Id$
  */
-@SuppressWarnings("serial")
-public class AppActivityMapper implements ActivityMapper {
-
-    private ComponentProvider componentProvider;
-
-    private Map<AppDescriptor, AppContext> contextMap = new HashMap<AppDescriptor, AppContext>();
+public class AppActivityMapper extends ActivityMapperImpl {
 
     @Inject
-    public AppActivityMapper(ComponentProvider componentProvider) {
-        this.componentProvider = componentProvider;
-    }
+    public AppActivityMapper(ComponentProvider componentProvider, AppLauncherLayout appRegistry, EventBus eventBus) {
+        super(componentProvider);
+        super.setLongLivingActivities(true);
 
-    @Override
-    public Activity getActivity(final Place place) {
-        for (Map.Entry<AppDescriptor, AppContext> entry : contextMap.entrySet()) {
-            final AppDescriptor descriptor = entry.getKey();
-            final AppContext context = entry.getValue();
-            final Class<? extends Activity> clazz = descriptor.getMappedActivityClass(place.getClass());
-            if (clazz != null) {
-                Activity activity = context.getActivityForPlace(place.getClass());
-                if (activity == null) {
-                    activity = componentProvider.newInstance(clazz);
-                    if (activity instanceof AbstractAppActivity) {
-                        ((AbstractAppActivity<?>) activity).setName(descriptor.getName());
-                    }
-                    context.addActivityMapping(activity, place.getClass());
+        // Add mappings for all places provided by apps
+        for (AppCategory category : appRegistry.getCategories()) {
+            for (AppDescriptor descriptor : category.getApps()) {
+                for (PlaceActivityMapping mapping : descriptor.getActivityMappings()) {
+                    super.addMapping(mapping.getPlace(), mapping.getActivity());
                 }
-                return activity;
             }
         }
-        return null;
-    }
 
-    public void registerAppStart(final AppDescriptor descriptor) {
-        AppContext context = contextMap.get(descriptor);
-        if (context == null) {
-            context = new AppContext();
-            contextMap.put(descriptor, context);
-        }
-    }
+        // When an app stops we remove all its activity instances, when it's started again new fresh instances will be created
+        eventBus.addHandler(AppLifecycleEvent.class, new AppLifecycleEventHandler.Adapter() {
 
-    public void unregisterApp(final AppDescriptor descriptor) {
-        contextMap.remove(descriptor);
-    }
-
-    private static class AppContext implements Serializable {
-
-        private Map<Class<? extends Place>, Activity> placeActivityMap = new HashMap<Class<? extends Place>, Activity>();
-
-        public AppContext() {
-            super();
-        }
-
-        public Activity getActivityForPlace(final Class<? extends Place> placeClass) {
-            return placeActivityMap.get(placeClass);
-        }
-
-        public void addActivityMapping(final Activity activity, final Class<? extends Place> placeClass) {
-            placeActivityMap.put(placeClass, activity);
-        }
+            @Override
+            public void onStopApp(AppLifecycleEvent event) {
+                for (PlaceActivityMapping mapping : event.getAppDescriptor().getActivityMappings()) {
+                    removeActivityInstanceForPlace(mapping.getPlace());
+                }
+            }
+        });
     }
 }

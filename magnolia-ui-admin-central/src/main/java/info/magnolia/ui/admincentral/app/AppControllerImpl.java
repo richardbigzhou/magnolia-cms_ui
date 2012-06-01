@@ -39,7 +39,7 @@ import info.magnolia.ui.framework.event.Event;
 import info.magnolia.ui.framework.event.EventBus;
 
 import java.util.LinkedList;
-import javax.inject.Inject;
+
 import javax.inject.Singleton;
 
 import org.apache.commons.collections.BidiMap;
@@ -47,9 +47,7 @@ import org.apache.commons.collections.bidimap.DualHashBidiMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.framework.event.Event;
-import info.magnolia.ui.framework.event.EventBus;
+import com.google.inject.Inject;
 
 /**
  * Default AppController implementation.

@@ -88,8 +88,8 @@ public class MagnoliaShellPresenter implements MagnoliaShellView.Presenter {
         final ShellAppActivityManager shellAppManager = new ShellAppActivityManager(shellAppActivityMapper, bus);
         shellAppManager.setViewPort(view.getRoot().getShellAppViewport());
 
-        final AppActivityMapper appActivityMapper = new AppActivityMapper(componentProvider, appRegistry, bus);
-        final ActivityManager appManager = new AppActivityManager(appActivityMapper, bus, appRegistry, appController);
+        final AppActivityMapper appActivityMapper = new AppActivityMapper(componentProvider, appLauncherLayout, bus);
+        final ActivityManager appManager = new AppActivityManager(appActivityMapper, bus, appLauncherLayout, appController);
         appManager.setViewPort(view.getRoot().getAppViewport());
 
         final PlaceHistoryMapper placeHistoryMapper = new PlaceHistoryMapperImpl(getSupportedPlaces(appLauncherLayout));

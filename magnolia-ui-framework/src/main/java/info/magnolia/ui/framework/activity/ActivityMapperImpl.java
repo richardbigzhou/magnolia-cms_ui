@@ -86,6 +86,10 @@ public class ActivityMapperImpl implements ActivityMapper {
         return activity;
     }
 
+    protected synchronized void removeActivityInstanceForPlace(Class<? extends Place> placeClass) {
+        placeToActivityInstance.remove(placeClass);
+    }
+
     protected Activity instantiateActivity(Class<? extends Activity> activityClass) {
         return componentProvider.newInstance(activityClass);
     }

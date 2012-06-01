@@ -44,6 +44,8 @@ import javax.inject.Inject;
  */
 public class PagesActivity extends AbstractAppActivity<PagesPresenter> implements PagesPresenter {
 
+    private static final long serialVersionUID = 1L;
+
     @Inject
     public PagesActivity(PagesView view) {
         super(view);

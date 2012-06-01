@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.admincentral.app;
 
+import info.magnolia.ui.admincentral.app.registry.ConfiguredAppDescriptor;
+
 
 /**
  * Utility Class for the App TestCases.
@@ -44,7 +46,7 @@ public class AppTestUtility {
      * Create a AppDescriptor.
      */
     public static AppDescriptor createAppDescriptor(String startLibell, Class<? extends AppLifecycle> appClass) {
-        AppDescriptor res = new AppDescriptor();
+        AppDescriptor res = new ConfiguredAppDescriptor();
         res.setAppClass(appClass);
         res.setIcon(startLibell+"_icon");
         res.setLabel(startLibell+"_label");

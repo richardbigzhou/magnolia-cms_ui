@@ -56,6 +56,11 @@ import com.vaadin.ui.Label;
 
 /**
  * Default view implementation for the app launcher.
+ * Handle the following AppLifecycleEvent:
+ *   StopApp : Remove the runningApp Icon
+ *   StartApp: Add the runningApp Icon
+ *   RegisterApp: Create a new App & Group Icon/Section
+ *   UnregisterApp: Remove the App & Group Icon/Section
  *
  */
 @SuppressWarnings("serial")
@@ -68,7 +73,7 @@ public class AppLauncherViewImpl implements AppLauncherView, IsVaadinComponent {
     private final Map<String, AppGroupComponent> appGroupMap = new HashMap<String, AppGroupComponent>();
 
     // Keep a list of registered AppButton.
-    private final Map<AppDescriptor, AppButton> appButtons = new HashMap<AppDescriptor, AppButton>();
+    private final Map<String, AppButton> appButtons = new HashMap<String, AppButton>();
 
     @Inject
     public AppLauncherViewImpl(EventBus eventBus) {
@@ -84,7 +89,7 @@ public class AppLauncherViewImpl implements AppLauncherView, IsVaadinComponent {
                  */
                 public void onStopApp(AppLifecycleEvent event) {
                     AppButton button = appButtons.get(event
-                        .getAppDescriptor());
+                        .getAppDescriptor().getName());
                     button.setActive(false);
                     layout.requestRepaintAll();
                 }
@@ -95,8 +100,28 @@ public class AppLauncherViewImpl implements AppLauncherView, IsVaadinComponent {
                  */
                 public void onStartApp(AppLifecycleEvent event) {
                     AppButton button = appButtons.get(event
-                        .getAppDescriptor());
+                        .getAppDescriptor().getName());
                     button.setActive(true);
+                    layout.requestRepaintAll();
+                }
+
+                @Override
+                /**
+                 * Register an new App.
+                 */
+                public void onRegisterApp(AppLifecycleEvent event) {
+                    AppCategory category = new AppCategory();
+                    category.setLabel(event.getAppDescriptor().getCategoryName());
+                    registerApp(event.getAppDescriptor(), category);
+                    layout.requestRepaintAll();
+                }
+
+                @Override
+                /**
+                 * Remove an App.
+                 */
+                public void onUnregisterApp(AppLifecycleEvent event) {
+                    unRegisterApp(event.getAppDescriptor());
                     layout.requestRepaintAll();
                 }
 
@@ -121,7 +146,9 @@ public class AppLauncherViewImpl implements AppLauncherView, IsVaadinComponent {
             appGroupMap.put(category.getLabel(), group);
             layout.addComponent(group);
         }
+
         group.addApp(descriptor);
+
     }
 
     /**
@@ -150,6 +177,10 @@ public class AppLauncherViewImpl implements AppLauncherView, IsVaadinComponent {
             addComponent(this.iconList);
         }
 
+        public CssLayout getIconList(){
+            return this.iconList;
+        }
+
         public void addApp(final AppDescriptor descriptor) {
             final AppButton button = new AppButton(descriptor.getLabel());
             button.addStyleName("item");
@@ -162,12 +193,30 @@ public class AppLauncherViewImpl implements AppLauncherView, IsVaadinComponent {
                     presenter.onAppInvoked(descriptor.getName());
                 }
             });
-            appButtons.put(descriptor, button);
+            appButtons.put(descriptor.getName(), button);
         }
     }
 
     @Override
     public String getAppName() {
         return ShellAppType.APPLAUNCHER.name();
+    }
+
+    @Override
+    public void unRegisterApp(AppDescriptor descriptor) {
+        //Init
+        AppGroupComponent group = appGroupMap.get(descriptor.getCategoryName());
+        AppButton button = appButtons.get(descriptor.getName());
+
+        //Remove the App Button from the GroupIconeList.
+        group.getIconList().removeComponent(button);
+        appButtons.remove(descriptor.getName());
+
+        //If the group is empty, remove it.
+        if(group.getIconList().getComponentCount()==0) {
+            layout.removeComponent(group);
+            appGroupMap.remove(descriptor.getCategoryName());
+        }
+        appButtons.remove(descriptor.getName());
     }
 }
