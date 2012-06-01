@@ -39,9 +39,8 @@ import info.magnolia.ui.model.settings.UISettings;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
 /**
+ * TODO: use ui settings?
  * Provides the JcrViewBuilder defined in the AdminCentralModule.
  */
 public class JcrViewBuilderProviderImpl implements JcrViewBuilderProvider {

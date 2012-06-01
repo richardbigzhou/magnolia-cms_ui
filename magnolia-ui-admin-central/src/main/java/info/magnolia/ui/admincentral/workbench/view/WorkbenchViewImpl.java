@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral.workbench.view;
 
-import info.magnolia.ui.admincentral.app.AppPresenter;
 import info.magnolia.ui.framework.view.ViewPort;
 import info.magnolia.ui.vaadin.integration.view.ComponentContainerViewPort;
 

@@ -33,15 +33,12 @@
  */
 package info.magnolia.ui.admincentral.column;
 
-import info.magnolia.cms.util.MetaDataUtil;
-import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.model.column.definition.AbstractColumnDefinition;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.jcr.Item;
-import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import com.vaadin.ui.Component;

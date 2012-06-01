@@ -39,8 +39,6 @@ import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.admincentral.column.Column;
 import info.magnolia.ui.admincentral.container.JcrContainerSource;
-import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
-import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.workbench.definition.ItemTypeDefinition;
@@ -52,7 +50,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Map;
 
-import javax.inject.Inject;
 import javax.jcr.Item;
 import javax.jcr.LoginException;
 import javax.jcr.Node;
@@ -67,6 +64,7 @@ import org.apache.commons.lang.StringUtils;
 import com.vaadin.ui.Component;
 
 /**
+ * TODO reintegrate action logic.
  * Model class for tree. Serves as a source for operations by JcrContainer and executes them.
  *
  */
@@ -175,7 +173,7 @@ public class TreeModel implements JcrContainerSource {
     }
 
     /**
-     * This method is used by {@link JcrContainer#getColumnValue(String, Object)} to retrieve properties of items.
+     * This method is used by {@link info.magnolia.ui.admincentral.container.JcrContainer#getColumnValue(String, Object)} to retrieve properties of items.
      */
     @Override
     public Component getColumnComponent(String columnName, Item item) throws RepositoryException {
