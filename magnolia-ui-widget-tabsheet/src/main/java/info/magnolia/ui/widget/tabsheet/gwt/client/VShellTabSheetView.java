@@ -60,11 +60,6 @@ public interface VShellTabSheetView extends IsWidget {
     void add(Widget tab);
 
     /**
-     * @param tabToOrphan
-     */
-    void remove(VShellTabContent tabToOrphan);
-
-    /**
      * @return
      */
     VShellTabNavigator getTabContainer();
@@ -79,5 +74,15 @@ public interface VShellTabSheetView extends IsWidget {
      * @return
      */
     List<VShellTabContent> getTabs();
+
+    /**
+     * @param tab
+     */
+    void setActiveTab(VShellTabContent tab);
+
+    /**
+     * @param tabToOrphan
+     */
+    void removeTab(VShellTabContent tabToOrphan);
 
 }

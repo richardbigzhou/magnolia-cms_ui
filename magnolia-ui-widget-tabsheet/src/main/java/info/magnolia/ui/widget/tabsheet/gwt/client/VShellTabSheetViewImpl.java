@@ -33,9 +33,12 @@
  */
 package info.magnolia.ui.widget.tabsheet.gwt.client;
 
+import info.magnolia.ui.widget.tabsheet.gwt.client.util.CollectionUtil;
+
 import java.util.LinkedList;
 import java.util.List;
 
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.FlowPanel;
 
@@ -48,6 +51,8 @@ public class VShellTabSheetViewImpl extends FlowPanel implements VShellTabSheetV
 
 
     private VShellTabNavigator tabContainer;
+
+    private VShellTabContent activeTab = null;
 
     private final List<VShellTabContent> tabs = new LinkedList<VShellTabContent>();
 
@@ -70,9 +75,24 @@ public class VShellTabSheetViewImpl extends FlowPanel implements VShellTabSheetV
     }
 
     @Override
-    public void remove(VShellTabContent tabToOrphan) {
+    public void removeTab(VShellTabContent tabToOrphan) {
+        if (activeTab == tabToOrphan) {
+            final VShellTabContent nextTab = CollectionUtil.getNext(getTabs(), tabToOrphan);
+            if (nextTab != null) {
+                setActiveTab(nextTab);
+            }
+        }
         tabs.remove(tabToOrphan);
         remove(tabToOrphan);
+    }
+
+    @Override
+    public void setActiveTab(final VShellTabContent tab) {
+        for (final VShellTabContent shellTab : getTabs()) {
+            shellTab.getElement().getStyle().setDisplay(Display.NONE);
+        }
+        tab.getElement().getStyle().setDisplay(Display.BLOCK);
+        activeTab = tab;
     }
 
     @Override

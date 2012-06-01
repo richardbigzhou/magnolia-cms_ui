@@ -38,7 +38,6 @@ import info.magnolia.ui.widget.tabsheet.gwt.client.event.ActiveTabChangedEvent;
 import info.magnolia.ui.widget.tabsheet.gwt.client.event.ActiveTabChangedHandler;
 import info.magnolia.ui.widget.tabsheet.gwt.client.event.TabCloseEvent;
 import info.magnolia.ui.widget.tabsheet.gwt.client.event.TabCloseEventHandler;
-import info.magnolia.ui.widget.tabsheet.gwt.client.util.CollectionUtil;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -49,7 +48,6 @@ import org.vaadin.rpc.client.ClientSideHandler;
 import org.vaadin.rpc.client.ClientSideProxy;
 import org.vaadin.rpc.client.Method;
 
-import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.Composite;
@@ -73,7 +71,6 @@ public class VShellTabSheet extends Composite implements VShellTabSheetView.Pres
     protected ApplicationConnection client;
 
 
-    private VShellTabContent activeTab = null;
 
     VShellTabSheetView view;
     private final EventBus eventBus = new SimpleEventBus();
@@ -92,8 +89,8 @@ public class VShellTabSheet extends Composite implements VShellTabSheetView.Pres
         eventBus.addHandler(ActiveTabChangedEvent.TYPE, new ActiveTabChangedHandler() {
             @Override
             public void onActiveTabChanged(ActiveTabChangedEvent event) {
-                activateTab(event.getTab());
-            }
+                view.setActiveTab(event.getTab());
+                proxy.call("activateTab", event.getTab().getTabId());            }
         });
         initWidget(view.asWidget());
     }
@@ -102,13 +99,8 @@ public class VShellTabSheet extends Composite implements VShellTabSheetView.Pres
         if (tab != null) {
             client.unregisterPaintable(tab);
             proxy.call("closeTab", tab.getTabId());
-            if (activeTab == tab) {
-                final VShellTabContent nextTab = CollectionUtil.getNext(view.getTabs(), tab);
-                if (nextTab != null) {
-                    doSetActiveTab(nextTab);
-                }
-            }
-            view.remove(tab);
+
+            view.removeTab(tab);
         }
     }
 
@@ -142,7 +134,7 @@ public class VShellTabSheet extends Composite implements VShellTabSheetView.Pres
             for (final VShellTabContent tabToOrphan : possibleTabsToOrphan) {
                 view.getTabs().remove(tabToOrphan);
                 client.unregisterPaintable(tabToOrphan);
-                view.remove(tabToOrphan);
+                view.removeTab(tabToOrphan);
             }
         }
     }
@@ -193,16 +185,7 @@ public class VShellTabSheet extends Composite implements VShellTabSheetView.Pres
     }
 
     void activateTab(final VShellTabContent tab) {
-        doSetActiveTab(tab);
-        proxy.call("activateTab", tab.getTabId());
-    }
 
-    private void doSetActiveTab(final VShellTabContent tab) {
-        for (final VShellTabContent shellTab : view.getTabs()) {
-            shellTab.getElement().getStyle().setDisplay(Display.NONE);
-        }
-        tab.getElement().getStyle().setDisplay(Display.BLOCK);
-        activeTab = tab;
     }
 
     @Override
