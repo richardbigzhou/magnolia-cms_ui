@@ -31,54 +31,30 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.applauncher;
+package info.magnolia.ui.admincentral.app.layout;
 
 import info.magnolia.ui.admincentral.app.AppCategory;
-import info.magnolia.ui.admincentral.app.AppController;
 import info.magnolia.ui.admincentral.app.AppDescriptor;
-import info.magnolia.ui.admincentral.app.layout.AppLauncherLayout;
-import info.magnolia.ui.framework.activity.AbstractActivity;
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.view.ViewPort;
 
-import javax.inject.Inject;
+import java.util.Collection;
 
 /**
- * Activity for the app launcher.
+ * Registry of available apps.
  *
  * @version $Id$
  */
-public class AppLauncherActivity extends AbstractActivity implements AppLauncherView.Presenter {
+public interface AppLauncherLayout {
 
-    private static final long serialVersionUID = 1L;
+    Collection<AppCategory> getCategories();
 
-    private AppLauncherView view;
+    Collection<AppCategory> reloadCategories();
 
-    private AppController appController;
+    /**
+     * Returns the AppDescriptor for a given name.
+     *
+     * @throws IllegalArgumentException: If key don't exist.
+     */
+    AppDescriptor getAppDescriptor(String name);
 
-    private AppLauncherLayout appLauncherLayout;
-
-    @Inject
-    public AppLauncherActivity(AppLauncherView view, AppController appController, AppLauncherLayout appLauncherLayout, EventBus eventBus) {
-        this.view = view;
-        this.appController = appController;
-        this.appLauncherLayout = appLauncherLayout;
-        for (AppCategory category : this.appLauncherLayout.getCategories()) {
-            for (AppDescriptor descriptor : category.getApps()) {
-                view.registerApp(descriptor, category);
-            }
-        }
-
-    }
-
-    @Override
-    public void onAppInvoked(String name) {
-        appController.startIfNotAlreadyRunningThenFocus(name);
-    }
-
-    @Override
-    public void start(ViewPort viewPort, EventBus eventBus) {
-        view.setPresenter(this);
-        viewPort.setView(view);
-    }
+    boolean isAppDescriptionRegistered(String name);
 }

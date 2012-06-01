@@ -22,6 +22,9 @@
       <type>info.magnolia.ui.admincentral.app.registry.AppDescriptorRegistry</type>
       <implementation>info.magnolia.ui.admincentral.app.registry.AppDescriptorRegistry</implementation>
     </component>
+
+
+
     <type-mapping>
       <type>info.magnolia.ui.admincentral.app.AppDescriptor</type>
       <implementation>info.magnolia.ui.admincentral.app.registry.ConfiguredAppDescriptor</implementation>
@@ -31,14 +34,17 @@
 
    <components>
     <id>admin-central</id>
-    <component>
+
+ 	<component>
       <type>info.magnolia.ui.framework.event.EventBus</type>
       <implementation>info.magnolia.ui.framework.event.SimpleEventBus</implementation>
     </component>
+
     <component>
       <type>info.magnolia.ui.admincentral.app.layout.AppLauncherLayout</type>
       <implementation>info.magnolia.ui.admincentral.app.layout.AppLauncherLayoutImpl</implementation>
     </component>
+
     <component>
       <type>info.magnolia.ui.framework.place.PlaceController</type>
       <implementation>info.magnolia.ui.framework.place.PlaceController</implementation>

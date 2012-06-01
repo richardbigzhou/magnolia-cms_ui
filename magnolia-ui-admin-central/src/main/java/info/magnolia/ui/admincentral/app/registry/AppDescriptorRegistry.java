@@ -1,0 +1,172 @@
+/**
+ * This file Copyright (c) 2012 Magnolia International
+ * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
+ *
+ *
+ * This file is dual-licensed under both the Magnolia
+ * Network Agreement and the GNU General Public License.
+ * You may elect to use one or the other of these licenses.
+ *
+ * This file is distributed in the hope that it will be
+ * useful, but AS-IS and WITHOUT ANY WARRANTY; without even the
+ * implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE, TITLE, or NONINFRINGEMENT.
+ * Redistribution, except as permitted by whichever of the GPL
+ * or MNA you select, is prohibited.
+ *
+ * 1. For the GPL license (GPL), you can redistribute and/or
+ * modify this file under the terms of the GNU General
+ * Public License, Version 3, as published by the Free Software
+ * Foundation.  You should have received a copy of the GNU
+ * General Public License, Version 3 along with this program;
+ * if not, write to the Free Software Foundation, Inc., 51
+ * Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ * 2. For the Magnolia Network Agreement (MNA), this file
+ * and the accompanying materials are made available under the
+ * terms of the MNA which accompanies this distribution, and
+ * is available at http://www.magnolia-cms.com/mna.html
+ *
+ * Any modifications to this file must keep this entire header
+ * intact.
+ *
+ */
+package info.magnolia.ui.admincentral.app.registry;
+
+import info.magnolia.registry.RegistrationException;
+import info.magnolia.registry.RegistryMap;
+import info.magnolia.ui.admincentral.app.AppDescriptor;
+import info.magnolia.ui.admincentral.app.AppEventType;
+import info.magnolia.ui.admincentral.app.AppLifecycleEvent;
+import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.event.SystemEventBus;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Set;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
+/**
+ * The central registry of all {@link AppDescriptor}s.
+ *
+ */
+@Singleton
+public class AppDescriptorRegistry {
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
+    private final RegistryMap<String, AppDescriptorProvider> registry = new RegistryMap<String, AppDescriptorProvider>() {
+
+        @Override
+        protected String keyFromValue(AppDescriptorProvider provider) {
+            return provider.getName();
+        }
+    };
+
+    private SystemEventBus eventBus;
+
+    @Inject
+    public AppDescriptorRegistry(SystemEventBus eventBus) {
+        this.eventBus = eventBus;
+    }
+
+    public AppDescriptor getAppDescriptor(String id) throws RegistrationException {
+        // Init
+        AppDescriptorProvider appDescriptorProvider = null;
+        appDescriptorProvider = registry.getRequired(id);
+        return appDescriptorProvider.getAppDescriptor();
+    }
+
+    public boolean isAppDescriptorRegistered(String id) {
+        return registry.get(id) != null ? true : false;
+    }
+
+    /**
+     * @return all AppDescriptors - in case of errors it'll just deliver the ones that are properly
+     * registered and logs error's for the others.
+     */
+    public Collection<AppDescriptor> getAppDescriptors() {
+        final Collection<AppDescriptor> templateDefinitions = new ArrayList<AppDescriptor>();
+        for (AppDescriptorProvider provider : registry.values()) {
+            try {
+                final AppDescriptor appDescriptor = provider.getAppDescriptor();
+                if (appDescriptor == null) {
+                    logger.error("Provider's appDescriptor is null: " + provider);
+                }
+                else {
+                    templateDefinitions.add(appDescriptor);
+                }
+            }
+            catch (RegistrationException e) {
+                logger.error("Failed to read appDescriptor definition from " + provider + ".", e);
+            }
+        }
+        return templateDefinitions;
+    }
+
+    public void register(AppDescriptorProvider provider) {
+        registry.put(provider);
+        sendEvent(AppEventType.REGISTER_EVENT, Arrays.asList(provider.appDescriptor));
+    }
+
+    public void unregister(String id) throws RegistrationException {
+        AppDescriptorProvider toRemove = registry.get(id);
+        registry.remove(id);
+        sendEvent(AppEventType.UNREGISTER_EVENT, Arrays.asList(toRemove.getAppDescriptor()));
+    }
+
+
+    @SuppressWarnings("unchecked")
+    public Set<String> unregisterAndRegister(Collection<String> registeredIds, Collection<AppDescriptorProvider> providers) throws RegistrationException {
+
+        Collection<AppDescriptorProvider> initialProviders = registry.values();
+        Set<String> set = registry.removeAndPutAll(registeredIds, providers);
+        Collection<AppDescriptorProvider> finalProviders = registry.values();
+
+        //Handle Events
+        if (CollectionUtils.isSubCollection(registeredIds, set)) {
+            // Add new AppDescriptor --> REGISTER_EVENT
+            sendEvent(AppEventType.REGISTER_EVENT,getAppDescriptorFromAppDescriptorProvider(CollectionUtils.disjunction(set, registeredIds),finalProviders));
+        }
+        else if (CollectionUtils.isSubCollection(set, registeredIds)) {
+            // Remove AppDescriptor --> UNREGISTER_EVENT
+            sendEvent(AppEventType.UNREGISTER_EVENT,getAppDescriptorFromAppDescriptorProvider(CollectionUtils.disjunction(registeredIds,set),initialProviders));
+        }
+        else {
+            // Add and Remove AppDescriptor --> REGISTER_EVENT & UNREGISTER_EVENT.
+            sendEvent(AppEventType.REGISTER_EVENT,getAppDescriptorFromAppDescriptorProvider(CollectionUtils.disjunction(set, registeredIds),finalProviders));
+            sendEvent(AppEventType.UNREGISTER_EVENT,getAppDescriptorFromAppDescriptorProvider(CollectionUtils.disjunction(registeredIds,set),initialProviders));
+        }
+        return set;
+    }
+
+    private Collection<AppDescriptor> getAppDescriptorFromAppDescriptorProvider(Collection<String> ids, Collection<AppDescriptorProvider> providers) throws RegistrationException {
+        ArrayList<AppDescriptor> res = new  ArrayList<AppDescriptor>();
+        for(String id:ids){
+            for(AppDescriptorProvider provider:providers){
+                if(provider.getName().equals(id)){
+                    res.add(provider.getAppDescriptor());
+                    break;
+                }
+            }
+        }
+        return res;
+    }
+
+    /**
+     * Send an Event to the Globale EventBuss.
+     */
+    private void sendEvent(AppEventType eventType, Collection<AppDescriptor> appDescriptors) {
+        for (AppDescriptor appDescriptor:appDescriptors ) {
+            eventBus.fireEvent(new AppLifecycleEvent(appDescriptor, eventType));
+        }
+    }
+}
