@@ -33,10 +33,12 @@
  */
 package info.magnolia.ui.framework.activity;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -44,6 +46,8 @@ import static org.mockito.Mockito.when;
 
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.event.SimpleEventBus;
+import info.magnolia.ui.framework.event.TestEvent;
+import info.magnolia.ui.framework.event.TestEventHandler;
 import info.magnolia.ui.framework.place.Place;
 import info.magnolia.ui.framework.place.PlaceChangeEvent;
 import info.magnolia.ui.framework.place.PlaceChangeRequestEvent;
@@ -64,6 +68,10 @@ public class ActivityManagerTest {
     }
 
     public static class FooPlace extends Place {
+
+    }
+
+    public static class BarPlace extends Place {
 
     }
 
@@ -106,7 +114,7 @@ public class ActivityManagerTest {
         // WHEN
         eventBus.fireEvent(new PlaceChangeEvent(new FooPlace()));
 
-        // THEN
+        // THEN (still 1)
         verify(activity, times(1)).start(eq(viewPort), any(EventBus.class));
     }
 
@@ -160,5 +168,57 @@ public class ActivityManagerTest {
         // THEN
         verify(activity).mayStop();
         assertEquals("WARNING", event.getWarning());
+    }
+
+    public static class EventListeningTestActivity extends AbstractActivity implements TestEventHandler {
+
+        public int invocationCount = 0;
+
+        @Override
+        public void start(ViewPort viewPort, EventBus eventBus) {
+            eventBus.addHandler(TestEvent.class, this);
+        }
+
+        @Override
+        public void handleEvent(TestEvent event) {
+            invocationCount++;
+        }
+    }
+
+    @Ignore
+    @Test
+    public void testActivityGetsEventEvenWhenNotActive() {
+
+        // GIVEN
+        SimpleEventBus eventBus = new SimpleEventBus();
+        ViewPort viewPort = mock(ViewPort.class);
+
+        EventListeningTestActivity fooActivity = new EventListeningTestActivity();
+        EventListeningTestActivity barActivity = new EventListeningTestActivity();
+
+        ActivityMapper activityMapper = mock(ActivityMapper.class);
+        when(activityMapper.getActivity(isA(FooPlace.class))).thenReturn(fooActivity);
+        when(activityMapper.getActivity(isA(BarPlace.class))).thenReturn(barActivity);
+
+        ActivityManager activityManager = new ActivityManager(activityMapper, eventBus);
+        activityManager.setViewPort(viewPort);
+
+        eventBus.fireEvent(new PlaceChangeEvent(new FooPlace()));
+
+        // WHEN
+        eventBus.fireEvent(new TestEvent());
+
+        // THEN
+        assertEquals(1, fooActivity.invocationCount);
+        assertEquals(0, barActivity.invocationCount);
+
+        // WHEN
+        eventBus.fireEvent(new PlaceChangeEvent(new BarPlace()));
+        eventBus.fireEvent(new TestEvent());
+
+        // THEN
+        assertEquals(2, fooActivity.invocationCount);
+        assertEquals(1, barActivity.invocationCount);
+
     }
 }
