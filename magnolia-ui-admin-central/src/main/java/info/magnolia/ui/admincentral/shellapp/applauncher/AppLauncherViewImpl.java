@@ -121,7 +121,7 @@ public class AppLauncherViewImpl implements AppLauncherView, IsVaadinComponent {
                  * Remove an App.
                  */
                 public void onUnregisterApp(AppLifecycleEvent event) {
-                    unRegisterApp(event.getAppDescriptor());
+                    unregisterApp(event.getAppDescriptor());
                     layout.requestRepaintAll();
                 }
 
@@ -203,7 +203,7 @@ public class AppLauncherViewImpl implements AppLauncherView, IsVaadinComponent {
     }
 
     @Override
-    public void unRegisterApp(AppDescriptor descriptor) {
+    public void unregisterApp(AppDescriptor descriptor) {
         //Init
         AppGroupComponent group = appGroupMap.get(descriptor.getCategoryName());
         AppButton button = appButtons.get(descriptor.getName());

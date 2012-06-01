@@ -53,12 +53,12 @@ import info.magnolia.ui.framework.event.EventBus;
 public class AppActivityMapper extends ActivityMapperImpl {
 
     @Inject
-    public AppActivityMapper(ComponentProvider componentProvider, AppLauncherLayout appRegistry, EventBus eventBus) {
+    public AppActivityMapper(ComponentProvider componentProvider, AppLauncherLayout appLauncherLayout, EventBus eventBus) {
         super(componentProvider);
         super.setLongLivingActivities(true);
 
         // Add mappings for all places provided by apps
-        for (AppCategory category : appRegistry.getCategories()) {
+        for (AppCategory category : appLauncherLayout.getCategories()) {
             for (AppDescriptor descriptor : category.getApps()) {
                 for (PlaceActivityMapping mapping : descriptor.getActivityMappings()) {
                     super.addMapping(mapping.getPlace(), mapping.getActivity());

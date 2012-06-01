@@ -57,12 +57,12 @@ public class AppActivityManager extends ActivityManager {
     private AppController appController;
     private final Map<Class<? extends Place>, String> placeToAppMapping = new HashMap<Class<? extends Place>, String>();
 
-    public AppActivityManager(ActivityMapperImpl appActivityMapper, EventBus eventBus, AppLauncherLayout appRegistry, AppController appController) {
+    public AppActivityManager(ActivityMapperImpl appActivityMapper, EventBus eventBus, AppLauncherLayout appLauncherLayout, AppController appController) {
         super(appActivityMapper, eventBus);
         this.appController = appController;
 
         // Build lookup table for place to app, see #beforeActivityStarts
-        for (AppCategory category : appRegistry.getCategories()) {
+        for (AppCategory category : appLauncherLayout.getCategories()) {
             for (AppDescriptor descriptor : category.getApps()) {
                 for (PlaceActivityMapping mapping : descriptor.getActivityMappings()) {
                     placeToAppMapping.put(mapping.getPlace(), descriptor.getName());
