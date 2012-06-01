@@ -44,11 +44,10 @@ import info.magnolia.ui.framework.place.PlaceChangeRequestEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-
 /**
  * Activity manager responsible for the top level apps management (shell apps).
- * @author p4elkin
  *
+ * @version $Id$
  */
 public class ShellAppActivityManager extends ActivityManager {
 

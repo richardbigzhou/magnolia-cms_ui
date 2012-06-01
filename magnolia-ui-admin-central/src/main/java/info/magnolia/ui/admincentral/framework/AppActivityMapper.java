@@ -42,7 +42,6 @@ import info.magnolia.ui.framework.place.Place;
 
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -66,9 +65,7 @@ public class AppActivityMapper implements ActivityMapper {
 
     @Override
     public Activity getActivity(final Place place) {
-        final Iterator<Map.Entry<AppDescriptor, AppContext>> it = contextMap.entrySet().iterator();
-        while (it.hasNext()) {
-            final Map.Entry<AppDescriptor, AppContext> entry = it.next();
+        for (Map.Entry<AppDescriptor, AppContext> entry : contextMap.entrySet()) {
             final AppDescriptor descriptor = entry.getKey();
             final AppContext context = entry.getValue();
             final Class<? extends Activity> clazz = descriptor.getMappedActivityClass(place.getClass());
@@ -77,7 +74,7 @@ public class AppActivityMapper implements ActivityMapper {
                 if (activity == null) {
                     activity = componentProvider.newInstance(clazz);
                     if (activity instanceof AbstractAppActivity) {
-                        ((AbstractAppActivity<?>)activity).setName(descriptor.getName());
+                        ((AbstractAppActivity<?>) activity).setName(descriptor.getName());
                     }
                     context.addActivityMapping(activity, place.getClass());
                 }
@@ -95,7 +92,7 @@ public class AppActivityMapper implements ActivityMapper {
         }
     }
 
-    public void uregisterApp(final AppDescriptor descriptor) {
+    public void unregisterApp(final AppDescriptor descriptor) {
         contextMap.remove(descriptor);
     }
 
