@@ -34,9 +34,11 @@
 package info.magnolia.ui.app.contacts;
 
 import info.magnolia.ui.admincentral.app.AbstractAppView;
+import info.magnolia.ui.framework.view.ViewPort;
+import info.magnolia.ui.vaadin.integration.view.ComponentContainerViewPort;
 
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
 
 /**
  * View implementation for the Contacts app.
@@ -46,11 +48,40 @@ import com.vaadin.ui.VerticalLayout;
 @SuppressWarnings("serial")
 public class ContactsViewImpl extends AbstractAppView<ContactsPresenter> implements ContactsView  {
 
+    private CssLayout outerLayout = new CssLayout();
+    private ComponentContainerViewPort itemListViewPort;
+
     public ContactsViewImpl() {
         super();
-        final VerticalLayout tableContainer = new VerticalLayout();
+        outerLayout.setSizeFull();
+        outerLayout.setStyleName("workbench-view");
+
+        CssLayout innerLayout = new CssLayout();
+        innerLayout.setSizeFull();
+        innerLayout.setStyleName("workbench-view-inner");
+        outerLayout.addComponent(innerLayout);
+        itemListViewPort = new ComponentContainerViewPort(innerLayout);
+
+
         Label label = new Label("<center>Contacts App</center>", Label.CONTENT_XHTML);
-        tableContainer.addComponent(label);
-        addTab(tableContainer, "Contacts");
+        outerLayout.addComponent(label);
+        addTab(outerLayout, "Contacts");
+    }
+
+    @Override
+    public ViewPort getItemListViewPort() {
+        return itemListViewPort;
+    }
+
+    @Override
+    public ViewPort getSidebarViewPort() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public ViewPort getFunctionToolbarViewPort() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

@@ -117,6 +117,10 @@ public class AppDescriptor {
         workbenches.add(workbenchDefinition);
     }
 
+    public List<WorkbenchDefinition> getWorkbenches() {
+        return workbenches;
+    }
+
     public Class<? extends Activity> getMappedActivityClass(final Class<? extends Place> placeClass) {
         final Iterator<PlaceActivityMapping> it = activityMappings.iterator();
         Class<? extends Activity> result = null;

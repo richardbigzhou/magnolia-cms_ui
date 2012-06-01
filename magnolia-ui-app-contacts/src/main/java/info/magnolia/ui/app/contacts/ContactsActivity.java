@@ -34,6 +34,10 @@
 package info.magnolia.ui.app.contacts;
 
 import info.magnolia.ui.admincentral.app.AbstractAppActivity;
+import info.magnolia.ui.admincentral.workbench.activity.ItemListActivityMapper;
+import info.magnolia.ui.framework.activity.ActivityManager;
+import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.view.ViewPort;
 
 import javax.inject.Inject;
 
@@ -44,13 +48,27 @@ import javax.inject.Inject;
  */
 public class ContactsActivity extends AbstractAppActivity<ContactsPresenter> implements ContactsPresenter {
 
+    private ItemListActivityMapper itemListActivityMapper;
+    private ContactsView view;
+
     @Inject
-    public ContactsActivity(ContactsView view) {
+    public ContactsActivity(ContactsView view, ItemListActivityMapper itemListActivityMapper) {
         super(view);
+        this.view = view;
+        this.itemListActivityMapper = itemListActivityMapper;
     }
 
     @Override
     public ContactsPresenter getReference() {
         return this;
     }
+
+    @Override
+    public void start(ViewPort display, EventBus eventBus) {
+        view.setPresenter(getReference());
+        final ActivityManager jcrActivityManager = new ActivityManager(itemListActivityMapper, eventBus);
+        jcrActivityManager.setViewPort(view.getItemListViewPort());
+        display.setView(view);
+    }
+
 }

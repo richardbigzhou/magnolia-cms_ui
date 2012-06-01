@@ -34,12 +34,13 @@
 package info.magnolia.ui.app.contacts;
 
 import info.magnolia.ui.admincentral.app.AppView;
+import info.magnolia.ui.admincentral.workbench.view.WorkbenchView;
 
 /**
  * View for the Contacts app.
  *
  * @version $Id$
  */
-public interface ContactsView extends AppView<ContactsPresenter> {
+public interface ContactsView extends AppView<ContactsPresenter>, WorkbenchView {
 
 }

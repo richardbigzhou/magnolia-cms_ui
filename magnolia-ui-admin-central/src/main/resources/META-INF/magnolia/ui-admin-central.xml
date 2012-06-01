@@ -25,13 +25,6 @@
       <scope>singleton</scope>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.MainActivityMapper</type>
-      <workspace>config</workspace>
-      <path>/modules/ui-admin-central/mainActivityMapper</path>
-      <observed>true</observed>
-      <scope>singleton</scope>
-    </component>
-    <component>
       <type>info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory</type>
       <workspace>config</workspace>
       <path>/modules/ui-admin-central/workbenchActionFactory</path>
