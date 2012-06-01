@@ -38,10 +38,10 @@ import info.magnolia.ui.widget.magnoliashell.ShellView;
 import com.vaadin.ui.ComponentContainer;
 
 /**
- * Gen app view.
- * @author p4elkin
+ * Generic app view.
  *
  * @param <T>
+ * @version $Id$
  */
 public interface AppView<T extends AppPresenter<T>> extends ShellView {
 

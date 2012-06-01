@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,16 +31,28 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.framework;
+package info.magnolia.ui.widget.actionbar.gwt.client;
 
-import info.magnolia.ui.framework.event.EventHandler;
+import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Handles the {@link AppCloseEvent}.
- * @author apchelintcev
+ *
+ * VActionbarView.
  *
  */
-public interface AppCloseHandler extends EventHandler {
+public interface VActionbarView extends HasWidgets, IsWidget {
 
-    void onAppClosed(final AppCloseEvent event);
+    /**
+     *
+     * Presenter.
+     */
+    interface Presenter {
+    }
+
+    void setPresenter(Presenter presenter);
+
+    boolean hasChildComponent(Widget component);
+
 }

@@ -33,39 +33,51 @@
  */
 package info.magnolia.ui.admincentral.framework;
 
-import info.magnolia.ui.admincentral.app.AppLifecycleEvent;
-import info.magnolia.ui.admincentral.app.AppLifecycleEventHandler;
+import java.util.HashMap;
+import java.util.Map;
+
+import info.magnolia.ui.admincentral.app.AppCategory;
+import info.magnolia.ui.admincentral.app.AppController;
+import info.magnolia.ui.admincentral.app.AppDescriptor;
+import info.magnolia.ui.admincentral.app.AppRegistry;
+import info.magnolia.ui.admincentral.app.PlaceActivityMapping;
+import info.magnolia.ui.framework.activity.Activity;
 import info.magnolia.ui.framework.activity.ActivityManager;
+import info.magnolia.ui.framework.activity.ActivityMapperImpl;
 import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.place.PlaceChangeRequestEvent;
+import info.magnolia.ui.framework.place.Place;
 
 /**
  * Activity manager responsible for the app management.
  *
- * @author p4elkin
- *
+ * @version $Id$
  */
 public class AppActivityManager extends ActivityManager {
 
-    public AppActivityManager(final AppActivityMapper mapper, final EventBus eventBus) {
-        super(mapper, eventBus);
-        eventBus.addHandler(AppLifecycleEvent.class, new AppLifecycleEventHandler.Adapter() {
+    private AppController appController;
+    private final Map<Class<? extends Place>, String> placeToAppMapping = new HashMap<Class<? extends Place>, String>();
 
-            @Override
-            public void onStartApp(AppLifecycleEvent event) {
-                mapper.registerAppStart(event.getAppDescriptor());
-            }
+    public AppActivityManager(ActivityMapperImpl appActivityMapper, EventBus eventBus, AppRegistry appRegistry, AppController appController) {
+        super(appActivityMapper, eventBus);
+        this.appController = appController;
 
-            @Override
-            public void onStopApp(AppLifecycleEvent event) {
-                mapper.uregisterApp(event.getAppDescriptor());
+        // Build lookup table for place to app, see #beforeActivityStarts
+        for (AppCategory category : appRegistry.getCategories()) {
+            for (AppDescriptor descriptor : category.getApps()) {
+                for (PlaceActivityMapping mapping : descriptor.getActivityMappings()) {
+                    placeToAppMapping.put(mapping.getPlace(), descriptor.getName());
+                }
             }
-        });
+        }
     }
 
     @Override
-    public void onPlaceChangeRequest(PlaceChangeRequestEvent event) {
-        super.onPlaceChangeRequest(event);
-    }
+    protected void beforeActivityStarts(Activity currentActivity, Place newPlace) {
 
+        // Make sure the app for this place is running before the activity starts
+        String appName = placeToAppMapping.get(newPlace.getClass());
+        if (appName != null) {
+            appController.startIfNotAlreadyRunning(appName);
+        }
+    }
 }

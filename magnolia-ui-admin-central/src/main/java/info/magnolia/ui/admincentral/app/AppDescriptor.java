@@ -37,6 +37,7 @@ import info.magnolia.ui.framework.activity.Activity;
 import info.magnolia.ui.framework.place.Place;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -46,7 +47,9 @@ import java.util.List;
  *
  * @version $Id$
  */
-public class AppDescriptor {
+public class AppDescriptor implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * unique identifier.

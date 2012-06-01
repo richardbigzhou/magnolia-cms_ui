@@ -46,7 +46,7 @@ import org.vaadin.rpc.client.ClientSideHandler;
 import org.vaadin.rpc.client.ClientSideProxy;
 import org.vaadin.rpc.client.Method;
 
-import com.google.gwt.dom.client.Style.Visibility;
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -253,9 +253,9 @@ public class VShellTabSheet extends FlowPanel implements Container, ClientSideHa
 
     private void doSetActiveTab(final VShellTab tab) {
         for (final VShellTab shellTab : tabs) {
-            shellTab.getElement().getStyle().setVisibility(Visibility.HIDDEN);
+            shellTab.getElement().getStyle().setDisplay(Display.NONE);
         }
-        tab.getElement().getStyle().setProperty("visibility", "");
+        tab.getElement().getStyle().setDisplay(Display.BLOCK);
         activeTab = tab;
     }
     

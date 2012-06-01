@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,17 +31,39 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.magnoliashell;
+package info.magnolia.ui.widget.actionbar;
 
-import java.io.Serializable;
+import info.magnolia.ui.widget.actionbar.gwt.client.VActionbar;
 
-import com.vaadin.ui.Component;
+import java.util.Map;
+
+import com.vaadin.terminal.PaintException;
+import com.vaadin.terminal.PaintTarget;
+import com.vaadin.ui.AbstractComponent;
+import com.vaadin.ui.ClientWidget;
+import com.vaadin.ui.ClientWidget.LoadStyle;
 
 /**
- * Stub interface just to resolve the compilation of the test. 
- * @author apchelintcev
+ *
+ * Actionbar.
  *
  */
-public interface IsVaadinComponent extends Serializable {
-    Component asVaadinComponent();
+@SuppressWarnings("serial")
+@ClientWidget(value = VActionbar.class, loadStyle = LoadStyle.EAGER)
+public class Actionbar extends AbstractComponent {
+
+    public Actionbar() {
+        setWidth("270px");
+    }
+
+    @Override
+    public void paintContent(PaintTarget target) throws PaintException {
+        super.paintContent(target);
+    }
+
+    @Override
+    public void changeVariables(Object source, Map<String, Object> variables) {
+        super.changeVariables(source, variables);
+    }
+
 }

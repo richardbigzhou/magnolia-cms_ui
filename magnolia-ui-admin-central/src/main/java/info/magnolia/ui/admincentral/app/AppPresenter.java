@@ -35,14 +35,14 @@ package info.magnolia.ui.admincentral.app;
 
 /**
  * App presenter interface.
- * @author p4elkin
  *
  * @param <T>
+ * @version $Id$
  */
 public interface AppPresenter<T extends AppPresenter<T>> {
 
     String getAppName();
-    
+
     T getReference();
-    
+
 }

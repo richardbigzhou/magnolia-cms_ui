@@ -33,6 +33,9 @@
  */
 package info.magnolia.ui.framework.activity;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.event.ResettableEventBus;
 import info.magnolia.ui.framework.place.Place;
@@ -40,24 +43,25 @@ import info.magnolia.ui.framework.place.PlaceChangeEvent;
 import info.magnolia.ui.framework.place.PlaceChangeRequestEvent;
 import info.magnolia.ui.framework.view.ViewPort;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Manages {@link Activity} objects that should be kicked off in response to
  * {@link PlaceChangeEvent} events. Each activity provides a widget to be shown when it's ready to run.
- *
+ * <p/>
  * Inspired by {@link com.google.gwt.activity.shared.ActivityManager}.
+ *
+ * @version $Id$
  */
 public class ActivityManager implements PlaceChangeEvent.Handler, PlaceChangeRequestEvent.Handler {
 
     private static Logger log = LoggerFactory.getLogger(ActivityManager.class);
 
     private static final Activity NULL_ACTIVITY = new AbstractActivity() {
+
         @Override
         public void start(ViewPort viewPort, EventBus eventBus) {
             viewPort.setView(null);
         }
+
         @Override
         public String toString() {
             return "NULL_ACTIVITY";
@@ -82,22 +86,23 @@ public class ActivityManager implements PlaceChangeEvent.Handler, PlaceChangeReq
 
     @Override
     public void onPlaceChange(PlaceChangeEvent event) {
+
         Place newPlace = event.getNewPlace();
         Activity nextActivity = mapper.getActivity(newPlace);
 
-
         if (currentActivity.equals(nextActivity)) {
+            onPlaceChangeToCurrentActivity(currentActivity, newPlace);
             return;
         }
 
-        // TODO is it really necessery to set the view to null. I think in GWT this is done to prevent event handling
+        // TODO is it really necessary to set the view to null. I think in GWT this is done to prevent event handling
         // after an activity has been stopped. but this is not going to happen in vaadin.
         viewPort.setView(null);
         isolatedEventBus.reset();
 
         currentActivity.onStop();
 
-        if(nextActivity == null){
+        if (nextActivity == null) {
             nextActivity = NULL_ACTIVITY;
         }
 
@@ -105,20 +110,27 @@ public class ActivityManager implements PlaceChangeEvent.Handler, PlaceChangeReq
 
         log.debug("starting activity: {}", currentActivity);
 
+        beforeActivityStarts(currentActivity, newPlace);
+
         currentActivity.start(viewPort, isolatedEventBus);
+    }
 
-   }
+    protected void onPlaceChangeToCurrentActivity(Activity currentActivity, Place newPlace) {
+    }
 
-    public void setViewPort(ViewPort viewPort){
+    protected void beforeActivityStarts(Activity currentActivity, Place newPlace) {
+    }
+
+    public void setViewPort(ViewPort viewPort) {
         this.viewPort = viewPort;
     }
 
     @Override
     public void onPlaceChangeRequest(final PlaceChangeRequestEvent event) {
         log.debug("onPlaceChangeRequest for event {}", event);
-        if (!currentActivity.equals(NULL_ACTIVITY)) {
+        if (currentActivity != NULL_ACTIVITY) {
             final String message = currentActivity.mayStop();
-            if(message != null) {
+            if (message != null) {
                 event.setWarning(message);
             }
         }

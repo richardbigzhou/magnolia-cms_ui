@@ -36,7 +36,7 @@ package info.magnolia.ui.admincentral;
 import info.magnolia.ui.admincentral.app.AppController;
 import info.magnolia.ui.admincentral.app.AppLifecycleEvent;
 import info.magnolia.ui.admincentral.app.AppLifecycleEventHandler;
-import info.magnolia.ui.widget.magnoliashell.IsVaadinComponent;
+import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 import info.magnolia.ui.widget.magnoliashell.BaseMagnoliaShell;
 import info.magnolia.ui.widget.magnoliashell.ShellViewport;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
@@ -128,11 +128,6 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell {
                 removeFragmentChangedHanlder(handler);
             }
         };
-    }
-    
-    @Override
-    public Shell createSubShell(String id) {
-        throw new UnsupportedOperationException("MagnoliaShell is not capable of opening the subshells.");
     }
 
     public void openDialog(IsVaadinComponent dialog) {

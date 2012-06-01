@@ -31,31 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.framework;
+package info.magnolia.ui.framework.event;
 
-import info.magnolia.ui.framework.event.Event;
-import info.magnolia.ui.framework.view.View;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Fired when the app is closed form the Shell.
- * @author apchelintcev
- *
- */
-public class AppCloseEvent implements Event<AppCloseHandler> {
+* @version $Id$
+*/
+public class InvocationOrderTestingEventHandler extends TestEventHandler {
 
-    private final View appView;
-    
-    public AppCloseEvent(final View appView) {
-        this.appView = appView;
+    int expectedOrder;
+    int actualOrder;
+    AtomicInteger counter;
+
+    public InvocationOrderTestingEventHandler(int expectedOrder, AtomicInteger counter) {
+        this.expectedOrder = expectedOrder;
+        this.counter = counter;
     }
-    
-    public View getAppView() {
-        return appView;
-    }
-    
+
     @Override
-    public void dispatch(AppCloseHandler handler) {
-        
+    public void handleEvent(TestEvent event) {
+        super.handleEvent(event);
+        this.actualOrder = counter.getAndIncrement();
     }
-
 }

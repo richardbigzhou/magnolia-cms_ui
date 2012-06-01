@@ -38,8 +38,8 @@ import info.magnolia.ui.admincentral.app.AppDescriptor;
 import info.magnolia.ui.admincentral.app.AppLifecycleEvent;
 import info.magnolia.ui.admincentral.app.AppLifecycleEventHandler;
 import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 import info.magnolia.ui.vaadin.integration.widget.AppButton;
-import info.magnolia.ui.widget.magnoliashell.IsVaadinComponent;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
 
 import java.util.HashMap;

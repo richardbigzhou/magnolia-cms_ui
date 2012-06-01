@@ -55,6 +55,7 @@ public class AppRegistryImpl implements AppRegistry {
 
     private final List<AppCategory> categories = new ArrayList<AppCategory>();
 
+    @Override
     public List<AppCategory> getCategories() {
         return categories;
     }

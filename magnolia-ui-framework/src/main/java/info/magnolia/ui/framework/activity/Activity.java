@@ -36,14 +36,16 @@ package info.magnolia.ui.framework.activity;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.view.ViewPort;
 
-
 /**
  * Implemented by objects that control a piece of user interface, with a life cycle managed by an
- * {@link ActivityManager}, in response to
- * {@link info.magnolia.ui.framework.place.PlaceChangeEvent} events as the user navigates through
- * the app.
+ * {@link ActivityManager}, in response to {@link info.magnolia.ui.framework.place.PlaceChangeEvent} events as the
+ * user navigates through the app.
+ *
+ * Should implement equals because its used to prevent navigating to the same activity that's currently active.
  *
  * Inspired by {@link com.google.gwt.activity.shared.Activity}.
+ *
+ * @version $Id$
  */
 public interface Activity {
 
@@ -52,21 +54,19 @@ public interface Activity {
      * should present it by calling {@link ViewPort#setView(com.vaadin.ui.Component)} on
      * the display.
      * <p>
-     * Any eventHandlers attached to the provided event bus will be de-registered when the activity is
-     * stopped.
+     * Any event handlers attached to the provided event bus will be de-registered when the activity is stopped.
      */
     void start(ViewPort viewPort, EventBus eventBus);
 
     /**
      * Called when the user is trying to navigate away from this activity.
      *
-     * @return A message to display to the user, e.g. to warn of unsaved work, or null to say
-     * nothing
+     * @return A message to display to the user, e.g. to warn of unsaved work, or null to say nothing
      */
     String mayStop();
 
     /**
-     * Called when the Activity's widget has been removed from view. All event eventHandlers it
+     * Called when the Activity's widget has been removed from view. All event event handlers it
      * registered will have been removed before this method is called.
      */
     void onStop();

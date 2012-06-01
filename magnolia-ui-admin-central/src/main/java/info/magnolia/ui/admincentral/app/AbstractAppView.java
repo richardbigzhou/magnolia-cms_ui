@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.app;
 
-import info.magnolia.ui.widget.magnoliashell.IsVaadinComponent;
+import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 import info.magnolia.ui.widget.tabsheet.ShellTab;
 import info.magnolia.ui.widget.tabsheet.ShellTabSheet;
 
@@ -44,9 +44,8 @@ import com.vaadin.ui.ComponentContainer;
 /**
  * App view impl.
  *
- * @author p4elkin
- * @param <T>
- *            recursive generic param.
+ * @param <T> recursive generic param.
+ * @version $Id$
  */
 @SuppressWarnings("serial")
 public abstract class AbstractAppView<T extends AppPresenter<T>> implements AppView<T>, IsVaadinComponent {
