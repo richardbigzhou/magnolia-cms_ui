@@ -46,33 +46,33 @@ import java.util.List;
  */
 public interface AppDescriptor extends Serializable {
 
-    public String getCategoryName();
+    String getCategoryName();
 
-    public void setCategoryName(String categoryName);
+    void setCategoryName(String categoryName);
 
-    public String getName();
+    String getName();
 
-    public void setName(String name);
+    void setName(String name);
 
-    public String getLabel();
+    String getLabel();
 
-    public void setLabel(String label);
+    void setLabel(String label);
 
-    public boolean isEnabled();
+    boolean isEnabled();
 
-    public void setEnabled(boolean enabled);
+    void setEnabled(boolean enabled);
 
-    public String getIcon();
+    String getIcon();
 
-    public void setIcon(String icon);
+    void setIcon(String icon);
 
-    public Class<? extends AppLifecycle> getAppClass();
+    Class<? extends AppLifecycle> getAppClass();
 
-    public void setAppClass(Class<? extends AppLifecycle> appClass);
+    void setAppClass(Class<? extends AppLifecycle> appClass);
 
-    public List<PlaceActivityMapping> getActivityMappings();
+    List<PlaceActivityMapping> getActivityMappings();
 
-    public void addActivityMapping(PlaceActivityMapping mapping);
+    void addActivityMapping(PlaceActivityMapping mapping);
 
-    public Class<? extends Activity> getMappedActivityClass(final Class<? extends Place> placeClass);
+    Class<? extends Activity> getMappedActivityClass(final Class<? extends Place> placeClass);
 }

@@ -33,32 +33,52 @@
  */
 package info.magnolia.ui.admincentral.app.registry;
 
+import javax.jcr.Node;
+
+import org.apache.commons.lang.StringUtils;
+
 import info.magnolia.cms.core.Content;
 import info.magnolia.cms.util.ContentUtil;
 import info.magnolia.content2bean.Content2BeanException;
 import info.magnolia.content2bean.Content2BeanUtil;
+import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.admincentral.app.AppDescriptor;
 
-import javax.jcr.Node;
-
 /**
- * TemplateDefinitionProvider that instantiates a template from a configuration node.
+ * ConfiguredAppDescriptorProvider that instantiates an AppDescriptor from a configuration node.
  *
  * @version $Id$
  */
-public class ConfiguredAppDescriptorProvider extends AppDescriptorProvider {
+public class ConfiguredAppDescriptorProvider implements AppDescriptorProvider {
 
+    private AppDescriptor appDescriptor;
 
     public ConfiguredAppDescriptorProvider(Node configNode) throws Content2BeanException {
         super();
         Content content = ContentUtil.asContent(configNode);
         this.appDescriptor = (AppDescriptor) Content2BeanUtil.toBean(content, true, AppDescriptor.class);
 
-        this.name = appDescriptor.getName();
         // Minimal check
-        this.validate();
-
+        validate();
     }
 
+    @Override
+    public String getName() {
+        return appDescriptor.getName();
+    }
 
+    @Override
+    public AppDescriptor getAppDescriptor() throws RegistrationException {
+        return appDescriptor;
+    }
+
+    public String toString() {
+        return "ConfiguredAppDescriptorProvider [id=" + appDescriptor.getName() + ", appDescriptor=" + appDescriptor + "]";
+    }
+
+    public void validate() {
+        if (StringUtils.isEmpty(appDescriptor.getCategoryName())) {
+            appDescriptor.setCategoryName(DEFAULT_CATEGORY_NAME);
+        }
+    }
 }

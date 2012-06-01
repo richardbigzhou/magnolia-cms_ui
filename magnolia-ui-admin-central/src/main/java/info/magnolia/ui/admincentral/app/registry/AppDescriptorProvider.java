@@ -33,46 +33,19 @@
  */
 package info.magnolia.ui.admincentral.app.registry;
 
-import org.apache.commons.lang.StringUtils;
-
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.admincentral.app.AppDescriptor;
-
 
 /**
  * Provides a {@link AppDescriptor}.
  *
+ * @version $Id$
  */
-public class AppDescriptorProvider {
+public interface AppDescriptorProvider {
 
-    public static String defaultGroupName = "DEFAULT";
+    public static final String DEFAULT_CATEGORY_NAME = "DEFAULT";
 
-    protected String name;
-    protected AppDescriptor appDescriptor;
+    String getName();
 
-    public AppDescriptorProvider (){}
-
-    public AppDescriptorProvider (String name, AppDescriptor appDescriptor ) {
-        this.name = name;
-        this.appDescriptor = appDescriptor;
-        validate();
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public AppDescriptor getAppDescriptor() throws RegistrationException{
-        return this.appDescriptor;
-    }
-
-    public String toString() {
-        return "ConfiguredAppDescriptorProvider [id=" + name + ", appDescriptor=" + appDescriptor + "]";
-    }
-
-    public void validate() {
-        if(StringUtils.isEmpty(appDescriptor.getCategoryName())) {
-            appDescriptor.setCategoryName(defaultGroupName);
-        }
-    }
+    AppDescriptor getAppDescriptor() throws RegistrationException;
 }

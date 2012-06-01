@@ -38,7 +38,6 @@ import info.magnolia.registry.RegistryMap;
 import info.magnolia.ui.admincentral.app.AppDescriptor;
 import info.magnolia.ui.admincentral.app.AppEventType;
 import info.magnolia.ui.admincentral.app.AppLifecycleEvent;
-import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.event.SystemEventBus;
 
 import java.util.ArrayList;
@@ -53,10 +52,10 @@ import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * The central registry of all {@link AppDescriptor}s.
  *
+ * @version $Id$
  */
 @Singleton
 public class AppDescriptorRegistry {
@@ -79,14 +78,17 @@ public class AppDescriptorRegistry {
     }
 
     public AppDescriptor getAppDescriptor(String id) throws RegistrationException {
-        // Init
-        AppDescriptorProvider appDescriptorProvider = null;
-        appDescriptorProvider = registry.getRequired(id);
-        return appDescriptorProvider.getAppDescriptor();
+        AppDescriptorProvider provider;
+        try {
+            provider = registry.getRequired(id);
+        } catch (RegistrationException e) {
+            throw new RegistrationException("No app registered for id: " + id, e);
+        }
+        return provider.getAppDescriptor();
     }
 
     public boolean isAppDescriptorRegistered(String id) {
-        return registry.get(id) != null ? true : false;
+        return registry.get(id) != null;
     }
 
     /**
@@ -94,27 +96,27 @@ public class AppDescriptorRegistry {
      * registered and logs error's for the others.
      */
     public Collection<AppDescriptor> getAppDescriptors() {
-        final Collection<AppDescriptor> templateDefinitions = new ArrayList<AppDescriptor>();
+        final Collection<AppDescriptor> descriptors = new ArrayList<AppDescriptor>();
         for (AppDescriptorProvider provider : registry.values()) {
             try {
                 final AppDescriptor appDescriptor = provider.getAppDescriptor();
                 if (appDescriptor == null) {
-                    logger.error("Provider's appDescriptor is null: " + provider);
+                    logger.error("Provider's AppDescriptor is null: " + provider);
                 }
                 else {
-                    templateDefinitions.add(appDescriptor);
+                    descriptors.add(appDescriptor);
                 }
             }
             catch (RegistrationException e) {
-                logger.error("Failed to read appDescriptor definition from " + provider + ".", e);
+                logger.error("Failed to read AppDescriptor definition from " + provider + ".", e);
             }
         }
-        return templateDefinitions;
+        return descriptors;
     }
 
-    public void register(AppDescriptorProvider provider) {
+    public void register(AppDescriptorProvider provider) throws RegistrationException {
         registry.put(provider);
-        sendEvent(AppEventType.REGISTER_EVENT, Arrays.asList(provider.appDescriptor));
+        sendEvent(AppEventType.REGISTER_EVENT, Arrays.asList(provider.getAppDescriptor()));
     }
 
     public void unregister(String id) throws RegistrationException {
@@ -122,7 +124,6 @@ public class AppDescriptorRegistry {
         registry.remove(id);
         sendEvent(AppEventType.UNREGISTER_EVENT, Arrays.asList(toRemove.getAppDescriptor()));
     }
-
 
     @SuppressWarnings("unchecked")
     public Set<String> unregisterAndRegister(Collection<String> registeredIds, Collection<AppDescriptorProvider> providers) throws RegistrationException {
@@ -162,7 +163,7 @@ public class AppDescriptorRegistry {
     }
 
     /**
-     * Send an Event to the Globale EventBuss.
+     * Send an event to the global event bus.
      */
     private void sendEvent(AppEventType eventType, Collection<AppDescriptor> appDescriptors) {
         for (AppDescriptor appDescriptor:appDescriptors ) {
