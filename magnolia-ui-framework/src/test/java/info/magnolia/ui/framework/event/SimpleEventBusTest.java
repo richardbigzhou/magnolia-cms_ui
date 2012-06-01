@@ -51,7 +51,7 @@ import org.junit.Test;
  */
 public class SimpleEventBusTest {
 
-    private static class RemoveEventHandler extends TestEventHandler {
+    private static class RemoveEventHandler extends InvocationCountingTestEventHandler {
 
         HandlerRegistration handlerRegistration;
 
@@ -90,8 +90,8 @@ public class SimpleEventBusTest {
 
         // GIVEN
         final SimpleEventBus eventBus = new SimpleEventBus();
-        final TestEventHandler handler2 = new TestEventHandler();
-        TestEventHandler handler1 = new TestEventHandler() {
+        final InvocationCountingTestEventHandler handler2 = new InvocationCountingTestEventHandler();
+        InvocationCountingTestEventHandler handler1 = new InvocationCountingTestEventHandler() {
             @Override
             public void handleEvent(TestEvent event) {
                 super.handleEvent(event);
@@ -114,7 +114,7 @@ public class SimpleEventBusTest {
         // GIVEN
         SimpleEventBus eventBus = new SimpleEventBus();
         RemoveEventHandler handler1 = new RemoveEventHandler();
-        TestEventHandler handler2 = new TestEventHandler();
+        InvocationCountingTestEventHandler handler2 = new InvocationCountingTestEventHandler();
 
         eventBus.addHandler(TestEvent.class, handler1);
         handler1.handlerRegistration = eventBus.addHandler(TestEvent.class, handler2);
@@ -132,7 +132,7 @@ public class SimpleEventBusTest {
 
         // GIVEN
         SimpleEventBus eventBus = new SimpleEventBus();
-        TestEventHandler handler = new TestEventHandler();
+        InvocationCountingTestEventHandler handler = new InvocationCountingTestEventHandler();
         eventBus.addHandler(TestEvent.class, handler);
         eventBus.addHandler(TestEvent.class, handler);
         eventBus.addHandler(TestEvent.class, handler);
@@ -165,12 +165,12 @@ public class SimpleEventBusTest {
                         startSignal.await();
                         for (int i = 0; i < numberOfIterations; i++) {
 
-                            List<TestEventHandler> handlers = new ArrayList<TestEventHandler>();
+                            List<InvocationCountingTestEventHandler> handlers = new ArrayList<InvocationCountingTestEventHandler>();
                             List<HandlerRegistration> registrations = new ArrayList<HandlerRegistration>();
 
                             // Add handlers
                             for (int j = 0; j < numberOfHandlers; j++) {
-                                TestEventHandler handler = new TestEventHandler();
+                                InvocationCountingTestEventHandler handler = new InvocationCountingTestEventHandler();
                                 handlers.add(handler);
                                 registrations.add(eventBus.addHandler(TestEvent.class, handler));
                             }
@@ -184,7 +184,7 @@ public class SimpleEventBusTest {
                             }
 
                             // Make sure that every handler was invoked at least once
-                            for (TestEventHandler handler : handlers) {
+                            for (InvocationCountingTestEventHandler handler : handlers) {
                                 Assert.assertTrue(handler.getInvocationCount() > 0);
                             }
                         }

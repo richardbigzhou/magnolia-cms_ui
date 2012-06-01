@@ -38,7 +38,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
 * @version $Id$
 */
-public class InvocationOrderTestingEventHandler extends TestEventHandler {
+public class InvocationOrderTestingEventHandler extends InvocationCountingTestEventHandler {
 
     int expectedOrder;
     int actualOrder;
