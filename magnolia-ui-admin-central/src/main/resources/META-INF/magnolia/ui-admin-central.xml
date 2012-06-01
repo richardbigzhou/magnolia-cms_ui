@@ -19,7 +19,7 @@
   </components>
 
    <components>
-    <id>m5-admin-central</id>
+    <id>admin-central</id>
     <component>
       <type>info.magnolia.ui.framework.event.EventBus</type>
       <implementation>info.magnolia.ui.framework.event.SimpleEventBus</implementation>
