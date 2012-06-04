@@ -62,12 +62,13 @@ import com.vaadin.ui.ComponentContainer;
 public class VaadinDialog extends AbstractComponent implements ServerSideHandler {
 
     private ShellTabSheet tabsheet = new ShellTabSheet();
+    private final String SHOW_ALL = "show all";
 
 
     protected ServerSideProxy proxy = new ServerSideProxy(this) {{}};
     public VaadinDialog() {
         setImmediate(true);
-        showAllTab();
+        showAllTab(true);
         addAction("save changes", "submit");
         addAction("cancel", "cancel");
     }
@@ -97,10 +98,13 @@ public class VaadinDialog extends AbstractComponent implements ServerSideHandler
         tabsheet.removeComponent(c);
     }
 
-    public void showAllTab() {
-        tabsheet.showAllTab(true);
+    public void showAllTab(boolean showAll, String label) {
+        tabsheet.showAllTab(showAll, label);
     }
 
+    public void showAllTab(boolean showAll) {
+        showAllTab(showAll, SHOW_ALL);
+    }
     public void addAction(String label, String action) {
         proxy.call("addAction", label, action);
     }

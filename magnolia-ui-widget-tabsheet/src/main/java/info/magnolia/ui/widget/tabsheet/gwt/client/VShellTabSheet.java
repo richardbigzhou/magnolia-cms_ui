@@ -99,8 +99,8 @@ public class VShellTabSheet extends Composite implements VShellTabSheetView.Pres
 
             @Override
             public void onShowAll(ShowAllTabEvent event) {
-                view.showAllTabContents();
-
+                view.showAllTabContents(true);
+                view.getTabContainer().showAll(true);
             }
 
         });
@@ -244,7 +244,9 @@ public class VShellTabSheet extends Composite implements VShellTabSheetView.Pres
         register("addShowAllTab", new Method() {
             @Override
             public void invoke(String methodName, Object[] params) {
-                view.getTabContainer().showAllTab(params[0]);
+                boolean showAll = (Boolean) params[0];
+                String label = String.valueOf(params[1]);
+                view.getTabContainer().addShowAllTab(showAll, label);
             }
         });
 

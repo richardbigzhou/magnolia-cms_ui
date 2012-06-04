@@ -86,8 +86,9 @@ public interface VShellTabSheetView extends IsWidget {
     void removeTab(VShellTabContent tabToOrphan);
 
     /**
-     *
+     * @param visible
      */
-    void showAllTabContents();
+    void showAllTabContents(boolean visible);
+
 
 }

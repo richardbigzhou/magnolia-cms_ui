@@ -36,6 +36,7 @@ package info.magnolia.ui.widget.tabsheet.gwt.client;
 import info.magnolia.ui.widget.tabsheet.gwt.client.event.ActiveTabChangedEvent;
 import info.magnolia.ui.widget.tabsheet.gwt.client.event.ActiveTabChangedHandler;
 import info.magnolia.ui.widget.tabsheet.gwt.client.event.ShowAllTabEvent;
+import info.magnolia.ui.widget.tabsheet.gwt.client.event.ShowAllTabHandler;
 import info.magnolia.ui.widget.tabsheet.gwt.client.event.TabCloseEvent;
 import info.magnolia.ui.widget.tabsheet.gwt.client.event.TabCloseEventHandler;
 import info.magnolia.ui.widget.tabsheet.gwt.client.util.CollectionUtil;
@@ -98,6 +99,7 @@ public class VShellTabNavigator extends ComplexPanel {
                         tabLabel.removeStyleName("active");
                     }
                     label.addStyleName("active");
+                    showAll(false);
                 }
             }
         });
@@ -116,6 +118,17 @@ public class VShellTabNavigator extends ComplexPanel {
                 tabLabels.remove(tabLabel);
                 labelMap.remove(event.getTab());
                 remove(tabLabel);
+            }
+        });
+
+        eventBus.addHandler(ShowAllTabEvent.TYPE, new ShowAllTabHandler() {
+
+            @Override
+            public void onShowAll(ShowAllTabEvent event) {
+                for (final VShellTabLabel tabLabel : tabLabels) {
+                    tabLabel.removeStyleName("active");
+                }
+                showAll(true);
             }
         });
     }
@@ -170,9 +183,15 @@ public class VShellTabNavigator extends ComplexPanel {
     /**
      * @param object
      */
-    public void showAllTab(Object object) {
-        showAllTab = new VShellShowAllTabLabel();
-        add(showAllTab, getElement());
+    public void addShowAllTab(boolean showAll, String label) {
+        if (showAll && showAllTab == null) {
+            showAllTab = new VShellShowAllTabLabel(label);
+            add(showAllTab, getElement());
+        }
+        else if (!showAll && showAllTab != null) {
+            remove(showAllTab);
+            showAllTab = null;
+        }
     }
 
     private class VShellTabLabel extends SimplePanel {
@@ -263,10 +282,10 @@ public class VShellTabNavigator extends ComplexPanel {
 
         private final Element text = DOM.createSpan();
 
-        public VShellShowAllTabLabel() {
+        public VShellShowAllTabLabel(String label) {
             super(DOM.createElement("li"));
             addStyleName("show-all");
-            text.setInnerHTML("show all");
+            text.setInnerHTML(label);
             getElement().appendChild(text);
 
         }
@@ -287,6 +306,22 @@ public class VShellTabNavigator extends ComplexPanel {
             }, ClickEvent.getType());
         }
 
+    }
+
+    /**
+     * @param showAll
+     */
+    public void showAll(boolean showAll) {
+        if (showAllTab != null) {
+            if (showAll) {
+                showAllTab.addStyleName("active");
+            }
+            else {
+                if (showAllTab.getStyleName().contains("active")) {
+                    showAllTab.removeStyleName("active");
+                }
+            }
+        }
     }
 
 }

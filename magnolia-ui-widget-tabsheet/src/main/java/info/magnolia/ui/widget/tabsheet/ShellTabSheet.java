@@ -128,8 +128,8 @@ public class ShellTabSheet extends AbstractComponentContainer implements ServerS
         proxy.changeVariables(source, variables);
     }
 
-    public void showAllTab(boolean showAll) {
-        proxy.call("addShowAllTab", showAll);
+    public void showAllTab(boolean showAll, String label) {
+        proxy.call("addShowAllTab", new Boolean(showAll), label);
     }
 
     private void closeTab(final String tabId) {

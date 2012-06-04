@@ -88,9 +88,9 @@ public class VShellTabSheetViewImpl extends FlowPanel implements VShellTabSheetV
 
     @Override
     public void setActiveTab(final VShellTabContent tab) {
-        for (final VShellTabContent shellTab : getTabs()) {
-            shellTab.getElement().getStyle().setDisplay(Display.NONE);
-        }
+
+        showAllTabContents(false);
+
         tab.getElement().getStyle().setDisplay(Display.BLOCK);
         activeTab = tab;
     }
@@ -117,9 +117,11 @@ public class VShellTabSheetViewImpl extends FlowPanel implements VShellTabSheetV
      * @see info.magnolia.ui.widget.tabsheet.gwt.client.VShellTabSheetView#showAllTabContents()
      */
     @Override
-    public void showAllTabContents() {
+    public void showAllTabContents(boolean visible) {
+        Display display = (visible) ? Display.BLOCK : Display.NONE;
         for (VShellTabContent tab : tabs) {
-            tab.getElement().getStyle().setDisplay(Display.BLOCK);
+            tab.getElement().getStyle().setDisplay(display);
         }
     }
+
 }

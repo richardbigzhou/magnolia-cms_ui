@@ -54,7 +54,7 @@ ul.nav-tabs {
 .nav.nav-tabs > li > span {
     color: #999999;
     font-family: DinRound,Arial;
-    font-size: 12px;
+    font-size: 14px;
     text-align: left;
 }
 
@@ -71,11 +71,6 @@ ul.nav-tabs {
 }
 
 .nav-tabs > li > span {
-    -moz-border-bottom-colors: none;
-    -moz-border-image: none;
-    -moz-border-left-colors: none;
-    -moz-border-right-colors: none;
-    -moz-border-top-colors: none;
     border-color: #DDDDDD #DDDDDD #DDDDDD #EEEEEE;
     border-radius: 0 0 0 0;
     border-style: solid;
@@ -88,11 +83,6 @@ ul.nav-tabs {
 }
 
 .nav-tabs > li.active > span, .nav-tabs > li.active > span:hover {
-    -moz-border-bottom-colors: none;
-    -moz-border-image: none;
-    -moz-border-left-colors: none;
-    -moz-border-right-colors: none;
-    -moz-border-top-colors: none;
     background-color: #FFFFFF;
     border-color: #DDDDDD #DDDDDD transparent;
     border-style: solid;
@@ -110,6 +100,7 @@ ul.nav-tabs {
 .nav > li > span {
     display: block;
     position: relative;
+    text-transform: uppercase;
 }
 .nav > li > span:hover {
     background-color: #EEEEEE;
@@ -139,8 +130,14 @@ ul.nav-tabs {
     float: left;
 }
 
-.nav-tabs > li.show-all, .nav-pills > li.show-all {
+.nav-tabs > li.tab-all, .nav-pills > li.tab-all {
     float: right;
+}
+
+.nav-tabs > li.tab-all span {
+    text-align: right;
+    padding-left: 15px;
+    padding-right: 20px;
 }
 
 .nav-tabs {
