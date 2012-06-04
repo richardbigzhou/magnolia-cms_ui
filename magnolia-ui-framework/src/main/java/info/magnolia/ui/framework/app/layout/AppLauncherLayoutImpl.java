@@ -93,6 +93,36 @@ public class AppLauncherLayoutImpl implements AppLauncherLayout {
             /**
              * Propagate Event to the AppShell event bus if this app has to be
              * displayed to the User.
+             * Add App to Category.
+             */
+            @Override
+            public void onAppReRegistered(AppLifecycleEvent event) {
+                if(isThisAppRegisteredForUser(event.getAppDescriptor())) {
+                    AppDescriptor app = event.getAppDescriptor();
+                    //Get Registered app
+                    AppDescriptor registeredApp = getAppDescriptor(app.getName());
+                    AppCategory registeredCategory = categories.get(registeredApp.getCategoryName());
+
+                    // If app was registered and is now unregistered
+                    if(registeredApp.isEnabled() && !app.isEnabled()) {
+                        removeAppFromCategory(event.getAppDescriptor());
+                        sendEvent(AppEventType.UNREGISTERED, event.getAppDescriptor());
+                    } else {
+                        //Remove old
+                        registeredCategory.getApps().remove(registeredApp);
+                        if(registeredCategory.getApps().isEmpty()) {
+                            categories.remove(registeredApp.getCategoryName());
+                        }
+
+                        handleCategory(app);
+                        sendEvent(AppEventType.REREGISTERED, event.getAppDescriptor());
+                    }
+                }
+            }
+
+            /**
+             * Propagate Event to the AppShell event bus if this app has to be
+             * displayed to the User.
              * Remove App from Category.
              */
             @Override

@@ -33,10 +33,6 @@
  */
 package info.magnolia.ui.framework.app.registry;
 
-import javax.jcr.Node;
-
-import org.apache.commons.lang.StringUtils;
-
 import info.magnolia.cms.core.Content;
 import info.magnolia.cms.util.ContentUtil;
 import info.magnolia.content2bean.Content2BeanException;
@@ -44,12 +40,22 @@ import info.magnolia.content2bean.Content2BeanUtil;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.framework.app.AppDescriptor;
 
+import java.util.Comparator;
+
+import javax.jcr.Node;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * ConfiguredAppDescriptorProvider that instantiates an AppDescriptor from a configuration node.
  *
  * @version $Id$
  */
-public class ConfiguredAppDescriptorProvider implements AppDescriptorProvider {
+public class ConfiguredAppDescriptorProvider implements AppDescriptorProvider, Comparator<AppDescriptorProvider>{
+
+    protected final Logger log = LoggerFactory.getLogger(getClass());
 
     private AppDescriptor appDescriptor;
 
@@ -80,5 +86,48 @@ public class ConfiguredAppDescriptorProvider implements AppDescriptorProvider {
         if (StringUtils.isEmpty(appDescriptor.getCategoryName())) {
             appDescriptor.setCategoryName(DEFAULT_CATEGORY_NAME);
         }
+    }
+
+    @Override
+    public int compare(AppDescriptorProvider other1, AppDescriptorProvider other2) {
+        String thisCompareToString = "";
+        String otherCompareToString = "";
+        try {
+            thisCompareToString = other1.getAppDescriptor().getName()+other1.getAppDescriptor().getCategoryName();
+            otherCompareToString = other2.getAppDescriptor().getName()+other2.getAppDescriptor().getCategoryName();
+        }
+        catch (RegistrationException e) {
+            log.error("",e);
+        }
+        return thisCompareToString.compareTo(otherCompareToString);
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if(o instanceof AppDescriptorProvider) {
+            AppDescriptorProvider other = (AppDescriptorProvider) o;
+            String thisCompareToString = "";
+            String otherCompareToString = "";
+            try {
+                thisCompareToString = getAppDescriptorProviderUniqueIdentifier(this.getAppDescriptor());
+                otherCompareToString = getAppDescriptorProviderUniqueIdentifier(other.getAppDescriptor());
+            }
+            catch (RegistrationException e) {
+                log.error("",e);
+            }
+            return thisCompareToString.equals(otherCompareToString);
+        }else {
+            return false;
+        }
+
+    }
+
+    /**
+     * Used to define if an App was Change in config, and also if the changes made in config
+     * needs a reload.
+     */
+    private String getAppDescriptorProviderUniqueIdentifier(AppDescriptor app) {
+        return app.getName()+app.getCategoryName() + app.isEnabled()+app.getIcon()+app.getAppClass();
     }
 }

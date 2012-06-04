@@ -52,6 +52,8 @@ public interface AppLifecycleEventHandler extends EventHandler {
 
     void onAppUnregistered(final AppLifecycleEvent event);
 
+    void onAppReRegistered(final AppLifecycleEvent event);
+
     /**
      * Simple stub so in case not all the methods should be implemented - you can skip them.
      *
@@ -77,6 +79,10 @@ public interface AppLifecycleEventHandler extends EventHandler {
 
         @Override
         public void onAppUnregistered(AppLifecycleEvent event) {
+        }
+
+        @Override
+        public void onAppReRegistered(AppLifecycleEvent event) {
         }
 
     }
