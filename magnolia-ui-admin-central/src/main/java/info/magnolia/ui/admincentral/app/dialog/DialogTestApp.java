@@ -37,7 +37,7 @@ package info.magnolia.ui.admincentral.app.dialog;
 import info.magnolia.ui.framework.app.AppLifecycle;
 import info.magnolia.ui.framework.place.PlaceController;
 
-import com.google.inject.Inject;
+import javax.inject.Inject;
 
 /**
  * Pages app.

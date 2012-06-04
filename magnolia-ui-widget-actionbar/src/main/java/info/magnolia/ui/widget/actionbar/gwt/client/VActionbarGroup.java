@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,13 +31,53 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.view;
+package info.magnolia.ui.widget.actionbar.gwt.client;
+
+import java.util.LinkedList;
+import java.util.List;
+
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.ComplexPanel;
+import com.google.gwt.user.client.ui.Widget;
+
 
 /**
- * Marker interface for views.
- *
- * @version $Id$
+ * The Class VActionbarGroup, which displays a group of actions within a section of the action bar.
  */
-public interface View {
+public class VActionbarGroup extends ComplexPanel {
 
+    private static final String CLASSNAME = "v-actionbar-group";
+
+    private final Element root = DOM.createElement("ul");
+
+    private final List<VAction> actions = new LinkedList<VAction>();
+
+    /**
+     * Instantiates a new action bar group.
+     */
+    public VActionbarGroup() {
+        setElement(root);
+        setStyleName(CLASSNAME);
+    }
+
+    /**
+     * Updates the actions.
+     */
+    public void updateActions() {
+        VAction addAction = new VAction("Add task");
+        VAction deleteAction = new VAction("Delete task");
+        actions.add(addAction);
+        actions.add(deleteAction);
+
+        for (VAction action : actions) {
+            add(action);
+            action.updateLabel(action.getLabel());
+        }
+    }
+
+    @Override
+    public void add(Widget w) {
+        add(w, getElement());
+    }
 }

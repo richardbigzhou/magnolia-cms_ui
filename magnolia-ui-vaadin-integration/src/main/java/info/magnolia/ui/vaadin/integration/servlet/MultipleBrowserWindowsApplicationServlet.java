@@ -121,7 +121,7 @@ public class MultipleBrowserWindowsApplicationServlet extends ApplicationServlet
             // Generate an application id that the client may or may not decide to use
             String applicationId = generateNewApplicationId();
 
-            logger.info("Suggesting application id: " + applicationId + " for request to " + request.getRequestURI());
+            logger.debug("Suggesting application id: " + applicationId + " for request to " + request.getRequestURI());
 
             // If the 'restartApplication' parameter is present we force the client to start using this application id
             boolean forceApplicationId = request.getParameter("restartApplication") != null;
@@ -131,7 +131,7 @@ public class MultipleBrowserWindowsApplicationServlet extends ApplicationServlet
             return;
         }
 
-        logger.info("Serving request for " + request.getRequestURI());
+        logger.debug("Serving request for " + request.getRequestURI());
 
         super.service(request, response);
     }
