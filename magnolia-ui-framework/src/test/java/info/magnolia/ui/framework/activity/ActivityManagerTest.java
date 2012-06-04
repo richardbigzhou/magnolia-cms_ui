@@ -63,7 +63,7 @@ public class ActivityManagerTest {
     public static class FooActivity extends AbstractActivity {
 
         @Override
-        public void start(ViewPort viewPort, EventBus eventBus) {
+        public void start(ViewPort viewPort, EventBus eventBus, Place place) {
         }
     }
 
@@ -89,10 +89,11 @@ public class ActivityManagerTest {
         activityManager.setViewPort(viewPort);
 
         // WHEN
-        eventBus.fireEvent(new PlaceChangeEvent(new FooPlace()));
+        FooPlace place = new FooPlace();
+        eventBus.fireEvent(new PlaceChangeEvent(place));
 
         // THEN
-        verify(activity).start(eq(viewPort), any(EventBus.class));
+        verify(activity).start(eq(viewPort), any(EventBus.class), eq(place));
     }
 
     @Test
@@ -108,14 +109,16 @@ public class ActivityManagerTest {
         ActivityManager activityManager = new ActivityManager(activityMapper, eventBus);
         activityManager.setViewPort(viewPort);
 
-        eventBus.fireEvent(new PlaceChangeEvent(new FooPlace()));
-        verify(activity, times(1)).start(eq(viewPort), any(EventBus.class));
+        FooPlace place = new FooPlace();
+        eventBus.fireEvent(new PlaceChangeEvent(place));
+        verify(activity, times(1)).start(eq(viewPort), any(EventBus.class), eq(place));
 
         // WHEN
-        eventBus.fireEvent(new PlaceChangeEvent(new FooPlace()));
+        FooPlace place2 = new FooPlace();
+        eventBus.fireEvent(new PlaceChangeEvent(place2));
 
         // THEN (still 1)
-        verify(activity, times(1)).start(eq(viewPort), any(EventBus.class));
+        verify(activity, times(1)).start(eq(viewPort), any(EventBus.class), any(Place.class));
     }
 
     @Test
@@ -133,9 +136,10 @@ public class ActivityManagerTest {
         ActivityManager activityManager = new ActivityManager(activityMapper, eventBus);
         activityManager.setViewPort(viewPort);
 
-        eventBus.fireEvent(new PlaceChangeEvent(new FooPlace()));
+        FooPlace place = new FooPlace();
+        eventBus.fireEvent(new PlaceChangeEvent(place));
 
-        verify(activity, times(1)).start(eq(viewPort), any(EventBus.class));
+        verify(activity, times(1)).start(eq(viewPort), any(EventBus.class), eq(place));
 
         // WHEN
         eventBus.fireEvent(new PlaceChangeEvent(new Place() {
@@ -175,7 +179,7 @@ public class ActivityManagerTest {
         public int invocationCount = 0;
 
         @Override
-        public void start(ViewPort viewPort, EventBus eventBus) {
+        public void start(ViewPort viewPort, EventBus eventBus, Place place) {
             eventBus.addHandler(TestEvent.class, this);
         }
 

@@ -31,21 +31,8 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.activity;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package info.magnolia.ui.framework.app.layout;
 
 /**
- * Annotation that marks Activity method meaning it can handle the Place state on Activity update. The signature of
- * method should also contain one parameter of the handled Place type.
- *
  * @version $Id$
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface PlaceStateHandler {
-
-}

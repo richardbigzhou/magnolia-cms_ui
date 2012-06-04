@@ -60,7 +60,7 @@ public class ActivityManager implements PlaceChangeEvent.Handler, PlaceChangeReq
         private static final long serialVersionUID = 1L;
 
         @Override
-        public void start(ViewPort viewPort, EventBus eventBus) {
+        public void start(ViewPort viewPort, EventBus eventBus, Place place) {
             viewPort.setView(null);
         }
 
@@ -114,7 +114,7 @@ public class ActivityManager implements PlaceChangeEvent.Handler, PlaceChangeReq
 
         beforeActivityStarts(currentActivity, newPlace);
 
-        currentActivity.start(viewPort, isolatedEventBus);
+        currentActivity.start(viewPort, isolatedEventBus, newPlace);
     }
 
     protected void onPlaceChangeToCurrentActivity(Activity currentActivity, Place newPlace) {

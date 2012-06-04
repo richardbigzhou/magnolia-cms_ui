@@ -36,12 +36,15 @@ package info.magnolia.ui.framework.activity;
 import java.io.Serializable;
 
 import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.place.Place;
 import info.magnolia.ui.framework.view.ViewPort;
 
 /**
  * Implemented by objects that control a piece of user interface, with a life cycle managed by an
  * {@link ActivityManager}, in response to {@link info.magnolia.ui.framework.place.PlaceChangeEvent} events as the
  * user navigates through the app.
+ *
+ * An activity is said to be active if it is the one currently focused. Only one activity is active at a time.
  *
  * Should implement equals because its used to prevent navigating to the same activity that's currently active.
  *
@@ -58,7 +61,14 @@ public interface Activity extends Serializable{
      * <p>
      * Any event handlers attached to the provided event bus will be de-registered when the activity is stopped.
      */
-    void start(ViewPort viewPort, EventBus eventBus);
+    void start(ViewPort viewPort, EventBus eventBus, Place place);
+
+    /**
+     * Called when a place change occurs that is mapped to this activity when it is already active.
+     *
+     * @param place the updated place
+     */
+    void onPlaceUpdate(Place place);
 
     /**
      * Called when the user is trying to navigate away from this activity.

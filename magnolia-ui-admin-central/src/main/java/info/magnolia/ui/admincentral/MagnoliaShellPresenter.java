@@ -41,7 +41,6 @@ import javax.inject.Inject;
 import com.vaadin.ui.Window;
 
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.framework.activity.PlaceChangeNotifyingActivityManager;
 import info.magnolia.ui.framework.app.layout.AppCategory;
 import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.AppDescriptor;
@@ -86,7 +85,7 @@ public class MagnoliaShellPresenter implements MagnoliaShellView.Presenter {
         shellAppActivityMapper.addMapping(AppLauncherPlace.class, AppLauncherActivity.class);
         shellAppActivityMapper.addMapping(PulsePlace.class, PulseActivity.class);
         shellAppActivityMapper.addMapping(FavoritesPlace.class, FavoritesActivity.class);
-        final PlaceChangeNotifyingActivityManager shellAppManager = new PlaceChangeNotifyingActivityManager(shellAppActivityMapper, bus);
+        final ActivityManager shellAppManager = new ActivityManager(shellAppActivityMapper, bus);
         shellAppManager.setViewPort(view.getRoot().getShellAppViewport());
 
         final AppActivityMapper appActivityMapper = new AppActivityMapper(componentProvider, appLauncherLayout, bus);

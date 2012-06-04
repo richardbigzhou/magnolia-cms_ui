@@ -35,6 +35,7 @@ package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.framework.activity.AbstractActivity;
 import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.place.Place;
 import info.magnolia.ui.framework.view.ViewPort;
 
 /**
@@ -56,7 +57,7 @@ public abstract class AbstractAppActivity<T extends AppPresenter<T>> extends Abs
     }
 
     @Override
-    public void start(ViewPort viewPort, EventBus eventBus) {
+    public void start(ViewPort viewPort, EventBus eventBus, Place place) {
         view.setPresenter(getReference());
         viewPort.setView(view);
     }
