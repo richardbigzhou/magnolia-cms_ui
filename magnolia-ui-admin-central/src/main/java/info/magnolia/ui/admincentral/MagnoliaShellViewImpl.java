@@ -33,7 +33,8 @@
  */
 package info.magnolia.ui.admincentral;
 
-import com.google.inject.Inject;
+import javax.inject.Inject;
+
 import com.vaadin.ui.Component;
 
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
