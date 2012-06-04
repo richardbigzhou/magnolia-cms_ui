@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.framework.app;
 
 import java.util.LinkedList;
 import javax.inject.Inject;
@@ -43,6 +43,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.framework.app.layout.AppLauncherLayout;
 import info.magnolia.ui.framework.event.Event;
 import info.magnolia.ui.framework.event.EventBus;
 
@@ -58,7 +59,7 @@ public class AppControllerImpl implements AppController {
 
     private static Logger log = LoggerFactory.getLogger(AppControllerImpl.class);
 
-    private AppRegistry appRegistry;
+    private AppLauncherLayout appLauncherLayout;
 
     private ComponentProvider componentProvider;
 
@@ -72,8 +73,8 @@ public class AppControllerImpl implements AppController {
     private LinkedList<AppLifecycle> appHistory = new LinkedList<AppLifecycle>();
 
     @Inject
-    public AppControllerImpl(AppRegistry appRegistry, ComponentProvider componentProvider, EventBus eventBus) {
-        this.appRegistry = appRegistry;
+    public AppControllerImpl(AppLauncherLayout appLauncherLayout, ComponentProvider componentProvider, EventBus eventBus) {
+        this.appLauncherLayout = appLauncherLayout;
         this.componentProvider = componentProvider;
         this.eventBus = eventBus;
     }
@@ -108,13 +109,13 @@ public class AppControllerImpl implements AppController {
     }
 
     private AppLifecycle doStart(String name) {
-        final AppDescriptor descriptor = appRegistry.getAppDescriptor(name);
+        final AppDescriptor descriptor = appLauncherLayout.getAppDescriptor(name);
         AppLifecycle lifecycle = (AppLifecycle) runningApps.get(descriptor);
         if (lifecycle == null) {
             lifecycle = componentProvider.newInstance(descriptor.getAppClass());
             lifecycle.start();
             runningApps.put(descriptor, lifecycle);
-            sendEvent(new AppLifecycleEvent(descriptor, AppEventType.START_EVENT));
+            sendEvent(new AppLifecycleEvent(descriptor, AppEventType.STARTED));
         }
         return lifecycle;
     }
@@ -122,11 +123,11 @@ public class AppControllerImpl implements AppController {
     private void doFocus(final AppLifecycle lifecycle) {
         lifecycle.focus();
         appHistory.offerFirst(lifecycle);
-        sendEvent(new AppLifecycleEvent(getAppDescriptor(lifecycle), AppEventType.FOCUS_EVENT));
+        sendEvent(new AppLifecycleEvent(getAppDescriptor(lifecycle), AppEventType.FOCUSED));
     }
 
     private void doStop(String name) {
-        final AppDescriptor descriptor = appRegistry.getAppDescriptor(name);
+        final AppDescriptor descriptor = appLauncherLayout.getAppDescriptor(name);
         AppLifecycle lifecycle = (AppLifecycle) runningApps.get(descriptor);
         if (lifecycle != null) {
             lifecycle.stop();
@@ -135,7 +136,7 @@ public class AppControllerImpl implements AppController {
                 wasPresentInHistory = appHistory.remove(lifecycle);
             }
             runningApps.remove(descriptor);
-            sendEvent(new AppLifecycleEvent(descriptor, AppEventType.STOP_EVENT));
+            sendEvent(new AppLifecycleEvent(descriptor, AppEventType.STOPPED));
             focusLatestLoadedApp();
         }
     }
@@ -147,7 +148,7 @@ public class AppControllerImpl implements AppController {
     }
 
     /**
-     * Send Event to the EventBuss.
+     * Send Event to the event bus.
      */
     private void sendEvent(Event<? extends AppLifecycleEventHandler> event) {
         log.debug("AppController: send Event " + event.getClass().getName());

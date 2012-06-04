@@ -31,42 +31,29 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.framework.app.layout;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+
+import info.magnolia.ui.framework.app.AppDescriptor;
 
 /**
- * Defines a category of apps in the app launcher and the apps that belong to it.
+ * Registry of available apps.
  *
  * @version $Id$
  */
-public class AppCategory implements Comparable<AppCategory>{
+public interface AppLauncherLayout {
 
-    private String label;
-    private List<AppDescriptor> apps = new ArrayList<AppDescriptor>();
+    Collection<AppCategory> getCategories();
 
-    public String getLabel() {
-        return label;
-    }
+    Collection<AppCategory> reloadCategories();
 
-    public void setLabel(String label) {
-        this.label = label;
-    }
+    /**
+     * Returns the AppDescriptor for a given name.
+     *
+     * @throws IllegalArgumentException: If key don't exist.
+     */
+    AppDescriptor getAppDescriptor(String name);
 
-    public List<AppDescriptor> getApps() {
-        return apps;
-    }
-
-    public void addApp(AppDescriptor descriptor) {
-        apps.add(descriptor);
-    }
-
-    @Override
-    public int compareTo(AppCategory o) {
-        if(this.label == null || o.getLabel() == null) {
-            return 0;
-        }
-        return label.compareTo(o.getLabel());
-    }
+    boolean isAppDescriptionRegistered(String name);
 }

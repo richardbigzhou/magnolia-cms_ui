@@ -33,12 +33,15 @@
  */
 package info.magnolia.ui.app.contacts;
 
+
 import info.magnolia.ui.admincentral.app.AbstractAppView;
 import info.magnolia.ui.framework.view.ViewPort;
 import info.magnolia.ui.vaadin.integration.view.ComponentContainerViewPort;
+import info.magnolia.ui.widget.actionbar.Actionbar;
 
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Label;
+
 
 /**
  * View implementation for the Contacts app.
@@ -46,13 +49,14 @@ import com.vaadin.ui.Label;
  * @version $Id$
  */
 @SuppressWarnings("serial")
-public class ContactsViewImpl extends AbstractAppView<ContactsPresenter> implements ContactsView  {
+public class ContactsViewImpl extends AbstractAppView<ContactsPresenter> implements ContactsView {
 
     private CssLayout outerLayout = new CssLayout();
     private ComponentContainerViewPort itemListViewPort;
 
     public ContactsViewImpl() {
         super();
+
         outerLayout.setSizeFull();
         outerLayout.setStyleName("workbench-view");
 
@@ -81,7 +85,32 @@ public class ContactsViewImpl extends AbstractAppView<ContactsPresenter> impleme
 
     @Override
     public ViewPort getFunctionToolbarViewPort() {
-        // TODO Auto-generated method stub
         return null;
+        /*final HorizontalLayout wrapper = new HorizontalLayout();
+        wrapper.setWidth("100%");
+
+        final VerticalLayout tableContainer = new VerticalLayout();
+        Label label = new Label("<center>Contacts App</center>", Label.CONTENT_XHTML);
+        tableContainer.addComponent(label);
+
+        wrapper.addComponent(tableContainer);
+        wrapper.setExpandRatio(tableContainer, 1.0f);
+
+        wrapper.addComponent(createActionbar());
+
+        addTab(wrapper, "Contacts");*/
+    }
+
+    private Actionbar createActionbar() {
+        Actionbar actionbar = new Actionbar();
+
+        // actionbar.addSection("actions", "Actions");
+        // actionbar.addGroup("group1", "actions");
+        // actionbar.addGroup("group2", "actions");
+        // actionbar.addGroup("group3", "actions");
+        // actionbar.addAction()
+
+        return actionbar;
+
     }
 }

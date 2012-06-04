@@ -34,17 +34,9 @@
 package info.magnolia.ui.framework.event;
 
 /**
-* @version $Id$
-*/
-public class TestEventHandler implements EventHandler {
+ * @version $Id$
+ */
+public interface TestEventHandler extends EventHandler {
 
-    private int invocationCount = 0;
-
-    public synchronized int getInvocationCount() {
-        return invocationCount;
-    }
-
-    public synchronized void handleEvent(TestEvent event) {
-        invocationCount++;
-    }
+    void handleEvent(TestEvent event);
 }

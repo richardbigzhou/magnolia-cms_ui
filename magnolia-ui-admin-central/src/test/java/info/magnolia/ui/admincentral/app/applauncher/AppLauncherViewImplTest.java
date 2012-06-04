@@ -36,10 +36,10 @@ package info.magnolia.ui.admincentral.app.applauncher;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import info.magnolia.ui.admincentral.app.AppCategory;
-import info.magnolia.ui.admincentral.app.AppDescriptor;
-import info.magnolia.ui.admincentral.app.AppEventType;
-import info.magnolia.ui.admincentral.app.AppLifecycleEvent;
+import info.magnolia.ui.framework.app.layout.AppCategory;
+import info.magnolia.ui.framework.app.AppDescriptor;
+import info.magnolia.ui.framework.app.AppEventType;
+import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.admincentral.app.AppTestUtility;
 import info.magnolia.ui.admincentral.shellapp.applauncher.AppLauncherViewImpl;
 import info.magnolia.ui.admincentral.shellapp.applauncher.AppLauncherViewImpl.AppGroupComponent;
@@ -196,13 +196,13 @@ public class AppLauncherViewImplTest {
         assertEquals(false,appButton.isActive());
 
         // WHEN
-        eventBus.fireEvent(new AppLifecycleEvent(descriptor_1, AppEventType.START_EVENT));
+        eventBus.fireEvent(new AppLifecycleEvent(descriptor_1, AppEventType.STARTED));
 
         // THEN
         assertEquals(true,appButton.isActive());
 
         // WHEN
-        eventBus.fireEvent(new AppLifecycleEvent(descriptor_1, AppEventType.STOP_EVENT));
+        eventBus.fireEvent(new AppLifecycleEvent(descriptor_1, AppEventType.STOPPED));
 
         // THEN
         assertEquals(false,appButton.isActive());

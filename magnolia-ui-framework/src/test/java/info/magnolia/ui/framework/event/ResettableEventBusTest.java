@@ -51,7 +51,7 @@ public class ResettableEventBusTest {
 
         // GIVEN
         ResettableEventBus eventBus = new ResettableEventBus(new SimpleEventBus());
-        TestEventHandler handler = new TestEventHandler();
+        InvocationCountingTestEventHandler handler = new InvocationCountingTestEventHandler();
         HandlerRegistration registration = eventBus.addHandler(TestEvent.class, handler);
         registration.removeHandler();
 
@@ -68,17 +68,17 @@ public class ResettableEventBusTest {
         // GIVEN
         ResettableEventBus eventBus = new ResettableEventBus(new SimpleEventBus());
 
-        List<TestEventHandler> handlers = new ArrayList<TestEventHandler>();
+        List<InvocationCountingTestEventHandler> handlers = new ArrayList<InvocationCountingTestEventHandler>();
 
         for (int i = 0; i < 50; i++) {
-            TestEventHandler handler = new TestEventHandler();
+            InvocationCountingTestEventHandler handler = new InvocationCountingTestEventHandler();
             handlers.add(handler);
             eventBus.addHandler(TestEvent.class, handler);
         }
 
         eventBus.fireEvent(new TestEvent());
 
-        for (TestEventHandler handler : handlers) {
+        for (InvocationCountingTestEventHandler handler : handlers) {
             assertEquals(1, handler.getInvocationCount());
         }
 
@@ -89,7 +89,7 @@ public class ResettableEventBusTest {
         eventBus.fireEvent(new TestEvent());
 
         // verifies that the second event fired after resetting the event bus did not result in any more invocations
-        for (TestEventHandler handler : handlers) {
+        for (InvocationCountingTestEventHandler handler : handlers) {
             assertEquals(1, handler.getInvocationCount());
         }
     }

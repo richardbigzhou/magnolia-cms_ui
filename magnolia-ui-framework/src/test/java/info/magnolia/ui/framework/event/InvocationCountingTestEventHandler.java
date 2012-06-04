@@ -31,37 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.dialog;
-
-import info.magnolia.ui.framework.app.AbstractAppActivity;
-import info.magnolia.ui.admincentral.dialog.DialogPresenter;
-import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
-
-import javax.inject.Inject;
+package info.magnolia.ui.framework.event;
 
 /**
- * Activity for the Pages app.
- *
- * @version $Id$
- */
-public class DialogTestActivity extends AbstractAppActivity<DialogTestPresenter> implements DialogTestPresenter {
-    
-    private DialogPresenterFactory factory;
+* @version $Id$
+*/
+public class InvocationCountingTestEventHandler implements TestEventHandler {
 
-    @Inject
-    public DialogTestActivity(DialogTestView view, DialogPresenterFactory factory) {
-        super(view);
-        this.factory = factory;
+    private int invocationCount = 0;
+
+    public synchronized int getInvocationCount() {
+        return invocationCount;
     }
 
-    @Override
-    public void openDialog() {
-        DialogPresenter presenter = factory.createDialog("testDialog");
-        presenter.showDialog();
-    }
-
-    @Override
-    public DialogTestPresenter getReference() {
-        return this;
+    public synchronized void handleEvent(TestEvent event) {
+        invocationCount++;
     }
 }

@@ -31,27 +31,53 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.widget.actionbar.gwt.client;
+
+import java.util.LinkedList;
+import java.util.List;
+
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.ComplexPanel;
+import com.google.gwt.user.client.ui.Widget;
+
 
 /**
- * Defines the lifecycle for an app.
- *
- * @version $Id$
+ * The Class VActionbarGroup, which displays a group of actions within a section of the action bar.
  */
-public interface AppLifecycle {
+public class VActionbarGroup extends ComplexPanel {
+
+    private static final String CLASSNAME = "v-actionbar-group";
+
+    private final Element root = DOM.createElement("ul");
+
+    private final List<VAction> actions = new LinkedList<VAction>();
 
     /**
-     * Starts the app letting it do initialization, the app is not displayed.
+     * Instantiates a new action bar group.
      */
-    void start();
+    public VActionbarGroup() {
+        setElement(root);
+        setStyleName(CLASSNAME);
+    }
 
     /**
-     * Displays the app. The app will perform a place switch using the PlaceController to a place it provides.
+     * Updates the actions.
      */
-    void focus();
+    public void updateActions() {
+        VAction addAction = new VAction("Add task");
+        VAction deleteAction = new VAction("Delete task");
+        actions.add(addAction);
+        actions.add(deleteAction);
 
-    /**
-     * Stops the app.
-     */
-    void stop();
+        for (VAction action : actions) {
+            add(action);
+            action.updateLabel(action.getLabel());
+        }
+    }
+
+    @Override
+    public void add(Widget w) {
+        add(w, getElement());
+    }
 }

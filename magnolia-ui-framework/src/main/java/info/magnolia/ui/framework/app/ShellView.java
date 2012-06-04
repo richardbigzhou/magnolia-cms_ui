@@ -31,37 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.dialog;
+package info.magnolia.ui.framework.app;
 
-import info.magnolia.ui.framework.app.AbstractAppActivity;
-import info.magnolia.ui.admincentral.dialog.DialogPresenter;
-import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
-
-import javax.inject.Inject;
+import info.magnolia.ui.framework.view.View;
 
 /**
- * Activity for the Pages app.
+ * View used within MagnoliaShell.
  *
  * @version $Id$
  */
-public class DialogTestActivity extends AbstractAppActivity<DialogTestPresenter> implements DialogTestPresenter {
-    
-    private DialogPresenterFactory factory;
+public interface ShellView extends View {
 
-    @Inject
-    public DialogTestActivity(DialogTestView view, DialogPresenterFactory factory) {
-        super(view);
-        this.factory = factory;
-    }
+    String getAppName();
 
-    @Override
-    public void openDialog() {
-        DialogPresenter presenter = factory.createDialog("testDialog");
-        presenter.showDialog();
-    }
-
-    @Override
-    public DialogTestPresenter getReference() {
-        return this;
-    }
 }

@@ -33,7 +33,8 @@
  */
 package info.magnolia.ui.admincentral.app;
 
-import info.magnolia.ui.widget.magnoliashell.ShellView;
+import info.magnolia.ui.framework.app.AppPresenter;
+import info.magnolia.ui.framework.app.ShellView;
 
 import com.vaadin.ui.ComponentContainer;
 

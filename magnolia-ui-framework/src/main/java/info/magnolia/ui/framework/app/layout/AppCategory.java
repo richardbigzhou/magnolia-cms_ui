@@ -31,41 +31,44 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.framework.app.layout;
 
-import info.magnolia.ui.framework.activity.AbstractActivity;
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.view.ViewPort;
+import java.util.ArrayList;
+import java.util.List;
+
+import info.magnolia.ui.framework.app.AppDescriptor;
 
 /**
- * Abstract presenter for app views.
+ * Defines a category of apps in the app launcher and the apps that belong to it.
  *
- * @param <T>
  * @version $Id$
  */
-public abstract class AbstractAppActivity<T extends AppPresenter<T>> extends AbstractActivity implements AppPresenter<T> {
+public class AppCategory implements Comparable<AppCategory> {
 
-    private AppView<T> view;
+    private String label;
+    private List<AppDescriptor> apps = new ArrayList<AppDescriptor>();
 
-    private String name;
+    public String getLabel() {
+        return label;
+    }
 
-    public AbstractAppActivity(AppView<T> view) {
-        this.view = view;
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public List<AppDescriptor> getApps() {
+        return apps;
+    }
+
+    public void addApp(AppDescriptor descriptor) {
+        apps.add(descriptor);
     }
 
     @Override
-    public void start(ViewPort viewPort, EventBus eventBus) {
-        view.setPresenter(getReference());
-        viewPort.setView(view);
+    public int compareTo(AppCategory o) {
+        if (this.label == null || o.getLabel() == null) {
+            return 0;
+        }
+        return label.compareTo(o.getLabel());
     }
-
-    @Override
-    public String getAppName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
 }

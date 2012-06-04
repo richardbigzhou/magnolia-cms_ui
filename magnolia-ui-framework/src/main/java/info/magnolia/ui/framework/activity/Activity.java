@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.framework.activity;
 
+import java.io.Serializable;
+
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.view.ViewPort;
 
@@ -47,7 +49,7 @@ import info.magnolia.ui.framework.view.ViewPort;
  *
  * @version $Id$
  */
-public interface Activity {
+public interface Activity extends Serializable{
 
     /**
      * Called when the Activity should ready its widget for the user. When the widget is ready it

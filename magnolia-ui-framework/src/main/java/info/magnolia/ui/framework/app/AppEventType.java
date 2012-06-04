@@ -31,25 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
-
-import java.util.Collection;
+package info.magnolia.ui.framework.app;
 
 /**
- * Registry of available apps.
+ * AppEvent Type enumeration.
  *
  * @version $Id$
  */
-public interface AppRegistry {
+public enum AppEventType {
 
-    Collection<AppCategory> getCategories();
-
-    /**
-     * Returns the AppDescriptor for a given name.
-     *
-     * @throws IllegalArgumentException: If key don't exist.
-     */
-    AppDescriptor getAppDescriptor(String name);
-
-    boolean isAppDescriptionRegistered(String name);
+    REGISTERED, UNREGISTERED, STARTED, STOPPED, FOCUSED
 }

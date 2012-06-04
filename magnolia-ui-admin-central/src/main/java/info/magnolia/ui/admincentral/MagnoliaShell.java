@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.admincentral;
 
-import info.magnolia.ui.admincentral.app.AppController;
-import info.magnolia.ui.admincentral.app.AppLifecycleEvent;
-import info.magnolia.ui.admincentral.app.AppLifecycleEventHandler;
+import info.magnolia.ui.framework.app.AppController;
+import info.magnolia.ui.framework.app.AppLifecycleEvent;
+import info.magnolia.ui.framework.app.AppLifecycleEventHandler;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 import info.magnolia.ui.widget.magnoliashell.BaseMagnoliaShell;
 import info.magnolia.ui.widget.magnoliashell.ShellViewport;
@@ -72,7 +72,7 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell {
         this.appController = appController;
         this.eventBus.addHandler(AppLifecycleEvent.class, new AppLifecycleEventHandler.Adapter() {
             @Override
-            public void onAppFocus(AppLifecycleEvent event) {
+            public void onAppFocused(AppLifecycleEvent event) {
                 setActiveViewport(getAppViewport());
             }
         });

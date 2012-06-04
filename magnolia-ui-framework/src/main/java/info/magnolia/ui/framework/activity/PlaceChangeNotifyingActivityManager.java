@@ -31,25 +31,28 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.framework;
+package info.magnolia.ui.framework.activity;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import info.magnolia.ui.framework.activity.Activity;
-import info.magnolia.ui.framework.activity.ActivityManager;
-import info.magnolia.ui.framework.activity.ActivityMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.place.Place;
 
 /**
- * Activity manager responsible for the top level apps management (shell apps).
+ * Activity manager that invokes methods on the activity annotated with {@link PlaceStateHandler} to notify it about the
+ * place causing the activity to start and place changes that map to it when its the current activity.
  *
  * @version $Id$
  */
-public class ShellAppActivityManager extends ActivityManager {
+public class PlaceChangeNotifyingActivityManager extends ActivityManager {
 
-    public ShellAppActivityManager(ActivityMapper mapper, EventBus eventBus) {
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
+    public PlaceChangeNotifyingActivityManager(ActivityMapper mapper, EventBus eventBus) {
         super(mapper, eventBus);
     }
 
@@ -74,11 +77,11 @@ public class ShellAppActivityManager extends ActivityManager {
                     try {
                         method.invoke(activity, place);
                     } catch (IllegalArgumentException e) {
-                        e.printStackTrace();
+                        logger.error("Unable to invoke method annotated with @PlaceStateHandler", e);
                     } catch (IllegalAccessException e) {
-                        e.printStackTrace();
+                        logger.error("Unable to invoke method annotated with @PlaceStateHandler", e);
                     } catch (InvocationTargetException e) {
-                        e.printStackTrace();
+                        logger.error("Unable to invoke method annotated with @PlaceStateHandler", e);
                     }
                 }
             }

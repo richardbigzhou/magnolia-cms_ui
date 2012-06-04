@@ -31,22 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.framework.app;
 
 /**
- * Manages apps running for a single user.
+ * Generic app view.
  *
+ * @param <T>
  * @version $Id$
  */
-public interface AppController {
-    
-    AppDescriptor getAppDescriptor(final AppLifecycle app);
-    
-    void startIfNotAlreadyRunning(String name);
+public interface AppView<T extends AppPresenter<T>> extends ShellView {
 
-    void startIfNotAlreadyRunningThenFocus(String name);
+    void setPresenter(final T presenter);
 
-    void stopApplication(String name);
-    
-    void stopCurrentApplication();
+    T getPresenter();
 }

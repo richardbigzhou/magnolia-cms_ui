@@ -31,37 +31,48 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.dialog;
+package info.magnolia.ui.framework.app;
 
-import info.magnolia.ui.framework.app.AbstractAppActivity;
-import info.magnolia.ui.admincentral.dialog.DialogPresenter;
-import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
+import java.io.Serializable;
+import java.util.List;
 
-import javax.inject.Inject;
+import info.magnolia.ui.framework.activity.Activity;
+import info.magnolia.ui.framework.place.Place;
 
 /**
- * Activity for the Pages app.
+ * Describes an app.
  *
  * @version $Id$
  */
-public class DialogTestActivity extends AbstractAppActivity<DialogTestPresenter> implements DialogTestPresenter {
-    
-    private DialogPresenterFactory factory;
+public interface AppDescriptor extends Serializable {
 
-    @Inject
-    public DialogTestActivity(DialogTestView view, DialogPresenterFactory factory) {
-        super(view);
-        this.factory = factory;
-    }
+    String getCategoryName();
 
-    @Override
-    public void openDialog() {
-        DialogPresenter presenter = factory.createDialog("testDialog");
-        presenter.showDialog();
-    }
+    void setCategoryName(String categoryName);
 
-    @Override
-    public DialogTestPresenter getReference() {
-        return this;
-    }
+    String getName();
+
+    void setName(String name);
+
+    String getLabel();
+
+    void setLabel(String label);
+
+    boolean isEnabled();
+
+    void setEnabled(boolean enabled);
+
+    String getIcon();
+
+    void setIcon(String icon);
+
+    Class<? extends AppLifecycle> getAppClass();
+
+    void setAppClass(Class<? extends AppLifecycle> appClass);
+
+    List<PlaceActivityMapping> getActivityMappings();
+
+    void addActivityMapping(PlaceActivityMapping mapping);
+
+    Class<? extends Activity> getMappedActivityClass(final Class<? extends Place> placeClass);
 }

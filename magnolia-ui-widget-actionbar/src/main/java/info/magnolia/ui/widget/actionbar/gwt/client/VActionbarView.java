@@ -37,15 +37,16 @@ import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
+
 /**
- *
+ * 
  * VActionbarView.
- *
+ * 
  */
 public interface VActionbarView extends HasWidgets, IsWidget {
 
     /**
-     *
+     * 
      * Presenter.
      */
     interface Presenter {
@@ -54,5 +55,10 @@ public interface VActionbarView extends HasWidgets, IsWidget {
     void setPresenter(Presenter presenter);
 
     boolean hasChildComponent(Widget component);
+
+    /**
+     * Updates the action bar sections.
+     */
+    void updateSections();
 
 }

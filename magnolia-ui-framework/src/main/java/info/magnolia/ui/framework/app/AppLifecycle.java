@@ -31,14 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.framework.app;
 
 /**
- * AppEvent Type enumeration.
+ * Defines the lifecycle for an app.
  *
  * @version $Id$
  */
-public enum AppEventType {
+public interface AppLifecycle {
 
-    STOP_EVENT, START_EVENT, FOCUS_EVENT
+    /**
+     * Starts the app letting it do initialization, the app is not displayed.
+     */
+    void start();
+
+    /**
+     * Displays the app. The app will perform a place switch using the PlaceController to a place it provides.
+     */
+    void focus();
+
+    /**
+     * Stops the app.
+     */
+    void stop();
 }

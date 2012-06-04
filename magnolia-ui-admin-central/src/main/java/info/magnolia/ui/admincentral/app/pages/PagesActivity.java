@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.app.pages;
 
-import info.magnolia.ui.admincentral.app.AbstractAppActivity;
+import info.magnolia.ui.framework.app.AbstractAppActivity;
 
 import javax.inject.Inject;
 
@@ -43,6 +43,8 @@ import javax.inject.Inject;
  * @version $Id$
  */
 public class PagesActivity extends AbstractAppActivity<PagesPresenter> implements PagesPresenter {
+
+    private static final long serialVersionUID = 1L;
 
     @Inject
     public PagesActivity(PagesView view) {

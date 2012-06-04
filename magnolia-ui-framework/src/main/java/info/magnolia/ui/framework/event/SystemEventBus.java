@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,17 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.magnoliashell;
-
-import info.magnolia.ui.framework.view.View;
+package info.magnolia.ui.framework.event;
 
 /**
- * View used within MagnoliaShell.
- * @author apchelintcev
+ * Event bus which fires events to a set of registered handlers.
  *
+ * @version $Id$
+ * @see EventBus
  */
-public interface ShellView extends View {
-    
-    String getAppName();
-    
+public interface SystemEventBus extends EventBus{
+
 }

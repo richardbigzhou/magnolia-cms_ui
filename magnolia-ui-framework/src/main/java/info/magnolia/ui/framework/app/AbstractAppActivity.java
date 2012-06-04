@@ -31,37 +31,43 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.dialog;
+package info.magnolia.ui.framework.app;
 
-import info.magnolia.ui.framework.app.AbstractAppActivity;
-import info.magnolia.ui.admincentral.dialog.DialogPresenter;
-import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
-
-import javax.inject.Inject;
+import info.magnolia.ui.framework.activity.AbstractActivity;
+import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.view.ViewPort;
 
 /**
- * Activity for the Pages app.
+ * Abstract presenter for app views.
  *
+ * @param <T>
  * @version $Id$
  */
-public class DialogTestActivity extends AbstractAppActivity<DialogTestPresenter> implements DialogTestPresenter {
-    
-    private DialogPresenterFactory factory;
+public abstract class AbstractAppActivity<T extends AppPresenter<T>> extends AbstractActivity implements AppPresenter<T> {
 
-    @Inject
-    public DialogTestActivity(DialogTestView view, DialogPresenterFactory factory) {
-        super(view);
-        this.factory = factory;
+    private static final long serialVersionUID = 1L;
+
+    private AppView<T> view;
+
+    private String name;
+
+    public AbstractAppActivity(AppView<T> view) {
+        this.view = view;
     }
 
     @Override
-    public void openDialog() {
-        DialogPresenter presenter = factory.createDialog("testDialog");
-        presenter.showDialog();
+    public void start(ViewPort viewPort, EventBus eventBus) {
+        view.setPresenter(getReference());
+        viewPort.setView(view);
     }
 
     @Override
-    public DialogTestPresenter getReference() {
-        return this;
+    public String getAppName() {
+        return name;
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
 }
