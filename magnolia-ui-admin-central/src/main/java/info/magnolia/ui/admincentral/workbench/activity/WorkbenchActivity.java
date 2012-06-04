@@ -33,11 +33,6 @@
  */
 package info.magnolia.ui.admincentral.workbench.activity;
 
-import javax.inject.Inject;
-
-import info.magnolia.ui.admincentral.search.activity.SearchActivityMapper;
-import info.magnolia.ui.admincentral.sidebar.activity.SidebarActivityMapper;
-import info.magnolia.ui.admincentral.toolbar.activity.FunctionToolbarViewActivityMapper;
 import info.magnolia.ui.admincentral.workbench.place.WorkbenchPlace;
 import info.magnolia.ui.admincentral.workbench.view.WorkbenchView;
 import info.magnolia.ui.framework.activity.AbstractActivity;
@@ -45,41 +40,44 @@ import info.magnolia.ui.framework.activity.ActivityManager;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.view.ViewPort;
 
+import javax.inject.Inject;
+
 
 /**
+ * FIXME: reintroduce actions and function toolbars.
  * Edit a workspace.
  */
 public class WorkbenchActivity extends AbstractActivity {
     private String workspace;
     private ItemListActivityMapper itemListActivityMapper;
-    private SidebarActivityMapper sidebarActivityMapper;
-    private FunctionToolbarViewActivityMapper functionToolbarViewActivityMapper;
-    private SearchActivityMapper searchActivityMapper;
+    //private SidebarActivityMapper sidebarActivityMapper;
+    //private FunctionToolbarViewActivityMapper functionToolbarViewActivityMapper;
+    //private SearchActivityMapper searchActivityMapper;
     private WorkbenchView view;
 
     @Inject
-    public WorkbenchActivity(WorkbenchPlace place, WorkbenchView view, ItemListActivityMapper itemListActivityMapper, SidebarActivityMapper sidebarActivityMapper, FunctionToolbarViewActivityMapper functionToolbarViewActivityMapper, SearchActivityMapper searchActivityMapper) {
+    public WorkbenchActivity(WorkbenchPlace place, WorkbenchView view, ItemListActivityMapper itemListActivityMapper/*, SidebarActivityMapper sidebarActivityMapper, FunctionToolbarViewActivityMapper functionToolbarViewActivityMapper, SearchActivityMapper searchActivityMapper*/) {
         this.workspace = place.getWorkbenchName();
         this.view = view;
         this.itemListActivityMapper = itemListActivityMapper;
-        this.sidebarActivityMapper = sidebarActivityMapper;
-        this.functionToolbarViewActivityMapper = functionToolbarViewActivityMapper;
-        this.searchActivityMapper = searchActivityMapper;
+        //this.sidebarActivityMapper = sidebarActivityMapper;
+        //this.functionToolbarViewActivityMapper = functionToolbarViewActivityMapper;
+        //this.searchActivityMapper = searchActivityMapper;
     }
 
     @Override
     public void start(ViewPort display, EventBus eventBus) {
 
         final ActivityManager jcrActivityManager = new ActivityManager(itemListActivityMapper, eventBus);
-        final ActivityManager sidebarActivityManager = new ActivityManager(sidebarActivityMapper, eventBus);
+        /*final ActivityManager sidebarActivityManager = new ActivityManager(sidebarActivityMapper, eventBus);
         final ActivityManager functionToolbarViewActivityManager = new ActivityManager(functionToolbarViewActivityMapper, eventBus);
-        final ActivityManager searchActivityManager = new ActivityManager(searchActivityMapper, eventBus);
+        final ActivityManager searchActivityManager = new ActivityManager(searchActivityMapper, eventBus);*/
 
         jcrActivityManager.setViewPort(view.getItemListViewPort());
-        sidebarActivityManager.setViewPort(view.getSidebarViewPort());
-        functionToolbarViewActivityManager.setViewPort(view.getFunctionToolbarViewPort());
+        //sidebarActivityManager.setViewPort(view.getSidebarViewPort());
+        //functionToolbarViewActivityManager.setViewPort(view.getFunctionToolbarViewPort());
         //search activity is displayed by the function toolbar
-        searchActivityManager.setViewPort(view.getFunctionToolbarViewPort());
+        //searchActivityManager.setViewPort(view.getFunctionToolbarViewPort());
 
         display.setView(view);
     }
