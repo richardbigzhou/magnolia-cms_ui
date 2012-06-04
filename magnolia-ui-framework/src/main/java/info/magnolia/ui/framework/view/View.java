@@ -33,9 +33,10 @@
  */
 package info.magnolia.ui.framework.view;
 
-
 /**
  * Marker interface for views.
+ *
+ * @version $Id$
  */
 public interface View {
 
