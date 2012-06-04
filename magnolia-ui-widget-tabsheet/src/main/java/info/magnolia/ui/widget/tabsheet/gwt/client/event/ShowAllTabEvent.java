@@ -31,16 +31,29 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.tabsheet.gwt.client;
+package info.magnolia.ui.widget.tabsheet.gwt.client.event;
 
-import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * Handler of the events fired when the tab is closed.
- * @author apchelintcev
+ * ShowAllTabEvent.
  *
+ * @author ejervidalo
  */
-public interface TabCloseEventHandler extends EventHandler {
-    
-    void onTabClosed(final TabCloseEvent event);
+public class ShowAllTabEvent extends GwtEvent<ShowAllTabHandler> {
+
+    public static Type<ShowAllTabHandler> TYPE = new Type<ShowAllTabHandler>();
+
+    @Override
+    public GwtEvent.Type<ShowAllTabHandler> getAssociatedType() {
+        return TYPE;
+    }
+
+
+    @Override
+    protected void dispatch(ShowAllTabHandler handler) {
+        handler.onShowAll(this);
+
+    }
+
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,26 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.widget.tabsheet.gwt.client.event;
 
-import info.magnolia.ui.framework.app.AppPresenter;
-import info.magnolia.ui.framework.app.ShellView;
-
-import com.vaadin.ui.ComponentContainer;
+import com.google.gwt.event.shared.EventHandler;
 
 /**
- * Generic app view.
+ * ShowAllTabHandler.
  *
- * @param <T>
- * @version $Id$
+ * @author ejervidalo
  */
-public interface AppView<T extends AppPresenter<T>> extends ShellView {
-
-    void addTab(final ComponentContainer cc, String caption);
-
-    void closeTab(final ComponentContainer cc);
-
-    void setPresenter(final T presenter);
-
-    T getPresenter();
+public interface ShowAllTabHandler extends EventHandler {
+    void onShowAll(final ShowAllTabEvent event);
 }

@@ -33,17 +33,16 @@
  */
 package info.magnolia.ui.framework.app.registry;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import info.magnolia.ui.framework.activity.Activity;
 import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.AppLifecycle;
 import info.magnolia.ui.framework.app.PlaceActivityMapping;
-import info.magnolia.ui.framework. place.Place;
+import info.magnolia.ui.framework.place.Place;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * Describes an app.
@@ -52,6 +51,9 @@ import java.util.List;
  */
 public class ConfiguredAppDescriptor implements AppDescriptor {
 
+    /**
+     *
+     */
     private static final long serialVersionUID = 1L;
 
     /**
@@ -72,6 +74,7 @@ public class ConfiguredAppDescriptor implements AppDescriptor {
     private List<PlaceActivityMapping> activityMappings = new ArrayList<PlaceActivityMapping>();
 
     private List<WorkbenchDefinition> workbenches = new ArrayList<WorkbenchDefinition>();
+
 
     public String getName() {
         return name;
@@ -121,14 +124,6 @@ public class ConfiguredAppDescriptor implements AppDescriptor {
         activityMappings.add(mapping);
     }
 
-    public void addWorkbench(WorkbenchDefinition workbenchDefinition) {
-        workbenches.add(workbenchDefinition);
-    }
-
-    public List<WorkbenchDefinition> getWorkbenches() {
-        return workbenches;
-    }
-
     public Class<? extends Activity> getMappedActivityClass(final Class<? extends Place> placeClass) {
         final Iterator<PlaceActivityMapping> it = activityMappings.iterator();
         Class<? extends Activity> result = null;
@@ -150,5 +145,14 @@ public class ConfiguredAppDescriptor implements AppDescriptor {
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
     }
+
+    public void addWorkbench(WorkbenchDefinition definition) {
+        workbenches.add(definition);
+    }
+
+    public List<WorkbenchDefinition> getWorkbenches() {
+        return workbenches;
+    }
+
 
 }

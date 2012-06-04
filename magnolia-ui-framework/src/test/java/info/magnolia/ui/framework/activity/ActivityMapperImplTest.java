@@ -129,4 +129,43 @@ public class ActivityMapperImplTest {
         assertNotNull(activity2);
         assertSame(activity1, activity2);
     }
+
+    public class ActivityMapperWithRemoveInstanceMethodPublic extends ActivityMapperImpl {
+
+        public ActivityMapperWithRemoveInstanceMethodPublic(ComponentProvider componentProvider) {
+            super(componentProvider);
+        }
+
+        @Override
+        public synchronized void removeActivityInstanceForPlace(Class<? extends Place> placeClass) {
+            super.removeActivityInstanceForPlace(placeClass);
+        }
+    }
+
+    @Test
+    public void testReturnsNewInstanceAfterExistingRemoved() {
+
+        // GIVEN
+        ComponentProvider componentProvider = mock(ComponentProvider.class);
+        when(componentProvider.newInstance(TestActivity.class)).thenAnswer(new Answer<Activity>() {
+            @Override
+            public Activity answer(InvocationOnMock invocation) throws Throwable {
+                return new TestActivity();
+            }
+        });
+
+        ActivityMapperWithRemoveInstanceMethodPublic mapper = new ActivityMapperWithRemoveInstanceMethodPublic(componentProvider);
+        mapper.addMapping(TestPlace.class, TestActivity.class);
+
+        // WHEN
+        TestPlace place = new TestPlace();
+        Activity activity1 = mapper.getActivity(place);
+        mapper.removeActivityInstanceForPlace(TestPlace.class);
+        Activity activity2 = mapper.getActivity(place);
+
+        // THEN
+        assertNotNull(activity1);
+        assertNotNull(activity2);
+        assertNotSame(activity1, activity2);
+    }
 }

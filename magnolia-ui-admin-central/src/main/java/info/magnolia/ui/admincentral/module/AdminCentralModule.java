@@ -33,23 +33,33 @@
  */
 package info.magnolia.ui.admincentral.module;
 
+import javax.inject.Inject;
+
 import info.magnolia.module.ModuleLifecycle;
 import info.magnolia.module.ModuleLifecycleContext;
+import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptorManager;
+
 
 /**
- * TODO javadoc.
- * @version $Id$
+ * Registers the observed managers: {@link ConfiguredAppDescriptorManager}.
  *
  */
 public class AdminCentralModule implements ModuleLifecycle {
 
-    @Override
-    public void start(ModuleLifecycleContext moduleLifecycleContext) {
+    private ConfiguredAppDescriptorManager configuredAppDescriptorManager;
+
+    @Inject
+    public AdminCentralModule(ConfiguredAppDescriptorManager configuredAppDescriptorManager) {
+        this.configuredAppDescriptorManager = configuredAppDescriptorManager;
     }
 
     @Override
-    public void stop(ModuleLifecycleContext moduleLifecycleContext) {
+    public void start(ModuleLifecycleContext arg0) {
+        this.configuredAppDescriptorManager.start();
+    }
 
+    @Override
+    public void stop(ModuleLifecycleContext arg0) {
     }
 
 }

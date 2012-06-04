@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,13 +31,38 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.view;
+package info.magnolia.ui.widget.tabsheet.gwt.client.event;
+
+import info.magnolia.ui.widget.tabsheet.gwt.client.VShellTabContent;
+
+import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * Marker interface for views.
+ * Event fired when the active tab in the tabsheet is changed.
+ * @author apchelintcev
  *
- * @version $Id$
  */
-public interface View {
+public class ActiveTabChangedEvent extends GwtEvent<ActiveTabChangedHandler>{
 
+    public final static Type<ActiveTabChangedHandler> TYPE = new Type<ActiveTabChangedHandler>();
+
+    private final VShellTabContent tab;
+
+    public ActiveTabChangedEvent(final VShellTabContent tab) {
+        this.tab = tab;
+    }
+
+    public VShellTabContent getTab() {
+        return tab;
+    }
+
+    @Override
+    protected void dispatch(ActiveTabChangedHandler handler) {
+        handler.onActiveTabChanged(this);
+    }
+
+    @Override
+    public GwtEvent.Type<ActiveTabChangedHandler> getAssociatedType() {
+        return TYPE;
+    }
 }

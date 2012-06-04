@@ -36,7 +36,8 @@ package info.magnolia.ui.admincentral;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.inject.Inject;
+import javax.inject.Inject;
+
 import com.vaadin.ui.Window;
 
 import info.magnolia.objectfactory.ComponentProvider;

@@ -33,60 +33,26 @@
  */
 package info.magnolia.ui.app.contacts;
 
-
 import info.magnolia.ui.admincentral.app.AbstractAppView;
-import info.magnolia.ui.framework.view.ViewPort;
-import info.magnolia.ui.vaadin.integration.view.ComponentContainerViewPort;
 import info.magnolia.ui.widget.actionbar.Actionbar;
 
-import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.VerticalLayout;
 
 
 /**
  * View implementation for the Contacts app.
- *
+ * 
  * @version $Id$
  */
 @SuppressWarnings("serial")
 public class ContactsViewImpl extends AbstractAppView<ContactsPresenter> implements ContactsView {
 
-    private CssLayout outerLayout = new CssLayout();
-    private ComponentContainerViewPort itemListViewPort;
-
     public ContactsViewImpl() {
         super();
 
-        outerLayout.setSizeFull();
-        outerLayout.setStyleName("workbench-view");
-
-        CssLayout innerLayout = new CssLayout();
-        innerLayout.setSizeFull();
-        innerLayout.setStyleName("workbench-view-inner");
-        outerLayout.addComponent(innerLayout);
-        itemListViewPort = new ComponentContainerViewPort(innerLayout);
-
-
-        Label label = new Label("<center>Contacts App</center>", Label.CONTENT_XHTML);
-        outerLayout.addComponent(label);
-        addTab(outerLayout, "Contacts");
-    }
-
-    @Override
-    public ViewPort getItemListViewPort() {
-        return itemListViewPort;
-    }
-
-    @Override
-    public ViewPort getSidebarViewPort() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public ViewPort getFunctionToolbarViewPort() {
-        return null;
-        /*final HorizontalLayout wrapper = new HorizontalLayout();
+        final HorizontalLayout wrapper = new HorizontalLayout();
         wrapper.setWidth("100%");
 
         final VerticalLayout tableContainer = new VerticalLayout();
@@ -98,7 +64,7 @@ public class ContactsViewImpl extends AbstractAppView<ContactsPresenter> impleme
 
         wrapper.addComponent(createActionbar());
 
-        addTab(wrapper, "Contacts");*/
+        addTab(wrapper, "Contacts");
     }
 
     private Actionbar createActionbar() {
@@ -111,6 +77,5 @@ public class ContactsViewImpl extends AbstractAppView<ContactsPresenter> impleme
         // actionbar.addAction()
 
         return actionbar;
-
     }
 }

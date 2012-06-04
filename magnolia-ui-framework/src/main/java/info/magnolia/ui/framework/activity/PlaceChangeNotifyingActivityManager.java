@@ -43,7 +43,7 @@ import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.place.Place;
 
 /**
- * Activity manager that invokes methods on the activity annotated with {@link PlaceStateHandler} to notify it about the
+ * Activity manager that invokes methods on the activity annoted with {@link PlaceStateHandler} to notify it about the
  * place causing the activity to start and place changes that map to it when its the current activity.
  *
  * @version $Id$
