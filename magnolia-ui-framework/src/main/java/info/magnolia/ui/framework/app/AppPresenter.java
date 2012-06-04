@@ -31,17 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.magnoliashell;
-
-import info.magnolia.ui.framework.view.View;
+package info.magnolia.ui.framework.app;
 
 /**
- * View used within MagnoliaShell.
- * @author apchelintcev
+ * App presenter interface.
  *
+ * @param <T>
+ * @version $Id$
  */
-public interface ShellView extends View {
-    
+public interface AppPresenter<T extends AppPresenter<T>> {
+
     String getAppName();
-    
+
+    T getReference();
+
 }

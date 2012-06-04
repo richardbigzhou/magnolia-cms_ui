@@ -31,27 +31,44 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.framework.app.layout;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import info.magnolia.ui.framework.app.AppDescriptor;
 
 /**
- * Defines the lifecycle for an app.
+ * Defines a category of apps in the app launcher and the apps that belong to it.
  *
  * @version $Id$
  */
-public interface AppLifecycle {
+public class AppCategory implements Comparable<AppCategory> {
 
-    /**
-     * Starts the app letting it do initialization, the app is not displayed.
-     */
-    void start();
+    private String label;
+    private List<AppDescriptor> apps = new ArrayList<AppDescriptor>();
 
-    /**
-     * Displays the app. The app will perform a place switch using the PlaceController to a place it provides.
-     */
-    void focus();
+    public String getLabel() {
+        return label;
+    }
 
-    /**
-     * Stops the app.
-     */
-    void stop();
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public List<AppDescriptor> getApps() {
+        return apps;
+    }
+
+    public void addApp(AppDescriptor descriptor) {
+        apps.add(descriptor);
+    }
+
+    @Override
+    public int compareTo(AppCategory o) {
+        if (this.label == null || o.getLabel() == null) {
+            return 0;
+        }
+        return label.compareTo(o.getLabel());
+    }
 }

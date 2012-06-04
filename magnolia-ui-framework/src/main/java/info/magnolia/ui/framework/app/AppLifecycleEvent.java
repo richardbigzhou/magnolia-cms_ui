@@ -31,18 +31,56 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.framework.app;
+
+import info.magnolia.ui.framework.event.Event;
 
 /**
- * App presenter interface.
+ * App Event used to notify a Start Stop or Focus event.
  *
- * @param <T>
  * @version $Id$
  */
-public interface AppPresenter<T extends AppPresenter<T>> {
+public class AppLifecycleEvent implements Event<AppLifecycleEventHandler> {
 
-    String getAppName();
+    private final AppDescriptor appDescriptor;
+    private final AppEventType eventType;
 
-    T getReference();
+    public AppLifecycleEvent(AppDescriptor app, AppEventType eventType) {
+        this.appDescriptor = app;
+        this.eventType = eventType;
+    }
 
+    public AppDescriptor getAppDescriptor() {
+        return appDescriptor;
+    }
+
+    public AppEventType getEventType() {
+        return eventType;
+    }
+
+    @Override
+    public void dispatch(AppLifecycleEventHandler handler) {
+
+        if (eventType == null) {
+            return;
+        }
+
+        switch (eventType) {
+            case STARTED:
+                handler.onAppStarted(this);
+                break;
+            case FOCUSED:
+                handler.onAppFocused(this);
+                break;
+            case STOPPED:
+                handler.onAppStopped(this);
+                break;
+            case REGISTERED:
+                handler.onAppRegistered(this);
+                break;
+            case UNREGISTERED:
+                handler.onAppUnregistered(this);
+                break;
+        }
+    }
 }

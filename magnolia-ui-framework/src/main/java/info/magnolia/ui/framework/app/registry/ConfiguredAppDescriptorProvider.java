@@ -31,32 +31,54 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.applauncher;
+package info.magnolia.ui.framework.app.registry;
 
-import info.magnolia.ui.framework.app.layout.AppCategory;
+import javax.jcr.Node;
+
+import org.apache.commons.lang.StringUtils;
+
+import info.magnolia.cms.core.Content;
+import info.magnolia.cms.util.ContentUtil;
+import info.magnolia.content2bean.Content2BeanException;
+import info.magnolia.content2bean.Content2BeanUtil;
+import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.app.ShellAppView;
 
 /**
- * View for the app launcher.
+ * ConfiguredAppDescriptorProvider that instantiates an AppDescriptor from a configuration node.
  *
  * @version $Id$
  */
-public interface AppLauncherView extends ShellAppView {
+public class ConfiguredAppDescriptorProvider implements AppDescriptorProvider {
 
-    /**
-     * Presenter.
-     *
-     * @version $Id$
-     */
-    public interface Presenter {
+    private AppDescriptor appDescriptor;
 
-        void onAppInvoked(String name);
+    public ConfiguredAppDescriptorProvider(Node configNode) throws Content2BeanException {
+        super();
+        Content content = ContentUtil.asContent(configNode);
+        this.appDescriptor = (AppDescriptor) Content2BeanUtil.toBean(content, true, AppDescriptor.class);
+
+        // Minimal check
+        validate();
     }
 
-    void setPresenter(Presenter presenter);
+    @Override
+    public String getName() {
+        return appDescriptor.getName();
+    }
 
-    void registerApp(final AppDescriptor descriptor, AppCategory category);
+    @Override
+    public AppDescriptor getAppDescriptor() throws RegistrationException {
+        return appDescriptor;
+    }
 
-    void unregisterApp(final AppDescriptor descriptor);
+    public String toString() {
+        return "ConfiguredAppDescriptorProvider [id=" + appDescriptor.getName() + ", appDescriptor=" + appDescriptor + "]";
+    }
+
+    public void validate() {
+        if (StringUtils.isEmpty(appDescriptor.getCategoryName())) {
+            appDescriptor.setCategoryName(DEFAULT_CATEGORY_NAME);
+        }
+    }
 }

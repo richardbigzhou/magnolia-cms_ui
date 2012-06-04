@@ -31,51 +31,21 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.framework.app.registry;
 
-import info.magnolia.ui.framework.event.Event;
+import info.magnolia.registry.RegistrationException;
+import info.magnolia.ui.framework.app.AppDescriptor;
 
 /**
- * App Event used to notify a Start Stop or Focus event.
+ * Provides a {@link AppDescriptor}.
  *
  * @version $Id$
  */
-public class AppLifecycleEvent implements Event<AppLifecycleEventHandler> {
+public interface AppDescriptorProvider {
 
-    private final AppDescriptor appDescriptor;
+    public static final String DEFAULT_CATEGORY_NAME = "DEFAULT";
 
-    private final AppEventType eventType;
+    String getName();
 
-    public AppLifecycleEvent(AppDescriptor app, AppEventType eventType) {
-        System.out.println("AppEvent: create Event for app type: " + app.getName() + " and type " + eventType);
-        this.appDescriptor = app;
-        this.eventType = eventType;
-    }
-
-    public AppDescriptor getAppDescriptor() {
-        return appDescriptor;
-    }
-
-    public AppEventType getEventType() {
-        return eventType;
-    }
-
-    @Override
-    public void dispatch(AppLifecycleEventHandler handler) {
-        if (eventType == null) {
-            return;
-        }
-
-        switch (eventType) {
-            case START_EVENT :
-                handler.onStartApp(this);
-                break;
-            case FOCUS_EVENT :
-                handler.onAppFocus(this);
-                break;
-            case STOP_EVENT :
-                handler.onStopApp(this);
-                break;
-        }
-    }
+    AppDescriptor getAppDescriptor() throws RegistrationException;
 }

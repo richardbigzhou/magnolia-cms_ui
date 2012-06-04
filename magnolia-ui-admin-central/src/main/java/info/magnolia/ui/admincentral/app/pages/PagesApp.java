@@ -34,7 +34,7 @@
 package info.magnolia.ui.admincentral.app.pages;
 
 
-import info.magnolia.ui.admincentral.app.AppLifecycle;
+import info.magnolia.ui.framework.app.AppLifecycle;
 import info.magnolia.ui.framework.place.PlaceController;
 
 import com.google.inject.Inject;

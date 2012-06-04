@@ -31,41 +31,54 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.framework.app;
 
-import info.magnolia.ui.framework.activity.AbstractActivity;
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.view.ViewPort;
+import info.magnolia.ui.framework.event.EventHandler;
 
 /**
- * Abstract presenter for app views.
+ * Listens to {@link AppLifecycleEvent}s.
  *
- * @param <T>
  * @version $Id$
  */
-public abstract class AbstractAppActivity<T extends AppPresenter<T>> extends AbstractActivity implements AppPresenter<T> {
+public interface AppLifecycleEventHandler extends EventHandler {
 
-    private AppView<T> view;
+    void onAppFocused(final AppLifecycleEvent event);
 
-    private String name;
+    void onAppStopped(final AppLifecycleEvent event);
 
-    public AbstractAppActivity(AppView<T> view) {
-        this.view = view;
-    }
+    void onAppStarted(final AppLifecycleEvent event);
 
-    @Override
-    public void start(ViewPort viewPort, EventBus eventBus) {
-        view.setPresenter(getReference());
-        viewPort.setView(view);
-    }
+    void onAppRegistered(final AppLifecycleEvent event);
 
-    @Override
-    public String getAppName() {
-        return name;
-    }
+    void onAppUnregistered(final AppLifecycleEvent event);
 
-    public void setName(String name) {
-        this.name = name;
+    /**
+     * Simple stub so in case not all the methods should be implemented - you can skip them.
+     *
+     * @version $Id$
+     */
+    public static class Adapter implements AppLifecycleEventHandler {
+
+        @Override
+        public void onAppFocused(AppLifecycleEvent event) {
+        }
+
+        @Override
+        public void onAppStopped(AppLifecycleEvent event) {
+        }
+
+        @Override
+        public void onAppStarted(AppLifecycleEvent event) {
+        }
+
+        @Override
+        public void onAppRegistered(AppLifecycleEvent event) {
+        }
+
+        @Override
+        public void onAppUnregistered(AppLifecycleEvent event) {
+        }
+
     }
 
 }

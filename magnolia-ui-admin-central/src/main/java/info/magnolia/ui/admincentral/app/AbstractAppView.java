@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.admincentral.app;
 
+import info.magnolia.ui.framework.app.AppPresenter;
+import info.magnolia.ui.framework.app.AppView;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 import info.magnolia.ui.widget.tabsheet.ShellTab;
 import info.magnolia.ui.widget.tabsheet.ShellTabSheet;
@@ -74,7 +76,6 @@ public abstract class AbstractAppView<T extends AppPresenter<T>> implements AppV
         return presenter.getAppName();
     }
 
-    @Override
     public void addTab(ComponentContainer cc, String caption) {
         final ShellTab tab = new ShellTab(caption, cc);
         tabsheet.addComponent(tab);
@@ -82,7 +83,6 @@ public abstract class AbstractAppView<T extends AppPresenter<T>> implements AppV
         tabsheet.setActiveTab(tab);
     }
 
-    @Override
     public void closeTab(ComponentContainer cc) {
         tabsheet.removeComponent(cc);
     }

@@ -31,37 +31,22 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.dialog;
-
-import info.magnolia.ui.framework.app.AbstractAppActivity;
-import info.magnolia.ui.admincentral.dialog.DialogPresenter;
-import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
-
-import javax.inject.Inject;
+package info.magnolia.ui.framework.app;
 
 /**
- * Activity for the Pages app.
+ * Manages apps running for a single user.
  *
  * @version $Id$
  */
-public class DialogTestActivity extends AbstractAppActivity<DialogTestPresenter> implements DialogTestPresenter {
-    
-    private DialogPresenterFactory factory;
+public interface AppController {
 
-    @Inject
-    public DialogTestActivity(DialogTestView view, DialogPresenterFactory factory) {
-        super(view);
-        this.factory = factory;
-    }
+    AppDescriptor getAppDescriptor(final AppLifecycle app);
 
-    @Override
-    public void openDialog() {
-        DialogPresenter presenter = factory.createDialog("testDialog");
-        presenter.showDialog();
-    }
+    void startIfNotAlreadyRunning(String name);
 
-    @Override
-    public DialogTestPresenter getReference() {
-        return this;
-    }
+    void startIfNotAlreadyRunningThenFocus(String name);
+
+    void stopApplication(String name);
+
+    void stopCurrentApplication();
 }

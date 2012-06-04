@@ -31,18 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.framework;
+package info.magnolia.ui.framework.app;
 
 import javax.inject.Inject;
 
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.admincentral.app.AppCategory;
-import info.magnolia.ui.admincentral.app.AppDescriptor;
-import info.magnolia.ui.admincentral.app.AppLifecycleEvent;
-import info.magnolia.ui.admincentral.app.AppLifecycleEventHandler;
-import info.magnolia.ui.admincentral.app.AppRegistry;
-import info.magnolia.ui.admincentral.app.PlaceActivityMapping;
 import info.magnolia.ui.framework.activity.ActivityMapperImpl;
+import info.magnolia.ui.framework.app.layout.AppCategory;
+import info.magnolia.ui.framework.app.layout.AppLauncherLayout;
 import info.magnolia.ui.framework.event.EventBus;
 
 /**
@@ -50,16 +46,15 @@ import info.magnolia.ui.framework.event.EventBus;
  *
  * @version $Id$
  */
-@SuppressWarnings("serial")
 public class AppActivityMapper extends ActivityMapperImpl {
 
     @Inject
-    public AppActivityMapper(ComponentProvider componentProvider, AppRegistry appRegistry, EventBus eventBus) {
+    public AppActivityMapper(ComponentProvider componentProvider, AppLauncherLayout appLauncherLayout, EventBus eventBus) {
         super(componentProvider);
         super.setLongLivingActivities(true);
 
         // Add mappings for all places provided by apps
-        for (AppCategory category : appRegistry.getCategories()) {
+        for (AppCategory category : appLauncherLayout.getCategories()) {
             for (AppDescriptor descriptor : category.getApps()) {
                 for (PlaceActivityMapping mapping : descriptor.getActivityMappings()) {
                     super.addMapping(mapping.getPlace(), mapping.getActivity());
@@ -71,7 +66,7 @@ public class AppActivityMapper extends ActivityMapperImpl {
         eventBus.addHandler(AppLifecycleEvent.class, new AppLifecycleEventHandler.Adapter() {
 
             @Override
-            public void onStopApp(AppLifecycleEvent event) {
+            public void onAppStopped(AppLifecycleEvent event) {
                 for (PlaceActivityMapping mapping : event.getAppDescriptor().getActivityMappings()) {
                     removeActivityInstanceForPlace(mapping.getPlace());
                 }

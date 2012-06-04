@@ -31,37 +31,35 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.dialog;
+package info.magnolia.ui.framework.app;
 
-import info.magnolia.ui.framework.app.AbstractAppActivity;
-import info.magnolia.ui.admincentral.dialog.DialogPresenter;
-import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
-
-import javax.inject.Inject;
+import info.magnolia.ui.framework.activity.Activity;
+import info.magnolia.ui.framework.place.Place;
 
 /**
- * Activity for the Pages app.
+ * Mapping for associating a place with an activity.
  *
  * @version $Id$
  */
-public class DialogTestActivity extends AbstractAppActivity<DialogTestPresenter> implements DialogTestPresenter {
-    
-    private DialogPresenterFactory factory;
+public class PlaceActivityMapping {
 
-    @Inject
-    public DialogTestActivity(DialogTestView view, DialogPresenterFactory factory) {
-        super(view);
-        this.factory = factory;
+    private Class<? extends Place> place;
+
+    private Class<? extends Activity> activity;
+
+    public Class<? extends Place> getPlace() {
+        return place;
     }
 
-    @Override
-    public void openDialog() {
-        DialogPresenter presenter = factory.createDialog("testDialog");
-        presenter.showDialog();
+    public void setPlace(Class<? extends Place> place) {
+        this.place = place;
     }
 
-    @Override
-    public DialogTestPresenter getReference() {
-        return this;
+    public Class<? extends Activity> getActivity() {
+        return activity;
+    }
+
+    public void setActivity(Class<? extends Activity> activity) {
+        this.activity = activity;
     }
 }

@@ -31,13 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.magnoliashell;
+package info.magnolia.ui.framework.app;
 
 /**
- * Shell apps capable view.
- * @author apchelintcev
+ * Generic app view.
  *
+ * @param <T>
+ * @version $Id$
  */
-public interface ShellAppView extends ShellView {
+public interface AppView<T extends AppPresenter<T>> extends ShellView {
 
+    void setPresenter(final T presenter);
+
+    T getPresenter();
 }

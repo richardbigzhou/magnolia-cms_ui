@@ -57,6 +57,8 @@ public class ActivityManager implements PlaceChangeEvent.Handler, PlaceChangeReq
 
     private static final Activity NULL_ACTIVITY = new AbstractActivity() {
 
+        private static final long serialVersionUID = 1L;
+
         @Override
         public void start(ViewPort viewPort, EventBus eventBus) {
             viewPort.setView(null);

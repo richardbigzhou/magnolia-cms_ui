@@ -31,22 +31,24 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.framework.app.registry;
 
-import info.magnolia.ui.framework.activity.Activity;
-import info.magnolia.ui.framework.place.Place;
-
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import info.magnolia.ui.framework.activity.Activity;
+import info.magnolia.ui.framework.app.AppDescriptor;
+import info.magnolia.ui.framework.app.AppLifecycle;
+import info.magnolia.ui.framework.app.PlaceActivityMapping;
+import info.magnolia.ui.framework.place.Place;
 
 /**
  * Describes an app.
  *
  * @version $Id$
  */
-public class AppDescriptor implements Serializable {
+public class ConfiguredAppDescriptor implements AppDescriptor {
 
     /**
      *
@@ -58,6 +60,8 @@ public class AppDescriptor implements Serializable {
      */
     private String name;
 
+    private String categoryName;
+
     private String label;
 
     private boolean enabled = true;
@@ -67,6 +71,7 @@ public class AppDescriptor implements Serializable {
     private Class<? extends AppLifecycle> appClass;
 
     private List<PlaceActivityMapping> activityMappings = new ArrayList<PlaceActivityMapping>();
+
 
     public String getName() {
         return name;
@@ -127,4 +132,16 @@ public class AppDescriptor implements Serializable {
         }
         return result;
     }
+
+    @Override
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    @Override
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
+
 }

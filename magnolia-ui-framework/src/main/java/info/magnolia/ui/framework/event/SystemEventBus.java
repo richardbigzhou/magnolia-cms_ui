@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,25 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
-
-import java.util.Collection;
+package info.magnolia.ui.framework.event;
 
 /**
- * Registry of available apps.
+ * Event bus which fires events to a set of registered handlers.
  *
  * @version $Id$
+ * @see EventBus
  */
-public interface AppRegistry {
+public interface SystemEventBus extends EventBus{
 
-    Collection<AppCategory> getCategories();
-
-    /**
-     * Returns the AppDescriptor for a given name.
-     *
-     * @throws IllegalArgumentException: If key don't exist.
-     */
-    AppDescriptor getAppDescriptor(String name);
-
-    boolean isAppDescriptionRegistered(String name);
 }

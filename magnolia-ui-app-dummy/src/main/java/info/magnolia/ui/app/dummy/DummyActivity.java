@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.app.dummy;
 
-import info.magnolia.ui.admincentral.app.AbstractAppActivity;
+import info.magnolia.ui.framework.app.AbstractAppActivity;
 
 import javax.inject.Inject;
 

@@ -31,25 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
-
-import info.magnolia.ui.widget.magnoliashell.ShellView;
-
-import com.vaadin.ui.ComponentContainer;
+package info.magnolia.ui.framework.app;
 
 /**
- * Generic app view.
+ * AppEvent Type enumeration.
  *
- * @param <T>
  * @version $Id$
  */
-public interface AppView<T extends AppPresenter<T>> extends ShellView {
+public enum AppEventType {
 
-    void addTab(final ComponentContainer cc, String caption);
-    
-    void closeTab(final ComponentContainer cc);
-    
-    void setPresenter(final T presenter);
-    
-    T getPresenter();
+    REGISTERED, UNREGISTERED, STARTED, STOPPED, FOCUSED
 }

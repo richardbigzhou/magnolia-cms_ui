@@ -33,10 +33,10 @@
  */
 package info.magnolia.ui.admincentral.shellapp.applauncher;
 
-import info.magnolia.ui.admincentral.app.AppCategory;
-import info.magnolia.ui.admincentral.app.AppController;
-import info.magnolia.ui.admincentral.app.AppDescriptor;
-import info.magnolia.ui.admincentral.app.AppRegistry;
+import info.magnolia.ui.framework.app.layout.AppCategory;
+import info.magnolia.ui.framework.app.AppController;
+import info.magnolia.ui.framework.app.AppDescriptor;
+import info.magnolia.ui.framework.app.layout.AppLauncherLayout;
 import info.magnolia.ui.framework.activity.AbstractActivity;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.view.ViewPort;
@@ -45,27 +45,30 @@ import javax.inject.Inject;
 
 /**
  * Activity for the app launcher.
- * 
+ *
  * @version $Id$
  */
 public class AppLauncherActivity extends AbstractActivity implements AppLauncherView.Presenter {
+
+    private static final long serialVersionUID = 1L;
 
     private AppLauncherView view;
 
     private AppController appController;
 
-    private AppRegistry appRegistry;
+    private AppLauncherLayout appLauncherLayout;
 
     @Inject
-    public AppLauncherActivity(AppLauncherView view, AppController appController, AppRegistry appRegistry) {
+    public AppLauncherActivity(AppLauncherView view, AppController appController, AppLauncherLayout appLauncherLayout, EventBus eventBus) {
         this.view = view;
         this.appController = appController;
-        this.appRegistry = appRegistry;
-        for (AppCategory category : appRegistry.getCategories()) {
+        this.appLauncherLayout = appLauncherLayout;
+        for (AppCategory category : this.appLauncherLayout.getCategories()) {
             for (AppDescriptor descriptor : category.getApps()) {
                 view.registerApp(descriptor, category);
             }
         }
+
     }
 
     @Override

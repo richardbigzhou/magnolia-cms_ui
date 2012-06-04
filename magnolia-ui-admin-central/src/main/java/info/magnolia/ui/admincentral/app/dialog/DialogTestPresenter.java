@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.app.dialog;
 
-import info.magnolia.ui.admincentral.app.AppPresenter;
+import info.magnolia.ui.framework.app.AppPresenter;
 
 /**
  * Dialog test presenter.

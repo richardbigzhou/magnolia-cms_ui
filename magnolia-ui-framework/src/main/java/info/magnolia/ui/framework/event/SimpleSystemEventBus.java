@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,39 +31,19 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.framework.event;
 
-import info.magnolia.ui.framework.event.EventHandler;
+import javax.inject.Singleton;
 
 /**
- * Listens to {@link AppLifecycleEvent}s.
+ * Event bus implementation.
+ *
+ * Inspired by {@link com.google.gwt.event.shared.SimpleEventBus}.
  *
  * @version $Id$
+ * @see SystemEventBus
  */
-public interface AppLifecycleEventHandler extends EventHandler {
-    
-    void onAppFocus(final AppLifecycleEvent event);
-    
-    void onStopApp(final AppLifecycleEvent event);
-    
-    void onStartApp(final AppLifecycleEvent event);
-    
-    /**
-     * Simple stub so in case not all the methods should be implemented - you can skip them.
-     *
-     * @version $Id$
-     */
-    public static class Adapter implements AppLifecycleEventHandler {
+@Singleton
+public class SimpleSystemEventBus extends SimpleEventBus implements SystemEventBus {
 
-        @Override
-        public void onAppFocus(AppLifecycleEvent event) {}
-
-        @Override
-        public void onStopApp(AppLifecycleEvent event) {}
-
-        @Override
-        public void onStartApp(AppLifecycleEvent event) {}
-        
-    }
-    
 }

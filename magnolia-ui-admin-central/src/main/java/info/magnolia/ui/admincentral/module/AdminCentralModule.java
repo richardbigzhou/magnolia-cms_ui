@@ -31,22 +31,35 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.admincentral.module;
+
+import javax.inject.Inject;
+
+import info.magnolia.module.ModuleLifecycle;
+import info.magnolia.module.ModuleLifecycleContext;
+import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptorManager;
+
 
 /**
- * Manages apps running for a single user.
+ * Registers the observed managers: {@link ConfiguredAppDescriptorManager}.
  *
- * @version $Id$
  */
-public interface AppController {
-    
-    AppDescriptor getAppDescriptor(final AppLifecycle app);
-    
-    void startIfNotAlreadyRunning(String name);
+public class AdminCentralModule implements ModuleLifecycle {
 
-    void startIfNotAlreadyRunningThenFocus(String name);
+    private ConfiguredAppDescriptorManager configuredAppDescriptorManager;
 
-    void stopApplication(String name);
-    
-    void stopCurrentApplication();
+    @Inject
+    public AdminCentralModule(ConfiguredAppDescriptorManager configuredAppDescriptorManager) {
+        this.configuredAppDescriptorManager = configuredAppDescriptorManager;
+    }
+
+    @Override
+    public void start(ModuleLifecycleContext arg0) {
+        this.configuredAppDescriptorManager.start();
+    }
+
+    @Override
+    public void stop(ModuleLifecycleContext arg0) {
+    }
+
 }

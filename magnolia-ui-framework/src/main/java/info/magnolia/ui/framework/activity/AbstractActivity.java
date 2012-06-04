@@ -40,6 +40,8 @@ package info.magnolia.ui.framework.activity;
  */
 public abstract class AbstractActivity implements Activity {
 
+    private static final long serialVersionUID = 1L;
+
     @Override
     public String mayStop() {
         return null;
