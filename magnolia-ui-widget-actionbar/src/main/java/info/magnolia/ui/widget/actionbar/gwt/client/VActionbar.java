@@ -70,13 +70,23 @@ public class VActionbar extends Composite implements HasWidgets, Container, VAct
         if (client.updateComponent(this, uidl, true)) {
             return;
         }
+        // find what incoming uidl should look like
         updateSections(uidl);
     }
 
     private void updateSections(UIDL uidl) {
+        view.updateSections();
+        // for any section passed through uidl, call view.addSection(...)
+        // then update nested group uidl
     }
 
     private void updateGroups(UIDL uidl) {
+        // for any group passed through uidl, call view.addGroup(...) into current section
+        // then update nested actions
+    }
+
+    private void updateActions(UIDL uidl) {
+        // for any action passed through uidl, call view.addAction(...) into current group
     }
 
     @Override

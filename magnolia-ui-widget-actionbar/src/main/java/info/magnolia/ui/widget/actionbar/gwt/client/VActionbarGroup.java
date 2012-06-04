@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,32 +33,51 @@
  */
 package info.magnolia.ui.widget.actionbar.gwt.client;
 
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.IsWidget;
+import java.util.LinkedList;
+import java.util.List;
+
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 
 /**
- * 
- * VActionbarView.
- * 
+ * The Class VActionbarGroup, which displays a group of actions within a section of the action bar.
  */
-public interface VActionbarView extends HasWidgets, IsWidget {
+public class VActionbarGroup extends ComplexPanel {
+
+    private static final String CLASSNAME = "v-actionbar-group";
+
+    private final Element root = DOM.createElement("ul");
+
+    private final List<VAction> actions = new LinkedList<VAction>();
 
     /**
-     * 
-     * Presenter.
+     * Instantiates a new action bar group.
      */
-    interface Presenter {
+    public VActionbarGroup() {
+        setElement(root);
+        setStyleName(CLASSNAME);
     }
 
-    void setPresenter(Presenter presenter);
-
-    boolean hasChildComponent(Widget component);
-
     /**
-     * Updates the action bar sections.
+     * Updates the actions.
      */
-    void updateSections();
+    public void updateActions() {
+        VAction addAction = new VAction("Add task");
+        VAction deleteAction = new VAction("Delete task");
+        actions.add(addAction);
+        actions.add(deleteAction);
 
+        for (VAction action : actions) {
+            add(action);
+            action.updateLabel(action.getLabel());
+        }
+    }
+
+    @Override
+    public void add(Widget w) {
+        add(w, getElement());
+    }
 }

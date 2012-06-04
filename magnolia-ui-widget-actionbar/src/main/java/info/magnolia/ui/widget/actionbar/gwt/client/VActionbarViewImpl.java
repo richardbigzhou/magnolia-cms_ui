@@ -33,33 +33,36 @@
  */
 package info.magnolia.ui.widget.actionbar.gwt.client;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+
 /**
- *
- * VActionbarViewImpl.
- *
+ * The Class VActionbarViewImpl, GWT implementation for the VActionbarView interface.
  */
-public class VActionbarViewImpl extends FlowPanel implements VActionbarView {
+public class VActionbarViewImpl extends ComplexPanel implements VActionbarView {
 
     public static final String CLASSNAME = "v-actionbar";
 
-    private Element root = DOM.createElement("section");
+    private final Element root = DOM.createElement("section");
 
     private Presenter presenter;
 
+    private final List<VActionbarSection> sections = new LinkedList<VActionbarSection>();
+
     public VActionbarViewImpl() {
-        this.root = getElement();
-        // setElement(root);
+        setElement(root);
         setStyleName(CLASSNAME);
 
-        Element title = DOM.createElement("h3");
-        title.setClassName("section-title");
-        title.setInnerText("Actions");
-        getElement().appendChild(title);
+        // Element title = DOM.createElement("h3");
+        // title.setClassName("section-title");
+        // title.setInnerText("Actions");
+        // getElement().appendChild(title);
 
     }
 
@@ -71,6 +74,24 @@ public class VActionbarViewImpl extends FlowPanel implements VActionbarView {
     @Override
     public boolean hasChildComponent(Widget component) {
         return getChildren().contains(component);
+    }
+
+    @Override
+    public void add(Widget w) {
+        add(w, getElement());
+    }
+
+    @Override
+    public void updateSections() {
+        VActionbarSection mainSection = new VActionbarSection("Actions");
+        VActionbarSection previewSection = new VActionbarSection("Preview");
+        sections.add(mainSection);
+        sections.add(previewSection);
+
+        for (VActionbarSection section : sections) {
+            add(section);
+            section.updateGroups();
+        }
     }
 
 }
