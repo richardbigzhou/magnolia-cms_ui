@@ -33,10 +33,10 @@
  */
 package info.magnolia.ui.admincentral.shellapp.applauncher;
 
-import info.magnolia.ui.framework.app.layout.AppCategory;
 import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventHandler;
+import info.magnolia.ui.framework.app.layout.AppCategory;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 import info.magnolia.ui.vaadin.integration.widget.AppButton;
@@ -125,6 +125,12 @@ public class AppLauncherViewImpl implements AppLauncherView, IsVaadinComponent {
                     layout.requestRepaintAll();
                 }
 
+                @Override
+                public void onAppReRegistered(AppLifecycleEvent event) {
+                    reRegisterApp(event.getAppDescriptor());
+                    layout.requestRepaintAll();
+                }
+
             });
     }
 
@@ -142,9 +148,7 @@ public class AppLauncherViewImpl implements AppLauncherView, IsVaadinComponent {
     public void registerApp(final AppDescriptor descriptor, AppCategory category) {
         AppGroupComponent group = appGroupMap.get(category.getLabel());
         if (group == null) {
-            group = new AppGroupComponent(category.getLabel());
-            appGroupMap.put(category.getLabel(), group);
-            layout.addComponent(group);
+            group = createGroup(category.getLabel());
         }
 
         group.addApp(descriptor);
@@ -219,4 +223,51 @@ public class AppLauncherViewImpl implements AppLauncherView, IsVaadinComponent {
         }
         appButtons.remove(descriptor.getName());
     }
+
+
+    @Override
+    /**
+     * Currently we just handle the Group changes.
+     */
+    public void reRegisterApp(AppDescriptor descriptor) {
+        //Init
+        AppGroupComponent group = appGroupMap.get(descriptor.getCategoryName());
+        AppButton button = appButtons.get(descriptor.getName());
+        AppGroupComponent currentAppGroup = (AppGroupComponent)button.getParent().getParent();
+        if(group == currentAppGroup) {
+            return;
+        }
+
+        //Add button to the new Group
+        if(group == null) {
+            //New Group
+            group = createGroup(descriptor.getCategoryName());
+        }
+        group.getIconList().addComponent(button);
+        button.setIcon(new ThemeResource(descriptor.getIcon()));
+
+
+        //Remove Button from the old group.
+        currentAppGroup.getIconList().removeComponent(button);
+        if(currentAppGroup.getIconList().getComponentCount()==0) {
+            layout.removeComponent(currentAppGroup);
+            appGroupMap.remove(currentAppGroup.title);
+        }
+
+    }
+
+
+
+    /**
+     * Create a new Group.
+     * Add this group to the layout and groupMap.
+     */
+    private AppGroupComponent createGroup(String groupName){
+        AppGroupComponent group = new AppGroupComponent(groupName);
+        appGroupMap.put(groupName, group);
+        layout.addComponent(group);
+
+        return group;
+    }
+
 }

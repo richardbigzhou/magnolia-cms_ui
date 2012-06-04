@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,14 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app;
+package info.magnolia.ui.widget.tabsheet.gwt.client.event;
+
+import com.google.gwt.event.shared.EventHandler;
 
 /**
- * AppEvent Type enumeration.
+ * ShowAllTabHandler.
  *
- * @version $Id$
+ * @author ejervidalo
  */
-public enum AppEventType {
-
-    REGISTERED, UNREGISTERED, REREGISTERED,  STARTED, STOPPED, FOCUSED
+public interface ShowAllTabHandler extends EventHandler {
+    void onShowAll(final ShowAllTabEvent event);
 }

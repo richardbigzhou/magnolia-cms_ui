@@ -59,4 +59,6 @@ public interface AppLauncherView extends ShellAppView {
     void registerApp(final AppDescriptor descriptor, AppCategory category);
 
     void unregisterApp(final AppDescriptor descriptor);
+
+    void reRegisterApp(final AppDescriptor descriptor);
 }

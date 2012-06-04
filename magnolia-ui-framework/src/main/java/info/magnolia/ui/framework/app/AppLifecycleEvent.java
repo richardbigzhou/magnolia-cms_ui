@@ -81,6 +81,9 @@ public class AppLifecycleEvent implements Event<AppLifecycleEventHandler> {
             case UNREGISTERED:
                 handler.onAppUnregistered(this);
                 break;
+            case REREGISTERED:
+                handler.onAppReRegistered(this);
+                break;
         }
     }
 }

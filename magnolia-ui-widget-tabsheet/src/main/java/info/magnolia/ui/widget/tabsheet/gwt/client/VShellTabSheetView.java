@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,14 +31,64 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app;
+package info.magnolia.ui.widget.tabsheet.gwt.client;
+
+import java.util.List;
+
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
- * AppEvent Type enumeration.
+ * VShellTabView.
  *
- * @version $Id$
+ * @author ejervidalo
  */
-public enum AppEventType {
+public interface VShellTabSheetView extends IsWidget {
 
-    REGISTERED, UNREGISTERED, REREGISTERED,  STARTED, STOPPED, FOCUSED
+    /**
+     * Presenter.
+     *
+     * @author ejervidalo
+     */
+    public interface Presenter {
+
+    }
+
+    /**
+     * @param tab
+     */
+    void add(Widget tab);
+
+    /**
+     * @return
+     */
+    VShellTabNavigator getTabContainer();
+
+    /**
+     * @param tabId
+     * @return
+     */
+    VShellTabContent getTabById(String tabId);
+
+    /**
+     * @return
+     */
+    List<VShellTabContent> getTabs();
+
+    /**
+     * @param tab
+     */
+    void setActiveTab(VShellTabContent tab);
+
+    /**
+     * @param tabToOrphan
+     */
+    void removeTab(VShellTabContent tabToOrphan);
+
+    /**
+     * @param visible
+     */
+    void showAllTabContents(boolean visible);
+
+
 }
