@@ -134,15 +134,15 @@ public class AppControllerImplTest {
         AppEventCollector eventCollector = new AppEventCollector();
         eventBus.addHandler(AppLifecycleEvent.class, eventCollector);
 
-        AppLauncherLayoutManager appLauncherLayoutManager = mock(AppLauncherLayoutManager.class);
         AppLauncherLayout appLauncherLayout = mock(AppLauncherLayout.class);
-        when(appLauncherLayoutManager.getLayout()).thenReturn(appLauncherLayout);
+        AppLauncherLayoutManager appLayoutManager = mock(AppLauncherLayoutManager.class);
+        when(appLayoutManager.getLayout()).thenReturn(appLauncherLayout);
         when(appLauncherLayout.getAppDescriptor("test")).thenReturn(appDescriptor);
 
         ComponentProvider componentProvider = mock(ComponentProvider.class);
         when(componentProvider.newInstance(same(TestApp.class))).thenReturn(app);
 
-        AppControllerImpl appController = new AppControllerImpl(appLauncherLayoutManager, componentProvider, eventBus);
+        AppControllerImpl appController = new AppControllerImpl(appLayoutManager, componentProvider, eventBus);
 
         // WHEN
         appController.startIfNotAlreadyRunning("test");
@@ -170,13 +170,17 @@ public class AppControllerImplTest {
         AppEventCollector eventCollector = new AppEventCollector();
         eventBus.addHandler(AppLifecycleEvent.class, eventCollector);
 
-        AppLauncherLayoutManager appLauncherLayoutManager = mock(AppLauncherLayoutManager.class);
-        when(appLauncherLayoutManager.getLayout().getAppDescriptor("test")).thenReturn(appDescriptor);
+        AppLauncherLayout appLauncherLayout = mock(AppLauncherLayout.class);
+        AppLauncherLayoutManager appLayoutManager = mock(AppLauncherLayoutManager.class);
+        
+        when(appLayoutManager.getLayout()).thenReturn(appLauncherLayout);
+        when(appLauncherLayout.getAppDescriptor("test")).thenReturn(appDescriptor);
+        
 
         ComponentProvider componentProvider = mock(ComponentProvider.class);
         when(componentProvider.newInstance(same(TestApp.class))).thenReturn(app);
 
-        AppControllerImpl appController = new AppControllerImpl(appLauncherLayoutManager, componentProvider, eventBus);
+        AppControllerImpl appController = new AppControllerImpl(appLayoutManager, componentProvider, eventBus);
 
         // WHEN
         appController.startIfNotAlreadyRunningThenFocus("test");
@@ -207,13 +211,15 @@ public class AppControllerImplTest {
         AppEventCollector eventCollector = new AppEventCollector();
         eventBus.addHandler(AppLifecycleEvent.class, eventCollector);
 
-        AppLauncherLayoutManager appLauncherLayoutManager = mock(AppLauncherLayoutManager.class);
-        when(appLauncherLayoutManager.getLayout().getAppDescriptor("test")).thenReturn(appDescriptor);
+        AppLauncherLayout appLauncherLayout = mock(AppLauncherLayout.class);
+        AppLauncherLayoutManager appLayoutManager = mock(AppLauncherLayoutManager.class);
+        when(appLayoutManager.getLayout()).thenReturn(appLauncherLayout);
+        when(appLauncherLayout.getAppDescriptor("test")).thenReturn(appDescriptor);
 
         ComponentProvider componentProvider = mock(ComponentProvider.class);
         when(componentProvider.newInstance(same(TestApp.class))).thenReturn(app);
 
-        AppControllerImpl appController = new AppControllerImpl(appLauncherLayoutManager, componentProvider, eventBus);
+        AppControllerImpl appController = new AppControllerImpl(appLayoutManager, componentProvider, eventBus);
 
         appController.startIfNotAlreadyRunning("test");
 
@@ -252,15 +258,18 @@ public class AppControllerImplTest {
         AppEventCollector eventCollector = new AppEventCollector();
         eventBus.addHandler(AppLifecycleEvent.class, eventCollector);
 
-        AppLauncherLayoutManager appLauncherLayoutManager = mock(AppLauncherLayoutManager.class);
-        when(appLauncherLayoutManager.getLayout().getAppDescriptor("test1")).thenReturn(appDescriptor1);
-        when(appLauncherLayoutManager.getLayout().getAppDescriptor("test2")).thenReturn(appDescriptor2);
-
+        AppLauncherLayout appLauncherLayout = mock(AppLauncherLayout.class);
+        AppLauncherLayoutManager appLayoutManager = mock(AppLauncherLayoutManager.class);
+        
+        when(appLayoutManager.getLayout()).thenReturn(appLauncherLayout);
+        when(appLauncherLayout.getAppDescriptor("test1")).thenReturn(appDescriptor1);
+        when(appLauncherLayout.getAppDescriptor("test2")).thenReturn(appDescriptor2);
+        
         ComponentProvider componentProvider = mock(ComponentProvider.class);
         when(componentProvider.newInstance(eq(TestApp.class))).thenReturn(app1);
         when(componentProvider.newInstance(eq(AnotherTestApp.class))).thenReturn(app2);
 
-        AppControllerImpl appController = new AppControllerImpl(appLauncherLayoutManager, componentProvider, eventBus);
+        AppControllerImpl appController = new AppControllerImpl(appLayoutManager, componentProvider, eventBus);
 
         appController.startIfNotAlreadyRunningThenFocus("test1");
         appController.startIfNotAlreadyRunningThenFocus("test2");
