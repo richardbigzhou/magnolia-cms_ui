@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,15 +33,34 @@
  */
 package info.magnolia.ui.model.action;
 
-/**
- * An action definition is always associated with an {@link Action} and provides
- * the latter with the context (i.e. dependencies) it needs to be executed. For
- * instance, a place change action might provide a place object to move to via a
- * place controller. Implementations are expected to provide correct {@link Object#equals(Object)}
- * and {@link Object#hashCode()} methods.
- *
- * @version $Id$
- */
-public interface ActionDefinition {
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.model.builder.FactoryBase;
 
+/**
+ * Abstract base class used by action factories.
+ *
+ * @param <D> definition parent type
+ * @param <I> implementation parent type
+ * @version $Id$
+ * @see FactoryBase
+ */
+public abstract class AbstractActionFactory<D extends ActionDefinition, I extends Action> extends FactoryBase<D, I> {
+
+    public AbstractActionFactory(ComponentProvider componentProvider) {
+        super(componentProvider);
+    }
+
+    @Override
+    public void addMapping(Class<? extends D> definitionClass, Class<? extends I> implementationClass) {
+        super.addMapping(definitionClass, implementationClass);
+    }
+
+    /**
+     * Creates an action using the implementation configured for the given action definition. The parameters are made
+     * available for injection when the instance is created. The definition object given is also available for
+     * injection.
+     */
+    public I createAction(D definition, Object... parameters) {
+        return super.create(definition, parameters);
+    }
 }

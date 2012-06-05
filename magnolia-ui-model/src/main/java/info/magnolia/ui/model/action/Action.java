@@ -33,14 +33,18 @@
  */
 package info.magnolia.ui.model.action;
 
-
 /**
- * An action encapsulates the logic for some UI behavior, e.g. clicking on an app menu item would trigger an action which goes to a place associated with it.
- * An action is bound to an {@link ActionDefinition}.
- * @author fgrilli
+ * An action encapsulates the logic for some UI behavior, e.g. clicking on an app menu item would trigger an action
+ * which goes to a place associated with it. An action is bound to an {@link ActionDefinition}.
  *
+ * @version $Id$
  */
 public interface Action {
 
+    /**
+     * Executes the action.
+     *
+     * @throws ActionExecutionException if an error occurs performing the action
+     */
     void execute() throws ActionExecutionException;
 }
