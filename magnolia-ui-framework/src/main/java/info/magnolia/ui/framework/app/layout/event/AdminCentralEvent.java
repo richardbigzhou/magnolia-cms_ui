@@ -31,24 +31,45 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app;
+package info.magnolia.ui.framework.app.layout.event;
+
+import info.magnolia.ui.framework.event.Event;
+
 
 /**
- * Manages apps running for a single user.
- *
- * @version $Id$
+ * AdminCentral Events used to notify Changes in the Admin central configuration.
  */
-public interface AppController {
+public class AdminCentralEvent implements Event<AdminCentralEventHandler> {
 
-    AppDescriptor getAppDescriptor(final AppLifecycle app);
+    private final AdminCentralEventType eventType;
 
-    void startIfNotAlreadyRunning(String name);
+    private final String appName;
 
-    void startIfNotAlreadyRunningThenFocus(String name);
+    public AdminCentralEvent(AdminCentralEventType eventType, String appName) {
+        this.eventType = eventType;
+        this.appName = appName;
+    }
 
-    void stopApplication(String name);
+    public AdminCentralEventType getEventType() {
+        return this.eventType;
+    }
 
-    void stopCurrentApplication();
+    public String getAppName() {
+        return this.appName;
+    }
 
-    boolean isAppStarted(AppDescriptor descriptor);
+
+    @Override
+    public void dispatch(AdminCentralEventHandler handler) {
+        if (eventType == null) {
+            return;
+        }
+
+        switch (eventType) {
+            case RELOAD_APP:
+                handler.onReloadApp(this);
+                break;
+        }
+    }
+
 }

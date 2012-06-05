@@ -31,24 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app;
+package info.magnolia.ui.framework.app.layout;
+
 
 /**
- * Manages apps running for a single user.
- *
- * @version $Id$
+ * Build {AppLauncherLayout}s POJO used by the {AppLauncherActivity}.
  */
-public interface AppController {
+public interface AppLauncherLayoutManager {
 
-    AppDescriptor getAppDescriptor(final AppLifecycle app);
+    /**
+     * Return the {AppLauncherLayout} defined for the current user.
+     * Return an Empty AppLauncherLayout if nothing set for profile.
+     */
+    public AppLauncherLayout getLayout();
 
-    void startIfNotAlreadyRunning(String name);
+    /**
+     * Check if the given App name is part of the categories define for the current profile.
+     */
+    boolean isAppDescriptionRegistered(String name);
 
-    void startIfNotAlreadyRunningThenFocus(String name);
-
-    void stopApplication(String name);
-
-    void stopCurrentApplication();
-
-    boolean isAppStarted(AppDescriptor descriptor);
+    /**
+     * Check if the given Category name is part of the categories define for the current profile.
+     */
+    boolean isCategoryRegistered(String name);
 }

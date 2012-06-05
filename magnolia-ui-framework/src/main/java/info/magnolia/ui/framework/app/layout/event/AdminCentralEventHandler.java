@@ -31,24 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app;
+package info.magnolia.ui.framework.app.layout.event;
+
+import info.magnolia.ui.framework.event.EventHandler;
+
 
 /**
- * Manages apps running for a single user.
- *
- * @version $Id$
+ * Listens to {@link AdminCentralEvent}s.
  */
-public interface AppController {
+public interface AdminCentralEventHandler extends EventHandler {
 
-    AppDescriptor getAppDescriptor(final AppLifecycle app);
+    void onReloadApp(final AdminCentralEvent event);
 
-    void startIfNotAlreadyRunning(String name);
+    /**
+     * Simple stub so in case not all the methods should be implemented - you can skip them.
+     */
+    public static class Adapter implements AdminCentralEventHandler {
 
-    void startIfNotAlreadyRunningThenFocus(String name);
+        @Override
+        public void onReloadApp(AdminCentralEvent event) {
+        }
 
-    void stopApplication(String name);
+    }
 
-    void stopCurrentApplication();
-
-    boolean isAppStarted(AppDescriptor descriptor);
 }

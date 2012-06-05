@@ -33,12 +33,18 @@
  */
 package info.magnolia.ui.admincentral.shellapp.applauncher;
 
-import info.magnolia.ui.framework.app.layout.AppCategory;
+import info.magnolia.ui.framework.activity.AbstractActivity;
 import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.AppDescriptor;
+import info.magnolia.ui.framework.app.AppLifecycleEvent;
+import info.magnolia.ui.framework.app.AppLifecycleEventHandler;
+import info.magnolia.ui.framework.app.layout.AppCategory;
 import info.magnolia.ui.framework.app.layout.AppLauncherLayout;
-import info.magnolia.ui.framework.activity.AbstractActivity;
+import info.magnolia.ui.framework.app.layout.AppLauncherLayoutManager;
+import info.magnolia.ui.framework.app.layout.event.AdminCentralEvent;
+import info.magnolia.ui.framework.app.layout.event.AdminCentralEventHandler;
 import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.event.SystemEventBus;
 import info.magnolia.ui.framework.place.Place;
 import info.magnolia.ui.framework.view.ViewPort;
 
@@ -53,23 +59,59 @@ public class AppLauncherActivity extends AbstractActivity implements AppLauncher
 
     private static final long serialVersionUID = 1L;
 
-    private AppLauncherView view;
+    private final AppLauncherView view;
 
     private AppController appController;
 
-    private AppLauncherLayout appLauncherLayout;
+    private AppLauncherLayoutManager appLauncherLayoutManager;
+
+    private AppLauncherLayout layout;
 
     @Inject
-    public AppLauncherActivity(AppLauncherView view, AppController appController, AppLauncherLayout appLauncherLayout, EventBus eventBus) {
+    public AppLauncherActivity(AppLauncherView view, AppController appController, AppLauncherLayoutManager appLauncherLayoutManager, EventBus eventBus, SystemEventBus systemEventBus) {
         this.view = view;
         this.appController = appController;
-        this.appLauncherLayout = appLauncherLayout;
-        for (AppCategory category : this.appLauncherLayout.getCategories()) {
-            for (AppDescriptor descriptor : category.getApps()) {
-                view.registerApp(descriptor, category);
-            }
-        }
+        this.appLauncherLayoutManager = appLauncherLayoutManager;
+        this.layout = this.appLauncherLayoutManager.getLayout();
 
+        //Init view
+        initView(layout);
+        /**
+         * Handle ReloadAppEvent.
+         */
+        systemEventBus.addHandler(AdminCentralEvent.class, new AdminCentralEventHandler.Adapter() {
+            @Override
+            public void onReloadApp(AdminCentralEvent event) {
+                if(isAppRegistered(event.getAppName())) {
+                    //Reload Layout
+                    reloadLayout();
+                }
+            }
+        });
+
+        /**
+         * Add Handler of type AppLifecycleEventHandler in order to catch stop
+         * and start App events.
+         */
+        eventBus.addHandler(AppLifecycleEvent.class,
+            new AppLifecycleEventHandler.Adapter() {
+
+                @Override
+                /**
+                 * Deactivate the visual triangle on the App Icon.
+                 */
+                public void onAppStopped(AppLifecycleEvent event) {
+                    activateButton(false, event.getAppDescriptor().getName());
+                }
+
+                @Override
+                /**
+                 * Activate the visual triangle on the App Icon.
+                 */
+                public void onAppStarted(AppLifecycleEvent event) {
+                    activateButton(true, event.getAppDescriptor().getName());
+                }
+        });
     }
 
     @Override
@@ -81,5 +123,35 @@ public class AppLauncherActivity extends AbstractActivity implements AppLauncher
     public void start(ViewPort viewPort, EventBus eventBus, Place place) {
         view.setPresenter(this);
         viewPort.setView(view);
+    }
+
+    /**
+     * Initialize the view.
+     */
+    private void initView(AppLauncherLayout layout) {
+        view.registerApp(layout);
+    }
+    private boolean isAppRegistered(String appName) {
+        return this.appLauncherLayoutManager.isAppDescriptionRegistered(appName);
+    }
+
+    /**
+     * Reload Layout and set Icon for running apps.
+     */
+    private void reloadLayout() {
+        this.layout = this.appLauncherLayoutManager.getLayout();
+        this.view.clearView();
+        initView(this.layout);
+        for (AppCategory category : layout.getCategories()) {
+            for (AppDescriptor descriptor : category.getApps()) {
+                if(this.appController.isAppStarted(descriptor)) {
+                    view.activateButton(true, descriptor.getName());
+                }
+            }
+        }
+    }
+
+    private void activateButton(boolean activate, String appName){
+        this.view.activateButton(activate, appName);
     }
 }

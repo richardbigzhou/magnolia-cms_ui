@@ -31,24 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app;
+package info.magnolia.ui.framework.app.layout.event;
+
 
 /**
- * Manages apps running for a single user.
- *
- * @version $Id$
+ * Admin Central Event Type Enumeration.
  */
-public interface AppController {
-
-    AppDescriptor getAppDescriptor(final AppLifecycle app);
-
-    void startIfNotAlreadyRunning(String name);
-
-    void startIfNotAlreadyRunningThenFocus(String name);
-
-    void stopApplication(String name);
-
-    void stopCurrentApplication();
-
-    boolean isAppStarted(AppDescriptor descriptor);
+public enum AdminCentralEventType {
+    RELOAD_APP
 }

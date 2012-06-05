@@ -33,7 +33,13 @@
  */
 package info.magnolia.ui.framework.app;
 
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.framework.app.layout.AppLauncherLayoutManager;
+import info.magnolia.ui.framework.event.Event;
+import info.magnolia.ui.framework.event.EventBus;
+
 import java.util.LinkedList;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -41,11 +47,6 @@ import org.apache.commons.collections.BidiMap;
 import org.apache.commons.collections.bidimap.DualHashBidiMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.framework.app.layout.AppLauncherLayout;
-import info.magnolia.ui.framework.event.Event;
-import info.magnolia.ui.framework.event.EventBus;
 
 /**
  * Default AppController implementation.
@@ -59,7 +60,7 @@ public class AppControllerImpl implements AppController {
 
     private static Logger log = LoggerFactory.getLogger(AppControllerImpl.class);
 
-    private AppLauncherLayout appLauncherLayout;
+    private AppLauncherLayoutManager appLauncherLayoutManager;
 
     private ComponentProvider componentProvider;
 
@@ -73,8 +74,8 @@ public class AppControllerImpl implements AppController {
     private LinkedList<AppLifecycle> appHistory = new LinkedList<AppLifecycle>();
 
     @Inject
-    public AppControllerImpl(AppLauncherLayout appLauncherLayout, ComponentProvider componentProvider, EventBus eventBus) {
-        this.appLauncherLayout = appLauncherLayout;
+    public AppControllerImpl(AppLauncherLayoutManager appLauncherLayoutManager, ComponentProvider componentProvider, EventBus eventBus) {
+        this.appLauncherLayoutManager = appLauncherLayoutManager;
         this.componentProvider = componentProvider;
         this.eventBus = eventBus;
     }
@@ -108,8 +109,13 @@ public class AppControllerImpl implements AppController {
         }
     }
 
+    @Override
+    public boolean isAppStarted(AppDescriptor descriptor) {
+        return runningApps.containsKey(descriptor);
+    }
+
     private AppLifecycle doStart(String name) {
-        final AppDescriptor descriptor = appLauncherLayout.getAppDescriptor(name);
+        final AppDescriptor descriptor = appLauncherLayoutManager.getLayout().getAppDescriptor(name);
         AppLifecycle lifecycle = (AppLifecycle) runningApps.get(descriptor);
         if (lifecycle == null) {
             lifecycle = componentProvider.newInstance(descriptor.getAppClass());
@@ -127,7 +133,7 @@ public class AppControllerImpl implements AppController {
     }
 
     private void doStop(String name) {
-        final AppDescriptor descriptor = appLauncherLayout.getAppDescriptor(name);
+        final AppDescriptor descriptor = appLauncherLayoutManager.getLayout().getAppDescriptor(name);
         AppLifecycle lifecycle = (AppLifecycle) runningApps.get(descriptor);
         if (lifecycle != null) {
             lifecycle.stop();
