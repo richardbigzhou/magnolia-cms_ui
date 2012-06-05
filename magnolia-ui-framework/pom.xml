@@ -19,7 +19,7 @@
       <version>${magnoliaVersion}</version>
     </dependency>
     <dependency>
-      <groupId>info.magnolia</groupId>
+      <groupId>info.magnolia.ui</groupId>
       <artifactId>magnolia-ui-model</artifactId>
       <version>5.0-SNAPSHOT</version>
     </dependency>
