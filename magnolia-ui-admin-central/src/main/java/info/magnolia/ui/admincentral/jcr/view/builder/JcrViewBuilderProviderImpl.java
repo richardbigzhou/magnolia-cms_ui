@@ -34,7 +34,6 @@
 package info.magnolia.ui.admincentral.jcr.view.builder;
 
 import info.magnolia.cms.security.User;
-import info.magnolia.ui.model.settings.UISettings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +46,7 @@ public class JcrViewBuilderProviderImpl implements JcrViewBuilderProvider {
 
     //injected
     private User user;
-    private UISettings uiSettings;
+    //private UISettings uiSettings;
 
     // content2bean
     private List<JcrViewBuilder> jcrViewBuilders = new ArrayList<JcrViewBuilder>();

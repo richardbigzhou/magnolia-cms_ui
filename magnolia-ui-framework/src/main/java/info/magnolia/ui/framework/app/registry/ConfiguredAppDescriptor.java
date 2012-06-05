@@ -42,7 +42,6 @@ import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.AppLifecycle;
 import info.magnolia.ui.framework.app.PlaceActivityMapping;
 import info.magnolia.ui.framework.place.Place;
-import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 
 /**
  * Describes an app.
@@ -72,9 +71,6 @@ public class ConfiguredAppDescriptor implements AppDescriptor {
     private Class<? extends AppLifecycle> appClass;
 
     private List<PlaceActivityMapping> activityMappings = new ArrayList<PlaceActivityMapping>();
-
-    private List<WorkbenchDefinition> workbenches = new ArrayList<WorkbenchDefinition>();
-
 
     public String getName() {
         return name;
@@ -145,15 +141,6 @@ public class ConfiguredAppDescriptor implements AppDescriptor {
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
     }
-
-    public void addWorkbench(WorkbenchDefinition definition) {
-        workbenches.add(definition);
-    }
-
-    public List<WorkbenchDefinition> getWorkbenches() {
-        return workbenches;
-    }
-
 
     @Override
     public boolean equals(Object o) {
