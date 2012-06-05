@@ -237,11 +237,6 @@ public class VShellViewport extends ComplexPanel implements Container, Container
     }
     
     @Override
-    public void setWidth(String width) {
-        super.setWidth(width);
-    }
-    
-    @Override
     public void setHeight(String height) {
         super.setHeight(height);
         if (visibleWidget != null) {

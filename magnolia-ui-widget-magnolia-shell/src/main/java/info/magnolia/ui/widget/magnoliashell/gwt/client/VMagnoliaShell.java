@@ -226,6 +226,11 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
     }
     
     @Override
+    public void closeCurrentShellApp() {
+        proxy.call("closeCurrentShellApp");
+    }
+    
+    @Override
     public void setWidth(String width) {
         view.asWidget().setWidth(width);
         super.setWidth(width);

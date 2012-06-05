@@ -346,7 +346,7 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
     public void onViewportClose(ViewportCloseEvent event) {
         final VShellViewport viewport = event.getViewport();
         if (viewport == shellAppViewport) {
-            eventBus.fireEvent(new ShellAppNavigationEvent(mainAppLauncher.getNextShellAppType(), "")) ;   
+            presenter.closeCurrentShellApp();
         } else if (viewport == appViewport) {
             presenter.closeCurrentApp();
         }
