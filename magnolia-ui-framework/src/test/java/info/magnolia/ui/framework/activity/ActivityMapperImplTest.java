@@ -63,7 +63,7 @@ public class ActivityMapperImplTest {
     public static class TestActivity extends AbstractActivity {
 
         @Override
-        public void start(ViewPort viewPort, EventBus eventBus) {
+        public void start(ViewPort viewPort, EventBus eventBus, Place place) {
         }
     }
 

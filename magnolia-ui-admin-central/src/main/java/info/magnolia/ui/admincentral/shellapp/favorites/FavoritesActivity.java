@@ -37,6 +37,7 @@ import javax.inject.Inject;
 
 import info.magnolia.ui.framework.activity.AbstractActivity;
 import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.place.Place;
 import info.magnolia.ui.framework.view.ViewPort;
 
 /**
@@ -54,7 +55,7 @@ public class FavoritesActivity extends AbstractActivity {
     }
 
     @Override
-    public void start(ViewPort viewPort, EventBus eventBus) {
+    public void start(ViewPort viewPort, EventBus eventBus, Place place) {
         viewPort.setView(favoritesView);
     }
 }

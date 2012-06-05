@@ -39,6 +39,7 @@ import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.layout.AppLauncherLayout;
 import info.magnolia.ui.framework.activity.AbstractActivity;
 import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.place.Place;
 import info.magnolia.ui.framework.view.ViewPort;
 
 import javax.inject.Inject;
@@ -77,7 +78,7 @@ public class AppLauncherActivity extends AbstractActivity implements AppLauncher
     }
 
     @Override
-    public void start(ViewPort viewPort, EventBus eventBus) {
+    public void start(ViewPort viewPort, EventBus eventBus, Place place) {
         view.setPresenter(this);
         viewPort.setView(view);
     }

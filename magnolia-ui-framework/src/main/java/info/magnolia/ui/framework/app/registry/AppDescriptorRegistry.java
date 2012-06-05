@@ -33,23 +33,24 @@
  */
 package info.magnolia.ui.framework.app.registry;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Set;
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.registry.RegistryMap;
 import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.AppEventType;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.event.SystemEventBus;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Set;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The central registry of all {@link AppDescriptor}s.
@@ -132,7 +133,17 @@ public class AppDescriptorRegistry {
         //Handle Events
         if (CollectionUtils.isSubCollection(registeredIds, set)) {
             // Add new AppDescriptor --> REGISTERED
-            sendEvent(AppEventType.REGISTERED, getAppDescriptorFromAppDescriptorProvider(CollectionUtils.disjunction(set, registeredIds), finalProviders));
+            if(CollectionUtils.disjunction(set, registeredIds).isEmpty()) {
+                // Content of one existing AppDescriptorProvider was changed
+                for(AppDescriptorProvider appProvider:initialProviders) {
+                    if(!finalProviders.contains(appProvider)){
+                        sendEvent(AppEventType.REREGISTERED, Arrays.asList(registry.get(appProvider.getName()).getAppDescriptor()));
+                    }
+                }
+            }else {
+                // Add new AppDescriptor --> REGISTERED
+                sendEvent(AppEventType.REGISTERED, getAppDescriptorFromAppDescriptorProvider(CollectionUtils.disjunction(set, registeredIds), finalProviders));
+            }
         } else if (CollectionUtils.isSubCollection(set, registeredIds)) {
             // Remove AppDescriptor --> UNREGISTERED
             sendEvent(AppEventType.UNREGISTERED, getAppDescriptorFromAppDescriptorProvider(CollectionUtils.disjunction(registeredIds, set), initialProviders));

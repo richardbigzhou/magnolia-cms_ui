@@ -40,5 +40,5 @@ package info.magnolia.ui.framework.app;
  */
 public enum AppEventType {
 
-    REGISTERED, UNREGISTERED, STARTED, STOPPED, FOCUSED
+    REGISTERED, UNREGISTERED, REREGISTERED,  STARTED, STOPPED, FOCUSED
 }

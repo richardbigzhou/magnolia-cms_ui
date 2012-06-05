@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,44 +31,52 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app;
+package info.magnolia.ui.vaadin.integration.shell;
 
-import info.magnolia.ui.framework.activity.AbstractActivity;
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.place.Place;
-import info.magnolia.ui.framework.view.ViewPort;
+import info.magnolia.ui.framework.shell.ConfirmationHandler;
+import info.magnolia.ui.framework.shell.Shell;
+
+import com.vaadin.ui.UriFragmentUtility;
+
 
 /**
- * Abstract presenter for app views.
+ * A shell working only with a sub fragment of the URL fragment. Used to build sub containers by using {@link info.magnolia.ui.framework.activity.AbstractMVPSubContainer}.
  *
- * @param <T>
  * @version $Id$
  */
-public abstract class AbstractAppActivity<T extends AppPresenter<T>> extends AbstractActivity implements AppPresenter<T> {
+@SuppressWarnings("serial")
+public class SubShell extends AbstractShell {
 
-    private static final long serialVersionUID = 1L;
+    private Shell parent;
 
-    private AppView<T> view;
-
-    private String name;
-
-    public AbstractAppActivity(AppView<T> view) {
-        this.view = view;
+    public SubShell(String id, Shell parent) {
+        super(id);
+        this.parent = parent;
     }
 
     @Override
-    public void start(ViewPort viewPort, EventBus eventBus, Place place) {
-        view.setPresenter(getReference());
-        viewPort.setView(view);
+    public void askForConfirmation(String message, ConfirmationHandler listener) {
+        parent.askForConfirmation(message, listener);
     }
 
     @Override
-    public String getAppName() {
-        return name;
+    public void showNotification(String message) {
+        parent.showNotification(message);
     }
 
-    public void setName(String name) {
-        this.name = name;
+    @Override
+    public void showError(String message, Exception e) {
+        parent.showError(message, e);
     }
 
+    @Override
+    protected UriFragmentUtility getUriFragmentUtility() {
+        //FIXME we should obviously not cast, but also don't like to add the method to the clean interface
+        return ((AbstractShell)parent).getUriFragmentUtility();
+    }
+
+    @Override
+    public void openWindow(String uri, String windowName) {
+        parent.openWindow(uri, windowName);
+    }
 }

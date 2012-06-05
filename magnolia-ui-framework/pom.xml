@@ -41,5 +41,12 @@
       <artifactId>mockito-core</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>info.magnolia</groupId>
+      <artifactId>magnolia-core</artifactId>
+      <type>test-jar</type>
+      <version>${magnoliaVersion}</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 </project>

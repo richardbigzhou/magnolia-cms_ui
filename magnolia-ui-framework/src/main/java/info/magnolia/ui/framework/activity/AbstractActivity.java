@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.framework.activity;
 
+import info.magnolia.ui.framework.place.Place;
+
 /**
  * Simple Activity implementation that is always willing to stop.
  *
@@ -41,6 +43,10 @@ package info.magnolia.ui.framework.activity;
 public abstract class AbstractActivity implements Activity {
 
     private static final long serialVersionUID = 1L;
+
+    @Override
+    public void onPlaceUpdate(Place place) {
+    }
 
     @Override
     public String mayStop() {

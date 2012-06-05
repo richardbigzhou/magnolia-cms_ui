@@ -129,6 +129,11 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell {
             }
         };
     }
+    
+    @Override
+    public Shell createSubShell(String id) {
+        throw new UnsupportedOperationException("MagnoliaShell is not capable of opening the subshells.");
+    }
 
     public void openDialog(IsVaadinComponent dialog) {
         addDialog(dialog.asVaadinComponent());

@@ -89,4 +89,6 @@ public interface Shell {
 
     HandlerRegistration addFragmentChangedHandler(FragmentChangedHandler handler);
 
+    Shell createSubShell(String id);
+
 }

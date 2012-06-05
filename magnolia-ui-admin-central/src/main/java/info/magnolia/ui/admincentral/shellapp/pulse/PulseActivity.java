@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse;
 
-import info.magnolia.ui.framework.activity.PlaceStateHandler;
 import info.magnolia.ui.framework.activity.AbstractActivity;
 import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.place.Place;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.framework.view.ViewPort;
 
@@ -51,11 +51,12 @@ public class PulseActivity extends AbstractActivity implements PulseView.Present
     private PulseView pulseView;
 
     private Shell shell;
-   
-    @PlaceStateHandler
-    public void updateTab(final PulsePlace place) {
-        final String displayedTabId = pulseView.setCurrentPulseTab(place.getCurrentPulseTab());
-        place.setCurrentPulseTab(displayedTabId);
+
+    @Override
+    public void onPlaceUpdate(Place place) {
+        PulsePlace pulsePlace = (PulsePlace) place;
+        final String displayedTabId = pulseView.setCurrentPulseTab(pulsePlace.getCurrentPulseTab());
+        pulsePlace.setCurrentPulseTab(displayedTabId);
     }
     
     @Inject
@@ -65,7 +66,7 @@ public class PulseActivity extends AbstractActivity implements PulseView.Present
     }
 
     @Override
-    public void start(ViewPort viewPort, EventBus eventBus) {
+    public void start(ViewPort viewPort, EventBus eventBus, Place place) {
         pulseView.setPresenter(this);
         shell.showNotification("Something weird goes on....But you can skip it for now");
         viewPort.setView(pulseView);
