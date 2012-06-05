@@ -33,9 +33,8 @@
  */
 package info.magnolia.ui.admincentral.shellapp.applauncher;
 
-import info.magnolia.ui.framework.app.layout.AppCategory;
-import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.ShellAppView;
+import info.magnolia.ui.framework.app.layout.AppLauncherLayout;
 
 /**
  * View for the app launcher.
@@ -56,9 +55,10 @@ public interface AppLauncherView extends ShellAppView {
 
     void setPresenter(Presenter presenter);
 
-    void registerApp(final AppDescriptor descriptor, AppCategory category);
+    void registerApp(AppLauncherLayout layout);
 
-    void unregisterApp(final AppDescriptor descriptor);
+    void activateButton(boolean activate, String appName);
 
-    void reRegisterApp(final AppDescriptor descriptor);
+    void clearView();
+
 }

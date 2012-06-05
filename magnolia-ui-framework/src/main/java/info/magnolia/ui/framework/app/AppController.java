@@ -49,4 +49,6 @@ public interface AppController {
     void stopApplication(String name);
 
     void stopCurrentApplication();
+
+    boolean isAppStarted(AppDescriptor descriptor);
 }

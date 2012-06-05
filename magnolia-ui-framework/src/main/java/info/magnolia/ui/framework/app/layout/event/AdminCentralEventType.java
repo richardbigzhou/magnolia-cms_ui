@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,15 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.navigation.registry;
-
-import info.magnolia.ui.model.menu.definition.MenuItemDefinition;
-import info.magnolia.ui.model.security.PermissionSchema;
+package info.magnolia.ui.framework.app.layout.event;
 
 
 /**
- * Checks whether a user can see a navigation item or not.
+ * Admin Central Event Type Enumeration.
  */
-public interface NavigationPermissionSchema extends PermissionSchema<MenuItemDefinition> {
-
+public enum AdminCentralEventType {
+    RELOAD_APP
 }

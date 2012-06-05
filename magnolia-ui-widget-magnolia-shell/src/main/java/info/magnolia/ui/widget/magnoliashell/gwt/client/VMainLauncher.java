@@ -162,10 +162,10 @@ public class VMainLauncher extends FlowPanel {
     @Override
     protected void onLoad() {
         super.onLoad();
-        activationHandlerRegistration = eventBus.addHandler(AppActivatedEvent.TYPE, navHandler);
         expandedHeight = getOffsetHeight();
         getElement().getStyle().setDisplay(Display.NONE);
         JQueryWrapper.select(getElement()).slideDown(500, null);
+        activationHandlerRegistration = eventBus.addHandler(AppActivatedEvent.TYPE, navHandler);
     } 
     
     @Override
@@ -270,7 +270,7 @@ public class VMainLauncher extends FlowPanel {
         final ShellAppType cur = getActiveShellType();
         if (cur != null) {
             final List<ShellAppType> values = Arrays.asList(ShellAppType.values()); 
-            return values.get(values.indexOf(cur) % values.size());    
+            return values.get((values.indexOf(cur) + 1) % values.size());    
         }
         return ShellAppType.APPLAUNCHER;
     }

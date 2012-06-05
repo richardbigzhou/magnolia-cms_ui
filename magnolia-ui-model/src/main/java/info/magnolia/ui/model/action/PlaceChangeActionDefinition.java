@@ -36,9 +36,10 @@ package info.magnolia.ui.model.action;
 import info.magnolia.ui.framework.place.Place;
 
 /**
- * Place change action definition.
- * @author fgrilli
+ * Action definition for {@link PlaceChangeAction}.
  *
+ * @version $Id$
+ * @see PlaceChangeAction
  */
 public interface PlaceChangeActionDefinition extends ActionDefinition {
 

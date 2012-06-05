@@ -155,4 +155,15 @@ public class ConfiguredAppDescriptor implements AppDescriptor {
     }
 
 
+    @Override
+    public boolean equals(Object o) {
+        if(o instanceof ConfiguredAppDescriptor) {
+            return this.getName().equals(((ConfiguredAppDescriptor)o).getName());
+        }
+        return false;
+    }
+    @Override
+    public int hashCode() {
+        return (this.getName() == null) ? 0 : this.getName().hashCode();
+     }
 }

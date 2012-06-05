@@ -35,6 +35,7 @@ package info.magnolia.ui.widget.magnoliashell;
 
 
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShell;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VShellMessage.MessageType;
 import info.magnolia.ui.framework.shell.FragmentChangedEvent;
 import info.magnolia.ui.framework.shell.FragmentChangedHandler;
@@ -94,6 +95,13 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
             @Override
             public void invoke(String methodName, Object[] params) {
                 closeCurrentApp();
+            }
+        });
+        
+        register("closeCurrentShellApp", new Method() {
+            @Override
+            public void invoke(String methodName, Object[] params) {
+                closeCurrentShellApp();
             }
         });
     }};
@@ -224,6 +232,14 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
     protected void addDialog(Component dialog) {
         dialogViewport.addComponent(dialog);
         requestRepaint();
+    }
+    
+    protected void closeCurrentShellApp() {
+        if (!getAppViewport().isEmpty()) {
+            setActiveViewport(appViewport);
+        } else {
+            navigateToShellApp(ShellAppType.APPLAUNCHER.name(), "");
+        }
     }
     
     protected void closeCurrentApp() {

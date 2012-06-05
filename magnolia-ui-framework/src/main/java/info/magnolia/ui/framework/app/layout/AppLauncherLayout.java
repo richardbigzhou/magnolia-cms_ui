@@ -38,22 +38,34 @@ import java.util.Collection;
 import info.magnolia.ui.framework.app.AppDescriptor;
 
 /**
- * Registry of available apps.
+ * Registry of available apps groups by categories.
  *
  * @version $Id$
  */
 public interface AppLauncherLayout {
 
+    /**
+     * Return the registered {AppCategory}s.
+     */
     Collection<AppCategory> getCategories();
 
-    Collection<AppCategory> reloadCategories();
+    /**
+     * Return the specified Category.
+     *
+     * @throws IllegalArgumentException: If key don't exist.
+     */
+    AppCategory getCategory(String name) throws IllegalArgumentException;
 
     /**
      * Returns the AppDescriptor for a given name.
      *
      * @throws IllegalArgumentException: If key don't exist.
      */
-    AppDescriptor getAppDescriptor(String name);
+    AppDescriptor getAppDescriptor(String name) throws IllegalArgumentException;
 
-    boolean isAppDescriptionRegistered(String name);
+    /**
+     * Check if the app is already registered.
+     */
+    boolean isAppAlreadyRegistered(String name);
+
 }

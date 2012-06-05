@@ -38,51 +38,56 @@ import info.magnolia.objectfactory.ComponentProvider;
 import java.util.HashMap;
 import java.util.Map;
 
-
-
 /**
- * A base class to implement factories which instantiate implementations based on definition
- * objects.
+ * A base class for implementing factories which instantiate implementations based on definition objects.
+ *
  * @param <D> definition parent type
  * @param <I> implementation parent type
+ * @version $Id$
  */
 public abstract class FactoryBase<D, I> {
 
     private ComponentProvider componentProvider;
 
-    private Map<Class< ? extends D>, Class< ? extends I>> mapping = new HashMap<Class< ? extends D>, Class< ? extends I>>();
+    private Map<Class<? extends D>, Class<? extends I>> mapping = new HashMap<Class<? extends D>, Class<? extends I>>();
 
-    public FactoryBase(ComponentProvider componentProvider) {
+    protected FactoryBase(ComponentProvider componentProvider) {
         this.componentProvider = componentProvider;
     }
 
-    protected void addMapping(Class< ? extends D> definitionClass, Class< ? extends I> implementationClass) {
+    protected void addMapping(Class<? extends D> definitionClass, Class<? extends I> implementationClass) {
         mapping.put(definitionClass, implementationClass);
     }
 
+    /**
+     * Creates an instance of the implementation configured for the given definition. The parameters are made
+     * available for injection when the instance is created. The definition object given is also available for
+     * injection.
+     */
     protected I create(D definition, Object... parameters) {
-        Class< ? extends I> implementationClass = null;
-        final Class< ? > definitionClass = definition.getClass();
-        if (mapping.containsKey(definitionClass)) {
-            implementationClass = mapping.get(definitionClass);
-        }
-        else {
-            // test if we are a sub class
-            for (Class< ? extends D> keyClass : mapping.keySet()) {
-                if (keyClass.isInstance(definition)) {
-                    implementationClass = mapping.get(keyClass);
-                    break;
-                }
-            }
-        }
+
+        Class<? extends I> implementationClass = resolveImplementationClass(definition);
         if (implementationClass != null) {
+
             // TODO: check whether this is satisfying enough - check TODO in FactoryBaseTest.Impl for details.
             Object[] combinedParameters = new Object[parameters.length + 1];
             combinedParameters[0] = definition;
-            for (int i = 0; i < parameters.length; i++) {
-                combinedParameters[i + 1] = parameters[i];
-            }
+            System.arraycopy(parameters, 0, combinedParameters, 1, parameters.length);
+
             return componentProvider.newInstance(implementationClass, combinedParameters);
+        }
+        return null;
+    }
+
+    private Class<? extends I> resolveImplementationClass(D definition) {
+        final Class<?> definitionClass = definition.getClass();
+        if (mapping.containsKey(definitionClass)) {
+            return mapping.get(definitionClass);
+        }
+        for (Class<? extends D> keyClass : mapping.keySet()) {
+            if (keyClass.isInstance(definition)) {
+                return mapping.get(keyClass);
+            }
         }
         return null;
     }

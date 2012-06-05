@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,35 +31,45 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.navigation.definition;
+package info.magnolia.ui.framework.app.layout.event;
 
-import java.util.ArrayList;
-import java.util.List;
+import info.magnolia.ui.framework.event.Event;
+
 
 /**
- * Implementation for {@link NavigationGroupDefinition}.
- * @author fgrilli
- *
+ * AdminCentral Events used to notify Changes in the Admin central configuration.
  */
-public class NavigationGroupDefinitionImpl implements NavigationGroupDefinition {
+public class AdminCentralEvent implements Event<AdminCentralEventHandler> {
 
-    private String name;
-    private List<NavigationItemDefinition> items = new ArrayList<NavigationItemDefinition>();
+    private final AdminCentralEventType eventType;
+
+    private final String appName;
+
+    public AdminCentralEvent(AdminCentralEventType eventType, String appName) {
+        this.eventType = eventType;
+        this.appName = appName;
+    }
+
+    public AdminCentralEventType getEventType() {
+        return this.eventType;
+    }
+
+    public String getAppName() {
+        return this.appName;
+    }
+
 
     @Override
-    public List<NavigationItemDefinition> getItems() {
-        return items;
-    }
-    public void addItem(NavigationItemDefinition definition) {
-        items.add(definition);
-    }
-    @Override
-    public String getName() {
-        return name;
-    }
+    public void dispatch(AdminCentralEventHandler handler) {
+        if (eventType == null) {
+            return;
+        }
 
-    public void setName(String name) {
-        this.name = name;
+        switch (eventType) {
+            case RELOAD_APP:
+                handler.onReloadApp(this);
+                break;
+        }
     }
 
 }
