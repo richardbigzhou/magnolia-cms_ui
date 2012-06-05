@@ -33,16 +33,16 @@
  */
 package info.magnolia.ui.framework.app;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import info.magnolia.ui.framework.activity.Activity;
 import info.magnolia.ui.framework.activity.ActivityManager;
 import info.magnolia.ui.framework.activity.ActivityMapperImpl;
 import info.magnolia.ui.framework.app.layout.AppCategory;
-import info.magnolia.ui.framework.app.layout.AppLauncherLayout;
+import info.magnolia.ui.framework.app.layout.AppLauncherLayoutManager;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.place.Place;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Activity manager responsible for the app management.
@@ -54,12 +54,12 @@ public class AppActivityManager extends ActivityManager {
     private AppController appController;
     private final Map<Class<? extends Place>, String> placeToAppMapping = new HashMap<Class<? extends Place>, String>();
 
-    public AppActivityManager(ActivityMapperImpl appActivityMapper, EventBus eventBus, AppLauncherLayout appLauncherLayout, AppController appController) {
+    public AppActivityManager(ActivityMapperImpl appActivityMapper, EventBus eventBus, AppLauncherLayoutManager appLauncherLayoutManager, AppController appController) {
         super(appActivityMapper, eventBus);
         this.appController = appController;
 
         // Build lookup table for place to app, see #beforeActivityStarts
-        for (AppCategory category : appLauncherLayout.getCategories()) {
+        for (AppCategory category : appLauncherLayoutManager.getLayout().getCategories()) {
             for (AppDescriptor descriptor : category.getApps()) {
                 for (PlaceActivityMapping mapping : descriptor.getActivityMappings()) {
                     placeToAppMapping.put(mapping.getPlace(), descriptor.getName());

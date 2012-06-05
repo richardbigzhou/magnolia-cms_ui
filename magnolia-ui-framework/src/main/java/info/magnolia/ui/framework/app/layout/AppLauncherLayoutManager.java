@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,35 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.settings;
+package info.magnolia.ui.framework.app.layout;
+
 
 /**
- * UI settings like whether the UI should be RTL/LTR or if it supports touch.
+ * Build {AppLauncherLayout}s POJO used by the {AppLauncherActivity}.
  */
-public class UISettings {
+public interface AppLauncherLayoutManager {
 
-    private Direction direction;
+    /**
+     * Return the {AppLauncherLayout} defined for the current user.
+     * Return an Empty AppLauncherLayout if nothing set for profile.
+     */
+    public AppLauncherLayout getLayout();
 
-    private InputDevice inputDevice;
+    /**
+     * Check if the given App name is part of the categories define for the current profile.
+     */
+    boolean isAppDescriptionRegistered(String name);
 
-    public UISettings(Direction direction, InputDevice inputDevice) {
-        this.direction = direction;
-        this.inputDevice = inputDevice;
-    }
-
-    public Direction getDirection() {
-        return direction;
-    }
-
-    public void setDirection(Direction direction) {
-        this.direction = direction;
-    }
-
-    public InputDevice getDevice() {
-        return inputDevice;
-    }
-
-    public void setDevice(InputDevice inputDevice) {
-        this.inputDevice = inputDevice;
-    }
+    /**
+     * Check if the given Category name is part of the categories define for the current profile.
+     */
+    boolean isCategoryRegistered(String name);
 }

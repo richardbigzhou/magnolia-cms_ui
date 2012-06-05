@@ -33,21 +33,7 @@
  */
 package info.magnolia.ui.admincentral;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
-
-import com.vaadin.ui.Window;
-
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.framework.app.layout.AppCategory;
-import info.magnolia.ui.framework.app.AppController;
-import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.app.PlaceActivityMapping;
-import info.magnolia.ui.framework.app.layout.AppLauncherLayout;
-import info.magnolia.ui.framework.app.AppActivityManager;
-import info.magnolia.ui.framework.app.AppActivityMapper;
 import info.magnolia.ui.admincentral.shellapp.applauncher.AppLauncherActivity;
 import info.magnolia.ui.admincentral.shellapp.applauncher.AppLauncherPlace;
 import info.magnolia.ui.admincentral.shellapp.favorites.FavoritesActivity;
@@ -56,12 +42,27 @@ import info.magnolia.ui.admincentral.shellapp.pulse.PulseActivity;
 import info.magnolia.ui.admincentral.shellapp.pulse.PulsePlace;
 import info.magnolia.ui.framework.activity.ActivityManager;
 import info.magnolia.ui.framework.activity.ActivityMapperImpl;
+import info.magnolia.ui.framework.app.AppActivityManager;
+import info.magnolia.ui.framework.app.AppActivityMapper;
+import info.magnolia.ui.framework.app.AppController;
+import info.magnolia.ui.framework.app.AppDescriptor;
+import info.magnolia.ui.framework.app.PlaceActivityMapping;
+import info.magnolia.ui.framework.app.layout.AppCategory;
+import info.magnolia.ui.framework.app.layout.AppLauncherLayout;
+import info.magnolia.ui.framework.app.layout.AppLauncherLayoutManager;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.place.Place;
 import info.magnolia.ui.framework.place.PlaceController;
 import info.magnolia.ui.framework.place.PlaceHistoryHandler;
 import info.magnolia.ui.framework.place.PlaceHistoryMapper;
 import info.magnolia.ui.framework.place.PlaceHistoryMapperImpl;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import com.vaadin.ui.Window;
 
 /**
  * Presenter meant to bootstrap the MagnoliaShell.
@@ -73,7 +74,7 @@ public class MagnoliaShellPresenter implements MagnoliaShellView.Presenter {
     private final MagnoliaShellView view;
 
     @Inject
-    public MagnoliaShellPresenter(final MagnoliaShellView view, final EventBus bus, final AppLauncherLayout appLauncherLayout,
+    public MagnoliaShellPresenter(final MagnoliaShellView view, final EventBus bus, final AppLauncherLayoutManager appLauncherLayoutManager,
                                   final AppController appController, final PlaceController controller,
                                   ComponentProvider componentProvider) {
         super();
@@ -88,11 +89,11 @@ public class MagnoliaShellPresenter implements MagnoliaShellView.Presenter {
         final ActivityManager shellAppManager = new ActivityManager(shellAppActivityMapper, bus);
         shellAppManager.setViewPort(view.getRoot().getShellAppViewport());
 
-        final AppActivityMapper appActivityMapper = new AppActivityMapper(componentProvider, appLauncherLayout, bus);
-        final ActivityManager appManager = new AppActivityManager(appActivityMapper, bus, appLauncherLayout, appController);
+        final AppActivityMapper appActivityMapper = new AppActivityMapper(componentProvider, appLauncherLayoutManager, bus);
+        final ActivityManager appManager = new AppActivityManager(appActivityMapper, bus, appLauncherLayoutManager, appController);
         appManager.setViewPort(view.getRoot().getAppViewport());
 
-        final PlaceHistoryMapper placeHistoryMapper = new PlaceHistoryMapperImpl(getSupportedPlaces(appLauncherLayout));
+        final PlaceHistoryMapper placeHistoryMapper = new PlaceHistoryMapperImpl(getSupportedPlaces(appLauncherLayoutManager.getLayout()));
         final PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(placeHistoryMapper, view.getRoot());
 
         historyHandler.register(controller, bus, new AppLauncherPlace("test"));

@@ -33,119 +33,28 @@
  */
 package info.magnolia.ui.framework.app.layout;
 
+import info.magnolia.ui.framework.app.AppDescriptor;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.app.AppEventType;
-import info.magnolia.ui.framework.app.AppLifecycleEvent;
-import info.magnolia.ui.framework.app.AppLifecycleEventHandler;
-import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.event.SystemEventBus;
 
 /**
  * Default AppRegistry implementation.
- *
- * @version $Id$
+ * Simple POJO bean containing the user registered AppCategories and App.
  */
-@Singleton
 public class AppLauncherLayoutImpl implements AppLauncherLayout {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private Map<String, AppCategory> categories = new HashMap<String, AppCategory>();
 
-    private AppDescriptorRegistry appDescriptorRegistry;
-
-    private EventBus eventBus;
-
-    @Inject
-    public AppLauncherLayoutImpl(AppDescriptorRegistry appDescriptorRegistry, EventBus eventBus, SystemEventBus systemEventBus) {
-        this.appDescriptorRegistry = appDescriptorRegistry;
-        this.eventBus = eventBus;
-
-        // Build layout
-        reloadCategories();
-
-        // Register for app registration events
-        systemEventBus.addHandler(AppLifecycleEvent.class, new AppLifecycleEventHandler.Adapter() {
-
-            /**
-             * Propagate Event to the AppShell event bus if this app has to be
-             * displayed to the User.
-             * Add App to Category.
-             */
-            @Override
-            public void onAppRegistered(AppLifecycleEvent event) {
-                if (hasToAddApp(event.getAppDescriptor())) {
-                    handleCategory(event.getAppDescriptor());
-                    sendEvent(AppEventType.REGISTERED, event.getAppDescriptor());
-                }
-            }
-
-            /**
-             * Propagate Event to the AppShell event bus if this app has to be
-             * displayed to the User.
-             * Add App to Category.
-             */
-            @Override
-            public void onAppReRegistered(AppLifecycleEvent event) {
-                if(isThisAppRegisteredForUser(event.getAppDescriptor())) {
-                    AppDescriptor app = event.getAppDescriptor();
-                    //Get Registered app
-                    AppDescriptor registeredApp = getAppDescriptor(app.getName());
-                    AppCategory registeredCategory = categories.get(registeredApp.getCategoryName());
-
-                    // If app was registered and is now unregistered
-                    if(registeredApp.isEnabled() && !app.isEnabled()) {
-                        removeAppFromCategory(event.getAppDescriptor());
-                        sendEvent(AppEventType.UNREGISTERED, event.getAppDescriptor());
-                    } else {
-                        //Remove old
-                        registeredCategory.getApps().remove(registeredApp);
-                        if(registeredCategory.getApps().isEmpty()) {
-                            categories.remove(registeredApp.getCategoryName());
-                        }
-
-                        handleCategory(app);
-                        sendEvent(AppEventType.REREGISTERED, event.getAppDescriptor());
-                    }
-                }
-            }
-
-            /**
-             * Propagate Event to the AppShell event bus if this app has to be
-             * displayed to the User.
-             * Remove App from Category.
-             */
-            @Override
-            public void onAppUnregistered(AppLifecycleEvent event) {
-                if (isAppDescriptionRegistered(event.getAppDescriptor().getName())) {
-                    removeAppFromCategory(event.getAppDescriptor());
-                    sendEvent(AppEventType.UNREGISTERED, event.getAppDescriptor());
-                }
-            }
-
-        });
-    }
-
-    @Override
-    public Collection<AppCategory> reloadCategories() {
-        categories.clear();
-        Collection<AppDescriptor> appDescriptors = this.appDescriptorRegistry.getAppDescriptors();
-        for (AppDescriptor app : appDescriptors) {
-            if (hasToAddApp(app)) {
-                handleCategory(app);
-            }
-        }
-        return getCategories();
+    public AppLauncherLayoutImpl(Map<String, AppCategory> categories) {
+        this.categories = categories;
     }
 
     @Override
@@ -154,7 +63,16 @@ public class AppLauncherLayoutImpl implements AppLauncherLayout {
     }
 
     @Override
-    public AppDescriptor getAppDescriptor(String name) {
+    public AppCategory getCategory(String name) throws IllegalArgumentException {
+        AppCategory category = this.categories.get(name);
+        if (category == null) {
+            throw new IllegalArgumentException("No Category registered with name \"" + name + "\".");
+        }
+        return category;
+    }
+
+    @Override
+    public AppDescriptor getAppDescriptor(String name) throws IllegalArgumentException {
         AppDescriptor descriptor = internalGetAppDescriptor(name);
         if (descriptor == null) {
             throw new IllegalArgumentException("No app registered with name \"" + name + "\".");
@@ -163,73 +81,15 @@ public class AppLauncherLayoutImpl implements AppLauncherLayout {
     }
 
     @Override
-    public boolean isAppDescriptionRegistered(String name) {
+    public boolean isAppAlreadyRegistered(String name) {
         AppDescriptor descriptor = internalGetAppDescriptor(name);
         return descriptor != null;
     }
 
     /**
-     * Add the AppDescriptor to an Existing or newly created AppCategory.
+     * Return the AppDescriptor corresponding to the given name.
+     * Return null if no AppDescriptor founded.
      */
-    private void handleCategory(AppDescriptor app) {
-        AppCategory category;
-        String catName = app.getCategoryName();
-        logger.debug("Handle app " + app.getName() + " for category " + catName);
-        if (categories.containsKey(catName)) {
-            // Add to Category
-            category = categories.get(catName);
-        } else {
-            // Create
-            category = new AppCategory();
-            category.setLabel(catName);
-            categories.put(catName, category);
-        }
-        category.addApp(app);
-    }
-
-    /**
-     * Filter out disabled apps and apps with identical names.
-     */
-    private boolean hasToAddApp(AppDescriptor app) {
-        // Filter out disabled apps and apps with identical names
-        if (!app.isEnabled() || isAppDescriptionRegistered(app.getName()) || !isThisAppRegisteredForUser(app)) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    /**
-     * Check if the user has registered for this App.
-     */
-    private boolean isThisAppRegisteredForUser(AppDescriptor app) {
-        return true;
-    }
-
-    /**
-     * Remove an App from a Category.
-     * Remove the Category if empty.
-     */
-    private void removeAppFromCategory(AppDescriptor app) {
-        AppCategory category = categories.get(app.getCategoryName());
-        for (AppDescriptor appDescriptor : category.getApps()) {
-            if (appDescriptor.getName().equals(app.getName())) {
-                category.getApps().remove(appDescriptor);
-                break;
-            }
-        }
-        if (category.getApps().isEmpty()) {
-            categories.remove(app.getCategoryName());
-        }
-    }
-
-    /**
-     * Send an Event to the ShellApp EventBuss.
-     */
-    private void sendEvent(AppEventType eventType, AppDescriptor appDescriptor) {
-        eventBus.fireEvent(new AppLifecycleEvent(appDescriptor, eventType));
-    }
-
     private AppDescriptor internalGetAppDescriptor(String name) {
         for (AppCategory category : categories.values()) {
             for (AppDescriptor descriptor : category.getApps()) {
@@ -241,4 +101,7 @@ public class AppLauncherLayoutImpl implements AppLauncherLayout {
         }
         return null;
     }
+
+
+
 }

@@ -37,15 +37,16 @@ import info.magnolia.ui.framework.place.Place;
 import info.magnolia.ui.framework.place.PlaceController;
 
 /**
- * Implements a place change action.
- * @author fgrilli
+ * Action that changes the current place withing the application by calling the {@link PlaceController}.
  *
+ * @version $Id$
+ * @see PlaceChangeActionDefinition
  */
-public class PlaceChangeAction extends ActionBase<PlaceChangeActionDefinition>  {
+public class PlaceChangeAction extends ActionBase<PlaceChangeActionDefinition> {
 
     private PlaceController placeController;
 
-    public PlaceChangeAction(final PlaceChangeActionDefinition definition, final PlaceController placeController) {
+    public PlaceChangeAction(PlaceChangeActionDefinition definition, PlaceController placeController) {
         super(definition);
         this.placeController = placeController;
     }

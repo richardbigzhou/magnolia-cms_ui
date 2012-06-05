@@ -33,13 +33,13 @@
  */
 package info.magnolia.ui.framework.app;
 
-import javax.inject.Inject;
-
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.framework.activity.ActivityMapperImpl;
 import info.magnolia.ui.framework.app.layout.AppCategory;
-import info.magnolia.ui.framework.app.layout.AppLauncherLayout;
+import info.magnolia.ui.framework.app.layout.AppLauncherLayoutManager;
 import info.magnolia.ui.framework.event.EventBus;
+
+import javax.inject.Inject;
 
 /**
  * AppActivityMapper.
@@ -49,12 +49,12 @@ import info.magnolia.ui.framework.event.EventBus;
 public class AppActivityMapper extends ActivityMapperImpl {
 
     @Inject
-    public AppActivityMapper(ComponentProvider componentProvider, AppLauncherLayout appLauncherLayout, EventBus eventBus) {
+    public AppActivityMapper(ComponentProvider componentProvider, AppLauncherLayoutManager appLauncherLayoutManager, EventBus eventBus) {
         super(componentProvider);
         super.setLongLivingActivities(true);
 
         // Add mappings for all places provided by apps
-        for (AppCategory category : appLauncherLayout.getCategories()) {
+        for (AppCategory category : appLauncherLayoutManager.getLayout().getCategories()) {
             for (AppDescriptor descriptor : category.getApps()) {
                 for (PlaceActivityMapping mapping : descriptor.getActivityMappings()) {
                     super.addMapping(mapping.getPlace(), mapping.getActivity());

@@ -34,8 +34,10 @@
 package info.magnolia.ui.model.action;
 
 /**
- * An {@link Action} taking an {@link ActionDefinition}.
- * @param <D> the definition type
+ * An {@link Action} bound to an {@link ActionDefinition}.
+ *
+ * @param <D> the action definition type
+ * @version $Id$
  */
 public abstract class ActionBase<D extends ActionDefinition> implements Action {
 

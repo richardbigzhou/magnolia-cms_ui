@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,44 +31,36 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.navigation.definition;
+package info.magnolia.ui.model.action;
 
-import info.magnolia.ui.model.menu.definition.MenuItemDefinitionImpl;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.model.builder.FactoryBase;
 
 /**
- * Simple implementation of {@link NavigationItemDefinition}.
+ * Abstract base class used by action factories.
+ *
+ * @param <D> definition parent type
+ * @param <I> implementation parent type
+ * @version $Id$
+ * @see FactoryBase
  */
-public class NavigationItemDefinitionImpl extends MenuItemDefinitionImpl implements NavigationItemDefinition {
+public abstract class AbstractActionFactory<D extends ActionDefinition, I extends Action> extends FactoryBase<D, I> {
 
-    private List<NavigationItemDefinition> items = new ArrayList<NavigationItemDefinition>();
-
-    private NavigationItemDefinition parent;
-
-    // interface
-    @Override
-    public List<NavigationItemDefinition> getItems() {
-        return Collections.unmodifiableList(items);
+    public AbstractActionFactory(ComponentProvider componentProvider) {
+        super(componentProvider);
     }
 
     @Override
-    public NavigationItemDefinition getParent() {
-        return parent;
+    public void addMapping(Class<? extends D> definitionClass, Class<? extends I> implementationClass) {
+        super.addMapping(definitionClass, implementationClass);
     }
 
-    @Override
-    public void setParent(NavigationItemDefinition parent) {
-        this.parent = parent;
+    /**
+     * Creates an action using the implementation configured for the given action definition. The parameters are made
+     * available for injection when the instance is created. The definition object given is also available for
+     * injection.
+     */
+    public I createAction(D definition, Object... parameters) {
+        return super.create(definition, parameters);
     }
-
-    // content2bean
-    public void addItem(NavigationItemDefinition item) {
-        item.setParent(this);
-        items.add(item);
-    }
-
 }

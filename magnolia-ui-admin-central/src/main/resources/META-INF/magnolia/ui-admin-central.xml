@@ -22,6 +22,10 @@
       <type>info.magnolia.ui.framework.app.registry.AppDescriptorRegistry</type>
       <implementation>info.magnolia.ui.framework.app.registry.AppDescriptorRegistry</implementation>
     </component>
+    <component>
+      <type>info.magnolia.ui.framework.app.layout.AppLauncherLayoutManager</type>
+      <implementation>info.magnolia.ui.framework.app.layout.AppLauncherLayoutManagerImpl</implementation>
+    </component>
     <type-mapping>
       <type>info.magnolia.ui.framework.app.AppDescriptor</type>
       <implementation>info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor</implementation>
@@ -33,10 +37,6 @@
    	<component>
       <type>info.magnolia.ui.framework.event.EventBus</type>
       <implementation>info.magnolia.ui.framework.event.SimpleEventBus</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.framework.app.layout.AppLauncherLayout</type>
-      <implementation>info.magnolia.ui.framework.app.layout.AppLauncherLayoutImpl</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.framework.place.PlaceController</type>
