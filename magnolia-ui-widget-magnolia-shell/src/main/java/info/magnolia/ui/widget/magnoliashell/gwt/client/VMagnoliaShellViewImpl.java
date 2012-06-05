@@ -235,8 +235,11 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
         if (dialogViewport != viewport) {
             doUpdateViewport(dialogViewport, viewport);
             dialogViewport = viewport;
-            dialogViewport.getElement().getStyle().setZIndex(100000);
+            dialogViewport.getElement().getStyle().setZIndex(500);
             dialogViewport.setContentAnimationDelegate(fadingDelegate);
+            if (viewport != null) {
+                viewport.showCurtain();
+            }
         }
     }
 

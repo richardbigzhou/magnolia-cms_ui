@@ -295,17 +295,25 @@ public class VShellViewport extends ComplexPanel implements Container, Container
             super.add(child, container);
         }
     }
+
+    @Override
+    public void removeFromParent() {
+        super.removeFromParent();
+        hideCurtain();
+    }
     
     public void setForceContentAlign(boolean forceContentAlign) {
         this.forceContentAlign = forceContentAlign;
     }
     
     public void showCurtain() {
-        modalityCurtain.getStyle().setVisibility(Visibility.VISIBLE);
+        final JQueryWrapper jq = JQueryWrapper.select(modalityCurtain);
+        jq.setCss("visibility", "visible");
+        jq.setCss("zIndex", String.valueOf(JQueryWrapper.select(this).cssInt("zIndex") - 1));
     }
 
     public void hideCurtain() {
-        modalityCurtain.getStyle().setVisibility(Visibility.HIDDEN);
+        JQueryWrapper.select(this).setCss("visibility", "hidden");
     }
 
     public boolean hasContent() {
