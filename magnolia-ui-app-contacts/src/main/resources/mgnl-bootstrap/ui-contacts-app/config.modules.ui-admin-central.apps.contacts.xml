@@ -91,7 +91,7 @@
         <sv:value>1847ae4c-3c8f-4ba0-b962-6b21d68ee2e3</sv:value>
       </sv:property>
       <sv:property sv:name="activity" sv:type="String">
-        <sv:value>info.magnolia.ui.app.contacts.ContactsActivity</sv:value>
+        <sv:value>info.magnolia.ui.admincentral.workbench.activity.WorkbenchMVPSubContainer</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
