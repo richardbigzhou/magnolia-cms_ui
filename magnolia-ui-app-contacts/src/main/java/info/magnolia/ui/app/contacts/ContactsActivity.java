@@ -34,8 +34,6 @@
 package info.magnolia.ui.app.contacts;
 
 import info.magnolia.ui.admincentral.workbench.activity.ItemListActivityMapper;
-import info.magnolia.ui.admincentral.workbench.activity.WorkbenchActivity;
-import info.magnolia.ui.admincentral.workbench.place.WorkbenchPlace;
 import info.magnolia.ui.framework.app.AbstractAppActivity;
 
 import javax.inject.Inject;

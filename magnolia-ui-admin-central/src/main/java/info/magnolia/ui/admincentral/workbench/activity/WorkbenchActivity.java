@@ -33,14 +33,12 @@
  */
 package info.magnolia.ui.admincentral.workbench.activity;
 
-import info.magnolia.ui.admincentral.workbench.place.ItemSelectedPlace;
 import info.magnolia.ui.admincentral.workbench.place.WorkbenchPlace;
 import info.magnolia.ui.admincentral.workbench.view.WorkbenchView;
 import info.magnolia.ui.framework.activity.ActivityManager;
 import info.magnolia.ui.framework.app.AbstractAppActivity;
 import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.place.PlaceHistoryMapper;
-import info.magnolia.ui.framework.place.PlaceHistoryMapperImpl;
+import info.magnolia.ui.framework.place.Place;
 import info.magnolia.ui.framework.view.ViewPort;
 
 import javax.inject.Inject;
@@ -53,39 +51,21 @@ import javax.inject.Inject;
 public class WorkbenchActivity extends AbstractAppActivity<WorkbenchPresenter> implements WorkbenchPresenter {
     private String workspace;
     private ItemListActivityMapper itemListActivityMapper;
-    //private SidebarActivityMapper sidebarActivityMapper;
-    //private FunctionToolbarViewActivityMapper functionToolbarViewActivityMapper;
-    //private SearchActivityMapper searchActivityMapper;
     private WorkbenchView view;
 
     @Inject
-    public WorkbenchActivity(WorkbenchPlace place, WorkbenchView view, ItemListActivityMapper itemListActivityMapper/*, SidebarActivityMapper sidebarActivityMapper, FunctionToolbarViewActivityMapper functionToolbarViewActivityMapper, SearchActivityMapper searchActivityMapper*/) {
+    public WorkbenchActivity(WorkbenchPlace place, WorkbenchView view, ItemListActivityMapper itemListActivityMapper) {
         super(view);
         this.workspace = place.getWorkbenchName();
         this.view = view;
         this.itemListActivityMapper = itemListActivityMapper;
-        //this.sidebarActivityMapper = sidebarActivityMapper;
-        //this.functionToolbarViewActivityMapper = functionToolbarViewActivityMapper;
-        //this.searchActivityMapper = searchActivityMapper;
     }
 
     @Override
-    public void start(ViewPort display, EventBus eventBus) {
+    public void start(ViewPort display, EventBus eventBus, Place place) {
         System.out.println("starting workbench activity...");
         final ActivityManager jcrActivityManager = new ActivityManager(itemListActivityMapper, eventBus);
-        /*final ActivityManager sidebarActivityManager = new ActivityManager(sidebarActivityMapper, eventBus);
-        final ActivityManager functionToolbarViewActivityManager = new ActivityManager(functionToolbarViewActivityMapper, eventBus);
-        final ActivityManager searchActivityManager = new ActivityManager(searchActivityMapper, eventBus);*/
-
         jcrActivityManager.setViewPort(view.getItemListViewPort());
-
-
-        //final PlaceHistoryMapper placeHistoryMapper = new PlaceHistoryMapperImpl(new Class[] {ItemSelectedPlace.class} );
-        //final PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(placeHistoryMapper, view.);
-        //sidebarActivityManager.setViewPort(view.getSidebarViewPort());
-        //functionToolbarViewActivityManager.setViewPort(view.getFunctionToolbarViewPort());
-        //search activity is displayed by the function toolbar
-        //searchActivityManager.setViewPort(view.getFunctionToolbarViewPort());
 
         view.setPresenter(getReference());
         display.setView(view);

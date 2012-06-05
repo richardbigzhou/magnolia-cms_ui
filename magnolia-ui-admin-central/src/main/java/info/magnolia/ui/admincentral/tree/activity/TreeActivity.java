@@ -34,16 +34,15 @@
 package info.magnolia.ui.admincentral.tree.activity;
 
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
-
+import info.magnolia.ui.admincentral.jcr.view.JcrView.ViewType;
 import info.magnolia.ui.admincentral.jcr.view.activity.AbstractJcrActivity;
 import info.magnolia.ui.admincentral.jcr.view.builder.JcrViewBuilderProvider;
-import info.magnolia.ui.admincentral.jcr.view.JcrView.ViewType;
 import info.magnolia.ui.framework.place.PlaceController;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /**
  * Activity for displaying a tree view.

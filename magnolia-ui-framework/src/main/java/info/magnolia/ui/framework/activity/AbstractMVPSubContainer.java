@@ -140,5 +140,4 @@ public abstract class AbstractMVPSubContainer<A extends Activity> extends Abstra
 
     protected abstract Place getDefaultPlace();
 
-
 }

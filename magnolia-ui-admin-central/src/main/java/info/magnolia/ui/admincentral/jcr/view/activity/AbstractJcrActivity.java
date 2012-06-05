@@ -41,6 +41,7 @@ import info.magnolia.ui.admincentral.workbench.event.ContentChangedEvent;
 import info.magnolia.ui.admincentral.workbench.place.ItemSelectedPlace;
 import info.magnolia.ui.framework.activity.AbstractActivity;
 import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.place.Place;
 import info.magnolia.ui.framework.place.PlaceController;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.framework.view.ViewPort;
@@ -50,7 +51,6 @@ import javax.jcr.Item;
 import javax.jcr.RepositoryException;
 /**
  * A base class for jcr-related displaying activities.
- * @author fgrilli
  * @see TreeActivity
  * @see ListActivity
  */
@@ -75,7 +75,7 @@ public abstract class AbstractJcrActivity extends AbstractActivity implements Jc
     }
 
     @Override
-    public void start(ViewPort viewPort, EventBus eventBus) {
+    public void start(ViewPort viewPort, EventBus eventBus, Place place) {
         jcrView.setPresenter(this);
         jcrView.select(path);
         eventBus.addHandler(ContentChangedEvent.class, this);

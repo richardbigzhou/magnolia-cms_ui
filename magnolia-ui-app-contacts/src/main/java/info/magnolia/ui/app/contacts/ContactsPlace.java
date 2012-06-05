@@ -70,7 +70,7 @@ public class ContactsPlace extends WorkbenchPlace {
         this.path = path;
     }
     public ContactsPlace() {
-    	this("/");
+        this("/");
     }
 
     public String getPath() {

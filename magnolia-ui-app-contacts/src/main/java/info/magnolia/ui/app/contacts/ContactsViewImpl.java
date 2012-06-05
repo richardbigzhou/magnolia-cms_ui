@@ -34,7 +34,6 @@
 package info.magnolia.ui.app.contacts;
 
 import info.magnolia.ui.admincentral.app.AbstractAppView;
-import info.magnolia.ui.framework.view.ViewPort;
 import info.magnolia.ui.widget.actionbar.Actionbar;
 
 import com.vaadin.ui.HorizontalLayout;
