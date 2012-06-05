@@ -93,7 +93,6 @@ public class AdminCentralApplication extends Application {
 
         log.debug("Loading workbench definitions...");
         ConfiguredWorkbenchDefinitionManager workbenchDefinitionManager = componentProvider.newInstance(ConfiguredWorkbenchDefinitionManager.class);
-        //FIXME fgrilli: currently this does not actually load the workbenches as we decided to change their location from /mymodule/workbenches to /ui-admin-central/../apps/myapp/workbenches
         workbenchDefinitionManager.start();
 
         window = new Window("Magnolia shell test");
