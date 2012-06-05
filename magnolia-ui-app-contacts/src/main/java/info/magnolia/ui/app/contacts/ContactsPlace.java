@@ -79,6 +79,6 @@ public class ContactsPlace extends WorkbenchPlace {
 
     @Override
     public String getWorkbenchName() {
-        return "users";
+        return "contacts";
     }
 }

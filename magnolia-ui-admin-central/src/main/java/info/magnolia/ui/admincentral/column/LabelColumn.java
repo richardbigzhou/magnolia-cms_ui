@@ -40,6 +40,7 @@ import info.magnolia.ui.model.column.definition.LabelColumnDefinition;
 
 import java.io.Serializable;
 
+import javax.inject.Inject;
 import javax.jcr.Item;
 import javax.jcr.RepositoryException;
 
@@ -47,12 +48,11 @@ import com.vaadin.ui.Component;
 
 /**
  * Describes a column that contains the label of the item.
- *
- * @author dlipp
- * @author tmattsson
+ * @version $Id$
  */
 public class LabelColumn extends AbstractEditableColumn<LabelColumnDefinition> implements Serializable {
 
+    @Inject
     public LabelColumn(LabelColumnDefinition def, EventBus eventBus, PlaceController placeController, Shell shell) {
         super(def, eventBus, placeController, shell);
     }

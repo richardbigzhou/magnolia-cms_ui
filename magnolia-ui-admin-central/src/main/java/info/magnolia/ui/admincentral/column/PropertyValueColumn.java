@@ -40,6 +40,7 @@ import info.magnolia.ui.model.column.definition.PropertyValueColumnDefinition;
 
 import java.io.Serializable;
 
+import javax.inject.Inject;
 import javax.jcr.Item;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
@@ -53,6 +54,7 @@ import com.vaadin.ui.Component;
  */
 public class PropertyValueColumn extends AbstractEditableColumn<PropertyValueColumnDefinition> implements Serializable {
 
+    @Inject
     public PropertyValueColumn(PropertyValueColumnDefinition def, EventBus eventBus, PlaceController placeController,
             Shell shell) {
         super(def, eventBus, placeController, shell);

@@ -39,6 +39,7 @@ import info.magnolia.ui.model.column.definition.StatusColumnDefinition;
 import java.io.Serializable;
 import java.security.AccessControlException;
 
+import javax.inject.Inject;
 import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -60,6 +61,7 @@ public class StatusColumn extends AbstractColumn<StatusColumnDefinition> impleme
 
     private boolean permissions = false;
 
+    @Inject
     public StatusColumn(StatusColumnDefinition def) {
         super(def);
     }

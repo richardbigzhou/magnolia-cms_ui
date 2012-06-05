@@ -125,10 +125,6 @@
       <type>info.magnolia.ui.admincentral.workbench.view.WorkbenchView</type>
       <implementation>info.magnolia.ui.admincentral.workbench.view.WorkbenchViewImpl</implementation>
     </component>
-    <component>
-      <type>info.magnolia.ui.admincentral.workbench.activity.ItemListActivityMapper</type>
-      <implementation>info.magnolia.ui.admincentral.workbench.activity.ItemListActivityMapper</implementation>
-    </component>
      <component>
       <type>info.magnolia.ui.model.workbench.registry.ConfiguredWorkbenchDefinitionManager</type>
       <implementation>info.magnolia.ui.model.workbench.registry.ConfiguredWorkbenchDefinitionManager</implementation>

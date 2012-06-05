@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,38 +33,46 @@
  */
 package info.magnolia.ui.admincentral.column;
 
-import info.magnolia.ui.model.column.definition.PropertyTypeColumnDefinition;
+import info.magnolia.ui.model.column.definition.PropertyColumnDefinition;
 
 import java.io.Serializable;
 
 import javax.inject.Inject;
 import javax.jcr.Item;
 import javax.jcr.Property;
-import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 
+
 /**
- * Column that displays the type of a property.
- *
- * @version $Id$
+ * A column that displays the value of a node.
  */
-public class PropertyTypeColumn extends AbstractColumn<PropertyTypeColumnDefinition> implements Serializable {
+public class ReadOnlyPropertyColumn extends AbstractColumn<PropertyColumnDefinition> implements Serializable {
 
     @Inject
-    public PropertyTypeColumn(PropertyTypeColumnDefinition def) {
+    public ReadOnlyPropertyColumn(ReadOnlyPropertyColumnDefinition def ) {
         super(def);
     }
 
+    public String getPropertyName() {
+        return getDefinition().getPropertyName();
+    }
+
+    public void setPropertyName(String propertyName) {
+        getDefinition().setPropertyName(propertyName);
+    }
+
     @Override
-    protected Component getDefaultComponent(Item item) throws RepositoryException {
+    public Component getDefaultComponent(Item item) throws RepositoryException {
         if (item.isNode()) {
-            return EMPTY_LABEL;
+            return new Label(item.getName());
         }
 
         Property property = (Property) item;
-        return new Label(PropertyType.nameFromValue(property.getType()));
+        return new Label(property.getString());
     }
+
+
 }

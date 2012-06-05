@@ -36,6 +36,7 @@ package info.magnolia.ui.admincentral;
 import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventHandler;
+import info.magnolia.ui.vaadin.integration.shell.SubShell;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 import info.magnolia.ui.widget.magnoliashell.BaseMagnoliaShell;
 import info.magnolia.ui.widget.magnoliashell.ShellViewport;
@@ -60,11 +61,11 @@ import com.vaadin.terminal.ExternalResource;
 @Singleton
 
 public class MagnoliaShell extends BaseMagnoliaShell implements Shell {
-    
+
     private EventBus eventBus;
-    
+
     private AppController appController;
-    
+
     @Inject
     public MagnoliaShell(final EventBus eventBus, final AppController appController) {
         super();
@@ -77,8 +78,8 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell {
             }
         });
     }
-    
-    
+
+
     @Override
     protected void closeCurrentApp() {
         super.closeCurrentApp();
@@ -87,7 +88,7 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell {
             navigateToShellApp(ShellAppType.APPLAUNCHER.name().toLowerCase(), "");
         }
     }
-    
+
     @Override
     public void askForConfirmation(String message, ConfirmationHandler listener) {
     }
@@ -109,7 +110,7 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell {
 
     @Override
     public String getFragment() {
-        final ShellViewport activeViewport = getActiveViewport(); 
+        final ShellViewport activeViewport = getActiveViewport();
         return activeViewport == null ? "" : activeViewport.getCurrentShellFragment();
     }
 
@@ -129,16 +130,17 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell {
             }
         };
     }
-    
+
     @Override
     public Shell createSubShell(String id) {
-        throw new UnsupportedOperationException("MagnoliaShell is not capable of opening the subshells.");
+        return new MagnoliaSubShell(id, this);
+        //throw new UnsupportedOperationException("MagnoliaShell is not capable of opening the subshells.");
     }
 
     public void openDialog(IsVaadinComponent dialog) {
         addDialog(dialog.asVaadinComponent());
     }
-    
+
     public void removeDialog(IsVaadinComponent dialog) {
         removeDialog(dialog.asVaadinComponent());
     }

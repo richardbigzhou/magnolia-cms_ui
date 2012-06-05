@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,38 +33,13 @@
  */
 package info.magnolia.ui.admincentral.column;
 
-import info.magnolia.ui.model.column.definition.PropertyTypeColumnDefinition;
-
-import java.io.Serializable;
-
-import javax.inject.Inject;
-import javax.jcr.Item;
-import javax.jcr.Property;
-import javax.jcr.PropertyType;
-import javax.jcr.RepositoryException;
-
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Label;
+import info.magnolia.ui.model.column.definition.PropertyColumnDefinition;
 
 /**
- * Column that displays the type of a property.
- *
+ * TODO: dummy def remove it.
  * @version $Id$
+ *
  */
-public class PropertyTypeColumn extends AbstractColumn<PropertyTypeColumnDefinition> implements Serializable {
+public class ReadOnlyPropertyColumnDefinition extends PropertyColumnDefinition {
 
-    @Inject
-    public PropertyTypeColumn(PropertyTypeColumnDefinition def) {
-        super(def);
-    }
-
-    @Override
-    protected Component getDefaultComponent(Item item) throws RepositoryException {
-        if (item.isNode()) {
-            return EMPTY_LABEL;
-        }
-
-        Property property = (Property) item;
-        return new Label(PropertyType.nameFromValue(property.getType()));
-    }
 }

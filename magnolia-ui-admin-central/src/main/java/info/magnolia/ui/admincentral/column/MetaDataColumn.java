@@ -39,6 +39,7 @@ import info.magnolia.ui.model.column.definition.MetaDataColumnDefinition;
 import java.io.Serializable;
 import java.util.Calendar;
 
+import javax.inject.Inject;
 import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -58,6 +59,7 @@ public class MetaDataColumn extends AbstractColumn<MetaDataColumnDefinition> imp
 
     private String datePattern;
 
+    @Inject
     public MetaDataColumn(MetaDataColumnDefinition def) {
         super(def);
     }

@@ -38,14 +38,25 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.objectfactory.configuration.InstanceConfiguration;
 import info.magnolia.registry.RegistrationException;
+import info.magnolia.ui.admincentral.column.Column;
 import info.magnolia.ui.admincentral.jcr.view.JcrView.ViewType;
+import info.magnolia.ui.admincentral.jcr.view.builder.ConfiguredJcrViewBuilder;
+import info.magnolia.ui.admincentral.jcr.view.builder.JcrViewBuilderProvider;
+import info.magnolia.ui.admincentral.list.activity.ListActivity;
+import info.magnolia.ui.admincentral.tree.activity.TreeActivity;
+import info.magnolia.ui.admincentral.tree.model.TreeModel;
 import info.magnolia.ui.admincentral.workbench.place.ItemSelectedPlace;
 import info.magnolia.ui.admincentral.workbench.place.WorkbenchPlace;
 import info.magnolia.ui.framework.activity.AbstractMVPSubContainer;
 import info.magnolia.ui.framework.place.Place;
+import info.magnolia.ui.framework.place.PlaceController;
 import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.model.column.definition.AbstractColumnDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.model.workbench.registry.WorkbenchDefinitionRegistry;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 
 /**
@@ -55,11 +66,19 @@ public class WorkbenchMVPSubContainer extends AbstractMVPSubContainer<WorkbenchA
 
     private WorkbenchPlace place;
     private WorkbenchDefinitionRegistry workbenchRegistry;
+    private ConfiguredJcrViewBuilder configuredJcrViewBuilder;
+    private PlaceController placeController;
+    private Shell shell;
+    private JcrViewBuilderProvider jcrViewBuilderProvider;
 
     public WorkbenchMVPSubContainer(WorkbenchPlace place, WorkbenchDefinitionRegistry workbenchRegistry, Shell shell, ComponentProvider componentProvider) {
         super("workbench-" + place.getWorkbenchName(), shell, componentProvider);
         this.place = place;
         this.workbenchRegistry = workbenchRegistry;
+        this.jcrViewBuilderProvider =  componentProvider.getComponent(JcrViewBuilderProvider.class);
+        this.configuredJcrViewBuilder = (ConfiguredJcrViewBuilder) jcrViewBuilderProvider.getBuilder();
+        this.placeController = componentProvider.getComponent(PlaceController.class);
+        this.shell = shell;
     }
 
     @Override
@@ -94,7 +113,26 @@ public class WorkbenchMVPSubContainer extends AbstractMVPSubContainer<WorkbenchA
             componentProviderConfiguration.combine(workbenchDefinition.getComponents());
         }
 
+        //FIXME  workaround to provide MVPSubContainer with the right components correctly initialized.
+        Map<String, Column<?>> columns = new LinkedHashMap<String, Column<?>>();
+        for (AbstractColumnDefinition columnDefinition : workbenchDefinition.getColumns()) {
+            Column<?> column = configuredJcrViewBuilder.createTreeColumn(columnDefinition);
+            // only add if not null - null meaning there's no definitionToImplementationMapping defined for that column.
+            if (column != null) {
+                columns.put(columnDefinition.getName(), column);
+            }
+        }
+
+        final TreeModel treeModel = new TreeModel(workbenchDefinition, columns);
+
+        TreeActivity treeActivity = new TreeActivity(workbenchDefinition, jcrViewBuilderProvider, placeController, shell);
+        ListActivity listActivity = new ListActivity(workbenchDefinition, jcrViewBuilderProvider, placeController, shell);
+
+        componentProviderConfiguration.addComponent(InstanceConfiguration.valueOf(TreeModel.class, treeModel));
         componentProviderConfiguration.addComponent(InstanceConfiguration.valueOf(WorkbenchDefinition.class, workbenchDefinition));
+
+        ItemListActivityMapper itemListActivityMapper = new ItemListActivityMapper(treeActivity, listActivity);
+        componentProviderConfiguration.addComponent(InstanceConfiguration.valueOf(ItemListActivityMapper.class, itemListActivityMapper));
 
         return componentProviderConfiguration;
     }

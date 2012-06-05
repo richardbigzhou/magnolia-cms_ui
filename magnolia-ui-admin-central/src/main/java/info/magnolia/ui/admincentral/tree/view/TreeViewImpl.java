@@ -63,6 +63,7 @@ public class TreeViewImpl implements TreeView, IsVaadinComponent {
         // next two lines are required to make the browser (TreeTable) react on selection change via mouse
         jcrBrowser.setImmediate(true);
         jcrBrowser.setNullSelectionAllowed(false);
+        jcrBrowser.setSizeFull();
         jcrBrowser.addListener(new ItemClickEvent.ItemClickListener() {
 
             @Override

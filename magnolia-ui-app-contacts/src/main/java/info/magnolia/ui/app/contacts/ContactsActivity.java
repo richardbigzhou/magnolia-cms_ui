@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.app.contacts;
 
-import info.magnolia.ui.admincentral.workbench.activity.ItemListActivityMapper;
 import info.magnolia.ui.framework.app.AbstractAppActivity;
 
 import javax.inject.Inject;
@@ -46,7 +45,7 @@ import javax.inject.Inject;
 public class ContactsActivity extends AbstractAppActivity<ContactsPresenter> implements ContactsPresenter {
 
     @Inject
-    public ContactsActivity(ContactsView view, ItemListActivityMapper itemListActivityMapper) {
+    public ContactsActivity(ContactsView view) {
         super(view);
     }
 
