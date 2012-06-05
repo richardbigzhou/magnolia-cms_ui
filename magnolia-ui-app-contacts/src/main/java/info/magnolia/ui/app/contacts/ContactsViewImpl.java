@@ -34,6 +34,7 @@
 package info.magnolia.ui.app.contacts;
 
 import info.magnolia.ui.admincentral.app.AbstractAppView;
+import info.magnolia.ui.framework.view.ViewPort;
 import info.magnolia.ui.widget.actionbar.Actionbar;
 
 import com.vaadin.ui.HorizontalLayout;
@@ -43,7 +44,7 @@ import com.vaadin.ui.VerticalLayout;
 
 /**
  * View implementation for the Contacts app.
- * 
+ *
  * @version $Id$
  */
 @SuppressWarnings("serial")
@@ -78,4 +79,5 @@ public class ContactsViewImpl extends AbstractAppView<ContactsPresenter> impleme
 
         return actionbar;
     }
+
 }

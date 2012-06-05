@@ -38,7 +38,6 @@ import javax.inject.Singleton;
 
 import info.magnolia.ui.admincentral.jcr.view.JcrView.ViewType;
 import info.magnolia.ui.admincentral.list.activity.ListActivity;
-import info.magnolia.ui.admincentral.shellapp.applauncher.AppLauncherPlace;
 import info.magnolia.ui.admincentral.tree.activity.TreeActivity;
 import info.magnolia.ui.admincentral.workbench.place.ItemSelectedPlace;
 import info.magnolia.ui.framework.activity.Activity;
@@ -63,12 +62,8 @@ public class ItemListActivityMapper implements ActivityMapper {
 
     @Override
     public Activity getActivity(final Place place) {
-        //TODO handle search
-        /*if(place instanceof SearchPlace){
-            ((SearchPlace)place).setJcrView(listActivity.getJcrView());
-            return listActivity;
-        }*/
-        if(place instanceof AppLauncherPlace){
+
+        if(!(place instanceof ItemSelectedPlace)){
             return null;
         }
         final ItemSelectedPlace selectedPlace = (ItemSelectedPlace)place;

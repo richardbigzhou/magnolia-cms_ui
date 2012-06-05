@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.workbench.view;
 
+import info.magnolia.ui.admincentral.workbench.activity.WorkbenchPresenter;
 import info.magnolia.ui.framework.view.ViewPort;
 import info.magnolia.ui.vaadin.integration.view.ComponentContainerViewPort;
 
@@ -69,10 +70,7 @@ public class WorkbenchViewImpl implements WorkbenchView {
         itemListViewPort = new ComponentContainerViewPort(innerLayout);
     }
 
-    @Override
-    public Component asVaadinComponent() {
-        return outerLayout;
-    }
+
 
     @Override
     public ViewPort getItemListViewPort() {
@@ -87,6 +85,29 @@ public class WorkbenchViewImpl implements WorkbenchView {
     @Override
     public ViewPort getFunctionToolbarViewPort() {
         return functionToolbarViewPort;
+    }
+
+    @Override
+    public void setPresenter(WorkbenchPresenter presenter) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public WorkbenchPresenter getPresenter() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public String getAppName() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Component asVaadinComponent() {
+        return outerLayout;
     }
 
 }

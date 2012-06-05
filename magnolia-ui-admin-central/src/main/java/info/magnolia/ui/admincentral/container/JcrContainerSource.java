@@ -43,8 +43,7 @@ import com.vaadin.ui.Component;
 
 /**
  * Backing implementation for JcrContainer.
- *
- * @author tmattsson
+ * @version $Id$
  */
 public interface JcrContainerSource {
 

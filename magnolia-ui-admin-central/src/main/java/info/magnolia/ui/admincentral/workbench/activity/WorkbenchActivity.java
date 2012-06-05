@@ -33,11 +33,14 @@
  */
 package info.magnolia.ui.admincentral.workbench.activity;
 
+import info.magnolia.ui.admincentral.workbench.place.ItemSelectedPlace;
 import info.magnolia.ui.admincentral.workbench.place.WorkbenchPlace;
 import info.magnolia.ui.admincentral.workbench.view.WorkbenchView;
-import info.magnolia.ui.framework.activity.AbstractActivity;
 import info.magnolia.ui.framework.activity.ActivityManager;
+import info.magnolia.ui.framework.app.AbstractAppActivity;
 import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.place.PlaceHistoryMapper;
+import info.magnolia.ui.framework.place.PlaceHistoryMapperImpl;
 import info.magnolia.ui.framework.view.ViewPort;
 
 import javax.inject.Inject;
@@ -47,7 +50,7 @@ import javax.inject.Inject;
  * FIXME: reintroduce actions and function toolbars.
  * Edit a workspace.
  */
-public class WorkbenchActivity extends AbstractActivity {
+public class WorkbenchActivity extends AbstractAppActivity<WorkbenchPresenter> implements WorkbenchPresenter {
     private String workspace;
     private ItemListActivityMapper itemListActivityMapper;
     //private SidebarActivityMapper sidebarActivityMapper;
@@ -57,6 +60,7 @@ public class WorkbenchActivity extends AbstractActivity {
 
     @Inject
     public WorkbenchActivity(WorkbenchPlace place, WorkbenchView view, ItemListActivityMapper itemListActivityMapper/*, SidebarActivityMapper sidebarActivityMapper, FunctionToolbarViewActivityMapper functionToolbarViewActivityMapper, SearchActivityMapper searchActivityMapper*/) {
+        super(view);
         this.workspace = place.getWorkbenchName();
         this.view = view;
         this.itemListActivityMapper = itemListActivityMapper;
@@ -67,20 +71,26 @@ public class WorkbenchActivity extends AbstractActivity {
 
     @Override
     public void start(ViewPort display, EventBus eventBus) {
-
+        System.out.println("starting workbench activity...");
         final ActivityManager jcrActivityManager = new ActivityManager(itemListActivityMapper, eventBus);
         /*final ActivityManager sidebarActivityManager = new ActivityManager(sidebarActivityMapper, eventBus);
         final ActivityManager functionToolbarViewActivityManager = new ActivityManager(functionToolbarViewActivityMapper, eventBus);
         final ActivityManager searchActivityManager = new ActivityManager(searchActivityMapper, eventBus);*/
 
         jcrActivityManager.setViewPort(view.getItemListViewPort());
+
+
+        //final PlaceHistoryMapper placeHistoryMapper = new PlaceHistoryMapperImpl(new Class[] {ItemSelectedPlace.class} );
+        //final PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(placeHistoryMapper, view.);
         //sidebarActivityManager.setViewPort(view.getSidebarViewPort());
         //functionToolbarViewActivityManager.setViewPort(view.getFunctionToolbarViewPort());
         //search activity is displayed by the function toolbar
         //searchActivityManager.setViewPort(view.getFunctionToolbarViewPort());
 
+        view.setPresenter(getReference());
         display.setView(view);
     }
+
 
     @Override
     public int hashCode() {
@@ -111,6 +121,11 @@ public class WorkbenchActivity extends AbstractActivity {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public WorkbenchPresenter getReference() {
+        return this;
     }
 
 }

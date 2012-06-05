@@ -41,10 +41,9 @@ import com.vaadin.ui.Label;
  * Represents a property on an item in JcrContainer. Think of this as a cell in a table. This
  * implementation refers back to the container that created the item to retrieve the value via
  * {@link JcrContainer#getColumnValue(String, Object)}.
- * 
+ *
  * Note: Vaadin calls the toString() method to get the value to display in the TreeTable.
- * 
- * @author tmattsson
+ * @version $Id$
  */
 public class JcrContainerProperty extends AbstractProperty {
 

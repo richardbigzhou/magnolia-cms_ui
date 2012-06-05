@@ -74,7 +74,7 @@ import com.vaadin.ui.Component;
  * lazy loading items from a JCR repository and a cache for items and item ids. Inspired by
  * http://vaadin.com/directory#addon/vaadin-sqlcontainer.
  *
- * @author tmattsson
+ * @version $Id$
  */
 public abstract class JcrContainer extends AbstractContainer implements Container.Sortable, Container.Indexed, Container.ItemSetChangeNotifier, Container.PropertySetChangeNotifier {
 

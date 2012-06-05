@@ -37,7 +37,6 @@ package info.magnolia.ui.admincentral.container;
 /**
  * Definition for Properties.
  *
- * @author dlipp
  * @version $Id$
  */
 public class PropertyDefinition {

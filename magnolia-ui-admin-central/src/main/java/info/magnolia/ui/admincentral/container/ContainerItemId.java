@@ -42,8 +42,7 @@ import org.apache.commons.lang.StringUtils;
 
 /**
  * Id of an item kept in JcrContainer. Can be used for a node or a property.
- *
- * @author tmattsson
+ * @version $Id$
  */
 public class ContainerItemId {
 

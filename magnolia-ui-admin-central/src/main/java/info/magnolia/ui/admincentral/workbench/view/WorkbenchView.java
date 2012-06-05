@@ -33,7 +33,8 @@
  */
 package info.magnolia.ui.admincentral.workbench.view;
 
-import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.admincentral.workbench.activity.WorkbenchPresenter;
+import info.magnolia.ui.framework.app.AppView;
 import info.magnolia.ui.framework.view.ViewPort;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
@@ -41,7 +42,7 @@ import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 /**
  * The view to edit a workspace. Provides slots for the tree/list view, sidebar view (with actions and preview), search view and function toolbar.
  */
-public interface WorkbenchView extends View, IsVaadinComponent{
+public interface WorkbenchView extends AppView<WorkbenchPresenter>, IsVaadinComponent {
 
     ViewPort getItemListViewPort();
 

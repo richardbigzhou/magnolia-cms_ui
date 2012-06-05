@@ -69,8 +69,16 @@ public class ContactsPlace extends WorkbenchPlace {
         super("contacts");
         this.path = path;
     }
+    public ContactsPlace() {
+    	this("/");
+    }
 
     public String getPath() {
         return path;
+    }
+
+    @Override
+    public String getWorkbenchName() {
+        return "users";
     }
 }

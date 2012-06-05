@@ -59,7 +59,7 @@ public class ContactsApp implements AppLifecycle {
 
     @Override
     public void focus() {
-        placeController.goTo(new ContactsPlace("foobar"));
+        placeController.goTo(new ContactsPlace("/"));
         System.out.println("ContactsApp focused");
     }
 
