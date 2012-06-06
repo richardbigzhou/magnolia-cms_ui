@@ -33,11 +33,7 @@
  */
 package info.magnolia.ui.admincentral.app.pages;
 
-import info.magnolia.ui.admincentral.workbench.place.WorkbenchPlace;
 import info.magnolia.ui.framework.app.AbstractAppActivity;
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.place.Place;
-import info.magnolia.ui.framework.view.ViewPort;
 
 import javax.inject.Inject;
 
