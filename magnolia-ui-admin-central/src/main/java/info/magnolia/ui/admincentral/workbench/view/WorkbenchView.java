@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,54 +31,23 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts;
+package info.magnolia.ui.admincentral.workbench.view;
 
-import info.magnolia.ui.admincentral.workbench.place.WorkbenchPlace;
-import info.magnolia.ui.framework.place.PlaceTokenizer;
-import info.magnolia.ui.framework.place.Prefix;
+import info.magnolia.ui.admincentral.workbench.activity.WorkbenchPresenter;
+import info.magnolia.ui.framework.app.AppView;
+import info.magnolia.ui.framework.view.ViewPort;
+import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
+
 
 /**
- * Place for the Contacts app.
- *
- * @version $Id$
+ * The view to edit a workspace. Provides slots for the tree/list view, sidebar view (with actions and preview), search view and function toolbar.
  */
-@Prefix("contacts")
-public class ContactsPlace extends WorkbenchPlace {
+public interface WorkbenchView extends AppView<WorkbenchPresenter>, IsVaadinComponent {
 
-    /**
-     * Tokenizer for ContactsPlace.
-     *
-     * @version $Id$
-     */
-    public static class Tokenizer implements PlaceTokenizer<ContactsPlace> {
+    ViewPort getItemListViewPort();
 
-        @Override
-        public ContactsPlace getPlace(String token) {
-            return new ContactsPlace(token);
-        }
+    ViewPort getSidebarViewPort();
 
-        @Override
-        public String getToken(ContactsPlace place) {
-            return place.getPath();
-        }
-    }
+    ViewPort getFunctionToolbarViewPort();
 
-    private String path;
-
-    public ContactsPlace(String path) {
-        super("contacts");
-        this.path = path;
-    }
-    public ContactsPlace() {
-        this("/");
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    @Override
-    public String getWorkbenchName() {
-        return "contacts";
-    }
 }

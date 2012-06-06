@@ -43,7 +43,7 @@ import com.vaadin.ui.VerticalLayout;
 
 /**
  * View implementation for the Contacts app.
- * 
+ *
  * @version $Id$
  */
 @SuppressWarnings("serial")
@@ -78,4 +78,5 @@ public class ContactsViewImpl extends AbstractAppView<ContactsPresenter> impleme
 
         return actionbar;
     }
+
 }

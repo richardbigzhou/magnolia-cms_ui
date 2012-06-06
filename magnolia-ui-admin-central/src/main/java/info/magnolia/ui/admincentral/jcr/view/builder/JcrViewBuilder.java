@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,54 +31,16 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts;
+package info.magnolia.ui.admincentral.jcr.view.builder;
 
-import info.magnolia.ui.admincentral.workbench.place.WorkbenchPlace;
-import info.magnolia.ui.framework.place.PlaceTokenizer;
-import info.magnolia.ui.framework.place.Prefix;
+import info.magnolia.ui.admincentral.jcr.view.JcrView;
+import info.magnolia.ui.admincentral.jcr.view.JcrView.ViewType;
+import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 
 /**
- * Place for the Contacts app.
- *
- * @version $Id$
+ * Used to transform tree or list and column definitions into components.
  */
-@Prefix("contacts")
-public class ContactsPlace extends WorkbenchPlace {
+public interface JcrViewBuilder {
 
-    /**
-     * Tokenizer for ContactsPlace.
-     *
-     * @version $Id$
-     */
-    public static class Tokenizer implements PlaceTokenizer<ContactsPlace> {
-
-        @Override
-        public ContactsPlace getPlace(String token) {
-            return new ContactsPlace(token);
-        }
-
-        @Override
-        public String getToken(ContactsPlace place) {
-            return place.getPath();
-        }
-    }
-
-    private String path;
-
-    public ContactsPlace(String path) {
-        super("contacts");
-        this.path = path;
-    }
-    public ContactsPlace() {
-        this("/");
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    @Override
-    public String getWorkbenchName() {
-        return "contacts";
-    }
+    JcrView build(WorkbenchDefinition workbenchDefinition, ViewType type);
 }

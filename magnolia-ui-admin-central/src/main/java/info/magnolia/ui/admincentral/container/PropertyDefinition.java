@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,54 +31,47 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts;
+package info.magnolia.ui.admincentral.container;
 
-import info.magnolia.ui.admincentral.workbench.place.WorkbenchPlace;
-import info.magnolia.ui.framework.place.PlaceTokenizer;
-import info.magnolia.ui.framework.place.Prefix;
 
 /**
- * Place for the Contacts app.
+ * Definition for Properties.
  *
  * @version $Id$
  */
-@Prefix("contacts")
-public class ContactsPlace extends WorkbenchPlace {
+public class PropertyDefinition {
+    private Object defaultValue;
+    private String propertyId;
+    private Class<?> type;
 
-    /**
-     * Tokenizer for ContactsPlace.
-     *
-     * @version $Id$
-     */
-    public static class Tokenizer implements PlaceTokenizer<ContactsPlace> {
-
-        @Override
-        public ContactsPlace getPlace(String token) {
-            return new ContactsPlace(token);
-        }
-
-        @Override
-        public String getToken(ContactsPlace place) {
-            return place.getPath();
-        }
+    public PropertyDefinition(String propertyId, Class<?> type,
+            Object defaultValue) {
+        setPropertyId(propertyId);
+        setType(type);
+        setDefaultValue(defaultValue);
     }
 
-    private String path;
-
-    public ContactsPlace(String path) {
-        super("contacts");
-        this.path = path;
-    }
-    public ContactsPlace() {
-        this("/");
+    public Object getDefaultValue() {
+        return defaultValue;
     }
 
-    public String getPath() {
-        return path;
+    public String getPropertyId() {
+        return propertyId;
     }
 
-    @Override
-    public String getWorkbenchName() {
-        return "contacts";
+    public Class<?> getType() {
+        return type;
+    }
+
+    public void setDefaultValue(Object defaultValue) {
+        this.defaultValue = defaultValue;
+    }
+
+    public void setPropertyId(String propertyId) {
+        this.propertyId = propertyId;
+    }
+
+    public void setType(Class<?> type) {
+        this.type = type;
     }
 }

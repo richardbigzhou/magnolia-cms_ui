@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,54 +31,43 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts;
+package info.magnolia.ui.admincentral.column;
 
-import info.magnolia.ui.admincentral.workbench.place.WorkbenchPlace;
-import info.magnolia.ui.framework.place.PlaceTokenizer;
-import info.magnolia.ui.framework.place.Prefix;
+import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.place.PlaceController;
+import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.model.column.definition.LabelColumnDefinition;
+
+import java.io.Serializable;
+
+import javax.inject.Inject;
+import javax.jcr.Item;
+import javax.jcr.RepositoryException;
+
+import com.vaadin.ui.Component;
 
 /**
- * Place for the Contacts app.
- *
+ * Describes a column that contains the label of the item.
  * @version $Id$
  */
-@Prefix("contacts")
-public class ContactsPlace extends WorkbenchPlace {
+public class LabelColumn extends AbstractEditableColumn<LabelColumnDefinition> implements Serializable {
 
-    /**
-     * Tokenizer for ContactsPlace.
-     *
-     * @version $Id$
-     */
-    public static class Tokenizer implements PlaceTokenizer<ContactsPlace> {
-
-        @Override
-        public ContactsPlace getPlace(String token) {
-            return new ContactsPlace(token);
-        }
-
-        @Override
-        public String getToken(ContactsPlace place) {
-            return place.getPath();
-        }
-    }
-
-    private String path;
-
-    public ContactsPlace(String path) {
-        super("contacts");
-        this.path = path;
-    }
-    public ContactsPlace() {
-        this("/");
-    }
-
-    public String getPath() {
-        return path;
+    @Inject
+    public LabelColumn(LabelColumnDefinition def, EventBus eventBus, PlaceController placeController, Shell shell) {
+        super(def, eventBus, placeController, shell);
     }
 
     @Override
-    public String getWorkbenchName() {
-        return "contacts";
+    protected Component getDefaultComponent(Item item) throws RepositoryException {
+
+        String path = item.isNode() ? "@name" : item.getName() + "@name";
+
+        return new EditableText(item, new PresenterImpl(), path) {
+
+            @Override
+            protected String getLabelText(Item item) throws RepositoryException {
+                return item.getName();
+            }
+        };
     }
 }

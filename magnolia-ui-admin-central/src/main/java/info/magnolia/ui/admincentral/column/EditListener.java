@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,54 +31,22 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts;
+package info.magnolia.ui.admincentral.column;
 
-import info.magnolia.ui.admincentral.workbench.place.WorkbenchPlace;
-import info.magnolia.ui.framework.place.PlaceTokenizer;
-import info.magnolia.ui.framework.place.Prefix;
+import java.lang.reflect.Method;
+import java.util.EventListener;
+
+import com.vaadin.tools.ReflectTools;
+
 
 /**
- * Place for the Contacts app.
+ * A listener for edit events.
  *
- * @version $Id$
  */
-@Prefix("contacts")
-public class ContactsPlace extends WorkbenchPlace {
+public interface EditListener extends EventListener {
 
-    /**
-     * Tokenizer for ContactsPlace.
-     *
-     * @version $Id$
-     */
-    public static class Tokenizer implements PlaceTokenizer<ContactsPlace> {
+    public static Method EVENT_METHOD = ReflectTools.findMethod(
+        EditListener.class, "edit", EditEvent.class);
 
-        @Override
-        public ContactsPlace getPlace(String token) {
-            return new ContactsPlace(token);
-        }
-
-        @Override
-        public String getToken(ContactsPlace place) {
-            return place.getPath();
-        }
-    }
-
-    private String path;
-
-    public ContactsPlace(String path) {
-        super("contacts");
-        this.path = path;
-    }
-    public ContactsPlace() {
-        this("/");
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    @Override
-    public String getWorkbenchName() {
-        return "contacts";
-    }
+    void edit(EditEvent event);
 }

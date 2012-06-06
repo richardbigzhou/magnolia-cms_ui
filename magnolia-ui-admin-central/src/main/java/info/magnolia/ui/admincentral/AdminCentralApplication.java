@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral;
 
-import info.magnolia.ui.admincentral.dialog.registry.DummyDialogDefinitionManager;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.model.ModuleDefinition;
 import info.magnolia.objectfactory.Components;
@@ -42,8 +41,13 @@ import info.magnolia.objectfactory.configuration.ComponentProviderConfigurationB
 import info.magnolia.objectfactory.configuration.InstanceConfiguration;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
+import info.magnolia.ui.admincentral.dialog.registry.DummyDialogDefinitionManager;
+import info.magnolia.ui.model.workbench.registry.ConfiguredWorkbenchDefinitionManager;
 
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaadin.Application;
 import com.vaadin.ui.Component;
@@ -56,27 +60,41 @@ import com.vaadin.ui.Window;
  */
 @SuppressWarnings("serial")
 public class AdminCentralApplication extends Application {
+    private static final Logger log = LoggerFactory.getLogger(AdminCentralApplication.class);
+
     private Window window;
 
     @Override
     public void init() {
+        log.debug("Init AdminCentralApplication...");
         setTheme("testtheme");
 
-        // Read component configurations from module descriptors
+        log.debug("Read component configurations from module descriptors...");
         ComponentProviderConfigurationBuilder configurationBuilder = new ComponentProviderConfigurationBuilder();
         List<ModuleDefinition> moduleDefinitions = Components.getComponent(ModuleRegistry.class).getModuleDefinitions();
-        ComponentProviderConfiguration configuration = configurationBuilder.getComponentsFromModules("admin-central", moduleDefinitions);
-        configuration = configuration.clone();
+        ComponentProviderConfiguration adminCentralConfig = configurationBuilder.getComponentsFromModules("admin-central", moduleDefinitions);
+        ComponentProviderConfiguration defaultWorkbenchConfig = configurationBuilder.getComponentsFromModules("default-workbench", moduleDefinitions);
+
+        log.debug("Combining different configurations...");
+        ComponentProviderConfiguration configuration = adminCentralConfig.clone();
+        configuration.combine(defaultWorkbenchConfig.clone());
+
         configuration.addComponent(InstanceConfiguration.valueOf(Application.class, this));
 
-        // Create the component provider
+        log.debug("Creating the component provider...");
         GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
         builder.withConfiguration(configuration);
         builder.withParent((GuiceComponentProvider) Components.getComponentProvider());
         GuiceComponentProvider componentProvider = builder.build();
 
+        log.debug("Loading dialog definitions...");
         DummyDialogDefinitionManager dialogManager = componentProvider.newInstance(DummyDialogDefinitionManager.class);
         dialogManager.load();
+
+        log.debug("Loading workbench definitions...");
+        ConfiguredWorkbenchDefinitionManager workbenchDefinitionManager = componentProvider.newInstance(ConfiguredWorkbenchDefinitionManager.class);
+        workbenchDefinitionManager.start();
+
         window = new Window("Magnolia shell test");
         window.setContent(new CssLayout(){
 

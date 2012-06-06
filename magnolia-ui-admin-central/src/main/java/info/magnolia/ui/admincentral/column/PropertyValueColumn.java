@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,40 +31,48 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts;
+package info.magnolia.ui.admincentral.column;
 
-import info.magnolia.ui.framework.app.AppLifecycle;
+import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.place.PlaceController;
+import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.model.column.definition.PropertyValueColumnDefinition;
+
+import java.io.Serializable;
 
 import javax.inject.Inject;
+import javax.jcr.Item;
+import javax.jcr.Property;
+import javax.jcr.RepositoryException;
+
+import com.vaadin.ui.Component;
 
 /**
- * Dummy app.
+ * Definition for a column that displays the value of a property.
  *
  * @version $Id$
  */
-public class ContactsApp implements AppLifecycle {
-
-    private PlaceController placeController;
+public class PropertyValueColumn extends AbstractEditableColumn<PropertyValueColumnDefinition> implements Serializable {
 
     @Inject
-    public ContactsApp(PlaceController placeController) {
-        this.placeController = placeController;
+    public PropertyValueColumn(PropertyValueColumnDefinition def, EventBus eventBus, PlaceController placeController,
+            Shell shell) {
+        super(def, eventBus, placeController, shell);
     }
 
     @Override
-    public void start() {
-        System.out.println("ContactsApp started");
-    }
+    protected Component getDefaultComponent(Item item) throws RepositoryException {
+        if (item.isNode()) {
+            return EMPTY_LABEL;
+        }
 
-    @Override
-    public void focus() {
-        placeController.goTo(new ContactsPlace("/"));
-        System.out.println("ContactsApp focused");
-    }
+        return new EditableText(item, new PresenterImpl(), item.getName()) {
 
-    @Override
-    public void stop() {
-        System.out.println("ContactsApp stopped");
+            @Override
+            protected String getLabelText(Item item) throws RepositoryException {
+                Property property = (Property) item;
+                return property.getString();
+            }
+        };
     }
 }

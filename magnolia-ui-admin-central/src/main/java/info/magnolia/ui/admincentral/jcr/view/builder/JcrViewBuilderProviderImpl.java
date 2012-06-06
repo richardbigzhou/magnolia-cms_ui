@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,54 +31,55 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts;
+package info.magnolia.ui.admincentral.jcr.view.builder;
 
-import info.magnolia.ui.admincentral.workbench.place.WorkbenchPlace;
-import info.magnolia.ui.framework.place.PlaceTokenizer;
-import info.magnolia.ui.framework.place.Prefix;
+import info.magnolia.cms.security.User;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Place for the Contacts app.
- *
- * @version $Id$
+ * TODO: use ui settings?
+ * Provides the JcrViewBuilder defined in the AdminCentralModule.
  */
-@Prefix("contacts")
-public class ContactsPlace extends WorkbenchPlace {
+public class JcrViewBuilderProviderImpl implements JcrViewBuilderProvider {
+
+    //injected
+    private User user;
+    //private UISettings uiSettings;
+
+    // content2bean
+    private List<JcrViewBuilder> jcrViewBuilders = new ArrayList<JcrViewBuilder>();
+
 
     /**
-     * Tokenizer for ContactsPlace.
-     *
-     * @version $Id$
+     * Is needed so that we can make a proxy (reloading configuration).
+     * TODO: is this really necessary?
      */
-    public static class Tokenizer implements PlaceTokenizer<ContactsPlace> {
-
-        @Override
-        public ContactsPlace getPlace(String token) {
-            return new ContactsPlace(token);
-        }
-
-        @Override
-        public String getToken(ContactsPlace place) {
-            return place.getPath();
-        }
+    public JcrViewBuilderProviderImpl() {
     }
 
-    private String path;
-
-    public ContactsPlace(String path) {
-        super("contacts");
-        this.path = path;
-    }
-    public ContactsPlace() {
-        this("/");
-    }
-
-    public String getPath() {
-        return path;
-    }
+    /*@Inject
+    public JcrViewBuilderProviderImpl(User user, UISettings uiSettings) {
+        this.user = user;
+        this.uiSettings = uiSettings;
+    }*/
 
     @Override
-    public String getWorkbenchName() {
-        return "contacts";
+    public JcrViewBuilder getBuilder() {
+        // FIXME: use user and uiSettings
+        return jcrViewBuilders.get(0);
+    }
+
+    public void setJcrViewBuilders(List<JcrViewBuilder> jcrViewBuilders) {
+        this.jcrViewBuilders = jcrViewBuilders;
+    }
+
+    public List<JcrViewBuilder> getJcrViewBuilders() {
+        return jcrViewBuilders;
+    }
+
+    public void addJcrViewBuilder(JcrViewBuilder jcrViewBuilder) {
+        this.jcrViewBuilders.add(jcrViewBuilder);
     }
 }

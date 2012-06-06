@@ -72,7 +72,6 @@ public class ConfiguredAppDescriptor implements AppDescriptor {
 
     private List<PlaceActivityMapping> activityMappings = new ArrayList<PlaceActivityMapping>();
 
-
     public String getName() {
         return name;
     }
@@ -142,7 +141,6 @@ public class ConfiguredAppDescriptor implements AppDescriptor {
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
     }
-
 
     @Override
     public boolean equals(Object o) {

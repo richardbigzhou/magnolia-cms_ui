@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,54 +31,36 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts;
+package info.magnolia.ui.admincentral.jcr;
 
-import info.magnolia.ui.admincentral.workbench.place.WorkbenchPlace;
-import info.magnolia.ui.framework.place.PlaceTokenizer;
-import info.magnolia.ui.framework.place.Prefix;
+import info.magnolia.cms.core.Content;
+import info.magnolia.cms.core.DefaultContent;
+import info.magnolia.cms.core.MetaData;
+import info.magnolia.jcr.util.MetaDataUtil;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 /**
- * Place for the Contacts app.
+ * Hack implementation of a Content. Temporarily used as long as we don't have a clear vision where
+ * to go with the Content-API.
  *
- * @version $Id$
+ * @deprecated temporary
  */
-@Prefix("contacts")
-public class ContactsPlace extends WorkbenchPlace {
+public class HackContent extends DefaultContent {
 
-    /**
-     * Tokenizer for ContactsPlace.
-     *
-     * @version $Id$
-     */
-    public static class Tokenizer implements PlaceTokenizer<ContactsPlace> {
-
-        @Override
-        public ContactsPlace getPlace(String token) {
-            return new ContactsPlace(token);
-        }
-
-        @Override
-        public String getToken(ContactsPlace place) {
-            return place.getPath();
-        }
-    }
-
-    private String path;
-
-    public ContactsPlace(String path) {
-        super("contacts");
-        this.path = path;
-    }
-    public ContactsPlace() {
-        this("/");
-    }
-
-    public String getPath() {
-        return path;
+    public HackContent(Node node) throws RepositoryException {
+        super();
+        setNode(node);
     }
 
     @Override
-    public String getWorkbenchName() {
-        return "contacts";
+    public Content getParent() throws RepositoryException {
+        return (new HackContent(this.node.getParent()));
+    }
+
+    @Override
+    public MetaData getMetaData() {
+        return MetaDataUtil.getMetaData(this.node);
     }
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,54 +31,38 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts;
+package info.magnolia.ui.admincentral.column;
 
-import info.magnolia.ui.admincentral.workbench.place.WorkbenchPlace;
-import info.magnolia.ui.framework.place.PlaceTokenizer;
-import info.magnolia.ui.framework.place.Prefix;
+import info.magnolia.ui.model.column.definition.AbstractColumnDefinition;
+
+import javax.jcr.Item;
+import javax.jcr.RepositoryException;
+
+import com.vaadin.ui.Component;
 
 /**
- * Place for the Contacts app.
+ * Defines a Column - e.g. for lists or trees.
  *
- * @version $Id$
+ * @param <D>
+ *            type of the definition for this column.
+ * @author dlipp
  */
-@Prefix("contacts")
-public class ContactsPlace extends WorkbenchPlace {
+public interface Column<D extends AbstractColumnDefinition> {
+
+    D getDefinition();
 
     /**
-     * Tokenizer for ContactsPlace.
-     *
-     * @version $Id$
+     * @return value to be displayed in the corresponding column (from the provided Node)
      */
-    public static class Tokenizer implements PlaceTokenizer<ContactsPlace> {
+    Component getComponent(Item item) throws RepositoryException;
 
-        @Override
-        public ContactsPlace getPlace(String token) {
-            return new ContactsPlace(token);
-        }
+    void setComponent(Item item, Component newValue) throws RepositoryException;
 
-        @Override
-        public String getToken(ContactsPlace place) {
-            return place.getPath();
-        }
-    }
+    int getWidth();
 
-    private String path;
+    void setWidth(int newWidth);
 
-    public ContactsPlace(String path) {
-        super("contacts");
-        this.path = path;
-    }
-    public ContactsPlace() {
-        this("/");
-    }
+    String getLabel();
 
-    public String getPath() {
-        return path;
-    }
-
-    @Override
-    public String getWorkbenchName() {
-        return "contacts";
-    }
+    void setLabel(String newLabel);
 }

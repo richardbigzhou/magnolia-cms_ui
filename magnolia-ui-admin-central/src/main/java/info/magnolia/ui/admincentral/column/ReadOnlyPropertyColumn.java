@@ -31,54 +31,48 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts;
+package info.magnolia.ui.admincentral.column;
 
-import info.magnolia.ui.admincentral.workbench.place.WorkbenchPlace;
-import info.magnolia.ui.framework.place.PlaceTokenizer;
-import info.magnolia.ui.framework.place.Prefix;
+import info.magnolia.ui.model.column.definition.PropertyColumnDefinition;
+
+import java.io.Serializable;
+
+import javax.inject.Inject;
+import javax.jcr.Item;
+import javax.jcr.Property;
+import javax.jcr.RepositoryException;
+
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Label;
+
 
 /**
- * Place for the Contacts app.
- *
- * @version $Id$
+ * A column that displays the value of a node.
  */
-@Prefix("contacts")
-public class ContactsPlace extends WorkbenchPlace {
+public class ReadOnlyPropertyColumn extends AbstractColumn<PropertyColumnDefinition> implements Serializable {
 
-    /**
-     * Tokenizer for ContactsPlace.
-     *
-     * @version $Id$
-     */
-    public static class Tokenizer implements PlaceTokenizer<ContactsPlace> {
-
-        @Override
-        public ContactsPlace getPlace(String token) {
-            return new ContactsPlace(token);
-        }
-
-        @Override
-        public String getToken(ContactsPlace place) {
-            return place.getPath();
-        }
+    @Inject
+    public ReadOnlyPropertyColumn(ReadOnlyPropertyColumnDefinition def ) {
+        super(def);
     }
 
-    private String path;
-
-    public ContactsPlace(String path) {
-        super("contacts");
-        this.path = path;
-    }
-    public ContactsPlace() {
-        this("/");
+    public String getPropertyName() {
+        return getDefinition().getPropertyName();
     }
 
-    public String getPath() {
-        return path;
+    public void setPropertyName(String propertyName) {
+        getDefinition().setPropertyName(propertyName);
     }
 
     @Override
-    public String getWorkbenchName() {
-        return "contacts";
+    public Component getDefaultComponent(Item item) throws RepositoryException {
+        if (item.isNode()) {
+            return new Label(item.getName());
+        }
+
+        Property property = (Property) item;
+        return new Label(property.getString());
     }
+
+
 }

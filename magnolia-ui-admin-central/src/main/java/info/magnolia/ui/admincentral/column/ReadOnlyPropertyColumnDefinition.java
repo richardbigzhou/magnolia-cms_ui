@@ -31,54 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts;
+package info.magnolia.ui.admincentral.column;
 
-import info.magnolia.ui.admincentral.workbench.place.WorkbenchPlace;
-import info.magnolia.ui.framework.place.PlaceTokenizer;
-import info.magnolia.ui.framework.place.Prefix;
+import info.magnolia.ui.model.column.definition.PropertyColumnDefinition;
 
 /**
- * Place for the Contacts app.
- *
+ * TODO: dummy def remove it.
  * @version $Id$
+ *
  */
-@Prefix("contacts")
-public class ContactsPlace extends WorkbenchPlace {
+public class ReadOnlyPropertyColumnDefinition extends PropertyColumnDefinition {
 
-    /**
-     * Tokenizer for ContactsPlace.
-     *
-     * @version $Id$
-     */
-    public static class Tokenizer implements PlaceTokenizer<ContactsPlace> {
-
-        @Override
-        public ContactsPlace getPlace(String token) {
-            return new ContactsPlace(token);
-        }
-
-        @Override
-        public String getToken(ContactsPlace place) {
-            return place.getPath();
-        }
-    }
-
-    private String path;
-
-    public ContactsPlace(String path) {
-        super("contacts");
-        this.path = path;
-    }
-    public ContactsPlace() {
-        this("/");
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    @Override
-    public String getWorkbenchName() {
-        return "contacts";
-    }
 }

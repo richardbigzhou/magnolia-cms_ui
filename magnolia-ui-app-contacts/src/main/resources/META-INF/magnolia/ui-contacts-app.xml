@@ -10,6 +10,10 @@
   <components>
     <id>admin-central</id>
     <component>
+      <type>info.magnolia.ui.admincentral.workbench.place.WorkbenchPlace</type>
+      <implementation>info.magnolia.ui.app.contacts.ContactsPlace</implementation>
+    </component>
+    <component>
       <type>info.magnolia.ui.app.contacts.ContactsView</type>
       <implementation>info.magnolia.ui.app.contacts.ContactsViewImpl</implementation>
     </component>

@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.module;
+package info.magnolia.ui.admincentral.setup;
 
 import info.magnolia.module.DefaultModuleVersionHandler;
 

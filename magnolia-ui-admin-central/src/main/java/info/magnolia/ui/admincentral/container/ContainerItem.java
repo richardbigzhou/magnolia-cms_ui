@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,54 +31,44 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts;
+package info.magnolia.ui.admincentral.container;
 
-import info.magnolia.ui.admincentral.workbench.place.WorkbenchPlace;
-import info.magnolia.ui.framework.place.PlaceTokenizer;
-import info.magnolia.ui.framework.place.Prefix;
+import java.util.Collection;
+
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
 
 /**
- * Place for the Contacts app.
+ * Item as held by JcrContainer. Does not support modifications and delegates to JcrContainer for everything else.
  *
- * @version $Id$
  */
-@Prefix("contacts")
-public class ContactsPlace extends WorkbenchPlace {
+public class ContainerItem implements Item {
 
-    /**
-     * Tokenizer for ContactsPlace.
-     *
-     * @version $Id$
-     */
-    public static class Tokenizer implements PlaceTokenizer<ContactsPlace> {
+    private ContainerItemId itemId;
+    private JcrContainer jcrContainer;
 
-        @Override
-        public ContactsPlace getPlace(String token) {
-            return new ContactsPlace(token);
-        }
-
-        @Override
-        public String getToken(ContactsPlace place) {
-            return place.getPath();
-        }
-    }
-
-    private String path;
-
-    public ContactsPlace(String path) {
-        super("contacts");
-        this.path = path;
-    }
-    public ContactsPlace() {
-        this("/");
-    }
-
-    public String getPath() {
-        return path;
+    public ContainerItem(ContainerItemId itemId, JcrContainer jcrContainer) {
+        this.itemId = itemId;
+        this.jcrContainer = jcrContainer;
     }
 
     @Override
-    public String getWorkbenchName() {
-        return "contacts";
+    public Property getItemProperty(Object id) {
+        return jcrContainer.getContainerProperty(itemId, id);
+    }
+
+    @Override
+    public Collection<?> getItemPropertyIds() {
+        return jcrContainer.getContainerPropertyIds();
+    }
+
+    @Override
+    public boolean addItemProperty(Object id, Property property) throws UnsupportedOperationException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean removeItemProperty(Object id) throws UnsupportedOperationException {
+        throw new UnsupportedOperationException();
     }
 }

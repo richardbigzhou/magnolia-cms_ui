@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,54 +31,44 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts;
+package info.magnolia.ui.admincentral.workbench.event;
 
-import info.magnolia.ui.admincentral.workbench.place.WorkbenchPlace;
-import info.magnolia.ui.framework.place.PlaceTokenizer;
-import info.magnolia.ui.framework.place.Prefix;
+import info.magnolia.ui.framework.event.Event;
+import info.magnolia.ui.framework.event.EventHandler;
+
 
 /**
- * Place for the Contacts app.
- *
- * @version $Id$
+ * Global event fired if content was changed, deleted, added.
+ * FIXME introduce more granular events
  */
-@Prefix("contacts")
-public class ContactsPlace extends WorkbenchPlace {
+public class ContentChangedEvent implements Event<ContentChangedEvent.Handler> {
 
     /**
-     * Tokenizer for ContactsPlace.
-     *
-     * @version $Id$
+     * Handles {@link ContentChangedEvent} events.
      */
-    public static class Tokenizer implements PlaceTokenizer<ContactsPlace> {
-
-        @Override
-        public ContactsPlace getPlace(String token) {
-            return new ContactsPlace(token);
-        }
-
-        @Override
-        public String getToken(ContactsPlace place) {
-            return place.getPath();
-        }
+    public static interface Handler extends EventHandler {
+        void onContentChanged(ContentChangedEvent event);
     }
+
+    private String workspace;
 
     private String path;
 
-    public ContactsPlace(String path) {
-        super("contacts");
+    @Override
+    public void dispatch(Handler handler) {
+        handler.onContentChanged(this);
+    }
+
+    public ContentChangedEvent(String workspace, String path) {
+        this.workspace = workspace;
         this.path = path;
     }
-    public ContactsPlace() {
-        this("/");
+
+    public String getWorkspace() {
+        return workspace;
     }
 
     public String getPath() {
         return path;
-    }
-
-    @Override
-    public String getWorkbenchName() {
-        return "contacts";
     }
 }

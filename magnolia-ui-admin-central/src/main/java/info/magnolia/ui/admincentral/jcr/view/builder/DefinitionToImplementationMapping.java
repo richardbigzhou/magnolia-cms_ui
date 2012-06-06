@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,54 +31,40 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts;
-
-import info.magnolia.ui.admincentral.workbench.place.WorkbenchPlace;
-import info.magnolia.ui.framework.place.PlaceTokenizer;
-import info.magnolia.ui.framework.place.Prefix;
+package info.magnolia.ui.admincentral.jcr.view.builder;
 
 /**
- * Place for the Contacts app.
+ * Defines a Mapping from a Definition to an specific implementation.
+ * @param <D> class of the definition
+ * @param <I> class of the implementation
  *
- * @version $Id$
+ * @author dlipp
  */
-@Prefix("contacts")
-public class ContactsPlace extends WorkbenchPlace {
+public class DefinitionToImplementationMapping<D,I> {
 
     /**
-     * Tokenizer for ContactsPlace.
-     *
-     * @version $Id$
+     * Class-name of definition.
      */
-    public static class Tokenizer implements PlaceTokenizer<ContactsPlace> {
+    private Class<D> definition;
 
-        @Override
-        public ContactsPlace getPlace(String token) {
-            return new ContactsPlace(token);
-        }
+    /**
+     * Class-name of implementation.
+     */
+    private Class<I> implementation;
 
-        @Override
-        public String getToken(ContactsPlace place) {
-            return place.getPath();
-        }
+    public void setDefinition(Class<D> definition) {
+        this.definition = definition;
     }
 
-    private String path;
-
-    public ContactsPlace(String path) {
-        super("contacts");
-        this.path = path;
-    }
-    public ContactsPlace() {
-        this("/");
+    public Class<D> getDefinition() {
+        return definition;
     }
 
-    public String getPath() {
-        return path;
+    public void setImplementation(Class<I> implementation) {
+        this.implementation = implementation;
     }
 
-    @Override
-    public String getWorkbenchName() {
-        return "contacts";
+    public Class<I> getImplementation() {
+        return implementation;
     }
 }

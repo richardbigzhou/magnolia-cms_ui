@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,54 +31,37 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts;
+package info.magnolia.ui.admincentral.container;
 
-import info.magnolia.ui.admincentral.workbench.place.WorkbenchPlace;
-import info.magnolia.ui.framework.place.PlaceTokenizer;
-import info.magnolia.ui.framework.place.Prefix;
+import java.util.Collection;
+
+import javax.jcr.Item;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
+import com.vaadin.ui.Component;
 
 /**
- * Place for the Contacts app.
- *
+ * Backing implementation for JcrContainer.
  * @version $Id$
  */
-@Prefix("contacts")
-public class ContactsPlace extends WorkbenchPlace {
+public interface JcrContainerSource {
 
-    /**
-     * Tokenizer for ContactsPlace.
-     *
-     * @version $Id$
-     */
-    public static class Tokenizer implements PlaceTokenizer<ContactsPlace> {
+    Collection<Item> getChildren(Item item) throws RepositoryException;
 
-        @Override
-        public ContactsPlace getPlace(String token) {
-            return new ContactsPlace(token);
-        }
+    Collection<Item> getRootItemIds() throws RepositoryException;
 
-        @Override
-        public String getToken(ContactsPlace place) {
-            return place.getPath();
-        }
-    }
+    boolean isRoot(Item item) throws RepositoryException;
 
-    private String path;
+    boolean hasChildren(Item item) throws RepositoryException;
 
-    public ContactsPlace(String path) {
-        super("contacts");
-        this.path = path;
-    }
-    public ContactsPlace() {
-        this("/");
-    }
+    Component getColumnComponent(String columnLabel, Item item) throws RepositoryException;
 
-    public String getPath() {
-        return path;
-    }
+    void setColumnComponent(String columnLabel, Item item, Component newValue) throws RepositoryException;
 
-    @Override
-    public String getWorkbenchName() {
-        return "contacts";
-    }
+    String getItemIcon(Item item) throws RepositoryException;
+
+    Item getItemByPath(String path) throws RepositoryException;
+
+    Node getNodeByIdentifier(String nodeIdentifier) throws RepositoryException;
 }
