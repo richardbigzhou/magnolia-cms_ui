@@ -41,6 +41,7 @@ import info.magnolia.ui.framework.place.Prefix;
 
 
 /**
+ * TODO: get rid of this class.
  * Edit a workbenchName's content.
  */
 @Prefix("edit-workbench")

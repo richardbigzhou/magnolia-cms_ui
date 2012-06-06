@@ -29,27 +29,19 @@
  *
  * Any modifications to this file must keep this entire header
  * intact.
+ *
  */
 package info.magnolia.ui.admincentral.workbench;
 
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
-import info.magnolia.objectfactory.configuration.InstanceConfiguration;
 import info.magnolia.registry.RegistrationException;
-import info.magnolia.ui.admincentral.column.Column;
 import info.magnolia.ui.admincentral.jcr.view.JcrView;
 import info.magnolia.ui.admincentral.jcr.view.JcrView.ViewType;
-import info.magnolia.ui.admincentral.jcr.view.builder.ConfiguredJcrViewBuilder;
 import info.magnolia.ui.admincentral.jcr.view.builder.JcrViewBuilderProvider;
-import info.magnolia.ui.admincentral.tree.model.TreeModel;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.model.column.definition.AbstractColumnDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.model.workbench.registry.WorkbenchDefinitionRegistry;
 import info.magnolia.ui.widget.actionbar.Actionbar;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -77,8 +69,6 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
 
     private JcrViewBuilderProvider jcrViewBuilderProvider;
 
-    private ConfiguredJcrViewBuilder configuredJcrViewBuilder;
-
     private WorkbenchDefinitionRegistry workbenchRegistry;
 
     protected String path = "/";
@@ -98,7 +88,6 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
         setCompositionRoot(root);
 
         this.jcrViewBuilderProvider = componentProvider.getComponent(JcrViewBuilderProvider.class);
-        this.configuredJcrViewBuilder = (ConfiguredJcrViewBuilder) jcrViewBuilderProvider.getBuilder();
         this.workbenchRegistry = workbenchRegistry;
     }
 
@@ -112,26 +101,8 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
         } catch (RegistrationException e) {
             throw new RuntimeException(e);
         }
-
-        ComponentProviderConfiguration componentProviderConfiguration = new ComponentProviderConfiguration();
-
-        if (workbenchDefinition.getComponents() != null) {
-            componentProviderConfiguration.combine(workbenchDefinition.getComponents());
-        }
-
-        Map<String, Column<?>> columns = new LinkedHashMap<String, Column<?>>();
-        for (AbstractColumnDefinition columnDefinition : workbenchDefinition.getColumns()) {
-            Column<?> column = configuredJcrViewBuilder.createTreeColumn(columnDefinition);
-            if (column != null) {
-                columns.put(columnDefinition.getName(), column);
-            }
-        }
-
-        final TreeModel treeModel = new TreeModel(workbenchDefinition, columns);
         jcrView = jcrViewBuilderProvider.getBuilder().build(workbenchDefinition, ViewType.TREE);
 
-        componentProviderConfiguration.addComponent(InstanceConfiguration.valueOf(TreeModel.class, treeModel));
-        componentProviderConfiguration.addComponent(InstanceConfiguration.valueOf(WorkbenchDefinition.class, workbenchDefinition));
 
         jcrView.setPresenter(jcrPresenter);
         jcrView.select(path);

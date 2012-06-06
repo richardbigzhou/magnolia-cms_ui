@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.app.contacts;
 
-import info.magnolia.ui.admincentral.workbench.place.WorkbenchPlace;
+import info.magnolia.ui.framework.place.Place;
 import info.magnolia.ui.framework.place.PlaceTokenizer;
 import info.magnolia.ui.framework.place.Prefix;
 
@@ -43,7 +43,7 @@ import info.magnolia.ui.framework.place.Prefix;
  * @version $Id$
  */
 @Prefix("contacts")
-public class ContactsPlace extends WorkbenchPlace {
+public class ContactsPlace extends Place {
 
     /**
      * Tokenizer for ContactsPlace.
@@ -66,7 +66,6 @@ public class ContactsPlace extends WorkbenchPlace {
     private String path;
 
     public ContactsPlace(String path) {
-        super("contacts");
         this.path = path;
     }
     public ContactsPlace() {
@@ -75,10 +74,5 @@ public class ContactsPlace extends WorkbenchPlace {
 
     public String getPath() {
         return path;
-    }
-
-    @Override
-    public String getWorkbenchName() {
-        return "contacts";
     }
 }
