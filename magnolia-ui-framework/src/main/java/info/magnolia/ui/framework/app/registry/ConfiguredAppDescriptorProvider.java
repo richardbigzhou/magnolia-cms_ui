@@ -78,6 +78,7 @@ public class ConfiguredAppDescriptorProvider implements AppDescriptorProvider, C
         return appDescriptor;
     }
 
+    @Override
     public String toString() {
         return "ConfiguredAppDescriptorProvider [id=" + appDescriptor.getName() + ", appDescriptor=" + appDescriptor + "]";
     }

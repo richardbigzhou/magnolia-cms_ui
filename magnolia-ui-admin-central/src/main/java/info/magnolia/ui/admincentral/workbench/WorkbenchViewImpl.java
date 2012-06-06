@@ -29,6 +29,7 @@
  *
  * Any modifications to this file must keep this entire header
  * intact.
+ * 
  */
 package info.magnolia.ui.admincentral.workbench;
 
@@ -73,6 +74,7 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
     protected String path = "/";
 
     private JcrView.Presenter jcrPresenter = new JcrView.Presenter() {
+        @Override
         public void onItemSelection(javax.jcr.Item item) {
 
         };
@@ -95,7 +97,6 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
         // load the workbench specific configuration if existing
         final WorkbenchDefinition workbenchDefinition;
         try {
-            // FIXME: stub workbench name!
             workbenchDefinition = workbenchRegistry.get(id);
         } catch (RegistrationException e) {
             throw new RuntimeException(e);
