@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral.workbench;
 
-import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.admincentral.jcr.view.JcrView;
 import info.magnolia.ui.admincentral.jcr.view.JcrView.ViewType;
@@ -80,14 +79,14 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
     };
 
     @Inject
-    public WorkbenchViewImpl(WorkbenchDefinitionRegistry workbenchRegistry, Shell shell, ComponentProvider componentProvider) {
+    public WorkbenchViewImpl(WorkbenchDefinitionRegistry workbenchRegistry, Shell shell, JcrViewBuilderProvider jcrViewBuilderProvider) {
         super();
         setSizeFull();
         root.setSizeFull();
         construct();
         setCompositionRoot(root);
 
-        this.jcrViewBuilderProvider = componentProvider.getComponent(JcrViewBuilderProvider.class);
+        this.jcrViewBuilderProvider = jcrViewBuilderProvider;
         this.workbenchRegistry = workbenchRegistry;
     }
 
