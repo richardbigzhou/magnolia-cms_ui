@@ -63,6 +63,17 @@ import com.vaadin.terminal.gwt.client.VConsole;
 @SuppressWarnings("serial")
 public class VMagnoliaShell extends Composite implements HasWidgets, Container, ClientSideHandler, VMagnoliaShellView.Presenter {
 
+    /**
+     * Enumeration of possible viewport types.
+     * @author apchelintcev
+     *
+     */
+    public enum ViewportType {
+        SHELL_APP_VIEWPORT,
+        APP_VIEWPORT,
+        DIALOG_VIEWPORT;
+    }
+    
     protected String paintableId;
 
     protected ApplicationConnection client;
@@ -112,52 +123,32 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
     public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
         this.client = client;
         this.paintableId = uidl.getId();
-        
-        updateShellAppViewport(uidl);
-        updateAppViewport(uidl);
-        updateDialogViewport(uidl);
-        
-        proxy.update(this, uidl, client);
-    }
-    
-    private void updateDialogViewport(UIDL uidl) {
-        final UIDL tagUidl = uidl.getChildByTagName("dialogViewport");
-        if (tagUidl != null) {
-            final UIDL viewportUidl = tagUidl.getChildUIDL(0);
-            final Paintable p = client.getPaintable(viewportUidl);
-            if (p instanceof VShellViewport) {
-                final VShellViewport dialogViewport = (VShellViewport)p;
-                view.updateDialogs(dialogViewport);
-                p.updateFromUIDL(viewportUidl, client);
-                if (dialogViewport.getWidgetCount() == 0) {
-                    view.removeDialogViewport();   
+        for (final ViewportType viewportType : ViewportType.values()) {
+            final UIDL tagUidl = uidl.getChildByTagName(viewportType.name());
+            if (tagUidl != null) {
+                final UIDL viewportUidl = tagUidl.getChildUIDL(0);
+                final Paintable p = client.getPaintable(viewportUidl);
+                if (p instanceof VShellViewport) {
+                    final VShellViewport viewport = (VShellViewport)p;
+                    switch (viewportType) {
+                    case APP_VIEWPORT:
+                        view.updateAppViewport(viewport);
+                        break;
+                    case SHELL_APP_VIEWPORT:
+                        view.updateShellAppViewport(viewport);
+                        break;
+                    case DIALOG_VIEWPORT:
+                        view.updateDialogs(viewport);
+                        break;
+                    }
+                    p.updateFromUIDL(viewportUidl, client);
+                    if (ViewportType.DIALOG_VIEWPORT == viewportType && viewport.getWidgetCount() == 0) {
+                        view.removeDialogViewport();   
+                    }
                 }
-            }
+            }    
         }
-    }
-
-    private void updateAppViewport(UIDL uidl) {
-        final UIDL tagUidl = uidl.getChildByTagName("appViewport");
-        if (tagUidl != null) {
-            final UIDL viewportUidl = tagUidl.getChildUIDL(0);
-            final Paintable p = client.getPaintable(viewportUidl);
-            if (p instanceof VShellViewport) {
-                view.updateAppViewport((VShellViewport)p);
-                p.updateFromUIDL(viewportUidl, client);
-            }
-        }
-    }
-    
-    private void updateShellAppViewport(UIDL uidl) {
-        final UIDL tagUidl = uidl.getChildByTagName("shellAppViewport");
-        if (tagUidl != null) {
-            final UIDL viewportUidl = tagUidl.getChildUIDL(0);
-            final Paintable p = client.getPaintable(viewportUidl);
-            if (p instanceof VShellViewport) {
-                view.updateShellAppViewport((VShellViewport)p);
-                p.updateFromUIDL(viewportUidl, client);
-            }
-        }
+        proxy.update(this, uidl, client);
     }
 
     @Override

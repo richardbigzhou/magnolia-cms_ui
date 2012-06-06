@@ -34,16 +34,19 @@
 package info.magnolia.ui.widget.magnoliashell;
 
 
-import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShell;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.VShellMessage.MessageType;
 import info.magnolia.ui.framework.shell.FragmentChangedEvent;
 import info.magnolia.ui.framework.shell.FragmentChangedHandler;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShell;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShell.ViewportType;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.VShellMessage.MessageType;
 
+import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.vaadin.rpc.ServerSideHandler;
 import org.vaadin.rpc.ServerSideProxy;
@@ -53,8 +56,8 @@ import com.vaadin.terminal.PaintException;
 import com.vaadin.terminal.PaintTarget;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.ClientWidget;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.ClientWidget.LoadStyle;
+import com.vaadin.ui.Component;
 
 /**
  * Server side implementation of the MagnoliaShell container.
@@ -64,14 +67,10 @@ import com.vaadin.ui.ClientWidget.LoadStyle;
 @SuppressWarnings("serial")
 @ClientWidget(value=VMagnoliaShell.class, loadStyle = LoadStyle.EAGER)
 public abstract class BaseMagnoliaShell extends AbstractComponent implements ServerSideHandler {
-
+    
     private List<FragmentChangedHandler> handlers = new LinkedList<FragmentChangedHandler>();
     
-    private ShellViewport appViewport = new ShellViewport(this);
-    
-    private ShellViewport shellAppViewport = new ShellViewport(this);
-    
-    private ShellViewport dialogViewport = new ShellViewport(this);
+    private Map<ViewportType, ShellViewport> viewports = new EnumMap<ViewportType, ShellViewport>(ViewportType.class);
     
     private ShellViewport activeViewport = null;
     
@@ -110,23 +109,23 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
         super();
         System.out.println("SHELL CREATED!");
         setImmediate(true);
+        viewports.put(ViewportType.SHELL_APP_VIEWPORT, new ShellViewport(this));
+        viewports.put(ViewportType.APP_VIEWPORT, new ShellViewport(this));
+        viewports.put(ViewportType.DIALOG_VIEWPORT, new ShellViewport(this));
     }
     
     @Override
     public void paintContent(PaintTarget target) throws PaintException {
         super.paintContent(target);
         
-        target.startTag("shellAppViewport");
-        shellAppViewport.paint(target);
-        target.endTag("shellAppViewport");
-        
-        target.startTag("appViewport");
-        appViewport.paint(target);
-        target.endTag("appViewport");
-        
-        target.startTag("dialogViewport");
-        dialogViewport.paint(target);
-        target.endTag("dialogViewport");
+        final Iterator<Entry<ViewportType, ShellViewport>> it = viewports.entrySet().iterator();
+        while (it.hasNext()) {
+            final Entry<ViewportType, ShellViewport> entry = it.next();
+            final String tagName = entry.getKey().name();
+            target.startTag(tagName);
+            entry.getValue().paint(target);
+            target.endTag(tagName);
+        }
         
         proxy.paintContent(target);
     }
@@ -140,28 +139,26 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
     @Override
     public void attach() {
         super.attach();
-        shellAppViewport.attach();
-        dialogViewport.attach();
-        appViewport.attach();
-        shellAppViewport.setParent(this);
-        dialogViewport.setParent(this);
-        appViewport.setParent(this);
+        for (final ShellViewport viewport : viewports.values()) {
+            viewport.attach();
+            viewport.setParent(this);
+        }
     }
     
     @Override
     public void detach() {
         super.detach();
-        shellAppViewport.detach();
-        dialogViewport.detach();
-        appViewport.detach();
+        for (final ShellViewport viewport : viewports.values()) {
+            viewport.detach();
+        }
     }
     
     public ShellViewport getAppViewport() {
-        return appViewport;
+        return viewports.get(ViewportType.APP_VIEWPORT);
     }
     
     public ShellViewport getShellAppViewport() {
-        return shellAppViewport;
+        return viewports.get(ViewportType.SHELL_APP_VIEWPORT);
     }
     
     public ShellViewport getActiveViewport() {
@@ -194,11 +191,11 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
     }
     
     protected void navigateToApp(String appFragment) {
-        doNavigateWithinViewport(appViewport, appFragment);
+        doNavigateWithinViewport(getAppViewport(), appFragment);
     }
     
     protected void navigateToShellApp(final String fragment, String parameter) {
-        doNavigateWithinViewport(shellAppViewport, fragment + ":" + parameter);
+        doNavigateWithinViewport(getShellAppViewport(), fragment + ":" + parameter);
     }
     
     protected void doNavigateWithinViewport(final ShellViewport viewport, final String fragment) {
@@ -225,24 +222,24 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
     }
 
     protected void removeDialog(Component dialog) {
-        dialogViewport.removeComponent(dialog);
+        viewports.get(ViewportType.DIALOG_VIEWPORT).removeComponent(dialog);
         requestRepaint();
     }
     
     protected void addDialog(Component dialog) {
-        dialogViewport.addComponent(dialog);
+        viewports.get(ViewportType.DIALOG_VIEWPORT).addComponent(dialog);
         requestRepaint();
     }
     
     protected void closeCurrentShellApp() {
         if (!getAppViewport().isEmpty()) {
-            setActiveViewport(appViewport);
+            setActiveViewport(getAppViewport());
         } else {
             navigateToShellApp(ShellAppType.APPLAUNCHER.name(), "");
         }
     }
     
     protected void closeCurrentApp() {
-        appViewport.pop();
+        getAppViewport().pop();
     }
 }

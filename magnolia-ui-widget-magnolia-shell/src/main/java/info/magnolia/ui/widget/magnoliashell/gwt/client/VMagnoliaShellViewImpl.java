@@ -68,9 +68,9 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
 
     public static final String CLASSNAME = "v-magnolia-shell";
 
-    private final static int FADE_SPEED = 300;
+    private final static int FADE_SPEED = 400;
 
-    private final static int SLIDE_SPEED = 500;
+    private final static int SLIDE_SPEED = 700;
 
     private static int Z_INDEX_HI = 300;
 
@@ -294,7 +294,7 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
     private final ContentAnimationDelegate slidingDelegate = new ContentAnimationDelegate() {
         @Override
         public void hide(Widget w, Callbacks callbacks) {
-            JQueryWrapper.select(w).fadeOut(FADE_SPEED, callbacks);
+            JQueryWrapper.select(w).slideUp(FADE_SPEED, callbacks);
         }
 
         @Override
