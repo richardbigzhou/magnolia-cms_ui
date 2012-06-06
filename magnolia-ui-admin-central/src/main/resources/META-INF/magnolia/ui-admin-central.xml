@@ -125,6 +125,17 @@
       <type>info.magnolia.ui.admincentral.workbench.view.WorkbenchView</type>
       <implementation>info.magnolia.ui.admincentral.workbench.view.WorkbenchViewImpl</implementation>
     </component>
+    
+    <component>
+      <type>info.magnolia.ui.admincentral.workbench.WorkbenchView</type>
+      <implementation>info.magnolia.ui.admincentral.workbench.WorkbenchViewImpl</implementation>
+    </component>
+    
+    <component>
+      <type>info.magnolia.ui.admincentral.workbench.Workbench</type>
+      <implementation>info.magnolia.ui.admincentral.workbench.Workbench</implementation>
+    </component>
+    
      <component>
       <type>info.magnolia.ui.model.workbench.registry.ConfiguredWorkbenchDefinitionManager</type>
       <implementation>info.magnolia.ui.model.workbench.registry.ConfiguredWorkbenchDefinitionManager</implementation>

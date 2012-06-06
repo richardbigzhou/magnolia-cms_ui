@@ -35,6 +35,7 @@ package info.magnolia.ui.admincentral.jcr.view;
 
 import info.magnolia.ui.admincentral.container.JcrContainer;
 import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 import javax.jcr.Item;
 
@@ -43,7 +44,7 @@ import javax.jcr.Item;
  *
  * @author fgrilli
  */
-public interface JcrView extends View {
+public interface JcrView extends View, IsVaadinComponent {
 
     /**
      * Enumeration for view types.

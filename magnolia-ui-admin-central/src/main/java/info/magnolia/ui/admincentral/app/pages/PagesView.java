@@ -43,6 +43,4 @@ import info.magnolia.ui.framework.app.AppView;
  * @version $Id$
  */
 public interface PagesView extends AppView<PagesPresenter> {
-
-
 }

@@ -34,13 +34,11 @@
 package info.magnolia.ui.admincentral.app.pages;
 
 import info.magnolia.ui.admincentral.app.AbstractAppView;
+import info.magnolia.ui.admincentral.workbench.Workbench;
 
 import javax.inject.Inject;
 
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.ComponentContainer;
 
 /**
  * View implementation for the Pages app.
@@ -50,19 +48,12 @@ import com.vaadin.ui.VerticalLayout;
 @SuppressWarnings("serial")
 public class PagesViewImpl extends AbstractAppView<PagesPresenter> implements PagesView {
     
+    private String jcrWorkspaceName = "contacts";
+    
     @Inject
-    public PagesViewImpl() {
-        final VerticalLayout tableContainer = new VerticalLayout();
-        tableContainer.addComponent(new Button("test", new Button.ClickListener() {
-            @Override
-            public void buttonClick(ClickEvent event) {
-                final VerticalLayout layout = new VerticalLayout();
-                layout.setSizeFull();
-                layout.addComponent(new Label("New tab opened"));
-                addTab(layout, "TestTab");
-            }
-        }));
-        addTab(tableContainer, "Pages");
+    public PagesViewImpl(final Workbench workbench) {
+        workbench.initWorkbench(jcrWorkspaceName);
+        addTab((ComponentContainer)workbench.asVaadinComponent(), "Workbench");
     }
 
 }

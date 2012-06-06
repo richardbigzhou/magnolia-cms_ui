@@ -33,7 +33,11 @@
  */
 package info.magnolia.ui.admincentral.app.pages;
 
+import info.magnolia.ui.admincentral.workbench.place.WorkbenchPlace;
 import info.magnolia.ui.framework.app.AbstractAppActivity;
+import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.place.Place;
+import info.magnolia.ui.framework.view.ViewPort;
 
 import javax.inject.Inject;
 
@@ -46,11 +50,14 @@ public class PagesActivity extends AbstractAppActivity<PagesPresenter> implement
 
     private static final long serialVersionUID = 1L;
 
+    private PagesView view;
+    
     @Inject
     public PagesActivity(PagesView view) {
         super(view);
+        this.view = view;
     }
-
+    
     @Override
     public PagesPresenter getReference() {
         return this;

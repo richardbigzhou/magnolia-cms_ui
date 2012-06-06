@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.app.pages;
 
-import info.magnolia.ui.framework.place.Place;
+import info.magnolia.ui.admincentral.workbench.place.WorkbenchPlace;
 import info.magnolia.ui.framework.place.PlaceTokenizer;
 import info.magnolia.ui.framework.place.Prefix;
 
@@ -43,7 +43,7 @@ import info.magnolia.ui.framework.place.Prefix;
  * @version $Id$
  */
 @Prefix("pages")
-public class PagesPlace extends Place {
+public class PagesPlace extends WorkbenchPlace {
 
     /**
      * Tokenizer for PagesPlace.
@@ -66,10 +66,12 @@ public class PagesPlace extends Place {
     private String path;
 
     public PagesPlace(String path) {
+        super("contacts");
         this.path = path;
     }
 
     public String getPath() {
         return path;
     }
+    
 }
