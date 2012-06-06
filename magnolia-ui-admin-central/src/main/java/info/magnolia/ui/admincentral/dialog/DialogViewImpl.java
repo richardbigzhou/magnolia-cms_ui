@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.dialog;
 
-import info.magnolia.ui.widget.dialog.VaadinDialog;
+import info.magnolia.ui.widget.dialog.Dialog;
 
 import com.vaadin.ui.Component;
 
@@ -42,7 +42,7 @@ import com.vaadin.ui.Component;
  *
  * @author ejervidalo
  */
-public class DialogViewImpl extends VaadinDialog implements DialogView {
+public class DialogViewImpl extends Dialog implements DialogView {
 
     private Presenter presenter;
 
@@ -52,13 +52,9 @@ public class DialogViewImpl extends VaadinDialog implements DialogView {
 
     @Override
     public Component asVaadinComponent() {
-        // TODO Auto-generated method stub
         return this;
     }
 
-    /* (non-Javadoc)
-     * @see info.magnolia.ui.admincentral.dialog.DialogView#setPresenter(info.magnolia.ui.admincentral.dialog.DialogView.Presenter)
-     */
     @Override
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;

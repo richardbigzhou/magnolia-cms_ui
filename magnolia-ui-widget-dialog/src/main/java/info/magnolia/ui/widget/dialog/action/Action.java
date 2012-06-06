@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,49 +31,31 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.dialog;
-
-import info.magnolia.ui.admincentral.dialog.DialogPresenter;
-import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
-import info.magnolia.ui.framework.app.AbstractAppActivity;
-
-import javax.inject.Inject;
-
-import com.vaadin.data.Item;
+package info.magnolia.ui.widget.dialog.action;
 
 /**
- * Activity for the Pages app.
+ * Action.
  *
- * @version $Id$
+ * @author ejervidalo
  */
-public class DialogTestActivity extends AbstractAppActivity<DialogTestPresenter> implements DialogTestPresenter {
+public abstract class Action {
 
-    private DialogPresenterFactory factory;
-    private Item selectedBean;
+    private String label;
+    private String name;
 
-    @Inject
-    public DialogTestActivity(DialogTestView view, DialogPresenterFactory factory) {
-        super(view);
-        this.factory = factory;
+    public Action(String name, String label) {
+        this.name = name;
+        this.label = label;
     }
 
-    @Override
-    public void openDialog() {
-        DialogPresenter presenter = factory.createDialog("contact");
+    abstract public void execute();
 
-        presenter.showDialog(selectedBean);
+    public String getName() {
+        return name;
     }
 
-    @Override
-    public DialogTestPresenter getReference() {
-        return this;
+    public String getLabel() {
+        return label;
     }
 
-    /* (non-Javadoc)
-     * @see info.magnolia.ui.admincentral.app.dialog.DialogTestPresenter#setSelected(com.vaadin.data.Property)
-     */
-    @Override
-    public void setSelected(Item item) {
-        this.selectedBean = item;
-    }
 }

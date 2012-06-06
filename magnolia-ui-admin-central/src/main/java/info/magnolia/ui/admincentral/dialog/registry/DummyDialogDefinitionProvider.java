@@ -57,41 +57,85 @@ public class DummyDialogDefinitionProvider implements DialogDefinitionProvider {
     public DummyDialogDefinitionProvider(String id) {
         this.id = id;
         this.dialogDefinition = new DialogDefinition();
-        this.dialogDefinition.setId(id);
-        this.dialogDefinition.setLabel("testlabel");
-        this.dialogDefinition.setName("testname");
+        dialogDefinition.setId(id);
+        dialogDefinition.setName("Contact");
+        dialogDefinition.setLabel("Contact");
+
+
         List<TabDefinition> tabs = new ArrayList<TabDefinition>();
 
-        TabDefinition tab1 = new TabDefinition();
-        tab1.setName("Test Tab Name");
-        FieldDefinition field = new FieldDefinition();
-        field.setLabel("Test Field 1");
-        tab1.addField(field);
-        FieldDefinition field2 = new FieldDefinition();
-        field2.setLabel("Test Field 2");
-        tab1.addField(field2);
+        TabDefinition personal = new TabDefinition();
+        personal.setName("personalTab");
+        personal.setLabel("Personal");
 
-        FieldDefinition field3 = new FieldDefinition();
-        field3.setLabel("Test Field 2");
-        tab1.addField(field3);
+        FieldDefinition name = new FieldDefinition();
+        name.setName("name");
+        name.setLabel("data.dialog.contact.name.label");
+        name.setType("edit");
+        personal.addField(name);
 
-        tabs.add(tab1);
+        FieldDefinition title = new FieldDefinition();
+        title.setName("title");
+        title.setLabel("data.dialog.contact.title.label");
+        title.setType("edit");
+        personal.addField(title);
 
-        tab1 = new TabDefinition();
+        FieldDefinition givenName = new FieldDefinition();
+        givenName.setName("givenName");
+        givenName.setLabel("data.dialog.contact.givenName.label");
+        givenName.setType("edit");
+        personal.addField(givenName);
 
-        tab1.setName("Test Tab Name");
-        field = new FieldDefinition();
-        field.setLabel("Test Field 1");
-        tab1.addField(field);
-        field2 = new FieldDefinition();
-        field2.setLabel("Test Field 2");
-        tab1.addField(field2);
+        FieldDefinition familyName = new FieldDefinition();
+        familyName.setName("familyName");
+        familyName.setLabel("data.dialog.contact.familyName.label");
+        familyName.setType("edit");
+        personal.addField(familyName);
 
-        field3 = new FieldDefinition();
-        field3.setLabel("Test Field 2");
-        tab1.addField(field3);
+        tabs.add(personal);
 
-        tabs.add(tab1);
+
+        TabDefinition company = new TabDefinition();
+        company.setName("companyTab");
+        company.setLabel("company");
+
+        FieldDefinition organizationName = new FieldDefinition();
+        organizationName.setName("organizationName");
+        organizationName.setLabel("data.dialog.contact.org.name.label");
+        organizationName.setType("edit");
+        company.addField(organizationName);
+
+        FieldDefinition organizationUnit = new FieldDefinition();
+        organizationUnit.setName("organizationUnit");
+        organizationUnit.setLabel("data.dialog.contact.org.unit.label");
+        organizationUnit.setType("edit");
+        company.addField(organizationUnit);
+
+        FieldDefinition streetAddress = new FieldDefinition();
+        streetAddress.setName("streetAddress");
+        streetAddress.setLabel("data.dialog.contact.org.street.label");
+        streetAddress.setType("edit");
+        company.addField(streetAddress);
+
+        FieldDefinition city = new FieldDefinition();
+        city.setName("city");
+        city.setLabel("data.dialog.contact.city.label");
+        city.setType("edit");
+        company.addField(city);
+
+        FieldDefinition zip = new FieldDefinition();
+        zip.setName("zip");
+        zip.setLabel("data.dialog.contact.zip.label");
+        zip.setType("edit");
+        company.addField(zip);
+
+        FieldDefinition country = new FieldDefinition();
+        country.setName("country");
+        country.setLabel("data.dialog.contact.country.label");
+        country.setType("edit");
+        company.addField(country);
+
+        tabs.add(company);
 
         this.dialogDefinition.setTabs(tabs);
 

@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.admincentral.app.dialog;
 
+import com.vaadin.data.Item;
+
 import info.magnolia.ui.framework.app.AppPresenter;
 
 /**
@@ -41,6 +43,11 @@ import info.magnolia.ui.framework.app.AppPresenter;
  *
  */
 public interface DialogTestPresenter extends AppPresenter<DialogTestPresenter> {
-    
+
     void openDialog();
+
+    /**
+     * @param item
+     */
+    void setSelected(Item item);
 }

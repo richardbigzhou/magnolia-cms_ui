@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,49 +31,36 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.dialog;
+package info.magnolia.ui.admincentral.dialog.builder;
 
-import info.magnolia.ui.admincentral.dialog.DialogPresenter;
-import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
-import info.magnolia.ui.framework.app.AbstractAppActivity;
+import info.magnolia.ui.model.dialog.definition.FieldDefinition;
 
-import javax.inject.Inject;
-
-import com.vaadin.data.Item;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Field;
+import com.vaadin.ui.TextField;
 
 /**
- * Activity for the Pages app.
+ * FieldFactory.
  *
- * @version $Id$
+ * @author ejervidalo
  */
-public class DialogTestActivity extends AbstractAppActivity<DialogTestPresenter> implements DialogTestPresenter {
+public class FieldBuilder {
 
-    private DialogPresenterFactory factory;
-    private Item selectedBean;
-
-    @Inject
-    public DialogTestActivity(DialogTestView view, DialogPresenterFactory factory) {
-        super(view);
-        this.factory = factory;
-    }
-
-    @Override
-    public void openDialog() {
-        DialogPresenter presenter = factory.createDialog("contact");
-
-        presenter.showDialog(selectedBean);
-    }
-
-    @Override
-    public DialogTestPresenter getReference() {
-        return this;
-    }
-
-    /* (non-Javadoc)
-     * @see info.magnolia.ui.admincentral.app.dialog.DialogTestPresenter#setSelected(com.vaadin.data.Property)
+    /**
+     * @param fieldDefinition
+     * @return
      */
-    @Override
-    public void setSelected(Item item) {
-        this.selectedBean = item;
+    public static Field createField(FieldDefinition fieldDefinition) {
+        Field input = null;
+        if (fieldDefinition.getType().equals("edit")) {
+            input = new TextField();
+            input.setCaption(fieldDefinition.getLabel());
+            input.setStyleName("field-text");
+
+        } else if (fieldDefinition.equals("checkbox")) {
+            input = new CheckBox(fieldDefinition.getLabel(), true);
+        }
+        return input;
     }
+
 }

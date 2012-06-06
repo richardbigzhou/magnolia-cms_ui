@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,47 +33,34 @@
  */
 package info.magnolia.ui.admincentral.app.dialog;
 
-import info.magnolia.ui.admincentral.dialog.DialogPresenter;
-import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
-import info.magnolia.ui.framework.app.AbstractAppActivity;
+import info.magnolia.ui.admincentral.app.dialog.model.ContactContainer;
 
-import javax.inject.Inject;
-
-import com.vaadin.data.Item;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Table;
 
 /**
- * Activity for the Pages app.
+ * ContactsViewImpl.
  *
- * @version $Id$
+ * @author ejervidalo
  */
-public class DialogTestActivity extends AbstractAppActivity<DialogTestPresenter> implements DialogTestPresenter {
+public class ContactsViewImpl extends Table {
 
-    private DialogPresenterFactory factory;
-    private Item selectedBean;
+    private Table contacts;
 
-    @Inject
-    public DialogTestActivity(DialogTestView view, DialogPresenterFactory factory) {
-        super(view);
-        this.factory = factory;
-    }
 
-    @Override
-    public void openDialog() {
-        DialogPresenter presenter = factory.createDialog("contact");
+    public ContactsViewImpl () {
+        super("Contacts", new ContactContainer());
 
-        presenter.showDialog(selectedBean);
-    }
+     // Allow selecting items from the table.
+        setSelectable(true);
 
-    @Override
-    public DialogTestPresenter getReference() {
-        return this;
-    }
+        // Send changes in selection immediately to server.
+        setImmediate(true);
 
-    /* (non-Javadoc)
-     * @see info.magnolia.ui.admincentral.app.dialog.DialogTestPresenter#setSelected(com.vaadin.data.Property)
-     */
-    @Override
-    public void setSelected(Item item) {
-        this.selectedBean = item;
+        // Shows feedback from selection.
+        final Label current = new Label("Selected: -");
+
+        // Handle selection change.
+
     }
 }

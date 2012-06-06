@@ -33,9 +33,12 @@
  */
 package info.magnolia.ui.admincentral.dialog;
 
-import com.vaadin.ui.ComponentContainer;
-
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
+
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.Field;
 
 /**
  * DialogView.
@@ -59,5 +62,12 @@ public interface DialogView extends IsVaadinComponent {
      * @param string
      */
     void addTab(ComponentContainer cc, String caption);
+
+    public void setItemDataSource(Item newDataSource);
+
+    public Item getItemDataSource();
+
+    void addField(Property itemProperty, Field textField);
+
 
 }

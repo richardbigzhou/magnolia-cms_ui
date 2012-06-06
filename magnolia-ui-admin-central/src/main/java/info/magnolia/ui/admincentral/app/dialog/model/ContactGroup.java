@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,49 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.dialog;
-
-import info.magnolia.ui.admincentral.dialog.DialogPresenter;
-import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
-import info.magnolia.ui.framework.app.AbstractAppActivity;
-
-import javax.inject.Inject;
-
-import com.vaadin.data.Item;
+package info.magnolia.ui.admincentral.app.dialog.model;
 
 /**
- * Activity for the Pages app.
+ * ContactGroup.
  *
- * @version $Id$
+ * @author ejervidalo
  */
-public class DialogTestActivity extends AbstractAppActivity<DialogTestPresenter> implements DialogTestPresenter {
+public class ContactGroup {
+    private String name;
+    private String description;
 
-    private DialogPresenterFactory factory;
-    private Item selectedBean;
-
-    @Inject
-    public DialogTestActivity(DialogTestView view, DialogPresenterFactory factory) {
-        super(view);
-        this.factory = factory;
-    }
-
-    @Override
-    public void openDialog() {
-        DialogPresenter presenter = factory.createDialog("contact");
-
-        presenter.showDialog(selectedBean);
-    }
-
-    @Override
-    public DialogTestPresenter getReference() {
-        return this;
-    }
-
-    /* (non-Javadoc)
-     * @see info.magnolia.ui.admincentral.app.dialog.DialogTestPresenter#setSelected(com.vaadin.data.Property)
-     */
-    @Override
-    public void setSelected(Item item) {
-        this.selectedBean = item;
-    }
 }

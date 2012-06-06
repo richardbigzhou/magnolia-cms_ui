@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.admincentral.dialog;
 
+import com.vaadin.data.Item;
+
 import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.admincentral.dialog.builder.DialogBuilder;
 import info.magnolia.ui.framework.event.EventBus;
@@ -47,7 +49,7 @@ public class DialogPresenter implements DialogView.Presenter {
 
     private DialogBuilder dialogBuilder;
     private DialogDefinition dialogDefinition;
-    private DialogView dialogView;
+    private DialogView view;
     private MagnoliaShell shell;
     private EventBus eventBus;
 
@@ -56,14 +58,16 @@ public class DialogPresenter implements DialogView.Presenter {
         this.dialogDefinition = dialogDefinition;
         this.shell = shell;
         this.eventBus = eventBus;
+        this.view = new DialogViewImpl();
     }
 
-    public void showDialog() {
-        dialogView = dialogBuilder.build(dialogDefinition, this);
-        shell.openDialog(dialogView);
+    public void showDialog(Item selectedBean) {
+        view = dialogBuilder.build(dialogDefinition, selectedBean);
+        shell.openDialog(view);
     }
 
     public void closeDialog() {
-        shell.removeDialog(dialogView);
+        shell.removeDialog(view);
     }
+
 }
