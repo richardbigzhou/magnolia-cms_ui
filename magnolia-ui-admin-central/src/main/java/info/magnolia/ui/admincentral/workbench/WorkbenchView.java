@@ -45,9 +45,11 @@ public interface WorkbenchView extends ComponentContainer {
     void setPresenter(final Presenter presenter);
 
     void initWorkbench(final String id);
+
     /**
-     * TODO write javadoc.
-     * @version $Id$
+     * Presenter.
+     * @author apchelintcev
+     *
      */
     public interface Presenter {
 
