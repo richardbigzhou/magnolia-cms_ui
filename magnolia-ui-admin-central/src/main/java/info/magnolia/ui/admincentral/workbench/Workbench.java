@@ -41,26 +41,25 @@ import com.vaadin.ui.Component;
 
 
 /**
- * Workbench component.
- * @author apchelintcev
- *
+ * TODO write javadoc.
+ * @version $Id$
  */
 @SuppressWarnings("serial")
 public class Workbench implements IsVaadinComponent, WorkbenchView.Presenter {
 
-    private WorkbenchView view; 
-    
+    private WorkbenchView view;
+
     @Inject
     public Workbench(final WorkbenchView view) {
         super();
         this.view = view;
-        view.setPresenter(this);        
+        view.setPresenter(this);
     }
-    
+
     public void initWorkbench(final String id) {
         view.initWorkbench(id);
     }
-    
+
     @Override
     public Component asVaadinComponent() {
         return view;

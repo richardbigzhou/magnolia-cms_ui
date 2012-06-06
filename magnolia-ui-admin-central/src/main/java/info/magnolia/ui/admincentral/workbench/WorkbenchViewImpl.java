@@ -29,7 +29,7 @@
  *
  * Any modifications to this file must keep this entire header
  * intact.
- *
+ * 
  */
 package info.magnolia.ui.admincentral.workbench;
 
@@ -60,34 +60,33 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- * Implmenetation of WorkbenchView.
- * @author apchelintcev
- *
+ * TODO write javadoc.
+ * @version $Id$
  */
 @SuppressWarnings("serial")
 public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView {
 
     private VerticalLayout root = new VerticalLayout();
-    
+
     private Presenter presenter;
-    
+
     private HorizontalLayout split = new HorizontalLayout();
-    
+
     private HorizontalLayout toolbar = new HorizontalLayout();
-    
+
     private JcrView jcrView;
-    
+
     private JcrViewBuilderProvider jcrViewBuilderProvider;
 
     private ConfiguredJcrViewBuilder configuredJcrViewBuilder;
 
     private WorkbenchDefinitionRegistry workbenchRegistry;
-    
+
     protected String path = "/";
-    
+
     private JcrView.Presenter jcrPresenter = new JcrView.Presenter() {
         public void onItemSelection(javax.jcr.Item item) {
-            
+
         };
     };
 
@@ -98,12 +97,12 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
         root.setSizeFull();
         construct();
         setCompositionRoot(root);
-        
+
         this.jcrViewBuilderProvider = componentProvider.getComponent(JcrViewBuilderProvider.class);
         this.configuredJcrViewBuilder = (ConfiguredJcrViewBuilder) jcrViewBuilderProvider.getBuilder();
         this.workbenchRegistry = workbenchRegistry;
     }
-    
+
     @Override
     public void initWorkbench(final String id) {
         // load the workbench specific configuration if existing
@@ -114,7 +113,7 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
         } catch (RegistrationException e) {
             throw new RuntimeException(e);
         }
-        
+
         ComponentProviderConfiguration componentProviderConfiguration = new ComponentProviderConfiguration();
 
         if (workbenchDefinition.getComponents() != null) {
@@ -128,13 +127,13 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
                 columns.put(columnDefinition.getName(), column);
             }
         }
-        
+
         final TreeModel treeModel = new TreeModel(workbenchDefinition, columns);
         jcrView = jcrViewBuilderProvider.getBuilder().build(workbenchDefinition, ViewType.TREE);
-        
+
         componentProviderConfiguration.addComponent(InstanceConfiguration.valueOf(TreeModel.class, treeModel));
         componentProviderConfiguration.addComponent(InstanceConfiguration.valueOf(WorkbenchDefinition.class, workbenchDefinition));
-        
+
         jcrView.setPresenter(jcrPresenter);
         jcrView.select(path);
         jcrView.asVaadinComponent();
