@@ -130,13 +130,13 @@
       <type>info.magnolia.ui.admincentral.workbench.Workbench</type>
       <implementation>info.magnolia.ui.admincentral.workbench.Workbench</implementation>
     </component>
+    <component>
+      <type>info.magnolia.ui.model.menu.definition.MenuItemDefinition</type>
+      <implementation>info.magnolia.ui.model.menu.definition.MenuItemDefinitionImpl</implementation>
+    </component>
      <component>
       <type>info.magnolia.ui.model.workbench.registry.ConfiguredWorkbenchDefinitionManager</type>
       <implementation>info.magnolia.ui.model.workbench.registry.ConfiguredWorkbenchDefinitionManager</implementation>
-    </component>
-     <component>
-      <type>info.magnolia.ui.model.menu.definition.MenuItemDefinition</type>
-      <implementation>info.magnolia.ui.model.menu.definition.MenuItemDefinitionImpl</implementation>
     </component>
   </components>
 
