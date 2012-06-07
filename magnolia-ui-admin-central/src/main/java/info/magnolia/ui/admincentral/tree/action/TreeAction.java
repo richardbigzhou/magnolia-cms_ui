@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,27 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.layout;
+package info.magnolia.ui.admincentral.tree.action;
 
+import javax.jcr.Item;
+import javax.jcr.RepositoryException;
 
 /**
- * Build {AppLauncherLayout}s POJO used by the {AppLauncherActivity}.
+ * Interface to be implemented by actions that provide additional hints about their capabilities.
+ *
+ * @version $Id$
  */
-public interface AppLauncherLayoutManager {
+public interface TreeAction {
 
-    /**
-     * Return the {AppLauncherLayout} defined for the current user.
-     * Return an Empty AppLauncherLayout if nothing set for profile.
-     */
-    public AppLauncherLayout getLayout();
-
-    /**
-     * Check if the given App name is part of the categories define for the current profile.
-     */
-    boolean isAppDescriptionRegistered(String name);
-
-    /**
-     * Check if the given Category name is part of the categories define for the current profile.
-     */
-    boolean isCategoryRegistered(String name);
+    boolean isAvailable(Item item) throws RepositoryException;
 }

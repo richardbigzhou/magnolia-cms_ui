@@ -134,7 +134,10 @@
       <type>info.magnolia.ui.model.menu.definition.MenuItemDefinition</type>
       <implementation>info.magnolia.ui.model.menu.definition.MenuItemDefinitionImpl</implementation>
     </component>
+<<<<<<< HEAD
 
+=======
+>>>>>>> branch 'master' of git@git.magnolia-cms.com:magnolia_ui.git
      <component>
       <type>info.magnolia.ui.model.workbench.registry.ConfiguredWorkbenchDefiniionManager</type>
       <implementation>info.magnolia.ui.model.workbench.registry.ConfiguredWorkbenchDefinitionManager</implementation>

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,27 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.pages;
+package info.magnolia.ui.admincentral.tree.action;
 
-import info.magnolia.ui.admincentral.app.AbstractAppView;
-import info.magnolia.ui.admincentral.workbench.Workbench;
+import info.magnolia.ui.model.action.ActionDefinition;
 
-import javax.inject.Inject;
 
 /**
- * View implementation for the Pages app.
- *
- * @version $Id$
+ * Add a property to a node.
  */
-@SuppressWarnings("serial")
-public class PagesViewImpl extends AbstractAppView<PagesPresenter> implements PagesView {
-    
-    private String jcrWorkspaceName = "contacts";
-    
-    @Inject
-    public PagesViewImpl(final Workbench workbench) {
-        workbench.initWorkbench(jcrWorkspaceName);
-        addTab(workbench.asVaadinComponent(), "Workbench");
-    }
+public class AddPropertyActionDefinition implements ActionDefinition {
 
 }

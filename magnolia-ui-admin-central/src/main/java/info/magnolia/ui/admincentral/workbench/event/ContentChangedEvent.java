@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,27 +31,44 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.pages;
+package info.magnolia.ui.admincentral.workbench.event;
 
-import info.magnolia.ui.admincentral.app.AbstractAppView;
-import info.magnolia.ui.admincentral.workbench.Workbench;
+import info.magnolia.ui.framework.event.Event;
+import info.magnolia.ui.framework.event.EventHandler;
 
-import javax.inject.Inject;
 
 /**
- * View implementation for the Pages app.
- *
- * @version $Id$
+ * Global event fired if content was changed, deleted, added.
+ * FIXME introduce more granular events
  */
-@SuppressWarnings("serial")
-public class PagesViewImpl extends AbstractAppView<PagesPresenter> implements PagesView {
-    
-    private String jcrWorkspaceName = "contacts";
-    
-    @Inject
-    public PagesViewImpl(final Workbench workbench) {
-        workbench.initWorkbench(jcrWorkspaceName);
-        addTab(workbench.asVaadinComponent(), "Workbench");
+public class ContentChangedEvent implements Event<ContentChangedEvent.Handler> {
+
+    /**
+     * Handles {@link ContentChangedEvent} events.
+     */
+    public static interface Handler extends EventHandler {
+        void onContentChanged(ContentChangedEvent event);
     }
 
+    private String workspace;
+
+    private String path;
+
+    @Override
+    public void dispatch(Handler handler) {
+        handler.onContentChanged(this);
+    }
+
+    public ContentChangedEvent(String workspace, String path) {
+        this.workspace = workspace;
+        this.path = path;
+    }
+
+    public String getWorkspace() {
+        return workspace;
+    }
+
+    public String getPath() {
+        return path;
+    }
 }

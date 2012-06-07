@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,27 +31,55 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.pages;
+package info.magnolia.ui.admincentral.tree.action;
 
-import info.magnolia.ui.admincentral.app.AbstractAppView;
-import info.magnolia.ui.admincentral.workbench.Workbench;
+import info.magnolia.ui.model.action.ActionDefinition;
 
-import javax.inject.Inject;
 
 /**
- * View implementation for the Pages app.
- *
- * @version $Id$
+ * Opens a dialog to edit an {@link javax.jcr.Node}.
  */
-@SuppressWarnings("serial")
-public class PagesViewImpl extends AbstractAppView<PagesPresenter> implements PagesView {
-    
-    private String jcrWorkspaceName = "contacts";
-    
-    @Inject
-    public PagesViewImpl(final Workbench workbench) {
-        workbench.initWorkbench(jcrWorkspaceName);
-        addTab(workbench.asVaadinComponent(), "Workbench");
+public class OpenEditDialogActionDefinition implements ActionDefinition {
+
+    private String dialogName;
+
+    public String getDialogName() {
+        return dialogName;
+    }
+
+    public void setDialogName(String dialogName) {
+        this.dialogName = dialogName;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result
+        + ((dialogName == null) ? 0 : dialogName.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof OpenEditDialogActionDefinition)) {
+            return false;
+        }
+        OpenEditDialogActionDefinition other = (OpenEditDialogActionDefinition) obj;
+        if (dialogName == null) {
+            if (other.dialogName != null) {
+                return false;
+            }
+        } else if (!dialogName.equals(other.dialogName)) {
+            return false;
+        }
+        return true;
     }
 
 }

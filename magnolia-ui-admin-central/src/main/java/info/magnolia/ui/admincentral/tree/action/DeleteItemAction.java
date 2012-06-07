@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,27 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.pages;
+package info.magnolia.ui.admincentral.tree.action;
 
-import info.magnolia.ui.admincentral.app.AbstractAppView;
-import info.magnolia.ui.admincentral.workbench.Workbench;
+import javax.jcr.Item;
+import javax.jcr.RepositoryException;
 
-import javax.inject.Inject;
+import info.magnolia.ui.framework.event.EventBus;
+
 
 /**
- * View implementation for the Pages app.
+ * Deletes a node from the repository.
  *
  * @version $Id$
  */
-@SuppressWarnings("serial")
-public class PagesViewImpl extends AbstractAppView<PagesPresenter> implements PagesView {
-    
-    private String jcrWorkspaceName = "contacts";
-    
-    @Inject
-    public PagesViewImpl(final Workbench workbench) {
-        workbench.initWorkbench(jcrWorkspaceName);
-        addTab(workbench.asVaadinComponent(), "Workbench");
+public class DeleteItemAction extends RepositoryOperationAction<DeleteItemActionDefinition> {
+
+    public DeleteItemAction(DeleteItemActionDefinition definition, Item item, EventBus eventBus) {
+        super(definition, item, eventBus);
     }
 
+    @Override
+    protected void onExecute(Item item) throws RepositoryException {
+        item.remove();
+    }
 }

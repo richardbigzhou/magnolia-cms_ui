@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,27 +31,36 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.pages;
+package info.magnolia.ui.admincentral.tree.action;
 
-import info.magnolia.ui.admincentral.app.AbstractAppView;
-import info.magnolia.ui.admincentral.workbench.Workbench;
+import javax.jcr.Item;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
-import javax.inject.Inject;
+import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.ui.framework.event.EventBus;
+
 
 /**
- * View implementation for the Pages app.
+ * Action for creating a new property.
  *
  * @version $Id$
  */
-@SuppressWarnings("serial")
-public class PagesViewImpl extends AbstractAppView<PagesPresenter> implements PagesView {
-    
-    private String jcrWorkspaceName = "contacts";
-    
-    @Inject
-    public PagesViewImpl(final Workbench workbench) {
-        workbench.initWorkbench(jcrWorkspaceName);
-        addTab(workbench.asVaadinComponent(), "Workbench");
+public class AddPropertyAction extends RepositoryOperationAction<AddPropertyActionDefinition> implements TreeAction {
+
+    public AddPropertyAction(AddPropertyActionDefinition definition, Item item, EventBus eventBus) {
+        super(definition, item, eventBus);
     }
 
+    @Override
+    public boolean isAvailable(Item item) throws RepositoryException {
+        return item.isNode();
+    }
+
+    @Override
+    protected void onExecute(Item item) throws RepositoryException {
+        Node node = (Node) item;
+        String name = NodeUtil.getName(node);
+        node.setProperty(name, "");
+    }
 }

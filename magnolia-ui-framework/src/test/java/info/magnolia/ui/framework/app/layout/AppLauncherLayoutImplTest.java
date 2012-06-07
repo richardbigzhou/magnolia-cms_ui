@@ -51,7 +51,7 @@ import org.junit.Test;
  */
 public class AppLauncherLayoutImplTest {
 
-    private AppLauncherLayout appLauncherLayout;
+    private AppLayout appLauncherLayout;
     private AppCategory appCategory1;
     private AppCategory appCategory2;
     private AppDescriptor appDescriptor1;
@@ -69,7 +69,7 @@ public class AppLauncherLayoutImplTest {
         Map<String, AppCategory> categories = new HashMap<String, AppCategory>();
         categories.put("appCategory1", appCategory1);
         categories.put("appCategory2", appCategory2);
-        appLauncherLayout = new AppLauncherLayoutImpl(categories);
+        appLauncherLayout = new AppLayoutImpl(categories);
     }
 
     @After

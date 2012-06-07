@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,41 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.layout;
+package info.magnolia.ui.admincentral.tree.action;
 
-import java.util.Collection;
+import info.magnolia.ui.model.action.ActionDefinition;
 
-import info.magnolia.ui.framework.app.AppDescriptor;
 
 /**
- * Registry of available apps groups by categories.
- *
- * @version $Id$
+ * Delete an {@link javax.jcr.Item}.
  */
-public interface AppLauncherLayout {
-
-    /**
-     * Return the registered {AppCategory}s.
-     */
-    Collection<AppCategory> getCategories();
-
-    /**
-     * Return the specified Category.
-     *
-     * @throws IllegalArgumentException: If key don't exist.
-     */
-    AppCategory getCategory(String name) throws IllegalArgumentException;
-
-    /**
-     * Returns the AppDescriptor for a given name.
-     *
-     * @throws IllegalArgumentException: If key don't exist.
-     */
-    AppDescriptor getAppDescriptor(String name) throws IllegalArgumentException;
-
-    /**
-     * Check if the app is already registered.
-     */
-    boolean isAppAlreadyRegistered(String name);
+public class DeleteItemActionDefinition implements ActionDefinition {
 
 }
