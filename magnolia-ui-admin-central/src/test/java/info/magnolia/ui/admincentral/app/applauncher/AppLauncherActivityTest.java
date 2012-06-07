@@ -46,10 +46,10 @@ import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.AppEventType;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.layout.AppCategory;
-import info.magnolia.ui.framework.app.layout.AppLauncherLayout;
-import info.magnolia.ui.framework.app.layout.AppLauncherLayoutImpl;
-import info.magnolia.ui.framework.app.layout.AppLauncherLayoutManager;
-import info.magnolia.ui.framework.app.layout.AppLauncherLayoutManagerImpl;
+import info.magnolia.ui.framework.app.layout.AppLayout;
+import info.magnolia.ui.framework.app.layout.AppLayoutImpl;
+import info.magnolia.ui.framework.app.layout.AppLayoutManager;
+import info.magnolia.ui.framework.app.layout.AppLayoutManagerImpl;
 import info.magnolia.ui.framework.app.layout.event.LayoutEvent;
 import info.magnolia.ui.framework.app.layout.event.LayoutEventType;
 import info.magnolia.ui.framework.event.EventBus;
@@ -76,8 +76,8 @@ public class AppLauncherActivityTest {
     private SystemEventBus systemEventBus;
     private AppLauncherViewImpl view;
     private AppController appController;
-    private AppLauncherLayoutManager appLauncherLayoutManager;
-    private AppLauncherLayout layout;
+    private AppLayoutManager appLauncherLayoutManager;
+    private AppLayout layout;
     private AppCategory appCategory1;
     private AppCategory appCategory2;
     private AppDescriptor appDescriptor1;
@@ -90,7 +90,7 @@ public class AppLauncherActivityTest {
         systemEventBus = new SimpleSystemEventBus();
         view = new AppLauncherViewImpl();
         layout = createLayout();
-        appLauncherLayoutManager = mock(AppLauncherLayoutManagerImpl.class);
+        appLauncherLayoutManager = mock(AppLayoutManagerImpl.class);
         when(appLauncherLayoutManager.getLayout()).thenReturn(layout);
         when(appLauncherLayoutManager.isAppDescriptionRegistered("appDescriptor1")).thenReturn(true);
         when(appLauncherLayoutManager.isAppDescriptionRegistered("appDescriptor2")).thenReturn(true);
@@ -100,7 +100,7 @@ public class AppLauncherActivityTest {
     }
 
 
-    private AppLauncherLayout createLayout() {
+    private AppLayout createLayout() {
         appDescriptor1 = AppTestUtility.createAppDescriptor("appDescriptor1", null);
         appDescriptor2 = AppTestUtility.createAppDescriptor("appDescriptor2", null);
         appDescriptor3 = AppTestUtility.createAppDescriptor("appDescriptor3", null);
@@ -109,7 +109,7 @@ public class AppLauncherActivityTest {
         Map<String, AppCategory> categories = new HashMap<String, AppCategory>();
         categories.put("appCategory1", appCategory1);
         categories.put("appCategory2", appCategory2);
-        return new AppLauncherLayoutImpl(categories);
+        return new AppLayoutImpl(categories);
     }
 
     @Test

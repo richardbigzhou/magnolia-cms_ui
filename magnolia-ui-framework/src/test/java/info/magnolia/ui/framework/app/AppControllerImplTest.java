@@ -40,8 +40,8 @@ import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.framework.app.layout.AppLauncherLayout;
-import info.magnolia.ui.framework.app.layout.AppLauncherLayoutManager;
+import info.magnolia.ui.framework.app.layout.AppLayout;
+import info.magnolia.ui.framework.app.layout.AppLayoutManager;
 import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
 import info.magnolia.ui.framework.event.SimpleEventBus;
 import info.magnolia.ui.framework.event.SimpleSystemEventBus;
@@ -136,8 +136,8 @@ public class AppControllerImplTest {
         AppEventCollector eventCollector = new AppEventCollector();
         eventBus.addHandler(AppLifecycleEvent.class, eventCollector);
 
-        AppLauncherLayout appLauncherLayout = mock(AppLauncherLayout.class);
-        AppLauncherLayoutManager appLayoutManager = mock(AppLauncherLayoutManager.class);
+        AppLayout appLauncherLayout = mock(AppLayout.class);
+        AppLayoutManager appLayoutManager = mock(AppLayoutManager.class);
         when(appLayoutManager.getLayout()).thenReturn(appLauncherLayout);
         when(appLauncherLayout.getAppDescriptor("test")).thenReturn(appDescriptor);
 
@@ -173,8 +173,8 @@ public class AppControllerImplTest {
         AppEventCollector eventCollector = new AppEventCollector();
         eventBus.addHandler(AppLifecycleEvent.class, eventCollector);
 
-        AppLauncherLayout appLauncherLayout = mock(AppLauncherLayout.class);
-        AppLauncherLayoutManager appLayoutManager = mock(AppLauncherLayoutManager.class);
+        AppLayout appLauncherLayout = mock(AppLayout.class);
+        AppLayoutManager appLayoutManager = mock(AppLayoutManager.class);
 
         when(appLayoutManager.getLayout()).thenReturn(appLauncherLayout);
         when(appLauncherLayout.getAppDescriptor("test")).thenReturn(appDescriptor);
@@ -215,8 +215,8 @@ public class AppControllerImplTest {
         AppEventCollector eventCollector = new AppEventCollector();
         eventBus.addHandler(AppLifecycleEvent.class, eventCollector);
 
-        AppLauncherLayout appLauncherLayout = mock(AppLauncherLayout.class);
-        AppLauncherLayoutManager appLayoutManager = mock(AppLauncherLayoutManager.class);
+        AppLayout appLauncherLayout = mock(AppLayout.class);
+        AppLayoutManager appLayoutManager = mock(AppLayoutManager.class);
         when(appLayoutManager.getLayout()).thenReturn(appLauncherLayout);
         when(appLauncherLayout.getAppDescriptor("test")).thenReturn(appDescriptor);
 
@@ -263,8 +263,8 @@ public class AppControllerImplTest {
         AppEventCollector eventCollector = new AppEventCollector();
         eventBus.addHandler(AppLifecycleEvent.class, eventCollector);
 
-        AppLauncherLayout appLauncherLayout = mock(AppLauncherLayout.class);
-        AppLauncherLayoutManager appLayoutManager = mock(AppLauncherLayoutManager.class);
+        AppLayout appLauncherLayout = mock(AppLayout.class);
+        AppLayoutManager appLayoutManager = mock(AppLayoutManager.class);
 
         when(appLayoutManager.getLayout()).thenReturn(appLauncherLayout);
         when(appLauncherLayout.getAppDescriptor("test1")).thenReturn(appDescriptor1);

@@ -31,41 +31,44 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.layout;
+package info.magnolia.ui.admincentral.workbench.event;
 
-import java.util.Collection;
+import info.magnolia.ui.framework.event.Event;
+import info.magnolia.ui.framework.event.EventHandler;
 
-import info.magnolia.ui.framework.app.AppDescriptor;
 
 /**
- * Registry of available apps groups by categories.
- *
- * @version $Id$
+ * This event is fired when an node (ie a row in the data grid within the workbench) is selected.
+
  */
-public interface AppLauncherLayout {
+public class NodeSelectedEvent implements Event<NodeSelectedEvent.Handler> {
 
     /**
-     * Return the registered {AppCategory}s.
+     * Handles {@link NodeSelectedEvent} events.
      */
-    Collection<AppCategory> getCategories();
+    public static interface Handler extends EventHandler {
+        void onNodeSelected(NodeSelectedEvent event);
+    }
 
-    /**
-     * Return the specified Category.
-     *
-     * @throws IllegalArgumentException: If key don't exist.
-     */
-    AppCategory getCategory(String name) throws IllegalArgumentException;
+    private String workspace;
 
-    /**
-     * Returns the AppDescriptor for a given name.
-     *
-     * @throws IllegalArgumentException: If key don't exist.
-     */
-    AppDescriptor getAppDescriptor(String name) throws IllegalArgumentException;
+    private String path;
 
-    /**
-     * Check if the app is already registered.
-     */
-    boolean isAppAlreadyRegistered(String name);
+    @Override
+    public void dispatch(Handler handler) {
+        handler.onNodeSelected(this);
+    }
 
+    public NodeSelectedEvent(String workspace, String path) {
+        this.workspace = workspace;
+        this.path = path;
+    }
+
+    public String getWorkspace() {
+        return workspace;
+    }
+
+    public String getPath() {
+        return path;
+    }
 }

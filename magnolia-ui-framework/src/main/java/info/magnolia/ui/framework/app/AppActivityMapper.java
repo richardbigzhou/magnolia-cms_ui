@@ -36,7 +36,7 @@ package info.magnolia.ui.framework.app;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.framework.activity.ActivityMapperImpl;
 import info.magnolia.ui.framework.app.layout.AppCategory;
-import info.magnolia.ui.framework.app.layout.AppLauncherLayoutManager;
+import info.magnolia.ui.framework.app.layout.AppLayoutManager;
 import info.magnolia.ui.framework.event.EventBus;
 
 import javax.inject.Inject;
@@ -49,7 +49,7 @@ import javax.inject.Inject;
 public class AppActivityMapper extends ActivityMapperImpl {
 
     @Inject
-    public AppActivityMapper(ComponentProvider componentProvider, AppLauncherLayoutManager appLauncherLayoutManager, EventBus eventBus) {
+    public AppActivityMapper(ComponentProvider componentProvider, AppLayoutManager appLauncherLayoutManager, EventBus eventBus) {
         super(componentProvider);
         super.setLongLivingActivities(true);
 

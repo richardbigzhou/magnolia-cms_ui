@@ -39,6 +39,8 @@ import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.admincentral.column.Column;
 import info.magnolia.ui.admincentral.container.JcrContainerSource;
+import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
+import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.workbench.definition.ItemTypeDefinition;
@@ -64,19 +66,18 @@ import org.apache.commons.lang.StringUtils;
 import com.vaadin.ui.Component;
 
 /**
- * TODO reintegrate action logic.
  * Model class for tree. Serves as a source for operations by JcrContainer and executes them.
  *
  */
 public class TreeModel implements JcrContainerSource {
 
-    //private WorkbenchActionFactory actionFactory;
+    private WorkbenchActionFactory actionFactory;
     private WorkbenchDefinition workbenchDefinition;
     private Map<String, Column<?>> columns;
 
-    public TreeModel(WorkbenchDefinition workbenchDefinition, Map<String, Column<?>> columns/*, WorkbenchActionFactory actionFactory*/) {
+    public TreeModel(WorkbenchDefinition workbenchDefinition, Map<String, Column<?>> columns, WorkbenchActionFactory actionFactory) {
         this.workbenchDefinition = workbenchDefinition;
-        //this.actionFactory = actionFactory;
+        this.actionFactory = actionFactory;
         this.columns = columns;
     }
 
@@ -266,7 +267,7 @@ public class TreeModel implements JcrContainerSource {
         return true;
     }
 
-    // Used by JcrBrowser and TreeViewImpl
+    // Used by JcrBrowser and VaadinTreeView
 
     public String getPathInTree(Item item) throws RepositoryException {
         String base = workbenchDefinition.getPath();
@@ -282,9 +283,8 @@ public class TreeModel implements JcrContainerSource {
     }
 
     public void execute(ActionDefinition actionDefinition, Item item) throws ActionExecutionException {
-        /*Action action = actionFactory.createAction(actionDefinition, item);
-        action.execute();*/
-        System.out.println("execute action");
+        Action action = actionFactory.createAction(actionDefinition, item);
+        action.execute();
     }
 
 

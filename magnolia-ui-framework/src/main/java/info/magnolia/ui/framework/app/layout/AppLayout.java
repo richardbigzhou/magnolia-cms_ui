@@ -31,34 +31,41 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.applauncher;
+package info.magnolia.ui.framework.app.layout;
 
-import info.magnolia.ui.framework.app.ShellAppView;
-import info.magnolia.ui.framework.app.layout.AppLayout;
+import java.util.Collection;
+
+import info.magnolia.ui.framework.app.AppDescriptor;
 
 /**
- * View for the app launcher.
+ * Registry of available apps groups by categories.
  *
  * @version $Id$
  */
-public interface AppLauncherView extends ShellAppView {
+public interface AppLayout {
 
     /**
-     * Presenter.
-     *
-     * @version $Id$
+     * Return the registered {AppCategory}s.
      */
-    public interface Presenter {
+    Collection<AppCategory> getCategories();
 
-        void onAppInvoked(String name);
-    }
+    /**
+     * Return the specified Category.
+     *
+     * @throws IllegalArgumentException: If key don't exist.
+     */
+    AppCategory getCategory(String name) throws IllegalArgumentException;
 
-    void setPresenter(Presenter presenter);
+    /**
+     * Returns the AppDescriptor for a given name.
+     *
+     * @throws IllegalArgumentException: If key don't exist.
+     */
+    AppDescriptor getAppDescriptor(String name) throws IllegalArgumentException;
 
-    void registerApp(AppLayout layout);
-
-    void activateButton(boolean activate, String appName);
-
-    void clearView();
+    /**
+     * Check if the app is already registered.
+     */
+    boolean isAppAlreadyRegistered(String name);
 
 }

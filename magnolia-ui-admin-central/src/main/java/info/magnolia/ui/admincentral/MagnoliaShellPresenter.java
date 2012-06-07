@@ -48,8 +48,8 @@ import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.PlaceActivityMapping;
 import info.magnolia.ui.framework.app.layout.AppCategory;
-import info.magnolia.ui.framework.app.layout.AppLauncherLayout;
-import info.magnolia.ui.framework.app.layout.AppLauncherLayoutManager;
+import info.magnolia.ui.framework.app.layout.AppLayout;
+import info.magnolia.ui.framework.app.layout.AppLayoutManager;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.place.Place;
 import info.magnolia.ui.framework.place.PlaceController;
@@ -74,7 +74,7 @@ public class MagnoliaShellPresenter implements MagnoliaShellView.Presenter {
     private final MagnoliaShellView view;
 
     @Inject
-    public MagnoliaShellPresenter(final MagnoliaShellView view, final EventBus bus, final AppLauncherLayoutManager appLauncherLayoutManager,
+    public MagnoliaShellPresenter(final MagnoliaShellView view, final EventBus bus, final AppLayoutManager appLauncherLayoutManager,
                                   final AppController appController, final PlaceController controller,
                                   ComponentProvider componentProvider) {
         super();
@@ -106,7 +106,7 @@ public class MagnoliaShellPresenter implements MagnoliaShellView.Presenter {
     }
 
     @SuppressWarnings("unchecked")
-    private Class<? extends Place>[] getSupportedPlaces(AppLauncherLayout appLauncherLayout) {
+    private Class<? extends Place>[] getSupportedPlaces(AppLayout appLauncherLayout) {
         List<Class<? extends Place>> places = new ArrayList<Class<? extends Place>>();
         places.add(AppLauncherPlace.class);
         places.add(PulsePlace.class);

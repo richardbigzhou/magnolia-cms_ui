@@ -34,7 +34,7 @@
 package info.magnolia.ui.framework.app;
 
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.framework.app.layout.AppLauncherLayoutManager;
+import info.magnolia.ui.framework.app.layout.AppLayoutManager;
 import info.magnolia.ui.framework.event.Event;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.event.SystemEventBus;
@@ -62,7 +62,7 @@ public class AppControllerImpl implements AppController {
 
     private static Logger log = LoggerFactory.getLogger(AppControllerImpl.class);
 
-    private AppLauncherLayoutManager appLauncherLayoutManager;
+    private AppLayoutManager appLauncherLayoutManager;
 
     private ComponentProvider componentProvider;
 
@@ -76,7 +76,7 @@ public class AppControllerImpl implements AppController {
     private LinkedList<AppLifecycle> appHistory = new LinkedList<AppLifecycle>();
 
     @Inject
-    public AppControllerImpl(AppLauncherLayoutManager appLauncherLayoutManager, ComponentProvider componentProvider, EventBus eventBus, SystemEventBus systemEventBus) {
+    public AppControllerImpl(AppLayoutManager appLauncherLayoutManager, ComponentProvider componentProvider, EventBus eventBus, SystemEventBus systemEventBus) {
         this.appLauncherLayoutManager = appLauncherLayoutManager;
         this.componentProvider = componentProvider;
         this.eventBus = eventBus;

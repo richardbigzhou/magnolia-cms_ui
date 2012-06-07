@@ -59,7 +59,7 @@ import org.slf4j.LoggerFactory;
  *
  */
 @Singleton
-public class AppLauncherLayoutManagerImpl implements AppLauncherLayoutManager{
+public class AppLayoutManagerImpl implements AppLayoutManager{
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -76,7 +76,7 @@ public class AppLauncherLayoutManagerImpl implements AppLauncherLayoutManager{
 
 
     @Inject
-    public AppLauncherLayoutManagerImpl(AppDescriptorRegistry appDescriptorRegistry, SystemEventBus systemEventBus) {
+    public AppLayoutManagerImpl(AppDescriptorRegistry appDescriptorRegistry, SystemEventBus systemEventBus) {
         this.appDescriptorRegistry = appDescriptorRegistry;
         this.systemEventBus = systemEventBus;
 
@@ -110,10 +110,10 @@ public class AppLauncherLayoutManagerImpl implements AppLauncherLayoutManager{
     }
 
     @Override
-    public AppLauncherLayout getLayout() {
+    public AppLayout getLayout() {
         //Init
         Map<String, AppCategory> categories = new HashMap<String, AppCategory>();
-        AppLauncherLayout appLauncherLayout = new AppLauncherLayoutImpl(categories);
+        AppLayout appLauncherLayout = new AppLayoutImpl(categories);
         // Get appDescriptor
         Collection<AppDescriptor> appDescriptors = this.appDescriptorRegistry.getAppDescriptors();
 
@@ -139,7 +139,7 @@ public class AppLauncherLayoutManagerImpl implements AppLauncherLayoutManager{
     /**
      * Filter out disabled apps and apps with identical names.
      */
-    private boolean hasToAddApp(AppDescriptor app, AppLauncherLayout appLauncherLayout) {
+    private boolean hasToAddApp(AppDescriptor app, AppLayout appLauncherLayout) {
         // Filter out disabled apps and apps with identical names
         if (!app.isEnabled() || appLauncherLayout.isAppAlreadyRegistered(app.getName()) || !isAppDescriptionRegistered(app.getName())) {
             return false;

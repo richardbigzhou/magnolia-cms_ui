@@ -40,6 +40,7 @@ import info.magnolia.ui.admincentral.jcr.view.JcrView.ViewType;
 import info.magnolia.ui.admincentral.list.view.ListViewImpl;
 import info.magnolia.ui.admincentral.tree.model.TreeModel;
 import info.magnolia.ui.admincentral.tree.view.TreeViewImpl;
+import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.model.builder.FactoryBase;
 import info.magnolia.ui.model.column.definition.AbstractColumnDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
@@ -97,9 +98,9 @@ public class ConfiguredJcrViewBuilder extends FactoryBase<AbstractColumnDefiniti
                 columns.put(columnDefinition.getName(), column);
             }
         }
-
+        final WorkbenchActionFactory workbenchActionFactory = componentProvider.getComponent(WorkbenchActionFactory.class);
         // FIXME the model should be set by the presenter
-        TreeModel treeModel = new TreeModel(workbenchDefinition, columns);
+        TreeModel treeModel = new TreeModel(workbenchDefinition, columns, workbenchActionFactory);
         if(type == ViewType.TREE) {
             return componentProvider.newInstance(TreeViewImpl.class, workbenchDefinition, treeModel);
         } else {
