@@ -22,6 +22,13 @@
       <scope>singleton</scope>
     </component>
     <component>
+      <type>info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory</type>
+      <workspace>config</workspace>
+      <path>/modules/ui-admin-central/workbenchActionFactory</path>
+      <observed>true</observed>
+      <scope>singleton</scope>
+    </component>
+    <component>
       <type>info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptorManager</type>
       <implementation>info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptorManager</implementation>
     </component>
@@ -30,8 +37,8 @@
       <implementation>info.magnolia.ui.framework.app.registry.AppDescriptorRegistry</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.framework.app.layout.AppLauncherLayoutManager</type>
-      <implementation>info.magnolia.ui.framework.app.layout.AppLauncherLayoutManagerImpl</implementation>
+      <type>info.magnolia.ui.framework.app.layout.AppLayoutManager</type>
+      <implementation>info.magnolia.ui.framework.app.layout.AppLayoutManagerImpl</implementation>
     </component>
     <type-mapping>
       <type>info.magnolia.ui.framework.app.AppDescriptor</type>
@@ -119,14 +126,17 @@
       <type>info.magnolia.ui.admincentral.workbench.WorkbenchView</type>
       <implementation>info.magnolia.ui.admincentral.workbench.WorkbenchViewImpl</implementation>
     </component>
-
     <component>
       <type>info.magnolia.ui.admincentral.workbench.Workbench</type>
       <implementation>info.magnolia.ui.admincentral.workbench.Workbench</implementation>
     </component>
+    <component>
+      <type>info.magnolia.ui.model.menu.definition.MenuItemDefinition</type>
+      <implementation>info.magnolia.ui.model.menu.definition.MenuItemDefinitionImpl</implementation>
+    </component>
 
      <component>
-      <type>info.magnolia.ui.model.workbench.registry.ConfiguredWorkbenchDefinitionManager</type>
+      <type>info.magnolia.ui.model.workbench.registry.ConfiguredWorkbenchDefiniionManager</type>
       <implementation>info.magnolia.ui.model.workbench.registry.ConfiguredWorkbenchDefinitionManager</implementation>
     </component>
   </components>
