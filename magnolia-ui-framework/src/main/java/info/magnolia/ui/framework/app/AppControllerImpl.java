@@ -88,7 +88,7 @@ public class AppControllerImpl implements AppController {
             @Override
             public void onAppUnregistered(AppLifecycleEvent event) {
                 if(isAppStarted(event.getAppDescriptor())) {
-                    stopApplication(event.getAppDescriptor().getName());
+                    doStop(event.getAppDescriptor());
                 }
             }
         });
@@ -113,7 +113,7 @@ public class AppControllerImpl implements AppController {
 
     @Override
     public void stopApplication(String name) {
-        doStop(name);
+        doStop(appLauncherLayoutManager.getLayout().getAppDescriptor(name));
     }
 
     @Override
@@ -147,8 +147,7 @@ public class AppControllerImpl implements AppController {
         sendEvent(new AppLifecycleEvent(getAppDescriptor(lifecycle), AppEventType.FOCUSED));
     }
 
-    private void doStop(String name) {
-        final AppDescriptor descriptor = appLauncherLayoutManager.getLayout().getAppDescriptor(name);
+    private void doStop(AppDescriptor descriptor) {
         AppLifecycle lifecycle = (AppLifecycle) runningApps.get(descriptor);
         if (lifecycle != null) {
             lifecycle.stop();

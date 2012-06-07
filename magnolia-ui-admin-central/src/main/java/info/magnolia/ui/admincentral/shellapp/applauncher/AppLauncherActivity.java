@@ -104,7 +104,9 @@ public class AppLauncherActivity extends AbstractActivity implements AppLauncher
                  * Deactivate the visual triangle on the App Icon.
                  */
                 public void onAppStopped(AppLifecycleEvent event) {
-                    activateButton(false, event.getAppDescriptor().getName());
+                    if(isAppPartOftheLayout(event.getAppDescriptor().getName())) {
+                        activateButton(false, event.getAppDescriptor().getName());
+                    }
                 }
 
                 @Override
@@ -134,8 +136,16 @@ public class AppLauncherActivity extends AbstractActivity implements AppLauncher
     private void initView(AppLauncherLayout layout) {
         view.registerApp(layout);
     }
+
+    /**
+     * Check if this app is registered For this profile.
+     */
     private boolean isAppRegistered(String appName) {
         return this.appLauncherLayoutManager.isAppDescriptionRegistered(appName);
+    }
+
+    private boolean isAppPartOftheLayout(String appName) {
+        return this.layout.isAppAlreadyRegistered(appName);
     }
 
     /**
