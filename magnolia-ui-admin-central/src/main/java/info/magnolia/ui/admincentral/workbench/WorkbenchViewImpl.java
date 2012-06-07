@@ -100,6 +100,7 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
         @Override
         public void onItemSelection(javax.jcr.Item item) {
             try {
+                //FIXME this seemed to be triggered twice both for click row event and tableValue change even when novalue has changed and only a click happneed on table, see info.magnolia.ui.admincentral.tree.view.TreeViewImpl.TreeViewImpl and jcrBrowser
                 log.info("java.jcr.Item at {} was selected. Firing NodeSelectedEvent...", item.getPath());
                 //TODO pass directly the item object ?
                 eventBus.fireEvent(new NodeSelectedEvent(item.getSession().getWorkspace().getName(), item.getPath()));
@@ -108,8 +109,6 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
             }
         };
     };
-
-
 
     @Inject
     public WorkbenchViewImpl(WorkbenchDefinitionRegistry workbenchRegistry, Shell shell, JcrViewBuilderProvider jcrViewBuilderProvider, WorkbenchActionFactory actionFactory, EventBus bus) {
