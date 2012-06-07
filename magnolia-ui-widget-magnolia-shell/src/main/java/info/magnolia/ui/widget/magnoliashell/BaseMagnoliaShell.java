@@ -160,6 +160,10 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
         return viewports.get(ViewportType.SHELL_APP_VIEWPORT);
     }
     
+    public ShellViewport getDialogViewport() {
+        return viewports.get(ViewportType.DIALOG_VIEWPORT);
+    }
+    
     public ShellViewport getActiveViewport() {
         return activeViewport;
     }
