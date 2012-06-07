@@ -44,6 +44,8 @@ import info.magnolia.ui.admincentral.jcr.view.JcrView.ViewType;
 import info.magnolia.ui.admincentral.jcr.view.builder.JcrViewBuilderProvider;
 import info.magnolia.ui.admincentral.tree.action.TreeAction;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
+import info.magnolia.ui.admincentral.workbench.event.NodeSelectedEvent;
+import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.menu.definition.MenuItemDefinition;
@@ -92,11 +94,15 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
 
     private Shell shell;
 
+    private EventBus eventBus;
+
     private JcrView.Presenter jcrPresenter = new JcrView.Presenter() {
         @Override
         public void onItemSelection(javax.jcr.Item item) {
             try {
-                log.info("Test: {} was selected.", item.getPath());
+                log.info("java.jcr.Item at {} was selected. Firing NodeSelectedEvent...", item.getPath());
+                //TODO pass directly the item object ?
+                eventBus.fireEvent(new NodeSelectedEvent(item.getSession().getWorkspace().getName(), item.getPath()));
             } catch (RepositoryException e) {
                shell.showError("An error occurred while selecting a row in the data grid", e);
             }
@@ -104,8 +110,9 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
     };
 
 
+
     @Inject
-    public WorkbenchViewImpl(WorkbenchDefinitionRegistry workbenchRegistry, Shell shell, JcrViewBuilderProvider jcrViewBuilderProvider, WorkbenchActionFactory actionFactory) {
+    public WorkbenchViewImpl(WorkbenchDefinitionRegistry workbenchRegistry, Shell shell, JcrViewBuilderProvider jcrViewBuilderProvider, WorkbenchActionFactory actionFactory, EventBus bus) {
         super();
         setSizeFull();
         root.setSizeFull();
@@ -115,6 +122,7 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
         this.jcrViewBuilderProvider = jcrViewBuilderProvider;
         this.workbenchRegistry = workbenchRegistry;
         this.actionFactory = actionFactory;
+        this.eventBus = bus;
     }
 
     @Override
