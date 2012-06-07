@@ -35,15 +35,15 @@ package info.magnolia.ui.widget.tabsheet.gwt.client;
 
 import java.util.List;
 
+import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * VShellTabView.
  *
  * @author ejervidalo
  */
-public interface VShellTabSheetView extends IsWidget {
+public interface VShellTabSheetView extends HasWidgets, IsWidget {
 
     /**
      * Presenter.
@@ -53,11 +53,6 @@ public interface VShellTabSheetView extends IsWidget {
     public interface Presenter {
 
     }
-
-    /**
-     * @param tab
-     */
-    void add(Widget tab);
 
     /**
      * @return

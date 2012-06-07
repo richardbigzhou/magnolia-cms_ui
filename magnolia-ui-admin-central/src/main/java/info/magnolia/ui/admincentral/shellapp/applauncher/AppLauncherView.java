@@ -34,7 +34,7 @@
 package info.magnolia.ui.admincentral.shellapp.applauncher;
 
 import info.magnolia.ui.framework.app.ShellAppView;
-import info.magnolia.ui.framework.app.layout.AppLauncherLayout;
+import info.magnolia.ui.framework.app.layout.AppLayout;
 
 /**
  * View for the app launcher.
@@ -55,7 +55,7 @@ public interface AppLauncherView extends ShellAppView {
 
     void setPresenter(Presenter presenter);
 
-    void registerApp(AppLauncherLayout layout);
+    void registerApp(AppLayout layout);
 
     void activateButton(boolean activate, String appName);
 

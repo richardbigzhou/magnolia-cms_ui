@@ -42,7 +42,7 @@ import info.magnolia.ui.framework.app.AppDescriptor;
  *
  * @version $Id$
  */
-public interface AppLauncherLayout {
+public interface AppLayout {
 
     /**
      * Return the registered {AppCategory}s.
