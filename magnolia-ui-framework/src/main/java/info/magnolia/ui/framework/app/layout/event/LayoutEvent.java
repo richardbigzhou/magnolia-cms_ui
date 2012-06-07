@@ -39,18 +39,18 @@ import info.magnolia.ui.framework.event.Event;
 /**
  * AdminCentral Events used to notify Changes in the Admin central configuration.
  */
-public class AdminCentralEvent implements Event<AdminCentralEventHandler> {
+public class LayoutEvent implements Event<LayoutEventHandler> {
 
-    private final AdminCentralEventType eventType;
+    private final LayoutEventType eventType;
 
     private final String appName;
 
-    public AdminCentralEvent(AdminCentralEventType eventType, String appName) {
+    public LayoutEvent(LayoutEventType eventType, String appName) {
         this.eventType = eventType;
         this.appName = appName;
     }
 
-    public AdminCentralEventType getEventType() {
+    public LayoutEventType getEventType() {
         return this.eventType;
     }
 
@@ -60,7 +60,7 @@ public class AdminCentralEvent implements Event<AdminCentralEventHandler> {
 
 
     @Override
-    public void dispatch(AdminCentralEventHandler handler) {
+    public void dispatch(LayoutEventHandler handler) {
         if (eventType == null) {
             return;
         }
@@ -73,3 +73,4 @@ public class AdminCentralEvent implements Event<AdminCentralEventHandler> {
     }
 
 }
+

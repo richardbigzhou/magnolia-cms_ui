@@ -44,6 +44,7 @@ public class InvocationCountingTestEventHandler implements TestEventHandler {
         return invocationCount;
     }
 
+    @Override
     public synchronized void handleEvent(TestEvent event) {
         invocationCount++;
     }

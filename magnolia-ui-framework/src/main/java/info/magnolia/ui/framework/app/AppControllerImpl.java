@@ -37,6 +37,7 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.framework.app.layout.AppLauncherLayoutManager;
 import info.magnolia.ui.framework.event.Event;
 import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.event.SystemEventBus;
 
 import java.util.LinkedList;
 
@@ -51,7 +52,8 @@ import org.slf4j.LoggerFactory;
 /**
  * Default AppController implementation.
  *
- * Also responsible for the App Event triggering (Start/Stop/Focus App events).
+ * Responsible for the App Event triggering (Start/Stop/Focus App events).
+ * Listen to the SystemEventBuss for UnregisterdApp Event.
  *
  * @version $Id$
  */
@@ -74,10 +76,23 @@ public class AppControllerImpl implements AppController {
     private LinkedList<AppLifecycle> appHistory = new LinkedList<AppLifecycle>();
 
     @Inject
-    public AppControllerImpl(AppLauncherLayoutManager appLauncherLayoutManager, ComponentProvider componentProvider, EventBus eventBus) {
+    public AppControllerImpl(AppLauncherLayoutManager appLauncherLayoutManager, ComponentProvider componentProvider, EventBus eventBus, SystemEventBus systemEventBus) {
         this.appLauncherLayoutManager = appLauncherLayoutManager;
         this.componentProvider = componentProvider;
         this.eventBus = eventBus;
+        /**
+         * Listen to the SystemBuss on AppUnregistered Event.
+         * In this case, Stop the App if it's running.
+         */
+        systemEventBus.addHandler(AppLifecycleEvent.class, new AppLifecycleEventHandler.Adapter() {
+            @Override
+            public void onAppUnregistered(AppLifecycleEvent event) {
+                if(isAppStarted(event.getAppDescriptor())) {
+                    doStop(event.getAppDescriptor());
+                }
+            }
+        });
+
     }
 
     @Override
@@ -98,7 +113,7 @@ public class AppControllerImpl implements AppController {
 
     @Override
     public void stopApplication(String name) {
-        doStop(name);
+        doStop(appLauncherLayoutManager.getLayout().getAppDescriptor(name));
     }
 
     @Override
@@ -132,8 +147,7 @@ public class AppControllerImpl implements AppController {
         sendEvent(new AppLifecycleEvent(getAppDescriptor(lifecycle), AppEventType.FOCUSED));
     }
 
-    private void doStop(String name) {
-        final AppDescriptor descriptor = appLauncherLayoutManager.getLayout().getAppDescriptor(name);
+    private void doStop(AppDescriptor descriptor) {
         AppLifecycle lifecycle = (AppLifecycle) runningApps.get(descriptor);
         if (lifecycle != null) {
             lifecycle.stop();
