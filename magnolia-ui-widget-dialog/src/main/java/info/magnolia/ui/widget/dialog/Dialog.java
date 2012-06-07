@@ -229,6 +229,7 @@ public class Dialog extends AbstractComponent implements ServerSideHandler, Item
         for (Field field : fields.values()) {
             field.commit();
         }
+        closeDialog();
     }
 
     /* (non-Javadoc)
@@ -236,7 +237,7 @@ public class Dialog extends AbstractComponent implements ServerSideHandler, Item
      */
     @Override
     public void discard() throws SourceException {
-
+        closeDialog();
     }
 
     /*
@@ -300,6 +301,14 @@ public class Dialog extends AbstractComponent implements ServerSideHandler, Item
                 (fields.get(i.next())).setWriteThrough(writeThrough);
             }
         }
+    }
+
+    /**
+     *
+     */
+    public void closeDialog() {
+        // TODO Auto-generated method stub
+
     }
 
 }

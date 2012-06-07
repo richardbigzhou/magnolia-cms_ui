@@ -33,23 +33,23 @@
  */
 package info.magnolia.ui.admincentral.dialog;
 
-import com.vaadin.data.Item;
-
 import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.admincentral.dialog.builder.DialogBuilder;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
+import info.magnolia.ui.widget.dialog.Dialog;
+
+import com.vaadin.data.Item;
 
 /**
  * DialogPresenter.
  *
  * @author ejervidalo
  */
-public class DialogPresenter implements DialogView.Presenter {
+public class DialogPresenter extends Dialog {
 
     private DialogBuilder dialogBuilder;
     private DialogDefinition dialogDefinition;
-    private DialogView view;
     private MagnoliaShell shell;
     private EventBus eventBus;
 
@@ -58,16 +58,16 @@ public class DialogPresenter implements DialogView.Presenter {
         this.dialogDefinition = dialogDefinition;
         this.shell = shell;
         this.eventBus = eventBus;
-        this.view = new DialogViewImpl();
     }
 
     public void showDialog(Item selectedBean) {
-        view = dialogBuilder.build(dialogDefinition, selectedBean);
-        shell.openDialog(view);
+        dialogBuilder.build(dialogDefinition, selectedBean, this);
+        shell.openDialog(this.asVaadinComponent());
     }
 
+    @Override
     public void closeDialog() {
-        shell.removeDialog(view);
+        shell.removeDialog(this.asVaadinComponent());
     }
 
 }

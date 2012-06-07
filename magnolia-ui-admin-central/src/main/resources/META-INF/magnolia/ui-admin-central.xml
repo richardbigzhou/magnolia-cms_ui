@@ -41,7 +41,7 @@
 
    <components>
     <id>admin-central</id>
-   	<component>
+       <component>
       <type>info.magnolia.ui.framework.event.EventBus</type>
       <implementation>info.magnolia.ui.framework.event.SimpleEventBus</implementation>
     </component>
@@ -105,10 +105,7 @@
       <type>info.magnolia.ui.admincentral.dialog.DialogPresenterFactory</type>
       <implementation>info.magnolia.ui.admincentral.dialog.DialogPresenterFactoryImpl</implementation>
     </component>
-    <component>
-      <type>info.magnolia.ui.admincentral.dialog.DialogView</type>
-      <implementation>info.magnolia.ui.admincentral.dialog.DialogViewImpl</implementation>
-    </component>
+
 
   </components>
 

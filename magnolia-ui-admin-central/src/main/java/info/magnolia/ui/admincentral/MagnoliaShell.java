@@ -50,6 +50,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import com.vaadin.terminal.ExternalResource;
+import com.vaadin.ui.Component;
 
 /**
  * Admin shell.
@@ -134,8 +135,8 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell {
         throw new UnsupportedOperationException("MagnoliaShell is not capable of opening the subshells.");
     }
 
-    public void openDialog(IsVaadinComponent dialog) {
-        addDialog(dialog.asVaadinComponent());
+    public void openDialog(Component component) {
+        addDialog(component);
     }
 
     public void removeDialog(IsVaadinComponent dialog) {
