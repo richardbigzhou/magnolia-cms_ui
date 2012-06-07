@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,45 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.layout.event;
+package info.magnolia.ui.admincentral.tree.action;
 
-import info.magnolia.ui.framework.event.Event;
+import info.magnolia.ui.model.action.ActionDefinition;
 
 
 /**
- * AdminCentral Events used to notify Changes in the Admin central configuration.
+ * Delete an {@link javax.jcr.Item}.
  */
-public class AdminCentralEvent implements Event<AdminCentralEventHandler> {
-
-    private final AdminCentralEventType eventType;
-
-    private final String appName;
-
-    public AdminCentralEvent(AdminCentralEventType eventType, String appName) {
-        this.eventType = eventType;
-        this.appName = appName;
-    }
-
-    public AdminCentralEventType getEventType() {
-        return this.eventType;
-    }
-
-    public String getAppName() {
-        return this.appName;
-    }
-
-
-    @Override
-    public void dispatch(AdminCentralEventHandler handler) {
-        if (eventType == null) {
-            return;
-        }
-
-        switch (eventType) {
-            case RELOAD_APP:
-                handler.onReloadApp(this);
-                break;
-        }
-    }
+public class DeleteItemActionDefinition implements ActionDefinition {
 
 }

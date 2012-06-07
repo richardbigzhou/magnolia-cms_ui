@@ -31,21 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.event;
+package info.magnolia.ui.framework.app.layout.event;
+
 
 /**
-* @version $Id$
-*/
-public class InvocationCountingTestEventHandler implements TestEventHandler {
-
-    private int invocationCount = 0;
-
-    public synchronized int getInvocationCount() {
-        return invocationCount;
-    }
-
-    @Override
-    public synchronized void handleEvent(TestEvent event) {
-        invocationCount++;
-    }
+ * Admin Central Event Type Enumeration.
+ */
+public enum LayoutEventType {
+    RELOAD_APP
 }

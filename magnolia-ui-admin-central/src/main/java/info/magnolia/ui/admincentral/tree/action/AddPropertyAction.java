@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,21 +31,36 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.event;
+package info.magnolia.ui.admincentral.tree.action;
+
+import javax.jcr.Item;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
+import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.ui.framework.event.EventBus;
+
 
 /**
-* @version $Id$
-*/
-public class InvocationCountingTestEventHandler implements TestEventHandler {
+ * Action for creating a new property.
+ *
+ * @version $Id$
+ */
+public class AddPropertyAction extends RepositoryOperationAction<AddPropertyActionDefinition> implements TreeAction {
 
-    private int invocationCount = 0;
-
-    public synchronized int getInvocationCount() {
-        return invocationCount;
+    public AddPropertyAction(AddPropertyActionDefinition definition, Item item, EventBus eventBus) {
+        super(definition, item, eventBus);
     }
 
     @Override
-    public synchronized void handleEvent(TestEvent event) {
-        invocationCount++;
+    public boolean isAvailable(Item item) throws RepositoryException {
+        return item.isNode();
+    }
+
+    @Override
+    protected void onExecute(Item item) throws RepositoryException {
+        Node node = (Node) item;
+        String name = NodeUtil.getName(node);
+        node.setProperty(name, "");
     }
 }

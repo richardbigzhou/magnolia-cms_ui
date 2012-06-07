@@ -41,8 +41,8 @@ import info.magnolia.ui.framework.app.AppLifecycleEventHandler;
 import info.magnolia.ui.framework.app.layout.AppCategory;
 import info.magnolia.ui.framework.app.layout.AppLauncherLayout;
 import info.magnolia.ui.framework.app.layout.AppLauncherLayoutManager;
-import info.magnolia.ui.framework.app.layout.event.AdminCentralEvent;
-import info.magnolia.ui.framework.app.layout.event.AdminCentralEventHandler;
+import info.magnolia.ui.framework.app.layout.event.LayoutEvent;
+import info.magnolia.ui.framework.app.layout.event.LayoutEventHandler;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.event.SystemEventBus;
 import info.magnolia.ui.framework.place.Place;
@@ -52,6 +52,9 @@ import javax.inject.Inject;
 
 /**
  * Activity for the app launcher.
+ * Listen to:
+ *  SystemEventBus: LayoutEvent. Reload the Layout by getting the latest available App from the {AppLauncherLayoutManager}.
+ *  LocalEventBus : App started and App stop event. In this case, update the App button to indicate if an App is started or stopped.
  *
  * @version $Id$
  */
@@ -79,9 +82,9 @@ public class AppLauncherActivity extends AbstractActivity implements AppLauncher
         /**
          * Handle ReloadAppEvent.
          */
-        systemEventBus.addHandler(AdminCentralEvent.class, new AdminCentralEventHandler.Adapter() {
+        systemEventBus.addHandler(LayoutEvent.class, new LayoutEventHandler.Adapter() {
             @Override
-            public void onReloadApp(AdminCentralEvent event) {
+            public void onReloadApp(LayoutEvent event) {
                 if(isAppRegistered(event.getAppName())) {
                     //Reload Layout
                     reloadLayout();
@@ -101,7 +104,9 @@ public class AppLauncherActivity extends AbstractActivity implements AppLauncher
                  * Deactivate the visual triangle on the App Icon.
                  */
                 public void onAppStopped(AppLifecycleEvent event) {
-                    activateButton(false, event.getAppDescriptor().getName());
+                    if(isAppPartOftheLayout(event.getAppDescriptor().getName())) {
+                        activateButton(false, event.getAppDescriptor().getName());
+                    }
                 }
 
                 @Override
@@ -131,8 +136,16 @@ public class AppLauncherActivity extends AbstractActivity implements AppLauncher
     private void initView(AppLauncherLayout layout) {
         view.registerApp(layout);
     }
+
+    /**
+     * Check if this app is registered For this profile.
+     */
     private boolean isAppRegistered(String appName) {
         return this.appLauncherLayoutManager.isAppDescriptionRegistered(appName);
+    }
+
+    private boolean isAppPartOftheLayout(String appName) {
+        return this.layout.isAppAlreadyRegistered(appName);
     }
 
     /**
@@ -151,7 +164,8 @@ public class AppLauncherActivity extends AbstractActivity implements AppLauncher
         }
     }
 
-    private void activateButton(boolean activate, String appName){
+    private void activateButton(boolean activate, String appName) {
         this.view.activateButton(activate, appName);
     }
+
 }

@@ -31,21 +31,46 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.event;
+package info.magnolia.ui.framework.app.layout.event;
+
+import info.magnolia.ui.framework.event.Event;
+
 
 /**
-* @version $Id$
-*/
-public class InvocationCountingTestEventHandler implements TestEventHandler {
+ * AdminCentral Events used to notify Changes in the Admin central configuration.
+ */
+public class LayoutEvent implements Event<LayoutEventHandler> {
 
-    private int invocationCount = 0;
+    private final LayoutEventType eventType;
 
-    public synchronized int getInvocationCount() {
-        return invocationCount;
+    private final String appName;
+
+    public LayoutEvent(LayoutEventType eventType, String appName) {
+        this.eventType = eventType;
+        this.appName = appName;
     }
+
+    public LayoutEventType getEventType() {
+        return this.eventType;
+    }
+
+    public String getAppName() {
+        return this.appName;
+    }
+
 
     @Override
-    public synchronized void handleEvent(TestEvent event) {
-        invocationCount++;
+    public void dispatch(LayoutEventHandler handler) {
+        if (eventType == null) {
+            return;
+        }
+
+        switch (eventType) {
+            case RELOAD_APP:
+                handler.onReloadApp(this);
+                break;
+        }
     }
+
 }
+

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,21 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.event;
+package info.magnolia.ui.admincentral.tree.action;
+
+import info.magnolia.ui.model.action.ActionDefinition;
+
 
 /**
-* @version $Id$
-*/
-public class InvocationCountingTestEventHandler implements TestEventHandler {
+ * Add a property to a node.
+ */
+public class AddPropertyActionDefinition implements ActionDefinition {
 
-    private int invocationCount = 0;
-
-    public synchronized int getInvocationCount() {
-        return invocationCount;
-    }
-
-    @Override
-    public synchronized void handleEvent(TestEvent event) {
-        invocationCount++;
-    }
 }

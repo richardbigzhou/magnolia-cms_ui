@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,21 +31,44 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.event;
+package info.magnolia.ui.admincentral.workbench.event;
+
+import info.magnolia.ui.framework.event.Event;
+import info.magnolia.ui.framework.event.EventHandler;
+
 
 /**
-* @version $Id$
-*/
-public class InvocationCountingTestEventHandler implements TestEventHandler {
+ * Global event fired if content was changed, deleted, added.
+ * FIXME introduce more granular events
+ */
+public class ContentChangedEvent implements Event<ContentChangedEvent.Handler> {
 
-    private int invocationCount = 0;
-
-    public synchronized int getInvocationCount() {
-        return invocationCount;
+    /**
+     * Handles {@link ContentChangedEvent} events.
+     */
+    public static interface Handler extends EventHandler {
+        void onContentChanged(ContentChangedEvent event);
     }
 
+    private String workspace;
+
+    private String path;
+
     @Override
-    public synchronized void handleEvent(TestEvent event) {
-        invocationCount++;
+    public void dispatch(Handler handler) {
+        handler.onContentChanged(this);
+    }
+
+    public ContentChangedEvent(String workspace, String path) {
+        this.workspace = workspace;
+        this.path = path;
+    }
+
+    public String getWorkspace() {
+        return workspace;
+    }
+
+    public String getPath() {
+        return path;
     }
 }

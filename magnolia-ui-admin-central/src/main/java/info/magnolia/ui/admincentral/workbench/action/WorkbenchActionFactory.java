@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,21 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.event;
+package info.magnolia.ui.admincentral.workbench.action;
+
+import javax.jcr.Item;
+
+import info.magnolia.ui.model.action.Action;
+import info.magnolia.ui.model.action.ActionDefinition;
 
 /**
-* @version $Id$
-*/
-public class InvocationCountingTestEventHandler implements TestEventHandler {
+ * Creates an action based on an {@link ActionDefinition}.
+ */
+public interface WorkbenchActionFactory {
 
-    private int invocationCount = 0;
-
-    public synchronized int getInvocationCount() {
-        return invocationCount;
-    }
-
-    @Override
-    public synchronized void handleEvent(TestEvent event) {
-        invocationCount++;
-    }
+    Action createAction(ActionDefinition actionDefinition, Item item);
 }

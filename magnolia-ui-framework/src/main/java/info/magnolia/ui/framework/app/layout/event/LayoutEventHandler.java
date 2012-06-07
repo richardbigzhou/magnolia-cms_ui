@@ -31,21 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.event;
+package info.magnolia.ui.framework.app.layout.event;
+
+import info.magnolia.ui.framework.event.EventHandler;
+
 
 /**
-* @version $Id$
-*/
-public class InvocationCountingTestEventHandler implements TestEventHandler {
+ * Listens to {@link LayoutEvent}s.
+ */
+public interface LayoutEventHandler extends EventHandler {
 
-    private int invocationCount = 0;
+    void onReloadApp(final LayoutEvent event);
 
-    public synchronized int getInvocationCount() {
-        return invocationCount;
+    /**
+     * Simple stub so in case not all the methods should be implemented - you can skip them.
+     */
+    public static class Adapter implements LayoutEventHandler {
+
+        @Override
+        public void onReloadApp(LayoutEvent event) {
+        }
+
     }
 
-    @Override
-    public synchronized void handleEvent(TestEvent event) {
-        invocationCount++;
-    }
 }

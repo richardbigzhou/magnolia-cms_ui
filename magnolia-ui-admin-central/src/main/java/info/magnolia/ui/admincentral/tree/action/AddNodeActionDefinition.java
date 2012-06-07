@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,12 +31,42 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.layout.event;
+package info.magnolia.ui.admincentral.tree.action;
+
+import info.magnolia.ui.model.action.ActionDefinition;
 
 
 /**
- * Admin Central Event Type Enumeration.
+ * Defines the {@link #nodeType} of the new node.
  */
-public enum AdminCentralEventType {
-    RELOAD_APP
+public class AddNodeActionDefinition implements ActionDefinition {
+
+    private String nodeType;
+
+    public String getNodeType() {
+        return nodeType;
+    }
+
+    public void setNodeType(String nodeType) {
+        this.nodeType = nodeType;
+    }
+
+
+    @Override
+    public int hashCode() {
+        return nodeType == null ? 13 : nodeType.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || !(obj instanceof AddNodeActionDefinition)) {
+            return false;
+        }
+        AddNodeActionDefinition that = (AddNodeActionDefinition) obj;
+        return this.nodeType == null ? that.nodeType == null : this.nodeType
+                .equals(that.nodeType);
+    }
 }

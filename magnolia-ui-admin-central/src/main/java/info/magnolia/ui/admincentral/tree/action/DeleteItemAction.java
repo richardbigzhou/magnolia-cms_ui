@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,21 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.event;
+package info.magnolia.ui.admincentral.tree.action;
+
+import javax.jcr.Item;
+import javax.jcr.RepositoryException;
+
+import info.magnolia.ui.framework.event.EventBus;
+
 
 /**
-* @version $Id$
-*/
-public class InvocationCountingTestEventHandler implements TestEventHandler {
+ * Deletes a node from the repository.
+ *
+ * @version $Id$
+ */
+public class DeleteItemAction extends RepositoryOperationAction<DeleteItemActionDefinition> {
 
-    private int invocationCount = 0;
-
-    public synchronized int getInvocationCount() {
-        return invocationCount;
+    public DeleteItemAction(DeleteItemActionDefinition definition, Item item, EventBus eventBus) {
+        super(definition, item, eventBus);
     }
 
     @Override
-    public synchronized void handleEvent(TestEvent event) {
-        invocationCount++;
+    protected void onExecute(Item item) throws RepositoryException {
+        item.remove();
     }
 }

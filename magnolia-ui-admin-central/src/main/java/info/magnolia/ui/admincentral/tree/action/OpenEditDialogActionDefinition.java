@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,21 +31,55 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.event;
+package info.magnolia.ui.admincentral.tree.action;
+
+import info.magnolia.ui.model.action.ActionDefinition;
+
 
 /**
-* @version $Id$
-*/
-public class InvocationCountingTestEventHandler implements TestEventHandler {
+ * Opens a dialog to edit an {@link javax.jcr.Node}.
+ */
+public class OpenEditDialogActionDefinition implements ActionDefinition {
 
-    private int invocationCount = 0;
+    private String dialogName;
 
-    public synchronized int getInvocationCount() {
-        return invocationCount;
+    public String getDialogName() {
+        return dialogName;
+    }
+
+    public void setDialogName(String dialogName) {
+        this.dialogName = dialogName;
     }
 
     @Override
-    public synchronized void handleEvent(TestEvent event) {
-        invocationCount++;
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result
+        + ((dialogName == null) ? 0 : dialogName.hashCode());
+        return result;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof OpenEditDialogActionDefinition)) {
+            return false;
+        }
+        OpenEditDialogActionDefinition other = (OpenEditDialogActionDefinition) obj;
+        if (dialogName == null) {
+            if (other.dialogName != null) {
+                return false;
+            }
+        } else if (!dialogName.equals(other.dialogName)) {
+            return false;
+        }
+        return true;
+    }
+
 }
