@@ -85,12 +85,20 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
 
     protected String path = "/";
 
+    private Shell shell;
+
     private JcrView.Presenter jcrPresenter = new JcrView.Presenter() {
         @Override
         public void onItemSelection(javax.jcr.Item item) {
-
+            try {
+                shell.showNotification("Test: " + item.getPath() + " was selected.");
+            } catch (RepositoryException e) {
+               shell.showError("An error occurred while selecting a row in the data grid", e);
+            }
         };
     };
+
+
 
 
     @Inject
@@ -100,7 +108,7 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
         root.setSizeFull();
         construct();
         setCompositionRoot(root);
-
+        this.shell = shell;
         this.jcrViewBuilderProvider = jcrViewBuilderProvider;
         this.workbenchRegistry = workbenchRegistry;
         this.actionFactory = actionFactory;
