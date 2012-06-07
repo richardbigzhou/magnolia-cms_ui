@@ -96,7 +96,7 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
         @Override
         public void onItemSelection(javax.jcr.Item item) {
             try {
-                shell.showNotification("Test: " + item.getPath() + " was selected.");
+                log.info("Test: {} was selected.", item.getPath());
             } catch (RepositoryException e) {
                shell.showError("An error occurred while selecting a row in the data grid", e);
             }
