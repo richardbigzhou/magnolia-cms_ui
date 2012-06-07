@@ -35,7 +35,7 @@ package info.magnolia.ui.admincentral.shellapp.applauncher;
 
 import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.layout.AppCategory;
-import info.magnolia.ui.framework.app.layout.AppLauncherLayout;
+import info.magnolia.ui.framework.app.layout.AppLayout;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 import info.magnolia.ui.vaadin.integration.widget.AppButton;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
@@ -102,7 +102,7 @@ public class AppLauncherViewImpl implements AppLauncherView, IsVaadinComponent {
     }
 
     @Override
-    public void registerApp(AppLauncherLayout layout) {
+    public void registerApp(AppLayout layout) {
         for (AppCategory category : layout.getCategories()) {
             for (AppDescriptor descriptor : category.getApps()) {
                 AppGroupComponent group = appGroupMap.get(category.getLabel());

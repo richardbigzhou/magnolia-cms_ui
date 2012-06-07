@@ -44,6 +44,8 @@ import info.magnolia.ui.admincentral.jcr.view.JcrView.ViewType;
 import info.magnolia.ui.admincentral.jcr.view.builder.JcrViewBuilderProvider;
 import info.magnolia.ui.admincentral.tree.action.TreeAction;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
+import info.magnolia.ui.admincentral.workbench.event.NodeSelectedEvent;
+import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.menu.definition.MenuItemDefinition;
@@ -54,6 +56,9 @@ import info.magnolia.ui.widget.actionbar.Actionbar;
 import javax.inject.Inject;
 import javax.jcr.Item;
 import javax.jcr.RepositoryException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomComponent;
@@ -66,6 +71,8 @@ import com.vaadin.ui.VerticalLayout;
  */
 @SuppressWarnings("serial")
 public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView {
+
+    private static final Logger log = LoggerFactory.getLogger(WorkbenchViewImpl.class);
 
     private VerticalLayout root = new VerticalLayout();
 
@@ -85,25 +92,37 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
 
     protected String path = "/";
 
+    private Shell shell;
+
+    private EventBus eventBus;
+
     private JcrView.Presenter jcrPresenter = new JcrView.Presenter() {
         @Override
         public void onItemSelection(javax.jcr.Item item) {
-
+            try {
+                log.info("java.jcr.Item at {} was selected. Firing NodeSelectedEvent...", item.getPath());
+                //TODO pass directly the item object ?
+                eventBus.fireEvent(new NodeSelectedEvent(item.getSession().getWorkspace().getName(), item.getPath()));
+            } catch (RepositoryException e) {
+               shell.showError("An error occurred while selecting a row in the data grid", e);
+            }
         };
     };
 
 
+
     @Inject
-    public WorkbenchViewImpl(WorkbenchDefinitionRegistry workbenchRegistry, Shell shell, JcrViewBuilderProvider jcrViewBuilderProvider, WorkbenchActionFactory actionFactory) {
+    public WorkbenchViewImpl(WorkbenchDefinitionRegistry workbenchRegistry, Shell shell, JcrViewBuilderProvider jcrViewBuilderProvider, WorkbenchActionFactory actionFactory, EventBus bus) {
         super();
         setSizeFull();
         root.setSizeFull();
         construct();
         setCompositionRoot(root);
-
+        this.shell = shell;
         this.jcrViewBuilderProvider = jcrViewBuilderProvider;
         this.workbenchRegistry = workbenchRegistry;
         this.actionFactory = actionFactory;
+        this.eventBus = bus;
     }
 
     @Override
@@ -146,12 +165,12 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
 
         List<MenuItemDefinition> menuItemDefinitions = new ArrayList<MenuItemDefinition>();
         for (MenuItemDefinition menuDefinition : defs) {
-            System.out.println("adding action for menu " + menuDefinition.getName());
+            log.debug("adding definition for menu " + menuDefinition.getName());
+            // TODO an optimization here would be to use reflection to test if the action implements TreeAction, instantiating it only to test this is a waste
             Action action = actionFactory.createAction(menuDefinition.getActionDefinition(), item);
 
             if (action instanceof TreeAction) {
                 final TreeAction treeAction = (TreeAction) action;
-
                 try {
                     if (treeAction.isAvailable(item)) {
                         menuItemDefinitions.add(menuDefinition);

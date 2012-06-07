@@ -37,13 +37,13 @@ package info.magnolia.ui.framework.app.layout;
 /**
  * Build {AppLauncherLayout}s POJO used by the {AppLauncherActivity}.
  */
-public interface AppLauncherLayoutManager {
+public interface AppLayoutManager {
 
     /**
      * Return the {AppLauncherLayout} defined for the current user.
      * Return an Empty AppLauncherLayout if nothing set for profile.
      */
-    public AppLauncherLayout getLayout();
+    public AppLayout getLayout();
 
     /**
      * Check if the given App name is part of the categories define for the current profile.

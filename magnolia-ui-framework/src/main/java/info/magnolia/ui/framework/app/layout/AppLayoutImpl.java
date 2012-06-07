@@ -47,13 +47,13 @@ import org.slf4j.LoggerFactory;
  * Default AppRegistry implementation.
  * Simple POJO bean containing the user registered AppCategories and App.
  */
-public class AppLauncherLayoutImpl implements AppLauncherLayout {
+public class AppLayoutImpl implements AppLayout {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private Map<String, AppCategory> categories = new HashMap<String, AppCategory>();
 
-    public AppLauncherLayoutImpl(Map<String, AppCategory> categories) {
+    public AppLayoutImpl(Map<String, AppCategory> categories) {
         this.categories = categories;
     }
 

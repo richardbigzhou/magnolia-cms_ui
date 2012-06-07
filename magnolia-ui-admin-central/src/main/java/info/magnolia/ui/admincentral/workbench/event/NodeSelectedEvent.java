@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,59 +31,44 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.tabsheet.gwt.client;
+package info.magnolia.ui.admincentral.workbench.event;
 
-import java.util.List;
+import info.magnolia.ui.framework.event.Event;
+import info.magnolia.ui.framework.event.EventHandler;
 
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.IsWidget;
 
 /**
- * VShellTabView.
- *
- * @author ejervidalo
+ * This event is fired when an node (ie a row in the data grid within the workbench) is selected.
+
  */
-public interface VShellTabSheetView extends HasWidgets, IsWidget {
+public class NodeSelectedEvent implements Event<NodeSelectedEvent.Handler> {
 
     /**
-     * Presenter.
-     *
-     * @author ejervidalo
+     * Handles {@link NodeSelectedEvent} events.
      */
-    public interface Presenter {
-
+    public static interface Handler extends EventHandler {
+        void onNodeSelected(NodeSelectedEvent event);
     }
 
-    /**
-     * @return
-     */
-    VShellTabNavigator getTabContainer();
+    private String workspace;
 
-    /**
-     * @param tabId
-     * @return
-     */
-    VShellTabContent getTabById(String tabId);
+    private String path;
 
-    /**
-     * @return
-     */
-    List<VShellTabContent> getTabs();
+    @Override
+    public void dispatch(Handler handler) {
+        handler.onNodeSelected(this);
+    }
 
-    /**
-     * @param tab
-     */
-    void setActiveTab(VShellTabContent tab);
+    public NodeSelectedEvent(String workspace, String path) {
+        this.workspace = workspace;
+        this.path = path;
+    }
 
-    /**
-     * @param tabToOrphan
-     */
-    void removeTab(VShellTabContent tabToOrphan);
+    public String getWorkspace() {
+        return workspace;
+    }
 
-    /**
-     * @param visible
-     */
-    void showAllTabContents(boolean visible);
-
-
+    public String getPath() {
+        return path;
+    }
 }

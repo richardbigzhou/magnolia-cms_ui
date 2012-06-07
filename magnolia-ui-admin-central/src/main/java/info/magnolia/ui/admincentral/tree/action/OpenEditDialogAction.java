@@ -46,7 +46,6 @@ import info.magnolia.ui.model.action.ActionExecutionException;
  * <p/>
  * TODO: add support for configuring supported itemTypes, maybe in base class where no config means all
  *
- * @author tmattsson
  */
 public class OpenEditDialogAction extends ActionBase<OpenEditDialogActionDefinition> {
 

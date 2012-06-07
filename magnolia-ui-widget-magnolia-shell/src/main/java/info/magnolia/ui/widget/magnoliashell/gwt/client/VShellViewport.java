@@ -33,18 +33,15 @@
  */
 package info.magnolia.ui.widget.magnoliashell.gwt.client;
 
+import info.magnolia.ui.widget.jquerywrapper.gwt.client.Callbacks;
+import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryCallback;
+import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.event.ViewportCloseEvent;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import info.magnolia.ui.widget.jquerywrapper.gwt.client.Callbacks;
-import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryCallback;
-import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper;
-
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Position;
@@ -164,16 +161,11 @@ public class VShellViewport extends ComplexPanel implements Container, Container
             } else {
                 visibleWidget = null;
             }
-
-            Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-                @Override
-                public void execute() {
-                    for (final Paintable paintable : orpanCandidates) {
-                        client.unregisterPaintable(paintable);
-                        remove((Widget)paintable);
-                    }
-                }
-            });
+            
+            for (final Paintable paintable : orpanCandidates) {
+                client.unregisterPaintable(paintable);
+                remove((Widget)paintable);
+            }
         }
     }
     

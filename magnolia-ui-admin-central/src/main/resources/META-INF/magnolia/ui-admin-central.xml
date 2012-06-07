@@ -15,20 +15,6 @@
       <implementation>info.magnolia.ui.framework.event.SimpleSystemEventBus</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.jcr.view.builder.JcrViewBuilderProvider</type>
-      <workspace>config</workspace>
-      <path>/modules/ui-admin-central/jcrViewBuilderProvider</path>
-      <observed>true</observed>
-      <scope>singleton</scope>
-    </component>
-    <component>
-      <type>info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory</type>
-      <workspace>config</workspace>
-      <path>/modules/ui-admin-central/workbenchActionFactory</path>
-      <observed>true</observed>
-      <scope>singleton</scope>
-    </component>
-    <component>
       <type>info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptorManager</type>
       <implementation>info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptorManager</implementation>
     </component>
@@ -37,18 +23,36 @@
       <implementation>info.magnolia.ui.framework.app.registry.AppDescriptorRegistry</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.framework.app.layout.AppLauncherLayoutManager</type>
-      <implementation>info.magnolia.ui.framework.app.layout.AppLauncherLayoutManagerImpl</implementation>
+      <type>info.magnolia.ui.framework.app.layout.AppLayoutManager</type>
+      <implementation>info.magnolia.ui.framework.app.layout.AppLayoutManagerImpl</implementation>
     </component>
     <type-mapping>
       <type>info.magnolia.ui.framework.app.AppDescriptor</type>
       <implementation>info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor</implementation>
     </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.model.menu.definition.MenuItemDefinition</type>
+      <implementation>info.magnolia.ui.model.menu.definition.MenuItemDefinitionImpl</implementation>
+    </type-mapping>
   </components>
 
    <components>
     <id>admin-central</id>
-   	<component>
+    <component>
+      <type>info.magnolia.ui.admincentral.jcr.view.builder.JcrViewBuilderProvider</type>
+      <workspace>config</workspace>
+      <path>/modules/ui-admin-central/jcrViewBuilderProvider</path>
+      <observed>true</observed>
+      <scope>singleton</scope>
+    </component>
+     <component>
+      <type>info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory</type>
+      <workspace>config</workspace>
+      <path>/modules/ui-admin-central/workbenchActionFactory</path>
+      <observed>true</observed>
+      <scope>singleton</scope>
+    </component>
+     <component>
       <type>info.magnolia.ui.framework.event.EventBus</type>
       <implementation>info.magnolia.ui.framework.event.SimpleEventBus</implementation>
     </component>

@@ -31,41 +31,50 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.layout;
+package info.magnolia.ui.vaadin.intergration.jcr;
 
-import java.util.Collection;
-
-import info.magnolia.ui.framework.app.AppDescriptor;
+import com.vaadin.data.Property;
 
 /**
- * Registry of available apps groups by categories.
- *
- * @version $Id$
+ * Basic implementation of {@link com.vaadin.data.Property}.
  */
-public interface AppLauncherLayout {
+public class BaseProperty implements Property {
 
-    /**
-     * Return the registered {AppCategory}s.
-     */
-    Collection<AppCategory> getCategories();
+    private Object value;
+    private Class<?> type;
+    private boolean readOnly;
 
-    /**
-     * Return the specified Category.
-     *
-     * @throws IllegalArgumentException: If key don't exist.
-     */
-    AppCategory getCategory(String name) throws IllegalArgumentException;
+    public BaseProperty(Object value, Class<?> type) {
+        this.value = value;
+        this.type = type;
+    }
 
-    /**
-     * Returns the AppDescriptor for a given name.
-     *
-     * @throws IllegalArgumentException: If key don't exist.
-     */
-    AppDescriptor getAppDescriptor(String name) throws IllegalArgumentException;
+    @Override
+    public Object getValue() {
+        return value;
+    }
 
-    /**
-     * Check if the app is already registered.
-     */
-    boolean isAppAlreadyRegistered(String name);
+    @Override
+    public void setValue(Object newValue) throws ReadOnlyException, ConversionException {
+        if (readOnly) {
+            throw new ReadOnlyException("Can't setValue for readonly-Property");
+        }
+        value = newValue;
+    }
+
+    @Override
+    public Class<?> getType() {
+        return type;
+    }
+
+    @Override
+    public boolean isReadOnly() {
+        return readOnly;
+    }
+
+    @Override
+    public void setReadOnly(boolean newStatus) {
+        readOnly = newStatus;
+    }
 
 }

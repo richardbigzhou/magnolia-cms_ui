@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.widget.magnoliashell.gwt.client;
 
+import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShell.ViewportType;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VShellMessage.MessageType;
 
@@ -51,7 +52,7 @@ public interface VMagnoliaShellView extends HasWidgets, IsWidget {
 
     int getViewportWidth();
     
-    void changeActiveViewport();
+    void changeActiveViewport(ViewportType viewportType);
     
     void updateAppViewport(VShellViewport viewport);
     

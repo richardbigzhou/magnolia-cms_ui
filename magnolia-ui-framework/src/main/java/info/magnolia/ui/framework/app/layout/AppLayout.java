@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,59 +31,41 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.tabsheet.gwt.client;
+package info.magnolia.ui.framework.app.layout;
 
-import java.util.List;
+import java.util.Collection;
 
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.IsWidget;
+import info.magnolia.ui.framework.app.AppDescriptor;
 
 /**
- * VShellTabView.
+ * Registry of available apps groups by categories.
  *
- * @author ejervidalo
+ * @version $Id$
  */
-public interface VShellTabSheetView extends HasWidgets, IsWidget {
+public interface AppLayout {
 
     /**
-     * Presenter.
+     * Return the registered {AppCategory}s.
+     */
+    Collection<AppCategory> getCategories();
+
+    /**
+     * Return the specified Category.
      *
-     * @author ejervidalo
+     * @throws IllegalArgumentException: If key don't exist.
      */
-    public interface Presenter {
-
-    }
+    AppCategory getCategory(String name) throws IllegalArgumentException;
 
     /**
-     * @return
+     * Returns the AppDescriptor for a given name.
+     *
+     * @throws IllegalArgumentException: If key don't exist.
      */
-    VShellTabNavigator getTabContainer();
+    AppDescriptor getAppDescriptor(String name) throws IllegalArgumentException;
 
     /**
-     * @param tabId
-     * @return
+     * Check if the app is already registered.
      */
-    VShellTabContent getTabById(String tabId);
-
-    /**
-     * @return
-     */
-    List<VShellTabContent> getTabs();
-
-    /**
-     * @param tab
-     */
-    void setActiveTab(VShellTabContent tab);
-
-    /**
-     * @param tabToOrphan
-     */
-    void removeTab(VShellTabContent tabToOrphan);
-
-    /**
-     * @param visible
-     */
-    void showAllTabContents(boolean visible);
-
+    boolean isAppAlreadyRegistered(String name);
 
 }
