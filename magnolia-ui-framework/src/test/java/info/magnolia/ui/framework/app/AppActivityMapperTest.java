@@ -48,9 +48,9 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.framework.activity.AbstractActivity;
 import info.magnolia.ui.framework.activity.Activity;
 import info.magnolia.ui.framework.app.layout.AppCategory;
-import info.magnolia.ui.framework.app.layout.AppLauncherLayout;
-import info.magnolia.ui.framework.app.layout.AppLauncherLayoutImpl;
-import info.magnolia.ui.framework.app.layout.AppLauncherLayoutManager;
+import info.magnolia.ui.framework.app.layout.AppLayout;
+import info.magnolia.ui.framework.app.layout.AppLayoutImpl;
+import info.magnolia.ui.framework.app.layout.AppLayoutManager;
 import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.event.SimpleEventBus;
@@ -88,7 +88,7 @@ public class AppActivityMapperTest {
 
         SimpleEventBus eventBus = new SimpleEventBus();
 
-        AppLauncherLayoutManager appLauncherLayoutManager = mock(AppLauncherLayoutManager.class);
+        AppLayoutManager appLayoutManager = mock(AppLayoutManager.class);
 
         ConfiguredAppDescriptor descriptor = new ConfiguredAppDescriptor();
         descriptor.setName("test-app");
@@ -104,10 +104,10 @@ public class AppActivityMapperTest {
         HashMap<String, AppCategory> categories = new HashMap<String, AppCategory>();
         categories.put(category.getLabel(), category);
 
-        AppLauncherLayout layout = new AppLauncherLayoutImpl(categories);
-        when(appLauncherLayoutManager.getLayout()).thenReturn(layout);
+        AppLayout layout = new AppLayoutImpl(categories);
+        when(appLayoutManager.getLayout()).thenReturn(layout);
 
-        AppActivityMapper mapper = new AppActivityMapper(componentProvider, appLauncherLayoutManager, eventBus);
+        AppActivityMapper mapper = new AppActivityMapper(componentProvider, appLayoutManager, eventBus);
         mapper.addMapping(TestPlace.class, TestActivity.class);
 
         // WHEN

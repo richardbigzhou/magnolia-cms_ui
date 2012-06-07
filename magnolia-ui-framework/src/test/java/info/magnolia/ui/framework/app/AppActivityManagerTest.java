@@ -49,9 +49,9 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.framework.activity.AbstractActivity;
 import info.magnolia.ui.framework.activity.ActivityMapper;
 import info.magnolia.ui.framework.app.layout.AppCategory;
-import info.magnolia.ui.framework.app.layout.AppLauncherLayout;
-import info.magnolia.ui.framework.app.layout.AppLauncherLayoutImpl;
-import info.magnolia.ui.framework.app.layout.AppLauncherLayoutManager;
+import info.magnolia.ui.framework.app.layout.AppLayout;
+import info.magnolia.ui.framework.app.layout.AppLayoutImpl;
+import info.magnolia.ui.framework.app.layout.AppLayoutManager;
 import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.event.SimpleEventBus;
@@ -117,7 +117,7 @@ public class AppActivityManagerTest {
         SimpleEventBus eventBus = new SimpleEventBus();
         SimpleSystemEventBus systemEventBus = new SimpleSystemEventBus();
 
-        AppLauncherLayoutManager appLauncherLayoutManager = mock(AppLauncherLayoutManager.class);
+        AppLayoutManager appLayoutManager = mock(AppLayoutManager.class);
 
         ConfiguredAppDescriptor descriptor = new ConfiguredAppDescriptor();
         descriptor.setName("test-app");
@@ -134,17 +134,17 @@ public class AppActivityManagerTest {
         HashMap<String, AppCategory> categories = new HashMap<String, AppCategory>();
         categories.put(category.getLabel(), category);
 
-        AppLauncherLayout layout = new AppLauncherLayoutImpl(categories);
-        when(appLauncherLayoutManager.getLayout()).thenReturn(layout);
+        AppLayout layout = new AppLayoutImpl(categories);
+        when(appLayoutManager.getLayout()).thenReturn(layout);
 
         ActivityMapper activityMapper = mock(ActivityMapper.class);
         when(activityMapper.getActivity(any(Place.class))).thenReturn(new TestActivity(eventSink));
 
         ComponentProvider componentProvider = mock(ComponentProvider.class);
         when(componentProvider.newInstance(eq(TestApp.class))).thenReturn(new TestApp(eventSink));
-        AppController appController = new AppControllerImpl(appLauncherLayoutManager, componentProvider, eventBus, systemEventBus);
+        AppController appController = new AppControllerImpl(appLayoutManager, componentProvider, eventBus, systemEventBus);
 
-        AppActivityManager activityManager = new AppActivityManager(activityMapper, eventBus, appLauncherLayoutManager, appController);
+        AppActivityManager activityManager = new AppActivityManager(activityMapper, eventBus, appLayoutManager, appController);
         activityManager.setViewPort(mock(ViewPort.class));
 
         // WHEN
