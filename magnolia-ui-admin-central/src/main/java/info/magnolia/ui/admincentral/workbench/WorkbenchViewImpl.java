@@ -29,7 +29,7 @@
  *
  * Any modifications to this file must keep this entire header
  * intact.
- * 
+ *
  */
 package info.magnolia.ui.admincentral.workbench;
 
@@ -123,45 +123,47 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
         jcrView.asVaadinComponent();
         split.addComponent(jcrView.asVaadinComponent());
 
+        //TODO rename MenuItemDefinition to something which has more to do with actions?
+        List<MenuItemDefinition> actions = buildActions(workbenchDefinition);
+        //TODO provide actionBar with actions
+        Actionbar bar = new Actionbar();
+
+        split.addComponent(bar);
+        split.setExpandRatio(jcrView.asVaadinComponent(), 1f);
+    }
+
+    private List<MenuItemDefinition> buildActions(final WorkbenchDefinition workbenchDefinition) {
         final Item item;
         try {
-            String normalizedPath = (workbenchDefinition.getPath() + path).replaceAll("//", "/");
+            String normalizedPath = (workbenchDefinition.getPath()).replaceAll("//", "/");
             item = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace()).getItem(normalizedPath);
 
         } catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);
         }
-        // Displaying commands for the root node makes no sense
-        if (!"/".equals(path)) {
-            this.path = path;
 
-            List<MenuItemDefinition> defs = workbenchDefinition.getMenuItems();
+        List<MenuItemDefinition> defs = workbenchDefinition.getMenuItems();
 
-            List<MenuItemDefinition> menuItemDefinitions = new ArrayList<MenuItemDefinition>();
-            for (MenuItemDefinition menuDefinition : defs) {
-                System.out.println("adding action for menu " + menuDefinition.getName());
-                Action action = actionFactory.createAction(menuDefinition.getActionDefinition(), item);
+        List<MenuItemDefinition> menuItemDefinitions = new ArrayList<MenuItemDefinition>();
+        for (MenuItemDefinition menuDefinition : defs) {
+            System.out.println("adding action for menu " + menuDefinition.getName());
+            Action action = actionFactory.createAction(menuDefinition.getActionDefinition(), item);
 
-                if (action instanceof TreeAction) {
-                    final TreeAction treeAction = (TreeAction) action;
+            if (action instanceof TreeAction) {
+                final TreeAction treeAction = (TreeAction) action;
 
-                    try {
-                        if (treeAction.isAvailable(item)) {
-                            menuItemDefinitions.add(menuDefinition);
-                        }
-                    } catch (RepositoryException e) {
-                        throw new RuntimeRepositoryException(e);
+                try {
+                    if (treeAction.isAvailable(item)) {
+                        menuItemDefinitions.add(menuDefinition);
                     }
-                } else {
-                    menuItemDefinitions.add(menuDefinition);
+                } catch (RepositoryException e) {
+                    throw new RuntimeRepositoryException(e);
                 }
+            } else {
+                menuItemDefinitions.add(menuDefinition);
             }
         }
-        //TODO add menuI
-        Actionbar bar = new Actionbar();
-
-        split.addComponent(bar);
-        split.setExpandRatio(jcrView.asVaadinComponent(), 1f);
+        return menuItemDefinitions;
     }
 
     private void construct() {
