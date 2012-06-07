@@ -37,7 +37,7 @@ import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 import javax.inject.Inject;
 
-import com.vaadin.ui.Component;
+import com.vaadin.ui.ComponentContainer;
 
 
 /**
@@ -61,7 +61,7 @@ public class Workbench implements IsVaadinComponent, WorkbenchView.Presenter {
     }
 
     @Override
-    public Component asVaadinComponent() {
+    public ComponentContainer asVaadinComponent() {
         return view;
     }
 
