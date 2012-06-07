@@ -31,30 +31,55 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.tree.activity;
+package info.magnolia.ui.admincentral.tree.action;
 
+import info.magnolia.ui.model.action.ActionDefinition;
 
-import info.magnolia.ui.admincentral.jcr.view.JcrView.ViewType;
-import info.magnolia.ui.admincentral.jcr.view.activity.AbstractJcrActivity;
-import info.magnolia.ui.admincentral.jcr.view.builder.JcrViewBuilderProvider;
-import info.magnolia.ui.framework.place.PlaceController;
-import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
 
 /**
- * Activity for displaying a tree view.
- *
+ * Opens a dialog to edit an {@link javax.jcr.Node}.
  */
-@Singleton
-public class TreeActivity extends AbstractJcrActivity{
+public class OpenEditDialogActionDefinition implements ActionDefinition {
 
-    @Inject
-    public TreeActivity(WorkbenchDefinition workbenchDefinition, JcrViewBuilderProvider jcrViewBuilderProvider, PlaceController placeController, Shell shell) {
-        super(workbenchDefinition, jcrViewBuilderProvider, placeController, shell);
-        jcrView = jcrViewBuilderProvider.getBuilder().build(workbenchDefinition, ViewType.TREE);
+    private String dialogName;
+
+    public String getDialogName() {
+        return dialogName;
+    }
+
+    public void setDialogName(String dialogName) {
+        this.dialogName = dialogName;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result
+        + ((dialogName == null) ? 0 : dialogName.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof OpenEditDialogActionDefinition)) {
+            return false;
+        }
+        OpenEditDialogActionDefinition other = (OpenEditDialogActionDefinition) obj;
+        if (dialogName == null) {
+            if (other.dialogName != null) {
+                return false;
+            }
+        } else if (!dialogName.equals(other.dialogName)) {
+            return false;
+        }
+        return true;
     }
 
 }

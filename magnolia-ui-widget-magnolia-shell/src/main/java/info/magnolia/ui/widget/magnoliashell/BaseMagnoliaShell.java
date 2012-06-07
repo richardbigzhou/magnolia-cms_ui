@@ -107,7 +107,6 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
     
     public BaseMagnoliaShell() {
         super();
-        System.out.println("SHELL CREATED!");
         setImmediate(true);
         viewports.put(ViewportType.SHELL_APP_VIEWPORT, new ShellViewport(this));
         viewports.put(ViewportType.APP_VIEWPORT, new ShellViewport(this));
@@ -159,6 +158,10 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
     
     public ShellViewport getShellAppViewport() {
         return viewports.get(ViewportType.SHELL_APP_VIEWPORT);
+    }
+    
+    public ShellViewport getDialogViewport() {
+        return viewports.get(ViewportType.DIALOG_VIEWPORT);
     }
     
     public ShellViewport getActiveViewport() {

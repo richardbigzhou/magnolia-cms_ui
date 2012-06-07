@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.framework.activity;
 
-import org.junit.Ignore;
-import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -43,7 +41,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.event.SimpleEventBus;
 import info.magnolia.ui.framework.event.TestEvent;
@@ -52,6 +49,9 @@ import info.magnolia.ui.framework.place.Place;
 import info.magnolia.ui.framework.place.PlaceChangeEvent;
 import info.magnolia.ui.framework.place.PlaceChangeRequestEvent;
 import info.magnolia.ui.framework.view.ViewPort;
+
+import org.junit.Ignore;
+import org.junit.Test;
 
 /**
  * Test case for {@link ActivityManager}.

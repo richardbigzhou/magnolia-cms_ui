@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,28 +31,46 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.list.activity;
+package info.magnolia.ui.framework.app.layout.event;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import info.magnolia.ui.framework.event.Event;
 
-import info.magnolia.ui.admincentral.jcr.view.activity.AbstractJcrActivity;
-import info.magnolia.ui.admincentral.jcr.view.builder.JcrViewBuilderProvider;
-import info.magnolia.ui.admincentral.jcr.view.JcrView.ViewType;
-import info.magnolia.ui.framework.place.PlaceController;
-import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 
 /**
- * Activity for displaying a list view.
- *
+ * AdminCentral Events used to notify Changes in the Admin central configuration.
  */
-@Singleton
-public class ListActivity extends AbstractJcrActivity {
+public class LayoutEvent implements Event<LayoutEventHandler> {
 
-    @Inject
-    public ListActivity(WorkbenchDefinition workbenchDefinition, JcrViewBuilderProvider jcrViewBuilderProvider, PlaceController placeController, Shell shell) {
-        super(workbenchDefinition, jcrViewBuilderProvider, placeController, shell);
-        jcrView = jcrViewBuilderProvider.getBuilder().build(workbenchDefinition, ViewType.LIST);
+    private final LayoutEventType eventType;
+
+    private final String appName;
+
+    public LayoutEvent(LayoutEventType eventType, String appName) {
+        this.eventType = eventType;
+        this.appName = appName;
     }
+
+    public LayoutEventType getEventType() {
+        return this.eventType;
+    }
+
+    public String getAppName() {
+        return this.appName;
+    }
+
+
+    @Override
+    public void dispatch(LayoutEventHandler handler) {
+        if (eventType == null) {
+            return;
+        }
+
+        switch (eventType) {
+            case RELOAD_APP:
+                handler.onReloadApp(this);
+                break;
+        }
+    }
+
 }
+

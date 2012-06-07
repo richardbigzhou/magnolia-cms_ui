@@ -31,23 +31,36 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.workbench.view;
+package info.magnolia.ui.admincentral.tree.action;
 
-import info.magnolia.ui.admincentral.workbench.activity.WorkbenchPresenter;
-import info.magnolia.ui.framework.app.AppView;
-import info.magnolia.ui.framework.view.ViewPort;
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
+import javax.jcr.Item;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
+import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.ui.framework.event.EventBus;
 
 
 /**
- * The view to edit a workspace. Provides slots for the tree/list view, sidebar view (with actions and preview), search view and function toolbar.
+ * Action for creating a new property.
+ *
+ * @version $Id$
  */
-public interface WorkbenchView extends AppView<WorkbenchPresenter>, IsVaadinComponent {
+public class AddPropertyAction extends RepositoryOperationAction<AddPropertyActionDefinition> implements TreeAction {
 
-    ViewPort getItemListViewPort();
+    public AddPropertyAction(AddPropertyActionDefinition definition, Item item, EventBus eventBus) {
+        super(definition, item, eventBus);
+    }
 
-    ViewPort getSidebarViewPort();
+    @Override
+    public boolean isAvailable(Item item) throws RepositoryException {
+        return item.isNode();
+    }
 
-    ViewPort getFunctionToolbarViewPort();
-
+    @Override
+    protected void onExecute(Item item) throws RepositoryException {
+        Node node = (Node) item;
+        String name = NodeUtil.getName(node);
+        node.setProperty(name, "");
+    }
 }

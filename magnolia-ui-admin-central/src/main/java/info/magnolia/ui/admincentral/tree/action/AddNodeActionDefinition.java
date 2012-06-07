@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2011 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,36 +31,42 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.jcr;
+package info.magnolia.ui.admincentral.tree.action;
 
-import info.magnolia.cms.core.Content;
-import info.magnolia.cms.core.DefaultContent;
-import info.magnolia.cms.core.MetaData;
-import info.magnolia.jcr.util.MetaDataUtil;
+import info.magnolia.ui.model.action.ActionDefinition;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
 
 /**
- * Hack implementation of a Content. Temporarily used as long as we don't have a clear vision where
- * to go with the Content-API.
- *
- * @deprecated temporary
+ * Defines the {@link #nodeType} of the new node.
  */
-public class HackContent extends DefaultContent {
+public class AddNodeActionDefinition implements ActionDefinition {
 
-    public HackContent(Node node) throws RepositoryException {
-        super();
-        setNode(node);
+    private String nodeType;
+
+    public String getNodeType() {
+        return nodeType;
+    }
+
+    public void setNodeType(String nodeType) {
+        this.nodeType = nodeType;
+    }
+
+
+    @Override
+    public int hashCode() {
+        return nodeType == null ? 13 : nodeType.hashCode();
     }
 
     @Override
-    public Content getParent() throws RepositoryException {
-        return (new HackContent(this.node.getParent()));
-    }
-
-    @Override
-    public MetaData getMetaData() {
-        return MetaDataUtil.getMetaData(this.node);
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || !(obj instanceof AddNodeActionDefinition)) {
+            return false;
+        }
+        AddNodeActionDefinition that = (AddNodeActionDefinition) obj;
+        return this.nodeType == null ? that.nodeType == null : this.nodeType
+                .equals(that.nodeType);
     }
 }

@@ -72,54 +72,67 @@ public class ConfiguredAppDescriptor implements AppDescriptor {
 
     private List<PlaceActivityMapping> activityMappings = new ArrayList<PlaceActivityMapping>();
 
+    @Override 
     public String getName() {
         return name;
     }
 
+    @Override
     public void setName(String name) {
         this.name = name;
     }
 
+    @Override
     public String getLabel() {
         return label;
     }
 
+    @Override
     public void setLabel(String label) {
         this.label = label;
     }
 
+    @Override
     public boolean isEnabled() {
         return enabled;
     }
 
+    @Override
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
 
+    @Override
     public String getIcon() {
         return icon;
     }
 
+    @Override
     public void setIcon(String icon) {
         this.icon = icon;
     }
 
+    @Override
     public Class<? extends AppLifecycle> getAppClass() {
         return appClass;
     }
 
+    @Override
     public void setAppClass(Class<? extends AppLifecycle> appClass) {
         this.appClass = appClass;
     }
 
+    @Override
     public List<PlaceActivityMapping> getActivityMappings() {
         return activityMappings;
     }
 
+    @Override
     public void addActivityMapping(PlaceActivityMapping mapping) {
         activityMappings.add(mapping);
     }
 
+    @Override
     public Class<? extends Activity> getMappedActivityClass(final Class<? extends Place> placeClass) {
         final Iterator<PlaceActivityMapping> it = activityMappings.iterator();
         Class<? extends Activity> result = null;

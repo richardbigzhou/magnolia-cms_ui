@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.app;
 
+import info.magnolia.ui.framework.app.layout.AppCategory;
 import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
 import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.AppLifecycle;
@@ -53,6 +54,15 @@ public class AppTestUtility {
         res.setIcon(startLibell+"_icon");
         res.setLabel(startLibell+"_label");
         res.setName(startLibell+"_name");
+        return res;
+    }
+
+    public static AppCategory createAppCategory(String name, AppDescriptor... appDescriptors) {
+        AppCategory res = new AppCategory();
+        res.setLabel(name);
+        for(AppDescriptor descriptor: appDescriptors) {
+            res.addApp(descriptor);
+        }
         return res;
     }
 }

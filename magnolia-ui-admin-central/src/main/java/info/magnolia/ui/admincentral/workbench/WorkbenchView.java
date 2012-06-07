@@ -45,7 +45,7 @@ public interface WorkbenchView extends ComponentContainer {
     void setPresenter(final Presenter presenter);
 
     void initWorkbench(final String id);
-    
+
     /**
      * Presenter.
      * @author apchelintcev

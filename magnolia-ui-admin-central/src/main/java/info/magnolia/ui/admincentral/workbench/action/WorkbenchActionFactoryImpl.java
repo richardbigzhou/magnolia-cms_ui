@@ -57,6 +57,10 @@ public class WorkbenchActionFactoryImpl extends FactoryBase<ActionDefinition, Ac
     public WorkbenchActionFactoryImpl(ComponentProvider componentProvider) {
         super(componentProvider);
     }
+    //Looks like this is needed by proxy
+    public WorkbenchActionFactoryImpl() {
+        super(null);
+    }
 
     public List<DefinitionToImplementationMapping<ActionDefinition, Action>> getDefinitionToImplementationMappings() {
         return this.definitionToImplementationMappings;

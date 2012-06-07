@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,12 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.layout.event;
+package info.magnolia.ui.admincentral.tree.action;
+
+import info.magnolia.ui.model.action.ActionDefinition;
 
 
 /**
- * Admin Central Event Type Enumeration.
+ * Add a property to a node.
  */
-public enum AdminCentralEventType {
-    RELOAD_APP
+public class AddPropertyActionDefinition implements ActionDefinition {
+
 }

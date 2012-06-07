@@ -53,8 +53,7 @@ import com.vaadin.terminal.ExternalResource;
 
 /**
  * Admin shell.
- * @author apchelintcev
- *
+ * @version $Id$
  */
 @SuppressWarnings("serial")
 @Singleton
@@ -132,8 +131,7 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell {
 
     @Override
     public Shell createSubShell(String id) {
-        return new MagnoliaSubShell(id, this);
-        //throw new UnsupportedOperationException("MagnoliaShell is not capable of opening the subshells.");
+        throw new UnsupportedOperationException("MagnoliaShell is not capable of opening the subshells.");
     }
 
     public void openDialog(IsVaadinComponent dialog) {

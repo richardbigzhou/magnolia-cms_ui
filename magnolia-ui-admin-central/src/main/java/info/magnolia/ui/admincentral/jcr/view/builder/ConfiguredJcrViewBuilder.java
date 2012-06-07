@@ -40,7 +40,6 @@ import info.magnolia.ui.admincentral.jcr.view.JcrView.ViewType;
 import info.magnolia.ui.admincentral.list.view.ListViewImpl;
 import info.magnolia.ui.admincentral.tree.model.TreeModel;
 import info.magnolia.ui.admincentral.tree.view.TreeViewImpl;
-import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.model.builder.FactoryBase;
 import info.magnolia.ui.model.column.definition.AbstractColumnDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
@@ -54,6 +53,7 @@ import java.util.Map;
 /**
  * Jcr view configured via content to bean.
  */
+@SuppressWarnings("serial")
 public class ConfiguredJcrViewBuilder extends FactoryBase<AbstractColumnDefinition, Column<AbstractColumnDefinition>> implements JcrViewBuilder, Serializable {
 
     /**
@@ -62,12 +62,10 @@ public class ConfiguredJcrViewBuilder extends FactoryBase<AbstractColumnDefiniti
     private List<DefinitionToImplementationMapping<AbstractColumnDefinition, Column<AbstractColumnDefinition>>> definitionToImplementationMappings = new ArrayList<DefinitionToImplementationMapping<AbstractColumnDefinition, Column<AbstractColumnDefinition>>>();
 
     private ComponentProvider componentProvider;
-    private WorkbenchActionFactory workbenchActionFactory;
 
-    public ConfiguredJcrViewBuilder(ComponentProvider componentProvider/*, WorkbenchDefinitionRegistry workbenchRegistry, WorkbenchActionFactory workbenchActionFactory*/) {
+    public ConfiguredJcrViewBuilder(ComponentProvider componentProvider) {
         super(componentProvider);
         this.componentProvider = componentProvider;
-        //this.workbenchActionFactory = workbenchActionFactory;
     }
 
     public List<DefinitionToImplementationMapping<AbstractColumnDefinition, Column<AbstractColumnDefinition>>> getDefinitionToImplementationMappings() {

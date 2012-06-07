@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral.column;
 
-import info.magnolia.ui.admincentral.workbench.place.ItemSelectedPlace;
 import info.magnolia.ui.framework.editor.ContentDriver;
 import info.magnolia.ui.framework.editor.Editor;
 import info.magnolia.ui.framework.editor.EditorError;
@@ -116,9 +115,7 @@ public abstract class AbstractEditableColumn<D extends AbstractColumnDefinition>
         public void onClick(Item item) throws RepositoryException {
 
             // TODO ItemSelectedPlace wants a path relative to the tree root, not the jcr workspace absolute root
-
-            final ItemSelectedPlace currentPlace = (ItemSelectedPlace) placeController.getWhere();
-            placeController.goTo(new ItemSelectedPlace(item.getSession().getWorkspace().getName(), item.getPath(), currentPlace.getViewType()));
+            throw new UnsupportedOperationException("Not Implemented yet");
         }
     }
 }

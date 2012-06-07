@@ -33,43 +33,10 @@
  */
 package info.magnolia.ui.framework.app.layout.event;
 
-import info.magnolia.ui.framework.event.Event;
-
 
 /**
- * AdminCentral Events used to notify Changes in the Admin central configuration.
+ * Admin Central Event Type Enumeration.
  */
-public class AdminCentralEvent implements Event<AdminCentralEventHandler> {
-
-    private final AdminCentralEventType eventType;
-
-    private final String appName;
-
-    public AdminCentralEvent(AdminCentralEventType eventType, String appName) {
-        this.eventType = eventType;
-        this.appName = appName;
-    }
-
-    public AdminCentralEventType getEventType() {
-        return this.eventType;
-    }
-
-    public String getAppName() {
-        return this.appName;
-    }
-
-
-    @Override
-    public void dispatch(AdminCentralEventHandler handler) {
-        if (eventType == null) {
-            return;
-        }
-
-        switch (eventType) {
-            case RELOAD_APP:
-                handler.onReloadApp(this);
-                break;
-        }
-    }
-
+public enum LayoutEventType {
+    RELOAD_APP
 }

@@ -31,23 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.jcr;
+package info.magnolia.ui.admincentral.tree.action;
 
-import info.magnolia.cms.core.Content;
-
-import javax.jcr.Node;
+import javax.jcr.Item;
 import javax.jcr.RepositoryException;
+
+import info.magnolia.ui.framework.event.EventBus;
 
 
 /**
- * Collection of utilities temporarily needed as long as we have no clear vision of the future of
- * our Content API.
+ * Deletes a node from the repository.
  *
- * @deprecated temporary
+ * @version $Id$
  */
-public class TemporaryHackUtil {
+public class DeleteItemAction extends RepositoryOperationAction<DeleteItemActionDefinition> {
 
-    public static Content createHackContentFrom(Node node) throws RepositoryException {
-        return new HackContent(node);
+    public DeleteItemAction(DeleteItemActionDefinition definition, Item item, EventBus eventBus) {
+        super(definition, item, eventBus);
+    }
+
+    @Override
+    protected void onExecute(Item item) throws RepositoryException {
+        item.remove();
     }
 }

@@ -29,30 +29,31 @@
  *
  * Any modifications to this file must keep this entire header
  * intact.
- * 
+ *
  */
 package info.magnolia.ui.admincentral.workbench;
 
-import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
-import info.magnolia.objectfactory.configuration.InstanceConfiguration;
+import java.util.ArrayList;
+import java.util.List;
+
+import info.magnolia.context.MgnlContext;
+import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.registry.RegistrationException;
-import info.magnolia.ui.admincentral.column.Column;
 import info.magnolia.ui.admincentral.jcr.view.JcrView;
 import info.magnolia.ui.admincentral.jcr.view.JcrView.ViewType;
-import info.magnolia.ui.admincentral.jcr.view.builder.ConfiguredJcrViewBuilder;
 import info.magnolia.ui.admincentral.jcr.view.builder.JcrViewBuilderProvider;
-import info.magnolia.ui.admincentral.tree.model.TreeModel;
+import info.magnolia.ui.admincentral.tree.action.TreeAction;
+import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.model.column.definition.AbstractColumnDefinition;
+import info.magnolia.ui.model.action.Action;
+import info.magnolia.ui.model.menu.definition.MenuItemDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.model.workbench.registry.WorkbenchDefinitionRegistry;
 import info.magnolia.ui.widget.actionbar.Actionbar;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import javax.inject.Inject;
+import javax.jcr.Item;
+import javax.jcr.RepositoryException;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomComponent;
@@ -78,29 +79,39 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
 
     private JcrViewBuilderProvider jcrViewBuilderProvider;
 
-    private ConfiguredJcrViewBuilder configuredJcrViewBuilder;
-
     private WorkbenchDefinitionRegistry workbenchRegistry;
+
+    private WorkbenchActionFactory actionFactory;
 
     protected String path = "/";
 
-    private JcrView.Presenter jcrPresenter = new JcrView.Presenter() {
-        public void onItemSelection(javax.jcr.Item item) {
+    private Shell shell;
 
+    private JcrView.Presenter jcrPresenter = new JcrView.Presenter() {
+        @Override
+        public void onItemSelection(javax.jcr.Item item) {
+            try {
+                shell.showNotification("Test: " + item.getPath() + " was selected.");
+            } catch (RepositoryException e) {
+               shell.showError("An error occurred while selecting a row in the data grid", e);
+            }
         };
     };
 
+
+
+
     @Inject
-    public WorkbenchViewImpl(WorkbenchDefinitionRegistry workbenchRegistry, Shell shell, ComponentProvider componentProvider) {
+    public WorkbenchViewImpl(WorkbenchDefinitionRegistry workbenchRegistry, Shell shell, JcrViewBuilderProvider jcrViewBuilderProvider, WorkbenchActionFactory actionFactory) {
         super();
         setSizeFull();
         root.setSizeFull();
         construct();
         setCompositionRoot(root);
-
-        this.jcrViewBuilderProvider = componentProvider.getComponent(JcrViewBuilderProvider.class);
-        this.configuredJcrViewBuilder = (ConfiguredJcrViewBuilder) jcrViewBuilderProvider.getBuilder();
+        this.shell = shell;
+        this.jcrViewBuilderProvider = jcrViewBuilderProvider;
         this.workbenchRegistry = workbenchRegistry;
+        this.actionFactory = actionFactory;
     }
 
     @Override
@@ -108,39 +119,59 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
         // load the workbench specific configuration if existing
         final WorkbenchDefinition workbenchDefinition;
         try {
-            // FIXME: stub workbench name!
             workbenchDefinition = workbenchRegistry.get(id);
         } catch (RegistrationException e) {
             throw new RuntimeException(e);
         }
-
-        ComponentProviderConfiguration componentProviderConfiguration = new ComponentProviderConfiguration();
-
-        if (workbenchDefinition.getComponents() != null) {
-            componentProviderConfiguration.combine(workbenchDefinition.getComponents());
-        }
-
-        Map<String, Column<?>> columns = new LinkedHashMap<String, Column<?>>();
-        for (AbstractColumnDefinition columnDefinition : workbenchDefinition.getColumns()) {
-            Column<?> column = configuredJcrViewBuilder.createTreeColumn(columnDefinition);
-            if (column != null) {
-                columns.put(columnDefinition.getName(), column);
-            }
-        }
-
-        final TreeModel treeModel = new TreeModel(workbenchDefinition, columns);
         jcrView = jcrViewBuilderProvider.getBuilder().build(workbenchDefinition, ViewType.TREE);
 
-        componentProviderConfiguration.addComponent(InstanceConfiguration.valueOf(TreeModel.class, treeModel));
-        componentProviderConfiguration.addComponent(InstanceConfiguration.valueOf(WorkbenchDefinition.class, workbenchDefinition));
 
         jcrView.setPresenter(jcrPresenter);
         jcrView.select(path);
         jcrView.asVaadinComponent();
         split.addComponent(jcrView.asVaadinComponent());
+
+        //TODO rename MenuItemDefinition to something which has more to do with actions?
+        List<MenuItemDefinition> actions = buildActions(workbenchDefinition);
+        //TODO provide actionBar with actions
         Actionbar bar = new Actionbar();
+
         split.addComponent(bar);
         split.setExpandRatio(jcrView.asVaadinComponent(), 1f);
+    }
+
+    private List<MenuItemDefinition> buildActions(final WorkbenchDefinition workbenchDefinition) {
+        final Item item;
+        try {
+            String normalizedPath = (workbenchDefinition.getPath()).replaceAll("//", "/");
+            item = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace()).getItem(normalizedPath);
+
+        } catch (RepositoryException e) {
+            throw new RuntimeRepositoryException(e);
+        }
+
+        List<MenuItemDefinition> defs = workbenchDefinition.getMenuItems();
+
+        List<MenuItemDefinition> menuItemDefinitions = new ArrayList<MenuItemDefinition>();
+        for (MenuItemDefinition menuDefinition : defs) {
+            System.out.println("adding action for menu " + menuDefinition.getName());
+            Action action = actionFactory.createAction(menuDefinition.getActionDefinition(), item);
+
+            if (action instanceof TreeAction) {
+                final TreeAction treeAction = (TreeAction) action;
+
+                try {
+                    if (treeAction.isAvailable(item)) {
+                        menuItemDefinitions.add(menuDefinition);
+                    }
+                } catch (RepositoryException e) {
+                    throw new RuntimeRepositoryException(e);
+                }
+            } else {
+                menuItemDefinitions.add(menuDefinition);
+            }
+        }
+        return menuItemDefinitions;
     }
 
     private void construct() {

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,27 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.layout.event;
+package info.magnolia.ui.admincentral.tree.action;
 
-import info.magnolia.ui.framework.event.EventHandler;
-
+import javax.jcr.Item;
+import javax.jcr.RepositoryException;
 
 /**
- * Listens to {@link AdminCentralEvent}s.
+ * Interface to be implemented by actions that provide additional hints about their capabilities.
+ *
+ * @version $Id$
  */
-public interface AdminCentralEventHandler extends EventHandler {
+public interface TreeAction {
 
-    void onReloadApp(final AdminCentralEvent event);
-
-    /**
-     * Simple stub so in case not all the methods should be implemented - you can skip them.
-     */
-    public static class Adapter implements AdminCentralEventHandler {
-
-        @Override
-        public void onReloadApp(AdminCentralEvent event) {
-        }
-
-    }
-
+    boolean isAvailable(Item item) throws RepositoryException;
 }

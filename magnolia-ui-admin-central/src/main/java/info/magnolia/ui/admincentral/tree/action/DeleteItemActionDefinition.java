@@ -31,14 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.workbench.activity;
+package info.magnolia.ui.admincentral.tree.action;
 
-import info.magnolia.ui.framework.app.AppPresenter;
+import info.magnolia.ui.model.action.ActionDefinition;
+
 
 /**
- * TODO write javadoc.
- * @version $Id$
+ * Delete an {@link javax.jcr.Item}.
  */
-public interface WorkbenchPresenter extends AppPresenter<WorkbenchPresenter>{
+public class DeleteItemActionDefinition implements ActionDefinition {
 
 }
