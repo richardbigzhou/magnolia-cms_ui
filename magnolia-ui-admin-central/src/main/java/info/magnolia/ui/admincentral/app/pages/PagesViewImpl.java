@@ -38,8 +38,6 @@ import info.magnolia.ui.admincentral.workbench.Workbench;
 
 import javax.inject.Inject;
 
-import com.vaadin.ui.ComponentContainer;
-
 /**
  * View implementation for the Pages app.
  *
@@ -53,7 +51,7 @@ public class PagesViewImpl extends AbstractAppView<PagesPresenter> implements Pa
     @Inject
     public PagesViewImpl(final Workbench workbench) {
         workbench.initWorkbench(jcrWorkspaceName);
-        addTab((ComponentContainer)workbench.asVaadinComponent(), "Workbench");
+        addTab(workbench.asVaadinComponent(), "Workbench");
     }
 
 }
