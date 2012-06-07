@@ -163,7 +163,7 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
     public ShellViewport getDialogViewport() {
         return viewports.get(ViewportType.DIALOG_VIEWPORT);
     }
-    
+
     public ShellViewport getActiveViewport() {
         return activeViewport;
     }
@@ -224,7 +224,7 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
         proxy.call("showMessage", MessageType.WARNING.name(), message);
     }
 
-    protected void removeDialog(Component dialog) {
+    public void removeDialog(Component dialog) {
         viewports.get(ViewportType.DIALOG_VIEWPORT).removeComponent(dialog);
         requestRepaint();
     }
