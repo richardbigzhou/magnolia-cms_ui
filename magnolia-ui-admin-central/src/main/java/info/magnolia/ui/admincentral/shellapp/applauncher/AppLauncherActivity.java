@@ -41,8 +41,8 @@ import info.magnolia.ui.framework.app.AppLifecycleEventHandler;
 import info.magnolia.ui.framework.app.layout.AppCategory;
 import info.magnolia.ui.framework.app.layout.AppLauncherLayout;
 import info.magnolia.ui.framework.app.layout.AppLauncherLayoutManager;
-import info.magnolia.ui.framework.app.layout.event.AdminCentralEvent;
-import info.magnolia.ui.framework.app.layout.event.AdminCentralEventHandler;
+import info.magnolia.ui.framework.app.layout.event.LayoutEvent;
+import info.magnolia.ui.framework.app.layout.event.LayoutEventHandler;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.event.SystemEventBus;
 import info.magnolia.ui.framework.place.Place;
@@ -79,9 +79,9 @@ public class AppLauncherActivity extends AbstractActivity implements AppLauncher
         /**
          * Handle ReloadAppEvent.
          */
-        systemEventBus.addHandler(AdminCentralEvent.class, new AdminCentralEventHandler.Adapter() {
+        systemEventBus.addHandler(LayoutEvent.class, new LayoutEventHandler.Adapter() {
             @Override
-            public void onReloadApp(AdminCentralEvent event) {
+            public void onReloadApp(LayoutEvent event) {
                 if(isAppRegistered(event.getAppName())) {
                     //Reload Layout
                     reloadLayout();

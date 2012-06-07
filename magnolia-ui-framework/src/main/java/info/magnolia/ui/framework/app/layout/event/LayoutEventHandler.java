@@ -33,10 +33,25 @@
  */
 package info.magnolia.ui.framework.app.layout.event;
 
+import info.magnolia.ui.framework.event.EventHandler;
+
 
 /**
- * Admin Central Event Type Enumeration.
+ * Listens to {@link LayoutEvent}s.
  */
-public enum AdminCentralEventType {
-    RELOAD_APP
+public interface LayoutEventHandler extends EventHandler {
+
+    void onReloadApp(final LayoutEvent event);
+
+    /**
+     * Simple stub so in case not all the methods should be implemented - you can skip them.
+     */
+    public static class Adapter implements LayoutEventHandler {
+
+        @Override
+        public void onReloadApp(LayoutEvent event) {
+        }
+
+    }
+
 }

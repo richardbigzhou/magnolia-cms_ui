@@ -36,8 +36,8 @@ package info.magnolia.ui.framework.app.layout;
 import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventHandler;
-import info.magnolia.ui.framework.app.layout.event.AdminCentralEvent;
-import info.magnolia.ui.framework.app.layout.event.AdminCentralEventType;
+import info.magnolia.ui.framework.app.layout.event.LayoutEvent;
+import info.magnolia.ui.framework.app.layout.event.LayoutEventType;
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.framework.event.SystemEventBus;
 
@@ -90,21 +90,21 @@ public class AppLauncherLayoutManagerImpl implements AppLauncherLayoutManager{
             public void onAppRegistered(AppLifecycleEvent event) {
                 String name = event.getAppDescriptor().getName();
                 logger.debug("Got AppLifecycleEvent."+event.getEventType()+" for the following appDescriptor "+name);
-                sendEvent(new AdminCentralEvent(AdminCentralEventType.RELOAD_APP,name));
+                sendEvent(new LayoutEvent(LayoutEventType.RELOAD_APP,name));
             }
 
             @Override
             public void onAppReRegistered(AppLifecycleEvent event) {
                 String name = event.getAppDescriptor().getName();
                 logger.debug("Got AppLifecycleEvent."+event.getEventType()+" for the following appDescriptor "+name);
-                sendEvent(new AdminCentralEvent(AdminCentralEventType.RELOAD_APP,name));
+                sendEvent(new LayoutEvent(LayoutEventType.RELOAD_APP,name));
             }
 
             @Override
             public void onAppUnregistered(AppLifecycleEvent event) {
                 String name = event.getAppDescriptor().getName();
                 logger.debug("Got AppLifecycleEvent."+event.getEventType()+" for the following appDescriptor "+name);
-                sendEvent(new AdminCentralEvent(AdminCentralEventType.RELOAD_APP,name));
+                sendEvent(new LayoutEvent(LayoutEventType.RELOAD_APP,name));
             }
         });
     }
@@ -170,7 +170,7 @@ public class AppLauncherLayoutManagerImpl implements AppLauncherLayoutManager{
     /**
      * Send an Event to the System EventBuss.
      */
-    private void sendEvent(AdminCentralEvent event) {
+    private void sendEvent(LayoutEvent event) {
         logger.debug("Send an AdminCentralEvent."+event.getEventType()+" to the systemBus");
         systemEventBus.fireEvent(event);
     }

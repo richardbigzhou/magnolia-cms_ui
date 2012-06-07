@@ -33,25 +33,43 @@
  */
 package info.magnolia.ui.framework.app.layout.event;
 
-import info.magnolia.ui.framework.event.EventHandler;
+import info.magnolia.ui.framework.event.Event;
 
 
 /**
- * Listens to {@link AdminCentralEvent}s.
+ * AdminCentral Events used to notify Changes in the Admin central configuration.
  */
-public interface AdminCentralEventHandler extends EventHandler {
+public class LayoutEvent implements Event<LayoutEventHandler> {
 
-    void onReloadApp(final AdminCentralEvent event);
+    private final LayoutEventType eventType;
 
-    /**
-     * Simple stub so in case not all the methods should be implemented - you can skip them.
-     */
-    public static class Adapter implements AdminCentralEventHandler {
+    private final String appName;
 
-        @Override
-        public void onReloadApp(AdminCentralEvent event) {
+    public LayoutEvent(LayoutEventType eventType, String appName) {
+        this.eventType = eventType;
+        this.appName = appName;
+    }
+
+    public LayoutEventType getEventType() {
+        return this.eventType;
+    }
+
+    public String getAppName() {
+        return this.appName;
+    }
+
+
+    @Override
+    public void dispatch(LayoutEventHandler handler) {
+        if (eventType == null) {
+            return;
         }
 
+        switch (eventType) {
+            case RELOAD_APP:
+                handler.onReloadApp(this);
+                break;
+        }
     }
 
 }
