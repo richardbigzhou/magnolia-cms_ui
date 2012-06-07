@@ -33,16 +33,27 @@
  */
 package info.magnolia.ui.admincentral.workbench;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import info.magnolia.context.MgnlContext;
+import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.admincentral.jcr.view.JcrView;
 import info.magnolia.ui.admincentral.jcr.view.JcrView.ViewType;
 import info.magnolia.ui.admincentral.jcr.view.builder.JcrViewBuilderProvider;
+import info.magnolia.ui.admincentral.tree.action.TreeAction;
+import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.model.action.Action;
+import info.magnolia.ui.model.menu.definition.MenuItemDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.model.workbench.registry.WorkbenchDefinitionRegistry;
 import info.magnolia.ui.widget.actionbar.Actionbar;
 
 import javax.inject.Inject;
+import javax.jcr.Item;
+import javax.jcr.RepositoryException;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomComponent;
@@ -70,6 +81,8 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
 
     private WorkbenchDefinitionRegistry workbenchRegistry;
 
+    private WorkbenchActionFactory actionFactory;
+
     protected String path = "/";
 
     private JcrView.Presenter jcrPresenter = new JcrView.Presenter() {
@@ -78,8 +91,9 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
         };
     };
 
+
     @Inject
-    public WorkbenchViewImpl(WorkbenchDefinitionRegistry workbenchRegistry, Shell shell, JcrViewBuilderProvider jcrViewBuilderProvider) {
+    public WorkbenchViewImpl(WorkbenchDefinitionRegistry workbenchRegistry, Shell shell, JcrViewBuilderProvider jcrViewBuilderProvider, WorkbenchActionFactory actionFactory) {
         super();
         setSizeFull();
         root.setSizeFull();
@@ -88,6 +102,7 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
 
         this.jcrViewBuilderProvider = jcrViewBuilderProvider;
         this.workbenchRegistry = workbenchRegistry;
+        this.actionFactory = actionFactory;
     }
 
     @Override
@@ -107,7 +122,44 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
         jcrView.select(path);
         jcrView.asVaadinComponent();
         split.addComponent(jcrView.asVaadinComponent());
+
+        final Item item;
+        try {
+            String normalizedPath = (workbenchDefinition.getPath() + path).replaceAll("//", "/");
+            item = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace()).getItem(normalizedPath);
+
+        } catch (RepositoryException e) {
+            throw new RuntimeRepositoryException(e);
+        }
+        // Displaying commands for the root node makes no sense
+        if (!"/".equals(path)) {
+            this.path = path;
+
+            List<MenuItemDefinition> defs = workbenchDefinition.getMenuItems();
+
+            List<MenuItemDefinition> menuItemDefinitions = new ArrayList<MenuItemDefinition>();
+            for (MenuItemDefinition menuDefinition : defs) {
+                System.out.println("adding action for menu " + menuDefinition.getName());
+                Action action = actionFactory.createAction(menuDefinition.getActionDefinition(), item);
+
+                if (action instanceof TreeAction) {
+                    final TreeAction treeAction = (TreeAction) action;
+
+                    try {
+                        if (treeAction.isAvailable(item)) {
+                            menuItemDefinitions.add(menuDefinition);
+                        }
+                    } catch (RepositoryException e) {
+                        throw new RuntimeRepositoryException(e);
+                    }
+                } else {
+                    menuItemDefinitions.add(menuDefinition);
+                }
+            }
+        }
+        //TODO add menuI
         Actionbar bar = new Actionbar();
+
         split.addComponent(bar);
         split.setExpandRatio(jcrView.asVaadinComponent(), 1f);
     }
