@@ -53,7 +53,7 @@ import org.slf4j.LoggerFactory;
  * Default AppController implementation.
  *
  * Responsible for the App Event triggering (Start/Stop/Focus App events).
- * Listen to the SystemEventBuss for UnregisterdApp Event.
+ * Listen to the SystemEventBuss for UnregisteredApp Event.
  *
  * @version $Id$
  */
@@ -80,11 +80,13 @@ public class AppControllerImpl implements AppController {
         this.appLauncherLayoutManager = appLauncherLayoutManager;
         this.componentProvider = componentProvider;
         this.eventBus = eventBus;
+
         /**
-         * Listen to the SystemBuss on AppUnregistered Event.
-         * In this case, Stop the App if it's running.
+         * Listen to the system bus on AppUnregistered event.
+         * In this case, stop the App if it's running.
          */
         systemEventBus.addHandler(AppLifecycleEvent.class, new AppLifecycleEventHandler.Adapter() {
+
             @Override
             public void onAppUnregistered(AppLifecycleEvent event) {
                 if(isAppStarted(event.getAppDescriptor())) {
