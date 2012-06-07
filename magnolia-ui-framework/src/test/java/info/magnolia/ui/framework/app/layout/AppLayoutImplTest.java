@@ -49,7 +49,7 @@ import org.junit.Test;
 /**
  *Test class for {AppLauncherLayout}.
  */
-public class AppLauncherLayoutImplTest {
+public class AppLayoutImplTest {
 
     private AppLayout appLauncherLayout;
     private AppCategory appCategory1;
