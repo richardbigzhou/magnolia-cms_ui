@@ -69,7 +69,7 @@ public class DialogBuilder {
                 CssLayout fieldContainer = new CssLayout();
                 fieldContainer.setStyleName("field-container");
 
-                Field input = FieldBuilder.createField(field);
+                Field input = FieldBuilder.build(field);
 
                 bindPropertyToField(field.getName(), item.getItemProperty(field.getName()), input);
 

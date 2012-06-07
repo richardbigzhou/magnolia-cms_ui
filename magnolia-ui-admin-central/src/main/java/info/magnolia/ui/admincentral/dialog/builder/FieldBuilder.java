@@ -50,15 +50,17 @@ public class FieldBuilder {
      * @param fieldDefinition
      * @return
      */
-    public static Field createField(FieldDefinition fieldDefinition) {
+    public static Field build(FieldDefinition fieldDefinition) {
         Field input = null;
         if (fieldDefinition.getType().equals("edit")) {
             input = new TextField();
             input.setCaption(fieldDefinition.getLabel());
-            input.setStyleName("field-text");
+            input.setStyleName("textfield");
 
         } else if (fieldDefinition.equals("checkbox")) {
             input = new CheckBox(fieldDefinition.getLabel(), true);
+            input.setStyleName("textfield");
+
         }
         return input;
     }
