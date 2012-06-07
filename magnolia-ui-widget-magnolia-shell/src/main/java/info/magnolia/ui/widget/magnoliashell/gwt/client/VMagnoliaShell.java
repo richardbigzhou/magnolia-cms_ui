@@ -84,7 +84,7 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
                 @Override
                 public void invoke(String methodName, Object[] params) {
                     final String historyToken = String.valueOf(params[0]);
-                    final String title = String.valueOf(params[1]);
+                    final String title = params.length > 1 ? String.valueOf(params[1]) : "";
                     view.navigate(historyToken, title);
                 }
             });
@@ -92,7 +92,7 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
             register("activeViewportChanged", new Method() {
                 @Override
                 public void invoke(String methodName, Object[] params) {
-                    view.changeActiveViewport();
+                    view.changeActiveViewport(ViewportType.valueOf(String.valueOf(params[0])));
                 }
             });
             
