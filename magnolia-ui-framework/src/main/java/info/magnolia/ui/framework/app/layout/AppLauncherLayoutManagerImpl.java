@@ -90,21 +90,21 @@ public class AppLauncherLayoutManagerImpl implements AppLauncherLayoutManager{
             public void onAppRegistered(AppLifecycleEvent event) {
                 String name = event.getAppDescriptor().getName();
                 logger.debug("Got AppLifecycleEvent."+event.getEventType()+" for the following appDescriptor "+name);
-                sendEvent(new LayoutEvent(LayoutEventType.RELOAD_APP,event.getAppDescriptor()));
+                sendEvent(new LayoutEvent(LayoutEventType.RELOAD_APP,name));
             }
 
             @Override
             public void onAppReRegistered(AppLifecycleEvent event) {
                 String name = event.getAppDescriptor().getName();
                 logger.debug("Got AppLifecycleEvent."+event.getEventType()+" for the following appDescriptor "+name);
-                sendEvent(new LayoutEvent(LayoutEventType.RELOAD_APP,event.getAppDescriptor()));
+                sendEvent(new LayoutEvent(LayoutEventType.RELOAD_APP,name));
             }
 
             @Override
             public void onAppUnregistered(AppLifecycleEvent event) {
                 String name = event.getAppDescriptor().getName();
                 logger.debug("Got AppLifecycleEvent."+event.getEventType()+" for the following appDescriptor "+name);
-                sendEvent(new LayoutEvent(LayoutEventType.RELOAD_APP,event.getAppDescriptor()));
+                sendEvent(new LayoutEvent(LayoutEventType.RELOAD_APP,name));
             }
         });
     }

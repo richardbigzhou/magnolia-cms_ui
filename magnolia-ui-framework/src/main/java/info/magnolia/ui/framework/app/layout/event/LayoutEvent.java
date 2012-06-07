@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.framework.app.layout.event;
 
-import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.event.Event;
 
 
@@ -44,19 +43,19 @@ public class LayoutEvent implements Event<LayoutEventHandler> {
 
     private final LayoutEventType eventType;
 
-    private final AppDescriptor appDescriptor;
+    private final String appName;
 
-    public LayoutEvent(LayoutEventType eventType, AppDescriptor appDescriptor) {
+    public LayoutEvent(LayoutEventType eventType, String appName) {
         this.eventType = eventType;
-        this.appDescriptor = appDescriptor;
+        this.appName = appName;
     }
 
     public LayoutEventType getEventType() {
         return this.eventType;
     }
 
-    public AppDescriptor getAppDescriptor() {
-        return appDescriptor;
+    public String getAppName() {
+        return this.appName;
     }
 
 
@@ -74,3 +73,4 @@ public class LayoutEvent implements Event<LayoutEventHandler> {
     }
 
 }
+

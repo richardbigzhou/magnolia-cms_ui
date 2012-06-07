@@ -54,7 +54,6 @@ import javax.inject.Inject;
  * Activity for the app launcher.
  * Listen to:
  *  SystemEventBus: LayoutEvent. Reload the Layout by getting the latest available App from the {AppLauncherLayoutManager}.
- *                      In addition stop the App related to the Reload event, if it's already running.
  *  LocalEventBus : App started and App stop event. In this case, update the App button to indicate if an App is started or stopped.
  *
  * @version $Id$
@@ -86,9 +85,7 @@ public class AppLauncherActivity extends AbstractActivity implements AppLauncher
         systemEventBus.addHandler(LayoutEvent.class, new LayoutEventHandler.Adapter() {
             @Override
             public void onReloadApp(LayoutEvent event) {
-                if(isAppRegistered(event.getAppDescriptor().getName())) {
-                    //Stop app.
-                    stopAppIfRunning(event.getAppDescriptor());
+                if(isAppRegistered(event.getAppName())) {
                     //Reload Layout
                     reloadLayout();
                 }
@@ -161,9 +158,4 @@ public class AppLauncherActivity extends AbstractActivity implements AppLauncher
         this.view.activateButton(activate, appName);
     }
 
-    private void  stopAppIfRunning(AppDescriptor descriptor) {
-        if(this.appController.isAppStarted(descriptor)) {
-            this.appController.stopApplication(descriptor.getName());
-        }
-    }
 }
