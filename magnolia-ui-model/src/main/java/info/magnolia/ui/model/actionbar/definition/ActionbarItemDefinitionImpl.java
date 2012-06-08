@@ -31,18 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts;
+package info.magnolia.ui.model.actionbar.definition;
 
-import info.magnolia.ui.framework.app.AppView;
-import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
+import info.magnolia.ui.model.menu.definition.MenuItemDefinitionImpl;
 
 
 /**
- * View for the Contacts app.
- * 
- * @version $Id$
+ * Simple implementation for {@link ActionbarItemDefinition}.
  */
-public interface ContactsView extends AppView<ContactsPresenter> {
+public class ActionbarItemDefinitionImpl extends MenuItemDefinitionImpl implements ActionbarItemDefinition {
 
-    void createActionbar(ActionbarDefinition actionbarDefinition);
 }

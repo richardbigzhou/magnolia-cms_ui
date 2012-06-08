@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,44 +33,65 @@
  */
 package info.magnolia.ui.widget.actionbar.gwt.client;
 
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+import com.vaadin.terminal.gwt.client.ApplicationConnection;
+import com.vaadin.terminal.gwt.client.UIDL;
+import com.vaadin.terminal.gwt.client.ui.VNativeButton;
 
 
 /**
- * The Interface VActionbarView.
+ * The client side implementation of ActionButton.
  */
-public interface VActionbarView extends HasWidgets, IsWidget {
+public class VActionButton extends VNativeButton {
 
-    /**
-     * Presenter.
-     */
-    interface Presenter {
+    private String sectionTitle;
+
+    private String groupName;
+
+    private String actionName;
+
+    public VActionButton() {
+        super();
+        setStylePrimaryName("v-action-button");
     }
 
     /**
-     * Sets the presenter.
+     * Gets the section title.
      * 
-     * @param presenter the new presenter
+     * @return the section title
      */
-    void setPresenter(Presenter presenter);
+    public String getSectionTitle() {
+        return sectionTitle;
+    }
 
     /**
-     * Adds an action button to this action bar.
+     * Gets the group name.
      * 
-     * @param button the action button
+     * @return the group name
      */
-    void addActionButton(VActionButton button);
+    public String getGroupName() {
+        return groupName;
+    }
 
     /**
-     * Clears all sections, groups and action buttons of this action bar.
+     * Gets the action name.
+     * 
+     * @return the action name
      */
-    void clearAll();
+    public String getActionName() {
+        return actionName;
+    }
 
-    /**
-     * Checks if given widget is a child of this component.
-     */
-    boolean hasChildComponent(Widget component);
+    @Override
+    public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
+        super.updateFromUIDL(uidl, client);
+        updateNames(uidl.getStringAttribute("sectionTitle"),
+            uidl.getStringAttribute("groupName"),
+            uidl.getStringAttribute("actionName"));
+    }
 
+    private void updateNames(String sectionTitle, String groupName, String actionName) {
+        this.sectionTitle = sectionTitle;
+        this.groupName = groupName;
+        this.actionName = actionName;
+    }
 }

@@ -35,10 +35,13 @@ package info.magnolia.ui.app.contacts;
 
 import info.magnolia.ui.framework.app.AppPresenter;
 
+
 /**
  * Dummy presenter.
  * @version $Id$
  */
 public interface ContactsPresenter extends AppPresenter<ContactsPresenter> {
+
+    void onActionbarItemClicked(String actionName);
 
 }

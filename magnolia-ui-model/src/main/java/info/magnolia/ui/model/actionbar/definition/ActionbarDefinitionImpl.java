@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,77 +31,47 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.actionbar.gwt.client;
+package info.magnolia.ui.model.actionbar.definition;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.ComplexPanel;
-import com.google.gwt.user.client.ui.Widget;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 
 /**
- * The Class VActionbarGroup, which displays a group of actions within a section of the action bar.
+ * Simple implementation for {@link ActionbarDefinition}.
  */
-public class VActionbarGroup extends ComplexPanel {
-
-    private static final String CLASSNAME = "v-actionbar-group";
-
-    private final Element root = DOM.createElement("ul");
+public class ActionbarDefinitionImpl implements ActionbarDefinition {
 
     private String name;
 
-    private final Map<String, VActionbarItem> items = new HashMap<String, VActionbarItem>();
+    private final List<ActionbarSectionDefinition> sections = new ArrayList<ActionbarSectionDefinition>();
 
-    /**
-     * Instantiates a new action bar group.
-     */
-    public VActionbarGroup() {
-        setElement(root);
-        setStyleName(CLASSNAME);
-    }
-
-    /**
-     * Gets the action group name.
-     * 
-     * @return the group name
-     */
+    @Override
     public String getName() {
         return name;
     }
 
     /**
-     * Sets the action group name.
+     * Sets the action bar name.
      * 
-     * @param name the new group name
+     * @param name the new name
      */
     public void setName(String name) {
         this.name = name;
     }
 
-    /**
-     * Gets the action items registered in this action group.
-     * 
-     * @return the map of actions
-     */
-    public Map<String, VActionbarItem> getItems() {
-        return items;
-    }
-
-    /**
-     * Adds an action to this action group.
-     * 
-     * @param item the action item
-     */
-    public void addItem(VActionbarItem item) {
-        items.put(item.getName(), item);
-        add(item);
-    }
-
     @Override
-    public void add(Widget w) {
-        add(w, getElement());
+    public List<ActionbarSectionDefinition> getSections() {
+        return Collections.unmodifiableList(sections);
+    }
+
+    /**
+     * Adds a section to the action bar.
+     * 
+     * @param sectionDefinition the section definition
+     */
+    public void addSection(ActionbarSectionDefinition sectionDefinition) {
+        sections.add(sectionDefinition);
     }
 }

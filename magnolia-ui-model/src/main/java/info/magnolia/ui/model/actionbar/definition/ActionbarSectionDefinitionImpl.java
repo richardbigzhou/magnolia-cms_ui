@@ -31,18 +31,48 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts;
+package info.magnolia.ui.model.actionbar.definition;
 
-import info.magnolia.ui.framework.app.AppView;
-import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 
 /**
- * View for the Contacts app.
- * 
- * @version $Id$
+ * Simple implementation for {@link ActionbarSectionDefinition}.
  */
-public interface ContactsView extends AppView<ContactsPresenter> {
+public class ActionbarSectionDefinitionImpl implements ActionbarSectionDefinition {
 
-    void createActionbar(ActionbarDefinition actionbarDefinition);
+    private String title;
+
+    private final List<ActionbarGroupDefinition> groups = new ArrayList<ActionbarGroupDefinition>();
+
+    @Override
+    public String getTitle() {
+        return title;
+    }
+
+    /**
+     * Sets the section title.
+     * 
+     * @param title the new title
+     */
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    @Override
+    public List<ActionbarGroupDefinition> getGroups() {
+        return Collections.unmodifiableList(groups);
+    }
+
+    /**
+     * Adds a group to this section.
+     * 
+     * @param groupDefinition the group definition
+     */
+    public void addGroup(ActionbarGroupDefinition groupDefinition) {
+        groups.add(groupDefinition);
+    }
+
 }
