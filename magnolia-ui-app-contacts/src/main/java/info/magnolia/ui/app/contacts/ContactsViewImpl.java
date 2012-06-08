@@ -34,8 +34,16 @@
 package info.magnolia.ui.app.contacts;
 
 import info.magnolia.ui.admincentral.app.AbstractAppView;
+import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
+import info.magnolia.ui.model.actionbar.definition.ActionbarGroupDefinition;
+import info.magnolia.ui.model.actionbar.definition.ActionbarItemDefinition;
+import info.magnolia.ui.model.actionbar.definition.ActionbarSectionDefinition;
+import info.magnolia.ui.widget.actionbar.ActionButton;
 import info.magnolia.ui.widget.actionbar.Actionbar;
 
+import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
@@ -48,6 +56,8 @@ import com.vaadin.ui.VerticalLayout;
  */
 @SuppressWarnings("serial")
 public class ContactsViewImpl extends AbstractAppView<ContactsPresenter> implements ContactsView {
+
+    private final Actionbar actionbar = new Actionbar();
 
     public ContactsViewImpl() {
         super();
@@ -62,13 +72,39 @@ public class ContactsViewImpl extends AbstractAppView<ContactsPresenter> impleme
         wrapper.addComponent(tableContainer);
         wrapper.setExpandRatio(tableContainer, 1.0f);
 
-        wrapper.addComponent(createActionbar());
+        wrapper.addComponent(actionbar);
 
         addTab(wrapper, "Contacts");
     }
 
-    private Actionbar createActionbar() {
-        Actionbar actionbar = new Actionbar();
+    @Override
+    public void createActionbar(ActionbarDefinition actionbarDefinition) {
+
+        for (ActionbarSectionDefinition section : actionbarDefinition.getSections()) {
+            for (ActionbarGroupDefinition group : section.getGroups()) {
+                for (ActionbarItemDefinition item : group.getItems()) {
+
+                    ActionButton button = new ActionButton(item.getLabel());
+                    button.setIcon(new ThemeResource(item.getIcon()));
+
+                    final String actionName = item.getName();
+                    button.setActionName(actionName);
+                    button.setGroupName(group.getName());
+                    button.setSectionTitle(section.getTitle());
+
+                    button.addListener(new ClickListener() {
+
+                        @Override
+                        public void buttonClick(ClickEvent event) {
+                            getPresenter().onActionbarItemClicked(actionName);
+                        }
+                    });
+                    actionbar.addComponent(button);
+                }
+            }
+        }
+
+        // actionbar.setDefinition(actionbarDefinition);
 
         // actionbar.addSection("actions", "Actions");
         // actionbar.addGroup("group1", "actions");
@@ -76,7 +112,6 @@ public class ContactsViewImpl extends AbstractAppView<ContactsPresenter> impleme
         // actionbar.addGroup("group3", "actions");
         // actionbar.addAction()
 
-        return actionbar;
     }
 
 }

@@ -31,77 +31,48 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.actionbar.gwt.client;
+package info.magnolia.ui.model.actionbar.definition;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.ComplexPanel;
-import com.google.gwt.user.client.ui.Widget;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 
 /**
- * The Class VActionbarGroup, which displays a group of actions within a section of the action bar.
+ * Simple implementation for {@link ActionbarGroupDefinition}.
  */
-public class VActionbarGroup extends ComplexPanel {
-
-    private static final String CLASSNAME = "v-actionbar-group";
-
-    private final Element root = DOM.createElement("ul");
+public class ActionbarGroupDefinitionImpl implements ActionbarGroupDefinition {
 
     private String name;
 
-    private final Map<String, VActionbarItem> items = new HashMap<String, VActionbarItem>();
+    private final List<ActionbarItemDefinition> items = new ArrayList<ActionbarItemDefinition>();
 
-    /**
-     * Instantiates a new action bar group.
-     */
-    public VActionbarGroup() {
-        setElement(root);
-        setStyleName(CLASSNAME);
-    }
-
-    /**
-     * Gets the action group name.
-     * 
-     * @return the group name
-     */
+    @Override
     public String getName() {
         return name;
     }
 
     /**
-     * Sets the action group name.
+     * Sets the group name.
      * 
-     * @param name the new group name
+     * @param name the new name
      */
     public void setName(String name) {
         this.name = name;
     }
 
-    /**
-     * Gets the action items registered in this action group.
-     * 
-     * @return the map of actions
-     */
-    public Map<String, VActionbarItem> getItems() {
-        return items;
-    }
-
-    /**
-     * Adds an action to this action group.
-     * 
-     * @param item the action item
-     */
-    public void addItem(VActionbarItem item) {
-        items.put(item.getName(), item);
-        add(item);
-    }
-
     @Override
-    public void add(Widget w) {
-        add(w, getElement());
+    public List<ActionbarItemDefinition> getItems() {
+        return Collections.unmodifiableList(items);
     }
+
+    /**
+     * Adds an action item to this group.
+     * 
+     * @param itemDefinition the action item definition
+     */
+    public void addItem(ActionbarItemDefinition itemDefinition) {
+        items.add(itemDefinition);
+    }
+
 }
