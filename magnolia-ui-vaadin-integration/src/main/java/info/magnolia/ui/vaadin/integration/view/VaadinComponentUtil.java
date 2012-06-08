@@ -37,9 +37,10 @@ import info.magnolia.ui.framework.view.View;
 
 import com.vaadin.ui.Component;
 
-
 /**
- * Util methods to transform views to Vaadin Components.
+ * Utility methods to transform views to Vaadin Components and vice versa.
+ *
+ * @version $Id$
  */
 public class VaadinComponentUtil {
 
@@ -49,7 +50,8 @@ public class VaadinComponentUtil {
      * if the cast is not possible.
      */
     public static Component toVaadinComponent(View view) {
-        if(view == null){
+
+        if (view == null) {
             return null;
         }
 
@@ -60,4 +62,33 @@ public class VaadinComponentUtil {
         throw new IllegalArgumentException("View [" + view + "] must be of type " + IsVaadinComponent.class.getName());
     }
 
+    /**
+     * Wraps a component as a view implementing {@link IsVaadinComponent}.
+     */
+    public static View toView(Component component) {
+
+        if (component == null) {
+            return null;
+        }
+
+        if (component instanceof View && component instanceof IsVaadinComponent) {
+            return (View) component;
+        }
+
+        return new ComponentViewAdapter(component);
+    }
+
+    private static class ComponentViewAdapter implements View, IsVaadinComponent {
+
+        private final Component component;
+
+        public ComponentViewAdapter(Component component) {
+            this.component = component;
+        }
+
+        @Override
+        public Component asVaadinComponent() {
+            return component;
+        }
+    }
 }
