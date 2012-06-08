@@ -202,7 +202,7 @@ public class JcrBrowser extends TreeTable {
             public Action[] getActions(Object target, Object sender) {
                 // FIXME make that item type, security dependent
                 List<JcrBrowserAction> actions = new ArrayList<JcrBrowserAction>();
-                for (MenuItemDefinition menuItemDefinition : workbenchDefinition.getMenuItems()) {
+                for (MenuItemDefinition menuItemDefinition : workbenchDefinition.getActions()) {
                     actions.add(new JcrBrowserAction(menuItemDefinition));
                 }
 

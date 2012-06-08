@@ -31,41 +31,30 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.layout;
+package info.magnolia.ui.framework.app;
 
-import java.util.Collection;
-
-import info.magnolia.ui.framework.app.AppDescriptor;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Registry of available apps groups by categories.
- *
  * @version $Id$
  */
-public interface AppLauncherLayout {
+public class EventCollectingTestApp implements AppLifecycle {
 
-    /**
-     * Return the registered {AppCategory}s.
-     */
-    Collection<AppCategory> getCategories();
+    public List<String> events = new ArrayList<String>();
 
-    /**
-     * Return the specified Category.
-     *
-     * @throws IllegalArgumentException: If key don't exist.
-     */
-    AppCategory getCategory(String name) throws IllegalArgumentException;
+    @Override
+    public void start() {
+        events.add("start");
+    }
 
-    /**
-     * Returns the AppDescriptor for a given name.
-     *
-     * @throws IllegalArgumentException: If key don't exist.
-     */
-    AppDescriptor getAppDescriptor(String name) throws IllegalArgumentException;
+    @Override
+    public void focus() {
+        events.add("focus");
+    }
 
-    /**
-     * Check if the app is already registered.
-     */
-    boolean isAppAlreadyRegistered(String name);
-
+    @Override
+    public void stop() {
+        events.add("stop");
+    }
 }

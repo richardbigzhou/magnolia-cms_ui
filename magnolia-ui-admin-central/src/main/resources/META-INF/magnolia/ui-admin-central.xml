@@ -23,8 +23,8 @@
       <implementation>info.magnolia.ui.framework.app.registry.AppDescriptorRegistry</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.framework.app.layout.AppLauncherLayoutManager</type>
-      <implementation>info.magnolia.ui.framework.app.layout.AppLauncherLayoutManagerImpl</implementation>
+      <type>info.magnolia.ui.framework.app.layout.AppLayoutManager</type>
+      <implementation>info.magnolia.ui.framework.app.layout.AppLayoutManagerImpl</implementation>
     </component>
     <type-mapping>
       <type>info.magnolia.ui.framework.app.AppDescriptor</type>

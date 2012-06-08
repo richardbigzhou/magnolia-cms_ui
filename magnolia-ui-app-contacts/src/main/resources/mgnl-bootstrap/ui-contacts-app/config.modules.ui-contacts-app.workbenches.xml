@@ -342,7 +342,7 @@
         </sv:node>
       </sv:node>
     </sv:node>
-    <sv:node sv:name="menuItems">
+    <sv:node sv:name="actions">
       <sv:property sv:name="jcr:primaryType" sv:type="Name">
         <sv:value>mgnl:contentNode</sv:value>
       </sv:property>

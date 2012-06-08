@@ -36,11 +36,11 @@ package info.magnolia.ui.model.workbench.registry;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import info.magnolia.cms.beans.config.ContentRepository;
 import info.magnolia.test.mock.jcr.SessionTestUtil;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.registry.RegistrationException;
+import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.MgnlTestCase;
 import info.magnolia.test.mock.MockUtil;
 import info.magnolia.test.mock.jcr.MockEvent;
@@ -69,7 +69,7 @@ public class ConfiguredWorkbenchManagerTest extends MgnlTestCase {
     public void setUp() throws Exception {
         super.setUp();
 
-        session = SessionTestUtil.createSession(ContentRepository.CONFIG,
+        session = SessionTestUtil.createSession(RepositoryConstants.CONFIG,
                 "/modules/fooModule/workbenches/a.class=" + WorkbenchDefinition.class.getName(),
                 "/modules/fooModule/workbenches/a.workspace=foo",
                 "/modules/barModule/workbenches/b.class=" + WorkbenchDefinition.class.getName(),

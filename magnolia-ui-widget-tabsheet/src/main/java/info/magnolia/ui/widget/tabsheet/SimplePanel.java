@@ -73,8 +73,7 @@ public class SimplePanel extends AbstractComponentContainer {
             }
             this.content = content;
             requestRepaint();
-        }
-        ;
+        };
     }
 
     public ComponentContainer getContent() {

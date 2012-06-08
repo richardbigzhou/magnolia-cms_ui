@@ -99,30 +99,34 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
     private JcrView.Presenter jcrPresenter = new JcrView.Presenter() {
         @Override
         public void onItemSelection(javax.jcr.Item item) {
+            if(item == null) {
+                log.warn("Got null javax.jcr.Item. No NodeSelectedEvent will be fired.");
+                return;
+            }
             try {
-                log.info("java.jcr.Item at {} was selected. Firing NodeSelectedEvent...", item.getPath());
-                //TODO pass directly the item object ?
+                //FIXME this seemed to be triggered twice both for click row event and tableValue change even when no value has changed and only a click happened on table, see info.magnolia.ui.admincentral.tree.view.TreeViewImpl.TreeViewImpl
+                //and jcrBrowser internal obj registering for those events.
+                log.info("javax.jcr.Item at {} was selected. Firing NodeSelectedEvent...", item.getPath());
                 eventBus.fireEvent(new NodeSelectedEvent(item.getSession().getWorkspace().getName(), item.getPath()));
             } catch (RepositoryException e) {
-               shell.showError("An error occurred while selecting a row in the data grid", e);
+                shell.showError("An error occurred while selecting a row in the data grid", e);
             }
         };
     };
 
-
-
     @Inject
     public WorkbenchViewImpl(WorkbenchDefinitionRegistry workbenchRegistry, Shell shell, JcrViewBuilderProvider jcrViewBuilderProvider, WorkbenchActionFactory actionFactory, EventBus bus) {
         super();
-        setSizeFull();
-        root.setSizeFull();
-        construct();
-        setCompositionRoot(root);
         this.shell = shell;
         this.jcrViewBuilderProvider = jcrViewBuilderProvider;
         this.workbenchRegistry = workbenchRegistry;
         this.actionFactory = actionFactory;
         this.eventBus = bus;
+
+        setSizeFull();
+        root.setSizeFull();
+        construct();
+        setCompositionRoot(root);
     }
 
     @Override
@@ -132,7 +136,9 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
         try {
             workbenchDefinition = workbenchRegistry.get(id);
         } catch (RegistrationException e) {
-            throw new RuntimeException(e);
+            log.error("An error occurred while trying to get workbench [{}] in the registry",id, e);
+            shell.showError("An error occurred while trying to get workbench ["+ id + "] in the registry", e);
+            return;
         }
         jcrView = jcrViewBuilderProvider.getBuilder().build(workbenchDefinition, ViewType.TREE);
 
@@ -142,7 +148,6 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
         jcrView.asVaadinComponent();
         split.addComponent(jcrView.asVaadinComponent());
 
-        //TODO rename MenuItemDefinition to something which has more to do with actions?
         List<MenuItemDefinition> actions = buildActions(workbenchDefinition);
         //TODO provide actionBar with actions
         Actionbar bar = new Actionbar();
@@ -161,11 +166,11 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
             throw new RuntimeRepositoryException(e);
         }
 
-        List<MenuItemDefinition> defs = workbenchDefinition.getMenuItems();
+        List<MenuItemDefinition> defs = workbenchDefinition.getActions();
 
         List<MenuItemDefinition> menuItemDefinitions = new ArrayList<MenuItemDefinition>();
         for (MenuItemDefinition menuDefinition : defs) {
-            log.debug("adding definition for menu " + menuDefinition.getName());
+            log.debug("adding definition for menu {}", menuDefinition.getName());
             // TODO an optimization here would be to use reflection to test if the action implements TreeAction, instantiating it only to test this is a waste
             Action action = actionFactory.createAction(menuDefinition.getActionDefinition(), item);
 

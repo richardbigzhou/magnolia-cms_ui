@@ -53,6 +53,7 @@ import org.vaadin.rpc.client.Method;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.Container;
@@ -66,15 +67,14 @@ import com.vaadin.terminal.gwt.client.UIDL;
  *
  */
 @SuppressWarnings("serial")
-public class VShellTabSheet extends Composite implements VShellTabSheetView.Presenter, Container, ClientSideHandler {
+public class VShellTabSheet extends Composite implements HasWidgets, VShellTabSheetView.Presenter, Container, ClientSideHandler {
 
     protected String paintableId;
 
     protected ApplicationConnection client;
 
-
-
-    VShellTabSheetView view;
+    private final VShellTabSheetView view;
+    
     private final EventBus eventBus = new SimpleEventBus();
 
     public VShellTabSheet() {
@@ -180,10 +180,6 @@ public class VShellTabSheet extends Composite implements VShellTabSheetView.Pres
         return new RenderSpace();
     }
 
-    public ApplicationConnection getAppConnection() {
-        return client;
-    }
-
     private void setTabClosable(String tabId, boolean isClosable) {
         for (final VShellTabContent tab: view.getTabs()) {
             if (tab.getTabId().equals(tabId)) {
@@ -270,5 +266,25 @@ public class VShellTabSheet extends Composite implements VShellTabSheetView.Pres
             }
         });
     }};
+
+    @Override
+    public void add(Widget w) {
+        view.add(w);
+    }
+
+    @Override
+    public void clear() {
+        view.clear();
+    }
+
+    @Override
+    public Iterator<Widget> iterator() {
+        return view.iterator();
+    }
+
+    @Override
+    public boolean remove(Widget w) {
+        return view.remove(w);
+    }
 
 }

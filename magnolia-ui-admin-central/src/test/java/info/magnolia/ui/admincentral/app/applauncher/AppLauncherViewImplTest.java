@@ -41,7 +41,7 @@ import info.magnolia.ui.admincentral.shellapp.applauncher.AppLauncherViewImpl;
 import info.magnolia.ui.admincentral.shellapp.applauncher.AppLauncherViewImpl.AppGroupComponent;
 import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.layout.AppCategory;
-import info.magnolia.ui.framework.app.layout.AppLauncherLayoutImpl;
+import info.magnolia.ui.framework.app.layout.AppLayoutImpl;
 import info.magnolia.ui.vaadin.integration.widget.AppButton;
 
 import java.util.HashMap;
@@ -86,7 +86,7 @@ public class AppLauncherViewImplTest {
         Map<String, AppCategory> categories = new HashMap<String, AppCategory>();
         categories.put(cat_1, category);
         // WHEN
-        appLauncherViewImpl.registerApp(new AppLauncherLayoutImpl(categories));
+        appLauncherViewImpl.registerApp(new AppLayoutImpl(categories));
 
         // THEN
         CssLayout component =  (CssLayout)appLauncherViewImpl.asVaadinComponent();
@@ -118,7 +118,7 @@ public class AppLauncherViewImplTest {
         Map<String, AppCategory> categories = new HashMap<String, AppCategory>();
         categories.put(cat_1, category);
         // WHEN
-        appLauncherViewImpl.registerApp(new AppLauncherLayoutImpl(categories));
+        appLauncherViewImpl.registerApp(new AppLayoutImpl(categories));
 
         // THEN
         CssLayout component =  (CssLayout)appLauncherViewImpl.asVaadinComponent();
@@ -147,7 +147,7 @@ public class AppLauncherViewImplTest {
         categories.put(cat_1, category1);
         categories.put(cat_2, category2);
         // WHEN
-        appLauncherViewImpl.registerApp(new AppLauncherLayoutImpl(categories));
+        appLauncherViewImpl.registerApp(new AppLayoutImpl(categories));
 
         // THEN
         CssLayout component =  (CssLayout)appLauncherViewImpl.asVaadinComponent();
@@ -176,7 +176,7 @@ public class AppLauncherViewImplTest {
         Map<String, AppCategory> categories = new HashMap<String, AppCategory>();
         categories.put(cat_1, category);
         // WHEN
-        appLauncherViewImpl.registerApp(new AppLauncherLayoutImpl(categories));
+        appLauncherViewImpl.registerApp(new AppLayoutImpl(categories));
     }
 
     /**

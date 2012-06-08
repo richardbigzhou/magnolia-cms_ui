@@ -34,7 +34,7 @@
 package info.magnolia.ui.framework.app;
 
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.framework.app.layout.AppLauncherLayoutManager;
+import info.magnolia.ui.framework.app.layout.AppLayoutManager;
 import info.magnolia.ui.framework.event.Event;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.event.SystemEventBus;
@@ -53,7 +53,7 @@ import org.slf4j.LoggerFactory;
  * Default AppController implementation.
  *
  * Responsible for the App Event triggering (Start/Stop/Focus App events).
- * Listen to the SystemEventBuss for UnregisterdApp Event.
+ * Listen to the SystemEventBuss for UnregisteredApp Event.
  *
  * @version $Id$
  */
@@ -62,7 +62,7 @@ public class AppControllerImpl implements AppController {
 
     private static Logger log = LoggerFactory.getLogger(AppControllerImpl.class);
 
-    private AppLauncherLayoutManager appLauncherLayoutManager;
+    private AppLayoutManager appLauncherLayoutManager;
 
     private ComponentProvider componentProvider;
 
@@ -76,15 +76,17 @@ public class AppControllerImpl implements AppController {
     private LinkedList<AppLifecycle> appHistory = new LinkedList<AppLifecycle>();
 
     @Inject
-    public AppControllerImpl(AppLauncherLayoutManager appLauncherLayoutManager, ComponentProvider componentProvider, EventBus eventBus, SystemEventBus systemEventBus) {
+    public AppControllerImpl(AppLayoutManager appLauncherLayoutManager, ComponentProvider componentProvider, EventBus eventBus, SystemEventBus systemEventBus) {
         this.appLauncherLayoutManager = appLauncherLayoutManager;
         this.componentProvider = componentProvider;
         this.eventBus = eventBus;
+
         /**
-         * Listen to the SystemBuss on AppUnregistered Event.
-         * In this case, Stop the App if it's running.
+         * Listen to the system bus on AppUnregistered event.
+         * In this case, stop the App if it's running.
          */
         systemEventBus.addHandler(AppLifecycleEvent.class, new AppLifecycleEventHandler.Adapter() {
+
             @Override
             public void onAppUnregistered(AppLifecycleEvent event) {
                 if(isAppStarted(event.getAppDescriptor())) {

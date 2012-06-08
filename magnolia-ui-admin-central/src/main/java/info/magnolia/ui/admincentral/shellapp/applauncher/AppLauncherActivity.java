@@ -39,8 +39,8 @@ import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventHandler;
 import info.magnolia.ui.framework.app.layout.AppCategory;
-import info.magnolia.ui.framework.app.layout.AppLauncherLayout;
-import info.magnolia.ui.framework.app.layout.AppLauncherLayoutManager;
+import info.magnolia.ui.framework.app.layout.AppLayout;
+import info.magnolia.ui.framework.app.layout.AppLayoutManager;
 import info.magnolia.ui.framework.app.layout.event.LayoutEvent;
 import info.magnolia.ui.framework.app.layout.event.LayoutEventHandler;
 import info.magnolia.ui.framework.event.EventBus;
@@ -66,12 +66,12 @@ public class AppLauncherActivity extends AbstractActivity implements AppLauncher
 
     private AppController appController;
 
-    private AppLauncherLayoutManager appLauncherLayoutManager;
+    private AppLayoutManager appLauncherLayoutManager;
 
-    private AppLauncherLayout layout;
+    private AppLayout layout;
 
     @Inject
-    public AppLauncherActivity(AppLauncherView view, AppController appController, AppLauncherLayoutManager appLauncherLayoutManager, EventBus eventBus, SystemEventBus systemEventBus) {
+    public AppLauncherActivity(AppLauncherView view, AppController appController, AppLayoutManager appLauncherLayoutManager, EventBus eventBus, SystemEventBus systemEventBus) {
         this.view = view;
         this.appController = appController;
         this.appLauncherLayoutManager = appLauncherLayoutManager;
@@ -133,7 +133,7 @@ public class AppLauncherActivity extends AbstractActivity implements AppLauncher
     /**
      * Initialize the view.
      */
-    private void initView(AppLauncherLayout layout) {
+    private void initView(AppLayout layout) {
         view.registerApp(layout);
     }
 
