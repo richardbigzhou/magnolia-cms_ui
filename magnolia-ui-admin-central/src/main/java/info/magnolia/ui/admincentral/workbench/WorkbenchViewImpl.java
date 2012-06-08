@@ -100,12 +100,12 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
         @Override
         public void onItemSelection(javax.jcr.Item item) {
             try {
-                //FIXME this seemed to be triggered twice both for click row event and tableValue change even when novalue has changed and only a click happneed on table, see info.magnolia.ui.admincentral.tree.view.TreeViewImpl.TreeViewImpl and jcrBrowser
+                //FIXME this seemed to be triggered twice both for click row event and tableValue change even when no value has changed and only a click happened on table, see info.magnolia.ui.admincentral.tree.view.TreeViewImpl.TreeViewImpl
+                //and jcrBrowser internal obj registering for those events.
                 log.info("java.jcr.Item at {} was selected. Firing NodeSelectedEvent...", item.getPath());
-                //TODO pass directly the item object ?
                 eventBus.fireEvent(new NodeSelectedEvent(item.getSession().getWorkspace().getName(), item.getPath()));
             } catch (RepositoryException e) {
-               shell.showError("An error occurred while selecting a row in the data grid", e);
+                shell.showError("An error occurred while selecting a row in the data grid", e);
             }
         };
     };
@@ -131,7 +131,9 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
         try {
             workbenchDefinition = workbenchRegistry.get(id);
         } catch (RegistrationException e) {
-            throw new RuntimeException(e);
+            log.error("An error occurred while trying to get workbench {} in the registry",id, e);
+            shell.showError("An error occurred while trying to get workbench ["+ id + "] in the registry", e);
+            return;
         }
         jcrView = jcrViewBuilderProvider.getBuilder().build(workbenchDefinition, ViewType.TREE);
 
@@ -160,11 +162,11 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
             throw new RuntimeRepositoryException(e);
         }
 
-        List<MenuItemDefinition> defs = workbenchDefinition.getMenuItems();
+        List<MenuItemDefinition> defs = workbenchDefinition.getActions();
 
         List<MenuItemDefinition> menuItemDefinitions = new ArrayList<MenuItemDefinition>();
         for (MenuItemDefinition menuDefinition : defs) {
-            log.debug("adding definition for menu " + menuDefinition.getName());
+            log.debug("adding definition for menu {}", menuDefinition.getName());
             // TODO an optimization here would be to use reflection to test if the action implements TreeAction, instantiating it only to test this is a waste
             Action action = actionFactory.createAction(menuDefinition.getActionDefinition(), item);
 
