@@ -99,10 +99,14 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
     private JcrView.Presenter jcrPresenter = new JcrView.Presenter() {
         @Override
         public void onItemSelection(javax.jcr.Item item) {
+            if(item == null) {
+                log.warn("Got null javax.jcr.Item. No NodeSelectedEvent will be fired.");
+                return;
+            }
             try {
                 //FIXME this seemed to be triggered twice both for click row event and tableValue change even when no value has changed and only a click happened on table, see info.magnolia.ui.admincentral.tree.view.TreeViewImpl.TreeViewImpl
                 //and jcrBrowser internal obj registering for those events.
-                log.info("java.jcr.Item at {} was selected. Firing NodeSelectedEvent...", item.getPath());
+                log.info("javax.jcr.Item at {} was selected. Firing NodeSelectedEvent...", item.getPath());
                 eventBus.fireEvent(new NodeSelectedEvent(item.getSession().getWorkspace().getName(), item.getPath()));
             } catch (RepositoryException e) {
                 shell.showError("An error occurred while selecting a row in the data grid", e);
@@ -113,15 +117,16 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
     @Inject
     public WorkbenchViewImpl(WorkbenchDefinitionRegistry workbenchRegistry, Shell shell, JcrViewBuilderProvider jcrViewBuilderProvider, WorkbenchActionFactory actionFactory, EventBus bus) {
         super();
-        setSizeFull();
-        root.setSizeFull();
-        construct();
-        setCompositionRoot(root);
         this.shell = shell;
         this.jcrViewBuilderProvider = jcrViewBuilderProvider;
         this.workbenchRegistry = workbenchRegistry;
         this.actionFactory = actionFactory;
         this.eventBus = bus;
+
+        setSizeFull();
+        root.setSizeFull();
+        construct();
+        setCompositionRoot(root);
     }
 
     @Override
@@ -131,7 +136,7 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
         try {
             workbenchDefinition = workbenchRegistry.get(id);
         } catch (RegistrationException e) {
-            log.error("An error occurred while trying to get workbench {} in the registry",id, e);
+            log.error("An error occurred while trying to get workbench [{}] in the registry",id, e);
             shell.showError("An error occurred while trying to get workbench ["+ id + "] in the registry", e);
             return;
         }
@@ -143,7 +148,6 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
         jcrView.asVaadinComponent();
         split.addComponent(jcrView.asVaadinComponent());
 
-        //TODO rename MenuItemDefinition to something which has more to do with actions?
         List<MenuItemDefinition> actions = buildActions(workbenchDefinition);
         //TODO provide actionBar with actions
         Actionbar bar = new Actionbar();
