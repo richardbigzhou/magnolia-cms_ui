@@ -37,16 +37,16 @@ import com.vaadin.data.Property;
 
 /**
  * Basic implementation of {@link com.vaadin.data.Property}.
+ *
+ * TODO dlipp - this impl is not depending on jcr, so it could/should be located in a different package.
  */
 public class BaseProperty implements Property {
 
     private Object value;
-    private Class<?> type;
     private boolean readOnly;
 
-    public BaseProperty(Object value, Class<?> type) {
+    public BaseProperty(Object value) {
         this.value = value;
-        this.type = type;
     }
 
     @Override
@@ -64,7 +64,7 @@ public class BaseProperty implements Property {
 
     @Override
     public Class<?> getType() {
-        return type;
+        return value.getClass();
     }
 
     @Override

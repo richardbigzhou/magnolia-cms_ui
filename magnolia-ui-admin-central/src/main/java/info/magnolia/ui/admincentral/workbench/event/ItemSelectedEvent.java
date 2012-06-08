@@ -33,21 +33,23 @@
  */
 package info.magnolia.ui.admincentral.workbench.event;
 
+
 import info.magnolia.ui.framework.event.Event;
 import info.magnolia.ui.framework.event.EventHandler;
 
 
 /**
- * This event is fired when an node (ie a row in the data grid within the workbench) is selected.
-
+ * This event is fired when an item is selected (ie a row in the data grid within the workbench representing either a {@link javax.jcr.Node} or a {@link javax.jcr.Property}).
+ * @version $Id$
+ *
  */
-public class NodeSelectedEvent implements Event<NodeSelectedEvent.Handler> {
+public class ItemSelectedEvent implements Event<ItemSelectedEvent.Handler> {
 
     /**
-     * Handles {@link NodeSelectedEvent} events.
+     * Handles {@link ItemSelectedEvent} events.
      */
     public static interface Handler extends EventHandler {
-        void onNodeSelected(NodeSelectedEvent event);
+        void onItemSelected(ItemSelectedEvent event);
     }
 
     private String workspace;
@@ -56,10 +58,10 @@ public class NodeSelectedEvent implements Event<NodeSelectedEvent.Handler> {
 
     @Override
     public void dispatch(Handler handler) {
-        handler.onNodeSelected(this);
+        handler.onItemSelected(this);
     }
 
-    public NodeSelectedEvent(String workspace, String path) {
+    public ItemSelectedEvent(String workspace, String path) {
         this.workspace = workspace;
         this.path = path;
     }

@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral.list.view;
 
-import static com.vaadin.terminal.Sizeable.UNITS_PERCENTAGE;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.ui.admincentral.column.Column;
 import info.magnolia.ui.admincentral.column.EditHandler;
@@ -75,8 +74,7 @@ public class ListViewImpl implements ListView, IsVaadinComponent {
     public ListViewImpl(WorkbenchDefinition workbenchDefinition, TreeModel treeModel){
         this.treeModel = treeModel;
         table = new Table();
-        table.setSizeUndefined();
-        table.setHeight(100, UNITS_PERCENTAGE);
+        table.setSizeFull();
         table.addStyleName("striped");
 
         // next two lines are required to make the browser (Table) react on selection change via mouse
