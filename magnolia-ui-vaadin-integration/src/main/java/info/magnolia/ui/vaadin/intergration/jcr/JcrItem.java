@@ -33,11 +33,13 @@
  */
 package info.magnolia.ui.vaadin.intergration.jcr;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+import info.magnolia.context.MgnlContext;
+import info.magnolia.jcr.RuntimeRepositoryException;
+import info.magnolia.jcr.util.PropertyUtil;
 
+import java.util.Collection;
+
+import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
@@ -49,47 +51,55 @@ import com.vaadin.data.Property;
 /**
  * Base implementation of an {@link com.vaadin.data.Item} based on a {@link javax.jcr.Node}.
  */
-public class BaseItem implements Item {
+public class JcrItem implements Item {
 
     static final String UN_IDENTIFIED = "?";
 
-    private static final Logger log = LoggerFactory.getLogger(BaseItem.class);
+    private static final Logger log = LoggerFactory.getLogger(JcrItem.class);
 
     private final String jcrIdentifier;
+    private final String jcrWorkspace;
 
-    private HashMap<Object, Property> properties = new LinkedHashMap<Object, Property>();
-
-    public BaseItem(javax.jcr.Node jcrNode) {
+    public JcrItem(Node jcrNode) {
         String identifier;
+        String workspace;
         try {
             identifier = jcrNode.getIdentifier();
+            workspace = jcrNode.getSession().getWorkspace().getName();
         } catch (RepositoryException e) {
             log.error("Couldn't retrieve identifier of jcr node", e);
             identifier = UN_IDENTIFIED;
+            workspace = UN_IDENTIFIED;
         }
         jcrIdentifier = identifier;
+        jcrWorkspace = workspace;
     }
 
     @Override
     public Property getItemProperty(Object id) {
-        return properties.get(id);
+        Object value;
+        try {
+            value = PropertyUtil.getProperty(getNode(), (String) id).getString();
+        } catch (RepositoryException e) {
+            throw new RuntimeRepositoryException(e);
+        }
+        return new BaseProperty(value);
     }
 
     @Override
     public Collection<Object> getItemPropertyIds() {
-       return Collections.unmodifiableCollection(properties.keySet());
+        // TODO dlipp - not clear where these could be retrieved from...
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean addItemProperty(Object id, Property property) {
-        properties.put(id, property);
-        return true;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean removeItemProperty(Object id) throws UnsupportedOperationException {
-        properties.remove(id);
-        return true;
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -99,5 +109,9 @@ public class BaseItem implements Item {
      */
     public String getIdentifier() {
         return jcrIdentifier;
+    }
+
+    public Node getNode() throws RepositoryException{
+        return MgnlContext.getJCRSession(jcrWorkspace).getNodeByIdentifier(jcrIdentifier);
     }
 }

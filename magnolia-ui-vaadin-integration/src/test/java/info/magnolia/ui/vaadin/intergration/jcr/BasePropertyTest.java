@@ -45,8 +45,7 @@ public class BasePropertyTest {
     public void testGetValue() throws Exception {
         // GIVEN
         final String value = "value";
-        final Class<String> type = String.class;
-        final BaseProperty property = new BaseProperty(value, type);
+        final BaseProperty property = new BaseProperty(value);
 
         // WHEN
         final Object result = property.getValue();
@@ -59,22 +58,20 @@ public class BasePropertyTest {
     public void testGetType() throws Exception {
         // GIVEN
         final String value = "value";
-        final Class<String> type = String.class;
-        final BaseProperty property = new BaseProperty(value, type);
+        final BaseProperty property = new BaseProperty(value);
 
         // WHEN
         final Class<?> result = property.getType();
 
         // THEN
-        assertEquals(type, result);
+        assertEquals(value.getClass(), result);
     }
 
     @Test
     public void testSetValue() throws Exception {
         // GIVEN
         final String value = "old";
-        final Class<String> type = String.class;
-        final BaseProperty property = new BaseProperty(value, type);
+        final BaseProperty property = new BaseProperty(value);
         final String newValue = "new";
 
         // WHEN
@@ -88,8 +85,7 @@ public class BasePropertyTest {
     public void testSetReadOnlyValue() throws Exception {
         // GIVEN
         final String value = "old";
-        final Class<String> type = String.class;
-        final BaseProperty property = new BaseProperty(value, type);
+        final BaseProperty property = new BaseProperty(value);
         property.setReadOnly(true);
         assertEquals(true, property.isReadOnly());
 
