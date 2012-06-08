@@ -44,7 +44,7 @@ import info.magnolia.ui.admincentral.jcr.view.JcrView.ViewType;
 import info.magnolia.ui.admincentral.jcr.view.builder.JcrViewBuilderProvider;
 import info.magnolia.ui.admincentral.tree.action.TreeAction;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
-import info.magnolia.ui.admincentral.workbench.event.NodeSelectedEvent;
+import info.magnolia.ui.admincentral.workbench.event.ItemSelectedEvent;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.action.Action;
@@ -100,14 +100,14 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
         @Override
         public void onItemSelection(javax.jcr.Item item) {
             if(item == null) {
-                log.warn("Got null javax.jcr.Item. No NodeSelectedEvent will be fired.");
+                log.warn("Got null javax.jcr.Item. No ItemSelectedEvent will be fired.");
                 return;
             }
             try {
                 //FIXME this seemed to be triggered twice both for click row event and tableValue change even when no value has changed and only a click happened on table, see info.magnolia.ui.admincentral.tree.view.TreeViewImpl.TreeViewImpl
                 //and jcrBrowser internal obj registering for those events.
-                log.info("javax.jcr.Item at {} was selected. Firing NodeSelectedEvent...", item.getPath());
-                eventBus.fireEvent(new NodeSelectedEvent(item.getSession().getWorkspace().getName(), item.getPath()));
+                log.info("javax.jcr.Item at {} was selected. Firing ItemSelectedEvent...", item.getPath());
+                eventBus.fireEvent(new ItemSelectedEvent(item.getSession().getWorkspace().getName(), item.getPath()));
             } catch (RepositoryException e) {
                 shell.showError("An error occurred while selecting a row in the data grid", e);
             }
