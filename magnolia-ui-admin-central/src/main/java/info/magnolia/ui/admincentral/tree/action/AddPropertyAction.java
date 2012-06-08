@@ -37,7 +37,7 @@ import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
-import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.cms.core.Path;
 import info.magnolia.ui.framework.event.EventBus;
 
 
@@ -60,7 +60,8 @@ public class AddPropertyAction extends RepositoryOperationAction<AddPropertyActi
     @Override
     protected void onExecute(Item item) throws RepositoryException {
         Node node = (Node) item;
-        String name = NodeUtil.getName(node);
+        String parentPath = "/".equals(node.getPath()) ? node.getPath(): node.getParent().getPath();
+        String name = Path.getUniqueLabel(node.getSession(), parentPath, "untitled");
         node.setProperty(name, "");
     }
 }

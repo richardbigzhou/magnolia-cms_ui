@@ -158,6 +158,10 @@ public class JcrBrowser extends TreeTable {
         }
 
         public void handleAction(ContainerItemId itemId) {
+            if(itemId == null) {
+                //assume jcrBrowser contains no data do we need to start from root.
+                itemId = container.getItemByPath("/");
+            }
             try {
                 try {
                     treeModel.execute(actionDefinition, container.getJcrItem(itemId));
