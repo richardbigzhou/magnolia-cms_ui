@@ -35,7 +35,9 @@ package info.magnolia.ui.widget.dialog;
 
 
 
+import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.widget.dialog.action.Action;
+import info.magnolia.ui.widget.dialog.event.DialogCommitEvent;
 import info.magnolia.ui.widget.dialog.gwt.client.VDialog;
 import info.magnolia.ui.widget.tabsheet.ShellTab;
 import info.magnolia.ui.widget.tabsheet.ShellTabSheet;
@@ -73,6 +75,7 @@ public class Dialog extends AbstractComponent implements ServerSideHandler, Item
 
     private ShellTabSheet tabsheet = new ShellTabSheet();
     private final String SHOW_ALL = "show all";
+    private EventBus eventBus;
 
     /**
      * Item connected to this dialog as datasource.
@@ -99,7 +102,8 @@ public class Dialog extends AbstractComponent implements ServerSideHandler, Item
     private boolean readThrough;
     private boolean writeThrough;
 
-    public Dialog() {
+    public Dialog(EventBus eventBus) {
+        this.eventBus = eventBus;
         setImmediate(true);
         showAllTab(true);
         registerActions();
@@ -226,9 +230,7 @@ public class Dialog extends AbstractComponent implements ServerSideHandler, Item
      */
     @Override
     public void commit() throws SourceException, InvalidValueException {
-        for (Field field : fields.values()) {
-            field.commit();
-        }
+        eventBus.fireEvent(new DialogCommitEvent(itemDatasource));
         closeDialog();
     }
 

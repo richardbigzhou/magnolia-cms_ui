@@ -35,9 +35,11 @@ package info.magnolia.ui.admincentral.dialog;
 
 import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.admincentral.dialog.builder.DialogBuilder;
+import info.magnolia.ui.admincentral.workbench.event.ContentChangedEvent;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 import info.magnolia.ui.widget.dialog.Dialog;
+import info.magnolia.ui.widget.dialog.event.DialogCommitEvent;
 
 import com.vaadin.data.Item;
 
@@ -53,11 +55,21 @@ public class DialogPresenter extends Dialog {
     private MagnoliaShell shell;
     private EventBus eventBus;
 
-    public DialogPresenter(DialogBuilder dialogBuilder, DialogDefinition dialogDefinition, MagnoliaShell shell, EventBus eventBus) {
+    public DialogPresenter(DialogBuilder dialogBuilder, DialogDefinition dialogDefinition, MagnoliaShell shell, final EventBus eventBus) {
+        super(eventBus);
         this.dialogBuilder = dialogBuilder;
         this.dialogDefinition = dialogDefinition;
         this.shell = shell;
         this.eventBus = eventBus;
+
+        eventBus.addHandler(DialogCommitEvent.class, new DialogCommitEvent.Handler() {
+
+            @Override
+            public void onDialogCommit(DialogCommitEvent event) {
+                Item itemChanged = event.getItem();
+                eventBus.fireEvent(new ContentChangedEvent(itemChanged.getItemProperty("workspace").toString(), itemChanged.getItemProperty("path").toString()));
+            }
+        });
     }
 
     public void showDialog(Item selectedBean) {

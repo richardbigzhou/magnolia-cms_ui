@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,40 +31,40 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.tree.action;
+package info.magnolia.ui.widget.dialog.event;
 
-import info.magnolia.ui.admincentral.dialog.DialogPresenter;
-import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
-import info.magnolia.ui.model.action.ActionBase;
-import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.vaadin.intergration.jcr.BaseItem;
+import com.vaadin.data.Item;
 
-import javax.jcr.Node;
-
+import info.magnolia.ui.framework.event.Event;
+import info.magnolia.ui.framework.event.EventHandler;
 
 /**
- * Opens a dialog for editing a nodeToEdit in a tree.
- * <p/>
- * TODO: add support for configuring supported itemTypes, maybe in base class where no config means all
+ * DialogCommitEvent.
  *
  */
-public class OpenEditDialogAction extends ActionBase<OpenEditDialogActionDefinition> {
+public class DialogCommitEvent implements Event<DialogCommitEvent.Handler> {
 
-    private DialogPresenterFactory dialogPresenterFactory;
+    private Item item;
 
-    private Node nodeToEdit;
+    /**
+     * Handler.
+     *
+     */
+    public static interface Handler extends EventHandler {
+        void onDialogCommit(DialogCommitEvent event);
+    }
 
-    public OpenEditDialogAction(OpenEditDialogActionDefinition definition, Node nodeToEdit, DialogPresenterFactory dialogPresenterFactory) {
-        super(definition);
-        this.nodeToEdit = nodeToEdit;
-        this.dialogPresenterFactory = dialogPresenterFactory;
+    public DialogCommitEvent(Item itemDatasource) {
+        this.item = itemDatasource;
     }
 
     @Override
-    public void execute() throws ActionExecutionException {
-
-            DialogPresenter dialogPresenter = dialogPresenterFactory.createDialog(getDefinition().getDialogName());
-            dialogPresenter.showDialog(new BaseItem(nodeToEdit));
-
+    public void dispatch(Handler handler) {
+        handler.onDialogCommit(this);
     }
+
+    public Item getItem() {
+        return item;
+    }
+
 }
