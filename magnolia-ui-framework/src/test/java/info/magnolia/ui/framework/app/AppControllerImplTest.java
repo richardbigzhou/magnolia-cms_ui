@@ -35,6 +35,7 @@ package info.magnolia.ui.framework.app;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
@@ -58,31 +59,11 @@ import org.junit.Test;
  */
 public class AppControllerImplTest {
 
-    public static class EventCollectingApp implements AppLifecycle {
-
-        List<String> eventsReceived = new ArrayList<String>();
-
-        @Override
-        public void start() {
-            eventsReceived.add("start");
-        }
-
-        @Override
-        public void focus() {
-            eventsReceived.add("focus");
-        }
-
-        @Override
-        public void stop() {
-            eventsReceived.add("stop");
-        }
-    }
-
-    public static class TestApp extends EventCollectingApp {
+    public static class TestApp extends EventCollectingTestApp {
 
     }
 
-    public static class AnotherTestApp extends EventCollectingApp {
+    public static class AnotherTestApp extends EventCollectingTestApp {
 
     }
 
@@ -150,8 +131,9 @@ public class AppControllerImplTest {
         appController.startIfNotAlreadyRunning("test");
 
         // THEN
-        assertEquals(1, app.eventsReceived.size());
-        assertEquals("start", app.eventsReceived.get(0));
+        assertTrue(appController.isAppStarted(appDescriptor));
+        assertEquals(1, app.events.size());
+        assertEquals("start", app.events.get(0));
 
         assertEquals(1, eventCollector.events.size());
         assertEquals(AppEventType.STARTED, eventCollector.events.get(0).getEventType());
@@ -189,9 +171,10 @@ public class AppControllerImplTest {
         appController.startIfNotAlreadyRunningThenFocus("test");
 
         // THEN
-        assertEquals(2, app.eventsReceived.size());
-        assertEquals("start", app.eventsReceived.get(0));
-        assertEquals("focus", app.eventsReceived.get(1));
+        assertTrue(appController.isAppStarted(appDescriptor));
+        assertEquals(2, app.events.size());
+        assertEquals("start", app.events.get(0));
+        assertEquals("focus", app.events.get(1));
 
         assertEquals(2, eventCollector.events.size());
         assertEquals(AppEventType.STARTED, eventCollector.events.get(0).getEventType());
@@ -227,15 +210,15 @@ public class AppControllerImplTest {
 
         appController.startIfNotAlreadyRunning("test");
 
-        app.eventsReceived.clear();
+        app.events.clear();
         eventCollector.events.clear();
 
         // WHEN
         appController.stopApplication("test");
 
         // THEN
-        assertEquals(1, app.eventsReceived.size());
-        assertEquals("stop", app.eventsReceived.get(0));
+        assertEquals(1, app.events.size());
+        assertEquals("stop", app.events.get(0));
 
         assertEquals(1, eventCollector.events.size());
         assertEquals(AppEventType.STOPPED, eventCollector.events.get(0).getEventType());
@@ -279,16 +262,16 @@ public class AppControllerImplTest {
         appController.startIfNotAlreadyRunningThenFocus("test1");
         appController.startIfNotAlreadyRunningThenFocus("test2");
 
-        app1.eventsReceived.clear();
-        app2.eventsReceived.clear();
+        app1.events.clear();
+        app2.events.clear();
         eventCollector.events.clear();
 
         // WHEN
         appController.stopCurrentApplication();
 
         // THEN
-        assertEquals(1, app2.eventsReceived.size());
-        assertEquals("stop", app2.eventsReceived.get(0));
+        assertEquals(1, app2.events.size());
+        assertEquals("stop", app2.events.get(0));
 
         assertEquals(2, eventCollector.events.size());
         assertEquals(AppEventType.STOPPED, eventCollector.events.get(0).getEventType());

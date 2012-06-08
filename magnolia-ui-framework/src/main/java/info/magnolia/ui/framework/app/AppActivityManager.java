@@ -35,7 +35,7 @@ package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.framework.activity.Activity;
 import info.magnolia.ui.framework.activity.ActivityManager;
-import info.magnolia.ui.framework.activity.ActivityMapperImpl;
+import info.magnolia.ui.framework.activity.ActivityMapper;
 import info.magnolia.ui.framework.app.layout.AppCategory;
 import info.magnolia.ui.framework.app.layout.AppLayoutManager;
 import info.magnolia.ui.framework.event.EventBus;
@@ -54,7 +54,7 @@ public class AppActivityManager extends ActivityManager {
     private AppController appController;
     private final Map<Class<? extends Place>, String> placeToAppMapping = new HashMap<Class<? extends Place>, String>();
 
-    public AppActivityManager(ActivityMapperImpl appActivityMapper, EventBus eventBus, AppLayoutManager appLauncherLayoutManager, AppController appController) {
+    public AppActivityManager(ActivityMapper appActivityMapper, EventBus eventBus, AppLayoutManager appLauncherLayoutManager, AppController appController) {
         super(appActivityMapper, eventBus);
         this.appController = appController;
 
