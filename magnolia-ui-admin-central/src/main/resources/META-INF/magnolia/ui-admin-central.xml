@@ -109,10 +109,6 @@
       <implementation>info.magnolia.ui.admincentral.app.assets.AssetsViewImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.dialog.registry.DummyDialogDefinitionManager</type>
-      <implementation>info.magnolia.ui.admincentral.dialog.registry.DummyDialogDefinitionManager</implementation>
-    </component>
-    <component>
       <type>info.magnolia.ui.admincentral.dialog.DialogPresenterFactory</type>
       <implementation>info.magnolia.ui.admincentral.dialog.DialogPresenterFactoryImpl</implementation>
     </component>
@@ -136,6 +132,15 @@
      <component>
       <type>info.magnolia.ui.model.workbench.registry.ConfiguredWorkbenchDefinitionManager</type>
       <implementation>info.magnolia.ui.model.workbench.registry.ConfiguredWorkbenchDefinitionManager</implementation>
+    </component>
+  </components>
+
+  <components>
+   <id>default-dialog</id>
+
+     <component>
+      <type>info.magnolia.ui.model.dialog.registry.ConfiguredDialogDefinitionManager</type>
+      <implementation>info.magnolia.ui.model.dialog.registry.ConfiguredDialogDefinitionManager</implementation>
     </component>
   </components>
 

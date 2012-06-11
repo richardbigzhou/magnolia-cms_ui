@@ -69,13 +69,13 @@ public class DummyDialogDefinitionProvider implements DialogDefinitionProvider {
         personal.setLabel("Personal");
 
         FieldDefinition name = new FieldDefinition();
-        name.setName("name");
-        name.setLabel("data.dialog.contact.name.label");
+        name.setName("statustitle");
+        name.setLabel("data.dialog.contact.status.label");
         name.setType("edit");
         personal.addField(name);
 
         FieldDefinition title = new FieldDefinition();
-        title.setName("title");
+        title.setName("status");
         title.setLabel("data.dialog.contact.title.label");
         title.setType("edit");
         personal.addField(title);

@@ -38,6 +38,7 @@ import info.magnolia.ui.admincentral.dialog.builder.DialogBuilder;
 import info.magnolia.ui.admincentral.workbench.event.ContentChangedEvent;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
+import info.magnolia.ui.vaadin.intergration.jcr.JcrItem;
 import info.magnolia.ui.widget.dialog.Dialog;
 import info.magnolia.ui.widget.dialog.event.DialogCommitEvent;
 
@@ -66,7 +67,10 @@ public class DialogPresenter extends Dialog {
 
             @Override
             public void onDialogCommit(DialogCommitEvent event) {
-                Item itemChanged = event.getItem();
+                JcrItem itemChanged = (JcrItem)event.getItem();
+                //itemChanged.getNode().getSession().save();
+
+
                 eventBus.fireEvent(new ContentChangedEvent(itemChanged.getItemProperty("workspace").toString(), itemChanged.getItemProperty("path").toString()));
             }
         });

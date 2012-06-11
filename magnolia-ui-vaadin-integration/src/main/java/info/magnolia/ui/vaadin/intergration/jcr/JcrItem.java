@@ -47,11 +47,14 @@ import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
 
 /**
  * Base implementation of an {@link com.vaadin.data.Item} based on a {@link javax.jcr.Node}.
+ * Implements {Property.ValueChangeListener} in order to inform/change JCR property when a
+ * Vaim property has changed.
  */
-public class JcrItem implements Item {
+public class JcrItem implements Item, Property.ValueChangeListener {
 
     static final String UN_IDENTIFIED = "?";
 
@@ -79,11 +82,19 @@ public class JcrItem implements Item {
     public Property getItemProperty(Object id) {
         Object value;
         try {
-            value = PropertyUtil.getProperty(getNode(), (String) id).getString();
+            //FIXME Temp solution. We should create a JcrItem with properties defined by a FieldDefinition related to the Item.
+            if(!getNode().hasProperty((String) id)) {
+                value = new String("");
+            } else {
+                value = PropertyUtil.getProperty(getNode(), (String) id).getString();
+            }
         } catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);
         }
-        return new BaseProperty(value);
+        BaseProperty property = new BaseProperty((String)id, value);
+        // add PropertyChange Listener
+        property.addListener(this);
+        return property;
     }
 
     @Override
@@ -94,12 +105,45 @@ public class JcrItem implements Item {
 
     @Override
     public boolean addItemProperty(Object id, Property property) {
-        throw new UnsupportedOperationException();
+        // add PropertyChange Listener
+        ((BaseProperty)property).addListener(this);
+
+        log.debug("Add new Property Item name "+id+" with value "+property.getValue());
+        try {
+            if(!getNode().hasProperty((String) id)) {
+                //Create Property.
+                getNode().setProperty((String) id, (String)property.getValue());
+                return true;
+            } else {
+                //FIXME Should throw exception
+                log.warn("Property "+id+" already exist.do nothing");
+                return false;
+            }
+        }
+        catch (RepositoryException e) {
+            log.error("",e);
+            return false;
+        }
     }
 
     @Override
     public boolean removeItemProperty(Object id) throws UnsupportedOperationException {
-        throw new UnsupportedOperationException();
+        log.debug("Remove Property Item name "+id);
+        try {
+            if(getNode().hasProperty((String) id)) {
+                //Create Property.
+                getNode().getProperty((String)id).remove();
+                return true;
+            } else {
+                //FIXME Should throw exception
+                log.warn("Property "+id+" do Not exist. do nothing");
+                return false;
+            }
+        }
+        catch (RepositoryException e) {
+            log.error("",e);
+            return false;
+        }
     }
 
     /**
@@ -113,5 +157,27 @@ public class JcrItem implements Item {
 
     public Node getNode() throws RepositoryException{
         return MgnlContext.getJCRSession(jcrWorkspace).getNodeByIdentifier(jcrIdentifier);
+    }
+
+    @Override
+    public void valueChange(ValueChangeEvent event) {
+        Property property = event.getProperty();
+        if(property instanceof BaseProperty) {
+            String name = ((BaseProperty)property).getPropertyName();
+            Object value = property.getValue();
+
+            try {
+                if(getNode().hasProperty(name)) {
+                    log.debug("Update existing propertie: "+name+ " with value: "+value);
+                    PropertyUtil.getProperty(getNode(), name).setValue((String)value);
+                }else {
+                    addItemProperty(name,property);
+                }
+            }
+            catch (RepositoryException e) {
+                log.error("",e);
+            }
+
+        }
     }
 }
