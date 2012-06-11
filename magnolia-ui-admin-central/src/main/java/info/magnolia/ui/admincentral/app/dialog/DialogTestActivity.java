@@ -33,11 +33,13 @@
  */
 package info.magnolia.ui.admincentral.app.dialog;
 
-import info.magnolia.ui.framework.app.AbstractAppActivity;
 import info.magnolia.ui.admincentral.dialog.DialogPresenter;
 import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
+import info.magnolia.ui.framework.app.AbstractAppActivity;
 
 import javax.inject.Inject;
+
+import com.vaadin.data.Item;
 
 /**
  * Activity for the Pages app.
@@ -45,8 +47,9 @@ import javax.inject.Inject;
  * @version $Id$
  */
 public class DialogTestActivity extends AbstractAppActivity<DialogTestPresenter> implements DialogTestPresenter {
-    
+
     private DialogPresenterFactory factory;
+    private Item selectedBean;
 
     @Inject
     public DialogTestActivity(DialogTestView view, DialogPresenterFactory factory) {
@@ -56,12 +59,21 @@ public class DialogTestActivity extends AbstractAppActivity<DialogTestPresenter>
 
     @Override
     public void openDialog() {
-        DialogPresenter presenter = factory.createDialog("testDialog");
-        presenter.showDialog();
+        DialogPresenter presenter = factory.createDialog("ui-contacts-app:contact");
+
+        presenter.showDialog(selectedBean);
     }
 
     @Override
     public DialogTestPresenter getReference() {
         return this;
+    }
+
+    /* (non-Javadoc)
+     * @see info.magnolia.ui.admincentral.app.dialog.DialogTestPresenter#setSelected(com.vaadin.data.Property)
+     */
+    @Override
+    public void setSelected(Item item) {
+        this.selectedBean = item;
     }
 }

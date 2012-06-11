@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,40 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.workbench;
-
-import info.magnolia.ui.model.action.ActionDefinition;
-import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
-
-import javax.jcr.Item;
-import javax.jcr.Node;
-
-import com.vaadin.ui.ComponentContainer;
-
+package info.magnolia.ui.admincentral.app.dialog.model;
 
 /**
- * TODO write javadoc.
- * @version $Id$
- * 
+ * ContactGroup.
+ *
+ * @author ejervidalo
  */
-public interface WorkbenchView extends ComponentContainer {
-
-    void setPresenter(final Presenter presenter);
-
-    void initWorkbench(final WorkbenchDefinition definintion);
-
-    void refreshNode(Node node);
-
-    /**
-     * Presenter.
-     * @version $id
-     */
-    public interface Presenter {
-
-        void onItemSelected(final Item item);
-
-        void onActionbarItemClicked(ActionDefinition actionDefinition);
-
-    }
+public class ContactGroup {
+    private String name;
+    private String description;
 
 }

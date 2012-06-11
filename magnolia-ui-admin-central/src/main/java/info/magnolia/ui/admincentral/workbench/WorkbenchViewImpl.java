@@ -33,38 +33,23 @@
  */
 package info.magnolia.ui.admincentral.workbench;
 
-import info.magnolia.context.MgnlContext;
-import info.magnolia.jcr.RuntimeRepositoryException;
-import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.admincentral.jcr.view.JcrView;
 import info.magnolia.ui.admincentral.jcr.view.JcrView.ViewType;
 import info.magnolia.ui.admincentral.jcr.view.builder.JcrViewBuilderProvider;
-import info.magnolia.ui.admincentral.tree.action.TreeAction;
-import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
-import info.magnolia.ui.admincentral.workbench.event.ItemSelectedEvent;
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
-import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarGroupDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarItemDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarSectionDefinition;
-import info.magnolia.ui.model.menu.definition.MenuItemDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.model.workbench.registry.WorkbenchDefinitionRegistry;
 import info.magnolia.ui.widget.actionbar.ActionButton;
 import info.magnolia.ui.widget.actionbar.Actionbar;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
-import javax.jcr.Item;
-import javax.jcr.RepositoryException;
+import javax.jcr.Node;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,61 +74,32 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
 
     private final VerticalLayout root = new VerticalLayout();
 
-    private Presenter presenter;
-
     private final HorizontalLayout split = new HorizontalLayout();
 
     private final HorizontalLayout toolbar = new HorizontalLayout();
+
+    private Presenter presenter;
 
     private JcrView jcrView;
 
     private final JcrViewBuilderProvider jcrViewBuilderProvider;
 
-    private final WorkbenchDefinitionRegistry workbenchRegistry;
-
-    private final WorkbenchActionFactory actionFactory;
-
     protected String path = "/";
-
-    private final Shell shell;
-
-    private final EventBus eventBus;
-
-    private Item selectedItem;
 
     private final Map<String, ActionbarItemDefinition> actions = new LinkedHashMap<String, ActionbarItemDefinition>();
 
     private final JcrView.Presenter jcrPresenter = new JcrView.Presenter() {
 
         @Override
-        public void onItemSelection(Item item) {
-            if (item == null) {
-                log.warn("Got null javax.jcr.Item. No ItemSelectedEvent will be fired.");
-                return;
-            }
-            try {
-                // FIXME this seemed to be triggered twice both for click row event and tableValue
-                // change even when no value has changed and only a click happened on table, see
-                // info.magnolia.ui.admincentral.tree.view.TreeViewImpl.TreeViewImpl
-                // and jcrBrowser internal obj registering for those events.
-                selectedItem = item;
-                log.info("javax.jcr.Item at {} was selected. Firing ItemSelectedEvent...", item.getPath());
-                eventBus.fireEvent(new ItemSelectedEvent(item.getSession().getWorkspace().getName(), item.getPath()));
-            }
-            catch (RepositoryException e) {
-                shell.showError("An error occurred while selecting a row in the data grid", e);
-            }
+        public void onItemSelection(javax.jcr.Item item) {
+            presenter.onItemSelected(item);
         };
     };
 
     @Inject
-    public WorkbenchViewImpl(WorkbenchDefinitionRegistry workbenchRegistry, Shell shell, JcrViewBuilderProvider jcrViewBuilderProvider, WorkbenchActionFactory actionFactory, EventBus bus) {
+    public WorkbenchViewImpl(JcrViewBuilderProvider jcrViewBuilderProvider) {
         super();
-        this.shell = shell;
         this.jcrViewBuilderProvider = jcrViewBuilderProvider;
-        this.workbenchRegistry = workbenchRegistry;
-        this.actionFactory = actionFactory;
-        this.eventBus = bus;
 
         setSizeFull();
         root.setSizeFull();
@@ -152,69 +108,17 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
     }
 
     @Override
-    public void initWorkbench(final String id) {
-        // load the workbench specific configuration if existing
-        final WorkbenchDefinition workbenchDefinition;
-        try {
-            workbenchDefinition = workbenchRegistry.get(id);
-        }
-        catch (RegistrationException e) {
-            log.error("An error occurred while trying to get workbench [{}] in the registry", id, e);
-            shell.showError("An error occurred while trying to get workbench [" + id + "] in the registry", e);
-            return;
-        }
+    public void initWorkbench(final WorkbenchDefinition workbenchDefinition) {
         jcrView = jcrViewBuilderProvider.getBuilder().build(workbenchDefinition, ViewType.TREE);
-
         jcrView.setPresenter(jcrPresenter);
         jcrView.select(path);
         jcrView.asVaadinComponent();
         split.addComponent(jcrView.asVaadinComponent());
 
-        List<MenuItemDefinition> actions = buildActions(workbenchDefinition);
-        // TODO provide actionBar with actions
-
         Actionbar bar = buildActionbar(workbenchDefinition.getActionbar());
 
         split.addComponent(bar);
         split.setExpandRatio(jcrView.asVaadinComponent(), 1f);
-    }
-
-    private List<MenuItemDefinition> buildActions(final WorkbenchDefinition workbenchDefinition) {
-        final Item item;
-        try {
-            String normalizedPath = (workbenchDefinition.getPath()).replaceAll("//", "/");
-            item = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace()).getItem(normalizedPath);
-
-        }
-        catch (RepositoryException e) {
-            throw new RuntimeRepositoryException(e);
-        }
-
-        List<MenuItemDefinition> defs = workbenchDefinition.getActions();
-
-        List<MenuItemDefinition> menuItemDefinitions = new ArrayList<MenuItemDefinition>();
-        for (MenuItemDefinition menuDefinition : defs) {
-            log.debug("adding definition for menu {}", menuDefinition.getName());
-            // TODO an optimization here would be to use reflection to test if the action implements
-            // TreeAction, instantiating it only to test this is a waste
-            Action action = actionFactory.createAction(menuDefinition.getActionDefinition(), item);
-
-            if (action instanceof TreeAction) {
-                final TreeAction treeAction = (TreeAction) action;
-                try {
-                    if (treeAction.isAvailable(item)) {
-                        menuItemDefinitions.add(menuDefinition);
-                    }
-                }
-                catch (RepositoryException e) {
-                    throw new RuntimeRepositoryException(e);
-                }
-            }
-            else {
-                menuItemDefinitions.add(menuDefinition);
-            }
-        }
-        return menuItemDefinitions;
     }
 
     private Actionbar buildActionbar(ActionbarDefinition actionbarDefinition) {
@@ -237,7 +141,8 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
                         @Override
                         public void buttonClick(ClickEvent event) {
                             System.out.println("actionbar item clicked");
-                            getPresenter().onActionbarItemClicked(actionName);
+                            ActionDefinition actionDefinition = getActionDefinition(actionName);
+                            getPresenter().onActionbarItemClicked(actionDefinition);
                         }
                     });
                     actionbar.addComponent(button);
@@ -250,21 +155,13 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
         return actionbar;
     }
 
-    @Override
-    public void executeAction(final String actionName) {
+    private ActionDefinition getActionDefinition(final String actionName) {
         ActionbarItemDefinition actionbarItemDefinition = actions.get(actionName);
-        if (actionbarItemDefinition != null && selectedItem != null) {
+        if (actionbarItemDefinition != null) {
             ActionDefinition actionDefinition = actionbarItemDefinition.getActionDefinition();
-            if (actionDefinition != null) {
-                Action action = actionFactory.createAction(actionDefinition, selectedItem);
-                try {
-                    action.execute();
-                }
-                catch (ActionExecutionException e) {
-                    shell.showError("Can't execute action.\n" + e.getMessage(), e);
-                }
-            }
+            return actionDefinition;
         }
+        return null;
     }
 
     private void construct() {
@@ -284,6 +181,11 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
     @Override
     public void setPresenter(final Presenter presenter) {
         this.presenter = presenter;
+    }
+
+    @Override
+    public void refreshNode(Node node) {
+        jcrView.refreshNode(node);
     }
 
 }

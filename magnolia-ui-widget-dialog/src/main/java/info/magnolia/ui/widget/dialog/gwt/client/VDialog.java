@@ -71,9 +71,9 @@ public class VDialog extends Composite implements Container, VDialogView.Present
             register("addAction", new Method() {
                 @Override
                 public void invoke(String methodName, Object[] params) {
-                    final String label = String.valueOf(params[0]);
-                    final String action = String.valueOf(params[1]);
-                    view.addAction(label, action);
+                    final String name = String.valueOf(params[0]);
+                    final String label = String.valueOf(params[1]);
+                    view.addAction(name, label);
                 }
             });
         }
@@ -82,8 +82,8 @@ public class VDialog extends Composite implements Container, VDialogView.Present
     public VDialog() {
         eventBus = new SimpleEventBus();
         this.view = new VDialogViewImpl(eventBus);
-        this.view.setPresenter(this);
         initWidget(view.asWidget());
+        view.setPresenter(this);
 
     }
 
@@ -147,6 +147,15 @@ public class VDialog extends Composite implements Container, VDialogView.Present
     @Override
     public void handleCallFromServer(String method, Object[] params) {
         VConsole.error("Unhandled RPC call from server: " + method);
+    }
+
+
+    /* (non-Javadoc)
+     * @see info.magnolia.ui.widget.dialog.gwt.client.VDialogView.Presenter#fireAction(java.lang.String)
+     */
+    @Override
+    public void fireAction(String action) {
+        proxy.call("fireAction", action);
     }
 
 }

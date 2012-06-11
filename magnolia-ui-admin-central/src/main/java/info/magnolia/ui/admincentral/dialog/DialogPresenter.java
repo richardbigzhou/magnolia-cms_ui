@@ -35,35 +35,55 @@ package info.magnolia.ui.admincentral.dialog;
 
 import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.admincentral.dialog.builder.DialogBuilder;
+import info.magnolia.ui.admincentral.workbench.event.ContentChangedEvent;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
+import info.magnolia.ui.vaadin.intergration.jcr.JcrItem;
+import info.magnolia.ui.widget.dialog.Dialog;
+import info.magnolia.ui.widget.dialog.event.DialogCommitEvent;
+
+import com.vaadin.data.Item;
 
 /**
  * DialogPresenter.
  *
  * @author ejervidalo
  */
-public class DialogPresenter implements DialogView.Presenter {
+public class DialogPresenter extends Dialog {
 
     private DialogBuilder dialogBuilder;
     private DialogDefinition dialogDefinition;
-    private DialogView dialogView;
     private MagnoliaShell shell;
     private EventBus eventBus;
 
-    public DialogPresenter(DialogBuilder dialogBuilder, DialogDefinition dialogDefinition, MagnoliaShell shell, EventBus eventBus) {
+    public DialogPresenter(DialogBuilder dialogBuilder, DialogDefinition dialogDefinition, MagnoliaShell shell, final EventBus eventBus) {
+        super(eventBus);
         this.dialogBuilder = dialogBuilder;
         this.dialogDefinition = dialogDefinition;
         this.shell = shell;
         this.eventBus = eventBus;
+
+        eventBus.addHandler(DialogCommitEvent.class, new DialogCommitEvent.Handler() {
+
+            @Override
+            public void onDialogCommit(DialogCommitEvent event) {
+                JcrItem itemChanged = (JcrItem)event.getItem();
+                //itemChanged.getNode().getSession().save();
+
+
+                eventBus.fireEvent(new ContentChangedEvent(itemChanged.getItemProperty("workspace").toString(), itemChanged.getItemProperty("path").toString()));
+            }
+        });
     }
 
-    public void showDialog() {
-        dialogView = dialogBuilder.build(dialogDefinition, this);
-        shell.openDialog(dialogView);
+    public void showDialog(Item selectedBean) {
+        dialogBuilder.build(dialogDefinition, selectedBean, this);
+        shell.openDialog(this.asVaadinComponent());
     }
 
+    @Override
     public void closeDialog() {
-        shell.removeDialog(dialogView);
+        shell.removeDialog(this.asVaadinComponent());
     }
+
 }

@@ -44,11 +44,29 @@ import info.magnolia.test.mock.jcr.MockSession;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.vaadin.data.Property;
 
 public class JcrItemTest {
+
+    private String sessionName = "test";
+    private MockSession session;
+
+    @Before
+    public void setUp() {
+        session = new MockSession(sessionName);
+        MockContext ctx = new MockContext();
+        ctx.addSession("test", session);
+        MgnlContext.setInstance(ctx);
+    }
+
+    @After
+    public void tearDown() {
+        MgnlContext.setInstance(null);
+    }
 
     @Test
     public void testConstructionInCaseOfJCRTroubles() throws Exception {
@@ -76,34 +94,46 @@ public class JcrItemTest {
         assertEquals(underlyingNode.getIdentifier(), result);
     }
 
-    @Test(expected=UnsupportedOperationException.class)
+    @Test
     public void testAddItemProperty() throws Exception {
         // GIVEN
-        final Node underlyingNode = new MockNode(new MockSession("test"));
+        final Node underlyingNode = session.getRootNode().addNode("underlying");
+        final String propertyName = "TEST";
+        final String propertyValue = "value";
+        BaseProperty property = new BaseProperty(propertyName, propertyValue);
         final JcrItem item = new JcrItem(underlyingNode);
 
         // WHEN
-        item.addItemProperty("a", new BaseProperty("b"));
+        final boolean b = item.addItemProperty(propertyName,property);
+
+        // THEN
+        assertEquals(true, b);
+        assertEquals(property.getValue().toString(), item.getItemProperty(propertyName).getValue().toString());
     }
 
-    @Test(expected=UnsupportedOperationException.class)
+    @Test
     public void testRemoveItemProperty() throws Exception {
         // GIVEN
-        final Node underlyingNode = new MockNode(new MockSession("test"));
+        final Node underlyingNode = session.getRootNode().addNode("underlying");
+        final String propertyName = "TEST";
+        final String propertyValue = "value";
+        underlyingNode.setProperty(propertyName, propertyValue);
         final JcrItem item = new JcrItem(underlyingNode);
+        assertEquals(true, underlyingNode.hasProperty(propertyName));
 
         // WHEN
-        item.removeItemProperty("a");
+        final boolean b = item.removeItemProperty(propertyName);
+
+        // THEN
+        assertEquals(true, b);
+        assertEquals(false, underlyingNode.hasProperty(propertyName));
+
     }
 
     @Test
     public void testGetItemProperties() throws Exception {
         // GIVEN
-        final MockSession session = new MockSession("test");
         final Node underlyingNode = session.getRootNode().addNode("underlying");
-        final MockContext ctx = new MockContext();
-        ctx.addSession("test", session);
-        MgnlContext.setInstance(ctx);
         final String propertyName = "TEST";
         final String propertyValue = "value";
         underlyingNode.setProperty(propertyName, propertyValue);
@@ -119,11 +149,7 @@ public class JcrItemTest {
     @Test
     public void testGetNode() throws Exception {
         // GIVEN
-        final MockSession session = new MockSession("test");
         final Node underlyingNode = session.getRootNode().addNode("underlying");
-        final MockContext ctx = new MockContext();
-        ctx.addSession("test", session);
-        MgnlContext.setInstance(ctx);
         final String propertyName = "TEST";
         final String propertyValue = "value";
         underlyingNode.setProperty(propertyName, propertyValue);

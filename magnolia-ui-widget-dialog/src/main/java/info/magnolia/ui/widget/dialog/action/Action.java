@@ -31,37 +31,31 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog;
-
-import info.magnolia.ui.widget.dialog.VaadinDialog;
-
-import com.vaadin.ui.Component;
+package info.magnolia.ui.widget.dialog.action;
 
 /**
- * DialogViewImpl.
+ * Action.
  *
  * @author ejervidalo
  */
-public class DialogViewImpl extends VaadinDialog implements DialogView {
+public abstract class Action {
 
-    private Presenter presenter;
+    private String label;
+    private String name;
 
-    public DialogViewImpl() {
-        super();
+    public Action(String name, String label) {
+        this.name = name;
+        this.label = label;
     }
 
-    @Override
-    public Component asVaadinComponent() {
-        // TODO Auto-generated method stub
-        return this;
+    abstract public void execute();
+
+    public String getName() {
+        return name;
     }
 
-    /* (non-Javadoc)
-     * @see info.magnolia.ui.admincentral.dialog.DialogView#setPresenter(info.magnolia.ui.admincentral.dialog.DialogView.Presenter)
-     */
-    @Override
-    public void setPresenter(Presenter presenter) {
-        this.presenter = presenter;
+    public String getLabel() {
+        return label;
     }
 
 }

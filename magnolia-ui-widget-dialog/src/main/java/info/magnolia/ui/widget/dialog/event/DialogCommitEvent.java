@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,40 +31,40 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.workbench;
+package info.magnolia.ui.widget.dialog.event;
 
-import info.magnolia.ui.model.action.ActionDefinition;
-import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
+import com.vaadin.data.Item;
 
-import javax.jcr.Item;
-import javax.jcr.Node;
-
-import com.vaadin.ui.ComponentContainer;
-
+import info.magnolia.ui.framework.event.Event;
+import info.magnolia.ui.framework.event.EventHandler;
 
 /**
- * TODO write javadoc.
- * @version $Id$
- * 
+ * DialogCommitEvent.
+ *
  */
-public interface WorkbenchView extends ComponentContainer {
+public class DialogCommitEvent implements Event<DialogCommitEvent.Handler> {
 
-    void setPresenter(final Presenter presenter);
-
-    void initWorkbench(final WorkbenchDefinition definintion);
-
-    void refreshNode(Node node);
+    private Item item;
 
     /**
-     * Presenter.
-     * @version $id
+     * Handler.
+     *
      */
-    public interface Presenter {
+    public static interface Handler extends EventHandler {
+        void onDialogCommit(DialogCommitEvent event);
+    }
 
-        void onItemSelected(final Item item);
+    public DialogCommitEvent(Item itemDatasource) {
+        this.item = itemDatasource;
+    }
 
-        void onActionbarItemClicked(ActionDefinition actionDefinition);
+    @Override
+    public void dispatch(Handler handler) {
+        handler.onDialogCommit(this);
+    }
 
+    public Item getItem() {
+        return item;
     }
 
 }

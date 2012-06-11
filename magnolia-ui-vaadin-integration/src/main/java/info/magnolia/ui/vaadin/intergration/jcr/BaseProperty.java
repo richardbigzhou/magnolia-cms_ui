@@ -33,19 +33,21 @@
  */
 package info.magnolia.ui.vaadin.intergration.jcr;
 
-import com.vaadin.data.Property;
+import com.vaadin.data.util.AbstractProperty;
 
 /**
  * Basic implementation of {@link com.vaadin.data.Property}.
  *
  * TODO dlipp - this impl is not depending on jcr, so it could/should be located in a different package.
  */
-public class BaseProperty implements Property {
+public class BaseProperty extends AbstractProperty {
 
     private Object value;
     private boolean readOnly;
+    private String propertyName;
 
-    public BaseProperty(Object value) {
+    public BaseProperty(String propertyName, Object value) {
+        this.propertyName = propertyName;
         this.value = value;
     }
 
@@ -60,6 +62,7 @@ public class BaseProperty implements Property {
             throw new ReadOnlyException("Can't setValue for readonly-Property");
         }
         value = newValue;
+        fireValueChange();
     }
 
     @Override
@@ -75,6 +78,10 @@ public class BaseProperty implements Property {
     @Override
     public void setReadOnly(boolean newStatus) {
         readOnly = newStatus;
+    }
+
+    public String getPropertyName() {
+        return this.propertyName;
     }
 
 }

@@ -35,6 +35,8 @@ package info.magnolia.ui.admincentral.app.dialog;
 
 import info.magnolia.ui.admincentral.app.AbstractAppView;
 
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -49,15 +51,29 @@ import com.vaadin.ui.HorizontalLayout;
 public class DialogTestViewImpl extends AbstractAppView<DialogTestPresenter> implements DialogTestView {
 
     private HorizontalLayout content = new HorizontalLayout();
+    private ContactsViewImpl contacts = new ContactsViewImpl();
+    private Item selected;
 
     public DialogTestViewImpl() {
+
+        contacts.addListener(new Property.ValueChangeListener() {
+
+            @Override
+            public void valueChange(Property.ValueChangeEvent event) {
+                selected = contacts.getItem(event.getProperty().getValue());
+                getPresenter().setSelected(selected);
+
+            }
+        });
+        content.addComponent(contacts);
+
         Button dialog = new Button("Open Dialog", new DialogListener());
         content.addComponent(dialog);
         addTab(content, "Dialog");
     }
 
     /**
-     * Handler of Dialog events. 
+     * Handler of Dialog events.
      *
      */
     class DialogListener implements ClickListener {

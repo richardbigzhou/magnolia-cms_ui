@@ -31,33 +31,38 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog;
+package info.magnolia.ui.admincentral.dialog.builder;
 
-import com.vaadin.ui.ComponentContainer;
+import info.magnolia.ui.model.dialog.definition.FieldDefinition;
 
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Field;
+import com.vaadin.ui.TextField;
 
 /**
- * DialogView.
+ * FieldFactory.
  *
  * @author ejervidalo
  */
-public interface DialogView extends IsVaadinComponent {
+public class FieldBuilder {
 
     /**
-     * Presenter.
-     *
-     * @author ejervidalo
+     * @param fieldDefinition
+     * @return
      */
-    public interface Presenter {
+    public static Field build(FieldDefinition fieldDefinition) {
+        Field input = null;
+        if (fieldDefinition.getType().equals("edit")) {
+            input = new TextField();
+            input.setCaption(fieldDefinition.getLabel());
+            input.setStyleName("textfield");
 
+        } else if (fieldDefinition.equals("checkbox")) {
+            input = new CheckBox(fieldDefinition.getLabel(), true);
+            input.setStyleName("textfield");
+
+        }
+        return input;
     }
-
-    void setPresenter(Presenter presenter);
-
-    /**
-     * @param string
-     */
-    void addTab(ComponentContainer cc, String caption);
 
 }

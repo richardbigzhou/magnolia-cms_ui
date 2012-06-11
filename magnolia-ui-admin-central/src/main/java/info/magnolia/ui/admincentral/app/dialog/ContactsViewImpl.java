@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,40 +31,36 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.workbench;
+package info.magnolia.ui.admincentral.app.dialog;
 
-import info.magnolia.ui.model.action.ActionDefinition;
-import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.admincentral.app.dialog.model.ContactContainer;
 
-import javax.jcr.Item;
-import javax.jcr.Node;
-
-import com.vaadin.ui.ComponentContainer;
-
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Table;
 
 /**
- * TODO write javadoc.
- * @version $Id$
- * 
+ * ContactsViewImpl.
+ *
+ * @author ejervidalo
  */
-public interface WorkbenchView extends ComponentContainer {
+public class ContactsViewImpl extends Table {
 
-    void setPresenter(final Presenter presenter);
+    private Table contacts;
 
-    void initWorkbench(final WorkbenchDefinition definintion);
 
-    void refreshNode(Node node);
+    public ContactsViewImpl () {
+        super("Contacts", new ContactContainer());
 
-    /**
-     * Presenter.
-     * @version $id
-     */
-    public interface Presenter {
+     // Allow selecting items from the table.
+        setSelectable(true);
 
-        void onItemSelected(final Item item);
+        // Send changes in selection immediately to server.
+        setImmediate(true);
 
-        void onActionbarItemClicked(ActionDefinition actionDefinition);
+        // Shows feedback from selection.
+        final Label current = new Label("Selected: -");
+
+        // Handle selection change.
 
     }
-
 }

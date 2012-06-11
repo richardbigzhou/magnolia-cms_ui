@@ -39,6 +39,7 @@ import java.io.Serializable;
 
 import javax.inject.Inject;
 import javax.jcr.Item;
+import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 
@@ -67,7 +68,13 @@ public class ReadOnlyPropertyColumn extends AbstractColumn<PropertyColumnDefinit
     @Override
     public Component getDefaultComponent(Item item) throws RepositoryException {
         if (item.isNode()) {
-            return new Label(item.getName());
+            Node node = (Node) item;
+            String label = node.getName();
+            if (node.hasProperty(getPropertyName())) {
+                Property property = node.getProperty(getPropertyName());
+                label = property.getString();
+            }
+            return new Label(label);
         }
 
         Property property = (Property) item;

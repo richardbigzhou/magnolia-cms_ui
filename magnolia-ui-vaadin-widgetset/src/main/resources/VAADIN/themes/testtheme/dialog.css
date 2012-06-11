@@ -80,10 +80,7 @@ button.btn-dialog-submit, button.btn-dialog-cancel, button.btn-dialog {
 }
 
 .dialog-panel .field-label {
-    display: inline-block;
-    padding-right: 10px;
-    text-align: right;
-    width: 140px;
+
 }
 .dialog-panel .field-container {
     padding-bottom: 20px;
@@ -97,14 +94,14 @@ button.btn-dialog-submit, button.btn-dialog-cancel, button.btn-dialog {
     height: 26px;
     padding-left: 10px;
     width: 425px;
+    background: none #FFF;
+    border-radius: 0;
+    margin: 0;
 }
 
-.v-textfield, .v-textarea, .white .v-textfield, .white .v-textarea {
-    background: none #FFF;
-    color: #999999;
-    border-color: 1px solid #CCCCCC;
-    border-radius: 0;
-    height: 26px;
-    line-height: normal;
-    margin: 0;
+.field-container .v-caption {
+    display: inline-block;
+    padding-right: 10px;
+    text-align: right;
+    width: 140px;
 }

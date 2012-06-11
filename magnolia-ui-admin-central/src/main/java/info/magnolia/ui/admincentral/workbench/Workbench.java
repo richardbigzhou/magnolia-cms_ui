@@ -33,9 +33,27 @@
  */
 package info.magnolia.ui.admincentral.workbench;
 
+import info.magnolia.registry.RegistrationException;
+import info.magnolia.ui.admincentral.MagnoliaShell;
+import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
+import info.magnolia.ui.admincentral.workbench.event.ItemSelectedEvent;
+import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.model.action.Action;
+import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.model.workbench.registry.WorkbenchDefinitionRegistry;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
+import info.magnolia.ui.vaadin.intergration.jcr.JcrItem;
+import info.magnolia.ui.widget.dialog.event.DialogCommitEvent;
 
 import javax.inject.Inject;
+import javax.jcr.Item;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaadin.ui.ComponentContainer;
 
@@ -47,17 +65,58 @@ import com.vaadin.ui.ComponentContainer;
 @SuppressWarnings("serial")
 public class Workbench implements IsVaadinComponent, WorkbenchView.Presenter {
 
+    private static final Logger log = LoggerFactory.getLogger(Workbench.class);
+
+    private final WorkbenchDefinitionRegistry workbenchRegistry;
+
     private final WorkbenchView view;
 
+    private final EventBus eventBus;
+
+    private final MagnoliaShell shell;
+
+    private final WorkbenchActionFactory actionFactory;
+
+    private Item selectedItem;
+
     @Inject
-    public Workbench(final WorkbenchView view) {
+    public Workbench(final WorkbenchView view, final EventBus eventbus, final MagnoliaShell shell, final WorkbenchDefinitionRegistry workbenchRegistry, final WorkbenchActionFactory actionFactory) {
         super();
         this.view = view;
+        this.eventBus = eventbus;
+        this.shell = shell;
+        this.workbenchRegistry = workbenchRegistry;
+        this.actionFactory = actionFactory;
+
         view.setPresenter(this);
+        eventbus.addHandler(DialogCommitEvent.class, new DialogCommitEvent.Handler() {
+
+            @Override
+            public void onDialogCommit(DialogCommitEvent event) {
+                try {
+                    final Node node = ((JcrItem) event.getItem()).getNode();
+                    node.getSession().save();
+                    view.refreshNode(node);
+                }
+                catch (RepositoryException e) {
+                    log.error("Node update failed with exception: " + e.getMessage());
+                }
+            }
+        });
     }
 
     public void initWorkbench(final String id) {
-        view.initWorkbench(id);
+        // load the workbench specific configuration if existing
+        final WorkbenchDefinition workbenchDefinition;
+        try {
+            workbenchDefinition = workbenchRegistry.get(id);
+        }
+        catch (RegistrationException e) {
+            log.error("An error occurred while trying to get workbench [{}] in the registry", id, e);
+            shell.showError("An error occurred while trying to get workbench [" + id + "] in the registry", e);
+            return;
+        }
+        view.initWorkbench(workbenchDefinition);
     }
 
     @Override
@@ -66,9 +125,36 @@ public class Workbench implements IsVaadinComponent, WorkbenchView.Presenter {
     }
 
     @Override
-    public void onActionbarItemClicked(String actionName) {
-        // should not be done by the view
-        view.executeAction(actionName);
+    public void onActionbarItemClicked(ActionDefinition actionDefinition) {
+        if (actionDefinition != null) {
+            Action action = actionFactory.createAction(actionDefinition, selectedItem);
+            try {
+                action.execute();
+            }
+            catch (ActionExecutionException e) {
+                shell.showError("Can't execute action.\n" + e.getMessage(), e);
+            }
+        }
+    }
+
+    @Override
+    public void onItemSelected(Item item) {
+        if (item == null) {
+            log.warn("Got null javax.jcr.Item. No ItemSelectedEvent will be fired.");
+            return;
+        }
+        try {
+            // FIXME this seemed to be triggered twice both for click row event and tableValue
+            // change even when no value has changed and only a click happened on table, see
+            // info.magnolia.ui.admincentral.tree.view.TreeViewImpl.TreeViewImpl
+            // and jcrBrowser internal obj registering for those events.
+            selectedItem = item;
+            log.info("javax.jcr.Item at {} was selected. Firing ItemSelectedEvent...", item.getPath());
+            eventBus.fireEvent(new ItemSelectedEvent(item.getSession().getWorkspace().getName(), item.getPath()));
+        }
+        catch (RepositoryException e) {
+            shell.showError("An error occurred while selecting a row in the data grid", e);
+        }
     }
 
 }
