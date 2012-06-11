@@ -46,10 +46,10 @@
       <sv:value>admin</sv:value>
     </sv:property>
     <sv:property sv:name="path" sv:type="String">
-      <sv:value>/system</sv:value>
+      <sv:value>/</sv:value>
     </sv:property>
     <sv:property sv:name="workspace" sv:type="String">
-      <sv:value>users</sv:value>
+      <sv:value>contacts</sv:value>
     </sv:property>
     <sv:node sv:name="MetaData">
       <sv:property sv:name="jcr:primaryType" sv:type="Name">

@@ -197,7 +197,6 @@ public class VShellViewport extends ComplexPanel implements Container, Container
             final Element el = w.getElement();
             final Style style = el.getStyle();
             el.appendChild(closeWrapper);
-            style.setDisplay(Display.NONE);
             style.setVisibility(Visibility.VISIBLE);
             animationDelegate.show(w, Callbacks.create(new JQueryCallback() {
                 @Override

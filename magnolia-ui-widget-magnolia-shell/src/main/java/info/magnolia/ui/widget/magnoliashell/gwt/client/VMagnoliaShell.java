@@ -69,9 +69,19 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
      *
      */
     public enum ViewportType {
-        SHELL_APP_VIEWPORT,
-        APP_VIEWPORT,
-        DIALOG_VIEWPORT;
+        SHELL_APP_VIEWPORT("shell:"),
+        APP_VIEWPORT("app:"),
+        DIALOG_VIEWPORT("");
+        
+        private String fragmentPrefix;
+        
+        private ViewportType(String fragmentPrefix) {
+            this.fragmentPrefix = fragmentPrefix;
+        }
+        
+        public String getFragmentPrefix() {
+            return fragmentPrefix;
+        }
     }
     
     protected String paintableId;
