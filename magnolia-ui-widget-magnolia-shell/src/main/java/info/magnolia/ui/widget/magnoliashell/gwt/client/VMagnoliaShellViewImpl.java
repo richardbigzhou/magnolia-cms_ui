@@ -317,13 +317,17 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
     private final ContentAnimationDelegate slidingDelegate = new ContentAnimationDelegate() {
         @Override
         public void hide(Widget w, Callbacks callbacks) {
-            JQueryWrapper.select(w).slideUp(FADE_SPEED, callbacks);
+            JQueryWrapper.select(w).slideUp(SLIDE_SPEED, callbacks);
         }
 
         @Override
-        public void show(final Widget widget, final Callbacks callbacks) {
-            if (widget != null) {
-                JQueryWrapper.select(widget).slideDown(SLIDE_SPEED, callbacks);
+        public void show(final Widget w, final Callbacks callbacks) {
+            if (w != null) {
+                final JQueryWrapper jq = JQueryWrapper.select(w);
+                jq.setCssPx("top", -w.getOffsetHeight());
+                jq.animate(SLIDE_SPEED, new AnimationSettings() {{
+                    setProperty("top", "+=" + w.getOffsetHeight());
+                }});
             }
         }
     };
@@ -331,13 +335,15 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
     private final ContentAnimationDelegate fadingDelegate = new ContentAnimationDelegate() {
         @Override
         public void hide(Widget w, Callbacks callbacks) {
-            JQueryWrapper.select(w.getElement()).fadeOut(FADE_SPEED, callbacks);
+            JQueryWrapper.select(w).fadeOut(FADE_SPEED, callbacks);
         }
 
         @Override
         public void show(final Widget widget, final Callbacks callbacks) {
             if (widget != null) {
-                JQueryWrapper.select(widget.getElement()).fadeIn(FADE_SPEED, callbacks);
+                final JQueryWrapper jq = JQueryWrapper.select(widget);
+                jq.setCss("display", "none");
+                jq.fadeIn(FADE_SPEED, callbacks);
             }
         }
     };
@@ -345,8 +351,7 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
     private final ShellNavigationHandler navHandler = new ShellNavigationHandler() {
         @Override
         public void onAppActivated(AppActivatedEvent event) {
-            final String prefix = activeViewportType == ViewportType.SHELL_APP_VIEWPORT ? "shell:" : "app:";
-            final String fragment = prefix + event.getToken();
+            final String fragment = activeViewportType.getFragmentPrefix() + event.getToken();
             History.newItem(fragment, false);
         }
 

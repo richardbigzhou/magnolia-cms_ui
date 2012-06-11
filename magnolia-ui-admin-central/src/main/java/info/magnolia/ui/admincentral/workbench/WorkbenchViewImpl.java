@@ -33,25 +33,20 @@
  */
 package info.magnolia.ui.admincentral.workbench;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.RuntimeRepositoryException;
-import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.admincentral.jcr.view.JcrView;
 import info.magnolia.ui.admincentral.jcr.view.JcrView.ViewType;
 import info.magnolia.ui.admincentral.jcr.view.builder.JcrViewBuilderProvider;
 import info.magnolia.ui.admincentral.tree.action.TreeAction;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
-import info.magnolia.ui.admincentral.workbench.event.ItemSelectedEvent;
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.menu.definition.MenuItemDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.model.workbench.registry.WorkbenchDefinitionRegistry;
 import info.magnolia.ui.widget.actionbar.Actionbar;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.jcr.Item;
@@ -76,52 +71,32 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
 
     private VerticalLayout root = new VerticalLayout();
 
-    private Presenter presenter;
-
     private HorizontalLayout split = new HorizontalLayout();
 
     private HorizontalLayout toolbar = new HorizontalLayout();
 
+    private Presenter presenter;
+    
     private JcrView jcrView;
 
     private JcrViewBuilderProvider jcrViewBuilderProvider;
-
-    private WorkbenchDefinitionRegistry workbenchRegistry;
 
     private WorkbenchActionFactory actionFactory;
 
     protected String path = "/";
 
-    private Shell shell;
-
-    private EventBus eventBus;
-
     private JcrView.Presenter jcrPresenter = new JcrView.Presenter() {
         @Override
         public void onItemSelection(javax.jcr.Item item) {
-            if(item == null) {
-                log.warn("Got null javax.jcr.Item. No ItemSelectedEvent will be fired.");
-                return;
-            }
-            try {
-                //FIXME this seemed to be triggered twice both for click row event and tableValue change even when no value has changed and only a click happened on table, see info.magnolia.ui.admincentral.tree.view.TreeViewImpl.TreeViewImpl
-                //and jcrBrowser internal obj registering for those events.
-                log.info("javax.jcr.Item at {} was selected. Firing ItemSelectedEvent...", item.getPath());
-                eventBus.fireEvent(new ItemSelectedEvent(item.getSession().getWorkspace().getName(), item.getPath()));
-            } catch (RepositoryException e) {
-                shell.showError("An error occurred while selecting a row in the data grid", e);
-            }
+            presenter.onItemSelected(item);
         };
     };
 
     @Inject
-    public WorkbenchViewImpl(WorkbenchDefinitionRegistry workbenchRegistry, Shell shell, JcrViewBuilderProvider jcrViewBuilderProvider, WorkbenchActionFactory actionFactory, EventBus bus) {
+    public WorkbenchViewImpl(JcrViewBuilderProvider jcrViewBuilderProvider, WorkbenchActionFactory actionFactory) {
         super();
-        this.shell = shell;
         this.jcrViewBuilderProvider = jcrViewBuilderProvider;
-        this.workbenchRegistry = workbenchRegistry;
         this.actionFactory = actionFactory;
-        this.eventBus = bus;
 
         setSizeFull();
         root.setSizeFull();
@@ -130,19 +105,8 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
     }
 
     @Override
-    public void initWorkbench(final String id) {
-        // load the workbench specific configuration if existing
-        final WorkbenchDefinition workbenchDefinition;
-        try {
-            workbenchDefinition = workbenchRegistry.get(id);
-        } catch (RegistrationException e) {
-            log.error("An error occurred while trying to get workbench [{}] in the registry",id, e);
-            shell.showError("An error occurred while trying to get workbench ["+ id + "] in the registry", e);
-            return;
-        }
+    public void initWorkbench(final WorkbenchDefinition workbenchDefinition) {
         jcrView = jcrViewBuilderProvider.getBuilder().build(workbenchDefinition, ViewType.TREE);
-
-
         jcrView.setPresenter(jcrPresenter);
         jcrView.select(path);
         jcrView.asVaadinComponent();

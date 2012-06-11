@@ -36,15 +36,15 @@ package info.magnolia.ui.admincentral;
 import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventHandler;
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
-import info.magnolia.ui.widget.magnoliashell.BaseMagnoliaShell;
-import info.magnolia.ui.widget.magnoliashell.ShellViewport;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.event.HandlerRegistration;
 import info.magnolia.ui.framework.shell.ConfirmationHandler;
 import info.magnolia.ui.framework.shell.FragmentChangedHandler;
 import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
+import info.magnolia.ui.widget.magnoliashell.BaseMagnoliaShell;
+import info.magnolia.ui.widget.magnoliashell.ShellViewport;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -139,7 +139,6 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell {
     }
 
     public void removeDialog(IsVaadinComponent dialog) {
-        removeDialog(dialog.asVaadinComponent());
+       removeDialog(dialog.asVaadinComponent());
     }
-
 }

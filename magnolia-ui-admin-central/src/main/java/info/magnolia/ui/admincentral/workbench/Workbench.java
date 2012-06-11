@@ -33,9 +33,20 @@
  */
 package info.magnolia.ui.admincentral.workbench;
 
+import info.magnolia.registry.RegistrationException;
+import info.magnolia.ui.admincentral.MagnoliaShell;
+import info.magnolia.ui.admincentral.workbench.event.ItemSelectedEvent;
+import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.model.workbench.registry.WorkbenchDefinitionRegistry;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 import javax.inject.Inject;
+import javax.jcr.Item;
+import javax.jcr.RepositoryException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaadin.ui.ComponentContainer;
 
@@ -47,22 +58,59 @@ import com.vaadin.ui.ComponentContainer;
 @SuppressWarnings("serial")
 public class Workbench implements IsVaadinComponent, WorkbenchView.Presenter {
 
-    private WorkbenchView view;
+    private static final Logger log = LoggerFactory.getLogger(Workbench.class);
+    
+    private final WorkbenchDefinitionRegistry workbenchRegistry;
+    
+    private final WorkbenchView view;
 
+    private final EventBus eventBus;
+    
+    private final MagnoliaShell shell;
+    
     @Inject
-    public Workbench(final WorkbenchView view) {
+    public Workbench(final WorkbenchView view, final EventBus eventbus, final MagnoliaShell shell, final WorkbenchDefinitionRegistry workbenchRegistry) {
         super();
         this.view = view;
+        this.eventBus = eventbus;
+        this.shell = shell;
+        this.workbenchRegistry = workbenchRegistry;
         view.setPresenter(this);
+        //eventbus.addHandler(, handler)
     }
 
     public void initWorkbench(final String id) {
-        view.initWorkbench(id);
+        // load the workbench specific configuration if existing
+        final WorkbenchDefinition workbenchDefinition;
+        try {
+            workbenchDefinition = workbenchRegistry.get(id);
+        } catch (RegistrationException e) {
+            log.error("An error occurred while trying to get workbench [{}] in the registry",id, e);
+            shell.showError("An error occurred while trying to get workbench ["+ id + "] in the registry", e);
+            return;
+        }
+        view.initWorkbench(workbenchDefinition);
     }
 
     @Override
     public ComponentContainer asVaadinComponent() {
         return view;
+    }
+
+    @Override
+    public void onItemSelected(Item item) {
+        if(item == null) {
+            log.warn("Got null javax.jcr.Item. No ItemSelectedEvent will be fired.");
+            return;
+        }
+        try {
+            //FIXME this seemed to be triggered twice both for click row event and tableValue change even when no value has changed and only a click happened on table, see info.magnolia.ui.admincentral.tree.view.TreeViewImpl.TreeViewImpl
+            //and jcrBrowser internal obj registering for those events.
+            log.info("javax.jcr.Item at {} was selected. Firing ItemSelectedEvent...", item.getPath());
+            eventBus.fireEvent(new ItemSelectedEvent(item.getSession().getWorkspace().getName(), item.getPath()));
+        } catch (RepositoryException e) {
+            shell.showError("An error occurred while selecting a row in the data grid", e);
+        }        
     }
 
 }

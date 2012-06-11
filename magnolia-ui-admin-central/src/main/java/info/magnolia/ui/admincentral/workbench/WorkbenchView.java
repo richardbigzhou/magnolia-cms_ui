@@ -33,6 +33,10 @@
  */
 package info.magnolia.ui.admincentral.workbench;
 
+import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
+
+import javax.jcr.Item;
+
 import com.vaadin.ui.ComponentContainer;
 
 /**
@@ -44,15 +48,15 @@ public interface WorkbenchView extends ComponentContainer {
 
     void setPresenter(final Presenter presenter);
 
-    void initWorkbench(final String id);
+    void initWorkbench(final WorkbenchDefinition definintion);
 
     /**
      * Presenter.
-     * @author apchelintcev
-     *
+     * @version $id
      */
     public interface Presenter {
-
+        
+        void onItemSelected(final Item item);
     }
 
 }
