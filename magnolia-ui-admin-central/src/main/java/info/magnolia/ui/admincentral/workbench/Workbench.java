@@ -40,6 +40,7 @@ import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.model.workbench.registry.WorkbenchDefinitionRegistry;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
+import info.magnolia.ui.widget.dialog.event.DialogCommitEvent;
 
 import javax.inject.Inject;
 import javax.jcr.Item;
@@ -76,7 +77,12 @@ public class Workbench implements IsVaadinComponent, WorkbenchView.Presenter {
         this.shell = shell;
         this.workbenchRegistry = workbenchRegistry;
         view.setPresenter(this);
-        //eventbus.addHandler(, handler)
+        eventbus.addHandler(DialogCommitEvent.class, new DialogCommitEvent.Handler() {
+            @Override
+            public void onDialogCommit(DialogCommitEvent event) {
+                
+            }
+        });
     }
 
     public void initWorkbench(final String id) {
