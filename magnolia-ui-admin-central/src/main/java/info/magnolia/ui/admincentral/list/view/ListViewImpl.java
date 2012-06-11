@@ -45,6 +45,7 @@ import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 import javax.jcr.Item;
+import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
@@ -168,5 +169,10 @@ public class ListViewImpl implements ListView, IsVaadinComponent {
             }
             presenter.onItemSelection(item);
         }
+    }
+
+    @Override
+    public void refreshNode(Node node) {
+        //FIXME: provide the correct implementation.
     }
 }
