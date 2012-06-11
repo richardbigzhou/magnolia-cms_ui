@@ -316,8 +316,12 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
     
     private final ContentAnimationDelegate slidingDelegate = new ContentAnimationDelegate() {
         @Override
-        public void hide(Widget w, Callbacks callbacks) {
-            JQueryWrapper.select(w).slideUp(SLIDE_SPEED, callbacks);
+        public void hide(final Widget w, final Callbacks callbacks) {
+            final JQueryWrapper jq = JQueryWrapper.select(w);
+            jq.animate(SLIDE_SPEED, new AnimationSettings() {{
+                setProperty("top", "-=" + w.getOffsetHeight());
+                setCallbacks(callbacks);
+            }});
         }
 
         @Override
@@ -327,6 +331,7 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
                 jq.setCssPx("top", -w.getOffsetHeight());
                 jq.animate(SLIDE_SPEED, new AnimationSettings() {{
                     setProperty("top", "+=" + w.getOffsetHeight());
+                    setCallbacks(callbacks);
                 }});
             }
         }
