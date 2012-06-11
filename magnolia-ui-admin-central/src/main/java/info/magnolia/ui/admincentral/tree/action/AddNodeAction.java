@@ -34,9 +34,9 @@
 package info.magnolia.ui.admincentral.tree.action;
 
 import info.magnolia.cms.core.MetaData;
+import info.magnolia.cms.core.Path;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.MetaDataUtil;
-import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.framework.event.EventBus;
 
 import javax.jcr.Item;
@@ -65,7 +65,8 @@ public class AddNodeAction extends RepositoryOperationAction<AddNodeActionDefini
     @Override
     protected void onExecute(Item item) throws RepositoryException {
         Node node = (Node) item;
-        String name = NodeUtil.getName(node);
+        String parentPath = "/".equals(node.getPath()) ? node.getPath(): node.getParent().getPath();
+        String name = Path.getUniqueLabel(node.getSession(), parentPath, "untitled");
         Node newNode = node.addNode(name, getDefinition().getNodeType());
         postProcessNode(newNode);
     }

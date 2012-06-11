@@ -34,60 +34,42 @@
 package info.magnolia.ui.widget.actionbar.gwt.client;
 
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.SimplePanel;
 
 
 /**
  * The Class VAction, which displays a single action with label and icon within an action group.
  */
-public class VAction extends SimplePanel {
+public class VActionbarItem extends SimplePanel {
 
-    private static final String CLASSNAME = "v-action";
+    private static final String CLASSNAME = "v-actionbar-item";
 
-    private static final String LABEL_CLASSNAME = "label";
-
-    private final Element labelElement = DOM.createSpan();
+    private String name;
 
     /**
-     * Instantiates a new action bar group.
+     * Instantiates a new action.
      */
-    public VAction() {
+    public VActionbarItem() {
         super(DOM.createElement("li"));
-        init();
+        setStyleName(CLASSNAME);
     }
 
     /**
-     * Instantiates a new action bar group with given label.
-     */
-    public VAction(String label) {
-        super(DOM.createElement("li"));
-        labelElement.setInnerText(label);
-        init();
-    }
-
-    private void init() {
-        setStylePrimaryName(CLASSNAME);
-        labelElement.setClassName(LABEL_CLASSNAME);
-        getElement().appendChild(labelElement);
-        InlineLabel secondLabel = new InlineLabel("-YEAH!");
-        secondLabel.setStylePrimaryName(CLASSNAME);
-        secondLabel.addStyleDependentName(LABEL_CLASSNAME);
-        add(secondLabel);
-    }
-
-    public String getLabel() {
-        return labelElement.getInnerText();
-    }
-
-    /**
-     * Updates the action label.
+     * Gets the action group name.
      * 
-     * @param label the label
+     * @return the group name
      */
-    public void updateLabel(String label) {
-        labelElement.setInnerText(label);
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Sets the action group name.
+     * 
+     * @param name the new group name
+     */
+    public void setName(String name) {
+        this.name = name;
     }
 
 }

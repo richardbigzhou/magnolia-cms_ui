@@ -68,7 +68,7 @@
         <sv:value>2010-09-08T11:41:04.409+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-        <sv:value>2012-06-06T15:32:11.640+02:00</sv:value>
+        <sv:value>2012-06-08T16:29:28.327+02:00</sv:value>
       </sv:property>
     </sv:node>
     <sv:node sv:name="itemTypes">
@@ -375,7 +375,7 @@
           <sv:value>2011-02-16T13:10:02.499+01:00</sv:value>
         </sv:property>
       </sv:node>
-      <sv:node sv:name="editUser">
+      <sv:node sv:name="editContact">
         <sv:property sv:name="jcr:primaryType" sv:type="Name">
           <sv:value>mgnl:contentNode</sv:value>
         </sv:property>
@@ -392,7 +392,7 @@
           <sv:value>admin</sv:value>
         </sv:property>
         <sv:property sv:name="label" sv:type="String">
-          <sv:value>Edit user...</sv:value>
+          <sv:value>Edit contact...</sv:value>
         </sv:property>
         <sv:node sv:name="MetaData">
           <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -411,7 +411,7 @@
             <sv:value>2010-09-08T15:02:53.617+02:00</sv:value>
           </sv:property>
           <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-            <sv:value>2011-02-16T13:28:07.508+01:00</sv:value>
+            <sv:value>2012-06-08T16:15:36.380+02:00</sv:value>
           </sv:property>
         </sv:node>
         <sv:node sv:name="actionDefinition">
@@ -455,7 +455,7 @@
           </sv:node>
         </sv:node>
       </sv:node>
-      <sv:node sv:name="newUser">
+      <sv:node sv:name="newContact">
         <sv:property sv:name="jcr:primaryType" sv:type="Name">
           <sv:value>mgnl:contentNode</sv:value>
         </sv:property>
@@ -472,7 +472,7 @@
           <sv:value>admin</sv:value>
         </sv:property>
         <sv:property sv:name="label" sv:type="String">
-          <sv:value>New user</sv:value>
+          <sv:value>New contact</sv:value>
         </sv:property>
         <sv:node sv:name="MetaData">
           <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -491,7 +491,7 @@
             <sv:value>2010-09-08T15:02:53.617+02:00</sv:value>
           </sv:property>
           <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-            <sv:value>2011-02-16T13:21:36.117+01:00</sv:value>
+            <sv:value>2012-06-08T16:14:38.145+02:00</sv:value>
           </sv:property>
         </sv:node>
         <sv:node sv:name="actionDefinition">
@@ -511,7 +511,7 @@
             <sv:value>admin</sv:value>
           </sv:property>
           <sv:property sv:name="nodeType" sv:type="String">
-            <sv:value>mgnl:user</sv:value>
+            <sv:value>mgnl:contactItem</sv:value>
           </sv:property>
           <sv:node sv:name="MetaData">
             <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -530,7 +530,7 @@
               <sv:value>2010-09-08T15:04:05.467+02:00</sv:value>
             </sv:property>
             <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-              <sv:value>2011-02-16T13:18:41.506+01:00</sv:value>
+              <sv:value>2012-06-08T16:13:20.434+02:00</sv:value>
             </sv:property>
           </sv:node>
         </sv:node>
@@ -629,7 +629,7 @@
           <sv:value>admin</sv:value>
         </sv:property>
         <sv:property sv:name="label" sv:type="String">
-          <sv:value>Delete user</sv:value>
+          <sv:value>Delete contact</sv:value>
         </sv:property>
         <sv:node sv:name="MetaData">
           <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -648,7 +648,7 @@
             <sv:value>2010-09-08T15:02:53.617+02:00</sv:value>
           </sv:property>
           <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-            <sv:value>2011-02-16T13:14:38.673+01:00</sv:value>
+            <sv:value>2012-06-08T16:14:46.891+02:00</sv:value>
           </sv:property>
         </sv:node>
         <sv:node sv:name="actionDefinition">

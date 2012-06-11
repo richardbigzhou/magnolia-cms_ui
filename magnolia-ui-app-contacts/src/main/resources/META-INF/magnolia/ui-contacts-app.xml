@@ -10,10 +10,6 @@
   <components>
     <id>admin-central</id>
     <component>
-      <type>info.magnolia.ui.admincentral.workbench.place.WorkbenchPlace</type>
-      <implementation>info.magnolia.ui.app.contacts.ContactsPlace</implementation>
-    </component>
-    <component>
       <type>info.magnolia.ui.app.contacts.ContactsView</type>
       <implementation>info.magnolia.ui.app.contacts.ContactsViewImpl</implementation>
     </component>
@@ -25,4 +21,14 @@
       <version>5.0/*</version>
     </dependency>
   </dependencies>
+
+  <repositories>
+    <repository>
+      <name>magnolia</name>
+      <workspaces>
+        <workspace>contacts</workspace>
+      </workspaces>
+      <nodeTypeFile>/mgnl-nodetypes/magnolia-contacts-nodetype.xml</nodeTypeFile>
+    </repository>
+  </repositories>
 </module>

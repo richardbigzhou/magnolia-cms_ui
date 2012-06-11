@@ -31,18 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts;
+package info.magnolia.ui.model.actionbar.definition;
 
-import info.magnolia.ui.framework.app.AppView;
-import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
+import java.util.List;
 
 
 /**
- * View for the Contacts app.
- * 
- * @version $Id$
+ * The definition for a section of the action bar, made of groups of actions.
  */
-public interface ContactsView extends AppView<ContactsPresenter> {
+public interface ActionbarSectionDefinition {
 
-    void createActionbar(ActionbarDefinition actionbarDefinition);
+    /**
+     * Gets the section title.
+     * 
+     * @return the title string
+     */
+    String getTitle();
+
+    /**
+     * Gets the groups within this section.
+     * 
+     * @return the list of groups
+     */
+    List<ActionbarGroupDefinition> getGroups();
 }
