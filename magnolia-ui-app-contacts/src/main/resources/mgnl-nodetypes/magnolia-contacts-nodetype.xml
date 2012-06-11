@@ -68,7 +68,7 @@
     xmlns:jcr="http://www.jcp.org/jcr/1.0">
 
     <!-- custom node types -->
-    <nodeType name="contactBase" isMixin="false" hasOrderableChildNodes="true" primaryItemName="">
+    <nodeType name="mgnl:contactBase" isMixin="false" hasOrderableChildNodes="true" primaryItemName="">
         <supertypes>
             <supertype>mix:referenceable</supertype>
             <supertype>nt:hierarchyNode</supertype>
@@ -77,38 +77,14 @@
         <childNodeDefinition name="*" defaultPrimaryType="" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" sameNameSiblings="true"/>
     </nodeType>
 
-    <nodeType name="contactItemBase" isMixin="false" hasOrderableChildNodes="true" primaryItemName="">
+    <nodeType name="mgnl:contact" isMixin="false" hasOrderableChildNodes="true" primaryItemName="">
         <supertypes>
-            <supertype>contactBase</supertype>
-        </supertypes>
-    </nodeType>
-
-    <!-- custom node types -->
-    <nodeType name="contactFolder" isMixin="false" hasOrderableChildNodes="true" primaryItemName="">
-        <supertypes>
-            <supertype>contactBase</supertype>
-        </supertypes>
-        <childNodeDefinition name="MetaData" defaultPrimaryType="mgnl:metaData" autoCreated="true" mandatory="true" onParentVersion="COPY" protected="false" sameNameSiblings="false">
-          <requiredPrimaryTypes>
-            <requiredPrimaryType>mgnl:metaData</requiredPrimaryType>
-          </requiredPrimaryTypes>
-        </childNodeDefinition>
-    </nodeType>
-
-    <nodeType name="contactItem" isMixin="false" hasOrderableChildNodes="true" primaryItemName="">
-        <supertypes>
-            <supertype>contactItemBase</supertype>
+            <supertype>mgnl:contactBase</supertype>
       </supertypes>
       <childNodeDefinition name="MetaData" defaultPrimaryType="mgnl:metaData" autoCreated="true" mandatory="true" onParentVersion="COPY" protected="false" sameNameSiblings="false">
         <requiredPrimaryTypes>
           <requiredPrimaryType>mgnl:metaData</requiredPrimaryType>
         </requiredPrimaryTypes>
       </childNodeDefinition>
-    </nodeType>
-
-    <nodeType name="contactItemNode" isMixin="false" hasOrderableChildNodes="true" primaryItemName="">
-        <supertypes>
-            <supertype>contactItemBase</supertype>
-        </supertypes>
     </nodeType>
 </nodeTypes>
