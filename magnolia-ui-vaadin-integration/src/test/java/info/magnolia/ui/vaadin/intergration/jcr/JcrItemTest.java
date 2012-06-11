@@ -83,7 +83,7 @@ public class JcrItemTest {
         final JcrItem item = new JcrItem(underlyingNode);
 
         // WHEN
-        item.addItemProperty("a", new BaseProperty("b"));
+        item.addItemProperty("a", new BaseProperty("","b"));
     }
 
     @Test(expected=UnsupportedOperationException.class)
