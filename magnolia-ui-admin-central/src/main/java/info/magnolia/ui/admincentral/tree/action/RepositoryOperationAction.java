@@ -33,27 +33,28 @@
  */
 package info.magnolia.ui.admincentral.tree.action;
 
-import javax.jcr.Item;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-
 import info.magnolia.ui.admincentral.workbench.event.ContentChangedEvent;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 
+import javax.jcr.Item;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+
+
 /**
  * A repository operation action which saves the changes and informs the event bus.
- *
+ * 
  * @version $Id$
  * @param <D> The {@link ActionDefinition} used by the action.
  */
 public abstract class RepositoryOperationAction<D extends ActionDefinition> extends ActionBase<D> {
 
-    private Item item;
+    private final Item item;
 
-    private EventBus eventBus;
+    private final EventBus eventBus;
 
     public RepositoryOperationAction(D definition, Item item, EventBus eventBus) {
         super(definition);
@@ -69,8 +70,9 @@ public abstract class RepositoryOperationAction<D extends ActionDefinition> exte
             onExecute(item);
             session.save();
             eventBus.fireEvent(new ContentChangedEvent(session.getWorkspace().getName(), path));
-        } catch (RepositoryException e) {
-            throw new ActionExecutionException("Can't execute repository operation.", e);
+        }
+        catch (RepositoryException e) {
+            throw new ActionExecutionException("Can't execute repository operation.\n" + e.getMessage(), e);
         }
     }
 

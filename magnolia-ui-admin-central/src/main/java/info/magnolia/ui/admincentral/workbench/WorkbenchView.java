@@ -35,10 +35,11 @@ package info.magnolia.ui.admincentral.workbench;
 
 import com.vaadin.ui.ComponentContainer;
 
+
 /**
  * TODO write javadoc.
  * @version $Id$
- *
+ * 
  */
 public interface WorkbenchView extends ComponentContainer {
 
@@ -46,12 +47,16 @@ public interface WorkbenchView extends ComponentContainer {
 
     void initWorkbench(final String id);
 
+    void executeAction(String actionName);
+
     /**
      * Presenter.
      * @author apchelintcev
-     *
+     * 
      */
     public interface Presenter {
+
+        void onActionbarItemClicked(String actionName);
 
     }
 

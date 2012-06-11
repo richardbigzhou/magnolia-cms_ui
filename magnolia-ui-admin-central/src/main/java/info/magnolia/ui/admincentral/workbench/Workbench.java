@@ -47,7 +47,7 @@ import com.vaadin.ui.ComponentContainer;
 @SuppressWarnings("serial")
 public class Workbench implements IsVaadinComponent, WorkbenchView.Presenter {
 
-    private WorkbenchView view;
+    private final WorkbenchView view;
 
     @Inject
     public Workbench(final WorkbenchView view) {
@@ -63,6 +63,12 @@ public class Workbench implements IsVaadinComponent, WorkbenchView.Presenter {
     @Override
     public ComponentContainer asVaadinComponent() {
         return view;
+    }
+
+    @Override
+    public void onActionbarItemClicked(String actionName) {
+        // should not be done by the view
+        view.executeAction(actionName);
     }
 
 }

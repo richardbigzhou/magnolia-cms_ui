@@ -34,6 +34,7 @@
 package info.magnolia.ui.model.workbench.definition;
 
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
+import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.model.column.definition.AbstractColumnDefinition;
 import info.magnolia.ui.model.menu.definition.MenuItemDefinition;
 import info.magnolia.ui.model.toolbar.ToolbarDefinition;
@@ -44,6 +45,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
 
 /**
  * Contains all elements which define a workbench configuration.
@@ -58,9 +60,11 @@ public class WorkbenchDefinition implements Serializable {
 
     private ComponentProviderConfiguration components;
 
-    private Map<String, AbstractColumnDefinition> columns = new LinkedHashMap<String, AbstractColumnDefinition>();
+    private final Map<String, AbstractColumnDefinition> columns = new LinkedHashMap<String, AbstractColumnDefinition>();
 
     private List<MenuItemDefinition> actions = new ArrayList<MenuItemDefinition>();
+
+    private ActionbarDefinition actionbar;
 
     private List<ItemTypeDefinition> itemTypes = new ArrayList<ItemTypeDefinition>();
 
@@ -124,6 +128,14 @@ public class WorkbenchDefinition implements Serializable {
 
     public boolean addAction(MenuItemDefinition action) {
         return actions.add(action);
+    }
+
+    public ActionbarDefinition getActionbar() {
+        return actionbar;
+    }
+
+    public void setActionbar(ActionbarDefinition actionbar) {
+        this.actionbar = actionbar;
     }
 
     public ToolbarDefinition getFunctionToolbar() {
