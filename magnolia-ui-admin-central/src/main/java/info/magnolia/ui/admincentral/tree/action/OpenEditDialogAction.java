@@ -37,7 +37,7 @@ import info.magnolia.ui.admincentral.dialog.DialogPresenter;
 import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.vaadin.intergration.jcr.BaseItem;
+import info.magnolia.ui.vaadin.intergration.jcr.JcrItem;
 
 import javax.jcr.Node;
 
@@ -64,7 +64,7 @@ public class OpenEditDialogAction extends ActionBase<OpenEditDialogActionDefinit
     public void execute() throws ActionExecutionException {
 
             DialogPresenter dialogPresenter = dialogPresenterFactory.createDialog(getDefinition().getDialogName());
-            dialogPresenter.showDialog(new BaseItem(nodeToEdit));
+            dialogPresenter.showDialog(new JcrItem(nodeToEdit));
 
     }
 }

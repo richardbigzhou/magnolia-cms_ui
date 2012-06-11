@@ -73,7 +73,7 @@ public class DummyDialogDefinitionManager {
         final List<DialogDefinitionProvider> providers = new ArrayList<DialogDefinitionProvider>();
 
 
-        DialogDefinitionProvider provider = new DummyDialogDefinitionProvider("contact");
+        DialogDefinitionProvider provider = new DummyDialogDefinitionProvider("admin-central:userpreferences");
         if (provider != null) {
             providers.add(provider);
         }

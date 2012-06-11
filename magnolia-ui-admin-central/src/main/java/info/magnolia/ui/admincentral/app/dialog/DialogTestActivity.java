@@ -59,7 +59,7 @@ public class DialogTestActivity extends AbstractAppActivity<DialogTestPresenter>
 
     @Override
     public void openDialog() {
-        DialogPresenter presenter = factory.createDialog("contact");
+        DialogPresenter presenter = factory.createDialog("admin-central:userpreferences");
 
         presenter.showDialog(selectedBean);
     }
