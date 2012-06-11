@@ -50,6 +50,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.jcr.Item;
+import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
@@ -167,6 +168,11 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
     @Override
     public void setPresenter(final Presenter presenter) {
         this.presenter = presenter;
+    }
+
+    @Override
+    public void refreshNode(Node node) {
+        jcrView.refreshNode(node);
     }
 
 }

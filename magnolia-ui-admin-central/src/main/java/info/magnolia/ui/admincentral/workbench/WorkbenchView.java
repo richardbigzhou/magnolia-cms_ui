@@ -36,6 +36,7 @@ package info.magnolia.ui.admincentral.workbench;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 
 import javax.jcr.Item;
+import javax.jcr.Node;
 
 import com.vaadin.ui.ComponentContainer;
 
@@ -50,6 +51,8 @@ public interface WorkbenchView extends ComponentContainer {
 
     void initWorkbench(final WorkbenchDefinition definintion);
 
+    void refreshNode(Node node);
+    
     /**
      * Presenter.
      * @version $id
