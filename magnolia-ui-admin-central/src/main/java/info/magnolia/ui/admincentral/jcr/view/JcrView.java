@@ -42,15 +42,14 @@ import javax.jcr.Node;
 
 /**
  * UI component that displays a jcr workspace.
- *
- * @author fgrilli
+ * @version $Id$
  */
 public interface JcrView extends View, IsVaadinComponent {
 
     /**
      * Enumeration for view types.
      * TODO: use lowercase elements and remove custom code so that C2B support "by name" could be leveraged?
-     * @author fgrilli
+     * @version $Id$
      *
      */
     enum ViewType {
