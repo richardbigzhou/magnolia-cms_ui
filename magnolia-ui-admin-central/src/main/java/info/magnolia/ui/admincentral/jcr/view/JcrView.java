@@ -92,17 +92,16 @@ public interface JcrView extends View, IsVaadinComponent {
     void refresh();
 
     void refreshNode(final Node node);
-    
+
     JcrContainer getContainer();
-    
+
     /**
      * Presenter for the JcrView.
-     *
-     * @author fgrilli
+     * @version $Id$
      */
     public interface Presenter {
 
         void onItemSelection(final Item item);
-       
+
     }
 }

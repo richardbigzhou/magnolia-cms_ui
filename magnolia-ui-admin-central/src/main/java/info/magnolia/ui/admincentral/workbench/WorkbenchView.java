@@ -45,25 +45,33 @@ import com.vaadin.ui.ComponentContainer;
 /**
  * TODO write javadoc.
  * @version $Id$
- * 
+ *
  */
 public interface WorkbenchView extends ComponentContainer {
 
     void setPresenter(final Presenter presenter);
 
     void initWorkbench(final WorkbenchDefinition definintion);
-
+    /**
+     * Causes a view refresh only if the current node exists in the repository.
+     */
     void refreshNode(Node node);
+    /**
+     * TODO review the for two methods to perform the view refresh. Had to add this one to refresh the view
+     * in case of item deletion.
+     * Refreshes the view.
+     */
+    void refresh();
 
     /**
      * Presenter.
-     * @version $id
+     * @version $Id$
      */
     public interface Presenter {
 
         void onItemSelected(final Item item);
 
-        void onActionbarItemClicked(ActionDefinition actionDefinition);
+        void onActionbarItemClicked(final ActionDefinition actionDefinition);
 
     }
 

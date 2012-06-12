@@ -188,4 +188,9 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
         jcrView.refreshNode(node);
     }
 
+    @Override
+    public void refresh() {
+        jcrView.refresh();
+    }
+
 }

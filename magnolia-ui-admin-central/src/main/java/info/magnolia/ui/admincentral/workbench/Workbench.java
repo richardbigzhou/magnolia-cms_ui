@@ -36,6 +36,7 @@ package info.magnolia.ui.admincentral.workbench;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.admincentral.MagnoliaShell;
+import info.magnolia.ui.admincentral.tree.action.DeleteItemAction;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.admincentral.workbench.event.ItemSelectedEvent;
 import info.magnolia.ui.framework.event.EventBus;
@@ -104,7 +105,7 @@ public class Workbench implements IsVaadinComponent, WorkbenchView.Presenter {
                     view.refreshNode(node);
                 }
                 catch (RepositoryException e) {
-                    log.error("Node update failed with exception: " + e.getMessage());
+                    log.error("Node update failed with exception: {}", e.getMessage());
                 }
             }
         });
@@ -115,7 +116,6 @@ public class Workbench implements IsVaadinComponent, WorkbenchView.Presenter {
         try {
             workbenchDefinition = workbenchRegistry.get(id);
         } catch (RegistrationException e) {
-            log.error("An error occurred while trying to get workbench [{}] in the registry", id, e);
             shell.showError("An error occurred while trying to get workbench [" + id + "] in the registry", e);
             return;
         }
@@ -134,6 +134,11 @@ public class Workbench implements IsVaadinComponent, WorkbenchView.Presenter {
                 Item item = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace()).getItem(selectedItemPath);
                 Action action = actionFactory.createAction(actionDefinition, item);
                 action.execute();
+                view.refresh();
+                //TODO a hack to reset the path to root in case we deleted the item, else we we get PathNotFoundEx next time we try to perfrom an action.
+                if(action instanceof DeleteItemAction) {
+                    selectedItemPath = "/";
+                }
             } catch (PathNotFoundException e) {
                 shell.showError("Can't execute action.\n" + e.getMessage(), e);
             } catch (LoginException e) {
