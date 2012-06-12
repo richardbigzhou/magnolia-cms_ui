@@ -87,10 +87,8 @@ public class Workbench implements IsVaadinComponent, WorkbenchView.Presenter {
         this.shell = shell;
         this.workbenchRegistry = workbenchRegistry;
         this.actionFactory = actionFactory;
-
         view.setPresenter(this);
         eventbus.addHandler(DialogCommitEvent.class, new DialogCommitEvent.Handler() {
-
             @Override
             public void onDialogCommit(DialogCommitEvent event) {
                 try {
@@ -106,17 +104,15 @@ public class Workbench implements IsVaadinComponent, WorkbenchView.Presenter {
     }
 
     public void initWorkbench(final String id) {
-        // load the workbench specific configuration if existing
-        final WorkbenchDefinition workbenchDefinition;
         try {
-            workbenchDefinition = workbenchRegistry.get(id);
+            final WorkbenchDefinition workbenchDefinition = workbenchRegistry.get(id);
+            view.initWorkbench(workbenchDefinition);
         }
         catch (RegistrationException e) {
             log.error("An error occurred while trying to get workbench [{}] in the registry", id, e);
             shell.showError("An error occurred while trying to get workbench [" + id + "] in the registry", e);
             return;
         }
-        view.initWorkbench(workbenchDefinition);
     }
 
     @Override
@@ -144,10 +140,6 @@ public class Workbench implements IsVaadinComponent, WorkbenchView.Presenter {
             return;
         }
         try {
-            // FIXME this seemed to be triggered twice both for click row event and tableValue
-            // change even when no value has changed and only a click happened on table, see
-            // info.magnolia.ui.admincentral.tree.view.TreeViewImpl.TreeViewImpl
-            // and jcrBrowser internal obj registering for those events.
             selectedItem = item;
             log.info("javax.jcr.Item at {} was selected. Firing ItemSelectedEvent...", item.getPath());
             eventBus.fireEvent(new ItemSelectedEvent(item.getSession().getWorkspace().getName(), item.getPath()));

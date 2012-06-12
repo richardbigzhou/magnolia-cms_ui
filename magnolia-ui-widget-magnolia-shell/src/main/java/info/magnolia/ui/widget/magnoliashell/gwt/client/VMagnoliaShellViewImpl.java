@@ -41,7 +41,6 @@ import info.magnolia.ui.widget.magnoliashell.gwt.client.FragmentDTO.FragmentType
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShell.ViewportType;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VShellMessage.MessageType;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.VShellViewport.ContentAnimationDelegate;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.event.AppActivatedEvent;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.event.ShellAppNavigationEvent;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.event.ViewportCloseEvent;
@@ -70,10 +69,6 @@ import com.google.web.bindery.event.shared.EventBus;
 public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellView, ViewportCloseHandler {
 
     public static final String CLASSNAME = "v-magnolia-shell";
-
-    private final static int FADE_SPEED = 400;
-
-    private final static int SLIDE_SPEED = 700;
 
     private static int Z_INDEX_HI = 300;
 
@@ -246,7 +241,7 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
         if (appViewport != viewport) {
             doUpdateViewport(appViewport, viewport);
             viewports.put(ViewportType.APP_VIEWPORT, viewport);
-            viewport.setContentAnimationDelegate(slidingDelegate);
+            viewport.setContentAnimationDelegate(ContentAnimationDelegate.SlidingDelegate);
             viewport.setForceContentAlign(false);
         }
     };
@@ -258,7 +253,7 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
             doUpdateViewport(dialogViewport, viewport);
             viewports.put(ViewportType.DIALOG_VIEWPORT, viewport);
             viewport.getElement().getStyle().setZIndex(500);
-            viewport.setContentAnimationDelegate(fadingDelegate);
+            viewport.setContentAnimationDelegate(ContentAnimationDelegate.FadingDelegate);
             if (viewport != null) {
                 viewport.showCurtain();
             }
@@ -271,7 +266,7 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
         if (shellAppViewport != viewport) {
             doUpdateViewport(shellAppViewport, viewport);
             viewports.put(ViewportType.SHELL_APP_VIEWPORT, viewport);
-            viewport.setContentAnimationDelegate(fadingDelegate);   
+            viewport.setContentAnimationDelegate(ContentAnimationDelegate.FadingDelegate);   
         }
     }
     
@@ -314,44 +309,6 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
         }
     }
     
-    private final ContentAnimationDelegate slidingDelegate = new ContentAnimationDelegate() {
-        @Override
-        public void hide(final Widget w, final Callbacks callbacks) {
-            final JQueryWrapper jq = JQueryWrapper.select(w);
-            jq.animate(SLIDE_SPEED, new AnimationSettings() {{
-                setProperty("top", "-=" + w.getOffsetHeight());
-                setCallbacks(callbacks);
-            }});
-        }
-
-        @Override
-        public void show(final Widget w, final Callbacks callbacks) {
-            if (w != null) {
-                final JQueryWrapper jq = JQueryWrapper.select(w);
-                jq.setCssPx("top", -w.getOffsetHeight());
-                jq.animate(SLIDE_SPEED, new AnimationSettings() {{
-                    setProperty("top", "+=" + w.getOffsetHeight());
-                    setCallbacks(callbacks);
-                }});
-            }
-        }
-    };
-
-    private final ContentAnimationDelegate fadingDelegate = new ContentAnimationDelegate() {
-        @Override
-        public void hide(Widget w, Callbacks callbacks) {
-            JQueryWrapper.select(w).fadeOut(FADE_SPEED, callbacks);
-        }
-
-        @Override
-        public void show(final Widget widget, final Callbacks callbacks) {
-            if (widget != null) {
-                final JQueryWrapper jq = JQueryWrapper.select(widget);
-                jq.setCss("display", "none");
-                jq.fadeIn(FADE_SPEED, callbacks);
-            }
-        }
-    };
     
     private final ShellNavigationHandler navHandler = new ShellNavigationHandler() {
         @Override
