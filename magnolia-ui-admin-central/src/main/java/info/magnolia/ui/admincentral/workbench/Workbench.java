@@ -37,6 +37,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
+import info.magnolia.ui.admincentral.workbench.event.ContentChangedEvent;
 import info.magnolia.ui.admincentral.workbench.event.ItemSelectedEvent;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.action.Action;
@@ -45,7 +46,7 @@ import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.model.workbench.registry.WorkbenchDefinitionRegistry;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
-import info.magnolia.ui.vaadin.intergration.jcr.JcrItem;
+import info.magnolia.ui.vaadin.intergration.jcr.NodeAdapter;
 import info.magnolia.ui.widget.dialog.event.DialogCommitEvent;
 
 import javax.inject.Inject;
@@ -63,7 +64,15 @@ import com.vaadin.ui.ComponentContainer;
 
 
 /**
- * TODO write javadoc.
+ * The workbench is a central view in AdminCentral. It represents the main hub through which users can interact with JCR data.
+ * It is compounded by
+ * <ul>
+ * <li>a configurable data grid.
+ * <li>a configurable function toolbar on top of the data grid, providing operations such as switching from tree to list view or performing searches on data.
+ * <li>a configurable action bar on the right hand side, showing the available operations for the given workspace and the selected item.
+ * </ul>
+ *
+ * <p>Its main configuration point is the {@link WorkbenchDefinition} through which one defines the JCR workspace to connect to, the columns/properties to display, the available actions and so on.
  * @version $Id$
  */
 @SuppressWarnings("serial")
@@ -95,18 +104,26 @@ public class Workbench implements IsVaadinComponent, WorkbenchView.Presenter {
         this.actionFactory = actionFactory;
 
         view.setPresenter(this);
-        eventbus.addHandler(DialogCommitEvent.class, new DialogCommitEvent.Handler() {
+        eventBus.addHandler(DialogCommitEvent.class, new DialogCommitEvent.Handler() {
 
             @Override
             public void onDialogCommit(DialogCommitEvent event) {
                 try {
-                    final Node node = ((JcrItem) event.getItem()).getNode();
+                    final Node node = ((NodeAdapter) event.getItem()).getNode();
                     node.getSession().save();
                     view.refreshNode(node);
                 }
                 catch (RepositoryException e) {
                     log.error("Node update failed with exception: {}", e.getMessage());
                 }
+            }
+        });
+
+        eventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
+
+            @Override
+            public void onContentChanged(ContentChangedEvent event) {
+                view.refresh();
             }
         });
     }
@@ -136,10 +153,9 @@ public class Workbench implements IsVaadinComponent, WorkbenchView.Presenter {
                     log.debug("{} does not exist anymore. Was it just deleted? Resetting path to root...", selectedItemPath);
                     selectedItemPath = "/";
                 }
-                Item item = session.getItem(selectedItemPath);
+                final Item item = session.getItem(selectedItemPath);
                 Action action = actionFactory.createAction(actionDefinition, item);
                 action.execute();
-                view.refresh();
             } catch (PathNotFoundException e) {
                 shell.showError("Can't execute action.\n" + e.getMessage(), e);
             } catch (LoginException e) {
@@ -159,13 +175,13 @@ public class Workbench implements IsVaadinComponent, WorkbenchView.Presenter {
             return;
         }
         try {
-            // FIXME this seemed to be triggered twice both for click row event and tableValue
+            // FIXME this seems to be triggered twice both for click row event and tableValue
             // change even when no value has changed and only a click happened on table, see
             // info.magnolia.ui.admincentral.tree.view.TreeViewImpl.TreeViewImpl
             // and jcrBrowser internal obj registering for those events.
             selectedItemPath = item.getPath();
-            log.info("javax.jcr.Item at {} was selected. Firing ItemSelectedEvent...", item.getPath());
-            eventBus.fireEvent(new ItemSelectedEvent(item.getSession().getWorkspace().getName(), item.getPath()));
+            log.debug("javax.jcr.Item at {} was selected. Firing ItemSelectedEvent...", item.getPath());
+            eventBus.fireEvent(new ItemSelectedEvent(workbenchDefinition.getWorkspace(), item.getPath()));
         } catch (RepositoryException e) {
             shell.showError("An error occurred while selecting a row in the data grid", e);
         }
