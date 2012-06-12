@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.workbench;
 
+import info.magnolia.context.MgnlContext;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
@@ -49,7 +50,9 @@ import info.magnolia.ui.widget.dialog.event.DialogCommitEvent;
 
 import javax.inject.Inject;
 import javax.jcr.Item;
+import javax.jcr.LoginException;
 import javax.jcr.Node;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
@@ -67,6 +70,8 @@ public class Workbench implements IsVaadinComponent, WorkbenchView.Presenter {
 
     private static final Logger log = LoggerFactory.getLogger(Workbench.class);
 
+    private WorkbenchDefinition workbenchDefinition;
+
     private final WorkbenchDefinitionRegistry workbenchRegistry;
 
     private final WorkbenchView view;
@@ -77,7 +82,7 @@ public class Workbench implements IsVaadinComponent, WorkbenchView.Presenter {
 
     private final WorkbenchActionFactory actionFactory;
 
-    private Item selectedItem;
+    private String selectedItemPath;
 
     @Inject
     public Workbench(final WorkbenchView view, final EventBus eventbus, final MagnoliaShell shell, final WorkbenchDefinitionRegistry workbenchRegistry, final WorkbenchActionFactory actionFactory) {
@@ -107,11 +112,9 @@ public class Workbench implements IsVaadinComponent, WorkbenchView.Presenter {
 
     public void initWorkbench(final String id) {
         // load the workbench specific configuration if existing
-        final WorkbenchDefinition workbenchDefinition;
         try {
             workbenchDefinition = workbenchRegistry.get(id);
-        }
-        catch (RegistrationException e) {
+        } catch (RegistrationException e) {
             log.error("An error occurred while trying to get workbench [{}] in the registry", id, e);
             shell.showError("An error occurred while trying to get workbench [" + id + "] in the registry", e);
             return;
@@ -127,11 +130,17 @@ public class Workbench implements IsVaadinComponent, WorkbenchView.Presenter {
     @Override
     public void onActionbarItemClicked(ActionDefinition actionDefinition) {
         if (actionDefinition != null) {
-            Action action = actionFactory.createAction(actionDefinition, selectedItem);
             try {
+                Item item = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace()).getItem(selectedItemPath);
+                Action action = actionFactory.createAction(actionDefinition, item);
                 action.execute();
-            }
-            catch (ActionExecutionException e) {
+            } catch (PathNotFoundException e) {
+                shell.showError("Can't execute action.\n" + e.getMessage(), e);
+            } catch (LoginException e) {
+                shell.showError("Can't execute action.\n" + e.getMessage(), e);
+            } catch (RepositoryException e) {
+                shell.showError("Can't execute action.\n" + e.getMessage(), e);
+            } catch (ActionExecutionException e) {
                 shell.showError("Can't execute action.\n" + e.getMessage(), e);
             }
         }
@@ -148,11 +157,10 @@ public class Workbench implements IsVaadinComponent, WorkbenchView.Presenter {
             // change even when no value has changed and only a click happened on table, see
             // info.magnolia.ui.admincentral.tree.view.TreeViewImpl.TreeViewImpl
             // and jcrBrowser internal obj registering for those events.
-            selectedItem = item;
+            selectedItemPath = item.getPath();
             log.info("javax.jcr.Item at {} was selected. Firing ItemSelectedEvent...", item.getPath());
             eventBus.fireEvent(new ItemSelectedEvent(item.getSession().getWorkspace().getName(), item.getPath()));
-        }
-        catch (RepositoryException e) {
+        } catch (RepositoryException e) {
             shell.showError("An error occurred while selecting a row in the data grid", e);
         }
     }
