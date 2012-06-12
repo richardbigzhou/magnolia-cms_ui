@@ -102,7 +102,8 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
             register("activeViewportChanged", new Method() {
                 @Override
                 public void invoke(String methodName, Object[] params) {
-                    view.changeActiveViewport(ViewportType.valueOf(String.valueOf(params[0])));
+                    ViewportType type = params.length > 0 ? ViewportType.valueOf(String.valueOf(params[0])) : ViewportType.SHELL_APP_VIEWPORT;
+                    view.changeActiveViewport(type);
                 }
             });
             

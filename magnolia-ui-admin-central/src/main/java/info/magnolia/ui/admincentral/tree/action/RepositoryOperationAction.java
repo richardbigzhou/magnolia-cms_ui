@@ -33,20 +33,23 @@
  */
 package info.magnolia.ui.admincentral.tree.action;
 
+import info.magnolia.cms.core.Path;
 import info.magnolia.ui.admincentral.workbench.event.ContentChangedEvent;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 
+import javax.jcr.AccessDeniedException;
 import javax.jcr.Item;
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 
 /**
  * A repository operation action which saves the changes and informs the event bus.
- * 
+ *
  * @version $Id$
  * @param <D> The {@link ActionDefinition} used by the action.
  */
@@ -77,5 +80,11 @@ public abstract class RepositoryOperationAction<D extends ActionDefinition> exte
     }
 
     protected abstract void onExecute(Item item) throws RepositoryException;
+
+    protected String getUniqueNewItemName(final Item item) throws RepositoryException, ItemNotFoundException, AccessDeniedException {
+        String parentPath = "/".equals(item.getPath()) ? item.getPath(): item.getParent().getPath();
+        String name = Path.getUniqueLabel(item.getSession(), parentPath, "untitled");
+        return name;
+    }
 
 }
