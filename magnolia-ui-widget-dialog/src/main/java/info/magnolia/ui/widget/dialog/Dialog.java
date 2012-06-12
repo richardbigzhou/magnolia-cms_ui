@@ -153,7 +153,7 @@ public class Dialog extends AbstractComponent implements ServerSideHandler, Item
 
     public void registerActions() {
 
-        Action commit = new Action("commit", "save stuff") {
+        Action commit = new Action("commit", "save changes") {
             @Override
             public void execute() {
                 commit();
