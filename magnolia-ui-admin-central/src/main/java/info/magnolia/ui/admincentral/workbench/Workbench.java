@@ -36,7 +36,6 @@ package info.magnolia.ui.admincentral.workbench;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.admincentral.MagnoliaShell;
-import info.magnolia.ui.admincentral.tree.action.DeleteItemAction;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.admincentral.workbench.event.ItemSelectedEvent;
 import info.magnolia.ui.framework.event.EventBus;
@@ -55,6 +54,7 @@ import javax.jcr.LoginException;
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -131,14 +131,15 @@ public class Workbench implements IsVaadinComponent, WorkbenchView.Presenter {
     public void onActionbarItemClicked(ActionDefinition actionDefinition) {
         if (actionDefinition != null) {
             try {
-                Item item = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace()).getItem(selectedItemPath);
+                Session session = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace());
+                if(!session.itemExists(selectedItemPath)) {
+                    log.debug("{} does not exist anymore. Was it just deleted? Resetting path to root...", selectedItemPath);
+                    selectedItemPath = "/";
+                }
+                Item item = session.getItem(selectedItemPath);
                 Action action = actionFactory.createAction(actionDefinition, item);
                 action.execute();
                 view.refresh();
-                //TODO a hack to reset the path to root in case we deleted the item, else we we get PathNotFoundEx next time we try to perfrom an action.
-                if(action instanceof DeleteItemAction) {
-                    selectedItemPath = "/";
-                }
             } catch (PathNotFoundException e) {
                 shell.showError("Can't execute action.\n" + e.getMessage(), e);
             } catch (LoginException e) {

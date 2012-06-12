@@ -140,7 +140,7 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
 
                         @Override
                         public void buttonClick(ClickEvent event) {
-                            System.out.println("actionbar item clicked");
+                            log.debug("actionbar item clicked");
                             ActionDefinition actionDefinition = getActionDefinition(actionName);
                             getPresenter().onActionbarItemClicked(actionDefinition);
                         }
