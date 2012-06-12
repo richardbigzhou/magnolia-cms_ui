@@ -428,7 +428,7 @@
             <sv:value>info.magnolia.ui.admincentral.tree.action.OpenEditDialogActionDefinition</sv:value>
           </sv:property>
           <sv:property sv:name="dialogName" sv:type="String">
-            <sv:value>admin-central:userpreferences</sv:value>
+            <sv:value>ui-contacts-app:contact</sv:value>
           </sv:property>
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
@@ -1154,7 +1154,7 @@
                       <sv:value>info.magnolia.ui.admincentral.tree.action.OpenEditDialogActionDefinition</sv:value>
                     </sv:property>
                     <sv:property sv:name="dialogName" sv:type="String">
-                      <sv:value>admin-central:userpreferences</sv:value>
+                      <sv:value>ui-contacts-app:contact</sv:value>
                     </sv:property>
                     <sv:property sv:name="jcr:createdBy" sv:type="String">
                       <sv:value>admin</sv:value>
