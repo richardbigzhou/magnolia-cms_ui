@@ -52,7 +52,7 @@ public class ContactsViewImpl extends AbstractAppView<ContactsPresenter> impleme
     @Inject
     public ContactsViewImpl(final Workbench workbench) {
         workbench.initWorkbench(jcrWorkspaceName);
-        addTab(workbench.asVaadinComponent(), "Workbench");
+        addTab(workbench.asVaadinComponent(), "Contacts");
     }
 
 
