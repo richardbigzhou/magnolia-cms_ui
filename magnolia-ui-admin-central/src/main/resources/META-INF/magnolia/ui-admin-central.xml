@@ -34,6 +34,22 @@
       <type>info.magnolia.ui.model.menu.definition.MenuItemDefinition</type>
       <implementation>info.magnolia.ui.model.menu.definition.MenuItemDefinitionImpl</implementation>
     </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.model.actionbar.definition.ActionbarDefinition</type>
+      <implementation>info.magnolia.ui.model.actionbar.definition.ActionbarDefinitionImpl</implementation>
+    </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.model.actionbar.definition.ActionbarSectionDefinition</type>
+      <implementation>info.magnolia.ui.model.actionbar.definition.ActionbarSectionDefinitionImpl</implementation>
+    </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.model.actionbar.definition.ActionbarGroupDefinition</type>
+      <implementation>info.magnolia.ui.model.actionbar.definition.ActionbarGroupDefinitionImpl</implementation>
+    </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.model.actionbar.definition.ActionbarItemDefinition</type>
+      <implementation>info.magnolia.ui.model.actionbar.definition.ActionbarItemDefinitionImpl</implementation>
+    </type-mapping>
   </components>
 
    <components>

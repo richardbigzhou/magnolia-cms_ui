@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.workbench;
 
+import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 
 import javax.jcr.Item;
@@ -40,10 +41,11 @@ import javax.jcr.Node;
 
 import com.vaadin.ui.ComponentContainer;
 
+
 /**
  * TODO write javadoc.
  * @version $Id$
- *
+ * 
  */
 public interface WorkbenchView extends ComponentContainer {
 
@@ -52,14 +54,17 @@ public interface WorkbenchView extends ComponentContainer {
     void initWorkbench(final WorkbenchDefinition definintion);
 
     void refreshNode(Node node);
-    
+
     /**
      * Presenter.
      * @version $id
      */
     public interface Presenter {
-        
+
         void onItemSelected(final Item item);
+
+        void onActionbarItemClicked(ActionDefinition actionDefinition);
+
     }
 
 }
