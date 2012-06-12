@@ -31,38 +31,16 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.testapp;
+package info.magnolia.ui.framework.app;
 
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
-import org.apache.commons.lang.RandomStringUtils;
-
-import info.magnolia.ui.framework.app.AppView;
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
+import info.magnolia.ui.framework.location.Location;
 
 /**
-* @version $Id$
-*/
-public class SimpleDummyTabView implements AppView, IsVaadinComponent {
+ * @version $Id$
+ */
+public interface AppContext {
 
-    private final VerticalLayout tableContainer;
-    private final String name;
+    void openAppView(AppView view);
 
-    SimpleDummyTabView() {
-        name = RandomStringUtils.randomNumeric(2);
-        tableContainer = new VerticalLayout();
-        Label label = new Label("<center>Dummy Tab " + name + "</center>", Label.CONTENT_XHTML);
-        tableContainer.addComponent(label);
-    }
-
-    @Override
-    public String getCaption() {
-        return "TAB " + name;
-    }
-
-    @Override
-    public Component asVaadinComponent() {
-        return tableContainer;
-    }
+    void setAppLocation(Location location);
 }

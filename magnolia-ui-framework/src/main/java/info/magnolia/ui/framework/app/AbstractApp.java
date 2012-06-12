@@ -31,49 +31,25 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.testapp;
+package info.magnolia.ui.framework.app;
 
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
-
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
+import info.magnolia.ui.framework.location.Location;
 
 /**
-* @version $Id$
-*/
-public class SimpleDummyAppViewImpl implements SimpleDummyAppView, IsVaadinComponent {
+ * @version $Id$
+ */
+public abstract class AbstractApp implements App {
 
-    private SimpleDummyAppView.Presenter presenter;
-    private final VerticalLayout tableContainer;
-
-    SimpleDummyAppViewImpl() {
-        tableContainer = new VerticalLayout();
-        Label label = new Label("<center>Dummy App</center>", Label.CONTENT_XHTML);
-        tableContainer.addComponent(label);
-
-        Button dialog = new Button("Gimme more tabs!", new Button.ClickListener() {
-
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                presenter.onButtonClick();
-            }
-        });
-        tableContainer.addComponent(dialog);
-    }
-
-    public void setPresenter(SimpleDummyAppView.Presenter presenter) {
-        this.presenter = presenter;
+    @Override
+    public void tokenChanged(String token) {
     }
 
     @Override
-    public String getCaption() {
-        return "SimpleDummy";
+    public void stop() {
     }
 
     @Override
-    public Component asVaadinComponent() {
-        return tableContainer;
+    public Location getDefaultLocation() {
+        return null;
     }
 }

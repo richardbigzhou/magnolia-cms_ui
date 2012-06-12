@@ -34,8 +34,8 @@
 package info.magnolia.ui.admincentral.app.pages;
 
 
-import info.magnolia.ui.framework.app.App;
-import info.magnolia.ui.framework.app.AppCallback;
+import info.magnolia.ui.framework.app.AbstractApp;
+import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.AppView;
 
 import javax.inject.Inject;
@@ -45,7 +45,7 @@ import javax.inject.Inject;
  *
  * @version $Id$
  */
-public class PagesApp implements App {
+public class PagesApp extends AbstractApp {
 
     private PagesView view;
 
@@ -55,15 +55,7 @@ public class PagesApp implements App {
     }
 
     @Override
-    public AppView start(AppCallback callback, String token) {
+    public AppView start(AppContext context, String token) {
         return view;
-    }
-
-    @Override
-    public void tokenChanged(String token) {
-    }
-
-    @Override
-    public void stop() {
     }
 }

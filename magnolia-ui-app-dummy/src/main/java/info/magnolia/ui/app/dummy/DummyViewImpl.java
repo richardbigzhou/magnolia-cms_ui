@@ -35,6 +35,7 @@ package info.magnolia.ui.app.dummy;
 
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
@@ -47,13 +48,26 @@ import com.vaadin.ui.VerticalLayout;
 @SuppressWarnings("serial")
 public class DummyViewImpl implements DummyView, IsVaadinComponent {
 
+    private DummyView.Presenter presenter;
     private final VerticalLayout tableContainer;
 
     public DummyViewImpl() {
-        super();
         tableContainer = new VerticalLayout();
         Label label = new Label("<center>Dummy App</center>", Label.CONTENT_XHTML);
         tableContainer.addComponent(label);
+
+        Button dialog = new Button("Gimme more tabs!", new Button.ClickListener() {
+
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                presenter.onButtonClick();
+            }
+        });
+        tableContainer.addComponent(dialog);
+    }
+
+    public void setPresenter(DummyView.Presenter presenter) {
+        this.presenter = presenter;
     }
 
     @Override

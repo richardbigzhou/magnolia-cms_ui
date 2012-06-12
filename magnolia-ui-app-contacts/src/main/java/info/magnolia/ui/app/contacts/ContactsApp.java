@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.app.contacts;
 
-import info.magnolia.ui.framework.app.App;
-import info.magnolia.ui.framework.app.AppCallback;
+import info.magnolia.ui.framework.app.AbstractApp;
+import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.AppView;
 
 import javax.inject.Inject;
@@ -44,7 +44,7 @@ import javax.inject.Inject;
  *
  * @version $Id$
  */
-public class ContactsApp implements App {
+public class ContactsApp extends AbstractApp {
 
     private ContactsView view;
 
@@ -53,17 +53,8 @@ public class ContactsApp implements App {
         this.view = view;
     }
 
-
     @Override
-    public AppView start(AppCallback callback, String token) {
+    public AppView start(AppContext context, String token) {
         return view;
-    }
-
-    @Override
-    public void tokenChanged(String token) {
-    }
-
-    @Override
-    public void stop() {
     }
 }

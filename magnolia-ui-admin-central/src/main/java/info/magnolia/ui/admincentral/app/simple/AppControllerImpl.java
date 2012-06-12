@@ -43,7 +43,7 @@ import com.vaadin.ui.ComponentContainer;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.framework.app.App;
-import info.magnolia.ui.framework.app.AppCallback;
+import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.AppEventType;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
@@ -53,6 +53,7 @@ import info.magnolia.ui.framework.app.AppView;
 import info.magnolia.ui.framework.app.layout.AppCategory;
 import info.magnolia.ui.framework.app.layout.AppLayoutManager;
 import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.place.Place;
 import info.magnolia.ui.framework.place.PlaceChangeEvent;
 import info.magnolia.ui.framework.place.PlaceChangeRequestEvent;
@@ -72,10 +73,10 @@ public class AppControllerImpl implements AppController, PlaceChangeEvent.Handle
     private EventBus eventBus;
     private ViewPort viewPort;
 
-    private final Map<String, AppContext> runningApps = new HashMap<String, AppContext>();
-    private final LinkedList<AppContext> appHistory = new LinkedList<AppContext>();
+    private final Map<String, AppContextImpl> runningApps = new HashMap<String, AppContextImpl>();
+    private final LinkedList<AppContextImpl> appHistory = new LinkedList<AppContextImpl>();
 
-    private AppContext currentApp;
+    private AppContextImpl currentApp;
 
     @Inject
     public AppControllerImpl(ComponentProvider componentProvider, AppLayoutManager appLayoutManager, PlaceController placeController, EventBus eventBus) {
@@ -98,22 +99,22 @@ public class AppControllerImpl implements AppController, PlaceChangeEvent.Handle
     }
 
     public void startIfNotAlreadyRunningThenFocus(String name) {
-        AppContext appContext = doStartIfNotAlreadyRunning(name, null);
+        AppContextImpl appContext = doStartIfNotAlreadyRunning(name, null);
         doFocus(appContext);
     }
 
-    public void stopApplication(String name) {
-        AppContext appContext = runningApps.get(name);
+    public void stopApp(String name) {
+        AppContextImpl appContext = runningApps.get(name);
         if (appContext != null) {
             doStop(appContext);
         }
     }
 
     @Override
-    public void stopCurrentApplication() {
-        final AppContext appContext = appHistory.peekFirst();
+    public void stopCurrentApp() {
+        final AppContextImpl appContext = appHistory.peekFirst();
         if (appContext != null) {
-            stopApplication(appContext.getName());
+            stopApp(appContext.getName());
         }
     }
 
@@ -121,11 +122,11 @@ public class AppControllerImpl implements AppController, PlaceChangeEvent.Handle
         return runningApps.containsKey(name);
     }
 
-    private AppContext doStartIfNotAlreadyRunning(String name, Place place) {
-        AppContext appContext = runningApps.get(name);
+    private AppContextImpl doStartIfNotAlreadyRunning(String name, Place place) {
+        AppContextImpl appContext = runningApps.get(name);
         if (appContext == null) {
             AppDescriptor descriptor = getAppDescriptor(name);
-            appContext = new AppContext(descriptor);
+            appContext = new AppContextImpl(descriptor);
 
             if (place == null) {
                 place = appContext.getDefaultPlace();
@@ -139,13 +140,13 @@ public class AppControllerImpl implements AppController, PlaceChangeEvent.Handle
         return appContext;
     }
 
-    private void doFocus(AppContext appContext) {
+    private void doFocus(AppContextImpl appContext) {
         appContext.focus();
         appHistory.addFirst(appContext);
         sendEvent(AppEventType.FOCUSED, appContext.getAppDescriptor());
     }
 
-    private void doStop(AppContext appContext) {
+    private void doStop(AppContextImpl appContext) {
         appContext.stop();
         while (appHistory.remove(appContext)) {
         }
@@ -174,7 +175,7 @@ public class AppControllerImpl implements AppController, PlaceChangeEvent.Handle
             return;
         }
 
-        AppContext nextAppContext = runningApps.get(nextApp.getName());
+        AppContextImpl nextAppContext = runningApps.get(nextApp.getName());
 
         if (nextAppContext != null) {
             nextAppContext.onPlaceUpdate(newPlace);
@@ -215,13 +216,14 @@ public class AppControllerImpl implements AppController, PlaceChangeEvent.Handle
         return null;
     }
 
-    private class AppContext {
+    private class AppContextImpl implements AppContext {
 
         private AppDescriptor appDescriptor;
         private App app;
         private AppFrameView appFrameView;
+        private Location currentLocation;
 
-        public AppContext(AppDescriptor appDescriptor) {
+        public AppContextImpl(AppDescriptor appDescriptor) {
             this.appDescriptor = appDescriptor;
         }
 
@@ -244,15 +246,9 @@ public class AppControllerImpl implements AppController, PlaceChangeEvent.Handle
 
             appFrameView = new AppFrameView();
 
-            AppCallback callback = new AppCallback() {
+            AppView view = app.start(this, appPlace.getToken());
 
-                @Override
-                public void openAppView(AppView view) {
-                    appFrameView.addTab((ComponentContainer) ((IsVaadinComponent) view).asVaadinComponent(), view.getCaption());
-                }
-            };
-
-            AppView view = app.start(callback, appPlace.getToken());
+            currentLocation = app.getDefaultLocation();
 
             appFrameView.addTab((ComponentContainer) ((IsVaadinComponent) view).asVaadinComponent(), view.getCaption());
         }
@@ -285,6 +281,17 @@ public class AppControllerImpl implements AppController, PlaceChangeEvent.Handle
 
         public Place getDefaultPlace() {
             return new AppPlace(appDescriptor.getName(), "");
+        }
+
+        @Override
+        public void openAppView(AppView view) {
+            appFrameView.addTab((ComponentContainer) ((IsVaadinComponent) view).asVaadinComponent(), view.getCaption());
+        }
+
+        @Override
+        public void setAppLocation(Location location) {
+            currentLocation = location;
+//                    shell.setFragment();
         }
     }
 }

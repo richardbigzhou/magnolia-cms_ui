@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<sv:node sv:name="contacts" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<sv:node sv:name="dialog" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <sv:property sv:name="jcr:primaryType" sv:type="Name">
     <sv:value>mgnl:contentNode</sv:value>
   </sv:property>
@@ -7,10 +7,10 @@
     <sv:value>mix:lockable</sv:value>
   </sv:property>
   <sv:property sv:name="jcr:uuid" sv:type="String">
-    <sv:value>187101de-39e7-43ab-bb5e-fdc392a4b720</sv:value>
+    <sv:value>2bae8e78-883d-493b-a8e3-4f7002191b67</sv:value>
   </sv:property>
   <sv:property sv:name="appClass" sv:type="String">
-    <sv:value>info.magnolia.ui.app.contacts.ContactsApp</sv:value>
+    <sv:value>info.magnolia.ui.admincentral.app.dialog.DialogTestApp</sv:value>
   </sv:property>
   <sv:property sv:name="categoryName" sv:type="String">
     <sv:value>MANAGE</sv:value>
@@ -22,10 +22,10 @@
     <sv:value>admin</sv:value>
   </sv:property>
   <sv:property sv:name="label" sv:type="String">
-    <sv:value>Contacts</sv:value>
+    <sv:value>Dialog</sv:value>
   </sv:property>
   <sv:property sv:name="name" sv:type="String">
-    <sv:value>contacts</sv:value>
+    <sv:value>dialog</sv:value>
   </sv:property>
   <sv:node sv:name="MetaData">
     <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -44,7 +44,7 @@
       <sv:value>2012-05-22T16:11:05.204+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-      <sv:value>2012-06-01T15:51:50.640+02:00</sv:value>
+      <sv:value>2012-06-01T08:52:25.425+02:00</sv:value>
     </sv:property>
   </sv:node>
 </sv:node>

@@ -11,9 +11,9 @@ public interface AppController {
 
     void startIfNotAlreadyRunningThenFocus(String name);
 
-    void stopApplication(String name);
+    void stopApp(String name);
 
-    void stopCurrentApplication();
+    void stopCurrentApp();
 
     boolean isAppStarted(String name);
 

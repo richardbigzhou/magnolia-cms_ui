@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.app.dummy;
 
-import info.magnolia.ui.framework.app.App;
-import info.magnolia.ui.framework.app.AppCallback;
+import info.magnolia.ui.framework.app.AbstractApp;
+import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.AppView;
 
 import javax.inject.Inject;
@@ -44,8 +44,9 @@ import javax.inject.Inject;
  *
  * @version $Id$
  */
-public class DummyApp implements App {
+public class DummyApp extends AbstractApp implements DummyView.Presenter {
 
+    private AppContext context;
     private DummyView dummyView;
 
     @Inject
@@ -54,15 +55,27 @@ public class DummyApp implements App {
     }
 
     @Override
-    public AppView start(AppCallback callback, String token) {
-        return dummyView;
-    }
-
-    @Override
-    public void tokenChanged(String token) {
+    public AppView start(AppContext context, String token) {
+        this.context = context;
+        System.out.println("SIMPLE DUMMY APP STARTED - token is: " + token);
+        DummyViewImpl view = new DummyViewImpl();
+        view.setPresenter(this);
+        return view;
     }
 
     @Override
     public void stop() {
+        System.out.println("SIMPLE DUMMY APP STOPPED");
+    }
+
+    @Override
+    public void tokenChanged(String token) {
+        System.out.println("TOKEN CHANGED: " + token);
+    }
+
+    @Override
+    public void onButtonClick() {
+        DummyTabView view = new DummyTabView();
+        context.openAppView(view);
     }
 }
