@@ -189,8 +189,6 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
     protected void setActiveViewport(ShellViewport activeViewport) {
         if (this.activeViewport != activeViewport) {
             this.activeViewport = activeViewport;
-            proxy.call("activeViewportChanged");
-            this.activeViewport = activeViewport;
             for (final ViewportType type : ViewportType.values()) {
                 if (this.activeViewport == viewports.get(type)) {
                     proxy.call("activeViewportChanged", type.name());

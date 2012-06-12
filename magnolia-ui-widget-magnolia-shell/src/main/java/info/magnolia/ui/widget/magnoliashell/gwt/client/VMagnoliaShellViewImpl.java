@@ -246,8 +246,8 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
         if (appViewport != viewport) {
             doUpdateViewport(appViewport, viewport);
             viewports.put(ViewportType.APP_VIEWPORT, viewport);
-            viewport.setForceContentAlign(false);
             viewport.setContentAnimationDelegate(slidingDelegate);
+            viewport.setForceContentAlign(false);
         }
     };
 
