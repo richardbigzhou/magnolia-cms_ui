@@ -270,6 +270,10 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
         }
     }
     
+    private int errorMessageCount() {
+        return JQueryWrapper.select(".error").get().length();
+    };
+    
     private class ErrorMessage extends VShellMessage {
 
         public ErrorMessage(final MessageType type, String text) {
@@ -283,17 +287,20 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
                         Integer messageHeight = jq.cssInt("height");
                         settings.setProperty("top", "+=" + messageHeight);
                         settings.setProperty("height", "-=" + messageHeight);
-                        settings.addCallback(relayoutCallback);
+                        settings.addCallback(new JQueryCallback() {
+                            @Override
+                            public void execute(JQueryWrapper query) {
+                                if (activeViewport != null) {
+                                    presenter.updateViewportLayout(activeViewport);
+                                }
+                            }
+                        });
                         JQueryWrapper.select(activeViewport).animate(300, settings);
                     }
                     show();
                 }
             }));
         }
-
-        private int errorMessageCount() {
-            return JQueryWrapper.select(".error").get().length();
-        };
 
         @Override
         public void hide() {
@@ -322,15 +329,7 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
             presenter.loadShellApp(event.getType(), event.getParameters());
         }
     };
-    
-    private JQueryCallback relayoutCallback = new JQueryCallback() {
-        @Override
-        public void execute(JQueryWrapper query) {
-            if (activeViewport != null) {
-                presenter.updateViewportLayout(activeViewport);
-            }
-        }
-    };
+   
 
     @Override
     public void onViewportClose(ViewportCloseEvent event) {
