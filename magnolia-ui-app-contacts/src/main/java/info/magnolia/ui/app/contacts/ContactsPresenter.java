@@ -42,6 +42,5 @@ import info.magnolia.ui.framework.app.AppPresenter;
  */
 public interface ContactsPresenter extends AppPresenter<ContactsPresenter> {
 
-    void onActionbarItemClicked(String actionName);
 
 }

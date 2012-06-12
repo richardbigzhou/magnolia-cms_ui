@@ -34,15 +34,13 @@
 package info.magnolia.ui.app.contacts;
 
 import info.magnolia.ui.framework.app.AppView;
-import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 
 
 /**
  * View for the Contacts app.
- * 
+ *
  * @version $Id$
  */
 public interface ContactsView extends AppView<ContactsPresenter> {
 
-    void createActionbar(ActionbarDefinition actionbarDefinition);
 }
