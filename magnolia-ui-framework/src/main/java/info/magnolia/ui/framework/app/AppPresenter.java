@@ -41,8 +41,5 @@ package info.magnolia.ui.framework.app;
  */
 public interface AppPresenter<T extends AppPresenter<T>> {
 
-    String getAppName();
-
-    T getReference();
 
 }

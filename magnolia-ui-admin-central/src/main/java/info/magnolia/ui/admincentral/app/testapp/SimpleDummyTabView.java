@@ -31,27 +31,38 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app;
+package info.magnolia.ui.admincentral.app.testapp;
+
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.VerticalLayout;
+import org.apache.commons.lang.RandomStringUtils;
+
+import info.magnolia.ui.framework.app.AppView;
+import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 /**
- * Defines the lifecycle for an app.
- *
- * @version $Id$
- */
-public interface AppLifecycle {
+* @version $Id$
+*/
+public class SimpleDummyTabView implements AppView, IsVaadinComponent {
 
-    /**
-     * Starts the app letting it do initialization, the app is not displayed.
-     */
-    void start();
+    private final VerticalLayout tableContainer;
+    private final String name;
 
-    /**
-     * Displays the app. The app will perform a place switch using the PlaceController to a place it provides.
-     */
-    void focus();
+    SimpleDummyTabView() {
+        name = RandomStringUtils.randomNumeric(2);
+        tableContainer = new VerticalLayout();
+        Label label = new Label("<center>Dummy Tab " + name + "</center>", Label.CONTENT_XHTML);
+        tableContainer.addComponent(label);
+    }
 
-    /**
-     * Stops the app.
-     */
-    void stop();
+    @Override
+    public String getCaption() {
+        return "TAB " + name;
+    }
+
+    @Override
+    public Component asVaadinComponent() {
+        return tableContainer;
+    }
 }

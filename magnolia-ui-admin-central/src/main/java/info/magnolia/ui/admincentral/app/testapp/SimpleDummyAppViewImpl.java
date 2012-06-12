@@ -31,45 +31,49 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
+package info.magnolia.ui.admincentral.app.testapp;
 
-import info.magnolia.ui.framework.place.Place;
-import info.magnolia.ui.framework.place.PlaceTokenizer;
-import info.magnolia.ui.framework.place.Prefix;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.VerticalLayout;
+
+import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 /**
- * Place for the Dummy app.
- *
- * @version $Id$
- */
-@Prefix("dummy")
-public class DummyPlace extends Place {
+* @version $Id$
+*/
+public class SimpleDummyAppViewImpl implements SimpleDummyAppView, IsVaadinComponent {
 
-    /**
-     * Tokenizer for DummyPlace.
-     *
-     * @version $Id$
-     */
-    public static class Tokenizer implements PlaceTokenizer<DummyPlace> {
+    private SimpleDummyAppView.Presenter presenter;
+    private final VerticalLayout tableContainer;
 
-        @Override
-        public DummyPlace getPlace(String token) {
-            return new DummyPlace(token);
-        }
+    SimpleDummyAppViewImpl() {
+        tableContainer = new VerticalLayout();
+        Label label = new Label("<center>Dummy App</center>", Label.CONTENT_XHTML);
+        tableContainer.addComponent(label);
 
-        @Override
-        public String getToken(DummyPlace place) {
-            return place.getPath();
-        }
+        Button dialog = new Button("Gimme more tabs!", new Button.ClickListener() {
+
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                presenter.onButtonClick();
+            }
+        });
+        tableContainer.addComponent(dialog);
     }
 
-    private String path;
-
-    public DummyPlace(String path) {
-        this.path = path;
+    public void setPresenter(SimpleDummyAppView.Presenter presenter) {
+        this.presenter = presenter;
     }
 
-    public String getPath() {
-        return path;
+    @Override
+    public String getCaption() {
+        return "SimpleDummy";
+    }
+
+    @Override
+    public Component asVaadinComponent() {
+        return tableContainer;
     }
 }

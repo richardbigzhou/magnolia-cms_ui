@@ -40,7 +40,7 @@ import info.magnolia.ui.framework.app.AppPresenter;
  * @author p4elkin
  *
  */
-public interface DialogTestPresenter extends AppPresenter<DialogTestPresenter> {
+public interface DialogTestPresenter  {
     
     void openDialog();
 }

@@ -40,6 +40,6 @@ import info.magnolia.ui.framework.app.AppView;
  *
  * @version $Id$
  */
-public interface DummyView extends AppView<DummyPresenter> {
+public interface DummyView extends AppView {
 
 }

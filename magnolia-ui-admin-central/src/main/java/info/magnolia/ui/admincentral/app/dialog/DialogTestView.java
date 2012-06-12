@@ -40,7 +40,7 @@ import info.magnolia.ui.framework.app.AppView;
  *
  * @version $Id$
  */
-public interface DialogTestView extends AppView<DialogTestPresenter> {
+public interface DialogTestView extends AppView {
 
-
+    void setPresenter(DialogTestPresenter presenter);
 }

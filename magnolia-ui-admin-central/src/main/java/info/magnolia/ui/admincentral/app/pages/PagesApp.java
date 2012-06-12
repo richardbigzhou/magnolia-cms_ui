@@ -34,8 +34,9 @@
 package info.magnolia.ui.admincentral.app.pages;
 
 
-import info.magnolia.ui.framework.app.AppLifecycle;
-import info.magnolia.ui.framework.place.PlaceController;
+import info.magnolia.ui.framework.app.App;
+import info.magnolia.ui.framework.app.AppCallback;
+import info.magnolia.ui.framework.app.AppView;
 
 import javax.inject.Inject;
 
@@ -44,28 +45,25 @@ import javax.inject.Inject;
  *
  * @version $Id$
  */
-public class PagesApp implements AppLifecycle {
+public class PagesApp implements App {
 
-    private PlaceController placeController;
+    private PagesView view;
 
     @Inject
-    public PagesApp(PlaceController placeController) {
-        this.placeController = placeController;
+    public PagesApp(PagesView view) {
+        this.view = view;
     }
 
     @Override
-    public void start() {
-        System.out.println("PagesApp started");
+    public AppView start(AppCallback callback, String token) {
+        return view;
     }
 
     @Override
-    public void focus() {
-        placeController.goTo(new PagesPlace("foobar"));
-        System.out.println("PagesApp focused");
+    public void tokenChanged(String token) {
     }
 
     @Override
     public void stop() {
-        System.out.println("PagesApp stopped");
     }
 }

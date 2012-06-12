@@ -58,7 +58,7 @@ public class ShellViewport extends DeckLayout implements ViewPort {
     
     private BaseMagnoliaShell parentShell;
     
-    private ShellView view;
+    private View view;
     
     public ShellViewport(final BaseMagnoliaShell shell) {
         super();
@@ -78,23 +78,16 @@ public class ShellViewport extends DeckLayout implements ViewPort {
 
     public String getCurrentAppName() {
         String result = "";
-        if (view != null) {
-            result = view.getAppName();
+        if (view instanceof ShellView) {
+            result = ((ShellView)view).getAppName();
         }
         return result;
     }
-    
-    public ShellView getView() {
-        return view;
-    }
-    
+
     @Override
     public void setView(final View view) {
-        if (view != null && !(view instanceof ShellView)) {
-            throw new RuntimeException("Wrong type of view");
-        }
         if (view != null){
-            this.view = (ShellView)view;
+            this.view = view;
             if (view instanceof IsVaadinComponent) {
                 final Component c = ((IsVaadinComponent)view).asVaadinComponent();
                 if (c instanceof ComponentContainer) {

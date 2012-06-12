@@ -33,8 +33,9 @@
  */
 package info.magnolia.ui.app.dummy;
 
-import info.magnolia.ui.framework.app.AppLifecycle;
-import info.magnolia.ui.framework.place.PlaceController;
+import info.magnolia.ui.framework.app.App;
+import info.magnolia.ui.framework.app.AppCallback;
+import info.magnolia.ui.framework.app.AppView;
 
 import javax.inject.Inject;
 
@@ -43,28 +44,25 @@ import javax.inject.Inject;
  *
  * @version $Id$
  */
-public class DummyApp implements AppLifecycle {
+public class DummyApp implements App {
 
-    private PlaceController placeController;
+    private DummyView dummyView;
 
     @Inject
-    public DummyApp(PlaceController placeController) {
-        this.placeController = placeController;
+    public DummyApp(DummyView dummyView) {
+        this.dummyView = dummyView;
     }
 
     @Override
-    public void start() {
-        System.out.println("DummyApp started");
+    public AppView start(AppCallback callback, String token) {
+        return dummyView;
     }
 
     @Override
-    public void focus() {
-        placeController.goTo(new DummyPlace("foobar"));
-        System.out.println("DummyApp focused");
+    public void tokenChanged(String token) {
     }
 
     @Override
     public void stop() {
-        System.out.println("DummyApp stopped");
     }
 }

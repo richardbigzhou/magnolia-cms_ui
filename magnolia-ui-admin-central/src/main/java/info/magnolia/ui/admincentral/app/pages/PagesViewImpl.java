@@ -33,10 +33,12 @@
  */
 package info.magnolia.ui.admincentral.app.pages;
 
-import info.magnolia.ui.admincentral.app.AbstractAppView;
 import info.magnolia.ui.admincentral.workbench.Workbench;
+import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 import javax.inject.Inject;
+
+import com.vaadin.ui.Component;
 
 /**
  * View implementation for the Pages app.
@@ -44,14 +46,24 @@ import javax.inject.Inject;
  * @version $Id$
  */
 @SuppressWarnings("serial")
-public class PagesViewImpl extends AbstractAppView<PagesPresenter> implements PagesView {
+public class PagesViewImpl implements PagesView, IsVaadinComponent {
     
     private String jcrWorkspaceName = "contacts";
-    
+    private Component view;
+
     @Inject
     public PagesViewImpl(final Workbench workbench) {
         workbench.initWorkbench(jcrWorkspaceName);
-        addTab(workbench.asVaadinComponent(), "Workbench");
+        view = workbench.asVaadinComponent();
     }
 
+    @Override
+    public String getCaption() {
+        return "Workbench";
+    }
+
+    @Override
+    public Component asVaadinComponent() {
+        return view;
+    }
 }

@@ -33,9 +33,10 @@
  */
 package info.magnolia.ui.app.contacts;
 
-import info.magnolia.ui.admincentral.app.AbstractAppView;
+import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 import info.magnolia.ui.widget.actionbar.Actionbar;
 
+import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
@@ -47,12 +48,14 @@ import com.vaadin.ui.VerticalLayout;
  * @version $Id$
  */
 @SuppressWarnings("serial")
-public class ContactsViewImpl extends AbstractAppView<ContactsPresenter> implements ContactsView {
+public class ContactsViewImpl implements ContactsView, IsVaadinComponent {
+
+    private final HorizontalLayout wrapper;
 
     public ContactsViewImpl() {
         super();
 
-        final HorizontalLayout wrapper = new HorizontalLayout();
+        wrapper = new HorizontalLayout();
         wrapper.setWidth("100%");
 
         final VerticalLayout tableContainer = new VerticalLayout();
@@ -63,8 +66,6 @@ public class ContactsViewImpl extends AbstractAppView<ContactsPresenter> impleme
         wrapper.setExpandRatio(tableContainer, 1.0f);
 
         wrapper.addComponent(createActionbar());
-
-        addTab(wrapper, "Contacts");
     }
 
     private Actionbar createActionbar() {
@@ -79,4 +80,13 @@ public class ContactsViewImpl extends AbstractAppView<ContactsPresenter> impleme
         return actionbar;
     }
 
+    @Override
+    public String getCaption() {
+        return "Contacts";
+    }
+
+    @Override
+    public Component asVaadinComponent() {
+        return wrapper;
+    }
 }

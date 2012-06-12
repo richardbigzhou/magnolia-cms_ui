@@ -33,42 +33,26 @@
  */
 package info.magnolia.ui.framework.app;
 
-import info.magnolia.ui.framework.activity.AbstractActivity;
-import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.place.Place;
-import info.magnolia.ui.framework.view.ViewPort;
 
 /**
- * Abstract presenter for app views.
- *
- * @param <T>
  * @version $Id$
  */
-public abstract class AbstractAppActivity<T extends AppPresenter<T>> extends AbstractActivity implements AppPresenter<T> {
+public class AppPlace extends Place {
 
-    private static final long serialVersionUID = 1L;
+    private final String app;
+    private final String token;
 
-    private AppView<T> view;
-
-    private String name;
-
-    public AbstractAppActivity(AppView<T> view) {
-        this.view = view;
+    public AppPlace(String app, String token) {
+        this.app = app;
+        this.token = token;
     }
 
-    @Override
-    public void start(ViewPort viewPort, EventBus eventBus, Place place) {
-        view.setPresenter(getReference());
-        viewPort.setView(view);
+    public String getApp() {
+        return app;
     }
 
-    @Override
-    public String getAppName() {
-        return name;
+    public String getToken() {
+        return token;
     }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
 }

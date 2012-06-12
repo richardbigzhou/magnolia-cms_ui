@@ -33,8 +33,9 @@
  */
 package info.magnolia.ui.app.contacts;
 
-import info.magnolia.ui.framework.app.AppLifecycle;
-import info.magnolia.ui.framework.place.PlaceController;
+import info.magnolia.ui.framework.app.App;
+import info.magnolia.ui.framework.app.AppCallback;
+import info.magnolia.ui.framework.app.AppView;
 
 import javax.inject.Inject;
 
@@ -43,28 +44,26 @@ import javax.inject.Inject;
  *
  * @version $Id$
  */
-public class ContactsApp implements AppLifecycle {
+public class ContactsApp implements App {
 
-    private PlaceController placeController;
+    private ContactsView view;
 
     @Inject
-    public ContactsApp(PlaceController placeController) {
-        this.placeController = placeController;
+    public ContactsApp(ContactsView view) {
+        this.view = view;
+    }
+
+
+    @Override
+    public AppView start(AppCallback callback, String token) {
+        return view;
     }
 
     @Override
-    public void start() {
-        System.out.println("ContactsApp started");
-    }
-
-    @Override
-    public void focus() {
-        placeController.goTo(new ContactsPlace("/"));
-        System.out.println("ContactsApp focused");
+    public void tokenChanged(String token) {
     }
 
     @Override
     public void stop() {
-        System.out.println("ContactsApp stopped");
     }
 }

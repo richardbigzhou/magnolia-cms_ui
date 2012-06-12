@@ -31,15 +31,46 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.pages;
+package info.magnolia.ui.admincentral.app.testapp;
 
-import info.magnolia.ui.framework.app.AppPresenter;
+import info.magnolia.ui.framework.app.App;
+import info.magnolia.ui.framework.app.AppCallback;
+import info.magnolia.ui.framework.app.AppView;
 
 /**
- * Pages presenter.
- * @author p4elkin
  *
+ * I am the app, the activity, the presenter
+ *
+ * @version $Id$
  */
-public interface PagesPresenter extends AppPresenter<PagesPresenter> {
+public class SimpleDummyApp implements App, SimpleDummyAppView.Presenter {
+
+    private AppCallback callback;
+
+    @Override
+    public AppView start(AppCallback callback, String token) {
+        this.callback = callback;
+        System.out.println("SIMPLE DUMMY APP STARTED - token is: " + token);
+        SimpleDummyAppViewImpl view = new SimpleDummyAppViewImpl();
+        view.setPresenter(this);
+        return view;
+    }
+
+    @Override
+    public void stop() {
+        System.out.println("SIMPLE DUMMY APP STOPPED");
+    }
+
+    @Override
+    public void tokenChanged(String token) {
+        System.out.println("TOKEN CHANGED: " + token);
+    }
+
+    @Override
+    public void onButtonClick() {
+        SimpleDummyTabView view = new SimpleDummyTabView();
+        callback.openAppView(view);
+    }
+
 
 }

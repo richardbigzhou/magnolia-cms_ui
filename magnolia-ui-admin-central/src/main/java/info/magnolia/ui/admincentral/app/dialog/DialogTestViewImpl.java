@@ -33,11 +33,12 @@
  */
 package info.magnolia.ui.admincentral.app.dialog;
 
-import info.magnolia.ui.admincentral.app.AbstractAppView;
+import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 
 /**
@@ -46,14 +47,14 @@ import com.vaadin.ui.HorizontalLayout;
  * @version $Id$
  */
 @SuppressWarnings("serial")
-public class DialogTestViewImpl extends AbstractAppView<DialogTestPresenter> implements DialogTestView {
+public class DialogTestViewImpl implements DialogTestView, IsVaadinComponent {
 
     private HorizontalLayout content = new HorizontalLayout();
+    private DialogTestPresenter presenter;
 
     public DialogTestViewImpl() {
         Button dialog = new Button("Open Dialog", new DialogListener());
         content.addComponent(dialog);
-        addTab(content, "Dialog");
     }
 
     /**
@@ -66,6 +67,24 @@ public class DialogTestViewImpl extends AbstractAppView<DialogTestPresenter> imp
         public void buttonClick(ClickEvent event) {
             getPresenter().openDialog();
         }
+    }
 
+    public DialogTestPresenter getPresenter() {
+        return presenter;
+    }
+
+    @Override
+    public void setPresenter(DialogTestPresenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @Override
+    public String getCaption() {
+        return "Dialog";
+    }
+
+    @Override
+    public Component asVaadinComponent() {
+        return content;
     }
 }

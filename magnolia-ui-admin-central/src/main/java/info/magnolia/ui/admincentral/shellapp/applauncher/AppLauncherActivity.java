@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.admincentral.shellapp.applauncher;
 
-import info.magnolia.ui.framework.activity.AbstractActivity;
 import info.magnolia.ui.framework.app.AppController;
+import info.magnolia.ui.framework.activity.AbstractActivity;
 import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventHandler;
@@ -157,7 +157,7 @@ public class AppLauncherActivity extends AbstractActivity implements AppLauncher
         initView(this.layout);
         for (AppCategory category : layout.getCategories()) {
             for (AppDescriptor descriptor : category.getApps()) {
-                if(this.appController.isAppStarted(descriptor)) {
+                if(this.appController.isAppStarted(descriptor.getName())) {
                     view.activateButton(true, descriptor.getName());
                 }
             }

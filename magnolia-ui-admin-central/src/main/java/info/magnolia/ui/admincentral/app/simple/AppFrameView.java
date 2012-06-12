@@ -31,48 +31,42 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts;
+package info.magnolia.ui.admincentral.app.simple;
 
-import info.magnolia.ui.framework.place.Place;
-import info.magnolia.ui.framework.place.PlaceTokenizer;
-import info.magnolia.ui.framework.place.Prefix;
+import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
+import info.magnolia.ui.widget.tabsheet.ShellTab;
+import info.magnolia.ui.widget.tabsheet.ShellTabSheet;
+
+import com.vaadin.ui.Component;
+import com.vaadin.ui.ComponentContainer;
 
 /**
- * Place for the Contacts app.
- *
  * @version $Id$
  */
-@Prefix("contacts")
-public class ContactsPlace extends Place {
+@SuppressWarnings("serial")
+public class AppFrameView implements View, IsVaadinComponent {
 
-    /**
-     * Tokenizer for ContactsPlace.
-     *
-     * @version $Id$
-     */
-    public static class Tokenizer implements PlaceTokenizer<ContactsPlace> {
+    private ShellTabSheet tabsheet = new ShellTabSheet();
 
-        @Override
-        public ContactsPlace getPlace(String token) {
-            return new ContactsPlace(token);
-        }
-
-        @Override
-        public String getToken(ContactsPlace place) {
-            return place.getPath();
-        }
+    public AppFrameView() {
+        super();
+        tabsheet.setSizeFull();
     }
 
-    private String path;
-
-    public ContactsPlace(String path) {
-        this.path = path;
-    }
-    public ContactsPlace() {
-        this("/");
+    public void addTab(ComponentContainer cc, String caption) {
+        final ShellTab tab = new ShellTab(caption, cc);
+        tabsheet.addComponent(tab);
+        tabsheet.setTabClosable(tab, true);
+        tabsheet.setActiveTab(tab);
     }
 
-    public String getPath() {
-        return path;
+    public void closeTab(ComponentContainer cc) {
+        tabsheet.removeComponent(cc);
+    }
+
+    @Override
+    public Component asVaadinComponent() {
+        return tabsheet;
     }
 }

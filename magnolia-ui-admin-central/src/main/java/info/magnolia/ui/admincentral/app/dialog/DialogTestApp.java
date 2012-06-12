@@ -34,8 +34,11 @@
 package info.magnolia.ui.admincentral.app.dialog;
 
 
-import info.magnolia.ui.framework.app.AppLifecycle;
-import info.magnolia.ui.framework.place.PlaceController;
+import info.magnolia.ui.admincentral.dialog.DialogPresenter;
+import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
+import info.magnolia.ui.framework.app.App;
+import info.magnolia.ui.framework.app.AppCallback;
+import info.magnolia.ui.framework.app.AppView;
 
 import javax.inject.Inject;
 
@@ -44,28 +47,34 @@ import javax.inject.Inject;
  *
  * @version $Id$
  */
-public class DialogTestApp implements AppLifecycle {
+public class DialogTestApp implements App, DialogTestPresenter {
 
-    private PlaceController placeController;
+    private DialogPresenterFactory factory;
+    private DialogTestView view;
 
     @Inject
-    public DialogTestApp(PlaceController placeController) {
-       this.placeController = placeController;
+    public DialogTestApp(DialogPresenterFactory factory, DialogTestView view) {
+        this.factory = factory;
+        this.view = view;
+        view.setPresenter(this);
     }
 
     @Override
-    public void start() {
-        System.out.println("DialogApp started");
+    public AppView start(AppCallback callback, String token) {
+        return view;
     }
 
     @Override
-    public void focus() {
-        placeController.goTo(new DialogTestPlace("foobar"));
-        System.out.println("DialogApp focused");
+    public void tokenChanged(String token) {
     }
 
     @Override
     public void stop() {
-        System.out.println("DialogApp stopped");
+    }
+
+    @Override
+    public void openDialog() {
+        DialogPresenter presenter = factory.createDialog("testDialog");
+        presenter.showDialog();
     }
 }
