@@ -118,7 +118,7 @@ public class VDialogViewImpl extends FlowPanel implements VDialogView {
     public void addAction(final String name, final String label) {
         Button button = new Button(label);
         button.setStyleName(CLASSNAME_BUTTON);
-        button.addStyleName(CLASSNAME_BUTTON + "-" +label);
+        button.addStyleDependentName(name);
         button.addClickHandler(new ClickHandler() {
 
             @Override

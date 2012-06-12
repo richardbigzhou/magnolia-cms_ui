@@ -33,7 +33,7 @@
     text-align: right;
 }
 
-button.btn-dialog-submit, button.btn-dialog-cancel, button.btn-dialog {
+button.btn-dialog {
     font-size: 12px;
     margin-left: 5px;
     padding: 4px 12px;
@@ -44,10 +44,16 @@ button.btn-dialog-submit, button.btn-dialog-cancel, button.btn-dialog {
     color: #FFFFFF;
 }
 
+button.btn-dialog-commit {
+    float: right;
+    background: none repeat scroll 0 0 #689600;
+}
+
 .dialog-panel .v-shell-tab {
     background-color: #E6E6E6;
-    padding: 12px 16px 12px 25px;
+    margin: 12px 16px 12px 25px;
 }
+
 .dialog-panel ul.nav-tabs {
     background-color: #CCCCCC;
 }
