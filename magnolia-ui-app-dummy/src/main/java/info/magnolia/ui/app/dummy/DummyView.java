@@ -42,6 +42,9 @@ import info.magnolia.ui.framework.app.AppView;
  */
 public interface DummyView extends AppView {
 
+    /**
+     * Presenter interface for DummyView.
+     */
     public interface Presenter {
         void onButtonClick();
     }

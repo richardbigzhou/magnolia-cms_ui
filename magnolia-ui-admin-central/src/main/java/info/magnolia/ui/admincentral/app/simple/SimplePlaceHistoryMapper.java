@@ -40,6 +40,8 @@ import info.magnolia.ui.framework.place.PlaceHistoryMapperImpl;
 import info.magnolia.ui.framework.place.PlaceTokenizer;
 
 /**
+ * PlaceHistoryMapper that creates AppPlace places for all apps.
+ *
  * @version $Id$
  */
 public class SimplePlaceHistoryMapper extends PlaceHistoryMapperImpl {

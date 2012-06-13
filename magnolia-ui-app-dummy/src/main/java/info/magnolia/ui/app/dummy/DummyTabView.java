@@ -42,6 +42,8 @@ import info.magnolia.ui.framework.app.AppView;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 /**
+ * View for a tab in the dummy application.
+ *
 * @version $Id$
 */
 public class DummyTabView implements AppView, IsVaadinComponent {

@@ -35,9 +35,11 @@ package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.framework.location.Location;
 
-
 /**
+ * Defines functionality used by an app to interact with the Magnolia shell.
+ *
  * @version $Id$
+ * @see App#start(AppContext, info.magnolia.ui.framework.location.Location)
  */
 public interface AppContext {
 

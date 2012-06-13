@@ -63,6 +63,8 @@ import info.magnolia.ui.framework.view.ViewPort;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 /**
+ * App controller that manages the lifecycle of running apps and raises callbacks to the app.
+ *
  * @version $Id$
  */
 @Singleton
@@ -237,7 +239,7 @@ public class AppControllerImpl implements AppController, PlaceChangeEvent.Handle
         }
 
         /**
-         * Called when the app is launched from the app launcher OR a place change event triggers it to start
+         * Called when the app is launched from the app launcher OR a place change event triggers it to start.
          */
         public void start(EventBus eventBus, Place place) {
 
@@ -255,14 +257,14 @@ public class AppControllerImpl implements AppController, PlaceChangeEvent.Handle
         }
 
         /**
-         * Called when the app is launched from the app launcher OR if another app is closed and this is to show itself
+         * Called when the app is launched from the app launcher OR if another app is closed and this is to show itself.
          */
         public void focus() {
             placeController.goTo(getDefaultPlace());
         }
 
         /**
-         * Called when a place change occurs and the app is already running
+         * Called when a place change occurs and the app is already running.
          */
         public void onPlaceUpdate(Place place) {
             app.locationChanged(new DefaultLocation(((AppPlace) place).getToken()));

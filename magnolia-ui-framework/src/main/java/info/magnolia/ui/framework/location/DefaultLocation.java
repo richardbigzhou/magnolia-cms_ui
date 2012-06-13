@@ -34,6 +34,8 @@
 package info.magnolia.ui.framework.location;
 
 /**
+ * Default location implementation.
+ *
  * @version $Id$
  */
 public class DefaultLocation implements Location {

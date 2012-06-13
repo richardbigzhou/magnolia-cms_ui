@@ -42,6 +42,8 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
 
 /**
+ * View used to give all apps a uniform look-and-feel.
+ *
  * @version $Id$
  */
 @SuppressWarnings("serial")

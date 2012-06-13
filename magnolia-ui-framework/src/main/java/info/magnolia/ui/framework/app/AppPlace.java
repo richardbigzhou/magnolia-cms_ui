@@ -36,6 +36,8 @@ package info.magnolia.ui.framework.app;
 import info.magnolia.ui.framework.place.Place;
 
 /**
+ * Generic place used by all apps.
+ *
  * @version $Id$
  */
 public class AppPlace extends Place {
