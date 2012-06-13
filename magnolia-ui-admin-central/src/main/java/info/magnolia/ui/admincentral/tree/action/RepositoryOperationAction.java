@@ -66,7 +66,7 @@ public abstract class RepositoryOperationAction<D extends ActionDefinition> exte
     }
 
     /**
-     * Executes the defined action passed on the passed in item. When successful will fire a {@link ContentChangedEvent}.
+     * Executes the defined action on the passed in item. When successful, it will fire a {@link ContentChangedEvent}.
      */
     @Override
     public void execute() throws ActionExecutionException {
