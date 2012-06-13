@@ -36,6 +36,7 @@ package info.magnolia.ui.app.dummy;
 import info.magnolia.ui.framework.app.AbstractApp;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.AppView;
+import info.magnolia.ui.framework.location.Location;
 
 import javax.inject.Inject;
 
@@ -55,9 +56,9 @@ public class DummyApp extends AbstractApp implements DummyView.Presenter {
     }
 
     @Override
-    public AppView start(AppContext context, String token) {
+    public AppView start(AppContext context, Location location) {
         this.context = context;
-        System.out.println("SIMPLE DUMMY APP STARTED - token is: " + token);
+        System.out.println("SIMPLE DUMMY APP STARTED - token is: " + location.toString());
         DummyViewImpl view = new DummyViewImpl();
         view.setPresenter(this);
         return view;
@@ -69,8 +70,8 @@ public class DummyApp extends AbstractApp implements DummyView.Presenter {
     }
 
     @Override
-    public void tokenChanged(String token) {
-        System.out.println("TOKEN CHANGED: " + token);
+    public void locationChanged(Location location) {
+        System.out.println("TOKEN CHANGED: " + location);
     }
 
     @Override

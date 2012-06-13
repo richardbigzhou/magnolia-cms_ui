@@ -31,32 +31,21 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.pages;
-
-
-import info.magnolia.ui.framework.app.AbstractApp;
-import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.app.AppView;
-import info.magnolia.ui.framework.location.Location;
-
-import javax.inject.Inject;
+package info.magnolia.ui.framework.location;
 
 /**
- * Pages app.
- *
  * @version $Id$
  */
-public class PagesApp extends AbstractApp {
+public class DefaultLocation implements Location {
 
-    private PagesView view;
+    private String token;
 
-    @Inject
-    public PagesApp(PagesView view) {
-        this.view = view;
+    public DefaultLocation(String token) {
+        this.token = token;
     }
 
     @Override
-    public AppView start(AppContext context, Location location) {
-        return view;
+    public String toString() {
+        return token;
     }
 }

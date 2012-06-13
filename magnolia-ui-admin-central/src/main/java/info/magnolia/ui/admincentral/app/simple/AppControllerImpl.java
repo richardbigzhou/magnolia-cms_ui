@@ -53,6 +53,7 @@ import info.magnolia.ui.framework.app.AppView;
 import info.magnolia.ui.framework.app.layout.AppCategory;
 import info.magnolia.ui.framework.app.layout.AppLayoutManager;
 import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.place.Place;
 import info.magnolia.ui.framework.place.PlaceChangeEvent;
@@ -246,7 +247,7 @@ public class AppControllerImpl implements AppController, PlaceChangeEvent.Handle
 
             appFrameView = new AppFrameView();
 
-            AppView view = app.start(this, appPlace.getToken());
+            AppView view = app.start(this, new DefaultLocation(appPlace.getToken()));
 
             currentLocation = app.getDefaultLocation();
 
@@ -264,7 +265,7 @@ public class AppControllerImpl implements AppController, PlaceChangeEvent.Handle
          * Called when a place change occurs and the app is already running
          */
         public void onPlaceUpdate(Place place) {
-            app.tokenChanged(((AppPlace) place).getToken());
+            app.locationChanged(new DefaultLocation(((AppPlace) place).getToken()));
         }
 
         public void display(ViewPort viewPort) {

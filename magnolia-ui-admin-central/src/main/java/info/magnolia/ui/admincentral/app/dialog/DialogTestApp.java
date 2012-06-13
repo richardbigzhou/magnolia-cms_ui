@@ -39,6 +39,7 @@ import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
 import info.magnolia.ui.framework.app.AbstractApp;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.AppView;
+import info.magnolia.ui.framework.location.Location;
 
 import javax.inject.Inject;
 
@@ -60,7 +61,7 @@ public class DialogTestApp extends AbstractApp implements DialogTestPresenter {
     }
 
     @Override
-    public AppView start(AppContext context, String token) {
+    public AppView start(AppContext context, Location location) {
         return view;
     }
 

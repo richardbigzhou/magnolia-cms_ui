@@ -7,9 +7,9 @@ import info.magnolia.ui.framework.location.Location;
  */
 public interface App {
 
-    AppView start(AppContext context, String token);
+    AppView start(AppContext context, Location location);
 
-    void tokenChanged(String token);
+    void locationChanged(Location location);
 
     void stop();
 

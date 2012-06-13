@@ -41,7 +41,7 @@ import info.magnolia.ui.framework.location.Location;
 public abstract class AbstractApp implements App {
 
     @Override
-    public void tokenChanged(String token) {
+    public void locationChanged(Location location) {
     }
 
     @Override
