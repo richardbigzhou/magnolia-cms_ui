@@ -157,6 +157,7 @@ public abstract class Editable extends Label {
             return component;
         }
         catch (RepositoryException e) {
+            log.error("",e);
             throw new RuntimeRepositoryException(e);
         }
     }

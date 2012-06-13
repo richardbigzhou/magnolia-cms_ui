@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.admincentral.jcr.view.builder;
 
-import info.magnolia.cms.security.User;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,8 +42,7 @@ import java.util.List;
  */
 public class JcrViewBuilderProviderImpl implements JcrViewBuilderProvider {
 
-    //injected
-    private User user;
+
     //private UISettings uiSettings;
 
     // content2bean

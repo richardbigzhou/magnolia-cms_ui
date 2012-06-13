@@ -100,6 +100,7 @@ public class ListViewImpl implements ListView, IsVaadinComponent {
 
             @Override
             public void valueChange(ValueChangeEvent event) {
+                log.debug("Handle value change Event: "+event.getProperty().getValue());
                 presenterOnItemSelection((ContainerItemId) event.getProperty().getValue());
             }
         });
