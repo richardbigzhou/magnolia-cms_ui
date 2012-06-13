@@ -44,9 +44,9 @@ import com.vaadin.ui.ComponentContainer;
 
 
 /**
- * TODO write javadoc.
+ * Implementors of this interface are responsible for building a workbench and handling the UI actions associated with it.
  * @version $Id$
- * 
+ *
  */
 public interface WorkbenchView extends ComponentContainer {
 
@@ -56,17 +56,26 @@ public interface WorkbenchView extends ComponentContainer {
 
     void setGridType(final JcrView.ViewType type);
     
-    void refreshNode(Node node);
+    /**
+     * Causes a view refresh only if the current node exists in the repository.
+     */
+    void refreshNode(final Node node);
+    /**
+     * TODO review the for two methods to perform the view refresh. Had to add this one to refresh the view
+     * in case of item deletion.
+     * Refreshes the view.
+     */
+    void refresh();
 
     /**
      * Presenter.
-     * @version $id
+     * @version $Id$
      */
     public interface Presenter {
 
         void onItemSelected(final Item item);
 
-        void onActionbarItemClicked(ActionDefinition actionDefinition);
+        void onActionbarItemClicked(final ActionDefinition actionDefinition);
 
     }
 

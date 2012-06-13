@@ -49,8 +49,12 @@ import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppTy
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Component;
+
 
 /**
  * Admin shell.
@@ -58,12 +62,13 @@ import com.vaadin.ui.Component;
  */
 @SuppressWarnings("serial")
 @Singleton
-
 public class MagnoliaShell extends BaseMagnoliaShell implements Shell {
 
-    private EventBus eventBus;
+    private static final Logger log = LoggerFactory.getLogger(MagnoliaShell.class);
 
-    private AppController appController;
+    private final EventBus eventBus;
+
+    private final AppController appController;
 
     @Inject
     public MagnoliaShell(final EventBus eventBus, final AppController appController) {
@@ -71,13 +76,13 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell {
         this.eventBus = eventBus;
         this.appController = appController;
         this.eventBus.addHandler(AppLifecycleEvent.class, new AppLifecycleEventHandler.Adapter() {
+
             @Override
             public void onAppFocused(AppLifecycleEvent event) {
                 setActiveViewport(getAppViewport());
             }
         });
     }
-
 
     @Override
     protected void closeCurrentApp() {
@@ -99,6 +104,7 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell {
 
     @Override
     public void showError(String message, Exception e) {
+        log.error(message, e);
         showError(message);
     }
 
@@ -123,6 +129,7 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell {
     public HandlerRegistration addFragmentChangedHandler(final FragmentChangedHandler handler) {
         super.addFragmentChangedHanlder(handler);
         return new HandlerRegistration() {
+
             @Override
             public void removeHandler() {
                 removeFragmentChangedHanlder(handler);
@@ -140,6 +147,6 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell {
     }
 
     public void removeDialog(IsVaadinComponent dialog) {
-       removeDialog(dialog.asVaadinComponent());
+        removeDialog(dialog.asVaadinComponent());
     }
 }

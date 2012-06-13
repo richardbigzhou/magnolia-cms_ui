@@ -65,6 +65,9 @@ public abstract class RepositoryOperationAction<D extends ActionDefinition> exte
         this.eventBus = eventBus;
     }
 
+    /**
+     * Executes the defined action on the passed in item. When successful, it will fire a {@link ContentChangedEvent}.
+     */
     @Override
     public void execute() throws ActionExecutionException {
         try {
@@ -82,9 +85,11 @@ public abstract class RepositoryOperationAction<D extends ActionDefinition> exte
     protected abstract void onExecute(Item item) throws RepositoryException;
 
     protected String getUniqueNewItemName(final Item item) throws RepositoryException, ItemNotFoundException, AccessDeniedException {
+        if(item == null) {
+            throw new IllegalArgumentException("Item cannot be null.");
+        }
         String parentPath = "/".equals(item.getPath()) ? item.getPath(): item.getParent().getPath();
-        String name = Path.getUniqueLabel(item.getSession(), parentPath, "untitled");
-        return name;
+        return Path.getUniqueLabel(item.getSession(), parentPath, "untitled");
     }
 
 }

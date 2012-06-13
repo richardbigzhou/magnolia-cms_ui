@@ -52,6 +52,10 @@ public class DeleteItemAction extends RepositoryOperationAction<DeleteItemAction
 
     @Override
     protected void onExecute(Item item) throws RepositoryException {
+        //avoid JCR logging long stacktraces about root not being removable.
+        if("/".equals(item.getPath())) {
+            return;
+        }
         item.remove();
     }
 }

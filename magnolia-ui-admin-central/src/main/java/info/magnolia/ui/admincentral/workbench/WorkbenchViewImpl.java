@@ -52,6 +52,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.jcr.Node;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,7 +67,7 @@ import com.vaadin.ui.VerticalLayout;
 
 
 /**
- * TODO write javadoc.
+ * Implementation of {@link WorkbenchView}.
  * @version $Id$
  */
 @SuppressWarnings("serial")
@@ -90,6 +91,8 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
     
     protected String path = "/";
 
+    private JcrView jcrView;
+
     private final Map<String, ActionbarItemDefinition> actions = new LinkedHashMap<String, ActionbarItemDefinition>();
 
     private final JcrView.Presenter jcrPresenter = new JcrView.Presenter() {
@@ -101,7 +104,7 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
     };
 
     @Inject
-    public WorkbenchViewImpl(JcrViewBuilderProvider jcrViewBuilderProvider) {
+    public WorkbenchViewImpl(final JcrViewBuilderProvider jcrViewBuilderProvider) {
         super();
         this.jcrViewBuilderProvider = jcrViewBuilderProvider;
         setSizeFull();
@@ -121,13 +124,35 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
         }
         
         setGridType(ViewType.TREE);
-        final Actionbar bar = buildActionbar(workbenchDefinition.getActionbar());
-        split.addComponent(bar);
-        
+        if(workbenchDefinition == null) {
+            throw new IllegalArgumentException("Trying to init a workbench but got null definition.");
+        }
+
+        log.debug("Initializing workbench {}...", workbenchDefinition.getName());
+
+        if(StringUtils.isBlank(workbenchDefinition.getWorkspace())) {
+            throw new IllegalStateException(workbenchDefinition.getName() + " workbench definition must specify a workspace to connect to. Please, check your configuration.");
+        }
+
+        jcrView = jcrViewBuilderProvider.getBuilder().build(workbenchDefinition, ViewType.TREE);
+        jcrView.setPresenter(jcrPresenter);
+        jcrView.select(StringUtils.defaultIfEmpty(workbenchDefinition.getPath(), "/"));
+        jcrView.asVaadinComponent();
+        split.addComponent(jcrView.asVaadinComponent());
+
+        final Actionbar actionBar = buildActionbar(workbenchDefinition.getActionbar());
+
+        split.addComponent(actionBar);
+        split.setExpandRatio(jcrView.asVaadinComponent(), 1f);
     }
 
-    private Actionbar buildActionbar(ActionbarDefinition actionbarDefinition) {
+    private Actionbar buildActionbar(final ActionbarDefinition actionbarDefinition) {
         Actionbar actionbar = new Actionbar();
+
+        if(actionbarDefinition == null) {
+            log.warn("No actionbar definition found. This will result in an empty action bar. Is that intended?");
+            return actionbar;
+        }
 
         for (ActionbarSectionDefinition section : actionbarDefinition.getSections()) {
             for (ActionbarGroupDefinition group : section.getGroups()) {
@@ -145,8 +170,11 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
 
                         @Override
                         public void buttonClick(ClickEvent event) {
-                            System.out.println("actionbar item clicked");
                             ActionDefinition actionDefinition = getActionDefinition(actionName);
+                            if(actionDefinition == null) {
+                                log.warn("No action definition found for {}", actionName);
+                                return;
+                            }
                             getPresenter().onActionbarItemClicked(actionDefinition);
                         }
                     });
@@ -212,4 +240,10 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
         split.setExpandRatio(c, 1f);
         this.currentViewType = type;
     }
+    
+    @Override
+    public void refresh() {
+        jcrView.refresh();
+    }
+
 }

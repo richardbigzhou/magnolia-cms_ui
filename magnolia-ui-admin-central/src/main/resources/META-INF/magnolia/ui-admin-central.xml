@@ -109,10 +109,6 @@
       <implementation>info.magnolia.ui.admincentral.app.pages.PagesViewImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.app.dialog.DialogTestView</type>
-      <implementation>info.magnolia.ui.admincentral.app.dialog.DialogTestViewImpl</implementation>
-    </component>
-    <component>
       <type>info.magnolia.ui.admincentral.MagnoliaShellView</type>
       <implementation>info.magnolia.ui.admincentral.MagnoliaShellViewImpl</implementation>
     </component>

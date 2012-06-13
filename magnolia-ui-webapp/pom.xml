@@ -78,7 +78,7 @@
 				<stopPort>9966</stopPort>
 				<scanIntervalSeconds>0</scanIntervalSeconds>
 				<reload>manual</reload>
-				<loginServices></loginServices>
+				<loginServices />
 				<webAppConfig>
 					<contextPath>/ui-webapp</contextPath>
 				</webAppConfig>

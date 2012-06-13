@@ -31,16 +31,57 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.dialog;
+package info.magnolia.ui.vaadin.intergration.jcr;
 
-import info.magnolia.ui.framework.app.AppView;
+import com.vaadin.data.util.AbstractProperty;
 
 /**
- * View for the Pages app.
+ * Basic implementation of {@link com.vaadin.data.Property}.
  *
- * @version $Id$
+ * TODO dlipp - this impl is not depending on jcr, so it could/should be located in a different package.
  */
-public interface DialogTestView extends AppView<DialogTestPresenter> {
+public class DefaultProperty extends AbstractProperty {
 
+    private Object value;
+    private boolean readOnly;
+    private String propertyName;
+
+    public DefaultProperty(String propertyName, Object value) {
+        this.propertyName = propertyName;
+        this.value = value;
+    }
+
+    @Override
+    public Object getValue() {
+        return value;
+    }
+
+    @Override
+    public void setValue(Object newValue) throws ReadOnlyException, ConversionException {
+        if (readOnly) {
+            throw new ReadOnlyException("Can't setValue for readonly-Property");
+        }
+        value = newValue;
+        fireValueChange();
+    }
+
+    @Override
+    public Class<?> getType() {
+        return value.getClass();
+    }
+
+    @Override
+    public boolean isReadOnly() {
+        return readOnly;
+    }
+
+    @Override
+    public void setReadOnly(boolean newStatus) {
+        readOnly = newStatus;
+    }
+
+    public String getPropertyName() {
+        return this.propertyName;
+    }
 
 }
