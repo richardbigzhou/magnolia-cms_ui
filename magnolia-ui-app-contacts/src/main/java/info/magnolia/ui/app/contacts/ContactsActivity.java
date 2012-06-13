@@ -37,12 +37,14 @@ import info.magnolia.ui.framework.app.AbstractAppActivity;
 
 import javax.inject.Inject;
 
+
 /**
  * Activity for the Dummy app.
  *
  * @version $Id$
  */
 public class ContactsActivity extends AbstractAppActivity<ContactsPresenter> implements ContactsPresenter {
+
 
     @Inject
     public ContactsActivity(ContactsView view) {
@@ -53,4 +55,5 @@ public class ContactsActivity extends AbstractAppActivity<ContactsPresenter> imp
     public ContactsPresenter getReference() {
         return this;
     }
+
 }

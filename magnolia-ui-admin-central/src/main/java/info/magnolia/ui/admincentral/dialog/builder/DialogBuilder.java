@@ -33,16 +33,15 @@
  */
 package info.magnolia.ui.admincentral.dialog.builder;
 
-import info.magnolia.ui.admincentral.dialog.DialogView;
+import info.magnolia.ui.admincentral.dialog.DialogPresenter;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 import info.magnolia.ui.model.dialog.definition.FieldDefinition;
 import info.magnolia.ui.model.dialog.definition.TabDefinition;
 
-import javax.inject.Inject;
-
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.TextField;
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.Field;
 import com.vaadin.ui.VerticalLayout;
 
 /**
@@ -52,38 +51,53 @@ import com.vaadin.ui.VerticalLayout;
  */
 public class DialogBuilder {
 
-    @Inject
-    DialogView view;
     /**
      * @param dialogDefinition
      * @param dialogPresenter
      * @return
      */
-    public DialogView build(DialogDefinition dialogDefinition, DialogView.Presenter dialogPresenter) {
+    public DialogPresenter build(DialogDefinition dialogDefinition, Item item, DialogPresenter presenter) {
 
-        view.setPresenter(dialogPresenter);
+
+        presenter.setItemDataSource(item);
 
         for (TabDefinition tabDefinition : dialogDefinition.getTabs()) {
             String tabName = tabDefinition.getName();
             VerticalLayout inputFields = new VerticalLayout();
 
             for (FieldDefinition field : tabDefinition.getFields()) {
-                HorizontalLayout fieldContainer = new HorizontalLayout();
+                CssLayout fieldContainer = new CssLayout();
                 fieldContainer.setStyleName("field-container");
-                Label fieldLabel = new Label(field.getLabel());
-                fieldLabel.setStyleName("field-label");
-                TextField textField = new TextField();
-                textField.setStyleName("field-text");
 
-                fieldContainer.addComponent(fieldLabel);
-                fieldContainer.addComponent(textField);
+                Field input = FieldBuilder.build(field);
+
+                bindPropertyToField(field.getName(), item.getItemProperty(field.getName()), input);
+
+                fieldContainer.addComponent(input);
                 inputFields.addComponent(fieldContainer);
+                presenter.addField(item.getItemProperty(field.getName()), input);
             }
 
-            view.addTab(inputFields, tabName);
+            presenter.addTab(inputFields, tabName);
 
         }
-        return view;
+        return presenter;
 
     }
+
+    protected void bindPropertyToField(final Object propertyId,
+            final Property property, final Field field) {
+        // check if field has a property that is Viewer set. In that case we
+        // expect developer has e.g. PropertyFormatter that he wishes to use and
+        // assign the property to the Viewer instead.
+        boolean hasFilterProperty = field.getPropertyDataSource() != null
+                && (field.getPropertyDataSource() instanceof Property.Viewer);
+        if (hasFilterProperty) {
+            ((Property.Viewer) field.getPropertyDataSource())
+                    .setPropertyDataSource(property);
+        } else {
+            field.setPropertyDataSource(property);
+        }
+    }
 }
+

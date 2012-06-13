@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.admincentral.column;
 
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.place.PlaceController;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.column.definition.LabelColumnDefinition;
 
@@ -53,10 +51,11 @@ import com.vaadin.ui.Component;
 public class LabelColumn extends AbstractEditableColumn<LabelColumnDefinition> implements Serializable {
 
     @Inject
-    public LabelColumn(LabelColumnDefinition def, EventBus eventBus, PlaceController placeController, Shell shell) {
-        super(def, eventBus, placeController, shell);
+    public LabelColumn(LabelColumnDefinition def, Shell shell) {
+        super(def, shell);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     protected Component getDefaultComponent(Item item) throws RepositoryException {
 

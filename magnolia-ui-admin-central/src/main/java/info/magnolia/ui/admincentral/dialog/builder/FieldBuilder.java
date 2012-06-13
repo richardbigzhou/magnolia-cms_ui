@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,41 +31,38 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.dialog;
+package info.magnolia.ui.admincentral.dialog.builder;
 
+import info.magnolia.ui.model.dialog.definition.FieldDefinition;
 
-import info.magnolia.ui.framework.app.AppLifecycle;
-import info.magnolia.ui.framework.place.PlaceController;
-
-import javax.inject.Inject;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Field;
+import com.vaadin.ui.TextField;
 
 /**
- * Pages app.
+ * FieldFactory.
  *
- * @version $Id$
+ * @author ejervidalo
  */
-public class DialogTestApp implements AppLifecycle {
+public class FieldBuilder {
 
-    private PlaceController placeController;
+    /**
+     * @param fieldDefinition
+     * @return
+     */
+    public static Field build(FieldDefinition fieldDefinition) {
+        Field input = null;
+        if (fieldDefinition.getType().equals("edit")) {
+            input = new TextField();
+            input.setCaption(fieldDefinition.getLabel());
+            input.setStyleName("textfield");
 
-    @Inject
-    public DialogTestApp(PlaceController placeController) {
-       this.placeController = placeController;
+        } else if (fieldDefinition.equals("checkbox")) {
+            input = new CheckBox(fieldDefinition.getLabel(), true);
+            input.setStyleName("textfield");
+
+        }
+        return input;
     }
 
-    @Override
-    public void start() {
-        System.out.println("DialogApp started");
-    }
-
-    @Override
-    public void focus() {
-        placeController.goTo(new DialogTestPlace("foobar"));
-        System.out.println("DialogApp focused");
-    }
-
-    @Override
-    public void stop() {
-        System.out.println("DialogApp stopped");
-    }
 }

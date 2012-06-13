@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral.list.view;
 
-import static com.vaadin.terminal.Sizeable.UNITS_PERCENTAGE;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.ui.admincentral.column.Column;
 import info.magnolia.ui.admincentral.column.EditHandler;
@@ -46,6 +45,7 @@ import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 import javax.jcr.Item;
+import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
@@ -75,8 +75,7 @@ public class ListViewImpl implements ListView, IsVaadinComponent {
     public ListViewImpl(WorkbenchDefinition workbenchDefinition, TreeModel treeModel){
         this.treeModel = treeModel;
         table = new Table();
-        table.setSizeUndefined();
-        table.setHeight(100, UNITS_PERCENTAGE);
+        table.setSizeFull();
         table.addStyleName("striped");
 
         // next two lines are required to make the browser (Table) react on selection change via mouse
@@ -101,6 +100,7 @@ public class ListViewImpl implements ListView, IsVaadinComponent {
 
             @Override
             public void valueChange(ValueChangeEvent event) {
+                log.debug("Handle value change Event: "+event.getProperty().getValue());
                 presenterOnItemSelection((ContainerItemId) event.getProperty().getValue());
             }
         });
@@ -170,5 +170,10 @@ public class ListViewImpl implements ListView, IsVaadinComponent {
             }
             presenter.onItemSelection(item);
         }
+    }
+
+    @Override
+    public void refreshNode(Node node) {
+        //FIXME: provide the correct implementation.
     }
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,37 +31,48 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog;
+package info.magnolia.ui.model.actionbar.definition;
 
-import info.magnolia.ui.widget.dialog.VaadinDialog;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-import com.vaadin.ui.Component;
 
 /**
- * DialogViewImpl.
- *
- * @author ejervidalo
+ * Simple implementation for {@link ActionbarGroupDefinition}.
  */
-public class DialogViewImpl extends VaadinDialog implements DialogView {
+public class ActionbarGroupDefinitionImpl implements ActionbarGroupDefinition {
 
-    private Presenter presenter;
+    private String name;
 
-    public DialogViewImpl() {
-        super();
-    }
+    private final List<ActionbarItemDefinition> items = new ArrayList<ActionbarItemDefinition>();
 
     @Override
-    public Component asVaadinComponent() {
-        // TODO Auto-generated method stub
-        return this;
+    public String getName() {
+        return name;
     }
 
-    /* (non-Javadoc)
-     * @see info.magnolia.ui.admincentral.dialog.DialogView#setPresenter(info.magnolia.ui.admincentral.dialog.DialogView.Presenter)
+    /**
+     * Sets the group name.
+     * 
+     * @param name the new name
      */
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @Override
-    public void setPresenter(Presenter presenter) {
-        this.presenter = presenter;
+    public List<ActionbarItemDefinition> getItems() {
+        return Collections.unmodifiableList(items);
+    }
+
+    /**
+     * Adds an action item to this group.
+     * 
+     * @param itemDefinition the action item definition
+     */
+    public void addItem(ActionbarItemDefinition itemDefinition) {
+        items.add(itemDefinition);
     }
 
 }

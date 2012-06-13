@@ -33,12 +33,13 @@
  */
 package info.magnolia.ui.admincentral.tree.action;
 
-import javax.jcr.Node;
-
+import info.magnolia.ui.admincentral.dialog.DialogPresenter;
 import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
-//import info.magnolia.ui.admincentral.dialog.view.DialogPresenter;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.vaadin.intergration.jcr.NodeAdapter;
+
+import javax.jcr.Node;
 
 
 /**
@@ -61,16 +62,9 @@ public class OpenEditDialogAction extends ActionBase<OpenEditDialogActionDefinit
 
     @Override
     public void execute() throws ActionExecutionException {
-        throw new UnsupportedOperationException("not Implemented");
-        /*try {
 
             DialogPresenter dialogPresenter = dialogPresenterFactory.createDialog(getDefinition().getDialogName());
-            dialogPresenter.setNode(nodeToEdit);
-            dialogPresenter.showDialog();
+            dialogPresenter.showDialog(new NodeAdapter(nodeToEdit));
 
-
-        } catch (RepositoryException e) {
-            throw new ActionExecutionException("Can't open dialog.", e);
-        }*/
     }
 }

@@ -31,16 +31,45 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.dialog;
+package info.magnolia.ui.widget.actionbar.gwt.client;
 
-import info.magnolia.ui.framework.app.AppPresenter;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.ui.SimplePanel;
+
 
 /**
- * Dialog test presenter.
- * @author p4elkin
- *
+ * The Class VAction, which displays a single action with label and icon within an action group.
  */
-public interface DialogTestPresenter extends AppPresenter<DialogTestPresenter> {
-    
-    void openDialog();
+public class VActionbarItem extends SimplePanel {
+
+    private static final String CLASSNAME = "v-actionbar-item";
+
+    private String name;
+
+    /**
+     * Instantiates a new action.
+     */
+    public VActionbarItem() {
+        super(DOM.createElement("li"));
+        setStyleName(CLASSNAME);
+    }
+
+    /**
+     * Gets the action group name.
+     * 
+     * @return the group name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Sets the action group name.
+     * 
+     * @param name the new group name
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
 }

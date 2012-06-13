@@ -34,11 +34,9 @@
 package info.magnolia.ui.app.contacts;
 
 import info.magnolia.ui.admincentral.app.AbstractAppView;
-import info.magnolia.ui.widget.actionbar.Actionbar;
+import info.magnolia.ui.admincentral.workbench.Workbench;
 
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
+import javax.inject.Inject;
 
 
 /**
@@ -49,34 +47,13 @@ import com.vaadin.ui.VerticalLayout;
 @SuppressWarnings("serial")
 public class ContactsViewImpl extends AbstractAppView<ContactsPresenter> implements ContactsView {
 
-    public ContactsViewImpl() {
-        super();
+    private String jcrWorkspaceName = "contacts";
 
-        final HorizontalLayout wrapper = new HorizontalLayout();
-        wrapper.setWidth("100%");
-
-        final VerticalLayout tableContainer = new VerticalLayout();
-        Label label = new Label("<center>Contacts App</center>", Label.CONTENT_XHTML);
-        tableContainer.addComponent(label);
-
-        wrapper.addComponent(tableContainer);
-        wrapper.setExpandRatio(tableContainer, 1.0f);
-
-        wrapper.addComponent(createActionbar());
-
-        addTab(wrapper, "Contacts");
+    @Inject
+    public ContactsViewImpl(final Workbench workbench) {
+        workbench.initWorkbench(jcrWorkspaceName);
+        addTab(workbench.asVaadinComponent(), "Contacts");
     }
 
-    private Actionbar createActionbar() {
-        Actionbar actionbar = new Actionbar();
-
-        // actionbar.addSection("actions", "Actions");
-        // actionbar.addGroup("group1", "actions");
-        // actionbar.addGroup("group2", "actions");
-        // actionbar.addGroup("group3", "actions");
-        // actionbar.addAction()
-
-        return actionbar;
-    }
 
 }

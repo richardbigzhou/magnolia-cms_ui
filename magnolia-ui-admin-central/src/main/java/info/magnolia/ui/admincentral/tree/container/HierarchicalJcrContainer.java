@@ -164,7 +164,7 @@ public class HierarchicalJcrContainer extends JcrContainer implements Container.
     }
 
     @Override
-    public com.vaadin.data.Item getItem(Object itemId) {
+    public ContainerItem getItem(Object itemId) {
         return new ContainerItem((ContainerItemId) itemId, this);
     }
 

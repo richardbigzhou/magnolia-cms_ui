@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.widget.actionbar.gwt.client;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
@@ -51,7 +51,9 @@ public class VActionbarGroup extends ComplexPanel {
 
     private final Element root = DOM.createElement("ul");
 
-    private final List<VAction> actions = new LinkedList<VAction>();
+    private String name;
+
+    private final Map<String, VActionbarItem> items = new HashMap<String, VActionbarItem>();
 
     /**
      * Instantiates a new action bar group.
@@ -62,18 +64,40 @@ public class VActionbarGroup extends ComplexPanel {
     }
 
     /**
-     * Updates the actions.
+     * Gets the action group name.
+     * 
+     * @return the group name
      */
-    public void updateActions() {
-        VAction addAction = new VAction("Add task");
-        VAction deleteAction = new VAction("Delete task");
-        actions.add(addAction);
-        actions.add(deleteAction);
+    public String getName() {
+        return name;
+    }
 
-        for (VAction action : actions) {
-            add(action);
-            action.updateLabel(action.getLabel());
-        }
+    /**
+     * Sets the action group name.
+     * 
+     * @param name the new group name
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * Gets the action items registered in this action group.
+     * 
+     * @return the map of actions
+     */
+    public Map<String, VActionbarItem> getItems() {
+        return items;
+    }
+
+    /**
+     * Adds an action to this action group.
+     * 
+     * @param item the action item
+     */
+    public void addItem(VActionbarItem item) {
+        items.put(item.getName(), item);
+        add(item);
     }
 
     @Override

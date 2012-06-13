@@ -33,10 +33,10 @@
  */
 package info.magnolia.ui.admincentral.dialog;
 
+import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.admincentral.dialog.builder.DialogBuilder;
 import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 import info.magnolia.ui.model.dialog.registry.DialogDefinitionRegistry;
 

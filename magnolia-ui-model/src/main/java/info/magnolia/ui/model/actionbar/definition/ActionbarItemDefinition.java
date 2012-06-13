@@ -31,45 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.dialog;
+package info.magnolia.ui.model.actionbar.definition;
 
-import info.magnolia.ui.framework.place.Place;
-import info.magnolia.ui.framework.place.PlaceTokenizer;
-import info.magnolia.ui.framework.place.Prefix;
+import info.magnolia.ui.model.menu.definition.MenuItemDefinition;
+
 
 /**
- * Place for the Pages app.
- *
- * @version $Id$
+ * The definition for an action item in the action bar.
  */
-@Prefix("dialog")
-public class DialogTestPlace extends Place {
+public interface ActionbarItemDefinition extends MenuItemDefinition {
 
-    /**
-     * Tokenizer for PagesPlace.
-     *
-     * @version $Id$
-     */
-    public static class Tokenizer implements PlaceTokenizer<DialogTestPlace> {
-
-        @Override
-        public DialogTestPlace getPlace(String token) {
-            return new DialogTestPlace(token);
-        }
-
-        @Override
-        public String getToken(DialogTestPlace place) {
-            return place.getPath();
-        }
-    }
-
-    private String path;
-
-    public DialogTestPlace(String path) {
-        this.path = path;
-    }
-
-    public String getPath() {
-        return path;
-    }
 }

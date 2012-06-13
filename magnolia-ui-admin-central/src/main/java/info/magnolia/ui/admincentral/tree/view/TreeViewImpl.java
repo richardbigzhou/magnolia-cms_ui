@@ -41,6 +41,7 @@ import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 import javax.jcr.Item;
+import javax.jcr.Node;
 
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.event.ItemClickEvent;
@@ -122,5 +123,10 @@ public class TreeViewImpl implements TreeView, IsVaadinComponent {
     @Override
     public JcrContainer getContainer() {
         throw new UnsupportedOperationException(getClass().getName() + " does not support this operation");
+    }
+
+    @Override
+    public void refreshNode(final Node node) {
+        jcrBrowser.updateNode(node);
     }
 }

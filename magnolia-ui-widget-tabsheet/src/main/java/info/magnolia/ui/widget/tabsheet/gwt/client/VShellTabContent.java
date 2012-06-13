@@ -36,7 +36,7 @@ package info.magnolia.ui.widget.tabsheet.gwt.client;
 
 import java.util.Set;
 
-import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.Container;
@@ -49,7 +49,7 @@ import com.vaadin.terminal.gwt.client.UIDL;
  * @author apchelintcev
  *
  */
-public class VShellTabContent extends SimplePanel implements Container {
+public class VShellTabContent extends ScrollPanel implements Container {
 
     protected String paintableId;
     

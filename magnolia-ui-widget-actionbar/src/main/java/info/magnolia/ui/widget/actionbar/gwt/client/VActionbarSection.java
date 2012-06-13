@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.widget.actionbar.gwt.client;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
@@ -53,9 +53,13 @@ public class VActionbarSection extends FlowPanel {
 
     private final Element header = DOM.createElement("header");
 
-    private String title = "";
+    private String label = "";
 
-    private final List<VActionbarGroup> groups = new LinkedList<VActionbarGroup>();
+    private int position;
+
+    private final Map<String, VActionbarGroup> groups = new HashMap<String, VActionbarGroup>();
+
+    private final HTMLPanel titleElement = new HTMLPanel(TITLE_TAGNAME, "");
 
     /**
      * Instantiates a new action bar section with given title.
@@ -63,59 +67,76 @@ public class VActionbarSection extends FlowPanel {
      * @param title the section title
      */
     public VActionbarSection() {
-        init();
-    }
-
-    /**
-     * Instantiates a new action bar section with given title.
-     * 
-     * @param title the section title
-     */
-    public VActionbarSection(String title) {
-        this.title = title;
-        init();
-    }
-
-    private void init() {
         setStyleName(CLASSNAME);
 
         // header
         getElement().appendChild(header);
-        add(new HTMLPanel(TITLE_TAGNAME, title), header);
+        titleElement.setStyleName("v-actionbar-section-title");
+
+        add(titleElement, header);
     }
 
     /**
-     * Gets the title.
+     * Gets the label.
      * 
-     * @return the title
+     * @return the label
      */
-    @Override
-    public String getTitle() {
-        return title;
+    public String getLabel() {
+        return label;
     }
 
     /**
-     * Updates the title.
+     * Sets the label.
      * 
-     * @param title the new title
+     * @param label the new label
      */
-    public void updateTitle(String title) {
-        this.title = title;
+    public void setLabel(String label) {
+        this.label = label;
+        updateLabel();
     }
 
     /**
-     * Updates the action groups.
+     * Gets the position.
+     * 
+     * @return the position
      */
-    public void updateGroups() {
-        VActionbarGroup crudGroup = new VActionbarGroup();
-        VActionbarGroup viewGroup = new VActionbarGroup();
-        groups.add(crudGroup);
-        groups.add(viewGroup);
+    public int getPosition() {
+        return position;
+    }
 
-        for (VActionbarGroup group : groups) {
-            add(group);
-            group.updateActions();
-        }
+    /**
+     * Sets the position.
+     * 
+     * @param position the new position
+     */
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
+    /**
+     * Gets the groups.
+     * 
+     * @return the groups
+     */
+    public Map<String, VActionbarGroup> getGroups() {
+        return groups;
+    }
+
+    /**
+     * Adds an action group to this section.
+     * 
+     * @param group the action group
+     */
+    public void addGroup(VActionbarGroup group) {
+        groups.put(group.getName(), group);
+        add(group);
+    }
+
+    /**
+     * Updates the title label.
+     */
+    public void updateLabel() {
+        titleElement.getElement().setInnerText(getLabel());
     }
 
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,41 +31,40 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.dialog;
+package info.magnolia.ui.widget.dialog.event;
 
-import info.magnolia.ui.admincentral.app.AbstractAppView;
+import com.vaadin.data.Item;
 
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.HorizontalLayout;
+import info.magnolia.ui.framework.event.Event;
+import info.magnolia.ui.framework.event.EventHandler;
 
 /**
- * View implementation for the Pages app.
+ * DialogCommitEvent.
  *
- * @version $Id$
  */
-@SuppressWarnings("serial")
-public class DialogTestViewImpl extends AbstractAppView<DialogTestPresenter> implements DialogTestView {
+public class DialogCommitEvent implements Event<DialogCommitEvent.Handler> {
 
-    private HorizontalLayout content = new HorizontalLayout();
-
-    public DialogTestViewImpl() {
-        Button dialog = new Button("Open Dialog", new DialogListener());
-        content.addComponent(dialog);
-        addTab(content, "Dialog");
-    }
+    private Item item;
 
     /**
-     * Handler of Dialog events. 
+     * Handler.
      *
      */
-    class DialogListener implements ClickListener {
-
-        @Override
-        public void buttonClick(ClickEvent event) {
-            getPresenter().openDialog();
-        }
-
+    public static interface Handler extends EventHandler {
+        void onDialogCommit(DialogCommitEvent event);
     }
+
+    public DialogCommitEvent(Item itemDatasource) {
+        this.item = itemDatasource;
+    }
+
+    @Override
+    public void dispatch(Handler handler) {
+        handler.onDialogCommit(this);
+    }
+
+    public Item getItem() {
+        return item;
+    }
+
 }

@@ -31,37 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.dialog;
+package info.magnolia.ui.model.actionbar.definition;
 
-import info.magnolia.ui.framework.app.AbstractAppActivity;
-import info.magnolia.ui.admincentral.dialog.DialogPresenter;
-import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
+import java.util.List;
 
-import javax.inject.Inject;
 
 /**
- * Activity for the Pages app.
- *
- * @version $Id$
+ * The definition for a section of the action bar, made of groups of actions.
  */
-public class DialogTestActivity extends AbstractAppActivity<DialogTestPresenter> implements DialogTestPresenter {
-    
-    private DialogPresenterFactory factory;
+public interface ActionbarSectionDefinition {
 
-    @Inject
-    public DialogTestActivity(DialogTestView view, DialogPresenterFactory factory) {
-        super(view);
-        this.factory = factory;
-    }
+    /**
+     * Gets the section title.
+     * 
+     * @return the title string
+     */
+    String getTitle();
 
-    @Override
-    public void openDialog() {
-        DialogPresenter presenter = factory.createDialog("testDialog");
-        presenter.showDialog();
-    }
-
-    @Override
-    public DialogTestPresenter getReference() {
-        return this;
-    }
+    /**
+     * Gets the groups within this section.
+     * 
+     * @return the list of groups
+     */
+    List<ActionbarGroupDefinition> getGroups();
 }

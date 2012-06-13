@@ -31,50 +31,28 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.intergration.jcr;
+package info.magnolia.ui.model.actionbar.definition;
 
-import com.vaadin.data.Property;
+import java.util.List;
+
 
 /**
- * Basic implementation of {@link com.vaadin.data.Property}.
+ * The definition for an action bar, made of sections and groups of actions.
  */
-public class BaseProperty implements Property {
+public interface ActionbarDefinition {
 
-    private Object value;
-    private Class<?> type;
-    private boolean readOnly;
+    /**
+     * Gets the action bar name.
+     * 
+     * @return the name string
+     */
+    String getName();
 
-    public BaseProperty(Object value, Class<?> type) {
-        this.value = value;
-        this.type = type;
-    }
-
-    @Override
-    public Object getValue() {
-        return value;
-    }
-
-    @Override
-    public void setValue(Object newValue) throws ReadOnlyException, ConversionException {
-        if (readOnly) {
-            throw new ReadOnlyException("Can't setValue for readonly-Property");
-        }
-        value = newValue;
-    }
-
-    @Override
-    public Class<?> getType() {
-        return type;
-    }
-
-    @Override
-    public boolean isReadOnly() {
-        return readOnly;
-    }
-
-    @Override
-    public void setReadOnly(boolean newStatus) {
-        readOnly = newStatus;
-    }
+    /**
+     * Gets the sections within this action bar.
+     * 
+     * @return the list of sections
+     */
+    List<ActionbarSectionDefinition> getSections();
 
 }

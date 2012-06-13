@@ -34,6 +34,22 @@
       <type>info.magnolia.ui.model.menu.definition.MenuItemDefinition</type>
       <implementation>info.magnolia.ui.model.menu.definition.MenuItemDefinitionImpl</implementation>
     </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.model.actionbar.definition.ActionbarDefinition</type>
+      <implementation>info.magnolia.ui.model.actionbar.definition.ActionbarDefinitionImpl</implementation>
+    </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.model.actionbar.definition.ActionbarSectionDefinition</type>
+      <implementation>info.magnolia.ui.model.actionbar.definition.ActionbarSectionDefinitionImpl</implementation>
+    </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.model.actionbar.definition.ActionbarGroupDefinition</type>
+      <implementation>info.magnolia.ui.model.actionbar.definition.ActionbarGroupDefinitionImpl</implementation>
+    </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.model.actionbar.definition.ActionbarItemDefinition</type>
+      <implementation>info.magnolia.ui.model.actionbar.definition.ActionbarItemDefinitionImpl</implementation>
+    </type-mapping>
   </components>
 
    <components>
@@ -93,10 +109,6 @@
       <implementation>info.magnolia.ui.admincentral.app.pages.PagesViewImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.app.dialog.DialogTestView</type>
-      <implementation>info.magnolia.ui.admincentral.app.dialog.DialogTestViewImpl</implementation>
-    </component>
-    <component>
       <type>info.magnolia.ui.admincentral.MagnoliaShellView</type>
       <implementation>info.magnolia.ui.admincentral.MagnoliaShellViewImpl</implementation>
     </component>
@@ -109,18 +121,9 @@
       <implementation>info.magnolia.ui.admincentral.app.assets.AssetsViewImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.dialog.registry.DummyDialogDefinitionManager</type>
-      <implementation>info.magnolia.ui.admincentral.dialog.registry.DummyDialogDefinitionManager</implementation>
-    </component>
-    <component>
       <type>info.magnolia.ui.admincentral.dialog.DialogPresenterFactory</type>
       <implementation>info.magnolia.ui.admincentral.dialog.DialogPresenterFactoryImpl</implementation>
     </component>
-    <component>
-      <type>info.magnolia.ui.admincentral.dialog.DialogView</type>
-      <implementation>info.magnolia.ui.admincentral.dialog.DialogViewImpl</implementation>
-    </component>
-
   </components>
 
   <components>
@@ -141,6 +144,15 @@
      <component>
       <type>info.magnolia.ui.model.workbench.registry.ConfiguredWorkbenchDefinitionManager</type>
       <implementation>info.magnolia.ui.model.workbench.registry.ConfiguredWorkbenchDefinitionManager</implementation>
+    </component>
+  </components>
+
+  <components>
+   <id>default-dialog</id>
+
+     <component>
+      <type>info.magnolia.ui.model.dialog.registry.ConfiguredDialogDefinitionManager</type>
+      <implementation>info.magnolia.ui.model.dialog.registry.ConfiguredDialogDefinitionManager</implementation>
     </component>
   </components>
 

@@ -33,12 +33,11 @@
  */
 package info.magnolia.ui.admincentral.tree.action;
 
+import info.magnolia.ui.framework.event.EventBus;
+
 import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-
-import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.ui.framework.event.EventBus;
 
 
 /**
@@ -60,7 +59,8 @@ public class AddPropertyAction extends RepositoryOperationAction<AddPropertyActi
     @Override
     protected void onExecute(Item item) throws RepositoryException {
         Node node = (Node) item;
-        String name = NodeUtil.getName(node);
+        String name = getUniqueNewItemName(item);
         node.setProperty(name, "");
     }
+
 }

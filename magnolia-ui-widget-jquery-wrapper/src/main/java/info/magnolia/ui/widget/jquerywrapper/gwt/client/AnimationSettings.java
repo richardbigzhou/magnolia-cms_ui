@@ -59,6 +59,10 @@ public class AnimationSettings {
         callbacks.add(callback);
     }
     
+    public void setCallbacks(final Callbacks callbacks) {
+        this.callbacks = callbacks;
+    }
+    
     final JavaScriptObject getCallbacks() {
         return callbacks;
     }

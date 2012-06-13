@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.admincentral.column;
 
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.place.PlaceController;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.column.definition.PropertyColumnDefinition;
 
@@ -55,8 +53,8 @@ import com.vaadin.ui.Label;
 public class PropertyColumn extends AbstractEditableColumn<PropertyColumnDefinition> implements Serializable {
 
     @Inject
-    public PropertyColumn(PropertyColumnDefinition def, EventBus eventBus, PlaceController placeController, Shell shell) {
-        super(def, eventBus, placeController, shell);
+    public PropertyColumn(PropertyColumnDefinition def, Shell shell) {
+        super(def,  shell);
     }
 
     public String getPropertyName() {

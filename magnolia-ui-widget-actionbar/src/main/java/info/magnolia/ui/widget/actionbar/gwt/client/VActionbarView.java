@@ -39,26 +39,38 @@ import com.google.gwt.user.client.ui.Widget;
 
 
 /**
- * 
- * VActionbarView.
- * 
+ * The Interface VActionbarView.
  */
 public interface VActionbarView extends HasWidgets, IsWidget {
 
     /**
-     * 
      * Presenter.
      */
     interface Presenter {
     }
 
+    /**
+     * Sets the presenter.
+     * 
+     * @param presenter the new presenter
+     */
     void setPresenter(Presenter presenter);
 
-    boolean hasChildComponent(Widget component);
+    /**
+     * Adds an action button to this action bar.
+     * 
+     * @param button the action button
+     */
+    void addActionButton(VActionButton button);
 
     /**
-     * Updates the action bar sections.
+     * Clears all sections, groups and action buttons of this action bar.
      */
-    void updateSections();
+    void clearAll();
+
+    /**
+     * Checks if given widget is a child of this component.
+     */
+    boolean hasChildComponent(Widget component);
 
 }

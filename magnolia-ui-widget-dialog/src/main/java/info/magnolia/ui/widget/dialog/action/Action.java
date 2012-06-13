@@ -31,33 +31,31 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog;
-
-import com.vaadin.ui.ComponentContainer;
-
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
+package info.magnolia.ui.widget.dialog.action;
 
 /**
- * DialogView.
+ * Action.
  *
  * @author ejervidalo
  */
-public interface DialogView extends IsVaadinComponent {
+public abstract class Action {
 
-    /**
-     * Presenter.
-     *
-     * @author ejervidalo
-     */
-    public interface Presenter {
+    private String label;
+    private String name;
 
+    public Action(String name, String label) {
+        this.name = name;
+        this.label = label;
     }
 
-    void setPresenter(Presenter presenter);
+    abstract public void execute();
 
-    /**
-     * @param string
-     */
-    void addTab(ComponentContainer cc, String caption);
+    public String getName() {
+        return name;
+    }
+
+    public String getLabel() {
+        return label;
+    }
 
 }
