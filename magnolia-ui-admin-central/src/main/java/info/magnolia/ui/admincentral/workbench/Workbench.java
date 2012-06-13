@@ -64,8 +64,8 @@ import com.vaadin.ui.ComponentContainer;
 
 
 /**
- * The workbench is a central view in AdminCentral. It represents the main hub through which users can interact with JCR data.
- * It is compounded by
+ * The workbench is a core component of AdminCentral. It represents the main hub through which users can interact with JCR data.
+ * It is compounded by three main sub-components:
  * <ul>
  * <li>a configurable data grid.
  * <li>a configurable function toolbar on top of the data grid, providing operations such as switching from tree to list view or performing searches on data.
