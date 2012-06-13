@@ -39,11 +39,6 @@ import info.magnolia.ui.model.menu.definition.MenuItemDefinition;
 /**
  * The definition for an action item in the action bar.
  */
-<<<<<<< HEAD
-public interface DialogTestView extends AppView {
-=======
 public interface ActionbarItemDefinition extends MenuItemDefinition {
->>>>>>> master
 
-    void setPresenter(DialogTestPresenter presenter);
 }

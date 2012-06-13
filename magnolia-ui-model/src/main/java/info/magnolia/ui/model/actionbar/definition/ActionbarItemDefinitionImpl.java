@@ -39,12 +39,6 @@ import info.magnolia.ui.model.menu.definition.MenuItemDefinitionImpl;
 /**
  * Simple implementation for {@link ActionbarItemDefinition}.
  */
-<<<<<<< HEAD
-public interface DialogTestPresenter  {
-    
-    void openDialog();
-=======
 public class ActionbarItemDefinitionImpl extends MenuItemDefinitionImpl implements ActionbarItemDefinition {
 
->>>>>>> master
 }

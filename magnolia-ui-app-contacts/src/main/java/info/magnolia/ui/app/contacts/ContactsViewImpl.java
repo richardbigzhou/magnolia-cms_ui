@@ -33,20 +33,12 @@
  */
 package info.magnolia.ui.app.contacts;
 
-<<<<<<< HEAD
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
-import info.magnolia.ui.widget.actionbar.Actionbar;
+import javax.inject.Inject;
 
 import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
-=======
-import info.magnolia.ui.admincentral.app.AbstractAppView;
-import info.magnolia.ui.admincentral.workbench.Workbench;
 
-import javax.inject.Inject;
->>>>>>> master
+import info.magnolia.ui.admincentral.workbench.Workbench;
+import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 
 /**
@@ -57,30 +49,14 @@ import javax.inject.Inject;
 @SuppressWarnings("serial")
 public class ContactsViewImpl implements ContactsView, IsVaadinComponent {
 
-    private final HorizontalLayout wrapper;
-
     private String jcrWorkspaceName = "contacts";
+    private final Workbench workbench;
 
-<<<<<<< HEAD
-        wrapper = new HorizontalLayout();
-        wrapper.setWidth("100%");
-
-        final VerticalLayout tableContainer = new VerticalLayout();
-        Label label = new Label("<center>Contacts App</center>", Label.CONTENT_XHTML);
-        tableContainer.addComponent(label);
-
-        wrapper.addComponent(tableContainer);
-        wrapper.setExpandRatio(tableContainer, 1.0f);
-
-        wrapper.addComponent(createActionbar());
-=======
     @Inject
     public ContactsViewImpl(final Workbench workbench) {
+        this.workbench = workbench;
         workbench.initWorkbench(jcrWorkspaceName);
-        addTab(workbench.asVaadinComponent(), "Contacts");
->>>>>>> master
     }
-
 
     @Override
     public String getCaption() {
@@ -89,6 +65,6 @@ public class ContactsViewImpl implements ContactsView, IsVaadinComponent {
 
     @Override
     public Component asVaadinComponent() {
-        return wrapper;
+        return workbench.asVaadinComponent();
     }
 }

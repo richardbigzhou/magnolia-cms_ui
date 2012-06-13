@@ -41,11 +41,7 @@ import info.magnolia.ui.framework.location.Location;
  */
 public interface AppContext {
 
-<<<<<<< HEAD
     void openAppView(AppView view);
 
     void setAppLocation(Location location);
-=======
-
->>>>>>> master
 }
