@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.app.contacts;
 
+<<<<<<< HEAD
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 import info.magnolia.ui.widget.actionbar.Actionbar;
 
@@ -40,6 +41,12 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
+=======
+import info.magnolia.ui.admincentral.app.AbstractAppView;
+import info.magnolia.ui.admincentral.workbench.Workbench;
+
+import javax.inject.Inject;
+>>>>>>> master
 
 
 /**
@@ -52,9 +59,9 @@ public class ContactsViewImpl implements ContactsView, IsVaadinComponent {
 
     private final HorizontalLayout wrapper;
 
-    public ContactsViewImpl() {
-        super();
+    private String jcrWorkspaceName = "contacts";
 
+<<<<<<< HEAD
         wrapper = new HorizontalLayout();
         wrapper.setWidth("100%");
 
@@ -66,19 +73,14 @@ public class ContactsViewImpl implements ContactsView, IsVaadinComponent {
         wrapper.setExpandRatio(tableContainer, 1.0f);
 
         wrapper.addComponent(createActionbar());
+=======
+    @Inject
+    public ContactsViewImpl(final Workbench workbench) {
+        workbench.initWorkbench(jcrWorkspaceName);
+        addTab(workbench.asVaadinComponent(), "Contacts");
+>>>>>>> master
     }
 
-    private Actionbar createActionbar() {
-        Actionbar actionbar = new Actionbar();
-
-        // actionbar.addSection("actions", "Actions");
-        // actionbar.addGroup("group1", "actions");
-        // actionbar.addGroup("group2", "actions");
-        // actionbar.addGroup("group3", "actions");
-        // actionbar.addAction()
-
-        return actionbar;
-    }
 
     @Override
     public String getCaption() {

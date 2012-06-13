@@ -69,9 +69,19 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
      *
      */
     public enum ViewportType {
-        SHELL_APP_VIEWPORT,
-        APP_VIEWPORT,
-        DIALOG_VIEWPORT;
+        SHELL_APP_VIEWPORT("shell:"),
+        APP_VIEWPORT("app:"),
+        DIALOG_VIEWPORT("");
+        
+        private String fragmentPrefix;
+        
+        private ViewportType(String fragmentPrefix) {
+            this.fragmentPrefix = fragmentPrefix;
+        }
+        
+        public String getFragmentPrefix() {
+            return fragmentPrefix;
+        }
     }
     
     protected String paintableId;
@@ -92,7 +102,8 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
             register("activeViewportChanged", new Method() {
                 @Override
                 public void invoke(String methodName, Object[] params) {
-                    view.changeActiveViewport(ViewportType.valueOf(String.valueOf(params[0])));
+                    ViewportType type = params.length > 0 ? ViewportType.valueOf(String.valueOf(params[0])) : ViewportType.SHELL_APP_VIEWPORT;
+                    view.changeActiveViewport(type);
                 }
             });
             

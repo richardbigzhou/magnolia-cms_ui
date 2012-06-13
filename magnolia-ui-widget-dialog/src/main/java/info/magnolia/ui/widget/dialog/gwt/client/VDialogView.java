@@ -49,14 +49,19 @@ public interface VDialogView extends IsWidget {
     /**
      * Presenter. Meant for Vaadin part of MagnoliaShell.
      */
-    interface Presenter {}
+    interface Presenter {
+
+        /**
+         * @param action
+         */
+        void fireAction(String action);}
 
     Paintable getTabSheet();
 
     /**
      * @param vDialog
      */
-    void setPresenter(Presenter vDialog);
+    void setPresenter(Presenter presenter);
 
     /**
      * @param component

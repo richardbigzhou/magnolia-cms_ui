@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,33 +31,48 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog;
+package info.magnolia.ui.model.actionbar.definition;
 
-import com.vaadin.ui.ComponentContainer;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 /**
- * DialogView.
- *
- * @author ejervidalo
+ * Simple implementation for {@link ActionbarSectionDefinition}.
  */
-public interface DialogView extends IsVaadinComponent {
+public class ActionbarSectionDefinitionImpl implements ActionbarSectionDefinition {
 
-    /**
-     * Presenter.
-     *
-     * @author ejervidalo
-     */
-    public interface Presenter {
+    private String title;
 
+    private final List<ActionbarGroupDefinition> groups = new ArrayList<ActionbarGroupDefinition>();
+
+    @Override
+    public String getTitle() {
+        return title;
     }
 
-    void setPresenter(Presenter presenter);
+    /**
+     * Sets the section title.
+     * 
+     * @param title the new title
+     */
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    @Override
+    public List<ActionbarGroupDefinition> getGroups() {
+        return Collections.unmodifiableList(groups);
+    }
 
     /**
-     * @param string
+     * Adds a group to this section.
+     * 
+     * @param groupDefinition the group definition
      */
-    void addTab(ComponentContainer cc, String caption);
+    public void addGroup(ActionbarGroupDefinition groupDefinition) {
+        groups.add(groupDefinition);
+    }
 
 }

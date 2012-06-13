@@ -33,10 +33,17 @@
  */
 package info.magnolia.ui.admincentral.workbench;
 
+import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
+
+import javax.jcr.Item;
+import javax.jcr.Node;
+
 import com.vaadin.ui.ComponentContainer;
 
+
 /**
- * TODO write javadoc.
+ * Implementors of this interface are responsible for building a workbench and handling the UI actions associated with it.
  * @version $Id$
  *
  */
@@ -44,14 +51,27 @@ public interface WorkbenchView extends ComponentContainer {
 
     void setPresenter(final Presenter presenter);
 
-    void initWorkbench(final String id);
+    void initWorkbench(final WorkbenchDefinition definintion);
+    /**
+     * Causes a view refresh only if the current node exists in the repository.
+     */
+    void refreshNode(final Node node);
+    /**
+     * TODO review the for two methods to perform the view refresh. Had to add this one to refresh the view
+     * in case of item deletion.
+     * Refreshes the view.
+     */
+    void refresh();
 
     /**
      * Presenter.
-     * @author apchelintcev
-     *
+     * @version $Id$
      */
     public interface Presenter {
+
+        void onItemSelected(final Item item);
+
+        void onActionbarItemClicked(final ActionDefinition actionDefinition);
 
     }
 

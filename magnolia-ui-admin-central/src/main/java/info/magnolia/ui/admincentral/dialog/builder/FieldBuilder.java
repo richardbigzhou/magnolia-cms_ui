@@ -31,37 +31,38 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog;
+package info.magnolia.ui.admincentral.dialog.builder;
 
-import info.magnolia.ui.widget.dialog.VaadinDialog;
+import info.magnolia.ui.model.dialog.definition.FieldDefinition;
 
-import com.vaadin.ui.Component;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Field;
+import com.vaadin.ui.TextField;
 
 /**
- * DialogViewImpl.
+ * FieldFactory.
  *
  * @author ejervidalo
  */
-public class DialogViewImpl extends VaadinDialog implements DialogView {
+public class FieldBuilder {
 
-    private Presenter presenter;
-
-    public DialogViewImpl() {
-        super();
-    }
-
-    @Override
-    public Component asVaadinComponent() {
-        // TODO Auto-generated method stub
-        return this;
-    }
-
-    /* (non-Javadoc)
-     * @see info.magnolia.ui.admincentral.dialog.DialogView#setPresenter(info.magnolia.ui.admincentral.dialog.DialogView.Presenter)
+    /**
+     * @param fieldDefinition
+     * @return
      */
-    @Override
-    public void setPresenter(Presenter presenter) {
-        this.presenter = presenter;
+    public static Field build(FieldDefinition fieldDefinition) {
+        Field input = null;
+        if (fieldDefinition.getType().equals("edit")) {
+            input = new TextField();
+            input.setCaption(fieldDefinition.getLabel());
+            input.setStyleName("textfield");
+
+        } else if (fieldDefinition.equals("checkbox")) {
+            input = new CheckBox(fieldDefinition.getLabel(), true);
+            input.setStyleName("textfield");
+
+        }
+        return input;
     }
 
 }

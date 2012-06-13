@@ -49,6 +49,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.jcr.Item;
+import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
@@ -69,6 +70,7 @@ import com.vaadin.ui.TreeTable;
  * User interface component that extends TreeTable and uses a WorkbenchDefinition for layout and invoking command callbacks.
  *
  */
+@SuppressWarnings("serial")
 public class JcrBrowser extends TreeTable {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
@@ -91,8 +93,6 @@ public class JcrBrowser extends TreeTable {
         setMultiSelect(false);
         setImmediate(true);
         addStyleName("striped");
-
-        // TODO: check Ticket http://dev.vaadin.com/ticket/5453
         setColumnReorderingAllowed(true);
 
         addDragAndDrop();
@@ -158,6 +158,10 @@ public class JcrBrowser extends TreeTable {
         }
 
         public void handleAction(ContainerItemId itemId) {
+            if(itemId == null) {
+                //assume jcrBrowser contains no data do we need to start from root.
+                itemId = container.getItemByPath("/");
+            }
             try {
                 try {
                     treeModel.execute(actionDefinition, container.getJcrItem(itemId));
@@ -195,9 +199,7 @@ public class JcrBrowser extends TreeTable {
     }
 
     private void addContextMenu() {
-
         addActionHandler(new Action.Handler() {
-
             @Override
             public Action[] getActions(Object target, Object sender) {
                 // FIXME make that item type, security dependent
@@ -208,7 +210,6 @@ public class JcrBrowser extends TreeTable {
 
                 return actions.toArray(new Action[actions.size()]);
             }
-
             @Override
             public void handleAction(Action action, Object sender, Object target) {
               ((JcrBrowserAction) action).handleAction((ContainerItemId) target);
@@ -222,11 +223,6 @@ public class JcrBrowser extends TreeTable {
     private void addDragAndDrop() {
         setDragMode(TableDragMode.ROW);
         setDropHandler(new DropHandler() {
-
-            /*
-             * @seecom.vaadin.event.dd.DropHandler#drop(com.vaadin.event.dd.
-             * DragAndDropEvent)
-             */
             @Override
             public void drop(DragAndDropEvent event) {
 
@@ -287,9 +283,6 @@ public class JcrBrowser extends TreeTable {
                 }
             }
 
-            /*
-             * @see com.vaadin.event.dd.DropHandler#getAcceptCriterion()
-             */
             @Override
             public AcceptCriterion getAcceptCriterion() {
 
@@ -324,6 +317,17 @@ public class JcrBrowser extends TreeTable {
 
     public void refresh() {
         container.fireItemSetChange();
+    }
+
+    public void updateNode(final Node node) {
+        try {
+            final ContainerItemId id = new ContainerItemId(node);
+            if (container.containsId(id)) {
+                container.fireItemSetChange();
+            }
+        } catch (RepositoryException e) {
+            throw new RuntimeException("Node search in tree table failed.");
+        }
     }
 
 //    @Override

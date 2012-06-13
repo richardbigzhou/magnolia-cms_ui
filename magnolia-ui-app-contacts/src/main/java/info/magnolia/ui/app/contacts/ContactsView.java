@@ -35,12 +35,18 @@ package info.magnolia.ui.app.contacts;
 
 import info.magnolia.ui.framework.app.AppView;
 
+
 /**
  * View for the Contacts app.
  *
  * @version $Id$
  */
+<<<<<<< HEAD
 public interface ContactsView extends AppView {
     
     
+=======
+public interface ContactsView extends AppView<ContactsPresenter> {
+
+>>>>>>> master
 }

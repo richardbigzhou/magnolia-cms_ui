@@ -31,9 +31,11 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.dialog;
+package info.magnolia.ui.model.actionbar.definition;
 
+import java.util.List;
 
+<<<<<<< HEAD
 import info.magnolia.ui.admincentral.dialog.DialogPresenter;
 import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
 import info.magnolia.ui.framework.app.AbstractApp;
@@ -42,12 +44,13 @@ import info.magnolia.ui.framework.app.AppView;
 import info.magnolia.ui.framework.location.Location;
 
 import javax.inject.Inject;
+=======
+>>>>>>> master
 
 /**
- * Pages app.
- *
- * @version $Id$
+ * The definition for an action bar, made of sections and groups of actions.
  */
+<<<<<<< HEAD
 public class DialogTestApp extends AbstractApp implements DialogTestPresenter {
 
     private DialogPresenterFactory factory;
@@ -70,4 +73,22 @@ public class DialogTestApp extends AbstractApp implements DialogTestPresenter {
         DialogPresenter presenter = factory.createDialog("testDialog");
         presenter.showDialog();
     }
+=======
+public interface ActionbarDefinition {
+
+    /**
+     * Gets the action bar name.
+     * 
+     * @return the name string
+     */
+    String getName();
+
+    /**
+     * Gets the sections within this action bar.
+     * 
+     * @return the list of sections
+     */
+    List<ActionbarSectionDefinition> getSections();
+
+>>>>>>> master
 }

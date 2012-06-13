@@ -35,12 +35,17 @@ package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.framework.location.Location;
 
+
 /**
  * @version $Id$
  */
 public interface AppContext {
 
+<<<<<<< HEAD
     void openAppView(AppView view);
 
     void setAppLocation(Location location);
+=======
+
+>>>>>>> master
 }

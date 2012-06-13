@@ -31,50 +31,29 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.intergration.jcr;
+package info.magnolia.ui.admincentral.app.pages;
 
-import com.vaadin.data.Property;
+import info.magnolia.ui.framework.app.AbstractAppActivity;
+
+import javax.inject.Inject;
 
 /**
- * Basic implementation of {@link com.vaadin.data.Property}.
+ * Activity for the Pages app.
+ *
+ * @version $Id$
  */
-public class BaseProperty implements Property {
+public class PagesActivity extends AbstractAppActivity<PagesPresenter> implements PagesPresenter {
 
-    private Object value;
-    private Class<?> type;
-    private boolean readOnly;
+    private static final long serialVersionUID = 1L;
 
-    public BaseProperty(Object value, Class<?> type) {
-        this.value = value;
-        this.type = type;
+
+    @Inject
+    public PagesActivity(PagesView view) {
+        super(view);
     }
 
     @Override
-    public Object getValue() {
-        return value;
+    public PagesPresenter getReference() {
+        return this;
     }
-
-    @Override
-    public void setValue(Object newValue) throws ReadOnlyException, ConversionException {
-        if (readOnly) {
-            throw new ReadOnlyException("Can't setValue for readonly-Property");
-        }
-        value = newValue;
-    }
-
-    @Override
-    public Class<?> getType() {
-        return type;
-    }
-
-    @Override
-    public boolean isReadOnly() {
-        return readOnly;
-    }
-
-    @Override
-    public void setReadOnly(boolean newStatus) {
-        readOnly = newStatus;
-    }
-
 }

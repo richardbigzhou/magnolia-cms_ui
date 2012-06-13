@@ -102,6 +102,8 @@ public class PulseViewImpl implements PulseView, IsVaadinComponent {
 
         pulseFeed.getRightContainer().setTitle("Pages I changed recently");
         pulseFeed.getRightContainer().setTitleLinkEnabled(true);
+        
+        pulseFeed.setHeight("2000px");
 
         final ShellTab pulse = tabsheet.addTab("pulse".toUpperCase(), pulseFeed);
         final ShellTab stats = tabsheet.addTab("stats".toUpperCase(), testLayout2);

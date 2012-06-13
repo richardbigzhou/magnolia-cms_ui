@@ -35,22 +35,29 @@ package info.magnolia.ui.widget.actionbar;
 
 import info.magnolia.ui.widget.actionbar.gwt.client.VActionbar;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import com.vaadin.terminal.PaintException;
 import com.vaadin.terminal.PaintTarget;
-import com.vaadin.ui.AbstractComponent;
+import com.vaadin.ui.AbstractComponentContainer;
 import com.vaadin.ui.ClientWidget;
 import com.vaadin.ui.ClientWidget.LoadStyle;
+import com.vaadin.ui.Component;
+
 
 /**
- *
+ * 
  * Actionbar.
- *
+ * 
  */
 @SuppressWarnings("serial")
 @ClientWidget(value = VActionbar.class, loadStyle = LoadStyle.EAGER)
-public class Actionbar extends AbstractComponent {
+public class Actionbar extends AbstractComponentContainer {
+
+    private final List<Component> actionButtons = new ArrayList<Component>();
 
     public Actionbar() {
         setWidth("270px");
@@ -59,11 +66,46 @@ public class Actionbar extends AbstractComponent {
     @Override
     public void paintContent(PaintTarget target) throws PaintException {
         super.paintContent(target);
+        for (final Component child : actionButtons) {
+            if (child instanceof ActionButton) {
+                child.paint(target);
+            }
+        }
     }
 
     @Override
     public void changeVariables(Object source, Map<String, Object> variables) {
         super.changeVariables(source, variables);
+    }
+
+    @Override
+    public void addComponent(Component c) {
+        super.addComponent(c);
+        if (!actionButtons.contains(c)) {
+            actionButtons.add(c);
+        }
+    }
+
+    @Override
+    public void removeComponent(Component c) {
+        super.removeComponent(c);
+        actionButtons.remove(c);
+    }
+
+    @Override
+    public void removeAllComponents() {
+        super.removeAllComponents();
+        actionButtons.clear();
+    }
+
+    @Override
+    public void replaceComponent(Component oldComponent, Component newComponent) {
+        actionButtons.set(actionButtons.indexOf(oldComponent), newComponent);
+    }
+
+    @Override
+    public Iterator<Component> getComponentIterator() {
+        return actionButtons.iterator();
     }
 
 }

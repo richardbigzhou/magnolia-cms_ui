@@ -21,4 +21,14 @@
       <version>5.0/*</version>
     </dependency>
   </dependencies>
+
+  <repositories>
+    <repository>
+      <name>magnolia</name>
+      <workspaces>
+        <workspace>contacts</workspace>
+      </workspaces>
+      <nodeTypeFile>/mgnl-nodetypes/magnolia-contacts-nodetype.xml</nodeTypeFile>
+    </repository>
+  </repositories>
 </module>

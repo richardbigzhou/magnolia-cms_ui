@@ -37,8 +37,6 @@ import info.magnolia.ui.framework.editor.ContentDriver;
 import info.magnolia.ui.framework.editor.Editor;
 import info.magnolia.ui.framework.editor.EditorError;
 import info.magnolia.ui.framework.editor.HasEditors;
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.place.PlaceController;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.column.definition.AbstractColumnDefinition;
 
@@ -59,13 +57,11 @@ import javax.jcr.RepositoryException;
 public abstract class AbstractEditableColumn<D extends AbstractColumnDefinition> extends AbstractColumn<D> {
 
     private Shell shell;
-    private EventBus eventBus;
-    private PlaceController placeController;
 
-    public AbstractEditableColumn(D def, EventBus eventBus, PlaceController placeController, Shell shell) {
+
+    public AbstractEditableColumn(D def, Shell shell) {
         super(def);
-        this.eventBus = eventBus;
-        this.placeController = placeController;
+
         this.shell = shell;
     }
 

@@ -33,15 +33,19 @@
  */
 package info.magnolia.ui.admincentral.tree.action;
 
-import javax.jcr.Item;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-
+import info.magnolia.cms.core.Path;
 import info.magnolia.ui.admincentral.workbench.event.ContentChangedEvent;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
+
+import javax.jcr.AccessDeniedException;
+import javax.jcr.Item;
+import javax.jcr.ItemNotFoundException;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+
 
 /**
  * A repository operation action which saves the changes and informs the event bus.
@@ -51,9 +55,9 @@ import info.magnolia.ui.model.action.ActionExecutionException;
  */
 public abstract class RepositoryOperationAction<D extends ActionDefinition> extends ActionBase<D> {
 
-    private Item item;
+    private final Item item;
 
-    private EventBus eventBus;
+    private final EventBus eventBus;
 
     public RepositoryOperationAction(D definition, Item item, EventBus eventBus) {
         super(definition);
@@ -61,6 +65,9 @@ public abstract class RepositoryOperationAction<D extends ActionDefinition> exte
         this.eventBus = eventBus;
     }
 
+    /**
+     * Executes the defined action on the passed in item. When successful, it will fire a {@link ContentChangedEvent}.
+     */
     @Override
     public void execute() throws ActionExecutionException {
         try {
@@ -69,11 +76,20 @@ public abstract class RepositoryOperationAction<D extends ActionDefinition> exte
             onExecute(item);
             session.save();
             eventBus.fireEvent(new ContentChangedEvent(session.getWorkspace().getName(), path));
-        } catch (RepositoryException e) {
-            throw new ActionExecutionException("Can't execute repository operation.", e);
+        }
+        catch (RepositoryException e) {
+            throw new ActionExecutionException("Can't execute repository operation.\n" + e.getMessage(), e);
         }
     }
 
     protected abstract void onExecute(Item item) throws RepositoryException;
+
+    protected String getUniqueNewItemName(final Item item) throws RepositoryException, ItemNotFoundException, AccessDeniedException {
+        if(item == null) {
+            throw new IllegalArgumentException("Item cannot be null.");
+        }
+        String parentPath = "/".equals(item.getPath()) ? item.getPath(): item.getParent().getPath();
+        return Path.getUniqueLabel(item.getSession(), parentPath, "untitled");
+    }
 
 }

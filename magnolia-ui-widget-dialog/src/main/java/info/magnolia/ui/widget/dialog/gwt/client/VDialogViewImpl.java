@@ -83,7 +83,7 @@ public class VDialogViewImpl extends FlowPanel implements VDialogView {
     }
 
     @Override
-    public void setPresenter(Presenter vDialog) {
+    public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
     }
 
@@ -115,15 +115,15 @@ public class VDialogViewImpl extends FlowPanel implements VDialogView {
     }
 
     @Override
-    public void addAction(String label, String action) {
+    public void addAction(final String name, final String label) {
         Button button = new Button(label);
         button.setStyleName(CLASSNAME_BUTTON);
-        button.addStyleName(CLASSNAME_BUTTON + "-" +label);
+        button.addStyleDependentName(name);
         button.addClickHandler(new ClickHandler() {
 
             @Override
             public void onClick(com.google.gwt.event.dom.client.ClickEvent event) {
-                VDialogViewImpl.this.getPresenter();
+                getPresenter().fireAction(name);
             }
 
         });

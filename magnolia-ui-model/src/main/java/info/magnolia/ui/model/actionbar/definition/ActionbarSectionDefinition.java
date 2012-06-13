@@ -31,16 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.dialog;
+package info.magnolia.ui.model.actionbar.definition;
 
-import info.magnolia.ui.framework.app.AppPresenter;
+import java.util.List;
+
 
 /**
- * Dialog test presenter.
- * @author p4elkin
- *
+ * The definition for a section of the action bar, made of groups of actions.
  */
-public interface DialogTestPresenter  {
-    
-    void openDialog();
+public interface ActionbarSectionDefinition {
+
+    /**
+     * Gets the section title.
+     * 
+     * @return the title string
+     */
+    String getTitle();
+
+    /**
+     * Gets the groups within this section.
+     * 
+     * @return the list of groups
+     */
+    List<ActionbarGroupDefinition> getGroups();
 }

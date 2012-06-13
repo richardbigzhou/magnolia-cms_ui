@@ -31,16 +31,29 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.dialog;
+package info.magnolia.ui.app.contacts;
 
-import info.magnolia.ui.framework.app.AppView;
+import info.magnolia.ui.framework.app.AbstractAppActivity;
+
+import javax.inject.Inject;
+
 
 /**
- * View for the Pages app.
+ * Activity for the Dummy app.
  *
  * @version $Id$
  */
-public interface DialogTestView extends AppView {
+public class ContactsActivity extends AbstractAppActivity<ContactsPresenter> implements ContactsPresenter {
 
-    void setPresenter(DialogTestPresenter presenter);
+
+    @Inject
+    public ContactsActivity(ContactsView view) {
+        super(view);
+    }
+
+    @Override
+    public ContactsPresenter getReference() {
+        return this;
+    }
+
 }
