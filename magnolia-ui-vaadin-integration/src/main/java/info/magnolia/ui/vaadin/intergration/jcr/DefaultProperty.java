@@ -40,13 +40,13 @@ import com.vaadin.data.util.AbstractProperty;
  *
  * TODO dlipp - this impl is not depending on jcr, so it could/should be located in a different package.
  */
-public class BaseProperty extends AbstractProperty {
+public class DefaultProperty extends AbstractProperty {
 
     private Object value;
     private boolean readOnly;
     private String propertyName;
 
-    public BaseProperty(String propertyName, Object value) {
+    public DefaultProperty(String propertyName, Object value) {
         this.propertyName = propertyName;
         this.value = value;
     }

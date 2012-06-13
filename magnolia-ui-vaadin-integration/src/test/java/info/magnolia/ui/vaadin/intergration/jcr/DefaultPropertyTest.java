@@ -39,13 +39,13 @@ import org.junit.Test;
 
 import com.vaadin.data.Property.ReadOnlyException;
 
-public class BasePropertyTest {
+public class DefaultPropertyTest {
 
     @Test
     public void testGetValue() throws Exception {
         // GIVEN
         final String value = "value";
-        final BaseProperty property = new BaseProperty("",value);
+        final DefaultProperty property = new DefaultProperty("propertyName",value);
 
         // WHEN
         final Object result = property.getValue();
@@ -58,7 +58,7 @@ public class BasePropertyTest {
     public void testGetType() throws Exception {
         // GIVEN
         final String value = "value";
-        final BaseProperty property = new BaseProperty("",value);
+        final DefaultProperty property = new DefaultProperty("propertyName",value);
 
         // WHEN
         final Class<?> result = property.getType();
@@ -71,7 +71,7 @@ public class BasePropertyTest {
     public void testSetValue() throws Exception {
         // GIVEN
         final String value = "old";
-        final BaseProperty property = new BaseProperty("",value);
+        final DefaultProperty property = new DefaultProperty("propertyName",value);
         final String newValue = "new";
 
         // WHEN
@@ -85,7 +85,7 @@ public class BasePropertyTest {
     public void testSetReadOnlyValue() throws Exception {
         // GIVEN
         final String value = "old";
-        final BaseProperty property = new BaseProperty("",value);
+        final DefaultProperty property = new DefaultProperty("propertyName",value);
         property.setReadOnly(true);
         assertEquals(true, property.isReadOnly());
 

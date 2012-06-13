@@ -54,16 +54,16 @@ import com.vaadin.data.Property.ValueChangeEvent;
  * Implements {Property.ValueChangeListener} in order to inform/change JCR property when a
  * Vaim property has changed.
  */
-public class JcrItem implements Item, Property.ValueChangeListener {
+public class NodeAdapter implements Item, Property.ValueChangeListener {
 
     static final String UN_IDENTIFIED = "?";
 
-    private static final Logger log = LoggerFactory.getLogger(JcrItem.class);
+    private static final Logger log = LoggerFactory.getLogger(NodeAdapter.class);
 
     private final String jcrIdentifier;
     private final String jcrWorkspace;
 
-    public JcrItem(Node jcrNode) {
+    public NodeAdapter(Node jcrNode) {
         String identifier;
         String workspace;
         try {
@@ -91,7 +91,7 @@ public class JcrItem implements Item, Property.ValueChangeListener {
         } catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);
         }
-        BaseProperty property = new BaseProperty((String)id, value);
+        DefaultProperty property = new DefaultProperty((String)id, value);
         // add PropertyChange Listener
         property.addListener(this);
         return property;
@@ -106,7 +106,7 @@ public class JcrItem implements Item, Property.ValueChangeListener {
     @Override
     public boolean addItemProperty(Object id, Property property) {
         // add PropertyChange Listener
-        ((BaseProperty)property).addListener(this);
+        ((DefaultProperty)property).addListener(this);
 
         log.debug("Add new Property Item name "+id+" with value "+property.getValue());
         try {
@@ -162,8 +162,8 @@ public class JcrItem implements Item, Property.ValueChangeListener {
     @Override
     public void valueChange(ValueChangeEvent event) {
         Property property = event.getProperty();
-        if(property instanceof BaseProperty) {
-            String name = ((BaseProperty)property).getPropertyName();
+        if(property instanceof DefaultProperty) {
+            String name = ((DefaultProperty)property).getPropertyName();
             Object value = property.getValue();
 
             try {
