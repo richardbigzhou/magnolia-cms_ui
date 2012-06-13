@@ -46,12 +46,10 @@ public class PagesActivity extends AbstractAppActivity<PagesPresenter> implement
 
     private static final long serialVersionUID = 1L;
 
-    private PagesView view;
 
     @Inject
     public PagesActivity(PagesView view) {
         super(view);
-        this.view = view;
     }
 
     @Override

@@ -50,7 +50,7 @@ import org.junit.Test;
 
 import com.vaadin.data.Property;
 
-public class JcrItemTest {
+public class NodeAdapterTest {
 
     private String sessionName = "test";
     private MockSession session;
@@ -75,17 +75,17 @@ public class JcrItemTest {
         when(underlyingNode.getIdentifier()).thenThrow(new RepositoryException("SIMULATED PROBLEM!"));
 
         // WHEN
-        final JcrItem item = new JcrItem(underlyingNode);
+        final NodeAdapter item = new NodeAdapter(underlyingNode);
 
         // THEN
-        assertEquals(JcrItem.UN_IDENTIFIED, item.getIdentifier());
+        assertEquals(NodeAdapter.UN_IDENTIFIED, item.getIdentifier());
     }
 
     @Test
     public void testGetIdentifier() throws Exception {
         // GIVEN
         final Node underlyingNode = new MockNode(new MockSession("test"));
-        final JcrItem item = new JcrItem(underlyingNode);
+        final NodeAdapter item = new NodeAdapter(underlyingNode);
 
         // WHEN
         final String result = item.getIdentifier();
@@ -100,8 +100,8 @@ public class JcrItemTest {
         final Node underlyingNode = session.getRootNode().addNode("underlying");
         final String propertyName = "TEST";
         final String propertyValue = "value";
-        BaseProperty property = new BaseProperty(propertyName, propertyValue);
-        final JcrItem item = new JcrItem(underlyingNode);
+        DefaultProperty property = new DefaultProperty(propertyName, propertyValue);
+        final NodeAdapter item = new NodeAdapter(underlyingNode);
 
         // WHEN
         final boolean b = item.addItemProperty(propertyName,property);
@@ -112,13 +112,32 @@ public class JcrItemTest {
     }
 
     @Test
+    public void testAddItemProperty_alreadyExist() throws Exception {
+        // GIVEN
+        final Node underlyingNode = session.getRootNode().addNode("underlying");
+        final String propertyName = "TEST";
+        final String propertyValue = "value";
+        underlyingNode.setProperty(propertyName, propertyValue);
+
+        DefaultProperty property = new DefaultProperty(propertyName, "newValue");
+        final NodeAdapter item = new NodeAdapter(underlyingNode);
+
+        // WHEN
+        final boolean b = item.addItemProperty(propertyName,property);
+
+        // THEN
+        assertEquals(false, b);
+        assertEquals(propertyValue, item.getItemProperty(propertyName).getValue().toString());
+    }
+
+    @Test
     public void testRemoveItemProperty() throws Exception {
         // GIVEN
         final Node underlyingNode = session.getRootNode().addNode("underlying");
         final String propertyName = "TEST";
         final String propertyValue = "value";
         underlyingNode.setProperty(propertyName, propertyValue);
-        final JcrItem item = new JcrItem(underlyingNode);
+        final NodeAdapter item = new NodeAdapter(underlyingNode);
         assertEquals(true, underlyingNode.hasProperty(propertyName));
 
         // WHEN
@@ -127,7 +146,22 @@ public class JcrItemTest {
         // THEN
         assertEquals(true, b);
         assertEquals(false, underlyingNode.hasProperty(propertyName));
+    }
 
+    @Test
+    public void testRemoveItemProperty_DoNotExist() throws Exception {
+        // GIVEN
+        final Node underlyingNode = session.getRootNode().addNode("underlying");
+        final String propertyName = "TEST";
+        final NodeAdapter item = new NodeAdapter(underlyingNode);
+        assertEquals(false, underlyingNode.hasProperty(propertyName));
+
+        // WHEN
+        final boolean b = item.removeItemProperty(propertyName);
+
+        // THEN
+        assertEquals(false, b);
+        assertEquals(false, underlyingNode.hasProperty(propertyName));
     }
 
     @Test
@@ -137,7 +171,7 @@ public class JcrItemTest {
         final String propertyName = "TEST";
         final String propertyValue = "value";
         underlyingNode.setProperty(propertyName, propertyValue);
-        final JcrItem item = new JcrItem(underlyingNode);
+        final NodeAdapter item = new NodeAdapter(underlyingNode);
 
         // WHEN
         final Property prop = item.getItemProperty(propertyName);
@@ -153,7 +187,7 @@ public class JcrItemTest {
         final String propertyName = "TEST";
         final String propertyValue = "value";
         underlyingNode.setProperty(propertyName, propertyValue);
-        final JcrItem item = new JcrItem(underlyingNode);
+        final NodeAdapter item = new NodeAdapter(underlyingNode);
 
         // WHEN
         final Node result = item.getNode();
@@ -167,7 +201,7 @@ public class JcrItemTest {
     public void testGetItemPropertyIds() throws Exception {
         // GIVEN
         final Node underlyingNode = new MockNode(new MockSession("test"));
-        final JcrItem item = new JcrItem(underlyingNode);
+        final NodeAdapter item = new NodeAdapter(underlyingNode);
 
         // WHEN
         item.getItemPropertyIds();

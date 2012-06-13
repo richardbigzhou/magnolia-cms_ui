@@ -46,12 +46,9 @@ import javax.inject.Inject;
 public class ContactsActivity extends AbstractAppActivity<ContactsPresenter> implements ContactsPresenter {
 
 
-    private ContactsView view;
-
     @Inject
     public ContactsActivity(ContactsView view) {
         super(view);
-        this.view = view;
     }
 
     @Override

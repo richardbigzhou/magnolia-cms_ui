@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.admincentral.column;
 
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.place.PlaceController;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.column.definition.PropertyValueColumnDefinition;
 
@@ -55,11 +53,11 @@ import com.vaadin.ui.Component;
 public class PropertyValueColumn extends AbstractEditableColumn<PropertyValueColumnDefinition> implements Serializable {
 
     @Inject
-    public PropertyValueColumn(PropertyValueColumnDefinition def, EventBus eventBus, PlaceController placeController,
-            Shell shell) {
-        super(def, eventBus, placeController, shell);
+    public PropertyValueColumn(PropertyValueColumnDefinition def, Shell shell) {
+        super(def, shell);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     protected Component getDefaultComponent(Item item) throws RepositoryException {
         if (item.isNode()) {
