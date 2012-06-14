@@ -119,11 +119,10 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
         for (final ViewType type : ViewType.values() ) {
             final JcrView jcrView = jcrViewBuilderProvider.getBuilder().build(workbenchDefinition, type);
             jcrView.setPresenter(jcrPresenter);
-            jcrView.select(path);
+            jcrView.select(StringUtils.defaultIfEmpty(workbenchDefinition.getPath(), "/"));
             jcrViews.put(type, jcrView);
         }
         
-        setGridType(ViewType.TREE);
         if(workbenchDefinition == null) {
             throw new IllegalArgumentException("Trying to init a workbench but got null definition.");
         }
@@ -134,16 +133,9 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
             throw new IllegalStateException(workbenchDefinition.getName() + " workbench definition must specify a workspace to connect to. Please, check your configuration.");
         }
 
-        jcrView = jcrViewBuilderProvider.getBuilder().build(workbenchDefinition, ViewType.TREE);
-        jcrView.setPresenter(jcrPresenter);
-        jcrView.select(StringUtils.defaultIfEmpty(workbenchDefinition.getPath(), "/"));
-        jcrView.asVaadinComponent();
-        split.addComponent(jcrView.asVaadinComponent());
-
         final Actionbar actionBar = buildActionbar(workbenchDefinition.getActionbar());
-
         split.addComponent(actionBar);
-        split.setExpandRatio(jcrView.asVaadinComponent(), 1f);
+        setGridType(ViewType.TREE);
     }
 
     private Actionbar buildActionbar(final ActionbarDefinition actionbarDefinition) {

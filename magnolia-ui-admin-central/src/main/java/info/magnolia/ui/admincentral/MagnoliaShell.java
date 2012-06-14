@@ -41,7 +41,7 @@ import info.magnolia.ui.framework.event.HandlerRegistration;
 import info.magnolia.ui.framework.shell.ConfirmationHandler;
 import info.magnolia.ui.framework.shell.FragmentChangedHandler;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
+import info.magnolia.ui.widget.dialog.Dialog;
 import info.magnolia.ui.widget.magnoliashell.BaseMagnoliaShell;
 import info.magnolia.ui.widget.magnoliashell.ShellViewport;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
@@ -53,7 +53,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.terminal.ExternalResource;
-import com.vaadin.ui.Component;
 
 
 /**
@@ -142,11 +141,11 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell {
         throw new UnsupportedOperationException("MagnoliaShell is not capable of opening the subshells.");
     }
 
-    public void openDialog(Component component) {
-        addDialog(component);
+    public void openDialog(Dialog component) {
+        addDialog(component.asVaadinComponent());
     }
 
-    public void removeDialog(IsVaadinComponent dialog) {
+    public void removeDialog(Dialog dialog) {
         removeDialog(dialog.asVaadinComponent());
     }
 }

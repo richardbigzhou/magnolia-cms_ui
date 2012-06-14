@@ -97,15 +97,18 @@ public class AppControllerImpl implements AppController, PlaceChangeEvent.Handle
         this.viewPort = viewPort;
     }
 
+    @Override
     public void startIfNotAlreadyRunning(String name) {
         doStartIfNotAlreadyRunning(name, null);
     }
-
+    
+    @Override
     public void startIfNotAlreadyRunningThenFocus(String name) {
         AppContextImpl appContext = doStartIfNotAlreadyRunning(name, null);
         doFocus(appContext);
     }
 
+    @Override
     public void stopApp(String name) {
         AppContextImpl appContext = runningApps.get(name);
         if (appContext != null) {
@@ -121,6 +124,7 @@ public class AppControllerImpl implements AppController, PlaceChangeEvent.Handle
         }
     }
 
+    @Override
     public boolean isAppStarted(String name) {
         return runningApps.containsKey(name);
     }

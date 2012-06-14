@@ -68,7 +68,6 @@ public class PulseActivity extends AbstractActivity implements PulseView.Present
     @Override
     public void start(ViewPort viewPort, EventBus eventBus, Place place) {
         pulseView.setPresenter(this);
-        shell.showNotification("Something weird goes on....But you can skip it for now");
         viewPort.setView(pulseView);
     }
 

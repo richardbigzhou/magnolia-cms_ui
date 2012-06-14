@@ -78,12 +78,12 @@ public class DialogPresenter extends Dialog {
 
     public void showDialog(Item selectedBean) {
         dialogBuilder.build(dialogDefinition, selectedBean, this);
-        shell.openDialog(this.asVaadinComponent());
+        shell.openDialog(this);
     }
 
     @Override
     public void closeDialog() {
-        shell.removeDialog(this.asVaadinComponent());
+        shell.removeDialog(this);
     }
 
 }
