@@ -34,29 +34,19 @@
 package info.magnolia.ui.framework.location;
 
 /**
- * Default location implementation.
+ * Maps {@link Location}s to/from fragments, used to configure a {@link info.magnolia.ui.framework.location.LocationHistoryHandler}.
  *
  * @version $Id$
  */
-public class DefaultLocation implements Location {
+public interface LocationHistoryMapper {
 
-    private String viewPort;
-    private String app;
-    private String token;
+    /**
+     * Returns the location represented by the fragment or null if the fragment is invalid or does not match a supported location.
+     */
+    Location getLocation(String fragment);
 
-    public DefaultLocation(String viewPort, String app, String token) {
-        this.viewPort = viewPort;
-        this.app = app;
-        this.token = token;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(viewPort).append(":").append(app);
-        if (token != null && token.length() != 0) {
-            sb.append(":").append(token);
-        }
-        return sb.toString();
-    }
+    /**
+     * Returns the text representation of the location or null if the location isn't handled.
+     */
+    String getFragment(Location location);
 }

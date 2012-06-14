@@ -33,30 +33,36 @@
  */
 package info.magnolia.ui.framework.location;
 
+import info.magnolia.ui.framework.event.Event;
+import info.magnolia.ui.framework.event.EventHandler;
+
 /**
- * Default location implementation.
+ * Event fired when a location change occurs.
  *
  * @version $Id$
  */
-public class DefaultLocation implements Location {
+public class LocationChangedEvent implements Event<LocationChangedEvent.Handler> {
 
-    private String viewPort;
-    private String app;
-    private String token;
+    /**
+     * Handler interface for {@link LocationChangedEvent}.
+     */
+    public interface Handler extends EventHandler {
 
-    public DefaultLocation(String viewPort, String app, String token) {
-        this.viewPort = viewPort;
-        this.app = app;
-        this.token = token;
+        void onLocationChanged(LocationChangedEvent event);
+    }
+
+    private final Location newLocation;
+
+    public LocationChangedEvent(Location newLocation) {
+      this.newLocation = newLocation;
+    }
+
+    public Location getNewLocation() {
+      return newLocation;
     }
 
     @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(viewPort).append(":").append(app);
-        if (token != null && token.length() != 0) {
-            sb.append(":").append(token);
-        }
-        return sb.toString();
+    public void dispatch(Handler handler) {
+        handler.onLocationChanged(this);
     }
 }

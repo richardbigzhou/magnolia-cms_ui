@@ -249,7 +249,7 @@ public class AppControllerImpl implements AppController, PlaceChangeEvent.Handle
 
             appFrameView = new AppFrameView();
 
-            AppView view = app.start(this, new DefaultLocation(appPlace.getToken()));
+            AppView view = app.start(this, new DefaultLocation("app", appDescriptor.getName(), appPlace.getToken()));
 
             currentLocation = app.getDefaultLocation();
 
@@ -267,7 +267,7 @@ public class AppControllerImpl implements AppController, PlaceChangeEvent.Handle
          * Called when a place change occurs and the app is already running.
          */
         public void onPlaceUpdate(Place place) {
-            app.locationChanged(new DefaultLocation(((AppPlace) place).getToken()));
+            app.locationChanged(new DefaultLocation("app", appDescriptor.getName(), ((AppPlace) place).getToken()));
         }
 
         public void display(ViewPort viewPort) {
