@@ -35,7 +35,9 @@ package info.magnolia.ui.widget.magnoliashell.gwt.client;
 
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShell.ViewportType;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.VShellMessage.MessageType;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VShellMessage.MessageType;
+
+import java.util.Collection;
 
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -52,6 +54,8 @@ public interface VMagnoliaShellView extends HasWidgets, IsWidget {
 
     int getViewportWidth();
     
+    int getErrorMessageCount();
+    
     void changeActiveViewport(ViewportType viewportType);
     
     void updateAppViewport(VShellViewport viewport);
@@ -64,11 +68,17 @@ public interface VMagnoliaShellView extends HasWidgets, IsWidget {
     
     void showMessage(final MessageType type, String text); 
 
-    boolean hasDialogs();
-
     void removeDialogViewport();
 
     void navigate(String historyToken, String title);
+    
+    void shiftViewportsVertically(int shiftPx, boolean animated);
+    
+    boolean hasDialogs();
+    
+    Presenter getPresenter();
+    
+    Collection<VShellViewport> getViewports();
     
     /**
      * Presenter. Meant for Vaadin part of MagnoliaShell.

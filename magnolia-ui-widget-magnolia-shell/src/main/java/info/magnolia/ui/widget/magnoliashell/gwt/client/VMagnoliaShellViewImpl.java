@@ -34,22 +34,26 @@
 package info.magnolia.ui.widget.magnoliashell.gwt.client;
 
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.AnimationSettings;
-import info.magnolia.ui.widget.jquerywrapper.gwt.client.Callbacks;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryCallback;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.FragmentDTO.FragmentType;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShell.ViewportType;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.VShellMessage.MessageType;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.event.AppActivatedEvent;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.event.ShellAppNavigationEvent;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.event.ViewportCloseEvent;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.event.handler.ShellNavigationHandler;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.event.handler.ViewportCloseHandler;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VShellErrorMessage;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VShellMessage;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VShellMessage.MessageType;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
 
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -75,8 +79,6 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
     private static int Z_INDEX_LO = 100;
 
     private Map<ViewportType, VShellViewport> viewports = new EnumMap<ViewportType, VShellViewport>(ViewportType.class);
-    
-    private VShellViewport activeViewport = null;
     
     private ViewportType activeViewportType = null;
 
@@ -145,7 +147,12 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
     
     @Override
     public int getViewportHeight() {
-        return getOffsetHeight() - mainAppLauncher.getExpandedHeight();
+        final JsArray<Element> errors = JQueryWrapper.select(".error").get();
+        int maxErrorHeight = 0;
+        for (int i = 0; i < errors.length(); ++i) {
+            maxErrorHeight = Math.max(maxErrorHeight, errors.get(i).getOffsetHeight());
+        }
+        return getOffsetHeight() - mainAppLauncher.getExpandedHeight() - maxErrorHeight;
     }
 
     @Override
@@ -208,10 +215,10 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
         VShellMessage msg = null;
         switch (type) {
         case WARNING:
-            msg = new VShellMessage(type, text);
+            msg = new VShellMessage(this, type, text);
             break;
         case ERROR:
-            msg = new ErrorMessage(type, text);
+            msg = new VShellErrorMessage(this, text);
             break;
         }
         add(msg, getElement());
@@ -223,10 +230,8 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
         shellAppViewport.getElement().getStyle().setZIndex(appViewportOnTop ? Z_INDEX_LO : Z_INDEX_HI);
         appViewport.getElement().getStyle().setZIndex(appViewportOnTop ? Z_INDEX_HI : Z_INDEX_LO);
         if (appViewportOnTop) {
-            activeViewport = appViewport;
             mainAppLauncher.deactivateControls();
         } else {
-            activeViewport = shellAppViewport;
             if (appViewport.hasContent()) {
                 shellAppViewport.showCurtain();
             } else {
@@ -270,52 +275,6 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
         }
     }
     
-    private int errorMessageCount() {
-        return JQueryWrapper.select(".error").get().length();
-    };
-    
-    private class ErrorMessage extends VShellMessage {
-
-        public ErrorMessage(final MessageType type, String text) {
-            super(type, text);
-            final JQueryWrapper jq = JQueryWrapper.select(this);
-            jq.ready(Callbacks.create(new JQueryCallback() {
-                @Override
-                public void execute(JQueryWrapper query) {
-                    if (type == MessageType.ERROR && errorMessageCount() == 0) {
-                        final AnimationSettings settings = new AnimationSettings();
-                        Integer messageHeight = jq.cssInt("height");
-                        settings.setProperty("top", "+=" + messageHeight);
-                        settings.setProperty("height", "-=" + messageHeight);
-                        settings.addCallback(new JQueryCallback() {
-                            @Override
-                            public void execute(JQueryWrapper query) {
-                                if (activeViewport != null) {
-                                    presenter.updateViewportLayout(activeViewport);
-                                }
-                            }
-                        });
-                        JQueryWrapper.select(activeViewport).animate(300, settings);
-                    }
-                    show();
-                }
-            }));
-        }
-
-        @Override
-        public void hide() {
-            if (errorMessageCount() < 2) {
-                final JQueryWrapper jq = JQueryWrapper.select(activeViewport);
-                final JQueryWrapper viewportJq = JQueryWrapper.select(activeViewport);
-                final Integer messageHeight = JQueryWrapper.select(this).cssInt("height");
-                viewportJq.setCssPx("top", jq.cssInt("top") - messageHeight);
-                viewportJq.setCssPx("height", jq.cssInt("height") + messageHeight);
-                presenter.updateViewportLayout(activeViewport);
-            }
-            super.hide();
-        }
-    }
-    
     
     private final ShellNavigationHandler navHandler = new ShellNavigationHandler() {
         @Override
@@ -346,4 +305,34 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
         eventBus.fireEvent(new AppActivatedEvent(activeViewportType == ViewportType.SHELL_APP_VIEWPORT, historyToken, title));        
     }
 
+    @Override
+    public Collection<VShellViewport> getViewports() {
+        return Collections.unmodifiableCollection(viewports.values());
+    }
+
+    @Override
+    public Presenter getPresenter() {
+        return presenter;
+    }
+
+    @Override
+    public int getErrorMessageCount() {
+        return JQueryWrapper.select(".error").get().length();
+    }
+
+    @Override
+    public void shiftViewportsVertically(int shiftPx, boolean animated) {
+        for (final VShellViewport viewport : viewports.values()) {
+            final AnimationSettings settings = new AnimationSettings();
+            settings.setProperty("top", "+=" + shiftPx);
+            settings.setProperty("height", "+=" + -shiftPx);
+            settings.addCallback(new JQueryCallback() {
+                @Override
+                public void execute(JQueryWrapper query) {
+                    getPresenter().updateViewportLayout(viewport);
+                }
+            });
+            JQueryWrapper.select(viewport).animate(animated ? 300 : 0, settings);   
+        }
+    }
 }
