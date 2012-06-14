@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.widget.magnoliashell;
 
-
+import info.magnolia.ui.framework.event.EventHandlerCollection;
 import info.magnolia.ui.framework.shell.FragmentChangedEvent;
 import info.magnolia.ui.framework.shell.FragmentChangedHandler;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShell;
@@ -43,8 +43,6 @@ import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VShellMessa
 
 import java.util.EnumMap;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -68,7 +66,7 @@ import com.vaadin.ui.Component;
 @ClientWidget(value=VMagnoliaShell.class, loadStyle = LoadStyle.EAGER)
 public abstract class BaseMagnoliaShell extends AbstractComponent implements ServerSideHandler {
 
-    private List<FragmentChangedHandler> handlers = new LinkedList<FragmentChangedHandler>();
+    private EventHandlerCollection<FragmentChangedHandler> handlers = new EventHandlerCollection<FragmentChangedHandler>();
 
     private Map<ViewportType, ShellViewport> viewports = new EnumMap<ViewportType, ShellViewport>(ViewportType.class);
 
@@ -214,11 +212,7 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
     }
 
     private void notifyOnFragmentChanged(final String fragment) {
-        final Iterator<FragmentChangedHandler> it = handlers.iterator();
-        final FragmentChangedEvent event = new FragmentChangedEvent(fragment);
-        while (it.hasNext()) {
-            it.next().onFragmentChanged(event);
-        }
+        handlers.dispatch(new FragmentChangedEvent(fragment));
     }
 
     public void showError(String message) {

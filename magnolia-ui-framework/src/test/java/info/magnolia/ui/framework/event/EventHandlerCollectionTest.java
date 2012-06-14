@@ -53,7 +53,7 @@ public class EventHandlerCollectionTest {
     public void testCanDispatchEvent() {
 
         // GIVEN
-        EventHandlerCollection<TestEventHandler, TestEvent> collection = new EventHandlerCollection<TestEventHandler, TestEvent>();
+        EventHandlerCollection<TestEventHandler> collection = new EventHandlerCollection<TestEventHandler>();
         InvocationCountingTestEventHandler eventHandler = new InvocationCountingTestEventHandler();
 
         assertTrue(collection.isEmpty());
@@ -75,7 +75,7 @@ public class EventHandlerCollectionTest {
     public void testCanRemoveHandler() {
 
         // GIVEN
-        EventHandlerCollection<TestEventHandler, TestEvent> collection = new EventHandlerCollection<TestEventHandler, TestEvent>();
+        EventHandlerCollection<TestEventHandler> collection = new EventHandlerCollection<TestEventHandler>();
         InvocationCountingTestEventHandler eventHandler = new InvocationCountingTestEventHandler();
         collection.add(eventHandler);
         collection.dispatch(new TestEvent());
@@ -95,7 +95,7 @@ public class EventHandlerCollectionTest {
     public void testCanRemoveHandlerViaReturnedRegistrationObject() {
 
         // GIVEN
-        EventHandlerCollection<TestEventHandler, TestEvent> collection = new EventHandlerCollection<TestEventHandler, TestEvent>();
+        EventHandlerCollection<TestEventHandler> collection = new EventHandlerCollection<TestEventHandler>();
         InvocationCountingTestEventHandler eventHandler = new InvocationCountingTestEventHandler();
         HandlerRegistration registration = collection.add(eventHandler);
 
@@ -116,7 +116,7 @@ public class EventHandlerCollectionTest {
     public void testHandlersAreInvokedInOrder() {
 
         // GIVEN
-        EventHandlerCollection<TestEventHandler, TestEvent> collection = new EventHandlerCollection<TestEventHandler, TestEvent>();
+        EventHandlerCollection<TestEventHandler> collection = new EventHandlerCollection<TestEventHandler>();
 
         List<InvocationOrderTestingEventHandler> handlers = new ArrayList<InvocationOrderTestingEventHandler>();
         AtomicInteger counter = new AtomicInteger(0);
@@ -140,7 +140,7 @@ public class EventHandlerCollectionTest {
     public void testHandlersAddedWhileDispatchedAreNotInvoked() {
 
         // GIVEN
-        final EventHandlerCollection<TestEventHandler, TestEvent> collection = new EventHandlerCollection<TestEventHandler, TestEvent>();
+        final EventHandlerCollection<TestEventHandler> collection = new EventHandlerCollection<TestEventHandler>();
         final InvocationCountingTestEventHandler secondHandler = new InvocationCountingTestEventHandler();
         InvocationCountingTestEventHandler firstHandler = new InvocationCountingTestEventHandler() {
             @Override
@@ -163,7 +163,7 @@ public class EventHandlerCollectionTest {
     public void testHandlersRemovedWhileDispatchedAreStillInvoked() {
 
         // GIVEN
-        final EventHandlerCollection<TestEventHandler, TestEvent> collection = new EventHandlerCollection<TestEventHandler, TestEvent>();
+        final EventHandlerCollection<TestEventHandler> collection = new EventHandlerCollection<TestEventHandler>();
         final InvocationCountingTestEventHandler secondHandler = new InvocationCountingTestEventHandler();
         InvocationCountingTestEventHandler firstHandler = new InvocationCountingTestEventHandler() {
             @Override

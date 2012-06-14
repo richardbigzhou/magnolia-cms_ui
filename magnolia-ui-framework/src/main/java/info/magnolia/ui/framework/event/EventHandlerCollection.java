@@ -40,10 +40,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * Simple thread safe collection of handlers for a specific event.
  *
  * @param <H> type of the event handler
- * @param <E> type of the event
  * @version $Id$
  */
-public class EventHandlerCollection<H extends EventHandler, E extends Event<H>> {
+public class EventHandlerCollection<H extends EventHandler> {
 
     private final List<H> handlers = new CopyOnWriteArrayList<H>();
 
@@ -62,7 +61,7 @@ public class EventHandlerCollection<H extends EventHandler, E extends Event<H>> 
         handlers.remove(handler);
     }
 
-    public void dispatch(E event) {
+    public void dispatch(Event<H> event) {
         for (H handler : handlers) {
             event.dispatch(handler);
         }
