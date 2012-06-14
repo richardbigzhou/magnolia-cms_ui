@@ -33,8 +33,10 @@
  */
 package info.magnolia.ui.app.dummy;
 
-import info.magnolia.ui.framework.app.AppLifecycle;
-import info.magnolia.ui.framework.place.PlaceController;
+import info.magnolia.ui.framework.app.AbstractApp;
+import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.framework.app.AppView;
+import info.magnolia.ui.framework.location.Location;
 
 import javax.inject.Inject;
 
@@ -43,28 +45,38 @@ import javax.inject.Inject;
  *
  * @version $Id$
  */
-public class DummyApp implements AppLifecycle {
+public class DummyApp extends AbstractApp implements DummyView.Presenter {
 
-    private PlaceController placeController;
+    private AppContext context;
+    private DummyView dummyView;
 
     @Inject
-    public DummyApp(PlaceController placeController) {
-        this.placeController = placeController;
+    public DummyApp(DummyView dummyView) {
+        this.dummyView = dummyView;
     }
 
     @Override
-    public void start() {
-        System.out.println("DummyApp started");
-    }
-
-    @Override
-    public void focus() {
-        placeController.goTo(new DummyPlace("foobar"));
-        System.out.println("DummyApp focused");
+    public AppView start(AppContext context, Location location) {
+        this.context = context;
+        System.out.println("SIMPLE DUMMY APP STARTED - token is: " + location.toString());
+        DummyViewImpl view = new DummyViewImpl();
+        view.setPresenter(this);
+        return view;
     }
 
     @Override
     public void stop() {
-        System.out.println("DummyApp stopped");
+        System.out.println("SIMPLE DUMMY APP STOPPED");
+    }
+
+    @Override
+    public void locationChanged(Location location) {
+        System.out.println("TOKEN CHANGED: " + location);
+    }
+
+    @Override
+    public void onButtonClick() {
+        DummyTabView view = new DummyTabView();
+        context.openAppView(view);
     }
 }

@@ -40,6 +40,6 @@ import info.magnolia.ui.framework.app.AppView;
  *
  * @version $Id$
  */
-public interface AssetsView extends AppView<AssetsAppPresenter> {
+public interface AssetsView extends AppView {
 
 }

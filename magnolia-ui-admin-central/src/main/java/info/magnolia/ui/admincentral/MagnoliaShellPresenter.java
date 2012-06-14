@@ -34,6 +34,8 @@
 package info.magnolia.ui.admincentral;
 
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.framework.app.AppController;
+import info.magnolia.ui.admincentral.app.simple.SimplePlaceHistoryMapper;
 import info.magnolia.ui.admincentral.shellapp.applauncher.AppLauncherActivity;
 import info.magnolia.ui.admincentral.shellapp.applauncher.AppLauncherPlace;
 import info.magnolia.ui.admincentral.shellapp.favorites.FavoritesActivity;
@@ -42,12 +44,6 @@ import info.magnolia.ui.admincentral.shellapp.pulse.PulseActivity;
 import info.magnolia.ui.admincentral.shellapp.pulse.PulsePlace;
 import info.magnolia.ui.framework.activity.ActivityManager;
 import info.magnolia.ui.framework.activity.ActivityMapperImpl;
-import info.magnolia.ui.framework.app.AppActivityManager;
-import info.magnolia.ui.framework.app.AppActivityMapper;
-import info.magnolia.ui.framework.app.AppController;
-import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.app.PlaceActivityMapping;
-import info.magnolia.ui.framework.app.layout.AppCategory;
 import info.magnolia.ui.framework.app.layout.AppLayout;
 import info.magnolia.ui.framework.app.layout.AppLayoutManager;
 import info.magnolia.ui.framework.event.EventBus;
@@ -55,7 +51,6 @@ import info.magnolia.ui.framework.place.Place;
 import info.magnolia.ui.framework.place.PlaceController;
 import info.magnolia.ui.framework.place.PlaceHistoryHandler;
 import info.magnolia.ui.framework.place.PlaceHistoryMapper;
-import info.magnolia.ui.framework.place.PlaceHistoryMapperImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,10 +69,7 @@ public class MagnoliaShellPresenter implements MagnoliaShellView.Presenter {
     private final MagnoliaShellView view;
 
     @Inject
-    public MagnoliaShellPresenter(final MagnoliaShellView view, final EventBus bus, final AppLayoutManager appLauncherLayoutManager,
-                                  final AppController appController, final PlaceController controller,
-                                  ComponentProvider componentProvider) {
-        super();
+    public MagnoliaShellPresenter(final MagnoliaShellView view, final EventBus eventBus, final AppLayoutManager appLauncherLayoutManager, final PlaceController placeController, ComponentProvider componentProvider, AppController appController) {
         this.view = view;
         this.view.setPresenter(this);
 
@@ -86,17 +78,15 @@ public class MagnoliaShellPresenter implements MagnoliaShellView.Presenter {
         shellAppActivityMapper.addMapping(AppLauncherPlace.class, AppLauncherActivity.class);
         shellAppActivityMapper.addMapping(PulsePlace.class, PulseActivity.class);
         shellAppActivityMapper.addMapping(FavoritesPlace.class, FavoritesActivity.class);
-        final ActivityManager shellAppManager = new ActivityManager(shellAppActivityMapper, bus);
+        final ActivityManager shellAppManager = new ActivityManager(shellAppActivityMapper, eventBus);
         shellAppManager.setViewPort(view.getRoot().getShellAppViewport());
 
-        final AppActivityMapper appActivityMapper = new AppActivityMapper(componentProvider, appLauncherLayoutManager, bus);
-        final ActivityManager appManager = new AppActivityManager(appActivityMapper, bus, appLauncherLayoutManager, appController);
-        appManager.setViewPort(view.getRoot().getAppViewport());
+        appController.setViewPort(view.getRoot().getAppViewport());
 
-        final PlaceHistoryMapper placeHistoryMapper = new PlaceHistoryMapperImpl(getSupportedPlaces(appLauncherLayoutManager.getLayout()));
+        final PlaceHistoryMapper placeHistoryMapper = new SimplePlaceHistoryMapper(appLauncherLayoutManager, getSupportedPlaces(appLauncherLayoutManager.getLayout()));
         final PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(placeHistoryMapper, view.getRoot());
 
-        historyHandler.register(controller, bus, new AppLauncherPlace("test"));
+        historyHandler.register(placeController, eventBus, new AppLauncherPlace("test"));
     }
 
     public void start(final Window window) {
@@ -111,13 +101,6 @@ public class MagnoliaShellPresenter implements MagnoliaShellView.Presenter {
         places.add(AppLauncherPlace.class);
         places.add(PulsePlace.class);
         places.add(FavoritesPlace.class);
-        for (AppCategory category : appLauncherLayout.getCategories()) {
-            for (AppDescriptor descriptor : category.getApps()) {
-                for (PlaceActivityMapping mapping : descriptor.getActivityMappings()) {
-                    places.add(mapping.getPlace());
-                }
-            }
-        }
         return places.toArray(new Class[places.size()]);
     }
 }

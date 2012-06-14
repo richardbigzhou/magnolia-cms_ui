@@ -31,15 +31,22 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.pages;
+package info.magnolia.ui.framework.app;
 
-import info.magnolia.ui.framework.app.AppPresenter;
+import info.magnolia.ui.framework.location.Location;
 
 /**
- * Pages presenter.
- * @author p4elkin
+ * Defines an app. Is called by the Magnolia shell as the user interacts with the app.
  *
+ * @version $Id$
  */
-public interface PagesPresenter extends AppPresenter<PagesPresenter> {
+public interface App {
 
+    AppView start(AppContext context, Location location);
+
+    void locationChanged(Location location);
+
+    void stop();
+
+    Location getDefaultLocation();
 }

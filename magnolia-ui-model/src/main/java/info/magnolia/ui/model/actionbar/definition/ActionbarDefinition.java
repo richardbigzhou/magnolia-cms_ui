@@ -43,14 +43,14 @@ public interface ActionbarDefinition {
 
     /**
      * Gets the action bar name.
-     * 
+     *
      * @return the name string
      */
     String getName();
 
     /**
      * Gets the sections within this action bar.
-     * 
+     *
      * @return the list of sections
      */
     List<ActionbarSectionDefinition> getSections();

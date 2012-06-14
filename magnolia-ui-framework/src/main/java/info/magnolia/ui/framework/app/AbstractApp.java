@@ -31,45 +31,28 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.assets;
+package info.magnolia.ui.framework.app;
 
-import info.magnolia.ui.framework.place.Place;
-import info.magnolia.ui.framework.place.PlaceTokenizer;
-import info.magnolia.ui.framework.place.Prefix;
+import info.magnolia.ui.framework.location.Location;
 
 /**
- * Place for the Assets app.
+ * Abstract implementation with default behavior suitable for most apps.
  *
  * @version $Id$
+ * @see App
  */
-@Prefix("assets")
-public class AssetsPlace extends Place {
+public abstract class AbstractApp implements App {
 
-    /**
-     * Tokenizer for AssetsPlace.
-     *
-     * @version $Id$
-     */
-    public static class Tokenizer implements PlaceTokenizer<AssetsPlace> {
-
-        @Override
-        public AssetsPlace getPlace(String token) {
-            return new AssetsPlace(token);
-        }
-
-        @Override
-        public String getToken(AssetsPlace place) {
-            return place.getPath();
-        }
+    @Override
+    public void locationChanged(Location location) {
     }
 
-    private String path;
-
-    public AssetsPlace(String path) {
-        this.path = path;
+    @Override
+    public void stop() {
     }
 
-    public String getPath() {
-        return path;
+    @Override
+    public Location getDefaultLocation() {
+        return null;
     }
 }

@@ -118,6 +118,7 @@ public class ActivityManager implements PlaceChangeEvent.Handler, PlaceChangeReq
     }
 
     protected void onPlaceChangeToCurrentActivity(Activity currentActivity, Place newPlace) {
+        currentActivity.onPlaceUpdate(newPlace);
     }
 
     protected void beforeActivityStarts(Activity currentActivity, Place newPlace) {

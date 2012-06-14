@@ -31,48 +31,19 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts;
+package info.magnolia.ui.framework.app;
 
-import info.magnolia.ui.framework.place.Place;
-import info.magnolia.ui.framework.place.PlaceTokenizer;
-import info.magnolia.ui.framework.place.Prefix;
+import info.magnolia.ui.framework.location.Location;
 
 /**
- * Place for the Contacts app.
+ * Defines functionality used by an app to interact with the Magnolia shell.
  *
  * @version $Id$
+ * @see App#start(AppContext, info.magnolia.ui.framework.location.Location)
  */
-@Prefix("contacts")
-public class ContactsPlace extends Place {
+public interface AppContext {
 
-    /**
-     * Tokenizer for ContactsPlace.
-     *
-     * @version $Id$
-     */
-    public static class Tokenizer implements PlaceTokenizer<ContactsPlace> {
+    void openAppView(AppView view);
 
-        @Override
-        public ContactsPlace getPlace(String token) {
-            return new ContactsPlace(token);
-        }
-
-        @Override
-        public String getToken(ContactsPlace place) {
-            return place.getPath();
-        }
-    }
-
-    private String path;
-
-    public ContactsPlace(String path) {
-        this.path = path;
-    }
-    public ContactsPlace() {
-        this("/");
-    }
-
-    public String getPath() {
-        return path;
-    }
+    void setAppLocation(Location location);
 }

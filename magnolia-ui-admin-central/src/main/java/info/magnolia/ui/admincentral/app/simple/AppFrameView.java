@@ -31,44 +31,44 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app;
+package info.magnolia.ui.admincentral.app.simple;
 
-import info.magnolia.ui.framework.activity.AbstractActivity;
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.place.Place;
-import info.magnolia.ui.framework.view.ViewPort;
+import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
+import info.magnolia.ui.widget.tabsheet.ShellTab;
+import info.magnolia.ui.widget.tabsheet.ShellTabSheet;
+
+import com.vaadin.ui.Component;
+import com.vaadin.ui.ComponentContainer;
 
 /**
- * Abstract presenter for app views.
+ * View used to give all apps a uniform look-and-feel.
  *
- * @param <T>
  * @version $Id$
  */
-public abstract class AbstractAppActivity<T extends AppPresenter<T>> extends AbstractActivity implements AppPresenter<T> {
+@SuppressWarnings("serial")
+public class AppFrameView implements View, IsVaadinComponent {
 
-    private static final long serialVersionUID = 1L;
+    private ShellTabSheet tabsheet = new ShellTabSheet();
 
-    private AppView<T> view;
+    public AppFrameView() {
+        super();
+        tabsheet.setSizeFull();
+    }
 
-    private String name;
+    public void addTab(ComponentContainer cc, String caption) {
+        final ShellTab tab = new ShellTab(caption, cc);
+        tabsheet.addComponent(tab);
+        tabsheet.setTabClosable(tab, true);
+        tabsheet.setActiveTab(tab);
+    }
 
-    public AbstractAppActivity(AppView<T> view) {
-        this.view = view;
+    public void closeTab(ComponentContainer cc) {
+        tabsheet.removeComponent(cc);
     }
 
     @Override
-    public void start(ViewPort viewPort, EventBus eventBus, Place place) {
-        view.setPresenter(getReference());
-        viewPort.setView(view);
+    public Component asVaadinComponent() {
+        return tabsheet;
     }
-
-    @Override
-    public String getAppName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<sv:node sv:name="contacts" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<sv:node sv:name="pages" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <sv:property sv:name="jcr:primaryType" sv:type="Name">
     <sv:value>mgnl:contentNode</sv:value>
   </sv:property>
@@ -7,25 +7,25 @@
     <sv:value>mix:lockable</sv:value>
   </sv:property>
   <sv:property sv:name="jcr:uuid" sv:type="String">
-    <sv:value>187101de-39e7-43ab-bb5e-fdc392a4b720</sv:value>
+    <sv:value>11e75f7d-7758-44c5-900d-47b575ab68da</sv:value>
   </sv:property>
   <sv:property sv:name="appClass" sv:type="String">
-    <sv:value>info.magnolia.ui.app.contacts.ContactsApp</sv:value>
+    <sv:value>info.magnolia.ui.admincentral.app.pages.PagesApp</sv:value>
   </sv:property>
   <sv:property sv:name="categoryName" sv:type="String">
-    <sv:value>MANAGE</sv:value>
+    <sv:value>EDIT</sv:value>
   </sv:property>
   <sv:property sv:name="icon" sv:type="String">
-    <sv:value>img/icon-app-default.png</sv:value>
+    <sv:value>img/icon-app-pages.png</sv:value>
   </sv:property>
   <sv:property sv:name="jcr:createdBy" sv:type="String">
     <sv:value>admin</sv:value>
   </sv:property>
   <sv:property sv:name="label" sv:type="String">
-    <sv:value>Contacts</sv:value>
+    <sv:value>Pages</sv:value>
   </sv:property>
   <sv:property sv:name="name" sv:type="String">
-    <sv:value>contacts</sv:value>
+    <sv:value>pages</sv:value>
   </sv:property>
   <sv:node sv:name="MetaData">
     <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -44,7 +44,7 @@
       <sv:value>2012-05-22T16:11:05.204+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-      <sv:value>2012-06-01T15:51:50.640+02:00</sv:value>
+      <sv:value>2012-05-31T14:32:59.278+02:00</sv:value>
     </sv:property>
   </sv:node>
 </sv:node>

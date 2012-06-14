@@ -97,7 +97,7 @@ public class ActivityManagerTest {
     }
 
     @Test
-    public void testRefusesToNavigateToSameActivity() {
+    public void testRefusesToNavigateToSameActivityAndCallsOnPlaceUpdate() {
 
         // GIVEN
         Activity activity = mock(Activity.class);
@@ -119,6 +119,7 @@ public class ActivityManagerTest {
 
         // THEN (still 1)
         verify(activity, times(1)).start(eq(viewPort), any(EventBus.class), any(Place.class));
+        verify(activity, times(1)).onPlaceUpdate(place2);
     }
 
     @Test

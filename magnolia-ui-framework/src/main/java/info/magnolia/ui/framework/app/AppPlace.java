@@ -33,25 +33,28 @@
  */
 package info.magnolia.ui.framework.app;
 
+import info.magnolia.ui.framework.place.Place;
+
 /**
- * Defines the lifecycle for an app.
+ * Generic place used by all apps.
  *
  * @version $Id$
  */
-public interface AppLifecycle {
+public class AppPlace extends Place {
 
-    /**
-     * Starts the app letting it do initialization, the app is not displayed.
-     */
-    void start();
+    private final String app;
+    private final String token;
 
-    /**
-     * Displays the app. The app will perform a place switch using the PlaceController to a place it provides.
-     */
-    void focus();
+    public AppPlace(String app, String token) {
+        this.app = app;
+        this.token = token;
+    }
 
-    /**
-     * Stops the app.
-     */
-    void stop();
+    public String getApp() {
+        return app;
+    }
+
+    public String getToken() {
+        return token;
+    }
 }
