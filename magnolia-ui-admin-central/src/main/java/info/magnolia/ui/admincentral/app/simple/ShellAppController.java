@@ -36,6 +36,7 @@ package info.magnolia.ui.admincentral.app.simple;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import info.magnolia.objectfactory.ComponentProvider;
@@ -68,6 +69,7 @@ public class ShellAppController implements LocationChangedEvent.Handler, Locatio
     private final Map<String, ShellAppContextImpl> contexts = new HashMap<String, ShellAppContextImpl>();
     private ShellAppContextImpl currentAppContext = null;
 
+    @Inject
     public ShellAppController(ComponentProvider componentProvider, Shell shell, EventBus eventBus) {
         this.componentProvider = componentProvider;
         this.shell = shell;
