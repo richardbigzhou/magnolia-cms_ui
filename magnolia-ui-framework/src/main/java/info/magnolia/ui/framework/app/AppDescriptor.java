@@ -34,10 +34,6 @@
 package info.magnolia.ui.framework.app;
 
 import java.io.Serializable;
-import java.util.List;
-
-import info.magnolia.ui.framework.activity.Activity;
-import info.magnolia.ui.framework.place.Place;
 
 /**
  * Describes an app.
@@ -66,13 +62,7 @@ public interface AppDescriptor extends Serializable {
 
     void setIcon(String icon);
 
-    Class<? extends AppLifecycle> getAppClass();
+    Class<? extends App> getAppClass();
 
-    void setAppClass(Class<? extends AppLifecycle> appClass);
-
-    List<PlaceActivityMapping> getActivityMappings();
-
-    void addActivityMapping(PlaceActivityMapping mapping);
-
-    Class<? extends Activity> getMappedActivityClass(final Class<? extends Place> placeClass);
+    void setAppClass(Class<? extends App> appClass);
 }

@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.framework.app;
 
+import info.magnolia.ui.framework.view.ViewPort;
+
 /**
  * Manages apps running for a single user.
  *
@@ -40,15 +42,15 @@ package info.magnolia.ui.framework.app;
  */
 public interface AppController {
 
-    AppDescriptor getAppDescriptor(final AppLifecycle app);
-
     void startIfNotAlreadyRunning(String name);
 
     void startIfNotAlreadyRunningThenFocus(String name);
 
-    void stopApplication(String name);
+    void stopApp(String name);
 
-    void stopCurrentApplication();
+    void stopCurrentApp();
 
-    boolean isAppStarted(AppDescriptor descriptor);
+    boolean isAppStarted(String name);
+
+    void setViewPort(ViewPort viewport);
 }

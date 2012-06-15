@@ -33,10 +33,12 @@
  */
 package info.magnolia.ui.app.contacts;
 
-import info.magnolia.ui.admincentral.app.AbstractAppView;
-import info.magnolia.ui.admincentral.workbench.Workbench;
-
 import javax.inject.Inject;
+
+import com.vaadin.ui.Component;
+
+import info.magnolia.ui.admincentral.workbench.Workbench;
+import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 
 /**
@@ -45,15 +47,24 @@ import javax.inject.Inject;
  * @version $Id$
  */
 @SuppressWarnings("serial")
-public class ContactsViewImpl extends AbstractAppView<ContactsPresenter> implements ContactsView {
+public class ContactsViewImpl implements ContactsView, IsVaadinComponent {
 
     private String jcrWorkspaceName = "contacts";
+    private final Workbench workbench;
 
     @Inject
     public ContactsViewImpl(final Workbench workbench) {
+        this.workbench = workbench;
         workbench.initWorkbench(jcrWorkspaceName);
-        addTab(workbench.asVaadinComponent(), "Contacts");
     }
 
+    @Override
+    public String getCaption() {
+        return "Contacts";
+    }
 
+    @Override
+    public Component asVaadinComponent() {
+        return workbench.asVaadinComponent();
+    }
 }

@@ -33,8 +33,10 @@
  */
 package info.magnolia.ui.admincentral.app.assets;
 
-import info.magnolia.ui.framework.app.AppLifecycle;
-import info.magnolia.ui.framework.place.PlaceController;
+import info.magnolia.ui.framework.app.AbstractApp;
+import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.framework.app.AppView;
+import info.magnolia.ui.framework.location.Location;
 
 import javax.inject.Inject;
 
@@ -43,28 +45,17 @@ import javax.inject.Inject;
  *
  * @version $Id$
  */
-public class AssetsApp implements AppLifecycle {
+public class AssetsApp extends AbstractApp {
 
-    private PlaceController placeController;
+    private final AssetsView view;
 
     @Inject
-    public AssetsApp(PlaceController placeController) {
-        this.placeController = placeController;
+    public AssetsApp(AssetsView view) {
+        this.view = view;
     }
 
     @Override
-    public void start() {
-        System.out.println("AssetsApp started");
-    }
-
-    @Override
-    public void focus() {
-        placeController.goTo(new AssetsPlace("foobar"));
-        System.out.println("AssetsApp focused");
-    }
-
-    @Override
-    public void stop() {
-        System.out.println("AssetsApp stopped");
+    public AppView start(AppContext context, Location location) {
+        return view;
     }
 }

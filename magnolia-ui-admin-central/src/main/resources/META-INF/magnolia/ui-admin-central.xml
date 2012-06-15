@@ -90,7 +90,7 @@
     </component>
     <component>
       <type>info.magnolia.ui.framework.app.AppController</type>
-      <implementation>info.magnolia.ui.framework.app.AppControllerImpl</implementation>
+      <implementation>info.magnolia.ui.admincentral.app.simple.AppControllerImpl</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.admincentral.shellapp.applauncher.AppLauncherView</type>

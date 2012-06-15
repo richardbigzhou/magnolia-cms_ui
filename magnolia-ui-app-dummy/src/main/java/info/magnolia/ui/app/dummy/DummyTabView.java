@@ -31,29 +31,40 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts;
+package info.magnolia.ui.app.dummy;
 
-import info.magnolia.ui.framework.app.AbstractAppActivity;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.VerticalLayout;
+import org.apache.commons.lang.RandomStringUtils;
 
-import javax.inject.Inject;
-
+import info.magnolia.ui.framework.app.AppView;
+import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 /**
- * Activity for the Dummy app.
+ * View for a tab in the dummy application.
  *
- * @version $Id$
- */
-public class ContactsActivity extends AbstractAppActivity<ContactsPresenter> implements ContactsPresenter {
+* @version $Id$
+*/
+public class DummyTabView implements AppView, IsVaadinComponent {
 
+    private final VerticalLayout tableContainer;
+    private final String name;
 
-    @Inject
-    public ContactsActivity(ContactsView view) {
-        super(view);
+    DummyTabView() {
+        name = RandomStringUtils.randomNumeric(2);
+        tableContainer = new VerticalLayout();
+        Label label = new Label("<center>Dummy Tab " + name + "</center>", Label.CONTENT_XHTML);
+        tableContainer.addComponent(label);
     }
 
     @Override
-    public ContactsPresenter getReference() {
-        return this;
+    public String getCaption() {
+        return "TAB " + name;
     }
 
+    @Override
+    public Component asVaadinComponent() {
+        return tableContainer;
+    }
 }

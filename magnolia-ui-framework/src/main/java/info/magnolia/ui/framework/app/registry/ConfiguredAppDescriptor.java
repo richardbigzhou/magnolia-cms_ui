@@ -33,15 +33,8 @@
  */
 package info.magnolia.ui.framework.app.registry;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import info.magnolia.ui.framework.activity.Activity;
+import info.magnolia.ui.framework.app.App;
 import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.app.AppLifecycle;
-import info.magnolia.ui.framework.app.PlaceActivityMapping;
-import info.magnolia.ui.framework.place.Place;
 
 /**
  * Describes an app.
@@ -68,11 +61,9 @@ public class ConfiguredAppDescriptor implements AppDescriptor {
 
     private String icon;
 
-    private Class<? extends AppLifecycle> appClass;
+    private Class<? extends App> appClass;
 
-    private List<PlaceActivityMapping> activityMappings = new ArrayList<PlaceActivityMapping>();
-
-    @Override 
+    @Override
     public String getName() {
         return name;
     }
@@ -113,36 +104,13 @@ public class ConfiguredAppDescriptor implements AppDescriptor {
     }
 
     @Override
-    public Class<? extends AppLifecycle> getAppClass() {
+    public Class<? extends App> getAppClass() {
         return appClass;
     }
 
     @Override
-    public void setAppClass(Class<? extends AppLifecycle> appClass) {
+    public void setAppClass(Class<? extends App> appClass) {
         this.appClass = appClass;
-    }
-
-    @Override
-    public List<PlaceActivityMapping> getActivityMappings() {
-        return activityMappings;
-    }
-
-    @Override
-    public void addActivityMapping(PlaceActivityMapping mapping) {
-        activityMappings.add(mapping);
-    }
-
-    @Override
-    public Class<? extends Activity> getMappedActivityClass(final Class<? extends Place> placeClass) {
-        final Iterator<PlaceActivityMapping> it = activityMappings.iterator();
-        Class<? extends Activity> result = null;
-        while (it.hasNext() && result == null) {
-            final PlaceActivityMapping mapping = it.next();
-            if (mapping.getPlace().equals(placeClass)) {
-                result = mapping.getActivity();
-            }
-        }
-        return result;
     }
 
     @Override

@@ -33,10 +33,10 @@
  */
 package info.magnolia.ui.admincentral.app;
 
+import info.magnolia.ui.framework.app.App;
 import info.magnolia.ui.framework.app.layout.AppCategory;
 import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
 import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.app.AppLifecycle;
 
 
 /**
@@ -48,7 +48,7 @@ public class AppTestUtility {
     /**
      * Create a AppDescriptor.
      */
-    public static AppDescriptor createAppDescriptor(String startLibell, Class<? extends AppLifecycle> appClass) {
+    public static AppDescriptor createAppDescriptor(String startLibell, Class<? extends App> appClass) {
         AppDescriptor res = new ConfiguredAppDescriptor();
         res.setAppClass(appClass);
         res.setIcon(startLibell+"_icon");

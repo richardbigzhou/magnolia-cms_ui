@@ -35,12 +35,10 @@ package info.magnolia.ui.admincentral.app.pages;
 
 import info.magnolia.ui.framework.app.AppView;
 
-
-
 /**
  * View for the Pages app.
  *
  * @version $Id$
  */
-public interface PagesView extends AppView<PagesPresenter> {
+public interface PagesView extends AppView {
 }

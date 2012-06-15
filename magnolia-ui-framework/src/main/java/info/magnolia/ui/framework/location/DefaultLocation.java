@@ -31,26 +31,23 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
-
-import info.magnolia.ui.framework.app.AbstractAppActivity;
-
-import javax.inject.Inject;
+package info.magnolia.ui.framework.location;
 
 /**
- * Activity for the Dummy app.
+ * Default location implementation.
  *
  * @version $Id$
  */
-public class DummyActivity extends AbstractAppActivity<DummyPresenter> implements DummyPresenter {
+public class DefaultLocation implements Location {
 
-    @Inject
-    public DummyActivity(DummyView view) {
-        super(view);
+    private String token;
+
+    public DefaultLocation(String token) {
+        this.token = token;
     }
 
     @Override
-    public DummyPresenter getReference() {
-        return this;
+    public String toString() {
+        return token;
     }
 }

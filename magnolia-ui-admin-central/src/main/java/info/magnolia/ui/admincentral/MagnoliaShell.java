@@ -87,7 +87,7 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell {
     @Override
     protected void closeCurrentApp() {
         super.closeCurrentApp();
-        appController.stopCurrentApplication();
+        appController.stopCurrentApp();
         if (getAppViewport().isEmpty()) {
             navigateToShellApp(ShellAppType.APPLAUNCHER.name().toLowerCase(), "");
         }

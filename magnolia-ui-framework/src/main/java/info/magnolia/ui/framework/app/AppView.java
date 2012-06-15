@@ -33,15 +33,14 @@
  */
 package info.magnolia.ui.framework.app;
 
+import info.magnolia.ui.framework.view.View;
+
 /**
- * Generic app view.
+ * A view inside an app.
  *
- * @param <T>
  * @version $Id$
  */
-public interface AppView<T extends AppPresenter<T>> extends ShellView {
+public interface AppView extends View {
 
-    void setPresenter(final T presenter);
-
-    T getPresenter();
+    String getCaption();
 }
