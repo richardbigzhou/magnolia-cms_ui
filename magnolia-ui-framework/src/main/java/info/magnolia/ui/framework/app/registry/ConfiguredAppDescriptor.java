@@ -43,9 +43,6 @@ import info.magnolia.ui.framework.app.AppDescriptor;
  */
 public class ConfiguredAppDescriptor implements AppDescriptor {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
 
     /**
@@ -68,7 +65,6 @@ public class ConfiguredAppDescriptor implements AppDescriptor {
         return name;
     }
 
-    @Override
     public void setName(String name) {
         this.name = name;
     }
@@ -78,7 +74,6 @@ public class ConfiguredAppDescriptor implements AppDescriptor {
         return label;
     }
 
-    @Override
     public void setLabel(String label) {
         this.label = label;
     }
@@ -88,7 +83,6 @@ public class ConfiguredAppDescriptor implements AppDescriptor {
         return enabled;
     }
 
-    @Override
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
@@ -98,7 +92,6 @@ public class ConfiguredAppDescriptor implements AppDescriptor {
         return icon;
     }
 
-    @Override
     public void setIcon(String icon) {
         this.icon = icon;
     }
@@ -108,7 +101,6 @@ public class ConfiguredAppDescriptor implements AppDescriptor {
         return appClass;
     }
 
-    @Override
     public void setAppClass(Class<? extends App> appClass) {
         this.appClass = appClass;
     }
@@ -118,7 +110,6 @@ public class ConfiguredAppDescriptor implements AppDescriptor {
         return categoryName;
     }
 
-    @Override
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
     }

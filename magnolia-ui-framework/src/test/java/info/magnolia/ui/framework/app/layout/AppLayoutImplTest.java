@@ -148,7 +148,7 @@ public class AppLayoutImplTest {
     }
 
     public static AppDescriptor createAppDescriptor(String name, String categoryName) {
-        AppDescriptor res = new ConfiguredAppDescriptor();
+        ConfiguredAppDescriptor res = new ConfiguredAppDescriptor();
         res.setCategoryName(categoryName);
         res.setName(name);
         return res;
