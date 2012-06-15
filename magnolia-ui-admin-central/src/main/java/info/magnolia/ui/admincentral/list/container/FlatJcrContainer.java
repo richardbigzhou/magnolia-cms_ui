@@ -34,12 +34,12 @@
 package info.magnolia.ui.admincentral.list.container;
 
 
-import info.magnolia.ui.admincentral.container.ContainerItem;
-import info.magnolia.ui.admincentral.container.ContainerItemId;
 import info.magnolia.ui.admincentral.container.JcrContainer;
 import info.magnolia.ui.admincentral.container.JcrContainerSource;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.vaadin.intergration.jcr.JcrNodeAdapter;
 
+import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.RowIterator;
 
@@ -70,11 +70,11 @@ public class FlatJcrContainer extends JcrContainer {
 
         long rowCount = 0;
         while(iterator.hasNext()){
-
-            final ContainerItemId id = createContainerId(iterator.nextRow().getNode("content"));
+            final Node node = iterator.nextRow().getNode("content");
+            final String id = node.getPath();
             /* Cache item */
             getItemIndexes().put(rowCount++, id);
-            getCachedItems().put(id, new ContainerItem(id, this));
+            getCachedItems().put(id, new JcrNodeAdapter(node));
 
         }
         setSize(Long.valueOf(rowCount).intValue());

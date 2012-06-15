@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral.tree.view;
 
-import info.magnolia.ui.admincentral.container.ContainerItemId;
 import info.magnolia.ui.admincentral.container.JcrContainer;
 import info.magnolia.ui.admincentral.jcr.view.JcrView;
 import info.magnolia.ui.admincentral.tree.model.TreeModel;
@@ -72,19 +71,19 @@ public class TreeViewImpl implements TreeView, IsVaadinComponent {
 
                 // TODO JcrBrowser should have a click event of its own that sends a JCR item instead of a
                 // ContainerItemId
-                presenterOnItemSelection((ContainerItemId) event.getItemId());
+                presenterOnItemSelection((String) event.getItemId());
             }
         });
 
         jcrBrowser.addListener(new TreeTable.ValueChangeListener() {
             @Override
             public void valueChange(ValueChangeEvent event) {
-                presenterOnItemSelection((ContainerItemId) event.getProperty().getValue());
+                presenterOnItemSelection((String) event.getProperty().getValue());
             }
         });
     }
 
-    private void presenterOnItemSelection(ContainerItemId id) {
+    private void presenterOnItemSelection(String id) {
         if (presenter != null) {
             presenter.onItemSelection(jcrBrowser.getJcrItem(id));
         }

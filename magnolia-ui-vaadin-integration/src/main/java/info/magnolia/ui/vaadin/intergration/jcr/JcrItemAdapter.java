@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,40 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.tree.action;
+package info.magnolia.ui.vaadin.intergration.jcr;
 
-import info.magnolia.ui.admincentral.dialog.DialogPresenter;
-import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
-import info.magnolia.ui.model.action.ActionBase;
-import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.vaadin.intergration.jcr.JcrNodeAdapter;
+import javax.jcr.RepositoryException;
 
-import javax.jcr.Node;
+import com.vaadin.data.Item;
 
 
 /**
- * Opens a dialog for editing a nodeToEdit in a tree.
- * <p/>
- * TODO: add support for configuring supported itemTypes, maybe in base class where no config means all
  *
  */
-public class OpenEditDialogAction extends ActionBase<OpenEditDialogActionDefinition> {
+public interface JcrItemAdapter extends Item{
 
-    private DialogPresenterFactory dialogPresenterFactory;
+    public boolean isNode();
 
-    private Node nodeToEdit;
+    public String getNodeIdentifier();
 
-    public OpenEditDialogAction(OpenEditDialogActionDefinition definition, Node nodeToEdit, DialogPresenterFactory dialogPresenterFactory) {
-        super(definition);
-        this.nodeToEdit = nodeToEdit;
-        this.dialogPresenterFactory = dialogPresenterFactory;
-    }
+    public String getPropertyName();
 
-    @Override
-    public void execute() throws ActionExecutionException {
+    public String getPath();
 
-            DialogPresenter dialogPresenter = dialogPresenterFactory.createDialog(getDefinition().getDialogName());
-            dialogPresenter.showDialog(new JcrNodeAdapter(nodeToEdit));
+    public javax.jcr.Item getJcrItem() throws RepositoryException;
 
-    }
+    public void save() throws RepositoryException;
 }

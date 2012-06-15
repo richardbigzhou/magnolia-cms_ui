@@ -84,4 +84,9 @@ public class DefaultProperty extends AbstractProperty {
         return this.propertyName;
     }
 
+    @Override
+    public String toString() {
+        Object value = getValue();
+        return value != null ? value.toString() : "";
+    }
 }
