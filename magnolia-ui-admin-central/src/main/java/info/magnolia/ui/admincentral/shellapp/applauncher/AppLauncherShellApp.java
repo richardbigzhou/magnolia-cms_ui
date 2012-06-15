@@ -33,11 +33,13 @@
  */
 package info.magnolia.ui.admincentral.shellapp.applauncher;
 
+import info.magnolia.ui.framework.app.ShellApp;
+import info.magnolia.ui.framework.app.ShellAppContext;
 import info.magnolia.ui.framework.app.AppController;
-import info.magnolia.ui.framework.activity.AbstractActivity;
 import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventHandler;
+import info.magnolia.ui.framework.app.ShellView;
 import info.magnolia.ui.framework.app.layout.AppCategory;
 import info.magnolia.ui.framework.app.layout.AppLayout;
 import info.magnolia.ui.framework.app.layout.AppLayoutManager;
@@ -45,8 +47,7 @@ import info.magnolia.ui.framework.app.layout.event.LayoutEvent;
 import info.magnolia.ui.framework.app.layout.event.LayoutEventHandler;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.event.SystemEventBus;
-import info.magnolia.ui.framework.place.Place;
-import info.magnolia.ui.framework.view.ViewPort;
+import info.magnolia.ui.framework.location.Location;
 
 import javax.inject.Inject;
 
@@ -58,7 +59,7 @@ import javax.inject.Inject;
  *
  * @version $Id$
  */
-public class AppLauncherActivity extends AbstractActivity implements AppLauncherView.Presenter {
+public class AppLauncherShellApp implements ShellApp, AppLauncherView.Presenter {
 
     private static final long serialVersionUID = 1L;
 
@@ -71,7 +72,7 @@ public class AppLauncherActivity extends AbstractActivity implements AppLauncher
     private AppLayout layout;
 
     @Inject
-    public AppLauncherActivity(AppLauncherView view, AppController appController, AppLayoutManager appLauncherLayoutManager, EventBus eventBus, SystemEventBus systemEventBus) {
+    public AppLauncherShellApp(AppLauncherView view, AppController appController, AppLayoutManager appLauncherLayoutManager, EventBus eventBus, SystemEventBus systemEventBus) {
         this.view = view;
         this.appController = appController;
         this.appLauncherLayoutManager = appLauncherLayoutManager;
@@ -120,14 +121,19 @@ public class AppLauncherActivity extends AbstractActivity implements AppLauncher
     }
 
     @Override
-    public void onAppInvoked(String name) {
-        appController.startIfNotAlreadyRunningThenFocus(name);
+    public ShellView start(ShellAppContext context) {
+        view.setPresenter(this);
+        return view;
     }
 
     @Override
-    public void start(ViewPort viewPort, EventBus eventBus, Place place) {
-        view.setPresenter(this);
-        viewPort.setView(view);
+    public void locationChanged(Location location) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void onAppInvoked(String name) {
+        appController.startIfNotAlreadyRunningThenFocus(name);
     }
 
     /**

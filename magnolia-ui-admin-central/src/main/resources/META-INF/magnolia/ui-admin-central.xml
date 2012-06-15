@@ -73,8 +73,8 @@
       <implementation>info.magnolia.ui.framework.event.SimpleEventBus</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.framework.place.PlaceController</type>
-      <implementation>info.magnolia.ui.framework.place.PlaceController</implementation>
+      <type>info.magnolia.ui.framework.location.LocationController</type>
+      <implementation>info.magnolia.ui.framework.location.LocationController</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.admincentral.app.pages.PagesApp</type>
@@ -91,6 +91,10 @@
     <component>
       <type>info.magnolia.ui.framework.app.AppController</type>
       <implementation>info.magnolia.ui.admincentral.app.simple.AppControllerImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.app.simple.ShellAppController</type>
+      <implementation>info.magnolia.ui.admincentral.app.simple.ShellAppController</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.admincentral.shellapp.applauncher.AppLauncherView</type>

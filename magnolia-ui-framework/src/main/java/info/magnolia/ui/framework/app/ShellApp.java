@@ -33,11 +33,18 @@
  */
 package info.magnolia.ui.framework.app;
 
+import info.magnolia.ui.framework.location.Location;
+
 /**
- * Shell apps capable view.
+ * Defines a shell app.
  *
  * @version $Id$
  */
-public interface ShellAppView extends ShellView {
+public interface ShellApp {
 
+    ShellView start(ShellAppContext context);
+
+    void locationChanged(Location location);
 }
+
+

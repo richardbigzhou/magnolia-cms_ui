@@ -33,28 +33,14 @@
  */
 package info.magnolia.ui.framework.app;
 
-import info.magnolia.ui.framework.place.Place;
+import info.magnolia.ui.framework.location.Location;
 
 /**
- * Generic place used by all apps.
+ * Defines functionality used by a shell app to interact with the Magnolia shell.
  *
  * @version $Id$
  */
-public class AppPlace extends Place {
+public interface ShellAppContext {
 
-    private final String app;
-    private final String token;
-
-    public AppPlace(String app, String token) {
-        this.app = app;
-        this.token = token;
-    }
-
-    public String getApp() {
-        return app;
-    }
-
-    public String getToken() {
-        return token;
-    }
+    void setAppLocation(Location location);
 }

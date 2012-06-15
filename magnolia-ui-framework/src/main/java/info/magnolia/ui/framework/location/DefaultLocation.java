@@ -40,23 +40,93 @@ package info.magnolia.ui.framework.location;
  */
 public class DefaultLocation implements Location {
 
-    private String viewPort;
-    private String app;
+    private String type;
+    private String prefix;
     private String token;
 
-    public DefaultLocation(String viewPort, String app, String token) {
-        this.viewPort = viewPort;
-        this.app = app;
+    public DefaultLocation(String type, String prefix, String token) {
+        this.type = type;
+        this.prefix = prefix;
         this.token = token;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        DefaultLocation that = (DefaultLocation) o;
+
+        if (prefix != null ? !prefix.equals(that.prefix) : that.prefix != null) {
+            return false;
+        }
+        if (token != null ? !token.equals(that.token) : that.token != null) {
+            return false;
+        }
+        if (type != null ? !type.equals(that.type) : that.type != null) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = type != null ? type.hashCode() : 0;
+        result = 31 * result + (prefix != null ? prefix.hashCode() : 0);
+        result = 31 * result + (token != null ? token.hashCode() : 0);
+        return result;
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(viewPort).append(":").append(app);
+        sb.append(type).append(":").append(prefix);
         if (token != null && token.length() != 0) {
             sb.append(":").append(token);
         }
         return sb.toString();
+    }
+
+    public static String extractType(String fragment) {
+        int i = fragment.indexOf(':');
+        return i != -1 ? fragment.substring(0, i) : fragment;
+    }
+
+    public static String extractPrefix(String fragment) {
+        int i = fragment.indexOf(':');
+        if (i == -1) {
+            return "";
+        }
+        int j = fragment.indexOf(':', i + 1);
+        return j != -1 ? fragment.substring(i + 1, j) : fragment.substring(i + 1);
+    }
+
+    public static String extractToken(String fragment) {
+        int i = fragment.indexOf(':');
+        if (i == -1) {
+            return "";
+        }
+        int j = fragment.indexOf(':', i + 1);
+        if (j == -1) {
+            return "";
+        }
+        return fragment.substring(j + 1);
     }
 }

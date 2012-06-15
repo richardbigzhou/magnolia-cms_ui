@@ -38,6 +38,7 @@ import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventHandler;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.event.HandlerRegistration;
+import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.shell.ConfirmationHandler;
 import info.magnolia.ui.framework.shell.FragmentChangedHandler;
 import info.magnolia.ui.framework.shell.Shell;
@@ -116,13 +117,28 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell {
     @Override
     public String getFragment() {
         final ShellViewport activeViewport = getActiveViewport();
-        return activeViewport == null ? "" : activeViewport.getCurrentShellFragment();
+        String viewPortName = "";
+        if (activeViewport == getShellAppViewport())
+            viewPortName = "shell";
+        else
+        if (activeViewport == getAppViewport())
+            viewPortName = "app";
+        else
+        if (activeViewport == getDialogViewport())
+            viewPortName = "dialog";
+        return viewPortName + ":" + (activeViewport == null ? "" : activeViewport.getCurrentShellFragment());
     }
 
     @Override
     public void setFragment(String fragment) {
+
+        String prefix = DefaultLocation.extractPrefix(fragment);
+        String token = DefaultLocation.extractToken(fragment);
+
         final ShellViewport activeViewport = getActiveViewport();
-        proxy.call("navigate", fragment, activeViewport.getCurrentAppName());
+        activeViewport.setCurrentShellFragment(prefix + ":" + token);
+
+        proxy.call("navigate", prefix, token);
     }
 
     @Override
