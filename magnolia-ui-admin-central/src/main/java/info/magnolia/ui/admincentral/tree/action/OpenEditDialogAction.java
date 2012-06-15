@@ -62,9 +62,7 @@ public class OpenEditDialogAction extends ActionBase<OpenEditDialogActionDefinit
 
     @Override
     public void execute() throws ActionExecutionException {
-
             DialogPresenter dialogPresenter = dialogPresenterFactory.createDialog(getDefinition().getDialogName());
-            dialogPresenter.showDialog(new NodeAdapter(nodeToEdit));
-
+            dialogPresenter.editItem(new NodeAdapter(nodeToEdit));
     }
 }

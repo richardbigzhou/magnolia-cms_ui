@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2011 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,11 +31,51 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.definition;
+package info.magnolia.ui.widget.dialog;
+
+import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
+
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.Field;
 
 /**
- * Field definition for a rich edit field.
+ * DialogView.
+ *
+ * @author ejervidalo
  */
-public class RichEditFieldDefinition extends ConfiguredFieldDefinition {
+public interface DialogView extends IsVaadinComponent {
+
+    /**
+     * DialogView.Presenter.
+     *
+     * @author ejervidalo
+     */
+    interface Presenter {
+
+    }
+
+    /**
+     * @param item
+     */
+    void setItemDataSource(Item item);
+
+    /**
+     * @param itemProperty
+     * @param input
+     */
+    void addField(Property itemProperty, Field input);
+
+    /**
+     * @param inputFields
+     * @param tabName
+     */
+    void addTab(ComponentContainer inputFields, String tabName);
+
+    /**
+     * @param dialogPresenter
+     */
+    void setPresenter(Presenter presenter);
 
 }

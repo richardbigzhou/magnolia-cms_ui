@@ -26,6 +26,14 @@
       <type>info.magnolia.ui.framework.app.layout.AppLayoutManager</type>
       <implementation>info.magnolia.ui.framework.app.layout.AppLayoutManagerImpl</implementation>
     </component>
+    <component>
+      <type>info.magnolia.ui.model.dialog.registry.ConfiguredDialogDefinitionManager</type>
+      <implementation>info.magnolia.ui.model.dialog.registry.ConfiguredDialogDefinitionManager</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.model.dialog.registry.DialogDefinitionRegistry</type>
+      <implementation>info.magnolia.ui.model.dialog.registry.DialogDefinitionRegistry</implementation>
+    </component>
     <type-mapping>
       <type>info.magnolia.ui.framework.app.AppDescriptor</type>
       <implementation>info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor</implementation>
@@ -49,6 +57,18 @@
     <type-mapping>
       <type>info.magnolia.ui.model.actionbar.definition.ActionbarItemDefinition</type>
       <implementation>info.magnolia.ui.model.actionbar.definition.ActionbarItemDefinitionImpl</implementation>
+    </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.model.dialog.definition.DialogDefinition</type>
+      <implementation>info.magnolia.ui.model.dialog.definition.ConfiguredDialogDefinition</implementation>
+    </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.model.dialog.definition.TabDefinition</type>
+      <implementation>info.magnolia.ui.model.dialog.definition.ConfiguredTabDefinition</implementation>
+    </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.model.dialog.definition.FieldDefinition</type>
+      <implementation>info.magnolia.ui.model.dialog.definition.ConfiguredFieldDefinition</implementation>
     </type-mapping>
   </components>
 
@@ -124,6 +144,10 @@
       <type>info.magnolia.ui.admincentral.dialog.DialogPresenterFactory</type>
       <implementation>info.magnolia.ui.admincentral.dialog.DialogPresenterFactoryImpl</implementation>
     </component>
+    <component>
+      <type>info.magnolia.ui.widget.dialog.DialogView</type>
+      <implementation>info.magnolia.ui.widget.dialog.Dialog</implementation>
+    </component>
   </components>
 
   <components>
@@ -144,15 +168,6 @@
      <component>
       <type>info.magnolia.ui.model.workbench.registry.ConfiguredWorkbenchDefinitionManager</type>
       <implementation>info.magnolia.ui.model.workbench.registry.ConfiguredWorkbenchDefinitionManager</implementation>
-    </component>
-  </components>
-
-  <components>
-   <id>default-dialog</id>
-
-     <component>
-      <type>info.magnolia.ui.model.dialog.registry.ConfiguredDialogDefinitionManager</type>
-      <implementation>info.magnolia.ui.model.dialog.registry.ConfiguredDialogDefinitionManager</implementation>
     </component>
   </components>
 

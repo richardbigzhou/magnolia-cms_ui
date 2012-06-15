@@ -35,9 +35,7 @@ package info.magnolia.ui.widget.dialog;
 
 
 
-import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.widget.dialog.action.Action;
-import info.magnolia.ui.widget.dialog.event.DialogCommitEvent;
 import info.magnolia.ui.widget.dialog.gwt.client.VDialog;
 import info.magnolia.ui.widget.tabsheet.ShellTab;
 import info.magnolia.ui.widget.tabsheet.ShellTabSheet;
@@ -71,11 +69,10 @@ import com.vaadin.ui.Field;
  */
 @SuppressWarnings("serial")
 @ClientWidget(value=VDialog.class, loadStyle = LoadStyle.EAGER)
-public class Dialog extends AbstractComponent implements ServerSideHandler, Item.Editor, Buffered {
+public class Dialog extends AbstractComponent implements DialogView, ServerSideHandler, Item.Editor, Buffered {
 
     private ShellTabSheet tabsheet = new ShellTabSheet();
     private final String SHOW_ALL = "show all";
-    private EventBus eventBus;
 
     /**
      * Item connected to this dialog as datasource.
@@ -99,14 +96,17 @@ public class Dialog extends AbstractComponent implements ServerSideHandler, Item
             }
         };
 
-    private boolean readThrough;
-    private boolean writeThrough;
+    private Presenter presenter;
 
-    public Dialog(EventBus eventBus) {
-        this.eventBus = eventBus;
+    public Dialog() {
         setImmediate(true);
         showAllTab(true);
         registerActions();
+    }
+
+    @Override
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
     }
 
     @Override
@@ -122,6 +122,7 @@ public class Dialog extends AbstractComponent implements ServerSideHandler, Item
         this.tabsheet.detach();
     }
 
+    @Override
     public void addTab(ComponentContainer cc, String caption) {
         final ShellTab tab = new ShellTab(caption, cc);
         tab.setSizeUndefined();
@@ -178,6 +179,7 @@ public class Dialog extends AbstractComponent implements ServerSideHandler, Item
 
     }
 
+    @Override
     public Component asVaadinComponent() {
         return this;
     }
@@ -203,9 +205,6 @@ public class Dialog extends AbstractComponent implements ServerSideHandler, Item
 
     }
 
-    /* (non-Javadoc)
-     * @see org.vaadin.rpc.ServerSideHandler#callFromClient(java.lang.String, java.lang.Object[])
-     */
     @Override
     public void callFromClient(String method, Object[] params) {
         System.out.println("Client called " + method);
@@ -221,25 +220,9 @@ public class Dialog extends AbstractComponent implements ServerSideHandler, Item
         return itemDatasource;
     }
 
+    @Override
     public void addField(Property property, Field field) {
         fields.put(property, field);
-    }
-
-    /* (non-Javadoc)
-     * @see com.vaadin.data.Buffered#commit()
-     */
-    @Override
-    public void commit() throws SourceException, InvalidValueException {
-        eventBus.fireEvent(new DialogCommitEvent(itemDatasource));
-        closeDialog();
-    }
-
-    /* (non-Javadoc)
-     * @see com.vaadin.data.Buffered#discard()
-     */
-    @Override
-    public void discard() throws SourceException {
-        closeDialog();
     }
 
     /*
@@ -258,59 +241,60 @@ public class Dialog extends AbstractComponent implements ServerSideHandler, Item
         return false;
     }
 
-    /*
-     * Is the editor in a read-through mode? Don't add a JavaDoc comment here,
-     * we use the default one from the interface.
+    /* (non-Javadoc)
+     * @see com.vaadin.data.Buffered#commit()
      */
     @Override
-    public boolean isReadThrough() {
-        return readThrough;
+    public void commit() throws SourceException, InvalidValueException {
+        // TODO Auto-generated method stub
+
     }
 
-    /*
-     * Is the editor in a write-through mode? Don't add a JavaDoc comment here,
-     * we use the default one from the interface.
+    /* (non-Javadoc)
+     * @see com.vaadin.data.Buffered#discard()
+     */
+    @Override
+    public void discard() throws SourceException {
+        // TODO Auto-generated method stub
+
+    }
+
+    /* (non-Javadoc)
+     * @see com.vaadin.data.Buffered#isWriteThrough()
      */
     @Override
     public boolean isWriteThrough() {
-        return writeThrough;
+        // TODO Auto-generated method stub
+        return false;
     }
 
-    /*
-     * Sets the editor's read-through mode to the specified status. Don't add a
-     * JavaDoc comment here, we use the default one from the interface.
-     */
-    @Override
-    public void setReadThrough(boolean readThrough) {
-        if (readThrough != this.readThrough) {
-            this.readThrough = readThrough;
-            for (final Iterator<Object> i = propertyIds.iterator(); i.hasNext();) {
-                (fields.get(i.next())).setReadThrough(readThrough);
-            }
-        }
-    }
-
-    /*
-     * Sets the editor's read-through mode to the specified status. Don't add a
-     * JavaDoc comment here, we use the default one from the interface.
+    /* (non-Javadoc)
+     * @see com.vaadin.data.Buffered#setWriteThrough(boolean)
      */
     @Override
     public void setWriteThrough(boolean writeThrough) throws SourceException,
             InvalidValueException {
-        if (writeThrough != this.writeThrough) {
-            this.writeThrough = writeThrough;
-            for (final Iterator<Object> i = propertyIds.iterator(); i.hasNext();) {
-                (fields.get(i.next())).setWriteThrough(writeThrough);
-            }
-        }
-    }
-
-    /**
-     *
-     */
-    public void closeDialog() {
         // TODO Auto-generated method stub
 
     }
+
+    /* (non-Javadoc)
+     * @see com.vaadin.data.Buffered#isReadThrough()
+     */
+    @Override
+    public boolean isReadThrough() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see com.vaadin.data.Buffered#setReadThrough(boolean)
+     */
+    @Override
+    public void setReadThrough(boolean readThrough) throws SourceException {
+        // TODO Auto-generated method stub
+
+    }
+
 
 }

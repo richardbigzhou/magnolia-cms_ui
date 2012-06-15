@@ -34,67 +34,82 @@
 package info.magnolia.ui.model.dialog.definition;
 
 /**
- * The link field allows you to create a link to content stored in Magnolia. You can browse any specified workspace and
- * select a content node to link to such as a page (website), file (dms) or data item (data).
+ * Describes a field in a dialog.
  *
- * @version $Id$
+ * TODO this should be abstract
+ *
+ * TODO we should be able to configure validators
+ *
+ * @author tmattsson
  */
-public class LinkFieldDefinition extends ConfiguredFieldDefinition {
+public class ConfiguredFieldDefinition implements FieldDefinition {
 
-    private String workspace;
-    private String extension;
-    private String workbench;
-    private String width;
-    private String buttonLabel;
+    private String name;
+    private String label;
+    private String description; // not relevant for controlType=static
+    private String i18nBasename;
 
-    // TODO In JCR 2.0 this is called identifier, do we want to adjust to this or maybe call it reference
-    private boolean uuid;
+    private String type; // JCR Property type name see javax.jcr.PropertyType
 
-    public String getWorkspace() {
-        return workspace;
+    private boolean required; // Not relevant for checkbox
+
+    @Override
+    public String getName() {
+        return name;
     }
 
-    public void setWorkspace(String workspace) {
-        this.workspace = workspace;
+    @Override
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getExtension() {
-        return extension;
+    @Override
+    public String getLabel() {
+        return label;
     }
 
-    public void setExtension(String extension) {
-        this.extension = extension;
+    @Override
+    public void setLabel(String label) {
+        this.label = label;
     }
 
-    public String getWorkbench() {
-        return workbench;
+    @Override
+    public String getDescription() {
+        return description;
     }
 
-    public void setWorkbench(String workbench) {
-        this.workbench = workbench;
+    @Override
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public String getWidth() {
-        return width;
+    @Override
+    public String getI18nBasename() {
+        return i18nBasename;
     }
 
-    public void setWidth(String width) {
-        this.width = width;
+    @Override
+    public void setI18nBasename(String i18nBasename) {
+        this.i18nBasename = i18nBasename;
     }
 
-    public String getButtonLabel() {
-        return buttonLabel;
+    @Override
+    public String getType() {
+        return type;
     }
 
-    public void setButtonLabel(String buttonLabel) {
-        this.buttonLabel = buttonLabel;
+    @Override
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public boolean isUuid() {
-        return uuid;
+    @Override
+    public boolean isRequired() {
+        return required;
     }
 
-    public void setUuid(boolean uuid) {
-        this.uuid = uuid;
+    @Override
+    public void setRequired(boolean required) {
+        this.required = required;
     }
 }

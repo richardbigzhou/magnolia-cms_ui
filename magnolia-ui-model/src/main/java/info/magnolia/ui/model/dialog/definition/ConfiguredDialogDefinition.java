@@ -33,28 +33,74 @@
  */
 package info.magnolia.ui.model.dialog.definition;
 
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Field definition for a select field.
+ * A definition of a configured dialog. Holds a list of tabs.
+ * --> align with AppDescriptor, use interface, same for fielddef, tabdef, extract common fields -> UiItem
  */
-public class SelectFieldDefinition extends ConfiguredFieldDefinition {
+public class ConfiguredDialogDefinition implements DialogDefinition {
 
-    // TODO options should be configured in another fashion
+    private String id;
+    private String name;
+    private String label;
+    private String i18nBasename;
+    private List<TabDefinition> tabs = new ArrayList<TabDefinition>();
 
-    // TODO support options from a path
-
-    // TODO support icons on options
-
-    // TODO see http://documentation.magnolia-cms.com/reference/controls.html#radiocheckboxandselect
-
-    private Map<String, String> options;
-
-    public Map<String, String> getOptions() {
-        return options;
+    @Override
+    public String getId() {
+        return id;
     }
 
-    public void setOptions(Map<String, String> options) {
-        this.options = options;
+    @Override
+    public void setId(String id) {
+        this.id = id;
     }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String getLabel() {
+        return label;
+    }
+
+    @Override
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    @Override
+    public List<TabDefinition> getTabs() {
+        return tabs;
+    }
+
+    @Override
+    public void setTabs(List<TabDefinition> tabs) {
+        this.tabs = tabs;
+    }
+
+    @Override
+    public boolean addTab(TabDefinition tabDefinition) {
+        return tabs.add(tabDefinition);
+    }
+
+    @Override
+    public String getI18nBasename() {
+        return i18nBasename;
+    }
+
+    @Override
+    public void setI18nBasename(String i18nBasename) {
+        this.i18nBasename = i18nBasename;
+    }
+
 }

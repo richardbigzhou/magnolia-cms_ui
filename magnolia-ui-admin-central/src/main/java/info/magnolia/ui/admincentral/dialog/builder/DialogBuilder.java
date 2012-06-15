@@ -33,10 +33,10 @@
  */
 package info.magnolia.ui.admincentral.dialog.builder;
 
-import info.magnolia.ui.admincentral.dialog.DialogPresenter;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 import info.magnolia.ui.model.dialog.definition.FieldDefinition;
 import info.magnolia.ui.model.dialog.definition.TabDefinition;
+import info.magnolia.ui.widget.dialog.DialogView;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -56,10 +56,10 @@ public class DialogBuilder {
      * @param dialogPresenter
      * @return
      */
-    public DialogPresenter build(DialogDefinition dialogDefinition, Item item, DialogPresenter presenter) {
+    public DialogView build(DialogDefinition dialogDefinition, Item item, DialogView view) {
 
 
-        presenter.setItemDataSource(item);
+        view.setItemDataSource(item);
 
         for (TabDefinition tabDefinition : dialogDefinition.getTabs()) {
             String tabName = tabDefinition.getName();
@@ -75,13 +75,13 @@ public class DialogBuilder {
 
                 fieldContainer.addComponent(input);
                 inputFields.addComponent(fieldContainer);
-                presenter.addField(item.getItemProperty(field.getName()), input);
+                view.addField(item.getItemProperty(field.getName()), input);
             }
 
-            presenter.addTab(inputFields, tabName);
+            view.addTab(inputFields, tabName);
 
         }
-        return presenter;
+        return view;
 
     }
 

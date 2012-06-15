@@ -38,7 +38,7 @@ package info.magnolia.ui.model.dialog.definition;
  *
  * @version $Id$
  */
-public class FileUploadFieldDefinition extends FieldDefinition {
+public class FileUploadFieldDefinition extends ConfiguredFieldDefinition {
 
     // TODO should we change this name? See also info.magnolia.cms.beans.runtime.FileProperties#PROPERTY_TEMPLATE
     private String nodeDataTemplate;

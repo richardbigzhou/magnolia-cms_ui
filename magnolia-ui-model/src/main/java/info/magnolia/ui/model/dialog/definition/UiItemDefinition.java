@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2011 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,8 +34,22 @@
 package info.magnolia.ui.model.dialog.definition;
 
 /**
- * Field definition for a rich edit field.
+ * UiItemDefinition.
+ *
+ * @author ejervidalo
  */
-public class RichEditFieldDefinition extends ConfiguredFieldDefinition {
+public interface UiItemDefinition {
+
+    public abstract void setI18nBasename(String i18nBasename);
+
+    public abstract String getI18nBasename();
+
+    public abstract void setLabel(String label);
+
+    public abstract String getLabel();
+
+    public abstract void setName(String name);
+
+    public abstract String getName();
 
 }

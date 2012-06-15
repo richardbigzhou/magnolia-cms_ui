@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2011 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,61 +33,25 @@
  */
 package info.magnolia.ui.model.dialog.definition;
 
-import java.util.ArrayList;
 import java.util.List;
 
+
 /**
- * A definition of a configured dialog. Holds a list of tabs.
+ * DialogDefinition.
+ *
+ * @author ejervidalo
  */
-public class DialogDefinition {
+public interface DialogDefinition extends UiItemDefinition {
 
-    private String id;
-    private String name;
-    private String label;
-    private String i18nBasename;
-    private List<TabDefinition> tabs = new ArrayList<TabDefinition>();
+    public abstract boolean addTab(TabDefinition tabDefinition);
 
-    public String getId() {
-        return id;
-    }
+    public abstract void setTabs(List<TabDefinition> tabs);
 
-    public void setId(String id) {
-        this.id = id;
-    }
+    public abstract List<TabDefinition> getTabs();
 
-    public String getName() {
-        return name;
-    }
+    public abstract void setId(String id);
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public abstract String getId();
 
-    public String getLabel() {
-        return label;
-    }
 
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    public List<TabDefinition> getTabs() {
-        return tabs;
-    }
-
-    public void setTabs(List<TabDefinition> tabs) {
-        this.tabs = tabs;
-    }
-
-    public boolean addTab(TabDefinition tabDefinition) {
-        return tabs.add(tabDefinition);
-    }
-
-    public String getI18nBasename() {
-        return i18nBasename;
-    }
-
-    public void setI18nBasename(String i18nBasename) {
-        this.i18nBasename = i18nBasename;
-    }
 }
