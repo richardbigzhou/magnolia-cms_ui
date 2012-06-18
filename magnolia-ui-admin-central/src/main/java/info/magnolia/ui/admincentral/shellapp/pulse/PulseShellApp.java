@@ -33,11 +33,12 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse;
 
-import info.magnolia.ui.framework.activity.AbstractActivity;
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.place.Place;
+import info.magnolia.ui.framework.app.ShellApp;
+import info.magnolia.ui.framework.app.ShellAppContext;
+import info.magnolia.ui.framework.app.ShellView;
+import info.magnolia.ui.framework.location.DefaultLocation;
+import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.framework.view.ViewPort;
 
 import javax.inject.Inject;
 
@@ -46,37 +47,35 @@ import javax.inject.Inject;
  *
  * @version $Id$
  */
-public class PulseActivity extends AbstractActivity implements PulseView.Presenter {
+public class PulseShellApp implements ShellApp, PulseView.Presenter {
     
     private PulseView pulseView;
-
     private Shell shell;
+    private ShellAppContext context;
 
-    @Override
-    public void onPlaceUpdate(Place place) {
-        PulsePlace pulsePlace = (PulsePlace) place;
-        final String displayedTabId = pulseView.setCurrentPulseTab(pulsePlace.getCurrentPulseTab());
-        pulsePlace.setCurrentPulseTab(displayedTabId);
-    }
-    
     @Inject
-    public PulseActivity(PulseView pulseView, final Shell shell) {
+    public PulseShellApp(PulseView pulseView, final Shell shell) {
         this.pulseView = pulseView;
         this.shell = shell;
     }
 
     @Override
-    public void start(ViewPort viewPort, EventBus eventBus, Place place) {
+    public ShellView start(ShellAppContext context) {
+        this.context = context;
         pulseView.setPresenter(this);
         shell.showNotification("Something weird goes on....But you can skip it for now");
-        viewPort.setView(pulseView);
+        return pulseView;
+    }
+
+    @Override
+    public void locationChanged(Location location) {
+        DefaultLocation pulsePlace = (DefaultLocation) location;
+        final String displayedTabId = pulseView.setCurrentPulseTab(pulsePlace.getToken());
+//        pulsePlace.setCurrentPulseTab(displayedTabId);
     }
 
     @Override
     public void onPulseTabChanged(String tabId) {
-        final String currentFragment = shell.getFragment();
-        int index = currentFragment.lastIndexOf(":");
-        final String newFragment = currentFragment.substring(0, index + 1) + tabId;
-        shell.setFragment(newFragment);
+        context.setAppLocation(new DefaultLocation("shell", "pulse", tabId));
     }
 }

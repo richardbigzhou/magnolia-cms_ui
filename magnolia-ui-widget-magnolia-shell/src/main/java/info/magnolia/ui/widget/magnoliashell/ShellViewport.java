@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.widget.magnoliashell;
 
-import info.magnolia.ui.framework.app.ShellView;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VShellViewport;
 import info.magnolia.ui.framework.view.View;
@@ -74,14 +73,6 @@ public class ShellViewport extends DeckLayout implements ViewPort {
     
     public String getCurrentShellFragment() {
         return currentShellFragment;
-    }
-
-    public String getCurrentAppName() {
-        String result = "";
-        if (view instanceof ShellView) {
-            result = ((ShellView)view).getAppName();
-        }
-        return result;
     }
 
     @Override

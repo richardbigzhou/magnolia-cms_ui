@@ -33,58 +33,61 @@
  */
 package info.magnolia.ui.admincentral.app.simple;
 
-import info.magnolia.ui.framework.app.AppPlace;
+import info.magnolia.ui.framework.app.AppDescriptor;
+import info.magnolia.ui.framework.app.layout.AppCategory;
 import info.magnolia.ui.framework.app.layout.AppLayoutManager;
-import info.magnolia.ui.framework.place.Place;
-import info.magnolia.ui.framework.place.PlaceHistoryMapperImpl;
-import info.magnolia.ui.framework.place.PlaceTokenizer;
+import info.magnolia.ui.framework.location.DefaultLocation;
+import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.framework.location.LocationHistoryMapper;
 
 /**
- * PlaceHistoryMapper that creates AppPlace places for all apps.
+ * LocationHistoryMapper that creates locations for all apps and shell apps.
  *
  * @version $Id$
  */
-public class SimplePlaceHistoryMapper extends PlaceHistoryMapperImpl {
+public class DefaultLocationHistoryMapper implements LocationHistoryMapper {
 
     private AppLayoutManager appLayoutManager;
 
-    public SimplePlaceHistoryMapper(AppLayoutManager appLayoutManager, Class<? extends Place>... places) {
-        super(places);
+    public DefaultLocationHistoryMapper(AppLayoutManager appLayoutManager) {
         this.appLayoutManager = appLayoutManager;
     }
 
     @Override
-    protected PrefixAndToken getPrefixAndToken(Place newPlace) {
-        if (newPlace instanceof AppPlace) {
-            AppPlace place = (AppPlace) newPlace;
-            return new PrefixAndToken(((AppPlace) newPlace).getApp(), place.getToken());
+    public Location getLocation(String fragment) {
+
+        String type = DefaultLocation.extractType(fragment);
+        String prefix = DefaultLocation.extractPrefix(fragment);
+        String token = DefaultLocation.extractToken(fragment);
+
+        if (type.equals("shell")) {
+            if (prefix.equals("applauncher") || prefix.equals("pulse") || prefix.equals("favorite")) {
+                return new DefaultLocation(type, prefix, token);
+            }
         }
-        return super.getPrefixAndToken(newPlace);
+
+        if (type.equals("app")) {
+            AppDescriptor descriptor = getAppDescriptor(prefix);
+            if (descriptor != null) {
+                return new DefaultLocation(type, prefix, token);
+            }
+        }
+        return null;
     }
 
     @Override
-    protected PlaceTokenizer<?> getTokenizer(final String prefix) {
+    public String getFragment(Location location) {
+        return location.toString();
+    }
 
-        PlaceTokenizer<?> tokenizer = super.getTokenizer(prefix);
-        if (tokenizer != null) {
-            return tokenizer;
-        }
-
-        if (appLayoutManager.isAppDescriptionRegistered(prefix)) {
-            return new PlaceTokenizer<AppPlace>() {
-
-                @Override
-                public AppPlace getPlace(String token) {
-                    return new AppPlace(prefix, token);
+    private AppDescriptor getAppDescriptor(String name) {
+        for (AppCategory category : appLayoutManager.getLayout().getCategories()) {
+            for (AppDescriptor descriptor : category.getApps()) {
+                if (descriptor.getName().equals(name)) {
+                    return descriptor;
                 }
-
-                @Override
-                public String getToken(AppPlace place) {
-                    return place.getToken();
-                }
-            };
+            }
         }
-
         return null;
     }
 }

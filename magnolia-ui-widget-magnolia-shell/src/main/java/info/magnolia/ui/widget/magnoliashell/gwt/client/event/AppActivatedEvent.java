@@ -48,31 +48,27 @@ public class AppActivatedEvent extends GwtEvent<ShellNavigationHandler>{
     public static final Type<ShellNavigationHandler> TYPE = new Type<ShellNavigationHandler>();
     
     private final boolean isShellApp;
-    
+    private final String prefix;
     private final String token;
-    
-    private final String appTitle;
-    
-    
-    public AppActivatedEvent(boolean isShellApp, final String token, final String title) {
-        this.isShellApp = isShellApp;
+
+    public AppActivatedEvent(boolean shellApp, String prefix, String token) {
+        isShellApp = shellApp;
+        this.prefix = prefix;
         this.token = token;
-        this.appTitle = title;
     }
-    
-    
-    public String getAppTitle() {
-        return appTitle;
-    }
-    
-    public String getToken() {
-        return token;
-    }
-    
+
     public boolean isShellApp() {
         return isShellApp;
     }
-    
+
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
     @Override
     public Type<ShellNavigationHandler> getAssociatedType() {
         return TYPE;

@@ -58,13 +58,13 @@ public class ConfiguredAppDescriptorProvider implements AppDescriptorProvider{
 
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
-    private AppDescriptor appDescriptor;
+    private ConfiguredAppDescriptor appDescriptor;
 
     @SuppressWarnings("deprecation")
     public ConfiguredAppDescriptorProvider(Node configNode) throws Content2BeanException {
         super();
         Content content = ContentUtil.asContent(configNode);
-        this.appDescriptor = (AppDescriptor) Content2BeanUtil.toBean(content, true, AppDescriptor.class);
+        this.appDescriptor = (ConfiguredAppDescriptor) Content2BeanUtil.toBean(content, true, ConfiguredAppDescriptor.class);
 
         // Minimal check
         validate();

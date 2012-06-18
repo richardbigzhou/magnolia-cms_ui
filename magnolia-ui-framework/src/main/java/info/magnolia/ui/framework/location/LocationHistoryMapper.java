@@ -31,30 +31,22 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app;
-
-import info.magnolia.ui.framework.place.Place;
+package info.magnolia.ui.framework.location;
 
 /**
- * Generic place used by all apps.
+ * Maps {@link Location}s to/from fragments, used to configure a {@link info.magnolia.ui.framework.location.LocationHistoryHandler}.
  *
  * @version $Id$
  */
-public class AppPlace extends Place {
+public interface LocationHistoryMapper {
 
-    private final String app;
-    private final String token;
+    /**
+     * Returns the location represented by the fragment or null if the fragment is invalid or does not match a supported location.
+     */
+    Location getLocation(String fragment);
 
-    public AppPlace(String app, String token) {
-        this.app = app;
-        this.token = token;
-    }
-
-    public String getApp() {
-        return app;
-    }
-
-    public String getToken() {
-        return token;
-    }
+    /**
+     * Returns the text representation of the location or null if the location isn't handled.
+     */
+    String getFragment(Location location);
 }

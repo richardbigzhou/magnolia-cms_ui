@@ -36,6 +36,7 @@ package info.magnolia.ui.app.dummy;
 import info.magnolia.ui.framework.app.AbstractApp;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.AppView;
+import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 
 import javax.inject.Inject;
@@ -78,5 +79,6 @@ public class DummyApp extends AbstractApp implements DummyView.Presenter {
     public void onButtonClick() {
         DummyTabView view = new DummyTabView();
         context.openAppView(view);
+        context.setAppLocation(new DefaultLocation("app", "dummy", view.getCaption()));
     }
 }

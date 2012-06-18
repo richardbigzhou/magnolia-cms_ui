@@ -38,7 +38,6 @@ import info.magnolia.ui.framework.app.layout.AppCategory;
 import info.magnolia.ui.framework.app.layout.AppLayout;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 import info.magnolia.ui.vaadin.integration.widget.AppButton;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -158,11 +157,6 @@ public class AppLauncherViewImpl implements AppLauncherView, IsVaadinComponent {
             });
             appButtons.put(descriptor.getName(), button);
         }
-    }
-
-    @Override
-    public String getAppName() {
-        return ShellAppType.APPLAUNCHER.name();
     }
 
     /**

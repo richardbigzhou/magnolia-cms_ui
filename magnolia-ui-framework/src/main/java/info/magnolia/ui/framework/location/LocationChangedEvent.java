@@ -31,45 +31,38 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.applauncher;
+package info.magnolia.ui.framework.location;
 
-import info.magnolia.ui.framework.place.Place;
-import info.magnolia.ui.framework.place.PlaceTokenizer;
-import info.magnolia.ui.framework.place.Prefix;
+import info.magnolia.ui.framework.event.Event;
+import info.magnolia.ui.framework.event.EventHandler;
 
 /**
- * Place for the app launcher.
+ * Event fired when a location change occurs.
  *
  * @version $Id$
  */
-@Prefix("applauncher")
-public class AppLauncherPlace extends Place {
+public class LocationChangedEvent implements Event<LocationChangedEvent.Handler> {
 
     /**
-     * Tokenizer for AppLauncherPlace.
-     *
-     * @version $Id$
+     * Handler interface for {@link LocationChangedEvent}.
      */
-    public static class Tokenizer implements PlaceTokenizer<AppLauncherPlace> {
+    public interface Handler extends EventHandler {
 
-        @Override
-        public AppLauncherPlace getPlace(String token) {
-            return new AppLauncherPlace(token);
-        }
-
-        @Override
-        public String getToken(AppLauncherPlace place) {
-            return place.getPath();
-        }
+        void onLocationChanged(LocationChangedEvent event);
     }
 
-    private String path;
+    private final Location newLocation;
 
-    public AppLauncherPlace(String path) {
-        this.path = path;
+    public LocationChangedEvent(Location newLocation) {
+      this.newLocation = newLocation;
     }
 
-    public String getPath() {
-        return path;
+    public Location getNewLocation() {
+      return newLocation;
+    }
+
+    @Override
+    public void dispatch(Handler handler) {
+        handler.onLocationChanged(this);
     }
 }

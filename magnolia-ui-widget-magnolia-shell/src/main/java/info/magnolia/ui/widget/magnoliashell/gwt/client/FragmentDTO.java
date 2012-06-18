@@ -55,9 +55,9 @@ public class FragmentDTO {
     
     private FragmentType type = FragmentType.SHELL_APP;
     
-    private String id = "";
+    private String prefix = "";
     
-    private String param = "";
+    private String token = "";
     
     protected FragmentDTO() {
         
@@ -69,29 +69,25 @@ public class FragmentDTO {
         if (tokens.length > 1) {
             if (tokens[0].equals("shell")) {
                 dto.type = FragmentType.SHELL_APP;
-                dto.id = ShellAppType.getTypeByFragmentId(tokens[1]);
+                dto.prefix = ShellAppType.getTypeByFragmentId(tokens[1]);
             } else if (tokens[0].equals("app")) {
                 dto.type = FragmentType.APP;
-                dto.id = tokens[1];
+                dto.prefix = tokens[1];
             }
         }
-        dto.param = tokens.length > 2 ? tokens[2] : "";
+        dto.token = tokens.length > 2 ? tokens[2] : "";
         return dto;
     }
-   
-    public String getId() {
-        return id;
-    }
-    
-    public String getParam() {
-        return param;
-    }
-    
+
     public FragmentType getType() {
         return type;
     }
-    
-    public String getPath() {
-        return id + FRAGMENT_DELIMITER + param;
+
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public String getToken() {
+        return token;
     }
 }
