@@ -46,7 +46,7 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- *
+ * Common base for {JcrItemAdapter} implementation.
  */
 public abstract class JcrAbstractAdapter implements JcrItemAdapter {
 

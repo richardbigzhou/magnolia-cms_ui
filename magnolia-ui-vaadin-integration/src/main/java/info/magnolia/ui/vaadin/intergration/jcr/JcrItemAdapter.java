@@ -39,7 +39,7 @@ import com.vaadin.data.Item;
 
 
 /**
- *
+ * Define common operation for Jcr Adapter.
  */
 public interface JcrItemAdapter extends Item{
 
