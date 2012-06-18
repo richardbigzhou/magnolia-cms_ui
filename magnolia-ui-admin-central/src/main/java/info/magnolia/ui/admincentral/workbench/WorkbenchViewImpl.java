@@ -33,20 +33,13 @@
  */
 package info.magnolia.ui.admincentral.workbench;
 
+import info.magnolia.ui.admincentral.actionbar.builder.ActionbarBuilder;
 import info.magnolia.ui.admincentral.jcr.view.JcrView;
 import info.magnolia.ui.admincentral.jcr.view.JcrView.ViewType;
 import info.magnolia.ui.admincentral.jcr.view.builder.JcrViewBuilderProvider;
-import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
-import info.magnolia.ui.model.actionbar.definition.ActionbarGroupDefinition;
-import info.magnolia.ui.model.actionbar.definition.ActionbarItemDefinition;
-import info.magnolia.ui.model.actionbar.definition.ActionbarSectionDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.widget.actionbar.ActionButton;
 import info.magnolia.ui.widget.actionbar.Actionbar;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 import javax.inject.Inject;
 import javax.jcr.Node;
@@ -55,10 +48,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
@@ -85,8 +75,6 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
 
     private final JcrViewBuilderProvider jcrViewBuilderProvider;
 
-    private final Map<String, ActionbarItemDefinition> actions = new LinkedHashMap<String, ActionbarItemDefinition>();
-
     private final JcrView.Presenter jcrPresenter = new JcrView.Presenter() {
 
         @Override
@@ -108,14 +96,15 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
 
     @Override
     public void initWorkbench(final WorkbenchDefinition workbenchDefinition) {
-        if(workbenchDefinition == null) {
+        if (workbenchDefinition == null) {
             throw new IllegalArgumentException("Trying to init a workbench but got null definition.");
         }
 
         log.debug("Initializing workbench {}...", workbenchDefinition.getName());
 
-        if(StringUtils.isBlank(workbenchDefinition.getWorkspace())) {
-            throw new IllegalStateException(workbenchDefinition.getName() + " workbench definition must specify a workspace to connect to. Please, check your configuration.");
+        if (StringUtils.isBlank(workbenchDefinition.getWorkspace())) {
+            throw new IllegalStateException(workbenchDefinition.getName()
+                + " workbench definition must specify a workspace to connect to. Please, check your configuration.");
         }
 
         jcrView = jcrViewBuilderProvider.getBuilder().build(workbenchDefinition, ViewType.TREE);
@@ -123,62 +112,16 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
         jcrView.select(StringUtils.defaultIfEmpty(workbenchDefinition.getPath(), "/"));
         jcrView.asVaadinComponent();
         split.addComponent(jcrView.asVaadinComponent());
-
-        final Actionbar actionBar = buildActionbar(workbenchDefinition.getActionbar());
-
-        split.addComponent(actionBar);
         split.setExpandRatio(jcrView.asVaadinComponent(), 1f);
     }
 
-    private Actionbar buildActionbar(final ActionbarDefinition actionbarDefinition) {
-        Actionbar actionbar = new Actionbar();
-
-        if(actionbarDefinition == null) {
-            log.warn("No actionbar definition found. This will result in an empty action bar. Is that intended?");
-            return actionbar;
+    @Override
+    public void initActionbar(final ActionbarDefinition definition) {
+        if (definition == null) {
+            throw new IllegalArgumentException("Trying to init an action bar but got null definition.");
         }
-
-        for (ActionbarSectionDefinition section : actionbarDefinition.getSections()) {
-            for (ActionbarGroupDefinition group : section.getGroups()) {
-                for (ActionbarItemDefinition item : group.getItems()) {
-
-                    ActionButton button = new ActionButton(item.getLabel());
-                    button.setIcon(new ThemeResource(item.getIcon()));
-
-                    final String actionName = item.getName();
-                    button.setActionName(actionName);
-                    button.setGroupName(group.getName());
-                    button.setSectionTitle(section.getTitle());
-
-                    button.addListener(new ClickListener() {
-
-                        @Override
-                        public void buttonClick(ClickEvent event) {
-                            ActionDefinition actionDefinition = getActionDefinition(actionName);
-                            if(actionDefinition == null) {
-                                log.warn("No action definition found for {}", actionName);
-                                return;
-                            }
-                            getPresenter().onActionbarItemClicked(actionDefinition);
-                        }
-                    });
-                    actionbar.addComponent(button);
-                    actions.put(actionName, item);
-                }
-            }
-        }
-
-        // actionbar.setDefinition(actionbarDefinition);
-        return actionbar;
-    }
-
-    private ActionDefinition getActionDefinition(final String actionName) {
-        ActionbarItemDefinition actionbarItemDefinition = actions.get(actionName);
-        if (actionbarItemDefinition != null) {
-            ActionDefinition actionDefinition = actionbarItemDefinition.getActionDefinition();
-            return actionDefinition;
-        }
-        return null;
+        final Actionbar actionbar = ActionbarBuilder.build(definition, getPresenter());
+        split.addComponent(actionbar);
     }
 
     private void construct() {

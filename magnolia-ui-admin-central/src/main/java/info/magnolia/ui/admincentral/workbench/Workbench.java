@@ -49,6 +49,9 @@ import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 import info.magnolia.ui.vaadin.intergration.jcr.NodeAdapter;
 import info.magnolia.ui.widget.dialog.event.DialogCommitEvent;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.inject.Inject;
 import javax.jcr.Item;
 import javax.jcr.LoginException;
@@ -57,6 +60,7 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,15 +68,19 @@ import com.vaadin.ui.ComponentContainer;
 
 
 /**
- * The workbench is a core component of AdminCentral. It represents the main hub through which users can interact with JCR data.
- * It is compounded by three main sub-components:
+ * The workbench is a core component of AdminCentral. It represents the main hub through which users
+ * can interact with JCR data. It is compounded by three main sub-components:
  * <ul>
  * <li>a configurable data grid.
- * <li>a configurable function toolbar on top of the data grid, providing operations such as switching from tree to list view or performing searches on data.
- * <li>a configurable action bar on the right hand side, showing the available operations for the given workspace and the selected item.
+ * <li>a configurable function toolbar on top of the data grid, providing operations such as
+ * switching from tree to list view or performing searches on data.
+ * <li>a configurable action bar on the right hand side, showing the available operations for the
+ * given workspace and the selected item.
  * </ul>
- *
- * <p>Its main configuration point is the {@link WorkbenchDefinition} through which one defines the JCR workspace to connect to, the columns/properties to display, the available actions and so on.
+ * 
+ * <p>
+ * Its main configuration point is the {@link WorkbenchDefinition} through which one defines the JCR
+ * workspace to connect to, the columns/properties to display, the available actions and so on.
  * @version $Id$
  */
 @SuppressWarnings("serial")
@@ -91,6 +99,8 @@ public class Workbench implements IsVaadinComponent, WorkbenchView.Presenter {
     private final MagnoliaShell shell;
 
     private final WorkbenchActionFactory actionFactory;
+
+    private final Map<String, ActionDefinition> actions = new HashMap<String, ActionDefinition>();
 
     private String selectedItemPath;
 
@@ -137,35 +147,12 @@ public class Workbench implements IsVaadinComponent, WorkbenchView.Presenter {
             return;
         }
         view.initWorkbench(workbenchDefinition);
+        view.initActionbar(workbenchDefinition.getActionbar());
     }
 
     @Override
     public ComponentContainer asVaadinComponent() {
         return view;
-    }
-
-    @Override
-    public void onActionbarItemClicked(ActionDefinition actionDefinition) {
-        if (actionDefinition != null) {
-            try {
-                Session session = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace());
-                if(!session.itemExists(selectedItemPath)) {
-                    log.debug("{} does not exist anymore. Was it just deleted? Resetting path to root...", selectedItemPath);
-                    selectedItemPath = "/";
-                }
-                final Item item = session.getItem(selectedItemPath);
-                Action action = actionFactory.createAction(actionDefinition, item);
-                action.execute();
-            } catch (PathNotFoundException e) {
-                shell.showError("Can't execute action.\n" + e.getMessage(), e);
-            } catch (LoginException e) {
-                shell.showError("Can't execute action.\n" + e.getMessage(), e);
-            } catch (RepositoryException e) {
-                shell.showError("Can't execute action.\n" + e.getMessage(), e);
-            } catch (ActionExecutionException e) {
-                shell.showError("Can't execute action.\n" + e.getMessage(), e);
-            }
-        }
     }
 
     @Override
@@ -187,4 +174,44 @@ public class Workbench implements IsVaadinComponent, WorkbenchView.Presenter {
         }
     }
 
+    //
+    // ACTIONBAR PRESENTER
+    //
+
+    @Override
+    public Map<String, ActionDefinition> getActions() {
+        return actions;
+    }
+
+    @Override
+    public void addAction(String actionName, ActionDefinition actionDefinition) {
+        if (StringUtils.isNotBlank(actionName)) {
+            actions.put(actionName, actionDefinition);
+        }
+    }
+
+    @Override
+    public void onActionbarItemClicked(final String actionName) {
+        ActionDefinition actionDefinition = getActions().get(actionName);
+        if (actionDefinition != null) {
+            try {
+                Session session = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace());
+                if (!session.itemExists(selectedItemPath)) {
+                    log.debug("{} does not exist anymore. Was it just deleted? Resetting path to root...", selectedItemPath);
+                    selectedItemPath = "/";
+                }
+                final Item item = session.getItem(selectedItemPath);
+                Action action = actionFactory.createAction(actionDefinition, item);
+                action.execute();
+            } catch (PathNotFoundException e) {
+                shell.showError("Can't execute action.\n" + e.getMessage(), e);
+            } catch (LoginException e) {
+                shell.showError("Can't execute action.\n" + e.getMessage(), e);
+            } catch (RepositoryException e) {
+                shell.showError("Can't execute action.\n" + e.getMessage(), e);
+            } catch (ActionExecutionException e) {
+                shell.showError("Can't execute action.\n" + e.getMessage(), e);
+            }
+        }
+    }
 }
