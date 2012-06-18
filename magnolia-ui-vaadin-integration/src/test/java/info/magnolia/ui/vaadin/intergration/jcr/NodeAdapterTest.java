@@ -34,15 +34,12 @@
 package info.magnolia.ui.vaadin.intergration.jcr;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockNode;
 import info.magnolia.test.mock.jcr.MockSession;
 
 import javax.jcr.Node;
-import javax.jcr.RepositoryException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -68,27 +65,16 @@ public class NodeAdapterTest {
         MgnlContext.setInstance(null);
     }
 
-    @Test
-    public void testConstructionInCaseOfJCRTroubles() throws Exception {
-        // GIVEN
-        final Node underlyingNode = mock(Node.class);
-        when(underlyingNode.getIdentifier()).thenThrow(new RepositoryException("SIMULATED PROBLEM!"));
 
-        // WHEN
-        final NodeAdapter item = new NodeAdapter(underlyingNode);
-
-        // THEN
-        assertEquals(NodeAdapter.UN_IDENTIFIED, item.getIdentifier());
-    }
 
     @Test
     public void testGetIdentifier() throws Exception {
         // GIVEN
         final Node underlyingNode = new MockNode(new MockSession("test"));
-        final NodeAdapter item = new NodeAdapter(underlyingNode);
+        final JcrNodeAdapter item = new JcrNodeAdapter(underlyingNode);
 
         // WHEN
-        final String result = item.getIdentifier();
+        final String result = item.getNodeIdentifier();
 
         // THEN
         assertEquals(underlyingNode.getIdentifier(), result);
@@ -101,7 +87,7 @@ public class NodeAdapterTest {
         final String propertyName = "TEST";
         final String propertyValue = "value";
         DefaultProperty property = new DefaultProperty(propertyName, propertyValue);
-        final NodeAdapter item = new NodeAdapter(underlyingNode);
+        final JcrNodeAdapter item = new JcrNodeAdapter(underlyingNode);
 
         // WHEN
         final boolean b = item.addItemProperty(propertyName,property);
@@ -120,7 +106,7 @@ public class NodeAdapterTest {
         underlyingNode.setProperty(propertyName, propertyValue);
 
         DefaultProperty property = new DefaultProperty(propertyName, "newValue");
-        final NodeAdapter item = new NodeAdapter(underlyingNode);
+        final JcrNodeAdapter item = new JcrNodeAdapter(underlyingNode);
 
         // WHEN
         final boolean b = item.addItemProperty(propertyName,property);
@@ -137,7 +123,7 @@ public class NodeAdapterTest {
         final String propertyName = "TEST";
         final String propertyValue = "value";
         underlyingNode.setProperty(propertyName, propertyValue);
-        final NodeAdapter item = new NodeAdapter(underlyingNode);
+        final JcrNodeAdapter item = new JcrNodeAdapter(underlyingNode);
         assertEquals(true, underlyingNode.hasProperty(propertyName));
 
         // WHEN
@@ -153,7 +139,7 @@ public class NodeAdapterTest {
         // GIVEN
         final Node underlyingNode = session.getRootNode().addNode("underlying");
         final String propertyName = "TEST";
-        final NodeAdapter item = new NodeAdapter(underlyingNode);
+        final JcrNodeAdapter item = new JcrNodeAdapter(underlyingNode);
         assertEquals(false, underlyingNode.hasProperty(propertyName));
 
         // WHEN
@@ -171,7 +157,7 @@ public class NodeAdapterTest {
         final String propertyName = "TEST";
         final String propertyValue = "value";
         underlyingNode.setProperty(propertyName, propertyValue);
-        final NodeAdapter item = new NodeAdapter(underlyingNode);
+        final JcrNodeAdapter item = new JcrNodeAdapter(underlyingNode);
 
         // WHEN
         final Property prop = item.getItemProperty(propertyName);
@@ -187,7 +173,7 @@ public class NodeAdapterTest {
         final String propertyName = "TEST";
         final String propertyValue = "value";
         underlyingNode.setProperty(propertyName, propertyValue);
-        final NodeAdapter item = new NodeAdapter(underlyingNode);
+        final JcrNodeAdapter item = new JcrNodeAdapter(underlyingNode);
 
         // WHEN
         final Node result = item.getNode();
@@ -201,7 +187,7 @@ public class NodeAdapterTest {
     public void testGetItemPropertyIds() throws Exception {
         // GIVEN
         final Node underlyingNode = new MockNode(new MockSession("test"));
-        final NodeAdapter item = new NodeAdapter(underlyingNode);
+        final JcrNodeAdapter item = new JcrNodeAdapter(underlyingNode);
 
         // WHEN
         item.getItemPropertyIds();

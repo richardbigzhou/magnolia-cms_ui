@@ -97,16 +97,16 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     public void setViewPort(ViewPort viewPort) {
         this.viewPort = viewPort;
     }
-
+    @Override
     public void startIfNotAlreadyRunning(String name) {
         doStartIfNotAlreadyRunning(name, null);
     }
-
+    @Override
     public void startIfNotAlreadyRunningThenFocus(String name) {
         AppContextImpl appContext = doStartIfNotAlreadyRunning(name, null);
         doFocus(appContext);
     }
-
+    @Override
     public void stopApp(String name) {
         AppContextImpl appContext = runningApps.get(name);
         if (appContext != null) {
@@ -121,7 +121,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             stopApp(appContext.getName());
         }
     }
-
+    @Override
     public boolean isAppStarted(String name) {
         return runningApps.containsKey(name);
     }

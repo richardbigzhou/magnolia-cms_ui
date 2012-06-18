@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,44 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.container;
+package info.magnolia.ui.vaadin.intergration.jcr;
 
-import java.util.Collection;
+import javax.jcr.RepositoryException;
 
 import com.vaadin.data.Item;
-import com.vaadin.data.Property;
+
 
 /**
- * Item as held by JcrContainer. Does not support modifications and delegates to JcrContainer for everything else.
- *
+ * Define common operation for Jcr Adapter.
  */
-public class ContainerItem implements Item {
+public interface JcrItemAdapter extends Item{
 
-    private ContainerItemId itemId;
-    private JcrContainer jcrContainer;
+    public boolean isNode();
 
-    public ContainerItem(ContainerItemId itemId, JcrContainer jcrContainer) {
-        this.itemId = itemId;
-        this.jcrContainer = jcrContainer;
-    }
+    public String getNodeIdentifier();
 
-    @Override
-    public Property getItemProperty(Object id) {
-        return jcrContainer.getContainerProperty(itemId, id);
-    }
+    public String getPropertyName();
 
-    @Override
-    public Collection<?> getItemPropertyIds() {
-        return jcrContainer.getContainerPropertyIds();
-    }
+    public String getPath();
 
-    @Override
-    public boolean addItemProperty(Object id, Property property) throws UnsupportedOperationException {
-        throw new UnsupportedOperationException();
-    }
+    public javax.jcr.Item getJcrItem() throws RepositoryException;
 
-    @Override
-    public boolean removeItemProperty(Object id) throws UnsupportedOperationException {
-        throw new UnsupportedOperationException();
-    }
+    public void save() throws RepositoryException;
 }
