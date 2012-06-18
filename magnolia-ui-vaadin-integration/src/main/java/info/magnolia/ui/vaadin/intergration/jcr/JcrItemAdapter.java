@@ -31,31 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.favorites;
+package info.magnolia.ui.vaadin.intergration.jcr;
 
-import javax.inject.Inject;
+import javax.jcr.RepositoryException;
 
-import info.magnolia.ui.framework.activity.AbstractActivity;
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.place.Place;
-import info.magnolia.ui.framework.view.ViewPort;
+import com.vaadin.data.Item;
+
 
 /**
- * Activity for favorites.
- *
- * @version $Id$
+ * Define common operation for Jcr Adapter.
  */
-public class FavoritesActivity extends AbstractActivity {
+public interface JcrItemAdapter extends Item{
 
-    private FavoritesView favoritesView;
+    public boolean isNode();
 
-    @Inject
-    public FavoritesActivity(FavoritesView favoritesView) {
-        this.favoritesView = favoritesView;
-    }
+    public String getNodeIdentifier();
 
-    @Override
-    public void start(ViewPort viewPort, EventBus eventBus, Place place) {
-        viewPort.setView(favoritesView);
-    }
+    public String getPropertyName();
+
+    public String getPath();
+
+    public javax.jcr.Item getJcrItem() throws RepositoryException;
+
+    public void save() throws RepositoryException;
 }

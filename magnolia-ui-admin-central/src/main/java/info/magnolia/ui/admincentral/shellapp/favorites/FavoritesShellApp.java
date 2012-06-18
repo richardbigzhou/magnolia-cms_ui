@@ -33,43 +33,33 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
-import info.magnolia.ui.framework.place.Place;
-import info.magnolia.ui.framework.place.PlaceTokenizer;
-import info.magnolia.ui.framework.place.Prefix;
+import javax.inject.Inject;
+
+import info.magnolia.ui.framework.app.ShellApp;
+import info.magnolia.ui.framework.app.ShellAppContext;
+import info.magnolia.ui.framework.app.ShellView;
+import info.magnolia.ui.framework.location.Location;
 
 /**
- * Place for favorites.
+ * Activity for favorites.
  *
  * @version $Id$
  */
-@Prefix("favorite")
-public class FavoritesPlace extends Place {
+public class FavoritesShellApp implements ShellApp {
 
-    /**
-     * Tokenizer for FavoritesPlace.
-     *
-     * @version $Id$
-     */
-    public static class Tokenizer implements PlaceTokenizer<FavoritesPlace> {
+    private FavoritesView favoritesView;
 
-        @Override
-        public FavoritesPlace getPlace(String token) {
-            return new FavoritesPlace(token);
-        }
-
-        @Override
-        public String getToken(FavoritesPlace place) {
-            return place.getPath();
-        }
+    @Inject
+    public FavoritesShellApp(FavoritesView favoritesView) {
+        this.favoritesView = favoritesView;
     }
 
-    private String path;
-
-    public FavoritesPlace(String path) {
-        this.path = path;
+    @Override
+    public ShellView start(ShellAppContext context) {
+        return favoritesView;
     }
 
-    public String getPath() {
-        return path;
+    @Override
+    public void locationChanged(Location location) {
     }
 }

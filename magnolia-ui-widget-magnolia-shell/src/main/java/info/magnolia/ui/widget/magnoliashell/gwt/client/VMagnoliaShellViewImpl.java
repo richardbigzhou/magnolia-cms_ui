@@ -112,9 +112,9 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
                 final String fragment = event.getValue();
                 final FragmentDTO dto = FragmentDTO.fromFragment(fragment);
                 if (dto.getType() == FragmentType.SHELL_APP) {
-                    eventBus.fireEvent(new ShellAppNavigationEvent(ShellAppType.resolveType(dto.getId()), dto.getParam()));
+                    eventBus.fireEvent(new ShellAppNavigationEvent(ShellAppType.resolveType(dto.getPrefix()), dto.getToken()));
                 } else {
-                    presenter.loadApp(dto.getPath());
+                    presenter.loadApp(dto.getPrefix(), dto.getToken());
                 }
             }
         });
@@ -279,13 +279,13 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
     private final ShellNavigationHandler navHandler = new ShellNavigationHandler() {
         @Override
         public void onAppActivated(AppActivatedEvent event) {
-            final String fragment = activeViewportType.getFragmentPrefix() + event.getToken();
+            final String fragment = activeViewportType.getFragmentPrefix() + event.getPrefix() + ":" + event.getToken();
             History.newItem(fragment, false);
         }
 
         @Override
         public void onShellAppNavigation(ShellAppNavigationEvent event) {
-            presenter.loadShellApp(event.getType(), event.getParameters());
+            presenter.loadShellApp(event.getType(), event.getToken());
         }
     };
    
@@ -301,8 +301,8 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
     }
 
     @Override
-    public void navigate(String historyToken, String title) {
-        eventBus.fireEvent(new AppActivatedEvent(activeViewportType == ViewportType.SHELL_APP_VIEWPORT, historyToken, title));        
+    public void navigate(String prefix, String token) {
+        eventBus.fireEvent(new AppActivatedEvent(activeViewportType == ViewportType.SHELL_APP_VIEWPORT, prefix, token));
     }
 
     @Override

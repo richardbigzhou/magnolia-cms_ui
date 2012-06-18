@@ -37,7 +37,6 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.ui.admincentral.column.Column;
 import info.magnolia.ui.admincentral.column.EditHandler;
-import info.magnolia.ui.admincentral.container.ContainerItemId;
 import info.magnolia.ui.admincentral.tree.container.HierarchicalJcrContainer;
 import info.magnolia.ui.admincentral.tree.model.TreeModel;
 import info.magnolia.ui.model.action.ActionDefinition;
@@ -122,7 +121,7 @@ public class JcrBrowser extends TreeTable {
     }
 
     // TODO this should not be needed, JcrBrowser should have event mechanisms that expose the JCR item not the ContainerItemId
-    public Item getJcrItem(ContainerItemId itemId) {
+    public Item getJcrItem(String itemId) {
         try {
             return container.getJcrItem(itemId);
         } catch (RepositoryException e) {
@@ -157,10 +156,10 @@ public class JcrBrowser extends TreeTable {
             actionDefinition = menuItemDefinition.getActionDefinition();
         }
 
-        public void handleAction(ContainerItemId itemId) {
+        public void handleAction(String itemId) {
             if(itemId == null) {
                 //assume jcrBrowser contains no data do we need to start from root.
-                itemId = container.getItemByPath("/");
+                itemId = "/";
             }
             try {
                 try {
@@ -212,7 +211,7 @@ public class JcrBrowser extends TreeTable {
             }
             @Override
             public void handleAction(Action action, Object sender, Object target) {
-              ((JcrBrowserAction) action).handleAction((ContainerItemId) target);
+              ((JcrBrowserAction) action).handleAction((String) target);
             }
         });
     }
@@ -248,8 +247,8 @@ public class JcrBrowser extends TreeTable {
                     HierarchicalJcrContainer containerWrapper = (HierarchicalJcrContainer) getContainerDataSource();
                     // Drop right on an item -> make it a child -
                     if (location == VerticalDropLocation.MIDDLE) {
-                        Item sourceItem = container.getJcrItem((ContainerItemId) sourceItemId);
-                        Item targetItem = container.getJcrItem((ContainerItemId) targetItemId);
+                        Item sourceItem = container.getJcrItem((String) sourceItemId);
+                        Item targetItem = container.getJcrItem((String) targetItemId);
                         if (treeModel.moveItem(sourceItem, targetItem)) {
                             setParent(sourceItemId, targetItemId);
                         }
@@ -259,8 +258,8 @@ public class JcrBrowser extends TreeTable {
                         Object parentId = containerWrapper.getParent(targetItemId);
                         if (parentId != null) {
                             log.debug("Parent:" + containerWrapper.getItem(parentId));
-                            Item sourceItem = container.getJcrItem((ContainerItemId) sourceItemId);
-                            Item targetItem = container.getJcrItem((ContainerItemId) targetItemId);
+                            Item sourceItem = container.getJcrItem((String) sourceItemId);
+                            Item targetItem = container.getJcrItem((String) targetItemId);
                             if (treeModel.moveItemBefore(sourceItem, targetItem)) {
                                 setParent(sourceItemId, targetItemId);
                             }
@@ -271,8 +270,8 @@ public class JcrBrowser extends TreeTable {
                     else if (location == VerticalDropLocation.BOTTOM) {
                         Object parentId = containerWrapper.getParent(targetItemId);
                         if (parentId != null) {
-                            Item sourceItem = container.getJcrItem((ContainerItemId) sourceItemId);
-                            Item targetItem = container.getJcrItem((ContainerItemId) targetItemId);
+                            Item sourceItem = container.getJcrItem((String) sourceItemId);
+                            Item targetItem = container.getJcrItem((String) targetItemId);
                             if (treeModel.moveItemAfter(sourceItem, targetItem)) {
                                 setParent(sourceItemId, targetItemId);
                             }
@@ -295,10 +294,8 @@ public class JcrBrowser extends TreeTable {
 
     public void select(String path) {
 
-        ContainerItemId itemId = container.getItemByPath(path);
-
-        if(!container.isRoot(itemId)){
-            ContainerItemId parent = container.getParent(itemId);
+        if(!container.isRoot(path)){
+            String parent = container.getParent(path);
             while (!container.isRoot(parent)) {
                 setCollapsed(parent, false);
                 parent = container.getParent(parent);
@@ -308,7 +305,7 @@ public class JcrBrowser extends TreeTable {
         }
 
         // Select the item
-        select(itemId);
+        select((Object)path);
 
         // Make sure its in view
         // TODO commented out to avoid flicker on selection via place controller while this should definitely be called when navigated by the history
@@ -321,7 +318,7 @@ public class JcrBrowser extends TreeTable {
 
     public void updateNode(final Node node) {
         try {
-            final ContainerItemId id = new ContainerItemId(node);
+            final String id = node.getPath();
             if (container.containsId(id)) {
                 container.fireItemSetChange();
             }

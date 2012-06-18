@@ -31,51 +31,38 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse;
+package info.magnolia.ui.framework.location;
 
-import info.magnolia.ui.framework.activity.AbstractActivity;
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.place.Place;
-import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.framework.view.ViewPort;
-
-import javax.inject.Inject;
+import info.magnolia.ui.framework.event.Event;
+import info.magnolia.ui.framework.event.EventHandler;
 
 /**
- * Activity for pulse.
+ * Event fired when a location change occurs.
  *
  * @version $Id$
  */
-public class PulseActivity extends AbstractActivity implements PulseView.Presenter {
-    
-    private PulseView pulseView;
+public class LocationChangedEvent implements Event<LocationChangedEvent.Handler> {
 
-    private Shell shell;
+    /**
+     * Handler interface for {@link LocationChangedEvent}.
+     */
+    public interface Handler extends EventHandler {
 
-    @Override
-    public void onPlaceUpdate(Place place) {
-        PulsePlace pulsePlace = (PulsePlace) place;
-        final String displayedTabId = pulseView.setCurrentPulseTab(pulsePlace.getCurrentPulseTab());
-        pulsePlace.setCurrentPulseTab(displayedTabId);
-    }
-    
-    @Inject
-    public PulseActivity(PulseView pulseView, final Shell shell) {
-        this.pulseView = pulseView;
-        this.shell = shell;
+        void onLocationChanged(LocationChangedEvent event);
     }
 
-    @Override
-    public void start(ViewPort viewPort, EventBus eventBus, Place place) {
-        pulseView.setPresenter(this);
-        viewPort.setView(pulseView);
+    private final Location newLocation;
+
+    public LocationChangedEvent(Location newLocation) {
+      this.newLocation = newLocation;
+    }
+
+    public Location getNewLocation() {
+      return newLocation;
     }
 
     @Override
-    public void onPulseTabChanged(String tabId) {
-        final String currentFragment = shell.getFragment();
-        int index = currentFragment.lastIndexOf(":");
-        final String newFragment = currentFragment.substring(0, index + 1) + tabId;
-        shell.setFragment(newFragment);
+    public void dispatch(Handler handler) {
+        handler.onLocationChanged(this);
     }
 }

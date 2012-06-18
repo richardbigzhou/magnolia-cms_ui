@@ -70,7 +70,7 @@ public interface VMagnoliaShellView extends HasWidgets, IsWidget {
 
     void removeDialogViewport();
 
-    void navigate(String historyToken, String title);
+    void navigate(String prefix, String token);
     
     void shiftViewportsVertically(int shiftPx, boolean animated);
     
@@ -86,9 +86,9 @@ public interface VMagnoliaShellView extends HasWidgets, IsWidget {
      */
     interface Presenter {
         
-        void loadApp(final String fragment);
+        void loadApp(String prefix, String token);
         
-        void loadShellApp(final ShellAppType shellAppType, String string);
+        void loadShellApp(ShellAppType shellAppType, String token);
 
         void updateViewportLayout(VShellViewport activeViewport);
         

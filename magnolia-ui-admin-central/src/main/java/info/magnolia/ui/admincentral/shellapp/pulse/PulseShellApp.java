@@ -31,45 +31,51 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.applauncher;
+package info.magnolia.ui.admincentral.shellapp.pulse;
 
-import info.magnolia.ui.framework.place.Place;
-import info.magnolia.ui.framework.place.PlaceTokenizer;
-import info.magnolia.ui.framework.place.Prefix;
+import info.magnolia.ui.framework.app.ShellApp;
+import info.magnolia.ui.framework.app.ShellAppContext;
+import info.magnolia.ui.framework.app.ShellView;
+import info.magnolia.ui.framework.location.DefaultLocation;
+import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.framework.shell.Shell;
+
+import javax.inject.Inject;
 
 /**
- * Place for the app launcher.
+ * Activity for pulse.
  *
  * @version $Id$
  */
-@Prefix("applauncher")
-public class AppLauncherPlace extends Place {
+public class PulseShellApp implements ShellApp, PulseView.Presenter {
+    
+    private PulseView pulseView;
+    private Shell shell;
+    private ShellAppContext context;
 
-    /**
-     * Tokenizer for AppLauncherPlace.
-     *
-     * @version $Id$
-     */
-    public static class Tokenizer implements PlaceTokenizer<AppLauncherPlace> {
-
-        @Override
-        public AppLauncherPlace getPlace(String token) {
-            return new AppLauncherPlace(token);
-        }
-
-        @Override
-        public String getToken(AppLauncherPlace place) {
-            return place.getPath();
-        }
+    @Inject
+    public PulseShellApp(PulseView pulseView, final Shell shell) {
+        this.pulseView = pulseView;
+        this.shell = shell;
     }
 
-    private String path;
-
-    public AppLauncherPlace(String path) {
-        this.path = path;
+    @Override
+    public ShellView start(ShellAppContext context) {
+        this.context = context;
+        pulseView.setPresenter(this);
+        shell.showNotification("Something weird goes on....But you can skip it for now");
+        return pulseView;
     }
 
-    public String getPath() {
-        return path;
+    @Override
+    public void locationChanged(Location location) {
+        DefaultLocation pulsePlace = (DefaultLocation) location;
+        final String displayedTabId = pulseView.setCurrentPulseTab(pulsePlace.getToken());
+//        pulsePlace.setCurrentPulseTab(displayedTabId);
+    }
+
+    @Override
+    public void onPulseTabChanged(String tabId) {
+        context.setAppLocation(new DefaultLocation("shell", "pulse", tabId));
     }
 }

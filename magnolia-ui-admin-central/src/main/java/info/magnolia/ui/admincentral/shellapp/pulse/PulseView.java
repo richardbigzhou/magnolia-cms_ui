@@ -33,14 +33,14 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse;
 
-import info.magnolia.ui.framework.app.ShellAppView;
+import info.magnolia.ui.framework.app.ShellView;
 
 /**
  * View for pulse.
  *
  * @version $Id$
  */
-public interface PulseView extends ShellAppView {
+public interface PulseView extends ShellView {
     
     /**
      * PulseView presenter.
