@@ -133,6 +133,8 @@ public abstract class JcrContainer extends AbstractContainer implements Containe
     public JcrContainer(JcrContainerSource jcrContainerSource, WorkbenchDefinition workbenchDefinition) {
         this.jcrContainerSource = jcrContainerSource;
         workspace = workbenchDefinition.getWorkspace();
+        // load first page.
+        getPage();
 
         for (AbstractColumnDefinition columnDefinition : workbenchDefinition.getColumns()) {
             if (columnDefinition.isSortable()) {
