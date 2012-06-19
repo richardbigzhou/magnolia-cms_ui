@@ -40,16 +40,18 @@ import javax.inject.Inject;
 
 import com.vaadin.ui.Component;
 
+
 /**
  * View implementation for the Pages app.
- *
+ * 
  * @version $Id$
  */
 @SuppressWarnings("serial")
 public class PagesViewImpl implements PagesView, IsVaadinComponent {
-    
-    private String jcrWorkspaceName = "contacts";
-    private Component view;
+
+    private final String jcrWorkspaceName = "pages";
+
+    private final Component view;
 
     @Inject
     public PagesViewImpl(final Workbench workbench) {
