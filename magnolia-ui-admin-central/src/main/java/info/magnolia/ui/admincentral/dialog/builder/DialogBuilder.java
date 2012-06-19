@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.dialog.builder;
 
+import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 import info.magnolia.ui.model.dialog.definition.FieldDefinition;
 import info.magnolia.ui.model.dialog.definition.TabDefinition;
@@ -80,6 +81,10 @@ public class DialogBuilder {
 
             view.addTab(inputFields, tabName);
 
+        }
+
+        for (DialogActionDefinition action : dialogDefinition.getActions()) {
+            view.addAction(action.getName(), action.getLabel());
         }
         return view;
 

@@ -31,35 +31,55 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.definition;
+package info.magnolia.ui.model.dialog.action;
 
-import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
-
-import java.util.List;
-
+import info.magnolia.ui.model.action.ActionDefinition;
 
 /**
- * DialogDefinition.
+ * ConfiguredDialogActionDefinition.
  *
  * @author ejervidalo
  */
-public interface DialogDefinition extends UiItemDefinition {
+public class ConfiguredDialogActionDefinition implements DialogActionDefinition {
 
-    public abstract boolean addTab(TabDefinition tabDefinition);
+    private String label;
+    private String name;
+    private String i18nBasename;
+    private ActionDefinition actionDefinition;
 
-    public abstract void setTabs(List<TabDefinition> tabs);
+    @Override
+    public String getLabel() {
+        return label;
+    }
+    @Override
+    public void setLabel(String label) {
+        this.label = label;
+    }
+    @Override
+    public String getName() {
+        return name;
+    }
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
+    @Override
+    public String getI18nBasename() {
+        return i18nBasename;
+    }
+    @Override
+    public void setI18nBasename(String i18nBasename) {
+        this.i18nBasename = i18nBasename;
+    }
+    @Override
+    public ActionDefinition getActionDefinition() {
+        return actionDefinition;
+    }
 
-    public abstract List<TabDefinition> getTabs();
-
-    public abstract boolean addAction(DialogActionDefinition fieldDefinition);
-
-    public abstract void setActions(List<DialogActionDefinition> actions);
-
-    public abstract List<DialogActionDefinition> getActions();
-
-    public abstract void setId(String id);
-
-    public abstract String getId();
+    @Override
+    public void setActionDefinition(ActionDefinition actionDefinition) {
+        this.actionDefinition = actionDefinition;
+    }
 
 
 }

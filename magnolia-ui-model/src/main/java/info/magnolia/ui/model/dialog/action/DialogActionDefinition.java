@@ -31,35 +31,19 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.definition;
+package info.magnolia.ui.model.dialog.action;
 
-import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
-
-import java.util.List;
-
+import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.dialog.definition.UiItemDefinition;
 
 /**
- * DialogDefinition.
+ * DialogActionDefinition.
  *
  * @author ejervidalo
  */
-public interface DialogDefinition extends UiItemDefinition {
+public interface DialogActionDefinition extends UiItemDefinition {
 
-    public abstract boolean addTab(TabDefinition tabDefinition);
+    ActionDefinition getActionDefinition();
 
-    public abstract void setTabs(List<TabDefinition> tabs);
-
-    public abstract List<TabDefinition> getTabs();
-
-    public abstract boolean addAction(DialogActionDefinition fieldDefinition);
-
-    public abstract void setActions(List<DialogActionDefinition> actions);
-
-    public abstract List<DialogActionDefinition> getActions();
-
-    public abstract void setId(String id);
-
-    public abstract String getId();
-
-
+    void setActionDefinition(ActionDefinition actionDefinition);
 }

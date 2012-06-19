@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.model.dialog.definition;
 
+import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,6 +49,7 @@ public class ConfiguredDialogDefinition implements DialogDefinition {
     private String label;
     private String i18nBasename;
     private List<TabDefinition> tabs = new ArrayList<TabDefinition>();
+    private List<DialogActionDefinition> actions = new ArrayList<DialogActionDefinition>();
 
     @Override
     public String getId() {
@@ -86,6 +89,21 @@ public class ConfiguredDialogDefinition implements DialogDefinition {
     @Override
     public void setTabs(List<TabDefinition> tabs) {
         this.tabs = tabs;
+    }
+
+    @Override
+    public List<DialogActionDefinition> getActions() {
+        return actions;
+    }
+
+    @Override
+    public boolean addAction(DialogActionDefinition actionDefinition) {
+        return this.actions.add(actionDefinition);
+    }
+
+    @Override
+    public void setActions(List<DialogActionDefinition> actions) {
+        this.actions = actions;
     }
 
     @Override

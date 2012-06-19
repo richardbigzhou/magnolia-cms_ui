@@ -31,35 +31,25 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.definition;
+package info.magnolia.ui.admincentral.dialog.action;
 
-import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
-
-import java.util.List;
-
+import info.magnolia.ui.model.action.ActionBase;
+import info.magnolia.ui.model.action.ActionExecutionException;
 
 /**
- * DialogDefinition.
+ * SaveDialogAction.
  *
  * @author ejervidalo
  */
-public interface DialogDefinition extends UiItemDefinition {
+public class CancelDialogAction extends ActionBase<CancelDialogActionDefinition> {
 
-    public abstract boolean addTab(TabDefinition tabDefinition);
+    public CancelDialogAction(CancelDialogActionDefinition definition) {
+        super(definition);
+    }
 
-    public abstract void setTabs(List<TabDefinition> tabs);
+    @Override
+    public void execute() throws ActionExecutionException {
 
-    public abstract List<TabDefinition> getTabs();
-
-    public abstract boolean addAction(DialogActionDefinition fieldDefinition);
-
-    public abstract void setActions(List<DialogActionDefinition> actions);
-
-    public abstract List<DialogActionDefinition> getActions();
-
-    public abstract void setId(String id);
-
-    public abstract String getId();
-
+    }
 
 }

@@ -70,6 +70,10 @@
       <type>info.magnolia.ui.model.dialog.definition.FieldDefinition</type>
       <implementation>info.magnolia.ui.model.dialog.definition.ConfiguredFieldDefinition</implementation>
     </type-mapping>
+        <type-mapping>
+      <type>info.magnolia.ui.model.dialog.action.DialogActionDefinition</type>
+      <implementation>info.magnolia.ui.model.dialog.action.ConfiguredDialogActionDefinition</implementation>
+    </type-mapping>
   </components>
 
    <components>
@@ -85,6 +89,13 @@
       <type>info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory</type>
       <workspace>config</workspace>
       <path>/modules/ui-admin-central/workbenchActionFactory</path>
+      <observed>true</observed>
+      <scope>singleton</scope>
+    </component>
+     <component>
+      <type>info.magnolia.ui.admincentral.dialog.action.DialogActionFactory</type>
+      <workspace>config</workspace>
+      <path>/modules/ui-admin-central/dialogActionFactory</path>
       <observed>true</observed>
       <scope>singleton</scope>
     </component>

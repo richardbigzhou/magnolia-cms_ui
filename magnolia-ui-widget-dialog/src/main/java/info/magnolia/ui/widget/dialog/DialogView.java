@@ -53,7 +53,7 @@ public interface DialogView extends IsVaadinComponent {
      * @author ejervidalo
      */
     interface Presenter {
-
+        void executeAction(String actionName);
     }
 
     /**
@@ -77,5 +77,11 @@ public interface DialogView extends IsVaadinComponent {
      * @param dialogPresenter
      */
     void setPresenter(Presenter presenter);
+
+    /**
+     * @param actionName
+     * @param actionLabel
+     */
+    void addAction(String actionName, String actionLabel);
 
 }

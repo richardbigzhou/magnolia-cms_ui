@@ -34,12 +34,18 @@
 package info.magnolia.ui.admincentral.dialog;
 
 import info.magnolia.ui.admincentral.MagnoliaShell;
+import info.magnolia.ui.admincentral.dialog.action.DialogActionFactory;
 import info.magnolia.ui.admincentral.dialog.builder.DialogBuilder;
-import info.magnolia.ui.admincentral.workbench.event.ContentChangedEvent;
 import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.model.action.Action;
+import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
-import info.magnolia.ui.vaadin.intergration.jcr.NodeAdapter;
 import info.magnolia.ui.widget.dialog.DialogView;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import com.vaadin.data.Item;
 
@@ -55,15 +61,20 @@ public class DialogPresenter implements DialogView.Presenter {
     private MagnoliaShell shell;
     private EventBus eventBus;
     private DialogView view;
+    private DialogActionFactory actionFactory;
+    private Map<String, ActionDefinition> actionMap = new HashMap<String, ActionDefinition>();
 
-    public DialogPresenter(DialogView view, DialogBuilder dialogBuilder, DialogDefinition dialogDefinition, MagnoliaShell shell, final EventBus eventBus) {
+    public DialogPresenter(DialogView view, DialogBuilder dialogBuilder, DialogDefinition dialogDefinition, MagnoliaShell shell, final EventBus eventBus, final DialogActionFactory actionFactory) {
         this.view = view;
         this.dialogBuilder = dialogBuilder;
         this.dialogDefinition = dialogDefinition;
         this.shell = shell;
         this.eventBus = eventBus;
+        this.actionFactory = actionFactory;
 
         this.view.setPresenter(this);
+
+        initActions(dialogDefinition);
     }
 
     public void editItem(Item item) {
@@ -75,12 +86,27 @@ public class DialogPresenter implements DialogView.Presenter {
         shell.removeDialog(view.asVaadinComponent());
     }
 
-    public void executeAction(Item item) {
-        NodeAdapter itemChanged = (NodeAdapter)item;
+    @Override
+    public void executeAction(String actionName) {
+
+        ActionDefinition actionDefinition = actionMap.get(actionName);
+        Action action = actionFactory.createAction(actionDefinition);
+        try {
+            action.execute();
+        } catch (ActionExecutionException e) {
+            e.printStackTrace();
+        }
+        //NodeAdapter itemChanged = (NodeAdapter)item;
         //itemChanged.getNode().getSession().save();
 
 
-        eventBus.fireEvent(new ContentChangedEvent(itemChanged.getItemProperty("workspace").toString(), itemChanged.getItemProperty("path").toString()));
+        //eventBus.fireEvent(new ContentChangedEvent(itemChanged.getItemProperty("workspace").toString(), itemChanged.getItemProperty("path").toString()));
     }
 
+    private void initActions(DialogDefinition dialogDefinition) {
+
+        for (DialogActionDefinition action : dialogDefinition.getActions()) {
+            actionMap.put(action.getName(), action.getActionDefinition());
+        }
+    }
 }

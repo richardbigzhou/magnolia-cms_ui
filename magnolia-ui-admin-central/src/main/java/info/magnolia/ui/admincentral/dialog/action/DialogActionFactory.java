@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,35 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.definition;
+package info.magnolia.ui.admincentral.dialog.action;
 
-import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
-
-import java.util.List;
-
+import info.magnolia.ui.model.action.Action;
+import info.magnolia.ui.model.action.ActionDefinition;
 
 /**
- * DialogDefinition.
- *
- * @author ejervidalo
+ * Creates an action based on an {@link ActionDefinition}.
  */
-public interface DialogDefinition extends UiItemDefinition {
+public interface DialogActionFactory {
 
-    public abstract boolean addTab(TabDefinition tabDefinition);
-
-    public abstract void setTabs(List<TabDefinition> tabs);
-
-    public abstract List<TabDefinition> getTabs();
-
-    public abstract boolean addAction(DialogActionDefinition fieldDefinition);
-
-    public abstract void setActions(List<DialogActionDefinition> actions);
-
-    public abstract List<DialogActionDefinition> getActions();
-
-    public abstract void setId(String id);
-
-    public abstract String getId();
-
-
+    Action createAction(ActionDefinition actionDefinition);
 }

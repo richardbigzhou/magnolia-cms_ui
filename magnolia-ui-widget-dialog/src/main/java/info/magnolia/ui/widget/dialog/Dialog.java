@@ -35,7 +35,6 @@ package info.magnolia.ui.widget.dialog;
 
 
 
-import info.magnolia.ui.widget.dialog.action.Action;
 import info.magnolia.ui.widget.dialog.gwt.client.VDialog;
 import info.magnolia.ui.widget.tabsheet.ShellTab;
 import info.magnolia.ui.widget.tabsheet.ShellTabSheet;
@@ -81,7 +80,7 @@ public class Dialog extends AbstractComponent implements DialogView, ServerSideH
     private final LinkedList<Object> propertyIds = new LinkedList<Object>();
     Map<Object, Field> fields = new HashMap<Object, Field>();
 
-    Map<String, Action> actionMap = new HashMap<String, Action>();
+    private Presenter presenter;
 
 
     protected ServerSideProxy proxy = new ServerSideProxy(this) {
@@ -89,19 +88,17 @@ public class Dialog extends AbstractComponent implements DialogView, ServerSideH
                 register("fireAction", new Method() {
                     @Override
                     public void invoke(String methodName, Object[] params) {
-                        final String action = String.valueOf(params[0]);
-                        actionMap.get(action).execute();
+                        final String actionName = String.valueOf(params[0]);
+                        presenter.executeAction(actionName);
                     }
                 });
             }
         };
 
-    private Presenter presenter;
 
     public Dialog() {
         setImmediate(true);
         showAllTab(true);
-        registerActions();
     }
 
     @Override
@@ -147,31 +144,9 @@ public class Dialog extends AbstractComponent implements DialogView, ServerSideH
         showAllTab(showAll, SHOW_ALL);
     }
 
-    public void addAction(Action action) {
-        actionMap.put(action.getName(), action);
-        proxy.call("addAction", action.getName(), action.getLabel());
-    }
-
-    public void registerActions() {
-
-        Action commit = new Action("commit", "save changes") {
-            @Override
-            public void execute() {
-                commit();
-            }
-        };
-        addAction(commit);
-
-        Action discard = new Action("discard", "cancel") {
-            @Override
-            public void execute() {
-                discard();
-            }
-        };
-        addAction(discard);
-
-
-
+    @Override
+    public void addAction(String actionName, String actionLabel) {
+        proxy.call("addAction", actionName, actionLabel);
     }
 
     @Override
