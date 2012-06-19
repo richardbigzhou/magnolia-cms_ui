@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.shellapp.applauncher;
 
-import info.magnolia.ui.framework.app.ShellAppView;
+import info.magnolia.ui.framework.app.ShellView;
 import info.magnolia.ui.framework.app.layout.AppLayout;
 
 /**
@@ -41,7 +41,7 @@ import info.magnolia.ui.framework.app.layout.AppLayout;
  *
  * @version $Id$
  */
-public interface AppLauncherView extends ShellAppView {
+public interface AppLauncherView extends ShellView {
 
     /**
      * Presenter.

@@ -38,7 +38,7 @@ import static org.junit.Assert.assertNotSame;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import info.magnolia.ui.admincentral.app.AppTestUtility;
-import info.magnolia.ui.admincentral.shellapp.applauncher.AppLauncherActivity;
+import info.magnolia.ui.admincentral.shellapp.applauncher.AppLauncherShellApp;
 import info.magnolia.ui.admincentral.shellapp.applauncher.AppLauncherViewImpl;
 import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.AppControllerImpl;
@@ -68,9 +68,9 @@ import com.vaadin.ui.CssLayout;
 */
 
 /**
- * Main test class for {AppLauncherActivity}.
+ * Main test class for {AppLauncherShellApp}.
  */
-public class AppLauncherActivityTest {
+public class AppLauncherShellAppTest {
 /*
     private EventBus eventBus;
     private SystemEventBus systemEventBus;
@@ -115,7 +115,7 @@ public class AppLauncherActivityTest {
     @Test
     public void testLayoutEvent() {
         // GIVEN
-        new AppLauncherActivity(view, appController, appLauncherLayoutManager, eventBus, systemEventBus);
+        new AppLauncherShellApp(view, appController, appLauncherLayoutManager, eventBus, systemEventBus);
         CssLayout component =  (CssLayout)view.asVaadinComponent();
         assertEquals(AppLauncherViewImplTest.appLauncherStyleName,component.getStyleName());
         AppButton appButtonBeforeReload = AppLauncherViewImplTest.getComponent( AppButton.class,  "appDescriptor1_label", null, component);
@@ -135,7 +135,7 @@ public class AppLauncherActivityTest {
     @Test
     public void testLayoutEvent_ActiveButton() {
         // GIVEN
-        new AppLauncherActivity(view, appController, appLauncherLayoutManager, eventBus, systemEventBus);
+        new AppLauncherShellApp(view, appController, appLauncherLayoutManager, eventBus, systemEventBus);
         CssLayout component =  (CssLayout)view.asVaadinComponent();
         assertEquals(AppLauncherViewImplTest.appLauncherStyleName,component.getStyleName());
         AppButton appButtonBeforeReload = AppLauncherViewImplTest.getComponent( AppButton.class,  "appDescriptor1_label", null, component);
@@ -157,7 +157,7 @@ public class AppLauncherActivityTest {
     @Test
     public void testAppEvent_Start() {
         // GIVEN
-        new AppLauncherActivity(view, appController, appLauncherLayoutManager, eventBus, systemEventBus);
+        new AppLauncherShellApp(view, appController, appLauncherLayoutManager, eventBus, systemEventBus);
         CssLayout component =  (CssLayout)view.asVaadinComponent();
         assertEquals(AppLauncherViewImplTest.appLauncherStyleName,component.getStyleName());
         AppButton appButton = AppLauncherViewImplTest.getComponent( AppButton.class,  "appDescriptor1_label", null, component);
@@ -174,7 +174,7 @@ public class AppLauncherActivityTest {
     public void testAppEvent_Stop() {
         // GIVEN
         when(appController.isAppStarted(appDescriptor1.getName())).thenReturn(true);
-        new AppLauncherActivity(view, appController, appLauncherLayoutManager, eventBus, systemEventBus);
+        new AppLauncherShellApp(view, appController, appLauncherLayoutManager, eventBus, systemEventBus);
         eventBus.fireEvent(new AppLifecycleEvent(appDescriptor1, AppEventType.STARTED));
         CssLayout component =  (CssLayout)view.asVaadinComponent();
         assertEquals(AppLauncherViewImplTest.appLauncherStyleName,component.getStyleName());

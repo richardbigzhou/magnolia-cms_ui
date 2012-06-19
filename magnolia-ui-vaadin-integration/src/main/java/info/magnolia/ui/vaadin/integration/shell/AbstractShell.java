@@ -54,7 +54,7 @@ public abstract class AbstractShell implements Shell, com.vaadin.ui.UriFragmentU
 
     private static final Logger log = LoggerFactory.getLogger(AbstractShell.class);
 
-    private final EventHandlerCollection<FragmentChangedHandler, FragmentChangedEvent> handlers = new EventHandlerCollection<FragmentChangedHandler, FragmentChangedEvent>();
+    private final EventHandlerCollection<FragmentChangedHandler> handlers = new EventHandlerCollection<FragmentChangedHandler>();
 
     protected String id;
 

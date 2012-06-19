@@ -33,13 +33,14 @@
  */
 package info.magnolia.ui.framework.app;
 
+import info.magnolia.ui.framework.location.Location;
+
 /**
- * App presenter interface.
+ * Defines functionality used by a shell app to interact with the Magnolia shell.
  *
- * @param <T>
  * @version $Id$
  */
-public interface AppPresenter<T extends AppPresenter<T>> {
+public interface ShellAppContext {
 
-
+    void setAppLocation(Location location);
 }

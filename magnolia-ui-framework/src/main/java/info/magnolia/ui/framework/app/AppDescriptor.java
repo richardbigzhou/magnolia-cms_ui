@@ -44,25 +44,13 @@ public interface AppDescriptor extends Serializable {
 
     String getCategoryName();
 
-    void setCategoryName(String categoryName);
-
     String getName();
-
-    void setName(String name);
 
     String getLabel();
 
-    void setLabel(String label);
-
     boolean isEnabled();
-
-    void setEnabled(boolean enabled);
 
     String getIcon();
 
-    void setIcon(String icon);
-
     Class<? extends App> getAppClass();
-
-    void setAppClass(Class<? extends App> appClass);
 }

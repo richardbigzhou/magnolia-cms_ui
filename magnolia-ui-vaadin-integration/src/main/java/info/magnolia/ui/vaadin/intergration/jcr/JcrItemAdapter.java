@@ -31,45 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.applauncher;
+package info.magnolia.ui.vaadin.intergration.jcr;
 
-import info.magnolia.ui.framework.place.Place;
-import info.magnolia.ui.framework.place.PlaceTokenizer;
-import info.magnolia.ui.framework.place.Prefix;
+import javax.jcr.RepositoryException;
+
+import com.vaadin.data.Item;
+
 
 /**
- * Place for the app launcher.
- *
- * @version $Id$
+ * Define common operation for Jcr Adapter.
  */
-@Prefix("applauncher")
-public class AppLauncherPlace extends Place {
+public interface JcrItemAdapter extends Item{
 
-    /**
-     * Tokenizer for AppLauncherPlace.
-     *
-     * @version $Id$
-     */
-    public static class Tokenizer implements PlaceTokenizer<AppLauncherPlace> {
+    public boolean isNode();
 
-        @Override
-        public AppLauncherPlace getPlace(String token) {
-            return new AppLauncherPlace(token);
-        }
+    public String getNodeIdentifier();
 
-        @Override
-        public String getToken(AppLauncherPlace place) {
-            return place.getPath();
-        }
-    }
+    public String getPropertyName();
 
-    private String path;
+    public String getPath();
 
-    public AppLauncherPlace(String path) {
-        this.path = path;
-    }
+    public javax.jcr.Item getJcrItem() throws RepositoryException;
 
-    public String getPath() {
-        return path;
-    }
+    public void save() throws RepositoryException;
 }

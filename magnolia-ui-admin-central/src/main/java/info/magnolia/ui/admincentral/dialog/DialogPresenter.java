@@ -96,11 +96,11 @@ public class DialogPresenter implements DialogView.Presenter {
         } catch (ActionExecutionException e) {
             e.printStackTrace();
         }
-        //NodeAdapter itemChanged = (NodeAdapter)item;
+        
+        //JcrNodeAdapter itemChanged = (JcrNodeAdapter)event.getItem();
         //itemChanged.getNode().getSession().save();
-
-
-        //eventBus.fireEvent(new ContentChangedEvent(itemChanged.getItemProperty("workspace").toString(), itemChanged.getItemProperty("path").toString()));
+		//eventBus.fireEvent(new ContentChangedEvent(itemChanged.getItemProperty("workspace").toString(), itemChanged.getItemProperty("path").toString()));
+            
     }
 
     private void initActions(DialogDefinition dialogDefinition) {

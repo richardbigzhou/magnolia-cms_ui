@@ -51,7 +51,7 @@ public class DummyTabView implements AppView, IsVaadinComponent {
     private final VerticalLayout tableContainer;
     private final String name;
 
-    DummyTabView() {
+    public DummyTabView() {
         name = RandomStringUtils.randomNumeric(2);
         tableContainer = new VerticalLayout();
         Label label = new Label("<center>Dummy Tab " + name + "</center>", Label.CONTENT_XHTML);

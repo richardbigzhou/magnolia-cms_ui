@@ -37,61 +37,80 @@ import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppTy
 
 /**
  * Helper class for holding the parsed info from the fragment.
- * @author apchelintcev
+ *
+ * @version $Id$
  */
 public class FragmentDTO {
     
-    private static final String FRAGMENT_DELIMITER = ":";
-    
     /**
      * Enum for the types of fragments used within MagnoliaShell.
-     * @author apchelintcev
-     *
      */
     public enum FragmentType {
         APP,
-        SHELL_APP;
+        SHELL_APP
     }
     
     private FragmentType type = FragmentType.SHELL_APP;
     
-    private String id = "";
+    private String prefix = "";
     
-    private String param = "";
+    private String token = "";
     
     protected FragmentDTO() {
-        
     }
     
     public static FragmentDTO fromFragment(final String fragment) {
         final FragmentDTO dto = new FragmentDTO();
-        final String[] tokens = fragment.split(FRAGMENT_DELIMITER);
-        if (tokens.length > 1) {
-            if (tokens[0].equals("shell")) {
-                dto.type = FragmentType.SHELL_APP;
-                dto.id = ShellAppType.getTypeByFragmentId(tokens[1]);
-            } else if (tokens[0].equals("app")) {
-                dto.type = FragmentType.APP;
-                dto.id = tokens[1];
-            }
+        String type = extractType(fragment);
+        if (type.equals("shell")) {
+            dto.type = FragmentType.SHELL_APP;
+            dto.prefix = ShellAppType.getTypeByFragmentId(extractPrefix(fragment));
+            dto.token = extractToken(fragment);
+        } else if (type.equals("app")) {
+            dto.type = FragmentType.APP;
+            dto.prefix = extractPrefix(fragment);
+            dto.token = extractToken(fragment);
         }
-        dto.param = tokens.length > 2 ? tokens[2] : "";
         return dto;
     }
-   
-    public String getId() {
-        return id;
-    }
-    
-    public String getParam() {
-        return param;
-    }
-    
+
     public FragmentType getType() {
         return type;
     }
-    
-    public String getPath() {
-        return id + FRAGMENT_DELIMITER + param;
+
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    // These methods are duplicated from info.magnolia.ui.framework.location.DefaultLocation
+
+    public static String extractType(String fragment) {
+        int i = fragment.indexOf(':');
+        return i != -1 ? fragment.substring(0, i) : fragment;
+    }
+
+    public static String extractPrefix(String fragment) {
+        int i = fragment.indexOf(':');
+        if (i == -1) {
+            return "";
+        }
+        int j = fragment.indexOf(':', i + 1);
+        return j != -1 ? fragment.substring(i + 1, j) : fragment.substring(i + 1);
+    }
+
+    public static String extractToken(String fragment) {
+        int i = fragment.indexOf(':');
+        if (i == -1) {
+            return "";
+        }
+        int j = fragment.indexOf(':', i + 1);
+        if (j == -1) {
+            return "";
+        }
+        return fragment.substring(j + 1);
     }
 }

@@ -102,7 +102,7 @@ public abstract class AbstractEditableColumn<D extends AbstractColumnDefinition>
             }
 
             // eventBus.fireEvent(new
-            // ContentChangedEvent(item.getSession().getWorkspace().getName(), item.getPath()));
+            // ContentChangedEvent(item.getSession().getWorkspace().getName(), item.getPrefixAndToken()));
 
             return true;
         }
