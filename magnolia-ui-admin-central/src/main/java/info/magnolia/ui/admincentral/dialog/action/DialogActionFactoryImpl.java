@@ -38,6 +38,7 @@ import info.magnolia.ui.admincentral.jcr.view.builder.DefinitionToImplementation
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.builder.FactoryBase;
+import info.magnolia.ui.widget.dialog.DialogView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,8 +79,8 @@ public class DialogActionFactoryImpl extends FactoryBase<ActionDefinition, Actio
     }
 
     @Override
-    public Action createAction(ActionDefinition actionDefinition) {
-        return create(actionDefinition);
+    public Action createAction(ActionDefinition actionDefinition, DialogView.Presenter presenter) {
+        return create(actionDefinition, presenter);
     }
 
 

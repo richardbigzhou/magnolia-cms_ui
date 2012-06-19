@@ -33,8 +33,15 @@
  */
 package info.magnolia.ui.admincentral.dialog.action;
 
+import info.magnolia.ui.admincentral.workbench.event.ContentChangedEvent;
+import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.vaadin.intergration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.widget.dialog.DialogView;
+import info.magnolia.ui.widget.dialog.DialogView.Presenter;
+
+import com.vaadin.data.Item;
 
 /**
  * SaveDialogAction.
@@ -43,13 +50,29 @@ import info.magnolia.ui.model.action.ActionExecutionException;
  */
 public class SaveDialogAction extends ActionBase<SaveDialogActionDefinition> {
 
-    public SaveDialogAction(SaveDialogActionDefinition definition) {
+    private Item item;
+    private EventBus eventBus;
+    private Presenter presenter;
+
+    public SaveDialogAction(SaveDialogActionDefinition definition, DialogView.Presenter presenter) {
         super(definition);
+        this.presenter = presenter;
+        this.item = presenter.getItem();
+        this.eventBus = presenter.getEventBus();
+
     }
 
     @Override
     public void execute() throws ActionExecutionException {
+        JcrNodeAdapter itemChanged = (JcrNodeAdapter) item;
+        try {
+            itemChanged.getNode().getSession().save();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        eventBus.fireEvent(new ContentChangedEvent(itemChanged.getItemProperty("workspace").toString(), itemChanged.getItemProperty("path").toString()));
 
+        presenter.closeDialog();
     }
 
 }

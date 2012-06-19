@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.widget.dialog;
 
+import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 import com.vaadin.data.Item;
@@ -53,35 +55,29 @@ public interface DialogView extends IsVaadinComponent {
      * @author ejervidalo
      */
     interface Presenter {
+
         void executeAction(String actionName);
+
+        Shell getShell();
+
+        DialogView getView();
+
+        Item getItem();
+
+        EventBus getEventBus();
+
+        void closeDialog();
     }
 
-    /**
-     * @param item
-     */
+
     void setItemDataSource(Item item);
 
-    /**
-     * @param itemProperty
-     * @param input
-     */
     void addField(Property itemProperty, Field input);
 
-    /**
-     * @param inputFields
-     * @param tabName
-     */
     void addTab(ComponentContainer inputFields, String tabName);
 
-    /**
-     * @param dialogPresenter
-     */
     void setPresenter(Presenter presenter);
 
-    /**
-     * @param actionName
-     * @param actionLabel
-     */
     void addAction(String actionName, String actionLabel);
 
 }

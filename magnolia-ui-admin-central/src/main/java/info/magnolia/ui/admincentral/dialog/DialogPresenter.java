@@ -37,6 +37,7 @@ import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.admincentral.dialog.action.DialogActionFactory;
 import info.magnolia.ui.admincentral.dialog.builder.DialogBuilder;
 import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
@@ -63,6 +64,7 @@ public class DialogPresenter implements DialogView.Presenter {
     private DialogView view;
     private DialogActionFactory actionFactory;
     private Map<String, ActionDefinition> actionMap = new HashMap<String, ActionDefinition>();
+    private Item item;
 
     public DialogPresenter(DialogView view, DialogBuilder dialogBuilder, DialogDefinition dialogDefinition, MagnoliaShell shell, final EventBus eventBus, final DialogActionFactory actionFactory) {
         this.view = view;
@@ -78,10 +80,12 @@ public class DialogPresenter implements DialogView.Presenter {
     }
 
     public void editItem(Item item) {
+        this.item = item;
         dialogBuilder.build(dialogDefinition, item, view);
         shell.openDialog(view.asVaadinComponent());
     }
 
+    @Override
     public void closeDialog() {
         shell.removeDialog(view.asVaadinComponent());
     }
@@ -90,17 +94,12 @@ public class DialogPresenter implements DialogView.Presenter {
     public void executeAction(String actionName) {
 
         ActionDefinition actionDefinition = actionMap.get(actionName);
-        Action action = actionFactory.createAction(actionDefinition);
+        Action action = actionFactory.createAction(actionDefinition, this);
         try {
             action.execute();
         } catch (ActionExecutionException e) {
             e.printStackTrace();
         }
-        
-        //JcrNodeAdapter itemChanged = (JcrNodeAdapter)event.getItem();
-        //itemChanged.getNode().getSession().save();
-		//eventBus.fireEvent(new ContentChangedEvent(itemChanged.getItemProperty("workspace").toString(), itemChanged.getItemProperty("path").toString()));
-            
     }
 
     private void initActions(DialogDefinition dialogDefinition) {
@@ -108,5 +107,25 @@ public class DialogPresenter implements DialogView.Presenter {
         for (DialogActionDefinition action : dialogDefinition.getActions()) {
             actionMap.put(action.getName(), action.getActionDefinition());
         }
+    }
+
+    @Override
+    public Shell getShell() {
+        return shell;
+    }
+
+    @Override
+    public DialogView getView() {
+        return view;
+    }
+
+    @Override
+    public Item getItem() {
+        return item;
+    }
+
+    @Override
+    public EventBus getEventBus() {
+        return eventBus;
     }
 }

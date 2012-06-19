@@ -35,6 +35,8 @@ package info.magnolia.ui.admincentral.dialog.action;
 
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.widget.dialog.DialogView;
+import info.magnolia.ui.widget.dialog.DialogView.Presenter;
 
 /**
  * SaveDialogAction.
@@ -43,13 +45,16 @@ import info.magnolia.ui.model.action.ActionExecutionException;
  */
 public class CancelDialogAction extends ActionBase<CancelDialogActionDefinition> {
 
-    public CancelDialogAction(CancelDialogActionDefinition definition) {
+    private Presenter presenter;
+
+    public CancelDialogAction(CancelDialogActionDefinition definition, DialogView.Presenter presenter) {
         super(definition);
+        this.presenter = presenter;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
-
+        presenter.closeDialog();
     }
 
 }
