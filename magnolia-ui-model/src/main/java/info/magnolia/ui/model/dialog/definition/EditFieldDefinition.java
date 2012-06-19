@@ -36,7 +36,7 @@ package info.magnolia.ui.model.dialog.definition;
 /**
  * Field definition for an edit box.
  */
-public class EditFieldDefinition extends FieldDefinition {
+public class EditFieldDefinition extends ConfiguredFieldDefinition {
 
     private int rows;
     private int maxLength = -1;

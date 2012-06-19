@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module SYSTEM "module.dtd">
+<module>
+  <name>ui-messages-app</name>
+  <displayName>UI Messages app</displayName>
+  <description>UI Messages app</description>
+  <version>${project.version}</version>
+
+  <components>
+    <id>admin-central</id>
+    <component>
+      <type>info.magnolia.ui.app.messages.MessagesView</type>
+      <implementation>info.magnolia.ui.app.messages.MessagesViewImpl</implementation>
+    </component>
+  </components>
+
+  <dependencies>
+    <dependency>
+      <name>ui-admin-central</name>
+      <version>5.0/*</version>
+    </dependency>
+  </dependencies>
+</module>

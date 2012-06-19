@@ -125,14 +125,15 @@
     <module>magnolia-ui-model</module>
     <module>magnolia-ui-vaadin-integration</module>
     <module>magnolia-ui-vaadin-widgetset</module>
-    <module>magnolia-ui-admin-central</module>
     <module>magnolia-ui-widget-jquery-wrapper</module>
     <module>magnolia-ui-widget-magnolia-shell</module>
     <module>magnolia-ui-widget-tabsheet</module>
     <module>magnolia-ui-widget-dialog</module>
     <module>magnolia-ui-widget-actionbar</module>
+    <module>magnolia-ui-admin-central</module>
     <module>magnolia-ui-webapp</module>
     <module>magnolia-ui-app-dummy</module>
     <module>magnolia-ui-app-contacts</module>
+    <module>magnolia-ui-app-messages</module>
   </modules>
 </project>

@@ -36,7 +36,7 @@ package info.magnolia.ui.model.dialog.definition;
 /**
  * Field definition for a date picker.
  */
-public class DateFieldDefinition extends FieldDefinition {
+public class DateFieldDefinition extends ConfiguredFieldDefinition {
 
     private boolean time;
 

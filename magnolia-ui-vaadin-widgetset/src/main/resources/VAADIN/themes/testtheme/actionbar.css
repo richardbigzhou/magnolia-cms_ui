@@ -55,6 +55,15 @@
 	background:#aabf2f;
 }
 
+.v-disabled {
+	opacity:0.4;
+}
+
+.v-action-button.v-disabled:hover {
+	background:none;
+	cursor:default;
+}
+
 .v-action-button .v-icon {
     position:absolute;
 	top:6px;

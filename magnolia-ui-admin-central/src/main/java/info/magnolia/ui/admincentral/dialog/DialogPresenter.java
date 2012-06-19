@@ -34,13 +34,19 @@
 package info.magnolia.ui.admincentral.dialog;
 
 import info.magnolia.ui.admincentral.MagnoliaShell;
+import info.magnolia.ui.admincentral.dialog.action.DialogActionFactory;
 import info.magnolia.ui.admincentral.dialog.builder.DialogBuilder;
-import info.magnolia.ui.admincentral.workbench.event.ContentChangedEvent;
 import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.model.action.Action;
+import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
-import info.magnolia.ui.vaadin.intergration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.widget.dialog.Dialog;
-import info.magnolia.ui.widget.dialog.event.DialogCommitEvent;
+import info.magnolia.ui.widget.dialog.DialogView;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import com.vaadin.data.Item;
 
@@ -49,41 +55,77 @@ import com.vaadin.data.Item;
  *
  * @author ejervidalo
  */
-public class DialogPresenter extends Dialog {
+public class DialogPresenter implements DialogView.Presenter {
 
     private DialogBuilder dialogBuilder;
     private DialogDefinition dialogDefinition;
     private MagnoliaShell shell;
     private EventBus eventBus;
+    private DialogView view;
+    private DialogActionFactory actionFactory;
+    private Map<String, ActionDefinition> actionMap = new HashMap<String, ActionDefinition>();
+    private Item item;
 
-    public DialogPresenter(DialogBuilder dialogBuilder, DialogDefinition dialogDefinition, MagnoliaShell shell, final EventBus eventBus) {
-        super(eventBus);
+    public DialogPresenter(DialogView view, DialogBuilder dialogBuilder, DialogDefinition dialogDefinition, MagnoliaShell shell, final EventBus eventBus, final DialogActionFactory actionFactory) {
+        this.view = view;
         this.dialogBuilder = dialogBuilder;
         this.dialogDefinition = dialogDefinition;
         this.shell = shell;
         this.eventBus = eventBus;
+        this.actionFactory = actionFactory;
 
-        this.eventBus.addHandler(DialogCommitEvent.class, new DialogCommitEvent.Handler() {
+        this.view.setPresenter(this);
 
-            @Override
-            public void onDialogCommit(DialogCommitEvent event) {
-                JcrNodeAdapter itemChanged = (JcrNodeAdapter)event.getItem();
-                //itemChanged.getNode().getSession().save();
-
-
-                eventBus.fireEvent(new ContentChangedEvent(itemChanged.getItemProperty("workspace").toString(), itemChanged.getItemProperty("path").toString()));
-            }
-        });
+        initActions(dialogDefinition);
     }
 
-    public void showDialog(Item selectedBean) {
-        dialogBuilder.build(dialogDefinition, selectedBean, this);
-        shell.openDialog(this.asVaadinComponent());
+    public void editItem(Item item) {
+        this.item = item;
+        dialogBuilder.build(dialogDefinition, item, view);
+        shell.openDialog(view.asVaadinComponent());
     }
 
     @Override
     public void closeDialog() {
-        shell.removeDialog(this.asVaadinComponent());
+        shell.removeDialog(view.asVaadinComponent());
     }
 
+    @Override
+    public void executeAction(String actionName) {
+
+        ActionDefinition actionDefinition = actionMap.get(actionName);
+        Action action = actionFactory.createAction(actionDefinition, this);
+        try {
+            action.execute();
+        } catch (ActionExecutionException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void initActions(DialogDefinition dialogDefinition) {
+
+        for (DialogActionDefinition action : dialogDefinition.getActions()) {
+            actionMap.put(action.getName(), action.getActionDefinition());
+        }
+    }
+
+    @Override
+    public Shell getShell() {
+        return shell;
+    }
+
+    @Override
+    public DialogView getView() {
+        return view;
+    }
+
+    @Override
+    public Item getItem() {
+        return item;
+    }
+
+    @Override
+    public EventBus getEventBus() {
+        return eventBus;
+    }
 }

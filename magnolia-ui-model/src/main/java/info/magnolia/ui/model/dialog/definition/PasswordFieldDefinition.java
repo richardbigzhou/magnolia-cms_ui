@@ -36,7 +36,7 @@ package info.magnolia.ui.model.dialog.definition;
 /**
  * Field definition for a password field.
  */
-public class PasswordFieldDefinition extends FieldDefinition {
+public class PasswordFieldDefinition extends ConfiguredFieldDefinition {
 
     private boolean verification = true;
     private String width;

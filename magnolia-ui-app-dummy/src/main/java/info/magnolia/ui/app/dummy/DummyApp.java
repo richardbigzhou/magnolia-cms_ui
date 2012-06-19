@@ -49,19 +49,18 @@ import javax.inject.Inject;
 public class DummyApp extends AbstractApp implements DummyView.Presenter {
 
     private AppContext context;
-    private DummyView dummyView;
+    private DummyView view;
 
     @Inject
-    public DummyApp(DummyView dummyView) {
-        this.dummyView = dummyView;
+    public DummyApp(DummyView view) {
+        this.view = view;
     }
 
     @Override
     public AppView start(AppContext context, Location location) {
         this.context = context;
-        System.out.println("SIMPLE DUMMY APP STARTED - token is: " + location.toString());
-        DummyViewImpl view = new DummyViewImpl();
         view.setPresenter(this);
+        System.out.println("SIMPLE DUMMY APP STARTED - token is: " + location.toString());
         return view;
     }
 
