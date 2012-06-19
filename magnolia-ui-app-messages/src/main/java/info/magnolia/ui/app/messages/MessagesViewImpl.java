@@ -31,49 +31,52 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
+package info.magnolia.ui.app.messages;
 
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.TextArea;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- * View implementation for the Dummy app.
+ * View implementation for the Messages app.
  *
  * @version $Id$
  */
 @SuppressWarnings("serial")
-public class DummyViewImpl implements DummyView, IsVaadinComponent {
+public class MessagesViewImpl implements MessagesView, IsVaadinComponent {
 
-    private DummyView.Presenter presenter;
+    private MessagesView.Presenter presenter;
     private final VerticalLayout tableContainer;
 
-    public DummyViewImpl() {
+    public MessagesViewImpl() {
         tableContainer = new VerticalLayout();
-        Label label = new Label("<center>Dummy App</center>", Label.CONTENT_XHTML);
+        Label label = new Label("<center>Messages App</center>", Label.CONTENT_XHTML);
         tableContainer.addComponent(label);
 
-        Button dialog = new Button("Gimme more tabs!", new Button.ClickListener() {
+        final TextArea textArea = new TextArea();
+        tableContainer.addComponent(textArea);
+        Button dialog = new Button("Send message", new Button.ClickListener() {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                presenter.onButtonClick();
+                presenter.onSendMessage((String) textArea.getValue());
             }
         });
         tableContainer.addComponent(dialog);
     }
 
     @Override
-    public void setPresenter(DummyView.Presenter presenter) {
+    public void setPresenter(MessagesView.Presenter presenter) {
         this.presenter = presenter;
     }
 
     @Override
     public String getCaption() {
-        return "Dummy";
+        return "Messages";
     }
 
     @Override

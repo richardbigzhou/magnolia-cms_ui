@@ -31,53 +31,39 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
+package info.magnolia.ui.app.messages;
 
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
+import info.magnolia.ui.framework.app.AbstractApp;
+import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.framework.app.AppView;
+import info.magnolia.ui.framework.location.Location;
 
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
+import javax.inject.Inject;
 
 /**
- * View implementation for the Dummy app.
+ * Messages app.
  *
  * @version $Id$
  */
-@SuppressWarnings("serial")
-public class DummyViewImpl implements DummyView, IsVaadinComponent {
+public class MessagesApp extends AbstractApp implements MessagesView.Presenter {
 
-    private DummyView.Presenter presenter;
-    private final VerticalLayout tableContainer;
+    private AppContext context;
+    private MessagesView view;
 
-    public DummyViewImpl() {
-        tableContainer = new VerticalLayout();
-        Label label = new Label("<center>Dummy App</center>", Label.CONTENT_XHTML);
-        tableContainer.addComponent(label);
-
-        Button dialog = new Button("Gimme more tabs!", new Button.ClickListener() {
-
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                presenter.onButtonClick();
-            }
-        });
-        tableContainer.addComponent(dialog);
+    @Inject
+    public MessagesApp(MessagesView view) {
+        this.view = view;
     }
 
     @Override
-    public void setPresenter(DummyView.Presenter presenter) {
-        this.presenter = presenter;
+    public AppView start(AppContext context, Location location) {
+        this.context = context;
+        view.setPresenter(this);
+        return view;
     }
 
     @Override
-    public String getCaption() {
-        return "Dummy";
-    }
-
-    @Override
-    public Component asVaadinComponent() {
-        return tableContainer;
+    public void onSendMessage(String text) {
+        System.out.printf("Sending message: " + text);
     }
 }
