@@ -46,7 +46,7 @@ import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.model.workbench.registry.WorkbenchDefinitionRegistry;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
-import info.magnolia.ui.vaadin.intergration.jcr.NodeAdapter;
+import info.magnolia.ui.vaadin.intergration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.widget.dialog.event.DialogCommitEvent;
 
 import javax.inject.Inject;
@@ -109,7 +109,7 @@ public class Workbench implements IsVaadinComponent, WorkbenchView.Presenter {
             @Override
             public void onDialogCommit(DialogCommitEvent event) {
                 try {
-                    final Node node = ((NodeAdapter) event.getItem()).getNode();
+                    final Node node = ((JcrNodeAdapter) event.getItem()).getNode();
                     node.getSession().save();
                     view.refreshNode(node);
                 }

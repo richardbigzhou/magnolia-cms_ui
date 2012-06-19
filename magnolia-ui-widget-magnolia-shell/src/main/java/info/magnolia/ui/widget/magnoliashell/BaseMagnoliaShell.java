@@ -83,7 +83,7 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
         register("activateApp", new Method() {
             @Override
             public void invoke(String methodName, Object[] params) {
-                navigateToApp(String.valueOf(params[0]));
+                navigateToApp(String.valueOf(params[0]), String.valueOf(params[1]));
             }
         });
 
@@ -196,18 +196,18 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
         }
     }
 
-    protected void navigateToApp(String appFragment) {
-        doNavigateWithinViewport(getAppViewport(), appFragment);
+    protected void navigateToApp(String prefix, String token) {
+        doNavigateWithinViewport(getAppViewport(), "app", prefix, token);
     }
 
-    protected void navigateToShellApp(final String fragment, String parameter) {
-        doNavigateWithinViewport(getShellAppViewport(), fragment + ":" + parameter);
+    protected void navigateToShellApp(final String prefix, String token) {
+        doNavigateWithinViewport(getShellAppViewport(), "shell", prefix , token);
     }
 
-    protected void doNavigateWithinViewport(final ShellViewport viewport, final String fragment) {
-        viewport.setCurrentShellFragment(fragment);
+    protected void doNavigateWithinViewport(final ShellViewport viewport, String type,  String prefix, String token) {
+        viewport.setCurrentShellFragment(prefix + ":" + token);
         setActiveViewport(viewport);
-        notifyOnFragmentChanged(fragment);
+        notifyOnFragmentChanged(type + ":" + prefix + ":" + token);
         requestRepaint();
     }
 

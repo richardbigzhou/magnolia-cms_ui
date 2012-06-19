@@ -38,7 +38,7 @@ import info.magnolia.ui.admincentral.dialog.builder.DialogBuilder;
 import info.magnolia.ui.admincentral.workbench.event.ContentChangedEvent;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
-import info.magnolia.ui.vaadin.intergration.jcr.NodeAdapter;
+import info.magnolia.ui.vaadin.intergration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.widget.dialog.Dialog;
 import info.magnolia.ui.widget.dialog.event.DialogCommitEvent;
 
@@ -67,7 +67,7 @@ public class DialogPresenter extends Dialog {
 
             @Override
             public void onDialogCommit(DialogCommitEvent event) {
-                NodeAdapter itemChanged = (NodeAdapter)event.getItem();
+                JcrNodeAdapter itemChanged = (JcrNodeAdapter)event.getItem();
                 //itemChanged.getNode().getSession().save();
 
 

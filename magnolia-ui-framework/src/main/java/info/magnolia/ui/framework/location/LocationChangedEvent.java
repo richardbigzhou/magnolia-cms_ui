@@ -31,31 +31,38 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.favorites;
+package info.magnolia.ui.framework.location;
 
-import javax.inject.Inject;
-
-import info.magnolia.ui.framework.activity.AbstractActivity;
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.place.Place;
-import info.magnolia.ui.framework.view.ViewPort;
+import info.magnolia.ui.framework.event.Event;
+import info.magnolia.ui.framework.event.EventHandler;
 
 /**
- * Activity for favorites.
+ * Event fired when a location change occurs.
  *
  * @version $Id$
  */
-public class FavoritesActivity extends AbstractActivity {
+public class LocationChangedEvent implements Event<LocationChangedEvent.Handler> {
 
-    private FavoritesView favoritesView;
+    /**
+     * Handler interface for {@link LocationChangedEvent}.
+     */
+    public interface Handler extends EventHandler {
 
-    @Inject
-    public FavoritesActivity(FavoritesView favoritesView) {
-        this.favoritesView = favoritesView;
+        void onLocationChanged(LocationChangedEvent event);
+    }
+
+    private final Location newLocation;
+
+    public LocationChangedEvent(Location newLocation) {
+      this.newLocation = newLocation;
+    }
+
+    public Location getNewLocation() {
+      return newLocation;
     }
 
     @Override
-    public void start(ViewPort viewPort, EventBus eventBus, Place place) {
-        viewPort.setView(favoritesView);
+    public void dispatch(Handler handler) {
+        handler.onLocationChanged(this);
     }
 }

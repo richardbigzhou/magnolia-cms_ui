@@ -36,7 +36,6 @@ package info.magnolia.ui.admincentral.list.view;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.ui.admincentral.column.Column;
 import info.magnolia.ui.admincentral.column.EditHandler;
-import info.magnolia.ui.admincentral.container.ContainerItemId;
 import info.magnolia.ui.admincentral.container.JcrContainer;
 import info.magnolia.ui.admincentral.jcr.view.JcrView;
 import info.magnolia.ui.admincentral.list.container.FlatJcrContainer;
@@ -93,7 +92,7 @@ public class ListViewImpl implements ListView, IsVaadinComponent {
 
             @Override
             public void itemClick(ItemClickEvent event) {
-                presenterOnItemSelection((ContainerItemId) event.getItemId());
+                presenterOnItemSelection((String) event.getItemId());
             }
         });
         table.addListener(new Table.ValueChangeListener() {
@@ -101,7 +100,7 @@ public class ListViewImpl implements ListView, IsVaadinComponent {
             @Override
             public void valueChange(ValueChangeEvent event) {
                 log.debug("Handle value change Event: "+event.getProperty().getValue());
-                presenterOnItemSelection((ContainerItemId) event.getProperty().getValue());
+                presenterOnItemSelection((String) event.getProperty().getValue());
             }
         });
         new EditHandler(table);
@@ -127,8 +126,7 @@ public class ListViewImpl implements ListView, IsVaadinComponent {
 
     @Override
     public void select(String path) {
-        ContainerItemId itemId = container.getItemByPath(path);
-        table.select(itemId);
+        table.select(path);
     }
 
     @Override
@@ -160,7 +158,7 @@ public class ListViewImpl implements ListView, IsVaadinComponent {
         return container;
     }
 
-    private void presenterOnItemSelection(ContainerItemId id) {
+    private void presenterOnItemSelection(String id) {
         if (presenter != null) {
             Item item = null;
             try {
