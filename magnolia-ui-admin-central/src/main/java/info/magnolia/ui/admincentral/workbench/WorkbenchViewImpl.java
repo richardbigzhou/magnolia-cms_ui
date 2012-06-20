@@ -221,7 +221,7 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
         split.setExpandRatio(c, 1f);
         this.currentViewType = type;
     }
-    
+
     @Override
     public void refreshItem(Item item) {
         jcrViews.get(currentViewType).refreshItem(item);

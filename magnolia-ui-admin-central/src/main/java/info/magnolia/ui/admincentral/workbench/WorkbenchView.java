@@ -54,7 +54,6 @@ public interface WorkbenchView extends ComponentContainer {
     void initWorkbench(final WorkbenchDefinition definintion);
 
     void setGridType(final JcrView.ViewType type);
-
     /**
      * Causes a view refresh only if the current node exists in the repository.
      */

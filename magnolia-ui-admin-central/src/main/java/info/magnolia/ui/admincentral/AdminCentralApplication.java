@@ -49,7 +49,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.Application;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Window;
 
@@ -86,20 +85,12 @@ public class AdminCentralApplication extends Application {
         builder.withParent((GuiceComponentProvider) Components.getComponentProvider());
         GuiceComponentProvider componentProvider = builder.build();
 
-        // init should be in the module, inspired by the template manager - something independent?
         log.debug("Loading workbench definitions...");
         ConfiguredWorkbenchDefinitionManager workbenchDefinitionManager = componentProvider.newInstance(ConfiguredWorkbenchDefinitionManager.class);
         workbenchDefinitionManager.start();
 
         window = new Window("Magnolia shell test");
-        window.setContent(new CssLayout(){
-
-            @Override
-            protected String getCss(Component c) {
-                return super.getCss(c);
-            }
-
-        });
+        window.setContent(new CssLayout());
         window.getContent().setSizeFull();
         ((CssLayout) window.getContent()).setMargin(false);
         setMainWindow(window);

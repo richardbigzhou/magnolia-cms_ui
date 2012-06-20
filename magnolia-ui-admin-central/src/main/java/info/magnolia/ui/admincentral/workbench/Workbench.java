@@ -46,8 +46,7 @@ import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.model.workbench.registry.WorkbenchDefinitionRegistry;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
-import info.magnolia.ui.vaadin.intergration.jcr.JcrItemAdapter;
-
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import javax.inject.Inject;
 import javax.jcr.LoginException;
 import javax.jcr.PathNotFoundException;

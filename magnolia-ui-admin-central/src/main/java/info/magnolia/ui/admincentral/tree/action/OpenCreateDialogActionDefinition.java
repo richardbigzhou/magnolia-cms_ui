@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,18 +31,54 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog;
-
-import info.magnolia.ui.widget.dialog.DialogView;
+package info.magnolia.ui.admincentral.tree.action;
 
 
 /**
- * Creates {@link DialogPresenter} instances that are use to display a dialog.
- *
- * @version $Id$
+ * Opens a dialog to create an {@link javax.jcr.Node}.
+ * @version $id$
  */
-public interface DialogPresenterFactory {
+public class OpenCreateDialogActionDefinition extends OpenEditDialogActionDefinition {
 
-    DialogView.Presenter createDialog(String dialogName);
+    private String nodeType;
+
+    public String getNodeType() {
+        return nodeType;
+    }
+
+    public void setNodeType(String nodeType) {
+        this.nodeType = nodeType;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result
+                + ((nodeType == null) ? 0 : nodeType.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (!(obj instanceof OpenCreateDialogActionDefinition)) {
+            return false;
+        }
+        OpenCreateDialogActionDefinition other = (OpenCreateDialogActionDefinition) obj;
+        if (nodeType == null) {
+            if (other.nodeType != null) {
+                return false;
+            }
+        } else if (!nodeType.equals(other.nodeType)) {
+            return false;
+        }
+        return true;
+    }
 
 }

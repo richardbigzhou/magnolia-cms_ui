@@ -44,15 +44,13 @@ import com.vaadin.ui.Field;
 
 /**
  * DialogView.
- *
- * @author ejervidalo
+ * @version $Id$
  */
 public interface DialogView extends IsVaadinComponent {
 
     /**
      * DialogView.Presenter.
      *
-     * @author ejervidalo
      */
     interface Presenter {
 
@@ -67,6 +65,8 @@ public interface DialogView extends IsVaadinComponent {
         EventBus getEventBus();
 
         void closeDialog();
+
+        void editItem(Item item);
     }
 
 

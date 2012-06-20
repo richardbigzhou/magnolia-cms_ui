@@ -55,8 +55,7 @@ import com.vaadin.data.Container;
 
 /**
  * Hierarchical implementation of {@link JcrContainer}.
- * @author fgrilli
- *
+ * @version $Id$
  */
 public class HierarchicalJcrContainer extends JcrContainer implements Container.Hierarchical {
 

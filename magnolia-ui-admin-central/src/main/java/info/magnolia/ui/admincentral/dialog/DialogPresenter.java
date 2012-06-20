@@ -43,6 +43,7 @@ import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
+import info.magnolia.ui.widget.dialog.Dialog;
 import info.magnolia.ui.widget.dialog.DialogView;
 
 import java.util.HashMap;
@@ -52,8 +53,7 @@ import com.vaadin.data.Item;
 
 /**
  * DialogPresenter.
- *
- * @author ejervidalo
+ * @version $Id$
  */
 public class DialogPresenter implements DialogView.Presenter {
 
@@ -79,15 +79,17 @@ public class DialogPresenter implements DialogView.Presenter {
         initActions(dialogDefinition);
     }
 
+    @Override
     public void editItem(Item item) {
         this.item = item;
         dialogBuilder.build(dialogDefinition, item, view);
-        shell.openDialog(view.asVaadinComponent());
+        shell.openDialog((Dialog)view.asVaadinComponent());
     }
 
     @Override
     public void closeDialog() {
         shell.removeDialog(view.asVaadinComponent());
+        // clear the view!
     }
 
     @Override

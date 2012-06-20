@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.intergration.jcr;
+package info.magnolia.ui.vaadin.integration.jcr;
 
 import info.magnolia.context.MgnlContext;
 
@@ -60,6 +60,8 @@ public abstract class JcrAbstractAdapter implements JcrItemAdapter {
     private  String jcrNodeIdentifier;
     private  String jcrWorkspace;
     private  String jcrPath;
+
+    private String primaryNodeTypeName;
 
     public JcrAbstractAdapter (Item jcrItem) {
         setPath(jcrItem);
@@ -106,19 +108,27 @@ public abstract class JcrAbstractAdapter implements JcrItemAdapter {
         return this.jcrWorkspace;
     }
 
+    public String getPrimaryNodeTypeName() {
+        return primaryNodeTypeName;
+    }
+
     private void initNode(Node jcrNode) {
         String identifier = null;
         String workspace = null;
+        String primaryNodeTypeName = null;
         try {
             identifier = jcrNode.getIdentifier();
             workspace = jcrNode.getSession().getWorkspace().getName();
+            primaryNodeTypeName = jcrNode.getPrimaryNodeType().getName();
         } catch (RepositoryException e) {
             log.error("Couldn't retrieve identifier of jcr node", e);
             identifier = UN_IDENTIFIED;
             workspace = UN_IDENTIFIED;
+            primaryNodeTypeName = UN_IDENTIFIED;
         }
         this.jcrNodeIdentifier = identifier;
         this.jcrWorkspace = workspace;
+        this.primaryNodeTypeName = primaryNodeTypeName;
     }
 
     private void initProperty(Property jcrProperty) {

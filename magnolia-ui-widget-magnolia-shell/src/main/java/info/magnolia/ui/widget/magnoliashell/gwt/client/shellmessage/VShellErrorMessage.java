@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,40 +31,40 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.dialog.event;
+package info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage;
 
-import com.vaadin.data.Item;
-
-import info.magnolia.ui.framework.event.Event;
-import info.magnolia.ui.framework.event.EventHandler;
+import info.magnolia.ui.widget.jquerywrapper.gwt.client.Callbacks;
+import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryCallback;
+import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShellView;
 
 /**
- * DialogCommitEvent.
+ * Error message.
+ * @author apchelintcev
  *
  */
-public class DialogCommitEvent implements Event<DialogCommitEvent.Handler> {
-
-    private Item item;
-
-    /**
-     * Handler.
-     *
-     */
-    public static interface Handler extends EventHandler {
-        void onDialogCommit(DialogCommitEvent event);
+public class VShellErrorMessage extends VShellMessage {
+    
+    public VShellErrorMessage(final VMagnoliaShellView shell, String text) {
+        super(shell, MessageType.ERROR, text);
+        final JQueryWrapper jq = JQueryWrapper.select(this);
+        jq.ready(Callbacks.create(new JQueryCallback() {
+            @Override
+            public void execute(JQueryWrapper query) {
+                if (shell.getErrorMessageCount() == 0) {
+                    Integer messageHeight = jq.cssInt("height");
+                    shell.shiftViewportsVertically(messageHeight, true);
+                }
+            }
+        }));
     }
-
-    public DialogCommitEvent(Item itemDatasource) {
-        this.item = itemDatasource;
-    }
-
+    
     @Override
-    public void dispatch(Handler handler) {
-        handler.onDialogCommit(this);
+    public void hide() {
+        if (getShell().getErrorMessageCount() < 2) {
+            final Integer messageHeight = JQueryWrapper.select(this).cssInt("height");
+            getShell().shiftViewportsVertically(-messageHeight, false);
+        }
+        super.hide();
     }
-
-    public Item getItem() {
-        return item;
-    }
-
 }

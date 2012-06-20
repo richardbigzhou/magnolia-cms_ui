@@ -31,11 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.magnoliashell.gwt.client;
+package info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage;
 
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.Callbacks;
-import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryCallback;
+import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShellView;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Display;
@@ -63,6 +64,8 @@ public class VShellMessage extends HTML {
         ERROR;
     }
     
+    private final VMagnoliaShellView shell;
+    
     private static final String STYLE_NAME = "v-shell-notification";
     
     private  HandlerRegistration eventPreviewReg = null;
@@ -72,12 +75,17 @@ public class VShellMessage extends HTML {
     private final String text;
     
     
-    public VShellMessage(MessageType type, String text) {
+    public VShellMessage(VMagnoliaShellView shell, MessageType type, String text) {
         super();
         this.type = type;
         this.text = text;
+        this.shell = shell;
         setStyleName(STYLE_NAME);
         construct();
+    }
+    
+    protected final VMagnoliaShellView getShell() {
+        return shell;
     }
     
     private void construct() {
@@ -113,15 +121,19 @@ public class VShellMessage extends HTML {
                 }
             }
         });
+        show();
     }
     
     public void show() {
         getElement().getStyle().setDisplay(Display.NONE);
-        JQueryWrapper.select(getElement()).slideDown(300, null);
+        JQueryWrapper.select(this).slideDown(300, Callbacks.create(new JQueryCallback() {
+            @Override
+            public void execute(JQueryWrapper query) {}
+        }));
     }
     
     public void hide() {
-        JQueryWrapper.select(getElement()).slideUp(300, Callbacks.create(new JQueryCallback() {
+        JQueryWrapper.select(this).slideUp(300, Callbacks.create(new JQueryCallback() {
             @Override
             public void execute(JQueryWrapper query) {
                 removeFromParent();   
