@@ -39,7 +39,7 @@ package info.magnolia.ui.model.dialog.definition;
  *
  * @version $Id$
  */
-public class LinkFieldDefinition extends FieldDefinition {
+public class LinkFieldDefinition extends ConfiguredFieldDefinition {
 
     private String workspace;
     private String extension;

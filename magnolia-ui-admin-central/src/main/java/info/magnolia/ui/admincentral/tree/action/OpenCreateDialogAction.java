@@ -34,18 +34,17 @@
 package info.magnolia.ui.admincentral.tree.action;
 
 import info.magnolia.cms.core.Path;
-import info.magnolia.ui.admincentral.dialog.DialogPresenter;
 import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrTransientNodeAdapter;
+import info.magnolia.ui.widget.dialog.DialogView.Presenter;
 
 import javax.jcr.AccessDeniedException;
 import javax.jcr.Item;
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-
 
 /**
  * Opens a dialog for creating a new node in a tree.
@@ -66,13 +65,13 @@ public class OpenCreateDialogAction extends ActionBase<OpenCreateDialogActionDef
     @Override
     public void execute() throws ActionExecutionException {
 
-        DialogPresenter dialogPresenter = dialogPresenterFactory.createDialog(getDefinition().getDialogName());
+        Presenter dialogPresenter = dialogPresenterFactory.createDialog(getDefinition().getDialogName());
         String name;
         Node transientNode;
         try {
             name = getUniqueNewItemName(parent);
             transientNode = parent.addNode(name, getDefinition().getNodeType());
-            dialogPresenter.showDialog(new JcrTransientNodeAdapter(transientNode));
+            dialogPresenter.editItem(new JcrTransientNodeAdapter(transientNode));
         } catch (AccessDeniedException e) {
             throw new ActionExecutionException(e);
         } catch (ItemNotFoundException e) {

@@ -45,9 +45,7 @@ import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.model.workbench.registry.WorkbenchDefinitionRegistry;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
-import info.magnolia.ui.widget.dialog.event.DialogCommitEvent;
 
 import javax.inject.Inject;
 import javax.jcr.Item;
@@ -103,7 +101,7 @@ public class Workbench implements IsVaadinComponent, WorkbenchView.Presenter {
         this.actionFactory = actionFactory;
 
         view.setPresenter(this);
-            //FIXME this seems to be fired twice.
+
         eventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
 
             @Override

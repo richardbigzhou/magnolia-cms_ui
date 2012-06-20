@@ -37,9 +37,6 @@ import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.ui.admincentral.container.JcrContainer;
 import info.magnolia.ui.admincentral.container.JcrContainerSource;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -58,8 +55,7 @@ import com.vaadin.data.Container;
 
 /**
  * Hierarchical implementation of {@link JcrContainer}.
- * @author fgrilli
- *
+ * @version $Id$
  */
 public class HierarchicalJcrContainer extends JcrContainer implements Container.Hierarchical {
 

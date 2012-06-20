@@ -41,7 +41,6 @@ import info.magnolia.objectfactory.configuration.ComponentProviderConfigurationB
 import info.magnolia.objectfactory.configuration.InstanceConfiguration;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
-import info.magnolia.ui.model.dialog.registry.ConfiguredDialogDefinitionManager;
 import info.magnolia.ui.model.workbench.registry.ConfiguredWorkbenchDefinitionManager;
 
 import java.util.List;
@@ -74,12 +73,10 @@ public class AdminCentralApplication extends Application {
         List<ModuleDefinition> moduleDefinitions = Components.getComponent(ModuleRegistry.class).getModuleDefinitions();
         ComponentProviderConfiguration adminCentralConfig = configurationBuilder.getComponentsFromModules("admin-central", moduleDefinitions);
         ComponentProviderConfiguration defaultWorkbenchConfig = configurationBuilder.getComponentsFromModules("default-workbench", moduleDefinitions);
-        ComponentProviderConfiguration defaultDialogConfig = configurationBuilder.getComponentsFromModules("default-dialog", moduleDefinitions);
 
         log.debug("Combining different configurations...");
         ComponentProviderConfiguration configuration = adminCentralConfig.clone();
         configuration.combine(defaultWorkbenchConfig.clone());
-        configuration.combine(defaultDialogConfig.clone());
 
         configuration.addComponent(InstanceConfiguration.valueOf(Application.class, this));
 
@@ -88,10 +85,6 @@ public class AdminCentralApplication extends Application {
         builder.withConfiguration(configuration);
         builder.withParent((GuiceComponentProvider) Components.getComponentProvider());
         GuiceComponentProvider componentProvider = builder.build();
-
-        log.debug("Loading dialog definitions...");
-        ConfiguredDialogDefinitionManager dialogManager = componentProvider.newInstance(ConfiguredDialogDefinitionManager.class);
-        dialogManager.start();
 
         log.debug("Loading workbench definitions...");
         ConfiguredWorkbenchDefinitionManager workbenchDefinitionManager = componentProvider.newInstance(ConfiguredWorkbenchDefinitionManager.class);

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,40 +31,39 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.dialog.event;
+package info.magnolia.ui.app.messages;
 
-import com.vaadin.data.Item;
+import info.magnolia.ui.framework.app.AbstractApp;
+import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.framework.app.AppView;
+import info.magnolia.ui.framework.location.Location;
 
-import info.magnolia.ui.framework.event.Event;
-import info.magnolia.ui.framework.event.EventHandler;
+import javax.inject.Inject;
 
 /**
- * DialogCommitEvent.
+ * Messages app.
  *
+ * @version $Id$
  */
-public class DialogCommitEvent implements Event<DialogCommitEvent.Handler> {
+public class MessagesApp extends AbstractApp implements MessagesView.Presenter {
 
-    private Item item;
+    private AppContext context;
+    private MessagesView view;
 
-    /**
-     * Handler.
-     *
-     */
-    public static interface Handler extends EventHandler {
-        void onDialogCommit(DialogCommitEvent event);
-    }
-
-    public DialogCommitEvent(Item itemDatasource) {
-        this.item = itemDatasource;
+    @Inject
+    public MessagesApp(MessagesView view) {
+        this.view = view;
     }
 
     @Override
-    public void dispatch(Handler handler) {
-        handler.onDialogCommit(this);
+    public AppView start(AppContext context, Location location) {
+        this.context = context;
+        view.setPresenter(this);
+        return view;
     }
 
-    public Item getItem() {
-        return item;
+    @Override
+    public void onSendMessage(String text) {
+        System.out.printf("Sending message: " + text);
     }
-
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2011 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,54 +33,19 @@
  */
 package info.magnolia.ui.model.dialog.definition;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A tab in a dialog. Holds a list of controls contained in the tab.
+ * TabDefinition.
  *
- * @author tmattsson
+ * @author ejervidalo
  */
-public class TabDefinition {
+public interface TabDefinition extends UiItemDefinition {
 
-    private String name;
-    private String label;
-    private String i18nBasename;
-    private List<FieldDefinition> fields = new ArrayList<FieldDefinition>();
+    public abstract boolean addField(FieldDefinition fieldDefinition);
 
-    public String getName() {
-        return name;
-    }
+    public abstract void setFields(List<FieldDefinition> fields);
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public abstract List<FieldDefinition> getFields();
 
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    public String getI18nBasename() {
-        return i18nBasename;
-    }
-
-    public void setI18nBasename(String i18nBasename) {
-        this.i18nBasename = i18nBasename;
-    }
-
-    public List<FieldDefinition> getFields() {
-        return fields;
-    }
-
-    public void setFields(List<FieldDefinition> fields) {
-        this.fields = fields;
-    }
-
-    public boolean addField(FieldDefinition fieldDefinition) {
-        return fields.add(fieldDefinition);
-    }
 }

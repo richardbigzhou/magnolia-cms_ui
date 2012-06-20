@@ -43,9 +43,6 @@ import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.widget.dialog.Dialog;
-import info.magnolia.ui.widget.dialog.event.DialogCommitEvent;
 import info.magnolia.ui.widget.dialog.DialogView;
 
 import java.util.HashMap;
@@ -55,8 +52,7 @@ import com.vaadin.data.Item;
 
 /**
  * DialogPresenter.
- *
- * @author ejervidalo
+ * @version $Id$
  */
 public class DialogPresenter implements DialogView.Presenter {
 

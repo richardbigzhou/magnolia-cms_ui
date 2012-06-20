@@ -66,6 +66,7 @@ public class DummyViewImpl implements DummyView, IsVaadinComponent {
         tableContainer.addComponent(dialog);
     }
 
+    @Override
     public void setPresenter(DummyView.Presenter presenter) {
         this.presenter = presenter;
     }
