@@ -89,6 +89,7 @@ public class JcrTransientNodeAdapterTest {
         // GIVEN
         final MockNode transientNode = new MockNode(session);
         transientNode.setIsNew(true);
+        transientNode.setName("untitled");
         final String propertyName = "TEST";
         final String propertyValue = "value";
         DefaultProperty property = new DefaultProperty(propertyName, propertyValue);
@@ -102,6 +103,30 @@ public class JcrTransientNodeAdapterTest {
         // THEN
         assertNotNull(result);
         assertEquals(propertyValue, PropertyUtil.getProperty(result, propertyName).getValue().getString());
+        assertEquals("/untitled", result.getPath());
+    }
+
+    @Test
+    public void testGetNodeReturnsPathWithChosenName() throws Exception {
+        // GIVEN
+        final MockNode transientNode = new MockNode(session);
+        transientNode.setIsNew(true);
+        transientNode.setName("untitled");
+        final String propertyName = "TEST";
+        final String propertyValue = "value";
+        DefaultProperty property = new DefaultProperty(propertyName, propertyValue);
+        DefaultProperty jcrNameProperty = new DefaultProperty("jcrName", "foo");
+        final JcrTransientNodeAdapter item = new JcrTransientNodeAdapter(transientNode);
+
+        item.addItemProperty(propertyName,property);
+        item.addItemProperty("jcrName",jcrNameProperty);
+
+        // WHEN
+        final Node result = item.getNode();
+
+        // THEN
+        assertNotNull(result);
+        assertEquals("/foo", result.getPath());
     }
 
 }
