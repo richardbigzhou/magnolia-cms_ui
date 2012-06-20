@@ -79,21 +79,5 @@ public class MagnoliaShellPresenter implements MagnoliaShellView.Presenter {
         final Application app = window.getApplication();
         final ICEPush pusher = new ICEPush();
         window.addComponent(pusher);
-        new Thread() {
-            @Override
-            public void run() {
-                while (true) {
-                    try {
-                        Thread.sleep(5000);
-                        synchronized (app) {
-                            window.showNotification("Test");
-                            pusher.push();
-                        }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            };
-        }.start();
     }
 }
