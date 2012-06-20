@@ -71,7 +71,7 @@ public class SaveDialogAction extends ActionBase<SaveDialogActionDefinition> {
         } catch (RepositoryException e) {
             throw new ActionExecutionException(e);
         }
-        eventBus.fireEvent(new ContentChangedEvent(itemChanged.getItemProperty("workspace").toString(), itemChanged.getItemProperty("path").toString()));
+        eventBus.fireEvent(new ContentChangedEvent(itemChanged.getWorkspace(), itemChanged.getPath()));
 
         presenter.closeDialog();
     }
