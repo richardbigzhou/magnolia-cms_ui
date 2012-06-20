@@ -34,7 +34,6 @@
 package info.magnolia.ui.vaadin.integration.jcr;
 
 import static org.junit.Assert.assertEquals;
-import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 
 import org.junit.Test;
 
