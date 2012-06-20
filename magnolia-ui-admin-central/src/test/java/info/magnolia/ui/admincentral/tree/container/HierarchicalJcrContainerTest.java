@@ -47,7 +47,6 @@ import info.magnolia.ui.model.column.definition.PropertyTypeColumnDefinition;
 import info.magnolia.ui.model.workbench.definition.ItemTypeDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.intergration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.vaadin.intergration.jcr.JcrPropertyAdapter;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -138,21 +137,6 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         assertEquals(node1.getPath(), ((JcrNodeAdapter)item).getJcrItem().getPath());
     }
 
-    @Test
-    public void testGetItem_PropertyType() throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        // GIVEN
-        Node node1 = JcrContainerTest.createNode(rootNode, "node1", "mgnl:content", "name", "name1");
-        node1.getSession().save();
-        String containerItemId = node1.getProperty("name").getPath();
-
-        // WHEN
-        com.vaadin.data.Item item = hierarchicalJcrContainer.getItem(containerItemId);
-
-        // THEN
-
-        assertEquals(node1.getProperty("name").getPath(), ((JcrPropertyAdapter)item).getJcrItem().getPath());
-        assertEquals("name1", ((JcrPropertyAdapter)item).getItemProperty("name").getValue().toString());
-    }
 
     @Test
     public void testContainsId() throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
@@ -160,6 +144,9 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         Node node1 = JcrContainerTest.createNode(rootNode, "node1", "mgnl:content", "name", "name1");
         node1.getSession().save();
         String containerItemId = node1.getPath();
+        //It's not yet in the cash
+        assertEquals(false,hierarchicalJcrContainer.containsId(containerItemId));
+        hierarchicalJcrContainer.getItem(containerItemId);
 
         // WHEN
         boolean res = hierarchicalJcrContainer.containsId(containerItemId);

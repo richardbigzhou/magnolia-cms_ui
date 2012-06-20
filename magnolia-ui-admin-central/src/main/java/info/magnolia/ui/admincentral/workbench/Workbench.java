@@ -134,7 +134,7 @@ public class Workbench implements IsVaadinComponent, WorkbenchView.Presenter {
         if (actionDefinition != null) {
             try {
                 Session session = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace());
-                if(!session.itemExists(selectedItemPath)) {
+                if(selectedItemPath == null || !session.itemExists(selectedItemPath)) {
                     log.debug("{} does not exist anymore. Was it just deleted? Resetting path to root...", selectedItemPath);
                     selectedItemPath = "/";
                 }
