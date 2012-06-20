@@ -36,7 +36,6 @@ package info.magnolia.ui.admincentral.tree.action;
 
 /**
  * Opens a dialog to create an {@link javax.jcr.Node}.
- * @version $id$
  */
 public class OpenCreateDialogActionDefinition extends OpenEditDialogActionDefinition {
 
@@ -49,36 +48,4 @@ public class OpenCreateDialogActionDefinition extends OpenEditDialogActionDefini
     public void setNodeType(String nodeType) {
         this.nodeType = nodeType;
     }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        result = prime * result
-                + ((nodeType == null) ? 0 : nodeType.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (!super.equals(obj)) {
-            return false;
-        }
-        if (!(obj instanceof OpenCreateDialogActionDefinition)) {
-            return false;
-        }
-        OpenCreateDialogActionDefinition other = (OpenCreateDialogActionDefinition) obj;
-        if (nodeType == null) {
-            if (other.nodeType != null) {
-                return false;
-            }
-        } else if (!nodeType.equals(other.nodeType)) {
-            return false;
-        }
-        return true;
-    }
-
 }
