@@ -19,7 +19,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<magnoliaVersion>5.0-SNAPSHOT</magnoliaVersion>
-		<vaadinVersion>6.9.0</vaadinVersion>
+		<vaadinVersion>6.8.0</vaadinVersion>
 		<gwtVersion>2.4.0</gwtVersion>
 	</properties>
 	<scm>
