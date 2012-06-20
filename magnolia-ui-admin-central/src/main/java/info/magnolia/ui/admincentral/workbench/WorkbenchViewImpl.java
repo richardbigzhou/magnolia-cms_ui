@@ -121,7 +121,6 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
         jcrView = jcrViewBuilderProvider.getBuilder().build(workbenchDefinition, ViewType.TREE);
         jcrView.setPresenter(jcrPresenter);
         jcrView.select(StringUtils.defaultIfEmpty(workbenchDefinition.getPath(), "/"));
-        jcrView.asVaadinComponent();
         split.addComponent(jcrView.asVaadinComponent());
 
         final Actionbar actionBar = buildActionbar(workbenchDefinition.getActionbar());

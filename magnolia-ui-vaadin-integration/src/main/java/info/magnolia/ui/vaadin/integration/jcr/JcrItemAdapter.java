@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.intergration.jcr;
+package info.magnolia.ui.vaadin.integration.jcr;
 
 import javax.jcr.RepositoryException;
 

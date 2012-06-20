@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,36 +33,52 @@
  */
 package info.magnolia.ui.admincentral.tree.action;
 
-import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
-import info.magnolia.ui.model.action.ActionBase;
-import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.widget.dialog.DialogView.Presenter;
-
-import javax.jcr.Node;
-
 
 /**
- * Opens a dialog for editing a nodeToEdit in a tree.
- * <p/>
- * TODO: add support for configuring supported itemTypes, maybe in base class where no config means all
- *
+ * Opens a dialog to create an {@link javax.jcr.Node}.
+ * @version $id$
  */
-public class OpenEditDialogAction extends ActionBase<OpenEditDialogActionDefinition> {
+public class OpenCreateDialogActionDefinition extends OpenEditDialogActionDefinition {
 
-    private DialogPresenterFactory dialogPresenterFactory;
+    private String nodeType;
 
-    private Node nodeToEdit;
+    public String getNodeType() {
+        return nodeType;
+    }
 
-    public OpenEditDialogAction(OpenEditDialogActionDefinition definition, Node nodeToEdit, DialogPresenterFactory dialogPresenterFactory) {
-        super(definition);
-        this.nodeToEdit = nodeToEdit;
-        this.dialogPresenterFactory = dialogPresenterFactory;
+    public void setNodeType(String nodeType) {
+        this.nodeType = nodeType;
     }
 
     @Override
-    public void execute() throws ActionExecutionException {
-            Presenter dialogPresenter = dialogPresenterFactory.createDialog(getDefinition().getDialogName());
-            dialogPresenter.editItem(new JcrNodeAdapter(nodeToEdit));
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result
+                + ((nodeType == null) ? 0 : nodeType.hashCode());
+        return result;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (!(obj instanceof OpenCreateDialogActionDefinition)) {
+            return false;
+        }
+        OpenCreateDialogActionDefinition other = (OpenCreateDialogActionDefinition) obj;
+        if (nodeType == null) {
+            if (other.nodeType != null) {
+                return false;
+            }
+        } else if (!nodeType.equals(other.nodeType)) {
+            return false;
+        }
+        return true;
+    }
+
 }

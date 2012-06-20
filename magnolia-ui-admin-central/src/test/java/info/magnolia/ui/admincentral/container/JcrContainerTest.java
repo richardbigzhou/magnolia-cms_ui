@@ -44,8 +44,8 @@ import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactoryImpl
 import info.magnolia.ui.model.column.definition.AbstractColumnDefinition;
 import info.magnolia.ui.model.column.definition.PropertyTypeColumnDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.vaadin.intergration.jcr.DefaultProperty;
-import info.magnolia.ui.vaadin.intergration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;

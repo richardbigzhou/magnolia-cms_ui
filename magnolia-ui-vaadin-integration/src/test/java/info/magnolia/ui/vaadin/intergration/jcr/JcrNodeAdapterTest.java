@@ -38,6 +38,8 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockNode;
 import info.magnolia.test.mock.jcr.MockSession;
+import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.jcr.Node;
 
@@ -47,7 +49,7 @@ import org.junit.Test;
 
 import com.vaadin.data.Property;
 
-public class NodeAdapterTest {
+public class JcrNodeAdapterTest {
 
     private String sessionName = "test";
     private MockSession session;
