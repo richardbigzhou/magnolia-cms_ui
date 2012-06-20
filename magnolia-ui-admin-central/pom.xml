@@ -109,6 +109,16 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+   		<groupId>org.vaadin.addons</groupId>
+   		<artifactId>icepush</artifactId>
+   		<version>0.2.1</version>
+	</dependency>
+	<dependency>
+		<groupId>org.icefaces</groupId>
+		<artifactId>icepush</artifactId>
+		<version>3.0.1</version>
+	</dependency>
     <!-- For Test -->
      <dependency>
         <groupId>junit</groupId>

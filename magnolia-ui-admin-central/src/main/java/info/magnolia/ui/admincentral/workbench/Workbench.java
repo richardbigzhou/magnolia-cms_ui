@@ -99,7 +99,6 @@ public class Workbench implements IsVaadinComponent, WorkbenchView.Presenter {
         this.shell = shell;
         this.workbenchRegistry = workbenchRegistry;
         this.actionFactory = actionFactory;
-
         view.setPresenter(this);
 
         eventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
@@ -107,7 +106,7 @@ public class Workbench implements IsVaadinComponent, WorkbenchView.Presenter {
             @Override
             public void onContentChanged(ContentChangedEvent event) {
                 // this should go into the presenter of the treegrid
-                //view.refreshNode(..)
+                //view.refreshNode(..)sett
                 view.refresh();
             }
         });

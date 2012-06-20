@@ -45,6 +45,7 @@ import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.widget.actionbar.ActionButton;
 import info.magnolia.ui.widget.actionbar.Actionbar;
 
+import java.util.EnumMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -59,6 +60,7 @@ import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
@@ -73,17 +75,19 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
 
     private static final Logger log = LoggerFactory.getLogger(WorkbenchViewImpl.class);
 
+    private final JcrViewBuilderProvider jcrViewBuilderProvider;
+
     private final VerticalLayout root = new VerticalLayout();
 
     private final HorizontalLayout split = new HorizontalLayout();
 
     private final HorizontalLayout toolbar = new HorizontalLayout();
 
+    private final Map<ViewType, JcrView> jcrViews = new EnumMap<ViewType, JcrView>(ViewType.class);
+
+    private ViewType currentViewType = ViewType.TREE;
+
     private Presenter presenter;
-
-    private JcrView jcrView;
-
-    private final JcrViewBuilderProvider jcrViewBuilderProvider;
 
     private final Map<String, ActionbarItemDefinition> actions = new LinkedHashMap<String, ActionbarItemDefinition>();
 
@@ -99,11 +103,10 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
     public WorkbenchViewImpl(final JcrViewBuilderProvider jcrViewBuilderProvider) {
         super();
         this.jcrViewBuilderProvider = jcrViewBuilderProvider;
-
         setSizeFull();
         root.setSizeFull();
-        construct();
         setCompositionRoot(root);
+        construct();
     }
 
     @Override
@@ -111,22 +114,22 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
         if(workbenchDefinition == null) {
             throw new IllegalArgumentException("Trying to init a workbench but got null definition.");
         }
-
         log.debug("Initializing workbench {}...", workbenchDefinition.getName());
+
+        for (final ViewType type : ViewType.values() ) {
+            final JcrView jcrView = jcrViewBuilderProvider.getBuilder().build(workbenchDefinition, type);
+            jcrView.setPresenter(jcrPresenter);
+            jcrView.select(StringUtils.defaultIfEmpty(workbenchDefinition.getPath(), "/"));
+            jcrViews.put(type, jcrView);
+        }
 
         if(StringUtils.isBlank(workbenchDefinition.getWorkspace())) {
             throw new IllegalStateException(workbenchDefinition.getName() + " workbench definition must specify a workspace to connect to. Please, check your configuration.");
         }
 
-        jcrView = jcrViewBuilderProvider.getBuilder().build(workbenchDefinition, ViewType.TREE);
-        jcrView.setPresenter(jcrPresenter);
-        jcrView.select(StringUtils.defaultIfEmpty(workbenchDefinition.getPath(), "/"));
-        split.addComponent(jcrView.asVaadinComponent());
-
         final Actionbar actionBar = buildActionbar(workbenchDefinition.getActionbar());
-
         split.addComponent(actionBar);
-        split.setExpandRatio(jcrView.asVaadinComponent(), 1f);
+        setGridType(ViewType.TREE);
     }
 
     private Actionbar buildActionbar(final ActionbarDefinition actionbarDefinition) {
@@ -183,8 +186,18 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
     private void construct() {
         split.setSizeFull();
         toolbar.setSizeUndefined();
-        toolbar.addComponent(new Button("Tree"));
-        toolbar.addComponent(new Button("List"));
+        toolbar.addComponent(new Button("Tree", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+                setGridType(ViewType.TREE);
+            }
+        }));
+        toolbar.addComponent(new Button("List", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+                setGridType(ViewType.LIST);
+            }
+        }));
         root.addComponent(toolbar);
         root.addComponent(split);
         root.setExpandRatio(split, 1f);
@@ -201,12 +214,22 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
 
     @Override
     public void refreshNode(Node node) {
-        jcrView.refreshNode(node);
+        jcrViews.get(ViewType.TREE).refreshNode(node);
+    }
+
+    @Override
+    public void setGridType(ViewType type) {
+        split.removeComponent(jcrViews.get(currentViewType).asVaadinComponent());
+        final Component c = jcrViews.get(type).asVaadinComponent();
+        split.addComponent(c);
+        split.addComponentAsFirst(c);
+        split.setExpandRatio(c, 1f);
+        this.currentViewType = type;
     }
 
     @Override
     public void refresh() {
-        jcrView.refresh();
+        jcrViews.get(currentViewType).refresh();
     }
 
 }

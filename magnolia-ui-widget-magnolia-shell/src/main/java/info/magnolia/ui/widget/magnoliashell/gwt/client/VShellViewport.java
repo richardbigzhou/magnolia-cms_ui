@@ -69,19 +69,6 @@ import com.vaadin.terminal.gwt.client.UIDL;
  * 
  */
 public class VShellViewport extends ComplexPanel implements Container, ContainerResizedListener {
-
-    /**
-     * Viewports might have different ways of displaying the content. 
-     * This interface helps to define them from outside.
-     * @author apchelintcev
-     *
-     */
-    public interface ContentAnimationDelegate {
-        
-        void show(final Widget w, final Callbacks callbacks);
-        
-        void hide(final Widget w, final Callbacks callbacks);
-    }
     
     private Element modalityCurtain = DOM.createDiv();
     
