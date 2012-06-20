@@ -86,7 +86,6 @@ public class AdminCentralApplication extends Application {
         builder.withParent((GuiceComponentProvider) Components.getComponentProvider());
         GuiceComponentProvider componentProvider = builder.build();
 
-        // init should be in the module, inspired by the template manager - something independent?
         log.debug("Loading workbench definitions...");
         ConfiguredWorkbenchDefinitionManager workbenchDefinitionManager = componentProvider.newInstance(ConfiguredWorkbenchDefinitionManager.class);
         workbenchDefinitionManager.start();

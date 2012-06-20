@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.dialog;
 
+import info.magnolia.objectfactory.Components;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.admincentral.dialog.action.DialogActionFactory;
@@ -57,22 +58,21 @@ public class DialogPresenterFactoryImpl implements DialogPresenterFactory {
     private MagnoliaShell shell;
     private DialogBuilder dialogBuilder;
     private EventBus eventBus;
-    private DialogView view;
     private DialogActionFactory actionFactory;
 
     @Inject
-    public DialogPresenterFactoryImpl(DialogDefinitionRegistry dialogDefinitionRegistry, DialogBuilder dialogBuilder, DialogView view, MagnoliaShell shell, EventBus eventBus, final DialogActionFactory actionFactory) {
+    public DialogPresenterFactoryImpl(DialogDefinitionRegistry dialogDefinitionRegistry, DialogBuilder dialogBuilder, MagnoliaShell shell, EventBus eventBus, final DialogActionFactory actionFactory) {
         this.dialogDefinitionRegistry = dialogDefinitionRegistry;
         this.dialogBuilder = dialogBuilder;
-        this.view = view;
         this.shell = shell;
         this.eventBus = eventBus;
         this.actionFactory = actionFactory;
     }
 
     @Override
-    public DialogPresenter createDialog(String dialogName) {
+    public DialogView.Presenter createDialog(String dialogName) {
 
+        DialogView view = Components.getComponent(DialogView.class);
         DialogDefinition dialogDefinition;
         try {
             dialogDefinition = dialogDefinitionRegistry.get(dialogName);

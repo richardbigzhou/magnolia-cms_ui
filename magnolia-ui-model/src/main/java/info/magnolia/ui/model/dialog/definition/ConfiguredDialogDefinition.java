@@ -40,7 +40,6 @@ import java.util.List;
 
 /**
  * A definition of a configured dialog. Holds a list of tabs.
- * --> align with AppDescriptor, use interface, same for fielddef, tabdef, extract common fields -> UiItem
  */
 public class ConfiguredDialogDefinition implements DialogDefinition {
 

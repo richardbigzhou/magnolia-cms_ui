@@ -67,6 +67,8 @@ public interface DialogView extends IsVaadinComponent {
         EventBus getEventBus();
 
         void closeDialog();
+
+        void editItem(Item item);
     }
 
 

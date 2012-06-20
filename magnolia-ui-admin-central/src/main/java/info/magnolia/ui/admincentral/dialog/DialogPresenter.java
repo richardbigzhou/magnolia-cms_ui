@@ -79,6 +79,7 @@ public class DialogPresenter implements DialogView.Presenter {
         initActions(dialogDefinition);
     }
 
+    @Override
     public void editItem(Item item) {
         this.item = item;
         dialogBuilder.build(dialogDefinition, item, view);
@@ -88,6 +89,7 @@ public class DialogPresenter implements DialogView.Presenter {
     @Override
     public void closeDialog() {
         shell.removeDialog(view.asVaadinComponent());
+        // clear the view!
     }
 
     @Override
