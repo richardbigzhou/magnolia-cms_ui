@@ -44,9 +44,6 @@ import info.magnolia.ui.framework.location.LocationHistoryHandler;
 
 import javax.inject.Inject;
 
-import org.vaadin.artur.icepush.ICEPush;
-
-import com.vaadin.Application;
 import com.vaadin.ui.Window;
 
 /**
@@ -76,8 +73,5 @@ public class MagnoliaShellPresenter implements MagnoliaShellView.Presenter {
         final MagnoliaShell shell = view.getRoot();
         shell.setSizeFull();
         window.addComponent(shell);
-        final Application app = window.getApplication();
-        final ICEPush pusher = new ICEPush();
-        window.addComponent(pusher);
     }
 }
