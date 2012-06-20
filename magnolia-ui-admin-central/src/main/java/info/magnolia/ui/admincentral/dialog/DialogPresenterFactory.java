@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.admincentral.dialog;
 
+import info.magnolia.ui.widget.dialog.DialogView;
+
 
 /**
  * Creates {@link DialogPresenter} instances that are use to display a dialog.
@@ -41,6 +43,6 @@ package info.magnolia.ui.admincentral.dialog;
  */
 public interface DialogPresenterFactory {
 
-    DialogPresenter createDialog(String dialogName);
+    DialogView.Presenter createDialog(String dialogName);
 
 }

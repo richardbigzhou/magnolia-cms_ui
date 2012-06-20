@@ -35,8 +35,7 @@ package info.magnolia.ui.admincentral.container;
 
 import static org.junit.Assert.assertEquals;
 import info.magnolia.context.MgnlContext;
-import info.magnolia.test.mock.MockContext;
-import info.magnolia.test.mock.jcr.MockSession;
+import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.admincentral.column.Column;
 import info.magnolia.ui.admincentral.column.PropertyTypeColumn;
 import info.magnolia.ui.admincentral.tree.model.TreeModel;
@@ -45,7 +44,10 @@ import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactoryImpl
 import info.magnolia.ui.model.column.definition.AbstractColumnDefinition;
 import info.magnolia.ui.model.column.definition.PropertyTypeColumnDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.vaadin.intergration.jcr.DefaultProperty;
+import info.magnolia.ui.vaadin.intergration.jcr.JcrNodeAdapter;
 
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -54,31 +56,37 @@ import javax.jcr.ItemExistsException;
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.ValueFormatException;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.query.RowIterator;
 import javax.jcr.version.VersionException;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.vaadin.data.Property;
 
 /**
  * Main test class for {JcrContainer}
  */
-public class JcrContainerTest {
+public class JcrContainerTest extends RepositoryTestCase{
 
     private JcrContainerTestImpl jcrContainer;
     private WorkbenchDefinition workbenchDefinition;
     private TreeModel treeModel;
-    private String workspace = "test";
+    private String workspace = "config";
     private String colName1 = "name";
     private String colName2 = "shortname";
-    private MockSession session;
+    private Session session;
     Node rootNode;
 
+    @SuppressWarnings("deprecation")
+    @Override
     @Before
-    public void setUp() {
+    public void setUp() throws Exception{
+        super.setUp();
         //Init
         workbenchDefinition = new WorkbenchDefinition();
         workbenchDefinition.setWorkspace(workspace);
@@ -110,17 +118,11 @@ public class JcrContainerTest {
 
 
         //Init session
-        session = new MockSession(workspace);
-        MockContext ctx = new MockContext();
-        ctx.addSession(workspace, session);
-        MgnlContext.setInstance(ctx);
+        session = MgnlContext.getSystemContext().getJCRSession(workspace);
         rootNode = session.getRootNode();
     }
 
-    @After
-    public void tearDown() {
-        MgnlContext.setInstance(null);
-    }
+
 
 
     @Test
@@ -141,7 +143,7 @@ public class JcrContainerTest {
     @Test
     public void testGetJcrItem() throws ItemExistsException, PathNotFoundException, VersionException, ConstraintViolationException, LockException, RepositoryException {
         // GIVEN
-        Node node1 = rootNode.addNode("node1");
+        Node node1 = createNode(rootNode, "node1", "mgnl:content", "name", "name1");
         String containerItemId = node1.getPath();
 
         // WHEN
@@ -149,25 +151,221 @@ public class JcrContainerTest {
 
         // THEN
         assertEquals(true, item.isNode());
-        assertEquals(node1, item);
+        assertEquals(node1.getPath(), item.getPath());
     }
 
 
 
-//    @Test
-//    public void testAddItem() throws ItemExistsException, PathNotFoundException, VersionException, ConstraintViolationException, LockException, RepositoryException {
-//        // GIVEN
-//        Node node1 = rootNode.addNode("node1","mgnl:content");
-//        String containerItemId = node1.getPath();
-//
-//        // WHEN
-//        com.vaadin.data.Item item = jcrContainer.addItem(containerItemId);
-//
-//        // THEN
-//
-//        assertEquals(node1, item);
-//    }
+    @Test
+    public void testGetItem() throws ItemExistsException, PathNotFoundException, VersionException, ConstraintViolationException, LockException, RepositoryException {
+        // GIVEN
+        Node node1 = createNode(rootNode, "node1", "mgnl:content", "name", "name1");
+        node1.getSession().save();
+        String containerItemId = node1.getPath();
 
+        // WHEN
+        com.vaadin.data.Item item = jcrContainer.getItem(containerItemId);
+
+        // THEN
+
+        assertEquals(node1.getPath(), ((JcrNodeAdapter)item).getJcrItem().getPath());
+        assertEquals(true,jcrContainer.isFirstId(containerItemId));
+        assertEquals(true, jcrContainer.isLastId(containerItemId));
+        assertEquals(containerItemId, jcrContainer.getIdByIndex(0));
+        assertEquals(null, jcrContainer.nextItemId(containerItemId));
+        assertEquals(null, jcrContainer.prevItemId(containerItemId));
+    }
+
+    @Test
+    public void testNextItemId() throws ItemExistsException, PathNotFoundException, VersionException, ConstraintViolationException, LockException, RepositoryException {
+        // GIVEN
+        Node node1 = createNode(rootNode, "node1", "mgnl:content", "name", "name1");
+        Node node2 = createNode(rootNode, "node2", "mgnl:content", "name", "name2");
+        node1.getSession().save();
+        String containerItemId1 = node1.getPath();
+        String containerItemId2 = node2.getPath();
+        setSorter("name",true);
+        jcrContainer.getItem(containerItemId1);
+
+        // WHEN
+        String containerItemId2Res = (String)jcrContainer.nextItemId(containerItemId1);
+
+        // THEN
+        assertEquals(containerItemId2, containerItemId2Res);
+        assertEquals(node2.getPath(),((JcrNodeAdapter)jcrContainer.getItem(containerItemId2Res)).getJcrItem().getPath());
+    }
+
+    @Test
+    public void testPrevItemId() throws ItemExistsException, PathNotFoundException, VersionException, ConstraintViolationException, LockException, RepositoryException {
+        // GIVEN
+        Node node1 = createNode(rootNode, "node1", "mgnl:content", "name", "name1");
+        Node node2 = createNode(rootNode, "node2", "mgnl:content", "name", "name2");
+        node1.getSession().save();
+        String containerItemId1 = node1.getPath();
+        String containerItemId2 = node2.getPath();
+        setSorter("name",true);
+        jcrContainer.getItem(containerItemId1);
+        // WHEN
+        String containerItemId1Res = (String)jcrContainer.prevItemId(containerItemId2);
+
+        // THEN
+        assertEquals(containerItemId1, containerItemId1Res);
+    }
+
+
+    @Test
+    public void testFirstItemId() throws ItemExistsException, PathNotFoundException, VersionException, ConstraintViolationException, LockException, RepositoryException {
+        // GIVEN
+        Node node1 = createNode(rootNode, "node1", "mgnl:content", "name", "name1");
+        createNode(rootNode, "node2", "mgnl:content", "name", "name2");
+        node1.getSession().save();
+        String containerItemId1 = node1.getPath();
+        setSorter("name",true);
+        jcrContainer.getItem(containerItemId1);
+
+        // WHEN
+        String containerItemRes = (String)jcrContainer.firstItemId();
+
+        // THEN
+        assertEquals(containerItemId1, containerItemRes);
+    }
+
+
+    @Test
+    public void testLastItemIdd() throws ItemExistsException, PathNotFoundException, VersionException, ConstraintViolationException, LockException, RepositoryException {
+        // GIVEN
+        Node node1 = createNode(rootNode, "node1", "mgnl:content", "name", "name1");
+        Node node2 = createNode(rootNode, "node2", "mgnl:content", "name", "name2");
+        node1.getSession().save();
+        String containerItemId1 = node1.getPath();
+        String containerItemId2 = node2.getPath();
+        setSorter("name",true);
+        jcrContainer.getItem(containerItemId1);
+
+        // WHEN
+        String containerItemRes = (String)jcrContainer.lastItemId();
+
+        // THEN
+        assertEquals(containerItemId2, containerItemRes);
+    }
+
+    @Test
+    public void testIsFirstId() throws ItemExistsException, PathNotFoundException, VersionException, ConstraintViolationException, LockException, RepositoryException {
+        // GIVEN
+        Node node1 = createNode(rootNode, "node1", "mgnl:content", "name", "name1");
+        Node node2 = createNode(rootNode, "node2", "mgnl:content", "name", "name2");
+        node1.getSession().save();
+        String containerItemId1 = node1.getPath();
+        String containerItemId2 = node2.getPath();
+        setSorter("name",true);
+        jcrContainer.getItem(containerItemId1);
+
+        // WHEN
+        boolean containerItemRes1 = (boolean)jcrContainer.isFirstId(containerItemId1);
+        boolean containerItemRes2 = (boolean)jcrContainer.isFirstId(containerItemId2);
+
+        // THEN
+        assertEquals(true, containerItemRes1);
+        assertEquals(false, containerItemRes2);
+    }
+
+
+    @Test
+    public void testIsLastId() throws ItemExistsException, PathNotFoundException, VersionException, ConstraintViolationException, LockException, RepositoryException {
+        // GIVEN
+        Node node1 = createNode(rootNode, "node1", "mgnl:content", "name", "name1");
+        Node node2 = createNode(rootNode, "node2", "mgnl:content", "name", "name2");
+        node1.getSession().save();
+        String containerItemId1 = node1.getPath();
+        String containerItemId2 = node2.getPath();
+        setSorter("name",true);
+        jcrContainer.getItem(containerItemId1);
+
+        // WHEN
+        boolean containerItemRes1 = (boolean)jcrContainer.isLastId(containerItemId1);
+        boolean containerItemRes2 = (boolean)jcrContainer.isLastId(containerItemId2);
+
+        // THEN
+        assertEquals(false, containerItemRes1);
+        assertEquals(true, containerItemRes2);
+    }
+
+
+    @Test
+    public void testAddItem() throws ItemExistsException, PathNotFoundException, VersionException, ConstraintViolationException, LockException, RepositoryException {
+        // GIVEN
+        Node node1 = rootNode.addNode("node1","mgnl:content");
+        String containerItemId = node1.getPath();
+        node1.getSession().save();
+        // WHEN
+        com.vaadin.data.Item item = jcrContainer.addItem(containerItemId);
+
+        // THEN
+
+        assertEquals(node1.getPath(), ((JcrNodeAdapter)item).getPath());
+    }
+
+    @Test
+    public void testGetContainerProperty() throws ItemExistsException, PathNotFoundException, VersionException, ConstraintViolationException, LockException, RepositoryException {
+        // GIVEN
+        Node node1 = createNode(rootNode, "node1", "mgnl:content", "name", "name1");
+        String containerItemId = node1.getPath();
+        node1.getSession().save();
+        // WHEN
+        Property property = jcrContainer.getContainerProperty(containerItemId, "name");
+
+        // THEN
+        assertEquals(true, property instanceof DefaultProperty);
+        assertEquals("name1",property.getValue().toString());
+    }
+
+
+    @Test
+    public void testSort_ascending() throws ItemExistsException, PathNotFoundException, VersionException, ConstraintViolationException, LockException, RepositoryException {
+        // GIVEN
+        Node node1 = createNode(rootNode, "node1", "mgnl:content", "name", "name1");
+        createNode(rootNode, "node2", "mgnl:content", "name", "name2");
+        node1.getSession().save();
+        String containerItemId1 = node1.getPath();
+        boolean[] ascending = {true};
+        // WHEN
+        jcrContainer.sort(Arrays.asList("name").toArray(), ascending);
+
+        // THEN
+        assertEquals(containerItemId1, jcrContainer.firstItemId());
+    }
+
+
+    @Test
+    public void testSort_descending() throws ItemExistsException, PathNotFoundException, VersionException, ConstraintViolationException, LockException, RepositoryException {
+        // GIVEN
+        Node node1 = createNode(rootNode, "node1", "mgnl:content", "name", "name1");
+        Node node2 = createNode(rootNode, "node2", "mgnl:content", "name", "name2");
+        node1.getSession().save();
+        String containerItemId2 = node2.getPath();
+        boolean[] ascending = {false};
+
+        // WHEN
+        jcrContainer.sort(Arrays.asList("name").toArray(), ascending);
+
+        // THEN
+        assertEquals(containerItemId2, jcrContainer.firstItemId());
+    }
+
+
+    /**
+     * Define the sorting criteria.
+     */
+    private void setSorter(String sortingPorperty, boolean ascending) {
+        boolean[] ascendingOrder = {ascending};
+        jcrContainer.sort(Arrays.asList(sortingPorperty).toArray(), ascendingOrder);
+    }
+
+    public static Node createNode(Node rootNode, String nodename, String nodeType, String nodePropertyName, String nodePropertyValue) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException{
+        Node node = rootNode.addNode(nodename,nodeType);
+        node.setProperty(nodePropertyName, nodePropertyValue);
+        return node;
+    }
 
     /**
      * Dummy Implementation of the  {JcrContainer}.

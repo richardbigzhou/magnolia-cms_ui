@@ -46,13 +46,10 @@ import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.model.workbench.registry.WorkbenchDefinitionRegistry;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
-import info.magnolia.ui.vaadin.intergration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.widget.dialog.event.DialogCommitEvent;
 
 import javax.inject.Inject;
 import javax.jcr.Item;
 import javax.jcr.LoginException;
-import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -103,24 +100,13 @@ public class Workbench implements IsVaadinComponent, WorkbenchView.Presenter {
         this.workbenchRegistry = workbenchRegistry;
         this.actionFactory = actionFactory;
         view.setPresenter(this);
-        eventbus.addHandler(DialogCommitEvent.class, new DialogCommitEvent.Handler() {
-            @Override
-            public void onDialogCommit(DialogCommitEvent event) {
-                try {
-                    final Node node = ((JcrNodeAdapter) event.getItem()).getNode();
-                    node.getSession().save();
-                    view.refreshNode(node);
-                }
-                catch (RepositoryException e) {
-                    log.error("Node update failed with exception: {}", e.getMessage());
-                }
-            }
-        });
 
         eventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
 
             @Override
             public void onContentChanged(ContentChangedEvent event) {
+                // this should go into the presenter of the treegrid
+                //view.refreshNode(..)
                 view.refresh();
             }
         });
@@ -146,7 +132,7 @@ public class Workbench implements IsVaadinComponent, WorkbenchView.Presenter {
         if (actionDefinition != null) {
             try {
                 Session session = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace());
-                if(!session.itemExists(selectedItemPath)) {
+                if(selectedItemPath == null || !session.itemExists(selectedItemPath)) {
                     log.debug("{} does not exist anymore. Was it just deleted? Resetting path to root...", selectedItemPath);
                     selectedItemPath = "/";
                 }

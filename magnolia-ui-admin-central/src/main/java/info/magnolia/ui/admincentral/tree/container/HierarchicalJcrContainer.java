@@ -37,9 +37,6 @@ import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.ui.admincentral.container.JcrContainer;
 import info.magnolia.ui.admincentral.container.JcrContainerSource;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.vaadin.intergration.jcr.JcrItemAdapter;
-import info.magnolia.ui.vaadin.intergration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.vaadin.intergration.jcr.JcrPropertyAdapter;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -47,8 +44,6 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.jcr.Item;
-import javax.jcr.Node;
-import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.RowIterator;
 
@@ -168,29 +163,4 @@ public class HierarchicalJcrContainer extends JcrContainer implements Container.
         return Collections.emptyList();
     }
 
-    @Override
-    public JcrItemAdapter getItem(Object itemId) {
-        try {
-            Item item = getJcrContainerSource().getItemByPath((String)itemId);
-            if(item.isNode()) {
-                return new JcrNodeAdapter((Node)item);
-            }else {
-                return new JcrPropertyAdapter((Property)item);
-            }
-         } catch (RepositoryException re) {
-            log.error("",re);
-            return null;
-        }
-    }
-
-    @Override
-    public boolean containsId(Object itemId) {
-        try {
-            getJcrItem((String) itemId);
-            return true;
-        }
-        catch (RepositoryException e) {
-            return false;
-        }
-    }
 }

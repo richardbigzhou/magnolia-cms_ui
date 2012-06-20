@@ -36,6 +36,6 @@ package info.magnolia.ui.model.dialog.definition;
 /**
  * Describes a field which is shows with a simple text in the dialog. The displayed text is the label.
  */
-public class StaticFieldDefinition extends FieldDefinition {
+public class StaticFieldDefinition extends ConfiguredFieldDefinition {
 
 }
