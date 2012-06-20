@@ -245,6 +245,10 @@
           <name>theme</name>
           <value>testtheme</value>
         </param>
+        <param>
+          <name>codeBasePath</name>
+          <value>/.magnolia/admin-central</value>
+        </param>
       </params>
     </servlet>
     <servlet>

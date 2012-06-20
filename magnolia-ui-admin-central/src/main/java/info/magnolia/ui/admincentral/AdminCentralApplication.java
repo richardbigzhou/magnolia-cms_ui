@@ -49,7 +49,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.Application;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Window;
 
@@ -91,14 +90,7 @@ public class AdminCentralApplication extends Application {
         workbenchDefinitionManager.start();
 
         window = new Window("Magnolia shell test");
-        window.setContent(new CssLayout(){
-
-            @Override
-            protected String getCss(Component c) {
-                return super.getCss(c);
-            }
-
-        });
+        window.setContent(new CssLayout());
         window.getContent().setSizeFull();
         ((CssLayout) window.getContent()).setMargin(false);
         setMainWindow(window);

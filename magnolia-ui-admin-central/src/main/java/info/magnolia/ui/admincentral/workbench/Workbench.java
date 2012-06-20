@@ -99,7 +99,6 @@ public class Workbench implements IsVaadinComponent, WorkbenchView.Presenter {
         this.shell = shell;
         this.workbenchRegistry = workbenchRegistry;
         this.actionFactory = actionFactory;
-
         view.setPresenter(this);
 
         eventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
@@ -121,7 +120,6 @@ public class Workbench implements IsVaadinComponent, WorkbenchView.Presenter {
             shell.showError("An error occurred while trying to get workbench [" + id + "] in the registry", e);
             return;
         }
-        view.initWorkbench(workbenchDefinition);
     }
 
     @Override

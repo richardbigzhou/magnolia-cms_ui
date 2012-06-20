@@ -39,20 +39,21 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.UUID;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.vaadin.Application;
 import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.gwt.server.AbstractApplicationServlet;
 import com.vaadin.terminal.gwt.server.AbstractCommunicationManager;
-import com.vaadin.terminal.gwt.server.ApplicationServlet;
 import com.vaadin.terminal.gwt.server.CommunicationManager;
 import com.vaadin.ui.Window;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Vaadin ApplicationServlet that supports running a unique Application per browser window. The applications are
@@ -61,7 +62,7 @@ import org.slf4j.LoggerFactory;
  *
  * @version $Id$
  */
-public class MultipleBrowserWindowsApplicationServlet extends ApplicationServlet {
+public class MultipleBrowserWindowsApplicationServlet extends MagnoliaIcePushServlet {
 
     private static final String ATTRIBUTE_APPLICATION_ID = MultipleBrowserWindowsApplicationServlet.class.getName() + ".applicationId";
     private static final String ATTRIBUTE_FORCE_APPLICATION_ID = MultipleBrowserWindowsApplicationServlet.class.getName() + ".forceApplicationId";
