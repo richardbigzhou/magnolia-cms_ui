@@ -33,12 +33,12 @@
  */
 package info.magnolia.ui.admincentral.workbench;
 
+import info.magnolia.ui.admincentral.jcr.view.JcrView;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 
-import javax.jcr.Item;
-import javax.jcr.Node;
 
+import com.vaadin.data.Item;
 import com.vaadin.ui.ComponentContainer;
 
 
@@ -52,10 +52,13 @@ public interface WorkbenchView extends ComponentContainer {
     void setPresenter(final Presenter presenter);
 
     void initWorkbench(final WorkbenchDefinition definintion);
+
+    void setGridType(final JcrView.ViewType type);
+
     /**
      * Causes a view refresh only if the current node exists in the repository.
      */
-    void refreshNode(final Node node);
+    void refreshItem(final Item item);
     /**
      * TODO review the for two methods to perform the view refresh. Had to add this one to refresh the view
      * in case of item deletion.

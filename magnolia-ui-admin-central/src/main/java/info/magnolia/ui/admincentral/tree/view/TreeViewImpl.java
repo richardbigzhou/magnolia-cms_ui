@@ -39,9 +39,9 @@ import info.magnolia.ui.admincentral.tree.model.TreeModel;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
-import javax.jcr.Item;
-import javax.jcr.Node;
 
+
+import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.ui.Component;
@@ -53,13 +53,13 @@ import com.vaadin.ui.TreeTable;
  */
 public class TreeViewImpl implements TreeView, IsVaadinComponent {
 
-    private JcrBrowser jcrBrowser;
+    private MagnoliaTreeTable jcrBrowser;
 
     private JcrView.Presenter presenter;
 
     public TreeViewImpl(WorkbenchDefinition workbenchDefinition, TreeModel treeModel) {
 
-        jcrBrowser = new JcrBrowser(workbenchDefinition, treeModel);
+        jcrBrowser = new MagnoliaTreeTable(workbenchDefinition, treeModel);
         // next two lines are required to make the browser (TreeTable) react on selection change via mouse
         jcrBrowser.setImmediate(true);
         jcrBrowser.setNullSelectionAllowed(false);
@@ -85,7 +85,7 @@ public class TreeViewImpl implements TreeView, IsVaadinComponent {
 
     private void presenterOnItemSelection(String id) {
         if (presenter != null) {
-            presenter.onItemSelection(jcrBrowser.getJcrItem(id));
+            presenter.onItemSelection(jcrBrowser.getItem(id));
         }
     }
 
@@ -104,10 +104,6 @@ public class TreeViewImpl implements TreeView, IsVaadinComponent {
         jcrBrowser.refresh();
     }
 
-    @Override
-    public String getPathInTree(Item item) {
-        return jcrBrowser.getPathInTree(item);
-    }
 
     @Override
     public Component asVaadinComponent() {
@@ -125,7 +121,7 @@ public class TreeViewImpl implements TreeView, IsVaadinComponent {
     }
 
     @Override
-    public void refreshNode(final Node node) {
-        jcrBrowser.updateNode(node);
+    public void refreshItem(final Item item) {
+        jcrBrowser.updateItem(item);
     }
 }

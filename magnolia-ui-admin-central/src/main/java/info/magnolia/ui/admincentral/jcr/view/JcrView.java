@@ -33,12 +33,11 @@
  */
 package info.magnolia.ui.admincentral.jcr.view;
 
+import com.vaadin.data.Item;
+
 import info.magnolia.ui.admincentral.container.JcrContainer;
 import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
-
-import javax.jcr.Item;
-import javax.jcr.Node;
 
 /**
  * UI component that displays a jcr workspace.
@@ -80,8 +79,6 @@ public interface JcrView extends View, IsVaadinComponent {
 
     void setPresenter(Presenter presenter);
 
-    // TODO should we really ask view?
-    String getPathInTree(Item item);
 
     /**
      * @throws info.magnolia.exception.RuntimeRepositoryException if the path does not exist
@@ -90,7 +87,7 @@ public interface JcrView extends View, IsVaadinComponent {
 
     void refresh();
 
-    void refreshNode(final Node node);
+    void refreshItem(final Item item);
 
     JcrContainer getContainer();
 

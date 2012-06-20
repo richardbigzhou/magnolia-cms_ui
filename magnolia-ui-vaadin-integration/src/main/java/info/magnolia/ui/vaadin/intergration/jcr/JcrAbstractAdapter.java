@@ -98,7 +98,7 @@ public abstract class JcrAbstractAdapter implements JcrItemAdapter {
     }
 
     @Override
-    public String getPath() {
+    public String getItemId() {
         return this.jcrPath;
     }
 

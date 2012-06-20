@@ -74,6 +74,18 @@ public class WorkbenchDefinition implements Serializable {
         return itemTypes;
     }
 
+    /**
+     * Return the itemType filter criteria in order to be used for searching nodes.
+     * like: "jcr:* | myapp:report | my doc"
+     */
+    public String getItemTypesFilter() {
+        String res = " ";
+        for(ItemTypeDefinition item:itemTypes) {
+            res = res +" "+ item.getItemType() + (itemTypes.indexOf(item) < itemTypes.size()-1 ? " | ":"");
+        }
+        return res;
+    }
+
     public void setItemTypes(List<ItemTypeDefinition> itemTypes) {
         this.itemTypes = itemTypes;
     }
