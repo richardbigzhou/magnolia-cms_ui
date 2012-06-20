@@ -280,10 +280,11 @@ public abstract class JcrContainer extends AbstractContainer implements Containe
         }
     }
 
+    /**
+     * Gets the number of visible Items in the Container.
+     */
     @Override
     public int size() {
-        updateCount();
-        // log.debug("size is {}", size);
         return size;
     }
 
@@ -380,7 +381,6 @@ public abstract class JcrContainer extends AbstractContainer implements Containe
 
     @Override
     public Object firstItemId() {
-        updateCount();
         if (size == 0) {
             return null;
         }
@@ -431,7 +431,6 @@ public abstract class JcrContainer extends AbstractContainer implements Containe
 
     @Override
     public boolean removeItem(Object itemId) throws UnsupportedOperationException {
-        // throw new UnsupportedOperationException();
         fireItemSetChange();
         return true;
     }
@@ -521,10 +520,9 @@ public abstract class JcrContainer extends AbstractContainer implements Containe
     /**
      * Triggers a refresh if the current row count has changed.
      */
-    private void updateCount() {
-        int newSize = getRowCount();
+    private void updateCount(long newSize) {
         if (newSize != size) {
-            size = newSize;
+            size = (int)newSize;
             refresh();
         }
 
@@ -532,9 +530,9 @@ public abstract class JcrContainer extends AbstractContainer implements Containe
 
     /**
      * Fetches a page from the data source based on the values of pageLenght and currentOffset.
+     * Update the size.
      */
     protected void getPage() {
-        updateCount();
         cachedItems.clear();
         itemIndexes.clear();
 
@@ -584,8 +582,10 @@ public abstract class JcrContainer extends AbstractContainer implements Containe
                 /* Cache item */
                 itemIndexes.put(rowCount++, id);
                 cachedItems.put(id, new JcrNodeAdapter(node));
-
             }
+
+            /* Set page size */
+            updateCount(iterator.getSize());
         }
         catch (RepositoryException re) {
             throw new RuntimeRepositoryException(re);
@@ -598,32 +598,30 @@ public abstract class JcrContainer extends AbstractContainer implements Containe
     }
 
     /**
-     * Refreshes the container - clears all caches and resets size and offset. Does NOT remove
-     * sorting or filtering rules!
+     * Refreshes the container - resets size and offset.
+     * Does NOT remove sorting or filtering rules!
      */
     public void refresh() {
         currentOffset = 0;
-        cachedItems.clear();
-        itemIndexes.clear();
         fireItemSetChange();
     }
 
-    protected int getRowCount() {
-        //FIXME cache the size cause at present the query to count rows is extremely slow () with "large" (20000+ nodes) data sets and it's called frequently by Vaadin.
-        //On the other hand caching this value prevents flat container changes (add/remove nodes) to be reflected immediately. See http://jira.magnolia-cms.com/browse/SCRUM-151
-        if(size >= 0){
-            return size;
-        }
-
-        QueryResult result = executeQuery(SELECT_CONTENT, Query.JCR_SQL2, 0, 0);
-        try {
-            return Long.valueOf(result.getRows().getSize()).intValue();
-        }
-        catch (RepositoryException e) {
-            throw new RuntimeRepositoryException(e);
-        }
-
-    }
+//    protected int getRowCount() {
+//        //FIXME cache the size cause at present the query to count rows is extremely slow () with "large" (20000+ nodes) data sets and it's called frequently by Vaadin.
+//        //On the other hand caching this value prevents flat container changes (add/remove nodes) to be reflected immediately. See http://jira.magnolia-cms.com/browse/SCRUM-151
+//        if(size >= 0){
+//            return size;
+//        }
+//
+//        QueryResult result = executeQuery(SELECT_CONTENT, Query.JCR_SQL2, 0, 0);
+//        try {
+//            return Long.valueOf(result.getRows().getSize()).intValue();
+//        }
+//        catch (RepositoryException e) {
+//            throw new RuntimeRepositoryException(e);
+//        }
+//
+//    }
 
     protected void setSize(int size) {
         this.size = size;
