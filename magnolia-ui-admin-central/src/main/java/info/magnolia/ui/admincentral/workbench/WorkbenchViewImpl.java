@@ -50,12 +50,12 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
-import javax.jcr.Node;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.data.Item;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -94,7 +94,7 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
     private final JcrView.Presenter jcrPresenter = new JcrView.Presenter() {
 
         @Override
-        public void onItemSelection(javax.jcr.Item item) {
+        public void onItemSelection(Item item) {
             presenter.onItemSelected(item);
         };
     };
@@ -213,11 +213,6 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
     }
 
     @Override
-    public void refreshNode(Node node) {
-        jcrViews.get(ViewType.TREE).refreshNode(node);
-    }
-
-    @Override
     public void setGridType(ViewType type) {
         split.removeComponent(jcrViews.get(currentViewType).asVaadinComponent());
         final Component c = jcrViews.get(type).asVaadinComponent();
@@ -225,6 +220,11 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
         split.addComponentAsFirst(c);
         split.setExpandRatio(c, 1f);
         this.currentViewType = type;
+    }
+
+    @Override
+    public void refreshItem(Item item) {
+        jcrViews.get(currentViewType).refreshItem(item);
     }
 
     @Override

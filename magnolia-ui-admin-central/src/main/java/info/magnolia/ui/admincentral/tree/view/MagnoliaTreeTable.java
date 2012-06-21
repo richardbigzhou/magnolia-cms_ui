@@ -43,17 +43,14 @@ import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.menu.definition.MenuItemDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.jcr.Item;
-import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.data.Item;
 import com.vaadin.event.Action;
 import com.vaadin.event.Transferable;
 import com.vaadin.event.dd.DragAndDropEvent;
@@ -70,7 +67,7 @@ import com.vaadin.ui.TreeTable;
  *
  */
 @SuppressWarnings("serial")
-public class JcrBrowser extends TreeTable {
+public class MagnoliaTreeTable extends TreeTable {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -80,7 +77,7 @@ public class JcrBrowser extends TreeTable {
 
     private final TreeModel treeModel;
 
-    public JcrBrowser(WorkbenchDefinition workbenchDefinition, TreeModel treeModel) {
+    public MagnoliaTreeTable(WorkbenchDefinition workbenchDefinition, TreeModel treeModel) {
         this.workbenchDefinition = workbenchDefinition;
         this.treeModel = treeModel;
 
@@ -107,27 +104,10 @@ public class JcrBrowser extends TreeTable {
         }
 
         setContainerDataSource(container);
-        addContextMenu();
 
         new EditHandler(this);
     }
 
-    public String getPathInTree(Item item) {
-        try {
-            return treeModel.getPathInTree(item);
-        } catch (RepositoryException e) {
-            throw new RuntimeRepositoryException(e);
-        }
-    }
-
-    // TODO this should not be needed, JcrBrowser should have event mechanisms that expose the JCR item not the ContainerItemId
-    public Item getJcrItem(String itemId) {
-        try {
-            return container.getJcrItem(itemId);
-        } catch (RepositoryException e) {
-            throw new RuntimeRepositoryException(e);
-        }
-    }
 
     private  class JcrBrowserAction extends Action {
         private ActionDefinition actionDefinition;
@@ -197,24 +177,6 @@ public class JcrBrowser extends TreeTable {
         }
     }
 
-    private void addContextMenu() {
-        addActionHandler(new Action.Handler() {
-            @Override
-            public Action[] getActions(Object target, Object sender) {
-                // FIXME make that item type, security dependent
-                List<JcrBrowserAction> actions = new ArrayList<JcrBrowserAction>();
-                for (MenuItemDefinition menuItemDefinition : workbenchDefinition.getActions()) {
-                    actions.add(new JcrBrowserAction(menuItemDefinition));
-                }
-
-                return actions.toArray(new Action[actions.size()]);
-            }
-            @Override
-            public void handleAction(Action action, Object sender, Object target) {
-              ((JcrBrowserAction) action).handleAction((String) target);
-            }
-        });
-    }
 
     /**
      * Add Drag and Drop functionality to the provided TreeTable.
@@ -231,7 +193,7 @@ public class JcrBrowser extends TreeTable {
                     Transferable t = event.getTransferable();
 
                     // Make sure the drag source is the same tree
-                    if (t.getSourceComponent() != JcrBrowser.this) {
+                    if (t.getSourceComponent() != MagnoliaTreeTable.this) {
                         return;
                     }
 
@@ -247,9 +209,9 @@ public class JcrBrowser extends TreeTable {
                     HierarchicalJcrContainer containerWrapper = (HierarchicalJcrContainer) getContainerDataSource();
                     // Drop right on an item -> make it a child -
                     if (location == VerticalDropLocation.MIDDLE) {
-                        Item sourceItem = container.getJcrItem((String) sourceItemId);
-                        Item targetItem = container.getJcrItem((String) targetItemId);
-                        if (treeModel.moveItem(sourceItem, targetItem)) {
+                        JcrItemAdapter sourceItem = (JcrItemAdapter)container.getItem((String) sourceItemId);
+                        JcrItemAdapter targetItem = (JcrItemAdapter)container.getItem((String) targetItemId);
+                        if (treeModel.moveItem(sourceItem.getJcrItem(), targetItem.getJcrItem())) {
                             setParent(sourceItemId, targetItemId);
                         }
                     }
@@ -258,9 +220,9 @@ public class JcrBrowser extends TreeTable {
                         Object parentId = containerWrapper.getParent(targetItemId);
                         if (parentId != null) {
                             log.debug("Parent:" + containerWrapper.getItem(parentId));
-                            Item sourceItem = container.getJcrItem((String) sourceItemId);
-                            Item targetItem = container.getJcrItem((String) targetItemId);
-                            if (treeModel.moveItemBefore(sourceItem, targetItem)) {
+                            JcrItemAdapter sourceItem = (JcrItemAdapter)container.getItem((String) sourceItemId);
+                            JcrItemAdapter targetItem = (JcrItemAdapter)container.getItem((String) targetItemId);
+                            if (treeModel.moveItemBefore(sourceItem.getJcrItem(), targetItem.getJcrItem())) {
                                 setParent(sourceItemId, targetItemId);
                             }
                         }
@@ -270,9 +232,9 @@ public class JcrBrowser extends TreeTable {
                     else if (location == VerticalDropLocation.BOTTOM) {
                         Object parentId = containerWrapper.getParent(targetItemId);
                         if (parentId != null) {
-                            Item sourceItem = container.getJcrItem((String) sourceItemId);
-                            Item targetItem = container.getJcrItem((String) targetItemId);
-                            if (treeModel.moveItemAfter(sourceItem, targetItem)) {
+                            JcrItemAdapter sourceItem = (JcrItemAdapter)container.getItem((String) sourceItemId);
+                            JcrItemAdapter targetItem = (JcrItemAdapter)container.getItem((String) targetItemId);
+                            if (treeModel.moveItemAfter(sourceItem.getJcrItem(), targetItem.getJcrItem())) {
                                 setParent(sourceItemId, targetItemId);
                             }
                         }
@@ -292,10 +254,10 @@ public class JcrBrowser extends TreeTable {
         });
     }
 
-    public void select(String path) {
+    public void select(String itemId) {
 
-        if(!container.isRoot(path)){
-            String parent = container.getParent(path);
+        if(!container.isRoot(itemId)){
+            String parent = container.getParent(itemId);
             while (!container.isRoot(parent)) {
                 setCollapsed(parent, false);
                 parent = container.getParent(parent);
@@ -305,7 +267,7 @@ public class JcrBrowser extends TreeTable {
         }
 
         // Select the item
-        select((Object)path);
+        select((Object)itemId);
 
         // Make sure its in view
         // TODO commented out to avoid flicker on selection via place controller while this should definitely be called when navigated by the history
@@ -316,15 +278,14 @@ public class JcrBrowser extends TreeTable {
         container.fireItemSetChange();
     }
 
-    public void updateNode(final Node node) {
-        try {
-            final String id = node.getPath();
-            if (container.containsId(id)) {
-                container.fireItemSetChange();
-            }
-        } catch (RepositoryException e) {
-            throw new RuntimeException("Node search in tree table failed.");
+    public void updateItem(final Item item) {
+        String itemId = ((JcrItemAdapter)item).getItemId();
+        if (container.containsId(itemId)) {
+            container.fireItemSetChange();
+        } else {
+            log.warn("No item found for Id: "+itemId);
         }
+
     }
 
 //    @Override

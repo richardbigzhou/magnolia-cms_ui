@@ -302,7 +302,7 @@ public class JcrContainerTest extends RepositoryTestCase{
 
         // THEN
 
-        assertEquals(node1.getPath(), ((JcrNodeAdapter)item).getPath());
+        assertEquals(node1.getPath(), ((JcrNodeAdapter)item).getItemId());
     }
 
     @Test

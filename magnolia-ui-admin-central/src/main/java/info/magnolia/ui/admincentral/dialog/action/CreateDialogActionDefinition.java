@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,55 +31,21 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.tree.action;
-
-import info.magnolia.ui.model.action.ActionDefinition;
+package info.magnolia.ui.admincentral.dialog.action;
 
 
 /**
- * Opens a dialog to edit an {@link javax.jcr.Node}.
+ * Opens a dialog to create an {@link javax.jcr.Node}.
  */
-public class OpenEditDialogActionDefinition implements ActionDefinition {
+public class CreateDialogActionDefinition extends EditDialogActionDefinition {
 
-    private String dialogName;
+    private String nodeType;
 
-    public String getDialogName() {
-        return dialogName;
+    public String getNodeType() {
+        return nodeType;
     }
 
-    public void setDialogName(String dialogName) {
-        this.dialogName = dialogName;
+    public void setNodeType(String nodeType) {
+        this.nodeType = nodeType;
     }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result
-        + ((dialogName == null) ? 0 : dialogName.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (!(obj instanceof OpenEditDialogActionDefinition)) {
-            return false;
-        }
-        OpenEditDialogActionDefinition other = (OpenEditDialogActionDefinition) obj;
-        if (dialogName == null) {
-            if (other.dialogName != null) {
-                return false;
-            }
-        } else if (!dialogName.equals(other.dialogName)) {
-            return false;
-        }
-        return true;
-    }
-
 }

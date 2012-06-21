@@ -49,7 +49,7 @@ public interface JcrItemAdapter extends Item{
 
     public String getPropertyName();
 
-    public String getPath();
+    public String getItemId();
 
     public javax.jcr.Item getJcrItem() throws RepositoryException;
 
