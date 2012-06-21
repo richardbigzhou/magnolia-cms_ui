@@ -51,7 +51,6 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import javax.jcr.Item;
 import javax.jcr.ItemExistsException;
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
@@ -137,21 +136,6 @@ public class JcrContainerTest extends RepositoryTestCase{
         assertEquals(workspace, jcrContainer.getWorkspace());
         assertEquals(1, jcrContainer.getSortableContainerPropertyIds().size());
         assertEquals(colName1, jcrContainer.getSortableContainerPropertyIds().get(0));
-    }
-
-
-    @Test
-    public void testGetJcrItem() throws ItemExistsException, PathNotFoundException, VersionException, ConstraintViolationException, LockException, RepositoryException {
-        // GIVEN
-        Node node1 = createNode(rootNode, "node1", "mgnl:content", "name", "name1");
-        String containerItemId = node1.getPath();
-
-        // WHEN
-        Item item = jcrContainer.getJcrItem(containerItemId);
-
-        // THEN
-        assertEquals(true, item.isNode());
-        assertEquals(node1.getPath(), item.getPath());
     }
 
 

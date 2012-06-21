@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.app.pages;
 
-import info.magnolia.ui.admincentral.workbench.Workbench;
+import info.magnolia.ui.admincentral.workbench.ContentWorkbench;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 import javax.inject.Inject;
@@ -47,19 +47,19 @@ import com.vaadin.ui.Component;
  */
 @SuppressWarnings("serial")
 public class PagesViewImpl implements PagesView, IsVaadinComponent {
-    
-    private String jcrWorkspaceName = "contacts";
+
+    private String jcrWorkspaceName = "website";
     private Component view;
 
     @Inject
-    public PagesViewImpl(final Workbench workbench) {
+    public PagesViewImpl(final ContentWorkbench workbench) {
         workbench.initWorkbench(jcrWorkspaceName);
         view = workbench.asVaadinComponent();
     }
 
     @Override
     public String getCaption() {
-        return "Workbench";
+        return "Website";
     }
 
     @Override

@@ -67,13 +67,13 @@ import com.vaadin.ui.VerticalLayout;
 
 
 /**
- * Implementation of {@link WorkbenchView}.
+ * Implementation of {@link ContentWorkbenchView}.
  * @version $Id$
  */
 @SuppressWarnings("serial")
-public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView {
+public class ContentWorkbenchViewImpl extends CustomComponent implements ContentWorkbenchView {
 
-    private static final Logger log = LoggerFactory.getLogger(WorkbenchViewImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(ContentWorkbenchViewImpl.class);
 
     private final JcrViewBuilderProvider jcrViewBuilderProvider;
 
@@ -100,7 +100,7 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
     };
 
     @Inject
-    public WorkbenchViewImpl(final JcrViewBuilderProvider jcrViewBuilderProvider) {
+    public ContentWorkbenchViewImpl(final JcrViewBuilderProvider jcrViewBuilderProvider) {
         super();
         this.jcrViewBuilderProvider = jcrViewBuilderProvider;
         setSizeFull();
@@ -220,6 +220,7 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
         split.addComponentAsFirst(c);
         split.setExpandRatio(c, 1f);
         this.currentViewType = type;
+        refresh();
     }
 
     @Override
