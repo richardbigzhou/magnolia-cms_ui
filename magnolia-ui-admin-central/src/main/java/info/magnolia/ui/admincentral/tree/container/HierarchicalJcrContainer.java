@@ -69,7 +69,7 @@ public class HierarchicalJcrContainer extends JcrContainer implements Container.
     public Collection<String> getChildren(Object itemId) {
         try {
             long start = System.currentTimeMillis();
-            Collection<Item> children = getJcrContainerSource().getChildren(getJcrItem((String) itemId));
+            Collection<Item> children = getJcrContainerSource().getChildren(getJcrContainerSource().getItemByPath((String) itemId));
             log.debug("Fetched {} children in {}ms", children.size(), System.currentTimeMillis() - start);
             return createContainerIds(children);
         }
@@ -81,7 +81,7 @@ public class HierarchicalJcrContainer extends JcrContainer implements Container.
     @Override
     public String getParent(Object itemId) {
         try {
-            Item item = getJcrItem((String) itemId);
+            Item item = getJcrContainerSource().getItemByPath((String) itemId);
             if (item.isNode() && item.getDepth() == 0) {
                 return null;
             }
@@ -125,7 +125,7 @@ public class HierarchicalJcrContainer extends JcrContainer implements Container.
     @Override
     public boolean isRoot(Object itemId) {
         try {
-            return getJcrContainerSource().isRoot(getJcrItem((String) itemId));
+            return getJcrContainerSource().isRoot(getJcrContainerSource().getItemByPath((String) itemId));
         }
         catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);
@@ -135,7 +135,7 @@ public class HierarchicalJcrContainer extends JcrContainer implements Container.
     @Override
     public boolean hasChildren(Object itemId) {
         try {
-            return getJcrContainerSource().hasChildren(getJcrItem((String) itemId));
+            return getJcrContainerSource().hasChildren(getJcrContainerSource().getItemByPath((String) itemId));
         }
         catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);

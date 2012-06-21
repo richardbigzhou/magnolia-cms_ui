@@ -47,7 +47,7 @@ import com.vaadin.ui.ComponentContainer;
  * @version $Id$
  *
  */
-public interface WorkbenchView extends ComponentContainer {
+public interface ContentWorkbenchView extends ComponentContainer {
 
     void setPresenter(final Presenter presenter);
 

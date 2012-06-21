@@ -40,6 +40,7 @@ import info.magnolia.ui.admincentral.jcr.view.JcrView;
 import info.magnolia.ui.admincentral.list.container.FlatJcrContainer;
 import info.magnolia.ui.admincentral.tree.model.TreeModel;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 import org.slf4j.Logger;
@@ -154,6 +155,11 @@ public class ListViewImpl implements ListView, IsVaadinComponent {
 
     @Override
     public void refreshItem(Item item) {
-        //FIXME: provide the correct implementation.
+        String itemId = ((JcrItemAdapter)item).getItemId();
+        if (container.containsId(itemId)) {
+            container.fireItemSetChange();
+        } else {
+            log.warn("No item found for Id: "+itemId);
+        }
     }
 }

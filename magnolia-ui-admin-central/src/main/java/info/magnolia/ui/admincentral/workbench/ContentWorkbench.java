@@ -36,9 +36,9 @@ package info.magnolia.ui.admincentral.workbench;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.admincentral.MagnoliaShell;
+import info.magnolia.ui.admincentral.event.ContentChangedEvent;
+import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
-import info.magnolia.ui.admincentral.workbench.event.ContentChangedEvent;
-import info.magnolia.ui.admincentral.workbench.event.ItemSelectedEvent;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
@@ -73,15 +73,15 @@ import com.vaadin.ui.ComponentContainer;
  * @version $Id$
  */
 @SuppressWarnings("serial")
-public class Workbench implements IsVaadinComponent, WorkbenchView.Presenter {
+public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView.Presenter {
 
-    private static final Logger log = LoggerFactory.getLogger(Workbench.class);
+    private static final Logger log = LoggerFactory.getLogger(ContentWorkbench.class);
 
     private WorkbenchDefinition workbenchDefinition;
 
     private final WorkbenchDefinitionRegistry workbenchRegistry;
 
-    private final WorkbenchView view;
+    private final ContentWorkbenchView view;
 
     private final EventBus eventBus;
 
@@ -92,7 +92,7 @@ public class Workbench implements IsVaadinComponent, WorkbenchView.Presenter {
     private String selectedItemId;
 
     @Inject
-    public Workbench(final WorkbenchView view, final EventBus eventbus, final MagnoliaShell shell, final WorkbenchDefinitionRegistry workbenchRegistry, final WorkbenchActionFactory actionFactory) {
+    public ContentWorkbench(final ContentWorkbenchView view, final EventBus eventbus, final MagnoliaShell shell, final WorkbenchDefinitionRegistry workbenchRegistry, final WorkbenchActionFactory actionFactory) {
         super();
         this.view = view;
         this.eventBus = eventbus;
