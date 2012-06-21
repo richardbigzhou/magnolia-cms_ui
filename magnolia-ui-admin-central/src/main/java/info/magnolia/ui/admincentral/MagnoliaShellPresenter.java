@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral;
 
+import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.admincentral.app.simple.DefaultLocationHistoryMapper;
 import info.magnolia.ui.admincentral.app.simple.LocalMessageDispatcher;
 import info.magnolia.ui.admincentral.app.simple.ShellAppController;
@@ -69,7 +70,7 @@ public class MagnoliaShellPresenter implements MagnoliaShellView.Presenter {
         DefaultLocationHistoryMapper locationHistoryMapper = new DefaultLocationHistoryMapper(appLauncherLayoutManager);
         LocationHistoryHandler locationHistoryHandler = new LocationHistoryHandler(locationHistoryMapper, view.getRoot());
         locationHistoryHandler.register(locationController, eventBus, new DefaultLocation("shell", "applauncher", ""));
-        messagesManager.registerMessagesListener(MessagesManager.DUMMY_USER_ID, messageDispatcher);
+        messagesManager.registerMessagesListener(MgnlContext.getUser().getName(), messageDispatcher);
     }
 
     public void start(final Window window) {

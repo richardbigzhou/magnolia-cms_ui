@@ -35,6 +35,7 @@ package info.magnolia.ui.app.messages;
 
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
@@ -50,23 +51,28 @@ import com.vaadin.ui.VerticalLayout;
 public class MessagesViewImpl implements MessagesView, IsVaadinComponent {
 
     private MessagesView.Presenter presenter;
-    private final VerticalLayout tableContainer;
+    private final VerticalLayout layout;
 
     public MessagesViewImpl() {
-        tableContainer = new VerticalLayout();
+        layout = new VerticalLayout();
         Label label = new Label("<center>Messages App</center>", Label.CONTENT_XHTML);
-        tableContainer.addComponent(label);
+        layout.addComponent(label);
 
         final TextArea textArea = new TextArea();
-        tableContainer.addComponent(textArea);
-        Button dialog = new Button("Send message", new Button.ClickListener() {
-
+        layout.addComponent(textArea);
+        layout.setComponentAlignment(label, Alignment.TOP_CENTER);
+        layout.addComponent(new Button("Warning", new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                presenter.onSendMessage((String) textArea.getValue());
+                presenter.handleWarning("Super warning");
             }
-        });
-        tableContainer.addComponent(dialog);
+        }));
+        layout.addComponent(new Button("Error", new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                presenter.handleError("Super error");
+            }
+        }));
     }
 
     @Override
@@ -81,6 +87,6 @@ public class MessagesViewImpl implements MessagesView, IsVaadinComponent {
 
     @Override
     public Component asVaadinComponent() {
-        return tableContainer;
+        return layout;
     }
 }

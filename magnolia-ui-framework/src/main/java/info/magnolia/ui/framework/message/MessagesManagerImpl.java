@@ -33,25 +33,24 @@
  */
 package info.magnolia.ui.framework.message;
 
-
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.inject.Singleton;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
+
 /**
  * Implementation of {@link MessagesManager}.
- * @author p4elkin
  *
+ * @version $Id$
  */
 @Singleton
 public class MessagesManagerImpl implements MessagesManager {
-    
-    private int idCounter = 0; 
-    
-    private Map<String, List<MessageListener>> listeners = new ConcurrentHashMap<String, List<MessageListener>>();
+
+    private int idCounter = 0;
+
+    private final ListMultimap<String, MessageListener> listeners = ArrayListMultimap.create();
 
     @Override
     public synchronized void sendMessageToAllUsers(Message message) {
@@ -59,50 +58,32 @@ public class MessagesManagerImpl implements MessagesManager {
             sendMessage(userId, message);
         }
     }
-    
-    @Override
+
     public synchronized void sendMessage(String userId, Message message) {
         final List<MessageListener> listenerList = listeners.get(userId);
-        if (listenerList != null) {
-            for (final MessageListener listener : listenerList) {
-                if (listener != null) {
-                    message.setId(generateMessageId());
-                    listener.handleMessage(message);   
-                }
+        for (final MessageListener listener : listenerList) {
+            if (listener != null) {
+                message.setId(generateMessageId());
+                listener.handleMessage(message);
             }
         }
     }
 
     @Override
     public synchronized void registerMessagesListener(String userId, MessageListener listener) {
-        List<MessageListener> listenerList = listeners.get(userId);
-        if (listenerList == null) {
-            listenerList = new LinkedList<MessageListener>();
-            listeners.put(userId, listenerList);
-        }
-        listenerList.add(listener);
+        listeners.put(userId, listener);
     }
-    
+
     @Override
     public synchronized void unregisterMessagesListener(String userId, MessageListener listener) {
-        final List<MessageListener> listenerList = listeners.get(userId);
-        if (listenerList != null) {
-            listenerList.remove(listener);
-            if (listenerList.isEmpty()) {
-                listeners.remove(userId);
-            }
-        }
+        listeners.remove(userId, listener);
     }
-    
-    private synchronized String generateMessageId() {
-        return String.valueOf(idCounter++);
-    }
-    
+
     @Override
     public void removeMessage(String id) {
-        
+
     }
-    
+
     @Override
     public int getMessageCountForUser(String userId) {
         return 0;
@@ -113,4 +94,7 @@ public class MessagesManagerImpl implements MessagesManager {
         return null;
     }
 
+    private synchronized String generateMessageId() {
+        return String.valueOf(idCounter++);
+    }
 }

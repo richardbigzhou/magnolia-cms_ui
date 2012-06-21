@@ -31,14 +31,16 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.event;
+package info.magnolia.ui.framework.message;
+
+import info.magnolia.ui.framework.event.EventHandler;
 
 /**
  * Handler of {link {@link MessageEvent}.
- * @author p4elkin
  *
+ * @version $Id$
  */
 public interface MessageEventHandler extends EventHandler {
-    
+
     void handleMessage(MessageEvent event);
 }

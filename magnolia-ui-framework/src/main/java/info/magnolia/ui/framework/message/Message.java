@@ -33,28 +33,27 @@
  */
 package info.magnolia.ui.framework.message;
 
-
 /**
  * A message.
- * 
+ *
  * @version $Id$
  */
 public class Message {
 
     private String id;
-    
+
     private long timestamp;
-    
+
     private MessageType type;
-    
+
     private String subject;
-    
+
     private String message;
-    
+
     public long getTimestamp() {
         return timestamp;
     }
-    
+
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
@@ -86,7 +85,7 @@ public class Message {
     public void setId(String id) {
         this.id = id;
     }
-    
+
     public String getId() {
         return id;
     }

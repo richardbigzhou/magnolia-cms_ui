@@ -62,22 +62,20 @@ import java.util.List;
  */
 public interface MessagesManager {
 
-    final static String DUMMY_USER_ID = "TEST";
-    
     /**
      * MessageListener.
-     * @author p4elkin
      *
+     * @version $Id$
      */
     public interface MessageListener {
-        
+
         void handleMessage(Message message);
     }
-    
+
     void registerMessagesListener(String userId, MessageListener listener);
-    
+
     void unregisterMessagesListener(String userId, MessageListener listener);
-    
+
     int getMessageCountForUser(String userId);
 
     List<Message> getMessagesForUser(String userId);

@@ -46,9 +46,14 @@ public interface MessagesView extends AppView {
 
     /**
      * Presenter interface for MessagesView.
+     *
+     * @version $Id$
      */
     public interface Presenter {
 
-        void onSendMessage(String text);
+        void handleWarning(String warning);
+
+        void handleError(String error);
+
     }
 }

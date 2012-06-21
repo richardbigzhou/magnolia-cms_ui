@@ -33,16 +33,11 @@
  */
 package info.magnolia.ui.admincentral.app.assets;
 
-import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 import javax.inject.Inject;
 
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
@@ -58,24 +53,11 @@ public class AssetsViewImpl implements AssetsView, View, IsVaadinComponent {
     private VerticalLayout layout = new VerticalLayout();
 
     private Presenter presenter;
-    
+
     @Inject
-    public AssetsViewImpl(final MagnoliaShell shell) {
+    public AssetsViewImpl() {
         Label label = new Label("<center>Assets App</center>", Label.CONTENT_XHTML);
         layout.addComponent(label);
-        layout.setComponentAlignment(label, Alignment.TOP_CENTER);
-        layout.addComponent(new Button("Warning", new ClickListener() {
-            @Override
-            public void buttonClick(ClickEvent event) {
-                getPresenter().handleWarning("Super warning");
-            }
-        }));
-        layout.addComponent(new Button("Error", new ClickListener() {
-            @Override
-            public void buttonClick(ClickEvent event) {
-                getPresenter().handleError("Super error");
-            }
-        }));
     }
 
     @Override

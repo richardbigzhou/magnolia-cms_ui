@@ -33,14 +33,10 @@
  */
 package info.magnolia.ui.admincentral.app.assets;
 
-import java.util.Date;
-
 import info.magnolia.ui.framework.app.AbstractApp;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.AppView;
 import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.message.Message;
-import info.magnolia.ui.framework.message.MessageType;
 
 import javax.inject.Inject;
 
@@ -51,10 +47,10 @@ import javax.inject.Inject;
  */
 public class AssetsApp extends AbstractApp implements AssetsView.Presenter {
 
+    private AppContext context;
+
     private final AssetsView view;
 
-    private AppContext context;
-    
     @Inject
     public AssetsApp(AssetsView view) {
         this.view = view;
@@ -65,25 +61,5 @@ public class AssetsApp extends AbstractApp implements AssetsView.Presenter {
         view.setPresenter(this);
         this.context = context;
         return view;
-    }
-
-    @Override
-    public void handleError(String error) {
-        final Message msg = new Message();
-        msg.setMessage("Test");
-        msg.setType(MessageType.ERROR);
-        msg.setTimestamp(new Date().getTime());
-        msg.setSubject("whatever");
-        context.sendLocalMessage(msg);
-    }
-
-    @Override
-    public void handleWarning(String warning) {
-        final Message msg = new Message();
-        msg.setMessage("Test");
-        msg.setType(MessageType.WARNING);
-        msg.setTimestamp(new Date().getTime());
-        msg.setSubject("whatever");
-        context.sendLocalMessage(msg);
     }
 }

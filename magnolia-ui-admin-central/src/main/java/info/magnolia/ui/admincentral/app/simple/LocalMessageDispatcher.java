@@ -34,7 +34,7 @@
 package info.magnolia.ui.admincentral.app.simple;
 
 import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.event.MessageEvent;
+import info.magnolia.ui.framework.message.MessageEvent;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessagesManager.MessageListener;
 
@@ -45,33 +45,35 @@ import javax.inject.Inject;
 
 /**
  * LocalMessageDispatcher.
- * 
- * @author p4elkin
- * 
+ *
+ * @version $Id$
  */
 public class LocalMessageDispatcher implements MessageListener {
 
     private BlockingQueue<Message> messageQueue = new LinkedBlockingQueue<Message>();
-    
+
     private EventBus eventBus;
-    
+
     private final Thread messageQueueThread = new Thread() {
+
         @Override
         public void run() {
-            while (true) {
+            while (!Thread.currentThread().isInterrupted()) {
                 try {
                     final Message msg = messageQueue.take();
                     eventBus.fireEvent(new MessageEvent(msg));
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    Thread.currentThread().interrupt();
                 }
             }
-        };
+        }
     };
-    
-    @Inject 
+
+    @Inject
     public LocalMessageDispatcher(final EventBus eventBus) {
         this.eventBus = eventBus;
+        messageQueueThread.setName("LocalMessageDispatcher");
+        messageQueueThread.setDaemon(true);
         messageQueueThread.start();
     }
 

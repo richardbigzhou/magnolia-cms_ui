@@ -33,10 +33,14 @@
  */
 package info.magnolia.ui.app.messages;
 
+import java.util.Date;
+
 import info.magnolia.ui.framework.app.AbstractApp;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.AppView;
 import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.framework.message.Message;
+import info.magnolia.ui.framework.message.MessageType;
 
 import javax.inject.Inject;
 
@@ -63,7 +67,22 @@ public class MessagesApp extends AbstractApp implements MessagesView.Presenter {
     }
 
     @Override
-    public void onSendMessage(String text) {
-        System.out.printf("Sending message: " + text);
+    public void handleError(String error) {
+        final Message msg = new Message();
+        msg.setMessage(error);
+        msg.setType(MessageType.ERROR);
+        msg.setTimestamp(new Date().getTime());
+        msg.setSubject("whatever");
+        context.sendLocalMessage(msg);
+    }
+
+    @Override
+    public void handleWarning(String warning) {
+        final Message msg = new Message();
+        msg.setMessage(warning);
+        msg.setType(MessageType.WARNING);
+        msg.setTimestamp(new Date().getTime());
+        msg.setSubject("whatever");
+        context.sendLocalMessage(msg);
     }
 }

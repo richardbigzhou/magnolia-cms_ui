@@ -31,29 +31,28 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.event;
+package info.magnolia.ui.framework.message;
 
-import info.magnolia.ui.framework.message.Message;
-
+import info.magnolia.ui.framework.event.Event;
 
 /**
  * Message event.
- * @author p4elkin
  *
+ * @version $Id$
  */
 public class MessageEvent implements Event<MessageEventHandler> {
 
     private Message message;
-    
+
     public MessageEvent(final Message message) {
         this.message = message;
     }
-    
+
     @Override
     public void dispatch(MessageEventHandler handler) {
         handler.handleMessage(this);
     }
-    
+
     public Message getMessage() {
         return message;
     }

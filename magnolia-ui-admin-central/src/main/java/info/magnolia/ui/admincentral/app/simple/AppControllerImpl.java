@@ -308,7 +308,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
         @Override
         public void sendLocalMessage(Message message) {
-            messagesManager.sendMessage(MessagesManager.DUMMY_USER_ID, message);
+            messagesManager.sendMessageToAllUsers(message);
         }
 
         @Override
