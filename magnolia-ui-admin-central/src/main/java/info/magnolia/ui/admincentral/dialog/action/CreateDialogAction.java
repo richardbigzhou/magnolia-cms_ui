@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,38 +31,61 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.tree.action;
+package info.magnolia.ui.admincentral.dialog.action;
 
+import info.magnolia.cms.core.Path;
 import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrTransientNodeAdapter;
 import info.magnolia.ui.widget.dialog.DialogView.Presenter;
 
+import javax.jcr.AccessDeniedException;
+import javax.jcr.Item;
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
-
+import javax.jcr.RepositoryException;
 
 /**
- * Opens a dialog for editing a nodeToEdit in a tree.
- * <p/>
- * TODO: add support for configuring supported itemTypes, maybe in base class where no config means all
- *
+ * Opens a dialog for creating a new node in a tree.
+ * @version $Id$
  */
-public class OpenEditDialogAction extends ActionBase<OpenEditDialogActionDefinition> {
+public class CreateDialogAction extends ActionBase<CreateDialogActionDefinition> {
 
     private DialogPresenterFactory dialogPresenterFactory;
 
-    private Node nodeToEdit;
+    private Node parent;
 
-    public OpenEditDialogAction(OpenEditDialogActionDefinition definition, Node nodeToEdit, DialogPresenterFactory dialogPresenterFactory) {
+    public CreateDialogAction(CreateDialogActionDefinition definition, Node parent, DialogPresenterFactory dialogPresenterFactory) {
         super(definition);
-        this.nodeToEdit = nodeToEdit;
+        this.parent = parent;
         this.dialogPresenterFactory = dialogPresenterFactory;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
+
         Presenter dialogPresenter = dialogPresenterFactory.createDialog(getDefinition().getDialogName());
-        dialogPresenter.editItem(new JcrNodeAdapter(nodeToEdit));
+        String name;
+        Node transientNode;
+        try {
+            name = getUniqueNewItemName(parent);
+            transientNode = parent.addNode(name, getDefinition().getNodeType());
+            dialogPresenter.editItem(new JcrTransientNodeAdapter(transientNode));
+        } catch (AccessDeniedException e) {
+            throw new ActionExecutionException(e);
+        } catch (ItemNotFoundException e) {
+            throw new ActionExecutionException(e);
+        } catch (RepositoryException e) {
+            throw new ActionExecutionException(e);
+        }
+
+    }
+
+    private String getUniqueNewItemName(final Item item) throws RepositoryException, ItemNotFoundException, AccessDeniedException {
+        if(item == null) {
+            throw new IllegalArgumentException("Item cannot be null.");
+        }
+        return Path.getUniqueLabel(item.getSession(), item.getPath(), "untitled");
     }
 }

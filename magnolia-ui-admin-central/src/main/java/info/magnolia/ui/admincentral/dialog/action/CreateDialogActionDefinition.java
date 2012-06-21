@@ -31,13 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.tree.action;
+package info.magnolia.ui.admincentral.dialog.action;
 
 
 /**
  * Opens a dialog to create an {@link javax.jcr.Node}.
  */
-public class OpenCreateDialogActionDefinition extends OpenEditDialogActionDefinition {
+public class CreateDialogActionDefinition extends EditDialogActionDefinition {
 
     private String nodeType;
 

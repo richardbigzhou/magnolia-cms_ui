@@ -59,7 +59,7 @@ import com.vaadin.data.Property.ValueChangeEvent;
  * Implementation of an {@link com.vaadin.data.Item} wrapping/representing a <strong>transient</strong> {@link javax.jcr.Node}.
  * Implements {Property.ValueChangeListener} in order to inform/change JCR property when a
  * Vaadin property has changed.
- * <p>The special property {@value #JCR_NAME} is reserved and can only be used to set the new node name. If not found, the name (that is the relative path)
+ * <p>The special property {@value #JCR_NAME} is reserved and can only be used to set the new node name. If not found, the default name (that is the relative path)
  * of the underlying transient node is used (which is likely to be something like <code>untitled</code>).
  */
 @SuppressWarnings("serial")
@@ -131,7 +131,7 @@ public class JcrTransientNodeAdapter extends JcrNodeAdapter {
                     newNodeRelPath = properties.get(JCR_NAME).getValue().toString();
                 }
             }
-            log.info("Path to be saved is [{}]", newNodeRelPath);
+            log.debug("Path to be saved is [{}]", newNodeRelPath);
             final Session session = MgnlContext.getJCRSession(getWorkspace());
             final Node unsavedNode = session.getRootNode().addNode(newNodeRelPath, getPrimaryNodeTypeName());
 

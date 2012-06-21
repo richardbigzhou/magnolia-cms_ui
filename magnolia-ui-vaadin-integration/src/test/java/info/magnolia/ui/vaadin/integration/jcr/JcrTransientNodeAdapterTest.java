@@ -115,11 +115,11 @@ public class JcrTransientNodeAdapterTest {
         final String propertyName = "TEST";
         final String propertyValue = "value";
         DefaultProperty property = new DefaultProperty(propertyName, propertyValue);
-        DefaultProperty jcrNameProperty = new DefaultProperty("jcrName", "foo");
+        DefaultProperty jcrNameProperty = new DefaultProperty(JcrTransientNodeAdapter.JCR_NAME, "foo");
         final JcrTransientNodeAdapter item = new JcrTransientNodeAdapter(transientNode);
 
         item.addItemProperty(propertyName,property);
-        item.addItemProperty("jcrName",jcrNameProperty);
+        item.addItemProperty(JcrTransientNodeAdapter.JCR_NAME,jcrNameProperty);
 
         // WHEN
         final Node result = item.getNode();

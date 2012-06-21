@@ -511,7 +511,7 @@
             <sv:value>2ac8c90f-3586-4739-9ac3-0f732119969f</sv:value>
           </sv:property>
           <sv:property sv:name="class" sv:type="String">
-            <sv:value>info.magnolia.ui.admincentral.tree.action.OpenEditDialogActionDefinition</sv:value>
+            <sv:value>info.magnolia.ui.admincentral.dialog.action.EditDialogActionDefinition</sv:value>
           </sv:property>
           <sv:property sv:name="dialogName" sv:type="String">
             <sv:value>ui-contacts-app:contact</sv:value>
@@ -1095,7 +1095,7 @@
                       <sv:value>a9a066bb-9b2c-44a7-85ae-aa870ac7ada8</sv:value>
                     </sv:property>
                     <sv:property sv:name="class" sv:type="String">
-                      <sv:value>info.magnolia.ui.admincentral.tree.action.OpenCreateDialogActionDefinition</sv:value>
+                      <sv:value>info.magnolia.ui.admincentral.dialog.action.CreateDialogActionDefinition</sv:value>
                     </sv:property>
                     <sv:property sv:name="dialogName" sv:type="String">
                       <sv:value>ui-contacts-app:contact</sv:value>
@@ -1240,7 +1240,7 @@
                       <sv:value>7e5806c4-f9e8-4137-bec4-27b2328f7ace</sv:value>
                     </sv:property>
                     <sv:property sv:name="class" sv:type="String">
-                      <sv:value>info.magnolia.ui.admincentral.tree.action.OpenEditDialogActionDefinition</sv:value>
+                      <sv:value>info.magnolia.ui.admincentral.dialog.action.EditDialogActionDefinition</sv:value>
                     </sv:property>
                     <sv:property sv:name="dialogName" sv:type="String">
                       <sv:value>ui-contacts-app:contact</sv:value>
