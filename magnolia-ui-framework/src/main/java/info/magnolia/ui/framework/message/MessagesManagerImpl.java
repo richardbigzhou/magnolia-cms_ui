@@ -50,6 +50,7 @@ public class MessagesManagerImpl implements MessagesManager {
 
     private int idCounter = 0;
 
+    private final ListMultimap<String, Message> messages = ArrayListMultimap.create();
     private final ListMultimap<String, MessageListener> listeners = ArrayListMultimap.create();
 
     @Override
@@ -60,10 +61,10 @@ public class MessagesManagerImpl implements MessagesManager {
     }
 
     public synchronized void sendMessage(String userId, Message message) {
-        final List<MessageListener> listenerList = listeners.get(userId);
-        for (final MessageListener listener : listenerList) {
+        message.setId(generateMessageId());
+        messages.put(userId, message);
+        for (final MessageListener listener : listeners.get(userId)) {
             if (listener != null) {
-                message.setId(generateMessageId());
                 listener.handleMessage(message);
             }
         }
@@ -91,7 +92,7 @@ public class MessagesManagerImpl implements MessagesManager {
 
     @Override
     public List<Message> getMessagesForUser(String userId) {
-        return null;
+        return messages.get(userId);
     }
 
     private synchronized String generateMessageId() {

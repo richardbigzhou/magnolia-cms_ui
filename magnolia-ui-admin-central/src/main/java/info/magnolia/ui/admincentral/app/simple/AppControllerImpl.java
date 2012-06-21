@@ -41,6 +41,7 @@ import javax.inject.Singleton;
 
 import com.vaadin.ui.ComponentContainer;
 
+import info.magnolia.context.MgnlContext;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.framework.app.App;
 import info.magnolia.ui.framework.app.AppContext;
@@ -308,12 +309,16 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
         @Override
         public void sendLocalMessage(Message message) {
-            messagesManager.sendMessageToAllUsers(message);
+            messagesManager.sendMessage(MgnlContext.getUser().getName(), message);
         }
 
         @Override
         public void broadcastMessage(Message message) {
             messagesManager.sendMessageToAllUsers(message);
+        }
+
+        @Override
+        public void showConfirmationMessage(String message) {
         }
     }
 }

@@ -51,9 +51,18 @@ public interface MessagesView extends AppView {
      */
     public interface Presenter {
 
-        void handleWarning(String warning);
+        void showConfirmationMessage(String message);
 
-        void handleError(String error);
+        void handleLocalInfo(String info);
 
+        void handleGlobalInfo(String info);
+
+        void handleLocalWarning(String warning);
+
+        void handleGlobalWarning(String warning);
+
+        void handleLocalError(String error);
+
+        void handleGlobalError(String error);
     }
 }

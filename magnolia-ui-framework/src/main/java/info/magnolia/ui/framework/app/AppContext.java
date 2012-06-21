@@ -47,8 +47,10 @@ public interface AppContext {
     void openAppView(AppView view);
 
     void setAppLocation(Location location);
-    
+
     void sendLocalMessage(Message message);
-    
+
     void broadcastMessage(Message message);
+
+    void showConfirmationMessage(String message);
 }

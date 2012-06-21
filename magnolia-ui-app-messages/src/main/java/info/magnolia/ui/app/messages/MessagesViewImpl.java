@@ -61,16 +61,50 @@ public class MessagesViewImpl implements MessagesView, IsVaadinComponent {
         final TextArea textArea = new TextArea();
         layout.addComponent(textArea);
         layout.setComponentAlignment(label, Alignment.TOP_CENTER);
-        layout.addComponent(new Button("Warning", new Button.ClickListener() {
+
+        layout.addComponent(new Button("Local Info", new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                presenter.handleWarning("Super warning");
+                presenter.handleLocalInfo("Local Info - " + textArea.getValue());
             }
         }));
-        layout.addComponent(new Button("Error", new Button.ClickListener() {
+        layout.addComponent(new Button("Global Info", new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                presenter.handleError("Super error");
+                presenter.handleGlobalInfo("Global Info - " + textArea.getValue());
+            }
+        }));
+
+        layout.addComponent(new Button("Local Warning", new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                presenter.handleLocalWarning("Local Warning - " + textArea.getValue());
+            }
+        }));
+        layout.addComponent(new Button("Global Warning", new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                presenter.handleGlobalWarning("Global Warning - " + textArea.getValue());
+            }
+        }));
+
+        layout.addComponent(new Button("Local Error", new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                presenter.handleLocalError("Local Error - " + textArea.getValue());
+            }
+        }));
+        layout.addComponent(new Button("Global Error", new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                presenter.handleGlobalError("Global Error - " + textArea.getValue());
+            }
+        }));
+
+        layout.addComponent(new Button("Confirmation message", new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                presenter.showConfirmationMessage("Confirmation - " + textArea.getValue());
             }
         }));
     }

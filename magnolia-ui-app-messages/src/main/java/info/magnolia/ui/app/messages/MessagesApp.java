@@ -67,7 +67,52 @@ public class MessagesApp extends AbstractApp implements MessagesView.Presenter {
     }
 
     @Override
-    public void handleError(String error) {
+    public void showConfirmationMessage(String message) {
+        context.showConfirmationMessage(message);
+    }
+
+    @Override
+    public void handleLocalInfo(String info) {
+        final Message msg = new Message();
+        msg.setMessage(info);
+        msg.setType(MessageType.INFO);
+        msg.setTimestamp(new Date().getTime());
+        msg.setSubject("whatever");
+        context.sendLocalMessage(msg);
+    }
+
+    @Override
+    public void handleGlobalInfo(String info) {
+        final Message msg = new Message();
+        msg.setMessage(info);
+        msg.setType(MessageType.INFO);
+        msg.setTimestamp(new Date().getTime());
+        msg.setSubject("whatever");
+        context.broadcastMessage(msg);
+    }
+
+    @Override
+    public void handleLocalWarning(String warning) {
+        final Message msg = new Message();
+        msg.setMessage(warning);
+        msg.setType(MessageType.WARNING);
+        msg.setTimestamp(new Date().getTime());
+        msg.setSubject("whatever");
+        context.sendLocalMessage(msg);
+    }
+
+    @Override
+    public void handleGlobalWarning(String warning) {
+        final Message msg = new Message();
+        msg.setMessage(warning);
+        msg.setType(MessageType.WARNING);
+        msg.setTimestamp(new Date().getTime());
+        msg.setSubject("whatever");
+        context.broadcastMessage(msg);
+    }
+
+    @Override
+    public void handleLocalError(String error) {
         final Message msg = new Message();
         msg.setMessage(error);
         msg.setType(MessageType.ERROR);
@@ -77,12 +122,12 @@ public class MessagesApp extends AbstractApp implements MessagesView.Presenter {
     }
 
     @Override
-    public void handleWarning(String warning) {
+    public void handleGlobalError(String error) {
         final Message msg = new Message();
-        msg.setMessage(warning);
-        msg.setType(MessageType.WARNING);
+        msg.setMessage(error);
+        msg.setType(MessageType.ERROR);
         msg.setTimestamp(new Date().getTime());
         msg.setSubject("whatever");
-        context.sendLocalMessage(msg);
+        context.broadcastMessage(msg);
     }
 }

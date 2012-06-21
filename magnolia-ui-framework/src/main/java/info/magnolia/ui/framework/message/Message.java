@@ -50,6 +50,8 @@ public class Message {
 
     private String message;
 
+    private boolean cleared;
+
     public long getTimestamp() {
         return timestamp;
     }
@@ -88,5 +90,13 @@ public class Message {
 
     public String getId() {
         return id;
+    }
+
+    public boolean isCleared() {
+        return cleared;
+    }
+
+    public void setCleared(boolean cleared) {
+        this.cleared = cleared;
     }
 }
