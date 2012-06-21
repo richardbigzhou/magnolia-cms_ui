@@ -122,7 +122,6 @@ public class JcrTransientNodeAdapter extends JcrNodeAdapter {
     @Override
     public Node getNode() {
 
-        //if called at the end of the creation process we should be able to create an actual node
         try {
             String newNodeRelPath = StringUtils.substringAfter(getItemId(), "/");
             if(properties.containsKey(JCR_NAME)) {
