@@ -54,7 +54,7 @@ public class DialogBuilder {
     /**
      * @return DialogView populated with values from DialogDevinition and Item.
      */
-    public DialogView build(DialogDefinition dialogDefinition, Item item, DialogView view, DialogView.Presenter presenter) {
+    public DialogView build(DialogDefinition dialogDefinition, Item item, DialogView view) {
 
         view.setItemDataSource(item);
 

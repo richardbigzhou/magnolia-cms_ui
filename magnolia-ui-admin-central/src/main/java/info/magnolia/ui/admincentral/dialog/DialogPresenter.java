@@ -82,7 +82,7 @@ public class DialogPresenter implements DialogView.Presenter {
     @Override
     public void editItem(final Item item) {
         this.item = item;
-        dialogBuilder.build(dialogDefinition, item, view, this);
+        dialogBuilder.build(dialogDefinition, item, view);
         shell.openDialog((Dialog)view.asVaadinComponent());
     }
 

@@ -127,7 +127,6 @@ public class JcrTransientNodeAdapter extends JcrNodeAdapter {
     public Node getNode() {
 
         try {
-            final Session session = MgnlContext.getJCRSession(getWorkspace());
             final Node unsavedNode;
             if (isNew) {
                 String newNodeRelPath = StringUtils.substringAfter(getItemId(), "/");
@@ -139,6 +138,7 @@ public class JcrTransientNodeAdapter extends JcrNodeAdapter {
                     }
                 }
                 log.debug("Path to be saved is [{}]", newNodeRelPath);
+                final Session session = MgnlContext.getJCRSession(getWorkspace());
                 unsavedNode = session.getRootNode().addNode(newNodeRelPath, getPrimaryNodeTypeName());
             }
             else {
@@ -173,13 +173,4 @@ public class JcrTransientNodeAdapter extends JcrNodeAdapter {
         }
     }
 
-    @Override
-    public javax.jcr.Item getJcrItem() throws RepositoryException{
-        throw new UnsupportedOperationException("This operation is not supported for a transient item.");
-    }
-
-    @Override
-    public void save() throws RepositoryException {
-        throw new UnsupportedOperationException("This operation is not supported for a transient item.");
-    }
 }
