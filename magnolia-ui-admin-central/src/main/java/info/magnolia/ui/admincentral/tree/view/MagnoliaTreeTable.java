@@ -104,7 +104,6 @@ public class MagnoliaTreeTable extends TreeTable {
         }
 
         setContainerDataSource(container);
-//        addContextMenu();
 
         new EditHandler(this);
     }
@@ -178,24 +177,6 @@ public class MagnoliaTreeTable extends TreeTable {
         }
     }
 
-//    private void addContextMenu() {
-//        addActionHandler(new Action.Handler() {
-//            @Override
-//            public Action[] getActions(Object target, Object sender) {
-//                // FIXME make that item type, security dependent
-//                List<JcrBrowserAction> actions = new ArrayList<JcrBrowserAction>();
-//                for (MenuItemDefinition menuItemDefinition : workbenchDefinition.getActions()) {
-//                    actions.add(new JcrBrowserAction(menuItemDefinition));
-//                }
-//
-//                return actions.toArray(new Action[actions.size()]);
-//            }
-//            @Override
-//            public void handleAction(Action action, Object sender, Object target) {
-//              ((JcrBrowserAction) action).handleAction((String) target);
-//            }
-//        });
-//    }
 
     /**
      * Add Drag and Drop functionality to the provided TreeTable.
