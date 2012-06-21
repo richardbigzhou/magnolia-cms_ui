@@ -106,7 +106,6 @@ public class Workbench implements IsVaadinComponent, WorkbenchView.Presenter {
             @Override
             public void onContentChanged(ContentChangedEvent event) {
                 // this should go into the presenter of the treegrid
-                //view.refreshNode(..)sett
                 view.refresh();
             }
         });

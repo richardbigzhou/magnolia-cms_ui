@@ -56,16 +56,21 @@ import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 
 /**
- * Base implementation of an {@link com.vaadin.data.Item} wrapping/representing a <strong>transient</strong> {@link javax.jcr.Node}.
+ * Implementation of an {@link com.vaadin.data.Item} wrapping/representing a <strong>transient</strong> {@link javax.jcr.Node}.
  * Implements {Property.ValueChangeListener} in order to inform/change JCR property when a
  * Vaadin property has changed.
+ * <p>The special property {@value #JCR_NAME} is reserved and can only be used to set the new node name. If not found, the name (that is the relative path)
+ * of the underlying transient node is used (which is likely to be something like <code>untitled</code>).
  */
 @SuppressWarnings("serial")
 public class JcrTransientNodeAdapter extends JcrNodeAdapter {
 
+    protected static final String JCR_NAME = "jcrName";
+
     private static final Logger log = LoggerFactory.getLogger(JcrTransientNodeAdapter.class);
 
     private Map<String, Property> properties = new HashMap<String,Property>();
+
     /**
      * Will throw an {@link IllegalArgumentException} if the node is <strong>not transient</strong>, that is if calling {@code node.isNew()} returns <code>false</code>.
      */
@@ -116,14 +121,26 @@ public class JcrTransientNodeAdapter extends JcrNodeAdapter {
      */
     @Override
     public Node getNode() {
-        log.debug("calling getNode for {}", getItemId());
+
         //if called at the end of the creation process we should be able to create an actual node
         try {
-            Session session = MgnlContext.getJCRSession(getWorkspace());
+            String newNodeRelPath = StringUtils.substringAfter(getItemId(), "/");
+            if(properties.containsKey(JCR_NAME)) {
+                if(newNodeRelPath.contains("/")) {
+                    newNodeRelPath = StringUtils.substringBefore(newNodeRelPath, "/") + "/"+ properties.get(JCR_NAME).getValue().toString();
+                } else {
+                    newNodeRelPath = properties.get(JCR_NAME).getValue().toString();
+                }
+            }
+            log.info("Path to be saved is [{}]", newNodeRelPath);
+            final Session session = MgnlContext.getJCRSession(getWorkspace());
+            final Node unsavedNode = session.getRootNode().addNode(newNodeRelPath, getPrimaryNodeTypeName());
 
-            Node unsavedNode = session.getRootNode().addNode(StringUtils.substringAfter(getItemId(), "/"), getPrimaryNodeTypeName());
             for(Entry<String, Property> entry: properties.entrySet()) {
                 //TODO fgrilli: check the value type and create the correct jcr object for the value
+                if(JCR_NAME.equals(entry.getKey())) {
+                    continue;
+                }
                 unsavedNode.setProperty(entry.getKey(), entry.getValue().toString());
             }
             return unsavedNode;

@@ -86,7 +86,6 @@ public class OpenCreateDialogAction extends ActionBase<OpenCreateDialogActionDef
         if(item == null) {
             throw new IllegalArgumentException("Item cannot be null.");
         }
-        String parentPath = "/".equals(item.getPath()) ? item.getPath(): item.getParent().getPath();
-        return Path.getUniqueLabel(item.getSession(), parentPath, "untitled");
+        return Path.getUniqueLabel(item.getSession(), item.getPath(), "untitled");
     }
 }

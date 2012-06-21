@@ -33,7 +33,11 @@
  */
 package info.magnolia.ui.admincentral.dialog.action;
 
+import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import info.magnolia.ui.admincentral.workbench.event.ContentChangedEvent;
 import info.magnolia.ui.framework.event.EventBus;
@@ -50,7 +54,7 @@ import com.vaadin.data.Item;
  * @version $Id$
  */
 public class SaveDialogAction extends ActionBase<SaveDialogActionDefinition> {
-
+    private static final Logger log = LoggerFactory.getLogger(SaveDialogAction.class);
     private Item item;
     private EventBus eventBus;
     private Presenter presenter;
@@ -67,11 +71,17 @@ public class SaveDialogAction extends ActionBase<SaveDialogActionDefinition> {
     public void execute() throws ActionExecutionException {
         JcrNodeAdapter itemChanged = (JcrNodeAdapter) item;
         try {
-            itemChanged.getNode().getSession().save();
+            final Node node = itemChanged.getNode();
+            if(node.isNew()) {
+                log.debug("Creating new node at {}", node.getPath());
+            } else {
+                log.debug("Updating node at {}", node.getPath());
+            }
+            node.getSession().save();
         } catch (RepositoryException e) {
             throw new ActionExecutionException(e);
         }
-        eventBus.fireEvent(new ContentChangedEvent(itemChanged.getItemProperty("workspace").toString(), itemChanged.getItemProperty("path").toString()));
+        eventBus.fireEvent(new ContentChangedEvent(itemChanged.getWorkspace(), itemChanged.getItemId()));
 
         presenter.closeDialog();
     }

@@ -91,8 +91,7 @@ public class TreeViewImpl implements TreeView, IsVaadinComponent {
 
     /**
      *
-     * @param path
-     *            relative to the tree root, must start with /
+     * @param path relative to the tree root, must start with /
      */
     @Override
     public void select(String path) {
