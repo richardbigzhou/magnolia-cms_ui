@@ -71,26 +71,32 @@ public class JcrTransientNodeAdapter extends JcrNodeAdapter {
 
     private Map<String, Property> properties = new HashMap<String,Property>();
 
-    /**
-     * Will throw an {@link IllegalArgumentException} if the node is <strong>not transient</strong>, that is if calling {@code node.isNew()} returns <code>false</code>.
-     */
-    public JcrTransientNodeAdapter(final Node jcrNode) throws RepositoryException {
-       super(jcrNode);
+    private boolean isNew;
 
-       if(!jcrNode.isNew()) {
-            throw new IllegalArgumentException(jcrNode.getPath() + " is not a transient node, that is one which temporarily lives in JCR session's transient storage and has not yet been saved.");
-       }
+    public JcrTransientNodeAdapter(final Node jcrNode) {
+       super(jcrNode);
+       this.isNew = jcrNode.isNew();
     }
 
     @Override
     public Property getItemProperty(Object id) {
-        Object value = "";
+        DefaultProperty property;
+
         if(properties.containsKey(id)) {
-            value = properties.get(id);
+            property = (DefaultProperty) properties.get(id);
         }
-        DefaultProperty property = new DefaultProperty((String)id, value);
-        // add PropertyChange Listener
-        property.addListener(this);
+        else if (!isNew) {
+            property = (DefaultProperty) super.getItemProperty(id);
+            properties.put((String) id, property);
+        }
+        else {
+            Object value = "";
+
+            property = new DefaultProperty((String)id, value);
+            // add PropertyChange Listener
+            property.addListener(this);
+        }
+
         return property;
     }
 
@@ -123,32 +129,41 @@ public class JcrTransientNodeAdapter extends JcrNodeAdapter {
     public Node getNode() {
 
         try {
-            String newNodeRelPath = StringUtils.substringAfter(getItemId(), "/");
-            if(properties.containsKey(JCR_NAME)) {
-                if(newNodeRelPath.contains("/")) {
-                    newNodeRelPath = StringUtils.substringBefore(newNodeRelPath, "/") + "/"+ properties.get(JCR_NAME).getValue().toString();
-                } else {
-                    newNodeRelPath = properties.get(JCR_NAME).getValue().toString();
-                }
-            }
-            log.debug("Path to be saved is [{}]", newNodeRelPath);
             final Session session = MgnlContext.getJCRSession(getWorkspace());
-            final Node unsavedNode = session.getRootNode().addNode(newNodeRelPath, getPrimaryNodeTypeName());
+            final Node unsavedNode;
+            if (isNew) {
+                String newNodeRelPath = StringUtils.substringAfter(getItemId(), "/");
+                if(properties.containsKey(JCR_NAME)) {
+                    if(newNodeRelPath.contains("/")) {
+                        newNodeRelPath = StringUtils.substringBefore(newNodeRelPath, "/") + "/"+ properties.get(JCR_NAME).getValue().toString();
+                    } else {
+                        newNodeRelPath = properties.get(JCR_NAME).getValue().toString();
+                    }
+                }
+                log.debug("Path to be saved is [{}]", newNodeRelPath);
+                unsavedNode = session.getRootNode().addNode(newNodeRelPath, getPrimaryNodeTypeName());
+            }
+            else {
+                unsavedNode = super.getNode();
+            }
 
             for(Entry<String, Property> entry: properties.entrySet()) {
-                //TODO fgrilli: check the value type and create the correct jcr object for the value
-                if(JCR_NAME.equals(entry.getKey())) {
-                    continue;
-                }
-                unsavedNode.setProperty(entry.getKey(), entry.getValue().toString());
+                    //TODO fgrilli: check the value type and create the correct jcr object for the value
+                    if(JCR_NAME.equals(entry.getKey())) {
+                        continue;
+                    }
+                    unsavedNode.setProperty(entry.getKey(), entry.getValue().toString());
             }
+
             return unsavedNode;
 
-        } catch (LoginException e) {
+        }
+        catch (LoginException e) {
             throw new RuntimeRepositoryException(e);
         } catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);
         }
+
     }
 
     @Override

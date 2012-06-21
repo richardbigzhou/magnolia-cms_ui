@@ -68,8 +68,6 @@ public interface DialogView extends IsVaadinComponent {
         void closeDialog();
 
         void editItem(Item item);
-
-        boolean isModified();
     }
 
 
