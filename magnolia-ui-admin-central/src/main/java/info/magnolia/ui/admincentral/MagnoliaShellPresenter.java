@@ -39,7 +39,6 @@ import info.magnolia.ui.admincentral.app.simple.ShellAppController;
 import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.layout.AppLayoutManager;
 import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.event.MessageEvent;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.location.LocationHistoryHandler;
@@ -71,7 +70,6 @@ public class MagnoliaShellPresenter implements MagnoliaShellView.Presenter {
         LocationHistoryHandler locationHistoryHandler = new LocationHistoryHandler(locationHistoryMapper, view.getRoot());
         locationHistoryHandler.register(locationController, eventBus, new DefaultLocation("shell", "applauncher", ""));
         messagesManager.registerMessagesListener(MessagesManager.DUMMY_USER_ID, messageDispatcher);
-        eventBus.addHandler(MessageEvent.class, view.getRoot());
     }
 
     public void start(final Window window) {

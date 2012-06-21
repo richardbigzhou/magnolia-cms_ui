@@ -85,6 +85,7 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
                 setActiveViewport(getAppViewport());
             }
         });
+        this.eventBus.addHandler(MessageEvent.class, this);
     }
 
     @Override
