@@ -65,12 +65,8 @@ public class TreeViewImpl implements TreeView, IsVaadinComponent {
         jcrBrowser.setNullSelectionAllowed(false);
         jcrBrowser.setSizeFull();
         jcrBrowser.addListener(new ItemClickEvent.ItemClickListener() {
-
             @Override
             public void itemClick(ItemClickEvent event) {
-
-                // TODO JcrBrowser should have a click event of its own that sends a JCR item instead of a
-                // ContainerItemId
                 presenterOnItemSelection((String) event.getItemId());
             }
         });

@@ -33,15 +33,11 @@
  */
 package info.magnolia.ui.admincentral.tree.view;
 
-import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.ui.admincentral.column.Column;
 import info.magnolia.ui.admincentral.column.EditHandler;
 import info.magnolia.ui.admincentral.tree.container.HierarchicalJcrContainer;
 import info.magnolia.ui.admincentral.tree.model.TreeModel;
-import info.magnolia.ui.model.action.ActionDefinition;
-import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.model.menu.definition.MenuItemDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
@@ -51,13 +47,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
-import com.vaadin.event.Action;
 import com.vaadin.event.Transferable;
 import com.vaadin.event.dd.DragAndDropEvent;
 import com.vaadin.event.dd.DropHandler;
 import com.vaadin.event.dd.acceptcriteria.AcceptAll;
 import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
-import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.gwt.client.ui.dd.VerticalDropLocation;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.TreeTable;
@@ -71,14 +65,11 @@ public class MagnoliaTreeTable extends TreeTable {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    private WorkbenchDefinition workbenchDefinition;
-
     private HierarchicalJcrContainer container;
 
     private final TreeModel treeModel;
 
     public MagnoliaTreeTable(WorkbenchDefinition workbenchDefinition, TreeModel treeModel) {
-        this.workbenchDefinition = workbenchDefinition;
         this.treeModel = treeModel;
 
         setSizeUndefined();
@@ -106,75 +97,6 @@ public class MagnoliaTreeTable extends TreeTable {
         setContainerDataSource(container);
 
         new EditHandler(this);
-    }
-
-
-    private  class JcrBrowserAction extends Action {
-        private ActionDefinition actionDefinition;
-
-        private JcrBrowserAction(MenuItemDefinition menuItemDefinition) {
-            super(menuItemDefinition.getLabel());
-            // TODO: PERFORMANCE: use ExternalResourceCache
-            // TODO: CODE: impl hashcode & equals
-            super.setIcon(new ExternalResource(MgnlContext.getContextPath() + menuItemDefinition.getIcon()) {
-                @Override
-                public int hashCode() {
-                    return getURL().hashCode();
-                }
-                @Override
-                public boolean equals(Object obj) {
-                    if (this == obj) {
-                        return true;
-                    }
-                    if (obj == null || !(obj instanceof ExternalResource)) {
-                        return false;
-                    }
-                    ExternalResource that = (ExternalResource) obj;
-                    return getURL().equals(that.getURL());
-                }
-            });
-            actionDefinition = menuItemDefinition.getActionDefinition();
-        }
-
-        public void handleAction(String itemId) {
-            if(itemId == null) {
-                //assume jcrBrowser contains no data do we need to start from root.
-                itemId = "/";
-            }
-            try {
-                try {
-                    treeModel.execute(actionDefinition, container.getJcrItem(itemId));
-
-                    // Refresh the tree
-                    container.fireItemSetChange();
-                }
-                catch (RepositoryException e) {
-                    log.error("Can't access content.", e);
-                }
-            }
-            catch (ActionExecutionException e) {
-                log.error("Can't execute action.", e);
-            }
-        }
-
-        @Override
-        public int hashCode() {
-            return (getIcon() == null ? 7 : getIcon().hashCode()) + (getCaption() == null ? 13 : getCaption().hashCode()) + (actionDefinition == null ? 17 : actionDefinition.hashCode());
-        }
-
-        @Override
-        public boolean equals(Object arg0) {
-            if (arg0 == this) {
-                return true;
-            }
-            if (arg0 == null || !(arg0 instanceof JcrBrowserAction)) {
-                return false;
-            }
-            JcrBrowserAction that = (JcrBrowserAction) arg0;
-            return (getIcon() == null ? that.getIcon() == null : getIcon().equals(that.getIcon()))
-                && (getCaption() == null ? that.getCaption() == null : getCaption().equals(that.getCaption()))
-                && (actionDefinition == null ? that.actionDefinition == null : actionDefinition.equals(that.actionDefinition));
-        }
     }
 
 
