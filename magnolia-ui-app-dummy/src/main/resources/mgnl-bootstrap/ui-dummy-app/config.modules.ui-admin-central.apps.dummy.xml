@@ -7,7 +7,7 @@
     <sv:value>mix:lockable</sv:value>
   </sv:property>
   <sv:property sv:name="jcr:uuid" sv:type="String">
-    <sv:value>119c99d8-1e22-42e4-8aca-f9328eeae078</sv:value>
+    <sv:value>008271e7-7d83-486d-989c-504751bb893b</sv:value>
   </sv:property>
   <sv:property sv:name="appClass" sv:type="String">
     <sv:value>info.magnolia.ui.app.dummy.DummyApp</sv:value>

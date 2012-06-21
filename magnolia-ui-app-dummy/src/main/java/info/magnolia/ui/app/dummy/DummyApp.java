@@ -36,6 +36,7 @@ package info.magnolia.ui.app.dummy;
 import info.magnolia.ui.framework.app.AbstractApp;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.AppView;
+import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 
 import javax.inject.Inject;
@@ -48,19 +49,18 @@ import javax.inject.Inject;
 public class DummyApp extends AbstractApp implements DummyView.Presenter {
 
     private AppContext context;
-    private DummyView dummyView;
+    private DummyView view;
 
     @Inject
-    public DummyApp(DummyView dummyView) {
-        this.dummyView = dummyView;
+    public DummyApp(DummyView view) {
+        this.view = view;
     }
 
     @Override
     public AppView start(AppContext context, Location location) {
         this.context = context;
-        System.out.println("SIMPLE DUMMY APP STARTED - token is: " + location.toString());
-        DummyViewImpl view = new DummyViewImpl();
         view.setPresenter(this);
+        System.out.println("SIMPLE DUMMY APP STARTED - token is: " + location.toString());
         return view;
     }
 
@@ -78,5 +78,6 @@ public class DummyApp extends AbstractApp implements DummyView.Presenter {
     public void onButtonClick() {
         DummyTabView view = new DummyTabView();
         context.openAppView(view);
+        context.setAppLocation(new DefaultLocation("app", "dummy", view.getCaption()));
     }
 }

@@ -34,7 +34,7 @@
 package info.magnolia.ui.widget.magnoliashell.gwt.client;
 
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.VShellMessage.MessageType;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VShellMessage.MessageType;
 
 import java.util.Iterator;
 import java.util.Set;
@@ -93,9 +93,9 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
             register("navigate", new Method() {
                 @Override
                 public void invoke(String methodName, Object[] params) {
-                    final String historyToken = String.valueOf(params[0]);
-                    final String title = params.length > 1 ? String.valueOf(params[1]) : "";
-                    view.navigate(historyToken, title);
+                    final String prefix = String.valueOf(params[0]);
+                    final String token = params.length > 1 ? String.valueOf(params[1]) : "";
+                    view.navigate(prefix, token);
                 }
             });
             
@@ -163,13 +163,13 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
     }
 
     @Override
-    public void loadShellApp(final ShellAppType type, final String param) {
-        proxy.call("activateShellApp", type.name().toLowerCase(), param);
+    public void loadShellApp(final ShellAppType type, final String token) {
+        proxy.call("activateShellApp", type.name().toLowerCase(), token);
     }
     
     @Override
-    public void loadApp(String fragment) {
-        proxy.call("activateApp", fragment);
+    public void loadApp(String prefix, String token) {
+        proxy.call("activateApp", prefix, token);
     }
     
     @Override

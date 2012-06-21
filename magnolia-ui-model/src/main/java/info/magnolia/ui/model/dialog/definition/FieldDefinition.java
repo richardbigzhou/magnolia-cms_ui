@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,80 +34,22 @@
 package info.magnolia.ui.model.dialog.definition;
 
 /**
- * Describes a field in a dialog.
+ * FieldDefinition.
  *
- * TODO this should be abstract
- *
- * TODO we should be able to configure validators
- *
- * @author tmattsson
+ * @author ejervidalo
  */
-public class FieldDefinition {
+public interface FieldDefinition extends UiItemDefinition {
 
-    private String name;
-    private String label;
-    private String description; // not relevant for controlType=static
-    private String i18nBasename;
+    public abstract String getDescription();
 
-    private String type; // JCR Property type name see javax.jcr.PropertyType
+    public abstract void setDescription(String description);
 
-    private boolean required; // Not relevant for checkbox
+    public abstract String getType();
 
-/*
-    private String requiredErrorMessage;
-    private String selectionText;
+    public abstract void setType(String type);
 
-    private int min, max;
+    public abstract boolean isRequired();
 
-    private String defaultValue;
+    public abstract void setRequired(boolean required);
 
-*/
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getI18nBasename() {
-        return i18nBasename;
-    }
-
-    public void setI18nBasename(String i18nBasename) {
-        this.i18nBasename = i18nBasename;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public boolean isRequired() {
-        return required;
-    }
-
-    public void setRequired(boolean required) {
-        this.required = required;
-    }
 }

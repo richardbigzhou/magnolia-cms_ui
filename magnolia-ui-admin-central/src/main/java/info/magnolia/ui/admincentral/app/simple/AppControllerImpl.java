@@ -48,17 +48,16 @@ import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.AppEventType;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppController;
-import info.magnolia.ui.framework.app.AppPlace;
 import info.magnolia.ui.framework.app.AppView;
 import info.magnolia.ui.framework.app.layout.AppCategory;
 import info.magnolia.ui.framework.app.layout.AppLayoutManager;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.place.Place;
-import info.magnolia.ui.framework.place.PlaceChangeEvent;
-import info.magnolia.ui.framework.place.PlaceChangeRequestEvent;
-import info.magnolia.ui.framework.place.PlaceController;
+import info.magnolia.ui.framework.location.LocationChangeRequestedEvent;
+import info.magnolia.ui.framework.location.LocationChangedEvent;
+import info.magnolia.ui.framework.location.LocationController;
+import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.framework.view.ViewPort;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
@@ -68,11 +67,12 @@ import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
  * @version $Id$
  */
 @Singleton
-public class AppControllerImpl implements AppController, PlaceChangeEvent.Handler, PlaceChangeRequestEvent.Handler {
+public class AppControllerImpl implements AppController, LocationChangedEvent.Handler, LocationChangeRequestedEvent.Handler {
 
     private ComponentProvider componentProvider;
     private AppLayoutManager appLayoutManager;
-    private PlaceController placeController;
+    private LocationController locationController;
+    private Shell shell;
     private EventBus eventBus;
     private ViewPort viewPort;
 
@@ -82,30 +82,34 @@ public class AppControllerImpl implements AppController, PlaceChangeEvent.Handle
     private AppContextImpl currentApp;
 
     @Inject
-    public AppControllerImpl(ComponentProvider componentProvider, AppLayoutManager appLayoutManager, PlaceController placeController, EventBus eventBus) {
+    public AppControllerImpl(ComponentProvider componentProvider, AppLayoutManager appLayoutManager, LocationController locationController, Shell shell, EventBus eventBus) {
         this.componentProvider = componentProvider;
         this.appLayoutManager = appLayoutManager;
-        this.placeController = placeController;
+        this.locationController = locationController;
+        this.shell = shell;
         this.eventBus = eventBus;
 
-        eventBus.addHandler(PlaceChangeEvent.class, this);
-        eventBus.addHandler(PlaceChangeRequestEvent.class, this);
+        eventBus.addHandler(LocationChangedEvent.class, this);
+        eventBus.addHandler(LocationChangeRequestedEvent.class, this);
     }
 
     @Override
     public void setViewPort(ViewPort viewPort) {
         this.viewPort = viewPort;
     }
-
-    public void startIfNotAlreadyRunning(String name) {
-        doStartIfNotAlreadyRunning(name, null);
-    }
-
+    
+    @Override
     public void startIfNotAlreadyRunningThenFocus(String name) {
         AppContextImpl appContext = doStartIfNotAlreadyRunning(name, null);
         doFocus(appContext);
     }
+    
+    @Override
+    public void startIfNotAlreadyRunning(String name) {
+        doStartIfNotAlreadyRunning(name, null);
+    }
 
+    @Override
     public void stopApp(String name) {
         AppContextImpl appContext = runningApps.get(name);
         if (appContext != null) {
@@ -120,22 +124,23 @@ public class AppControllerImpl implements AppController, PlaceChangeEvent.Handle
             stopApp(appContext.getName());
         }
     }
-
+    
+    @Override
     public boolean isAppStarted(String name) {
         return runningApps.containsKey(name);
     }
 
-    private AppContextImpl doStartIfNotAlreadyRunning(String name, Place place) {
+    private AppContextImpl doStartIfNotAlreadyRunning(String name, Location location) {
         AppContextImpl appContext = runningApps.get(name);
         if (appContext == null) {
             AppDescriptor descriptor = getAppDescriptor(name);
             appContext = new AppContextImpl(descriptor);
 
-            if (place == null) {
-                place = appContext.getDefaultPlace();
+            if (location == null) {
+                location = appContext.getDefaultLocation();
             }
 
-            appContext.start(eventBus, place);
+            appContext.start(eventBus, location);
 
             runningApps.put(name, appContext);
             sendEvent(AppEventType.STARTED, descriptor);
@@ -169,10 +174,10 @@ public class AppControllerImpl implements AppController, PlaceChangeEvent.Handle
     }
 
     @Override
-    public void onPlaceChange(PlaceChangeEvent event) {
+    public void onLocationChanged(LocationChangedEvent event) {
 
-        Place newPlace = event.getNewPlace();
-        AppDescriptor nextApp = getAppForPlace(newPlace);
+        Location newLocation = event.getNewLocation();
+        AppDescriptor nextApp = getAppForLocation(newLocation);
 
         if (nextApp == null) {
             return;
@@ -181,9 +186,9 @@ public class AppControllerImpl implements AppController, PlaceChangeEvent.Handle
         AppContextImpl nextAppContext = runningApps.get(nextApp.getName());
 
         if (nextAppContext != null) {
-            nextAppContext.onPlaceUpdate(newPlace);
+            nextAppContext.onLocationUpdate(newLocation);
         } else {
-            nextAppContext = doStartIfNotAlreadyRunning(nextApp.getName(), newPlace);
+            nextAppContext = doStartIfNotAlreadyRunning(nextApp.getName(), newLocation);
         }
 
         nextAppContext.display(viewPort);
@@ -191,7 +196,7 @@ public class AppControllerImpl implements AppController, PlaceChangeEvent.Handle
     }
 
     @Override
-    public void onPlaceChangeRequest(PlaceChangeRequestEvent event) {
+    public void onLocationChangeRequested(LocationChangeRequestedEvent event) {
         if (currentApp != null) {
             final String message = currentApp.mayStop();
             if (message != null) {
@@ -200,10 +205,10 @@ public class AppControllerImpl implements AppController, PlaceChangeEvent.Handle
         }
     }
 
-    private AppDescriptor getAppForPlace(Place newPlace) {
-        if (newPlace instanceof AppPlace) {
-            AppPlace appPlace = (AppPlace) newPlace;
-            return getAppDescriptor(appPlace.getApp());
+    private AppDescriptor getAppForLocation(Location newLocation) {
+        if (newLocation instanceof DefaultLocation) {
+            DefaultLocation appLocation = (DefaultLocation) newLocation;
+            return getAppDescriptor(appLocation.getPrefix());
         }
         return null;
     }
@@ -239,19 +244,19 @@ public class AppControllerImpl implements AppController, PlaceChangeEvent.Handle
         }
 
         /**
-         * Called when the app is launched from the app launcher OR a place change event triggers it to start.
+         * Called when the app is launched from the app launcher OR a location change event triggers it to start.
          */
-        public void start(EventBus eventBus, Place place) {
+        public void start(EventBus eventBus, Location location) {
 
-            AppPlace appPlace = (AppPlace) place;
+            DefaultLocation appLocation = (DefaultLocation) location;
 
             app = componentProvider.newInstance(appDescriptor.getAppClass());
 
             appFrameView = new AppFrameView();
 
-            AppView view = app.start(this, new DefaultLocation(appPlace.getToken()));
+            AppView view = app.start(this, new DefaultLocation("app", appDescriptor.getName(), appLocation.getToken()));
 
-            currentLocation = app.getDefaultLocation();
+            currentLocation = location;
 
             appFrameView.addTab((ComponentContainer) ((IsVaadinComponent) view).asVaadinComponent(), view.getCaption());
         }
@@ -260,14 +265,14 @@ public class AppControllerImpl implements AppController, PlaceChangeEvent.Handle
          * Called when the app is launched from the app launcher OR if another app is closed and this is to show itself.
          */
         public void focus() {
-            placeController.goTo(getDefaultPlace());
+            locationController.goTo(currentLocation);
         }
 
         /**
-         * Called when a place change occurs and the app is already running.
+         * Called when a location change occurs and the app is already running.
          */
-        public void onPlaceUpdate(Place place) {
-            app.locationChanged(new DefaultLocation(((AppPlace) place).getToken()));
+        public void onLocationUpdate(Location location) {
+            app.locationChanged(new DefaultLocation("app", appDescriptor.getName(), ((DefaultLocation) location).getToken()));
         }
 
         public void display(ViewPort viewPort) {
@@ -282,8 +287,8 @@ public class AppControllerImpl implements AppController, PlaceChangeEvent.Handle
             app.stop();
         }
 
-        public Place getDefaultPlace() {
-            return new AppPlace(appDescriptor.getName(), "");
+        public Location getDefaultLocation() {
+            return new DefaultLocation("app", appDescriptor.getName(), "");
         }
 
         @Override
@@ -294,7 +299,7 @@ public class AppControllerImpl implements AppController, PlaceChangeEvent.Handle
         @Override
         public void setAppLocation(Location location) {
             currentLocation = location;
-//                    shell.setFragment();
+            shell.setFragment(location.toString());
         }
     }
 }

@@ -49,7 +49,7 @@ import com.vaadin.ui.Component;
 @SuppressWarnings("serial")
 public class PagesViewImpl implements PagesView, IsVaadinComponent {
 
-    private final String jcrWorkspaceName = "pages";
+    private final String jcrWorkspaceName = "website";
 
     private final Component view;
 

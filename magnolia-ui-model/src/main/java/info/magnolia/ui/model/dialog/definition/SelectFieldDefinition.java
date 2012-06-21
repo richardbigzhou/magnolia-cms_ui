@@ -38,7 +38,7 @@ import java.util.Map;
 /**
  * Field definition for a select field.
  */
-public class SelectFieldDefinition extends FieldDefinition {
+public class SelectFieldDefinition extends ConfiguredFieldDefinition {
 
     // TODO options should be configured in another fashion
 

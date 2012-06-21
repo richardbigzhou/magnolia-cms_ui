@@ -36,7 +36,6 @@ package info.magnolia.ui.model.workbench.definition;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.model.column.definition.AbstractColumnDefinition;
-import info.magnolia.ui.model.menu.definition.MenuItemDefinition;
 import info.magnolia.ui.model.toolbar.ToolbarDefinition;
 
 import java.io.Serializable;
@@ -62,8 +61,6 @@ public class WorkbenchDefinition implements Serializable {
 
     private final Map<String, AbstractColumnDefinition> columns = new LinkedHashMap<String, AbstractColumnDefinition>();
 
-    private List<MenuItemDefinition> actions = new ArrayList<MenuItemDefinition>();
-
     private ActionbarDefinition actionbar;
 
     private List<ItemTypeDefinition> itemTypes = new ArrayList<ItemTypeDefinition>();
@@ -72,6 +69,18 @@ public class WorkbenchDefinition implements Serializable {
 
     public List<ItemTypeDefinition> getItemTypes() {
         return itemTypes;
+    }
+
+    /**
+     * Return the itemType filter criteria in order to be used for searching nodes.
+     * like: "jcr:* | myapp:report | my doc"
+     */
+    public String getItemTypesFilter() {
+        String res = " ";
+        for(ItemTypeDefinition item:itemTypes) {
+            res = res +" "+ item.getItemType() + (itemTypes.indexOf(item) < itemTypes.size()-1 ? " | ":"");
+        }
+        return res;
     }
 
     public void setItemTypes(List<ItemTypeDefinition> itemTypes) {
@@ -116,18 +125,6 @@ public class WorkbenchDefinition implements Serializable {
 
     public void addColumn(AbstractColumnDefinition treeColumn) {
         columns.put(treeColumn.getLabel(), treeColumn);
-    }
-
-    public List<MenuItemDefinition> getActions() {
-        return actions;
-    }
-
-    public void setActions(List<MenuItemDefinition> actions) {
-        this.actions = actions;
-    }
-
-    public boolean addAction(MenuItemDefinition action) {
-        return actions.add(action);
     }
 
     public ActionbarDefinition getActionbar() {

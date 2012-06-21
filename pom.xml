@@ -18,8 +18,8 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <magnoliaVersion>5.0-SNAPSHOT</magnoliaVersion>
-    <vaadinVersion>6.7.7</vaadinVersion>
-    <gwtVersion>2.3.0</gwtVersion>
+    <vaadinVersion>6.8.0</vaadinVersion>
+    <gwtVersion>2.4.0</gwtVersion>
   </properties>
   <scm>
     <connection>scm:git:http://git.magnolia-cms.com/magnolia_ui</connection>
@@ -54,6 +54,16 @@
         <artifactId>widget-rpc</artifactId>
         <version>1.1.5</version>
       </dependency>
+	<dependency>
+		<groupId>org.vaadin.addons</groupId>
+		<artifactId>icepush</artifactId>
+		<version>0.2.1</version>
+	</dependency>
+	<dependency>
+		<groupId>org.icefaces</groupId>
+		<artifactId>icepush</artifactId>
+		<version>3.0.1</version>
+	</dependency>
       <dependency>
         <groupId>com.google.gwt</groupId>
         <artifactId>gwt-user</artifactId>
@@ -125,14 +135,15 @@
     <module>magnolia-ui-model</module>
     <module>magnolia-ui-vaadin-integration</module>
     <module>magnolia-ui-vaadin-widgetset</module>
-    <module>magnolia-ui-admin-central</module>
     <module>magnolia-ui-widget-jquery-wrapper</module>
     <module>magnolia-ui-widget-magnolia-shell</module>
     <module>magnolia-ui-widget-tabsheet</module>
     <module>magnolia-ui-widget-dialog</module>
     <module>magnolia-ui-widget-actionbar</module>
+    <module>magnolia-ui-admin-central</module>
     <module>magnolia-ui-webapp</module>
     <module>magnolia-ui-app-dummy</module>
     <module>magnolia-ui-app-contacts</module>
+    <module>magnolia-ui-app-messages</module>
   </modules>
 </project>

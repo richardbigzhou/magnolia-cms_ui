@@ -49,7 +49,7 @@ public class AppTestUtility {
      * Create a AppDescriptor.
      */
     public static AppDescriptor createAppDescriptor(String startLibell, Class<? extends App> appClass) {
-        AppDescriptor res = new ConfiguredAppDescriptor();
+        ConfiguredAppDescriptor res = new ConfiguredAppDescriptor();
         res.setAppClass(appClass);
         res.setIcon(startLibell+"_icon");
         res.setLabel(startLibell+"_label");

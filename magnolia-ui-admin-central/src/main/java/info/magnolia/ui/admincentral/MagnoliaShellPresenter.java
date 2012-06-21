@@ -33,30 +33,20 @@
  */
 package info.magnolia.ui.admincentral;
 
-import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.admincentral.app.simple.DefaultLocationHistoryMapper;
+import info.magnolia.ui.admincentral.app.simple.ShellAppController;
 import info.magnolia.ui.framework.app.AppController;
-import info.magnolia.ui.admincentral.app.simple.SimplePlaceHistoryMapper;
-import info.magnolia.ui.admincentral.shellapp.applauncher.AppLauncherActivity;
-import info.magnolia.ui.admincentral.shellapp.applauncher.AppLauncherPlace;
-import info.magnolia.ui.admincentral.shellapp.favorites.FavoritesActivity;
-import info.magnolia.ui.admincentral.shellapp.favorites.FavoritesPlace;
-import info.magnolia.ui.admincentral.shellapp.pulse.PulseActivity;
-import info.magnolia.ui.admincentral.shellapp.pulse.PulsePlace;
-import info.magnolia.ui.framework.activity.ActivityManager;
-import info.magnolia.ui.framework.activity.ActivityMapperImpl;
-import info.magnolia.ui.framework.app.layout.AppLayout;
 import info.magnolia.ui.framework.app.layout.AppLayoutManager;
 import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.place.Place;
-import info.magnolia.ui.framework.place.PlaceController;
-import info.magnolia.ui.framework.place.PlaceHistoryHandler;
-import info.magnolia.ui.framework.place.PlaceHistoryMapper;
-
-import java.util.ArrayList;
-import java.util.List;
+import info.magnolia.ui.framework.location.DefaultLocation;
+import info.magnolia.ui.framework.location.LocationController;
+import info.magnolia.ui.framework.location.LocationHistoryHandler;
 
 import javax.inject.Inject;
 
+import org.vaadin.artur.icepush.ICEPush;
+
+import com.vaadin.Application;
 import com.vaadin.ui.Window;
 
 /**
@@ -69,38 +59,25 @@ public class MagnoliaShellPresenter implements MagnoliaShellView.Presenter {
     private final MagnoliaShellView view;
 
     @Inject
-    public MagnoliaShellPresenter(final MagnoliaShellView view, final EventBus eventBus, final AppLayoutManager appLauncherLayoutManager, final PlaceController placeController, ComponentProvider componentProvider, AppController appController) {
+    public MagnoliaShellPresenter(final MagnoliaShellView view, final EventBus eventBus, final AppLayoutManager appLauncherLayoutManager, final LocationController locationController, final AppController appController, final ShellAppController shellAppController) {
         this.view = view;
         this.view.setPresenter(this);
 
-        final ActivityMapperImpl shellAppActivityMapper = new ActivityMapperImpl(componentProvider);
-        shellAppActivityMapper.setLongLivingActivities(true);
-        shellAppActivityMapper.addMapping(AppLauncherPlace.class, AppLauncherActivity.class);
-        shellAppActivityMapper.addMapping(PulsePlace.class, PulseActivity.class);
-        shellAppActivityMapper.addMapping(FavoritesPlace.class, FavoritesActivity.class);
-        final ActivityManager shellAppManager = new ActivityManager(shellAppActivityMapper, eventBus);
-        shellAppManager.setViewPort(view.getRoot().getShellAppViewport());
+        shellAppController.setViewPort(view.getRoot().getShellAppViewport());
 
         appController.setViewPort(view.getRoot().getAppViewport());
 
-        final PlaceHistoryMapper placeHistoryMapper = new SimplePlaceHistoryMapper(appLauncherLayoutManager, getSupportedPlaces(appLauncherLayoutManager.getLayout()));
-        final PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(placeHistoryMapper, view.getRoot());
-
-        historyHandler.register(placeController, eventBus, new AppLauncherPlace("test"));
+        DefaultLocationHistoryMapper locationHistoryMapper = new DefaultLocationHistoryMapper(appLauncherLayoutManager);
+        LocationHistoryHandler locationHistoryHandler = new LocationHistoryHandler(locationHistoryMapper, view.getRoot());
+        locationHistoryHandler.register(locationController, eventBus, new DefaultLocation("shell", "applauncher", ""));
     }
 
     public void start(final Window window) {
         final MagnoliaShell shell = view.getRoot();
         shell.setSizeFull();
         window.addComponent(shell);
-    }
-
-    @SuppressWarnings("unchecked")
-    private Class<? extends Place>[] getSupportedPlaces(AppLayout appLauncherLayout) {
-        List<Class<? extends Place>> places = new ArrayList<Class<? extends Place>>();
-        places.add(AppLauncherPlace.class);
-        places.add(PulsePlace.class);
-        places.add(FavoritesPlace.class);
-        return places.toArray(new Class[places.size()]);
+        final Application app = window.getApplication();
+        final ICEPush pusher = new ICEPush();
+        window.addComponent(pusher);
     }
 }

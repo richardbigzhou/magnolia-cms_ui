@@ -36,7 +36,7 @@ package info.magnolia.ui.model.dialog.definition;
 /**
  * Field definition for a checkbox.
  */
-public class CheckboxFieldDefinition extends FieldDefinition {
+public class CheckboxFieldDefinition extends ConfiguredFieldDefinition {
 
     private boolean defaultValue;
 

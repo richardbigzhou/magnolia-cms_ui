@@ -50,10 +50,10 @@ public class ShellAppNavigationEvent extends GwtEvent<ShellNavigationHandler> {
 
     private ShellAppType type;
     
-    private String parameters;
+    private String token;
     
     public ShellAppNavigationEvent(final ShellAppType type, final String token) {
-        this.parameters = token;
+        this.token = token;
         this.type = type;
     }
     
@@ -71,7 +71,7 @@ public class ShellAppNavigationEvent extends GwtEvent<ShellNavigationHandler> {
         return type;
     }
     
-    public String getParameters() {
-        return parameters;
+    public String getToken() {
+        return token;
     }
 }

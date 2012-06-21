@@ -36,6 +36,6 @@ package info.magnolia.ui.model.dialog.definition;
 /**
  * Field definition for a rich edit field.
  */
-public class RichEditFieldDefinition extends FieldDefinition {
+public class RichEditFieldDefinition extends ConfiguredFieldDefinition {
 
 }

@@ -35,10 +35,10 @@ package info.magnolia.ui.admincentral.workbench;
 
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.actionbar.ActionbarView;
+import info.magnolia.ui.admincentral.jcr.view.JcrView;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 
 import javax.jcr.Item;
-import javax.jcr.Node;
 
 import com.vaadin.ui.ComponentContainer;
 
@@ -55,10 +55,12 @@ public interface WorkbenchView extends ComponentContainer, ActionbarView {
 
     void initWorkbench(WorkbenchDefinition definintion);
 
+    void setGridType(final JcrView.ViewType type);
+
     /**
      * Causes a view refresh only if the current node exists in the repository.
      */
-    void refreshNode(Node node);
+    void refreshItem(final Item item);
 
     /**
      * TODO review the for two methods to perform the view refresh. Had to add this one to refresh

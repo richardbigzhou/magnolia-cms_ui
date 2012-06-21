@@ -33,10 +33,8 @@
  */
 package info.magnolia.ui.admincentral.list.view;
 
-import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.ui.admincentral.column.Column;
 import info.magnolia.ui.admincentral.column.EditHandler;
-import info.magnolia.ui.admincentral.container.ContainerItemId;
 import info.magnolia.ui.admincentral.container.JcrContainer;
 import info.magnolia.ui.admincentral.jcr.view.JcrView;
 import info.magnolia.ui.admincentral.list.container.FlatJcrContainer;
@@ -44,13 +42,10 @@ import info.magnolia.ui.admincentral.tree.model.TreeModel;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
-import javax.jcr.Item;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.ui.Component;
@@ -93,7 +88,7 @@ public class ListViewImpl implements ListView, IsVaadinComponent {
 
             @Override
             public void itemClick(ItemClickEvent event) {
-                presenterOnItemSelection((ContainerItemId) event.getItemId());
+                presenterOnItemSelection((String) event.getItemId());
             }
         });
         table.addListener(new Table.ValueChangeListener() {
@@ -101,7 +96,7 @@ public class ListViewImpl implements ListView, IsVaadinComponent {
             @Override
             public void valueChange(ValueChangeEvent event) {
                 log.debug("Handle value change Event: "+event.getProperty().getValue());
-                presenterOnItemSelection((ContainerItemId) event.getProperty().getValue());
+                presenterOnItemSelection((String) event.getProperty().getValue());
             }
         });
         new EditHandler(table);
@@ -127,8 +122,7 @@ public class ListViewImpl implements ListView, IsVaadinComponent {
 
     @Override
     public void select(String path) {
-        ContainerItemId itemId = container.getItemByPath(path);
-        table.select(itemId);
+        table.select(path);
     }
 
     @Override
@@ -142,15 +136,6 @@ public class ListViewImpl implements ListView, IsVaadinComponent {
     }
 
     @Override
-    public String getPathInTree(Item jcrItem) {
-        try {
-            return treeModel.getPathInTree(jcrItem);
-        } catch (RepositoryException e) {
-            throw new RuntimeRepositoryException(e);
-        }
-    }
-
-    @Override
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
     }
@@ -160,20 +145,15 @@ public class ListViewImpl implements ListView, IsVaadinComponent {
         return container;
     }
 
-    private void presenterOnItemSelection(ContainerItemId id) {
+    private void presenterOnItemSelection(String id) {
         if (presenter != null) {
-            Item item = null;
-            try {
-                item = container.getJcrItem(id);
-            } catch (RepositoryException e) {
-                throw new RuntimeRepositoryException(e);
-            }
+            com.vaadin.data.Item item  = container.getItem(id);
             presenter.onItemSelection(item);
         }
     }
 
     @Override
-    public void refreshNode(Node node) {
+    public void refreshItem(Item item) {
         //FIXME: provide the correct implementation.
     }
 }

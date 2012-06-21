@@ -41,6 +41,7 @@ import com.vaadin.ui.TextField;
 
 /**
  * FieldFactory.
+ * FieldTypeDef provider
  *
  * @author ejervidalo
  */
@@ -52,7 +53,7 @@ public class FieldBuilder {
      */
     public static Field build(FieldDefinition fieldDefinition) {
         Field input = null;
-        if (fieldDefinition.getType().equals("edit")) {
+        if (fieldDefinition.getType().equals("text")) {
             input = new TextField();
             input.setCaption(fieldDefinition.getLabel());
             input.setStyleName("textfield");

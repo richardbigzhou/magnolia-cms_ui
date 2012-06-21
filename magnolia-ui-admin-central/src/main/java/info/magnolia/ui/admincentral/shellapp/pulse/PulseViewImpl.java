@@ -37,7 +37,6 @@ package info.magnolia.ui.admincentral.shellapp.pulse;
 import info.magnolia.ui.admincentral.components.ActivityItem;
 import info.magnolia.ui.admincentral.components.SplitFeed;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
 import info.magnolia.ui.widget.tabsheet.ShellTab;
 import info.magnolia.ui.widget.tabsheet.ShellTabSheet;
 
@@ -152,11 +151,6 @@ public class PulseViewImpl implements PulseView, IsVaadinComponent {
     @Override
     public Component asVaadinComponent() {
         return tabsheet;
-    }
-
-    @Override
-    public String getAppName() {
-        return ShellAppType.PULSE.name();
     }
 
     @Override

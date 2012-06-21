@@ -70,21 +70,13 @@
     <!-- custom node types -->
     <nodeType name="mgnl:contactBase" isMixin="false" hasOrderableChildNodes="true" primaryItemName="">
         <supertypes>
-            <supertype>mix:referenceable</supertype>
-            <supertype>nt:hierarchyNode</supertype>
+            <supertype>mgnl:content</supertype>
         </supertypes>
-        <propertyDefinition name="*" requiredType="undefined" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false"/>
-        <childNodeDefinition name="*" defaultPrimaryType="" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" sameNameSiblings="true"/>
     </nodeType>
 
     <nodeType name="mgnl:contact" isMixin="false" hasOrderableChildNodes="true" primaryItemName="">
         <supertypes>
             <supertype>mgnl:contactBase</supertype>
       </supertypes>
-      <childNodeDefinition name="MetaData" defaultPrimaryType="mgnl:metaData" autoCreated="true" mandatory="true" onParentVersion="COPY" protected="false" sameNameSiblings="false">
-        <requiredPrimaryTypes>
-          <requiredPrimaryType>mgnl:metaData</requiredPrimaryType>
-        </requiredPrimaryTypes>
-      </childNodeDefinition>
     </nodeType>
 </nodeTypes>
