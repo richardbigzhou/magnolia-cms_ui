@@ -59,13 +59,11 @@ import com.vaadin.data.Property.ValueChangeEvent;
  * Implementation of an {@link com.vaadin.data.Item} wrapping/representing a <strong>transient</strong> {@link javax.jcr.Node}.
  * Implements {Property.ValueChangeListener} in order to inform/change JCR property when a
  * Vaadin property has changed.
- * <p>The special property {@value #JCR_NAME} is reserved and can only be used to set the new node name. If not found, the default name (that is the relative path)
+ * <p>The special property {@value JcrItemAdapter#JCR_NAME} is reserved and can only be used to set the new node name. If not found, the default name (that is the relative path)
  * of the underlying transient node is used (which is likely to be something like <code>untitled</code>).
  */
 @SuppressWarnings("serial")
 public class JcrTransientNodeAdapter extends JcrNodeAdapter {
-
-    protected static final String JCR_NAME = "jcrName";
 
     private static final Logger log = LoggerFactory.getLogger(JcrTransientNodeAdapter.class);
 
@@ -158,5 +156,15 @@ public class JcrTransientNodeAdapter extends JcrNodeAdapter {
             String name = ((DefaultProperty)property).getPropertyName();
             addItemProperty(name, property);
         }
+    }
+
+    @Override
+    public javax.jcr.Item getJcrItem() throws RepositoryException{
+        throw new UnsupportedOperationException("This operation is not supported for a transient item.");
+    }
+
+    @Override
+    public void save() throws RepositoryException {
+        throw new UnsupportedOperationException("This operation is not supported for a transient item.");
     }
 }
