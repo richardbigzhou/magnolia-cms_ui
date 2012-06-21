@@ -193,10 +193,10 @@
         <sv:value>133a55dc-3efb-43c1-9244-671e86d30d50</sv:value>
       </sv:property>
       <sv:property sv:name="definition" sv:type="String">
-        <sv:value>info.magnolia.ui.admincentral.tree.action.OpenCreateDialogActionDefinition</sv:value>
+        <sv:value>info.magnolia.ui.admincentral.dialog.action.CreateDialogActionDefinition</sv:value>
       </sv:property>
       <sv:property sv:name="implementation" sv:type="String">
-        <sv:value>info.magnolia.ui.admincentral.tree.action.OpenCreateDialogAction</sv:value>
+        <sv:value>info.magnolia.ui.admincentral.dialog.action.CreateDialogAction</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
@@ -233,10 +233,10 @@
         <sv:value>85b01eeb-a831-4173-8fa7-fa33a7a197fc</sv:value>
       </sv:property>
       <sv:property sv:name="definition" sv:type="String">
-        <sv:value>info.magnolia.ui.admincentral.tree.action.OpenEditDialogActionDefinition</sv:value>
+        <sv:value>info.magnolia.ui.admincentral.dialog.action.EditDialogActionDefinition</sv:value>
       </sv:property>
       <sv:property sv:name="implementation" sv:type="String">
-        <sv:value>info.magnolia.ui.admincentral.tree.action.OpenEditDialogAction</sv:value>
+        <sv:value>info.magnolia.ui.admincentral.dialog.action.EditDialogAction</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>

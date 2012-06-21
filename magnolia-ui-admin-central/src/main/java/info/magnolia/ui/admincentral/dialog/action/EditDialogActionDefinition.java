@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.tree.action;
+package info.magnolia.ui.admincentral.dialog.action;
 
 import info.magnolia.ui.model.action.ActionDefinition;
 
@@ -39,7 +39,7 @@ import info.magnolia.ui.model.action.ActionDefinition;
 /**
  * Opens a dialog to edit an {@link javax.jcr.Node}.
  */
-public class OpenEditDialogActionDefinition implements ActionDefinition {
+public class EditDialogActionDefinition implements ActionDefinition {
 
     private String dialogName;
 
