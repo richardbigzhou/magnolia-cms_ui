@@ -4,6 +4,7 @@
 @import url(dialog.css);
 @import url(actionbar.css);
 @import url(tabsheet.css);
+@import url(workbench.css);
 
 @font-face{
     font-family: DinRound;

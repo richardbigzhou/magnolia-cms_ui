@@ -63,13 +63,11 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
 
     private static final Logger log = LoggerFactory.getLogger(WorkbenchViewImpl.class);
 
-    private final VerticalLayout root = new VerticalLayout();
-
-    private final HorizontalLayout split = new HorizontalLayout();
-
-    private final HorizontalLayout toolbar = new HorizontalLayout();
-
     private Presenter presenter;
+
+    private final HorizontalLayout root = new HorizontalLayout();
+
+    private final VerticalLayout workbenchContainer = new VerticalLayout();
 
     private JcrView jcrView;
 
@@ -88,10 +86,23 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
         super();
         this.jcrViewBuilderProvider = jcrViewBuilderProvider;
 
-        setSizeFull();
-        root.setSizeFull();
-        construct();
         setCompositionRoot(root);
+        setSizeFull();
+
+        root.setSizeFull();
+        root.setStyleName("mgnl-app-root");
+        root.addComponent(workbenchContainer);
+        root.setExpandRatio(workbenchContainer, 1f);
+        root.setMargin(false);
+
+        HorizontalLayout toolbar = new HorizontalLayout();
+        toolbar.setSizeUndefined();
+        toolbar.setStyleName("mgnl-workbench-toolbar");
+        toolbar.addComponent(new Button("Tree"));
+        toolbar.addComponent(new Button("List"));
+
+        workbenchContainer.setStyleName("mgnl-workbench");
+        workbenchContainer.addComponent(toolbar);
     }
 
     @Override
@@ -110,9 +121,7 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
         jcrView = jcrViewBuilderProvider.getBuilder().build(workbenchDefinition, ViewType.TREE);
         jcrView.setPresenter(jcrPresenter);
         jcrView.select(StringUtils.defaultIfEmpty(workbenchDefinition.getPath(), "/"));
-        jcrView.asVaadinComponent();
-        split.addComponent(jcrView.asVaadinComponent());
-        split.setExpandRatio(jcrView.asVaadinComponent(), 1f);
+        workbenchContainer.addComponent(jcrView.asVaadinComponent());
     }
 
     @Override
@@ -121,17 +130,7 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
             throw new IllegalArgumentException("Trying to init an action bar but got null definition.");
         }
         final Actionbar actionbar = ActionbarBuilder.build(definition, getPresenter());
-        split.addComponent(actionbar);
-    }
-
-    private void construct() {
-        split.setSizeFull();
-        toolbar.setSizeUndefined();
-        toolbar.addComponent(new Button("Tree"));
-        toolbar.addComponent(new Button("List"));
-        root.addComponent(toolbar);
-        root.addComponent(split);
-        root.setExpandRatio(split, 1f);
+        root.addComponent(actionbar);
     }
 
     public Presenter getPresenter() {

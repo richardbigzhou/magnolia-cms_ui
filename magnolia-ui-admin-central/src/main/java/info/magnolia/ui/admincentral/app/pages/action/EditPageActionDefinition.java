@@ -31,41 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.pages;
+package info.magnolia.ui.admincentral.app.pages.action;
 
-import info.magnolia.ui.admincentral.workbench.Workbench;
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
-
-import javax.inject.Inject;
-
-import com.vaadin.ui.Component;
+import info.magnolia.ui.model.action.ActionDefinition;
 
 
 /**
- * View implementation for the Pages app.
- * 
- * @version $Id$
+ * Definition interface for the edit page action.
  */
-@SuppressWarnings("serial")
-public class PagesViewImpl implements PagesView, IsVaadinComponent {
+public class EditPageActionDefinition implements ActionDefinition {
 
-    private final String jcrWorkspaceName = "pages";
-
-    private final Component view;
-
-    @Inject
-    public PagesViewImpl(final Workbench workbench) {
-        workbench.initWorkbench(jcrWorkspaceName);
-        view = workbench.asVaadinComponent();
-    }
-
-    @Override
-    public String getCaption() {
-        return "Pages";
-    }
-
-    @Override
-    public Component asVaadinComponent() {
-        return view;
-    }
 }

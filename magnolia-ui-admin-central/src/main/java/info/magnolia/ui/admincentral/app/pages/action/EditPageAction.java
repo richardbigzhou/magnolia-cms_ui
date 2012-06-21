@@ -31,41 +31,40 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.pages;
+package info.magnolia.ui.admincentral.app.pages.action;
 
-import info.magnolia.ui.admincentral.workbench.Workbench;
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
+import info.magnolia.ui.model.action.ActionBase;
+import info.magnolia.ui.model.action.ActionExecutionException;
 
-import javax.inject.Inject;
-
-import com.vaadin.ui.Component;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 
 /**
- * View implementation for the Pages app.
- * 
- * @version $Id$
+ * The Class EditPageAction. Opens a new tab in Pages app and displays page editor in an iframe.
  */
-@SuppressWarnings("serial")
-public class PagesViewImpl implements PagesView, IsVaadinComponent {
+public class EditPageAction extends ActionBase<EditPageActionDefinition> {
 
-    private final String jcrWorkspaceName = "pages";
+    private final Node nodeToEdit;
 
-    private final Component view;
-
-    @Inject
-    public PagesViewImpl(final Workbench workbench) {
-        workbench.initWorkbench(jcrWorkspaceName);
-        view = workbench.asVaadinComponent();
+    /**
+     * Instantiates a new edit page action.
+     * 
+     * @param definition the definition
+     */
+    public EditPageAction(EditPageActionDefinition definition, Node nodeToEdit) {
+        super(definition);
+        this.nodeToEdit = nodeToEdit;
     }
 
     @Override
-    public String getCaption() {
-        return "Pages";
+    public void execute() throws ActionExecutionException {
+        System.out.println("edit page should open a tab with given page bean.");
+        try {
+            System.out.println(nodeToEdit.getPath());
+        } catch (RepositoryException e) {
+            System.err.println("ERROR GETTINT NODE PATH");
+        }
     }
 
-    @Override
-    public Component asVaadinComponent() {
-        return view;
-    }
 }
