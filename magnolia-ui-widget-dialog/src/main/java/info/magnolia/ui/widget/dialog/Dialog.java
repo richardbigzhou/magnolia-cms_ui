@@ -39,19 +39,15 @@ import info.magnolia.ui.widget.dialog.gwt.client.VDialog;
 import info.magnolia.ui.widget.tabsheet.ShellTab;
 import info.magnolia.ui.widget.tabsheet.ShellTabSheet;
 
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.vaadin.rpc.ServerSideHandler;
 import org.vaadin.rpc.ServerSideProxy;
 import org.vaadin.rpc.client.Method;
 
-import com.vaadin.data.Buffered;
 import com.vaadin.data.Item;
-import com.vaadin.data.Property;
-import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.terminal.PaintException;
 import com.vaadin.terminal.PaintTarget;
 import com.vaadin.ui.AbstractComponent;
@@ -68,7 +64,7 @@ import com.vaadin.ui.Field;
  */
 @SuppressWarnings("serial")
 @ClientWidget(value=VDialog.class, loadStyle = LoadStyle.EAGER)
-public class Dialog extends AbstractComponent implements DialogView, ServerSideHandler, Item.Editor, Buffered {
+public class Dialog extends AbstractComponent implements DialogView, ServerSideHandler, Item.Editor {
 
     private ShellTabSheet tabsheet = new ShellTabSheet();
     private final String SHOW_ALL = "show all";
@@ -77,8 +73,7 @@ public class Dialog extends AbstractComponent implements DialogView, ServerSideH
      * Item connected to this dialog as datasource.
      */
     private Item itemDatasource;
-    private final LinkedList<Object> propertyIds = new LinkedList<Object>();
-    Map<Object, Field> fields = new HashMap<Object, Field>();
+    List<Field> fields = new LinkedList<Field>();
 
     private Presenter presenter;
 
@@ -196,79 +191,16 @@ public class Dialog extends AbstractComponent implements DialogView, ServerSideH
     }
 
     @Override
-    public void addField(Property property, Field field) {
-        fields.put(property, field);
-    }
-
-    /*
-     * Is the object modified but not committed? Don't add a JavaDoc comment
-     * here, we use the default one from the interface.
-     */
-    @Override
-    public boolean isModified() {
-        for (final Iterator<Object> i = propertyIds.iterator(); i.hasNext();) {
-            final Field f = fields.get(i.next());
-            if (f != null && f.isModified()) {
-                return true;
-            }
-
-        }
-        return false;
+    public void addField(Field field) {
+        fields.add(field);
     }
 
     /* (non-Javadoc)
-     * @see com.vaadin.data.Buffered#commit()
+     * @see info.magnolia.ui.widget.dialog.DialogView#getFields()
      */
     @Override
-    public void commit() throws SourceException, InvalidValueException {
-        // TODO Auto-generated method stub
-
-    }
-
-    /* (non-Javadoc)
-     * @see com.vaadin.data.Buffered#discard()
-     */
-    @Override
-    public void discard() throws SourceException {
-        // TODO Auto-generated method stub
-
-    }
-
-    /* (non-Javadoc)
-     * @see com.vaadin.data.Buffered#isWriteThrough()
-     */
-    @Override
-    public boolean isWriteThrough() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    /* (non-Javadoc)
-     * @see com.vaadin.data.Buffered#setWriteThrough(boolean)
-     */
-    @Override
-    public void setWriteThrough(boolean writeThrough) throws SourceException,
-            InvalidValueException {
-        // TODO Auto-generated method stub
-
-    }
-
-    /* (non-Javadoc)
-     * @see com.vaadin.data.Buffered#isReadThrough()
-     */
-    @Override
-    public boolean isReadThrough() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    /* (non-Javadoc)
-     * @see com.vaadin.data.Buffered#setReadThrough(boolean)
-     */
-    @Override
-    public void setReadThrough(boolean readThrough) throws SourceException {
-        // TODO Auto-generated method stub
-
+    public List<Field> getFields() {
+        return fields;
     }
 
 

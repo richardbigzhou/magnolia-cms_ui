@@ -65,15 +65,17 @@ public class SaveDialogAction extends ActionBase<SaveDialogActionDefinition> {
 
     @Override
     public void execute() throws ActionExecutionException {
-        JcrNodeAdapter itemChanged = (JcrNodeAdapter) item;
-        try {
-            itemChanged.getNode().getSession().save();
-        } catch (RepositoryException e) {
-            throw new ActionExecutionException(e);
-        }
-        eventBus.fireEvent(new ContentChangedEvent(itemChanged.getItemProperty("workspace").toString(), itemChanged.getItemProperty("path").toString()));
+        if (presenter.isModified()) {
+            JcrNodeAdapter itemChanged = (JcrNodeAdapter) item;
+            try {
+                itemChanged.getNode().getSession().save();
+            } catch (RepositoryException e) {
+                throw new ActionExecutionException(e);
+            }
+            eventBus.fireEvent(new ContentChangedEvent(itemChanged.getItemProperty("workspace").toString(), itemChanged.getItemProperty("path").toString()));
 
-        presenter.closeDialog();
+            presenter.closeDialog();
+        }
     }
 
 }

@@ -47,9 +47,13 @@ import info.magnolia.ui.widget.dialog.Dialog;
 import info.magnolia.ui.widget.dialog.DialogView;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.ui.Field;
 
 /**
  * DialogPresenter.
@@ -65,6 +69,8 @@ public class DialogPresenter implements DialogView.Presenter {
     private DialogActionFactory actionFactory;
     private Map<String, ActionDefinition> actionMap = new HashMap<String, ActionDefinition>();
     private Item item;
+
+    private final List<Property> propertyIds = new LinkedList<Property>();
 
     public DialogPresenter(DialogView view, DialogBuilder dialogBuilder, DialogDefinition dialogDefinition, MagnoliaShell shell, final EventBus eventBus, final DialogActionFactory actionFactory) {
         this.view = view;
@@ -82,7 +88,7 @@ public class DialogPresenter implements DialogView.Presenter {
     @Override
     public void editItem(Item item) {
         this.item = item;
-        dialogBuilder.build(dialogDefinition, item, view);
+        dialogBuilder.build(dialogDefinition, item, view, this);
         shell.openDialog((Dialog)view.asVaadinComponent());
     }
 
@@ -130,4 +136,17 @@ public class DialogPresenter implements DialogView.Presenter {
     public EventBus getEventBus() {
         return eventBus;
     }
+
+    @Override
+    public boolean isModified() {
+            for (Field field : view.getFields()) {
+            if (field != null && (field.getValue().equals(field.getPropertyDataSource().getValue()))) {
+                return true;
+            }
+
+        }
+        return false;
+    }
+
+
 }

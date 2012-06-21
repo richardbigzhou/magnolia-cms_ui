@@ -37,8 +37,9 @@ import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
+import java.util.List;
+
 import com.vaadin.data.Item;
-import com.vaadin.data.Property;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.Field;
 
@@ -67,17 +68,21 @@ public interface DialogView extends IsVaadinComponent {
         void closeDialog();
 
         void editItem(Item item);
+
+        boolean isModified();
     }
 
 
     void setItemDataSource(Item item);
-
-    void addField(Property itemProperty, Field input);
 
     void addTab(ComponentContainer inputFields, String tabName);
 
     void setPresenter(Presenter presenter);
 
     void addAction(String actionName, String actionLabel);
+
+    List<Field> getFields();
+
+    void addField(Field field);
 
 }
