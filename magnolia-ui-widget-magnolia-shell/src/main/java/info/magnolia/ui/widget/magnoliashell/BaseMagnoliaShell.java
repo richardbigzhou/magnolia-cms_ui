@@ -46,6 +46,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.vaadin.artur.icepush.ICEPush;
 import org.vaadin.rpc.ServerSideHandler;
 import org.vaadin.rpc.ServerSideProxy;
 import org.vaadin.rpc.client.Method;
@@ -68,10 +69,16 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
 
     private EventHandlerCollection<FragmentChangedHandler> handlers = new EventHandlerCollection<FragmentChangedHandler>();
 
-    private Map<ViewportType, ShellViewport> viewports = new EnumMap<ViewportType, ShellViewport>(ViewportType.class);
+    private Map<ViewportType, ShellViewport> viewports = new EnumMap<ViewportType, ShellViewport>(ViewportType.class) {{
+        put(ViewportType.SHELL_APP_VIEWPORT, new ShellViewport(BaseMagnoliaShell.this));
+        put(ViewportType.APP_VIEWPORT, new ShellViewport(BaseMagnoliaShell.this));
+        put(ViewportType.DIALOG_VIEWPORT, new ShellViewport(BaseMagnoliaShell.this));
+    }};
 
     private ShellViewport activeViewport = null;
 
+    private ICEPush pusher = new ICEPush();
+    
     protected ServerSideProxy proxy = new ServerSideProxy(this) {{
         register("activateShellApp", new Method() {
             @Override
@@ -106,15 +113,14 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
     public BaseMagnoliaShell() {
         super();
         setImmediate(true);
-        viewports.put(ViewportType.SHELL_APP_VIEWPORT, new ShellViewport(this));
-        viewports.put(ViewportType.APP_VIEWPORT, new ShellViewport(this));
-        viewports.put(ViewportType.DIALOG_VIEWPORT, new ShellViewport(this));
     }
 
     @Override
     public void paintContent(PaintTarget target) throws PaintException {
         super.paintContent(target);
-
+        target.startTag("pusher");
+        pusher.paint(target);
+        target.endTag("pusher");
         final Iterator<Entry<ViewportType, ShellViewport>> it = viewports.entrySet().iterator();
         while (it.hasNext()) {
             final Entry<ViewportType, ShellViewport> entry = it.next();
@@ -123,7 +129,6 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
             entry.getValue().paint(target);
             target.endTag(tagName);
         }
-
         proxy.paintContent(target);
     }
 
@@ -136,6 +141,8 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
     @Override
     public void attach() {
         super.attach();
+        pusher.attach();
+        pusher.setParent(this);
         for (final ShellViewport viewport : viewports.values()) {
             viewport.attach();
             viewport.setParent(this);
@@ -145,6 +152,7 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
     @Override
     public void detach() {
         super.detach();
+        pusher.detach();
         for (final ShellViewport viewport : viewports.values()) {
             viewport.detach();
         }
@@ -216,11 +224,17 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
     }
 
     public void showError(String message) {
-        proxy.call("showMessage", MessageType.ERROR.name(), message);
+        synchronized (getApplication()) {
+            proxy.call("showMessage", MessageType.ERROR.name(), message);
+            pusher.push();
+        }
     }
 
     public void showWarning(String message) {
-        proxy.call("showMessage", MessageType.WARNING.name(), message);
+        synchronized (getApplication()) {
+            proxy.call("showMessage", MessageType.WARNING.name(), message);
+            pusher.push();
+        }
     }
 
     public void removeDialog(Component dialog) {
@@ -243,5 +257,9 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
 
     protected void closeCurrentApp() {
         getAppViewport().pop();
+    }
+    
+    protected ICEPush getPusher() {
+        return pusher; 
     }
 }

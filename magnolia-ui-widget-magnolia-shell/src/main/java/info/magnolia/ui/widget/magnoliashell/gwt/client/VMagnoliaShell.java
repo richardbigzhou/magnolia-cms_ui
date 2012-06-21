@@ -39,6 +39,7 @@ import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VShellMessa
 import java.util.Iterator;
 import java.util.Set;
 
+import org.vaadin.artur.icepush.client.ui.VICEPush;
 import org.vaadin.rpc.client.ClientSideHandler;
 import org.vaadin.rpc.client.ClientSideProxy;
 import org.vaadin.rpc.client.Method;
@@ -159,7 +160,21 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
                 }
             }    
         }
+        updatePusher(uidl);
         proxy.update(this, uidl, client);
+    }
+
+    private void updatePusher(final UIDL uidl) {
+        final UIDL pusherUidl = uidl.getChildByTagName("pusher");
+        if (pusherUidl != null) {
+            final Paintable pusherPaintable = client.getPaintable(pusherUidl.getChildUIDL(0));
+            if (pusherPaintable instanceof VICEPush) {
+                if (!hasChildComponent((VICEPush)pusherPaintable)) {
+                    view.setPusher((VICEPush)pusherPaintable);   
+                }
+                pusherPaintable.updateFromUIDL(pusherUidl.getChildUIDL(0), client);
+            }
+        }
     }
 
     @Override

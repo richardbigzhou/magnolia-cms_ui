@@ -39,6 +39,8 @@ import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VShellMessa
 
 import java.util.Collection;
 
+import org.vaadin.artur.icepush.client.ui.VICEPush;
+
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
@@ -73,6 +75,8 @@ public interface VMagnoliaShellView extends HasWidgets, IsWidget {
     void navigate(String prefix, String token);
     
     void shiftViewportsVertically(int shiftPx, boolean animated);
+    
+    void setPusher(VICEPush pusher);
     
     boolean hasDialogs();
     

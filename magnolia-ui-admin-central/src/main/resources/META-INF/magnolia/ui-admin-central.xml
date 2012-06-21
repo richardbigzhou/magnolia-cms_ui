@@ -15,6 +15,10 @@
       <implementation>info.magnolia.ui.framework.event.SimpleSystemEventBus</implementation>
     </component>
     <component>
+    	<type>info.magnolia.ui.framework.message.MessagesManager</type>
+    	<implementation>info.magnolia.ui.framework.message.MessagesManagerImpl</implementation>
+    </component>
+    <component>
       <type>info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptorManager</type>
       <implementation>info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptorManager</implementation>
     </component>
@@ -78,6 +82,10 @@
 
    <components>
     <id>admin-central</id>
+    <component>
+    	<type>info.magnolia.ui.admincentral.app.simple.LocalMessageDispatcher</type>
+    	<implementation>info.magnolia.ui.admincentral.app.simple.LocalMessageDispatcher</implementation>
+    </component>
     <component>
       <type>info.magnolia.ui.admincentral.jcr.view.builder.JcrViewBuilderProvider</type>
       <workspace>config</workspace>

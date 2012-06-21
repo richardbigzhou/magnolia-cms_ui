@@ -57,6 +57,8 @@ public class AssetsViewImpl implements AssetsView, View, IsVaadinComponent {
 
     private VerticalLayout layout = new VerticalLayout();
 
+    private Presenter presenter;
+    
     @Inject
     public AssetsViewImpl(final MagnoliaShell shell) {
         Label label = new Label("<center>Assets App</center>", Label.CONTENT_XHTML);
@@ -65,13 +67,13 @@ public class AssetsViewImpl implements AssetsView, View, IsVaadinComponent {
         layout.addComponent(new Button("Warning", new ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
-                shell.showWarning("Screw");
+                getPresenter().handleWarning("Super warning");
             }
         }));
         layout.addComponent(new Button("Error", new ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
-                shell.showError("Screw");
+                getPresenter().handleError("Super error");
             }
         }));
     }
@@ -84,5 +86,15 @@ public class AssetsViewImpl implements AssetsView, View, IsVaadinComponent {
     @Override
     public Component asVaadinComponent() {
         return layout;
+    }
+
+    @Override
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @Override
+    public Presenter getPresenter() {
+        return presenter;
     }
 }

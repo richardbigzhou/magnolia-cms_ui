@@ -53,6 +53,8 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
 
+import org.vaadin.artur.icepush.client.ui.VICEPush;
+
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -334,5 +336,10 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
             });
             JQueryWrapper.select(viewport).animate(animated ? 300 : 0, settings);   
         }
+    }
+
+    @Override
+    public void setPusher(final VICEPush pusher) {
+        insert(pusher, 0);
     }
 }

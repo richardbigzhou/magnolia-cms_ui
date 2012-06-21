@@ -31,50 +31,56 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse;
+package info.magnolia.ui.admincentral.app.simple;
 
-import info.magnolia.ui.framework.app.ShellApp;
-import info.magnolia.ui.framework.app.ShellAppContext;
-import info.magnolia.ui.framework.app.ShellView;
-import info.magnolia.ui.framework.location.DefaultLocation;
-import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.event.MessageEvent;
+import info.magnolia.ui.framework.message.Message;
+import info.magnolia.ui.framework.message.MessagesManager.MessageListener;
+
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.inject.Inject;
 
 /**
- * Activity for pulse.
- *
- * @version $Id$
+ * LocalMessageDispatcher.
+ * 
+ * @author p4elkin
+ * 
  */
-public class PulseShellApp implements ShellApp, PulseView.Presenter {
+public class LocalMessageDispatcher implements MessageListener {
+
+    private BlockingQueue<Message> messageQueue = new LinkedBlockingQueue<Message>();
     
-    private PulseView pulseView;
-    private Shell shell;
-    private ShellAppContext context;
-
-    @Inject
-    public PulseShellApp(PulseView pulseView, final Shell shell) {
-        this.pulseView = pulseView;
-        this.shell = shell;
+    private EventBus eventBus;
+    
+    private final Thread messageQueueThread = new Thread() {
+        @Override
+        public void run() {
+            while (true) {
+                try {
+                    final Message msg = messageQueue.take();
+                    eventBus.fireEvent(new MessageEvent(msg));
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+    };
+    
+    @Inject 
+    public LocalMessageDispatcher(final EventBus eventBus) {
+        this.eventBus = eventBus;
+        messageQueueThread.start();
     }
 
     @Override
-    public ShellView start(ShellAppContext context) {
-        this.context = context;
-        pulseView.setPresenter(this);
-        return pulseView;
+    public void handleMessage(Message message) {
+        queueMessage(message);
     }
 
-    @Override
-    public void locationChanged(Location location) {
-        DefaultLocation pulsePlace = (DefaultLocation) location;
-        final String displayedTabId = pulseView.setCurrentPulseTab(pulsePlace.getToken());
-//        pulsePlace.setCurrentPulseTab(displayedTabId);
-    }
-
-    @Override
-    public void onPulseTabChanged(String tabId) {
-        context.setAppLocation(new DefaultLocation("shell", "pulse", tabId));
+    private void queueMessage(Message message) {
+        messageQueue.add(message);
     }
 }

@@ -34,13 +34,16 @@
 package info.magnolia.ui.admincentral;
 
 import info.magnolia.ui.admincentral.app.simple.DefaultLocationHistoryMapper;
+import info.magnolia.ui.admincentral.app.simple.LocalMessageDispatcher;
 import info.magnolia.ui.admincentral.app.simple.ShellAppController;
 import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.layout.AppLayoutManager;
 import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.event.MessageEvent;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.location.LocationHistoryHandler;
+import info.magnolia.ui.framework.message.MessagesManager;
 
 import javax.inject.Inject;
 
@@ -52,11 +55,11 @@ import com.vaadin.ui.Window;
  * @version $Id$
  */
 public class MagnoliaShellPresenter implements MagnoliaShellView.Presenter {
-
+    
     private final MagnoliaShellView view;
 
     @Inject
-    public MagnoliaShellPresenter(final MagnoliaShellView view, final EventBus eventBus, final AppLayoutManager appLauncherLayoutManager, final LocationController locationController, final AppController appController, final ShellAppController shellAppController) {
+    public MagnoliaShellPresenter(final MagnoliaShellView view, final EventBus eventBus, final AppLayoutManager appLauncherLayoutManager, final LocationController locationController, final AppController appController, final ShellAppController shellAppController, final LocalMessageDispatcher messageDispatcher, MessagesManager messagesManager) {
         this.view = view;
         this.view.setPresenter(this);
 
@@ -67,6 +70,8 @@ public class MagnoliaShellPresenter implements MagnoliaShellView.Presenter {
         DefaultLocationHistoryMapper locationHistoryMapper = new DefaultLocationHistoryMapper(appLauncherLayoutManager);
         LocationHistoryHandler locationHistoryHandler = new LocationHistoryHandler(locationHistoryMapper, view.getRoot());
         locationHistoryHandler.register(locationController, eventBus, new DefaultLocation("shell", "applauncher", ""));
+        messagesManager.registerMessagesListener(MessagesManager.DUMMY_USER_ID, messageDispatcher);
+        eventBus.addHandler(MessageEvent.class, view.getRoot());
     }
 
     public void start(final Window window) {

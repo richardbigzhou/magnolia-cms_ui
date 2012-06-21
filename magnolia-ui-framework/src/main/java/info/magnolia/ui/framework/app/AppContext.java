@@ -34,6 +34,7 @@
 package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.framework.message.Message;
 
 /**
  * Defines functionality used by an app to interact with the Magnolia shell.
@@ -46,4 +47,8 @@ public interface AppContext {
     void openAppView(AppView view);
 
     void setAppLocation(Location location);
+    
+    void sendLocalMessage(Message message);
+    
+    void broadcastMessage(Message message);
 }

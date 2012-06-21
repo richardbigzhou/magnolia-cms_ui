@@ -38,7 +38,10 @@ import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventHandler;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.event.HandlerRegistration;
+import info.magnolia.ui.framework.event.MessageEvent;
+import info.magnolia.ui.framework.event.MessageEventHandler;
 import info.magnolia.ui.framework.location.DefaultLocation;
+import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.shell.ConfirmationHandler;
 import info.magnolia.ui.framework.shell.FragmentChangedHandler;
 import info.magnolia.ui.framework.shell.Shell;
@@ -55,14 +58,14 @@ import org.slf4j.LoggerFactory;
 
 import com.vaadin.terminal.ExternalResource;
 
-
 /**
  * Admin shell.
+ * 
  * @version $Id$
  */
 @SuppressWarnings("serial")
 @Singleton
-public class MagnoliaShell extends BaseMagnoliaShell implements Shell {
+public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEventHandler {
 
     private static final Logger log = LoggerFactory.getLogger(MagnoliaShell.class);
 
@@ -119,11 +122,9 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell {
         String viewPortName = "";
         if (activeViewport == getShellAppViewport())
             viewPortName = "shell";
-        else
-        if (activeViewport == getAppViewport())
+        else if (activeViewport == getAppViewport())
             viewPortName = "app";
-        else
-        if (activeViewport == getDialogViewport())
+        else if (activeViewport == getDialogViewport())
             viewPortName = "dialog";
         return viewPortName + ":" + (activeViewport == null ? "" : activeViewport.getCurrentShellFragment());
     }
@@ -163,5 +164,20 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell {
 
     public void removeDialog(Dialog dialog) {
         removeDialog(dialog.asVaadinComponent());
+    }
+
+    @Override
+    public void handleMessage(MessageEvent event) {
+        final Message message = event.getMessage();
+        switch (message.getType()) {
+        case WARNING:
+            showWarning(message.getMessage());
+            break;
+        case ERROR:
+            showError(message.getMessage());
+            break;
+        default:
+            break;
+        }
     }
 }

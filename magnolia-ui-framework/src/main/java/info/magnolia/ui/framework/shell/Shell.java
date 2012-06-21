@@ -45,7 +45,7 @@ public interface Shell {
     void askForConfirmation(String message, ConfirmationHandler listener);
 
     void showNotification(String message);
-
+    
     void showError(String message, Exception e);
     /**
      * Opens the given resource in a window with the given name.

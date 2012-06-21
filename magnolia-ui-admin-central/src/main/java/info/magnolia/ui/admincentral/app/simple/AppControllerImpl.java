@@ -57,6 +57,8 @@ import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.location.LocationChangeRequestedEvent;
 import info.magnolia.ui.framework.location.LocationChangedEvent;
 import info.magnolia.ui.framework.location.LocationController;
+import info.magnolia.ui.framework.message.Message;
+import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.framework.view.ViewPort;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
@@ -72,6 +74,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     private ComponentProvider componentProvider;
     private AppLayoutManager appLayoutManager;
     private LocationController locationController;
+    private MessagesManager messagesManager;
     private Shell shell;
     private EventBus eventBus;
     private ViewPort viewPort;
@@ -82,13 +85,14 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     private AppContextImpl currentApp;
 
     @Inject
-    public AppControllerImpl(ComponentProvider componentProvider, AppLayoutManager appLayoutManager, LocationController locationController, Shell shell, EventBus eventBus) {
+    public AppControllerImpl(ComponentProvider componentProvider, AppLayoutManager appLayoutManager, LocationController locationController, Shell shell, EventBus eventBus, MessagesManager messagesManager) {
+        this.locationController = locationController;
         this.componentProvider = componentProvider;
         this.appLayoutManager = appLayoutManager;
-        this.locationController = locationController;
-        this.shell = shell;
+        this.messagesManager = messagesManager;
         this.eventBus = eventBus;
-
+        this.shell = shell;
+        
         eventBus.addHandler(LocationChangedEvent.class, this);
         eventBus.addHandler(LocationChangeRequestedEvent.class, this);
     }
@@ -300,6 +304,16 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         public void setAppLocation(Location location) {
             currentLocation = location;
             shell.setFragment(location.toString());
+        }
+
+        @Override
+        public void sendLocalMessage(Message message) {
+            messagesManager.sendMessage(MessagesManager.DUMMY_USER_ID, message);
+        }
+
+        @Override
+        public void broadcastMessage(Message message) {
+            messagesManager.sendMessageToAllUsers(message);
         }
     }
 }

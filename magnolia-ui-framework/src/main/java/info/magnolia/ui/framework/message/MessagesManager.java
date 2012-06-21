@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse;
+package info.magnolia.ui.framework.message;
 
 import java.util.List;
 
@@ -62,6 +62,22 @@ import java.util.List;
  */
 public interface MessagesManager {
 
+    final static String DUMMY_USER_ID = "TEST";
+    
+    /**
+     * MessageListener.
+     * @author p4elkin
+     *
+     */
+    public interface MessageListener {
+        
+        void handleMessage(Message message);
+    }
+    
+    void registerMessagesListener(String userId, MessageListener listener);
+    
+    void unregisterMessagesListener(String userId, MessageListener listener);
+    
     int getMessageCountForUser(String userId);
 
     List<Message> getMessagesForUser(String userId);
