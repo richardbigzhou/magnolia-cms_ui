@@ -45,9 +45,6 @@ import info.magnolia.ui.model.menu.definition.MenuItemDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
@@ -107,7 +104,7 @@ public class MagnoliaTreeTable extends TreeTable {
         }
 
         setContainerDataSource(container);
-        addContextMenu();
+//        addContextMenu();
 
         new EditHandler(this);
     }
@@ -181,24 +178,24 @@ public class MagnoliaTreeTable extends TreeTable {
         }
     }
 
-    private void addContextMenu() {
-        addActionHandler(new Action.Handler() {
-            @Override
-            public Action[] getActions(Object target, Object sender) {
-                // FIXME make that item type, security dependent
-                List<JcrBrowserAction> actions = new ArrayList<JcrBrowserAction>();
-                for (MenuItemDefinition menuItemDefinition : workbenchDefinition.getActions()) {
-                    actions.add(new JcrBrowserAction(menuItemDefinition));
-                }
-
-                return actions.toArray(new Action[actions.size()]);
-            }
-            @Override
-            public void handleAction(Action action, Object sender, Object target) {
-              ((JcrBrowserAction) action).handleAction((String) target);
-            }
-        });
-    }
+//    private void addContextMenu() {
+//        addActionHandler(new Action.Handler() {
+//            @Override
+//            public Action[] getActions(Object target, Object sender) {
+//                // FIXME make that item type, security dependent
+//                List<JcrBrowserAction> actions = new ArrayList<JcrBrowserAction>();
+//                for (MenuItemDefinition menuItemDefinition : workbenchDefinition.getActions()) {
+//                    actions.add(new JcrBrowserAction(menuItemDefinition));
+//                }
+//
+//                return actions.toArray(new Action[actions.size()]);
+//            }
+//            @Override
+//            public void handleAction(Action action, Object sender, Object target) {
+//              ((JcrBrowserAction) action).handleAction((String) target);
+//            }
+//        });
+//    }
 
     /**
      * Add Drag and Drop functionality to the provided TreeTable.
