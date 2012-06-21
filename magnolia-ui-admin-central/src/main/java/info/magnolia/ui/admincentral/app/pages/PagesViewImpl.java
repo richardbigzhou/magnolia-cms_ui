@@ -47,8 +47,8 @@ import com.vaadin.ui.Component;
  */
 @SuppressWarnings("serial")
 public class PagesViewImpl implements PagesView, IsVaadinComponent {
-    
-    private String jcrWorkspaceName = "contacts";
+
+    private String jcrWorkspaceName = "website";
     private Component view;
 
     @Inject
@@ -59,7 +59,7 @@ public class PagesViewImpl implements PagesView, IsVaadinComponent {
 
     @Override
     public String getCaption() {
-        return "Workbench";
+        return "Website";
     }
 
     @Override

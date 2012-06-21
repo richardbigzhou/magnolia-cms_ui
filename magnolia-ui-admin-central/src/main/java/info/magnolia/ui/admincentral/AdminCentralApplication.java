@@ -71,12 +71,8 @@ public class AdminCentralApplication extends Application {
         ComponentProviderConfigurationBuilder configurationBuilder = new ComponentProviderConfigurationBuilder();
         List<ModuleDefinition> moduleDefinitions = Components.getComponent(ModuleRegistry.class).getModuleDefinitions();
         ComponentProviderConfiguration adminCentralConfig = configurationBuilder.getComponentsFromModules("admin-central", moduleDefinitions);
-        ComponentProviderConfiguration defaultWorkbenchConfig = configurationBuilder.getComponentsFromModules("default-workbench", moduleDefinitions);
 
-        log.debug("Combining different configurations...");
         ComponentProviderConfiguration configuration = adminCentralConfig.clone();
-        configuration.combine(defaultWorkbenchConfig.clone());
-
         configuration.addComponent(InstanceConfiguration.valueOf(Application.class, this));
 
         log.debug("Creating the component provider...");
