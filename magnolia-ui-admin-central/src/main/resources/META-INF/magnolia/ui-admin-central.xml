@@ -163,11 +163,6 @@
       <type>info.magnolia.ui.widget.dialog.DialogView</type>
       <implementation>info.magnolia.ui.widget.dialog.Dialog</implementation>
     </component>
-  </components>
-
-  <components>
-   <id>default-workbench</id>
-
     <component>
       <type>info.magnolia.ui.admincentral.workbench.WorkbenchView</type>
       <implementation>info.magnolia.ui.admincentral.workbench.WorkbenchViewImpl</implementation>
