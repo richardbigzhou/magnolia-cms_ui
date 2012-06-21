@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.app.pages;
 
-import info.magnolia.ui.admincentral.workbench.Workbench;
+import info.magnolia.ui.admincentral.workbench.ContentWorkbench;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 import javax.inject.Inject;
@@ -54,7 +54,7 @@ public class PagesViewImpl implements PagesView, IsVaadinComponent {
     private final Component view;
 
     @Inject
-    public PagesViewImpl(final Workbench workbench) {
+    public PagesViewImpl(final ContentWorkbench workbench) {
         workbench.initWorkbench(jcrWorkspaceName);
         view = workbench.asVaadinComponent();
     }

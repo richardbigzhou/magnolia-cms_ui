@@ -452,26 +452,9 @@ public abstract class JcrContainer extends AbstractContainer implements Containe
 //            throw new RuntimeRepositoryException(e);
 //        }
 //    }
-//
-//    public void setColumnValue(String propertyId, Object itemId, Object newValue) {
-//        try {
-//            jcrContainerSource.setColumnComponent(propertyId, getJcrItem((String)itemId), (Component) newValue);
-//            firePropertySetChange();
-//        }
-//        catch (RepositoryException e) {
-//            throw new RuntimeRepositoryException(e);
-//        }
-//    }
 
-    public javax.jcr.Item getJcrItem(String containerItemId) throws RepositoryException {
-        if (containerItemId == null) {
-            return null;
-        }
-        return jcrContainerSource.getItemByPath(containerItemId);
-    }
 
     // Used by JcrBrowser
-
     protected JcrContainerSource getJcrContainerSource() {
         return jcrContainerSource;
     }

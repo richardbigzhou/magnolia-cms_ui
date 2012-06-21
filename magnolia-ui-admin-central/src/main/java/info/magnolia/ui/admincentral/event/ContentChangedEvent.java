@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,25 +31,23 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.workbench.event;
-
+package info.magnolia.ui.admincentral.event;
 
 import info.magnolia.ui.framework.event.Event;
 import info.magnolia.ui.framework.event.EventHandler;
 
 
 /**
- * This event is fired when an item is selected (ie a row in the data grid within the workbench representing either a {@link javax.jcr.Node} or a {@link javax.jcr.Property}).
- * @version $Id$
- *
+ * Global event fired if content was changed, deleted, added.
+ * FIXME introduce more granular events
  */
-public class ItemSelectedEvent implements Event<ItemSelectedEvent.Handler> {
+public class ContentChangedEvent implements Event<ContentChangedEvent.Handler> {
 
     /**
-     * Handles {@link ItemSelectedEvent} events.
+     * Handles {@link ContentChangedEvent} events.
      */
     public static interface Handler extends EventHandler {
-        void onItemSelected(ItemSelectedEvent event);
+        void onContentChanged(ContentChangedEvent event);
     }
 
     private String workspace;
@@ -58,10 +56,10 @@ public class ItemSelectedEvent implements Event<ItemSelectedEvent.Handler> {
 
     @Override
     public void dispatch(Handler handler) {
-        handler.onItemSelected(this);
+        handler.onContentChanged(this);
     }
 
-    public ItemSelectedEvent(String workspace, String path) {
+    public ContentChangedEvent(String workspace, String path) {
         this.workspace = workspace;
         this.path = path;
     }

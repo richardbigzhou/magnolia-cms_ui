@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,44 +31,47 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.workbench.event;
+package info.magnolia.ui.admincentral.workbench;
 
-import info.magnolia.ui.framework.event.Event;
-import info.magnolia.ui.framework.event.EventHandler;
+import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
+import info.magnolia.ui.admincentral.actionbar.ActionbarView;
+import info.magnolia.ui.admincentral.jcr.view.JcrView;
+import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
+
+import com.vaadin.data.Item;
+import com.vaadin.ui.ComponentContainer;
 
 
 /**
- * Global event fired if content was changed, deleted, added.
- * FIXME introduce more granular events
+ * Implementors of this interface are responsible for building a workbench and handling the UI
+ * actions associated with it.
  */
-public class ContentChangedEvent implements Event<ContentChangedEvent.Handler> {
+public interface ContentWorkbenchView extends ComponentContainer, ActionbarView {
+
+    void setPresenter(Presenter presenter);
+
+    void initWorkbench(WorkbenchDefinition definintion);
+
+    void setGridType(final JcrView.ViewType type);
 
     /**
-     * Handles {@link ContentChangedEvent} events.
+     * Causes a view refresh only if the current node exists in the repository.
      */
-    public static interface Handler extends EventHandler {
-        void onContentChanged(ContentChangedEvent event);
+    void refreshItem(final Item item);
+
+    /**
+     * TODO review the for two methods to perform the view refresh. Had to add this one to refresh
+     * the view in case of item deletion. Refreshes the view.
+     */
+    void refresh();
+
+    /**
+     * Presenter.
+     */
+    public interface Presenter extends ActionbarPresenter {
+
+        void onItemSelected(Item item);
+
     }
 
-    private String workspace;
-
-    private String path;
-
-    @Override
-    public void dispatch(Handler handler) {
-        handler.onContentChanged(this);
-    }
-
-    public ContentChangedEvent(String workspace, String path) {
-        this.workspace = workspace;
-        this.path = path;
-    }
-
-    public String getWorkspace() {
-        return workspace;
-    }
-
-    public String getPath() {
-        return path;
-    }
 }
