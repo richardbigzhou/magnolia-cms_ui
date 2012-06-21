@@ -46,19 +46,16 @@ import com.vaadin.ui.Field;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- * DialogBuilder.
- *
- * @author ejervidalo
+ * Builder for Dialogs.
  */
 public class DialogBuilder {
 
+    static final String FIELD_CONTAINER_STYLE_NAME = "field-container";
+
     /**
-     * @param dialogDefinition
-     * @param dialogPresenter
-     * @return
+     * @return DialogView populated with values from DialogDevinition and Item.
      */
     public DialogView build(DialogDefinition dialogDefinition, Item item, DialogView view) {
-
 
         view.setItemDataSource(item);
 
@@ -68,7 +65,7 @@ public class DialogBuilder {
 
             for (FieldDefinition field : tabDefinition.getFields()) {
                 CssLayout fieldContainer = new CssLayout();
-                fieldContainer.setStyleName("field-container");
+                fieldContainer.setStyleName(FIELD_CONTAINER_STYLE_NAME);
 
                 Field input = FieldBuilder.build(field);
 
@@ -87,7 +84,6 @@ public class DialogBuilder {
             view.addAction(action.getName(), action.getLabel());
         }
         return view;
-
     }
 
     protected void bindPropertyToField(final Object propertyId,
