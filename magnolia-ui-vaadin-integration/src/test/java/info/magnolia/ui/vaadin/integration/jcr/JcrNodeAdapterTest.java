@@ -183,6 +183,41 @@ public class JcrNodeAdapterTest {
     }
 
 
+    @Test
+    public void testValueChangeEvent_PropertyExist() throws Exception {
+        // GIVEN
+        Node underlyingNode = session.getRootNode().addNode("underlying");
+        String propertyName = "TEST";
+        String propertyValue = "value";
+        javax.jcr.Property jcrProperty = underlyingNode.setProperty(propertyName, propertyValue);
+        JcrNodeAdapter item = new JcrNodeAdapter(underlyingNode);
+
+        // WHEN
+        Property nodePorperty = item.getItemProperty(propertyName);
+        nodePorperty.setValue("newValue");
+
+        // THEN
+        assertEquals("newValue", jcrProperty.getString());
+    }
+
+
+    @Test
+    public void testValueChangeEvent_PropertyDoNotExist() throws Exception {
+        // GIVEN
+        Node underlyingNode = session.getRootNode().addNode("underlying");
+        String propertyName = "TEST";
+        JcrNodeAdapter item = new JcrNodeAdapter(underlyingNode);
+
+        // WHEN
+        Property nodePorperty = item.getItemProperty(propertyName);
+        nodePorperty.setValue("newValue");
+
+        // THEN
+        assertEquals("newValue", underlyingNode.getProperty(propertyName).getString());
+    }
+
+
+
     @Test(expected=UnsupportedOperationException.class)
     public void testGetItemPropertyIds() throws Exception {
         // GIVEN
