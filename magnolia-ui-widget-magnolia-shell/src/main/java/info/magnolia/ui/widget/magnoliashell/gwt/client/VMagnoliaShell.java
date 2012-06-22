@@ -116,6 +116,15 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
                     view.showMessage(type, message);
                 }
             });
+            
+            register("updateIndication", new Method() {
+                @Override
+                public void invoke(String methodName, Object[] params) {
+                    final ShellAppType type = ShellAppType.valueOf(String.valueOf(params[0]));
+                    final int increment = (Integer)params[1];
+                    view.updateShellAppIndication(type, increment);
+                }
+            });
         }
     };
     

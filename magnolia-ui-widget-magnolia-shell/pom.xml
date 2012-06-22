@@ -133,6 +133,11 @@
        <groupId>org.vaadin.addons</groupId>
        <artifactId>widget-rpc</artifactId>
     </dependency>
+    
+    <dependency>
+   		<groupId>org.vaadin.addons</groupId>
+   		<artifactId>gwt-graphics</artifactId>
+	</dependency>
 
     <dependency>
       <groupId>javax.validation</groupId>

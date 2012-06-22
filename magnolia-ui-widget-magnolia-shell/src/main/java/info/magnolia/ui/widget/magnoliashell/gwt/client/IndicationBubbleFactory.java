@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,41 +31,39 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage;
+package info.magnolia.ui.widget.magnoliashell.gwt.client;
 
-import info.magnolia.ui.widget.jquerywrapper.gwt.client.Callbacks;
-import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryCallback;
-import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShellView;
+import org.vaadin.gwtgraphics.client.DrawingArea;
+import org.vaadin.gwtgraphics.client.shape.Ellipse;
 
 /**
- * Error message.
+ * Factory for generating the pads for the indicators in the
+ * {@link MainLauncher}.
  * 
- * @author apchelintcev
+ * @author p4elkin
  * 
  */
-public class VShellErrorMessage extends VShellMessage {
+public class IndicationBubbleFactory {
 
-    public VShellErrorMessage(final VMagnoliaShellView shell, String text) {
-        super(shell, MessageType.ERROR, text);
-        final JQueryWrapper jq = JQueryWrapper.select(this);
-        jq.ready(Callbacks.create(new JQueryCallback() {
-            @Override
-            public void execute(JQueryWrapper query) {
-                shell.shiftViewportsVertically(getHeaderHeight(), true);
-            }
-        }));
+    private static final int BASE_WIDTH = 16;
+
+    private static final int BASE_HEIGHT = 16;
+
+    private static final int WIDTH_INCREMENT = 10;
+
+    public static void createBubbleForValue(int value, final DrawingArea canvas) {
+        canvas.clear();
+        canvas.setWidth(BASE_WIDTH + (digitCount(value) - 1)* WIDTH_INCREMENT);
+        canvas.setHeight(BASE_HEIGHT);
+        int vRadius = (int)(canvas.getHeight() / 2d);
+        int hRadius = (int)(canvas.getWidth() / 2d);
+        final Ellipse ellipse = new Ellipse(hRadius, vRadius, hRadius, vRadius);
+        ellipse.setStrokeOpacity(0);
+        canvas.add(ellipse);
     }
 
-    @Override
-    protected void expand() {
-        super.expand();
-        getShell().shiftViewportsVertically(getDetailsElement().getOffsetHeight(), false);
+    private static int digitCount(int value) {
+        return String.valueOf(value).length();
     }
-    
-    @Override
-    public void hide() {
-        getShell().shiftViewportsVertically(-getOffsetHeight(), false);
-        super.hide();
-    }
+
 }

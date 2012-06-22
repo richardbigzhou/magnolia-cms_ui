@@ -56,8 +56,6 @@ public interface VMagnoliaShellView extends HasWidgets, IsWidget {
 
     int getViewportWidth();
     
-    int getErrorMessageCount();
-    
     void changeActiveViewport(ViewportType viewportType);
     
     void updateAppViewport(VShellViewport viewport);
@@ -77,6 +75,8 @@ public interface VMagnoliaShellView extends HasWidgets, IsWidget {
     void shiftViewportsVertically(int shiftPx, boolean animated);
     
     void setPusher(VICEPush pusher);
+    
+    void updateShellAppIndication(ShellAppType type, int increment);
     
     boolean hasDialogs();
     

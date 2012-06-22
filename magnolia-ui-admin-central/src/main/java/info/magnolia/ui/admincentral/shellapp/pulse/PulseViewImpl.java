@@ -34,11 +34,13 @@
 package info.magnolia.ui.admincentral.shellapp.pulse;
 
 import info.magnolia.context.MgnlContext;
+import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.admincentral.components.ActivityItem;
 import info.magnolia.ui.admincentral.components.SplitFeed;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
 import info.magnolia.ui.widget.tabsheet.ShellTab;
 import info.magnolia.ui.widget.tabsheet.ShellTabSheet;
 
@@ -87,13 +89,15 @@ public class PulseViewImpl implements PulseView, IsVaadinComponent {
         }
     }
 
+    private MagnoliaShell shell;
     private MessagesManager messagesManager;
     private Presenter  presenter;
 
     private BidiMap m = new DualHashBidiMap();
 
     @Inject
-    public PulseViewImpl(MessagesManager messagesManager) {
+    public PulseViewImpl(MessagesManager messagesManager, MagnoliaShell shell) {
+        this.shell = shell;
         this.messagesManager = messagesManager;
         tabsheet.addStyleName("v-pulse");
         final Panel testLayout2 = new Panel();
@@ -157,6 +161,7 @@ public class PulseViewImpl implements PulseView, IsVaadinComponent {
             @Override
             public void handleMessage(Message message) {
                 addMessageToContainer(container, message);
+                shell.updateShellAppIndication(ShellAppType.PULSE, 1);
             }
         });
 

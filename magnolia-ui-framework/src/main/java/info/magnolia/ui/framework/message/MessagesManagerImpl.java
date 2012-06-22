@@ -60,6 +60,7 @@ public class MessagesManagerImpl implements MessagesManager {
         }
     }
 
+    @Override
     public synchronized void sendMessage(String userId, Message message) {
         message.setId(generateMessageId());
         messages.put(userId, message);

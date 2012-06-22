@@ -55,7 +55,8 @@ import java.util.Map;
 
 import org.vaadin.artur.icepush.client.ui.VICEPush;
 
-import com.google.gwt.core.client.JsArray;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -94,6 +95,10 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
     
     private EventBus eventBus;
 
+    private VShellMessage lowPriorityMessage;
+    
+    private VShellMessage hiPriorityMessage;
+    
     public VMagnoliaShellViewImpl(final EventBus eventBus) {
         super();
         this.eventBus = eventBus;
@@ -149,12 +154,8 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
     
     @Override
     public int getViewportHeight() {
-        final JsArray<Element> errors = JQueryWrapper.select(".error").get();
-        int maxErrorHeight = 0;
-        for (int i = 0; i < errors.length(); ++i) {
-            maxErrorHeight = Math.max(maxErrorHeight, errors.get(i).getOffsetHeight());
-        }
-        return getOffsetHeight() - mainAppLauncher.getExpandedHeight() - maxErrorHeight;
+        int errorMessageHeight = hiPriorityMessage == null && (getWidgetIndex(hiPriorityMessage) > -1) ? hiPriorityMessage.getOffsetHeight() : 0; 
+        return getOffsetHeight() - mainAppLauncher.getExpandedHeight() - errorMessageHeight;
     }
 
     @Override
@@ -214,16 +215,33 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
 
     @Override
     public void showMessage(final MessageType type, String text) {
-        VShellMessage msg = null;
+        final VShellMessage msg;
         switch (type) {
         case WARNING:
             msg = new VShellMessage(this, type, text);
+            if (lowPriorityMessage != null && getWidgetIndex(lowPriorityMessage) != -1) {
+                lowPriorityMessage.hide();
+            }
+            lowPriorityMessage = msg;
             break;
         case ERROR:
             msg = new VShellErrorMessage(this, text);
+            if (hiPriorityMessage != null && getWidgetIndex(hiPriorityMessage) != -1) {
+                hiPriorityMessage.hide();
+            }
+            hiPriorityMessage = msg;
             break;
+        default:
+            msg = null;
         }
-        add(msg, getElement());
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() { 
+            @Override
+            public void execute() {
+                if (msg != null) {
+                    add(msg, getElement());   
+                }
+            }
+        });
     }
 
     protected void switchViewports(boolean appViewportOnTop) {
@@ -318,11 +336,6 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
     }
 
     @Override
-    public int getErrorMessageCount() {
-        return JQueryWrapper.select(".error").get().length();
-    }
-
-    @Override
     public void shiftViewportsVertically(int shiftPx, boolean animated) {
         for (final VShellViewport viewport : viewports.values()) {
             final AnimationSettings settings = new AnimationSettings();
@@ -340,6 +353,13 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
 
     @Override
     public void setPusher(final VICEPush pusher) {
-        insert(pusher, 0);
+        if (getWidgetIndex(pusher) != -1) {
+            insert(pusher, 0);   
+        }
+    }
+
+    @Override
+    public void updateShellAppIndication(ShellAppType type, int increment) {
+        mainAppLauncher.updateIndication(type, increment);
     }
 }

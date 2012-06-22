@@ -237,6 +237,13 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
         }
     }
 
+    public void updateShellAppIndication(ShellAppType type, int increment) {
+        synchronized (getApplication()) {
+            proxy.call("updateIndication", type.name(), increment);
+            pusher.push();
+        }
+    }
+    
     public void removeDialog(Component dialog) {
         viewports.get(ViewportType.DIALOG_VIEWPORT).removeComponent(dialog);
         requestRepaint();
