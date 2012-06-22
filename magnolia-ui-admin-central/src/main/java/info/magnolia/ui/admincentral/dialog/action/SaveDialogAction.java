@@ -39,6 +39,7 @@ import javax.jcr.RepositoryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import info.magnolia.jcr.util.MetaDataUtil;
 import info.magnolia.ui.admincentral.event.ContentChangedEvent;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.action.ActionBase;
@@ -69,16 +70,18 @@ public class SaveDialogAction extends ActionBase<SaveDialogActionDefinition> {
 
     @Override
     public void execute() throws ActionExecutionException {
-        JcrNodeAdapter itemChanged = (JcrNodeAdapter) item;
+        final JcrNodeAdapter itemChanged = (JcrNodeAdapter) item;
         try {
             final Node node = itemChanged.getNode();
             if(node.isNew()) {
+
                 log.debug("Creating new node at {}", node.getPath());
             } else {
+                MetaDataUtil.updateMetaData(node);
                 log.debug("Updating node at {}", node.getPath());
             }
             node.getSession().save();
-        } catch (RepositoryException e) {
+        } catch (final RepositoryException e) {
             throw new ActionExecutionException(e);
         }
         eventBus.fireEvent(new ContentChangedEvent(itemChanged.getWorkspace(), itemChanged.getItemId()));
