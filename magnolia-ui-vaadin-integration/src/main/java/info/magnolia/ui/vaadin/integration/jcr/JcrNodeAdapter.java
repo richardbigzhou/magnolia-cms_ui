@@ -67,8 +67,12 @@ public class JcrNodeAdapter extends JcrAbstractAdapter implements  Property.Valu
         Object value;
         try {
             //FIXME Temp solution. We should create a JcrItem with properties defined by a FieldDefinition related to the Item.
+
             if(!getNode().hasProperty((String) id)) {
-                value = new String("");
+                value = "";
+                if(JCR_NAME.equals(id)) {
+                    value = getNode().getName();
+                }
             } else {
                 value = PropertyUtil.getProperty(getNode(), (String) id).getString();
             }

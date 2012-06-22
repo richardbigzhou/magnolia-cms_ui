@@ -35,10 +35,11 @@ package info.magnolia.ui.model.dialog.definition;
 
 /**
  * FieldDefinition.
- *
- * @author ejervidalo
  */
 public interface FieldDefinition extends UiItemDefinition {
+
+    static final String TEXT_FIELD_TYPE = "text";
+    static final String CHECKBOX_FIELD_TYPE = "checkbox";
 
     public abstract String getDescription();
 
