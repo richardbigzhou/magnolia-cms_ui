@@ -35,6 +35,9 @@ package info.magnolia.ui.admincentral.dialog.builder;
 
 import info.magnolia.ui.model.dialog.definition.FieldDefinition;
 
+import com.vaadin.data.Validator;
+import com.vaadin.data.validator.EmailValidator;
+import com.vaadin.data.validator.RegexpValidator;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.TextField;
@@ -45,14 +48,25 @@ import com.vaadin.ui.TextField;
 public class FieldBuilder {
 
     static final String TEXTFIELD_STYLE_NAME = "textfield";
+
     /**
-     * @return field (currently TextField or Checkbox) build from provided definition.
+     * @return field (currently TextField or Checkbox) build from provided
+     *         definition.
      */
     public static Field build(FieldDefinition fieldDefinition) {
         Field input = null;
         if (FieldDefinition.TEXT_FIELD_TYPE.equals(fieldDefinition.getType())) {
             input = new TextField();
             input.setCaption(fieldDefinition.getLabel());
+
+            final String fieldName = fieldDefinition.getName();
+            Validator validator = null;
+            if ("email".equals(fieldName)) {
+                validator = new EmailValidator("{0} is not a valid email-adress! (to be i18n'ed");
+            } else {
+                validator = new RegexpValidator("^[a-zA-Z]+$", "One or more characters! (to be i18n'ed)");
+            }
+            input.addValidator(validator);
 
         } else if (FieldDefinition.CHECKBOX_FIELD_TYPE.equals(fieldDefinition.getType())) {
             input = new CheckBox(fieldDefinition.getLabel(), true);
