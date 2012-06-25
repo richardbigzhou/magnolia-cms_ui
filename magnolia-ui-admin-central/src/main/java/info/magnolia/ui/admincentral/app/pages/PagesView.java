@@ -50,7 +50,10 @@ public interface PagesView extends AppView {
     void setPresenter(Presenter presenter);
 
     ContentWorkbench getWorkbench();
-
+    /**
+     * Presenter for the PagesView.
+     *
+     */
     public interface Presenter {
 
         void onEditPage(final Node page, final AppContext context) throws RepositoryException;
