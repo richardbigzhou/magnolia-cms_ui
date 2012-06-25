@@ -89,18 +89,27 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter{
 
     /**
      * Create a new subNode of the parent Node.
-     * @throws RepositoryException
      *
+     * @throws IllegalAccessError: If the node was already created.
      */
     @Override
     public Node getNode() {
-        Node node = null;
         if(nodeName !=null) {
             //TODO ehe: Check what exactly to do in this case. throw exception or search for the last
             // created node. In this case, what to do if the node was created in another session and not yet stored.
             log.warn("Node already created. getNode() should only be called once. ");
             throw new IllegalAccessError("Should only call this method once");
         }
+
+        return createNode();
+    }
+
+    /**
+     * Create a new node linked o the parent node used to
+     * initialized this NewNodeAdapter.
+     */
+    private Node createNode() {
+        Node node = null;
         try {
             Node parent = (Node)getJcrItem();
             nodeName = getUniqueNewItemName(parent);
