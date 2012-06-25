@@ -139,4 +139,7 @@
         </dependency>
   </dependencies>
 
+  <properties>
+  	<cloverCoverageThreshold>15</cloverCoverageThreshold>
+  </properties>
 </project>

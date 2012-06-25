@@ -40,31 +40,32 @@ import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShellView;
 
 /**
  * Error message.
+ * 
  * @author apchelintcev
- *
+ * 
  */
 public class VShellErrorMessage extends VShellMessage {
-    
-    public VShellErrorMessage(final VMagnoliaShellView shell, String text) {
-        super(shell, MessageType.ERROR, text);
+
+    public VShellErrorMessage(final VMagnoliaShellView shell, String topic, String message, String id) {
+        super(shell, MessageType.ERROR, topic, message, id);
         final JQueryWrapper jq = JQueryWrapper.select(this);
         jq.ready(Callbacks.create(new JQueryCallback() {
             @Override
             public void execute(JQueryWrapper query) {
-                if (shell.getErrorMessageCount() == 0) {
-                    Integer messageHeight = jq.cssInt("height");
-                    shell.shiftViewportsVertically(messageHeight, true);
-                }
+                shell.shiftViewportsVertically(getHeaderHeight(), true);
             }
         }));
+    }
+
+    @Override
+    protected void expand() {
+        super.expand();
+        getShell().shiftViewportsVertically(getDetailsElement().getOffsetHeight(), false);
     }
     
     @Override
     public void hide() {
-        if (getShell().getErrorMessageCount() < 2) {
-            final Integer messageHeight = JQueryWrapper.select(this).cssInt("height");
-            getShell().shiftViewportsVertically(-messageHeight, false);
-        }
+        getShell().shiftViewportsVertically(-getOffsetHeight(), false);
         super.hide();
     }
 }

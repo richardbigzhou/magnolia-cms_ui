@@ -53,7 +53,10 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
 
-import com.google.gwt.core.client.JsArray;
+import org.vaadin.artur.icepush.client.ui.VICEPush;
+
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -92,6 +95,10 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
     
     private EventBus eventBus;
 
+    private VShellMessage lowPriorityMessage;
+    
+    private VShellMessage hiPriorityMessage;
+    
     public VMagnoliaShellViewImpl(final EventBus eventBus) {
         super();
         this.eventBus = eventBus;
@@ -147,12 +154,8 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
     
     @Override
     public int getViewportHeight() {
-        final JsArray<Element> errors = JQueryWrapper.select(".error").get();
-        int maxErrorHeight = 0;
-        for (int i = 0; i < errors.length(); ++i) {
-            maxErrorHeight = Math.max(maxErrorHeight, errors.get(i).getOffsetHeight());
-        }
-        return getOffsetHeight() - mainAppLauncher.getExpandedHeight() - maxErrorHeight;
+        int errorMessageHeight = hiPriorityMessage == null && (getWidgetIndex(hiPriorityMessage) > -1) ? hiPriorityMessage.getOffsetHeight() : 0; 
+        return getOffsetHeight() - mainAppLauncher.getExpandedHeight() - errorMessageHeight;
     }
 
     @Override
@@ -211,18 +214,36 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
     }
 
     @Override
-    public void showMessage(final MessageType type, String text) {
-        VShellMessage msg = null;
+    public void showMessage(MessageType type, String topic, String message, String id) {
+        final VShellMessage msg;
         switch (type) {
         case WARNING:
-            msg = new VShellMessage(this, type, text);
+            msg = new VShellMessage(this, type, topic, message, id);
+            if (lowPriorityMessage != null && getWidgetIndex(lowPriorityMessage) != -1) {
+                lowPriorityMessage.hide();
+            }
+            lowPriorityMessage = msg;
             break;
         case ERROR:
-            msg = new VShellErrorMessage(this, text);
+            msg = new VShellErrorMessage(this, topic, message, id);
+            if (hiPriorityMessage != null && getWidgetIndex(hiPriorityMessage) != -1) {
+                hiPriorityMessage.hide();
+            }
+            hiPriorityMessage = msg;
             break;
+        default:
+            msg = null;
         }
-        add(msg, getElement());
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() { 
+            @Override
+            public void execute() {
+                if (msg != null) {
+                    add(msg, getElement());   
+                }
+            }
+        });        
     }
+   
 
     protected void switchViewports(boolean appViewportOnTop) {
         final VShellViewport shellAppViewport = getShellAppViewport();
@@ -316,11 +337,6 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
     }
 
     @Override
-    public int getErrorMessageCount() {
-        return JQueryWrapper.select(".error").get().length();
-    }
-
-    @Override
     public void shiftViewportsVertically(int shiftPx, boolean animated) {
         for (final VShellViewport viewport : viewports.values()) {
             final AnimationSettings settings = new AnimationSettings();
@@ -335,4 +351,22 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
             JQueryWrapper.select(viewport).animate(animated ? 300 : 0, settings);   
         }
     }
+
+    @Override
+    public void setPusher(final VICEPush pusher) {
+        if (getWidgetIndex(pusher) != -1) {
+            insert(pusher, 0);   
+        }
+    }
+
+    @Override
+    public void updateShellAppIndication(ShellAppType type, int increment) {
+        mainAppLauncher.updateIndication(type, increment);
+    }
+
+    @Override
+    public void closeMessageEager(final String id) {
+        presenter.removeMessage(id);
+    }
+
 }

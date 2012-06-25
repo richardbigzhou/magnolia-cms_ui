@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,38 +31,60 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog.action;
+package info.magnolia.ui.framework.message;
 
-import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
-import info.magnolia.ui.model.action.ActionBase;
-import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.vaadin.integration.jcr.JcrTransientNodeAdapter;
-import info.magnolia.ui.widget.dialog.DialogView.Presenter;
-
-import javax.jcr.Node;
-
+import java.util.List;
 
 /**
- * Opens a dialog for editing a nodeToEdit in a tree.
- * <p/>
- * TODO: add support for configuring supported itemTypes, maybe in base class where no config means all
+ * Manages users messages.
  *
+ * needs persistence
+ *
+ * messages to all and messages to single user (to group as well?)
+ *
+ * server side push of messages? or poll
+ *
+ * - new work item !!
+ * - error
+ * - warning
+ * - informational
+ *
+ * messages need confirming to go away
+ *
+ * messages need unique ids
+ *
+ * messages to all need to go to all logged-in users
+ *  how will this class know who they are?
+ *  how is it distributed?
+ *  must be careful not to let this class keep references to inactive sessions/vaadin applications
+ *
+ * @version $Id$
  */
-public class EditDialogAction extends ActionBase<EditDialogActionDefinition> {
+public interface MessagesManager {
 
-    private DialogPresenterFactory dialogPresenterFactory;
+    /**
+     * MessageListener.
+     *
+     * @version $Id$
+     */
+    public interface MessageListener {
 
-    private Node nodeToEdit;
-
-    public EditDialogAction(EditDialogActionDefinition definition, Node nodeToEdit, DialogPresenterFactory dialogPresenterFactory) {
-        super(definition);
-        this.nodeToEdit = nodeToEdit;
-        this.dialogPresenterFactory = dialogPresenterFactory;
+        void handleMessage(Message message);
+        
+        void removeMessage(Message message);
     }
 
-    @Override
-    public void execute() throws ActionExecutionException {
-        Presenter dialogPresenter = dialogPresenterFactory.createDialog(getDefinition().getDialogName());
-        dialogPresenter.editItem(new JcrTransientNodeAdapter(nodeToEdit));
-    }
+    void registerMessagesListener(String userId, MessageListener listener);
+
+    void unregisterMessagesListener(String userId, MessageListener listener);
+
+    int getMessageCountForUser(String userId);
+
+    List<Message> getMessagesForUser(String userId);
+
+    void sendMessage(String userId, Message message);
+
+    void sendMessageToAllUsers(Message message);
+
+    void removeMessage(String userId, String id);
 }

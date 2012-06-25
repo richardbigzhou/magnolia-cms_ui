@@ -133,6 +133,11 @@
        <groupId>org.vaadin.addons</groupId>
        <artifactId>widget-rpc</artifactId>
     </dependency>
+    
+    <dependency>
+   		<groupId>org.vaadin.addons</groupId>
+   		<artifactId>gwt-graphics</artifactId>
+	</dependency>
 
     <dependency>
       <groupId>javax.validation</groupId>
@@ -168,6 +173,19 @@
       <version>7.2.2.v20101205</version>
     </dependency>
 
+    <dependency>
+		<groupId>org.vaadin.addons</groupId>
+		<artifactId>icepush</artifactId>
+	</dependency>
+	<dependency>
+		<groupId>org.icefaces</groupId>
+		<artifactId>icepush</artifactId>
+	</dependency>
+	<dependency> 
+		<groupId>org.icepush</groupId> 
+		<artifactId>icepush-gwt</artifactId> 
+		<version>2.0.0</version> 
+    </dependency>
   </dependencies>
 
 </project>

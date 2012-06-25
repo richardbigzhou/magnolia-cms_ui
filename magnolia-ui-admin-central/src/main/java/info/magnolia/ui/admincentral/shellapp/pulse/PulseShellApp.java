@@ -63,7 +63,6 @@ public class PulseShellApp implements ShellApp, PulseView.Presenter {
     public ShellView start(ShellAppContext context) {
         this.context = context;
         pulseView.setPresenter(this);
-        shell.showNotification("Something weird goes on....But you can skip it for now");
         return pulseView;
     }
 

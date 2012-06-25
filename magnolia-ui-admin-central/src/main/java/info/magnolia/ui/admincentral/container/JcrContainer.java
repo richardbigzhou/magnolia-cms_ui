@@ -133,8 +133,6 @@ public abstract class JcrContainer extends AbstractContainer implements Containe
     public JcrContainer(JcrContainerSource jcrContainerSource, WorkbenchDefinition workbenchDefinition) {
         this.jcrContainerSource = jcrContainerSource;
         workspace = workbenchDefinition.getWorkspace();
-//        // load first page.
-//        getPage();
 
         for (AbstractColumnDefinition columnDefinition : workbenchDefinition.getColumns()) {
             if (columnDefinition.isSortable()) {
@@ -507,7 +505,6 @@ public abstract class JcrContainer extends AbstractContainer implements Containe
         if (newSize != size) {
             size = (int)newSize;
         }
-
     }
 
     /**
@@ -577,6 +574,15 @@ public abstract class JcrContainer extends AbstractContainer implements Containe
 
     public String getWorkspace() {
         return workspace;
+    }
+
+    /**
+     * Refreshes the container - clears all caches and resets size and offset. Does NOT remove
+     * sorting or filtering rules!
+     */
+    public void refresh() {
+        currentOffset = 0;
+        getPage();
     }
 
 

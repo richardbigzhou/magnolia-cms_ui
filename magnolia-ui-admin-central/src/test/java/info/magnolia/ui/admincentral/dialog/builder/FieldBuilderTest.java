@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,48 +33,58 @@
  */
 package info.magnolia.ui.admincentral.dialog.builder;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import info.magnolia.ui.model.dialog.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.model.dialog.definition.FieldDefinition;
 
-import com.vaadin.data.Validator;
-import com.vaadin.data.validator.EmailValidator;
-import com.vaadin.data.validator.RegexpValidator;
+import org.junit.Test;
+
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.TextField;
 
-/**
- * Build fields from provided {@link info.magnolia.ui.model.dialog.definition.FieldDefinition}s.
- */
-public class FieldBuilder {
+public class FieldBuilderTest {
 
-    static final String TEXTFIELD_STYLE_NAME = "textfield";
+    @Test
+    public void testBuildingTextField() {
+        // GIVEN
+        final FieldDefinition def = new ConfiguredFieldDefinition();
+        def.setType(FieldDefinition.TEXT_FIELD_TYPE);
 
-    /**
-     * @return field (currently TextField or Checkbox) build from provided
-     *         definition.
-     */
-    public static Field build(FieldDefinition fieldDefinition) {
-        Field input = null;
-        if (FieldDefinition.TEXT_FIELD_TYPE.equals(fieldDefinition.getType())) {
-            input = new TextField();
-            input.setCaption(fieldDefinition.getLabel());
+        // WHEN
+        final Field result = FieldBuilder.build(def);
 
-            final String fieldName = fieldDefinition.getName();
-            Validator validator = null;
-            if ("email".equals(fieldName)) {
-                validator = new EmailValidator("{0} is not a valid email-adress! (to be i18n'ed");
-            } else {
-                validator = new RegexpValidator("^[a-zA-Z]+$", "One or more characters! (to be i18n'ed)");
-            }
-            input.addValidator(validator);
+        // THEN
+        assertEquals(TextField.class, result.getClass());
+        assertEquals(FieldBuilder.TEXTFIELD_STYLE_NAME, result.getStyleName());
+    }
 
-        } else if (FieldDefinition.CHECKBOX_FIELD_TYPE.equals(fieldDefinition.getType())) {
-            input = new CheckBox(fieldDefinition.getLabel(), true);
-        }
-        if (input != null) {
-            input.setStyleName(TEXTFIELD_STYLE_NAME);
-        }
-        return input;
+    @Test
+    public void testBuildingCheckBox() {
+        // GIVEN
+        final FieldDefinition def = new ConfiguredFieldDefinition();
+        def.setType(FieldDefinition.CHECKBOX_FIELD_TYPE);
+
+        // WHEN
+        final Field result = FieldBuilder.build(def);
+
+        // THEN
+        assertEquals(CheckBox.class, result.getClass());
+        assertEquals(FieldBuilder.TEXTFIELD_STYLE_NAME, result.getStyleName());
+    }
+
+    @Test
+    public void testBuildingNullField() {
+        // GIVEN
+        final FieldDefinition def = new ConfiguredFieldDefinition();
+        def.setType("<unkown>");
+
+        // WHEN
+        final Field result = FieldBuilder.build(def);
+
+        // THEN
+        assertNull(result);
     }
 
 }

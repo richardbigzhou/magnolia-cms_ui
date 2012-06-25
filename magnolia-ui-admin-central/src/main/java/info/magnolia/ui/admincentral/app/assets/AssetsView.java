@@ -42,4 +42,16 @@ import info.magnolia.ui.framework.app.AppView;
  */
 public interface AssetsView extends AppView {
 
+    void setPresenter(final Presenter presenter);
+
+    Presenter getPresenter();
+
+    /**
+     * Presenter.
+     *
+     * @version $Id$
+     */
+    public interface Presenter {
+
+    }
 }

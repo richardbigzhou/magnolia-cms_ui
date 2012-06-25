@@ -39,6 +39,8 @@ import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VShellMessa
 
 import java.util.Collection;
 
+import org.vaadin.artur.icepush.client.ui.VICEPush;
+
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
@@ -54,8 +56,6 @@ public interface VMagnoliaShellView extends HasWidgets, IsWidget {
 
     int getViewportWidth();
     
-    int getErrorMessageCount();
-    
     void changeActiveViewport(ViewportType viewportType);
     
     void updateAppViewport(VShellViewport viewport);
@@ -66,7 +66,7 @@ public interface VMagnoliaShellView extends HasWidgets, IsWidget {
 
     void setPresenter(final Presenter presenter);
     
-    void showMessage(final MessageType type, String text); 
+    void showMessage(final MessageType type, String text, String message, String id); 
 
     void removeDialogViewport();
 
@@ -74,11 +74,17 @@ public interface VMagnoliaShellView extends HasWidgets, IsWidget {
     
     void shiftViewportsVertically(int shiftPx, boolean animated);
     
+    void setPusher(VICEPush pusher);
+    
+    void updateShellAppIndication(ShellAppType type, int increment);
+    
     boolean hasDialogs();
     
     Presenter getPresenter();
     
     Collection<VShellViewport> getViewports();
+    
+    void closeMessageEager(String id);
     
     /**
      * Presenter. Meant for Vaadin part of MagnoliaShell.
@@ -97,5 +103,7 @@ public interface VMagnoliaShellView extends HasWidgets, IsWidget {
         void closeCurrentApp();
         
         void closeCurrentShellApp();
+
+        void removeMessage(String id);
     }
 }

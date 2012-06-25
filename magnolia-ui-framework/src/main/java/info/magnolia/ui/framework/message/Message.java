@@ -31,14 +31,72 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse;
+package info.magnolia.ui.framework.message;
 
 /**
- * The type of message.
+ * A message.
  *
  * @version $Id$
  */
-public enum MessageType {
+public class Message {
 
-    ERROR, WARNING, INFO
+    private String id;
+
+    private long timestamp;
+
+    private MessageType type;
+
+    private String subject;
+
+    private String message;
+
+    private boolean cleared;
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public MessageType getType() {
+        return type;
+    }
+
+    public void setType(MessageType type) {
+        this.type = type;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public boolean isCleared() {
+        return cleared;
+    }
+
+    public void setCleared(boolean cleared) {
+        this.cleared = cleared;
+    }
 }

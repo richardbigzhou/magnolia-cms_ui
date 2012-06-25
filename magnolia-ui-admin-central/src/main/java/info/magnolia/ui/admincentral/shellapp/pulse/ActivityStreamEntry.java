@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse;
 
+import info.magnolia.ui.framework.message.MessageType;
+
 /**
  * An entry in the activity stream for a user.
  *

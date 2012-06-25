@@ -40,25 +40,21 @@ import info.magnolia.ui.model.dialog.definition.TabDefinition;
 import info.magnolia.ui.widget.dialog.DialogView;
 
 import com.vaadin.data.Item;
-import com.vaadin.data.Property;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- * DialogBuilder.
- *
- * @author ejervidalo
+ * Builder for Dialogs.
  */
 public class DialogBuilder {
 
+    static final String FIELD_CONTAINER_STYLE_NAME = "field-container";
+
     /**
-     * @param dialogDefinition
-     * @param dialogPresenter
-     * @return
+     * @return DialogView populated with values from DialogDevinition and Item.
      */
     public DialogView build(DialogDefinition dialogDefinition, Item item, DialogView view) {
-
 
         view.setItemDataSource(item);
 
@@ -66,17 +62,17 @@ public class DialogBuilder {
             String tabName = tabDefinition.getName();
             VerticalLayout inputFields = new VerticalLayout();
 
-            for (FieldDefinition field : tabDefinition.getFields()) {
+            for (FieldDefinition fieldDefinition : tabDefinition.getFields()) {
                 CssLayout fieldContainer = new CssLayout();
-                fieldContainer.setStyleName("field-container");
+                fieldContainer.setStyleName(FIELD_CONTAINER_STYLE_NAME);
 
-                Field input = FieldBuilder.build(field);
+                Field input = FieldBuilder.build(fieldDefinition);
 
-                bindPropertyToField(field.getName(), item.getItemProperty(field.getName()), input);
+                input.setPropertyDataSource(item.getItemProperty(fieldDefinition.getName()));
 
                 fieldContainer.addComponent(input);
                 inputFields.addComponent(fieldContainer);
-                view.addField(item.getItemProperty(field.getName()), input);
+                view.addField(input);
             }
 
             view.addTab(inputFields, tabName);
@@ -87,22 +83,7 @@ public class DialogBuilder {
             view.addAction(action.getName(), action.getLabel());
         }
         return view;
-
     }
 
-    protected void bindPropertyToField(final Object propertyId,
-            final Property property, final Field field) {
-        // check if field has a property that is Viewer set. In that case we
-        // expect developer has e.g. PropertyFormatter that he wishes to use and
-        // assign the property to the Viewer instead.
-        boolean hasFilterProperty = field.getPropertyDataSource() != null
-                && (field.getPropertyDataSource() instanceof Property.Viewer);
-        if (hasFilterProperty) {
-            ((Property.Viewer) field.getPropertyDataSource())
-                    .setPropertyDataSource(property);
-        } else {
-            field.setPropertyDataSource(property);
-        }
-    }
 }
 

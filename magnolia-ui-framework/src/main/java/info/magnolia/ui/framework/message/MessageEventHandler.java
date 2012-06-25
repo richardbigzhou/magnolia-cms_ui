@@ -31,38 +31,16 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog.action;
+package info.magnolia.ui.framework.message;
 
-import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
-import info.magnolia.ui.model.action.ActionBase;
-import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.vaadin.integration.jcr.JcrTransientNodeAdapter;
-import info.magnolia.ui.widget.dialog.DialogView.Presenter;
-
-import javax.jcr.Node;
-
+import info.magnolia.ui.framework.event.EventHandler;
 
 /**
- * Opens a dialog for editing a nodeToEdit in a tree.
- * <p/>
- * TODO: add support for configuring supported itemTypes, maybe in base class where no config means all
+ * Handler of {link {@link MessageEvent}.
  *
+ * @version $Id$
  */
-public class EditDialogAction extends ActionBase<EditDialogActionDefinition> {
+public interface MessageEventHandler extends EventHandler {
 
-    private DialogPresenterFactory dialogPresenterFactory;
-
-    private Node nodeToEdit;
-
-    public EditDialogAction(EditDialogActionDefinition definition, Node nodeToEdit, DialogPresenterFactory dialogPresenterFactory) {
-        super(definition);
-        this.nodeToEdit = nodeToEdit;
-        this.dialogPresenterFactory = dialogPresenterFactory;
-    }
-
-    @Override
-    public void execute() throws ActionExecutionException {
-        Presenter dialogPresenter = dialogPresenterFactory.createDialog(getDefinition().getDialogName());
-        dialogPresenter.editItem(new JcrTransientNodeAdapter(nodeToEdit));
-    }
+    void handleMessage(MessageEvent event);
 }

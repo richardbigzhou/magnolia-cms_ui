@@ -35,6 +35,7 @@ package info.magnolia.ui.app.messages;
 
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
@@ -50,23 +51,62 @@ import com.vaadin.ui.VerticalLayout;
 public class MessagesViewImpl implements MessagesView, IsVaadinComponent {
 
     private MessagesView.Presenter presenter;
-    private final VerticalLayout tableContainer;
+    private final VerticalLayout layout;
 
     public MessagesViewImpl() {
-        tableContainer = new VerticalLayout();
+        layout = new VerticalLayout();
         Label label = new Label("<center>Messages App</center>", Label.CONTENT_XHTML);
-        tableContainer.addComponent(label);
+        layout.addComponent(label);
 
         final TextArea textArea = new TextArea();
-        tableContainer.addComponent(textArea);
-        Button dialog = new Button("Send message", new Button.ClickListener() {
+        layout.addComponent(textArea);
+        layout.setComponentAlignment(label, Alignment.TOP_CENTER);
 
+        layout.addComponent(new Button("Local Info", new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                presenter.onSendMessage((String) textArea.getValue());
+                presenter.handleLocalInfo("Local Info - " + textArea.getValue());
             }
-        });
-        tableContainer.addComponent(dialog);
+        }));
+        layout.addComponent(new Button("Global Info", new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                presenter.handleGlobalInfo("Global Info - " + textArea.getValue());
+            }
+        }));
+
+        layout.addComponent(new Button("Local Warning", new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                presenter.handleLocalWarning("Local Warning - " + textArea.getValue());
+            }
+        }));
+        layout.addComponent(new Button("Global Warning", new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                presenter.handleGlobalWarning("Global Warning - " + textArea.getValue());
+            }
+        }));
+
+        layout.addComponent(new Button("Local Error", new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                presenter.handleLocalError("Local Error - " + textArea.getValue());
+            }
+        }));
+        layout.addComponent(new Button("Global Error", new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                presenter.handleGlobalError("Global Error - " + textArea.getValue());
+            }
+        }));
+
+        layout.addComponent(new Button("Confirmation message", new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                presenter.showConfirmationMessage("Confirmation - " + textArea.getValue());
+            }
+        }));
     }
 
     @Override
@@ -81,6 +121,6 @@ public class MessagesViewImpl implements MessagesView, IsVaadinComponent {
 
     @Override
     public Component asVaadinComponent() {
-        return tableContainer;
+        return layout;
     }
 }

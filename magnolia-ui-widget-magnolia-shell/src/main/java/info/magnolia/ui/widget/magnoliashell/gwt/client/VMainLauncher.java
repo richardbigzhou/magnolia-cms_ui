@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.widget.magnoliashell.gwt.client;
 
+import info.magnolia.ui.widget.jquerywrapper.gwt.client.AnimationSettings;
+import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.event.AppActivatedEvent;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.event.ShellAppNavigationEvent;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.event.handler.ShellNavigationAdapter;
@@ -45,10 +47,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import info.magnolia.ui.widget.jquerywrapper.gwt.client.AnimationSettings;
-import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper;
+import org.vaadin.gwtgraphics.client.DrawingArea;
 
 import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -73,6 +75,57 @@ public class VMainLauncher extends FlowPanel {
     private final static String ID = "main-launcher";
     
     private HandlerRegistration activationHandlerRegistration;
+    
+    private class NavigatorButton extends FlowPanel {
+        
+        private Element indicator = DOM.createDiv();
+        
+        private Element buttonWrapper;
+        
+        private int indication = 0;
+        
+        private DrawingArea indicatorPad = new DrawingArea(0, 0);
+        
+        public NavigatorButton(final ShellAppType type) {
+            super();
+            buttonWrapper = getElement();
+            addStyleName("btn-shell");
+            indicator.addClassName("indicator");
+            indicator.getStyle().setDisplay(Display.NONE);
+            indicator.appendChild(DOM.createSpan());
+            buttonWrapper.getStyle().setPosition(Position.RELATIVE);
+            buttonWrapper.appendChild(indicator);
+            buttonWrapper.setId(type.getId());
+
+            final Element span = DOM.createSpan();
+            span.setInnerHTML(type.getCaption());
+            buttonWrapper.appendChild(span);
+            
+            indicatorPad.addStyleName("pad");
+            DOM.sinkEvents(getElement(), Event.MOUSEEVENTS);
+            addDomHandler(new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent event) {                    
+                    navigateToShellApp(type);
+                }
+            }, ClickEvent.getType());
+        }
+
+        public void incerementIndication(int increment) {
+            indication += increment;
+            ((Element)indicator.getFirstChild().cast()).setInnerText(String.valueOf(indication));
+            if (indication <= 0) {
+                indicator.getStyle().setDisplay(Display.NONE);
+            } else {
+                if (getWidgetIndex(indicatorPad) < 0) {
+                    add(indicatorPad, indicator);   
+                }
+                indicator.getStyle().setDisplay(Display.BLOCK);
+                IndicationBubbleFactory.createBubbleForValue(indication, indicatorPad);
+                indicator.getStyle().setWidth(indicatorPad.getWidth(), Unit.PX);
+            }
+        }
+    };
     
     /**
      * Type of the "shell app" to be loaded.
@@ -129,7 +182,7 @@ public class VMainLauncher extends FlowPanel {
     
     private Image divet = new Image(VShellImageBundle.BUNDLE.getDivetGreen());
     
-    private Map<ShellAppType, Widget> controlsMap = new EnumMap<ShellAppType, Widget>(ShellAppType.class);
+    private Map<ShellAppType, NavigatorButton> controlsMap = new EnumMap<ShellAppType, NavigatorButton>(ShellAppType.class);
 
     private final EventBus eventBus;
     
@@ -152,7 +205,7 @@ public class VMainLauncher extends FlowPanel {
         add(logo, logoWrapper);
         add(divet, divetWrapper);
         for (final ShellAppType appType : ShellAppType.values()) {
-            final Widget w = new NavigatorButton(appType);
+            final NavigatorButton w = new NavigatorButton(appType);
             controlsMap.put(appType, w);
             add(w);
         }
@@ -184,35 +237,15 @@ public class VMainLauncher extends FlowPanel {
     }
 
     public ShellAppType getActiveShellType() {
-        final Iterator<Entry<ShellAppType, Widget>> it = controlsMap.entrySet().iterator();
+        final Iterator<Entry<ShellAppType, NavigatorButton>> it = controlsMap.entrySet().iterator();
         while (it.hasNext()) {
-            final Entry<ShellAppType, Widget> entry = it.next();
+            final Entry<ShellAppType, NavigatorButton> entry = it.next();
             if (entry.getValue().getStyleName().contains("active")) {
                 return entry.getKey();
             }
         }
         return null;
     }
-
-    private class NavigatorButton extends Widget {
-        
-        private Element buttonWrapper = DOM.createDiv();
-        
-        public NavigatorButton(final ShellAppType type) {
-            super();
-            setElement(buttonWrapper);
-            buttonWrapper.setInnerHTML("<span>" + type.getCaption() + "</span>");
-            getElement().setId(type.getId());
-            addStyleName("btn-shell");
-            DOM.sinkEvents(getElement(), Event.MOUSEEVENTS);
-            addDomHandler(new ClickHandler() {
-                @Override
-                public void onClick(ClickEvent event) {                    
-                    navigateToShellApp(type);
-                }
-            }, ClickEvent.getType());
-        }
-    };
     
     protected void activateControl(final ShellAppType type) {
         final ShellAppType currentActive = getActiveShellType();
@@ -273,5 +306,9 @@ public class VMainLauncher extends FlowPanel {
             return values.get((values.indexOf(cur) + 1) % values.size());    
         }
         return ShellAppType.APPLAUNCHER;
+    }
+
+    public void updateIndication(ShellAppType type, int increment) {
+        controlsMap.get(type).incerementIndication(increment);
     }
 }

@@ -2,8 +2,11 @@
 @import url(splitfeed.css);
 @import url(pulse-activity-entry.css);
 @import url(dialog.css);
+@import url(tabsheet.css);
 @import url(actionbar.css);
 @import url(tabsheet.css);
+@import url(shellmessage.css);
+@import url(app.css);
 
 @font-face{
     font-family: DinRound;
@@ -92,28 +95,6 @@ button.action-close {
     top: 80px;
     width: 100%;
     bottom: 0;
-}
-
-.v-shell-notification {
-    width: 100%;
-    position: absolute;
-    z-index: 1200;
-    text-align: center;
-    vertical-align: middle;
-    font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
-}
-
-.v-shell-notification.warning {
-    background: none repeat scroll 0 0 #FFBF28;
-    bottom:0;
-    height: 30px;
-}
-
-.v-shell-notification.error {
-    background: none repeat scroll 0 0 #9A3333;
-    color: white;
-    height: 30px;
-    top: 80px;
 }
 
 #modality-curtain {
@@ -205,24 +186,6 @@ button.action-close {
     text-align: left;
 }
 /*END OF APP LAUNCHER RELATED STYLES*/
-
-
-
-/*SHELL TAB SHEET RELATED STYLES*/
-
-.v-shell-tab {
-    background-color: #FFFFFF;
-}
-
-.v-shell-tab-close {
-    background: url("img/icon-close-16.png") no-repeat scroll 2px 2px transparent;
-}
-
-.v-shell-tab-notification {
-    background: url("img/message-circle-pulse-tab.png") no-repeat scroll 0 0 transparent;
-}
-
-/*END OF SHELL TAB SHEET RELATED STYLES*/
 
 
 /*FAVORITES RELATED STYLES*/

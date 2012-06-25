@@ -39,6 +39,7 @@ import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VShellMessa
 import java.util.Iterator;
 import java.util.Set;
 
+import org.vaadin.artur.icepush.client.ui.VICEPush;
 import org.vaadin.rpc.client.ClientSideHandler;
 import org.vaadin.rpc.client.ClientSideProxy;
 import org.vaadin.rpc.client.Method;
@@ -111,8 +112,19 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
                 @Override
                 public void invoke(String methodName, Object[] params) {
                     final MessageType type = MessageType.valueOf(String.valueOf(params[0]));
-                    final String message = String.valueOf(params[1]);
-                    view.showMessage(type, message);
+                    final String topic = String.valueOf(params[1]);
+                    final String message = String.valueOf(params[2]);
+                    final String id = String.valueOf(params[3]);
+                    view.showMessage(type, topic, message, id);
+                }
+            });
+            
+            register("updateIndication", new Method() {
+                @Override
+                public void invoke(String methodName, Object[] params) {
+                    final ShellAppType type = ShellAppType.valueOf(String.valueOf(params[0]));
+                    final int increment = (Integer)params[1];
+                    view.updateShellAppIndication(type, increment);
                 }
             });
         }
@@ -159,7 +171,21 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
                 }
             }    
         }
+        updatePusher(uidl);
         proxy.update(this, uidl, client);
+    }
+
+    private void updatePusher(final UIDL uidl) {
+        final UIDL pusherUidl = uidl.getChildByTagName("pusher");
+        if (pusherUidl != null) {
+            final Paintable pusherPaintable = client.getPaintable(pusherUidl.getChildUIDL(0));
+            if (pusherPaintable instanceof VICEPush) {
+                if (!hasChildComponent((VICEPush)pusherPaintable)) {
+                    view.setPusher((VICEPush)pusherPaintable);   
+                }
+                pusherPaintable.updateFromUIDL(pusherUidl.getChildUIDL(0), client);
+            }
+        }
     }
 
     @Override
@@ -230,6 +256,11 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
     @Override
     public void closeCurrentShellApp() {
         proxy.call("closeCurrentShellApp");
+    }
+    
+    @Override
+    public void removeMessage(String id) {
+        proxy.call("removeMessage", id);
     }
     
     @Override

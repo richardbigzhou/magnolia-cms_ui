@@ -52,8 +52,6 @@ public interface JcrItemAdapter extends Item {
 
     String getNodeIdentifier();
 
-    String getPropertyName();
-
     String getItemId();
 
     javax.jcr.Item getJcrItem() throws RepositoryException;

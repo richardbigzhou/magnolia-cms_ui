@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,18 +31,29 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse;
+package info.magnolia.ui.framework.message;
+
+import info.magnolia.ui.framework.event.Event;
 
 /**
- * A message.
+ * Message event.
  *
  * @version $Id$
  */
-public class Message {
+public class MessageEvent implements Event<MessageEventHandler> {
 
-    private String id;
-    private long timestamp;
-    private MessageType type;
-    private String subject;
-    private String message;
+    private Message message;
+
+    public MessageEvent(final Message message) {
+        this.message = message;
+    }
+
+    @Override
+    public void dispatch(MessageEventHandler handler) {
+        handler.handleMessage(this);
+    }
+
+    public Message getMessage() {
+        return message;
+    }
 }

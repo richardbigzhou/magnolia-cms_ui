@@ -33,12 +33,17 @@
  */
 package info.magnolia.ui.admincentral;
 
+import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventHandler;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.event.HandlerRegistration;
+import info.magnolia.ui.framework.message.MessageEvent;
+import info.magnolia.ui.framework.message.MessageEventHandler;
+import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.location.DefaultLocation;
+import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.shell.ConfirmationHandler;
 import info.magnolia.ui.framework.shell.FragmentChangedHandler;
 import info.magnolia.ui.framework.shell.Shell;
@@ -55,14 +60,14 @@ import org.slf4j.LoggerFactory;
 
 import com.vaadin.terminal.ExternalResource;
 
-
 /**
  * Admin shell.
+ * 
  * @version $Id$
  */
 @SuppressWarnings("serial")
 @Singleton
-public class MagnoliaShell extends BaseMagnoliaShell implements Shell {
+public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEventHandler {
 
     private static final Logger log = LoggerFactory.getLogger(MagnoliaShell.class);
 
@@ -70,9 +75,12 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell {
 
     private final AppController appController;
 
+    private final MessagesManager messagesManager;
+    
     @Inject
-    public MagnoliaShell(final EventBus eventBus, final AppController appController) {
+    public MagnoliaShell(final EventBus eventBus, final AppController appController, final MessagesManager messagesManager) {
         super();
+        this.messagesManager = messagesManager;
         this.eventBus = eventBus;
         this.appController = appController;
         this.eventBus.addHandler(AppLifecycleEvent.class, new AppLifecycleEventHandler.Adapter() {
@@ -82,6 +90,7 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell {
                 setActiveViewport(getAppViewport());
             }
         });
+        this.eventBus.addHandler(MessageEvent.class, this);
     }
 
     @Override
@@ -98,14 +107,22 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell {
     }
 
     @Override
+    @Deprecated
     public void showNotification(String message) {
-        showWarning(message);
+        final Message msg = new Message();
+        msg.setMessage(message);
+        msg.setId("");
+        showWarning(msg);
     }
 
     @Override
+    @Deprecated
     public void showError(String message, Exception e) {
         log.error(message, e);
-        showError(message);
+        final Message msg = new Message();
+        msg.setMessage(message);
+        msg.setId("");
+        showError(msg);
     }
 
     @Override
@@ -119,11 +136,9 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell {
         String viewPortName = "";
         if (activeViewport == getShellAppViewport())
             viewPortName = "shell";
-        else
-        if (activeViewport == getAppViewport())
+        else if (activeViewport == getAppViewport())
             viewPortName = "app";
-        else
-        if (activeViewport == getDialogViewport())
+        else if (activeViewport == getDialogViewport())
             viewPortName = "dialog";
         return viewPortName + ":" + (activeViewport == null ? "" : activeViewport.getCurrentShellFragment());
     }
@@ -157,11 +172,32 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell {
         throw new UnsupportedOperationException("MagnoliaShell is not capable of opening the subshells.");
     }
 
+    @Override
+    protected void removeMessage(String messageId) {
+        super.removeMessage(messageId);
+        messagesManager.removeMessage(MgnlContext.getUser().getName(), messageId);
+    }
+    
     public void openDialog(Dialog component) {
         addDialog(component.asVaadinComponent());
     }
 
     public void removeDialog(Dialog dialog) {
         removeDialog(dialog.asVaadinComponent());
+    }
+
+    @Override
+    public void handleMessage(MessageEvent event) {
+        final Message message = event.getMessage();
+        switch (message.getType()) {
+        case WARNING:
+            showWarning(message);
+            break;
+        case ERROR:
+            showError(message);
+            break;
+        default:
+            break;
+        }
     }
 }

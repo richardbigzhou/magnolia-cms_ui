@@ -31,44 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse;
-
-import java.util.List;
+package info.magnolia.ui.framework.message;
 
 /**
- * Manages users messages.
- *
- * needs persistence
- *
- * messages to all and messages to single user (to group as well?)
- *
- * server side push of messages? or poll
- *
- * - new work item !!
- * - error
- * - warning
- * - informational
- *
- * messages need confirming to go away
- *
- * messages need unique ids
- *
- * messages to all need to go to all logged-in users
- *  how will this class know who they are?
- *  how is it distributed?
- *  must be careful not to let this class keep references to inactive sessions/vaadin applications
+ * The type of message.
  *
  * @version $Id$
  */
-public interface MessagesManager {
+public enum MessageType {
 
-    int getMessageCountForUser(String userId);
-
-    List<Message> getMessagesForUser(String userId);
-
-    void sendMessage(String userId, Message message);
-
-    void sendMessageToAllUsers(Message message);
-
-    void removeMessage(String id);
+    ERROR, WARNING, INFO
 }

@@ -45,7 +45,9 @@ import javax.inject.Inject;
  *
  * @version $Id$
  */
-public class AssetsApp extends AbstractApp {
+public class AssetsApp extends AbstractApp implements AssetsView.Presenter {
+
+    private AppContext context;
 
     private final AssetsView view;
 
@@ -56,6 +58,8 @@ public class AssetsApp extends AbstractApp {
 
     @Override
     public AppView start(AppContext context, Location location) {
+        view.setPresenter(this);
+        this.context = context;
         return view;
     }
 }

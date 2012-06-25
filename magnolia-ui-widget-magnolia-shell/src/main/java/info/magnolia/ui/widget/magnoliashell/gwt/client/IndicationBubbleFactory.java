@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,38 +31,39 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog.action;
+package info.magnolia.ui.widget.magnoliashell.gwt.client;
 
-import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
-import info.magnolia.ui.model.action.ActionBase;
-import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.vaadin.integration.jcr.JcrTransientNodeAdapter;
-import info.magnolia.ui.widget.dialog.DialogView.Presenter;
-
-import javax.jcr.Node;
-
+import org.vaadin.gwtgraphics.client.DrawingArea;
+import org.vaadin.gwtgraphics.client.shape.Ellipse;
 
 /**
- * Opens a dialog for editing a nodeToEdit in a tree.
- * <p/>
- * TODO: add support for configuring supported itemTypes, maybe in base class where no config means all
- *
+ * Factory for generating the pads for the indicators in the
+ * {@link MainLauncher}.
+ * 
+ * @author p4elkin
+ * 
  */
-public class EditDialogAction extends ActionBase<EditDialogActionDefinition> {
+public class IndicationBubbleFactory {
 
-    private DialogPresenterFactory dialogPresenterFactory;
+    private static final int BASE_WIDTH = 16;
 
-    private Node nodeToEdit;
+    private static final int BASE_HEIGHT = 16;
 
-    public EditDialogAction(EditDialogActionDefinition definition, Node nodeToEdit, DialogPresenterFactory dialogPresenterFactory) {
-        super(definition);
-        this.nodeToEdit = nodeToEdit;
-        this.dialogPresenterFactory = dialogPresenterFactory;
+    private static final int WIDTH_INCREMENT = 10;
+
+    public static void createBubbleForValue(int value, final DrawingArea canvas) {
+        canvas.clear();
+        canvas.setWidth(BASE_WIDTH + (digitCount(value) - 1)* WIDTH_INCREMENT);
+        canvas.setHeight(BASE_HEIGHT);
+        int vRadius = (int)(canvas.getHeight() / 2d);
+        int hRadius = (int)(canvas.getWidth() / 2d);
+        final Ellipse ellipse = new Ellipse(hRadius, vRadius, hRadius, vRadius);
+        ellipse.setStrokeOpacity(0);
+        canvas.add(ellipse);
     }
 
-    @Override
-    public void execute() throws ActionExecutionException {
-        Presenter dialogPresenter = dialogPresenterFactory.createDialog(getDefinition().getDialogName());
-        dialogPresenter.editItem(new JcrTransientNodeAdapter(nodeToEdit));
+    private static int digitCount(int value) {
+        return String.valueOf(value).length();
     }
+
 }

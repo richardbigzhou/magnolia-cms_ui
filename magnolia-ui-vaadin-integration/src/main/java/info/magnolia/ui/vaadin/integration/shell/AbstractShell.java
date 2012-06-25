@@ -33,16 +33,17 @@
  */
 package info.magnolia.ui.vaadin.integration.shell;
 
-import com.vaadin.ui.UriFragmentUtility;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import info.magnolia.ui.framework.event.EventHandlerCollection;
 import info.magnolia.ui.framework.event.HandlerRegistration;
 import info.magnolia.ui.framework.shell.FragmentChangedEvent;
 import info.magnolia.ui.framework.shell.FragmentChangedHandler;
 import info.magnolia.ui.framework.shell.Fragmenter;
 import info.magnolia.ui.framework.shell.Shell;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.vaadin.ui.UriFragmentUtility;
 
 /**
  * Implements the methods to handle URI fragment changes.

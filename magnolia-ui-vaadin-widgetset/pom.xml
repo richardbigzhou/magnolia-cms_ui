@@ -51,12 +51,10 @@
     <dependency>
 		<groupId>org.vaadin.addons</groupId>
 		<artifactId>icepush</artifactId>
-		<version>0.2.1</version>
 	</dependency>
 	<dependency>
 		<groupId>org.icefaces</groupId>
 		<artifactId>icepush</artifactId>
-		<version>3.0.1</version>
 	</dependency>
 	<dependency> 
 		<groupId>org.icepush</groupId> 
@@ -128,6 +126,14 @@
         <configuration>
           <skip>true</skip>
         </configuration>
+      </plugin>
+            <plugin>
+          <groupId>org.zeroturnaround</groupId>
+          <artifactId>jrebel-maven-plugin</artifactId>
+          <configuration>
+            <relativePath>../${basedir}</relativePath>
+            <rootPath>$${admincentral.root}</rootPath>
+          </configuration>
       </plugin>
     </plugins>
   </build>
