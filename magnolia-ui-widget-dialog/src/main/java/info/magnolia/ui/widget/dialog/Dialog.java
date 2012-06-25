@@ -87,6 +87,12 @@ public class Dialog extends AbstractComponent implements DialogView, ServerSideH
                         presenter.executeAction(actionName);
                     }
                 });
+                register("closeDialog", new Method() {
+                    @Override
+                    public void invoke(String methodName, Object[] params) {
+                        presenter.closeDialog();
+                    }
+                });
             }
         };
 
@@ -195,13 +201,14 @@ public class Dialog extends AbstractComponent implements DialogView, ServerSideH
         fields.add(field);
     }
 
-    /* (non-Javadoc)
-     * @see info.magnolia.ui.widget.dialog.DialogView#getFields()
-     */
     @Override
     public List<Field> getFields() {
         return fields;
     }
 
+    @Override
+    public void setDescription(String description) {
+        proxy.call("setDescription", description);
+    }
 
 }

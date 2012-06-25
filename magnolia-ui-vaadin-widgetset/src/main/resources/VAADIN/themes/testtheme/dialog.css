@@ -1,7 +1,8 @@
-.dialog-header, .dialog-footer {
+.dialog-header, .dialog-footer, .dialog-description {
     padding: 12px 16px 12px 25px;
 }
-.dialog-footer, .dialog-content {
+
+.dialog-description, .dialog-footer, .dialog-content {
     border-top: 2px solid black;
 }
 
@@ -15,6 +16,14 @@
     font-size: 18px;
     line-height: 18px;
     display: block;
+}
+
+.dialog-description {
+    background: none repeat scroll 0 0 #C1D8DF;
+}
+
+.dialog-description span {
+    margin-right: 35px;
 }
 
 .dialog-panel {
@@ -33,6 +42,11 @@
     text-align: right;
 }
 
+.dialog-close, .dialog-help {
+    float: right;
+    margin-right: 0;
+}
+
 button.btn-dialog {
     font-size: 12px;
     margin-left: 5px;
@@ -49,6 +63,29 @@ button.btn-dialog-commit {
     background: none repeat scroll 0 0 #689600;
 }
 
+button.btn-dialog-close {
+    background: url("img/icon-close-16.png") no-repeat scroll 0 0 transparent;
+    border: none;
+    display: inline-block;
+    height: 24px;
+    width: 24px;
+    margin: 0;
+    padding: 4px;
+
+}
+
+button.btn-dialog-close.green {
+    background: url("img/icon-close-green-16.png") no-repeat scroll 0 0 transparent;
+}
+
+button.btn-dialog-help {
+    background: url("img/icon-help.png") no-repeat scroll 1px 1px transparent;
+    border: none;
+    height: 20px;
+    width: 20px;
+    margin: 0 6px 0 0;
+    padding: 1px;
+}
 
 /* tabsheet styling */
 .dialog-panel .v-shell-tabsheet {
@@ -75,7 +112,6 @@ button.btn-dialog-commit {
 
 /* Field styling */
 .dialog-panel .field-container {
-    padding-bottom: 20px;
     color: #999999;
 }
 
@@ -91,13 +127,21 @@ button.btn-dialog-commit {
     margin: 0;
 }
 
-.field-container .v-caption {
+.field-container .v-csslayout-margin {
+    padding: 12px 16px 12px 25px;
+}
+
+.field .v-csslayout-margin {
+    padding: 0 0 12px 0;
+}
+
+.field .v-caption {
     display: inline-block;
     padding-right: 10px;
     text-align: right;
     width: 140px;
 }
 
-.field-container .v-captiontext {
+.field .v-captiontext {
     float: none;
 }

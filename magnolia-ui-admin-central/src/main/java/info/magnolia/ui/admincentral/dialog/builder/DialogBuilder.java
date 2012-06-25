@@ -39,10 +39,11 @@ import info.magnolia.ui.model.dialog.definition.FieldDefinition;
 import info.magnolia.ui.model.dialog.definition.TabDefinition;
 import info.magnolia.ui.widget.dialog.DialogView;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.vaadin.data.Item;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Field;
-import com.vaadin.ui.VerticalLayout;
 
 /**
  * Builder for Dialogs.
@@ -50,6 +51,7 @@ import com.vaadin.ui.VerticalLayout;
 public class DialogBuilder {
 
     static final String FIELD_CONTAINER_STYLE_NAME = "field-container";
+    static final String FIELD_STYLE_NAME = "field";
 
     /**
      * @return DialogView populated with values from DialogDevinition and Item.
@@ -58,24 +60,30 @@ public class DialogBuilder {
 
         view.setItemDataSource(item);
 
+        if (StringUtils.isNotBlank(dialogDefinition.getDescription())) {
+            view.setDescription(dialogDefinition.getDescription());
+        }
+
         for (TabDefinition tabDefinition : dialogDefinition.getTabs()) {
             String tabName = tabDefinition.getName();
-            VerticalLayout inputFields = new VerticalLayout();
+
+            CssLayout fieldContainer = new CssLayout();
+            fieldContainer.setStyleName(FIELD_CONTAINER_STYLE_NAME);
 
             for (FieldDefinition fieldDefinition : tabDefinition.getFields()) {
-                CssLayout fieldContainer = new CssLayout();
-                fieldContainer.setStyleName(FIELD_CONTAINER_STYLE_NAME);
+                CssLayout field = new CssLayout();
+                field.setStyleName(FIELD_STYLE_NAME);
 
                 Field input = FieldBuilder.build(fieldDefinition);
 
                 input.setPropertyDataSource(item.getItemProperty(fieldDefinition.getName()));
 
-                fieldContainer.addComponent(input);
-                inputFields.addComponent(fieldContainer);
+                field.addComponent(input);
+                fieldContainer.addComponent(field);
                 view.addField(input);
             }
 
-            view.addTab(inputFields, tabName);
+            view.addTab(fieldContainer, tabName);
 
         }
 

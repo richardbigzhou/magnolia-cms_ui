@@ -51,35 +51,21 @@ public interface VDialogView extends IsWidget {
      */
     interface Presenter {
 
-        /**
-         * @param action
-         */
-        void fireAction(String action);}
+        void fireAction(String action);
+
+        void closeDialog();
+    }
 
     Paintable getTabSheet();
 
-    /**
-     * @param vDialog
-     */
     void setPresenter(Presenter presenter);
 
-    /**
-     * @param component
-     * @return
-     */
     boolean hasChildComponent(Widget component);
 
-    /**
-     * @param label
-     * @param action
-     */
     void addAction(String label, String action);
 
-    /**
-     * @param tabsheet
-     */
     void addTabSheet(VShellTabSheet tabsheet);
 
-
+    void setDescription(String description);
 
 }

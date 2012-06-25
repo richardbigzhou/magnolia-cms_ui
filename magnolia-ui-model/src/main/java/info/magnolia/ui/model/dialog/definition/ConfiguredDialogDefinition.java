@@ -47,6 +47,8 @@ public class ConfiguredDialogDefinition implements DialogDefinition {
     private String name;
     private String label;
     private String i18nBasename;
+    private String description;
+
     private List<TabDefinition> tabs = new ArrayList<TabDefinition>();
     private List<DialogActionDefinition> actions = new ArrayList<DialogActionDefinition>();
 
@@ -78,6 +80,16 @@ public class ConfiguredDialogDefinition implements DialogDefinition {
     @Override
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    @Override
+    public String getDescription() {
+        return description;
+    }
+
+    @Override
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override

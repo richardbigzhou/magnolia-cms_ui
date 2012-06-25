@@ -52,38 +52,68 @@ import com.google.web.bindery.event.shared.EventBus;
  */
 public class VDialogViewImpl extends FlowPanel implements VDialogView {
 
-    private Element header = DOM.createDiv();
-    private Element content = DOM.createDiv();
-    private Element footer = DOM.createDiv();
+    private final Element header = DOM.createDiv();
+    private final Element content = DOM.createDiv();
+    private final FlowPanel description = new FlowPanel();
+    private final FlowPanel error = new FlowPanel();
 
-    private Element root;
+    private final Element footer = DOM.createDiv();
+    private final Element close = DOM.createDiv();
+    private final Element help = DOM.createDiv();
+
+    private final Element root;
     private VShellTabSheet tabsheet;
     private Presenter presenter;
-    private EventBus eventBus;
-    private String CLASSNAME = "dialog-panel";
-    private String CLASSNAME_HEADER = "dialog-header";
-    private String CLASSNAME_CONTENT = "dialog-content";
-    private String CLASSNAME_FOOTER = "dialog-footer";
+    private final EventBus eventBus;
+    private static final String CLASSNAME = "dialog-panel";
+    private static final String CLASSNAME_HEADER = "dialog-header";
+    private static final String ClASSNAME_DESCRIPTION = "dialog-description";
+    private static final String ClASSNAME_ERROR = "dialog-error";
 
-    private String CLASSNAME_BUTTON = "btn-dialog";
+    private static final String CLASSNAME_CONTENT = "dialog-content";
+    private static final String CLASSNAME_FOOTER = "dialog-footer";
+    private static final String ClASSNAME_CLOSE = "dialog-close";
+    private static final String ClASSNAME_HELP = "dialog-help";
+
+    private static final String CLASSNAME_HELPBUTTON = "btn-dialog-help";
+    private static final String CLASSNAME_CLOSEBUTTON = "btn-dialog-close";
+    private static final String CLASSNAME_BUTTON = "btn-dialog";
 
     public VDialogViewImpl(final EventBus eventBus) {
         super();
         setStylePrimaryName(CLASSNAME);
         header.addClassName(CLASSNAME_HEADER);
         content.addClassName(CLASSNAME_CONTENT);
+        description.setStyleName(ClASSNAME_DESCRIPTION);
+        error.setStyleName(ClASSNAME_ERROR);
         footer.addClassName(CLASSNAME_FOOTER);
+        close.addClassName(ClASSNAME_CLOSE);
+        help.addClassName(ClASSNAME_HELP);
+
+        header.appendChild(close);
+        header.appendChild(help);
 
         this.eventBus = eventBus;
         this.root = getElement();
         root.appendChild(header);
+
+
+        description.setVisible(false);
+        error.setVisible(false);
+        add(description, root);
+        add(error, root);
+
         root.appendChild(content);
         root.appendChild(footer);
+
+
         setCaption("Edit page properties");
+
+        addClose();
     }
 
     @Override
-    public void setPresenter(Presenter presenter) {
+    public void setPresenter(final Presenter presenter) {
         this.presenter = presenter;
     }
 
@@ -98,15 +128,15 @@ public class VDialogViewImpl extends FlowPanel implements VDialogView {
 
 
     @Override
-    public void addTabSheet(VShellTabSheet tabsheet) {
+    public void addTabSheet(final VShellTabSheet tabsheet) {
         this.tabsheet = tabsheet;
         add(tabsheet, content);
     }
 
     @Override
-    public boolean hasChildComponent(Widget component) {
+    public boolean hasChildComponent(final Widget component) {
         boolean isChild = false;
-        for (Widget widget : getChildren()) {
+        for (final Widget widget : getChildren()) {
             if (component == widget) {
                 isChild = true;
             }
@@ -116,13 +146,13 @@ public class VDialogViewImpl extends FlowPanel implements VDialogView {
 
     @Override
     public void addAction(final String name, final String label) {
-        Button button = new Button(label);
+        final Button button = new Button(label);
         button.setStyleName(CLASSNAME_BUTTON);
         button.addStyleDependentName(name);
         button.addClickHandler(new ClickHandler() {
 
             @Override
-            public void onClick(com.google.gwt.event.dom.client.ClickEvent event) {
+            public void onClick(final com.google.gwt.event.dom.client.ClickEvent event) {
                 getPresenter().fireAction(name);
             }
 
@@ -130,9 +160,70 @@ public class VDialogViewImpl extends FlowPanel implements VDialogView {
         add(button, footer);
     }
 
-    void setCaption(String caption) {
-        Label label = new Label(caption);
+    void setCaption(final String caption) {
+        final Label label = new Label(caption);
         add(label, header);
     }
 
+    public void addClose() {
+        final Button closeButton = new Button();
+        closeButton.setStyleName(CLASSNAME_CLOSEBUTTON);
+        closeButton.addStyleName("green");
+        closeButton.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(final com.google.gwt.event.dom.client.ClickEvent event) {
+                getPresenter().closeDialog();
+            }
+
+        });
+        add(closeButton, close);
+
+    }
+
+    @Override
+    public void setDescription(final String dialogDescription) {
+
+        final Button helpButton = new Button();
+
+        helpButton.setStyleName(CLASSNAME_HELPBUTTON);
+        helpButton.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(final com.google.gwt.event.dom.client.ClickEvent event) {
+                toggleDescription();
+            }
+
+        });
+
+
+        final Element close = DOM.createDiv();
+        close.addClassName(ClASSNAME_CLOSE);
+        final Button closeButton = new Button();
+        closeButton.setStyleName(CLASSNAME_CLOSEBUTTON);
+        closeButton.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(final com.google.gwt.event.dom.client.ClickEvent event) {
+                toggleDescription();
+            }
+
+        });
+
+        add(closeButton, close);
+        description.getElement().appendChild(close);
+
+        final Element content = DOM.createSpan();
+        content.setInnerText(dialogDescription);
+        description.getElement().appendChild(content);
+
+
+        add(helpButton, help);
+
+    }
+
+    void toggleDescription() {
+        description.setVisible(!description.isVisible());
+
+    }
 }

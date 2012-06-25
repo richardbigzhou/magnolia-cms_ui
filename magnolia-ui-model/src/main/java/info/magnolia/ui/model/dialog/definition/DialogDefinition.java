@@ -61,5 +61,9 @@ public interface DialogDefinition extends UiItemDefinition {
 
     public abstract String getId();
 
+    public abstract String getDescription();
+
+    public abstract void setDescription(String description);
+
 
 }

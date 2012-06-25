@@ -76,6 +76,13 @@ public class VDialog extends Composite implements Container, VDialogView.Present
                     view.addAction(name, label);
                 }
             });
+            register("setDescription", new Method() {
+                @Override
+                public void invoke(String methodName, Object[] params) {
+                    final String description = String.valueOf(params[0]);
+                    view.setDescription(description);
+                }
+            });
         }
     };
 
@@ -156,6 +163,15 @@ public class VDialog extends Composite implements Container, VDialogView.Present
     @Override
     public void fireAction(String action) {
         proxy.call("fireAction", action);
+    }
+
+
+    /* (non-Javadoc)
+     * @see info.magnolia.ui.widget.dialog.gwt.client.VDialogView.Presenter#closeDialog()
+     */
+    @Override
+    public void closeDialog() {
+        proxy.call("closeDialog");
     }
 
 }

@@ -83,4 +83,5 @@ public interface DialogView extends IsVaadinComponent {
 
     void addField(Field field);
 
+    void setDescription(String description);
 }
