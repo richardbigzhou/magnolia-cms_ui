@@ -33,15 +33,16 @@
  */
 package info.magnolia.ui.admincentral.workbench.action;
 
-import javax.jcr.Item;
-
+import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
+
+import javax.jcr.Item;
 
 /**
  * Creates an action based on an {@link ActionDefinition}.
  */
 public interface WorkbenchActionFactory {
 
-    Action createAction(ActionDefinition actionDefinition, Item item);
+    Action createAction(ActionDefinition actionDefinition, Item item, AppContext ctx);
 }

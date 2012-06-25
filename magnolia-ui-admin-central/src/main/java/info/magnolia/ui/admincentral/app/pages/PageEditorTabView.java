@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,38 +31,53 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog.action;
+package info.magnolia.ui.admincentral.app.pages;
 
-import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
-import info.magnolia.ui.model.action.ActionBase;
-import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.widget.dialog.DialogView.Presenter;
+import info.magnolia.context.MgnlContext;
+import info.magnolia.jcr.util.PropertyUtil;
+import info.magnolia.ui.framework.app.AppView;
+import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
+import org.apache.commons.lang.StringUtils;
+
+import com.vaadin.terminal.ExternalResource;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Embedded;
+import com.vaadin.ui.VerticalLayout;
 
 /**
- * Opens a dialog for editing a nodeToEdit in a tree.
- * <p/>
- * TODO: add support for configuring supported itemTypes, maybe in base class where no config means all
+ * PageEditorTabView.
  *
- */
-public class EditDialogAction extends ActionBase<EditDialogActionDefinition> {
+* @version $Id$
+*/
+@SuppressWarnings("serial")
+public class PageEditorTabView implements AppView, IsVaadinComponent {
 
-    private DialogPresenterFactory dialogPresenterFactory;
+    private final VerticalLayout container = new VerticalLayout();
+    private String caption;
 
-    private Node nodeToEdit;
+    public PageEditorTabView(final Node pageNode) throws RepositoryException {
+        final Embedded page = new Embedded("", new ExternalResource(MgnlContext.getContextPath() + pageNode.getPath()));
+        page.setType(Embedded.TYPE_BROWSER);
+        page.setSizeFull();
 
-    public EditDialogAction(EditDialogActionDefinition definition, Node nodeToEdit, DialogPresenterFactory dialogPresenterFactory) {
-        super(definition);
-        this.nodeToEdit = nodeToEdit;
-        this.dialogPresenterFactory = dialogPresenterFactory;
+        container.setSizeFull();
+        container.addComponent(page);
+        caption = StringUtils.defaultIfEmpty(PropertyUtil.getString(pageNode, "title"), pageNode.getName());
+
     }
 
     @Override
-    public void execute() throws ActionExecutionException {
-        Presenter dialogPresenter = dialogPresenterFactory.createDialog(getDefinition().getDialogName());
-        dialogPresenter.editItem(new JcrNodeAdapter(nodeToEdit));
+    public String getCaption() {
+        return caption;
     }
+
+    @Override
+    public Component asVaadinComponent() {
+        return container;
+    }
+
 }

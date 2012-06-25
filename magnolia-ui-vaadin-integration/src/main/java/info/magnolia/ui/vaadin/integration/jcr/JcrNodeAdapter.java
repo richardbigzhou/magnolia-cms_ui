@@ -37,7 +37,12 @@ import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.PropertyUtil;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
+import javax.jcr.LoginException;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
@@ -51,136 +56,140 @@ import com.vaadin.data.Property.ValueChangeEvent;
  * Base implementation of an {@link com.vaadin.data.Item} wrapping/representing a {@link javax.jcr.Node}.
  * Implements {Property.ValueChangeListener} in order to inform/change JCR property when a
  * Vaadim property has changed.
+ *
+ * JcrPropertys are read from Repository as long as they are not modified.
+ *
+ * JcrPropertys are updated or created if they:
+ *   Previously existed and where modified.
+ *   Newly created and set (an empty created property is not stored into Jcr repository)
  */
-public class JcrNodeAdapter extends JcrAbstractAdapter implements  Property.ValueChangeListener {
+public class JcrNodeAdapter extends JcrAbstractNodeAdapter  {
     // Init
     private static final Logger log = LoggerFactory.getLogger(JcrNodeAdapter.class);
-    private String primaryNodeTypeName;
-
+    protected Map<String, Property> changedProperties = new HashMap<String,Property>();
+    protected Map<String, Property> removedProperties = new HashMap<String,Property>();
 
     public JcrNodeAdapter(Node jcrNode) {
-       super(jcrNode);
-       setPrimaryNodeTypeName(jcrNode);
+        super(jcrNode);
     }
 
     /**
-     * Set propertyNodeType.
+     * Get Vaadim Property from a Jcr Property.
+     * If the Property was already modify, get this Property from the local changedProperties map.
+     * Else:
+     *   If the corresponding Jcr property don't exist, create a empty Vaadin Property.
+     *   If the corresponding Jcr property already exist, create a corresponding Vaadin Property.
      */
-    private void setPrimaryNodeTypeName(Node jcrNode) {
-        String primaryNodeTypeName = null;
-        try {
-            primaryNodeTypeName = jcrNode.getPrimaryNodeType().getName();
-        } catch (RepositoryException e) {
-            log.error("Couldn't retrieve identifier of jcr node", e);
-            primaryNodeTypeName = UN_IDENTIFIED;
-        }
-        this.primaryNodeTypeName = primaryNodeTypeName;
-    }
-
-    public String getPrimaryNodeTypeName() {
-        return primaryNodeTypeName;
-    }
-
-    public Node getNode() throws RepositoryException{
-        return (Node) getJcrItem();
-    }
-
     @Override
     public Property getItemProperty(Object id) {
-        Object value;
-        try {
-            //FIXME Temp solution. We should create a JcrItem with properties defined by a FieldDefinition related to the Item.
+        DefaultProperty property = null;
 
-            if(!getNode().hasProperty((String) id)) {
-                value = "";
-                if(JCR_NAME.equals(id)) {
-                    value = getNode().getName();
-                }
-            } else {
-                value = PropertyUtil.getProperty(getNode(), (String) id).getString();
-            }
-        } catch (RepositoryException e) {
-            throw new RuntimeRepositoryException(e);
+        if(changedProperties.containsKey(id)) {
+            property = (DefaultProperty) changedProperties.get(id);
         }
-        DefaultProperty property = new DefaultProperty((String)id, value);
-        // add PropertyChange Listener
-        property.addListener(this);
+        else {
+            property = (DefaultProperty) super.getItemProperty(id);
+        }
         return property;
     }
 
     @Override
     public Collection<?> getItemPropertyIds() {
-        // TODO dlipp - not clear where these could be retrieved from...
-        throw new UnsupportedOperationException();
+        return Collections.unmodifiableCollection(changedProperties.keySet());
     }
 
     @Override
-    public boolean addItemProperty(Object id, Property property) {
+    public boolean addItemProperty(Object id, Property property) throws UnsupportedOperationException {
+        log.debug("Adding new Property Item named [{}] with value [{}]", id, property.getValue());
+
         // add PropertyChange Listener
-        ((DefaultProperty)property).addListener(this);
+        if(!((DefaultProperty)property).getListeners(ValueChangeEvent.class).contains(this)) {
+            ((DefaultProperty)property).addListener(this);
+        }
 
-        log.debug("Add new Property Item name "+id+" with value "+property.getValue());
-        try {
-            if(!getNode().hasProperty((String) id)) {
-                //Create Property.
-                getNode().setProperty((String) id, (String)property.getValue());
-                return true;
-            } else {
-                //FIXME ehe Should throw exception
-                log.warn("Property "+id+" already exist.do nothing");
-                return false;
-            }
-        }
-        catch (RepositoryException e) {
-            log.error("",e);
-            return false;
-        }
-    }
+        //Store Property.
+        changedProperties.put((String) id, property);
 
-    @Override
-    public boolean removeItemProperty(Object id) throws UnsupportedOperationException {
-        log.debug("Remove Property Item name "+id);
-        try {
-            if(getNode().hasProperty((String) id)) {
-                //Create Property.
-                getNode().getProperty((String)id).remove();
-                return true;
-            } else {
-                //FIXME ehe Should throw exception
-                log.warn("Property "+id+" do Not exist. do nothing");
-                return false;
-            }
-        }
-        catch (RepositoryException e) {
-            log.error("",e);
-            return false;
-        }
+        return true;
     }
 
     /**
-     * Listener to DefaultProperty value change event.
-     * Get this event when a property has changed, and
-     * propagate this VaadimProperty value change to the corresponding
-     * JCR property.
+     * Remove a property from an Item.
+     * If the property was already modified, remove it for the changedProperties Map and
+     * add it to the removedProperties Map.
+     * Else fill the removedProperties Map with the retrieved property.
      */
+    @Override
+    public boolean removeItemProperty(Object id){
+        boolean res = false;
+        if(changedProperties.containsKey(id)) {
+            removedProperties.put((String)id, changedProperties.remove(id));
+            res = true;
+        }else if(jcrItemHasProperty((String) id)){
+            removedProperties.put((String)id, super.getItemProperty(id));
+            res = true;
+        } else {
+            res = false;
+        }
+        return res;
+    }
+
+    /**
+     * Get the referenced node and update the property.
+     * Update property will:
+     *  remove existing JCR property if requested
+     *  add newly and setted property
+     *  update existing modified property.
+     */
+    @Override
+    public Node getNode() {
+        Node node = null;
+        try {
+            node =  super.getNode();
+            // Update property
+            updateProperty(node);
+
+            return node;
+        }
+        catch (LoginException e) {
+            throw new RuntimeRepositoryException(e);
+        } catch (RepositoryException e) {
+            throw new RuntimeRepositoryException(e);
+        }
+    }
+
     @Override
     public void valueChange(ValueChangeEvent event) {
         Property property = event.getProperty();
         if(property instanceof DefaultProperty) {
             String name = ((DefaultProperty)property).getPropertyName();
-            Object value = property.getValue();
-            try {
-                if(getNode().hasProperty(name)) {
-                    log.debug("Update existing propertie: "+name+ " with value: "+value);
-                    PropertyUtil.getProperty(getNode(), name).setValue((String)value);
-                }else {
-                    addItemProperty(name,property);
-                }
-            }
-            catch (RepositoryException e) {
-                log.error("",e);
-            }
+            addItemProperty(name, property);
+        }
+    }
 
+    /**
+     * Update or remove property.
+     */
+    protected void updateProperty(Node node) throws RepositoryException {
+      //Update property
+        for(Entry<String, Property> entry: changedProperties.entrySet()) {
+            PropertyUtil.setProperty(node, entry.getKey(), entry.getValue().getValue());
+        }
+        // Remove Property
+        for(Entry<String, Property> entry: removedProperties.entrySet()) {
+            if(node.hasProperty(entry.getKey())) {
+                node.getProperty(entry.getKey()).remove();
+            }
+        }
+    }
+
+    private boolean jcrItemHasProperty(String propertyName) {
+        try {
+            return ((Node) getJcrItem()).hasProperty((String) propertyName);
+        }
+        catch (RepositoryException e) {
+            log.error("", e);
+            return false;
         }
     }
 

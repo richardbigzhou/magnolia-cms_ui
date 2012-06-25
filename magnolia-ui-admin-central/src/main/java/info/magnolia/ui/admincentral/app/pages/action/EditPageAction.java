@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,38 +31,41 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog.action;
+package info.magnolia.ui.admincentral.app.pages.action;
 
-import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
+import info.magnolia.ui.admincentral.app.pages.PagesView;
+import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.widget.dialog.DialogView.Presenter;
 
 import javax.jcr.Node;
-
+import javax.jcr.RepositoryException;
 
 /**
- * Opens a dialog for editing a nodeToEdit in a tree.
- * <p/>
- * TODO: add support for configuring supported itemTypes, maybe in base class where no config means all
- *
+ * Opens a page for editing.
+ * @version $Id$
  */
-public class EditDialogAction extends ActionBase<EditDialogActionDefinition> {
+public class EditPageAction extends ActionBase<EditPageActionDefinition> {
 
-    private DialogPresenterFactory dialogPresenterFactory;
+    private Node selectedNode;
 
-    private Node nodeToEdit;
+    private PagesView.Presenter presenter;
 
-    public EditDialogAction(EditDialogActionDefinition definition, Node nodeToEdit, DialogPresenterFactory dialogPresenterFactory) {
+    private AppContext ctx;
+
+    public EditPageAction(final EditPageActionDefinition definition, final Node selectedNode, final PagesView.Presenter presenter, final AppContext ctx) {
         super(definition);
-        this.nodeToEdit = nodeToEdit;
-        this.dialogPresenterFactory = dialogPresenterFactory;
+        this.selectedNode = selectedNode;
+        this.presenter = presenter;
+        this.ctx = ctx;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
-        Presenter dialogPresenter = dialogPresenterFactory.createDialog(getDefinition().getDialogName());
-        dialogPresenter.editItem(new JcrNodeAdapter(nodeToEdit));
+        try {
+            presenter.onEditPage(selectedNode, ctx);
+        } catch (RepositoryException e) {
+            throw new ActionExecutionException(e);
+        }
     }
 }
