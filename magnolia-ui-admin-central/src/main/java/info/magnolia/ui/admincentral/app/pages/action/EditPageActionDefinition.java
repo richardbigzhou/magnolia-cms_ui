@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,18 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.workbench.action;
+package info.magnolia.ui.admincentral.app.pages.action;
 
-import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 
-import javax.jcr.Item;
-
 /**
- * Creates an action based on an {@link ActionDefinition}.
+ * EditPageActionDefinition.
+ * @version $Id$
  */
-public interface WorkbenchActionFactory {
+public class EditPageActionDefinition implements ActionDefinition {
 
-    Action createAction(ActionDefinition actionDefinition, Item item, AppContext ctx);
 }

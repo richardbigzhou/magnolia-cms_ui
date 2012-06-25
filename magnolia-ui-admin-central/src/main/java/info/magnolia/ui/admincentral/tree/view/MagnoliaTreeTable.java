@@ -80,7 +80,7 @@ public class MagnoliaTreeTable extends TreeTable {
         setMultiSelect(false);
         setImmediate(true);
         addStyleName("striped");
-        setColumnReorderingAllowed(true);
+        setColumnReorderingAllowed(false);
 
         addDragAndDrop();
 

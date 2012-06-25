@@ -39,6 +39,7 @@ import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.admincentral.event.ContentChangedEvent;
 import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
+import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
@@ -91,6 +92,8 @@ public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView
 
     private String selectedItemId;
 
+    private AppContext context;
+
     @Inject
     public ContentWorkbench(final ContentWorkbenchView view, final EventBus eventbus, final MagnoliaShell shell, final WorkbenchDefinitionRegistry workbenchRegistry, final WorkbenchActionFactory actionFactory) {
         super();
@@ -137,7 +140,7 @@ public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView
                     selectedItemId = "/";
                 }
                 final javax.jcr.Item item = session.getItem(selectedItemId);
-                Action action = actionFactory.createAction(actionDefinition, item);
+                Action action = actionFactory.createAction(actionDefinition, item, context);
                 action.execute();
             } catch (PathNotFoundException e) {
                 shell.showError("Can't execute action.\n" + e.getMessage(), e);
@@ -168,6 +171,14 @@ public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView
         } catch (Exception e) {
             shell.showError("An error occurred while selecting a row in the data grid", e);
         }
+    }
+
+    public ContentWorkbenchView asView() {
+        return view;
+    }
+
+    public void setAppContext(AppContext ctx) {
+        this.context = ctx;
     }
 
 }

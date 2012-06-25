@@ -33,50 +33,51 @@
  */
 package info.magnolia.ui.admincentral.app.pages;
 
-import info.magnolia.ui.admincentral.workbench.ContentWorkbench;
+import info.magnolia.context.MgnlContext;
+import info.magnolia.jcr.util.PropertyUtil;
+import info.magnolia.ui.framework.app.AppView;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
-import javax.inject.Inject;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
+import org.apache.commons.lang.StringUtils;
+
+import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.Embedded;
+import com.vaadin.ui.VerticalLayout;
 
 /**
- * View implementation for the Pages app.
+ * PageEditorTabView.
  *
- * @version $Id$
- */
+* @version $Id$
+*/
 @SuppressWarnings("serial")
-public class PagesViewImpl implements PagesView, IsVaadinComponent {
+public class PageEditorTabView implements AppView, IsVaadinComponent {
 
-    private ComponentContainer view;
-    private Presenter presenter;
-    private ContentWorkbench workbench;
+    private final VerticalLayout container = new VerticalLayout();
+    private String caption;
 
-    @Inject
-    public PagesViewImpl(final ContentWorkbench workbench) {
-        workbench.initWorkbench("website");
-        this.workbench = workbench;
-        view = workbench.asVaadinComponent();
+    public PageEditorTabView(final Node pageNode) throws RepositoryException {
+        final Embedded page = new Embedded("", new ExternalResource(MgnlContext.getContextPath() + pageNode.getPath()));
+        page.setType(Embedded.TYPE_BROWSER);
+        page.setSizeFull();
+
+        container.setSizeFull();
+        container.addComponent(page);
+        caption = StringUtils.defaultIfEmpty(PropertyUtil.getString(pageNode, "title"), pageNode.getName());
+
     }
 
     @Override
     public String getCaption() {
-        return "Website";
+        return caption;
     }
 
     @Override
     public Component asVaadinComponent() {
-        return view;
+        return container;
     }
 
-    @Override
-    public void setPresenter(Presenter presenter) {
-        this.presenter = presenter;
-    }
-
-    @Override
-    public ContentWorkbench getWorkbench() {
-        return workbench;
-    }
 }
