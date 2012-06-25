@@ -33,21 +33,22 @@
  */
 package info.magnolia.ui.model.dialog.definition;
 
+import info.magnolia.ui.model.definition.ConfiguredUiItemDefinition;
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 
 import java.util.ArrayList;
 import java.util.List;
 
+
 /**
  * A definition of a configured dialog. Holds a list of tabs.
  */
-public class ConfiguredDialogDefinition implements DialogDefinition {
+public class ConfiguredDialogDefinition extends ConfiguredUiItemDefinition implements DialogDefinition {
 
     private String id;
-    private String name;
-    private String label;
-    private String i18nBasename;
+
     private List<TabDefinition> tabs = new ArrayList<TabDefinition>();
+
     private List<DialogActionDefinition> actions = new ArrayList<DialogActionDefinition>();
 
     @Override
@@ -58,26 +59,6 @@ public class ConfiguredDialogDefinition implements DialogDefinition {
     @Override
     public void setId(String id) {
         this.id = id;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String getLabel() {
-        return label;
-    }
-
-    @Override
-    public void setLabel(String label) {
-        this.label = label;
     }
 
     @Override
@@ -108,16 +89,6 @@ public class ConfiguredDialogDefinition implements DialogDefinition {
     @Override
     public boolean addTab(TabDefinition tabDefinition) {
         return tabs.add(tabDefinition);
-    }
-
-    @Override
-    public String getI18nBasename() {
-        return i18nBasename;
-    }
-
-    @Override
-    public void setI18nBasename(String i18nBasename) {
-        this.i18nBasename = i18nBasename;
     }
 
 }

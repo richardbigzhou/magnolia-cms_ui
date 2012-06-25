@@ -33,45 +33,24 @@
  */
 package info.magnolia.ui.model.dialog.definition;
 
+import info.magnolia.ui.model.definition.ConfiguredUiItemDefinition;
+
+
 /**
  * Describes a field in a dialog.
- *
+ * 
  * TODO this should be abstract
- *
+ * 
  * TODO we should be able to configure validators
- *
- * @author tmattsson
+ * 
  */
-public class ConfiguredFieldDefinition implements FieldDefinition {
+public class ConfiguredFieldDefinition extends ConfiguredUiItemDefinition implements FieldDefinition {
 
-    private String name;
-    private String label;
     private String description; // not relevant for controlType=static
-    private String i18nBasename;
 
     private String type; // JCR Property type name see javax.jcr.PropertyType
 
     private boolean required; // Not relevant for checkbox
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String getLabel() {
-        return label;
-    }
-
-    @Override
-    public void setLabel(String label) {
-        this.label = label;
-    }
 
     @Override
     public String getDescription() {
@@ -81,16 +60,6 @@ public class ConfiguredFieldDefinition implements FieldDefinition {
     @Override
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    @Override
-    public String getI18nBasename() {
-        return i18nBasename;
-    }
-
-    @Override
-    public void setI18nBasename(String i18nBasename) {
-        this.i18nBasename = i18nBasename;
     }
 
     @Override

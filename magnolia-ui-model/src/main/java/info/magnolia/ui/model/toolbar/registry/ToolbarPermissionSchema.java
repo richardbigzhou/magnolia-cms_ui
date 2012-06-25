@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.model.toolbar.registry;
 
-import info.magnolia.ui.model.menu.definition.MenuItemDefinition;
+import info.magnolia.ui.model.definition.MenuItemDefinition;
 import info.magnolia.ui.model.security.PermissionSchema;
 
 

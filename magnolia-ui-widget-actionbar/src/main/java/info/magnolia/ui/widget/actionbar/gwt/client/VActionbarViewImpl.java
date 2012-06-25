@@ -108,7 +108,7 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView {
 
     @Override
     public void addActionButton(VActionButton button) {
-        VActionbarSection section = registerSection(button.getSectionTitle());
+        VActionbarSection section = registerSection(button.getSectionName());
         VActionbarGroup group = registerGroup(button.getGroupName(), section);
         VActionbarItem item = registerItem(button.getActionName(), group);
         item.add(button);

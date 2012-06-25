@@ -49,7 +49,7 @@ import com.vaadin.ui.NativeButton;
 @ClientWidget(value = VActionButton.class, loadStyle = LoadStyle.EAGER)
 public class ActionButton extends NativeButton {
 
-    private String sectionTitle;
+    private String sectionName;
 
     private String groupName;
 
@@ -66,21 +66,21 @@ public class ActionButton extends NativeButton {
     }
 
     /**
-     * Gets the section title.
+     * Gets the section name.
      * 
-     * @return the section title
+     * @return the section name
      */
-    public String getSectionTitle() {
-        return sectionTitle;
+    public String getSectionName() {
+        return sectionName;
     }
 
     /**
-     * Sets the section title.
+     * Sets the section name.
      * 
-     * @param sectionTitle the new section title
+     * @param sectionName the new section name
      */
-    public void setSectionTitle(String sectionTitle) {
-        this.sectionTitle = sectionTitle;
+    public void setSectionName(String sectionName) {
+        this.sectionName = sectionName;
     }
 
     /**
@@ -122,7 +122,7 @@ public class ActionButton extends NativeButton {
     @Override
     public void paintContent(PaintTarget target) throws PaintException {
         super.paintContent(target);
-        target.addAttribute("sectionTitle", sectionTitle);
+        target.addAttribute("sectionName", sectionName);
         target.addAttribute("groupName", groupName);
         target.addAttribute("actionName", actionName);
     }

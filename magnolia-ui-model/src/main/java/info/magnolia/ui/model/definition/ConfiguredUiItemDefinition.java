@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,25 +31,46 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.definition;
+package info.magnolia.ui.model.definition;
+
+
 
 /**
- * UiItemDefinition.
- *
- * @author ejervidalo
+ * Simple implementation of {@link UiItemDefinition}.
  */
-public interface UiItemDefinition {
+public class ConfiguredUiItemDefinition implements UiItemDefinition {
 
-    public abstract void setI18nBasename(String i18nBasename);
+    private String name;
 
-    public abstract String getI18nBasename();
+    private String label;
 
-    public abstract void setLabel(String label);
+    private String i18nBasename;
 
-    public abstract String getLabel();
+    @Override
+    public String getName() {
+        return name;
+    }
 
-    public abstract void setName(String name);
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public abstract String getName();
+    @Override
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    @Override
+    public String getI18nBasename() {
+        return i18nBasename;
+    }
+
+    public void setI18nBasename(String i18nBasename) {
+        this.i18nBasename = i18nBasename;
+    }
 
 }

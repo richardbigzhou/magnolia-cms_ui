@@ -43,7 +43,7 @@ import com.vaadin.terminal.gwt.client.ui.VNativeButton;
  */
 public class VActionButton extends VNativeButton {
 
-    private String sectionTitle;
+    private String sectionName;
 
     private String groupName;
 
@@ -55,12 +55,12 @@ public class VActionButton extends VNativeButton {
     }
 
     /**
-     * Gets the section title.
+     * Gets the section name.
      * 
-     * @return the section title
+     * @return the section name
      */
-    public String getSectionTitle() {
-        return sectionTitle;
+    public String getSectionName() {
+        return sectionName;
     }
 
     /**
@@ -84,13 +84,13 @@ public class VActionButton extends VNativeButton {
     @Override
     public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
         super.updateFromUIDL(uidl, client);
-        updateNames(uidl.getStringAttribute("sectionTitle"),
+        updateNames(uidl.getStringAttribute("sectionName"),
             uidl.getStringAttribute("groupName"),
             uidl.getStringAttribute("actionName"));
     }
 
-    private void updateNames(String sectionTitle, String groupName, String actionName) {
-        this.sectionTitle = sectionTitle;
+    private void updateNames(String sectionName, String groupName, String actionName) {
+        this.sectionName = sectionName;
         this.groupName = groupName;
         this.actionName = actionName;
     }

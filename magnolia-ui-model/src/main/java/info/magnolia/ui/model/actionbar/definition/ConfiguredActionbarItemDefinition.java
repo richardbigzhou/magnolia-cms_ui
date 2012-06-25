@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,15 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.toolbar;
+package info.magnolia.ui.model.actionbar.definition;
 
 import info.magnolia.ui.model.definition.ConfiguredMenuItemDefinition;
 
+
 /**
- * Implementation for {@link ToolbarDefinition}.
- * @author fgrilli
- *
+ * Simple implementation for {@link ActionbarItemDefinition}.
  */
-public class ToolbarItemDefinitionImpl extends ConfiguredMenuItemDefinition implements ToolbarItemDefinition{
+public class ConfiguredActionbarItemDefinition extends ConfiguredMenuItemDefinition implements ActionbarItemDefinition {
 
 }

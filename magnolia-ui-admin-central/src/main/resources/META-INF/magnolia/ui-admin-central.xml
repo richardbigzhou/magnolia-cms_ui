@@ -43,24 +43,28 @@
       <implementation>info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor</implementation>
     </type-mapping>
     <type-mapping>
-      <type>info.magnolia.ui.model.menu.definition.MenuItemDefinition</type>
-      <implementation>info.magnolia.ui.model.menu.definition.MenuItemDefinitionImpl</implementation>
+      <type>info.magnolia.ui.model.definition.UiItemDefinition</type>
+      <implementation>info.magnolia.ui.model.definition.ConfiguredUiItemDefinition</implementation>
+    </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.model.definition.MenuItemDefinition</type>
+      <implementation>info.magnolia.ui.model.definition.ConfiguredMenuItemDefinition</implementation>
     </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.model.actionbar.definition.ActionbarDefinition</type>
-      <implementation>info.magnolia.ui.model.actionbar.definition.ActionbarDefinitionImpl</implementation>
+      <implementation>info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarDefinition</implementation>
     </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.model.actionbar.definition.ActionbarSectionDefinition</type>
-      <implementation>info.magnolia.ui.model.actionbar.definition.ActionbarSectionDefinitionImpl</implementation>
+      <implementation>info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarSectionDefinition</implementation>
     </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.model.actionbar.definition.ActionbarGroupDefinition</type>
-      <implementation>info.magnolia.ui.model.actionbar.definition.ActionbarGroupDefinitionImpl</implementation>
+      <implementation>info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarGroupDefinition</implementation>
     </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.model.actionbar.definition.ActionbarItemDefinition</type>
-      <implementation>info.magnolia.ui.model.actionbar.definition.ActionbarItemDefinitionImpl</implementation>
+      <implementation>info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarItemDefinition</implementation>
     </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.model.dialog.definition.DialogDefinition</type>
@@ -182,10 +186,6 @@
     <component>
       <type>info.magnolia.ui.admincentral.workbench.ContentWorkbench</type>
       <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbench</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.model.menu.definition.MenuItemDefinition</type>
-      <implementation>info.magnolia.ui.model.menu.definition.MenuItemDefinitionImpl</implementation>
     </component>
      <component>
       <type>info.magnolia.ui.model.workbench.registry.ConfiguredWorkbenchDefinitionManager</type>

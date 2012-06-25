@@ -41,7 +41,7 @@ import java.util.List;
 /**
  * Simple implementation for {@link ActionbarDefinition}.
  */
-public class ActionbarDefinitionImpl implements ActionbarDefinition {
+public class ConfiguredActionbarDefinition implements ActionbarDefinition {
 
     private String name;
 

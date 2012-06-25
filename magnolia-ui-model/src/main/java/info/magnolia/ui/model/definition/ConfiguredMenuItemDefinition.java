@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,48 +31,47 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.actionbar.definition;
+package info.magnolia.ui.model.definition;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import info.magnolia.ui.model.action.ActionDefinition;
 
 
 /**
- * Simple implementation for {@link ActionbarGroupDefinition}.
+ * Simple implementation of {@link MenuItemDefinition}.
  */
-public class ActionbarGroupDefinitionImpl implements ActionbarGroupDefinition {
+public class ConfiguredMenuItemDefinition extends ConfiguredUiItemDefinition implements MenuItemDefinition {
 
-    private String name;
+    private String icon;
 
-    private final List<ActionbarItemDefinition> items = new ArrayList<ActionbarItemDefinition>();
+    private String description;
+
+    private ActionDefinition actionDefinition;
 
     @Override
-    public String getName() {
-        return name;
+    public String getIcon() {
+        return icon;
     }
 
-    /**
-     * Sets the group name.
-     * 
-     * @param name the new name
-     */
-    public void setName(String name) {
-        this.name = name;
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 
     @Override
-    public List<ActionbarItemDefinition> getItems() {
-        return Collections.unmodifiableList(items);
+    public String getDescription() {
+        return description;
     }
 
-    /**
-     * Adds an action item to this group.
-     * 
-     * @param itemDefinition the action item definition
-     */
-    public void addItem(ActionbarItemDefinition itemDefinition) {
-        items.add(itemDefinition);
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @Override
+    public ActionDefinition getActionDefinition() {
+        return actionDefinition;
+    }
+
+    public void setActionDefinition(ActionDefinition actionDefinition) {
+        this.actionDefinition = actionDefinition;
     }
 
 }
