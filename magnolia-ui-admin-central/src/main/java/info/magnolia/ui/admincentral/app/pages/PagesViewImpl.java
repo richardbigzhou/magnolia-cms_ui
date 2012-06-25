@@ -41,9 +41,10 @@ import javax.inject.Inject;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
 
+
 /**
  * View implementation for the Pages app.
- *
+ * 
  * @version $Id$
  */
 @SuppressWarnings("serial")
@@ -62,7 +63,7 @@ public class PagesViewImpl implements PagesView, IsVaadinComponent {
 
     @Override
     public String getCaption() {
-        return "Website";
+        return "Pages";
     }
 
     @Override

@@ -31,47 +31,11 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.workbench;
-
-import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
-import info.magnolia.ui.admincentral.actionbar.ActionbarView;
-import info.magnolia.ui.admincentral.jcr.view.JcrView;
-import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
-
-import com.vaadin.data.Item;
-import com.vaadin.ui.ComponentContainer;
-
+package info.magnolia.ui.widget.actionbar;
 
 /**
- * Implementors of this interface are responsible for building a workbench and handling the UI
- * actions associated with it.
+ * The Class ActionbarTest.
  */
-public interface ContentWorkbenchView extends ComponentContainer, ActionbarView {
-
-    void setPresenter(Presenter presenter);
-
-    void initWorkbench(WorkbenchDefinition definintion);
-
-    void setGridType(final JcrView.ViewType type);
-
-    /**
-     * Causes a view refresh only if the current node exists in the repository.
-     */
-    void refreshItem(final Item item);
-
-    /**
-     * TODO review the for two methods to perform the view refresh. Had to add this one to refresh
-     * the view in case of item deletion. Refreshes the view.
-     */
-    void refresh();
-
-    /**
-     * Presenter.
-     */
-    public interface Presenter extends ActionbarPresenter {
-
-        void onItemSelected(Item item);
-
-    }
+public class ActionbarTest {
 
 }

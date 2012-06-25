@@ -31,47 +31,38 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.workbench;
+package info.magnolia.ui.admincentral.actionbar;
 
-import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
-import info.magnolia.ui.admincentral.actionbar.ActionbarView;
-import info.magnolia.ui.admincentral.jcr.view.JcrView;
-import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.model.action.ActionDefinition;
 
-import com.vaadin.data.Item;
-import com.vaadin.ui.ComponentContainer;
+import java.util.Map;
 
 
 /**
- * Implementors of this interface are responsible for building a workbench and handling the UI
- * actions associated with it.
+ * Base interface for an action bar presenter.
  */
-public interface ContentWorkbenchView extends ComponentContainer, ActionbarView {
-
-    void setPresenter(Presenter presenter);
-
-    void initWorkbench(WorkbenchDefinition definintion);
-
-    void setGridType(final JcrView.ViewType type);
+public interface ActionbarPresenter {
 
     /**
-     * Causes a view refresh only if the current node exists in the repository.
+     * Gets the action definitions registered in this presenter.
+     * 
+     * @return the map of action definitions
      */
-    void refreshItem(final Item item);
+    Map<String, ActionDefinition> getActions();
 
     /**
-     * TODO review the for two methods to perform the view refresh. Had to add this one to refresh
-     * the view in case of item deletion. Refreshes the view.
+     * Registers the given action definition for this presenter.
+     * 
+     * @param actionName the action name
+     * @param actionDefinition the action definition
      */
-    void refresh();
+    void addAction(String actionName, ActionDefinition actionDefinition);
 
     /**
-     * Presenter.
+     * Event handler invoked on clicking an item in the action bar.
+     * 
+     * @param actionName the action name
      */
-    public interface Presenter extends ActionbarPresenter {
-
-        void onItemSelected(Item item);
-
-    }
+    void onActionbarItemClicked(String actionName);
 
 }

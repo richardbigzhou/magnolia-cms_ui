@@ -31,47 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.workbench;
+package info.magnolia.ui.admincentral.tree.action;
 
-import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
-import info.magnolia.ui.admincentral.actionbar.ActionbarView;
-import info.magnolia.ui.admincentral.jcr.view.JcrView;
-import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.model.action.ActionBase;
+import info.magnolia.ui.model.action.ActionExecutionException;
 
-import com.vaadin.data.Item;
-import com.vaadin.ui.ComponentContainer;
+import javax.jcr.Node;
 
 
 /**
- * Implementors of this interface are responsible for building a workbench and handling the UI
- * actions associated with it.
+ * The Class DuplicateNodeAction.
  */
-public interface ContentWorkbenchView extends ComponentContainer, ActionbarView {
+public class DuplicateNodeAction extends ActionBase<DuplicateNodeActionDefinition> {
 
-    void setPresenter(Presenter presenter);
-
-    void initWorkbench(WorkbenchDefinition definintion);
-
-    void setGridType(final JcrView.ViewType type);
+    private final Node nodeToEdit;
 
     /**
-     * Causes a view refresh only if the current node exists in the repository.
+     * Instantiates a new duplicate node action.
+     * 
+     * @param definition the definition
+     * @param nodeToEdit the node to edit
      */
-    void refreshItem(final Item item);
+    public DuplicateNodeAction(DuplicateNodeActionDefinition definition, Node nodeToEdit) {
+        super(definition);
+        this.nodeToEdit = nodeToEdit;
+    }
 
-    /**
-     * TODO review the for two methods to perform the view refresh. Had to add this one to refresh
-     * the view in case of item deletion. Refreshes the view.
-     */
-    void refresh();
-
-    /**
-     * Presenter.
-     */
-    public interface Presenter extends ActionbarPresenter {
-
-        void onItemSelected(Item item);
-
+    @Override
+    public void execute() throws ActionExecutionException {
     }
 
 }
