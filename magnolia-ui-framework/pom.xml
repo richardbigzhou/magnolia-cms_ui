@@ -11,7 +11,7 @@
 	<artifactId>magnolia-ui-framework</artifactId>
 	<name>magnolia-ui-framework</name>
 	<properties>
-		<cloverCoverageThreshold>40</cloverCoverageThreshold>
+		<cloverCoverageThreshold>41</cloverCoverageThreshold>
 	</properties>
 	<build>
 		<plugins>
