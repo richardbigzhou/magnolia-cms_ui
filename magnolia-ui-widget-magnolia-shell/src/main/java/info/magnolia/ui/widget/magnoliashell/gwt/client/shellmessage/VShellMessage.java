@@ -54,12 +54,6 @@ import com.google.gwt.user.client.ui.HTML;
  * 
  */
 public class VShellMessage extends HTML {
-    private static final String DUMMY_DETAILS = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. "
-            + "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley"
-            + " of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into"
-            + " electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset"
-            + " sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including "
-            + "versions of Lorem Ipsum.";
 
     private static final String STYLE_NAME = "v-shell-notification";
 
@@ -79,7 +73,7 @@ public class VShellMessage extends HTML {
 
     private final MessageType type;
 
-    private final String text;
+    private final String topic;
 
     private Element header = DOM.createDiv();
     
@@ -93,11 +87,18 @@ public class VShellMessage extends HTML {
 
     private Element messageTypeEl = DOM.createElement("b");
 
-    public VShellMessage(VMagnoliaShellView shell, MessageType type, String topic) {
+    private final String id;
+    
+    private final String message;
+    
+    
+    public VShellMessage(VMagnoliaShellView shell, MessageType type, String topic, String message, String id) {
         super();
         this.type = type;
-        this.text = topic;
+        this.topic = topic;
         this.shell = shell;
+        this.message = message;
+        this.id = id;
         construct();
     }
 
@@ -111,7 +112,7 @@ public class VShellMessage extends HTML {
         header.setClassName("header");
         getElement().appendChild(header);
         
-        topicEl.setInnerText(text);
+        topicEl.setInnerText(topic);
         header.appendChild(messageTypeEl);
         header.appendChild(topicEl);
 
@@ -122,7 +123,7 @@ public class VShellMessage extends HTML {
         closeEl.setClassName("close");
         header.appendChild(closeEl);
         
-        detailsEl.setInnerText(DUMMY_DETAILS);
+        detailsEl.setInnerText(message);
         getElement().appendChild(detailsEl);
         
         switch (type) {
@@ -159,12 +160,17 @@ public class VShellMessage extends HTML {
                 if (event.getTypeInt() == Event.ONCLICK) {
                     final Element targetEl = event.getNativeEvent().getEventTarget().cast();
                     if (getElement().isOrHasChild(targetEl) && type == MessageType.WARNING) {
-                        hide();
+                        close();
                     }
                 }
             }
         });
         show();
+    }
+
+    protected void close() {
+        hide();
+        shell.closeMessageEager(id);
     }
 
     @Override

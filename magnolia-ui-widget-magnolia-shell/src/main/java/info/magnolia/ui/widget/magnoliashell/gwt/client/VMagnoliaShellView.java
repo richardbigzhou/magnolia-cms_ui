@@ -66,7 +66,7 @@ public interface VMagnoliaShellView extends HasWidgets, IsWidget {
 
     void setPresenter(final Presenter presenter);
     
-    void showMessage(final MessageType type, String text); 
+    void showMessage(final MessageType type, String text, String message, String id); 
 
     void removeDialogViewport();
 
@@ -83,6 +83,8 @@ public interface VMagnoliaShellView extends HasWidgets, IsWidget {
     Presenter getPresenter();
     
     Collection<VShellViewport> getViewports();
+    
+    void closeMessageEager(String id);
     
     /**
      * Presenter. Meant for Vaadin part of MagnoliaShell.
@@ -101,5 +103,7 @@ public interface VMagnoliaShellView extends HasWidgets, IsWidget {
         void closeCurrentApp();
         
         void closeCurrentShellApp();
+
+        void removeMessage(String id);
     }
 }

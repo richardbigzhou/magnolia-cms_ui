@@ -163,6 +163,12 @@ public class PulseViewImpl implements PulseView, IsVaadinComponent {
                 addMessageToContainer(container, message);
                 shell.updateShellAppIndication(ShellAppType.PULSE, 1);
             }
+
+            @Override
+            public void removeMessage(Message message) {
+                container.removeItem(message.getId());
+                shell.updateShellAppIndication(ShellAppType.PULSE, -1);
+            }
         });
 
         Table table = new Table();
@@ -176,7 +182,7 @@ public class PulseViewImpl implements PulseView, IsVaadinComponent {
     }
 
     private void addMessageToContainer(IndexedContainer container, Message message) {
-        final Item item = container.getItem(container.addItemAt(0));
+        final Item item = container.addItem(message.getId());
         item.getItemProperty("type").setValue(message.getType().name());
         item.getItemProperty("text").setValue(message.getMessage());
         item.getItemProperty("date").setValue(new SimpleDateFormat().format(new Date(message.getTimestamp())));

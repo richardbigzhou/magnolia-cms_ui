@@ -214,18 +214,18 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
     }
 
     @Override
-    public void showMessage(final MessageType type, String text) {
+    public void showMessage(MessageType type, String topic, String message, String id) {
         final VShellMessage msg;
         switch (type) {
         case WARNING:
-            msg = new VShellMessage(this, type, text);
+            msg = new VShellMessage(this, type, topic, message, id);
             if (lowPriorityMessage != null && getWidgetIndex(lowPriorityMessage) != -1) {
                 lowPriorityMessage.hide();
             }
             lowPriorityMessage = msg;
             break;
         case ERROR:
-            msg = new VShellErrorMessage(this, text);
+            msg = new VShellErrorMessage(this, topic, message, id);
             if (hiPriorityMessage != null && getWidgetIndex(hiPriorityMessage) != -1) {
                 hiPriorityMessage.hide();
             }
@@ -241,8 +241,9 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
                     add(msg, getElement());   
                 }
             }
-        });
+        });        
     }
+   
 
     protected void switchViewports(boolean appViewportOnTop) {
         final VShellViewport shellAppViewport = getShellAppViewport();
@@ -362,4 +363,10 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
     public void updateShellAppIndication(ShellAppType type, int increment) {
         mainAppLauncher.updateIndication(type, increment);
     }
+
+    @Override
+    public void closeMessageEager(final String id) {
+        presenter.removeMessage(id);
+    }
+
 }

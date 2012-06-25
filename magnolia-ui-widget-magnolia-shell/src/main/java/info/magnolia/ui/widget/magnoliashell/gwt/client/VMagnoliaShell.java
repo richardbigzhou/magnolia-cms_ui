@@ -112,8 +112,10 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
                 @Override
                 public void invoke(String methodName, Object[] params) {
                     final MessageType type = MessageType.valueOf(String.valueOf(params[0]));
-                    final String message = String.valueOf(params[1]);
-                    view.showMessage(type, message);
+                    final String topic = String.valueOf(params[1]);
+                    final String message = String.valueOf(params[2]);
+                    final String id = String.valueOf(params[3]);
+                    view.showMessage(type, topic, message, id);
                 }
             });
             
@@ -254,6 +256,11 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
     @Override
     public void closeCurrentShellApp() {
         proxy.call("closeCurrentShellApp");
+    }
+    
+    @Override
+    public void removeMessage(String id) {
+        proxy.call("removeMessage", id);
     }
     
     @Override

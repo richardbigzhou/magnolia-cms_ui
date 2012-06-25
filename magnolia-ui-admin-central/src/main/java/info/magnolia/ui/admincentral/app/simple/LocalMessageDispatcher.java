@@ -85,4 +85,9 @@ public class LocalMessageDispatcher implements MessageListener {
     private void queueMessage(Message message) {
         messageQueue.add(message);
     }
+
+    @Override
+    public void removeMessage(Message message) {
+        
+    }
 }

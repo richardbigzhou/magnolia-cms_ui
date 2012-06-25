@@ -34,6 +34,7 @@
 package info.magnolia.ui.widget.magnoliashell;
 
 import info.magnolia.ui.framework.event.EventHandlerCollection;
+import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.shell.FragmentChangedEvent;
 import info.magnolia.ui.framework.shell.FragmentChangedHandler;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShell;
@@ -93,7 +94,13 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
                 navigateToApp(String.valueOf(params[0]), String.valueOf(params[1]));
             }
         });
-
+        
+        register("removeMessage", new Method() {
+            @Override
+            public void invoke(String methodName, Object[] params) {
+                removeMessage(String.valueOf(params[0]));
+            }
+        });
 
         register("closeCurrentApp", new Method() {
             @Override
@@ -223,16 +230,16 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
         handlers.dispatch(new FragmentChangedEvent(fragment));
     }
 
-    public void showError(String message) {
+    public void showError(Message message) {
         synchronized (getApplication()) {
-            proxy.call("showMessage", MessageType.ERROR.name(), message);
+            proxy.call("showMessage", MessageType.ERROR.name(), message.getSubject(), message.getMessage(), message.getId());
             pusher.push();
         }
     }
 
-    public void showWarning(String message) {
+    public void showWarning(Message message) {
         synchronized (getApplication()) {
-            proxy.call("showMessage", MessageType.WARNING.name(), message);
+            proxy.call("showMessage", MessageType.WARNING.name(), message.getSubject(), message.getMessage(), message.getId());
             pusher.push();
         }
     }
@@ -262,6 +269,8 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
         }
     }
 
+    protected void removeMessage(String messageId) {}
+    
     protected void closeCurrentApp() {
         getAppViewport().pop();
     }

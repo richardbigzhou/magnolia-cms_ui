@@ -82,12 +82,40 @@ public class MessagesManagerImpl implements MessagesManager {
     }
 
     @Override
-    public void removeMessage(String id) {
+    public void removeMessage(final String userId, final String id) {
+        System.out.println("Removing message");
+        final Message message = findMessageById(userId, id);
+        if (message != null) {
+            messages.remove(userId, message);
+            final List<MessageListener> listenerList = listeners.get(userId);
+            if (listenerList != null) {
+                for (final MessageListener listener : listenerList) {
+                    listener.removeMessage(message);
+                }
+            }
+        }
+    }
 
+    private Message findMessageById(String userId, String msgId) {
+        Message result = null;
+        final List<Message> userMessages = messages.get(userId);
+        if (userMessages != null) {
+            for (final Message msg : userMessages) {
+                if (msg.getId().equals(msgId)) {
+                    result = msg;
+                    break;
+                }
+            }       
+        }
+        return result;
     }
 
     @Override
     public int getMessageCountForUser(String userId) {
+        final List<Message> userMessages = messages.get(userId);
+        if (userMessages != null) {
+            return userMessages.size();
+        }
         return 0;
     }
 

@@ -46,8 +46,8 @@ import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShellView;
  */
 public class VShellErrorMessage extends VShellMessage {
 
-    public VShellErrorMessage(final VMagnoliaShellView shell, String text) {
-        super(shell, MessageType.ERROR, text);
+    public VShellErrorMessage(final VMagnoliaShellView shell, String topic, String message, String id) {
+        super(shell, MessageType.ERROR, topic, message, id);
         final JQueryWrapper jq = JQueryWrapper.select(this);
         jq.ready(Callbacks.create(new JQueryCallback() {
             @Override

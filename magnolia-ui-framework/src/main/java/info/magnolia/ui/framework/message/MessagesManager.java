@@ -70,6 +70,8 @@ public interface MessagesManager {
     public interface MessageListener {
 
         void handleMessage(Message message);
+        
+        void removeMessage(Message message);
     }
 
     void registerMessagesListener(String userId, MessageListener listener);
@@ -84,5 +86,5 @@ public interface MessagesManager {
 
     void sendMessageToAllUsers(Message message);
 
-    void removeMessage(String id);
+    void removeMessage(String userId, String id);
 }
