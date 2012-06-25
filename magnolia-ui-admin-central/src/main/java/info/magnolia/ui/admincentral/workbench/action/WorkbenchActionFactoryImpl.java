@@ -41,6 +41,7 @@ import javax.jcr.Item;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.jcr.view.builder.DefinitionToImplementationMapping;
+import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.builder.FactoryBase;
@@ -78,8 +79,8 @@ public class WorkbenchActionFactoryImpl extends FactoryBase<ActionDefinition, Ac
     }
 
     @Override
-    public Action createAction(ActionDefinition actionDefinition, Item item) {
-        return create(actionDefinition, item);
+    public Action createAction(ActionDefinition actionDefinition, Item item, AppContext ctx) {
+        return create(actionDefinition, item, ctx);
     }
 
 }

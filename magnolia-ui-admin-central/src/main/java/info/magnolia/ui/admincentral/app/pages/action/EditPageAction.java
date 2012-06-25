@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,18 +31,41 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.workbench.action;
+package info.magnolia.ui.admincentral.app.pages.action;
 
+import info.magnolia.ui.admincentral.app.pages.PagesView;
 import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.model.action.Action;
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.action.ActionBase;
+import info.magnolia.ui.model.action.ActionExecutionException;
 
-import javax.jcr.Item;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 /**
- * Creates an action based on an {@link ActionDefinition}.
+ * Opens a page for editing.
+ * @version $Id$
  */
-public interface WorkbenchActionFactory {
+public class EditPageAction extends ActionBase<EditPageActionDefinition> {
 
-    Action createAction(ActionDefinition actionDefinition, Item item, AppContext ctx);
+    private Node selectedNode;
+
+    private PagesView.Presenter presenter;
+
+    private AppContext ctx;
+
+    public EditPageAction(final EditPageActionDefinition definition, final Node selectedNode, final PagesView.Presenter presenter, final AppContext ctx) {
+        super(definition);
+        this.selectedNode = selectedNode;
+        this.presenter = presenter;
+        this.ctx = ctx;
+    }
+
+    @Override
+    public void execute() throws ActionExecutionException {
+        try {
+            presenter.onEditPage(selectedNode, ctx);
+        } catch (RepositoryException e) {
+            throw new ActionExecutionException(e);
+        }
+    }
 }

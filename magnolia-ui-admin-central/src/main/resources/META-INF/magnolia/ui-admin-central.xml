@@ -144,6 +144,10 @@
       <implementation>info.magnolia.ui.admincentral.app.pages.PagesViewImpl</implementation>
     </component>
     <component>
+      <type>info.magnolia.ui.admincentral.app.pages.PagesView$Presenter</type>
+      <implementation>info.magnolia.ui.admincentral.app.pages.PagesApp</implementation>
+    </component>
+    <component>
       <type>info.magnolia.ui.admincentral.MagnoliaShellView</type>
       <implementation>info.magnolia.ui.admincentral.MagnoliaShellViewImpl</implementation>
     </component>

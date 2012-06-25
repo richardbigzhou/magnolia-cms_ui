@@ -37,26 +37,39 @@ package info.magnolia.ui.admincentral.app.pages;
 import info.magnolia.ui.framework.app.AbstractApp;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.AppView;
+import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 
 import javax.inject.Inject;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 /**
  * Pages app.
  *
  * @version $Id$
  */
-public class PagesApp extends AbstractApp {
+public class PagesApp extends AbstractApp implements PagesView.Presenter {
 
     private PagesView view;
 
     @Inject
     public PagesApp(PagesView view) {
         this.view = view;
+        this.view.setPresenter(this);
+
     }
 
     @Override
     public AppView start(AppContext context, Location location) {
+        view.getWorkbench().setAppContext(context);
         return view;
+    }
+
+    @Override
+    public void onEditPage(Node pageNode, AppContext context) throws RepositoryException {
+        final PageEditorTabView tabView = new PageEditorTabView(pageNode);
+        context.openAppView(tabView);
+        context.setAppLocation(new DefaultLocation("app", "app:pages:", tabView.getCaption()));
     }
 }

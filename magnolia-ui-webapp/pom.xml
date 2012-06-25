@@ -48,6 +48,11 @@
       <artifactId>magnolia-ui-app-messages</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>info.magnolia</groupId>
+      <artifactId>magnolia-templating-samples</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
 
   <build>

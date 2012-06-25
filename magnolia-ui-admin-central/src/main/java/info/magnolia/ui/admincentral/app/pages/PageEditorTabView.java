@@ -33,26 +33,51 @@
  */
 package info.magnolia.ui.admincentral.app.pages;
 
+import info.magnolia.context.MgnlContext;
+import info.magnolia.jcr.util.PropertyUtil;
+import info.magnolia.ui.framework.app.AppView;
+import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
+
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
-import info.magnolia.ui.admincentral.workbench.ContentWorkbench;
-import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.app.AppView;
+import org.apache.commons.lang.StringUtils;
+
+import com.vaadin.terminal.ExternalResource;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Embedded;
+import com.vaadin.ui.VerticalLayout;
 
 /**
- * View for the Pages app.
+ * PageEditorTabView.
  *
- * @version $Id$
- */
-public interface PagesView extends AppView {
+* @version $Id$
+*/
+@SuppressWarnings("serial")
+public class PageEditorTabView implements AppView, IsVaadinComponent {
 
-    void setPresenter(Presenter presenter);
+    private final VerticalLayout container = new VerticalLayout();
+    private String caption;
 
-    ContentWorkbench getWorkbench();
+    public PageEditorTabView(final Node pageNode) throws RepositoryException {
+        final Embedded page = new Embedded("", new ExternalResource(MgnlContext.getContextPath() + pageNode.getPath()));
+        page.setType(Embedded.TYPE_BROWSER);
+        page.setSizeFull();
 
-    public interface Presenter {
+        container.setSizeFull();
+        container.addComponent(page);
+        caption = StringUtils.defaultIfEmpty(PropertyUtil.getString(pageNode, "title"), pageNode.getName());
 
-        void onEditPage(final Node page, final AppContext context) throws RepositoryException;
     }
+
+    @Override
+    public String getCaption() {
+        return caption;
+    }
+
+    @Override
+    public Component asVaadinComponent() {
+        return container;
+    }
+
 }
