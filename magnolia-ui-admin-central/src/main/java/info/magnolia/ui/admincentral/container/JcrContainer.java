@@ -37,8 +37,8 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.ui.model.column.definition.AbstractColumnDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.vaadin.intergration.jcr.JcrItemAdapter;
-import info.magnolia.ui.vaadin.intergration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -133,8 +133,6 @@ public abstract class JcrContainer extends AbstractContainer implements Containe
     public JcrContainer(JcrContainerSource jcrContainerSource, WorkbenchDefinition workbenchDefinition) {
         this.jcrContainerSource = jcrContainerSource;
         workspace = workbenchDefinition.getWorkspace();
-        // load first page.
-        getPage();
 
         for (AbstractColumnDefinition columnDefinition : workbenchDefinition.getColumns()) {
             if (columnDefinition.isSortable()) {
@@ -452,26 +450,9 @@ public abstract class JcrContainer extends AbstractContainer implements Containe
 //            throw new RuntimeRepositoryException(e);
 //        }
 //    }
-//
-//    public void setColumnValue(String propertyId, Object itemId, Object newValue) {
-//        try {
-//            jcrContainerSource.setColumnComponent(propertyId, getJcrItem((String)itemId), (Component) newValue);
-//            firePropertySetChange();
-//        }
-//        catch (RepositoryException e) {
-//            throw new RuntimeRepositoryException(e);
-//        }
-//    }
 
-    public javax.jcr.Item getJcrItem(String containerItemId) throws RepositoryException {
-        if (containerItemId == null) {
-            return null;
-        }
-        return jcrContainerSource.getItemByPath(containerItemId);
-    }
 
     // Used by JcrBrowser
-
     protected JcrContainerSource getJcrContainerSource() {
         return jcrContainerSource;
     }
@@ -523,9 +504,7 @@ public abstract class JcrContainer extends AbstractContainer implements Containe
     private void updateCount(long newSize) {
         if (newSize != size) {
             size = (int)newSize;
-            refresh();
         }
-
     }
 
     /**
@@ -598,13 +577,14 @@ public abstract class JcrContainer extends AbstractContainer implements Containe
     }
 
     /**
-     * Refreshes the container - resets size and offset.
-     * Does NOT remove sorting or filtering rules!
+     * Refreshes the container - clears all caches and resets size and offset. Does NOT remove
+     * sorting or filtering rules!
      */
     public void refresh() {
         currentOffset = 0;
-        fireItemSetChange();
+        getPage();
     }
+
 
 //    protected int getRowCount() {
 //        //FIXME cache the size cause at present the query to count rows is extremely slow () with "large" (20000+ nodes) data sets and it's called frequently by Vaadin.

@@ -182,6 +182,46 @@
         </sv:property>
       </sv:node>
     </sv:node>
+    <sv:node sv:name="openCreateDialog">
+      <sv:property sv:name="jcr:primaryType" sv:type="Name">
+        <sv:value>mgnl:contentNode</sv:value>
+      </sv:property>
+      <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
+        <sv:value>mix:lockable</sv:value>
+      </sv:property>
+      <sv:property sv:name="jcr:uuid" sv:type="String">
+        <sv:value>133a55dc-3efb-43c1-9244-671e86d30d50</sv:value>
+      </sv:property>
+      <sv:property sv:name="definition" sv:type="String">
+        <sv:value>info.magnolia.ui.admincentral.dialog.action.CreateDialogActionDefinition</sv:value>
+      </sv:property>
+      <sv:property sv:name="implementation" sv:type="String">
+        <sv:value>info.magnolia.ui.admincentral.dialog.action.CreateDialogAction</sv:value>
+      </sv:property>
+      <sv:property sv:name="jcr:createdBy" sv:type="String">
+        <sv:value>admin</sv:value>
+      </sv:property>
+      <sv:node sv:name="MetaData">
+        <sv:property sv:name="jcr:primaryType" sv:type="Name">
+          <sv:value>mgnl:metaData</sv:value>
+        </sv:property>
+        <sv:property sv:name="jcr:createdBy" sv:type="String">
+          <sv:value>admin</sv:value>
+        </sv:property>
+        <sv:property sv:name="mgnl:activated" sv:type="Boolean">
+          <sv:value>false</sv:value>
+        </sv:property>
+        <sv:property sv:name="mgnl:authorid" sv:type="String">
+          <sv:value>superuser</sv:value>
+        </sv:property>
+        <sv:property sv:name="mgnl:creationdate" sv:type="Date">
+          <sv:value>2011-03-16T16:07:46.823+01:00</sv:value>
+        </sv:property>
+        <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
+          <sv:value>2012-06-19T17:56:39.619+02:00</sv:value>
+        </sv:property>
+      </sv:node>
+    </sv:node>
     <sv:node sv:name="openEditDialog">
       <sv:property sv:name="jcr:primaryType" sv:type="Name">
         <sv:value>mgnl:contentNode</sv:value>
@@ -193,10 +233,10 @@
         <sv:value>85b01eeb-a831-4173-8fa7-fa33a7a197fc</sv:value>
       </sv:property>
       <sv:property sv:name="definition" sv:type="String">
-        <sv:value>info.magnolia.ui.admincentral.tree.action.OpenEditDialogActionDefinition</sv:value>
+        <sv:value>info.magnolia.ui.admincentral.dialog.action.EditDialogActionDefinition</sv:value>
       </sv:property>
       <sv:property sv:name="implementation" sv:type="String">
-        <sv:value>info.magnolia.ui.admincentral.tree.action.OpenEditDialogAction</sv:value>
+        <sv:value>info.magnolia.ui.admincentral.dialog.action.EditDialogAction</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>

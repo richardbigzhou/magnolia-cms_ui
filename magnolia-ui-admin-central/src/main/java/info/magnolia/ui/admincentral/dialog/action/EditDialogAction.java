@@ -31,44 +31,38 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.workbench.event;
+package info.magnolia.ui.admincentral.dialog.action;
 
-import info.magnolia.ui.framework.event.Event;
-import info.magnolia.ui.framework.event.EventHandler;
+import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
+import info.magnolia.ui.model.action.ActionBase;
+import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.vaadin.integration.jcr.JcrTransientNodeAdapter;
+import info.magnolia.ui.widget.dialog.DialogView.Presenter;
+
+import javax.jcr.Node;
 
 
 /**
- * Global event fired if content was changed, deleted, added.
- * FIXME introduce more granular events
+ * Opens a dialog for editing a nodeToEdit in a tree.
+ * <p/>
+ * TODO: add support for configuring supported itemTypes, maybe in base class where no config means all
+ *
  */
-public class ContentChangedEvent implements Event<ContentChangedEvent.Handler> {
+public class EditDialogAction extends ActionBase<EditDialogActionDefinition> {
 
-    /**
-     * Handles {@link ContentChangedEvent} events.
-     */
-    public static interface Handler extends EventHandler {
-        void onContentChanged(ContentChangedEvent event);
+    private DialogPresenterFactory dialogPresenterFactory;
+
+    private Node nodeToEdit;
+
+    public EditDialogAction(EditDialogActionDefinition definition, Node nodeToEdit, DialogPresenterFactory dialogPresenterFactory) {
+        super(definition);
+        this.nodeToEdit = nodeToEdit;
+        this.dialogPresenterFactory = dialogPresenterFactory;
     }
-
-    private String workspace;
-
-    private String path;
 
     @Override
-    public void dispatch(Handler handler) {
-        handler.onContentChanged(this);
-    }
-
-    public ContentChangedEvent(String workspace, String path) {
-        this.workspace = workspace;
-        this.path = path;
-    }
-
-    public String getWorkspace() {
-        return workspace;
-    }
-
-    public String getPath() {
-        return path;
+    public void execute() throws ActionExecutionException {
+        Presenter dialogPresenter = dialogPresenterFactory.createDialog(getDefinition().getDialogName());
+        dialogPresenter.editItem(new JcrTransientNodeAdapter(nodeToEdit));
     }
 }

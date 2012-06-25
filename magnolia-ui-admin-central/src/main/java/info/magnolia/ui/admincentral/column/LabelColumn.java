@@ -59,7 +59,7 @@ public class LabelColumn extends AbstractEditableColumn<LabelColumnDefinition> i
     @Override
     protected Component getDefaultComponent(Item item) throws RepositoryException {
 
-        String path = item.isNode() ? "@name" : item.getName() + "@name";
+        String path = item.isNode() ? item.getName() : item.getName() + "@name";
 
         return new EditableText(item, new PresenterImpl(), path) {
 

@@ -31,66 +31,60 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.intergration.jcr;
+package info.magnolia.ui.admincentral.dialog.builder;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import info.magnolia.ui.model.dialog.definition.ConfiguredFieldDefinition;
+import info.magnolia.ui.model.dialog.definition.FieldDefinition;
 
 import org.junit.Test;
 
-import com.vaadin.data.Property.ReadOnlyException;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Field;
+import com.vaadin.ui.TextField;
 
-public class DefaultPropertyTest {
+public class FieldBuilderTest {
 
     @Test
-    public void testGetValue() throws Exception {
+    public void testBuildingTextField() {
         // GIVEN
-        final String value = "value";
-        final DefaultProperty property = new DefaultProperty("propertyName",value);
+        final FieldDefinition def = new ConfiguredFieldDefinition();
+        def.setType(FieldDefinition.TEXT_FIELD_TYPE);
 
         // WHEN
-        final Object result = property.getValue();
+        final Field result = FieldBuilder.build(def);
 
         // THEN
-        assertEquals(value, result);
+        assertEquals(TextField.class, result.getClass());
+        assertEquals(FieldBuilder.TEXTFIELD_STYLE_NAME, result.getStyleName());
     }
 
     @Test
-    public void testGetType() throws Exception {
+    public void testBuildingCheckBox() {
         // GIVEN
-        final String value = "value";
-        final DefaultProperty property = new DefaultProperty("propertyName",value);
+        final FieldDefinition def = new ConfiguredFieldDefinition();
+        def.setType(FieldDefinition.CHECKBOX_FIELD_TYPE);
 
         // WHEN
-        final Class<?> result = property.getType();
+        final Field result = FieldBuilder.build(def);
 
         // THEN
-        assertEquals(value.getClass(), result);
+        assertEquals(CheckBox.class, result.getClass());
+        assertEquals(FieldBuilder.TEXTFIELD_STYLE_NAME, result.getStyleName());
     }
 
     @Test
-    public void testSetValue() throws Exception {
+    public void testBuildingNullField() {
         // GIVEN
-        final String value = "old";
-        final DefaultProperty property = new DefaultProperty("propertyName",value);
-        final String newValue = "new";
+        final FieldDefinition def = new ConfiguredFieldDefinition();
+        def.setType("<unkown>");
 
         // WHEN
-        property.setValue(newValue);
+        final Field result = FieldBuilder.build(def);
 
         // THEN
-        assertEquals(newValue, property.getValue());
-    }
-
-    @Test(expected=ReadOnlyException.class)
-    public void testSetReadOnlyValue() throws Exception {
-        // GIVEN
-        final String value = "old";
-        final DefaultProperty property = new DefaultProperty("propertyName",value);
-        property.setReadOnly(true);
-        assertEquals(true, property.isReadOnly());
-
-        // WHEN
-        property.setValue("new");
+        assertNull(result);
     }
 
 }

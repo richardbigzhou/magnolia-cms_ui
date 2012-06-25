@@ -31,38 +31,44 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.tree.action;
+package info.magnolia.ui.admincentral.event;
 
-import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
-import info.magnolia.ui.model.action.ActionBase;
-import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.vaadin.intergration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.widget.dialog.DialogView.Presenter;
-
-import javax.jcr.Node;
+import info.magnolia.ui.framework.event.Event;
+import info.magnolia.ui.framework.event.EventHandler;
 
 
 /**
- * Opens a dialog for editing a nodeToEdit in a tree.
- * <p/>
- * TODO: add support for configuring supported itemTypes, maybe in base class where no config means all
- *
+ * Global event fired if content was changed, deleted, added.
+ * FIXME introduce more granular events
  */
-public class OpenEditDialogAction extends ActionBase<OpenEditDialogActionDefinition> {
+public class ContentChangedEvent implements Event<ContentChangedEvent.Handler> {
 
-    private DialogPresenterFactory dialogPresenterFactory;
-
-    private Node nodeToEdit;
-
-    public OpenEditDialogAction(OpenEditDialogActionDefinition definition, Node nodeToEdit, DialogPresenterFactory dialogPresenterFactory) {
-        super(definition);
-        this.nodeToEdit = nodeToEdit;
-        this.dialogPresenterFactory = dialogPresenterFactory;
+    /**
+     * Handles {@link ContentChangedEvent} events.
+     */
+    public static interface Handler extends EventHandler {
+        void onContentChanged(ContentChangedEvent event);
     }
 
+    private String workspace;
+
+    private String path;
+
     @Override
-    public void execute() throws ActionExecutionException {
-            Presenter dialogPresenter = dialogPresenterFactory.createDialog(getDefinition().getDialogName());
-            dialogPresenter.editItem(new JcrNodeAdapter(nodeToEdit));
+    public void dispatch(Handler handler) {
+        handler.onContentChanged(this);
+    }
+
+    public ContentChangedEvent(String workspace, String path) {
+        this.workspace = workspace;
+        this.path = path;
+    }
+
+    public String getWorkspace() {
+        return workspace;
+    }
+
+    public String getPath() {
+        return path;
     }
 }

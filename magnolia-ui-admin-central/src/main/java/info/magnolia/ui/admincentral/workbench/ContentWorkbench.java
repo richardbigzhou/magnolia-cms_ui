@@ -36,9 +36,9 @@ package info.magnolia.ui.admincentral.workbench;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.admincentral.MagnoliaShell;
+import info.magnolia.ui.admincentral.event.ContentChangedEvent;
+import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
-import info.magnolia.ui.admincentral.workbench.event.ContentChangedEvent;
-import info.magnolia.ui.admincentral.workbench.event.ItemSelectedEvent;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
@@ -46,9 +46,8 @@ import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.model.workbench.registry.WorkbenchDefinitionRegistry;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
-
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import javax.inject.Inject;
-import javax.jcr.Item;
 import javax.jcr.LoginException;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
@@ -57,6 +56,7 @@ import javax.jcr.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.data.Item;
 import com.vaadin.ui.ComponentContainer;
 
 
@@ -73,15 +73,15 @@ import com.vaadin.ui.ComponentContainer;
  * @version $Id$
  */
 @SuppressWarnings("serial")
-public class Workbench implements IsVaadinComponent, WorkbenchView.Presenter {
+public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView.Presenter {
 
-    private static final Logger log = LoggerFactory.getLogger(Workbench.class);
+    private static final Logger log = LoggerFactory.getLogger(ContentWorkbench.class);
 
     private WorkbenchDefinition workbenchDefinition;
 
     private final WorkbenchDefinitionRegistry workbenchRegistry;
 
-    private final WorkbenchView view;
+    private final ContentWorkbenchView view;
 
     private final EventBus eventBus;
 
@@ -89,10 +89,10 @@ public class Workbench implements IsVaadinComponent, WorkbenchView.Presenter {
 
     private final WorkbenchActionFactory actionFactory;
 
-    private String selectedItemPath;
+    private String selectedItemId;
 
     @Inject
-    public Workbench(final WorkbenchView view, final EventBus eventbus, final MagnoliaShell shell, final WorkbenchDefinitionRegistry workbenchRegistry, final WorkbenchActionFactory actionFactory) {
+    public ContentWorkbench(final ContentWorkbenchView view, final EventBus eventbus, final MagnoliaShell shell, final WorkbenchDefinitionRegistry workbenchRegistry, final WorkbenchActionFactory actionFactory) {
         super();
         this.view = view;
         this.eventBus = eventbus;
@@ -106,7 +106,6 @@ public class Workbench implements IsVaadinComponent, WorkbenchView.Presenter {
             @Override
             public void onContentChanged(ContentChangedEvent event) {
                 // this should go into the presenter of the treegrid
-                //view.refreshNode(..)
                 view.refresh();
             }
         });
@@ -120,6 +119,7 @@ public class Workbench implements IsVaadinComponent, WorkbenchView.Presenter {
             shell.showError("An error occurred while trying to get workbench [" + id + "] in the registry", e);
             return;
         }
+        view.initWorkbench(workbenchDefinition);
     }
 
     @Override
@@ -132,11 +132,11 @@ public class Workbench implements IsVaadinComponent, WorkbenchView.Presenter {
         if (actionDefinition != null) {
             try {
                 Session session = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace());
-                if(selectedItemPath == null || !session.itemExists(selectedItemPath)) {
-                    log.debug("{} does not exist anymore. Was it just deleted? Resetting path to root...", selectedItemPath);
-                    selectedItemPath = "/";
+                if(selectedItemId == null || !session.itemExists(selectedItemId)) {
+                    log.debug("{} does not exist anymore. Was it just deleted? Resetting path to root...", selectedItemId);
+                    selectedItemId = "/";
                 }
-                final Item item = session.getItem(selectedItemPath);
+                final javax.jcr.Item item = session.getItem(selectedItemId);
                 Action action = actionFactory.createAction(actionDefinition, item);
                 action.execute();
             } catch (PathNotFoundException e) {
@@ -162,10 +162,10 @@ public class Workbench implements IsVaadinComponent, WorkbenchView.Presenter {
             // change even when no value has changed and only a click happened on table, see
             // info.magnolia.ui.admincentral.tree.view.TreeViewImpl.TreeViewImpl
             // and jcrBrowser internal obj registering for those events.
-            selectedItemPath = item.getPath();
-            log.debug("javax.jcr.Item at {} was selected. Firing ItemSelectedEvent...", item.getPath());
-            eventBus.fireEvent(new ItemSelectedEvent(workbenchDefinition.getWorkspace(), item.getPath()));
-        } catch (RepositoryException e) {
+            selectedItemId = ((JcrItemAdapter)item).getItemId();
+            log.debug("javax.jcr.Item at {} was selected. Firing ItemSelectedEvent...", selectedItemId);
+            eventBus.fireEvent(new ItemSelectedEvent(workbenchDefinition.getWorkspace(),selectedItemId));
+        } catch (Exception e) {
             shell.showError("An error occurred while selecting a row in the data grid", e);
         }
     }

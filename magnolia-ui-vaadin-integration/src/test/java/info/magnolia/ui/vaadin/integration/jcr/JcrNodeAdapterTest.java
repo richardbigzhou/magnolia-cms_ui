@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.intergration.jcr;
+package info.magnolia.ui.vaadin.integration.jcr;
 
 import static org.junit.Assert.assertEquals;
 import info.magnolia.context.MgnlContext;
@@ -47,7 +47,7 @@ import org.junit.Test;
 
 import com.vaadin.data.Property;
 
-public class NodeAdapterTest {
+public class JcrNodeAdapterTest {
 
     private String sessionName = "test";
     private MockSession session;
@@ -181,6 +181,41 @@ public class NodeAdapterTest {
         // THEN
         assertEquals(underlyingNode, result);
     }
+
+
+    @Test
+    public void testValueChangeEvent_PropertyExist() throws Exception {
+        // GIVEN
+        Node underlyingNode = session.getRootNode().addNode("underlying");
+        String propertyName = "TEST";
+        String propertyValue = "value";
+        javax.jcr.Property jcrProperty = underlyingNode.setProperty(propertyName, propertyValue);
+        JcrNodeAdapter item = new JcrNodeAdapter(underlyingNode);
+
+        // WHEN
+        Property nodePorperty = item.getItemProperty(propertyName);
+        nodePorperty.setValue("newValue");
+
+        // THEN
+        assertEquals("newValue", jcrProperty.getString());
+    }
+
+
+    @Test
+    public void testValueChangeEvent_PropertyDoNotExist() throws Exception {
+        // GIVEN
+        Node underlyingNode = session.getRootNode().addNode("underlying");
+        String propertyName = "TEST";
+        JcrNodeAdapter item = new JcrNodeAdapter(underlyingNode);
+
+        // WHEN
+        Property nodePorperty = item.getItemProperty(propertyName);
+        nodePorperty.setValue("newValue");
+
+        // THEN
+        assertEquals("newValue", underlyingNode.getProperty(propertyName).getString());
+    }
+
 
 
     @Test(expected=UnsupportedOperationException.class)

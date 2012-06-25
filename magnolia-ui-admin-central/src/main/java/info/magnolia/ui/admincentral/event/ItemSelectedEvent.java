@@ -31,62 +31,46 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.intergration.jcr;
+package info.magnolia.ui.admincentral.event;
 
-import com.vaadin.data.util.AbstractProperty;
+
+import info.magnolia.ui.framework.event.Event;
+import info.magnolia.ui.framework.event.EventHandler;
+
 
 /**
- * Basic implementation of {@link com.vaadin.data.Property}.
+ * This event is fired when an item is selected (ie a row in the data grid within the workbench representing either a {@link javax.jcr.Node} or a {@link javax.jcr.Property}).
+ * @version $Id$
  *
- * TODO dlipp - this impl is not depending on jcr, so it could/should be located in a different package.
  */
-public class DefaultProperty extends AbstractProperty {
+public class ItemSelectedEvent implements Event<ItemSelectedEvent.Handler> {
 
-    private Object value;
-    private boolean readOnly;
-    private String propertyName;
-
-    public DefaultProperty(String propertyName, Object value) {
-        this.propertyName = propertyName;
-        this.value = value;
+    /**
+     * Handles {@link ItemSelectedEvent} events.
+     */
+    public static interface Handler extends EventHandler {
+        void onItemSelected(ItemSelectedEvent event);
     }
+
+    private String workspace;
+
+    private String path;
 
     @Override
-    public Object getValue() {
-        return value;
+    public void dispatch(Handler handler) {
+        handler.onItemSelected(this);
     }
 
-    @Override
-    public void setValue(Object newValue) throws ReadOnlyException, ConversionException {
-        if (readOnly) {
-            throw new ReadOnlyException("Can't setValue for readonly-Property");
-        }
-        value = newValue;
-        fireValueChange();
+    public ItemSelectedEvent(String workspace, String path) {
+        this.workspace = workspace;
+        this.path = path;
     }
 
-    @Override
-    public Class<?> getType() {
-        return value.getClass();
+    public String getWorkspace() {
+        return workspace;
     }
 
-    @Override
-    public boolean isReadOnly() {
-        return readOnly;
-    }
-
-    @Override
-    public void setReadOnly(boolean newStatus) {
-        readOnly = newStatus;
-    }
-
-    public String getPropertyName() {
-        return this.propertyName;
-    }
-
-    @Override
-    public String toString() {
-        Object value = getValue();
-        return value != null ? value.toString() : "";
+    public String getPath() {
+        return path;
     }
 }

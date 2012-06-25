@@ -33,34 +33,25 @@
  */
 package info.magnolia.ui.admincentral.tree.view;
 
-import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.ui.admincentral.column.Column;
 import info.magnolia.ui.admincentral.column.EditHandler;
 import info.magnolia.ui.admincentral.tree.container.HierarchicalJcrContainer;
 import info.magnolia.ui.admincentral.tree.model.TreeModel;
-import info.magnolia.ui.model.action.ActionDefinition;
-import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.model.menu.definition.MenuItemDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.jcr.Item;
-import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.event.Action;
+import com.vaadin.data.Item;
 import com.vaadin.event.Transferable;
 import com.vaadin.event.dd.DragAndDropEvent;
 import com.vaadin.event.dd.DropHandler;
 import com.vaadin.event.dd.acceptcriteria.AcceptAll;
 import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
-import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.gwt.client.ui.dd.VerticalDropLocation;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.TreeTable;
@@ -70,18 +61,15 @@ import com.vaadin.ui.TreeTable;
  *
  */
 @SuppressWarnings("serial")
-public class JcrBrowser extends TreeTable {
+public class MagnoliaTreeTable extends TreeTable {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
-
-    private WorkbenchDefinition workbenchDefinition;
 
     private HierarchicalJcrContainer container;
 
     private final TreeModel treeModel;
 
-    public JcrBrowser(WorkbenchDefinition workbenchDefinition, TreeModel treeModel) {
-        this.workbenchDefinition = workbenchDefinition;
+    public MagnoliaTreeTable(WorkbenchDefinition workbenchDefinition, TreeModel treeModel) {
         this.treeModel = treeModel;
 
         setSizeUndefined();
@@ -107,114 +95,10 @@ public class JcrBrowser extends TreeTable {
         }
 
         setContainerDataSource(container);
-        addContextMenu();
 
         new EditHandler(this);
     }
 
-    public String getPathInTree(Item item) {
-        try {
-            return treeModel.getPathInTree(item);
-        } catch (RepositoryException e) {
-            throw new RuntimeRepositoryException(e);
-        }
-    }
-
-    // TODO this should not be needed, JcrBrowser should have event mechanisms that expose the JCR item not the ContainerItemId
-    public Item getJcrItem(String itemId) {
-        try {
-            return container.getJcrItem(itemId);
-        } catch (RepositoryException e) {
-            throw new RuntimeRepositoryException(e);
-        }
-    }
-
-    private  class JcrBrowserAction extends Action {
-        private ActionDefinition actionDefinition;
-
-        private JcrBrowserAction(MenuItemDefinition menuItemDefinition) {
-            super(menuItemDefinition.getLabel());
-            // TODO: PERFORMANCE: use ExternalResourceCache
-            // TODO: CODE: impl hashcode & equals
-            super.setIcon(new ExternalResource(MgnlContext.getContextPath() + menuItemDefinition.getIcon()) {
-                @Override
-                public int hashCode() {
-                    return getURL().hashCode();
-                }
-                @Override
-                public boolean equals(Object obj) {
-                    if (this == obj) {
-                        return true;
-                    }
-                    if (obj == null || !(obj instanceof ExternalResource)) {
-                        return false;
-                    }
-                    ExternalResource that = (ExternalResource) obj;
-                    return getURL().equals(that.getURL());
-                }
-            });
-            actionDefinition = menuItemDefinition.getActionDefinition();
-        }
-
-        public void handleAction(String itemId) {
-            if(itemId == null) {
-                //assume jcrBrowser contains no data do we need to start from root.
-                itemId = "/";
-            }
-            try {
-                try {
-                    treeModel.execute(actionDefinition, container.getJcrItem(itemId));
-
-                    // Refresh the tree
-                    container.fireItemSetChange();
-                }
-                catch (RepositoryException e) {
-                    log.error("Can't access content.", e);
-                }
-            }
-            catch (ActionExecutionException e) {
-                log.error("Can't execute action.", e);
-            }
-        }
-
-        @Override
-        public int hashCode() {
-            return (getIcon() == null ? 7 : getIcon().hashCode()) + (getCaption() == null ? 13 : getCaption().hashCode()) + (actionDefinition == null ? 17 : actionDefinition.hashCode());
-        }
-
-        @Override
-        public boolean equals(Object arg0) {
-            if (arg0 == this) {
-                return true;
-            }
-            if (arg0 == null || !(arg0 instanceof JcrBrowserAction)) {
-                return false;
-            }
-            JcrBrowserAction that = (JcrBrowserAction) arg0;
-            return (getIcon() == null ? that.getIcon() == null : getIcon().equals(that.getIcon()))
-                && (getCaption() == null ? that.getCaption() == null : getCaption().equals(that.getCaption()))
-                && (actionDefinition == null ? that.actionDefinition == null : actionDefinition.equals(that.actionDefinition));
-        }
-    }
-
-    private void addContextMenu() {
-        addActionHandler(new Action.Handler() {
-            @Override
-            public Action[] getActions(Object target, Object sender) {
-                // FIXME make that item type, security dependent
-                List<JcrBrowserAction> actions = new ArrayList<JcrBrowserAction>();
-                for (MenuItemDefinition menuItemDefinition : workbenchDefinition.getActions()) {
-                    actions.add(new JcrBrowserAction(menuItemDefinition));
-                }
-
-                return actions.toArray(new Action[actions.size()]);
-            }
-            @Override
-            public void handleAction(Action action, Object sender, Object target) {
-              ((JcrBrowserAction) action).handleAction((String) target);
-            }
-        });
-    }
 
     /**
      * Add Drag and Drop functionality to the provided TreeTable.
@@ -231,7 +115,7 @@ public class JcrBrowser extends TreeTable {
                     Transferable t = event.getTransferable();
 
                     // Make sure the drag source is the same tree
-                    if (t.getSourceComponent() != JcrBrowser.this) {
+                    if (t.getSourceComponent() != MagnoliaTreeTable.this) {
                         return;
                     }
 
@@ -247,9 +131,9 @@ public class JcrBrowser extends TreeTable {
                     HierarchicalJcrContainer containerWrapper = (HierarchicalJcrContainer) getContainerDataSource();
                     // Drop right on an item -> make it a child -
                     if (location == VerticalDropLocation.MIDDLE) {
-                        Item sourceItem = container.getJcrItem((String) sourceItemId);
-                        Item targetItem = container.getJcrItem((String) targetItemId);
-                        if (treeModel.moveItem(sourceItem, targetItem)) {
+                        JcrItemAdapter sourceItem = (JcrItemAdapter)container.getItem((String) sourceItemId);
+                        JcrItemAdapter targetItem = (JcrItemAdapter)container.getItem((String) targetItemId);
+                        if (treeModel.moveItem(sourceItem.getJcrItem(), targetItem.getJcrItem())) {
                             setParent(sourceItemId, targetItemId);
                         }
                     }
@@ -258,9 +142,9 @@ public class JcrBrowser extends TreeTable {
                         Object parentId = containerWrapper.getParent(targetItemId);
                         if (parentId != null) {
                             log.debug("Parent:" + containerWrapper.getItem(parentId));
-                            Item sourceItem = container.getJcrItem((String) sourceItemId);
-                            Item targetItem = container.getJcrItem((String) targetItemId);
-                            if (treeModel.moveItemBefore(sourceItem, targetItem)) {
+                            JcrItemAdapter sourceItem = (JcrItemAdapter)container.getItem((String) sourceItemId);
+                            JcrItemAdapter targetItem = (JcrItemAdapter)container.getItem((String) targetItemId);
+                            if (treeModel.moveItemBefore(sourceItem.getJcrItem(), targetItem.getJcrItem())) {
                                 setParent(sourceItemId, targetItemId);
                             }
                         }
@@ -270,9 +154,9 @@ public class JcrBrowser extends TreeTable {
                     else if (location == VerticalDropLocation.BOTTOM) {
                         Object parentId = containerWrapper.getParent(targetItemId);
                         if (parentId != null) {
-                            Item sourceItem = container.getJcrItem((String) sourceItemId);
-                            Item targetItem = container.getJcrItem((String) targetItemId);
-                            if (treeModel.moveItemAfter(sourceItem, targetItem)) {
+                            JcrItemAdapter sourceItem = (JcrItemAdapter)container.getItem((String) sourceItemId);
+                            JcrItemAdapter targetItem = (JcrItemAdapter)container.getItem((String) targetItemId);
+                            if (treeModel.moveItemAfter(sourceItem.getJcrItem(), targetItem.getJcrItem())) {
                                 setParent(sourceItemId, targetItemId);
                             }
                         }
@@ -292,10 +176,10 @@ public class JcrBrowser extends TreeTable {
         });
     }
 
-    public void select(String path) {
+    public void select(String itemId) {
 
-        if(!container.isRoot(path)){
-            String parent = container.getParent(path);
+        if(!container.isRoot(itemId)){
+            String parent = container.getParent(itemId);
             while (!container.isRoot(parent)) {
                 setCollapsed(parent, false);
                 parent = container.getParent(parent);
@@ -305,7 +189,7 @@ public class JcrBrowser extends TreeTable {
         }
 
         // Select the item
-        select((Object)path);
+        select((Object)itemId);
 
         // Make sure its in view
         // TODO commented out to avoid flicker on selection via place controller while this should definitely be called when navigated by the history
@@ -316,15 +200,14 @@ public class JcrBrowser extends TreeTable {
         container.fireItemSetChange();
     }
 
-    public void updateNode(final Node node) {
-        try {
-            final String id = node.getPath();
-            if (container.containsId(id)) {
-                container.fireItemSetChange();
-            }
-        } catch (RepositoryException e) {
-            throw new RuntimeException("Node search in tree table failed.");
+    public void updateItem(final Item item) {
+        String itemId = ((JcrItemAdapter)item).getItemId();
+        if (container.containsId(itemId)) {
+            container.fireItemSetChange();
+        } else {
+            log.warn("No item found for Id: "+itemId);
         }
+
     }
 
 //    @Override

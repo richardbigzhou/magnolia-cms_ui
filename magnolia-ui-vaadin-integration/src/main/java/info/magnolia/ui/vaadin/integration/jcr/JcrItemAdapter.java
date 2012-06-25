@@ -31,40 +31,30 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts;
+package info.magnolia.ui.vaadin.integration.jcr;
 
-import javax.inject.Inject;
+import javax.jcr.RepositoryException;
 
-import com.vaadin.ui.Component;
-
-import info.magnolia.ui.admincentral.workbench.ContentWorkbench;
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
+import com.vaadin.data.Item;
 
 
 /**
- * View implementation for the Contacts app.
- *
- * @version $Id$
+ * Define common operation for Jcr Adapter.
  */
-@SuppressWarnings("serial")
-public class ContactsViewImpl implements ContactsView, IsVaadinComponent {
+public interface JcrItemAdapter extends Item {
+   /**
+    * The special property {@value #JCR_NAME} is reserved and can only be used to set the new node name. If not found, the default name (that is the relative path)
+    * of the underlying transient node is used (which is likely to be something like <code>untitled</code>).
+    */
+    static final String JCR_NAME = "jcrName";
 
-    private String jcrWorkspaceName = "contacts";
-    private final ContentWorkbench workbench;
+    boolean isNode();
 
-    @Inject
-    public ContactsViewImpl(final ContentWorkbench workbench) {
-        this.workbench = workbench;
-        workbench.initWorkbench(jcrWorkspaceName);
-    }
+    String getNodeIdentifier();
 
-    @Override
-    public String getCaption() {
-        return "Contacts";
-    }
+    String getItemId();
 
-    @Override
-    public Component asVaadinComponent() {
-        return workbench.asVaadinComponent();
-    }
+    javax.jcr.Item getJcrItem() throws RepositoryException;
+
+   void save() throws RepositoryException;
 }

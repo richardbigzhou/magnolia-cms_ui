@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,65 +31,61 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.tree.action;
+package info.magnolia.ui.admincentral.dialog.action;
 
 import info.magnolia.cms.core.Path;
-import info.magnolia.ui.admincentral.event.ContentChangedEvent;
-import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
 import info.magnolia.ui.model.action.ActionBase;
-import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.vaadin.integration.jcr.JcrTransientNodeAdapter;
+import info.magnolia.ui.widget.dialog.DialogView.Presenter;
 
 import javax.jcr.AccessDeniedException;
 import javax.jcr.Item;
 import javax.jcr.ItemNotFoundException;
+import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-
 
 /**
- * A repository operation action which saves the changes and informs the event bus.
- *
+ * Opens a dialog for creating a new node in a tree.
  * @version $Id$
- * @param <D> The {@link ActionDefinition} used by the action.
  */
-public abstract class RepositoryOperationAction<D extends ActionDefinition> extends ActionBase<D> {
+public class CreateDialogAction extends ActionBase<CreateDialogActionDefinition> {
 
-    private final Item item;
+    private DialogPresenterFactory dialogPresenterFactory;
 
-    private final EventBus eventBus;
+    private Node parent;
 
-    public RepositoryOperationAction(D definition, Item item, EventBus eventBus) {
+    public CreateDialogAction(CreateDialogActionDefinition definition, Node parent, DialogPresenterFactory dialogPresenterFactory) {
         super(definition);
-        this.item = item;
-        this.eventBus = eventBus;
+        this.parent = parent;
+        this.dialogPresenterFactory = dialogPresenterFactory;
     }
 
-    /**
-     * Executes the defined action on the passed in item. When successful, it will fire a {@link ContentChangedEvent}.
-     */
     @Override
     public void execute() throws ActionExecutionException {
+
+        Presenter dialogPresenter = dialogPresenterFactory.createDialog(getDefinition().getDialogName());
+        String name;
+        Node transientNode;
         try {
-            Session session = item.getSession();
-            final String path = item.getPath();
-            onExecute(item);
-            session.save();
-            eventBus.fireEvent(new ContentChangedEvent(session.getWorkspace().getName(), path));
+            name = getUniqueNewItemName(parent);
+            transientNode = parent.addNode(name, getDefinition().getNodeType());
+            dialogPresenter.editItem(new JcrTransientNodeAdapter(transientNode));
+        } catch (AccessDeniedException e) {
+            throw new ActionExecutionException(e);
+        } catch (ItemNotFoundException e) {
+            throw new ActionExecutionException(e);
+        } catch (RepositoryException e) {
+            throw new ActionExecutionException(e);
         }
-        catch (RepositoryException e) {
-            throw new ActionExecutionException("Can't execute repository operation.\n" + e.getMessage(), e);
-        }
+
     }
 
-    protected abstract void onExecute(Item item) throws RepositoryException;
-
-    protected String getUniqueNewItemName(final Item item) throws RepositoryException, ItemNotFoundException, AccessDeniedException {
+    private String getUniqueNewItemName(final Item item) throws RepositoryException, ItemNotFoundException, AccessDeniedException {
         if(item == null) {
             throw new IllegalArgumentException("Item cannot be null.");
         }
-        String parentPath = "/".equals(item.getPath()) ? item.getPath(): item.getParent().getPath();
-        return Path.getUniqueLabel(item.getSession(), parentPath, "untitled");
+        return Path.getUniqueLabel(item.getSession(), item.getPath(), "untitled");
     }
-
 }

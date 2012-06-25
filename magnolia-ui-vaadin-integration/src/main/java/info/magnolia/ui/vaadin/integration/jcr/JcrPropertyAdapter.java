@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.intergration.jcr;
+package info.magnolia.ui.vaadin.integration.jcr;
 
 import info.magnolia.jcr.RuntimeRepositoryException;
 
@@ -50,14 +50,32 @@ import com.vaadin.data.Property;
  */
 
 public class JcrPropertyAdapter extends JcrAbstractAdapter {
-
+    //Init
     private static final Logger log = LoggerFactory.getLogger(JcrPropertyAdapter.class);
-
+    private String jcrPropertyName;
 
     public JcrPropertyAdapter(javax.jcr.Property jcrProperty) {
         super(jcrProperty);
+        setPropertyName(jcrProperty);
     }
 
+    /**
+     * Set PropertyName.
+     */
+    private void setPropertyName(javax.jcr.Property  jcrProperty) {
+        String propertyIdentifier = null;
+        try {
+            propertyIdentifier =jcrProperty.getName();
+        } catch (RepositoryException e) {
+            log.error("Couldn't retrieve identifier of jcr property", e);
+            propertyIdentifier = UN_IDENTIFIED;
+        }
+        this.jcrPropertyName = propertyIdentifier;
+    }
+
+    public String getPropertyName() {
+        return jcrPropertyName;
+    }
 
     public javax.jcr.Property getProperty() throws RepositoryException {
         return (javax.jcr.Property) getJcrItem();

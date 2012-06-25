@@ -50,12 +50,12 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
-import javax.jcr.Node;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.data.Item;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -67,16 +67,16 @@ import com.vaadin.ui.VerticalLayout;
 
 
 /**
- * Implementation of {@link WorkbenchView}.
+ * Implementation of {@link ContentWorkbenchView}.
  * @version $Id$
  */
 @SuppressWarnings("serial")
-public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView {
+public class ContentWorkbenchViewImpl extends CustomComponent implements ContentWorkbenchView {
 
-    private static final Logger log = LoggerFactory.getLogger(WorkbenchViewImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(ContentWorkbenchViewImpl.class);
 
     private final JcrViewBuilderProvider jcrViewBuilderProvider;
-    
+
     private final VerticalLayout root = new VerticalLayout();
 
     private final HorizontalLayout split = new HorizontalLayout();
@@ -84,27 +84,23 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
     private final HorizontalLayout toolbar = new HorizontalLayout();
 
     private final Map<ViewType, JcrView> jcrViews = new EnumMap<ViewType, JcrView>(ViewType.class);
-    
-    private ViewType currentViewType = ViewType.TREE; 
-            
-    private Presenter presenter;
-    
-    protected String path = "/";
 
-    private JcrView jcrView;
+    private ViewType currentViewType = ViewType.TREE;
+
+    private Presenter presenter;
 
     private final Map<String, ActionbarItemDefinition> actions = new LinkedHashMap<String, ActionbarItemDefinition>();
 
     private final JcrView.Presenter jcrPresenter = new JcrView.Presenter() {
 
         @Override
-        public void onItemSelection(javax.jcr.Item item) {
+        public void onItemSelection(Item item) {
             presenter.onItemSelected(item);
         };
     };
 
     @Inject
-    public WorkbenchViewImpl(final JcrViewBuilderProvider jcrViewBuilderProvider) {
+    public ContentWorkbenchViewImpl(final JcrViewBuilderProvider jcrViewBuilderProvider) {
         super();
         this.jcrViewBuilderProvider = jcrViewBuilderProvider;
         setSizeFull();
@@ -115,19 +111,17 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
 
     @Override
     public void initWorkbench(final WorkbenchDefinition workbenchDefinition) {
-        
+        if(workbenchDefinition == null) {
+            throw new IllegalArgumentException("Trying to init a workbench but got null definition.");
+        }
+        log.debug("Initializing workbench {}...", workbenchDefinition.getName());
+
         for (final ViewType type : ViewType.values() ) {
             final JcrView jcrView = jcrViewBuilderProvider.getBuilder().build(workbenchDefinition, type);
             jcrView.setPresenter(jcrPresenter);
             jcrView.select(StringUtils.defaultIfEmpty(workbenchDefinition.getPath(), "/"));
             jcrViews.put(type, jcrView);
         }
-        
-        if(workbenchDefinition == null) {
-            throw new IllegalArgumentException("Trying to init a workbench but got null definition.");
-        }
-
-        log.debug("Initializing workbench {}...", workbenchDefinition.getName());
 
         if(StringUtils.isBlank(workbenchDefinition.getWorkspace())) {
             throw new IllegalStateException(workbenchDefinition.getName() + " workbench definition must specify a workspace to connect to. Please, check your configuration.");
@@ -219,11 +213,6 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
     }
 
     @Override
-    public void refreshNode(Node node) {
-        jcrViews.get(ViewType.TREE).refreshNode(node);
-    }
-
-    @Override
     public void setGridType(ViewType type) {
         split.removeComponent(jcrViews.get(currentViewType).asVaadinComponent());
         final Component c = jcrViews.get(type).asVaadinComponent();
@@ -231,11 +220,17 @@ public class WorkbenchViewImpl extends CustomComponent implements WorkbenchView 
         split.addComponentAsFirst(c);
         split.setExpandRatio(c, 1f);
         this.currentViewType = type;
+        refresh();
     }
-    
+
+    @Override
+    public void refreshItem(Item item) {
+        jcrViews.get(currentViewType).refreshItem(item);
+    }
+
     @Override
     public void refresh() {
-        jcrView.refresh();
+        jcrViews.get(currentViewType).refresh();
     }
 
 }

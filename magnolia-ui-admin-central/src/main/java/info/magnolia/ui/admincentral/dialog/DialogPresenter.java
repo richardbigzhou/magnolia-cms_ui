@@ -53,21 +53,20 @@ import com.vaadin.data.Item;
 
 /**
  * DialogPresenter.
- *
- * @author ejervidalo
+ * @version $Id$
  */
 public class DialogPresenter implements DialogView.Presenter {
 
-    private DialogBuilder dialogBuilder;
-    private DialogDefinition dialogDefinition;
-    private MagnoliaShell shell;
-    private EventBus eventBus;
-    private DialogView view;
-    private DialogActionFactory actionFactory;
-    private Map<String, ActionDefinition> actionMap = new HashMap<String, ActionDefinition>();
+    private final DialogBuilder dialogBuilder;
+    private final DialogDefinition dialogDefinition;
+    private final MagnoliaShell shell;
+    private final EventBus eventBus;
+    private final DialogView view;
+    private final DialogActionFactory actionFactory;
+    private final Map<String, ActionDefinition> actionMap = new HashMap<String, ActionDefinition>();
     private Item item;
 
-    public DialogPresenter(DialogView view, DialogBuilder dialogBuilder, DialogDefinition dialogDefinition, MagnoliaShell shell, final EventBus eventBus, final DialogActionFactory actionFactory) {
+    public DialogPresenter(final DialogView view, final DialogBuilder dialogBuilder, final DialogDefinition dialogDefinition, final MagnoliaShell shell, final EventBus eventBus, final DialogActionFactory actionFactory) {
         this.view = view;
         this.dialogBuilder = dialogBuilder;
         this.dialogDefinition = dialogDefinition;
@@ -81,7 +80,7 @@ public class DialogPresenter implements DialogView.Presenter {
     }
 
     @Override
-    public void editItem(Item item) {
+    public void editItem(final Item item) {
         this.item = item;
         dialogBuilder.build(dialogDefinition, item, view);
         shell.openDialog((Dialog)view.asVaadinComponent());
@@ -94,20 +93,20 @@ public class DialogPresenter implements DialogView.Presenter {
     }
 
     @Override
-    public void executeAction(String actionName) {
+    public void executeAction(final String actionName) {
 
-        ActionDefinition actionDefinition = actionMap.get(actionName);
-        Action action = actionFactory.createAction(actionDefinition, this);
+        final ActionDefinition actionDefinition = actionMap.get(actionName);
+        final Action action = actionFactory.createAction(actionDefinition, this);
         try {
             action.execute();
-        } catch (ActionExecutionException e) {
+        } catch (final ActionExecutionException e) {
             e.printStackTrace();
         }
     }
 
-    private void initActions(DialogDefinition dialogDefinition) {
+    private void initActions(final DialogDefinition dialogDefinition) {
 
-        for (DialogActionDefinition action : dialogDefinition.getActions()) {
+        for (final DialogActionDefinition action : dialogDefinition.getActions()) {
             actionMap.put(action.getName(), action.getActionDefinition());
         }
     }
@@ -131,4 +130,5 @@ public class DialogPresenter implements DialogView.Presenter {
     public EventBus getEventBus() {
         return eventBus;
     }
+
 }

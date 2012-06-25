@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.intergration.jcr;
+package info.magnolia.ui.vaadin.integration.jcr;
 
 import info.magnolia.context.MgnlContext;
 
@@ -53,23 +53,38 @@ public abstract class JcrAbstractAdapter implements JcrItemAdapter {
     private static final Logger log = LoggerFactory.getLogger(JcrAbstractAdapter.class);
 
     static final String UN_IDENTIFIED = "?";
-
+    //Common variable
     private boolean isNode;
-
-    private  String jcrPropertyName;
     private  String jcrNodeIdentifier;
     private  String jcrWorkspace;
     private  String jcrPath;
 
     public JcrAbstractAdapter (Item jcrItem) {
-        setPath(jcrItem);
-        if(jcrItem.isNode()) {
-            isNode = true;
-            initNode((Node) jcrItem);
-        } else {
-            isNode = false;
-            initProperty((Property) jcrItem);
+        setCommonAttributes(jcrItem);
+    }
+
+    /**
+     * Init common Item attributes.
+     */
+    private void setCommonAttributes(Item jcrItem) {
+        String nodeIdentifier = null;
+        String workspace = null;
+        String path = null;
+        try {
+            isNode = jcrItem.isNode();
+            Node node = isNode ? ((Node)jcrItem) : ((Property)jcrItem).getParent();
+            nodeIdentifier = node.getIdentifier();
+            workspace = node.getSession().getWorkspace().getName();
+            path = jcrItem.getPath();
+        } catch (RepositoryException e) {
+            log.error("Couldn't retrieve identifier of jcr property", e);
+            path = UN_IDENTIFIED;
+            workspace = UN_IDENTIFIED;
+            nodeIdentifier = UN_IDENTIFIED;
         }
+        this.jcrPath = path;
+        this.jcrNodeIdentifier = nodeIdentifier;
+        this.jcrWorkspace = workspace;
     }
 
     @Override
@@ -83,11 +98,6 @@ public abstract class JcrAbstractAdapter implements JcrItemAdapter {
     }
 
     @Override
-    public String getPropertyName() {
-        return jcrPropertyName;
-    }
-
-    @Override
     public javax.jcr.Item getJcrItem() throws RepositoryException{
         return MgnlContext.getJCRSession(jcrWorkspace).getItem(jcrPath);
     }
@@ -98,7 +108,7 @@ public abstract class JcrAbstractAdapter implements JcrItemAdapter {
     }
 
     @Override
-    public String getPath() {
+    public String getItemId() {
         return this.jcrPath;
     }
 
@@ -106,46 +116,4 @@ public abstract class JcrAbstractAdapter implements JcrItemAdapter {
         return this.jcrWorkspace;
     }
 
-    private void initNode(Node jcrNode) {
-        String identifier = null;
-        String workspace = null;
-        try {
-            identifier = jcrNode.getIdentifier();
-            workspace = jcrNode.getSession().getWorkspace().getName();
-        } catch (RepositoryException e) {
-            log.error("Couldn't retrieve identifier of jcr node", e);
-            identifier = UN_IDENTIFIED;
-            workspace = UN_IDENTIFIED;
-        }
-        this.jcrNodeIdentifier = identifier;
-        this.jcrWorkspace = workspace;
-    }
-
-    private void initProperty(Property jcrProperty) {
-        String propertyIdentifier = null;
-        String nodeIdentifier = null;
-        String workspace = null;
-        try {
-            nodeIdentifier = jcrProperty.getParent().getIdentifier();
-            workspace = jcrProperty.getParent().getSession().getWorkspace().getName();
-            propertyIdentifier =jcrProperty.getName();
-        } catch (RepositoryException e) {
-            log.error("Couldn't retrieve identifier of jcr property", e);
-            propertyIdentifier = UN_IDENTIFIED;
-            workspace = UN_IDENTIFIED;
-            nodeIdentifier = UN_IDENTIFIED;
-        }
-        this.jcrNodeIdentifier = nodeIdentifier;
-        this.jcrPropertyName = propertyIdentifier;
-        this.jcrWorkspace = workspace;
-    }
-
-    private void setPath(Item item) {
-        this.jcrPath = null;
-        try {
-            this.jcrPath = item.getPath();
-        }catch (RepositoryException re) {
-            log.error("",re);
-        }
-    }
 }

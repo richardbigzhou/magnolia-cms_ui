@@ -35,33 +35,44 @@ package info.magnolia.ui.admincentral.dialog.builder;
 
 import info.magnolia.ui.model.dialog.definition.FieldDefinition;
 
+import com.vaadin.data.Validator;
+import com.vaadin.data.validator.EmailValidator;
+import com.vaadin.data.validator.RegexpValidator;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.TextField;
 
 /**
- * FieldFactory.
- * FieldTypeDef provider
- *
- * @author ejervidalo
+ * Build fields from provided {@link info.magnolia.ui.model.dialog.definition.FieldDefinition}s.
  */
 public class FieldBuilder {
 
+    static final String TEXTFIELD_STYLE_NAME = "textfield";
+
     /**
-     * @param fieldDefinition
-     * @return
+     * @return field (currently TextField or Checkbox) build from provided
+     *         definition.
      */
     public static Field build(FieldDefinition fieldDefinition) {
         Field input = null;
-        if (fieldDefinition.getType().equals("text")) {
+        if (FieldDefinition.TEXT_FIELD_TYPE.equals(fieldDefinition.getType())) {
             input = new TextField();
             input.setCaption(fieldDefinition.getLabel());
-            input.setStyleName("textfield");
 
-        } else if (fieldDefinition.equals("checkbox")) {
+            final String fieldName = fieldDefinition.getName();
+            Validator validator = null;
+            if ("email".equals(fieldName)) {
+                validator = new EmailValidator("{0} is not a valid email-adress! (to be i18n'ed");
+            } else {
+                validator = new RegexpValidator("^[a-zA-Z]+$", "One or more characters! (to be i18n'ed)");
+            }
+            input.addValidator(validator);
+
+        } else if (FieldDefinition.CHECKBOX_FIELD_TYPE.equals(fieldDefinition.getType())) {
             input = new CheckBox(fieldDefinition.getLabel(), true);
-            input.setStyleName("textfield");
-
+        }
+        if (input != null) {
+            input.setStyleName(TEXTFIELD_STYLE_NAME);
         }
         return input;
     }

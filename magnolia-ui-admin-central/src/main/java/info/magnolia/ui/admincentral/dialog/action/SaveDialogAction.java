@@ -33,11 +33,18 @@
  */
 package info.magnolia.ui.admincentral.dialog.action;
 
-import info.magnolia.ui.admincentral.workbench.event.ContentChangedEvent;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import info.magnolia.jcr.util.MetaDataUtil;
+import info.magnolia.ui.admincentral.event.ContentChangedEvent;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.vaadin.intergration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.widget.dialog.DialogView;
 import info.magnolia.ui.widget.dialog.DialogView.Presenter;
 
@@ -45,11 +52,10 @@ import com.vaadin.data.Item;
 
 /**
  * SaveDialogAction.
- *
- * @author ejervidalo
+ * @version $Id$
  */
 public class SaveDialogAction extends ActionBase<SaveDialogActionDefinition> {
-
+    private static final Logger log = LoggerFactory.getLogger(SaveDialogAction.class);
     private Item item;
     private EventBus eventBus;
     private Presenter presenter;
@@ -64,11 +70,19 @@ public class SaveDialogAction extends ActionBase<SaveDialogActionDefinition> {
 
     @Override
     public void execute() throws ActionExecutionException {
-        JcrNodeAdapter itemChanged = (JcrNodeAdapter) item;
+        final JcrNodeAdapter itemChanged = (JcrNodeAdapter) item;
         try {
-            itemChanged.getNode().getSession().save();
-        } catch (Exception e) {
-            e.printStackTrace();
+            final Node node = itemChanged.getNode();
+            if(node.isNew()) {
+
+                log.debug("Creating new node at {}", node.getPath());
+            } else {
+                MetaDataUtil.updateMetaData(node);
+                log.debug("Updating node at {}", node.getPath());
+            }
+            node.getSession().save();
+        } catch (final RepositoryException e) {
+            throw new ActionExecutionException(e);
         }
         eventBus.fireEvent(new ContentChangedEvent(itemChanged.getItemProperty("workspace").toString(), itemChanged.getItemProperty("path").toString()));
 

@@ -54,6 +54,7 @@ public class AppFrameView implements View, IsVaadinComponent {
     public AppFrameView() {
         super();
         tabsheet.setSizeFull();
+        tabsheet.addStyleName("app");
     }
 
     public void addTab(ComponentContainer cc, String caption) {

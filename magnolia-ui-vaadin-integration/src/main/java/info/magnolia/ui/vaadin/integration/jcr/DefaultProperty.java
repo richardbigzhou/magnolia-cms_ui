@@ -31,52 +31,62 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.workbench;
+package info.magnolia.ui.vaadin.integration.jcr;
 
-import info.magnolia.ui.admincentral.jcr.view.JcrView;
-import info.magnolia.ui.model.action.ActionDefinition;
-import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
-
-import javax.jcr.Item;
-import javax.jcr.Node;
-
-import com.vaadin.ui.ComponentContainer;
-
+import com.vaadin.data.util.AbstractProperty;
 
 /**
- * Implementors of this interface are responsible for building a workbench and handling the UI actions associated with it.
- * @version $Id$
+ * Basic implementation of {@link com.vaadin.data.Property}.
  *
+ * TODO dlipp - this impl is not depending on jcr, so it could/should be located in a different package.
  */
-public interface WorkbenchView extends ComponentContainer {
+public class DefaultProperty extends AbstractProperty {
 
-    void setPresenter(final Presenter presenter);
+    private Object value;
+    private boolean readOnly;
+    private String propertyName;
 
-    void initWorkbench(final WorkbenchDefinition definintion);
-
-    void setGridType(final JcrView.ViewType type);
-    
-    /**
-     * Causes a view refresh only if the current node exists in the repository.
-     */
-    void refreshNode(final Node node);
-    /**
-     * TODO review the for two methods to perform the view refresh. Had to add this one to refresh the view
-     * in case of item deletion.
-     * Refreshes the view.
-     */
-    void refresh();
-
-    /**
-     * Presenter.
-     * @version $Id$
-     */
-    public interface Presenter {
-
-        void onItemSelected(final Item item);
-
-        void onActionbarItemClicked(final ActionDefinition actionDefinition);
-
+    public DefaultProperty(String propertyName, Object value) {
+        this.propertyName = propertyName;
+        this.value = value;
     }
 
+    @Override
+    public Object getValue() {
+        return value;
+    }
+
+    @Override
+    public void setValue(Object newValue) throws ReadOnlyException, ConversionException {
+        if (readOnly) {
+            throw new ReadOnlyException("Can't setValue for readonly-Property");
+        }
+        value = newValue;
+        fireValueChange();
+    }
+
+    @Override
+    public Class<?> getType() {
+        return value.getClass();
+    }
+
+    @Override
+    public boolean isReadOnly() {
+        return readOnly;
+    }
+
+    @Override
+    public void setReadOnly(boolean newStatus) {
+        readOnly = newStatus;
+    }
+
+    public String getPropertyName() {
+        return this.propertyName;
+    }
+
+    @Override
+    public String toString() {
+        Object value = getValue();
+        return value != null ? value.toString() : "";
+    }
 }

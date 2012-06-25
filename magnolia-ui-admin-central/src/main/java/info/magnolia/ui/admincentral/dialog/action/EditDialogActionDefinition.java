@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,27 +31,23 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.intergration.jcr;
+package info.magnolia.ui.admincentral.dialog.action;
 
-import javax.jcr.RepositoryException;
-
-import com.vaadin.data.Item;
+import info.magnolia.ui.model.action.ActionDefinition;
 
 
 /**
- * Define common operation for Jcr Adapter.
+ * Opens a dialog to edit an {@link javax.jcr.Node}.
  */
-public interface JcrItemAdapter extends Item{
+public class EditDialogActionDefinition implements ActionDefinition {
 
-    public boolean isNode();
+    private String dialogName;
 
-    public String getNodeIdentifier();
+    public String getDialogName() {
+        return dialogName;
+    }
 
-    public String getPropertyName();
-
-    public String getPath();
-
-    public javax.jcr.Item getJcrItem() throws RepositoryException;
-
-    public void save() throws RepositoryException;
+    public void setDialogName(String dialogName) {
+        this.dialogName = dialogName;
+    }
 }

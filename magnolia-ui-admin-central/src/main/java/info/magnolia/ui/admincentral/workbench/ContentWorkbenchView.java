@@ -31,46 +31,50 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.workbench.event;
+package info.magnolia.ui.admincentral.workbench;
+
+import info.magnolia.ui.admincentral.jcr.view.JcrView;
+import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 
 
-import info.magnolia.ui.framework.event.Event;
-import info.magnolia.ui.framework.event.EventHandler;
+import com.vaadin.data.Item;
+import com.vaadin.ui.ComponentContainer;
 
 
 /**
- * This event is fired when an item is selected (ie a row in the data grid within the workbench representing either a {@link javax.jcr.Node} or a {@link javax.jcr.Property}).
+ * Implementors of this interface are responsible for building a workbench and handling the UI actions associated with it.
  * @version $Id$
  *
  */
-public class ItemSelectedEvent implements Event<ItemSelectedEvent.Handler> {
+public interface ContentWorkbenchView extends ComponentContainer {
+
+    void setPresenter(final Presenter presenter);
+
+    void initWorkbench(final WorkbenchDefinition definintion);
+
+    void setGridType(final JcrView.ViewType type);
+    /**
+     * Causes a view refresh only if the current node exists in the repository.
+     */
+    void refreshItem(final Item item);
+    /**
+     * TODO review the for two methods to perform the view refresh. Had to add this one to refresh the view
+     * in case of item deletion.
+     * Refreshes the view.
+     */
+    void refresh();
 
     /**
-     * Handles {@link ItemSelectedEvent} events.
+     * Presenter.
+     * @version $Id$
      */
-    public static interface Handler extends EventHandler {
-        void onItemSelected(ItemSelectedEvent event);
+    public interface Presenter {
+
+        void onItemSelected(final Item item);
+
+        void onActionbarItemClicked(final ActionDefinition actionDefinition);
+
     }
 
-    private String workspace;
-
-    private String path;
-
-    @Override
-    public void dispatch(Handler handler) {
-        handler.onItemSelected(this);
-    }
-
-    public ItemSelectedEvent(String workspace, String path) {
-        this.workspace = workspace;
-        this.path = path;
-    }
-
-    public String getWorkspace() {
-        return workspace;
-    }
-
-    public String getPath() {
-        return path;
-    }
 }

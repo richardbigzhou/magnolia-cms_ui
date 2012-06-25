@@ -37,22 +37,21 @@ import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
+import java.util.List;
+
 import com.vaadin.data.Item;
-import com.vaadin.data.Property;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.Field;
 
 /**
  * DialogView.
- *
- * @author ejervidalo
+ * @version $Id$
  */
 public interface DialogView extends IsVaadinComponent {
 
     /**
      * DialogView.Presenter.
      *
-     * @author ejervidalo
      */
     interface Presenter {
 
@@ -74,12 +73,14 @@ public interface DialogView extends IsVaadinComponent {
 
     void setItemDataSource(Item item);
 
-    void addField(Property itemProperty, Field input);
-
     void addTab(ComponentContainer inputFields, String tabName);
 
     void setPresenter(Presenter presenter);
 
     void addAction(String actionName, String actionLabel);
+
+    List<Field> getFields();
+
+    void addField(Field field);
 
 }

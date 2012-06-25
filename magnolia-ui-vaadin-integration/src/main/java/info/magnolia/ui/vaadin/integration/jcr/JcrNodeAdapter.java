@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.intergration.jcr;
+package info.magnolia.ui.vaadin.integration.jcr;
 
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.PropertyUtil;
@@ -53,22 +53,49 @@ import com.vaadin.data.Property.ValueChangeEvent;
  * Vaadim property has changed.
  */
 public class JcrNodeAdapter extends JcrAbstractAdapter implements  Property.ValueChangeListener {
-
-
+    // Init
     private static final Logger log = LoggerFactory.getLogger(JcrNodeAdapter.class);
+    private String primaryNodeTypeName;
+
 
     public JcrNodeAdapter(Node jcrNode) {
        super(jcrNode);
+       setPrimaryNodeTypeName(jcrNode);
     }
 
+    /**
+     * Set propertyNodeType.
+     */
+    private void setPrimaryNodeTypeName(Node jcrNode) {
+        String primaryNodeTypeName = null;
+        try {
+            primaryNodeTypeName = jcrNode.getPrimaryNodeType().getName();
+        } catch (RepositoryException e) {
+            log.error("Couldn't retrieve identifier of jcr node", e);
+            primaryNodeTypeName = UN_IDENTIFIED;
+        }
+        this.primaryNodeTypeName = primaryNodeTypeName;
+    }
+
+    public String getPrimaryNodeTypeName() {
+        return primaryNodeTypeName;
+    }
+
+    public Node getNode() throws RepositoryException{
+        return (Node) getJcrItem();
+    }
 
     @Override
     public Property getItemProperty(Object id) {
         Object value;
         try {
             //FIXME Temp solution. We should create a JcrItem with properties defined by a FieldDefinition related to the Item.
+
             if(!getNode().hasProperty((String) id)) {
-                value = new String("");
+                value = "";
+                if(JCR_NAME.equals(id)) {
+                    value = getNode().getName();
+                }
             } else {
                 value = PropertyUtil.getProperty(getNode(), (String) id).getString();
             }
@@ -99,7 +126,7 @@ public class JcrNodeAdapter extends JcrAbstractAdapter implements  Property.Valu
                 getNode().setProperty((String) id, (String)property.getValue());
                 return true;
             } else {
-                //FIXME Should throw exception
+                //FIXME ehe Should throw exception
                 log.warn("Property "+id+" already exist.do nothing");
                 return false;
             }
@@ -119,7 +146,7 @@ public class JcrNodeAdapter extends JcrAbstractAdapter implements  Property.Valu
                 getNode().getProperty((String)id).remove();
                 return true;
             } else {
-                //FIXME Should throw exception
+                //FIXME ehe Should throw exception
                 log.warn("Property "+id+" do Not exist. do nothing");
                 return false;
             }
@@ -130,19 +157,18 @@ public class JcrNodeAdapter extends JcrAbstractAdapter implements  Property.Valu
         }
     }
 
-
-
-    public Node getNode() throws RepositoryException{
-        return (Node) getJcrItem();
-    }
-
+    /**
+     * Listener to DefaultProperty value change event.
+     * Get this event when a property has changed, and
+     * propagate this VaadimProperty value change to the corresponding
+     * JCR property.
+     */
     @Override
     public void valueChange(ValueChangeEvent event) {
         Property property = event.getProperty();
         if(property instanceof DefaultProperty) {
             String name = ((DefaultProperty)property).getPropertyName();
             Object value = property.getValue();
-
             try {
                 if(getNode().hasProperty(name)) {
                     log.debug("Update existing propertie: "+name+ " with value: "+value);

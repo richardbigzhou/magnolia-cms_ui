@@ -69,7 +69,7 @@ public class AddNodeAction extends RepositoryOperationAction<AddNodeActionDefini
         postProcessNode(newNode);
     }
 
-    protected void postProcessNode(Node newNode) throws RepositoryException {
+    protected void postProcessNode(Node newNode) {
         MetaData metaData = MetaDataUtil.getMetaData(newNode);
 
         metaData.setAuthorId(MgnlContext.getUser().getName());
