@@ -39,22 +39,21 @@ import com.vaadin.data.Item;
 
 
 /**
- * Define common operation for Jcr Adapter.
+ * Define common operation for Jcr Item Adapter.
  */
 public interface JcrItemAdapter extends Item {
-   /**
-    * The special property {@value #JCR_NAME} is reserved and can only be used to set the new node name. If not found, the default name (that is the relative path)
-    * of the underlying transient node is used (which is likely to be something like <code>untitled</code>).
-    */
-    static final String JCR_NAME = "jcrName";
 
     boolean isNode();
 
     String getNodeIdentifier();
 
+    /**
+     * ItemId is equivalent to jcr.Item.getPath().
+     * This is the Identifier of the Item used as key in the JcrContainer.
+     */
     String getItemId();
 
-    javax.jcr.Item getJcrItem() throws RepositoryException;
+    javax.jcr.Item getJcrItem();
 
-   void save() throws RepositoryException;
+    void save() throws RepositoryException;
 }

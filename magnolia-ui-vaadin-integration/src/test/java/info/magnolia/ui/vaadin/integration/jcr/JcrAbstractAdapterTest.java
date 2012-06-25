@@ -110,6 +110,66 @@ public class JcrAbstractAdapterTest {
     }
 
 
+    @Test
+    public void testGetJcrItem_Node_Existing() throws Exception {
+        // GIVEN
+        String nodeName = "nodeName";
+        Node testNode = session.getRootNode().addNode(nodeName);
+
+        // WHEN
+        AbstractAdapterTest adapter = new AbstractAdapterTest(testNode);
+
+        // THEN
+        assertEquals(true, adapter.getJcrItem() !=null);
+    }
+
+    @Test
+    public void testGetJcrItem_Node_NotExisting() throws Exception {
+        // GIVEN
+        String nodeName = "nodeName";
+        Node testNode = session.getRootNode().addNode(nodeName);
+        testNode.remove();
+        // WHEN
+        AbstractAdapterTest adapter = new AbstractAdapterTest(testNode);
+
+        // THEN
+        assertEquals(true, adapter.getJcrItem() == null);
+    }
+
+    @Test
+    public void testGetJcrItem_Property_Existing() throws Exception {
+        // GIVEN
+        String nodeName = "nodeName";
+        Node testNode = session.getRootNode().addNode(nodeName);
+        String propertyName = "propertyName";
+        String propertyValue = "propertyValue";
+        Property testProperty = testNode.setProperty(propertyName, propertyValue);
+
+        // WHEN
+        AbstractAdapterTest adapter = new AbstractAdapterTest(testProperty);
+
+        // THEN
+        assertEquals(true, adapter.getJcrItem() !=null);
+    }
+
+    @Test
+    public void testGetJcrItem_Property_NotExisting() throws Exception {
+        // GIVEN
+        String nodeName = "nodeName";
+        Node testNode = session.getRootNode().addNode(nodeName);
+        String propertyName = "propertyName";
+        String propertyValue = "propertyValue";
+        Property testProperty = testNode.setProperty(propertyName, propertyValue);
+        testNode.remove();
+
+        // WHEN
+        AbstractAdapterTest adapter = new AbstractAdapterTest(testProperty);
+
+        // THEN
+        assertEquals(true, adapter.getJcrItem() == null);
+    }
+
+
     /**
      * Dummy implementation of the Abstract class.
      */

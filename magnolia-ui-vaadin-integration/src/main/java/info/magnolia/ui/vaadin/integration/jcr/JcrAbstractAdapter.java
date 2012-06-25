@@ -97,9 +97,17 @@ public abstract class JcrAbstractAdapter implements JcrItemAdapter {
         return jcrNodeIdentifier;
     }
 
+    /**
+     * @return: Related JCR Item, or null in case of {RepositoryException}.
+     */
     @Override
-    public javax.jcr.Item getJcrItem() throws RepositoryException{
-        return MgnlContext.getJCRSession(jcrWorkspace).getItem(jcrPath);
+    public javax.jcr.Item getJcrItem() {
+        try {
+            return MgnlContext.getJCRSession(jcrWorkspace).getItem(jcrPath);
+        } catch(RepositoryException re) {
+            log.warn("Not able to retreave the JcrItem ", re.getMessage());
+            return null;
+        }
     }
 
     @Override
