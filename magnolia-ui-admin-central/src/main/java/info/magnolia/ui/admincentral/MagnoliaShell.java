@@ -175,7 +175,7 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
     @Override
     protected void removeMessage(String messageId) {
         super.removeMessage(messageId);
-        messagesManager.removeMessage(MgnlContext.getUser().getName(), messageId);
+        messagesManager.clearMessage(MgnlContext.getUser().getName(), messageId);
     }
     
     public void openDialog(Dialog component) {
