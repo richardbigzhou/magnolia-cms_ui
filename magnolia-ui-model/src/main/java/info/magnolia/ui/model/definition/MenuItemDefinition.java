@@ -46,6 +46,6 @@ public interface MenuItemDefinition extends UiItemDefinition {
 
     String getDescription();
 
-    public ActionDefinition getActionDefinition();
+    ActionDefinition getActionDefinition();
 
 }
