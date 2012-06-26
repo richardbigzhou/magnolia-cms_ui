@@ -7,6 +7,7 @@
   <versionHandler>info.magnolia.ui.app.contacts.ContactsAppModuleVersionHandler</versionHandler>
   <version>${project.version}</version>
 
+<!--
   <components>
     <id>admin-central</id>
     <component>
@@ -14,6 +15,23 @@
       <implementation>info.magnolia.ui.app.contacts.ContactsViewImpl</implementation>
     </component>
   </components>
+-->
+
+   <components>
+    <id>app-contacts</id>
+    <component>
+      <type>info.magnolia.ui.app.contacts.ContactsView</type>
+      <implementation>info.magnolia.ui.app.contacts.ContactsViewImpl</implementation>
+    </component>
+        <component>
+      <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchView</type>
+      <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbenchViewImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.workbench.ContentWorkbench</type>
+      <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbench</implementation>
+    </component>
+   </components>
 
   <dependencies>
     <dependency>

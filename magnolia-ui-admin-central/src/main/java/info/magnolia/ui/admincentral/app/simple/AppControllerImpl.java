@@ -33,22 +33,22 @@
  */
 package info.magnolia.ui.admincentral.app.simple;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
-import com.vaadin.ui.ComponentContainer;
-
 import info.magnolia.context.MgnlContext;
+import info.magnolia.module.ModuleRegistry;
+import info.magnolia.module.model.ModuleDefinition;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.objectfactory.Components;
+import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
+import info.magnolia.objectfactory.configuration.ComponentProviderConfigurationBuilder;
+import info.magnolia.objectfactory.configuration.InstanceConfiguration;
+import info.magnolia.objectfactory.guice.GuiceComponentProvider;
+import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
 import info.magnolia.ui.framework.app.App;
 import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.AppEventType;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
-import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.AppView;
 import info.magnolia.ui.framework.app.layout.AppCategory;
 import info.magnolia.ui.framework.app.layout.AppLayoutManager;
@@ -64,6 +64,19 @@ import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.framework.view.ViewPort;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.vaadin.ui.ComponentContainer;
+
 /**
  * App controller that manages the lifecycle of running apps and raises callbacks to the app.
  *
@@ -71,6 +84,8 @@ import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
  */
 @Singleton
 public class AppControllerImpl implements AppController, LocationChangedEvent.Handler, LocationChangeRequestedEvent.Handler {
+
+    private static final Logger log = LoggerFactory.getLogger(AppControllerImpl.class);
 
     private ComponentProvider componentProvider;
     private AppLayoutManager appLayoutManager;
@@ -83,6 +98,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     private final Map<String, AppContextImpl> runningApps = new HashMap<String, AppContextImpl>();
     private final LinkedList<AppContextImpl> appHistory = new LinkedList<AppContextImpl>();
 
+
     private AppContextImpl currentApp;
 
     @Inject
@@ -93,7 +109,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         this.messagesManager = messagesManager;
         this.eventBus = eventBus;
         this.shell = shell;
-        
+
         eventBus.addHandler(LocationChangedEvent.class, this);
         eventBus.addHandler(LocationChangeRequestedEvent.class, this);
     }
@@ -102,13 +118,13 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     public void setViewPort(ViewPort viewPort) {
         this.viewPort = viewPort;
     }
-    
+
     @Override
     public void startIfNotAlreadyRunningThenFocus(String name) {
         AppContextImpl appContext = doStartIfNotAlreadyRunning(name, null);
         doFocus(appContext);
     }
-    
+
     @Override
     public void startIfNotAlreadyRunning(String name) {
         doStartIfNotAlreadyRunning(name, null);
@@ -129,7 +145,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             stopApp(appContext.getName());
         }
     }
-    
+
     @Override
     public boolean isAppStarted(String name) {
         return runningApps.containsKey(name);
@@ -235,9 +251,11 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         private App app;
         private AppFrameView appFrameView;
         private Location currentLocation;
+        private ComponentProvider appProvider;
 
         public AppContextImpl(AppDescriptor appDescriptor) {
             this.appDescriptor = appDescriptor;
+            this.appProvider = setAppComponentProvider(appDescriptor.getName(),this);
         }
 
         public String getName() {
@@ -255,10 +273,10 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
             DefaultLocation appLocation = (DefaultLocation) location;
 
-            app = componentProvider.newInstance(appDescriptor.getAppClass());
+            app = appProvider.newInstance(appDescriptor.getAppClass());
 
             appFrameView = new AppFrameView();
-
+            //TODO ehe: Remove this from app. start and use injection instead.
             AppView view = app.start(this, new DefaultLocation("app", appDescriptor.getName(), appLocation.getToken()));
 
             currentLocation = location;
@@ -321,4 +339,25 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         public void showConfirmationMessage(String message) {
         }
     }
+
+    private ComponentProvider setAppComponentProvider(String name, AppContext appContext) {
+
+        String componentIdName = "app-"+name;
+        //TODO ehe: Add check for componentIdName.
+        // If not defined in the module descriptor --> Log message, do not start app.
+        log.debug("Read component configurations from module descriptors...");
+        ComponentProviderConfigurationBuilder configurationBuilder = new ComponentProviderConfigurationBuilder();
+        List<ModuleDefinition> moduleDefinitions = Components.getComponent(ModuleRegistry.class).getModuleDefinitions();
+        ComponentProviderConfiguration configuration = configurationBuilder.getComponentsFromModules(componentIdName, moduleDefinitions);
+
+        configuration.addComponent(InstanceConfiguration.valueOf(AppContext.class, appContext));
+
+        log.debug("Creating the component provider...");
+        GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
+        builder.withConfiguration(configuration);
+        builder.withParent((GuiceComponentProvider) componentProvider);
+        GuiceComponentProvider componentProvider = builder.build();
+
+        return componentProvider;
+   }
 }

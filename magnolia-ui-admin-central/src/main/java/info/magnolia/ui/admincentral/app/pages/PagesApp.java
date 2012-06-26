@@ -62,7 +62,6 @@ public class PagesApp extends AbstractApp implements PagesView.Presenter {
 
     @Override
     public AppView start(AppContext context, Location location) {
-        view.getWorkbench().setAppContext(context);
         return view;
     }
 

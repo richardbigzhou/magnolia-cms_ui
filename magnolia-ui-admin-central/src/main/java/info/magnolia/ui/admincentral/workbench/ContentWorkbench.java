@@ -76,7 +76,7 @@ import com.vaadin.ui.ComponentContainer;
  * <li>a configurable action bar on the right hand side, showing the available operations for the
  * given workspace and the selected item.
  * </ul>
- * 
+ *
  * <p>
  * Its main configuration point is the {@link WorkbenchDefinition} through which one defines the JCR
  * workspace to connect to, the columns/properties to display, the available actions and so on.
@@ -106,8 +106,8 @@ public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView
     private AppContext context;
 
     @Inject
-    public ContentWorkbench(final ContentWorkbenchView view, final EventBus eventbus, final MagnoliaShell shell, final WorkbenchDefinitionRegistry workbenchRegistry, final WorkbenchActionFactory actionFactory) {
-        super();
+    public ContentWorkbench(final AppContext context, final ContentWorkbenchView view, final EventBus eventbus, final MagnoliaShell shell, final WorkbenchDefinitionRegistry workbenchRegistry, final WorkbenchActionFactory actionFactory) {
+        this.context = context;
         this.view = view;
         this.eventBus = eventbus;
         this.shell = shell;
@@ -206,8 +206,5 @@ public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView
         return view;
     }
 
-    public void setAppContext(AppContext ctx) {
-        this.context = ctx;
-    }
 
 }

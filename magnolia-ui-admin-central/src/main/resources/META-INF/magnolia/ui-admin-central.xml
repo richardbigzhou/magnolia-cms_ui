@@ -26,6 +26,12 @@
       <type>info.magnolia.ui.framework.app.registry.AppDescriptorRegistry</type>
       <implementation>info.magnolia.ui.framework.app.registry.AppDescriptorRegistry</implementation>
     </component>
+
+    <component>
+      <type>info.magnolia.ui.model.workbench.registry.WorkbenchDefinitionRegistry</type>
+      <implementation>info.magnolia.ui.model.workbench.registry.WorkbenchDefinitionRegistry</implementation>
+    </component>
+
     <component>
       <type>info.magnolia.ui.framework.app.layout.AppLayoutManager</type>
       <implementation>info.magnolia.ui.framework.app.layout.AppLayoutManagerImpl</implementation>
@@ -120,10 +126,6 @@
       <implementation>info.magnolia.ui.framework.location.LocationController</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.app.pages.PagesApp</type>
-      <implementation>info.magnolia.ui.admincentral.app.pages.PagesApp</implementation>
-    </component>
-    <component>
       <type>info.magnolia.ui.admincentral.app.assets.AssetsApp</type>
       <implementation>info.magnolia.ui.admincentral.app.assets.AssetsApp</implementation>
     </component>
@@ -152,14 +154,6 @@
       <implementation>info.magnolia.ui.admincentral.shellapp.favorites.FavoritesViewImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.app.pages.PagesView</type>
-      <implementation>info.magnolia.ui.admincentral.app.pages.PagesViewImpl</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.admincentral.app.pages.PagesView$Presenter</type>
-      <implementation>info.magnolia.ui.admincentral.app.pages.PagesApp</implementation>
-    </component>
-    <component>
       <type>info.magnolia.ui.admincentral.MagnoliaShellView</type>
       <implementation>info.magnolia.ui.admincentral.MagnoliaShellViewImpl</implementation>
     </component>
@@ -179,6 +173,15 @@
       <type>info.magnolia.ui.widget.dialog.DialogView</type>
       <implementation>info.magnolia.ui.widget.dialog.Dialog</implementation>
     </component>
+     <component>
+      <type>info.magnolia.ui.model.workbench.registry.ConfiguredWorkbenchDefinitionManager</type>
+      <implementation>info.magnolia.ui.model.workbench.registry.ConfiguredWorkbenchDefinitionManager</implementation>
+    </component>
+  </components>
+
+
+   <components>
+    <id>app-pages</id>
     <component>
       <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchView</type>
       <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbenchViewImpl</implementation>
@@ -187,11 +190,11 @@
       <type>info.magnolia.ui.admincentral.workbench.ContentWorkbench</type>
       <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbench</implementation>
     </component>
-     <component>
-      <type>info.magnolia.ui.model.workbench.registry.ConfiguredWorkbenchDefinitionManager</type>
-      <implementation>info.magnolia.ui.model.workbench.registry.ConfiguredWorkbenchDefinitionManager</implementation>
+    <component>
+      <type>info.magnolia.ui.admincentral.app.pages.PagesView</type>
+      <implementation>info.magnolia.ui.admincentral.app.pages.PagesViewImpl</implementation>
     </component>
-  </components>
+   </components>
 
   <dependencies>
     <dependency>
