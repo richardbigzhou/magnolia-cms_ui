@@ -639,7 +639,7 @@
                       <sv:value>1651cb30-6d1b-442f-ac67-fc0d685f6356</sv:value>
                     </sv:property>
                     <sv:property sv:name="class" sv:type="String">
-                      <sv:value>info.magnolia.ui.admincentral.tree.action.AddNodeActionDefinition</sv:value>
+                      <sv:value>info.magnolia.ui.admincentral.dialog.action.CreateDialogActionDefinition</sv:value>
                     </sv:property>
                     <sv:property sv:name="jcr:createdBy" sv:type="String">
                       <sv:value>admin</sv:value>
@@ -1018,7 +1018,7 @@
                       <sv:value>9e292b92-d9f8-42e1-98fa-3b34dbe8be86</sv:value>
                     </sv:property>
                     <sv:property sv:name="class" sv:type="String">
-                      <sv:value>info.magnolia.ui.admincentral.tree.action.OpenEditDialogActionDefinition</sv:value>
+                      <sv:value>info.magnolia.ui.admincentral.dialog.action.EditDialogActionDefinition</sv:value>
                     </sv:property>
                     <sv:property sv:name="dialogName" sv:type="String">
                       <sv:value>ui-admin-central:app:pages</sv:value>
