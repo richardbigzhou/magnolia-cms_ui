@@ -33,11 +33,6 @@
  */
 package info.magnolia.ui.admincentral.app.pages;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
-import info.magnolia.ui.admincentral.workbench.ContentWorkbench;
-import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.AppView;
 
 /**
@@ -47,15 +42,4 @@ import info.magnolia.ui.framework.app.AppView;
  */
 public interface PagesView extends AppView {
 
-    void setPresenter(Presenter presenter);
-
-    ContentWorkbench getWorkbench();
-    /**
-     * Presenter for the PagesView.
-     *
-     */
-    public interface Presenter {
-
-        void onEditPage(final Node page, final AppContext context) throws RepositoryException;
-    }
 }

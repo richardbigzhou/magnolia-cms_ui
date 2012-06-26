@@ -36,11 +36,15 @@ package info.magnolia.ui.admincentral.workbench;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.admincentral.MagnoliaShell;
+import info.magnolia.ui.admincentral.app.pages.PageEditorTabView;
 import info.magnolia.ui.admincentral.event.ContentChangedEvent;
 import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.framework.app.AppView;
 import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.location.DefaultLocation;
+import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
@@ -54,6 +58,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 import javax.jcr.LoginException;
+import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -188,7 +193,7 @@ public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView
                     selectedItemId = "/";
                 }
                 final javax.jcr.Item item = session.getItem(selectedItemId);
-                Action action = actionFactory.createAction(actionDefinition, item, context);
+                Action action = actionFactory.createAction(actionDefinition, item, this);
                 action.execute();
             } catch (PathNotFoundException e) {
                 shell.showError("Can't execute action.\n" + e.getMessage(), e);
@@ -206,5 +211,10 @@ public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView
         return view;
     }
 
+    @Override
+    public void onOpenNewView(AppView view, Location location) {
+        context.openAppView(view);
+        context.setAppLocation(location);
+    }
 
 }

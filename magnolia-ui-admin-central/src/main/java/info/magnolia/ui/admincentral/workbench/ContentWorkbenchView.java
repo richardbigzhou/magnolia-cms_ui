@@ -36,6 +36,8 @@ package info.magnolia.ui.admincentral.workbench;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.actionbar.ActionbarView;
 import info.magnolia.ui.admincentral.jcr.view.JcrView;
+import info.magnolia.ui.framework.app.AppView;
+import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 
 import com.vaadin.data.Item;
@@ -70,7 +72,9 @@ public interface ContentWorkbenchView extends ComponentContainer, ActionbarView 
      */
     public interface Presenter extends ActionbarPresenter {
 
-        void onItemSelected(Item item);
+        void onItemSelected(final Item item);
+
+        void onOpenNewView(final AppView view, final Location location);
 
     }
 
