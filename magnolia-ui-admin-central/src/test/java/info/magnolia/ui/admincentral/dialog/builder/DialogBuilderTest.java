@@ -35,7 +35,8 @@ package info.magnolia.ui.admincentral.dialog.builder;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import info.magnolia.ui.model.dialog.definition.ConfiguredDialogDefinition;
 import info.magnolia.ui.model.dialog.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.model.dialog.definition.ConfiguredTabDefinition;
@@ -51,6 +52,7 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Field;
+
 
 public class DialogBuilderTest {
 
@@ -77,11 +79,11 @@ public class DialogBuilderTest {
         final TabDefinition tabDef = new ConfiguredTabDefinition();
         final FieldDefinition fieldDef = new ConfiguredFieldDefinition();
         fieldDef.setType(FieldDefinition.TEXT_FIELD_TYPE);
-        fieldDef.setName("test");
+        ((ConfiguredFieldDefinition) fieldDef).setName("test");
         tabDef.addField(fieldDef);
         dialogDef.addTab(tabDef);
 
-        Item item  = mock(Item.class);
+        Item item = mock(Item.class);
         Property prop = mock(Property.class);
         when(item.getItemProperty("test")).thenReturn(prop);
 

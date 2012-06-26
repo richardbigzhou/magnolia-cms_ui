@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.model.dialog.definition;
 
+import info.magnolia.ui.model.definition.UiItemDefinition;
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 
 import java.util.List;

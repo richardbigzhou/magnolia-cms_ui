@@ -83,7 +83,7 @@ public class ActionbarBuilder {
                         final String actionName = item.getName();
                         button.setActionName(actionName);
                         button.setGroupName(group.getName());
-                        button.setSectionTitle(section.getTitle());
+                        button.setSectionName(section.getName());
 
                         button.addListener(clickListener);
 

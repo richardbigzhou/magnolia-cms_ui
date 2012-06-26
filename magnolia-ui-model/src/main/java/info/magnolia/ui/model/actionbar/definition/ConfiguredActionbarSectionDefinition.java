@@ -33,12 +33,32 @@
  */
 package info.magnolia.ui.model.actionbar.definition;
 
-import info.magnolia.ui.model.menu.definition.MenuItemDefinitionImpl;
+import info.magnolia.ui.model.definition.ConfiguredUiItemDefinition;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 
 /**
- * Simple implementation for {@link ActionbarItemDefinition}.
+ * Simple implementation for {@link ActionbarSectionDefinition}.
  */
-public class ActionbarItemDefinitionImpl extends MenuItemDefinitionImpl implements ActionbarItemDefinition {
+public class ConfiguredActionbarSectionDefinition extends ConfiguredUiItemDefinition implements ActionbarSectionDefinition {
+
+    private final List<ActionbarGroupDefinition> groups = new ArrayList<ActionbarGroupDefinition>();
+
+    @Override
+    public List<ActionbarGroupDefinition> getGroups() {
+        return Collections.unmodifiableList(groups);
+    }
+
+    /**
+     * Adds a group to this section.
+     * 
+     * @param groupDefinition the group definition
+     */
+    public void addGroup(ActionbarGroupDefinition groupDefinition) {
+        groups.add(groupDefinition);
+    }
 
 }

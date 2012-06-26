@@ -33,17 +33,14 @@
  */
 package info.magnolia.ui.model.dialog.action;
 
-import info.magnolia.ui.model.action.ActionDefinition;
-import info.magnolia.ui.model.dialog.definition.UiItemDefinition;
+import info.magnolia.ui.model.definition.MenuItemDefinition;
+
 
 /**
  * DialogActionDefinition.
- *
+ * 
  * @author ejervidalo
  */
-public interface DialogActionDefinition extends UiItemDefinition {
+public interface DialogActionDefinition extends MenuItemDefinition {
 
-    ActionDefinition getActionDefinition();
-
-    void setActionDefinition(ActionDefinition actionDefinition);
 }

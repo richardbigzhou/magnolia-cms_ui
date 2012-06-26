@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.model.toolbar;
 
-import info.magnolia.ui.model.menu.definition.MenuItemDefinition;
+import info.magnolia.ui.model.definition.MenuItemDefinition;
 
 /**
  * Toolbar item definition.

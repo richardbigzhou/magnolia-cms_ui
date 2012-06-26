@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.menu.definition;
+package info.magnolia.ui.model.definition;
 
 import info.magnolia.ui.model.action.ActionDefinition;
 
@@ -40,15 +40,9 @@ import info.magnolia.ui.model.action.ActionDefinition;
  * Menu item definition providing configuration for the label and icon. Also provides the
  * {@link ActionDefinition} executed when the item is clicked.
  */
-public interface MenuItemDefinition {
+public interface MenuItemDefinition extends UiItemDefinition {
 
     String getIcon();
-
-    String getName();
-
-    String getLabel();
-
-    String getI18nBasename();
 
     String getDescription();
 
