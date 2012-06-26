@@ -42,6 +42,9 @@
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>77c5fe54-c198-4f66-9e55-8b2ebff883b4</sv:value>
     </sv:property>
+    <sv:property sv:name="description" sv:type="String">
+      <sv:value>If an entire section ahould use the some keywords, use "inherit keywords from parent page". If you’d like to add some keywords in addition, choose "add keywords to those from parent page". If you’d like to replace all possibly inherited keywords with your own, choose the last option.</sv:value>
+    </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
     </sv:property>
@@ -62,7 +65,7 @@
         <sv:value>2012-06-11T13:54:31.240+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-        <sv:value>2012-06-21T14:22:15.059+02:00</sv:value>
+        <sv:value>2012-06-26T13:19:52.657+02:00</sv:value>
       </sv:property>
     </sv:node>
     <sv:node sv:name="tabs">

@@ -64,36 +64,38 @@ import com.vaadin.terminal.gwt.client.UIDL;
 
 /**
  * An overlay that displays the open app in the shell on top of each other.
- * 
+ *
  * @author apchelintcev
- * 
+ *
  */
 public class VShellViewport extends ComplexPanel implements Container, ContainerResizedListener {
-    
-    private Element modalityCurtain = DOM.createDiv();
-    
+
+    private Element greenModalityCurtain = DOM.createDiv();
+    private Element blackModalityCurtain = DOM.createDiv();
+
     protected String paintableId = null;
-    
+
     protected ApplicationConnection client;
-    
+
     protected Element container = DOM.createDiv();
-    
+
     private final Element closeWrapper = DOM.createDiv();
-    
+
     private Widget visibleWidget = null;
-    
+
     private List<Paintable> paintables = new LinkedList<Paintable>();
-    
+
     private ContentAnimationDelegate animationDelegate;
-    
+
     private boolean forceContentAlign = true;
-    
+
     private EventBus eventBus;
-    
+
     public VShellViewport() {
         super();
         setElement(container);
-        modalityCurtain.setId("modality-curtain");
+        greenModalityCurtain.setId("green-modality-curtain");
+        blackModalityCurtain.setId("black-modality-curtain");
         addStyleName("v-shell-vieport");
         final Element closeButton = DOM.createButton();
         closeWrapper.setClassName("close");
@@ -107,33 +109,36 @@ public class VShellViewport extends ComplexPanel implements Container, Container
                 }
             }
         }, ClickEvent.getType());
-        modalityCurtain.getStyle().setVisibility(Visibility.HIDDEN);
+        greenModalityCurtain.getStyle().setVisibility(Visibility.HIDDEN);
+        blackModalityCurtain.getStyle().setVisibility(Visibility.HIDDEN);
     }
-    
-    
+
+
     public void setEventBus(EventBus eventBus) {
         this.eventBus = eventBus;
     }
-    
+
     @Override
     protected void onLoad() {
         super.onLoad();
-        RootPanel.get().getElement().appendChild(modalityCurtain);
-    }
-    
-    @Override
-    protected void onUnload() {
-        super.onUnload();
-        RootPanel.get().getElement().removeChild(modalityCurtain);
+        RootPanel.get().getElement().appendChild(greenModalityCurtain);
+        RootPanel.get().getElement().appendChild(blackModalityCurtain);
     }
 
     @Override
-    public void updateFromUIDL(final UIDL uidl, final ApplicationConnection client) { 
+    protected void onUnload() {
+        super.onUnload();
+        RootPanel.get().getElement().removeChild(greenModalityCurtain);
+        RootPanel.get().getElement().removeChild(blackModalityCurtain);
+    }
+
+    @Override
+    public void updateFromUIDL(final UIDL uidl, final ApplicationConnection client) {
         this.paintableId = uidl.getId();
         this.client = client;
         if (!client.updateComponent(this, uidl, true)) {
             final List<Paintable> orpanCandidates = new LinkedList<Paintable>(paintables);
-            if (uidl.getChildCount() > 0) { 
+            if (uidl.getChildCount() > 0) {
                 int idx = 0;
                 for (;idx < uidl.getChildCount(); ++idx) {
                     final UIDL childUIdl = uidl.getChildUIDL(idx);
@@ -144,22 +149,22 @@ public class VShellViewport extends ComplexPanel implements Container, Container
                     paintable.updateFromUIDL(childUIdl, client);
                     if (forceContentAlign) {alignChild(w);}
                     if (idx == 0) {setWidgetVisible(w);}
-                }   
+                }
             } else {
                 visibleWidget = null;
             }
-            
+
             for (final Paintable paintable : orpanCandidates) {
                 client.unregisterPaintable(paintable);
                 remove((Widget)paintable);
             }
         }
     }
-    
+
     private void alignChild(Widget w) {
         final Element el = w.getElement();
         if (w.isAttached()) {
-            final Style style = el.getStyle(); 
+            final Style style = el.getStyle();
             style.setLeft(50, Unit.PCT);
             style.setMarginLeft(-el.getOffsetWidth() / 2, Unit.PX);
         }
@@ -171,15 +176,15 @@ public class VShellViewport extends ComplexPanel implements Container, Container
             add(w, container);
         }
         if (w != visibleWidget) {
-            w.getElement().getStyle().setVisibility(Visibility.HIDDEN);   
-        }   
+            w.getElement().getStyle().setVisibility(Visibility.HIDDEN);
+        }
         return result;
     }
 
     protected void setWidgetVisible(final Widget w) {
         if (hasChildComponent(w)) {
             if (w != visibleWidget) {
-                hideCurrentContent();   
+                hideCurrentContent();
             }
             final Element el = w.getElement();
             final Style style = el.getStyle();
@@ -193,11 +198,11 @@ public class VShellViewport extends ComplexPanel implements Container, Container
             }));
         }
     }
-    
+
     public Widget getVisibleWidget() {
         return visibleWidget;
     }
-    
+
     protected void hideCurrentContent() {
         if (visibleWidget != null) {
             final Widget formerVisible = visibleWidget;
@@ -205,7 +210,7 @@ public class VShellViewport extends ComplexPanel implements Container, Container
                 animationDelegate.hide(formerVisible, Callbacks.create(new JQueryCallback() {
                     @Override
                     public void execute(JQueryWrapper query) {
-                        final Style style = formerVisible.getElement().getStyle(); 
+                        final Style style = formerVisible.getElement().getStyle();
                         style.setVisibility(Visibility.HIDDEN);
                         style.setDisplay(Display.BLOCK);
                     }
@@ -213,7 +218,7 @@ public class VShellViewport extends ComplexPanel implements Container, Container
             }
         }
     }
-    
+
     @Override
     public void setHeight(String height) {
         super.setHeight(height);
@@ -221,12 +226,12 @@ public class VShellViewport extends ComplexPanel implements Container, Container
             visibleWidget.setHeight(height);
         }
     }
-    
+
     @Override
     public boolean hasChildComponent(Widget component) {
         return getChildren().contains(component);
     }
-    
+
     @Override
     public boolean requestLayout(Set<Paintable> children) {
         return false;
@@ -239,27 +244,27 @@ public class VShellViewport extends ComplexPanel implements Container, Container
         }
         return new RenderSpace();
     }
-    
+
     @Override
     public void updateCaption(Paintable component, UIDL uidl) {}
 
     @Override
     public void replaceChildComponent(Widget oldComponent, Widget newComponent) {}
-    
+
     @Override
     public void clear() {
         super.clear();
         paintables.clear();
     }
-    
+
     @Override
     protected void insert(Widget child, Element container, int beforeIndex, boolean domInsert) {
         super.insert(child, container, beforeIndex, domInsert);
         if (child instanceof Paintable) {
-            paintables.add((Paintable)child);   
+            paintables.add((Paintable)child);
         }
     }
-    
+
     @Override
     protected void add(final Widget child, Element container) {
         if (child instanceof Paintable) {
@@ -274,13 +279,19 @@ public class VShellViewport extends ComplexPanel implements Container, Container
         super.removeFromParent();
         hideCurtain();
     }
-    
+
     public void setForceContentAlign(boolean forceContentAlign) {
         this.forceContentAlign = forceContentAlign;
     }
-    
+
     public void showCurtain() {
-        final JQueryWrapper jq = JQueryWrapper.select(modalityCurtain);
+        final JQueryWrapper jq = JQueryWrapper.select(greenModalityCurtain);
+        jq.setCss("visibility", "visible");
+        jq.setCss("zIndex", String.valueOf(JQueryWrapper.select(this).cssInt("zIndex") - 1));
+    }
+
+    public void showBlackCurtain() {
+        final JQueryWrapper jq = JQueryWrapper.select(blackModalityCurtain);
         jq.setCss("visibility", "visible");
         jq.setCss("zIndex", String.valueOf(JQueryWrapper.select(this).cssInt("zIndex") - 1));
     }
@@ -302,7 +313,7 @@ public class VShellViewport extends ComplexPanel implements Container, Container
         if (forceContentAlign) {
             for (final Widget w : getChildren()) {
                 alignChild(w);
-            }   
+            }
         }
     }
 }
