@@ -35,7 +35,7 @@ package info.magnolia.ui.widget.magnoliashell.gwt.client;
 
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShell.ViewportType;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VShellMessage.MessageType;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VWarningMessage.MessageType;
 
 import java.util.Collection;
 
@@ -85,6 +85,8 @@ public interface VMagnoliaShellView extends HasWidgets, IsWidget {
     Collection<VShellViewport> getViewports();
     
     void closeMessageEager(String id);
+    
+    void navigateToMessageDetails(String id);
     
     /**
      * Presenter. Meant for Vaadin part of MagnoliaShell.

@@ -33,19 +33,10 @@
  */
 package info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage;
 
-import info.magnolia.ui.widget.jquerywrapper.gwt.client.Callbacks;
-import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryCallback;
-import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShellView;
 
-import com.google.gwt.dom.client.Style.Display;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Event.NativePreviewEvent;
-import com.google.gwt.user.client.Event.NativePreviewHandler;
-import com.google.gwt.user.client.ui.HTML;
 
 /**
  * Simple notification object that pops up when warnings/errors occur.
@@ -53,10 +44,7 @@ import com.google.gwt.user.client.ui.HTML;
  * @author apchelintcev
  * 
  */
-public class VShellMessage extends HTML {
-
-    private static final String STYLE_NAME = "v-shell-notification";
-
+public class VWarningMessage extends VShellMessage {
     /**
      * Enumeration of possible message types.
      * 
@@ -67,158 +55,40 @@ public class VShellMessage extends HTML {
         WARNING, ERROR;
     }
 
-    private HandlerRegistration eventPreviewReg = null;
-
-    private final VMagnoliaShellView shell;
-
-    private final MessageType type;
-
-    private final String topic;
-
-    private Element header = DOM.createDiv();
-    
-    private Element closeEl = DOM.createDiv();
-
     private Element detailsEl = DOM.createDiv();
-
-    private Element topicEl = DOM.createSpan();
 
     private Element detailsExpanderEl = DOM.createElement("b");
 
-    private Element messageTypeEl = DOM.createElement("b");
-
-    private final String id;
-    
-    private final String message;
-    
-    
-    public VShellMessage(VMagnoliaShellView shell, MessageType type, String topic, String message, String id) {
-        super();
-        this.type = type;
-        this.topic = topic;
-        this.shell = shell;
-        this.message = message;
-        this.id = id;
-        construct();
+    public VWarningMessage(VMagnoliaShellView shell, String topic, String message, String id) {
+        super(shell, topic, message, id);
+        addStyleName("warning");
     }
 
-    protected final VMagnoliaShellView getShell() {
-        return shell;
-    }
-
-    private void construct() {
-        setStyleName(STYLE_NAME);
-        
-        header.setClassName("header");
-        getElement().appendChild(header);
-        
-        topicEl.setInnerText(topic);
-        header.appendChild(messageTypeEl);
-        header.appendChild(topicEl);
+    @Override
+    protected void construct() {
+        super.construct();
 
         detailsExpanderEl.setInnerText("[MORE]");
         detailsExpanderEl.setClassName("details-expander");
-        header.appendChild(detailsExpanderEl);
+        getHeader().appendChild(detailsExpanderEl);
 
-        closeEl.setClassName("close");
-        header.appendChild(closeEl);
-        
-        detailsEl.setInnerText(message);
+        detailsEl.setInnerText(getMessage());
         getElement().appendChild(detailsEl);
         
-        switch (type) {
-        case WARNING:
-            addStyleName("warning");
-            messageTypeEl.setInnerHTML("Warning: ");
-            setAutoExpanding(true);
-            break;
-        case ERROR:
-            addStyleName("error");
-            setAutoExpanding(false);
-            messageTypeEl.setInnerHTML("Error: ");
-            break;
-        }
-        
-    }
-
-    private void setAutoExpanding(boolean autoExpanding) {
-        if (autoExpanding) {
-            expand();
-        } else {
-            detailsEl.getStyle().setDisplay(Display.NONE);
-            detailsExpanderEl.getStyle().setDisplay(Display.INLINE);
-        }
     }
 
     @Override
-    protected void onLoad() {
-        super.onLoad();
-        sinkEvents(Event.MOUSEEVENTS);
-        eventPreviewReg = Event.addNativePreviewHandler(new NativePreviewHandler() {
-            @Override
-            public void onPreviewNativeEvent(NativePreviewEvent event) {
-                if (event.getTypeInt() == Event.ONCLICK) {
-                    final Element targetEl = event.getNativeEvent().getEventTarget().cast();
-                    if (getElement().isOrHasChild(targetEl) && type == MessageType.WARNING) {
-                        close();
-                    }
-                }
-            }
-        });
-        show();
-    }
-
-    protected void close() {
-        hide();
-        shell.closeMessageEager(id);
-    }
-
-    @Override
-    public void onBrowserEvent(Event event) {
-        super.onBrowserEvent(event);
-        int eventCode = event.getTypeInt();
-        if (eventCode == Event.ONMOUSEDOWN) {
-            final Element target = event.getEventTarget().cast();
-            if (target == closeEl) {
-                hide();
-            } else if (target == detailsExpanderEl) {
-                expand();
-            }
-        }
+    protected void onMessageClicked(Element targetEl) {
+        super.onMessageClicked(targetEl);
+        close();
     }
 
     protected Element getDetailsElement() {
         return detailsEl;
     }
-    
-    protected void expand() {
-        detailsExpanderEl.getStyle().setDisplay(Display.NONE);
-        detailsEl.getStyle().setDisplay(Display.BLOCK);
-    }
 
-    public void show() {
-        getElement().getStyle().setDisplay(Display.NONE);
-        JQueryWrapper.select(this).slideDown(300, null);
-    }
-
-    public void hide() {
-        JQueryWrapper.select(this).slideUp(300, Callbacks.create(new JQueryCallback() {
-            @Override
-            public void execute(JQueryWrapper query) {
-                removeFromParent();
-            }
-        }));
-    }
-
-    protected int getHeaderHeight() {
-        return JQueryWrapper.select(header).cssInt("height");
-    }
-    
     @Override
-    protected void onUnload() {
-        super.onUnload();
-        if (eventPreviewReg != null) {
-            eventPreviewReg.removeHandler();
-        }
+    protected String getMessageTypeCaption() {
+        return "Warning: ";
     }
 }

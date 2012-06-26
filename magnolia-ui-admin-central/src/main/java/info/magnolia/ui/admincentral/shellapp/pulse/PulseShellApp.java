@@ -40,6 +40,8 @@ import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.shell.Shell;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 /**
@@ -50,7 +52,9 @@ import javax.inject.Inject;
 public class PulseShellApp implements ShellApp, PulseView.Presenter {
     
     private PulseView pulseView;
+    
     private Shell shell;
+    
     private ShellAppContext context;
 
     @Inject
@@ -69,8 +73,16 @@ public class PulseShellApp implements ShellApp, PulseView.Presenter {
     @Override
     public void locationChanged(Location location) {
         DefaultLocation pulsePlace = (DefaultLocation) location;
-        final String displayedTabId = pulseView.setCurrentPulseTab(pulsePlace.getToken());
+        List<String> pathParams = parsePathParamsFromToken(pulsePlace.getToken());
+        if (pathParams.size() > 0) {
+            final String tabName = pathParams.remove(0);
+            final String displayedTabId = pulseView.setCurrentPulseTab(tabName, pathParams);
+        }
 //        pulsePlace.setCurrentPulseTab(displayedTabId);
+    }
+
+    private List<String> parsePathParamsFromToken(String token) {
+        return null;
     }
 
     @Override

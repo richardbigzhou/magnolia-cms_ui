@@ -78,7 +78,7 @@ public class LocalMessageDispatcher implements MessageListener {
     }
 
     @Override
-    public void handleMessage(Message message) {
+    public void messageSent(Message message) {
         queueMessage(message);
     }
 
@@ -87,7 +87,7 @@ public class LocalMessageDispatcher implements MessageListener {
     }
 
     @Override
-    public void removeMessage(Message message) {
+    public void messageCleared(Message message) {
         
     }
 }

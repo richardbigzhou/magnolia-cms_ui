@@ -66,6 +66,19 @@ public class JQueryWrapper extends JavaScriptObject {
         return select(w.getElement()); 
     };
    
+    public final native void on(String eventId, String selector, Callbacks callbacks) /*-{
+        this.on(eventId, selector, function(event) {
+            var target = this;
+            if (event.target != 'undefined') {
+                target = event.target;
+            }
+            var jq = @info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper::select(Lcom/google/gwt/user/client/Element;)(target);
+            if (callbacks != null) {
+                callbacks.fire(jq);
+            }
+        });
+    }-*/;
+    
     public final native void animate(int duration, AnimationSettings settings) /*-{
         var json = settings.@info.magnolia.ui.widget.jquerywrapper.gwt.client.AnimationSettings::asJSO()();
         var jq = this;

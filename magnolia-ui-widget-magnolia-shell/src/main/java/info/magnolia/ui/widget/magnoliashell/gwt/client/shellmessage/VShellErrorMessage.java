@@ -33,10 +33,10 @@
  */
 package info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage;
 
-import info.magnolia.ui.widget.jquerywrapper.gwt.client.Callbacks;
-import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryCallback;
-import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShellView;
+
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
 
 /**
  * Error message.
@@ -46,26 +46,44 @@ import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShellView;
  */
 public class VShellErrorMessage extends VShellMessage {
 
+    private Element detailsLinkEl = DOM.createElement("b");
+    
     public VShellErrorMessage(final VMagnoliaShellView shell, String topic, String message, String id) {
-        super(shell, MessageType.ERROR, topic, message, id);
-        final JQueryWrapper jq = JQueryWrapper.select(this);
-        jq.ready(Callbacks.create(new JQueryCallback() {
-            @Override
-            public void execute(JQueryWrapper query) {
-                shell.shiftViewportsVertically(getHeaderHeight(), true);
-            }
-        }));
+        super(shell, topic, message, id);
+        addStyleName("error");
     }
 
     @Override
-    protected void expand() {
-        super.expand();
-        getShell().shiftViewportsVertically(getDetailsElement().getOffsetHeight(), false);
+    protected void construct() {
+        super.construct();
+        final Element header = getHeader();
+        detailsLinkEl.setInnerHTML("[SHOW DETAILS]");
+        header.appendChild(detailsLinkEl);
+    }
+    
+    @Override
+    protected void onMessageClicked(Element targetEl) {
+        if (targetEl == detailsLinkEl) {
+            getShell().navigateToMessageDetails(getId());
+        } else {
+            super.onMessageClicked(targetEl);   
+        }
+    }
+    
+    @Override
+    public void show() {
+        getShell().shiftViewportsVertically(getHeaderHeight(), true);
+        super.show();
     }
     
     @Override
     public void hide() {
         getShell().shiftViewportsVertically(-getOffsetHeight(), false);
         super.hide();
+    }
+
+    @Override
+    protected String getMessageTypeCaption() {
+        return "Error: ";
     }
 }
