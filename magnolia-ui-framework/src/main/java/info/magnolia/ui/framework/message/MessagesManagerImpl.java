@@ -66,7 +66,7 @@ public class MessagesManagerImpl implements MessagesManager {
         messages.put(userId, message);
         for (final MessageListener listener : listeners.get(userId)) {
             if (listener != null) {
-                listener.handleMessage(message);
+                listener.messageSent(message);
             }
         }
     }
@@ -82,15 +82,15 @@ public class MessagesManagerImpl implements MessagesManager {
     }
 
     @Override
-    public void removeMessage(final String userId, final String id) {
-        System.out.println("Removing message");
+    public void clearMessage(final String userId, final String id) {
         final Message message = findMessageById(userId, id);
         if (message != null) {
-            messages.remove(userId, message);
+            //messages.remove(userId, message);
+            message.setCleared(true);
             final List<MessageListener> listenerList = listeners.get(userId);
             if (listenerList != null) {
                 for (final MessageListener listener : listenerList) {
-                    listener.removeMessage(message);
+                    listener.messageCleared(message);
                 }
             }
         }

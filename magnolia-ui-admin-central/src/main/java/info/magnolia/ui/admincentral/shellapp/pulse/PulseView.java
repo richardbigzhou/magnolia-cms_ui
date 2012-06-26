@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse;
 
+import java.util.List;
+
 import info.magnolia.ui.framework.app.ShellView;
 
 /**
@@ -51,7 +53,7 @@ public interface PulseView extends ShellView {
         void onPulseTabChanged(final String tabId);
     }
     
-    String setCurrentPulseTab(final String tabId);
+    String setCurrentPulseTab(final String tabId, List<String> pathParams);
     
     public void setPresenter(final Presenter presenter);
 }

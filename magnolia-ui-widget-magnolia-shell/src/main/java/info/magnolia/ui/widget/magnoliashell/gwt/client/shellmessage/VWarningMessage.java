@@ -39,51 +39,56 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 
 /**
- * Error message.
+ * Simple notification object that pops up when warnings/errors occur.
  * 
  * @author apchelintcev
  * 
  */
-public class VShellErrorMessage extends VShellMessage {
+public class VWarningMessage extends VShellMessage {
+    /**
+     * Enumeration of possible message types.
+     * 
+     * @author apchelintcev
+     * 
+     */
+    public enum MessageType {
+        WARNING, ERROR;
+    }
 
-    private Element detailsLinkEl = DOM.createElement("b");
-    
-    public VShellErrorMessage(final VMagnoliaShellView shell, String topic, String message, String id) {
+    private Element detailsEl = DOM.createDiv();
+
+    private Element detailsExpanderEl = DOM.createElement("b");
+
+    public VWarningMessage(VMagnoliaShellView shell, String topic, String message, String id) {
         super(shell, topic, message, id);
-        addStyleName("error");
+        addStyleName("warning");
     }
 
     @Override
     protected void construct() {
         super.construct();
-        final Element header = getHeader();
-        detailsLinkEl.setInnerHTML("[SHOW DETAILS]");
-        header.appendChild(detailsLinkEl);
+
+        detailsExpanderEl.setInnerText("[MORE]");
+        detailsExpanderEl.setClassName("details-expander");
+        getHeader().appendChild(detailsExpanderEl);
+
+        detailsEl.setInnerText(getMessage());
+        getElement().appendChild(detailsEl);
+        
     }
-    
+
     @Override
     protected void onMessageClicked(Element targetEl) {
-        if (targetEl == detailsLinkEl) {
-            getShell().navigateToMessageDetails(getId());
-        } else {
-            super.onMessageClicked(targetEl);   
-        }
+        super.onMessageClicked(targetEl);
+        close();
     }
-    
-    @Override
-    public void show() {
-        getShell().shiftViewportsVertically(getHeaderHeight(), true);
-        super.show();
-    }
-    
-    @Override
-    public void hide() {
-        getShell().shiftViewportsVertically(-getOffsetHeight(), false);
-        super.hide();
+
+    protected Element getDetailsElement() {
+        return detailsEl;
     }
 
     @Override
     protected String getMessageTypeCaption() {
-        return "Error: ";
+        return "Warning: ";
     }
 }

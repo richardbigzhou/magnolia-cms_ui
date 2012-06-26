@@ -641,6 +641,9 @@
                     <sv:property sv:name="class" sv:type="String">
                       <sv:value>info.magnolia.ui.admincentral.dialog.action.CreateDialogActionDefinition</sv:value>
                     </sv:property>
+                    <sv:property sv:name="dialogName" sv:type="String">
+                      <sv:value>ui-admin-central:pages</sv:value>
+                    </sv:property>
                     <sv:property sv:name="jcr:createdBy" sv:type="String">
                       <sv:value>admin</sv:value>
                     </sv:property>
@@ -1021,7 +1024,7 @@
                       <sv:value>info.magnolia.ui.admincentral.dialog.action.EditDialogActionDefinition</sv:value>
                     </sv:property>
                     <sv:property sv:name="dialogName" sv:type="String">
-                      <sv:value>ui-admin-central:app:pages</sv:value>
+                      <sv:value>ui-admin-central:pages</sv:value>
                     </sv:property>
                     <sv:property sv:name="jcr:createdBy" sv:type="String">
                       <sv:value>admin</sv:value>

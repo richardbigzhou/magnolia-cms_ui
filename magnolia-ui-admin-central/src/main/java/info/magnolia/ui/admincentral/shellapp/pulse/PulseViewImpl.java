@@ -46,16 +46,17 @@ import info.magnolia.ui.widget.tabsheet.ShellTabSheet;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import javax.inject.Inject;
 
-import com.vaadin.ui.ComponentContainer;
 import org.apache.commons.collections.BidiMap;
 import org.apache.commons.collections.bidimap.DualHashBidiMap;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
@@ -90,7 +91,9 @@ public class PulseViewImpl implements PulseView, IsVaadinComponent {
     }
 
     private MagnoliaShell shell;
+    
     private MessagesManager messagesManager;
+    
     private Presenter  presenter;
 
     private BidiMap m = new DualHashBidiMap();
@@ -114,8 +117,7 @@ public class PulseViewImpl implements PulseView, IsVaadinComponent {
 
         pulseFeed.getRightContainer().setTitle("Pages I changed recently");
         pulseFeed.getRightContainer().setTitleLinkEnabled(true);
-        
-        pulseFeed.setHeight("2000px");
+       
 
         ComponentContainer messagesTable = createMessagesLayout();
 
@@ -159,14 +161,18 @@ public class PulseViewImpl implements PulseView, IsVaadinComponent {
         messagesManager.registerMessagesListener(MgnlContext.getUser().getName(), new MessagesManager.MessageListener() {
 
             @Override
-            public void handleMessage(Message message) {
+            public void messageSent(Message message) {
                 addMessageToContainer(container, message);
                 shell.updateShellAppIndication(ShellAppType.PULSE, 1);
             }
 
             @Override
-            public void removeMessage(Message message) {
-                container.removeItem(message.getId());
+            public void messageCleared(Message message) {
+                /**
+                 * FIXME: we do not remove message here, but in MessagesManager those are removed.
+                 * The logic needs to be clearer somehow.
+                 */
+                //container.removeItem(message.getId());
                 shell.updateShellAppIndication(ShellAppType.PULSE, -1);
             }
         });
@@ -194,7 +200,7 @@ public class PulseViewImpl implements PulseView, IsVaadinComponent {
     }
 
     @Override
-    public String setCurrentPulseTab(final String tabId) {
+    public String setCurrentPulseTab(final String tabId, final List<String> params) {
         PulseTabType type = null;
         String finalDisplayedTabId = tabId;
         try {

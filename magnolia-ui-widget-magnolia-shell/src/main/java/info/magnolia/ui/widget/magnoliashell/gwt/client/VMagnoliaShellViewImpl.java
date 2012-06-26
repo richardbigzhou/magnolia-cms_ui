@@ -46,7 +46,8 @@ import info.magnolia.ui.widget.magnoliashell.gwt.client.event.handler.ShellNavig
 import info.magnolia.ui.widget.magnoliashell.gwt.client.event.handler.ViewportCloseHandler;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VShellErrorMessage;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VShellMessage;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VShellMessage.MessageType;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VWarningMessage;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VWarningMessage.MessageType;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -218,7 +219,7 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
         final VShellMessage msg;
         switch (type) {
         case WARNING:
-            msg = new VShellMessage(this, type, topic, message, id);
+            msg = new VWarningMessage(this, topic, message, id);
             if (lowPriorityMessage != null && getWidgetIndex(lowPriorityMessage) != -1) {
                 lowPriorityMessage.hide();
             }
@@ -367,6 +368,11 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
     @Override
     public void closeMessageEager(final String id) {
         presenter.removeMessage(id);
+    }
+
+    @Override
+    public void navigateToMessageDetails(String id) {
+        presenter.loadShellApp(ShellAppType.PULSE, "messages"/* + id*/);
     }
 
 }

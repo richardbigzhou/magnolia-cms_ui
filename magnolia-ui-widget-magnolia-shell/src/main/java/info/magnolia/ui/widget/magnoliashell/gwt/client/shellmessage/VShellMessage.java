@@ -53,154 +53,89 @@ import com.google.gwt.user.client.ui.HTML;
  * @author apchelintcev
  * 
  */
-public class VShellMessage extends HTML {
-
+public abstract class VShellMessage extends HTML {
+    
     private static final String STYLE_NAME = "v-shell-notification";
-
-    /**
-     * Enumeration of possible message types.
-     * 
-     * @author apchelintcev
-     * 
-     */
-    public enum MessageType {
-        WARNING, ERROR;
-    }
-
+    
     private HandlerRegistration eventPreviewReg = null;
 
     private final VMagnoliaShellView shell;
-
-    private final MessageType type;
-
-    private final String topic;
-
-    private Element header = DOM.createDiv();
     
-    private Element closeEl = DOM.createDiv();
-
-    private Element detailsEl = DOM.createDiv();
+    private Element messageTypeEl = DOM.createElement("b");
+    
+    private Element header = DOM.createDiv();
 
     private Element topicEl = DOM.createSpan();
-
-    private Element detailsExpanderEl = DOM.createElement("b");
-
-    private Element messageTypeEl = DOM.createElement("b");
-
+    
+    private Element closeEl = DOM.createDiv();
+    
     private final String id;
     
     private final String message;
     
+    private final String topic;
     
-    public VShellMessage(VMagnoliaShellView shell, MessageType type, String topic, String message, String id) {
+    public VShellMessage(VMagnoliaShellView shell, String topic, String message, String id) {
         super();
-        this.type = type;
         this.topic = topic;
         this.shell = shell;
         this.message = message;
         this.id = id;
-        construct();
-    }
-
-    protected final VMagnoliaShellView getShell() {
-        return shell;
-    }
-
-    private void construct() {
-        setStyleName(STYLE_NAME);
-        
-        header.setClassName("header");
-        getElement().appendChild(header);
-        
-        topicEl.setInnerText(topic);
-        header.appendChild(messageTypeEl);
-        header.appendChild(topicEl);
-
-        detailsExpanderEl.setInnerText("[MORE]");
-        detailsExpanderEl.setClassName("details-expander");
-        header.appendChild(detailsExpanderEl);
-
-        closeEl.setClassName("close");
-        header.appendChild(closeEl);
-        
-        detailsEl.setInnerText(message);
-        getElement().appendChild(detailsEl);
-        
-        switch (type) {
-        case WARNING:
-            addStyleName("warning");
-            messageTypeEl.setInnerHTML("Warning: ");
-            setAutoExpanding(true);
-            break;
-        case ERROR:
-            addStyleName("error");
-            setAutoExpanding(false);
-            messageTypeEl.setInnerHTML("Error: ");
-            break;
-        }
-        
-    }
-
-    private void setAutoExpanding(boolean autoExpanding) {
-        if (autoExpanding) {
-            expand();
-        } else {
-            detailsEl.getStyle().setDisplay(Display.NONE);
-            detailsExpanderEl.getStyle().setDisplay(Display.INLINE);
-        }
-    }
-
-    @Override
-    protected void onLoad() {
-        super.onLoad();
-        sinkEvents(Event.MOUSEEVENTS);
         eventPreviewReg = Event.addNativePreviewHandler(new NativePreviewHandler() {
             @Override
             public void onPreviewNativeEvent(NativePreviewEvent event) {
                 if (event.getTypeInt() == Event.ONCLICK) {
                     final Element targetEl = event.getNativeEvent().getEventTarget().cast();
-                    if (getElement().isOrHasChild(targetEl) && type == MessageType.WARNING) {
-                        close();
+                    if (getElement().isOrHasChild(targetEl)) {
+                        onMessageClicked(targetEl);
                     }
                 }
             }
         });
-        show();
-    }
-
-    protected void close() {
-        hide();
-        shell.closeMessageEager(id);
-    }
-
-    @Override
-    public void onBrowserEvent(Event event) {
-        super.onBrowserEvent(event);
-        int eventCode = event.getTypeInt();
-        if (eventCode == Event.ONMOUSEDOWN) {
-            final Element target = event.getEventTarget().cast();
-            if (target == closeEl) {
-                hide();
-            } else if (target == detailsExpanderEl) {
-                expand();
-            }
-        }
-    }
-
-    protected Element getDetailsElement() {
-        return detailsEl;
     }
     
-    protected void expand() {
-        detailsExpanderEl.getStyle().setDisplay(Display.NONE);
-        detailsEl.getStyle().setDisplay(Display.BLOCK);
+    @Override
+    protected void onLoad() {
+        super.onLoad();
+        sinkEvents(Event.MOUSEEVENTS);
+        construct();
+        show();
+    }
+    
+    protected void onMessageClicked(Element targetEl) {}
+    
+    protected void close() {
+        hide();
+        getShell().closeMessageEager(getId());
     }
 
+    protected void construct() {
+        topicEl.setInnerText(topic);
+        header.appendChild(messageTypeEl);
+        header.appendChild(topicEl);
+        
+        addStyleName(STYLE_NAME);
+        
+        header.setClassName("header");
+        getElement().appendChild(header);
+        
+        closeEl.setClassName("close");
+        header.appendChild(closeEl);
+        
+        messageTypeEl.setInnerHTML(getMessageTypeCaption());
+    }
+
+    protected abstract String getMessageTypeCaption();
+
+    protected int getHeaderHeight() {
+        return JQueryWrapper.select(header).cssInt("height");
+    }
+    
     public void show() {
         getElement().getStyle().setDisplay(Display.NONE);
         JQueryWrapper.select(this).slideDown(300, null);
     }
-
+    
     public void hide() {
         JQueryWrapper.select(this).slideUp(300, Callbacks.create(new JQueryCallback() {
             @Override
@@ -209,9 +144,17 @@ public class VShellMessage extends HTML {
             }
         }));
     }
-
-    protected int getHeaderHeight() {
-        return JQueryWrapper.select(header).cssInt("height");
+    
+    @Override
+    public void onBrowserEvent(Event event) {
+        super.onBrowserEvent(event);
+        int eventCode = event.getTypeInt();
+        if (eventCode == Event.ONMOUSEDOWN) {
+            final Element target = event.getEventTarget().cast();
+            if (target == closeEl) {
+                close();
+            }
+        }
     }
     
     @Override
@@ -221,4 +164,27 @@ public class VShellMessage extends HTML {
             eventPreviewReg.removeHandler();
         }
     }
+    
+    public Element getHeader() {
+        return header;
+    }
+    
+    protected final VMagnoliaShellView getShell() {
+        return shell;
+    }
+    
+    public String getMessage() {
+        return message;
+    }
+    
+    public String getId() {
+        return id;
+    }
+    
+    public String getTopic() {
+        return topic;
+    }
+    
+    
 }
+

@@ -40,7 +40,7 @@ import info.magnolia.ui.framework.shell.FragmentChangedHandler;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShell;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShell.ViewportType;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VShellMessage.MessageType;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VWarningMessage.MessageType;
 
 import java.util.EnumMap;
 import java.util.Iterator;
@@ -75,7 +75,7 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
         put(ViewportType.APP_VIEWPORT, new ShellViewport(BaseMagnoliaShell.this));
         put(ViewportType.DIALOG_VIEWPORT, new ShellViewport(BaseMagnoliaShell.this));
     }};
-
+    
     private ShellViewport activeViewport = null;
 
     private ICEPush pusher = new ICEPush();
