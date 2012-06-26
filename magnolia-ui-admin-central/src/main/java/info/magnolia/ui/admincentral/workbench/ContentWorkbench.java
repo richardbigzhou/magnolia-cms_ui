@@ -39,20 +39,26 @@ import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.admincentral.event.ContentChangedEvent;
 import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
+import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.model.workbench.registry.WorkbenchDefinitionRegistry;
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.inject.Inject;
 import javax.jcr.LoginException;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,15 +67,19 @@ import com.vaadin.ui.ComponentContainer;
 
 
 /**
- * The workbench is a core component of AdminCentral. It represents the main hub through which users can interact with JCR data.
- * It is compounded by three main sub-components:
+ * The workbench is a core component of AdminCentral. It represents the main hub through which users
+ * can interact with JCR data. It is compounded by three main sub-components:
  * <ul>
  * <li>a configurable data grid.
- * <li>a configurable function toolbar on top of the data grid, providing operations such as switching from tree to list view or performing searches on data.
- * <li>a configurable action bar on the right hand side, showing the available operations for the given workspace and the selected item.
+ * <li>a configurable function toolbar on top of the data grid, providing operations such as
+ * switching from tree to list view or performing searches on data.
+ * <li>a configurable action bar on the right hand side, showing the available operations for the
+ * given workspace and the selected item.
  * </ul>
- *
- * <p>Its main configuration point is the {@link WorkbenchDefinition} through which one defines the JCR workspace to connect to, the columns/properties to display, the available actions and so on.
+ * 
+ * <p>
+ * Its main configuration point is the {@link WorkbenchDefinition} through which one defines the JCR
+ * workspace to connect to, the columns/properties to display, the available actions and so on.
  * @version $Id$
  */
 @SuppressWarnings("serial")
@@ -89,7 +99,11 @@ public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView
 
     private final WorkbenchActionFactory actionFactory;
 
+    private final Map<String, ActionDefinition> actions = new HashMap<String, ActionDefinition>();
+
     private String selectedItemId;
+
+    private AppContext context;
 
     @Inject
     public ContentWorkbench(final ContentWorkbenchView view, final EventBus eventbus, final MagnoliaShell shell, final WorkbenchDefinitionRegistry workbenchRegistry, final WorkbenchActionFactory actionFactory) {
@@ -120,35 +134,12 @@ public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView
             return;
         }
         view.initWorkbench(workbenchDefinition);
+        view.initActionbar(workbenchDefinition.getActionbar());
     }
 
     @Override
     public ComponentContainer asVaadinComponent() {
         return view;
-    }
-
-    @Override
-    public void onActionbarItemClicked(ActionDefinition actionDefinition) {
-        if (actionDefinition != null) {
-            try {
-                Session session = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace());
-                if(selectedItemId == null || !session.itemExists(selectedItemId)) {
-                    log.debug("{} does not exist anymore. Was it just deleted? Resetting path to root...", selectedItemId);
-                    selectedItemId = "/";
-                }
-                final javax.jcr.Item item = session.getItem(selectedItemId);
-                Action action = actionFactory.createAction(actionDefinition, item);
-                action.execute();
-            } catch (PathNotFoundException e) {
-                shell.showError("Can't execute action.\n" + e.getMessage(), e);
-            } catch (LoginException e) {
-                shell.showError("Can't execute action.\n" + e.getMessage(), e);
-            } catch (RepositoryException e) {
-                shell.showError("Can't execute action.\n" + e.getMessage(), e);
-            } catch (ActionExecutionException e) {
-                shell.showError("Can't execute action.\n" + e.getMessage(), e);
-            }
-        }
     }
 
     @Override
@@ -162,12 +153,61 @@ public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView
             // change even when no value has changed and only a click happened on table, see
             // info.magnolia.ui.admincentral.tree.view.TreeViewImpl.TreeViewImpl
             // and jcrBrowser internal obj registering for those events.
-            selectedItemId = ((JcrItemAdapter)item).getItemId();
+            selectedItemId = ((JcrItemAdapter) item).getItemId();
             log.debug("javax.jcr.Item at {} was selected. Firing ItemSelectedEvent...", selectedItemId);
-            eventBus.fireEvent(new ItemSelectedEvent(workbenchDefinition.getWorkspace(),selectedItemId));
+            eventBus.fireEvent(new ItemSelectedEvent(workbenchDefinition.getWorkspace(), selectedItemId));
         } catch (Exception e) {
             shell.showError("An error occurred while selecting a row in the data grid", e);
         }
+    }
+
+    //
+    // ACTIONBAR PRESENTER
+    //
+
+    @Override
+    public Map<String, ActionDefinition> getActions() {
+        return actions;
+    }
+
+    @Override
+    public void addAction(String actionName, ActionDefinition actionDefinition) {
+        if (StringUtils.isNotBlank(actionName)) {
+            actions.put(actionName, actionDefinition);
+        }
+    }
+
+    @Override
+    public void onActionbarItemClicked(final String actionName) {
+        ActionDefinition actionDefinition = getActions().get(actionName);
+        if (actionDefinition != null) {
+            try {
+                Session session = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace());
+                if (selectedItemId == null || !session.itemExists(selectedItemId)) {
+                    log.debug("{} does not exist anymore. Was it just deleted? Resetting path to root...", selectedItemId);
+                    selectedItemId = "/";
+                }
+                final javax.jcr.Item item = session.getItem(selectedItemId);
+                Action action = actionFactory.createAction(actionDefinition, item, context);
+                action.execute();
+            } catch (PathNotFoundException e) {
+                shell.showError("Can't execute action.\n" + e.getMessage(), e);
+            } catch (LoginException e) {
+                shell.showError("Can't execute action.\n" + e.getMessage(), e);
+            } catch (RepositoryException e) {
+                shell.showError("Can't execute action.\n" + e.getMessage(), e);
+            } catch (ActionExecutionException e) {
+                shell.showError("Can't execute action.\n" + e.getMessage(), e);
+            }
+        }
+    }
+
+    public ContentWorkbenchView asView() {
+        return view;
+    }
+
+    public void setAppContext(AppContext ctx) {
+        this.context = ctx;
     }
 
 }

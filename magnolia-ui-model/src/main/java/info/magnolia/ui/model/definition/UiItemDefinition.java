@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,48 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.actionbar.definition;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
+package info.magnolia.ui.model.definition;
 
 /**
- * Simple implementation for {@link ActionbarSectionDefinition}.
+ * An definition interface for UI items which may have a name, a label and an i18n bundle key.
  */
-public class ActionbarSectionDefinitionImpl implements ActionbarSectionDefinition {
+public interface UiItemDefinition {
 
-    private String title;
+    String getName();
 
-    private final List<ActionbarGroupDefinition> groups = new ArrayList<ActionbarGroupDefinition>();
+    String getLabel();
 
-    @Override
-    public String getTitle() {
-        return title;
-    }
-
-    /**
-     * Sets the section title.
-     * 
-     * @param title the new title
-     */
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    @Override
-    public List<ActionbarGroupDefinition> getGroups() {
-        return Collections.unmodifiableList(groups);
-    }
-
-    /**
-     * Adds a group to this section.
-     * 
-     * @param groupDefinition the group definition
-     */
-    public void addGroup(ActionbarGroupDefinition groupDefinition) {
-        groups.add(groupDefinition);
-    }
+    String getI18nBasename();
 
 }

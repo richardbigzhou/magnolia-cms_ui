@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,25 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.definition;
+package info.magnolia.ui.admincentral.tree.action;
+
+import info.magnolia.ui.model.action.ActionBase;
+import info.magnolia.ui.model.action.ActionExecutionException;
+
+import javax.jcr.Node;
+
 
 /**
- * UiItemDefinition.
- *
- * @author ejervidalo
+ * The Class MoveNodeAction.
  */
-public interface UiItemDefinition {
+public class MoveNodeAction extends ActionBase<MoveNodeActionDefinition> {
 
-    public abstract void setI18nBasename(String i18nBasename);
+    private final Node nodeToEdit;
 
-    public abstract String getI18nBasename();
+    /**
+     * Instantiates a new move node action.
+     * 
+     * @param definition the definition
+     * @param nodeToEdit the node to edit
+     */
+    public MoveNodeAction(MoveNodeActionDefinition definition, Node nodeToEdit) {
+        super(definition);
+        this.nodeToEdit = nodeToEdit;
+    }
 
-    public abstract void setLabel(String label);
-
-    public abstract String getLabel();
-
-    public abstract void setName(String name);
-
-    public abstract String getName();
+    @Override
+    public void execute() throws ActionExecutionException {
+    }
 
 }

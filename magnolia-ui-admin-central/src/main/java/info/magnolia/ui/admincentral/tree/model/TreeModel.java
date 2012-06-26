@@ -283,7 +283,7 @@ public class TreeModel implements JcrContainerSource {
     }
 
     public void execute(ActionDefinition actionDefinition, Item item) throws ActionExecutionException {
-        Action action = actionFactory.createAction(actionDefinition, item);
+        Action action = actionFactory.createAction(actionDefinition, item, null);
         action.execute();
     }
 

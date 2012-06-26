@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,27 +31,41 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.menu.definition;
+package info.magnolia.ui.admincentral.app.pages.action;
 
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.action.ActionBase;
+import info.magnolia.ui.model.action.ActionExecutionException;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 
 /**
- * Menu item definition providing configuration for the label and icon. Also provides the
- * {@link ActionDefinition} executed when the item is clicked.
+ * The Class PreviewPageAction. Opens a full screen preview of the selected page.
  */
-public interface MenuItemDefinition {
+public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
 
-    String getIcon();
+    private final Node nodeToEdit;
 
-    String getName();
+    /**
+     * Instantiates a new preview page action.
+     * 
+     * @param definition the definition
+     * @param nodeToEdit the node to edit
+     */
+    public PreviewPageAction(PreviewPageActionDefinition definition, Node nodeToEdit) {
+        super(definition);
+        this.nodeToEdit = nodeToEdit;
+    }
 
-    String getLabel();
-
-    String getI18nBasename();
-
-    String getDescription();
-
-    public ActionDefinition getActionDefinition();
+    @Override
+    public void execute() throws ActionExecutionException {
+        System.out.println("preview page should open full screen preview.");
+        try {
+            System.out.println(nodeToEdit.getPath());
+        } catch (RepositoryException e) {
+            System.err.println("ERROR GETTING NODE PATH");
+        }
+    }
 
 }

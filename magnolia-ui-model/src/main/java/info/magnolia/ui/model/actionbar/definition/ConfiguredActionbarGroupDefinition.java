@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,82 +31,48 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.menu.definition;
+package info.magnolia.ui.model.actionbar.definition;
 
-import info.magnolia.ui.model.action.ActionDefinition;
-
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 
 /**
- * Simple implementation of {@link MenuItemDefinition}.
+ * Simple implementation for {@link ActionbarGroupDefinition}.
  */
-public class MenuItemDefinitionImpl implements MenuItemDefinition {
-
-    private String i18nBasename;
+public class ConfiguredActionbarGroupDefinition implements ActionbarGroupDefinition {
 
     private String name;
 
-    private String label;
-
-    private String icon;
-
-    private String description;
-
-    private ActionDefinition actionDefinition;
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String getLabel() {
-        return label;
-    }
+    private final List<ActionbarItemDefinition> items = new ArrayList<ActionbarItemDefinition>();
 
     @Override
     public String getName() {
         return name;
     }
 
-    public void setIcon(String icon) {
-        this.icon = icon;
+    /**
+     * Sets the group name.
+     * 
+     * @param name the new name
+     */
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
-    public String getIcon() {
-        return icon;
+    public List<ActionbarItemDefinition> getItems() {
+        return Collections.unmodifiableList(items);
     }
 
-    @Override
-    public ActionDefinition getActionDefinition() {
-        return actionDefinition;
-    }
-
-    public void setActionDefinition(ActionDefinition actionDefinition) {
-        this.actionDefinition = actionDefinition;
-    }
-
-
-    @Override
-    public String getI18nBasename() {
-        return i18nBasename;
-    }
-
-    public void setI18nBasename(String i18nBasename) {
-        this.i18nBasename = i18nBasename;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    @Override
-    public String getDescription() {
-        return description;
+    /**
+     * Adds an action item to this group.
+     * 
+     * @param itemDefinition the action item definition
+     */
+    public void addItem(ActionbarItemDefinition itemDefinition) {
+        items.add(itemDefinition);
     }
 
 }

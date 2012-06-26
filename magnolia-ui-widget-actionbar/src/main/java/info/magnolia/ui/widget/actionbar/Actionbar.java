@@ -49,9 +49,7 @@ import com.vaadin.ui.Component;
 
 
 /**
- * 
- * Actionbar.
- * 
+ * The Actionbar widget, consisting of sections and groups of actions.
  */
 @SuppressWarnings("serial")
 @ClientWidget(value = VActionbar.class, loadStyle = LoadStyle.EAGER)

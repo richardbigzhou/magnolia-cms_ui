@@ -33,13 +33,13 @@
  */
 package info.magnolia.ui.model.toolbar;
 
-import info.magnolia.ui.model.menu.definition.MenuItemDefinitionImpl;
+import info.magnolia.ui.model.definition.ConfiguredMenuItemDefinition;
 
 /**
  * Implementation for {@link ToolbarDefinition}.
  * @author fgrilli
  *
  */
-public class ToolbarItemDefinitionImpl extends MenuItemDefinitionImpl implements ToolbarItemDefinition{
+public class ToolbarItemDefinitionImpl extends ConfiguredMenuItemDefinition implements ToolbarItemDefinition{
 
 }

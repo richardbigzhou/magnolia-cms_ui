@@ -39,31 +39,45 @@ import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 import javax.inject.Inject;
 
 import com.vaadin.ui.Component;
+import com.vaadin.ui.ComponentContainer;
+
 
 /**
  * View implementation for the Pages app.
- *
+ * 
  * @version $Id$
  */
 @SuppressWarnings("serial")
 public class PagesViewImpl implements PagesView, IsVaadinComponent {
 
-    private String jcrWorkspaceName = "website";
-    private Component view;
+    private ComponentContainer view;
+    private Presenter presenter;
+    private ContentWorkbench workbench;
 
     @Inject
     public PagesViewImpl(final ContentWorkbench workbench) {
-        workbench.initWorkbench(jcrWorkspaceName);
+        workbench.initWorkbench("website");
+        this.workbench = workbench;
         view = workbench.asVaadinComponent();
     }
 
     @Override
     public String getCaption() {
-        return "Website";
+        return "Pages";
     }
 
     @Override
     public Component asVaadinComponent() {
         return view;
+    }
+
+    @Override
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @Override
+    public ContentWorkbench getWorkbench() {
+        return workbench;
     }
 }

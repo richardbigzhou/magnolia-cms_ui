@@ -33,53 +33,14 @@
  */
 package info.magnolia.ui.model.dialog.action;
 
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.definition.ConfiguredMenuItemDefinition;
+
 
 /**
  * ConfiguredDialogActionDefinition.
- *
+ * 
  * @author ejervidalo
  */
-public class ConfiguredDialogActionDefinition implements DialogActionDefinition {
-
-    private String label;
-    private String name;
-    private String i18nBasename;
-    private ActionDefinition actionDefinition;
-
-    @Override
-    public String getLabel() {
-        return label;
-    }
-    @Override
-    public void setLabel(String label) {
-        this.label = label;
-    }
-    @Override
-    public String getName() {
-        return name;
-    }
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-    @Override
-    public String getI18nBasename() {
-        return i18nBasename;
-    }
-    @Override
-    public void setI18nBasename(String i18nBasename) {
-        this.i18nBasename = i18nBasename;
-    }
-    @Override
-    public ActionDefinition getActionDefinition() {
-        return actionDefinition;
-    }
-
-    @Override
-    public void setActionDefinition(ActionDefinition actionDefinition) {
-        this.actionDefinition = actionDefinition;
-    }
-
+public class ConfiguredDialogActionDefinition extends ConfiguredMenuItemDefinition {
 
 }

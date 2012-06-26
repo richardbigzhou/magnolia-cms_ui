@@ -2,11 +2,11 @@
 @import url(splitfeed.css);
 @import url(pulse-activity-entry.css);
 @import url(dialog.css);
-@import url(tabsheet.css);
 @import url(actionbar.css);
 @import url(tabsheet.css);
 @import url(shellmessage.css);
 @import url(app.css);
+@import url(workbench.css);
 
 @font-face{
     font-family: DinRound;

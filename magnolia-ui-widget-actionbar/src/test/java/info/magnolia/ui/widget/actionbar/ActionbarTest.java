@@ -31,14 +31,11 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.actionbar.definition;
-
-import info.magnolia.ui.model.menu.definition.MenuItemDefinitionImpl;
-
+package info.magnolia.ui.widget.actionbar;
 
 /**
- * Simple implementation for {@link ActionbarItemDefinition}.
+ * The Class ActionbarTest.
  */
-public class ActionbarItemDefinitionImpl extends MenuItemDefinitionImpl implements ActionbarItemDefinition {
+public class ActionbarTest {
 
 }

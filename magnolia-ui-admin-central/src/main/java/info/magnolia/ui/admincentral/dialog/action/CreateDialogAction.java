@@ -33,18 +33,13 @@
  */
 package info.magnolia.ui.admincentral.dialog.action;
 
-import info.magnolia.cms.core.Path;
 import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.vaadin.integration.jcr.JcrTransientNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.widget.dialog.DialogView.Presenter;
 
-import javax.jcr.AccessDeniedException;
-import javax.jcr.Item;
-import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
-import javax.jcr.RepositoryException;
 
 /**
  * Opens a dialog for creating a new node in a tree.
@@ -64,28 +59,8 @@ public class CreateDialogAction extends ActionBase<CreateDialogActionDefinition>
 
     @Override
     public void execute() throws ActionExecutionException {
-
         Presenter dialogPresenter = dialogPresenterFactory.createDialog(getDefinition().getDialogName());
-        String name;
-        Node transientNode;
-        try {
-            name = getUniqueNewItemName(parent);
-            transientNode = parent.addNode(name, getDefinition().getNodeType());
-            dialogPresenter.editItem(new JcrTransientNodeAdapter(transientNode));
-        } catch (AccessDeniedException e) {
-            throw new ActionExecutionException(e);
-        } catch (ItemNotFoundException e) {
-            throw new ActionExecutionException(e);
-        } catch (RepositoryException e) {
-            throw new ActionExecutionException(e);
-        }
-
+        dialogPresenter.editItem(new JcrNewNodeAdapter(parent, getDefinition().getNodeType()));
     }
 
-    private String getUniqueNewItemName(final Item item) throws RepositoryException, ItemNotFoundException, AccessDeniedException {
-        if(item == null) {
-            throw new IllegalArgumentException("Item cannot be null.");
-        }
-        return Path.getUniqueLabel(item.getSession(), item.getPath(), "untitled");
-    }
 }

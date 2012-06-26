@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,47 +31,21 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.actionbar.definition;
+package info.magnolia.ui.admincentral.actionbar;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 
 
 /**
- * Simple implementation for {@link ActionbarDefinition}.
+ * Base interface for an action bar view.
  */
-public class ActionbarDefinitionImpl implements ActionbarDefinition {
-
-    private String name;
-
-    private final List<ActionbarSectionDefinition> sections = new ArrayList<ActionbarSectionDefinition>();
-
-    @Override
-    public String getName() {
-        return name;
-    }
+public interface ActionbarView {
 
     /**
-     * Sets the action bar name.
+     * Inits the actionbar view.
      * 
-     * @param name the new name
+     * @param definition the actionbar definition
      */
-    public void setName(String name) {
-        this.name = name;
-    }
+    void initActionbar(ActionbarDefinition definition);
 
-    @Override
-    public List<ActionbarSectionDefinition> getSections() {
-        return Collections.unmodifiableList(sections);
-    }
-
-    /**
-     * Adds a section to the action bar.
-     * 
-     * @param sectionDefinition the section definition
-     */
-    public void addSection(ActionbarSectionDefinition sectionDefinition) {
-        sections.add(sectionDefinition);
-    }
 }
