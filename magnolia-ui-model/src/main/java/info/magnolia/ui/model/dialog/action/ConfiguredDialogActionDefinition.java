@@ -38,9 +38,7 @@ import info.magnolia.ui.model.definition.ConfiguredMenuItemDefinition;
 
 /**
  * ConfiguredDialogActionDefinition.
- * 
- * @author ejervidalo
  */
-public class ConfiguredDialogActionDefinition extends ConfiguredMenuItemDefinition {
+public class ConfiguredDialogActionDefinition extends ConfiguredMenuItemDefinition implements DialogActionDefinition {
 
 }
