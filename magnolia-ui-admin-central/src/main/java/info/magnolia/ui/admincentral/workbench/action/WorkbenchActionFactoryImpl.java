@@ -78,8 +78,14 @@ public class WorkbenchActionFactoryImpl extends FactoryBase<ActionDefinition, Ac
         addMapping(mapping.getDefinition(), mapping.getImplementation());
     }
 
+    /**
+     * Creates a workbench action based on its {@link ActionDefinition}, the selected {@link Item} and an optional (nullable) {@link AppContext}.
+     */
     @Override
-    public Action createAction(ActionDefinition actionDefinition, Item item, AppContext ctx) {
+    public Action createAction(final ActionDefinition actionDefinition, final Item item, final AppContext ctx) {
+        if(ctx == null) {
+            return create(actionDefinition, item);
+        }
         return create(actionDefinition, item, ctx);
     }
 
