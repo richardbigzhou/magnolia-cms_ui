@@ -33,14 +33,16 @@
  */
 package info.magnolia.ui.app.messages;
 
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
-
-import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.Label;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.TextArea;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
+
+import info.magnolia.ui.framework.message.MessageType;
+import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 /**
  * View implementation for the Messages app.
@@ -51,62 +53,64 @@ import com.vaadin.ui.VerticalLayout;
 public class MessagesViewImpl implements MessagesView, IsVaadinComponent {
 
     private MessagesView.Presenter presenter;
-    private final VerticalLayout layout;
+    private final Component component;
 
     public MessagesViewImpl() {
-        layout = new VerticalLayout();
-        Label label = new Label("<center>Messages App</center>", Label.CONTENT_XHTML);
-        layout.addComponent(label);
+        VerticalLayout layout = new VerticalLayout();
+        layout.setMargin(true);
+        layout.setSpacing(true);
 
-        final TextArea textArea = new TextArea();
-        layout.addComponent(textArea);
-        layout.setComponentAlignment(label, Alignment.TOP_CENTER);
+        final TextField subjectField = new TextField("Subject");
+        layout.addComponent(subjectField);
 
-        layout.addComponent(new Button("Local Info", new Button.ClickListener() {
+        final TextArea messageField = new TextArea("Message");
+        layout.addComponent(messageField);
+
+        HorizontalLayout middle = new HorizontalLayout();
+
+        final OptionGroup types = new OptionGroup("Type");
+        types.setNullSelectionAllowed(false);
+        types.addItem("Info");
+        types.addItem("Warning");
+        types.addItem("Error");
+        types.setValue("Info");
+        middle.addComponent(types);
+
+        final OptionGroup scopes = new OptionGroup("Scope");
+        scopes.setNullSelectionAllowed(false);
+        scopes.addItem("Local");
+        scopes.addItem("Global");
+        scopes.setValue("Local");
+        middle.addComponent(scopes);
+        layout.addComponent(middle);
+
+        layout.addComponent(new Button("Send system message", new Button.ClickListener() {
+
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                presenter.handleLocalInfo("Local Info - " + textArea.getValue());
-            }
-        }));
-        layout.addComponent(new Button("Global Info", new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                presenter.handleGlobalInfo("Global Info - " + textArea.getValue());
+
+                String subject = (String) subjectField.getValue();
+                String message = (String) messageField.getValue();
+                MessageType type = MessageType.valueOf(((String) types.getValue()).toUpperCase());
+                String scope = (String) scopes.getValue();
+
+                if (scope.equals("Local")) {
+                    presenter.handleLocalMessage(type, subject, message);
+                } else {
+                    presenter.handleGlobalMessage(type, subject, message);
+                }
             }
         }));
 
-        layout.addComponent(new Button("Local Warning", new Button.ClickListener() {
+        layout.addComponent(new Button("Send confirmation message", new Button.ClickListener() {
+
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                presenter.handleLocalWarning("Local Warning - " + textArea.getValue());
-            }
-        }));
-        layout.addComponent(new Button("Global Warning", new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                presenter.handleGlobalWarning("Global Warning - " + textArea.getValue());
+                presenter.showConfirmationMessage("Confirmation - " + messageField.getValue());
             }
         }));
 
-        layout.addComponent(new Button("Local Error", new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                presenter.handleLocalError("Local Error - " + textArea.getValue());
-            }
-        }));
-        layout.addComponent(new Button("Global Error", new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                presenter.handleGlobalError("Global Error - " + textArea.getValue());
-            }
-        }));
-
-        layout.addComponent(new Button("Confirmation message", new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                presenter.showConfirmationMessage("Confirmation - " + textArea.getValue());
-            }
-        }));
+        component = layout;
     }
 
     @Override
@@ -121,6 +125,6 @@ public class MessagesViewImpl implements MessagesView, IsVaadinComponent {
 
     @Override
     public Component asVaadinComponent() {
-        return layout;
+        return component;
     }
 }
