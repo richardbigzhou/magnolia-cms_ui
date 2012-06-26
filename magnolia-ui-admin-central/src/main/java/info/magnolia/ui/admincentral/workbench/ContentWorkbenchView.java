@@ -50,9 +50,9 @@ import com.vaadin.ui.ComponentContainer;
  */
 public interface ContentWorkbenchView extends ComponentContainer, ActionbarView {
 
-    void setPresenter(Presenter presenter);
+    void setPresenter(final Presenter presenter);
 
-    void initWorkbench(WorkbenchDefinition definintion);
+    void initWorkbench(final WorkbenchDefinition definintion);
 
     void setGridType(final JcrView.ViewType type);
 
