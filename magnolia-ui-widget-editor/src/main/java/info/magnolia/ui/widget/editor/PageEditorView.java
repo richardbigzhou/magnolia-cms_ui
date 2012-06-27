@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,37 +31,24 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.editor.gwt.client;
+package info.magnolia.ui.widget.editor;
 
-
-
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.web.bindery.event.shared.EventBus;
+import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 /**
- * GWT implementation of MagnoliaShell client side (the view part basically).
+ * PageEditorView.
+ * @version $Id$
  *
  */
-public class VPageEditorViewImpl extends FlowPanel implements VPageEditorView {
+public interface PageEditorView extends IsVaadinComponent {
 
+    void setPresenter(Presenter presenter);
+    /**
+     * Presenter.
+     */
+    interface Presenter {
 
-    private Presenter presenter;
-    private EventBus eventBus;
-
-
-    public VPageEditorViewImpl(final EventBus eventBus) {
-        super();
-        this.eventBus = eventBus;
+        void executeAction(final String actionName);
 
     }
-
-    @Override
-    public void setPresenter(Presenter presenter) {
-        this.presenter = presenter;
-    }
-
-    public Presenter getPresenter() {
-        return presenter;
-    }
-
 }

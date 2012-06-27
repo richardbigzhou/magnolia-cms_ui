@@ -51,7 +51,6 @@ public class AreaProcessor extends MgnlElementProcessor {
         super(mgnlElement);
     }
 
-    @SuppressWarnings("unused")
     @Override
     public void process() {
         AreaBar areaBar = null;
