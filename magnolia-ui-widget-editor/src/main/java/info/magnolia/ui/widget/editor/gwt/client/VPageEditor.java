@@ -72,7 +72,6 @@ import com.google.gwt.user.client.Window.ScrollEvent;
 import com.google.gwt.user.client.Window.ScrollHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Frame;
-import com.google.gwt.user.client.ui.RootPanel;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.Paintable;
 import com.vaadin.terminal.gwt.client.UIDL;
@@ -120,6 +119,10 @@ public class VPageEditor extends FlowPanel implements Paintable, VPageEditorView
         eventBus = new SimpleEventBus();
         this.view = new VPageEditorViewImpl(eventBus);
         view.setPresenter(this);
+        final Element iframeElement = iframe.getElement();
+        iframeElement.setAttribute("width", "100%");
+        iframeElement.setAttribute("height", "100%");
+        iframeElement.setAttribute("allowTransparency", "true");
         add(iframe);
 
     }
@@ -144,15 +147,15 @@ public class VPageEditor extends FlowPanel implements Paintable, VPageEditorView
         if (client.updateComponent(this, uidl, true)) {
             return;
         }
-
+        iframe.getElement().setId(paintableId);
         iframe.setUrl(getSrc(uidl, client));
+        //FIXME at this point the iframe has not yet loaded the page so processing does nothing
+        process();
 
         proxy.update(this, uidl, client);
     }
 
-
-    @Override
-    public boolean initWidget(Object[] params) {
+    private void process() {
         /*String mgnlVersion = Window.Location.getParameter(MGNL_VERSION_PARAMETER);
         if(mgnlVersion != null) {
             return false;
@@ -183,14 +186,14 @@ public class VPageEditor extends FlowPanel implements Paintable, VPageEditorView
         locale = JavascriptUtils.detectCurrentLocale();
 
         long startTime = System.currentTimeMillis();
-        processDocument(Document.get().getDocumentElement(), null);
+        processDocument(iframe.getElement(), null);
         processMgnlElements();
 
         GWT.log("Time spent to process cms comments: " + (System.currentTimeMillis() - startTime) + "ms");
 
         JavascriptUtils.getCookieContentId();
 
-        RootPanel.get().addDomHandler(new MouseUpHandler() {
+        iframe.addDomHandler(new MouseUpHandler() {
             @Override
             public void onMouseUp(MouseUpEvent event) {
 
@@ -199,7 +202,7 @@ public class VPageEditor extends FlowPanel implements Paintable, VPageEditorView
             }
         }, MouseUpEvent.getType());
 
-        RootPanel.get().addDomHandler(new KeyDownHandler() {
+        iframe.addDomHandler(new KeyDownHandler() {
             @Override
             public void onKeyDown(KeyDownEvent event) {
                 if (event.getNativeKeyCode() == KeyCodes.KEY_ESCAPE) {
@@ -216,7 +219,7 @@ public class VPageEditor extends FlowPanel implements Paintable, VPageEditorView
 
 
 
-        RootPanel.get().addDomHandler(new MouseMoveHandler() {
+        iframe.addDomHandler(new MouseMoveHandler() {
 
             @Override
             public void onMouseMove(MouseMoveEvent event) {
@@ -234,8 +237,12 @@ public class VPageEditor extends FlowPanel implements Paintable, VPageEditorView
 
         JavascriptUtils.resetEditorCookies();
 
-        GWT.log("Running onPageEditorReady callbacks...");
-        onPageEditorReady();
+        //GWT.log("Running onPageEditorReady callbacks...");
+        //onPageEditorReady();
+    }
+    @Override
+    public boolean initWidget(Object[] params) {
+        //TODO this seems never to be called
         return false;
     }
 
@@ -276,7 +283,7 @@ public class VPageEditor extends FlowPanel implements Paintable, VPageEditorView
     }
 
     private void processMgnlElements() {
-        List<MgnlElement> rootElements = new LinkedList<MgnlElement>(model.getRootElements());
+        List<MgnlElement> rootElements = new LinkedList<MgnlElement>(getModel().getRootElements());
         for (MgnlElement root : rootElements) {
             LinkedList<MgnlElement> elements = new LinkedList<MgnlElement>();
             elements.add(root);

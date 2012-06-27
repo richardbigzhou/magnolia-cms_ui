@@ -37,6 +37,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.ui.framework.app.AppView;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
+import info.magnolia.ui.widget.editor.PageEditor;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -45,7 +46,6 @@ import org.apache.commons.lang.StringUtils;
 
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.Embedded;
 import com.vaadin.ui.VerticalLayout;
 
 /**
@@ -60,8 +60,7 @@ public class PageEditorTabView implements AppView, IsVaadinComponent {
     private String caption;
 
     public PageEditorTabView(final Node pageNode) throws RepositoryException {
-        final Embedded page = new Embedded("", new ExternalResource(MgnlContext.getContextPath() + pageNode.getPath()));
-        page.setType(Embedded.TYPE_BROWSER);
+        final PageEditor page = new PageEditor(new ExternalResource(MgnlContext.getContextPath() + pageNode.getPath()));
         page.setSizeFull();
 
         container.setSizeFull();
