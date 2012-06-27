@@ -52,7 +52,7 @@ import com.vaadin.ui.Component;
  */
 @SuppressWarnings("serial")
 @ClientWidget(value=VPageEditor.class)
-public class PageEditor extends AbstractComponent implements PageEditorView, ServerSideHandler{
+public class PageEditor extends AbstractComponent implements PageEditorView, ServerSideHandler {
 
     private Presenter presenter;
 
@@ -63,6 +63,7 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
 
     public PageEditor(final Resource source) {
         this.source = source;
+        setCaption("");
     }
 
 

@@ -72,9 +72,9 @@ public final class JavascriptUtils {
     private final static String editorContentIdCookieName = EDITOR_COOKIE_NAMESPACE + "content-id-";
 
     static {
-        //TODO move messages we need to this module?
-        JavascriptUtils.exposeMgnlMessagesToGwtDictionary("info.magnolia.module.admininterface.messages");
-        dictionary = Dictionary.getDictionary("mgnlGwtMessages");
+        //TODO these calls raise an error
+        //JavascriptUtils.exposeMgnlMessagesToGwtDictionary("info.magnolia.module.admininterface.messages");
+        //dictionary = Dictionary.getDictionary("mgnlGwtMessages");
     }
 
     private JavascriptUtils() {
