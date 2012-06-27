@@ -45,7 +45,6 @@ import info.magnolia.ui.widget.editor.gwt.client.widget.dnd.LegacyDragAndDrop;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import org.vaadin.rpc.client.ClientSideHandler;
 import org.vaadin.rpc.client.ClientSideProxy;
@@ -71,13 +70,11 @@ import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ScrollEvent;
 import com.google.gwt.user.client.Window.ScrollHandler;
-import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
-import com.vaadin.terminal.gwt.client.Container;
 import com.vaadin.terminal.gwt.client.Paintable;
-import com.vaadin.terminal.gwt.client.RenderSpace;
 import com.vaadin.terminal.gwt.client.UIDL;
 import com.vaadin.terminal.gwt.client.VConsole;
 
@@ -86,7 +83,7 @@ import com.vaadin.terminal.gwt.client.VConsole;
  * Vaadin implementation of PageEditor client side (Presenter).
  */
 @SuppressWarnings("serial")
-public class VPageEditor extends Composite implements Container, VPageEditorView.Presenter, ClientSideHandler {
+public class VPageEditor extends FlowPanel implements Paintable, VPageEditorView.Presenter, ClientSideHandler {
 
     protected String paintableId;
 
@@ -105,6 +102,9 @@ public class VPageEditor extends Composite implements Container, VPageEditorView
 
 
     private final EventBus eventBus;
+
+    private Frame iframe = new Frame();
+
     private ClientSideProxy proxy = new ClientSideProxy(this) {
         {
             register("addAction", new Method() {
@@ -119,9 +119,21 @@ public class VPageEditor extends Composite implements Container, VPageEditorView
     public VPageEditor() {
         eventBus = new SimpleEventBus();
         this.view = new VPageEditorViewImpl(eventBus);
-        initWidget(view.asWidget());
         view.setPresenter(this);
+        add(iframe);
 
+    }
+
+    /**
+     * Helper to return translated src-attribute from embedded's UIDL
+     * Copied verbatim from Vaadin's VEmbedded class.
+     */
+    private String getSrc(UIDL uidl, ApplicationConnection client) {
+        String url = client.translateVaadinUri(uidl.getStringAttribute("src"));
+        if (url == null) {
+            return "";
+        }
+        return url;
     }
 
 
@@ -133,27 +145,9 @@ public class VPageEditor extends Composite implements Container, VPageEditorView
             return;
         }
 
+        iframe.setUrl(getSrc(uidl, client));
+
         proxy.update(this, uidl, client);
-    }
-
-
-    @Override
-    public void replaceChildComponent(Widget oldComponent, Widget newComponent) {}
-
-    @Override
-    public void updateCaption(Paintable component, UIDL uidl) {}
-
-    @Override
-    public boolean requestLayout(Set<Paintable> children) {
-        return false;
-    }
-
-    @Override
-    public RenderSpace getAllocatedSpace(Widget child) {
-        if (hasChildComponent(child)) {
-            return new RenderSpace(getOffsetWidth(), getOffsetHeight());
-        }
-        return new RenderSpace();
     }
 
 
@@ -250,11 +244,6 @@ public class VPageEditor extends Composite implements Container, VPageEditorView
         VConsole.error("Unhandled RPC call from server: " + method);
     }
 
-
-    @Override
-    public boolean hasChildComponent(Widget component) {
-        return false;
-    }
 
     public static ModelStorage getModel() {
         return model;
