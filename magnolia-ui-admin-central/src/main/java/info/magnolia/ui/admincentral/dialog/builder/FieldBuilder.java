@@ -67,6 +67,7 @@ public class FieldBuilder {
         }
         if (input != null) {
             input.setStyleName(TEXTFIELD_STYLE_NAME);
+            input.setRequired(fieldDefinition.isRequired());
             addValidators(fieldDefinition, input);
         }
         return input;

@@ -35,6 +35,7 @@ package info.magnolia.ui.admincentral.dialog.builder;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import info.magnolia.ui.model.dialog.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.model.dialog.definition.EmailValidatorDefinition;
 import info.magnolia.ui.model.dialog.definition.FieldDefinition;
@@ -75,6 +76,20 @@ public class FieldBuilderTest {
         // THEN
         assertEquals(CheckBox.class, result.getClass());
         assertEquals(FieldBuilder.TEXTFIELD_STYLE_NAME, result.getStyleName());
+    }
+
+    @Test
+    public void testBuildingRequiredField() {
+        // GIVEN
+        final FieldDefinition def = new ConfiguredFieldDefinition();
+        def.setRequired(true);
+        def.setType(FieldDefinition.TEXT_FIELD_TYPE);
+
+        // WHEN
+        final Field result = FieldBuilder.build(def);
+
+        // THEN
+        assertTrue(result.isRequired());
     }
 
     @Test
