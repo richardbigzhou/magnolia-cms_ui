@@ -177,8 +177,8 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
     private void doStop(AppContextImpl appContext) {
         appContext.stop();
-        while (appHistory.remove(appContext)) {
-        }
+        while (appHistory.remove(appContext));
+
         runningApps.remove(appContext.getName());
         if (currentApp == appContext) {
             currentApp = null;
