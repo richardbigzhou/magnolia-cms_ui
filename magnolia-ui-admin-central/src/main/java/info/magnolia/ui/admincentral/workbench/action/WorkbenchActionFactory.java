@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.workbench.action;
 
-import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.admincentral.workbench.ContentWorkbenchView;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 
@@ -44,5 +44,5 @@ import javax.jcr.Item;
  */
 public interface WorkbenchActionFactory {
 
-    Action createAction(ActionDefinition actionDefinition, Item item, AppContext ctx);
+    Action createAction(final ActionDefinition actionDefinition, final Item item, final ContentWorkbenchView.Presenter presenter);
 }

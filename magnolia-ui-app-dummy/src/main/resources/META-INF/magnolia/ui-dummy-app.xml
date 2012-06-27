@@ -7,8 +7,11 @@
   <versionHandler>info.magnolia.ui.app.dummy.DummyAppModuleVersionHandler</versionHandler>
   <version>${project.version}</version>
 
+	<!-- App components definition. -->
+	<!-- id of the components should be app-'appname'. 'appname' is the name of the app configured
+	     in the apps configuration repository of the admin central. (config/module/apps/appname/name:appname) -->
   <components>
-    <id>admin-central</id>
+    <id>app-dummy</id>
     <component>
       <type>info.magnolia.ui.app.dummy.DummyView</type>
       <implementation>info.magnolia.ui.app.dummy.DummyViewImpl</implementation>

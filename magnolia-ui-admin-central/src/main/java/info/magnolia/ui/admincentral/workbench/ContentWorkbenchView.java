@@ -36,6 +36,8 @@ package info.magnolia.ui.admincentral.workbench;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.actionbar.ActionbarView;
 import info.magnolia.ui.admincentral.jcr.view.JcrView;
+import info.magnolia.ui.framework.app.AppView;
+import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 
 import com.vaadin.data.Item;
@@ -48,9 +50,9 @@ import com.vaadin.ui.ComponentContainer;
  */
 public interface ContentWorkbenchView extends ComponentContainer, ActionbarView {
 
-    void setPresenter(Presenter presenter);
+    void setPresenter(final Presenter presenter);
 
-    void initWorkbench(WorkbenchDefinition definintion);
+    void initWorkbench(final WorkbenchDefinition definintion);
 
     void setGridType(final JcrView.ViewType type);
 
@@ -70,7 +72,9 @@ public interface ContentWorkbenchView extends ComponentContainer, ActionbarView 
      */
     public interface Presenter extends ActionbarPresenter {
 
-        void onItemSelected(Item item);
+        void onItemSelected(final Item item);
+
+        void onOpenNewView(final AppView view, final Location location);
 
     }
 

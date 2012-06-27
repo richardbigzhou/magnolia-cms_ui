@@ -33,18 +33,19 @@
  */
 package info.magnolia.ui.admincentral.workbench.action;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.jcr.Item;
-
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.jcr.view.builder.DefinitionToImplementationMapping;
-import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.admincentral.workbench.ContentWorkbenchView;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.builder.FactoryBase;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import javax.jcr.Item;
 
 /**
  * Creates an action based on an {@link info.magnolia.ui.model.action.ActionDefinition}.
@@ -78,15 +79,9 @@ public class WorkbenchActionFactoryImpl extends FactoryBase<ActionDefinition, Ac
         addMapping(mapping.getDefinition(), mapping.getImplementation());
     }
 
-    /**
-     * Creates a workbench action based on its {@link ActionDefinition}, the selected {@link Item} and an optional (nullable) {@link AppContext}.
-     */
     @Override
-    public Action createAction(final ActionDefinition actionDefinition, final Item item, final AppContext ctx) {
-        if(ctx == null) {
-            return create(actionDefinition, item);
-        }
-        return create(actionDefinition, item, ctx);
+    public Action createAction(final ActionDefinition actionDefinition, final Item item, final ContentWorkbenchView.Presenter presenter) {
+        return create(actionDefinition, item, presenter);
     }
 
 }

@@ -34,7 +34,6 @@
 package info.magnolia.ui.app.contacts;
 
 import info.magnolia.ui.framework.app.AbstractApp;
-import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.AppView;
 import info.magnolia.ui.framework.location.Location;
 
@@ -55,7 +54,7 @@ public class ContactsApp extends AbstractApp {
     }
 
     @Override
-    public AppView start(AppContext context, Location location) {
+    public AppView start(Location location) {
         return view;
     }
 }

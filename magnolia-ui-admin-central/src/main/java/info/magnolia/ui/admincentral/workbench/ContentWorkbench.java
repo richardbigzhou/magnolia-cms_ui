@@ -40,7 +40,9 @@ import info.magnolia.ui.admincentral.event.ContentChangedEvent;
 import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.framework.app.AppView;
 import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
@@ -188,7 +190,7 @@ public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView
                     selectedItemId = "/";
                 }
                 final javax.jcr.Item item = session.getItem(selectedItemId);
-                Action action = actionFactory.createAction(actionDefinition, item, context);
+                Action action = actionFactory.createAction(actionDefinition, item, this);
                 action.execute();
             } catch (PathNotFoundException e) {
                 shell.showError("Can't execute action.\n" + e.getMessage(), e);
@@ -206,5 +208,10 @@ public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView
         return view;
     }
 
+    @Override
+    public void onOpenNewView(AppView view, Location location) {
+        context.openAppView(view);
+        context.setAppLocation(location);
+    }
 
 }

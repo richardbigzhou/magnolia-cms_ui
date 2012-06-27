@@ -44,20 +44,17 @@ import com.vaadin.ui.ComponentContainer;
 
 /**
  * View implementation for the Pages app.
- * 
+ *
  * @version $Id$
  */
 @SuppressWarnings("serial")
 public class PagesViewImpl implements PagesView, IsVaadinComponent {
 
     private ComponentContainer view;
-    private Presenter presenter;
-    private ContentWorkbench workbench;
 
     @Inject
     public PagesViewImpl(final ContentWorkbench workbench) {
         workbench.initWorkbench("website");
-        this.workbench = workbench;
         view = workbench.asVaadinComponent();
     }
 
@@ -71,13 +68,4 @@ public class PagesViewImpl implements PagesView, IsVaadinComponent {
         return view;
     }
 
-    @Override
-    public void setPresenter(Presenter presenter) {
-        this.presenter = presenter;
-    }
-
-    @Override
-    public ContentWorkbench getWorkbench() {
-        return workbench;
-    }
 }

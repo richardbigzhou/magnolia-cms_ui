@@ -33,8 +33,10 @@
  */
 package info.magnolia.ui.admincentral.app.pages.action;
 
-import info.magnolia.ui.admincentral.app.pages.PagesView;
-import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.admincentral.app.pages.PageEditorTabView;
+import info.magnolia.ui.admincentral.workbench.ContentWorkbenchView;
+import info.magnolia.ui.framework.app.AppView;
+import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 
@@ -49,21 +51,19 @@ public class EditPageAction extends ActionBase<EditPageActionDefinition> {
 
     private Node selectedNode;
 
-    private PagesView.Presenter presenter;
+    private ContentWorkbenchView.Presenter presenter;
 
-    private AppContext ctx;
-
-    public EditPageAction(final EditPageActionDefinition definition, final Node selectedNode, final PagesView.Presenter presenter, final AppContext ctx) {
+    public EditPageAction(final EditPageActionDefinition definition, final Node selectedNode, final ContentWorkbenchView.Presenter presenter) {
         super(definition);
         this.selectedNode = selectedNode;
         this.presenter = presenter;
-        this.ctx = ctx;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
         try {
-            presenter.onEditPage(selectedNode, ctx);
+            final AppView view = new PageEditorTabView(selectedNode);
+            presenter.onOpenNewView(view, new DefaultLocation("app", "app:pages:", view.getCaption()));
         } catch (RepositoryException e) {
             throw new ActionExecutionException(e);
         }

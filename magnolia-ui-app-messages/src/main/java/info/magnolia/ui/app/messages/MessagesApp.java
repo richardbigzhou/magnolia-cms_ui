@@ -55,13 +55,13 @@ public class MessagesApp extends AbstractApp implements MessagesView.Presenter {
     private MessagesView view;
 
     @Inject
-    public MessagesApp(MessagesView view) {
+    public MessagesApp(MessagesView view, AppContext context) {
         this.view = view;
+        this.context = context;
     }
 
     @Override
-    public AppView start(AppContext context, Location location) {
-        this.context = context;
+    public AppView start(Location location) {
         view.setPresenter(this);
         return view;
     }

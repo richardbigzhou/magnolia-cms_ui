@@ -42,7 +42,7 @@ import info.magnolia.ui.framework.location.Location;
  */
 public interface App {
 
-    AppView start(AppContext context, Location location);
+    AppView start(Location location);
 
     void locationChanged(Location location);
 
