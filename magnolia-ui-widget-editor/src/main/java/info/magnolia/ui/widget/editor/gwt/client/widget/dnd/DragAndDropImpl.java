@@ -34,7 +34,6 @@
 package info.magnolia.ui.widget.editor.gwt.client.widget.dnd;
 
 import static info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils.moveComponent;
-import info.magnolia.ui.widget.editor.gwt.client.PageEditor;
 import info.magnolia.ui.widget.editor.gwt.client.VPageEditor;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.ComponentBar;

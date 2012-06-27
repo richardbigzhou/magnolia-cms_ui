@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.widget.editor.gwt.client.widget.placeholder;
 
-import info.magnolia.ui.widget.editor.gwt.client.PageEditor;
 import info.magnolia.ui.widget.editor.gwt.client.VPageEditor;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 
