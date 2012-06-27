@@ -33,13 +33,18 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse;
 
+import info.magnolia.context.MgnlContext;
+import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.framework.app.ShellApp;
 import info.magnolia.ui.framework.app.ShellAppContext;
 import info.magnolia.ui.framework.app.ShellView;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.framework.message.Message;
+import info.magnolia.ui.framework.message.MessagesManager;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -52,14 +57,15 @@ import javax.inject.Inject;
 public class PulseShellApp implements ShellApp, PulseView.Presenter {
     
     private PulseView pulseView;
-    
-    private Shell shell;
-    
+
+    private MessagesManager messagesManager;
+    private MagnoliaShell shell;
     private ShellAppContext context;
 
     @Inject
-    public PulseShellApp(PulseView pulseView, final Shell shell) {
+    public PulseShellApp(PulseView pulseView, MessagesManager messagesManager, MagnoliaShell shell) {
         this.pulseView = pulseView;
+        this.messagesManager = messagesManager;
         this.shell = shell;
     }
 
@@ -67,6 +73,26 @@ public class PulseShellApp implements ShellApp, PulseView.Presenter {
     public ShellView start(ShellAppContext context) {
         this.context = context;
         pulseView.setPresenter(this);
+
+        for (Message message : messagesManager.getMessagesForUser(MgnlContext.getUser().getName())) {
+            pulseView.addMessage(message);
+        }
+
+        messagesManager.registerMessagesListener(MgnlContext.getUser().getName(), new MessagesManager.MessageListener() {
+
+            @Override
+            public void messageSent(Message message) {
+                pulseView.addMessage(message);
+                shell.updateShellAppIndication(VMainLauncher.ShellAppType.PULSE, 1);
+            }
+
+            @Override
+            public void messageCleared(Message message) {
+                pulseView.updateMessage(message);
+                shell.updateShellAppIndication(VMainLauncher.ShellAppType.PULSE, -1);
+            }
+        });
+
         return pulseView;
     }
 
@@ -82,7 +108,7 @@ public class PulseShellApp implements ShellApp, PulseView.Presenter {
     }
 
     private List<String> parsePathParamsFromToken(String token) {
-        return null;
+        return new ArrayList<String>();
     }
 
     @Override
