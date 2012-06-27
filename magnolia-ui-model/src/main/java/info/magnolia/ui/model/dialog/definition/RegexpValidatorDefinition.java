@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,34 +33,19 @@
  */
 package info.magnolia.ui.model.dialog.definition;
 
-import java.util.List;
-
-import info.magnolia.ui.model.definition.UiItemDefinition;
 
 /**
- * FieldDefinition.
+ * Defines a Regexp based ValidationDefinition - needs an additional argument: the pattern.
  */
-public interface FieldDefinition extends UiItemDefinition {
+public class RegexpValidatorDefinition extends AbstractValidatorDefinition {
 
-    static final String TEXT_FIELD_TYPE = "text";
-    static final String CHECKBOX_FIELD_TYPE = "checkbox";
+    private String pattern;
 
-    public abstract String getDescription();
+    public String getPattern() {
+        return pattern;
+    }
 
-    public abstract void setDescription(String description);
-
-    public abstract String getType();
-
-    public abstract void setType(String type);
-
-    public abstract boolean isRequired();
-
-    public abstract void setRequired(boolean required);
-
-    public abstract void addValidator(ValidatorDefinition validator);
-
-    public abstract void setValidators(List<ValidatorDefinition> validators);
-
-    public abstract List<ValidatorDefinition> getValidators();
-
+    public void setPattern(String pattern) {
+        this.pattern = pattern;
+    }
 }
