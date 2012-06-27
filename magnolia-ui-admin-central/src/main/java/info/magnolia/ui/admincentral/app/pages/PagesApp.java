@@ -35,7 +35,6 @@ package info.magnolia.ui.admincentral.app.pages;
 
 
 import info.magnolia.ui.framework.app.AbstractApp;
-import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.AppView;
 import info.magnolia.ui.framework.location.Location;
 
@@ -57,7 +56,7 @@ public class PagesApp extends AbstractApp {
     }
 
     @Override
-    public AppView start(AppContext context, Location location) {
+    public AppView start(Location location) {
         return view;
     }
 }

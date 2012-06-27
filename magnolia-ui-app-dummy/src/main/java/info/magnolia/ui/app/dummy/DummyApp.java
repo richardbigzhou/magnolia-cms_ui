@@ -52,13 +52,13 @@ public class DummyApp extends AbstractApp implements DummyView.Presenter {
     private DummyView view;
 
     @Inject
-    public DummyApp(DummyView view) {
+    public DummyApp(DummyView view, AppContext context) {
         this.view = view;
+        this.context = context;
     }
 
     @Override
-    public AppView start(AppContext context, Location location) {
-        this.context = context;
+    public AppView start(Location location) {
         view.setPresenter(this);
         System.out.println("SIMPLE DUMMY APP STARTED - token is: " + location.toString());
         return view;

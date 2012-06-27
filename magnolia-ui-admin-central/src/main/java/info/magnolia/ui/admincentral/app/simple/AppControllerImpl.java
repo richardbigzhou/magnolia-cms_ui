@@ -277,7 +277,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
             appFrameView = new AppFrameView();
             //TODO ehe: Remove this from app. start and use injection instead.
-            AppView view = app.start(this, new DefaultLocation("app", appDescriptor.getName(), appLocation.getToken()));
+            AppView view = app.start(new DefaultLocation("app", appDescriptor.getName(), appLocation.getToken()));
 
             currentLocation = location;
 
@@ -340,16 +340,22 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         }
     }
 
+    /**
+     * Create an App Provider child of admin-central and dedicated to the app.
+     * This gives us the ability to inject the AppContext into App components.
+     * In the module configuration file, for app definition, the
+     * components id name must be:
+     * app-'appname' : like app-pages.
+     */
     private ComponentProvider setAppComponentProvider(String name, AppContext appContext) {
 
         String componentIdName = "app-"+name;
-        //TODO ehe: Add check for componentIdName.
-        // If not defined in the module descriptor --> Log message, do not start app.
-        log.debug("Read component configurations from module descriptors...");
+
+        log.debug("Read component configurations from module descriptors for "+componentIdName);
         ComponentProviderConfigurationBuilder configurationBuilder = new ComponentProviderConfigurationBuilder();
         List<ModuleDefinition> moduleDefinitions = Components.getComponent(ModuleRegistry.class).getModuleDefinitions();
         ComponentProviderConfiguration configuration = configurationBuilder.getComponentsFromModules(componentIdName, moduleDefinitions);
-
+        //Add the related App AppContext into the component provider.
         configuration.addComponent(InstanceConfiguration.valueOf(AppContext.class, appContext));
 
         log.debug("Creating the component provider...");
