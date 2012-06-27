@@ -83,7 +83,7 @@ public class VHybridSelectionTreeTable extends VTreeTable {
                 final Element target = event.getNativeEvent().getEventTarget().cast();
                 final Element rowEl = findParentRowElement(target);
                 if (rowEl != null) {
-                    final NodeList<?> cbList = target.getElementsByTagName("input");
+                    final NodeList<?> cbList = rowEl.getElementsByTagName("input");
                     if (cbList != null && cbList.getLength() > 0) {
                         final Element cb = (Element) cbList.getItem(0);
                         cb.setPropertyBoolean("checked", !target.getClassName().contains("select"));

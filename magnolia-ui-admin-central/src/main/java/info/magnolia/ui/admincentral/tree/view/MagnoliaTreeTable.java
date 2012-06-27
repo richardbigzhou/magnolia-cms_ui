@@ -42,6 +42,9 @@ import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.widget.HybridSelectionTreeTable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
@@ -70,6 +73,7 @@ public class MagnoliaTreeTable extends HybridSelectionTreeTable {
     private final TreeModel treeModel;
 
     public MagnoliaTreeTable(WorkbenchDefinition workbenchDefinition, TreeModel treeModel) {
+        super();
         this.treeModel = treeModel;
 
         setSizeFull();
@@ -82,17 +86,19 @@ public class MagnoliaTreeTable extends HybridSelectionTreeTable {
         addDragAndDrop();
 
         container = new HierarchicalJcrContainer(treeModel, workbenchDefinition);
-
+        setContainerDataSource(container);
+        
+        final List<Object> visibleColumns = new ArrayList<Object>();
         for (Column<?> treeColumn : treeModel.getColumns().values()) {
             String columnName = treeColumn.getDefinition().getName();
             // super.setColumnExpandRatio(columnName, treeColumn.getWidth() <= 0 ? 1 :
             // treeColumn.getWidth());
-            container.addContainerProperty(columnName, Component.class, "");
+            addContainerProperty(columnName, Component.class, "");
             super.setColumnHeader(columnName, treeColumn.getLabel());
+            visibleColumns.add(columnName);
         }
 
-        setContainerDataSource(container);
-
+        //setVisibleColumns(visibleColumns.toArray());
         new EditHandler(this);
     }
 
@@ -184,13 +190,7 @@ public class MagnoliaTreeTable extends HybridSelectionTreeTable {
             //finally expand the root else children won't be visibile.
             setCollapsed(parent, false);
         }
-
-        // Select the item
         select((Object)itemId);
-
-        // Make sure its in view
-        // TODO commented out to avoid flicker on selection via place controller while this should definitely be called when navigated by the history
-        // setCurrentPageFirstItemId(itemId);
     }
 
     public void refresh() {

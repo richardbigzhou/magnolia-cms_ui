@@ -38,10 +38,11 @@ import info.magnolia.ui.vaadin.integration.widget.client.VHybridSelectionTreeTab
 import java.util.Collection;
 import java.util.Map;
 
+import com.vaadin.data.Container;
 import com.vaadin.ui.ClientWidget;
 import com.vaadin.ui.ClientWidget.LoadStyle;
-import com.vaadin.ui.themes.ChameleonTheme;
 import com.vaadin.ui.TreeTable;
+import com.vaadin.ui.themes.ChameleonTheme;
 
 /**
  * Tree table that supports the hybrid selection model (with checkboxes). 
@@ -52,6 +53,8 @@ import com.vaadin.ui.TreeTable;
 @ClientWidget(value = VHybridSelectionTreeTable.class, loadStyle = LoadStyle.EAGER)
 public class HybridSelectionTreeTable extends TreeTable {
 
+    private final static String CHECKBOX_COLUMN_ID = "CB";
+    
     public HybridSelectionTreeTable() {
         super();
         addStyleName("v-hybrid-selection-table");
@@ -60,7 +63,26 @@ public class HybridSelectionTreeTable extends TreeTable {
         setImmediate(true);
         setMultiSelect(true);
     }
-
+    
+    @Override
+    public void setContainerDataSource(Container newDataSource) {
+        final Container current = items;
+        super.setContainerDataSource(newDataSource);
+        if (current != null) {
+            addContainerProperty(CHECKBOX_COLUMN_ID, String.class, "");
+            setColumnHeader(CHECKBOX_COLUMN_ID, "");
+            setColumnWidth(CHECKBOX_COLUMN_ID, 20);
+        }
+    }
+    
+    @Override
+    public boolean addContainerProperty(Object propertyId, Class<?> type, Object defaultValue) throws UnsupportedOperationException {
+        boolean result = super.addContainerProperty(propertyId, type, defaultValue);
+        if (getContainerPropertyIds().size() == 2) {
+            setHierarchyColumn(propertyId);
+        }
+        return result;
+    }
     @Override
     public void changeVariables(Object source, Map<String, Object> variables) {
         super.changeVariables(source, variables);
