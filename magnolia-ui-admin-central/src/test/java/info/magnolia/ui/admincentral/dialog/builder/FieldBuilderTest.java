@@ -90,6 +90,7 @@ public class FieldBuilderTest {
 
         // THEN
         assertTrue(result.isRequired());
+        assertEquals(FieldBuilder.REQUIRED_ERROR, result.getRequiredError());
     }
 
     @Test
