@@ -34,7 +34,6 @@
 package info.magnolia.ui.widget.editor.gwt.client.widget.controlbar;
 
 import static info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils.getI18nMessage;
-import info.magnolia.ui.widget.editor.gwt.client.VPageEditor;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 import info.magnolia.ui.widget.editor.gwt.client.widget.dnd.DragAndDrop;
 import info.magnolia.ui.widget.editor.gwt.client.widget.dnd.LegacyDragAndDrop;
