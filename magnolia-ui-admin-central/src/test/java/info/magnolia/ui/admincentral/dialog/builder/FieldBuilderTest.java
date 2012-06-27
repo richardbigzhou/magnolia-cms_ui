@@ -35,11 +35,15 @@ package info.magnolia.ui.admincentral.dialog.builder;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import info.magnolia.ui.model.dialog.definition.ConfiguredFieldDefinition;
+import info.magnolia.ui.model.dialog.definition.EmailValidatorDefinition;
 import info.magnolia.ui.model.dialog.definition.FieldDefinition;
+import info.magnolia.ui.model.dialog.definition.RegexpValidatorDefinition;
 
 import org.junit.Test;
 
+import com.vaadin.data.validator.RegexpValidator;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.TextField;
@@ -75,6 +79,20 @@ public class FieldBuilderTest {
     }
 
     @Test
+    public void testBuildingRequiredField() {
+        // GIVEN
+        final FieldDefinition def = new ConfiguredFieldDefinition();
+        def.setRequired(true);
+        def.setType(FieldDefinition.TEXT_FIELD_TYPE);
+
+        // WHEN
+        final Field result = FieldBuilder.build(def);
+
+        // THEN
+        assertTrue(result.isRequired());
+    }
+
+    @Test
     public void testBuildingNullField() {
         // GIVEN
         final FieldDefinition def = new ConfiguredFieldDefinition();
@@ -87,4 +105,57 @@ public class FieldBuilderTest {
         assertNull(result);
     }
 
+    @Test
+    public void testAddValidatorsWithNotValidatorConfigured() {
+        // GIVEN
+        final FieldDefinition def = new ConfiguredFieldDefinition();
+
+        final Field field = new TextField();
+
+        // WHEN
+        FieldBuilder.addValidators(def, field);
+
+        // THEN
+        assertNull(field.getValidators());
+    }
+
+    @Test
+    public void testAddValidatorsWithRegExpValidatorDef() {
+        // GIVEN
+        final String errorMessage = "Must be diggets - from 4 to 5...";
+        final FieldDefinition def = new ConfiguredFieldDefinition();
+        final RegexpValidatorDefinition validatorDef = new RegexpValidatorDefinition();
+        validatorDef.setErrorMessage(errorMessage);
+        validatorDef.setPattern("^\\d{4,5}$");
+        def.addValidator(validatorDef);
+        final Field field = new TextField();
+
+        // WHEN
+        FieldBuilder.addValidators(def, field);
+
+        // THEN
+        assertEquals(1,field.getValidators().size());
+        final RegexpValidator validator = (RegexpValidator) field.getValidators().iterator().next();
+        // check error message gets transferred - can't check for pattern as RegexpValidator offeres no easy way to acces it...
+        assertEquals(errorMessage, validator.getErrorMessage());
+    }
+
+    @Test
+    public void testAddValidatorsWithEmailValidatorDef() {
+        // GIVEN
+        final String errorMessage = "Incorrect format for an email adress!";
+        final FieldDefinition def = new ConfiguredFieldDefinition();
+        final EmailValidatorDefinition validatorDef = new EmailValidatorDefinition();
+        validatorDef.setErrorMessage(errorMessage);
+        def.addValidator(validatorDef);
+        final Field field = new TextField();
+
+        // WHEN
+        FieldBuilder.addValidators(def, field);
+
+        // THEN
+        assertEquals(1,field.getValidators().size());
+        final RegexpValidator validator = (RegexpValidator) field.getValidators().iterator().next();
+        assertEquals(errorMessage, validator.getErrorMessage());
+    }
 }

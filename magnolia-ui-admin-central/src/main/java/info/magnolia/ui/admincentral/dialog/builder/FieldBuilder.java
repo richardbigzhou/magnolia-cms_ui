@@ -33,7 +33,11 @@
  */
 package info.magnolia.ui.admincentral.dialog.builder;
 
+import info.magnolia.ui.model.dialog.definition.ConfiguredFieldDefinition;
+import info.magnolia.ui.model.dialog.definition.EmailValidatorDefinition;
 import info.magnolia.ui.model.dialog.definition.FieldDefinition;
+import info.magnolia.ui.model.dialog.definition.RegexpValidatorDefinition;
+import info.magnolia.ui.model.dialog.definition.ValidatorDefinition;
 
 import com.vaadin.data.Validator;
 import com.vaadin.data.validator.EmailValidator;
@@ -58,23 +62,32 @@ public class FieldBuilder {
         if (FieldDefinition.TEXT_FIELD_TYPE.equals(fieldDefinition.getType())) {
             input = new TextField();
             input.setCaption(fieldDefinition.getLabel());
-
-            final String fieldName = fieldDefinition.getName();
-            Validator validator = null;
-            if ("email".equals(fieldName)) {
-                validator = new EmailValidator("{0} is not a valid email-adress! (to be i18n'ed");
-            } else {
-                validator = new RegexpValidator("^[a-zA-Z]+$", "One or more characters! (to be i18n'ed)");
-            }
-            input.addValidator(validator);
-
         } else if (FieldDefinition.CHECKBOX_FIELD_TYPE.equals(fieldDefinition.getType())) {
             input = new CheckBox(fieldDefinition.getLabel(), true);
         }
         if (input != null) {
             input.setStyleName(TEXTFIELD_STYLE_NAME);
+            input.setRequired(fieldDefinition.isRequired());
+            addValidators(fieldDefinition, input);
         }
         return input;
     }
 
+    static void addValidators(FieldDefinition fieldDefinition, Field input) {
+        Validator vaadinValidator = null;
+        for (ValidatorDefinition current: ((ConfiguredFieldDefinition) fieldDefinition).getValidators()) {
+            // TODO dlipp - this is what was defined for Sprint III. Of course this has to be enhanced later - when we have a better picture of how we want to validate.
+            if (current instanceof EmailValidatorDefinition) {
+                EmailValidatorDefinition def = (EmailValidatorDefinition) current;
+                vaadinValidator = new EmailValidator(def.getErrorMessage());
+            } else if (current instanceof RegexpValidatorDefinition) {
+                RegexpValidatorDefinition def = (RegexpValidatorDefinition) current;
+                vaadinValidator = new RegexpValidator(def.getPattern(), def.getErrorMessage());
+            }
+
+            if (vaadinValidator != null) {
+                input.addValidator(vaadinValidator);
+            }
+        }
+    }
 }

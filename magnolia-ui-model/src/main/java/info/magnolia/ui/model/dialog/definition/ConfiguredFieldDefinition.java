@@ -33,16 +33,16 @@
  */
 package info.magnolia.ui.model.dialog.definition;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import info.magnolia.ui.model.definition.ConfiguredUiItemDefinition;
 
 
 /**
  * Describes a field in a dialog.
- * 
+ *
  * TODO this should be abstract
- * 
- * TODO we should be able to configure validators
- * 
  */
 public class ConfiguredFieldDefinition extends ConfiguredUiItemDefinition implements FieldDefinition {
 
@@ -51,6 +51,8 @@ public class ConfiguredFieldDefinition extends ConfiguredUiItemDefinition implem
     private String type; // JCR Property type name see javax.jcr.PropertyType
 
     private boolean required; // Not relevant for checkbox
+
+    private List<ValidatorDefinition> validators = new ArrayList<ValidatorDefinition>();
 
     @Override
     public String getDescription() {
@@ -80,5 +82,20 @@ public class ConfiguredFieldDefinition extends ConfiguredUiItemDefinition implem
     @Override
     public void setRequired(boolean required) {
         this.required = required;
+    }
+
+    @Override
+    public List<ValidatorDefinition> getValidators() {
+        return validators;
+    }
+
+    @Override
+    public void setValidators(List<ValidatorDefinition> validators) {
+        this.validators = validators;
+    }
+
+    @Override
+    public void addValidator(ValidatorDefinition validator) {
+        validators.add(validator);
     }
 }
