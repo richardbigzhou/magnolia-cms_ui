@@ -40,6 +40,7 @@ import info.magnolia.ui.admincentral.tree.container.HierarchicalJcrContainer;
 import info.magnolia.ui.admincentral.tree.model.TreeModel;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.widget.HybridSelectionTreeTable;
 
 import javax.jcr.RepositoryException;
 
@@ -54,14 +55,13 @@ import com.vaadin.event.dd.acceptcriteria.AcceptAll;
 import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
 import com.vaadin.terminal.gwt.client.ui.dd.VerticalDropLocation;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.TreeTable;
 
 /**
  * User interface component that extends TreeTable and uses a WorkbenchDefinition for layout and invoking command callbacks.
  *
  */
 @SuppressWarnings("serial")
-public class MagnoliaTreeTable extends TreeTable {
+public class MagnoliaTreeTable extends HybridSelectionTreeTable {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -72,14 +72,11 @@ public class MagnoliaTreeTable extends TreeTable {
     public MagnoliaTreeTable(WorkbenchDefinition workbenchDefinition, TreeModel treeModel) {
         this.treeModel = treeModel;
 
-        setSizeUndefined();
-        setHeight(100, UNITS_PERCENTAGE);
+        setSizeFull();
         setEditable(false);
         setSelectable(true);
         setColumnCollapsingAllowed(true);
-        setMultiSelect(false);
         setImmediate(true);
-        addStyleName("striped");
         setColumnReorderingAllowed(false);
 
         addDragAndDrop();
@@ -209,24 +206,4 @@ public class MagnoliaTreeTable extends TreeTable {
         }
 
     }
-
-//    @Override
-//    public Resource getItemIcon(Object itemId) {
-//
-//        // FIXME this is not the best place to do it, ideally we could set it when we create a new item (investigate, might not make a difference)
-//        try {
-//
-//            // TODO should getItemIcon be available on JcrContainerSource ?
-//
-//            String itemIcon = treeModel.getItemIcon(container.getJcrItem((ContainerItemId) itemId));
-//            if (itemIcon != null) {
-//                String tmp = MgnlContext.getContextPath() + (!itemIcon.startsWith(JCRUtil.PATH_SEPARATOR) ? JCRUtil.PATH_SEPARATOR + itemIcon : itemIcon);
-//                return new ExternalResource(tmp);
-//            }
-//
-//        } catch (RepositoryException e) {
-//            throw new RuntimeRepositoryException(e);
-//        }
-//        return super.getItemIcon(itemId);
-//    }
 }

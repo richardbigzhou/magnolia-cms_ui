@@ -40,6 +40,7 @@ import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.shell.Shell;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -82,7 +83,9 @@ public class PulseShellApp implements ShellApp, PulseView.Presenter {
     }
 
     private List<String> parsePathParamsFromToken(String token) {
-        return null;
+        final List<String> result = new ArrayList<String>();
+        result.add(token);
+        return result;
     }
 
     @Override

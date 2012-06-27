@@ -1,4 +1,4 @@
-@import url(../reindeer/styles.css);
+@import url(../chameleon/styles.css);
 @import url(splitfeed.css);
 @import url(pulse-activity-entry.css);
 @import url(dialog.css);
@@ -7,6 +7,7 @@
 @import url(shellmessage.css);
 @import url(app.css);
 @import url(workbench.css);
+@import url(hybridselectiontreetable.css);
 
 @font-face{
     font-family: DinRound;

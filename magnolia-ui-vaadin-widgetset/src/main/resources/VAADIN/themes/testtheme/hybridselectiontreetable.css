@@ -1,0 +1,100 @@
+.v-hybrid-selection-table {
+	position: relative;
+	background: none repeat scroll 0 0 #FFFFFF;
+}
+
+.v-hybrid-selection-table .v-table {
+	background-color: #FFFFFF;
+}
+
+.v-hybrid-selection-table .v-table-cell-content {
+	border-bottom: 1px dashed #C7C7C7 !important;
+}
+
+.v-hybrid-selection-table .v-table-header-wrap {
+	background: none;
+	border-bottom: 1px solid #000000 !important;
+}
+
+.v-hybrid-selection-table .v-table-cell-wrapper {
+	position: relative;
+}
+
+.v-hybrid-selection-table .v-table-resizer {
+	visibility: hidden;
+}
+
+.v-hybrid-selection-table .v-table-caption-container {
+	font: bold 10pt Arial;	
+	padding-top: 0 !important;
+}
+
+.v-hybrid-selection-table .square {
+	width: 15px;
+	height: 15px;
+	display: inline-block;
+	margin-left: 5px;
+    margin-right: 5px;
+    margin-top: 5px;
+}
+
+.v-hybrid-selection-table .tree-table-label.root .square {
+	background-color: #A7B900;
+}
+
+.v-hybrid-selection-table .tree-table-label.child .square {
+	background-color: blue;
+}
+
+.v-hybrid-selection-table .tree-table-label {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.v-hybrid-selection-table .v-select-all {
+	position: absolute;
+	top: 0px;
+	left: 7px;
+	z-index: 1000;
+	margin-top: 1px;
+}
+
+.v-hybrid-selection-table .v-select-all > input {
+	margin-top: 1px;
+}
+
+.v-hybrid-selection-table tr.v-selected {
+	background-image: none !important;
+	background-color: #666666;
+	color:#A7B900;
+}
+
+*:focus {
+	outline: none;
+}
+
+.v-hybrid-selection-table .v-treetable-treespacer {
+    margin-left: 20px;
+}
+
+.v-hybrid-selection-table .v-selection-cb {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 15px;
+	height: 15px;
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+.v-hybrid-selection-table .v-table-row, .v-table-row-odd {
+	height: 25px;
+}
+
+.v-hybrid-selection-table .v-table-row:HOVER, .v-table-row-odd:HOVER {
+	background-color: #EFEFEF;
+}
+
+.v-hybrid-selection-table .v-selected:HOVER {
+	background-color: #666666;
+}
