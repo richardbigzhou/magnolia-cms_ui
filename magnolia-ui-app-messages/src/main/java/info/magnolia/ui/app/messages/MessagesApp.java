@@ -72,62 +72,22 @@ public class MessagesApp extends AbstractApp implements MessagesView.Presenter {
     }
 
     @Override
-    public void handleLocalInfo(String info) {
+    public void handleLocalMessage(MessageType type, String subject, String message) {
         final Message msg = new Message();
-        msg.setMessage(info);
-        msg.setType(MessageType.INFO);
+        msg.setSubject(subject);
+        msg.setMessage(message);
+        msg.setType(type);
         msg.setTimestamp(new Date().getTime());
-        msg.setSubject("whatever");
         context.sendLocalMessage(msg);
     }
 
     @Override
-    public void handleGlobalInfo(String info) {
+    public void handleGlobalMessage(MessageType type, String subject, String message) {
         final Message msg = new Message();
-        msg.setMessage(info);
-        msg.setType(MessageType.INFO);
+        msg.setSubject(subject);
+        msg.setMessage(message);
+        msg.setType(type);
         msg.setTimestamp(new Date().getTime());
-        msg.setSubject("whatever");
-        context.broadcastMessage(msg);
-    }
-
-    @Override
-    public void handleLocalWarning(String warning) {
-        final Message msg = new Message();
-        msg.setMessage(warning);
-        msg.setType(MessageType.WARNING);
-        msg.setTimestamp(new Date().getTime());
-        msg.setSubject("whatever");
-        context.sendLocalMessage(msg);
-    }
-
-    @Override
-    public void handleGlobalWarning(String warning) {
-        final Message msg = new Message();
-        msg.setMessage(warning);
-        msg.setType(MessageType.WARNING);
-        msg.setTimestamp(new Date().getTime());
-        msg.setSubject("whatever");
-        context.broadcastMessage(msg);
-    }
-
-    @Override
-    public void handleLocalError(String error) {
-        final Message msg = new Message();
-        msg.setMessage(error);
-        msg.setType(MessageType.ERROR);
-        msg.setTimestamp(new Date().getTime());
-        msg.setSubject("whatever");
-        context.sendLocalMessage(msg);
-    }
-
-    @Override
-    public void handleGlobalError(String error) {
-        final Message msg = new Message();
-        msg.setMessage(error);
-        msg.setType(MessageType.ERROR);
-        msg.setTimestamp(new Date().getTime());
-        msg.setSubject("whatever");
         context.broadcastMessage(msg);
     }
 }

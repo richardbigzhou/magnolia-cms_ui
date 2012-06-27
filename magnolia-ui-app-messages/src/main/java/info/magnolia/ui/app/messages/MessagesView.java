@@ -34,6 +34,7 @@
 package info.magnolia.ui.app.messages;
 
 import info.magnolia.ui.framework.app.AppView;
+import info.magnolia.ui.framework.message.MessageType;
 
 /**
  * View for the Messages app.
@@ -51,18 +52,10 @@ public interface MessagesView extends AppView {
      */
     public interface Presenter {
 
+        void handleLocalMessage(MessageType type, String subject, String message);
+
+        void handleGlobalMessage(MessageType type, String subject, String message);
+
         void showConfirmationMessage(String message);
-
-        void handleLocalInfo(String info);
-
-        void handleGlobalInfo(String info);
-
-        void handleLocalWarning(String warning);
-
-        void handleGlobalWarning(String warning);
-
-        void handleLocalError(String error);
-
-        void handleGlobalError(String error);
     }
 }
