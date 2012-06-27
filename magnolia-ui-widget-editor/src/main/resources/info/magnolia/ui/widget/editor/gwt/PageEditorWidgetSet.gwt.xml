@@ -1,0 +1,6 @@
+<module>
+  <!-- WS Compiler: manually edited -->
+  <inherits name="com.vaadin.terminal.gwt.DefaultWidgetSet"/>
+  <inherits name="org.vaadin.rpc.WidgetRPC"/>
+  <inherits name="info.magnolia.ui.widget.jquerywrapper.gwt.JQueryWrapperWidgetSet"/>
+</module>
