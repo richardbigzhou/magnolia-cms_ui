@@ -45,7 +45,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 /**
- * FieldBuilder.
+ * FieldTypeProvider providing FieldType implementations using content to bean.
  *
  */
 public class FieldTypeProvider extends FactoryBase<FieldTypeDefinition, FieldType> implements Serializable {

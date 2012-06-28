@@ -102,9 +102,6 @@ public class ConfiguredFieldDefinition extends ConfiguredUiItemDefinition implem
         validators.add(validator);
     }
 
-    /* (non-Javadoc)
-     * @see info.magnolia.ui.model.dialog.definition.FieldDefinition#getFielTypeDefinition()
-     */
     @Override
     public FieldTypeDefinition getFieldTypeDefinition() {
         return fieldTypeDefinition;

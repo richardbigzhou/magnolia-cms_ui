@@ -40,8 +40,7 @@ import java.util.List;
 
 /**
  * TabDefinition.
- * 
- * @author ejervidalo
+ *
  */
 public interface TabDefinition extends UiItemDefinition {
 
