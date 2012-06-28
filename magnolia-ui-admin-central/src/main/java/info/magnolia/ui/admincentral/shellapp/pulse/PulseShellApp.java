@@ -78,6 +78,9 @@ public class PulseShellApp implements ShellApp, PulseView.Presenter {
             pulseView.addMessage(message);
         }
 
+        // TODO -tobias- Calling this here results in an NPE because MagnoliaShell doesn't have an Application instance to synchronize on yet
+//        shell.updateShellAppIndication(VMainLauncher.ShellAppType.PULSE, messagesManager.getNumberOfUnclearedMessagesForUser(MgnlContext.getUser().getName()));
+
         messagesManager.registerMessagesListener(MgnlContext.getUser().getName(), new MessagesManager.MessageListener() {
 
             @Override
