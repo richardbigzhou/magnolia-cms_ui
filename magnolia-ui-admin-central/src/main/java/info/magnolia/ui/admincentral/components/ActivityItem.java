@@ -57,7 +57,7 @@ public class ActivityItem extends CustomLayout {
     public ActivityItem(String type, String description, String comment, String status, Date date){
         try {
             //FIXME fgrilli a workaround to get the custom layout template contents (Vaadin could not find it)
-            final InputStream inputStream = ClasspathResourcesUtil.getStream("/VAADIN/themes/testtheme/layouts/activityItem.html");
+            final InputStream inputStream = ClasspathResourcesUtil.getStream("/VAADIN/themes/admincentraltheme/layouts/activityItem.html");
             StringWriter writer = new StringWriter();
             IOUtils.copy(inputStream, writer, "UTF-8");
             String templateContents = writer.toString();

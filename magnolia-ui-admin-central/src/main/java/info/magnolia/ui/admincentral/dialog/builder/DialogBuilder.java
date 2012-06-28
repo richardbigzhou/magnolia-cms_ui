@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.admincentral.dialog.builder;
 
+import info.magnolia.ui.admincentral.field.builder.FieldType;
+import info.magnolia.ui.admincentral.field.builder.FieldTypeProvider;
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 import info.magnolia.ui.model.dialog.definition.FieldDefinition;
@@ -56,7 +58,8 @@ public class DialogBuilder {
     /**
      * @return DialogView populated with values from DialogDevinition and Item.
      */
-    public DialogView build(DialogDefinition dialogDefinition, Item item, DialogView view) {
+    public DialogView build(FieldTypeProvider fieldTypeBuilder, DialogDefinition dialogDefinition, Item item, DialogView view) {
+
 
         view.setItemDataSource(item);
 
@@ -71,16 +74,18 @@ public class DialogBuilder {
             fieldContainer.setStyleName(FIELD_CONTAINER_STYLE_NAME);
 
             for (FieldDefinition fieldDefinition : tabDefinition.getFields()) {
-                CssLayout field = new CssLayout();
-                field.setStyleName(FIELD_STYLE_NAME);
 
-                Field input = FieldBuilder.build(fieldDefinition);
+                CssLayout fieldLayout = new CssLayout();
+                fieldLayout.setStyleName(FIELD_STYLE_NAME);
 
-                input.setPropertyDataSource(item.getItemProperty(fieldDefinition.getName()));
+                FieldType fieldType = fieldTypeBuilder.create(fieldDefinition.getFieldTypeDefinition());
+                Field field = fieldType.build(fieldDefinition);
+                field.setPropertyDataSource(item.getItemProperty(fieldDefinition.getName()));
 
-                field.addComponent(input);
-                fieldContainer.addComponent(field);
-                view.addField(input);
+                fieldLayout.addComponent(field);
+
+                fieldContainer.addComponent(fieldLayout);
+                view.addField(field);
             }
 
             view.addTab(fieldContainer, tabName);

@@ -93,4 +93,21 @@ public interface ContentAnimationDelegate {
             }
         }
     };
+    
+    final static ContentAnimationDelegate ZoomingDelegate = new ContentAnimationDelegate() {
+        
+        @Override
+        public void hide(Widget widget, Callbacks callbacks) {
+            widget.removeStyleName("zoom-in");
+            widget.addStyleName("zoom-out");
+            callbacks.fire();
+        }
+
+        @Override
+        public void show(final Widget widget, final Callbacks callbacks) {
+            widget.removeStyleName("zoom-out");
+            widget.addStyleName("zoom-in");
+            callbacks.fire();
+        }
+    };
 }

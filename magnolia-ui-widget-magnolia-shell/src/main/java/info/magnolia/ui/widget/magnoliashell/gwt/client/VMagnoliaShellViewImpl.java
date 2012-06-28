@@ -44,10 +44,11 @@ import info.magnolia.ui.widget.magnoliashell.gwt.client.event.ShellAppNavigation
 import info.magnolia.ui.widget.magnoliashell.gwt.client.event.ViewportCloseEvent;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.event.handler.ShellNavigationHandler;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.event.handler.ViewportCloseHandler;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VInfoMessage;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VShellErrorMessage;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VShellMessage;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VShellMessage.MessageType;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VWarningMessage;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VWarningMessage.MessageType;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -225,6 +226,13 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
             }
             lowPriorityMessage = msg;
             break;
+        case INFO:
+            msg = new VInfoMessage(this, topic, message, id);
+            if (lowPriorityMessage != null && getWidgetIndex(lowPriorityMessage) != -1) {
+                lowPriorityMessage.hide();
+            }
+            lowPriorityMessage = msg;
+            break;
         case ERROR:
             msg = new VShellErrorMessage(this, topic, message, id);
             if (hiPriorityMessage != null && getWidgetIndex(hiPriorityMessage) != -1) {
@@ -268,7 +276,7 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
         if (appViewport != viewport) {
             doUpdateViewport(appViewport, viewport);
             viewports.put(ViewportType.APP_VIEWPORT, viewport);
-            viewport.setContentAnimationDelegate(ContentAnimationDelegate.SlidingDelegate);
+            viewport.setContentAnimationDelegate(ContentAnimationDelegate.ZoomingDelegate);
             viewport.setForceContentAlign(false);
         }
     };

@@ -1,0 +1,64 @@
+.v-shell-notification {
+	width: 100%;
+	position: absolute;
+	z-index: 1200;
+	text-align: center;
+	vertical-align: middle;
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	text-align: center;
+}
+
+.v-shell-notification.info {
+	background: none repeat scroll 0 0 #FFBF28;
+	bottom: 0;
+}
+
+.v-shell-notification.warning {
+	background: none repeat scroll 0 0 #D1D8DF;
+	bottom: 0;
+}
+
+.v-shell-notification.error {
+	background: none repeat scroll 0 0 #9A3333;
+	color: white;
+	top: 80px;
+}
+
+.v-shell-notification .header {
+	height: 25px;
+}
+
+.v-shell-notification .close {
+	background: url("img/icon-close-16.png")no-repeat scroll 4px 4px transparent;
+	vertical-align: text-top;
+	display: inline-block;
+	border: medium none;
+	height: 20px;
+	width: 20px;
+	float: right;
+	padding: 2px;
+	margin: 0;
+	right: 0;
+    top: 0;
+}
+
+.v-shell-notification .details-expander {
+	margin-left: 20px;
+}
+
+.btn-shell .indicator {
+	position: absolute;
+	top: 22px;
+	top: 23px;
+	left: 29px;
+	color: #689600;
+    z-index: 1000; 
+    text-align: center;
+}
+
+.btn-shell .pad {
+	top:0;
+	left:0;
+	position: absolute;
+    z-index: -1; 
+}

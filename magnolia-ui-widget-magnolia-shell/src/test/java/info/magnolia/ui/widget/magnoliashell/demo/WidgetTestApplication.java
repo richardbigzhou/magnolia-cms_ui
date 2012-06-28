@@ -50,7 +50,7 @@ public class WidgetTestApplication extends Application {
 
     @Override
     public void init() {
-        setTheme("testtheme");
+        setTheme("admincentraltheme");
         window = new Window("Magnolia shell test");
         window.getContent().setSizeFull();
         ((VerticalLayout) window.getContent()).setMargin(false);
