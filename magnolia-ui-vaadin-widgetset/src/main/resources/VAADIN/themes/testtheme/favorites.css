@@ -1,0 +1,11 @@
+/*FAVORITES RELATED STYLES*/
+
+.v-split-feed .v-entry-icon.newpages {
+    background: url("img/icon-favorites-new-page.png") no-repeat scroll 0 0 transparent;
+}
+
+.v-split-feed .v-entry-icon.shortcuts {
+    background: url("img/icon-favorites-shortcut.png") no-repeat scroll 0 0 transparent;
+}
+
+/*END OF FAVORITES RELATED STYLES*/
