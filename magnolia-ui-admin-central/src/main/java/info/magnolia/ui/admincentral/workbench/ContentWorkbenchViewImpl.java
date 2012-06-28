@@ -120,6 +120,7 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
             }
         }));
 
+        workbenchContainer.setSizeFull();
         workbenchContainer.setStyleName("mgnl-workbench");
         workbenchContainer.addComponent(toolbar);
     }

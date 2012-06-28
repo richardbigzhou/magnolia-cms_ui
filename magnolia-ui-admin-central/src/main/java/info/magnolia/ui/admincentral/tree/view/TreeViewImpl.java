@@ -39,7 +39,7 @@ import info.magnolia.ui.admincentral.tree.model.TreeModel;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
-
+import java.util.Set;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -74,7 +74,15 @@ public class TreeViewImpl implements TreeView, IsVaadinComponent {
         jcrBrowser.addListener(new TreeTable.ValueChangeListener() {
             @Override
             public void valueChange(ValueChangeEvent event) {
-                presenterOnItemSelection((String) event.getProperty().getValue());
+                final Object value = event.getProperty().getValue();
+                if (value instanceof String) {
+                    presenterOnItemSelection(String.valueOf(value));    
+                } else if (value instanceof Set) {
+                    final Set<?> set = (Set<?>)value;
+                    if (set.size() == 1) {
+                        presenterOnItemSelection(String.valueOf(set.iterator().next()));
+                    }
+                }
             }
         });
     }

@@ -52,6 +52,7 @@ import com.vaadin.ui.TextField;
 public class FieldBuilder {
 
     static final String TEXTFIELD_STYLE_NAME = "textfield";
+    static final String REQUIRED_ERROR = "This field is required! (to be i18n'd)";
 
     /**
      * @return field (currently TextField or Checkbox) build from provided
@@ -67,7 +68,10 @@ public class FieldBuilder {
         }
         if (input != null) {
             input.setStyleName(TEXTFIELD_STYLE_NAME);
-            input.setRequired(fieldDefinition.isRequired());
+            if (fieldDefinition.isRequired()) {
+                input.setRequired(fieldDefinition.isRequired());
+                input.setRequiredError(REQUIRED_ERROR);
+            }
             addValidators(fieldDefinition, input);
         }
         return input;

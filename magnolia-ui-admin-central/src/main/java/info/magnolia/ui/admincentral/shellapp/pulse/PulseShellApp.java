@@ -111,7 +111,9 @@ public class PulseShellApp implements ShellApp, PulseView.Presenter {
     }
 
     private List<String> parsePathParamsFromToken(String token) {
-        return new ArrayList<String>();
+        final List<String> result = new ArrayList<String>();
+        result.add(token);
+        return result;
     }
 
     @Override
