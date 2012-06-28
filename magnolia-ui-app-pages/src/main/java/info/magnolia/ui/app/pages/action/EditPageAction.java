@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,16 +31,41 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.registry;
+package info.magnolia.ui.app.pages.action;
 
-import info.magnolia.registry.Provider;
-import info.magnolia.ui.model.dialog.definition.DialogDefinition;
+import info.magnolia.ui.admincentral.workbench.ContentWorkbenchView;
+import info.magnolia.ui.app.pages.PageEditorTabView;
+import info.magnolia.ui.framework.app.AppView;
+import info.magnolia.ui.framework.location.DefaultLocation;
+import info.magnolia.ui.model.action.ActionBase;
+import info.magnolia.ui.model.action.ActionExecutionException;
 
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 /**
- * Provides a dialog definition.
- *
+ * Opens a page for editing.
  * @version $Id$
  */
-public interface DialogDefinitionProvider extends Provider<DialogDefinition> {
+public class EditPageAction extends ActionBase<EditPageActionDefinition> {
+
+    private Node selectedNode;
+
+    private ContentWorkbenchView.Presenter presenter;
+
+    public EditPageAction(final EditPageActionDefinition definition, final Node selectedNode, final ContentWorkbenchView.Presenter presenter) {
+        super(definition);
+        this.selectedNode = selectedNode;
+        this.presenter = presenter;
+    }
+
+    @Override
+    public void execute() throws ActionExecutionException {
+        try {
+            final AppView view = new PageEditorTabView(selectedNode);
+            presenter.onOpenNewView(view, new DefaultLocation("app", "app:pages:", view.getCaption()));
+        } catch (RepositoryException e) {
+            throw new ActionExecutionException(e);
+        }
+    }
 }

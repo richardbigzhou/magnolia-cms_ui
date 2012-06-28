@@ -31,41 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.definition;
+package info.magnolia.ui.admincentral.field.builder;
 
-import java.util.List;
+import info.magnolia.ui.model.dialog.definition.FieldDefinition;
 
-import info.magnolia.ui.model.definition.UiItemDefinition;
-import info.magnolia.ui.model.field.definition.FieldTypeDefinition;
+import com.vaadin.ui.Field;
 
 /**
- * FieldDefinition.
+ * FieldType.
+ *
  */
-public interface FieldDefinition extends UiItemDefinition {
+public interface FieldType {
 
-    static final String TEXT_FIELD_TYPE = "text";
-    static final String CHECKBOX_FIELD_TYPE = "checkbox";
-
-    public abstract String getDescription();
-
-    public abstract void setDescription(String description);
-
-    public abstract String getType();
-
-    public abstract void setType(String type);
-
-    public abstract boolean isRequired();
-
-    public abstract void setRequired(boolean required);
-
-    public abstract void addValidator(ValidatorDefinition validator);
-
-    public abstract void setValidators(List<ValidatorDefinition> validators);
-
-    public abstract List<ValidatorDefinition> getValidators();
-
-    public abstract void setFieldTypeDefinition(FieldTypeDefinition fieldTypeDefinition);
-
-    public abstract FieldTypeDefinition getFieldTypeDefinition();
-
+    Field build(FieldDefinition fieldDefinition);
 }

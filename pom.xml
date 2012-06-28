@@ -150,5 +150,6 @@
 		<module>magnolia-ui-app-dummy</module>
 		<module>magnolia-ui-app-contacts</module>
 		<module>magnolia-ui-app-messages</module>
+		<module>magnolia-ui-app-pages</module>
 	</modules>
 </project>

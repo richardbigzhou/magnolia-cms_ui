@@ -64,7 +64,7 @@ public class DialogBuilderTest {
         final Dialog dialog = new Dialog();
 
         // WHEN
-        final DialogView result = builder.build(def, null, dialog);
+        final DialogView result = builder.build(null, def, null, dialog);
 
         // THEN
         assertEquals(result, dialog);
@@ -88,7 +88,7 @@ public class DialogBuilderTest {
         when(item.getItemProperty("test")).thenReturn(prop);
 
         // WHEN
-        final DialogView result = builder.build(dialogDef, item, dialog);
+        final DialogView result = builder.build(null, dialogDef, item, dialog);
 
         // THEN
         assertEquals(result, dialog);

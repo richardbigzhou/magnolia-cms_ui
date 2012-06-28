@@ -36,6 +36,7 @@ package info.magnolia.ui.admincentral.dialog;
 import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.admincentral.dialog.action.DialogActionFactory;
 import info.magnolia.ui.admincentral.dialog.builder.DialogBuilder;
+import info.magnolia.ui.admincentral.field.builder.FieldTypeProvider;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.action.Action;
@@ -58,6 +59,7 @@ import com.vaadin.data.Item;
 public class DialogPresenter implements DialogView.Presenter {
 
     private final DialogBuilder dialogBuilder;
+    private final FieldTypeProvider fieldTypeBuilder;
     private final DialogDefinition dialogDefinition;
     private final MagnoliaShell shell;
     private final EventBus eventBus;
@@ -66,9 +68,10 @@ public class DialogPresenter implements DialogView.Presenter {
     private final Map<String, ActionDefinition> actionMap = new HashMap<String, ActionDefinition>();
     private Item item;
 
-    public DialogPresenter(final DialogView view, final DialogBuilder dialogBuilder, final DialogDefinition dialogDefinition, final MagnoliaShell shell, final EventBus eventBus, final DialogActionFactory actionFactory) {
+    public DialogPresenter(final DialogView view, final DialogBuilder dialogBuilder, final FieldTypeProvider fieldTypeBuilder, final DialogDefinition dialogDefinition, final MagnoliaShell shell, final EventBus eventBus, final DialogActionFactory actionFactory) {
         this.view = view;
         this.dialogBuilder = dialogBuilder;
+        this.fieldTypeBuilder = fieldTypeBuilder;
         this.dialogDefinition = dialogDefinition;
         this.shell = shell;
         this.eventBus = eventBus;
@@ -82,7 +85,7 @@ public class DialogPresenter implements DialogView.Presenter {
     @Override
     public void editItem(final Item item) {
         this.item = item;
-        dialogBuilder.build(dialogDefinition, item, view);
+        dialogBuilder.build(fieldTypeBuilder, dialogDefinition, item, view);
         shell.openDialog((Dialog)view.asVaadinComponent());
     }
 

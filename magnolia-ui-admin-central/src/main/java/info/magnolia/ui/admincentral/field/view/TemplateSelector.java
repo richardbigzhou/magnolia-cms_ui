@@ -31,41 +31,38 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.definition;
+package info.magnolia.ui.admincentral.field.view;
 
-import java.util.List;
+import org.vaadin.addon.customfield.CustomField;
 
-import info.magnolia.ui.model.definition.UiItemDefinition;
-import info.magnolia.ui.model.field.definition.FieldTypeDefinition;
+import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.ListSelect;
 
 /**
- * FieldDefinition.
+ * TemplateSelector.
+ *
  */
-public interface FieldDefinition extends UiItemDefinition {
+public class TemplateSelector extends CustomField {
 
-    static final String TEXT_FIELD_TYPE = "text";
-    static final String CHECKBOX_FIELD_TYPE = "checkbox";
 
-    public abstract String getDescription();
+    public TemplateSelector() {
+        CssLayout layout = new CssLayout();
 
-    public abstract void setDescription(String description);
+        ListSelect select = new ListSelect();
 
-    public abstract String getType();
+        select.addItem("Template1");
+        select.addItem("Template2");
+        select.addItem("Template3");
+        select.addItem("Template4");
 
-    public abstract void setType(String type);
+        layout.addComponent(select);
+        setValue("Template1");
 
-    public abstract boolean isRequired();
+        setCompositionRoot(layout);
+    }
 
-    public abstract void setRequired(boolean required);
-
-    public abstract void addValidator(ValidatorDefinition validator);
-
-    public abstract void setValidators(List<ValidatorDefinition> validators);
-
-    public abstract List<ValidatorDefinition> getValidators();
-
-    public abstract void setFieldTypeDefinition(FieldTypeDefinition fieldTypeDefinition);
-
-    public abstract FieldTypeDefinition getFieldTypeDefinition();
-
+    @Override
+    public Class<?> getType() {
+        return String.class;
+    }
 }

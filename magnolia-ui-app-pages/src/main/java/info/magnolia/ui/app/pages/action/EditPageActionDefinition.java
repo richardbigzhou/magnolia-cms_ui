@@ -31,52 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.pages;
+package info.magnolia.ui.app.pages.action;
 
-import info.magnolia.context.MgnlContext;
-import info.magnolia.jcr.util.PropertyUtil;
-import info.magnolia.ui.framework.app.AppView;
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
-import info.magnolia.ui.widget.editor.PageEditor;
-
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
-import org.apache.commons.lang.StringUtils;
-
-import com.vaadin.terminal.ExternalResource;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.VerticalLayout;
+import info.magnolia.ui.model.action.ActionDefinition;
 
 /**
- * PageEditorTabView.
- *
-* @version $Id$
-*/
-@SuppressWarnings("serial")
-public class PageEditorTabView implements AppView, IsVaadinComponent {
-
-    private final VerticalLayout container = new VerticalLayout();
-    private String caption;
-
-    public PageEditorTabView(final Node pageNode) throws RepositoryException {
-        final PageEditor page = new PageEditor(new ExternalResource(MgnlContext.getContextPath() + pageNode.getPath()));
-        page.setSizeFull();
-
-        container.setSizeFull();
-        container.addComponent(page);
-        caption = StringUtils.defaultIfEmpty(PropertyUtil.getString(pageNode, "title"), pageNode.getName());
-
-    }
-
-    @Override
-    public String getCaption() {
-        return caption;
-    }
-
-    @Override
-    public Component asVaadinComponent() {
-        return container;
-    }
+ * EditPageActionDefinition.
+ * @version $Id$
+ */
+public class EditPageActionDefinition implements ActionDefinition {
 
 }

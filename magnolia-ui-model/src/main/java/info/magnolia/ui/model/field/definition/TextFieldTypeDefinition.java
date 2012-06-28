@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,41 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.pages.action;
-
-import info.magnolia.ui.model.action.ActionBase;
-import info.magnolia.ui.model.action.ActionExecutionException;
-
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
+package info.magnolia.ui.model.field.definition;
 
 /**
- * The Class PreviewPageAction. Opens a full screen preview of the selected page.
+ * TextFieldTypeDefinition.
+ *
  */
-public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
+public class TextFieldTypeDefinition implements FieldTypeDefinition {
 
-    private final Node nodeToEdit;
-
-    /**
-     * Instantiates a new preview page action.
-     * 
-     * @param definition the definition
-     * @param nodeToEdit the node to edit
-     */
-    public PreviewPageAction(PreviewPageActionDefinition definition, Node nodeToEdit) {
-        super(definition);
-        this.nodeToEdit = nodeToEdit;
-    }
-
-    @Override
-    public void execute() throws ActionExecutionException {
-        System.out.println("preview page should open full screen preview.");
-        try {
-            System.out.println(nodeToEdit.getPath());
-        } catch (RepositoryException e) {
-            System.err.println("ERROR GETTING NODE PATH");
-        }
-    }
 
 }

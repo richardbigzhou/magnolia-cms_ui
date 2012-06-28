@@ -31,41 +31,41 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.pages.action;
+package info.magnolia.ui.app.pages.action;
 
-import info.magnolia.ui.admincentral.app.pages.PageEditorTabView;
-import info.magnolia.ui.admincentral.workbench.ContentWorkbenchView;
-import info.magnolia.ui.framework.app.AppView;
-import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+
 /**
- * Opens a page for editing.
- * @version $Id$
+ * The Class PreviewPageAction. Opens a full screen preview of the selected page.
  */
-public class EditPageAction extends ActionBase<EditPageActionDefinition> {
+public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
 
-    private Node selectedNode;
+    private final Node nodeToEdit;
 
-    private ContentWorkbenchView.Presenter presenter;
-
-    public EditPageAction(final EditPageActionDefinition definition, final Node selectedNode, final ContentWorkbenchView.Presenter presenter) {
+    /**
+     * Instantiates a new preview page action.
+     * 
+     * @param definition the definition
+     * @param nodeToEdit the node to edit
+     */
+    public PreviewPageAction(PreviewPageActionDefinition definition, Node nodeToEdit) {
         super(definition);
-        this.selectedNode = selectedNode;
-        this.presenter = presenter;
+        this.nodeToEdit = nodeToEdit;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
+        System.out.println("preview page should open full screen preview.");
         try {
-            final AppView view = new PageEditorTabView(selectedNode);
-            presenter.onOpenNewView(view, new DefaultLocation("app", "app:pages:", view.getCaption()));
+            System.out.println(nodeToEdit.getPath());
         } catch (RepositoryException e) {
-            throw new ActionExecutionException(e);
+            System.err.println("ERROR GETTING NODE PATH");
         }
     }
+
 }
