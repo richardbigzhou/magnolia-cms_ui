@@ -50,6 +50,7 @@ import com.vaadin.ui.VerticalLayout;
 
 /**
  * PageEditorTabView.
+ * TODO: make this a component with a split layout to accomodate the page editor on the left and its related actions on the right.
  *
 * @version $Id$
 */
@@ -60,11 +61,11 @@ public class PageEditorTabView implements AppView, IsVaadinComponent {
     private String caption;
 
     public PageEditorTabView(final Node pageNode) throws RepositoryException {
-        final PageEditor page = new PageEditor(new ExternalResource(MgnlContext.getContextPath() + pageNode.getPath()));
-        page.setSizeFull();
+        final PageEditor pageEditor = new PageEditor(new ExternalResource(MgnlContext.getContextPath() + pageNode.getPath()));
+        pageEditor.setSizeFull();
 
         container.setSizeFull();
-        container.addComponent(page);
+        container.addComponent(pageEditor);
         caption = StringUtils.defaultIfEmpty(PropertyUtil.getString(pageNode, "title"), pageNode.getName());
 
     }
