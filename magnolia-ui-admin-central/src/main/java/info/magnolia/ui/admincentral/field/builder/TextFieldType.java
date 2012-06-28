@@ -47,7 +47,7 @@ import com.vaadin.ui.Field;
 import com.vaadin.ui.TextField;
 
 /**
- * TextField.
+ * TextField. A {@link FieldType} for textfields which will return a vaadin textfield.
  *
  */
 public class TextFieldType extends FieldTypeBase {

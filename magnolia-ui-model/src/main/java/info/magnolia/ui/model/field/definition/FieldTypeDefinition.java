@@ -34,8 +34,9 @@
 package info.magnolia.ui.model.field.definition;
 
 
+
 /**
- * FieldTypeDefinition.
+ * FieldTypeDefinition definition of a simple textfield implementation.
  *
  */
 public interface FieldTypeDefinition {

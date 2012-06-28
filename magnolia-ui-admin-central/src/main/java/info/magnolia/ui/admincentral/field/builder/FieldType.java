@@ -38,7 +38,9 @@ import info.magnolia.ui.model.dialog.definition.FieldDefinition;
 import com.vaadin.ui.Field;
 
 /**
- * FieldType.
+ * FieldType. Is provided by the {@link FieldTypeProvider}.
+ * A FieldType is defined for every field in e.g. a dialog-type.
+ * It builds a vaadin {@link Field} and maps the necessary labels, validators etc to the field.
  *
  */
 public interface FieldType {

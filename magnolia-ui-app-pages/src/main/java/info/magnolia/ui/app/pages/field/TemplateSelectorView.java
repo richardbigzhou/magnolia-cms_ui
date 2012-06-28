@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.field.view;
+package info.magnolia.ui.app.pages.field;
 
 import org.vaadin.addon.customfield.CustomField;
 
@@ -39,13 +39,13 @@ import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.ListSelect;
 
 /**
- * TemplateSelector.
+ * TemplateSelectorView implementation of a template selector.
  *
  */
-public class TemplateSelector extends CustomField {
+public class TemplateSelectorView extends CustomField {
 
 
-    public TemplateSelector() {
+    public TemplateSelectorView() {
         CssLayout layout = new CssLayout();
 
         ListSelect select = new ListSelect();

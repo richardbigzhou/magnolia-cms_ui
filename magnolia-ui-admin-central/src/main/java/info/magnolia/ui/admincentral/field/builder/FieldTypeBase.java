@@ -36,8 +36,9 @@ package info.magnolia.ui.admincentral.field.builder;
 import info.magnolia.ui.model.field.definition.FieldTypeDefinition;
 
 /**
- * FieldTypeBase.
- * @param <D> the field type definition
+ * An {@link FieldType} bound to an {@link FieldTypeDefinition}.
+ *
+ * @param <D> the definition of the field type
  */
 public abstract class FieldTypeBase<D extends FieldTypeDefinition> implements FieldType {
 
