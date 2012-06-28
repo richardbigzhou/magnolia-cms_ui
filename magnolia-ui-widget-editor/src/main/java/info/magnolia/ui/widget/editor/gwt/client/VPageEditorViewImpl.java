@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,52 +31,37 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.pages;
+package info.magnolia.ui.widget.editor.gwt.client;
 
-import info.magnolia.context.MgnlContext;
-import info.magnolia.jcr.util.PropertyUtil;
-import info.magnolia.ui.framework.app.AppView;
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
-import info.magnolia.ui.widget.editor.PageEditor;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
 
-import org.apache.commons.lang.StringUtils;
-
-import com.vaadin.terminal.ExternalResource;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.VerticalLayout;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.web.bindery.event.shared.EventBus;
 
 /**
- * PageEditorTabView.
+ * GWT implementation of MagnoliaShell client side (the view part basically).
  *
-* @version $Id$
-*/
-@SuppressWarnings("serial")
-public class PageEditorTabView implements AppView, IsVaadinComponent {
+ */
+public class VPageEditorViewImpl extends FlowPanel implements VPageEditorView {
 
-    private final VerticalLayout container = new VerticalLayout();
-    private String caption;
 
-    public PageEditorTabView(final Node pageNode) throws RepositoryException {
-        final PageEditor page = new PageEditor(new ExternalResource(MgnlContext.getContextPath() + pageNode.getPath()));
-        page.setSizeFull();
+    private Presenter presenter;
+    private EventBus eventBus;
 
-        container.setSizeFull();
-        container.addComponent(page);
-        caption = StringUtils.defaultIfEmpty(PropertyUtil.getString(pageNode, "title"), pageNode.getName());
+
+    public VPageEditorViewImpl(final EventBus eventBus) {
+        super();
+        this.eventBus = eventBus;
 
     }
 
     @Override
-    public String getCaption() {
-        return caption;
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
     }
 
-    @Override
-    public Component asVaadinComponent() {
-        return container;
+    public Presenter getPresenter() {
+        return presenter;
     }
 
 }

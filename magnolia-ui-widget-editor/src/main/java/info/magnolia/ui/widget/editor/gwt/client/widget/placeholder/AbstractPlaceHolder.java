@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,52 +31,46 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.pages;
+package info.magnolia.ui.widget.editor.gwt.client.widget.placeholder;
 
-import info.magnolia.context.MgnlContext;
-import info.magnolia.jcr.util.PropertyUtil;
-import info.magnolia.ui.framework.app.AppView;
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
-import info.magnolia.ui.widget.editor.PageEditor;
+import info.magnolia.ui.widget.editor.gwt.client.VPageEditor;
+import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
-import org.apache.commons.lang.StringUtils;
-
-import com.vaadin.terminal.ExternalResource;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.VerticalLayout;
+import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
- * PageEditorTabView.
+ * Abstract Widget for area and component placeholder.
  *
-* @version $Id$
-*/
-@SuppressWarnings("serial")
-public class PageEditorTabView implements AppView, IsVaadinComponent {
+ * @version $Id$
+ */
+public class AbstractPlaceHolder extends FlowPanel {
 
-    private final VerticalLayout container = new VerticalLayout();
-    private String caption;
+    private MgnlElement mgnlElement;
 
-    public PageEditorTabView(final Node pageNode) throws RepositoryException {
-        final PageEditor page = new PageEditor(new ExternalResource(MgnlContext.getContextPath() + pageNode.getPath()));
-        page.setSizeFull();
+    public AbstractPlaceHolder(MgnlElement mgnlElement) {
+        super();
+        this.setMgnlElement(mgnlElement);
 
-        container.setSizeFull();
-        container.addComponent(page);
-        caption = StringUtils.defaultIfEmpty(PropertyUtil.getString(pageNode, "title"), pageNode.getName());
+        setStyleName("mgnlEditor mgnlEditorPlaceholder");
+    }
 
+    public void toggleVisible() {
+        isVisible();
+        setVisible(!isVisible());
     }
 
     @Override
-    public String getCaption() {
-        return caption;
+    protected void onAttach() {
+        VPageEditor.getModel().addElements(this.getMgnlElement(), getElement());
+        super.onAttach();
     }
 
-    @Override
-    public Component asVaadinComponent() {
-        return container;
+    public void setMgnlElement(MgnlElement mgnlElement) {
+        this.mgnlElement = mgnlElement;
+    }
+
+    public MgnlElement getMgnlElement() {
+        return mgnlElement;
     }
 
 }
