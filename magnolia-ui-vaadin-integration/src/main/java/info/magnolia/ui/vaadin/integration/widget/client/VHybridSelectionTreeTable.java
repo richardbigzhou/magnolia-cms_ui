@@ -79,14 +79,21 @@ public class VHybridSelectionTreeTable extends VTreeTable {
 
         addDomHandler(new MouseUpHandler() {
             @Override
-            public void onMouseUp(MouseUpEvent event) {
-                final Element target = event.getNativeEvent().getEventTarget().cast();
-                final Element rowEl = findParentRowElement(target);
-                if (rowEl != null) {
-                    final NodeList<?> cbList = rowEl.getElementsByTagName("input");
-                    if (cbList != null && cbList.getLength() > 0) {
-                        final Element cb = (Element) cbList.getItem(0);
-                        cb.setPropertyBoolean("checked", !target.getClassName().contains("select"));
+            public void onMouseUp(final MouseUpEvent event) {       
+                if (event.getNativeButton() == NativeEvent.BUTTON_LEFT) {
+                    if (!event.getNativeEvent().getShiftKey()) {
+                        final Element target = event.getNativeEvent().getEventTarget().cast();
+                        final Element rowEl = findParentRowElement(target);
+                        if (rowEl != null) {
+                            toggleRowCheckBox(rowEl);
+                        }      
+                    } else {
+                        JsArray<Element> selectedRows = JQueryWrapper.select(".v-selected").get();
+                        if (selectedRows != null) {
+                            for (int i = 0; i < selectedRows.length(); ++i) {
+                                toggleRowCheckBox(selectedRows.get(i));
+                            }
+                        }
                     }
                 }
             }
@@ -116,6 +123,15 @@ public class VHybridSelectionTreeTable extends VTreeTable {
         });
     }
 
+    private void toggleRowCheckBox(final Element rowEl) {
+        final NodeList<?> cbList = rowEl.getElementsByTagName("input");
+        if (cbList != null && cbList.getLength() > 0) {
+            final Element cb = (Element) cbList.getItem(0);
+            final String className = rowEl.getClassName();
+            cb.setPropertyBoolean("checked", className.contains("select"));
+        }
+    }
+    
     @Override
     protected VScrollTableBody createScrollBody() {
         VScrollTableBody body = super.createScrollBody();
@@ -181,6 +197,9 @@ public class VHybridSelectionTreeTable extends VTreeTable {
         Element itEl = el;
         while (!itEl.getTagName().equalsIgnoreCase("tr") && itEl.hasParentElement()) {
             itEl = itEl.getParentElement().cast();
+        }
+        if (!itEl.getTagName().equalsIgnoreCase("tr")) {
+            itEl = null;
         }
         return itEl;
     }
