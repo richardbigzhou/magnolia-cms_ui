@@ -36,6 +36,7 @@ package info.magnolia.ui.framework.message;
 import java.util.Collection;
 import java.util.List;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.inject.Singleton;
 
 import com.google.common.collect.ArrayListMultimap;
@@ -43,8 +44,8 @@ import com.google.common.collect.ListMultimap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.cms.security.User;
-import info.magnolia.cms.security.UserManager;
 
 /**
  * Implementation of {@link MessagesManager}.
@@ -56,30 +57,36 @@ public class MessagesManagerImpl implements MessagesManager {
 
     private final ListMultimap<String, MessageListener> listeners = ArrayListMultimap.create();
 
-    private UserManager userManager;
+    private Provider<SecuritySupport> securitySupportProvider;
     private MessageStore messageStore;
 
     @Inject
-    public MessagesManagerImpl(UserManager userManager, MessageStore messageStore) {
-        this.userManager = userManager;
+    public MessagesManagerImpl(Provider<SecuritySupport> securitySupportProvider, MessageStore messageStore) {
+        this.securitySupportProvider = securitySupportProvider;
         this.messageStore = messageStore;
     }
 
     @Override
     public void sendMessageToAllUsers(Message message) {
+
         Collection<User> users;
         try {
-            users = userManager.getAllUsers();
+            users = securitySupportProvider.get().getUserManager().getAllUsers();
         } catch (UnsupportedOperationException e) {
             logger.error("Unable to broadcast message because UserManager does not support enumerating its users", e);
             return;
         }
-        for (User user : users) {
-            messageStore.saveMessage(user.getName(), message);
-        }
+
         synchronized (listeners) {
-            for (String userId : listeners.keySet()) {
-                sendMessageSentEvent(userId, message);
+            for (User user : users) {
+
+                // We need to set the id to null for each loop to make sure each user gets a unique id. Otherwise an id
+                // suitable for the first user gets generated and is then used for everyone, possible overwriting
+                // already existing messages for some users.
+                message.setId(null);
+
+                messageStore.saveMessage(user.getName(), message);
+                sendMessageSentEvent(user.getName(), message);
             }
         }
     }
