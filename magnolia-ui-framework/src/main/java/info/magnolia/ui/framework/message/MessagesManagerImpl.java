@@ -33,60 +33,99 @@
  */
 package info.magnolia.ui.framework.message;
 
+import java.util.Collection;
 import java.util.List;
-
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import info.magnolia.cms.security.User;
+import info.magnolia.cms.security.UserManager;
 
 /**
  * Implementation of {@link MessagesManager}.
- *
- * @version $Id$
  */
 @Singleton
 public class MessagesManagerImpl implements MessagesManager {
 
-    private int idCounter = 0;
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final ListMultimap<String, Message> messages = ArrayListMultimap.create();
     private final ListMultimap<String, MessageListener> listeners = ArrayListMultimap.create();
 
-    @Override
-    public synchronized void sendMessageToAllUsers(Message message) {
-        for (final String userId : listeners.keySet()) {
-            sendMessage(userId, message);
-        }
+    private UserManager userManager;
+    private MessageStore messageStore;
+
+    @Inject
+    public MessagesManagerImpl(UserManager userManager, MessageStore messageStore) {
+        this.userManager = userManager;
+        this.messageStore = messageStore;
     }
 
     @Override
-    public synchronized void sendMessage(String userId, Message message) {
-        message.setId(generateMessageId());
-        messages.put(userId, message);
-        for (final MessageListener listener : listeners.get(userId)) {
-            if (listener != null) {
-                listener.messageSent(message);
+    public void sendMessageToAllUsers(Message message) {
+        Collection<User> users;
+        try {
+            users = userManager.getAllUsers();
+        } catch (UnsupportedOperationException e) {
+            logger.error("Unable to broadcast message because UserManager does not support enumerating its users", e);
+            return;
+        }
+        for (User user : users) {
+            messageStore.saveMessage(user.getName(), message);
+        }
+        synchronized (listeners) {
+            for (String userId : listeners.keySet()) {
+                sendMessageSentEvent(userId, message);
             }
         }
     }
 
     @Override
-    public synchronized void registerMessagesListener(String userId, MessageListener listener) {
-        listeners.put(userId, listener);
+    public void sendMessage(String userId, Message message) {
+        messageStore.saveMessage(userId, message);
+        sendMessageSentEvent(userId, message);
     }
 
     @Override
-    public synchronized void unregisterMessagesListener(String userId, MessageListener listener) {
-        listeners.remove(userId, listener);
-    }
-
-    @Override
-    public void clearMessage(final String userId, final String id) {
-        final Message message = findMessageById(userId, id);
+    public void clearMessage(final String userId, final String messageId) {
+        final Message message = messageStore.findMessageById(userId, messageId);
         if (message != null) {
-            //messages.remove(userId, message);
             message.setCleared(true);
+            messageStore.saveMessage(userId, message);
+            sendMessageClearedEvent(userId, message);
+        }
+    }
+
+    @Override
+    public int getNumberOfUnclearedMessagesForUser(String userId) {
+        return messageStore.getNumberOfUnclearedMessagesForUser(userId);
+    }
+
+    @Override
+    public List<Message> getMessagesForUser(String userId) {
+        return messageStore.findAllMessagesForUser(userId);
+    }
+
+    @Override
+    public void registerMessagesListener(String userId, MessageListener listener) {
+        synchronized (listeners) {
+            listeners.put(userId, listener);
+        }
+    }
+
+    @Override
+    public void unregisterMessagesListener(String userId, MessageListener listener) {
+        synchronized (listeners) {
+            listeners.remove(userId, listener);
+        }
+    }
+
+    private void sendMessageClearedEvent(String userId, Message message) {
+        synchronized (listeners) {
             final List<MessageListener> listenerList = listeners.get(userId);
             if (listenerList != null) {
                 for (final MessageListener listener : listenerList) {
@@ -96,35 +135,13 @@ public class MessagesManagerImpl implements MessagesManager {
         }
     }
 
-    private Message findMessageById(String userId, String msgId) {
-        Message result = null;
-        final List<Message> userMessages = messages.get(userId);
-        if (userMessages != null) {
-            for (final Message msg : userMessages) {
-                if (msg.getId().equals(msgId)) {
-                    result = msg;
-                    break;
+    private void sendMessageSentEvent(String userId, Message message) {
+        synchronized (listeners) {
+            for (final MessageListener listener : listeners.get(userId)) {
+                if (listener != null) {
+                    listener.messageSent(message);
                 }
-            }       
+            }
         }
-        return result;
-    }
-
-    @Override
-    public int getMessageCountForUser(String userId) {
-        final List<Message> userMessages = messages.get(userId);
-        if (userMessages != null) {
-            return userMessages.size();
-        }
-        return 0;
-    }
-
-    @Override
-    public List<Message> getMessagesForUser(String userId) {
-        return messages.get(userId);
-    }
-
-    private synchronized String generateMessageId() {
-        return String.valueOf(idCounter++);
     }
 }
