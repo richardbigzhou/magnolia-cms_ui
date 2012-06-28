@@ -119,7 +119,6 @@
         <artifactId>icepush</artifactId>
         <version>3.0.1</version>
     </dependency>
-
     <dependency>
            <groupId>org.vaadin.addons</groupId>
            <artifactId>customfield</artifactId>
