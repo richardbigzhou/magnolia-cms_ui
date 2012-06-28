@@ -83,6 +83,7 @@ public class HybridSelectionTreeTable extends TreeTable {
         }
         return result;
     }
+    
     @Override
     public void changeVariables(Object source, Map<String, Object> variables) {
         super.changeVariables(source, variables);
