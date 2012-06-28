@@ -77,7 +77,6 @@ import com.google.gwt.user.client.Window.ScrollEvent;
 import com.google.gwt.user.client.Window.ScrollHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Frame;
-import com.google.gwt.user.client.ui.HTML;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.Paintable;
 import com.vaadin.terminal.gwt.client.UIDL;
@@ -150,9 +149,7 @@ public class VPageEditor extends FlowPanel implements Paintable, VPageEditorView
     }
 
     private void initHandlers() {
-        final HTML html = HTML.wrap(contentDocument.getDocumentElement());
-
-        html.addDomHandler(new MouseUpHandler() {
+      addDomHandler(new MouseUpHandler() {
             @Override
             public void onMouseUp(MouseUpEvent event) {
 
@@ -161,7 +158,7 @@ public class VPageEditor extends FlowPanel implements Paintable, VPageEditorView
             }
         }, MouseUpEvent.getType());
 
-        html.addDomHandler(new KeyDownHandler() {
+      addDomHandler(new KeyDownHandler() {
             @Override
             public void onKeyDown(KeyDownEvent event) {
                 if (event.getNativeKeyCode() == KeyCodes.KEY_ESCAPE) {
@@ -178,7 +175,7 @@ public class VPageEditor extends FlowPanel implements Paintable, VPageEditorView
 
 
 
-        html.addDomHandler(new MouseMoveHandler() {
+        addDomHandler(new MouseMoveHandler() {
 
             @Override
             public void onMouseMove(MouseMoveEvent event) {

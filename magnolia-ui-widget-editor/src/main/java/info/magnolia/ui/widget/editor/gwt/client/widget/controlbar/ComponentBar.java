@@ -51,6 +51,7 @@ import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.PushButton;
 
 
@@ -170,7 +171,7 @@ public class ComponentBar extends AbstractBar  {
         remove.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                //PageEditor.deleteComponent(path);
+                Window.alert("Hi, one fine day I will be able to do something useful.");
             }
         });
         remove.setTitle(getI18nMessage("buttons.component.delete.js"));
@@ -197,7 +198,7 @@ public class ComponentBar extends AbstractBar  {
             edit.addClickHandler(new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent event) {
-                    //PageEditor.openDialog(dialog, workspace, path);
+                    Window.alert("Hi, one fine day I will be able to do something useful.");
                 }
             });
             edit.setTitle(getI18nMessage("buttons.component.edit.js"));

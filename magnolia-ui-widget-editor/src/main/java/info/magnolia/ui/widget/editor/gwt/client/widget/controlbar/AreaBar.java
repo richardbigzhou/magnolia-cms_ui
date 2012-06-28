@@ -43,6 +43,7 @@ import java.util.Map;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.PushButton;
 
 
@@ -87,6 +88,7 @@ public class AreaBar extends AbstractBar {
                     @Override
                     public void onClick(ClickEvent event) {
                         //TODO delegate to presenter
+                        Window.alert("Hi, one fine day I will be able to open a dialog.");
                         //PageEditor.openDialog(dialog, workspace, path);
                     }
                 });
@@ -102,6 +104,7 @@ public class AreaBar extends AbstractBar {
                 removeButton.addClickHandler(new ClickHandler() {
                     @Override
                     public void onClick(ClickEvent event) {
+                        Window.alert("Hi, one fine day I will be able to delete this component.");
                         //PageEditor.deleteComponent(path);
                     }
                 });
@@ -117,6 +120,7 @@ public class AreaBar extends AbstractBar {
                 createbutton.addClickHandler(new ClickHandler() {
                     @Override
                     public void onClick(ClickEvent event) {
+                        Window.alert("Hi, one fine day I will be able to craete this component.");
                         //PageEditor.createComponent(workspace, path, "mgnl:area");
                     }
                 });
