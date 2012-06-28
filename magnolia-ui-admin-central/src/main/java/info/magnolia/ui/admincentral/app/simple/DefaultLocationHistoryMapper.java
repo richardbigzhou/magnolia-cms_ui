@@ -60,23 +60,21 @@ public class DefaultLocationHistoryMapper implements LocationHistoryMapper {
         String prefix = DefaultLocation.extractPrefix(fragment);
         String token = DefaultLocation.extractToken(fragment);
 
-        if (type.equals("shell")) {
-            if (prefix.equals("applauncher") || prefix.equals("pulse") || prefix.equals("favorite")) {
-                return new DefaultLocation(type, prefix, token);
-            }
+        if (!supported(type, prefix, token)) {
+            return null;
         }
 
-        if (type.equals("app")) {
-            AppDescriptor descriptor = getAppDescriptor(prefix);
-            if (descriptor != null) {
-                return new DefaultLocation(type, prefix, token);
-            }
-        }
-        return null;
+        return new DefaultLocation(type, prefix, token);
     }
 
     @Override
     public String getFragment(Location location) {
+        DefaultLocation defaultLocation = (DefaultLocation) location;
+
+        if (!supported(defaultLocation.getType(), defaultLocation.getPrefix(), defaultLocation.getToken())) {
+            return null;
+        }
+
         return location.toString();
     }
 
@@ -89,5 +87,18 @@ public class DefaultLocationHistoryMapper implements LocationHistoryMapper {
             }
         }
         return null;
+    }
+
+    private boolean supported(String type, String prefix, String token) {
+
+        if (type.equals("shell") && (prefix.equals("applauncher") || prefix.equals("pulse") || prefix.equals("favorite"))) {
+            return true;
+        }
+
+        if (type.equals("app") && getAppDescriptor(prefix) != null) {
+            return true;
+        }
+
+        return false;
     }
 }
