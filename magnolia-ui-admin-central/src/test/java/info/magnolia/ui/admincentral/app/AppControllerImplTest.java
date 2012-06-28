@@ -139,8 +139,8 @@ public class AppControllerImplTest {
         // THEN
         //Check Events
         assertEquals(2, eventCollector.appLifecycleEvent.size());
-        checkAppEvent(appName, AppEventType.STARTED, 0);
-        checkAppEvent(appName, AppEventType.FOCUSED, 1);
+        checkAppEvent(eventCollector, appName, AppEventType.STARTED, 0);
+        checkAppEvent(eventCollector, appName, AppEventType.FOCUSED, 1);
         //Check App
         assertEquals(true, PageAppTestImpl.res.containsKey("TestPageApp0"));
         PageAppTestImpl pageApp = (PageAppTestImpl)PageAppTestImpl.res.get("TestPageApp0");
@@ -166,9 +166,9 @@ public class AppControllerImplTest {
 
         // THEN
         assertEquals(3, eventCollector.appLifecycleEvent.size());
-        checkAppEvent(appName, AppEventType.STARTED, 0);
-        checkAppEvent(appName, AppEventType.FOCUSED, 1);
-        checkAppEvent(appName, AppEventType.STOPPED, 2);
+        checkAppEvent(eventCollector, appName, AppEventType.STARTED, 0);
+        checkAppEvent(eventCollector, appName, AppEventType.FOCUSED, 1);
+        checkAppEvent(eventCollector, appName, AppEventType.STOPPED, 2);
         assertEquals(2, pageApp.events.size());
         assertEquals(true, pageApp.events.get(0).startsWith("start()"));
         assertEquals(true, pageApp.events.get(1).startsWith("stop()"));
@@ -197,12 +197,12 @@ public class AppControllerImplTest {
 
         // THEN
         assertEquals(6, eventCollector.appLifecycleEvent.size());
-        checkAppEvent(appName1, AppEventType.STARTED, 0);
-        checkAppEvent(appName1, AppEventType.FOCUSED, 1);
-        checkAppEvent(appName2, AppEventType.STARTED, 2);
-        checkAppEvent(appName2, AppEventType.FOCUSED, 3);
-        checkAppEvent(appName2, AppEventType.STOPPED, 4);
-        checkAppEvent(appName1, AppEventType.FOCUSED, 5);
+        checkAppEvent(eventCollector, appName1, AppEventType.STARTED, 0);
+        checkAppEvent(eventCollector, appName1, AppEventType.FOCUSED, 1);
+        checkAppEvent(eventCollector, appName2, AppEventType.STARTED, 2);
+        checkAppEvent(eventCollector, appName2, AppEventType.FOCUSED, 3);
+        checkAppEvent(eventCollector, appName2, AppEventType.STOPPED, 4);
+        checkAppEvent(eventCollector, appName1, AppEventType.FOCUSED, 5);
 
         assertEquals(2, pageApp2.events.size());
         assertEquals(true, pageApp2.events.get(0).startsWith("start()"));
@@ -256,8 +256,6 @@ public class AppControllerImplTest {
         assertEquals(false , appControler.isAppStarted(appName1));
     }
 
-
-
     /**
      * Init a LayoutManager containing 2 category (cat1 and cat2) with
      * one app each (app1 and app2) linket to {TestApp}.
@@ -282,7 +280,7 @@ public class AppControllerImplTest {
     }
 
 
-    private GuiceComponentProvider initComponentProvider() {
+    public static GuiceComponentProvider initComponentProvider() {
         GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
         ComponentProviderConfiguration components = new ComponentProviderConfiguration();
         components.registerImplementation(ModuleRegistry.class, ModuleRegistryImpl.class);
@@ -327,7 +325,7 @@ public class AppControllerImplTest {
             appLifecycleEvent.add(event);
         }
     }
-    private void checkAppEvent(String appName, AppEventType eventType, int position) {
+    public static void checkAppEvent(AppEventCollector eventCollector, String appName, AppEventType eventType, int position) {
         assertEquals(eventType,  eventCollector.appLifecycleEvent.get(position).getEventType());
         assertEquals(appName, eventCollector.appLifecycleEvent.get(position).getAppDescriptor().getName());
     }
