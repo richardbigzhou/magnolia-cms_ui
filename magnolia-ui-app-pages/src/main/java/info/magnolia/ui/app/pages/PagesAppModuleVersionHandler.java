@@ -31,41 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.pages;
+package info.magnolia.ui.app.pages;
 
-import info.magnolia.ui.admincentral.workbench.ContentWorkbench;
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
-
-import javax.inject.Inject;
-
-import com.vaadin.ui.Component;
-import com.vaadin.ui.ComponentContainer;
-
+import info.magnolia.module.DefaultModuleVersionHandler;
 
 /**
- * View implementation for the Pages app.
- *
- * @version $Id$
+ * Version handler for Dummy app module.
  */
-@SuppressWarnings("serial")
-public class PagesViewImpl implements PagesView, IsVaadinComponent {
-
-    private ComponentContainer view;
-
-    @Inject
-    public PagesViewImpl(final ContentWorkbench workbench) {
-        workbench.initWorkbench("website");
-        view = workbench.asVaadinComponent();
-    }
-
-    @Override
-    public String getCaption() {
-        return "Pages";
-    }
-
-    @Override
-    public Component asVaadinComponent() {
-        return view;
-    }
-
+public class PagesAppModuleVersionHandler extends DefaultModuleVersionHandler {
 }

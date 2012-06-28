@@ -31,53 +31,41 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.pages;
+package info.magnolia.ui.app.pages.action;
 
-import info.magnolia.context.MgnlContext;
-import info.magnolia.jcr.util.PropertyUtil;
-import info.magnolia.ui.framework.app.AppView;
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
+import info.magnolia.ui.model.action.ActionBase;
+import info.magnolia.ui.model.action.ActionExecutionException;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
-import org.apache.commons.lang.StringUtils;
-
-import com.vaadin.terminal.ExternalResource;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Embedded;
-import com.vaadin.ui.VerticalLayout;
 
 /**
- * PageEditorTabView.
- *
-* @version $Id$
-*/
-@SuppressWarnings("serial")
-public class PageEditorTabView implements AppView, IsVaadinComponent {
+ * The Class PreviewPageAction. Opens a full screen preview of the selected page.
+ */
+public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
 
-    private final VerticalLayout container = new VerticalLayout();
-    private String caption;
+    private final Node nodeToEdit;
 
-    public PageEditorTabView(final Node pageNode) throws RepositoryException {
-        final Embedded page = new Embedded("", new ExternalResource(MgnlContext.getContextPath() + pageNode.getPath()));
-        page.setType(Embedded.TYPE_BROWSER);
-        page.setSizeFull();
-
-        container.setSizeFull();
-        container.addComponent(page);
-        caption = StringUtils.defaultIfEmpty(PropertyUtil.getString(pageNode, "title"), pageNode.getName());
-
+    /**
+     * Instantiates a new preview page action.
+     * 
+     * @param definition the definition
+     * @param nodeToEdit the node to edit
+     */
+    public PreviewPageAction(PreviewPageActionDefinition definition, Node nodeToEdit) {
+        super(definition);
+        this.nodeToEdit = nodeToEdit;
     }
 
     @Override
-    public String getCaption() {
-        return caption;
-    }
-
-    @Override
-    public Component asVaadinComponent() {
-        return container;
+    public void execute() throws ActionExecutionException {
+        System.out.println("preview page should open full screen preview.");
+        try {
+            System.out.println(nodeToEdit.getPath());
+        } catch (RepositoryException e) {
+            System.err.println("ERROR GETTING NODE PATH");
+        }
     }
 
 }

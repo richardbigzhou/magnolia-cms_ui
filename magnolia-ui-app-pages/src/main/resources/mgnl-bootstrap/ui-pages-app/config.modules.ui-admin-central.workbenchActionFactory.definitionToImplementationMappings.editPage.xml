@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<sv:node sv:name="pages" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<sv:node sv:name="editPage" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <sv:property sv:name="jcr:primaryType" sv:type="Name">
     <sv:value>mgnl:contentNode</sv:value>
   </sv:property>
@@ -7,25 +7,16 @@
     <sv:value>mix:lockable</sv:value>
   </sv:property>
   <sv:property sv:name="jcr:uuid" sv:type="String">
-    <sv:value>11e75f7d-7758-44c5-900d-47b575ab68da</sv:value>
+    <sv:value>3ff0b509-eef5-407f-9f67-6de284b153d6</sv:value>
   </sv:property>
-  <sv:property sv:name="appClass" sv:type="String">
-    <sv:value>info.magnolia.ui.admincentral.app.pages.PagesApp</sv:value>
+  <sv:property sv:name="definition" sv:type="String">
+    <sv:value>info.magnolia.ui.app.pages.action.EditPageActionDefinition</sv:value>
   </sv:property>
-  <sv:property sv:name="categoryName" sv:type="String">
-    <sv:value>EDIT</sv:value>
-  </sv:property>
-  <sv:property sv:name="icon" sv:type="String">
-    <sv:value>img/icon-app-pages.png</sv:value>
+  <sv:property sv:name="implementation" sv:type="String">
+    <sv:value>info.magnolia.ui.app.pages.action.EditPageAction</sv:value>
   </sv:property>
   <sv:property sv:name="jcr:createdBy" sv:type="String">
     <sv:value>admin</sv:value>
-  </sv:property>
-  <sv:property sv:name="label" sv:type="String">
-    <sv:value>Pages</sv:value>
-  </sv:property>
-  <sv:property sv:name="name" sv:type="String">
-    <sv:value>pages</sv:value>
   </sv:property>
   <sv:node sv:name="MetaData">
     <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -41,10 +32,10 @@
       <sv:value>superuser</sv:value>
     </sv:property>
     <sv:property sv:name="mgnl:creationdate" sv:type="Date">
-      <sv:value>2012-05-22T16:11:05.204+02:00</sv:value>
+      <sv:value>2012-06-21T11:52:43.712+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-      <sv:value>2012-05-31T14:32:59.278+02:00</sv:value>
+      <sv:value>2012-06-28T16:17:50.291+02:00</sv:value>
     </sv:property>
   </sv:node>
 </sv:node>

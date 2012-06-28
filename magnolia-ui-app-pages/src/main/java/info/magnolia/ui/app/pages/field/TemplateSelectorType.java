@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,33 +31,37 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.app.pages.field;
 
-import com.vaadin.ui.Component;
+import info.magnolia.rendering.template.registry.TemplateDefinitionRegistry;
+import info.magnolia.ui.admincentral.field.builder.FieldTypeBase;
+import info.magnolia.ui.admincentral.field.view.TemplateSelector;
+import info.magnolia.ui.model.dialog.definition.FieldDefinition;
+import info.magnolia.ui.model.field.definition.FieldTypeDefinition;
 
-import info.magnolia.ui.admincentral.app.pages.PagesView;
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
+import com.google.inject.Inject;
+import com.vaadin.ui.Field;
 
 /**
- *
- * Stupid PagesView Test class.
+ * TemplateSelectorType.
  *
  */
-public class PagesViewTestImpl implements PagesView, IsVaadinComponent {
+public class TemplateSelectorType extends FieldTypeBase {
 
+    TemplateDefinitionRegistry templateDefinitionRegistry;
 
-    public PagesViewTestImpl() {
-
+    @Inject
+    public TemplateSelectorType(FieldTypeDefinition definition, TemplateDefinitionRegistry templateDefinitionRegistry) {
+        super(definition);
+        this.templateDefinitionRegistry = templateDefinitionRegistry;
     }
 
     @Override
-    public String getCaption() {
-        return null;
-    }
+    public Field build(FieldDefinition fieldDefinition) {
+        Field field = new TemplateSelector();
 
-    @Override
-    public Component asVaadinComponent() {
-        return null;
+        //templateDefinitionRegistry.getTemplateDefinitions()
+        return field;
     }
 
 }

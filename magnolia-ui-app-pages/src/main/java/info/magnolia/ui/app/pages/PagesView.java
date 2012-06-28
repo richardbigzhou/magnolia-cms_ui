@@ -31,14 +31,25 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.pages.action;
+package info.magnolia.ui.app.pages;
 
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.framework.app.AppView;
 
 /**
- * EditPageActionDefinition.
+ * View for the Pages app.
+ *
  * @version $Id$
  */
-public class EditPageActionDefinition implements ActionDefinition {
+public interface PagesView extends AppView {
+
+    /**
+     * Presenter.
+     *
+     */
+    public interface Presenter {
+
+    }
+
+    void setPresenter(Presenter presenter);
 
 }

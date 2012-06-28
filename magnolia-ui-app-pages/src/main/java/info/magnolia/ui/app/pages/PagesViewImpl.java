@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,41 +31,47 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.definition;
+package info.magnolia.ui.app.pages;
 
-import java.util.List;
+import info.magnolia.ui.admincentral.workbench.ContentWorkbench;
+import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
-import info.magnolia.ui.model.definition.UiItemDefinition;
-import info.magnolia.ui.model.field.definition.FieldTypeDefinition;
+import javax.inject.Inject;
+
+import com.vaadin.ui.Component;
+import com.vaadin.ui.ComponentContainer;
+
 
 /**
- * FieldDefinition.
+ * View implementation for the Pages app.
+ *
+ * @version $Id$
  */
-public interface FieldDefinition extends UiItemDefinition {
+@SuppressWarnings("serial")
+public class PagesViewImpl implements PagesView, IsVaadinComponent {
 
-    static final String TEXT_FIELD_TYPE = "text";
-    static final String CHECKBOX_FIELD_TYPE = "checkbox";
+    private ComponentContainer view;
+    private Presenter presenter;
 
-    public abstract String getDescription();
+    @Inject
+    public PagesViewImpl(final ContentWorkbench workbench) {
+        workbench.initWorkbench("website");
+        view = workbench.asVaadinComponent();
+    }
 
-    public abstract void setDescription(String description);
+    @Override
+    public String getCaption() {
+        return "Pages";
+    }
 
-    public abstract String getType();
+    @Override
+    public Component asVaadinComponent() {
+        return view;
+    }
 
-    public abstract void setType(String type);
-
-    public abstract boolean isRequired();
-
-    public abstract void setRequired(boolean required);
-
-    public abstract void addValidator(ValidatorDefinition validator);
-
-    public abstract void setValidators(List<ValidatorDefinition> validators);
-
-    public abstract List<ValidatorDefinition> getValidators();
-
-    public abstract void setFieldTypeDefinition(FieldTypeDefinition fieldTypeDefinition);
-
-    public abstract FieldTypeDefinition getFieldTypeDefinition();
+    @Override
+    public void setPresenter(PagesView.Presenter presenter) {
+        this.presenter = presenter;
+    }
 
 }

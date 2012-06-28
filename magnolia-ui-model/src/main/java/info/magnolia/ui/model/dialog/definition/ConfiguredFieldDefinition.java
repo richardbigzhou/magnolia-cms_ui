@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import info.magnolia.ui.model.definition.ConfiguredUiItemDefinition;
+import info.magnolia.ui.model.field.definition.FieldTypeDefinition;
 
 
 /**
@@ -53,6 +54,8 @@ public class ConfiguredFieldDefinition extends ConfiguredUiItemDefinition implem
     private boolean required; // Not relevant for checkbox
 
     private List<ValidatorDefinition> validators = new ArrayList<ValidatorDefinition>();
+
+    private FieldTypeDefinition fieldTypeDefinition;
 
     @Override
     public String getDescription() {
@@ -97,5 +100,18 @@ public class ConfiguredFieldDefinition extends ConfiguredUiItemDefinition implem
     @Override
     public void addValidator(ValidatorDefinition validator) {
         validators.add(validator);
+    }
+
+    /* (non-Javadoc)
+     * @see info.magnolia.ui.model.dialog.definition.FieldDefinition#getFielTypeDefinition()
+     */
+    @Override
+    public FieldTypeDefinition getFieldTypeDefinition() {
+        return fieldTypeDefinition;
+    }
+
+    @Override
+    public void setFieldTypeDefinition(FieldTypeDefinition fieldTypeDefinition) {
+        this.fieldTypeDefinition = fieldTypeDefinition;
     }
 }
