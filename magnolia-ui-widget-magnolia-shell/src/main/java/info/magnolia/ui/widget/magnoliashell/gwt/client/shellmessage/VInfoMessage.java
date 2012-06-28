@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,30 +31,24 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.magnoliashell.demo;
+package info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage;
 
-import com.vaadin.Application;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShellView;
 
 /**
- * Test app for the shell development.
- * 
+ * Info message.
  * @author apchelintcev
- * 
+ *
  */
-@SuppressWarnings("serial")
-public class WidgetTestApplication extends Application {
-    
-    private Window window;
+public class VInfoMessage extends VShellMessage {
+
+    public VInfoMessage(VMagnoliaShellView shell, String topic, String message, String id) {
+        super(shell, topic, message, id);
+        addStyleName("info");
+    }
 
     @Override
-    public void init() {
-        setTheme("admincentraltheme");
-        window = new Window("Magnolia shell test");
-        window.getContent().setSizeFull();
-        ((VerticalLayout) window.getContent()).setMargin(false);
-        setMainWindow(window);
+    protected String getMessageTypeCaption() {
+        return "Info:";
     }
-   
 }

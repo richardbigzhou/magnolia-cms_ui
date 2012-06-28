@@ -45,15 +45,6 @@ import com.google.gwt.user.client.Element;
  * 
  */
 public class VWarningMessage extends VShellMessage {
-    /**
-     * Enumeration of possible message types.
-     * 
-     * @author apchelintcev
-     * 
-     */
-    public enum MessageType {
-        WARNING, ERROR;
-    }
 
     private Element detailsEl = DOM.createDiv();
 
