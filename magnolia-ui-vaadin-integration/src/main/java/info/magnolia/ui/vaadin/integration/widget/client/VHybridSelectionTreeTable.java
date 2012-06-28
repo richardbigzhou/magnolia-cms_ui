@@ -64,13 +64,13 @@ import com.vaadin.terminal.gwt.client.ui.VTreeTable;
  */
 public class VHybridSelectionTreeTable extends VTreeTable {
 
-    final CheckBox cb = new CheckBox();
+    final CheckBox selectAllCheckBox = new CheckBox();
 
     public VHybridSelectionTreeTable() {
         super();
-        cb.addStyleName("v-select-all");
-        add(cb, getElement());
-        cb.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+        selectAllCheckBox.addStyleName("v-select-all");
+        add(selectAllCheckBox, getElement());
+        selectAllCheckBox.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
             @Override
             public void onValueChange(ValueChangeEvent<Boolean> event) {
                 client.updateVariable(paintableId, "selectAll", event.getValue(), true);
@@ -95,6 +95,7 @@ public class VHybridSelectionTreeTable extends VTreeTable {
                             }
                         }
                     }
+                    updateSelectAllControl();
                 }
             }
         }, MouseUpEvent.getType());
@@ -152,6 +153,13 @@ public class VHybridSelectionTreeTable extends VTreeTable {
                 }
             }
         }
+        updateSelectAllControl();
+    }
+
+    private void updateSelectAllControl() {
+        final JsArray<Element> selectedRows = JQueryWrapper.select(".v-selected").get();
+        final JsArray<Element> totalRows = JQueryWrapper.select(".v-table-row, .v-table-row-odd").get();
+        selectAllCheckBox.setValue(selectedRows.length() == totalRows.length());
     }
 
     private native void addDOMCallbacks(Element body) /*-{
