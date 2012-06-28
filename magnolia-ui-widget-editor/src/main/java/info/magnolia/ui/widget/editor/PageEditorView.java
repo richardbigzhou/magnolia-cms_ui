@@ -31,53 +31,24 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages;
+package info.magnolia.ui.widget.editor;
 
-import info.magnolia.context.MgnlContext;
-import info.magnolia.jcr.util.PropertyUtil;
-import info.magnolia.ui.framework.app.AppView;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
-import info.magnolia.ui.widget.editor.PageEditor;
-
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
-import org.apache.commons.lang.StringUtils;
-
-import com.vaadin.terminal.ExternalResource;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.VerticalLayout;
 
 /**
- * PageEditorTabView.
- * TODO: make this a component with a split layout to accomodate the page editor on the left and its related actions on the right.
+ * PageEditorView.
+ * @version $Id$
  *
-* @version $Id$
-*/
-@SuppressWarnings("serial")
-public class PageEditorTabView implements AppView, IsVaadinComponent {
+ */
+public interface PageEditorView extends IsVaadinComponent {
 
-    private final VerticalLayout container = new VerticalLayout();
-    private String caption;
+    void setPresenter(Presenter presenter);
+    /**
+     * Presenter.
+     */
+    interface Presenter {
 
-    public PageEditorTabView(final Node pageNode) throws RepositoryException {
-        final PageEditor pageEditor = new PageEditor(new ExternalResource(MgnlContext.getContextPath() + pageNode.getPath()));
-        pageEditor.setSizeFull();
-
-        container.setSizeFull();
-        container.addComponent(pageEditor);
-        caption = StringUtils.defaultIfEmpty(PropertyUtil.getString(pageNode, "title"), pageNode.getName());
+        void executeAction(final String actionName);
 
     }
-
-    @Override
-    public String getCaption() {
-        return caption;
-    }
-
-    @Override
-    public Component asVaadinComponent() {
-        return container;
-    }
-
 }

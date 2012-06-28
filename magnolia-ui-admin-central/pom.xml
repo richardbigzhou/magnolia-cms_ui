@@ -61,11 +61,11 @@
       <artifactId>vaadin</artifactId>
     </dependency>
 
-    <dependency>
-        <groupId>commons-lang</groupId>
-        <artifactId>commons-lang</artifactId>
-        <version>2.4</version>
-    </dependency>
+	<dependency>
+		<groupId>commons-lang</groupId>
+		<artifactId>commons-lang</artifactId>
+		<version>2.4</version>
+	</dependency>
 
     <dependency>
       <groupId>info.magnolia.ui</groupId>
@@ -110,32 +110,28 @@
     </dependency>
 
     <dependency>
-           <groupId>org.vaadin.addons</groupId>
-           <artifactId>icepush</artifactId>
-           <version>0.2.1</version>
-    </dependency>
-    <dependency>
-        <groupId>org.icefaces</groupId>
-        <artifactId>icepush</artifactId>
-        <version>3.0.1</version>
-    </dependency>
+   		<groupId>org.vaadin.addons</groupId>
+   		<artifactId>icepush</artifactId>
+	</dependency>
+	<dependency>
+		<groupId>org.icefaces</groupId>
+		<artifactId>icepush</artifactId>
+	</dependency>
 
-    <dependency>
-           <groupId>org.vaadin.addons</groupId>
-           <artifactId>customfield</artifactId>
-           <version>1.0.0</version>
-    </dependency>
-
+	<dependency>
+	 	<groupId>org.vaadin.addons</groupId>
+		<artifactId>customfield</artifactId>
+	</dependency>
     <!-- For Test -->
      <dependency>
         <groupId>junit</groupId>
         <artifactId>junit-dep</artifactId>
-        <scope>provided</scope>
+		<scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.mockito</groupId>
         <artifactId>mockito-core</artifactId>
-        <scope>provided</scope>
+		<scope>provided</scope>
       </dependency>
        <dependency>
             <groupId>info.magnolia</groupId>
@@ -147,6 +143,6 @@
   </dependencies>
 
   <properties>
-      <cloverCoverageThreshold>15</cloverCoverageThreshold>
+  	<cloverCoverageThreshold>15</cloverCoverageThreshold>
   </properties>
 </project>
