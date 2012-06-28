@@ -89,10 +89,14 @@ public class MessagesManagerImpl implements MessagesManager {
                 sendMessageSentEvent(user.getName(), message);
             }
         }
+
+        // Reset it to null simply to avoid assumptions about the id in calling code
+        message.setId(null);
     }
 
     @Override
     public void sendMessage(String userId, Message message) {
+        message.setId(null);
         messageStore.saveMessage(userId, message);
         sendMessageSentEvent(userId, message);
     }
