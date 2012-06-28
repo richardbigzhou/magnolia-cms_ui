@@ -248,7 +248,7 @@ public class VPageEditor extends FlowPanel implements Paintable, VPageEditorView
         JavascriptUtils.setWindowLocation(Window.Location.getPath());
         JavascriptUtils.getCookiePosition();
         locale = JavascriptUtils.detectCurrentLocale();
-        //inject editor stylesheet inside head of doc contained in iframe.
+        //inject editor stylesheet inside xhead of doc in iframe.
         HeadElement head = HeadElement.as(document.getElementsByTagName("head").getItem(0));
         LinkElement cssLink = document.createLinkElement();
         cssLink.setType("text/css");

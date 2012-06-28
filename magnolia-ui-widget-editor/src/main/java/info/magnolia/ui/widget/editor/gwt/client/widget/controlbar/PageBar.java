@@ -85,11 +85,13 @@ public class PageBar extends AbstractBar {
     private String currentURI;
     private Map<String,String> availableLocales = new HashMap<String, String>();
     private FlowPanel mainBarWrapper;
+
     private Document document;
 
     public PageBar(final Document document, final CMSComment comment) {
         super(null);
         this.document = document;
+
         String content = comment.getAttribute("content");
         int i = content.indexOf(':');
         workspace = content.substring(0, i);

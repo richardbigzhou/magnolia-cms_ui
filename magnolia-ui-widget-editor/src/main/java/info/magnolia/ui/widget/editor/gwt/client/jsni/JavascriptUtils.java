@@ -138,6 +138,7 @@ public final class JavascriptUtils {
         try {
             //return dictionary.get(key);
             return "dummy";
+
         } catch(RuntimeException e) {
             GWT.log("key ["+ key +"] was not found in dictionary", e);
             return "???" + key + "???";

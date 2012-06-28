@@ -51,6 +51,7 @@ public class CommentProcessor {
 
         CMSComment comment = CMSComment.as(node);
 
+
         GWT.log("processing comment " + comment);
 
         if (!comment.isClosing()) {

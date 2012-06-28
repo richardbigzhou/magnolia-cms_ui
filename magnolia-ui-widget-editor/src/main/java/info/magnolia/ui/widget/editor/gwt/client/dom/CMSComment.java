@@ -87,6 +87,7 @@ public class CMSComment {
                 this.attributes.put(keyValue[0], keyValue[1].replace("\"", ""));
             }
         } else {
+
             throw new IllegalArgumentException("Tagname must start with 'cms:'.");
         }
 
