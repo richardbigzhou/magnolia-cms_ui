@@ -77,6 +77,7 @@ import com.google.gwt.user.client.Window.ScrollEvent;
 import com.google.gwt.user.client.Window.ScrollHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Frame;
+import com.google.gwt.user.client.ui.HTML;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.Paintable;
 import com.vaadin.terminal.gwt.client.UIDL;
@@ -149,16 +150,18 @@ public class VPageEditor extends FlowPanel implements Paintable, VPageEditorView
     }
 
     private void initHandlers() {
-        iframe.addDomHandler(new MouseUpHandler() {
+        final HTML html = HTML.wrap(contentDocument.getDocumentElement());
+
+        html.addDomHandler(new MouseUpHandler() {
             @Override
             public void onMouseUp(MouseUpEvent event) {
 
-                model.getFocusModel().onMouseUp((Element)event.getNativeEvent().getEventTarget().cast());
+                getModel().getFocusModel().onMouseUp((Element)event.getNativeEvent().getEventTarget().cast());
                 event.stopPropagation();
             }
         }, MouseUpEvent.getType());
 
-        iframe.addDomHandler(new KeyDownHandler() {
+        html.addDomHandler(new KeyDownHandler() {
             @Override
             public void onKeyDown(KeyDownEvent event) {
                 if (event.getNativeKeyCode() == KeyCodes.KEY_ESCAPE) {
@@ -175,12 +178,12 @@ public class VPageEditor extends FlowPanel implements Paintable, VPageEditorView
 
 
 
-        iframe.addDomHandler(new MouseMoveHandler() {
+        html.addDomHandler(new MouseMoveHandler() {
 
             @Override
             public void onMouseMove(MouseMoveEvent event) {
 
-                Element moveElement = contentDocument.getElementById("mgnlEditorMoveDiv");
+                Element moveElement = contentDocument.getOwnerDocument().getElementById("mgnlEditorMoveDiv");
 
                 if (moveElement != null) {
                     int x = event.getClientX() + Window.getScrollLeft();
@@ -248,7 +251,7 @@ public class VPageEditor extends FlowPanel implements Paintable, VPageEditorView
         JavascriptUtils.setWindowLocation(Window.Location.getPath());
         JavascriptUtils.getCookiePosition();
         locale = JavascriptUtils.detectCurrentLocale();
-        //inject editor stylesheet inside xhead of doc in iframe.
+        //inject editor stylesheet inside head of doc contained in iframe.
         HeadElement head = HeadElement.as(document.getElementsByTagName("head").getItem(0));
         LinkElement cssLink = document.createLinkElement();
         cssLink.setType("text/css");
