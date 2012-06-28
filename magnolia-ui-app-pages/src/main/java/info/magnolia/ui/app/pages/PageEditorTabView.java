@@ -31,41 +31,53 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.pages.action;
+package info.magnolia.ui.app.pages;
 
-import info.magnolia.ui.admincentral.app.pages.PageEditorTabView;
-import info.magnolia.ui.admincentral.workbench.ContentWorkbenchView;
+import info.magnolia.context.MgnlContext;
+import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.ui.framework.app.AppView;
-import info.magnolia.ui.framework.location.DefaultLocation;
-import info.magnolia.ui.model.action.ActionBase;
-import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import org.apache.commons.lang.StringUtils;
+
+import com.vaadin.terminal.ExternalResource;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Embedded;
+import com.vaadin.ui.VerticalLayout;
+
 /**
- * Opens a page for editing.
- * @version $Id$
- */
-public class EditPageAction extends ActionBase<EditPageActionDefinition> {
+ * PageEditorTabView.
+ *
+* @version $Id$
+*/
+@SuppressWarnings("serial")
+public class PageEditorTabView implements AppView, IsVaadinComponent {
 
-    private Node selectedNode;
+    private final VerticalLayout container = new VerticalLayout();
+    private String caption;
 
-    private ContentWorkbenchView.Presenter presenter;
+    public PageEditorTabView(final Node pageNode) throws RepositoryException {
+        final Embedded page = new Embedded("", new ExternalResource(MgnlContext.getContextPath() + pageNode.getPath()));
+        page.setType(Embedded.TYPE_BROWSER);
+        page.setSizeFull();
 
-    public EditPageAction(final EditPageActionDefinition definition, final Node selectedNode, final ContentWorkbenchView.Presenter presenter) {
-        super(definition);
-        this.selectedNode = selectedNode;
-        this.presenter = presenter;
+        container.setSizeFull();
+        container.addComponent(page);
+        caption = StringUtils.defaultIfEmpty(PropertyUtil.getString(pageNode, "title"), pageNode.getName());
+
     }
 
     @Override
-    public void execute() throws ActionExecutionException {
-        try {
-            final AppView view = new PageEditorTabView(selectedNode);
-            presenter.onOpenNewView(view, new DefaultLocation("app", "app:pages:", view.getCaption()));
-        } catch (RepositoryException e) {
-            throw new ActionExecutionException(e);
-        }
+    public String getCaption() {
+        return caption;
     }
+
+    @Override
+    public Component asVaadinComponent() {
+        return container;
+    }
+
 }

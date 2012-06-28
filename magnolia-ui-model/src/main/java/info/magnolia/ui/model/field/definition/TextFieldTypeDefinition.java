@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,32 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.pages;
-
-
-import info.magnolia.ui.framework.app.AbstractApp;
-import info.magnolia.ui.framework.app.AppView;
-import info.magnolia.ui.framework.location.Location;
-
-import javax.inject.Inject;
+package info.magnolia.ui.model.field.definition;
 
 /**
- * Pages app.
+ * TextFieldTypeDefinition.
  *
- * @version $Id$
  */
-public class PagesApp extends AbstractApp {
+public class TextFieldTypeDefinition implements FieldTypeDefinition {
 
-    private PagesView view;
 
-    @Inject
-    public PagesApp(PagesView view) {
-        this.view = view;
-
-    }
-
-    @Override
-    public AppView start(Location location) {
-        return view;
-    }
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,14 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.pages.action;
-
-import info.magnolia.ui.model.action.ActionDefinition;
-
+package info.magnolia.ui.model.field.definition;
 
 /**
- * Definition interface for the preview page action.
+ * TemplateSelectorTypeDefinition.
+ *
  */
-public class PreviewPageActionDefinition implements ActionDefinition {
+public class TemplateSelectorTypeDefinition implements FieldTypeDefinition {
 
 }

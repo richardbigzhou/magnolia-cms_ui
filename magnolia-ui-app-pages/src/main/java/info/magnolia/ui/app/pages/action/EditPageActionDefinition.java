@@ -31,41 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.pages.action;
+package info.magnolia.ui.app.pages.action;
 
-import info.magnolia.ui.model.action.ActionBase;
-import info.magnolia.ui.model.action.ActionExecutionException;
-
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
+import info.magnolia.ui.model.action.ActionDefinition;
 
 /**
- * The Class PreviewPageAction. Opens a full screen preview of the selected page.
+ * EditPageActionDefinition.
+ * @version $Id$
  */
-public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
-
-    private final Node nodeToEdit;
-
-    /**
-     * Instantiates a new preview page action.
-     * 
-     * @param definition the definition
-     * @param nodeToEdit the node to edit
-     */
-    public PreviewPageAction(PreviewPageActionDefinition definition, Node nodeToEdit) {
-        super(definition);
-        this.nodeToEdit = nodeToEdit;
-    }
-
-    @Override
-    public void execute() throws ActionExecutionException {
-        System.out.println("preview page should open full screen preview.");
-        try {
-            System.out.println(nodeToEdit.getPath());
-        } catch (RepositoryException e) {
-            System.err.println("ERROR GETTING NODE PATH");
-        }
-    }
+public class EditPageActionDefinition implements ActionDefinition {
 
 }
