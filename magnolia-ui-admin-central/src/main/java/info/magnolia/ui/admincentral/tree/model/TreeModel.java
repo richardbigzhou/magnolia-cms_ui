@@ -62,6 +62,8 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaadin.ui.Component;
 
@@ -71,6 +73,7 @@ import com.vaadin.ui.Component;
  */
 public class TreeModel implements JcrContainerSource {
 
+    private static final Logger log = LoggerFactory.getLogger(TreeModel.class);
     private WorkbenchActionFactory actionFactory;
     private WorkbenchDefinition workbenchDefinition;
     private Map<String, Column<?>> columns;
@@ -174,16 +177,23 @@ public class TreeModel implements JcrContainerSource {
     }
 
     /**
-     * This method is used by {@link info.magnolia.ui.admincentral.container.JcrContainer#getColumnValue(String, Object)} to retrieve properties of items.
+     * @return Component if founded or null if the ColumnName does not exist or if
+     * Item does not have this property.
      */
     @Override
     public Component getColumnComponent(String columnName, Item item) throws RepositoryException {
-        return getColumn(columnName).getComponent(item);
+        Column<?> col = getColumn(columnName);
+        return col!=null ? col.getComponent(item):null;
     }
 
     @Override
     public void setColumnComponent(String columnName, Item item, Component newValue) throws RepositoryException {
-        getColumn(columnName).setComponent(item, newValue);
+        Column<?> col = getColumn(columnName);
+        if(col != null) {
+            col.setComponent(item, newValue);
+        } else {
+            log.warn(columnName+" does not exist or be linked with this Item: "+item.getPath()+" No setColumnComponent will be performed");
+        }
     }
 
     @Override

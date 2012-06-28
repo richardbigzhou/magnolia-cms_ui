@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.app;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import info.magnolia.module.ModuleRegistry;
@@ -120,12 +121,12 @@ public class AppControllerImplTest {
         PageAppTestImpl pageApp = (PageAppTestImpl)PageAppTestImpl.res.get("TestPageApp0");
         assertEquals(1, pageApp.events.size());
         assertEquals(true, pageApp.events.get(0).startsWith("start()"));
+        //Check injection
+        assertNotNull(pageApp.ctx);
+        assertNotNull(pageApp.view);
         //Check AppContext
         assertEquals("app:app1_name", pageApp.getDefaultLocation().toString());
     }
-
-
-
 
     @Test
     public void TestStartIfNotAlreadyRunningThenFocus_Basic() {
@@ -138,8 +139,8 @@ public class AppControllerImplTest {
         // THEN
         //Check Events
         assertEquals(2, eventCollector.appLifecycleEvent.size());
-        assertEquals(AppEventType.STARTED, eventCollector.appLifecycleEvent.get(0).getEventType());
-        assertEquals(AppEventType.FOCUSED, eventCollector.appLifecycleEvent.get(1).getEventType());
+        checkAppEvent(appName, AppEventType.STARTED, 0);
+        checkAppEvent(appName, AppEventType.FOCUSED, 1);
         //Check App
         assertEquals(true, PageAppTestImpl.res.containsKey("TestPageApp0"));
         PageAppTestImpl pageApp = (PageAppTestImpl)PageAppTestImpl.res.get("TestPageApp0");
@@ -165,9 +166,9 @@ public class AppControllerImplTest {
 
         // THEN
         assertEquals(3, eventCollector.appLifecycleEvent.size());
-        assertEquals(AppEventType.STARTED, eventCollector.appLifecycleEvent.get(0).getEventType());
-        assertEquals(AppEventType.FOCUSED, eventCollector.appLifecycleEvent.get(1).getEventType());
-        assertEquals(AppEventType.STOPPED, eventCollector.appLifecycleEvent.get(2).getEventType());
+        checkAppEvent(appName, AppEventType.STARTED, 0);
+        checkAppEvent(appName, AppEventType.FOCUSED, 1);
+        checkAppEvent(appName, AppEventType.STOPPED, 2);
         assertEquals(2, pageApp.events.size());
         assertEquals(true, pageApp.events.get(0).startsWith("start()"));
         assertEquals(true, pageApp.events.get(1).startsWith("stop()"));
@@ -196,12 +197,13 @@ public class AppControllerImplTest {
 
         // THEN
         assertEquals(6, eventCollector.appLifecycleEvent.size());
-        assertEquals(AppEventType.FOCUSED, eventCollector.appLifecycleEvent.get(3).getEventType());
-        assertEquals(appName2, eventCollector.appLifecycleEvent.get(3).getAppDescriptor().getName());
-        assertEquals(AppEventType.STOPPED, eventCollector.appLifecycleEvent.get(4).getEventType());
-        assertEquals(appName2, eventCollector.appLifecycleEvent.get(4).getAppDescriptor().getName());
-        assertEquals(AppEventType.FOCUSED, eventCollector.appLifecycleEvent.get(5).getEventType());
-        assertEquals(appName1, eventCollector.appLifecycleEvent.get(5).getAppDescriptor().getName());
+        checkAppEvent(appName1, AppEventType.STARTED, 0);
+        checkAppEvent(appName1, AppEventType.FOCUSED, 1);
+        checkAppEvent(appName2, AppEventType.STARTED, 2);
+        checkAppEvent(appName2, AppEventType.FOCUSED, 3);
+        checkAppEvent(appName2, AppEventType.STOPPED, 4);
+        checkAppEvent(appName1, AppEventType.FOCUSED, 5);
+
         assertEquals(2, pageApp2.events.size());
         assertEquals(true, pageApp2.events.get(0).startsWith("start()"));
         assertEquals(true, pageApp2.events.get(1).startsWith("stop()"));
@@ -324,5 +326,9 @@ public class AppControllerImplTest {
         public void onAppReRegistered(AppLifecycleEvent event) {
             appLifecycleEvent.add(event);
         }
+    }
+    private void checkAppEvent(String appName, AppEventType eventType, int position) {
+        assertEquals(eventType,  eventCollector.appLifecycleEvent.get(position).getEventType());
+        assertEquals(appName, eventCollector.appLifecycleEvent.get(position).getAppDescriptor().getName());
     }
 }
