@@ -280,7 +280,7 @@ public class AppControllerImplTest {
     }
 
 
-    private GuiceComponentProvider initComponentProvider() {
+    public static GuiceComponentProvider initComponentProvider() {
         GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
         ComponentProviderConfiguration components = new ComponentProviderConfiguration();
         components.registerImplementation(ModuleRegistry.class, ModuleRegistryImpl.class);
