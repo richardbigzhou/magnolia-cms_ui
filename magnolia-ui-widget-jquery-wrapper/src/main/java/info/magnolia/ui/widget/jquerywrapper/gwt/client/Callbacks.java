@@ -71,4 +71,8 @@ public class Callbacks extends JavaScriptObject {
     private final native void doAdd(final JQueryFunction callback) /*-{
         this.add(callback);   
     }-*/;
+    
+    public final native void fire() /*-{
+        this.fire();
+    }-*/;
 }

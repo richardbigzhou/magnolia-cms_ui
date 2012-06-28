@@ -1,11 +1,11 @@
 /* Widget specific CSS goes here */
 /* When renaming this directory, update the path in the widgetset GWT module (.gwt.xml) */
 
-.btn-shell > span {
+/*.btn-shell > span {
 	display: block;
 	padding-top: 45px;
 	font-family: DinRound,Arial;
-}
+}*/
 
 .btn-shell:hover,.btn-shell.active {
 	color: white;
