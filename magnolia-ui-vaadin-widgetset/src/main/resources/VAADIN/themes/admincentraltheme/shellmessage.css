@@ -8,8 +8,13 @@
 	text-align: center;
 }
 
-.v-shell-notification.warning {
+.v-shell-notification.info {
 	background: none repeat scroll 0 0 #FFBF28;
+	bottom: 0;
+}
+
+.v-shell-notification.warning {
+	background: none repeat scroll 0 0 #D1D8DF;
 	bottom: 0;
 }
 

@@ -55,6 +55,16 @@ import com.google.gwt.user.client.ui.HTML;
  */
 public abstract class VShellMessage extends HTML {
     
+    /**
+     * Enumeration of possible message types.
+     * 
+     * @author apchelintcev
+     * 
+     */
+    public enum MessageType {
+        WARNING, ERROR, INFO;
+    }
+    
     private static final String STYLE_NAME = "v-shell-notification";
     
     private HandlerRegistration eventPreviewReg = null;

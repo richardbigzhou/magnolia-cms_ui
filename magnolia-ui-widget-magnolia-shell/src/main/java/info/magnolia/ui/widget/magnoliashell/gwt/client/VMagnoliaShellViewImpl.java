@@ -44,10 +44,11 @@ import info.magnolia.ui.widget.magnoliashell.gwt.client.event.ShellAppNavigation
 import info.magnolia.ui.widget.magnoliashell.gwt.client.event.ViewportCloseEvent;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.event.handler.ShellNavigationHandler;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.event.handler.ViewportCloseHandler;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VInfoMessage;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VShellErrorMessage;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VShellMessage;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VShellMessage.MessageType;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VWarningMessage;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VWarningMessage.MessageType;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -220,6 +221,13 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
         switch (type) {
         case WARNING:
             msg = new VWarningMessage(this, topic, message, id);
+            if (lowPriorityMessage != null && getWidgetIndex(lowPriorityMessage) != -1) {
+                lowPriorityMessage.hide();
+            }
+            lowPriorityMessage = msg;
+            break;
+        case INFO:
+            msg = new VInfoMessage(this, topic, message, id);
             if (lowPriorityMessage != null && getWidgetIndex(lowPriorityMessage) != -1) {
                 lowPriorityMessage.hide();
             }

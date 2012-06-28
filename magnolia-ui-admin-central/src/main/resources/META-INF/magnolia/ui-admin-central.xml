@@ -253,7 +253,7 @@
         </param>
         <param>
           <name>theme</name>
-          <value>testtheme</value>
+          <value>admincentraltheme</value>
         </param>
         <param>
           <name>codeBasePath</name>
