@@ -65,7 +65,7 @@ public class AdminCentralApplication extends Application {
     @Override
     public void init() {
         log.debug("Init AdminCentralApplication...");
-        setTheme("testtheme");
+        setTheme("admincentraltheme");
 
         log.debug("Read component configurations from module descriptors...");
         ComponentProviderConfigurationBuilder configurationBuilder = new ComponentProviderConfigurationBuilder();
