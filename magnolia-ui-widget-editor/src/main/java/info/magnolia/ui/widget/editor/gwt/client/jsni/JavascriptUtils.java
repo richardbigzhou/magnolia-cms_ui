@@ -136,7 +136,8 @@ public final class JavascriptUtils {
      */
     public static String getI18nMessage(final String key) {
         try {
-            return dictionary.get(key);
+            //return dictionary.get(key);
+            return "dummy";
         } catch(RuntimeException e) {
             GWT.log("key ["+ key +"] was not found in dictionary", e);
             return "???" + key + "???";

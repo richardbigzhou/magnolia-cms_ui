@@ -55,12 +55,17 @@ import com.google.gwt.dom.client.AnchorElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.FormElement;
+import com.google.gwt.dom.client.HeadElement;
+import com.google.gwt.dom.client.IFrameElement;
+import com.google.gwt.dom.client.LinkElement;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.dom.client.LoadEvent;
+import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.event.dom.client.MouseMoveEvent;
 import com.google.gwt.event.dom.client.MouseMoveHandler;
 import com.google.gwt.event.dom.client.MouseUpEvent;
@@ -80,6 +85,7 @@ import com.vaadin.terminal.gwt.client.VConsole;
 
 /**
  * Vaadin implementation of PageEditor client side (Presenter).
+ * TODO fgrilli: this class badly needs clean up and refactoring.
  */
 @SuppressWarnings("serial")
 public class VPageEditor extends FlowPanel implements Paintable, VPageEditorView.Presenter, ClientSideHandler {
@@ -99,10 +105,11 @@ public class VPageEditor extends FlowPanel implements Paintable, VPageEditorView
     private static boolean keepProcessing = true;
     private static boolean isPreview = false;
 
-
     private final EventBus eventBus;
 
     private Frame iframe = new Frame();
+
+    private Document contentDocument;
 
     private ClientSideProxy proxy = new ClientSideProxy(this) {
         {
@@ -119,80 +126,29 @@ public class VPageEditor extends FlowPanel implements Paintable, VPageEditorView
         eventBus = new SimpleEventBus();
         this.view = new VPageEditorViewImpl(eventBus);
         view.setPresenter(this);
+        iframe.addLoadHandler(new LoadHandler() {
+
+            @Override
+            public void onLoad(LoadEvent event) {
+                IFrameElement frameElement = IFrameElement.as(iframe.getElement());
+                contentDocument = frameElement.getContentDocument();
+                //other handlers are initialized here b/c we need to know the document inside the iframe.
+                initHandlers();
+                //make sure we process  html only when the document inside the iframe is loaded.
+                process(contentDocument);
+            }
+        });
+
         final Element iframeElement = iframe.getElement();
         iframeElement.setAttribute("width", "100%");
         iframeElement.setAttribute("height", "100%");
         iframeElement.setAttribute("allowTransparency", "true");
+        iframeElement.setAttribute("frameborder", "0");
         add(iframe);
 
     }
 
-    /**
-     * Helper to return translated src-attribute from embedded's UIDL
-     * Copied verbatim from Vaadin's VEmbedded class.
-     */
-    private String getSrc(UIDL uidl, ApplicationConnection client) {
-        String url = client.translateVaadinUri(uidl.getStringAttribute("src"));
-        if (url == null) {
-            return "";
-        }
-        return url;
-    }
-
-
-    @Override
-    public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
-        this.client = client;
-        this.paintableId = uidl.getId();
-        if (client.updateComponent(this, uidl, true)) {
-            return;
-        }
-        iframe.getElement().setId(paintableId);
-        iframe.setUrl(getSrc(uidl, client));
-        //FIXME at this point the iframe has not yet loaded the page so processing does nothing
-        process();
-
-        proxy.update(this, uidl, client);
-    }
-
-    private void process() {
-        /*String mgnlVersion = Window.Location.getParameter(MGNL_VERSION_PARAMETER);
-        if(mgnlVersion != null) {
-            return false;
-        }
-
-        String mgnlChannel = Window.Location.getParameter(MGNL_CHANNEL_PARAMETER);
-        boolean isMobile = "smartphone".equals(mgnlChannel) || "tablet".equals(mgnlChannel);
-
-        if(isMobile) {
-            GWT.log("Found " + mgnlChannel + " in request, post processing links...");
-            postProcessLinksOnMobilePreview(Document.get().getDocumentElement(), mgnlChannel);
-            return false;
-        }*/
-
-        JavascriptUtils.setWindowLocation(Window.Location.getPath());
-        // save x/y positon
-        Window.addWindowScrollHandler(new ScrollHandler() {
-
-            @Override
-            public void onWindowScroll(ScrollEvent event) {
-                String value = event.getScrollLeft() + ":" + event.getScrollTop();
-                JavascriptUtils.setEditorPositionCookie(value);
-            }
-        });
-
-        JavascriptUtils.getCookiePosition();
-
-        locale = JavascriptUtils.detectCurrentLocale();
-
-        long startTime = System.currentTimeMillis();
-        processDocument(iframe.getElement(), null);
-        processMgnlElements();
-
-        GWT.log("Time spent to process cms comments: " + (System.currentTimeMillis() - startTime) + "ms");
-
-        JavascriptUtils.getCookieContentId();
-
+    private void initHandlers() {
         iframe.addDomHandler(new MouseUpHandler() {
             @Override
             public void onMouseUp(MouseUpEvent event) {
@@ -224,7 +180,7 @@ public class VPageEditor extends FlowPanel implements Paintable, VPageEditorView
             @Override
             public void onMouseMove(MouseMoveEvent event) {
 
-                Element moveElement = Document.get().getElementById("mgnlEditorMoveDiv");
+                Element moveElement = contentDocument.getElementById("mgnlEditorMoveDiv");
 
                 if (moveElement != null) {
                     int x = event.getClientX() + Window.getScrollLeft();
@@ -235,6 +191,78 @@ public class VPageEditor extends FlowPanel implements Paintable, VPageEditorView
             }
         }, MouseMoveEvent.getType());
 
+        // save x/y positon
+        Window.addWindowScrollHandler(new ScrollHandler() {
+
+            @Override
+            public void onWindowScroll(ScrollEvent event) {
+                String value = event.getScrollLeft() + ":" + event.getScrollTop();
+                JavascriptUtils.setEditorPositionCookie(value);
+            }
+        });
+    }
+
+    /**
+     * Helper to return translated src-attribute from embedded's UIDL
+     * Copied verbatim from Vaadin's VEmbedded class.
+     */
+    private String getSrc(UIDL uidl, ApplicationConnection client) {
+        String url = client.translateVaadinUri(uidl.getStringAttribute("src"));
+        if (url == null) {
+            return "";
+        }
+        return url;
+    }
+
+
+    @Override
+    public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
+        this.client = client;
+        this.paintableId = uidl.getId();
+        if (client.updateComponent(this, uidl, true)) {
+            return;
+        }
+        iframe.getElement().setId(paintableId);
+        iframe.setUrl(getSrc(uidl, client));
+
+
+        proxy.update(this, uidl, client);
+    }
+
+    private void process(final Document document) {
+        //TODO how will we handle preview in 5.0?
+        /*String mgnlVersion = Window.Location.getParameter(MGNL_VERSION_PARAMETER);
+        if(mgnlVersion != null) {
+            return false;
+        }
+
+        String mgnlChannel = Window.Location.getParameter(MGNL_CHANNEL_PARAMETER);
+        boolean isMobile = "smartphone".equals(mgnlChannel) || "tablet".equals(mgnlChannel);
+
+        if(isMobile) {
+            GWT.log("Found " + mgnlChannel + " in request, post processing links...");
+            postProcessLinksOnMobilePreview(Document.get().getDocumentElement(), mgnlChannel);
+            return false;
+        }*/
+
+        JavascriptUtils.setWindowLocation(Window.Location.getPath());
+        JavascriptUtils.getCookiePosition();
+        locale = JavascriptUtils.detectCurrentLocale();
+        //inject editor stylesheet inside head of doc contained in iframe.
+        HeadElement head = HeadElement.as(document.getElementsByTagName("head").getItem(0));
+        LinkElement cssLink = document.createLinkElement();
+        cssLink.setType("text/css");
+        cssLink.setRel("stylesheet");
+        cssLink.setHref("VAADIN/widgetsets/info.magnolia.ui.vaadin.widgetset.MagnoliaWidgetSet/editor/styles.css");
+
+        head.insertFirst(cssLink);
+        long startTime = System.currentTimeMillis();
+        processDocument(document.getDocumentElement(), null);
+        processMgnlElements();
+
+        GWT.log("Time spent to process cms comments: " + (System.currentTimeMillis() - startTime) + "ms");
+
+        JavascriptUtils.getCookieContentId();
         JavascriptUtils.resetEditorCookies();
 
         //GWT.log("Running onPageEditorReady callbacks...");
@@ -264,16 +292,12 @@ public class VPageEditor extends FlowPanel implements Paintable, VPageEditorView
 
                     try {
                         mgnlElement = CommentProcessor.process(childNode, mgnlElement);
-                    }
-                    catch (IllegalArgumentException e) {
+                    } catch (IllegalArgumentException e) {
                         GWT.log("Not CMSComment element, skipping: " + e.toString());
-
-                    }
-                    catch (Exception e) {
+                    } catch (Exception e) {
                         GWT.log("Caught undefined exception: " + e.toString());
                     }
-                }
-                else if (childNode.getNodeType() == Node.ELEMENT_NODE && mgnlElement != null) {
+                } else if (childNode.getNodeType() == Node.ELEMENT_NODE && mgnlElement != null) {
                     ElementProcessor.process(childNode, mgnlElement);
                 }
 
@@ -293,8 +317,7 @@ public class VPageEditor extends FlowPanel implements Paintable, VPageEditorView
                 try {
                     MgnlElementProcessor processor = MgnlElementProcessorFactory.getProcessor(mgnlElement);
                     processor.process();
-                }
-                catch (IllegalArgumentException e) {
+                } catch (IllegalArgumentException e) {
                     GWT.log("MgnlFactory could not instantiate class. The element is neither an area nor component.");
                 }
             }
@@ -358,11 +381,9 @@ public class VPageEditor extends FlowPanel implements Paintable, VPageEditorView
          }
     }-*/;
 
-
     public static boolean isPreview() {
         return false;
     }
-
 
     public static void setKeepProcessing(boolean process) {
         keepProcessing = process;

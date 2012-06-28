@@ -37,6 +37,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Node;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 
@@ -55,7 +56,7 @@ public class CMSComment {
 
     private HashMap<String, String> attributes;
 
-    public CMSComment(Comment comment) throws IllegalArgumentException {
+    protected CMSComment(Comment comment) throws IllegalArgumentException {
         this.setElement((Element)comment.cast());
         this.comment = comment.getData().trim();
 
@@ -85,8 +86,7 @@ public class CMSComment {
                 keyValue = matcher.getGroup(0).split("=");
                 this.attributes.put(keyValue[0], keyValue[1].replace("\"", ""));
             }
-        }
-        else {
+        } else {
             throw new IllegalArgumentException("Tagname must start with 'cms:'.");
         }
 
@@ -128,6 +128,10 @@ public class CMSComment {
 
     public Element getElement() {
         return element;
+    }
+
+    public static CMSComment as(final Node node) {
+        return new CMSComment((Comment)node.cast());
     }
 
 }
