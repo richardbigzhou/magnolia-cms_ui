@@ -84,32 +84,28 @@ import com.vaadin.terminal.gwt.client.VConsole;
 
 
 /**
- * Vaadin implementation of PageEditor client side (Presenter).
+ * Vaadin implementation of PageEditor client side.
  * TODO fgrilli: this class badly needs clean up and refactoring.
  */
 @SuppressWarnings("serial")
 public class VPageEditor extends FlowPanel implements Paintable, VPageEditorView.Presenter, ClientSideHandler {
 
-    protected String paintableId;
-
-    protected ApplicationConnection client;
-
-    private final VPageEditorView view;
-
-    private static String locale;
-    private final static ModelStorage model = ModelStorage.getInstance();
-
-    private LinkedList<MgnlElement> mgnlElements = new LinkedList<MgnlElement>();
+    private static boolean isPreview = false;
 
     // In case we're in preview mode, we will stop processing the document, after the pagebar has been injected.
     private static boolean keepProcessing = true;
-    private static boolean isPreview = false;
+
+    private static String locale;
+
+    private final static ModelStorage model = ModelStorage.getInstance();
+
+    private Document contentDocument;
 
     private final EventBus eventBus;
 
-    private Frame iframe = new Frame();
+    private Frame iframe;
 
-    private Document contentDocument;
+    private LinkedList<MgnlElement> mgnlElements = new LinkedList<MgnlElement>();
 
     private ClientSideProxy proxy = new ClientSideProxy(this) {
         {
@@ -122,10 +118,18 @@ public class VPageEditor extends FlowPanel implements Paintable, VPageEditorView
         }
     };
 
+    private final VPageEditorView view;
+
+    protected ApplicationConnection client;
+
+    protected String paintableId;
+
+
     public VPageEditor() {
         eventBus = new SimpleEventBus();
-        this.view = new VPageEditorViewImpl(eventBus);
+        view = new VPageEditorViewImpl(eventBus);
         view.setPresenter(this);
+        iframe = new Frame();
         iframe.addLoadHandler(new LoadHandler() {
 
             @Override
@@ -147,6 +151,55 @@ public class VPageEditor extends FlowPanel implements Paintable, VPageEditorView
         add(iframe);
 
     }
+
+    @Override
+    public void handleCallFromServer(String method, Object[] params) {
+        VConsole.error("Unhandled RPC call from server: " + method);
+    }
+
+    @Override
+    public boolean initWidget(Object[] params) {
+        //TODO this seems never to be called
+        return false;
+    }
+
+    @Override
+    public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
+        this.client = client;
+        this.paintableId = uidl.getId();
+        if (client.updateComponent(this, uidl, true)) {
+            return;
+        }
+        iframe.getElement().setId(paintableId);
+        iframe.setUrl(getSrc(uidl, client));
+
+        proxy.update(this, uidl, client);
+    }
+
+    public static ModelStorage getModel() {
+        return model;
+    }
+
+    public static boolean isPreview() {
+        return false;
+    }
+
+    public static void setKeepProcessing(boolean process) {
+        keepProcessing = process;
+    }
+
+    /**
+     * Helper to return translated src-attribute from embedded's UIDL
+     * Copied verbatim from Vaadin's VEmbedded class.
+     */
+    private String getSrc(UIDL uidl, ApplicationConnection client) {
+        String url = client.translateVaadinUri(uidl.getStringAttribute("src"));
+        if (url == null) {
+            return "";
+        }
+        return url;
+    }
+
 
     private void initHandlers() {
       addDomHandler(new MouseUpHandler() {
@@ -202,53 +255,7 @@ public class VPageEditor extends FlowPanel implements Paintable, VPageEditorView
         });
     }
 
-    /**
-     * Helper to return translated src-attribute from embedded's UIDL
-     * Copied verbatim from Vaadin's VEmbedded class.
-     */
-    private String getSrc(UIDL uidl, ApplicationConnection client) {
-        String url = client.translateVaadinUri(uidl.getStringAttribute("src"));
-        if (url == null) {
-            return "";
-        }
-        return url;
-    }
-
-
-    @Override
-    public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
-        this.client = client;
-        this.paintableId = uidl.getId();
-        if (client.updateComponent(this, uidl, true)) {
-            return;
-        }
-        iframe.getElement().setId(paintableId);
-        iframe.setUrl(getSrc(uidl, client));
-
-
-        proxy.update(this, uidl, client);
-    }
-
-    private void process(final Document document) {
-        //TODO how will we handle preview in 5.0?
-        /*String mgnlVersion = Window.Location.getParameter(MGNL_VERSION_PARAMETER);
-        if(mgnlVersion != null) {
-            return false;
-        }
-
-        String mgnlChannel = Window.Location.getParameter(MGNL_CHANNEL_PARAMETER);
-        boolean isMobile = "smartphone".equals(mgnlChannel) || "tablet".equals(mgnlChannel);
-
-        if(isMobile) {
-            GWT.log("Found " + mgnlChannel + " in request, post processing links...");
-            postProcessLinksOnMobilePreview(Document.get().getDocumentElement(), mgnlChannel);
-            return false;
-        }*/
-
-        JavascriptUtils.setWindowLocation(Window.Location.getPath());
-        JavascriptUtils.getCookiePosition();
-        locale = JavascriptUtils.detectCurrentLocale();
-        //inject editor stylesheet inside head of doc contained in iframe.
+    private void injectEditorStyles(final Document document) {
         HeadElement head = HeadElement.as(document.getElementsByTagName("head").getItem(0));
         LinkElement cssLink = document.createLinkElement();
         cssLink.setType("text/css");
@@ -256,74 +263,16 @@ public class VPageEditor extends FlowPanel implements Paintable, VPageEditorView
         cssLink.setHref("VAADIN/widgetsets/info.magnolia.ui.vaadin.widgetset.MagnoliaWidgetSet/editor/styles.css");
 
         head.insertFirst(cssLink);
-        long startTime = System.currentTimeMillis();
-        processDocument(document.getDocumentElement(), null);
-        processMgnlElements();
-
-        GWT.log("Time spent to process cms comments: " + (System.currentTimeMillis() - startTime) + "ms");
-
-        JavascriptUtils.getCookieContentId();
-        JavascriptUtils.resetEditorCookies();
-
-        //GWT.log("Running onPageEditorReady callbacks...");
-        //onPageEditorReady();
-    }
-    @Override
-    public boolean initWidget(Object[] params) {
-        //TODO this seems never to be called
-        return false;
     }
 
-    @Override
-    public void handleCallFromServer(String method, Object[] params) {
-        VConsole.error("Unhandled RPC call from server: " + method);
-    }
-
-
-    public static ModelStorage getModel() {
-        return model;
-    }
-
-    private void processDocument(Node node, MgnlElement mgnlElement) {
-        if(keepProcessing) {
-            for (int i = 0; i < node.getChildCount(); i++) {
-                Node childNode = node.getChild(i);
-                if (childNode.getNodeType() == Comment.COMMENT_NODE) {
-
-                    try {
-                        mgnlElement = CommentProcessor.process(childNode, mgnlElement);
-                    } catch (IllegalArgumentException e) {
-                        GWT.log("Not CMSComment element, skipping: " + e.toString());
-                    } catch (Exception e) {
-                        GWT.log("Caught undefined exception: " + e.toString());
-                    }
-                } else if (childNode.getNodeType() == Node.ELEMENT_NODE && mgnlElement != null) {
-                    ElementProcessor.process(childNode, mgnlElement);
-                }
-
-                processDocument(childNode, mgnlElement);
-            }
-        }
-    }
-
-    private void processMgnlElements() {
-        List<MgnlElement> rootElements = new LinkedList<MgnlElement>(getModel().getRootElements());
-        for (MgnlElement root : rootElements) {
-            LinkedList<MgnlElement> elements = new LinkedList<MgnlElement>();
-            elements.add(root);
-            elements.addAll(root.getDescendants());
-
-            for (MgnlElement mgnlElement : elements) {
-                try {
-                    MgnlElementProcessor processor = MgnlElementProcessorFactory.getProcessor(mgnlElement);
-                    processor.process();
-                } catch (IllegalArgumentException e) {
-                    GWT.log("MgnlFactory could not instantiate class. The element is neither an area nor component.");
-                }
-            }
-        }
-
-    }
+    private native void onPageEditorReady() /*-{
+        var callbacks = $wnd.mgnl.PageEditor.onPageEditorReadyCallbacks
+        if(typeof callbacks != 'undefined') {
+             for(var i=0; i < callbacks.length; i++) {
+                callbacks[i].apply()
+             }
+         }
+    }-*/;
 
     //FIXME submitting forms still renders website channel and edit bars
     private void postProcessLinksOnMobilePreview(Element root, String channel) {
@@ -372,21 +321,81 @@ public class VPageEditor extends FlowPanel implements Paintable, VPageEditorView
     }
 
 
-    private native void onPageEditorReady() /*-{
-        var callbacks = $wnd.mgnl.PageEditor.onPageEditorReadyCallbacks
-        if(typeof callbacks != 'undefined') {
-             for(var i=0; i < callbacks.length; i++) {
-                callbacks[i].apply()
-             }
-         }
-    }-*/;
+    private void process(final Document document) {
+        //TODO how will we handle preview in 5.0?
+        /*String mgnlVersion = Window.Location.getParameter(MGNL_VERSION_PARAMETER);
+        if(mgnlVersion != null) {
+            return false;
+        }
 
-    public static boolean isPreview() {
-        return false;
+        String mgnlChannel = Window.Location.getParameter(MGNL_CHANNEL_PARAMETER);
+        boolean isMobile = "smartphone".equals(mgnlChannel) || "tablet".equals(mgnlChannel);
+
+        if(isMobile) {
+            GWT.log("Found " + mgnlChannel + " in request, post processing links...");
+            postProcessLinksOnMobilePreview(Document.get().getDocumentElement(), mgnlChannel);
+            return false;
+        }*/
+
+        JavascriptUtils.setWindowLocation(Window.Location.getPath());
+        JavascriptUtils.getCookiePosition();
+        locale = JavascriptUtils.detectCurrentLocale();
+
+        //inject editor stylesheet inside head of doc contained in iframe.
+        injectEditorStyles(document);
+
+        long startTime = System.currentTimeMillis();
+        processDocument(document.getDocumentElement(), null);
+        processMgnlElements();
+
+        GWT.log("Time spent to process cms comments: " + (System.currentTimeMillis() - startTime) + "ms");
+
+        JavascriptUtils.getCookieContentId();
+        JavascriptUtils.resetEditorCookies();
+
+        //GWT.log("Running onPageEditorReady callbacks...");
+        //onPageEditorReady();
     }
 
-    public static void setKeepProcessing(boolean process) {
-        keepProcessing = process;
+    private void processDocument(Node node, MgnlElement mgnlElement) {
+        if(keepProcessing) {
+            for (int i = 0; i < node.getChildCount(); i++) {
+                Node childNode = node.getChild(i);
+                if (childNode.getNodeType() == Comment.COMMENT_NODE) {
+
+                    try {
+                        mgnlElement = CommentProcessor.process(childNode, mgnlElement);
+                    } catch (IllegalArgumentException e) {
+                        GWT.log("Not CMSComment element, skipping: " + e.toString());
+                    } catch (Exception e) {
+                        GWT.log("Caught undefined exception: " + e.toString());
+                    }
+                } else if (childNode.getNodeType() == Node.ELEMENT_NODE && mgnlElement != null) {
+                    ElementProcessor.process(childNode, mgnlElement);
+                }
+
+                processDocument(childNode, mgnlElement);
+            }
+        }
+    }
+
+    private void processMgnlElements() {
+        List<MgnlElement> rootElements = new LinkedList<MgnlElement>(getModel().getRootElements());
+        for (MgnlElement root : rootElements) {
+            LinkedList<MgnlElement> elements = new LinkedList<MgnlElement>();
+            elements.add(root);
+            elements.addAll(root.getDescendants());
+
+            for (MgnlElement mgnlElement : elements) {
+                try {
+                    MgnlElementProcessor processor = MgnlElementProcessorFactory.getProcessor(mgnlElement);
+                    processor.process();
+                } catch (IllegalArgumentException e) {
+                    GWT.log("MgnlFactory could not instantiate class. The element is neither an area nor component.");
+                }
+            }
+        }
+
     }
 
 }
