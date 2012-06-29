@@ -191,7 +191,6 @@ public class AppControllerImplTest {
         assertEquals(true, PageAppTestImpl.res.containsKey("TestPageApp1"));
         PageAppTestImpl pageApp2 = (PageAppTestImpl)PageAppTestImpl.res.get("TestPageApp1");
 
-
         // WHEN
         appControler.stopApp(appName2);
 
