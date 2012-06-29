@@ -36,7 +36,7 @@ package info.magnolia.ui.admincentral.app.applauncher;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import info.magnolia.ui.admincentral.app.AppTestUtility;
+import info.magnolia.ui.admincentral.app.simple.AppTestUtility;
 import info.magnolia.ui.admincentral.shellapp.applauncher.AppLauncherViewImpl;
 import info.magnolia.ui.admincentral.shellapp.applauncher.AppLauncherViewImpl.AppGroupComponent;
 import info.magnolia.ui.framework.app.AppDescriptor;

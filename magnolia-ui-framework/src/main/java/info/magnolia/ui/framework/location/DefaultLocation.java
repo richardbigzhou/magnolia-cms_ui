@@ -97,9 +97,14 @@ public class DefaultLocation implements Location {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(type).append(":").append(prefix);
-        if (token != null && token.length() != 0) {
-            sb.append(":").append(token);
+        if (type != null && type.length() != 0) {
+            sb.append(type);
+            if (prefix != null && prefix.length() != 0) {
+                sb.append(":").append(prefix);
+                if (token != null && token.length() != 0) {
+                    sb.append(":").append(token);
+                }
+            }
         }
         return sb.toString();
     }

@@ -115,6 +115,13 @@
       <observed>true</observed>
       <scope>singleton</scope>
     </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.field.builder.FieldTypeProvider</type>
+      <workspace>config</workspace>
+      <path>/modules/ui-admin-central/fieldTypeProvider</path>
+      <observed>true</observed>
+      <scope>singleton</scope>
+     </component>
      <component>
       <type>info.magnolia.ui.framework.event.EventBus</type>
       <implementation>info.magnolia.ui.framework.event.SimpleEventBus</implementation>
@@ -176,25 +183,6 @@
       <implementation>info.magnolia.ui.model.workbench.registry.ConfiguredWorkbenchDefinitionManager</implementation>
     </component>
   </components>
-
-	<!-- Used to create an App component provider for injection of AppContext for example -->
-	<!-- id of the components should be app-'appname'. 'appname' is the name of the app configured
-	     in the apps configuration repository of the admin central. (config/module/apps/appname/name:appname) -->
-   <components>
-    <id>app-pages</id>
-    <component>
-      <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchView</type>
-      <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbenchViewImpl</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.admincentral.workbench.ContentWorkbench</type>
-      <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbench</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.admincentral.app.pages.PagesView</type>
-      <implementation>info.magnolia.ui.admincentral.app.pages.PagesViewImpl</implementation>
-    </component>
-   </components>
 
   <dependencies>
     <dependency>

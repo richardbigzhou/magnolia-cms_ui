@@ -11,7 +11,7 @@
 	<artifactId>magnolia-ui-framework</artifactId>
 	<name>magnolia-ui-framework</name>
 	<properties>
-		<cloverCoverageThreshold>41</cloverCoverageThreshold>
+		<cloverCoverageThreshold>60</cloverCoverageThreshold>
 	</properties>
 	<build>
 		<plugins>
@@ -24,6 +24,18 @@
 						<phase>process-resources</phase>
 						<goals>
 							<goal>generate</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- let's also attach the test sources -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>test-jar</goal>
 						</goals>
 					</execution>
 				</executions>

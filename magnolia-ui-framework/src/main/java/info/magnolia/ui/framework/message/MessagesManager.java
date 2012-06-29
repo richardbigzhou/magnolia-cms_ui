@@ -37,40 +37,16 @@ import java.util.List;
 
 /**
  * Manages users messages.
- *
- * needs persistence
- *
- * messages to all and messages to single user (to group as well?)
- *
- * server side push of messages? or poll
- *
- * - new work item !!
- * - error
- * - warning
- * - informational
- *
- * messages need confirming to go away
- *
- * messages need unique ids
- *
- * messages to all need to go to all logged-in users
- *  how will this class know who they are?
- *  how is it distributed?
- *  must be careful not to let this class keep references to inactive sessions/vaadin applications
- *
- * @version $Id$
  */
 public interface MessagesManager {
 
     /**
      * MessageListener.
-     *
-     * @version $Id$
      */
     public interface MessageListener {
 
         void messageSent(Message message);
-        
+
         void messageCleared(Message message);
     }
 
@@ -78,13 +54,42 @@ public interface MessagesManager {
 
     void unregisterMessagesListener(String userId, MessageListener listener);
 
-    int getMessageCountForUser(String userId);
+    /**
+     * Returns how many of the messages kept for a specific user that hasn't been cleared.
+     *
+     * @param userId id of the user
+     * @return number of uncleared messages
+     */
+    int getNumberOfUnclearedMessagesForUser(String userId);
 
+    /**
+     * Returns all messages kept for a specific user.
+     *
+     * @param userId id of the user
+     * @return list of messages kept for the user
+     */
     List<Message> getMessagesForUser(String userId);
 
+    /**
+     * Send message to a specific user.
+     *
+     * @param userId id of the user to receive the message
+     * @param message message to send
+     */
     void sendMessage(String userId, Message message);
 
+    /**
+     * Sends a message to all users.
+     *
+     * @param message message to send
+     */
     void sendMessageToAllUsers(Message message);
 
-    void clearMessage(String userId, String id);
+    /**
+     * Marks a message as cleared.
+     *
+     * @param userId id of the user the message belongs to
+     * @param messageId id of message
+     */
+    void clearMessage(String userId, String messageId);
 }
