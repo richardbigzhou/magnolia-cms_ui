@@ -31,8 +31,9 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages;
+package info.magnolia.ui.admincentral.app.simple;
 
+import info.magnolia.ui.framework.app.AppView;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 import com.vaadin.ui.Component;
@@ -42,10 +43,10 @@ import com.vaadin.ui.Component;
  * Stupid PagesView Test class.
  *
  */
-public class PagesViewTestImpl implements PagesView, IsVaadinComponent {
+public class AppViewTestImpl implements AppView, IsVaadinComponent {
 
 
-    public PagesViewTestImpl() {
+    public AppViewTestImpl() {
 
     }
 
@@ -57,15 +58,6 @@ public class PagesViewTestImpl implements PagesView, IsVaadinComponent {
     @Override
     public Component asVaadinComponent() {
         return null;
-    }
-
-    /* (non-Javadoc)
-     * @see info.magnolia.ui.app.pages.PagesView#setPresenter(info.magnolia.ui.app.pages.PagesView.Presenter)
-     */
-    @Override
-    public void setPresenter(Presenter presenter) {
-        // TODO Auto-generated method stub
-
     }
 
 }

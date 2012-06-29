@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.admincentral.app.simple;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
@@ -42,12 +42,11 @@ import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
 import info.magnolia.ui.admincentral.MagnoliaShell;
-import info.magnolia.ui.admincentral.app.pages.PagesView;
-import info.magnolia.ui.admincentral.app.simple.AppControllerImpl;
 import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.AppEventType;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventHandler;
+import info.magnolia.ui.framework.app.AppView;
 import info.magnolia.ui.framework.app.layout.AppCategory;
 import info.magnolia.ui.framework.app.layout.AppLayout;
 import info.magnolia.ui.framework.app.layout.AppLayoutImpl;
@@ -99,8 +98,8 @@ public class AppControllerImplTest {
     public void tearDown() throws Exception{
         componentProvider.destroy();
         //Reset the static fields
-        PageAppTestImpl.appNumber = 0;
-        PageAppTestImpl.res = new HashMap<String, Object>();
+        AppTestImpl.appNumber = 0;
+        AppTestImpl.res = new HashMap<String, Object>();
     }
 
 
@@ -118,8 +117,8 @@ public class AppControllerImplTest {
         assertEquals(1, eventCollector.appLifecycleEvent.size());
         assertEquals(AppEventType.STARTED, eventCollector.appLifecycleEvent.get(0).getEventType());
         //Check App
-        assertEquals(true, PageAppTestImpl.res.containsKey("TestPageApp0"));
-        PageAppTestImpl pageApp = (PageAppTestImpl)PageAppTestImpl.res.get("TestPageApp0");
+        assertEquals(true, AppTestImpl.res.containsKey("TestPageApp0"));
+        AppTestImpl pageApp = (AppTestImpl)AppTestImpl.res.get("TestPageApp0");
         assertEquals(1, pageApp.events.size());
         assertEquals(true, pageApp.events.get(0).startsWith("start()"));
         //Check injection
@@ -143,8 +142,8 @@ public class AppControllerImplTest {
         checkAppEvent(eventCollector, appName, AppEventType.STARTED, 0);
         checkAppEvent(eventCollector, appName, AppEventType.FOCUSED, 1);
         //Check App
-        assertEquals(true, PageAppTestImpl.res.containsKey("TestPageApp0"));
-        PageAppTestImpl pageApp = (PageAppTestImpl)PageAppTestImpl.res.get("TestPageApp0");
+        assertEquals(true, AppTestImpl.res.containsKey("TestPageApp0"));
+        AppTestImpl pageApp = (AppTestImpl)AppTestImpl.res.get("TestPageApp0");
         assertEquals(1, pageApp.events.size());
         assertEquals(true, pageApp.events.get(0).startsWith("start()"));
         //Check AppContext
@@ -157,8 +156,8 @@ public class AppControllerImplTest {
         String appName = appName_1+"_name";
         appControler.startIfNotAlreadyRunningThenFocus(appName);
         //Check
-        assertEquals(true, PageAppTestImpl.res.containsKey("TestPageApp0"));
-        PageAppTestImpl pageApp = (PageAppTestImpl)PageAppTestImpl.res.get("TestPageApp0");
+        assertEquals(true, AppTestImpl.res.containsKey("TestPageApp0"));
+        AppTestImpl pageApp = (AppTestImpl)AppTestImpl.res.get("TestPageApp0");
         assertEquals(1, pageApp.events.size());
         assertEquals(true, pageApp.events.get(0).startsWith("start()"));
 
@@ -182,15 +181,15 @@ public class AppControllerImplTest {
         String appName1 = appName_1+"_name";
         appControler.startIfNotAlreadyRunningThenFocus(appName1);
         //Check
-        assertEquals(true, PageAppTestImpl.res.containsKey("TestPageApp0"));
-        PageAppTestImpl pageApp1 = (PageAppTestImpl)PageAppTestImpl.res.get("TestPageApp0");
+        assertEquals(true, AppTestImpl.res.containsKey("TestPageApp0"));
+        AppTestImpl pageApp1 = (AppTestImpl)AppTestImpl.res.get("TestPageApp0");
 
         //Start second App
         String appName2 = appName_2+"_name";
         appControler.startIfNotAlreadyRunningThenFocus(appName2);
         //Check
-        assertEquals(true, PageAppTestImpl.res.containsKey("TestPageApp1"));
-        PageAppTestImpl pageApp2 = (PageAppTestImpl)PageAppTestImpl.res.get("TestPageApp1");
+        assertEquals(true, AppTestImpl.res.containsKey("TestPageApp1"));
+        AppTestImpl pageApp2 = (AppTestImpl)AppTestImpl.res.get("TestPageApp1");
 
         // WHEN
         appControler.stopApp(appName2);
@@ -219,15 +218,15 @@ public class AppControllerImplTest {
         String appName1 = appName_1+"_name";
         appControler.startIfNotAlreadyRunningThenFocus(appName1);
         //Check
-        assertEquals(true, PageAppTestImpl.res.containsKey("TestPageApp0"));
-        PageAppTestImpl.res.get("TestPageApp0");
+        assertEquals(true, AppTestImpl.res.containsKey("TestPageApp0"));
+        AppTestImpl.res.get("TestPageApp0");
 
         //Start second App
         String appName2 = appName_2+"_name";
         appControler.startIfNotAlreadyRunningThenFocus(appName2);
         //Check
-        assertEquals(true, PageAppTestImpl.res.containsKey("TestPageApp1"));
-        PageAppTestImpl pageApp2 = (PageAppTestImpl)PageAppTestImpl.res.get("TestPageApp1");
+        assertEquals(true, AppTestImpl.res.containsKey("TestPageApp1"));
+        AppTestImpl pageApp2 = (AppTestImpl)AppTestImpl.res.get("TestPageApp1");
 
         // WHEN
         appControler.stopCurrentApp();
@@ -264,10 +263,10 @@ public class AppControllerImplTest {
 
         appLayoutManager = mock(AppLayoutManagerImpl.class);
         //Set cat1 with App1
-        AppDescriptor app1 = AppTestUtility.createAppDescriptor(appName_1, PageAppTestImpl.class);
+        AppDescriptor app1 = AppTestUtility.createAppDescriptor(appName_1, AppTestImpl.class);
         AppCategory cat1 = AppTestUtility.createAppCategory("cat1", app1);
         //Set cat2 with App2
-        AppDescriptor app2 = AppTestUtility.createAppDescriptor("app2", PageAppTestImpl.class);
+        AppDescriptor app2 = AppTestUtility.createAppDescriptor("app2", AppTestImpl.class);
         AppCategory cat2 =AppTestUtility.createAppCategory("cat2", app2);
         cat2.addApp(app2);
         Map<String, AppCategory> categories = new HashMap<String, AppCategory>();
@@ -285,7 +284,7 @@ public class AppControllerImplTest {
         ComponentProviderConfiguration components = new ComponentProviderConfiguration();
         components.registerImplementation(ModuleRegistry.class, ModuleRegistryImpl.class);
         //Register PagesView
-        components.registerImplementation(PagesView.class, PagesViewTestImpl.class);
+        components.registerImplementation(AppView.class, AppViewTestImpl.class);
         builder.withConfiguration(components);
         builder.exposeGlobally();
         return  builder.build();

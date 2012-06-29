@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.admincentral.app.simple;
 
 import info.magnolia.ui.framework.app.App;
 import info.magnolia.ui.framework.app.layout.AppCategory;
