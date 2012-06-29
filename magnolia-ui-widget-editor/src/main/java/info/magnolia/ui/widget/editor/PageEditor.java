@@ -45,13 +45,14 @@ import com.vaadin.terminal.PaintTarget;
 import com.vaadin.terminal.Resource;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.ClientWidget;
+import com.vaadin.ui.ClientWidget.LoadStyle;
 import com.vaadin.ui.Component;
 
 /**
  * PageEditor widget server side implementation.
  */
 @SuppressWarnings("serial")
-@ClientWidget(value=VPageEditor.class)
+@ClientWidget(value=VPageEditor.class, loadStyle = LoadStyle.EAGER)
 public class PageEditor extends AbstractComponent implements PageEditorView, ServerSideHandler {
 
     private Presenter presenter;
