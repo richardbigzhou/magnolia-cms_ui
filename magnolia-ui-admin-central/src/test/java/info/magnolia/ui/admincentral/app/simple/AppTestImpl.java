@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages;
+package info.magnolia.ui.admincentral.app.simple;
 
 import info.magnolia.ui.framework.app.AbstractApp;
 import info.magnolia.ui.framework.app.AppContext;
@@ -54,17 +54,17 @@ import com.google.inject.Inject;
  * it's not possible in the test class to access child GuiceComponentProvider
  * (app specific provider) defining the AppContext.
  */
-public class PageAppTestImpl extends AbstractApp {
+public class AppTestImpl extends AbstractApp {
 
     public List<String> events = new ArrayList<String>();
-    public PagesView view;
+    public AppView view;
     public AppContext ctx;
     public Location currentLocation;
     public static Map<String, Object> res = new HashMap<String, Object>();
     public static int appNumber = 0;
 
     @Inject
-    public PageAppTestImpl(AppContext ctx, PagesView view) {
+    public AppTestImpl(AppContext ctx, AppView view) {
         this.ctx = ctx;
         this.view = view;
         res.put("TestPageApp"+appNumber, this);

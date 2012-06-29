@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,40 +31,33 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage;
+package info.magnolia.ui.admincentral.app.simple;
 
-import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShellView;
+import info.magnolia.ui.framework.app.AppView;
+import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
+import com.vaadin.ui.Component;
 
 /**
- * Simple notification object that pops up when warnings/errors occur.
- * 
- * @author apchelintcev
- * 
+ *
+ * Stupid PagesView Test class.
+ *
  */
-public class VWarningMessage extends VDetailedShellMessage {
+public class AppViewTestImpl implements AppView, IsVaadinComponent {
 
-    private Element detailsExpanderEl = DOM.createElement("b");
 
-    public VWarningMessage(VMagnoliaShellView shell, String topic, String message, String id) {
-        super(shell, topic, message, id);
-        addStyleName("warning");
+    public AppViewTestImpl() {
+
     }
 
     @Override
-    protected void construct() {
-        super.construct();
-
-        detailsExpanderEl.setInnerText("[MORE]");
-        detailsExpanderEl.setClassName("details-expander");
-        getHeader().appendChild(detailsExpanderEl);
-        
+    public String getCaption() {
+        return null;
     }
 
     @Override
-    protected String getMessageTypeCaption() {
-        return "Warning: ";
+    public Component asVaadinComponent() {
+        return null;
     }
+
 }

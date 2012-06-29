@@ -9,19 +9,19 @@
 }
 
 .v-shell-notification.info {
-	background: none repeat scroll 0 0 #FFBF28;
+	background: none repeat scroll 0 0 #D1D8DF;
 	bottom: 0;
 }
 
 .v-shell-notification.warning {
-	background: none repeat scroll 0 0 #D1D8DF;
+	background: none repeat scroll 0 0 #FFBF28;
 	bottom: 0;
 }
 
 .v-shell-notification.error {
 	background: none repeat scroll 0 0 #9A3333;
 	color: white;
-	top: 80px;
+	top: 60px;
 }
 
 .v-shell-notification .header {

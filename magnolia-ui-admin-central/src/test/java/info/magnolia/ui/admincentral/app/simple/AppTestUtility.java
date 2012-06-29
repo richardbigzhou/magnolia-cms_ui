@@ -31,41 +31,38 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages;
+package info.magnolia.ui.admincentral.app.simple;
 
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
+import info.magnolia.ui.framework.app.App;
+import info.magnolia.ui.framework.app.layout.AppCategory;
+import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
+import info.magnolia.ui.framework.app.AppDescriptor;
 
-import com.vaadin.ui.Component;
 
 /**
- *
- * Stupid PagesView Test class.
+ * Utility Class for the App TestCases.
  *
  */
-public class PagesViewTestImpl implements PagesView, IsVaadinComponent {
+public class AppTestUtility {
 
-
-    public PagesViewTestImpl() {
-
-    }
-
-    @Override
-    public String getCaption() {
-        return null;
-    }
-
-    @Override
-    public Component asVaadinComponent() {
-        return null;
-    }
-
-    /* (non-Javadoc)
-     * @see info.magnolia.ui.app.pages.PagesView#setPresenter(info.magnolia.ui.app.pages.PagesView.Presenter)
+    /**
+     * Create a AppDescriptor.
      */
-    @Override
-    public void setPresenter(Presenter presenter) {
-        // TODO Auto-generated method stub
-
+    public static AppDescriptor createAppDescriptor(String startLibell, Class<? extends App> appClass) {
+        ConfiguredAppDescriptor res = new ConfiguredAppDescriptor();
+        res.setAppClass(appClass);
+        res.setIcon(startLibell+"_icon");
+        res.setLabel(startLibell+"_label");
+        res.setName(startLibell+"_name");
+        return res;
     }
 
+    public static AppCategory createAppCategory(String name, AppDescriptor... appDescriptors) {
+        AppCategory res = new AppCategory();
+        res.setLabel(name);
+        for(AppDescriptor descriptor: appDescriptors) {
+            res.addApp(descriptor);
+        }
+        return res;
+    }
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,38 +31,35 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app;
+package info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage;
 
-import info.magnolia.ui.framework.app.App;
-import info.magnolia.ui.framework.app.layout.AppCategory;
-import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
-import info.magnolia.ui.framework.app.AppDescriptor;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
 
+import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShellView;
 
 /**
- * Utility Class for the App TestCases.
+ * Shell message that displays the details. 
+ * @author apchelintcev
  *
  */
-public class AppTestUtility {
+public abstract class VDetailedShellMessage extends VShellMessage {
 
-    /**
-     * Create a AppDescriptor.
-     */
-    public static AppDescriptor createAppDescriptor(String startLibell, Class<? extends App> appClass) {
-        ConfiguredAppDescriptor res = new ConfiguredAppDescriptor();
-        res.setAppClass(appClass);
-        res.setIcon(startLibell+"_icon");
-        res.setLabel(startLibell+"_label");
-        res.setName(startLibell+"_name");
-        return res;
+    private Element detailsEl = DOM.createDiv();
+    
+    public VDetailedShellMessage(VMagnoliaShellView shell, String topic, String message, String id) {
+        super(shell, topic, message, id);
+    }
+    
+    protected Element getDetailsElement() {
+        return detailsEl;
+    }
+    
+    @Override
+    protected void construct() {
+        super.construct();
+        detailsEl.setInnerText(getMessage());
+        getElement().appendChild(detailsEl);
     }
 
-    public static AppCategory createAppCategory(String name, AppDescriptor... appDescriptors) {
-        AppCategory res = new AppCategory();
-        res.setLabel(name);
-        for(AppDescriptor descriptor: appDescriptors) {
-            res.addApp(descriptor);
-        }
-        return res;
-    }
 }

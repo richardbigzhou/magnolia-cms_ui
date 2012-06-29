@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,40 +31,35 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage;
+package info.magnolia.ui.admincentral.app.simple;
 
-import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShellView;
+import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.framework.app.AppView;
+import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.event.InvocationCountingTestEventHandler;
+import info.magnolia.ui.framework.event.TestEvent;
 
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
+import com.google.inject.Inject;
+
 
 /**
- * Simple notification object that pops up when warnings/errors occur.
- * 
- * @author apchelintcev
- * 
+ * @author erichechinger
+ * @version $Id$
+ *
  */
-public class VWarningMessage extends VDetailedShellMessage {
+public class AppEventTestImpl extends AppTestImpl {
 
-    private Element detailsExpanderEl = DOM.createElement("b");
+    public EventBus eventBus;
+    public InvocationCountingTestEventHandler handler;
 
-    public VWarningMessage(VMagnoliaShellView shell, String topic, String message, String id) {
-        super(shell, topic, message, id);
-        addStyleName("warning");
+    @Inject
+    public AppEventTestImpl(AppContext ctx, AppView view, EventBus eventBus) {
+        super(ctx, view);
+        this.eventBus = eventBus;
+
+        //Register
+        handler = new InvocationCountingTestEventHandler();
+        eventBus.addHandler(TestEvent.class, handler);
     }
 
-    @Override
-    protected void construct() {
-        super.construct();
-
-        detailsExpanderEl.setInnerText("[MORE]");
-        detailsExpanderEl.setClassName("details-expander");
-        getHeader().appendChild(detailsExpanderEl);
-        
-    }
-
-    @Override
-    protected String getMessageTypeCaption() {
-        return "Warning: ";
-    }
 }

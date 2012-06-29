@@ -227,16 +227,9 @@ public class TreeModel implements JcrContainerSource {
     // TODO these move methods need to be commands instead
 
     public boolean moveItem(Item source, Item target) throws RepositoryException {
-
-        if (!target.isNode()) {
+        if(!basicMoveCheck(source,target)) {
             return false;
         }
-
-        if (!source.isNode()) {
-            // Not yet implemented
-            return false;
-        }
-
         NodeUtil.moveNode((Node)source, (Node)target);
         source.getSession().save();
 
@@ -244,13 +237,7 @@ public class TreeModel implements JcrContainerSource {
     }
 
     public boolean moveItemBefore(Item source, Item target) throws RepositoryException {
-
-        if (!target.isNode()) {
-            return false;
-        }
-
-        if (!source.isNode()) {
-            // Not yet implemented
+        if(!basicMoveCheck(source,target)) {
             return false;
         }
 
@@ -261,13 +248,7 @@ public class TreeModel implements JcrContainerSource {
     }
 
     public boolean moveItemAfter(Item source, Item target) throws RepositoryException {
-
-        if (!target.isNode()) {
-            return false;
-        }
-
-        if (!source.isNode()) {
-            // Not yet implemented
+        if(!basicMoveCheck(source,target)) {
             return false;
         }
 
@@ -276,6 +257,26 @@ public class TreeModel implements JcrContainerSource {
 
         return true;
     }
+
+    /**
+     * Perform basic check.
+     */
+    private boolean basicMoveCheck(Item source, Item target) throws RepositoryException {
+        // One or both are not node... do nothing
+        if (!target.isNode() && !source.isNode()) {
+            return false;
+        }
+        // Source and origin are the same... do nothing
+        if (target.getPath().equals(source.getPath())) {
+            return false;
+        }
+        // Source can not be a child of target.
+        if(target.getPath().startsWith(source.getPath())) {
+            return false;
+        }
+        return true;
+    }
+
 
     // Used by JcrBrowser and VaadinTreeView
 

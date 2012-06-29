@@ -149,7 +149,8 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
     @Override
     public void changeActiveViewport(final ViewportType type) {
         if (activeViewportType != type) {
-            switchViewports(activeViewportType == ViewportType.SHELL_APP_VIEWPORT);
+            //switchViewports(activeViewportType == ViewportType.SHELL_APP_VIEWPORT);
+            switchViewports(type == ViewportType.APP_VIEWPORT);
             activeViewportType = type;
         }
     }

@@ -86,7 +86,8 @@ public class VHybridSelectionTreeTable extends VTreeTable {
                         final Element rowEl = findParentRowElement(target);
                         if (rowEl != null) {
                             toggleRowCheckBox(rowEl);
-                        }      
+                        }   
+                        updateSelectAllControl();
                     } else {
                         JsArray<Element> selectedRows = JQueryWrapper.select(".v-selected").get();
                         if (selectedRows != null) {
@@ -94,8 +95,8 @@ public class VHybridSelectionTreeTable extends VTreeTable {
                                 toggleRowCheckBox(selectedRows.get(i));
                             }
                         }
+                        updateSelectAllControl();
                     }
-                    updateSelectAllControl();
                 }
             }
         }, MouseUpEvent.getType());
