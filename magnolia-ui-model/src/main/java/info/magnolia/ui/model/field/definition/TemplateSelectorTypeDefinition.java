@@ -34,7 +34,7 @@
 package info.magnolia.ui.model.field.definition;
 
 /**
- * TemplateSelectorTypeDefinition.
+ * TemplateSelectorTypeDefinition definition of a field used for selecting templates.
  *
  */
 public class TemplateSelectorTypeDefinition implements FieldTypeDefinition {

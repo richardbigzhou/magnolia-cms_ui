@@ -33,60 +33,110 @@
  */
 package info.magnolia.ui.framework.message;
 
+import java.util.Collection;
 import java.util.List;
-
+import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.inject.Singleton;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import info.magnolia.cms.security.SecuritySupport;
+import info.magnolia.cms.security.User;
 
 /**
  * Implementation of {@link MessagesManager}.
- *
- * @version $Id$
  */
 @Singleton
 public class MessagesManagerImpl implements MessagesManager {
 
-    private int idCounter = 0;
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final ListMultimap<String, Message> messages = ArrayListMultimap.create();
     private final ListMultimap<String, MessageListener> listeners = ArrayListMultimap.create();
 
-    @Override
-    public synchronized void sendMessageToAllUsers(Message message) {
-        for (final String userId : listeners.keySet()) {
-            sendMessage(userId, message);
-        }
+    private Provider<SecuritySupport> securitySupportProvider;
+    private MessageStore messageStore;
+
+    @Inject
+    public MessagesManagerImpl(Provider<SecuritySupport> securitySupportProvider, MessageStore messageStore) {
+        this.securitySupportProvider = securitySupportProvider;
+        this.messageStore = messageStore;
     }
 
     @Override
-    public synchronized void sendMessage(String userId, Message message) {
-        message.setId(generateMessageId());
-        messages.put(userId, message);
-        for (final MessageListener listener : listeners.get(userId)) {
-            if (listener != null) {
-                listener.messageSent(message);
+    public void sendMessageToAllUsers(Message message) {
+
+        Collection<User> users;
+        try {
+            users = securitySupportProvider.get().getUserManager().getAllUsers();
+        } catch (UnsupportedOperationException e) {
+            logger.error("Unable to broadcast message because UserManager does not support enumerating its users", e);
+            return;
+        }
+
+        synchronized (listeners) {
+            for (User user : users) {
+
+                // We need to set the id to null for each loop to make sure each user gets a unique id. Otherwise an id
+                // suitable for the first user gets generated and is then used for everyone, possible overwriting
+                // already existing messages for some users.
+                message.setId(null);
+
+                messageStore.saveMessage(user.getName(), message);
+                sendMessageSentEvent(user.getName(), message);
             }
         }
+
+        // Reset it to null simply to avoid assumptions about the id in calling code
+        message.setId(null);
     }
 
     @Override
-    public synchronized void registerMessagesListener(String userId, MessageListener listener) {
-        listeners.put(userId, listener);
+    public void sendMessage(String userId, Message message) {
+        message.setId(null);
+        messageStore.saveMessage(userId, message);
+        sendMessageSentEvent(userId, message);
     }
 
     @Override
-    public synchronized void unregisterMessagesListener(String userId, MessageListener listener) {
-        listeners.remove(userId, listener);
-    }
-
-    @Override
-    public void clearMessage(final String userId, final String id) {
-        final Message message = findMessageById(userId, id);
+    public void clearMessage(final String userId, final String messageId) {
+        final Message message = messageStore.findMessageById(userId, messageId);
         if (message != null) {
-            //messages.remove(userId, message);
             message.setCleared(true);
+            messageStore.saveMessage(userId, message);
+            sendMessageClearedEvent(userId, message);
+        }
+    }
+
+    @Override
+    public int getNumberOfUnclearedMessagesForUser(String userId) {
+        return messageStore.getNumberOfUnclearedMessagesForUser(userId);
+    }
+
+    @Override
+    public List<Message> getMessagesForUser(String userId) {
+        return messageStore.findAllMessagesForUser(userId);
+    }
+
+    @Override
+    public void registerMessagesListener(String userId, MessageListener listener) {
+        synchronized (listeners) {
+            listeners.put(userId, listener);
+        }
+    }
+
+    @Override
+    public void unregisterMessagesListener(String userId, MessageListener listener) {
+        synchronized (listeners) {
+            listeners.remove(userId, listener);
+        }
+    }
+
+    private void sendMessageClearedEvent(String userId, Message message) {
+        synchronized (listeners) {
             final List<MessageListener> listenerList = listeners.get(userId);
             if (listenerList != null) {
                 for (final MessageListener listener : listenerList) {
@@ -96,35 +146,13 @@ public class MessagesManagerImpl implements MessagesManager {
         }
     }
 
-    private Message findMessageById(String userId, String msgId) {
-        Message result = null;
-        final List<Message> userMessages = messages.get(userId);
-        if (userMessages != null) {
-            for (final Message msg : userMessages) {
-                if (msg.getId().equals(msgId)) {
-                    result = msg;
-                    break;
+    private void sendMessageSentEvent(String userId, Message message) {
+        synchronized (listeners) {
+            for (final MessageListener listener : listeners.get(userId)) {
+                if (listener != null) {
+                    listener.messageSent(message);
                 }
-            }       
+            }
         }
-        return result;
-    }
-
-    @Override
-    public int getMessageCountForUser(String userId) {
-        final List<Message> userMessages = messages.get(userId);
-        if (userMessages != null) {
-            return userMessages.size();
-        }
-        return 0;
-    }
-
-    @Override
-    public List<Message> getMessagesForUser(String userId) {
-        return messages.get(userId);
-    }
-
-    private synchronized String generateMessageId() {
-        return String.valueOf(idCounter++);
     }
 }

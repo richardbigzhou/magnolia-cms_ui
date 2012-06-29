@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,38 +31,37 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.field.view;
+package info.magnolia.ui.widget.editor.gwt.client.widget.dnd;
 
-import org.vaadin.addon.customfield.CustomField;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Style.Unit;
 
-import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.ListSelect;
+import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
- * TemplateSelector.
- *
+ * MoveWidget. Used for the legacy moving.
  */
-public class TemplateSelector extends CustomField {
+public class MoveWidget extends FlowPanel {
 
+    public MoveWidget(int height, int width) {
 
-    public TemplateSelector() {
-        CssLayout layout = new CssLayout();
+        setStyleName("mgnlEditorMoveDiv");
 
-        ListSelect select = new ListSelect();
+        getElement().getStyle().setWidth(width, Unit.PX);
+        getElement().getStyle().setHeight(height, Unit.PX);
+        getElement().setId("mgnlEditorMoveDiv");
 
-        select.addItem("Template1");
-        select.addItem("Template2");
-        select.addItem("Template3");
-        select.addItem("Template4");
-
-        layout.addComponent(select);
-        setValue("Template1");
-
-        setCompositionRoot(layout);
+        attach();
     }
 
-    @Override
-    public Class<?> getType() {
-        return String.class;
+    private void attach() {
+        Document.get().getBody().appendChild(this.getElement());
+        super.onAttach();
     }
+
+    public void detach() {
+        Document.get().getBody().removeChild(this.getElement());
+        super.onDetach();
+    }
+
 }

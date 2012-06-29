@@ -9,6 +9,7 @@
     <inherits name="info.magnolia.ui.widget.tabsheet.gwt.TabsheetWidgetSet" />
     <inherits name="info.magnolia.ui.widget.dialog.gwt.DialogWidgetSet" />
     <inherits name="info.magnolia.ui.widget.actionbar.gwt.ActionbarWidgetSet" />
+    <inherits name="info.magnolia.ui.widget.editor.gwt.PageEditorWidgetSet" />
     <inherits name="org.vaadin.artur.icepush.IcepushaddonWidgetset" />
     <inherits name='org.vaadin.gwtgraphics.GWTGraphics' />
 

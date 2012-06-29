@@ -35,7 +35,6 @@ package info.magnolia.ui.app.pages.field;
 
 import info.magnolia.rendering.template.registry.TemplateDefinitionRegistry;
 import info.magnolia.ui.admincentral.field.builder.FieldTypeBase;
-import info.magnolia.ui.admincentral.field.view.TemplateSelector;
 import info.magnolia.ui.model.dialog.definition.FieldDefinition;
 import info.magnolia.ui.model.field.definition.FieldTypeDefinition;
 
@@ -43,7 +42,7 @@ import com.google.inject.Inject;
 import com.vaadin.ui.Field;
 
 /**
- * TemplateSelectorType.
+ * TemplateSelectorType builds the field used to select templates.
  *
  */
 public class TemplateSelectorType extends FieldTypeBase {
@@ -58,7 +57,7 @@ public class TemplateSelectorType extends FieldTypeBase {
 
     @Override
     public Field build(FieldDefinition fieldDefinition) {
-        Field field = new TemplateSelector();
+        Field field = new TemplateSelectorView();
 
         //templateDefinitionRegistry.getTemplateDefinitions()
         return field;

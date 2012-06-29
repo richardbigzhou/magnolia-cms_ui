@@ -37,6 +37,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.ui.framework.app.AppView;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
+import info.magnolia.ui.widget.editor.PageEditor;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -45,11 +46,11 @@ import org.apache.commons.lang.StringUtils;
 
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.Embedded;
 import com.vaadin.ui.VerticalLayout;
 
 /**
  * PageEditorTabView.
+ * TODO: make this a component with a split layout to accomodate the page editor on the left and its related actions on the right.
  *
 * @version $Id$
 */
@@ -60,12 +61,11 @@ public class PageEditorTabView implements AppView, IsVaadinComponent {
     private String caption;
 
     public PageEditorTabView(final Node pageNode) throws RepositoryException {
-        final Embedded page = new Embedded("", new ExternalResource(MgnlContext.getContextPath() + pageNode.getPath()));
-        page.setType(Embedded.TYPE_BROWSER);
-        page.setSizeFull();
+        final PageEditor pageEditor = new PageEditor(new ExternalResource(MgnlContext.getContextPath() + pageNode.getPath()));
+        pageEditor.setSizeFull();
 
         container.setSizeFull();
-        container.addComponent(page);
+        container.addComponent(pageEditor);
         caption = StringUtils.defaultIfEmpty(PropertyUtil.getString(pageNode, "title"), pageNode.getName());
 
     }
