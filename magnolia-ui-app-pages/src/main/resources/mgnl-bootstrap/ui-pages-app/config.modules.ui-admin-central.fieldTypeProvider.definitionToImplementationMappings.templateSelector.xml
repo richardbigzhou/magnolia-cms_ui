@@ -13,7 +13,7 @@
     <sv:value>info.magnolia.ui.model.field.definition.TemplateSelectorTypeDefinition</sv:value>
   </sv:property>
   <sv:property sv:name="implementation" sv:type="String">
-    <sv:value>info.magnolia.ui.app.pages.field.TemplateSelectorType.TemplateSelectorType</sv:value>
+    <sv:value>info.magnolia.ui.app.pages.field.TemplateSelectorType</sv:value>
   </sv:property>
   <sv:property sv:name="jcr:createdBy" sv:type="String">
     <sv:value>admin</sv:value>
