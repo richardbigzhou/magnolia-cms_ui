@@ -88,7 +88,7 @@ import com.vaadin.terminal.gwt.client.VConsole;
  * TODO fgrilli: this class badly needs clean up and refactoring.
  */
 @SuppressWarnings("serial")
-public class VPageEditor extends FlowPanel implements Paintable, VPageEditorView.Presenter, ClientSideHandler {
+public class VPageEditor extends FlowPanel implements Paintable, ClientSideHandler {
 
     private static boolean isPreview = false;
 
@@ -118,7 +118,7 @@ public class VPageEditor extends FlowPanel implements Paintable, VPageEditorView
         }
     };
 
-    private final VPageEditorView view;
+    private static VPageEditorView view;
 
     protected ApplicationConnection client;
 
@@ -128,7 +128,6 @@ public class VPageEditor extends FlowPanel implements Paintable, VPageEditorView
     public VPageEditor() {
         eventBus = new SimpleEventBus();
         view = new VPageEditorViewImpl(eventBus);
-        view.setPresenter(this);
         iframe = new Frame();
         iframe.addLoadHandler(new LoadHandler() {
 
@@ -396,6 +395,10 @@ public class VPageEditor extends FlowPanel implements Paintable, VPageEditorView
             }
         }
 
+    }
+
+    public static VPageEditorView getView() {
+        return view;
     }
 
 }

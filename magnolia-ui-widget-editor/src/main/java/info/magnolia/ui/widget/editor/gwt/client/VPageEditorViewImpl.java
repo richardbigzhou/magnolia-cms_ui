@@ -35,6 +35,7 @@ package info.magnolia.ui.widget.editor.gwt.client;
 
 
 
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.web.bindery.event.shared.EventBus;
 
@@ -42,7 +43,7 @@ import com.google.web.bindery.event.shared.EventBus;
  * GWT implementation of MagnoliaShell client side (the view part basically).
  *
  */
-public class VPageEditorViewImpl extends FlowPanel implements VPageEditorView {
+public class VPageEditorViewImpl extends FlowPanel implements VPageEditorView, VPageEditorView.Presenter {
 
 
     private Presenter presenter;
@@ -52,6 +53,7 @@ public class VPageEditorViewImpl extends FlowPanel implements VPageEditorView {
     public VPageEditorViewImpl(final EventBus eventBus) {
         super();
         this.eventBus = eventBus;
+        this.setPresenter(this);
 
     }
 
@@ -62,6 +64,31 @@ public class VPageEditorViewImpl extends FlowPanel implements VPageEditorView {
 
     public Presenter getPresenter() {
         return presenter;
+    }
+
+    @Override
+    public void onNewComponent(String workspace, String path, String nodeType) {
+        //eventBus.fireEvent(newComponentEvent);
+        Window.alert("Hi, one fine day I will be able to create a component of type ["+nodeType+"] in workspace ["+workspace+"] at path ["+path +"]");
+    }
+
+    @Override
+    public void onEditComponent(String dialog, String workspace, String path) {
+        //eventBus.fireEvent(editComponentEvent);
+        Window.alert("Hi, one fine day I will be able to edit a component with dialog ["+dialog +"] in workspace ["+workspace+"] at path ["+path+"]");
+
+    }
+
+    @Override
+    public void onDeleteComponent(String path) {
+        //eventBus.fireEvent(deleteEvent);
+        Window.alert("Hi, one fine day I will be able to delete component at path [" + path +"]");
+    }
+
+    @Override
+    public void onMoveComponent() {
+        // TODO decide how to handle move action.
+        Window.alert("Move me here, move me there!");
     }
 
 }

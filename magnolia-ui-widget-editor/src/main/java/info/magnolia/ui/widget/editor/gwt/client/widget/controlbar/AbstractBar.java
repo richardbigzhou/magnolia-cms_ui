@@ -35,6 +35,7 @@ package info.magnolia.ui.widget.editor.gwt.client.widget.controlbar;
 
 
 import info.magnolia.ui.widget.editor.gwt.client.VPageEditor;
+import info.magnolia.ui.widget.editor.gwt.client.VPageEditorView.Presenter;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 import info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils;
 
@@ -58,6 +59,8 @@ public abstract class AbstractBar extends FlowPanel {
 
     private FlowPanel primaryButtons;
     private FlowPanel secondaryButtons;
+
+    private final Presenter presenter = VPageEditor.getView().getPresenter();
 
     public AbstractBar(MgnlElement mgnlElement) {
 
@@ -145,6 +148,10 @@ public abstract class AbstractBar extends FlowPanel {
         return getElement().getStyle();
     }
 
+    public Presenter getPresenter() {
+        return presenter;
+    }
+
     /**
      *  TODO: we should not have to call onAttach ourself?
      */
@@ -203,6 +210,5 @@ public abstract class AbstractBar extends FlowPanel {
                 VPageEditor.getModel().getEditBar(component).secondaryButtons.setVisible(visible);
             }
         }
-
     }
 }

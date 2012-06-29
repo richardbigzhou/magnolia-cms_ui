@@ -43,7 +43,6 @@ import java.util.Map;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.PushButton;
 
 
@@ -64,6 +63,7 @@ public class AreaBar extends AbstractBar {
 
     public AreaBar(MgnlElement mgnlElement) throws IllegalArgumentException {
         super(mgnlElement);
+
 
         checkMandatories(mgnlElement.getAttributes());
 
@@ -87,9 +87,7 @@ public class AreaBar extends AbstractBar {
                 editButton.addClickHandler(new ClickHandler() {
                     @Override
                     public void onClick(ClickEvent event) {
-                        //TODO delegate to presenter
-                        Window.alert("Hi, one fine day I will be able to open a dialog.");
-                        //PageEditor.openDialog(dialog, workspace, path);
+                        getPresenter().onEditComponent(dialog, workspace, path);
                     }
                 });
                 editButton.setTitle(getI18nMessage("buttons.area.edit.js"));
@@ -104,8 +102,7 @@ public class AreaBar extends AbstractBar {
                 removeButton.addClickHandler(new ClickHandler() {
                     @Override
                     public void onClick(ClickEvent event) {
-                        Window.alert("Hi, one fine day I will be able to delete this component.");
-                        //PageEditor.deleteComponent(path);
+                        getPresenter().onDeleteComponent(path);
                     }
                 });
                 removeButton.setTitle(getI18nMessage("buttons.area.delete.js"));
@@ -120,8 +117,7 @@ public class AreaBar extends AbstractBar {
                 createbutton.addClickHandler(new ClickHandler() {
                     @Override
                     public void onClick(ClickEvent event) {
-                        Window.alert("Hi, one fine day I will be able to craete this component.");
-                        //PageEditor.createComponent(workspace, path, "mgnl:area");
+                        getPresenter().onNewComponent(workspace, path, "mgnl:area");
                     }
                 });
                 createbutton.setTitle(getI18nMessage("buttons.area.add.js"));
