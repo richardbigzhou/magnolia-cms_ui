@@ -112,7 +112,9 @@ public abstract class VShellMessage extends HTML {
         show();
     }
     
-    protected void onMessageClicked(Element targetEl) {}
+    protected void onMessageClicked(Element targetEl) {
+        close();
+    }
     
     protected void close() {
         hide();

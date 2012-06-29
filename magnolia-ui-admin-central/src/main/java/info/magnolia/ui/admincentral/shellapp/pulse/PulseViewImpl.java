@@ -38,6 +38,7 @@ import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.admincentral.components.ActivityItem;
 import info.magnolia.ui.admincentral.components.SplitFeed;
 import info.magnolia.ui.framework.message.Message;
+import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
@@ -163,7 +164,9 @@ public class PulseViewImpl implements PulseView, IsVaadinComponent {
             @Override
             public void messageSent(Message message) {
                 addMessageToContainer(container, message);
-                shell.updateShellAppIndication(ShellAppType.PULSE, 1);
+                if (message.getType() != MessageType.INFO) {
+                    shell.updateShellAppIndication(ShellAppType.PULSE, 1);   
+                }
             }
 
             @Override
@@ -173,7 +176,9 @@ public class PulseViewImpl implements PulseView, IsVaadinComponent {
                  * The logic needs to be clearer somehow.
                  */
                 //container.removeItem(message.getId());
-                shell.updateShellAppIndication(ShellAppType.PULSE, -1);
+                if (message.getType() != MessageType.INFO) {
+                    shell.updateShellAppIndication(ShellAppType.PULSE, -1);
+                }
             }
         });
 

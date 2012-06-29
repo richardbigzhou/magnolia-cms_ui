@@ -40,7 +40,7 @@ import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShellView;
  * @author apchelintcev
  *
  */
-public class VInfoMessage extends VShellMessage {
+public class VInfoMessage extends VDetailedShellMessage {
 
     public VInfoMessage(VMagnoliaShellView shell, String topic, String message, String id) {
         super(shell, topic, message, id);
