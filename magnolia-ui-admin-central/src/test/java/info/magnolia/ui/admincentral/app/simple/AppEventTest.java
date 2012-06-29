@@ -37,7 +37,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.ui.admincentral.MagnoliaShell;
-import info.magnolia.ui.admincentral.app.simple.AppControllerImpl;
 import info.magnolia.ui.admincentral.app.simple.AppControllerImplTest.AppEventCollector;
 import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.AppEventType;
@@ -64,7 +63,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test case for {@link nfo.magnolia.ui.framework.app.AppController} local App's event.
+ * Test case for {@link info.magnolia.ui.framework.app.AppController} local App's event.
  */
 public class AppEventTest {
 
