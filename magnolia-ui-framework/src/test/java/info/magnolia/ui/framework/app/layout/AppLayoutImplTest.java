@@ -72,11 +72,6 @@ public class AppLayoutImplTest {
         applayout = new AppLayoutImpl(categories);
     }
 
-    @After
-    public void tearDown() throws Exception {
-        applayout = null;
-    }
-
     @Test
     public void TestGetCategories() {
         // GIVEN
