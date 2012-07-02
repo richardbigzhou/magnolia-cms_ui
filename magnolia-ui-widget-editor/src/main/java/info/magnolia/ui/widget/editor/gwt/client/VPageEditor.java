@@ -79,7 +79,6 @@ import info.magnolia.ui.widget.editor.gwt.client.model.ModelStorage;
 import info.magnolia.ui.widget.editor.gwt.client.widget.dnd.LegacyDragAndDrop;
 import org.vaadin.rpc.client.ClientSideHandler;
 import org.vaadin.rpc.client.ClientSideProxy;
-import org.vaadin.rpc.client.Method;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -109,16 +108,7 @@ public class VPageEditor extends FlowPanel implements Paintable, ClientSideHandl
 
     private LinkedList<MgnlElement> mgnlElements = new LinkedList<MgnlElement>();
 
-    private ClientSideProxy proxy = new ClientSideProxy(this) {
-        {
-            register("addAction", new Method() {
-                @Override
-                public void invoke(String methodName, Object[] params) {
-
-                }
-            });
-        }
-    };
+    private ClientSideProxy proxy = new ClientSideProxy(this);
 
     private static VPageEditorView view;
 
@@ -151,6 +141,7 @@ public class VPageEditor extends FlowPanel implements Paintable, ClientSideHandl
         iframeElement.setAttribute("allowTransparency", "true");
         iframeElement.setAttribute("frameborder", "0");
         add(iframe);
+
 
     }
 

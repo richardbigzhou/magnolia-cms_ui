@@ -42,6 +42,7 @@ import info.magnolia.ui.widget.dialog.DialogView;
 import info.magnolia.ui.widget.editor.PageEditor;
 import info.magnolia.ui.widget.editor.PageEditorView;
 
+import javax.inject.Inject;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -56,9 +57,13 @@ public class PageEditorPresenter implements PageEditorView.Presenter {
     private String nodeName;
     private DialogPresenterFactory dialogPresenterFactory;
 
-    public PageEditorPresenter(final Node pageNode) throws RepositoryException {
+    @Inject
+    public PageEditorPresenter(DialogPresenterFactory dialogPresenterFactory, final Node pageNode) throws RepositoryException {
         this.pageNode = pageNode;
+        this.dialogPresenterFactory = dialogPresenterFactory;
+
         this.view = new PageEditor(new ExternalResource(MgnlContext.getContextPath() + pageNode.getPath()));
+        this.view.setPresenter(this);
         this.nodeName = pageNode.getName();
     }
 

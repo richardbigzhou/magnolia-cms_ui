@@ -42,7 +42,6 @@ import com.vaadin.ui.Select;
 import info.magnolia.rendering.template.TemplateDefinition;
 import info.magnolia.rendering.template.assignment.TemplateDefinitionAssignment;
 import info.magnolia.ui.admincentral.field.builder.FieldTypeBase;
-import info.magnolia.ui.admincentral.field.builder.TextFieldType;
 import info.magnolia.ui.model.dialog.definition.FieldDefinition;
 import info.magnolia.ui.model.field.definition.FieldTypeDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
@@ -59,6 +58,8 @@ public class TemplateSelectorType extends FieldTypeBase {
 
     private TemplateDefinitionAssignment templateAssignment;
     private Select select;
+    private static final String TEMPLATESELECTOR_STYLE_NAME = "templateselector";
+
 
     @SuppressWarnings("unchecked")
     @Inject
@@ -71,7 +72,7 @@ public class TemplateSelectorType extends FieldTypeBase {
     public Field build(FieldDefinition fieldDefinition, Item fieldRelatedItem) {
         Field field = new TemplateSelectorView(buildTemplateList(fieldRelatedItem));
         field.setCaption(fieldDefinition.getLabel());
-        field.setStyleName(TextFieldType.TEXTFIELD_STYLE_NAME);
+        field.setStyleName(TEMPLATESELECTOR_STYLE_NAME);
         return field;
     }
 

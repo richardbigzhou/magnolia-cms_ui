@@ -45,6 +45,8 @@ import org.vaadin.rpc.ServerSideHandler;
 import org.vaadin.rpc.ServerSideProxy;
 import org.vaadin.rpc.client.Method;
 
+import java.util.Map;
+
 /**
  * PageEditor widget server side implementation.
  */
@@ -63,6 +65,7 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
         this.source = source;
         setCaption("");
         setSizeFull();
+        setImmediate(true);
     }
 
 
@@ -74,11 +77,16 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
                     final String workSpace = String.valueOf(params[0]);
                     final String path = String.valueOf(params[1]);
                     final String dialog = String.valueOf(params[2]);
-                    presenter.editComponent(workSpace, path, dialog);
+                    editComponent(workSpace, path, dialog);
                 }
             });
         }
     };
+
+    private void editComponent(String workSpace, String path, String dialog) {
+
+        presenter.editComponent(workSpace, path, dialog);
+    }
 
     @Override
     public Component asVaadinComponent() {
@@ -108,6 +116,12 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
             target.addAttribute("src", getSource());
         }
         proxy.paintContent(target);
+    }
+
+    @Override
+    public void changeVariables(Object source, Map<String, Object> variables) {
+        super.changeVariables(source, variables);
+        proxy.changeVariables(source, variables);
     }
 
     protected Resource getSource() {

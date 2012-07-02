@@ -37,6 +37,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
 import info.magnolia.jcr.util.PropertyUtil;
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.framework.app.AppView;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 import info.magnolia.ui.widget.actionbar.Actionbar;
@@ -63,8 +64,9 @@ public class PageEditorTabView implements AppView, IsVaadinComponent {
     
     private final String caption;
 
-    public PageEditorTabView(final Node pageNode) throws RepositoryException {
+    public PageEditorTabView(ComponentProvider componentProvider, Node pageNode, final Actionbar actionbar) throws RepositoryException {
 
+        this.actionbar = actionbar;
         // same root as ContentWorkbenchView
         root.setSizeFull();
         root.setStyleName("mgnl-app-root");
@@ -73,18 +75,18 @@ public class PageEditorTabView implements AppView, IsVaadinComponent {
         root.setMargin(false);
         root.setSpacing(true);
 
-        PageEditorView.Presenter pageEditorPresenter = null;
-        try {
-            pageEditorPresenter = new PageEditorPresenter(pageNode);
-        } catch (RepositoryException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
+        Object[] combinedParameters = new Object[1];
+
+        combinedParameters[0] = pageNode;
+        PageEditorView.Presenter pageEditorPresenter = componentProvider.newInstance(PageEditorPresenter.class, combinedParameters);
+
        
 
         container.setSizeFull();
         container.setStyleName("mgnl-app-view");
         container.addComponent(pageEditorPresenter.getView().asVaadinComponent());
         caption = StringUtils.defaultIfEmpty(PropertyUtil.getString(pageNode, "title"), pageNode.getName());
+        root.addComponent(actionbar);
     }
 
     public Actionbar getActionbar() {
@@ -106,4 +108,10 @@ public class PageEditorTabView implements AppView, IsVaadinComponent {
         return root;
     }
 
+    /**
+     * Presenter.
+     */
+    public interface Presenter {
+
+    }
 }

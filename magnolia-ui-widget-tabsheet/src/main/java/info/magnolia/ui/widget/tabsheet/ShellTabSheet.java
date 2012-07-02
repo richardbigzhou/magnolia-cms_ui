@@ -255,7 +255,7 @@ public class ShellTabSheet extends AbstractComponentContainer implements ServerS
     }
 
     public void setActiveTab(final ShellTab tab) {
-        if (this.activeTab != tab && tabs.contains(tab)) {
+        if (tabs.contains(tab)) {
             this.activeTab = tab;
             proxy.callOnce("setActiveTab", mapper.key(tab));
             requestRepaint();
