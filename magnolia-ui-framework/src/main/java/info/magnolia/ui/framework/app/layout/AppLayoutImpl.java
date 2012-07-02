@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.framework.app.layout;
 
-import info.magnolia.ui.framework.app.AppDescriptor;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,10 +40,10 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import info.magnolia.ui.framework.app.AppDescriptor;
 
 /**
- * Default AppRegistry implementation.
- * Simple POJO bean containing the user registered AppCategories and App.
+ * Default {@link AppLayout} implementation.
  */
 public class AppLayoutImpl implements AppLayout {
 
@@ -88,7 +86,8 @@ public class AppLayoutImpl implements AppLayout {
 
     /**
      * Return the AppDescriptor corresponding to the given name.
-     * Return null if no AppDescriptor founded.
+     *
+     * @return null if no AppDescriptor is found
      */
     private AppDescriptor internalGetAppDescriptor(String name) {
         for (AppCategory category : categories.values()) {
@@ -101,7 +100,4 @@ public class AppLayoutImpl implements AppLayout {
         }
         return null;
     }
-
-
-
 }

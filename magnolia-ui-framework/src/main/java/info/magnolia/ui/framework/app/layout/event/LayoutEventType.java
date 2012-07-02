@@ -33,9 +33,8 @@
  */
 package info.magnolia.ui.framework.app.layout.event;
 
-
 /**
- * Admin Central Event Type Enumeration.
+ * Enumeration of event types sent by {@link info.magnolia.ui.framework.app.layout.AppLayoutManager}.
  */
 public enum LayoutEventType {
     RELOAD_APP

@@ -72,8 +72,12 @@ public class SimpleEventBus implements EventBus {
     @Override
     public <H extends EventHandler> void fireEvent(Event<H> event) {
         for (H eventHandler : internalGetHandlers(event)) {
-            log.debug("Dispatch event {} with handler {}", event, eventHandler);
-            event.dispatch(eventHandler);
+            log.debug("Dispatching event {} with handler {}", event, eventHandler);
+            try {
+                event.dispatch(eventHandler);
+            } catch (RuntimeException e) {
+                log.warn("Exception caught when dispatching event: " + e.getMessage(), e);
+            }
         }
     }
 

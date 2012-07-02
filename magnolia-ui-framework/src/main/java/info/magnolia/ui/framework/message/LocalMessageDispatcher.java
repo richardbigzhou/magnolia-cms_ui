@@ -42,18 +42,13 @@ import java.util.concurrent.LinkedBlockingQueue;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
- * LocalMessageDispatcher.
+ * Dispatches events on an {@link EventBus} for a certain user.
  *
  * @version $Id$
  */
 @Singleton
 public class LocalMessageDispatcher implements MessageListener {
-
-    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private BlockingQueue<MessageEvent> messageQueue = new LinkedBlockingQueue<MessageEvent>();
 
@@ -69,8 +64,6 @@ public class LocalMessageDispatcher implements MessageListener {
                     eventBus.fireEvent(msg);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
-                } catch (RuntimeException e) {
-                    logger.warn("Exception caught when dispatching message: " + e.getMessage(), e);
                 }
             }
         }
