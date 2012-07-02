@@ -187,19 +187,23 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
     }
 
     @Override
-    public void handleMessage(MessageEvent event) {
+    public void messageSent(MessageEvent event) {
         final Message message = event.getMessage();
         switch (message.getType()) {
-        case WARNING:
-            showWarning(message);
-            break;
-        case ERROR:
-            showError(message);
-            break;
-        case INFO:
-            showInfo(message);
-        default:
-            break;
+            case WARNING:
+                showWarning(message);
+                break;
+            case ERROR:
+                showError(message);
+                break;
+            case INFO:
+                showInfo(message);
+            default:
+                break;
         }
+    }
+
+    @Override
+    public void messageCleared(MessageEvent event) {
     }
 }
