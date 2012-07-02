@@ -37,6 +37,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.ui.framework.app.AppView;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
+import info.magnolia.ui.widget.actionbar.Actionbar;
 import info.magnolia.ui.widget.editor.PageEditor;
 
 import javax.jcr.Node;
@@ -46,28 +47,51 @@ import org.apache.commons.lang.StringUtils;
 
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
 
+
 /**
- * PageEditorTabView.
- * TODO: make this a component with a split layout to accomodate the page editor on the left and its related actions on the right.
- *
-* @version $Id$
-*/
+ * The tab view for the Page Editor, consisting of a PageEditor widget and an Actionbar.
+ * 
+ */
 @SuppressWarnings("serial")
 public class PageEditorTabView implements AppView, IsVaadinComponent {
 
+    private Actionbar actionbar;
+
+    private final HorizontalLayout root = new HorizontalLayout();
+
     private final VerticalLayout container = new VerticalLayout();
-    private String caption;
+
+    private final String caption;
 
     public PageEditorTabView(final Node pageNode) throws RepositoryException {
+
+        // same root as ContentWorkbenchView
+        root.setSizeFull();
+        root.setStyleName("mgnl-app-root");
+        root.addComponent(container);
+        root.setExpandRatio(container, 1f);
+        root.setMargin(false);
+        root.setSpacing(true);
+
         final PageEditor pageEditor = new PageEditor(new ExternalResource(MgnlContext.getContextPath() + pageNode.getPath()));
         pageEditor.setSizeFull();
 
         container.setSizeFull();
+        container.setStyleName("mgnl-app-view");
         container.addComponent(pageEditor);
         caption = StringUtils.defaultIfEmpty(PropertyUtil.getString(pageNode, "title"), pageNode.getName());
+    }
 
+    public Actionbar getActionbar() {
+        return actionbar;
+    }
+
+    public void setActionbar(Actionbar actionbar) {
+        root.replaceComponent(this.actionbar, actionbar);
+        this.actionbar = actionbar;
     }
 
     @Override
@@ -77,7 +101,7 @@ public class PageEditorTabView implements AppView, IsVaadinComponent {
 
     @Override
     public Component asVaadinComponent() {
-        return container;
+        return root;
     }
 
 }
