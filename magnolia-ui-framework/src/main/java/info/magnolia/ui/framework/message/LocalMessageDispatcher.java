@@ -53,8 +53,6 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class LocalMessageDispatcher implements MessageListener {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
-
     private BlockingQueue<MessageEvent> messageQueue = new LinkedBlockingQueue<MessageEvent>();
 
     private EventBus eventBus;
@@ -69,8 +67,6 @@ public class LocalMessageDispatcher implements MessageListener {
                     eventBus.fireEvent(msg);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
-                } catch (RuntimeException e) {
-                    logger.warn("Exception caught when dispatching message: " + e.getMessage(), e);
                 }
             }
         }
