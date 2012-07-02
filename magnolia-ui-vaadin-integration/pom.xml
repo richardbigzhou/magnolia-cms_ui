@@ -10,7 +10,7 @@
   <artifactId>magnolia-ui-vaadin-integration</artifactId>
   <name>magnolia-ui-vaadin-integration</name>
   <properties>
-    <cloverCoverageThreshold>23</cloverCoverageThreshold>
+    <cloverCoverageThreshold>22</cloverCoverageThreshold>
   </properties>
   <dependencies>
     <dependency>
@@ -70,13 +70,16 @@
     <dependency>
 		<groupId>org.vaadin.addons</groupId>
 		<artifactId>icepush</artifactId>
-		<version>0.2.1</version>
 	</dependency>
 		<dependency>
 		<groupId>org.icefaces</groupId>
 		<artifactId>icepush</artifactId>
-		<version>3.0.1</version>
 	</dependency>
+	<dependency>
+      <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-widget-jquery-wrapper</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -97,6 +100,14 @@
             </manifestEntries>
           </archive>
         </configuration>
+      </plugin>
+      <plugin>
+          <groupId>org.zeroturnaround</groupId>
+          <artifactId>jrebel-maven-plugin</artifactId>
+          <configuration>
+            <relativePath>../${basedir}</relativePath>
+            <rootPath>$${admincentral.root}</rootPath>
+          </configuration>
       </plugin>
     </plugins>
     <resources>

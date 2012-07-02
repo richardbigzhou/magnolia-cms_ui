@@ -1,0 +1,82 @@
+/*APP LAUNCHER RELATED STYLES*/
+.v-csslayout-app-list > .v-csslayout-margin {
+    padding-top: 30px;
+    padding-bottom: 25px;
+}
+
+.app-launcher {
+    min-width: 350px;
+    max-width: 600px;
+}
+
+.app-launcher > .v-csslayout-margin .app-list:FIRST-CHILD {
+    border: 0;
+}
+
+.app-list {
+    border-top: 2px solid #689611;
+}
+
+.app-list.edit {
+    border: none;
+}
+
+.app-list .item {
+    border-radius: 3px 3px 3px 3px;
+    color: white;
+    background: none; /* added to shared */
+    border: none; /* added to shared */
+    cursor: pointer;
+    float: left;
+    font-size: 12px;
+    margin: 0 0 0 20px;
+    padding: 5px;
+    text-align: center;
+    width: 80px;
+    height: 82px;
+}
+
+.app-list .v-label {
+    margin-bottom: 10px;
+    line-height: 1.4;
+}
+
+.app-list .item > span {
+    display: block;
+}
+
+.app-list .v-nativebutton > .v-icon {
+    margin-right: 0 !important;
+    margin-left: 3px !important;
+}
+
+.app-list .item:first-of-type {
+    margin-left: 0;
+}
+
+.app-list .item:hover {
+    background-color: #AABF2F;
+    color: white;
+    text-decoration: none;
+}
+
+.app-list .app-group-title {
+    color: #557722;
+    font-size: 18px;
+    font-weight: normal;
+    text-transform: uppercase;
+    text-align: left;
+}
+
+.v-appbutton {
+    position: relative;
+    text-align: center;
+}
+
+.v-appbutton .divet {
+    position: absolute;
+    height: 9px;
+    width: 9px;
+    left: 37px;
+    background: url("img/style-app-running.png") no-repeat scroll center bottom transparent;
+}

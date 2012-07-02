@@ -37,12 +37,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import info.magnolia.ui.admincentral.field.builder.FieldTypeProvider;
+import info.magnolia.ui.admincentral.field.builder.TextFieldType;
 import info.magnolia.ui.model.dialog.definition.ConfiguredDialogDefinition;
 import info.magnolia.ui.model.dialog.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.model.dialog.definition.ConfiguredTabDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 import info.magnolia.ui.model.dialog.definition.FieldDefinition;
 import info.magnolia.ui.model.dialog.definition.TabDefinition;
+import info.magnolia.ui.model.field.definition.FieldTypeDefinition;
+import info.magnolia.ui.model.field.definition.TextFieldTypeDefinition;
 import info.magnolia.ui.widget.dialog.Dialog;
 import info.magnolia.ui.widget.dialog.DialogView;
 
@@ -64,7 +68,7 @@ public class DialogBuilderTest {
         final Dialog dialog = new Dialog();
 
         // WHEN
-        final DialogView result = builder.build(def, null, dialog);
+        final DialogView result = builder.build(null, def, null, dialog);
 
         // THEN
         assertEquals(result, dialog);
@@ -75,10 +79,19 @@ public class DialogBuilderTest {
         // GIVEN
         final DialogBuilder builder = new DialogBuilder();
         final DialogDefinition dialogDef = new ConfiguredDialogDefinition();
+
+
+        final FieldTypeDefinition fieldTypeDef = new TextFieldTypeDefinition();
+
+        final FieldTypeProvider fieldTypeProvider = mock(FieldTypeProvider.class);
+        when(fieldTypeProvider.create(fieldTypeDef)).thenReturn(new TextFieldType(fieldTypeDef));
+
         final Dialog dialog = new Dialog();
         final TabDefinition tabDef = new ConfiguredTabDefinition();
         final FieldDefinition fieldDef = new ConfiguredFieldDefinition();
+
         fieldDef.setType(FieldDefinition.TEXT_FIELD_TYPE);
+        fieldDef.setFieldTypeDefinition(fieldTypeDef);
         ((ConfiguredFieldDefinition) fieldDef).setName("test");
         tabDef.addField(fieldDef);
         dialogDef.addTab(tabDef);
@@ -88,7 +101,7 @@ public class DialogBuilderTest {
         when(item.getItemProperty("test")).thenReturn(prop);
 
         // WHEN
-        final DialogView result = builder.build(dialogDef, item, dialog);
+        final DialogView result = builder.build(fieldTypeProvider, dialogDef, item, dialog);
 
         // THEN
         assertEquals(result, dialog);

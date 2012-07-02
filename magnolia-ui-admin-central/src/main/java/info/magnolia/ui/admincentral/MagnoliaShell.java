@@ -196,6 +196,8 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
         case ERROR:
             showError(message);
             break;
+        case INFO:
+            showInfo(message);
         default:
             break;
         }

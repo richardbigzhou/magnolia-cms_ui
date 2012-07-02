@@ -34,7 +34,7 @@
 package info.magnolia.ui.widget.magnoliashell.gwt.client;
 
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VWarningMessage.MessageType;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VShellMessage.MessageType;
 
 import java.util.Iterator;
 import java.util.Set;
@@ -83,6 +83,7 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
         public String getFragmentPrefix() {
             return fragmentPrefix;
         }
+
     }
     
     protected String paintableId;

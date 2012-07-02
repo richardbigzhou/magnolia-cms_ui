@@ -38,6 +38,7 @@ import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.admincentral.dialog.action.DialogActionFactory;
 import info.magnolia.ui.admincentral.dialog.builder.DialogBuilder;
+import info.magnolia.ui.admincentral.field.builder.FieldTypeProvider;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 import info.magnolia.ui.model.dialog.registry.DialogDefinitionRegistry;
@@ -59,12 +60,14 @@ public class DialogPresenterFactoryImpl implements DialogPresenterFactory {
     private DialogBuilder dialogBuilder;
     private EventBus eventBus;
     private DialogActionFactory actionFactory;
+    private FieldTypeProvider fieldTypeBuilder;
     private ComponentProvider componentProvider;
 
     @Inject
-    public DialogPresenterFactoryImpl(ComponentProvider componentProvider, DialogDefinitionRegistry dialogDefinitionRegistry, DialogBuilder dialogBuilder, MagnoliaShell shell, EventBus eventBus, final DialogActionFactory actionFactory) {
+    public DialogPresenterFactoryImpl(ComponentProvider componentProvider, DialogDefinitionRegistry dialogDefinitionRegistry, DialogBuilder dialogBuilder, FieldTypeProvider fieldTypeBuilder, MagnoliaShell shell, EventBus eventBus, final DialogActionFactory actionFactory) {
         this.dialogDefinitionRegistry = dialogDefinitionRegistry;
         this.dialogBuilder = dialogBuilder;
+        this.fieldTypeBuilder = fieldTypeBuilder;
         this.shell = shell;
         this.eventBus = eventBus;
         this.actionFactory = actionFactory;
@@ -86,6 +89,6 @@ public class DialogPresenterFactoryImpl implements DialogPresenterFactory {
             throw new IllegalArgumentException("No dialog definition registered for name [" + dialogName + "]");
         }
 
-        return new DialogPresenter(view, dialogBuilder, dialogDefinition, shell, eventBus, actionFactory);
+        return new DialogPresenter(view, dialogBuilder, fieldTypeBuilder, dialogDefinition, shell, eventBus, actionFactory);
     }
 }

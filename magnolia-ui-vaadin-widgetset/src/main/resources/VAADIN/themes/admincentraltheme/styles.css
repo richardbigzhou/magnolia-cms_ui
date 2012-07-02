@@ -1,0 +1,32 @@
+@import url(../chameleon/styles.css);
+@import url(splitfeed.css);
+@import url(pulse-activity-entry.css);
+@import url(dialog.css);
+@import url(actionbar.css);
+@import url(tabsheet.css);
+@import url(shellmessage.css);
+@import url(app.css);
+@import url(workbench.css);
+@import url(hybridselectiontreetable.css);
+@import url(applauncher.css);
+@import url(pulse.css);
+@import url(favorites.css);
+@import url(shell.css);
+
+@font-face{
+    font-family: DinRound;
+    src: url("dinroundmedium.woff") format("woff");
+    font-weight:bold;
+}
+
+.clearfix:before, .clearfix:after { content: ""; display: table; }
+.clearfix:after { clear: both; }
+.clearfix { *zoom: 1; }
+
+
+
+
+/*END OF APP LAUNCHER RELATED STYLES*/
+
+
+

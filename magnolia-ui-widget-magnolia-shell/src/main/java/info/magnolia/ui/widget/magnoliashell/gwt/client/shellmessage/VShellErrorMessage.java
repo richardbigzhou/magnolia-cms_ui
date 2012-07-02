@@ -65,8 +65,6 @@ public class VShellErrorMessage extends VShellMessage {
     protected void onMessageClicked(Element targetEl) {
         if (targetEl == detailsLinkEl) {
             getShell().navigateToMessageDetails(getId());
-        } else {
-            super.onMessageClicked(targetEl);   
         }
     }
     

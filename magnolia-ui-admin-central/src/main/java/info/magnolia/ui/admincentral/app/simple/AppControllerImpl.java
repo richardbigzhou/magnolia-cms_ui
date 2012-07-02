@@ -53,6 +53,7 @@ import info.magnolia.ui.framework.app.AppView;
 import info.magnolia.ui.framework.app.layout.AppCategory;
 import info.magnolia.ui.framework.app.layout.AppLayoutManager;
 import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.event.ResettableEventBus;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.location.LocationChangeRequestedEvent;
@@ -177,8 +178,8 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
     private void doStop(AppContextImpl appContext) {
         appContext.stop();
-        while (appHistory.remove(appContext)) {
-        }
+        while (appHistory.remove(appContext));
+
         runningApps.remove(appContext.getName());
         if (currentApp == appContext) {
             currentApp = null;
@@ -255,7 +256,6 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
         public AppContextImpl(AppDescriptor appDescriptor) {
             this.appDescriptor = appDescriptor;
-            this.appProvider = setAppComponentProvider(appDescriptor.getName(),this);
         }
 
         public String getName() {
@@ -271,12 +271,14 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
          */
         public void start(EventBus eventBus, Location location) {
 
+            this.appProvider = setAppComponentProvider(appDescriptor.getName(),this, eventBus);
+
             DefaultLocation appLocation = (DefaultLocation) location;
 
             app = appProvider.newInstance(appDescriptor.getAppClass());
 
             appFrameView = new AppFrameView();
-            //TODO ehe: Remove this from app. start and use injection instead.
+
             AppView view = app.start(new DefaultLocation("app", appDescriptor.getName(), appLocation.getToken()));
 
             currentLocation = location;
@@ -308,6 +310,8 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
         public void stop() {
             app.stop();
+            ((ResettableEventBus)appProvider.getComponent(EventBus.class)).reset();
+
         }
 
         public Location getDefaultLocation() {
@@ -347,7 +351,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
      * components id name must be:
      * app-'appname' : like app-pages.
      */
-    private ComponentProvider setAppComponentProvider(String name, AppContext appContext) {
+    private ComponentProvider setAppComponentProvider(String name, AppContext appContext, EventBus eventBus) {
 
         String componentIdName = "app-"+name;
 
@@ -355,8 +359,11 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         ComponentProviderConfigurationBuilder configurationBuilder = new ComponentProviderConfigurationBuilder();
         List<ModuleDefinition> moduleDefinitions = Components.getComponent(ModuleRegistry.class).getModuleDefinitions();
         ComponentProviderConfiguration configuration = configurationBuilder.getComponentsFromModules(componentIdName, moduleDefinitions);
-        //Add the related App AppContext into the component provider.
+
+        //Add the related App AppContext into the app component provider.
         configuration.addComponent(InstanceConfiguration.valueOf(AppContext.class, appContext));
+        //Add a local App's EventBus (of type ResettableEventBus) into the app component provider.
+        configuration.addComponent(InstanceConfiguration.valueOf(EventBus.class, new ResettableEventBus(eventBus)));
 
         log.debug("Creating the component provider...");
         GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();

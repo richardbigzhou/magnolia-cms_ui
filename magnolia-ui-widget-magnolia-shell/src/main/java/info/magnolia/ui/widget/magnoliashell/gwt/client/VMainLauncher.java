@@ -96,10 +96,6 @@ public class VMainLauncher extends FlowPanel {
             buttonWrapper.getStyle().setPosition(Position.RELATIVE);
             buttonWrapper.appendChild(indicator);
             buttonWrapper.setId(type.getId());
-
-            final Element span = DOM.createSpan();
-            span.setInnerHTML(type.getCaption());
-            buttonWrapper.appendChild(span);
             
             indicatorPad.addStyleName("pad");
             DOM.sinkEvents(getElement(), Event.MOUSEEVENTS);
@@ -131,25 +127,18 @@ public class VMainLauncher extends FlowPanel {
      * Type of the "shell app" to be loaded.
      */
     public static enum ShellAppType {
-        APPLAUNCHER("btn-appslauncher", "Apps"),
-        PULSE("btn-pulse", "Pulse"),
-        FAVORITE("btn-favorites", "Favorites");
+        APPLAUNCHER("btn-appslauncher"),
+        PULSE("btn-pulse"),
+        FAVORITE("btn-favorites");
         
         private String classId;
-        
-        private String caption;
-        
-        public String getCaption() {
-            return caption;
-        }
         
         public String getId() {
             return classId;
         }
         
-        private ShellAppType(final String styleName, final String caption) {
+        private ShellAppType(final String styleName) {
             this.classId = styleName;
-            this.caption = caption;
         }
         
         public static String getTypeByFragmentId(final String id) {

@@ -33,14 +33,10 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse;
 
-import info.magnolia.context.MgnlContext;
-import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.admincentral.components.ActivityItem;
 import info.magnolia.ui.admincentral.components.SplitFeed;
 import info.magnolia.ui.framework.message.Message;
-import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
 import info.magnolia.ui.widget.tabsheet.ShellTab;
 import info.magnolia.ui.widget.tabsheet.ShellTabSheet;
 
@@ -90,54 +86,26 @@ public class PulseViewImpl implements PulseView, IsVaadinComponent {
         }
     }
 
-    private MagnoliaShell shell;
-    
-    private MessagesManager messagesManager;
-    
+    private IndexedContainer messagesContainer;
     private Presenter  presenter;
 
     private BidiMap m = new DualHashBidiMap();
 
     @Inject
-    public PulseViewImpl(MessagesManager messagesManager, MagnoliaShell shell) {
-        this.shell = shell;
-        this.messagesManager = messagesManager;
-        tabsheet.addStyleName("v-pulse");
-        final Panel testLayout2 = new Panel();
-        final Panel testLayout3 = new Panel();
+    public PulseViewImpl() {
 
-        testLayout2.setSizeFull();
-        testLayout2.addComponent(new Label("Test2".toUpperCase()));
-        testLayout3.setSizeFull();
-        testLayout3.addComponent(new Label("Test3".toUpperCase()));
-
-        final SplitFeed pulseFeed = new SplitFeed();
-        pulseFeed.getLeftContainer().setTitle("Activity Stream");
-        pulseFeed.getLeftContainer().setTitleLinkEnabled(true);
-
-        pulseFeed.getRightContainer().setTitle("Pages I changed recently");
-        pulseFeed.getRightContainer().setTitleLinkEnabled(true);
-       
-
-        ComponentContainer messagesTable = createMessagesLayout();
-
-        final ShellTab pulse = tabsheet.addTab("pulse".toUpperCase(), pulseFeed);
-        final ShellTab stats = tabsheet.addTab("stats".toUpperCase(), testLayout2);
-        final ShellTab messages = tabsheet.addTab("messages".toUpperCase(), messagesTable);
-        final ShellTab inbox = tabsheet.addTab("inbox".toUpperCase(), new VerticalLayout());
+        final ShellTab pulse = tabsheet.addTab("pulse".toUpperCase(), createPulseFeedLayout());
+        final ShellTab stats = tabsheet.addTab("stats".toUpperCase(), createStatsLayout());
+        final ShellTab messages = tabsheet.addTab("messages".toUpperCase(), createMessagesLayout());
+        final ShellTab inbox = tabsheet.addTab("inbox".toUpperCase(), createInboxLayout());
 
         tabsheet.updateTabNotification(stats, "4");
         tabsheet.updateTabNotification(messages, "2");
         tabsheet.updateTabNotification(inbox, "1");
 
+        tabsheet.addStyleName("v-pulse");
         tabsheet.setSizeFull();
         tabsheet.setWidth("900px");
-
-        final Label l = new Label("Today");
-        l.addStyleName("category-separartor");
-        pulseFeed.getLeftContainer().addComponent(l);
-        pulseFeed.getLeftContainer().addComponent(new ActivityItem("Test", "Lorem ipsum...", "Say hi", "green", new Date()));
-        pulseFeed.getLeftContainer().addComponent(new ActivityItem("Test", "Lorem ipsum once again", "Say hi", "red", new Date()));
 
         m.put(PulseTabType.PULSE, pulse);
         m.put(PulseTabType.STATS, stats);
@@ -145,50 +113,22 @@ public class PulseViewImpl implements PulseView, IsVaadinComponent {
         m.put(PulseTabType.INBOX, inbox);
     }
 
-    private ComponentContainer createMessagesLayout() {
-
-        final IndexedContainer container = new IndexedContainer();
-        container.addContainerProperty("new", String.class, null);
-        container.addContainerProperty("type", String.class,  null);
-        container.addContainerProperty("text", String.class,  null);
-        container.addContainerProperty("sender", String.class,  null);
-        container.addContainerProperty("date", String.class,  null);
-
-        for (Message message : messagesManager.getMessagesForUser(MgnlContext.getUser().getName())) {
-            addMessageToContainer(container, message);
-        }
-
-        messagesManager.registerMessagesListener(MgnlContext.getUser().getName(), new MessagesManager.MessageListener() {
-
-            @Override
-            public void messageSent(Message message) {
-                addMessageToContainer(container, message);
-                shell.updateShellAppIndication(ShellAppType.PULSE, 1);
-            }
-
-            @Override
-            public void messageCleared(Message message) {
-                /**
-                 * FIXME: we do not remove message here, but in MessagesManager those are removed.
-                 * The logic needs to be clearer somehow.
-                 */
-                //container.removeItem(message.getId());
-                shell.updateShellAppIndication(ShellAppType.PULSE, -1);
-            }
-        });
-
-        Table table = new Table();
-        table.setSizeFull();
-        table.setContainerDataSource(container);
-
-        VerticalLayout layout = new VerticalLayout();
-        layout.setSizeFull();
-        layout.addComponent(table);
-        return layout;
+    @Override
+    public void addMessage(Message message) {
+        final Item item = this.messagesContainer.addItemAt(0, message.getId());
+        setMessagePropertyValues(message, item);
     }
 
-    private void addMessageToContainer(IndexedContainer container, Message message) {
-        final Item item = container.addItem(message.getId());
+    @Override
+    public void updateMessage(Message message) {
+        Item item = this.messagesContainer.getItem(message.getId());
+        if (item != null) {
+            setMessagePropertyValues(message, item);
+        }
+    }
+
+    private void setMessagePropertyValues(Message message, Item item) {
+        item.getItemProperty("new").setValue(message.isCleared() ? "No" : "Yes");
         item.getItemProperty("type").setValue(message.getType().name());
         item.getItemProperty("text").setValue(message.getMessage());
         item.getItemProperty("date").setValue(new SimpleDateFormat().format(new Date(message.getTimestamp())));
@@ -219,5 +159,51 @@ public class PulseViewImpl implements PulseView, IsVaadinComponent {
     @Override
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
+    }
+
+    private SplitFeed createPulseFeedLayout() {
+        final SplitFeed pulseFeed = new SplitFeed();
+        pulseFeed.getLeftContainer().setTitle("Activity Stream");
+        pulseFeed.getLeftContainer().setTitleLinkEnabled(true);
+
+        pulseFeed.getRightContainer().setTitle("Pages I changed recently");
+        pulseFeed.getRightContainer().setTitleLinkEnabled(true);
+
+        final Label l = new Label("Today");
+        l.addStyleName("category-separartor");
+        pulseFeed.getLeftContainer().addComponent(l);
+        pulseFeed.getLeftContainer().addComponent(new ActivityItem("Test", "Lorem ipsum...", "Say hi", "green", new Date()));
+        pulseFeed.getLeftContainer().addComponent(new ActivityItem("Test", "Lorem ipsum once again", "Say hi", "red", new Date()));
+        return pulseFeed;
+    }
+
+    private Panel createStatsLayout() {
+        final Panel layout = new Panel();
+        layout.setSizeFull();
+        layout.addComponent(new Label("Test2".toUpperCase()));
+        return layout;
+    }
+
+    private ComponentContainer createMessagesLayout() {
+
+        messagesContainer = new IndexedContainer();
+        messagesContainer.addContainerProperty("new", String.class, null);
+        messagesContainer.addContainerProperty("type", String.class, null);
+        messagesContainer.addContainerProperty("text", String.class, null);
+        messagesContainer.addContainerProperty("sender", String.class, null);
+        messagesContainer.addContainerProperty("date", String.class, null);
+
+        Table table = new Table();
+        table.setSizeFull();
+        table.setContainerDataSource(messagesContainer);
+
+        VerticalLayout layout = new VerticalLayout();
+        layout.setSizeFull();
+        layout.addComponent(table);
+        return layout;
+    }
+
+    private VerticalLayout createInboxLayout() {
+        return new VerticalLayout();
     }
 }

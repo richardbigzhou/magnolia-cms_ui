@@ -44,18 +44,7 @@ import com.google.gwt.user.client.Element;
  * @author apchelintcev
  * 
  */
-public class VWarningMessage extends VShellMessage {
-    /**
-     * Enumeration of possible message types.
-     * 
-     * @author apchelintcev
-     * 
-     */
-    public enum MessageType {
-        WARNING, ERROR;
-    }
-
-    private Element detailsEl = DOM.createDiv();
+public class VWarningMessage extends VDetailedShellMessage {
 
     private Element detailsExpanderEl = DOM.createElement("b");
 
@@ -71,20 +60,7 @@ public class VWarningMessage extends VShellMessage {
         detailsExpanderEl.setInnerText("[MORE]");
         detailsExpanderEl.setClassName("details-expander");
         getHeader().appendChild(detailsExpanderEl);
-
-        detailsEl.setInnerText(getMessage());
-        getElement().appendChild(detailsEl);
         
-    }
-
-    @Override
-    protected void onMessageClicked(Element targetEl) {
-        super.onMessageClicked(targetEl);
-        close();
-    }
-
-    protected Element getDetailsElement() {
-        return detailsEl;
     }
 
     @Override

@@ -36,6 +36,7 @@ package info.magnolia.ui.model.dialog.definition;
 import java.util.List;
 
 import info.magnolia.ui.model.definition.UiItemDefinition;
+import info.magnolia.ui.model.field.definition.FieldTypeDefinition;
 
 /**
  * FieldDefinition.
@@ -62,5 +63,9 @@ public interface FieldDefinition extends UiItemDefinition {
     public abstract void setValidators(List<ValidatorDefinition> validators);
 
     public abstract List<ValidatorDefinition> getValidators();
+
+    public abstract void setFieldTypeDefinition(FieldTypeDefinition fieldTypeDefinition);
+
+    public abstract FieldTypeDefinition getFieldTypeDefinition();
 
 }

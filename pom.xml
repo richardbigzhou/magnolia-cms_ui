@@ -71,6 +71,11 @@
 				<version>3.0.1</version>
 			</dependency>
 			<dependency>
+				<groupId>org.vaadin.addons</groupId>
+				<artifactId>customfield</artifactId>
+				<version>1.0.0</version>
+			</dependency>
+			<dependency>
 				<groupId>com.google.gwt</groupId>
 				<artifactId>gwt-user</artifactId>
 				<version>${gwtVersion}</version>
@@ -144,10 +149,12 @@
 		<module>magnolia-ui-widget-tabsheet</module>
 		<module>magnolia-ui-widget-dialog</module>
 		<module>magnolia-ui-widget-actionbar</module>
+		<module>magnolia-ui-widget-editor</module>
 		<module>magnolia-ui-admin-central</module>
 		<module>magnolia-ui-webapp</module>
 		<module>magnolia-ui-app-dummy</module>
 		<module>magnolia-ui-app-contacts</module>
 		<module>magnolia-ui-app-messages</module>
+		<module>magnolia-ui-app-pages</module>
 	</modules>
 </project>
