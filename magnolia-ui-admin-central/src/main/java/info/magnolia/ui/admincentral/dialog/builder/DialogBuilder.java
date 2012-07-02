@@ -79,9 +79,8 @@ public class DialogBuilder {
                 fieldLayout.setStyleName(FIELD_STYLE_NAME);
 
                 FieldType fieldType = fieldTypeBuilder.create(fieldDefinition.getFieldTypeDefinition());
-                Field field = fieldType.build(fieldDefinition);
+                Field field = fieldType.build(fieldDefinition, item);
                 field.setPropertyDataSource(item.getItemProperty(fieldDefinition.getName()));
-
                 fieldLayout.addComponent(field);
 
                 fieldContainer.addComponent(fieldLayout);
