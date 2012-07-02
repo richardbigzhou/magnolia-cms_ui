@@ -36,6 +36,9 @@ package info.magnolia.ui.framework.event;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Simple thread safe collection of handlers for a specific event.
  *
@@ -43,6 +46,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @version $Id$
  */
 public class EventHandlerCollection<H extends EventHandler> {
+
+    private static final Logger log = LoggerFactory.getLogger(EventHandlerCollection.class);
 
     private final List<H> handlers = new CopyOnWriteArrayList<H>();
 
@@ -62,8 +67,13 @@ public class EventHandlerCollection<H extends EventHandler> {
     }
 
     public void dispatch(Event<H> event) {
-        for (H handler : handlers) {
-            event.dispatch(handler);
+        for (H eventHandler : handlers) {
+            log.debug("Dispatching event {} with handler {}", event, eventHandler);
+            try {
+                event.dispatch(eventHandler);
+            } catch (RuntimeException e) {
+                log.warn("Exception caught when dispatching event: " + e.getMessage(), e);
+            }
         }
     }
 
