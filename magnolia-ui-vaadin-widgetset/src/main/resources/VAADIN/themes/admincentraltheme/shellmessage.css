@@ -21,7 +21,7 @@
 .v-shell-notification.error {
 	background: none repeat scroll 0 0 #9A3333;
 	color: white;
-	top: 80px;
+	top: 60px;
 }
 
 .v-shell-notification .header {
