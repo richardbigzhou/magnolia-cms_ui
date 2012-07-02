@@ -189,7 +189,7 @@
           <sv:value>Page</sv:value>
         </sv:property>
         <sv:property sv:name="propertyName" sv:type="String">
-          <sv:value>nodeName</sv:value>
+          <sv:value>jcrName</sv:value>
         </sv:property>
         <sv:node sv:name="MetaData">
           <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -208,7 +208,7 @@
             <sv:value>2010-09-08T11:44:25.527+02:00</sv:value>
           </sv:property>
           <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-            <sv:value>2012-06-25T13:35:42.168+02:00</sv:value>
+            <sv:value>2012-07-02T14:43:00.537+02:00</sv:value>
           </sv:property>
         </sv:node>
       </sv:node>
@@ -357,6 +357,9 @@
         <sv:property sv:name="label" sv:type="String">
           <sv:value>Modification Date</sv:value>
         </sv:property>
+        <sv:property sv:name="propertyName" sv:type="String">
+          <sv:value>MetaData/mgnl:lastmodified</sv:value>
+        </sv:property>
         <sv:node sv:name="MetaData">
           <sv:property sv:name="jcr:primaryType" sv:type="Name">
             <sv:value>mgnl:metaData</sv:value>
@@ -374,7 +377,7 @@
             <sv:value>2010-09-08T11:44:25.527+02:00</sv:value>
           </sv:property>
           <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-            <sv:value>2012-06-20T09:39:06.928+02:00</sv:value>
+            <sv:value>2012-07-02T08:44:22.376+02:00</sv:value>
           </sv:property>
         </sv:node>
       </sv:node>
