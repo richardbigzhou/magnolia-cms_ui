@@ -35,9 +35,8 @@ package info.magnolia.ui.framework.app.layout.event;
 
 import info.magnolia.ui.framework.event.EventHandler;
 
-
 /**
- * Listens to {@link LayoutEvent}s.
+ * Event handler for {@link LayoutEvent}s.
  */
 public interface LayoutEventHandler extends EventHandler {
 

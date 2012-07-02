@@ -40,8 +40,6 @@ import info.magnolia.ui.framework.app.AppDescriptor;
 
 /**
  * Defines a category of apps in the app launcher and the apps that belong to it.
- *
- * @version $Id$
  */
 public class AppCategory implements Comparable<AppCategory> {
 

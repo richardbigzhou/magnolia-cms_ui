@@ -33,6 +33,15 @@
  */
 package info.magnolia.ui.framework.app.layout;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventHandler;
@@ -41,39 +50,23 @@ import info.magnolia.ui.framework.app.layout.event.LayoutEventType;
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.framework.event.SystemEventBus;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-
-
 /**
- * LauncherLayoutManager.
- * Handle RegisteryEvent to keep AppLouncherLayout in synchronization.
- *
+ * Default {@link AppLayoutManager} implementation.
  */
 @Singleton
-public class AppLayoutManagerImpl implements AppLayoutManager{
+public class AppLayoutManagerImpl implements AppLayoutManager {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     /**
-     * Reference to the injected AppDescriptorRegistery.
+     * Reference to the injected AppDescriptorRegistry.
      */
     private AppDescriptorRegistry appDescriptorRegistry;
+
     /**
-     * Reference to the injected SystemEventBus.
-     * This Bus is used to handle AppRegistery Events
-     * and send AdminCentral Events.
+     * Reference to the injected SystemEventBus, used to handle events from the AppDescriptorRegistry events.
      */
     private SystemEventBus systemEventBus;
-
 
     @Inject
     public AppLayoutManagerImpl(AppDescriptorRegistry appDescriptorRegistry, SystemEventBus systemEventBus) {
@@ -82,29 +75,29 @@ public class AppLayoutManagerImpl implements AppLayoutManager{
 
         /**
          * Register for App registration events.
-         * Currently just propagate the events.
+         * Currently just propagates the events.
          */
         systemEventBus.addHandler(AppLifecycleEvent.class, new AppLifecycleEventHandler.Adapter() {
 
             @Override
             public void onAppRegistered(AppLifecycleEvent event) {
                 String name = event.getAppDescriptor().getName();
-                logger.debug("Got AppLifecycleEvent."+event.getEventType()+" for the following appDescriptor "+name);
-                sendEvent(new LayoutEvent(LayoutEventType.RELOAD_APP,name));
+                logger.debug("Got AppLifecycleEvent." + event.getEventType() + " for the following appDescriptor " + name);
+                sendEvent(new LayoutEvent(LayoutEventType.RELOAD_APP, name));
             }
 
             @Override
             public void onAppReRegistered(AppLifecycleEvent event) {
                 String name = event.getAppDescriptor().getName();
-                logger.debug("Got AppLifecycleEvent."+event.getEventType()+" for the following appDescriptor "+name);
-                sendEvent(new LayoutEvent(LayoutEventType.RELOAD_APP,name));
+                logger.debug("Got AppLifecycleEvent." + event.getEventType() + " for the following appDescriptor " + name);
+                sendEvent(new LayoutEvent(LayoutEventType.RELOAD_APP, name));
             }
 
             @Override
             public void onAppUnregistered(AppLifecycleEvent event) {
                 String name = event.getAppDescriptor().getName();
-                logger.debug("Got AppLifecycleEvent."+event.getEventType()+" for the following appDescriptor "+name);
-                sendEvent(new LayoutEvent(LayoutEventType.RELOAD_APP,name));
+                logger.debug("Got AppLifecycleEvent." + event.getEventType() + " for the following appDescriptor " + name);
+                sendEvent(new LayoutEvent(LayoutEventType.RELOAD_APP, name));
             }
         });
     }
@@ -114,19 +107,19 @@ public class AppLayoutManagerImpl implements AppLayoutManager{
         //Init
         Map<String, AppCategory> categories = new HashMap<String, AppCategory>();
         AppLayout appLauncherLayout = new AppLayoutImpl(categories);
-        // Get appDescriptor
+        // Get AppDescriptor
         Collection<AppDescriptor> appDescriptors = this.appDescriptorRegistry.getAppDescriptors();
 
         for (AppDescriptor app : appDescriptors) {
             if (hasToAddApp(app, appLauncherLayout)) {
-                handleCategory(categories,app);
+                handleCategory(categories, app);
             }
         }
         return appLauncherLayout;
     }
 
     @Override
-    public boolean isAppDescriptionRegistered(String name) {
+    public boolean isAppDescriptorRegistered(String name) {
         return true;
     }
 
@@ -135,13 +128,12 @@ public class AppLayoutManagerImpl implements AppLayoutManager{
         return true;
     }
 
-
     /**
      * Filter out disabled apps and apps with identical names.
      */
     private boolean hasToAddApp(AppDescriptor app, AppLayout appLauncherLayout) {
         // Filter out disabled apps and apps with identical names
-        if (!app.isEnabled() || appLauncherLayout.isAppAlreadyRegistered(app.getName()) || !isAppDescriptionRegistered(app.getName())) {
+        if (!app.isEnabled() || appLauncherLayout.isAppAlreadyRegistered(app.getName()) || !isAppDescriptorRegistered(app.getName())) {
             return false;
         } else {
             return true;
@@ -149,7 +141,7 @@ public class AppLayoutManagerImpl implements AppLayoutManager{
     }
 
     /**
-     * Add the AppDescriptor to an Existing or newly created AppCategory.
+     * Add the AppDescriptor to an existing or newly created AppCategory.
      */
     private void handleCategory(Map<String, AppCategory> categories, AppDescriptor app) {
         AppCategory category;
@@ -168,10 +160,10 @@ public class AppLayoutManagerImpl implements AppLayoutManager{
     }
 
     /**
-     * Send an Event to the System EventBuss.
+     * Send an event to the system event bus.
      */
     private void sendEvent(LayoutEvent event) {
-        logger.debug("Send an AdminCentralEvent."+event.getEventType()+" to the systemBus");
+        logger.debug("Sending LayoutEvent." + event.getEventType() + " to the system bus");
         systemEventBus.fireEvent(event);
     }
 }
