@@ -31,26 +31,31 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.simple;
+package info.magnolia.ui.framework.message;
 
 import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.message.MessageEvent;
-import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessagesManager.MessageListener;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * LocalMessageDispatcher.
  *
  * @version $Id$
  */
+@Singleton
 public class LocalMessageDispatcher implements MessageListener {
 
-    private BlockingQueue<Message> messageQueue = new LinkedBlockingQueue<Message>();
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
+    private BlockingQueue<MessageEvent> messageQueue = new LinkedBlockingQueue<MessageEvent>();
 
     private EventBus eventBus;
 
@@ -60,10 +65,12 @@ public class LocalMessageDispatcher implements MessageListener {
         public void run() {
             while (!Thread.currentThread().isInterrupted()) {
                 try {
-                    final Message msg = messageQueue.take();
-                    eventBus.fireEvent(new MessageEvent(msg));
+                    final MessageEvent msg = messageQueue.take();
+                    eventBus.fireEvent(msg);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
+                } catch (RuntimeException e) {
+                    logger.warn("Exception caught when dispatching message: " + e.getMessage(), e);
                 }
             }
         }
@@ -79,15 +86,15 @@ public class LocalMessageDispatcher implements MessageListener {
 
     @Override
     public void messageSent(Message message) {
-        queueMessage(message);
-    }
-
-    private void queueMessage(Message message) {
-        messageQueue.add(message);
+        queueEvent(new MessageEvent(message, false));
     }
 
     @Override
     public void messageCleared(Message message) {
-        
+        queueEvent(new MessageEvent(message, true));
+    }
+
+    private void queueEvent(MessageEvent event) {
+        messageQueue.add(event);
     }
 }

@@ -35,7 +35,7 @@ package info.magnolia.ui.admincentral;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.admincentral.app.simple.DefaultLocationHistoryMapper;
-import info.magnolia.ui.admincentral.app.simple.LocalMessageDispatcher;
+import info.magnolia.ui.framework.message.LocalMessageDispatcher;
 import info.magnolia.ui.admincentral.app.simple.ShellAppController;
 import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.layout.AppLayoutManager;

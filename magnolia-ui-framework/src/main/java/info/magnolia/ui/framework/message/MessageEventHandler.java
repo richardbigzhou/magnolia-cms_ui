@@ -42,5 +42,7 @@ import info.magnolia.ui.framework.event.EventHandler;
  */
 public interface MessageEventHandler extends EventHandler {
 
-    void handleMessage(MessageEvent event);
+    void messageSent(MessageEvent event);
+
+    void messageCleared(MessageEvent event);
 }
