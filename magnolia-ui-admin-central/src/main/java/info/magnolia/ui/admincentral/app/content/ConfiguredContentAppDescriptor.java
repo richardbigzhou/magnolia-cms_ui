@@ -31,30 +31,33 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts;
+package info.magnolia.ui.admincentral.app.content;
 
-import info.magnolia.ui.admincentral.app.content.ContentApp;
-import info.magnolia.ui.framework.app.AppView;
-import info.magnolia.ui.framework.location.Location;
-
-import javax.inject.Inject;
+import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
+import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 
 
 /**
- * The Contacts app, extending base content app.
+ * Base implementation for content app descriptor.
  * 
  */
-public class ContactsApp extends ContentApp {
+@SuppressWarnings("serial")
+public class ConfiguredContentAppDescriptor extends ConfiguredAppDescriptor implements ContentAppDescriptor {
 
-    private final ContactsView view;
+    private WorkbenchDefinition workbench;
 
-    @Inject
-    public ContactsApp(ContactsView view) {
-        this.view = view;
+    public ConfiguredContentAppDescriptor(String appName, WorkbenchDefinition workbenchDefinition) {
+        setName(appName);
+        setWorkbench(workbenchDefinition);
     }
 
     @Override
-    public AppView start(Location location) {
-        return view;
+    public WorkbenchDefinition getWorkbench() {
+        return workbench;
     }
+
+    public void setWorkbench(WorkbenchDefinition workbench) {
+        this.workbench = workbench;
+    }
+
 }

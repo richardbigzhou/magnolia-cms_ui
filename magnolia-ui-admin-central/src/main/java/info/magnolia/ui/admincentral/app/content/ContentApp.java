@@ -31,30 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts;
+package info.magnolia.ui.admincentral.app.content;
 
-import info.magnolia.ui.admincentral.app.content.ContentApp;
-import info.magnolia.ui.framework.app.AppView;
-import info.magnolia.ui.framework.location.Location;
-
-import javax.inject.Inject;
+import info.magnolia.ui.framework.app.AbstractApp;
 
 
 /**
- * The Contacts app, extending base content app.
- * 
+ * Abstract base app class for content apps.
  */
-public class ContactsApp extends ContentApp {
+public abstract class ContentApp extends AbstractApp {
 
-    private final ContactsView view;
-
-    @Inject
-    public ContactsApp(ContactsView view) {
-        this.view = view;
-    }
-
-    @Override
-    public AppView start(Location location) {
-        return view;
-    }
 }

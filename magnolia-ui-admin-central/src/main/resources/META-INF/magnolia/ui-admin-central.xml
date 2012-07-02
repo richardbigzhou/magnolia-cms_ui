@@ -15,8 +15,8 @@
       <implementation>info.magnolia.ui.framework.event.SimpleSystemEventBus</implementation>
     </component>
     <component>
-    	<type>info.magnolia.ui.framework.message.MessagesManager</type>
-    	<implementation>info.magnolia.ui.framework.message.MessagesManagerImpl</implementation>
+      <type>info.magnolia.ui.framework.message.MessagesManager</type>
+      <implementation>info.magnolia.ui.framework.message.MessagesManagerImpl</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptorManager</type>
@@ -42,9 +42,14 @@
       <type>info.magnolia.ui.model.dialog.registry.DialogDefinitionRegistry</type>
       <implementation>info.magnolia.ui.model.dialog.registry.DialogDefinitionRegistry</implementation>
     </component>
+
     <type-mapping>
       <type>info.magnolia.ui.framework.app.AppDescriptor</type>
       <implementation>info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor</implementation>
+    </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.admincentral.app.content.ContentAppDescriptor</type>
+      <implementation>info.magnolia.ui.admincentral.app.content.ConfiguredContentAppDescriptor</implementation>
     </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.model.definition.UiItemDefinition</type>
@@ -82,7 +87,7 @@
       <type>info.magnolia.ui.model.dialog.definition.FieldDefinition</type>
       <implementation>info.magnolia.ui.model.dialog.definition.ConfiguredFieldDefinition</implementation>
     </type-mapping>
-        <type-mapping>
+    <type-mapping>
       <type>info.magnolia.ui.model.dialog.action.DialogActionDefinition</type>
       <implementation>info.magnolia.ui.model.dialog.action.ConfiguredDialogActionDefinition</implementation>
     </type-mapping>
