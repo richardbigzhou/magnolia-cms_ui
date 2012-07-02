@@ -97,6 +97,7 @@ public class TemplateSelectorType extends FieldTypeBase {
             @Override
             public void valueChange(ValueChangeEvent event) {
                 //TODO EHE Remove this dirty hack.
+                // We should use view injection or event buss.
                 Property p = ((TemplateSelectorView)select.getParent().getParent()).getPropertyDataSource();
                 p.setValue(event.getProperty().getValue());
             }
