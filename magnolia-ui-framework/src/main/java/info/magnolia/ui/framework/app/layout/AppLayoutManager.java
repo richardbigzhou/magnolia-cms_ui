@@ -40,7 +40,7 @@ public interface AppLayoutManager {
 
     /**
      * Return the {@link AppLayout} defined for the current user.
-     * Return an Empty AppLauncherLayout if nothing set for profile.
+     * Return an empty AppLayout if nothing set for profile.
      */
     public AppLayout getLayout();
 

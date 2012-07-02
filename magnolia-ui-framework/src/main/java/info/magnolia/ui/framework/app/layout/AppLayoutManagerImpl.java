@@ -106,16 +106,16 @@ public class AppLayoutManagerImpl implements AppLayoutManager {
     public AppLayout getLayout() {
         //Init
         Map<String, AppCategory> categories = new HashMap<String, AppCategory>();
-        AppLayout appLauncherLayout = new AppLayoutImpl(categories);
+        AppLayout appLayout = new AppLayoutImpl(categories);
         // Get AppDescriptor
         Collection<AppDescriptor> appDescriptors = this.appDescriptorRegistry.getAppDescriptors();
 
         for (AppDescriptor app : appDescriptors) {
-            if (hasToAddApp(app, appLauncherLayout)) {
+            if (hasToAddApp(app, appLayout)) {
                 handleCategory(categories, app);
             }
         }
-        return appLauncherLayout;
+        return appLayout;
     }
 
     @Override
@@ -131,9 +131,9 @@ public class AppLayoutManagerImpl implements AppLayoutManager {
     /**
      * Filter out disabled apps and apps with identical names.
      */
-    private boolean hasToAddApp(AppDescriptor app, AppLayout appLauncherLayout) {
+    private boolean hasToAddApp(AppDescriptor app, AppLayout appLayout) {
         // Filter out disabled apps and apps with identical names
-        if (!app.isEnabled() || appLauncherLayout.isAppAlreadyRegistered(app.getName()) || !isAppDescriptorRegistered(app.getName())) {
+        if (!app.isEnabled() || appLayout.isAppAlreadyRegistered(app.getName()) || !isAppDescriptorRegistered(app.getName())) {
             return false;
         } else {
             return true;

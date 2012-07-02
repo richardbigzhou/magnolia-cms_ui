@@ -47,11 +47,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- *Test class for {AppLauncherLayout}.
+ * Test class for {@link AppLayoutImpl}.
  */
 public class AppLayoutImplTest {
 
-    private AppLayout appLauncherLayout;
+    private AppLayout applayout;
     private AppCategory appCategory1;
     private AppCategory appCategory2;
     private AppDescriptor appDescriptor1;
@@ -69,12 +69,12 @@ public class AppLayoutImplTest {
         Map<String, AppCategory> categories = new HashMap<String, AppCategory>();
         categories.put("appCategory1", appCategory1);
         categories.put("appCategory2", appCategory2);
-        appLauncherLayout = new AppLayoutImpl(categories);
+        applayout = new AppLayoutImpl(categories);
     }
 
     @After
     public void tearDown() throws Exception {
-        appLauncherLayout = null;
+        applayout = null;
     }
 
     @Test
@@ -82,7 +82,7 @@ public class AppLayoutImplTest {
         // GIVEN
 
         // WHEN
-        Collection<AppCategory> appCategories = appLauncherLayout.getCategories();
+        Collection<AppCategory> appCategories = applayout.getCategories();
 
         // THEN
         assertNotNull(appCategories);
@@ -94,14 +94,14 @@ public class AppLayoutImplTest {
         // GIVEN
 
         // WHEN
-        AppCategory res = appLauncherLayout.getCategory("appCategory1");
+        AppCategory res = applayout.getCategory("appCategory1");
 
         // THEN
         assertNotNull(res);
         assertEquals(res, appCategory1);
 
         // WHEN
-        res = appLauncherLayout.getCategory("x");
+        res = applayout.getCategory("x");
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -109,14 +109,14 @@ public class AppLayoutImplTest {
         // GIVEN
 
         // WHEN
-        AppDescriptor res = appLauncherLayout.getAppDescriptor("appDescriptor3");
+        AppDescriptor res = applayout.getAppDescriptor("appDescriptor3");
 
         // THEN
         assertNotNull(res);
         assertEquals(res, appDescriptor3);
 
         // WHEN
-        res = appLauncherLayout.getAppDescriptor("x");
+        res = applayout.getAppDescriptor("x");
     }
 
     @Test
@@ -124,19 +124,17 @@ public class AppLayoutImplTest {
         // GIVEN
 
         // WHEN
-        boolean res = appLauncherLayout.isAppAlreadyRegistered("appDescriptor3");
+        boolean res = applayout.isAppAlreadyRegistered("appDescriptor3");
 
         // THEN
         assertEquals(res, true);
 
         // WHEN
-        res = appLauncherLayout.isAppAlreadyRegistered("x");
+        res = applayout.isAppAlreadyRegistered("x");
 
         // THEN
         assertEquals(res, false);
     }
-
-
 
     public static AppCategory createAppCategory(String name, AppDescriptor... appDescriptors) {
         AppCategory res = new AppCategory();
