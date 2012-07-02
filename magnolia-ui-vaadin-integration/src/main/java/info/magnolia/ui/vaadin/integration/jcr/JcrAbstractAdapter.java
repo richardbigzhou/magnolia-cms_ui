@@ -120,6 +120,10 @@ public abstract class JcrAbstractAdapter implements JcrItemAdapter {
         return this.jcrPath;
     }
 
+    protected void setPath(String path) {
+        this.jcrPath = path;
+    }
+
     public String getWorkspace() {
         return this.jcrWorkspace;
     }

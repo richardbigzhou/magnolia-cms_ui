@@ -35,6 +35,7 @@ package info.magnolia.ui.admincentral.field.builder;
 
 import info.magnolia.ui.model.dialog.definition.FieldDefinition;
 
+import com.vaadin.data.Item;
 import com.vaadin.ui.Field;
 
 /**
@@ -45,5 +46,5 @@ import com.vaadin.ui.Field;
  */
 public interface FieldType {
 
-    Field build(FieldDefinition fieldDefinition);
+    Field build(FieldDefinition fieldDefinition, Item fieldRelatedItem);
 }

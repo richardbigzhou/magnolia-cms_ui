@@ -35,8 +35,9 @@ package info.magnolia.ui.app.pages.field;
 
 import org.vaadin.addon.customfield.CustomField;
 
+import com.vaadin.data.Property;
 import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.ListSelect;
+import com.vaadin.ui.Select;
 
 /**
  * TemplateSelectorView implementation of a template selector.
@@ -44,21 +45,24 @@ import com.vaadin.ui.ListSelect;
  */
 public class TemplateSelectorView extends CustomField {
 
+    private Select select;
 
-    public TemplateSelectorView() {
+    public TemplateSelectorView(Select select) {
+        this.select = select;
         CssLayout layout = new CssLayout();
-
-        ListSelect select = new ListSelect();
-
-        select.addItem("Template1");
-        select.addItem("Template2");
-        select.addItem("Template3");
-        select.addItem("Template4");
-
-        layout.addComponent(select);
-        setValue("Template1");
-
+        layout.addComponent(this.select);
         setCompositionRoot(layout);
+    }
+
+    /**
+     * Set the select item if the datasource is not empty.
+     */
+    @Override
+    public void setPropertyDataSource(Property newDataSource) {
+        super.setPropertyDataSource(newDataSource);
+        if(!newDataSource.getValue().toString().isEmpty()) {
+            select.setValue(newDataSource.getValue());
+        }
     }
 
     @Override

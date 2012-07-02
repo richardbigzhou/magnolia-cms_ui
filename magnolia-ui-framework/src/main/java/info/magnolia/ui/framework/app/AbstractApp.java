@@ -35,10 +35,10 @@ package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.framework.location.Location;
 
+
 /**
  * Abstract implementation with default behavior suitable for most apps.
- *
- * @version $Id$
+ * 
  * @see App
  */
 public abstract class AbstractApp implements App {

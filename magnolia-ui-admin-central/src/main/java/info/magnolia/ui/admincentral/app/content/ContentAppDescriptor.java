@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,38 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.place;
+package info.magnolia.ui.admincentral.app.content;
 
-import info.magnolia.ui.framework.event.Event;
-import info.magnolia.ui.framework.event.EventHandler;
+import info.magnolia.ui.framework.app.AppDescriptor;
+import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
+
 
 /**
- * Event fired when a place change occurs.
- *
- * @version $Id$
+ * Describes a "content" app, i.e. an app for managing content in a workspace through a workbench.
+ * 
  */
-public class PlaceChangeEvent implements Event<PlaceChangeEvent.Handler> {
+public interface ContentAppDescriptor extends AppDescriptor {
 
-    /**
-     * Handler interface for {@link PlaceChangeEvent}.
-     */
-    public interface Handler extends EventHandler {
-
-        void onPlaceChange(PlaceChangeEvent event);
-    }
-
-    private final Place newPlace;
-
-    public PlaceChangeEvent(Place newPlace) {
-      this.newPlace = newPlace;
-    }
-
-    public Place getNewPlace() {
-      return newPlace;
-    }
-
-    @Override
-    public void dispatch(Handler handler) {
-        handler.onPlaceChange(this);
-    }
+    WorkbenchDefinition getWorkbench();
 }

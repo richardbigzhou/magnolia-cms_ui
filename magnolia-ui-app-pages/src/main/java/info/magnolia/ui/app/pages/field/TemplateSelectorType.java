@@ -33,34 +33,92 @@
  */
 package info.magnolia.ui.app.pages.field;
 
-import info.magnolia.rendering.template.registry.TemplateDefinitionRegistry;
+import info.magnolia.rendering.template.TemplateDefinition;
+import info.magnolia.rendering.template.assignment.TemplateDefinitionAssignment;
 import info.magnolia.ui.admincentral.field.builder.FieldTypeBase;
+import info.magnolia.ui.admincentral.field.builder.TextFieldType;
 import info.magnolia.ui.model.dialog.definition.FieldDefinition;
 import info.magnolia.ui.model.field.definition.FieldTypeDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+
+import java.util.Collection;
+
+import javax.jcr.Node;
 
 import com.google.inject.Inject;
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.ui.Field;
+import com.vaadin.ui.Select;
 
 /**
- * TemplateSelectorType builds the field used to select templates.
+ * TemplateSelectorType builds the available templates list based on the nodeType.
  *
  */
 public class TemplateSelectorType extends FieldTypeBase {
 
-    TemplateDefinitionRegistry templateDefinitionRegistry;
+    private TemplateDefinitionAssignment templateAssignment;
+    private Select select;
 
+    @SuppressWarnings("unchecked")
     @Inject
-    public TemplateSelectorType(FieldTypeDefinition definition, TemplateDefinitionRegistry templateDefinitionRegistry) {
+    public TemplateSelectorType(FieldTypeDefinition definition, TemplateDefinitionAssignment templateAssignment) {
         super(definition);
-        this.templateDefinitionRegistry = templateDefinitionRegistry;
+        this.templateAssignment = templateAssignment;
     }
 
     @Override
-    public Field build(FieldDefinition fieldDefinition) {
-        Field field = new TemplateSelectorView();
-
-        //templateDefinitionRegistry.getTemplateDefinitions()
+    public Field build(FieldDefinition fieldDefinition, Item fieldRelatedItem) {
+        Field field = new TemplateSelectorView(buildTemplateList(fieldRelatedItem));
+        field.setCaption(fieldDefinition.getLabel());
+        field.setStyleName(TextFieldType.TEXTFIELD_STYLE_NAME);
         return field;
     }
+
+
+    private Select buildTemplateList(Item fieldRelatedItem) {
+        select = new Select();
+        select.setImmediate(true);
+        Collection<TemplateDefinition> templates = this.templateAssignment.getAvailableTemplates(getRelatedNode(fieldRelatedItem));
+
+        for(TemplateDefinition templateDefinition: templates) {
+            select.addItem(templateDefinition.getId());
+            select.setItemCaption(templateDefinition.getId(), templateDefinition.getTitle());
+        }
+
+
+        /**
+         * Add an ValueChangeListener to the Select component.
+         * On component select, set the value of the related Vaadin property field .
+         */
+        select.addListener(new Property.ValueChangeListener() {
+            @Override
+            public void valueChange(ValueChangeEvent event) {
+                //TODO EHE Remove this dirty hack.
+                // We should use view injection or event buss.
+                Property p = ((TemplateSelectorView)select.getParent().getParent()).getPropertyDataSource();
+                p.setValue(event.getProperty().getValue());
+            }
+
+        });
+
+        return select;
+    }
+
+    /**
+     * Return the field related node.
+     * If field is of type JcrNewNodeAdapter then return the parent node.
+     * Else get the node associated with the vaadim item.
+     */
+    private Node getRelatedNode(Item fieldRelatedItem) {
+        if(fieldRelatedItem instanceof JcrNewNodeAdapter) {
+            return ((JcrNewNodeAdapter)fieldRelatedItem).getParentNode();
+        } else {
+            return ((JcrNodeAdapter)fieldRelatedItem).getNode();
+        }
+    }
+
 
 }

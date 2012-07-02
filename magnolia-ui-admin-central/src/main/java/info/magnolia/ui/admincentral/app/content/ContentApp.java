@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,27 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.place;
+package info.magnolia.ui.admincentral.app.content;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import info.magnolia.ui.framework.app.AbstractApp;
+
 
 /**
- * Annotation used on a {@link Place} implementation to indicate the prefix to use by its {@link PlaceTokenizer}.
- *
- * Inspired by {@link com.google.gwt.place.shared.Prefix}.
- *
- * @version $Id$
- * @see Place
- * @see PlaceTokenizer
+ * Abstract base app class for content apps.
  */
-@Target({ElementType.TYPE})
-@Retention(RetentionPolicy.RUNTIME)
-@Inherited
-public @interface Prefix {
+public abstract class ContentApp extends AbstractApp {
 
-    String value();
 }

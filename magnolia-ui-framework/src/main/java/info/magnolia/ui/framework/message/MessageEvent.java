@@ -43,17 +43,26 @@ import info.magnolia.ui.framework.event.Event;
 public class MessageEvent implements Event<MessageEventHandler> {
 
     private Message message;
+    private boolean cleared;
 
-    public MessageEvent(final Message message) {
+    public MessageEvent(Message message, boolean cleared) {
         this.message = message;
+        this.cleared = cleared;
     }
 
     @Override
     public void dispatch(MessageEventHandler handler) {
-        handler.handleMessage(this);
+        if (cleared)
+            handler.messageCleared(this);
+        else
+            handler.messageSent(this);
     }
 
     public Message getMessage() {
         return message;
+    }
+
+    public boolean isCleared() {
+        return cleared;
     }
 }

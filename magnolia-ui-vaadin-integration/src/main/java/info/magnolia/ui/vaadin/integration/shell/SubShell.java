@@ -38,9 +38,8 @@ import info.magnolia.ui.framework.shell.Shell;
 
 import com.vaadin.ui.UriFragmentUtility;
 
-
 /**
- * A shell working only with a sub fragment of the URL fragment. Used to build sub containers by using {@link info.magnolia.ui.framework.activity.AbstractMVPSubContainer}.
+ * A shell working only with a sub fragment of the URL fragment.
  *
  * @version $Id$
  */

@@ -87,14 +87,15 @@ public class MagnoliaTreeTable extends HybridSelectionTreeTable {
 
         container = new HierarchicalJcrContainer(treeModel, workbenchDefinition);
         setContainerDataSource(container);
-        
+
         final List<Object> visibleColumns = new ArrayList<Object>();
         for (Column<?> treeColumn : treeModel.getColumns().values()) {
             String columnName = treeColumn.getDefinition().getName();
+            String columnProperty = (treeColumn.getDefinition().getPropertyName()!=null)?treeColumn.getDefinition().getPropertyName():columnName;
             // super.setColumnExpandRatio(columnName, treeColumn.getWidth() <= 0 ? 1 :
             // treeColumn.getWidth());
-            addContainerProperty(columnName, Component.class, "");
-            super.setColumnHeader(columnName, treeColumn.getLabel());
+            addContainerProperty(columnProperty, Component.class, "");
+            super.setColumnHeader(columnProperty, treeColumn.getLabel());
             visibleColumns.add(columnName);
         }
 

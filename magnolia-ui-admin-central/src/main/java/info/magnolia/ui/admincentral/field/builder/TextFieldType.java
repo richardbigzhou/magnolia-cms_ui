@@ -40,6 +40,7 @@ import info.magnolia.ui.model.dialog.definition.RegexpValidatorDefinition;
 import info.magnolia.ui.model.dialog.definition.ValidatorDefinition;
 import info.magnolia.ui.model.field.definition.FieldTypeDefinition;
 
+import com.vaadin.data.Item;
 import com.vaadin.data.Validator;
 import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.data.validator.RegexpValidator;
@@ -52,7 +53,7 @@ import com.vaadin.ui.TextField;
  */
 public class TextFieldType extends FieldTypeBase {
 
-    private final String TEXTFIELD_STYLE_NAME = "textfield";
+    public static final String TEXTFIELD_STYLE_NAME = "textfield";
 
     public TextFieldType(FieldTypeDefinition definition) {
         super(definition);
@@ -60,7 +61,7 @@ public class TextFieldType extends FieldTypeBase {
 
 
     @Override
-    public Field build(FieldDefinition fieldDefinition) {
+    public Field build(FieldDefinition fieldDefinition, Item fieldRelatedItem) {
         Field field = new TextField();
         field.setCaption(fieldDefinition.getLabel());
 
