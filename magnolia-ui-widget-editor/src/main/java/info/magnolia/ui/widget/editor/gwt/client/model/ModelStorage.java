@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.widget.editor.gwt.client.model;
 
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Node;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 import info.magnolia.ui.widget.editor.gwt.client.model.focus.FocusModel;
 import info.magnolia.ui.widget.editor.gwt.client.model.focus.FocusModelImpl3;
@@ -46,9 +48,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import com.google.gwt.dom.client.Node;
-
-import com.google.gwt.dom.client.Element;
 
 /**
  * Singleton keeping the model.

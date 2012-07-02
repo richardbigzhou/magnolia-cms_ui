@@ -35,7 +35,6 @@ package info.magnolia.ui.widget.editor.gwt.client.dom.processor;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
-
 import info.magnolia.rendering.template.AreaDefinition;
 import info.magnolia.ui.widget.editor.gwt.client.VPageEditor;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;

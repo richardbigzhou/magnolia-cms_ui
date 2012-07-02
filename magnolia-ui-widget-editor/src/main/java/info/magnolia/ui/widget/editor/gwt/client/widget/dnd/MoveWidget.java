@@ -35,7 +35,6 @@ package info.magnolia.ui.widget.editor.gwt.client.widget.dnd;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Style.Unit;
-
 import com.google.gwt.user.client.ui.FlowPanel;
 
 /**

@@ -33,13 +33,13 @@
  */
 package info.magnolia.ui.widget.editor.gwt.client.dom;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**

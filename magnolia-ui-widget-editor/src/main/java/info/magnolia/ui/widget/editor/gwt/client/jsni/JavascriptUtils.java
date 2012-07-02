@@ -34,9 +34,6 @@
 package info.magnolia.ui.widget.editor.gwt.client.jsni;
 
 
-import info.magnolia.ui.widget.editor.gwt.client.VPageEditor;
-import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
@@ -46,6 +43,8 @@ import com.google.gwt.http.client.UrlBuilder;
 import com.google.gwt.i18n.client.Dictionary;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
+import info.magnolia.ui.widget.editor.gwt.client.VPageEditor;
+import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 
 /**
  * A JSNI wrapper around native javascript functions found in general.js, inline.js and others plus some utilities.

@@ -33,27 +33,6 @@
  */
 package info.magnolia.ui.widget.editor.gwt.client;
 
-import info.magnolia.ui.widget.editor.gwt.client.dom.Comment;
-import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
-import info.magnolia.ui.widget.editor.gwt.client.dom.processor.CommentProcessor;
-import info.magnolia.ui.widget.editor.gwt.client.dom.processor.ElementProcessor;
-import info.magnolia.ui.widget.editor.gwt.client.dom.processor.MgnlElementProcessor;
-import info.magnolia.ui.widget.editor.gwt.client.dom.processor.MgnlElementProcessorFactory;
-import info.magnolia.ui.widget.editor.gwt.client.event.EditComponentEvent;
-import info.magnolia.ui.widget.editor.gwt.client.event.EditComponentEventHandler;
-import info.magnolia.ui.widget.editor.gwt.client.event.NewComponentEvent;
-import info.magnolia.ui.widget.editor.gwt.client.event.NewComponentEventHandler;
-import info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils;
-import info.magnolia.ui.widget.editor.gwt.client.model.ModelStorage;
-import info.magnolia.ui.widget.editor.gwt.client.widget.dnd.LegacyDragAndDrop;
-
-import java.util.LinkedList;
-import java.util.List;
-
-import org.vaadin.rpc.client.ClientSideHandler;
-import org.vaadin.rpc.client.ClientSideProxy;
-import org.vaadin.rpc.client.Method;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.AnchorElement;
 import com.google.gwt.dom.client.Document;
@@ -85,6 +64,25 @@ import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.Paintable;
 import com.vaadin.terminal.gwt.client.UIDL;
 import com.vaadin.terminal.gwt.client.VConsole;
+import info.magnolia.ui.widget.editor.gwt.client.dom.Comment;
+import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
+import info.magnolia.ui.widget.editor.gwt.client.dom.processor.CommentProcessor;
+import info.magnolia.ui.widget.editor.gwt.client.dom.processor.ElementProcessor;
+import info.magnolia.ui.widget.editor.gwt.client.dom.processor.MgnlElementProcessor;
+import info.magnolia.ui.widget.editor.gwt.client.dom.processor.MgnlElementProcessorFactory;
+import info.magnolia.ui.widget.editor.gwt.client.event.EditComponentEvent;
+import info.magnolia.ui.widget.editor.gwt.client.event.EditComponentEventHandler;
+import info.magnolia.ui.widget.editor.gwt.client.event.NewComponentEvent;
+import info.magnolia.ui.widget.editor.gwt.client.event.NewComponentEventHandler;
+import info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils;
+import info.magnolia.ui.widget.editor.gwt.client.model.ModelStorage;
+import info.magnolia.ui.widget.editor.gwt.client.widget.dnd.LegacyDragAndDrop;
+import org.vaadin.rpc.client.ClientSideHandler;
+import org.vaadin.rpc.client.ClientSideProxy;
+import org.vaadin.rpc.client.Method;
+
+import java.util.LinkedList;
+import java.util.List;
 
 
 /**

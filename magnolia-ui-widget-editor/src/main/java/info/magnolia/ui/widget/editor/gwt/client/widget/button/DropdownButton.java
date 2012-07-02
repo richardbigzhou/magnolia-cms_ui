@@ -33,9 +33,6 @@
  */
 package info.magnolia.ui.widget.editor.gwt.client.widget.button;
 
-import java.util.Arrays;
-import java.util.List;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
@@ -45,6 +42,9 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.PopupPanel;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * A button which, when clicking on it, will display a dropdown menu just beneath. The menu can have different mutually exclusive choices.

@@ -33,11 +33,7 @@
  */
 package info.magnolia.ui.widget.editor;
 
-import com.vaadin.ui.Component;
-import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
-
-import javax.jcr.RepositoryException;
 
 /**
  * PageEditorView.

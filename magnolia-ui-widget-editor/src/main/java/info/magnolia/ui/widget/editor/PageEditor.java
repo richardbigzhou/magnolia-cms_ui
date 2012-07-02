@@ -34,25 +34,22 @@
 package info.magnolia.ui.widget.editor;
 
 
-import info.magnolia.ui.widget.editor.gwt.client.VPageEditor;
-
-import org.vaadin.rpc.ServerSideHandler;
-import org.vaadin.rpc.ServerSideProxy;
-import org.vaadin.rpc.client.Method;
-
 import com.vaadin.terminal.PaintException;
 import com.vaadin.terminal.PaintTarget;
 import com.vaadin.terminal.Resource;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.ClientWidget;
-import com.vaadin.ui.ClientWidget.LoadStyle;
 import com.vaadin.ui.Component;
+import info.magnolia.ui.widget.editor.gwt.client.VPageEditor;
+import org.vaadin.rpc.ServerSideHandler;
+import org.vaadin.rpc.ServerSideProxy;
+import org.vaadin.rpc.client.Method;
 
 /**
  * PageEditor widget server side implementation.
  */
 @SuppressWarnings("serial")
-@ClientWidget(value=VPageEditor.class, loadStyle = LoadStyle.EAGER)
+@ClientWidget(value=VPageEditor.class, loadStyle = ClientWidget.LoadStyle.EAGER)
 public class PageEditor extends AbstractComponent implements PageEditorView, ServerSideHandler {
 
     private Presenter presenter;
@@ -77,7 +74,7 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
                     final String workSpace = String.valueOf(params[0]);
                     final String path = String.valueOf(params[1]);
                     final String dialog = String.valueOf(params[2]);
-                    presenter.editComponent(workSpace,path,dialog);
+                    presenter.editComponent(workSpace, path, dialog);
                 }
             });
         }

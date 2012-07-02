@@ -33,12 +33,11 @@
  */
 package info.magnolia.ui.widget.editor.gwt.client.model.focus;
 
+import com.google.gwt.dom.client.Element;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 import info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils;
 import info.magnolia.ui.widget.editor.gwt.client.model.ModelStorage;
 import info.magnolia.ui.widget.editor.gwt.client.widget.dnd.LegacyDragAndDrop;
-
-import com.google.gwt.dom.client.Element;
 
 /**
  * Helper class to keep tack on selected items.

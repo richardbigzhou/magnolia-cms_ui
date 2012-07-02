@@ -31,7 +31,6 @@
  * intact.
  *
  */
-
 package info.magnolia.ui.app.pages;
 
 import com.vaadin.terminal.ExternalResource;

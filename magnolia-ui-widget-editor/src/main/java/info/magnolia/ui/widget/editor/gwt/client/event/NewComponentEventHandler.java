@@ -31,7 +31,6 @@
  * intact.
  *
  */
-
 package info.magnolia.ui.widget.editor.gwt.client.event;
 
 import com.google.gwt.event.shared.EventHandler;

@@ -33,9 +33,8 @@
  */
 package info.magnolia.ui.widget.editor.gwt.client.model.focus;
 
-import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
-
 import com.google.gwt.dom.client.Element;
+import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 
 
 
