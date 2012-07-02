@@ -39,6 +39,10 @@ import info.magnolia.ui.widget.editor.gwt.client.dom.processor.CommentProcessor;
 import info.magnolia.ui.widget.editor.gwt.client.dom.processor.ElementProcessor;
 import info.magnolia.ui.widget.editor.gwt.client.dom.processor.MgnlElementProcessor;
 import info.magnolia.ui.widget.editor.gwt.client.dom.processor.MgnlElementProcessorFactory;
+import info.magnolia.ui.widget.editor.gwt.client.event.EditComponentEvent;
+import info.magnolia.ui.widget.editor.gwt.client.event.EditComponentEventHandler;
+import info.magnolia.ui.widget.editor.gwt.client.event.NewComponentEvent;
+import info.magnolia.ui.widget.editor.gwt.client.event.NewComponentEventHandler;
 import info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils;
 import info.magnolia.ui.widget.editor.gwt.client.model.ModelStorage;
 import info.magnolia.ui.widget.editor.gwt.client.widget.dnd.LegacyDragAndDrop;
@@ -142,6 +146,7 @@ public class VPageEditor extends FlowPanel implements Paintable, ClientSideHandl
             }
         });
 
+        registerEventHandlers();
         final Element iframeElement = iframe.getElement();
         iframeElement.setAttribute("width", "100%");
         iframeElement.setAttribute("height", "100%");
@@ -214,6 +219,21 @@ public class VPageEditor extends FlowPanel implements Paintable, ClientSideHandl
         }
     }-*/;
 
+    private void registerEventHandlers() {
+        eventBus.addHandler(NewComponentEvent.TYPE, new NewComponentEventHandler() {
+            @Override
+            public void onNewComponent(NewComponentEvent newComponentEvent) {
+                proxy.call("newComponent", newComponentEvent.getWorkSpace(), newComponentEvent.getNodeType(), newComponentEvent.getPath());
+            }
+        });
+
+        eventBus.addHandler(EditComponentEvent.TYPE, new EditComponentEventHandler() {
+            @Override
+            public void onEditComponent(EditComponentEvent editComponentEvent) {
+                proxy.call("editComponent", editComponentEvent.getWorkSpace(), editComponentEvent.getPath(), editComponentEvent.getDialog());
+            }
+        });
+    }
 
     private void initHandlers() {
       addDomHandler(new MouseUpHandler() {

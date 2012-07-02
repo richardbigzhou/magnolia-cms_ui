@@ -65,16 +65,19 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
     public PageEditor(final Resource source) {
         this.source = source;
         setCaption("");
+        setSizeFull();
     }
 
 
     protected ServerSideProxy proxy = new ServerSideProxy(this) {
         {
-            register("fireAction", new Method() {
+            register("editComponent", new Method() {
                 @Override
                 public void invoke(String methodName, Object[] params) {
-                    final String actionName = String.valueOf(params[0]);
-                    presenter.executeAction(actionName);
+                    final String workSpace = String.valueOf(params[0]);
+                    final String path = String.valueOf(params[1]);
+                    final String dialog = String.valueOf(params[2]);
+                    presenter.editComponent(workSpace,path,dialog);
                 }
             });
         }
@@ -88,11 +91,12 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
     @Override
     public Object[] initRequestFromClient() {
         return new Object[] {};
+
     }
 
     @Override
     public void callFromClient(String method, Object[] params) {
-        // TODO Auto-generated method stub
+        System.out.println("Client called " + method);
     }
 
     @Override
@@ -102,9 +106,11 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
 
     @Override
     public void paintContent(PaintTarget target) throws PaintException {
+        super.paintContent(target);
         if (getSource() != null) {
             target.addAttribute("src", getSource());
         }
+        proxy.paintContent(target);
     }
 
     protected Resource getSource() {

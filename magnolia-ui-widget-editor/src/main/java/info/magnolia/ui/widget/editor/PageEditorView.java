@@ -33,7 +33,11 @@
  */
 package info.magnolia.ui.widget.editor;
 
+import com.vaadin.ui.Component;
+import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
+
+import javax.jcr.RepositoryException;
 
 /**
  * PageEditorView.
@@ -48,7 +52,10 @@ public interface PageEditorView extends IsVaadinComponent {
      */
     interface Presenter {
 
-        void executeAction(final String actionName);
+        void editComponent(final String workSpace, final String path, final String dialog);
 
+        IsVaadinComponent getView();
+
+        String getNodeName();
     }
 }

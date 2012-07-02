@@ -44,7 +44,6 @@ import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
-
 /**
  * Opens a page for editing.
  * @version $Id$

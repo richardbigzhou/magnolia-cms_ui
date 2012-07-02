@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,43 +31,46 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.action;
 
-import com.google.inject.Inject;
-import info.magnolia.ui.model.action.ActionBase;
-import info.magnolia.ui.model.action.ActionExecutionException;
+package info.magnolia.ui.widget.editor.gwt.client.event;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
+import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * The Class PreviewPageAction. Opens a full screen preview of the selected page.
+ * EditComponentEvent.
  */
-public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
+public class EditComponentEvent extends GwtEvent<EditComponentEventHandler> {
 
-    private final Node nodeToEdit;
+    public static Type<EditComponentEventHandler> TYPE = new Type<EditComponentEventHandler>();
+    private String workSpace;
+    private String path;
+    private String dialog;
 
-    /**
-     * Instantiates a new preview page action.
-     * 
-     * @param definition the definition
-     * @param nodeToEdit the node to edit
-     */
-    @Inject
-    public PreviewPageAction(PreviewPageActionDefinition definition, Node nodeToEdit) {
-        super(definition);
-        this.nodeToEdit = nodeToEdit;
+    public EditComponentEvent(String workSpace, String path, String dialog) {
+        this.workSpace = workSpace;
+        this.path = path;
+        this.dialog = dialog;
     }
 
     @Override
-    public void execute() throws ActionExecutionException {
-        System.out.println("preview page should open full screen preview.");
-        try {
-            System.out.println(nodeToEdit.getPath());
-        } catch (RepositoryException e) {
-            System.err.println("ERROR GETTING NODE PATH");
-        }
+    public Type<EditComponentEventHandler> getAssociatedType() {
+        return TYPE;
     }
 
+    @Override
+    protected void dispatch(EditComponentEventHandler handler) {
+        handler.onEditComponent(this);
+    }
+
+    public String getWorkSpace() {
+        return workSpace;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public String getDialog() {
+        return dialog;
+    }
 }

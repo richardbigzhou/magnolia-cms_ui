@@ -35,6 +35,7 @@ package info.magnolia.ui.app.pages;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.PropertyUtil;
+import info.magnolia.ui.admincentral.workbench.ContentWorkbenchView;
 import info.magnolia.ui.framework.app.AppView;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 import info.magnolia.ui.widget.actionbar.Actionbar;
@@ -43,6 +44,7 @@ import info.magnolia.ui.widget.editor.PageEditor;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import info.magnolia.ui.widget.editor.PageEditorView;
 import org.apache.commons.lang.StringUtils;
 
 import com.vaadin.terminal.ExternalResource;
@@ -50,11 +52,12 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
 
-
 /**
- * The tab view for the Page Editor, consisting of a PageEditor widget and an Actionbar.
- * 
- */
+ * PageEditorTabView.
+ * TODO: make this a component with a split layout to accomodate the page editor on the left and its related actions on the right.
+ *
+* @version $Id$
+*/
 @SuppressWarnings("serial")
 public class PageEditorTabView implements AppView, IsVaadinComponent {
 
@@ -63,7 +66,7 @@ public class PageEditorTabView implements AppView, IsVaadinComponent {
     private final HorizontalLayout root = new HorizontalLayout();
 
     private final VerticalLayout container = new VerticalLayout();
-
+    
     private final String caption;
 
     public PageEditorTabView(final Node pageNode) throws RepositoryException {
@@ -76,12 +79,17 @@ public class PageEditorTabView implements AppView, IsVaadinComponent {
         root.setMargin(false);
         root.setSpacing(true);
 
-        final PageEditor pageEditor = new PageEditor(new ExternalResource(MgnlContext.getContextPath() + pageNode.getPath()));
-        pageEditor.setSizeFull();
+        PageEditorView.Presenter pageEditorPresenter = null;
+        try {
+            pageEditorPresenter = new PageEditorPresenter(pageNode);
+        } catch (RepositoryException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+       
 
         container.setSizeFull();
         container.setStyleName("mgnl-app-view");
-        container.addComponent(pageEditor);
+        container.addComponent(pageEditorPresenter.getView().asVaadinComponent());
         caption = StringUtils.defaultIfEmpty(PropertyUtil.getString(pageNode, "title"), pageNode.getName());
     }
 

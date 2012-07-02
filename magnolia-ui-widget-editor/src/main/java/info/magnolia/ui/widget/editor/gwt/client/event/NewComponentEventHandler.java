@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,43 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.action;
 
-import com.google.inject.Inject;
-import info.magnolia.ui.model.action.ActionBase;
-import info.magnolia.ui.model.action.ActionExecutionException;
+package info.magnolia.ui.widget.editor.gwt.client.event;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
+import com.google.gwt.event.shared.EventHandler;
 
 /**
- * The Class PreviewPageAction. Opens a full screen preview of the selected page.
+ * NewComponentEventHandler.
  */
-public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
-
-    private final Node nodeToEdit;
-
-    /**
-     * Instantiates a new preview page action.
-     * 
-     * @param definition the definition
-     * @param nodeToEdit the node to edit
-     */
-    @Inject
-    public PreviewPageAction(PreviewPageActionDefinition definition, Node nodeToEdit) {
-        super(definition);
-        this.nodeToEdit = nodeToEdit;
-    }
-
-    @Override
-    public void execute() throws ActionExecutionException {
-        System.out.println("preview page should open full screen preview.");
-        try {
-            System.out.println(nodeToEdit.getPath());
-        } catch (RepositoryException e) {
-            System.err.println("ERROR GETTING NODE PATH");
-        }
-    }
-
+public interface NewComponentEventHandler extends EventHandler {
+        void onNewComponent(NewComponentEvent newComponentEvent);
 }
