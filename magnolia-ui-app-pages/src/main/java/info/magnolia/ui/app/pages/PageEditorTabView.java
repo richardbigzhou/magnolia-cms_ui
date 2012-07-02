@@ -33,24 +33,18 @@
  */
 package info.magnolia.ui.app.pages;
 
-import info.magnolia.context.MgnlContext;
-import info.magnolia.jcr.util.PropertyUtil;
-import info.magnolia.ui.admincentral.workbench.ContentWorkbenchView;
-import info.magnolia.ui.framework.app.AppView;
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
-import info.magnolia.ui.widget.actionbar.Actionbar;
-import info.magnolia.ui.widget.editor.PageEditor;
-
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
-import info.magnolia.ui.widget.editor.PageEditorView;
-import org.apache.commons.lang.StringUtils;
-
-import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
+import info.magnolia.jcr.util.PropertyUtil;
+import info.magnolia.ui.framework.app.AppView;
+import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
+import info.magnolia.ui.widget.actionbar.Actionbar;
+import info.magnolia.ui.widget.editor.PageEditorView;
+import org.apache.commons.lang.StringUtils;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 /**
  * PageEditorTabView.

@@ -33,14 +33,7 @@
  */
 package info.magnolia.ui.app.pages.action;
 
-import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
-import info.magnolia.ui.model.actionbar.definition.ActionbarGroupDefinition;
-import info.magnolia.ui.model.actionbar.definition.ActionbarItemDefinition;
-import info.magnolia.ui.model.actionbar.definition.ActionbarSectionDefinition;
-import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarDefinition;
-import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarGroupDefinition;
-import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarItemDefinition;
-import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarSectionDefinition;
+import info.magnolia.ui.model.actionbar.definition.*;
 
 
 /**
