@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.vaadin.integration.jcr;
 
+import info.magnolia.cms.core.MetaData;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.PropertyUtil;
 
@@ -46,6 +47,7 @@ import javax.jcr.LoginException;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -169,18 +171,35 @@ public class JcrNodeAdapter extends JcrAbstractNodeAdapter  {
 
     /**
      * Update or remove property.
+     * Property can refer to node property (like name, title) or
+     * node.MetaData property like (MetaData/template).
+     * Also handle the specific case of node renaming.
+     *  If property JCR_NAME is present, Rename the node.
      */
     protected void updateProperty(Node node) throws RepositoryException {
       //Update property
         for(Entry<String, Property> entry: changedProperties.entrySet()) {
-            PropertyUtil.setProperty(node, entry.getKey(), entry.getValue().getValue());
+            // JCRNAME has change --> perform the renaming and continue
+            if(entry.getKey().equals(JCR_NAME) && (entry.getValue() !=null && !entry.getValue().toString().isEmpty())) {
+               node.getSession().move(node.getPath(), node.getParent().getPath()+"/"+entry.getValue().getValue());
+               setPath(node.getPath());
+               continue;
+            }
+            // Check if the field is refereeing to MetaData Property
+            if(entry.getKey().startsWith(MetaData.DEFAULT_META_NODE)) {
+                PropertyUtil.setProperty(node.getNode(MetaData.DEFAULT_META_NODE), StringUtils.removeStart(entry.getKey(),MetaData.DEFAULT_META_NODE+"/"), entry.getValue().getValue());
+            } else {
+                PropertyUtil.setProperty(node, entry.getKey(), entry.getValue().getValue());
+            }
         }
+        changedProperties.clear();
         // Remove Property
         for(Entry<String, Property> entry: removedProperties.entrySet()) {
             if(node.hasProperty(entry.getKey())) {
                 node.getProperty(entry.getKey()).remove();
             }
         }
+        removedProperties.clear();
     }
 
     private boolean jcrItemHasProperty(String propertyName) {

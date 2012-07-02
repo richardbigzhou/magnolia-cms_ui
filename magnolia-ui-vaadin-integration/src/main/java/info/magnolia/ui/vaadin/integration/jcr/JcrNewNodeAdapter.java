@@ -35,6 +35,7 @@ package info.magnolia.ui.vaadin.integration.jcr;
 
 import info.magnolia.cms.core.Path;
 import info.magnolia.jcr.RuntimeRepositoryException;
+import info.magnolia.jcr.util.MetaDataUtil;
 
 import javax.jcr.AccessDeniedException;
 import javax.jcr.Item;
@@ -43,6 +44,7 @@ import javax.jcr.LoginException;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -105,6 +107,13 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter{
     }
 
     /**
+     * Return the parent Node.
+     */
+    public Node getParentNode() {
+       return (Node)getJcrItem();
+    }
+
+    /**
      * Create a new node linked o the parent node used to
      * initialized this NewNodeAdapter.
      */
@@ -115,6 +124,8 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter{
             nodeName = getUniqueNewItemName(parent);
             node = parent.addNode(nodeName, this.nodeType);
             log.debug("create a new node for parent "+parent.getPath()+" with nodeId "+nodeName);
+            //Create MetaData
+            MetaDataUtil.getMetaData(node);
             //Update property
             updateProperty(node);
 
@@ -129,12 +140,19 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter{
 
     /**
      * Create a new unique nodeName.
+     * If JCR_NAME if part of the properties, use this property as desired nodeName.
      */
     private String getUniqueNewItemName(final Item item) throws RepositoryException, ItemNotFoundException, AccessDeniedException {
         if(item == null) {
             throw new IllegalArgumentException("Item cannot be null.");
         }
-        return Path.getUniqueLabel(item.getSession(), item.getPath(), "untitled");
+        String nodeName = "";
+        if(changedProperties.containsKey(JCR_NAME)) {
+            nodeName = changedProperties.get(JCR_NAME).toString();
+            changedProperties.remove(JCR_NAME);
+        }
+
+        return Path.getUniqueLabel(item.getSession(), item.getPath(), StringUtils.isNotBlank(nodeName)?nodeName:"untitled");
     }
 
 }
