@@ -46,7 +46,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * LocalMessageDispatcher.
+ * Dispatches events on an {@link EventBus} for a certain user.
  *
  * @version $Id$
  */
