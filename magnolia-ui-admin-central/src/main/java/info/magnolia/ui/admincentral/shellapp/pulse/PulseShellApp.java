@@ -33,16 +33,11 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse;
 
-import info.magnolia.context.MgnlContext;
-import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.framework.app.ShellApp;
 import info.magnolia.ui.framework.app.ShellAppContext;
 import info.magnolia.ui.framework.app.ShellView;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.message.Message;
-import info.magnolia.ui.framework.message.MessagesManager;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,44 +53,17 @@ public class PulseShellApp implements ShellApp, PulseView.Presenter {
     
     private PulseView pulseView;
 
-    private MessagesManager messagesManager;
-    private MagnoliaShell shell;
     private ShellAppContext context;
 
     @Inject
-    public PulseShellApp(PulseView pulseView, MessagesManager messagesManager, MagnoliaShell shell) {
+    public PulseShellApp(PulseView pulseView) {
         this.pulseView = pulseView;
-        this.messagesManager = messagesManager;
-        this.shell = shell;
     }
 
     @Override
     public ShellView start(ShellAppContext context) {
         this.context = context;
         pulseView.setPresenter(this);
-
-        for (Message message : messagesManager.getMessagesForUser(MgnlContext.getUser().getName())) {
-            pulseView.addMessage(message);
-        }
-
-        // TODO -tobias- Calling this here results in an NPE because MagnoliaShell doesn't have an Application instance to synchronize on yet
-//        shell.updateShellAppIndication(VMainLauncher.ShellAppType.PULSE, messagesManager.getNumberOfUnclearedMessagesForUser(MgnlContext.getUser().getName()));
-
-        messagesManager.registerMessagesListener(MgnlContext.getUser().getName(), new MessagesManager.MessageListener() {
-
-            @Override
-            public void messageSent(Message message) {
-                pulseView.addMessage(message);
-                shell.updateShellAppIndication(VMainLauncher.ShellAppType.PULSE, 1);
-            }
-
-            @Override
-            public void messageCleared(Message message) {
-                pulseView.updateMessage(message);
-                shell.updateShellAppIndication(VMainLauncher.ShellAppType.PULSE, -1);
-            }
-        });
-
         return pulseView;
     }
 

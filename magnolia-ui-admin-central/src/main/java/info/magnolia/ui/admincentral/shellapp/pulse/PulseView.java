@@ -33,10 +33,9 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse;
 
-import java.util.List;
-
 import info.magnolia.ui.framework.app.ShellView;
-import info.magnolia.ui.framework.message.Message;
+
+import java.util.List;
 
 /**
  * View for pulse.
@@ -56,7 +55,4 @@ public interface PulseView extends ShellView {
 
     void setPresenter(final Presenter presenter);
 
-    void addMessage(Message message);
-
-    void updateMessage(Message message);
 }

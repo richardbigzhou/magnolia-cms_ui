@@ -45,21 +45,20 @@ import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.UIDL;
+import com.vaadin.terminal.gwt.client.ui.VScrollTable;
 import com.vaadin.terminal.gwt.client.ui.VScrollTable.VScrollTableBody.VScrollTableRow;
-import com.vaadin.terminal.gwt.client.ui.VTreeTable;
 
 /**
- * Client side implementation of the Hybrid selection Tree Table.
+ * Client side iimpl of HybridSelection table.
  * 
- * @author apchelintcev
+ * @author p4elkin
  * 
  */
-public class VHybridSelectionTreeTable extends VTreeTable {
+public class VHybridSelectionTable extends VScrollTable {
 
-    private final CheckBox selectAllCheckBox = new CheckBox();
+    final CheckBox selectAllCheckBox = new CheckBox();
 
-    public VHybridSelectionTreeTable() {
-        super();
+    public VHybridSelectionTable() {
         selectAllCheckBox.addStyleName("v-select-all");
         add(selectAllCheckBox, getElement());
         selectAllCheckBox.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
@@ -97,9 +96,7 @@ public class VHybridSelectionTreeTable extends VTreeTable {
     
     @Override
     protected VScrollTableBody createScrollBody() {
-        VScrollTableBody body = super.createScrollBody();
-        addDOMCallbacks(body.getElement());
-        return body;
+        return new VHybridSelectionTableBody();
     }
 
     @Override
@@ -109,40 +106,55 @@ public class VHybridSelectionTreeTable extends VTreeTable {
         VHybridSelectionUtils.updateSelectAllControl(selectAllCheckBox);
     }
 
-    private native void addDOMCallbacks(Element body) /*-{
-        var table = body.getElementsByTagName("tbody")[0];
-        if (table != 'undefined') {
-            table._appendChild = table.appendChild;
-            table._insertBefore = table.insertBefore;
-            var ref = this;
-            table.appendChild = function(element) {
-                this._appendChild(element);
-                ref.@info.magnolia.ui.vaadin.integration.widget.client.VHybridSelectionTreeTable::addCheckBox(Lcom/google/gwt/user/client/Element;)(element);
-            }
-            table.insertBefore = function(newElement, refElement) {
-                this._insertBefore(newElement, refElement);
-                ref.@info.magnolia.ui.vaadin.integration.widget.client.VHybridSelectionTreeTable::addCheckBox(Lcom/google/gwt/user/client/Element;)(newElement);
-            }
-       }
-    }-*/;
-
-    public void addCheckBox(final Element element) {
-        if (element.getTagName().equalsIgnoreCase("tr")) {
-            final Element cb = DOM.createInputCheck();
-            final Element refDiv = element.getElementsByTagName("div").getItem(0).cast();
-            cb.addClassName("v-selection-cb");
-            if (element.getClassName().contains("select")) {
-                cb.setPropertyBoolean("checked", true);
-            }
-            refDiv.appendChild(cb);
-            DOM.sinkEvents(element, Event.MOUSEEVENTS);
-        }
-    }
-
     @Override
     public void deselectAll() {
         super.deselectAll();
         VHybridSelectionUtils.deselectAllCheckBoxes();
+    }
+    
+    /**
+     * Custom body.
+     * 
+     * @author p4elkin
+     * 
+     */
+    protected class VHybridSelectionTableBody extends VScrollTableBody {
+
+        @Override
+        protected VScrollTableRow createRow(UIDL uidl, char[] aligns2) {
+            final VHybridSelectionTableRow row = new VHybridSelectionTableRow(uidl, aligns2);
+            row.addCheckBox();
+            return row;
+        }
+
+        /**
+         * Custom row.
+         * 
+         * @author p4elkin
+         * 
+         */
+        protected class VHybridSelectionTableRow extends VScrollTableBody.VScrollTableRow {
+
+            public VHybridSelectionTableRow(UIDL uidl, char[] aligns) {
+                super(uidl, aligns);
+            }
+
+            public void addCheckBox() {
+                final Element element = getElement();
+                final Element cb = DOM.createInputCheck();
+                final Element refDiv = element.getElementsByTagName("div").getItem(0).cast();
+                cb.addClassName("v-selection-cb");
+                if (element.getClassName().contains("select")) {
+                    cb.setPropertyBoolean("checked", true);
+                }
+                refDiv.appendChild(cb);
+            }
+
+            @Override
+            protected boolean isRenderHtmlInCells() {
+                return true;
+            }
+        }
     }
 
 }

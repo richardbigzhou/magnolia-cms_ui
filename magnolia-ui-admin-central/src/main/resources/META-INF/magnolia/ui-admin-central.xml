@@ -182,6 +182,14 @@
       <type>info.magnolia.ui.model.workbench.registry.ConfiguredWorkbenchDefinitionManager</type>
       <implementation>info.magnolia.ui.model.workbench.registry.ConfiguredWorkbenchDefinitionManager</implementation>
     </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.shellapp.pulse.PulseMessagesView</type>
+      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.PulseMessagesViewImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.shellapp.pulse.PulseMessagesPresenter</type>
+      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.PulseMessagesPresenter</implementation>
+    </component>
   </components>
 
   <dependencies>
