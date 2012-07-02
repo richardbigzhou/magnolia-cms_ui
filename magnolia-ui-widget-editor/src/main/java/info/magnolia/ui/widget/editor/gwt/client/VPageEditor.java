@@ -136,7 +136,7 @@ public class VPageEditor extends FlowPanel implements Paintable, ClientSideHandl
                 IFrameElement frameElement = IFrameElement.as(iframe.getElement());
                 contentDocument = frameElement.getContentDocument();
                 //other handlers are initialized here b/c we need to know the document inside the iframe.
-                initHandlers();
+                initNativeHandlers(iframe.getElement());
                 //make sure we process  html only when the document inside the iframe is loaded.
                 process(contentDocument);
             }
@@ -198,6 +198,21 @@ public class VPageEditor extends FlowPanel implements Paintable, ClientSideHandl
         }
         return url;
     }
+
+    public void onMouseUp(final Element element) {
+        getModel().getFocusModel().onMouseUp(element);
+
+    }
+
+    private native void initNativeHandlers(Element element) /*-{
+        if (element != 'undefined') {
+            var ref = this;
+            element.contentDocument.onmouseup = function(event) {
+                ref.@info.magnolia.ui.widget.editor.gwt.client.VPageEditor::onMouseUp(Lcom/google/gwt/dom/client/Element;)(event.target);
+                event.stopPropagation();
+            }
+        }
+    }-*/;
 
 
     private void initHandlers() {
@@ -268,7 +283,7 @@ public class VPageEditor extends FlowPanel implements Paintable, ClientSideHandl
         var callbacks = $wnd.mgnl.PageEditor.onPageEditorReadyCallbacks
         if(typeof callbacks != 'undefined') {
              for(var i=0; i < callbacks.length; i++) {
-                callbacks[i].apply()
+                callbacks[i].apply();
              }
          }
     }-*/;
