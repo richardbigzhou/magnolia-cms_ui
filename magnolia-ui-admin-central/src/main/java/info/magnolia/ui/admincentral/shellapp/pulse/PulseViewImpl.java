@@ -35,12 +35,10 @@ package info.magnolia.ui.admincentral.shellapp.pulse;
 
 import info.magnolia.ui.admincentral.components.ActivityItem;
 import info.magnolia.ui.admincentral.components.SplitFeed;
-import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 import info.magnolia.ui.widget.tabsheet.ShellTab;
 import info.magnolia.ui.widget.tabsheet.ShellTabSheet;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -49,14 +47,9 @@ import javax.inject.Inject;
 import org.apache.commons.collections.BidiMap;
 import org.apache.commons.collections.bidimap.DualHashBidiMap;
 
-import com.vaadin.data.Item;
-import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.VerticalLayout;
 
 /**
  * Default view implementation for Pulse.
@@ -76,62 +69,35 @@ public class PulseViewImpl implements PulseView, IsVaadinComponent {
     };
 
     private enum PulseTabType {
-        PULSE,
-        STATS,
-        MESSAGES,
-        INBOX;
+        DASHBOARD,
+        STATISTIC,
+        MESSAGES;
 
         public static PulseTabType getDefault() {
-            return PULSE;
+            return MESSAGES;
         }
     }
-
-    private IndexedContainer messagesContainer;
+    
     private Presenter  presenter;
 
     private BidiMap m = new DualHashBidiMap();
 
     @Inject
-    public PulseViewImpl() {
+    public PulseViewImpl(final PulseMessagesView messagesView) {
 
-        final ShellTab pulse = tabsheet.addTab("pulse".toUpperCase(), createPulseFeedLayout());
         final ShellTab stats = tabsheet.addTab("stats".toUpperCase(), createStatsLayout());
-        final ShellTab messages = tabsheet.addTab("messages".toUpperCase(), createMessagesLayout());
-        final ShellTab inbox = tabsheet.addTab("inbox".toUpperCase(), createInboxLayout());
+        final ShellTab messages = tabsheet.addTab("messages".toUpperCase(), messagesView.asVaadinComponent());
+        final ShellTab dashboard = tabsheet.addTab("dashboard".toUpperCase(), createPulseFeedLayout());
 
-        tabsheet.updateTabNotification(stats, "4");
         tabsheet.updateTabNotification(messages, "2");
-        tabsheet.updateTabNotification(inbox, "1");
 
         tabsheet.addStyleName("v-pulse");
         tabsheet.setSizeFull();
         tabsheet.setWidth("900px");
-
-        m.put(PulseTabType.PULSE, pulse);
-        m.put(PulseTabType.STATS, stats);
+        
+        m.put(PulseTabType.DASHBOARD, dashboard);
+        m.put(PulseTabType.STATISTIC, stats);
         m.put(PulseTabType.MESSAGES, messages);
-        m.put(PulseTabType.INBOX, inbox);
-    }
-
-    @Override
-    public void addMessage(Message message) {
-        final Item item = this.messagesContainer.addItemAt(0, message.getId());
-        setMessagePropertyValues(message, item);
-    }
-
-    @Override
-    public void updateMessage(Message message) {
-        Item item = this.messagesContainer.getItem(message.getId());
-        if (item != null) {
-            setMessagePropertyValues(message, item);
-        }
-    }
-
-    private void setMessagePropertyValues(Message message, Item item) {
-        item.getItemProperty("new").setValue(message.isCleared() ? "No" : "Yes");
-        item.getItemProperty("type").setValue(message.getType().name());
-        item.getItemProperty("text").setValue(message.getMessage());
-        item.getItemProperty("date").setValue(new SimpleDateFormat().format(new Date(message.getTimestamp())));
     }
 
     @Override
@@ -182,28 +148,5 @@ public class PulseViewImpl implements PulseView, IsVaadinComponent {
         layout.setSizeFull();
         layout.addComponent(new Label("Test2".toUpperCase()));
         return layout;
-    }
-
-    private ComponentContainer createMessagesLayout() {
-
-        messagesContainer = new IndexedContainer();
-        messagesContainer.addContainerProperty("new", String.class, null);
-        messagesContainer.addContainerProperty("type", String.class, null);
-        messagesContainer.addContainerProperty("text", String.class, null);
-        messagesContainer.addContainerProperty("sender", String.class, null);
-        messagesContainer.addContainerProperty("date", String.class, null);
-
-        Table table = new Table();
-        table.setSizeFull();
-        table.setContainerDataSource(messagesContainer);
-
-        VerticalLayout layout = new VerticalLayout();
-        layout.setSizeFull();
-        layout.addComponent(table);
-        return layout;
-    }
-
-    private VerticalLayout createInboxLayout() {
-        return new VerticalLayout();
     }
 }

@@ -31,36 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.message;
+package info.magnolia.ui.admincentral.shellapp.pulse;
+
+import com.vaadin.ui.ComponentContainer;
+
+import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 /**
- * The type of message.
+ * Messages Pulse tab UI. 
+ * @author p4elkin
  *
- * @version $Id$
  */
-public enum MessageType {
-    UNKNOWN(""),
-    ERROR("Error"), 
-    WARNING("Warning"), 
-    INFO("Warning");
-    
-    private String caption;
-    
-    private MessageType(final String caption) {
-        this.caption = caption;
-    }
-    
-    @Override
-    public String toString() {
-        return caption;
-    }
+public interface PulseMessagesView extends View, IsVaadinComponent {
 
-    public boolean isSignificant() {
-        switch (this) {
-        case INFO: case UNKNOWN:
-            return false;
-        default:
-            return true;
-        }
-    };
+    @Override
+    ComponentContainer asVaadinComponent(); 
 }
