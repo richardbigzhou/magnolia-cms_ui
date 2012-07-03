@@ -33,15 +33,13 @@
  */
 package info.magnolia.ui.widget.editor.gwt.client.widget.dnd;
 
-import static info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils.moveComponent;
-
 import com.google.gwt.dom.client.Element;
-
-
 import info.magnolia.ui.widget.editor.gwt.client.VPageEditor;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.ComponentBar;
 import info.magnolia.ui.widget.editor.gwt.client.widget.placeholder.ComponentPlaceHolder;
+
+import static info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils.moveComponent;
 
 /**
  * DragAndDropLegacy. GWT port of legacy /magnolia-module-admininterface/src/main/resources/mgnl-resources/admin-js/inline.js

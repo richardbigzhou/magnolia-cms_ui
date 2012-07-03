@@ -33,10 +33,9 @@
  */
 package info.magnolia.ui.widget.editor.gwt.client.widget.placeholder;
 
+import com.google.gwt.user.client.ui.FlowPanel;
 import info.magnolia.ui.widget.editor.gwt.client.VPageEditor;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
-
-import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
  * Abstract Widget for area and component placeholder.

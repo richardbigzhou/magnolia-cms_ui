@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,17 +31,45 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.action;
+package info.magnolia.ui.widget.editor.gwt.client.event;
 
-import info.magnolia.ui.framework.place.Place;
+import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * Action definition for {@link PlaceChangeAction}.
- *
- * @version $Id$
- * @see PlaceChangeAction
+ * NewComponentEvent.
  */
-public interface PlaceChangeActionDefinition extends ActionDefinition {
+public class NewComponentEvent extends GwtEvent<NewComponentEventHandler> {
 
-    Place getPlace();
+    public static Type<NewComponentEventHandler> TYPE = new Type<NewComponentEventHandler>();
+    private String workspace;
+    private String nodeType;
+    private String path;
+
+    public NewComponentEvent(String workspace, String nodeType, String path) {
+        this.workspace = workspace;
+        this.nodeType = nodeType;
+        this.path = path;
+    }
+
+    @Override
+    public Type<NewComponentEventHandler> getAssociatedType() {
+        return TYPE;
+    }
+
+    @Override
+    protected void dispatch(NewComponentEventHandler handler) {
+        handler.onNewComponent(this);
+    }
+
+    public String getWorkSpace() {
+        return workspace;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public String getNodeType() {
+        return nodeType;
+    }
 }

@@ -86,7 +86,7 @@ public class ConfiguredDialogDefinitionManager extends ModuleConfigurationObserv
                 @Override
                 public void visit(Node current) throws RepositoryException {
                     for (Node dialogNode : NodeUtil.getNodes(current, MgnlNodeType.NT_CONTENTNODE)) {
-                        DialogDefinitionProvider provider = readProvider(dialogNode);
+                        DialogDefinitionProvider provider = createProvider(dialogNode);
                         if (provider != null) {
                             providers.add(provider);
                         }
@@ -98,7 +98,7 @@ public class ConfiguredDialogDefinitionManager extends ModuleConfigurationObserv
         this.registeredIds = dialogDefinitionRegistry.unregisterAndRegister(registeredIds, providers);
     }
 
-    protected DialogDefinitionProvider readProvider(Node dialogNode) throws RepositoryException {
+    protected DialogDefinitionProvider createProvider(Node dialogNode) throws RepositoryException {
 
         final String id = createId(dialogNode);
 

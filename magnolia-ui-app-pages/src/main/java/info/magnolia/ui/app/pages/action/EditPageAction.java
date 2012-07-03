@@ -33,13 +33,17 @@
  */
 package info.magnolia.ui.app.pages.action;
 
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.admincentral.actionbar.builder.ActionbarBuilder;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchView;
 import info.magnolia.ui.app.pages.PageEditorTabView;
-import info.magnolia.ui.framework.app.AppView;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
+import info.magnolia.ui.widget.actionbar.Actionbar;
 
+import javax.inject.Inject;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
@@ -49,20 +53,30 @@ import javax.jcr.RepositoryException;
  */
 public class EditPageAction extends ActionBase<EditPageActionDefinition> {
 
-    private Node selectedNode;
+    private final Node selectedNode;
 
-    private ContentWorkbenchView.Presenter presenter;
+    private final ContentWorkbenchView.Presenter presenter;
 
-    public EditPageAction(final EditPageActionDefinition definition, final Node selectedNode, final ContentWorkbenchView.Presenter presenter) {
+    private final ActionbarDefinition pageEditorActionbar;
+
+    private final ComponentProvider componentProvider;
+    @Inject
+    public EditPageAction(final EditPageActionDefinition definition, final Node selectedNode, final ContentWorkbenchView.Presenter presenter, ComponentProvider componentProvider) {
         super(definition);
         this.selectedNode = selectedNode;
         this.presenter = presenter;
+        this.componentProvider = componentProvider;
+        this.pageEditorActionbar = PagesActionbarDefinitionProvider.getPageEditorActionbarDefinition();
     }
 
     @Override
     public void execute() throws ActionExecutionException {
         try {
-            final AppView view = new PageEditorTabView(selectedNode);
+
+            Actionbar actionBar =  ActionbarBuilder.build(pageEditorActionbar, presenter);
+
+            final PageEditorTabView view = new PageEditorTabView(componentProvider, selectedNode, actionBar);
+
             presenter.onOpenNewView(view, new DefaultLocation("app", "app:pages:", view.getCaption()));
         } catch (RepositoryException e) {
             throw new ActionExecutionException(e);

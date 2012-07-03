@@ -33,23 +33,6 @@
  */
 package info.magnolia.ui.widget.editor.gwt.client;
 
-import info.magnolia.ui.widget.editor.gwt.client.dom.Comment;
-import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
-import info.magnolia.ui.widget.editor.gwt.client.dom.processor.CommentProcessor;
-import info.magnolia.ui.widget.editor.gwt.client.dom.processor.ElementProcessor;
-import info.magnolia.ui.widget.editor.gwt.client.dom.processor.MgnlElementProcessor;
-import info.magnolia.ui.widget.editor.gwt.client.dom.processor.MgnlElementProcessorFactory;
-import info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils;
-import info.magnolia.ui.widget.editor.gwt.client.model.ModelStorage;
-import info.magnolia.ui.widget.editor.gwt.client.widget.dnd.LegacyDragAndDrop;
-
-import java.util.LinkedList;
-import java.util.List;
-
-import org.vaadin.rpc.client.ClientSideHandler;
-import org.vaadin.rpc.client.ClientSideProxy;
-import org.vaadin.rpc.client.Method;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.AnchorElement;
 import com.google.gwt.dom.client.Document;
@@ -81,6 +64,24 @@ import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.Paintable;
 import com.vaadin.terminal.gwt.client.UIDL;
 import com.vaadin.terminal.gwt.client.VConsole;
+import info.magnolia.ui.widget.editor.gwt.client.dom.Comment;
+import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
+import info.magnolia.ui.widget.editor.gwt.client.dom.processor.CommentProcessor;
+import info.magnolia.ui.widget.editor.gwt.client.dom.processor.ElementProcessor;
+import info.magnolia.ui.widget.editor.gwt.client.dom.processor.MgnlElementProcessor;
+import info.magnolia.ui.widget.editor.gwt.client.dom.processor.MgnlElementProcessorFactory;
+import info.magnolia.ui.widget.editor.gwt.client.event.EditComponentEvent;
+import info.magnolia.ui.widget.editor.gwt.client.event.EditComponentEventHandler;
+import info.magnolia.ui.widget.editor.gwt.client.event.NewComponentEvent;
+import info.magnolia.ui.widget.editor.gwt.client.event.NewComponentEventHandler;
+import info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils;
+import info.magnolia.ui.widget.editor.gwt.client.model.ModelStorage;
+import info.magnolia.ui.widget.editor.gwt.client.widget.dnd.LegacyDragAndDrop;
+import org.vaadin.rpc.client.ClientSideHandler;
+import org.vaadin.rpc.client.ClientSideProxy;
+
+import java.util.LinkedList;
+import java.util.List;
 
 
 /**
@@ -107,16 +108,7 @@ public class VPageEditor extends FlowPanel implements Paintable, ClientSideHandl
 
     private LinkedList<MgnlElement> mgnlElements = new LinkedList<MgnlElement>();
 
-    private ClientSideProxy proxy = new ClientSideProxy(this) {
-        {
-            register("addAction", new Method() {
-                @Override
-                public void invoke(String methodName, Object[] params) {
-
-                }
-            });
-        }
-    };
+    private ClientSideProxy proxy = new ClientSideProxy(this);
 
     private static VPageEditorView view;
 
@@ -136,18 +128,20 @@ public class VPageEditor extends FlowPanel implements Paintable, ClientSideHandl
                 IFrameElement frameElement = IFrameElement.as(iframe.getElement());
                 contentDocument = frameElement.getContentDocument();
                 //other handlers are initialized here b/c we need to know the document inside the iframe.
-                initHandlers();
+                initNativeHandlers(iframe.getElement());
                 //make sure we process  html only when the document inside the iframe is loaded.
                 process(contentDocument);
             }
         });
 
+        registerEventHandlers();
         final Element iframeElement = iframe.getElement();
         iframeElement.setAttribute("width", "100%");
         iframeElement.setAttribute("height", "100%");
         iframeElement.setAttribute("allowTransparency", "true");
         iframeElement.setAttribute("frameborder", "0");
         add(iframe);
+
 
     }
 
@@ -199,6 +193,36 @@ public class VPageEditor extends FlowPanel implements Paintable, ClientSideHandl
         return url;
     }
 
+    public void onMouseUp(final Element element) {
+        getModel().getFocusModel().onMouseUp(element);
+
+    }
+
+    private native void initNativeHandlers(Element element) /*-{
+        if (element != 'undefined') {
+            var ref = this;
+            element.contentDocument.onmouseup = function(event) {
+                ref.@info.magnolia.ui.widget.editor.gwt.client.VPageEditor::onMouseUp(Lcom/google/gwt/dom/client/Element;)(event.target);
+                event.stopPropagation();
+            }
+        }
+    }-*/;
+
+    private void registerEventHandlers() {
+        eventBus.addHandler(NewComponentEvent.TYPE, new NewComponentEventHandler() {
+            @Override
+            public void onNewComponent(NewComponentEvent newComponentEvent) {
+                proxy.call("newComponent", newComponentEvent.getWorkSpace(), newComponentEvent.getNodeType(), newComponentEvent.getPath());
+            }
+        });
+
+        eventBus.addHandler(EditComponentEvent.TYPE, new EditComponentEventHandler() {
+            @Override
+            public void onEditComponent(EditComponentEvent editComponentEvent) {
+                proxy.call("editComponent", editComponentEvent.getWorkSpace(), editComponentEvent.getPath(), editComponentEvent.getDialog());
+            }
+        });
+    }
 
     private void initHandlers() {
       addDomHandler(new MouseUpHandler() {
@@ -268,7 +292,7 @@ public class VPageEditor extends FlowPanel implements Paintable, ClientSideHandl
         var callbacks = $wnd.mgnl.PageEditor.onPageEditorReadyCallbacks
         if(typeof callbacks != 'undefined') {
              for(var i=0; i < callbacks.length; i++) {
-                callbacks[i].apply()
+                callbacks[i].apply();
              }
          }
     }-*/;

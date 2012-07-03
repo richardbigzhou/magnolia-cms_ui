@@ -33,12 +33,6 @@
  */
 package info.magnolia.ui.widget.editor.gwt.client.widget.dnd;
 
-import static info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils.moveComponent;
-import info.magnolia.ui.widget.editor.gwt.client.VPageEditor;
-import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
-import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.ComponentBar;
-import info.magnolia.ui.widget.editor.gwt.client.widget.placeholder.ComponentPlaceHolder;
-
 import com.google.gwt.event.dom.client.DragEndEvent;
 import com.google.gwt.event.dom.client.DragEndHandler;
 import com.google.gwt.event.dom.client.DragLeaveEvent;
@@ -49,6 +43,12 @@ import com.google.gwt.event.dom.client.DragStartEvent;
 import com.google.gwt.event.dom.client.DragStartHandler;
 import com.google.gwt.event.dom.client.DropEvent;
 import com.google.gwt.event.dom.client.DropHandler;
+import info.magnolia.ui.widget.editor.gwt.client.VPageEditor;
+import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
+import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.ComponentBar;
+import info.magnolia.ui.widget.editor.gwt.client.widget.placeholder.ComponentPlaceHolder;
+
+import static info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils.moveComponent;
 
 /**
  * DragAndDropImpl.

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,27 +31,45 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.place;
+package info.magnolia.ui.widget.editor.gwt.client.event;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * Annotation used on a {@link Place} implementation to indicate the prefix to use by its {@link PlaceTokenizer}.
- *
- * Inspired by {@link com.google.gwt.place.shared.Prefix}.
- *
- * @version $Id$
- * @see Place
- * @see PlaceTokenizer
+ * EditComponentEvent.
  */
-@Target({ElementType.TYPE})
-@Retention(RetentionPolicy.RUNTIME)
-@Inherited
-public @interface Prefix {
+public class EditComponentEvent extends GwtEvent<EditComponentEventHandler> {
 
-    String value();
+    public static Type<EditComponentEventHandler> TYPE = new Type<EditComponentEventHandler>();
+    private String workSpace;
+    private String path;
+    private String dialog;
+
+    public EditComponentEvent(String workSpace, String path, String dialog) {
+        this.workSpace = workSpace;
+        this.path = path;
+        this.dialog = dialog;
+    }
+
+    @Override
+    public Type<EditComponentEventHandler> getAssociatedType() {
+        return TYPE;
+    }
+
+    @Override
+    protected void dispatch(EditComponentEventHandler handler) {
+        handler.onEditComponent(this);
+    }
+
+    public String getWorkSpace() {
+        return workSpace;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public String getDialog() {
+        return dialog;
+    }
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,25 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.place;
+package info.magnolia.ui.widget.editor.gwt.client.event;
+
+import com.google.gwt.event.shared.EventHandler;
 
 /**
- * Implemented by objects responsible for text serialization and deserialization of {@link Place} objects.
- *
- * Inspired by {@link com.google.gwt.place.shared.PlaceTokenizer}.
- *
- * @param <P>
- * @version $Id$
+ * EditComponentEventHandler.
  */
-public interface PlaceTokenizer<P extends Place> {
-
-    /**
-     * Deserializes the text representation of the place.
-     */
-    P getPlace(String token);
-
-    /**
-     * Serializes the place to its text representation.
-     */
-    String getToken(P place);
+public interface EditComponentEventHandler extends EventHandler {
+    void onEditComponent(EditComponentEvent editComponentEvent);
 }

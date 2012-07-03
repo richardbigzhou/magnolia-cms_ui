@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.app.pages.action;
 
+import com.google.inject.Inject;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 
@@ -53,6 +54,7 @@ public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
      * @param definition the definition
      * @param nodeToEdit the node to edit
      */
+    @Inject
     public PreviewPageAction(PreviewPageActionDefinition definition, Node nodeToEdit) {
         super(definition);
         this.nodeToEdit = nodeToEdit;

@@ -82,7 +82,7 @@ public class ConfiguredWorkbenchDefinitionManager extends ModuleConfigurationObs
                 @Override
                 public void visit(Node current) throws RepositoryException {
                     for (Node child : NodeUtil.getNodes(current, MgnlNodeType.NT_CONTENTNODE)) {
-                        WorkbenchDefinitionProvider provider = readProvider(child);
+                        WorkbenchDefinitionProvider provider = createProvider(child);
                         if (provider != null) {
                             providers.add(provider);
                         }
@@ -94,7 +94,7 @@ public class ConfiguredWorkbenchDefinitionManager extends ModuleConfigurationObs
         this.registeredIds = registry.unregisterAndRegister(registeredIds, providers);
     }
 
-    protected WorkbenchDefinitionProvider readProvider(Node workbenchNode) throws RepositoryException {
+    protected WorkbenchDefinitionProvider createProvider(Node workbenchNode) throws RepositoryException {
 
         final String id = createId(workbenchNode);
 

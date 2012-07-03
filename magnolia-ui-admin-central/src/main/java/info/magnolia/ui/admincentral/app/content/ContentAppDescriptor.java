@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,24 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.place;
+package info.magnolia.ui.admincentral.app.content;
+
+import info.magnolia.ui.framework.app.AppDescriptor;
+import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
+
 
 /**
- * Maps {@link Place}s to/from tokens, used to configure a {@link PlaceHistoryHandler}.
- *
- * Inspired by {@link com.google.gwt.place.shared.PlaceHistoryMapper}.
- *
- * @version $Id$
+ * Describes a "content" app, i.e. an app for managing content in a workspace through a workbench.
+ * 
  */
-public interface PlaceHistoryMapper {
+public interface ContentAppDescriptor extends AppDescriptor {
 
-    /**
-     * Returns the place represented by the token or null if the token is invalid or does not match a supported place.
-     */
-    Place getPlace(String token);
-
-    /**
-     * Returns the text representation of the place or null if there's no tokenizer for the place.
-     */
-    String getToken(Place place);
+    WorkbenchDefinition getWorkbench();
 }

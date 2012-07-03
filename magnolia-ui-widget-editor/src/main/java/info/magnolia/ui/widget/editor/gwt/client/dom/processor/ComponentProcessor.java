@@ -34,7 +34,6 @@
 package info.magnolia.ui.widget.editor.gwt.client.dom.processor;
 
 import com.google.gwt.core.client.GWT;
-
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.ComponentBar;
 

@@ -46,9 +46,12 @@ public interface PageEditorView extends IsVaadinComponent {
     /**
      * Presenter.
      */
-    interface Presenter {
+    public interface Presenter {
 
-        void executeAction(final String actionName);
+        void editComponent(final String workSpace, final String path, final String dialog);
 
+        IsVaadinComponent getView();
+
+        String getNodeName();
     }
 }

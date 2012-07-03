@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,29 +31,33 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.activity;
+package info.magnolia.ui.admincentral.app.content;
 
-import info.magnolia.ui.framework.place.Place;
+import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
+import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
+
 
 /**
- * Simple Activity implementation that is always willing to stop.
- *
- * @version $Id$
+ * Base implementation for content app descriptor.
+ * 
  */
-public abstract class AbstractActivity implements Activity {
+@SuppressWarnings("serial")
+public class ConfiguredContentAppDescriptor extends ConfiguredAppDescriptor implements ContentAppDescriptor {
 
-    private static final long serialVersionUID = 1L;
+    private WorkbenchDefinition workbench;
 
-    @Override
-    public void onPlaceUpdate(Place place) {
+    public ConfiguredContentAppDescriptor(String appName, WorkbenchDefinition workbenchDefinition) {
+        setName(appName);
+        setWorkbench(workbenchDefinition);
     }
 
     @Override
-    public String mayStop() {
-        return null;
+    public WorkbenchDefinition getWorkbench() {
+        return workbench;
     }
 
-    @Override
-    public void onStop() {
+    public void setWorkbench(WorkbenchDefinition workbench) {
+        this.workbench = workbench;
     }
+
 }

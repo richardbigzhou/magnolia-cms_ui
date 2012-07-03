@@ -34,12 +34,11 @@
 package info.magnolia.ui.widget.editor.gwt.client.widget.controlbar;
 
 
-import info.magnolia.ui.widget.editor.gwt.client.VPageEditor;
-import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
-
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.user.client.ui.FlowPanel;
+import info.magnolia.ui.widget.editor.gwt.client.VPageEditor;
+import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 
 
 /**

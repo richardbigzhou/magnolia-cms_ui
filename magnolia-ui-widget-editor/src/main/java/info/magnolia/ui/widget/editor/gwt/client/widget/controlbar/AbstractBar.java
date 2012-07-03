@@ -34,19 +34,17 @@
 package info.magnolia.ui.widget.editor.gwt.client.widget.controlbar;
 
 
-import info.magnolia.ui.widget.editor.gwt.client.VPageEditor;
-import info.magnolia.ui.widget.editor.gwt.client.VPageEditorView.Presenter;
-import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
-import info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils;
-
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Float;
-
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import info.magnolia.ui.widget.editor.gwt.client.VPageEditor;
+import info.magnolia.ui.widget.editor.gwt.client.VPageEditorView.Presenter;
+import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
+import info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils;
 
 /**
  * Base class for horizontal bars with buttons.

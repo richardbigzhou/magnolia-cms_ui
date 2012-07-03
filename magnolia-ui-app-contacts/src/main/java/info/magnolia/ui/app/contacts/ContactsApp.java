@@ -33,20 +33,20 @@
  */
 package info.magnolia.ui.app.contacts;
 
-import info.magnolia.ui.framework.app.AbstractApp;
+import info.magnolia.ui.admincentral.app.content.ContentApp;
 import info.magnolia.ui.framework.app.AppView;
 import info.magnolia.ui.framework.location.Location;
 
 import javax.inject.Inject;
 
-/**
- * Dummy app.
- *
- * @version $Id$
- */
-public class ContactsApp extends AbstractApp {
 
-    private ContactsView view;
+/**
+ * The Contacts app, extending base content app.
+ * 
+ */
+public class ContactsApp extends ContentApp {
+
+    private final ContactsView view;
 
     @Inject
     public ContactsApp(ContactsView view) {

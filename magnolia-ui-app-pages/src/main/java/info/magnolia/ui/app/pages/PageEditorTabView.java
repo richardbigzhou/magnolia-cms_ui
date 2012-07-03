@@ -33,20 +33,19 @@
  */
 package info.magnolia.ui.app.pages;
 
-import info.magnolia.context.MgnlContext;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.VerticalLayout;
 import info.magnolia.jcr.util.PropertyUtil;
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.framework.app.AppView;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
-import info.magnolia.ui.widget.editor.PageEditor;
+import info.magnolia.ui.widget.actionbar.Actionbar;
+import info.magnolia.ui.widget.editor.PageEditorView;
+import org.apache.commons.lang.StringUtils;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-
-import org.apache.commons.lang.StringUtils;
-
-import com.vaadin.terminal.ExternalResource;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.VerticalLayout;
 
 /**
  * PageEditorTabView.
@@ -57,17 +56,46 @@ import com.vaadin.ui.VerticalLayout;
 @SuppressWarnings("serial")
 public class PageEditorTabView implements AppView, IsVaadinComponent {
 
-    private final VerticalLayout container = new VerticalLayout();
-    private String caption;
+    private Actionbar actionbar;
 
-    public PageEditorTabView(final Node pageNode) throws RepositoryException {
-        final PageEditor pageEditor = new PageEditor(new ExternalResource(MgnlContext.getContextPath() + pageNode.getPath()));
-        pageEditor.setSizeFull();
+    private final HorizontalLayout root = new HorizontalLayout();
+
+    private final VerticalLayout container = new VerticalLayout();
+    
+    private final String caption;
+
+    public PageEditorTabView(ComponentProvider componentProvider, Node pageNode, final Actionbar actionbar) throws RepositoryException {
+
+        this.actionbar = actionbar;
+        // same root as ContentWorkbenchView
+        root.setSizeFull();
+        root.setStyleName("mgnl-app-root");
+        root.addComponent(container);
+        root.setExpandRatio(container, 1f);
+        root.setMargin(false);
+        root.setSpacing(true);
+
+        Object[] combinedParameters = new Object[1];
+
+        combinedParameters[0] = pageNode;
+        PageEditorView.Presenter pageEditorPresenter = componentProvider.newInstance(PageEditorPresenter.class, combinedParameters);
+
+       
 
         container.setSizeFull();
-        container.addComponent(pageEditor);
+        container.setStyleName("mgnl-app-view");
+        container.addComponent(pageEditorPresenter.getView().asVaadinComponent());
         caption = StringUtils.defaultIfEmpty(PropertyUtil.getString(pageNode, "title"), pageNode.getName());
+        root.addComponent(actionbar);
+    }
 
+    public Actionbar getActionbar() {
+        return actionbar;
+    }
+
+    public void setActionbar(Actionbar actionbar) {
+        root.replaceComponent(this.actionbar, actionbar);
+        this.actionbar = actionbar;
     }
 
     @Override
@@ -77,7 +105,13 @@ public class PageEditorTabView implements AppView, IsVaadinComponent {
 
     @Override
     public Component asVaadinComponent() {
-        return container;
+        return root;
     }
 
+    /**
+     * Presenter.
+     */
+    public interface Presenter {
+
+    }
 }

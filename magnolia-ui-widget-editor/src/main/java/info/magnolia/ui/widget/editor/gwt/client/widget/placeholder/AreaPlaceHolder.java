@@ -33,15 +33,13 @@
  */
 package info.magnolia.ui.widget.editor.gwt.client.widget.placeholder;
 
-import java.util.Map;
-
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.user.client.ui.Label;
 import info.magnolia.rendering.template.AreaDefinition;
 import info.magnolia.ui.widget.editor.gwt.client.VPageEditor;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 
-
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.ui.Label;
+import java.util.Map;
 
 /**
  * Widget for area placeholders.

@@ -96,11 +96,11 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
         setSizeFull();
 
         root.setSizeFull();
-        setCompositionRoot(root);
         root.setStyleName("mgnl-app-root");
         root.addComponent(workbenchContainer);
         root.setExpandRatio(workbenchContainer, 1f);
         root.setMargin(false);
+        root.setSpacing(true);
 
         HorizontalLayout toolbar = new HorizontalLayout();
         toolbar.setSizeUndefined();
@@ -121,7 +121,7 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
         }));
 
         workbenchContainer.setSizeFull();
-        workbenchContainer.setStyleName("mgnl-workbench");
+        workbenchContainer.setStyleName("mgnl-app-view");
         workbenchContainer.addComponent(toolbar);
     }
 

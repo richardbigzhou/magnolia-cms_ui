@@ -147,7 +147,7 @@ public class AppLauncherShellApp implements ShellApp, AppLauncherView.Presenter 
      * Check if this app is registered For this profile.
      */
     private boolean isAppRegistered(String appName) {
-        return this.appLauncherLayoutManager.isAppDescriptionRegistered(appName);
+        return this.appLauncherLayoutManager.isAppDescriptorRegistered(appName);
     }
 
     private boolean isAppPartOftheLayout(String appName) {

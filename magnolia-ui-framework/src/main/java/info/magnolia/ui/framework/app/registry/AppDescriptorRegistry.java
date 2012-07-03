@@ -118,17 +118,28 @@ public class AppDescriptorRegistry {
     }
 
     public void unregister(String id) throws RegistrationException {
-        AppDescriptorProvider toRemove = registry.get(id);
-        registry.remove(id);
+        AppDescriptorProvider toRemove;
+        // synchronized to make sure we don't remove one added after the get() call
+        synchronized (registry) {
+            toRemove = registry.get(id);
+            registry.remove(id);
+        }
         sendEvent(AppEventType.UNREGISTERED, Arrays.asList(toRemove.getAppDescriptor()));
     }
 
     @SuppressWarnings("unchecked")
     public Set<String> unregisterAndRegister(Collection<String> registeredIds, Collection<AppDescriptorProvider> providers) throws RegistrationException {
 
-        Collection<AppDescriptorProvider> initialProviders = registry.values();
-        Set<String> set = registry.removeAndPutAll(registeredIds, providers);
-        Collection<AppDescriptorProvider> finalProviders = registry.values();
+        Collection<AppDescriptorProvider> initialProviders;
+        Set<String> set;
+        Collection<AppDescriptorProvider> finalProviders;
+
+        // synchronized to make sure concurrent puts don't interfere
+        synchronized (registry) {
+            initialProviders = registry.values();
+            set = registry.removeAndPutAll(registeredIds, providers);
+            finalProviders = registry.values();
+        }
 
         //Handle Events
         if (CollectionUtils.isSubCollection(registeredIds, set)) {
@@ -142,34 +153,31 @@ public class AppDescriptorRegistry {
                 }
             }else {
                 // Add new AppDescriptor --> REGISTERED
-                sendEvent(AppEventType.REGISTERED, getAppDescriptorFromAppDescriptorProvider(CollectionUtils.disjunction(set, registeredIds), finalProviders));
+                sendEvent(AppEventType.REGISTERED, getAppDescriptorsFromAppDescriptorProviders(CollectionUtils.disjunction(set, registeredIds), finalProviders));
             }
         } else if (CollectionUtils.isSubCollection(set, registeredIds)) {
             // Remove AppDescriptor --> UNREGISTERED
-            sendEvent(AppEventType.UNREGISTERED, getAppDescriptorFromAppDescriptorProvider(CollectionUtils.disjunction(registeredIds, set), initialProviders));
+            sendEvent(AppEventType.UNREGISTERED, getAppDescriptorsFromAppDescriptorProviders(CollectionUtils.disjunction(registeredIds, set), initialProviders));
         } else {
             // Add and Remove AppDescriptor --> REGISTERED & UNREGISTERED.
-            sendEvent(AppEventType.REGISTERED, getAppDescriptorFromAppDescriptorProvider(CollectionUtils.disjunction(set, registeredIds), finalProviders));
-            sendEvent(AppEventType.UNREGISTERED, getAppDescriptorFromAppDescriptorProvider(CollectionUtils.disjunction(registeredIds, set), initialProviders));
+            sendEvent(AppEventType.REGISTERED, getAppDescriptorsFromAppDescriptorProviders(CollectionUtils.disjunction(set, registeredIds), finalProviders));
+            sendEvent(AppEventType.UNREGISTERED, getAppDescriptorsFromAppDescriptorProviders(CollectionUtils.disjunction(registeredIds, set), initialProviders));
         }
         return set;
     }
 
-    private Collection<AppDescriptor> getAppDescriptorFromAppDescriptorProvider(Collection<String> ids, Collection<AppDescriptorProvider> providers) throws RegistrationException {
-        ArrayList<AppDescriptor> res = new ArrayList<AppDescriptor>();
-        for (String id : ids) {
-            for (AppDescriptorProvider provider : providers) {
-                if (provider.getName().equals(id)) {
-                    res.add(provider.getAppDescriptor());
-                    break;
-                }
+    private Collection<AppDescriptor> getAppDescriptorsFromAppDescriptorProviders(Collection<String> names, Collection<AppDescriptorProvider> providers) throws RegistrationException {
+        ArrayList<AppDescriptor> descriptors = new ArrayList<AppDescriptor>();
+        for (AppDescriptorProvider provider : providers) {
+            if (names.contains(provider.getName())) {
+                descriptors.add(provider.getAppDescriptor());
             }
         }
-        return res;
+        return descriptors;
     }
 
     /**
-     * Send an event to the global event bus.
+     * Send an event to the system event bus.
      */
     private void sendEvent(AppEventType eventType, Collection<AppDescriptor> appDescriptors) {
         for (AppDescriptor appDescriptor : appDescriptors) {

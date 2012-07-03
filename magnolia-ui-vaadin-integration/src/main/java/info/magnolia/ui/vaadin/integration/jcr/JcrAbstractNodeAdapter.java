@@ -122,6 +122,9 @@ public abstract class JcrAbstractNodeAdapter extends JcrAbstractAdapter implemen
         try {
             if(!getNode().hasProperty((String) id)) {
                 value = new String("");
+                if(JCR_NAME.equals(id)) {
+                    value = getNode().getName();
+                }
             } else {
                 value = PropertyUtil.getProperty(getNode(), (String) id).getString();
             }

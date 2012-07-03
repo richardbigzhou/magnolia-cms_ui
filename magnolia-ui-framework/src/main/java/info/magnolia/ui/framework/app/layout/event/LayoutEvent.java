@@ -35,9 +35,8 @@ package info.magnolia.ui.framework.app.layout.event;
 
 import info.magnolia.ui.framework.event.Event;
 
-
 /**
- * AdminCentral Events used to notify Changes in the Admin central configuration.
+ * Event sent by {@link info.magnolia.ui.framework.app.layout.AppLayoutManager}.
  */
 public class LayoutEvent implements Event<LayoutEventHandler> {
 
@@ -73,4 +72,3 @@ public class LayoutEvent implements Event<LayoutEventHandler> {
     }
 
 }
-

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,38 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.place;
+package info.magnolia.ui.widget.editor.gwt.client.event;
 
-import info.magnolia.ui.framework.event.Event;
-import info.magnolia.ui.framework.event.EventHandler;
+import com.google.gwt.event.shared.EventHandler;
 
 /**
- * Event fired when a place change occurs.
- *
- * @version $Id$
+ * NewComponentEventHandler.
  */
-public class PlaceChangeEvent implements Event<PlaceChangeEvent.Handler> {
-
-    /**
-     * Handler interface for {@link PlaceChangeEvent}.
-     */
-    public interface Handler extends EventHandler {
-
-        void onPlaceChange(PlaceChangeEvent event);
-    }
-
-    private final Place newPlace;
-
-    public PlaceChangeEvent(Place newPlace) {
-      this.newPlace = newPlace;
-    }
-
-    public Place getNewPlace() {
-      return newPlace;
-    }
-
-    @Override
-    public void dispatch(Handler handler) {
-        handler.onPlaceChange(this);
-    }
+public interface NewComponentEventHandler extends EventHandler {
+        void onNewComponent(NewComponentEvent newComponentEvent);
 }

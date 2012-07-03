@@ -33,23 +33,20 @@
  */
 package info.magnolia.ui.admincentral.dialog.action;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import info.magnolia.cms.core.MetaData;
-import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.MetaDataUtil;
 import info.magnolia.ui.admincentral.event.ContentChangedEvent;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.widget.dialog.DialogView;
 import info.magnolia.ui.widget.dialog.DialogView.Presenter;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
 
@@ -76,18 +73,8 @@ public class SaveDialogAction extends ActionBase<SaveDialogActionDefinition> {
         final JcrNodeAdapter itemChanged = (JcrNodeAdapter) item;
         try {
             final Node node = itemChanged.getNode();
-            //FIXME ehe. Found a way to handle metaData in a more structured or general way (templateId part of metaData)
-            if(itemChanged instanceof JcrNewNodeAdapter) {
-                MetaData metaData = MetaDataUtil.getMetaData(node);
-                metaData.setAuthorId(MgnlContext.getUser().getName());
-                metaData.setCreationDate();
-                metaData.setModificationDate();
-
-                log.debug("Creating new node at {}", node.getPath());
-            } else {
-                MetaDataUtil.updateMetaData(node);
-                log.debug("Updating node at {}", node.getPath());
-            }
+            //Update MetaData
+            MetaDataUtil.updateMetaData(node);
             node.getSession().save();
         } catch (final RepositoryException e) {
             throw new ActionExecutionException(e);

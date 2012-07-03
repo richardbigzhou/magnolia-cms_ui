@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,34 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.action;
+package info.magnolia.ui.admincentral.app.content;
 
-import info.magnolia.ui.framework.place.Place;
-import info.magnolia.ui.framework.place.PlaceController;
+import info.magnolia.ui.framework.app.AbstractApp;
+
 
 /**
- * Action that changes the current place withing the application by calling the {@link PlaceController}.
- *
- * @version $Id$
- * @see PlaceChangeActionDefinition
+ * Abstract base app class for content apps.
  */
-public class PlaceChangeAction extends ActionBase<PlaceChangeActionDefinition> {
-
-    private PlaceController placeController;
-
-    public PlaceChangeAction(PlaceChangeActionDefinition definition, PlaceController placeController) {
-        super(definition);
-        this.placeController = placeController;
-    }
-
-    @Override
-    public void execute() {
-        Place newPlace = getDefinition().getPlace();
-        placeController.goTo(newPlace);
-    }
-
-    protected PlaceController getPlaceController() {
-        return placeController;
-    }
+public abstract class ContentApp extends AbstractApp {
 
 }

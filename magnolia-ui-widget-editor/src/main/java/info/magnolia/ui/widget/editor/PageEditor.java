@@ -34,25 +34,24 @@
 package info.magnolia.ui.widget.editor;
 
 
-import info.magnolia.ui.widget.editor.gwt.client.VPageEditor;
-
-import org.vaadin.rpc.ServerSideHandler;
-import org.vaadin.rpc.ServerSideProxy;
-import org.vaadin.rpc.client.Method;
-
 import com.vaadin.terminal.PaintException;
 import com.vaadin.terminal.PaintTarget;
 import com.vaadin.terminal.Resource;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.ClientWidget;
-import com.vaadin.ui.ClientWidget.LoadStyle;
 import com.vaadin.ui.Component;
+import info.magnolia.ui.widget.editor.gwt.client.VPageEditor;
+import org.vaadin.rpc.ServerSideHandler;
+import org.vaadin.rpc.ServerSideProxy;
+import org.vaadin.rpc.client.Method;
+
+import java.util.Map;
 
 /**
  * PageEditor widget server side implementation.
  */
 @SuppressWarnings("serial")
-@ClientWidget(value=VPageEditor.class, loadStyle = LoadStyle.EAGER)
+@ClientWidget(value=VPageEditor.class, loadStyle = ClientWidget.LoadStyle.EAGER)
 public class PageEditor extends AbstractComponent implements PageEditorView, ServerSideHandler {
 
     private Presenter presenter;
@@ -65,20 +64,29 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
     public PageEditor(final Resource source) {
         this.source = source;
         setCaption("");
+        setSizeFull();
+        setImmediate(true);
     }
 
 
     protected ServerSideProxy proxy = new ServerSideProxy(this) {
         {
-            register("fireAction", new Method() {
+            register("editComponent", new Method() {
                 @Override
                 public void invoke(String methodName, Object[] params) {
-                    final String actionName = String.valueOf(params[0]);
-                    presenter.executeAction(actionName);
+                    final String workSpace = String.valueOf(params[0]);
+                    final String path = String.valueOf(params[1]);
+                    final String dialog = String.valueOf(params[2]);
+                    editComponent(workSpace, path, dialog);
                 }
             });
         }
     };
+
+    private void editComponent(String workSpace, String path, String dialog) {
+
+        presenter.editComponent(workSpace, path, dialog);
+    }
 
     @Override
     public Component asVaadinComponent() {
@@ -88,11 +96,12 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
     @Override
     public Object[] initRequestFromClient() {
         return new Object[] {};
+
     }
 
     @Override
     public void callFromClient(String method, Object[] params) {
-        // TODO Auto-generated method stub
+        System.out.println("Client called " + method);
     }
 
     @Override
@@ -102,9 +111,17 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
 
     @Override
     public void paintContent(PaintTarget target) throws PaintException {
+        super.paintContent(target);
         if (getSource() != null) {
             target.addAttribute("src", getSource());
         }
+        proxy.paintContent(target);
+    }
+
+    @Override
+    public void changeVariables(Object source, Map<String, Object> variables) {
+        super.changeVariables(source, variables);
+        proxy.changeVariables(source, variables);
     }
 
     protected Resource getSource() {

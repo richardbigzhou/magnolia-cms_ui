@@ -34,20 +34,6 @@
 package info.magnolia.ui.widget.editor.gwt.client.widget.controlbar;
 
 
-import static info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils.getI18nMessage;
-import info.magnolia.ui.widget.editor.gwt.client.VPageEditor;
-import info.magnolia.ui.widget.editor.gwt.client.dom.CMSComment;
-import info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils;
-import info.magnolia.ui.widget.editor.gwt.client.model.ModelStorage;
-import info.magnolia.ui.widget.editor.gwt.client.widget.PreviewChannel.Orientation;
-import info.magnolia.ui.widget.editor.gwt.client.widget.button.LocaleSelector;
-import info.magnolia.ui.widget.editor.gwt.client.widget.button.PreviewButton;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
@@ -63,6 +49,20 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.MenuItem;
+import info.magnolia.ui.widget.editor.gwt.client.VPageEditor;
+import info.magnolia.ui.widget.editor.gwt.client.dom.CMSComment;
+import info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils;
+import info.magnolia.ui.widget.editor.gwt.client.model.ModelStorage;
+import info.magnolia.ui.widget.editor.gwt.client.widget.PreviewChannel.Orientation;
+import info.magnolia.ui.widget.editor.gwt.client.widget.button.LocaleSelector;
+import info.magnolia.ui.widget.editor.gwt.client.widget.button.PreviewButton;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils.getI18nMessage;
 
 /**
  * Page bar. The HTML output by this widget contains an empty <code>span</code> element with an id called <code>mgnlEditorMainbarPlaceholder</code> as a convenience which can be used by other modules to inject

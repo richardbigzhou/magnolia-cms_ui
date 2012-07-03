@@ -84,7 +84,7 @@ public class ConfiguredAppDescriptorManager extends ModuleConfigurationObserving
                 @Override
                 public void visit(Node nodeToVisit) throws RepositoryException {
                     for (Node configNode : NodeUtil.getNodes(nodeToVisit, MgnlNodeType.NT_CONTENTNODE)) {
-                        AppDescriptorProvider provider = readProvider(configNode);
+                        AppDescriptorProvider provider = createProvider(configNode);
                         if (provider != null) {
                             providers.add(provider);
                         }
@@ -99,7 +99,7 @@ public class ConfiguredAppDescriptorManager extends ModuleConfigurationObserving
         }
     }
 
-    protected AppDescriptorProvider readProvider(Node appDefinitionNode) throws RepositoryException {
+    protected AppDescriptorProvider createProvider(Node appDefinitionNode) throws RepositoryException {
 
         try {
             return new ConfiguredAppDescriptorProvider(appDefinitionNode);

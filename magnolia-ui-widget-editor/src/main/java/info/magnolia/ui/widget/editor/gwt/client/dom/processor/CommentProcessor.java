@@ -33,13 +33,12 @@
  */
 package info.magnolia.ui.widget.editor.gwt.client.dom.processor;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Node;
 import info.magnolia.ui.widget.editor.gwt.client.VPageEditor;
 import info.magnolia.ui.widget.editor.gwt.client.dom.CMSComment;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.PageBar;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Node;
 
 /**
  * Processor for comment elements.
