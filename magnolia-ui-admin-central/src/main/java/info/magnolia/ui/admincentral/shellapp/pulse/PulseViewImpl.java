@@ -89,9 +89,7 @@ public class PulseViewImpl implements PulseView, IsVaadinComponent {
         final ShellTab messages = tabsheet.addTab("messages".toUpperCase(), messagesView.asVaadinComponent());
         final ShellTab dashboard = tabsheet.addTab("dashboard".toUpperCase(), createPulseFeedLayout());
 
-        tabsheet.updateTabNotification(stats, "4");
         tabsheet.updateTabNotification(messages, "2");
-        tabsheet.updateTabNotification(dashboard, "1");
 
         tabsheet.addStyleName("v-pulse");
         tabsheet.setSizeFull();
