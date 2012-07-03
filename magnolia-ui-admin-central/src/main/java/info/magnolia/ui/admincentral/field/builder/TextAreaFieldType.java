@@ -33,18 +33,12 @@
  */
 package info.magnolia.ui.admincentral.field.builder;
 
+import info.magnolia.ui.model.dialog.definition.FieldDefinition;
+import info.magnolia.ui.model.field.definition.FieldTypeDefinition;
+
 import com.vaadin.data.Item;
-import com.vaadin.data.Validator;
-import com.vaadin.data.validator.EmailValidator;
-import com.vaadin.data.validator.RegexpValidator;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.TextArea;
-import info.magnolia.ui.model.dialog.definition.ConfiguredFieldDefinition;
-import info.magnolia.ui.model.dialog.definition.EmailValidatorDefinition;
-import info.magnolia.ui.model.dialog.definition.FieldDefinition;
-import info.magnolia.ui.model.dialog.definition.RegexpValidatorDefinition;
-import info.magnolia.ui.model.dialog.definition.ValidatorDefinition;
-import info.magnolia.ui.model.field.definition.FieldTypeDefinition;
 
 /**
  * TextAreaField. A {@link info.magnolia.ui.admincentral.field.builder.FieldType} for textareafields which will return a vaadin textarea.
@@ -67,27 +61,9 @@ public class TextAreaFieldType extends FieldTypeBase {
         final String label = fieldDefinition.getLabel();
         field.setCaption(label);
         field.setStyleName(TEXTFIELD_STYLE_NAME);
-        addValidators(fieldDefinition, field);
+        addValidatorsAndRequiredElements(fieldDefinition, field);
 
         return field;
-    }
-
-    static void addValidators(FieldDefinition fieldDefinition, Field input) {
-        Validator vaadinValidator = null;
-        for (ValidatorDefinition current: ((ConfiguredFieldDefinition) fieldDefinition).getValidators()) {
-            // TODO dlipp - this is what was defined for Sprint III. Of course this has to be enhanced later - when we have a better picture of how we want to validate.
-            if (current instanceof EmailValidatorDefinition) {
-                EmailValidatorDefinition def = (EmailValidatorDefinition) current;
-                vaadinValidator = new EmailValidator(def.getErrorMessage());
-            } else if (current instanceof RegexpValidatorDefinition) {
-                RegexpValidatorDefinition def = (RegexpValidatorDefinition) current;
-                vaadinValidator = new RegexpValidator(def.getPattern(), def.getErrorMessage());
-            }
-
-            if (vaadinValidator != null) {
-                input.addValidator(vaadinValidator);
-            }
-        }
     }
 
 }
