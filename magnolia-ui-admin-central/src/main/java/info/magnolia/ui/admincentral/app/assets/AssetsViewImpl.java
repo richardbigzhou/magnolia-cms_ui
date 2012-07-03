@@ -44,8 +44,6 @@ import com.vaadin.ui.VerticalLayout;
 
 /**
  * View implementation for the Assets app.
- *
- * @version $Id$
  */
 @SuppressWarnings("serial")
 public class AssetsViewImpl implements AssetsView, View, IsVaadinComponent {

@@ -43,8 +43,6 @@ import javax.inject.Inject;
 
 /**
  * Pages app.
- *
- * @version $Id$
  */
 public class PagesApp extends AbstractApp implements PagesView.Presenter {
 

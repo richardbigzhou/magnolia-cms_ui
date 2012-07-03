@@ -37,8 +37,6 @@ import java.util.Map;
 
 /**
  * A search filter definition used to build a UI element showing possible constraints for an advanced search.
- * @version $Id$
- *
  */
 public interface ToolbarItemFilterDefinition {
     Map<String, String> getOptions();

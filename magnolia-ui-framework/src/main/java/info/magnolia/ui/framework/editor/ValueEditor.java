@@ -37,7 +37,6 @@ package info.magnolia.ui.framework.editor;
  * Editor for editing a value.
  *
  * @param <T> type of the editable value.
- * @version $Id$
  */
 public interface ValueEditor<T> extends HasEditorPath {
 

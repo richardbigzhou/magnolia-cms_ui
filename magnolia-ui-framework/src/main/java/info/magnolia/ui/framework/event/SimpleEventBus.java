@@ -47,7 +47,6 @@ import org.slf4j.LoggerFactory;
  *
  * Inspired by {@link com.google.gwt.event.shared.SimpleEventBus}.
  *
- * @version $Id$
  * @see EventBus
  */
 @Singleton

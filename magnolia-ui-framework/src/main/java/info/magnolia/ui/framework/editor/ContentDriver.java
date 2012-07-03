@@ -56,8 +56,6 @@ import info.magnolia.jcr.util.PropertyUtil;
 
 /**
  * Automates editing of entities defined by the content model.
- *
- * @version $Id$
  */
 public class ContentDriver extends AbstractDriver<Node> {
 

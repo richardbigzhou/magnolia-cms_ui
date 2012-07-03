@@ -38,8 +38,6 @@ import info.magnolia.ui.framework.event.EventHandler;
 
 /**
  * Event fired when a location change occurs.
- *
- * @version $Id$
  */
 public class LocationChangedEvent implements Event<LocationChangedEvent.Handler> {
 

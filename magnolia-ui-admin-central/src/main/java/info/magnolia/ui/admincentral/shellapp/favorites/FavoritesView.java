@@ -37,8 +37,6 @@ import info.magnolia.ui.framework.app.ShellView;
 
 /**
  * View for favorites.
- *
- * @version $Id$
  */
 public interface FavoritesView extends ShellView {
 

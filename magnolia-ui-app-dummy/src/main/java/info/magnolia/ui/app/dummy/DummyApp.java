@@ -43,8 +43,6 @@ import javax.inject.Inject;
 
 /**
  * Dummy app.
- *
- * @version $Id$
  */
 public class DummyApp extends AbstractApp implements DummyView.Presenter {
 

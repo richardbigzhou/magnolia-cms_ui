@@ -49,7 +49,6 @@ import javax.jcr.RepositoryException;
 
 /**
  * Opens a page for editing.
- * @version $Id$
  */
 public class EditPageAction extends ActionBase<EditPageActionDefinition> {
 

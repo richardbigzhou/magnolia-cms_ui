@@ -45,8 +45,6 @@ import javax.inject.Singleton;
 
 /**
  * Maintains a registry of dialog providers registered by id.
- *
- * @version $Id$
  */
 @Singleton
 public class DialogDefinitionRegistry {

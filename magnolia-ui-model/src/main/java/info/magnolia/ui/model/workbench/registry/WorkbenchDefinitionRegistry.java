@@ -44,8 +44,6 @@ import javax.inject.Singleton;
 
 /**
  * Maintains a registry of configured workbench providers by name.
- *
- * @version $Id$
  */
 @Singleton
 public class WorkbenchDefinitionRegistry {

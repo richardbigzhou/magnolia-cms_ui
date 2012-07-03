@@ -43,7 +43,6 @@ import java.util.Map;
  *
  * @param <D> definition parent type
  * @param <I> implementation parent type
- * @version $Id$
  */
 public abstract class FactoryBase<D, I> {
 

@@ -37,8 +37,6 @@ import info.magnolia.ui.framework.location.Location;
 
 /**
  * Defines an app. Is called by the Magnolia shell as the user interacts with the app.
- *
- * @version $Id$
  */
 public interface App {
 

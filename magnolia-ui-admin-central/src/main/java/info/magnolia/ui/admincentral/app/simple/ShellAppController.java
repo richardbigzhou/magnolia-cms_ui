@@ -56,8 +56,6 @@ import info.magnolia.ui.framework.view.ViewPort;
 
 /**
  * Manages the shell apps and raises callbacks to the app.
- *
- * @version $Id$
  */
 @Singleton
 public class ShellAppController implements LocationChangedEvent.Handler, LocationChangeRequestedEvent.Handler {

@@ -37,8 +37,6 @@ import info.magnolia.ui.framework.app.AppView;
 
 /**
  * View for the Dummy app.
- *
- * @version $Id$
  */
 public interface DummyView extends AppView {
 

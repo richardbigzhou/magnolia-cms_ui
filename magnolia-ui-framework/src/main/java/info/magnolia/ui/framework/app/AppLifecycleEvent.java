@@ -37,8 +37,6 @@ import info.magnolia.ui.framework.event.Event;
 
 /**
  * App Event used to notify a Start Stop or Focus event.
- *
- * @version $Id$
  */
 public class AppLifecycleEvent implements Event<AppLifecycleEventHandler> {
 

@@ -39,8 +39,6 @@ import java.util.Map;
 
 /**
  * Implementation of ToolbarItemFilterDefinition.
- * @version $Id$
- *
  */
 public class ToolbarItemFilterDefinitionImpl implements ToolbarItemFilterDefinition {
     private Map<String, String> options = new HashMap<String, String>();

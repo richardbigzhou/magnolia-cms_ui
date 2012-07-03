@@ -40,8 +40,6 @@ import info.magnolia.ui.framework.event.EventHandler;
 
 /**
  * This event is fired when an item is selected (ie a row in the data grid within the workbench representing either a {@link javax.jcr.Node} or a {@link javax.jcr.Property}).
- * @version $Id$
- *
  */
 public class ItemSelectedEvent implements Event<ItemSelectedEvent.Handler> {
 

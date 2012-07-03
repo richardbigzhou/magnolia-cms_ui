@@ -53,8 +53,6 @@ import info.magnolia.ui.framework.event.SystemEventBus;
 
 /**
  * The central registry of all {@link AppDescriptor}s.
- *
- * @version $Id$
  */
 @Singleton
 public class AppDescriptorRegistry {

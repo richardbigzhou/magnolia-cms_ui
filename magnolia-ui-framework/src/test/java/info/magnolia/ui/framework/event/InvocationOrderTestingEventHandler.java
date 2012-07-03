@@ -35,9 +35,6 @@ package info.magnolia.ui.framework.event;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-/**
-* @version $Id$
-*/
 public class InvocationOrderTestingEventHandler extends InvocationCountingTestEventHandler {
 
     int expectedOrder;

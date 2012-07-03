@@ -36,8 +36,6 @@ package info.magnolia.ui.admincentral.container;
 
 /**
  * Definition for Properties.
- *
- * @version $Id$
  */
 public class PropertyDefinition {
     private Object defaultValue;

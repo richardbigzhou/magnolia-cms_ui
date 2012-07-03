@@ -46,8 +46,6 @@ import info.magnolia.objectfactory.ComponentProvider;
 
 /**
  * Test case for {@link AbstractActionFactory}.
- *
- * @version $Id$
  */
 public class AbstractActionFactoryTest {
 

@@ -41,8 +41,6 @@ import static org.junit.Assert.assertEquals;
 
 /**
  * Test case for {@link ResettableEventBus}.
- *
- * @version $Id$
  */
 public class ResettableEventBusTest {
 

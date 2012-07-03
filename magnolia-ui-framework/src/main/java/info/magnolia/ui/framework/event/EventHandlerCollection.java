@@ -43,7 +43,6 @@ import org.slf4j.LoggerFactory;
  * Simple thread safe collection of handlers for a specific event.
  *
  * @param <H> type of the event handler
- * @version $Id$
  */
 public class EventHandlerCollection<H extends EventHandler> {
 

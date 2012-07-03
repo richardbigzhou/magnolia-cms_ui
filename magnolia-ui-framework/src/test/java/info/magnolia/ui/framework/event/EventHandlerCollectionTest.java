@@ -44,8 +44,6 @@ import static org.junit.Assert.assertTrue;
 
 /**
  * Test case for {@link EventHandlerCollection}.
- *
- * @version $Id$
  */
 public class EventHandlerCollectionTest {
 

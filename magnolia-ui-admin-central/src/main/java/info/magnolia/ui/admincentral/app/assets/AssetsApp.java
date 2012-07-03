@@ -41,8 +41,6 @@ import javax.inject.Inject;
 
 /**
  * Assets app.
- *
- * @version $Id$
  */
 public class AssetsApp extends AbstractApp implements AssetsView.Presenter {
 

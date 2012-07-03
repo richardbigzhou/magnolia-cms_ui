@@ -42,8 +42,6 @@ import info.magnolia.ui.framework.location.LocationHistoryMapper;
 
 /**
  * LocationHistoryMapper that creates locations for all apps and shell apps.
- *
- * @version $Id$
  */
 public class DefaultLocationHistoryMapper implements LocationHistoryMapper {
 

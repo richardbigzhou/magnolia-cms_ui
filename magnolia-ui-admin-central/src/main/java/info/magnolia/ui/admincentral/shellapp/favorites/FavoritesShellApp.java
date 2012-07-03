@@ -42,8 +42,6 @@ import info.magnolia.ui.framework.location.Location;
 
 /**
  * Activity for favorites.
- *
- * @version $Id$
  */
 public class FavoritesShellApp implements ShellApp {
 

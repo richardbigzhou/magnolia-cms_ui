@@ -33,9 +33,6 @@
  */
 package info.magnolia.ui.framework.event;
 
-/**
- * @version $Id$
- */
 public interface TestEventHandler extends EventHandler {
 
     void handleEvent(TestEvent event);

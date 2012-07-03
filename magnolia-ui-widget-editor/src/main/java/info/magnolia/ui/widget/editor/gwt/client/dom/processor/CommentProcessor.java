@@ -42,7 +42,6 @@ import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.PageBar;
 
 /**
  * Processor for comment elements.
- * @version $Id$
  */
 public class CommentProcessor {
 

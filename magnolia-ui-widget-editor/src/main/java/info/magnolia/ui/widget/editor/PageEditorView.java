@@ -37,8 +37,6 @@ import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 /**
  * PageEditorView.
- * @version $Id$
- *
  */
 public interface PageEditorView extends IsVaadinComponent {
 

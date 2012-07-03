@@ -49,8 +49,6 @@ import javax.inject.Singleton;
 
 /**
  * Implementation of {@link DialogPresenterFactory}.
- *
- * @version $Id$
  */
 @Singleton
 public class DialogPresenterFactoryImpl implements DialogPresenterFactory {

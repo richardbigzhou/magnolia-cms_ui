@@ -37,7 +37,6 @@ import info.magnolia.ui.framework.view.View;
 
 /**
  * Interface of the main MagnoliaShell view.
- * @version $Id$
  */
 public interface MagnoliaShellView extends View {
 
@@ -47,7 +46,6 @@ public interface MagnoliaShellView extends View {
 
     /**
      * Presenter interface that interacts with MagnoliaShell view.
-     * @version $Id$
      */
     public interface Presenter {
 

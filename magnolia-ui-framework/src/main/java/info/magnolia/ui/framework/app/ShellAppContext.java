@@ -37,8 +37,6 @@ import info.magnolia.ui.framework.location.Location;
 
 /**
  * Defines functionality used by a shell app to interact with the Magnolia shell.
- *
- * @version $Id$
  */
 public interface ShellAppContext {
 

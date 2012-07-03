@@ -50,8 +50,6 @@ import java.util.List;
  * what does an invitation to add a favorite look like in the ui?
  *
  * needs ordering so users can rearrange them
- *
- * @version $Id$
  */
 public interface FavoriteManager {
 

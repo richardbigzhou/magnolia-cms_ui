@@ -40,8 +40,6 @@ import java.util.Set;
  * Wraps an EventBus to hold on to any HandlerRegistrations, so that they can easily all be cleared at once.
  *
  * Inspired by {@link com.google.gwt.event.shared.ResettableEventBus}.
- *
- * @version $Id$
  */
 public class ResettableEventBus implements EventBus {
 

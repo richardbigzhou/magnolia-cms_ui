@@ -47,8 +47,6 @@ import javax.jcr.RepositoryException;
  * Action for adding a new folder.
  *
  * TODO: add support for configuring supported itemTypes, maybe in base class where no config means all
- *
- * @version $Id$
  */
 public class AddNodeAction extends RepositoryOperationAction<AddNodeActionDefinition> implements TreeAction {
 

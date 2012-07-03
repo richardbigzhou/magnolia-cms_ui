@@ -35,8 +35,6 @@ package info.magnolia.ui.framework.editor;
 
 /**
  * Describes an editor.
- *
- * @version $Id$
  */
 public interface Editor {
 }

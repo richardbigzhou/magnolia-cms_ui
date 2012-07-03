@@ -82,7 +82,6 @@ import com.vaadin.ui.ComponentContainer;
  * <p>
  * Its main configuration point is the {@link WorkbenchDefinition} through which one defines the JCR
  * workspace to connect to, the columns/properties to display, the available actions and so on.
- * @version $Id$
  */
 @SuppressWarnings("serial")
 public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView.Presenter {

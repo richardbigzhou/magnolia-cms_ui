@@ -46,8 +46,6 @@ import com.vaadin.ui.Window;
 
 /**
  * Creates the main window. Classes that depend on having a window created can depend on this class.
- *
- * @version $Id$
  */
 @Singleton
 public class MainWindow {

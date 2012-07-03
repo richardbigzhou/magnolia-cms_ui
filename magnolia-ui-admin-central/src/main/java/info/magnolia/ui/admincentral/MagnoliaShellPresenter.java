@@ -51,8 +51,6 @@ import com.vaadin.ui.Window;
 
 /**
  * Presenter meant to bootstrap the MagnoliaShell.
- *
- * @version $Id$
  */
 public class MagnoliaShellPresenter implements MagnoliaShellView.Presenter {
     

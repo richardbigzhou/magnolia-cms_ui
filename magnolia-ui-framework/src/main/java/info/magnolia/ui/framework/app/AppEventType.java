@@ -35,8 +35,6 @@ package info.magnolia.ui.framework.app;
 
 /**
  * AppEvent Type enumeration.
- *
- * @version $Id$
  */
 public enum AppEventType {
 

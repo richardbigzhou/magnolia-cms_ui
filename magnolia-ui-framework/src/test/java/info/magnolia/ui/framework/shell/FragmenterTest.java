@@ -39,8 +39,6 @@ import static org.junit.Assert.assertNull;
 
 /**
  * Test case for {@link Fragmenter}.
- *
- * @version $Id$
  */
 public class FragmenterTest {
 

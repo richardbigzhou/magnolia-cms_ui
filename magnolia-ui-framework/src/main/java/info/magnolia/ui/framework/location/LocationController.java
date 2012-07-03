@@ -42,8 +42,6 @@ import info.magnolia.ui.framework.shell.Shell;
 
 /**
  * Manages the user's location in the app and controls location changes.
- *
- * @version $Id$
  */
 @Singleton
 public class LocationController {

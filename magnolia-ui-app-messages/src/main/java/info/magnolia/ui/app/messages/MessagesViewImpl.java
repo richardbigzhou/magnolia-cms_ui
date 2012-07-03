@@ -46,8 +46,6 @@ import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 /**
  * View implementation for the Messages app.
- *
- * @version $Id$
  */
 @SuppressWarnings("serial")
 public class MessagesViewImpl implements MessagesView, IsVaadinComponent {

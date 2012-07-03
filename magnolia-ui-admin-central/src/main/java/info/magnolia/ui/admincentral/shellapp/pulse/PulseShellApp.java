@@ -47,8 +47,6 @@ import javax.inject.Inject;
 
 /**
  * Activity for pulse.
- *
- * @version $Id$
  */
 public class PulseShellApp implements ShellApp, PulseView.Presenter {
     

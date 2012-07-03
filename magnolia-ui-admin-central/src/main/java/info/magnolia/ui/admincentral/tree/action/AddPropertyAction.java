@@ -42,8 +42,6 @@ import javax.jcr.RepositoryException;
 
 /**
  * Action for creating a new property.
- *
- * @version $Id$
  */
 public class AddPropertyAction extends RepositoryOperationAction<AddPropertyActionDefinition> implements TreeAction {
 

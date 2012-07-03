@@ -37,8 +37,6 @@ import java.util.List;
 
 /**
  * The definition for the toolbar UI element (i.e. a function toolbar).
- * @version $Id$
- *
  */
 public interface ToolbarDefinition {
     List<ToolbarItemGroupDefinition> getGroups();

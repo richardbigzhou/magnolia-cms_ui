@@ -39,8 +39,6 @@ package info.magnolia.ui.model.action;
  * instance, a place change action might provide a place object to move to via a
  * place controller. Implementations are expected to provide correct {@link Object#equals(Object)}
  * and {@link Object#hashCode()} methods.
- *
- * @version $Id$
  */
 public interface ActionDefinition {
 

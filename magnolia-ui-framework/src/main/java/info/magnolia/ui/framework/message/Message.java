@@ -35,8 +35,6 @@ package info.magnolia.ui.framework.message;
 
 /**
  * A message.
- *
- * @version $Id$
  */
 public class Message {
 

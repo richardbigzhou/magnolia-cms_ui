@@ -48,8 +48,6 @@ import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 
 /**
  * A JSNI wrapper around native javascript functions found in general.js, inline.js and others plus some utilities.
- * @version $Id$
- *
  */
 public final class JavascriptUtils {
 

@@ -37,8 +37,6 @@ import info.magnolia.ui.framework.view.ViewPort;
 
 /**
  * Manages apps running for a single user.
- *
- * @version $Id$
  */
 public interface AppController {
 

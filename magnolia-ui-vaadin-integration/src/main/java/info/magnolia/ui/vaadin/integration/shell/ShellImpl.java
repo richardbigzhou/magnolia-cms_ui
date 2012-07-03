@@ -51,8 +51,6 @@ import com.vaadin.ui.Window.Notification;
 
 /**
  * Wraps the Vaadin application.
- *
- * @version $Id$
  */
 @Singleton
 public class ShellImpl extends AbstractShell {

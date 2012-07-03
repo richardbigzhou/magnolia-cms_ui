@@ -37,8 +37,6 @@ import info.magnolia.ui.framework.app.AppView;
 
 /**
  * View for the Assets app.
- *
- * @version $Id$
  */
 public interface AssetsView extends AppView {
 
@@ -48,8 +46,6 @@ public interface AssetsView extends AppView {
 
     /**
      * Presenter.
-     *
-     * @version $Id$
      */
     public interface Presenter {
 

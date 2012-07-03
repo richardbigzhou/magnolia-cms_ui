@@ -55,8 +55,6 @@ import info.magnolia.registry.RegistrationException;
 
 /**
  * ObservedManager for {@link info.magnolia.ui.framework.app.AppDescriptor} configured in repository.
- *
- * @version $Id$
  */
 @Singleton
 public class ConfiguredAppDescriptorManager extends ModuleConfigurationObservingManager {

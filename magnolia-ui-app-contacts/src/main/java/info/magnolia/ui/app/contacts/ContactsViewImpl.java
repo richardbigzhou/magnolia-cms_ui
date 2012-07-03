@@ -43,8 +43,6 @@ import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 /**
  * View implementation for the Contacts app.
- *
- * @version $Id$
  */
 @SuppressWarnings("serial")
 public class ContactsViewImpl implements ContactsView, IsVaadinComponent {

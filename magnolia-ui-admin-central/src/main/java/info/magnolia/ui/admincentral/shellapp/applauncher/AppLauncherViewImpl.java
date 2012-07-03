@@ -115,8 +115,6 @@ public class AppLauncherViewImpl implements AppLauncherView, IsVaadinComponent {
 
     /**
      * Block in the applauncher responsible for one app category.
-     *
-     * @version $Id$
      */
     public class AppGroupComponent extends CssLayout {
 

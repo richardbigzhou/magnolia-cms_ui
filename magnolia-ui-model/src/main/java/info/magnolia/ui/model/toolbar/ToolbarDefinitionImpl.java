@@ -39,8 +39,6 @@ import java.util.List;
 
 /**
  * Implementation for {@link ToolbarDefinition}.
- * @version $Id$
- *
  */
 public class ToolbarDefinitionImpl implements ToolbarDefinition {
 

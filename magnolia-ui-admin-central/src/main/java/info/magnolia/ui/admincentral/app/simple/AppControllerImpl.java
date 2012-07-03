@@ -80,8 +80,6 @@ import com.vaadin.ui.ComponentContainer;
 
 /**
  * App controller that manages the lifecycle of running apps and raises callbacks to the app.
- *
- * @version $Id$
  */
 @Singleton
 public class AppControllerImpl implements AppController, LocationChangedEvent.Handler, LocationChangeRequestedEvent.Handler {

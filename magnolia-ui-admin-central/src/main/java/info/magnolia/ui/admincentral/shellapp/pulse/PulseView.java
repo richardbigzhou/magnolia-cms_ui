@@ -39,8 +39,6 @@ import java.util.List;
 
 /**
  * View for pulse.
- *
- * @version $Id$
  */
 public interface PulseView extends ShellView {
 

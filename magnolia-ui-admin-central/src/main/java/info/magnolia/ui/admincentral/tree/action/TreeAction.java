@@ -38,8 +38,6 @@ import javax.jcr.RepositoryException;
 
 /**
  * Interface to be implemented by actions that provide additional hints about their capabilities.
- *
- * @version $Id$
  */
 public interface TreeAction {
 
