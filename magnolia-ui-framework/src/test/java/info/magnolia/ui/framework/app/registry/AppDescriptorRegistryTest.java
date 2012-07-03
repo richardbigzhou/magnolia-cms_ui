@@ -33,8 +33,22 @@
  */
 package info.magnolia.ui.framework.app.registry;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+import javax.jcr.RepositoryException;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import info.magnolia.content2bean.Content2BeanException;
 import info.magnolia.content2bean.Content2BeanProcessor;
 import info.magnolia.content2bean.impl.Content2BeanProcessorImpl;
@@ -48,39 +62,26 @@ import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventHandler;
 import info.magnolia.ui.framework.event.SimpleSystemEventBus;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Set;
-
-import javax.jcr.RepositoryException;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 /**
- * Main Test class for {AppDescriptorRegistry}.
+ * Main Test class for {@link AppDescriptorRegistry}.
  */
 public class AppDescriptorRegistryTest {
 
     private AppDescriptorRegistry appDescriptorRegistry;
-    private AppLifecycleEventHandlerTest appLifecycleEventHandler;
-
+    private EventCollectingAppLifecycleEventHandler eventHandler;
 
     @SuppressWarnings("deprecation")
     @Before
     public void setUp() throws Exception {
         SimpleSystemEventBus eventBus = new SimpleSystemEventBus();
-        appLifecycleEventHandler = new AppLifecycleEventHandlerTest();
-        eventBus.addHandler(AppLifecycleEvent.class, appLifecycleEventHandler);
+        eventHandler = new EventCollectingAppLifecycleEventHandler();
+        eventBus.addHandler(AppLifecycleEvent.class, eventHandler);
 
         appDescriptorRegistry = new AppDescriptorRegistry(eventBus);
-
 
         TypeMappingImpl typeMapping = new TypeMappingImpl();
         ComponentsTestUtil.setInstance(Content2BeanProcessor.class, new Content2BeanProcessorImpl(typeMapping));
         ComponentsTestUtil.setImplementation(AppDescriptor.class, ConfiguredAppDescriptor.class);
-
     }
 
     @After
@@ -88,199 +89,270 @@ public class AppDescriptorRegistryTest {
         ComponentsTestUtil.clear();
     }
 
+    @Test
     public void testGetAppDescriptors() throws Content2BeanException, RepositoryException, RegistrationException {
+
         // GIVEN
         String addId = "app1";
         AppDescriptorProvider appDescriptorProvider1 = createAppDescriptorProvider(addId, "catApp1", true);
-        Collection<String> registeredIds = Arrays.asList();
-        Collection<AppDescriptorProvider> providers = Arrays.asList(appDescriptorProvider1);
+
+        appDescriptorRegistry.unregisterAndRegister(new ArrayList<String>(), Arrays.asList(appDescriptorProvider1));
 
         // WHEN
-        appDescriptorRegistry.unregisterAndRegister(registeredIds, providers);
+        Collection<AppDescriptor> descriptors = appDescriptorRegistry.getAppDescriptors();
 
         // THEN
-        // Test get getAppDescriptors()
-        Collection<AppDescriptor> res = appDescriptorRegistry.getAppDescriptors();
-
-        assertNotNull(res);
-        assertEquals(1, res.size());
-        assertEquals(addId, ((AppDescriptor)res.toArray()[0]).getName());
-        assertEquals("catApp1", ((AppDescriptor)res.toArray()[0]).getCategoryName());
+        assertNotNull(descriptors);
+        assertEquals(1, descriptors.size());
+        assertEquals(addId, ((AppDescriptor) descriptors.toArray()[0]).getName());
+        assertEquals("catApp1", ((AppDescriptor) descriptors.toArray()[0]).getCategoryName());
     }
 
+    @Test
     public void testGetAppDescriptor() throws Content2BeanException, RepositoryException, RegistrationException {
+
         // GIVEN
         String addId = "app1";
         AppDescriptorProvider appDescriptorProvider1 = createAppDescriptorProvider(addId, "catApp1", true);
-        Collection<String> registeredIds = Arrays.asList();
-        Collection<AppDescriptorProvider> providers = Arrays.asList(appDescriptorProvider1);
+
+        appDescriptorRegistry.unregisterAndRegister(new ArrayList<String>(), Arrays.asList(appDescriptorProvider1));
 
         // WHEN
-        appDescriptorRegistry.unregisterAndRegister(registeredIds, providers);
-
-        // THEN
-        // Test get getAppDescriptor(name)
         AppDescriptor appDescriptor = appDescriptorRegistry.getAppDescriptor(addId);
 
+        // THEN
         assertNotNull(appDescriptor);
         assertEquals(addId, appDescriptor.getName());
-        assertEquals("catApp1",  appDescriptor.getCategoryName());
+        assertEquals("catApp1", appDescriptor.getCategoryName());
     }
 
-    @Test(expected=RegistrationException.class)
-    public void testGetAppDescriptorThrowsException() throws Content2BeanException, RepositoryException, RegistrationException {
+    @Test(expected = RegistrationException.class)
+    public void testGetAppDescriptorThrowsExceptionWhenAppNotFound() throws Content2BeanException, RepositoryException, RegistrationException {
+
         // GIVEN
         String addId = "app1";
         AppDescriptorProvider appDescriptorProvider1 = createAppDescriptorProvider(addId, "catApp1", true);
-        Collection<String> registeredIds = Arrays.asList();
-        Collection<AppDescriptorProvider> providers = Arrays.asList(appDescriptorProvider1);
+
+        appDescriptorRegistry.unregisterAndRegister(new ArrayList<String>(), Arrays.asList(appDescriptorProvider1));
 
         // WHEN
-        appDescriptorRegistry.unregisterAndRegister(registeredIds, providers);
-
-        // THEN
-        // Test get getAppDescriptor(xx) with unregistered appName
         appDescriptorRegistry.getAppDescriptor("xx");
-
     }
 
     @Test
-    public void TestUnregisterAndRegister_Initial() throws Content2BeanException, RepositoryException, RegistrationException {
+    public void testUnregisterAndRegisterWhenEmpty() throws Content2BeanException, RepositoryException, RegistrationException {
+
         // GIVEN
         String addId = "app1";
         AppDescriptorProvider appDescriptorProvider1 = createAppDescriptorProvider(addId, "catApp1", true);
-        Collection<String> registeredIds = Arrays.asList();
-        Collection<AppDescriptorProvider> providers = Arrays.asList(appDescriptorProvider1);
 
         // WHEN
-        Set<String> res = appDescriptorRegistry.unregisterAndRegister(registeredIds, providers);
+        Set<String> registeredNames = appDescriptorRegistry.unregisterAndRegister(new ArrayList<String>(), Arrays.asList(appDescriptorProvider1));
 
         // THEN
         // appDescriptorProvider1 should be registered.
-        assertNotNull(res);
-        assertEquals(1, res.size());
-        assertEquals(addId, res.toArray()[0]);
-        assertEquals(AppEventType.REGISTERED.toString(), appLifecycleEventHandler.eventSended);
+        assertNotNull(registeredNames);
+        assertEquals(1, registeredNames.size());
+        assertEquals(addId, registeredNames.toArray()[0]);
+        assertEquals(1, eventHandler.events.size());
+        assertEquals(AppEventType.REGISTERED, eventHandler.events.get(0).getEventType());
     }
 
     @Test
-    public void TestUnregisterAndRegister_Add() throws Content2BeanException, RepositoryException, RegistrationException {
+    public void testUnregisterAndRegisterWhenAdding() throws Content2BeanException, RepositoryException, RegistrationException {
+
         // GIVEN
-        String appId1 = "app1";
-        String appId2 = "app2";
-        AppDescriptorProvider appDescriptorProvider1 = createAppDescriptorProvider(appId1, "catApp1", true);
-        AppDescriptorProvider appDescriptorProvider2 = createAppDescriptorProvider(appId2, "catApp2", true);
+        String appName1 = "app1";
+        String appName2 = "app2";
+        AppDescriptorProvider appDescriptorProvider1 = createAppDescriptorProvider(appName1, "catApp1", true);
+        AppDescriptorProvider appDescriptorProvider2 = createAppDescriptorProvider(appName2, "catApp2", true);
+
         //Add app1
-        Collection<String> registeredIds = Arrays.asList();
-        Collection<AppDescriptorProvider> providers = Arrays.asList(appDescriptorProvider1);
-        registeredIds = appDescriptorRegistry.unregisterAndRegister(registeredIds, providers);
-        assertEquals(appId1, registeredIds.toArray()[0]);
-        providers = Arrays.asList(appDescriptorProvider1,appDescriptorProvider2);
+        Set<String> registeredNames = appDescriptorRegistry.unregisterAndRegister(new ArrayList<String>(), Arrays.asList(appDescriptorProvider1));
+        assertEquals(1, registeredNames.size());
+        assertTrue(registeredNames.contains(appName1));
+        eventHandler.clear();
 
         // WHEN
-        Set<String> res = appDescriptorRegistry.unregisterAndRegister(registeredIds, providers);
+        Set<String> registeredNames2 = appDescriptorRegistry.unregisterAndRegister(registeredNames, Arrays.asList(appDescriptorProvider1, appDescriptorProvider2));
 
         // THEN
         // appDescriptorProvider1 should be registered.
-        assertNotNull(res);
-        assertEquals(2, res.size());
-        assertEquals(AppEventType.REGISTERED.toString(), appLifecycleEventHandler.eventSended);
-        assertEquals(appDescriptorRegistry.getAppDescriptor(appId2), appLifecycleEventHandler.appDescriptor);
+        assertNotNull(registeredNames2);
+        assertEquals(2, registeredNames2.size());
+        assertEquals(2, eventHandler.events.size());
+        assertContainsEvent(AppEventType.REREGISTERED, appName1);
+        assertContainsEvent(AppEventType.REGISTERED, appName2);
     }
 
-
     @Test
-    public void TestUnregisterAndRegister_Remove() throws Content2BeanException, RepositoryException, RegistrationException {
+    public void testUnregisterAndRegisterWhenRemoving() throws Content2BeanException, RepositoryException, RegistrationException {
+
         // GIVEN
-        String appId1 = "app1";
-        String appId2 = "app2";
-        AppDescriptorProvider appDescriptorProvider1 = createAppDescriptorProvider(appId1, "catApp1", true);
-        AppDescriptorProvider appDescriptorProvider2 = createAppDescriptorProvider(appId2, "catApp2", true);
+        String appName1 = "app1";
+        String appName2 = "app2";
+        AppDescriptorProvider appDescriptorProvider1 = createAppDescriptorProvider(appName1, "catApp1", true);
+        AppDescriptorProvider appDescriptorProvider2 = createAppDescriptorProvider(appName2, "catApp2", true);
+
         //Add app1
-        Collection<String> registeredIds = Arrays.asList();
+        Collection<String> registeredNames = Arrays.asList();
         Collection<AppDescriptorProvider> providers = Arrays.asList(appDescriptorProvider1);
-        registeredIds = appDescriptorRegistry.unregisterAndRegister(registeredIds, providers);
-        assertEquals(appId1, registeredIds.toArray()[0]);
+        registeredNames = appDescriptorRegistry.unregisterAndRegister(registeredNames, providers);
+        assertEquals(appName1, registeredNames.toArray()[0]);
+
         //Add app2
-        providers = Arrays.asList(appDescriptorProvider1,appDescriptorProvider2);
-        registeredIds = appDescriptorRegistry.unregisterAndRegister(registeredIds, providers);
-        providers = Arrays.asList(appDescriptorProvider1);
+        providers = Arrays.asList(appDescriptorProvider1, appDescriptorProvider2);
+        registeredNames = appDescriptorRegistry.unregisterAndRegister(registeredNames, providers);
+
+        eventHandler.clear();
 
         // WHEN
-        // Remove --> registeredIds don't contain appId2
-        Set<String> res = appDescriptorRegistry.unregisterAndRegister(registeredIds, providers);
+        // Remove --> registeredNames don't contain appName2
+        providers = Arrays.asList(appDescriptorProvider1);
+        Set<String> res = appDescriptorRegistry.unregisterAndRegister(registeredNames, providers);
 
         // THEN
         // appDescriptorProvider1 should be registered.
         assertNotNull(res);
         assertEquals(1, res.size());
-        assertEquals(AppEventType.UNREGISTERED.toString(), appLifecycleEventHandler.eventSended);
-        assertEquals(appId2, appLifecycleEventHandler.appDescriptor.getName());
+        assertEquals(2, eventHandler.events.size());
+        assertContainsEvent(AppEventType.REREGISTERED, appName1);
+        assertContainsEvent(AppEventType.UNREGISTERED, appName2);
     }
 
     @Test
-    public void TestUnregisterAndRegister_Update() throws Content2BeanException, RepositoryException, RegistrationException {
+    public void TestUnregisterAndRegisterWhenUpdating() throws Content2BeanException, RepositoryException, RegistrationException {
+
         // GIVEN
-        String appId = "app1";
-        AppDescriptorProvider appDescriptorProvider1 = createAppDescriptorProvider(appId, "catApp1", true);
-        Collection<String> registeredIds = Arrays.asList();
-        Collection<AppDescriptorProvider> providers = Arrays.asList(appDescriptorProvider1);
-        registeredIds = appDescriptorRegistry.unregisterAndRegister(registeredIds, providers);
+        String appName = "app1";
+        AppDescriptorProvider appDescriptorProvider1 = createAppDescriptorProvider(appName, "catApp1", true);
+        Set<String> registeredNames = appDescriptorRegistry.unregisterAndRegister(new ArrayList<String>(), Arrays.asList(appDescriptorProvider1));
+
         //Change content of AppDescriptor info
-        appDescriptorProvider1 = createAppDescriptorProvider(appId, "catApp2", true);
-        providers = Arrays.asList(appDescriptorProvider1);
+        AppDescriptorProvider appDescriptorProvider2 = createAppDescriptorProvider(appName, "catApp2", true);
+
+        eventHandler.clear();
+
         // WHEN
-        Set<String> res = appDescriptorRegistry.unregisterAndRegister(registeredIds, providers);
+        Set<String> registeredNames2 = appDescriptorRegistry.unregisterAndRegister(registeredNames, Arrays.asList(appDescriptorProvider2));
 
         // THEN
         // appDescriptorProvider1 should be registered.
-        assertNotNull(res);
-        assertEquals(1, res.size());
-        assertEquals(appId, res.toArray()[0]);
-        assertEquals(AppEventType.REREGISTERED.toString(), appLifecycleEventHandler.eventSended);
-        assertEquals(appDescriptorRegistry.getAppDescriptor(appId), appLifecycleEventHandler.appDescriptor);
+        assertNotNull(registeredNames2);
+        assertEquals(1, registeredNames2.size());
+        assertEquals(appName, registeredNames2.toArray()[0]);
+        assertEquals(1, eventHandler.events.size());
+        assertEquals(AppEventType.REREGISTERED, eventHandler.events.get(0).getEventType());
+        assertEquals(appDescriptorRegistry.getAppDescriptor(appName), eventHandler.events.get(0).getAppDescriptor());
     }
 
     @Test
-    public void TestUnregisterAndRegister_Duplicate() throws Content2BeanException, RepositoryException, RegistrationException {
+    public void testUnregisterAndRegisterInComplexCase() throws RepositoryException, Content2BeanException, RegistrationException {
+
         // GIVEN
+        AppDescriptorProvider appThatStays = createAppDescriptorProvider("appThatStays", "category", true);
+        AppDescriptorProvider appThatGoesAway = createAppDescriptorProvider("appThatGoesAway", "category", true);
+        AppDescriptorProvider appThatAppears = createAppDescriptorProvider("appThatAppears", "category", true);
+
+        Set<String> registeredNames = appDescriptorRegistry.unregisterAndRegister(new ArrayList<String>(), Arrays.asList(appThatStays, appThatGoesAway));
+
+        assertEquals(2, registeredNames.size());
+        assertTrue(registeredNames.contains(appThatStays.getName()));
+        assertTrue(registeredNames.contains(appThatGoesAway.getName()));
+
+        assertEquals(2, eventHandler.events.size());
+        assertContainsEvent(AppEventType.REGISTERED, appThatStays.getName());
+        assertContainsEvent(AppEventType.REGISTERED, appThatGoesAway.getName());
+
+        eventHandler.clear();
 
         // WHEN
+        Set<String> registeredNames2 = appDescriptorRegistry.unregisterAndRegister(registeredNames, Arrays.asList(appThatStays, appThatAppears));
 
         // THEN
-        // appDescriptorProvider1 should be registered.
+        assertEquals(2, registeredNames2.size());
+        assertTrue(registeredNames2.contains(appThatStays.getName()));
+        assertTrue(registeredNames2.contains(appThatAppears.getName()));
+        assertEquals(3, eventHandler.events.size());
+        assertContainsEvent(AppEventType.REREGISTERED, appThatStays.getName());
+        assertContainsEvent(AppEventType.UNREGISTERED, appThatGoesAway.getName());
+        assertContainsEvent(AppEventType.REGISTERED, appThatAppears.getName());
     }
 
+    @Test
+    public void testRegister() throws RepositoryException, Content2BeanException, RegistrationException {
 
-    private AppDescriptorProvider createAppDescriptorProvider(String name, String categoryName, boolean isEnable) throws RepositoryException, Content2BeanException{
+        // GIVEN
+        String appName = "app1";
+        AppDescriptorProvider provider = createAppDescriptorProvider(appName, "catApp1", true);
+
+        assertFalse(appDescriptorRegistry.isAppDescriptorRegistered(appName));
+
+        // WHEN
+        appDescriptorRegistry.register(provider);
+
+        // THEN
+        assertTrue(appDescriptorRegistry.isAppDescriptorRegistered(appName));
+    }
+
+    @Test
+    public void testUnregister() throws RepositoryException, Content2BeanException, RegistrationException {
+
+        // GIVEN
+        String appName = "app1";
+        AppDescriptorProvider provider = createAppDescriptorProvider(appName, "catApp1", true);
+
+        assertFalse(appDescriptorRegistry.isAppDescriptorRegistered(appName));
+
+        appDescriptorRegistry.register(provider);
+
+        assertTrue(appDescriptorRegistry.isAppDescriptorRegistered(appName));
+
+        // WHEN
+        appDescriptorRegistry.unregister(appName);
+
+        // THEN
+        assertFalse(appDescriptorRegistry.isAppDescriptorRegistered(appName));
+    }
+
+    private AppDescriptorProvider createAppDescriptorProvider(String name, String categoryName, boolean enabled) throws RepositoryException, Content2BeanException {
         MockNode node = new MockNode("name");
         node.setProperty("name", name);
         node.setProperty("categoryName", categoryName);
-        node.setProperty("enabled", isEnable);
+        node.setProperty("enabled", enabled);
         return new ConfiguredAppDescriptorProvider(node);
     }
 
-    private class AppLifecycleEventHandlerTest extends AppLifecycleEventHandler.Adapter {
-        private AppDescriptor appDescriptor = null;;
-        private String eventSended = "";
+    private void assertContainsEvent(AppEventType appEventType, String name) {
+        for (AppLifecycleEvent event : eventHandler.events) {
+            if (event.getEventType() == appEventType && event.getAppDescriptor().getName().equals(name)) {
+                return;
+            }
+        }
+        fail("Expected event " + appEventType.name() + " for app " + name);
+    }
+
+    private class EventCollectingAppLifecycleEventHandler extends AppLifecycleEventHandler.Adapter {
+
+        List<AppLifecycleEvent> events = new ArrayList<AppLifecycleEvent>();
+
+        public void clear() {
+            events.clear();
+        }
+
         @Override
         public void onAppRegistered(AppLifecycleEvent event) {
-            appDescriptor = event.getAppDescriptor();
-            eventSended = event.getEventType().name();
+            events.add(event);
         }
 
         @Override
         public void onAppUnregistered(AppLifecycleEvent event) {
-            appDescriptor = event.getAppDescriptor();
-            eventSended = event.getEventType().name();
+            events.add(event);
         }
 
         @Override
         public void onAppReRegistered(AppLifecycleEvent event) {
-            appDescriptor = event.getAppDescriptor();
-            eventSended = event.getEventType().name();
+            events.add(event);
         }
     }
-
-
 }

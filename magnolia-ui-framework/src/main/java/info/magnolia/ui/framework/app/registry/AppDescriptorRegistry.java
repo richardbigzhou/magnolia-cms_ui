@@ -41,8 +41,8 @@ import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.event.SystemEventBus;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -77,12 +77,12 @@ public class AppDescriptorRegistry {
         this.eventBus = eventBus;
     }
 
-    public AppDescriptor getAppDescriptor(String id) throws RegistrationException {
+    public AppDescriptor getAppDescriptor(String name) throws RegistrationException {
         AppDescriptorProvider provider;
         try {
-            provider = registry.getRequired(id);
+            provider = registry.getRequired(name);
         } catch (RegistrationException e) {
-            throw new RegistrationException("No app registered for id: " + id, e);
+            throw new RegistrationException("No app registered for name: " + name, e);
         }
         return provider.getAppDescriptor();
     }
@@ -114,55 +114,39 @@ public class AppDescriptorRegistry {
 
     public void register(AppDescriptorProvider provider) throws RegistrationException {
         registry.put(provider);
-        sendEvent(AppEventType.REGISTERED, Arrays.asList(provider.getAppDescriptor()));
+        sendEvent(AppEventType.REGISTERED, Collections.singleton(provider.getAppDescriptor()));
     }
 
-    public void unregister(String id) throws RegistrationException {
+    public void unregister(String name) throws RegistrationException {
         AppDescriptorProvider toRemove;
         // synchronized to make sure we don't remove one added after the get() call
         synchronized (registry) {
-            toRemove = registry.get(id);
-            registry.remove(id);
+            toRemove = registry.get(name);
+            registry.remove(name);
         }
-        sendEvent(AppEventType.UNREGISTERED, Arrays.asList(toRemove.getAppDescriptor()));
+        sendEvent(AppEventType.UNREGISTERED, Collections.singleton(toRemove.getAppDescriptor()));
     }
 
     @SuppressWarnings("unchecked")
-    public Set<String> unregisterAndRegister(Collection<String> registeredIds, Collection<AppDescriptorProvider> providers) throws RegistrationException {
+    public Set<String> unregisterAndRegister(Collection<String> registeredNames, Collection<AppDescriptorProvider> providers) throws RegistrationException {
 
         Collection<AppDescriptorProvider> initialProviders;
         Set<String> set;
-        Collection<AppDescriptorProvider> finalProviders;
 
         // synchronized to make sure concurrent puts don't interfere
         synchronized (registry) {
             initialProviders = registry.values();
-            set = registry.removeAndPutAll(registeredIds, providers);
-            finalProviders = registry.values();
+            set = registry.removeAndPutAll(registeredNames, providers);
         }
 
-        //Handle Events
-        if (CollectionUtils.isSubCollection(registeredIds, set)) {
-            // Add new AppDescriptor --> REGISTERED
-            if(CollectionUtils.disjunction(set, registeredIds).isEmpty()) {
-                // Content of one existing AppDescriptorProvider was changed
-                for(AppDescriptorProvider appProvider:initialProviders) {
-                    if(!finalProviders.contains(appProvider)){
-                        sendEvent(AppEventType.REREGISTERED, Arrays.asList(registry.get(appProvider.getName()).getAppDescriptor()));
-                    }
-                }
-            }else {
-                // Add new AppDescriptor --> REGISTERED
-                sendEvent(AppEventType.REGISTERED, getAppDescriptorsFromAppDescriptorProviders(CollectionUtils.disjunction(set, registeredIds), finalProviders));
-            }
-        } else if (CollectionUtils.isSubCollection(set, registeredIds)) {
-            // Remove AppDescriptor --> UNREGISTERED
-            sendEvent(AppEventType.UNREGISTERED, getAppDescriptorsFromAppDescriptorProviders(CollectionUtils.disjunction(registeredIds, set), initialProviders));
-        } else {
-            // Add and Remove AppDescriptor --> REGISTERED & UNREGISTERED.
-            sendEvent(AppEventType.REGISTERED, getAppDescriptorsFromAppDescriptorProviders(CollectionUtils.disjunction(set, registeredIds), finalProviders));
-            sendEvent(AppEventType.UNREGISTERED, getAppDescriptorsFromAppDescriptorProviders(CollectionUtils.disjunction(registeredIds, set), initialProviders));
-        }
+        Collection<String> added = CollectionUtils.subtract(set, registeredNames);
+        Collection<String> removed = CollectionUtils.subtract(registeredNames, set);
+        Collection<String> kept = CollectionUtils.subtract(registeredNames, removed);
+
+        sendEvent(AppEventType.REGISTERED, getAppDescriptorsFromAppDescriptorProviders(added, providers));
+        sendEvent(AppEventType.UNREGISTERED, getAppDescriptorsFromAppDescriptorProviders(removed, initialProviders));
+        sendEvent(AppEventType.REREGISTERED, getAppDescriptorsFromAppDescriptorProviders(kept, providers));
+
         return set;
     }
 
