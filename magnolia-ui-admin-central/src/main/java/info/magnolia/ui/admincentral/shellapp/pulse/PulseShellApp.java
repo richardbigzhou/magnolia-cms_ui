@@ -40,6 +40,7 @@ import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -73,14 +74,13 @@ public class PulseShellApp implements ShellApp, PulseView.Presenter {
         List<String> pathParams = parsePathParamsFromToken(pulsePlace.getToken());
         if (pathParams.size() > 0) {
             final String tabName = pathParams.remove(0);
-            final String displayedTabId = pulseView.setCurrentPulseTab(tabName, pathParams);
+            pulseView.setCurrentPulseTab(tabName, pathParams);
         }
 //        pulsePlace.setCurrentPulseTab(displayedTabId);
     }
 
     private List<String> parsePathParamsFromToken(String token) {
-        final List<String> result = new ArrayList<String>();
-        result.add(token);
+        final List<String> result = new ArrayList<String>(Arrays.asList(token.split("/")));
         return result;
     }
 

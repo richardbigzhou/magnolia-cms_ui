@@ -33,12 +33,23 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse;
 
+import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
+
+import java.util.List;
+
+import com.vaadin.ui.ComponentContainer;
 
 /**
- * Messages Pulse tab UI. 
+ * Interface for the tabs in the Pulse.
  * @author p4elkin
  *
  */
-public interface PulseMessagesView extends PulseSubView {
+public interface PulseSubView extends View, IsVaadinComponent {
 
+    void update(final List<String> params);
+    
+    @Override
+    ComponentContainer asVaadinComponent();
+    
 }

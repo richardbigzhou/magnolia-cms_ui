@@ -35,6 +35,7 @@ package info.magnolia.ui.vaadin.integration.jcr;
 
 import info.magnolia.cms.core.MetaData;
 import info.magnolia.jcr.RuntimeRepositoryException;
+import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
 
 import java.util.Collection;
@@ -143,11 +144,10 @@ public class JcrNodeAdapter extends JcrAbstractNodeAdapter  {
      *  add newly and setted property
      *  update existing modified property.
      */
-    @Override
     public Node getNode() {
         Node node = null;
         try {
-            node =  super.getNode();
+            node =  getNodeFromRepository();
             // Update property
             updateProperty(node);
 
@@ -181,7 +181,7 @@ public class JcrNodeAdapter extends JcrAbstractNodeAdapter  {
         for(Entry<String, Property> entry: changedProperties.entrySet()) {
             // JCRNAME has change --> perform the renaming and continue
             if(entry.getKey().equals(JCR_NAME) && (entry.getValue() !=null && !entry.getValue().toString().isEmpty())) {
-               node.getSession().move(node.getPath(), node.getParent().getPath()+"/"+entry.getValue().getValue());
+               node.getSession().move(node.getPath(), NodeUtil.combinePathAndName(node.getParent().getPath(), entry.getValue().getValue().toString()));
                setPath(node.getPath());
                continue;
             }

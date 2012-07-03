@@ -112,9 +112,10 @@ public class ListViewImpl implements ListView {
 
         for (Column<?> treeColumn : treeModel.getColumns().values()) {
             String columnName = treeColumn.getDefinition().getName();
+            String columnProperty = (treeColumn.getDefinition().getPropertyName()!=null)?treeColumn.getDefinition().getPropertyName():columnName;
             table.setColumnExpandRatio(columnName, treeColumn.getWidth() <= 0 ? 1 : treeColumn.getWidth());
-            container.addContainerProperty(columnName, Component.class, "");
-            table.setColumnHeader(columnName, treeColumn.getLabel());
+            container.addContainerProperty(columnProperty, Component.class, "");
+            table.setColumnHeader(columnProperty, treeColumn.getLabel());
         }
 
         table.setContainerDataSource(container);

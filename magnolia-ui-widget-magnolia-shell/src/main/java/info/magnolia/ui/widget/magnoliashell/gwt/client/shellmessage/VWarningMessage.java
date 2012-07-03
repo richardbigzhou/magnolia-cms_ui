@@ -62,6 +62,14 @@ public class VWarningMessage extends VDetailedShellMessage {
         getHeader().appendChild(detailsExpanderEl);
         
     }
+    
+    @Override
+    protected void onMessageClicked(Element targetEl) {
+        if (detailsExpanderEl == targetEl) {
+            getShell().navigateToMessageDetails(getId());
+        }
+        super.onMessageClicked(targetEl);
+    }
 
     @Override
     protected String getMessageTypeCaption() {
