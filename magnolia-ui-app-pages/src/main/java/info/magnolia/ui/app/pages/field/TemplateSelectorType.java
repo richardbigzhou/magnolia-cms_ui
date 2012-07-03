@@ -73,6 +73,9 @@ public class TemplateSelectorType extends FieldTypeBase {
         Field field = new TemplateSelectorView(buildTemplateList(fieldRelatedItem));
         field.setCaption(fieldDefinition.getLabel());
         field.setStyleName(TEMPLATESELECTOR_STYLE_NAME);
+
+        addValidatorsAndRequiredElements(fieldDefinition, field);
+
         return field;
     }
 

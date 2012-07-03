@@ -33,7 +33,19 @@
  */
 package info.magnolia.ui.admincentral.field.builder;
 
+import info.magnolia.ui.model.dialog.definition.ConfiguredFieldDefinition;
+import info.magnolia.ui.model.dialog.definition.EmailValidatorDefinition;
+import info.magnolia.ui.model.dialog.definition.FieldDefinition;
+import info.magnolia.ui.model.dialog.definition.RegexpValidatorDefinition;
+import info.magnolia.ui.model.dialog.definition.ValidatorDefinition;
 import info.magnolia.ui.model.field.definition.FieldTypeDefinition;
+
+import org.apache.commons.lang.StringUtils;
+
+import com.vaadin.data.Validator;
+import com.vaadin.data.validator.EmailValidator;
+import com.vaadin.data.validator.RegexpValidator;
+import com.vaadin.ui.Field;
 
 /**
  * An {@link FieldType} bound to an {@link FieldTypeDefinition}.
@@ -43,6 +55,7 @@ import info.magnolia.ui.model.field.definition.FieldTypeDefinition;
 public abstract class FieldTypeBase<D extends FieldTypeDefinition> implements FieldType {
 
     private D definition;
+    static final String REQUIRED_ERROR = "This field is required! (to be i18n'd)";
 
     public FieldTypeBase(D definition) {
         this.definition = definition;
@@ -50,5 +63,46 @@ public abstract class FieldTypeBase<D extends FieldTypeDefinition> implements Fi
 
     protected D getDefinition() {
         return definition;
+    }
+
+    public void addValidatorsAndRequiredElements(FieldDefinition fieldDefinition, Field input) {
+        addValidators(fieldDefinition, input);
+        if(fieldDefinition.isRequired()) {
+            addRequired(input, null);
+        }
+    }
+
+    /**
+     * Add Validators.
+     * TODO EHE: is it the good place to do this?
+     */
+    public void addValidators(FieldDefinition fieldDefinition, final Field input) {
+        Validator vaadinValidator = null;
+        for (ValidatorDefinition current: ((ConfiguredFieldDefinition) fieldDefinition).getValidators()) {
+            // TODO dlipp - this is what was defined for Sprint III. Of course this has to be enhanced later - when we have a better picture of how we want to validate.
+            if (current instanceof EmailValidatorDefinition) {
+                EmailValidatorDefinition def = (EmailValidatorDefinition) current;
+                vaadinValidator = new EmailValidator(def.getErrorMessage());
+            } else if (current instanceof RegexpValidatorDefinition) {
+                RegexpValidatorDefinition def = (RegexpValidatorDefinition) current;
+                vaadinValidator = new RegexpValidator(def.getPattern(), def.getErrorMessage());
+            }
+
+            if (vaadinValidator != null) {
+                input.addValidator(vaadinValidator);
+            }
+        }
+    }
+
+    /**
+     * Add Required on fields.
+     */
+    public void addRequired( Field input, String message) {
+        input.setRequired(true);
+        if(StringUtils.isEmpty(message)) {
+            input.setRequiredError(REQUIRED_ERROR);
+        } else {
+            input.setRequiredError(message);
+        }
     }
 }
