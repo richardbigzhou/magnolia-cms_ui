@@ -53,7 +53,7 @@ import com.vaadin.ui.Panel;
 
 /**
  * Default view implementation for Pulse.
- *
+ * 
  * @version $Id$
  */
 @SuppressWarnings("serial")
@@ -69,32 +69,31 @@ public class PulseViewImpl implements PulseView, IsVaadinComponent {
     };
 
     private enum PulseTabType {
-        DASHBOARD,
-        STATISTIC,
-        MESSAGES;
+        DASHBOARD, STATISTIC, MESSAGES;
 
         public static PulseTabType getDefault() {
             return MESSAGES;
         }
     }
-    
-    private Presenter  presenter;
+
+    private Presenter presenter;
 
     private BidiMap m = new DualHashBidiMap();
+
+    private final PulseMessagesView messagesView;
 
     @Inject
     public PulseViewImpl(final PulseMessagesView messagesView) {
 
+        this.messagesView = messagesView;
         final ShellTab stats = tabsheet.addTab("stats".toUpperCase(), createStatsLayout());
         final ShellTab messages = tabsheet.addTab("messages".toUpperCase(), messagesView.asVaadinComponent());
         final ShellTab dashboard = tabsheet.addTab("dashboard".toUpperCase(), createPulseFeedLayout());
 
-        tabsheet.updateTabNotification(messages, "2");
-
         tabsheet.addStyleName("v-pulse");
         tabsheet.setSizeFull();
         tabsheet.setWidth("900px");
-        
+
         m.put(PulseTabType.DASHBOARD, dashboard);
         m.put(PulseTabType.STATISTIC, stats);
         m.put(PulseTabType.MESSAGES, messages);
@@ -115,9 +114,17 @@ public class PulseViewImpl implements PulseView, IsVaadinComponent {
             type = PulseTabType.getDefault();
             finalDisplayedTabId = type.name().toLowerCase();
         }
-        final ShellTab tab = (ShellTab)m.get(type);
+        final ShellTab tab = (ShellTab) m.get(type);
         if (tab != null) {
             tabsheet.setActiveTab(tab);
+        }
+
+        switch (type) {
+        case MESSAGES:
+            messagesView.update(params);
+            break;
+        default:
+            break;
         }
         return finalDisplayedTabId;
     }

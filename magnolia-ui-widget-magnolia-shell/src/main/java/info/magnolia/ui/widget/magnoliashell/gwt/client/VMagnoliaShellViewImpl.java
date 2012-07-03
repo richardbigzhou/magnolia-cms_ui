@@ -381,7 +381,7 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
 
     @Override
     public void navigateToMessageDetails(String id) {
-        presenter.loadShellApp(ShellAppType.PULSE, "messages"/* + id*/);
+        presenter.loadShellApp(ShellAppType.PULSE, "messages/" + id);
     }
 
 }

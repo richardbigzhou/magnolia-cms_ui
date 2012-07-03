@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse;
 
+import java.util.List;
+
 import info.magnolia.ui.admincentral.shellapp.pulse.PulseMessageCategoryNavigator.CategoryChangedEvent;
 import info.magnolia.ui.admincentral.shellapp.pulse.PulseMessageCategoryNavigator.MessageCategoryChangedListener;
 import info.magnolia.ui.vaadin.integration.widget.HybridSelectionTable;
@@ -102,5 +104,12 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
     @Override
     public ComponentContainer asVaadinComponent() {
         return this;
+    }
+
+    @Override
+    public void update(List<String> params) {
+        if (params != null && !params.isEmpty()) {
+            messageTable.select(params.get(0));
+        }
     };
 }
