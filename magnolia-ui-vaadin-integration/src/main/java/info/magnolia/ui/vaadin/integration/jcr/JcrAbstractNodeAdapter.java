@@ -83,7 +83,7 @@ public abstract class JcrAbstractNodeAdapter extends JcrAbstractAdapter implemen
     /**
      * @return: Corresponding node or null if not existing.
      */
-    public Node getNode() {
+    public Node getNodeFromRepository() {
         return (Node) getJcrItem();
     }
 
@@ -97,9 +97,9 @@ public abstract class JcrAbstractNodeAdapter extends JcrAbstractAdapter implemen
 
         log.debug("Add new Property Item name "+id+" with value "+property.getValue());
         try {
-            if(!getNode().hasProperty((String) id)) {
+            if(!getNodeFromRepository().hasProperty((String) id)) {
                 //Create Property.
-                getNode().setProperty((String) id, (String)property.getValue());
+                getNodeFromRepository().setProperty((String) id, (String)property.getValue());
                 return true;
             } else {
                 log.warn("Property "+id+" already exist.do nothing");
@@ -120,13 +120,13 @@ public abstract class JcrAbstractNodeAdapter extends JcrAbstractAdapter implemen
     public Property getItemProperty(Object id) {
         Object value;
         try {
-            if(!getNode().hasProperty((String) id)) {
+            if(!this.getNodeFromRepository().hasProperty((String) id)) {
                 value = new String("");
                 if(JCR_NAME.equals(id)) {
-                    value = getNode().getName();
+                    value = getNodeFromRepository().getName();
                 }
             } else {
-                value = PropertyUtil.getProperty(getNode(), (String) id).getString();
+                value = PropertyUtil.getProperty(getNodeFromRepository(), (String) id).getString();
             }
         } catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);
@@ -150,9 +150,9 @@ public abstract class JcrAbstractNodeAdapter extends JcrAbstractAdapter implemen
             String name = ((DefaultProperty)property).getPropertyName();
             Object value = property.getValue();
             try {
-                if(getNode().hasProperty(name)) {
+                if(getNodeFromRepository().hasProperty(name)) {
                     log.debug("Update existing propertie: "+name+ " with value: "+value);
-                    PropertyUtil.getProperty(getNode(), name).setValue((String)value);
+                    PropertyUtil.getProperty(getNodeFromRepository(), name).setValue((String)value);
                 }else {
                     addItemProperty(name,property);
                 }
