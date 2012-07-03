@@ -128,26 +128,30 @@ public class AppDescriptorRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    public Set<String> unregisterAndRegister(Collection<String> registeredNames, Collection<AppDescriptorProvider> providers) throws RegistrationException {
+    public Set<String> unregisterAndRegister(Collection<String> namesToUnregister, Collection<AppDescriptorProvider> providersToRegister) throws RegistrationException {
 
-        Collection<AppDescriptorProvider> initialProviders;
-        Set<String> set;
+        Collection<String> namesBefore;
+        Collection<String> namesAfter;
+        Collection<AppDescriptorProvider> providersBefore;
+        Set<String> registeredNames;
 
         // synchronized to make sure concurrent puts don't interfere
         synchronized (registry) {
-            initialProviders = registry.values();
-            set = registry.removeAndPutAll(registeredNames, providers);
+            namesBefore = registry.keySet();
+            providersBefore = registry.values();
+            registeredNames = registry.removeAndPutAll(namesToUnregister, providersToRegister);
+            namesAfter = registry.keySet();
         }
 
-        Collection<String> added = CollectionUtils.subtract(set, registeredNames);
-        Collection<String> removed = CollectionUtils.subtract(registeredNames, set);
-        Collection<String> kept = CollectionUtils.subtract(registeredNames, removed);
+        Collection<String> added = CollectionUtils.subtract(namesAfter, namesBefore);
+        Collection<String> removed = CollectionUtils.subtract(namesBefore, namesAfter);
+        Collection<String> kept = CollectionUtils.subtract(namesBefore, removed);
 
-        sendEvent(AppEventType.REGISTERED, getAppDescriptorsFromAppDescriptorProviders(added, providers));
-        sendEvent(AppEventType.UNREGISTERED, getAppDescriptorsFromAppDescriptorProviders(removed, initialProviders));
-        sendEvent(AppEventType.REREGISTERED, getAppDescriptorsFromAppDescriptorProviders(kept, providers));
+        sendEvent(AppEventType.REGISTERED, getAppDescriptorsFromAppDescriptorProviders(added, providersToRegister));
+        sendEvent(AppEventType.UNREGISTERED, getAppDescriptorsFromAppDescriptorProviders(removed, providersBefore));
+        sendEvent(AppEventType.REREGISTERED, getAppDescriptorsFromAppDescriptorProviders(kept, providersToRegister));
 
-        return set;
+        return registeredNames;
     }
 
     private Collection<AppDescriptor> getAppDescriptorsFromAppDescriptorProviders(Collection<String> names, Collection<AppDescriptorProvider> providers) throws RegistrationException {

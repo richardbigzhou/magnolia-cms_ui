@@ -177,7 +177,6 @@ public class AppDescriptorRegistryTest {
         Set<String> registeredNames2 = appDescriptorRegistry.unregisterAndRegister(registeredNames, Arrays.asList(appDescriptorProvider1, appDescriptorProvider2));
 
         // THEN
-        // appDescriptorProvider1 should be registered.
         assertNotNull(registeredNames2);
         assertEquals(2, registeredNames2.size());
         assertEquals(2, eventHandler.events.size());
@@ -277,6 +276,31 @@ public class AppDescriptorRegistryTest {
         assertContainsEvent(AppEventType.REREGISTERED, appThatStays.getName());
         assertContainsEvent(AppEventType.UNREGISTERED, appThatGoesAway.getName());
         assertContainsEvent(AppEventType.REGISTERED, appThatAppears.getName());
+    }
+
+    @Test
+    public void testUnregisterAndRegisterWhenAddingFromMultipleSources() throws Content2BeanException, RepositoryException, RegistrationException {
+
+        // GIVEN
+        String appName1 = "app1";
+        String appName2 = "app2";
+        AppDescriptorProvider appDescriptorProvider1 = createAppDescriptorProvider(appName1, "catApp1", true);
+        AppDescriptorProvider appDescriptorProvider2 = createAppDescriptorProvider(appName2, "catApp2", true);
+
+        Set<String> registeredNames = appDescriptorRegistry.unregisterAndRegister(new ArrayList<String>(), Arrays.asList(appDescriptorProvider1));
+        assertEquals(1, registeredNames.size());
+        assertTrue(registeredNames.contains(appName1));
+        eventHandler.clear();
+
+        // WHEN
+        Set<String> registeredNames2 = appDescriptorRegistry.unregisterAndRegister(new ArrayList<String>(), Arrays.asList(appDescriptorProvider1, appDescriptorProvider2));
+
+        // THEN
+        assertNotNull(registeredNames2);
+        assertEquals(2, registeredNames2.size());
+        assertEquals(2, eventHandler.events.size());
+        assertContainsEvent(AppEventType.REREGISTERED, appName1);
+        assertContainsEvent(AppEventType.REGISTERED, appName2);
     }
 
     @Test
