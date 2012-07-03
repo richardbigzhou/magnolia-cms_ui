@@ -34,7 +34,6 @@
 package info.magnolia.ui.admincentral.dialog.builder;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import info.magnolia.ui.admincentral.field.builder.FieldTypeProvider;
@@ -54,8 +53,6 @@ import org.junit.Test;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.Field;
 
 
 public class DialogBuilderTest {
@@ -107,31 +104,6 @@ public class DialogBuilderTest {
         assertEquals(result, dialog);
     }
 
-    @Test
-    public void testBuildingCheckBox() {
-        // GIVEN
-        FieldDefinition def = new ConfiguredFieldDefinition();
-        def.setType(FieldDefinition.CHECKBOX_FIELD_TYPE);
 
-        // WHEN
-        Field result = FieldBuilder.build(def);
-
-        // THEN
-        assertEquals(CheckBox.class, result.getClass());
-        assertEquals(FieldBuilder.TEXTFIELD_STYLE_NAME, result.getStyleName());
-    }
-
-    @Test
-    public void testBuildingNullField() {
-        // GIVEN
-        FieldDefinition def = new ConfiguredFieldDefinition();
-        def.setType("<unkown>");
-
-        // WHEN
-        Field result = FieldBuilder.build(def);
-
-        // THEN
-        assertNull(result);
-    }
 
 }

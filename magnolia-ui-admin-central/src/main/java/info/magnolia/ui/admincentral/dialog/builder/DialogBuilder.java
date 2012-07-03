@@ -84,6 +84,7 @@ public class DialogBuilder {
                 fieldLayout.addComponent(field);
 
                 fieldContainer.addComponent(fieldLayout);
+
                 view.addField(field);
             }
 

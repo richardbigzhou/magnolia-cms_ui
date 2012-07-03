@@ -211,4 +211,13 @@ public class Dialog extends AbstractComponent implements DialogView, ServerSideH
         proxy.call("setDescription", description);
     }
 
+    @Override
+    public boolean isValid() {
+        boolean res = true;
+        for(Field field:getFields()) {
+            res &= field.isValid();
+        }
+        return res;
+    }
+
 }
