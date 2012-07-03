@@ -33,48 +33,13 @@
  */
 package info.magnolia.ui.framework.app;
 
-import info.magnolia.ui.framework.event.Event;
-
 /**
- * Event fired when the lifecycle of an app changes.
+ * Enumeration of events fired to signal changes to an apps lifecycle.
  *
+ * @see AppLifecycleEvent
  * @see AppLifecycleEventHandler
  */
-public class AppLifecycleEvent implements Event<AppLifecycleEventHandler> {
+public enum AppLifecycleEventType {
 
-    private final AppDescriptor appDescriptor;
-    private final AppLifecycleEventType eventType;
-
-    public AppLifecycleEvent(AppDescriptor app, AppLifecycleEventType eventType) {
-        this.appDescriptor = app;
-        this.eventType = eventType;
-    }
-
-    public AppDescriptor getAppDescriptor() {
-        return appDescriptor;
-    }
-
-    public AppLifecycleEventType getEventType() {
-        return eventType;
-    }
-
-    @Override
-    public void dispatch(AppLifecycleEventHandler handler) {
-
-        if (eventType == null) {
-            return;
-        }
-
-        switch (eventType) {
-            case STARTED:
-                handler.onAppStarted(this);
-                break;
-            case FOCUSED:
-                handler.onAppFocused(this);
-                break;
-            case STOPPED:
-                handler.onAppStopped(this);
-                break;
-        }
-    }
+    STARTED, STOPPED, FOCUSED
 }

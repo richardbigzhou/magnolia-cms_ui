@@ -31,50 +31,21 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app;
+package info.magnolia.ui.framework.app.registry;
 
-import info.magnolia.ui.framework.event.Event;
+import info.magnolia.ui.framework.event.EventHandler;
 
 /**
- * Event fired when the lifecycle of an app changes.
+ * Event handler interface for listening to {@link AppRegistryEvent}.
  *
- * @see AppLifecycleEventHandler
+ * @see AppRegistryEvent
+ * @see AppDescriptorRegistry
  */
-public class AppLifecycleEvent implements Event<AppLifecycleEventHandler> {
+public interface AppRegistryEventHandler extends EventHandler {
 
-    private final AppDescriptor appDescriptor;
-    private final AppLifecycleEventType eventType;
+    void onAppRegistered(AppRegistryEvent event);
 
-    public AppLifecycleEvent(AppDescriptor app, AppLifecycleEventType eventType) {
-        this.appDescriptor = app;
-        this.eventType = eventType;
-    }
+    void onAppReregistered(AppRegistryEvent event);
 
-    public AppDescriptor getAppDescriptor() {
-        return appDescriptor;
-    }
-
-    public AppLifecycleEventType getEventType() {
-        return eventType;
-    }
-
-    @Override
-    public void dispatch(AppLifecycleEventHandler handler) {
-
-        if (eventType == null) {
-            return;
-        }
-
-        switch (eventType) {
-            case STARTED:
-                handler.onAppStarted(this);
-                break;
-            case FOCUSED:
-                handler.onAppFocused(this);
-                break;
-            case STOPPED:
-                handler.onAppStopped(this);
-                break;
-        }
-    }
+    void onAppUnregistered(AppRegistryEvent event);
 }

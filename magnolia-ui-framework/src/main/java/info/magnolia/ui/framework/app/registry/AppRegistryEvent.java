@@ -31,49 +31,46 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app;
+package info.magnolia.ui.framework.app.registry;
 
+import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.event.Event;
 
 /**
- * Event fired when the lifecycle of an app changes.
+ * Event fired by {@link AppDescriptorRegistry} when changes are made to the apps it manages.
  *
- * @see AppLifecycleEventHandler
+ * @see AppRegistryEventHandler
+ * @see AppDescriptorRegistry
  */
-public class AppLifecycleEvent implements Event<AppLifecycleEventHandler> {
+public class AppRegistryEvent implements Event<AppRegistryEventHandler> {
 
+    private final AppRegistryEventType eventType;
     private final AppDescriptor appDescriptor;
-    private final AppLifecycleEventType eventType;
 
-    public AppLifecycleEvent(AppDescriptor app, AppLifecycleEventType eventType) {
-        this.appDescriptor = app;
+    public AppRegistryEvent(AppDescriptor appDescriptor, AppRegistryEventType eventType) {
         this.eventType = eventType;
+        this.appDescriptor = appDescriptor;
+    }
+
+    public AppRegistryEventType getEventType() {
+        return eventType;
     }
 
     public AppDescriptor getAppDescriptor() {
         return appDescriptor;
     }
 
-    public AppLifecycleEventType getEventType() {
-        return eventType;
-    }
-
     @Override
-    public void dispatch(AppLifecycleEventHandler handler) {
-
-        if (eventType == null) {
-            return;
-        }
-
+    public void dispatch(AppRegistryEventHandler handler) {
         switch (eventType) {
-            case STARTED:
-                handler.onAppStarted(this);
+            case REGISTERED:
+                handler.onAppRegistered(this);
                 break;
-            case FOCUSED:
-                handler.onAppFocused(this);
+            case REREGISTERED:
+                handler.onAppReregistered(this);
                 break;
-            case STOPPED:
-                handler.onAppStopped(this);
+            case UNREGISTERED:
+                handler.onAppUnregistered(this);
                 break;
         }
     }

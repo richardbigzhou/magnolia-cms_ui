@@ -47,7 +47,7 @@ import info.magnolia.ui.framework.app.App;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.app.AppEventType;
+import info.magnolia.ui.framework.app.AppLifecycleEventType;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppView;
 import info.magnolia.ui.framework.app.layout.AppCategory;
@@ -163,7 +163,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             appContext.start(eventBus, location);
 
             runningApps.put(name, appContext);
-            sendEvent(AppEventType.STARTED, descriptor);
+            sendEvent(AppLifecycleEventType.STARTED, descriptor);
         }
         return appContext;
     }
@@ -171,7 +171,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     private void doFocus(AppContextImpl appContext) {
         appContext.focus();
         appHistory.addFirst(appContext);
-        sendEvent(AppEventType.FOCUSED, appContext.getAppDescriptor());
+        sendEvent(AppLifecycleEventType.FOCUSED, appContext.getAppDescriptor());
     }
 
     private void doStop(AppContextImpl appContext) {
@@ -183,13 +183,13 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             currentApp = null;
             viewPort.setView(null);
         }
-        sendEvent(AppEventType.STOPPED, appContext.getAppDescriptor());
+        sendEvent(AppLifecycleEventType.STOPPED, appContext.getAppDescriptor());
         if (!appHistory.isEmpty()) {
             doFocus(appHistory.peekFirst());
         }
     }
 
-    private void sendEvent(AppEventType appEventType, AppDescriptor appDescriptor) {
+    private void sendEvent(AppLifecycleEventType appEventType, AppDescriptor appDescriptor) {
         eventBus.fireEvent(new AppLifecycleEvent(appDescriptor, appEventType));
     }
 

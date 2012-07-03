@@ -39,7 +39,7 @@ import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.admincentral.app.simple.AppControllerImplTest.AppEventCollector;
 import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.app.AppEventType;
+import info.magnolia.ui.framework.app.AppLifecycleEventType;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.layout.AppCategory;
 import info.magnolia.ui.framework.app.layout.AppLayout;
@@ -105,8 +105,8 @@ public class AppEventTest {
         appControler.startIfNotAlreadyRunningThenFocus(appName);
             //Initial check
         assertEquals(2, eventCollector.appLifecycleEvent.size());
-        AppControllerImplTest.checkAppEvent(eventCollector, appName, AppEventType.STARTED, 0);
-        AppControllerImplTest.checkAppEvent(eventCollector, appName, AppEventType.FOCUSED, 1);
+        AppControllerImplTest.checkAppEvent(eventCollector, appName, AppLifecycleEventType.STARTED, 0);
+        AppControllerImplTest.checkAppEvent(eventCollector, appName, AppLifecycleEventType.FOCUSED, 1);
         assertEquals(true, AppTestImpl.res.containsKey("TestPageApp0"));
         AppEventTestImpl pageApp = (AppEventTestImpl)AppTestImpl.res.get("TestPageApp0");
         EventBus bus = pageApp.eventBus;

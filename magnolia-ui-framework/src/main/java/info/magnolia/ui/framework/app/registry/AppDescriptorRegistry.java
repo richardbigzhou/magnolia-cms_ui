@@ -47,8 +47,6 @@ import org.slf4j.LoggerFactory;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.registry.RegistryMap;
 import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.app.AppEventType;
-import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.event.SystemEventBus;
 
 /**
@@ -111,7 +109,7 @@ public class AppDescriptorRegistry {
 
     public void register(AppDescriptorProvider provider) throws RegistrationException {
         registry.put(provider);
-        sendEvent(AppEventType.REGISTERED, Collections.singleton(provider.getAppDescriptor()));
+        sendEvent(AppRegistryEventType.REGISTERED, Collections.singleton(provider.getAppDescriptor()));
     }
 
     public void unregister(String name) throws RegistrationException {
@@ -121,7 +119,7 @@ public class AppDescriptorRegistry {
             toRemove = registry.get(name);
             registry.remove(name);
         }
-        sendEvent(AppEventType.UNREGISTERED, Collections.singleton(toRemove.getAppDescriptor()));
+        sendEvent(AppRegistryEventType.UNREGISTERED, Collections.singleton(toRemove.getAppDescriptor()));
     }
 
     @SuppressWarnings("unchecked")
@@ -145,9 +143,9 @@ public class AppDescriptorRegistry {
         Collection<String> kept = CollectionUtils.subtract(namesBefore, removed);
         Collection<String> changed = getAppsThatHaveChanged(kept, providersBefore, providersToRegister);
 
-        sendEvent(AppEventType.REGISTERED, getAppDescriptorsFromAppDescriptorProviders(added, providersToRegister));
-        sendEvent(AppEventType.UNREGISTERED, getAppDescriptorsFromAppDescriptorProviders(removed, providersBefore));
-        sendEvent(AppEventType.REREGISTERED, getAppDescriptorsFromAppDescriptorProviders(changed, providersToRegister));
+        sendEvent(AppRegistryEventType.REGISTERED, getAppDescriptorsFromAppDescriptorProviders(added, providersToRegister));
+        sendEvent(AppRegistryEventType.UNREGISTERED, getAppDescriptorsFromAppDescriptorProviders(removed, providersBefore));
+        sendEvent(AppRegistryEventType.REREGISTERED, getAppDescriptorsFromAppDescriptorProviders(changed, providersToRegister));
 
         return registeredNames;
     }
@@ -184,9 +182,9 @@ public class AppDescriptorRegistry {
     /**
      * Send an event to the system event bus.
      */
-    private void sendEvent(AppEventType eventType, Collection<AppDescriptor> appDescriptors) {
+    private void sendEvent(AppRegistryEventType eventType, Collection<AppDescriptor> appDescriptors) {
         for (AppDescriptor appDescriptor : appDescriptors) {
-            eventBus.fireEvent(new AppLifecycleEvent(appDescriptor, eventType));
+            eventBus.fireEvent(new AppRegistryEvent(appDescriptor, eventType));
         }
     }
 }

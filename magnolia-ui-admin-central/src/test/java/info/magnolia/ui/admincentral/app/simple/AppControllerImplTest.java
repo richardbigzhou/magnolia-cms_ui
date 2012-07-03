@@ -43,7 +43,7 @@ import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
 import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.app.AppEventType;
+import info.magnolia.ui.framework.app.AppLifecycleEventType;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventHandler;
 import info.magnolia.ui.framework.app.AppView;
@@ -69,7 +69,7 @@ import org.junit.Before;
 import com.google.gwt.editor.client.Editor.Ignore;
 
 /**
- * Test case for {@link nfo.magnolia.ui.framework.app.AppController}.
+ * Test case for {@link info.magnolia.ui.framework.app.AppController}.
  */
 public class AppControllerImplTest {
 
@@ -115,7 +115,7 @@ public class AppControllerImplTest {
         // THEN
         //Check Events
         assertEquals(1, eventCollector.appLifecycleEvent.size());
-        assertEquals(AppEventType.STARTED, eventCollector.appLifecycleEvent.get(0).getEventType());
+        assertEquals(AppLifecycleEventType.STARTED, eventCollector.appLifecycleEvent.get(0).getEventType());
         //Check App
         assertEquals(true, AppTestImpl.res.containsKey("TestPageApp0"));
         AppTestImpl pageApp = (AppTestImpl)AppTestImpl.res.get("TestPageApp0");
@@ -139,8 +139,8 @@ public class AppControllerImplTest {
         // THEN
         //Check Events
         assertEquals(2, eventCollector.appLifecycleEvent.size());
-        checkAppEvent(eventCollector, appName, AppEventType.STARTED, 0);
-        checkAppEvent(eventCollector, appName, AppEventType.FOCUSED, 1);
+        checkAppEvent(eventCollector, appName, AppLifecycleEventType.STARTED, 0);
+        checkAppEvent(eventCollector, appName, AppLifecycleEventType.FOCUSED, 1);
         //Check App
         assertEquals(true, AppTestImpl.res.containsKey("TestPageApp0"));
         AppTestImpl pageApp = (AppTestImpl)AppTestImpl.res.get("TestPageApp0");
@@ -166,9 +166,9 @@ public class AppControllerImplTest {
 
         // THEN
         assertEquals(3, eventCollector.appLifecycleEvent.size());
-        checkAppEvent(eventCollector, appName, AppEventType.STARTED, 0);
-        checkAppEvent(eventCollector, appName, AppEventType.FOCUSED, 1);
-        checkAppEvent(eventCollector, appName, AppEventType.STOPPED, 2);
+        checkAppEvent(eventCollector, appName, AppLifecycleEventType.STARTED, 0);
+        checkAppEvent(eventCollector, appName, AppLifecycleEventType.FOCUSED, 1);
+        checkAppEvent(eventCollector, appName, AppLifecycleEventType.STOPPED, 2);
         assertEquals(2, pageApp.events.size());
         assertEquals(true, pageApp.events.get(0).startsWith("start()"));
         assertEquals(true, pageApp.events.get(1).startsWith("stop()"));
@@ -196,12 +196,12 @@ public class AppControllerImplTest {
 
         // THEN
         assertEquals(6, eventCollector.appLifecycleEvent.size());
-        checkAppEvent(eventCollector, appName1, AppEventType.STARTED, 0);
-        checkAppEvent(eventCollector, appName1, AppEventType.FOCUSED, 1);
-        checkAppEvent(eventCollector, appName2, AppEventType.STARTED, 2);
-        checkAppEvent(eventCollector, appName2, AppEventType.FOCUSED, 3);
-        checkAppEvent(eventCollector, appName2, AppEventType.STOPPED, 4);
-        checkAppEvent(eventCollector, appName1, AppEventType.FOCUSED, 5);
+        checkAppEvent(eventCollector, appName1, AppLifecycleEventType.STARTED, 0);
+        checkAppEvent(eventCollector, appName1, AppLifecycleEventType.FOCUSED, 1);
+        checkAppEvent(eventCollector, appName2, AppLifecycleEventType.STARTED, 2);
+        checkAppEvent(eventCollector, appName2, AppLifecycleEventType.FOCUSED, 3);
+        checkAppEvent(eventCollector, appName2, AppLifecycleEventType.STOPPED, 4);
+        checkAppEvent(eventCollector, appName1, AppLifecycleEventType.FOCUSED, 5);
 
         assertEquals(2, pageApp2.events.size());
         assertEquals(true, pageApp2.events.get(0).startsWith("start()"));
@@ -308,23 +308,8 @@ public class AppControllerImplTest {
         public void onAppStarted(AppLifecycleEvent event) {
             appLifecycleEvent.add(event);
         }
-
-        @Override
-        public void onAppRegistered(AppLifecycleEvent event) {
-            appLifecycleEvent.add(event);
-        }
-
-        @Override
-        public void onAppUnregistered(AppLifecycleEvent event) {
-            appLifecycleEvent.add(event);
-        }
-
-        @Override
-        public void onAppReRegistered(AppLifecycleEvent event) {
-            appLifecycleEvent.add(event);
-        }
     }
-    public static void checkAppEvent(AppEventCollector eventCollector, String appName, AppEventType eventType, int position) {
+    public static void checkAppEvent(AppEventCollector eventCollector, String appName, AppLifecycleEventType eventType, int position) {
         assertEquals(eventType,  eventCollector.appLifecycleEvent.get(position).getEventType());
         assertEquals(appName, eventCollector.appLifecycleEvent.get(position).getAppDescriptor().getName());
     }

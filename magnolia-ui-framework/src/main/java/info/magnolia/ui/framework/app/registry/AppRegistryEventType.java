@@ -31,12 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app;
+package info.magnolia.ui.framework.app.registry;
 
 /**
- * AppEvent Type enumeration.
+ * Enumeration of events fired by {@link AppDescriptorRegistry}.
+ *
+ * @see AppRegistryEventHandler
+ * @see AppDescriptorRegistry
  */
-public enum AppEventType {
+public enum AppRegistryEventType {
 
-    REGISTERED, UNREGISTERED, REREGISTERED,  STARTED, STOPPED, FOCUSED
+    REGISTERED, REREGISTERED, UNREGISTERED
 }
