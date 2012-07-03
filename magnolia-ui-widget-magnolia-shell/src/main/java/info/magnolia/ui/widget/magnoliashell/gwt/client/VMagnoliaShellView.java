@@ -47,8 +47,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The view interface for MagnoliaShell (implemented by GWT part of MagnoliaShell).
- * @author apchelintcev
- *
  */
 public interface VMagnoliaShellView extends HasWidgets, IsWidget {
     
@@ -90,7 +88,6 @@ public interface VMagnoliaShellView extends HasWidgets, IsWidget {
     
     /**
      * Presenter. Meant for Vaadin part of MagnoliaShell.
-     * @author apchelintcev
      */
     interface Presenter {
         

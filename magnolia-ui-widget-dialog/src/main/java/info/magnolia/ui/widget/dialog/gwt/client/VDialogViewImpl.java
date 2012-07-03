@@ -47,8 +47,6 @@ import com.google.web.bindery.event.shared.EventBus;
 
 /**
  * GWT implementation of MagnoliaShell client side (the view part basically).
- * @author apchelintcev
- *
  */
 public class VDialogViewImpl extends FlowPanel implements VDialogView {
 

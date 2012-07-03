@@ -35,8 +35,6 @@ package info.magnolia.ui.widget.dialog.action;
 
 /**
  * Action.
- *
- * @author ejervidalo
  */
 public abstract class Action {
 

@@ -39,8 +39,6 @@ import java.util.List;
 
 /**
  * Implementation for {@link ToolbarItemGroupDefinition}.
- * @author fgrilli
- *
  */
 public class ToolbarItemGroupDefinitionImpl implements ToolbarItemGroupDefinition {
     private String groupLabel;

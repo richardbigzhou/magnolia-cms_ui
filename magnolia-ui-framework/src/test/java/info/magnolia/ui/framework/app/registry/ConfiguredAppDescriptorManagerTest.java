@@ -65,9 +65,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * @author erichechinger
- * @version $Id$
- *
+ * Test case for {@link ConfiguredAppDescriptorManager}.
  */
 public class ConfiguredAppDescriptorManagerTest {
 

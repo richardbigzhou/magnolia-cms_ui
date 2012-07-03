@@ -45,8 +45,6 @@ import com.vaadin.ui.VerticalLayout;
 
 /**
  * Component container capable of holding a single component.
- * @author apchelintcev
- *
  */
 @SuppressWarnings("serial")
 public class SimplePanel extends AbstractComponentContainer {

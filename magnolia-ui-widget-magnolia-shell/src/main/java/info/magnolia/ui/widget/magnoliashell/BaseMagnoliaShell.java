@@ -61,8 +61,6 @@ import com.vaadin.ui.Component;
 
 /**
  * Server side implementation of the MagnoliaShell container.
- *
- * @author apchelintcev
  */
 @SuppressWarnings("serial")
 @ClientWidget(value=VMagnoliaShell.class, loadStyle = LoadStyle.EAGER)

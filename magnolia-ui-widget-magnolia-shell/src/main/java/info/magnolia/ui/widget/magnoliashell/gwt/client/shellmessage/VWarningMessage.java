@@ -40,9 +40,6 @@ import com.google.gwt.user.client.Element;
 
 /**
  * Simple notification object that pops up when warnings/errors occur.
- * 
- * @author apchelintcev
- * 
  */
 public class VWarningMessage extends VDetailedShellMessage {
 

@@ -35,8 +35,6 @@ package info.magnolia.ui.model.column.definition;
 
 /**
  * Definition for column that shows the type of a property.
- *
- * @author dlipp
  */
 public class PropertyTypeColumnDefinition extends AbstractColumnDefinition {
 }

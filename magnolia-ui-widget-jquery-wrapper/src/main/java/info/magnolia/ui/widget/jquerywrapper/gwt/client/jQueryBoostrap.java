@@ -35,8 +35,6 @@ package info.magnolia.ui.widget.jquerywrapper.gwt.client;
 
 /**
  * Calls JQuery noConflict on load.
- * @author apchelintcev
- *
  */
 public class jQueryBoostrap {
     

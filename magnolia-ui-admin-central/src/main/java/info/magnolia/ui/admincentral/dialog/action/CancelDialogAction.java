@@ -40,8 +40,6 @@ import info.magnolia.ui.widget.dialog.DialogView.Presenter;
 
 /**
  * SaveDialogAction.
- *
- * @author ejervidalo
  */
 public class CancelDialogAction extends ActionBase<CancelDialogActionDefinition> {
 

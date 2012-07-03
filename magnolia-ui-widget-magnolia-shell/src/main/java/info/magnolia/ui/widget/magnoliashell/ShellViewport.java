@@ -46,8 +46,6 @@ import com.vaadin.ui.ComponentContainer;
 /**
  * The server side implementation of the shell viewport. MagnoliaShell is capable of holding of such for 
  * the shell apps, one - for the regular apps.
- * @author apchelintcev
- *
  */
 @SuppressWarnings("serial")
 @ClientWidget(value=VShellViewport.class, loadStyle = LoadStyle.EAGER)

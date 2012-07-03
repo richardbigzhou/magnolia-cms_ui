@@ -51,8 +51,6 @@ import org.junit.Test;
 /**
  * Tests for Dialog C2B.
  *
- * @author had
- * @version $Id:$
  */
 public class ConfiguredDialogProviderTest extends RepositoryTestCase {
     @Test

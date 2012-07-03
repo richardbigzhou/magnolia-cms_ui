@@ -37,8 +37,6 @@ import com.google.gwt.core.client.JavaScriptObject;
 
 /**
  * Wrapper for JQuery Callbacks API.
- * @author apchelintcev
- *
  */
 public class Callbacks extends JavaScriptObject {
     

@@ -179,8 +179,7 @@ public class AppDescriptorRegistryTest {
         // THEN
         assertNotNull(registeredNames2);
         assertEquals(2, registeredNames2.size());
-        assertEquals(2, eventHandler.events.size());
-        assertContainsEvent(AppEventType.REREGISTERED, appName1);
+        assertEquals(1, eventHandler.events.size());
         assertContainsEvent(AppEventType.REGISTERED, appName2);
     }
 
@@ -214,8 +213,7 @@ public class AppDescriptorRegistryTest {
         // appDescriptorProvider1 should be registered.
         assertNotNull(res);
         assertEquals(1, res.size());
-        assertEquals(2, eventHandler.events.size());
-        assertContainsEvent(AppEventType.REREGISTERED, appName1);
+        assertEquals(1, eventHandler.events.size());
         assertContainsEvent(AppEventType.UNREGISTERED, appName2);
     }
 
@@ -272,8 +270,7 @@ public class AppDescriptorRegistryTest {
         assertEquals(2, registeredNames2.size());
         assertTrue(registeredNames2.contains(appThatStays.getName()));
         assertTrue(registeredNames2.contains(appThatAppears.getName()));
-        assertEquals(3, eventHandler.events.size());
-        assertContainsEvent(AppEventType.REREGISTERED, appThatStays.getName());
+        assertEquals(2, eventHandler.events.size());
         assertContainsEvent(AppEventType.UNREGISTERED, appThatGoesAway.getName());
         assertContainsEvent(AppEventType.REGISTERED, appThatAppears.getName());
     }
@@ -285,7 +282,6 @@ public class AppDescriptorRegistryTest {
         String appName1 = "app1";
         String appName2 = "app2";
         AppDescriptorProvider appDescriptorProvider1 = createAppDescriptorProvider(appName1, "catApp1", true);
-        AppDescriptorProvider appDescriptorProvider2 = createAppDescriptorProvider(appName2, "catApp2", true);
 
         Set<String> registeredNames = appDescriptorRegistry.unregisterAndRegister(new ArrayList<String>(), Arrays.asList(appDescriptorProvider1));
         assertEquals(1, registeredNames.size());
@@ -293,6 +289,9 @@ public class AppDescriptorRegistryTest {
         eventHandler.clear();
 
         // WHEN
+        appDescriptorProvider1 = createAppDescriptorProvider(appName1, "catApp2", true);
+        AppDescriptorProvider appDescriptorProvider2 = createAppDescriptorProvider(appName2, "catApp2", true);
+
         Set<String> registeredNames2 = appDescriptorRegistry.unregisterAndRegister(new ArrayList<String>(), Arrays.asList(appDescriptorProvider1, appDescriptorProvider2));
 
         // THEN

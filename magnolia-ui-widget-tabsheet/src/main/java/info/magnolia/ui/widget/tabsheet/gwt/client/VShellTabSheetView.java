@@ -40,15 +40,11 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * VShellTabView.
- *
- * @author ejervidalo
  */
 public interface VShellTabSheetView extends HasWidgets, IsWidget {
 
     /**
      * Presenter.
-     *
-     * @author ejervidalo
      */
     public interface Presenter {
 

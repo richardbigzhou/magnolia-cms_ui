@@ -55,9 +55,6 @@ import com.vaadin.data.util.IndexedContainer;
 
 /**
  * Presenter of {@link PulseMessagesView}.
- * 
- * @author p4elkin
- * 
  */
 @SuppressWarnings("serial")
 public class PulseMessagesPresenter implements Serializable {

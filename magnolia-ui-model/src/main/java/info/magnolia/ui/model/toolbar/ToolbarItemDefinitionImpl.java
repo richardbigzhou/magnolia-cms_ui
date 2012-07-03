@@ -37,8 +37,6 @@ import info.magnolia.ui.model.definition.ConfiguredMenuItemDefinition;
 
 /**
  * Implementation for {@link ToolbarDefinition}.
- * @author fgrilli
- *
  */
 public class ToolbarItemDefinitionImpl extends ConfiguredMenuItemDefinition implements ToolbarItemDefinition{
 

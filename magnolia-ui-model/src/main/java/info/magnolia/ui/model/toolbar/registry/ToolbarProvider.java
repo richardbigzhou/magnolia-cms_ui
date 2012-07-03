@@ -37,8 +37,6 @@ import info.magnolia.ui.model.toolbar.ToolbarDefinition;
 
 /**
  * Provides a toolbar definition.
- * @author fgrilli
- *
  */
 public interface ToolbarProvider {
     ToolbarDefinition getToolbar();

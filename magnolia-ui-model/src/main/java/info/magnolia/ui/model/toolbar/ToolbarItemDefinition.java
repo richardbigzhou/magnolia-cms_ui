@@ -37,8 +37,6 @@ import info.magnolia.ui.model.definition.MenuItemDefinition;
 
 /**
  * Toolbar item definition.
- * @author fgrilli
- *
  */
 public interface ToolbarItemDefinition extends MenuItemDefinition {
 }

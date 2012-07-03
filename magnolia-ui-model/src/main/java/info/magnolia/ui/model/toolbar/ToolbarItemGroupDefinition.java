@@ -37,8 +37,6 @@ import java.util.List;
 
 /**
  * Represents a group of toolbar items, usually made up by a label and one or more buttons.
- * @author fgrilli
- *
  */
 public interface ToolbarItemGroupDefinition {
     List<ToolbarItemDefinition> getItems();

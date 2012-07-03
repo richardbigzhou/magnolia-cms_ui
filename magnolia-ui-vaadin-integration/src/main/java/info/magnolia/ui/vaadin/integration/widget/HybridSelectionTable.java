@@ -46,8 +46,6 @@ import com.vaadin.ui.themes.ChameleonTheme;
 
 /**
  * Hybrid selection table.
- * @author p4elkin
- *
  */
 @SuppressWarnings("serial")
 @ClientWidget(value = VHybridSelectionTable.class, loadStyle = LoadStyle.EAGER)
