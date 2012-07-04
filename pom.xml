@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>info.magnolia</groupId>
@@ -9,7 +8,7 @@
 	</parent>
 	<groupId>info.magnolia.ui</groupId>
 	<artifactId>magnolia-ui-project</artifactId>
-	<version>5.0-SNAPSHOT</version>
+	<version>5.0-m5-s3</version>
 	<name>magnolia-ui-project</name>
 	<packaging>pom</packaging>
 	<properties>
@@ -26,7 +25,8 @@
 		<connection>scm:git:http://git.magnolia-cms.com/magnolia_ui</connection>
 		<developerConnection>scm:git:https://git.magnolia-cms.com/magnolia_ui</developerConnection>
 		<url>http://git.magnolia-cms.com/gitweb/?p=magnolia_ui.git</url>
-	</scm>
+	  <tag>magnolia-ui-project-5.0-m5-s3</tag>
+  </scm>
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
