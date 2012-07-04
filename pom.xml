@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>info.magnolia</groupId>
 		<artifactId>magnolia-parent-pom-internal</artifactId>
-		<version>23</version>
+		<version>24</version>
 	</parent>
 	<groupId>info.magnolia.ui</groupId>
 	<artifactId>magnolia-ui-project</artifactId>
@@ -18,7 +18,7 @@
 		<javaVersion>1.6</javaVersion>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<magnoliaVersion>5.0-SNAPSHOT</magnoliaVersion>
+		<magnoliaVersion>5.0-m5-s3</magnoliaVersion>
 		<vaadinVersion>6.8.0</vaadinVersion>
 		<gwtVersion>2.4.0</gwtVersion>
 	</properties>
