@@ -56,7 +56,7 @@
     <dependency>
       <groupId>info.magnolia</groupId>
       <artifactId>magnolia-templating-samples</artifactId>
-      <version>${project.version}</version>
+      <version>5.0-m5-s3</version>
     </dependency>
   </dependencies>
 
