@@ -150,9 +150,17 @@ public class MessagesManagerImpl implements MessagesManager {
         synchronized (listeners) {
             for (final MessageListener listener : listeners.get(userId)) {
                 if (listener != null) {
-                    listener.messageSent(message);
+                    try {
+                        listener.messageSent(cloneMessage(message));
+                    } catch (CloneNotSupportedException e) {
+                        logger.warn("Exception caught when dispatching event: " + e.getMessage(), e);
+                    }
                 }
             }
         }
+    }
+
+    private Message cloneMessage(Message message) throws CloneNotSupportedException {
+        return message.clone();
     }
 }

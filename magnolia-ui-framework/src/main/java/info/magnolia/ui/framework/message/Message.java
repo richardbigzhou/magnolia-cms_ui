@@ -36,7 +36,7 @@ package info.magnolia.ui.framework.message;
 /**
  * A message.
  */
-public class Message {
+public class Message implements Cloneable {
 
     private String id;
 
@@ -96,5 +96,10 @@ public class Message {
 
     public void setCleared(boolean cleared) {
         this.cleared = cleared;
+    }
+
+    @Override
+    protected Message clone() throws CloneNotSupportedException {
+        return (Message) super.clone();
     }
 }
