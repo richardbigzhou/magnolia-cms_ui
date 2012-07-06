@@ -35,7 +35,6 @@ package info.magnolia.ui.admincentral.workbench;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.registry.RegistrationException;
-import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.admincentral.event.ContentChangedEvent;
 import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
@@ -43,6 +42,7 @@ import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.AppView;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
@@ -96,7 +96,7 @@ public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView
 
     private final EventBus eventBus;
 
-    private final MagnoliaShell shell;
+    private final Shell shell;
 
     private final WorkbenchActionFactory actionFactory;
 
@@ -107,7 +107,7 @@ public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView
     private AppContext context;
 
     @Inject
-    public ContentWorkbench(final AppContext context, final ContentWorkbenchView view, final EventBus eventbus, final MagnoliaShell shell, final WorkbenchDefinitionRegistry workbenchRegistry, final WorkbenchActionFactory actionFactory) {
+    public ContentWorkbench(final AppContext context, final ContentWorkbenchView view, final EventBus eventbus, final Shell shell, final WorkbenchDefinitionRegistry workbenchRegistry, final WorkbenchActionFactory actionFactory) {
         this.context = context;
         this.view = view;
         this.eventBus = eventbus;
