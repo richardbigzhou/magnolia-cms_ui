@@ -67,7 +67,7 @@ public class MessagesManagerImpl implements MessagesManager {
     }
 
     @Override
-    public void sendMessageToAllUsers(Message message) {
+    public void broadcastMessage(Message message) {
 
         Collection<User> users;
         try {

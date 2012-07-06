@@ -83,7 +83,7 @@ public interface MessagesManager {
      *
      * @param message message to send
      */
-    void sendMessageToAllUsers(Message message);
+    void broadcastMessage(Message message);
 
     /**
      * Marks a message as cleared.
