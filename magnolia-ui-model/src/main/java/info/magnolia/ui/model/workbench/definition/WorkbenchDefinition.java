@@ -36,7 +36,6 @@ package info.magnolia.ui.model.workbench.definition;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.model.column.definition.AbstractColumnDefinition;
-import info.magnolia.ui.model.toolbar.ToolbarDefinition;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -64,8 +63,6 @@ public class WorkbenchDefinition implements Serializable {
     private ActionbarDefinition actionbar;
 
     private List<ItemTypeDefinition> itemTypes = new ArrayList<ItemTypeDefinition>();
-
-    private ToolbarDefinition functionToolbar;
 
     public List<ItemTypeDefinition> getItemTypes() {
         return itemTypes;
@@ -133,14 +130,6 @@ public class WorkbenchDefinition implements Serializable {
 
     public void setActionbar(ActionbarDefinition actionbar) {
         this.actionbar = actionbar;
-    }
-
-    public ToolbarDefinition getFunctionToolbar() {
-        return functionToolbar;
-    }
-
-    public void setFunctionToolbar(ToolbarDefinition functionToolbar) {
-        this.functionToolbar = functionToolbar;
     }
 
     public ComponentProviderConfiguration getComponents() {
