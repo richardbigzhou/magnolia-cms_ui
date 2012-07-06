@@ -76,7 +76,7 @@ public class EditPageAction extends ActionBase<EditPageActionDefinition> {
 
             final PageEditorTabView view = new PageEditorTabView(componentProvider, selectedNode, actionBar);
 
-            presenter.onOpenNewView(view, new DefaultLocation("app", "app:pages:", view.getCaption()));
+            presenter.onOpenNewView(view, new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "app:pages:", view.getCaption()));
         } catch (RepositoryException e) {
             throw new ActionExecutionException(e);
         }

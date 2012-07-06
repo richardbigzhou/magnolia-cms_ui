@@ -38,6 +38,9 @@ package info.magnolia.ui.framework.location;
  */
 public class DefaultLocation implements Location {
 
+    public static final String LOCATION_TYPE_APP = "app";
+    public static final String LOCATION_TYPE_SHELL_APP = "shell";
+
     private String type;
     private String prefix;
     private String token;

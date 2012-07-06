@@ -89,11 +89,11 @@ public class DefaultLocationHistoryMapper implements LocationHistoryMapper {
 
     private boolean supported(String type, String prefix, String token) {
 
-        if (type.equals("shell") && (prefix.equals("applauncher") || prefix.equals("pulse") || prefix.equals("favorite"))) {
+        if (type.equals(DefaultLocation.LOCATION_TYPE_SHELL_APP) && (prefix.equals("applauncher") || prefix.equals("pulse") || prefix.equals("favorite"))) {
             return true;
         }
 
-        if (type.equals("app") && getAppDescriptor(prefix) != null) {
+        if (type.equals(DefaultLocation.LOCATION_TYPE_APP) && getAppDescriptor(prefix) != null) {
             return true;
         }
 

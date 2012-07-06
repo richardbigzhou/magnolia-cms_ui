@@ -83,6 +83,8 @@ import com.vaadin.ui.ComponentContainer;
 @Singleton
 public class AppControllerImpl implements AppController, LocationChangedEvent.Handler, LocationChangeRequestedEvent.Handler {
 
+    public static final String COMPONENTS_ID_PREFIX = "app-";
+
     private static final Logger log = LoggerFactory.getLogger(AppControllerImpl.class);
 
     private ModuleRegistry moduleRegistry;
@@ -277,7 +279,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
             appFrameView = new AppFrameView();
 
-            AppView view = app.start(new DefaultLocation("app", appDescriptor.getName(), appLocation.getToken()));
+            AppView view = app.start(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appDescriptor.getName(), appLocation.getToken()));
 
             currentLocation = location;
 
@@ -295,7 +297,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
          * Called when a location change occurs and the app is already running.
          */
         public void onLocationUpdate(Location location) {
-            app.locationChanged(new DefaultLocation("app", appDescriptor.getName(), ((DefaultLocation) location).getToken()));
+            app.locationChanged(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appDescriptor.getName(), ((DefaultLocation) location).getToken()));
         }
 
         public void display(ViewPort viewPort) {
@@ -313,7 +315,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         }
 
         public Location getDefaultLocation() {
-            return new DefaultLocation("app", appDescriptor.getName(), "");
+            return new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appDescriptor.getName(), "");
         }
 
         @Override
@@ -349,7 +351,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
      */
     private ComponentProvider createAppComponentProvider(String name, AppContext appContext, EventBus eventBus) {
 
-        String componentsId = "app-" + name;
+        String componentsId = COMPONENTS_ID_PREFIX + name;
 
         log.debug("Reading component configurations from module descriptors for " + componentsId);
         ComponentProviderConfigurationBuilder configurationBuilder = new ComponentProviderConfigurationBuilder();
