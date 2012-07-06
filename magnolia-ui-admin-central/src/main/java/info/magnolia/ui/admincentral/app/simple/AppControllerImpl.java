@@ -336,7 +336,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
         @Override
         public void broadcastMessage(Message message) {
-            messagesManager.sendMessageToAllUsers(message);
+            messagesManager.broadcastMessage(message);
         }
 
         @Override
