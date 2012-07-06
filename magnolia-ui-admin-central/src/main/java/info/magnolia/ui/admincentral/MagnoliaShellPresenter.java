@@ -57,7 +57,7 @@ public class MagnoliaShellPresenter implements MagnoliaShellView.Presenter {
     private final MagnoliaShellView view;
 
     @Inject
-    public MagnoliaShellPresenter(final MagnoliaShellView view, final EventBus eventBus, final AppLayoutManager appLauncherLayoutManager, final LocationController locationController, final AppController appController, final ShellAppController shellAppController, final LocalMessageDispatcher messageDispatcher, MessagesManager messagesManager) {
+    public MagnoliaShellPresenter(final MagnoliaShellView view, final EventBus eventBus, final AppLayoutManager appLayoutManager, final LocationController locationController, final AppController appController, final ShellAppController shellAppController, final LocalMessageDispatcher messageDispatcher, MessagesManager messagesManager) {
         this.view = view;
         this.view.setPresenter(this);
 
@@ -65,7 +65,7 @@ public class MagnoliaShellPresenter implements MagnoliaShellView.Presenter {
 
         appController.setViewPort(view.getRoot().getAppViewport());
 
-        DefaultLocationHistoryMapper locationHistoryMapper = new DefaultLocationHistoryMapper(appLauncherLayoutManager);
+        DefaultLocationHistoryMapper locationHistoryMapper = new DefaultLocationHistoryMapper(appLayoutManager);
         LocationHistoryHandler locationHistoryHandler = new LocationHistoryHandler(locationHistoryMapper, view.getRoot());
         locationHistoryHandler.register(locationController, eventBus, new DefaultLocation("shell", "applauncher", ""));
         messagesManager.registerMessagesListener(MgnlContext.getUser().getName(), messageDispatcher);

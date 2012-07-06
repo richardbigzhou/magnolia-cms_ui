@@ -77,6 +77,8 @@ public class LocationController {
         LocationChangeRequestedEvent willChange = new LocationChangeRequestedEvent(newLocation);
         eventBus.fireEvent(willChange);
 
+        // Listeners to this event will set warning if they want the users to confirm the location change
+
         if (willChange.getWarning() != null) {
             shell.askForConfirmation(willChange.getWarning(), new ConfirmationHandler() {
 

@@ -37,7 +37,6 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.model.ModuleDefinition;
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.objectfactory.Components;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfigurationBuilder;
 import info.magnolia.objectfactory.configuration.InstanceConfiguration;
@@ -86,6 +85,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
     private static final Logger log = LoggerFactory.getLogger(AppControllerImpl.class);
 
+    private ModuleRegistry moduleRegistry;
     private ComponentProvider componentProvider;
     private AppLayoutManager appLayoutManager;
     private LocationController locationController;
@@ -97,11 +97,11 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     private final Map<String, AppContextImpl> runningApps = new HashMap<String, AppContextImpl>();
     private final LinkedList<AppContextImpl> appHistory = new LinkedList<AppContextImpl>();
 
-
     private AppContextImpl currentApp;
 
     @Inject
-    public AppControllerImpl(ComponentProvider componentProvider, AppLayoutManager appLayoutManager, LocationController locationController, Shell shell, EventBus eventBus, MessagesManager messagesManager) {
+    public AppControllerImpl(ModuleRegistry moduleRegistry, ComponentProvider componentProvider, AppLayoutManager appLayoutManager, LocationController locationController, Shell shell, EventBus eventBus, MessagesManager messagesManager) {
+        this.moduleRegistry = moduleRegistry;
         this.locationController = locationController;
         this.componentProvider = componentProvider;
         this.appLayoutManager = appLayoutManager;
@@ -250,7 +250,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         private App app;
         private AppFrameView appFrameView;
         private Location currentLocation;
-        private ComponentProvider appProvider;
+        private ComponentProvider appComponentProvider;
 
         public AppContextImpl(AppDescriptor appDescriptor) {
             this.appDescriptor = appDescriptor;
@@ -269,11 +269,11 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
          */
         public void start(EventBus eventBus, Location location) {
 
-            this.appProvider = setAppComponentProvider(appDescriptor.getName(),this, eventBus);
+            this.appComponentProvider = createAppComponentProvider(appDescriptor.getName(), this, eventBus);
 
             DefaultLocation appLocation = (DefaultLocation) location;
 
-            app = appProvider.newInstance(appDescriptor.getAppClass());
+            app = appComponentProvider.newInstance(appDescriptor.getAppClass());
 
             appFrameView = new AppFrameView();
 
@@ -308,7 +308,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
         public void stop() {
             app.stop();
-            ((ResettableEventBus)appProvider.getComponent(EventBus.class)).reset();
+            ((ResettableEventBus) appComponentProvider.getComponent(EventBus.class)).reset();
 
         }
 
@@ -343,32 +343,30 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     }
 
     /**
-     * Create an App Provider child of admin-central and dedicated to the app.
-     * This gives us the ability to inject the AppContext into App components.
-     * In the module configuration file, for app definition, the
-     * components id name must be:
-     * app-'appname' : like app-pages.
+     * Creates a ComponentProvider as a child of the admin-central ComponentProvider dedicated to the app. This gives us
+     * the ability to inject the AppContext into App components. The components are read from module descriptors using
+     * the convention "app-" + name of the app.
      */
-    private ComponentProvider setAppComponentProvider(String name, AppContext appContext, EventBus eventBus) {
+    private ComponentProvider createAppComponentProvider(String name, AppContext appContext, EventBus eventBus) {
 
-        String componentIdName = "app-"+name;
+        String componentsId = "app-" + name;
 
-        log.debug("Read component configurations from module descriptors for "+componentIdName);
+        log.debug("Reading component configurations from module descriptors for " + componentsId);
         ComponentProviderConfigurationBuilder configurationBuilder = new ComponentProviderConfigurationBuilder();
-        List<ModuleDefinition> moduleDefinitions = Components.getComponent(ModuleRegistry.class).getModuleDefinitions();
-        ComponentProviderConfiguration configuration = configurationBuilder.getComponentsFromModules(componentIdName, moduleDefinitions);
+        List<ModuleDefinition> moduleDefinitions = moduleRegistry.getModuleDefinitions();
+        ComponentProviderConfiguration configuration = configurationBuilder.getComponentsFromModules(componentsId, moduleDefinitions);
 
-        //Add the related App AppContext into the app component provider.
+        // Add the AppContext instance into the component provider.
         configuration.addComponent(InstanceConfiguration.valueOf(AppContext.class, appContext));
-        //Add a local App's EventBus (of type ResettableEventBus) into the app component provider.
+
+        // Add a local EventBus (of type ResettableEventBus) into the app component provider.
         configuration.addComponent(InstanceConfiguration.valueOf(EventBus.class, new ResettableEventBus(eventBus)));
 
-        log.debug("Creating the component provider...");
+        log.debug("Creating component provider for app " + name);
         GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
         builder.withConfiguration(configuration);
         builder.withParent((GuiceComponentProvider) componentProvider);
-        GuiceComponentProvider componentProvider = builder.build();
 
-        return componentProvider;
-   }
+        return builder.build();
+    }
 }

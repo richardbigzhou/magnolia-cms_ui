@@ -32,11 +32,11 @@
  *
  */
 package info.magnolia.ui.admincentral.app.simple;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.ModuleRegistryImpl;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
@@ -83,6 +83,7 @@ public class AppControllerImplTest {
     @Before
     public void setUp() throws Exception{
         setAppLayoutManager();
+        ModuleRegistryImpl moduleRegistry = new ModuleRegistryImpl();
         componentProvider = initComponentProvider();
         Shell shell = mock(MagnoliaShell.class);
         MessagesManager messagesManager = mock(MessagesManagerImpl.class);
@@ -91,7 +92,7 @@ public class AppControllerImplTest {
         eventCollector = new AppEventCollector();
         eventBus.addHandler(AppLifecycleEvent.class, eventCollector);
 
-        appControler = new AppControllerImpl(componentProvider, appLayoutManager, locationController, shell, eventBus, messagesManager);
+        appControler = new AppControllerImpl(moduleRegistry, componentProvider, appLayoutManager, locationController, shell, eventBus, messagesManager);
     }
 
     @After
@@ -282,7 +283,6 @@ public class AppControllerImplTest {
     public static GuiceComponentProvider initComponentProvider() {
         GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
         ComponentProviderConfiguration components = new ComponentProviderConfiguration();
-        components.registerImplementation(ModuleRegistry.class, ModuleRegistryImpl.class);
         //Register PagesView
         components.registerImplementation(AppView.class, AppViewTestImpl.class);
         builder.withConfiguration(components);

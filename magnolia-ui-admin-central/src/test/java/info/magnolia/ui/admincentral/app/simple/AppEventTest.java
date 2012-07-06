@@ -32,9 +32,12 @@
  *
  */
 package info.magnolia.ui.admincentral.app.simple;
+
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import info.magnolia.module.ModuleRegistryImpl;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.admincentral.app.simple.AppControllerImplTest.AppEventCollector;
@@ -76,6 +79,7 @@ public class AppEventTest {
     @Before
     public void setUp() throws Exception{
         setAppLayoutManager();
+        ModuleRegistryImpl moduleRegistry = new ModuleRegistryImpl();
         componentProvider = AppControllerImplTest.initComponentProvider();
         Shell shell = mock(MagnoliaShell.class);
         MessagesManager messagesManager = mock(MessagesManagerImpl.class);
@@ -84,7 +88,7 @@ public class AppEventTest {
         eventCollector = new AppEventCollector();
         eventBus.addHandler(AppLifecycleEvent.class, eventCollector);
 
-        appControler = new AppControllerImpl(componentProvider, appLayoutManager, locationController, shell, eventBus, messagesManager);
+        appControler = new AppControllerImpl(moduleRegistry, componentProvider, appLayoutManager, locationController, shell, eventBus, messagesManager);
     }
 
     @After
