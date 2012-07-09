@@ -66,7 +66,7 @@ public interface WorkbenchDefinition extends Serializable {
     public Collection<AbstractColumnDefinition> getColumns();
 
     /**
-     * Gets the definition for the action bar related to this workbench
+     * Gets the definition for the action bar related to this workbench.
      */
     public ActionbarDefinition getActionbar();
 
