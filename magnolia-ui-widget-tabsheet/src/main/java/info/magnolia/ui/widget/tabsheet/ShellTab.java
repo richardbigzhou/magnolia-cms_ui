@@ -43,8 +43,6 @@ import com.vaadin.ui.ComponentContainer;
 
 /**
  * A tab in the shell tabsheet.
- * @author apchelintcev
- *
  */
 @SuppressWarnings("serial")
 @ClientWidget(value=VShellTabContent.class, loadStyle = LoadStyle.EAGER)

@@ -41,8 +41,6 @@ import com.vaadin.ui.UriFragmentUtility;
 
 /**
  * Historian.
- * @author fgrilli
- *
  */
 @ClientWidget(value = VHistorian.class, loadStyle = LoadStyle.EAGER)
 public class Historian extends UriFragmentUtility{

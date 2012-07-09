@@ -50,9 +50,6 @@ import com.vaadin.terminal.gwt.client.ui.VScrollTable.VScrollTableBody.VScrollTa
 
 /**
  * Client side iimpl of HybridSelection table.
- * 
- * @author p4elkin
- * 
  */
 public class VHybridSelectionTable extends VScrollTable {
 
@@ -114,9 +111,6 @@ public class VHybridSelectionTable extends VScrollTable {
     
     /**
      * Custom body.
-     * 
-     * @author p4elkin
-     * 
      */
     protected class VHybridSelectionTableBody extends VScrollTableBody {
 
@@ -129,9 +123,6 @@ public class VHybridSelectionTable extends VScrollTable {
 
         /**
          * Custom row.
-         * 
-         * @author p4elkin
-         * 
          */
         protected class VHybridSelectionTableRow extends VScrollTableBody.VScrollTableRow {
 

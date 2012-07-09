@@ -43,8 +43,6 @@ import com.vaadin.ui.NativeButton;
 
 /**
  * An extended button used in the AppLauncher.
- * @author apchelintcev
- *
  */
 @SuppressWarnings("serial")
 @ClientWidget(value = VAppButton.class, loadStyle = LoadStyle.EAGER)

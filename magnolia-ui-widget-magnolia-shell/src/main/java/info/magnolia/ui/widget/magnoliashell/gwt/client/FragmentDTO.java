@@ -37,8 +37,6 @@ import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppTy
 
 /**
  * Helper class for holding the parsed info from the fragment.
- *
- * @version $Id$
  */
 public class FragmentDTO {
     

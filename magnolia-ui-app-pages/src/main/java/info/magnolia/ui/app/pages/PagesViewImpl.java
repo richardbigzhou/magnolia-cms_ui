@@ -43,8 +43,6 @@ import javax.inject.Inject;
 
 /**
  * View implementation for the Pages app.
- *
- * @version $Id$
  */
 @SuppressWarnings("serial")
 public class PagesViewImpl implements PagesView, IsVaadinComponent {

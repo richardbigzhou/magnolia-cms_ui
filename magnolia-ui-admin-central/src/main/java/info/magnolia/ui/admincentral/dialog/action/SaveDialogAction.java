@@ -52,7 +52,6 @@ import com.vaadin.data.Item;
 
 /**
  * SaveDialogAction.
- * @version $Id$
  */
 public class SaveDialogAction extends ActionBase<SaveDialogActionDefinition> {
     private static final Logger log = LoggerFactory.getLogger(SaveDialogAction.class);

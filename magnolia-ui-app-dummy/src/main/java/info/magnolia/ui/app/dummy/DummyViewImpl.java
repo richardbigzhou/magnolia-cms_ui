@@ -42,8 +42,6 @@ import com.vaadin.ui.VerticalLayout;
 
 /**
  * View implementation for the Dummy app.
- *
- * @version $Id$
  */
 @SuppressWarnings("serial")
 public class DummyViewImpl implements DummyView, IsVaadinComponent {

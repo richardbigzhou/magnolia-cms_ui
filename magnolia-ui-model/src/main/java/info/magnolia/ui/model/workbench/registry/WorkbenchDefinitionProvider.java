@@ -38,8 +38,6 @@ import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 
 /**
  * Provides a Workbench definition.
- *
- * @version $Id$
  */
 public interface WorkbenchDefinitionProvider extends Provider<WorkbenchDefinition>{
 

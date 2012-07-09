@@ -46,7 +46,6 @@ import com.vaadin.ui.Component;
 
 /**
  * Describes a column that contains the label of the item.
- * @version $Id$
  */
 public class LabelColumn extends AbstractEditableColumn<LabelColumnDefinition> implements Serializable {
 

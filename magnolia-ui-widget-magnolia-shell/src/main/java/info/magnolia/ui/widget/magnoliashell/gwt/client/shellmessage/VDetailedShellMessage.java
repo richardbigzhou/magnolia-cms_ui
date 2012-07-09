@@ -40,8 +40,6 @@ import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShellView;
 
 /**
  * Shell message that displays the details. 
- * @author apchelintcev
- *
  */
 public abstract class VDetailedShellMessage extends VShellMessage {
 

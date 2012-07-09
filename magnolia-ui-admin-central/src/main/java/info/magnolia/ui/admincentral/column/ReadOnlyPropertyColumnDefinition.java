@@ -37,8 +37,6 @@ import info.magnolia.ui.model.column.definition.PropertyColumnDefinition;
 
 /**
  * TODO: dummy def remove it.
- * @version $Id$
- *
  */
 public class ReadOnlyPropertyColumnDefinition extends PropertyColumnDefinition {
 

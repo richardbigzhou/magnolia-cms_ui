@@ -39,9 +39,6 @@ import com.vaadin.ui.Window;
 
 /**
  * Test app for the shell development.
- * 
- * @author apchelintcev
- * 
  */
 @SuppressWarnings("serial")
 public class WidgetTestApplication extends Application {

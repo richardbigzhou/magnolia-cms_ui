@@ -53,8 +53,6 @@ import com.vaadin.ui.Panel;
 
 /**
  * Default view implementation for Pulse.
- * 
- * @version $Id$
  */
 @SuppressWarnings("serial")
 public class PulseViewImpl implements PulseView, IsVaadinComponent {

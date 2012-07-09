@@ -41,8 +41,6 @@ import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 /**
  * Implementation of MagnoliaShellView.
- * @version $Id$
- *
  */
 @SuppressWarnings("serial")
 public class MagnoliaShellViewImpl implements MagnoliaShellView, IsVaadinComponent{

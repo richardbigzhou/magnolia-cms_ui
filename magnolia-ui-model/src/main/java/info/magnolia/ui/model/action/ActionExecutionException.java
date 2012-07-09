@@ -35,8 +35,6 @@ package info.magnolia.ui.model.action;
 
 /**
  * Thrown when an {@link Action} encounters an error during execution.
- *
- * @version $Id$
  */
 public class ActionExecutionException extends Exception {
 

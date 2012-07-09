@@ -46,8 +46,6 @@ import com.vaadin.ui.Table;
  * Event handler for a table that uses JcrContainer. When the user clicks on a cell that should
  * allow editing, it converts the cell's label into an editable field. When the user finishes
  * editing, it will revert back to a label again.
- *
- * @author mrichert
  */
 public class EditHandler implements ItemClickListener
 // , ValueChangeListener

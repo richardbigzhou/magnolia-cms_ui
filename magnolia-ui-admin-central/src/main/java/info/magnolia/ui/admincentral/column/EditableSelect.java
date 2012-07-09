@@ -51,8 +51,6 @@ import com.vaadin.ui.Layout;
 
 /**
  * UI component that displays a label and on double click opens it for editing by switching the label to a select field.
- *
- * @author tmattsson
  */
 public abstract class EditableSelect extends Editable {
 

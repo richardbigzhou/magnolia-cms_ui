@@ -46,8 +46,6 @@ import org.junit.Test;
 
 /**
  * Tests for SimpleEventBus.
- *
- * @author tmattsson
  */
 public class SimpleEventBusTest {
 

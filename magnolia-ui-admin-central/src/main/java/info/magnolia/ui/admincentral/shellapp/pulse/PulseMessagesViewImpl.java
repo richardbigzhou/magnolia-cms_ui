@@ -48,8 +48,6 @@ import com.vaadin.ui.VerticalLayout;
 
 /**
  * Implementation of {@link PulseMessagesView}.
- * @author p4elkin
- *
  */
 @SuppressWarnings("serial")
 public class PulseMessagesViewImpl extends CustomComponent implements PulseMessagesView {

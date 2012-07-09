@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,17 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.toolbar;
-
-import java.util.List;
+package info.magnolia.ui.framework.app.registry;
 
 /**
- * Represents a group of toolbar items, usually made up by a label and one or more buttons.
- * @author fgrilli
+ * Enumeration of events fired by {@link AppDescriptorRegistry}.
  *
+ * @see AppRegistryEventHandler
+ * @see AppDescriptorRegistry
  */
-public interface ToolbarItemGroupDefinition {
-    List<ToolbarItemDefinition> getItems();
-    String getGroupLabel();
-    String getName();
+public enum AppRegistryEventType {
+
+    REGISTERED, REREGISTERED, UNREGISTERED
 }

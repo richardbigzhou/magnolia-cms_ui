@@ -46,8 +46,6 @@ import com.vaadin.ui.themes.ChameleonTheme;
 
 /**
  * Tree table that supports the hybrid selection model (with checkboxes). 
- * @author apchelintcev
- *
  */
 @SuppressWarnings("serial")
 @ClientWidget(value = VHybridSelectionTreeTable.class, loadStyle = LoadStyle.EAGER)

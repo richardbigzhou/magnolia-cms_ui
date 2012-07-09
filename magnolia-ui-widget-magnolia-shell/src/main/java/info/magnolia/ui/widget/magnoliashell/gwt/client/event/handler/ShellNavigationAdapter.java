@@ -39,8 +39,6 @@ import info.magnolia.ui.widget.magnoliashell.gwt.client.event.ShellAppNavigation
 
 /**
  * Helper class in case somebody doesn't want to implement all the methods of the interface.
- * @author apchelintcev
- *
  */
 public class ShellNavigationAdapter implements ShellNavigationHandler {
 

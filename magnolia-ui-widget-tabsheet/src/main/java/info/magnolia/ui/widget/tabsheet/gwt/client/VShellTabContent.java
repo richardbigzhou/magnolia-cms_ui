@@ -46,8 +46,6 @@ import com.vaadin.terminal.gwt.client.UIDL;
 
 /**
  * Tab class for a tabsheet.
- * @author apchelintcev
- *
  */
 public class VShellTabContent extends ScrollPanel implements Container {
 

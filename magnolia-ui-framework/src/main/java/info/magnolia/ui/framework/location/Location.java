@@ -35,8 +35,6 @@ package info.magnolia.ui.framework.location;
 
 /**
  * Represents a location within an app, such as the open view and the selected item.
- *
- * @version $Id$
  */
 public interface Location {
 

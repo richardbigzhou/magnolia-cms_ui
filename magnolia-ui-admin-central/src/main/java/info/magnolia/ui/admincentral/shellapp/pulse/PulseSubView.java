@@ -42,8 +42,6 @@ import com.vaadin.ui.ComponentContainer;
 
 /**
  * Interface for the tabs in the Pulse.
- * @author p4elkin
- *
  */
 public interface PulseSubView extends View, IsVaadinComponent {
 

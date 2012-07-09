@@ -35,8 +35,6 @@ package info.magnolia.ui.model.dialog.definition;
 
 /**
  * Field definition for a upload field.
- *
- * @version $Id$
  */
 public class FileUploadFieldDefinition extends ConfiguredFieldDefinition {
 

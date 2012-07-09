@@ -40,8 +40,6 @@ import com.google.gwt.event.shared.EventHandler;
 
 /**
  * Handler of the {@link ViewportCloseEvent}.
- * @author apchelintcev
- *
  */
 public interface ViewportCloseHandler extends EventHandler {
     void onViewportClose(final ViewportCloseEvent event);

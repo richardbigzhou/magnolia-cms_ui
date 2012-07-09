@@ -41,12 +41,6 @@ import info.magnolia.ui.framework.event.TestEvent;
 
 import com.google.inject.Inject;
 
-
-/**
- * @author erichechinger
- * @version $Id$
- *
- */
 public class AppEventTestImpl extends AppTestImpl {
 
     public EventBus eventBus;

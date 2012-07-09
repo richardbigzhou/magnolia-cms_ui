@@ -54,7 +54,6 @@ import com.vaadin.ui.Window;
 
 /**
  * The Application's "main" class.
- * @version $Id$
  */
 @SuppressWarnings("serial")
 public class AdminCentralApplication extends Application {

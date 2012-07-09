@@ -39,8 +39,6 @@ import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 
 /**
  * Abstract Widget for area and component placeholder.
- *
- * @version $Id$
  */
 public class AbstractPlaceHolder extends FlowPanel {
 

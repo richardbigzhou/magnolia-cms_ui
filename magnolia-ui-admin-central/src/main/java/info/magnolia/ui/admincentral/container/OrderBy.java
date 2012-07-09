@@ -35,7 +35,6 @@ package info.magnolia.ui.admincentral.container;
 
 /**
  * Represents a sorting rule to be applied to a query.
- * @version $Id$
  */
 public class OrderBy {
 

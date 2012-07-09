@@ -66,8 +66,6 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
 
     /**
      * Enumeration of possible viewport types.
-     * @author apchelintcev
-     *
      */
     public enum ViewportType {
         SHELL_APP_VIEWPORT("shell:"),

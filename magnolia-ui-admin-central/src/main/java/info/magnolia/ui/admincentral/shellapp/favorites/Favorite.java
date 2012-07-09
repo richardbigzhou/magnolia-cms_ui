@@ -35,8 +35,6 @@ package info.magnolia.ui.admincentral.shellapp.favorites;
 
 /**
  * Represents a favorite.
- *
- * @version $Id$
  */
 public class Favorite {
 

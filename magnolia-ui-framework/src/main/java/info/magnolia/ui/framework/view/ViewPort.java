@@ -35,8 +35,6 @@ package info.magnolia.ui.framework.view;
 
 /**
  * Implemented by displays that can be given an {@link View} to show.
- *
- * @version $Id$
  */
 public interface ViewPort {
 

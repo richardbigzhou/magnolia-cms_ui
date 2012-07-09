@@ -59,8 +59,6 @@ import com.vaadin.ui.Field;
 
 /**
  * Server side implementation of the MagnoliaShell container.
- *
- * @author apchelintcev
  */
 @SuppressWarnings("serial")
 @ClientWidget(value=VDialog.class, loadStyle = LoadStyle.EAGER)

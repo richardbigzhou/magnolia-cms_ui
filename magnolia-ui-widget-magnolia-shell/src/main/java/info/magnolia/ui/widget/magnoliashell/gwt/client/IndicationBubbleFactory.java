@@ -39,9 +39,6 @@ import org.vaadin.gwtgraphics.client.shape.Ellipse;
 /**
  * Factory for generating the pads for the indicators in the
  * {@link MainLauncher}.
- * 
- * @author p4elkin
- * 
  */
 public class IndicationBubbleFactory {
 

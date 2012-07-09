@@ -39,8 +39,6 @@ import com.google.gwt.event.shared.GwtEvent;
 
 /**
  * Event fired when the active tab in the tabsheet is changed.
- * @author apchelintcev
- *
  */
 public class ActiveTabChangedEvent extends GwtEvent<ActiveTabChangedHandler>{
 

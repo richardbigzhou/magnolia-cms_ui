@@ -38,8 +38,6 @@ import info.magnolia.ui.model.definition.MenuItemDefinition;
 
 /**
  * DialogActionDefinition.
- * 
- * @author ejervidalo
  */
 public interface DialogActionDefinition extends MenuItemDefinition {
 

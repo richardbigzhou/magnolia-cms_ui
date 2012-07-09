@@ -37,8 +37,6 @@ import info.magnolia.ui.framework.message.MessageType;
 
 /**
  * An entry in the activity stream for a user.
- *
- * @version $Id$
  */
 public class ActivityStreamEntry {
 

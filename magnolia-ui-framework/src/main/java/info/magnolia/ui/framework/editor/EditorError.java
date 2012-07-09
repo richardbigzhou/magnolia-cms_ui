@@ -35,8 +35,6 @@ package info.magnolia.ui.framework.editor;
 
 /**
  * Describes an error as reported to EditorDelegate.recordError().
- *
- * @version $Id$
  */
 public interface EditorError {
 

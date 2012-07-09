@@ -40,7 +40,6 @@ import javax.inject.Singleton;
  *
  * Inspired by {@link com.google.gwt.event.shared.SimpleEventBus}.
  *
- * @version $Id$
  * @see SystemEventBus
  */
 @Singleton

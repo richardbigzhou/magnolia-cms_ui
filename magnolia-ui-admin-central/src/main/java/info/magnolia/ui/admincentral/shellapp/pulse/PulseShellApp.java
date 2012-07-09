@@ -47,8 +47,6 @@ import javax.inject.Inject;
 
 /**
  * Activity for pulse.
- *
- * @version $Id$
  */
 public class PulseShellApp implements ShellApp, PulseView.Presenter {
     
@@ -86,6 +84,6 @@ public class PulseShellApp implements ShellApp, PulseView.Presenter {
 
     @Override
     public void onPulseTabChanged(String tabId) {
-        context.setAppLocation(new DefaultLocation("shell", "pulse", tabId));
+        context.setAppLocation(new DefaultLocation(DefaultLocation.LOCATION_TYPE_SHELL_APP, "pulse", tabId));
     }
 }

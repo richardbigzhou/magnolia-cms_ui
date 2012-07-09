@@ -44,8 +44,6 @@ import javax.inject.Singleton;
 
 /**
  * Dispatches events on an {@link EventBus} for a certain user.
- *
- * @version $Id$
  */
 @Singleton
 public class LocalMessageDispatcher implements MessageListener {

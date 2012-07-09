@@ -41,7 +41,6 @@ import info.magnolia.ui.model.builder.FactoryBase;
  *
  * @param <D> definition parent type
  * @param <I> implementation parent type
- * @version $Id$
  * @see FactoryBase
  */
 public abstract class AbstractActionFactory<D extends ActionDefinition, I extends Action> extends FactoryBase<D, I> {

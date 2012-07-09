@@ -48,8 +48,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A flat implementation of {@link JcrContainer} where relationships are not taken into account.
- * @author fgrilli
- *
  */
 public class FlatJcrContainer extends JcrContainer {
 

@@ -37,8 +37,6 @@ import info.magnolia.ui.framework.location.Location;
 
 /**
  * Defines a shell app.
- *
- * @version $Id$
  */
 public interface ShellApp {
 

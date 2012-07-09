@@ -45,8 +45,6 @@ import java.util.List;
 
 /**
  * Preview button composed by two buttons: left-hand side button is for the default action, whereas right-hand side button will display a dropdown menu with further options.
- * @version $Id$
- *
  */
 public final class PreviewButton extends Composite {
 

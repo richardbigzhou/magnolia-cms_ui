@@ -41,8 +41,6 @@ import com.vaadin.terminal.gwt.client.Paintable;
 
 /**
  * VDialogView.
- *
- * @author ejervidalo
  */
 public interface VDialogView extends IsWidget {
 

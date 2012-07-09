@@ -46,8 +46,6 @@ import javax.inject.Inject;
 
 /**
  * Messages app.
- *
- * @version $Id$
  */
 public class MessagesApp extends AbstractApp implements MessagesView.Presenter {
 

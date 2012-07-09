@@ -38,8 +38,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * VPageEditorView.
- * @version $Id$
- *
  */
 public interface VPageEditorView extends IsWidget {
 

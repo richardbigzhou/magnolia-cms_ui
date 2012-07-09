@@ -38,15 +38,11 @@ import info.magnolia.ui.framework.app.layout.AppLayout;
 
 /**
  * View for the app launcher.
- *
- * @version $Id$
  */
 public interface AppLauncherView extends ShellView {
 
     /**
      * Presenter.
-     *
-     * @version $Id$
      */
     public interface Presenter {
 

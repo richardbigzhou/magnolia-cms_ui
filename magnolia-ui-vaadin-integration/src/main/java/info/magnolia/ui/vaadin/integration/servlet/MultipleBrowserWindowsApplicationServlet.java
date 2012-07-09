@@ -59,8 +59,6 @@ import com.vaadin.ui.Window;
  * Vaadin ApplicationServlet that supports running a unique Application per browser window. The applications are
  * identified in the URIs used by UIDL requests and file downloads. The browser keeps track of which application is
  * being used for the browser window (or tab) using the document.name property.
- *
- * @version $Id$
  */
 public class MultipleBrowserWindowsApplicationServlet extends MagnoliaIcePushServlet {
 

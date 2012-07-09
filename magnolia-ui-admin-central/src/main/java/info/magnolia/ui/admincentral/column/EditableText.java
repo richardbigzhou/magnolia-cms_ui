@@ -47,8 +47,6 @@ import com.vaadin.ui.TextField;
 
 /**
  * UI component that displays a label and on double click opens it for editing by switching the label to save text field.
- *
- * @author tmattsson
  */
 public abstract class EditableText extends Editable {
 

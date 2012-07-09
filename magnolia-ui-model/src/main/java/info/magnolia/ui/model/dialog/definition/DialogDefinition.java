@@ -41,8 +41,6 @@ import java.util.List;
 
 /**
  * DialogDefinition.
- *
- * @author ejervidalo
  */
 public interface DialogDefinition extends UiItemDefinition {
 

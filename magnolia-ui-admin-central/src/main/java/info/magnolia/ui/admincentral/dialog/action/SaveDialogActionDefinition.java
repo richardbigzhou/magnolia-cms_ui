@@ -38,8 +38,6 @@ import info.magnolia.ui.model.action.ActionDefinition;
 
 /**
  * SaveDialogActionDefinition.
- *
- * @author ejervidalo
  */
 public class SaveDialogActionDefinition implements ActionDefinition {
 

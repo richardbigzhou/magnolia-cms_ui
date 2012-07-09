@@ -39,8 +39,6 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * Utility for using paths as returned by the {@link HttpServletRequest} class.
- *
- * @version $Id$
  */
 public class RequestPathUtil {
 

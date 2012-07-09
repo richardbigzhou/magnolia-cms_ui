@@ -38,8 +38,6 @@ import javax.jcr.RepositoryException;
 
 /**
  * An editor that implements its own strategy for persistence.
- *
- * @version $Id$
  */
 public interface NodeEditor extends Editor {
 

@@ -63,8 +63,6 @@ import com.vaadin.terminal.gwt.client.UIDL;
 
 /**
  * Client side implementation of the simple tab sheet.
- * @author apchelintcev
- *
  */
 @SuppressWarnings("serial")
 public class VShellTabSheet extends Composite implements HasWidgets, VShellTabSheetView.Presenter, Container, ClientSideHandler {

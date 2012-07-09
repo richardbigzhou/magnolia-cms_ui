@@ -55,8 +55,6 @@ import static info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils.get
 
 /**
  * A Widget for adding components to area.
- *
- * @version $Id$
  */
 public class ComponentPlaceHolder extends AbstractPlaceHolder {
 

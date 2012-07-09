@@ -40,9 +40,6 @@ import com.google.gwt.event.shared.GwtEvent;
 
 /**
  * Navigation event fired when the controls in the headers are triggered.
- * 
- * @author apchelintcev
- * 
  */
 public class ShellAppNavigationEvent extends GwtEvent<ShellNavigationHandler> {
     

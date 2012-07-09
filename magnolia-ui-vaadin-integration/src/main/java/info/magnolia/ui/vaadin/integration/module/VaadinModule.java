@@ -38,9 +38,6 @@ import info.magnolia.module.ModuleLifecycleContext;
 
 /**
  * Initializes the Vaadin module.
- * @author fgrilli
- * @version $Id$
- *
  */
 public class VaadinModule  implements ModuleLifecycle {
 

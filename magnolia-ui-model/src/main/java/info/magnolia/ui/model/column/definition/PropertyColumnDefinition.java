@@ -35,8 +35,6 @@ package info.magnolia.ui.model.column.definition;
 
 /**
  * Definition for a column that shows the value of a property.
- *
- * @author dlipp
  */
 public class PropertyColumnDefinition extends AbstractColumnDefinition {
 

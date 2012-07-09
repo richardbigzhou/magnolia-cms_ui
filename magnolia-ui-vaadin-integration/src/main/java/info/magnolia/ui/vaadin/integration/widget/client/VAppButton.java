@@ -41,8 +41,6 @@ import com.vaadin.terminal.gwt.client.ui.VNativeButton;
 
 /**
  * Client side impl of AppButton.
- * @author p4elkin
- *
  */
 public class VAppButton extends VNativeButton {
 

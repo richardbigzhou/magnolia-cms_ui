@@ -48,8 +48,6 @@ import com.vaadin.ui.Label;
  * Base class for tree columns.
  *
  * @param <D> type of the definition for this column.
- *
- * @version $Id$
  */
 public abstract class AbstractColumn<D extends AbstractColumnDefinition> implements Column<AbstractColumnDefinition> {
     protected static final Label EMPTY_LABEL = new Label();

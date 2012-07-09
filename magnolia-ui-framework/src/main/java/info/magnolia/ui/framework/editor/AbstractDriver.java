@@ -41,14 +41,11 @@ import java.util.List;
  * Abstract support class for classes implementing the Driver interface.
  *
  * @param <T> the type of entity to edit
- * @version $Id$
  */
 public abstract class AbstractDriver<T> implements Driver<T> {
 
     /**
      * Trivial implementation of EditorError.
-     *
-     * @version $Id$
      */
     private static class SimpleEditorError implements EditorError {
 

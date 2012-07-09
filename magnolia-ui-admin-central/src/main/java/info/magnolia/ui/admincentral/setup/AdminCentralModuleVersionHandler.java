@@ -37,8 +37,6 @@ import info.magnolia.module.DefaultModuleVersionHandler;
 
 /**
  * VersionHandler for the Admin Central module.
- *
- * @version $Id$
  */
 public class AdminCentralModuleVersionHandler extends DefaultModuleVersionHandler {
 }

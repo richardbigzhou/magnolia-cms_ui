@@ -42,8 +42,6 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * JQuery library wrapper. The functionality covered is ruled by 
  * the needs of MagnoliaShell (and its parts) implementation.
- * @author apchelintcev
- *
  */
 public class JQueryWrapper extends JavaScriptObject {
     

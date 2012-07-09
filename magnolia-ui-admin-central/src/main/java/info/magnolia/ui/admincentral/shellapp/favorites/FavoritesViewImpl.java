@@ -43,8 +43,6 @@ import com.vaadin.ui.Label;
 
 /**
  * Default view implementation for favorites.
- *
- * @version $Id$
  */
 @SuppressWarnings("serial")
 public class FavoritesViewImpl extends CustomComponent implements FavoritesView, IsVaadinComponent {

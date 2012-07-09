@@ -42,7 +42,7 @@ public interface AppLayoutManager {
      * Return the {@link AppLayout} defined for the current user.
      * Return an empty AppLayout if nothing set for profile.
      */
-    public AppLayout getLayout();
+    AppLayout getLayout();
 
     /**
      * Check if the given App name is part of the categories defined for the current profile.

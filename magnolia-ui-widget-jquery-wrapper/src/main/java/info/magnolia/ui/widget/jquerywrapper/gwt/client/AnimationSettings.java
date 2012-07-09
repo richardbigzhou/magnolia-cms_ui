@@ -42,8 +42,6 @@ import com.google.gwt.json.client.JSONString;
 
 /**
  * Helper class that holds the animation settings.
- * @author p4elkin
- *
  */
 public class AnimationSettings {
     

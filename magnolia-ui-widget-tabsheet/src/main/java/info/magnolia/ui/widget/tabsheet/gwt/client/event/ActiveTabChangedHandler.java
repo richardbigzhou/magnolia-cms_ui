@@ -37,8 +37,6 @@ import com.google.gwt.event.shared.EventHandler;
 
 /**
  * Handler of the active tab changed event.
- * @author apchelintcev
- *
  */
 public interface ActiveTabChangedHandler extends EventHandler {
     void onActiveTabChanged(final ActiveTabChangedEvent event);

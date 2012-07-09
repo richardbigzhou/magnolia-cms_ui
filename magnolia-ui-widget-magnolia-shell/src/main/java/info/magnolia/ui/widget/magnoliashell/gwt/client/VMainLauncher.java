@@ -65,8 +65,6 @@ import com.google.web.bindery.event.shared.HandlerRegistration;
 
 /**
  * Navigation bar.
- * @author apchelintcev
- *
  */
 public class VMainLauncher extends FlowPanel {
     

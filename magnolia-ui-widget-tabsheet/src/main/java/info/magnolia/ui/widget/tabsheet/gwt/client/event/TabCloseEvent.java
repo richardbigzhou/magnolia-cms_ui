@@ -39,8 +39,6 @@ import com.google.gwt.event.shared.GwtEvent;
 
 /**
  * Event that is fired when the tab is closed.
- * @author p4elkin
- *
  */
 public class TabCloseEvent extends GwtEvent<TabCloseEventHandler>{
 

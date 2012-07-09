@@ -109,7 +109,7 @@ public class MessagesManagerImplTest {
     }
 
     @Test
-    public void testSendMessageToAllUsers() throws RepositoryException {
+    public void testBroadcastMessage() throws RepositoryException {
 
         MessagesManager.MessageListener listenerA = mock(MessagesManager.MessageListener.class);
         messagesManager.registerMessagesListener("alice", listenerA);
@@ -123,7 +123,7 @@ public class MessagesManagerImplTest {
         message.setType(MessageType.ERROR);
         message.setSubject("subject");
         message.setMessage("message");
-        messagesManager.sendMessageToAllUsers(message);
+        messagesManager.broadcastMessage(message);
 
         // THEN
         assertNull(message.getId());

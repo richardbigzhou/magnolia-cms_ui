@@ -47,8 +47,6 @@ import com.vaadin.ui.Component;
 
 /**
  * Definition for a column that displays the value of a property.
- *
- * @version $Id$
  */
 public class PropertyValueColumn extends AbstractEditableColumn<PropertyValueColumnDefinition> implements Serializable {
 

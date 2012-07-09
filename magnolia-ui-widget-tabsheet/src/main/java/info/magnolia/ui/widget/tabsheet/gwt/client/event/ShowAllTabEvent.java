@@ -37,8 +37,6 @@ import com.google.gwt.event.shared.GwtEvent;
 
 /**
  * ShowAllTabEvent.
- *
- * @author ejervidalo
  */
 public class ShowAllTabEvent extends GwtEvent<ShowAllTabHandler> {
 

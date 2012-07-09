@@ -35,8 +35,6 @@ package info.magnolia.ui.admincentral.shellapp.pulse;
 
 /**
  * The type of entries in the activity stream.
- *
- * @version $Id$
  */
 public enum ActivityStreamEntryType {
 

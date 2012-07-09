@@ -58,8 +58,6 @@ import com.vaadin.terminal.gwt.client.UIDL;
 
 /**
  * A bar that contains the tab labels and controls the switching between tabs.
- * @author apchelintcev
- *
  */
 public class VShellTabNavigator extends ComplexPanel {
 

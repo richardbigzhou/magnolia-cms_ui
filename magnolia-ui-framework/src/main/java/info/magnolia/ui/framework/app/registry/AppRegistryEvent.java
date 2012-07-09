@@ -31,14 +31,47 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app;
+package info.magnolia.ui.framework.app.registry;
+
+import info.magnolia.ui.framework.app.AppDescriptor;
+import info.magnolia.ui.framework.event.Event;
 
 /**
- * AppEvent Type enumeration.
+ * Event fired by {@link AppDescriptorRegistry} when changes are made to the apps it manages.
  *
- * @version $Id$
+ * @see AppRegistryEventHandler
+ * @see AppDescriptorRegistry
  */
-public enum AppEventType {
+public class AppRegistryEvent implements Event<AppRegistryEventHandler> {
 
-    REGISTERED, UNREGISTERED, REREGISTERED,  STARTED, STOPPED, FOCUSED
+    private final AppRegistryEventType eventType;
+    private final AppDescriptor appDescriptor;
+
+    public AppRegistryEvent(AppDescriptor appDescriptor, AppRegistryEventType eventType) {
+        this.eventType = eventType;
+        this.appDescriptor = appDescriptor;
+    }
+
+    public AppRegistryEventType getEventType() {
+        return eventType;
+    }
+
+    public AppDescriptor getAppDescriptor() {
+        return appDescriptor;
+    }
+
+    @Override
+    public void dispatch(AppRegistryEventHandler handler) {
+        switch (eventType) {
+            case REGISTERED:
+                handler.onAppRegistered(this);
+                break;
+            case REREGISTERED:
+                handler.onAppReregistered(this);
+                break;
+            case UNREGISTERED:
+                handler.onAppUnregistered(this);
+                break;
+        }
+    }
 }

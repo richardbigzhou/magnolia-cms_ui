@@ -40,7 +40,6 @@ import com.google.gwt.event.shared.GwtEvent;
 
 /**
  * Event fired when the viewport is closed.
- * @author apchelintcev
  */
 public class ViewportCloseEvent extends GwtEvent<ViewportCloseHandler>{
 

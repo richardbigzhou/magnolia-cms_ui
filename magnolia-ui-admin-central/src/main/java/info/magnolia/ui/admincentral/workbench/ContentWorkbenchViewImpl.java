@@ -61,7 +61,6 @@ import com.vaadin.ui.VerticalLayout;
 
 /**
  * Implementation of {@link ContentWorkbenchView}.
- * @version $Id$
  */
 @SuppressWarnings("serial")
 public class ContentWorkbenchViewImpl extends CustomComponent implements ContentWorkbenchView {

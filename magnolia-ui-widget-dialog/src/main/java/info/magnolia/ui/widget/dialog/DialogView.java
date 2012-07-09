@@ -45,7 +45,6 @@ import com.vaadin.ui.Field;
 
 /**
  * DialogView.
- * @version $Id$
  */
 public interface DialogView extends IsVaadinComponent {
 

@@ -59,7 +59,7 @@ public class TemplateSelectorType extends FieldTypeBase {
     private TemplateDefinitionAssignment templateAssignment;
     private Select select;
     private static final String TEMPLATESELECTOR_STYLE_NAME = "templateselector";
-
+    private Field field;
 
     @SuppressWarnings("unchecked")
     @Inject
@@ -70,7 +70,7 @@ public class TemplateSelectorType extends FieldTypeBase {
 
     @Override
     public Field build(FieldDefinition fieldDefinition, Item fieldRelatedItem) {
-        Field field = new TemplateSelectorView(buildTemplateList(fieldRelatedItem));
+        field = new TemplateSelectorView(buildTemplateList(fieldRelatedItem));
         field.setCaption(fieldDefinition.getLabel());
         field.setStyleName(TEMPLATESELECTOR_STYLE_NAME);
 
@@ -98,9 +98,7 @@ public class TemplateSelectorType extends FieldTypeBase {
         select.addListener(new Property.ValueChangeListener() {
             @Override
             public void valueChange(ValueChangeEvent event) {
-                //TODO EHE Remove this dirty hack.
-                // We should use view injection or event buss.
-                Property p = ((TemplateSelectorView)select.getParent().getParent()).getPropertyDataSource();
+                Property p = field.getPropertyDataSource();
                 p.setValue(event.getProperty().getValue());
             }
 

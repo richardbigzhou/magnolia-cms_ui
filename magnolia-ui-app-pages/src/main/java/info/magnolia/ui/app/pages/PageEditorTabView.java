@@ -50,8 +50,6 @@ import javax.jcr.RepositoryException;
 /**
  * PageEditorTabView.
  * TODO: make this a component with a split layout to accomodate the page editor on the left and its related actions on the right.
- *
-* @version $Id$
 */
 @SuppressWarnings("serial")
 public class PageEditorTabView implements AppView, IsVaadinComponent {
