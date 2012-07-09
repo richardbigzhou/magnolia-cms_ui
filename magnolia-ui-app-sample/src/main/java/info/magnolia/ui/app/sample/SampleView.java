@@ -31,19 +31,19 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
+package info.magnolia.ui.app.sample;
 
 import info.magnolia.ui.framework.app.AppView;
 
 /**
- * View for the Dummy app.
+ * View for the sample app.
  */
-public interface DummyView extends AppView {
+public interface SampleView extends AppView {
 
     void setPresenter(Presenter presenter);
 
     /**
-     * Presenter interface for DummyView.
+     * Presenter interface for SampleView.
      */
     public interface Presenter {
         void onButtonClick();

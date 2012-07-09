@@ -31,51 +31,51 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
+package info.magnolia.ui.app.sample;
 
-import info.magnolia.ui.framework.app.AbstractApp;
-import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.app.AppView;
-import info.magnolia.ui.framework.location.DefaultLocation;
-import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
-import javax.inject.Inject;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.VerticalLayout;
 
 /**
- * Dummy app.
+ * View implementation for the sample app.
  */
-public class DummyApp extends AbstractApp implements DummyView.Presenter {
+@SuppressWarnings("serial")
+public class SampleViewImpl implements SampleView, IsVaadinComponent {
 
-    private AppContext context;
-    private DummyView view;
+    private SampleView.Presenter presenter;
+    private final VerticalLayout tableContainer;
 
-    @Inject
-    public DummyApp(DummyView view, AppContext context) {
-        this.view = view;
-        this.context = context;
+    public SampleViewImpl() {
+        tableContainer = new VerticalLayout();
+        Label label = new Label("<center>Sample App</center>", Label.CONTENT_XHTML);
+        tableContainer.addComponent(label);
+
+        Button dialog = new Button("Gimme more tabs!", new Button.ClickListener() {
+
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                presenter.onButtonClick();
+            }
+        });
+        tableContainer.addComponent(dialog);
     }
 
     @Override
-    public AppView start(Location location) {
-        view.setPresenter(this);
-        System.out.println("SIMPLE DUMMY APP STARTED - token is: " + location.toString());
-        return view;
+    public void setPresenter(SampleView.Presenter presenter) {
+        this.presenter = presenter;
     }
 
     @Override
-    public void stop() {
-        System.out.println("SIMPLE DUMMY APP STOPPED");
+    public String getCaption() {
+        return "Sample";
     }
 
     @Override
-    public void locationChanged(Location location) {
-        System.out.println("TOKEN CHANGED: " + location);
-    }
-
-    @Override
-    public void onButtonClick() {
-        DummyTabView view = new DummyTabView();
-        context.openAppView(view);
-        context.setAppLocation(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "dummy", view.getCaption()));
+    public Component asVaadinComponent() {
+        return tableContainer;
     }
 }

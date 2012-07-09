@@ -31,12 +31,48 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
+package info.magnolia.ui.app.sample;
 
-import info.magnolia.module.DefaultModuleVersionHandler;
+import info.magnolia.ui.framework.app.AbstractApp;
+import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.framework.app.AppView;
+import info.magnolia.ui.framework.location.DefaultLocation;
+import info.magnolia.ui.framework.location.Location;
+
+import javax.inject.Inject;
 
 /**
- * Version handler for Dummy app module.
+ * Sample app.
  */
-public class DummyAppModuleVersionHandler extends DefaultModuleVersionHandler {
+public class SampleApp extends AbstractApp implements SampleView.Presenter {
+
+    private AppContext context;
+    private SampleView view;
+
+    @Inject
+    public SampleApp(SampleView view, AppContext context) {
+        this.view = view;
+        this.context = context;
+    }
+
+    @Override
+    public AppView start(Location location) {
+        view.setPresenter(this);
+        return view;
+    }
+
+    @Override
+    public void stop() {
+    }
+
+    @Override
+    public void locationChanged(Location location) {
+    }
+
+    @Override
+    public void onButtonClick() {
+        SampleTabView view = new SampleTabView();
+        context.openAppView(view);
+        context.setAppLocation(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "sample", view.getCaption()));
+    }
 }

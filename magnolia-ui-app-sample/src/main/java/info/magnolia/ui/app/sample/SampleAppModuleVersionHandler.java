@@ -31,38 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
+package info.magnolia.ui.app.sample;
 
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
-import org.apache.commons.lang.RandomStringUtils;
-
-import info.magnolia.ui.framework.app.AppView;
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
+import info.magnolia.module.DefaultModuleVersionHandler;
 
 /**
- * View for a tab in the dummy application.
+ * Version handler for sample app module.
  */
-public class DummyTabView implements AppView, IsVaadinComponent {
-
-    private final VerticalLayout tableContainer;
-    private final String name;
-
-    public DummyTabView() {
-        name = RandomStringUtils.randomNumeric(2);
-        tableContainer = new VerticalLayout();
-        Label label = new Label("<center>Dummy Tab " + name + "</center>", Label.CONTENT_XHTML);
-        tableContainer.addComponent(label);
-    }
-
-    @Override
-    public String getCaption() {
-        return "TAB " + name;
-    }
-
-    @Override
-    public Component asVaadinComponent() {
-        return tableContainer;
-    }
+public class SampleAppModuleVersionHandler extends DefaultModuleVersionHandler {
 }
