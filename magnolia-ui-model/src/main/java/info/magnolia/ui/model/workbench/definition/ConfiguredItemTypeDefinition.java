@@ -31,14 +31,37 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.workbench.registry;
-
-import info.magnolia.registry.Provider;
-import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
+package info.magnolia.ui.model.workbench.definition;
 
 /**
- * Provides a Workbench definition.
+ * Configuration for inclusion of a certain item type in a tree.
+ * 
+ * @see info.magnolia.cms.core.ItemType
  */
-public interface WorkbenchDefinitionProvider extends Provider<WorkbenchDefinition>{
+public class ConfiguredItemTypeDefinition implements ItemTypeDefinition {
 
+    /**
+     * The system name of the item type or 'nodeData' if it describes node data.
+     */
+    private String itemType;
+
+    private String icon;
+
+    @Override
+    public String getItemType() {
+        return itemType;
+    }
+
+    public void setItemType(String itemType) {
+        this.itemType = itemType;
+    }
+
+    @Override
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
 }

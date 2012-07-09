@@ -38,106 +38,38 @@ import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.model.column.definition.AbstractColumnDefinition;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 
 /**
  * Contains all elements which define a workbench configuration.
  */
-public class WorkbenchDefinition implements Serializable {
+public interface WorkbenchDefinition extends Serializable {
 
-    private String name;
+    public String getName();
 
-    private String workspace;
+    public String getWorkspace();
 
-    private String path;
+    public String getPath();
 
-    private ComponentProviderConfiguration components;
-
-    private final Map<String, AbstractColumnDefinition> columns = new LinkedHashMap<String, AbstractColumnDefinition>();
-
-    private ActionbarDefinition actionbar;
-
-    private List<ItemTypeDefinition> itemTypes = new ArrayList<ItemTypeDefinition>();
-
-    public List<ItemTypeDefinition> getItemTypes() {
-        return itemTypes;
-    }
+    public List<ItemTypeDefinition> getItemTypes();
 
     /**
-     * Return the itemType filter criteria in order to be used for searching nodes.
-     * like: "jcr:* | myapp:report | my doc"
+     * Return the itemType filter criteria in order to be used for searching nodes. like:
+     * "jcr:* | myapp:report | my doc"
      */
-    public String getItemTypesFilter() {
-        String res = " ";
-        for(ItemTypeDefinition item:itemTypes) {
-            res = res +" "+ item.getItemType() + (itemTypes.indexOf(item) < itemTypes.size()-1 ? " | ":"");
-        }
-        return res;
-    }
+    public String getItemTypesFilter();
 
-    public void setItemTypes(List<ItemTypeDefinition> itemTypes) {
-        this.itemTypes = itemTypes;
-    }
+    public AbstractColumnDefinition getColumn(String columnId);
 
-    public boolean addItemType(ItemTypeDefinition itemTypeDefinition) {
-        return itemTypes.add(itemTypeDefinition);
-    }
+    public Collection<AbstractColumnDefinition> getColumns();
 
-    public String getWorkspace() {
-        return workspace;
-    }
+    /**
+     * Gets the definition for the action bar related to this workbench
+     */
+    public ActionbarDefinition getActionbar();
 
-    public void setWorkspace(String workspace) {
-        this.workspace = workspace;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public AbstractColumnDefinition getColumn(String columnId) {
-        return columns.get(columnId);
-    }
-
-    public Collection<AbstractColumnDefinition> getColumns() {
-        return columns.values();
-    }
-
-    public void addColumn(AbstractColumnDefinition treeColumn) {
-        columns.put(treeColumn.getLabel(), treeColumn);
-    }
-
-    public ActionbarDefinition getActionbar() {
-        return actionbar;
-    }
-
-    public void setActionbar(ActionbarDefinition actionbar) {
-        this.actionbar = actionbar;
-    }
-
-    public ComponentProviderConfiguration getComponents() {
-        return components;
-    }
-
-    public void setComponents(ComponentProviderConfiguration components) {
-        this.components = components;
-    }
+    public ComponentProviderConfiguration getComponents();
 
 }

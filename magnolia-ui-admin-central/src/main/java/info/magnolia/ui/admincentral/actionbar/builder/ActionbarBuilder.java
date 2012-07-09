@@ -78,7 +78,11 @@ public class ActionbarBuilder {
                     for (ActionbarItemDefinition item : group.getItems()) {
 
                         ActionButton button = new ActionButton(item.getLabel());
-                        button.setIcon(new ThemeResource(item.getIcon()));
+                        try {
+                            button.setIcon(new ThemeResource(item.getIcon()));
+                        } catch (NullPointerException e) {
+                            log.debug("Icon resource not found for Actionbar item '" + item.getName() + "'.");
+                        }
 
                         final String actionName = item.getName();
                         button.setActionName(actionName);

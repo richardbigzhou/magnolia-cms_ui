@@ -33,36 +33,16 @@
  */
 package info.magnolia.ui.model.workbench.definition;
 
-import java.io.Serializable;
-
 /**
  * Configuration for inclusion of a certain item type in a tree.
- *
+ * 
  * @see info.magnolia.cms.core.ItemType
  */
-public class ItemTypeDefinition implements Serializable {
+public interface ItemTypeDefinition {
 
     public static final String ITEM_TYPE_NODE_DATA = "mgnl:property";
 
-    /**
-     * The system name of the item type or 'nodeData' if it describes node data.
-     */
-    private String itemType;
-    private String icon;
+    String getItemType();
 
-    public String getItemType() {
-        return itemType;
-    }
-
-    public void setItemType(String itemType) {
-        this.itemType = itemType;
-    }
-
-    public String getIcon() {
-        return icon;
-    }
-
-    public void setIcon(String icon) {
-        this.icon = icon;
-    }
+    String getIcon();
 }

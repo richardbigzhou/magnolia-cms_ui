@@ -34,7 +34,7 @@
 package info.magnolia.ui.admincentral.workbench;
 
 import info.magnolia.context.MgnlContext;
-import info.magnolia.registry.RegistrationException;
+import info.magnolia.ui.admincentral.app.content.ContentAppDescriptor;
 import info.magnolia.ui.admincentral.event.ContentChangedEvent;
 import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
@@ -47,7 +47,6 @@ import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.model.workbench.registry.WorkbenchDefinitionRegistry;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
@@ -78,7 +77,7 @@ import com.vaadin.ui.ComponentContainer;
  * <li>a configurable action bar on the right hand side, showing the available operations for the
  * given workspace and the selected item.
  * </ul>
- *
+ * 
  * <p>
  * Its main configuration point is the {@link WorkbenchDefinition} through which one defines the JCR
  * workspace to connect to, the columns/properties to display, the available actions and so on.
@@ -89,8 +88,6 @@ public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView
     private static final Logger log = LoggerFactory.getLogger(ContentWorkbench.class);
 
     private WorkbenchDefinition workbenchDefinition;
-
-    private final WorkbenchDefinitionRegistry workbenchRegistry;
 
     private final ContentWorkbenchView view;
 
@@ -104,15 +101,14 @@ public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView
 
     private String selectedItemId;
 
-    private AppContext context;
+    private final AppContext context;
 
     @Inject
-    public ContentWorkbench(final AppContext context, final ContentWorkbenchView view, final EventBus eventbus, final Shell shell, final WorkbenchDefinitionRegistry workbenchRegistry, final WorkbenchActionFactory actionFactory) {
+    public ContentWorkbench(final AppContext context, final ContentWorkbenchView view, final EventBus eventbus, final Shell shell, final WorkbenchActionFactory actionFactory) {
         this.context = context;
         this.view = view;
         this.eventBus = eventbus;
         this.shell = shell;
-        this.workbenchRegistry = workbenchRegistry;
         this.actionFactory = actionFactory;
         view.setPresenter(this);
 
@@ -128,12 +124,7 @@ public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView
 
     public void initWorkbench(final String id) {
         // load the workbench specific configuration if existing
-        try {
-            workbenchDefinition = workbenchRegistry.get(id);
-        } catch (RegistrationException e) {
-            shell.showError("An error occurred while trying to get workbench [" + id + "] in the registry", e);
-            return;
-        }
+        workbenchDefinition = ((ContentAppDescriptor) context.getAppDescriptor()).getWorkbench();
         view.initWorkbench(workbenchDefinition);
         view.initActionbar(workbenchDefinition.getActionbar());
     }

@@ -41,7 +41,6 @@ import info.magnolia.objectfactory.configuration.ComponentProviderConfigurationB
 import info.magnolia.objectfactory.configuration.InstanceConfiguration;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
-import info.magnolia.ui.model.workbench.registry.ConfiguredWorkbenchDefinitionManager;
 
 import java.util.List;
 
@@ -52,11 +51,13 @@ import com.vaadin.Application;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Window;
 
+
 /**
  * The Application's "main" class.
  */
 @SuppressWarnings("serial")
 public class AdminCentralApplication extends Application {
+
     private static final Logger log = LoggerFactory.getLogger(AdminCentralApplication.class);
 
     private Window window;
@@ -80,10 +81,6 @@ public class AdminCentralApplication extends Application {
         builder.withParent((GuiceComponentProvider) Components.getComponentProvider());
         GuiceComponentProvider componentProvider = builder.build();
 
-        log.debug("Loading workbench definitions...");
-        ConfiguredWorkbenchDefinitionManager workbenchDefinitionManager = componentProvider.newInstance(ConfiguredWorkbenchDefinitionManager.class);
-        workbenchDefinitionManager.start();
-
         window = new Window("Magnolia shell test");
         window.setContent(new CssLayout());
         window.getContent().setSizeFull();
@@ -93,4 +90,3 @@ public class AdminCentralApplication extends Application {
         presenter.start(window);
     }
 }
-

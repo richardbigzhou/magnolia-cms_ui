@@ -36,14 +36,15 @@ package info.magnolia.ui.framework.app;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.message.Message;
 
+
 /**
  * Provides functionality used by an app to interact with the Magnolia shell.
- *
- * @see App#start(info.magnolia.ui.framework.location.Location)
  */
 public interface AppContext {
 
     void openAppView(AppView view);
+
+    AppDescriptor getAppDescriptor();
 
     void setAppLocation(Location location);
 

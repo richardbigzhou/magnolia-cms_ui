@@ -45,6 +45,8 @@ import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactoryImpl;
 import info.magnolia.ui.model.column.definition.AbstractColumnDefinition;
 import info.magnolia.ui.model.column.definition.PropertyTypeColumnDefinition;
+import info.magnolia.ui.model.workbench.definition.ConfiguredItemTypeDefinition;
+import info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition;
 import info.magnolia.ui.model.workbench.definition.ItemTypeDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 
@@ -64,59 +66,66 @@ import org.junit.Test;
 
 import com.vaadin.ui.Component;
 
+
 /**
  * Main test class for {TreeModel}
  */
-public class TreeModelTest extends RepositoryTestCase{
+public class TreeModelTest extends RepositoryTestCase {
 
     private TreeModel treeModel;
-    private String workspace = "config";
-    private String colName1 = "name";
-    private String colName2 = "shortname";
-    private Session session;
-    private Node rootNode;
-    private WorkbenchDefinition workbenchDefinition;
 
+    private final String workspace = "config";
+
+    private final String colName1 = "name";
+
+    private final String colName2 = "shortname";
+
+    private Session session;
+
+    private Node rootNode;
+
+    private WorkbenchDefinition workbenchDefinition;
 
     @SuppressWarnings("deprecation")
     @Override
     @Before
-    public void setUp() throws Exception{
+    public void setUp() throws Exception {
         super.setUp();
 
         WorkbenchActionFactory workbenchActionFactory = new WorkbenchActionFactoryImpl();
-        workbenchDefinition = new WorkbenchDefinition();
-        workbenchDefinition.setWorkspace(workspace);
-        workbenchDefinition.setPath("/");
+        ConfiguredWorkbenchDefinition configuredWorkbench = new ConfiguredWorkbenchDefinition();
+        configuredWorkbench.setWorkspace(workspace);
+        configuredWorkbench.setPath("/");
 
-        ItemTypeDefinition type1 = new ItemTypeDefinition();
+        ConfiguredItemTypeDefinition type1 = new ConfiguredItemTypeDefinition();
         type1.setItemType("mgnl:content");
         type1.setIcon("icone1");
-        workbenchDefinition.addItemType(type1);
-        //Init col
+        configuredWorkbench.addItemType(type1);
+        // Init col
 
-        Map<String, Column<?>> columns = new LinkedHashMap<String, Column<?>>();
+        Map<String, Column< ? >> columns = new LinkedHashMap<String, Column< ? >>();
         PropertyTypeColumnDefinition colDef1 = new PropertyTypeColumnDefinition();
         colDef1.setSortable(true);
         colDef1.setName(colName1);
-        colDef1.setLabel("Label_"+colName1);
-        colDef1.setPropertyName("PropertyName_"+colName1);
+        colDef1.setLabel("Label_" + colName1);
+        colDef1.setPropertyName("PropertyName_" + colName1);
         Column<AbstractColumnDefinition> col1 = new PropertyTypeColumn(colDef1);
         PropertyTypeColumnDefinition colDef2 = new PropertyTypeColumnDefinition();
         colDef2.setSortable(false);
         colDef2.setName(colName2);
-        colDef2.setLabel("Label_"+colName2);
-        colDef2.setPropertyName("PropertyName_"+colName2);
+        colDef2.setLabel("Label_" + colName2);
+        colDef2.setPropertyName("PropertyName_" + colName2);
         Column<AbstractColumnDefinition> col2 = new PropertyTypeColumn(colDef2);
 
         columns.put(colName1, col1);
         columns.put(colName2, col2);
-        workbenchDefinition.addColumn(colDef1);
-        workbenchDefinition.addColumn(colDef2);
+        configuredWorkbench.addColumn(colDef1);
+        configuredWorkbench.addColumn(colDef2);
 
-        treeModel = new TreeModel(workbenchDefinition, columns, workbenchActionFactory);
+        treeModel = new TreeModel(configuredWorkbench, columns, workbenchActionFactory);
+        workbenchDefinition = configuredWorkbench;
 
-        //Init session
+        // Init session
         session = MgnlContext.getSystemContext().getJCRSession(workspace);
         rootNode = session.getRootNode();
     }
@@ -128,31 +137,29 @@ public class TreeModelTest extends RepositoryTestCase{
         treeModel = null;
     }
 
-
     @Test
-    public void testGetRootItemIds() throws RepositoryException{
+    public void testGetRootItemIds() throws RepositoryException {
         // GIVEN
         Node node1 = JcrContainerTest.createNode(rootNode, "node1", "mgnl:page", colName1, "name1");
         Node node2 = JcrContainerTest.createNode(rootNode, "node2", "mgnl:content", colName1, "name2");
         Node node2_1 = JcrContainerTest.createNode(node2, "node2_1", "mgnl:content", colName1, "name2_1");
         node1.getSession().save();
-        //Initial check
-        Collection<Item> res =  treeModel.getRootItemIds();
+        // Initial check
+        Collection<Item> res = treeModel.getRootItemIds();
         assertEquals(1, res.size());
-        assertEquals(node2.getPath(), ((Node)res.toArray()[0]).getPath());
+        assertEquals(node2.getPath(), ((Node) res.toArray()[0]).getPath());
 
         // WHEN
-        workbenchDefinition.setPath("/node2");
-        res =  treeModel.getRootItemIds();
+        ((ConfiguredWorkbenchDefinition) workbenchDefinition).setPath("/node2");
+        res = treeModel.getRootItemIds();
 
         // THEN
         assertEquals(1, res.size());
-        assertEquals(node2_1.getPath(), ((Node)res.toArray()[0]).getPath());
+        assertEquals(node2_1.getPath(), ((Node) res.toArray()[0]).getPath());
     }
 
-
     @Test
-    public void testisRoot() throws RepositoryException{
+    public void testisRoot() throws RepositoryException {
         // GIVEN
         Node node1 = JcrContainerTest.createNode(rootNode, "node1", "mgnl:page", colName1, "name1");
         Node node2 = JcrContainerTest.createNode(rootNode, "node2", "mgnl:content", colName1, "name2");
@@ -173,10 +180,8 @@ public class TreeModelTest extends RepositoryTestCase{
 
     }
 
-
-
     @Test
-    public void testGetColumnComponent_exist()  throws RepositoryException {
+    public void testGetColumnComponent_exist() throws RepositoryException {
         // GIVEN
         Node node1 = JcrContainerTest.createNode(rootNode, "node1", "mgnl:page", colName1, "name1");
         Node node2 = JcrContainerTest.createNode(rootNode, "node2", "mgnl:content", colName1, "name2");
@@ -190,7 +195,7 @@ public class TreeModelTest extends RepositoryTestCase{
     }
 
     @Test
-    public void testGetColumnComponent_doNotexist()  throws RepositoryException {
+    public void testGetColumnComponent_doNotexist() throws RepositoryException {
         // GIVEN
         Node node1 = JcrContainerTest.createNode(rootNode, "node1", "mgnl:page", colName1, "name1");
         Node node2 = JcrContainerTest.createNode(rootNode, "node2", "mgnl:content", colName1, "name2");
@@ -203,17 +208,15 @@ public class TreeModelTest extends RepositoryTestCase{
         assertNull(component);
     }
 
-
     @Test
-    public void testSetColumnComponent(){
-        //TODO
+    public void testSetColumnComponent() {
+        // TODO
         // GIVEN
 
         // WHEN
 
         // THEN
     }
-
 
     @Test
     public void testGetItemIcon_Node() throws RepositoryException {
@@ -231,14 +234,13 @@ public class TreeModelTest extends RepositoryTestCase{
 
     @Test
     public void testGetItemIcon_Property() {
-        //TODO
+        // TODO
         // GIVEN
 
         // WHEN
 
         // THEN
     }
-
 
     @Test
     public void testGetNodeByIdentifier() throws RepositoryException {
@@ -253,7 +255,6 @@ public class TreeModelTest extends RepositoryTestCase{
         assertNotNull(res);
         assertEquals(node1.getPath(), res.getPath());
     }
-
 
     @Test
     public void testGetItemByPath_Node() throws RepositoryException {
@@ -276,7 +277,7 @@ public class TreeModelTest extends RepositoryTestCase{
         node1.getSession().save();
 
         // WHEN
-        Item res = treeModel.getItemByPath(node1.getPath()+"/"+colName1);
+        Item res = treeModel.getItemByPath(node1.getPath() + "/" + colName1);
 
         // THEN
         assertNotNull(res);
@@ -285,29 +286,27 @@ public class TreeModelTest extends RepositoryTestCase{
 
     @Test
     public void testMoveItem() {
-        //TODO
+        // TODO
         // GIVEN
 
         // WHEN
 
         // THEN
     }
-
 
     @Test
     public void testMoveItemBefore() {
-        //TODO
+        // TODO
         // GIVEN
 
         // WHEN
 
         // THEN
     }
-
 
     @Test
     public void testMoveItemAfter() {
-        //TODO
+        // TODO
         // GIVEN
 
         // WHEN
@@ -315,9 +314,8 @@ public class TreeModelTest extends RepositoryTestCase{
         // THEN
     }
 
-
     @Test
-    public void testGetChildren_OnlyNode_oneNodeType() throws RepositoryException{
+    public void testGetChildren_OnlyNode_oneNodeType() throws RepositoryException {
         // GIVEN
         Node node1 = JcrContainerTest.createNode(rootNode, "node1", "mgnl:content", "name", "name1");
         Node node2 = JcrContainerTest.createNode(rootNode, "node2", "mgnl:page", "name", "name2");
@@ -329,50 +327,51 @@ public class TreeModelTest extends RepositoryTestCase{
 
         // THEN
         assertEquals(1, res.size());
-        // Currently don't get subtypes (mgnl:page is a sub type of mgnl:content but not included as child.
-        assertEquals(node1.getPath(), ((Node)res.toArray()[0]).getPath());
+        // Currently don't get subtypes (mgnl:page is a sub type of mgnl:content but not included as
+        // child.
+        assertEquals(node1.getPath(), ((Node) res.toArray()[0]).getPath());
     }
 
     @Test
-    public void testGetChildren_OnlyNode_twoNodeType() throws RepositoryException{
+    public void testGetChildren_OnlyNode_twoNodeType() throws RepositoryException {
         // GIVEN
         Node node1 = JcrContainerTest.createNode(rootNode, "node1", "mgnl:content", "name", "name1");
         Node node2 = JcrContainerTest.createNode(rootNode, "node2", "mgnl:contentNode", "name", "name2");
         JcrContainerTest.createNode(node2, "node2_1", "mgnl:contentNode", "name", "name2_1");
         node1.getSession().save();
-        ItemTypeDefinition type1 = new ItemTypeDefinition();
+        ConfiguredItemTypeDefinition type1 = new ConfiguredItemTypeDefinition();
         type1.setItemType("mgnl:contentNode");
-        workbenchDefinition.addItemType(type1);
+        ((ConfiguredWorkbenchDefinition) workbenchDefinition).addItemType(type1);
         // WHEN
         Collection<Item> res = treeModel.getChildren(rootNode);
 
         // THEN
 
         assertEquals(2, res.size());
-        assertEquals(node1.getPath(), ((Node)res.toArray()[0]).getPath());
-        assertEquals(node2.getPath(), ((Node)res.toArray()[1]).getPath());
+        assertEquals(node1.getPath(), ((Node) res.toArray()[0]).getPath());
+        assertEquals(node2.getPath(), ((Node) res.toArray()[1]).getPath());
     }
 
     @Test
-    public void testGetChildren_NodeAndProperty() throws RepositoryException{
+    public void testGetChildren_NodeAndProperty() throws RepositoryException {
         // GIVEN
         Node node1 = JcrContainerTest.createNode(rootNode, "node1", "mgnl:content", "name", "name1");
         Node node2 = JcrContainerTest.createNode(rootNode, "node2", "mgnl:content", "name", "name2");
-        rootNode.setProperty( "jcr:name", "excluded");
-        rootNode.setProperty( "name", "included");
+        rootNode.setProperty("jcr:name", "excluded");
+        rootNode.setProperty("name", "included");
         node1.getSession().save();
-        ItemTypeDefinition type1 = new ItemTypeDefinition();
+        ConfiguredItemTypeDefinition type1 = new ConfiguredItemTypeDefinition();
         type1.setItemType(ItemTypeDefinition.ITEM_TYPE_NODE_DATA);
-        workbenchDefinition.addItemType(type1);
+        ((ConfiguredWorkbenchDefinition) workbenchDefinition).addItemType(type1);
         // WHEN
         Collection<Item> res = treeModel.getChildren(rootNode);
 
         // THEN
 
         assertEquals(3, res.size());
-        assertEquals(node1.getPath(), ((Node)res.toArray()[0]).getPath());
-        assertEquals(node2.getPath(), ((Node)res.toArray()[1]).getPath());
-        assertEquals(rootNode.getProperty("name").getString(), ((Property)res.toArray()[2]).getString());
+        assertEquals(node1.getPath(), ((Node) res.toArray()[0]).getPath());
+        assertEquals(node2.getPath(), ((Node) res.toArray()[1]).getPath());
+        assertEquals(rootNode.getProperty("name").getString(), ((Property) res.toArray()[2]).getString());
     }
 
     @Test
@@ -380,25 +379,24 @@ public class TreeModelTest extends RepositoryTestCase{
         // GIVEN
         Node node1 = JcrContainerTest.createNode(rootNode, "node1", "mgnl:content", colName1, "name1");
         node1.getSession().save();
-        //Initial Check
+        // Initial Check
         assertEquals("/node1", treeModel.getPathInTree(node1));
 
         // WHEN
-        workbenchDefinition.setPath("/node1");
+        ((ConfiguredWorkbenchDefinition) workbenchDefinition).setPath("/node1");
 
         // THEN
         assertEquals("", treeModel.getPathInTree(node1));
     }
 
     @Test
-    public void testGetColumns(){
-        //TODO
+    public void testGetColumns() {
+        // TODO
         // GIVEN
 
         // WHEN
 
         // THEN
     }
-
 
 }
