@@ -12,14 +12,13 @@
   <name>magnolia-ui-app-pages</name>
   <dependencies>
     <dependency>
+      <groupId>info.magnolia</groupId>
+      <artifactId>magnolia-rendering</artifactId>
+    </dependency>
+    <dependency>
       <groupId>info.magnolia.ui</groupId>
       <artifactId>magnolia-ui-admin-central</artifactId>
       <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>info.magnolia</groupId>
-      <artifactId>magnolia-rendering</artifactId>
-      <version>${magnoliaVersion}</version>
     </dependency>
     <dependency>
       <groupId>info.magnolia.ui</groupId>

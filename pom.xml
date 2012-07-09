@@ -29,6 +29,11 @@
   </scm>
 	<dependencyManagement>
 		<dependencies>
+           <dependency>
+           		<groupId>info.magnolia</groupId>
+           		<artifactId>magnolia-rendering</artifactId>
+           		<version>${magnoliaVersion}</version>
+            </dependency>
 			<dependency>
 				<groupId>javax.servlet</groupId>
 				<artifactId>servlet-api</artifactId>
