@@ -12,6 +12,9 @@
   <artifactId>magnolia-ui-admin-central</artifactId>
   <packaging>jar</packaging>
   <name>magnolia-ui-admin-central</name>
+  <properties>
+  	<cloverCoverageThreshold>19</cloverCoverageThreshold>
+  </properties>
 
   <build>
     <plugins>
@@ -148,8 +151,4 @@
             <scope>test</scope>
         </dependency>
   </dependencies>
-
-  <properties>
-  	<cloverCoverageThreshold>15</cloverCoverageThreshold>
-  </properties>
 </project>
