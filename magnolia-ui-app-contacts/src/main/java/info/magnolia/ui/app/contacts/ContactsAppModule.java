@@ -81,7 +81,7 @@ public class ContactsAppModule implements ModuleLifecycle {
     public void start(ModuleLifecycleContext moduleLifecycleContext) {
         // Uncomment to register definition through code.
         // Beware, you may have to remove configured "contacts" app in module config.
-        buildAndRegisterApp();
+        // buildAndRegisterApp();
     }
 
     @Override
