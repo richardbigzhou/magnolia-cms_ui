@@ -33,25 +33,12 @@
  */
 package info.magnolia.ui.app.pages;
 
-import com.vaadin.ui.ComponentContainer;
 import info.magnolia.ui.framework.app.AppView;
 
 /**
- * View for the Pages app.
- *
- * @version $Id$
+ * Interface for Pages App Presenters.
  */
-public interface PagesView extends AppView {
+public interface PagesAppPresenter {
 
-
-
-    /**
-     * Presenter.
-     *
-     */
-    public interface Presenter extends PagesAppPresenter {
-    }
-
-    void setPresenter(Presenter presenter);
-    void initView(ComponentContainer workbenchView);
+    AppView getView();
 }

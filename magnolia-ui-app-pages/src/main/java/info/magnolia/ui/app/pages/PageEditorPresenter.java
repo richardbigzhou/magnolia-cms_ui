@@ -33,14 +33,11 @@
  */
 package info.magnolia.ui.app.pages;
 
-import com.vaadin.terminal.ExternalResource;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
+import info.magnolia.ui.framework.app.AppView;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 import info.magnolia.ui.widget.dialog.DialogView;
-import info.magnolia.ui.widget.editor.PageEditor;
-import info.magnolia.ui.widget.editor.PageEditorView;
 
 import javax.inject.Inject;
 import javax.jcr.Node;
@@ -53,18 +50,16 @@ import javax.jcr.Session;
 public class PageEditorPresenter implements PageEditorView.Presenter {
 
     private PageEditorView view;
-    private Node pageNode;
-    private String nodeName;
+    private String pageNodePath;
     private DialogPresenterFactory dialogPresenterFactory;
 
     @Inject
-    public PageEditorPresenter(DialogPresenterFactory dialogPresenterFactory, final Node pageNode) throws RepositoryException {
-        this.pageNode = pageNode;
+    public PageEditorPresenter(PageEditorView view, DialogPresenterFactory dialogPresenterFactory, String pageNodePath) {
+        this.view = view;
+        this.pageNodePath = pageNodePath;
         this.dialogPresenterFactory = dialogPresenterFactory;
 
-        this.view = new PageEditor(new ExternalResource(MgnlContext.getContextPath() + pageNode.getPath()));
-        this.view.setPresenter(this);
-        this.nodeName = pageNode.getName();
+        view.initPageEditor(pageNodePath);
     }
 
     @Override
@@ -81,18 +76,15 @@ public class PageEditorPresenter implements PageEditorView.Presenter {
             JcrNodeAdapter item = new JcrNodeAdapter(node);
             dialogPresenter.editItem(item);
         } catch (RepositoryException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
 
     }
 
+
     @Override
-    public IsVaadinComponent getView() {
+    public AppView getView() {
         return view;
     }
 
-    @Override
-    public String getNodeName() {
-        return nodeName;
-    }
 }

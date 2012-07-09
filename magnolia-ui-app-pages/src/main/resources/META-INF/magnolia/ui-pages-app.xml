@@ -1,34 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE module SYSTEM "module.dtd">
 <module>
-  <name>ui-pages-app</name>
-  <displayName>UI pages app</displayName>
-  <description>UI pages app</description>
-  <version>${project.version}</version>
+    <name>ui-pages-app</name>
+    <displayName>UI pages app</displayName>
+    <description>UI pages app</description>
+    <version>${project.version}</version>
 
     <!-- App components definition. -->
     <!-- id of the components should be app-'appname'. 'appname' is the name of the app configured
          in the apps configuration repository of the admin central. (config/module/apps/appname/name:appname) -->
-  <components>
-    <id>app-pages</id>
-    <component>
-      <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchView</type>
-      <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbenchViewImpl</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.admincentral.workbench.ContentWorkbench</type>
-      <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbench</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.app.pages.PagesView</type>
-      <implementation>info.magnolia.ui.app.pages.PagesViewImpl</implementation>
-    </component>
-  </components>
+    <components>
+        <id>app-pages</id>
+        <component>
+            <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchView</type>
+            <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbenchViewImpl</implementation>
+        </component>
+        <component>
+            <type>info.magnolia.ui.admincentral.workbench.ContentWorkbench</type>
+            <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbench</implementation>
+        </component>
+        <component>
+            <type>info.magnolia.ui.app.pages.PagesView</type>
+            <implementation>info.magnolia.ui.app.pages.PagesViewImpl</implementation>
+        </component>
+        <component>
+            <type>info.magnolia.ui.app.pages.PageEditorView</type>
+            <implementation>info.magnolia.ui.app.pages.PageEditorViewImpl</implementation>
+        </component>
+        <component>
+            <type>info.magnolia.ui.app.pages.PageEditorPresenter</type>
+            <implementation>info.magnolia.ui.app.pages.PageEditorPresenter</implementation>
+        </component>
+    </components>
 
-  <dependencies>
-    <dependency>
-      <name>ui-admin-central</name>
-      <version>5.0/*</version>
-    </dependency>
-  </dependencies>
+    <dependencies>
+        <dependency>
+            <name>ui-admin-central</name>
+            <version>5.0/*</version>
+        </dependency>
+    </dependencies>
 </module>

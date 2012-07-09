@@ -35,10 +35,7 @@ package info.magnolia.ui.app.pages;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
-import info.magnolia.ui.admincentral.workbench.ContentWorkbench;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
-
-import javax.inject.Inject;
 
 
 /**
@@ -52,11 +49,6 @@ public class PagesViewImpl implements PagesView, IsVaadinComponent {
     private ComponentContainer view;
     private Presenter presenter;
 
-    @Inject
-    public PagesViewImpl(final ContentWorkbench workbench) {
-        workbench.initWorkbench("website");
-        view = workbench.asVaadinComponent();
-    }
 
     @Override
     public String getCaption() {
@@ -71,6 +63,11 @@ public class PagesViewImpl implements PagesView, IsVaadinComponent {
     @Override
     public void setPresenter(PagesView.Presenter presenter) {
         this.presenter = presenter;
+    }
+
+    @Override
+    public void initView(ComponentContainer workbenchView) {
+        this.view = workbenchView;
     }
 
 }

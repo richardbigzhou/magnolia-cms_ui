@@ -31,27 +31,26 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.editor;
+package info.magnolia.ui.app.pages;
 
+import info.magnolia.ui.framework.app.AppView;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 /**
  * PageEditorView.
- * @version $Id$
  *
  */
-public interface PageEditorView extends IsVaadinComponent {
+public interface PageEditorView extends AppView, IsVaadinComponent {
 
     void setPresenter(Presenter presenter);
+
+    void initPageEditor(String nodePath);
+
     /**
      * Presenter.
      */
-    public interface Presenter {
+    public interface Presenter extends PagesAppPresenter {
 
-        void editComponent(final String workSpace, final String path, final String dialog);
-
-        IsVaadinComponent getView();
-
-        String getNodeName();
+        void editComponent(String workSpace, String path, String dialog);
     }
 }
