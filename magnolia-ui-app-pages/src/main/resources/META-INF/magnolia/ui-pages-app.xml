@@ -12,28 +12,28 @@
     <components>
         <id>app-pages</id>
         <component>
-            <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchView</type>
-            <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbenchViewImpl</implementation>
-        </component>
-        <component>
-            <type>info.magnolia.ui.admincentral.workbench.ContentWorkbench</type>
-            <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbench</implementation>
+            <type>info.magnolia.ui.app.pages.PagesMainSubApp</type>
+            <implementation>info.magnolia.ui.app.pages.PagesMainSubApp</implementation>
         </component>
         <component>
             <type>info.magnolia.ui.app.pages.PagesMainView</type>
             <implementation>info.magnolia.ui.app.pages.PagesMainViewImpl</implementation>
         </component>
         <component>
-            <type>info.magnolia.ui.app.pages.PagesMainSubApp</type>
-            <implementation>info.magnolia.ui.app.pages.PagesMainSubApp</implementation>
+            <type>info.magnolia.ui.app.pages.PageEditorSubApp</type>
+            <implementation>info.magnolia.ui.app.pages.PageEditorSubApp</implementation>
         </component>
         <component>
             <type>info.magnolia.ui.app.pages.PageEditorView</type>
             <implementation>info.magnolia.ui.app.pages.PageEditorViewImpl</implementation>
         </component>
         <component>
-            <type>info.magnolia.ui.app.pages.PageEditorSubApp</type>
-            <implementation>info.magnolia.ui.app.pages.PageEditorSubApp</implementation>
+            <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchView</type>
+            <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbenchViewImpl</implementation>
+        </component>
+        <component>
+            <type>info.magnolia.ui.admincentral.workbench.ContentWorkbench</type>
+            <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbench</implementation>
         </component>
     </components>
 
