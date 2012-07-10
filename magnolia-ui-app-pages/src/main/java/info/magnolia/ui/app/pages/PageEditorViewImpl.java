@@ -36,6 +36,8 @@ package info.magnolia.ui.app.pages;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
+import info.magnolia.context.MgnlContext;
+import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 import info.magnolia.ui.widget.actionbar.Actionbar;
 import info.magnolia.ui.widget.editor.PageEditor;
 
@@ -44,7 +46,7 @@ import info.magnolia.ui.widget.editor.PageEditor;
  * TODO: make this a component with a split layout to accomodate the page editor on the left and its related actions on the right.
 */
 @SuppressWarnings("serial")
-public class PageEditorViewImpl implements PageEditorView {
+public class PageEditorViewImpl implements PageEditorView, IsVaadinComponent {
 
     private Actionbar actionbar;
 
@@ -52,7 +54,7 @@ public class PageEditorViewImpl implements PageEditorView {
 
     private final VerticalLayout container = new VerticalLayout();
 
-    private Presenter presenter;
+    private Listener listener;
     private PageEditor pageEditor;
     private String caption;
 
@@ -69,7 +71,7 @@ public class PageEditorViewImpl implements PageEditorView {
 
         container.setSizeFull();
         container.setStyleName("mgnl-app-view");
-
+        container.setImmediate(true);
         caption = "meeeh"; //StringUtils.defaultIfEmpty(PropertyUtil.getString(pageNode, "title"), pageNode.getName());
         //root.addCompon;ent(actionbar);
     }
@@ -80,24 +82,20 @@ public class PageEditorViewImpl implements PageEditorView {
     }
 
     @Override
-    public void setPresenter(Presenter presenter) {
-        this.presenter = presenter;
+    public void setListener(Listener listener) {
+        this.listener = listener;
     }
 
     @Override
     public void initPageEditor(String nodePath) {
-        pageEditor = new PageEditor(nodePath);
-        root.addComponent(pageEditor);
+        String contextPath = MgnlContext.getContextPath();
+        pageEditor = new PageEditor(contextPath + nodePath);
+        container.addComponent(pageEditor);
     }
 
-    @Override
-    public String getCaption() {
-        return caption;
-    }
 
     @Override
     public Component asVaadinComponent() {
         return root;
     }
-
 }

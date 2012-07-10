@@ -34,7 +34,6 @@
 package info.magnolia.ui.admincentral.app.simple;
 
 import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.app.AppView;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.event.InvocationCountingTestEventHandler;
 import info.magnolia.ui.framework.event.TestEvent;
@@ -47,8 +46,8 @@ public class AppEventTestImpl extends AppTestImpl {
     public InvocationCountingTestEventHandler handler;
 
     @Inject
-    public AppEventTestImpl(AppContext ctx, AppView view, EventBus eventBus) {
-        super(ctx, view);
+    public AppEventTestImpl(AppContext ctx, AppTestSubApp subApp, EventBus eventBus) {
+        super(ctx, subApp);
         this.eventBus = eventBus;
 
         //Register

@@ -31,21 +31,38 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
+package info.magnolia.ui.app.sample;
 
-import info.magnolia.ui.framework.app.AppView;
+import javax.inject.Inject;
+
+import info.magnolia.ui.framework.app.SubApp;
+import info.magnolia.ui.framework.view.View;
 
 /**
- * View for the Dummy app.
+ * SubApp for editor tabs in sample app.
  */
-public interface DummyView extends AppView {
+public class SampleEditorSubApp implements SubApp, SampleEditorView.Listener {
 
-    void setPresenter(Presenter presenter);
+    private String name;
+    private final SampleEditorView view;
 
-    /**
-     * Presenter interface for DummyView.
-     */
-    public interface Presenter {
-        void onButtonClick();
+    @Inject
+    public SampleEditorSubApp(SampleEditorView view) {
+        this.view = view;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getCaption() {
+        return "Editor " + name;
+    }
+
+    @Override
+    public View start() {
+        this.view.setName(name);
+        this.view.setListener(this);
+        return view;
     }
 }

@@ -35,7 +35,8 @@ package info.magnolia.ui.app.pages;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
-import info.magnolia.ui.framework.app.AppView;
+import info.magnolia.ui.framework.app.SubApp;
+import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.widget.dialog.DialogView;
 
@@ -45,18 +46,17 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 /**
- * PageEditorPresenter.
+ * PageEditorSubApp.
  */
-public class PageEditorPresenter implements PageEditorView.Presenter {
+public class PageEditorSubApp implements SubApp, PageEditorView.Listener {
 
     private PageEditorView view;
-    private String pageNodePath;
+
     private DialogPresenterFactory dialogPresenterFactory;
 
     @Inject
-    public PageEditorPresenter(PageEditorView view, DialogPresenterFactory dialogPresenterFactory, String pageNodePath) {
+    public PageEditorSubApp(PageEditorView view, DialogPresenterFactory dialogPresenterFactory, String pageNodePath) {
         this.view = view;
-        this.pageNodePath = pageNodePath;
         this.dialogPresenterFactory = dialogPresenterFactory;
 
         view.initPageEditor(pageNodePath);
@@ -81,9 +81,13 @@ public class PageEditorPresenter implements PageEditorView.Presenter {
 
     }
 
+    @Override
+    public String getCaption() {
+        return null;
+    }
 
     @Override
-    public AppView getView() {
+    public View start() {
         return view;
     }
 

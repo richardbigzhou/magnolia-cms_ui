@@ -31,24 +31,22 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages;
+package info.magnolia.ui.app.sample;
 
-import com.vaadin.ui.ComponentContainer;
-import info.magnolia.ui.framework.app.AppView;
+import info.magnolia.ui.framework.view.View;
 
 /**
- * View for the Pages app.
+ * View for the main tab of sample app.
  */
-public interface PagesView extends AppView {
+public interface SampleMainView extends View {
 
-
+    void setListener(Listener listener);
 
     /**
-     * Presenter.
+     * Listener for SampleMainView.
      */
-    public interface Presenter extends PagesAppPresenter {
-    }
+    public interface Listener {
 
-    void setPresenter(Presenter presenter);
-    void initView(ComponentContainer workbenchView);
+        void onOpenNewEditor();
+    }
 }

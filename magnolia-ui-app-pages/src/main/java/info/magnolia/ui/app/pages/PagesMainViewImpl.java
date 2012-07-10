@@ -31,12 +31,36 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
+package info.magnolia.ui.app.pages;
 
-import info.magnolia.module.DefaultModuleVersionHandler;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.ComponentContainer;
+import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
+
 
 /**
- * Version handler for Dummy app module.
+ * View implementation for the Pages app.
  */
-public class DummyAppModuleVersionHandler extends DefaultModuleVersionHandler {
+@SuppressWarnings("serial")
+public class PagesMainViewImpl implements PagesMainView, IsVaadinComponent {
+
+    private ComponentContainer view;
+    private Listener listener;
+
+
+    @Override
+    public Component asVaadinComponent() {
+        return view;
+    }
+
+    @Override
+    public void setListener(Listener listener) {
+        this.listener = listener;
+    }
+
+    @Override
+    public void initView(ComponentContainer workbenchView) {
+        this.view = workbenchView;
+    }
+
 }

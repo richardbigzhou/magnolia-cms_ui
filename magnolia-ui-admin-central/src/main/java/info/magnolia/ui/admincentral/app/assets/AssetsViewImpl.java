@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral.app.assets;
 
-import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 import javax.inject.Inject;
@@ -46,11 +45,11 @@ import com.vaadin.ui.VerticalLayout;
  * View implementation for the Assets app.
  */
 @SuppressWarnings("serial")
-public class AssetsViewImpl implements AssetsView, View, IsVaadinComponent {
+public class AssetsViewImpl implements AssetsView, IsVaadinComponent {
 
     private VerticalLayout layout = new VerticalLayout();
 
-    private Presenter presenter;
+    private Listener listener;
 
     @Inject
     public AssetsViewImpl() {
@@ -59,22 +58,12 @@ public class AssetsViewImpl implements AssetsView, View, IsVaadinComponent {
     }
 
     @Override
-    public String getCaption() {
-        return "Assets";
-    }
-
-    @Override
     public Component asVaadinComponent() {
         return layout;
     }
 
     @Override
-    public void setPresenter(Presenter presenter) {
-        this.presenter = presenter;
-    }
-
-    @Override
-    public Presenter getPresenter() {
-        return presenter;
+    public void setListener(Listener listener) {
+        this.listener = listener;
     }
 }

@@ -31,51 +31,51 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
-
-import info.magnolia.ui.framework.app.AbstractApp;
-import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.app.AppView;
-import info.magnolia.ui.framework.location.DefaultLocation;
-import info.magnolia.ui.framework.location.Location;
+package info.magnolia.ui.app.sample;
 
 import javax.inject.Inject;
 
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.framework.app.AbstractApp;
+import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.framework.app.SubApp;
+import info.magnolia.ui.framework.location.DefaultLocation;
+import info.magnolia.ui.framework.location.Location;
+
 /**
- * Dummy app.
+ * Sample app.
  */
-public class DummyApp extends AbstractApp implements DummyView.Presenter {
+public class SampleApp extends AbstractApp {
 
     private AppContext context;
-    private DummyView view;
+    private ComponentProvider componentProvider;
+    private SampleMainSubApp mainSubApp;
 
     @Inject
-    public DummyApp(DummyView view, AppContext context) {
-        this.view = view;
+    public SampleApp(AppContext context, ComponentProvider componentProvider, SampleMainSubApp mainSubApp) {
         this.context = context;
+        this.componentProvider = componentProvider;
+        this.mainSubApp = mainSubApp;
+        this.mainSubApp.setSampleApp(this);
     }
 
     @Override
-    public AppView start(Location location) {
-        view.setPresenter(this);
-        System.out.println("SIMPLE DUMMY APP STARTED - token is: " + location.toString());
-        return view;
+    public SubApp start(Location location) {
+        return mainSubApp;
     }
 
     @Override
     public void stop() {
-        System.out.println("SIMPLE DUMMY APP STOPPED");
     }
 
     @Override
     public void locationChanged(Location location) {
-        System.out.println("TOKEN CHANGED: " + location);
     }
 
-    @Override
-    public void onButtonClick() {
-        DummyTabView view = new DummyTabView();
-        context.openAppView(view);
-        context.setAppLocation(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "dummy", view.getCaption()));
+    public void openNewEditor(String name) {
+        SampleEditorSubApp editorSubApp = componentProvider.getComponent(SampleEditorSubApp.class);
+        editorSubApp.setName(name);
+        context.openSubApp(editorSubApp);
+        context.setAppLocation(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "sample", editorSubApp.getCaption()));
     }
 }

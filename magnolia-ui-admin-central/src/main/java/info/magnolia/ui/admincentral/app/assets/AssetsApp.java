@@ -34,7 +34,7 @@
 package info.magnolia.ui.admincentral.app.assets;
 
 import info.magnolia.ui.framework.app.AbstractApp;
-import info.magnolia.ui.framework.app.AppView;
+import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.location.Location;
 
 import javax.inject.Inject;
@@ -42,18 +42,17 @@ import javax.inject.Inject;
 /**
  * Assets app.
  */
-public class AssetsApp extends AbstractApp implements AssetsView.Presenter {
+public class AssetsApp extends AbstractApp {
 
-    private AssetsView view;
+    private AssetsMainSubApp subApp;
 
     @Inject
-    public AssetsApp(AssetsView view) {
-        this.view = view;
+    public AssetsApp(AssetsMainSubApp subApp) {
+        this.subApp = subApp;
     }
 
     @Override
-    public AppView start(Location location) {
-        view.setPresenter(this);
-        return view;
+    public SubApp start(Location location) {
+        return subApp;
     }
 }

@@ -35,10 +35,9 @@ package info.magnolia.ui.app.pages;
 
 
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.admincentral.workbench.ContentWorkbench;
 import info.magnolia.ui.framework.app.AbstractApp;
 import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.app.AppView;
+import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 
@@ -50,7 +49,7 @@ import java.util.List;
 /**
  * Pages app.
  */
-public class PagesApp extends AbstractApp implements PagesView.Presenter {
+public class PagesApp extends AbstractApp {
 
 
     private enum PagesTab {
@@ -73,23 +72,14 @@ public class PagesApp extends AbstractApp implements PagesView.Presenter {
     }
     private AppContext context;
     private ComponentProvider componentProvider;
-    private PagesView view;
+    private PagesMainSubApp mainSubApp;
     private Location currentLocation;
 
     @Inject
-    public PagesApp(PagesView view, AppContext context, ComponentProvider componentProvider, ContentWorkbench workbench) {
-        this.view = view;
+    public PagesApp(AppContext context, ComponentProvider componentProvider, PagesMainSubApp mainSubApp) {
         this.context = context;
         this.componentProvider = componentProvider;
-        workbench.initWorkbench("website");
-        view.initView(workbench.asVaadinComponent());
-    }
-
-
-    @Override
-    public AppView start(Location location) {
-        view.setPresenter(this);
-        return view;
+        this.mainSubApp = mainSubApp;
     }
 
     @Override
@@ -97,16 +87,15 @@ public class PagesApp extends AbstractApp implements PagesView.Presenter {
         DefaultLocation pagesLocation = (DefaultLocation) location;
 
        List<String> pathParams = parsePathParamsFromToken(pagesLocation.getToken());
-       PagesAppPresenter tabPresenter = this;
 
         if (pathParams.size() > 0) {
             final String tabName = pathParams.remove(0);
             PagesTab pagesTab = PagesTab.resolveTab(tabName);
             switch (pagesTab) {
                 case PAGEEDITOR:
-                    Object[] parameters = new Object[]{pathParams};
-                    tabPresenter = componentProvider.newInstance(PageEditorPresenter.class, parameters);
-                    context.openAppView(tabPresenter.getView());
+                    PageEditorSubApp editorSubApp = componentProvider.newInstance(PageEditorSubApp.class, pathParams.get(0));
+
+                    context.openSubApp(editorSubApp);
                     context.setAppLocation(location);
                     break;
                 case WORKBENCH: default:
@@ -125,7 +114,12 @@ public class PagesApp extends AbstractApp implements PagesView.Presenter {
     }
 
     @Override
-    public AppView getView() {
-        return view;
+    public SubApp start(Location location) {
+        return mainSubApp;
     }
+
+    @Override
+    public void stop() {
+    }
+
 }

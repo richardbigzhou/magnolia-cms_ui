@@ -42,7 +42,7 @@ import info.magnolia.ui.framework.message.Message;
  */
 public interface AppContext {
 
-    void openAppView(AppView view);
+    void openSubApp(SubApp subApp);
 
     AppDescriptor getAppDescriptor();
 
@@ -53,4 +53,6 @@ public interface AppContext {
     void broadcastMessage(Message message);
 
     void showConfirmationMessage(String message);
+
+    String getName();
 }

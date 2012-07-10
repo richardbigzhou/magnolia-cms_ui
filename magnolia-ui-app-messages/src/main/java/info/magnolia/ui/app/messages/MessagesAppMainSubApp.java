@@ -33,29 +33,61 @@
  */
 package info.magnolia.ui.app.messages;
 
-import info.magnolia.ui.framework.app.AbstractApp;
-import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.app.SubApp;
-import info.magnolia.ui.framework.location.Location;
-
+import java.util.Date;
 import javax.inject.Inject;
 
-/**
- * Messages app.
- */
-public class MessagesApp extends AbstractApp {
+import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.framework.app.SubApp;
+import info.magnolia.ui.framework.message.Message;
+import info.magnolia.ui.framework.message.MessageType;
+import info.magnolia.ui.framework.view.View;
 
-    private AppContext context;
-    private MessagesAppMainSubApp subApp;
+/**
+ * Sub app for the main tab in the message app.
+ */
+public class MessagesAppMainSubApp implements SubApp, MessagesView.Listener {
+
+    private AppContext appContext;
+    private MessagesView view;
 
     @Inject
-    public MessagesApp(AppContext context, MessagesAppMainSubApp subApp) {
-        this.context = context;
-        this.subApp = subApp;
+    public MessagesAppMainSubApp(AppContext appContext, MessagesView view) {
+        this.appContext = appContext;
+        this.view = view;
     }
 
     @Override
-    public SubApp start(Location location) {
-        return subApp;
+    public String getCaption() {
+        return "Messages";
+    }
+
+    @Override
+    public View start() {
+        return view;
+    }
+
+    @Override
+    public void showConfirmationMessage(String message) {
+        appContext.showConfirmationMessage(message);
+    }
+
+    @Override
+    public void handleLocalMessage(MessageType type, String subject, String message) {
+        final Message msg = new Message();
+        msg.setSubject(subject);
+        msg.setMessage(message);
+        msg.setType(type);
+        msg.setTimestamp(new Date().getTime());
+        appContext.sendLocalMessage(msg);
+    }
+
+    @Override
+    public void handleGlobalMessage(MessageType type, String subject, String message) {
+        final Message msg = new Message();
+        msg.setSubject(subject);
+        msg.setMessage(message);
+        msg.setType(type);
+        msg.setTimestamp(new Date().getTime());
+        appContext.broadcastMessage(msg);
     }
 }

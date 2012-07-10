@@ -31,41 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages;
+package info.magnolia.ui.admincentral.app.simple;
 
-import com.vaadin.ui.Component;
-import com.vaadin.ui.ComponentContainer;
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
-
+import info.magnolia.ui.framework.view.View;
 
 /**
- * View implementation for the Pages app.
+ *
  */
-@SuppressWarnings("serial")
-public class PagesViewImpl implements PagesView, IsVaadinComponent {
-
-    private ComponentContainer view;
-    private Presenter presenter;
-
-
-    @Override
-    public String getCaption() {
-        return "Pages";
-    }
-
-    @Override
-    public Component asVaadinComponent() {
-        return view;
-    }
-
-    @Override
-    public void setPresenter(PagesView.Presenter presenter) {
-        this.presenter = presenter;
-    }
-
-    @Override
-    public void initView(ComponentContainer workbenchView) {
-        this.view = workbenchView;
-    }
-
+public interface AppTestView extends View {
 }

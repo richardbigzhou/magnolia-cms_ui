@@ -31,21 +31,48 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.assets;
+package info.magnolia.ui.app.sample;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+import org.apache.commons.lang.RandomStringUtils;
+
+import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.view.View;
 
 /**
- * View for the Assets app.
+ * SubApp for the main tab in sample app.
  */
-public interface AssetsView extends View {
+@Singleton
+public class SampleMainSubApp implements SubApp, SampleMainView.Listener {
 
-    void setListener(final Listener listener);
+    private SampleApp sampleApp;
+    private SampleMainView sampleMainView;
 
-    /**
-     * Listener.
-     */
-    public interface Listener {
+    @Inject
+    public SampleMainSubApp(SampleMainView sampleMainView) {
+        this.sampleMainView = sampleMainView;
+    }
 
+    public void setSampleApp(SampleApp sampleApp) {
+        this.sampleApp = sampleApp;
+    }
+
+    @Override
+    public View start() {
+        sampleMainView.setListener(this);
+        return sampleMainView;
+    }
+
+    @Override
+    public String getCaption() {
+        return "Sample";
+    }
+
+    @Override
+    public void onOpenNewEditor() {
+        String name = RandomStringUtils.randomNumeric(2);
+        sampleApp.openNewEditor(name);
     }
 }

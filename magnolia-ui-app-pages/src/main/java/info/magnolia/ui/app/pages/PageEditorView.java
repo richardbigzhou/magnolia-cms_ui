@@ -33,23 +33,22 @@
  */
 package info.magnolia.ui.app.pages;
 
-import info.magnolia.ui.framework.app.AppView;
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
+import info.magnolia.ui.framework.view.View;
 
 /**
  * PageEditorView.
  *
  */
-public interface PageEditorView extends AppView, IsVaadinComponent {
+public interface PageEditorView extends View {
 
-    void setPresenter(Presenter presenter);
+    void setListener(Listener listener);
 
     void initPageEditor(String nodePath);
 
     /**
-     * Presenter.
+     * Listener.
      */
-    public interface Presenter extends PagesAppPresenter {
+    public interface Listener {
 
         void editComponent(String workSpace, String path, String dialog);
     }

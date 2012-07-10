@@ -57,11 +57,6 @@ public class ContactsViewImpl implements ContactsView, IsVaadinComponent {
     }
 
     @Override
-    public String getCaption() {
-        return "Contacts";
-    }
-
-    @Override
     public Component asVaadinComponent() {
         return workbench.asVaadinComponent();
     }

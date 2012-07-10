@@ -34,10 +34,9 @@
 package info.magnolia.ui.app.pages.action;
 
 import info.magnolia.ui.admincentral.workbench.ContentWorkbench;
-import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.location.LocationChangedEvent;
+import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 
@@ -49,23 +48,22 @@ import javax.inject.Inject;
 public class EditPageAction extends ActionBase<EditPageActionDefinition> {
 
 
-
-    private EventBus eventBus;
-    ContentWorkbench workbench;
-
+    private final ContentWorkbench workbench;
+    private final LocationController locationController;
+    private final static String TOKEN = "pageeditor";
 
     @Inject
-    public EditPageAction(final EditPageActionDefinition definition, ContentWorkbench workbench, EventBus eventBus) {
+    public EditPageAction(final EditPageActionDefinition definition, ContentWorkbench workbench, LocationController locationController) {
         super(definition);
         this.workbench = workbench;
-        this.eventBus = eventBus;
+        this.locationController = locationController;
 
     }
 
     @Override
     public void execute() throws ActionExecutionException {
         String nodePath = workbench.getSelectedItemId();
-        Location pageEditorLocation = new DefaultLocation("app", "pages", "pageeditor:" + nodePath);
-        eventBus.fireEvent(new LocationChangedEvent(pageEditorLocation));
+        Location pageEditorLocation = new DefaultLocation("app", "pages", TOKEN + ":" + nodePath);
+        locationController.goTo(pageEditorLocation);
     }
 }

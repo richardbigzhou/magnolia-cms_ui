@@ -34,7 +34,7 @@
 package info.magnolia.ui.app.contacts;
 
 import info.magnolia.ui.admincentral.app.content.ContentApp;
-import info.magnolia.ui.framework.app.AppView;
+import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.location.Location;
 
 import javax.inject.Inject;
@@ -46,15 +46,15 @@ import javax.inject.Inject;
  */
 public class ContactsApp extends ContentApp {
 
-    private final ContactsView view;
+    private final ContactsMainSubApp subApp;
 
     @Inject
-    public ContactsApp(ContactsView view) {
-        this.view = view;
+    public ContactsApp(ContactsMainSubApp subApp) {
+        this.subApp = subApp;
     }
 
     @Override
-    public AppView start(Location location) {
-        return view;
+    public SubApp start(Location location) {
+        return subApp;
     }
 }

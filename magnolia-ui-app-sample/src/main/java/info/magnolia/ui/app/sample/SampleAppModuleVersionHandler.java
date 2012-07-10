@@ -31,21 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.assets;
+package info.magnolia.ui.app.sample;
 
-import info.magnolia.ui.framework.view.View;
+import info.magnolia.module.DefaultModuleVersionHandler;
 
 /**
- * View for the Assets app.
+ * Version handler for sample app module.
  */
-public interface AssetsView extends View {
-
-    void setListener(final Listener listener);
-
-    /**
-     * Listener.
-     */
-    public interface Listener {
-
-    }
+public class SampleAppModuleVersionHandler extends DefaultModuleVersionHandler {
 }

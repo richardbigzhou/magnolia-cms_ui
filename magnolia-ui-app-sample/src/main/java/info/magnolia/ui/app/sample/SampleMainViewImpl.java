@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,39 +31,47 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.field.builder;
+package info.magnolia.ui.app.sample;
 
-import info.magnolia.ui.model.dialog.definition.FieldDefinition;
-import info.magnolia.ui.model.field.definition.FieldTypeDefinition;
+import javax.inject.Inject;
 
-import com.vaadin.data.Item;
-import com.vaadin.ui.Field;
-import com.vaadin.ui.TextArea;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.VerticalLayout;
+
+import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 /**
- * TextAreaField. A {@link info.magnolia.ui.admincentral.field.builder.FieldType} for textareafields which will return a vaadin textarea.
- *
+ * View implementation of the main tab in sample app.
  */
-public class TextAreaFieldType extends FieldTypeBase {
+public class SampleMainViewImpl implements SampleMainView, IsVaadinComponent {
 
-    public static final String TEXTFIELD_STYLE_NAME = "textarea";
+    private Listener listener;
+    private VerticalLayout tableContainer;
 
-    public TextAreaFieldType(FieldTypeDefinition definition) {
-        super(definition);
+    @Inject
+    public SampleMainViewImpl() {
     }
-
 
     @Override
-    public Field build(FieldDefinition fieldDefinition, Item fieldRelatedItem) {
-        Field field = new TextArea();
-        field.setCaption(fieldDefinition.getLabel());
-
-        final String label = fieldDefinition.getLabel();
-        field.setCaption(label);
-        field.setStyleName(TEXTFIELD_STYLE_NAME);
-        addValidatorsAndRequiredElements(fieldDefinition, field);
-
-        return field;
+    public void setListener(Listener listener) {
+        this.listener = listener;
     }
 
+    @Override
+    public Component asVaadinComponent() {
+        if (tableContainer == null) {
+            tableContainer = new VerticalLayout();
+            tableContainer.addComponent(new Label("<center>Sample App</center>", Label.CONTENT_XHTML));
+            tableContainer.addComponent(new Button("Open new editor!", new Button.ClickListener() {
+
+                @Override
+                public void buttonClick(Button.ClickEvent event) {
+                    listener.onOpenNewEditor();
+                }
+            }));
+        }
+        return tableContainer;
+    }
 }
