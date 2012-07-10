@@ -45,8 +45,6 @@ import org.slf4j.LoggerFactory;
 /**
  * Monitors the browser history for location changes and calls the {@link LocationController} to initiate location changes
  * accordingly, also listens for location change events on the EventBus and updates the browser history to match.
- *
- * @version $Id$
  */
 public class LocationHistoryHandler {
 

@@ -66,8 +66,6 @@ import java.util.List;
  *  DropdownButton dropdown = new DropdownButton("My cool caption", options);
  *  ...
  * </pre>
- *
- * @version $Id$
  */
 public class DropdownButton extends Button {
 

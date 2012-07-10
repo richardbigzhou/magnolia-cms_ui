@@ -37,8 +37,6 @@ import info.magnolia.ui.framework.event.Event;
 
 /**
  * Message event.
- *
- * @version $Id$
  */
 public class MessageEvent implements Event<MessageEventHandler> {
 

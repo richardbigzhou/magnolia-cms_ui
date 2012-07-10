@@ -44,6 +44,8 @@ import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactoryImpl;
 import info.magnolia.ui.model.column.definition.AbstractColumnDefinition;
 import info.magnolia.ui.model.column.definition.PropertyTypeColumnDefinition;
+import info.magnolia.ui.model.workbench.definition.ConfiguredItemTypeDefinition;
+import info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition;
 import info.magnolia.ui.model.workbench.definition.ItemTypeDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -64,60 +66,68 @@ import javax.jcr.version.VersionException;
 import org.junit.Before;
 import org.junit.Test;
 
+
 /**
  * Main test class for {HierarchicalJcrContainer}
  */
 public class HierarchicalJcrContainerTest extends RepositoryTestCase {
 
     private HierarchicalJcrContainer hierarchicalJcrContainer;
+
     private WorkbenchDefinition workbenchDefinition;
+
     private TreeModel treeModel;
-    private String workspace = "config";
-    private String colName1 = "name";
-    private String colName2 = "shortname";
+
+    private final String workspace = "config";
+
+    private final String colName1 = "name";
+
+    private final String colName2 = "shortname";
+
     private Session session;
+
     Node rootNode;
 
     @SuppressWarnings("deprecation")
     @Override
     @Before
-    public void setUp() throws Exception{
+    public void setUp() throws Exception {
         super.setUp();
-        //Init
-        workbenchDefinition = new WorkbenchDefinition();
-        workbenchDefinition.setWorkspace(workspace);
-        workbenchDefinition.setPath("/");
-        //Init workBench
+        // Init
+        ConfiguredWorkbenchDefinition configuredWorkbench = new ConfiguredWorkbenchDefinition();
+        configuredWorkbench.setWorkspace(workspace);
+        configuredWorkbench.setPath("/");
+        // Init workBench
         WorkbenchActionFactory workbenchActionFactory = new WorkbenchActionFactoryImpl();
-        //Init col
-        Map<String, Column<?>> columns = new LinkedHashMap<String, Column<?>>();
+        // Init col
+        Map<String, Column< ? >> columns = new LinkedHashMap<String, Column< ? >>();
         PropertyTypeColumnDefinition colDef1 = new PropertyTypeColumnDefinition();
         colDef1.setSortable(true);
         colDef1.setName(colName1);
-        colDef1.setLabel("Label_"+colName1);
+        colDef1.setLabel("Label_" + colName1);
         Column<AbstractColumnDefinition> col1 = new PropertyTypeColumn(colDef1);
         PropertyTypeColumnDefinition colDef2 = new PropertyTypeColumnDefinition();
         colDef2.setSortable(false);
         colDef2.setName(colName2);
-        colDef2.setLabel("Label_"+colName2);
+        colDef2.setLabel("Label_" + colName2);
         Column<AbstractColumnDefinition> col2 = new PropertyTypeColumn(colDef2);
 
         columns.put(colName1, col1);
         columns.put(colName2, col2);
-        workbenchDefinition.addColumn(colDef1);
-        workbenchDefinition.addColumn(colDef2);
+        configuredWorkbench.addColumn(colDef1);
+        configuredWorkbench.addColumn(colDef2);
 
-        ItemTypeDefinition itemType = new ItemTypeDefinition();
-        itemType.setItemType("mgnl:content");
-        workbenchDefinition.setItemTypes(Arrays.asList(itemType));
+        ItemTypeDefinition itemType = new ConfiguredItemTypeDefinition();
+        ((ConfiguredItemTypeDefinition) itemType).setItemType("mgnl:content");
+        configuredWorkbench.setItemTypes(Arrays.asList(itemType));
 
-        //FIXME.... workbenchDefinition --> has column set && we send also columns???
+        // FIXME.... workbenchDefinition --> has column set && we send also columns???
         treeModel = new TreeModel(workbenchDefinition, columns, workbenchActionFactory);
 
+        workbenchDefinition = configuredWorkbench;
         hierarchicalJcrContainer = new HierarchicalJcrContainer(treeModel, workbenchDefinition);
 
-
-        //Init session
+        // Init session
         session = MgnlContext.getSystemContext().getJCRSession(workspace);
         rootNode = session.getRootNode();
     }
@@ -134,9 +144,8 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
 
         // THEN
         assertEquals(true, item instanceof JcrNodeAdapter);
-        assertEquals(node1.getPath(), ((JcrNodeAdapter)item).getJcrItem().getPath());
+        assertEquals(node1.getPath(), ((JcrNodeAdapter) item).getJcrItem().getPath());
     }
-
 
     @Test
     public void testContainsId() throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
@@ -144,8 +153,8 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         Node node1 = JcrContainerTest.createNode(rootNode, "node1", "mgnl:content", "name", "name1");
         node1.getSession().save();
         String containerItemId = node1.getPath();
-        //It's not yet in the cash
-        assertEquals(false,hierarchicalJcrContainer.containsId(containerItemId));
+        // It's not yet in the cash
+        assertEquals(false, hierarchicalJcrContainer.containsId(containerItemId));
         hierarchicalJcrContainer.getItem(containerItemId);
 
         // WHEN
@@ -154,7 +163,6 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         // THEN
         assertEquals(true, res);
     }
-
 
     @Test
     public void testAreChildrenAllowed_true() throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
@@ -196,7 +204,6 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         String containerItemId1 = node1.getPath();
         String containerItemId2 = node2.getPath();
 
-
         // WHEN
         Collection<String> res = hierarchicalJcrContainer.rootItemIds();
 
@@ -205,7 +212,6 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         assertEquals(true, res.contains(containerItemId1));
         assertEquals(true, res.contains(containerItemId2));
     }
-
 
     @Test
     public void testisRoot_true() throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
@@ -250,7 +256,6 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
 
         String containerItemId1 = node1.getPath();
 
-
         // WHEN
         Collection<String> res = hierarchicalJcrContainer.getChildren(containerItemId1);
 
@@ -269,7 +274,6 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         node1.getSession().save();
 
         String containerItemId1 = node1.getPath();
-
 
         // WHEN
         String res = hierarchicalJcrContainer.getParent(node1_1.getPath());

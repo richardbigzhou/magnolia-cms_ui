@@ -39,7 +39,6 @@ import java.util.List;
  * Automates editing of entities defined by the content model.
  *
  * @param <T> the type of entity to edit
- * @version $Id$
  */
 public interface Driver<T> {
 

@@ -36,8 +36,6 @@ package info.magnolia.ui.model.dialog.definition;
 /**
  * The link field allows you to create a link to content stored in Magnolia. You can browse any specified workspace and
  * select a content node to link to such as a page (website), file (dms) or data item (data).
- *
- * @version $Id$
  */
 public class LinkFieldDefinition extends ConfiguredFieldDefinition {
 

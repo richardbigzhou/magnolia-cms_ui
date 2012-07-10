@@ -45,7 +45,6 @@ import com.vaadin.ui.Component;
  *
  * @param <D>
  *            type of the definition for this column.
- * @author dlipp
  */
 public interface Column<D extends AbstractColumnDefinition> {
 

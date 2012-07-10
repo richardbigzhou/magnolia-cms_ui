@@ -39,8 +39,6 @@ import com.vaadin.ui.Component;
 
 /**
  * Utility methods to transform views to Vaadin Components and vice versa.
- *
- * @version $Id$
  */
 public class VaadinComponentUtil {
 

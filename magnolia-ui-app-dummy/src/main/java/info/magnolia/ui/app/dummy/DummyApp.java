@@ -43,8 +43,6 @@ import javax.inject.Inject;
 
 /**
  * Dummy app.
- *
- * @version $Id$
  */
 public class DummyApp extends AbstractApp implements DummyView.Presenter {
 
@@ -78,6 +76,6 @@ public class DummyApp extends AbstractApp implements DummyView.Presenter {
     public void onButtonClick() {
         DummyTabView view = new DummyTabView();
         context.openAppView(view);
-        context.setAppLocation(new DefaultLocation("app", "dummy", view.getCaption()));
+        context.setAppLocation(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "dummy", view.getCaption()));
     }
 }

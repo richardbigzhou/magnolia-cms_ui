@@ -35,8 +35,6 @@ package info.magnolia.ui.model.column.definition;
 
 /**
  * Definition for LabelColumns.
- *
- * @author dlipp
  */
 public class LabelColumnDefinition extends AbstractColumnDefinition {
 

@@ -57,9 +57,6 @@ import info.magnolia.registry.RegistrationException;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.jcr.MockNode;
 import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.app.AppEventType;
-import info.magnolia.ui.framework.app.AppLifecycleEvent;
-import info.magnolia.ui.framework.app.AppLifecycleEventHandler;
 import info.magnolia.ui.framework.event.SimpleSystemEventBus;
 
 /**
@@ -68,14 +65,14 @@ import info.magnolia.ui.framework.event.SimpleSystemEventBus;
 public class AppDescriptorRegistryTest {
 
     private AppDescriptorRegistry appDescriptorRegistry;
-    private EventCollectingAppLifecycleEventHandler eventHandler;
+    private EventCollectingAppRegistryEventHandler eventHandler;
 
     @SuppressWarnings("deprecation")
     @Before
     public void setUp() throws Exception {
         SimpleSystemEventBus eventBus = new SimpleSystemEventBus();
-        eventHandler = new EventCollectingAppLifecycleEventHandler();
-        eventBus.addHandler(AppLifecycleEvent.class, eventHandler);
+        eventHandler = new EventCollectingAppRegistryEventHandler();
+        eventBus.addHandler(AppRegistryEvent.class, eventHandler);
 
         appDescriptorRegistry = new AppDescriptorRegistry(eventBus);
 
@@ -155,7 +152,7 @@ public class AppDescriptorRegistryTest {
         assertEquals(1, registeredNames.size());
         assertEquals(addId, registeredNames.toArray()[0]);
         assertEquals(1, eventHandler.events.size());
-        assertEquals(AppEventType.REGISTERED, eventHandler.events.get(0).getEventType());
+        assertEquals(AppRegistryEventType.REGISTERED, eventHandler.events.get(0).getEventType());
     }
 
     @Test
@@ -177,12 +174,10 @@ public class AppDescriptorRegistryTest {
         Set<String> registeredNames2 = appDescriptorRegistry.unregisterAndRegister(registeredNames, Arrays.asList(appDescriptorProvider1, appDescriptorProvider2));
 
         // THEN
-        // appDescriptorProvider1 should be registered.
         assertNotNull(registeredNames2);
         assertEquals(2, registeredNames2.size());
-        assertEquals(2, eventHandler.events.size());
-        assertContainsEvent(AppEventType.REREGISTERED, appName1);
-        assertContainsEvent(AppEventType.REGISTERED, appName2);
+        assertEquals(1, eventHandler.events.size());
+        assertContainsEvent(AppRegistryEventType.REGISTERED, appName2);
     }
 
     @Test
@@ -215,9 +210,8 @@ public class AppDescriptorRegistryTest {
         // appDescriptorProvider1 should be registered.
         assertNotNull(res);
         assertEquals(1, res.size());
-        assertEquals(2, eventHandler.events.size());
-        assertContainsEvent(AppEventType.REREGISTERED, appName1);
-        assertContainsEvent(AppEventType.UNREGISTERED, appName2);
+        assertEquals(1, eventHandler.events.size());
+        assertContainsEvent(AppRegistryEventType.UNREGISTERED, appName2);
     }
 
     @Test
@@ -242,7 +236,7 @@ public class AppDescriptorRegistryTest {
         assertEquals(1, registeredNames2.size());
         assertEquals(appName, registeredNames2.toArray()[0]);
         assertEquals(1, eventHandler.events.size());
-        assertEquals(AppEventType.REREGISTERED, eventHandler.events.get(0).getEventType());
+        assertEquals(AppRegistryEventType.REREGISTERED, eventHandler.events.get(0).getEventType());
         assertEquals(appDescriptorRegistry.getAppDescriptor(appName), eventHandler.events.get(0).getAppDescriptor());
     }
 
@@ -261,8 +255,8 @@ public class AppDescriptorRegistryTest {
         assertTrue(registeredNames.contains(appThatGoesAway.getName()));
 
         assertEquals(2, eventHandler.events.size());
-        assertContainsEvent(AppEventType.REGISTERED, appThatStays.getName());
-        assertContainsEvent(AppEventType.REGISTERED, appThatGoesAway.getName());
+        assertContainsEvent(AppRegistryEventType.REGISTERED, appThatStays.getName());
+        assertContainsEvent(AppRegistryEventType.REGISTERED, appThatGoesAway.getName());
 
         eventHandler.clear();
 
@@ -273,10 +267,36 @@ public class AppDescriptorRegistryTest {
         assertEquals(2, registeredNames2.size());
         assertTrue(registeredNames2.contains(appThatStays.getName()));
         assertTrue(registeredNames2.contains(appThatAppears.getName()));
-        assertEquals(3, eventHandler.events.size());
-        assertContainsEvent(AppEventType.REREGISTERED, appThatStays.getName());
-        assertContainsEvent(AppEventType.UNREGISTERED, appThatGoesAway.getName());
-        assertContainsEvent(AppEventType.REGISTERED, appThatAppears.getName());
+        assertEquals(2, eventHandler.events.size());
+        assertContainsEvent(AppRegistryEventType.UNREGISTERED, appThatGoesAway.getName());
+        assertContainsEvent(AppRegistryEventType.REGISTERED, appThatAppears.getName());
+    }
+
+    @Test
+    public void testUnregisterAndRegisterWhenAddingFromMultipleSources() throws Content2BeanException, RepositoryException, RegistrationException {
+
+        // GIVEN
+        String appName1 = "app1";
+        String appName2 = "app2";
+        AppDescriptorProvider appDescriptorProvider1 = createAppDescriptorProvider(appName1, "catApp1", true);
+
+        Set<String> registeredNames = appDescriptorRegistry.unregisterAndRegister(new ArrayList<String>(), Arrays.asList(appDescriptorProvider1));
+        assertEquals(1, registeredNames.size());
+        assertTrue(registeredNames.contains(appName1));
+        eventHandler.clear();
+
+        // WHEN
+        appDescriptorProvider1 = createAppDescriptorProvider(appName1, "catApp2", true);
+        AppDescriptorProvider appDescriptorProvider2 = createAppDescriptorProvider(appName2, "catApp2", true);
+
+        Set<String> registeredNames2 = appDescriptorRegistry.unregisterAndRegister(new ArrayList<String>(), Arrays.asList(appDescriptorProvider1, appDescriptorProvider2));
+
+        // THEN
+        assertNotNull(registeredNames2);
+        assertEquals(2, registeredNames2.size());
+        assertEquals(2, eventHandler.events.size());
+        assertContainsEvent(AppRegistryEventType.REREGISTERED, appName1);
+        assertContainsEvent(AppRegistryEventType.REGISTERED, appName2);
     }
 
     @Test
@@ -323,8 +343,8 @@ public class AppDescriptorRegistryTest {
         return new ConfiguredAppDescriptorProvider(node);
     }
 
-    private void assertContainsEvent(AppEventType appEventType, String name) {
-        for (AppLifecycleEvent event : eventHandler.events) {
+    private void assertContainsEvent(AppRegistryEventType appEventType, String name) {
+        for (AppRegistryEvent event : eventHandler.events) {
             if (event.getEventType() == appEventType && event.getAppDescriptor().getName().equals(name)) {
                 return;
             }
@@ -332,26 +352,26 @@ public class AppDescriptorRegistryTest {
         fail("Expected event " + appEventType.name() + " for app " + name);
     }
 
-    private class EventCollectingAppLifecycleEventHandler extends AppLifecycleEventHandler.Adapter {
+    private class EventCollectingAppRegistryEventHandler implements AppRegistryEventHandler {
 
-        List<AppLifecycleEvent> events = new ArrayList<AppLifecycleEvent>();
+        List<AppRegistryEvent> events = new ArrayList<AppRegistryEvent>();
 
         public void clear() {
             events.clear();
         }
 
         @Override
-        public void onAppRegistered(AppLifecycleEvent event) {
+        public void onAppRegistered(AppRegistryEvent event) {
             events.add(event);
         }
 
         @Override
-        public void onAppUnregistered(AppLifecycleEvent event) {
+        public void onAppUnregistered(AppRegistryEvent event) {
             events.add(event);
         }
 
         @Override
-        public void onAppReRegistered(AppLifecycleEvent event) {
+        public void onAppReregistered(AppRegistryEvent event) {
             events.add(event);
         }
     }

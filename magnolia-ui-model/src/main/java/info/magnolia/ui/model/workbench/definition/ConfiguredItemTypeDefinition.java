@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2010-2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,37 +31,37 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.toolbar;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+package info.magnolia.ui.model.workbench.definition;
 
 /**
- * Implementation for {@link ToolbarDefinition}.
- * @version $Id$
- *
+ * Configuration for inclusion of a certain item type in a tree.
+ * 
+ * @see info.magnolia.cms.core.ItemType
  */
-public class ToolbarDefinitionImpl implements ToolbarDefinition {
+public class ConfiguredItemTypeDefinition implements ItemTypeDefinition {
 
-    private List<ToolbarItemGroupDefinition> groups = new ArrayList<ToolbarItemGroupDefinition>();
-    private List<ToolbarItemFilterDefinition> filters = new ArrayList<ToolbarItemFilterDefinition>();
+    /**
+     * The system name of the item type or 'nodeData' if it describes node data.
+     */
+    private String itemType;
 
-    @Override
-    public List<ToolbarItemGroupDefinition> getGroups() {
-        return Collections.unmodifiableList(groups);
-    }
-
-    public void addGroup(ToolbarItemGroupDefinition toolbarItemGroup){
-       groups.add(toolbarItemGroup);
-   }
+    private String icon;
 
     @Override
-    public List<ToolbarItemFilterDefinition> getFilters() {
-        return Collections.unmodifiableList(filters);
+    public String getItemType() {
+        return itemType;
     }
 
-    public void addFilter(ToolbarItemFilterDefinition toolbarItemFilter){
-        filters.add(toolbarItemFilter);
+    public void setItemType(String itemType) {
+        this.itemType = itemType;
+    }
+
+    @Override
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 }

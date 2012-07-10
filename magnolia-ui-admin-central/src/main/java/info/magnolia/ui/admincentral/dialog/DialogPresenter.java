@@ -54,7 +54,6 @@ import com.vaadin.data.Item;
 
 /**
  * DialogPresenter.
- * @version $Id$
  */
 public class DialogPresenter implements DialogView.Presenter {
 

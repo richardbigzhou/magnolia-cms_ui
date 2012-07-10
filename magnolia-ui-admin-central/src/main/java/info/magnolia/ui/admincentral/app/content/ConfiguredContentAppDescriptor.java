@@ -46,11 +46,6 @@ public class ConfiguredContentAppDescriptor extends ConfiguredAppDescriptor impl
 
     private WorkbenchDefinition workbench;
 
-    public ConfiguredContentAppDescriptor(String appName, WorkbenchDefinition workbenchDefinition) {
-        setName(appName);
-        setWorkbench(workbenchDefinition);
-    }
-
     @Override
     public WorkbenchDefinition getWorkbench() {
         return workbench;

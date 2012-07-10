@@ -40,8 +40,6 @@ import com.vaadin.ui.UriFragmentUtility;
 
 /**
  * A shell working only with a sub fragment of the URL fragment.
- *
- * @version $Id$
  */
 @SuppressWarnings("serial")
 public class SubShell extends AbstractShell {

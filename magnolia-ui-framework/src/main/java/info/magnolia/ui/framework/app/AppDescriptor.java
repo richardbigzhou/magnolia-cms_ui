@@ -37,8 +37,6 @@ import java.io.Serializable;
 
 /**
  * Describes an app.
- *
- * @version $Id$
  */
 public interface AppDescriptor extends Serializable {
 

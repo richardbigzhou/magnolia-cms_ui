@@ -37,8 +37,6 @@ import java.util.List;
 
 /**
  * Util class for the collections operations.
- * @author apchelintcev
- *
  */
 public class CollectionUtil {
 

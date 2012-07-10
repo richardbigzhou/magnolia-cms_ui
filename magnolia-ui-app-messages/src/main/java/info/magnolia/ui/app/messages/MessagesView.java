@@ -38,8 +38,6 @@ import info.magnolia.ui.framework.message.MessageType;
 
 /**
  * View for the Messages app.
- *
- * @version $Id$
  */
 public interface MessagesView extends AppView {
 
@@ -47,8 +45,6 @@ public interface MessagesView extends AppView {
 
     /**
      * Presenter interface for MessagesView.
-     *
-     * @version $Id$
      */
     public interface Presenter {
 

@@ -40,18 +40,12 @@ import com.vaadin.ui.NativeButton;
 
 /**
  * Message category navigation component in Pulse.
- * 
- * @author p4elkin
- * 
  */
 @SuppressWarnings("serial")
 public class PulseMessageCategoryNavigator extends CustomComponent {
 
     /**
      * Enumeration for the category types.
-     * 
-     * @author p4elkin
-     * 
      */
     public enum MessageCategory {
         ALL("ALL MESSAGES"), 
@@ -88,9 +82,6 @@ public class PulseMessageCategoryNavigator extends CustomComponent {
 
     /**
      * Category changed event.
-     * 
-     * @author p4elkin
-     * 
      */
     public static class CategoryChangedEvent extends Component.Event {
 
@@ -119,9 +110,6 @@ public class PulseMessageCategoryNavigator extends CustomComponent {
 
     /**
      * MessageCategoryChangedListener.
-     * 
-     * @author p4elkin
-     * 
      */
     public interface MessageCategoryChangedListener {
         public void messageCategoryChanged(final CategoryChangedEvent event);

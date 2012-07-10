@@ -48,8 +48,6 @@ import com.vaadin.ui.Label;
 
 /**
  * Column that displays the type of a property.
- *
- * @version $Id$
  */
 public class PropertyTypeColumn extends AbstractColumn<PropertyTypeColumnDefinition> implements Serializable {
 

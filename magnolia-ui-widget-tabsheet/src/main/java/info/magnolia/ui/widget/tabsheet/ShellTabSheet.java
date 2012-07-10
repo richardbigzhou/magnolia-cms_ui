@@ -57,9 +57,6 @@ import com.vaadin.ui.VerticalLayout;
 
 /**
  * Simple lightweight tabsheet component.
- *
- * @author apchelintcev
- *
  */
 @SuppressWarnings("serial")
 @ClientWidget(value = VShellTabSheet.class, loadStyle = LoadStyle.EAGER)

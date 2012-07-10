@@ -37,8 +37,6 @@ import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShellView;
 
 /**
  * Info message.
- * @author apchelintcev
- *
  */
 public class VInfoMessage extends VDetailedShellMessage {
 

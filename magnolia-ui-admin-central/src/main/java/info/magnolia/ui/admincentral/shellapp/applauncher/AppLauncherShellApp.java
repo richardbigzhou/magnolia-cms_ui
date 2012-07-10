@@ -56,8 +56,6 @@ import javax.inject.Inject;
  * Listen to:
  *  SystemEventBus: LayoutEvent. Reload the Layout by getting the latest available App from the {AppLauncherLayoutManager}.
  *  LocalEventBus : App started and App stop event. In this case, update the App button to indicate if an App is started or stopped.
- *
- * @version $Id$
  */
 public class AppLauncherShellApp implements ShellApp, AppLauncherView.Presenter {
 

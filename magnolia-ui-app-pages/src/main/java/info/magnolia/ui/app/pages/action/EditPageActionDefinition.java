@@ -37,7 +37,6 @@ import info.magnolia.ui.model.action.ActionDefinition;
 
 /**
  * EditPageActionDefinition.
- * @version $Id$
  */
 public class EditPageActionDefinition implements ActionDefinition {
 

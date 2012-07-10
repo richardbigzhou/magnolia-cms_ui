@@ -40,8 +40,6 @@ import com.google.gwt.event.shared.EventHandler;
 
 /**
  * Event handler for the header controls events. 
- * @author p4elkin
- *
  */
 public interface ShellNavigationHandler extends EventHandler {
 

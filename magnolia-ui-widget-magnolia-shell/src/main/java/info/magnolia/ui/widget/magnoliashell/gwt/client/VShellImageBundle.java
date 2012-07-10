@@ -39,8 +39,6 @@ import com.google.gwt.resources.client.ImageResource;
 
 /**
  * Image bundle.
- * @author apchelintcev
- *
  */
 public interface VShellImageBundle extends ClientBundle {
     

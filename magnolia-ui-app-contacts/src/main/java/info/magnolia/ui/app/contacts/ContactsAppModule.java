@@ -37,7 +37,9 @@ import info.magnolia.module.ModuleLifecycle;
 import info.magnolia.module.ModuleLifecycleContext;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.admincentral.app.content.ConfiguredContentAppDescriptor;
-import info.magnolia.ui.admincentral.tree.action.AddNodeActionDefinition;
+import info.magnolia.ui.admincentral.column.ReadOnlyPropertyColumnDefinition;
+import info.magnolia.ui.admincentral.dialog.action.CreateDialogActionDefinition;
+import info.magnolia.ui.admincentral.dialog.action.EditDialogActionDefinition;
 import info.magnolia.ui.admincentral.tree.action.DeleteItemActionDefinition;
 import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.registry.AppDescriptorProvider;
@@ -46,7 +48,13 @@ import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarDefinition
 import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarGroupDefinition;
 import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarItemDefinition;
 import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarSectionDefinition;
-import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.model.column.definition.MetaDataColumnDefinition;
+import info.magnolia.ui.model.column.definition.StatusColumnDefinition;
+import info.magnolia.ui.model.workbench.definition.ConfiguredItemTypeDefinition;
+import info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition;
+import info.magnolia.ui.model.workbench.definition.ItemTypeDefinition;
+
+import java.util.ArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +64,6 @@ import com.google.inject.Inject;
 
 /**
  * Module lifecycle handler for the contacts app, that may register app and its configuration.
- * 
  */
 @SuppressWarnings("serial")
 public class ContactsAppModule implements ModuleLifecycle {
@@ -72,9 +79,8 @@ public class ContactsAppModule implements ModuleLifecycle {
 
     @Override
     public void start(ModuleLifecycleContext moduleLifecycleContext) {
-        // Uncomment to register definition through code
-        // TODO 20120702 mgeljic: injection of the view doesn't work afterwards on ContactApp
-        // construct.
+        // Uncomment to register definition through code.
+        // Beware, you may have to remove configured "contacts" app in module config.
         // buildAndRegisterApp();
     }
 
@@ -91,46 +97,149 @@ public class ContactsAppModule implements ModuleLifecycle {
 
                 @Override
                 public String getName() {
-                    return "contentAppDescriptorProvider";
+                    return "contacts";
                 }
 
                 @Override
                 public AppDescriptor getAppDescriptor() throws RegistrationException {
-                    return new ConfiguredContentAppDescriptor("WHAT THE CONF!", new WorkbenchDefinition() {
+                    return new ConfiguredContentAppDescriptor() {
 
                         {
-                            setName("configWorkbench");
-                            setWorkspace("config");
-                            setPath("/");
-                            setActionbar(new ConfiguredActionbarDefinition() {
+                            this.setName("contacts");
+                            this.setCategoryName("MANAGE");
+                            this.setAppClass(ContactsApp.class);
+                            this.setLabel("Contacts");
+                            this.setIcon("img/icon-app-default.png");
+                            this.setWorkbench(new ConfiguredWorkbenchDefinition() {
 
                                 {
-                                    this.setName("configActionbar");
+                                    setName("contactsWorkbenchByCode");
+                                    setWorkspace("contacts");
+                                    setPath("/");
 
-                                    this.addSection(new ConfiguredActionbarSectionDefinition() {
+                                    // workbench item types
+                                    setItemTypes(new ArrayList<ItemTypeDefinition>() {
 
                                         {
-                                            this.setName("mainSection");
-                                            this.setLabel("Actions");
-
-                                            this.addGroup(new ConfiguredActionbarGroupDefinition() {
+                                            this.add(new ConfiguredItemTypeDefinition() {
 
                                                 {
-                                                    this.setName("0");
-                                                    this.addItem(new ConfiguredActionbarItemDefinition() {
+                                                    setItemType("mgnl:folder");
+                                                    setIcon("/.resources/icons/16/folders.gif");
+                                                }
+                                            });
+                                            this.add(new ConfiguredItemTypeDefinition() {
+
+                                                {
+                                                    setItemType("mgnl:contact");
+                                                    setIcon("/.resources/icons/16/pawn_glass_yellow.gif");
+                                                }
+                                            });
+                                        }
+                                    });
+
+                                    // workbench columns
+                                    addColumn(new ReadOnlyPropertyColumnDefinition() {
+
+                                        {
+                                            setName("firstName");
+                                            setPropertyName("firstName");
+                                            setLabel("First name");
+                                        }
+                                    });
+                                    addColumn(new ReadOnlyPropertyColumnDefinition() {
+
+                                        {
+                                            setName("lastName");
+                                            setPropertyName("lastName");
+                                            setLabel("Last name");
+                                        }
+                                    });
+                                    addColumn(new ReadOnlyPropertyColumnDefinition() {
+
+                                        {
+                                            setName("email");
+                                            setPropertyName("email");
+                                            setLabel("Email");
+                                        }
+                                    });
+                                    addColumn(new StatusColumnDefinition() {
+
+                                        {
+                                            setName("status");
+                                            setLabel("Status");
+                                        }
+                                    });
+                                    addColumn(new MetaDataColumnDefinition() {
+
+                                        {
+                                            setName("moddate");
+                                            setPropertyName("MetaData/mgnl:lastmodified");
+                                            setLabel("Mod. date");
+                                        }
+                                    });
+
+                                    // workbench action bar
+                                    setActionbar(new ConfiguredActionbarDefinition() {
+
+                                        {
+                                            this.setName("contactsActionbarByCode");
+
+                                            this.addSection(new ConfiguredActionbarSectionDefinition() {
+
+                                                {
+                                                    this.setName("Actions");
+                                                    this.setLabel("Actions");
+
+                                                    this.addGroup(new ConfiguredActionbarGroupDefinition() {
 
                                                         {
-                                                            this.setName("addNode");
-                                                            this.setLabel("Add node");
-                                                            this.setActionDefinition(new AddNodeActionDefinition());
+                                                            this.setName("0");
+                                                            this.addItem(new ConfiguredActionbarItemDefinition() {
+
+                                                                {
+                                                                    this.setName("newContact");
+                                                                    this.setLabel("New contact");
+                                                                    this.setIcon("img/actionbar-icons/icon-action-add-tablet.png");
+                                                                    this.setActionDefinition(new CreateDialogActionDefinition() {
+
+                                                                        {
+                                                                            this.setDialogName("ui-contacts-app:contact");
+                                                                            this.setNodeType("mgnl:contact");
+                                                                        }
+                                                                    });
+                                                                }
+                                                            });
+                                                            this.addItem(new ConfiguredActionbarItemDefinition() {
+
+                                                                {
+                                                                    this.setName("deleteContact");
+                                                                    this.setLabel("Delete contact");
+                                                                    this.setIcon("img/actionbar-icons/icon-action-delete-tablet.png");
+                                                                    this.setActionDefinition(new DeleteItemActionDefinition());
+                                                                }
+                                                            });
                                                         }
                                                     });
-                                                    this.addItem(new ConfiguredActionbarItemDefinition() {
+
+                                                    this.addGroup(new ConfiguredActionbarGroupDefinition() {
 
                                                         {
-                                                            this.setName("deleteNode");
-                                                            this.setLabel("Delete node");
-                                                            this.setActionDefinition(new DeleteItemActionDefinition());
+                                                            this.setName("1");
+                                                            this.addItem(new ConfiguredActionbarItemDefinition() {
+
+                                                                {
+                                                                    this.setName("editContact");
+                                                                    this.setLabel("Edit contact");
+                                                                    this.setIcon("img/actionbar-icons/icon-action-edit-tablet.png");
+                                                                    this.setActionDefinition(new EditDialogActionDefinition() {
+
+                                                                        {
+                                                                            this.setDialogName("ui-contacts-app:contact");
+                                                                        }
+                                                                    });
+                                                                }
+                                                            });
                                                         }
                                                     });
                                                 }
@@ -140,19 +249,8 @@ public class ContactsAppModule implements ModuleLifecycle {
                                 }
                             });
                         }
-
-                    }) {
-
-                        {
-                            this.setCategoryName("MANAGE");
-                            this.setAppClass(ContactsApp.class);
-                            this.setLabel("Confitacts");
-                            this.setIcon("img/icon-app-default.png");
-                        }
                     };
-
                 }
-
             });
         } catch (RegistrationException e) {
             logger.error(e.getMessage(), e);

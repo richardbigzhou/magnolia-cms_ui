@@ -38,8 +38,6 @@ import com.vaadin.ui.Component;
 
 /**
  * Fired upon discarding or committing an edit.
- * 
- * @author mrichert
  */
 public class EditEvent extends Component.Event {
 

@@ -43,7 +43,6 @@ import javax.jcr.Node;
 
 /**
  * Opens a dialog for creating a new node in a tree.
- * @version $Id$
  */
 public class CreateDialogAction extends ActionBase<CreateDialogActionDefinition> {
 

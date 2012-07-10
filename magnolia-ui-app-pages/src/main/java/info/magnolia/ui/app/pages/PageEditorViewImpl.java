@@ -42,8 +42,6 @@ import info.magnolia.ui.widget.editor.PageEditor;
 /**
  * PageEditorViewImpl.
  * TODO: make this a component with a split layout to accomodate the page editor on the left and its related actions on the right.
- *
-* @version $Id$
 */
 @SuppressWarnings("serial")
 public class PageEditorViewImpl implements PageEditorView {

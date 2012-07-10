@@ -44,8 +44,6 @@ import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
  * VShellTabSheetViewImpl.
- *
- * @author ejervidalo
  */
 public class VShellTabSheetViewImpl extends FlowPanel implements VShellTabSheetView {
 

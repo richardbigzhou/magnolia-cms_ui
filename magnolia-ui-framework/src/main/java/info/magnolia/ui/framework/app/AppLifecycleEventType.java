@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,17 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.toolbar;
-
-import java.util.Map;
+package info.magnolia.ui.framework.app;
 
 /**
- * A search filter definition used to build a UI element showing possible constraints for an advanced search.
- * @version $Id$
+ * Enumeration of events fired to signal changes to an apps lifecycle.
  *
+ * @see AppLifecycleEvent
+ * @see AppLifecycleEventHandler
  */
-public interface ToolbarItemFilterDefinition {
-    Map<String, String> getOptions();
-    String getName();
-    String getFilterLabel();
+public enum AppLifecycleEventType {
+
+    STARTED, STOPPED, FOCUSED
 }

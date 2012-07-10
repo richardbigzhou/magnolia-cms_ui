@@ -43,6 +43,7 @@ import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactoryImpl;
 import info.magnolia.ui.model.column.definition.AbstractColumnDefinition;
 import info.magnolia.ui.model.column.definition.PropertyTypeColumnDefinition;
+import info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -87,9 +88,9 @@ public class JcrContainerTest extends RepositoryTestCase{
     public void setUp() throws Exception{
         super.setUp();
         //Init
-        workbenchDefinition = new WorkbenchDefinition();
-        workbenchDefinition.setWorkspace(workspace);
-        workbenchDefinition.setPath("/");
+        ConfiguredWorkbenchDefinition configuredWorkbench = new ConfiguredWorkbenchDefinition();
+        configuredWorkbench.setWorkspace(workspace);
+        configuredWorkbench.setPath("/");
         //Init workBench
         WorkbenchActionFactory workbenchActionFactory = new WorkbenchActionFactoryImpl();
         //Init col
@@ -107,13 +108,14 @@ public class JcrContainerTest extends RepositoryTestCase{
 
         columns.put(colName1, col1);
         columns.put(colName2, col2);
-        workbenchDefinition.addColumn(colDef1);
-        workbenchDefinition.addColumn(colDef2);
+        configuredWorkbench.addColumn(colDef1);
+        configuredWorkbench.addColumn(colDef2);
 
         //FIXME.... workbenchDefinition --> has column set && we send also columns???
-        treeModel = new TreeModel(workbenchDefinition, columns, workbenchActionFactory);
+        treeModel = new TreeModel(configuredWorkbench, columns, workbenchActionFactory);
 
-        jcrContainer = new JcrContainerTestImpl(treeModel, workbenchDefinition);
+        jcrContainer = new JcrContainerTestImpl(treeModel, configuredWorkbench);
+        workbenchDefinition = configuredWorkbench;
 
 
         //Init session

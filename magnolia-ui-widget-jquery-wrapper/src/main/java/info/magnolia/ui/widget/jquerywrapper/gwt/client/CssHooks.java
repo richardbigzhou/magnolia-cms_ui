@@ -37,8 +37,6 @@ import com.google.gwt.core.client.JavaScriptObject;
 
 /**
  * Css hook JQuery API wrapper.
- * @author apchelintcev
- *
  */
 public class CssHooks extends JavaScriptObject {
 

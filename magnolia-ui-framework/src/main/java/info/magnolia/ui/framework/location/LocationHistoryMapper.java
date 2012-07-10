@@ -35,8 +35,6 @@ package info.magnolia.ui.framework.location;
 
 /**
  * Maps {@link Location}s to/from fragments, used to configure a {@link info.magnolia.ui.framework.location.LocationHistoryHandler}.
- *
- * @version $Id$
  */
 public interface LocationHistoryMapper {
 

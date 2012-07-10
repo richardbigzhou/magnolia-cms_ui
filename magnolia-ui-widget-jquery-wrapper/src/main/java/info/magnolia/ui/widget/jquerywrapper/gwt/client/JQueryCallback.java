@@ -35,8 +35,6 @@ package info.magnolia.ui.widget.jquerywrapper.gwt.client;
 
 /**
  * Java callback for JQuery events/animations.
- * @author p4elkin
- *
  */
 public interface JQueryCallback {
     public void execute(final JQueryWrapper query);

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,15 +31,21 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.toolbar;
+package info.magnolia.ui.framework.app.registry;
 
-import info.magnolia.ui.model.definition.ConfiguredMenuItemDefinition;
+import info.magnolia.ui.framework.event.EventHandler;
 
 /**
- * Implementation for {@link ToolbarDefinition}.
- * @author fgrilli
+ * Event handler interface for listening to {@link AppRegistryEvent}.
  *
+ * @see AppRegistryEvent
+ * @see AppDescriptorRegistry
  */
-public class ToolbarItemDefinitionImpl extends ConfiguredMenuItemDefinition implements ToolbarItemDefinition{
+public interface AppRegistryEventHandler extends EventHandler {
 
+    void onAppRegistered(AppRegistryEvent event);
+
+    void onAppReregistered(AppRegistryEvent event);
+
+    void onAppUnregistered(AppRegistryEvent event);
 }

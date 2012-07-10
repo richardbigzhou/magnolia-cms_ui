@@ -52,7 +52,6 @@ import javax.jcr.RepositoryException;
  * Abstract base class for columns that use AbstractEditable. Provides selecting of items and tree refresh on modification.
  *
  * @param <D>
- * @author tmattsson
  */
 public abstract class AbstractEditableColumn<D extends AbstractColumnDefinition> extends AbstractColumn<D> {
 

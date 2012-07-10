@@ -48,9 +48,6 @@ import com.vaadin.terminal.gwt.server.ApplicationServlet;
 /**
  * Simple test server for the GWT hosted mode development. 
  * Saves a lot of time against m2e wtp-integration.  
- * 
- * @author apchelintcev
- *
  */
 public class TestServer {
 

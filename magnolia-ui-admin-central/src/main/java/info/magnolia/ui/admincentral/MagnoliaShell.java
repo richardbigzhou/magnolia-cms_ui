@@ -62,8 +62,6 @@ import com.vaadin.terminal.ExternalResource;
 
 /**
  * Admin shell.
- * 
- * @version $Id$
  */
 @SuppressWarnings("serial")
 @Singleton

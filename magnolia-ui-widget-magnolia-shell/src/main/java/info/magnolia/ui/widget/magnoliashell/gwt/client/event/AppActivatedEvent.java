@@ -40,8 +40,6 @@ import com.google.gwt.event.shared.GwtEvent;
 
 /**
  * Shell app loaded event.
- * @author apchelintcev
- *
  */
 public class AppActivatedEvent extends GwtEvent<ShellNavigationHandler>{
 

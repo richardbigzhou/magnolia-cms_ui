@@ -49,7 +49,6 @@ import com.vaadin.ui.Label;
 
 /**
  * Entry in the feed (pulse).
- * @version $Id$
  */
 @SuppressWarnings("serial")
 public class ActivityItem extends CustomLayout {

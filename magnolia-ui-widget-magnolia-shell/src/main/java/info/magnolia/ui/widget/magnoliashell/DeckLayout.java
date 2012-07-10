@@ -45,8 +45,6 @@ import com.vaadin.ui.Component;
 
 /**
  * Component container capable of holding a single component.
- * @author apchelintcev
- *
  */
 @SuppressWarnings("serial")
 public class DeckLayout extends AbstractComponentContainer {

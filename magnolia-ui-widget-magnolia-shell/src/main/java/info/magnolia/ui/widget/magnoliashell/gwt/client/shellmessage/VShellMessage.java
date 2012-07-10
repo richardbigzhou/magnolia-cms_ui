@@ -49,17 +49,11 @@ import com.google.gwt.user.client.ui.HTML;
 
 /**
  * Simple notification object that pops up when warnings/errors occur.
- * 
- * @author apchelintcev
- * 
  */
 public abstract class VShellMessage extends HTML {
     
     /**
      * Enumeration of possible message types.
-     * 
-     * @author apchelintcev
-     * 
      */
     public enum MessageType {
         WARNING, ERROR, INFO;

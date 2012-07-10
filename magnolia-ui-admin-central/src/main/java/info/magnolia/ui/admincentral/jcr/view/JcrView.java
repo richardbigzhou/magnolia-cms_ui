@@ -41,15 +41,12 @@ import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 /**
  * UI component that displays a jcr workspace.
- * @version $Id$
  */
 public interface JcrView extends View, IsVaadinComponent {
 
     /**
      * Enumeration for view types.
      * TODO: use lowercase elements and remove custom code so that C2B support "by name" could be leveraged?
-     * @version $Id$
-     *
      */
     enum ViewType {
         LIST("list"),
@@ -93,7 +90,6 @@ public interface JcrView extends View, IsVaadinComponent {
 
     /**
      * Presenter for the JcrView.
-     * @version $Id$
      */
     public interface Presenter {
 

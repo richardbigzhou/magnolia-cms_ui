@@ -45,9 +45,6 @@ import java.util.Map.Entry;
 /**
  * Locale selector widget. It will output a select box with all locales passed in. Changing selection will trigger page reloading by default. You can change this behavior, by overriding
  * {@link #onChangeCallback(ChangeEvent)}.
- *
- * @version $Id$
- *
  */
 public class LocaleSelector extends ListBox {
     /**

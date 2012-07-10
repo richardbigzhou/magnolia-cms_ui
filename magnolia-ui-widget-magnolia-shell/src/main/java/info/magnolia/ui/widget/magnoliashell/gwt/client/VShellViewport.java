@@ -64,9 +64,6 @@ import com.vaadin.terminal.gwt.client.UIDL;
 
 /**
  * An overlay that displays the open app in the shell on top of each other.
- *
- * @author apchelintcev
- *
  */
 public class VShellViewport extends ComplexPanel implements Container, ContainerResizedListener {
 

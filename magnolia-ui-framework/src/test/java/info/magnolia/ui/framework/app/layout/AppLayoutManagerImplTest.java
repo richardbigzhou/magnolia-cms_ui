@@ -45,11 +45,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.app.AppEventType;
-import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.layout.event.LayoutEvent;
 import info.magnolia.ui.framework.app.layout.event.LayoutEventHandler;
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
+import info.magnolia.ui.framework.app.registry.AppRegistryEvent;
+import info.magnolia.ui.framework.app.registry.AppRegistryEventType;
 import info.magnolia.ui.framework.event.SimpleSystemEventBus;
 
 /**
@@ -113,9 +113,9 @@ public class AppLayoutManagerImplTest {
         });
 
         // WHEN
-        systemEventBus.fireEvent(new AppLifecycleEvent(appDescriptor1, AppEventType.REGISTERED));
-        systemEventBus.fireEvent(new AppLifecycleEvent(appDescriptor2, AppEventType.REREGISTERED));
-        systemEventBus.fireEvent(new AppLifecycleEvent(appDescriptor3, AppEventType.UNREGISTERED));
+        systemEventBus.fireEvent(new AppRegistryEvent(appDescriptor1, AppRegistryEventType.REGISTERED));
+        systemEventBus.fireEvent(new AppRegistryEvent(appDescriptor2, AppRegistryEventType.REREGISTERED));
+        systemEventBus.fireEvent(new AppRegistryEvent(appDescriptor3, AppRegistryEventType.UNREGISTERED));
 
         // THEN
         assertEquals(3, events.size());

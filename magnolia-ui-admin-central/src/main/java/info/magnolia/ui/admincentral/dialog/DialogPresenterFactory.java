@@ -38,8 +38,6 @@ import info.magnolia.ui.widget.dialog.DialogView;
 
 /**
  * Creates {@link DialogPresenter} instances that are use to display a dialog.
- *
- * @version $Id$
  */
 public interface DialogPresenterFactory {
 

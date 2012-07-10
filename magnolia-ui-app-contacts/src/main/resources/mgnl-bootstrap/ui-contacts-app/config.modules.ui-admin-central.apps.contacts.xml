@@ -15,6 +15,9 @@
   <sv:property sv:name="categoryName" sv:type="String">
     <sv:value>MANAGE</sv:value>
   </sv:property>
+  <sv:property sv:name="class" sv:type="String">
+    <sv:value>info.magnolia.ui.admincentral.app.content.ContentAppDescriptor</sv:value>
+  </sv:property>
   <sv:property sv:name="icon" sv:type="String">
     <sv:value>img/icon-app-default.png</sv:value>
   </sv:property>

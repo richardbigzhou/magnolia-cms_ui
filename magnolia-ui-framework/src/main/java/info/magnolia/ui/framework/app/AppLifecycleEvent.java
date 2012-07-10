@@ -36,16 +36,16 @@ package info.magnolia.ui.framework.app;
 import info.magnolia.ui.framework.event.Event;
 
 /**
- * App Event used to notify a Start Stop or Focus event.
+ * Event fired when the lifecycle of an app changes.
  *
- * @version $Id$
+ * @see AppLifecycleEventHandler
  */
 public class AppLifecycleEvent implements Event<AppLifecycleEventHandler> {
 
     private final AppDescriptor appDescriptor;
-    private final AppEventType eventType;
+    private final AppLifecycleEventType eventType;
 
-    public AppLifecycleEvent(AppDescriptor app, AppEventType eventType) {
+    public AppLifecycleEvent(AppDescriptor app, AppLifecycleEventType eventType) {
         this.appDescriptor = app;
         this.eventType = eventType;
     }
@@ -54,7 +54,7 @@ public class AppLifecycleEvent implements Event<AppLifecycleEventHandler> {
         return appDescriptor;
     }
 
-    public AppEventType getEventType() {
+    public AppLifecycleEventType getEventType() {
         return eventType;
     }
 
@@ -74,15 +74,6 @@ public class AppLifecycleEvent implements Event<AppLifecycleEventHandler> {
                 break;
             case STOPPED:
                 handler.onAppStopped(this);
-                break;
-            case REGISTERED:
-                handler.onAppRegistered(this);
-                break;
-            case UNREGISTERED:
-                handler.onAppUnregistered(this);
-                break;
-            case REREGISTERED:
-                handler.onAppReRegistered(this);
                 break;
         }
     }

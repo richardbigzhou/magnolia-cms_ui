@@ -46,8 +46,6 @@ import javax.jcr.RepositoryException;
 
 /**
  * DialogProvider that instantiates a dialog from a configuration node.
- *
- * @version $Id$
  */
 public class ConfiguredDialogDefinitionProvider implements DialogDefinitionProvider {
 

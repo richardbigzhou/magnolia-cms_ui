@@ -34,6 +34,7 @@
 package info.magnolia.ui.widget.magnoliashell;
 
 import info.magnolia.ui.framework.event.EventHandlerCollection;
+import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.shell.FragmentChangedEvent;
 import info.magnolia.ui.framework.shell.FragmentChangedHandler;
@@ -61,8 +62,6 @@ import com.vaadin.ui.Component;
 
 /**
  * Server side implementation of the MagnoliaShell container.
- *
- * @author apchelintcev
  */
 @SuppressWarnings("serial")
 @ClientWidget(value=VMagnoliaShell.class, loadStyle = LoadStyle.EAGER)
@@ -212,11 +211,11 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
     }
 
     protected void navigateToApp(String prefix, String token) {
-        doNavigateWithinViewport(getAppViewport(), "app", prefix, token);
+        doNavigateWithinViewport(getAppViewport(), DefaultLocation.LOCATION_TYPE_APP, prefix, token);
     }
 
     protected void navigateToShellApp(final String prefix, String token) {
-        doNavigateWithinViewport(getShellAppViewport(), "shell", prefix , token);
+        doNavigateWithinViewport(getShellAppViewport(), DefaultLocation.LOCATION_TYPE_SHELL_APP, prefix , token);
     }
 
     protected void doNavigateWithinViewport(final ShellViewport viewport, String type,  String prefix, String token) {

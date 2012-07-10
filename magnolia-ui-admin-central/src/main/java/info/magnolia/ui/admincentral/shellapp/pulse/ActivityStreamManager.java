@@ -43,8 +43,6 @@ import java.util.List;
  * need to clean up old entries
  *
  * can you post to more than one user? all? by group?
- *
- * @version $Id$
  */
 public interface ActivityStreamManager {
 

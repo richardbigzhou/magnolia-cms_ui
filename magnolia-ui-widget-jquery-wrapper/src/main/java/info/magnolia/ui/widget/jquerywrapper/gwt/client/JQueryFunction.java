@@ -37,8 +37,6 @@ import com.google.gwt.core.client.JavaScriptObject;
 
 /**
  * JS wrapper around JQuery callback.
- * @author apchelintcev
- *
  */
 final class JQueryFunction extends JavaScriptObject {
     

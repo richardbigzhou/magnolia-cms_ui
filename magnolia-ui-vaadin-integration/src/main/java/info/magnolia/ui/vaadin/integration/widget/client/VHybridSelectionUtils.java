@@ -50,15 +50,11 @@ import com.vaadin.terminal.gwt.client.ui.VScrollTable.VScrollTableBody.VScrollTa
 
 /**
  * Utility class for Hybrid selection widgets.
- * @author p4elkin
- *
  */
 public class VHybridSelectionUtils {
 
     /**
      * Common handler for mouse up events.
-     * @author p4elkin
-     *
      */
     public static class VHybridSelectionMouseUpHandler implements MouseUpHandler {
         

@@ -37,7 +37,6 @@ package info.magnolia.ui.framework.event;
  * Registration returned when registering a handler with a {@link EventBus}. Used to remove the handler when its no
  * longer needed.
  *
- * @version $Id$
  * @see EventBus
  * @see EventHandler
  */

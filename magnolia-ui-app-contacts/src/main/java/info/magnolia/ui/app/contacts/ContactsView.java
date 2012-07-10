@@ -38,8 +38,6 @@ import info.magnolia.ui.framework.app.AppView;
 
 /**
  * View for the Contacts app.
- *
- * @version $Id$
  */
 public interface ContactsView extends AppView {
     

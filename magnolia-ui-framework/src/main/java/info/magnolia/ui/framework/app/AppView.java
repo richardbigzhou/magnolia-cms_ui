@@ -37,8 +37,6 @@ import info.magnolia.ui.framework.view.View;
 
 /**
  * A view inside an app.
- *
- * @version $Id$
  */
 public interface AppView extends View {
 

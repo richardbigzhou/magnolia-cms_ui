@@ -38,8 +38,6 @@ import info.magnolia.ui.framework.app.AppDescriptor;
 
 /**
  * Provides a {@link AppDescriptor}.
- *
- * @version $Id$
  */
 public interface AppDescriptorProvider {
 

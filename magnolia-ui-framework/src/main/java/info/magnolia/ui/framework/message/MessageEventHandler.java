@@ -37,8 +37,6 @@ import info.magnolia.ui.framework.event.EventHandler;
 
 /**
  * Handler of {link {@link MessageEvent}.
- *
- * @version $Id$
  */
 public interface MessageEventHandler extends EventHandler {
 

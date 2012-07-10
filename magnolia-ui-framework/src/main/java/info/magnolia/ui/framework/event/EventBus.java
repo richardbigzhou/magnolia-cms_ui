@@ -36,7 +36,6 @@ package info.magnolia.ui.framework.event;
 /**
  * Event bus which fires events to a set of registered handlers.
  *
- * @version $Id$
  * @see Event
  * @see EventHandler
  * @see HandlerRegistration

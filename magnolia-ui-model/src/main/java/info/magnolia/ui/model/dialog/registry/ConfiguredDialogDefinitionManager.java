@@ -57,8 +57,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * ObservedManager for dialogs configured in repository.
- *
- * @version $Id$
  */
 @Singleton
 public class ConfiguredDialogDefinitionManager extends ModuleConfigurationObservingManager {

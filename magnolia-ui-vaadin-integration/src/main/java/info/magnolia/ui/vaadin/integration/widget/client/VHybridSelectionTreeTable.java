@@ -50,9 +50,6 @@ import com.vaadin.terminal.gwt.client.ui.VTreeTable;
 
 /**
  * Client side implementation of the Hybrid selection Tree Table.
- * 
- * @author apchelintcev
- * 
  */
 public class VHybridSelectionTreeTable extends VTreeTable {
 

@@ -48,9 +48,6 @@ import info.magnolia.jcr.RuntimeRepositoryException;
 /**
  * UI component that displays a label and on double click opens it for editing by switching the
  * label to save text field.
- *
- * @author tmattsson
- * @author mrichert
  */
 public abstract class Editable extends Label {
 

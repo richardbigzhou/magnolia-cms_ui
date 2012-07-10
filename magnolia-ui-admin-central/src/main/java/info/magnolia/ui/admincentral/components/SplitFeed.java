@@ -45,7 +45,6 @@ import com.vaadin.ui.NativeButton;
 
 /**
  * Split panel that displays two column feed.
- * @version $Id$
  */
 @SuppressWarnings("serial")
 public class SplitFeed extends CustomComponent {
@@ -86,7 +85,6 @@ public class SplitFeed extends CustomComponent {
 
     /**
      * Title for the feed section.
-     * @version $Id$
      */
     public static class FeedTitle extends Label {
 
@@ -100,7 +98,6 @@ public class SplitFeed extends CustomComponent {
 
     /**
      * Feed section (column).
-     * @version $Id$
      */
     public static class FeedSection extends CssLayout {
 

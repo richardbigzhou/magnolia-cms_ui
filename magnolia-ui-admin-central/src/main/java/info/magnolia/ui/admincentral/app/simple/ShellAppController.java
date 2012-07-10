@@ -56,8 +56,6 @@ import info.magnolia.ui.framework.view.ViewPort;
 
 /**
  * Manages the shell apps and raises callbacks to the app.
- *
- * @version $Id$
  */
 @Singleton
 public class ShellAppController implements LocationChangedEvent.Handler, LocationChangeRequestedEvent.Handler {
@@ -101,7 +99,7 @@ public class ShellAppController implements LocationChangedEvent.Handler, Locatio
     public void onLocationChanged(LocationChangedEvent event) {
 
         DefaultLocation newLocation = (DefaultLocation) event.getNewLocation();
-        if (!newLocation.getType().equals("shell")) {
+        if (!newLocation.getType().equals(DefaultLocation.LOCATION_TYPE_SHELL_APP)) {
             currentAppContext = null;
             viewPort.setView(null);
             return;

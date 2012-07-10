@@ -33,34 +33,38 @@
  */
 package info.magnolia.ui.admincentral.workbench;
 
-import com.vaadin.data.Item;
-import com.vaadin.ui.ComponentContainer;
 import info.magnolia.context.MgnlContext;
-import info.magnolia.registry.RegistrationException;
-import info.magnolia.ui.admincentral.MagnoliaShell;
+import info.magnolia.ui.admincentral.app.content.ContentAppDescriptor;
 import info.magnolia.ui.admincentral.event.ContentChangedEvent;
 import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.framework.app.AppView;
 import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.model.workbench.registry.WorkbenchDefinitionRegistry;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.jcr.LoginException;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import java.util.HashMap;
-import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.vaadin.data.Item;
+import com.vaadin.ui.ComponentContainer;
 
 
 /**
@@ -73,11 +77,10 @@ import java.util.Map;
  * <li>a configurable action bar on the right hand side, showing the available operations for the
  * given workspace and the selected item.
  * </ul>
- *
+ * 
  * <p>
  * Its main configuration point is the {@link WorkbenchDefinition} through which one defines the JCR
  * workspace to connect to, the columns/properties to display, the available actions and so on.
- * @version $Id$
  */
 @SuppressWarnings("serial")
 public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView.Presenter {
@@ -86,13 +89,11 @@ public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView
 
     private WorkbenchDefinition workbenchDefinition;
 
-    private final WorkbenchDefinitionRegistry workbenchRegistry;
-
     private final ContentWorkbenchView view;
 
     private final EventBus eventBus;
 
-    private final MagnoliaShell shell;
+    private final Shell shell;
 
     private final WorkbenchActionFactory actionFactory;
 
@@ -100,15 +101,14 @@ public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView
 
     private String selectedItemId;
 
-    private AppContext context;
+    private final AppContext context;
 
     @Inject
-    public ContentWorkbench(final AppContext context, final ContentWorkbenchView view, final EventBus eventbus, final MagnoliaShell shell, final WorkbenchDefinitionRegistry workbenchRegistry, final WorkbenchActionFactory actionFactory) {
+    public ContentWorkbench(final AppContext context, final ContentWorkbenchView view, final EventBus eventbus, final Shell shell, final WorkbenchActionFactory actionFactory) {
         this.context = context;
         this.view = view;
         this.eventBus = eventbus;
         this.shell = shell;
-        this.workbenchRegistry = workbenchRegistry;
         this.actionFactory = actionFactory;
         view.setPresenter(this);
 
@@ -124,12 +124,7 @@ public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView
 
     public void initWorkbench(final String id) {
         // load the workbench specific configuration if existing
-        try {
-            workbenchDefinition = workbenchRegistry.get(id);
-        } catch (RegistrationException e) {
-            shell.showError("An error occurred while trying to get workbench [" + id + "] in the registry", e);
-            return;
-        }
+        workbenchDefinition = ((ContentAppDescriptor) context.getAppDescriptor()).getWorkbench();
         view.initWorkbench(workbenchDefinition);
         view.initActionbar(workbenchDefinition.getActionbar());
     }
@@ -203,9 +198,10 @@ public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView
         return view;
     }
 
-
     @Override
-    public String getSelectedItemId() {
-        return selectedItemId;
+    public void onOpenNewView(AppView view, Location location) {
+        context.openAppView(view);
+        context.setAppLocation(location);
     }
+
 }

@@ -40,9 +40,6 @@ import com.google.gwt.user.client.Element;
 
 /**
  * Error message.
- * 
- * @author apchelintcev
- * 
  */
 public class VShellErrorMessage extends VShellMessage {
 

@@ -37,8 +37,6 @@ import info.magnolia.ui.framework.event.Event;
 
 /**
  * Fired when a URI fragment has changed.
- *
- * @version $Id$
  */
 public class FragmentChangedEvent implements Event<FragmentChangedHandler> {
 

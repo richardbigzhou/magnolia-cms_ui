@@ -37,8 +37,6 @@ import com.google.gwt.event.shared.EventHandler;
 
 /**
  * ShowAllTabHandler.
- *
- * @author ejervidalo
  */
 public interface ShowAllTabHandler extends EventHandler {
     void onShowAll(final ShowAllTabEvent event);

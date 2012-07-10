@@ -33,9 +33,6 @@
  */
 package info.magnolia.ui.framework.event;
 
-/**
-* @version $Id$
-*/
 public class TestEvent implements Event<TestEventHandler> {
 
     @Override

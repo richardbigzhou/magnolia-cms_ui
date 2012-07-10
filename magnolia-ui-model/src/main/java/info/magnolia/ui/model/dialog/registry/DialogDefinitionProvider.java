@@ -39,8 +39,6 @@ import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 
 /**
  * Provides a dialog definition.
- *
- * @version $Id$
  */
 public interface DialogDefinitionProvider extends Provider<DialogDefinition> {
 }

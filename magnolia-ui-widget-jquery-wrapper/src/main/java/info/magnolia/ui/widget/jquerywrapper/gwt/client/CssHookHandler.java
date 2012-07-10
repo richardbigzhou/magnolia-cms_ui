@@ -38,8 +38,6 @@ import com.google.gwt.user.client.Element;
 
 /**
  * Css hook callback. Fired when the target property got/set.
- * @author apchelintcev
- *
  */
 public interface CssHookHandler {
 

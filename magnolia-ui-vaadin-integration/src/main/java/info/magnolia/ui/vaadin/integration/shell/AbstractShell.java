@@ -47,8 +47,6 @@ import com.vaadin.ui.UriFragmentUtility;
 
 /**
  * Implements the methods to handle URI fragment changes.
- *
- * @version $Id$
  */
 @SuppressWarnings("serial")
 public abstract class AbstractShell implements Shell, com.vaadin.ui.UriFragmentUtility.FragmentChangedListener {

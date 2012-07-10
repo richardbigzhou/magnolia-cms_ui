@@ -37,8 +37,6 @@ package info.magnolia.ui.admincentral.jcr.view.builder;
  * Defines a Mapping from a Definition to an specific implementation.
  * @param <D> class of the definition
  * @param <I> class of the implementation
- *
- * @author dlipp
  */
 public class DefinitionToImplementationMapping<D,I> {
 

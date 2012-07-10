@@ -43,11 +43,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.app.AppLifecycleEvent;
-import info.magnolia.ui.framework.app.AppLifecycleEventHandler;
 import info.magnolia.ui.framework.app.layout.event.LayoutEvent;
 import info.magnolia.ui.framework.app.layout.event.LayoutEventType;
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
+import info.magnolia.ui.framework.app.registry.AppRegistryEvent;
+import info.magnolia.ui.framework.app.registry.AppRegistryEventHandler;
 import info.magnolia.ui.framework.event.SystemEventBus;
 
 /**
@@ -74,27 +74,26 @@ public class AppLayoutManagerImpl implements AppLayoutManager {
         this.systemEventBus = systemEventBus;
 
         /**
-         * Register for App registration events.
-         * Currently just propagates the events.
+         * Propagate events from {@link AppDescriptorRegistry} to notify listeners that the layout has changed.
          */
-        systemEventBus.addHandler(AppLifecycleEvent.class, new AppLifecycleEventHandler.Adapter() {
+        systemEventBus.addHandler(AppRegistryEvent.class, new AppRegistryEventHandler() {
 
             @Override
-            public void onAppRegistered(AppLifecycleEvent event) {
+            public void onAppRegistered(AppRegistryEvent event) {
                 String name = event.getAppDescriptor().getName();
                 logger.debug("Got AppLifecycleEvent." + event.getEventType() + " for the following appDescriptor " + name);
                 sendEvent(new LayoutEvent(LayoutEventType.RELOAD_APP, name));
             }
 
             @Override
-            public void onAppReRegistered(AppLifecycleEvent event) {
+            public void onAppReregistered(AppRegistryEvent event) {
                 String name = event.getAppDescriptor().getName();
                 logger.debug("Got AppLifecycleEvent." + event.getEventType() + " for the following appDescriptor " + name);
                 sendEvent(new LayoutEvent(LayoutEventType.RELOAD_APP, name));
             }
 
             @Override
-            public void onAppUnregistered(AppLifecycleEvent event) {
+            public void onAppUnregistered(AppRegistryEvent event) {
                 String name = event.getAppDescriptor().getName();
                 logger.debug("Got AppLifecycleEvent." + event.getEventType() + " for the following appDescriptor " + name);
                 sendEvent(new LayoutEvent(LayoutEventType.RELOAD_APP, name));
@@ -104,10 +103,10 @@ public class AppLayoutManagerImpl implements AppLayoutManager {
 
     @Override
     public AppLayout getLayout() {
-        //Init
+
         Map<String, AppCategory> categories = new HashMap<String, AppCategory>();
         AppLayout appLayout = new AppLayoutImpl(categories);
-        // Get AppDescriptor
+
         Collection<AppDescriptor> appDescriptors = this.appDescriptorRegistry.getAppDescriptors();
 
         for (AppDescriptor app : appDescriptors) {
