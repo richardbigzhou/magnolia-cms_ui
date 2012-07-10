@@ -31,21 +31,32 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.assets;
+package info.magnolia.ui.app.pages;
 
+import javax.inject.Inject;
+
+import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.view.View;
 
 /**
- * View for the Assets app.
+ * Sub app for the main tab in the pages app.
  */
-public interface AssetsView extends View {
+public class PagesAppMainSubApp implements SubApp {
 
-    void setListener(final Listener listener);
+    private PagesView view;
 
-    /**
-     * Listener.
-     */
-    public interface Listener {
+    @Inject
+    public PagesAppMainSubApp(PagesView view) {
+        this.view = view;
+    }
 
+    @Override
+    public String getCaption() {
+        return "Pages";
+    }
+
+    @Override
+    public View start() {
+        return view;
     }
 }

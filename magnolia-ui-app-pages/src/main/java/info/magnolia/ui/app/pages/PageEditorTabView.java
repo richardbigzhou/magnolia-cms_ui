@@ -38,7 +38,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
 import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.framework.app.AppView;
+import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 import info.magnolia.ui.widget.actionbar.Actionbar;
 import info.magnolia.ui.widget.editor.PageEditorView;
@@ -52,7 +52,7 @@ import javax.jcr.RepositoryException;
  * TODO: make this a component with a split layout to accomodate the page editor on the left and its related actions on the right.
 */
 @SuppressWarnings("serial")
-public class PageEditorTabView implements AppView, IsVaadinComponent {
+public class PageEditorTabView implements View, IsVaadinComponent {
 
     private Actionbar actionbar;
 
@@ -96,7 +96,6 @@ public class PageEditorTabView implements AppView, IsVaadinComponent {
         this.actionbar = actionbar;
     }
 
-    @Override
     public String getCaption() {
         return caption;
     }
@@ -107,9 +106,9 @@ public class PageEditorTabView implements AppView, IsVaadinComponent {
     }
 
     /**
-     * Presenter.
+     * Listener.
      */
-    public interface Presenter {
+    public interface Listener {
 
     }
 }

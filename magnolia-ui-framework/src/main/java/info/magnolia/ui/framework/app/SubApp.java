@@ -31,21 +31,16 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.assets;
+package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.framework.view.View;
 
 /**
- * View for the Assets app.
+ * Sub apps represents a view open in a tab within an app.
  */
-public interface AssetsView extends View {
+public interface SubApp {
 
-    void setListener(final Listener listener);
+    String getCaption();
 
-    /**
-     * Listener.
-     */
-    public interface Listener {
-
-    }
+    View start();
 }

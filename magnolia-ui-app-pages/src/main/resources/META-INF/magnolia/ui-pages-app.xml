@@ -12,6 +12,10 @@
   <components>
     <id>app-pages</id>
     <component>
+      <type>info.magnolia.ui.app.pages.PagesAppMainSubApp</type>
+      <implementation>info.magnolia.ui.app.pages.PagesAppMainSubApp</implementation>
+    </component>
+    <component>
       <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchView</type>
       <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbenchViewImpl</implementation>
     </component>

@@ -48,7 +48,7 @@ import javax.inject.Inject;
 public class PagesViewImpl implements PagesView, IsVaadinComponent {
 
     private ComponentContainer view;
-    private Presenter presenter;
+    private Listener listener;
 
     @Inject
     public PagesViewImpl(final ContentWorkbench workbench) {
@@ -57,18 +57,13 @@ public class PagesViewImpl implements PagesView, IsVaadinComponent {
     }
 
     @Override
-    public String getCaption() {
-        return "Pages";
-    }
-
-    @Override
     public Component asVaadinComponent() {
         return view;
     }
 
     @Override
-    public void setPresenter(PagesView.Presenter presenter) {
-        this.presenter = presenter;
+    public void setListener(Listener listener) {
+        this.listener = listener;
     }
 
 }

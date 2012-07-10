@@ -13,8 +13,20 @@
   <components>
     <id>app-sample</id>
     <component>
-      <type>info.magnolia.ui.app.sample.SampleView</type>
-      <implementation>info.magnolia.ui.app.sample.SampleViewImpl</implementation>
+      <type>info.magnolia.ui.app.sample.SampleMainSubApp</type>
+      <implementation>info.magnolia.ui.app.sample.SampleMainSubApp</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.app.sample.SampleEditorSubApp</type>
+      <implementation>info.magnolia.ui.app.sample.SampleEditorSubApp</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.app.sample.SampleMainView</type>
+      <implementation>info.magnolia.ui.app.sample.SampleMainViewImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.app.sample.SampleEditorView</type>
+      <implementation>info.magnolia.ui.app.sample.SampleEditorViewImpl</implementation>
     </component>
   </components>
 

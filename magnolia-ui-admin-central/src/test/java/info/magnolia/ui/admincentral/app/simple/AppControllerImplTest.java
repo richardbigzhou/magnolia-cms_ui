@@ -46,7 +46,6 @@ import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.AppLifecycleEventType;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventHandler;
-import info.magnolia.ui.framework.app.AppView;
 import info.magnolia.ui.framework.app.layout.AppCategory;
 import info.magnolia.ui.framework.app.layout.AppLayout;
 import info.magnolia.ui.framework.app.layout.AppLayoutImpl;
@@ -124,7 +123,7 @@ public class AppControllerImplTest {
         assertEquals(true, pageApp.events.get(0).startsWith("start()"));
         //Check injection
         assertNotNull(pageApp.ctx);
-        assertNotNull(pageApp.view);
+        assertNotNull(pageApp.subApp);
         //Check AppContext
         assertEquals("app:app1_name", pageApp.getDefaultLocation().toString());
     }
@@ -283,8 +282,8 @@ public class AppControllerImplTest {
     public static GuiceComponentProvider initComponentProvider() {
         GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
         ComponentProviderConfiguration components = new ComponentProviderConfiguration();
-        //Register PagesView
-        components.registerImplementation(AppView.class, AppViewTestImpl.class);
+
+        components.registerImplementation(AppTestView.class, AppViewTestImpl.class);
         builder.withConfiguration(components);
         builder.exposeGlobally();
         return  builder.build();

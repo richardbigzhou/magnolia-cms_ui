@@ -35,7 +35,7 @@ package info.magnolia.ui.admincentral.app.simple;
 
 import info.magnolia.ui.framework.app.AbstractApp;
 import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.app.AppView;
+import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.location.Location;
 
 import java.util.ArrayList;
@@ -57,25 +57,25 @@ import com.google.inject.Inject;
 public class AppTestImpl extends AbstractApp {
 
     public List<String> events = new ArrayList<String>();
-    public AppView view;
     public AppContext ctx;
     public Location currentLocation;
     public static Map<String, Object> res = new HashMap<String, Object>();
     public static int appNumber = 0;
+    public final AppTestSubApp subApp;
 
     @Inject
-    public AppTestImpl(AppContext ctx, AppView view) {
+    public AppTestImpl(AppContext ctx, AppTestSubApp subApp) {
         this.ctx = ctx;
-        this.view = view;
+        this.subApp = subApp;
         res.put("TestPageApp"+appNumber, this);
         appNumber +=1;
     }
 
     @Override
-    public AppView start(Location location) {
+    public SubApp start(Location location) {
         events.add("start() with location "+location);
         currentLocation = location;
-        return view;
+        return subApp;
     }
 
     @Override

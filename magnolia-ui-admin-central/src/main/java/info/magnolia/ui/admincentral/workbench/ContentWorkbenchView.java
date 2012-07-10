@@ -36,7 +36,7 @@ package info.magnolia.ui.admincentral.workbench;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.actionbar.ActionbarView;
 import info.magnolia.ui.admincentral.jcr.view.JcrView;
-import info.magnolia.ui.framework.app.AppView;
+import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 
@@ -74,7 +74,7 @@ public interface ContentWorkbenchView extends ComponentContainer, ActionbarView 
 
         void onItemSelected(final Item item);
 
-        void onOpenNewView(final AppView view, final Location location);
+        void onOpenNewView(final SubApp subApp, final Location location);
 
     }
 

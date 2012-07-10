@@ -31,51 +31,32 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.sample;
+package info.magnolia.ui.admincentral.app.assets;
 
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
+import javax.inject.Inject;
 
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
+import info.magnolia.ui.framework.app.SubApp;
+import info.magnolia.ui.framework.view.View;
 
 /**
- * View implementation for the sample app.
+ * Sub app for the main tab in the assets app.
  */
-@SuppressWarnings("serial")
-public class SampleViewImpl implements SampleView, IsVaadinComponent {
+public class AssetsMainSubApp implements SubApp {
 
-    private SampleView.Presenter presenter;
-    private final VerticalLayout tableContainer;
+    private AssetsView assetsView;
 
-    public SampleViewImpl() {
-        tableContainer = new VerticalLayout();
-        Label label = new Label("<center>Sample App</center>", Label.CONTENT_XHTML);
-        tableContainer.addComponent(label);
-
-        Button dialog = new Button("Gimme more tabs!", new Button.ClickListener() {
-
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                presenter.onButtonClick();
-            }
-        });
-        tableContainer.addComponent(dialog);
-    }
-
-    @Override
-    public void setPresenter(SampleView.Presenter presenter) {
-        this.presenter = presenter;
+    @Inject
+    public AssetsMainSubApp(AssetsView assetsView) {
+        this.assetsView = assetsView;
     }
 
     @Override
     public String getCaption() {
-        return "Sample";
+        return "Assets";
     }
 
     @Override
-    public Component asVaadinComponent() {
-        return tableContainer;
+    public View start() {
+        return assetsView;
     }
 }

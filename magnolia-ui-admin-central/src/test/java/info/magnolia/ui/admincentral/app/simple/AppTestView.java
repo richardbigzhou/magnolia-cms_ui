@@ -31,21 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.sample;
+package info.magnolia.ui.admincentral.app.simple;
 
-import info.magnolia.ui.framework.app.AppView;
+import info.magnolia.ui.framework.view.View;
 
 /**
- * View for the sample app.
+ *
  */
-public interface SampleView extends AppView {
-
-    void setPresenter(Presenter presenter);
-
-    /**
-     * Presenter interface for SampleView.
-     */
-    public interface Presenter {
-        void onButtonClick();
-    }
+public interface AppTestView extends View {
 }

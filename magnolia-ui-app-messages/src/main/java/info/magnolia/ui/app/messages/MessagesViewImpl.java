@@ -50,7 +50,7 @@ import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 @SuppressWarnings("serial")
 public class MessagesViewImpl implements MessagesView, IsVaadinComponent {
 
-    private MessagesView.Presenter presenter;
+    private Listener listener;
     private final Component component;
 
     public MessagesViewImpl() {
@@ -93,9 +93,9 @@ public class MessagesViewImpl implements MessagesView, IsVaadinComponent {
                 String scope = (String) scopes.getValue();
 
                 if (scope.equals("Local")) {
-                    presenter.handleLocalMessage(type, subject, message);
+                    listener.handleLocalMessage(type, subject, message);
                 } else {
-                    presenter.handleGlobalMessage(type, subject, message);
+                    listener.handleGlobalMessage(type, subject, message);
                 }
             }
         }));
@@ -104,7 +104,7 @@ public class MessagesViewImpl implements MessagesView, IsVaadinComponent {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                presenter.showConfirmationMessage("Confirmation - " + messageField.getValue());
+                listener.showConfirmationMessage("Confirmation - " + messageField.getValue());
             }
         }));
 
@@ -112,13 +112,8 @@ public class MessagesViewImpl implements MessagesView, IsVaadinComponent {
     }
 
     @Override
-    public void setPresenter(MessagesView.Presenter presenter) {
-        this.presenter = presenter;
-    }
-
-    @Override
-    public String getCaption() {
-        return "Messages";
+    public void setListener(Listener listener) {
+        this.listener = listener;
     }
 
     @Override

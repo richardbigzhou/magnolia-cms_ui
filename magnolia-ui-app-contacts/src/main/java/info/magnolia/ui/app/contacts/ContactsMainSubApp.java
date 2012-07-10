@@ -31,21 +31,32 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.assets;
+package info.magnolia.ui.app.contacts;
 
+import javax.inject.Inject;
+
+import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.view.View;
 
 /**
- * View for the Assets app.
+ * Sub app for the main tab in the contacts app.
  */
-public interface AssetsView extends View {
+public class ContactsMainSubApp implements SubApp {
 
-    void setListener(final Listener listener);
+    private ContactsView view;
 
-    /**
-     * Listener.
-     */
-    public interface Listener {
+    @Inject
+    public ContactsMainSubApp(ContactsView view) {
+        this.view = view;
+    }
 
+    @Override
+    public String getCaption() {
+        return "Contacts";
+    }
+
+    @Override
+    public View start() {
+        return view;
     }
 }

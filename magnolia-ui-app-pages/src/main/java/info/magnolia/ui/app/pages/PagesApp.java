@@ -35,8 +35,7 @@ package info.magnolia.ui.app.pages;
 
 
 import info.magnolia.ui.framework.app.AbstractApp;
-import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.app.AppView;
+import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.location.Location;
 
 import javax.inject.Inject;
@@ -44,20 +43,17 @@ import javax.inject.Inject;
 /**
  * Pages app.
  */
-public class PagesApp extends AbstractApp implements PagesView.Presenter {
+public class PagesApp extends AbstractApp implements PagesView.Listener {
 
-    private AppContext context;
-    private PagesView view;
+    private PagesAppMainSubApp subApp;
 
     @Inject
-    public PagesApp(PagesView view, AppContext context) {
-        this.view = view;
-        this.context = context;
+    public PagesApp(PagesAppMainSubApp subApp) {
+        this.subApp = subApp;
     }
 
     @Override
-    public AppView start(Location location) {
-        view.setPresenter(this);
-        return view;
+    public SubApp start(Location location) {
+        return subApp;
     }
 }

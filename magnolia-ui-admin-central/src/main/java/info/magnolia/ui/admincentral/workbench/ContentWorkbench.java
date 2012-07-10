@@ -39,7 +39,7 @@ import info.magnolia.ui.admincentral.event.ContentChangedEvent;
 import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.app.AppView;
+import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.shell.Shell;
@@ -199,9 +199,8 @@ public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView
     }
 
     @Override
-    public void onOpenNewView(AppView view, Location location) {
-        context.openAppView(view);
+    public void onOpenNewView(SubApp subApp, Location location) {
+        context.openSubApp(subApp);
         context.setAppLocation(location);
     }
-
 }

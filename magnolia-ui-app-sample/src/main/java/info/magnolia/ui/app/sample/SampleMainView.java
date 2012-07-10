@@ -33,36 +33,20 @@
  */
 package info.magnolia.ui.app.sample;
 
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
-import org.apache.commons.lang.RandomStringUtils;
-
-import info.magnolia.ui.framework.app.AppView;
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
+import info.magnolia.ui.framework.view.View;
 
 /**
- * View for a tab in the sample application.
+ * View for the main tab of sample app.
  */
-public class SampleTabView implements AppView, IsVaadinComponent {
+public interface SampleMainView extends View {
 
-    private final VerticalLayout tableContainer;
-    private final String name;
+    void setListener(Listener listener);
 
-    public SampleTabView() {
-        name = RandomStringUtils.randomNumeric(2);
-        tableContainer = new VerticalLayout();
-        Label label = new Label("<center>Sample Tab " + name + "</center>", Label.CONTENT_XHTML);
-        tableContainer.addComponent(label);
-    }
+    /**
+     * Listener for SampleMainView.
+     */
+    public interface Listener {
 
-    @Override
-    public String getCaption() {
-        return "TAB " + name;
-    }
-
-    @Override
-    public Component asVaadinComponent() {
-        return tableContainer;
+        void onOpenNewEditor();
     }
 }

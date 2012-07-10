@@ -31,51 +31,63 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.sample;
+package info.magnolia.ui.app.messages;
 
+import java.util.Date;
 import javax.inject.Inject;
 
-import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.framework.app.AbstractApp;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.SubApp;
-import info.magnolia.ui.framework.location.DefaultLocation;
-import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.framework.message.Message;
+import info.magnolia.ui.framework.message.MessageType;
+import info.magnolia.ui.framework.view.View;
 
 /**
- * Sample app.
+ * Sub app for the main tab in the message app.
  */
-public class SampleApp extends AbstractApp {
+public class MessagesAppMainSubApp implements SubApp, MessagesView.Listener {
 
-    private AppContext context;
-    private ComponentProvider componentProvider;
-    private SampleMainSubApp mainSubApp;
+    private AppContext appContext;
+    private MessagesView view;
 
     @Inject
-    public SampleApp(AppContext context, ComponentProvider componentProvider, SampleMainSubApp mainSubApp) {
-        this.context = context;
-        this.componentProvider = componentProvider;
-        this.mainSubApp = mainSubApp;
-        this.mainSubApp.setSampleApp(this);
+    public MessagesAppMainSubApp(AppContext appContext, MessagesView view) {
+        this.appContext = appContext;
+        this.view = view;
     }
 
     @Override
-    public SubApp start(Location location) {
-        return mainSubApp;
+    public String getCaption() {
+        return "Messages";
     }
 
     @Override
-    public void stop() {
+    public View start() {
+        return view;
     }
 
     @Override
-    public void locationChanged(Location location) {
+    public void showConfirmationMessage(String message) {
+        appContext.showConfirmationMessage(message);
     }
 
-    public void openNewEditor(String name) {
-        SampleEditorSubApp editorSubApp = componentProvider.getComponent(SampleEditorSubApp.class);
-        editorSubApp.setName(name);
-        context.openSubApp(editorSubApp);
-        context.setAppLocation(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "sample", editorSubApp.getCaption()));
+    @Override
+    public void handleLocalMessage(MessageType type, String subject, String message) {
+        final Message msg = new Message();
+        msg.setSubject(subject);
+        msg.setMessage(message);
+        msg.setType(type);
+        msg.setTimestamp(new Date().getTime());
+        appContext.sendLocalMessage(msg);
+    }
+
+    @Override
+    public void handleGlobalMessage(MessageType type, String subject, String message) {
+        final Message msg = new Message();
+        msg.setSubject(subject);
+        msg.setMessage(message);
+        msg.setType(type);
+        msg.setTimestamp(new Date().getTime());
+        appContext.broadcastMessage(msg);
     }
 }

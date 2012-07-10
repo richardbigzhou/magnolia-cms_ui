@@ -31,21 +31,38 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.assets;
+package info.magnolia.ui.app.sample;
 
+import javax.inject.Inject;
+
+import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.view.View;
 
 /**
- * View for the Assets app.
+ * SubApp for editor tabs in sample app.
  */
-public interface AssetsView extends View {
+public class SampleEditorSubApp implements SubApp, SampleEditorView.Listener {
 
-    void setListener(final Listener listener);
+    private String name;
+    private final SampleEditorView view;
 
-    /**
-     * Listener.
-     */
-    public interface Listener {
+    @Inject
+    public SampleEditorSubApp(SampleEditorView view) {
+        this.view = view;
+    }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getCaption() {
+        return "Editor " + name;
+    }
+
+    @Override
+    public View start() {
+        this.view.setName(name);
+        this.view.setListener(this);
+        return view;
     }
 }

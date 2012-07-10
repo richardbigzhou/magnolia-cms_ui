@@ -31,21 +31,32 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.assets;
+package info.magnolia.ui.admincentral.app.simple;
 
+import javax.inject.Inject;
+
+import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.view.View;
 
 /**
- * View for the Assets app.
+ *
  */
-public interface AssetsView extends View {
+public class AppTestSubApp implements SubApp {
 
-    void setListener(final Listener listener);
+    private AppTestView view;
 
-    /**
-     * Listener.
-     */
-    public interface Listener {
+    @Inject
+    public AppTestSubApp(AppTestView view) {
+        this.view = view;
+    }
 
+    @Override
+    public String getCaption() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public View start() {
+        return view;
     }
 }

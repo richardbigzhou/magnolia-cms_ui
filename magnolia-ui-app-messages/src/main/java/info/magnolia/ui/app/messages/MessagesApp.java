@@ -33,59 +33,29 @@
  */
 package info.magnolia.ui.app.messages;
 
-import java.util.Date;
-
 import info.magnolia.ui.framework.app.AbstractApp;
 import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.app.AppView;
+import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.message.Message;
-import info.magnolia.ui.framework.message.MessageType;
 
 import javax.inject.Inject;
 
 /**
  * Messages app.
  */
-public class MessagesApp extends AbstractApp implements MessagesView.Presenter {
+public class MessagesApp extends AbstractApp {
 
     private AppContext context;
-    private MessagesView view;
+    private MessagesAppMainSubApp subApp;
 
     @Inject
-    public MessagesApp(MessagesView view, AppContext context) {
-        this.view = view;
+    public MessagesApp(AppContext context, MessagesAppMainSubApp subApp) {
         this.context = context;
+        this.subApp = subApp;
     }
 
     @Override
-    public AppView start(Location location) {
-        view.setPresenter(this);
-        return view;
-    }
-
-    @Override
-    public void showConfirmationMessage(String message) {
-        context.showConfirmationMessage(message);
-    }
-
-    @Override
-    public void handleLocalMessage(MessageType type, String subject, String message) {
-        final Message msg = new Message();
-        msg.setSubject(subject);
-        msg.setMessage(message);
-        msg.setType(type);
-        msg.setTimestamp(new Date().getTime());
-        context.sendLocalMessage(msg);
-    }
-
-    @Override
-    public void handleGlobalMessage(MessageType type, String subject, String message) {
-        final Message msg = new Message();
-        msg.setSubject(subject);
-        msg.setMessage(message);
-        msg.setType(type);
-        msg.setTimestamp(new Date().getTime());
-        context.broadcastMessage(msg);
+    public SubApp start(Location location) {
+        return subApp;
     }
 }

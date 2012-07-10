@@ -33,20 +33,20 @@
  */
 package info.magnolia.ui.app.pages;
 
-import info.magnolia.ui.framework.app.AppView;
+import info.magnolia.ui.framework.view.View;
 
 /**
  * View for the Pages app.
  */
-public interface PagesView extends AppView {
+public interface PagesView extends View {
 
     /**
-     * Presenter.
+     * Listener.
      */
-    public interface Presenter {
+    public interface Listener {
 
     }
 
-    void setPresenter(Presenter presenter);
+    void setListener(Listener listener);
 
 }
