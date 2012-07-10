@@ -33,19 +33,28 @@
  */
 package info.magnolia.ui.admincentral.app.simple;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
 import info.magnolia.module.ModuleRegistryImpl;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
 import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.app.AppLifecycleEventType;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventHandler;
+import info.magnolia.ui.framework.app.AppLifecycleEventType;
 import info.magnolia.ui.framework.app.layout.AppCategory;
 import info.magnolia.ui.framework.app.layout.AppLayout;
 import info.magnolia.ui.framework.app.layout.AppLayoutImpl;
@@ -56,16 +65,6 @@ import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.message.MessagesManagerImpl;
 import info.magnolia.ui.framework.shell.Shell;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.junit.After;
-import org.junit.Before;
-
-import com.google.gwt.editor.client.Editor.Ignore;
 
 /**
  * Test case for {@link info.magnolia.ui.framework.app.AppController}.
@@ -80,7 +79,7 @@ public class AppControllerImplTest {
     private String appName_2 = "app2";
 
     @Before
-    public void setUp() throws Exception{
+    public void setUp() throws Exception {
         setAppLayoutManager();
         ModuleRegistryImpl moduleRegistry = new ModuleRegistryImpl();
         componentProvider = initComponentProvider();
@@ -95,19 +94,17 @@ public class AppControllerImplTest {
     }
 
     @After
-    public void tearDown() throws Exception{
+    public void tearDown() throws Exception {
         componentProvider.destroy();
         //Reset the static fields
         AppTestImpl.appNumber = 0;
         AppTestImpl.res = new HashMap<String, Object>();
     }
 
-
-
-    @Ignore
-    public void TestStartIfNotAlreadyRunning_Basic() {
+    @Test
+    public void testStartIfNotAlreadyRunning_Basic() {
         // GIVEN
-        String appName = appName_1+"_name";
+        String appName = appName_1 + "_name";
 
         // WHEN
         appControler.startIfNotAlreadyRunning(appName);
@@ -118,7 +115,7 @@ public class AppControllerImplTest {
         assertEquals(AppLifecycleEventType.STARTED, eventCollector.appLifecycleEvent.get(0).getEventType());
         //Check App
         assertEquals(true, AppTestImpl.res.containsKey("TestPageApp0"));
-        AppTestImpl pageApp = (AppTestImpl)AppTestImpl.res.get("TestPageApp0");
+        AppTestImpl pageApp = (AppTestImpl) AppTestImpl.res.get("TestPageApp0");
         assertEquals(1, pageApp.events.size());
         assertEquals(true, pageApp.events.get(0).startsWith("start()"));
         //Check injection
@@ -128,10 +125,10 @@ public class AppControllerImplTest {
         assertEquals("app:app1_name", pageApp.getDefaultLocation().toString());
     }
 
-    @Ignore
-    public void TestStartIfNotAlreadyRunningThenFocus_Basic() {
+    @Test
+    public void testStartIfNotAlreadyRunningThenFocus_Basic() {
         // GIVEN
-        String appName = appName_1+"_name";
+        String appName = appName_1 + "_name";
 
         // WHEN
         appControler.startIfNotAlreadyRunningThenFocus(appName);
@@ -143,21 +140,21 @@ public class AppControllerImplTest {
         checkAppEvent(eventCollector, appName, AppLifecycleEventType.FOCUSED, 1);
         //Check App
         assertEquals(true, AppTestImpl.res.containsKey("TestPageApp0"));
-        AppTestImpl pageApp = (AppTestImpl)AppTestImpl.res.get("TestPageApp0");
+        AppTestImpl pageApp = (AppTestImpl) AppTestImpl.res.get("TestPageApp0");
         assertEquals(1, pageApp.events.size());
         assertEquals(true, pageApp.events.get(0).startsWith("start()"));
         //Check AppContext
         assertEquals("app:app1_name", pageApp.getDefaultLocation().toString());
     }
 
-    @Ignore
-    public void TestStopApp_oneApp() {
+    @Test
+    public void testStopApp_oneApp() {
         // GIVEN
-        String appName = appName_1+"_name";
+        String appName = appName_1 + "_name";
         appControler.startIfNotAlreadyRunningThenFocus(appName);
         //Check
         assertEquals(true, AppTestImpl.res.containsKey("TestPageApp0"));
-        AppTestImpl pageApp = (AppTestImpl)AppTestImpl.res.get("TestPageApp0");
+        AppTestImpl pageApp = (AppTestImpl) AppTestImpl.res.get("TestPageApp0");
         assertEquals(1, pageApp.events.size());
         assertEquals(true, pageApp.events.get(0).startsWith("start()"));
 
@@ -174,22 +171,22 @@ public class AppControllerImplTest {
         assertEquals(true, pageApp.events.get(1).startsWith("stop()"));
     }
 
-    @Ignore
-    public void TestStopApp_twoApp() {
+    @Test
+    public void testStopApp_twoApp() {
         // GIVEN
         //Start first App
-        String appName1 = appName_1+"_name";
+        String appName1 = appName_1 + "_name";
         appControler.startIfNotAlreadyRunningThenFocus(appName1);
         //Check
         assertEquals(true, AppTestImpl.res.containsKey("TestPageApp0"));
-        AppTestImpl pageApp1 = (AppTestImpl)AppTestImpl.res.get("TestPageApp0");
+        AppTestImpl pageApp1 = (AppTestImpl) AppTestImpl.res.get("TestPageApp0");
 
         //Start second App
-        String appName2 = appName_2+"_name";
+        String appName2 = appName_2 + "_name";
         appControler.startIfNotAlreadyRunningThenFocus(appName2);
         //Check
         assertEquals(true, AppTestImpl.res.containsKey("TestPageApp1"));
-        AppTestImpl pageApp2 = (AppTestImpl)AppTestImpl.res.get("TestPageApp1");
+        AppTestImpl pageApp2 = (AppTestImpl) AppTestImpl.res.get("TestPageApp1");
 
         // WHEN
         appControler.stopApp(appName2);
@@ -210,23 +207,22 @@ public class AppControllerImplTest {
         assertEquals(true, pageApp1.events.get(0).startsWith("start()"));
     }
 
-
-    @Ignore
-    public void TestStopCurrentApp() {
+    @Test
+    public void testStopCurrentApp() {
         // GIVEN
         //Start first App
-        String appName1 = appName_1+"_name";
+        String appName1 = appName_1 + "_name";
         appControler.startIfNotAlreadyRunningThenFocus(appName1);
         //Check
         assertEquals(true, AppTestImpl.res.containsKey("TestPageApp0"));
         AppTestImpl.res.get("TestPageApp0");
 
         //Start second App
-        String appName2 = appName_2+"_name";
+        String appName2 = appName_2 + "_name";
         appControler.startIfNotAlreadyRunningThenFocus(appName2);
         //Check
         assertEquals(true, AppTestImpl.res.containsKey("TestPageApp1"));
-        AppTestImpl pageApp2 = (AppTestImpl)AppTestImpl.res.get("TestPageApp1");
+        AppTestImpl pageApp2 = (AppTestImpl) AppTestImpl.res.get("TestPageApp1");
 
         // WHEN
         appControler.stopCurrentApp();
@@ -237,22 +233,22 @@ public class AppControllerImplTest {
         assertEquals(true, pageApp2.events.get(1).startsWith("stop()"));
     }
 
-    @Ignore
-    public void TestIsAppStarted() {
+    @Test
+    public void testIsAppStarted() {
         // GIVEN
-        String appName1 = appName_1+"_name";
+        String appName1 = appName_1 + "_name";
         //Check
-        assertEquals(false , appControler.isAppStarted(appName1));
+        assertEquals(false, appControler.isAppStarted(appName1));
         //Start App
         appControler.startIfNotAlreadyRunningThenFocus(appName1);
         //Check
-        assertEquals(true , appControler.isAppStarted(appName1));
+        assertEquals(true, appControler.isAppStarted(appName1));
 
         // WHEN
         appControler.stopCurrentApp();
 
         // THEN
-        assertEquals(false , appControler.isAppStarted(appName1));
+        assertEquals(false, appControler.isAppStarted(appName1));
     }
 
     /**
@@ -267,32 +263,33 @@ public class AppControllerImplTest {
         AppCategory cat1 = AppTestUtility.createAppCategory("cat1", app1);
         //Set cat2 with App2
         AppDescriptor app2 = AppTestUtility.createAppDescriptor("app2", AppTestImpl.class);
-        AppCategory cat2 =AppTestUtility.createAppCategory("cat2", app2);
+        AppCategory cat2 = AppTestUtility.createAppCategory("cat2", app2);
         cat2.addApp(app2);
         Map<String, AppCategory> categories = new HashMap<String, AppCategory>();
-        categories.put("cat1",cat1);
-        categories.put("cat2",cat2);
+        categories.put("cat1", cat1);
+        categories.put("cat2", cat2);
 
         AppLayout appLayout = new AppLayoutImpl(categories);
 
         when(appLayoutManager.getLayout()).thenReturn(appLayout);
     }
 
-
     public static GuiceComponentProvider initComponentProvider() {
-        GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
-        ComponentProviderConfiguration components = new ComponentProviderConfiguration();
 
+        ComponentProviderConfiguration components = new ComponentProviderConfiguration();
         components.registerImplementation(AppTestView.class, AppViewTestImpl.class);
+        components.registerImplementation(AppTestSubApp.class, AppTestSubApp.class);
+
+        GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
         builder.withConfiguration(components);
         builder.exposeGlobally();
-        return  builder.build();
+        return builder.build();
     }
-
 
     public static class AppEventCollector implements AppLifecycleEventHandler {
 
         List<AppLifecycleEvent> appLifecycleEvent = new ArrayList<AppLifecycleEvent>();
+
         @Override
         public void onAppFocused(AppLifecycleEvent event) {
             appLifecycleEvent.add(event);
@@ -308,8 +305,9 @@ public class AppControllerImplTest {
             appLifecycleEvent.add(event);
         }
     }
+
     public static void checkAppEvent(AppEventCollector eventCollector, String appName, AppLifecycleEventType eventType, int position) {
-        assertEquals(eventType,  eventCollector.appLifecycleEvent.get(position).getEventType());
+        assertEquals(eventType, eventCollector.appLifecycleEvent.get(position).getEventType());
         assertEquals(appName, eventCollector.appLifecycleEvent.get(position).getAppDescriptor().getName());
     }
 }
