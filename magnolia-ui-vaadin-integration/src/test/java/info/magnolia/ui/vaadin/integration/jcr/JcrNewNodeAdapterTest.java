@@ -77,8 +77,9 @@ public class JcrNewNodeAdapterTest {
         //Create a NewNodeAdapter
         String nodeName = "rootNode";
         String id = "propertyName";
+        String nodeType = "mgnl:content";
         Node parentNode = session.getRootNode().addNode(nodeName);
-        JcrNodeAdapter adapter = new JcrNodeAdapter(parentNode);
+        JcrNewNodeAdapter adapter = new JcrNewNodeAdapter(parentNode,nodeType);
         Property propertyInitial = adapter.getItemProperty(id);
         propertyInitial.setValue("new");
 

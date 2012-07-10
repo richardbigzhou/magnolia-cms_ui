@@ -121,10 +121,9 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         ((ConfiguredItemTypeDefinition) itemType).setItemType("mgnl:content");
         configuredWorkbench.setItemTypes(Arrays.asList(itemType));
 
+        workbenchDefinition = configuredWorkbench;
         // FIXME.... workbenchDefinition --> has column set && we send also columns???
         treeModel = new TreeModel(workbenchDefinition, columns, workbenchActionFactory);
-
-        workbenchDefinition = configuredWorkbench;
         hierarchicalJcrContainer = new HierarchicalJcrContainer(treeModel, workbenchDefinition);
 
         // Init session

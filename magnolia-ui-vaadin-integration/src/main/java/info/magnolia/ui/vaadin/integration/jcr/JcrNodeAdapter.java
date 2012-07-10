@@ -171,6 +171,7 @@ public class JcrNodeAdapter extends JcrAbstractNodeAdapter  {
 
     /**
      * Update or remove property.
+     * Property wit flag saveInfo to false will not be updated.
      * Property can refer to node property (like name, title) or
      * node.MetaData property like (MetaData/template).
      * Also handle the specific case of node renaming.
@@ -179,6 +180,10 @@ public class JcrNodeAdapter extends JcrAbstractNodeAdapter  {
     protected void updateProperty(Node node) throws RepositoryException {
       //Update property
         for(Entry<String, Property> entry: changedProperties.entrySet()) {
+            //Check saveInfo Flag
+            if(!((DefaultProperty)entry.getValue()).isSaveInfo() || ((DefaultProperty)entry.getValue()).isReadOnly()) {
+                continue;
+            }
             // JCRNAME has change --> perform the renaming and continue
             if(entry.getKey().equals(JCR_NAME) && (entry.getValue() !=null && !entry.getValue().toString().isEmpty())) {
                node.getSession().move(node.getPath(), NodeUtil.combinePathAndName(node.getParent().getPath(), entry.getValue().getValue().toString()));
@@ -192,14 +197,12 @@ public class JcrNodeAdapter extends JcrAbstractNodeAdapter  {
                 PropertyUtil.setProperty(node, entry.getKey(), entry.getValue().getValue());
             }
         }
-        changedProperties.clear();
         // Remove Property
         for(Entry<String, Property> entry: removedProperties.entrySet()) {
             if(node.hasProperty(entry.getKey())) {
                 node.getProperty(entry.getKey()).remove();
             }
         }
-        removedProperties.clear();
     }
 
     private boolean jcrItemHasProperty(String propertyName) {

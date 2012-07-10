@@ -33,11 +33,10 @@
  */
 package info.magnolia.ui.model.dialog.definition;
 
+import info.magnolia.ui.model.definition.ConfiguredUiItemDefinition;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import info.magnolia.ui.model.definition.ConfiguredUiItemDefinition;
-import info.magnolia.ui.model.field.definition.FieldTypeDefinition;
 
 
 /**
@@ -53,9 +52,12 @@ public class ConfiguredFieldDefinition extends ConfiguredUiItemDefinition implem
 
     private boolean required; // Not relevant for checkbox
 
+    private boolean saveInfo = true; // Specify if the property has to be saved
+
+    private String defaultValue; // Specify the default value
+
     private List<ValidatorDefinition> validators = new ArrayList<ValidatorDefinition>();
 
-    private FieldTypeDefinition fieldTypeDefinition;
 
     @Override
     public String getDescription() {
@@ -103,12 +105,23 @@ public class ConfiguredFieldDefinition extends ConfiguredUiItemDefinition implem
     }
 
     @Override
-    public FieldTypeDefinition getFieldTypeDefinition() {
-        return fieldTypeDefinition;
+    public void setDefaultValue(String defaultValue) {
+        this.defaultValue = defaultValue;
     }
 
     @Override
-    public void setFieldTypeDefinition(FieldTypeDefinition fieldTypeDefinition) {
-        this.fieldTypeDefinition = fieldTypeDefinition;
+    public String getDefaultValue() {
+        return this.defaultValue;
     }
+
+    @Override
+    public void setSaveInfo(boolean saveInfo) {
+        this.saveInfo = saveInfo;
+    }
+
+    @Override
+    public boolean getSaveInfo() {
+        return this.saveInfo;
+    }
+
 }

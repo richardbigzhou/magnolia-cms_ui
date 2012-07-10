@@ -33,10 +33,11 @@
  */
 package info.magnolia.ui.app.pages.field;
 
+import org.vaadin.addon.customfield.CustomField;
+
 import com.vaadin.data.Property;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Select;
-import org.vaadin.addon.customfield.CustomField;
 
 /**
  * TemplateSelectorView implementation of a template selector.

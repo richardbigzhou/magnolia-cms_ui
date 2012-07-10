@@ -31,39 +31,21 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.field.builder;
+package info.magnolia.ui.admincentral.field;
 
 import info.magnolia.ui.model.dialog.definition.FieldDefinition;
-import info.magnolia.ui.model.field.definition.FieldTypeDefinition;
 
-import com.vaadin.data.Item;
 import com.vaadin.ui.Field;
-import com.vaadin.ui.TextField;
 
 /**
- * TextField. A {@link FieldType} for textfields which will return a vaadin textfield.
+ * FieldType. Is provided by the {@link info.magnolia.ui.admincentral.field.builder.FieldTypeProvider}.
+ * A FieldType is defined for every field in e.g. a dialog-type.
+ * It builds a vaadin {@link Field} and maps the necessary labels, validators etc to the field.
  *
  */
-public class TextFieldType extends FieldTypeBase {
+public interface DialogField {
 
-    public static final String TEXTFIELD_STYLE_NAME = "textfield";
+    Field getField();
 
-    public TextFieldType(FieldTypeDefinition definition) {
-        super(definition);
-    }
-
-
-    @Override
-    public Field build(FieldDefinition fieldDefinition, Item fieldRelatedItem) {
-        Field field = new TextField();
-        field.setCaption(fieldDefinition.getLabel());
-
-        final String label = fieldDefinition.getLabel();
-        field.setCaption(label);
-        field.setStyleName(TEXTFIELD_STYLE_NAME);
-        addValidatorsAndRequiredElements(fieldDefinition, field);
-        return field;
-    }
-
-
+    FieldDefinition getFieldDefinition();
 }
