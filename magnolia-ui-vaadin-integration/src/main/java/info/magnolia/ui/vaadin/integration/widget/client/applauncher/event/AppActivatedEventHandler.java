@@ -31,47 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.workbench;
+package info.magnolia.ui.vaadin.integration.widget.client.applauncher.event;
 
-import com.vaadin.data.Item;
-import com.vaadin.ui.ComponentContainer;
-import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
-import info.magnolia.ui.admincentral.actionbar.ActionbarView;
-import info.magnolia.ui.admincentral.jcr.view.JcrView;
-import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
+import com.google.gwt.event.shared.EventHandler;
 
 /**
- * Implementors of this interface are responsible for building a workbench and handling the UI
- * actions associated with it.
+ * Event handler of app activation.
  */
-public interface ContentWorkbenchView extends ComponentContainer, ActionbarView {
+public interface AppActivatedEventHandler extends EventHandler {
 
-    void setPresenter(final Presenter presenter);
-
-    void initWorkbench(final WorkbenchDefinition definintion);
-
-    void setGridType(final JcrView.ViewType type);
-
-    /**
-     * Causes a view refresh only if the current node exists in the repository.
-     */
-    void refreshItem(final Item item);
-
-    /**
-     * TODO review the for two methods to perform the view refresh. Had to add this one to refresh
-     * the view in case of item deletion. Refreshes the view.
-     */
-    void refresh();
-
-    /**
-     * Presenter.
-     */
-    public interface Presenter extends ActionbarPresenter {
-
-        void onItemSelected(final Item item);
-
-        String getSelectedItemId();
-
-    }
-
+    void onAppActivated(final AppActivationEvent event);
 }

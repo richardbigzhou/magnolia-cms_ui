@@ -33,15 +33,18 @@
  */
 package info.magnolia.ui.widget.magnoliashell;
 
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.VShellViewport;
 import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.framework.view.ViewPort;
+import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.VShellViewport;
 
 import com.vaadin.ui.ClientWidget;
 import com.vaadin.ui.ClientWidget.LoadStyle;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.ProgressIndicator;
 
 /**
  * The server side implementation of the shell viewport. MagnoliaShell is capable of holding of such for 
@@ -87,5 +90,16 @@ public class ShellViewport extends DeckLayout implements ViewPort {
                 throw new RuntimeException("The view passed can't be interpreted as Vaadin ComponentContainer!");   
             }
         }
+    }
+
+
+    public void showAppPlaceHolder(final String name) {
+        Panel panel = new Panel();
+        panel.addComponent(new Label("Loading: " + name));
+        ProgressIndicator pi = new ProgressIndicator();
+        pi.setIndeterminate(true);
+        panel.addComponent(pi);
+        display((ComponentContainer)panel);
+        parentShell.setActiveViewport(this);
     }
 }

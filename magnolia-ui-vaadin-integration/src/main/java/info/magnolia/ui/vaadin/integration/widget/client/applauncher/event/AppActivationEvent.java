@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,17 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.widget;
+package info.magnolia.ui.vaadin.integration.widget.client.applauncher.event;
 
-import info.magnolia.ui.vaadin.integration.widget.client.VHistorian;
-
-import com.vaadin.ui.ClientWidget;
-import com.vaadin.ui.ClientWidget.LoadStyle;
-import com.vaadin.ui.UriFragmentUtility;
+import com.google.web.bindery.event.shared.Event;
 
 /**
- * Historian.
+ * Event of app activation.
  */
-@ClientWidget(value = VHistorian.class, loadStyle = LoadStyle.EAGER)
-public class Historian extends UriFragmentUtility{
+public class AppActivationEvent extends Event<AppActivatedEventHandler> {
+
+    public static final Type<AppActivatedEventHandler> TYPE = new Type<AppActivatedEventHandler>();
+
+    private String appId;
+    
+    public AppActivationEvent(final String appId) {
+        this.appId = appId;
+    }
+    
+    public String getAppId() {
+        return appId;
+    }
+    
+    @Override
+    public Type<AppActivatedEventHandler> getAssociatedType() {
+        return TYPE;
+    }
+
+    @Override
+    protected void dispatch(AppActivatedEventHandler handler) {
+        handler.onAppActivated(this);
+    }
 }

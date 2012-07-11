@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,49 +31,53 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.shell;
+package info.magnolia.ui.vaadin.integration.widget.client.applauncher;
 
-import info.magnolia.ui.framework.shell.ConfirmationHandler;
-import info.magnolia.ui.framework.shell.Shell;
+import java.util.HashMap;
+import java.util.Map;
 
-import com.vaadin.ui.UriFragmentUtility;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.ui.ComplexPanel;
 
 /**
- * A shell working only with a sub fragment of the URL fragment.
+ * The unit that groups semantically close apps.
  */
-@SuppressWarnings("serial")
-public class SubShell extends AbstractShell {
+public abstract class VAppTileGroup extends ComplexPanel {
+    
+    private String color;
 
-    private Shell parent;
+    private Map<String, VAppTile> appTileMap = new HashMap<String, VAppTile>();
+    
+    public VAppTileGroup(String color) {
+        super();
+        this.color = color;
+        setElement(DOM.createElement("section"));
 
-    public SubShell(String id, Shell parent) {
-        super(id);
-        this.parent = parent;
+        addStyleName("app-list");
+        addStyleName("section");
+        addStyleName("clearfix");
     }
 
-    @Override
-    public void askForConfirmation(String message, ConfirmationHandler listener) {
-        parent.askForConfirmation(message, listener);
+    protected abstract void construct();
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+    
+    public String getColor() {
+        return color;
     }
 
-    @Override
-    public void showNotification(String message) {
-        parent.showNotification(message);
+    public void addAppThumbnail(final VAppTile thumbnail) {
+        add(thumbnail, getElement());
+        appTileMap.put(thumbnail.getCaption(), thumbnail);
     }
 
-    @Override
-    public void showError(String message, Exception e) {
-        parent.showError(message, e);
+    public boolean hasApp(String appName) {
+        return appTileMap.containsKey(appName);
     }
-
-    @Override
-    protected UriFragmentUtility getUriFragmentUtility() {
-        //FIXME we should obviously not cast, but also don't like to add the method to the clean interface
-        return ((AbstractShell)parent).getUriFragmentUtility();
-    }
-
-    @Override
-    public void openWindow(String uri, String windowName) {
-        parent.openWindow(uri, windowName);
+    
+    public VAppTile getAppTile(String appName) {
+        return appTileMap.get(appName);
     }
 }

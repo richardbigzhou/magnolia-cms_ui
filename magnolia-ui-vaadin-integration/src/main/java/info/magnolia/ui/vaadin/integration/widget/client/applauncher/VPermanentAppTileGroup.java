@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,42 +31,53 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.widget;
+package info.magnolia.ui.vaadin.integration.widget.client.applauncher;
 
-import info.magnolia.ui.vaadin.integration.widget.client.VAppButton;
-
-import com.vaadin.terminal.PaintException;
-import com.vaadin.terminal.PaintTarget;
-import com.vaadin.ui.ClientWidget;
-import com.vaadin.ui.ClientWidget.LoadStyle;
-import com.vaadin.ui.NativeButton;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
+import com.google.web.bindery.event.shared.EventBus;
 
 /**
- * An extended button used in the AppLauncher.
+ * The permanent App Group.
+ *
  */
-@SuppressWarnings("serial")
-@ClientWidget(value = VAppButton.class, loadStyle = LoadStyle.EAGER)
-public class AppButton extends NativeButton {
+public class VPermanentAppTileGroup extends VAppTileGroup {
 
-    private boolean isActive;
+    private String caption;
+    
+    final Element sectionEl = DOM.createDiv();
 
-    public AppButton(final String caption) {
-        super(caption);
-        addStyleName("v-appbutton");
+    public VPermanentAppTileGroup(EventBus eventBus, String caption, String color) {
+        super(color);
+        this.caption = caption;
+        construct();
     }
-
-    public void setActive(boolean isActive) {
-        this.isActive = isActive;
+    
+    public void setCaption(String caption) {
+        this.caption = caption;
     }
-
-    public boolean isActive() {
-        return isActive;
+    
+    private void createSectionItem() {
+        final Element sectionEl = DOM.createDiv();
+        final Element sectionLabel = DOM.createSpan();
+        
+        sectionEl.appendChild(sectionLabel);
+        sectionEl.addClassName("item");
+        sectionEl.addClassName("section");
+        
+        sectionLabel.addClassName("label");
+        sectionLabel.setInnerText(caption);
+        sectionEl.getStyle().setBackgroundColor(getColor());
+        getElement().appendChild(sectionEl);
     }
-
+    
     @Override
-    public void paintContent(PaintTarget target) throws PaintException {
-        target.addAttribute("active", isActive);
-        super.paintContent(target);
+    protected void construct() {
+        createSectionItem();
     }
-
+    
+    public Element getSectionEl() {
+        return sectionEl;
+    }
+    
 }

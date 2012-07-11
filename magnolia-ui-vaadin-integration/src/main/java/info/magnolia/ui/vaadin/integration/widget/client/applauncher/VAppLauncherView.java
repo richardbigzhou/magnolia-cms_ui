@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,28 +31,32 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.view;
+package info.magnolia.ui.vaadin.integration.widget.client.applauncher;
 
-import info.magnolia.ui.framework.view.View;
-import info.magnolia.ui.framework.view.ViewPort;
-
-import com.vaadin.ui.CustomComponent;
-
+import com.google.gwt.user.client.ui.IsWidget;
 
 /**
- * A display which itself is a {@link CustomComponent}. Can be used as a display slot. Attention:
- * this adds an extra element to the DOM tree. It is recommended to use
- * {@link ComponentContainerBasedViewPort}.
+ * Viw interface of client side AppLauncher.
+ * 
  */
-@SuppressWarnings("serial")
-public class ComponentViewPort extends CustomComponent implements ViewPort {
+public interface VAppLauncherView extends IsWidget {
 
-    public ComponentViewPort() {
-        setSizeUndefined();
-    }
+    void addPermanentAppGroup(String caption, String color);
 
-    @Override
-    public void setView(View view) {
-        setCompositionRoot(VaadinComponentUtil.toVaadinComponent(view));
+    void addTemporaryAppGroup(String caption, String color);
+
+    void addAppThumbnail(String caption, String iconStyle, String categoryId);
+
+    void setPresenter(Presenter presenter);
+    
+    void setAppActive(String appName, boolean isActive);
+    
+    /**
+     * Presenter for the AppLauncher view. 
+     */
+    interface Presenter {
+
+        void activateApp(String appId);
+
     }
 }
