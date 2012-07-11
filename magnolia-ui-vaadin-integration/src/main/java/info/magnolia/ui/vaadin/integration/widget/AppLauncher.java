@@ -35,6 +35,10 @@ package info.magnolia.ui.vaadin.integration.widget;
 
 import info.magnolia.ui.vaadin.integration.widget.client.applauncher.VAppLaucnher;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.vaadin.rpc.ServerSideHandler;
@@ -50,12 +54,34 @@ import com.vaadin.ui.Component;
 
 /**
  * Server side of AppLauncher.
- * 
+ * addGroup("EDIT", "#9A3332", true);
+addGroup("MANAGE", "#4B8E9E", true);
+addAppThumbnail("Pages", "icon-assets", "EDIT");
+addAppThumbnail("Templates", "icon-templates", "MANAGE");
+
+addMinorGroup("TOOLS", "#537800");
+addAppThumbnail("Packager", "icon-packager", "TOOLS");
+addAppThumbnail("Backup", "icon-backup", "TOOLS");
+addAppThumbnail("Packager1", "icon-packager", "TOOLS");
+addAppThumbnail("Backup1", "icon-backup", "TOOLS");
+addAppThumbnail("Packager2", "icon-packager", "TOOLS");
+addAppThumbnail("Backup2", "icon-backup", "TOOLS");
+
+addMinorGroup("MIGROS", "#537800");
+addAppThumbnail("Packager44", "icon-packager", "MIGROS");
+addAppThumbnail("Backup44", "icon-backup", "MIGROS");
+addAppThumbnail("Packager55", "icon-packager", "MIGROS");
+addAppThumbnail("Backup55", "icon-backup", "MIGROS");
+addAppThumbnail("Packager66", "icon-packager", "MIGROS");
+addAppThumbnail("Backup66", "icon-backup", "MIGROS"); 
  */
+
 @SuppressWarnings("serial")
 @ClientWidget(value = VAppLaucnher.class, loadStyle = LoadStyle.EAGER)
 public class AppLauncher extends AbstractComponent implements ServerSideHandler {
 
+    private Map<String, AppSection> appSections = new HashMap<String, AppLauncher.AppSection>();
+    
     private ServerSideProxy proxy = new ServerSideProxy(this) {
         {
             register("appActivated", new Method() {
@@ -69,43 +95,34 @@ public class AppLauncher extends AbstractComponent implements ServerSideHandler 
         }
     };
 
+    private boolean isAttached = false;
+    
+    
     public AppLauncher() {
         super();
         setSizeFull();
         setImmediate(true);
-        /*addGroup("EDIT", "#9A3332", true);
-        addGroup("MANAGE", "#4B8E9E", true);
-        addAppThumbnail("Pages", "icon-assets", "EDIT");
-        addAppThumbnail("Templates", "icon-templates", "MANAGE");
-
-        addMinorGroup("TOOLS", "#537800");
-        addAppThumbnail("Packager", "icon-packager", "TOOLS");
-        addAppThumbnail("Backup", "icon-backup", "TOOLS");
-        addAppThumbnail("Packager1", "icon-packager", "TOOLS");
-        addAppThumbnail("Backup1", "icon-backup", "TOOLS");
-        addAppThumbnail("Packager2", "icon-packager", "TOOLS");
-        addAppThumbnail("Backup2", "icon-backup", "TOOLS");
-
-        addMinorGroup("MIGROS", "#537800");
-        addAppThumbnail("Packager44", "icon-packager", "MIGROS");
-        addAppThumbnail("Backup44", "icon-backup", "MIGROS");
-        addAppThumbnail("Packager55", "icon-packager", "MIGROS");
-        addAppThumbnail("Backup55", "icon-backup", "MIGROS");
-        addAppThumbnail("Packager66", "icon-packager", "MIGROS");
-        addAppThumbnail("Backup66", "icon-backup", "MIGROS");*/
     }
 
-    public void addGroup(String caption, String color, boolean isMajor) {
-        if (isMajor) {
-            proxy.call("addGroup", caption, color);     
-        } else {
-            proxy.call("addMinorGroup", caption, color);   
+    public void addAppSection(String caption, String color, boolean isPermanent) {
+        appSections.put(caption, new AppSection(caption, color, isPermanent));
+        if (isAttached) {
+            if (isPermanent) {
+                proxy.call("addGroup", caption, color);     
+            } else {
+                proxy.call("addMinorGroup", caption, color);   
+            }   
         }
-       
     }
 
-    public void addAppThumbnail(String caption, String style, String groupId) {
-        proxy.call("addAppThumbnail", caption, style, groupId);
+    public void addAppTile(String caption, String icon, String sectionId) {
+        final AppSection section = appSections.get(sectionId);
+        if (section != null) {
+            section.addAppTile(new AppTile(caption, icon));
+            if (isAttached) {
+                proxy.call("addAppThumbnail", caption, icon, sectionId);   
+            }   
+        }
     }
 
     @Override
@@ -122,9 +139,27 @@ public class AppLauncher extends AbstractComponent implements ServerSideHandler 
 
     @Override
     public Object[] initRequestFromClient() {
+        for (final AppSection section : appSections.values()) {
+            addAppSection(section.caption, section.backGroundColor, section.isPermanent);
+            for (final AppTile tile : section.getAppTiles()) {
+                addAppTile(tile.caption, tile.icon, section.caption);
+            }
+        }
         return new Object[] {};
     }
 
+    @Override
+    public void attach() {
+        super.attach();
+        isAttached = true;
+    }
+    
+    @Override
+    public void detach() {
+        super.detach();
+        isAttached = false;
+    }
+    
     @Override
     public void callFromClient(String method, Object[] params) {
         throw new RuntimeException("Unknown call from client: " + method);
@@ -181,4 +216,70 @@ public class AppLauncher extends AbstractComponent implements ServerSideHandler 
     public void setAppActive(String appName, boolean isActive) {
         proxy.call("setAppActive", appName, isActive);
     }
+    
+    /**
+     * Represents one tile in the AppLauncher. 
+     */
+    public static class AppTile implements Serializable {
+        
+        private String caption;
+        
+        private String icon;
+        
+        public AppTile(String caption, String icon) {
+            this.caption = caption;
+            this.icon = icon;
+        }
+        
+        public String getCaption() {
+            return caption;
+        }
+        
+        public String getIcon() {
+            return icon;
+        }
+    }
+    
+    /**
+     * Represents a section of tiles in the AppLauncher. 
+     */
+    public static class AppSection implements Serializable {
+        
+        private List<AppTile> appTiles = new ArrayList<AppTile>();
+        
+        private String caption;
+        
+        private String backGroundColor;
+        
+        private boolean isPermanent;
+        
+        public AppSection(String caption, String backgroundColor, boolean isPermanent) {
+            this.caption = caption;
+            this.backGroundColor = backgroundColor;
+            this.isPermanent = isPermanent;
+        }
+        
+        public void addAppTile(final AppTile tile) {
+            appTiles.add(tile);
+        }
+        
+        
+        public String getCaption() {
+            return caption;
+        }
+        
+        public String getBackGroundColor() {
+            return backGroundColor;
+        }
+        
+        public List<AppTile> getAppTiles() {
+            return appTiles;
+        }
+        
+        public boolean isPermanent() {
+            return isPermanent;
+        }
+    }
+    
+    
 }

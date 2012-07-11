@@ -68,6 +68,7 @@
 .item.section .label {
     padding-left: 10px;
     padding-top: 10px;
+    display: block;
 }
 
 .app-list.sections {
