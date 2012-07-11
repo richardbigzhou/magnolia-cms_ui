@@ -259,6 +259,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             this.appDescriptor = appDescriptor;
         }
 
+        @Override
         public String getName() {
             return appDescriptor.getName();
         }

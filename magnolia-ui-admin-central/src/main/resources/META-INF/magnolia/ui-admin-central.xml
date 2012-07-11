@@ -97,12 +97,8 @@
     </type-mapping>
   </components>
 
-   <components>
-    <id>admin-central</id>
-    <component>
-    	<type>info.magnolia.ui.framework.message.LocalMessageDispatcher</type>
-    	<implementation>info.magnolia.ui.framework.message.LocalMessageDispatcher</implementation>
-    </component>
+    <components>
+        <id>admin-central</id>
     <component>
       <type>info.magnolia.ui.admincentral.jcr.view.builder.JcrViewBuilderProvider</type>
       <workspace>config</workspace>
