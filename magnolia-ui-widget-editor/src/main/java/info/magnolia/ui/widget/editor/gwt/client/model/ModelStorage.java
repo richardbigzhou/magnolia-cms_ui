@@ -36,8 +36,6 @@ package info.magnolia.ui.widget.editor.gwt.client.model;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
-import info.magnolia.ui.widget.editor.gwt.client.model.focus.FocusModel;
-import info.magnolia.ui.widget.editor.gwt.client.model.focus.FocusModelImpl3;
 import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.AbstractBar;
 import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.AreaEndBar;
 import info.magnolia.ui.widget.editor.gwt.client.widget.overlay.AbstractOverlay;

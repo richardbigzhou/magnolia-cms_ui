@@ -167,6 +167,16 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
 
     }
 
+    private native void initNativeHandlers(Element element) /*-{
+        if (element != 'undefined') {
+            var ref = this;
+            element.contentDocument.onmouseup = function(event) {
+                ref.@info.magnolia.ui.widget.editor.gwt.client.VPageEditor::onMouseUp(Lcom/google/gwt/dom/client/Element;)(event.target);
+                event.stopPropagation();
+            }
+        }
+    }-*/;
+
     private void registerEventHandlers() {
         eventBus.addHandler(NewComponentEvent.TYPE, new NewComponentEventHandler() {
             @Override
@@ -188,7 +198,7 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
         LinkElement cssLink = document.createLinkElement();
         cssLink.setType("text/css");
         cssLink.setRel("stylesheet");
-        cssLink.setHref("VAADIN/widgetsets/info.magnolia.ui.vaadin.widgetset.MagnoliaWidgetSet/editor/styles.css");
+        cssLink.setHref("/VAADIN/widgetsets/info.magnolia.ui.vaadin.widgetset.MagnoliaWidgetSet/editor/styles.css");
 
         head.insertFirst(cssLink);
     }
@@ -291,7 +301,7 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
                 if (childNode.getNodeType() == Comment.COMMENT_NODE) {
 
                     try {
-                        mgnlElement = CommentProcessor.process(model, focusModel, childNode, mgnlElement);
+                        mgnlElement = CommentProcessor.process(model, childNode, mgnlElement);
                     } catch (IllegalArgumentException e) {
                         GWT.log("Not CMSComment element, skipping: " + e.toString());
                     } catch (Exception e) {
@@ -344,10 +354,12 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
     @Override
     public void onFrameLoaded(Frame iframe) {
         Element element= iframe.getElement();
+        initNativeHandlers(element);
 
         IFrameElement frameElement = IFrameElement.as(element);
         Document contentDocument = frameElement.getContentDocument();
         process(contentDocument);
+        focusModel.toggleRootAreaBar(true);
 
     }
 

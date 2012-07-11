@@ -63,7 +63,6 @@ public class VPageEditorViewImpl extends FlowPanel implements VPageEditorView {
             public void onLoad(LoadEvent event) {
 
                 //other handlers are initialized here b/c we need to know the document inside the iframe.
-                initNativeHandlers(iframe.getElement());
 
                 //make sure we process  html only when the document inside the iframe is loaded.
                 listener.onFrameLoaded(iframe);
@@ -94,13 +93,4 @@ public class VPageEditorViewImpl extends FlowPanel implements VPageEditorView {
         return listener;
     }
 
-    private native void initNativeHandlers(Element element) /*-{
-        if (element != 'undefined') {
-            var ref = this;
-            element.contentDocument.onmouseup = function(event) {
-                ref.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorViewImpl::onMouseUp(Lcom/google/gwt/dom/client/Element;)(event.target);
-                event.stopPropagation();
-            }
-        }
-    }-*/;
 }
