@@ -35,8 +35,8 @@ package info.magnolia.ui.admincentral.jcr.view.builder;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.column.Column;
-import info.magnolia.ui.admincentral.jcr.view.JcrView;
-import info.magnolia.ui.admincentral.jcr.view.JcrView.ViewType;
+import info.magnolia.ui.admincentral.jcr.view.ContentView;
+import info.magnolia.ui.admincentral.jcr.view.ContentView.ViewType;
 import info.magnolia.ui.admincentral.list.view.ListViewImpl;
 import info.magnolia.ui.admincentral.tree.model.TreeModel;
 import info.magnolia.ui.admincentral.tree.view.TreeViewImpl;
@@ -52,10 +52,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Jcr view configured via content to bean.
+ * ContentView configured via content to bean.
  */
-@SuppressWarnings("serial")
-public class ConfiguredJcrViewBuilder extends FactoryBase<AbstractColumnDefinition, Column<AbstractColumnDefinition>> implements JcrViewBuilder, Serializable {
+public class ConfiguredContentViewBuilder extends FactoryBase<AbstractColumnDefinition, Column<AbstractColumnDefinition>> implements ContentViewBuilder, Serializable {
 
     /**
      * List as retrieved out of JCR-config (via Content2Bean).
@@ -64,7 +63,7 @@ public class ConfiguredJcrViewBuilder extends FactoryBase<AbstractColumnDefiniti
 
     private ComponentProvider componentProvider;
 
-    public ConfiguredJcrViewBuilder(ComponentProvider componentProvider) {
+    public ConfiguredContentViewBuilder(ComponentProvider componentProvider) {
         super(componentProvider);
         this.componentProvider = componentProvider;
     }
@@ -89,7 +88,7 @@ public class ConfiguredJcrViewBuilder extends FactoryBase<AbstractColumnDefiniti
     }
 
     @Override
-    public JcrView build(WorkbenchDefinition workbenchDefinition, ViewType type) {
+    public ContentView build(WorkbenchDefinition workbenchDefinition, ViewType type) {
         Map<String, Column<?>> columns = new LinkedHashMap<String, Column<?>>();
         for (AbstractColumnDefinition columnDefinition : workbenchDefinition.getColumns()) {
             Column<?> column = createTreeColumn(columnDefinition);

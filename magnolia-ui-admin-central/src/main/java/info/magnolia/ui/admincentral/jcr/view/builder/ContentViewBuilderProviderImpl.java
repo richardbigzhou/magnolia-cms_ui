@@ -38,45 +38,45 @@ import java.util.List;
 
 /**
  * TODO: use ui settings?
- * Provides the JcrViewBuilder defined in the AdminCentralModule.
+ * Provides the ContentViewBuilder defined in the AdminCentralModule.
  */
-public class JcrViewBuilderProviderImpl implements JcrViewBuilderProvider {
+public class ContentViewBuilderProviderImpl implements ContentViewBuilderProvider {
 
 
     //private UISettings uiSettings;
 
     // content2bean
-    private List<JcrViewBuilder> jcrViewBuilders = new ArrayList<JcrViewBuilder>();
+    private List<ContentViewBuilder> contentViewBuilders = new ArrayList<ContentViewBuilder>();
 
 
     /**
      * Is needed so that we can make a proxy (reloading configuration).
      * TODO: is this really necessary?
      */
-    public JcrViewBuilderProviderImpl() {
+    public ContentViewBuilderProviderImpl() {
     }
 
     /*@Inject
-    public JcrViewBuilderProviderImpl(User user, UISettings uiSettings) {
+    public ContentViewBuilderProviderImpl(User user, UISettings uiSettings) {
         this.user = user;
         this.uiSettings = uiSettings;
     }*/
 
     @Override
-    public JcrViewBuilder getBuilder() {
+    public ContentViewBuilder getBuilder() {
         // FIXME: use user and uiSettings
-        return jcrViewBuilders.get(0);
+        return contentViewBuilders.get(0);
     }
 
-    public void setJcrViewBuilders(List<JcrViewBuilder> jcrViewBuilders) {
-        this.jcrViewBuilders = jcrViewBuilders;
+    public void setContentViewBuilders(List<ContentViewBuilder> contentViewBuilders) {
+        this.contentViewBuilders = contentViewBuilders;
     }
 
-    public List<JcrViewBuilder> getJcrViewBuilders() {
-        return jcrViewBuilders;
+    public List<ContentViewBuilder> getContentViewBuilders() {
+        return contentViewBuilders;
     }
 
-    public void addJcrViewBuilder(JcrViewBuilder jcrViewBuilder) {
-        this.jcrViewBuilders.add(jcrViewBuilder);
+    public void addContentViewBuilder(ContentViewBuilder contentViewBuilder) {
+        this.contentViewBuilders.add(contentViewBuilder);
     }
 }

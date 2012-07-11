@@ -80,7 +80,7 @@ public class WorkbenchActionFactoryImpl extends FactoryBase<ActionDefinition, Ac
     }
 
     @Override
-    public Action createAction(final ActionDefinition actionDefinition, final Item item, final ContentWorkbenchView.Presenter presenter) {
+    public Action createAction(final ActionDefinition actionDefinition, final Item item, final ContentWorkbenchView.Listener presenter) {
         return create(actionDefinition, item, presenter);
     }
 

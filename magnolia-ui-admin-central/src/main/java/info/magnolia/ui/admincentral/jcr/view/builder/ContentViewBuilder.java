@@ -31,28 +31,16 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.view;
+package info.magnolia.ui.admincentral.jcr.view.builder;
 
-import info.magnolia.ui.framework.view.View;
-import info.magnolia.ui.framework.view.ViewPort;
-
-import com.vaadin.ui.CustomComponent;
-
+import info.magnolia.ui.admincentral.jcr.view.ContentView;
+import info.magnolia.ui.admincentral.jcr.view.ContentView.ViewType;
+import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 
 /**
- * A display which itself is a {@link CustomComponent}. Can be used as a display slot. Attention:
- * this adds an extra element to the DOM tree. It is recommended to use
- * {@link ComponentContainerBasedViewPort}.
+ * Used to transform tree or list and column definitions into components.
  */
-@SuppressWarnings("serial")
-public class ComponentViewPort extends CustomComponent implements ViewPort {
+public interface ContentViewBuilder {
 
-    public ComponentViewPort() {
-        setSizeUndefined();
-    }
-
-    @Override
-    public void setView(View view) {
-        setCompositionRoot(VaadinComponentUtil.toVaadinComponent(view));
-    }
+    ContentView build(WorkbenchDefinition workbenchDefinition, ViewType type);
 }

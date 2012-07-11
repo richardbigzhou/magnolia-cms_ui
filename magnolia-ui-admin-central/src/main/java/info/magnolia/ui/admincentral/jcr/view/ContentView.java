@@ -40,9 +40,9 @@ import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 /**
- * UI component that displays a jcr workspace.
+ * UI component that displays content (from Jcr).
  */
-public interface JcrView extends View, IsVaadinComponent {
+public interface ContentView extends View, IsVaadinComponent {
 
     /**
      * Enumeration for view types.
@@ -74,7 +74,7 @@ public interface JcrView extends View, IsVaadinComponent {
         }
     }
 
-    void setPresenter(Presenter presenter);
+    void setListener(Listener listener);
 
 
     /**
@@ -89,9 +89,9 @@ public interface JcrView extends View, IsVaadinComponent {
     JcrContainer getContainer();
 
     /**
-     * Presenter for the JcrView.
+     * Listener for the ContentView.
      */
-    public interface Presenter {
+    public interface Listener {
 
         void onItemSelection(final Item item);
 

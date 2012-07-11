@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2010-2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,39 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.widget.client;
-
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
-import com.vaadin.terminal.gwt.client.ApplicationConnection;
-import com.vaadin.terminal.gwt.client.UIDL;
-import com.vaadin.terminal.gwt.client.ui.VNativeButton;
+package info.magnolia.ui.admincentral.jcr.view.builder;
 
 /**
- * Client side impl of AppButton.
+ * Provides a ContentViewBuilder.
+ *
+ * TODO: check whether this type should go to ui-model layer.
  */
-public class VAppButton extends VNativeButton {
+public interface ContentViewBuilderProvider {
 
-    private Element divet = DOM.createDiv();
-    
-    public VAppButton() {
-        super();   
-        divet.addClassName("divet");
-    }
-    
-    @Override
-    public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
-        super.updateFromUIDL(uidl, client);
-        if (uidl.hasAttribute("active")) {
-            setActive(uidl.getBooleanAttribute("active"));
-        }
-    }
-
-    private void setActive(boolean isActive) {
-        if (isActive && !getElement().isOrHasChild(divet)) {
-            getElement().appendChild(divet);
-        } else if (!isActive && getElement().isOrHasChild(divet)) {
-            getElement().removeChild(divet);
-        }
-    }
+    ContentViewBuilder getBuilder();
 }

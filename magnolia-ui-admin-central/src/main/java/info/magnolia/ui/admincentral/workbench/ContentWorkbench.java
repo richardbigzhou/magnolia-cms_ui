@@ -78,7 +78,7 @@ import java.util.Map;
  * workspace to connect to, the columns/properties to display, the available actions and so on.
  */
 @SuppressWarnings("serial")
-public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView.Presenter {
+public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView.Listener {
 
     private static final Logger log = LoggerFactory.getLogger(ContentWorkbench.class);
 
@@ -105,7 +105,7 @@ public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView
         this.eventBus = eventbus;
         this.shell = shell;
         this.actionFactory = actionFactory;
-        view.setPresenter(this);
+        view.setListener(this);
 
         eventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
 
