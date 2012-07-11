@@ -10,7 +10,7 @@
   <artifactId>magnolia-ui-vaadin-integration</artifactId>
   <name>magnolia-ui-vaadin-integration</name>
   <properties>
-    <cloverCoverageThreshold>22</cloverCoverageThreshold>
+    <cloverCoverageThreshold>19</cloverCoverageThreshold>
   </properties>
   <dependencies>
     <dependency>
@@ -74,6 +74,10 @@
 		<dependency>
 		<groupId>org.icefaces</groupId>
 		<artifactId>icepush</artifactId>
+	</dependency>
+	<dependency>
+		<groupId>org.vaadin.addons</groupId>
+		<artifactId>widget-rpc</artifactId>
 	</dependency>
 	<dependency>
       <groupId>info.magnolia.ui</groupId>

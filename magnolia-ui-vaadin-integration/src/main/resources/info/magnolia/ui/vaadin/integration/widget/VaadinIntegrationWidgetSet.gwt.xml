@@ -3,5 +3,7 @@
 <module>
 	<!-- WS Compiler: manually edited -->
   <inherits name="com.vaadin.terminal.gwt.DefaultWidgetSet" />
+  <inherits name="com.google.gwt.inject.Inject" />
+  <inherits name="org.vaadin.rpc.WidgetRPC" />
   <stylesheet src="AppButton/styles.css"/>
 </module>
