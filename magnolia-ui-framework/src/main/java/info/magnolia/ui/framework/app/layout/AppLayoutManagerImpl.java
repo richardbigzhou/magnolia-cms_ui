@@ -139,6 +139,8 @@ public class AppLayoutManagerImpl implements AppLayoutManager {
         }
     }
 
+    private static boolean nextGroupIsPermanent = true;
+    
     /**
      * Add the AppDescriptor to an existing or newly created AppCategory.
      */
@@ -153,7 +155,10 @@ public class AppLayoutManagerImpl implements AppLayoutManager {
             // Create
             category = new AppCategory();
             category.setLabel(catName);
+            category.setPermanent(nextGroupIsPermanent);
+            category.setBackgroundColor("#9A3332");
             categories.put(catName, category);
+            nextGroupIsPermanent = !nextGroupIsPermanent;
         }
         category.addApp(app);
     }

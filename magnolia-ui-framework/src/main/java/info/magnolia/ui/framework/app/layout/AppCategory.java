@@ -44,14 +44,35 @@ import info.magnolia.ui.framework.app.AppDescriptor;
 public class AppCategory implements Comparable<AppCategory> {
 
     private String label;
+    
+    private String backgroundColor;
+    
+    private boolean isPermanent;
+    
     private List<AppDescriptor> apps = new ArrayList<AppDescriptor>();
 
-    public String getLabel() {
-        return label;
+    public void setPermanent(boolean isPermanent) {
+        this.isPermanent = isPermanent;
     }
-
+    
+    public void setBackgroundColor(String backgroundColor) {
+        this.backgroundColor = backgroundColor;
+    }
+    
     public void setLabel(String label) {
         this.label = label;
+    }
+    
+    public String getBackgroundColor() {
+        return backgroundColor;
+    }
+    
+    public boolean isPermanent() {
+        return isPermanent;
+    }
+    
+    public String getLabel() {
+        return label;
     }
 
     public List<AppDescriptor> getApps() {
