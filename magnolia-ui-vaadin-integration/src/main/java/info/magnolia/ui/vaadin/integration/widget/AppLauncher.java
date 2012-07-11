@@ -53,27 +53,7 @@ import com.vaadin.ui.ClientWidget.LoadStyle;
 import com.vaadin.ui.Component;
 
 /**
- * Server side of AppLauncher.
- * addGroup("EDIT", "#9A3332", true);
-addGroup("MANAGE", "#4B8E9E", true);
-addAppThumbnail("Pages", "icon-assets", "EDIT");
-addAppThumbnail("Templates", "icon-templates", "MANAGE");
-
-addMinorGroup("TOOLS", "#537800");
-addAppThumbnail("Packager", "icon-packager", "TOOLS");
-addAppThumbnail("Backup", "icon-backup", "TOOLS");
-addAppThumbnail("Packager1", "icon-packager", "TOOLS");
-addAppThumbnail("Backup1", "icon-backup", "TOOLS");
-addAppThumbnail("Packager2", "icon-packager", "TOOLS");
-addAppThumbnail("Backup2", "icon-backup", "TOOLS");
-
-addMinorGroup("MIGROS", "#537800");
-addAppThumbnail("Packager44", "icon-packager", "MIGROS");
-addAppThumbnail("Backup44", "icon-backup", "MIGROS");
-addAppThumbnail("Packager55", "icon-packager", "MIGROS");
-addAppThumbnail("Backup55", "icon-backup", "MIGROS");
-addAppThumbnail("Packager66", "icon-packager", "MIGROS");
-addAppThumbnail("Backup66", "icon-backup", "MIGROS"); 
+ * Server side of AppLauncher. 
  */
 
 @SuppressWarnings("serial")
