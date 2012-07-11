@@ -31,63 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.layout;
+package info.magnolia.ui.vaadin.integration.widget.client.applauncher.event;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import info.magnolia.ui.framework.app.AppDescriptor;
+import com.google.gwt.event.shared.EventHandler;
 
 /**
- * Defines a category and the apps that belong to it.
+ * Event handler of app activation.
  */
-public class AppCategory implements Comparable<AppCategory> {
+public interface AppActivatedEventHandler extends EventHandler {
 
-    private String label;
-    
-    private String backgroundColor;
-    
-    private boolean isPermanent;
-    
-    private List<AppDescriptor> apps = new ArrayList<AppDescriptor>();
-
-    public void setPermanent(boolean isPermanent) {
-        this.isPermanent = isPermanent;
-    }
-    
-    public void setBackgroundColor(String backgroundColor) {
-        this.backgroundColor = backgroundColor;
-    }
-    
-    public void setLabel(String label) {
-        this.label = label;
-    }
-    
-    public String getBackgroundColor() {
-        return backgroundColor;
-    }
-    
-    public boolean isPermanent() {
-        return isPermanent;
-    }
-    
-    public String getLabel() {
-        return label;
-    }
-
-    public List<AppDescriptor> getApps() {
-        return apps;
-    }
-
-    public void addApp(AppDescriptor descriptor) {
-        apps.add(descriptor);
-    }
-
-    @Override
-    public int compareTo(AppCategory o) {
-        if (this.label == null || o.getLabel() == null) {
-            return 0;
-        }
-        return label.compareTo(o.getLabel());
-    }
+    void onAppActivated(final AppActivationEvent event);
 }

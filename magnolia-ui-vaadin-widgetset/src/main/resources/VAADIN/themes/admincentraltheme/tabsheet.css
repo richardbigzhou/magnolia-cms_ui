@@ -2,6 +2,10 @@
     background-color: #FFF;
 }
 
+.v-shell-tab {
+	position: absolute;
+}
+
 .v-shell-tab-close {
     position: absolute;
     right: 4px;

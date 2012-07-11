@@ -37,16 +37,12 @@ import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.layout.AppCategory;
 import info.magnolia.ui.framework.app.layout.AppLayout;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
-import info.magnolia.ui.vaadin.integration.widget.AppButton;
+import info.magnolia.ui.vaadin.integration.widget.AppLauncher;
+import info.magnolia.ui.vaadin.integration.widget.AppLauncher.AppActivatedEvent;
+import info.magnolia.ui.vaadin.integration.widget.AppLauncher.AppActivationListener;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.Label;
 
 
 /**
@@ -65,15 +61,19 @@ public class AppLauncherViewImpl implements AppLauncherView, IsVaadinComponent {
 
     private CssLayout layout = new CssLayout();
 
-    private final Map<String, AppGroupComponent> appGroupMap = new HashMap<String, AppGroupComponent>();
-
-    // Keep a list of registered AppButton.
-    private final Map<String, AppButton> appButtons = new HashMap<String, AppButton>();
-
-
+    private AppLauncher appLauncher = new AppLauncher();
+    
     public AppLauncherViewImpl() {
-        layout.addStyleName("app-launcher");
-
+        layout.setHeight("100%");
+        layout.setWidth("720px");
+        appLauncher.setSizeFull();
+        layout.addComponent(appLauncher);
+        appLauncher.addAppActivationListener(new AppActivationListener() {
+            @Override
+            public void onAppActivated(AppActivatedEvent event) {
+                presenter.onAppInvoked(event.getAppName());
+            }
+        });
     }
 
     @Override
@@ -88,86 +88,21 @@ public class AppLauncherViewImpl implements AppLauncherView, IsVaadinComponent {
 
     @Override
     public void activateButton(boolean activate, String appName) {
-        AppButton button = appButtons.get(appName);
-        button.setActive(activate);
-        layout.requestRepaintAll();
+        appLauncher.setAppActive(appName, activate);
     }
 
     @Override
     public void clearView() {
         layout.removeAllComponents();
-        appGroupMap.clear();
-        appButtons.clear();
     }
 
     @Override
     public void registerApp(AppLayout layout) {
         for (AppCategory category : layout.getCategories()) {
+            appLauncher.addGroup(category.getLabel(), category.getBackgroundColor(), category.isPermanent());
             for (AppDescriptor descriptor : category.getApps()) {
-                AppGroupComponent group = appGroupMap.get(category.getLabel());
-                if (group == null) {
-                    group = createGroup(category.getLabel());
-                }
-                group.addApp(descriptor);
+                appLauncher.addAppThumbnail(descriptor.getName(), descriptor.getIcon(), descriptor.getCategoryName());
             }
         }
     }
-
-    /**
-     * Block in the applauncher responsible for one app category.
-     */
-    public class AppGroupComponent extends CssLayout {
-
-        private Label title;
-
-        private CssLayout iconList;
-
-        public AppGroupComponent(String title) {
-            setStyleName("app-list");
-            addStyleName(title);
-
-            this.title = new Label(title);
-            this.title.setStyleName("app-group-title");
-            this.title.setSizeUndefined();
-
-            this.iconList = new CssLayout();
-            this.iconList.addStyleName("clearfix");
-
-            addComponent(this.title);
-            addComponent(this.iconList);
-        }
-
-        public CssLayout getIconList(){
-            return this.iconList;
-        }
-
-        public void addApp(final AppDescriptor descriptor) {
-            final AppButton button = new AppButton(descriptor.getLabel());
-            button.addStyleName("item");
-            button.setIcon(new ThemeResource(descriptor.getIcon()));
-            this.iconList.addComponent(button);
-            button.addListener(new Button.ClickListener() {
-
-                @Override
-                public void buttonClick(Button.ClickEvent event) {
-                    presenter.onAppInvoked(descriptor.getName());
-                }
-            });
-            appButtons.put(descriptor.getName(), button);
-        }
-    }
-
-    /**
-     * Create a new Group.
-     * Add this group to the layout and groupMap.
-     */
-    private AppGroupComponent createGroup(String groupName){
-        AppGroupComponent group = new AppGroupComponent(groupName);
-        appGroupMap.put(groupName, group);
-        layout.addComponent(group);
-
-        return group;
-    }
-
-
 }

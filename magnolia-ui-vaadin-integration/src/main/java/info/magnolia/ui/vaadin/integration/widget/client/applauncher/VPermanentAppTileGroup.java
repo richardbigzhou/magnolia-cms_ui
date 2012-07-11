@@ -31,63 +31,53 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.layout;
+package info.magnolia.ui.vaadin.integration.widget.client.applauncher;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import info.magnolia.ui.framework.app.AppDescriptor;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
+import com.google.web.bindery.event.shared.EventBus;
 
 /**
- * Defines a category and the apps that belong to it.
+ * The permanent App Group.
+ *
  */
-public class AppCategory implements Comparable<AppCategory> {
+public class VPermanentAppTileGroup extends VAppTileGroup {
 
-    private String label;
+    private String caption;
     
-    private String backgroundColor;
-    
-    private boolean isPermanent;
-    
-    private List<AppDescriptor> apps = new ArrayList<AppDescriptor>();
+    final Element sectionEl = DOM.createDiv();
 
-    public void setPermanent(boolean isPermanent) {
-        this.isPermanent = isPermanent;
+    public VPermanentAppTileGroup(EventBus eventBus, String caption, String color) {
+        super(color);
+        this.caption = caption;
+        construct();
     }
     
-    public void setBackgroundColor(String backgroundColor) {
-        this.backgroundColor = backgroundColor;
+    public void setCaption(String caption) {
+        this.caption = caption;
     }
     
-    public void setLabel(String label) {
-        this.label = label;
+    private void createSectionItem() {
+        final Element sectionEl = DOM.createDiv();
+        final Element sectionLabel = DOM.createSpan();
+        
+        sectionEl.appendChild(sectionLabel);
+        sectionEl.addClassName("item");
+        sectionEl.addClassName("section");
+        
+        sectionLabel.addClassName("label");
+        sectionLabel.setInnerText(caption);
+        sectionEl.getStyle().setBackgroundColor(getColor());
+        getElement().appendChild(sectionEl);
     }
     
-    public String getBackgroundColor() {
-        return backgroundColor;
-    }
-    
-    public boolean isPermanent() {
-        return isPermanent;
-    }
-    
-    public String getLabel() {
-        return label;
-    }
-
-    public List<AppDescriptor> getApps() {
-        return apps;
-    }
-
-    public void addApp(AppDescriptor descriptor) {
-        apps.add(descriptor);
-    }
-
     @Override
-    public int compareTo(AppCategory o) {
-        if (this.label == null || o.getLabel() == null) {
-            return 0;
-        }
-        return label.compareTo(o.getLabel());
+    protected void construct() {
+        createSectionItem();
     }
+    
+    public Element getSectionEl() {
+        return sectionEl;
+    }
+    
 }

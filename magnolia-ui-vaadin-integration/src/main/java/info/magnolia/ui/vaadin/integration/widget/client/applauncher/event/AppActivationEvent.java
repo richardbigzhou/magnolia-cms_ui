@@ -31,63 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.layout;
+package info.magnolia.ui.vaadin.integration.widget.client.applauncher.event;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import info.magnolia.ui.framework.app.AppDescriptor;
+import com.google.web.bindery.event.shared.Event;
 
 /**
- * Defines a category and the apps that belong to it.
+ * Event of app activation.
  */
-public class AppCategory implements Comparable<AppCategory> {
+public class AppActivationEvent extends Event<AppActivatedEventHandler> {
 
-    private String label;
-    
-    private String backgroundColor;
-    
-    private boolean isPermanent;
-    
-    private List<AppDescriptor> apps = new ArrayList<AppDescriptor>();
+    public static final Type<AppActivatedEventHandler> TYPE = new Type<AppActivatedEventHandler>();
 
-    public void setPermanent(boolean isPermanent) {
-        this.isPermanent = isPermanent;
+    private String appId;
+    
+    public AppActivationEvent(final String appId) {
+        this.appId = appId;
     }
     
-    public void setBackgroundColor(String backgroundColor) {
-        this.backgroundColor = backgroundColor;
+    public String getAppId() {
+        return appId;
     }
     
-    public void setLabel(String label) {
-        this.label = label;
-    }
-    
-    public String getBackgroundColor() {
-        return backgroundColor;
-    }
-    
-    public boolean isPermanent() {
-        return isPermanent;
-    }
-    
-    public String getLabel() {
-        return label;
-    }
-
-    public List<AppDescriptor> getApps() {
-        return apps;
-    }
-
-    public void addApp(AppDescriptor descriptor) {
-        apps.add(descriptor);
+    @Override
+    public Type<AppActivatedEventHandler> getAssociatedType() {
+        return TYPE;
     }
 
     @Override
-    public int compareTo(AppCategory o) {
-        if (this.label == null || o.getLabel() == null) {
-            return 0;
-        }
-        return label.compareTo(o.getLabel());
+    protected void dispatch(AppActivatedEventHandler handler) {
+        handler.onAppActivated(this);
     }
 }

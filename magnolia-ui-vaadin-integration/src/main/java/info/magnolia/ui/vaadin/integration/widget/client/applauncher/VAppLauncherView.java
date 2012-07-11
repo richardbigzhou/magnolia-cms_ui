@@ -31,63 +31,32 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.layout;
+package info.magnolia.ui.vaadin.integration.widget.client.applauncher;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import info.magnolia.ui.framework.app.AppDescriptor;
+import com.google.gwt.user.client.ui.IsWidget;
 
 /**
- * Defines a category and the apps that belong to it.
+ * Viw interface of client side AppLauncher.
+ * 
  */
-public class AppCategory implements Comparable<AppCategory> {
+public interface VAppLauncherView extends IsWidget {
 
-    private String label;
-    
-    private String backgroundColor;
-    
-    private boolean isPermanent;
-    
-    private List<AppDescriptor> apps = new ArrayList<AppDescriptor>();
+    void addPermanentAppGroup(String caption, String color);
 
-    public void setPermanent(boolean isPermanent) {
-        this.isPermanent = isPermanent;
-    }
-    
-    public void setBackgroundColor(String backgroundColor) {
-        this.backgroundColor = backgroundColor;
-    }
-    
-    public void setLabel(String label) {
-        this.label = label;
-    }
-    
-    public String getBackgroundColor() {
-        return backgroundColor;
-    }
-    
-    public boolean isPermanent() {
-        return isPermanent;
-    }
-    
-    public String getLabel() {
-        return label;
-    }
+    void addTemporaryAppGroup(String caption, String color);
 
-    public List<AppDescriptor> getApps() {
-        return apps;
-    }
+    void addAppThumbnail(String caption, String iconStyle, String categoryId);
 
-    public void addApp(AppDescriptor descriptor) {
-        apps.add(descriptor);
-    }
+    void setPresenter(Presenter presenter);
+    
+    void setAppActive(String appName, boolean isActive);
+    
+    /**
+     * Presenter for the AppLauncher view. 
+     */
+    interface Presenter {
 
-    @Override
-    public int compareTo(AppCategory o) {
-        if (this.label == null || o.getLabel() == null) {
-            return 0;
-        }
-        return label.compareTo(o.getLabel());
+        void activateApp(String appId);
+
     }
 }

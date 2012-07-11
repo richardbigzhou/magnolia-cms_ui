@@ -31,63 +31,53 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.layout;
+package info.magnolia.ui.vaadin.integration.widget.client.applauncher;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-import info.magnolia.ui.framework.app.AppDescriptor;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.ui.ComplexPanel;
 
 /**
- * Defines a category and the apps that belong to it.
+ * The unit that groups semantically close apps.
  */
-public class AppCategory implements Comparable<AppCategory> {
+public abstract class VAppTileGroup extends ComplexPanel {
+    
+    private String color;
 
-    private String label;
+    private Map<String, VAppTile> appTileMap = new HashMap<String, VAppTile>();
     
-    private String backgroundColor;
-    
-    private boolean isPermanent;
-    
-    private List<AppDescriptor> apps = new ArrayList<AppDescriptor>();
+    public VAppTileGroup(String color) {
+        super();
+        this.color = color;
+        setElement(DOM.createElement("section"));
 
-    public void setPermanent(boolean isPermanent) {
-        this.isPermanent = isPermanent;
-    }
-    
-    public void setBackgroundColor(String backgroundColor) {
-        this.backgroundColor = backgroundColor;
-    }
-    
-    public void setLabel(String label) {
-        this.label = label;
-    }
-    
-    public String getBackgroundColor() {
-        return backgroundColor;
-    }
-    
-    public boolean isPermanent() {
-        return isPermanent;
-    }
-    
-    public String getLabel() {
-        return label;
+        addStyleName("app-list");
+        addStyleName("section");
+        addStyleName("clearfix");
     }
 
-    public List<AppDescriptor> getApps() {
-        return apps;
+    protected abstract void construct();
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+    
+    public String getColor() {
+        return color;
     }
 
-    public void addApp(AppDescriptor descriptor) {
-        apps.add(descriptor);
+    public void addAppThumbnail(final VAppTile thumbnail) {
+        add(thumbnail, getElement());
+        appTileMap.put(thumbnail.getCaption(), thumbnail);
     }
 
-    @Override
-    public int compareTo(AppCategory o) {
-        if (this.label == null || o.getLabel() == null) {
-            return 0;
-        }
-        return label.compareTo(o.getLabel());
+    public boolean hasApp(String appName) {
+        return appTileMap.containsKey(appName);
+    }
+    
+    public VAppTile getAppTile(String appName) {
+        return appTileMap.get(appName);
     }
 }
