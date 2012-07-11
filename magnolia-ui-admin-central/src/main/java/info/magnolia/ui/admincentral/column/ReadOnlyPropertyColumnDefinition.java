@@ -36,7 +36,7 @@ package info.magnolia.ui.admincentral.column;
 import info.magnolia.ui.model.column.definition.PropertyColumnDefinition;
 
 /**
- * TODO: dummy def remove it.
+ * Definition for ReadOnlyPropertyColumns.
  */
 public class ReadOnlyPropertyColumnDefinition extends PropertyColumnDefinition {
 
