@@ -37,7 +37,7 @@ import com.vaadin.data.Item;
 import com.vaadin.ui.ComponentContainer;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.actionbar.ActionbarView;
-import info.magnolia.ui.admincentral.jcr.view.JcrView;
+import info.magnolia.ui.admincentral.jcr.view.ContentView;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 
 /**
@@ -46,11 +46,11 @@ import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
  */
 public interface ContentWorkbenchView extends ComponentContainer, ActionbarView {
 
-    void setPresenter(final Presenter presenter);
+    void setListener(final Listener listener);
 
     void initWorkbench(final WorkbenchDefinition definintion);
 
-    void setGridType(final JcrView.ViewType type);
+    void setGridType(final ContentView.ViewType type);
 
     /**
      * Causes a view refresh only if the current node exists in the repository.
@@ -64,14 +64,16 @@ public interface ContentWorkbenchView extends ComponentContainer, ActionbarView 
     void refresh();
 
     /**
-     * Presenter.
+     * Listener for ContentWorkbenchView's.
      */
-    public interface Presenter extends ActionbarPresenter {
+    public interface Listener extends ActionbarPresenter {
 
         void onItemSelected(final Item item);
 
+        /**
+         * TODO dlipp - to move to real presenter.
+         */
         String getSelectedItemId();
-
     }
 
 }

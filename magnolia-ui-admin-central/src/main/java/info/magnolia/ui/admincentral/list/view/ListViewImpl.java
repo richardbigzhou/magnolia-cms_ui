@@ -36,7 +36,7 @@ package info.magnolia.ui.admincentral.list.view;
 import info.magnolia.ui.admincentral.column.Column;
 import info.magnolia.ui.admincentral.column.EditHandler;
 import info.magnolia.ui.admincentral.container.JcrContainer;
-import info.magnolia.ui.admincentral.jcr.view.JcrView;
+import info.magnolia.ui.admincentral.jcr.view.ContentView;
 import info.magnolia.ui.admincentral.list.container.FlatJcrContainer;
 import info.magnolia.ui.admincentral.tree.model.TreeModel;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
@@ -57,7 +57,7 @@ import com.vaadin.ui.Table;
  */
 public class ListViewImpl implements ListView {
 
-    private JcrView.Presenter presenter;
+    private ContentView.Listener presenter;
 
     private final Table table;
 
@@ -140,7 +140,7 @@ public class ListViewImpl implements ListView {
     }
 
     @Override
-    public void setPresenter(Presenter presenter) {
+    public void setPresenter(Listener presenter) {
         this.presenter = presenter;
     }
 

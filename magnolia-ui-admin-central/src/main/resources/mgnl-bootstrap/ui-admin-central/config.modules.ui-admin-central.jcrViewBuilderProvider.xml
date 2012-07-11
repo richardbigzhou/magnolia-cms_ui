@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<sv:node sv:name="jcrViewBuilderProvider" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<sv:node sv:name="contentViewBuilderProvider" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <sv:property sv:name="jcr:primaryType" sv:type="Name">
     <sv:value>mgnl:content</sv:value>
   </sv:property>
@@ -10,7 +10,7 @@
     <sv:value>c1da4542-bc13-407a-8962-40b05b5d1617</sv:value>
   </sv:property>
   <sv:property sv:name="class" sv:type="String">
-    <sv:value>info.magnolia.ui.admincentral.jcr.view.builder.JcrViewBuilderProviderImpl</sv:value>
+    <sv:value>info.magnolia.ui.admincentral.jcr.view.builder.ContentViewBuilderProviderImpl</sv:value>
   </sv:property>
   <sv:property sv:name="jcr:createdBy" sv:type="String">
     <sv:value>admin</sv:value>
@@ -32,7 +32,7 @@
       <sv:value>2012-05-31T15:43:49.284+02:00</sv:value>
     </sv:property>
   </sv:node>
-  <sv:node sv:name="jcrViewBuilders">
+  <sv:node sv:name="contentViewBuilders">
     <sv:property sv:name="jcr:primaryType" sv:type="Name">
       <sv:value>mgnl:contentNode</sv:value>
     </sv:property>
@@ -73,7 +73,7 @@
         <sv:value>3ba817a5-641e-4577-afef-29bf9c66e76d</sv:value>
       </sv:property>
       <sv:property sv:name="class" sv:type="String">
-        <sv:value>info.magnolia.ui.admincentral.jcr.view.builder.ConfiguredJcrViewBuilder</sv:value>
+        <sv:value>info.magnolia.ui.admincentral.jcr.view.builder.ConfiguredcontentViewBuilder</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>

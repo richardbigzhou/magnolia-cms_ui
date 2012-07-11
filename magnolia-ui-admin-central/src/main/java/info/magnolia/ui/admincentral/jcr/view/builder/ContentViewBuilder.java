@@ -33,14 +33,14 @@
  */
 package info.magnolia.ui.admincentral.jcr.view.builder;
 
-import info.magnolia.ui.admincentral.jcr.view.JcrView;
-import info.magnolia.ui.admincentral.jcr.view.JcrView.ViewType;
+import info.magnolia.ui.admincentral.jcr.view.ContentView;
+import info.magnolia.ui.admincentral.jcr.view.ContentView.ViewType;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 
 /**
  * Used to transform tree or list and column definitions into components.
  */
-public interface JcrViewBuilder {
+public interface ContentViewBuilder {
 
-    JcrView build(WorkbenchDefinition workbenchDefinition, ViewType type);
+    ContentView build(WorkbenchDefinition workbenchDefinition, ViewType type);
 }

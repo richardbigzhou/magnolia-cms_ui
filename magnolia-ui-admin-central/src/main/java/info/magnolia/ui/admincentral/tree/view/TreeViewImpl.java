@@ -34,7 +34,7 @@
 package info.magnolia.ui.admincentral.tree.view;
 
 import info.magnolia.ui.admincentral.container.JcrContainer;
-import info.magnolia.ui.admincentral.jcr.view.JcrView;
+import info.magnolia.ui.admincentral.jcr.view.ContentView;
 import info.magnolia.ui.admincentral.tree.model.TreeModel;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
@@ -55,7 +55,7 @@ public class TreeViewImpl implements TreeView, IsVaadinComponent {
 
     private MagnoliaTreeTable jcrBrowser;
 
-    private JcrView.Presenter presenter;
+    private ContentView.Listener presenter;
 
     public TreeViewImpl(WorkbenchDefinition workbenchDefinition, TreeModel treeModel) {
 
@@ -114,7 +114,7 @@ public class TreeViewImpl implements TreeView, IsVaadinComponent {
     }
 
     @Override
-    public void setPresenter(JcrView.Presenter presenter) {
+    public void setPresenter(ContentView.Listener presenter) {
         this.presenter = presenter;
     }
 

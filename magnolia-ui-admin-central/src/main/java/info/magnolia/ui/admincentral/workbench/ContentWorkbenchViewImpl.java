@@ -34,9 +34,9 @@
 package info.magnolia.ui.admincentral.workbench;
 
 import info.magnolia.ui.admincentral.actionbar.builder.ActionbarBuilder;
-import info.magnolia.ui.admincentral.jcr.view.JcrView;
-import info.magnolia.ui.admincentral.jcr.view.JcrView.ViewType;
-import info.magnolia.ui.admincentral.jcr.view.builder.JcrViewBuilderProvider;
+import info.magnolia.ui.admincentral.jcr.view.ContentView;
+import info.magnolia.ui.admincentral.jcr.view.ContentView.ViewType;
+import info.magnolia.ui.admincentral.jcr.view.builder.ContentViewBuilderProvider;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.widget.actionbar.Actionbar;
@@ -62,35 +62,33 @@ import com.vaadin.ui.VerticalLayout;
 /**
  * Implementation of {@link ContentWorkbenchView}.
  */
-@SuppressWarnings("serial")
 public class ContentWorkbenchViewImpl extends CustomComponent implements ContentWorkbenchView {
 
     private static final Logger log = LoggerFactory.getLogger(ContentWorkbenchViewImpl.class);
 
-    private final JcrViewBuilderProvider jcrViewBuilderProvider;
+    private final ContentViewBuilderProvider contentViewBuilderProvider;
 
     private final HorizontalLayout root = new HorizontalLayout();
 
     private final VerticalLayout workbenchContainer = new VerticalLayout();
 
-    private final Map<ViewType, JcrView> jcrViews = new EnumMap<ViewType, JcrView>(ViewType.class);
+    private final Map<ViewType, ContentView> contentViews = new EnumMap<ViewType, ContentView>(ViewType.class);
 
     private ViewType currentViewType = ViewType.TREE;
 
-    private Presenter presenter;
+    private ContentWorkbenchView.Listener listener;
 
-    private final JcrView.Presenter jcrPresenter = new JcrView.Presenter() {
-
+    private final ContentView.Listener jcrPresenter = new ContentView.Listener() {
         @Override
         public void onItemSelection(Item item) {
-            presenter.onItemSelected(item);
-        };
+            listener.onItemSelected(item);
+        }
     };
 
     @Inject
-    public ContentWorkbenchViewImpl(final JcrViewBuilderProvider jcrViewBuilderProvider) {
+    public ContentWorkbenchViewImpl(final ContentViewBuilderProvider contentViewBuilderProvider) {
         super();
-        this.jcrViewBuilderProvider = jcrViewBuilderProvider;
+        this.contentViewBuilderProvider = contentViewBuilderProvider;
         setCompositionRoot(root);
         setSizeFull();
 
@@ -132,10 +130,10 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
         log.debug("Initializing workbench {}...", workbenchDefinition.getName());
 
         for (final ViewType type : ViewType.values()) {
-            final JcrView jcrView = jcrViewBuilderProvider.getBuilder().build(workbenchDefinition, type);
-            jcrView.setPresenter(jcrPresenter);
-            jcrView.select(StringUtils.defaultIfEmpty(workbenchDefinition.getPath(), "/"));
-            jcrViews.put(type, jcrView);
+            final ContentView contentView = contentViewBuilderProvider.getBuilder().build(workbenchDefinition, type);
+            contentView.setPresenter(jcrPresenter);
+            contentView.select(StringUtils.defaultIfEmpty(workbenchDefinition.getPath(), "/"));
+            contentViews.put(type, contentView);
         }
 
         if (StringUtils.isBlank(workbenchDefinition.getWorkspace())) {
@@ -151,23 +149,23 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
         if (definition == null) {
             throw new IllegalArgumentException("Trying to init an action bar but got null definition.");
         }
-        final Actionbar actionbar = ActionbarBuilder.build(definition, getPresenter());
+        final Actionbar actionbar = ActionbarBuilder.build(definition, getListener());
         root.addComponent(actionbar);
     }
 
-    public Presenter getPresenter() {
-        return presenter;
+    public ContentWorkbenchView.Listener getListener() {
+        return listener;
     }
 
     @Override
-    public void setPresenter(final Presenter presenter) {
-        this.presenter = presenter;
+    public void setListener(final ContentWorkbenchView.Listener presenter) {
+        this.listener = presenter;
     }
 
     @Override
     public void setGridType(ViewType type) {
-        workbenchContainer.removeComponent(jcrViews.get(currentViewType).asVaadinComponent());
-        final Component c = jcrViews.get(type).asVaadinComponent();
+        workbenchContainer.removeComponent(contentViews.get(currentViewType).asVaadinComponent());
+        final Component c = contentViews.get(type).asVaadinComponent();
 
         workbenchContainer.addComponent(c);
         workbenchContainer.setExpandRatio(c, 1f);
@@ -179,12 +177,12 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
 
     @Override
     public void refreshItem(Item item) {
-        jcrViews.get(currentViewType).refreshItem(item);
+        contentViews.get(currentViewType).refreshItem(item);
     }
 
     @Override
     public void refresh() {
-        jcrViews.get(currentViewType).refresh();
+        contentViews.get(currentViewType).refresh();
     }
 
 }

@@ -33,50 +33,12 @@
  */
 package info.magnolia.ui.admincentral.jcr.view.builder;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
- * TODO: use ui settings?
- * Provides the JcrViewBuilder defined in the AdminCentralModule.
+ * Provides a ContentViewBuilder.
+ *
+ * TODO: check whether this type should go to ui-model layer.
  */
-public class JcrViewBuilderProviderImpl implements JcrViewBuilderProvider {
+public interface ContentViewBuilderProvider {
 
-
-    //private UISettings uiSettings;
-
-    // content2bean
-    private List<JcrViewBuilder> jcrViewBuilders = new ArrayList<JcrViewBuilder>();
-
-
-    /**
-     * Is needed so that we can make a proxy (reloading configuration).
-     * TODO: is this really necessary?
-     */
-    public JcrViewBuilderProviderImpl() {
-    }
-
-    /*@Inject
-    public JcrViewBuilderProviderImpl(User user, UISettings uiSettings) {
-        this.user = user;
-        this.uiSettings = uiSettings;
-    }*/
-
-    @Override
-    public JcrViewBuilder getBuilder() {
-        // FIXME: use user and uiSettings
-        return jcrViewBuilders.get(0);
-    }
-
-    public void setJcrViewBuilders(List<JcrViewBuilder> jcrViewBuilders) {
-        this.jcrViewBuilders = jcrViewBuilders;
-    }
-
-    public List<JcrViewBuilder> getJcrViewBuilders() {
-        return jcrViewBuilders;
-    }
-
-    public void addJcrViewBuilder(JcrViewBuilder jcrViewBuilder) {
-        this.jcrViewBuilders.add(jcrViewBuilder);
-    }
+    ContentViewBuilder getBuilder();
 }

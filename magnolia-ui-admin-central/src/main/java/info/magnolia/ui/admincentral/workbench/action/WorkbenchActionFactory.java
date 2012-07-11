@@ -44,5 +44,5 @@ import javax.jcr.Item;
  */
 public interface WorkbenchActionFactory {
 
-    Action createAction(final ActionDefinition actionDefinition, final Item item, final ContentWorkbenchView.Presenter presenter);
+    Action createAction(final ActionDefinition actionDefinition, final Item item, final ContentWorkbenchView.Listener presenter);
 }
