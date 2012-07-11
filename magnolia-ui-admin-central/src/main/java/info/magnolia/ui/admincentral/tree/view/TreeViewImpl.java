@@ -37,7 +37,6 @@ import info.magnolia.ui.admincentral.container.JcrContainer;
 import info.magnolia.ui.admincentral.jcr.view.ContentView;
 import info.magnolia.ui.admincentral.tree.model.TreeModel;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 import java.util.Set;
 
@@ -51,11 +50,11 @@ import com.vaadin.ui.TreeTable;
  * Vaadin UI component that displays a tree.
  *
  */
-public class TreeViewImpl implements TreeView, IsVaadinComponent {
+public class TreeViewImpl implements TreeView{
 
     private MagnoliaTreeTable jcrBrowser;
 
-    private ContentView.Listener presenter;
+    private ContentView.Listener listener;
 
     public TreeViewImpl(WorkbenchDefinition workbenchDefinition, TreeModel treeModel) {
 
@@ -76,7 +75,7 @@ public class TreeViewImpl implements TreeView, IsVaadinComponent {
             public void valueChange(ValueChangeEvent event) {
                 final Object value = event.getProperty().getValue();
                 if (value instanceof String) {
-                    presenterOnItemSelection(String.valueOf(value));    
+                    presenterOnItemSelection(String.valueOf(value));
                 } else if (value instanceof Set) {
                     final Set<?> set = (Set<?>)value;
                     if (set.size() == 1) {
@@ -88,8 +87,8 @@ public class TreeViewImpl implements TreeView, IsVaadinComponent {
     }
 
     private void presenterOnItemSelection(String id) {
-        if (presenter != null) {
-            presenter.onItemSelection(jcrBrowser.getItem(id));
+        if (listener != null) {
+            listener.onItemSelection(jcrBrowser.getItem(id));
         }
     }
 
@@ -114,8 +113,8 @@ public class TreeViewImpl implements TreeView, IsVaadinComponent {
     }
 
     @Override
-    public void setPresenter(ContentView.Listener presenter) {
-        this.presenter = presenter;
+    public void setListener(ContentView.Listener listener) {
+        this.listener = listener;
     }
 
     @Override

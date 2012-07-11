@@ -131,7 +131,7 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
 
         for (final ViewType type : ViewType.values()) {
             final ContentView contentView = contentViewBuilderProvider.getBuilder().build(workbenchDefinition, type);
-            contentView.setPresenter(contentViewListener);
+            contentView.setListener(contentViewListener);
             contentView.select(StringUtils.defaultIfEmpty(workbenchDefinition.getPath(), "/"));
             contentViews.put(type, contentView);
         }
@@ -158,8 +158,8 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
     }
 
     @Override
-    public void setListener(final ContentWorkbenchView.Listener presenter) {
-        this.contentWorkbenchViewListener = presenter;
+    public void setListener(final ContentWorkbenchView.Listener listener) {
+        this.contentWorkbenchViewListener = listener;
     }
 
     @Override

@@ -74,7 +74,7 @@ public interface ContentView extends View, IsVaadinComponent {
         }
     }
 
-    void setPresenter(Listener presenter);
+    void setListener(Listener listener);
 
 
     /**
