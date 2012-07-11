@@ -31,23 +31,28 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.sample;
+package info.magnolia.ui.app.sample.main;
 
-import info.magnolia.ui.framework.view.View;
+import javax.inject.Inject;
 
 /**
- * View for editor tabs in sample app.
+ * Presenter for the content display.
  */
-public interface SampleEditorView extends View {
+public class ContentDisplayPresenter implements ContentDisplayView.Listener {
 
-    void setListener(Listener listener);
+    private ContentDisplayView view;
 
-    void setName(String name);
+    @Inject
+    public ContentDisplayPresenter(ContentDisplayView view) {
+        this.view = view;
+    }
 
-    /**
-     * Listener for SampleEditorView.
-     */
-    public interface Listener {
+    public ContentDisplayView start() {
+        view.setListener(this);
+        return view;
+    }
 
+    public void setResourceToDisplay(String name) {
+        view.setResource(name);
     }
 }

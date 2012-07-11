@@ -31,22 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.sample;
+package info.magnolia.ui.app.sample.main;
 
-import info.magnolia.ui.framework.view.View;
+import javax.inject.Inject;
 
 /**
- * View for the main tab of sample app.
+ * Presenter for the navigation.
  */
-public interface SampleMainView extends View {
+public class NavigationPresenter implements NavigationView.Listener {
 
-    void setListener(Listener listener);
+    private SampleMainSubApp mainSubApp;
+    private NavigationView view;
 
-    /**
-     * Listener for SampleMainView.
-     */
-    public interface Listener {
+    @Inject
+    public NavigationPresenter(NavigationView view) {
+        this.view = view;
+    }
 
-        void onOpenNewEditor();
+    public void setMainSubApp(SampleMainSubApp mainSubApp) {
+        this.mainSubApp = mainSubApp;
+    }
+
+    public NavigationView start() {
+        view.setListener(this);
+        return view;
+    }
+
+    @Override
+    public void onItemSelected(String name) {
+        mainSubApp.onItemSelected(name);
     }
 }

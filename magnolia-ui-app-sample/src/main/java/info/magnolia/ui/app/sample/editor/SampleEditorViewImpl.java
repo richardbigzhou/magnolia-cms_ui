@@ -31,48 +31,45 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.sample;
+package info.magnolia.ui.app.sample.editor;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
-import org.apache.commons.lang.RandomStringUtils;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.VerticalLayout;
 
-import info.magnolia.ui.framework.app.SubApp;
-import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 /**
- * SubApp for the main tab in sample app.
+ * View implementation of an editor tab in sample app.
  */
-@Singleton
-public class SampleMainSubApp implements SubApp, SampleMainView.Listener {
+public class SampleEditorViewImpl implements SampleEditorView, IsVaadinComponent {
 
-    private SampleApp sampleApp;
-    private SampleMainView sampleMainView;
+    private Listener listener;
+    private String name;
+    private VerticalLayout layout;
 
     @Inject
-    public SampleMainSubApp(SampleMainView sampleMainView) {
-        this.sampleMainView = sampleMainView;
-    }
-
-    public void setSampleApp(SampleApp sampleApp) {
-        this.sampleApp = sampleApp;
+    public SampleEditorViewImpl() {
     }
 
     @Override
-    public View start() {
-        sampleMainView.setListener(this);
-        return sampleMainView;
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
-    public String getCaption() {
-        return "Sample";
+    public void setListener(Listener listener) {
+        this.listener = listener;
     }
 
     @Override
-    public void onOpenNewEditor() {
-        String name = RandomStringUtils.randomNumeric(2);
-        sampleApp.openNewEditor(name);
+    public Component asVaadinComponent() {
+        if (layout == null) {
+            layout = new VerticalLayout();
+            layout.addComponent(new Label("<center>Sample Editor " + name + "</center>", Label.CONTENT_XHTML));
+        }
+        return layout;
     }
 }
