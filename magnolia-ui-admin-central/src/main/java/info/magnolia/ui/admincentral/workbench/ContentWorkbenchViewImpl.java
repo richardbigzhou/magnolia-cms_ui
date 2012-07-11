@@ -76,12 +76,12 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
 
     private ViewType currentViewType = ViewType.TREE;
 
-    private ContentWorkbenchView.Listener listener;
+    private ContentWorkbenchView.Listener contentWorkbenchViewListener;
 
-    private final ContentView.Listener jcrPresenter = new ContentView.Listener() {
+    private final ContentView.Listener contentViewListener = new ContentView.Listener() {
         @Override
         public void onItemSelection(Item item) {
-            listener.onItemSelected(item);
+            contentWorkbenchViewListener.onItemSelected(item);
         }
     };
 
@@ -131,7 +131,7 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
 
         for (final ViewType type : ViewType.values()) {
             final ContentView contentView = contentViewBuilderProvider.getBuilder().build(workbenchDefinition, type);
-            contentView.setPresenter(jcrPresenter);
+            contentView.setPresenter(contentViewListener);
             contentView.select(StringUtils.defaultIfEmpty(workbenchDefinition.getPath(), "/"));
             contentViews.put(type, contentView);
         }
@@ -154,12 +154,12 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
     }
 
     public ContentWorkbenchView.Listener getListener() {
-        return listener;
+        return contentWorkbenchViewListener;
     }
 
     @Override
     public void setListener(final ContentWorkbenchView.Listener presenter) {
-        this.listener = presenter;
+        this.contentWorkbenchViewListener = presenter;
     }
 
     @Override
