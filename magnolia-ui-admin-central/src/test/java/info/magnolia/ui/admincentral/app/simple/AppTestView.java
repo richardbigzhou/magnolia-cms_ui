@@ -31,22 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages;
+package info.magnolia.ui.admincentral.app.simple;
 
-import info.magnolia.ui.framework.app.AppView;
+import info.magnolia.ui.framework.view.View;
 
 /**
- * View for the Pages app.
+ *
  */
-public interface PagesView extends AppView {
-
-    /**
-     * Presenter.
-     */
-    public interface Presenter {
-
-    }
-
-    void setPresenter(Presenter presenter);
-
+public interface AppTestView extends View {
 }

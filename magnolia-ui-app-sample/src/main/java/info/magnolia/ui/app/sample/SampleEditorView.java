@@ -31,19 +31,21 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.assets;
+package info.magnolia.ui.app.sample;
 
 import info.magnolia.ui.framework.view.View;
 
 /**
- * View for the Assets app.
+ * View for editor tabs in sample app.
  */
-public interface AssetsView extends View {
+public interface SampleEditorView extends View {
 
-    void setListener(final Listener listener);
+    void setListener(Listener listener);
+
+    void setName(String name);
 
     /**
-     * Listener.
+     * Listener for SampleEditorView.
      */
     public interface Listener {
 

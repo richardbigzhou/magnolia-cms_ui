@@ -29,11 +29,11 @@
   </scm>
 	<dependencyManagement>
 		<dependencies>
-           <dependency>
-           		<groupId>info.magnolia</groupId>
-           		<artifactId>magnolia-rendering</artifactId>
-           		<version>${magnoliaVersion}</version>
-            </dependency>
+       <dependency>
+          <groupId>info.magnolia</groupId>
+          <artifactId>magnolia-rendering</artifactId>
+          <version>${magnoliaVersion}</version>
+        </dependency>
 			<dependency>
 				<groupId>javax.servlet</groupId>
 				<artifactId>servlet-api</artifactId>
@@ -157,7 +157,7 @@
 		<module>magnolia-ui-widget-editor</module>
 		<module>magnolia-ui-admin-central</module>
 		<module>magnolia-ui-webapp</module>
-		<module>magnolia-ui-app-dummy</module>
+		<module>magnolia-ui-app-sample</module>
 		<module>magnolia-ui-app-contacts</module>
 		<module>magnolia-ui-app-messages</module>
 		<module>magnolia-ui-app-pages</module>

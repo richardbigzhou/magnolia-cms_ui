@@ -31,21 +31,25 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.assets;
+package info.magnolia.ui.app.pages;
 
 import info.magnolia.ui.framework.view.View;
 
 /**
- * View for the Assets app.
+ * PageEditorView.
+ *
  */
-public interface AssetsView extends View {
+public interface PageEditorView extends View {
 
-    void setListener(final Listener listener);
+    void setListener(Listener listener);
+
+    void initPageEditor(String nodePath);
 
     /**
      * Listener.
      */
     public interface Listener {
 
+        void editComponent(String workSpace, String path, String dialog);
     }
 }

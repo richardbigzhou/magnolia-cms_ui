@@ -33,52 +33,37 @@
  */
 package info.magnolia.ui.app.pages.action;
 
-import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.admincentral.actionbar.builder.ActionbarBuilder;
-import info.magnolia.ui.admincentral.workbench.ContentWorkbenchView;
-import info.magnolia.ui.app.pages.PageEditorTabView;
+import info.magnolia.ui.admincentral.workbench.ContentWorkbench;
 import info.magnolia.ui.framework.location.DefaultLocation;
+import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
-import info.magnolia.ui.widget.actionbar.Actionbar;
 
 import javax.inject.Inject;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
 
 /**
  * Opens a page for editing.
  */
 public class EditPageAction extends ActionBase<EditPageActionDefinition> {
 
-    private final Node selectedNode;
 
-    private final ContentWorkbenchView.Presenter presenter;
+    private final ContentWorkbench workbench;
+    private final LocationController locationController;
+    private final static String TOKEN = "pageeditor";
 
-    private final ActionbarDefinition pageEditorActionbar;
-
-    private final ComponentProvider componentProvider;
     @Inject
-    public EditPageAction(final EditPageActionDefinition definition, final Node selectedNode, final ContentWorkbenchView.Presenter presenter, ComponentProvider componentProvider) {
+    public EditPageAction(final EditPageActionDefinition definition, ContentWorkbench workbench, LocationController locationController) {
         super(definition);
-        this.selectedNode = selectedNode;
-        this.presenter = presenter;
-        this.componentProvider = componentProvider;
-        this.pageEditorActionbar = PagesActionbarDefinitionProvider.getPageEditorActionbarDefinition();
+        this.workbench = workbench;
+        this.locationController = locationController;
+
     }
 
     @Override
     public void execute() throws ActionExecutionException {
-        try {
-
-            Actionbar actionBar =  ActionbarBuilder.build(pageEditorActionbar, presenter);
-
-            final PageEditorTabView view = new PageEditorTabView(componentProvider, selectedNode, actionBar);
-
-            presenter.onOpenNewView(view, new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "app:pages:", view.getCaption()));
-        } catch (RepositoryException e) {
-            throw new ActionExecutionException(e);
-        }
+        String nodePath = workbench.getSelectedItemId();
+        Location pageEditorLocation = new DefaultLocation("app", "pages", TOKEN + ":" + nodePath);
+        locationController.goTo(pageEditorLocation);
     }
 }

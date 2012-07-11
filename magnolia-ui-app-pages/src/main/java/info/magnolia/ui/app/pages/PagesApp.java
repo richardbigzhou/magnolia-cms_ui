@@ -34,30 +34,92 @@
 package info.magnolia.ui.app.pages;
 
 
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.framework.app.AbstractApp;
 import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.app.AppView;
+import info.magnolia.ui.framework.app.SubApp;
+import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Pages app.
  */
-public class PagesApp extends AbstractApp implements PagesView.Presenter {
+public class PagesApp extends AbstractApp {
 
+
+    private enum PagesTab {
+
+
+        WORKBENCH, PAGEEDITOR;
+
+        private static final String PAGEEDITOR_TOKEN = "pageeditor";
+
+        public static PagesTab getDefault() {
+            return WORKBENCH;
+        }
+
+        public static PagesTab resolveTab(String tabName) {
+            if (tabName.equals(PAGEEDITOR_TOKEN)) {
+                return PAGEEDITOR;
+            }
+            return getDefault();
+        }
+    }
     private AppContext context;
-    private PagesView view;
+    private ComponentProvider componentProvider;
+    private PagesMainSubApp mainSubApp;
+    private Location currentLocation;
 
     @Inject
-    public PagesApp(PagesView view, AppContext context) {
-        this.view = view;
+    public PagesApp(AppContext context, ComponentProvider componentProvider, PagesMainSubApp mainSubApp) {
         this.context = context;
+        this.componentProvider = componentProvider;
+        this.mainSubApp = mainSubApp;
     }
 
     @Override
-    public AppView start(Location location) {
-        view.setPresenter(this);
-        return view;
+    public void locationChanged(Location location) {
+        DefaultLocation pagesLocation = (DefaultLocation) location;
+
+       List<String> pathParams = parsePathParamsFromToken(pagesLocation.getToken());
+
+        if (pathParams.size() > 0) {
+            final String tabName = pathParams.remove(0);
+            PagesTab pagesTab = PagesTab.resolveTab(tabName);
+            switch (pagesTab) {
+                case PAGEEDITOR:
+                    PageEditorSubApp editorSubApp = componentProvider.newInstance(PageEditorSubApp.class, pathParams.get(0));
+
+                    context.openSubApp(editorSubApp);
+                    context.setAppLocation(location);
+                    break;
+                case WORKBENCH: default:
+                    break;
+
+            }
+        }
+        currentLocation = location;
+
+//        pulsePlace.setCurrentPulseTab(displayedTabId);
     }
+
+    private List<String> parsePathParamsFromToken(String token) {
+        final List<String> result = new ArrayList<String>(Arrays.asList(token.split(":")));
+        return result;
+    }
+
+    @Override
+    public SubApp start(Location location) {
+        return mainSubApp;
+    }
+
+    @Override
+    public void stop() {
+    }
+
 }

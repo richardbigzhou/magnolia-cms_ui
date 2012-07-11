@@ -34,12 +34,13 @@
 package info.magnolia.ui.widget.editor;
 
 
+import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.PaintException;
 import com.vaadin.terminal.PaintTarget;
 import com.vaadin.terminal.Resource;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.ClientWidget;
-import com.vaadin.ui.Component;
+import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.widget.editor.gwt.client.VPageEditor;
 import org.vaadin.rpc.ServerSideHandler;
 import org.vaadin.rpc.ServerSideProxy;
@@ -52,17 +53,19 @@ import java.util.Map;
  */
 @SuppressWarnings("serial")
 @ClientWidget(value=VPageEditor.class, loadStyle = ClientWidget.LoadStyle.EAGER)
-public class PageEditor extends AbstractComponent implements PageEditorView, ServerSideHandler {
+public class PageEditor extends AbstractComponent implements ServerSideHandler {
 
-    private Presenter presenter;
 
     /**
      * Source of the embedded object.
      */
     private Resource source;
+    private EventBus eventBus;
 
-    public PageEditor(final Resource source) {
-        this.source = source;
+    public PageEditor(final String source) {
+
+        this.source = new ExternalResource(source);
+        this.eventBus = eventBus;
         setCaption("");
         setSizeFull();
         setImmediate(true);
@@ -85,13 +88,8 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
 
     private void editComponent(String workSpace, String path, String dialog) {
 
-        presenter.editComponent(workSpace, path, dialog);
     }
 
-    @Override
-    public Component asVaadinComponent() {
-        return this;
-    }
 
     @Override
     public Object[] initRequestFromClient() {
@@ -104,10 +102,6 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
         System.out.println("Client called " + method);
     }
 
-    @Override
-    public void setPresenter(Presenter presenter) {
-        this.presenter = presenter;
-    }
 
     @Override
     public void paintContent(PaintTarget target) throws PaintException {

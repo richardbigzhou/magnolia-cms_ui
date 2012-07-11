@@ -31,51 +31,38 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
-
-import info.magnolia.ui.framework.app.AbstractApp;
-import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.app.AppView;
-import info.magnolia.ui.framework.location.DefaultLocation;
-import info.magnolia.ui.framework.location.Location;
+package info.magnolia.ui.app.sample;
 
 import javax.inject.Inject;
 
-/**
- * Dummy app.
- */
-public class DummyApp extends AbstractApp implements DummyView.Presenter {
+import info.magnolia.ui.framework.app.SubApp;
+import info.magnolia.ui.framework.view.View;
 
-    private AppContext context;
-    private DummyView view;
+/**
+ * SubApp for editor tabs in sample app.
+ */
+public class SampleEditorSubApp implements SubApp, SampleEditorView.Listener {
+
+    private String name;
+    private final SampleEditorView view;
 
     @Inject
-    public DummyApp(DummyView view, AppContext context) {
+    public SampleEditorSubApp(SampleEditorView view) {
         this.view = view;
-        this.context = context;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getCaption() {
+        return "Editor " + name;
     }
 
     @Override
-    public AppView start(Location location) {
-        view.setPresenter(this);
-        System.out.println("SIMPLE DUMMY APP STARTED - token is: " + location.toString());
+    public View start() {
+        this.view.setName(name);
+        this.view.setListener(this);
         return view;
-    }
-
-    @Override
-    public void stop() {
-        System.out.println("SIMPLE DUMMY APP STOPPED");
-    }
-
-    @Override
-    public void locationChanged(Location location) {
-        System.out.println("TOKEN CHANGED: " + location);
-    }
-
-    @Override
-    public void onButtonClick() {
-        DummyTabView view = new DummyTabView();
-        context.openAppView(view);
-        context.setAppLocation(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "dummy", view.getCaption()));
     }
 }

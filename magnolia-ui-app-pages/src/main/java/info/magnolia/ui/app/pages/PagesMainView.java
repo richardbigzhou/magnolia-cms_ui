@@ -31,21 +31,23 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.assets;
+package info.magnolia.ui.app.pages;
 
+import com.vaadin.ui.ComponentContainer;
 import info.magnolia.ui.framework.view.View;
 
 /**
- * View for the Assets app.
+ * View for the Pages app.
  */
-public interface AssetsView extends View {
-
-    void setListener(final Listener listener);
+public interface PagesMainView extends View {
 
     /**
      * Listener.
+     *
      */
     public interface Listener {
-
     }
+
+    void setListener(Listener listener);
+    void initView(ComponentContainer workbenchView);
 }

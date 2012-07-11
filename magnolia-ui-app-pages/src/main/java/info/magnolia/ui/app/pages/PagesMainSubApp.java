@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,21 +31,39 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.assets;
+package info.magnolia.ui.app.pages;
 
+import info.magnolia.ui.admincentral.workbench.ContentWorkbench;
+import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.view.View;
 
+import javax.inject.Inject;
+
 /**
- * View for the Assets app.
+ * PagesMainSubApp.
  */
-public interface AssetsView extends View {
+public class PagesMainSubApp implements SubApp, PagesMainView.Listener {
 
-    void setListener(final Listener listener);
+    private PagesMainView view;
+    private final static String WORKBENCH_NAME = "website";
 
-    /**
-     * Listener.
-     */
-    public interface Listener {
+    @Inject
+    public PagesMainSubApp(PagesMainView view, ContentWorkbench workbench) {
+        this.view = view;
+        this.view.setListener(this);
 
+        workbench.initWorkbench(WORKBENCH_NAME);
+        this.view.initView(workbench.asVaadinComponent());
+
+    }
+
+    @Override
+    public String getCaption() {
+        return "Pages";
+    }
+
+    @Override
+    public View start() {
+        return view;
     }
 }

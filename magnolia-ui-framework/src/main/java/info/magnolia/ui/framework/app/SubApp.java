@@ -31,25 +31,16 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.editor;
+package info.magnolia.ui.framework.app;
 
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
+import info.magnolia.ui.framework.view.View;
 
 /**
- * PageEditorView.
+ * Sub apps represents a view open in a tab within an app.
  */
-public interface PageEditorView extends IsVaadinComponent {
+public interface SubApp {
 
-    void setPresenter(Presenter presenter);
-    /**
-     * Presenter.
-     */
-    public interface Presenter {
+    String getCaption();
 
-        void editComponent(final String workSpace, final String path, final String dialog);
-
-        IsVaadinComponent getView();
-
-        String getNodeName();
-    }
+    View start();
 }

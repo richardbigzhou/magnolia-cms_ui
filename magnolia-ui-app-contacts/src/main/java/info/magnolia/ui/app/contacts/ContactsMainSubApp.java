@@ -31,51 +31,32 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
+package info.magnolia.ui.app.contacts;
 
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
+import javax.inject.Inject;
 
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
+import info.magnolia.ui.framework.app.SubApp;
+import info.magnolia.ui.framework.view.View;
 
 /**
- * View implementation for the Dummy app.
+ * Sub app for the main tab in the contacts app.
  */
-@SuppressWarnings("serial")
-public class DummyViewImpl implements DummyView, IsVaadinComponent {
+public class ContactsMainSubApp implements SubApp {
 
-    private DummyView.Presenter presenter;
-    private final VerticalLayout tableContainer;
+    private ContactsView view;
 
-    public DummyViewImpl() {
-        tableContainer = new VerticalLayout();
-        Label label = new Label("<center>Dummy App</center>", Label.CONTENT_XHTML);
-        tableContainer.addComponent(label);
-
-        Button dialog = new Button("Gimme more tabs!", new Button.ClickListener() {
-
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                presenter.onButtonClick();
-            }
-        });
-        tableContainer.addComponent(dialog);
-    }
-
-    @Override
-    public void setPresenter(DummyView.Presenter presenter) {
-        this.presenter = presenter;
+    @Inject
+    public ContactsMainSubApp(ContactsView view) {
+        this.view = view;
     }
 
     @Override
     public String getCaption() {
-        return "Dummy";
+        return "Contacts";
     }
 
     @Override
-    public Component asVaadinComponent() {
-        return tableContainer;
+    public View start() {
+        return view;
     }
 }

@@ -31,21 +31,32 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
+package info.magnolia.ui.admincentral.app.assets;
 
-import info.magnolia.ui.framework.app.AppView;
+import javax.inject.Inject;
+
+import info.magnolia.ui.framework.app.SubApp;
+import info.magnolia.ui.framework.view.View;
 
 /**
- * View for the Dummy app.
+ * Sub app for the main tab in the assets app.
  */
-public interface DummyView extends AppView {
+public class AssetsMainSubApp implements SubApp {
 
-    void setPresenter(Presenter presenter);
+    private AssetsView assetsView;
 
-    /**
-     * Presenter interface for DummyView.
-     */
-    public interface Presenter {
-        void onButtonClick();
+    @Inject
+    public AssetsMainSubApp(AssetsView assetsView) {
+        this.assetsView = assetsView;
+    }
+
+    @Override
+    public String getCaption() {
+        return "Assets";
+    }
+
+    @Override
+    public View start() {
+        return assetsView;
     }
 }

@@ -33,12 +33,12 @@
  */
 package info.magnolia.ui.app.contacts;
 
-import info.magnolia.ui.framework.app.AppView;
+import info.magnolia.ui.framework.view.View;
 
 
 /**
  * View for the Contacts app.
  */
-public interface ContactsView extends AppView {
+public interface ContactsView extends View {
     
 }

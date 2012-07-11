@@ -33,31 +33,20 @@
  */
 package info.magnolia.ui.admincentral.app.simple;
 
-import info.magnolia.ui.framework.app.AppView;
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
-
 import com.vaadin.ui.Component;
 
-/**
- *
- * Stupid PagesView Test class.
- *
- */
-public class AppViewTestImpl implements AppView, IsVaadinComponent {
+import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
+/**
+ * Stupid PagesView Test class.
+ */
+public class AppViewTestImpl implements AppTestView, IsVaadinComponent {
 
     public AppViewTestImpl() {
-
-    }
-
-    @Override
-    public String getCaption() {
-        return null;
     }
 
     @Override
     public Component asVaadinComponent() {
         return null;
     }
-
 }

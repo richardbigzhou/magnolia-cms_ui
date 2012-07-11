@@ -31,12 +31,22 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.dummy;
+package info.magnolia.ui.app.sample;
 
-import info.magnolia.module.DefaultModuleVersionHandler;
+import info.magnolia.ui.framework.view.View;
 
 /**
- * Version handler for Dummy app module.
+ * View for the main tab of sample app.
  */
-public class DummyAppModuleVersionHandler extends DefaultModuleVersionHandler {
+public interface SampleMainView extends View {
+
+    void setListener(Listener listener);
+
+    /**
+     * Listener for SampleMainView.
+     */
+    public interface Listener {
+
+        void onOpenNewEditor();
+    }
 }

@@ -36,35 +36,31 @@ package info.magnolia.ui.app.pages;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
-import info.magnolia.jcr.util.PropertyUtil;
-import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.framework.app.AppView;
+import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 import info.magnolia.ui.widget.actionbar.Actionbar;
-import info.magnolia.ui.widget.editor.PageEditorView;
-import org.apache.commons.lang.StringUtils;
-
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
+import info.magnolia.ui.widget.editor.PageEditor;
 
 /**
- * PageEditorTabView.
+ * PageEditorViewImpl.
  * TODO: make this a component with a split layout to accomodate the page editor on the left and its related actions on the right.
 */
 @SuppressWarnings("serial")
-public class PageEditorTabView implements AppView, IsVaadinComponent {
+public class PageEditorViewImpl implements PageEditorView, IsVaadinComponent {
 
     private Actionbar actionbar;
 
     private final HorizontalLayout root = new HorizontalLayout();
 
     private final VerticalLayout container = new VerticalLayout();
-    
-    private final String caption;
 
-    public PageEditorTabView(ComponentProvider componentProvider, Node pageNode, final Actionbar actionbar) throws RepositoryException {
+    private Listener listener;
+    private PageEditor pageEditor;
+    private String caption;
 
-        this.actionbar = actionbar;
+    public PageEditorViewImpl() {
+
+        //this.actionbar = actionbar;
         // same root as ContentWorkbenchView
         root.setSizeFull();
         root.setStyleName("mgnl-app-root");
@@ -73,22 +69,11 @@ public class PageEditorTabView implements AppView, IsVaadinComponent {
         root.setMargin(false);
         root.setSpacing(true);
 
-        Object[] combinedParameters = new Object[1];
-
-        combinedParameters[0] = pageNode;
-        PageEditorView.Presenter pageEditorPresenter = componentProvider.newInstance(PageEditorPresenter.class, combinedParameters);
-
-       
-
         container.setSizeFull();
         container.setStyleName("mgnl-app-view");
-        container.addComponent(pageEditorPresenter.getView().asVaadinComponent());
-        caption = StringUtils.defaultIfEmpty(PropertyUtil.getString(pageNode, "title"), pageNode.getName());
-        root.addComponent(actionbar);
-    }
-
-    public Actionbar getActionbar() {
-        return actionbar;
+        container.setImmediate(true);
+        caption = "meeeh"; //StringUtils.defaultIfEmpty(PropertyUtil.getString(pageNode, "title"), pageNode.getName());
+        //root.addCompon;ent(actionbar);
     }
 
     public void setActionbar(Actionbar actionbar) {
@@ -97,19 +82,20 @@ public class PageEditorTabView implements AppView, IsVaadinComponent {
     }
 
     @Override
-    public String getCaption() {
-        return caption;
+    public void setListener(Listener listener) {
+        this.listener = listener;
     }
+
+    @Override
+    public void initPageEditor(String nodePath) {
+        String contextPath = MgnlContext.getContextPath();
+        pageEditor = new PageEditor(contextPath + nodePath);
+        container.addComponent(pageEditor);
+    }
+
 
     @Override
     public Component asVaadinComponent() {
         return root;
-    }
-
-    /**
-     * Presenter.
-     */
-    public interface Presenter {
-
     }
 }

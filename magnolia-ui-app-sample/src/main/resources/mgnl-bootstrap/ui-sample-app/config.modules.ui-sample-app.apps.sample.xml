@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<sv:node sv:name="dummy" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<sv:node sv:name="sample" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <sv:property sv:name="jcr:primaryType" sv:type="Name">
     <sv:value>mgnl:contentNode</sv:value>
   </sv:property>
@@ -10,7 +10,7 @@
     <sv:value>008271e7-7d83-486d-989c-504751bb893b</sv:value>
   </sv:property>
   <sv:property sv:name="appClass" sv:type="String">
-    <sv:value>info.magnolia.ui.app.dummy.DummyApp</sv:value>
+    <sv:value>info.magnolia.ui.app.sample.SampleApp</sv:value>
   </sv:property>
   <sv:property sv:name="categoryName" sv:type="String">
     <sv:value>MANAGE</sv:value>
@@ -22,10 +22,10 @@
     <sv:value>admin</sv:value>
   </sv:property>
   <sv:property sv:name="label" sv:type="String">
-    <sv:value>Dummy</sv:value>
+    <sv:value>Sample</sv:value>
   </sv:property>
   <sv:property sv:name="name" sv:type="String">
-    <sv:value>dummy</sv:value>
+    <sv:value>sample</sv:value>
   </sv:property>
   <sv:node sv:name="MetaData">
     <sv:property sv:name="jcr:primaryType" sv:type="Name">

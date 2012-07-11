@@ -31,44 +31,51 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages;
-
-import com.vaadin.ui.Component;
-import com.vaadin.ui.ComponentContainer;
-import info.magnolia.ui.admincentral.workbench.ContentWorkbench;
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
+package info.magnolia.ui.app.sample;
 
 import javax.inject.Inject;
 
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.framework.app.AbstractApp;
+import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.framework.app.SubApp;
+import info.magnolia.ui.framework.location.DefaultLocation;
+import info.magnolia.ui.framework.location.Location;
 
 /**
- * View implementation for the Pages app.
+ * Sample app.
  */
-@SuppressWarnings("serial")
-public class PagesViewImpl implements PagesView, IsVaadinComponent {
+public class SampleApp extends AbstractApp {
 
-    private ComponentContainer view;
-    private Presenter presenter;
+    private AppContext context;
+    private ComponentProvider componentProvider;
+    private SampleMainSubApp mainSubApp;
 
     @Inject
-    public PagesViewImpl(final ContentWorkbench workbench) {
-        workbench.initWorkbench("website");
-        view = workbench.asVaadinComponent();
+    public SampleApp(AppContext context, ComponentProvider componentProvider, SampleMainSubApp mainSubApp) {
+        this.context = context;
+        this.componentProvider = componentProvider;
+        this.mainSubApp = mainSubApp;
+        this.mainSubApp.setSampleApp(this);
     }
 
     @Override
-    public String getCaption() {
-        return "Pages";
+    public SubApp start(Location location) {
+        return mainSubApp;
     }
 
     @Override
-    public Component asVaadinComponent() {
-        return view;
+    public void stop() {
     }
 
     @Override
-    public void setPresenter(PagesView.Presenter presenter) {
-        this.presenter = presenter;
+    public void locationChanged(Location location) {
     }
 
+    public void openNewEditor(String name) {
+        SampleEditorSubApp editorSubApp = componentProvider.getComponent(SampleEditorSubApp.class);
+        editorSubApp.setName(name);
+        context.openSubApp(editorSubApp);
+        context.setAppLocation(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "sample", editorSubApp.getCaption()));
+    }
 }
