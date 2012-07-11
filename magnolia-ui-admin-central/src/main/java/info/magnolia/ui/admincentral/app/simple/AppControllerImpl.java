@@ -48,7 +48,7 @@ import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.AppLifecycleEventType;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
-import info.magnolia.ui.framework.app.AppView;
+import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.app.layout.AppCategory;
 import info.magnolia.ui.framework.app.layout.AppLayoutManager;
 import info.magnolia.ui.framework.event.EventBus;
@@ -61,6 +61,7 @@ import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.framework.view.ViewPort;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
@@ -258,6 +259,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             this.appDescriptor = appDescriptor;
         }
 
+        @Override
         public String getName() {
             return appDescriptor.getName();
         }
@@ -280,11 +282,12 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
             appFrameView = new AppFrameView();
 
-            AppView view = app.start(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appDescriptor.getName(), appLocation.getToken()));
+            SubApp main = app.start(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appDescriptor.getName(), appLocation.getToken()));
 
             currentLocation = location;
 
-            appFrameView.addTab((ComponentContainer) ((IsVaadinComponent) view).asVaadinComponent(), view.getCaption());
+            View view = main.start();
+            appFrameView.addTab((ComponentContainer) ((IsVaadinComponent) view).asVaadinComponent(), main.getCaption());
         }
 
         /**
@@ -320,8 +323,8 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         }
 
         @Override
-        public void openAppView(AppView view) {
-            appFrameView.addTab((ComponentContainer) ((IsVaadinComponent) view).asVaadinComponent(), view.getCaption());
+        public void openSubApp(SubApp subApp) {
+            appFrameView.addTab((ComponentContainer) ((IsVaadinComponent) subApp.start()).asVaadinComponent(), subApp.getCaption());
         }
 
         @Override

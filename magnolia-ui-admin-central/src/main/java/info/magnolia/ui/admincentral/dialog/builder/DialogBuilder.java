@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.dialog.builder;
 
-import info.magnolia.ui.admincentral.field.builder.FieldType;
+import info.magnolia.ui.admincentral.field.DialogField;
 import info.magnolia.ui.admincentral.field.builder.FieldTypeProvider;
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
@@ -78,11 +78,10 @@ public class DialogBuilder {
                 CssLayout fieldLayout = new CssLayout();
                 fieldLayout.setStyleName(FIELD_STYLE_NAME);
 
-                FieldType fieldType = fieldTypeBuilder.create(fieldDefinition.getFieldTypeDefinition());
-                Field field = fieldType.build(fieldDefinition, item);
-                field.setPropertyDataSource(item.getItemProperty(fieldDefinition.getName()));
-                fieldLayout.addComponent(field);
+                DialogField fieldType = fieldTypeBuilder.create(fieldDefinition, fieldDefinition, item);
+                Field field = fieldType.getField();
 
+                fieldLayout.addComponent(field);
                 fieldContainer.addComponent(fieldLayout);
 
                 view.addField(field);

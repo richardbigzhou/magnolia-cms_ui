@@ -33,13 +33,15 @@
  */
 package info.magnolia.ui.admincentral.workbench;
 
+import com.vaadin.data.Item;
+import com.vaadin.ui.ComponentContainer;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.admincentral.app.content.ContentAppDescriptor;
 import info.magnolia.ui.admincentral.event.ContentChangedEvent;
 import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.app.AppView;
+import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.shell.Shell;
@@ -49,22 +51,17 @@ import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
-
-import java.util.HashMap;
-import java.util.Map;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.jcr.LoginException;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.vaadin.data.Item;
-import com.vaadin.ui.ComponentContainer;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -153,6 +150,16 @@ public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView
         }
     }
 
+    @Override
+    public void onOpenNewView(SubApp subApp, Location location) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public String getSelectedItemId() {
+        return selectedItemId;
+    }
+
     //
     // ACTIONBAR PRESENTER
     //
@@ -196,12 +203,6 @@ public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView
 
     public ContentWorkbenchView asView() {
         return view;
-    }
-
-    @Override
-    public void onOpenNewView(AppView view, Location location) {
-        context.openAppView(view);
-        context.setAppLocation(location);
     }
 
 }

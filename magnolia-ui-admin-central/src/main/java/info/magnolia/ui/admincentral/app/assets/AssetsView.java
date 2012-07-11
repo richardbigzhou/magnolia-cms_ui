@@ -33,21 +33,19 @@
  */
 package info.magnolia.ui.admincentral.app.assets;
 
-import info.magnolia.ui.framework.app.AppView;
+import info.magnolia.ui.framework.view.View;
 
 /**
  * View for the Assets app.
  */
-public interface AssetsView extends AppView {
+public interface AssetsView extends View {
 
-    void setPresenter(final Presenter presenter);
-
-    Presenter getPresenter();
+    void setListener(final Listener listener);
 
     /**
-     * Presenter.
+     * Listener.
      */
-    public interface Presenter {
+    public interface Listener {
 
     }
 }

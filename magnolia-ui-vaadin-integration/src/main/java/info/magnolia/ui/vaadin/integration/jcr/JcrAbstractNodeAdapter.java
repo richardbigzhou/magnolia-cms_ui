@@ -113,17 +113,19 @@ public abstract class JcrAbstractNodeAdapter extends JcrAbstractAdapter implemen
     }
 
     /**
-     * @return Property: New Empty property if the related Jcr Node does not
-     * yet have this property. Otherwise create a Vaadin Property based on the Jcr Property.
+     * @return: the property if it already exist on the JCR Item
+     *          a new property if this property refer to the JCR Node name
+     *          null if the property doesn't exist yet.
      */
     @Override
     public Property getItemProperty(Object id) {
         Object value;
         try {
             if(!this.getNodeFromRepository().hasProperty((String) id)) {
-                value = new String("");
                 if(JCR_NAME.equals(id)) {
                     value = getNodeFromRepository().getName();
+                } else {
+                    return null;
                 }
             } else {
                 value = PropertyUtil.getProperty(getNodeFromRepository(), (String) id).getString();

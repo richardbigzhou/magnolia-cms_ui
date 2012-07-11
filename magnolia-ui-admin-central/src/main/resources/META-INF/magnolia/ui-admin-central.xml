@@ -89,7 +89,7 @@
     </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.model.dialog.definition.FieldDefinition</type>
-      <implementation>info.magnolia.ui.model.dialog.definition.ConfiguredFieldDefinition</implementation>
+      <implementation>info.magnolia.ui.model.dialog.definition.EditFieldDefinition</implementation>
     </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.model.dialog.action.DialogActionDefinition</type>
@@ -97,12 +97,8 @@
     </type-mapping>
   </components>
 
-   <components>
-    <id>admin-central</id>
-    <component>
-    	<type>info.magnolia.ui.framework.message.LocalMessageDispatcher</type>
-    	<implementation>info.magnolia.ui.framework.message.LocalMessageDispatcher</implementation>
-    </component>
+    <components>
+        <id>admin-central</id>
     <component>
       <type>info.magnolia.ui.admincentral.jcr.view.builder.JcrViewBuilderProvider</type>
       <workspace>config</workspace>
@@ -140,10 +136,6 @@
       <implementation>info.magnolia.ui.framework.location.LocationController</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.app.assets.AssetsApp</type>
-      <implementation>info.magnolia.ui.admincentral.app.assets.AssetsApp</implementation>
-    </component>
-    <component>
       <type>info.magnolia.ui.framework.shell.Shell</type>
       <implementation>info.magnolia.ui.admincentral.MagnoliaShell</implementation>
     </component>
@@ -176,10 +168,6 @@
       <implementation>info.magnolia.ui.admincentral.MagnoliaShellPresenter</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.app.assets.AssetsView</type>
-      <implementation>info.magnolia.ui.admincentral.app.assets.AssetsViewImpl</implementation>
-    </component>
-    <component>
       <type>info.magnolia.ui.admincentral.dialog.DialogPresenterFactory</type>
       <implementation>info.magnolia.ui.admincentral.dialog.DialogPresenterFactoryImpl</implementation>
     </component>
@@ -194,6 +182,18 @@
     <component>
       <type>info.magnolia.ui.admincentral.shellapp.pulse.PulseMessagesPresenter</type>
       <implementation>info.magnolia.ui.admincentral.shellapp.pulse.PulseMessagesPresenter</implementation>
+    </component>
+  </components>
+
+  <components>
+    <id>app-assets</id>
+    <component>
+      <type>info.magnolia.ui.admincentral.app.assets.AssetsMainSubApp</type>
+      <implementation>info.magnolia.ui.admincentral.app.assets.AssetsMainSubApp</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.app.assets.AssetsView</type>
+      <implementation>info.magnolia.ui.admincentral.app.assets.AssetsViewImpl</implementation>
     </component>
   </components>
 

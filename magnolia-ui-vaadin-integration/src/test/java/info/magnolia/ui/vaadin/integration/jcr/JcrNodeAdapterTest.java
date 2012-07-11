@@ -103,8 +103,24 @@ public class JcrNodeAdapterTest {
         Property property = adapter.getItemProperty(id);
 
         // THEN
-        assertEquals("", property.getValue());
-        assertNotSame(property, adapter.getItemProperty(id));
+        assertEquals(null, property);
+    }
+
+    @Test
+    public void testGetItemProperty_NewCreate() throws Exception {
+        // GIVEN
+        String nodeName = "nodeName";
+        String id = "propertyName";
+        Node node = session.getRootNode().addNode(nodeName);
+        JcrNodeAdapter adapter = new JcrNodeAdapter(node);
+
+        // WHEN
+        Property property = DefaultPropertyUtil.newDefaultProperty(id, null, "");
+        adapter.addItemProperty(id, property);
+
+        // THEN
+        assertEquals("", property.getValue().toString());
+        assertSame(property, adapter.getItemProperty(id));
     }
 
     @Test
@@ -135,8 +151,8 @@ public class JcrNodeAdapterTest {
         Node node = session.getRootNode().addNode(nodeName);
         JcrNodeAdapter adapter = new JcrNodeAdapter(node);
         //Get and modify property
-        Property propertyInitial = adapter.getItemProperty(id);
-        propertyInitial.setValue(value);
+        Property propertyInitial = DefaultPropertyUtil.newDefaultProperty(id, null, value);
+        adapter.addItemProperty(id, propertyInitial);
 
         // WHEN get property again
         Property property = adapter.getItemProperty(id);
@@ -154,9 +170,32 @@ public class JcrNodeAdapterTest {
         String id = "propertyName";
         String value = "value";
         Node node = session.getRootNode().addNode(nodeName);
+        node.setProperty(id, value);
         JcrNodeAdapter adapter = new JcrNodeAdapter(node);
         //Get property: add listener
         DefaultProperty propertyInitial = (DefaultProperty)adapter.getItemProperty(id);
+        //Modify property -->  add listener
+        propertyInitial.setValue(value);
+
+        // WHEN Modify property -->  add listener
+        propertyInitial.setValue(value);
+
+        // THEN
+        assertEquals(1, propertyInitial.getListeners(ValueChangeEvent.class).size());
+        assertEquals(true, propertyInitial.getListeners(ValueChangeEvent.class).contains(adapter));
+    }
+
+    @Test
+    public void testProperty_ListenerUniqueCreated() throws Exception {
+        // GIVEN
+        String nodeName = "nodeName";
+        String id = "propertyName";
+        String value = "value";
+        Node node = session.getRootNode().addNode(nodeName);
+        JcrNodeAdapter adapter = new JcrNodeAdapter(node);
+        //Get property: add listener
+        DefaultProperty propertyInitial = DefaultPropertyUtil.newDefaultProperty(id, null, value);
+        adapter.addItemProperty(id, propertyInitial);
         //Modify property -->  add listener
         propertyInitial.setValue(value);
 
@@ -175,9 +214,11 @@ public class JcrNodeAdapterTest {
         String nodeName = "nodeName";
         String id = "propertyName";
         Node node = session.getRootNode().addNode(nodeName);
+
         JcrNodeAdapter adapter = new JcrNodeAdapter(node);
         // Create a new property
-        DefaultProperty property = (DefaultProperty)adapter.getItemProperty(id);
+        DefaultProperty property = DefaultPropertyUtil.newDefaultProperty(id, null, "");
+        adapter.addItemProperty(id, property);
         assertNotNull(property);
 
         // WHEN
@@ -185,7 +226,7 @@ public class JcrNodeAdapterTest {
         boolean res = adapter.removeItemProperty(id);
 
         // THEN
-        assertEquals(false, res);
+        assertEquals(true, res);
         assertEquals(0, adapter.getItemPropertyIds().size());
     }
 
@@ -196,6 +237,7 @@ public class JcrNodeAdapterTest {
         String nodeName = "nodeName";
         String id = "propertyName";
         Node node = session.getRootNode().addNode(nodeName);
+        node.setProperty(id, "");
         JcrNodeAdapter adapter = new JcrNodeAdapter(node);
         // Create a new property
         DefaultProperty property = (DefaultProperty)adapter.getItemProperty(id);
@@ -219,6 +261,7 @@ public class JcrNodeAdapterTest {
         String id = "propertyName";
         String value = "value";
         Node node = session.getRootNode().addNode(nodeName);
+        node.setProperty(id, value);
         JcrNodeAdapter adapter = new JcrNodeAdapter(node);
         // Create a new property
         DefaultProperty property = (DefaultProperty)adapter.getItemProperty(id);
@@ -290,7 +333,8 @@ public class JcrNodeAdapterTest {
         Node node = session.getRootNode().addNode(nodeName);
         JcrNodeAdapter adapter = new JcrNodeAdapter(node);
         // Add a new property (Vaadin)
-        Property property = adapter.getItemProperty(id);
+        Property property = DefaultPropertyUtil.newDefaultProperty(id, null, "");
+        adapter.addItemProperty(id, property);
         property.setValue(value);
 
         // WHEN
@@ -352,7 +396,8 @@ public class JcrNodeAdapterTest {
         node.setProperty(id_2, value_2);
         JcrNodeAdapter adapter = new JcrNodeAdapter(node);
         // Create a new Vaadin property
-        Property newProperty = adapter.getItemProperty(id_3);
+        Property newProperty = DefaultPropertyUtil.newDefaultProperty(id_3, null, "");
+        adapter.addItemProperty(id_3, newProperty);
 
         // WHEN
         // Modify one JCR and Vaadin property.
@@ -370,6 +415,46 @@ public class JcrNodeAdapterTest {
         // The other JCR property should stay unmodified.
         assertEquals(value_2, res.getProperty(id_2).getString());
     }
+
+
+    @Test
+    public void testGetNode_MixedProperty_FlagSaveInfo_False() throws Exception {
+        // GIVEN
+        // Create a empty node
+        String nodeName = "nodeName";
+        String id_1 = "propertyName_1";
+        String value_1 = "value_1";
+        String id_2 = "propertyName_2";
+        String value_2 = "value_2";
+        String id_3 = "propertyName_3";
+        String value_3 = "value_3";
+        Node node = session.getRootNode().addNode(nodeName);
+        // Add two property (JCR)
+        node.setProperty(id_1, value_1);
+        node.setProperty(id_2, value_2);
+        JcrNodeAdapter adapter = new JcrNodeAdapter(node);
+        // Create a new Vaadin property
+        DefaultProperty newProperty = DefaultPropertyUtil.newDefaultProperty(id_3, null, "");
+        newProperty.setSaveInfo(false);
+        adapter.addItemProperty(id_3, newProperty);
+
+        // WHEN
+        // Modify one JCR and Vaadin property.
+        newProperty.setValue(value_3);
+        DefaultProperty jcrProperty = (DefaultProperty)adapter.getItemProperty(id_1);
+        jcrProperty.setValue(value_1+"_modifyed");
+        jcrProperty.setSaveInfo(false);
+        Node res = adapter.getNode();
+
+        // THEN
+        // Vaadin property should not be created
+        assertEquals(false, res.hasProperty(id_3));
+        // Modified property should stay unmodified.
+        assertEquals(value_1, res.getProperty(id_1).getString());
+        // The other JCR property should stay unmodified.
+        assertEquals(value_2, res.getProperty(id_2).getString());
+    }
+
 
     @Test
     public void testGetNode_ExistingPropertyRemoved() throws Exception {
@@ -422,8 +507,10 @@ public class JcrNodeAdapterTest {
         adapter.getItemProperty("id_1").setValue("value_1_Modify");
         adapter.getItemProperty("id_2").setValue("value_2_Modify");
         // Create two 2 Vaadin property
-        Property newProperty_1 = adapter.getItemProperty("id_4");
-        Property newProperty_2 = adapter.getItemProperty("id_5");
+        Property newProperty_1 = DefaultPropertyUtil.newDefaultProperty("id_4", null,"");
+        adapter.addItemProperty("id_4",newProperty_1);
+        Property newProperty_2 = DefaultPropertyUtil.newDefaultProperty("id_5", null,"");
+        adapter.addItemProperty("id_5",newProperty_2);
         // Modify two Vaadin property.
         newProperty_1.setValue("value_4");
         newProperty_2.setValue("value_5");
@@ -457,8 +544,12 @@ public class JcrNodeAdapterTest {
         Node node = session.getRootNode().addNode(nodeName);
         JcrNodeAdapter adapter = new JcrNodeAdapter(node);
         // Add two three property (Vaadin)
-        Property newProperty_1 = adapter.getItemProperty("id_4");
-        Property newProperty_2 = adapter.getItemProperty("id_5");
+        Property newProperty_1 = DefaultPropertyUtil.newDefaultProperty("id_4", null,"");
+        adapter.addItemProperty("id_4",newProperty_1);
+        Property newProperty_2 = DefaultPropertyUtil.newDefaultProperty("id_5", null,"");
+        adapter.addItemProperty("id_5",newProperty_2);
+
+
         adapter.getItemProperty("id_6");
         // Modify two Vaadin property.
         newProperty_1.setValue("value_4");

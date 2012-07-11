@@ -33,20 +33,20 @@
  */
 package info.magnolia.ui.app.messages;
 
-import info.magnolia.ui.framework.app.AppView;
 import info.magnolia.ui.framework.message.MessageType;
+import info.magnolia.ui.framework.view.View;
 
 /**
  * View for the Messages app.
  */
-public interface MessagesView extends AppView {
+public interface MessagesView extends View {
 
-    void setPresenter(Presenter presenter);
+    void setListener(Listener listener);
 
     /**
-     * Presenter interface for MessagesView.
+     * Listener interface for MessagesView.
      */
-    public interface Presenter {
+    public interface Listener {
 
         void handleLocalMessage(MessageType type, String subject, String message);
 

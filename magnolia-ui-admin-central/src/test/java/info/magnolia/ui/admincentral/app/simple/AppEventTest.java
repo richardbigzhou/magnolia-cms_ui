@@ -33,6 +33,12 @@
  */
 package info.magnolia.ui.admincentral.app.simple;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -42,8 +48,8 @@ import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.admincentral.app.simple.AppControllerImplTest.AppEventCollector;
 import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.app.AppLifecycleEventType;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
+import info.magnolia.ui.framework.app.AppLifecycleEventType;
 import info.magnolia.ui.framework.app.layout.AppCategory;
 import info.magnolia.ui.framework.app.layout.AppLayout;
 import info.magnolia.ui.framework.app.layout.AppLayoutImpl;
@@ -58,13 +64,6 @@ import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.message.MessagesManagerImpl;
 import info.magnolia.ui.framework.shell.Shell;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 /**
  * Test case for {@link info.magnolia.ui.framework.app.AppController} local App's event.
  */
@@ -77,7 +76,7 @@ public class AppEventTest {
     private String name = "app";
 
     @Before
-    public void setUp() throws Exception{
+    public void setUp() throws Exception {
         setAppLayoutManager();
         ModuleRegistryImpl moduleRegistry = new ModuleRegistryImpl();
         componentProvider = AppControllerImplTest.initComponentProvider();
@@ -92,27 +91,26 @@ public class AppEventTest {
     }
 
     @After
-    public void tearDown() throws Exception{
+    public void tearDown() throws Exception {
         componentProvider.destroy();
         //Reset the static fields
         AppTestImpl.appNumber = 0;
         AppTestImpl.res = new HashMap<String, Object>();
     }
 
-
     @Test
-    public void TestAppEventBus() {
+    public void testAppEventBus() {
 
         // GIVEN
-        String appName = name+"_name";
+        String appName = name + "_name";
         // Start an App that has the AppBuss injected and that also add a dumy handler
         appControler.startIfNotAlreadyRunningThenFocus(appName);
-            //Initial check
+        //Initial check
         assertEquals(2, eventCollector.appLifecycleEvent.size());
         AppControllerImplTest.checkAppEvent(eventCollector, appName, AppLifecycleEventType.STARTED, 0);
         AppControllerImplTest.checkAppEvent(eventCollector, appName, AppLifecycleEventType.FOCUSED, 1);
         assertEquals(true, AppTestImpl.res.containsKey("TestPageApp0"));
-        AppEventTestImpl pageApp = (AppEventTestImpl)AppTestImpl.res.get("TestPageApp0");
+        AppEventTestImpl pageApp = (AppEventTestImpl) AppTestImpl.res.get("TestPageApp0");
         EventBus bus = pageApp.eventBus;
         InvocationCountingTestEventHandler handler = pageApp.handler;
 
@@ -134,12 +132,11 @@ public class AppEventTest {
 
         // THEN
         assertEquals(true, AppTestImpl.res.containsKey("TestPageApp1"));
-        AppEventTestImpl pageApp1 = (AppEventTestImpl)AppTestImpl.res.get("TestPageApp1");
+        AppEventTestImpl pageApp1 = (AppEventTestImpl) AppTestImpl.res.get("TestPageApp1");
         // Check the number of invocation of the handler should stay 1
         assertEquals(1, handler.getInvocationCount());
         assertEquals(1, pageApp1.handler.getInvocationCount());
     }
-
 
     /**
      * Init a LayoutManager containing 1 category with one app.
@@ -152,9 +149,8 @@ public class AppEventTest {
         AppCategory cat = AppTestUtility.createAppCategory("cat", app);
         cat.addApp(app);
         Map<String, AppCategory> categories = new HashMap<String, AppCategory>();
-        categories.put("cat",cat);
+        categories.put("cat", cat);
         AppLayout appLayout = new AppLayoutImpl(categories);
         when(appLayoutManager.getLayout()).thenReturn(appLayout);
     }
-
 }

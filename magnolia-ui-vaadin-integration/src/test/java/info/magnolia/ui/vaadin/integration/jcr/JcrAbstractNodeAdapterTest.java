@@ -41,6 +41,7 @@ import info.magnolia.test.mock.jcr.MockSession;
 import java.util.Collection;
 
 import javax.jcr.Node;
+import javax.jcr.PropertyType;
 
 import org.junit.After;
 import org.junit.Before;
@@ -99,10 +100,25 @@ public class JcrAbstractNodeAdapterTest {
         final Property prop = item.getItemProperty(propertyName+"_1");
 
         // THEN
-        assertEquals("", prop.getValue());
+        assertEquals(true, prop == null);
     }
 
+    @Test
+    public void testGetItemProperty_NewProperty_Add() throws Exception {
+        // GIVEN
+        final Node underlyingNode = session.getRootNode().addNode("underlying");
+        final String propertyName = "TEST";
+        final String propertyValue = "value";
+        final AbstractNodeAdapterTest item = new AbstractNodeAdapterTest(underlyingNode);
+        Property property = DefaultPropertyUtil.newDefaultProperty(propertyName, PropertyType.TYPENAME_STRING, propertyValue);
+        item.addItemProperty(propertyName, property);
 
+        // WHEN
+        final Property prop = item.getItemProperty(propertyName);
+
+        // THEN
+        assertEquals(propertyValue, prop.getValue().toString());
+    }
 
     @Test
     public void testValueChangeEvent_PropertyExist() throws Exception {
@@ -130,8 +146,9 @@ public class JcrAbstractNodeAdapterTest {
         AbstractNodeAdapterTest item = new AbstractNodeAdapterTest(underlyingNode);
 
         // WHEN
-        Property nodePorperty = item.getItemProperty(propertyName);
-        nodePorperty.setValue("newValue");
+        Property itemPorperty = DefaultPropertyUtil.newDefaultProperty(propertyName, PropertyType.TYPENAME_STRING, propertyName);
+        item.addItemProperty(propertyName, itemPorperty);
+        itemPorperty.setValue("newValue");
 
         // THEN
         assertEquals("newValue", underlyingNode.getProperty(propertyName).getString());

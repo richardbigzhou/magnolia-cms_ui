@@ -34,9 +34,10 @@
 package info.magnolia.ui.admincentral.field.builder;
 
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.admincentral.field.DialogField;
 import info.magnolia.ui.admincentral.jcr.view.builder.DefinitionToImplementationMapping;
 import info.magnolia.ui.model.builder.FactoryBase;
-import info.magnolia.ui.model.field.definition.FieldTypeDefinition;
+import info.magnolia.ui.model.dialog.definition.FieldDefinition;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -48,9 +49,9 @@ import javax.inject.Inject;
  * FieldTypeProvider providing FieldType implementations using content to bean.
  *
  */
-public class FieldTypeProvider extends FactoryBase<FieldTypeDefinition, FieldType> implements Serializable {
+public class FieldTypeProvider extends FactoryBase<FieldDefinition, DialogField> implements Serializable {
 
-    private List<DefinitionToImplementationMapping<FieldTypeDefinition, FieldType>> definitionToImplementationMappings = new ArrayList<DefinitionToImplementationMapping<FieldTypeDefinition, FieldType>>();
+    private List<DefinitionToImplementationMapping<FieldDefinition, DialogField>> definitionToImplementationMappings = new ArrayList<DefinitionToImplementationMapping<FieldDefinition, DialogField>>();
 
     @Inject
     public FieldTypeProvider(ComponentProvider componentProvider) {
@@ -61,22 +62,23 @@ public class FieldTypeProvider extends FactoryBase<FieldTypeDefinition, FieldTyp
         super(null);
     }
 
-    public List<DefinitionToImplementationMapping<FieldTypeDefinition, FieldType>> getDefinitionToImplementationMappings() {
+    public List<DefinitionToImplementationMapping<FieldDefinition, DialogField>> getDefinitionToImplementationMappings() {
         return this.definitionToImplementationMappings;
     }
 
-    public void setDefinitionToImplementationMappings(List<DefinitionToImplementationMapping<FieldTypeDefinition, FieldType>> definitionToImplementationMappings) {
+    public void setDefinitionToImplementationMappings(List<DefinitionToImplementationMapping<FieldDefinition, DialogField>> definitionToImplementationMappings) {
         this.definitionToImplementationMappings = definitionToImplementationMappings;
-        for (DefinitionToImplementationMapping<FieldTypeDefinition, FieldType> definitionToImplementationMapping : definitionToImplementationMappings) {
+        for (DefinitionToImplementationMapping<FieldDefinition, DialogField> definitionToImplementationMapping : definitionToImplementationMappings) {
             addDefinitionToImplementationMapping(definitionToImplementationMapping);
         }
     }
 
-    public void addDefinitionToImplementationMapping(DefinitionToImplementationMapping<FieldTypeDefinition, FieldType> mapping) {
+    public void addDefinitionToImplementationMapping(DefinitionToImplementationMapping<FieldDefinition, DialogField> mapping) {
         addMapping(mapping.getDefinition(), mapping.getImplementation());
     }
 
-    public FieldType create(FieldTypeDefinition fieldTypeDefinition) {
-        return super.create(fieldTypeDefinition);
+    @Override
+    public DialogField create(FieldDefinition fieldTypeDefinition, Object... parameters) {
+        return super.create(fieldTypeDefinition, parameters);
     }
 }

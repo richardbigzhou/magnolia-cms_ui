@@ -40,6 +40,7 @@ import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.RepositoryTestCase;
 
 import javax.jcr.Node;
+import javax.jcr.PropertyType;
 import javax.jcr.Session;
 
 import org.apache.commons.io.IOUtils;
@@ -116,6 +117,10 @@ public class JcrNodeAdapterRepositoryTest extends RepositoryTestCase {
         property.setValue(value);
         // Get the template  as property
         Property propertyTemplate = adapter.getItemProperty("MetaData/template");
+        //This is a new Property, Create it first & attach it to the adapter
+        assertEquals(true, propertyTemplate == null);
+        propertyTemplate = DefaultPropertyUtil.newDefaultProperty("MetaData/template", PropertyType.TYPENAME_STRING, "");
+        adapter.addItemProperty("MetaData/template", propertyTemplate);
         assertEquals("", propertyTemplate.getValue().toString());
         //Change the property node name
         propertyTemplate.setValue("newTemplate");

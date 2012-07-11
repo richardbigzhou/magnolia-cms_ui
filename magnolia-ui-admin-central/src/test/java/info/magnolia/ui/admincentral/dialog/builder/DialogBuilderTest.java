@@ -36,26 +36,48 @@ package info.magnolia.ui.admincentral.dialog.builder;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import info.magnolia.context.MgnlContext;
+import info.magnolia.test.mock.MockContext;
+import info.magnolia.test.mock.jcr.MockSession;
+import info.magnolia.ui.admincentral.field.DialogEditField;
 import info.magnolia.ui.admincentral.field.builder.FieldTypeProvider;
-import info.magnolia.ui.admincentral.field.builder.TextFieldType;
 import info.magnolia.ui.model.dialog.definition.ConfiguredDialogDefinition;
 import info.magnolia.ui.model.dialog.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.model.dialog.definition.ConfiguredTabDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
+import info.magnolia.ui.model.dialog.definition.EditFieldDefinition;
 import info.magnolia.ui.model.dialog.definition.FieldDefinition;
 import info.magnolia.ui.model.dialog.definition.TabDefinition;
-import info.magnolia.ui.model.field.definition.FieldTypeDefinition;
-import info.magnolia.ui.model.field.definition.TextFieldTypeDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.widget.dialog.Dialog;
 import info.magnolia.ui.widget.dialog.DialogView;
 
-import org.junit.Test;
+import javax.jcr.Node;
 
-import com.vaadin.data.Item;
-import com.vaadin.data.Property;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
 public class DialogBuilderTest {
+
+    private String worksapceName = "workspace";
+    private MockSession session;
+
+
+    @Before
+    public void setUp() {
+        session = new MockSession(worksapceName);
+        MockContext ctx = new MockContext();
+        ctx.addSession(worksapceName, session);
+        MgnlContext.setInstance(ctx);
+    }
+
+    @After
+    public void tearDown() {
+        MgnlContext.setInstance(null);
+    }
+
 
     @Test
     public void testBuildingWithoutTabsAndActions() {
@@ -72,30 +94,32 @@ public class DialogBuilderTest {
     }
 
     @Test
-    public void testBuildingWithTabsAndActions() {
+    public void testBuildingWithTabsAndActions() throws Exception {
         // GIVEN
+        final String propertyName = "test";
         final DialogBuilder builder = new DialogBuilder();
         final DialogDefinition dialogDef = new ConfiguredDialogDefinition();
+        final EditFieldDefinition fieldTypeDef = new EditFieldDefinition();
+        fieldTypeDef.setName(propertyName);
 
-
-        final FieldTypeDefinition fieldTypeDef = new TextFieldTypeDefinition();
-
-        final FieldTypeProvider fieldTypeProvider = mock(FieldTypeProvider.class);
-        when(fieldTypeProvider.create(fieldTypeDef)).thenReturn(new TextFieldType(fieldTypeDef));
+        final Node underlyingNode = session.getRootNode().addNode("underlying");
+        final String propertyValue = "value";
+        underlyingNode.setProperty(propertyName, propertyValue);
+        final JcrNodeAdapter item = new JcrNodeAdapter(underlyingNode);
 
         final Dialog dialog = new Dialog();
         final TabDefinition tabDef = new ConfiguredTabDefinition();
         final FieldDefinition fieldDef = new ConfiguredFieldDefinition();
 
         fieldDef.setType(FieldDefinition.TEXT_FIELD_TYPE);
-        fieldDef.setFieldTypeDefinition(fieldTypeDef);
-        ((ConfiguredFieldDefinition) fieldDef).setName("test");
+        ((ConfiguredFieldDefinition) fieldDef).setName(propertyName);
         tabDef.addField(fieldDef);
         dialogDef.addTab(tabDef);
 
-        Item item = mock(Item.class);
-        Property prop = mock(Property.class);
-        when(item.getItemProperty("test")).thenReturn(prop);
+
+
+        final FieldTypeProvider fieldTypeProvider = mock(FieldTypeProvider.class);
+        when(fieldTypeProvider.create(fieldDef,fieldDef,item)).thenReturn(new DialogEditField(fieldTypeDef,item));
 
         // WHEN
         final DialogView result = builder.build(fieldTypeProvider, dialogDef, item, dialog);

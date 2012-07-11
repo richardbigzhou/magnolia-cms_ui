@@ -169,7 +169,7 @@
               <sv:value>true</sv:value>
             </sv:property>
             <sv:property sv:name="type" sv:type="String">
-              <sv:value>text</sv:value>
+              <sv:value>String</sv:value>
             </sv:property>
             <sv:node sv:name="MetaData">
               <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -185,7 +185,7 @@
                 <sv:value>2012-06-11T13:55:35.862+02:00</sv:value>
               </sv:property>
               <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-                <sv:value>2012-06-25T15:36:36.569+02:00</sv:value>
+                <sv:value>2012-07-10T16:31:36.161+02:00</sv:value>
               </sv:property>
             </sv:node>
             <sv:node sv:name="fieldTypeDefinition">
@@ -199,7 +199,7 @@
                 <sv:value>917f7c47-0dd4-4d9e-897a-ffd410acca19</sv:value>
               </sv:property>
               <sv:property sv:name="class" sv:type="String">
-                <sv:value>info.magnolia.ui.model.field.definition.TextFieldTypeDefinition</sv:value>
+                <sv:value>info.magnolia.ui.model.dialog.definition.EditFieldDefinition</sv:value>
               </sv:property>
               <sv:property sv:name="jcr:createdBy" sv:type="String">
                 <sv:value>admin</sv:value>
@@ -218,7 +218,7 @@
                   <sv:value>2012-06-27T13:59:17.227+02:00</sv:value>
                 </sv:property>
                 <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-                  <sv:value>2012-06-27T13:59:43.448+02:00</sv:value>
+                  <sv:value>2012-07-10T08:19:05.323+02:00</sv:value>
                 </sv:property>
               </sv:node>
             </sv:node>
@@ -243,7 +243,7 @@
               <sv:value>true</sv:value>
             </sv:property>
             <sv:property sv:name="type" sv:type="String">
-              <sv:value>text</sv:value>
+              <sv:value>String</sv:value>
             </sv:property>
             <sv:node sv:name="MetaData">
               <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -262,7 +262,7 @@
                 <sv:value>2012-06-11T13:55:35.862+02:00</sv:value>
               </sv:property>
               <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-                <sv:value>2012-06-27T10:56:16.895+02:00</sv:value>
+                <sv:value>2012-07-10T16:31:32.329+02:00</sv:value>
               </sv:property>
             </sv:node>
             <sv:node sv:name="fieldTypeDefinition">
@@ -276,7 +276,7 @@
                 <sv:value>ca28bd21-ea78-434e-9b49-f30d1eaf4e29</sv:value>
               </sv:property>
               <sv:property sv:name="class" sv:type="String">
-                <sv:value>info.magnolia.ui.model.field.definition.TextFieldTypeDefinition</sv:value>
+                <sv:value>info.magnolia.ui.model.dialog.definition.EditFieldDefinition</sv:value>
               </sv:property>
               <sv:property sv:name="jcr:createdBy" sv:type="String">
                 <sv:value>admin</sv:value>
@@ -298,7 +298,7 @@
                   <sv:value>2012-06-27T13:59:17.227+02:00</sv:value>
                 </sv:property>
                 <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-                  <sv:value>2012-06-27T14:59:26.689+02:00</sv:value>
+                  <sv:value>2012-07-10T08:19:11.355+02:00</sv:value>
                 </sv:property>
               </sv:node>
             </sv:node>
@@ -384,6 +384,9 @@
             <sv:property sv:name="jcr:uuid" sv:type="String">
               <sv:value>2ee61fdf-9ba7-44de-95f0-65eae5e19dc3</sv:value>
             </sv:property>
+            <sv:property sv:name="defaultValue" sv:type="String">
+              <sv:value>test@magnolia.com</sv:value>
+            </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
             </sv:property>
@@ -391,7 +394,7 @@
               <sv:value>email</sv:value>
             </sv:property>
             <sv:property sv:name="type" sv:type="String">
-              <sv:value>text</sv:value>
+              <sv:value>String</sv:value>
             </sv:property>
             <sv:node sv:name="MetaData">
               <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -407,7 +410,7 @@
                 <sv:value>2012-06-11T13:57:22.262+02:00</sv:value>
               </sv:property>
               <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-                <sv:value>2012-06-19T11:23:05.280+02:00</sv:value>
+                <sv:value>2012-07-10T16:32:32.833+02:00</sv:value>
               </sv:property>
             </sv:node>
             <sv:node sv:name="fieldTypeDefinition">
@@ -421,7 +424,7 @@
                 <sv:value>0b73e9e7-8802-4c8d-9f77-87d1d9f13a1b</sv:value>
               </sv:property>
               <sv:property sv:name="class" sv:type="String">
-                <sv:value>info.magnolia.ui.model.field.definition.TextFieldTypeDefinition</sv:value>
+                <sv:value>info.magnolia.ui.model.dialog.definition.EditFieldDefinition</sv:value>
               </sv:property>
               <sv:property sv:name="jcr:createdBy" sv:type="String">
                 <sv:value>admin</sv:value>
@@ -443,7 +446,7 @@
                   <sv:value>2012-06-27T13:59:17.227+02:00</sv:value>
                 </sv:property>
                 <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-                  <sv:value>2012-06-27T14:59:38.036+02:00</sv:value>
+                  <sv:value>2012-07-10T08:19:20.233+02:00</sv:value>
                 </sv:property>
               </sv:node>
             </sv:node>
@@ -594,8 +597,11 @@
             <sv:property sv:name="label" sv:type="String">
               <sv:value>Organization Name</sv:value>
             </sv:property>
+            <sv:property sv:name="saveInfo" sv:type="Boolean">
+              <sv:value>false</sv:value>
+            </sv:property>
             <sv:property sv:name="type" sv:type="String">
-              <sv:value>text</sv:value>
+              <sv:value>String</sv:value>
             </sv:property>
             <sv:node sv:name="MetaData">
               <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -614,7 +620,7 @@
                 <sv:value>2012-06-11T13:55:35.862+02:00</sv:value>
               </sv:property>
               <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-                <sv:value>2012-06-19T11:23:05.282+02:00</sv:value>
+                <sv:value>2012-07-10T16:33:41.010+02:00</sv:value>
               </sv:property>
             </sv:node>
             <sv:node sv:name="fieldTypeDefinition">
@@ -628,7 +634,7 @@
                 <sv:value>6c5ef7ef-c726-418b-953f-03355f66ccb2</sv:value>
               </sv:property>
               <sv:property sv:name="class" sv:type="String">
-                <sv:value>info.magnolia.ui.model.field.definition.TextFieldTypeDefinition</sv:value>
+                <sv:value>info.magnolia.ui.model.dialog.definition.EditFieldDefinition</sv:value>
               </sv:property>
               <sv:property sv:name="jcr:createdBy" sv:type="String">
                 <sv:value>admin</sv:value>
@@ -650,7 +656,7 @@
                   <sv:value>2012-06-27T13:59:17.227+02:00</sv:value>
                 </sv:property>
                 <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-                  <sv:value>2012-06-27T15:00:21.222+02:00</sv:value>
+                  <sv:value>2012-07-10T08:19:28.205+02:00</sv:value>
                 </sv:property>
               </sv:node>
             </sv:node>
@@ -672,7 +678,7 @@
               <sv:value>City</sv:value>
             </sv:property>
             <sv:property sv:name="type" sv:type="String">
-              <sv:value>text</sv:value>
+              <sv:value>String</sv:value>
             </sv:property>
             <sv:node sv:name="MetaData">
               <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -691,7 +697,7 @@
                 <sv:value>2012-06-11T13:55:35.862+02:00</sv:value>
               </sv:property>
               <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-                <sv:value>2012-06-19T11:23:05.282+02:00</sv:value>
+                <sv:value>2012-07-10T16:31:13.233+02:00</sv:value>
               </sv:property>
             </sv:node>
             <sv:node sv:name="fieldTypeDefinition">
@@ -705,7 +711,7 @@
                 <sv:value>394a213d-552e-4ab3-b527-b229c1ef3934</sv:value>
               </sv:property>
               <sv:property sv:name="class" sv:type="String">
-                <sv:value>info.magnolia.ui.model.field.definition.TextFieldTypeDefinition</sv:value>
+                <sv:value>info.magnolia.ui.model.dialog.definition.EditFieldDefinition</sv:value>
               </sv:property>
               <sv:property sv:name="jcr:createdBy" sv:type="String">
                 <sv:value>admin</sv:value>
@@ -727,7 +733,7 @@
                   <sv:value>2012-06-27T13:59:17.227+02:00</sv:value>
                 </sv:property>
                 <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-                  <sv:value>2012-06-27T15:00:47.542+02:00</sv:value>
+                  <sv:value>2012-07-10T08:19:33.166+02:00</sv:value>
                 </sv:property>
               </sv:node>
             </sv:node>
@@ -749,7 +755,7 @@
               <sv:value>Zip</sv:value>
             </sv:property>
             <sv:property sv:name="type" sv:type="String">
-              <sv:value>text</sv:value>
+              <sv:value>String</sv:value>
             </sv:property>
             <sv:node sv:name="MetaData">
               <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -768,7 +774,7 @@
                 <sv:value>2012-06-11T13:55:35.862+02:00</sv:value>
               </sv:property>
               <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-                <sv:value>2012-06-19T11:23:05.283+02:00</sv:value>
+                <sv:value>2012-07-10T16:31:17.024+02:00</sv:value>
               </sv:property>
             </sv:node>
             <sv:node sv:name="fieldTypeDefinition">
@@ -782,7 +788,7 @@
                 <sv:value>07959cf1-7e23-45f9-8259-5a7a485ec1bb</sv:value>
               </sv:property>
               <sv:property sv:name="class" sv:type="String">
-                <sv:value>info.magnolia.ui.model.field.definition.TextFieldTypeDefinition</sv:value>
+                <sv:value>info.magnolia.ui.model.dialog.definition.EditFieldDefinition</sv:value>
               </sv:property>
               <sv:property sv:name="jcr:createdBy" sv:type="String">
                 <sv:value>admin</sv:value>
@@ -804,7 +810,7 @@
                   <sv:value>2012-06-27T13:59:17.227+02:00</sv:value>
                 </sv:property>
                 <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-                  <sv:value>2012-06-27T15:00:51.925+02:00</sv:value>
+                  <sv:value>2012-07-10T08:19:39.420+02:00</sv:value>
                 </sv:property>
               </sv:node>
             </sv:node>
@@ -903,7 +909,7 @@
               <sv:value>Street</sv:value>
             </sv:property>
             <sv:property sv:name="type" sv:type="String">
-              <sv:value>text</sv:value>
+              <sv:value>String</sv:value>
             </sv:property>
             <sv:node sv:name="MetaData">
               <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -919,7 +925,7 @@
                 <sv:value>2012-06-11T13:59:40.335+02:00</sv:value>
               </sv:property>
               <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-                <sv:value>2012-06-19T11:23:05.283+02:00</sv:value>
+                <sv:value>2012-07-10T16:31:22.192+02:00</sv:value>
               </sv:property>
             </sv:node>
             <sv:node sv:name="fieldTypeDefinition">
@@ -933,7 +939,7 @@
                 <sv:value>74741454-e58b-4991-8d91-1ff32aba599b</sv:value>
               </sv:property>
               <sv:property sv:name="class" sv:type="String">
-                <sv:value>info.magnolia.ui.model.field.definition.TextFieldTypeDefinition</sv:value>
+                <sv:value>info.magnolia.ui.model.dialog.definition.EditFieldDefinition</sv:value>
               </sv:property>
               <sv:property sv:name="jcr:createdBy" sv:type="String">
                 <sv:value>admin</sv:value>
@@ -955,7 +961,7 @@
                   <sv:value>2012-06-27T13:59:17.227+02:00</sv:value>
                 </sv:property>
                 <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-                  <sv:value>2012-06-27T15:00:55.459+02:00</sv:value>
+                  <sv:value>2012-07-10T08:19:43.456+02:00</sv:value>
                 </sv:property>
               </sv:node>
             </sv:node>

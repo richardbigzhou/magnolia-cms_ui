@@ -73,7 +73,6 @@ public class ConfiguredAppDescriptorManagerTest {
     private AppDescriptorRegistry appRegistry;
     private Session session;
 
-
     @SuppressWarnings("deprecation")
     @Before
     public void setUp() throws Exception {
@@ -108,7 +107,7 @@ public class ConfiguredAppDescriptorManagerTest {
     }
 
     @Test
-    public void TestAppDescriptorOnStart() throws RegistrationException {
+    public void testAppDescriptorOnStart() throws RegistrationException {
         // GIVEN
         ConfiguredAppDescriptorManager addDescriptorManager = new ConfiguredAppDescriptorManager(moduleRegistry, appRegistry);
 
@@ -128,9 +127,8 @@ public class ConfiguredAppDescriptorManagerTest {
 
     }
 
-
     @Test
-    public void TestAppDescriptorReloadsOnChange() throws RepositoryException, RegistrationException, InterruptedException {
+    public void testAppDescriptorReloadsOnChange() throws RepositoryException, RegistrationException, InterruptedException {
         // GIVEN
         MockObservationManager observationManager = (MockObservationManager) session.getWorkspace().getObservationManager();
         ConfiguredAppDescriptorManager addDescriptorManager = new ConfiguredAppDescriptorManager(moduleRegistry, appRegistry);

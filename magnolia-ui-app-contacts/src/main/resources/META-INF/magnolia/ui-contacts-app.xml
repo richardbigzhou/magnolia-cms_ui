@@ -13,11 +13,15 @@
 	     in the apps configuration repository of the admin central. (config/module/apps/appname/name:appname) -->
    <components>
     <id>app-contacts</id>
-    <component>
+     <component>
+       <type>info.magnolia.ui.app.contacts.ContactsMainSubApp</type>
+       <implementation>info.magnolia.ui.app.contacts.ContactsMainSubApp</implementation>
+     </component>
+     <component>
       <type>info.magnolia.ui.app.contacts.ContactsView</type>
       <implementation>info.magnolia.ui.app.contacts.ContactsViewImpl</implementation>
     </component>
-        <component>
+    <component>
       <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchView</type>
       <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbenchViewImpl</implementation>
     </component>
