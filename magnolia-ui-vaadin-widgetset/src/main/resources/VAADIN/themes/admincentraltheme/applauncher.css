@@ -1,82 +1,170 @@
-/*APP LAUNCHER RELATED STYLES*/
-.v-csslayout-app-list > .v-csslayout-margin {
-    padding-top: 30px;
-    padding-bottom: 25px;
-}
-
-.app-launcher {
-    min-width: 350px;
-    max-width: 600px;
-}
-
-.app-launcher > .v-csslayout-margin .app-list:FIRST-CHILD {
-    border: 0;
-}
-
 .app-list {
-    border-top: 2px solid #689611;
-}
-
-.app-list.edit {
-    border: none;
-}
-
-.app-list .item {
-    border-radius: 3px 3px 3px 3px;
-    color: white;
-    background: none; /* added to shared */
-    border: none; /* added to shared */
-    cursor: pointer;
-    float: left;
-    font-size: 12px;
-    margin: 0 0 0 20px;
-    padding: 5px;
-    text-align: center;
-    width: 80px;
-    height: 82px;
-}
-
-.app-list .v-label {
-    margin-bottom: 10px;
-    line-height: 1.4;
-}
-
-.app-list .item > span {
+	clear: both;
     display: block;
+    margin-top: 20px;
+    overflow: visible;
 }
 
-.app-list .v-nativebutton > .v-icon {
-    margin-right: 0 !important;
-    margin-left: 3px !important;
+.v-app-launcher {
+    color: #444444;
+    font-family: sans-serif;
+    font-size: 13px;
+    margin-top: 100px;
 }
 
-.app-list .item:first-of-type {
-    margin-left: 0;
-}
-
-.app-list .item:hover {
-    background-color: #AABF2F;
+.item {
+    background: none repeat scroll 0 0 #689600;
     color: white;
-    text-decoration: none;
+    cursor: pointer;
+    display: inline-block;
+    float: left;
+    font-family: DinRound;
+    font-size: 12px;
+    height: 78px;
+    margin: 0 2px 2px 0;
+    overflow: visible;
+    position: relative;
+    text-align: center;
+    width: 78px;
 }
 
-.app-list .app-group-title {
-    color: #557722;
-    font-size: 18px;
-    font-weight: normal;
-    text-transform: uppercase;
+.app-list .item .icon {
+    font-size: 36px;
+    margin-top: 7px;
+}
+
+.app-list .item:not(.section) .label {
+    bottom: 8px;
+    left: 0;
+    margin-left: auto;
+    margin-right: auto;
+    position: absolute;
+    right: 0;
+}
+
+.clearfix:before, .clearfix:after { content: ""; display: table; }
+.clearfix:after { clear: both; }
+.clearfix { *zoom: 1; }
+
+.item.anim-turn-in {
+    -moz-animation-duration: 0.2s;
+    -moz-animation-name: anim-turn-in;
+    -moz-transform: rotatey(0deg);
+    -moz-transform-origin: left center;
+}
+.item.anim-turn-in-off {
+    -moz-animation-duration: 0.2s;
+    -moz-animation-name: anim-turn-in-off;
+    -moz-transform: rotatey(90deg);
+    -moz-transform-origin: left center;
+}
+
+.item.section {
+    cursor: default;
+    font-size: 14px;
     text-align: left;
 }
 
-.v-appbutton {
-    position: relative;
-    text-align: center;
+.item.section .label {
+    padding-left: 10px;
+    padding-top: 10px;
 }
 
-.v-appbutton .divet {
+.app-list.sections {
+    bottom: 60px;
     position: absolute;
-    height: 9px;
-    width: 9px;
-    left: 37px;
-    background: url("img/style-app-running.png") no-repeat scroll center bottom transparent;
+}
+
+.app-list.temporary {
+    bottom: 140px;
+    position: absolute;
+}
+
+.item.section.closed {
+	background-image: url("img/applauncher/style-appslauncher-group-triangle-closed.png");
+    background-position: left center;
+    background-repeat: no-repeat;	
+}
+
+.item.section.open {
+	background-image: url("img/applauncher/style-appslauncher-group-triangle-open.png");
+    background-position: bottom center;
+    background-repeat: no-repeat;	
+}
+
+@-moz-keyframes anim-turn-in {
+    0% {
+        -moz-transform:rotateY(-90deg);
+        opacity:0;
+    }
+    50%{
+        opacity:1.0;
+    }
+    100%{
+       -moz-transform:rotateY(0deg);
+
+    }
+}
+
+@-webkit-keyframes anim-turn-in {
+    0% {
+      -webkit-transform:rotateY(-90deg);
+      opacity:0;
+    }
+    50%{
+        opacity:1;
+    }
+    100% {
+       -webkit-transform:rotateY(0deg);
+    }
+}
+
+/* Animation for tiles */
+.app-list{
+    -moz-perspective:500px;
+    -webkit-perspective:500px;
+}
+
+.item.anim-turn-in-off {
+    -moz-animation-duration: 0.2s;
+    /*-moz-animation-timing-function: ease-out;*/
+    -moz-animation-name: anim-turn-in-off;
+    -moz-transform-origin:left;
+    -moz-transform:rotateY(90deg);
+
+    -webkit-animation-duration: 0.2s;
+    /*-webkit-animation-timing-function: ease-out;*/
+    -webkit-animation-name: anim-turn-in-off;
+    -webkit-transform-origin:left;
+    -webkit-transform:rotateY(90deg);
+}
+
+
+@-moz-keyframes anim-turn-in-off {
+    100% {
+        -moz-transform:rotateY(-90deg);
+        opacity:0;
+    }
+    50%{
+       opacity:1.0;
+    }
+    0%{
+        opacity:1.0;
+       -moz-transform:rotateY(0deg);
+
+    }
+}
+
+@-webkit-keyframes anim-turn-in-off {
+    100% {
+      -webkit-transform:rotateY(-90deg);
+      opacity:0;
+    }
+    50%{
+        opacity:1;
+    }
+    0% {
+       -webkit-transform:rotateY(0deg);
+       opacity:1;
+    }
 }
