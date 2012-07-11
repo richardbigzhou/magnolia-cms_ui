@@ -38,6 +38,8 @@ import com.google.gwt.dom.client.Node;
 import info.magnolia.ui.widget.editor.gwt.client.VPageEditor;
 import info.magnolia.ui.widget.editor.gwt.client.dom.CMSComment;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
+import info.magnolia.ui.widget.editor.gwt.client.model.Model;
+import info.magnolia.ui.widget.editor.gwt.client.model.focus.FocusModel;
 import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.PageBar;
 
 /**
@@ -45,7 +47,7 @@ import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.PageBar;
  */
 public class CommentProcessor {
 
-    public static MgnlElement process (Node node, MgnlElement mgnlElement) throws Exception {
+    public static MgnlElement process(Model model, FocusModel focusModel, Node node, MgnlElement mgnlElement) throws Exception {
 
         CMSComment comment = CMSComment.as(node);
 
@@ -56,7 +58,7 @@ public class CommentProcessor {
 
             if ("cms:page".equals(comment.getTagName())) {
                 GWT.log("element was detected as page edit bar. Injecting it...");
-                PageBar pageBarWidget = new PageBar(node.getOwnerDocument(), comment);
+                PageBar pageBarWidget = new PageBar(model, focusModel, node.getOwnerDocument(), comment);
                 pageBarWidget.attach();
 
                 if (VPageEditor.isPreview()) {
@@ -69,7 +71,7 @@ public class CommentProcessor {
                     mgnlElement = new MgnlElement(comment, mgnlElement);
 
                     if (mgnlElement.getParent() == null) {
-                        VPageEditor.getModel().addRoot(mgnlElement);
+                        model.addRoot(mgnlElement);
                     } else {
                         mgnlElement.getParent().getChildren().add(mgnlElement);
                     }

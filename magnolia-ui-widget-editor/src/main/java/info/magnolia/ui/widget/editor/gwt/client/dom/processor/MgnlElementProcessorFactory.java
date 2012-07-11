@@ -34,20 +34,21 @@
 package info.magnolia.ui.widget.editor.gwt.client.dom.processor;
 
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
+import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 
 /**
  * Factory Class for MgnlElement processors.
  */
 public class MgnlElementProcessorFactory {
 
-    public static MgnlElementProcessor getProcessor(MgnlElement mgnlElement) throws IllegalArgumentException {
+    public static MgnlElementProcessor getProcessor(Model model, MgnlElement mgnlElement) throws IllegalArgumentException {
         MgnlElementProcessor processor;
 
         if (mgnlElement.isArea()) {
-            processor = new AreaProcessor(mgnlElement);
+            processor = new AreaProcessor(model, mgnlElement);
         }
         else if (mgnlElement.isComponent()) {
-            processor = new ComponentProcessor(mgnlElement);
+            processor = new ComponentProcessor(model, mgnlElement);
         }
         else {
             throw new IllegalArgumentException("mgnlElement is not a Area nor Component");

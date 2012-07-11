@@ -52,7 +52,8 @@ import com.google.gwt.user.client.ui.MenuItem;
 import info.magnolia.ui.widget.editor.gwt.client.VPageEditor;
 import info.magnolia.ui.widget.editor.gwt.client.dom.CMSComment;
 import info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils;
-import info.magnolia.ui.widget.editor.gwt.client.model.ModelStorage;
+import info.magnolia.ui.widget.editor.gwt.client.model.Model;
+import info.magnolia.ui.widget.editor.gwt.client.model.focus.FocusModel;
 import info.magnolia.ui.widget.editor.gwt.client.widget.PreviewChannel.Orientation;
 import info.magnolia.ui.widget.editor.gwt.client.widget.button.LocaleSelector;
 import info.magnolia.ui.widget.editor.gwt.client.widget.button.PreviewButton;
@@ -66,7 +67,7 @@ import static info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils.get
 
 /**
  * Page bar. The HTML output by this widget contains an empty <code>span</code> element with an id called <code>mgnlEditorMainbarPlaceholder</code> as a convenience which can be used by other modules to inject
- * their own DOM elements into the main bar, <strong>once the page editor is loaded (see {@link PageEditor} and <code>mgnl.PageEditor.onReady(..)</code>)</strong>.
+ * their own DOM elements into the main bar, <strong>once the page editor is loaded (see {@link VPageEditor} and <code>mgnl.PageEditor.onReady(..)</code>)</strong>.
  * <p>I.e., assuming usage of jQuery, a module's own javascript could do something like this
  * <p>
  * {@code
@@ -86,10 +87,14 @@ public class PageBar extends AbstractBar {
     private Map<String,String> availableLocales = new HashMap<String, String>();
     private FlowPanel mainBarWrapper;
 
+    private Model model;
+    private final FocusModel focusModel;
     private Document document;
 
-    public PageBar(final Document document, final CMSComment comment) {
-        super(null);
+    public PageBar(Model model, final FocusModel focusModel, final Document document, final CMSComment comment) {
+        super(model, null);
+        this.model = model;
+        this.focusModel = focusModel;
         this.document = document;
 
         String content = comment.getAttribute("content");
@@ -129,7 +134,7 @@ public class PageBar extends AbstractBar {
         addDomHandler(new MouseDownHandler() {
             @Override
             public void onMouseDown(MouseDownEvent event) {
-                ModelStorage.getInstance().getFocusModel().toggleRootAreaBar(true);
+                focusModel.toggleRootAreaBar(true);
                 event.stopPropagation();
             }
         }, MouseDownEvent.getType());
@@ -256,4 +261,9 @@ public class PageBar extends AbstractBar {
             //VPageEditor.createChannelPreview("tablet", orientation);
         }
     }
+
+    public Model getModel() {
+        return model;
+    }
+
 }

@@ -36,22 +36,22 @@ package info.magnolia.ui.widget.editor.gwt.client.dom.processor;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import info.magnolia.rendering.template.AreaDefinition;
-import info.magnolia.ui.widget.editor.gwt.client.VPageEditor;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
+import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 
 /**
  * Processor for DOM elements.
  */
 public class ElementProcessor {
 
-    public static void process(Node node, MgnlElement mgnlElement) {
+    public static void process(Model model, Node node, MgnlElement mgnlElement) {
 
         Element element = node.cast();
         if (element.hasTagName("A")) {
             disableLink(element);
             removeHover(element);
         }
-        VPageEditor.getModel().addElement(mgnlElement, element);
+        model.addElement(mgnlElement, element);
 
         if (element.hasAttribute(AreaDefinition.CMS_ADD)) {
             mgnlElement.setComponentElement(element);

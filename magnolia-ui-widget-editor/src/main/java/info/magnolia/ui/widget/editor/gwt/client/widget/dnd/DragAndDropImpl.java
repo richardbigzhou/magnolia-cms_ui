@@ -43,8 +43,8 @@ import com.google.gwt.event.dom.client.DragStartEvent;
 import com.google.gwt.event.dom.client.DragStartHandler;
 import com.google.gwt.event.dom.client.DropEvent;
 import com.google.gwt.event.dom.client.DropHandler;
-import info.magnolia.ui.widget.editor.gwt.client.VPageEditor;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
+import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.ComponentBar;
 import info.magnolia.ui.widget.editor.gwt.client.widget.placeholder.ComponentPlaceHolder;
 
@@ -55,7 +55,10 @@ import static info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils.mov
  */
 public class DragAndDropImpl {
 
-    public void dragAndDrop (final ComponentBar bar) {
+    private Model model;
+
+    public void dragAndDrop (Model model, final ComponentBar bar) {
+        this.model = model;
 
         bar.setDraggable(true);
         bar.addDomHandler(new DragStartHandler() {
@@ -68,12 +71,12 @@ public class DragAndDropImpl {
                 MgnlElement area = bar.getMgnlElement().getParentArea();
                 if (area != null) {
                     for (MgnlElement component : area.getComponents()) {
-                        ComponentBar componentBar = (ComponentBar) VPageEditor.getModel().getEditBar(component);
+                        ComponentBar componentBar = (ComponentBar) getModel().getEditBar(component);
                         if (componentBar != null && componentBar != bar) {
                             componentBar.setStyleName("moveTarget", true);
                         }
                     }
-                    ComponentPlaceHolder placeholder = VPageEditor.getModel().getComponentPlaceHolder(area);
+                    ComponentPlaceHolder placeholder = getModel().getComponentPlaceHolder(area);
                     if (placeholder != null) {
                         placeholder.setStyleName("moveOngoing", true);
                     }
@@ -97,12 +100,12 @@ public class DragAndDropImpl {
                 MgnlElement area = bar.getMgnlElement().getParentArea();
                 if (area != null) {
                     for (MgnlElement component : area.getComponents()) {
-                        ComponentBar componentBar = (ComponentBar) VPageEditor.getModel().getEditBar(component);
+                        ComponentBar componentBar = (ComponentBar) getModel().getEditBar(component);
                         if (componentBar != null && componentBar != bar) {
                             componentBar.setStyleName("moveTarget", false);
                         }
                     }
-                    ComponentPlaceHolder placeholder = VPageEditor.getModel().getComponentPlaceHolder(area);
+                    ComponentPlaceHolder placeholder = getModel().getComponentPlaceHolder(area);
                     if (placeholder != null) {
                         placeholder.setStyleName("moveOngoing", false);
                     }
@@ -166,5 +169,9 @@ public class DragAndDropImpl {
             }
         }, DropEvent.getType());
 
+    }
+
+    public Model getModel() {
+        return model;
     }
 }

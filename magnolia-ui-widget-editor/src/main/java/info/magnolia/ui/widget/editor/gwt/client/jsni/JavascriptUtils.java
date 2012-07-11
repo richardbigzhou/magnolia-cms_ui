@@ -41,10 +41,7 @@ import com.google.gwt.dom.client.MetaElement;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.http.client.UrlBuilder;
 import com.google.gwt.i18n.client.Dictionary;
-import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
-import info.magnolia.ui.widget.editor.gwt.client.VPageEditor;
-import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 
 /**
  * A JSNI wrapper around native javascript functions found in general.js, inline.js and others plus some utilities.
@@ -189,7 +186,7 @@ public final class JavascriptUtils {
      * the GWT module is unloaded and then reloaded, we need a clean slate when accessing cookies on a given page to avoid weird
      * behaviour, i.e. page scrolling to last saved position when you come back to it after having been on a different page.
      */
-    public static void resetEditorCookies() {
+/*    public static void resetEditorCookies() {
         for(String cookie : Cookies.getCookieNames()) {
             if(cookie.startsWith(EDITOR_COOKIE_NAMESPACE) && !(getEditorContentIdUniqueCookieName().equals(cookie)
                     || getEditorPositionUniqueCookieName().equals(cookie))) {
@@ -245,5 +242,5 @@ public final class JavascriptUtils {
 
     public static void removeEditorPositionCookie() {
         Cookies.removeCookie(getEditorPositionUniqueCookieName(), EDITOR_COOKIE_PATH);
-    }
+    }*/
 }
