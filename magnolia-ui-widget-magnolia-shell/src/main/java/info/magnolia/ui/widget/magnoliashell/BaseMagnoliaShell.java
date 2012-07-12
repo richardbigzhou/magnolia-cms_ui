@@ -281,7 +281,11 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
         getAppViewport().pop();
     }
     
-    protected ICEPush getPusher() {
+    /**
+     * FIXME: public for test purposes only. Reduce visibility asap!!!
+     * @return
+     */
+    public ICEPush getPusher() {
         return pusher; 
     }
 }

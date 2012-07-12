@@ -41,9 +41,7 @@ import info.magnolia.ui.admincentral.event.ContentChangedEvent;
 import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
@@ -80,7 +78,7 @@ import java.util.Map;
  * workspace to connect to, the columns/properties to display, the available actions and so on.
  */
 @SuppressWarnings("serial")
-public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView.Presenter {
+public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView.Listener {
 
     private static final Logger log = LoggerFactory.getLogger(ContentWorkbench.class);
 
@@ -107,7 +105,7 @@ public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView
         this.eventBus = eventbus;
         this.shell = shell;
         this.actionFactory = actionFactory;
-        view.setPresenter(this);
+        view.setListener(this);
 
         eventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
 
@@ -148,11 +146,6 @@ public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView
         } catch (Exception e) {
             shell.showError("An error occurred while selecting a row in the data grid", e);
         }
-    }
-
-    @Override
-    public void onOpenNewView(SubApp subApp, Location location) {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override

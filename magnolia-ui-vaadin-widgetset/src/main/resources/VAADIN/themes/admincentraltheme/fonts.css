@@ -1,0 +1,63 @@
+@font-face {
+	font-family: 'IcoMoon';
+	src: url('fonts/IcoMoon.eot');
+	src: url('fonts/IcoMoon.eot?#iefix') format('embedded-opentype'),
+		url('fonts/IcoMoon.svg#IcoMoon') format('svg'),
+		url('fonts/IcoMoon.woff') format('woff'),
+		url('fonts/IcoMoon.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+/* Use the following CSS code if you want to use data attributes for inserting your icons */
+[data-icon]:before {
+	font-family: 'IcoMoon';
+	content: attr(data-icon);
+	speak: none;
+}
+
+/* Use the following CSS code if you want to have a class per icon */
+[class^="icon-"]:before, [class*=" icon-"]:before {
+	font-family: 'IcoMoon';
+	font-style: normal;
+	speak: none;
+}
+.icon-assets:before {
+	content: "\26";
+}
+.icon-companies:before {
+	content: "\27";
+}
+.icon-configuration:before {
+	content: "\25";
+}
+.icon-contacts:before {
+	content: "\24";
+}
+.icon-news:before {
+	content: "\21";
+}
+.icon-pages:before {
+	content: "\23";
+}
+.icon-templates:before {
+	content: "\22";
+}
+.icon-content:before {
+	content: "\28";
+}
+.icon-tools:before {
+	content: "\29";
+}
+.icon-backup:before {
+	content: "\2a";
+}
+.icon-packager:before {
+	content: "\2b";
+}
+.icon-content-app:before {
+	content: "\2c";
+}
+.icon-security:before {
+	content: "\2d";
+}

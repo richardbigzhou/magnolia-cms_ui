@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,18 +31,32 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.workbench.action;
+package info.magnolia.ui.vaadin.integration.widget.client.applauncher;
 
-import info.magnolia.ui.admincentral.workbench.ContentWorkbenchView;
-import info.magnolia.ui.model.action.Action;
-import info.magnolia.ui.model.action.ActionDefinition;
-
-import javax.jcr.Item;
+import com.google.gwt.user.client.ui.IsWidget;
 
 /**
- * Creates an action based on an {@link ActionDefinition}.
+ * Viw interface of client side AppLauncher.
+ * 
  */
-public interface WorkbenchActionFactory {
+public interface VAppLauncherView extends IsWidget {
 
-    Action createAction(final ActionDefinition actionDefinition, final Item item, final ContentWorkbenchView.Listener presenter);
+    void addPermanentAppGroup(String caption, String color);
+
+    void addTemporaryAppGroup(String caption, String color);
+
+    void addAppThumbnail(String caption, String iconStyle, String categoryId);
+
+    void setPresenter(Presenter presenter);
+    
+    void setAppActive(String appName, boolean isActive);
+    
+    /**
+     * Presenter for the AppLauncher view. 
+     */
+    interface Presenter {
+
+        void activateApp(String appId);
+
+    }
 }

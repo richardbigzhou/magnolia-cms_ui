@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2010-2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,18 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.workbench.action;
-
-import info.magnolia.ui.admincentral.workbench.ContentWorkbenchView;
-import info.magnolia.ui.model.action.Action;
-import info.magnolia.ui.model.action.ActionDefinition;
-
-import javax.jcr.Item;
+package info.magnolia.ui.admincentral.jcr.view.builder;
 
 /**
- * Creates an action based on an {@link ActionDefinition}.
+ * Provides a ContentViewBuilder.
+ *
+ * TODO: check whether this type should go to ui-model layer.
  */
-public interface WorkbenchActionFactory {
+public interface ContentViewBuilderProvider {
 
-    Action createAction(final ActionDefinition actionDefinition, final Item item, final ContentWorkbenchView.Listener presenter);
+    ContentViewBuilder getBuilder();
 }

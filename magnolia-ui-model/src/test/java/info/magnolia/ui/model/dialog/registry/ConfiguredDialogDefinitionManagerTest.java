@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.registry;
+package info.magnolia.ui.model.dialog.registry;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -41,7 +41,6 @@ import static org.mockito.Mockito.when;
 import info.magnolia.content2bean.Content2BeanProcessor;
 import info.magnolia.content2bean.impl.Content2BeanProcessorImpl;
 import info.magnolia.content2bean.impl.TypeMappingImpl;
-import info.magnolia.context.MgnlContext;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.repository.RepositoryConstants;
@@ -50,40 +49,38 @@ import info.magnolia.test.mock.MockUtil;
 import info.magnolia.test.mock.jcr.MockEvent;
 import info.magnolia.test.mock.jcr.MockObservationManager;
 import info.magnolia.test.mock.jcr.SessionTestUtil;
-import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.event.SimpleSystemEventBus;
-import info.magnolia.ui.framework.event.SystemEventBus;
+import info.magnolia.ui.model.dialog.definition.ConfiguredDialogDefinition;
+import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.UnsupportedRepositoryOperationException;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+
 /**
- * Test case for {@link ConfiguredAppDescriptorManager}.
+ * Tests for the dialog definition manager.
  */
-public class ConfiguredAppDescriptorManagerTest {
+public class ConfiguredDialogDefinitionManagerTest {
 
     private ModuleRegistry moduleRegistry;
-    private AppDescriptorRegistry appRegistry;
+
+    private DialogDefinitionRegistry dialogRegistry;
+
     private Session session;
 
-    @SuppressWarnings("deprecation")
     @Before
     public void setUp() throws Exception {
-        //INIT
-        SystemEventBus eventBus = new SimpleSystemEventBus();
-        ComponentsTestUtil.setImplementation(AppDescriptor.class, ConfiguredAppDescriptor.class);
+
+        ComponentsTestUtil.setImplementation(DialogDefinition.class, ConfiguredDialogDefinition.class);
         session = SessionTestUtil.createSession(RepositoryConstants.CONFIG,
-            "/modules/aModule/apps/app1.name=appNameA",
-            "/modules/aModule/apps/app1.categoryName=categoryA",
-            "/modules/bModule/apps/app1.name=appNameB",
-            "/modules/bModule/apps/app1.categoryName=\n"
+            "/modules/aModule/dialogs/aDialog.id=aModule:aDialog",
+            "/modules/bModule/dialogs/bDialog.id=bModule:bDialog"
             );
         MockUtil.initMockContext();
         MockUtil.setSystemContextSessionAndHierarchyManager(session);
@@ -94,96 +91,86 @@ public class ConfiguredAppDescriptorManagerTest {
         moduleRegistry = mock(ModuleRegistry.class);
         when(moduleRegistry.getModuleNames()).thenReturn(moduleNames);
 
-        appRegistry = new AppDescriptorRegistry(eventBus);
+        dialogRegistry = new DialogDefinitionRegistry();
 
         TypeMappingImpl typeMapping = new TypeMappingImpl();
         ComponentsTestUtil.setInstance(Content2BeanProcessor.class, new Content2BeanProcessorImpl(typeMapping));
     }
 
-    @After
-    public void tearDown() throws Exception {
-        ComponentsTestUtil.clear();
-        MgnlContext.setInstance(null);
-    }
-
     @Test
-    public void testAppDescriptorOnStart() throws RegistrationException {
+    public void testDialogDefinitionOnStart() throws RegistrationException {
         // GIVEN
-        ConfiguredAppDescriptorManager addDescriptorManager = new ConfiguredAppDescriptorManager(moduleRegistry, appRegistry);
+        ConfiguredDialogDefinitionManager dialogManager = new ConfiguredDialogDefinitionManager(moduleRegistry, dialogRegistry);
 
         // WHEN
-        addDescriptorManager.start();
+        dialogManager.start();
 
         // THEN
-        AppDescriptor a = appRegistry.getAppDescriptor("appNameA");
-        assertNotNull(a);
-        assertEquals("appNameA", a.getName());
-        assertEquals("categoryA", a.getCategoryName());
+        DialogDefinition aDialog = dialogRegistry.get("aModule:aDialog");
+        assertNotNull(aDialog);
+        assertEquals("aModule:aDialog", aDialog.getId());
 
-        AppDescriptor b = appRegistry.getAppDescriptor("appNameB");
-        assertNotNull(b);
-        assertEquals("appNameB", b.getName());
-        assertEquals(ConfiguredAppDescriptorProvider.DEFAULT_CATEGORY_NAME, b.getCategoryName());
-
+        DialogDefinition bDialog = dialogRegistry.get("bModule:bDialog");
+        assertNotNull(bDialog);
+        assertEquals("bModule:bDialog", bDialog.getId());
     }
 
     @Test
-    public void testAppDescriptorReloadsOnChange() throws RepositoryException, RegistrationException, InterruptedException {
+    public void testDialogDefinitionReloadsOnChange() throws RegistrationException, UnsupportedRepositoryOperationException, RepositoryException, InterruptedException {
         // GIVEN
         MockObservationManager observationManager = (MockObservationManager) session.getWorkspace().getObservationManager();
-        ConfiguredAppDescriptorManager addDescriptorManager = new ConfiguredAppDescriptorManager(moduleRegistry, appRegistry);
+        ConfiguredDialogDefinitionManager dialogManager = new ConfiguredDialogDefinitionManager(moduleRegistry, dialogRegistry);
 
         // WHEN
-        addDescriptorManager.start();
+        dialogManager.start();
 
         // THEN
-        // Make sure app a is there.
-        AppDescriptor a = appRegistry.getAppDescriptor("appNameA");
-        assertNotNull(a);
+        // Make sure dialog a is there.
+        DialogDefinition aDialog = dialogRegistry.get("aModule:aDialog");
+        assertNotNull(aDialog);
 
         // WHEN
-        // Remove app a:
-        session.getNode("/modules/aModule/apps/app1").remove();
-        observationManager.fireEvent(MockEvent.nodeRemoved("/modules/aModule/apps/app1"));
+        // Remove dialog a:
+        session.getNode("/modules/aModule/dialogs/aDialog").remove();
+        observationManager.fireEvent(MockEvent.nodeRemoved("/modules/aModule/dialogs/aDialog"));
         Thread.sleep(6000);
         // THEN a is gone
         try {
-            a = appRegistry.getAppDescriptor("appNameA");
+            aDialog = dialogRegistry.get("aModule:aDialog");
             fail();
         } catch (RegistrationException expected) {
         }
 
         // WHEN
         // Add a property and fire event
-        session.getNode("/modules/bModule/apps/app1").setProperty("categoryName", "categoryB");
-        observationManager.fireEvent(MockEvent.propertyAdded("/modules/bModule/apps/app1"));
+        session.getNode("/modules/bModule/dialogs/bDialog").setProperty("description", "dialog for bItems");
+        observationManager.fireEvent(MockEvent.propertyAdded("/modules/bModule/dialogs/bDialog"));
         Thread.sleep(6000);
         // THEN
-        // app b has his property modified.
-        AppDescriptor b = appRegistry.getAppDescriptor("appNameB");
-        assertEquals("categoryB", b.getCategoryName());
+        // dialog b has its property modified.
+        DialogDefinition bDialog = dialogRegistry.get("bModule:bDialog");
+        assertNotNull(bDialog);
+        assertEquals("dialog for bItems", bDialog.getDescription());
 
         // WHEN
-        // Rename app b, chnge the app name.
-        session.getNode("/modules/bModule/apps/app1").getProperty("name").setValue("appNameB_B");
+        // Rename dialog b, change the dialog name.
+        session.getNode("/modules/bModule/dialogs/bDialog").getParent().addNode("cDialog").setProperty("id", "bModule:cDialog");
+        session.getNode("/modules/bModule/dialogs/bDialog").remove();
         MockEvent event = new MockEvent();
-        event.setType(MockEvent.PROPERTY_CHANGED);
-        event.setPath("/modules/bModule/apps/app1");
-
+        event.setType(MockEvent.NODE_MOVED);
+        event.setPath("/modules/bModule/dialogs/bDialog");
         observationManager.fireEvent(event);
         Thread.sleep(6000);
 
         // THEN
-        // app b has gone.
+        // dialog b is gone.
         try {
-            b = appRegistry.getAppDescriptor("appNameB");
+            bDialog = dialogRegistry.get("bModule:bDialog");
             fail();
         } catch (RegistrationException expected) {
         }
-        b = appRegistry.getAppDescriptor("appNameB_B");
-        assertNotNull(b);
-        assertEquals("categoryB", b.getCategoryName());
+        bDialog = dialogRegistry.get("bModule:cDialog");
+        assertNotNull(bDialog);
     }
-
 
 }

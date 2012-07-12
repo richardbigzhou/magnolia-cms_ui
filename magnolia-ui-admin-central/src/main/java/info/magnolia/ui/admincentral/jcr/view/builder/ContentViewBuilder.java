@@ -31,18 +31,16 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.workbench.action;
+package info.magnolia.ui.admincentral.jcr.view.builder;
 
-import info.magnolia.ui.admincentral.workbench.ContentWorkbenchView;
-import info.magnolia.ui.model.action.Action;
-import info.magnolia.ui.model.action.ActionDefinition;
-
-import javax.jcr.Item;
+import info.magnolia.ui.admincentral.jcr.view.ContentView;
+import info.magnolia.ui.admincentral.jcr.view.ContentView.ViewType;
+import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 
 /**
- * Creates an action based on an {@link ActionDefinition}.
+ * Used to transform tree or list and column definitions into components.
  */
-public interface WorkbenchActionFactory {
+public interface ContentViewBuilder {
 
-    Action createAction(final ActionDefinition actionDefinition, final Item item, final ContentWorkbenchView.Listener presenter);
+    ContentView build(WorkbenchDefinition workbenchDefinition, ViewType type);
 }

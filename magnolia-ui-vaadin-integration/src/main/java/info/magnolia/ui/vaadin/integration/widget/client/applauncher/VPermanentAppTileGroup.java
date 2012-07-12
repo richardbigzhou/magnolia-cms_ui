@@ -31,13 +31,53 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.column;
+package info.magnolia.ui.vaadin.integration.widget.client.applauncher;
 
-import info.magnolia.ui.model.column.definition.PropertyColumnDefinition;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
+import com.google.web.bindery.event.shared.EventBus;
 
 /**
- * Definition for ReadOnlyPropertyColumns.
+ * The permanent App Group.
+ *
  */
-public class ReadOnlyPropertyColumnDefinition extends PropertyColumnDefinition {
+public class VPermanentAppTileGroup extends VAppTileGroup {
 
+    private String caption;
+    
+    final Element sectionEl = DOM.createDiv();
+
+    public VPermanentAppTileGroup(EventBus eventBus, String caption, String color) {
+        super(color);
+        this.caption = caption;
+        construct();
+    }
+    
+    public void setCaption(String caption) {
+        this.caption = caption;
+    }
+    
+    private void createSectionItem() {
+        final Element sectionEl = DOM.createDiv();
+        final Element sectionLabel = DOM.createSpan();
+        
+        sectionEl.appendChild(sectionLabel);
+        sectionEl.addClassName("item");
+        sectionEl.addClassName("section");
+        
+        sectionLabel.addClassName("label");
+        sectionLabel.setInnerText(caption);
+        sectionEl.getStyle().setBackgroundColor(getColor());
+        getElement().appendChild(sectionEl);
+    }
+    
+    @Override
+    protected void construct() {
+        createSectionItem();
+    }
+    
+    public Element getSectionEl() {
+        return sectionEl;
+    }
+    
 }

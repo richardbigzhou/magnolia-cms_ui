@@ -119,7 +119,7 @@ public class PulseMessageCategoryNavigator extends CustomComponent {
         addListener("category_changed", CategoryChangedEvent.class, listener, CategoryChangedEvent.MESSAGE_CATEGORY_CHANGED);
     }
 
-    private void fireCategoryChangedEvent(PulseMessageCategoryNavigator pulseMessageCategoryNavigator, MessageCategory category) {
+    private void fireCategoryChangedEvent(MessageCategory category) {
         fireEvent(new CategoryChangedEvent(this, category));
     }
     
@@ -138,7 +138,7 @@ public class PulseMessageCategoryNavigator extends CustomComponent {
             addListener(new ClickListener() {
                 @Override
                 public void buttonClick(ClickEvent event) {
-                    fireCategoryChangedEvent(PulseMessageCategoryNavigator.this, MessageCategoryButton.this.category);
+                    fireCategoryChangedEvent(MessageCategoryButton.this.category);
                 }
             });
         }

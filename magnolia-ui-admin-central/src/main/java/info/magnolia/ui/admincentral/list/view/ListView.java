@@ -33,12 +33,12 @@
  */
 package info.magnolia.ui.admincentral.list.view;
 
-import info.magnolia.ui.admincentral.jcr.view.JcrView;
+import info.magnolia.ui.admincentral.jcr.view.ContentView;
 
 /**
  * List view interface.
  *
  */
-public interface ListView extends JcrView {
+public interface ListView extends ContentView {
 
 }

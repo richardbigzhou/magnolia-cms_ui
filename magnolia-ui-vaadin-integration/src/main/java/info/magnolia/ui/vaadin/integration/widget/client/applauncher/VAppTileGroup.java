@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,18 +31,53 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.workbench.action;
+package info.magnolia.ui.vaadin.integration.widget.client.applauncher;
 
-import info.magnolia.ui.admincentral.workbench.ContentWorkbenchView;
-import info.magnolia.ui.model.action.Action;
-import info.magnolia.ui.model.action.ActionDefinition;
+import java.util.HashMap;
+import java.util.Map;
 
-import javax.jcr.Item;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.ui.ComplexPanel;
 
 /**
- * Creates an action based on an {@link ActionDefinition}.
+ * The unit that groups semantically close apps.
  */
-public interface WorkbenchActionFactory {
+public abstract class VAppTileGroup extends ComplexPanel {
+    
+    private String color;
 
-    Action createAction(final ActionDefinition actionDefinition, final Item item, final ContentWorkbenchView.Listener presenter);
+    private Map<String, VAppTile> appTileMap = new HashMap<String, VAppTile>();
+    
+    public VAppTileGroup(String color) {
+        super();
+        this.color = color;
+        setElement(DOM.createElement("section"));
+
+        addStyleName("app-list");
+        addStyleName("section");
+        addStyleName("clearfix");
+    }
+
+    protected abstract void construct();
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+    
+    public String getColor() {
+        return color;
+    }
+
+    public void addAppThumbnail(final VAppTile thumbnail) {
+        add(thumbnail, getElement());
+        appTileMap.put(thumbnail.getCaption(), thumbnail);
+    }
+
+    public boolean hasApp(String appName) {
+        return appTileMap.containsKey(appName);
+    }
+    
+    public VAppTile getAppTile(String appName) {
+        return appTileMap.get(appName);
+    }
 }

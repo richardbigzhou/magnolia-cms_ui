@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,63 +31,52 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.layout;
+package info.magnolia.ui.admincentral.jcr.view.builder;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import info.magnolia.ui.framework.app.AppDescriptor;
-
 /**
- * Defines a category and the apps that belong to it.
+ * TODO: use ui settings?
+ * Provides the ContentViewBuilder defined in the AdminCentralModule.
  */
-public class AppCategory implements Comparable<AppCategory> {
+public class ContentViewBuilderProviderImpl implements ContentViewBuilderProvider {
 
-    private String label;
-    
-    private String backgroundColor;
-    
-    private boolean isPermanent;
-    
-    private List<AppDescriptor> apps = new ArrayList<AppDescriptor>();
 
-    public void setPermanent(boolean isPermanent) {
-        this.isPermanent = isPermanent;
-    }
-    
-    public void setBackgroundColor(String backgroundColor) {
-        this.backgroundColor = backgroundColor;
-    }
-    
-    public void setLabel(String label) {
-        this.label = label;
-    }
-    
-    public String getBackgroundColor() {
-        return backgroundColor;
-    }
-    
-    public boolean isPermanent() {
-        return isPermanent;
-    }
-    
-    public String getLabel() {
-        return label;
+    //private UISettings uiSettings;
+
+    // content2bean
+    private List<ContentViewBuilder> contentViewBuilders = new ArrayList<ContentViewBuilder>();
+
+
+    /**
+     * Is needed so that we can make a proxy (reloading configuration).
+     * TODO: is this really necessary?
+     */
+    public ContentViewBuilderProviderImpl() {
     }
 
-    public List<AppDescriptor> getApps() {
-        return apps;
-    }
-
-    public void addApp(AppDescriptor descriptor) {
-        apps.add(descriptor);
-    }
+    /*@Inject
+    public ContentViewBuilderProviderImpl(User user, UISettings uiSettings) {
+        this.user = user;
+        this.uiSettings = uiSettings;
+    }*/
 
     @Override
-    public int compareTo(AppCategory o) {
-        if (this.label == null || o.getLabel() == null) {
-            return 0;
-        }
-        return label.compareTo(o.getLabel());
+    public ContentViewBuilder getBuilder() {
+        // FIXME: use user and uiSettings
+        return contentViewBuilders.get(0);
+    }
+
+    public void setContentViewBuilders(List<ContentViewBuilder> contentViewBuilders) {
+        this.contentViewBuilders = contentViewBuilders;
+    }
+
+    public List<ContentViewBuilder> getContentViewBuilders() {
+        return contentViewBuilders;
+    }
+
+    public void addContentViewBuilder(ContentViewBuilder contentViewBuilder) {
+        this.contentViewBuilders.add(contentViewBuilder);
     }
 }

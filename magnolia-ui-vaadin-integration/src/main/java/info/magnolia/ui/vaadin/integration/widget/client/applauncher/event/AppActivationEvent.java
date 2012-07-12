@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,18 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.workbench.action;
+package info.magnolia.ui.vaadin.integration.widget.client.applauncher.event;
 
-import info.magnolia.ui.admincentral.workbench.ContentWorkbenchView;
-import info.magnolia.ui.model.action.Action;
-import info.magnolia.ui.model.action.ActionDefinition;
-
-import javax.jcr.Item;
+import com.google.web.bindery.event.shared.Event;
 
 /**
- * Creates an action based on an {@link ActionDefinition}.
+ * Event of app activation.
  */
-public interface WorkbenchActionFactory {
+public class AppActivationEvent extends Event<AppActivatedEventHandler> {
 
-    Action createAction(final ActionDefinition actionDefinition, final Item item, final ContentWorkbenchView.Listener presenter);
+    public static final Type<AppActivatedEventHandler> TYPE = new Type<AppActivatedEventHandler>();
+
+    private String appId;
+    
+    public AppActivationEvent(final String appId) {
+        this.appId = appId;
+    }
+    
+    public String getAppId() {
+        return appId;
+    }
+    
+    @Override
+    public Type<AppActivatedEventHandler> getAssociatedType() {
+        return TYPE;
+    }
+
+    @Override
+    protected void dispatch(AppActivatedEventHandler handler) {
+        handler.onAppActivated(this);
+    }
 }
