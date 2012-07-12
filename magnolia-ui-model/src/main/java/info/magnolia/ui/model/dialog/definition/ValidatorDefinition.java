@@ -37,8 +37,6 @@ package info.magnolia.ui.model.dialog.definition;
  * Definition for Validators.
  */
 public interface ValidatorDefinition {
-    static final String TYPE_EMAIL = "email";
-    static final String TYPE_REGEXP = "regexp";
 
     public String getErrorMessage();
 
