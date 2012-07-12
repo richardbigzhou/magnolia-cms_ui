@@ -35,6 +35,7 @@ package info.magnolia.ui.admincentral.workbench;
 
 import info.magnolia.ui.admincentral.jcr.view.ContentView;
 import info.magnolia.ui.admincentral.jcr.view.ContentView.ViewType;
+import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.widget.actionbar.ActionbarView;
 
 import com.vaadin.data.Item;
@@ -45,7 +46,7 @@ import com.vaadin.ui.ComponentContainer;
  * Implementors of this interface are responsible for building a workbench and handling the UI
  * actions associated with it.
  */
-public interface ContentWorkbenchView extends ComponentContainer {
+public interface ContentWorkbenchView extends ComponentContainer, View {
 
     void setListener(final Listener listener);
 

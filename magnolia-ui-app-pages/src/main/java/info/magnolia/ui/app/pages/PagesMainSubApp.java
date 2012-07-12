@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.app.pages;
 
-import info.magnolia.ui.admincentral.workbench.ContentWorkbench;
+import info.magnolia.ui.admincentral.workbench.ContentWorkbenchSubApp;
 import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.view.View;
 
@@ -48,7 +48,7 @@ public class PagesMainSubApp implements SubApp, PagesMainView.Listener {
     private final static String WORKBENCH_NAME = "website";
 
     @Inject
-    public PagesMainSubApp(PagesMainView view, ContentWorkbench workbench) {
+    public PagesMainSubApp(PagesMainView view, ContentWorkbenchSubApp workbench) {
         this.view = view;
         this.view.setListener(this);
 
