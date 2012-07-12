@@ -99,6 +99,7 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
 
     protected String paintableId;
     private FocusModel focusModel;
+    private String contextPath;
 
 
     public VPageEditor() {
@@ -135,6 +136,7 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
         view.getIframe().getElement().setId(paintableId);
         view.getIframe().setUrl(getSrc(uidl, client));
 
+        setContextPathFromUIDL(uidl);
         proxy.update(this, uidl, client);
     }
 
@@ -160,6 +162,17 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
             return "";
         }
         return url;
+    }
+
+    /**
+     * Helper to return the contextPath sent from server.
+     */
+    private void setContextPathFromUIDL(UIDL uidl) {
+        String contextPath = uidl.getStringAttribute("contextPath");
+        if (contextPath == null) {
+            contextPath = "";
+        }
+        this.contextPath = contextPath;
     }
 
     public void onMouseUp(final Element element) {
@@ -198,7 +211,7 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
         LinkElement cssLink = document.createLinkElement();
         cssLink.setType("text/css");
         cssLink.setRel("stylesheet");
-        cssLink.setHref("/VAADIN/widgetsets/info.magnolia.ui.vaadin.widgetset.MagnoliaWidgetSet/editor/styles.css");
+        cssLink.setHref(contextPath + "/VAADIN/widgetsets/info.magnolia.ui.vaadin.widgetset.MagnoliaWidgetSet/editor/styles.css");
 
         head.insertFirst(cssLink);
     }
