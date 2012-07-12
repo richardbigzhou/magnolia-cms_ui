@@ -44,25 +44,23 @@ import java.util.List;
  */
 public interface DialogDefinition extends UiItemDefinition {
 
-    public abstract boolean addTab(TabDefinition tabDefinition);
+    boolean addTab(TabDefinition tabDefinition);
 
-    public abstract void setTabs(List<TabDefinition> tabs);
+    void setTabs(List<TabDefinition> tabs);
 
-    public abstract List<TabDefinition> getTabs();
+    List<TabDefinition> getTabs();
 
-    public abstract boolean addAction(DialogActionDefinition fieldDefinition);
+    boolean addAction(DialogActionDefinition fieldDefinition);
 
-    public abstract void setActions(List<DialogActionDefinition> actions);
+    void setActions(List<DialogActionDefinition> actions);
 
-    public abstract List<DialogActionDefinition> getActions();
+    List<DialogActionDefinition> getActions();
 
-    public abstract void setId(String id);
+    void setId(String id);
 
-    public abstract String getId();
+    String getId();
 
-    public abstract String getDescription();
+    String getDescription();
 
-    public abstract void setDescription(String description);
-
-
+    void setDescription(String description);
 }

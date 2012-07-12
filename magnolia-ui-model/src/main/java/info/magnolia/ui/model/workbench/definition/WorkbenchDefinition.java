@@ -47,29 +47,29 @@ import java.util.List;
  */
 public interface WorkbenchDefinition extends Serializable {
 
-    public String getName();
+    String getName();
 
-    public String getWorkspace();
+    String getWorkspace();
 
-    public String getPath();
+    String getPath();
 
-    public List<ItemTypeDefinition> getItemTypes();
+    List<ItemTypeDefinition> getItemTypes();
 
     /**
      * Return the itemType filter criteria in order to be used for searching nodes. like:
      * "jcr:* | myapp:report | my doc"
      */
-    public String getItemTypesFilter();
+    String getItemTypesFilter();
 
-    public AbstractColumnDefinition getColumn(String columnId);
+    AbstractColumnDefinition getColumn(String columnId);
 
-    public Collection<AbstractColumnDefinition> getColumns();
+    Collection<AbstractColumnDefinition> getColumns();
 
     /**
      * Gets the definition for the action bar related to this workbench.
      */
-    public ActionbarDefinition getActionbar();
+    ActionbarDefinition getActionbar();
 
-    public ComponentProviderConfiguration getComponents();
+    ComponentProviderConfiguration getComponents();
 
 }
