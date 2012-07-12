@@ -35,7 +35,6 @@ package info.magnolia.ui.widget.editor.gwt.client.model.focus;
 
 import com.google.gwt.dom.client.Element;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
-import info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils;
 import info.magnolia.ui.widget.editor.gwt.client.model.ModelStorage;
 import info.magnolia.ui.widget.editor.gwt.client.widget.dnd.LegacyDragAndDrop;
 
@@ -95,10 +94,10 @@ public class FocusModelImpl3 implements FocusModel {
     private void toggleSelection(MgnlElement mgnlElement, boolean visible) {
         if (visible) {
             String contentId = mgnlElement.getAttribute("content");
-            JavascriptUtils.setEditorContentIdCookie(contentId);
+            //JavascriptUtils.setEditorContentIdCookie(contentId);
         }
         else {
-            JavascriptUtils.removeEditorContentIdCookie();
+            //JavascriptUtils.removeEditorContentIdCookie();
         }
 
         if (model.getEditBar(mgnlElement) != null) {

@@ -36,8 +36,6 @@ package info.magnolia.ui.widget.editor.gwt.client.model;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
-import info.magnolia.ui.widget.editor.gwt.client.model.focus.FocusModel;
-import info.magnolia.ui.widget.editor.gwt.client.model.focus.FocusModelImpl3;
 import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.AbstractBar;
 import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.AreaEndBar;
 import info.magnolia.ui.widget.editor.gwt.client.widget.overlay.AbstractOverlay;
@@ -52,11 +50,8 @@ import java.util.Map;
 /**
  * Singleton keeping the model.
  */
-public class ModelStorage {
+public class ModelStorage implements Model {
 
-    private static ModelStorage storage = null;
-
-    private FocusModel focusModel = new FocusModelImpl3(this);
 
     private Map<MgnlElement, AbstractBar> editBars = new HashMap<MgnlElement, AbstractBar>();
     private Map<MgnlElement, AbstractOverlay> overlays = new HashMap<MgnlElement, AbstractOverlay>();
@@ -72,29 +67,28 @@ public class ModelStorage {
 
     private MgnlElement selectedMgnlElement = null;
 
-    public static ModelStorage getInstance() {
-        if (storage == null) {
-            storage = new ModelStorage();
-        }
-        return storage;
-    }
 
+    @Override
     public void addOverlay(MgnlElement mgnlElement, AbstractOverlay overlayWidget) {
         overlays.put(mgnlElement, overlayWidget);
     }
 
+    @Override
     public AbstractOverlay getOverlay(MgnlElement mgnlElement) {
         return overlays.get(mgnlElement);
     }
 
+    @Override
     public void addEditBar(MgnlElement mgnlElement, AbstractBar editBar) {
         editBars.put(mgnlElement, editBar);
     }
 
+    @Override
     public AbstractBar getEditBar(MgnlElement mgnlElement) {
         return editBars.get(mgnlElement);
     }
 
+    @Override
     public void addElement(MgnlElement mgnlElement, Element element) {
 
         if (mgnlElement == null || element == null) {
@@ -112,6 +106,7 @@ public class ModelStorage {
         }
     }
 
+    @Override
     public void addElements(MgnlElement mgnlElement, Element element) {
 
         if (mgnlElement == null || element == null) {
@@ -128,6 +123,7 @@ public class ModelStorage {
         }
     }
 
+    @Override
     public MgnlElement getMgnlElement(Element element) {
         MgnlElement mgnlElement = mgnlElements.get(element);
         while (mgnlElement == null && element.hasParentElement()) {
@@ -137,54 +133,62 @@ public class ModelStorage {
         return mgnlElement;
     }
 
+    @Override
     public List<Element> getElements(MgnlElement mgnlElement) {
         return elements.get(mgnlElement);
     }
 
+    @Override
     public void addRoot(MgnlElement boundary) {
         this.rootElements.add(boundary);
     }
 
+    @Override
     public List<MgnlElement> getRootElements() {
         return rootElements;
     }
 
+    @Override
     public void setSelectedMgnlElement(MgnlElement selectedMgnlElement) {
         this.selectedMgnlElement = selectedMgnlElement;
     }
 
+    @Override
     public MgnlElement getSelectedMgnlElement() {
         return selectedMgnlElement;
     }
 
-    public FocusModel getFocusModel() {
-        return focusModel;
-    }
-
+    @Override
     public void addAreaPlaceHolder(MgnlElement mgnlElement, AreaPlaceHolder placeHolder) {
         areaPlaceHolders.put(mgnlElement, placeHolder);
     }
 
+    @Override
     public AreaPlaceHolder getAreaPlaceHolder(MgnlElement mgnlElement) {
         return areaPlaceHolders.get(mgnlElement);
     }
 
+    @Override
     public void addComponentPlaceHolder(MgnlElement mgnlElement, ComponentPlaceHolder placeHolder) {
         componentPlaceHolders.put(mgnlElement, placeHolder);
     }
 
+    @Override
     public ComponentPlaceHolder getComponentPlaceHolder(MgnlElement mgnlElement) {
         return componentPlaceHolders.get(mgnlElement);
     }
 
+    @Override
     public void addAreaEndBar(MgnlElement mgnlElement, AreaEndBar areaEndBar) {
         areaEndBars.put(mgnlElement, areaEndBar);
     }
 
+    @Override
     public AreaEndBar getAreaEndBar(MgnlElement mgnlElement) {
         return areaEndBars.get(mgnlElement);
     }
 
+    @Override
     public void removeMgnlElement(MgnlElement mgnlElement) {
 
         // remove all occurrences of the element
@@ -200,6 +204,7 @@ public class ModelStorage {
         }
     }
 
+    @Override
     public MgnlElement findMgnlElementByContentId(String contentId) {
         for (MgnlElement element : elements.keySet()) {
             if(contentId.equals(element.getAttribute("content"))){

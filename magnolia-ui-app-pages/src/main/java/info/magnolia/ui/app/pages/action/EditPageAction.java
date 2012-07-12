@@ -63,7 +63,7 @@ public class EditPageAction extends ActionBase<EditPageActionDefinition> {
     @Override
     public void execute() throws ActionExecutionException {
         String nodePath = workbench.getSelectedItemId();
-        Location pageEditorLocation = new DefaultLocation("app", "pages", TOKEN + ":" + nodePath);
+        Location pageEditorLocation = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages", TOKEN + ":" + nodePath);
         locationController.goTo(pageEditorLocation);
     }
 }
