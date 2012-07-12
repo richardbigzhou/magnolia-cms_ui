@@ -12,6 +12,7 @@
 @import url(pulse.css);
 @import url(favorites.css);
 @import url(shell.css);
+@import url(fonts.css);
 
 @font-face{
     font-family: DinRound;
