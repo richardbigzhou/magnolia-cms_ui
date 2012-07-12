@@ -98,6 +98,7 @@ public class AreaPlaceHolder extends AbstractPlaceHolder {
         }
     }
 
+    @Override
     public Model getModel() {
         return model;
     }

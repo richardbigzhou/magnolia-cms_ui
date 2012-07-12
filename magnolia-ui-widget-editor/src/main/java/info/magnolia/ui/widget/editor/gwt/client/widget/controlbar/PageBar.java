@@ -262,6 +262,7 @@ public class PageBar extends AbstractBar {
         }
     }
 
+    @Override
     public Model getModel() {
         return model;
     }
