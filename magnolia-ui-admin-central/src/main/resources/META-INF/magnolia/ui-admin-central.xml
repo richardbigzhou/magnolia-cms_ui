@@ -89,7 +89,7 @@
     </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.model.dialog.definition.FieldDefinition</type>
-      <implementation>info.magnolia.ui.model.dialog.definition.DateFieldDefinition</implementation>
+      <implementation>info.magnolia.ui.model.dialog.definition.EditFieldDefinition</implementation>
     </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.model.dialog.action.DialogActionDefinition</type>
