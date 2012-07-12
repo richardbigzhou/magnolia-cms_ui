@@ -29,6 +29,10 @@
       <type>info.magnolia.ui.admincentral.workbench.ContentWorkbench</type>
       <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbench</implementation>
     </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.jcr.view.ContentPresenter</type>
+      <implementation>info.magnolia.ui.admincentral.jcr.view.ContentPresenter</implementation>
+    </component>
    </components>
 
   <dependencies>

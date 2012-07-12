@@ -33,12 +33,13 @@
  */
 package info.magnolia.ui.admincentral.workbench;
 
-import com.vaadin.data.Item;
-import com.vaadin.ui.ComponentContainer;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.actionbar.ActionbarView;
 import info.magnolia.ui.admincentral.jcr.view.ContentView;
-import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.admincentral.jcr.view.ContentView.ViewType;
+
+import com.vaadin.data.Item;
+import com.vaadin.ui.ComponentContainer;
 
 /**
  * Implementors of this interface are responsible for building a workbench and handling the UI
@@ -47,8 +48,6 @@ import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 public interface ContentWorkbenchView extends ComponentContainer, ActionbarView {
 
     void setListener(final Listener listener);
-
-    void initWorkbench(final WorkbenchDefinition definintion);
 
     void setGridType(final ContentView.ViewType type);
 
@@ -64,16 +63,14 @@ public interface ContentWorkbenchView extends ComponentContainer, ActionbarView 
     void refresh();
 
     /**
-     * Listener for ContentWorkbenchView's.
+     * Use this method to add sub views hosted by this view.
+     */
+    void addContentView(final ViewType type, final ContentView view);
+
+    /**
+     * TODO dlipp - ActionBarPresenter should be a proper type as well.
      */
     public interface Listener extends ActionbarPresenter {
-
-        void onItemSelected(final Item item);
-
-        /**
-         * TODO dlipp - to move to real presenter.
-         */
-        String getSelectedItemId();
     }
 
 }
