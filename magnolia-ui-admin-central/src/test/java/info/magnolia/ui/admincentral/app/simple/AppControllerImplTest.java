@@ -36,7 +36,6 @@ package info.magnolia.ui.admincentral.app.simple;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.After;
 import org.junit.Before;
@@ -55,9 +54,9 @@ import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventHandler;
 import info.magnolia.ui.framework.app.AppLifecycleEventType;
-import info.magnolia.ui.framework.app.layout.AppCategory;
+import info.magnolia.ui.framework.app.layout.AppGroup;
+import info.magnolia.ui.framework.app.layout.AppGroupEntry;
 import info.magnolia.ui.framework.app.layout.AppLayout;
-import info.magnolia.ui.framework.app.layout.AppLayoutImpl;
 import info.magnolia.ui.framework.app.layout.AppLayoutManager;
 import info.magnolia.ui.framework.app.layout.AppLayoutManagerImpl;
 import info.magnolia.ui.framework.event.SimpleEventBus;
@@ -90,7 +89,7 @@ public class AppControllerImplTest {
         eventCollector = new AppEventCollector();
         eventBus.addHandler(AppLifecycleEvent.class, eventCollector);
 
-        appControler = new AppControllerImpl(moduleRegistry, componentProvider, appLayoutManager, locationController, shell, eventBus, messagesManager);
+        appControler = new AppControllerImpl(moduleRegistry, componentProvider, appLayoutManager, locationController, messagesManager, shell, eventBus);
     }
 
     @After
@@ -260,18 +259,26 @@ public class AppControllerImplTest {
         appLayoutManager = mock(AppLayoutManagerImpl.class);
         //Set cat1 with App1
         AppDescriptor app1 = AppTestUtility.createAppDescriptor(appName_1, AppTestImpl.class);
-        AppCategory cat1 = AppTestUtility.createAppCategory("cat1", app1);
+        AppGroup cat1 = AppTestUtility.createAppGroup("cat1", app1);
         //Set cat2 with App2
         AppDescriptor app2 = AppTestUtility.createAppDescriptor("app2", AppTestImpl.class);
-        AppCategory cat2 = AppTestUtility.createAppCategory("cat2", app2);
-        cat2.addApp(app2);
-        Map<String, AppCategory> categories = new HashMap<String, AppCategory>();
-        categories.put("cat1", cat1);
-        categories.put("cat2", cat2);
+        AppGroup cat2 = AppTestUtility.createAppGroup("cat2", app2);
 
-        AppLayout appLayout = new AppLayoutImpl(categories);
+        AppGroupEntry entry1 = new AppGroupEntry();
+        entry1.setName(app1.getName());
+        entry1.setAppDescriptor(app1);
+        cat1.addApp(entry1);
 
-        when(appLayoutManager.getLayout()).thenReturn(appLayout);
+        AppGroupEntry entry2 = new AppGroupEntry();
+        entry2.setName(app2.getName());
+        entry2.setAppDescriptor(app2);
+        cat2.addApp(entry2);
+
+        AppLayout appLayout = new AppLayout();
+        appLayout.addGroup(cat1);
+        appLayout.addGroup(cat2);
+
+        when(appLayoutManager.getLayoutForCurrentUser()).thenReturn(appLayout);
     }
 
     public static GuiceComponentProvider initComponentProvider() {

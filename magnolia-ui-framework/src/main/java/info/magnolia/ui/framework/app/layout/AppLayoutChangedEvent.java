@@ -31,11 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.layout.event;
+package info.magnolia.ui.framework.app.layout;
+
+import info.magnolia.ui.framework.event.Event;
 
 /**
- * Enumeration of event types sent by {@link info.magnolia.ui.framework.app.layout.AppLayoutManager}.
+ * Event dispatched when the app layout changes.
+ *
+ * @see AppLayoutManager
+ * @see AppLayoutChangedEventHandler
  */
-public enum LayoutEventType {
-    RELOAD_APP
+public class AppLayoutChangedEvent implements Event<AppLayoutChangedEventHandler> {
+
+    @Override
+    public void dispatch(AppLayoutChangedEventHandler handler) {
+        handler.onAppLayoutChanged(this);
+    }
 }

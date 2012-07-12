@@ -31,26 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.layout.event;
+package info.magnolia.ui.framework.app.layout;
 
 import info.magnolia.ui.framework.event.EventHandler;
 
 /**
- * Event handler for {@link LayoutEvent}s.
+ * Event handler for receiving events when the app layout changes.
+ *
+ * @see AppLayoutManager
+ * @see AppLayoutChangedEvent
  */
-public interface LayoutEventHandler extends EventHandler {
+public interface AppLayoutChangedEventHandler extends EventHandler {
 
-    void onReloadApp(final LayoutEvent event);
-
-    /**
-     * Simple stub so in case not all the methods should be implemented - you can skip them.
-     */
-    public static class Adapter implements LayoutEventHandler {
-
-        @Override
-        public void onReloadApp(LayoutEvent event) {
-        }
-
-    }
-
+    void onAppLayoutChanged(AppLayoutChangedEvent event);
 }

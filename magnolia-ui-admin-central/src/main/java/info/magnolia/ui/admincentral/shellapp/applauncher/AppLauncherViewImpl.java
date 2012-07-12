@@ -34,7 +34,8 @@
 package info.magnolia.ui.admincentral.shellapp.applauncher;
 
 import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.app.layout.AppCategory;
+import info.magnolia.ui.framework.app.layout.AppGroup;
+import info.magnolia.ui.framework.app.layout.AppGroupEntry;
 import info.magnolia.ui.framework.app.layout.AppLayout;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 import info.magnolia.ui.vaadin.integration.widget.AppLauncher;
@@ -98,9 +99,10 @@ public class AppLauncherViewImpl implements AppLauncherView, IsVaadinComponent {
 
     @Override
     public void registerApp(AppLayout layout) {
-        for (AppCategory category : layout.getCategories()) {
+        for (AppGroup category : layout.getGroups()) {
             appLauncher.addAppSection(category.getLabel(), category.getBackgroundColor(), category.isPermanent());
-            for (AppDescriptor descriptor : category.getApps()) {
+            for (AppGroupEntry entry : category.getApps()) {
+                AppDescriptor descriptor = entry.getAppDescriptor();
                 appLauncher.addAppTile(descriptor.getName(), descriptor.getIcon(), descriptor.getCategoryName());
             }
         }

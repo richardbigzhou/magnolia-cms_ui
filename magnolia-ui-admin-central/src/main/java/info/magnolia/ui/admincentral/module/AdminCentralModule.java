@@ -37,6 +37,8 @@ import javax.inject.Inject;
 
 import info.magnolia.module.ModuleLifecycle;
 import info.magnolia.module.ModuleLifecycleContext;
+import info.magnolia.ui.framework.app.layout.AppLayout;
+import info.magnolia.ui.framework.app.layout.AppLayoutManager;
 import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptorManager;
 import info.magnolia.ui.model.dialog.registry.ConfiguredDialogDefinitionManager;
 
@@ -47,23 +49,39 @@ import info.magnolia.ui.model.dialog.registry.ConfiguredDialogDefinitionManager;
  */
 public class AdminCentralModule implements ModuleLifecycle {
 
+    private AppLayout appLayout;
+    private AppLayoutManager appLayoutManager;
     private ConfiguredAppDescriptorManager configuredAppDescriptorManager;
     private ConfiguredDialogDefinitionManager configuredDialogDefinitionManager;
 
     @Inject
-    public AdminCentralModule(ConfiguredAppDescriptorManager configuredAppDescriptorManager, ConfiguredDialogDefinitionManager configuredDialogDefinitionManager) {
+    public AdminCentralModule(AppLayoutManager appLayoutManager, ConfiguredAppDescriptorManager configuredAppDescriptorManager, ConfiguredDialogDefinitionManager configuredDialogDefinitionManager) {
+        this.appLayoutManager = appLayoutManager;
         this.configuredAppDescriptorManager = configuredAppDescriptorManager;
         this.configuredDialogDefinitionManager = configuredDialogDefinitionManager;
     }
 
     @Override
-    public void start(ModuleLifecycleContext arg0) {
-        this.configuredAppDescriptorManager.start();
-        this.configuredDialogDefinitionManager.start();
+    public void start(ModuleLifecycleContext context) {
+        if (context.getPhase() == ModuleLifecycleContext.PHASE_SYSTEM_STARTUP) {
+            this.configuredAppDescriptorManager.start();
+            this.configuredDialogDefinitionManager.start();
+            appLayoutManager.setLayout(getAppLayout());
+        }
+        if (context.getPhase() == ModuleLifecycleContext.PHASE_MODULE_RESTART) {
+            appLayoutManager.setLayout(getAppLayout());
+        }
     }
 
     @Override
-    public void stop(ModuleLifecycleContext arg0) {
+    public void stop(ModuleLifecycleContext context) {
     }
 
+    public AppLayout getAppLayout() {
+        return appLayout;
+    }
+
+    public void setAppLayout(AppLayout appLayout) {
+        this.appLayout = appLayout;
+    }
 }

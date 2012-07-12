@@ -31,44 +31,70 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.layout.event;
+package info.magnolia.ui.framework.app.layout;
 
-import info.magnolia.ui.framework.event.Event;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Event sent by {@link info.magnolia.ui.framework.app.layout.AppLayoutManager}.
+ * Defines a group of apps displayed in the app launcher including display properties of the group.
+ *
+ * @see AppLayout
+ * @see AppGroupEntry
+ * @see AppLayoutManager
  */
-public class LayoutEvent implements Event<LayoutEventHandler> {
+public class AppGroup {
 
-    private final LayoutEventType eventType;
+    private String name;
+    private String label;
+    private boolean permanent;
+    private String backgroundColor;
+    private List<AppGroupEntry> apps;
 
-    private final String appName;
-
-    public LayoutEvent(LayoutEventType eventType, String appName) {
-        this.eventType = eventType;
-        this.appName = appName;
+    public String getName() {
+        return name;
     }
 
-    public LayoutEventType getEventType() {
-        return this.eventType;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getAppName() {
-        return this.appName;
+    public String getLabel() {
+        return label;
     }
 
+    public void setLabel(String label) {
+        this.label = label;
+    }
 
-    @Override
-    public void dispatch(LayoutEventHandler handler) {
-        if (eventType == null) {
-            return;
+    public boolean isPermanent() {
+        return permanent;
+    }
+
+    public void setPermanent(boolean permanent) {
+        this.permanent = permanent;
+    }
+
+    public String getBackgroundColor() {
+        return backgroundColor;
+    }
+
+    public void setBackgroundColor(String backgroundColor) {
+        this.backgroundColor = backgroundColor;
+    }
+
+    public List<AppGroupEntry> getApps() {
+        if (apps == null) {
+            apps = new ArrayList<AppGroupEntry>();
         }
-
-        switch (eventType) {
-            case RELOAD_APP:
-                handler.onReloadApp(this);
-                break;
-        }
+        return apps;
     }
 
+    public void setApps(List<AppGroupEntry> apps) {
+        this.apps = apps;
+    }
+
+    public void addApp(AppGroupEntry entry) {
+        getApps().add(entry);
+    }
 }
