@@ -110,7 +110,7 @@ public class AppLayoutManagerImpl implements AppLayoutManager {
                     AppDescriptor appDescriptor;
                     try {
                         appDescriptor = appDescriptorRegistry.getAppDescriptor(entry.getName());
-                    } catch (RegistrationException e1) {
+                    } catch (RegistrationException e) {
                         continue;
                     }
                     AppGroupEntry entryCopy = new AppGroupEntry();
