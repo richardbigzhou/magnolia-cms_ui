@@ -35,6 +35,7 @@ package info.magnolia.ui.admincentral.workbench;
 
 import info.magnolia.ui.admincentral.jcr.view.ContentView;
 import info.magnolia.ui.admincentral.jcr.view.ContentView.ViewType;
+import info.magnolia.ui.widget.actionbar.ActionbarView;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.ComponentContainer;
@@ -65,6 +66,11 @@ public interface ContentWorkbenchView extends ComponentContainer {
      * Use this method to add sub views hosted by this view.
      */
     void addContentView(final ViewType type, final ContentView view);
+
+    /**
+     * Use this method to add an action bar to this sub app view.
+     */
+    void addActionbarView(final ActionbarView actionbar);
 
     /**
      * TODO dlipp - ActionBarPresenter should be a proper type as well.

@@ -36,6 +36,7 @@ package info.magnolia.ui.admincentral.workbench;
 import info.magnolia.ui.admincentral.jcr.view.ContentView;
 import info.magnolia.ui.admincentral.jcr.view.ContentView.ViewType;
 import info.magnolia.ui.admincentral.jcr.view.builder.ContentViewBuilderProvider;
+import info.magnolia.ui.widget.actionbar.ActionbarView;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -110,15 +111,6 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
         workbenchContainer.addComponent(toolbar);
     }
 
-    // @Override
-    // public void initActionbar(final ActionbarDefinition definition) {
-    // if (definition == null) {
-    // throw new IllegalArgumentException("Trying to init an action bar but got null definition.");
-    // }
-    // final Actionbar actionbar = ActionbarBuilder.build(definition, getListener());
-    // root.addComponent(actionbar);
-    // }
-
     public ContentWorkbenchView.Listener getListener() {
         return contentWorkbenchViewListener;
     }
@@ -154,5 +146,10 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
     @Override
     public void addContentView(final ViewType type, final ContentView view) {
         contentViews.put(type, view);
+    }
+
+    @Override
+    public void addActionbarView(final ActionbarView actionbar) {
+        root.addComponent((Component) actionbar);
     }
 }

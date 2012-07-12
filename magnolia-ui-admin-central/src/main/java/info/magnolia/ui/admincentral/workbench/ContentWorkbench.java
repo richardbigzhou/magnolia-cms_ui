@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.workbench;
 
+import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.app.content.ContentAppDescriptor;
 import info.magnolia.ui.admincentral.event.ContentChangedEvent;
 import info.magnolia.ui.admincentral.jcr.view.ContentPresenter;
@@ -40,12 +41,8 @@ import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -87,17 +84,18 @@ public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView
 
     private final WorkbenchActionFactory actionFactory;
 
-    private final Map<String, ActionDefinition> actions = new HashMap<String, ActionDefinition>();
+    private final ContentPresenter contentPresenter;
 
-    final ContentPresenter contentPresenter;
+    private final ActionbarPresenter actionbarPresenter;
 
     @Inject
-    public ContentWorkbench(final AppContext context, final ContentWorkbenchView view, final EventBus eventbus, final Shell shell, final WorkbenchActionFactory actionFactory, final ContentPresenter contentPresenter) {
+    public ContentWorkbench(final AppContext context, final ContentWorkbenchView view, final EventBus eventbus, final Shell shell, final WorkbenchActionFactory actionFactory, final ContentPresenter contentPresenter, final ActionbarPresenter actionbarPresenter) {
         this.view = view;
         this.eventBus = eventbus;
         this.shell = shell;
         this.actionFactory = actionFactory;
         this.contentPresenter = contentPresenter;
+        this.actionbarPresenter = actionbarPresenter;
 
         workbenchDefinition = ((ContentAppDescriptor) context.getAppDescriptor()).getWorkbench();
 
@@ -115,6 +113,7 @@ public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView
         contentPresenter.initContentView(view);
         view.setListener(this);
         // view.initActionbar(workbenchDefinition.getActionbar());
+        view.addActionbarView(actionbarPresenter.getView());
     }
 
     @Override
