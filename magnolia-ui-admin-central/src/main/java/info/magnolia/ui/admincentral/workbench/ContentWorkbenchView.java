@@ -33,18 +33,18 @@
  */
 package info.magnolia.ui.admincentral.workbench;
 
-import com.vaadin.data.Item;
-import com.vaadin.ui.ComponentContainer;
-import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
-import info.magnolia.ui.admincentral.actionbar.ActionbarView;
 import info.magnolia.ui.admincentral.jcr.view.ContentView;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
+
+import com.vaadin.data.Item;
+import com.vaadin.ui.ComponentContainer;
+
 
 /**
  * Implementors of this interface are responsible for building a workbench and handling the UI
  * actions associated with it.
  */
-public interface ContentWorkbenchView extends ComponentContainer, ActionbarView {
+public interface ContentWorkbenchView extends ComponentContainer {
 
     void setListener(final Listener listener);
 
@@ -66,7 +66,7 @@ public interface ContentWorkbenchView extends ComponentContainer, ActionbarView 
     /**
      * Listener for ContentWorkbenchView's.
      */
-    public interface Listener extends ActionbarPresenter {
+    public interface Listener {
 
         void onItemSelected(final Item item);
 

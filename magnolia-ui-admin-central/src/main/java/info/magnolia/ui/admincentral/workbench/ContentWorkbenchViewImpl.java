@@ -33,13 +33,10 @@
  */
 package info.magnolia.ui.admincentral.workbench;
 
-import info.magnolia.ui.admincentral.actionbar.builder.ActionbarBuilder;
 import info.magnolia.ui.admincentral.jcr.view.ContentView;
 import info.magnolia.ui.admincentral.jcr.view.ContentView.ViewType;
 import info.magnolia.ui.admincentral.jcr.view.builder.ContentViewBuilderProvider;
-import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.widget.actionbar.Actionbar;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -79,6 +76,7 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
     private ContentWorkbenchView.Listener contentWorkbenchViewListener;
 
     private final ContentView.Listener contentViewListener = new ContentView.Listener() {
+
         @Override
         public void onItemSelection(Item item) {
             contentWorkbenchViewListener.onItemSelected(item);
@@ -144,14 +142,14 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
         setGridType(ViewType.TREE);
     }
 
-    @Override
-    public void initActionbar(final ActionbarDefinition definition) {
-        if (definition == null) {
-            throw new IllegalArgumentException("Trying to init an action bar but got null definition.");
-        }
-        final Actionbar actionbar = ActionbarBuilder.build(definition, getListener());
-        root.addComponent(actionbar);
-    }
+    // @Override
+    // public void initActionbar(final ActionbarDefinition definition) {
+    // if (definition == null) {
+    // throw new IllegalArgumentException("Trying to init an action bar but got null definition.");
+    // }
+    // final Actionbar actionbar = ActionbarBuilder.build(definition, getListener());
+    // root.addComponent(actionbar);
+    // }
 
     public ContentWorkbenchView.Listener getListener() {
         return contentWorkbenchViewListener;

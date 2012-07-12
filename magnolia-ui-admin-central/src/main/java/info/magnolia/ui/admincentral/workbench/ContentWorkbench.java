@@ -33,9 +33,6 @@
  */
 package info.magnolia.ui.admincentral.workbench;
 
-import com.vaadin.data.Item;
-import com.vaadin.ui.ComponentContainer;
-import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.admincentral.app.content.ContentAppDescriptor;
 import info.magnolia.ui.admincentral.event.ContentChangedEvent;
 import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
@@ -43,23 +40,21 @@ import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
-import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
-import org.apache.commons.lang.StringUtils;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
-import javax.jcr.LoginException;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import java.util.HashMap;
-import java.util.Map;
+import com.vaadin.data.Item;
+import com.vaadin.ui.ComponentContainer;
 
 
 /**
@@ -121,7 +116,7 @@ public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView
         // load the workbench specific configuration if existing
         workbenchDefinition = ((ContentAppDescriptor) context.getAppDescriptor()).getWorkbench();
         view.initWorkbench(workbenchDefinition);
-        view.initActionbar(workbenchDefinition.getActionbar());
+        // view.initActionbar(workbenchDefinition.getActionbar());
     }
 
     @Override
@@ -151,47 +146,6 @@ public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView
     @Override
     public String getSelectedItemId() {
         return selectedItemId;
-    }
-
-    //
-    // ACTIONBAR PRESENTER
-    //
-
-    @Override
-    public Map<String, ActionDefinition> getActions() {
-        return actions;
-    }
-
-    @Override
-    public void addAction(String actionName, ActionDefinition actionDefinition) {
-        if (StringUtils.isNotBlank(actionName)) {
-            actions.put(actionName, actionDefinition);
-        }
-    }
-
-    @Override
-    public void onActionbarItemClicked(final String actionName) {
-        ActionDefinition actionDefinition = getActions().get(actionName);
-        if (actionDefinition != null) {
-            try {
-                Session session = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace());
-                if (selectedItemId == null || !session.itemExists(selectedItemId)) {
-                    log.debug("{} does not exist anymore. Was it just deleted? Resetting path to root...", selectedItemId);
-                    selectedItemId = "/";
-                }
-                final javax.jcr.Item item = session.getItem(selectedItemId);
-                Action action = actionFactory.createAction(actionDefinition, item, this);
-                action.execute();
-            } catch (PathNotFoundException e) {
-                shell.showError("Can't execute action.\n" + e.getMessage(), e);
-            } catch (LoginException e) {
-                shell.showError("Can't execute action.\n" + e.getMessage(), e);
-            } catch (RepositoryException e) {
-                shell.showError("Can't execute action.\n" + e.getMessage(), e);
-            } catch (ActionExecutionException e) {
-                shell.showError("Can't execute action.\n" + e.getMessage(), e);
-            }
-        }
     }
 
     public ContentWorkbenchView asView() {
