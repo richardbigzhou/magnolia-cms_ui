@@ -33,28 +33,33 @@
  */
 package info.magnolia.ui.vaadin.integration.widget.client.applauncher;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.core.client.JavaScriptObject;
 
 /**
- * Viw interface of client side AppLauncher.
- * 
+ * Clinet side of App section description class.
+ *
  */
-public interface VAppLauncherView extends IsWidget {
-
-    void setPresenter(Presenter presenter);
+public final class VAppSectionJSO extends JavaScriptObject {
     
-    void setAppActive(String appName, boolean isActive);
+    protected VAppSectionJSO() {}
     
-    void addAppSection(VAppSectionJSO section);
-
-    void addAppThumbnail(VAppTileJSO appTile, String categoryId);
+    public static native VAppSectionJSO parse(String json) /*-{
+       try {
+         return eval('(' + json + ')');
+       } catch(e) {
+           $wnd.alert(e);
+       } 
+    }-*/;
     
-    /**
-     * Presenter for the AppLauncher view. 
-     */
-    interface Presenter {
-
-        void activateApp(String appId);
-
-    }
+    public final native String getCaption() /*-{
+        return this.caption;
+    }-*/; 
+    
+    public final native String getBackgroundColor() /*-{
+        return this.backgroundColor;
+    }-*/;
+    
+    public final native boolean isPermanent() /*-{
+        return this.isPermanent;
+    }-*/;
 }

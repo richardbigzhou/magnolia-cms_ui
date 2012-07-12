@@ -45,6 +45,7 @@ import org.vaadin.rpc.ServerSideHandler;
 import org.vaadin.rpc.ServerSideProxy;
 import org.vaadin.rpc.client.Method;
 
+import com.google.gson.Gson;
 import com.vaadin.terminal.PaintException;
 import com.vaadin.terminal.PaintTarget;
 import com.vaadin.ui.AbstractComponent;
@@ -85,22 +86,20 @@ public class AppLauncher extends AbstractComponent implements ServerSideHandler 
     }
 
     public void addAppSection(String caption, String color, boolean isPermanent) {
-        appSections.put(caption, new AppSection(caption, color, isPermanent));
+        final AppSection section = new AppSection(caption, color, isPermanent); 
+        appSections.put(caption, section);
         if (isAttached) {
-            if (isPermanent) {
-                proxy.call("addGroup", caption, color);     
-            } else {
-                proxy.call("addMinorGroup", caption, color);   
-            }   
+            proxy.call("addSection", new Gson().toJson(section));     
         }
     }
 
     public void addAppTile(String caption, String icon, String sectionId) {
         final AppSection section = appSections.get(sectionId);
         if (section != null) {
-            section.addAppTile(new AppTile(caption, icon));
+            final AppTile tile = new AppTile(caption, icon);
+            section.addAppTile(tile);
             if (isAttached) {
-                proxy.call("addAppThumbnail", caption, icon, sectionId);   
+                proxy.call("addAppThumbnail", new Gson().toJson(tile), sectionId);   
             }   
         }
     }
@@ -120,7 +119,7 @@ public class AppLauncher extends AbstractComponent implements ServerSideHandler 
     @Override
     public Object[] initRequestFromClient() {
         for (final AppSection section : appSections.values()) {
-            addAppSection(section.caption, section.backGroundColor, section.isPermanent);
+            addAppSection(section.caption, section.backgroundColor, section.isPermanent);
             for (final AppTile tile : section.getAppTiles()) {
                 addAppTile(tile.caption, tile.icon, section.caption);
             }
@@ -138,6 +137,10 @@ public class AppLauncher extends AbstractComponent implements ServerSideHandler 
     public void detach() {
         super.detach();
         isAttached = false;
+        for (final AppSection section : appSections.values()) {
+            section.getAppTiles().clear();
+        }
+        appSections.clear();
     }
     
     @Override
@@ -225,17 +228,17 @@ public class AppLauncher extends AbstractComponent implements ServerSideHandler 
      */
     public static class AppSection implements Serializable {
         
-        private List<AppTile> appTiles = new ArrayList<AppTile>();
+        private transient List<AppTile> appTiles = new ArrayList<AppTile>();
         
         private String caption;
         
-        private String backGroundColor;
+        private String backgroundColor;
         
         private boolean isPermanent;
         
         public AppSection(String caption, String backgroundColor, boolean isPermanent) {
             this.caption = caption;
-            this.backGroundColor = backgroundColor;
+            this.backgroundColor = backgroundColor;
             this.isPermanent = isPermanent;
         }
         
@@ -248,8 +251,8 @@ public class AppLauncher extends AbstractComponent implements ServerSideHandler 
             return caption;
         }
         
-        public String getBackGroundColor() {
-            return backGroundColor;
+        public String getBackgroundColor() {
+            return backgroundColor;
         }
         
         public List<AppTile> getAppTiles() {

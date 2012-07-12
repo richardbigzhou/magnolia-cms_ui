@@ -33,28 +33,26 @@
  */
 package info.magnolia.ui.vaadin.integration.widget.client.applauncher;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.core.client.JavaScriptObject;
 
 /**
- * Viw interface of client side AppLauncher.
- * 
+ * App tile data object received from server.
+ *
  */
-public interface VAppLauncherView extends IsWidget {
-
-    void setPresenter(Presenter presenter);
+public class VAppTileJSO extends JavaScriptObject {
     
-    void setAppActive(String appName, boolean isActive);
+    protected VAppTileJSO() {}
     
-    void addAppSection(VAppSectionJSO section);
-
-    void addAppThumbnail(VAppTileJSO appTile, String categoryId);
+    public native final static VAppTileJSO parse(String json) /*-{
+        return eval('(' + json + ')');
+    }-*/;
     
-    /**
-     * Presenter for the AppLauncher view. 
-     */
-    interface Presenter {
-
-        void activateApp(String appId);
-
-    }
+    public native final String  getCaption() /*-{
+        return this.caption;
+    }-*/;
+    
+    public native final String  getIcon() /*-{
+        return this.icon;
+    }-*/;
+    
 }

@@ -66,29 +66,29 @@ public class VAppLauncherViewImpl extends FlowPanel implements VAppLauncherView,
         this.eventBus.addHandler(AppActivationEvent.TYPE,  this);
     }
 
-    @Override
-    public void addPermanentAppGroup(String caption, String color) {
-        final VPermanentAppTileGroup group = new VPermanentAppTileGroup(eventBus, caption, color);
-        groups.put(caption, group);
-        add(group);
-    }
     
     @Override
-    public void addAppThumbnail(String caption, String iconStyle, String categoryId) {
-        final VAppTile thumbnail = new VAppTile(eventBus, caption, iconStyle);
-        final VAppTileGroup group = groups.get(categoryId);
-        if (group != null) {
-            group.addAppThumbnail(thumbnail);
+    public void addAppSection(VAppSectionJSO section) {
+        if (section.isPermanent()) {
+            addPermanentAppGroup(section.getCaption(), section.getBackgroundColor());
+        } else {
+            addTemporaryAppGroup(section.getCaption(), section.getBackgroundColor());
         }
     }
 
-    @Override
     public void addTemporaryAppGroup(String caption, String color) {
         final VAppTileGroup group = new VTemporaryAppTileGroup(eventBus, color);
         groups.put(caption, group);
         temporarySectionsBar.addGroup(caption, group);
         add(group);
     }
+    
+    public void addPermanentAppGroup(String caption, String color) {
+        final VPermanentAppTileGroup group = new VPermanentAppTileGroup(eventBus, caption, color);
+        groups.put(caption, group);
+        add(group);
+    }
+
 
     @Override
     public void onAppActivated(AppActivationEvent event) {
@@ -109,6 +109,16 @@ public class VAppLauncherViewImpl extends FlowPanel implements VAppLauncherView,
                 final VAppTile tile = entry.getValue().getAppTile(appName);
                 tile.setActive(isActive);
             }
+        }
+    }
+
+
+    @Override
+    public void addAppThumbnail(VAppTileJSO appTile, String categoryId) {
+        final VAppTile thumbnail = new VAppTile(eventBus, appTile);
+        final VAppTileGroup group = groups.get(categoryId);
+        if (group != null) {
+            group.addAppThumbnail(thumbnail);
         }
     }
 }
