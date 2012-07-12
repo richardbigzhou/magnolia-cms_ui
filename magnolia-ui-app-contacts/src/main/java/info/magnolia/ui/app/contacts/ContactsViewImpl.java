@@ -37,7 +37,7 @@ import javax.inject.Inject;
 
 import com.vaadin.ui.Component;
 
-import info.magnolia.ui.admincentral.workbench.ContentWorkbench;
+import info.magnolia.ui.admincentral.workbench.ContentWorkbenchSubApp;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 
@@ -48,10 +48,10 @@ import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 public class ContactsViewImpl implements ContactsView, IsVaadinComponent {
 
     private String jcrWorkspaceName = "contacts";
-    private final ContentWorkbench workbench;
+    private final ContentWorkbenchSubApp workbench;
 
     @Inject
-    public ContactsViewImpl(final ContentWorkbench workbench) {
+    public ContactsViewImpl(final ContentWorkbenchSubApp workbench) {
         this.workbench = workbench;
         workbench.initWorkbench(jcrWorkspaceName);
     }

@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.app.pages.action;
 
-import info.magnolia.ui.admincentral.workbench.ContentWorkbench;
+import info.magnolia.ui.admincentral.workbench.ContentWorkbenchSubApp;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.location.LocationController;
@@ -48,12 +48,12 @@ import javax.inject.Inject;
 public class EditPageAction extends ActionBase<EditPageActionDefinition> {
 
 
-    private final ContentWorkbench workbench;
+    private final ContentWorkbenchSubApp workbench;
     private final LocationController locationController;
     private final static String TOKEN = "pageeditor";
 
     @Inject
-    public EditPageAction(final EditPageActionDefinition definition, ContentWorkbench workbench, LocationController locationController) {
+    public EditPageAction(final EditPageActionDefinition definition, ContentWorkbenchSubApp workbench, LocationController locationController) {
         super(definition);
         this.workbench = workbench;
         this.locationController = locationController;
@@ -63,7 +63,7 @@ public class EditPageAction extends ActionBase<EditPageActionDefinition> {
     @Override
     public void execute() throws ActionExecutionException {
         String nodePath = workbench.getSelectedItemId();
-        Location pageEditorLocation = new DefaultLocation("app", "pages", TOKEN + ":" + nodePath);
+        Location pageEditorLocation = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages", TOKEN + ":" + nodePath);
         locationController.goTo(pageEditorLocation);
     }
 }

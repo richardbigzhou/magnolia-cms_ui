@@ -59,6 +59,7 @@ public class SampleEditorSubApp implements SubApp, SampleEditorView.Listener {
         return name;
     }
 
+    @Override
     public String getCaption() {
         return "Editor " + name;
     }

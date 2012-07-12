@@ -57,7 +57,7 @@ import com.vaadin.ui.Table;
  */
 public class ListViewImpl implements ListView {
 
-    private ContentView.Listener presenter;
+    private ContentView.Listener listener;
 
     private final Table table;
 
@@ -140,8 +140,8 @@ public class ListViewImpl implements ListView {
     }
 
     @Override
-    public void setPresenter(Listener presenter) {
-        this.presenter = presenter;
+    public void setListener(Listener listener) {
+        this.listener = listener;
     }
 
     @Override
@@ -150,9 +150,9 @@ public class ListViewImpl implements ListView {
     }
 
     private void presenterOnItemSelection(String id) {
-        if (presenter != null) {
+        if (listener != null) {
             com.vaadin.data.Item item  = container.getItem(id);
-            presenter.onItemSelection(item);
+            listener.onItemSelection(item);
         }
     }
 
@@ -162,7 +162,7 @@ public class ListViewImpl implements ListView {
         if (container.containsId(itemId)) {
             container.fireItemSetChange();
         } else {
-            log.warn("No item found for Id: "+itemId);
+            log.warn("No item found for Id: " + itemId);
         }
     }
 }

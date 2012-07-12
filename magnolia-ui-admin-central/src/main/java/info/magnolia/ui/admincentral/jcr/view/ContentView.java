@@ -48,7 +48,7 @@ public interface ContentView extends View, IsVaadinComponent {
      * Enumeration for view types.
      * TODO: use lowercase elements and remove custom code so that C2B support "by name" could be leveraged?
      */
-    enum ViewType {
+    public enum ViewType {
         LIST("list"),
         TREE("tree");
 
@@ -74,7 +74,7 @@ public interface ContentView extends View, IsVaadinComponent {
         }
     }
 
-    void setPresenter(Listener presenter);
+    void setListener(Listener listener);
 
 
     /**

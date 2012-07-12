@@ -46,8 +46,8 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PushButton;
 import info.magnolia.rendering.template.AreaDefinition;
-import info.magnolia.ui.widget.editor.gwt.client.VPageEditor;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
+import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 
 import java.util.Map;
 
@@ -66,11 +66,13 @@ public class ComponentPlaceHolder extends AbstractPlaceHolder {
     private FlowPanel buttonWrapper;
     private String label;
     private String labelString;
+    private Model model;
 
 
-    public ComponentPlaceHolder(MgnlElement mgnlElement) throws IllegalArgumentException {
+    public ComponentPlaceHolder(Model model, MgnlElement mgnlElement) throws IllegalArgumentException {
 
-        super(mgnlElement);
+        super(model,mgnlElement);
+        this.model = model;
 
         checkMandatories(mgnlElement.getAttributes());
 
@@ -162,7 +164,7 @@ public class ComponentPlaceHolder extends AbstractPlaceHolder {
             parent.insertFirst(getElement());
         }
         onAttach();
-        VPageEditor.getModel().addComponentPlaceHolder(getMgnlElement(), this);
+        getModel().addComponentPlaceHolder(getMgnlElement(), this);
     }
 
     public void attach(MgnlElement mgnlElement) {
@@ -203,8 +205,10 @@ public class ComponentPlaceHolder extends AbstractPlaceHolder {
         if (this.type.equals(AreaDefinition.TYPE_SINGLE) && !getMgnlElement().getComponents().isEmpty()) {
             throw new IllegalArgumentException();
         }
-
-
     }
 
+    @Override
+    public Model getModel() {
+        return model;
+    }
 }
