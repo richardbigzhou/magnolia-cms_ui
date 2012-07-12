@@ -99,9 +99,9 @@ public class AppLauncherViewImpl implements AppLauncherView, IsVaadinComponent {
 
     @Override
     public void registerApp(AppLayout layout) {
-        for (AppGroup category : layout.getGroups()) {
-            appLauncher.addAppSection(category.getLabel(), category.getBackgroundColor(), category.isPermanent());
-            for (AppGroupEntry entry : category.getApps()) {
+        for (AppGroup group : layout.getGroups()) {
+            appLauncher.addAppSection(group.getLabel(), group.getBackgroundColor(), group.isPermanent());
+            for (AppGroupEntry entry : group.getApps()) {
                 AppDescriptor descriptor = entry.getAppDescriptor();
                 appLauncher.addAppTile(descriptor.getName(), descriptor.getIcon(), descriptor.getCategoryName());
             }
