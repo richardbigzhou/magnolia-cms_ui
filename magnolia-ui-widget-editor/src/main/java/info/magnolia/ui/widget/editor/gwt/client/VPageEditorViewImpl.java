@@ -64,6 +64,7 @@ public class VPageEditorViewImpl extends FlowPanel implements VPageEditorView, V
         this.presenter = presenter;
     }
 
+    @Override
     public Presenter getPresenter() {
         return presenter;
     }
