@@ -39,8 +39,10 @@ import info.magnolia.ui.admincentral.event.ContentChangedEvent;
 import info.magnolia.ui.admincentral.jcr.view.ContentPresenter;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
@@ -78,11 +80,11 @@ import com.vaadin.ui.ComponentContainer;
  * Its main configuration point is the {@link WorkbenchDefinition} through which one defines the JCR
  * workspace to connect to, the columns/properties to display, the available actions and so on.
  *
- * TODO dlipp - rename to ContentWorkbenchSubbApp and implement corresponding Interface (but no longer IsVaadinComponent).
+ * TODO dlipp - IsVaadinComponent will got with SCRUM-1350. Re-added it for now because it's required by other apps (that will be adapted with SCRUM-1350) as well.
  */
-public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView.Listener {
+public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.Listener, IsVaadinComponent {
 
-    private static final Logger log = LoggerFactory.getLogger(ContentWorkbench.class);
+    private static final Logger log = LoggerFactory.getLogger(ContentWorkbenchSubApp.class);
 
     private final WorkbenchDefinition workbenchDefinition;
 
@@ -99,7 +101,7 @@ public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView
     final ContentPresenter contentPresenter;
 
     @Inject
-    public ContentWorkbench(final AppContext context, final ContentWorkbenchView view, final EventBus eventbus, final Shell shell, final WorkbenchActionFactory actionFactory, final ContentPresenter contentPresenter) {
+    public ContentWorkbenchSubApp(final AppContext context, final ContentWorkbenchView view, final EventBus eventbus, final Shell shell, final WorkbenchActionFactory actionFactory, final ContentPresenter contentPresenter) {
         this.view = view;
         this.eventBus = eventbus;
         this.shell = shell;
@@ -118,20 +120,32 @@ public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView
         });
     }
 
+    /**
+     * TODO dlipp - id is currently ignored: to be checked whether we can really drop it!
+     */
     public void initWorkbench(final String id) {
         contentPresenter.initContentView(view);
         view.setListener(this);
         view.initActionbar(workbenchDefinition.getActionbar());
     }
 
+    /**
+     * TODO dlipp - what should happen in here and who's responsibility is it to call it? Maybe the above initWorkbench can be dropped in favor of this method?
+     */
     @Override
-    public ComponentContainer asVaadinComponent() {
+    public View start() {
         return view;
     }
 
     public String getSelectedItemId() {
         return contentPresenter.getSelectedItemId();
     }
+
+    @Override
+    public String getCaption() {
+        return "Content-Workbench";
+    }
+
 
     //
     // ACTIONBAR PRESENTER
@@ -178,4 +192,8 @@ public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView
         return view;
     }
 
+    @Override
+    public ComponentContainer asVaadinComponent() {
+        return view;
+    }
 }
