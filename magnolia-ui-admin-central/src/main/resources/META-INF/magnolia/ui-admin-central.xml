@@ -89,7 +89,7 @@
     </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.model.dialog.definition.FieldDefinition</type>
-      <implementation>info.magnolia.ui.model.dialog.definition.EditFieldDefinition</implementation>
+      <implementation>info.magnolia.ui.model.dialog.definition.ConfiguredDialogDefinition</implementation>
     </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.model.dialog.action.DialogActionDefinition</type>
@@ -102,7 +102,7 @@
     <component>
       <type>info.magnolia.ui.admincentral.jcr.view.builder.ContentViewBuilderProvider</type>
       <workspace>config</workspace>
-      <path>/modules/ui-admin-central/ContentViewBuilderProvider</path>
+      <path>/modules/ui-admin-central/contentViewBuilderProvider</path>
       <observed>true</observed>
       <scope>singleton</scope>
     </component>
