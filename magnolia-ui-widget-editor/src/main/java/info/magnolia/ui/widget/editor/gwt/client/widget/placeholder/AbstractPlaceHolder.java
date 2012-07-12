@@ -34,8 +34,8 @@
 package info.magnolia.ui.widget.editor.gwt.client.widget.placeholder;
 
 import com.google.gwt.user.client.ui.FlowPanel;
-import info.magnolia.ui.widget.editor.gwt.client.VPageEditor;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
+import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 
 /**
  * Abstract Widget for area and component placeholder.
@@ -43,9 +43,11 @@ import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 public class AbstractPlaceHolder extends FlowPanel {
 
     private MgnlElement mgnlElement;
+    private Model model;
 
-    public AbstractPlaceHolder(MgnlElement mgnlElement) {
+    public AbstractPlaceHolder(Model model, MgnlElement mgnlElement) {
         super();
+        this.model = model;
         this.setMgnlElement(mgnlElement);
 
         setStyleName("mgnlEditor mgnlEditorPlaceholder");
@@ -58,7 +60,7 @@ public class AbstractPlaceHolder extends FlowPanel {
 
     @Override
     protected void onAttach() {
-        VPageEditor.getModel().addElements(this.getMgnlElement(), getElement());
+        getModel().addElements(this.getMgnlElement(), getElement());
         super.onAttach();
     }
 
@@ -70,4 +72,7 @@ public class AbstractPlaceHolder extends FlowPanel {
         return mgnlElement;
     }
 
+    public Model getModel() {
+        return model;
+    }
 }

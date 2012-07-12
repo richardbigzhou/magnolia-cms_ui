@@ -34,8 +34,8 @@
 package info.magnolia.ui.widget.editor.gwt.client.dom.processor;
 
 import com.google.gwt.core.client.GWT;
-import info.magnolia.ui.widget.editor.gwt.client.VPageEditor;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
+import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.AreaBar;
 import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.AreaEndBar;
 import info.magnolia.ui.widget.editor.gwt.client.widget.placeholder.AreaPlaceHolder;
@@ -46,30 +46,30 @@ import info.magnolia.ui.widget.editor.gwt.client.widget.placeholder.ComponentPla
  */
 public class AreaProcessor extends MgnlElementProcessor {
 
-    public AreaProcessor(MgnlElement mgnlElement) {
-        super(mgnlElement);
+    public AreaProcessor(Model model, MgnlElement mgnlElement) {
+        super(model, mgnlElement);
     }
 
     @Override
     public void process() {
         AreaBar areaBar = null;
         try {
-            areaBar = new AreaBar(getMgnlElement());
+            areaBar = new AreaBar(getModel(), getMgnlElement());
 
             try {
-                new AreaPlaceHolder(getMgnlElement());
+                new AreaPlaceHolder(getModel(), getMgnlElement());
             }
             catch(IllegalArgumentException e) {
                 GWT.log("Not creating area placeholder for this element. Missing parameters.");
             }
             try {
-                new ComponentPlaceHolder(getMgnlElement());
+                new ComponentPlaceHolder(getModel(), getMgnlElement());
             }
             catch(IllegalArgumentException e) {
                 GWT.log("Not creating component placeholder for this element. Missing parameters.");
             }
 
-            new AreaEndBar(getMgnlElement());
+            new AreaEndBar(getModel(), getMgnlElement());
         }
         catch (IllegalArgumentException e) {
             GWT.log("Not creating areabar and area endbar for this element. Missing parameters. Will be deleted.");
@@ -84,7 +84,7 @@ public class AreaProcessor extends MgnlElementProcessor {
 
 
             // remove it from the Model
-            VPageEditor.getModel().removeMgnlElement(getMgnlElement());
+            getModel().removeMgnlElement(getMgnlElement());
         }
     }
 

@@ -34,8 +34,8 @@
 package info.magnolia.ui.widget.editor.gwt.client.widget.dnd;
 
 import com.google.gwt.dom.client.Element;
-import info.magnolia.ui.widget.editor.gwt.client.VPageEditor;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
+import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.ComponentBar;
 import info.magnolia.ui.widget.editor.gwt.client.widget.placeholder.ComponentPlaceHolder;
 
@@ -48,16 +48,18 @@ public class LegacyDragAndDrop {
 
     public static ComponentBar sourceBar;
     private static MoveWidget moveDiv;
+    private static Model model;
 
-    public static void moveComponentStart(ComponentBar bar) {
-            toggleStyles(bar, true);
+    public static void moveComponentStart(Model model, ComponentBar bar) {
+        LegacyDragAndDrop.model = model;
+        toggleStyles(bar, true);
 
             // reset native drag and drop
             bar.setDraggable(false);
             MgnlElement area = bar.getMgnlElement().getParentArea();
             if (area != null) {
                 for (MgnlElement component : area.getComponents()) {
-                    ComponentBar componentBar = (ComponentBar) VPageEditor.getModel().getEditBar(component);
+                    ComponentBar componentBar = (ComponentBar) getModel().getEditBar(component);
                     if (componentBar != null && componentBar != bar) {
                         componentBar.setDraggable(false);
                     }
@@ -127,7 +129,7 @@ public class LegacyDragAndDrop {
             MgnlElement area = sourceBar.getMgnlElement().getParentArea();
             if (area != null) {
                 for (MgnlElement component : area.getComponents()) {
-                    ComponentBar componentBar = (ComponentBar) VPageEditor.getModel().getEditBar(component);
+                    ComponentBar componentBar = (ComponentBar) getModel().getEditBar(component);
                     if (componentBar != null && componentBar != sourceBar) {
                         componentBar.setDraggable(false);
                     }
@@ -147,7 +149,7 @@ public class LegacyDragAndDrop {
         MgnlElement area = bar.getMgnlElement().getParentArea();
         if (area != null) {
             for (MgnlElement component : area.getComponents()) {
-                ComponentBar componentBar = (ComponentBar) VPageEditor.getModel().getEditBar(component);
+                ComponentBar componentBar = (ComponentBar) getModel().getEditBar(component);
                 if (componentBar != null && componentBar != bar) {
                     componentBar.setStyleName("moveTarget", isMove);
                     //moveOver style can be removed en bloc
@@ -158,7 +160,7 @@ public class LegacyDragAndDrop {
 
                 }
             }
-            ComponentPlaceHolder placeholder = VPageEditor.getModel().getComponentPlaceHolder(area);
+            ComponentPlaceHolder placeholder = getModel().getComponentPlaceHolder(area);
             if (placeholder != null) {
                 placeholder.setStyleName("moveOngoing", isMove);
             }
@@ -167,5 +169,9 @@ public class LegacyDragAndDrop {
 
     public static boolean isMoving() {
         return sourceBar != null;
+    }
+
+    public static Model getModel() {
+        return model;
     }
 }

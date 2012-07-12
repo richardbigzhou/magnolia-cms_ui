@@ -34,61 +34,64 @@
 package info.magnolia.ui.widget.editor.gwt.client;
 
 
-
-import com.google.gwt.user.client.Window;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.LoadEvent;
+import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Frame;
 import com.google.web.bindery.event.shared.EventBus;
-import info.magnolia.ui.widget.editor.gwt.client.event.EditComponentEvent;
-import info.magnolia.ui.widget.editor.gwt.client.event.NewComponentEvent;
 
 /**
  * GWT implementation of MagnoliaShell client side (the view part basically).
  *
  */
-public class VPageEditorViewImpl extends FlowPanel implements VPageEditorView, VPageEditorView.Presenter {
+public class VPageEditorViewImpl extends FlowPanel implements VPageEditorView {
 
 
-    private Presenter presenter;
+    private Listener listener;
     private EventBus eventBus;
+    private Frame iframe;
 
 
     public VPageEditorViewImpl(final EventBus eventBus) {
         super();
         this.eventBus = eventBus;
-        this.setPresenter(this);
+        iframe = new Frame();
+        iframe.addLoadHandler(new LoadHandler() {
+
+            @Override
+            public void onLoad(LoadEvent event) {
+
+                //other handlers are initialized here b/c we need to know the document inside the iframe.
+
+                //make sure we process  html only when the document inside the iframe is loaded.
+                listener.onFrameLoaded(iframe);
+
+            }
+        });
+
+        final Element iframeElement = iframe.getElement();
+        iframeElement.setAttribute("width", "100%");
+        iframeElement.setAttribute("height", "100%");
+        iframeElement.setAttribute("allowTransparency", "true");
+        iframeElement.setAttribute("frameborder", "0");
+        add(iframe);
 
     }
 
     @Override
-    public void setPresenter(Presenter presenter) {
-        this.presenter = presenter;
-    }
-
-    public Presenter getPresenter() {
-        return presenter;
+    public Frame getIframe() {
+        return iframe;
     }
 
     @Override
-    public void onNewComponent(String workspace, String path, String nodeType) {
-        eventBus.fireEvent(new NewComponentEvent(workspace, path, nodeType));
+    public void setListener(Listener listener) {
+        this.listener = listener;
     }
 
     @Override
-    public void onEditComponent(String dialog, String workspace, String path) {
-        eventBus.fireEvent(new EditComponentEvent(workspace, path, dialog));
-
-    }
-
-    @Override
-    public void onDeleteComponent(String path) {
-        //eventBus.fireEvent(deleteEvent);
-        Window.alert("Hi, one fine day I will be able to delete component at path [" + path +"]");
-    }
-
-    @Override
-    public void onMoveComponent() {
-        // TODO decide how to handle move action.
-        Window.alert("Move me here, move me there!");
+    public Listener getListener() {
+        return listener;
     }
 
 }

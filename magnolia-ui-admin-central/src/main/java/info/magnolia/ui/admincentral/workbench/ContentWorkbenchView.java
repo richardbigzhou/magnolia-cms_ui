@@ -34,7 +34,7 @@
 package info.magnolia.ui.admincentral.workbench;
 
 import info.magnolia.ui.admincentral.jcr.view.ContentView;
-import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.admincentral.jcr.view.ContentView.ViewType;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.ComponentContainer;
@@ -47,8 +47,6 @@ import com.vaadin.ui.ComponentContainer;
 public interface ContentWorkbenchView extends ComponentContainer {
 
     void setListener(final Listener listener);
-
-    void initWorkbench(final WorkbenchDefinition definintion);
 
     void setGridType(final ContentView.ViewType type);
 
@@ -64,16 +62,14 @@ public interface ContentWorkbenchView extends ComponentContainer {
     void refresh();
 
     /**
-     * Listener for ContentWorkbenchView's.
+     * Use this method to add sub views hosted by this view.
+     */
+    void addContentView(final ViewType type, final ContentView view);
+
+    /**
+     * TODO dlipp - ActionBarPresenter should be a proper type as well.
      */
     public interface Listener {
-
-        void onItemSelected(final Item item);
-
-        /**
-         * TODO dlipp - to move to real presenter.
-         */
-        String getSelectedItemId();
     }
 
 }

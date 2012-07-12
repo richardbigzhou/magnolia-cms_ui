@@ -42,9 +42,10 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import info.magnolia.ui.widget.editor.gwt.client.VPageEditor;
-import info.magnolia.ui.widget.editor.gwt.client.VPageEditorView.Presenter;
+import info.magnolia.ui.widget.editor.gwt.client.VPageEditorView.Listener;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 import info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils;
+import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 
 /**
  * Base class for horizontal bars with buttons.
@@ -58,9 +59,11 @@ public abstract class AbstractBar extends FlowPanel {
     private FlowPanel primaryButtons;
     private FlowPanel secondaryButtons;
 
-    private final Presenter presenter = VPageEditor.getView().getPresenter();
+    private final Listener listener = VPageEditor.getView().getListener();
+    private Model model;
 
-    public AbstractBar(MgnlElement mgnlElement) {
+    public AbstractBar(Model model, MgnlElement mgnlElement) {
+        this.model = model;
 
         this.setMgnlElement(mgnlElement);
 
@@ -146,8 +149,8 @@ public abstract class AbstractBar extends FlowPanel {
         return getElement().getStyle();
     }
 
-    public Presenter getPresenter() {
-        return presenter;
+    public Listener getListener() {
+        return listener;
     }
 
     /**
@@ -187,8 +190,8 @@ public abstract class AbstractBar extends FlowPanel {
 
     @Override
     protected void onAttach() {
-        VPageEditor.getModel().addElements(this.getMgnlElement(), getElement());
-        VPageEditor.getModel().addEditBar(this.getMgnlElement(), this);
+        getModel().addElements(this.getMgnlElement(), getElement());
+        getModel().addEditBar(this.getMgnlElement(), this);
         super.onAttach();
     }
 
@@ -204,9 +207,13 @@ public abstract class AbstractBar extends FlowPanel {
         MgnlElement parent = mgnlElement.getParent();
         if (parent != null) {
             for (MgnlElement component : parent.getComponents()) {
-                VPageEditor.getModel().getEditBar(component).primaryButtons.setVisible(visible);
-                VPageEditor.getModel().getEditBar(component).secondaryButtons.setVisible(visible);
+                getModel().getEditBar(component).primaryButtons.setVisible(visible);
+                getModel().getEditBar(component).secondaryButtons.setVisible(visible);
             }
         }
+    }
+
+    public Model getModel() {
+        return model;
     }
 }

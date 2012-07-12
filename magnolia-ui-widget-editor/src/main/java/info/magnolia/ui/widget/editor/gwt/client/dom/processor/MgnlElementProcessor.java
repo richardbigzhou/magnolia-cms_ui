@@ -34,6 +34,7 @@
 package info.magnolia.ui.widget.editor.gwt.client.dom.processor;
 
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
+import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 
 /**
  * Abstract Class for MgnlElement processors.
@@ -42,7 +43,10 @@ public abstract class MgnlElementProcessor {
 
     private MgnlElement mgnlElement;
 
-    public MgnlElementProcessor(MgnlElement mgnlElement) {
+    private Model model;
+
+    public MgnlElementProcessor(Model model, MgnlElement mgnlElement) {
+        this.model = model;
         this.setMgnlElement(mgnlElement);
     }
 
@@ -54,6 +58,10 @@ public abstract class MgnlElementProcessor {
 
     public MgnlElement getMgnlElement() {
         return mgnlElement;
+    }
+
+    public Model getModel() {
+        return model;
     }
 
 }

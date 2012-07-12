@@ -35,14 +35,13 @@ package info.magnolia.ui.admincentral.workbench;
 
 import info.magnolia.ui.admincentral.app.content.ContentAppDescriptor;
 import info.magnolia.ui.admincentral.event.ContentChangedEvent;
-import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
+import info.magnolia.ui.admincentral.jcr.view.ContentPresenter;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 import java.util.HashMap;
@@ -53,7 +52,6 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.data.Item;
 import com.vaadin.ui.ComponentContainer;
 
 
@@ -71,13 +69,15 @@ import com.vaadin.ui.ComponentContainer;
  * <p>
  * Its main configuration point is the {@link WorkbenchDefinition} through which one defines the JCR
  * workspace to connect to, the columns/properties to display, the available actions and so on.
+ * 
+ * TODO dlipp - rename to ContentWorkbenchSubbApp and implement corresponding Interface (but no
+ * longer IsVaadinComponent).
  */
-@SuppressWarnings("serial")
 public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView.Listener {
 
     private static final Logger log = LoggerFactory.getLogger(ContentWorkbench.class);
 
-    private WorkbenchDefinition workbenchDefinition;
+    private final WorkbenchDefinition workbenchDefinition;
 
     private final ContentWorkbenchView view;
 
@@ -89,18 +89,17 @@ public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView
 
     private final Map<String, ActionDefinition> actions = new HashMap<String, ActionDefinition>();
 
-    private String selectedItemId;
-
-    private final AppContext context;
+    final ContentPresenter contentPresenter;
 
     @Inject
-    public ContentWorkbench(final AppContext context, final ContentWorkbenchView view, final EventBus eventbus, final Shell shell, final WorkbenchActionFactory actionFactory) {
-        this.context = context;
+    public ContentWorkbench(final AppContext context, final ContentWorkbenchView view, final EventBus eventbus, final Shell shell, final WorkbenchActionFactory actionFactory, final ContentPresenter contentPresenter) {
         this.view = view;
         this.eventBus = eventbus;
         this.shell = shell;
         this.actionFactory = actionFactory;
-        view.setListener(this);
+        this.contentPresenter = contentPresenter;
+
+        workbenchDefinition = ((ContentAppDescriptor) context.getAppDescriptor()).getWorkbench();
 
         eventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
 
@@ -113,9 +112,8 @@ public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView
     }
 
     public void initWorkbench(final String id) {
-        // load the workbench specific configuration if existing
-        workbenchDefinition = ((ContentAppDescriptor) context.getAppDescriptor()).getWorkbench();
-        view.initWorkbench(workbenchDefinition);
+        contentPresenter.initContentView(view);
+        view.setListener(this);
         // view.initActionbar(workbenchDefinition.getActionbar());
     }
 
@@ -124,29 +122,34 @@ public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView
         return view;
     }
 
-    @Override
-    public void onItemSelected(Item item) {
-        if (item == null) {
-            log.warn("Got null javax.jcr.Item. No ItemSelectedEvent will be fired.");
-            return;
-        }
-        try {
-            // FIXME this seems to be triggered twice both for click row event and tableValue
-            // change even when no value has changed and only a click happened on table, see
-            // info.magnolia.ui.admincentral.tree.view.TreeViewImpl.TreeViewImpl
-            // and jcrBrowser internal obj registering for those events.
-            selectedItemId = ((JcrItemAdapter) item).getItemId();
-            log.debug("javax.jcr.Item at {} was selected. Firing ItemSelectedEvent...", selectedItemId);
-            eventBus.fireEvent(new ItemSelectedEvent(workbenchDefinition.getWorkspace(), selectedItemId));
-        } catch (Exception e) {
-            shell.showError("An error occurred while selecting a row in the data grid", e);
-        }
+    public String getSelectedItemId() {
+        return contentPresenter.getSelectedItemId();
     }
 
-    @Override
-    public String getSelectedItemId() {
-        return selectedItemId;
-    }
+    // public void onActionbarItemClicked(final String actionName) {
+    // ActionDefinition actionDefinition = getActions().get(actionName);
+    // if (actionDefinition != null) {
+    // try {
+    // Session session = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace());
+    // final String selectedItemId = getSelectedItemId();
+    // if (selectedItemId == null || !session.itemExists(selectedItemId)) {
+    // log.debug("{} does not exist anymore. Was it just deleted? Resetting path to root...",
+    // selectedItemId);
+    // }
+    // final javax.jcr.Item item = session.getItem(selectedItemId);
+    // Action action = actionFactory.createAction(actionDefinition, item, this);
+    // action.execute();
+    // } catch (PathNotFoundException e) {
+    // shell.showError("Can't execute action.\n" + e.getMessage(), e);
+    // } catch (LoginException e) {
+    // shell.showError("Can't execute action.\n" + e.getMessage(), e);
+    // } catch (RepositoryException e) {
+    // shell.showError("Can't execute action.\n" + e.getMessage(), e);
+    // } catch (ActionExecutionException e) {
+    // shell.showError("Can't execute action.\n" + e.getMessage(), e);
+    // }
+    // }
+    // }
 
     public ContentWorkbenchView asView() {
         return view;
