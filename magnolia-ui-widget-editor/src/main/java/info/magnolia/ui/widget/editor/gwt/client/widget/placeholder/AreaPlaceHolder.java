@@ -36,8 +36,8 @@ package info.magnolia.ui.widget.editor.gwt.client.widget.placeholder;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.Label;
 import info.magnolia.rendering.template.AreaDefinition;
-import info.magnolia.ui.widget.editor.gwt.client.VPageEditor;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
+import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 
 import java.util.Map;
 
@@ -47,10 +47,12 @@ import java.util.Map;
 public class AreaPlaceHolder extends AbstractPlaceHolder {
 
     private Label areaName;
+    private Model model;
 
-    public AreaPlaceHolder(MgnlElement mgnlElement) throws IllegalArgumentException {
+    public AreaPlaceHolder(Model model, MgnlElement mgnlElement) throws IllegalArgumentException {
 
-        super(mgnlElement);
+        super(model, mgnlElement);
+        this.model = model;
 
         checkMandatories(mgnlElement.getAttributes());
 
@@ -71,15 +73,15 @@ public class AreaPlaceHolder extends AbstractPlaceHolder {
     public void attach() {
         Element parent = getMgnlElement().getAreaElement();
         if (parent == null) {
-            parent = VPageEditor.getModel().getEditBar(getMgnlElement()).getElement().getParentElement();
-            parent.insertAfter(getElement(), VPageEditor.getModel().getEditBar(getMgnlElement()).getElement());
+            parent = getModel().getEditBar(getMgnlElement()).getElement().getParentElement();
+            parent.insertAfter(getElement(), getModel().getEditBar(getMgnlElement()).getElement());
         }
         else {
             parent.insertFirst(getElement());
         }
 
         onAttach();
-        VPageEditor.getModel().addAreaPlaceHolder(getMgnlElement(), this);
+        getModel().addAreaPlaceHolder(getMgnlElement(), this);
     }
 
     public void setActive(boolean active) {
@@ -96,4 +98,7 @@ public class AreaPlaceHolder extends AbstractPlaceHolder {
         }
     }
 
+    public Model getModel() {
+        return model;
+    }
 }

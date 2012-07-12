@@ -43,22 +43,10 @@ import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.dom.client.LinkElement;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
-import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
-import com.google.gwt.event.dom.client.LoadEvent;
-import com.google.gwt.event.dom.client.LoadHandler;
-import com.google.gwt.event.dom.client.MouseMoveEvent;
-import com.google.gwt.event.dom.client.MouseMoveHandler;
-import com.google.gwt.event.dom.client.MouseUpEvent;
-import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.Window.ScrollEvent;
-import com.google.gwt.user.client.Window.ScrollHandler;
-import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Frame;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.Paintable;
@@ -76,7 +64,8 @@ import info.magnolia.ui.widget.editor.gwt.client.event.NewComponentEvent;
 import info.magnolia.ui.widget.editor.gwt.client.event.NewComponentEventHandler;
 import info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils;
 import info.magnolia.ui.widget.editor.gwt.client.model.ModelStorage;
-import info.magnolia.ui.widget.editor.gwt.client.widget.dnd.LegacyDragAndDrop;
+import info.magnolia.ui.widget.editor.gwt.client.model.focus.FocusModel;
+import info.magnolia.ui.widget.editor.gwt.client.model.focus.FocusModelImpl3;
 import org.vaadin.rpc.client.ClientSideHandler;
 import org.vaadin.rpc.client.ClientSideProxy;
 
@@ -89,7 +78,7 @@ import java.util.List;
  * TODO fgrilli: this class badly needs clean up and refactoring.
  */
 @SuppressWarnings("serial")
-public class VPageEditor extends FlowPanel implements Paintable, ClientSideHandler {
+public class VPageEditor extends Composite implements VPageEditorView.Listener, Paintable, ClientSideHandler {
 
     private static boolean isPreview = false;
 
@@ -98,15 +87,9 @@ public class VPageEditor extends FlowPanel implements Paintable, ClientSideHandl
 
     private static String locale;
 
-    private final static ModelStorage model = ModelStorage.getInstance();
-
-    private Document contentDocument;
+    private final ModelStorage model;
 
     private final EventBus eventBus;
-
-    private Frame iframe;
-
-    private LinkedList<MgnlElement> mgnlElements = new LinkedList<MgnlElement>();
 
     private ClientSideProxy proxy = new ClientSideProxy(this);
 
@@ -115,33 +98,20 @@ public class VPageEditor extends FlowPanel implements Paintable, ClientSideHandl
     protected ApplicationConnection client;
 
     protected String paintableId;
+    private FocusModel focusModel;
+    private String contextPath;
 
 
     public VPageEditor() {
-        eventBus = new SimpleEventBus();
-        view = new VPageEditorViewImpl(eventBus);
-        iframe = new Frame();
-        iframe.addLoadHandler(new LoadHandler() {
+        this.eventBus = new SimpleEventBus();
+        this.view = new VPageEditorViewImpl(eventBus);
+        this.model = new ModelStorage();
+        this.focusModel = new FocusModelImpl3(model);
 
-            @Override
-            public void onLoad(LoadEvent event) {
-                IFrameElement frameElement = IFrameElement.as(iframe.getElement());
-                contentDocument = frameElement.getContentDocument();
-                //other handlers are initialized here b/c we need to know the document inside the iframe.
-                initNativeHandlers(iframe.getElement());
-                //make sure we process  html only when the document inside the iframe is loaded.
-                process(contentDocument);
-            }
-        });
-
+        view.setListener(this);
         registerEventHandlers();
-        final Element iframeElement = iframe.getElement();
-        iframeElement.setAttribute("width", "100%");
-        iframeElement.setAttribute("height", "100%");
-        iframeElement.setAttribute("allowTransparency", "true");
-        iframeElement.setAttribute("frameborder", "0");
-        add(iframe);
 
+        initWidget(view.asWidget());
 
     }
 
@@ -163,13 +133,14 @@ public class VPageEditor extends FlowPanel implements Paintable, ClientSideHandl
         if (client.updateComponent(this, uidl, true)) {
             return;
         }
-        iframe.getElement().setId(paintableId);
-        iframe.setUrl(getSrc(uidl, client));
+        view.getIframe().getElement().setId(paintableId);
+        view.getIframe().setUrl(getSrc(uidl, client));
 
+        setContextPathFromUIDL(uidl);
         proxy.update(this, uidl, client);
     }
 
-    public static ModelStorage getModel() {
+    public ModelStorage getModel() {
         return model;
     }
 
@@ -193,8 +164,19 @@ public class VPageEditor extends FlowPanel implements Paintable, ClientSideHandl
         return url;
     }
 
+    /**
+     * Helper to return the contextPath sent from server.
+     */
+    private void setContextPathFromUIDL(UIDL uidl) {
+        String contextPath = uidl.getStringAttribute("contextPath");
+        if (contextPath == null) {
+            contextPath = "";
+        }
+        this.contextPath = contextPath;
+    }
+
     public void onMouseUp(final Element element) {
-        getModel().getFocusModel().onMouseUp(element);
+        focusModel.onMouseUp(element);
 
     }
 
@@ -224,66 +206,12 @@ public class VPageEditor extends FlowPanel implements Paintable, ClientSideHandl
         });
     }
 
-    private void initHandlers() {
-      addDomHandler(new MouseUpHandler() {
-            @Override
-            public void onMouseUp(MouseUpEvent event) {
-
-                getModel().getFocusModel().onMouseUp((Element)event.getNativeEvent().getEventTarget().cast());
-                event.stopPropagation();
-            }
-        }, MouseUpEvent.getType());
-
-      addDomHandler(new KeyDownHandler() {
-            @Override
-            public void onKeyDown(KeyDownEvent event) {
-                if (event.getNativeKeyCode() == KeyCodes.KEY_ESCAPE) {
-                    //if we're moving an element abort move
-                    if(LegacyDragAndDrop.isMoving()) {
-                        LegacyDragAndDrop.moveComponentReset();
-                    } else {
-                        //VPageEditor.enablePreview(!isPreview);
-                    }
-                    event.preventDefault();
-                }
-            }
-        }, KeyDownEvent.getType());
-
-
-
-        addDomHandler(new MouseMoveHandler() {
-
-            @Override
-            public void onMouseMove(MouseMoveEvent event) {
-
-                Element moveElement = contentDocument.getOwnerDocument().getElementById("mgnlEditorMoveDiv");
-
-                if (moveElement != null) {
-                    int x = event.getClientX() + Window.getScrollLeft();
-                    int y = event.getClientY() + 15 + Window.getScrollTop();
-                    moveElement.getStyle().setTop(y, Unit.PX);
-                    moveElement.getStyle().setLeft(x, Unit.PX);
-                }
-            }
-        }, MouseMoveEvent.getType());
-
-        // save x/y positon
-        Window.addWindowScrollHandler(new ScrollHandler() {
-
-            @Override
-            public void onWindowScroll(ScrollEvent event) {
-                String value = event.getScrollLeft() + ":" + event.getScrollTop();
-                JavascriptUtils.setEditorPositionCookie(value);
-            }
-        });
-    }
-
     private void injectEditorStyles(final Document document) {
         HeadElement head = HeadElement.as(document.getElementsByTagName("head").getItem(0));
         LinkElement cssLink = document.createLinkElement();
         cssLink.setType("text/css");
         cssLink.setRel("stylesheet");
-        cssLink.setHref("VAADIN/widgetsets/info.magnolia.ui.vaadin.widgetset.MagnoliaWidgetSet/editor/styles.css");
+        cssLink.setHref(contextPath + "/VAADIN/widgetsets/info.magnolia.ui.vaadin.widgetset.MagnoliaWidgetSet/editor/styles.css");
 
         head.insertFirst(cssLink);
     }
@@ -343,7 +271,6 @@ public class VPageEditor extends FlowPanel implements Paintable, ClientSideHandl
         }
     }
 
-
     private void process(final Document document) {
         //TODO how will we handle preview in 5.0?
         /*String mgnlVersion = Window.Location.getParameter(MGNL_VERSION_PARAMETER);
@@ -361,7 +288,7 @@ public class VPageEditor extends FlowPanel implements Paintable, ClientSideHandl
         }*/
 
         JavascriptUtils.setWindowLocation(Window.Location.getPath());
-        JavascriptUtils.getCookiePosition();
+        //JavascriptUtils.getCookiePosition();
         locale = JavascriptUtils.detectCurrentLocale();
 
         //inject editor stylesheet inside head of doc contained in iframe.
@@ -373,8 +300,8 @@ public class VPageEditor extends FlowPanel implements Paintable, ClientSideHandl
 
         GWT.log("Time spent to process cms comments: " + (System.currentTimeMillis() - startTime) + "ms");
 
-        JavascriptUtils.getCookieContentId();
-        JavascriptUtils.resetEditorCookies();
+        //JavascriptUtils.getCookieContentId();
+        //JavascriptUtils.resetEditorCookies();
 
         //GWT.log("Running onPageEditorReady callbacks...");
         //onPageEditorReady();
@@ -387,14 +314,14 @@ public class VPageEditor extends FlowPanel implements Paintable, ClientSideHandl
                 if (childNode.getNodeType() == Comment.COMMENT_NODE) {
 
                     try {
-                        mgnlElement = CommentProcessor.process(childNode, mgnlElement);
+                        mgnlElement = CommentProcessor.process(model, childNode, mgnlElement);
                     } catch (IllegalArgumentException e) {
                         GWT.log("Not CMSComment element, skipping: " + e.toString());
                     } catch (Exception e) {
                         GWT.log("Caught undefined exception: " + e.toString());
                     }
                 } else if (childNode.getNodeType() == Node.ELEMENT_NODE && mgnlElement != null) {
-                    ElementProcessor.process(childNode, mgnlElement);
+                    ElementProcessor.process(model, childNode, mgnlElement);
                 }
 
                 processDocument(childNode, mgnlElement);
@@ -411,7 +338,7 @@ public class VPageEditor extends FlowPanel implements Paintable, ClientSideHandl
 
             for (MgnlElement mgnlElement : elements) {
                 try {
-                    MgnlElementProcessor processor = MgnlElementProcessorFactory.getProcessor(mgnlElement);
+                    MgnlElementProcessor processor = MgnlElementProcessorFactory.getProcessor(model, mgnlElement);
                     processor.process();
                 } catch (IllegalArgumentException e) {
                     GWT.log("MgnlFactory could not instantiate class. The element is neither an area nor component.");
@@ -424,5 +351,42 @@ public class VPageEditor extends FlowPanel implements Paintable, ClientSideHandl
     public static VPageEditorView getView() {
         return view;
     }
+
+
+    @Override
+    public void onNewComponent(String workspace, String path, String nodeType) {
+        eventBus.fireEvent(new NewComponentEvent(workspace, path, nodeType));
+    }
+
+    @Override
+    public void onEditComponent(String dialog, String workspace, String path) {
+        eventBus.fireEvent(new EditComponentEvent(workspace, path, dialog));
+
+    }
+
+    @Override
+    public void onFrameLoaded(Frame iframe) {
+        Element element= iframe.getElement();
+        initNativeHandlers(element);
+
+        IFrameElement frameElement = IFrameElement.as(element);
+        Document contentDocument = frameElement.getContentDocument();
+        process(contentDocument);
+        focusModel.toggleRootAreaBar(true);
+
+    }
+
+    @Override
+    public void onDeleteComponent(String path) {
+        //eventBus.fireEvent(deleteEvent);
+        Window.alert("Hi, one fine day I will be able to delete component at path [" + path +"]");
+    }
+
+    @Override
+    public void onMoveComponent() {
+        // TODO decide how to handle move action.
+        Window.alert("Move me here, move me there!");
+    }
+
 
 }

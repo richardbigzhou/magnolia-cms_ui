@@ -89,7 +89,7 @@ public class PageEditorViewImpl implements PageEditorView, IsVaadinComponent {
     @Override
     public void initPageEditor(String nodePath) {
         String contextPath = MgnlContext.getContextPath();
-        pageEditor = new PageEditor(contextPath + nodePath);
+        pageEditor = new PageEditor(contextPath, nodePath);
         container.addComponent(pageEditor);
     }
 

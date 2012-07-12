@@ -40,6 +40,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.PushButton;
 import info.magnolia.rendering.template.AreaDefinition;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
+import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 
 import java.util.Map;
 
@@ -61,8 +62,8 @@ public class AreaBar extends AbstractBar {
     private boolean created;
     private boolean editable = true;
 
-    public AreaBar(MgnlElement mgnlElement) throws IllegalArgumentException {
-        super(mgnlElement);
+    public AreaBar(Model model, MgnlElement mgnlElement) throws IllegalArgumentException {
+        super(model, mgnlElement);
 
 
         checkMandatories(mgnlElement.getAttributes());
@@ -87,7 +88,7 @@ public class AreaBar extends AbstractBar {
                 editButton.addClickHandler(new ClickHandler() {
                     @Override
                     public void onClick(ClickEvent event) {
-                        getPresenter().onEditComponent(dialog, workspace, path);
+                        getListener().onEditComponent(dialog, workspace, path);
                     }
                 });
                 editButton.setTitle(getI18nMessage("buttons.area.edit.js"));
@@ -102,7 +103,7 @@ public class AreaBar extends AbstractBar {
                 removeButton.addClickHandler(new ClickHandler() {
                     @Override
                     public void onClick(ClickEvent event) {
-                        getPresenter().onDeleteComponent(path);
+                        getListener().onDeleteComponent(path);
                     }
                 });
                 removeButton.setTitle(getI18nMessage("buttons.area.delete.js"));
@@ -117,7 +118,7 @@ public class AreaBar extends AbstractBar {
                 createbutton.addClickHandler(new ClickHandler() {
                     @Override
                     public void onClick(ClickEvent event) {
-                        getPresenter().onNewComponent(workspace, path, "mgnl:area");
+                        getListener().onNewComponent(workspace, path, "mgnl:area");
                     }
                 });
                 createbutton.setTitle(getI18nMessage("buttons.area.add.js"));

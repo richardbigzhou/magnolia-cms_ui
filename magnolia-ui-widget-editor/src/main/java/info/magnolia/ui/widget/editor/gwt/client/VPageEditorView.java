@@ -34,6 +34,7 @@
 package info.magnolia.ui.widget.editor.gwt.client;
 
 
+import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.IsWidget;
 
 /**
@@ -41,19 +42,23 @@ import com.google.gwt.user.client.ui.IsWidget;
  */
 public interface VPageEditorView extends IsWidget {
 
+    Frame getIframe();
+
     /**
-     * Presenter.
+     * Listener.
      */
-    interface Presenter {
+    interface Listener {
         void onDeleteComponent(final String path);
         //TODO decide how we will handle moving components
         void onMoveComponent();
         void onNewComponent(final String workspace, final String path, final String nodeType);
         void onEditComponent(final String dialog, final String workspace, final String path);
+
+        void onFrameLoaded(Frame frame);
     }
 
-    void setPresenter(Presenter presenter);
+    void setListener(Listener listener);
 
-    Presenter getPresenter();
+    Listener getListener();
 
 }

@@ -46,6 +46,7 @@ import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.user.client.ui.PushButton;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
+import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 import info.magnolia.ui.widget.editor.gwt.client.widget.dnd.DragAndDrop;
 import info.magnolia.ui.widget.editor.gwt.client.widget.dnd.LegacyDragAndDrop;
 
@@ -66,9 +67,9 @@ public class ComponentBar extends AbstractBar  {
     private boolean isInherited;
     private boolean editable = true;
 
-    public ComponentBar(MgnlElement mgnlElement) throws IllegalArgumentException {
+    public ComponentBar(Model model, MgnlElement mgnlElement) throws IllegalArgumentException {
 
-        super(mgnlElement);
+        super(model, mgnlElement);
 
         checkMandatories(mgnlElement.getAttributes());
         addStyleName("component");
@@ -133,7 +134,7 @@ public class ComponentBar extends AbstractBar  {
     }
 
     private void createDragAndDropHandlers() {
-        DragAndDrop.dragAndDrop(this);
+        DragAndDrop.dragAndDrop(getModel(), this);
     }
 
     private void createMouseEventsHandlers() {
@@ -170,7 +171,7 @@ public class ComponentBar extends AbstractBar  {
         remove.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                getPresenter().onDeleteComponent(path);
+                getListener().onDeleteComponent(path);
             }
         });
         remove.setTitle(getI18nMessage("buttons.component.delete.js"));
@@ -184,7 +185,7 @@ public class ComponentBar extends AbstractBar  {
             @Override
             public void onClick(ClickEvent event) {
                 toggleButtons(false);
-                LegacyDragAndDrop.moveComponentStart(ComponentBar.this);
+                LegacyDragAndDrop.moveComponentStart(getModel(), ComponentBar.this);
             }
         });
         move.setTitle(getI18nMessage("buttons.component.move.js"));
@@ -197,7 +198,7 @@ public class ComponentBar extends AbstractBar  {
             edit.addClickHandler(new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent event) {
-                    getPresenter().onEditComponent(dialog, workspace, path);
+                    getListener().onEditComponent(dialog, workspace, path);
                 }
             });
             edit.setTitle(getI18nMessage("buttons.component.edit.js"));
