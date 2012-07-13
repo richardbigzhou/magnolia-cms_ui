@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,64 +34,17 @@
 package info.magnolia.ui.model.column.definition;
 
 /**
- * Base implementation for all special ColumnDefinitions. Some subclass do not add additional
- * behavior but still are required because in jcr we configure ColumnDefinition to Column mappings
- * and only with specific Definitions we know what Column-Type to map to.
+ * Interface for a column definition.
  */
-public abstract class AbstractColumnDefinition implements ColumnDefinition {
+public interface ColumnDefinition {
 
-    private String name;
+    String getName();
 
-    private String label;
+    String getPropertyName();
 
-    private int width = 1;
+    String getLabel();
 
-    private boolean sortable = false;
+    int getWidth();
 
-    private String propertyName;
-
-    @Override
-    public String getPropertyName() {
-        return propertyName;
-    }
-
-    public void setPropertyName(String propertyName) {
-        this.propertyName = propertyName;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public int getWidth() {
-        return width;
-    }
-
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
-    @Override
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    @Override
-    public boolean isSortable() {
-        return sortable;
-    }
-
-    public void setSortable(boolean sortable) {
-        this.sortable = sortable;
-    }
+    boolean isSortable();
 }
