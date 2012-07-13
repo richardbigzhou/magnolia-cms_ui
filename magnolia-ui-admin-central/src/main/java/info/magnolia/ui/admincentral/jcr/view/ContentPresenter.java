@@ -109,7 +109,6 @@ public class ContentPresenter implements ContentView.Listener {
             log.debug("javax.jcr.Item at {} was selected. Firing ItemSelectedEvent...", selectedItemId);
             eventBus.fireEvent(new ItemSelectedEvent(workspaceName, selectedItemId));
         } catch (Exception e) {
-            // TODO dlipp - to check - throwing an Exception should be sufficient...
             shell.showError("An error occurred while selecting a row in the data grid", e);
         }
     }
