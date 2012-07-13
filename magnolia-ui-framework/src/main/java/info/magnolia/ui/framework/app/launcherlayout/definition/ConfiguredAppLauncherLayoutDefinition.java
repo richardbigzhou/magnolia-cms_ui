@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,14 +31,28 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.definition;
+package info.magnolia.ui.framework.app.launcherlayout.definition;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Definition for Validators.
+ * Default implementation of {@link AppLauncherLayoutDefinition} used for configuration in the repository.
  */
-public interface ValidatorDefinition {
+public class ConfiguredAppLauncherLayoutDefinition implements AppLauncherLayoutDefinition {
 
-    String getErrorMessage();
+    private List<AppLauncherGroupDefinition> groups = new ArrayList<AppLauncherGroupDefinition>();
 
-    void setErrorMessage(String errorMessage);
+    @Override
+    public List<AppLauncherGroupDefinition> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(List<AppLauncherGroupDefinition> groups) {
+        this.groups = groups;
+    }
+
+    public void addGroup(AppLauncherGroupDefinition appGroup) {
+        groups.add(appGroup);
+    }
 }

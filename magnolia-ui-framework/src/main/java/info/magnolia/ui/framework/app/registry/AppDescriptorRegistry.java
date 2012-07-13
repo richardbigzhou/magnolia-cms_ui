@@ -82,8 +82,8 @@ public class AppDescriptorRegistry {
         return provider.getAppDescriptor();
     }
 
-    public boolean isAppDescriptorRegistered(String id) {
-        return registry.get(id) != null;
+    public boolean isAppDescriptorRegistered(String name) {
+        return registry.get(name) != null;
     }
 
     /**

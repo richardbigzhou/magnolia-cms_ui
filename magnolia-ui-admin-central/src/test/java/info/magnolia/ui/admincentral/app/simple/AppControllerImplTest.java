@@ -36,7 +36,6 @@ package info.magnolia.ui.admincentral.app.simple;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.After;
 import org.junit.Before;
@@ -55,11 +54,11 @@ import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventHandler;
 import info.magnolia.ui.framework.app.AppLifecycleEventType;
-import info.magnolia.ui.framework.app.layout.AppCategory;
-import info.magnolia.ui.framework.app.layout.AppLayout;
-import info.magnolia.ui.framework.app.layout.AppLayoutImpl;
-import info.magnolia.ui.framework.app.layout.AppLayoutManager;
-import info.magnolia.ui.framework.app.layout.AppLayoutManagerImpl;
+import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
+import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManagerImpl;
+import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroup;
+import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroupEntry;
+import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayout;
 import info.magnolia.ui.framework.event.SimpleEventBus;
 import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.message.MessagesManager;
@@ -71,9 +70,9 @@ import info.magnolia.ui.framework.shell.Shell;
  */
 public class AppControllerImplTest {
 
-    private AppLayoutManager appLayoutManager = null;
+    private AppLauncherLayoutManager appLauncherLayoutManager = null;
     private GuiceComponentProvider componentProvider = null;
-    private AppControllerImpl appControler = null;
+    private AppControllerImpl appController = null;
     private AppEventCollector eventCollector = null;
     private String appName_1 = "app1";
     private String appName_2 = "app2";
@@ -90,7 +89,7 @@ public class AppControllerImplTest {
         eventCollector = new AppEventCollector();
         eventBus.addHandler(AppLifecycleEvent.class, eventCollector);
 
-        appControler = new AppControllerImpl(moduleRegistry, componentProvider, appLayoutManager, locationController, shell, eventBus, messagesManager);
+        appController = new AppControllerImpl(moduleRegistry, componentProvider, appLauncherLayoutManager, locationController, messagesManager, shell, eventBus);
     }
 
     @After
@@ -107,7 +106,7 @@ public class AppControllerImplTest {
         String appName = appName_1 + "_name";
 
         // WHEN
-        appControler.startIfNotAlreadyRunning(appName);
+        appController.startIfNotAlreadyRunning(appName);
 
         // THEN
         //Check Events
@@ -131,7 +130,7 @@ public class AppControllerImplTest {
         String appName = appName_1 + "_name";
 
         // WHEN
-        appControler.startIfNotAlreadyRunningThenFocus(appName);
+        appController.startIfNotAlreadyRunningThenFocus(appName);
 
         // THEN
         //Check Events
@@ -151,7 +150,7 @@ public class AppControllerImplTest {
     public void testStopApp_oneApp() {
         // GIVEN
         String appName = appName_1 + "_name";
-        appControler.startIfNotAlreadyRunningThenFocus(appName);
+        appController.startIfNotAlreadyRunningThenFocus(appName);
         //Check
         assertEquals(true, AppTestImpl.res.containsKey("TestPageApp0"));
         AppTestImpl pageApp = (AppTestImpl) AppTestImpl.res.get("TestPageApp0");
@@ -159,7 +158,7 @@ public class AppControllerImplTest {
         assertEquals(true, pageApp.events.get(0).startsWith("start()"));
 
         // WHEN
-        appControler.stopApp(appName);
+        appController.stopApp(appName);
 
         // THEN
         assertEquals(3, eventCollector.appLifecycleEvent.size());
@@ -176,20 +175,20 @@ public class AppControllerImplTest {
         // GIVEN
         //Start first App
         String appName1 = appName_1 + "_name";
-        appControler.startIfNotAlreadyRunningThenFocus(appName1);
+        appController.startIfNotAlreadyRunningThenFocus(appName1);
         //Check
         assertEquals(true, AppTestImpl.res.containsKey("TestPageApp0"));
         AppTestImpl pageApp1 = (AppTestImpl) AppTestImpl.res.get("TestPageApp0");
 
         //Start second App
         String appName2 = appName_2 + "_name";
-        appControler.startIfNotAlreadyRunningThenFocus(appName2);
+        appController.startIfNotAlreadyRunningThenFocus(appName2);
         //Check
         assertEquals(true, AppTestImpl.res.containsKey("TestPageApp1"));
         AppTestImpl pageApp2 = (AppTestImpl) AppTestImpl.res.get("TestPageApp1");
 
         // WHEN
-        appControler.stopApp(appName2);
+        appController.stopApp(appName2);
 
         // THEN
         assertEquals(6, eventCollector.appLifecycleEvent.size());
@@ -212,20 +211,20 @@ public class AppControllerImplTest {
         // GIVEN
         //Start first App
         String appName1 = appName_1 + "_name";
-        appControler.startIfNotAlreadyRunningThenFocus(appName1);
+        appController.startIfNotAlreadyRunningThenFocus(appName1);
         //Check
         assertEquals(true, AppTestImpl.res.containsKey("TestPageApp0"));
         AppTestImpl.res.get("TestPageApp0");
 
         //Start second App
         String appName2 = appName_2 + "_name";
-        appControler.startIfNotAlreadyRunningThenFocus(appName2);
+        appController.startIfNotAlreadyRunningThenFocus(appName2);
         //Check
         assertEquals(true, AppTestImpl.res.containsKey("TestPageApp1"));
         AppTestImpl pageApp2 = (AppTestImpl) AppTestImpl.res.get("TestPageApp1");
 
         // WHEN
-        appControler.stopCurrentApp();
+        appController.stopCurrentApp();
 
         // THEN
         assertEquals(2, pageApp2.events.size());
@@ -238,40 +237,48 @@ public class AppControllerImplTest {
         // GIVEN
         String appName1 = appName_1 + "_name";
         //Check
-        assertEquals(false, appControler.isAppStarted(appName1));
+        assertEquals(false, appController.isAppStarted(appName1));
         //Start App
-        appControler.startIfNotAlreadyRunningThenFocus(appName1);
+        appController.startIfNotAlreadyRunningThenFocus(appName1);
         //Check
-        assertEquals(true, appControler.isAppStarted(appName1));
+        assertEquals(true, appController.isAppStarted(appName1));
 
         // WHEN
-        appControler.stopCurrentApp();
+        appController.stopCurrentApp();
 
         // THEN
-        assertEquals(false, appControler.isAppStarted(appName1));
+        assertEquals(false, appController.isAppStarted(appName1));
     }
 
     /**
-     * Init a LayoutManager containing 2 category (cat1 and cat2) with
+     * Init a LayoutManager containing 2 groups (group1 and group2) with
      * one app each (app1 and app2) linket to {TestApp}.
      */
     private void setAppLayoutManager() {
 
-        appLayoutManager = mock(AppLayoutManagerImpl.class);
-        //Set cat1 with App1
+        appLauncherLayoutManager = mock(AppLauncherLayoutManagerImpl.class);
+        //Set group1 with App1
         AppDescriptor app1 = AppTestUtility.createAppDescriptor(appName_1, AppTestImpl.class);
-        AppCategory cat1 = AppTestUtility.createAppCategory("cat1", app1);
-        //Set cat2 with App2
+        AppLauncherGroup group1 = AppTestUtility.createAppGroup("group1", app1);
+        //Set group2 with App2
         AppDescriptor app2 = AppTestUtility.createAppDescriptor("app2", AppTestImpl.class);
-        AppCategory cat2 = AppTestUtility.createAppCategory("cat2", app2);
-        cat2.addApp(app2);
-        Map<String, AppCategory> categories = new HashMap<String, AppCategory>();
-        categories.put("cat1", cat1);
-        categories.put("cat2", cat2);
+        AppLauncherGroup group2 = AppTestUtility.createAppGroup("group2", app2);
 
-        AppLayout appLayout = new AppLayoutImpl(categories);
+        AppLauncherGroupEntry entry1 = new AppLauncherGroupEntry();
+        entry1.setName(app1.getName());
+        entry1.setAppDescriptor(app1);
+        group1.addApp(entry1);
 
-        when(appLayoutManager.getLayout()).thenReturn(appLayout);
+        AppLauncherGroupEntry entry2 = new AppLauncherGroupEntry();
+        entry2.setName(app2.getName());
+        entry2.setAppDescriptor(app2);
+        group2.addApp(entry2);
+
+        AppLauncherLayout appLauncherLayout = new AppLauncherLayout();
+        appLauncherLayout.addGroup(group1);
+        appLauncherLayout.addGroup(group2);
+
+        when(appLauncherLayoutManager.getLayoutForCurrentUser()).thenReturn(appLauncherLayout);
     }
 
     public static GuiceComponentProvider initComponentProvider() {

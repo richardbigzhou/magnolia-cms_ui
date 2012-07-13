@@ -37,6 +37,8 @@ import javax.inject.Inject;
 
 import info.magnolia.module.ModuleLifecycle;
 import info.magnolia.module.ModuleLifecycleContext;
+import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
+import info.magnolia.ui.framework.app.launcherlayout.definition.AppLauncherLayoutDefinition;
 import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptorManager;
 import info.magnolia.ui.model.dialog.registry.ConfiguredDialogDefinitionManager;
 
@@ -47,23 +49,39 @@ import info.magnolia.ui.model.dialog.registry.ConfiguredDialogDefinitionManager;
  */
 public class AdminCentralModule implements ModuleLifecycle {
 
+    private AppLauncherLayoutDefinition appLauncherLayout;
+    private AppLauncherLayoutManager appLauncherLayoutManager;
     private ConfiguredAppDescriptorManager configuredAppDescriptorManager;
     private ConfiguredDialogDefinitionManager configuredDialogDefinitionManager;
 
     @Inject
-    public AdminCentralModule(ConfiguredAppDescriptorManager configuredAppDescriptorManager, ConfiguredDialogDefinitionManager configuredDialogDefinitionManager) {
+    public AdminCentralModule(AppLauncherLayoutManager appLauncherLayoutManager, ConfiguredAppDescriptorManager configuredAppDescriptorManager, ConfiguredDialogDefinitionManager configuredDialogDefinitionManager) {
+        this.appLauncherLayoutManager = appLauncherLayoutManager;
         this.configuredAppDescriptorManager = configuredAppDescriptorManager;
         this.configuredDialogDefinitionManager = configuredDialogDefinitionManager;
     }
 
     @Override
-    public void start(ModuleLifecycleContext arg0) {
-        this.configuredAppDescriptorManager.start();
-        this.configuredDialogDefinitionManager.start();
+    public void start(ModuleLifecycleContext context) {
+        if (context.getPhase() == ModuleLifecycleContext.PHASE_SYSTEM_STARTUP) {
+            this.configuredAppDescriptorManager.start();
+            this.configuredDialogDefinitionManager.start();
+            appLauncherLayoutManager.setLayout(getAppLauncherLayout());
+        }
+        if (context.getPhase() == ModuleLifecycleContext.PHASE_MODULE_RESTART) {
+            appLauncherLayoutManager.setLayout(getAppLauncherLayout());
+        }
     }
 
     @Override
-    public void stop(ModuleLifecycleContext arg0) {
+    public void stop(ModuleLifecycleContext context) {
     }
 
+    public AppLauncherLayoutDefinition getAppLauncherLayout() {
+        return appLauncherLayout;
+    }
+
+    public void setAppLauncherLayout(AppLauncherLayoutDefinition appLauncherLayout) {
+        this.appLauncherLayout = appLauncherLayout;
+    }
 }

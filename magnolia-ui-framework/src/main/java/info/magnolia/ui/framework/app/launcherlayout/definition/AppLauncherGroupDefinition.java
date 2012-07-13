@@ -31,22 +31,25 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.sample;
+package info.magnolia.ui.framework.app.launcherlayout.definition;
 
-import info.magnolia.ui.framework.view.View;
+import java.util.List;
 
 /**
- * View for the main tab of sample app.
+ * Defines a a group in the layout of apps in the app launcher.
+ *
+ * @see AppLauncherLayoutDefinition
+ * @see AppLauncherGroupEntryDefinition
  */
-public interface SampleMainView extends View {
+public interface AppLauncherGroupDefinition {
 
-    void setListener(Listener listener);
+    String getName();
 
-    /**
-     * Listener for SampleMainView.
-     */
-    public interface Listener {
+    String getLabel();
 
-        void onOpenNewEditor();
-    }
+    boolean isPermanent();
+
+    String getColor();
+
+    List<AppLauncherGroupEntryDefinition> getApps();
 }

@@ -35,16 +35,10 @@ package info.magnolia.ui.admincentral.workbench;
 
 import info.magnolia.ui.admincentral.jcr.view.ContentView;
 import info.magnolia.ui.admincentral.jcr.view.ContentView.ViewType;
-import info.magnolia.ui.admincentral.jcr.view.builder.ContentViewBuilderProvider;
 import info.magnolia.ui.widget.actionbar.ActionbarView;
 
 import java.util.EnumMap;
 import java.util.Map;
-
-import javax.inject.Inject;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.Button;
@@ -60,10 +54,6 @@ import com.vaadin.ui.VerticalLayout;
  */
 public class ContentWorkbenchViewImpl extends CustomComponent implements ContentWorkbenchView {
 
-    private static final Logger log = LoggerFactory.getLogger(ContentWorkbenchViewImpl.class);
-
-    private final ContentViewBuilderProvider contentViewBuilderProvider;
-
     private final HorizontalLayout root = new HorizontalLayout();
 
     private final VerticalLayout workbenchContainer = new VerticalLayout();
@@ -74,10 +64,8 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
 
     private ContentWorkbenchView.Listener contentWorkbenchViewListener;
 
-    @Inject
-    public ContentWorkbenchViewImpl(final ContentViewBuilderProvider contentViewBuilderProvider) {
+    public ContentWorkbenchViewImpl() {
         super();
-        this.contentViewBuilderProvider = contentViewBuilderProvider;
         setCompositionRoot(root);
         setSizeFull();
 

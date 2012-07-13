@@ -34,8 +34,9 @@
 package info.magnolia.ui.admincentral.shellapp.applauncher;
 
 import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.app.layout.AppCategory;
-import info.magnolia.ui.framework.app.layout.AppLayout;
+import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroup;
+import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroupEntry;
+import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayout;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 import info.magnolia.ui.vaadin.integration.widget.AppLauncher;
 import info.magnolia.ui.vaadin.integration.widget.AppLauncher.AppActivatedEvent;
@@ -97,10 +98,11 @@ public class AppLauncherViewImpl implements AppLauncherView, IsVaadinComponent {
     }
 
     @Override
-    public void registerApp(AppLayout layout) {
-        for (AppCategory category : layout.getCategories()) {
-            appLauncher.addAppSection(category.getLabel(), category.getBackgroundColor(), category.isPermanent());
-            for (AppDescriptor descriptor : category.getApps()) {
+    public void registerApp(AppLauncherLayout layout) {
+        for (AppLauncherGroup group : layout.getGroups()) {
+            appLauncher.addAppSection(group.getLabel(), group.getColor(), group.isPermanent());
+            for (AppLauncherGroupEntry entry : group.getApps()) {
+                AppDescriptor descriptor = entry.getAppDescriptor();
                 appLauncher.addAppTile(descriptor.getName(), descriptor.getIcon(), descriptor.getCategoryName());
             }
         }

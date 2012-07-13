@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,14 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.definition;
+package info.magnolia.ui.app.sample.setup;
+
+import info.magnolia.module.DefaultModuleVersionHandler;
 
 /**
- * Definition for Validators.
+ * Version handler for sample app module.
  */
-public interface ValidatorDefinition {
-
-    String getErrorMessage();
-
-    void setErrorMessage(String errorMessage);
+public class SampleAppModuleVersionHandler extends DefaultModuleVersionHandler {
 }

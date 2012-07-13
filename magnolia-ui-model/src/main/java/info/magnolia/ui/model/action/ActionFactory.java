@@ -34,7 +34,10 @@
 package info.magnolia.ui.model.action;
 
 /**
- * Interface for an action factory
+ * Interface for an action factory.
+ * 
+ * @param <D> the action definition type
+ * @param <I> the action implementation type
  */
 public interface ActionFactory<D extends ActionDefinition, I extends Action> {
 

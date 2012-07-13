@@ -61,14 +61,16 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class ConfiguredDialogDefinitionManager extends ModuleConfigurationObservingManager {
 
-    protected final Logger log = LoggerFactory.getLogger(getClass());
+    static final String DIALOG_CONFIG_NODE_NAME = "dialogs50";
+
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     private Set<String> registeredIds = new HashSet<String>();
     private final DialogDefinitionRegistry dialogDefinitionRegistry;
 
     @Inject
     public ConfiguredDialogDefinitionManager(ModuleRegistry moduleRegistry, DialogDefinitionRegistry dialogDefinitionRegistry) {
-        super("dialogs", moduleRegistry);
+        super(DIALOG_CONFIG_NODE_NAME, moduleRegistry);
         this.dialogDefinitionRegistry = dialogDefinitionRegistry;
     }
 
@@ -112,6 +114,6 @@ public class ConfiguredDialogDefinitionManager extends ModuleConfigurationObserv
         final String path = configNode.getPath();
         final String[] pathElements = path.split("/");
         final String moduleName = pathElements[2];
-        return moduleName + ":" + StringUtils.removeStart(path, "/modules/" + moduleName + "/dialogs/");
+        return moduleName + ":" + StringUtils.removeStart(path, "/modules/" + moduleName + "/" + DIALOG_CONFIG_NODE_NAME+ "/");
     }
 }

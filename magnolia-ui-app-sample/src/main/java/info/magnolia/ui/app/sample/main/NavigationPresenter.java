@@ -31,39 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.layout;
+package info.magnolia.ui.app.sample.main;
 
-import java.util.Collection;
-
-import info.magnolia.ui.framework.app.AppDescriptor;
+import javax.inject.Inject;
 
 /**
- * Represents the available app groups organized by category.
+ * Presenter for the navigation.
  */
-public interface AppLayout {
+public class NavigationPresenter implements NavigationView.Listener {
 
-    /**
-     * Return the registered {AppCategory}s.
-     */
-    Collection<AppCategory> getCategories();
+    private SampleMainSubApp mainSubApp;
+    private NavigationView view;
 
-    /**
-     * Returns the specified category.
-     *
-     * @throws IllegalArgumentException: If key don't exist.
-     */
-    AppCategory getCategory(String name) throws IllegalArgumentException;
+    @Inject
+    public NavigationPresenter(NavigationView view) {
+        this.view = view;
+    }
 
-    /**
-     * Returns the AppDescriptor for a given name.
-     *
-     * @throws IllegalArgumentException: If key don't exist.
-     */
-    AppDescriptor getAppDescriptor(String name) throws IllegalArgumentException;
+    public void setMainSubApp(SampleMainSubApp mainSubApp) {
+        this.mainSubApp = mainSubApp;
+    }
 
-    /**
-     * Checks if the app is already registered.
-     */
-    boolean isAppAlreadyRegistered(String name);
+    public NavigationView start() {
+        view.setListener(this);
+        return view;
+    }
 
+    @Override
+    public void onItemSelected(String name) {
+        mainSubApp.onItemSelected(name);
+    }
 }

@@ -31,64 +31,57 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.messages;
+package info.magnolia.ui.app.sample.main;
 
-import java.util.Date;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
-import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.app.sample.SampleApp;
 import info.magnolia.ui.framework.app.SubApp;
-import info.magnolia.ui.framework.message.Message;
-import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.framework.view.View;
 
 /**
- * Sub app for the main tab in the message app.
+ * SubApp for the main tab in sample app.
  */
-public class MessagesAppMainSubApp implements SubApp, MessagesView.Listener {
+@Singleton
+public class SampleMainSubApp implements SubApp, SampleMainView.Listener {
 
-    private AppContext appContext;
-    private MessagesView view;
+    private SampleApp sampleApp;
+    private SampleMainView sampleMainView;
+    private NavigationPresenter navigationPresenter;
+    private ContentDisplayPresenter contentDisplayPresenter;
 
     @Inject
-    public MessagesAppMainSubApp(AppContext appContext, MessagesView view) {
-        this.appContext = appContext;
-        this.view = view;
-        view.setListener(this);
+    public SampleMainSubApp(SampleMainView sampleMainView, NavigationPresenter navigationPresenter, ContentDisplayPresenter contentDisplayPresenter) {
+        this.sampleMainView = sampleMainView;
+        this.contentDisplayPresenter = contentDisplayPresenter;
+        this.navigationPresenter = navigationPresenter;
     }
 
-    @Override
-    public String getCaption() {
-        return "Messages";
+    public void setSampleApp(SampleApp sampleApp) {
+        this.sampleApp = sampleApp;
     }
 
     @Override
     public View start() {
-        return view;
+
+        ContentDisplayView contentDisplayView = contentDisplayPresenter.start();
+
+        navigationPresenter.setMainSubApp(this);
+        NavigationView navigationView = navigationPresenter.start();
+
+        sampleMainView.setListener(this);
+        sampleMainView.setLeftView(navigationView);
+        sampleMainView.setRightView(contentDisplayView);
+        return sampleMainView;
     }
 
     @Override
-    public void showConfirmationMessage(String message) {
-        appContext.showConfirmationMessage(message);
+    public String getCaption() {
+        return "Sample";
     }
 
-    @Override
-    public void handleLocalMessage(MessageType type, String subject, String message) {
-        final Message msg = new Message();
-        msg.setSubject(subject);
-        msg.setMessage(message);
-        msg.setType(type);
-        msg.setTimestamp(new Date().getTime());
-        appContext.sendLocalMessage(msg);
-    }
-
-    @Override
-    public void handleGlobalMessage(MessageType type, String subject, String message) {
-        final Message msg = new Message();
-        msg.setSubject(subject);
-        msg.setMessage(message);
-        msg.setType(type);
-        msg.setTimestamp(new Date().getTime());
-        appContext.broadcastMessage(msg);
+    public void onItemSelected(String name) {
+        contentDisplayPresenter.setResourceToDisplay(name);
     }
 }

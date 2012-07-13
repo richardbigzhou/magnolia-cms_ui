@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,14 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.definition;
+package info.magnolia.ui.framework.app.launcherlayout;
+
+import info.magnolia.ui.framework.app.launcherlayout.definition.AppLauncherLayoutDefinition;
 
 /**
- * Definition for Validators.
+ * Manages the launcher layout displayed in the app launcher. Fires an {@link AppLauncherLayoutChangedEvent} of the system event bus
+ * when the layout changes.
+ *
+ * @see AppLauncherLayout
+ * @see AppLauncherLayoutChangedEvent
+ * @see AppLauncherLayoutChangedEventHandler
  */
-public interface ValidatorDefinition {
+public interface AppLauncherLayoutManager {
 
-    String getErrorMessage();
+    /**
+     * Returns the {@link AppLauncherLayout} defined for the current user. Empty groups or groups where the current user doesn't
+     * have access to any of the apps are not returned. Disabled apps are not included in the response nor are apps that
+     * are not present in the {@link info.magnolia.ui.framework.app.registry.AppDescriptorRegistry}. The returned object
+     * is also populated with {@link info.magnolia.ui.framework.app.AppDescriptor} for quick access.
+     */
+    AppLauncherLayout getLayoutForCurrentUser();
 
-    void setErrorMessage(String errorMessage);
+    void setLayout(AppLauncherLayoutDefinition layout);
 }

@@ -31,63 +31,70 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.layout;
+package info.magnolia.ui.framework.app.launcherlayout;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import info.magnolia.ui.framework.app.AppDescriptor;
-
 /**
- * Defines a category and the apps that belong to it.
+ * Defines a group of apps displayed in the app launcher including display properties of the group.
+ *
+ * @see AppLauncherLayout
+ * @see AppLauncherGroupEntry
+ * @see AppLauncherLayoutManager
  */
-public class AppCategory implements Comparable<AppCategory> {
+public class AppLauncherGroup {
 
+    private String name;
     private String label;
-    
-    private String backgroundColor;
-    
-    private boolean isPermanent;
-    
-    private List<AppDescriptor> apps = new ArrayList<AppDescriptor>();
+    private boolean permanent;
+    private String color;
+    private List<AppLauncherGroupEntry> apps;
 
-    public void setPermanent(boolean isPermanent) {
-        this.isPermanent = isPermanent;
+    public String getName() {
+        return name;
     }
-    
-    public void setBackgroundColor(String backgroundColor) {
-        this.backgroundColor = backgroundColor;
+
+    public void setName(String name) {
+        this.name = name;
     }
-    
-    public void setLabel(String label) {
-        this.label = label;
-    }
-    
-    public String getBackgroundColor() {
-        return backgroundColor;
-    }
-    
-    public boolean isPermanent() {
-        return isPermanent;
-    }
-    
+
     public String getLabel() {
         return label;
     }
 
-    public List<AppDescriptor> getApps() {
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public boolean isPermanent() {
+        return permanent;
+    }
+
+    public void setPermanent(boolean permanent) {
+        this.permanent = permanent;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public List<AppLauncherGroupEntry> getApps() {
+        if (apps == null) {
+            apps = new ArrayList<AppLauncherGroupEntry>();
+        }
         return apps;
     }
 
-    public void addApp(AppDescriptor descriptor) {
-        apps.add(descriptor);
+    public void setApps(List<AppLauncherGroupEntry> apps) {
+        this.apps = apps;
     }
 
-    @Override
-    public int compareTo(AppCategory o) {
-        if (this.label == null || o.getLabel() == null) {
-            return 0;
-        }
-        return label.compareTo(o.getLabel());
+    public void addApp(AppLauncherGroupEntry entry) {
+        getApps().add(entry);
     }
 }

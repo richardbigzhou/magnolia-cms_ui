@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,14 +31,48 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.definition;
+package info.magnolia.ui.app.sample.main;
+
+import javax.inject.Inject;
+
+import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalSplitPanel;
+
+import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
+import info.magnolia.ui.vaadin.integration.view.VaadinComponentUtil;
 
 /**
- * Definition for Validators.
+ * View implementation of the main tab in sample app.
  */
-public interface ValidatorDefinition {
+public class SampleMainViewImpl implements SampleMainView, IsVaadinComponent {
 
-    String getErrorMessage();
+    private Listener listener;
+    private HorizontalSplitPanel layout;
 
-    void setErrorMessage(String errorMessage);
+    @Inject
+    public SampleMainViewImpl() {
+        layout = new HorizontalSplitPanel();
+        layout.setSplitPosition(50);
+    }
+
+    @Override
+    public void setListener(Listener listener) {
+        this.listener = listener;
+    }
+
+    @Override
+    public Component asVaadinComponent() {
+        return layout;
+    }
+
+    @Override
+    public void setRightView(View right) {
+        layout.setSecondComponent(VaadinComponentUtil.toVaadinComponent(right));
+    }
+
+    @Override
+    public void setLeftView(View left) {
+        layout.setFirstComponent(VaadinComponentUtil.toVaadinComponent(left));
+    }
 }

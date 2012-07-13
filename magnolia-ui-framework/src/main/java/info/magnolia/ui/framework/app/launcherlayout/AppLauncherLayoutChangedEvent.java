@@ -31,44 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.layout.event;
+package info.magnolia.ui.framework.app.launcherlayout;
 
 import info.magnolia.ui.framework.event.Event;
 
 /**
- * Event sent by {@link info.magnolia.ui.framework.app.layout.AppLayoutManager}.
+ * Event dispatched when the launcher layout changes.
+ *
+ * @see AppLauncherLayoutManager
+ * @see AppLauncherLayoutChangedEventHandler
  */
-public class LayoutEvent implements Event<LayoutEventHandler> {
-
-    private final LayoutEventType eventType;
-
-    private final String appName;
-
-    public LayoutEvent(LayoutEventType eventType, String appName) {
-        this.eventType = eventType;
-        this.appName = appName;
-    }
-
-    public LayoutEventType getEventType() {
-        return this.eventType;
-    }
-
-    public String getAppName() {
-        return this.appName;
-    }
-
+public class AppLauncherLayoutChangedEvent implements Event<AppLauncherLayoutChangedEventHandler> {
 
     @Override
-    public void dispatch(LayoutEventHandler handler) {
-        if (eventType == null) {
-            return;
-        }
-
-        switch (eventType) {
-            case RELOAD_APP:
-                handler.onReloadApp(this);
-                break;
-        }
+    public void dispatch(AppLauncherLayoutChangedEventHandler handler) {
+        handler.onAppLayoutChanged(this);
     }
-
 }

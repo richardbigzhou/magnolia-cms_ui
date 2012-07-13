@@ -35,7 +35,11 @@ package info.magnolia.ui.app.sample;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang.StringUtils;
+
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.app.sample.editor.SampleEditorSubApp;
+import info.magnolia.ui.app.sample.main.SampleMainSubApp;
 import info.magnolia.ui.framework.app.AbstractApp;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.SubApp;
@@ -56,11 +60,11 @@ public class SampleApp extends AbstractApp {
         this.context = context;
         this.componentProvider = componentProvider;
         this.mainSubApp = mainSubApp;
-        this.mainSubApp.setSampleApp(this);
     }
 
     @Override
     public SubApp start(Location location) {
+        this.mainSubApp.setSampleApp(this);
         return mainSubApp;
     }
 
@@ -70,12 +74,18 @@ public class SampleApp extends AbstractApp {
 
     @Override
     public void locationChanged(Location location) {
+
+        DefaultLocation l = (DefaultLocation) location;
+
+        String token = l.getToken();
+        if (StringUtils.isNotBlank(token)) {
+            openNewEditor(token);
+        }
     }
 
-    public void openNewEditor(String name) {
+    private void openNewEditor(String name) {
         SampleEditorSubApp editorSubApp = componentProvider.getComponent(SampleEditorSubApp.class);
         editorSubApp.setName(name);
         context.openSubApp(editorSubApp);
-        context.setAppLocation(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "sample", editorSubApp.getCaption()));
     }
 }

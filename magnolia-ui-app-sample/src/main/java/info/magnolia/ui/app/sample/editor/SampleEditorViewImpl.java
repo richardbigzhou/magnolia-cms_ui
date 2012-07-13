@@ -31,26 +31,45 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.layout;
+package info.magnolia.ui.app.sample.editor;
+
+import javax.inject.Inject;
+
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.VerticalLayout;
+
+import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 /**
- * Manages the {@link AppLayout}.
+ * View implementation of an editor tab in sample app.
  */
-public interface AppLayoutManager {
+public class SampleEditorViewImpl implements SampleEditorView, IsVaadinComponent {
 
-    /**
-     * Return the {@link AppLayout} defined for the current user.
-     * Return an empty AppLayout if nothing set for profile.
-     */
-    AppLayout getLayout();
+    private Listener listener;
+    private String name;
+    private VerticalLayout layout;
 
-    /**
-     * Check if the given App name is part of the categories defined for the current profile.
-     */
-    boolean isAppDescriptorRegistered(String name);
+    @Inject
+    public SampleEditorViewImpl() {
+    }
 
-    /**
-     * Check if the given Category name is part of the categories defined for the current profile.
-     */
-    boolean isCategoryRegistered(String name);
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public void setListener(Listener listener) {
+        this.listener = listener;
+    }
+
+    @Override
+    public Component asVaadinComponent() {
+        if (layout == null) {
+            layout = new VerticalLayout();
+            layout.addComponent(new Label("<center>Sample Editor " + name + "</center>", Label.CONTENT_XHTML));
+        }
+        return layout;
+    }
 }

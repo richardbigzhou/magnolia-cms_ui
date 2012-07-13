@@ -45,30 +45,30 @@ public interface FieldDefinition extends UiItemDefinition {
     static final String TEXT_FIELD_TYPE = "text";
     static final String CHECKBOX_FIELD_TYPE = "checkbox";
 
-    public abstract String getDescription();
+    String getDescription();
 
-    public abstract void setDescription(String description);
+    void setDescription(String description);
 
-    public abstract String getType();
+    String getType();
 
-    public abstract void setType(String type);
+    void setType(String type);
 
-    public abstract boolean isRequired();
+    boolean isRequired();
 
-    public abstract void setRequired(boolean required);
+    void setRequired(boolean required);
 
-    public abstract void addValidator(ValidatorDefinition validator);
+    void addValidator(ValidatorDefinition validator);
 
-    public abstract void setValidators(List<ValidatorDefinition> validators);
+    void setValidators(List<ValidatorDefinition> validators);
 
-    public abstract List<ValidatorDefinition> getValidators();
+    List<ValidatorDefinition> getValidators();
 
-    public abstract void setDefaultValue(String defaultValue);
+    void setDefaultValue(String defaultValue);
 
-    public abstract String getDefaultValue();
+    String getDefaultValue();
 
-    public abstract void setSaveInfo(boolean saveInfo);
+    void setSaveInfo(boolean saveInfo);
 
-    public abstract boolean getSaveInfo();
+    boolean getSaveInfo();
 
 }

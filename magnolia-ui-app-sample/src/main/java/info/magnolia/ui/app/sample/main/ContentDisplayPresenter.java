@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,14 +31,40 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.definition;
+package info.magnolia.ui.app.sample.main;
+
+import javax.inject.Inject;
+
+import info.magnolia.ui.framework.location.DefaultLocation;
+import info.magnolia.ui.framework.location.LocationController;
 
 /**
- * Definition for Validators.
+ * Presenter for the content display.
  */
-public interface ValidatorDefinition {
+public class ContentDisplayPresenter implements ContentDisplayView.Listener {
 
-    String getErrorMessage();
+    private ContentDisplayView view;
+    private LocationController locationController;
+    private String name;
 
-    void setErrorMessage(String errorMessage);
+    @Inject
+    public ContentDisplayPresenter(ContentDisplayView view, LocationController locationController) {
+        this.view = view;
+        this.locationController = locationController;
+    }
+
+    public ContentDisplayView start() {
+        view.setListener(this);
+        return view;
+    }
+
+    public void setResourceToDisplay(String name) {
+        this.name = name;
+        view.setResource(name);
+    }
+
+    @Override
+    public void onOpenInNewEditor() {
+        locationController.goTo(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "sample", name));
+    }
 }

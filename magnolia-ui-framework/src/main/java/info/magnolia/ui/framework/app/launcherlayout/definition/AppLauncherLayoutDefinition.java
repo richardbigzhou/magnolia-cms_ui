@@ -31,12 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.sample;
+package info.magnolia.ui.framework.app.launcherlayout.definition;
 
-import info.magnolia.module.DefaultModuleVersionHandler;
+import java.util.List;
 
 /**
- * Version handler for sample app module.
+ * Defines the layout of apps in the app launcher. Apps are organized into groups.
+ *
+ * @see AppLauncherGroupDefinition
+ * @see AppLauncherGroupEntryDefinition
  */
-public class SampleAppModuleVersionHandler extends DefaultModuleVersionHandler {
+public interface AppLauncherLayoutDefinition {
+
+    List<AppLauncherGroupDefinition> getGroups();
 }

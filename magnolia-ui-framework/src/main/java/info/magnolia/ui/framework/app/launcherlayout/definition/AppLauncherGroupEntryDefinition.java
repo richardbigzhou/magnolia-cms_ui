@@ -31,48 +31,21 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.sample;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
-import org.apache.commons.lang.RandomStringUtils;
-
-import info.magnolia.ui.framework.app.SubApp;
-import info.magnolia.ui.framework.view.View;
+package info.magnolia.ui.framework.app.launcherlayout.definition;
 
 /**
- * SubApp for the main tab in sample app.
+ * Defines the appearance of an app in the app launcher.
+ *
+ * @see AppLauncherLayoutDefinition
+ * @see AppLauncherGroupDefinition
  */
-@Singleton
-public class SampleMainSubApp implements SubApp, SampleMainView.Listener {
+public interface AppLauncherGroupEntryDefinition {
 
-    private SampleApp sampleApp;
-    private SampleMainView sampleMainView;
+    String getName();
 
-    @Inject
-    public SampleMainSubApp(SampleMainView sampleMainView) {
-        this.sampleMainView = sampleMainView;
-    }
+    boolean isEnabled();
 
-    public void setSampleApp(SampleApp sampleApp) {
-        this.sampleApp = sampleApp;
-    }
+    String getIconFont();
 
-    @Override
-    public View start() {
-        sampleMainView.setListener(this);
-        return sampleMainView;
-    }
-
-    @Override
-    public String getCaption() {
-        return "Sample";
-    }
-
-    @Override
-    public void onOpenNewEditor() {
-        String name = RandomStringUtils.randomNumeric(2);
-        sampleApp.openNewEditor(name);
-    }
+    String getIconCharacter();
 }

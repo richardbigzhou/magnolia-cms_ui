@@ -34,14 +34,13 @@
 package info.magnolia.ui.admincentral.app.simple;
 
 import info.magnolia.ui.framework.app.App;
-import info.magnolia.ui.framework.app.layout.AppCategory;
-import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
 import info.magnolia.ui.framework.app.AppDescriptor;
-
+import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroup;
+import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroupEntry;
+import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
 
 /**
  * Utility Class for the App TestCases.
- *
  */
 public class AppTestUtility {
 
@@ -49,20 +48,24 @@ public class AppTestUtility {
      * Create a AppDescriptor.
      */
     public static AppDescriptor createAppDescriptor(String startLibell, Class<? extends App> appClass) {
-        ConfiguredAppDescriptor res = new ConfiguredAppDescriptor();
-        res.setAppClass(appClass);
-        res.setIcon(startLibell+"_icon");
-        res.setLabel(startLibell+"_label");
-        res.setName(startLibell+"_name");
-        return res;
+        ConfiguredAppDescriptor descriptor = new ConfiguredAppDescriptor();
+        descriptor.setAppClass(appClass);
+        descriptor.setIcon(startLibell + "_icon");
+        descriptor.setLabel(startLibell + "_label");
+        descriptor.setName(startLibell + "_name");
+        return descriptor;
     }
 
-    public static AppCategory createAppCategory(String name, AppDescriptor... appDescriptors) {
-        AppCategory res = new AppCategory();
-        res.setLabel(name);
-        for(AppDescriptor descriptor: appDescriptors) {
-            res.addApp(descriptor);
+    public static AppLauncherGroup createAppGroup(String name, AppDescriptor... descriptors) {
+        AppLauncherGroup group = new AppLauncherGroup();
+        group.setName(name);
+        group.setLabel(name);
+        for (AppDescriptor descriptor : descriptors) {
+            AppLauncherGroupEntry entry = new AppLauncherGroupEntry();
+            entry.setName(descriptor.getName());
+            entry.setAppDescriptor(descriptor);
+            group.addApp(entry);
         }
-        return res;
+        return group;
     }
 }

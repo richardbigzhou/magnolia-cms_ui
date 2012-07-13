@@ -31,39 +31,56 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.sample;
+package info.magnolia.ui.app.sample.main;
 
-import javax.inject.Inject;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.VerticalLayout;
 
-import info.magnolia.ui.framework.app.SubApp;
-import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 /**
- * SubApp for editor tabs in sample app.
+ * View implementation of navigation view.
  */
-public class SampleEditorSubApp implements SubApp, SampleEditorView.Listener {
+public class NavigationViewImpl implements NavigationView, IsVaadinComponent {
 
+    private Listener listener;
+    private VerticalLayout layout;
     private String name;
-    private final SampleEditorView view;
 
-    @Inject
-    public SampleEditorSubApp(SampleEditorView view) {
-        this.view = view;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public NavigationViewImpl() {
     }
 
     @Override
-    public String getCaption() {
-        return "Editor " + name;
+    public void setListener(Listener listener) {
+        this.listener = listener;
     }
 
     @Override
-    public View start() {
-        this.view.setName(name);
-        this.view.setListener(this);
-        return view;
+    public Component asVaadinComponent() {
+        if (layout == null) {
+            layout = new VerticalLayout();
+            layout.setMargin(true);
+            layout.setSpacing(true);
+            layout.addComponent(new Label("NAVIGATION"));
+
+            layout.addComponent(createButton("Alpha"));
+            layout.addComponent(createButton("Bravo"));
+            layout.addComponent(createButton("Charlie"));
+            layout.addComponent(createButton("Delta"));
+            layout.addComponent(createButton("Echo"));
+        }
+        return layout;
+    }
+
+    private Button createButton(final String name) {
+        return new Button("Select " + name, new Button.ClickListener() {
+
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                listener.onItemSelected(name);
+            }
+        });
     }
 }
