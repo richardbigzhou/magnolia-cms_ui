@@ -33,9 +33,14 @@
  */
 package info.magnolia.ui.framework.view;
 
-/**
- * Marker interface for views.
- */
-public interface View {
+import java.io.Serializable;
 
+import com.vaadin.ui.Component;
+
+/**
+ * Marker interface for views. Extends Serializable as all Vaadin components will have to.
+ */
+public interface View extends Serializable {
+
+    Component asVaadinComponent();
 }

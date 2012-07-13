@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.admincentral.app.assets;
 
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
-
 import javax.inject.Inject;
 
 import com.vaadin.ui.Component;
@@ -45,7 +43,7 @@ import com.vaadin.ui.VerticalLayout;
  * View implementation for the Assets app.
  */
 @SuppressWarnings("serial")
-public class AssetsViewImpl implements AssetsView, IsVaadinComponent {
+public class AssetsViewImpl implements AssetsView {
 
     private VerticalLayout layout = new VerticalLayout();
 

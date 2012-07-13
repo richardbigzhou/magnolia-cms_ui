@@ -35,14 +35,13 @@ package info.magnolia.ui.app.pages;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 
 /**
  * View implementation for the Pages app.
  */
 @SuppressWarnings("serial")
-public class PagesMainViewImpl implements PagesMainView, IsVaadinComponent {
+public class PagesMainViewImpl implements PagesMainView {
 
     private ComponentContainer view;
     private Listener listener;

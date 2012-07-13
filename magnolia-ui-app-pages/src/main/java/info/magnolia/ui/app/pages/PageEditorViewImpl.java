@@ -37,7 +37,6 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
 import info.magnolia.context.MgnlContext;
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 import info.magnolia.ui.widget.actionbar.Actionbar;
 import info.magnolia.ui.widget.editor.PageEditor;
 
@@ -46,7 +45,7 @@ import info.magnolia.ui.widget.editor.PageEditor;
  * TODO: make this a component with a split layout to accomodate the page editor on the left and its related actions on the right.
 */
 @SuppressWarnings("serial")
-public class PageEditorViewImpl implements PageEditorView, IsVaadinComponent {
+public class PageEditorViewImpl implements PageEditorView {
 
     private Actionbar actionbar;
 
