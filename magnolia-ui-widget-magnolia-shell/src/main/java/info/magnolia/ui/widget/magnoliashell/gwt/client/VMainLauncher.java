@@ -205,7 +205,7 @@ public class VMainLauncher extends FlowPanel {
         expandedHeight = getOffsetHeight();
         getElement().getStyle().setDisplay(Display.NONE);
         JQueryWrapper.select(getElement()).slideDown(500, null);
-        activationHandlerRegistration = eventBus.addHandler(AppActivatedEvent.TYPE, navHandler);
+        activationHandlerRegistration = eventBus.addHandler(AppActivatedEvent.TYPE, navigationHandler);
     } 
     
     @Override
@@ -277,7 +277,7 @@ public class VMainLauncher extends FlowPanel {
         return expandedHeight;
     }
     
-    private ShellNavigationHandler navHandler = new ShellNavigationAdapter() {
+    private ShellNavigationHandler navigationHandler = new ShellNavigationAdapter() {
         @Override
         public void onAppActivated(AppActivatedEvent event) {
             if (event.isShellApp()) {

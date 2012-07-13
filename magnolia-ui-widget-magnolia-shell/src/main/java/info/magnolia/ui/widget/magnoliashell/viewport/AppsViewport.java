@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,35 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.widget.client.applauncher;
+package info.magnolia.ui.widget.magnoliashell.viewport;
 
-import com.google.gwt.core.client.JavaScriptObject;
+import info.magnolia.ui.widget.magnoliashell.BaseMagnoliaShell;
 
 /**
- * Client side of App section description class.
+ * Apps viewport.
  *
  */
-public final class VAppSectionJSO extends JavaScriptObject {
-    
-    protected VAppSectionJSO() {}
-    
-    public static native VAppSectionJSO parse(String json) /*-{
-       try {
-         return eval('(' + json + ')');
-       } catch(e) {
-           return null;
-       } 
-    }-*/;
-    
-    public final native String getCaption() /*-{
-        return this.caption;
-    }-*/; 
-    
-    public final native String getBackgroundColor() /*-{
-        return this.backgroundColor;
-    }-*/;
-    
-    public final native boolean isPermanent() /*-{
-        return this.isPermanent;
-    }-*/;
+public class AppsViewport extends ShellViewport {
+
+    public AppsViewport(BaseMagnoliaShell shell) {
+        super(shell);
+    }
+
 }

@@ -68,6 +68,7 @@ import com.vaadin.terminal.gwt.client.UIDL;
 public class VShellViewport extends ComplexPanel implements Container, ContainerResizedListener {
 
     private Element greenModalityCurtain = DOM.createDiv();
+    
     private Element blackModalityCurtain = DOM.createDiv();
 
     protected String paintableId = null;

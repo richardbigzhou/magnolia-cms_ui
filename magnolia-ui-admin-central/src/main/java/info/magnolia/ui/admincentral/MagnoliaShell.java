@@ -49,8 +49,8 @@ import info.magnolia.ui.framework.shell.FragmentChangedHandler;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.widget.dialog.Dialog;
 import info.magnolia.ui.widget.magnoliashell.BaseMagnoliaShell;
-import info.magnolia.ui.widget.magnoliashell.ShellViewport;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
+import info.magnolia.ui.widget.magnoliashell.viewport.ShellViewport;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -107,20 +107,13 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
     @Override
     @Deprecated
     public void showNotification(String message) {
-        final Message msg = new Message();
-        msg.setMessage(message);
-        msg.setId("");
-        showWarning(msg);
+        throw new UnsupportedOperationException("Use MessagesManager class for messages dispatching");
     }
 
     @Override
     @Deprecated
     public void showError(String message, Exception e) {
-        log.error(message, e);
-        final Message msg = new Message();
-        msg.setMessage(message);
-        msg.setId("");
-        showError(msg);
+        throw new UnsupportedOperationException("Use MessagesManager class for messages dispatching");
     }
 
     @Override
