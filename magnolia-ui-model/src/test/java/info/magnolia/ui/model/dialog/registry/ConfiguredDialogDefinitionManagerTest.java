@@ -68,6 +68,10 @@ import org.junit.Test;
  */
 public class ConfiguredDialogDefinitionManagerTest {
 
+    private static final String A_DIALOG_PATH = "/modules/aModule/" + ConfiguredDialogDefinitionManager.DIALOG_CONFIG_NODE_NAME + "/aDialog";
+    private static final String B_DIALOG_PATH = "/modules/bModule/" + ConfiguredDialogDefinitionManager.DIALOG_CONFIG_NODE_NAME + "/bDialog";
+
+
     private ModuleRegistry moduleRegistry;
 
     private DialogDefinitionRegistry dialogRegistry;
@@ -79,8 +83,8 @@ public class ConfiguredDialogDefinitionManagerTest {
 
         ComponentsTestUtil.setImplementation(DialogDefinition.class, ConfiguredDialogDefinition.class);
         session = SessionTestUtil.createSession(RepositoryConstants.CONFIG,
-            "/modules/aModule/dialogs/aDialog.id=aModule:aDialog",
-            "/modules/bModule/dialogs/bDialog.id=bModule:bDialog"
+            A_DIALOG_PATH + ".id=aModule:aDialog",
+            B_DIALOG_PATH + ".id=bModule:bDialog"
             );
         MockUtil.initMockContext();
         MockUtil.setSystemContextSessionAndHierarchyManager(session);
@@ -131,8 +135,8 @@ public class ConfiguredDialogDefinitionManagerTest {
 
         // WHEN
         // Remove dialog a:
-        session.getNode("/modules/aModule/dialogs/aDialog").remove();
-        observationManager.fireEvent(MockEvent.nodeRemoved("/modules/aModule/dialogs/aDialog"));
+        session.getNode(A_DIALOG_PATH).remove();
+        observationManager.fireEvent(MockEvent.nodeRemoved(A_DIALOG_PATH));
         Thread.sleep(6000);
         // THEN a is gone
         try {
@@ -143,8 +147,8 @@ public class ConfiguredDialogDefinitionManagerTest {
 
         // WHEN
         // Add a property and fire event
-        session.getNode("/modules/bModule/dialogs/bDialog").setProperty("description", "dialog for bItems");
-        observationManager.fireEvent(MockEvent.propertyAdded("/modules/bModule/dialogs/bDialog"));
+        session.getNode(B_DIALOG_PATH).setProperty("description", "dialog for bItems");
+        observationManager.fireEvent(MockEvent.propertyAdded(B_DIALOG_PATH));
         Thread.sleep(6000);
         // THEN
         // dialog b has its property modified.
@@ -154,11 +158,11 @@ public class ConfiguredDialogDefinitionManagerTest {
 
         // WHEN
         // Rename dialog b, change the dialog name.
-        session.getNode("/modules/bModule/dialogs/bDialog").getParent().addNode("cDialog").setProperty("id", "bModule:cDialog");
-        session.getNode("/modules/bModule/dialogs/bDialog").remove();
+        session.getNode(B_DIALOG_PATH).getParent().addNode("cDialog").setProperty("id", "bModule:cDialog");
+        session.getNode(B_DIALOG_PATH).remove();
         MockEvent event = new MockEvent();
         event.setType(MockEvent.NODE_MOVED);
-        event.setPath("/modules/bModule/dialogs/bDialog");
+        event.setPath(B_DIALOG_PATH);
         observationManager.fireEvent(event);
         Thread.sleep(6000);
 
