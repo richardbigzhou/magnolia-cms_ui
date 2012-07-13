@@ -64,6 +64,7 @@ public class ContentDisplayViewImpl implements ContentDisplayView, IsVaadinCompo
         this.listener = listener;
     }
 
+    @Override
     public void setResource(final String name) {
         layout.removeAllComponents();
         layout.addComponent(new Label("CONTENT DISPLAY"));
