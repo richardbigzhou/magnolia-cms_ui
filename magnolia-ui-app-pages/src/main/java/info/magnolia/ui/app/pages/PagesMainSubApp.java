@@ -53,7 +53,7 @@ public class PagesMainSubApp implements SubApp, PagesMainView.Listener {
         this.view.setListener(this);
 
         workbench.initWorkbench(WORKBENCH_NAME);
-        this.view.initView(workbench.asVaadinComponent());
+        this.view.initView(workbench.asView());
 
     }
 

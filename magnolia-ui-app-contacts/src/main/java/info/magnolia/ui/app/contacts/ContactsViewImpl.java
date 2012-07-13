@@ -58,6 +58,6 @@ public class ContactsViewImpl implements ContactsView, IsVaadinComponent {
 
     @Override
     public Component asVaadinComponent() {
-        return workbench.asVaadinComponent();
+        return workbench.asView();
     }
 }
