@@ -42,7 +42,6 @@ import java.util.Set;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.event.ItemClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.TreeTable;
 
@@ -63,13 +62,6 @@ public class TreeViewImpl implements TreeView{
         jcrBrowser.setImmediate(true);
         jcrBrowser.setNullSelectionAllowed(false);
         jcrBrowser.setSizeFull();
-        jcrBrowser.addListener(new ItemClickEvent.ItemClickListener() {
-            @Override
-            public void itemClick(ItemClickEvent event) {
-                presenterOnItemSelection((String) event.getItemId());
-            }
-        });
-
         jcrBrowser.addListener(new TreeTable.ValueChangeListener() {
             @Override
             public void valueChange(ValueChangeEvent event) {

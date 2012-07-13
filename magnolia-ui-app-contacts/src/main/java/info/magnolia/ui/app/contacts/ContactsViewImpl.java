@@ -47,13 +47,11 @@ import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 @SuppressWarnings("serial")
 public class ContactsViewImpl implements ContactsView, IsVaadinComponent {
 
-    private String jcrWorkspaceName = "contacts";
     private final ContentWorkbenchSubApp workbench;
 
     @Inject
     public ContactsViewImpl(final ContentWorkbenchSubApp workbench) {
         this.workbench = workbench;
-        workbench.initWorkbench(jcrWorkspaceName);
     }
 
     @Override
