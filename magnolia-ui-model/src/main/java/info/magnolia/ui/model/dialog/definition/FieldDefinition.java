@@ -42,33 +42,30 @@ import java.util.List;
  */
 public interface FieldDefinition extends UiItemDefinition {
 
-    static final String TEXT_FIELD_TYPE = "text";
-    static final String CHECKBOX_FIELD_TYPE = "checkbox";
+    String getDescription();
 
-    public abstract String getDescription();
+    void setDescription(String description);
 
-    public abstract void setDescription(String description);
+    String getType();
 
-    public abstract String getType();
+    void setType(String type);
 
-    public abstract void setType(String type);
+    boolean isRequired();
 
-    public abstract boolean isRequired();
+    void setRequired(boolean required);
 
-    public abstract void setRequired(boolean required);
+    void addValidator(ValidatorDefinition validator);
 
-    public abstract void addValidator(ValidatorDefinition validator);
+    void setValidators(List<ValidatorDefinition> validators);
 
-    public abstract void setValidators(List<ValidatorDefinition> validators);
+    List<ValidatorDefinition> getValidators();
 
-    public abstract List<ValidatorDefinition> getValidators();
+    void setDefaultValue(String defaultValue);
 
-    public abstract void setDefaultValue(String defaultValue);
+    String getDefaultValue();
 
-    public abstract String getDefaultValue();
+    void setSaveInfo(boolean saveInfo);
 
-    public abstract void setSaveInfo(boolean saveInfo);
-
-    public abstract boolean getSaveInfo();
+    boolean getSaveInfo();
 
 }
