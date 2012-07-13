@@ -31,41 +31,63 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.simple;
+package info.magnolia.ui.framework.app.launcherlayout;
 
-import info.magnolia.ui.framework.app.App;
 import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroup;
-import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroupEntry;
-import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
 
 /**
- * Utility Class for the App TestCases.
+ * Entry of an app group describing an app to be part of that group.
+ *
+ * @see AppLauncherLayout
+ * @see AppLauncherGroup
+ * @see AppLauncherLayoutManager
  */
-public class AppTestUtility {
+public class AppLauncherGroupEntry {
 
-    /**
-     * Create a AppDescriptor.
-     */
-    public static AppDescriptor createAppDescriptor(String startLibell, Class<? extends App> appClass) {
-        ConfiguredAppDescriptor descriptor = new ConfiguredAppDescriptor();
-        descriptor.setAppClass(appClass);
-        descriptor.setIcon(startLibell + "_icon");
-        descriptor.setLabel(startLibell + "_label");
-        descriptor.setName(startLibell + "_name");
-        return descriptor;
+    private String name;
+    private boolean enabled = true;
+    private String iconFont;
+    private String iconCharacter;
+
+    private AppDescriptor appDescriptor;
+
+    public String getName() {
+        return name;
     }
 
-    public static AppLauncherGroup createAppGroup(String name, AppDescriptor... descriptors) {
-        AppLauncherGroup group = new AppLauncherGroup();
-        group.setName(name);
-        group.setLabel(name);
-        for (AppDescriptor descriptor : descriptors) {
-            AppLauncherGroupEntry entry = new AppLauncherGroupEntry();
-            entry.setName(descriptor.getName());
-            entry.setAppDescriptor(descriptor);
-            group.addApp(entry);
-        }
-        return group;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public AppDescriptor getAppDescriptor() {
+        return appDescriptor;
+    }
+
+    public void setAppDescriptor(AppDescriptor appDescriptor) {
+        this.appDescriptor = appDescriptor;
+    }
+
+    public String getIconFont() {
+        return iconFont;
+    }
+
+    public void setIconFont(String iconFont) {
+        this.iconFont = iconFont;
+    }
+
+    public String getIconCharacter() {
+        return iconCharacter;
+    }
+
+    public void setIconCharacter(String iconCharacter) {
+        this.iconCharacter = iconCharacter;
     }
 }

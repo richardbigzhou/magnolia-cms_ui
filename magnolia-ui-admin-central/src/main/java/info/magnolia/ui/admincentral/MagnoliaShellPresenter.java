@@ -35,10 +35,10 @@ package info.magnolia.ui.admincentral;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.admincentral.app.simple.DefaultLocationHistoryMapper;
+import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.framework.message.LocalMessageDispatcher;
 import info.magnolia.ui.admincentral.app.simple.ShellAppController;
 import info.magnolia.ui.framework.app.AppController;
-import info.magnolia.ui.framework.app.layout.AppLayoutManager;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.LocationController;
@@ -57,7 +57,7 @@ public class MagnoliaShellPresenter implements MagnoliaShellView.Presenter {
     private final MagnoliaShellView view;
 
     @Inject
-    public MagnoliaShellPresenter(final MagnoliaShellView view, final EventBus eventBus, final AppLayoutManager appLayoutManager, final LocationController locationController, final AppController appController, final ShellAppController shellAppController, final LocalMessageDispatcher messageDispatcher, MessagesManager messagesManager) {
+    public MagnoliaShellPresenter(final MagnoliaShellView view, final EventBus eventBus, final AppLauncherLayoutManager appLauncherLayoutManager, final LocationController locationController, final AppController appController, final ShellAppController shellAppController, final LocalMessageDispatcher messageDispatcher, MessagesManager messagesManager) {
         this.view = view;
         this.view.setPresenter(this);
 
@@ -65,7 +65,7 @@ public class MagnoliaShellPresenter implements MagnoliaShellView.Presenter {
 
         appController.setViewPort(view.getRoot().getAppViewport());
 
-        DefaultLocationHistoryMapper locationHistoryMapper = new DefaultLocationHistoryMapper(appLayoutManager);
+        DefaultLocationHistoryMapper locationHistoryMapper = new DefaultLocationHistoryMapper(appLauncherLayoutManager);
         LocationHistoryHandler locationHistoryHandler = new LocationHistoryHandler(locationHistoryMapper, view.getRoot());
         locationHistoryHandler.register(locationController, eventBus, new DefaultLocation(DefaultLocation.LOCATION_TYPE_SHELL_APP, "applauncher", ""));
         messagesManager.registerMessagesListener(MgnlContext.getUser().getName(), messageDispatcher);

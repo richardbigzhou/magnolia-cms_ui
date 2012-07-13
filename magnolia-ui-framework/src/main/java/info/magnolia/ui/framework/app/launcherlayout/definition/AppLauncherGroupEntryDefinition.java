@@ -31,25 +31,21 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.layout;
+package info.magnolia.ui.framework.app.launcherlayout.definition;
 
 /**
- * Manages the app layout displayed in the app launcher. Fires an {@link AppLayoutChangedEvent} of the system event bus
- * when the layout changes.
+ * Defines the appearance of an app in the app launcher.
  *
- * @see AppLayout
- * @see AppLayoutChangedEvent
- * @see AppLayoutChangedEventHandler
+ * @see AppLauncherLayoutDefinition
+ * @see AppLauncherGroupDefinition
  */
-public interface AppLayoutManager {
+public interface AppLauncherGroupEntryDefinition {
 
-    /**
-     * Returns the {@link AppLayout} defined for the current user. Empty groups or groups where the current user doesn't
-     * have access to any of the apps are not returned. Disabled apps are not included in the response nor are apps that
-     * are not present in the {@link info.magnolia.ui.framework.app.registry.AppDescriptorRegistry}. The returned object
-     * is also populated with {@link info.magnolia.ui.framework.app.AppDescriptor} for quick access.
-     */
-    AppLayout getLayoutForCurrentUser();
+    String getName();
 
-    void setLayout(AppLayout layout);
+    boolean isEnabled();
+
+    String getIconFont();
+
+    String getIconCharacter();
 }

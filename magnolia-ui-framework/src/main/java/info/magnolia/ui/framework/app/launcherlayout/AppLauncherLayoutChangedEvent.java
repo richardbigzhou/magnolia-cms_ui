@@ -31,30 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.applauncher;
+package info.magnolia.ui.framework.app.launcherlayout;
 
-import info.magnolia.ui.framework.app.ShellView;
-import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayout;
+import info.magnolia.ui.framework.event.Event;
 
 /**
- * View for the app launcher.
+ * Event dispatched when the launcher layout changes.
+ *
+ * @see AppLauncherLayoutManager
+ * @see AppLauncherLayoutChangedEventHandler
  */
-public interface AppLauncherView extends ShellView {
+public class AppLauncherLayoutChangedEvent implements Event<AppLauncherLayoutChangedEventHandler> {
 
-    /**
-     * Presenter.
-     */
-    public interface Presenter {
-
-        void onAppInvoked(String name);
+    @Override
+    public void dispatch(AppLauncherLayoutChangedEventHandler handler) {
+        handler.onAppLayoutChanged(this);
     }
-
-    void setPresenter(Presenter presenter);
-
-    void registerApp(AppLauncherLayout layout);
-
-    void activateButton(boolean activate, String appName);
-
-    void clearView();
-
 }

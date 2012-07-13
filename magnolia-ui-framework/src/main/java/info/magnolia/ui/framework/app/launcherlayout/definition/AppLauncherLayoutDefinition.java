@@ -31,30 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.applauncher;
+package info.magnolia.ui.framework.app.launcherlayout.definition;
 
-import info.magnolia.ui.framework.app.ShellView;
-import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayout;
+import java.util.List;
 
 /**
- * View for the app launcher.
+ * Defines the layout of apps in the app launcher. Apps are organized into groups.
+ *
+ * @see AppLauncherGroupDefinition
+ * @see AppLauncherGroupEntryDefinition
  */
-public interface AppLauncherView extends ShellView {
+public interface AppLauncherLayoutDefinition {
 
-    /**
-     * Presenter.
-     */
-    public interface Presenter {
-
-        void onAppInvoked(String name);
-    }
-
-    void setPresenter(Presenter presenter);
-
-    void registerApp(AppLauncherLayout layout);
-
-    void activateButton(boolean activate, String appName);
-
-    void clearView();
-
+    List<AppLauncherGroupDefinition> getGroups();
 }

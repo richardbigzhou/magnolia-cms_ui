@@ -31,41 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.simple;
+package info.magnolia.ui.framework.app.launcherlayout;
 
-import info.magnolia.ui.framework.app.App;
-import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroup;
-import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroupEntry;
-import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
+import info.magnolia.ui.framework.app.launcherlayout.definition.AppLauncherLayoutDefinition;
 
 /**
- * Utility Class for the App TestCases.
+ * Manages the launcher layout displayed in the app launcher. Fires an {@link AppLauncherLayoutChangedEvent} of the system event bus
+ * when the layout changes.
+ *
+ * @see AppLauncherLayout
+ * @see AppLauncherLayoutChangedEvent
+ * @see AppLauncherLayoutChangedEventHandler
  */
-public class AppTestUtility {
+public interface AppLauncherLayoutManager {
 
     /**
-     * Create a AppDescriptor.
+     * Returns the {@link AppLauncherLayout} defined for the current user. Empty groups or groups where the current user doesn't
+     * have access to any of the apps are not returned. Disabled apps are not included in the response nor are apps that
+     * are not present in the {@link info.magnolia.ui.framework.app.registry.AppDescriptorRegistry}. The returned object
+     * is also populated with {@link info.magnolia.ui.framework.app.AppDescriptor} for quick access.
      */
-    public static AppDescriptor createAppDescriptor(String startLibell, Class<? extends App> appClass) {
-        ConfiguredAppDescriptor descriptor = new ConfiguredAppDescriptor();
-        descriptor.setAppClass(appClass);
-        descriptor.setIcon(startLibell + "_icon");
-        descriptor.setLabel(startLibell + "_label");
-        descriptor.setName(startLibell + "_name");
-        return descriptor;
-    }
+    AppLauncherLayout getLayoutForCurrentUser();
 
-    public static AppLauncherGroup createAppGroup(String name, AppDescriptor... descriptors) {
-        AppLauncherGroup group = new AppLauncherGroup();
-        group.setName(name);
-        group.setLabel(name);
-        for (AppDescriptor descriptor : descriptors) {
-            AppLauncherGroupEntry entry = new AppLauncherGroupEntry();
-            entry.setName(descriptor.getName());
-            entry.setAppDescriptor(descriptor);
-            group.addApp(entry);
-        }
-        return group;
-    }
+    void setLayout(AppLauncherLayoutDefinition layout);
 }

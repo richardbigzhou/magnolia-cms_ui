@@ -39,12 +39,12 @@ import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventHandler;
 import info.magnolia.ui.framework.app.ShellView;
-import info.magnolia.ui.framework.app.layout.AppGroup;
-import info.magnolia.ui.framework.app.layout.AppGroupEntry;
-import info.magnolia.ui.framework.app.layout.AppLayout;
-import info.magnolia.ui.framework.app.layout.AppLayoutChangedEvent;
-import info.magnolia.ui.framework.app.layout.AppLayoutChangedEventHandler;
-import info.magnolia.ui.framework.app.layout.AppLayoutManager;
+import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
+import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroup;
+import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroupEntry;
+import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayout;
+import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutChangedEvent;
+import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutChangedEventHandler;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.event.SystemEventBus;
 import info.magnolia.ui.framework.location.Location;
@@ -65,23 +65,23 @@ public class AppLauncherShellApp implements ShellApp, AppLauncherView.Presenter 
 
     private AppController appController;
 
-    private AppLayoutManager appLayoutManager;
+    private AppLauncherLayoutManager appLauncherLayoutManager;
 
     @Inject
-    public AppLauncherShellApp(AppLauncherView view, AppController appController, AppLayoutManager appLayoutManager, EventBus eventBus, SystemEventBus systemEventBus) {
+    public AppLauncherShellApp(AppLauncherView view, AppController appController, AppLauncherLayoutManager appLauncherLayoutManager, EventBus eventBus, SystemEventBus systemEventBus) {
         this.view = view;
         this.appController = appController;
-        this.appLayoutManager = appLayoutManager;
+        this.appLauncherLayoutManager = appLauncherLayoutManager;
 
         //Init view
-        initView(appLayoutManager.getLayoutForCurrentUser());
+        initView(appLauncherLayoutManager.getLayoutForCurrentUser());
         /**
          * Handle ReloadAppEvent.
          */
-        systemEventBus.addHandler(AppLayoutChangedEvent.class, new AppLayoutChangedEventHandler() {
+        systemEventBus.addHandler(AppLauncherLayoutChangedEvent.class, new AppLauncherLayoutChangedEventHandler() {
 
             @Override
-            public void onAppLayoutChanged(AppLayoutChangedEvent event) {
+            public void onAppLayoutChanged(AppLauncherLayoutChangedEvent event) {
                 //Reload Layout
                 reloadLayout();
             }
@@ -98,7 +98,7 @@ public class AppLauncherShellApp implements ShellApp, AppLauncherView.Presenter 
                  */
                 @Override
                 public void onAppStopped(AppLifecycleEvent event) {
-                    AppLayout layout = AppLauncherShellApp.this.appLayoutManager.getLayoutForCurrentUser();
+                    AppLauncherLayout layout = AppLauncherShellApp.this.appLauncherLayoutManager.getLayoutForCurrentUser();
                     if (layout.containsApp(event.getAppDescriptor().getName())) {
                         activateButton(false, event.getAppDescriptor().getName());
                     }
@@ -132,7 +132,7 @@ public class AppLauncherShellApp implements ShellApp, AppLauncherView.Presenter 
     /**
      * Initialize the view.
      */
-    private void initView(AppLayout layout) {
+    private void initView(AppLauncherLayout layout) {
         view.registerApp(layout);
     }
 
@@ -140,11 +140,11 @@ public class AppLauncherShellApp implements ShellApp, AppLauncherView.Presenter 
      * Reload Layout and set Icon for running apps.
      */
     private void reloadLayout() {
-        AppLayout layout = this.appLayoutManager.getLayoutForCurrentUser();
+        AppLauncherLayout layout = this.appLauncherLayoutManager.getLayoutForCurrentUser();
         this.view.clearView();
         initView(layout);
-        for (AppGroup group : layout.getGroups()) {
-            for (AppGroupEntry entry : group.getApps()) {
+        for (AppLauncherGroup group : layout.getGroups()) {
+            for (AppLauncherGroupEntry entry : group.getApps()) {
                 if(this.appController.isAppStarted(entry.getName())) {
                     view.activateButton(true, entry.getName());
                 }
