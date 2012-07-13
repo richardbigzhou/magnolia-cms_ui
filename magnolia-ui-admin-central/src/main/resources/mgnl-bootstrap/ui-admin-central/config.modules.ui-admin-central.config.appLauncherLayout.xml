@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<sv:node sv:name="appLayout" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<sv:node sv:name="appLauncherLayout" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <sv:property sv:name="jcr:primaryType" sv:type="Name">
     <sv:value>mgnl:contentNode</sv:value>
   </sv:property>
@@ -69,7 +69,7 @@
       <sv:property sv:name="jcr:uuid" sv:type="String">
         <sv:value>bd76b159-1642-4c52-bf7a-1ff82cde0f46</sv:value>
       </sv:property>
-      <sv:property sv:name="backgroundColor" sv:type="String">
+      <sv:property sv:name="color" sv:type="String">
         <sv:value>#9A3332</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
@@ -202,7 +202,7 @@
       <sv:property sv:name="jcr:uuid" sv:type="String">
         <sv:value>2bc09d13-e1a3-4ad8-86c6-e650b86744f0</sv:value>
       </sv:property>
-      <sv:property sv:name="backgroundColor" sv:type="String">
+      <sv:property sv:name="color" sv:type="String">
         <sv:value>#4B8E9E</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">

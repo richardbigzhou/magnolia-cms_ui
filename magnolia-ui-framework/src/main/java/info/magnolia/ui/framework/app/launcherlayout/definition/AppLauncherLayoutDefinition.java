@@ -31,24 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.sample.main;
+package info.magnolia.ui.framework.app.launcherlayout.definition;
 
-import info.magnolia.ui.framework.view.View;
+import java.util.List;
 
 /**
- * View for the content display.
+ * Defines the layout of apps in the app launcher. Apps are organized into groups.
+ *
+ * @see AppLauncherGroupDefinition
+ * @see AppLauncherGroupEntryDefinition
  */
-public interface ContentDisplayView extends View {
+public interface AppLauncherLayoutDefinition {
 
-    void setListener(Listener listener);
-
-    void setResource(String name);
-
-    /**
-     * Listener.
-     */
-    public interface Listener {
-
-        void onOpenInNewEditor();
-    }
+    List<AppLauncherGroupDefinition> getGroups();
 }

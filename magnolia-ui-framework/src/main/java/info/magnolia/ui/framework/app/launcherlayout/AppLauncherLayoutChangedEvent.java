@@ -31,12 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.sample;
+package info.magnolia.ui.framework.app.launcherlayout;
 
-import info.magnolia.module.DefaultModuleVersionHandler;
+import info.magnolia.ui.framework.event.Event;
 
 /**
- * Version handler for sample app module.
+ * Event dispatched when the launcher layout changes.
+ *
+ * @see AppLauncherLayoutManager
+ * @see AppLauncherLayoutChangedEventHandler
  */
-public class SampleAppModuleVersionHandler extends DefaultModuleVersionHandler {
+public class AppLauncherLayoutChangedEvent implements Event<AppLauncherLayoutChangedEventHandler> {
+
+    @Override
+    public void dispatch(AppLauncherLayoutChangedEventHandler handler) {
+        handler.onAppLayoutChanged(this);
+    }
 }

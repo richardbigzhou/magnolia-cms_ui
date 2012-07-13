@@ -49,7 +49,7 @@ import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.AppLifecycleEventType;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.SubApp;
-import info.magnolia.ui.framework.app.layout.AppLayoutManager;
+import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.event.ResettableEventBus;
 import info.magnolia.ui.framework.location.DefaultLocation;
@@ -89,7 +89,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
     private ModuleRegistry moduleRegistry;
     private ComponentProvider componentProvider;
-    private AppLayoutManager appLayoutManager;
+    private AppLauncherLayoutManager appLauncherLayoutManager;
     private LocationController locationController;
     private MessagesManager messagesManager;
     private Shell shell;
@@ -102,10 +102,10 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     private AppContextImpl currentApp;
 
     @Inject
-    public AppControllerImpl(ModuleRegistry moduleRegistry, ComponentProvider componentProvider, AppLayoutManager appLayoutManager, LocationController locationController, MessagesManager messagesManager, Shell shell, EventBus eventBus) {
+    public AppControllerImpl(ModuleRegistry moduleRegistry, ComponentProvider componentProvider, AppLauncherLayoutManager appLauncherLayoutManager, LocationController locationController, MessagesManager messagesManager, Shell shell, EventBus eventBus) {
         this.moduleRegistry = moduleRegistry;
         this.componentProvider = componentProvider;
-        this.appLayoutManager = appLayoutManager;
+        this.appLauncherLayoutManager = appLauncherLayoutManager;
         this.locationController = locationController;
         this.messagesManager = messagesManager;
         this.shell = shell;
@@ -243,7 +243,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     }
 
     private AppDescriptor getAppDescriptor(String name) {
-        return appLayoutManager.getLayoutForCurrentUser().getAppDescriptor(name);
+        return appLauncherLayoutManager.getLayoutForCurrentUser().getAppDescriptor(name);
     }
 
     private class AppContextImpl implements AppContext {

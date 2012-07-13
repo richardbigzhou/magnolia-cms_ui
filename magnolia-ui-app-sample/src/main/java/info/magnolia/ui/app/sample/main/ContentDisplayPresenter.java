@@ -35,16 +35,22 @@ package info.magnolia.ui.app.sample.main;
 
 import javax.inject.Inject;
 
+import info.magnolia.ui.framework.location.DefaultLocation;
+import info.magnolia.ui.framework.location.LocationController;
+
 /**
  * Presenter for the content display.
  */
 public class ContentDisplayPresenter implements ContentDisplayView.Listener {
 
     private ContentDisplayView view;
+    private LocationController locationController;
+    private String name;
 
     @Inject
-    public ContentDisplayPresenter(ContentDisplayView view) {
+    public ContentDisplayPresenter(ContentDisplayView view, LocationController locationController) {
         this.view = view;
+        this.locationController = locationController;
     }
 
     public ContentDisplayView start() {
@@ -53,6 +59,12 @@ public class ContentDisplayPresenter implements ContentDisplayView.Listener {
     }
 
     public void setResourceToDisplay(String name) {
+        this.name = name;
         view.setResource(name);
+    }
+
+    @Override
+    public void onOpenInNewEditor() {
+        locationController.goTo(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "sample", name));
     }
 }

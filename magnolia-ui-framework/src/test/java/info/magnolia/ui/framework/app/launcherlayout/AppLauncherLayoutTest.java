@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.layout;
+package info.magnolia.ui.framework.app.launcherlayout;
 
 import java.util.Collection;
 
@@ -45,13 +45,13 @@ import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
 
 /**
- * Test class for {@link AppLayout}.
+ * Test class for {@link AppLauncherLayout}.
  */
-public class AppLayoutTest {
+public class AppLauncherLayoutTest {
 
-    private AppLayout applayout;
-    private AppGroup appGroup1;
-    private AppGroup appGroup2;
+    private AppLauncherLayout applayout;
+    private AppLauncherGroup appGroup1;
+    private AppLauncherGroup appGroup2;
     private AppDescriptor appDescriptor1;
     private AppDescriptor appDescriptor2;
     private AppDescriptor appDescriptor3;
@@ -64,7 +64,7 @@ public class AppLayoutTest {
         appDescriptor3 = createAppDescriptor("appDescriptor3", "appGroup2");
         appGroup1 = createAppGroup("appGroup1", appDescriptor1, appDescriptor2);
         appGroup2 = createAppGroup("appGroup2", appDescriptor3);
-        applayout = new AppLayout();
+        applayout = new AppLauncherLayout();
         applayout.addGroup(appGroup1);
         applayout.addGroup(appGroup2);
     }
@@ -74,7 +74,7 @@ public class AppLayoutTest {
         // GIVEN
 
         // WHEN
-        Collection<AppGroup> groups = applayout.getGroups();
+        Collection<AppLauncherGroup> groups = applayout.getGroups();
 
         // THEN
         assertNotNull(groups);
@@ -86,7 +86,7 @@ public class AppLayoutTest {
         // GIVEN
 
         // WHEN
-        AppGroup res = applayout.getGroup("appGroup1");
+        AppLauncherGroup res = applayout.getGroup("appGroup1");
 
         // THEN
         assertNotNull(res);
@@ -103,7 +103,7 @@ public class AppLayoutTest {
         // GIVEN
 
         // WHEN
-        AppGroupEntry res = applayout.getAppGroupEntry("appDescriptor3");
+        AppLauncherGroupEntry res = applayout.getAppGroupEntry("appDescriptor3");
 
         // THEN
         assertNotNull(res);
@@ -147,11 +147,11 @@ public class AppLayoutTest {
         assertEquals(res, false);
     }
 
-    public static AppGroup createAppGroup(String name, AppDescriptor... appDescriptors) {
-        AppGroup group = new AppGroup();
+    public static AppLauncherGroup createAppGroup(String name, AppDescriptor... appDescriptors) {
+        AppLauncherGroup group = new AppLauncherGroup();
         group.setName(name);
         for (AppDescriptor descriptor : appDescriptors) {
-            AppGroupEntry entry = new AppGroupEntry();
+            AppLauncherGroupEntry entry = new AppLauncherGroupEntry();
             entry.setName(descriptor.getName());
             entry.setAppDescriptor(descriptor);
             entry.setEnabled(true);

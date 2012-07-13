@@ -31,54 +31,68 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.sample.main;
+package info.magnolia.ui.framework.app.launcherlayout.definition;
 
-import javax.inject.Inject;
-
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
-
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * View implementation for the content display.
+ * Default implementation of {@link AppLauncherGroupDefinition} used for configuration in the repository.
  */
-public class ContentDisplayViewImpl implements ContentDisplayView, IsVaadinComponent {
+public class ConfiguredAppLauncherGroupDefinition implements AppLauncherGroupDefinition {
 
-    private ContentDisplayView.Listener listener;
-    private VerticalLayout layout;
+    private String name;
+    private String label;
+    private boolean permanent;
+    private String color;
+    private List<AppLauncherGroupEntryDefinition> apps = new ArrayList<AppLauncherGroupEntryDefinition>();
 
-    @Inject
-    public ContentDisplayViewImpl() {
-        layout = new VerticalLayout();
-        layout.setMargin(true);
-        layout.setSpacing(true);
-        layout.addComponent(new Label("CONTENT DISPLAY"));
-        layout.addComponent(new Label("Click one of the buttons in the navigation on the left to display it"));
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
-    public void setListener(ContentDisplayView.Listener listener) {
-        this.listener = listener;
+    public String getLabel() {
+        return label;
     }
 
-    public void setResource(final String name) {
-        layout.removeAllComponents();
-        layout.addComponent(new Label("CONTENT DISPLAY"));
-        layout.addComponent(new Label("Displaying " + name));
-        layout.addComponent(new Button("Open in new editor!", new Button.ClickListener() {
-
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                listener.onOpenInNewEditor();
-            }
-        }));
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     @Override
-    public Component asVaadinComponent() {
-        return layout;
+    public boolean isPermanent() {
+        return permanent;
+    }
+
+    public void setPermanent(boolean permanent) {
+        this.permanent = permanent;
+    }
+
+    @Override
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    @Override
+    public List<AppLauncherGroupEntryDefinition> getApps() {
+        return apps;
+    }
+
+    public void setApps(List<AppLauncherGroupEntryDefinition> apps) {
+        this.apps = apps;
+    }
+
+    public void addApp(AppLauncherGroupEntryDefinition appGroupEntry) {
+        apps.add(appGroupEntry);
     }
 }

@@ -31,24 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.sample.main;
+package info.magnolia.ui.framework.app.launcherlayout;
 
-import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.framework.app.launcherlayout.definition.AppLauncherLayoutDefinition;
 
 /**
- * View for the content display.
+ * Manages the launcher layout displayed in the app launcher. Fires an {@link AppLauncherLayoutChangedEvent} of the system event bus
+ * when the layout changes.
+ *
+ * @see AppLauncherLayout
+ * @see AppLauncherLayoutChangedEvent
+ * @see AppLauncherLayoutChangedEventHandler
  */
-public interface ContentDisplayView extends View {
-
-    void setListener(Listener listener);
-
-    void setResource(String name);
+public interface AppLauncherLayoutManager {
 
     /**
-     * Listener.
+     * Returns the {@link AppLauncherLayout} defined for the current user. Empty groups or groups where the current user doesn't
+     * have access to any of the apps are not returned. Disabled apps are not included in the response nor are apps that
+     * are not present in the {@link info.magnolia.ui.framework.app.registry.AppDescriptorRegistry}. The returned object
+     * is also populated with {@link info.magnolia.ui.framework.app.AppDescriptor} for quick access.
      */
-    public interface Listener {
+    AppLauncherLayout getLayoutForCurrentUser();
 
-        void onOpenInNewEditor();
-    }
+    void setLayout(AppLauncherLayoutDefinition layout);
 }

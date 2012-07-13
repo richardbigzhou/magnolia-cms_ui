@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.admincentral.app.simple;
 
-import info.magnolia.ui.framework.app.layout.AppLayout;
-import info.magnolia.ui.framework.app.layout.AppLayoutManager;
+import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayout;
+import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.location.LocationHistoryMapper;
@@ -44,10 +44,10 @@ import info.magnolia.ui.framework.location.LocationHistoryMapper;
  */
 public class DefaultLocationHistoryMapper implements LocationHistoryMapper {
 
-    private AppLayoutManager appLayoutManager;
+    private AppLauncherLayoutManager appLauncherLayoutManager;
 
-    public DefaultLocationHistoryMapper(AppLayoutManager appLayoutManager) {
-        this.appLayoutManager = appLayoutManager;
+    public DefaultLocationHistoryMapper(AppLauncherLayoutManager appLauncherLayoutManager) {
+        this.appLauncherLayoutManager = appLauncherLayoutManager;
     }
 
     @Override
@@ -81,8 +81,8 @@ public class DefaultLocationHistoryMapper implements LocationHistoryMapper {
             return true;
         }
 
-        AppLayout appLayout = appLayoutManager.getLayoutForCurrentUser();
-        if (type.equals(DefaultLocation.LOCATION_TYPE_APP) && appLayout.containsApp(prefix)) {
+        AppLauncherLayout appLauncherLayout = appLauncherLayoutManager.getLayoutForCurrentUser();
+        if (type.equals(DefaultLocation.LOCATION_TYPE_APP) && appLauncherLayout.containsApp(prefix)) {
             return true;
         }
 

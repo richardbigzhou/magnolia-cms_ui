@@ -31,20 +31,25 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.layout;
+package info.magnolia.ui.framework.app.launcherlayout.definition;
 
-import info.magnolia.ui.framework.event.Event;
+import java.util.List;
 
 /**
- * Event dispatched when the app layout changes.
+ * Defines a a group in the layout of apps in the app launcher.
  *
- * @see AppLayoutManager
- * @see AppLayoutChangedEventHandler
+ * @see AppLauncherLayoutDefinition
+ * @see AppLauncherGroupEntryDefinition
  */
-public class AppLayoutChangedEvent implements Event<AppLayoutChangedEventHandler> {
+public interface AppLauncherGroupDefinition {
 
-    @Override
-    public void dispatch(AppLayoutChangedEventHandler handler) {
-        handler.onAppLayoutChanged(this);
-    }
+    String getName();
+
+    String getLabel();
+
+    boolean isPermanent();
+
+    String getColor();
+
+    List<AppLauncherGroupEntryDefinition> getApps();
 }
