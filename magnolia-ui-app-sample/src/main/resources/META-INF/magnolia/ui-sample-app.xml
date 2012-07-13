@@ -4,7 +4,7 @@
   <name>ui-sample-app</name>
   <displayName>UI Sample app</displayName>
   <description>UI Sample app</description>
-  <versionHandler>info.magnolia.ui.app.sample.SampleAppModuleVersionHandler</versionHandler>
+  <versionHandler>info.magnolia.ui.app.sample.setup.SampleAppModuleVersionHandler</versionHandler>
   <version>${project.version}</version>
 
 	<!-- App components definition. -->

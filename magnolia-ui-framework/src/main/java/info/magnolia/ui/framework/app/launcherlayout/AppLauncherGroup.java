@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.layout;
+package info.magnolia.ui.framework.app.launcherlayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,17 +39,17 @@ import java.util.List;
 /**
  * Defines a group of apps displayed in the app launcher including display properties of the group.
  *
- * @see AppLayout
- * @see AppGroupEntry
- * @see AppLayoutManager
+ * @see AppLauncherLayout
+ * @see AppLauncherGroupEntry
+ * @see AppLauncherLayoutManager
  */
-public class AppGroup {
+public class AppLauncherGroup {
 
     private String name;
     private String label;
     private boolean permanent;
-    private String backgroundColor;
-    private List<AppGroupEntry> apps;
+    private String color;
+    private List<AppLauncherGroupEntry> apps;
 
     public String getName() {
         return name;
@@ -75,26 +75,26 @@ public class AppGroup {
         this.permanent = permanent;
     }
 
-    public String getBackgroundColor() {
-        return backgroundColor;
+    public String getColor() {
+        return color;
     }
 
-    public void setBackgroundColor(String backgroundColor) {
-        this.backgroundColor = backgroundColor;
+    public void setColor(String color) {
+        this.color = color;
     }
 
-    public List<AppGroupEntry> getApps() {
+    public List<AppLauncherGroupEntry> getApps() {
         if (apps == null) {
-            apps = new ArrayList<AppGroupEntry>();
+            apps = new ArrayList<AppLauncherGroupEntry>();
         }
         return apps;
     }
 
-    public void setApps(List<AppGroupEntry> apps) {
+    public void setApps(List<AppLauncherGroupEntry> apps) {
         this.apps = apps;
     }
 
-    public void addApp(AppGroupEntry entry) {
+    public void addApp(AppLauncherGroupEntry entry) {
         getApps().add(entry);
     }
 }

@@ -35,8 +35,8 @@ package info.magnolia.ui.admincentral.app.simple;
 
 import info.magnolia.ui.framework.app.App;
 import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.app.layout.AppGroup;
-import info.magnolia.ui.framework.app.layout.AppGroupEntry;
+import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroup;
+import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroupEntry;
 import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
 
 /**
@@ -56,12 +56,12 @@ public class AppTestUtility {
         return descriptor;
     }
 
-    public static AppGroup createAppGroup(String name, AppDescriptor... descriptors) {
-        AppGroup group = new AppGroup();
+    public static AppLauncherGroup createAppGroup(String name, AppDescriptor... descriptors) {
+        AppLauncherGroup group = new AppLauncherGroup();
         group.setName(name);
         group.setLabel(name);
         for (AppDescriptor descriptor : descriptors) {
-            AppGroupEntry entry = new AppGroupEntry();
+            AppLauncherGroupEntry entry = new AppLauncherGroupEntry();
             entry.setName(descriptor.getName());
             entry.setAppDescriptor(descriptor);
             group.addApp(entry);

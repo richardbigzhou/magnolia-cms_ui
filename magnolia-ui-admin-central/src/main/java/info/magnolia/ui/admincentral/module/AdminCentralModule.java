@@ -37,8 +37,8 @@ import javax.inject.Inject;
 
 import info.magnolia.module.ModuleLifecycle;
 import info.magnolia.module.ModuleLifecycleContext;
-import info.magnolia.ui.framework.app.layout.AppLayout;
-import info.magnolia.ui.framework.app.layout.AppLayoutManager;
+import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
+import info.magnolia.ui.framework.app.launcherlayout.definition.AppLauncherLayoutDefinition;
 import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptorManager;
 import info.magnolia.ui.model.dialog.registry.ConfiguredDialogDefinitionManager;
 
@@ -49,14 +49,14 @@ import info.magnolia.ui.model.dialog.registry.ConfiguredDialogDefinitionManager;
  */
 public class AdminCentralModule implements ModuleLifecycle {
 
-    private AppLayout appLayout;
-    private AppLayoutManager appLayoutManager;
+    private AppLauncherLayoutDefinition appLauncherLayout;
+    private AppLauncherLayoutManager appLauncherLayoutManager;
     private ConfiguredAppDescriptorManager configuredAppDescriptorManager;
     private ConfiguredDialogDefinitionManager configuredDialogDefinitionManager;
 
     @Inject
-    public AdminCentralModule(AppLayoutManager appLayoutManager, ConfiguredAppDescriptorManager configuredAppDescriptorManager, ConfiguredDialogDefinitionManager configuredDialogDefinitionManager) {
-        this.appLayoutManager = appLayoutManager;
+    public AdminCentralModule(AppLauncherLayoutManager appLauncherLayoutManager, ConfiguredAppDescriptorManager configuredAppDescriptorManager, ConfiguredDialogDefinitionManager configuredDialogDefinitionManager) {
+        this.appLauncherLayoutManager = appLauncherLayoutManager;
         this.configuredAppDescriptorManager = configuredAppDescriptorManager;
         this.configuredDialogDefinitionManager = configuredDialogDefinitionManager;
     }
@@ -66,10 +66,10 @@ public class AdminCentralModule implements ModuleLifecycle {
         if (context.getPhase() == ModuleLifecycleContext.PHASE_SYSTEM_STARTUP) {
             this.configuredAppDescriptorManager.start();
             this.configuredDialogDefinitionManager.start();
-            appLayoutManager.setLayout(getAppLayout());
+            appLauncherLayoutManager.setLayout(getAppLauncherLayout());
         }
         if (context.getPhase() == ModuleLifecycleContext.PHASE_MODULE_RESTART) {
-            appLayoutManager.setLayout(getAppLayout());
+            appLauncherLayoutManager.setLayout(getAppLauncherLayout());
         }
     }
 
@@ -77,11 +77,11 @@ public class AdminCentralModule implements ModuleLifecycle {
     public void stop(ModuleLifecycleContext context) {
     }
 
-    public AppLayout getAppLayout() {
-        return appLayout;
+    public AppLauncherLayoutDefinition getAppLauncherLayout() {
+        return appLauncherLayout;
     }
 
-    public void setAppLayout(AppLayout appLayout) {
-        this.appLayout = appLayout;
+    public void setAppLauncherLayout(AppLauncherLayoutDefinition appLauncherLayout) {
+        this.appLauncherLayout = appLauncherLayout;
     }
 }

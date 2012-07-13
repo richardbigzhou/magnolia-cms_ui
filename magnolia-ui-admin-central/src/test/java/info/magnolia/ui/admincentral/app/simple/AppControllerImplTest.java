@@ -54,11 +54,11 @@ import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventHandler;
 import info.magnolia.ui.framework.app.AppLifecycleEventType;
-import info.magnolia.ui.framework.app.layout.AppGroup;
-import info.magnolia.ui.framework.app.layout.AppGroupEntry;
-import info.magnolia.ui.framework.app.layout.AppLayout;
-import info.magnolia.ui.framework.app.layout.AppLayoutManager;
-import info.magnolia.ui.framework.app.layout.AppLayoutManagerImpl;
+import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
+import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManagerImpl;
+import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroup;
+import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroupEntry;
+import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayout;
 import info.magnolia.ui.framework.event.SimpleEventBus;
 import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.message.MessagesManager;
@@ -70,7 +70,7 @@ import info.magnolia.ui.framework.shell.Shell;
  */
 public class AppControllerImplTest {
 
-    private AppLayoutManager appLayoutManager = null;
+    private AppLauncherLayoutManager appLauncherLayoutManager = null;
     private GuiceComponentProvider componentProvider = null;
     private AppControllerImpl appController = null;
     private AppEventCollector eventCollector = null;
@@ -89,7 +89,7 @@ public class AppControllerImplTest {
         eventCollector = new AppEventCollector();
         eventBus.addHandler(AppLifecycleEvent.class, eventCollector);
 
-        appController = new AppControllerImpl(moduleRegistry, componentProvider, appLayoutManager, locationController, messagesManager, shell, eventBus);
+        appController = new AppControllerImpl(moduleRegistry, componentProvider, appLauncherLayoutManager, locationController, messagesManager, shell, eventBus);
     }
 
     @After
@@ -256,29 +256,29 @@ public class AppControllerImplTest {
      */
     private void setAppLayoutManager() {
 
-        appLayoutManager = mock(AppLayoutManagerImpl.class);
+        appLauncherLayoutManager = mock(AppLauncherLayoutManagerImpl.class);
         //Set group1 with App1
         AppDescriptor app1 = AppTestUtility.createAppDescriptor(appName_1, AppTestImpl.class);
-        AppGroup group1 = AppTestUtility.createAppGroup("group1", app1);
+        AppLauncherGroup group1 = AppTestUtility.createAppGroup("group1", app1);
         //Set group2 with App2
         AppDescriptor app2 = AppTestUtility.createAppDescriptor("app2", AppTestImpl.class);
-        AppGroup group2 = AppTestUtility.createAppGroup("group2", app2);
+        AppLauncherGroup group2 = AppTestUtility.createAppGroup("group2", app2);
 
-        AppGroupEntry entry1 = new AppGroupEntry();
+        AppLauncherGroupEntry entry1 = new AppLauncherGroupEntry();
         entry1.setName(app1.getName());
         entry1.setAppDescriptor(app1);
         group1.addApp(entry1);
 
-        AppGroupEntry entry2 = new AppGroupEntry();
+        AppLauncherGroupEntry entry2 = new AppLauncherGroupEntry();
         entry2.setName(app2.getName());
         entry2.setAppDescriptor(app2);
         group2.addApp(entry2);
 
-        AppLayout appLayout = new AppLayout();
-        appLayout.addGroup(group1);
-        appLayout.addGroup(group2);
+        AppLauncherLayout appLauncherLayout = new AppLauncherLayout();
+        appLauncherLayout.addGroup(group1);
+        appLauncherLayout.addGroup(group2);
 
-        when(appLayoutManager.getLayoutForCurrentUser()).thenReturn(appLayout);
+        when(appLauncherLayoutManager.getLayoutForCurrentUser()).thenReturn(appLauncherLayout);
     }
 
     public static GuiceComponentProvider initComponentProvider() {

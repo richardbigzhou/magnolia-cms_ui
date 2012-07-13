@@ -31,24 +31,19 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.layout;
-
-import info.magnolia.ui.framework.app.AppDescriptor;
+package info.magnolia.ui.framework.app.launcherlayout.definition;
 
 /**
- * Entry of an app group describing an app to be part of that group.
- *
- * @see AppLayout
- * @see AppGroup
- * @see AppLayoutManager
+ * Default implementation of {@link AppLauncherGroupEntryDefinition} used for configuration in the repository.
  */
-public class AppGroupEntry {
+public class ConfiguredAppLauncherGroupEntryDefinition implements AppLauncherGroupEntryDefinition {
 
     private String name;
     private boolean enabled = true;
+    private String iconFont;
+    private String iconCharacter;
 
-    private AppDescriptor appDescriptor;
-
+    @Override
     public String getName() {
         return name;
     }
@@ -57,6 +52,7 @@ public class AppGroupEntry {
         this.name = name;
     }
 
+    @Override
     public boolean isEnabled() {
         return enabled;
     }
@@ -65,11 +61,21 @@ public class AppGroupEntry {
         this.enabled = enabled;
     }
 
-    public AppDescriptor getAppDescriptor() {
-        return appDescriptor;
+    @Override
+    public String getIconFont() {
+        return iconFont;
     }
 
-    public void setAppDescriptor(AppDescriptor appDescriptor) {
-        this.appDescriptor = appDescriptor;
+    public void setIconFont(String iconFont) {
+        this.iconFont = iconFont;
+    }
+
+    @Override
+    public String getIconCharacter() {
+        return iconCharacter;
+    }
+
+    public void setIconCharacter(String iconCharacter) {
+        this.iconCharacter = iconCharacter;
     }
 }

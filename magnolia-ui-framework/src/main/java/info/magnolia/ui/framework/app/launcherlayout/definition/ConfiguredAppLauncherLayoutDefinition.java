@@ -31,67 +31,28 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.layout;
+package info.magnolia.ui.framework.app.launcherlayout.definition;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-
-import info.magnolia.ui.framework.app.AppDescriptor;
-
 /**
- * Describes the app layout in the app launcher. Apps in the launcher are organized into groups.
- *
- * @see AppGroup
- * @see AppGroupEntry
- * @see AppLayoutManager
+ * Default implementation of {@link AppLauncherLayoutDefinition} used for configuration in the repository.
  */
-public class AppLayout {
+public class ConfiguredAppLauncherLayoutDefinition implements AppLauncherLayoutDefinition {
 
-    private List<AppGroup> groups;
+    private List<AppLauncherGroupDefinition> groups = new ArrayList<AppLauncherGroupDefinition>();
 
-    public List<AppGroup> getGroups() {
-        if (groups == null) {
-            groups = new ArrayList<AppGroup>();
-        }
+    @Override
+    public List<AppLauncherGroupDefinition> getGroups() {
         return groups;
     }
 
-    public void setGroups(List<AppGroup> groups) {
+    public void setGroups(List<AppLauncherGroupDefinition> groups) {
         this.groups = groups;
     }
 
-    public void addGroup(AppGroup group) {
-        getGroups().add(group);
-    }
-
-    public boolean containsApp(String name) {
-        return getAppGroupEntry(name) != null;
-    }
-
-    public AppGroup getGroup(String name) {
-        for (AppGroup group : getGroups()) {
-            if (StringUtils.equals(group.getName(), name)) {
-                return group;
-            }
-        }
-        return null;
-    }
-
-    public AppGroupEntry getAppGroupEntry(String name) {
-        for (AppGroup group : getGroups()) {
-            for (AppGroupEntry entry : group.getApps()) {
-                if (StringUtils.equals(entry.getName(), name)) {
-                    return entry;
-                }
-            }
-        }
-        return null;
-    }
-
-    public AppDescriptor getAppDescriptor(String name) {
-        AppGroupEntry entry = getAppGroupEntry(name);
-        return entry != null ? entry.getAppDescriptor() : null;
+    public void addGroup(AppLauncherGroupDefinition appGroup) {
+        groups.add(appGroup);
     }
 }

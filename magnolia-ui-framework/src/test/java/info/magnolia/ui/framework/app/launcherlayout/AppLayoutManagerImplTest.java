@@ -31,56 +31,57 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.layout;
+package info.magnolia.ui.framework.app.launcherlayout;
 
 import java.util.ArrayList;
 
 import org.junit.Before;
 import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import info.magnolia.ui.framework.app.AppDescriptor;
+import info.magnolia.ui.framework.app.launcherlayout.definition.AppLauncherGroupDefinition;
+import info.magnolia.ui.framework.app.launcherlayout.definition.ConfiguredAppLauncherGroupDefinition;
+import info.magnolia.ui.framework.app.launcherlayout.definition.ConfiguredAppLauncherGroupEntryDefinition;
+import info.magnolia.ui.framework.app.launcherlayout.definition.ConfiguredAppLauncherLayoutDefinition;
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.framework.app.registry.AppRegistryEvent;
 import info.magnolia.ui.framework.app.registry.AppRegistryEventType;
 import info.magnolia.ui.framework.event.SimpleSystemEventBus;
 
 /**
- * Test case for {@link AppLayoutManagerImpl}.
+ * Test case for {@link AppLauncherLayoutManagerImpl}.
  */
 public class AppLayoutManagerImplTest {
 
-    private AppGroup appGroup1;
-    private AppGroup appGroup2;
+    private AppLauncherGroupDefinition appGroup1;
+    private AppLauncherGroupDefinition appGroup2;
     private AppDescriptor appDescriptor1;
     private AppDescriptor appDescriptor2;
     private AppDescriptor appDescriptor3;
     private SimpleSystemEventBus systemEventBus;
-    private AppLayoutManagerImpl appLayoutManager;
+    private AppLauncherLayoutManagerImpl appLayoutManager;
 
     @Before
     public void setUp() throws Exception {
         //Init
-        appDescriptor1 = AppLayoutTest.createAppDescriptor("appDescriptor1", "appGroup1");
-        appDescriptor2 = AppLayoutTest.createAppDescriptor("appDescriptor2", "appGroup1");
-        appDescriptor3 = AppLayoutTest.createAppDescriptor("appDescriptor3", "appGroup2");
-        appGroup1 =  AppLayoutTest.createAppGroup("appGroup1", appDescriptor1, appDescriptor2);
-        appGroup2 =  AppLayoutTest.createAppGroup("appGroup2", appDescriptor3);
+        appDescriptor1 = AppLauncherLayoutTest.createAppDescriptor("appDescriptor1", "appGroup1");
+        appDescriptor2 = AppLauncherLayoutTest.createAppDescriptor("appDescriptor2", "appGroup1");
+        appDescriptor3 = AppLauncherLayoutTest.createAppDescriptor("appDescriptor3", "appGroup2");
+        appGroup1 = createAppGroup("appGroup1", "appDescriptor1", "appDescriptor2");
+        appGroup2 = createAppGroup("appGroup2", "appDescriptor3");
 
-        AppLayout appLayout = new AppLayout();
-        appLayout.addGroup(appGroup1);
-        appLayout.addGroup(appGroup2);
+        ConfiguredAppLauncherLayoutDefinition layoutDefinition = new ConfiguredAppLauncherLayoutDefinition();
+        layoutDefinition.addGroup(appGroup1);
+        layoutDefinition.addGroup(appGroup2);
 
         ArrayList<AppDescriptor> descriptors = new ArrayList<AppDescriptor>();
         descriptors.add(appDescriptor1);
         descriptors.add(appDescriptor2);
         descriptors.add(appDescriptor3);
-
-        systemEventBus = new SimpleSystemEventBus();
 
         AppDescriptorRegistry registry = mock(AppDescriptorRegistry.class);
         when(registry.getAppDescriptors()).thenReturn(descriptors);
@@ -89,15 +90,17 @@ public class AppLayoutManagerImplTest {
         when(registry.isAppDescriptorRegistered(eq("appDescriptor2"))).thenReturn(true);
         when(registry.isAppDescriptorRegistered(eq("appDescriptor3"))).thenReturn(true);
 
-        appLayoutManager = new AppLayoutManagerImpl(registry, systemEventBus);
-        appLayoutManager.setLayout(appLayout);
+        systemEventBus = new SimpleSystemEventBus();
+
+        appLayoutManager = new AppLauncherLayoutManagerImpl(registry, systemEventBus);
+        appLayoutManager.setLayout(layoutDefinition);
     }
 
     @Test
     public void testGetAppLayout() {
 
         // WHEN
-        AppLayout layout = appLayoutManager.getLayoutForCurrentUser();
+        AppLauncherLayout layout = appLayoutManager.getLayoutForCurrentUser();
 
         // THEN
         assertEquals(2, layout.getGroups().size());
@@ -106,11 +109,11 @@ public class AppLayoutManagerImplTest {
     @Test
     public void testSendsEvents() {
 
-        final ArrayList<AppLayoutChangedEvent> events = new ArrayList<AppLayoutChangedEvent>();
-        systemEventBus.addHandler(AppLayoutChangedEvent.class, new AppLayoutChangedEventHandler() {
+        final ArrayList<AppLauncherLayoutChangedEvent> events = new ArrayList<AppLauncherLayoutChangedEvent>();
+        systemEventBus.addHandler(AppLauncherLayoutChangedEvent.class, new AppLauncherLayoutChangedEventHandler() {
 
             @Override
-            public void onAppLayoutChanged(AppLayoutChangedEvent event) {
+            public void onAppLayoutChanged(AppLauncherLayoutChangedEvent event) {
                 events.add(event);
             }
         });
@@ -122,5 +125,17 @@ public class AppLayoutManagerImplTest {
 
         // THEN
         assertEquals(3, events.size());
+    }
+
+    public static AppLauncherGroupDefinition createAppGroup(String name, String... appNames) {
+        ConfiguredAppLauncherGroupDefinition group = new ConfiguredAppLauncherGroupDefinition();
+        group.setName(name);
+        for (String appName : appNames) {
+            ConfiguredAppLauncherGroupEntryDefinition entry = new ConfiguredAppLauncherGroupEntryDefinition();
+            entry.setName(appName);
+            entry.setEnabled(true);
+            group.addApp(entry);
+        }
+        return group;
     }
 }

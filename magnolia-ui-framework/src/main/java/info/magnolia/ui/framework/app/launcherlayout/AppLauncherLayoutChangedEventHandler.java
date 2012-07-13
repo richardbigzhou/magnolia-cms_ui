@@ -31,17 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.layout;
+package info.magnolia.ui.framework.app.launcherlayout;
 
 import info.magnolia.ui.framework.event.EventHandler;
 
 /**
- * Event handler for receiving events when the app layout changes.
+ * Event handler for receiving events when the launcher layout changes.
  *
- * @see AppLayoutManager
- * @see AppLayoutChangedEvent
+ * @see AppLauncherLayoutManager
+ * @see AppLauncherLayoutChangedEvent
  */
-public interface AppLayoutChangedEventHandler extends EventHandler {
+public interface AppLauncherLayoutChangedEventHandler extends EventHandler {
 
-    void onAppLayoutChanged(AppLayoutChangedEvent event);
+    void onAppLayoutChanged(AppLauncherLayoutChangedEvent event);
 }

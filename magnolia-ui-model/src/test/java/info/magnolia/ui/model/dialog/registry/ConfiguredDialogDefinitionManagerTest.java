@@ -68,8 +68,8 @@ import org.junit.Test;
  */
 public class ConfiguredDialogDefinitionManagerTest {
 
-    private static final String A_DIALOG_PATH = "/modules/aModule/" + ConfiguredDialogDefinitionManager.DIALOG_CONFIG_PATH + "/aDialog";
-    private static final String B_DIALOG_PATH = "/modules/bModule/" + ConfiguredDialogDefinitionManager.DIALOG_CONFIG_PATH + "/bDialog";
+    private static final String A_DIALOG_PATH = "/modules/aModule/" + ConfiguredDialogDefinitionManager.DIALOG_CONFIG_NODE_NAME + "/aDialog";
+    private static final String B_DIALOG_PATH = "/modules/bModule/" + ConfiguredDialogDefinitionManager.DIALOG_CONFIG_NODE_NAME + "/bDialog";
 
 
     private ModuleRegistry moduleRegistry;

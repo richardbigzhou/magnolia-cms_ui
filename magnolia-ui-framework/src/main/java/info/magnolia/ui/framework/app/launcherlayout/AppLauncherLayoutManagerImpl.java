@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.layout;
+package info.magnolia.ui.framework.app.launcherlayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,25 +44,28 @@ import org.slf4j.LoggerFactory;
 
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.framework.app.AppDescriptor;
+import info.magnolia.ui.framework.app.launcherlayout.definition.AppLauncherGroupDefinition;
+import info.magnolia.ui.framework.app.launcherlayout.definition.AppLauncherGroupEntryDefinition;
+import info.magnolia.ui.framework.app.launcherlayout.definition.AppLauncherLayoutDefinition;
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.framework.app.registry.AppRegistryEvent;
 import info.magnolia.ui.framework.app.registry.AppRegistryEventHandler;
 import info.magnolia.ui.framework.event.SystemEventBus;
 
 /**
- * Default {@link AppLayoutManager} implementation.
+ * Default {@link AppLauncherLayoutManager} implementation.
  */
 @Singleton
-public class AppLayoutManagerImpl implements AppLayoutManager {
+public class AppLauncherLayoutManagerImpl implements AppLauncherLayoutManager {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private AppDescriptorRegistry appDescriptorRegistry;
     private SystemEventBus systemEventBus;
-    private AtomicReference<AppLayout> layout = new AtomicReference<AppLayout>();
+    private AtomicReference<AppLauncherLayoutDefinition> layoutDefinitionReference = new AtomicReference<AppLauncherLayoutDefinition>();
 
     @Inject
-    public AppLayoutManagerImpl(AppDescriptorRegistry appDescriptorRegistry, SystemEventBus systemEventBus) {
+    public AppLauncherLayoutManagerImpl(AppDescriptorRegistry appDescriptorRegistry, SystemEventBus systemEventBus) {
         this.appDescriptorRegistry = appDescriptorRegistry;
         this.systemEventBus = systemEventBus;
 
@@ -95,59 +98,63 @@ public class AppLayoutManagerImpl implements AppLayoutManager {
     }
 
     @Override
-    public AppLayout getLayoutForCurrentUser() {
+    public AppLauncherLayout getLayoutForCurrentUser() {
 
-        AppLayout appLayout = layout.get();
-        if (appLayout == null) {
-            return new AppLayout();
+        AppLauncherLayoutDefinition layoutDefinition = layoutDefinitionReference.get();
+        if (layoutDefinition == null) {
+            return new AppLauncherLayout();
         }
 
-        AppLayout layoutCopy = new AppLayout();
-        for (AppGroup group : appLayout.getGroups()) {
-            List<AppGroupEntry> copiedEntries = new ArrayList<AppGroupEntry>();
-            for (AppGroupEntry entry : group.getApps()) {
-                if (isAppEnabledForCurrentUser(entry)) {
-                    AppDescriptor appDescriptor;
-                    try {
-                        appDescriptor = appDescriptorRegistry.getAppDescriptor(entry.getName());
-                    } catch (RegistrationException e) {
-                        continue;
-                    }
-                    AppGroupEntry entryCopy = new AppGroupEntry();
-                    entryCopy.setName(entry.getName());
-                    entryCopy.setEnabled(entry.isEnabled());
-                    entryCopy.setAppDescriptor(appDescriptor);
-                    copiedEntries.add(entryCopy);
+        AppLauncherLayout layout = new AppLauncherLayout();
+        for (AppLauncherGroupDefinition groupDefinition : layoutDefinition.getGroups()) {
+
+            List<AppLauncherGroupEntry> entries = new ArrayList<AppLauncherGroupEntry>();
+            for (AppLauncherGroupEntryDefinition entryDefinition : groupDefinition.getApps()) {
+
+                AppDescriptor appDescriptor;
+                try {
+                    appDescriptor = appDescriptorRegistry.getAppDescriptor(entryDefinition.getName());
+                } catch (RegistrationException e) {
+                    continue;
+                }
+
+                if (isAppEnabledForCurrentUser(entryDefinition)) {
+                    AppLauncherGroupEntry entry = new AppLauncherGroupEntry();
+                    entry.setName(entryDefinition.getName());
+                    entry.setEnabled(entryDefinition.isEnabled());
+                    entry.setAppDescriptor(appDescriptor);
+                    entries.add(entry);
                 }
             }
-            if (!copiedEntries.isEmpty()) {
-                AppGroup groupCopy = new AppGroup();
-                groupCopy.setName(group.getName());
-                groupCopy.setLabel(group.getLabel());
-                groupCopy.setBackgroundColor(group.getBackgroundColor());
-                groupCopy.setPermanent(group.isPermanent());
-                groupCopy.setApps(copiedEntries);
-                layoutCopy.addGroup(groupCopy);
+
+            if (!entries.isEmpty()) {
+                AppLauncherGroup group = new AppLauncherGroup();
+                group.setName(groupDefinition.getName());
+                group.setLabel(groupDefinition.getLabel());
+                group.setColor(groupDefinition.getColor());
+                group.setPermanent(groupDefinition.isPermanent());
+                group.setApps(entries);
+                layout.addGroup(group);
             }
         }
-        return layoutCopy;
+        return layout;
     }
 
     @Override
-    public void setLayout(AppLayout layout) {
-        this.layout.set(layout);
+    public void setLayout(AppLauncherLayoutDefinition layout) {
+        this.layoutDefinitionReference.set(layout);
         sendEvent();
     }
 
-    private boolean isAppEnabledForCurrentUser(AppGroupEntry entry) {
-        return entry.isEnabled() && appDescriptorRegistry.isAppDescriptorRegistered(entry.getName());
+    private boolean isAppEnabledForCurrentUser(AppLauncherGroupEntryDefinition entry) {
+        return entry.isEnabled();
     }
 
     /**
      * Send an event to the system event bus.
      */
     private void sendEvent() {
-        logger.debug("Sending AppLayoutChangedEvent on the system bus");
-        systemEventBus.fireEvent(new AppLayoutChangedEvent());
+        logger.debug("Sending AppLauncherLayoutChangedEvent on the system bus");
+        systemEventBus.fireEvent(new AppLauncherLayoutChangedEvent());
     }
 }

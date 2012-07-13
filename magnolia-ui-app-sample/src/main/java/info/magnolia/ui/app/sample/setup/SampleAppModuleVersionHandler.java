@@ -31,24 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.sample.main;
+package info.magnolia.ui.app.sample.setup;
 
-import info.magnolia.ui.framework.view.View;
+import info.magnolia.module.DefaultModuleVersionHandler;
 
 /**
- * View for the content display.
+ * Version handler for sample app module.
  */
-public interface ContentDisplayView extends View {
-
-    void setListener(Listener listener);
-
-    void setResource(String name);
-
-    /**
-     * Listener.
-     */
-    public interface Listener {
-
-        void onOpenInNewEditor();
-    }
+public class SampleAppModuleVersionHandler extends DefaultModuleVersionHandler {
 }

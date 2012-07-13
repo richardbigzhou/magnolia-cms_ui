@@ -31,24 +31,63 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.sample.main;
+package info.magnolia.ui.framework.app.launcherlayout;
 
-import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.framework.app.AppDescriptor;
 
 /**
- * View for the content display.
+ * Entry of an app group describing an app to be part of that group.
+ *
+ * @see AppLauncherLayout
+ * @see AppLauncherGroup
+ * @see AppLauncherLayoutManager
  */
-public interface ContentDisplayView extends View {
+public class AppLauncherGroupEntry {
 
-    void setListener(Listener listener);
+    private String name;
+    private boolean enabled = true;
+    private String iconFont;
+    private String iconCharacter;
 
-    void setResource(String name);
+    private AppDescriptor appDescriptor;
 
-    /**
-     * Listener.
-     */
-    public interface Listener {
+    public String getName() {
+        return name;
+    }
 
-        void onOpenInNewEditor();
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public AppDescriptor getAppDescriptor() {
+        return appDescriptor;
+    }
+
+    public void setAppDescriptor(AppDescriptor appDescriptor) {
+        this.appDescriptor = appDescriptor;
+    }
+
+    public String getIconFont() {
+        return iconFont;
+    }
+
+    public void setIconFont(String iconFont) {
+        this.iconFont = iconFont;
+    }
+
+    public String getIconCharacter() {
+        return iconCharacter;
+    }
+
+    public void setIconCharacter(String iconCharacter) {
+        this.iconCharacter = iconCharacter;
     }
 }
