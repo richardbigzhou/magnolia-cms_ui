@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.vaadin.integration.widget;
 
-import info.magnolia.ui.vaadin.integration.widget.client.applauncher.VAppLaucnher;
+import info.magnolia.ui.vaadin.integration.widget.client.applauncher.VAppLauncher;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -58,7 +58,7 @@ import com.vaadin.ui.Component;
  */
 
 @SuppressWarnings("serial")
-@ClientWidget(value = VAppLaucnher.class, loadStyle = LoadStyle.EAGER)
+@ClientWidget(value = VAppLauncher.class, loadStyle = LoadStyle.EAGER)
 public class AppLauncher extends AbstractComponent implements ServerSideHandler {
 
     private Map<String, AppSection> appSections = new HashMap<String, AppLauncher.AppSection>();

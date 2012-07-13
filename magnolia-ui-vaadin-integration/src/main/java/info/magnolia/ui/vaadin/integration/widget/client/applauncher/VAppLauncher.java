@@ -51,7 +51,7 @@ import com.vaadin.terminal.gwt.client.UIDL;
  * 
  */
 @SuppressWarnings("serial")
-public class VAppLaucnher extends Composite implements Paintable, ClientSideHandler, VAppLauncherView.Presenter {
+public class VAppLauncher extends Composite implements Paintable, ClientSideHandler, VAppLauncherView.Presenter {
 
     private ClientSideProxy proxy = new ClientSideProxy(this) {
         {
@@ -88,7 +88,7 @@ public class VAppLaucnher extends Composite implements Paintable, ClientSideHand
 
     private final EventBus eventBus = new SimpleEventBus();
     
-    public VAppLaucnher() {
+    public VAppLauncher() {
         super();
         this.view = new VAppLauncherViewImpl(eventBus);
         this.view.setPresenter(this);
