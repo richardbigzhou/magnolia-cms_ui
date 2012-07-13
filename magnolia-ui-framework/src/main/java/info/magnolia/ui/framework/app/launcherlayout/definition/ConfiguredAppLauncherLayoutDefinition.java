@@ -31,33 +31,28 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts;
+package info.magnolia.ui.framework.app.launcherlayout.definition;
 
-import javax.inject.Inject;
-
-import com.vaadin.ui.Component;
-
-import info.magnolia.ui.admincentral.workbench.ContentWorkbenchSubApp;
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
-
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * View implementation for the Contacts app.
+ * Default implementation of {@link AppLauncherLayoutDefinition} used for configuration in the repository.
  */
-@SuppressWarnings("serial")
-public class ContactsViewImpl implements ContactsView, IsVaadinComponent {
+public class ConfiguredAppLauncherLayoutDefinition implements AppLauncherLayoutDefinition {
 
-    private String jcrWorkspaceName = "contacts";
-    private final ContentWorkbenchSubApp workbench;
-
-    @Inject
-    public ContactsViewImpl(final ContentWorkbenchSubApp workbench) {
-        this.workbench = workbench;
-        workbench.initWorkbench(jcrWorkspaceName);
-    }
+    private List<AppLauncherGroupDefinition> groups = new ArrayList<AppLauncherGroupDefinition>();
 
     @Override
-    public Component asVaadinComponent() {
-        return workbench.asVaadinComponent();
+    public List<AppLauncherGroupDefinition> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(List<AppLauncherGroupDefinition> groups) {
+        this.groups = groups;
+    }
+
+    public void addGroup(AppLauncherGroupDefinition appGroup) {
+        groups.add(appGroup);
     }
 }

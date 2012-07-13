@@ -31,33 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts;
+package info.magnolia.ui.framework.app.launcherlayout;
 
-import javax.inject.Inject;
-
-import com.vaadin.ui.Component;
-
-import info.magnolia.ui.admincentral.workbench.ContentWorkbenchSubApp;
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
-
+import info.magnolia.ui.framework.app.launcherlayout.definition.AppLauncherLayoutDefinition;
 
 /**
- * View implementation for the Contacts app.
+ * Manages the launcher layout displayed in the app launcher. Fires an {@link AppLauncherLayoutChangedEvent} of the system event bus
+ * when the layout changes.
+ *
+ * @see AppLauncherLayout
+ * @see AppLauncherLayoutChangedEvent
+ * @see AppLauncherLayoutChangedEventHandler
  */
-@SuppressWarnings("serial")
-public class ContactsViewImpl implements ContactsView, IsVaadinComponent {
+public interface AppLauncherLayoutManager {
 
-    private String jcrWorkspaceName = "contacts";
-    private final ContentWorkbenchSubApp workbench;
+    /**
+     * Returns the {@link AppLauncherLayout} defined for the current user. Empty groups or groups where the current user doesn't
+     * have access to any of the apps are not returned. Disabled apps are not included in the response nor are apps that
+     * are not present in the {@link info.magnolia.ui.framework.app.registry.AppDescriptorRegistry}. The returned object
+     * is also populated with {@link info.magnolia.ui.framework.app.AppDescriptor} for quick access.
+     */
+    AppLauncherLayout getLayoutForCurrentUser();
 
-    @Inject
-    public ContactsViewImpl(final ContentWorkbenchSubApp workbench) {
-        this.workbench = workbench;
-        workbench.initWorkbench(jcrWorkspaceName);
-    }
-
-    @Override
-    public Component asVaadinComponent() {
-        return workbench.asVaadinComponent();
-    }
+    void setLayout(AppLauncherLayoutDefinition layout);
 }

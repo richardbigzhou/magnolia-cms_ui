@@ -31,33 +31,63 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts;
+package info.magnolia.ui.framework.app.launcherlayout;
 
-import javax.inject.Inject;
-
-import com.vaadin.ui.Component;
-
-import info.magnolia.ui.admincentral.workbench.ContentWorkbenchSubApp;
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
-
+import info.magnolia.ui.framework.app.AppDescriptor;
 
 /**
- * View implementation for the Contacts app.
+ * Entry of an app group describing an app to be part of that group.
+ *
+ * @see AppLauncherLayout
+ * @see AppLauncherGroup
+ * @see AppLauncherLayoutManager
  */
-@SuppressWarnings("serial")
-public class ContactsViewImpl implements ContactsView, IsVaadinComponent {
+public class AppLauncherGroupEntry {
 
-    private String jcrWorkspaceName = "contacts";
-    private final ContentWorkbenchSubApp workbench;
+    private String name;
+    private boolean enabled = true;
+    private String iconFont;
+    private String iconCharacter;
 
-    @Inject
-    public ContactsViewImpl(final ContentWorkbenchSubApp workbench) {
-        this.workbench = workbench;
-        workbench.initWorkbench(jcrWorkspaceName);
+    private AppDescriptor appDescriptor;
+
+    public String getName() {
+        return name;
     }
 
-    @Override
-    public Component asVaadinComponent() {
-        return workbench.asVaadinComponent();
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public AppDescriptor getAppDescriptor() {
+        return appDescriptor;
+    }
+
+    public void setAppDescriptor(AppDescriptor appDescriptor) {
+        this.appDescriptor = appDescriptor;
+    }
+
+    public String getIconFont() {
+        return iconFont;
+    }
+
+    public void setIconFont(String iconFont) {
+        this.iconFont = iconFont;
+    }
+
+    public String getIconCharacter() {
+        return iconCharacter;
+    }
+
+    public void setIconCharacter(String iconCharacter) {
+        this.iconCharacter = iconCharacter;
     }
 }

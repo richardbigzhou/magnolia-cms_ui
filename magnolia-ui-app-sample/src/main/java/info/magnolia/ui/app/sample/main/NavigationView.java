@@ -31,33 +31,22 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts;
+package info.magnolia.ui.app.sample.main;
 
-import javax.inject.Inject;
-
-import com.vaadin.ui.Component;
-
-import info.magnolia.ui.admincentral.workbench.ContentWorkbenchSubApp;
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
-
+import info.magnolia.ui.framework.view.View;
 
 /**
- * View implementation for the Contacts app.
+ * View for the navigation.
  */
-@SuppressWarnings("serial")
-public class ContactsViewImpl implements ContactsView, IsVaadinComponent {
+public interface NavigationView extends View {
 
-    private String jcrWorkspaceName = "contacts";
-    private final ContentWorkbenchSubApp workbench;
+    void setListener(Listener listener);
 
-    @Inject
-    public ContactsViewImpl(final ContentWorkbenchSubApp workbench) {
-        this.workbench = workbench;
-        workbench.initWorkbench(jcrWorkspaceName);
-    }
+    /**
+     * Listener.
+     */
+    public interface Listener {
 
-    @Override
-    public Component asVaadinComponent() {
-        return workbench.asVaadinComponent();
+        void onItemSelected(String name);
     }
 }

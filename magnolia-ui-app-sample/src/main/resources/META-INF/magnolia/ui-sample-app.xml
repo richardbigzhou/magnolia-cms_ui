@@ -4,7 +4,7 @@
   <name>ui-sample-app</name>
   <displayName>UI Sample app</displayName>
   <description>UI Sample app</description>
-  <versionHandler>info.magnolia.ui.app.sample.SampleAppModuleVersionHandler</versionHandler>
+  <versionHandler>info.magnolia.ui.app.sample.setup.SampleAppModuleVersionHandler</versionHandler>
   <version>${project.version}</version>
 
 	<!-- App components definition. -->
@@ -13,20 +13,28 @@
   <components>
     <id>app-sample</id>
     <component>
-      <type>info.magnolia.ui.app.sample.SampleMainSubApp</type>
-      <implementation>info.magnolia.ui.app.sample.SampleMainSubApp</implementation>
+      <type>info.magnolia.ui.app.sample.main.SampleMainSubApp</type>
+      <implementation>info.magnolia.ui.app.sample.main.SampleMainSubApp</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.app.sample.SampleEditorSubApp</type>
-      <implementation>info.magnolia.ui.app.sample.SampleEditorSubApp</implementation>
+      <type>info.magnolia.ui.app.sample.editor.SampleEditorSubApp</type>
+      <implementation>info.magnolia.ui.app.sample.editor.SampleEditorSubApp</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.app.sample.SampleMainView</type>
-      <implementation>info.magnolia.ui.app.sample.SampleMainViewImpl</implementation>
+      <type>info.magnolia.ui.app.sample.main.SampleMainView</type>
+      <implementation>info.magnolia.ui.app.sample.main.SampleMainViewImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.app.sample.SampleEditorView</type>
-      <implementation>info.magnolia.ui.app.sample.SampleEditorViewImpl</implementation>
+      <type>info.magnolia.ui.app.sample.editor.SampleEditorView</type>
+      <implementation>info.magnolia.ui.app.sample.editor.SampleEditorViewImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.app.sample.main.NavigationView</type>
+      <implementation>info.magnolia.ui.app.sample.main.NavigationViewImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.app.sample.main.ContentDisplayView</type>
+      <implementation>info.magnolia.ui.app.sample.main.ContentDisplayViewImpl</implementation>
     </component>
   </components>
 

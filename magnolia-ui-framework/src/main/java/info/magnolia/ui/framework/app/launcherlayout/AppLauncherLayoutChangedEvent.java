@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,42 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.field;
+package info.magnolia.ui.framework.app.launcherlayout;
 
-import org.vaadin.addon.customfield.CustomField;
-
-import com.vaadin.data.Property;
-import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.Select;
+import info.magnolia.ui.framework.event.Event;
 
 /**
- * TemplateSelectorView implementation of a template selector.
+ * Event dispatched when the launcher layout changes.
  *
+ * @see AppLauncherLayoutManager
+ * @see AppLauncherLayoutChangedEventHandler
  */
-public class TemplateSelectorView extends CustomField {
-
-    private Select select;
-
-    public TemplateSelectorView(Select select) {
-        this.select = select;
-        CssLayout layout = new CssLayout();
-        layout.addComponent(this.select);
-        setCompositionRoot(layout);
-    }
-
-    /**
-     * Set the select item if the datasource is not empty.
-     */
-    @Override
-    public void setPropertyDataSource(Property newDataSource) {
-        super.setPropertyDataSource(newDataSource);
-        if(!newDataSource.getValue().toString().isEmpty()) {
-            select.setValue(newDataSource.getValue());
-        }
-    }
+public class AppLauncherLayoutChangedEvent implements Event<AppLauncherLayoutChangedEventHandler> {
 
     @Override
-    public Class<?> getType() {
-        return String.class;
+    public void dispatch(AppLauncherLayoutChangedEventHandler handler) {
+        handler.onAppLayoutChanged(this);
     }
 }

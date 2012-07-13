@@ -33,28 +33,101 @@
  */
 package info.magnolia.ui.model.dialog.definition;
 
-import java.util.Map;
+import info.magnolia.repository.RepositoryConstants;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Field definition for a select field.
+ * Field definition for a select field. This replace the former {@link info.magnolia.cms.gui.dialog.DialogSelect}
  */
 public class SelectFieldDefinition extends ConfiguredFieldDefinition {
 
-    // TODO options should be configured in another fashion
+    public static String OPTION_VALUE_PROPERTY_NAME = "value";
+    public static String OPTION_NAME_PROPERTY_NAME = "name";
+    public static String OPTION_SELECTED_PROPERTY_NAME = "selected";
+    public static String OPTION_ICONSRC_PROPERTY_NAME = "iconSrc";
+    public static String OPTION_LABEL_PROPERTY_NAME = "label";
 
-    // TODO support options from a path
+    public static String DEFAULT_REPOSITORY_NAME = RepositoryConstants.CONFIG;
 
-    // TODO support icons on options
+    private String cssClass;
 
-    // TODO see http://documentation.magnolia-cms.com/reference/controls.html#radiocheckboxandselect
+    private String path;
 
-    private Map<String, String> options;
+    private String repository = DEFAULT_REPOSITORY_NAME;
 
-    public Map<String, String> getOptions() {
+    private String valueNodeData = OPTION_VALUE_PROPERTY_NAME;
+
+    private String labelNodeData = OPTION_LABEL_PROPERTY_NAME;
+
+
+    private List<SelectFieldOptionDefinition> options = new ArrayList<SelectFieldOptionDefinition>();
+
+
+    public List<SelectFieldOptionDefinition> getOptions() {
         return options;
     }
 
-    public void setOptions(Map<String, String> options) {
+
+    public void setOptions(List<SelectFieldOptionDefinition> options) {
         this.options = options;
     }
+
+
+    public void addOption(SelectFieldOptionDefinition option) {
+        options.add(option);
+    }
+
+
+    public String getCssClass() {
+        return cssClass;
+    }
+
+
+    public void setCssClass(String cssClass) {
+        this.cssClass = cssClass;
+    }
+
+
+    public String getPath() {
+        return path;
+    }
+
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+
+    public String getRepository() {
+        return repository;
+    }
+
+
+    public void setRepository(String repository) {
+        this.repository = repository;
+    }
+
+
+    public String getValueNodeData() {
+        return valueNodeData;
+    }
+
+
+    public void setValueNodeData(String valueNodeData) {
+        this.valueNodeData = valueNodeData;
+    }
+
+
+    public String getLabelNodeData() {
+        return labelNodeData;
+    }
+
+
+    public void setLabelNodeData(String labelNodeData) {
+        this.labelNodeData = labelNodeData;
+    }
+
+
 }

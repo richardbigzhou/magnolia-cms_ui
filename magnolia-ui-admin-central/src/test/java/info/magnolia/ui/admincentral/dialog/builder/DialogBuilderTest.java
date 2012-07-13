@@ -111,7 +111,7 @@ public class DialogBuilderTest {
         final TabDefinition tabDef = new ConfiguredTabDefinition();
         final FieldDefinition fieldDef = new ConfiguredFieldDefinition();
 
-        fieldDef.setType(FieldDefinition.TEXT_FIELD_TYPE);
+//        fieldDef.setType(FieldDefinition.TEXT_FIELD_TYPE);
         ((ConfiguredFieldDefinition) fieldDef).setName(propertyName);
         tabDef.addField(fieldDef);
         dialogDef.addTab(tabDef);

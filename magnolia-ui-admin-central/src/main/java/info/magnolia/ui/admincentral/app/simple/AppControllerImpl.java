@@ -49,8 +49,7 @@ import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.AppLifecycleEventType;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.SubApp;
-import info.magnolia.ui.framework.app.layout.AppCategory;
-import info.magnolia.ui.framework.app.layout.AppLayoutManager;
+import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.event.ResettableEventBus;
 import info.magnolia.ui.framework.location.DefaultLocation;
@@ -90,7 +89,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
     private ModuleRegistry moduleRegistry;
     private ComponentProvider componentProvider;
-    private AppLayoutManager appLayoutManager;
+    private AppLauncherLayoutManager appLauncherLayoutManager;
     private LocationController locationController;
     private MessagesManager messagesManager;
     private Shell shell;
@@ -103,14 +102,14 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     private AppContextImpl currentApp;
 
     @Inject
-    public AppControllerImpl(ModuleRegistry moduleRegistry, ComponentProvider componentProvider, AppLayoutManager appLayoutManager, LocationController locationController, Shell shell, EventBus eventBus, MessagesManager messagesManager) {
+    public AppControllerImpl(ModuleRegistry moduleRegistry, ComponentProvider componentProvider, AppLauncherLayoutManager appLauncherLayoutManager, LocationController locationController, MessagesManager messagesManager, Shell shell, EventBus eventBus) {
         this.moduleRegistry = moduleRegistry;
-        this.locationController = locationController;
         this.componentProvider = componentProvider;
-        this.appLayoutManager = appLayoutManager;
+        this.appLauncherLayoutManager = appLauncherLayoutManager;
+        this.locationController = locationController;
         this.messagesManager = messagesManager;
-        this.eventBus = eventBus;
         this.shell = shell;
+        this.eventBus = eventBus;
 
         eventBus.addHandler(LocationChangedEvent.class, this);
         eventBus.addHandler(LocationChangeRequestedEvent.class, this);
@@ -124,7 +123,9 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     @Override
     public void startIfNotAlreadyRunningThenFocus(String name) {
         AppContextImpl appContext = doStartIfNotAlreadyRunning(name, null);
-        doFocus(appContext);
+        if (appContext != null) {
+            doFocus(appContext);
+        }
     }
 
     @Override
@@ -156,7 +157,12 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     private AppContextImpl doStartIfNotAlreadyRunning(String name, Location location) {
         AppContextImpl appContext = runningApps.get(name);
         if (appContext == null) {
+
             AppDescriptor descriptor = getAppDescriptor(name);
+            if (descriptor == null) {
+                return null;
+            }
+
             appContext = new AppContextImpl(descriptor);
 
             if (location == null) {
@@ -237,14 +243,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     }
 
     private AppDescriptor getAppDescriptor(String name) {
-        for (AppCategory category : appLayoutManager.getLayout().getCategories()) {
-            for (AppDescriptor descriptor : category.getApps()) {
-                if (descriptor.getName().equals(name)) {
-                    return descriptor;
-                }
-            }
-        }
-        return null;
+        return appLauncherLayoutManager.getLayoutForCurrentUser().getAppDescriptor(name);
     }
 
     private class AppContextImpl implements AppContext {

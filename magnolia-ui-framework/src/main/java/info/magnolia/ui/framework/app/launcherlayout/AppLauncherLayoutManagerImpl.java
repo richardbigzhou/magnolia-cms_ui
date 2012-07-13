@@ -31,50 +31,46 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.layout;
+package info.magnolia.ui.framework.app.launcherlayout;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.app.layout.event.LayoutEvent;
-import info.magnolia.ui.framework.app.layout.event.LayoutEventType;
+import info.magnolia.ui.framework.app.launcherlayout.definition.AppLauncherGroupDefinition;
+import info.magnolia.ui.framework.app.launcherlayout.definition.AppLauncherGroupEntryDefinition;
+import info.magnolia.ui.framework.app.launcherlayout.definition.AppLauncherLayoutDefinition;
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.framework.app.registry.AppRegistryEvent;
 import info.magnolia.ui.framework.app.registry.AppRegistryEventHandler;
 import info.magnolia.ui.framework.event.SystemEventBus;
 
 /**
- * Default {@link AppLayoutManager} implementation.
+ * Default {@link AppLauncherLayoutManager} implementation.
  */
 @Singleton
-public class AppLayoutManagerImpl implements AppLayoutManager {
+public class AppLauncherLayoutManagerImpl implements AppLauncherLayoutManager {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    /**
-     * Reference to the injected AppDescriptorRegistry.
-     */
     private AppDescriptorRegistry appDescriptorRegistry;
-
-    /**
-     * Reference to the injected SystemEventBus, used to handle events from the AppDescriptorRegistry events.
-     */
     private SystemEventBus systemEventBus;
+    private AtomicReference<AppLauncherLayoutDefinition> layoutDefinitionReference = new AtomicReference<AppLauncherLayoutDefinition>();
 
     @Inject
-    public AppLayoutManagerImpl(AppDescriptorRegistry appDescriptorRegistry, SystemEventBus systemEventBus) {
+    public AppLauncherLayoutManagerImpl(AppDescriptorRegistry appDescriptorRegistry, SystemEventBus systemEventBus) {
         this.appDescriptorRegistry = appDescriptorRegistry;
         this.systemEventBus = systemEventBus;
 
         /**
-         * Propagate events from {@link AppDescriptorRegistry} to notify listeners that the layout has changed.
+         * Propagate events from {@link info.magnolia.ui.framework.app.registry.AppDescriptorRegistry} to notify listeners that the layout has changed.
          */
         systemEventBus.addHandler(AppRegistryEvent.class, new AppRegistryEventHandler() {
 
@@ -82,92 +78,83 @@ public class AppLayoutManagerImpl implements AppLayoutManager {
             public void onAppRegistered(AppRegistryEvent event) {
                 String name = event.getAppDescriptor().getName();
                 logger.debug("Got AppLifecycleEvent." + event.getEventType() + " for the following appDescriptor " + name);
-                sendEvent(new LayoutEvent(LayoutEventType.RELOAD_APP, name));
+                sendEvent();
             }
 
             @Override
             public void onAppReregistered(AppRegistryEvent event) {
                 String name = event.getAppDescriptor().getName();
                 logger.debug("Got AppLifecycleEvent." + event.getEventType() + " for the following appDescriptor " + name);
-                sendEvent(new LayoutEvent(LayoutEventType.RELOAD_APP, name));
+                sendEvent();
             }
 
             @Override
             public void onAppUnregistered(AppRegistryEvent event) {
                 String name = event.getAppDescriptor().getName();
                 logger.debug("Got AppLifecycleEvent." + event.getEventType() + " for the following appDescriptor " + name);
-                sendEvent(new LayoutEvent(LayoutEventType.RELOAD_APP, name));
+                sendEvent();
             }
         });
     }
 
     @Override
-    public AppLayout getLayout() {
+    public AppLauncherLayout getLayoutForCurrentUser() {
 
-        Map<String, AppCategory> categories = new HashMap<String, AppCategory>();
-        AppLayout appLayout = new AppLayoutImpl(categories);
+        AppLauncherLayoutDefinition layoutDefinition = layoutDefinitionReference.get();
+        if (layoutDefinition == null) {
+            return new AppLauncherLayout();
+        }
 
-        Collection<AppDescriptor> appDescriptors = this.appDescriptorRegistry.getAppDescriptors();
+        AppLauncherLayout layout = new AppLauncherLayout();
+        for (AppLauncherGroupDefinition groupDefinition : layoutDefinition.getGroups()) {
 
-        for (AppDescriptor app : appDescriptors) {
-            if (hasToAddApp(app, appLayout)) {
-                handleCategory(categories, app);
+            List<AppLauncherGroupEntry> entries = new ArrayList<AppLauncherGroupEntry>();
+            for (AppLauncherGroupEntryDefinition entryDefinition : groupDefinition.getApps()) {
+
+                AppDescriptor appDescriptor;
+                try {
+                    appDescriptor = appDescriptorRegistry.getAppDescriptor(entryDefinition.getName());
+                } catch (RegistrationException e) {
+                    continue;
+                }
+
+                if (isAppEnabledForCurrentUser(entryDefinition)) {
+                    AppLauncherGroupEntry entry = new AppLauncherGroupEntry();
+                    entry.setName(entryDefinition.getName());
+                    entry.setEnabled(entryDefinition.isEnabled());
+                    entry.setAppDescriptor(appDescriptor);
+                    entries.add(entry);
+                }
+            }
+
+            if (!entries.isEmpty()) {
+                AppLauncherGroup group = new AppLauncherGroup();
+                group.setName(groupDefinition.getName());
+                group.setLabel(groupDefinition.getLabel());
+                group.setColor(groupDefinition.getColor());
+                group.setPermanent(groupDefinition.isPermanent());
+                group.setApps(entries);
+                layout.addGroup(group);
             }
         }
-        return appLayout;
+        return layout;
     }
 
     @Override
-    public boolean isAppDescriptorRegistered(String name) {
-        return true;
+    public void setLayout(AppLauncherLayoutDefinition layout) {
+        this.layoutDefinitionReference.set(layout);
+        sendEvent();
     }
 
-    @Override
-    public boolean isCategoryRegistered(String name) {
-        return true;
-    }
-
-    /**
-     * Filter out disabled apps and apps with identical names.
-     */
-    private boolean hasToAddApp(AppDescriptor app, AppLayout appLayout) {
-        // Filter out disabled apps and apps with identical names
-        if (!app.isEnabled() || appLayout.isAppAlreadyRegistered(app.getName()) || !isAppDescriptorRegistered(app.getName())) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    private static boolean nextGroupIsPermanent = true;
-    
-    /**
-     * Add the AppDescriptor to an existing or newly created AppCategory.
-     */
-    private void handleCategory(Map<String, AppCategory> categories, AppDescriptor app) {
-        AppCategory category;
-        String catName = app.getCategoryName();
-        logger.debug("Handle app " + app.getName() + " for category " + catName);
-        if (categories.containsKey(catName)) {
-            // Add to Category
-            category = categories.get(catName);
-        } else {
-            // Create
-            category = new AppCategory();
-            category.setLabel(catName);
-            category.setPermanent(nextGroupIsPermanent);
-            category.setBackgroundColor("#9A3332");
-            categories.put(catName, category);
-            nextGroupIsPermanent = !nextGroupIsPermanent;
-        }
-        category.addApp(app);
+    private boolean isAppEnabledForCurrentUser(AppLauncherGroupEntryDefinition entry) {
+        return entry.isEnabled();
     }
 
     /**
      * Send an event to the system event bus.
      */
-    private void sendEvent(LayoutEvent event) {
-        logger.debug("Sending LayoutEvent." + event.getEventType() + " to the system bus");
-        systemEventBus.fireEvent(event);
+    private void sendEvent() {
+        logger.debug("Sending AppLauncherLayoutChangedEvent on the system bus");
+        systemEventBus.fireEvent(new AppLauncherLayoutChangedEvent());
     }
 }

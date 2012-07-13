@@ -38,7 +38,6 @@ import info.magnolia.ui.admincentral.jcr.view.ContentView;
 import info.magnolia.ui.admincentral.jcr.view.ContentView.ViewType;
 import info.magnolia.ui.admincentral.jcr.view.builder.ContentViewBuilderProvider;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
-import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.widget.actionbar.Actionbar;
 
 import java.util.EnumMap;
@@ -46,7 +45,6 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,13 +75,6 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
     private ViewType currentViewType = ViewType.TREE;
 
     private ContentWorkbenchView.Listener contentWorkbenchViewListener;
-
-    private final ContentView.Listener contentViewListener = new ContentView.Listener() {
-        @Override
-        public void onItemSelection(Item item) {
-            contentWorkbenchViewListener.onItemSelected(item);
-        }
-    };
 
     @Inject
     public ContentWorkbenchViewImpl(final ContentViewBuilderProvider contentViewBuilderProvider) {
@@ -120,28 +111,6 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
         workbenchContainer.setSizeFull();
         workbenchContainer.setStyleName("mgnl-app-view");
         workbenchContainer.addComponent(toolbar);
-    }
-
-    @Override
-    public void initWorkbench(final WorkbenchDefinition workbenchDefinition) {
-        if (workbenchDefinition == null) {
-            throw new IllegalArgumentException("Trying to init a workbench but got null definition.");
-        }
-        log.debug("Initializing workbench {}...", workbenchDefinition.getName());
-
-        for (final ViewType type : ViewType.values()) {
-            final ContentView contentView = contentViewBuilderProvider.getBuilder().build(workbenchDefinition, type);
-            contentView.setListener(contentViewListener);
-            contentView.select(StringUtils.defaultIfEmpty(workbenchDefinition.getPath(), "/"));
-            contentViews.put(type, contentView);
-        }
-
-        if (StringUtils.isBlank(workbenchDefinition.getWorkspace())) {
-            throw new IllegalStateException(workbenchDefinition.getName()
-                + " workbench definition must specify a workspace to connect to. Please, check your configuration.");
-        }
-
-        setGridType(ViewType.TREE);
     }
 
     @Override
@@ -185,4 +154,8 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
         contentViews.get(currentViewType).refresh();
     }
 
+    @Override
+    public void addContentView(final ViewType type, final ContentView view) {
+        contentViews.put(type, view);
+    }
 }

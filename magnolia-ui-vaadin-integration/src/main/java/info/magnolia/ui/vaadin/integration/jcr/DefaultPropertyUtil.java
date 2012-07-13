@@ -59,7 +59,7 @@ public class DefaultPropertyUtil {
      * If defaultValue is defined, initialize the Field with the default value.
      * If fieldType is not defined, create a String Value.
      */
-    public static DefaultProperty newDefaultProperty(String name, String fieldType, String defaultValue) throws NumberFormatException{
+    public static DefaultProperty newDefaultProperty(String name, String fieldType, Object defaultValue) throws NumberFormatException{
         Object value = null;
         try {
             value = createTypedValue(name, fieldType, defaultValue);
@@ -72,29 +72,28 @@ public class DefaultPropertyUtil {
 
     /**
      * Create a custom Field Object based on the Type and defaultValue.
-     * If the Type is nor defined, used he default one (String).
+     * If the Type is not defined, used he default one (String).
      * @throws IllegalAccessException
      * @throws InstantiationException
      * @throws: In case of the default value could not be parsed to the desired class.
      */
-    public static Object createTypedValue(String name, String fieldType, String defaultValue) throws NumberFormatException, InstantiationException, IllegalAccessException{
+    public static Object createTypedValue(String name, String fieldType, Object defaultValue) throws NumberFormatException, InstantiationException, IllegalAccessException{
+        boolean hasDefaultValue = defaultValue != null;
         if (StringUtils.isNotEmpty(fieldType)) {
             int valueType = PropertyType.valueFromName(fieldType);
-            defaultValue = StringUtils.isNotBlank(defaultValue)?defaultValue:"";
             switch (valueType) {
                 case PropertyType.STRING:
-                    return (StringUtils.isNotBlank(defaultValue)?defaultValue:"");
+                    return (hasDefaultValue?defaultValue:"");
                 case PropertyType.LONG:
-                    return (StringUtils.isNotBlank(defaultValue)?Long.valueOf(defaultValue):Long.class.newInstance());
+                    return (hasDefaultValue?(Long)defaultValue:Long.decode("0"));
                 case PropertyType.DOUBLE:
-                    return (StringUtils.isNotBlank(defaultValue)?Double.valueOf(defaultValue):Double.class.newInstance());
+                    return (hasDefaultValue?(Double)defaultValue:Double.valueOf("0"));
                 case PropertyType.DATE:
-                    // TODO ehe Check if this is Util!!
-                    return null;
+                    return (hasDefaultValue?(Date)defaultValue:new Date());
                 case PropertyType.BOOLEAN:
-                    return (StringUtils.isNotBlank(defaultValue)?Boolean.valueOf(defaultValue):Boolean.class.newInstance());
+                    return (hasDefaultValue?(Boolean)defaultValue:Boolean.getBoolean(""));
                 case PropertyType.DECIMAL:
-                    return (StringUtils.isNotBlank(defaultValue)?BigDecimal.valueOf(Double.parseDouble(defaultValue)):BigDecimal.class.newInstance());
+                    return (hasDefaultValue?(BigDecimal)defaultValue:BigDecimal.valueOf(Long.decode("0")));
                 default: {
                     String msg = "Unsupported property type " + PropertyType.nameFromValue(valueType);
                     log.error(msg);
@@ -102,7 +101,7 @@ public class DefaultPropertyUtil {
                 }
             }
         } else {
-            return String.valueOf(StringUtils.isNotBlank(defaultValue)?defaultValue:"");
+            return String.valueOf(hasDefaultValue?defaultValue:"");
         }
     }
 

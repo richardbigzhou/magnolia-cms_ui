@@ -31,11 +31,51 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.layout.event;
+package info.magnolia.ui.framework.app.launcherlayout.definition;
 
 /**
- * Enumeration of event types sent by {@link info.magnolia.ui.framework.app.layout.AppLayoutManager}.
+ * Default implementation of {@link AppLauncherGroupEntryDefinition} used for configuration in the repository.
  */
-public enum LayoutEventType {
-    RELOAD_APP
+public class ConfiguredAppLauncherGroupEntryDefinition implements AppLauncherGroupEntryDefinition {
+
+    private String name;
+    private boolean enabled = true;
+    private String iconFont;
+    private String iconCharacter;
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    @Override
+    public String getIconFont() {
+        return iconFont;
+    }
+
+    public void setIconFont(String iconFont) {
+        this.iconFont = iconFont;
+    }
+
+    @Override
+    public String getIconCharacter() {
+        return iconCharacter;
+    }
+
+    public void setIconCharacter(String iconCharacter) {
+        this.iconCharacter = iconCharacter;
+    }
 }

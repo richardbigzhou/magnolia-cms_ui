@@ -81,11 +81,7 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter{
         if(changedProperties.containsKey(id)) {
             property = (DefaultProperty) changedProperties.get(id);
         }
-        else {
-            Object value = new String("");
-            property = new DefaultProperty((String)id, value);
-            property.addListener(this);
-        }
+
         return property;
     }
 

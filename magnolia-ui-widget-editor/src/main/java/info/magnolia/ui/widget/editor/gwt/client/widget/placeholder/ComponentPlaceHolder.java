@@ -205,10 +205,9 @@ public class ComponentPlaceHolder extends AbstractPlaceHolder {
         if (this.type.equals(AreaDefinition.TYPE_SINGLE) && !getMgnlElement().getComponents().isEmpty()) {
             throw new IllegalArgumentException();
         }
-
-
     }
 
+    @Override
     public Model getModel() {
         return model;
     }

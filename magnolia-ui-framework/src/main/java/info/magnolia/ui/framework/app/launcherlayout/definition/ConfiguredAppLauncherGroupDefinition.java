@@ -31,45 +31,68 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.sample;
+package info.magnolia.ui.framework.app.launcherlayout.definition;
 
-import javax.inject.Inject;
-
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
-
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * View implementation of an editor tab in sample app.
+ * Default implementation of {@link AppLauncherGroupDefinition} used for configuration in the repository.
  */
-public class SampleEditorViewImpl implements SampleEditorView, IsVaadinComponent {
+public class ConfiguredAppLauncherGroupDefinition implements AppLauncherGroupDefinition {
 
-    private Listener listener;
     private String name;
-    private VerticalLayout tableContainer;
-
-    @Inject
-    public SampleEditorViewImpl() {
-    }
+    private String label;
+    private boolean permanent;
+    private String color;
+    private List<AppLauncherGroupEntryDefinition> apps = new ArrayList<AppLauncherGroupEntryDefinition>();
 
     @Override
+    public String getName() {
+        return name;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
 
     @Override
-    public void setListener(Listener listener) {
-        this.listener = listener;
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     @Override
-    public Component asVaadinComponent() {
-        if (tableContainer == null) {
-            tableContainer = new VerticalLayout();
-            tableContainer.addComponent(new Label("<center>Sample Editor " + name + "</center>", Label.CONTENT_XHTML));
-        }
-        return tableContainer;
+    public boolean isPermanent() {
+        return permanent;
+    }
+
+    public void setPermanent(boolean permanent) {
+        this.permanent = permanent;
+    }
+
+    @Override
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    @Override
+    public List<AppLauncherGroupEntryDefinition> getApps() {
+        return apps;
+    }
+
+    public void setApps(List<AppLauncherGroupEntryDefinition> apps) {
+        this.apps = apps;
+    }
+
+    public void addApp(AppLauncherGroupEntryDefinition appGroupEntry) {
+        apps.add(appGroupEntry);
     }
 }

@@ -31,44 +31,24 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.layout.event;
+package info.magnolia.ui.app.sample.main;
 
-import info.magnolia.ui.framework.event.Event;
+import info.magnolia.ui.framework.view.View;
 
 /**
- * Event sent by {@link info.magnolia.ui.framework.app.layout.AppLayoutManager}.
+ * View for the content display.
  */
-public class LayoutEvent implements Event<LayoutEventHandler> {
+public interface ContentDisplayView extends View {
 
-    private final LayoutEventType eventType;
+    void setListener(Listener listener);
 
-    private final String appName;
+    void setResource(String name);
 
-    public LayoutEvent(LayoutEventType eventType, String appName) {
-        this.eventType = eventType;
-        this.appName = appName;
+    /**
+     * Listener.
+     */
+    public interface Listener {
+
+        void onOpenInNewEditor();
     }
-
-    public LayoutEventType getEventType() {
-        return this.eventType;
-    }
-
-    public String getAppName() {
-        return this.appName;
-    }
-
-
-    @Override
-    public void dispatch(LayoutEventHandler handler) {
-        if (eventType == null) {
-            return;
-        }
-
-        switch (eventType) {
-            case RELOAD_APP:
-                handler.onReloadApp(this);
-                break;
-        }
-    }
-
 }

@@ -31,33 +31,40 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts;
+package info.magnolia.ui.app.sample.main;
 
 import javax.inject.Inject;
 
-import com.vaadin.ui.Component;
-
-import info.magnolia.ui.admincentral.workbench.ContentWorkbenchSubApp;
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
-
+import info.magnolia.ui.framework.location.DefaultLocation;
+import info.magnolia.ui.framework.location.LocationController;
 
 /**
- * View implementation for the Contacts app.
+ * Presenter for the content display.
  */
-@SuppressWarnings("serial")
-public class ContactsViewImpl implements ContactsView, IsVaadinComponent {
+public class ContentDisplayPresenter implements ContentDisplayView.Listener {
 
-    private String jcrWorkspaceName = "contacts";
-    private final ContentWorkbenchSubApp workbench;
+    private ContentDisplayView view;
+    private LocationController locationController;
+    private String name;
 
     @Inject
-    public ContactsViewImpl(final ContentWorkbenchSubApp workbench) {
-        this.workbench = workbench;
-        workbench.initWorkbench(jcrWorkspaceName);
+    public ContentDisplayPresenter(ContentDisplayView view, LocationController locationController) {
+        this.view = view;
+        this.locationController = locationController;
+    }
+
+    public ContentDisplayView start() {
+        view.setListener(this);
+        return view;
+    }
+
+    public void setResourceToDisplay(String name) {
+        this.name = name;
+        view.setResource(name);
     }
 
     @Override
-    public Component asVaadinComponent() {
-        return workbench.asVaadinComponent();
+    public void onOpenInNewEditor() {
+        locationController.goTo(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "sample", name));
     }
 }

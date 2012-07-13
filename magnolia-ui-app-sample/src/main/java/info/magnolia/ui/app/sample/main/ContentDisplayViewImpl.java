@@ -31,33 +31,55 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts;
+package info.magnolia.ui.app.sample.main;
 
 import javax.inject.Inject;
 
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.VerticalLayout;
 
-import info.magnolia.ui.admincentral.workbench.ContentWorkbenchSubApp;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
-
 /**
- * View implementation for the Contacts app.
+ * View implementation for the content display.
  */
-@SuppressWarnings("serial")
-public class ContactsViewImpl implements ContactsView, IsVaadinComponent {
+public class ContentDisplayViewImpl implements ContentDisplayView, IsVaadinComponent {
 
-    private String jcrWorkspaceName = "contacts";
-    private final ContentWorkbenchSubApp workbench;
+    private ContentDisplayView.Listener listener;
+    private VerticalLayout layout;
 
     @Inject
-    public ContactsViewImpl(final ContentWorkbenchSubApp workbench) {
-        this.workbench = workbench;
-        workbench.initWorkbench(jcrWorkspaceName);
+    public ContentDisplayViewImpl() {
+        layout = new VerticalLayout();
+        layout.setMargin(true);
+        layout.setSpacing(true);
+        layout.addComponent(new Label("CONTENT DISPLAY"));
+        layout.addComponent(new Label("Click one of the buttons in the navigation on the left to display it"));
+    }
+
+    @Override
+    public void setListener(ContentDisplayView.Listener listener) {
+        this.listener = listener;
+    }
+
+    @Override
+    public void setResource(final String name) {
+        layout.removeAllComponents();
+        layout.addComponent(new Label("CONTENT DISPLAY"));
+        layout.addComponent(new Label("Displaying " + name));
+        layout.addComponent(new Button("Open in new editor!", new Button.ClickListener() {
+
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                listener.onOpenInNewEditor();
+            }
+        }));
     }
 
     @Override
     public Component asVaadinComponent() {
-        return workbench.asVaadinComponent();
+        return layout;
     }
 }

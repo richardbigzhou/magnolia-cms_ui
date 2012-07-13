@@ -31,33 +31,48 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts;
+package info.magnolia.ui.app.sample.main;
 
 import javax.inject.Inject;
 
 import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalSplitPanel;
 
-import info.magnolia.ui.admincentral.workbench.ContentWorkbenchSubApp;
+import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
-
+import info.magnolia.ui.vaadin.integration.view.VaadinComponentUtil;
 
 /**
- * View implementation for the Contacts app.
+ * View implementation of the main tab in sample app.
  */
-@SuppressWarnings("serial")
-public class ContactsViewImpl implements ContactsView, IsVaadinComponent {
+public class SampleMainViewImpl implements SampleMainView, IsVaadinComponent {
 
-    private String jcrWorkspaceName = "contacts";
-    private final ContentWorkbenchSubApp workbench;
+    private Listener listener;
+    private HorizontalSplitPanel layout;
 
     @Inject
-    public ContactsViewImpl(final ContentWorkbenchSubApp workbench) {
-        this.workbench = workbench;
-        workbench.initWorkbench(jcrWorkspaceName);
+    public SampleMainViewImpl() {
+        layout = new HorizontalSplitPanel();
+        layout.setSplitPosition(50);
+    }
+
+    @Override
+    public void setListener(Listener listener) {
+        this.listener = listener;
     }
 
     @Override
     public Component asVaadinComponent() {
-        return workbench.asVaadinComponent();
+        return layout;
+    }
+
+    @Override
+    public void setRightView(View right) {
+        layout.setSecondComponent(VaadinComponentUtil.toVaadinComponent(right));
+    }
+
+    @Override
+    public void setLeftView(View left) {
+        layout.setFirstComponent(VaadinComponentUtil.toVaadinComponent(left));
     }
 }
