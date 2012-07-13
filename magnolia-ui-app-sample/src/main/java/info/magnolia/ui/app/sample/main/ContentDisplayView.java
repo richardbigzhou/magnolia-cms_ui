@@ -49,5 +49,6 @@ public interface ContentDisplayView extends View {
      */
     public interface Listener {
 
+        void onOpenInNewEditor();
     }
 }

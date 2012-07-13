@@ -40,8 +40,6 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
-import info.magnolia.ui.framework.location.DefaultLocation;
-import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 /**
@@ -49,14 +47,11 @@ import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
  */
 public class ContentDisplayViewImpl implements ContentDisplayView, IsVaadinComponent {
 
-    private LocationController locationController;
     private ContentDisplayView.Listener listener;
     private VerticalLayout layout;
-    private String name;
 
     @Inject
-    public ContentDisplayViewImpl(LocationController locationController) {
-        this.locationController = locationController;
+    public ContentDisplayViewImpl() {
         layout = new VerticalLayout();
         layout.setMargin(true);
         layout.setSpacing(true);
@@ -70,7 +65,6 @@ public class ContentDisplayViewImpl implements ContentDisplayView, IsVaadinCompo
     }
 
     public void setResource(final String name) {
-        this.name = name;
         layout.removeAllComponents();
         layout.addComponent(new Label("CONTENT DISPLAY"));
         layout.addComponent(new Label("Displaying " + name));
@@ -78,7 +72,7 @@ public class ContentDisplayViewImpl implements ContentDisplayView, IsVaadinCompo
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                locationController.goTo(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "sample", name));
+                listener.onOpenInNewEditor();
             }
         }));
     }
