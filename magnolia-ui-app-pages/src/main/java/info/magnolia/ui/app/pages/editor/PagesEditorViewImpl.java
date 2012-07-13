@@ -31,36 +31,26 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages;
+package info.magnolia.ui.app.pages.editor;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
-import info.magnolia.context.MgnlContext;
-import info.magnolia.ui.widget.actionbar.Actionbar;
-import info.magnolia.ui.widget.editor.PageEditor;
+import info.magnolia.ui.widget.editor.PageEditorView;
 
 /**
- * PageEditorViewImpl.
+ * PagesEditorViewImpl.
  * TODO: make this a component with a split layout to accomodate the page editor on the left and its related actions on the right.
 */
 @SuppressWarnings("serial")
-public class PageEditorViewImpl implements PageEditorView {
-
-    private Actionbar actionbar;
+public class PagesEditorViewImpl implements PagesEditorView {
 
     private final HorizontalLayout root = new HorizontalLayout();
 
     private final VerticalLayout container = new VerticalLayout();
-
     private Listener listener;
-    private PageEditor pageEditor;
-    private String caption;
 
-    public PageEditorViewImpl() {
-
-        //this.actionbar = actionbar;
-        // same root as ContentWorkbenchView
+    public PagesEditorViewImpl() {
         root.setSizeFull();
         root.setStyleName("mgnl-app-root");
         root.addComponent(container);
@@ -71,13 +61,6 @@ public class PageEditorViewImpl implements PageEditorView {
         container.setSizeFull();
         container.setStyleName("mgnl-app-view");
         container.setImmediate(true);
-        caption = "meeeh"; //StringUtils.defaultIfEmpty(PropertyUtil.getString(pageNode, "title"), pageNode.getName());
-        //root.addCompon;ent(actionbar);
-    }
-
-    public void setActionbar(Actionbar actionbar) {
-        root.replaceComponent(this.actionbar, actionbar);
-        this.actionbar = actionbar;
     }
 
     @Override
@@ -86,12 +69,9 @@ public class PageEditorViewImpl implements PageEditorView {
     }
 
     @Override
-    public void initPageEditor(String nodePath) {
-        String contextPath = MgnlContext.getContextPath();
-        pageEditor = new PageEditor(contextPath, nodePath);
-        container.addComponent(pageEditor);
+    public void setPageEditor(PageEditorView pageEditor) {
+        container.addComponent(pageEditor.asVaadinComponent());
     }
-
 
     @Override
     public Component asVaadinComponent() {

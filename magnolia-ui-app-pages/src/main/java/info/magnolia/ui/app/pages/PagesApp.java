@@ -34,7 +34,11 @@
 package info.magnolia.ui.app.pages;
 
 
+import info.magnolia.context.MgnlContext;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.app.pages.editor.PageEditorParameters;
+import info.magnolia.ui.app.pages.editor.PagesEditorSubApp;
+import info.magnolia.ui.app.pages.main.PagesMainSubApp;
 import info.magnolia.ui.framework.app.AbstractApp;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.SubApp;
@@ -52,28 +56,11 @@ import java.util.List;
 public class PagesApp extends AbstractApp {
 
 
-    private enum PagesTab {
+    private static final String PAGEEDITOR_TOKEN = "pageeditor";
 
-
-        WORKBENCH, PAGEEDITOR;
-
-        private static final String PAGEEDITOR_TOKEN = "pageeditor";
-
-        public static PagesTab getDefault() {
-            return WORKBENCH;
-        }
-
-        public static PagesTab resolveTab(String tabName) {
-            if (tabName.equals(PAGEEDITOR_TOKEN)) {
-                return PAGEEDITOR;
-            }
-            return getDefault();
-        }
-    }
     private AppContext context;
     private ComponentProvider componentProvider;
     private PagesMainSubApp mainSubApp;
-    private Location currentLocation;
 
     @Inject
     public PagesApp(AppContext context, ComponentProvider componentProvider, PagesMainSubApp mainSubApp) {
@@ -84,28 +71,23 @@ public class PagesApp extends AbstractApp {
 
     @Override
     public void locationChanged(Location location) {
-        DefaultLocation pagesLocation = (DefaultLocation) location;
 
-       List<String> pathParams = parsePathParamsFromToken(pagesLocation.getToken());
+        DefaultLocation l = (DefaultLocation) location;
 
-        if (pathParams.size() > 0) {
-            final String tabName = pathParams.remove(0);
-            PagesTab pagesTab = PagesTab.resolveTab(tabName);
-            switch (pagesTab) {
-                case PAGEEDITOR:
-                    PageEditorSubApp editorSubApp = componentProvider.newInstance(PageEditorSubApp.class, pathParams.get(0));
+        List<String> pathParams = parsePathParamsFromToken(l.getToken());
 
-                    context.openSubApp(editorSubApp);
-                    context.setAppLocation(location);
-                    break;
-                case WORKBENCH: default:
-                    break;
+        final String subAppName = pathParams.remove(0);
 
-            }
+        if (subAppName.equals(PAGEEDITOR_TOKEN)) {
+            String contextPath = MgnlContext.getContextPath();
+
+            PagesEditorSubApp editorSubApp = componentProvider.newInstance(PagesEditorSubApp.class);
+            PageEditorParameters parameters = new PageEditorParameters(contextPath, pathParams.get(0));
+            editorSubApp.setParameters(parameters);
+            context.openSubApp(editorSubApp);
+            context.setAppLocation(location);
         }
-        currentLocation = location;
 
-//        pulsePlace.setCurrentPulseTab(displayedTabId);
     }
 
     private List<String> parsePathParamsFromToken(String token) {

@@ -40,7 +40,7 @@ import com.vaadin.terminal.PaintTarget;
 import com.vaadin.terminal.Resource;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.ClientWidget;
-import info.magnolia.ui.framework.event.EventBus;
+import com.vaadin.ui.Component;
 import info.magnolia.ui.widget.editor.gwt.client.VPageEditor;
 import org.vaadin.rpc.ServerSideHandler;
 import org.vaadin.rpc.ServerSideProxy;
@@ -53,54 +53,25 @@ import java.util.Map;
  */
 @SuppressWarnings("serial")
 @ClientWidget(value=VPageEditor.class, loadStyle = ClientWidget.LoadStyle.EAGER)
-public class PageEditor extends AbstractComponent implements ServerSideHandler {
+public class PageEditor extends AbstractComponent implements PageEditorView, ServerSideHandler {
 
 
     /**
      * Source of the embedded object.
      */
     private Resource source;
-    private EventBus eventBus;
     private String contextPath;
+    private PageEditorView.Listener listener;
+    protected ServerSideProxy proxy;
 
-    public PageEditor(final String contextPath, final String source) {
-        this.contextPath = contextPath;
-        this.source = new ExternalResource(contextPath + source);
-        this.eventBus = eventBus;
-        setCaption("");
+    public PageEditor() {
         setSizeFull();
         setImmediate(true);
     }
 
-
-    protected ServerSideProxy proxy = new ServerSideProxy(this) {
-        {
-            register("editComponent", new Method() {
-                @Override
-                public void invoke(String methodName, Object[] params) {
-                    final String workSpace = String.valueOf(params[0]);
-                    final String path = String.valueOf(params[1]);
-                    final String dialog = String.valueOf(params[2]);
-                    editComponent(workSpace, path, dialog);
-                }
-            });
-        }
-    };
-
-    private void editComponent(String workSpace, String path, String dialog) {
-
-    }
-
-
     @Override
-    public Object[] initRequestFromClient() {
-        return new Object[] {};
-
-    }
-
-    @Override
-    public void callFromClient(String method, Object[] params) {
-        System.out.println("Client called " + method);
+    public void setListener(PageEditorView.Listener listener) {
+        this.listener = listener;
     }
 
 
@@ -129,5 +100,67 @@ public class PageEditor extends AbstractComponent implements ServerSideHandler {
 
     public String getContextPath() {
         return contextPath;
+    }
+
+    @Override
+    public void init(String contextPath, String nodePath) {
+        this.contextPath = contextPath;
+        this.source = new ExternalResource(contextPath + nodePath);
+
+        proxy = new ServerSideProxy(this) {
+            {
+                register("editComponent", new Method() {
+                    @Override
+                    public void invoke(String methodName, Object[] params) {
+                        final String workSpace = String.valueOf(params[0]);
+                        final String path = String.valueOf(params[1]);
+                        final String dialog = String.valueOf(params[2]);
+                        listener.editComponent(workSpace, path, dialog);
+                    }
+                });
+                register("newComponent", new Method() {
+                    @Override
+                    public void invoke(String methodName, Object[] params) {
+                        final String workSpace = String.valueOf(params[0]);
+                        final String nodeType = String.valueOf(params[1]);
+                        final String path = String.valueOf(params[2]);
+                        listener.newComponent(workSpace, nodeType, path);
+                    }
+
+                });
+                register("deleteComponent", new Method() {
+                    @Override
+                    public void invoke(String methodName, Object[] params) {
+                        final String workSpace = String.valueOf(params[0]);
+                        final String path = String.valueOf(params[1]);
+                        listener.deleteComponent(workSpace, path);
+                    }
+                });
+                register("onComponentSelect", new Method() {
+                    @Override
+                    public void invoke(String methodName, Object[] params) {
+                        final String path = String.valueOf(params[0]);
+                        listener.selectComponent(path);
+                    }
+                });
+            }
+        };
+
+    }
+
+    @Override
+    public Component asVaadinComponent() {
+        return this;
+    }
+
+    @Override
+    public Object[] initRequestFromClient() {
+        return new Object[] {};
+
+    }
+
+    @Override
+    public void callFromClient(String method, Object[] params) {
+        System.out.println("Client called " + method);
     }
 }

@@ -67,9 +67,13 @@ public interface Model {
 
     List<MgnlElement> getRootElements();
 
-    void setSelectedMgnlElement(MgnlElement selectedMgnlElement);
+    void setSelectedMgnlAreaElement(MgnlElement selectedMgnlAreaElement);
 
-    MgnlElement getSelectedMgnlElement();
+    MgnlElement getSelectedMgnlAreaElement();
+
+    void setSelectedMgnlComponentElement(MgnlElement selectedMgnlComponentElement);
+
+    MgnlElement getSelectedMgnlComponentElement();
 
     void addAreaPlaceHolder(MgnlElement mgnlElement, AreaPlaceHolder placeHolder);
 

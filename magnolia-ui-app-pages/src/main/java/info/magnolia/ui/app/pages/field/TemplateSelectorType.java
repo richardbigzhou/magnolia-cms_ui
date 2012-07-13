@@ -33,6 +33,12 @@
  */
 package info.magnolia.ui.app.pages.field;
 
+import com.google.inject.Inject;
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.ui.Field;
+import com.vaadin.ui.Select;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.rendering.template.TemplateDefinition;
 import info.magnolia.rendering.template.assignment.TemplateDefinitionAssignment;
@@ -41,16 +47,8 @@ import info.magnolia.ui.model.dialog.definition.FieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
-import java.util.Collection;
-
 import javax.jcr.Node;
-
-import com.google.inject.Inject;
-import com.vaadin.data.Item;
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.ui.Field;
-import com.vaadin.ui.Select;
+import java.util.Collection;
 
 /**
  * TemplateSelectorType builds the available templates list based on the nodeType.

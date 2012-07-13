@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,29 +31,38 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.editor.gwt.client.dom.processor;
+package info.magnolia.ui.app.pages.main;
 
-import com.google.gwt.event.shared.EventBus;
-import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
-import info.magnolia.ui.widget.editor.gwt.client.model.Model;
+import info.magnolia.ui.admincentral.workbench.ContentWorkbenchSubApp;
+import info.magnolia.ui.framework.app.SubApp;
+import info.magnolia.ui.framework.view.View;
+
+import javax.inject.Inject;
 
 /**
- * Factory Class for MgnlElement processors.
+ * PagesMainSubApp.
  */
-public class MgnlElementProcessorFactory {
+public class PagesMainSubApp implements SubApp, PagesMainView.Listener {
 
-    public static MgnlElementProcessor getProcessor(Model model, EventBus eventBus, MgnlElement mgnlElement) throws IllegalArgumentException {
-        MgnlElementProcessor processor;
+    private PagesMainView view;
+    private final static String CAPTION = "Pages";
+    private ContentWorkbenchSubApp workbench;
 
-        if (mgnlElement.isArea()) {
-            processor = new AreaProcessor(model, eventBus, mgnlElement);
-        }
-        else if (mgnlElement.isComponent()) {
-            processor = new ComponentProcessor(model, eventBus, mgnlElement);
-        }
-        else {
-            throw new IllegalArgumentException("mgnlElement is not a Area nor Component");
-        }
-        return processor;
+    @Inject
+    public PagesMainSubApp(PagesMainView view, ContentWorkbenchSubApp workbench) {
+        this.view = view;
+        this.view.setListener(this);
+        this.workbench = workbench;
+    }
+
+    @Override
+    public String getCaption() {
+        return CAPTION;
+    }
+
+    @Override
+    public View start() {
+        view.setWorkBench(workbench.asView());
+        return view;
     }
 }

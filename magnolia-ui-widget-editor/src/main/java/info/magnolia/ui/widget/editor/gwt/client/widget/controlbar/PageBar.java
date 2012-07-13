@@ -75,8 +75,11 @@ import static info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils.get
  * }
  * <p>The placeholder is styled to be automatically centered in the main bar. See this module's editor.css file (id selector #mgnlEditorMainbarPlaceholder).
  *
- * TODO: review and clean up, especially the private Command classes.
+ * Note: This class is no longer used. Functionality provided by actionbar etc.
+ *
+ *
  */
+@Deprecated
 public class PageBar extends AbstractBar {
 
 
@@ -92,7 +95,7 @@ public class PageBar extends AbstractBar {
     private Document document;
 
     public PageBar(Model model, final FocusModel focusModel, final Document document, final CMSComment comment) {
-        super(model, null);
+        super(model, null, null);
         this.model = model;
         this.focusModel = focusModel;
         this.document = document;
