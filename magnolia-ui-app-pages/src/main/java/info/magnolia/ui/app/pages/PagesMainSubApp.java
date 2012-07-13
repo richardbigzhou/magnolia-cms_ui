@@ -45,16 +45,12 @@ import javax.inject.Inject;
 public class PagesMainSubApp implements SubApp, PagesMainView.Listener {
 
     private PagesMainView view;
-    private final static String WORKBENCH_NAME = "website";
 
     @Inject
     public PagesMainSubApp(PagesMainView view, ContentWorkbenchSubApp workbench) {
         this.view = view;
         this.view.setListener(this);
-
-        workbench.initWorkbench(WORKBENCH_NAME);
         this.view.initView(workbench.asView());
-
     }
 
     @Override

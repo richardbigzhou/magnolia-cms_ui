@@ -104,6 +104,9 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
         this.contentPresenter = contentPresenter;
 
         workbenchDefinition = ((ContentAppDescriptor) context.getAppDescriptor()).getWorkbench();
+        contentPresenter.initContentView(view);
+        view.setListener(this);
+        view.initActionbar(workbenchDefinition.getActionbar());
 
         eventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
 
@@ -115,18 +118,6 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
         });
     }
 
-    /**
-     * TODO dlipp - id is currently ignored: to be checked whether we can really drop it!
-     */
-    public void initWorkbench(final String id) {
-        contentPresenter.initContentView(view);
-        view.setListener(this);
-        view.initActionbar(workbenchDefinition.getActionbar());
-    }
-
-    /**
-     * TODO dlipp - what should happen in here and who's responsibility is it to call it? Maybe the above initWorkbench can be dropped in favor of this method?
-     */
     @Override
     public View start() {
         return view;

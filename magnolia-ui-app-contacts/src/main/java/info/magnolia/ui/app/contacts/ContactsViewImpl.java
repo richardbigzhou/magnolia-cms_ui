@@ -46,13 +46,11 @@ import info.magnolia.ui.admincentral.workbench.ContentWorkbenchSubApp;
 @SuppressWarnings("serial")
 public class ContactsViewImpl implements ContactsView {
 
-    private String jcrWorkspaceName = "contacts";
     private final ContentWorkbenchSubApp workbench;
 
     @Inject
     public ContactsViewImpl(final ContentWorkbenchSubApp workbench) {
         this.workbench = workbench;
-        workbench.initWorkbench(jcrWorkspaceName);
     }
 
     @Override
