@@ -31,26 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.layout.event;
+package info.magnolia.ui.app.sample.main;
 
-import info.magnolia.ui.framework.event.EventHandler;
+import javax.inject.Inject;
 
 /**
- * Event handler for {@link LayoutEvent}s.
+ * Presenter for the navigation.
  */
-public interface LayoutEventHandler extends EventHandler {
+public class NavigationPresenter implements NavigationView.Listener {
 
-    void onReloadApp(final LayoutEvent event);
+    private SampleMainSubApp mainSubApp;
+    private NavigationView view;
 
-    /**
-     * Simple stub so in case not all the methods should be implemented - you can skip them.
-     */
-    public static class Adapter implements LayoutEventHandler {
-
-        @Override
-        public void onReloadApp(LayoutEvent event) {
-        }
-
+    @Inject
+    public NavigationPresenter(NavigationView view) {
+        this.view = view;
     }
 
+    public void setMainSubApp(SampleMainSubApp mainSubApp) {
+        this.mainSubApp = mainSubApp;
+    }
+
+    public NavigationView start() {
+        view.setListener(this);
+        return view;
+    }
+
+    @Override
+    public void onItemSelected(String name) {
+        mainSubApp.onItemSelected(name);
+    }
 }

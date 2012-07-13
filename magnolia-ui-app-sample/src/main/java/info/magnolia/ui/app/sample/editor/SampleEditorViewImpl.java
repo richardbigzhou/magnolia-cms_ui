@@ -31,23 +31,45 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.sample;
+package info.magnolia.ui.app.sample.editor;
 
-import info.magnolia.ui.framework.view.View;
+import javax.inject.Inject;
+
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.VerticalLayout;
+
+import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 /**
- * View for editor tabs in sample app.
+ * View implementation of an editor tab in sample app.
  */
-public interface SampleEditorView extends View {
+public class SampleEditorViewImpl implements SampleEditorView, IsVaadinComponent {
 
-    void setListener(Listener listener);
+    private Listener listener;
+    private String name;
+    private VerticalLayout layout;
 
-    void setName(String name);
+    @Inject
+    public SampleEditorViewImpl() {
+    }
 
-    /**
-     * Listener for SampleEditorView.
-     */
-    public interface Listener {
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
 
+    @Override
+    public void setListener(Listener listener) {
+        this.listener = listener;
+    }
+
+    @Override
+    public Component asVaadinComponent() {
+        if (layout == null) {
+            layout = new VerticalLayout();
+            layout.addComponent(new Label("<center>Sample Editor " + name + "</center>", Label.CONTENT_XHTML));
+        }
+        return layout;
     }
 }

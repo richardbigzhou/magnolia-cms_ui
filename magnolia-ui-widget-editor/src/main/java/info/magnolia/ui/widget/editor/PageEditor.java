@@ -61,10 +61,11 @@ public class PageEditor extends AbstractComponent implements ServerSideHandler {
      */
     private Resource source;
     private EventBus eventBus;
+    private String contextPath;
 
-    public PageEditor(final String source) {
-
-        this.source = new ExternalResource(source);
+    public PageEditor(final String contextPath, final String source) {
+        this.contextPath = contextPath;
+        this.source = new ExternalResource(contextPath + source);
         this.eventBus = eventBus;
         setCaption("");
         setSizeFull();
@@ -109,6 +110,10 @@ public class PageEditor extends AbstractComponent implements ServerSideHandler {
         if (getSource() != null) {
             target.addAttribute("src", getSource());
         }
+        if (getSource() != null) {
+            target.addAttribute("contextPath", getContextPath());
+        }
+
         proxy.paintContent(target);
     }
 
@@ -122,4 +127,7 @@ public class PageEditor extends AbstractComponent implements ServerSideHandler {
         return source;
     }
 
+    public String getContextPath() {
+        return contextPath;
+    }
 }

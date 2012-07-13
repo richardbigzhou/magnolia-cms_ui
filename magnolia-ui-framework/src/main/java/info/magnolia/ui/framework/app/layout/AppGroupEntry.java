@@ -33,61 +33,43 @@
  */
 package info.magnolia.ui.framework.app.layout;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import info.magnolia.ui.framework.app.AppDescriptor;
 
 /**
- * Defines a category and the apps that belong to it.
+ * Entry of an app group describing an app to be part of that group.
+ *
+ * @see AppLayout
+ * @see AppGroup
+ * @see AppLayoutManager
  */
-public class AppCategory implements Comparable<AppCategory> {
+public class AppGroupEntry {
 
-    private String label;
-    
-    private String backgroundColor;
-    
-    private boolean isPermanent;
-    
-    private List<AppDescriptor> apps = new ArrayList<AppDescriptor>();
+    private String name;
+    private boolean enabled = true;
 
-    public void setPermanent(boolean isPermanent) {
-        this.isPermanent = isPermanent;
-    }
-    
-    public void setBackgroundColor(String backgroundColor) {
-        this.backgroundColor = backgroundColor;
-    }
-    
-    public void setLabel(String label) {
-        this.label = label;
-    }
-    
-    public String getBackgroundColor() {
-        return backgroundColor;
-    }
-    
-    public boolean isPermanent() {
-        return isPermanent;
-    }
-    
-    public String getLabel() {
-        return label;
+    private AppDescriptor appDescriptor;
+
+    public String getName() {
+        return name;
     }
 
-    public List<AppDescriptor> getApps() {
-        return apps;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void addApp(AppDescriptor descriptor) {
-        apps.add(descriptor);
+    public boolean isEnabled() {
+        return enabled;
     }
 
-    @Override
-    public int compareTo(AppCategory o) {
-        if (this.label == null || o.getLabel() == null) {
-            return 0;
-        }
-        return label.compareTo(o.getLabel());
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public AppDescriptor getAppDescriptor() {
+        return appDescriptor;
+    }
+
+    public void setAppDescriptor(AppDescriptor appDescriptor) {
+        this.appDescriptor = appDescriptor;
     }
 }

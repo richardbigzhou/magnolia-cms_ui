@@ -31,38 +31,23 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.sample;
+package info.magnolia.ui.app.sample.editor;
 
-import javax.inject.Inject;
-
-import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.view.View;
 
 /**
- * SubApp for editor tabs in sample app.
+ * View for editor tabs in sample app.
  */
-public class SampleEditorSubApp implements SubApp, SampleEditorView.Listener {
+public interface SampleEditorView extends View {
 
-    private String name;
-    private final SampleEditorView view;
+    void setListener(Listener listener);
 
-    @Inject
-    public SampleEditorSubApp(SampleEditorView view) {
-        this.view = view;
-    }
+    void setName(String name);
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    /**
+     * Listener for SampleEditorView.
+     */
+    public interface Listener {
 
-    public String getCaption() {
-        return "Editor " + name;
-    }
-
-    @Override
-    public View start() {
-        this.view.setName(name);
-        this.view.setListener(this);
-        return view;
     }
 }

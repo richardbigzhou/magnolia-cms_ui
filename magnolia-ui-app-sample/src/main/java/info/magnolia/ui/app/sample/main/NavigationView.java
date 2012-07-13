@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,14 +31,22 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.definition;
+package info.magnolia.ui.app.sample.main;
+
+import info.magnolia.ui.framework.view.View;
 
 /**
- * Definition for Validators.
+ * View for the navigation.
  */
-public interface ValidatorDefinition {
+public interface NavigationView extends View {
 
-    String getErrorMessage();
+    void setListener(Listener listener);
 
-    void setErrorMessage(String errorMessage);
+    /**
+     * Listener.
+     */
+    public interface Listener {
+
+        void onItemSelected(String name);
+    }
 }

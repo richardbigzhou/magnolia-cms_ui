@@ -33,8 +33,7 @@
  */
 package info.magnolia.ui.admincentral.app.simple;
 
-import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.app.layout.AppCategory;
+import info.magnolia.ui.framework.app.layout.AppLayout;
 import info.magnolia.ui.framework.app.layout.AppLayoutManager;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
@@ -76,27 +75,18 @@ public class DefaultLocationHistoryMapper implements LocationHistoryMapper {
         return location.toString();
     }
 
-    private AppDescriptor getAppDescriptor(String name) {
-        for (AppCategory category : appLayoutManager.getLayout().getCategories()) {
-            for (AppDescriptor descriptor : category.getApps()) {
-                if (descriptor.getName().equals(name)) {
-                    return descriptor;
-                }
-            }
-        }
-        return null;
-    }
-
     private boolean supported(String type, String prefix, String token) {
 
         if (type.equals(DefaultLocation.LOCATION_TYPE_SHELL_APP) && (prefix.equals("applauncher") || prefix.equals("pulse") || prefix.equals("favorite"))) {
             return true;
         }
 
-        if (type.equals(DefaultLocation.LOCATION_TYPE_APP) && getAppDescriptor(prefix) != null) {
+        AppLayout appLayout = appLayoutManager.getLayoutForCurrentUser();
+        if (type.equals(DefaultLocation.LOCATION_TYPE_APP) && appLayout.containsApp(prefix)) {
             return true;
         }
 
         return false;
     }
+
 }

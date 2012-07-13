@@ -33,33 +33,36 @@
  */
 package info.magnolia.ui.admincentral.workbench;
 
-import com.vaadin.data.Item;
-import com.vaadin.ui.ComponentContainer;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.admincentral.app.content.ContentAppDescriptor;
 import info.magnolia.ui.admincentral.event.ContentChangedEvent;
-import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
+import info.magnolia.ui.admincentral.jcr.view.ContentPresenter;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.jcr.LoginException;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import java.util.HashMap;
-import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.vaadin.ui.ComponentContainer;
 
 
 /**
@@ -72,17 +75,18 @@ import java.util.Map;
  * <li>a configurable action bar on the right hand side, showing the available operations for the
  * given workspace and the selected item.
  * </ul>
- * 
+ *
  * <p>
  * Its main configuration point is the {@link WorkbenchDefinition} through which one defines the JCR
  * workspace to connect to, the columns/properties to display, the available actions and so on.
+ *
+ * TODO dlipp - IsVaadinComponent will got with SCRUM-1350. Re-added it for now because it's required by other apps (that will be adapted with SCRUM-1350) as well.
  */
-@SuppressWarnings("serial")
-public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView.Listener {
+public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.Listener, IsVaadinComponent {
 
-    private static final Logger log = LoggerFactory.getLogger(ContentWorkbench.class);
+    private static final Logger log = LoggerFactory.getLogger(ContentWorkbenchSubApp.class);
 
-    private WorkbenchDefinition workbenchDefinition;
+    private final WorkbenchDefinition workbenchDefinition;
 
     private final ContentWorkbenchView view;
 
@@ -94,18 +98,17 @@ public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView
 
     private final Map<String, ActionDefinition> actions = new HashMap<String, ActionDefinition>();
 
-    private String selectedItemId;
-
-    private final AppContext context;
+    final ContentPresenter contentPresenter;
 
     @Inject
-    public ContentWorkbench(final AppContext context, final ContentWorkbenchView view, final EventBus eventbus, final Shell shell, final WorkbenchActionFactory actionFactory) {
-        this.context = context;
+    public ContentWorkbenchSubApp(final AppContext context, final ContentWorkbenchView view, final EventBus eventbus, final Shell shell, final WorkbenchActionFactory actionFactory, final ContentPresenter contentPresenter) {
         this.view = view;
         this.eventBus = eventbus;
         this.shell = shell;
         this.actionFactory = actionFactory;
-        view.setListener(this);
+        this.contentPresenter = contentPresenter;
+
+        workbenchDefinition = ((ContentAppDescriptor) context.getAppDescriptor()).getWorkbench();
 
         eventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
 
@@ -117,41 +120,32 @@ public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView
         });
     }
 
+    /**
+     * TODO dlipp - id is currently ignored: to be checked whether we can really drop it!
+     */
     public void initWorkbench(final String id) {
-        // load the workbench specific configuration if existing
-        workbenchDefinition = ((ContentAppDescriptor) context.getAppDescriptor()).getWorkbench();
-        view.initWorkbench(workbenchDefinition);
+        contentPresenter.initContentView(view);
+        view.setListener(this);
         view.initActionbar(workbenchDefinition.getActionbar());
     }
 
+    /**
+     * TODO dlipp - what should happen in here and who's responsibility is it to call it? Maybe the above initWorkbench can be dropped in favor of this method?
+     */
     @Override
-    public ComponentContainer asVaadinComponent() {
+    public View start() {
         return view;
     }
 
-    @Override
-    public void onItemSelected(Item item) {
-        if (item == null) {
-            log.warn("Got null javax.jcr.Item. No ItemSelectedEvent will be fired.");
-            return;
-        }
-        try {
-            // FIXME this seems to be triggered twice both for click row event and tableValue
-            // change even when no value has changed and only a click happened on table, see
-            // info.magnolia.ui.admincentral.tree.view.TreeViewImpl.TreeViewImpl
-            // and jcrBrowser internal obj registering for those events.
-            selectedItemId = ((JcrItemAdapter) item).getItemId();
-            log.debug("javax.jcr.Item at {} was selected. Firing ItemSelectedEvent...", selectedItemId);
-            eventBus.fireEvent(new ItemSelectedEvent(workbenchDefinition.getWorkspace(), selectedItemId));
-        } catch (Exception e) {
-            shell.showError("An error occurred while selecting a row in the data grid", e);
-        }
+    public String getSelectedItemId() {
+        return contentPresenter.getSelectedItemId();
     }
 
     @Override
-    public String getSelectedItemId() {
-        return selectedItemId;
+    public String getCaption() {
+        return "Content-Workbench";
     }
+
 
     //
     // ACTIONBAR PRESENTER
@@ -175,9 +169,9 @@ public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView
         if (actionDefinition != null) {
             try {
                 Session session = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace());
+                final String selectedItemId = getSelectedItemId();
                 if (selectedItemId == null || !session.itemExists(selectedItemId)) {
                     log.debug("{} does not exist anymore. Was it just deleted? Resetting path to root...", selectedItemId);
-                    selectedItemId = "/";
                 }
                 final javax.jcr.Item item = session.getItem(selectedItemId);
                 Action action = actionFactory.createAction(actionDefinition, item, this);
@@ -198,4 +192,8 @@ public class ContentWorkbench implements IsVaadinComponent, ContentWorkbenchView
         return view;
     }
 
+    @Override
+    public ComponentContainer asVaadinComponent() {
+        return view;
+    }
 }

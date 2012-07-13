@@ -35,17 +35,16 @@ package info.magnolia.ui.widget.editor.gwt.client.dom.processor;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Node;
-import info.magnolia.ui.widget.editor.gwt.client.VPageEditor;
 import info.magnolia.ui.widget.editor.gwt.client.dom.CMSComment;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
-import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.PageBar;
+import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 
 /**
  * Processor for comment elements.
  */
 public class CommentProcessor {
 
-    public static MgnlElement process (Node node, MgnlElement mgnlElement) throws Exception {
+    public static MgnlElement process(Model model, Node node, MgnlElement mgnlElement) throws Exception {
 
         CMSComment comment = CMSComment.as(node);
 
@@ -54,22 +53,11 @@ public class CommentProcessor {
 
         if (!comment.isClosing()) {
 
-            if ("cms:page".equals(comment.getTagName())) {
-                GWT.log("element was detected as page edit bar. Injecting it...");
-                PageBar pageBarWidget = new PageBar(node.getOwnerDocument(), comment);
-                pageBarWidget.attach();
-
-                if (VPageEditor.isPreview()) {
-                    //we just need the preview bar here
-                    GWT.log("We're in preview mode, stop processing DOM.");
-                    return mgnlElement;
-                }
-            } else {
                 try {
                     mgnlElement = new MgnlElement(comment, mgnlElement);
 
                     if (mgnlElement.getParent() == null) {
-                        VPageEditor.getModel().addRoot(mgnlElement);
+                        model.addRoot(mgnlElement);
                     } else {
                         mgnlElement.getParent().getChildren().add(mgnlElement);
                     }
@@ -77,7 +65,7 @@ public class CommentProcessor {
                 } catch (IllegalArgumentException e) {
                     GWT.log("Not MgnlElement, skipping: " + e.toString());
                 }
-            }
+
         } else if (mgnlElement != null) {
             mgnlElement.setEndComment(comment);
             mgnlElement = mgnlElement.getParent();

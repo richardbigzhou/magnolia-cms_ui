@@ -31,9 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.sample;
-
-import javax.inject.Inject;
+package info.magnolia.ui.app.sample.main;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -43,15 +41,15 @@ import com.vaadin.ui.VerticalLayout;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 /**
- * View implementation of the main tab in sample app.
+ * View implementation of navigation view.
  */
-public class SampleMainViewImpl implements SampleMainView, IsVaadinComponent {
+public class NavigationViewImpl implements NavigationView, IsVaadinComponent {
 
     private Listener listener;
-    private VerticalLayout tableContainer;
+    private VerticalLayout layout;
+    private String name;
 
-    @Inject
-    public SampleMainViewImpl() {
+    public NavigationViewImpl() {
     }
 
     @Override
@@ -61,17 +59,28 @@ public class SampleMainViewImpl implements SampleMainView, IsVaadinComponent {
 
     @Override
     public Component asVaadinComponent() {
-        if (tableContainer == null) {
-            tableContainer = new VerticalLayout();
-            tableContainer.addComponent(new Label("<center>Sample App</center>", Label.CONTENT_XHTML));
-            tableContainer.addComponent(new Button("Open new editor!", new Button.ClickListener() {
+        if (layout == null) {
+            layout = new VerticalLayout();
+            layout.setMargin(true);
+            layout.setSpacing(true);
+            layout.addComponent(new Label("NAVIGATION"));
 
-                @Override
-                public void buttonClick(Button.ClickEvent event) {
-                    listener.onOpenNewEditor();
-                }
-            }));
+            layout.addComponent(createButton("Alpha"));
+            layout.addComponent(createButton("Bravo"));
+            layout.addComponent(createButton("Charlie"));
+            layout.addComponent(createButton("Delta"));
+            layout.addComponent(createButton("Echo"));
         }
-        return tableContainer;
+        return layout;
+    }
+
+    private Button createButton(final String name) {
+        return new Button("Select " + name, new Button.ClickListener() {
+
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                listener.onItemSelected(name);
+            }
+        });
     }
 }

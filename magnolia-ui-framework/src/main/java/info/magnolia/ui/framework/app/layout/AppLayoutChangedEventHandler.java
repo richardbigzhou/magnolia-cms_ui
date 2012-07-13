@@ -31,22 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.sample;
+package info.magnolia.ui.framework.app.layout;
 
-import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.framework.event.EventHandler;
 
 /**
- * View for the main tab of sample app.
+ * Event handler for receiving events when the app layout changes.
+ *
+ * @see AppLayoutManager
+ * @see AppLayoutChangedEvent
  */
-public interface SampleMainView extends View {
+public interface AppLayoutChangedEventHandler extends EventHandler {
 
-    void setListener(Listener listener);
-
-    /**
-     * Listener for SampleMainView.
-     */
-    public interface Listener {
-
-        void onOpenNewEditor();
-    }
+    void onAppLayoutChanged(AppLayoutChangedEvent event);
 }

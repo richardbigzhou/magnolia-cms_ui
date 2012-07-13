@@ -33,37 +33,65 @@
  */
 package info.magnolia.ui.framework.app.layout;
 
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 
 import info.magnolia.ui.framework.app.AppDescriptor;
 
 /**
- * Represents the available app groups organized by category.
+ * Describes the app layout in the app launcher. Apps in the launcher are organized into groups.
+ *
+ * @see AppGroup
+ * @see AppGroupEntry
+ * @see AppLayoutManager
  */
-public interface AppLayout {
+public class AppLayout {
 
-    /**
-     * Return the registered {AppCategory}s.
-     */
-    Collection<AppCategory> getCategories();
+    private List<AppGroup> groups;
 
-    /**
-     * Returns the specified category.
-     *
-     * @throws IllegalArgumentException: If key don't exist.
-     */
-    AppCategory getCategory(String name) throws IllegalArgumentException;
+    public List<AppGroup> getGroups() {
+        if (groups == null) {
+            groups = new ArrayList<AppGroup>();
+        }
+        return groups;
+    }
 
-    /**
-     * Returns the AppDescriptor for a given name.
-     *
-     * @throws IllegalArgumentException: If key don't exist.
-     */
-    AppDescriptor getAppDescriptor(String name) throws IllegalArgumentException;
+    public void setGroups(List<AppGroup> groups) {
+        this.groups = groups;
+    }
 
-    /**
-     * Checks if the app is already registered.
-     */
-    boolean isAppAlreadyRegistered(String name);
+    public void addGroup(AppGroup group) {
+        getGroups().add(group);
+    }
 
+    public boolean containsApp(String name) {
+        return getAppGroupEntry(name) != null;
+    }
+
+    public AppGroup getGroup(String name) {
+        for (AppGroup group : getGroups()) {
+            if (StringUtils.equals(group.getName(), name)) {
+                return group;
+            }
+        }
+        return null;
+    }
+
+    public AppGroupEntry getAppGroupEntry(String name) {
+        for (AppGroup group : getGroups()) {
+            for (AppGroupEntry entry : group.getApps()) {
+                if (StringUtils.equals(entry.getName(), name)) {
+                    return entry;
+                }
+            }
+        }
+        return null;
+    }
+
+    public AppDescriptor getAppDescriptor(String name) {
+        AppGroupEntry entry = getAppGroupEntry(name);
+        return entry != null ? entry.getAppDescriptor() : null;
+    }
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,39 +31,57 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages;
+package info.magnolia.ui.app.sample.main;
 
-import info.magnolia.ui.admincentral.workbench.ContentWorkbenchSubApp;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+import info.magnolia.ui.app.sample.SampleApp;
 import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.view.View;
 
-import javax.inject.Inject;
-
 /**
- * PagesMainSubApp.
+ * SubApp for the main tab in sample app.
  */
-public class PagesMainSubApp implements SubApp, PagesMainView.Listener {
+@Singleton
+public class SampleMainSubApp implements SubApp, SampleMainView.Listener {
 
-    private PagesMainView view;
-    private final static String WORKBENCH_NAME = "website";
+    private SampleApp sampleApp;
+    private SampleMainView sampleMainView;
+    private NavigationPresenter navigationPresenter;
+    private ContentDisplayPresenter contentDisplayPresenter;
 
     @Inject
-    public PagesMainSubApp(PagesMainView view, ContentWorkbenchSubApp workbench) {
-        this.view = view;
-        this.view.setListener(this);
-
-        workbench.initWorkbench(WORKBENCH_NAME);
-        this.view.initView(workbench.asVaadinComponent());
-
+    public SampleMainSubApp(SampleMainView sampleMainView, NavigationPresenter navigationPresenter, ContentDisplayPresenter contentDisplayPresenter) {
+        this.sampleMainView = sampleMainView;
+        this.contentDisplayPresenter = contentDisplayPresenter;
+        this.navigationPresenter = navigationPresenter;
     }
 
-    @Override
-    public String getCaption() {
-        return "Pages";
+    public void setSampleApp(SampleApp sampleApp) {
+        this.sampleApp = sampleApp;
     }
 
     @Override
     public View start() {
-        return view;
+
+        ContentDisplayView contentDisplayView = contentDisplayPresenter.start();
+
+        navigationPresenter.setMainSubApp(this);
+        NavigationView navigationView = navigationPresenter.start();
+
+        sampleMainView.setListener(this);
+        sampleMainView.setLeftView(navigationView);
+        sampleMainView.setRightView(contentDisplayView);
+        return sampleMainView;
+    }
+
+    @Override
+    public String getCaption() {
+        return "Sample";
+    }
+
+    public void onItemSelected(String name) {
+        contentDisplayPresenter.setResourceToDisplay(name);
     }
 }

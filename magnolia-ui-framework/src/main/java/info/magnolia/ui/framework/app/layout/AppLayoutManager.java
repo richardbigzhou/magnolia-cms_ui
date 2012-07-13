@@ -34,23 +34,22 @@
 package info.magnolia.ui.framework.app.layout;
 
 /**
- * Manages the {@link AppLayout}.
+ * Manages the app layout displayed in the app launcher. Fires an {@link AppLayoutChangedEvent} of the system event bus
+ * when the layout changes.
+ *
+ * @see AppLayout
+ * @see AppLayoutChangedEvent
+ * @see AppLayoutChangedEventHandler
  */
 public interface AppLayoutManager {
 
     /**
-     * Return the {@link AppLayout} defined for the current user.
-     * Return an empty AppLayout if nothing set for profile.
+     * Returns the {@link AppLayout} defined for the current user. Empty groups or groups where the current user doesn't
+     * have access to any of the apps are not returned. Disabled apps are not included in the response nor are apps that
+     * are not present in the {@link info.magnolia.ui.framework.app.registry.AppDescriptorRegistry}. The returned object
+     * is also populated with {@link info.magnolia.ui.framework.app.AppDescriptor} for quick access.
      */
-    AppLayout getLayout();
+    AppLayout getLayoutForCurrentUser();
 
-    /**
-     * Check if the given App name is part of the categories defined for the current profile.
-     */
-    boolean isAppDescriptorRegistered(String name);
-
-    /**
-     * Check if the given Category name is part of the categories defined for the current profile.
-     */
-    boolean isCategoryRegistered(String name);
+    void setLayout(AppLayout layout);
 }

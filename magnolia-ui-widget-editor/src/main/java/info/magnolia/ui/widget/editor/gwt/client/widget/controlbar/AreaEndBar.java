@@ -37,8 +37,8 @@ package info.magnolia.ui.widget.editor.gwt.client.widget.controlbar;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.user.client.ui.FlowPanel;
-import info.magnolia.ui.widget.editor.gwt.client.VPageEditor;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
+import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 
 
 /**
@@ -46,10 +46,11 @@ import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
  */
 public class AreaEndBar extends FlowPanel {
 
-
+    private Model model;
     private MgnlElement mgnlElement;
 
-    public AreaEndBar(MgnlElement mgnlElement) {
+    public AreaEndBar(Model model, MgnlElement mgnlElement) {
+        this.model = model;
 
         this.mgnlElement = mgnlElement;
         this.setStyleName("mgnlEditor mgnlEditorBar");
@@ -87,10 +88,13 @@ public class AreaEndBar extends FlowPanel {
 
     @Override
     protected void onAttach() {
-        VPageEditor.getModel().addElements(mgnlElement, getElement());
-        VPageEditor.getModel().addAreaEndBar(mgnlElement, this);
+        getModel().addElements(mgnlElement, getElement());
+        getModel().addAreaEndBar(mgnlElement, this);
         super.onAttach();
     }
 
+    public Model getModel() {
+        return model;
+    }
 
  }

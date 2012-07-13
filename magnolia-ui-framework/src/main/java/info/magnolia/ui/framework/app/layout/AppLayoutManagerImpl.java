@@ -33,18 +33,17 @@
  */
 package info.magnolia.ui.framework.app.layout;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.app.layout.event.LayoutEvent;
-import info.magnolia.ui.framework.app.layout.event.LayoutEventType;
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.framework.app.registry.AppRegistryEvent;
 import info.magnolia.ui.framework.app.registry.AppRegistryEventHandler;
@@ -58,15 +57,9 @@ public class AppLayoutManagerImpl implements AppLayoutManager {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    /**
-     * Reference to the injected AppDescriptorRegistry.
-     */
     private AppDescriptorRegistry appDescriptorRegistry;
-
-    /**
-     * Reference to the injected SystemEventBus, used to handle events from the AppDescriptorRegistry events.
-     */
     private SystemEventBus systemEventBus;
+    private AtomicReference<AppLayout> layout = new AtomicReference<AppLayout>();
 
     @Inject
     public AppLayoutManagerImpl(AppDescriptorRegistry appDescriptorRegistry, SystemEventBus systemEventBus) {
@@ -74,7 +67,7 @@ public class AppLayoutManagerImpl implements AppLayoutManager {
         this.systemEventBus = systemEventBus;
 
         /**
-         * Propagate events from {@link AppDescriptorRegistry} to notify listeners that the layout has changed.
+         * Propagate events from {@link info.magnolia.ui.framework.app.registry.AppDescriptorRegistry} to notify listeners that the layout has changed.
          */
         systemEventBus.addHandler(AppRegistryEvent.class, new AppRegistryEventHandler() {
 
@@ -82,92 +75,79 @@ public class AppLayoutManagerImpl implements AppLayoutManager {
             public void onAppRegistered(AppRegistryEvent event) {
                 String name = event.getAppDescriptor().getName();
                 logger.debug("Got AppLifecycleEvent." + event.getEventType() + " for the following appDescriptor " + name);
-                sendEvent(new LayoutEvent(LayoutEventType.RELOAD_APP, name));
+                sendEvent();
             }
 
             @Override
             public void onAppReregistered(AppRegistryEvent event) {
                 String name = event.getAppDescriptor().getName();
                 logger.debug("Got AppLifecycleEvent." + event.getEventType() + " for the following appDescriptor " + name);
-                sendEvent(new LayoutEvent(LayoutEventType.RELOAD_APP, name));
+                sendEvent();
             }
 
             @Override
             public void onAppUnregistered(AppRegistryEvent event) {
                 String name = event.getAppDescriptor().getName();
                 logger.debug("Got AppLifecycleEvent." + event.getEventType() + " for the following appDescriptor " + name);
-                sendEvent(new LayoutEvent(LayoutEventType.RELOAD_APP, name));
+                sendEvent();
             }
         });
     }
 
     @Override
-    public AppLayout getLayout() {
+    public AppLayout getLayoutForCurrentUser() {
 
-        Map<String, AppCategory> categories = new HashMap<String, AppCategory>();
-        AppLayout appLayout = new AppLayoutImpl(categories);
+        AppLayout appLayout = layout.get();
+        if (appLayout == null) {
+            return new AppLayout();
+        }
 
-        Collection<AppDescriptor> appDescriptors = this.appDescriptorRegistry.getAppDescriptors();
-
-        for (AppDescriptor app : appDescriptors) {
-            if (hasToAddApp(app, appLayout)) {
-                handleCategory(categories, app);
+        AppLayout layoutCopy = new AppLayout();
+        for (AppGroup group : appLayout.getGroups()) {
+            List<AppGroupEntry> copiedEntries = new ArrayList<AppGroupEntry>();
+            for (AppGroupEntry entry : group.getApps()) {
+                if (isAppEnabledForCurrentUser(entry)) {
+                    AppDescriptor appDescriptor;
+                    try {
+                        appDescriptor = appDescriptorRegistry.getAppDescriptor(entry.getName());
+                    } catch (RegistrationException e) {
+                        continue;
+                    }
+                    AppGroupEntry entryCopy = new AppGroupEntry();
+                    entryCopy.setName(entry.getName());
+                    entryCopy.setEnabled(entry.isEnabled());
+                    entryCopy.setAppDescriptor(appDescriptor);
+                    copiedEntries.add(entryCopy);
+                }
+            }
+            if (!copiedEntries.isEmpty()) {
+                AppGroup groupCopy = new AppGroup();
+                groupCopy.setName(group.getName());
+                groupCopy.setLabel(group.getLabel());
+                groupCopy.setBackgroundColor(group.getBackgroundColor());
+                groupCopy.setPermanent(group.isPermanent());
+                groupCopy.setApps(copiedEntries);
+                layoutCopy.addGroup(groupCopy);
             }
         }
-        return appLayout;
+        return layoutCopy;
     }
 
     @Override
-    public boolean isAppDescriptorRegistered(String name) {
-        return true;
+    public void setLayout(AppLayout layout) {
+        this.layout.set(layout);
+        sendEvent();
     }
 
-    @Override
-    public boolean isCategoryRegistered(String name) {
-        return true;
-    }
-
-    /**
-     * Filter out disabled apps and apps with identical names.
-     */
-    private boolean hasToAddApp(AppDescriptor app, AppLayout appLayout) {
-        // Filter out disabled apps and apps with identical names
-        if (!app.isEnabled() || appLayout.isAppAlreadyRegistered(app.getName()) || !isAppDescriptorRegistered(app.getName())) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    private static boolean nextGroupIsPermanent = true;
-    
-    /**
-     * Add the AppDescriptor to an existing or newly created AppCategory.
-     */
-    private void handleCategory(Map<String, AppCategory> categories, AppDescriptor app) {
-        AppCategory category;
-        String catName = app.getCategoryName();
-        logger.debug("Handle app " + app.getName() + " for category " + catName);
-        if (categories.containsKey(catName)) {
-            // Add to Category
-            category = categories.get(catName);
-        } else {
-            // Create
-            category = new AppCategory();
-            category.setLabel(catName);
-            category.setPermanent(nextGroupIsPermanent);
-            category.setBackgroundColor("#9A3332");
-            categories.put(catName, category);
-            nextGroupIsPermanent = !nextGroupIsPermanent;
-        }
-        category.addApp(app);
+    private boolean isAppEnabledForCurrentUser(AppGroupEntry entry) {
+        return entry.isEnabled() && appDescriptorRegistry.isAppDescriptorRegistered(entry.getName());
     }
 
     /**
      * Send an event to the system event bus.
      */
-    private void sendEvent(LayoutEvent event) {
-        logger.debug("Sending LayoutEvent." + event.getEventType() + " to the system bus");
-        systemEventBus.fireEvent(event);
+    private void sendEvent() {
+        logger.debug("Sending AppLayoutChangedEvent on the system bus");
+        systemEventBus.fireEvent(new AppLayoutChangedEvent());
     }
 }

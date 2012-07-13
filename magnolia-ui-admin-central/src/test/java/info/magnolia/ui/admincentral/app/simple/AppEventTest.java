@@ -34,7 +34,6 @@
 package info.magnolia.ui.admincentral.app.simple;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import org.junit.After;
 import org.junit.Before;
@@ -50,11 +49,12 @@ import info.magnolia.ui.admincentral.app.simple.AppControllerImplTest.AppEventCo
 import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventType;
-import info.magnolia.ui.framework.app.layout.AppCategory;
+import info.magnolia.ui.framework.app.layout.AppGroup;
+import info.magnolia.ui.framework.app.layout.AppGroupEntry;
 import info.magnolia.ui.framework.app.layout.AppLayout;
-import info.magnolia.ui.framework.app.layout.AppLayoutImpl;
 import info.magnolia.ui.framework.app.layout.AppLayoutManager;
 import info.magnolia.ui.framework.app.layout.AppLayoutManagerImpl;
+import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.event.InvocationCountingTestEventHandler;
 import info.magnolia.ui.framework.event.SimpleEventBus;
@@ -71,7 +71,7 @@ public class AppEventTest {
 
     private AppLayoutManager appLayoutManager = null;
     private GuiceComponentProvider componentProvider = null;
-    private AppControllerImpl appControler = null;
+    private AppControllerImpl appController = null;
     private AppEventCollector eventCollector = null;
     private String name = "app";
 
@@ -87,7 +87,9 @@ public class AppEventTest {
         eventCollector = new AppEventCollector();
         eventBus.addHandler(AppLifecycleEvent.class, eventCollector);
 
-        appControler = new AppControllerImpl(moduleRegistry, componentProvider, appLayoutManager, locationController, shell, eventBus, messagesManager);
+        AppDescriptorRegistry appDescriptorRegistry = mock(AppDescriptorRegistry.class);
+
+        appController = new AppControllerImpl(moduleRegistry, componentProvider, appLayoutManager, locationController, messagesManager, shell, eventBus);
     }
 
     @After
@@ -104,7 +106,7 @@ public class AppEventTest {
         // GIVEN
         String appName = name + "_name";
         // Start an App that has the AppBuss injected and that also add a dumy handler
-        appControler.startIfNotAlreadyRunningThenFocus(appName);
+        appController.startIfNotAlreadyRunningThenFocus(appName);
         //Initial check
         assertEquals(2, eventCollector.appLifecycleEvent.size());
         AppControllerImplTest.checkAppEvent(eventCollector, appName, AppLifecycleEventType.STARTED, 0);
@@ -121,10 +123,10 @@ public class AppEventTest {
         assertEquals(1, handler.getInvocationCount());
 
         // Stop the app
-        appControler.stopCurrentApp();
+        appController.stopCurrentApp();
 
         // Start app again
-        appControler.startIfNotAlreadyRunningThenFocus(appName);
+        appController.startIfNotAlreadyRunningThenFocus(appName);
 
         // WHEN
         // Send Event to this Bus
@@ -139,18 +141,20 @@ public class AppEventTest {
     }
 
     /**
-     * Init a LayoutManager containing 1 category with one app.
+     * Init a LayoutManager containing 1 group with one app.
      */
     private void setAppLayoutManager() {
 
         appLayoutManager = mock(AppLayoutManagerImpl.class);
         //Set cat1 with App1
         AppDescriptor app = AppTestUtility.createAppDescriptor(name, AppEventTestImpl.class);
-        AppCategory cat = AppTestUtility.createAppCategory("cat", app);
-        cat.addApp(app);
-        Map<String, AppCategory> categories = new HashMap<String, AppCategory>();
-        categories.put("cat", cat);
-        AppLayout appLayout = new AppLayoutImpl(categories);
-        when(appLayoutManager.getLayout()).thenReturn(appLayout);
+        AppGroup cat = AppTestUtility.createAppGroup("cat", app);
+        AppGroupEntry entry = new AppGroupEntry();
+        entry.setName(name);
+        entry.setAppDescriptor(app);
+        cat.addApp(entry);
+        AppLayout appLayout = new AppLayout();
+        appLayout.addGroup(cat);
+        when(appLayoutManager.getLayoutForCurrentUser()).thenReturn(appLayout);
     }
 }

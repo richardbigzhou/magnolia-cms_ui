@@ -31,48 +31,43 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.sample;
+package info.magnolia.ui.app.sample.editor;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
-
-import org.apache.commons.lang.RandomStringUtils;
 
 import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.view.View;
 
 /**
- * SubApp for the main tab in sample app.
+ * SubApp for editor tabs in sample app.
  */
-@Singleton
-public class SampleMainSubApp implements SubApp, SampleMainView.Listener {
+public class SampleEditorSubApp implements SubApp, SampleEditorView.Listener {
 
-    private SampleApp sampleApp;
-    private SampleMainView sampleMainView;
+    private String name;
+    private final SampleEditorView view;
 
     @Inject
-    public SampleMainSubApp(SampleMainView sampleMainView) {
-        this.sampleMainView = sampleMainView;
+    public SampleEditorSubApp(SampleEditorView view) {
+        this.view = view;
     }
 
-    public void setSampleApp(SampleApp sampleApp) {
-        this.sampleApp = sampleApp;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    @Override
-    public View start() {
-        sampleMainView.setListener(this);
-        return sampleMainView;
+    public String getName() {
+        return name;
     }
 
     @Override
     public String getCaption() {
-        return "Sample";
+        return "Editor " + name;
     }
 
     @Override
-    public void onOpenNewEditor() {
-        String name = RandomStringUtils.randomNumeric(2);
-        sampleApp.openNewEditor(name);
+    public View start() {
+        this.view.setName(name);
+        this.view.setListener(this);
+        return view;
     }
 }
