@@ -41,6 +41,7 @@ import info.magnolia.ui.admincentral.list.container.FlatJcrContainer;
 import info.magnolia.ui.admincentral.tree.model.TreeModel;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +56,7 @@ import com.vaadin.ui.Table;
  * Vaadin UI component that displays a list.
  *
  */
-public class ListViewImpl implements ListView {
+public class ListViewImpl implements ListView, IsVaadinComponent {
 
     private ContentView.Listener listener;
 

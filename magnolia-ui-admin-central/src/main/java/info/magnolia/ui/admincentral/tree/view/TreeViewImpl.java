@@ -37,6 +37,7 @@ import info.magnolia.ui.admincentral.container.JcrContainer;
 import info.magnolia.ui.admincentral.jcr.view.ContentView;
 import info.magnolia.ui.admincentral.tree.model.TreeModel;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 import java.util.Set;
 
@@ -50,7 +51,7 @@ import com.vaadin.ui.TreeTable;
  * Vaadin UI component that displays a tree.
  *
  */
-public class TreeViewImpl implements TreeView{
+public class TreeViewImpl implements TreeView, IsVaadinComponent {
 
     private MagnoliaTreeTable jcrBrowser;
 

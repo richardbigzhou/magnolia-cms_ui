@@ -44,6 +44,7 @@ import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
+import info.magnolia.ui.vaadin.integration.view.VaadinComponentUtil;
 import info.magnolia.ui.widget.dialog.Dialog;
 import info.magnolia.ui.widget.dialog.DialogView;
 
@@ -85,12 +86,12 @@ public class DialogPresenter implements DialogView.Presenter {
     public void editItem(final Item item) {
         this.item = item;
         dialogBuilder.build(fieldTypeBuilder, dialogDefinition, item, view);
-        shell.openDialog((Dialog)view.asVaadinComponent());
+        shell.openDialog((Dialog) VaadinComponentUtil.toVaadinComponent(view));
     }
 
     @Override
     public void closeDialog() {
-        shell.removeDialog(view.asVaadinComponent());
+        shell.removeDialog(VaadinComponentUtil.toVaadinComponent(view));
         // clear the view!
     }
 

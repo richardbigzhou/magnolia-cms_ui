@@ -37,6 +37,7 @@ import java.util.List;
 
 import info.magnolia.ui.admincentral.shellapp.pulse.PulseMessageCategoryNavigator.CategoryChangedEvent;
 import info.magnolia.ui.admincentral.shellapp.pulse.PulseMessageCategoryNavigator.MessageCategoryChangedListener;
+import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 import info.magnolia.ui.vaadin.integration.widget.HybridSelectionTable;
 
 import javax.inject.Inject;
@@ -50,7 +51,7 @@ import com.vaadin.ui.VerticalLayout;
  * Implementation of {@link PulseMessagesView}.
  */
 @SuppressWarnings("serial")
-public class PulseMessagesViewImpl extends CustomComponent implements PulseMessagesView {
+public class PulseMessagesViewImpl extends CustomComponent implements PulseMessagesView, IsVaadinComponent {
     
     private static final String[] headers = new String[] {
             "", "New", "Type", "Message Text", "Sender", "Date", "Quick Do"

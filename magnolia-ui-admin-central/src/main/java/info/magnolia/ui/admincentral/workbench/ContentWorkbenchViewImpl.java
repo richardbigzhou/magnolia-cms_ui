@@ -38,6 +38,7 @@ import info.magnolia.ui.admincentral.jcr.view.ContentView;
 import info.magnolia.ui.admincentral.jcr.view.ContentView.ViewType;
 import info.magnolia.ui.admincentral.jcr.view.builder.ContentViewBuilderProvider;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
+import info.magnolia.ui.vaadin.integration.view.VaadinComponentUtil;
 import info.magnolia.ui.widget.actionbar.Actionbar;
 
 import java.util.EnumMap;
@@ -133,8 +134,8 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
 
     @Override
     public void setGridType(ViewType type) {
-        workbenchContainer.removeComponent(contentViews.get(currentViewType).asVaadinComponent());
-        final Component c = contentViews.get(type).asVaadinComponent();
+        workbenchContainer.removeComponent(VaadinComponentUtil.toVaadinComponent(contentViews.get(currentViewType)));
+        final Component c = VaadinComponentUtil.toVaadinComponent(contentViews.get(type));
 
         workbenchContainer.addComponent(c);
         workbenchContainer.setExpandRatio(c, 1f);
