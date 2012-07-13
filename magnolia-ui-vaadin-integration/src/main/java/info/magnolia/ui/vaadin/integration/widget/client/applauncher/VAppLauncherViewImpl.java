@@ -41,6 +41,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.web.bindery.event.shared.EventBus;
 
@@ -58,10 +60,13 @@ public class VAppLauncherViewImpl extends FlowPanel implements VAppLauncherView,
     
     private Presenter presenter;
     
+    private Element rootEl = DOM.createDiv();
+    
     public VAppLauncherViewImpl(final EventBus eventBus) {
         super();
+        getElement().appendChild(rootEl);
         this.eventBus = eventBus;
-        addStyleName("v-app-launcher");
+        rootEl.addClassName("v-app-launcher");
         add(temporarySectionsBar);
         this.eventBus.addHandler(AppActivationEvent.TYPE,  this);
     }
@@ -80,13 +85,13 @@ public class VAppLauncherViewImpl extends FlowPanel implements VAppLauncherView,
         final VAppTileGroup group = new VTemporaryAppTileGroup(eventBus, color);
         groups.put(caption, group);
         temporarySectionsBar.addGroup(caption, group);
-        add(group);
+        add(group, rootEl);
     }
     
     public void addPermanentAppGroup(String caption, String color) {
         final VPermanentAppTileGroup group = new VPermanentAppTileGroup(eventBus, caption, color);
         groups.put(caption, group);
-        add(group);
+        add(group, rootEl);
     }
 
 

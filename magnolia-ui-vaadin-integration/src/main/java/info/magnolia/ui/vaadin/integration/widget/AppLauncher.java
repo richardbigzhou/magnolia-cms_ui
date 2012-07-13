@@ -136,6 +136,10 @@ public class AppLauncher extends AbstractComponent implements ServerSideHandler 
     @Override
     public void detach() {
         super.detach();
+        clear();
+    }
+    
+    public void clear() {
         isAttached = false;
         for (final AppSection section : appSections.values()) {
             section.getAppTiles().clear();
@@ -263,6 +267,4 @@ public class AppLauncher extends AbstractComponent implements ServerSideHandler 
             return isPermanent;
         }
     }
-    
-    
 }
