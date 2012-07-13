@@ -54,6 +54,7 @@ public class MessagesAppMainSubApp implements SubApp, MessagesView.Listener {
     public MessagesAppMainSubApp(AppContext appContext, MessagesView view) {
         this.appContext = appContext;
         this.view = view;
+        view.setListener(this);
     }
 
     @Override
