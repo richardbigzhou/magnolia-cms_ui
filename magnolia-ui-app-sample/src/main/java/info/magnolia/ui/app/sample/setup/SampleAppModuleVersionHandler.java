@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.sample;
+package info.magnolia.ui.app.sample.setup;
 
 import info.magnolia.module.DefaultModuleVersionHandler;
 
