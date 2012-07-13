@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,29 +31,26 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.editor.gwt.client.dom.processor;
-
-import com.google.gwt.event.shared.EventBus;
-import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
-import info.magnolia.ui.widget.editor.gwt.client.model.Model;
+package info.magnolia.ui.app.pages.editor;
 
 /**
- * Factory Class for MgnlElement processors.
+ * PageEditorParameters.
  */
-public class MgnlElementProcessorFactory {
+public class PageEditorParameters {
 
-    public static MgnlElementProcessor getProcessor(Model model, EventBus eventBus, MgnlElement mgnlElement) throws IllegalArgumentException {
-        MgnlElementProcessor processor;
+    private String contextPath;
+    private String nodePath;
 
-        if (mgnlElement.isArea()) {
-            processor = new AreaProcessor(model, eventBus, mgnlElement);
-        }
-        else if (mgnlElement.isComponent()) {
-            processor = new ComponentProcessor(model, eventBus, mgnlElement);
-        }
-        else {
-            throw new IllegalArgumentException("mgnlElement is not a Area nor Component");
-        }
-        return processor;
+    public PageEditorParameters(String contextPath, String nodePath) {
+        this.contextPath = contextPath;
+        this.nodePath = nodePath;
+    }
+
+    public String getContextPath() {
+        return contextPath;
+    }
+
+    public String getNodePath() {
+        return nodePath;
     }
 }

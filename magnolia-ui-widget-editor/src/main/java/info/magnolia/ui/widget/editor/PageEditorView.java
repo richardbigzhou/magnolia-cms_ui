@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,35 +31,32 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages;
+package info.magnolia.ui.widget.editor;
 
-import com.vaadin.ui.Component;
-import com.vaadin.ui.ComponentContainer;
-
+import info.magnolia.ui.framework.view.View;
 
 /**
- * View implementation for the Pages app.
+ *  PageEditorView.
  */
-@SuppressWarnings("serial")
-public class PagesMainViewImpl implements PagesMainView {
+public interface PageEditorView extends View {
 
-    private ComponentContainer view;
-    private Listener listener;
+    void setListener(Listener listener);
 
+    void init(String contextPath, String nodePath);
 
-    @Override
-    public Component asVaadinComponent() {
-        return view;
+    /**
+     * Listener.
+     */
+    public interface Listener {
+
+        void editComponent(String workSpace, String path, String dialog);
+
+        void deleteComponent(String workSpace, String path);
+
+        void newComponent(String workSpace, String nodeType, String path);
+
+        void selectComponent(String path);
+
+        void sortComponent();
     }
-
-    @Override
-    public void setListener(Listener listener) {
-        this.listener = listener;
-    }
-
-    @Override
-    public void initView(ComponentContainer workbenchView) {
-        this.view = workbenchView;
-    }
-
 }

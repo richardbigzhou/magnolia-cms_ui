@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.widget.editor.gwt.client.dom.processor;
 
+import com.google.gwt.event.shared.EventBus;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 
@@ -44,9 +45,11 @@ public abstract class MgnlElementProcessor {
     private MgnlElement mgnlElement;
 
     private Model model;
+    private EventBus eventBus;
 
-    public MgnlElementProcessor(Model model, MgnlElement mgnlElement) {
+    public MgnlElementProcessor(Model model, EventBus eventBus, MgnlElement mgnlElement) {
         this.model = model;
+        this.eventBus = eventBus;
         this.setMgnlElement(mgnlElement);
     }
 
@@ -64,4 +67,7 @@ public abstract class MgnlElementProcessor {
         return model;
     }
 
+    protected EventBus getEventBus() {
+        return eventBus;
+    }
 }

@@ -65,7 +65,8 @@ public class ModelStorage implements Model {
     public List<MgnlElement> rootElements = new LinkedList<MgnlElement>();
 
 
-    private MgnlElement selectedMgnlElement = null;
+    private MgnlElement selectedMgnlAreaElement = null;
+    private MgnlElement selectedMgnlComponentElement = null;
 
 
     @Override
@@ -149,13 +150,13 @@ public class ModelStorage implements Model {
     }
 
     @Override
-    public void setSelectedMgnlElement(MgnlElement selectedMgnlElement) {
-        this.selectedMgnlElement = selectedMgnlElement;
+    public void setSelectedMgnlAreaElement(MgnlElement selectedMgnlAreaElement) {
+        this.selectedMgnlAreaElement = selectedMgnlAreaElement;
     }
 
     @Override
-    public MgnlElement getSelectedMgnlElement() {
-        return selectedMgnlElement;
+    public MgnlElement getSelectedMgnlAreaElement() {
+        return selectedMgnlAreaElement;
     }
 
     @Override
@@ -214,4 +215,11 @@ public class ModelStorage implements Model {
         return null;
     }
 
+    public MgnlElement getSelectedMgnlComponentElement() {
+        return selectedMgnlComponentElement;
+    }
+
+    public void setSelectedMgnlComponentElement(MgnlElement selectedMgnlComponentElement) {
+        this.selectedMgnlComponentElement = selectedMgnlComponentElement;
+    }
 }

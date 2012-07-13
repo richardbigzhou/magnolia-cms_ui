@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,29 +31,24 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.editor.gwt.client.dom.processor;
+package info.magnolia.ui.app.pages.main;
 
-import com.google.gwt.event.shared.EventBus;
-import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
-import info.magnolia.ui.widget.editor.gwt.client.model.Model;
+import com.vaadin.ui.ComponentContainer;
+import info.magnolia.ui.framework.view.View;
 
 /**
- * Factory Class for MgnlElement processors.
+ * View for the Pages app.
  */
-public class MgnlElementProcessorFactory {
+public interface PagesMainView extends View {
 
-    public static MgnlElementProcessor getProcessor(Model model, EventBus eventBus, MgnlElement mgnlElement) throws IllegalArgumentException {
-        MgnlElementProcessor processor;
+    void setWorkBench(ComponentContainer workbench);
 
-        if (mgnlElement.isArea()) {
-            processor = new AreaProcessor(model, eventBus, mgnlElement);
-        }
-        else if (mgnlElement.isComponent()) {
-            processor = new ComponentProcessor(model, eventBus, mgnlElement);
-        }
-        else {
-            throw new IllegalArgumentException("mgnlElement is not a Area nor Component");
-        }
-        return processor;
+    /**
+     * Listener.
+     *
+     */
+    public interface Listener {
     }
+
+    void setListener(Listener listener);
 }

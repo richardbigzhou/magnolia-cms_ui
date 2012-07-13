@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,12 +31,41 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages;
+package info.magnolia.ui.widget.editor.gwt.client.event;
 
-import info.magnolia.module.DefaultModuleVersionHandler;
+import com.google.gwt.event.shared.GwtEvent;
+import com.google.web.bindery.event.shared.Event;
 
 /**
- * Version handler for Dummy app module.
+ * DeleteComponentEvent.
  */
-public class PagesAppModuleVersionHandler extends DefaultModuleVersionHandler {
+public class DeleteComponentEvent extends Event<DeleteComponentEventHandler> {
+
+    public static GwtEvent.Type<DeleteComponentEventHandler> TYPE = new GwtEvent.Type<DeleteComponentEventHandler>();
+
+    private String workSpace;
+    private String path;
+
+    public DeleteComponentEvent(String workSpace, String path) {
+        this.workSpace = workSpace;
+        this.path = path;
+    }
+
+    @Override
+    public GwtEvent.Type<DeleteComponentEventHandler> getAssociatedType() {
+        return TYPE;
+    }
+
+    @Override
+    protected void dispatch(DeleteComponentEventHandler handler) {
+        handler.onDeleteComponent(this);
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public String getWorkSpace() {
+        return workSpace;
+    }
 }

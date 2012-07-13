@@ -31,25 +31,25 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages;
+package info.magnolia.ui.app.pages.editor;
 
 import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.widget.editor.PageEditorView;
 
 /**
- * PageEditorView.
+ * PagesEditorView.
  *
  */
-public interface PageEditorView extends View {
+public interface PagesEditorView extends View {
 
     void setListener(Listener listener);
 
-    void initPageEditor(String nodePath);
+    void setPageEditor(PageEditorView pageEditor);
 
     /**
      * Listener.
      */
     public interface Listener {
-
-        void editComponent(String workSpace, String path, String dialog);
+        void setParameters(PageEditorParameters parameters);
     }
 }

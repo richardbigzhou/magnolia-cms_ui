@@ -44,8 +44,11 @@ import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.PushButton;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
+import info.magnolia.ui.widget.editor.gwt.client.event.DeleteComponentEvent;
+import info.magnolia.ui.widget.editor.gwt.client.event.EditComponentEvent;
 import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 import info.magnolia.ui.widget.editor.gwt.client.widget.dnd.DragAndDrop;
 import info.magnolia.ui.widget.editor.gwt.client.widget.dnd.LegacyDragAndDrop;
@@ -66,10 +69,11 @@ public class ComponentBar extends AbstractBar  {
     private String nodeName;
     private boolean isInherited;
     private boolean editable = true;
+    private EventBus eventBus;
 
-    public ComponentBar(Model model, MgnlElement mgnlElement) throws IllegalArgumentException {
+    public ComponentBar(Model model, EventBus eventBus, MgnlElement mgnlElement) throws IllegalArgumentException {
 
-        super(model, mgnlElement);
+        super(model, eventBus, mgnlElement);
 
         checkMandatories(mgnlElement.getAttributes());
         addStyleName("component");
@@ -171,7 +175,7 @@ public class ComponentBar extends AbstractBar  {
         remove.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                getListener().onDeleteComponent(path);
+                getEventBus().fireEvent(new DeleteComponentEvent(workspace, path));
             }
         });
         remove.setTitle(getI18nMessage("buttons.component.delete.js"));
@@ -198,7 +202,7 @@ public class ComponentBar extends AbstractBar  {
             edit.addClickHandler(new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent event) {
-                    getListener().onEditComponent(dialog, workspace, path);
+                    getEventBus().fireEvent(new EditComponentEvent(dialog, workspace, path));
                 }
             });
             edit.setTitle(getI18nMessage("buttons.component.edit.js"));
