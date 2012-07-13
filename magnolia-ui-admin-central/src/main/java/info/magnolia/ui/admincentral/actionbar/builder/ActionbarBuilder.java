@@ -57,7 +57,7 @@ public class ActionbarBuilder {
 
     private static final Logger log = LoggerFactory.getLogger(ActionbarBuilder.class);
 
-    public static Actionbar build(ActionbarDefinition definition, final Listener presenter) {
+    public static Actionbar build(ActionbarDefinition definition, final Listener listener) {
         Actionbar actionbar = new Actionbar();
         if (definition == null) {
             log.warn("No actionbar definition found. This will result in an empty action bar. Is that intended?");
@@ -69,7 +69,7 @@ public class ActionbarBuilder {
                 @Override
                 public void buttonClick(ClickEvent event) {
                     ActionButton button = (ActionButton) event.getButton();
-                    presenter.onActionbarItemClicked(button.getActionName());
+                    listener.onActionbarItemClicked(button.getActionName());
                 }
             };
 

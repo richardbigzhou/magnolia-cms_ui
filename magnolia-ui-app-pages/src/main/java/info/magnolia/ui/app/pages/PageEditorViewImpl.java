@@ -33,18 +33,21 @@
  */
 package info.magnolia.ui.app.pages;
 
-import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.VerticalLayout;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 import info.magnolia.ui.widget.actionbar.Actionbar;
+import info.magnolia.ui.widget.actionbar.ActionbarView;
 import info.magnolia.ui.widget.editor.PageEditor;
 
+import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.VerticalLayout;
+
+
 /**
- * PageEditorViewImpl.
- * TODO: make this a component with a split layout to accomodate the page editor on the left and its related actions on the right.
-*/
+ * PageEditorViewImpl. TODO: make this a component with a split layout to accomodate the page editor
+ * on the left and its related actions on the right.
+ */
 @SuppressWarnings("serial")
 public class PageEditorViewImpl implements PageEditorView, IsVaadinComponent {
 
@@ -55,12 +58,12 @@ public class PageEditorViewImpl implements PageEditorView, IsVaadinComponent {
     private final VerticalLayout container = new VerticalLayout();
 
     private Listener listener;
+
     private PageEditor pageEditor;
-    private String caption;
 
     public PageEditorViewImpl() {
 
-        //this.actionbar = actionbar;
+        // this.actionbar = actionbar;
         // same root as ContentWorkbenchView
         root.setSizeFull();
         root.setStyleName("mgnl-app-root");
@@ -72,8 +75,6 @@ public class PageEditorViewImpl implements PageEditorView, IsVaadinComponent {
         container.setSizeFull();
         container.setStyleName("mgnl-app-view");
         container.setImmediate(true);
-        caption = "meeeh"; //StringUtils.defaultIfEmpty(PropertyUtil.getString(pageNode, "title"), pageNode.getName());
-        //root.addCompon;ent(actionbar);
     }
 
     public void setActionbar(Actionbar actionbar) {
@@ -93,6 +94,12 @@ public class PageEditorViewImpl implements PageEditorView, IsVaadinComponent {
         container.addComponent(pageEditor);
     }
 
+    @Override
+    public void addActionbarView(final ActionbarView actionbar) {
+        root.replaceComponent(this.actionbar, (Component) actionbar);
+        // TODO mgeljic 20120713: cleanup Actionbar/ActionbarView disambiguation.
+        this.actionbar = (Actionbar) actionbar;
+    }
 
     @Override
     public Component asVaadinComponent() {

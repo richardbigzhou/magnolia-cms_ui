@@ -31,32 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages;
-
-import info.magnolia.ui.framework.view.View;
-import info.magnolia.ui.widget.actionbar.ActionbarView;
-
+package info.magnolia.ui.model.action;
 
 /**
- * PageEditorView.
- * 
+ * Interface for an action factory
  */
-public interface PageEditorView extends View {
-
-    void setListener(Listener listener);
-
-    void initPageEditor(String nodePath);
+public interface ActionFactory<D extends ActionDefinition, I extends Action> {
 
     /**
-     * Use this method to add an action bar to this sub app view.
+     * Creates an action using the implementation configured for the given action definition. The
+     * parameters are made available for injection when the instance is created. The definition
+     * object given is also available for injection.
      */
-    void addActionbarView(final ActionbarView actionbar);
+    I createAction(D definition, Object... parameters);
 
-    /**
-     * Listener.
-     */
-    public interface Listener {
-
-        void editComponent(String workSpace, String path, String dialog);
-    }
 }

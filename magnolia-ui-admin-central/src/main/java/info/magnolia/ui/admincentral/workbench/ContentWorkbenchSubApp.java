@@ -33,8 +33,10 @@
  */
 package info.magnolia.ui.admincentral.workbench;
 
+import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.app.content.ContentAppDescriptor;
+import info.magnolia.ui.admincentral.event.ActionbarClickEvent;
 import info.magnolia.ui.admincentral.event.ContentChangedEvent;
 import info.magnolia.ui.admincentral.jcr.view.ContentPresenter;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
@@ -43,14 +45,17 @@ import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.inject.Inject;
+import javax.jcr.LoginException;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,8 +95,6 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
 
     private final WorkbenchActionFactory actionFactory;
 
-    private final Map<String, ActionDefinition> actions = new HashMap<String, ActionDefinition>();
-
     final ContentPresenter contentPresenter;
 
     final ActionbarPresenter actionbarPresenter;
@@ -115,6 +118,37 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
                 view.refresh();
             }
         });
+
+        eventBus.addHandler(ActionbarClickEvent.class, new ActionbarClickEvent.Handler() {
+
+            @Override
+            public void onActionbarItemClicked(ActionbarClickEvent event) {
+
+                ActionDefinition actionDefinition = event.getActionDefinition();
+                if (actionDefinition != null) {
+                    try {
+                        Session session = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace());
+                        String selectedItemId = getSelectedItemId();
+                        if (selectedItemId == null || !session.itemExists(selectedItemId)) {
+                            log.debug("{} does not exist anymore. Was it just deleted? Resetting path to root...",
+                                selectedItemId);
+                            selectedItemId = "/";
+                        }
+                        final javax.jcr.Item item = session.getItem(selectedItemId);
+                        Action action = ContentWorkbenchSubApp.this.actionFactory.createAction(actionDefinition, item);
+                        action.execute();
+                    } catch (PathNotFoundException e) {
+                        ContentWorkbenchSubApp.this.shell.showError("Can't execute action.\n" + e.getMessage(), e);
+                    } catch (LoginException e) {
+                        ContentWorkbenchSubApp.this.shell.showError("Can't execute action.\n" + e.getMessage(), e);
+                    } catch (RepositoryException e) {
+                        ContentWorkbenchSubApp.this.shell.showError("Can't execute action.\n" + e.getMessage(), e);
+                    } catch (ActionExecutionException e) {
+                        ContentWorkbenchSubApp.this.shell.showError("Can't execute action.\n" + e.getMessage(), e);
+                    }
+                }
+            }
+        });
     }
 
     /**
@@ -124,6 +158,7 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
         contentPresenter.initContentView(view);
         view.setListener(this);
 
+        actionbarPresenter.initActionbar(workbenchDefinition.getActionbar());
         view.addActionbarView(actionbarPresenter.getView());
     }
 
@@ -144,32 +179,6 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
     public String getCaption() {
         return "Content-Workbench";
     }
-
-    // @Override
-    // public void onActionbarItemClicked(final String actionName) {
-    // ActionDefinition actionDefinition = getActions().get(actionName);
-    // if (actionDefinition != null) {
-    // try {
-    // Session session = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace());
-    // final String selectedItemId = getSelectedItemId();
-    // if (selectedItemId == null || !session.itemExists(selectedItemId)) {
-    // log.debug("{} does not exist anymore. Was it just deleted? Resetting path to root...",
-    // selectedItemId);
-    // }
-    // final javax.jcr.Item item = session.getItem(selectedItemId);
-    // Action action = actionFactory.createAction(actionDefinition, item, this);
-    // action.execute();
-    // } catch (PathNotFoundException e) {
-    // shell.showError("Can't execute action.\n" + e.getMessage(), e);
-    // } catch (LoginException e) {
-    // shell.showError("Can't execute action.\n" + e.getMessage(), e);
-    // } catch (RepositoryException e) {
-    // shell.showError("Can't execute action.\n" + e.getMessage(), e);
-    // } catch (ActionExecutionException e) {
-    // shell.showError("Can't execute action.\n" + e.getMessage(), e);
-    // }
-    // }
-    // }
 
     public ContentWorkbenchView asView() {
         return view;

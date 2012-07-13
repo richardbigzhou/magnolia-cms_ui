@@ -34,8 +34,8 @@
 package info.magnolia.ui.admincentral.actionbar;
 
 import info.magnolia.ui.admincentral.actionbar.builder.ActionbarBuilder;
-import info.magnolia.ui.model.action.AbstractActionFactory;
-import info.magnolia.ui.model.action.Action;
+import info.magnolia.ui.admincentral.event.ActionbarClickEvent;
+import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarGroupDefinition;
@@ -51,20 +51,18 @@ import com.google.inject.Inject;
  */
 public class ActionbarPresenter implements ActionbarView.Listener {
 
-    private final ActionbarDefinition definition;
+    private ActionbarDefinition definition;
 
-    private final AbstractActionFactory<ActionDefinition, Action> actionFactory;
+    private ActionbarView actionbar;
 
-    private final ActionbarView actionbar;
+    private final EventBus eventBus;
 
     /**
      * Instantiates a new action bar presenter.
      */
     @Inject
-    public ActionbarPresenter(ActionbarDefinition definition, AbstractActionFactory<ActionDefinition, Action> actionFactory) {
-        this.definition = definition;
-        this.actionFactory = actionFactory;
-        actionbar = ActionbarBuilder.build(definition, this);
+    public ActionbarPresenter(EventBus eventBus) {
+        this.eventBus = eventBus;
     }
 
     @Override
@@ -72,13 +70,15 @@ public class ActionbarPresenter implements ActionbarView.Listener {
         return actionbar;
     }
 
+    public void initActionbar(final ActionbarDefinition definition) {
+        this.definition = definition;
+        actionbar = ActionbarBuilder.build(definition, this);
+    }
+
     @Override
     public void onActionbarItemClicked(String actionName) {
         ActionDefinition actionDefinition = getActionDefinition(actionName);
-        if (actionDefinition != null) {
-            Action action = actionFactory.createAction(actionDefinition);
-        }
-        // somehow return action to subApp level so that it can execute it with content view params
+        eventBus.fireEvent(new ActionbarClickEvent(actionDefinition));
     }
 
     private ActionDefinition getActionDefinition(String actionName) {

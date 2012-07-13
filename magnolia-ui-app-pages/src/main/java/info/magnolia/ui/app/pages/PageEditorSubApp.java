@@ -34,7 +34,9 @@
 package info.magnolia.ui.app.pages;
 
 import info.magnolia.context.MgnlContext;
+import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
+import info.magnolia.ui.app.pages.action.PagesActionbarDefinitionProvider;
 import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -45,21 +47,30 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+
 /**
  * PageEditorSubApp.
  */
 public class PageEditorSubApp implements SubApp, PageEditorView.Listener {
 
-    private PageEditorView view;
+    private final PageEditorView view;
 
-    private DialogPresenterFactory dialogPresenterFactory;
+    private final DialogPresenterFactory dialogPresenterFactory;
+
+    private final ActionbarPresenter actionbarPresenter;
+
+    private final String pageNodePath;
 
     @Inject
-    public PageEditorSubApp(PageEditorView view, DialogPresenterFactory dialogPresenterFactory, String pageNodePath) {
+    public PageEditorSubApp(PageEditorView view, DialogPresenterFactory dialogPresenterFactory, String pageNodePath, final ActionbarPresenter actionbarPresenter) {
         this.view = view;
         this.dialogPresenterFactory = dialogPresenterFactory;
+        this.pageNodePath = pageNodePath;
+        this.actionbarPresenter = actionbarPresenter;
 
         view.initPageEditor(pageNodePath);
+        this.actionbarPresenter.initActionbar(PagesActionbarDefinitionProvider.getPageEditorActionbarDefinition());
+        view.addActionbarView(actionbarPresenter.getView());
     }
 
     @Override
@@ -69,10 +80,10 @@ public class PageEditorSubApp implements SubApp, PageEditorView.Listener {
         try {
             session = MgnlContext.getJCRSession(workSpace);
 
-        if (path == null || !session.itemExists(path)) {
-            path = "/";
-        }
-        final Node node = session.getNode(path);
+            if (path == null || !session.itemExists(path)) {
+                path = "/";
+            }
+            final Node node = session.getNode(path);
             JcrNodeAdapter item = new JcrNodeAdapter(node);
             dialogPresenter.editItem(item);
         } catch (RepositoryException e) {
@@ -83,7 +94,9 @@ public class PageEditorSubApp implements SubApp, PageEditorView.Listener {
 
     @Override
     public String getCaption() {
-        return null;
+        // String[] chunks = pageNodePath.split("/");
+        // return "Edit " + chunks[chunks.length - 1];
+        return "Edit Pages";
     }
 
     @Override

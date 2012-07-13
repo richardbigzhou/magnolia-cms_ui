@@ -141,6 +141,7 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
     @Override
     public void refresh() {
         contentViews.get(currentViewType).refresh();
+        // TODO 20120713 mgeljic: refresh action bar (context sensitivity)
     }
 
     @Override

@@ -31,32 +31,39 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages;
+package info.magnolia.ui.admincentral.event;
 
-import info.magnolia.ui.framework.view.View;
-import info.magnolia.ui.widget.actionbar.ActionbarView;
+import info.magnolia.ui.framework.event.Event;
+import info.magnolia.ui.framework.event.EventHandler;
+import info.magnolia.ui.model.action.ActionDefinition;
 
 
 /**
- * PageEditorView.
- * 
+ * This event is fired when an item in the action bar is clicked.
  */
-public interface PageEditorView extends View {
-
-    void setListener(Listener listener);
-
-    void initPageEditor(String nodePath);
+public class ActionbarClickEvent implements Event<ActionbarClickEvent.Handler> {
 
     /**
-     * Use this method to add an action bar to this sub app view.
+     * Handles {@link ActionbarClickEvent} events.
      */
-    void addActionbarView(final ActionbarView actionbar);
+    public static interface Handler extends EventHandler {
 
-    /**
-     * Listener.
-     */
-    public interface Listener {
-
-        void editComponent(String workSpace, String path, String dialog);
+        void onActionbarItemClicked(ActionbarClickEvent event);
     }
+
+    private final ActionDefinition actionDefinition;
+
+    @Override
+    public void dispatch(Handler handler) {
+        handler.onActionbarItemClicked(this);
+    }
+
+    public ActionbarClickEvent(ActionDefinition actionDefinition) {
+        this.actionDefinition = actionDefinition;
+    }
+
+    public ActionDefinition getActionDefinition() {
+        return actionDefinition;
+    }
+
 }
