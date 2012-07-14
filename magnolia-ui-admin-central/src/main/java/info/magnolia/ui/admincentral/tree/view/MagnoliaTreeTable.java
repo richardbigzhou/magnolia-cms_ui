@@ -62,7 +62,6 @@ import com.vaadin.terminal.gwt.client.ui.dd.VerticalDropLocation;
 
 /**
  * User interface component that extends TreeTable and uses a WorkbenchDefinition for layout and invoking command callbacks.
- *
  */
 @SuppressWarnings("serial")
 public class MagnoliaTreeTable extends HybridSelectionTreeTable {
