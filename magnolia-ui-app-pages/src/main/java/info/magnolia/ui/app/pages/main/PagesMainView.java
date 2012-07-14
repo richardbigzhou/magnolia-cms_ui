@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,16 +31,24 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.view;
+package info.magnolia.ui.app.pages.main;
 
-import java.io.Serializable;
-
-import com.vaadin.ui.Component;
-
+import com.vaadin.ui.ComponentContainer;
+import info.magnolia.ui.framework.view.View;
 
 /**
- * Implemented if a component is a Vaadin component. Extends Serializable as all Vaadin components will have to.
+ * View for the Pages app.
  */
-public interface IsVaadinComponent extends Serializable {
-    Component asVaadinComponent();
+public interface PagesMainView extends View {
+
+    void setWorkBench(ComponentContainer workbench);
+
+    /**
+     * Listener.
+     *
+     */
+    public interface Listener {
+    }
+
+    void setListener(Listener listener);
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,46 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.definition;
+package info.magnolia.ui.app.pages.setup;
 
-
+import info.magnolia.module.DefaultModuleVersionHandler;
 
 /**
- * Simple implementation of {@link UiItemDefinition}.
+ * Version handler for Dummy app module.
  */
-public class ConfiguredUiItemDefinition implements UiItemDefinition {
-
-    private String name;
-
-    private String label;
-
-    private String i18nBasename;
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    @Override
-    public String getI18nBasename() {
-        return i18nBasename;
-    }
-
-    public void setI18nBasename(String i18nBasename) {
-        this.i18nBasename = i18nBasename;
-    }
-
+public class PagesAppModuleVersionHandler extends DefaultModuleVersionHandler {
 }

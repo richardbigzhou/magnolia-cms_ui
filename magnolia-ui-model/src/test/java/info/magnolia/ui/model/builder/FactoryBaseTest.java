@@ -34,10 +34,12 @@
 package info.magnolia.ui.model.builder;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import info.magnolia.test.mock.MockSimpleComponentProvider;
 
 import org.junit.Test;
+
 
 public class FactoryBaseTest {
 
@@ -50,8 +52,10 @@ public class FactoryBaseTest {
             super(ignored);
         }
 
-        // TODO: check whether impl in FactoryBase is tolerant enough - when removing the following constructor, it'll
-        // not be able to create an Impl from a OtherSubclassOfDef although the constructor above is compile-wise satisfying - new Impl(otherSubclassOfDef);
+        // TODO: check whether impl in FactoryBase is tolerant enough - when removing the following
+        // constructor, it'll
+        // not be able to create an Impl from a OtherSubclassOfDef although the constructor above is
+        // compile-wise satisfying - new Impl(otherSubclassOfDef);
         public Impl(OtherSubclassOfDef ignored) {
             super(ignored);
         }
@@ -61,6 +65,7 @@ public class FactoryBaseTest {
     }
 
     public static class SubclassOfImpl extends Impl {
+
         public SubclassOfImpl(SubclassOfDef ignored) {
             super(ignored);
         }
@@ -73,8 +78,12 @@ public class FactoryBaseTest {
     }
 
     public static class SuperclassOfImpl {
+
         public SuperclassOfImpl(SuperclassOfDef ignored) {
         }
+    }
+
+    public class OnlyDef extends SuperclassOfDef {
     }
 
     @Test
@@ -90,10 +99,17 @@ public class FactoryBaseTest {
         assertNotNull(anotherImpl);
         assertTrue(anotherImpl instanceof SubclassOfImpl);
 
-        // SubclassOfSubclassOfDef is actually not registered - so registration from Hierarchy should be used
+        // SubclassOfSubclassOfDef is actually not registered - so registration from Hierarchy
+        // should be used
         OtherSubclassOfDef otherSubclassOfDef = new OtherSubclassOfDef();
 
         SuperclassOfImpl yetAnotherImpl = factoryBase.create(otherSubclassOfDef);
         assertNotNull(yetAnotherImpl);
+
+        // WHEN
+        Object nonMappedDef = factoryBase.create(new OnlyDef());
+
+        // THEN
+        assertNull(nonMappedDef);
     }
 }

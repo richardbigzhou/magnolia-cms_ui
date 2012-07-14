@@ -31,36 +31,21 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages;
-
-import com.vaadin.ui.Component;
-import com.vaadin.ui.ComponentContainer;
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
-
+package info.magnolia.ui.model.action;
 
 /**
- * View implementation for the Pages app.
+ * Interface for an action factory.
+ * 
+ * @param <D> the action definition type
+ * @param <I> the action implementation type
  */
-@SuppressWarnings("serial")
-public class PagesMainViewImpl implements PagesMainView, IsVaadinComponent {
+public interface ActionFactory<D extends ActionDefinition, I extends Action> {
 
-    private ComponentContainer view;
-    private Listener listener;
-
-
-    @Override
-    public Component asVaadinComponent() {
-        return view;
-    }
-
-    @Override
-    public void setListener(Listener listener) {
-        this.listener = listener;
-    }
-
-    @Override
-    public void initView(ComponentContainer workbenchView) {
-        this.view = workbenchView;
-    }
+    /**
+     * Creates an action using the implementation configured for the given action definition. The
+     * parameters are made available for injection when the instance is created. The definition
+     * object given is also available for injection.
+     */
+    I createAction(D definition, Object... parameters);
 
 }

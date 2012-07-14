@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,47 +31,36 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.definition;
+package info.magnolia.ui.app.pages.main;
 
-import info.magnolia.ui.model.action.ActionDefinition;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.ComponentContainer;
 
 
 /**
- * Simple implementation of {@link MenuItemDefinition}.
+ * View implementation for the Pages app.
  */
-public class ConfiguredMenuItemDefinition extends ConfiguredUiItemDefinition implements MenuItemDefinition {
+@SuppressWarnings("serial")
+public class PagesMainViewImpl implements PagesMainView {
 
-    private String icon;
+    private ComponentContainer view;
+    private Listener listener;
 
-    private String description;
-
-    private ActionDefinition actionDefinition;
 
     @Override
-    public String getIcon() {
-        return icon;
-    }
-
-    public void setIcon(String icon) {
-        this.icon = icon;
+    public Component asVaadinComponent() {
+        return view;
     }
 
     @Override
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    public void setWorkBench(ComponentContainer workBench) {
+    this.view = workBench;
     }
 
     @Override
-    public ActionDefinition getActionDefinition() {
-        return actionDefinition;
+    public void setListener(Listener listener) {
+        this.listener = listener;
     }
 
-    public void setActionDefinition(ActionDefinition actionDefinition) {
-        this.actionDefinition = actionDefinition;
-    }
 
 }

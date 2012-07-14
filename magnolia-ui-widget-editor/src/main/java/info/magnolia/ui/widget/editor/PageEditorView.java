@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,23 +31,32 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages;
+package info.magnolia.ui.widget.editor;
 
-import com.vaadin.ui.ComponentContainer;
 import info.magnolia.ui.framework.view.View;
 
 /**
- * View for the Pages app.
+ *  PageEditorView.
  */
-public interface PagesMainView extends View {
+public interface PageEditorView extends View {
+
+    void setListener(Listener listener);
+
+    void init(String contextPath, String nodePath);
 
     /**
      * Listener.
-     *
      */
     public interface Listener {
-    }
 
-    void setListener(Listener listener);
-    void initView(ComponentContainer workbenchView);
+        void editComponent(String workSpace, String path, String dialog);
+
+        void deleteComponent(String workSpace, String path);
+
+        void newComponent(String workSpace, String nodeType, String path);
+
+        void selectComponent(String path);
+
+        void sortComponent();
+    }
 }

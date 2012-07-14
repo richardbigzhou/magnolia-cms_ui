@@ -2,7 +2,7 @@
  * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
- *
+ * 
  * This file is dual-licensed under both the Magnolia
  * Network Agreement and the GNU General Public License.
  * You may elect to use one or the other of these licenses.
@@ -32,6 +32,7 @@
  *
  */
 package info.magnolia.ui.app.pages.field;
+
 
 import info.magnolia.ui.model.dialog.definition.SelectFieldDefinition;
 

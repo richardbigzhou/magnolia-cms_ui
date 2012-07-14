@@ -107,7 +107,6 @@ public class DialogBuilderTest {
         final Dialog dialog = new Dialog();
         final ConfiguredTabDefinition tabDef = new ConfiguredTabDefinition();
         final ConfiguredFieldDefinition fieldDef = new ConfiguredFieldDefinition();
-
         fieldDef.setName(propertyName);
         tabDef.addField(fieldDef);
         dialogDef.addTab(tabDef);

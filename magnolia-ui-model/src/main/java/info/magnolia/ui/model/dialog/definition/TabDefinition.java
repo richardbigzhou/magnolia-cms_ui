@@ -33,20 +33,20 @@
  */
 package info.magnolia.ui.model.dialog.definition;
 
-import info.magnolia.ui.model.definition.UiItemDefinition;
-
 import java.util.List;
 
 
 /**
  * TabDefinition.
- *
+ * 
  */
-public interface TabDefinition extends UiItemDefinition {
+public interface TabDefinition {
 
-    boolean addField(FieldDefinition fieldDefinition);
+    String getName();
 
-    void setFields(List<FieldDefinition> fields);
+    String getLabel();
+
+    String getI18nBasename();
 
     List<FieldDefinition> getFields();
 

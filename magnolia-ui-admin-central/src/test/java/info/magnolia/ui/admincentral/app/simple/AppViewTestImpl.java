@@ -35,12 +35,10 @@ package info.magnolia.ui.admincentral.app.simple;
 
 import com.vaadin.ui.Component;
 
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
-
 /**
  * Stupid PagesView Test class.
  */
-public class AppViewTestImpl implements AppTestView, IsVaadinComponent {
+public class AppViewTestImpl implements AppTestView {
 
     public AppViewTestImpl() {
     }

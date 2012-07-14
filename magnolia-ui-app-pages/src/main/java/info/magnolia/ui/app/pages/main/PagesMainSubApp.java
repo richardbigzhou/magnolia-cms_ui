@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages;
+package info.magnolia.ui.app.pages.main;
 
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchSubApp;
 import info.magnolia.ui.framework.app.SubApp;
@@ -45,25 +45,24 @@ import javax.inject.Inject;
 public class PagesMainSubApp implements SubApp, PagesMainView.Listener {
 
     private PagesMainView view;
-    private final static String WORKBENCH_NAME = "website";
+    private final static String CAPTION = "Pages";
+    private ContentWorkbenchSubApp workbench;
 
     @Inject
     public PagesMainSubApp(PagesMainView view, ContentWorkbenchSubApp workbench) {
         this.view = view;
         this.view.setListener(this);
-
-        workbench.initWorkbench(WORKBENCH_NAME);
-        this.view.initView(workbench.asVaadinComponent());
-
+        this.workbench = workbench;
     }
 
     @Override
     public String getCaption() {
-        return "Pages";
+        return CAPTION;
     }
 
     @Override
     public View start() {
+        view.setWorkBench(workbench.asView());
         return view;
     }
 }

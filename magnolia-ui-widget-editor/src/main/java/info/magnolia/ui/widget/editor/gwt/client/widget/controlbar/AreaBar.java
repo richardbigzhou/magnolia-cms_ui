@@ -37,9 +37,13 @@ package info.magnolia.ui.widget.editor.gwt.client.widget.controlbar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.PushButton;
 import info.magnolia.rendering.template.AreaDefinition;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
+import info.magnolia.ui.widget.editor.gwt.client.event.DeleteComponentEvent;
+import info.magnolia.ui.widget.editor.gwt.client.event.EditComponentEvent;
+import info.magnolia.ui.widget.editor.gwt.client.event.NewComponentEvent;
 import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 
 import java.util.Map;
@@ -61,9 +65,10 @@ public class AreaBar extends AbstractBar {
     private boolean optional;
     private boolean created;
     private boolean editable = true;
+    private static final String NODE_TYPE = "mgnl:area";
 
-    public AreaBar(Model model, MgnlElement mgnlElement) throws IllegalArgumentException {
-        super(model, mgnlElement);
+    public AreaBar(Model model, EventBus eventBus, MgnlElement mgnlElement) throws IllegalArgumentException {
+        super(model, eventBus, mgnlElement);
 
 
         checkMandatories(mgnlElement.getAttributes());
@@ -88,7 +93,7 @@ public class AreaBar extends AbstractBar {
                 editButton.addClickHandler(new ClickHandler() {
                     @Override
                     public void onClick(ClickEvent event) {
-                        getListener().onEditComponent(dialog, workspace, path);
+                        getEventBus().fireEvent(new EditComponentEvent(dialog, workspace, path));
                     }
                 });
                 editButton.setTitle(getI18nMessage("buttons.area.edit.js"));
@@ -103,7 +108,7 @@ public class AreaBar extends AbstractBar {
                 removeButton.addClickHandler(new ClickHandler() {
                     @Override
                     public void onClick(ClickEvent event) {
-                        getListener().onDeleteComponent(path);
+                        getEventBus().fireEvent(new DeleteComponentEvent(workspace, path));
                     }
                 });
                 removeButton.setTitle(getI18nMessage("buttons.area.delete.js"));
@@ -118,7 +123,7 @@ public class AreaBar extends AbstractBar {
                 createbutton.addClickHandler(new ClickHandler() {
                     @Override
                     public void onClick(ClickEvent event) {
-                        getListener().onNewComponent(workspace, path, "mgnl:area");
+                        getEventBus().fireEvent(new NewComponentEvent(workspace, NODE_TYPE, path));
                     }
                 });
                 createbutton.setTitle(getI18nMessage("buttons.area.add.js"));

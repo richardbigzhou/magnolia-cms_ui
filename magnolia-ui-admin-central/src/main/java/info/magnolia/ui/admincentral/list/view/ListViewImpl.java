@@ -47,7 +47,6 @@ import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.event.ItemClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Table;
 
@@ -63,12 +62,9 @@ public class ListViewImpl implements ListView {
 
     private final JcrContainer container;
 
-    private final TreeModel treeModel;
-
     private static final Logger log = LoggerFactory.getLogger(ListViewImpl.class);
 
     public ListViewImpl(WorkbenchDefinition workbenchDefinition, TreeModel treeModel){
-        this.treeModel = treeModel;
         table = new Table();
         table.setSizeFull();
         table.addStyleName("striped");
@@ -81,21 +77,11 @@ public class ListViewImpl implements ListView {
 
         //Important do not set page length and cache ratio on the Table, rather set them by using JcrContainer corresponding methods. Setting
         //those value explicitly on the Table will cause the same jcr query to be repeated twice thus degrading performance greatly.
-        //TODO investigate cause for this behavior.
-        //table.setPageLength(200); recipe for slowness, don't do this!
-
-        table.addListener(new ItemClickEvent.ItemClickListener() {
-
-            @Override
-            public void itemClick(ItemClickEvent event) {
-                presenterOnItemSelection((String) event.getItemId());
-            }
-        });
         table.addListener(new Table.ValueChangeListener() {
 
             @Override
             public void valueChange(ValueChangeEvent event) {
-                log.debug("Handle value change Event: "+event.getProperty().getValue());
+                log.debug("Handle value change Event: " + event.getProperty().getValue());
                 presenterOnItemSelection((String) event.getProperty().getValue());
             }
         });

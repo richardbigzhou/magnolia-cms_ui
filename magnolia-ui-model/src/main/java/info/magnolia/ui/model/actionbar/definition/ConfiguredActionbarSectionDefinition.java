@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.model.actionbar.definition;
 
-import info.magnolia.ui.model.definition.ConfiguredUiItemDefinition;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -43,9 +41,42 @@ import java.util.List;
 /**
  * Simple implementation for {@link ActionbarSectionDefinition}.
  */
-public class ConfiguredActionbarSectionDefinition extends ConfiguredUiItemDefinition implements ActionbarSectionDefinition {
+public class ConfiguredActionbarSectionDefinition implements ActionbarSectionDefinition {
+
+    private String name;
+
+    private String label;
+
+    private String i18nBasename;
 
     private final List<ActionbarGroupDefinition> groups = new ArrayList<ActionbarGroupDefinition>();
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    @Override
+    public String getI18nBasename() {
+        return i18nBasename;
+    }
+
+    public void setI18nBasename(String i18nBasename) {
+        this.i18nBasename = i18nBasename;
+    }
 
     @Override
     public List<ActionbarGroupDefinition> getGroups() {

@@ -31,12 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages;
-
-import info.magnolia.module.DefaultModuleVersionHandler;
+package info.magnolia.ui.model.column.definition;
 
 /**
- * Version handler for Dummy app module.
+ * Interface for a column definition.
  */
-public class PagesAppModuleVersionHandler extends DefaultModuleVersionHandler {
+public interface ColumnDefinition {
+
+    String getName();
+
+    String getPropertyName();
+
+    String getLabel();
+
+    int getWidth();
+
+    boolean isSortable();
 }

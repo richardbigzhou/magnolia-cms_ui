@@ -1,7 +1,7 @@
 /**
  * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
- *
+ * 
  *
  * This file is dual-licensed under both the Magnolia
  * Network Agreement and the GNU General Public License.
@@ -33,13 +33,6 @@
  */
 package info.magnolia.ui.app.pages.field;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.jcr.Node;
-
-import com.vaadin.data.Item;
 
 import info.magnolia.objectfactory.Components;
 import info.magnolia.rendering.template.TemplateDefinition;
@@ -48,6 +41,14 @@ import info.magnolia.ui.admincentral.field.DialogSelectField;
 import info.magnolia.ui.model.dialog.definition.FieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.jcr.Node;
+
+import com.vaadin.data.Item;
 
 /**
  * Define a Template selector field.

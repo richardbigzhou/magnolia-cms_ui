@@ -12,20 +12,24 @@
     <components>
         <id>app-pages</id>
         <component>
-            <type>info.magnolia.ui.app.pages.PagesMainSubApp</type>
-            <implementation>info.magnolia.ui.app.pages.PagesMainSubApp</implementation>
+            <type>info.magnolia.ui.app.pages.main.PagesMainSubApp</type>
+            <implementation>info.magnolia.ui.app.pages.main.PagesMainSubApp</implementation>
         </component>
         <component>
-            <type>info.magnolia.ui.app.pages.PagesMainView</type>
-            <implementation>info.magnolia.ui.app.pages.PagesMainViewImpl</implementation>
+            <type>info.magnolia.ui.app.pages.main.PagesMainView</type>
+            <implementation>info.magnolia.ui.app.pages.main.PagesMainViewImpl</implementation>
         </component>
         <component>
-            <type>info.magnolia.ui.app.pages.PageEditorSubApp</type>
-            <implementation>info.magnolia.ui.app.pages.PageEditorSubApp</implementation>
+            <type>info.magnolia.ui.app.pages.editor.PagesEditorSubApp</type>
+            <implementation>info.magnolia.ui.app.pages.editor.PagesEditorSubApp</implementation>
         </component>
         <component>
-            <type>info.magnolia.ui.app.pages.PageEditorView</type>
-            <implementation>info.magnolia.ui.app.pages.PageEditorViewImpl</implementation>
+            <type>info.magnolia.ui.app.pages.editor.PagesEditorView</type>
+            <implementation>info.magnolia.ui.app.pages.editor.PagesEditorViewImpl</implementation>
+        </component>
+        <component>
+            <type>info.magnolia.ui.widget.editor.PageEditorView</type>
+            <implementation>info.magnolia.ui.widget.editor.PageEditor</implementation>
         </component>
         <component>
             <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchView</type>

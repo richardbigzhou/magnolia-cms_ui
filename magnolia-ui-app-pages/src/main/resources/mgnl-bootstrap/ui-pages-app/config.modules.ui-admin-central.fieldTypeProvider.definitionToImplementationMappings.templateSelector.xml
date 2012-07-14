@@ -10,10 +10,10 @@
     <sv:value>54a8395a-008d-4667-be06-6f089586f34f</sv:value>
   </sv:property>
   <sv:property sv:name="definition" sv:type="String">
-    <sv:value>info.magnolia.ui.model.field.definition.TemplateSelectorTypeDefinition</sv:value>
+    <sv:value>info.magnolia.ui.app.pages.field.TemplateSelectorDefinition</sv:value>
   </sv:property>
   <sv:property sv:name="implementation" sv:type="String">
-    <sv:value>info.magnolia.ui.app.pages.field.TemplateSelectorType</sv:value>
+    <sv:value>info.magnolia.ui.app.pages.field.TemplateSelectorField</sv:value>
   </sv:property>
   <sv:property sv:name="jcr:createdBy" sv:type="String">
     <sv:value>admin</sv:value>

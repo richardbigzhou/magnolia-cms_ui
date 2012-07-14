@@ -31,21 +31,32 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.actionbar;
+package info.magnolia.ui.app.pages.editor;
 
-import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
+import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.widget.actionbar.ActionbarView;
+import info.magnolia.ui.widget.editor.PageEditorView;
 
 
 /**
- * Base interface for an action bar view.
+ * PagesEditorView.
  */
-public interface ActionbarView {
+public interface PagesEditorView extends View {
+
+    void setListener(Listener listener);
+
+    void setPageEditor(PageEditorView pageEditor);
 
     /**
-     * Inits the actionbar view.
-     * 
-     * @param definition the actionbar definition
+     * Use this method to add an action bar to this sub app view.
      */
-    void initActionbar(ActionbarDefinition definition);
+    void addActionbarView(final ActionbarView actionbar);
 
+    /**
+     * Listener.
+     */
+    public interface Listener {
+
+        void setParameters(PageEditorParameters parameters);
+    }
 }
