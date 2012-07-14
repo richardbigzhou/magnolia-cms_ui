@@ -1,7 +1,7 @@
 /**
  * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
- * 
+ *
  *
  * This file is dual-licensed under both the Magnolia
  * Network Agreement and the GNU General Public License.
