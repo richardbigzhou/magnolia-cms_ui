@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.model.dialog.definition;
 
-
 import java.util.List;
+
 
 /**
  * FieldDefinition.
