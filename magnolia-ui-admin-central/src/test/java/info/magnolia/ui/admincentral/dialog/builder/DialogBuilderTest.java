@@ -56,7 +56,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-
+/**
+ * Main test for {@link DialogBuilder}.
+ */
 public class DialogBuilderTest {
 
     private final String worksapceName = "workspace";
