@@ -52,7 +52,6 @@ public class DateFieldDefinition extends ConfiguredFieldDefinition {
         this.time = time;
     }
 
-
     public String getDateFormat() {
         return dateFormat;
     }
