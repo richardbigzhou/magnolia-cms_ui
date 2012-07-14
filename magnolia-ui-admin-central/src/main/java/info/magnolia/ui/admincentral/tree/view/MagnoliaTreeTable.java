@@ -209,7 +209,8 @@ public class MagnoliaTreeTable extends HybridSelectionTreeTable {
 
     }
 
-
+    //FIXME This is not the correct way to handle Typed column.
+    // Ticket: SCRUM-1360
     @Override
     protected String formatPropertyValue(Object rowId, Object colId, Property property) {
         Object v = property.getValue();
