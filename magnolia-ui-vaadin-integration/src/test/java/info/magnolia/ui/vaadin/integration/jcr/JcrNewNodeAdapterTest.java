@@ -49,10 +49,8 @@ import info.magnolia.test.mock.jcr.MockSession;
 
 public class JcrNewNodeAdapterTest {
 
-
     private String worksapceName = "workspace";
     private MockSession session;
-
 
     @Before
     public void setUp() {

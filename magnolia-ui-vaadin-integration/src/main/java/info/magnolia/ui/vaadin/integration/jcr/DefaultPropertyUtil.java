@@ -51,8 +51,6 @@ public class DefaultPropertyUtil {
 
     private static final Logger log = LoggerFactory.getLogger(DefaultPropertyUtil.class);
 
-
-
     /**
      * Create a new DefaultProperty.
      * If fieldType is define, create a Typed Value.
