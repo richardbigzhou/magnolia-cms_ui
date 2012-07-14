@@ -39,12 +39,10 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
-
 /**
  * View implementation of an editor tab in sample app.
  */
-public class SampleEditorViewImpl implements SampleEditorView, IsVaadinComponent {
+public class SampleEditorViewImpl implements SampleEditorView {
 
     private Listener listener;
     private String name;

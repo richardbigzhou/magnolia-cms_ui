@@ -49,7 +49,6 @@ import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 import javax.inject.Inject;
 import javax.jcr.LoginException;
@@ -59,8 +58,6 @@ import javax.jcr.Session;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.vaadin.ui.ComponentContainer;
 
 
 /**
@@ -77,11 +74,8 @@ import com.vaadin.ui.ComponentContainer;
  * <p>
  * Its main configuration point is the {@link WorkbenchDefinition} through which one defines the JCR
  * workspace to connect to, the columns/properties to display, the available actions and so on.
- * 
- * TODO dlipp - IsVaadinComponent will got with SCRUM-1350. Re-added it for now because it's
- * required by other apps (that will be adapted with SCRUM-1350) as well.
  */
-public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.Listener, IsVaadinComponent {
+public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.Listener {
 
     private static final Logger log = LoggerFactory.getLogger(ContentWorkbenchSubApp.class);
 
@@ -170,11 +164,6 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
     }
 
     public ContentWorkbenchView asView() {
-        return view;
-    }
-
-    @Override
-    public ComponentContainer asVaadinComponent() {
         return view;
     }
 }

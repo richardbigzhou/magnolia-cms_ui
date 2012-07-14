@@ -141,4 +141,9 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
     public void addActionbarView(final ActionbarView actionbar) {
         root.addComponent((Component) actionbar);
     }
+    
+    @Override
+    public Component asVaadinComponent() {
+        return this;
+    }
 }

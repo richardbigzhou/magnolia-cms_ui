@@ -35,7 +35,7 @@ package info.magnolia.ui.widget.dialog;
 
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
+import info.magnolia.ui.framework.view.View;
 
 import java.util.List;
 
@@ -46,7 +46,7 @@ import com.vaadin.ui.Field;
 /**
  * DialogView.
  */
-public interface DialogView extends IsVaadinComponent {
+public interface DialogView extends View {
 
     /**
      * DialogView.Presenter.

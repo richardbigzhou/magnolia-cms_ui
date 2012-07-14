@@ -100,11 +100,11 @@
 <!--       <groupId>org.vaadin.addons</groupId> -->
 <!--       <artifactId>widget-rpc</artifactId> -->
 <!--     </dependency> -->
-<!--     <dependency> -->
-<!--       <groupId>info.magnolia.ui</groupId> -->
-<!--       <artifactId>magnolia-ui-widget-jquery-wrapper</artifactId> -->
-<!--       <version>${project.version}</version> -->
-<!--     </dependency> -->
+    <dependency>
+      <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-framework</artifactId>
+      <version>${project.version}</version>
+    </dependency>
     <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-user</artifactId>

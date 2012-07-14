@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,43 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral;
+package info.magnolia.ui.widget.editor.gwt.client.event;
 
-import javax.inject.Inject;
-
-import com.vaadin.ui.Component;
+import com.google.gwt.event.shared.EventHandler;
 
 /**
- * Implementation of MagnoliaShellView.
+ * DeleteComponentEventHandler.
  */
-@SuppressWarnings("serial")
-public class MagnoliaShellViewImpl implements MagnoliaShellView {
-
-    private Presenter presenter;
-
-    private MagnoliaShell shell;
-
-    @Inject
-    public MagnoliaShellViewImpl(MagnoliaShell shell) {
-        this.shell = shell;
-    }
-
-    @Override
-    public MagnoliaShell getRoot() {
-        return shell;
-    }
-
-    @Override
-    public void setPresenter(Presenter presenter) {
-        this.presenter = presenter;
-    }
-
-    public Presenter getPresenter() {
-        return presenter;
-    }
-
-    @Override
-    public Component asVaadinComponent() {
-        return getRoot();
-    }
+public interface DeleteComponentEventHandler extends EventHandler {
+    void onDeleteComponent(DeleteComponentEvent deleteComponentEvent);
 }

@@ -31,76 +31,57 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages;
+package info.magnolia.ui.app.pages.editor;
 
-import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
-import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
 import info.magnolia.ui.app.pages.action.PagesActionbarDefinitionProvider;
 import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.view.View;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.widget.dialog.DialogView;
 
 import javax.inject.Inject;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-
 
 /**
- * PageEditorSubApp.
+ * PagesEditorSubApp.
  */
-public class PageEditorSubApp implements SubApp, PageEditorView.Listener {
+public class PagesEditorSubApp implements SubApp, PagesEditorView.Listener {
 
-    private final PageEditorView view;
+    private PagesEditorView view;
 
-    private final DialogPresenterFactory dialogPresenterFactory;
-
+    private PageEditorPresenter pageEditorPresenter;
+    
+    private PageEditorParameters parameters;
+    
     private final ActionbarPresenter actionbarPresenter;
-
-    private final String pageNodePath;
+    
+    private String caption;
 
     @Inject
-    public PageEditorSubApp(PageEditorView view, DialogPresenterFactory dialogPresenterFactory, String pageNodePath, final ActionbarPresenter actionbarPresenter) {
+    public PagesEditorSubApp(PagesEditorView view, PageEditorPresenter pageEditorPresenter, ActionbarPresenter actionbarPresenter) {
         this.view = view;
-        this.dialogPresenterFactory = dialogPresenterFactory;
-        this.pageNodePath = pageNodePath;
+        this.pageEditorPresenter = pageEditorPresenter;
         this.actionbarPresenter = actionbarPresenter;
-
-        view.initPageEditor(pageNodePath);
-        this.actionbarPresenter.initActionbar(PagesActionbarDefinitionProvider.getPageEditorActionbarDefinition());
-        view.addActionbarView(actionbarPresenter.getView());
-    }
-
-    @Override
-    public void editComponent(String workSpace, String path, String dialog) {
-        DialogView.Presenter dialogPresenter = dialogPresenterFactory.createDialog(dialog);
-        Session session = null;
-        try {
-            session = MgnlContext.getJCRSession(workSpace);
-
-            if (path == null || !session.itemExists(path)) {
-                path = "/";
-            }
-            final Node node = session.getNode(path);
-            JcrNodeAdapter item = new JcrNodeAdapter(node);
-            dialogPresenter.editItem(item);
-        } catch (RepositoryException e) {
-            e.printStackTrace();
-        }
-
     }
 
     @Override
     public String getCaption() {
-        // String[] chunks = pageNodePath.split("/");
-        // return "Edit " + chunks[chunks.length - 1];
-        return "Edit Pages";
+        return caption;
+    }
+
+    @Override
+    public void setParameters(PageEditorParameters parameters) {
+        this.parameters = parameters;
+        this.caption = parameters.getNodePath();
     }
 
     @Override
     public View start() {
+        view.setListener(this);
+        pageEditorPresenter.setParameters(parameters);
+        view.setPageEditor(pageEditorPresenter.start());
+        
+        actionbarPresenter.initActionbar(PagesActionbarDefinitionProvider.getPageEditorActionbarDefinition());
+        view.addActionbarView(actionbarPresenter.getView());
+
         return view;
     }
 

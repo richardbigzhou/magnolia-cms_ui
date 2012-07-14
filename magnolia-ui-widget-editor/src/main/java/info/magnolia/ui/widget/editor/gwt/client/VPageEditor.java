@@ -58,6 +58,8 @@ import info.magnolia.ui.widget.editor.gwt.client.dom.processor.CommentProcessor;
 import info.magnolia.ui.widget.editor.gwt.client.dom.processor.ElementProcessor;
 import info.magnolia.ui.widget.editor.gwt.client.dom.processor.MgnlElementProcessor;
 import info.magnolia.ui.widget.editor.gwt.client.dom.processor.MgnlElementProcessorFactory;
+import info.magnolia.ui.widget.editor.gwt.client.event.DeleteComponentEvent;
+import info.magnolia.ui.widget.editor.gwt.client.event.DeleteComponentEventHandler;
 import info.magnolia.ui.widget.editor.gwt.client.event.EditComponentEvent;
 import info.magnolia.ui.widget.editor.gwt.client.event.EditComponentEventHandler;
 import info.magnolia.ui.widget.editor.gwt.client.event.NewComponentEvent;
@@ -116,14 +118,13 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
     }
 
     @Override
-    public void handleCallFromServer(String method, Object[] params) {
-        VConsole.error("Unhandled RPC call from server: " + method);
+    public boolean initWidget(Object[] objects) {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public boolean initWidget(Object[] params) {
-        //TODO this seems never to be called
-        return false;
+    public void handleCallFromServer(String method, Object[] params) {
+        VConsole.error("Unhandled RPC call from server: " + method);
     }
 
     @Override
@@ -177,7 +178,10 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
 
     public void onMouseUp(final Element element) {
         focusModel.onMouseUp(element);
-
+        MgnlElement selectedMgnlComponentElement = model.getSelectedMgnlComponentElement();
+        if (selectedMgnlComponentElement != null) {
+            proxy.call("onComponentSelect", selectedMgnlComponentElement.getAttribute("content"));
+        }
     }
 
     private native void initNativeHandlers(Element element) /*-{
@@ -202,6 +206,13 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
             @Override
             public void onEditComponent(EditComponentEvent editComponentEvent) {
                 proxy.call("editComponent", editComponentEvent.getWorkSpace(), editComponentEvent.getPath(), editComponentEvent.getDialog());
+            }
+        });
+
+        eventBus.addHandler(DeleteComponentEvent.TYPE, new DeleteComponentEventHandler() {
+            @Override
+            public void onDeleteComponent(DeleteComponentEvent deleteComponentEvent) {
+                proxy.call("deleteComponent", deleteComponentEvent.getWorkSpace(), deleteComponentEvent.getPath());
             }
         });
     }
@@ -338,7 +349,7 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
 
             for (MgnlElement mgnlElement : elements) {
                 try {
-                    MgnlElementProcessor processor = MgnlElementProcessorFactory.getProcessor(model, mgnlElement);
+                    MgnlElementProcessor processor = MgnlElementProcessorFactory.getProcessor(model, eventBus, mgnlElement);
                     processor.process();
                 } catch (IllegalArgumentException e) {
                     GWT.log("MgnlFactory could not instantiate class. The element is neither an area nor component.");

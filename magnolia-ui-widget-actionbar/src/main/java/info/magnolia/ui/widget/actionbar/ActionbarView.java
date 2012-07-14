@@ -33,13 +33,15 @@
  */
 package info.magnolia.ui.widget.actionbar;
 
+import info.magnolia.ui.framework.view.View;
+
 import com.vaadin.ui.Component;
 
 
 /**
  * Base interface for an action bar view.
  */
-public interface ActionbarView {
+public interface ActionbarView extends View {
 
     void addSection(String sectionName);
 

@@ -39,13 +39,11 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalSplitPanel;
 
 import info.magnolia.ui.framework.view.View;
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
-import info.magnolia.ui.vaadin.integration.view.VaadinComponentUtil;
 
 /**
  * View implementation of the main tab in sample app.
  */
-public class SampleMainViewImpl implements SampleMainView, IsVaadinComponent {
+public class SampleMainViewImpl implements SampleMainView {
 
     private Listener listener;
     private HorizontalSplitPanel layout;
@@ -68,11 +66,11 @@ public class SampleMainViewImpl implements SampleMainView, IsVaadinComponent {
 
     @Override
     public void setRightView(View right) {
-        layout.setSecondComponent(VaadinComponentUtil.toVaadinComponent(right));
+        layout.setSecondComponent(right.asVaadinComponent());
     }
 
     @Override
     public void setLeftView(View left) {
-        layout.setFirstComponent(VaadinComponentUtil.toVaadinComponent(left));
+        layout.setFirstComponent(left.asVaadinComponent());
     }
 }

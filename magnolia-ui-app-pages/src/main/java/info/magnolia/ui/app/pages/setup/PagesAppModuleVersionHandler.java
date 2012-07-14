@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,35 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages;
+package info.magnolia.ui.app.pages.setup;
 
-import info.magnolia.ui.admincentral.workbench.ContentWorkbenchSubApp;
-import info.magnolia.ui.framework.app.SubApp;
-import info.magnolia.ui.framework.view.View;
-
-import javax.inject.Inject;
+import info.magnolia.module.DefaultModuleVersionHandler;
 
 /**
- * PagesMainSubApp.
+ * Version handler for Dummy app module.
  */
-public class PagesMainSubApp implements SubApp, PagesMainView.Listener {
-
-    private PagesMainView view;
-
-    @Inject
-    public PagesMainSubApp(PagesMainView view, ContentWorkbenchSubApp workbench) {
-        this.view = view;
-        this.view.setListener(this);
-        this.view.initView(workbench.asVaadinComponent());
-    }
-
-    @Override
-    public String getCaption() {
-        return "Pages";
-    }
-
-    @Override
-    public View start() {
-        return view;
-    }
+public class PagesAppModuleVersionHandler extends DefaultModuleVersionHandler {
 }

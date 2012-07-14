@@ -49,7 +49,7 @@ import com.vaadin.ui.TreeTable;
  * Vaadin UI component that displays a tree.
  *
  */
-public class TreeViewImpl implements TreeView{
+public class TreeViewImpl implements TreeView {
 
     private MagnoliaTreeTable jcrBrowser;
 

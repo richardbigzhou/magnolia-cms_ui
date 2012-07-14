@@ -38,11 +38,10 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Float;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
-import info.magnolia.ui.widget.editor.gwt.client.VPageEditor;
-import info.magnolia.ui.widget.editor.gwt.client.VPageEditorView.Listener;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 import info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils;
 import info.magnolia.ui.widget.editor.gwt.client.model.Model;
@@ -59,11 +58,12 @@ public abstract class AbstractBar extends FlowPanel {
     private FlowPanel primaryButtons;
     private FlowPanel secondaryButtons;
 
-    private final Listener listener = VPageEditor.getView().getListener();
     private Model model;
+    private EventBus eventBus;
 
-    public AbstractBar(Model model, MgnlElement mgnlElement) {
+    public AbstractBar(Model model, EventBus eventBus, MgnlElement mgnlElement) {
         this.model = model;
+        this.eventBus = eventBus;
 
         this.setMgnlElement(mgnlElement);
 
@@ -149,10 +149,6 @@ public abstract class AbstractBar extends FlowPanel {
         return getElement().getStyle();
     }
 
-    public Listener getListener() {
-        return listener;
-    }
-
     /**
      *  TODO: we should not have to call onAttach ourself?
      */
@@ -215,5 +211,9 @@ public abstract class AbstractBar extends FlowPanel {
 
     public Model getModel() {
         return model;
+    }
+
+    public EventBus getEventBus() {
+        return eventBus;
     }
 }

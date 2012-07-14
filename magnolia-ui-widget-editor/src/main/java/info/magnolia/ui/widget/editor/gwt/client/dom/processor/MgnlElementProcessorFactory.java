@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.widget.editor.gwt.client.dom.processor;
 
+import com.google.gwt.event.shared.EventBus;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 
@@ -41,14 +42,14 @@ import info.magnolia.ui.widget.editor.gwt.client.model.Model;
  */
 public class MgnlElementProcessorFactory {
 
-    public static MgnlElementProcessor getProcessor(Model model, MgnlElement mgnlElement) throws IllegalArgumentException {
+    public static MgnlElementProcessor getProcessor(Model model, EventBus eventBus, MgnlElement mgnlElement) throws IllegalArgumentException {
         MgnlElementProcessor processor;
 
         if (mgnlElement.isArea()) {
-            processor = new AreaProcessor(model, mgnlElement);
+            processor = new AreaProcessor(model, eventBus, mgnlElement);
         }
         else if (mgnlElement.isComponent()) {
-            processor = new ComponentProcessor(model, mgnlElement);
+            processor = new ComponentProcessor(model, eventBus, mgnlElement);
         }
         else {
             throw new IllegalArgumentException("mgnlElement is not a Area nor Component");

@@ -31,18 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages;
+package info.magnolia.ui.app.pages.main;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 
 /**
  * View implementation for the Pages app.
  */
 @SuppressWarnings("serial")
-public class PagesMainViewImpl implements PagesMainView, IsVaadinComponent {
+public class PagesMainViewImpl implements PagesMainView {
 
     private ComponentContainer view;
     private Listener listener;
@@ -54,13 +53,14 @@ public class PagesMainViewImpl implements PagesMainView, IsVaadinComponent {
     }
 
     @Override
+    public void setWorkBench(ComponentContainer workBench) {
+    this.view = workBench;
+    }
+
+    @Override
     public void setListener(Listener listener) {
         this.listener = listener;
     }
 
-    @Override
-    public void initView(ComponentContainer workbenchView) {
-        this.view = workbenchView;
-    }
 
 }

@@ -40,12 +40,10 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
-
 /**
  * View implementation for the content display.
  */
-public class ContentDisplayViewImpl implements ContentDisplayView, IsVaadinComponent {
+public class ContentDisplayViewImpl implements ContentDisplayView {
 
     private ContentDisplayView.Listener listener;
     private VerticalLayout layout;

@@ -288,4 +288,14 @@
       </params>
     </servlet>
   </servlets>
+
+  <repositories>
+    <repository>
+      <name>magnolia</name>
+      <workspaces>
+        <workspace>messages</workspace>
+      </workspaces>
+      <nodeTypeFile>/mgnl-nodetypes/magnolia-message-nodetypes.xml</nodeTypeFile>
+    </repository>
+  </repositories>
 </module>

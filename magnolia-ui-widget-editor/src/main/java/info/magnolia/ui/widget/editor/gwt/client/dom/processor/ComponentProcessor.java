@@ -34,6 +34,7 @@
 package info.magnolia.ui.widget.editor.gwt.client.dom.processor;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.shared.EventBus;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.ComponentBar;
@@ -43,15 +44,15 @@ import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.ComponentBar;
  */
 public class ComponentProcessor extends MgnlElementProcessor {
 
-    public ComponentProcessor(Model model, MgnlElement mgnlElement) {
-        super(model, mgnlElement);
+    public ComponentProcessor(Model model, EventBus eventBus, MgnlElement mgnlElement) {
+        super(model, eventBus, mgnlElement);
     }
 
     @Override
     public void process() {
         GWT.log("element is edit bar placeholder. Injecting it...");
         try {
-            ComponentBar editBarWidget = new ComponentBar(getModel(), getMgnlElement());
+            ComponentBar editBarWidget = new ComponentBar(getModel(), getEventBus(), getMgnlElement());
         }
         catch(IllegalArgumentException e) {
             GWT.log("This component is inherited. Skipping..");

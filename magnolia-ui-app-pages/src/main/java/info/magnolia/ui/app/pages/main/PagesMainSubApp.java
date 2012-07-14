@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,43 +31,38 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral;
+package info.magnolia.ui.app.pages.main;
+
+import info.magnolia.ui.admincentral.workbench.ContentWorkbenchSubApp;
+import info.magnolia.ui.framework.app.SubApp;
+import info.magnolia.ui.framework.view.View;
 
 import javax.inject.Inject;
 
-import com.vaadin.ui.Component;
-
 /**
- * Implementation of MagnoliaShellView.
+ * PagesMainSubApp.
  */
-@SuppressWarnings("serial")
-public class MagnoliaShellViewImpl implements MagnoliaShellView {
+public class PagesMainSubApp implements SubApp, PagesMainView.Listener {
 
-    private Presenter presenter;
-
-    private MagnoliaShell shell;
+    private PagesMainView view;
+    private final static String CAPTION = "Pages";
+    private ContentWorkbenchSubApp workbench;
 
     @Inject
-    public MagnoliaShellViewImpl(MagnoliaShell shell) {
-        this.shell = shell;
+    public PagesMainSubApp(PagesMainView view, ContentWorkbenchSubApp workbench) {
+        this.view = view;
+        this.view.setListener(this);
+        this.workbench = workbench;
     }
 
     @Override
-    public MagnoliaShell getRoot() {
-        return shell;
+    public String getCaption() {
+        return CAPTION;
     }
 
     @Override
-    public void setPresenter(Presenter presenter) {
-        this.presenter = presenter;
-    }
-
-    public Presenter getPresenter() {
-        return presenter;
-    }
-
-    @Override
-    public Component asVaadinComponent() {
-        return getRoot();
+    public View start() {
+        view.setWorkBench(workbench.asView());
+        return view;
     }
 }

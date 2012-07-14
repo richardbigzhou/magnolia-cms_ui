@@ -170,4 +170,9 @@ public class Actionbar extends AbstractComponentContainer implements ActionbarVi
     public void hideSection(String sectionName) {
     }
 
+    @Override
+    public Component asVaadinComponent() {
+        return this;
+    }
+
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,32 +31,41 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages;
+package info.magnolia.ui.widget.editor.gwt.client.event;
 
-import info.magnolia.ui.framework.view.View;
-import info.magnolia.ui.widget.actionbar.ActionbarView;
-
+import com.google.gwt.event.shared.GwtEvent;
+import com.google.web.bindery.event.shared.Event;
 
 /**
- * PageEditorView.
- * 
+ * DeleteComponentEvent.
  */
-public interface PageEditorView extends View {
+public class DeleteComponentEvent extends Event<DeleteComponentEventHandler> {
 
-    void setListener(Listener listener);
+    public static GwtEvent.Type<DeleteComponentEventHandler> TYPE = new GwtEvent.Type<DeleteComponentEventHandler>();
 
-    void initPageEditor(String nodePath);
+    private String workSpace;
+    private String path;
 
-    /**
-     * Use this method to add an action bar to this sub app view.
-     */
-    void addActionbarView(final ActionbarView actionbar);
+    public DeleteComponentEvent(String workSpace, String path) {
+        this.workSpace = workSpace;
+        this.path = path;
+    }
 
-    /**
-     * Listener.
-     */
-    public interface Listener {
+    @Override
+    public GwtEvent.Type<DeleteComponentEventHandler> getAssociatedType() {
+        return TYPE;
+    }
 
-        void editComponent(String workSpace, String path, String dialog);
+    @Override
+    protected void dispatch(DeleteComponentEventHandler handler) {
+        handler.onDeleteComponent(this);
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public String getWorkSpace() {
+        return workSpace;
     }
 }

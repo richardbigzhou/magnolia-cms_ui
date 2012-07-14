@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,43 +31,26 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral;
-
-import javax.inject.Inject;
-
-import com.vaadin.ui.Component;
+package info.magnolia.ui.app.pages.editor;
 
 /**
- * Implementation of MagnoliaShellView.
+ * PageEditorParameters.
  */
-@SuppressWarnings("serial")
-public class MagnoliaShellViewImpl implements MagnoliaShellView {
+public class PageEditorParameters {
 
-    private Presenter presenter;
+    private String contextPath;
+    private String nodePath;
 
-    private MagnoliaShell shell;
-
-    @Inject
-    public MagnoliaShellViewImpl(MagnoliaShell shell) {
-        this.shell = shell;
+    public PageEditorParameters(String contextPath, String nodePath) {
+        this.contextPath = contextPath;
+        this.nodePath = nodePath;
     }
 
-    @Override
-    public MagnoliaShell getRoot() {
-        return shell;
+    public String getContextPath() {
+        return contextPath;
     }
 
-    @Override
-    public void setPresenter(Presenter presenter) {
-        this.presenter = presenter;
-    }
-
-    public Presenter getPresenter() {
-        return presenter;
-    }
-
-    @Override
-    public Component asVaadinComponent() {
-        return getRoot();
+    public String getNodePath() {
+        return nodePath;
     }
 }

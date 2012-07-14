@@ -31,12 +31,32 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages;
+package info.magnolia.ui.app.pages.editor;
 
-import info.magnolia.module.DefaultModuleVersionHandler;
+import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.widget.actionbar.ActionbarView;
+import info.magnolia.ui.widget.editor.PageEditorView;
+
 
 /**
- * Version handler for Dummy app module.
+ * PagesEditorView.
  */
-public class PagesAppModuleVersionHandler extends DefaultModuleVersionHandler {
+public interface PagesEditorView extends View {
+
+    void setListener(Listener listener);
+
+    void setPageEditor(PageEditorView pageEditor);
+
+    /**
+     * Use this method to add an action bar to this sub app view.
+     */
+    void addActionbarView(final ActionbarView actionbar);
+
+    /**
+     * Listener.
+     */
+    public interface Listener {
+
+        void setParameters(PageEditorParameters parameters);
+    }
 }

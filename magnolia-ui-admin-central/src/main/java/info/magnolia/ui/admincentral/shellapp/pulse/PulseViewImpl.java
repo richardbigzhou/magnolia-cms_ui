@@ -35,7 +35,6 @@ package info.magnolia.ui.admincentral.shellapp.pulse;
 
 import info.magnolia.ui.admincentral.components.ActivityItem;
 import info.magnolia.ui.admincentral.components.SplitFeed;
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 import info.magnolia.ui.widget.tabsheet.ShellTab;
 import info.magnolia.ui.widget.tabsheet.ShellTabSheet;
 
@@ -44,6 +43,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import com.vaadin.ui.ComponentContainer;
 import org.apache.commons.collections.BidiMap;
 import org.apache.commons.collections.bidimap.DualHashBidiMap;
 
@@ -55,7 +55,7 @@ import com.vaadin.ui.Panel;
  * Default view implementation for Pulse.
  */
 @SuppressWarnings("serial")
-public class PulseViewImpl implements PulseView, IsVaadinComponent {
+public class PulseViewImpl implements PulseView {
 
     private ShellTabSheet tabsheet = new ShellTabSheet() {
 
@@ -85,7 +85,7 @@ public class PulseViewImpl implements PulseView, IsVaadinComponent {
 
         this.messagesView = messagesView;
         final ShellTab stats = tabsheet.addTab("stats".toUpperCase(), createStatsLayout());
-        final ShellTab messages = tabsheet.addTab("messages".toUpperCase(), messagesView.asVaadinComponent());
+        final ShellTab messages = tabsheet.addTab("messages".toUpperCase(), (ComponentContainer) messagesView.asVaadinComponent());
         final ShellTab dashboard = tabsheet.addTab("dashboard".toUpperCase(), createPulseFeedLayout());
 
         tabsheet.addStyleName("v-pulse");

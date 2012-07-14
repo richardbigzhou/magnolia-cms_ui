@@ -40,7 +40,7 @@ public enum MessageType {
     UNKNOWN(""),
     ERROR("Error"), 
     WARNING("Warning"), 
-    INFO("Warning");
+    INFO("Info");
     
     private String caption;
     
