@@ -33,15 +33,19 @@
  */
 package info.magnolia.ui.model.actionbar.definition;
 
-import info.magnolia.ui.model.definition.UiItemDefinition;
-
 import java.util.List;
 
 
 /**
  * The definition for a section of the action bar, made of groups of actions.
  */
-public interface ActionbarSectionDefinition extends UiItemDefinition {
+public interface ActionbarSectionDefinition {
+
+    String getName();
+
+    String getLabel();
+
+    String getI18nBasename();
 
     /**
      * Gets the groups within this section.

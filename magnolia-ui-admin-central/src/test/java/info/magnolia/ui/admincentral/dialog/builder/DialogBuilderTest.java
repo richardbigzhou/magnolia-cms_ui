@@ -47,7 +47,6 @@ import info.magnolia.ui.model.dialog.definition.ConfiguredTabDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 import info.magnolia.ui.model.dialog.definition.EditFieldDefinition;
 import info.magnolia.ui.model.dialog.definition.FieldDefinition;
-import info.magnolia.ui.model.dialog.definition.TabDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.widget.dialog.Dialog;
 import info.magnolia.ui.widget.dialog.DialogView;
@@ -61,9 +60,9 @@ import org.junit.Test;
 
 public class DialogBuilderTest {
 
-    private String worksapceName = "workspace";
-    private MockSession session;
+    private final String worksapceName = "workspace";
 
+    private MockSession session;
 
     @Before
     public void setUp() {
@@ -77,7 +76,6 @@ public class DialogBuilderTest {
     public void tearDown() {
         MgnlContext.setInstance(null);
     }
-
 
     @Test
     public void testBuildingWithoutTabsAndActions() {
@@ -98,7 +96,7 @@ public class DialogBuilderTest {
         // GIVEN
         final String propertyName = "test";
         final DialogBuilder builder = new DialogBuilder();
-        final DialogDefinition dialogDef = new ConfiguredDialogDefinition();
+        final ConfiguredDialogDefinition dialogDef = new ConfiguredDialogDefinition();
         final EditFieldDefinition fieldTypeDef = new EditFieldDefinition();
         fieldTypeDef.setName(propertyName);
 
@@ -108,18 +106,16 @@ public class DialogBuilderTest {
         final JcrNodeAdapter item = new JcrNodeAdapter(underlyingNode);
 
         final Dialog dialog = new Dialog();
-        final TabDefinition tabDef = new ConfiguredTabDefinition();
-        final FieldDefinition fieldDef = new ConfiguredFieldDefinition();
+        final ConfiguredTabDefinition tabDef = new ConfiguredTabDefinition();
+        final ConfiguredFieldDefinition fieldDef = new ConfiguredFieldDefinition();
 
         fieldDef.setType(FieldDefinition.TEXT_FIELD_TYPE);
-        ((ConfiguredFieldDefinition) fieldDef).setName(propertyName);
+        fieldDef.setName(propertyName);
         tabDef.addField(fieldDef);
         dialogDef.addTab(tabDef);
 
-
-
         final FieldTypeProvider fieldTypeProvider = mock(FieldTypeProvider.class);
-        when(fieldTypeProvider.create(fieldDef,fieldDef,item)).thenReturn(new DialogEditField(fieldTypeDef,item));
+        when(fieldTypeProvider.create(fieldDef, fieldDef, item)).thenReturn(new DialogEditField(fieldTypeDef, item));
 
         // WHEN
         final DialogView result = builder.build(fieldTypeProvider, dialogDef, item, dialog);
@@ -127,7 +123,5 @@ public class DialogBuilderTest {
         // THEN
         assertEquals(result, dialog);
     }
-
-
 
 }

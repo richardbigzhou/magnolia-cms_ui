@@ -48,14 +48,6 @@
       <implementation>info.magnolia.ui.admincentral.app.content.ConfiguredContentAppDescriptor</implementation>
     </type-mapping>
     <type-mapping>
-      <type>info.magnolia.ui.model.definition.UiItemDefinition</type>
-      <implementation>info.magnolia.ui.model.definition.ConfiguredUiItemDefinition</implementation>
-    </type-mapping>
-    <type-mapping>
-      <type>info.magnolia.ui.model.definition.MenuItemDefinition</type>
-      <implementation>info.magnolia.ui.model.definition.ConfiguredMenuItemDefinition</implementation>
-    </type-mapping>
-    <type-mapping>
       <type>info.magnolia.ui.model.workbench.definition.WorkbenchDefinition</type>
       <implementation>info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition</implementation>
     </type-mapping>

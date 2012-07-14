@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.model.dialog.definition;
 
-import info.magnolia.ui.model.definition.UiItemDefinition;
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 
 import java.util.List;
@@ -42,25 +41,20 @@ import java.util.List;
 /**
  * DialogDefinition.
  */
-public interface DialogDefinition extends UiItemDefinition {
-
-    boolean addTab(TabDefinition tabDefinition);
-
-    void setTabs(List<TabDefinition> tabs);
-
-    List<TabDefinition> getTabs();
-
-    boolean addAction(DialogActionDefinition fieldDefinition);
-
-    void setActions(List<DialogActionDefinition> actions);
-
-    List<DialogActionDefinition> getActions();
-
-    void setId(String id);
+public interface DialogDefinition {
 
     String getId();
 
+    String getName();
+
+    String getLabel();
+
+    String getI18nBasename();
+
     String getDescription();
 
-    void setDescription(String description);
+    List<TabDefinition> getTabs();
+
+    List<DialogActionDefinition> getActions();
+
 }
