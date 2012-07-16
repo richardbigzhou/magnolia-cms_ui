@@ -33,20 +33,20 @@
  */
 package info.magnolia.ui.admincentral.workbench;
 
-import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
-import info.magnolia.ui.admincentral.actionbar.ActionbarView;
 import info.magnolia.ui.admincentral.jcr.view.ContentView;
 import info.magnolia.ui.admincentral.jcr.view.ContentView.ViewType;
 import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.widget.actionbar.ActionbarView;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.ComponentContainer;
+
 
 /**
  * Implementors of this interface are responsible for building a workbench and handling the UI
  * actions associated with it.
  */
-public interface ContentWorkbenchView extends ComponentContainer, View, ActionbarView {
+public interface ContentWorkbenchView extends ComponentContainer, View {
 
     void setListener(final Listener listener);
 
@@ -69,9 +69,14 @@ public interface ContentWorkbenchView extends ComponentContainer, View, Actionba
     void addContentView(final ViewType type, final ContentView view);
 
     /**
+     * Use this method to add an action bar to this sub app view.
+     */
+    void addActionbarView(final ActionbarView actionbar);
+
+    /**
      * TODO dlipp - ActionBarPresenter should be a proper type as well.
      */
-    public interface Listener extends ActionbarPresenter {
+    public interface Listener {
     }
 
 }

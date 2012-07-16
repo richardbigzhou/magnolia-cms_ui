@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,46 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.definition;
-
-
+package info.magnolia.ui.model.column.definition;
 
 /**
- * Simple implementation of {@link UiItemDefinition}.
+ * Interface for a column definition.
  */
-public class ConfiguredUiItemDefinition implements UiItemDefinition {
+public interface ColumnDefinition {
 
-    private String name;
+    String getName();
 
-    private String label;
+    String getPropertyName();
 
-    private String i18nBasename;
+    String getLabel();
 
-    @Override
-    public String getName() {
-        return name;
-    }
+    int getWidth();
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    @Override
-    public String getI18nBasename() {
-        return i18nBasename;
-    }
-
-    public void setI18nBasename(String i18nBasename) {
-        this.i18nBasename = i18nBasename;
-    }
-
+    boolean isSortable();
 }

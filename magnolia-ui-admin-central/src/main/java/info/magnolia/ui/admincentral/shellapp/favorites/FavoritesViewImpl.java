@@ -35,7 +35,6 @@ package info.magnolia.ui.admincentral.shellapp.favorites;
 
 import info.magnolia.ui.admincentral.components.SplitFeed;
 import info.magnolia.ui.admincentral.components.SplitFeed.FeedSection;
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
@@ -45,7 +44,7 @@ import com.vaadin.ui.Label;
  * Default view implementation for favorites.
  */
 @SuppressWarnings("serial")
-public class FavoritesViewImpl extends CustomComponent implements FavoritesView, IsVaadinComponent {
+public class FavoritesViewImpl extends CustomComponent implements FavoritesView {
 
     private SplitFeed splitPanel = new SplitFeed();
     

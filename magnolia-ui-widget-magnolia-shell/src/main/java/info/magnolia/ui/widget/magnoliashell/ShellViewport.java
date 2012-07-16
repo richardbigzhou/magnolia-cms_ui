@@ -35,7 +35,6 @@ package info.magnolia.ui.widget.magnoliashell;
 
 import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.framework.view.ViewPort;
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VShellViewport;
 
 import com.vaadin.ui.ClientWidget;
@@ -80,14 +79,10 @@ public class ShellViewport extends DeckLayout implements ViewPort {
     public void setView(final View view) {
         if (view != null){
             this.view = view;
-            if (view instanceof IsVaadinComponent) {
-                final Component c = ((IsVaadinComponent)view).asVaadinComponent();
-                if (c instanceof ComponentContainer) {
-                    display((ComponentContainer)c);
-                    parentShell.setActiveViewport(this);
-                }
-            } else {
-                throw new RuntimeException("The view passed can't be interpreted as Vaadin ComponentContainer!");   
+            final Component c = view.asVaadinComponent();
+            if (c instanceof ComponentContainer) {
+                display(c);
+                parentShell.setActiveViewport(this);
             }
         }
     }
@@ -99,7 +94,7 @@ public class ShellViewport extends DeckLayout implements ViewPort {
         ProgressIndicator pi = new ProgressIndicator();
         pi.setIndeterminate(true);
         panel.addComponent(pi);
-        display((ComponentContainer)panel);
+        display(panel);
         parentShell.setActiveViewport(this);
     }
 }

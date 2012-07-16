@@ -31,16 +31,32 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.view;
+package info.magnolia.ui.widget.editor;
 
-import java.io.Serializable;
-
-import com.vaadin.ui.Component;
-
+import info.magnolia.ui.framework.view.View;
 
 /**
- * Implemented if a component is a Vaadin component. Extends Serializable as all Vaadin components will have to.
+ *  PageEditorView.
  */
-public interface IsVaadinComponent extends Serializable {
-    Component asVaadinComponent();
+public interface PageEditorView extends View {
+
+    void setListener(Listener listener);
+
+    void init(String contextPath, String nodePath);
+
+    /**
+     * Listener.
+     */
+    public interface Listener {
+
+        void editComponent(String workSpace, String path, String dialog);
+
+        void deleteComponent(String workSpace, String path);
+
+        void newComponent(String workSpace, String nodeType, String path);
+
+        void selectComponent(String path);
+
+        void sortComponent();
+    }
 }

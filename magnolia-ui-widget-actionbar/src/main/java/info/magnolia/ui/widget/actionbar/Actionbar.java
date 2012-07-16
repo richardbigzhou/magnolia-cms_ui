@@ -53,7 +53,7 @@ import com.vaadin.ui.Component;
  */
 @SuppressWarnings("serial")
 @ClientWidget(value = VActionbar.class, loadStyle = LoadStyle.EAGER)
-public class Actionbar extends AbstractComponentContainer {
+public class Actionbar extends AbstractComponentContainer implements ActionbarView {
 
     private final List<Component> actionButtons = new ArrayList<Component>();
 
@@ -104,6 +104,75 @@ public class Actionbar extends AbstractComponentContainer {
     @Override
     public Iterator<Component> getComponentIterator() {
         return actionButtons.iterator();
+    }
+
+    @Override
+    public void addSection(String sectionName) {
+    }
+
+    @Override
+    public void addGroup(String groupName, String sectionName) {
+    }
+
+    @Override
+    public void addAction(String actionName, String groupName, String sectionName) {
+    }
+
+    @Override
+    public void addPreview(Component component, String sectionName) {
+    }
+
+    @Override
+    public void enable(String actionName) {
+    }
+
+    @Override
+    public void enable(String actionName, String groupName) {
+    }
+
+    @Override
+    public void enable(String actionName, String groupName, String sectionName) {
+    }
+
+    @Override
+    public void enableGroup(String groupName) {
+    }
+
+    @Override
+    public void enableGroup(String groupName, String sectionName) {
+    }
+
+    @Override
+    public void disable(String actionName) {
+    }
+
+    @Override
+    public void disable(String actionName, String groupName) {
+    }
+
+    @Override
+    public void disable(String actionName, String groupName, String sectionName) {
+    }
+
+    @Override
+    public void disableGroup(String groupName) {
+    }
+
+    @Override
+    public void disableGroup(String groupName, String sectionName) {
+    }
+
+    @Override
+    public void showSection(String sectionName) {
+    }
+
+    @Override
+    public void hideSection(String sectionName) {
+    }
+
+    @Override
+    public Component asVaadinComponent() {
+        return this;
     }
 
 }

@@ -33,20 +33,29 @@
  */
 package info.magnolia.ui.model.dialog.definition;
 
-import info.magnolia.ui.model.definition.ConfiguredUiItemDefinition;
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 
 import java.util.ArrayList;
 import java.util.List;
 
+
 /**
  * A definition of a configured dialog. Holds a list of tabs.
  */
-public class ConfiguredDialogDefinition extends ConfiguredUiItemDefinition implements DialogDefinition {
+public class ConfiguredDialogDefinition implements DialogDefinition {
 
     private String id;
+
+    private String name;
+
+    private String label;
+
+    private String i18nBasename;
+
     private String description;
+
     private List<TabDefinition> tabs = new ArrayList<TabDefinition>();
+
     private List<DialogActionDefinition> actions = new ArrayList<DialogActionDefinition>();
 
     @Override
@@ -54,9 +63,35 @@ public class ConfiguredDialogDefinition extends ConfiguredUiItemDefinition imple
         return id;
     }
 
-    @Override
     public void setId(String id) {
         this.id = id;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    @Override
+    public String getI18nBasename() {
+        return i18nBasename;
+    }
+
+    public void setI18nBasename(String i18nBasename) {
+        this.i18nBasename = i18nBasename;
     }
 
     @Override
@@ -64,7 +99,6 @@ public class ConfiguredDialogDefinition extends ConfiguredUiItemDefinition imple
         return description;
     }
 
-    @Override
     public void setDescription(String description) {
         this.description = description;
     }
@@ -74,9 +108,12 @@ public class ConfiguredDialogDefinition extends ConfiguredUiItemDefinition imple
         return tabs;
     }
 
-    @Override
     public void setTabs(List<TabDefinition> tabs) {
         this.tabs = tabs;
+    }
+
+    public boolean addTab(TabDefinition tabDefinition) {
+        return tabs.add(tabDefinition);
     }
 
     @Override
@@ -84,19 +121,12 @@ public class ConfiguredDialogDefinition extends ConfiguredUiItemDefinition imple
         return actions;
     }
 
-    @Override
-    public boolean addAction(DialogActionDefinition actionDefinition) {
-        return this.actions.add(actionDefinition);
-    }
-
-    @Override
     public void setActions(List<DialogActionDefinition> actions) {
         this.actions = actions;
     }
 
-    @Override
-    public boolean addTab(TabDefinition tabDefinition) {
-        return tabs.add(tabDefinition);
+    public boolean addAction(DialogActionDefinition actionDefinition) {
+        return this.actions.add(actionDefinition);
     }
 
 }

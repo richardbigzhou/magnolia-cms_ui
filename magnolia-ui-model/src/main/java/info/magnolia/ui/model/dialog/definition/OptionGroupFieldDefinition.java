@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2010-2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,42 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.field;
+package info.magnolia.ui.model.dialog.definition;
 
-import org.vaadin.addon.customfield.CustomField;
-
-import com.vaadin.data.Property;
-import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.Select;
 
 /**
- * TemplateSelectorView implementation of a template selector.
- *
+ * Field definition for Radio and check box select field. This replace the former {@link info.magnolia.cms.gui.dialog.DialogButtonSet}
+ * This is now used for Control radio and checkbox.
  */
-public class TemplateSelectorView extends CustomField {
+public class OptionGroupFieldDefinition extends SelectFieldDefinition {
 
-    private Select select;
+    private int cols = 1;
 
-    public TemplateSelectorView(Select select) {
-        this.select = select;
-        CssLayout layout = new CssLayout();
-        layout.addComponent(this.select);
-        setCompositionRoot(layout);
+    private boolean multiselect = false;
+
+    public boolean isMultiselect() {
+        return multiselect;
     }
 
-    /**
-     * Set the select item if the datasource is not empty.
-     */
-    @Override
-    public void setPropertyDataSource(Property newDataSource) {
-        super.setPropertyDataSource(newDataSource);
-        if(!newDataSource.getValue().toString().isEmpty()) {
-            select.setValue(newDataSource.getValue());
-        }
+
+    public void setMultiselect(boolean multiselect) {
+        this.multiselect = multiselect;
     }
 
-    @Override
-    public Class<?> getType() {
-        return String.class;
+    public int getCols() {
+        return cols;
     }
+
+    public void setCols(int cols) {
+        this.cols = cols;
+    }
+
 }

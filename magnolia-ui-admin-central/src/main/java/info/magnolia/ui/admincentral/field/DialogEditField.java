@@ -49,25 +49,20 @@ import com.vaadin.ui.TextField;
  */
 public class DialogEditField extends AbstractDialogField<FieldDefinition> {
 
-    public static final String TEXTFIELD_STYLE_NAME = "textfield";
-
     public DialogEditField(FieldDefinition definition, Item relatedFieldItem) {
         super(definition, relatedFieldItem);
     }
 
     @Override
     protected Field buildField() {
-        EditFieldDefinition definition = (EditFieldDefinition) getFieldDefinition();
+        EditFieldDefinition editDefinition = (EditFieldDefinition) definition;
 
-        if (definition.getRows() > 1) {
-            this.dialogField =  createMultiRowEditField(definition);
+        if (editDefinition.getRows() > 1) {
+            this.field =  createMultiRowEditField(editDefinition);
         }
-        this.dialogField =  createSingleRowEditField(definition);
+        this.field =  createSingleRowEditField(editDefinition);
 
-        this.dialogField.setCaption(definition.getLabel());
-        this.dialogField.setStyleName(TEXTFIELD_STYLE_NAME);
-
-        return dialogField;
+        return this.field;
     }
 
     private Field createSingleRowEditField(EditFieldDefinition definition) {

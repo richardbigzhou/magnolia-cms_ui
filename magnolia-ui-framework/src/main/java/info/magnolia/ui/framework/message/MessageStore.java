@@ -47,7 +47,6 @@ import org.slf4j.LoggerFactory;
 import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.repository.RepositoryConstants;
 
 /**
  * Stores messages on behalf of {@link MessagesManager} in the repository, every user in the system has its own set of
@@ -59,7 +58,10 @@ public class MessageStore {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private static final String MESSAGE_STORE_PATH = "/modules/ui-admin-central/messageStore";
+    private static final String WORKSPACE_NAME = "messages";
+    private static final String WORKSPACE_PATH = "/";
+    private static final String MESSAGE_NODE_TYPE = "mgnl:message";
+    private static final String USER_NODE_TYPE = MgnlNodeType.NT_CONTENT;
 
     /**
      * Stores a new message or overwrites an existing one depending on whether there's an id set. That is, the id of the
@@ -77,7 +79,7 @@ public class MessageStore {
             @Override
             public Boolean exec() {
                 try {
-                    Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+                    Session session = MgnlContext.getJCRSession(WORKSPACE_NAME);
 
                     if (message.getId() == null) {
                         message.setId(getUniqueMessageId(getOrCreateUserNode(session, userId)));
@@ -104,10 +106,10 @@ public class MessageStore {
             @Override
             public Integer exec() throws RuntimeException {
                 try {
-                    Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+                    Session session = MgnlContext.getJCRSession(WORKSPACE_NAME);
 
                     int n = 0;
-                    for (Node messageNode : NodeUtil.getNodes(getOrCreateUserNode(session, userId), MgnlNodeType.NT_CONTENTNODE)) {
+                    for (Node messageNode : NodeUtil.getNodes(getOrCreateUserNode(session, userId), MESSAGE_NODE_TYPE)) {
                         if (!messageNode.getProperty("cleared").getBoolean()) {
                             n++;
                         }
@@ -128,11 +130,11 @@ public class MessageStore {
             @Override
             public List<Message> exec() throws RuntimeException {
                 try {
-                    Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+                    Session session = MgnlContext.getJCRSession(WORKSPACE_NAME);
 
                     ArrayList<Message> messages = new ArrayList<Message>();
 
-                    for (Node messageNode : NodeUtil.getNodes(getOrCreateUserNode(session, userId), MgnlNodeType.NT_CONTENTNODE)) {
+                    for (Node messageNode : NodeUtil.getNodes(getOrCreateUserNode(session, userId), MESSAGE_NODE_TYPE)) {
 
                         Message message = unmarshallMessage(messageNode);
 
@@ -155,7 +157,7 @@ public class MessageStore {
             @Override
             public Message exec() {
                 try {
-                    Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+                    Session session = MgnlContext.getJCRSession(WORKSPACE_NAME);
 
                     Node messageNode = getMessageNode(session, userId, messageId);
 
@@ -193,15 +195,15 @@ public class MessageStore {
     }
 
     private Node getOrCreateUserNode(Session session, String userId) throws RepositoryException {
-        return JcrUtils.getOrCreateByPath(MESSAGE_STORE_PATH + "/" + userId, MgnlNodeType.NT_CONTENT, session);
+        return JcrUtils.getOrCreateByPath(WORKSPACE_PATH + userId, USER_NODE_TYPE, session);
     }
 
     private Node getOrCreateMessageNode(Session session, String userId, Message message) throws RepositoryException {
-        return JcrUtils.getOrCreateByPath(MESSAGE_STORE_PATH + "/" + userId + "/" + message.getId(), false, MgnlNodeType.NT_CONTENT, MgnlNodeType.NT_CONTENTNODE, session, false);
+        return getOrCreateUserNode(session, userId).addNode(message.getId(), MESSAGE_NODE_TYPE);
     }
 
     private Node getMessageNode(Session session, String userId, String messageId) throws RepositoryException {
-        String absolutePath = MESSAGE_STORE_PATH + "/" + userId + "/" + messageId;
+        String absolutePath = WORKSPACE_PATH + userId + "/" + messageId;
         if (session.nodeExists(absolutePath)) {
             return session.getNode(absolutePath);
         }
@@ -210,7 +212,7 @@ public class MessageStore {
 
     private String getUniqueMessageId(Node userNode) throws RepositoryException {
         int largestIdFound = -1;
-        for (Node node : NodeUtil.getNodes(userNode, MgnlNodeType.NT_CONTENTNODE)) {
+        for (Node node : NodeUtil.getNodes(userNode, MESSAGE_NODE_TYPE)) {
             try {
                 int nameAsInt = Integer.parseInt(node.getName());
                 if (nameAsInt > largestIdFound) {

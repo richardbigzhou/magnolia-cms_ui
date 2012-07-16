@@ -37,13 +37,11 @@ import javax.inject.Inject;
 
 import com.vaadin.ui.Component;
 
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
-
 /**
  * Implementation of MagnoliaShellView.
  */
 @SuppressWarnings("serial")
-public class MagnoliaShellViewImpl implements MagnoliaShellView, IsVaadinComponent{
+public class MagnoliaShellViewImpl implements MagnoliaShellView {
 
     private Presenter presenter;
 

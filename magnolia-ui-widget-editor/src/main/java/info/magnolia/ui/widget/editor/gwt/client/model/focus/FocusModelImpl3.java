@@ -65,11 +65,16 @@ public class FocusModelImpl3 implements FocusModel {
         }
         if (mgnlElement == null) {
             reset();
+            return;
         }
 
-        else if (mgnlElement.getParentArea() != null) {
+        if (mgnlElement.isComponent()) {
+            model.setSelectedMgnlComponentElement(mgnlElement);
+        }
+
+        if (mgnlElement.getParentArea() != null) {
             MgnlElement area = mgnlElement.getParentArea();
-            if (area != model.getSelectedMgnlElement()) {
+            if (area != model.getSelectedMgnlAreaElement()) {
                 deSelect();
                 hideRoot();
                 toggleSelection(area, true);
@@ -79,7 +84,7 @@ public class FocusModelImpl3 implements FocusModel {
 
     @Override
     public void onLoadSelect(MgnlElement selectedMgnlElement) {
-        model.setSelectedMgnlElement(selectedMgnlElement);
+        model.setSelectedMgnlAreaElement(selectedMgnlElement);
         toggleRootAreaBar(false);
         showRootPlaceHolder();
         toggleSelection(selectedMgnlElement, true);
@@ -140,15 +145,16 @@ public class FocusModelImpl3 implements FocusModel {
         if (model.getComponentPlaceHolder(mgnlElement) != null) {
             model.getComponentPlaceHolder(mgnlElement).setVisible(visible);
         }
-        model.setSelectedMgnlElement(mgnlElement);
+        model.setSelectedMgnlAreaElement(mgnlElement);
 
     }
 
     private void deSelect() {
-        if (model.getSelectedMgnlElement() != null && model.getSelectedMgnlElement().getParentArea() != null) {
-            toggleSelection(model.getSelectedMgnlElement().getParentArea(), false);
-            model.setSelectedMgnlElement(null);
+        if (model.getSelectedMgnlAreaElement() != null && model.getSelectedMgnlAreaElement().getParentArea() != null) {
+            toggleSelection(model.getSelectedMgnlAreaElement().getParentArea(), false);
+            model.setSelectedMgnlAreaElement(null);
         }
+        model.setSelectedMgnlComponentElement(null);
     }
 
     @Override

@@ -40,6 +40,10 @@ public class DateFieldDefinition extends ConfiguredFieldDefinition {
 
     private boolean time;
 
+    private String dateFormat = "yyyy-MM-dd";
+
+    private String timeFormat = "HH:mm:ss";
+
     public boolean isTime() {
         return time;
     }
@@ -47,4 +51,26 @@ public class DateFieldDefinition extends ConfiguredFieldDefinition {
     public void setTime(boolean time) {
         this.time = time;
     }
+
+    public String getDateFormat() {
+        return dateFormat;
+    }
+
+
+    public void setDateFormat(String dateFormat) {
+        this.dateFormat = dateFormat;
+    }
+
+
+    public String getTimeFormat() {
+        return timeFormat;
+    }
+
+
+    public void setTimeFormat(String timeFormat) {
+        this.timeFormat = timeFormat;
+    }
+
+
+
 }

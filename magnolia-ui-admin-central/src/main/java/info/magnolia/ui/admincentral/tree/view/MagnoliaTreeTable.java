@@ -43,6 +43,7 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.widget.HybridSelectionTreeTable;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.jcr.RepositoryException;
@@ -51,17 +52,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
+import com.vaadin.data.Property;
 import com.vaadin.event.Transferable;
 import com.vaadin.event.dd.DragAndDropEvent;
 import com.vaadin.event.dd.DropHandler;
 import com.vaadin.event.dd.acceptcriteria.AcceptAll;
 import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
 import com.vaadin.terminal.gwt.client.ui.dd.VerticalDropLocation;
-import com.vaadin.ui.Component;
 
 /**
  * User interface component that extends TreeTable and uses a WorkbenchDefinition for layout and invoking command callbacks.
- *
  */
 @SuppressWarnings("serial")
 public class MagnoliaTreeTable extends HybridSelectionTreeTable {
@@ -94,7 +94,7 @@ public class MagnoliaTreeTable extends HybridSelectionTreeTable {
             String columnProperty = (treeColumn.getDefinition().getPropertyName()!=null)?treeColumn.getDefinition().getPropertyName():columnName;
             // super.setColumnExpandRatio(columnName, treeColumn.getWidth() <= 0 ? 1 :
             // treeColumn.getWidth());
-            addContainerProperty(columnProperty, Component.class, "");
+            addContainerProperty(columnProperty, Property.class, "");
             super.setColumnHeader(columnProperty, treeColumn.getLabel());
             visibleColumns.add(columnName);
         }
@@ -207,4 +207,19 @@ public class MagnoliaTreeTable extends HybridSelectionTreeTable {
         }
 
     }
+
+    //FIXME This is not the correct way to handle Typed column.
+    // Ticket: SCRUM-1360
+    @Override
+    protected String formatPropertyValue(Object rowId, Object colId, Property property) {
+        Object v = property.getValue();
+        if (v instanceof Date) {
+            Date dateValue = (Date) v;
+            return "Formatted date: " + (1900 + dateValue.getYear())
+                    + "-" + dateValue.getMonth() + "-"
+                    + dateValue.getDate();
+        }
+        return super.formatPropertyValue(rowId, colId, property);
+    }
+
 }

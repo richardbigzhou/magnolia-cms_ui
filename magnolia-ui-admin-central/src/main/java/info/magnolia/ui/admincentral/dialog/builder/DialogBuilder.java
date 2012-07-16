@@ -78,7 +78,9 @@ public class DialogBuilder {
                 CssLayout fieldLayout = new CssLayout();
                 fieldLayout.setStyleName(FIELD_STYLE_NAME);
 
+                //Create the DialogField
                 DialogField fieldType = fieldTypeBuilder.create(fieldDefinition, fieldDefinition, item);
+                //Get the Vaadin  Field
                 Field field = fieldType.getField();
 
                 fieldLayout.addComponent(field);

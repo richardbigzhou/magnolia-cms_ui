@@ -38,12 +38,10 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
-
 /**
  * View implementation of navigation view.
  */
-public class NavigationViewImpl implements NavigationView, IsVaadinComponent {
+public class NavigationViewImpl implements NavigationView {
 
     private Listener listener;
     private VerticalLayout layout;

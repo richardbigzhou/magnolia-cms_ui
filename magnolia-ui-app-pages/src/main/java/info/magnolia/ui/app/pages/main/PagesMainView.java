@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,21 +31,24 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.definition;
+package info.magnolia.ui.app.pages.main;
 
-import info.magnolia.ui.model.action.ActionDefinition;
-
+import com.vaadin.ui.ComponentContainer;
+import info.magnolia.ui.framework.view.View;
 
 /**
- * Menu item definition providing configuration for the label and icon. Also provides the
- * {@link ActionDefinition} executed when the item is clicked.
+ * View for the Pages app.
  */
-public interface MenuItemDefinition extends UiItemDefinition {
+public interface PagesMainView extends View {
 
-    String getIcon();
+    void setWorkBench(ComponentContainer workbench);
 
-    String getDescription();
+    /**
+     * Listener.
+     *
+     */
+    public interface Listener {
+    }
 
-    ActionDefinition getActionDefinition();
-
+    void setListener(Listener listener);
 }

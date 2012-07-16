@@ -33,12 +33,23 @@
  */
 package info.magnolia.ui.model.actionbar.definition;
 
-import info.magnolia.ui.model.definition.MenuItemDefinition;
-
+import info.magnolia.ui.model.action.ActionDefinition;
 
 /**
  * The definition for an action item in the action bar.
  */
-public interface ActionbarItemDefinition extends MenuItemDefinition {
+public interface ActionbarItemDefinition {
+
+    String getName();
+
+    String getLabel();
+
+    String getI18nBasename();
+
+    String getIcon();
+
+    String getDescription();
+
+    ActionDefinition getActionDefinition();
 
 }

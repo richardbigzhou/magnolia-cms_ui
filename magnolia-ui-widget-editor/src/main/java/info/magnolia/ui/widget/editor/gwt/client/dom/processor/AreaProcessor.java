@@ -34,6 +34,7 @@
 package info.magnolia.ui.widget.editor.gwt.client.dom.processor;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.shared.EventBus;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.AreaBar;
@@ -46,15 +47,15 @@ import info.magnolia.ui.widget.editor.gwt.client.widget.placeholder.ComponentPla
  */
 public class AreaProcessor extends MgnlElementProcessor {
 
-    public AreaProcessor(Model model, MgnlElement mgnlElement) {
-        super(model, mgnlElement);
+    public AreaProcessor(Model model, EventBus eventBus, MgnlElement mgnlElement) {
+        super(model, eventBus, mgnlElement);
     }
 
     @Override
     public void process() {
         AreaBar areaBar = null;
         try {
-            areaBar = new AreaBar(getModel(), getMgnlElement());
+            areaBar = new AreaBar(getModel(), getEventBus(), getMgnlElement());
 
             try {
                 new AreaPlaceHolder(getModel(), getMgnlElement());

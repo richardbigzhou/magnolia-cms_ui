@@ -33,41 +33,29 @@
  */
 package info.magnolia.ui.model.dialog.definition;
 
-import info.magnolia.ui.model.definition.UiItemDefinition;
-
 import java.util.List;
 
-/**
- * FieldDefinition.
- */
-public interface FieldDefinition extends UiItemDefinition {
 
-    static final String TEXT_FIELD_TYPE = "text";
-    static final String CHECKBOX_FIELD_TYPE = "checkbox";
+/**
+ * FieldDefinition .
+ */
+public interface FieldDefinition {
+
+    String getName();
+
+    String getLabel();
+
+    String getI18nBasename();
 
     String getDescription();
 
-    void setDescription(String description);
-
     String getType();
-
-    void setType(String type);
 
     boolean isRequired();
 
-    void setRequired(boolean required);
-
-    void addValidator(ValidatorDefinition validator);
-
-    void setValidators(List<ValidatorDefinition> validators);
-
     List<ValidatorDefinition> getValidators();
 
-    void setDefaultValue(String defaultValue);
-
     String getDefaultValue();
-
-    void setSaveInfo(boolean saveInfo);
 
     boolean getSaveInfo();
 

@@ -38,14 +38,13 @@ import javax.inject.Inject;
 import com.vaadin.ui.Component;
 
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchSubApp;
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 
 /**
  * View implementation for the Contacts app.
  */
 @SuppressWarnings("serial")
-public class ContactsViewImpl implements ContactsView, IsVaadinComponent {
+public class ContactsViewImpl implements ContactsView {
 
     private final ContentWorkbenchSubApp workbench;
 
@@ -56,6 +55,6 @@ public class ContactsViewImpl implements ContactsView, IsVaadinComponent {
 
     @Override
     public Component asVaadinComponent() {
-        return workbench.asVaadinComponent();
+        return workbench.asView();
     }
 }

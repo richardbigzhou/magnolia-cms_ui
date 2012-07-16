@@ -31,36 +31,32 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages;
+package info.magnolia.ui.app.pages.editor;
 
-import com.vaadin.ui.Component;
-import com.vaadin.ui.ComponentContainer;
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
+import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.widget.actionbar.ActionbarView;
+import info.magnolia.ui.widget.editor.PageEditorView;
 
 
 /**
- * View implementation for the Pages app.
+ * PagesEditorView.
  */
-@SuppressWarnings("serial")
-public class PagesMainViewImpl implements PagesMainView, IsVaadinComponent {
+public interface PagesEditorView extends View {
 
-    private ComponentContainer view;
-    private Listener listener;
+    void setListener(Listener listener);
 
+    void setPageEditor(PageEditorView pageEditor);
 
-    @Override
-    public Component asVaadinComponent() {
-        return view;
+    /**
+     * Use this method to add an action bar to this sub app view.
+     */
+    void addActionbarView(final ActionbarView actionbar);
+
+    /**
+     * Listener.
+     */
+    public interface Listener {
+
+        void setParameters(PageEditorParameters parameters);
     }
-
-    @Override
-    public void setListener(Listener listener) {
-        this.listener = listener;
-    }
-
-    @Override
-    public void initView(ComponentContainer workbenchView) {
-        this.view = workbenchView;
-    }
-
 }

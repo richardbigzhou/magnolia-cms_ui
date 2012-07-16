@@ -31,23 +31,39 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages;
+package info.magnolia.ui.admincentral.event;
 
-import com.vaadin.ui.ComponentContainer;
-import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.framework.event.Event;
+import info.magnolia.ui.framework.event.EventHandler;
+import info.magnolia.ui.model.action.ActionDefinition;
+
 
 /**
- * View for the Pages app.
+ * This event is fired when an item in the action bar is clicked.
  */
-public interface PagesMainView extends View {
+public class ActionbarClickEvent implements Event<ActionbarClickEvent.Handler> {
 
     /**
-     * Listener.
-     *
+     * Handles {@link ActionbarClickEvent} events.
      */
-    public interface Listener {
+    public static interface Handler extends EventHandler {
+
+        void onActionbarItemClicked(ActionbarClickEvent event);
     }
 
-    void setListener(Listener listener);
-    void initView(ComponentContainer workbenchView);
+    private final ActionDefinition actionDefinition;
+
+    @Override
+    public void dispatch(Handler handler) {
+        handler.onActionbarItemClicked(this);
+    }
+
+    public ActionbarClickEvent(ActionDefinition actionDefinition) {
+        this.actionDefinition = actionDefinition;
+    }
+
+    public ActionDefinition getActionDefinition() {
+        return actionDefinition;
+    }
+
 }

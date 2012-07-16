@@ -37,12 +37,11 @@ import com.vaadin.data.Item;
 
 import info.magnolia.ui.admincentral.container.JcrContainer;
 import info.magnolia.ui.framework.view.View;
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 /**
  * UI component that displays content (from Jcr).
  */
-public interface ContentView extends View, IsVaadinComponent {
+public interface ContentView extends View {
 
     /**
      * Enumeration for view types.

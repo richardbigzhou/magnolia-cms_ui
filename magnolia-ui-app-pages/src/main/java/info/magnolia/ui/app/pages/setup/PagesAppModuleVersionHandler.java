@@ -31,25 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages;
+package info.magnolia.ui.app.pages.setup;
 
-import info.magnolia.ui.framework.view.View;
+import info.magnolia.module.DefaultModuleVersionHandler;
 
 /**
- * PageEditorView.
- *
+ * Version handler for Dummy app module.
  */
-public interface PageEditorView extends View {
-
-    void setListener(Listener listener);
-
-    void initPageEditor(String nodePath);
-
-    /**
-     * Listener.
-     */
-    public interface Listener {
-
-        void editComponent(String workSpace, String path, String dialog);
-    }
+public class PagesAppModuleVersionHandler extends DefaultModuleVersionHandler {
 }

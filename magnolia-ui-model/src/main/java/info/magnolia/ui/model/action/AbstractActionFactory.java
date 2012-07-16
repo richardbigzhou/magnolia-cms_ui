@@ -36,29 +36,26 @@ package info.magnolia.ui.model.action;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.model.builder.FactoryBase;
 
+
 /**
  * Abstract base class used by action factories.
- *
+ * 
  * @param <D> definition parent type
  * @param <I> implementation parent type
  * @see FactoryBase
  */
-public abstract class AbstractActionFactory<D extends ActionDefinition, I extends Action> extends FactoryBase<D, I> {
+public abstract class AbstractActionFactory<D extends ActionDefinition, I extends Action> extends FactoryBase<D, I> implements ActionFactory<D, I> {
 
     public AbstractActionFactory(ComponentProvider componentProvider) {
         super(componentProvider);
     }
 
     @Override
-    public void addMapping(Class<? extends D> definitionClass, Class<? extends I> implementationClass) {
+    public void addMapping(Class< ? extends D> definitionClass, Class< ? extends I> implementationClass) {
         super.addMapping(definitionClass, implementationClass);
     }
 
-    /**
-     * Creates an action using the implementation configured for the given action definition. The parameters are made
-     * available for injection when the instance is created. The definition object given is also available for
-     * injection.
-     */
+    @Override
     public I createAction(D definition, Object... parameters) {
         return super.create(definition, parameters);
     }

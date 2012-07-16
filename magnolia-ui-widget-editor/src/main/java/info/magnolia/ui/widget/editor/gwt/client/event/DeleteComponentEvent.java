@@ -31,17 +31,41 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.definition;
+package info.magnolia.ui.widget.editor.gwt.client.event;
+
+import com.google.gwt.event.shared.GwtEvent;
+import com.google.web.bindery.event.shared.Event;
 
 /**
- * An definition interface for UI items which may have a name, a label and an i18n bundle key.
+ * DeleteComponentEvent.
  */
-public interface UiItemDefinition {
+public class DeleteComponentEvent extends Event<DeleteComponentEventHandler> {
 
-    String getName();
+    public static GwtEvent.Type<DeleteComponentEventHandler> TYPE = new GwtEvent.Type<DeleteComponentEventHandler>();
 
-    String getLabel();
+    private String workSpace;
+    private String path;
 
-    String getI18nBasename();
+    public DeleteComponentEvent(String workSpace, String path) {
+        this.workSpace = workSpace;
+        this.path = path;
+    }
 
+    @Override
+    public GwtEvent.Type<DeleteComponentEventHandler> getAssociatedType() {
+        return TYPE;
+    }
+
+    @Override
+    protected void dispatch(DeleteComponentEventHandler handler) {
+        handler.onDeleteComponent(this);
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public String getWorkSpace() {
+        return workSpace;
+    }
 }
