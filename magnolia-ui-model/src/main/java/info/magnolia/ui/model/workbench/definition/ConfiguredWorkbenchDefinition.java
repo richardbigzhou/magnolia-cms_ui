@@ -35,7 +35,7 @@ package info.magnolia.ui.model.workbench.definition;
 
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
-import info.magnolia.ui.model.column.definition.AbstractColumnDefinition;
+import info.magnolia.ui.model.column.definition.ColumnDefinition;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -58,7 +58,7 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
 
     private List<ItemTypeDefinition> itemTypes = new ArrayList<ItemTypeDefinition>();
 
-    private final Map<String, AbstractColumnDefinition> columns = new LinkedHashMap<String, AbstractColumnDefinition>();
+    private final Map<String, ColumnDefinition> columns = new LinkedHashMap<String, ColumnDefinition>();
 
     private ActionbarDefinition actionbar;
 
@@ -114,16 +114,16 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
     }
 
     @Override
-    public AbstractColumnDefinition getColumn(String columnId) {
+    public ColumnDefinition getColumn(String columnId) {
         return columns.get(columnId);
     }
 
     @Override
-    public Collection<AbstractColumnDefinition> getColumns() {
+    public Collection<ColumnDefinition> getColumns() {
         return columns.values();
     }
 
-    public void addColumn(AbstractColumnDefinition treeColumn) {
+    public void addColumn(ColumnDefinition treeColumn) {
         columns.put(treeColumn.getLabel(), treeColumn);
     }
 
