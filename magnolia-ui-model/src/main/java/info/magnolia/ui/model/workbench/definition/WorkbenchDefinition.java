@@ -35,7 +35,7 @@ package info.magnolia.ui.model.workbench.definition;
 
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
-import info.magnolia.ui.model.column.definition.AbstractColumnDefinition;
+import info.magnolia.ui.model.column.definition.ColumnDefinition;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -61,9 +61,9 @@ public interface WorkbenchDefinition extends Serializable {
      */
     String getItemTypesFilter();
 
-    AbstractColumnDefinition getColumn(String columnId);
+    ColumnDefinition getColumn(String columnId);
 
-    Collection<AbstractColumnDefinition> getColumns();
+    Collection<ColumnDefinition> getColumns();
 
     /**
      * Gets the definition for the action bar related to this workbench.
