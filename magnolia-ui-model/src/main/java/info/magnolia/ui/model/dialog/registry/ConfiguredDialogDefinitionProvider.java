@@ -38,6 +38,7 @@ import info.magnolia.cms.util.ContentUtil;
 import info.magnolia.content2bean.Content2BeanException;
 import info.magnolia.content2bean.Content2BeanUtil;
 import info.magnolia.registry.RegistrationException;
+import info.magnolia.ui.model.dialog.definition.ConfiguredDialogDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 
 import javax.jcr.Node;
@@ -49,13 +50,14 @@ import javax.jcr.RepositoryException;
  */
 public class ConfiguredDialogDefinitionProvider implements DialogDefinitionProvider {
 
-    private String id;
-    private DialogDefinition dialogDefinition;
+    private final String id;
+
+    private final ConfiguredDialogDefinition dialogDefinition;
 
     public ConfiguredDialogDefinitionProvider(String id, Node configNode) throws RepositoryException, Content2BeanException {
         this.id = id;
         Content content = ContentUtil.asContent(configNode);
-        this.dialogDefinition = (DialogDefinition) Content2BeanUtil.toBean(content, true, DialogDefinition.class);
+        this.dialogDefinition = (ConfiguredDialogDefinition) Content2BeanUtil.toBean(content, true, DialogDefinition.class);
         if (this.dialogDefinition != null) {
             this.dialogDefinition.setId(id);
         }

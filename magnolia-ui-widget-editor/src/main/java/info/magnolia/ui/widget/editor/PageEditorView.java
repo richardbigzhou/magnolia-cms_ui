@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2011 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,21 +31,32 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.definition;
+package info.magnolia.ui.widget.editor;
 
-import info.magnolia.ui.model.action.ActionDefinition;
-
+import info.magnolia.ui.framework.view.View;
 
 /**
- * Menu item definition providing configuration for the label and icon. Also provides the
- * {@link ActionDefinition} executed when the item is clicked.
+ *  PageEditorView.
  */
-public interface MenuItemDefinition extends UiItemDefinition {
+public interface PageEditorView extends View {
 
-    String getIcon();
+    void setListener(Listener listener);
 
-    String getDescription();
+    void init(String contextPath, String nodePath);
 
-    ActionDefinition getActionDefinition();
+    /**
+     * Listener.
+     */
+    public interface Listener {
 
+        void editComponent(String workSpace, String path, String dialog);
+
+        void deleteComponent(String workSpace, String path);
+
+        void newComponent(String workSpace, String nodeType, String path);
+
+        void selectComponent(String path);
+
+        void sortComponent();
+    }
 }

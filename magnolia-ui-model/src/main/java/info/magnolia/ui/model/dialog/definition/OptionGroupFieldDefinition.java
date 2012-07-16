@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,25 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages;
+package info.magnolia.ui.model.dialog.definition;
 
-import info.magnolia.ui.framework.view.View;
 
 /**
- * PageEditorView.
- *
+ * Field definition for Radio and check box select field. This replace the former {@link info.magnolia.cms.gui.dialog.DialogButtonSet}
+ * This is now used for Control radio and checkbox.
  */
-public interface PageEditorView extends View {
+public class OptionGroupFieldDefinition extends SelectFieldDefinition {
 
-    void setListener(Listener listener);
+    private int cols = 1;
 
-    void initPageEditor(String nodePath);
+    private boolean multiselect = false;
 
-    /**
-     * Listener.
-     */
-    public interface Listener {
-
-        void editComponent(String workSpace, String path, String dialog);
+    public boolean isMultiselect() {
+        return multiselect;
     }
+
+
+    public void setMultiselect(boolean multiselect) {
+        this.multiselect = multiselect;
+    }
+
+    public int getCols() {
+        return cols;
+    }
+
+    public void setCols(int cols) {
+        this.cols = cols;
+    }
+
 }

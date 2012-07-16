@@ -159,3 +159,9 @@ button.action-close {
        -webkit-transform:scale(1);
     }
 }
+
+.v-loading-indicator-wait,
+.v-loading-indicator-delay,
+.v-loading-indicator {
+	display: none !important;
+}

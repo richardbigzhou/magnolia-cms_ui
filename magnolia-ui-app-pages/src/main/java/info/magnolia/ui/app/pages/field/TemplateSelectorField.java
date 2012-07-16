@@ -33,80 +33,48 @@
  */
 package info.magnolia.ui.app.pages.field;
 
+
 import info.magnolia.objectfactory.Components;
 import info.magnolia.rendering.template.TemplateDefinition;
 import info.magnolia.rendering.template.assignment.TemplateDefinitionAssignment;
-import info.magnolia.ui.admincentral.field.AbstractDialogField;
+import info.magnolia.ui.admincentral.field.DialogSelectField;
 import info.magnolia.ui.model.dialog.definition.FieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.jcr.Node;
 
-import com.google.inject.Inject;
 import com.vaadin.data.Item;
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.ui.Field;
-import com.vaadin.ui.Select;
 
 /**
- * TemplateSelectorType builds the available templates list based on the nodeType.
- *
+ * Define a Template selector field.
+ * The values displayed in the field are initialized based on the
+ * related Item (Image of a JCR node) and {@link TemplateDefinitionAssignment}.
  */
-public class TemplateSelectorType extends AbstractDialogField<FieldDefinition> {
+public class TemplateSelectorField extends DialogSelectField {
 
-    private TemplateDefinitionAssignment templateAssignment;
-    private Select select;
-    private static final String TEMPLATESELECTOR_STYLE_NAME = "templateselector";
-
-    @Inject
-    public TemplateSelectorType(FieldDefinition definition, Item relatedFieldItem, TemplateDefinitionAssignment templateAssignment) {
+    public TemplateSelectorField(FieldDefinition definition, Item relatedFieldItem) {
         super(definition, relatedFieldItem);
-        this.templateAssignment = templateAssignment;
     }
 
+    /**
+     * Get the Available templates based on the current Node.
+     */
     @Override
-    protected Field buildField() {
-        dialogField = new TemplateSelectorView(buildTemplateList(item));
-        dialogField.setCaption(getFieldDefinition().getLabel());
-        dialogField.setStyleName(TEMPLATESELECTOR_STYLE_NAME);
+    public Map<String, String>  getOptions() {
+        TemplateDefinitionAssignment templateAssignment = Components.getComponent(TemplateDefinitionAssignment.class);
+        Map<String, String> res = new HashMap<String, String>();
 
-        return dialogField;
-    }
-
-
-    private Select buildTemplateList(Item fieldRelatedItem) {
-        select = new Select();
-        select.setImmediate(true);
-        //ToModify
-        if(this.templateAssignment == null) {
-            this.templateAssignment = Components.getComponent(TemplateDefinitionAssignment.class);
-        }
-        Collection<TemplateDefinition> templates = this.templateAssignment.getAvailableTemplates(getRelatedNode(fieldRelatedItem));
+        Collection<TemplateDefinition> templates = templateAssignment.getAvailableTemplates(getRelatedNode(item));
 
         for(TemplateDefinition templateDefinition: templates) {
-            select.addItem(templateDefinition.getId());
-            select.setItemCaption(templateDefinition.getId(), templateDefinition.getTitle());
+            res.put(templateDefinition.getId(), templateDefinition.getTitle());
         }
-
-
-        /**
-         * Add an ValueChangeListener to the Select component.
-         * On component select, set the value of the related Vaadin property field .
-         */
-        select.addListener(new Property.ValueChangeListener() {
-            @Override
-            public void valueChange(ValueChangeEvent event) {
-                Property p = dialogField.getPropertyDataSource();
-                p.setValue(event.getProperty().getValue());
-            }
-
-        });
-
-        return select;
+        return res;
     }
 
     /**
@@ -122,5 +90,9 @@ public class TemplateSelectorType extends AbstractDialogField<FieldDefinition> {
         }
     }
 
+    @Override
+    protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {
+        return String.class;
+    }
 
 }

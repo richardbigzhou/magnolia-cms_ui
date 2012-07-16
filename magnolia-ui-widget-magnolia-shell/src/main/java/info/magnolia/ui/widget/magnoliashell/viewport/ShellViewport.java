@@ -35,7 +35,6 @@ package info.magnolia.ui.widget.magnoliashell.viewport;
 
 import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.framework.view.ViewPort;
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 import info.magnolia.ui.widget.magnoliashell.BaseMagnoliaShell;
 import info.magnolia.ui.widget.magnoliashell.DeckLayout;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.VShellViewport;
@@ -45,46 +44,41 @@ import com.vaadin.ui.ClientWidget.LoadStyle;
 import com.vaadin.ui.Component;
 
 /**
- * The server side implementation of the shell viewport. MagnoliaShell is capable of holding of such for 
- * the shell apps, one - for the regular apps.
+ * The server side implementation of the shell viewport. MagnoliaShell is
+ * capable of holding of such for the shell apps, one - for the regular apps.
  */
 @SuppressWarnings("serial")
-@ClientWidget(value=VShellViewport.class, loadStyle = LoadStyle.EAGER)
+@ClientWidget(value = VShellViewport.class, loadStyle = LoadStyle.EAGER)
 public class ShellViewport extends DeckLayout implements ViewPort {
-    
+
     private String currentShellFragment = "";
-    
+
     private BaseMagnoliaShell parentShell;
-    
+
     private View view;
-    
+
     public ShellViewport(final BaseMagnoliaShell shell) {
         super();
         setSizeFull();
         display(null);
         this.parentShell = shell;
     }
-    
-    
+
     public void setCurrentShellFragment(String currentShellFragment) {
         this.currentShellFragment = currentShellFragment;
     }
-    
+
     public String getCurrentShellFragment() {
         return currentShellFragment;
     }
 
     @Override
     public void setView(final View view) {
-        if (view != null){
+        if (view != null) {
             this.view = view;
-            if (view instanceof IsVaadinComponent) {
-                final Component c = ((IsVaadinComponent)view).asVaadinComponent();
-                display(c);
-                parentShell.setActiveViewport(this);
-            } else {
-                throw new RuntimeException("The view passed can't be interpreted as Vaadin ComponentContainer!");   
-            }
+            final Component c = this.view.asVaadinComponent();
+            display(c);
+            parentShell.setActiveViewport(this);
         }
     }
 }

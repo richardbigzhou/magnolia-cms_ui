@@ -34,18 +34,23 @@
 package info.magnolia.ui.model.column.definition;
 
 /**
- * Base implementation for all special ColumnDefinitions. Some subclass do not add additional behavior but still are
- * required because in jcr we configure ColumnDefinition to Column mappings and only with specific Definitions we know
- * what Column-Type to map to.
+ * Base implementation for all special ColumnDefinitions. Some subclass do not add additional
+ * behavior but still are required because in jcr we configure ColumnDefinition to Column mappings
+ * and only with specific Definitions we know what Column-Type to map to.
  */
-public abstract class AbstractColumnDefinition {
+public abstract class AbstractColumnDefinition implements ColumnDefinition {
 
     private String name;
+
     private String label;
+
     private int width = 1;
+
     private boolean sortable = false;
+
     private String propertyName;
 
+    @Override
     public String getPropertyName() {
         return propertyName;
     }
@@ -54,6 +59,7 @@ public abstract class AbstractColumnDefinition {
         this.propertyName = propertyName;
     }
 
+    @Override
     public String getName() {
         return name;
     }
@@ -62,6 +68,7 @@ public abstract class AbstractColumnDefinition {
         this.name = name;
     }
 
+    @Override
     public int getWidth() {
         return width;
     }
@@ -70,6 +77,7 @@ public abstract class AbstractColumnDefinition {
         this.width = width;
     }
 
+    @Override
     public String getLabel() {
         return label;
     }
@@ -78,6 +86,7 @@ public abstract class AbstractColumnDefinition {
         this.label = label;
     }
 
+    @Override
     public boolean isSortable() {
         return sortable;
     }

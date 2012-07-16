@@ -42,13 +42,12 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 import info.magnolia.ui.framework.message.MessageType;
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 /**
  * View implementation for the Messages app.
  */
 @SuppressWarnings("serial")
-public class MessagesViewImpl implements MessagesView, IsVaadinComponent {
+public class MessagesViewImpl implements MessagesView {
 
     private Listener listener;
     private final Component component;

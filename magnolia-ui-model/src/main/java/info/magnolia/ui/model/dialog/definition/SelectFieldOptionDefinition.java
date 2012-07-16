@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2010-2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,42 +31,67 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.field;
+package info.magnolia.ui.model.dialog.definition;
 
-import org.vaadin.addon.customfield.CustomField;
-
-import com.vaadin.data.Property;
-import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.Select;
 
 /**
- * TemplateSelectorView implementation of a template selector.
- *
+ * Simple pojo used to define options used in selection.
  */
-public class TemplateSelectorView extends CustomField {
 
-    private Select select;
+public class SelectFieldOptionDefinition {
 
-    public TemplateSelectorView(Select select) {
-        this.select = select;
-        CssLayout layout = new CssLayout();
-        layout.addComponent(this.select);
-        setCompositionRoot(layout);
+    // Value saved to the repository and displayed to the user.
+    private String value;
+    // Name of the property that stores the selected value.
+    private String name;
+    // Sets the option as pre-selected
+    private boolean selected = false;
+    // The human-readable label for this option.
+    private String label;
+    // Value is a path to the image.
+    private String iconSrc;
+
+
+
+    public String getValue() {
+        return value;
     }
 
-    /**
-     * Set the select item if the datasource is not empty.
-     */
-    @Override
-    public void setPropertyDataSource(Property newDataSource) {
-        super.setPropertyDataSource(newDataSource);
-        if(!newDataSource.getValue().toString().isEmpty()) {
-            select.setValue(newDataSource.getValue());
-        }
+    public void setValue(String value) {
+        this.value = value;
     }
 
-    @Override
-    public Class<?> getType() {
-        return String.class;
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public String getIconSrc() {
+        return iconSrc;
+    }
+
+    public void setIconSrc(String iconSrc) {
+        this.iconSrc = iconSrc;
     }
 }

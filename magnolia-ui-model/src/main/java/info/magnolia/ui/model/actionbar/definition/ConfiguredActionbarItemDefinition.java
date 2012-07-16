@@ -33,12 +33,77 @@
  */
 package info.magnolia.ui.model.actionbar.definition;
 
-import info.magnolia.ui.model.definition.ConfiguredMenuItemDefinition;
+import info.magnolia.ui.model.action.ActionDefinition;
 
 
 /**
  * Simple implementation for {@link ActionbarItemDefinition}.
  */
-public class ConfiguredActionbarItemDefinition extends ConfiguredMenuItemDefinition implements ActionbarItemDefinition {
+public class ConfiguredActionbarItemDefinition implements ActionbarItemDefinition {
 
+    private String name;
+
+    private String label;
+
+    private String i18nBasename;
+
+    private String icon;
+
+    private String description;
+
+    private ActionDefinition actionDefinition;
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    @Override
+    public String getI18nBasename() {
+        return i18nBasename;
+    }
+
+    public void setI18nBasename(String i18nBasename) {
+        this.i18nBasename = i18nBasename;
+    }
+
+    @Override
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+
+    @Override
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @Override
+    public ActionDefinition getActionDefinition() {
+        return actionDefinition;
+    }
+
+    public void setActionDefinition(ActionDefinition actionDefinition) {
+        this.actionDefinition = actionDefinition;
+    }
 }

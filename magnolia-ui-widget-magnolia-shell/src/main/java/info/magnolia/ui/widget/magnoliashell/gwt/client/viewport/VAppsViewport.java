@@ -33,12 +33,10 @@
  */
 package info.magnolia.ui.widget.magnoliashell.gwt.client.viewport;
 
-import com.google.gwt.dom.client.Style.Position;
-import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.UIDL;
@@ -58,12 +56,14 @@ public class VAppsViewport extends VShellViewport {
 
     @Override
     public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
+        hideEntireContents();
+        preloader.getElement().getStyle().setZIndex(299);
         super.updateFromUIDL(uidl, client);
-        if (getWidgetIndex(preloader) >= 0) {
+        if (RootPanel.get().getWidgetIndex(preloader) >= 0) {
             new Timer() {
                 @Override
                 public void run() {
-                    remove(preloader);
+                    RootPanel.get().remove(preloader);
                 }
             }.schedule(1000);
         }
@@ -77,7 +77,7 @@ public class VAppsViewport extends VShellViewport {
 
     public void showAppPreloader(final String appName, final PreloaderCallback callback) {
         preloader.setCaption(appName);
-        add(preloader, getElement());
+        RootPanel.get().add(preloader/*, getElement()*/);
         preloader.addStyleName("zoom-in");
         new Timer() {
             @Override
@@ -111,12 +111,7 @@ public class VAppsViewport extends VShellViewport {
             root.appendChild(navigator);
             navigator.appendChild(tab);
             tab.appendChild(captionSpan);
-            
-            getElement().getStyle().setPosition(Position.ABSOLUTE);
-            getElement().getStyle().setHeight(100, Unit.PCT);
-            getElement().getStyle().setWidth(100, Unit.PCT);
-            getElement().getStyle().setBackgroundColor("#FFFFFF");
-            getElement().getStyle().setVisibility(Visibility.VISIBLE);
+           
 
             Element preloadingScreen = DOM.createDiv();
             preloadingScreen.addClassName("loading-screen");
@@ -127,6 +122,12 @@ public class VAppsViewport extends VShellViewport {
                     "           </div> Loading </div>" +
                     "</div>");
             getElement().appendChild(preloadingScreen);
+        }
+        
+        @Override
+        protected void onLoad() {
+            super.onLoad();
+            getElement().getStyle().setZIndex(301);
         }
         
         public void setCaption(String caption) {

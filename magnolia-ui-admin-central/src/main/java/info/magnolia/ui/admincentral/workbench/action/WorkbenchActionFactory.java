@@ -33,16 +33,17 @@
  */
 package info.magnolia.ui.admincentral.workbench.action;
 
-import info.magnolia.ui.admincentral.workbench.ContentWorkbenchView;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.action.ActionFactory;
 
 import javax.jcr.Item;
+
 
 /**
  * Creates an action based on an {@link ActionDefinition}.
  */
-public interface WorkbenchActionFactory {
+public interface WorkbenchActionFactory extends ActionFactory<ActionDefinition, Action> {
 
-    Action createAction(final ActionDefinition actionDefinition, final Item item, final ContentWorkbenchView.Listener presenter);
+    Action createAction(final ActionDefinition actionDefinition, final Item item);
 }

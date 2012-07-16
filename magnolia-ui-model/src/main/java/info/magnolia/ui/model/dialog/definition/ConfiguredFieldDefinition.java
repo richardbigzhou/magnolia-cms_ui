@@ -33,18 +33,22 @@
  */
 package info.magnolia.ui.model.dialog.definition;
 
-import info.magnolia.ui.model.definition.ConfiguredUiItemDefinition;
-
 import java.util.ArrayList;
 import java.util.List;
 
 
 /**
  * Describes a field in a dialog.
- *
+ * 
  * TODO this should be abstract
  */
-public class ConfiguredFieldDefinition extends ConfiguredUiItemDefinition implements FieldDefinition {
+public class ConfiguredFieldDefinition implements FieldDefinition {
+
+    private String name;
+
+    private String label;
+
+    private String i18nBasename;
 
     private String description; // not relevant for controlType=static
 
@@ -58,13 +62,38 @@ public class ConfiguredFieldDefinition extends ConfiguredUiItemDefinition implem
 
     private List<ValidatorDefinition> validators = new ArrayList<ValidatorDefinition>();
 
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    @Override
+    public String getI18nBasename() {
+        return i18nBasename;
+    }
+
+    public void setI18nBasename(String i18nBasename) {
+        this.i18nBasename = i18nBasename;
+    }
 
     @Override
     public String getDescription() {
         return description;
     }
 
-    @Override
     public void setDescription(String description) {
         this.description = description;
     }
@@ -74,7 +103,6 @@ public class ConfiguredFieldDefinition extends ConfiguredUiItemDefinition implem
         return type;
     }
 
-    @Override
     public void setType(String type) {
         this.type = type;
     }
@@ -84,7 +112,6 @@ public class ConfiguredFieldDefinition extends ConfiguredUiItemDefinition implem
         return required;
     }
 
-    @Override
     public void setRequired(boolean required) {
         this.required = required;
     }
@@ -94,17 +121,14 @@ public class ConfiguredFieldDefinition extends ConfiguredUiItemDefinition implem
         return validators;
     }
 
-    @Override
     public void setValidators(List<ValidatorDefinition> validators) {
         this.validators = validators;
     }
 
-    @Override
     public void addValidator(ValidatorDefinition validator) {
         validators.add(validator);
     }
 
-    @Override
     public void setDefaultValue(String defaultValue) {
         this.defaultValue = defaultValue;
     }
@@ -114,7 +138,6 @@ public class ConfiguredFieldDefinition extends ConfiguredUiItemDefinition implem
         return this.defaultValue;
     }
 
-    @Override
     public void setSaveInfo(boolean saveInfo) {
         this.saveInfo = saveInfo;
     }

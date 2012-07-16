@@ -37,7 +37,6 @@ import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroup;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroupEntry;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayout;
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 import info.magnolia.ui.vaadin.integration.widget.AppLauncher;
 import info.magnolia.ui.vaadin.integration.widget.AppLauncher.AppActivatedEvent;
 import info.magnolia.ui.vaadin.integration.widget.AppLauncher.AppActivationListener;
@@ -55,7 +54,7 @@ import com.vaadin.ui.Component;
  *
  */
 @SuppressWarnings("serial")
-public class AppLauncherViewImpl implements AppLauncherView, IsVaadinComponent {
+public class AppLauncherViewImpl implements AppLauncherView {
 
     private Presenter presenter;
 

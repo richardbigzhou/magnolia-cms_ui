@@ -51,38 +51,53 @@ import com.vaadin.data.validator.RegexpValidator;
 import com.vaadin.ui.Field;
 
 /**
- * Define an Abstract implementation of {@link FieldDefinition}.
+ * Define an Abstract implementation of {@link DialogField}.
  * Initialize the common attributes of a Field definition.
- * Initialize the Field wit ValidationRules, Related DataSource.
+ * Initialize the Field with ValidationRules, Related DataSource.
  * @param <D>.
  */
 public abstract class AbstractDialogField<D extends FieldDefinition> implements DialogField {
 
-    protected Field dialogField = null;
-    private D definition;
-    static final String REQUIRED_ERROR = "This field is required! (to be i18n'd)";
     protected Item item;
+    protected Field field;
+    protected D definition;
+    static final String REQUIRED_ERROR = "This field is required! (to be i18n'd)";
+    public static final String FIELD_STYLE_NAME = "textfield";
+    private String styleName;
 
-
+    /**
+     * First create the real Item by calling abstract buildField().
+     * Add
+     *   the related property Datasource.
+     *   Validators rules
+     *   Mandatory tag
+     * @param definition
+     * @param relatedFieldItem
+     */
     public AbstractDialogField(D definition, Item relatedFieldItem) {
         this.definition = definition;
         this.item = relatedFieldItem;
-        // Create the Vaadin Field
-        this.dialogField = buildField();
 
-        //Get the Datasource Field property . Id the property does not yet exist,
-        //Create a new Property and Set default Value and Type
+        // Build the vaadin field
+        this.field = buildField();
+
+        //Get and set the Field Datasource property .
         Property property = getOrCreateProperty();
-        setPropertyDataSource(property);
+        this.field.setPropertyDataSource(property);
 
-        addValidatorsAndRequiredElements(definition, dialogField);
+        //Set Style
+        this.field.setStyleName(getStyleName());
 
+        //Set Label
+        this.field.setCaption(getFieldDefinition().getLabel());//TODO Add i18n
+
+        //Add Validation
+        setRestriction(definition, this.field);
     }
-
 
     @Override
     public Field getField() {
-        return dialogField;
+        return this.field;
     }
 
     @Override
@@ -94,12 +109,22 @@ public abstract class AbstractDialogField<D extends FieldDefinition> implements 
      * Set the Datasource of the current field.
      */
     public void setPropertyDataSource(Property property) {
-        this.dialogField.setPropertyDataSource(property);
+        this.field.setPropertyDataSource(property);
     }
 
     protected abstract Field buildField();
 
 
+    /**
+     * Set the default Css StyleName for the Current field.
+     */
+    protected void setStyleName(String styleName) {
+        this.styleName = styleName;
+    }
+
+    protected String getStyleName() {
+        return this.styleName !=null ? this.styleName:FIELD_STYLE_NAME;
+    }
     /**
      * Get a property from the current Item.
      * If the property already exist, return this property.
@@ -110,7 +135,6 @@ public abstract class AbstractDialogField<D extends FieldDefinition> implements 
         DefaultProperty property = (DefaultProperty)item.getItemProperty(definition.getName());
         if(property == null){
             property = DefaultPropertyUtil.newDefaultProperty(definition.getName(), getFieldType(definition).getSimpleName(), definition.getDefaultValue());
-            property.setSaveInfo(definition.getSaveInfo());
             item.addItemProperty(definition.getName(), property);
         }
         return property;
@@ -133,14 +157,18 @@ public abstract class AbstractDialogField<D extends FieldDefinition> implements 
     }
 
     /**
-     * Add Validation rules and mandatory field info
-     * to the Vaadin Field.
+     * Set all restrictions linked to a field. Add:
+     *   Validation rules
+     *   Mandatory field
+     *   SaveInfo property
      */
-    private void addValidatorsAndRequiredElements(FieldDefinition fieldDefinition, Field input) {
+    private void setRestriction(FieldDefinition fieldDefinition, Field input) {
         addValidators(fieldDefinition, input);
         if(fieldDefinition.isRequired()) {
             addRequired(input, null);
         }
+
+        ((DefaultProperty)input.getPropertyDataSource()).setSaveInfo(definition.getSaveInfo());
     }
 
     /**
@@ -175,5 +203,4 @@ public abstract class AbstractDialogField<D extends FieldDefinition> implements 
             input.setRequiredError(message);
         }
     }
-
 }

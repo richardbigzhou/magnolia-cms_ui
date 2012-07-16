@@ -105,15 +105,10 @@ public class ContentPresenter implements ContentView.Listener {
             return;
         }
         try {
-            // FIXME this seems to be triggered twice both for click row event and tableValue
-            // change even when no value has changed and only a click happened on table, see
-            // info.magnolia.ui.admincentral.tree.view.TreeViewImpl.TreeViewImpl
-            // and jcrBrowser internal obj registering for those events.
             selectedItemId = ((JcrItemAdapter) item).getItemId();
             log.debug("javax.jcr.Item at {} was selected. Firing ItemSelectedEvent...", selectedItemId);
             eventBus.fireEvent(new ItemSelectedEvent(workspaceName, selectedItemId));
         } catch (Exception e) {
-            // TODO dlipp - to check - throwing an Exception should be sufficient...
             shell.showError("An error occurred while selecting a row in the data grid", e);
         }
     }

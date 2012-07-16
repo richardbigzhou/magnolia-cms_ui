@@ -38,6 +38,7 @@ import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryCallback;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.event.ViewportCloseEvent;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -197,6 +198,13 @@ public class VShellViewport extends ComplexPanel implements Container, Container
         }
     }
 
+    protected void hideEntireContents() {
+        Iterator<Widget> it = iterator();
+        while (it.hasNext()) {
+            it.next().setVisible(false);
+        }
+    }
+    
     public Widget getVisibleWidget() {
         return visibleWidget;
     }

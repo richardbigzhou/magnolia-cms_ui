@@ -34,7 +34,6 @@
 package info.magnolia.ui.admincentral.app.simple;
 
 import info.magnolia.ui.framework.view.View;
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 import info.magnolia.ui.widget.tabsheet.ShellTab;
 import info.magnolia.ui.widget.tabsheet.ShellTabSheet;
 
@@ -45,7 +44,7 @@ import com.vaadin.ui.ComponentContainer;
  * View used to give all apps a uniform look-and-feel.
  */
 @SuppressWarnings("serial")
-public class AppFrameView implements View, IsVaadinComponent {
+public class AppFrameView implements View {
 
     private ShellTabSheet tabsheet = new ShellTabSheet();
 

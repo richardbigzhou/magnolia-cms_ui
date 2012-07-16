@@ -170,6 +170,16 @@
     }
 }
 
+.v-preloader {
+	position: absolute;
+	background-color: #FFFFFF;
+	visibility: visible;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	top: 60px;
+}
+
 .loading-screen {
     background: none repeat scroll 0 0 #E6E6E6;
     bottom: 0;

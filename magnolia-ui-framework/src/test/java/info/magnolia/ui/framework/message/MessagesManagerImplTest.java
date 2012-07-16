@@ -53,11 +53,11 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.cms.security.User;
 import info.magnolia.cms.security.UserManager;
 import info.magnolia.context.MgnlContext;
-import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockUtil;
 import info.magnolia.test.mock.jcr.SessionTestUtil;
@@ -74,9 +74,7 @@ public class MessagesManagerImplTest {
     @Before
     public void setUp() throws Exception {
 
-        session = SessionTestUtil.createSession(RepositoryConstants.CONFIG,
-                "/modules/ui-admin-central"
-        );
+        session = SessionTestUtil.createSession("messages", "/");
 
         MockUtil.initMockContext();
         MockUtil.setSystemContextSessionAndHierarchyManager(session);
@@ -132,9 +130,12 @@ public class MessagesManagerImplTest {
         verify(listenerB).messageSent(any(Message.class));
         verify(listenerC, never()).messageSent(any(Message.class));
 
-        assertTrue(session.nodeExists("/modules/ui-admin-central/messageStore/alice/0"));
-        assertTrue(session.nodeExists("/modules/ui-admin-central/messageStore/bob/0"));
-        assertFalse(session.nodeExists("/modules/ui-admin-central/messageStore/charlie"));
+        assertTrue(session.nodeExists("/alice/0"));
+        assertTrue(session.nodeExists("/bob/0"));
+        assertFalse(session.nodeExists("/charlie"));
+
+        assertTrue(session.getNode("/alice").getPrimaryNodeType().getName().equals(MgnlNodeType.NT_CONTENT));
+        assertTrue(session.getNode("/alice/0").getPrimaryNodeType().getName().equals("mgnl:message"));
 
         assertEquals(1, messagesManager.getMessagesForUser("alice").size());
         assertEquals(1, messagesManager.getMessagesForUser("bob").size());
@@ -165,9 +166,12 @@ public class MessagesManagerImplTest {
         verify(listenerB).messageSent(any(Message.class));
         verify(listenerC, never()).messageSent(any(Message.class));
 
-        assertFalse(session.nodeExists("/modules/ui-admin-central/messageStore/alice"));
-        assertTrue(session.nodeExists("/modules/ui-admin-central/messageStore/bob/0"));
-        assertFalse(session.nodeExists("/modules/ui-admin-central/messageStore/charlie"));
+        assertFalse(session.nodeExists("/alice"));
+        assertTrue(session.nodeExists("/bob/0"));
+        assertFalse(session.nodeExists("/charlie"));
+
+        assertTrue(session.getNode("/bob").getPrimaryNodeType().getName().equals(MgnlNodeType.NT_CONTENT));
+        assertTrue(session.getNode("/bob/0").getPrimaryNodeType().getName().equals("mgnl:message"));
     }
 
     @Test
@@ -190,7 +194,7 @@ public class MessagesManagerImplTest {
         // THEN
         assertEquals(0, messagesManager.getNumberOfUnclearedMessagesForUser("bob"));
         verify(listener).messageSent(any(Message.class));
-        assertTrue(session.getNode("/modules/ui-admin-central/messageStore/bob/0").getProperty("cleared").getBoolean());
+        assertTrue(session.getNode("/bob/0").getProperty("cleared").getBoolean());
     }
 
     @Test

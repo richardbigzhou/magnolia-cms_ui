@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.app.pages.action;
 
-import info.magnolia.ui.admincentral.workbench.ContentWorkbenchSubApp;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.location.LocationController;
@@ -41,29 +40,42 @@ import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 
 import javax.inject.Inject;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * Opens a page for editing.
  */
 public class EditPageAction extends ActionBase<EditPageActionDefinition> {
 
+    private static final Logger log = LoggerFactory.getLogger(EditPageAction.class);
 
-    private final ContentWorkbenchSubApp workbench;
+    private final Node nodeToEdit;
+
     private final LocationController locationController;
+
     private final static String TOKEN = "pageeditor";
 
     @Inject
-    public EditPageAction(final EditPageActionDefinition definition, ContentWorkbenchSubApp workbench, LocationController locationController) {
+    public EditPageAction(final EditPageActionDefinition definition, Node nodeToEdit, LocationController locationController) {
         super(definition);
-        this.workbench = workbench;
+        this.nodeToEdit = nodeToEdit;
         this.locationController = locationController;
 
     }
 
     @Override
     public void execute() throws ActionExecutionException {
-        String nodePath = workbench.getSelectedItemId();
-        Location pageEditorLocation = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages", TOKEN + ":" + nodePath);
-        locationController.goTo(pageEditorLocation);
+        try {
+            String nodePath = nodeToEdit.getPath();
+            Location pageEditorLocation = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages", TOKEN + ":" + nodePath);
+            locationController.goTo(pageEditorLocation);
+        } catch (RepositoryException e) {
+            log.error(e.getMessage(), e);
+        }
     }
 }

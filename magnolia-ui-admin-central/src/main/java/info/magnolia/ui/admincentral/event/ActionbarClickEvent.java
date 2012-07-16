@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,16 +31,39 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.view;
+package info.magnolia.ui.admincentral.event;
 
-import java.io.Serializable;
-
-import com.vaadin.ui.Component;
+import info.magnolia.ui.framework.event.Event;
+import info.magnolia.ui.framework.event.EventHandler;
+import info.magnolia.ui.model.action.ActionDefinition;
 
 
 /**
- * Implemented if a component is a Vaadin component. Extends Serializable as all Vaadin components will have to.
+ * This event is fired when an item in the action bar is clicked.
  */
-public interface IsVaadinComponent extends Serializable {
-    Component asVaadinComponent();
+public class ActionbarClickEvent implements Event<ActionbarClickEvent.Handler> {
+
+    /**
+     * Handles {@link ActionbarClickEvent} events.
+     */
+    public static interface Handler extends EventHandler {
+
+        void onActionbarItemClicked(ActionbarClickEvent event);
+    }
+
+    private final ActionDefinition actionDefinition;
+
+    @Override
+    public void dispatch(Handler handler) {
+        handler.onActionbarItemClicked(this);
+    }
+
+    public ActionbarClickEvent(ActionDefinition actionDefinition) {
+        this.actionDefinition = actionDefinition;
+    }
+
+    public ActionDefinition getActionDefinition() {
+        return actionDefinition;
+    }
+
 }

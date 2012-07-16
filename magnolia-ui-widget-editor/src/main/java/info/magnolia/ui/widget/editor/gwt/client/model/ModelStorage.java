@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.widget.editor.gwt.client.model;
 
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Node;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.AbstractBar;
 import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.AreaEndBar;
@@ -47,26 +45,34 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Node;
+
+
 /**
  * Singleton keeping the model.
  */
 public class ModelStorage implements Model {
 
+    private final Map<MgnlElement, AbstractBar> editBars = new HashMap<MgnlElement, AbstractBar>();
 
-    private Map<MgnlElement, AbstractBar> editBars = new HashMap<MgnlElement, AbstractBar>();
-    private Map<MgnlElement, AbstractOverlay> overlays = new HashMap<MgnlElement, AbstractOverlay>();
-    private Map<MgnlElement, List<Element>> elements = new HashMap<MgnlElement, List<Element>>();
-    private Map<Element, MgnlElement> mgnlElements = new HashMap<Element, MgnlElement>();
-    private Map<MgnlElement, AreaPlaceHolder> areaPlaceHolders = new HashMap<MgnlElement, AreaPlaceHolder>();
-    private Map<MgnlElement, ComponentPlaceHolder> componentPlaceHolders = new HashMap<MgnlElement, ComponentPlaceHolder>();
-    private Map<MgnlElement, AreaEndBar> areaEndBars = new HashMap<MgnlElement, AreaEndBar>();
+    private final Map<MgnlElement, AbstractOverlay> overlays = new HashMap<MgnlElement, AbstractOverlay>();
 
+    private final Map<MgnlElement, List<Element>> elements = new HashMap<MgnlElement, List<Element>>();
+
+    private final Map<Element, MgnlElement> mgnlElements = new HashMap<Element, MgnlElement>();
+
+    private final Map<MgnlElement, AreaPlaceHolder> areaPlaceHolders = new HashMap<MgnlElement, AreaPlaceHolder>();
+
+    private final Map<MgnlElement, ComponentPlaceHolder> componentPlaceHolders = new HashMap<MgnlElement, ComponentPlaceHolder>();
+
+    private final Map<MgnlElement, AreaEndBar> areaEndBars = new HashMap<MgnlElement, AreaEndBar>();
 
     public List<MgnlElement> rootElements = new LinkedList<MgnlElement>();
 
+    private MgnlElement selectedMgnlAreaElement = null;
 
-    private MgnlElement selectedMgnlElement = null;
-
+    private MgnlElement selectedMgnlComponentElement = null;
 
     @Override
     public void addOverlay(MgnlElement mgnlElement, AbstractOverlay overlayWidget) {
@@ -149,13 +155,13 @@ public class ModelStorage implements Model {
     }
 
     @Override
-    public void setSelectedMgnlElement(MgnlElement selectedMgnlElement) {
-        this.selectedMgnlElement = selectedMgnlElement;
+    public void setSelectedMgnlAreaElement(MgnlElement selectedMgnlAreaElement) {
+        this.selectedMgnlAreaElement = selectedMgnlAreaElement;
     }
 
     @Override
-    public MgnlElement getSelectedMgnlElement() {
-        return selectedMgnlElement;
+    public MgnlElement getSelectedMgnlAreaElement() {
+        return selectedMgnlAreaElement;
     }
 
     @Override
@@ -193,7 +199,8 @@ public class ModelStorage implements Model {
 
         // remove all occurrences of the element
         if (mgnlElements.containsValue(mgnlElement)) {
-            while(mgnlElements.values().remove(mgnlElement));
+            while (mgnlElements.values().remove(mgnlElement))
+                ;
         }
         elements.remove(mgnlElement);
 
@@ -207,11 +214,20 @@ public class ModelStorage implements Model {
     @Override
     public MgnlElement findMgnlElementByContentId(String contentId) {
         for (MgnlElement element : elements.keySet()) {
-            if(contentId.equals(element.getAttribute("content"))){
+            if (contentId.equals(element.getAttribute("content"))) {
                 return element;
             }
         }
         return null;
     }
 
+    @Override
+    public MgnlElement getSelectedMgnlComponentElement() {
+        return selectedMgnlComponentElement;
+    }
+
+    @Override
+    public void setSelectedMgnlComponentElement(MgnlElement selectedMgnlComponentElement) {
+        this.selectedMgnlComponentElement = selectedMgnlComponentElement;
+    }
 }

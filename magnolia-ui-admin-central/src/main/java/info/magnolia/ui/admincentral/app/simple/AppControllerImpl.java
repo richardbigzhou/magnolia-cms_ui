@@ -62,7 +62,6 @@ import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.framework.view.ViewPort;
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -286,7 +285,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             currentLocation = location;
 
             View view = main.start();
-            appFrameView.addTab((ComponentContainer) ((IsVaadinComponent) view).asVaadinComponent(), main.getCaption());
+            appFrameView.addTab((ComponentContainer) view.asVaadinComponent(), main.getCaption());
         }
 
         /**
@@ -323,7 +322,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
         @Override
         public void openSubApp(SubApp subApp) {
-            appFrameView.addTab((ComponentContainer) ((IsVaadinComponent) subApp.start()).asVaadinComponent(), subApp.getCaption());
+            appFrameView.addTab((ComponentContainer) subApp.start().asVaadinComponent(), subApp.getCaption());
         }
 
         @Override

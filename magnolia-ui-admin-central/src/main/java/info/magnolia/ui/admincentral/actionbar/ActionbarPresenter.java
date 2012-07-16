@@ -33,36 +33,65 @@
  */
 package info.magnolia.ui.admincentral.actionbar;
 
+import info.magnolia.ui.admincentral.actionbar.builder.ActionbarBuilder;
+import info.magnolia.ui.admincentral.event.ActionbarClickEvent;
+import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
+import info.magnolia.ui.model.actionbar.definition.ActionbarGroupDefinition;
+import info.magnolia.ui.model.actionbar.definition.ActionbarItemDefinition;
+import info.magnolia.ui.model.actionbar.definition.ActionbarSectionDefinition;
+import info.magnolia.ui.widget.actionbar.ActionbarView;
 
-import java.util.Map;
+import com.google.inject.Inject;
 
 
 /**
- * Base interface for an action bar presenter.
+ * Default presenter for an action bar.
  */
-public interface ActionbarPresenter {
+public class ActionbarPresenter implements ActionbarView.Listener {
+
+    private ActionbarDefinition definition;
+
+    private ActionbarView actionbar;
+
+    private final EventBus eventBus;
 
     /**
-     * Gets the action definitions registered in this presenter.
-     * 
-     * @return the map of action definitions
+     * Instantiates a new action bar presenter.
      */
-    Map<String, ActionDefinition> getActions();
+    @Inject
+    public ActionbarPresenter(EventBus eventBus) {
+        this.eventBus = eventBus;
+    }
 
-    /**
-     * Registers the given action definition for this presenter.
-     * 
-     * @param actionName the action name
-     * @param actionDefinition the action definition
-     */
-    void addAction(String actionName, ActionDefinition actionDefinition);
+    @Override
+    public ActionbarView getView() {
+        return actionbar;
+    }
 
-    /**
-     * Event handler invoked on clicking an item in the action bar.
-     * 
-     * @param actionName the action name
-     */
-    void onActionbarItemClicked(String actionName);
+    public void initActionbar(final ActionbarDefinition definition) {
+        this.definition = definition;
+        actionbar = ActionbarBuilder.build(definition, this);
+    }
+
+    @Override
+    public void onActionbarItemClicked(String actionName) {
+        ActionDefinition actionDefinition = getActionDefinition(actionName);
+        eventBus.fireEvent(new ActionbarClickEvent(actionDefinition));
+    }
+
+    private ActionDefinition getActionDefinition(String actionName) {
+        for (ActionbarSectionDefinition section : definition.getSections()) {
+            for (ActionbarGroupDefinition group : section.getGroups()) {
+                for (ActionbarItemDefinition action : group.getItems()) {
+                    if (actionName.equals(action.getName())) {
+                        return action.getActionDefinition();
+                    }
+                }
+            }
+        }
+        return null;
+    }
 
 }

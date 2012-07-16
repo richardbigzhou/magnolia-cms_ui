@@ -31,12 +31,21 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages;
-
-import info.magnolia.module.DefaultModuleVersionHandler;
+package info.magnolia.ui.model.action;
 
 /**
- * Version handler for Dummy app module.
+ * Interface for an action factory.
+ * 
+ * @param <D> the action definition type
+ * @param <I> the action implementation type
  */
-public class PagesAppModuleVersionHandler extends DefaultModuleVersionHandler {
+public interface ActionFactory<D extends ActionDefinition, I extends Action> {
+
+    /**
+     * Creates an action using the implementation configured for the given action definition. The
+     * parameters are made available for injection when the instance is created. The definition
+     * object given is also available for injection.
+     */
+    I createAction(D definition, Object... parameters);
+
 }

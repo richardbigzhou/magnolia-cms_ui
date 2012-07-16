@@ -33,13 +33,13 @@
  */
 package info.magnolia.ui.admincentral.actionbar.builder;
 
-import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarGroupDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarItemDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarSectionDefinition;
 import info.magnolia.ui.widget.actionbar.ActionButton;
 import info.magnolia.ui.widget.actionbar.Actionbar;
+import info.magnolia.ui.widget.actionbar.ActionbarView.Listener;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +57,7 @@ public class ActionbarBuilder {
 
     private static final Logger log = LoggerFactory.getLogger(ActionbarBuilder.class);
 
-    public static Actionbar build(ActionbarDefinition definition, final ActionbarPresenter presenter) {
+    public static Actionbar build(ActionbarDefinition definition, final Listener listener) {
         Actionbar actionbar = new Actionbar();
         if (definition == null) {
             log.warn("No actionbar definition found. This will result in an empty action bar. Is that intended?");
@@ -69,7 +69,7 @@ public class ActionbarBuilder {
                 @Override
                 public void buttonClick(ClickEvent event) {
                     ActionButton button = (ActionButton) event.getButton();
-                    presenter.onActionbarItemClicked(button.getActionName());
+                    listener.onActionbarItemClicked(button.getActionName());
                 }
             };
 
@@ -90,8 +90,6 @@ public class ActionbarBuilder {
                         button.setSectionName(section.getName());
 
                         button.addListener(clickListener);
-
-                        presenter.addAction(actionName, item.getActionDefinition());
                         actionbar.addComponent(button);
                     }
                 }

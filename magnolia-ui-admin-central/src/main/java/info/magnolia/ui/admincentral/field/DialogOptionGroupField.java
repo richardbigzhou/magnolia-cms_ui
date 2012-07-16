@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,21 +31,40 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.actionbar;
+package info.magnolia.ui.admincentral.field;
 
-import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
+import info.magnolia.ui.model.dialog.definition.FieldDefinition;
+import info.magnolia.ui.model.dialog.definition.OptionGroupFieldDefinition;
+
+import com.vaadin.data.Item;
+import com.vaadin.ui.AbstractSelect;
+import com.vaadin.ui.Field;
+import com.vaadin.ui.OptionGroup;
 
 
 /**
- * Base interface for an action bar view.
+ * Initialize a DialogOption Field based on the configured informations.
  */
-public interface ActionbarView {
 
-    /**
-     * Inits the actionbar view.
-     * 
-     * @param definition the actionbar definition
-     */
-    void initActionbar(ActionbarDefinition definition);
+public class DialogOptionGroupField extends DialogSelectField {
+
+    public DialogOptionGroupField(FieldDefinition definition, Item relatedFieldItem) {
+        super(definition, relatedFieldItem);
+    }
+
+
+    @Override
+    protected Field buildField() {
+        //Set common attributes
+        super.buildField();
+        select.setMultiSelect(((OptionGroupFieldDefinition)getFieldDefinition()).isMultiselect());
+        return select;
+    }
+
+    @Override
+    protected AbstractSelect createVaadinSeletionField() {
+        return new OptionGroup();
+    }
+
 
 }

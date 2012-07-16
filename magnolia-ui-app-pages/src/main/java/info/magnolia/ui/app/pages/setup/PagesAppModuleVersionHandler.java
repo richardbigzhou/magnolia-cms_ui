@@ -31,23 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages;
+package info.magnolia.ui.app.pages.setup;
 
-import com.vaadin.ui.ComponentContainer;
-import info.magnolia.ui.framework.view.View;
+import info.magnolia.module.DefaultModuleVersionHandler;
 
 /**
- * View for the Pages app.
+ * Version handler for Dummy app module.
  */
-public interface PagesMainView extends View {
-
-    /**
-     * Listener.
-     *
-     */
-    public interface Listener {
-    }
-
-    void setListener(Listener listener);
-    void initView(ComponentContainer workbenchView);
+public class PagesAppModuleVersionHandler extends DefaultModuleVersionHandler {
 }

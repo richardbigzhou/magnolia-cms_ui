@@ -31,37 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages;
+package info.magnolia.ui.app.pages.editor;
+
+import info.magnolia.ui.widget.actionbar.ActionbarView;
+import info.magnolia.ui.widget.editor.PageEditorView;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
-import info.magnolia.context.MgnlContext;
-import info.magnolia.ui.vaadin.integration.view.IsVaadinComponent;
-import info.magnolia.ui.widget.actionbar.Actionbar;
-import info.magnolia.ui.widget.editor.PageEditor;
+
 
 /**
- * PageEditorViewImpl.
- * TODO: make this a component with a split layout to accomodate the page editor on the left and its related actions on the right.
-*/
+ * PageEditorViewImpl. TODO: make this a component with a split layout to accomodate the page editor
+ * on the left and its related actions on the right.
+ */
 @SuppressWarnings("serial")
-public class PageEditorViewImpl implements PageEditorView, IsVaadinComponent {
-
-    private Actionbar actionbar;
+public class PagesEditorViewImpl implements PagesEditorView {
 
     private final HorizontalLayout root = new HorizontalLayout();
 
     private final VerticalLayout container = new VerticalLayout();
 
     private Listener listener;
-    private PageEditor pageEditor;
-    private String caption;
 
-    public PageEditorViewImpl() {
+    private PageEditorView pageEditor;
 
-        //this.actionbar = actionbar;
-        // same root as ContentWorkbenchView
+    private ActionbarView actionbar;
+
+    public PagesEditorViewImpl() {
         root.setSizeFull();
         root.setStyleName("mgnl-app-root");
         root.addComponent(container);
@@ -72,13 +69,6 @@ public class PageEditorViewImpl implements PageEditorView, IsVaadinComponent {
         container.setSizeFull();
         container.setStyleName("mgnl-app-view");
         container.setImmediate(true);
-        caption = "meeeh"; //StringUtils.defaultIfEmpty(PropertyUtil.getString(pageNode, "title"), pageNode.getName());
-        //root.addCompon;ent(actionbar);
-    }
-
-    public void setActionbar(Actionbar actionbar) {
-        root.replaceComponent(this.actionbar, actionbar);
-        this.actionbar = actionbar;
     }
 
     @Override
@@ -87,12 +77,20 @@ public class PageEditorViewImpl implements PageEditorView, IsVaadinComponent {
     }
 
     @Override
-    public void initPageEditor(String nodePath) {
-        String contextPath = MgnlContext.getContextPath();
-        pageEditor = new PageEditor(contextPath, nodePath);
-        container.addComponent(pageEditor);
+    public void setPageEditor(PageEditorView pageEditor) {
+        this.pageEditor = pageEditor;
+        container.addComponent(pageEditor.asVaadinComponent());
     }
 
+    @Override
+    public void addActionbarView(final ActionbarView actionbar) {
+        if (this.actionbar == null) {
+            root.addComponent(actionbar.asVaadinComponent());
+        } else {
+            root.replaceComponent(this.actionbar.asVaadinComponent(), actionbar.asVaadinComponent());
+        }
+        this.actionbar = actionbar;
+    }
 
     @Override
     public Component asVaadinComponent() {
