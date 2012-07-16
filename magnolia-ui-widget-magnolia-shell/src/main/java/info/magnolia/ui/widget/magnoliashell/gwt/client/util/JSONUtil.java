@@ -31,27 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.tabsheet.gwt.client.event;
+package info.magnolia.ui.widget.magnoliashell.gwt.client.util;
 
-import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.core.client.JsArrayString;
 
 /**
- * ShowAllTabEvent.
+ * JSON conversion utils.
+ *
  */
-public class ShowAllTabEvent extends GwtEvent<ShowAllTabHandler> {
-
-    public static Type<ShowAllTabHandler> TYPE = new Type<ShowAllTabHandler>();
-
-    @Override
-    public GwtEvent.Type<ShowAllTabHandler> getAssociatedType() {
-        return TYPE;
-    }
-
-
-    @Override
-    protected void dispatch(ShowAllTabHandler handler) {
-        handler.onShowAll(this);
-
-    }
-
+public class JSONUtil {
+    
+    public static native JsArrayString parseStringArray(String json) /*-{
+        return eval('(' + json + ')');
+    }-*/;
 }

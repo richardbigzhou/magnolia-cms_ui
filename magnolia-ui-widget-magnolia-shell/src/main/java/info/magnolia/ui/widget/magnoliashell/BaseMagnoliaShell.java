@@ -42,6 +42,8 @@ import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShell;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShell.ViewportType;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VShellMessage.MessageType;
+import info.magnolia.ui.widget.magnoliashell.viewport.AppsViewport;
+import info.magnolia.ui.widget.magnoliashell.viewport.ShellAppsViewport;
 import info.magnolia.ui.widget.magnoliashell.viewport.ShellViewport;
 
 import java.util.EnumMap;
@@ -71,8 +73,8 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
     private EventHandlerCollection<FragmentChangedHandler> handlers = new EventHandlerCollection<FragmentChangedHandler>();
 
     private Map<ViewportType, ShellViewport> viewports = new EnumMap<ViewportType, ShellViewport>(ViewportType.class) {{
-        put(ViewportType.SHELL_APP_VIEWPORT, new ShellViewport(BaseMagnoliaShell.this));
-        put(ViewportType.APP_VIEWPORT, new ShellViewport(BaseMagnoliaShell.this));
+        put(ViewportType.SHELL_APP_VIEWPORT, new ShellAppsViewport(BaseMagnoliaShell.this));
+        put(ViewportType.APP_VIEWPORT, new AppsViewport(BaseMagnoliaShell.this));
         put(ViewportType.DIALOG_VIEWPORT, new ShellViewport(BaseMagnoliaShell.this));
     }};
     

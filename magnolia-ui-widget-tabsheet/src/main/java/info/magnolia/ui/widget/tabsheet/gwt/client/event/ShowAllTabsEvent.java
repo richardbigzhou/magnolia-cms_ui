@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,14 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.widget.client.applauncher.event;
+package info.magnolia.ui.widget.tabsheet.gwt.client.event;
 
-import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * Event handler of app activation.
+ * ShowAllTabEvent.
  */
-public interface AppActivatedEventHandler extends EventHandler {
+public class ShowAllTabsEvent extends GwtEvent<ShowAllTabsHandler> {
 
-    void onAppActivated(final AppActivationEvent event);
+    public static Type<ShowAllTabsHandler> TYPE = new Type<ShowAllTabsHandler>();
+
+    @Override
+    public GwtEvent.Type<ShowAllTabsHandler> getAssociatedType() {
+        return TYPE;
+    }
+
+
+    @Override
+    protected void dispatch(ShowAllTabsHandler handler) {
+        handler.onShowAllTabs(this);
+
+    }
+
 }

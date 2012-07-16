@@ -66,9 +66,7 @@ public class VShellTabSheetViewImpl extends FlowPanel implements VShellTabSheetV
         super();
         this.eventBus = eventBus;
         this.tabContainer =  new VShellTabNavigator(eventBus);
-
-        setStyleName("v-shell-tabsheet");
-
+        addStyleName("v-shell-tabsheet");
         add(tabContainer);
     }
 

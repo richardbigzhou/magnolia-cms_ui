@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.vaadin.integration.widget.client.applauncher;
 
-import info.magnolia.ui.vaadin.integration.widget.client.applauncher.event.AppActivatedEventHandler;
 import info.magnolia.ui.vaadin.integration.widget.client.applauncher.event.AppActivationEvent;
 
 import java.util.HashMap;
@@ -50,7 +49,7 @@ import com.google.web.bindery.event.shared.EventBus;
  * Implementation of AppLauncher view. 
  *
  */
-public class VAppLauncherViewImpl extends FlowPanel implements VAppLauncherView, AppActivatedEventHandler {
+public class VAppLauncherViewImpl extends FlowPanel implements VAppLauncherView, AppActivationEvent.Handler {
 
     private Map<String, VAppTileGroup> groups = new HashMap<String, VAppTileGroup>();
     
@@ -67,7 +66,7 @@ public class VAppLauncherViewImpl extends FlowPanel implements VAppLauncherView,
         getElement().appendChild(rootEl);
         this.eventBus = eventBus;
         rootEl.addClassName("v-app-launcher");
-        add(temporarySectionsBar);
+        add(temporarySectionsBar);        
         this.eventBus.addHandler(AppActivationEvent.TYPE,  this);
     }
 

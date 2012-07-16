@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.magnoliashell.gwt.client;
+package info.magnolia.ui.widget.magnoliashell.gwt.client.viewport;
 
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.Callbacks;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryCallback;
@@ -268,8 +268,8 @@ public class VShellViewport extends ComplexPanel implements Container, Container
         if (child instanceof Paintable) {
             paintables.add((Paintable)child);
             child.getElement().getStyle().setPosition(Position.ABSOLUTE);
-            super.add(child, container);
         }
+        super.add(child, container);
     }
 
     @Override
@@ -302,7 +302,7 @@ public class VShellViewport extends ComplexPanel implements Container, Container
         return visibleWidget != null;
     }
 
-    void setContentAnimationDelegate(final ContentAnimationDelegate animationDelegate) {
+    public void setContentAnimationDelegate(final ContentAnimationDelegate animationDelegate) {
         this.animationDelegate = animationDelegate;
     }
 

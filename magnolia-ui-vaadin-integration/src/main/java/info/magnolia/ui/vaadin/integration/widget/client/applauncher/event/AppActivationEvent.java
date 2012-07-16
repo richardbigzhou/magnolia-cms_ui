@@ -38,9 +38,9 @@ import com.google.web.bindery.event.shared.Event;
 /**
  * Event of app activation.
  */
-public class AppActivationEvent extends Event<AppActivatedEventHandler> {
+public class AppActivationEvent extends Event<AppActivationEvent.Handler> {
 
-    public static final Type<AppActivatedEventHandler> TYPE = new Type<AppActivatedEventHandler>();
+    public static final Type<Handler> TYPE = new Type<Handler>();
 
     private String appId;
     
@@ -53,12 +53,19 @@ public class AppActivationEvent extends Event<AppActivatedEventHandler> {
     }
     
     @Override
-    public Type<AppActivatedEventHandler> getAssociatedType() {
+    public Type<Handler> getAssociatedType() {
         return TYPE;
     }
 
     @Override
-    protected void dispatch(AppActivatedEventHandler handler) {
+    protected void dispatch(Handler handler) {
         handler.onAppActivated(this);
+    }
+    
+    /**
+     * Handler.
+     */
+    public interface Handler {
+        void onAppActivated(final AppActivationEvent event);
     }
 }

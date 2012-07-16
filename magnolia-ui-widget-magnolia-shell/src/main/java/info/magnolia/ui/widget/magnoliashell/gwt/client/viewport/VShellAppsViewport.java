@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,37 +31,16 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.magnoliashell.gwt.client.event;
-
-import info.magnolia.ui.widget.magnoliashell.gwt.client.event.handler.ViewportCloseHandler;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.VShellViewport;
-
-import com.google.gwt.event.shared.GwtEvent;
+package info.magnolia.ui.widget.magnoliashell.gwt.client.viewport;
 
 /**
- * Event fired when the viewport is closed.
+ * Shell apps viewport client side.
  */
-public class ViewportCloseEvent extends GwtEvent<ViewportCloseHandler>{
+public class VShellAppsViewport extends VShellViewport {
 
-    public static final Type<ViewportCloseHandler> TYPE = new Type<ViewportCloseHandler>();
-
-    private final VShellViewport viewport;
-
-    public ViewportCloseEvent(final VShellViewport viewport) {
-        this.viewport = viewport;
-    }
-
-    @Override
-    protected void dispatch(ViewportCloseHandler handler) {
-        handler.onViewportClose(this);
-    }
-
-    @Override
-    public GwtEvent.Type<ViewportCloseHandler> getAssociatedType() {
-        return TYPE;
-    };
-
-    public VShellViewport getViewport() {
-        return viewport;
+    public VShellAppsViewport() {
+        super();
+        setForceContentAlign(true);
+        setContentAnimationDelegate(ContentAnimationDelegate.FadingDelegate);
     }
 }

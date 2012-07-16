@@ -64,7 +64,7 @@ public class VAppLauncher extends Composite implements Paintable, ClientSideHand
                 }
             });
 
-            register("addAppThumbnail", new Method() {
+            register("addAppTile", new Method() {
                 @Override
                 public void invoke(String methodName, Object[] params) {
                     final VAppTileJSO appTile = VAppTileJSO.parse(String.valueOf(params[0]));
@@ -86,15 +86,20 @@ public class VAppLauncher extends Composite implements Paintable, ClientSideHand
     
     private final VAppLauncherView view;
 
-    private final EventBus eventBus = new SimpleEventBus();
+    private final EventBus internalEventBus = new SimpleEventBus();
     
     public VAppLauncher() {
         super();
-        this.view = new VAppLauncherViewImpl(eventBus);
+        this.view = new VAppLauncherViewImpl(internalEventBus);
         this.view.setPresenter(this);
         initWidget(view.asWidget());
     }
 
+    public void addAppLauchHandler() {
+        
+    }
+   
+    
     @Override
     public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
         proxy.update(this, uidl, client);
@@ -113,7 +118,6 @@ public class VAppLauncher extends Composite implements Paintable, ClientSideHand
     @Override
     public void activateApp(String appId) {
         History.newItem("app:" + appId, true);
-        //proxy.call("appActivated", appId);
     }
 
 }

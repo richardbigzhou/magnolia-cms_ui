@@ -99,7 +99,7 @@ public class AppLauncher extends AbstractComponent implements ServerSideHandler 
             final AppTile tile = new AppTile(caption, icon);
             section.addAppTile(tile);
             if (isAttached) {
-                proxy.call("addAppThumbnail", new Gson().toJson(tile), sectionId);   
+                proxy.call("addAppTile", new Gson().toJson(tile), sectionId);   
             }   
         }
     }

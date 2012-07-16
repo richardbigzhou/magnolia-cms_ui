@@ -169,3 +169,35 @@
        opacity:1;
     }
 }
+
+.loading-screen {
+    background: none repeat scroll 0 0 #E6E6E6;
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    right: 0;
+    text-align: center;
+    top: 27px;
+    z-index: 10;
+}
+
+.loading-message-wrapper {
+    margin-right: 25px;
+}
+
+.loading-message {
+    color: #777777;
+    font-family: DINWebPro-Medium;
+    font-size: 14px;
+    margin: 70px auto auto;
+    text-transform: uppercase;
+    width: 300px;
+}
+
+
+.loading-message .spinner {
+    background: url("img/shell/loader-app-worm-24.gif") no-repeat scroll center center transparent;
+    height: 24px;
+    margin: auto auto 6px;
+    width: 24px;
+}

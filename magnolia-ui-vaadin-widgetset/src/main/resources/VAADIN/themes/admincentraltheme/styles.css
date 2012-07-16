@@ -16,8 +16,30 @@
 
 @font-face{
     font-family: DinRound;
-    src: url("dinroundmedium.woff") format("woff");
+    src: url("fonts/dinroundmedium.woff") format("woff");
     font-weight:bold;
+}
+
+/* first for IE 4Ð8 */
+@font-face {
+    font-family: DINWebPro-Medium;
+    src: url("fonts/DINWebPro-Medium.eot");
+}
+/* then for WOFF-capable browsers */
+@font-face {
+    font-family: DINWebPro-Medium;
+    src: url("fonts/DINWebPro-Medium.woff") format("woff");
+}
+
+/* first for IE 4Ð8 */
+@font-face {
+    font-family: DINWebPro;
+    src: url("fonts/DINWebPro.eot");
+}
+/* then for WOFF-capable browsers */
+@font-face {
+    font-family: DINWebPro;
+    src: url("fonts/DINWebPro.woff") format("woff");
 }
 
 .clearfix:before, .clearfix:after { content: ""; display: table; }

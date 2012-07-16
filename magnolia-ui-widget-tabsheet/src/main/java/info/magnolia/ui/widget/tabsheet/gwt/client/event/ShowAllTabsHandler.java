@@ -38,6 +38,6 @@ import com.google.gwt.event.shared.EventHandler;
 /**
  * ShowAllTabHandler.
  */
-public interface ShowAllTabHandler extends EventHandler {
-    void onShowAll(final ShowAllTabEvent event);
+public interface ShowAllTabsHandler extends EventHandler {
+    void onShowAllTabs(final ShowAllTabsEvent event);
 }

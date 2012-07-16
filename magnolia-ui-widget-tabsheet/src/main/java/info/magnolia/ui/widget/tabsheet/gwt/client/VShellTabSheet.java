@@ -36,8 +36,8 @@ package info.magnolia.ui.widget.tabsheet.gwt.client;
 
 import info.magnolia.ui.widget.tabsheet.gwt.client.event.ActiveTabChangedEvent;
 import info.magnolia.ui.widget.tabsheet.gwt.client.event.ActiveTabChangedHandler;
-import info.magnolia.ui.widget.tabsheet.gwt.client.event.ShowAllTabEvent;
-import info.magnolia.ui.widget.tabsheet.gwt.client.event.ShowAllTabHandler;
+import info.magnolia.ui.widget.tabsheet.gwt.client.event.ShowAllTabsEvent;
+import info.magnolia.ui.widget.tabsheet.gwt.client.event.ShowAllTabsHandler;
 import info.magnolia.ui.widget.tabsheet.gwt.client.event.TabCloseEvent;
 import info.magnolia.ui.widget.tabsheet.gwt.client.event.TabCloseEventHandler;
 
@@ -93,10 +93,10 @@ public class VShellTabSheet extends Composite implements HasWidgets, VShellTabSh
                 proxy.call("activateTab", event.getTab().getTabId());            }
         });
 
-        eventBus.addHandler(ShowAllTabEvent.TYPE, new ShowAllTabHandler() {
+        eventBus.addHandler(ShowAllTabsEvent.TYPE, new ShowAllTabsHandler() {
 
             @Override
-            public void onShowAll(ShowAllTabEvent event) {
+            public void onShowAllTabs(ShowAllTabsEvent event) {
                 view.showAllTabContents(true);
                 view.getTabContainer().showAll(true);
             }
