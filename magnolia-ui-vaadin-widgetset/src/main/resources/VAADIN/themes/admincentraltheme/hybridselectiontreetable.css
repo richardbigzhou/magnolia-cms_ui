@@ -1,19 +1,30 @@
 .v-hybrid-selection-table {
-	position: relative;
-	background: none repeat scroll 0 0 #FFFFFF;
+	position:relative;
+	background:none repeat scroll 0 0 #ffffff;
 }
 
+.mgnl-content-view {background:#fff;}
+.mgnl-content-view .v-verticallayout-margin {padding:8px 12px;}
+
 .v-hybrid-selection-table .v-table {
-	background-color: #FFFFFF;
+	background-color:#ffffff;
+	font-size:12px;
 }
 
 .v-hybrid-selection-table .v-table-cell-content {
-	border-bottom: 1px dashed #C7C7C7 !important;
+	border-bottom:1px dashed #dddddd;
+	padding:5px;
+	line-height:18px;
+	color:#666666;
 }
 
 .v-hybrid-selection-table .v-table-header-wrap {
-	background: none;
-	border-bottom: 1px solid #000000 !important;
+	background:none;
+	border-bottom:1px solid #cccccc;
+}
+
+.v-table-header-wrap, .v-table-header-drag {
+	height:auto;
 }
 
 .v-hybrid-selection-table .v-table-cell-wrapper {
@@ -25,8 +36,12 @@
 }
 
 .v-hybrid-selection-table .v-table-caption-container {
-	font: bold 10pt Arial;	
-	padding-top: 0 !important;
+	color:#333333;
+	font-size:12px;
+	font-weight:bold;
+	font-family:Verdana,Arial,Geneva,Helvetica,sans-serif;
+	padding:10px 5px;
+	margin:0;
 }
 
 .v-hybrid-selection-table .square {
@@ -52,39 +67,35 @@
 }
 
 .v-hybrid-selection-table .v-select-all {
-	position: absolute;
-	top: 0px;
-	left: 7px;
-	z-index: 1000;
-	margin-top: 1px;
+	position:absolute;
+	top:0;
+	left:6px;
+	z-index:1000;
+	margin-top:8px;
 }
 
-.v-hybrid-selection-table .v-select-all > input {
-	margin-top: 1px;
-}
-
-.v-hybrid-selection-table tr.v-selected {
-	background-image: none !important;
-	background-color: #666666;
-	color:#A7B900;
+.v-hybrid-selection-table tr.v-selected .v-table-cell-content {
+	background:#666666;
+	color:#ffffff;
 }
 
 *:focus {
-	outline: none;
+	outline:none;
 }
+
+.v-table-focus .v-table-cell-wrapper {margin:0;}
+.v-table-focus .v-table-cell-content {border-top:none;}
 
 /*.v-hybrid-selection-table .v-treetable-treespacer {
     margin-left: 20px;
 }*/
 
 .v-hybrid-selection-table .v-selection-cb {
-	position: relative;
-	top: 0;
-	left: 0;
-	width: 15px;
-	height: 15px;
-	margin-top: 0;
-	margin-bottom: 0;
+	width:15px;
+	height:15px;
+	line-height:18px;
+	vertical-align:top;
+	margin:0 4px;
 }
 
 .v-hybrid-selection-table .v-table-row, .v-table-row-odd {
