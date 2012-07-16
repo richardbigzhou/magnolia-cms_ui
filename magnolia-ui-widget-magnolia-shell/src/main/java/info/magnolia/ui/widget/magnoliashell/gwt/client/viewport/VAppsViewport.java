@@ -33,6 +33,10 @@
  */
 package info.magnolia.ui.widget.magnoliashell.gwt.client.viewport;
 
+import info.magnolia.ui.widget.magnoliashell.gwt.client.event.ViewportCloseEvent;
+
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
@@ -48,15 +52,28 @@ public class VAppsViewport extends VShellViewport {
 
     private VAppPreloader preloader = new VAppPreloader();
     
+    private final Element closeWrapper = DOM.createDiv();
+    
     public VAppsViewport() {
         super();
         setForceContentAlign(false);
         setContentAnimationDelegate(ContentAnimationDelegate.FadingDelegate);
+        final Element closeButton = DOM.createButton();
+        closeWrapper.setClassName("close");
+        closeButton.setClassName("action-close");
+        closeWrapper.appendChild(closeButton);
+        addDomHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                if (closeWrapper.isOrHasChild((Element)event.getNativeEvent().getEventTarget().cast())) {
+                    getEventBus().fireEvent(new ViewportCloseEvent(VAppsViewport.this));
+                }
+            }
+        }, ClickEvent.getType());
     }
 
     @Override
     public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
-        hideEntireContents();
         preloader.getElement().getStyle().setZIndex(299);
         super.updateFromUIDL(uidl, client);
         if (RootPanel.get().getWidgetIndex(preloader) >= 0) {
@@ -76,8 +93,9 @@ public class VAppsViewport extends VShellViewport {
     }
 
     public void showAppPreloader(final String appName, final PreloaderCallback callback) {
+        hideEntireContents();
         preloader.setCaption(appName);
-        RootPanel.get().add(preloader/*, getElement()*/);
+        RootPanel.get().add(preloader);
         preloader.addStyleName("zoom-in");
         new Timer() {
             @Override
@@ -85,6 +103,13 @@ public class VAppsViewport extends VShellViewport {
                 callback.onPreloaderShown(appName);
             }
         }.schedule(750);
+    }
+    
+    
+    @Override
+    protected void setWidgetVisible(Widget w) {
+        super.setWidgetVisible(w);
+        w.getElement().appendChild(closeWrapper);
     }
 
     /**

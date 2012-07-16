@@ -40,6 +40,6 @@ package info.magnolia.ui.widget.magnoliashell.gwt.client.viewport;
 public class VDialogViewport extends VShellViewport {
 
     public VDialogViewport() {
-        modalityCurtain.setId("black-modality-curtain");
+        getModalityCurtain().setId("black-modalgetity-curtain");
     }
 }

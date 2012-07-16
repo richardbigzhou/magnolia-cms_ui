@@ -51,12 +51,6 @@ public class AssetsViewImpl implements AssetsView {
 
     @Inject
     public AssetsViewImpl() {
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
         Label label = new Label("<center>Assets App</center>", Label.CONTENT_XHTML);
         layout.addComponent(label);
     }
