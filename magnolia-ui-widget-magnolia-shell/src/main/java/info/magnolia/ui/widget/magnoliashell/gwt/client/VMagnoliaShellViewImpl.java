@@ -304,7 +304,7 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
             viewport.getElement().getStyle().setZIndex(500);
             viewport.setContentAnimationDelegate(ContentAnimationDelegate.FadingDelegate);
             if (viewport != null) {
-                viewport.showBlackCurtain();
+                viewport.showCurtain();
             }
         }
     }

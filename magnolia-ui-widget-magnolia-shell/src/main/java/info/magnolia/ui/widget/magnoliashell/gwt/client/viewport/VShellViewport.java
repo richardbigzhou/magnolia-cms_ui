@@ -68,9 +68,7 @@ import com.vaadin.terminal.gwt.client.UIDL;
  */
 public class VShellViewport extends ComplexPanel implements Container, ContainerResizedListener {
 
-    private Element greenModalityCurtain = DOM.createDiv();
-    
-    private Element blackModalityCurtain = DOM.createDiv();
+    protected Element modalityCurtain = DOM.createDiv();
 
     protected String paintableId = null;
 
@@ -93,8 +91,7 @@ public class VShellViewport extends ComplexPanel implements Container, Container
     public VShellViewport() {
         super();
         setElement(container);
-        greenModalityCurtain.setId("green-modality-curtain");
-        blackModalityCurtain.setId("black-modality-curtain");
+        modalityCurtain.setId("green-modality-curtain");
         addStyleName("v-shell-vieport");
         final Element closeButton = DOM.createButton();
         closeWrapper.setClassName("close");
@@ -108,8 +105,7 @@ public class VShellViewport extends ComplexPanel implements Container, Container
                 }
             }
         }, ClickEvent.getType());
-        greenModalityCurtain.getStyle().setVisibility(Visibility.HIDDEN);
-        blackModalityCurtain.getStyle().setVisibility(Visibility.HIDDEN);
+        modalityCurtain.getStyle().setVisibility(Visibility.HIDDEN);
     }
 
 
@@ -120,15 +116,13 @@ public class VShellViewport extends ComplexPanel implements Container, Container
     @Override
     protected void onLoad() {
         super.onLoad();
-        RootPanel.get().getElement().appendChild(greenModalityCurtain);
-        RootPanel.get().getElement().appendChild(blackModalityCurtain);
+        RootPanel.get().getElement().appendChild(modalityCurtain);
     }
 
     @Override
     protected void onUnload() {
         super.onUnload();
-        RootPanel.get().getElement().removeChild(greenModalityCurtain);
-        RootPanel.get().getElement().removeChild(blackModalityCurtain);
+        RootPanel.get().getElement().removeChild(modalityCurtain);
     }
 
     @Override
@@ -291,13 +285,7 @@ public class VShellViewport extends ComplexPanel implements Container, Container
     }
 
     public void showCurtain() {
-        final JQueryWrapper jq = JQueryWrapper.select(greenModalityCurtain);
-        jq.setCss("visibility", "visible");
-        jq.setCss("zIndex", String.valueOf(JQueryWrapper.select(this).cssInt("zIndex") - 1));
-    }
-
-    public void showBlackCurtain() {
-        final JQueryWrapper jq = JQueryWrapper.select(blackModalityCurtain);
+        final JQueryWrapper jq = JQueryWrapper.select(modalityCurtain);
         jq.setCss("visibility", "visible");
         jq.setCss("zIndex", String.valueOf(JQueryWrapper.select(this).cssInt("zIndex") - 1));
     }

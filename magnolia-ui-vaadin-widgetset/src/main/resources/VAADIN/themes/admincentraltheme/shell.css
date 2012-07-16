@@ -16,6 +16,8 @@
 }
 
 #main-launcher {
+	width: 100%;
+	position: absolute;
     color: green;
     text-align: center;
     color: white;

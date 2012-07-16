@@ -203,8 +203,10 @@ public class VMainLauncher extends FlowPanel {
     protected void onLoad() {
         super.onLoad();
         expandedHeight = getOffsetHeight();
-        getElement().getStyle().setDisplay(Display.NONE);
-        JQueryWrapper.select(getElement()).slideDown(500, null);
+        getElement().getStyle().setTop(-60, Unit.PX);
+        JQueryWrapper.select(getElement()).animate(250, new AnimationSettings() {{
+            setProperty("top", 0);
+        }});
         activationHandlerRegistration = eventBus.addHandler(AppActivatedEvent.TYPE, navigationHandler);
     } 
     
