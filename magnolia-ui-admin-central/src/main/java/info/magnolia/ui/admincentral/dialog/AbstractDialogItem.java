@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,22 +31,52 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.field;
+package info.magnolia.ui.admincentral.dialog;
 
-import info.magnolia.ui.admincentral.dialog.DialogItem;
-import info.magnolia.ui.model.dialog.definition.FieldDefinition;
+import org.apache.commons.lang.StringUtils;
 
-import com.vaadin.ui.Field;
+import info.magnolia.cms.i18n.Messages;
+import info.magnolia.cms.i18n.MessagesManager;
+import info.magnolia.cms.i18n.MessagesUtil;
 
 /**
- * FieldType. Is provided by the {@link info.magnolia.ui.admincentral.field.builder.FieldTypeProvider}.
- * A FieldType is defined for every field in e.g. a dialog-type.
- * It builds a vaadin {@link Field} and maps the necessary labels, validators etc to the field.
+ * Abstract base class for dialog items, provides resolution of {@link Messages} in the hierarchical.
  *
+ * @see Messages
+ * @see DialogItem
  */
-public interface DialogField extends DialogItem {
+public abstract class AbstractDialogItem implements DialogItem {
 
-    Field getField();
+    private DialogItem parent;
 
-    FieldDefinition getFieldDefinition();
+    @Override
+    public void setParent(DialogItem parent) {
+        this.parent = parent;
+    }
+
+    @Override
+    public DialogItem getParent() {
+        return parent;
+    }
+
+    @Override
+    public Messages getMessages() {
+
+        Messages messages;
+        if (getParent() != null) {
+            messages = getParent().getMessages();
+        } else {
+            messages = MessagesManager.getMessages();
+        }
+        if (StringUtils.isNotBlank(getI18nBasename())) {
+            messages = MessagesUtil.chain(getI18nBasename(), messages);
+        }
+        return messages;
+    }
+
+    protected abstract String getI18nBasename();
+
+    public String getMessage(String key) {
+        return getMessages().getWithDefault(key, key);
+    }
 }

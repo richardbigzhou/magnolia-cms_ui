@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.field;
 
+import info.magnolia.ui.admincentral.dialog.AbstractDialogItem;
 import info.magnolia.ui.model.dialog.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.model.dialog.definition.EmailValidatorDefinition;
 import info.magnolia.ui.model.dialog.definition.FieldDefinition;
@@ -56,7 +57,7 @@ import com.vaadin.ui.Field;
  * Initialize the Field with ValidationRules, Related DataSource.
  * @param <D>.
  */
-public abstract class AbstractDialogField<D extends FieldDefinition> implements DialogField {
+public abstract class AbstractDialogField<D extends FieldDefinition> extends AbstractDialogItem implements DialogField {
 
     protected Item item;
     protected Field field;
@@ -89,7 +90,7 @@ public abstract class AbstractDialogField<D extends FieldDefinition> implements 
         this.field.setStyleName(getStyleName());
 
         //Set Label
-        this.field.setCaption(getFieldDefinition().getLabel());//TODO Add i18n
+        this.field.setCaption(getMessage(getFieldDefinition().getLabel()));
 
         //Add Validation
         setRestriction(definition, this.field);
@@ -202,5 +203,10 @@ public abstract class AbstractDialogField<D extends FieldDefinition> implements 
         } else {
             input.setRequiredError(message);
         }
+    }
+
+    @Override
+    protected String getI18nBasename() {
+        return definition.getI18nBasename();
     }
 }

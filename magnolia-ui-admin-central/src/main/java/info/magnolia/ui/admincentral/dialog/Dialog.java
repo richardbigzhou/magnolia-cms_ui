@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,22 +31,26 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.field;
+package info.magnolia.ui.admincentral.dialog;
 
-import info.magnolia.ui.admincentral.dialog.DialogItem;
-import info.magnolia.ui.model.dialog.definition.FieldDefinition;
-
-import com.vaadin.ui.Field;
+import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 
 /**
- * FieldType. Is provided by the {@link info.magnolia.ui.admincentral.field.builder.FieldTypeProvider}.
- * A FieldType is defined for every field in e.g. a dialog-type.
- * It builds a vaadin {@link Field} and maps the necessary labels, validators etc to the field.
+ * Represents a dialog.
  *
+ * @see DialogTab
+ * @see info.magnolia.ui.admincentral.field.DialogField
  */
-public interface DialogField extends DialogItem {
+public class Dialog extends AbstractDialogItem {
 
-    Field getField();
+    private DialogDefinition dialogDefinition;
 
-    FieldDefinition getFieldDefinition();
+    public Dialog(DialogDefinition dialogDefinition) {
+        this.dialogDefinition = dialogDefinition;
+    }
+
+    @Override
+    protected String getI18nBasename() {
+        return dialogDefinition.getI18nBasename();
+    }
 }

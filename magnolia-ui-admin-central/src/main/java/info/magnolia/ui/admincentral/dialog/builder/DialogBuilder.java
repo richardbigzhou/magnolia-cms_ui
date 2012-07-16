@@ -33,6 +33,13 @@
  */
 package info.magnolia.ui.admincentral.dialog.builder;
 
+import com.vaadin.data.Item;
+import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.Field;
+import org.apache.commons.lang.StringUtils;
+
+import info.magnolia.ui.admincentral.dialog.Dialog;
+import info.magnolia.ui.admincentral.dialog.DialogTab;
 import info.magnolia.ui.admincentral.field.DialogField;
 import info.magnolia.ui.admincentral.field.builder.FieldTypeProvider;
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
@@ -41,25 +48,19 @@ import info.magnolia.ui.model.dialog.definition.FieldDefinition;
 import info.magnolia.ui.model.dialog.definition.TabDefinition;
 import info.magnolia.ui.widget.dialog.DialogView;
 
-import org.apache.commons.lang.StringUtils;
-
-import com.vaadin.data.Item;
-import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.Field;
-
 /**
  * Builder for Dialogs.
  */
 public class DialogBuilder {
 
-    static final String FIELD_CONTAINER_STYLE_NAME = "field-container";
-    static final String FIELD_STYLE_NAME = "field";
+    private static final String FIELD_STYLE_NAME = "field";
 
     /**
-     * @return DialogView populated with values from DialogDevinition and Item.
+     * @return DialogView populated with values from DialogDefinition and Item.
      */
     public DialogView build(FieldTypeProvider fieldTypeBuilder, DialogDefinition dialogDefinition, Item item, DialogView view) {
 
+        Dialog dialog = new Dialog(dialogDefinition);
 
         view.setItemDataSource(item);
 
@@ -68,29 +69,28 @@ public class DialogBuilder {
         }
 
         for (TabDefinition tabDefinition : dialogDefinition.getTabs()) {
-            String tabName = tabDefinition.getName();
 
-            CssLayout fieldContainer = new CssLayout();
-            fieldContainer.setStyleName(FIELD_CONTAINER_STYLE_NAME);
+            DialogTab tab = new DialogTab(tabDefinition);
+            tab.setParent(dialog);
 
             for (FieldDefinition fieldDefinition : tabDefinition.getFields()) {
 
+                // Create the DialogField
+                DialogField dialogField = fieldTypeBuilder.create(fieldDefinition, fieldDefinition, item);
+                dialogField.setParent(tab);
+
+                // Get the Vaadin Field
+                Field field = dialogField.getField();
+
                 CssLayout fieldLayout = new CssLayout();
                 fieldLayout.setStyleName(FIELD_STYLE_NAME);
-
-                //Create the DialogField
-                DialogField fieldType = fieldTypeBuilder.create(fieldDefinition, fieldDefinition, item);
-                //Get the Vaadin  Field
-                Field field = fieldType.getField();
-
                 fieldLayout.addComponent(field);
-                fieldContainer.addComponent(fieldLayout);
 
+                tab.addField(fieldLayout);
                 view.addField(field);
             }
 
-            view.addTab(fieldContainer, tabName);
-
+            view.addTab(tab.getContainer(), tab.getMessage(tabDefinition.getLabel()));
         }
 
         for (DialogActionDefinition action : dialogDefinition.getActions()) {

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,22 +31,43 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.field;
+package info.magnolia.ui.admincentral.dialog;
 
-import info.magnolia.ui.admincentral.dialog.DialogItem;
-import info.magnolia.ui.model.dialog.definition.FieldDefinition;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.CssLayout;
 
-import com.vaadin.ui.Field;
+import info.magnolia.ui.model.dialog.definition.TabDefinition;
 
 /**
- * FieldType. Is provided by the {@link info.magnolia.ui.admincentral.field.builder.FieldTypeProvider}.
- * A FieldType is defined for every field in e.g. a dialog-type.
- * It builds a vaadin {@link Field} and maps the necessary labels, validators etc to the field.
+ * Represents a tab in a dialog.
  *
+ * @see Dialog
+ * @see info.magnolia.ui.admincentral.field.DialogField
  */
-public interface DialogField extends DialogItem {
+public class DialogTab extends AbstractDialogItem {
 
-    Field getField();
+    private static final String FIELD_CONTAINER_STYLE_NAME = "field-container";
 
-    FieldDefinition getFieldDefinition();
+    private TabDefinition definition;
+    private final CssLayout container;
+
+    public DialogTab(TabDefinition definition) {
+        this.definition = definition;
+        container = new CssLayout();
+        container.setStyleName(FIELD_CONTAINER_STYLE_NAME);
+    }
+
+    public void addField(Component component) {
+        this.container.addComponent(component);
+    }
+
+    public ComponentContainer getContainer() {
+        return container;
+    }
+
+    @Override
+    protected String getI18nBasename() {
+        return definition.getI18nBasename();
+    }
 }
