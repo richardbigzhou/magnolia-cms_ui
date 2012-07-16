@@ -160,7 +160,7 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
         }
     }
 
-    protected void hideEntireContents() {
+    public void hideEntireContents() {
         Iterator<Widget> it = iterator();
         while (it.hasNext()) {
             it.next().getElement().getStyle().setVisibility(Visibility.HIDDEN);

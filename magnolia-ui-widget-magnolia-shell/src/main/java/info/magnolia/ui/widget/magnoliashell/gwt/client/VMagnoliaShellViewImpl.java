@@ -134,6 +134,7 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
                                 }
                             });   
                         } else {
+                            getAppViewport().hideEntireContents();
                             presenter.loadApp(prefix, token);
                         }
                     } else {
