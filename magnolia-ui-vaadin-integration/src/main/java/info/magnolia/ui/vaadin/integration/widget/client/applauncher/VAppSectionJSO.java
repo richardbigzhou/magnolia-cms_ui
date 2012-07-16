@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,27 +31,35 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.tabsheet.gwt.client.event;
+package info.magnolia.ui.vaadin.integration.widget.client.applauncher;
 
-import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.core.client.JavaScriptObject;
 
 /**
- * ShowAllTabEvent.
+ * Client side of App section description class.
+ *
  */
-public class ShowAllTabEvent extends GwtEvent<ShowAllTabHandler> {
-
-    public static Type<ShowAllTabHandler> TYPE = new Type<ShowAllTabHandler>();
-
-    @Override
-    public GwtEvent.Type<ShowAllTabHandler> getAssociatedType() {
-        return TYPE;
-    }
-
-
-    @Override
-    protected void dispatch(ShowAllTabHandler handler) {
-        handler.onShowAll(this);
-
-    }
-
+public final class VAppSectionJSO extends JavaScriptObject {
+    
+    protected VAppSectionJSO() {}
+    
+    public static native VAppSectionJSO parse(String json) /*-{
+       try {
+         return eval('(' + json + ')');
+       } catch(e) {
+           return null;
+       } 
+    }-*/;
+    
+    public final native String getCaption() /*-{
+        return this.caption;
+    }-*/; 
+    
+    public final native String getBackgroundColor() /*-{
+        return this.backgroundColor;
+    }-*/;
+    
+    public final native boolean isPermanent() /*-{
+        return this.isPermanent;
+    }-*/;
 }

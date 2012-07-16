@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,16 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.jcr.view.builder;
+package info.magnolia.ui.widget.tabsheet.gwt.client.event;
 
-import info.magnolia.ui.admincentral.jcr.view.ContentView;
-import info.magnolia.ui.admincentral.jcr.view.ContentView.ViewType;
-import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
+import com.google.gwt.event.shared.EventHandler;
 
 /**
- * Used to transform tree or list and column definitions into components.
+ * ShowAllTabHandler.
  */
-public interface ContentViewBuilder {
-
-    ContentView build(WorkbenchDefinition workbenchDefinition, ViewType type);
+public interface ShowAllTabsHandler extends EventHandler {
+    void onShowAllTabs(final ShowAllTabsEvent event);
 }

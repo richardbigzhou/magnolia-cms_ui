@@ -52,10 +52,6 @@ public class DeckLayout extends AbstractComponentContainer {
     private LinkedList<Component> children = new LinkedList<Component>();
     
     private Component visibleChild = null;
-    
-    public DeckLayout() {
-        super();
-    }
 
     public void display(Component content) {
         if (content != null) {

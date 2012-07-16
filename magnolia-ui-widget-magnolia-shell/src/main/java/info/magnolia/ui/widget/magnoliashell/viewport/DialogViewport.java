@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2011 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,45 +31,23 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.workbench.definition;
+package info.magnolia.ui.widget.magnoliashell.viewport;
 
-import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
-import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
-import info.magnolia.ui.model.column.definition.ColumnDefinition;
+import com.vaadin.ui.ClientWidget;
+import com.vaadin.ui.ClientWidget.LoadStyle;
 
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.List;
-
+import info.magnolia.ui.widget.magnoliashell.BaseMagnoliaShell;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.VDialogViewport;
 
 /**
- * Contains all elements which define a workbench configuration.
+ * Dialogs viewport server side implementation. 
+ *
  */
-public interface WorkbenchDefinition extends Serializable {
+@ClientWidget(value = VDialogViewport.class, loadStyle = LoadStyle.EAGER)
+public class DialogViewport extends ShellViewport{
 
-    String getName();
-
-    String getWorkspace();
-
-    String getPath();
-
-    List<ItemTypeDefinition> getItemTypes();
-
-    /**
-     * Return the itemType filter criteria in order to be used for searching nodes. like:
-     * "jcr:* | myapp:report | my doc"
-     */
-    String getItemTypesFilter();
-
-    ColumnDefinition getColumn(String columnId);
-
-    Collection<ColumnDefinition> getColumns();
-
-    /**
-     * Gets the definition for the action bar related to this workbench.
-     */
-    ActionbarDefinition getActionbar();
-
-    ComponentProviderConfiguration getComponents();
-
+    public DialogViewport(BaseMagnoliaShell shell) {
+        super(shell);
+    }
+    
 }

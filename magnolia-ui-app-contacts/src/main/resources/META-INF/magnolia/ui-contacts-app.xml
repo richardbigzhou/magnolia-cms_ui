@@ -30,8 +30,8 @@
       <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbenchSubApp</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.jcr.view.ContentPresenter</type>
-      <implementation>info.magnolia.ui.admincentral.jcr.view.ContentPresenter</implementation>
+      <type>info.magnolia.ui.admincentral.content.view.ContentPresenter</type>
+      <implementation>info.magnolia.ui.admincentral.content.view.ContentPresenter</implementation>
     </component>
    </components>
 

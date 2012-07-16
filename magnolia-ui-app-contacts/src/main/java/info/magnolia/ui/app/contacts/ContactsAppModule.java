@@ -109,7 +109,7 @@ public class ContactsAppModule implements ModuleLifecycle {
                             this.setCategoryName("MANAGE");
                             this.setAppClass(ContactsApp.class);
                             this.setLabel("Contacts");
-                            this.setIcon("img/icon-app-default.png");
+                            this.setIcon("icon-backup");
                             this.setWorkbench(new ConfiguredWorkbenchDefinition() {
 
                                 {

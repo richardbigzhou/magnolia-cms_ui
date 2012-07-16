@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.magnoliashell.gwt.client;
+package info.magnolia.ui.widget.magnoliashell.gwt.client.viewport;
 
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.AnimationSettings;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.Callbacks;

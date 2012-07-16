@@ -33,33 +33,36 @@
  */
 package info.magnolia.ui.admincentral.shellapp.applauncher;
 
-import info.magnolia.ui.framework.app.ShellApp;
-import info.magnolia.ui.framework.app.ShellAppContext;
+import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventHandler;
+import info.magnolia.ui.framework.app.ShellApp;
+import info.magnolia.ui.framework.app.ShellAppContext;
 import info.magnolia.ui.framework.app.ShellView;
-import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroup;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroupEntry;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayout;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutChangedEvent;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutChangedEventHandler;
+import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.event.SystemEventBus;
 import info.magnolia.ui.framework.location.Location;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import javax.inject.Inject;
 
 /**
- * Activity for the app launcher.
- * Listen to:
- *  SystemEventBus: LayoutEvent. Reload the Layout by getting the latest available App from the {AppLauncherLayoutManager}.
- *  LocalEventBus : App started and App stop event. In this case, update the App button to indicate if an App is started or stopped.
+ * Activity for the app launcher. Listen to: SystemEventBus: LayoutEvent. Reload
+ * the Layout by getting the latest available App from the
+ * {AppLauncherLayoutManager}. LocalEventBus : App started and App stop event.
+ * In this case, update the App button to indicate if an App is started or
+ * stopped.
  */
 public class AppLauncherShellApp implements ShellApp, AppLauncherView.Presenter {
-
-    private static final long serialVersionUID = 1L;
 
     private final AppLauncherView view;
 
@@ -67,13 +70,16 @@ public class AppLauncherShellApp implements ShellApp, AppLauncherView.Presenter 
 
     private AppLauncherLayoutManager appLauncherLayoutManager;
 
+    private MagnoliaShell shell;
+
     @Inject
-    public AppLauncherShellApp(AppLauncherView view, AppController appController, AppLauncherLayoutManager appLauncherLayoutManager, EventBus eventBus, SystemEventBus systemEventBus) {
+    public AppLauncherShellApp(MagnoliaShell shell, AppLauncherView view, AppController appController,
+            AppLauncherLayoutManager appLauncherLayoutManager, EventBus eventBus, SystemEventBus systemEventBus) {
         this.view = view;
+        this.shell = shell;
         this.appController = appController;
         this.appLauncherLayoutManager = appLauncherLayoutManager;
-
-        //Init view
+        // Init view
         initView(appLauncherLayoutManager.getLayoutForCurrentUser());
         /**
          * Handle ReloadAppEvent.
@@ -82,7 +88,7 @@ public class AppLauncherShellApp implements ShellApp, AppLauncherView.Presenter 
 
             @Override
             public void onAppLayoutChanged(AppLauncherLayoutChangedEvent event) {
-                //Reload Layout
+                // Reload Layout
                 reloadLayout();
             }
         });
@@ -93,24 +99,24 @@ public class AppLauncherShellApp implements ShellApp, AppLauncherView.Presenter 
          */
         eventBus.addHandler(AppLifecycleEvent.class, new AppLifecycleEventHandler.Adapter() {
 
-                /**
-                 * Deactivate the visual triangle on the App Icon.
-                 */
-                @Override
-                public void onAppStopped(AppLifecycleEvent event) {
-                    AppLauncherLayout layout = AppLauncherShellApp.this.appLauncherLayoutManager.getLayoutForCurrentUser();
-                    if (layout.containsApp(event.getAppDescriptor().getName())) {
-                        activateButton(false, event.getAppDescriptor().getName());
-                    }
+            /**
+             * Deactivate the visual triangle on the App Icon.
+             */
+            @Override
+            public void onAppStopped(AppLifecycleEvent event) {
+                AppLauncherLayout layout = AppLauncherShellApp.this.appLauncherLayoutManager.getLayoutForCurrentUser();
+                if (layout.containsApp(event.getAppDescriptor().getName())) {
+                    activateButton(false, event.getAppDescriptor().getName());
                 }
+            }
 
-                /**
-                 * Activate the visual triangle on the App Icon.
-                 */
-                @Override
-                public void onAppStarted(AppLifecycleEvent event) {
-                    activateButton(true, event.getAppDescriptor().getName());
-                }
+            /**
+             * Activate the visual triangle on the App Icon.
+             */
+            @Override
+            public void onAppStarted(AppLifecycleEvent event) {
+                activateButton(true, event.getAppDescriptor().getName());
+            }
         });
     }
 
@@ -134,6 +140,13 @@ public class AppLauncherShellApp implements ShellApp, AppLauncherView.Presenter 
      */
     private void initView(AppLauncherLayout layout) {
         view.registerApp(layout);
+        final List<String> appNames = new LinkedList<String>();
+        for (AppLauncherGroup group : layout.getGroups()) {
+            for (AppLauncherGroupEntry entry : group.getApps()) {
+                appNames.add(entry.getName());
+            }
+        }
+        shell.setRegisteredAppNames(appNames);
     }
 
     /**
@@ -145,7 +158,7 @@ public class AppLauncherShellApp implements ShellApp, AppLauncherView.Presenter 
         initView(layout);
         for (AppLauncherGroup group : layout.getGroups()) {
             for (AppLauncherGroupEntry entry : group.getApps()) {
-                if(this.appController.isAppStarted(entry.getName())) {
+                if (this.appController.isAppStarted(entry.getName())) {
                     view.activateButton(true, entry.getName());
                 }
             }

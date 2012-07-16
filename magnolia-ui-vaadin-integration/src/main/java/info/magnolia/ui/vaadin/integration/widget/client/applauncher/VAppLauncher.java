@@ -39,6 +39,7 @@ import org.vaadin.rpc.client.Method;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.SimpleEventBus;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.web.bindery.event.shared.EventBus;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
@@ -50,36 +51,25 @@ import com.vaadin.terminal.gwt.client.UIDL;
  * 
  */
 @SuppressWarnings("serial")
-public class VAppLaucnher extends Composite implements Paintable, ClientSideHandler, VAppLauncherView.Presenter {
+public class VAppLauncher extends Composite implements Paintable, ClientSideHandler, VAppLauncherView.Presenter {
 
     private ClientSideProxy proxy = new ClientSideProxy(this) {
         {
 
-            register("addGroup", new Method() {
+            register("addSection", new Method() {
                 @Override
                 public void invoke(String methodName, Object[] params) {
-                    final String caption = String.valueOf(params[0]);
-                    final String color = String.valueOf(params[1]);
-                    view.addPermanentAppGroup(caption, color);
+                    final VAppSectionJSO section = VAppSectionJSO.parse(String.valueOf(params[0]));
+                    view.addAppSection(section);
                 }
             });
 
-            register("addMinorGroup", new Method() {
+            register("addAppTile", new Method() {
                 @Override
                 public void invoke(String methodName, Object[] params) {
-                    final String caption = String.valueOf(params[0]);
-                    final String color = String.valueOf(params[1]);
-                    view.addTemporaryAppGroup(caption, color);
-                }
-            });
-
-            register("addAppThumbnail", new Method() {
-                @Override
-                public void invoke(String methodName, Object[] params) {
-                    final String caption = String.valueOf(params[0]);
-                    final String iconStyle = String.valueOf(params[1]);
-                    final String categoryId = String.valueOf(params[2]);
-                    view.addAppThumbnail(caption, iconStyle, categoryId);
+                    final VAppTileJSO appTile = VAppTileJSO.parse(String.valueOf(params[0]));
+                    final String categoryId = String.valueOf(params[1]);
+                    view.addAppThumbnail(appTile, categoryId);
                 }
             });
             
@@ -96,15 +86,20 @@ public class VAppLaucnher extends Composite implements Paintable, ClientSideHand
     
     private final VAppLauncherView view;
 
-    private final EventBus eventBus = new SimpleEventBus();
+    private final EventBus internalEventBus = new SimpleEventBus();
     
-    public VAppLaucnher() {
+    public VAppLauncher() {
         super();
-        this.view = new VAppLauncherViewImpl(eventBus);
+        this.view = new VAppLauncherViewImpl(internalEventBus);
         this.view.setPresenter(this);
         initWidget(view.asWidget());
     }
 
+    public void addAppLauchHandler() {
+        
+    }
+   
+    
     @Override
     public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
         proxy.update(this, uidl, client);
@@ -122,7 +117,7 @@ public class VAppLaucnher extends Composite implements Paintable, ClientSideHand
 
     @Override
     public void activateApp(String appId) {
-        proxy.call("appActivated", appId);
+        History.newItem("app:" + appId, true);
     }
 
 }

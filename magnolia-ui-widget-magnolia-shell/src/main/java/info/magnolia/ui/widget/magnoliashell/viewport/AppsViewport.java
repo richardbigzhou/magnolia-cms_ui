@@ -31,13 +31,23 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.tabsheet.gwt.client.event;
+package info.magnolia.ui.widget.magnoliashell.viewport;
 
-import com.google.gwt.event.shared.EventHandler;
+import info.magnolia.ui.widget.magnoliashell.BaseMagnoliaShell;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.VAppsViewport;
+
+import com.vaadin.ui.ClientWidget;
+import com.vaadin.ui.ClientWidget.LoadStyle;
 
 /**
- * ShowAllTabHandler.
+ * Apps viewport.
+ *
  */
-public interface ShowAllTabHandler extends EventHandler {
-    void onShowAll(final ShowAllTabEvent event);
+@ClientWidget(value = VAppsViewport.class, loadStyle = LoadStyle.EAGER)
+public class AppsViewport extends ShellViewport {
+    
+    public AppsViewport(BaseMagnoliaShell shell) {
+        super(shell);
+    }
+   
 }

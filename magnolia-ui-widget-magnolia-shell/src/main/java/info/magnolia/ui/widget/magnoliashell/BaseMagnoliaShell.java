@@ -42,6 +42,10 @@ import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShell;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShell.ViewportType;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VShellMessage.MessageType;
+import info.magnolia.ui.widget.magnoliashell.viewport.AppsViewport;
+import info.magnolia.ui.widget.magnoliashell.viewport.DialogViewport;
+import info.magnolia.ui.widget.magnoliashell.viewport.ShellAppsViewport;
+import info.magnolia.ui.widget.magnoliashell.viewport.ShellViewport;
 
 import java.util.EnumMap;
 import java.util.Iterator;
@@ -70,9 +74,9 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
     private EventHandlerCollection<FragmentChangedHandler> handlers = new EventHandlerCollection<FragmentChangedHandler>();
 
     private Map<ViewportType, ShellViewport> viewports = new EnumMap<ViewportType, ShellViewport>(ViewportType.class) {{
-        put(ViewportType.SHELL_APP_VIEWPORT, new ShellViewport(BaseMagnoliaShell.this));
-        put(ViewportType.APP_VIEWPORT, new ShellViewport(BaseMagnoliaShell.this));
-        put(ViewportType.DIALOG_VIEWPORT, new ShellViewport(BaseMagnoliaShell.this));
+        put(ViewportType.SHELL_APP_VIEWPORT, new ShellAppsViewport(BaseMagnoliaShell.this));
+        put(ViewportType.APP_VIEWPORT, new AppsViewport(BaseMagnoliaShell.this));
+        put(ViewportType.DIALOG_VIEWPORT, new DialogViewport(BaseMagnoliaShell.this));
     }};
     
     private ShellViewport activeViewport = null;
@@ -198,7 +202,7 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
         handlers.remove(handler);
     }
 
-    protected void setActiveViewport(ShellViewport activeViewport) {
+    public void setActiveViewport(ShellViewport activeViewport) {
         if (this.activeViewport != activeViewport) {
             this.activeViewport = activeViewport;
             for (final ViewportType type : ViewportType.values()) {
@@ -281,11 +285,7 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
         getAppViewport().pop();
     }
     
-    /**
-     * FIXME: public for test purposes only. Reduce visibility asap!!!
-     * @return
-     */
-    public ICEPush getPusher() {
+    protected ICEPush getPusher() {
         return pusher; 
     }
 }

@@ -16,6 +16,8 @@
 }
 
 #main-launcher {
+	width: 100%;
+	position: absolute;
     color: green;
     text-align: center;
     color: white;
@@ -158,4 +160,10 @@ button.action-close {
     } to {
        -webkit-transform:scale(1);
     }
+}
+
+.v-loading-indicator-wait,
+.v-loading-indicator-delay,
+.v-loading-indicator {
+	display: none !important;
 }

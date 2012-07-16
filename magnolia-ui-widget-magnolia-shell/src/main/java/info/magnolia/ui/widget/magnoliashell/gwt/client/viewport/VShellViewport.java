@@ -31,13 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.magnoliashell.gwt.client;
+package info.magnolia.ui.widget.magnoliashell.gwt.client.viewport;
 
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.Callbacks;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryCallback;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.event.ViewportCloseEvent;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -47,12 +47,8 @@ import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.Style.Visibility;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.ComplexPanel;
-import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
@@ -65,18 +61,13 @@ import com.vaadin.terminal.gwt.client.UIDL;
 /**
  * An overlay that displays the open app in the shell on top of each other.
  */
-public class VShellViewport extends ComplexPanel implements Container, ContainerResizedListener {
-
-    private Element greenModalityCurtain = DOM.createDiv();
-    private Element blackModalityCurtain = DOM.createDiv();
+public class VShellViewport extends VPanelWithCurtain implements Container, ContainerResizedListener {
 
     protected String paintableId = null;
 
     protected ApplicationConnection client;
 
     protected Element container = DOM.createDiv();
-
-    private final Element closeWrapper = DOM.createDiv();
 
     private Widget visibleWidget = null;
 
@@ -91,23 +82,7 @@ public class VShellViewport extends ComplexPanel implements Container, Container
     public VShellViewport() {
         super();
         setElement(container);
-        greenModalityCurtain.setId("green-modality-curtain");
-        blackModalityCurtain.setId("black-modality-curtain");
         addStyleName("v-shell-vieport");
-        final Element closeButton = DOM.createButton();
-        closeWrapper.setClassName("close");
-        closeButton.setClassName("action-close");
-        closeWrapper.appendChild(closeButton);
-        addDomHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                if (closeWrapper.isOrHasChild((Element)event.getNativeEvent().getEventTarget().cast())) {
-                    eventBus.fireEvent(new ViewportCloseEvent(VShellViewport.this));
-                }
-            }
-        }, ClickEvent.getType());
-        greenModalityCurtain.getStyle().setVisibility(Visibility.HIDDEN);
-        blackModalityCurtain.getStyle().setVisibility(Visibility.HIDDEN);
     }
 
 
@@ -115,18 +90,8 @@ public class VShellViewport extends ComplexPanel implements Container, Container
         this.eventBus = eventBus;
     }
 
-    @Override
-    protected void onLoad() {
-        super.onLoad();
-        RootPanel.get().getElement().appendChild(greenModalityCurtain);
-        RootPanel.get().getElement().appendChild(blackModalityCurtain);
-    }
-
-    @Override
-    protected void onUnload() {
-        super.onUnload();
-        RootPanel.get().getElement().removeChild(greenModalityCurtain);
-        RootPanel.get().getElement().removeChild(blackModalityCurtain);
+    public EventBus getEventBus() {
+        return eventBus;
     }
 
     @Override
@@ -185,7 +150,6 @@ public class VShellViewport extends ComplexPanel implements Container, Container
             }
             final Element el = w.getElement();
             final Style style = el.getStyle();
-            el.appendChild(closeWrapper);
             style.setVisibility(Visibility.VISIBLE);
             animationDelegate.show(w, Callbacks.create(new JQueryCallback() {
                 @Override
@@ -196,6 +160,13 @@ public class VShellViewport extends ComplexPanel implements Container, Container
         }
     }
 
+    public void hideEntireContents() {
+        Iterator<Widget> it = iterator();
+        while (it.hasNext()) {
+            it.next().getElement().getStyle().setVisibility(Visibility.HIDDEN);
+        }
+    }
+    
     public Widget getVisibleWidget() {
         return visibleWidget;
     }
@@ -267,41 +238,19 @@ public class VShellViewport extends ComplexPanel implements Container, Container
         if (child instanceof Paintable) {
             paintables.add((Paintable)child);
             child.getElement().getStyle().setPosition(Position.ABSOLUTE);
-            super.add(child, container);
         }
-    }
-
-    @Override
-    public void removeFromParent() {
-        super.removeFromParent();
-        hideCurtain();
+        super.add(child, container);
     }
 
     public void setForceContentAlign(boolean forceContentAlign) {
         this.forceContentAlign = forceContentAlign;
     }
 
-    public void showCurtain() {
-        final JQueryWrapper jq = JQueryWrapper.select(greenModalityCurtain);
-        jq.setCss("visibility", "visible");
-        jq.setCss("zIndex", String.valueOf(JQueryWrapper.select(this).cssInt("zIndex") - 1));
-    }
-
-    public void showBlackCurtain() {
-        final JQueryWrapper jq = JQueryWrapper.select(blackModalityCurtain);
-        jq.setCss("visibility", "visible");
-        jq.setCss("zIndex", String.valueOf(JQueryWrapper.select(this).cssInt("zIndex") - 1));
-    }
-
-    public void hideCurtain() {
-        JQueryWrapper.select(this).setCss("visibility", "hidden");
-    }
-
     public boolean hasContent() {
         return visibleWidget != null;
     }
 
-    void setContentAnimationDelegate(final ContentAnimationDelegate animationDelegate) {
+    public void setContentAnimationDelegate(final ContentAnimationDelegate animationDelegate) {
         this.animationDelegate = animationDelegate;
     }
 

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2011 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,45 +31,16 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.workbench.definition;
-
-import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
-import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
-import info.magnolia.ui.model.column.definition.ColumnDefinition;
-
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.List;
-
+package info.magnolia.ui.widget.magnoliashell.gwt.client.viewport;
 
 /**
- * Contains all elements which define a workbench configuration.
+ * Shell apps viewport client side.
  */
-public interface WorkbenchDefinition extends Serializable {
+public class VShellAppsViewport extends VShellViewport {
 
-    String getName();
-
-    String getWorkspace();
-
-    String getPath();
-
-    List<ItemTypeDefinition> getItemTypes();
-
-    /**
-     * Return the itemType filter criteria in order to be used for searching nodes. like:
-     * "jcr:* | myapp:report | my doc"
-     */
-    String getItemTypesFilter();
-
-    ColumnDefinition getColumn(String columnId);
-
-    Collection<ColumnDefinition> getColumns();
-
-    /**
-     * Gets the definition for the action bar related to this workbench.
-     */
-    ActionbarDefinition getActionbar();
-
-    ComponentProviderConfiguration getComponents();
-
+    public VShellAppsViewport() {
+        super();
+        setForceContentAlign(true);
+        setContentAnimationDelegate(ContentAnimationDelegate.FadingDelegate);
+    }
 }

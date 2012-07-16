@@ -36,7 +36,7 @@ package info.magnolia.ui.admincentral.list.view;
 import info.magnolia.ui.admincentral.column.Column;
 import info.magnolia.ui.admincentral.column.EditHandler;
 import info.magnolia.ui.admincentral.container.JcrContainer;
-import info.magnolia.ui.admincentral.jcr.view.ContentView;
+import info.magnolia.ui.admincentral.content.view.ContentView;
 import info.magnolia.ui.admincentral.list.container.FlatJcrContainer;
 import info.magnolia.ui.admincentral.tree.model.TreeModel;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
@@ -49,10 +49,12 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.VerticalLayout;
+
 
 /**
  * Vaadin UI component that displays a list.
- *
+ * 
  */
 public class ListViewImpl implements ListView {
 
@@ -60,23 +62,28 @@ public class ListViewImpl implements ListView {
 
     private final Table table;
 
+    private final VerticalLayout margin = new VerticalLayout();
+
     private final JcrContainer container;
 
     private static final Logger log = LoggerFactory.getLogger(ListViewImpl.class);
 
-    public ListViewImpl(WorkbenchDefinition workbenchDefinition, TreeModel treeModel){
+    public ListViewImpl(WorkbenchDefinition workbenchDefinition, TreeModel treeModel) {
         table = new Table();
         table.setSizeFull();
         table.addStyleName("striped");
 
-        // next two lines are required to make the browser (Table) react on selection change via mouse
+        // next two lines are required to make the browser (Table) react on selection change via
+        // mouse
         table.setImmediate(true);
         table.setNullSelectionAllowed(false);
         // table.setMultiSelectMode(MultiSelectMode.DEFAULT);
         table.setMultiSelect(false);
 
-        //Important do not set page length and cache ratio on the Table, rather set them by using JcrContainer corresponding methods. Setting
-        //those value explicitly on the Table will cause the same jcr query to be repeated twice thus degrading performance greatly.
+        // Important do not set page length and cache ratio on the Table, rather set them by using
+        // JcrContainer corresponding methods. Setting
+        // those value explicitly on the Table will cause the same jcr query to be repeated twice
+        // thus degrading performance greatly.
         table.addListener(new Table.ValueChangeListener() {
 
             @Override
@@ -94,17 +101,22 @@ public class ListViewImpl implements ListView {
         // TODO: check Ticket http://dev.vaadin.com/ticket/5493
         table.setColumnReorderingAllowed(true);
 
-        container = new FlatJcrContainer(treeModel,workbenchDefinition);
+        container = new FlatJcrContainer(treeModel, workbenchDefinition);
 
-        for (Column<?> treeColumn : treeModel.getColumns().values()) {
+        for (Column< ? > treeColumn : treeModel.getColumns().values()) {
             String columnName = treeColumn.getDefinition().getName();
-            String columnProperty = (treeColumn.getDefinition().getPropertyName()!=null)?treeColumn.getDefinition().getPropertyName():columnName;
+            String columnProperty = (treeColumn.getDefinition().getPropertyName() != null)
+                ? treeColumn.getDefinition().getPropertyName()
+                : columnName;
             table.setColumnExpandRatio(columnName, treeColumn.getWidth() <= 0 ? 1 : treeColumn.getWidth());
             container.addContainerProperty(columnProperty, Component.class, "");
             table.setColumnHeader(columnProperty, treeColumn.getLabel());
         }
 
         table.setContainerDataSource(container);
+
+        margin.setStyleName("mgnl-content-view");
+        margin.addComponent(table);
     }
 
     @Override
@@ -114,15 +126,15 @@ public class ListViewImpl implements ListView {
 
     @Override
     public void refresh() {
-        //This will update the row count and display the newly
-        //created items.
+        // This will update the row count and display the newly
+        // created items.
         container.refresh();
         container.fireItemSetChange();
     }
 
     @Override
     public Component asVaadinComponent() {
-        return table;
+        return margin;
     }
 
     @Override
@@ -137,14 +149,14 @@ public class ListViewImpl implements ListView {
 
     private void presenterOnItemSelection(String id) {
         if (listener != null) {
-            com.vaadin.data.Item item  = container.getItem(id);
+            com.vaadin.data.Item item = container.getItem(id);
             listener.onItemSelection(item);
         }
     }
 
     @Override
     public void refreshItem(Item item) {
-        String itemId = ((JcrItemAdapter)item).getItemId();
+        String itemId = ((JcrItemAdapter) item).getItemId();
         if (container.containsId(itemId)) {
             container.fireItemSetChange();
         } else {

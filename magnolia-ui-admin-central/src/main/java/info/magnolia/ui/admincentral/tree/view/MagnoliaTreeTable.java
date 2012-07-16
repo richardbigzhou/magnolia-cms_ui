@@ -34,16 +34,19 @@
 package info.magnolia.ui.admincentral.tree.view;
 
 import info.magnolia.jcr.RuntimeRepositoryException;
-import info.magnolia.ui.admincentral.column.Column;
 import info.magnolia.ui.admincentral.column.EditHandler;
 import info.magnolia.ui.admincentral.tree.container.HierarchicalJcrContainer;
 import info.magnolia.ui.admincentral.tree.model.TreeModel;
+import info.magnolia.ui.model.column.definition.ColumnDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.widget.HybridSelectionTreeTable;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.jcr.RepositoryException;
@@ -60,15 +63,17 @@ import com.vaadin.event.dd.acceptcriteria.AcceptAll;
 import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
 import com.vaadin.terminal.gwt.client.ui.dd.VerticalDropLocation;
 
+
 /**
- * User interface component that extends TreeTable and uses a WorkbenchDefinition for layout and invoking command callbacks.
+ * User interface component that extends TreeTable and uses a WorkbenchDefinition for layout and
+ * invoking command callbacks.
  */
 @SuppressWarnings("serial")
 public class MagnoliaTreeTable extends HybridSelectionTreeTable {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    private HierarchicalJcrContainer container;
+    private final HierarchicalJcrContainer container;
 
     private final TreeModel treeModel;
 
@@ -89,20 +94,26 @@ public class MagnoliaTreeTable extends HybridSelectionTreeTable {
         setContainerDataSource(container);
 
         final List<Object> visibleColumns = new ArrayList<Object>();
-        for (Column<?> treeColumn : treeModel.getColumns().values()) {
-            String columnName = treeColumn.getDefinition().getName();
-            String columnProperty = (treeColumn.getDefinition().getPropertyName()!=null)?treeColumn.getDefinition().getPropertyName():columnName;
+        Iterator<ColumnDefinition> iterator = workbenchDefinition.getColumns().iterator();
+        while (iterator.hasNext()) {
+            ColumnDefinition column = iterator.next();
+            String columnName = column.getName();
+            String columnProperty = "";
+            if (column.getPropertyName() != null) {
+                columnProperty = column.getPropertyName();
+            } else {
+                columnProperty = columnName;
+            }
             // super.setColumnExpandRatio(columnName, treeColumn.getWidth() <= 0 ? 1 :
             // treeColumn.getWidth());
             addContainerProperty(columnProperty, Property.class, "");
-            super.setColumnHeader(columnProperty, treeColumn.getLabel());
+            super.setColumnHeader(columnProperty, column.getLabel());
             visibleColumns.add(columnName);
-        }
 
-        //setVisibleColumns(visibleColumns.toArray());
+        }
+        // setVisibleColumns(visibleColumns.toArray());
         new EditHandler(this);
     }
-
 
     /**
      * Add Drag and Drop functionality to the provided TreeTable.
@@ -110,6 +121,7 @@ public class MagnoliaTreeTable extends HybridSelectionTreeTable {
     private void addDragAndDrop() {
         setDragMode(TableDragMode.ROW);
         setDropHandler(new DropHandler() {
+
             @Override
             public void drop(DragAndDropEvent event) {
 
@@ -135,8 +147,8 @@ public class MagnoliaTreeTable extends HybridSelectionTreeTable {
                     HierarchicalJcrContainer containerWrapper = (HierarchicalJcrContainer) getContainerDataSource();
                     // Drop right on an item -> make it a child -
                     if (location == VerticalDropLocation.MIDDLE) {
-                        JcrItemAdapter sourceItem = (JcrItemAdapter)container.getItem((String) sourceItemId);
-                        JcrItemAdapter targetItem = (JcrItemAdapter)container.getItem((String) targetItemId);
+                        JcrItemAdapter sourceItem = (JcrItemAdapter) container.getItem(sourceItemId);
+                        JcrItemAdapter targetItem = (JcrItemAdapter) container.getItem(targetItemId);
                         if (treeModel.moveItem(sourceItem.getJcrItem(), targetItem.getJcrItem())) {
                             setParent(sourceItemId, targetItemId);
                         }
@@ -146,8 +158,8 @@ public class MagnoliaTreeTable extends HybridSelectionTreeTable {
                         Object parentId = containerWrapper.getParent(targetItemId);
                         if (parentId != null) {
                             log.debug("Parent:" + containerWrapper.getItem(parentId));
-                            JcrItemAdapter sourceItem = (JcrItemAdapter)container.getItem((String) sourceItemId);
-                            JcrItemAdapter targetItem = (JcrItemAdapter)container.getItem((String) targetItemId);
+                            JcrItemAdapter sourceItem = (JcrItemAdapter) container.getItem(sourceItemId);
+                            JcrItemAdapter targetItem = (JcrItemAdapter) container.getItem(targetItemId);
                             if (treeModel.moveItemBefore(sourceItem.getJcrItem(), targetItem.getJcrItem())) {
                                 setParent(sourceItemId, targetItemId);
                             }
@@ -158,8 +170,8 @@ public class MagnoliaTreeTable extends HybridSelectionTreeTable {
                     else if (location == VerticalDropLocation.BOTTOM) {
                         Object parentId = containerWrapper.getParent(targetItemId);
                         if (parentId != null) {
-                            JcrItemAdapter sourceItem = (JcrItemAdapter)container.getItem((String) sourceItemId);
-                            JcrItemAdapter targetItem = (JcrItemAdapter)container.getItem((String) targetItemId);
+                            JcrItemAdapter sourceItem = (JcrItemAdapter) container.getItem(sourceItemId);
+                            JcrItemAdapter targetItem = (JcrItemAdapter) container.getItem(targetItemId);
                             if (treeModel.moveItemAfter(sourceItem.getJcrItem(), targetItem.getJcrItem())) {
                                 setParent(sourceItemId, targetItemId);
                             }
@@ -182,16 +194,16 @@ public class MagnoliaTreeTable extends HybridSelectionTreeTable {
 
     public void select(String itemId) {
 
-        if(!container.isRoot(itemId)){
+        if (!container.isRoot(itemId)) {
             String parent = container.getParent(itemId);
             while (!container.isRoot(parent)) {
                 setCollapsed(parent, false);
                 parent = container.getParent(parent);
             }
-            //finally expand the root else children won't be visibile.
+            // finally expand the root else children won't be visibile.
             setCollapsed(parent, false);
         }
-        select((Object)itemId);
+        select((Object) itemId);
     }
 
     public void refresh() {
@@ -199,25 +211,24 @@ public class MagnoliaTreeTable extends HybridSelectionTreeTable {
     }
 
     public void updateItem(final Item item) {
-        String itemId = ((JcrItemAdapter)item).getItemId();
+        String itemId = ((JcrItemAdapter) item).getItemId();
         if (container.containsId(itemId)) {
             container.fireItemSetChange();
         } else {
-            log.warn("No item found for Id: "+itemId);
+            log.warn("No item found for Id: " + itemId);
         }
 
     }
 
-    //FIXME This is not the correct way to handle Typed column.
+    // FIXME This is not the correct way to handle Typed column.
     // Ticket: SCRUM-1360
     @Override
     protected String formatPropertyValue(Object rowId, Object colId, Property property) {
         Object v = property.getValue();
         if (v instanceof Date) {
             Date dateValue = (Date) v;
-            return "Formatted date: " + (1900 + dateValue.getYear())
-                    + "-" + dateValue.getMonth() + "-"
-                    + dateValue.getDate();
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            return "Formatted date: " + dateFormat.format(dateValue);
         }
         return super.formatPropertyValue(rowId, colId, property);
     }

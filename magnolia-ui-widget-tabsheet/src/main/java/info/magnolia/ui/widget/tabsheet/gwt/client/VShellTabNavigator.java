@@ -35,8 +35,8 @@ package info.magnolia.ui.widget.tabsheet.gwt.client;
 
 import info.magnolia.ui.widget.tabsheet.gwt.client.event.ActiveTabChangedEvent;
 import info.magnolia.ui.widget.tabsheet.gwt.client.event.ActiveTabChangedHandler;
-import info.magnolia.ui.widget.tabsheet.gwt.client.event.ShowAllTabEvent;
-import info.magnolia.ui.widget.tabsheet.gwt.client.event.ShowAllTabHandler;
+import info.magnolia.ui.widget.tabsheet.gwt.client.event.ShowAllTabsEvent;
+import info.magnolia.ui.widget.tabsheet.gwt.client.event.ShowAllTabsHandler;
 import info.magnolia.ui.widget.tabsheet.gwt.client.event.TabCloseEvent;
 import info.magnolia.ui.widget.tabsheet.gwt.client.event.TabCloseEventHandler;
 import info.magnolia.ui.widget.tabsheet.gwt.client.util.CollectionUtil;
@@ -119,10 +119,10 @@ public class VShellTabNavigator extends ComplexPanel {
             }
         });
 
-        eventBus.addHandler(ShowAllTabEvent.TYPE, new ShowAllTabHandler() {
+        eventBus.addHandler(ShowAllTabsEvent.TYPE, new ShowAllTabsHandler() {
 
             @Override
-            public void onShowAll(ShowAllTabEvent event) {
+            public void onShowAllTabs(ShowAllTabsEvent event) {
                 for (final VShellTabLabel tabLabel : tabLabels) {
                     tabLabel.removeStyleName("active");
                 }
@@ -299,7 +299,7 @@ public class VShellTabNavigator extends ComplexPanel {
                 @Override
                 public void onClick(ClickEvent event) {
                     final Element target = (Element)event.getNativeEvent().getEventTarget().cast();
-                    eventBus.fireEvent(new ShowAllTabEvent());
+                    eventBus.fireEvent(new ShowAllTabsEvent());
                 }
             }, ClickEvent.getType());
         }

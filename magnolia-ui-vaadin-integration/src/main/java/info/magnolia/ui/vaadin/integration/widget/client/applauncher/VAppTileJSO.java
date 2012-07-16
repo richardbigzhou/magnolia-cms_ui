@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,45 +31,28 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.workbench.definition;
+package info.magnolia.ui.vaadin.integration.widget.client.applauncher;
 
-import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
-import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
-import info.magnolia.ui.model.column.definition.ColumnDefinition;
-
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.List;
-
+import com.google.gwt.core.client.JavaScriptObject;
 
 /**
- * Contains all elements which define a workbench configuration.
+ * App tile data object received from server.
+ *
  */
-public interface WorkbenchDefinition extends Serializable {
-
-    String getName();
-
-    String getWorkspace();
-
-    String getPath();
-
-    List<ItemTypeDefinition> getItemTypes();
-
-    /**
-     * Return the itemType filter criteria in order to be used for searching nodes. like:
-     * "jcr:* | myapp:report | my doc"
-     */
-    String getItemTypesFilter();
-
-    ColumnDefinition getColumn(String columnId);
-
-    Collection<ColumnDefinition> getColumns();
-
-    /**
-     * Gets the definition for the action bar related to this workbench.
-     */
-    ActionbarDefinition getActionbar();
-
-    ComponentProviderConfiguration getComponents();
-
+public class VAppTileJSO extends JavaScriptObject {
+    
+    protected VAppTileJSO() {}
+    
+    public native final static VAppTileJSO parse(String json) /*-{
+        return eval('(' + json + ')');
+    }-*/;
+    
+    public native final String  getCaption() /*-{
+        return this.caption;
+    }-*/;
+    
+    public native final String  getIcon() /*-{
+        return this.icon;
+    }-*/;
+    
 }

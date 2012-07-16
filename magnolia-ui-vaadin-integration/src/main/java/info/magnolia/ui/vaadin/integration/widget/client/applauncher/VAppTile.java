@@ -53,28 +53,30 @@ import com.google.web.bindery.event.shared.EventBus;
  */
 public class VAppTile extends Widget {
 
-    private Element icon = DOM.createDiv();
+    private final Element icon = DOM.createDiv();
 
-    private Element label = DOM.createDiv();
+    private final Element label = DOM.createDiv();
 
-    private Element root = DOM.createDiv();
+    private final Element root = DOM.createDiv();
 
-    private Element runningIndicator = DOM.createDiv();
+    private final Element runningIndicator = DOM.createDiv();
 
-    private boolean isActive = false;
+    private final Element iconContent = DOM.createSpan();
 
-    private String caption;
+    private final VAppTileJSO appTileData;
     
-    private EventBus eventBus;
-
-    public VAppTile(final EventBus eventBus, String caption, String iconStyle) {
+    private final EventBus eventBus;
+    
+    private boolean isActive = false;
+    
+    public VAppTile(EventBus eventBus, VAppTileJSO appTile) {
         super();
+        this.appTileData = appTile;
         this.eventBus = eventBus;
-        this.caption = caption;
         constructDOM();
         bindHandlers();
-        setIcon(iconStyle);
-        setCaption(caption);
+        updateIcon();
+        updateCaption();
     }
 
     private void constructDOM() {
@@ -85,6 +87,9 @@ public class VAppTile extends Widget {
         addStyleName("item");
         icon.addClassName("icon");
         label.addClassName("label");
+        
+        icon.appendChild(iconContent);
+        
         DOM.sinkEvents(getElement(), Event.MOUSEEVENTS);
     }
 
@@ -118,7 +123,7 @@ public class VAppTile extends Widget {
                     getElement().getStyle().setBackgroundColor(getParent().getColor());
                     getElement().getStyle().setColor("white");
                 }
-                eventBus.fireEvent(new AppActivationEvent(caption));
+                eventBus.fireEvent(new AppActivationEvent(appTileData.getCaption()));
             }
         }, ClickEvent.getType());
     }
@@ -135,7 +140,7 @@ public class VAppTile extends Widget {
     }
 
     public String getCaption() {
-        return caption;
+        return appTileData.getCaption();
     }
     
     public boolean isActive() {
@@ -147,14 +152,13 @@ public class VAppTile extends Widget {
         return (VAppTileGroup) super.getParent();
     }
 
-    public void setCaption(String caption) {
-        label.setInnerText(caption);
-        this.caption = caption;
+    public void updateCaption() {
+        if (appTileData != null) {
+            label.setInnerText(appTileData.getCaption());   
+        }
     }
 
-    public void setIcon(String iconStyle) {
-        final Element iconContent = DOM.createSpan();
-        iconContent.addClassName(iconStyle);
-        icon.appendChild(iconContent);
+    public void updateIcon() {
+        iconContent.addClassName(appTileData.getIcon());
     }
 }

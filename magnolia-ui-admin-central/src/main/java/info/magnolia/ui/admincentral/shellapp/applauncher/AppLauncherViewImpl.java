@@ -42,7 +42,6 @@ import info.magnolia.ui.vaadin.integration.widget.AppLauncher.AppActivatedEvent;
 import info.magnolia.ui.vaadin.integration.widget.AppLauncher.AppActivationListener;
 
 import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
 
 
 /**
@@ -59,15 +58,11 @@ public class AppLauncherViewImpl implements AppLauncherView {
 
     private Presenter presenter;
 
-    private CssLayout layout = new CssLayout();
-
     private AppLauncher appLauncher = new AppLauncher();
     
     public AppLauncherViewImpl() {
-        layout.setHeight("100%");
-        layout.setWidth("720px");
-        appLauncher.setSizeFull();
-        layout.addComponent(appLauncher);
+        appLauncher.setHeight("100%");
+        appLauncher.setWidth("720px");
         appLauncher.addAppActivationListener(new AppActivationListener() {
             @Override
             public void onAppActivated(AppActivatedEvent event) {
@@ -83,7 +78,7 @@ public class AppLauncherViewImpl implements AppLauncherView {
 
     @Override
     public Component asVaadinComponent() {
-        return layout;
+        return appLauncher;
     }
 
     @Override
@@ -93,7 +88,7 @@ public class AppLauncherViewImpl implements AppLauncherView {
 
     @Override
     public void clearView() {
-        layout.removeAllComponents();
+        appLauncher.clear();
     }
 
     @Override

@@ -49,7 +49,7 @@ public class AppLauncherGroupEntry {
     private String iconFont;
     private String iconCharacter;
 
-    private AppDescriptor appDescriptor;
+    private transient AppDescriptor appDescriptor;
 
     public String getName() {
         return name;

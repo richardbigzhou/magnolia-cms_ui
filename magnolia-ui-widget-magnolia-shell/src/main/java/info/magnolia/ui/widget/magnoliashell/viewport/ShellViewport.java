@@ -31,70 +31,54 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.magnoliashell;
+package info.magnolia.ui.widget.magnoliashell.viewport;
 
 import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.framework.view.ViewPort;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.VShellViewport;
+import info.magnolia.ui.widget.magnoliashell.BaseMagnoliaShell;
+import info.magnolia.ui.widget.magnoliashell.DeckLayout;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.VShellViewport;
 
 import com.vaadin.ui.ClientWidget;
 import com.vaadin.ui.ClientWidget.LoadStyle;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.ComponentContainer;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.ProgressIndicator;
 
 /**
- * The server side implementation of the shell viewport. MagnoliaShell is capable of holding of such for 
- * the shell apps, one - for the regular apps.
+ * The server side implementation of the shell viewport. MagnoliaShell is
+ * capable of holding of such for the shell apps, one - for the regular apps.
  */
 @SuppressWarnings("serial")
-@ClientWidget(value=VShellViewport.class, loadStyle = LoadStyle.EAGER)
+@ClientWidget(value = VShellViewport.class, loadStyle = LoadStyle.EAGER)
 public class ShellViewport extends DeckLayout implements ViewPort {
-    
+
     private String currentShellFragment = "";
-    
+
     private BaseMagnoliaShell parentShell;
-    
+
     private View view;
-    
+
     public ShellViewport(final BaseMagnoliaShell shell) {
         super();
         setSizeFull();
         display(null);
         this.parentShell = shell;
     }
-    
-    
+
     public void setCurrentShellFragment(String currentShellFragment) {
         this.currentShellFragment = currentShellFragment;
     }
-    
+
     public String getCurrentShellFragment() {
         return currentShellFragment;
     }
 
     @Override
     public void setView(final View view) {
-        if (view != null){
+        if (view != null) {
             this.view = view;
-            final Component c = view.asVaadinComponent();
-            if (c instanceof ComponentContainer) {
-                display(c);
-                parentShell.setActiveViewport(this);
-            }
+            final Component c = this.view.asVaadinComponent();
+            display(c);
+            parentShell.setActiveViewport(this);
         }
-    }
-
-
-    public void showAppPlaceHolder(final String name) {
-        Panel panel = new Panel();
-        panel.addComponent(new Label("Loading: " + name));
-        ProgressIndicator pi = new ProgressIndicator();
-        pi.setIndeterminate(true);
-        panel.addComponent(pi);
-        display(panel);
-        parentShell.setActiveViewport(this);
     }
 }

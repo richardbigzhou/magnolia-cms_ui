@@ -31,45 +31,52 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.workbench.definition;
+package info.magnolia.ui.admincentral.content.view.builder;
 
-import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
-import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
-import info.magnolia.ui.model.column.definition.ColumnDefinition;
-
-import java.io.Serializable;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
 
-
 /**
- * Contains all elements which define a workbench configuration.
+ * TODO: use ui settings?
+ * Provides the ContentViewBuilder defined in the AdminCentralModule.
  */
-public interface WorkbenchDefinition extends Serializable {
+public class ContentViewBuilderProviderImpl implements ContentViewBuilderProvider {
 
-    String getName();
 
-    String getWorkspace();
+    //private UISettings uiSettings;
 
-    String getPath();
+    // content2bean
+    private List<ContentViewBuilder> contentViewBuilders = new ArrayList<ContentViewBuilder>();
 
-    List<ItemTypeDefinition> getItemTypes();
-
-    /**
-     * Return the itemType filter criteria in order to be used for searching nodes. like:
-     * "jcr:* | myapp:report | my doc"
-     */
-    String getItemTypesFilter();
-
-    ColumnDefinition getColumn(String columnId);
-
-    Collection<ColumnDefinition> getColumns();
 
     /**
-     * Gets the definition for the action bar related to this workbench.
+     * Is needed so that we can make a proxy (reloading configuration).
+     * TODO: is this really necessary?
      */
-    ActionbarDefinition getActionbar();
+    public ContentViewBuilderProviderImpl() {
+    }
 
-    ComponentProviderConfiguration getComponents();
+    /*@Inject
+    public ContentViewBuilderProviderImpl(User user, UISettings uiSettings) {
+        this.user = user;
+        this.uiSettings = uiSettings;
+    }*/
 
+    @Override
+    public ContentViewBuilder getBuilder() {
+        // FIXME: use user and uiSettings
+        return contentViewBuilders.get(0);
+    }
+
+    public void setContentViewBuilders(List<ContentViewBuilder> contentViewBuilders) {
+        this.contentViewBuilders = contentViewBuilders;
+    }
+
+    public List<ContentViewBuilder> getContentViewBuilders() {
+        return contentViewBuilders;
+    }
+
+    public void addContentViewBuilder(ContentViewBuilder contentViewBuilder) {
+        this.contentViewBuilders.add(contentViewBuilder);
+    }
 }

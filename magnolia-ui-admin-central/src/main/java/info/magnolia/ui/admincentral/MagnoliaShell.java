@@ -39,18 +39,20 @@ import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventHandler;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.event.HandlerRegistration;
+import info.magnolia.ui.framework.location.DefaultLocation;
+import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessageEvent;
 import info.magnolia.ui.framework.message.MessageEventHandler;
 import info.magnolia.ui.framework.message.MessagesManager;
-import info.magnolia.ui.framework.location.DefaultLocation;
-import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.shell.ConfirmationHandler;
 import info.magnolia.ui.framework.shell.FragmentChangedHandler;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.widget.dialog.Dialog;
 import info.magnolia.ui.widget.magnoliashell.BaseMagnoliaShell;
-import info.magnolia.ui.widget.magnoliashell.ShellViewport;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
+import info.magnolia.ui.widget.magnoliashell.viewport.ShellViewport;
+
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -58,6 +60,7 @@ import javax.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.Gson;
 import com.vaadin.terminal.ExternalResource;
 
 /**
@@ -76,7 +79,7 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
     private final MessagesManager messagesManager;
     
     @Inject
-    public MagnoliaShell(final EventBus eventBus, final AppController appController, final MessagesManager messagesManager) {
+    public MagnoliaShell(EventBus eventBus, AppController appController, MessagesManager messagesManager) {
         super();
         this.messagesManager = messagesManager;
         this.eventBus = eventBus;
@@ -86,6 +89,16 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
             @Override
             public void onAppFocused(AppLifecycleEvent event) {
                 setActiveViewport(getAppViewport());
+            }
+            
+            @Override
+            public void onAppStarted(AppLifecycleEvent event) {
+                proxy.call("onAppStarted", event.getAppDescriptor().getName());
+            }
+            
+            @Override
+            public void onAppStopped(AppLifecycleEvent event) {
+                proxy.call("onAppStopped", event.getAppDescriptor().getName());
             }
         });
         this.eventBus.addHandler(MessageEvent.class, this);
@@ -107,20 +120,13 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
     @Override
     @Deprecated
     public void showNotification(String message) {
-        final Message msg = new Message();
-        msg.setMessage(message);
-        msg.setId("");
-        showWarning(msg);
+        throw new UnsupportedOperationException("Use MessagesManager class for messages dispatching");
     }
 
     @Override
     @Deprecated
     public void showError(String message, Exception e) {
-        log.error(message, e);
-        final Message msg = new Message();
-        msg.setMessage(message);
-        msg.setId("");
-        showError(msg);
+        throw new UnsupportedOperationException("Use MessagesManager class for messages dispatching");
     }
 
     @Override
@@ -202,6 +208,15 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
     }
 
     @Override
+    public Object[] initRequestFromClient() {
+        return super.initRequestFromClient();
+    }
+    
+    @Override
     public void messageCleared(MessageEvent event) {
+    }
+
+    public void setRegisteredAppNames(List<String> appNames) {
+        proxy.call("registerApps", new Gson().toJson(appNames));
     }
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,14 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.widget.client.applauncher.event;
+package info.magnolia.ui.widget.magnoliashell.gwt.client.util;
 
-import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.core.client.JsArrayString;
 
 /**
- * Event handler of app activation.
+ * JSON conversion utils.
+ *
  */
-public interface AppActivatedEventHandler extends EventHandler {
-
-    void onAppActivated(final AppActivationEvent event);
+public class JSONUtil {
+    
+    public static native JsArrayString parseStringArray(String json) /*-{
+        return eval('(' + json + ')');
+    }-*/;
 }

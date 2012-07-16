@@ -35,7 +35,7 @@ package info.magnolia.ui.admincentral.container;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.RuntimeRepositoryException;
-import info.magnolia.ui.model.column.definition.AbstractColumnDefinition;
+import info.magnolia.ui.model.column.definition.ColumnDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -103,13 +103,13 @@ public abstract class JcrContainer extends AbstractContainer implements Containe
 
     private final LinkedHashMap<String, JcrItemAdapter> cachedItems = new LinkedHashMap<String, JcrItemAdapter>();
 
-    private Map<String, String> sortableProperties = new HashMap<String, String>();
+    private final Map<String, String> sortableProperties = new HashMap<String, String>();
 
     /** Filters (WHERE) and sorters (ORDER BY). */
     // private final List<Filter> filters = new ArrayList<Filter>();
     private final List<OrderBy> sorters = new ArrayList<OrderBy>();
 
-    private String workspace;
+    private final String workspace;
 
     /** Starting row number of the currently fetched page. */
     private int currentOffset;
@@ -132,7 +132,7 @@ public abstract class JcrContainer extends AbstractContainer implements Containe
         this.jcrContainerSource = jcrContainerSource;
         workspace = workbenchDefinition.getWorkspace();
 
-        for (AbstractColumnDefinition columnDefinition : workbenchDefinition.getColumns()) {
+        for (ColumnDefinition columnDefinition : workbenchDefinition.getColumns()) {
             if (columnDefinition.isSortable()) {
                 log.debug("Configuring column [{}] as sortable", columnDefinition.getName());
 
@@ -268,9 +268,9 @@ public abstract class JcrContainer extends AbstractContainer implements Containe
     @Override
     public Property getContainerProperty(Object itemId, Object propertyId) {
         Item item = getItem(itemId);
-        if (item != null ) {
+        if (item != null) {
             return item.getItemProperty(propertyId);
-        }else {
+        } else {
             log.error("Could not get a Property of an node that don't exist ");
             return null;
         }
@@ -434,21 +434,22 @@ public abstract class JcrContainer extends AbstractContainer implements Containe
     /***********************************************/
     /** Used by JcrContainerProperty **/
     /***********************************************/
-    //FIXME Check now who/where to do this
-//    public Object getColumnValue(String propertyId, Object itemId) {
-//        try {
-//            final javax.jcr.Item jcrItem = getJcrItem(((String) itemId));
-//            if (ITEM_ICON_PROPERTY_ID.equals(propertyId)) {
-//                return new ExternalResource(StringUtils.removeEnd(MgnlContext.getContextPath(), "/") + "/" + StringUtils.removeStart(jcrContainerSource.getItemIcon(jcrItem), "/"));
-//            }
-//                return jcrContainerSource.getColumnComponent(propertyId, jcrItem);
-////            return jcrContainerSource.getColumnComponent(propertyId, getJcrItem(((ContainerItemId) itemId)));
-//        }
-//        catch (RepositoryException e) {
-//            throw new RuntimeRepositoryException(e);
-//        }
-//    }
-
+    // FIXME Check now who/where to do this
+    // public Object getColumnValue(String propertyId, Object itemId) {
+    // try {
+    // final javax.jcr.Item jcrItem = getJcrItem(((String) itemId));
+    // if (ITEM_ICON_PROPERTY_ID.equals(propertyId)) {
+    // return new ExternalResource(StringUtils.removeEnd(MgnlContext.getContextPath(), "/") + "/" +
+    // StringUtils.removeStart(jcrContainerSource.getItemIcon(jcrItem), "/"));
+    // }
+    // return jcrContainerSource.getColumnComponent(propertyId, jcrItem);
+    // // return jcrContainerSource.getColumnComponent(propertyId, getJcrItem(((ContainerItemId)
+    // itemId)));
+    // }
+    // catch (RepositoryException e) {
+    // throw new RuntimeRepositoryException(e);
+    // }
+    // }
 
     // Used by JcrBrowser
     protected JcrContainerSource getJcrContainerSource() {
@@ -482,7 +483,7 @@ public abstract class JcrContainer extends AbstractContainer implements Containe
     /**
      * Determines a new offset for updating the row cache. The offset is calculated from the given
      * index, and will be fixed to match the start of a page, based on the value of pageLength.
-     *
+     * 
      * @param index Index of the item that was requested, but not found in cache
      */
     private void updateOffsetAndCache(int index) {
@@ -501,7 +502,7 @@ public abstract class JcrContainer extends AbstractContainer implements Containe
      */
     private void updateCount(long newSize) {
         if (newSize != size) {
-            size = (int)newSize;
+            size = (int) newSize;
         }
     }
 
@@ -563,8 +564,7 @@ public abstract class JcrContainer extends AbstractContainer implements Containe
 
             /* Set page size */
             updateCount(iterator.getSize());
-        }
-        catch (RepositoryException re) {
+        } catch (RepositoryException re) {
             throw new RuntimeRepositoryException(re);
         }
 
@@ -583,23 +583,24 @@ public abstract class JcrContainer extends AbstractContainer implements Containe
         getPage();
     }
 
-
-//    protected int getRowCount() {
-//        //FIXME cache the size cause at present the query to count rows is extremely slow () with "large" (20000+ nodes) data sets and it's called frequently by Vaadin.
-//        //On the other hand caching this value prevents flat container changes (add/remove nodes) to be reflected immediately. See http://jira.magnolia-cms.com/browse/SCRUM-151
-//        if(size >= 0){
-//            return size;
-//        }
-//
-//        QueryResult result = executeQuery(SELECT_CONTENT, Query.JCR_SQL2, 0, 0);
-//        try {
-//            return Long.valueOf(result.getRows().getSize()).intValue();
-//        }
-//        catch (RepositoryException e) {
-//            throw new RuntimeRepositoryException(e);
-//        }
-//
-//    }
+    // protected int getRowCount() {
+    // //FIXME cache the size cause at present the query to count rows is extremely slow () with
+    // "large" (20000+ nodes) data sets and it's called frequently by Vaadin.
+    // //On the other hand caching this value prevents flat container changes (add/remove nodes) to
+    // be reflected immediately. See http://jira.magnolia-cms.com/browse/SCRUM-151
+    // if(size >= 0){
+    // return size;
+    // }
+    //
+    // QueryResult result = executeQuery(SELECT_CONTENT, Query.JCR_SQL2, 0, 0);
+    // try {
+    // return Long.valueOf(result.getRows().getSize()).intValue();
+    // }
+    // catch (RepositoryException e) {
+    // throw new RuntimeRepositoryException(e);
+    // }
+    //
+    // }
 
     protected void setSize(int size) {
         this.size = size;
@@ -627,14 +628,11 @@ public abstract class JcrContainer extends AbstractContainer implements Containe
 
             return result;
 
-        }
-        catch (LoginException e) {
+        } catch (LoginException e) {
             throw new RuntimeRepositoryException(e);
-        }
-        catch (InvalidQueryException e) {
+        } catch (InvalidQueryException e) {
             throw new RuntimeRepositoryException(e);
-        }
-        catch (RepositoryException e) {
+        } catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);
         }
     }

@@ -41,15 +41,13 @@ import com.google.gwt.user.client.ui.IsWidget;
  */
 public interface VAppLauncherView extends IsWidget {
 
-    void addPermanentAppGroup(String caption, String color);
-
-    void addTemporaryAppGroup(String caption, String color);
-
-    void addAppThumbnail(String caption, String iconStyle, String categoryId);
-
     void setPresenter(Presenter presenter);
     
     void setAppActive(String appName, boolean isActive);
+    
+    void addAppSection(VAppSectionJSO section);
+
+    void addAppThumbnail(VAppTileJSO appTile, String categoryId);
     
     /**
      * Presenter for the AppLauncher view. 

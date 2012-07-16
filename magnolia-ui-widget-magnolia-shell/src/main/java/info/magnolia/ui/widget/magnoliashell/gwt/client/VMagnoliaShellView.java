@@ -36,6 +36,9 @@ package info.magnolia.ui.widget.magnoliashell.gwt.client;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShell.ViewportType;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VShellMessage.MessageType;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.VAppsViewport;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.VShellAppsViewport;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.VShellViewport;
 
 import java.util.Collection;
 
@@ -56,9 +59,9 @@ public interface VMagnoliaShellView extends HasWidgets, IsWidget {
     
     void changeActiveViewport(ViewportType viewportType);
     
-    void updateAppViewport(VShellViewport viewport);
+    void updateAppViewport(VAppsViewport viewport);
     
-    void updateShellAppViewport(VShellViewport viewport);
+    void updateShellAppViewport(VShellAppsViewport viewport);
     
     void updateDialogs(VShellViewport dialogViewport);
 
@@ -85,7 +88,7 @@ public interface VMagnoliaShellView extends HasWidgets, IsWidget {
     void closeMessageEager(String id);
     
     void navigateToMessageDetails(String id);
-    
+   
     /**
      * Presenter. Meant for Vaadin part of MagnoliaShell.
      */
@@ -104,5 +107,9 @@ public interface VMagnoliaShellView extends HasWidgets, IsWidget {
         void closeCurrentShellApp();
 
         void removeMessage(String id);
+
+        boolean isAppRegistered(String appName);
+        
+        boolean isAppRunning(String appName);
     }
 }

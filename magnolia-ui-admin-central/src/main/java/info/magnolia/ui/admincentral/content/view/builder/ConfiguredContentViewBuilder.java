@@ -31,18 +31,19 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.jcr.view.builder;
+package info.magnolia.ui.admincentral.content.view.builder;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.column.Column;
-import info.magnolia.ui.admincentral.jcr.view.ContentView;
-import info.magnolia.ui.admincentral.jcr.view.ContentView.ViewType;
+import info.magnolia.ui.admincentral.content.view.ContentView;
+import info.magnolia.ui.admincentral.content.view.ContentView.ViewType;
 import info.magnolia.ui.admincentral.list.view.ListViewImpl;
 import info.magnolia.ui.admincentral.tree.model.TreeModel;
 import info.magnolia.ui.admincentral.tree.view.TreeViewImpl;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.model.builder.FactoryBase;
 import info.magnolia.ui.model.column.definition.AbstractColumnDefinition;
+import info.magnolia.ui.model.column.definition.ColumnDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 
 import java.io.Serializable;
@@ -51,17 +52,18 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+
 /**
  * ContentView configured via content to bean.
  */
-public class ConfiguredContentViewBuilder extends FactoryBase<AbstractColumnDefinition, Column<AbstractColumnDefinition>> implements ContentViewBuilder, Serializable {
+public class ConfiguredContentViewBuilder extends FactoryBase<ColumnDefinition, Column<AbstractColumnDefinition>> implements ContentViewBuilder, Serializable {
 
     /**
      * List as retrieved out of JCR-config (via Content2Bean).
      */
     private List<DefinitionToImplementationMapping<AbstractColumnDefinition, Column<AbstractColumnDefinition>>> definitionToImplementationMappings = new ArrayList<DefinitionToImplementationMapping<AbstractColumnDefinition, Column<AbstractColumnDefinition>>>();
 
-    private ComponentProvider componentProvider;
+    private final ComponentProvider componentProvider;
 
     public ConfiguredContentViewBuilder(ComponentProvider componentProvider) {
         super(componentProvider);
@@ -72,27 +74,30 @@ public class ConfiguredContentViewBuilder extends FactoryBase<AbstractColumnDefi
         return this.definitionToImplementationMappings;
     }
 
-    public void setDefinitionToImplementationMappings(List<DefinitionToImplementationMapping<AbstractColumnDefinition, Column<AbstractColumnDefinition>>> definitionToImplementationMappings) {
+    public void setDefinitionToImplementationMappings(
+        List<DefinitionToImplementationMapping<AbstractColumnDefinition, Column<AbstractColumnDefinition>>> definitionToImplementationMappings) {
         this.definitionToImplementationMappings = definitionToImplementationMappings;
         for (DefinitionToImplementationMapping<AbstractColumnDefinition, Column<AbstractColumnDefinition>> definitionToImplementationMapping : definitionToImplementationMappings) {
             addDefinitionToImplementationMapping(definitionToImplementationMapping);
         }
     }
 
-    public void addDefinitionToImplementationMapping(DefinitionToImplementationMapping<AbstractColumnDefinition, Column<AbstractColumnDefinition>> mapping) {
+    public void addDefinitionToImplementationMapping(
+        DefinitionToImplementationMapping<AbstractColumnDefinition, Column<AbstractColumnDefinition>> mapping) {
         addMapping(mapping.getDefinition(), mapping.getImplementation());
     }
 
-    public Column<AbstractColumnDefinition> createTreeColumn(AbstractColumnDefinition definition) {
+    public Column<AbstractColumnDefinition> createTreeColumn(ColumnDefinition definition) {
         return create(definition);
     }
 
     @Override
     public ContentView build(WorkbenchDefinition workbenchDefinition, ViewType type) {
-        Map<String, Column<?>> columns = new LinkedHashMap<String, Column<?>>();
-        for (AbstractColumnDefinition columnDefinition : workbenchDefinition.getColumns()) {
-            Column<?> column = createTreeColumn(columnDefinition);
-            // only add if not null - null meaning there's no definitionToImplementationMapping defined for that column.
+        Map<String, Column< ? >> columns = new LinkedHashMap<String, Column< ? >>();
+        for (ColumnDefinition columnDefinition : workbenchDefinition.getColumns()) {
+            Column< ? > column = createTreeColumn(columnDefinition);
+            // only add if not null - null meaning there's no definitionToImplementationMapping
+            // defined for that column.
             if (column != null) {
                 columns.put(columnDefinition.getName(), column);
             }
@@ -100,7 +105,7 @@ public class ConfiguredContentViewBuilder extends FactoryBase<AbstractColumnDefi
         final WorkbenchActionFactory workbenchActionFactory = componentProvider.getComponent(WorkbenchActionFactory.class);
         // FIXME the model should be set by the presenter
         TreeModel treeModel = new TreeModel(workbenchDefinition, columns, workbenchActionFactory);
-        if(type == ViewType.TREE) {
+        if (type == ViewType.TREE) {
             return componentProvider.newInstance(TreeViewImpl.class, workbenchDefinition, treeModel);
         } else {
             return componentProvider.newInstance(ListViewImpl.class, workbenchDefinition, treeModel);

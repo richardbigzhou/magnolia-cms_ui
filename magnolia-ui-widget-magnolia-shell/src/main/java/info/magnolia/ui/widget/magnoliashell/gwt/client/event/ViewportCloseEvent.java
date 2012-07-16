@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.widget.magnoliashell.gwt.client.event;
 
-import info.magnolia.ui.widget.magnoliashell.gwt.client.VShellViewport;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.event.handler.ViewportCloseHandler;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.VShellViewport;
 
 import com.google.gwt.event.shared.GwtEvent;
 

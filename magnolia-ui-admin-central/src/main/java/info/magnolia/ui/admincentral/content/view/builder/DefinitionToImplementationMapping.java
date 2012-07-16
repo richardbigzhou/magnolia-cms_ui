@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.jcr.view.builder;
+package info.magnolia.ui.admincentral.content.view.builder;
 
 /**
  * Defines a Mapping from a Definition to an specific implementation.

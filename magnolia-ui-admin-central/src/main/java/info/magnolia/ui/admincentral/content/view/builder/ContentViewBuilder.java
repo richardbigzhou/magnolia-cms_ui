@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2011 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,14 +31,16 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.jcr.view.builder;
+package info.magnolia.ui.admincentral.content.view.builder;
+
+import info.magnolia.ui.admincentral.content.view.ContentView;
+import info.magnolia.ui.admincentral.content.view.ContentView.ViewType;
+import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 
 /**
- * Provides a ContentViewBuilder.
- *
- * TODO: check whether this type should go to ui-model layer.
+ * Used to transform tree or list and column definitions into components.
  */
-public interface ContentViewBuilderProvider {
+public interface ContentViewBuilder {
 
-    ContentViewBuilder getBuilder();
+    ContentView build(WorkbenchDefinition workbenchDefinition, ViewType type);
 }
