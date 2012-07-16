@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2010-2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,30 +33,32 @@
  */
 package info.magnolia.ui.model.dialog.definition;
 
-import java.util.List;
-
 
 /**
- * FieldDefinition .
+ * Field definition for Radio and check box select field. This replace the former {@link info.magnolia.cms.gui.dialog.DialogButtonSet}
+ * This is now used for Control radio and checkbox.
  */
-public interface FieldDefinition {
+public class OptionGroupFieldDefinition extends SelectFieldDefinition {
 
-    String getName();
+    private int cols = 1;
 
-    String getLabel();
+    private boolean multiselect = false;
 
-    String getI18nBasename();
+    public boolean isMultiselect() {
+        return multiselect;
+    }
 
-    String getDescription();
 
-    String getType();
+    public void setMultiselect(boolean multiselect) {
+        this.multiselect = multiselect;
+    }
 
-    boolean isRequired();
+    public int getCols() {
+        return cols;
+    }
 
-    List<ValidatorDefinition> getValidators();
-
-    String getDefaultValue();
-
-    boolean getSaveInfo();
+    public void setCols(int cols) {
+        this.cols = cols;
+    }
 
 }

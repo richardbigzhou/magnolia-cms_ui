@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2010-2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,16 +31,67 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.jcr.view.builder;
+package info.magnolia.ui.model.dialog.definition;
 
-import info.magnolia.ui.admincentral.jcr.view.ContentView;
-import info.magnolia.ui.admincentral.jcr.view.ContentView.ViewType;
-import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 
 /**
- * Used to transform tree or list and column definitions into components.
+ * Simple pojo used to define options used in selection.
  */
-public interface ContentViewBuilder {
 
-    ContentView build(WorkbenchDefinition workbenchDefinition, ViewType type);
+public class SelectFieldOptionDefinition {
+
+    // Value saved to the repository and displayed to the user.
+    private String value;
+    // Name of the property that stores the selected value.
+    private String name;
+    // Sets the option as pre-selected
+    private boolean selected = false;
+    // The human-readable label for this option.
+    private String label;
+    // Value is a path to the image.
+    private String iconSrc;
+
+
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public String getIconSrc() {
+        return iconSrc;
+    }
+
+    public void setIconSrc(String iconSrc) {
+        this.iconSrc = iconSrc;
+    }
 }

@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.tree.view;
 
-import info.magnolia.ui.admincentral.jcr.view.ContentView;
+import info.magnolia.ui.admincentral.content.view.ContentView;
 
 /**
  * Tree view interface.

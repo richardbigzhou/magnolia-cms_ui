@@ -46,7 +46,6 @@ import info.magnolia.ui.model.dialog.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.model.dialog.definition.ConfiguredTabDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 import info.magnolia.ui.model.dialog.definition.EditFieldDefinition;
-import info.magnolia.ui.model.dialog.definition.FieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.widget.dialog.Dialog;
 import info.magnolia.ui.widget.dialog.DialogView;
@@ -57,7 +56,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-
+/**
+ * Main test for {@link DialogBuilder}.
+ */
 public class DialogBuilderTest {
 
     private final String worksapceName = "workspace";
@@ -108,8 +109,6 @@ public class DialogBuilderTest {
         final Dialog dialog = new Dialog();
         final ConfiguredTabDefinition tabDef = new ConfiguredTabDefinition();
         final ConfiguredFieldDefinition fieldDef = new ConfiguredFieldDefinition();
-
-        fieldDef.setType(FieldDefinition.TEXT_FIELD_TYPE);
         fieldDef.setName(propertyName);
         tabDef.addField(fieldDef);
         dialogDef.addTab(tabDef);
@@ -125,3 +124,4 @@ public class DialogBuilderTest {
     }
 
 }
+

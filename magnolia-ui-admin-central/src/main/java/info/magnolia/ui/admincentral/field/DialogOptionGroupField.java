@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,41 +31,40 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.field;
+package info.magnolia.ui.admincentral.field;
 
-import com.vaadin.data.Property;
-import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.Select;
-import org.vaadin.addon.customfield.CustomField;
+import info.magnolia.ui.model.dialog.definition.FieldDefinition;
+import info.magnolia.ui.model.dialog.definition.OptionGroupFieldDefinition;
+
+import com.vaadin.data.Item;
+import com.vaadin.ui.AbstractSelect;
+import com.vaadin.ui.Field;
+import com.vaadin.ui.OptionGroup;
+
 
 /**
- * TemplateSelectorView implementation of a template selector.
- *
+ * Initialize a DialogOption Field based on the configured informations.
  */
-public class TemplateSelectorView extends CustomField {
 
-    private Select select;
+public class DialogOptionGroupField extends DialogSelectField {
 
-    public TemplateSelectorView(Select select) {
-        this.select = select;
-        CssLayout layout = new CssLayout();
-        layout.addComponent(this.select);
-        setCompositionRoot(layout);
+    public DialogOptionGroupField(FieldDefinition definition, Item relatedFieldItem) {
+        super(definition, relatedFieldItem);
     }
 
-    /**
-     * Set the select item if the datasource is not empty.
-     */
+
     @Override
-    public void setPropertyDataSource(Property newDataSource) {
-        super.setPropertyDataSource(newDataSource);
-        if(!newDataSource.getValue().toString().isEmpty()) {
-            select.setValue(newDataSource.getValue());
-        }
+    protected Field buildField() {
+        //Set common attributes
+        super.buildField();
+        select.setMultiSelect(((OptionGroupFieldDefinition)getFieldDefinition()).isMultiselect());
+        return select;
     }
 
     @Override
-    public Class<?> getType() {
-        return String.class;
+    protected AbstractSelect createVaadinSeletionField() {
+        return new OptionGroup();
     }
+
+
 }

@@ -33,27 +33,24 @@
  */
 package info.magnolia.ui.vaadin.integration.jcr;
 
-import static org.junit.Assert.assertSame;
+import javax.jcr.Node;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import info.magnolia.context.MgnlContext;
-import info.magnolia.test.mock.MockContext;
-import info.magnolia.test.mock.jcr.MockSession;
-
-import javax.jcr.Node;
-
+import static org.junit.Assert.assertSame;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.vaadin.data.Property;
 
-public class JcrNewNodeAdapterTest {
+import info.magnolia.context.MgnlContext;
+import info.magnolia.test.mock.MockContext;
+import info.magnolia.test.mock.jcr.MockSession;
 
+public class JcrNewNodeAdapterTest {
 
     private String worksapceName = "workspace";
     private MockSession session;
-
 
     @Before
     public void setUp() {
@@ -80,7 +77,13 @@ public class JcrNewNodeAdapterTest {
         String nodeType = "mgnl:content";
         Node parentNode = session.getRootNode().addNode(nodeName);
         JcrNewNodeAdapter adapter = new JcrNewNodeAdapter(parentNode,nodeType);
+
         Property propertyInitial = adapter.getItemProperty(id);
+        //New property --> null.
+        assertEquals(true, propertyInitial == null);
+        propertyInitial = DefaultPropertyUtil.newDefaultProperty(id, null, "test");
+        adapter.addItemProperty(id,propertyInitial);
+
         propertyInitial.setValue("new");
 
         // WHEN
@@ -98,13 +101,21 @@ public class JcrNewNodeAdapterTest {
         String nodeType = "mgnl:content";
         Node parentNode = session.getRootNode().addNode(nodeName);
         JcrNewNodeAdapter adapter = new JcrNewNodeAdapter(parentNode,nodeType);
-        adapter.getItemProperty("notModify");
-        adapter.getItemProperty("notModifyRemoved");
+
+        Property notModifyProperty = DefaultPropertyUtil.newDefaultProperty("notModify", null, "");
+        adapter.addItemProperty("notModify", notModifyProperty);
+
+        Property notNotModifyRemovedProperty = DefaultPropertyUtil.newDefaultProperty("notModifyRemoved", null, "");
+        adapter.addItemProperty("notModifyRemoved", notNotModifyRemovedProperty);
         adapter.removeItemProperty("notModifyRemoved");
-        Property propertyModified = adapter.getItemProperty("modify");
-        propertyModified.setValue("newModify");
-        Property propertyModifiedRemoved = adapter.getItemProperty("modifyRemoved");
-        propertyModifiedRemoved.setValue("newModifyRemoved");
+
+        Property notNewModifyProperty = DefaultPropertyUtil.newDefaultProperty("modify", null, "");
+        adapter.addItemProperty("modify", notNewModifyProperty);
+        notNewModifyProperty.setValue("newModify");
+
+        Property modifyRemovedProperty = DefaultPropertyUtil.newDefaultProperty("modifyRemoved", null, "");
+        adapter.addItemProperty("modifyRemoved", modifyRemovedProperty);
+        modifyRemovedProperty.setValue("newModifyRemoved");
         adapter.removeItemProperty("modifyRemoved");
 
         // WHEN
@@ -113,7 +124,7 @@ public class JcrNewNodeAdapterTest {
         // THEN
         assertNotNull(res);
         assertSame(res, parentNode.getNode(res.getName()));
-        assertEquals(false, res.hasProperty("notModify"));
+        assertEquals(true, res.hasProperty("notModify"));
         assertEquals(false, res.hasProperty("notModifyRemoved"));
         assertEquals(true, res.hasProperty("modify"));
         assertEquals("newModify", res.getProperty("modify").getString());
@@ -130,8 +141,9 @@ public class JcrNewNodeAdapterTest {
         String nodeType = "mgnl:content";
         Node parentNode = session.getRootNode().addNode(nodeName);
         JcrNewNodeAdapter adapter = new JcrNewNodeAdapter(parentNode,nodeType);
-        Property propertyModified = adapter.getItemProperty("modify");
-        propertyModified.setValue("newModify");
+
+        Property propertyModified= DefaultPropertyUtil.newDefaultProperty("id", null, "");
+        adapter.addItemProperty("id", propertyModified);
         adapter.getNode();
 
         // WHEN no duplicate call

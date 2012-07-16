@@ -31,32 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.definition;
+package info.magnolia.ui.app.pages.field;
 
-import java.util.List;
 
+import info.magnolia.ui.model.dialog.definition.SelectFieldDefinition;
 
 /**
- * FieldDefinition .
+ * Definition used for configuring {@link TemplateSelectorField}.
  */
-public interface FieldDefinition {
-
-    String getName();
-
-    String getLabel();
-
-    String getI18nBasename();
-
-    String getDescription();
-
-    String getType();
-
-    boolean isRequired();
-
-    List<ValidatorDefinition> getValidators();
-
-    String getDefaultValue();
-
-    boolean getSaveInfo();
-
+public class TemplateSelectorDefinition extends SelectFieldDefinition{
+    //
 }

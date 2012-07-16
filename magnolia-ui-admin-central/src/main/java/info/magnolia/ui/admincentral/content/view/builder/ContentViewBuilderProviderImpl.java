@@ -31,46 +31,52 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.definition;
+package info.magnolia.ui.admincentral.content.view.builder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Field definition for a date picker.
+ * TODO: use ui settings?
+ * Provides the ContentViewBuilder defined in the AdminCentralModule.
  */
-public class DateFieldDefinition extends ConfiguredFieldDefinition {
+public class ContentViewBuilderProviderImpl implements ContentViewBuilderProvider {
 
-    private boolean time;
 
-    private String dateFormat = "yyyy-MM-dd";
+    //private UISettings uiSettings;
 
-    private String timeFormat = "HH:mm:ss";
+    // content2bean
+    private List<ContentViewBuilder> contentViewBuilders = new ArrayList<ContentViewBuilder>();
 
-    public boolean isTime() {
-        return time;
+
+    /**
+     * Is needed so that we can make a proxy (reloading configuration).
+     * TODO: is this really necessary?
+     */
+    public ContentViewBuilderProviderImpl() {
     }
 
-    public void setTime(boolean time) {
-        this.time = time;
+    /*@Inject
+    public ContentViewBuilderProviderImpl(User user, UISettings uiSettings) {
+        this.user = user;
+        this.uiSettings = uiSettings;
+    }*/
+
+    @Override
+    public ContentViewBuilder getBuilder() {
+        // FIXME: use user and uiSettings
+        return contentViewBuilders.get(0);
     }
 
-    public String getDateFormat() {
-        return dateFormat;
+    public void setContentViewBuilders(List<ContentViewBuilder> contentViewBuilders) {
+        this.contentViewBuilders = contentViewBuilders;
     }
 
-
-    public void setDateFormat(String dateFormat) {
-        this.dateFormat = dateFormat;
+    public List<ContentViewBuilder> getContentViewBuilders() {
+        return contentViewBuilders;
     }
 
-
-    public String getTimeFormat() {
-        return timeFormat;
+    public void addContentViewBuilder(ContentViewBuilder contentViewBuilder) {
+        this.contentViewBuilders.add(contentViewBuilder);
     }
-
-
-    public void setTimeFormat(String timeFormat) {
-        this.timeFormat = timeFormat;
-    }
-
-
-
 }

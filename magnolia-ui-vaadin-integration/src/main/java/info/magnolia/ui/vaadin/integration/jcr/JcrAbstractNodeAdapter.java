@@ -128,7 +128,7 @@ public abstract class JcrAbstractNodeAdapter extends JcrAbstractAdapter implemen
                     return null;
                 }
             } else {
-                value = PropertyUtil.getProperty(getNodeFromRepository(), (String) id).getString();
+                value = PropertyUtil.getPropertyValueObject(getNodeFromRepository(), (String) id);
             }
         } catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);

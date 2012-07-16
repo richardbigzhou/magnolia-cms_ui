@@ -31,14 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.jcr.view;
+package info.magnolia.ui.admincentral.content.view;
 
 import javax.inject.Inject;
 
 import info.magnolia.ui.admincentral.app.content.ContentAppDescriptor;
+import info.magnolia.ui.admincentral.content.view.ContentView.ViewType;
+import info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilderProvider;
 import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
-import info.magnolia.ui.admincentral.jcr.view.ContentView.ViewType;
-import info.magnolia.ui.admincentral.jcr.view.builder.ContentViewBuilderProvider;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchView;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.event.EventBus;
@@ -109,7 +109,6 @@ public class ContentPresenter implements ContentView.Listener {
             log.debug("javax.jcr.Item at {} was selected. Firing ItemSelectedEvent...", selectedItemId);
             eventBus.fireEvent(new ItemSelectedEvent(workspaceName, selectedItemId));
         } catch (Exception e) {
-            // TODO dlipp - to check - throwing an Exception should be sufficient...
             shell.showError("An error occurred while selecting a row in the data grid", e);
         }
     }

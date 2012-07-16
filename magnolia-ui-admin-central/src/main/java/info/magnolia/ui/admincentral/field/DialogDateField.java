@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,32 +31,47 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.definition;
+package info.magnolia.ui.admincentral.field;
 
-import java.util.List;
+import info.magnolia.ui.model.dialog.definition.DateFieldDefinition;
+import info.magnolia.ui.model.dialog.definition.FieldDefinition;
+
+import com.vaadin.data.Item;
+import com.vaadin.ui.DateField;
+import com.vaadin.ui.Field;
+import com.vaadin.ui.PopupDateField;
 
 
 /**
- * FieldDefinition .
+ * Initialize a Date Field based on the configured informations.
  */
-public interface FieldDefinition {
 
-    String getName();
+public class DialogDateField extends AbstractDialogField<FieldDefinition>{
 
-    String getLabel();
+    public DialogDateField(FieldDefinition definition, Item relatedFieldItem) {
+        super(definition, relatedFieldItem);
+    }
 
-    String getI18nBasename();
 
-    String getDescription();
+    @Override
+    protected Field buildField() {
+        DateFieldDefinition definition = (DateFieldDefinition) getFieldDefinition();
+        PopupDateField popupDateField = new PopupDateField();
 
-    String getType();
+        String dateFormat = "";
 
-    boolean isRequired();
+        // set Resolution
+        if (definition.isTime()) {
+            popupDateField.setResolution(DateField.RESOLUTION_MIN);
+            dateFormat = definition.getDateFormat()+":"+definition.getTimeFormat();
+        } else {
+            popupDateField.setResolution(DateField.RESOLUTION_DAY);
+            dateFormat = definition.getDateFormat();
+        }
 
-    List<ValidatorDefinition> getValidators();
+        popupDateField.setDateFormat(dateFormat);
 
-    String getDefaultValue();
-
-    boolean getSaveInfo();
+        return popupDateField;
+    }
 
 }
