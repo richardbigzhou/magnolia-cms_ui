@@ -10,7 +10,7 @@
     <sv:value>c1da4542-bc13-407a-8962-40b05b5d1617</sv:value>
   </sv:property>
   <sv:property sv:name="class" sv:type="String">
-    <sv:value>info.magnolia.ui.admincentral.jcr.view.builder.ContentViewBuilderProviderImpl</sv:value>
+    <sv:value>info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilderProviderImpl</sv:value>
   </sv:property>
   <sv:property sv:name="jcr:createdBy" sv:type="String">
     <sv:value>admin</sv:value>
@@ -73,7 +73,7 @@
         <sv:value>3ba817a5-641e-4577-afef-29bf9c66e76d</sv:value>
       </sv:property>
       <sv:property sv:name="class" sv:type="String">
-        <sv:value>info.magnolia.ui.admincentral.jcr.view.builder.ConfiguredContentViewBuilder</sv:value>
+        <sv:value>info.magnolia.ui.admincentral.content.view.builder.ConfiguredContentViewBuilder</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>

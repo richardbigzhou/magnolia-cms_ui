@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.admincentral.workbench;
 
-import info.magnolia.ui.admincentral.jcr.view.ContentView;
-import info.magnolia.ui.admincentral.jcr.view.ContentView.ViewType;
+import info.magnolia.ui.admincentral.content.view.ContentView;
+import info.magnolia.ui.admincentral.content.view.ContentView.ViewType;
 import info.magnolia.ui.widget.actionbar.ActionbarView;
 
 import java.util.EnumMap;

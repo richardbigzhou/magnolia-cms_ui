@@ -31,12 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.jcr.view.builder;
+package info.magnolia.ui.admincentral.content.view.builder;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.column.Column;
-import info.magnolia.ui.admincentral.jcr.view.ContentView;
-import info.magnolia.ui.admincentral.jcr.view.ContentView.ViewType;
+import info.magnolia.ui.admincentral.content.view.ContentView;
+import info.magnolia.ui.admincentral.content.view.ContentView.ViewType;
 import info.magnolia.ui.admincentral.list.view.ListViewImpl;
 import info.magnolia.ui.admincentral.tree.model.TreeModel;
 import info.magnolia.ui.admincentral.tree.view.TreeViewImpl;

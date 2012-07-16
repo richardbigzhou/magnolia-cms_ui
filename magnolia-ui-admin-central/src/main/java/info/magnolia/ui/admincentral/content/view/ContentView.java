@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.jcr.view;
+package info.magnolia.ui.admincentral.content.view;
 
 import com.vaadin.data.Item;
 
