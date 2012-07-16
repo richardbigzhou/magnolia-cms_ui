@@ -136,6 +136,17 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
                         listener.deleteComponent(workSpace, path);
                     }
                 });
+                register("sortComponent", new Method() {
+                    @Override
+                    public void invoke(String methodName, Object[] params) {
+                        final String workSpace = String.valueOf(params[0]);
+                        final String parentPath = String.valueOf(params[1]);
+                        final String source = String.valueOf(params[2]);
+                        final String target = String.valueOf(params[3]);
+                        final String order = String.valueOf(params[4]);
+                        listener.sortComponent(workSpace, parentPath, source, target, order);
+                    }
+                });
                 register("onComponentSelect", new Method() {
                     @Override
                     public void invoke(String methodName, Object[] params) {
@@ -146,6 +157,11 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
             }
         };
 
+    }
+
+    @Override
+    public void refresh() {
+        proxy.call("refresh");
     }
 
     @Override

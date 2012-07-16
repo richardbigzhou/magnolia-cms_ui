@@ -36,40 +36,53 @@ package info.magnolia.ui.widget.editor.gwt.client.event;
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * NewComponentEvent.
+ * SortComponentEvent.
  */
-public class NewComponentEvent extends GwtEvent<NewComponentEventHandler> {
+public class SortComponentEvent extends GwtEvent<SortComponentEventHandler> {
 
-    public static Type<NewComponentEventHandler> TYPE = new Type<NewComponentEventHandler>();
-    private String workspace;
-    private String nodeType;
-    private String path;
+    public static Type<SortComponentEventHandler> TYPE = new Type<SortComponentEventHandler>();
 
-    public NewComponentEvent(String workspace, String nodeType, String path) {
-        this.workspace = workspace;
-        this.nodeType = nodeType;
-        this.path = path;
+    private String workSpace;
+    private String parentPath;
+    private String sourcePath;
+    private String targetPath;
+    private String order;
+
+    public SortComponentEvent(String workSpace,String parentPath, String sourcePath, String targetPath, String order) {
+        this.workSpace = workSpace;
+        this.parentPath= parentPath;
+        this.sourcePath = sourcePath;
+        this.targetPath = targetPath;
+        this.order = order;
     }
 
     @Override
-    public Type<NewComponentEventHandler> getAssociatedType() {
+    public Type<SortComponentEventHandler> getAssociatedType() {
         return TYPE;
     }
 
     @Override
-    protected void dispatch(NewComponentEventHandler handler) {
-        handler.onNewComponent(this);
+    protected void dispatch(SortComponentEventHandler handler) {
+        handler.onSortComponent(this);
     }
 
     public String getWorkSpace() {
-        return workspace;
+        return workSpace;
     }
 
-    public String getPath() {
-        return path;
+    public String getSourcePath() {
+        return sourcePath;
     }
 
-    public String getNodeType() {
-        return nodeType;
+    public String getTargetPath() {
+        return targetPath;
+    }
+
+    public String getOrder() {
+        return order;
+    }
+
+    public String getParentPath() {
+        return parentPath;
     }
 }

@@ -34,38 +34,42 @@
 package info.magnolia.ui.widget.editor.gwt.client.event;
 
 import com.google.gwt.event.shared.GwtEvent;
-import com.google.web.bindery.event.shared.Event;
 
 /**
- * DeleteComponentEvent. Used for components and areas.
+ * NewAreaEvent.
  */
-public class DeleteComponentEvent extends Event<DeleteComponentEventHandler> {
+public class NewAreaEvent extends GwtEvent<NewAreaEventHandler> {
 
-    public static GwtEvent.Type<DeleteComponentEventHandler> TYPE = new GwtEvent.Type<DeleteComponentEventHandler>();
-
-    private String workSpace;
+    public static Type<NewAreaEventHandler> TYPE = new Type<NewAreaEventHandler>();
+    private String workspace;
+    private String nodeType;
     private String path;
 
-    public DeleteComponentEvent(String workSpace, String path) {
-        this.workSpace = workSpace;
+    public NewAreaEvent(String workspace, String nodeType, String path) {
+        this.workspace = workspace;
+        this.nodeType = nodeType;
         this.path = path;
     }
 
     @Override
-    public GwtEvent.Type<DeleteComponentEventHandler> getAssociatedType() {
+    public Type<NewAreaEventHandler> getAssociatedType() {
         return TYPE;
     }
 
     @Override
-    protected void dispatch(DeleteComponentEventHandler handler) {
-        handler.onDeleteComponent(this);
+    protected void dispatch(NewAreaEventHandler handler) {
+        handler.onNewComponent(this);
+    }
+
+    public String getWorkSpace() {
+        return workspace;
     }
 
     public String getPath() {
         return path;
     }
 
-    public String getWorkSpace() {
-        return workSpace;
+    public String getNodeType() {
+        return nodeType;
     }
 }

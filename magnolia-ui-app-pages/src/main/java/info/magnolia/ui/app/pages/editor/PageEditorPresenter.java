@@ -34,17 +34,20 @@
 package info.magnolia.ui.app.pages.editor;
 
 import info.magnolia.context.MgnlContext;
+import info.magnolia.jcr.util.MetaDataUtil;
+import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
+import info.magnolia.ui.admincentral.event.ContentChangedEvent;
+import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.widget.dialog.DialogView;
 import info.magnolia.ui.widget.editor.PageEditorView;
+import org.apache.commons.lang.StringUtils;
 
 import javax.inject.Inject;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-
-import org.apache.commons.lang.NotImplementedException;
 
 
 /**
@@ -54,22 +57,39 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
     private final PageEditorView view;
 
+    private EventBus eventBus;
     private final DialogPresenterFactory dialogPresenterFactory;
 
     private PageEditorParameters parameters;
+    private String path;
 
     @Inject
-    public PageEditorPresenter(PageEditorView view, DialogPresenterFactory dialogPresenterFactory) {
+    public PageEditorPresenter(PageEditorView view, EventBus eventBus, DialogPresenterFactory dialogPresenterFactory) {
         this.view = view;
+        this.eventBus = eventBus;
         this.dialogPresenterFactory = dialogPresenterFactory;
+
+        registerHandlers();
+    }
+
+    private void registerHandlers() {
+        eventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
+            @Override
+            public void onContentChanged(ContentChangedEvent event) {
+                if (event.getPath().equals(getPath())) {
+                    view.refresh();
+                    setPath(null);
+                }
+            }
+        });
     }
 
     @Override
     public void editComponent(String workSpace, String path, String dialog) {
         DialogView.Presenter dialogPresenter = dialogPresenterFactory.createDialog(dialog);
-        Session session = null;
+
         try {
-            session = MgnlContext.getJCRSession(workSpace);
+            Session session = MgnlContext.getJCRSession(workSpace);
 
             if (path == null || !session.itemExists(path)) {
                 path = "/";
@@ -77,6 +97,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
             final Node node = session.getNode(path);
             JcrNodeAdapter item = new JcrNodeAdapter(node);
             dialogPresenter.editItem(item);
+            setPath(path);
         } catch (RepositoryException e) {
             e.printStackTrace();
         }
@@ -84,51 +105,75 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
     @Override
     public void deleteComponent(String workSpace, String path) {
-        /*    Session session = null;
-            try {
-                session = MgnlContext.getJCRSession(workSpace);
 
-                Node page = session.getNode(handle);
-                session.removeItem(path);
-                MetaDataUtil.updateMetaData(page);
-                session.save();
-            } catch (RepositoryException e) {
-                log.error("Exception caught: {}", e.getMessage(), e);
-            }*/
+        int index = path.lastIndexOf("/");
+        String parent = path.substring(0, index);
+
+        try {
+            Session session = MgnlContext.getJCRSession(workSpace);
+
+            Node parentNode = session.getNode(parent);
+            session.removeItem(path);
+            MetaDataUtil.updateMetaData(parentNode);
+            session.save();
+            view.refresh();
+
+        } catch (RepositoryException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void newComponent(String workSpace, String nodeType, String path) {
-        throw new NotImplementedException();
+
+        int index = path.lastIndexOf("/");
+        String parent = path.substring(0, index);
+        String relPath = path.substring(index+1);
+
+        Session session = null;
+        try {
+            session = MgnlContext.getJCRSession(workSpace);
+
+            Node parentNode = session.getNode(parent);
+
+            Node newNode = NodeUtil.createPath(parentNode, relPath, nodeType);
+            MetaDataUtil.updateMetaData(newNode);
+            session.save();
+            view.refresh();
+        } catch (RepositoryException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public void sortComponent() {
-        // sort paragraphs
-        /*        try {
-                    String pathSelected = request.getParameter(PARAM_PATH_SELECTED);
-                    String pathTarget = request.getParameter(PARAM_PATH_TARGET);
-                    String pathParent = StringUtils.substringBeforeLast(pathSelected, "/");
-                    String srcName = StringUtils.substringAfterLast(pathSelected, "/");
-                    String destName = StringUtils.substringAfterLast(pathTarget, "/");
-                    String order = StringUtils.defaultIfEmpty(request.getParameter("order"), "before");
-                    if (StringUtils.equalsIgnoreCase(destName, "mgnlNew")) {
-                        destName = null;
-                    }
-                    Node parent = session.getNode(pathParent+srcName);
+    public void sortComponent(String workSpace, String parentPath, String source, String target, String order) {
+        try {
 
-                    if("before".equals(order)) {
-                        NodeUtil.orderBefore(parent, destName);
-                    } else {
-                        NodeUtil.orderAfter(parent, destName);
-                    }
+            if (StringUtils.isBlank(order)) {
+                order = "before";
+            }
 
-                    Node page = session.getNode(handle);
-                    MetaDataUtil.updateMetaData(page);
-                    session.save();
-                } catch (RepositoryException e) {
-                    log.error("Exception caught: {}", e.getMessage(), e);
-                }*/
+            if (StringUtils.equalsIgnoreCase(target, "mgnlNew")) {
+                target = null;
+            }
+
+            Session session = MgnlContext.getJCRSession(workSpace);
+
+            Node parent  = session.getNode(parentPath);
+            Node component = parent.getNode(source);
+
+            if("before".equals(order)) {
+                NodeUtil.orderBefore(component, target);
+            } else {
+                NodeUtil.orderAfter(component, target);
+            }
+
+            MetaDataUtil.updateMetaData(parent);
+            session.save();
+            view.refresh();
+        } catch (RepositoryException e) {
+            //log.error("Exception caught: {}", e.getMessage(), e);
+        }
     }
 
     @Override
@@ -144,5 +189,13 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
     public void setParameters(PageEditorParameters parameters) {
         this.parameters = parameters;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 }

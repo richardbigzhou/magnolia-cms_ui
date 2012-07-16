@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.widget.editor.gwt.client.widget.placeholder;
 
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.FlowPanel;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 import info.magnolia.ui.widget.editor.gwt.client.model.Model;
@@ -44,10 +45,13 @@ public class AbstractPlaceHolder extends FlowPanel {
 
     private MgnlElement mgnlElement;
     private Model model;
+    private EventBus eventBus;
 
-    public AbstractPlaceHolder(Model model, MgnlElement mgnlElement) {
+    public AbstractPlaceHolder(Model model, EventBus eventBus, MgnlElement mgnlElement) {
         super();
         this.model = model;
+        this.eventBus = eventBus;
+
         this.setMgnlElement(mgnlElement);
 
         setStyleName("mgnlEditor mgnlEditorPlaceholder");
@@ -74,5 +78,9 @@ public class AbstractPlaceHolder extends FlowPanel {
 
     public Model getModel() {
         return model;
+    }
+
+    public EventBus getEventBus() {
+        return eventBus;
     }
 }

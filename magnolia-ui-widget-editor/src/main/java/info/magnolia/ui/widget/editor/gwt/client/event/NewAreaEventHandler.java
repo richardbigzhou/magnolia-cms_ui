@@ -36,8 +36,8 @@ package info.magnolia.ui.widget.editor.gwt.client.event;
 import com.google.gwt.event.shared.EventHandler;
 
 /**
- * NewComponentEventHandler.
+ * NewAreaEventHandler.
  */
-public interface NewComponentEventHandler extends EventHandler {
-        void onNewComponent(NewComponentEvent newComponentEvent);
+public interface NewAreaEventHandler extends EventHandler {
+        void onNewComponent(NewAreaEvent newAreaEvent);
 }

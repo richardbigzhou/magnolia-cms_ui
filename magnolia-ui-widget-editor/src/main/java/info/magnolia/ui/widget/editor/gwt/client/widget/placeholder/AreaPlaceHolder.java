@@ -34,6 +34,7 @@
 package info.magnolia.ui.widget.editor.gwt.client.widget.placeholder;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.Label;
 import info.magnolia.rendering.template.AreaDefinition;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
@@ -49,9 +50,9 @@ public class AreaPlaceHolder extends AbstractPlaceHolder {
     private Label areaName;
     private Model model;
 
-    public AreaPlaceHolder(Model model, MgnlElement mgnlElement) throws IllegalArgumentException {
+    public AreaPlaceHolder(Model model, EventBus eventBus, MgnlElement mgnlElement) throws IllegalArgumentException {
 
-        super(model, mgnlElement);
+        super(model, eventBus, mgnlElement);
         this.model = model;
 
         checkMandatories(mgnlElement.getAttributes());
