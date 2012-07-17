@@ -107,7 +107,6 @@ public abstract class VBubble extends FlowPanel {
                 icon.addClassName("action-dialog-help");
                 messageWrapper.addClassName("help-message");
                 triangleSVG.addStyleName("triangle blue");
-                setMessage("askdl;dklasdkla;sdkasl;dksal;dkas;lkd");
             }
         };
         return result;

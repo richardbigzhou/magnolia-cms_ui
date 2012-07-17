@@ -90,6 +90,7 @@ public class DialogBuilder {
                     public boolean isValid(Object value) {return false;}
                 });
                 fieldContainer.addComponent(field);
+                fieldContainer.setComponentHelpDescription(field, "TEST HELP DESCRIPTION.");
                 view.addField(field);
             }
 

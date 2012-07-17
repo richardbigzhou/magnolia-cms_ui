@@ -81,16 +81,24 @@ public class VDialogLayout extends FlowPanel implements Container, HelpAccessibi
         final Iterator<?> it = uidl.getChildIterator();
         while (it.hasNext()) {
             final UIDL childUIdl = (UIDL)it.next();
-            final Paintable p = client.getPaintable(childUIdl);
+            final Paintable p = client.getPaintable(childUIdl.getChildUIDL(0));
             final Widget w = (Widget)p;
             if (!hasChildComponent(w)) {
-                DialogFieldSection fs = new DialogFieldSection();
-                sections.put(w, fs);
+                DialogFieldSection fieldSection = new DialogFieldSection();
+                sections.put(w, fieldSection);
                 children.add(w);
-                fs.setField(w);
-                add(fs, fieldSet);
+                fieldSection.setField(w);
+                add(fieldSection, fieldSet);
             }
-            p.updateFromUIDL(childUIdl, client);
+            if (childUIdl.hasAttribute("helpDescription")) {
+                String description = childUIdl.getStringAttribute("helpDescription");
+                DialogFieldSection fieldSection = sections.get(w);
+                fieldSection.setHelpDescription(description);
+            }
+            p.updateFromUIDL(childUIdl.getChildUIDL(0), client);
+            /**
+             * TODO: Implement ALL the details of Paintable handling here.
+             */
         }
         
         if (helpEventRegistration == null) {

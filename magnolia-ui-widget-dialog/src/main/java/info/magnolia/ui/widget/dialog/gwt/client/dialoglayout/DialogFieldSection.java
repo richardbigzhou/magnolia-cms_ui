@@ -60,6 +60,8 @@ public class DialogFieldSection extends FlowPanel {
     
     private VBubble helpSection = null;
     
+    private String helpDescription = null;
+    
     public DialogFieldSection() {
         super();
         addStyleName("v-dialog-field-section");
@@ -86,6 +88,7 @@ public class DialogFieldSection extends FlowPanel {
 
     protected void showHelp() {
         helpSection = VBubble.createHelpSection();
+        helpSection.setMessage(helpDescription);
         add(helpSection);
     }
 
@@ -143,9 +146,16 @@ public class DialogFieldSection extends FlowPanel {
     }
     
     public void setHelpEnabled(boolean isHelpEnabled) {
-        helpButton.setVisible(isHelpEnabled);
+        helpButton.setVisible(isHelpEnabled && helpDescription != null);
         if (!isHelpEnabled && helpSection != null) {
             hideHelp();
+        }
+    }
+
+    public void setHelpDescription(String description) {
+        this.helpDescription = description;
+        if (helpSection != null && getWidgetIndex(helpSection) >= 0) {
+            helpSection.setMessage(helpDescription);
         }
     }
 }

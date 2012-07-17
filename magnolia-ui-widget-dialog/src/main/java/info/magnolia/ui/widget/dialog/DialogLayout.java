@@ -35,9 +35,11 @@ package info.magnolia.ui.widget.dialog;
 
 import info.magnolia.ui.widget.dialog.gwt.client.dialoglayout.VDialogLayout;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import com.vaadin.terminal.PaintException;
 import com.vaadin.terminal.PaintTarget;
@@ -54,6 +56,8 @@ public class DialogLayout extends AbstractLayout {
 
     private List<Component> components = new LinkedList<Component>();
     
+    private Map<Component, String> helpDescriptions = new HashMap<Component, String>();
+    
     public DialogLayout() {
         addStyleName("v-dialog-layout");
     }
@@ -63,8 +67,22 @@ public class DialogLayout extends AbstractLayout {
         super.paintContent(target);
         final Iterator<Component> it = getComponentIterator();
         while (it.hasNext()) {
-            final Component c = it.next(); 
+            final Component c = it.next();
+            target.startTag("component");
             c.paint(target);
+            if (helpDescriptions.containsKey(c)) {
+                target.addAttribute("helpDescription", helpDescriptions.get(c));
+            }
+            target.endTag("component");
+        }
+    }
+    
+    public void setComponentHelpDescription(Component c, String description) {
+        if (components.contains(c)) {
+            helpDescriptions.put(c, description);
+            requestRepaint();   
+        } else {
+            throw new IllegalArgumentException("Layout doesn't contain this component.");
         }
     }
     
