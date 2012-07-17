@@ -33,11 +33,12 @@
  */
 package info.magnolia.ui.admincentral.dialog;
 
+import info.magnolia.ui.model.dialog.definition.TabDefinition;
+import info.magnolia.ui.widget.dialog.DialogLayout;
+
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
-import com.vaadin.ui.CssLayout;
-
-import info.magnolia.ui.model.dialog.definition.TabDefinition;
+import com.vaadin.ui.Field;
 
 /**
  * Represents a tab in a dialog.
@@ -47,15 +48,15 @@ import info.magnolia.ui.model.dialog.definition.TabDefinition;
  */
 public class DialogTab extends AbstractDialogItem {
 
-    private static final String FIELD_CONTAINER_STYLE_NAME = "field-container";
+    //private static final String FIELD_CONTAINER_STYLE_NAME = "field-container";
 
     private TabDefinition definition;
-    private final CssLayout container;
+    
+    private final DialogLayout container = new DialogLayout();
 
     public DialogTab(TabDefinition definition) {
         this.definition = definition;
-        container = new CssLayout();
-        container.setStyleName(FIELD_CONTAINER_STYLE_NAME);
+        //container.setStyleName(FIELD_CONTAINER_STYLE_NAME);
     }
 
     public void addField(Component component) {
@@ -69,5 +70,9 @@ public class DialogTab extends AbstractDialogItem {
     @Override
     protected String getI18nBasename() {
         return definition.getI18nBasename();
+    }
+
+    public void setComponentHelpDescription(Field field, String helpDescription) {
+        container.setComponentHelpDescription(field, helpDescription);
     }
 }
