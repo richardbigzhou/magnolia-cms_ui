@@ -361,7 +361,7 @@ public class TreeModelTest extends RepositoryTestCase {
         rootNode.setProperty("name", "included");
         node1.getSession().save();
         ConfiguredItemTypeDefinition type1 = new ConfiguredItemTypeDefinition();
-        type1.setItemType(ItemTypeDefinition.ITEM_TYPE_NODE_DATA);
+        type1.setItemType(ItemTypeDefinition.ITEM_TYPE_PROPERTY);
         ((ConfiguredWorkbenchDefinition) workbenchDefinition).addItemType(type1);
         // WHEN
         Collection<Item> res = treeModel.getChildren(rootNode);

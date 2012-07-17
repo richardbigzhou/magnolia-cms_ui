@@ -180,6 +180,9 @@
             <sv:property sv:name="class" sv:type="String">
               <sv:value>info.magnolia.ui.model.dialog.definition.EditFieldDefinition</sv:value>
             </sv:property>
+            <sv:property sv:name="description" sv:type="String">
+              <sv:value>Page Name. This name is also used as node name.</sv:value>
+            </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
             </sv:property>
@@ -188,6 +191,9 @@
             </sv:property>
             <sv:property sv:name="name" sv:type="String">
               <sv:value>jcrName</sv:value>
+            </sv:property>
+            <sv:property sv:name="required" sv:type="String">
+              <sv:value>true</sv:value>
             </sv:property>
             <sv:node sv:name="MetaData">
               <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -206,7 +212,7 @@
                 <sv:value>2012-06-11T13:55:35.862+02:00</sv:value>
               </sv:property>
               <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-                <sv:value>2012-07-13T14:09:34.061+02:00</sv:value>
+                <sv:value>2012-07-17T11:50:47.067+02:00</sv:value>
               </sv:property>
             </sv:node>
           </sv:node>
@@ -222,6 +228,9 @@
             </sv:property>
             <sv:property sv:name="class" sv:type="String">
               <sv:value>info.magnolia.ui.model.dialog.definition.EditFieldDefinition</sv:value>
+            </sv:property>
+            <sv:property sv:name="description" sv:type="String">
+              <sv:value>Page Title used as default header tutle.  </sv:value>
             </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
@@ -252,7 +261,7 @@
                 <sv:value>2012-06-11T13:55:35.862+02:00</sv:value>
               </sv:property>
               <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-                <sv:value>2012-07-13T14:09:10.400+02:00</sv:value>
+                <sv:value>2012-07-17T11:45:39.334+02:00</sv:value>
               </sv:property>
             </sv:node>
           </sv:node>
@@ -269,6 +278,9 @@
             <sv:property sv:name="class" sv:type="String">
               <sv:value>info.magnolia.ui.app.pages.field.TemplateSelectorDefinition</sv:value>
             </sv:property>
+            <sv:property sv:name="description" sv:type="String">
+              <sv:value>Select the Template used for rendering.</sv:value>
+            </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
             </sv:property>
@@ -277,6 +289,9 @@
             </sv:property>
             <sv:property sv:name="name" sv:type="String">
               <sv:value>MetaData/mgnl:template</sv:value>
+            </sv:property>
+            <sv:property sv:name="required" sv:type="String">
+              <sv:value>true</sv:value>
             </sv:property>
             <sv:node sv:name="MetaData">
               <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -295,7 +310,7 @@
                 <sv:value>2012-06-11T13:55:35.862+02:00</sv:value>
               </sv:property>
               <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-                <sv:value>2012-07-14T16:46:05.452+02:00</sv:value>
+                <sv:value>2012-07-17T11:50:26.791+02:00</sv:value>
               </sv:property>
             </sv:node>
           </sv:node>
