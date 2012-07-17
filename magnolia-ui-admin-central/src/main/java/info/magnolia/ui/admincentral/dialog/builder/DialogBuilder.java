@@ -74,7 +74,7 @@ public class DialogBuilder {
             tab.setParent(dialog);
 
             for (FieldDefinition fieldDefinition : tabDefinition.getFields()) {
-            
+
                 // Create the DialogField
                 DialogField dialogField = fieldTypeBuilder.create(fieldDefinition, fieldDefinition, item);
                 dialogField.setParent(tab);
@@ -90,12 +90,13 @@ public class DialogBuilder {
                     @Override
                     public boolean isValid(Object value) {return false;}
                 });
-                
+
                 //CssLayout fieldLayout = new CssLayout();
                 //fieldLayout.setStyleName(FIELD_STYLE_NAME);
 
                 tab.addField(field);
-                tab.setComponentHelpDescription(field, "TEST HELP DESCRIPTION.");
+                // FIXME dlipp - temporarily commented out as it's not compiling
+                //tab.setComponentHelpDescription(field, "TEST HELP DESCRIPTION.");
                 view.addField(field);
             }
 
