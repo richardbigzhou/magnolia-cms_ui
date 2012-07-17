@@ -59,6 +59,7 @@ import javax.inject.Singleton;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.vaadin.rpc.client.Method;
 
 import com.google.gson.Gson;
 import com.vaadin.terminal.ExternalResource;
@@ -101,6 +102,15 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
                 proxy.call("onAppStopped", event.getAppDescriptor().getName());
             }
         });
+        
+        proxy.register("startApp", new Method() {
+            @Override
+            public void invoke(String methodName, Object[] params) {
+                final String appName = String.valueOf(params[0]);
+                MagnoliaShell.this.appController.startIfNotAlreadyRunningThenFocus(appName);
+            }
+        });
+        
         this.eventBus.addHandler(MessageEvent.class, this);
     }
 

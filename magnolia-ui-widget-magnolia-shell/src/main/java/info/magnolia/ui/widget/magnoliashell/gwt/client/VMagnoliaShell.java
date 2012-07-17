@@ -343,4 +343,9 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
         return runningAppNames.contains(appName);
     }
 
+    @Override
+    public void startApp(String appName) {
+        proxy.call("startApp", appName);
+    }
+
 }
