@@ -69,6 +69,7 @@ public class DialogLayout extends AbstractLayout {
         while (it.hasNext()) {
             final Component c = it.next();
             target.startTag("component");
+            c.setSizeUndefined();
             c.paint(target);
             if (helpDescriptions.containsKey(c)) {
                 target.addAttribute("helpDescription", helpDescriptions.get(c));
