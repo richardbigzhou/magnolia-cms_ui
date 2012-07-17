@@ -42,11 +42,13 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PushButton;
 import info.magnolia.rendering.template.AreaDefinition;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
+import info.magnolia.ui.widget.editor.gwt.client.event.NewAreaEvent;
 import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 
 import java.util.Map;
@@ -69,9 +71,9 @@ public class ComponentPlaceHolder extends AbstractPlaceHolder {
     private Model model;
 
 
-    public ComponentPlaceHolder(Model model, MgnlElement mgnlElement) throws IllegalArgumentException {
+    public ComponentPlaceHolder(Model model, EventBus eventBus, MgnlElement mgnlElement) throws IllegalArgumentException {
 
-        super(model,mgnlElement);
+        super(model, eventBus, mgnlElement);
         this.model = model;
 
         checkMandatories(mgnlElement.getAttributes());
@@ -143,6 +145,7 @@ public class ComponentPlaceHolder extends AbstractPlaceHolder {
                 @Override
                 public void onClick(ClickEvent event) {
                     //PageEditor.addComponent(areaWorkspace, areaPath, null, availableComponents);
+                    getEventBus().fireEvent(new NewAreaEvent(areaWorkspace, areaPath, availableComponents));
                 }
             });
             buttonWrapper.add(button);
@@ -211,4 +214,5 @@ public class ComponentPlaceHolder extends AbstractPlaceHolder {
     public Model getModel() {
         return model;
     }
+
 }

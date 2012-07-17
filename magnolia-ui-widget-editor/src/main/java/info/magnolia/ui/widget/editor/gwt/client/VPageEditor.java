@@ -62,14 +62,17 @@ import info.magnolia.ui.widget.editor.gwt.client.event.DeleteComponentEvent;
 import info.magnolia.ui.widget.editor.gwt.client.event.DeleteComponentEventHandler;
 import info.magnolia.ui.widget.editor.gwt.client.event.EditComponentEvent;
 import info.magnolia.ui.widget.editor.gwt.client.event.EditComponentEventHandler;
-import info.magnolia.ui.widget.editor.gwt.client.event.NewComponentEvent;
-import info.magnolia.ui.widget.editor.gwt.client.event.NewComponentEventHandler;
+import info.magnolia.ui.widget.editor.gwt.client.event.NewAreaEvent;
+import info.magnolia.ui.widget.editor.gwt.client.event.NewAreaEventHandler;
+import info.magnolia.ui.widget.editor.gwt.client.event.SortComponentEvent;
+import info.magnolia.ui.widget.editor.gwt.client.event.SortComponentEventHandler;
 import info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils;
 import info.magnolia.ui.widget.editor.gwt.client.model.ModelStorage;
 import info.magnolia.ui.widget.editor.gwt.client.model.focus.FocusModel;
 import info.magnolia.ui.widget.editor.gwt.client.model.focus.FocusModelImpl3;
 import org.vaadin.rpc.client.ClientSideHandler;
 import org.vaadin.rpc.client.ClientSideProxy;
+import org.vaadin.rpc.client.Method;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -93,7 +96,7 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
 
     private final EventBus eventBus;
 
-    private ClientSideProxy proxy = new ClientSideProxy(this);
+    private ClientSideProxy proxy;
 
     private static VPageEditorView view;
 
@@ -114,6 +117,17 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
         registerEventHandlers();
 
         initWidget(view.asWidget());
+
+        proxy = new ClientSideProxy(this) {
+            {
+                register("refresh", new Method() {
+                    @Override
+                    public void invoke(String methodName, Object[] params) {
+                        reloadIFrame(view.getIframe().getElement());
+                    }
+                });
+            }
+        };
 
     }
 
@@ -195,10 +209,10 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
     }-*/;
 
     private void registerEventHandlers() {
-        eventBus.addHandler(NewComponentEvent.TYPE, new NewComponentEventHandler() {
+        eventBus.addHandler(NewAreaEvent.TYPE, new NewAreaEventHandler() {
             @Override
-            public void onNewComponent(NewComponentEvent newComponentEvent) {
-                proxy.call("newComponent", newComponentEvent.getWorkSpace(), newComponentEvent.getNodeType(), newComponentEvent.getPath());
+            public void onNewComponent(NewAreaEvent newAreaEvent) {
+                proxy.call("newComponent", newAreaEvent.getWorkSpace(), newAreaEvent.getNodeType(), newAreaEvent.getPath());
             }
         });
 
@@ -213,6 +227,12 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
             @Override
             public void onDeleteComponent(DeleteComponentEvent deleteComponentEvent) {
                 proxy.call("deleteComponent", deleteComponentEvent.getWorkSpace(), deleteComponentEvent.getPath());
+            }
+        });
+        eventBus.addHandler(SortComponentEvent.TYPE, new SortComponentEventHandler() {
+            @Override
+            public void onSortComponent(SortComponentEvent sortComponentEvent) {
+                proxy.call("sortComponent", sortComponentEvent.getWorkSpace(), sortComponentEvent.getParentPath(), sortComponentEvent.getSourcePath(), sortComponentEvent.getTargetPath(), sortComponentEvent.getOrder());
             }
         });
     }
@@ -234,6 +254,10 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
                 callbacks[i].apply();
              }
          }
+    }-*/;
+
+    protected native void reloadIFrame(Element iframeElement) /*-{
+        iframeElement.contentWindow.location.reload(true);
     }-*/;
 
     //FIXME submitting forms still renders website channel and edit bars
@@ -366,7 +390,7 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
 
     @Override
     public void onNewComponent(String workspace, String path, String nodeType) {
-        eventBus.fireEvent(new NewComponentEvent(workspace, path, nodeType));
+        eventBus.fireEvent(new NewAreaEvent(workspace, path, nodeType));
     }
 
     @Override

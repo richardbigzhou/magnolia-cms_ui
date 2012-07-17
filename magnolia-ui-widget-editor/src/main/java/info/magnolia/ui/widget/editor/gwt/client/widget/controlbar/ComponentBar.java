@@ -69,7 +69,6 @@ public class ComponentBar extends AbstractBar  {
     private String nodeName;
     private boolean isInherited;
     private boolean editable = true;
-    private EventBus eventBus;
 
     public ComponentBar(Model model, EventBus eventBus, MgnlElement mgnlElement) throws IllegalArgumentException {
 
@@ -129,6 +128,10 @@ public class ComponentBar extends AbstractBar  {
 
     }
 
+    public String getWorkspace() {
+        return workspace;
+    }
+
     public String getNodeName() {
         return nodeName;
     }
@@ -138,7 +141,7 @@ public class ComponentBar extends AbstractBar  {
     }
 
     private void createDragAndDropHandlers() {
-        DragAndDrop.dragAndDrop(getModel(), this);
+        DragAndDrop.dragAndDrop(getModel(), getEventBus(), this);
     }
 
     private void createMouseEventsHandlers() {
@@ -202,7 +205,7 @@ public class ComponentBar extends AbstractBar  {
             edit.addClickHandler(new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent event) {
-                    getEventBus().fireEvent(new EditComponentEvent(dialog, workspace, path));
+                    getEventBus().fireEvent(new EditComponentEvent(workspace, path, dialog));
                 }
             });
             edit.setTitle(getI18nMessage("buttons.component.edit.js"));

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,41 +31,22 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.editor.gwt.client.event;
+package info.magnolia.ui.admincentral.dialog;
 
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.web.bindery.event.shared.Event;
+import info.magnolia.cms.i18n.Messages;
 
 /**
- * DeleteComponentEvent. Used for components and areas.
+ * Common interface for participants of a dialog. Provides support for organizing them in a hierarchy and getting
+ * access to the {@link Messages} they use.
+ *
+ * @see Messages
+ * @see AbstractDialogItem
  */
-public class DeleteComponentEvent extends Event<DeleteComponentEventHandler> {
+public interface DialogItem {
 
-    public static GwtEvent.Type<DeleteComponentEventHandler> TYPE = new GwtEvent.Type<DeleteComponentEventHandler>();
+    void setParent(DialogItem parent);
 
-    private String workSpace;
-    private String path;
+    DialogItem getParent();
 
-    public DeleteComponentEvent(String workSpace, String path) {
-        this.workSpace = workSpace;
-        this.path = path;
-    }
-
-    @Override
-    public GwtEvent.Type<DeleteComponentEventHandler> getAssociatedType() {
-        return TYPE;
-    }
-
-    @Override
-    protected void dispatch(DeleteComponentEventHandler handler) {
-        handler.onDeleteComponent(this);
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public String getWorkSpace() {
-        return workSpace;
-    }
+    Messages getMessages();
 }

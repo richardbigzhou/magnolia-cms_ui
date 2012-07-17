@@ -34,38 +34,55 @@
 package info.magnolia.ui.widget.editor.gwt.client.event;
 
 import com.google.gwt.event.shared.GwtEvent;
-import com.google.web.bindery.event.shared.Event;
 
 /**
- * DeleteComponentEvent. Used for components and areas.
+ * SortComponentEvent.
  */
-public class DeleteComponentEvent extends Event<DeleteComponentEventHandler> {
+public class SortComponentEvent extends GwtEvent<SortComponentEventHandler> {
 
-    public static GwtEvent.Type<DeleteComponentEventHandler> TYPE = new GwtEvent.Type<DeleteComponentEventHandler>();
+    public static Type<SortComponentEventHandler> TYPE = new Type<SortComponentEventHandler>();
 
     private String workSpace;
-    private String path;
+    private String parentPath;
+    private String sourcePath;
+    private String targetPath;
+    private String order;
 
-    public DeleteComponentEvent(String workSpace, String path) {
+    public SortComponentEvent(String workSpace,String parentPath, String sourcePath, String targetPath, String order) {
         this.workSpace = workSpace;
-        this.path = path;
+        this.parentPath= parentPath;
+        this.sourcePath = sourcePath;
+        this.targetPath = targetPath;
+        this.order = order;
     }
 
     @Override
-    public GwtEvent.Type<DeleteComponentEventHandler> getAssociatedType() {
+    public Type<SortComponentEventHandler> getAssociatedType() {
         return TYPE;
     }
 
     @Override
-    protected void dispatch(DeleteComponentEventHandler handler) {
-        handler.onDeleteComponent(this);
-    }
-
-    public String getPath() {
-        return path;
+    protected void dispatch(SortComponentEventHandler handler) {
+        handler.onSortComponent(this);
     }
 
     public String getWorkSpace() {
         return workSpace;
+    }
+
+    public String getSourcePath() {
+        return sourcePath;
+    }
+
+    public String getTargetPath() {
+        return targetPath;
+    }
+
+    public String getOrder() {
+        return order;
+    }
+
+    public String getParentPath() {
+        return parentPath;
     }
 }

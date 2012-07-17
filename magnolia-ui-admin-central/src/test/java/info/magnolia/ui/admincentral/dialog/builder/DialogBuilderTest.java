@@ -33,10 +33,18 @@
  */
 package info.magnolia.ui.admincentral.dialog.builder;
 
+import java.util.Locale;
+
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import info.magnolia.cms.i18n.DefaultMessagesManager;
+import info.magnolia.cms.i18n.MessagesManager;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.context.SystemContext;
+import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.admincentral.field.DialogEditField;
@@ -61,21 +69,27 @@ import org.junit.Test;
  */
 public class DialogBuilderTest {
 
-    private final String worksapceName = "workspace";
+    private final String workspaceName = "workspace";
 
     private MockSession session;
 
     @Before
     public void setUp() {
-        session = new MockSession(worksapceName);
+        DefaultMessagesManager manager = new DefaultMessagesManager();
+        ComponentsTestUtil.setInstance(MessagesManager.class, manager);
+        SystemContext systemContext = mock(SystemContext.class);
+        when(systemContext.getLocale()).thenReturn(new Locale("en"));
+        ComponentsTestUtil.setInstance(SystemContext.class, systemContext);
+        session = new MockSession(workspaceName);
         MockContext ctx = new MockContext();
-        ctx.addSession(worksapceName, session);
+        ctx.addSession(workspaceName, session);
         MgnlContext.setInstance(ctx);
     }
 
     @After
     public void tearDown() {
         MgnlContext.setInstance(null);
+        ComponentsTestUtil.clear();
     }
 
     @Test
@@ -114,7 +128,8 @@ public class DialogBuilderTest {
         dialogDef.addTab(tabDef);
 
         final FieldTypeProvider fieldTypeProvider = mock(FieldTypeProvider.class);
-        when(fieldTypeProvider.create(fieldDef, fieldDef, item)).thenReturn(new DialogEditField(fieldTypeDef, item));
+        DialogEditField editField = new DialogEditField(fieldTypeDef, item);
+        when(fieldTypeProvider.create(same(fieldDef), same(fieldDef), same(item))).thenReturn(editField);
 
         // WHEN
         final DialogView result = builder.build(fieldTypeProvider, dialogDef, item, dialog);

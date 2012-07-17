@@ -44,38 +44,47 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.TreeTable;
+import com.vaadin.ui.VerticalLayout;
+
 
 /**
  * Vaadin UI component that displays a tree.
- *
+ * 
  */
 public class TreeViewImpl implements TreeView {
 
-    private MagnoliaTreeTable jcrBrowser;
+    private final MagnoliaTreeTable jcrBrowser;
+
+    private final VerticalLayout margin = new VerticalLayout();
 
     private ContentView.Listener listener;
 
     public TreeViewImpl(WorkbenchDefinition workbenchDefinition, TreeModel treeModel) {
 
         jcrBrowser = new MagnoliaTreeTable(workbenchDefinition, treeModel);
-        // next two lines are required to make the browser (TreeTable) react on selection change via mouse
+        // next two lines are required to make the browser (TreeTable) react on selection change via
+        // mouse
         jcrBrowser.setImmediate(true);
         jcrBrowser.setNullSelectionAllowed(false);
         jcrBrowser.setSizeFull();
         jcrBrowser.addListener(new TreeTable.ValueChangeListener() {
+
             @Override
             public void valueChange(ValueChangeEvent event) {
                 final Object value = event.getProperty().getValue();
                 if (value instanceof String) {
                     presenterOnItemSelection(String.valueOf(value));
                 } else if (value instanceof Set) {
-                    final Set<?> set = (Set<?>)value;
+                    final Set< ? > set = (Set< ? >) value;
                     if (set.size() == 1) {
                         presenterOnItemSelection(String.valueOf(set.iterator().next()));
                     }
                 }
             }
         });
+
+        margin.setStyleName("mgnl-content-view");
+        margin.addComponent(jcrBrowser);
     }
 
     private void presenterOnItemSelection(String id) {
@@ -85,7 +94,7 @@ public class TreeViewImpl implements TreeView {
     }
 
     /**
-     *
+     * 
      * @param path relative to the tree root, must start with /
      */
     @Override
@@ -98,10 +107,9 @@ public class TreeViewImpl implements TreeView {
         jcrBrowser.refresh();
     }
 
-
     @Override
     public Component asVaadinComponent() {
-        return jcrBrowser;
+        return margin;
     }
 
     @Override

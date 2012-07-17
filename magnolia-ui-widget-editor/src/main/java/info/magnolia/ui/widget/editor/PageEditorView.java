@@ -44,6 +44,8 @@ public interface PageEditorView extends View {
 
     void init(String contextPath, String nodePath);
 
+    void refresh();
+
     /**
      * Listener.
      */
@@ -51,12 +53,12 @@ public interface PageEditorView extends View {
 
         void editComponent(String workSpace, String path, String dialog);
 
-        void deleteComponent(String workSpace, String path);
-
         void newComponent(String workSpace, String nodeType, String path);
 
         void selectComponent(String path);
 
-        void sortComponent();
+        void deleteComponent(String workSpace, String path);
+
+        void sortComponent(String workSpace, String parentPath, String source, String target, String order);
     }
 }

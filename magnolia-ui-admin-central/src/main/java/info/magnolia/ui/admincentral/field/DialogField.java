@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.field;
 
+import info.magnolia.ui.admincentral.dialog.DialogItem;
 import info.magnolia.ui.model.dialog.definition.FieldDefinition;
 
 import com.vaadin.ui.Field;
@@ -43,7 +44,7 @@ import com.vaadin.ui.Field;
  * It builds a vaadin {@link Field} and maps the necessary labels, validators etc to the field.
  *
  */
-public interface DialogField {
+public interface DialogField extends DialogItem {
 
     Field getField();
 

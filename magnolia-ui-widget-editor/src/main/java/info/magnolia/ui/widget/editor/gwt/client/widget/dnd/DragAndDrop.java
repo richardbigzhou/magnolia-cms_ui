@@ -35,6 +35,7 @@ package info.magnolia.ui.widget.editor.gwt.client.widget.dnd;
 
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.shared.EventBus;
 import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.ComponentBar;
 
@@ -45,7 +46,7 @@ public abstract class DragAndDrop {
 
     private static final DragAndDropImpl dndImpl = GWT.create(DragAndDropImpl.class);
 
-    public static void dragAndDrop (Model model, final ComponentBar abstractBar) {
-        dndImpl.dragAndDrop(model, abstractBar);
+    public static void dragAndDrop (Model model, EventBus eventBus, final ComponentBar abstractBar) {
+        dndImpl.dragAndDrop(model, eventBus, abstractBar);
     }
 }

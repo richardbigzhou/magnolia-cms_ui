@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,41 +31,26 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.editor.gwt.client.event;
+package info.magnolia.ui.admincentral.dialog;
 
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.web.bindery.event.shared.Event;
+import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 
 /**
- * DeleteComponentEvent. Used for components and areas.
+ * Represents a dialog.
+ *
+ * @see DialogTab
+ * @see info.magnolia.ui.admincentral.field.DialogField
  */
-public class DeleteComponentEvent extends Event<DeleteComponentEventHandler> {
+public class Dialog extends AbstractDialogItem {
 
-    public static GwtEvent.Type<DeleteComponentEventHandler> TYPE = new GwtEvent.Type<DeleteComponentEventHandler>();
+    private DialogDefinition dialogDefinition;
 
-    private String workSpace;
-    private String path;
-
-    public DeleteComponentEvent(String workSpace, String path) {
-        this.workSpace = workSpace;
-        this.path = path;
+    public Dialog(DialogDefinition dialogDefinition) {
+        this.dialogDefinition = dialogDefinition;
     }
 
     @Override
-    public GwtEvent.Type<DeleteComponentEventHandler> getAssociatedType() {
-        return TYPE;
-    }
-
-    @Override
-    protected void dispatch(DeleteComponentEventHandler handler) {
-        handler.onDeleteComponent(this);
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public String getWorkSpace() {
-        return workSpace;
+    protected String getI18nBasename() {
+        return dialogDefinition.getI18nBasename();
     }
 }

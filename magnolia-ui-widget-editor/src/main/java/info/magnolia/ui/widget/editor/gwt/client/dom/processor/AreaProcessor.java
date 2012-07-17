@@ -58,13 +58,13 @@ public class AreaProcessor extends MgnlElementProcessor {
             areaBar = new AreaBar(getModel(), getEventBus(), getMgnlElement());
 
             try {
-                new AreaPlaceHolder(getModel(), getMgnlElement());
+                new AreaPlaceHolder(getModel(), getEventBus(), getMgnlElement());
             }
             catch(IllegalArgumentException e) {
                 GWT.log("Not creating area placeholder for this element. Missing parameters.");
             }
             try {
-                new ComponentPlaceHolder(getModel(), getMgnlElement());
+                new ComponentPlaceHolder(getModel(), getEventBus(), getMgnlElement());
             }
             catch(IllegalArgumentException e) {
                 GWT.log("Not creating component placeholder for this element. Missing parameters.");

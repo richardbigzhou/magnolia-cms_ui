@@ -43,12 +43,12 @@ import com.google.gwt.event.dom.client.DragStartEvent;
 import com.google.gwt.event.dom.client.DragStartHandler;
 import com.google.gwt.event.dom.client.DropEvent;
 import com.google.gwt.event.dom.client.DropHandler;
+import com.google.gwt.event.shared.EventBus;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
+import info.magnolia.ui.widget.editor.gwt.client.event.SortComponentEvent;
 import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.ComponentBar;
 import info.magnolia.ui.widget.editor.gwt.client.widget.placeholder.ComponentPlaceHolder;
-
-import static info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils.moveComponent;
 
 /**
  * DragAndDropImpl.
@@ -56,9 +56,11 @@ import static info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils.mov
 public class DragAndDropImpl {
 
     private Model model;
+    private EventBus eventBus;
 
-    public void dragAndDrop (Model model, final ComponentBar bar) {
+    public void dragAndDrop (Model model, final EventBus eventBus, final ComponentBar bar) {
         this.model = model;
+        this.eventBus = eventBus;
 
         bar.setDraggable(true);
         bar.addDomHandler(new DragStartHandler() {
@@ -162,7 +164,8 @@ public class DragAndDropImpl {
                         order = "after";
                     }
                     String parentPath = bar.getPath().substring(0, bar.getPath().lastIndexOf("/"));
-                    moveComponent(bar.getNodeName(), idSource, parentPath, order);
+                    eventBus.fireEvent(new SortComponentEvent(bar.getWorkspace(), parentPath, idSource, bar.getNodeName(), order));
+                    //moveComponent(bar.getNodeName(), idSource, parentPath, order);
                 }
 
                 event.preventDefault();

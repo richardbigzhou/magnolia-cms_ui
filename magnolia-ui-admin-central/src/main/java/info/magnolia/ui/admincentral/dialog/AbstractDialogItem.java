@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,45 +31,52 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.editor.gwt.client.event;
+package info.magnolia.ui.admincentral.dialog;
 
-import com.google.gwt.event.shared.GwtEvent;
+import org.apache.commons.lang.StringUtils;
+
+import info.magnolia.cms.i18n.Messages;
+import info.magnolia.cms.i18n.MessagesManager;
+import info.magnolia.cms.i18n.MessagesUtil;
 
 /**
- * NewComponentEvent.
+ * Abstract base class for dialog items, provides resolution of {@link Messages} in the hierarchical.
+ *
+ * @see Messages
+ * @see DialogItem
  */
-public class NewComponentEvent extends GwtEvent<NewComponentEventHandler> {
+public abstract class AbstractDialogItem implements DialogItem {
 
-    public static Type<NewComponentEventHandler> TYPE = new Type<NewComponentEventHandler>();
-    private String workspace;
-    private String nodeType;
-    private String path;
+    private DialogItem parent;
 
-    public NewComponentEvent(String workspace, String nodeType, String path) {
-        this.workspace = workspace;
-        this.nodeType = nodeType;
-        this.path = path;
+    @Override
+    public void setParent(DialogItem parent) {
+        this.parent = parent;
     }
 
     @Override
-    public Type<NewComponentEventHandler> getAssociatedType() {
-        return TYPE;
+    public DialogItem getParent() {
+        return parent;
     }
 
     @Override
-    protected void dispatch(NewComponentEventHandler handler) {
-        handler.onNewComponent(this);
+    public Messages getMessages() {
+
+        Messages messages;
+        if (getParent() != null) {
+            messages = getParent().getMessages();
+        } else {
+            messages = MessagesManager.getMessages();
+        }
+        if (StringUtils.isNotBlank(getI18nBasename())) {
+            messages = MessagesUtil.chain(getI18nBasename(), messages);
+        }
+        return messages;
     }
 
-    public String getWorkSpace() {
-        return workspace;
-    }
+    protected abstract String getI18nBasename();
 
-    public String getPath() {
-        return path;
-    }
-
-    public String getNodeType() {
-        return nodeType;
+    public String getMessage(String key) {
+        return getMessages().getWithDefault(key, key);
     }
 }

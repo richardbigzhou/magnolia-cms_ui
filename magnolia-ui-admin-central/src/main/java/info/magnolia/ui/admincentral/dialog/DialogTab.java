@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,41 +31,43 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.editor.gwt.client.event;
+package info.magnolia.ui.admincentral.dialog;
 
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.web.bindery.event.shared.Event;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.CssLayout;
+
+import info.magnolia.ui.model.dialog.definition.TabDefinition;
 
 /**
- * DeleteComponentEvent. Used for components and areas.
+ * Represents a tab in a dialog.
+ *
+ * @see Dialog
+ * @see info.magnolia.ui.admincentral.field.DialogField
  */
-public class DeleteComponentEvent extends Event<DeleteComponentEventHandler> {
+public class DialogTab extends AbstractDialogItem {
 
-    public static GwtEvent.Type<DeleteComponentEventHandler> TYPE = new GwtEvent.Type<DeleteComponentEventHandler>();
+    private static final String FIELD_CONTAINER_STYLE_NAME = "field-container";
 
-    private String workSpace;
-    private String path;
+    private TabDefinition definition;
+    private final CssLayout container;
 
-    public DeleteComponentEvent(String workSpace, String path) {
-        this.workSpace = workSpace;
-        this.path = path;
+    public DialogTab(TabDefinition definition) {
+        this.definition = definition;
+        container = new CssLayout();
+        container.setStyleName(FIELD_CONTAINER_STYLE_NAME);
+    }
+
+    public void addField(Component component) {
+        this.container.addComponent(component);
+    }
+
+    public ComponentContainer getContainer() {
+        return container;
     }
 
     @Override
-    public GwtEvent.Type<DeleteComponentEventHandler> getAssociatedType() {
-        return TYPE;
-    }
-
-    @Override
-    protected void dispatch(DeleteComponentEventHandler handler) {
-        handler.onDeleteComponent(this);
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public String getWorkSpace() {
-        return workSpace;
+    protected String getI18nBasename() {
+        return definition.getI18nBasename();
     }
 }

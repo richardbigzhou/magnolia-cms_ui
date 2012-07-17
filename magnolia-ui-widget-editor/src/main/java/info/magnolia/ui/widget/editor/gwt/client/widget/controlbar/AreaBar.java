@@ -43,7 +43,7 @@ import info.magnolia.rendering.template.AreaDefinition;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 import info.magnolia.ui.widget.editor.gwt.client.event.DeleteComponentEvent;
 import info.magnolia.ui.widget.editor.gwt.client.event.EditComponentEvent;
-import info.magnolia.ui.widget.editor.gwt.client.event.NewComponentEvent;
+import info.magnolia.ui.widget.editor.gwt.client.event.NewAreaEvent;
 import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 
 import java.util.Map;
@@ -123,7 +123,7 @@ public class AreaBar extends AbstractBar {
                 createbutton.addClickHandler(new ClickHandler() {
                     @Override
                     public void onClick(ClickEvent event) {
-                        getEventBus().fireEvent(new NewComponentEvent(workspace, NODE_TYPE, path));
+                        getEventBus().fireEvent(new NewAreaEvent(workspace, NODE_TYPE, path));
                     }
                 });
                 createbutton.setTitle(getI18nMessage("buttons.area.add.js"));
