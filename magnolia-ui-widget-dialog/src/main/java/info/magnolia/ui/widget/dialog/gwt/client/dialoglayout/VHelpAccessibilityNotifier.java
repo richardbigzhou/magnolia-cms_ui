@@ -31,15 +31,40 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.magnoliashell.gwt.client.viewport;
+package info.magnolia.ui.widget.dialog.gwt.client.dialoglayout;
+
+import info.magnolia.ui.widget.dialog.gwt.client.dialoglayout.HelpAccessibilityEvent.Handler;
+
+import com.google.web.bindery.event.shared.EventBus;
+import com.google.web.bindery.event.shared.HandlerRegistration;
+import com.google.web.bindery.event.shared.SimpleEventBus;
 
 /**
- * Dialogs viewport.
- *
+ * Notifier of help accessibility changes. 
  */
-public class VDialogViewport extends VShellViewport {
-
-    public VDialogViewport() {
-        getModalityCurtain().setId("black-modality-curtain");
-    }
+public interface VHelpAccessibilityNotifier {
+    
+    /**
+     * Implementor of {@link VHelpAccessibilityNotifier}.
+     */
+    public static class Delegate implements VHelpAccessibilityNotifier {
+   
+        private EventBus internalEventBus = new SimpleEventBus();
+        
+        @Override
+        public HandlerRegistration addHelpAccessibilityHandler(HelpAccessibilityEvent.Handler handler) {
+            return internalEventBus.addHandler(HelpAccessibilityEvent.TYPE, handler);
+        }
+        
+        @Override
+        public void changeHelpAccessibility(boolean isEnabled) {
+            internalEventBus.fireEvent(new HelpAccessibilityEvent(isEnabled));
+        }
+        
+    };
+   
+    public HandlerRegistration addHelpAccessibilityHandler(Handler handler);
+    
+    void changeHelpAccessibility(boolean isEnabled);
+    
 }

@@ -3,5 +3,6 @@
   <inherits name="com.vaadin.terminal.gwt.DefaultWidgetSet"/>
   <inherits name="org.vaadin.rpc.WidgetRPC"/>
   <inherits name="info.magnolia.ui.widget.jquerywrapper.gwt.JQueryWrapperWidgetSet"/>
+  <inherits name='org.vaadin.gwtgraphics.GWTGraphics' />
   <stylesheet src="dialog/styles.css"/>
 </module>

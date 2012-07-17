@@ -39,12 +39,14 @@ import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 import info.magnolia.ui.model.dialog.definition.FieldDefinition;
 import info.magnolia.ui.model.dialog.definition.TabDefinition;
+import info.magnolia.ui.widget.dialog.DialogLayout;
 import info.magnolia.ui.widget.dialog.DialogView;
 
 import org.apache.commons.lang.StringUtils;
 
 import com.vaadin.data.Item;
-import com.vaadin.ui.CssLayout;
+import com.vaadin.data.Validator;
+import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.ui.Field;
 
 /**
@@ -70,22 +72,24 @@ public class DialogBuilder {
         for (TabDefinition tabDefinition : dialogDefinition.getTabs()) {
             String tabName = tabDefinition.getName();
 
-            CssLayout fieldContainer = new CssLayout();
+            DialogLayout fieldContainer = new DialogLayout();
             fieldContainer.setStyleName(FIELD_CONTAINER_STYLE_NAME);
 
             for (FieldDefinition fieldDefinition : tabDefinition.getFields()) {
 
-                CssLayout fieldLayout = new CssLayout();
-                fieldLayout.setStyleName(FIELD_STYLE_NAME);
 
-                //Create the DialogField
                 DialogField fieldType = fieldTypeBuilder.create(fieldDefinition, fieldDefinition, item);
-                //Get the Vaadin  Field
                 Field field = fieldType.getField();
-
-                fieldLayout.addComponent(field);
-                fieldContainer.addComponent(fieldLayout);
-
+                
+                field.setRequiredError("TEST ERROR JUST TO SEE THAT THE UI WORKS OK.");
+                field.setRequired(true);
+                field.addValidator(new Validator() {
+                    @Override
+                    public void validate(Object value) throws InvalidValueException {}
+                    @Override
+                    public boolean isValid(Object value) {return false;}
+                });
+                fieldContainer.addComponent(field);
                 view.addField(field);
             }
 

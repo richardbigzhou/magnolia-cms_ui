@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.widget.dialog.gwt.client;
 
+import info.magnolia.ui.widget.dialog.gwt.client.dialoglayout.HelpAccessibilityEvent;
+import info.magnolia.ui.widget.dialog.gwt.client.dialoglayout.VHelpAccessibilityNotifier;
 import info.magnolia.ui.widget.tabsheet.gwt.client.VShellTabSheet;
 
 import java.util.Set;
@@ -45,6 +47,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.HandlerRegistration;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.Container;
 import com.vaadin.terminal.gwt.client.Paintable;
@@ -57,7 +60,7 @@ import com.vaadin.terminal.gwt.client.VConsole;
  * Vaadin implementation of Dialog client side (Presenter).
  */
 @SuppressWarnings("serial")
-public class VDialog extends Composite implements Container, VDialogView.Presenter, ClientSideHandler {
+public class VDialog extends Composite implements VHelpAccessibilityNotifier, Container, VDialogView.Presenter, ClientSideHandler {
 
     protected String paintableId;
 
@@ -65,7 +68,10 @@ public class VDialog extends Composite implements Container, VDialogView.Present
 
     private final VDialogView view;
 
+    private boolean isHelpAccessible = false;
+    
     private final EventBus eventBus;
+    
     private ClientSideProxy proxy = new ClientSideProxy(this) {
         {
             register("addAction", new Method() {
@@ -174,4 +180,24 @@ public class VDialog extends Composite implements Container, VDialogView.Present
         proxy.call("closeDialog");
     }
 
+
+    VHelpAccessibilityNotifier.Delegate delegate = new Delegate();
+    
+    @Override
+    public HandlerRegistration addHelpAccessibilityHandler(HelpAccessibilityEvent.Handler handler) {
+        return delegate.addHelpAccessibilityHandler(handler);
+    }
+
+
+    @Override
+    public void changeHelpAccessibility(boolean isEnabled) {
+        delegate.changeHelpAccessibility(isHelpAccessible);
+    }
+
+
+    @Override
+    public void notifyOfHelpAccessibilityChange(boolean isAccessible) {
+        isHelpAccessible = !isHelpAccessible;
+        changeHelpAccessibility(isHelpAccessible);
+    }
 }

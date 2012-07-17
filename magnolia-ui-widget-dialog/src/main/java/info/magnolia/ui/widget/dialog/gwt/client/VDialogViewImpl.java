@@ -36,6 +36,7 @@ package info.magnolia.ui.widget.dialog.gwt.client;
 
 import info.magnolia.ui.widget.tabsheet.gwt.client.VShellTabSheet;
 
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
@@ -77,6 +78,7 @@ public class VDialogViewImpl extends FlowPanel implements VDialogView {
     private static final String CLASSNAME_CLOSEBUTTON = "btn-dialog-close";
     private static final String CLASSNAME_BUTTON = "btn-dialog";
 
+    
     public VDialogViewImpl(final EventBus eventBus) {
         super();
         setStylePrimaryName(CLASSNAME);
@@ -188,7 +190,7 @@ public class VDialogViewImpl extends FlowPanel implements VDialogView {
         helpButton.addClickHandler(new ClickHandler() {
 
             @Override
-            public void onClick(final com.google.gwt.event.dom.client.ClickEvent event) {
+            public void onClick(final ClickEvent event) {
                 toggleDescription();
             }
 
@@ -222,6 +224,6 @@ public class VDialogViewImpl extends FlowPanel implements VDialogView {
 
     void toggleDescription() {
         description.setVisible(!description.isVisible());
-
+        presenter.notifyOfHelpAccessibilityChange(description.isVisible());
     }
 }

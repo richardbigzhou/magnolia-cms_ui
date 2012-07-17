@@ -126,7 +126,7 @@ button.btn-dialog-help {
     margin: 0;
 }
 
-.field-container .v-csslayout-margin {
+/*.field-container .v-csslayout-margin {
     padding: 12px 16px 12px 25px;
 }
 
@@ -143,4 +143,137 @@ button.btn-dialog-help {
 
 .field .v-captiontext {
     float: none;
+}*/
+
+.v-dialog-field-label {
+    display: inline-block;
+    padding-right: 10px;
+    text-align: right;
+    width: 140px;
+}
+
+
+.v-dialog-field-container {
+	display: inline-block;
+    position: relative;
+    vertical-align: top;
+}
+
+.validation-hilight {
+    border: 2px solid #9A3333;
+    padding: 3px;
+}
+
+.v-dialog-field-section {
+	padding-bottom: 12px;
+}
+
+.v-dialog-layout {
+	background-color: #E6E6E6;
+	color: #999999;
+	font: sans-serif;
+	font-size: 13px;
+}
+
+.action-dialog-help {
+    background: url("img/icons/icon-help.png") no-repeat scroll 1px 1px transparent;
+    border: medium none;
+    display: inline-block;
+    height: 20px;
+    margin: 0 6px 0 0;
+    padding: 1px;
+    vertical-align: middle;
+    width: 20px;
+}
+
+/*.v-textfield {
+	border: 1px solid #CCCCCC !important;
+    color: #999999 !important;
+    display: inline-block !important;
+    height: 26px !important;
+    padding-left: 10px !important;
+}
+
+.v-filterselect {
+	border: 1px solid #CCCCCC !important;
+    color: #999999 !important;
+    display: inline-block !important;
+    height: 26px !important;
+    padding-left: 10px !important;
+}*/
+
+.triangle {
+}
+
+.validation-message-inline, .help-message-inline {
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.validation-message, .help-message {
+    background: none repeat scroll 0 0 #9A3333;
+    color: white;
+    display: block;
+    padding: 10px;
+}
+
+.help-message {
+    background: none repeat scroll 0 0 #C1D8DF;
+    color: black;
+}
+
+.triangle.red  path {
+	fill: #9A3333;
+}
+
+.triangle.blue  path {
+	fill: #C1D8DF;
+}
+
+.triangle {
+	text-align: right;
+}
+
+.icon-error-white {
+    background: url("img/icons/icon-error-white.png") no-repeat scroll 1px 1px transparent;
+    border: medium none;
+    display: inline-block;
+    height: 20px;
+    margin: 0 6px 0 0;
+    padding: 1px;
+    vertical-align: middle;
+    width: 20px;
+}
+
+select:focus, input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
+    border: 1px solid #93BAC6;
+    box-shadow: 0 0 1px 0 #93BAC6;
+    color: #777777;
+}
+
+
+.icon-error, .action-validation {
+    background: url("img/icons/icon-error-red.png") no-repeat scroll 1px 1px transparent;
+    border: medium none;
+    display: inline-block;
+    height: 20px;
+    margin: 0 6px 0 0;
+    padding: 1px;
+    vertical-align: middle;
+    width: 20px;
+}
+
+.action-dialog-help {
+    background: url("img/icons/icon-help.png") no-repeat scroll 1px 1px transparent;
+    border: medium none;
+    display: inline-block;
+    height: 20px;
+    margin: 0 6px 0 0;
+    padding: 1px;
+    vertical-align: middle;
+    width: 20px;
+}
+
+fieldset {
+    border: 0 none;
 }
