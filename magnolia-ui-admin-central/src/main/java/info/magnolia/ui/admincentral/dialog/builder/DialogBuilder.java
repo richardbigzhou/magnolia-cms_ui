@@ -46,7 +46,6 @@ import info.magnolia.ui.widget.dialog.DialogView;
 import org.apache.commons.lang.StringUtils;
 
 import com.vaadin.data.Item;
-import com.vaadin.data.Validator;
 import com.vaadin.ui.Field;
 
 /**
@@ -82,20 +81,12 @@ public class DialogBuilder {
                 // Get the Vaadin Field
                 Field field = dialogField.getField();
 
-                field.setRequiredError("TEST ERROR JUST TO SEE THAT THE UI WORKS OK.");
-                field.setRequired(true);
-                field.addValidator(new Validator() {
-                    @Override
-                    public void validate(Object value) throws InvalidValueException {}
-                    @Override
-                    public boolean isValid(Object value) {return false;}
-                });
-
-                //CssLayout fieldLayout = new CssLayout();
-                //fieldLayout.setStyleName(FIELD_STYLE_NAME);
-
                 tab.addField(field);
-                tab.setComponentHelpDescription(field, "TEST HELP DESCRIPTION.");
+                //Set Help
+                if(StringUtils.isNotBlank(fieldDefinition.getDescription())) {
+                    //TODO EHE SCRUM-1344 Add i18n to Dialog/Tab definition.
+                    tab.setComponentHelpDescription(field, fieldDefinition.getDescription());
+                }
                 view.addField(field);
             }
 

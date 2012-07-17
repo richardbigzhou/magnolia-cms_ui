@@ -81,7 +81,6 @@ public class DialogSelectField extends AbstractDialogField<FieldDefinition> {
         select.setInvalidAllowed(false);
         select.setMultiSelect(false);
         select.setNewItemsAllowed(false);
-        select.setSizeFull();
         //Set Style
         if(StringUtils.isNotBlank(((SelectFieldDefinition)getFieldDefinition()).getCssClass())) {
             setStyleName(((SelectFieldDefinition)getFieldDefinition()).getCssClass());
