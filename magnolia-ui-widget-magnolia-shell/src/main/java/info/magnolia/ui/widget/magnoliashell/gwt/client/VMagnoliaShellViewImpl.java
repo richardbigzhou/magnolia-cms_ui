@@ -130,7 +130,7 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
                             getAppViewport().showAppPreloader(prefix, new PreloaderCallback() {
                                 @Override
                                 public void onPreloaderShown(String appName) {
-                                    presenter.loadApp(appName, token);
+                                    presenter.startApp(appName);
                                 }
                             });   
                         } else {
