@@ -95,8 +95,7 @@ public class DialogBuilder {
                 //fieldLayout.setStyleName(FIELD_STYLE_NAME);
 
                 tab.addField(field);
-                // FIXME dlipp - temporarily commented out as it's not compiling
-                //tab.setComponentHelpDescription(field, "TEST HELP DESCRIPTION.");
+                tab.setComponentHelpDescription(field, "TEST HELP DESCRIPTION.");
                 view.addField(field);
             }
 
