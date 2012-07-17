@@ -120,30 +120,10 @@ button.btn-dialog-help {
     display: inline-block;
     height: 26px;
     padding-left: 10px;
-    width: 425px;
     background: none #FFF;
     border-radius: 0;
     margin: 0;
 }
-
-/*.field-container .v-csslayout-margin {
-    padding: 12px 16px 12px 25px;
-}
-
-.field .v-csslayout-margin {
-    padding: 0 0 12px 0;
-}
-
-.field .v-caption {
-    display: inline-block;
-    padding-right: 10px;
-    text-align: right;
-    width: 140px;
-}
-
-.field .v-captiontext {
-    float: none;
-}*/
 
 .v-dialog-field-label {
     display: inline-block;
@@ -175,6 +155,11 @@ button.btn-dialog-help {
 	font-size: 13px;
 }
 
+.v-dialog-layout .v-dialog-field {
+    width: 425px;	
+    display: inline-block;
+}
+
 .action-dialog-help {
     background: url("img/icons/icon-help.png") no-repeat scroll 1px 1px transparent;
     border: medium none;
@@ -185,22 +170,6 @@ button.btn-dialog-help {
     vertical-align: middle;
     width: 20px;
 }
-
-/*.v-textfield {
-	border: 1px solid #CCCCCC !important;
-    color: #999999 !important;
-    display: inline-block !important;
-    height: 26px !important;
-    padding-left: 10px !important;
-}
-
-.v-filterselect {
-	border: 1px solid #CCCCCC !important;
-    color: #999999 !important;
-    display: inline-block !important;
-    height: 26px !important;
-    padding-left: 10px !important;
-}*/
 
 .triangle {
 }

@@ -69,6 +69,7 @@ public class DialogLayout extends AbstractLayout {
         while (it.hasNext()) {
             final Component c = it.next();
             target.startTag("component");
+            c.addStyleName("v-dialog-field");
             c.setSizeUndefined();
             c.paint(target);
             if (helpDescriptions.containsKey(c)) {
