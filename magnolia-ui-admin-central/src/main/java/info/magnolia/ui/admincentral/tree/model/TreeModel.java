@@ -121,7 +121,7 @@ public class TreeModel implements JcrContainerSource {
 
         boolean includeProperties = false;
         for (ItemTypeDefinition itemType : workbenchDefinition.getItemTypes()) {
-            if (itemType.getItemType().equals(ItemTypeDefinition.ITEM_TYPE_NODE_DATA)) {
+            if (itemType.getItemType().equals(ItemTypeDefinition.ITEM_TYPE_PROPERTY)) {
                 includeProperties = true;
                 break;
             }
@@ -199,7 +199,7 @@ public class TreeModel implements JcrContainerSource {
     @Override
     public String getItemIcon(Item item) throws RepositoryException {
         for (ItemTypeDefinition itemType : workbenchDefinition.getItemTypes()) {
-            if (!item.isNode() && itemType.getItemType().equals(ItemTypeDefinition.ITEM_TYPE_NODE_DATA)) {
+            if (!item.isNode() && itemType.getItemType().equals(ItemTypeDefinition.ITEM_TYPE_PROPERTY)) {
                 return itemType.getIcon();
             } else if (item.isNode()) {
                 Node node = (Node) item;
