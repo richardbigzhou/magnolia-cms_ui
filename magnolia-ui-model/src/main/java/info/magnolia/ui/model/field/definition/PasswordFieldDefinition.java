@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2010-2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,45 +31,22 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.definition;
+package info.magnolia.ui.model.field.definition;
 
 /**
- * The link field allows you to create a link to content stored in Magnolia. You can browse any specified workspace and
- * select a content node to link to such as a page (website), file (dms) or data item (data).
+ * Field definition for a password field.
  */
-public class LinkFieldDefinition extends ConfiguredFieldDefinition {
+public class PasswordFieldDefinition extends ConfiguredFieldDefinition {
 
-    private String workspace;
-    private String extension;
-    private String workbench;
+    private boolean verification = true;
     private String width;
-    private String buttonLabel;
 
-    // TODO In JCR 2.0 this is called identifier, do we want to adjust to this or maybe call it reference
-    private boolean uuid;
-
-    public String getWorkspace() {
-        return workspace;
+    public boolean isVerification() {
+        return verification;
     }
 
-    public void setWorkspace(String workspace) {
-        this.workspace = workspace;
-    }
-
-    public String getExtension() {
-        return extension;
-    }
-
-    public void setExtension(String extension) {
-        this.extension = extension;
-    }
-
-    public String getWorkbench() {
-        return workbench;
-    }
-
-    public void setWorkbench(String workbench) {
-        this.workbench = workbench;
+    public void setVerification(boolean verification) {
+        this.verification = verification;
     }
 
     public String getWidth() {
@@ -78,21 +55,5 @@ public class LinkFieldDefinition extends ConfiguredFieldDefinition {
 
     public void setWidth(String width) {
         this.width = width;
-    }
-
-    public String getButtonLabel() {
-        return buttonLabel;
-    }
-
-    public void setButtonLabel(String buttonLabel) {
-        this.buttonLabel = buttonLabel;
-    }
-
-    public boolean isUuid() {
-        return uuid;
-    }
-
-    public void setUuid(boolean uuid) {
-        this.uuid = uuid;
     }
 }

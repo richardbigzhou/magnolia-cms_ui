@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.dialog;
 
-import info.magnolia.ui.model.dialog.definition.TabDefinition;
+import info.magnolia.ui.model.tab.definition.TabDefinition;
 import info.magnolia.ui.widget.dialog.DialogLayout;
 
 import com.vaadin.ui.Component;

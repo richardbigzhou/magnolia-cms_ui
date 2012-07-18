@@ -31,20 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.definition;
+package info.magnolia.ui.model.field.definition;
+
 
 /**
- * Field definition for a checkbox.
+ * Field definition for Radio and check box select field. This replace the former {@link info.magnolia.cms.gui.dialog.DialogButtonSet}
+ * This is now used for Control radio and checkbox.
  */
-public class CheckboxFieldDefinition extends ConfiguredFieldDefinition {
+public class OptionGroupFieldDefinition extends SelectFieldDefinition {
 
-    private boolean defaultValue;
+    private int cols = 1;
 
-    public boolean isDefaultValue() {
-        return defaultValue;
+    private boolean multiselect = false;
+
+    public boolean isMultiselect() {
+        return multiselect;
     }
 
-    public void setDefaultValue(boolean defaultValue) {
-        this.defaultValue = defaultValue;
+
+    public void setMultiselect(boolean multiselect) {
+        this.multiselect = multiselect;
     }
+
+    public int getCols() {
+        return cols;
+    }
+
+    public void setCols(int cols) {
+        this.cols = cols;
+    }
+
 }

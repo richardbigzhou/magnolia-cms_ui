@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2010-2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,40 +31,46 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.field;
-
-import info.magnolia.ui.model.field.definition.FieldDefinition;
-import info.magnolia.ui.model.field.definition.OptionGroupFieldDefinition;
-
-import com.vaadin.data.Item;
-import com.vaadin.ui.AbstractSelect;
-import com.vaadin.ui.Field;
-import com.vaadin.ui.OptionGroup;
-
+package info.magnolia.ui.model.field.definition;
 
 /**
- * Initialize a DialogOption Field based on the configured informations.
+ * Field definition for a date picker.
  */
+public class DateFieldDefinition extends ConfiguredFieldDefinition {
 
-public class DialogOptionGroupField extends DialogSelectField {
+    private boolean time;
 
-    public DialogOptionGroupField(FieldDefinition definition, Item relatedFieldItem) {
-        super(definition, relatedFieldItem);
+    private String dateFormat = "yyyy-MM-dd";
+
+    private String timeFormat = "HH:mm:ss";
+
+    public boolean isTime() {
+        return time;
+    }
+
+    public void setTime(boolean time) {
+        this.time = time;
+    }
+
+    public String getDateFormat() {
+        return dateFormat;
     }
 
 
-    @Override
-    protected Field buildField() {
-        //Set common attributes
-        super.buildField();
-        select.setMultiSelect(((OptionGroupFieldDefinition)getFieldDefinition()).isMultiselect());
-        return select;
+    public void setDateFormat(String dateFormat) {
+        this.dateFormat = dateFormat;
     }
 
-    @Override
-    protected AbstractSelect createVaadinSeletionField() {
-        return new OptionGroup();
+
+    public String getTimeFormat() {
+        return timeFormat;
     }
+
+
+    public void setTimeFormat(String timeFormat) {
+        this.timeFormat = timeFormat;
+    }
+
 
 
 }

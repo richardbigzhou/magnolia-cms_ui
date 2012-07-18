@@ -34,7 +34,7 @@
 package info.magnolia.ui.app.pages.field;
 
 
-import info.magnolia.ui.model.dialog.definition.SelectFieldDefinition;
+import info.magnolia.ui.model.field.definition.SelectFieldDefinition;
 
 /**
  * Definition used for configuring {@link TemplateSelectorField}.

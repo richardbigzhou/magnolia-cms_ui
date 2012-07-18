@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2011 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,46 +31,25 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.definition;
+package info.magnolia.ui.model.tab.definition;
+
+import info.magnolia.ui.model.field.definition.FieldDefinition;
+
+import java.util.List;
+
 
 /**
- * Field definition for a date picker.
+ * TabDefinition.
+ * 
  */
-public class DateFieldDefinition extends ConfiguredFieldDefinition {
+public interface TabDefinition {
 
-    private boolean time;
+    String getName();
 
-    private String dateFormat = "yyyy-MM-dd";
+    String getLabel();
 
-    private String timeFormat = "HH:mm:ss";
+    String getI18nBasename();
 
-    public boolean isTime() {
-        return time;
-    }
-
-    public void setTime(boolean time) {
-        this.time = time;
-    }
-
-    public String getDateFormat() {
-        return dateFormat;
-    }
-
-
-    public void setDateFormat(String dateFormat) {
-        this.dateFormat = dateFormat;
-    }
-
-
-    public String getTimeFormat() {
-        return timeFormat;
-    }
-
-
-    public void setTimeFormat(String timeFormat) {
-        this.timeFormat = timeFormat;
-    }
-
-
+    List<FieldDefinition> getFields();
 
 }

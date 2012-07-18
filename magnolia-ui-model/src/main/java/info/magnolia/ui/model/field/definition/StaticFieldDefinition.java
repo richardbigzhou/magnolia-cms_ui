@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.definition;
+package info.magnolia.ui.model.field.definition;
 
 /**
  * Describes a field which is shows with a simple text in the dialog. The displayed text is the label.

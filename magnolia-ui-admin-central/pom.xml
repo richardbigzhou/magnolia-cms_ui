@@ -125,6 +125,17 @@
 	 	<groupId>org.vaadin.addons</groupId>
 		<artifactId>customfield</artifactId>
 	</dependency>
+	<dependency>
+   		<groupId>org.vaadin.addons</groupId>
+   		<artifactId>easyuploads</artifactId>
+   		<version>0.5.1</version>
+	</dependency>
+		<dependency>
+   		<groupId>org.vaadin.addons</groupId>
+   		<artifactId>ckeditor-wrapper-for-vaadin</artifactId>
+   		<version>1.6.5</version>
+	</dependency>
+
     <!-- For Test -->
      <dependency>
         <groupId>junit</groupId>

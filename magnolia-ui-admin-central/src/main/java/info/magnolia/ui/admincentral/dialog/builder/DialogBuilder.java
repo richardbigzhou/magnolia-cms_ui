@@ -39,8 +39,8 @@ import info.magnolia.ui.admincentral.field.DialogField;
 import info.magnolia.ui.admincentral.field.builder.FieldTypeProvider;
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
-import info.magnolia.ui.model.dialog.definition.FieldDefinition;
-import info.magnolia.ui.model.dialog.definition.TabDefinition;
+import info.magnolia.ui.model.field.definition.FieldDefinition;
+import info.magnolia.ui.model.tab.definition.TabDefinition;
 import info.magnolia.ui.widget.dialog.DialogView;
 
 import org.apache.commons.lang.StringUtils;

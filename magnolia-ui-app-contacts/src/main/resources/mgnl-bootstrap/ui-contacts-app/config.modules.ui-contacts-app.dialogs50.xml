@@ -169,7 +169,7 @@
               <sv:value>e1ab87aa-371c-4948-a6d3-dbb89fd0df9c</sv:value>
             </sv:property>
             <sv:property sv:name="class" sv:type="String">
-              <sv:value>info.magnolia.ui.model.dialog.definition.DateFieldDefinition</sv:value>
+              <sv:value>info.magnolia.ui.model.field.definition.DateFieldDefinition</sv:value>
             </sv:property>
             <sv:property sv:name="dateFormat" sv:type="String">
               <sv:value>yyyy-MM-dd</sv:value>
@@ -292,7 +292,7 @@
               <sv:value>701d88d7-1982-4ede-93a2-106111e7f9a0</sv:value>
             </sv:property>
             <sv:property sv:name="class" sv:type="String">
-              <sv:value>info.magnolia.ui.model.dialog.definition.SelectFieldDefinition</sv:value>
+              <sv:value>info.magnolia.ui.model.field.definition.SelectFieldDefinition</sv:value>
             </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
@@ -560,7 +560,7 @@
               <sv:value>34d607f2-ea7e-4882-a285-08749a32cdba</sv:value>
             </sv:property>
             <sv:property sv:name="class" sv:type="String">
-              <sv:value>info.magnolia.ui.model.dialog.definition.OptionGroupFieldDefinition</sv:value>
+              <sv:value>info.magnolia.ui.model.field.definition.OptionGroupFieldDefinition</sv:value>
             </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
@@ -760,7 +760,7 @@
               <sv:value>7ab50f0e-e65a-46b1-b19e-40d7c4156204</sv:value>
             </sv:property>
             <sv:property sv:name="class" sv:type="String">
-              <sv:value>info.magnolia.ui.model.dialog.definition.OptionGroupFieldDefinition</sv:value>
+              <sv:value>info.magnolia.ui.model.field.definition.OptionGroupFieldDefinition</sv:value>
             </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>

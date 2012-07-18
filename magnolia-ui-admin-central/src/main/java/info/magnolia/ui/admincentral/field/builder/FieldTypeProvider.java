@@ -37,7 +37,7 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.content.view.builder.DefinitionToImplementationMapping;
 import info.magnolia.ui.admincentral.field.DialogField;
 import info.magnolia.ui.model.builder.FactoryBase;
-import info.magnolia.ui.model.dialog.definition.FieldDefinition;
+import info.magnolia.ui.model.field.definition.FieldDefinition;
 
 import java.io.Serializable;
 import java.util.ArrayList;

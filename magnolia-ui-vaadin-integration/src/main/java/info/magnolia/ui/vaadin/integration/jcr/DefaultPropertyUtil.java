@@ -77,7 +77,7 @@ public class DefaultPropertyUtil {
      */
     public static Object createTypedValue(String name, String fieldType, Object defaultValue) throws NumberFormatException, InstantiationException, IllegalAccessException{
         boolean hasDefaultValue = defaultValue != null;
-        if (StringUtils.isNotEmpty(fieldType)) {
+        if (StringUtils.isNotBlank(fieldType)) {
             int valueType = PropertyType.valueFromName(fieldType);
             switch (valueType) {
                 case PropertyType.STRING:
@@ -118,7 +118,7 @@ public class DefaultPropertyUtil {
                 case PropertyType.DOUBLE:
                     return Double.class;
                 case PropertyType.DATE:
-                    // TODO we use Date here instead of Calendar simply because the vaadin DateField uses Date not Calendar
+                    // we use Date here instead of Calendar simply because the vaadin DateField uses Date not Calendar
                     return Date.class;
                 case PropertyType.BOOLEAN:
                     return Boolean.class;

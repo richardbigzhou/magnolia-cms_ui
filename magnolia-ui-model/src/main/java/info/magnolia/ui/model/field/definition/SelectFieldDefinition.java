@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.definition;
+package info.magnolia.ui.model.field.definition;
 
 import info.magnolia.repository.RepositoryConstants;
 

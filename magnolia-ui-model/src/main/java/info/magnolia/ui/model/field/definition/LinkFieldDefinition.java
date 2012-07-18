@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2011 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,31 +31,45 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.definition;
+package info.magnolia.ui.model.field.definition;
 
 /**
- * Field definition for an edit box.
+ * The link field allows you to create a link to content stored in Magnolia. You can browse any specified workspace and
+ * select a content node to link to such as a page (website), file (dms) or data item (data).
  */
-public class EditFieldDefinition extends ConfiguredFieldDefinition {
+public class LinkFieldDefinition extends ConfiguredFieldDefinition {
 
-    private int rows;
-    private int maxLength = -1;
+    private String workspace;
+    private String extension;
+    private String workbench;
     private String width;
+    private String buttonLabel;
 
-    public int getRows() {
-        return rows;
+    // TODO In JCR 2.0 this is called identifier, do we want to adjust to this or maybe call it reference
+    private boolean uuid;
+
+    public String getWorkspace() {
+        return workspace;
     }
 
-    public void setRows(int rows) {
-        this.rows = rows;
+    public void setWorkspace(String workspace) {
+        this.workspace = workspace;
     }
 
-    public int getMaxLength() {
-        return maxLength;
+    public String getExtension() {
+        return extension;
     }
 
-    public void setMaxLength(int maxLength) {
-        this.maxLength = maxLength;
+    public void setExtension(String extension) {
+        this.extension = extension;
+    }
+
+    public String getWorkbench() {
+        return workbench;
+    }
+
+    public void setWorkbench(String workbench) {
+        this.workbench = workbench;
     }
 
     public String getWidth() {
@@ -64,5 +78,21 @@ public class EditFieldDefinition extends ConfiguredFieldDefinition {
 
     public void setWidth(String width) {
         this.width = width;
+    }
+
+    public String getButtonLabel() {
+        return buttonLabel;
+    }
+
+    public void setButtonLabel(String buttonLabel) {
+        this.buttonLabel = buttonLabel;
+    }
+
+    public boolean isUuid() {
+        return uuid;
+    }
+
+    public void setUuid(boolean uuid) {
+        this.uuid = uuid;
     }
 }

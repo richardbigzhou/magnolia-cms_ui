@@ -31,34 +31,67 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.definition;
+package info.magnolia.ui.model.field.definition;
 
 
 /**
- * Field definition for Radio and check box select field. This replace the former {@link info.magnolia.cms.gui.dialog.DialogButtonSet}
- * This is now used for Control radio and checkbox.
+ * Simple pojo used to define options used in selection.
  */
-public class OptionGroupFieldDefinition extends SelectFieldDefinition {
 
-    private int cols = 1;
+public class SelectFieldOptionDefinition {
 
-    private boolean multiselect = false;
+    // Value saved to the repository and displayed to the user.
+    private String value;
+    // Name of the property that stores the selected value.
+    private String name;
+    // Sets the option as pre-selected
+    private boolean selected = false;
+    // The human-readable label for this option.
+    private String label;
+    // Value is a path to the image.
+    private String iconSrc;
 
-    public boolean isMultiselect() {
-        return multiselect;
+
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
 
-    public void setMultiselect(boolean multiselect) {
-        this.multiselect = multiselect;
+    public boolean isSelected() {
+        return selected;
     }
 
-    public int getCols() {
-        return cols;
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 
-    public void setCols(int cols) {
-        this.cols = cols;
+    public String getLabel() {
+        return label;
     }
 
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public String getIconSrc() {
+        return iconSrc;
+    }
+
+    public void setIconSrc(String iconSrc) {
+        this.iconSrc = iconSrc;
+    }
 }

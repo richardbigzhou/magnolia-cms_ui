@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,23 +31,30 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.definition;
-
-import java.util.List;
-
+package info.magnolia.ui.model.field.definition;
 
 /**
- * TabDefinition.
- * 
+ * Field definition for a upload field.
  */
-public interface TabDefinition {
+public class FileUploadFieldDefinition extends ConfiguredFieldDefinition {
 
-    String getName();
+    // TODO should we change this name? See also info.magnolia.cms.beans.runtime.FileProperties#PROPERTY_TEMPLATE
+    private String nodeDataTemplate;
+    private boolean preview = true;
 
-    String getLabel();
+    public boolean isPreview() {
+        return preview;
+    }
 
-    String getI18nBasename();
+    public void setPreview(boolean preview) {
+        this.preview = preview;
+    }
 
-    List<FieldDefinition> getFields();
+    public String getNodeDataTemplate() {
+        return nodeDataTemplate;
+    }
 
+    public void setNodeDataTemplate(String nodeDataTemplate) {
+        this.nodeDataTemplate = nodeDataTemplate;
+    }
 }

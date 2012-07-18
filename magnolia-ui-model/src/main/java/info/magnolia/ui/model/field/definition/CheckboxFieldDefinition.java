@@ -31,29 +31,21 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.definition;
+package info.magnolia.ui.model.field.definition;
+
 
 /**
- * Field definition for a password field.
+ * Field definition for a checkbox.
  */
-public class PasswordFieldDefinition extends ConfiguredFieldDefinition {
+public class CheckboxFieldDefinition extends ConfiguredFieldDefinition {
 
-    private boolean verification = true;
-    private String width;
+    private boolean defaultValue;
 
-    public boolean isVerification() {
-        return verification;
+    public boolean isDefaultValue() {
+        return defaultValue;
     }
 
-    public void setVerification(boolean verification) {
-        this.verification = verification;
-    }
-
-    public String getWidth() {
-        return width;
-    }
-
-    public void setWidth(String width) {
-        this.width = width;
+    public void setDefaultValue(boolean defaultValue) {
+        this.defaultValue = defaultValue;
     }
 }

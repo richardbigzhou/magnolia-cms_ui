@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2011 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,16 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.definition;
+package info.magnolia.ui.model.field.definition;
+
+import info.magnolia.ui.model.dialog.definition.ValidatorDefinition;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
 /**
- * A tab in a dialog. Holds a list of controls contained in the tab.
+ * Describes a field in a dialog.
+ *
+ * TODO this should be abstract
  */
-public class ConfiguredTabDefinition implements TabDefinition {
+public class ConfiguredFieldDefinition implements FieldDefinition {
 
     private String name;
 
@@ -48,7 +52,17 @@ public class ConfiguredTabDefinition implements TabDefinition {
 
     private String i18nBasename;
 
-    private List<FieldDefinition> fields = new ArrayList<FieldDefinition>();
+    private String description; // not relevant for controlType=static
+
+    private String type; // JCR Property type name see javax.jcr.PropertyType
+
+    private boolean required; // Not relevant for checkbox
+
+    private boolean saveInfo = true; // Specify if the property has to be saved
+
+    private String defaultValue; // Specify the default value
+
+    private List<ValidatorDefinition> validators = new ArrayList<ValidatorDefinition>();
 
     @Override
     public String getName() {
@@ -78,15 +92,61 @@ public class ConfiguredTabDefinition implements TabDefinition {
     }
 
     @Override
-    public List<FieldDefinition> getFields() {
-        return fields;
+    public String getDescription() {
+        return description;
     }
 
-    public void setFields(List<FieldDefinition> fields) {
-        this.fields = fields;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public boolean addField(FieldDefinition fieldDefinition) {
-        return fields.add(fieldDefinition);
+    @Override
+    public String getType() {
+        return type;
     }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    @Override
+    public boolean isRequired() {
+        return required;
+    }
+
+    public void setRequired(boolean required) {
+        this.required = required;
+    }
+
+    @Override
+    public List<ValidatorDefinition> getValidators() {
+        return validators;
+    }
+
+    public void setValidators(List<ValidatorDefinition> validators) {
+        this.validators = validators;
+    }
+
+    public void addValidator(ValidatorDefinition validator) {
+        validators.add(validator);
+    }
+
+    public void setDefaultValue(String defaultValue) {
+        this.defaultValue = defaultValue;
+    }
+
+    @Override
+    public String getDefaultValue() {
+        return this.defaultValue;
+    }
+
+    public void setSaveInfo(boolean saveInfo) {
+        this.saveInfo = saveInfo;
+    }
+
+    @Override
+    public boolean getSaveInfo() {
+        return this.saveInfo;
+    }
+
 }

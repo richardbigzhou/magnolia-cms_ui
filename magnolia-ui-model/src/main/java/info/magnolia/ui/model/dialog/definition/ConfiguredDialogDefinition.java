@@ -34,6 +34,7 @@
 package info.magnolia.ui.model.dialog.definition;
 
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
+import info.magnolia.ui.model.tab.definition.TabDefinition;
 
 import java.util.ArrayList;
 import java.util.List;

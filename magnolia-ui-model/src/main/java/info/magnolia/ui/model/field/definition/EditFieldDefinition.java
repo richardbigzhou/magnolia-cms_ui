@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2010-2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,30 +31,38 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.definition;
+package info.magnolia.ui.model.field.definition;
 
 /**
- * Field definition for a upload field.
+ * Field definition for an edit box.
  */
-public class FileUploadFieldDefinition extends ConfiguredFieldDefinition {
+public class EditFieldDefinition extends ConfiguredFieldDefinition {
 
-    // TODO should we change this name? See also info.magnolia.cms.beans.runtime.FileProperties#PROPERTY_TEMPLATE
-    private String nodeDataTemplate;
-    private boolean preview = true;
+    private int rows;
+    private int maxLength = -1;
+    private String width;
 
-    public boolean isPreview() {
-        return preview;
+    public int getRows() {
+        return rows;
     }
 
-    public void setPreview(boolean preview) {
-        this.preview = preview;
+    public void setRows(int rows) {
+        this.rows = rows;
     }
 
-    public String getNodeDataTemplate() {
-        return nodeDataTemplate;
+    public int getMaxLength() {
+        return maxLength;
     }
 
-    public void setNodeDataTemplate(String nodeDataTemplate) {
-        this.nodeDataTemplate = nodeDataTemplate;
+    public void setMaxLength(int maxLength) {
+        this.maxLength = maxLength;
+    }
+
+    public String getWidth() {
+        return width;
+    }
+
+    public void setWidth(String width) {
+        this.width = width;
     }
 }

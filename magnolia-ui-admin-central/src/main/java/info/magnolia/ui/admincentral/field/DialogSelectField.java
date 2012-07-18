@@ -34,9 +34,9 @@
 package info.magnolia.ui.admincentral.field;
 
 import info.magnolia.jcr.util.SessionUtil;
-import info.magnolia.ui.model.dialog.definition.FieldDefinition;
-import info.magnolia.ui.model.dialog.definition.SelectFieldDefinition;
-import info.magnolia.ui.model.dialog.definition.SelectFieldOptionDefinition;
+import info.magnolia.ui.model.field.definition.FieldDefinition;
+import info.magnolia.ui.model.field.definition.SelectFieldDefinition;
+import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -122,7 +122,7 @@ public class DialogSelectField extends AbstractDialogField<FieldDefinition> {
             for(SelectFieldOptionDefinition option : this.options) {
                 res.put(option.getValue(), option.getLabel());
                 if(option.isSelected()) {
-                    initialSelecteKey = option.getLabel();
+                    initialSelecteKey = option.getValue();
                 }
             }
         }else if(StringUtils.isNotBlank(selectFieldDefinition.getPath())) {
@@ -154,8 +154,8 @@ public class DialogSelectField extends AbstractDialogField<FieldDefinition> {
             selectedValue = dataSource.getValue().toString();
         } else if (initialSelecteKey !=null) {
             selectedValue = initialSelecteKey;
-        } else if (!((SelectFieldDefinition)getFieldDefinition()).getOptions().isEmpty()) {
-            selectedValue = ((SelectFieldDefinition)getFieldDefinition()).getOptions().get(0).getValue();
+        } else if (options !=null && !options.isEmpty()) {
+            selectedValue = options.get(0).getValue();
         }
         this.field.setValue(selectedValue);
     }
@@ -194,6 +194,7 @@ public class DialogSelectField extends AbstractDialogField<FieldDefinition> {
                             option.setIconSrc(child.getProperty(SelectFieldDefinition.OPTION_ICONSRC_PROPERTY_NAME).getString());
                         }
                     }
+                    options.add(option);
                 }
             } catch(Exception e) {
                 log.warn("Not able to buld Options based on option node "+parent.toString(),e);

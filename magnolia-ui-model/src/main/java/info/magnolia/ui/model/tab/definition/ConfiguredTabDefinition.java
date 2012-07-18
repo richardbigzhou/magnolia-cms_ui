@@ -31,36 +31,28 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.definition;
+package info.magnolia.ui.model.tab.definition;
+
+import info.magnolia.ui.model.field.definition.FieldDefinition;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
- * Simple pojo used to define options used in selection.
+ * A tab in a dialog. Holds a list of controls contained in the tab.
  */
+public class ConfiguredTabDefinition implements TabDefinition {
 
-public class SelectFieldOptionDefinition {
-
-    // Value saved to the repository and displayed to the user.
-    private String value;
-    // Name of the property that stores the selected value.
     private String name;
-    // Sets the option as pre-selected
-    private boolean selected = false;
-    // The human-readable label for this option.
+
     private String label;
-    // Value is a path to the image.
-    private String iconSrc;
 
+    private String i18nBasename;
 
+    private List<FieldDefinition> fields = new ArrayList<FieldDefinition>();
 
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-
+    @Override
     public String getName() {
         return name;
     }
@@ -69,16 +61,7 @@ public class SelectFieldOptionDefinition {
         this.name = name;
     }
 
-
-    public boolean isSelected() {
-        return selected;
-    }
-
-
-    public void setSelected(boolean selected) {
-        this.selected = selected;
-    }
-
+    @Override
     public String getLabel() {
         return label;
     }
@@ -87,11 +70,25 @@ public class SelectFieldOptionDefinition {
         this.label = label;
     }
 
-    public String getIconSrc() {
-        return iconSrc;
+    @Override
+    public String getI18nBasename() {
+        return i18nBasename;
     }
 
-    public void setIconSrc(String iconSrc) {
-        this.iconSrc = iconSrc;
+    public void setI18nBasename(String i18nBasename) {
+        this.i18nBasename = i18nBasename;
+    }
+
+    @Override
+    public List<FieldDefinition> getFields() {
+        return fields;
+    }
+
+    public void setFields(List<FieldDefinition> fields) {
+        this.fields = fields;
+    }
+
+    public boolean addField(FieldDefinition fieldDefinition) {
+        return fields.add(fieldDefinition);
     }
 }
