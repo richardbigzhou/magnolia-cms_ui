@@ -33,6 +33,9 @@
  */
 package info.magnolia.ui.widget.magnoliashell.gwt.client.viewport;
 
+import com.vaadin.terminal.gwt.client.ApplicationConnection;
+import com.vaadin.terminal.gwt.client.UIDL;
+
 /**
  * Dialogs viewport.
  *
@@ -41,5 +44,17 @@ public class VDialogViewport extends VShellViewport {
 
     public VDialogViewport() {
         getModalityCurtain().setId("black-modality-curtain");
+        getElement().getStyle().setZIndex(500);
+        setContentAnimationDelegate(ContentAnimationDelegate.FadingDelegate);
+        showCurtain();
+    }
+    
+    @Override
+    public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
+        super.updateFromUIDL(uidl, client);
+        
+        if (getWidgetCount() == 0) {
+            removeFromParent();
+        }
     }
 }

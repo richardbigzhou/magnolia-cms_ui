@@ -102,7 +102,7 @@ public class VAppsViewport extends VShellViewport {
             public void run() {
                 callback.onPreloaderShown(appName);
             }
-        }.schedule(750);
+        }.schedule(500);
     }
     
     

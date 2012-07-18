@@ -36,8 +36,6 @@ package info.magnolia.ui.widget.magnoliashell.gwt.client;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShell.ViewportType;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VShellMessage.MessageType;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.VAppsViewport;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.VShellAppsViewport;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.VShellViewport;
 
 import java.util.Collection;
@@ -59,17 +57,11 @@ public interface VMagnoliaShellView extends HasWidgets, IsWidget {
     
     void changeActiveViewport(ViewportType viewportType);
     
-    void updateAppViewport(VAppsViewport viewport);
-    
-    void updateShellAppViewport(VShellAppsViewport viewport);
-    
-    void updateDialogs(VShellViewport dialogViewport);
+    void updateViewport(VShellViewport viewport, ViewportType type);
 
     void setPresenter(final Presenter presenter);
     
     void showMessage(final MessageType type, String text, String message, String id); 
-
-    void removeDialogViewport();
 
     void navigate(String prefix, String token);
     

@@ -36,8 +36,6 @@ package info.magnolia.ui.widget.magnoliashell.gwt.client;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VShellMessage.MessageType;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.util.JSONUtil;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.VAppsViewport;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.VShellAppsViewport;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.VShellViewport;
 
 import java.util.Iterator;
@@ -162,6 +160,7 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
             });
         }
     };
+    
 
     private final VMagnoliaShellView view;
 
@@ -186,21 +185,8 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
                 final Paintable p = client.getPaintable(viewportUidl);
                 if (p instanceof VShellViewport) {
                     final VShellViewport viewport = (VShellViewport) p;
-                    switch (viewportType) {
-                    case APP_VIEWPORT:
-                        view.updateAppViewport((VAppsViewport)viewport);
-                        break;
-                    case SHELL_APP_VIEWPORT:
-                        view.updateShellAppViewport((VShellAppsViewport)viewport);
-                        break;
-                    case DIALOG_VIEWPORT:
-                        view.updateDialogs(viewport);
-                        break;
-                    }
+                    view.updateViewport(viewport, viewportType);
                     p.updateFromUIDL(viewportUidl, client);
-                    if (ViewportType.DIALOG_VIEWPORT == viewportType && viewport.getWidgetCount() == 0) {
-                        view.removeDialogViewport();
-                    }
                 }
             }
         }
@@ -208,6 +194,31 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
         proxy.update(this, uidl, client);
     }
 
+    @Override
+    public void loadShellApp(final ShellAppType type, final String token) {
+        proxy.call("activateShellApp", type.name().toLowerCase(), token);
+    }
+
+    @Override
+    public void loadApp(String prefix, String token) {
+        proxy.call("activateApp", prefix, token);
+    }
+
+    @Override
+    public void closeCurrentApp() {
+        proxy.call("closeCurrentApp");
+    }
+
+    @Override
+    public void closeCurrentShellApp() {
+        proxy.call("closeCurrentShellApp");
+    }
+
+    @Override
+    public void removeMessage(String id) {
+        proxy.call("removeMessage", id);
+    }
+    
     private void updatePusher(final UIDL uidl) {
         final UIDL pusherUidl = uidl.getChildByTagName("pusher");
         if (pusherUidl != null) {
@@ -222,15 +233,11 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
     }
 
     @Override
-    public void loadShellApp(final ShellAppType type, final String token) {
-        proxy.call("activateShellApp", type.name().toLowerCase(), token);
+    public void setWidth(String width) {
+        view.asWidget().setWidth(width);
+        super.setWidth(width);
     }
-
-    @Override
-    public void loadApp(String prefix, String token) {
-        proxy.call("activateApp", prefix, token);
-    }
-
+    
     @Override
     public void updateViewportLayout(VShellViewport viewport) {
         client.runDescendentsLayout(viewport);
@@ -262,8 +269,7 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
     }
 
     @Override
-    public void updateCaption(Paintable component, UIDL uidl) {
-    }
+    public void updateCaption(Paintable component, UIDL uidl) {}
 
     @Override
     public boolean requestLayout(Set<Paintable> children) {
@@ -283,27 +289,6 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
         if (child instanceof Paintable) {
             client.unregisterPaintable((Paintable) child);
         }
-    }
-
-    @Override
-    public void closeCurrentApp() {
-        proxy.call("closeCurrentApp");
-    }
-
-    @Override
-    public void closeCurrentShellApp() {
-        proxy.call("closeCurrentShellApp");
-    }
-
-    @Override
-    public void removeMessage(String id) {
-        proxy.call("removeMessage", id);
-    }
-
-    @Override
-    public void setWidth(String width) {
-        view.asWidget().setWidth(width);
-        super.setWidth(width);
     }
 
     @Override
@@ -331,13 +316,6 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
         return registeredAppNames.contains(appName);
     }
 
-    private void registerApps(JsArrayString appNames) {
-        registeredAppNames.clear();
-        for (int i = 0; i < appNames.length(); ++i) {
-            registeredAppNames.add(appNames.get(i));
-        }
-    }
-
     @Override
     public boolean isAppRunning(String appName) {
         return runningAppNames.contains(appName);
@@ -346,6 +324,13 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
     @Override
     public void startApp(String appName) {
         proxy.call("startApp", appName);
+    }
+    
+    private void registerApps(JsArrayString appNames) {
+        registeredAppNames.clear();
+        for (int i = 0; i < appNames.length(); ++i) {
+            registeredAppNames.add(appNames.get(i));
+        }
     }
 
 }

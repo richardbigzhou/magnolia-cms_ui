@@ -49,9 +49,9 @@ import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VShellError
 import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VShellMessage;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VShellMessage.MessageType;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VWarningMessage;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.ContentAnimationDelegate;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.VAppsViewport;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.VAppsViewport.PreloaderCallback;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.VDialogViewport;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.VShellAppsViewport;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.VShellViewport;
 
@@ -99,7 +99,7 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
     private VShellMessage lowPriorityMessage;
 
     private VShellMessage hiPriorityMessage;
-    
+
     public VMagnoliaShellViewImpl(final EventBus eventBus) {
         super();
         this.eventBus = eventBus;
@@ -109,7 +109,7 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
         add(mainAppLauncher, root);
         bindEventHandlers();
     }
-    
+
     private void bindEventHandlers() {
         eventBus.addHandler(ViewportCloseEvent.TYPE, this);
         eventBus.addHandler(ShellAppNavigationEvent.TYPE, navigationHandler);
@@ -125,14 +125,13 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
                     final String prefix = dto.getPrefix();
                     final String token = dto.getToken();
                     if (presenter.isAppRegistered(prefix)) {
-                        changeActiveViewport(ViewportType.APP_VIEWPORT);
                         if (!presenter.isAppRunning(prefix)) {
                             getAppViewport().showAppPreloader(prefix, new PreloaderCallback() {
                                 @Override
                                 public void onPreloaderShown(String appName) {
                                     presenter.startApp(appName);
                                 }
-                            });   
+                            });
                         } else {
                             getAppViewport().hideEntireContents();
                             presenter.loadApp(prefix, token);
@@ -146,20 +145,15 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
     }
 
     protected VAppsViewport getAppViewport() {
-        return (VAppsViewport)viewports.get(ViewportType.APP_VIEWPORT);
+        return (VAppsViewport) viewports.get(ViewportType.APP_VIEWPORT);
     }
 
-    protected VShellViewport getShellAppViewport() {
-        return viewports.get(ViewportType.SHELL_APP_VIEWPORT);
+    protected VShellAppsViewport getShellAppViewport() {
+        return (VShellAppsViewport) viewports.get(ViewportType.SHELL_APP_VIEWPORT);
     }
 
-    protected VShellViewport getDialogViewport() {
-        return viewports.get(ViewportType.DIALOG_VIEWPORT);
-    }
-
-    private void doUpdateViewport(VShellViewport oldViewport, VShellViewport newViewport) {
-        replaceWidget(oldViewport, newViewport);
-        newViewport.setEventBus(eventBus);
+    protected VDialogViewport getDialogViewport() {
+        return (VDialogViewport) viewports.get(ViewportType.DIALOG_VIEWPORT);
     }
 
     @Override
@@ -172,7 +166,8 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
 
     @Override
     public int getViewportHeight() {
-        int errorMessageHeight = hiPriorityMessage == null && (getWidgetIndex(hiPriorityMessage) > -1) ? hiPriorityMessage.getOffsetHeight() : 0;
+        int errorMessageHeight = hiPriorityMessage == null && (getWidgetIndex(hiPriorityMessage) > -1) ? hiPriorityMessage
+                .getOffsetHeight() : 0;
         return getOffsetHeight() - mainAppLauncher.getExpandedHeight() - errorMessageHeight;
     }
 
@@ -193,19 +188,13 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
         return super.remove(w);
     }
 
-    @Override
-    public void removeDialogViewport() {
-        final VShellViewport dialogViewport = getDialogViewport();
-        if (dialogViewport != null) {
-            remove(dialogViewport);
-        }
-    }
-
     protected void replaceWidget(final Widget oldWidget, final Widget newWidget) {
         if (oldWidget != null) {
             remove(oldWidget);
         }
-        add(newWidget, root);
+        if (getWidgetIndex(newWidget) < 0) {
+            add(newWidget, root);
+        }
     }
 
     @Override
@@ -261,7 +250,6 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
         });
     }
 
-
     protected void switchViewports(boolean appViewportOnTop) {
         final VShellViewport shellAppViewport = getShellAppViewport();
         final VShellViewport appViewport = getAppViewport();
@@ -279,37 +267,9 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
     }
 
     @Override
-    public void updateAppViewport(VAppsViewport viewport) {
-        final VShellViewport appViewport = getAppViewport();
-        if (appViewport != viewport) {
-            doUpdateViewport(appViewport, viewport);
-            viewports.put(ViewportType.APP_VIEWPORT, viewport);
-        }
-    };
-
-    @Override
-    public void updateShellAppViewport(VShellAppsViewport viewport) {
-        final VShellViewport shellAppViewport = getShellAppViewport();
-        if (shellAppViewport != viewport) {
-            doUpdateViewport(shellAppViewport, viewport);
-            viewports.put(ViewportType.SHELL_APP_VIEWPORT, viewport);
-        }
+    public void updateViewport(VShellViewport viewport, ViewportType type) {
+        doUpdateViewport(viewport, type);
     }
-    
-    @Override
-    public void updateDialogs(VShellViewport viewport) {
-        final VShellViewport dialogViewport = getDialogViewport();
-        if (dialogViewport != viewport) {
-            doUpdateViewport(dialogViewport, viewport);
-            viewports.put(ViewportType.DIALOG_VIEWPORT, viewport);
-            viewport.getElement().getStyle().setZIndex(500);
-            viewport.setContentAnimationDelegate(ContentAnimationDelegate.FadingDelegate);
-            if (viewport != null) {
-                viewport.showCurtain();
-            }
-        }
-    }
-
 
     private final ShellNavigationHandler navigationHandler = new ShellNavigationHandler() {
         @Override
@@ -323,7 +283,6 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
             presenter.loadShellApp(event.getType(), event.getToken());
         }
     };
-
 
     @Override
     public void onViewportClose(ViewportCloseEvent event) {
@@ -388,4 +347,10 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
         presenter.loadShellApp(ShellAppType.PULSE, "messages/" + id);
     }
 
+    private void doUpdateViewport(VShellViewport viewport, ViewportType shellAppViewport) {
+        final VShellViewport oldViewport = viewports.get(shellAppViewport);
+        replaceWidget(oldViewport, viewport);
+        viewport.setEventBus(eventBus);
+        viewports.put(shellAppViewport, viewport);
+    }
 }

@@ -85,15 +85,6 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
         addStyleName("v-shell-vieport");
     }
 
-
-    public void setEventBus(EventBus eventBus) {
-        this.eventBus = eventBus;
-    }
-
-    public EventBus getEventBus() {
-        return eventBus;
-    }
-
     @Override
     public void updateFromUIDL(final UIDL uidl, final ApplicationConnection client) {
         this.paintableId = uidl.getId();
@@ -261,5 +252,13 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
                 alignChild(w);
             }
         }
+    }
+    
+    public void setEventBus(EventBus eventBus) {
+        this.eventBus = eventBus;
+    }
+
+    public EventBus getEventBus() {
+        return eventBus;
     }
 }
