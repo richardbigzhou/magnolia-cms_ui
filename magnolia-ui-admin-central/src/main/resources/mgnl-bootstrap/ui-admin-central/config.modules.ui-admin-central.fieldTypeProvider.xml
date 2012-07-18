@@ -73,7 +73,7 @@
         <sv:value>1a6ba7be-65fb-4130-9be3-94a95c8e10bb</sv:value>
       </sv:property>
       <sv:property sv:name="definition" sv:type="String">
-        <sv:value>info.magnolia.ui.model.dialog.definition.EditFieldDefinition</sv:value>
+        <sv:value>info.magnolia.ui.model.field.definition.EditFieldDefinition</sv:value>
       </sv:property>
       <sv:property sv:name="implementation" sv:type="String">
         <sv:value>info.magnolia.ui.admincentral.field.DialogEditField</sv:value>
@@ -113,7 +113,7 @@
         <sv:value>029dc8e0-68f6-4b23-ac01-2c886ba68ae2</sv:value>
       </sv:property>
       <sv:property sv:name="definition" sv:type="String">
-        <sv:value>info.magnolia.ui.model.dialog.definition.DateFieldDefinition</sv:value>
+        <sv:value>info.magnolia.ui.model.field.definition.DateFieldDefinition</sv:value>
       </sv:property>
       <sv:property sv:name="implementation" sv:type="String">
         <sv:value>info.magnolia.ui.admincentral.field.DialogDateField</sv:value>
@@ -153,7 +153,7 @@
         <sv:value>799358ff-a398-4f84-9e6f-c56ba00b21c4</sv:value>
       </sv:property>
       <sv:property sv:name="definition" sv:type="String">
-        <sv:value>info.magnolia.ui.model.dialog.definition.SelectFieldDefinition</sv:value>
+        <sv:value>info.magnolia.ui.model.field.definition.SelectFieldDefinition</sv:value>
       </sv:property>
       <sv:property sv:name="implementation" sv:type="String">
         <sv:value>info.magnolia.ui.admincentral.field.DialogSelectField</sv:value>
@@ -193,7 +193,7 @@
         <sv:value>e89576da-6efc-42d3-8fc6-0eb2e043505f</sv:value>
       </sv:property>
       <sv:property sv:name="definition" sv:type="String">
-        <sv:value>info.magnolia.ui.model.dialog.definition.OptionGroupFieldDefinition</sv:value>
+        <sv:value>info.magnolia.ui.model.field.definition.OptionGroupFieldDefinition</sv:value>
       </sv:property>
       <sv:property sv:name="implementation" sv:type="String">
         <sv:value>info.magnolia.ui.admincentral.field.DialogOptionGroupField</sv:value>

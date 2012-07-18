@@ -76,12 +76,12 @@
       <implementation>info.magnolia.ui.model.dialog.definition.ConfiguredDialogDefinition</implementation>
     </type-mapping>
     <type-mapping>
-      <type>info.magnolia.ui.model.dialog.definition.TabDefinition</type>
-      <implementation>info.magnolia.ui.model.dialog.definition.ConfiguredTabDefinition</implementation>
+      <type>info.magnolia.ui.model.tab.definition.TabDefinition</type>
+      <implementation>info.magnolia.ui.model.tab.definition.ConfiguredTabDefinition</implementation>
     </type-mapping>
     <type-mapping>
-      <type>info.magnolia.ui.model.dialog.definition.FieldDefinition</type>
-      <implementation>info.magnolia.ui.model.dialog.definition.ConfiguredFieldDefinition</implementation>
+      <type>info.magnolia.ui.model.field.definition.FieldDefinition</type>
+      <implementation>info.magnolia.ui.model.field.definition.ConfiguredFieldDefinition</implementation>
     </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.model.dialog.action.DialogActionDefinition</type>
