@@ -34,7 +34,7 @@
 package info.magnolia.ui.admincentral.field;
 
 import info.magnolia.ui.admincentral.dialog.DialogItem;
-import info.magnolia.ui.model.dialog.definition.FieldDefinition;
+import info.magnolia.ui.model.field.definition.FieldDefinition;
 
 import com.vaadin.ui.Field;
 

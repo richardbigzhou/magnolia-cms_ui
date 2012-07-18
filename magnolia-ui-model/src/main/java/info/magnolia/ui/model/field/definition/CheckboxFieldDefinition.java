@@ -31,7 +31,8 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.definition;
+package info.magnolia.ui.model.field.definition;
+
 
 /**
  * Field definition for a checkbox.

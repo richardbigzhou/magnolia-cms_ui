@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.admincentral.field;
 
-import info.magnolia.ui.model.dialog.definition.EditFieldDefinition;
-import info.magnolia.ui.model.dialog.definition.FieldDefinition;
+import info.magnolia.ui.model.field.definition.EditFieldDefinition;
+import info.magnolia.ui.model.field.definition.FieldDefinition;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -58,11 +58,10 @@ public class DialogEditField extends AbstractDialogField<FieldDefinition> {
         EditFieldDefinition editDefinition = (EditFieldDefinition) definition;
 
         if (editDefinition.getRows() > 1) {
-            this.field =  createMultiRowEditField(editDefinition);
+            return  createMultiRowEditField(editDefinition);
         }
-        this.field =  createSingleRowEditField(editDefinition);
+        return createSingleRowEditField(editDefinition);
 
-        return this.field;
     }
 
     private Field createSingleRowEditField(EditFieldDefinition definition) {

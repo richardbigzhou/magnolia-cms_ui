@@ -34,11 +34,11 @@
 package info.magnolia.ui.admincentral.field;
 
 import info.magnolia.ui.admincentral.dialog.AbstractDialogItem;
-import info.magnolia.ui.model.dialog.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.model.dialog.definition.EmailValidatorDefinition;
-import info.magnolia.ui.model.dialog.definition.FieldDefinition;
 import info.magnolia.ui.model.dialog.definition.RegexpValidatorDefinition;
 import info.magnolia.ui.model.dialog.definition.ValidatorDefinition;
+import info.magnolia.ui.model.field.definition.ConfiguredFieldDefinition;
+import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 
@@ -84,7 +84,7 @@ public abstract class AbstractDialogField<D extends FieldDefinition> extends Abs
 
         //Get and set the Field Datasource property .
         Property property = getOrCreateProperty();
-        this.field.setPropertyDataSource(property);
+        setPropertyDataSource(property);
 
         //Set Style
         this.field.setStyleName(getStyleName());

@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.admincentral.field;
 
-import info.magnolia.ui.model.dialog.definition.FieldDefinition;
-import info.magnolia.ui.model.dialog.definition.OptionGroupFieldDefinition;
+import info.magnolia.ui.model.field.definition.FieldDefinition;
+import info.magnolia.ui.model.field.definition.OptionGroupFieldDefinition;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.AbstractSelect;
