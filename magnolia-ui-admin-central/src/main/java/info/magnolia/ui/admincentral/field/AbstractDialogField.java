@@ -34,10 +34,6 @@
 package info.magnolia.ui.admincentral.field;
 
 import info.magnolia.ui.admincentral.dialog.AbstractDialogItem;
-import info.magnolia.ui.model.dialog.definition.EmailValidatorDefinition;
-import info.magnolia.ui.model.dialog.definition.RegexpValidatorDefinition;
-import info.magnolia.ui.model.dialog.definition.ValidatorDefinition;
-import info.magnolia.ui.model.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
@@ -46,9 +42,6 @@ import org.apache.commons.lang.StringUtils;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
-import com.vaadin.data.Validator;
-import com.vaadin.data.validator.EmailValidator;
-import com.vaadin.data.validator.RegexpValidator;
 import com.vaadin.ui.Field;
 
 /**
@@ -59,11 +52,11 @@ import com.vaadin.ui.Field;
  */
 public abstract class AbstractDialogField<D extends FieldDefinition> extends AbstractDialogItem implements DialogField {
 
+    public static final String FIELD_STYLE_NAME = "textfield";
+
     protected Item item;
     protected Field field;
     protected D definition;
-    static final String REQUIRED_ERROR = "This field is required! (to be i18n'd)";
-    public static final String FIELD_STYLE_NAME = "textfield";
     private String styleName;
 
     /**
@@ -78,31 +71,32 @@ public abstract class AbstractDialogField<D extends FieldDefinition> extends Abs
     public AbstractDialogField(D definition, Item relatedFieldItem) {
         this.definition = definition;
         this.item = relatedFieldItem;
-
-        // Build the vaadin field
-        this.field = buildField();
-
-        //Get and set the Field Datasource property .
-        Property property = getOrCreateProperty();
-        setPropertyDataSource(property);
-
-        //Set Style
-        this.field.setStyleName(getStyleName());
-
-        //Set Label
-        this.field.setCaption(getMessage(getFieldDefinition().getLabel()));
-
-        //Add Validation
-        setRestriction(definition, this.field);
     }
 
     @Override
     public Field getField() {
+        if (field == null) {
+
+            // Build the vaadin field
+            this.field = buildField();
+
+            //Get and set the Field Datasource property .
+            Property property = getOrCreateProperty();
+            setPropertyDataSource(property);
+
+            //Set Style
+            this.field.setStyleName(getStyleName());
+
+            //Set Label
+            this.field.setCaption(getMessage(getFieldDefinition().getLabel()));
+
+            ((DefaultProperty)this.field.getPropertyDataSource()).setSaveInfo(definition.getSaveInfo());
+        }
         return this.field;
     }
 
     @Override
-    public FieldDefinition getFieldDefinition() {
+    public D getFieldDefinition() {
         return this.definition;
     }
 
@@ -114,7 +108,6 @@ public abstract class AbstractDialogField<D extends FieldDefinition> extends Abs
     }
 
     protected abstract Field buildField();
-
 
     /**
      * Set the default Css StyleName for the Current field.
@@ -155,54 +148,6 @@ public abstract class AbstractDialogField<D extends FieldDefinition> extends Abs
 
     protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {
         throw new IllegalArgumentException("Unsupported type " + fieldDefinition.getClass().getName());
-    }
-
-    /**
-     * Set all restrictions linked to a field. Add:
-     *   Validation rules
-     *   Mandatory field
-     *   SaveInfo property
-     */
-    private void setRestriction(FieldDefinition fieldDefinition, Field input) {
-        addValidators(fieldDefinition, input);
-        if(fieldDefinition.isRequired()) {
-            addRequired(input, null);
-        }
-
-        ((DefaultProperty)input.getPropertyDataSource()).setSaveInfo(definition.getSaveInfo());
-    }
-
-    /**
-     * Add Validators.
-     */
-    private void addValidators(FieldDefinition fieldDefinition, final Field input) {
-        Validator vaadinValidator = null;
-        for (ValidatorDefinition current: ((ConfiguredFieldDefinition) fieldDefinition).getValidators()) {
-            // TODO dlipp - this is what was defined for Sprint III. Of course this has to be enhanced later - when we have a better picture of how we want to validate.
-            if (current instanceof EmailValidatorDefinition) {
-                EmailValidatorDefinition def = (EmailValidatorDefinition) current;
-                vaadinValidator = new EmailValidator(def.getErrorMessage());
-            } else if (current instanceof RegexpValidatorDefinition) {
-                RegexpValidatorDefinition def = (RegexpValidatorDefinition) current;
-                vaadinValidator = new RegexpValidator(def.getPattern(), def.getErrorMessage());
-            }
-
-            if (vaadinValidator != null) {
-                input.addValidator(vaadinValidator);
-            }
-        }
-    }
-
-    /**
-     * Add Required on fields.
-     */
-    private void addRequired( Field input, String message) {
-        input.setRequired(true);
-        if(StringUtils.isEmpty(message)) {
-            input.setRequiredError(REQUIRED_ERROR);
-        } else {
-            input.setRequiredError(message);
-        }
     }
 
     @Override

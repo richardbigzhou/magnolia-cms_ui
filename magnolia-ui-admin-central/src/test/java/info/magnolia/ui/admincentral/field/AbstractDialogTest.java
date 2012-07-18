@@ -42,7 +42,7 @@ import info.magnolia.context.SystemContext;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
-import info.magnolia.ui.model.field.definition.ConfiguredFieldDefinition;
+import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.Locale;
@@ -58,14 +58,15 @@ import com.vaadin.data.Item;
 /**
  * Abstract test class used to initialize the DialogField Tests.
  */
-public abstract class AbstractDialogTest {
+public abstract class AbstractDialogTest<D extends FieldDefinition> {
+
     protected final String workspaceName = "workspace";
     protected MockSession session;
     protected String propertyName = "propertyName";
     protected String itemName = "item";
     protected Node baseNode;
     protected Item baseItem;
-    protected ConfiguredFieldDefinition definition;
+    protected D definition;
 
     @Before
     public void setUp() throws Exception {
@@ -100,7 +101,7 @@ public abstract class AbstractDialogTest {
     /**
      * Create the specific ConfiguredFieldDefinition or sub class.
      */
-    abstract void createConfiguredFieldDefinition();
+    protected abstract void createConfiguredFieldDefinition();
 
 
 }

@@ -55,9 +55,9 @@ import com.vaadin.data.Item;
  * The values displayed in the field are initialized based on the
  * related Item (Image of a JCR node) and {@link TemplateDefinitionAssignment}.
  */
-public class TemplateSelectorField extends DialogSelectField {
+public class TemplateSelectorField extends DialogSelectField<TemplateSelectorDefinition> {
 
-    public TemplateSelectorField(FieldDefinition definition, Item relatedFieldItem) {
+    public TemplateSelectorField(TemplateSelectorDefinition definition, Item relatedFieldItem) {
         super(definition, relatedFieldItem);
     }
 

@@ -52,7 +52,7 @@ import com.vaadin.ui.NativeSelect;
 /**
  * Main testcase for {@link DialogDateField}.
  */
-public class DialogSelectFieldTest extends AbstractDialogTest {
+public class DialogSelectFieldTest extends AbstractDialogTest<SelectFieldDefinition> {
 
     private DialogSelectField dialogSelect;
 
@@ -75,7 +75,7 @@ public class DialogSelectFieldTest extends AbstractDialogTest {
     @Test
     public void selectFieldTest_DefaultSelected() throws Exception{
         // GIVEN
-        SelectFieldOptionDefinition option = ((SelectFieldDefinition)definition).getOptions().get(1);
+        SelectFieldOptionDefinition option = definition.getOptions().get(1);
         option.setSelected(true);
         dialogSelect = new DialogSelectField(definition, baseItem);
 
@@ -112,9 +112,9 @@ public class DialogSelectFieldTest extends AbstractDialogTest {
         optionFr.setProperty("value", "fr");
         optionFr.setProperty("label", "Francais");
         // Set remote Options in configuration
-        ((SelectFieldDefinition)definition).setPath(options.getPath());
-        ((SelectFieldDefinition)definition).setRepository(workspaceName);
-        ((SelectFieldDefinition)definition).setOptions(new ArrayList<SelectFieldOptionDefinition>());
+        definition.setPath(options.getPath());
+        definition.setRepository(workspaceName);
+        definition.setOptions(new ArrayList<SelectFieldOptionDefinition>());
         dialogSelect = new DialogSelectField(definition, baseItem);
 
         // WHEN
@@ -139,12 +139,12 @@ public class DialogSelectFieldTest extends AbstractDialogTest {
         optionFr.setProperty("z", "Francais");
         optionFr.setProperty("selected", "true");
         // Set remote Options in configuration
-        ((SelectFieldDefinition)definition).setPath(options.getPath());
-        ((SelectFieldDefinition)definition).setRepository(workspaceName);
-        ((SelectFieldDefinition)definition).setOptions(new ArrayList<SelectFieldOptionDefinition>());
+        definition.setPath(options.getPath());
+        definition.setRepository(workspaceName);
+        definition.setOptions(new ArrayList<SelectFieldOptionDefinition>());
         //Define the name of value and label
-        ((SelectFieldDefinition)definition).setValueNodeData("x");
-        ((SelectFieldDefinition)definition).setLabelNodeData("z");
+        definition.setValueNodeData("x");
+        definition.setLabelNodeData("z");
 
         dialogSelect = new DialogSelectField(definition, baseItem);
 
@@ -159,7 +159,7 @@ public class DialogSelectFieldTest extends AbstractDialogTest {
 
 
     @Override
-    void createConfiguredFieldDefinition() {
+    protected void createConfiguredFieldDefinition() {
         SelectFieldDefinition fieldDefinition = new SelectFieldDefinition();
         fieldDefinition = (SelectFieldDefinition)AbstractDialogFieldTest.createConfiguredFieldDefinition(fieldDefinition, propertyName);
         fieldDefinition.setDefaultValue(null);

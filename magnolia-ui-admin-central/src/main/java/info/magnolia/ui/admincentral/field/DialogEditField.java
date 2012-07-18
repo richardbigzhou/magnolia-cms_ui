@@ -47,15 +47,15 @@ import com.vaadin.ui.TextField;
 /**
  * .
  */
-public class DialogEditField extends AbstractDialogField<FieldDefinition> {
+public class DialogEditField extends AbstractDialogField<EditFieldDefinition> {
 
-    public DialogEditField(FieldDefinition definition, Item relatedFieldItem) {
+    public DialogEditField(EditFieldDefinition definition, Item relatedFieldItem) {
         super(definition, relatedFieldItem);
     }
 
     @Override
     protected Field buildField() {
-        EditFieldDefinition editDefinition = (EditFieldDefinition) definition;
+        EditFieldDefinition editDefinition = definition;
 
         if (editDefinition.getRows() > 1) {
             return  createMultiRowEditField(editDefinition);
