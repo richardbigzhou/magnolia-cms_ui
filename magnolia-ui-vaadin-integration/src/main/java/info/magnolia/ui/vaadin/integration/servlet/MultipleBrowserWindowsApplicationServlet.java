@@ -204,8 +204,8 @@ public class MultipleBrowserWindowsApplicationServlet extends MagnoliaIcePushSer
         return pathWithinServletMapping;
     }
 
-    private String getPathAfterApplicationId(AbstractCommunicationManager.Request request) {
-        String pathWithinServletMapping = RequestPathUtil.getPathWithinServletMapping((HttpServletRequest) request.getWrappedRequest());
+    private String getPathAfterApplicationId(HttpServletRequest request) {
+        String pathWithinServletMapping = RequestPathUtil.getPathWithinServletMapping(request);
         if (pathWithinServletMapping.startsWith("/")) {
             pathWithinServletMapping = pathWithinServletMapping.substring(1);
         }
@@ -259,7 +259,7 @@ public class MultipleBrowserWindowsApplicationServlet extends MagnoliaIcePushSer
 
                     // We override the behavior here to return the part of the request uri after the application id,
                     // otherwise it would have returned it with the application id and the resource would not be found.
-                    return getPathAfterApplicationId(request);
+                    return getPathAfterApplicationId((HttpServletRequest) request.getWrappedRequest());
                 }
 
                 @Override
@@ -268,5 +268,10 @@ public class MultipleBrowserWindowsApplicationServlet extends MagnoliaIcePushSer
                 }
             });
         }
+    }
+
+    @Override
+    protected String getRequestPathInfo(HttpServletRequest request) {
+        return getPathAfterApplicationId(request);
     }
 }
