@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>info.magnolia</groupId>
-		<artifactId>magnolia-parent-pom-internal</artifactId>
+		<artifactId>magnolia-parent-pom-ce</artifactId>
 		<version>24</version>
 	</parent>
 	<groupId>info.magnolia.ui</groupId>

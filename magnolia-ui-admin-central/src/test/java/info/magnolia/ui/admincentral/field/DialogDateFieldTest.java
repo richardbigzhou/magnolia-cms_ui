@@ -48,7 +48,7 @@ import com.vaadin.ui.PopupDateField;
 /**
  * Main testcase for {@link DialogDateField}.
  */
-public class DialogDateFieldTest extends AbstractDialogTest {
+public class DialogDateFieldTest extends AbstractDialogTest<DateFieldDefinition> {
 
     private DialogDateField dialogDate;
 
@@ -107,8 +107,8 @@ public class DialogDateFieldTest extends AbstractDialogTest {
         cal.set(Calendar.YEAR, 2012);
         cal.set(Calendar.HOUR_OF_DAY, 5);
         cal.set(Calendar.MINUTE, 55);
-        ((DateFieldDefinition)definition).setTime(true);
-        ((DateFieldDefinition)definition).setTimeFormat("HH:mm");
+        definition.setTime(true);
+        definition.setTimeFormat("HH:mm");
         baseNode.setProperty(propertyName, cal);
         baseItem = new JcrNodeAdapter(baseNode);
         dialogDate = new DialogDateField(definition, baseItem);
@@ -125,7 +125,7 @@ public class DialogDateFieldTest extends AbstractDialogTest {
 
 
     @Override
-    void createConfiguredFieldDefinition() {
+    protected void createConfiguredFieldDefinition() {
         DateFieldDefinition fieldDefinition = new DateFieldDefinition();
         fieldDefinition = (DateFieldDefinition)AbstractDialogFieldTest.createConfiguredFieldDefinition(fieldDefinition, propertyName);
 

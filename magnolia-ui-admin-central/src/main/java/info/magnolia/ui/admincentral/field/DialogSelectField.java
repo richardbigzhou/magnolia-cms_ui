@@ -34,7 +34,6 @@
 package info.magnolia.ui.admincentral.field;
 
 import info.magnolia.jcr.util.SessionUtil;
-import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.model.field.definition.SelectFieldDefinition;
 import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
 
@@ -59,8 +58,10 @@ import com.vaadin.ui.NativeSelect;
 
 /**
  * Initialize a Selection Field based on the configured informations.
+ *
+ * @param <D> type of definition
  */
-public class DialogSelectField extends AbstractDialogField<FieldDefinition> {
+public class DialogSelectField<D extends SelectFieldDefinition> extends AbstractDialogField<D> {
 
     private static final Logger log = LoggerFactory.getLogger(DialogSelectField.class);
 
@@ -70,20 +71,20 @@ public class DialogSelectField extends AbstractDialogField<FieldDefinition> {
     protected List<SelectFieldOptionDefinition>  options;
     protected AbstractSelect select;
 
-    public DialogSelectField(FieldDefinition definition, Item relatedFieldItem) {
+    public DialogSelectField(D definition, Item relatedFieldItem) {
         super(definition, relatedFieldItem);
     }
 
     @Override
     protected Field buildField() {
-        select = createVaadinSeletionField();
+        select = createVaadinSelectionField();
         select.setNullSelectionAllowed(false);
         select.setInvalidAllowed(false);
         select.setMultiSelect(false);
         select.setNewItemsAllowed(false);
         //Set Style
-        if(StringUtils.isNotBlank(((SelectFieldDefinition)getFieldDefinition()).getCssClass())) {
-            setStyleName(((SelectFieldDefinition)getFieldDefinition()).getCssClass());
+        if(StringUtils.isNotBlank(getFieldDefinition().getCssClass())) {
+            setStyleName(getFieldDefinition().getCssClass());
         }
         //Get Options
         Map<String, String> options = getOptions();
@@ -99,7 +100,7 @@ public class DialogSelectField extends AbstractDialogField<FieldDefinition> {
      * Used to initialize the desired subclass of VaadinSelect field component.
      * Subclass of DialogSelectField should override this method.
      */
-    protected AbstractSelect createVaadinSeletionField() {
+    protected AbstractSelect createVaadinSelectionField() {
         return new NativeSelect();
     }
 
@@ -114,7 +115,7 @@ public class DialogSelectField extends AbstractDialogField<FieldDefinition> {
      */
     public Map<String, String>  getOptions() {
         Map<String, String> res = new HashMap<String, String>();
-        SelectFieldDefinition selectFieldDefinition = (SelectFieldDefinition)getFieldDefinition();
+        SelectFieldDefinition selectFieldDefinition = getFieldDefinition();
 
         this.options = selectFieldDefinition.getOptions();
 

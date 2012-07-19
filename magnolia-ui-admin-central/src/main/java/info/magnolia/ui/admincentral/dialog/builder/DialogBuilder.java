@@ -39,10 +39,16 @@ import info.magnolia.ui.admincentral.field.DialogField;
 import info.magnolia.ui.admincentral.field.builder.FieldTypeProvider;
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
+import info.magnolia.ui.model.dialog.definition.EmailValidatorDefinition;
+import info.magnolia.ui.model.dialog.definition.RegexpValidatorDefinition;
+import info.magnolia.ui.model.dialog.definition.ValidatorDefinition;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.model.tab.definition.TabDefinition;
 import info.magnolia.ui.widget.dialog.DialogView;
 
+import com.vaadin.data.Validator;
+import com.vaadin.data.validator.EmailValidator;
+import com.vaadin.data.validator.RegexpValidator;
 import org.apache.commons.lang.StringUtils;
 
 import com.vaadin.data.Item;
@@ -52,6 +58,8 @@ import com.vaadin.ui.Field;
  * Builder for Dialogs.
  */
 public class DialogBuilder {
+
+    private static final String REQUIRED_ERROR = "This field is required! (to be i18n'd)";
 
     //private static final String FIELD_STYLE_NAME = "field";
 
@@ -81,6 +89,9 @@ public class DialogBuilder {
                 // Get the Vaadin Field
                 Field field = dialogField.getField();
 
+                //Add Validation
+                setRestriction(fieldDefinition, field);
+
                 tab.addField(field);
                 //Set Help
                 if(StringUtils.isNotBlank(fieldDefinition.getDescription())) {
@@ -99,5 +110,35 @@ public class DialogBuilder {
         return view;
     }
 
+
+    /**
+     * Set all restrictions linked to a field. Add:
+     *   Validation rules
+     *   Mandatory field
+     *   SaveInfo property
+     */
+    private void setRestriction(FieldDefinition fieldDefinition, Field input) {
+
+        Validator vaadinValidator = null;
+        for (ValidatorDefinition current: fieldDefinition.getValidators()) {
+            // TODO dlipp - this is what was defined for Sprint III. Of course this has to be enhanced later - when we have a better picture of how we want to validate.
+            if (current instanceof EmailValidatorDefinition) {
+                EmailValidatorDefinition def = (EmailValidatorDefinition) current;
+                vaadinValidator = new EmailValidator(def.getErrorMessage());
+            } else if (current instanceof RegexpValidatorDefinition) {
+                RegexpValidatorDefinition def = (RegexpValidatorDefinition) current;
+                vaadinValidator = new RegexpValidator(def.getPattern(), def.getErrorMessage());
+            }
+
+            if (vaadinValidator != null) {
+                input.addValidator(vaadinValidator);
+            }
+        }
+
+        if(fieldDefinition.isRequired()) {
+            input.setRequired(true);
+            input.setRequiredError(REQUIRED_ERROR);
+        }
+    }
 }
 
