@@ -34,7 +34,6 @@
 package info.magnolia.ui.admincentral.field;
 
 import info.magnolia.ui.model.field.definition.DateFieldDefinition;
-import info.magnolia.ui.model.field.definition.FieldDefinition;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.Field;
@@ -45,16 +44,16 @@ import com.vaadin.ui.PopupDateField;
  * Initialize a Date Field based on the configured informations.
  */
 
-public class DialogDateField extends AbstractDialogField<FieldDefinition>{
+public class DialogDateField extends AbstractDialogField<DateFieldDefinition>{
 
-    public DialogDateField(FieldDefinition definition, Item relatedFieldItem) {
+    public DialogDateField(DateFieldDefinition definition, Item relatedFieldItem) {
         super(definition, relatedFieldItem);
     }
 
 
     @Override
     protected Field buildField() {
-        DateFieldDefinition definition = (DateFieldDefinition) getFieldDefinition();
+        DateFieldDefinition definition = getFieldDefinition();
         PopupDateField popupDateField = new PopupDateField();
 
         String dateFormat = "";

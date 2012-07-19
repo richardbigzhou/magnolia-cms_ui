@@ -53,7 +53,7 @@ import com.vaadin.ui.TextField;
 /**
  * Main testcase for {@link AbstractDialogField}.
  */
-public class AbstractDialogFieldTest extends AbstractDialogTest{
+public class AbstractDialogFieldTest extends AbstractDialogTest<ConfiguredFieldDefinition> {
 
     private AbstractDialogField<FieldDefinition> abstractDialogField;
 
@@ -168,7 +168,7 @@ public class AbstractDialogFieldTest extends AbstractDialogTest{
     }
 
     @Override
-    void createConfiguredFieldDefinition() {
+    protected void createConfiguredFieldDefinition() {
         ConfiguredFieldDefinition configureFieldDefinition = new ConfiguredFieldDefinition();
         this.definition = createConfiguredFieldDefinition(configureFieldDefinition, propertyName);
     }

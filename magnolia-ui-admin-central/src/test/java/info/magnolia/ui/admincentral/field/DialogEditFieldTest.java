@@ -45,7 +45,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * Main testcase for {@link DialogEditField}.
  */
-public class DialogEditFieldTest extends AbstractDialogTest {
+public class DialogEditFieldTest extends AbstractDialogTest<EditFieldDefinition> {
 
     private DialogEditField dialogEdit;
 
@@ -59,15 +59,15 @@ public class DialogEditFieldTest extends AbstractDialogTest {
 
         // THEN
         assertEquals(true, field instanceof TextField);
-        assertEquals(50, ((TextField)field).getWidth(),0);
-        assertEquals(8,((TextField)field).getWidthUnits());
+        assertEquals(50, field.getWidth(),0);
+        assertEquals(8, field.getWidthUnits());
     }
 
     @Test
     public void createMultiRowEditField() {
         // GIVEN
-        ((EditFieldDefinition)definition).setRows(2);
-        ((EditFieldDefinition)definition).setWidth("88");
+        definition.setRows(2);
+        definition.setWidth("88");
         dialogEdit = new DialogEditField(definition, baseItem);
 
         // WHEN
@@ -76,13 +76,13 @@ public class DialogEditFieldTest extends AbstractDialogTest {
         // THEN
         assertEquals(true, field instanceof TextArea);
         assertEquals(2, ((TextArea)field).getRows());
-        assertEquals(88, ((TextArea)field).getWidth(),0);
-        assertEquals(0,((TextArea)field).getWidthUnits());
+        assertEquals(88, field.getWidth(),0);
+        assertEquals(0, field.getWidthUnits());
     }
 
 
     @Override
-    void createConfiguredFieldDefinition() {
+    protected void createConfiguredFieldDefinition() {
         EditFieldDefinition fieldDefinition = new EditFieldDefinition();
         fieldDefinition = (EditFieldDefinition)AbstractDialogFieldTest.createConfiguredFieldDefinition(fieldDefinition, propertyName);
 

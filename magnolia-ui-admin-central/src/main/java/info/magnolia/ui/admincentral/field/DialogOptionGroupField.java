@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral.field;
 
-import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.model.field.definition.OptionGroupFieldDefinition;
 
 import com.vaadin.data.Item;
@@ -46,9 +45,9 @@ import com.vaadin.ui.OptionGroup;
  * Initialize a DialogOption Field based on the configured informations.
  */
 
-public class DialogOptionGroupField extends DialogSelectField {
+public class DialogOptionGroupField extends DialogSelectField<OptionGroupFieldDefinition> {
 
-    public DialogOptionGroupField(FieldDefinition definition, Item relatedFieldItem) {
+    public DialogOptionGroupField(OptionGroupFieldDefinition definition, Item relatedFieldItem) {
         super(definition, relatedFieldItem);
     }
 
@@ -57,12 +56,12 @@ public class DialogOptionGroupField extends DialogSelectField {
     protected Field buildField() {
         //Set common attributes
         super.buildField();
-        select.setMultiSelect(((OptionGroupFieldDefinition)getFieldDefinition()).isMultiselect());
+        select.setMultiSelect(getFieldDefinition().isMultiselect());
         return select;
     }
 
     @Override
-    protected AbstractSelect createVaadinSeletionField() {
+    protected AbstractSelect createVaadinSelectionField() {
         return new OptionGroup();
     }
 
