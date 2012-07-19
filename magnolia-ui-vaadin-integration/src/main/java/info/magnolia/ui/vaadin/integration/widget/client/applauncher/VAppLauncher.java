@@ -94,11 +94,6 @@ public class VAppLauncher extends Composite implements Paintable, ClientSideHand
         this.view.setPresenter(this);
         initWidget(view.asWidget());
     }
-
-    public void addAppLauchHandler() {
-        
-    }
-   
     
     @Override
     public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {

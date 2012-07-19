@@ -43,7 +43,6 @@ import java.util.Map;
 
 import org.vaadin.rpc.ServerSideHandler;
 import org.vaadin.rpc.ServerSideProxy;
-import org.vaadin.rpc.client.Method;
 
 import com.google.gson.Gson;
 import com.vaadin.terminal.PaintException;
@@ -63,21 +62,9 @@ public class AppLauncher extends AbstractComponent implements ServerSideHandler 
 
     private Map<String, AppSection> appSections = new HashMap<String, AppLauncher.AppSection>();
     
-    private ServerSideProxy proxy = new ServerSideProxy(this) {
-        {
-            register("appActivated", new Method() {
-
-                @Override
-                public void invoke(String methodName, Object[] params) {
-                    final String appName = String.valueOf(params[0]);
-                    fireAppChangedEvent(appName);
-                }
-            });
-        }
-    };
+    private ServerSideProxy proxy = new ServerSideProxy(this);
 
     private boolean isAttached = false;
-    
     
     public AppLauncher() {
         super();
@@ -88,6 +75,10 @@ public class AppLauncher extends AbstractComponent implements ServerSideHandler 
     public void addAppSection(String caption, String color, boolean isPermanent) {
         final AppSection section = new AppSection(caption, color, isPermanent); 
         appSections.put(caption, section);
+        doAddSection(section);
+    }
+
+    private void doAddSection(final AppSection section) {
         if (isAttached) {
             proxy.call("addSection", new Gson().toJson(section));     
         }
@@ -98,9 +89,13 @@ public class AppLauncher extends AbstractComponent implements ServerSideHandler 
         if (section != null) {
             final AppTile tile = new AppTile(caption, icon);
             section.addAppTile(tile);
-            if (isAttached) {
-                proxy.call("addAppTile", new Gson().toJson(tile), sectionId);   
-            }   
+            doAddAppTile(tile, sectionId);   
+        }
+    }
+
+    private void doAddAppTile(final AppTile tile, String sectionId) {
+        if (isAttached) {
+            proxy.call("addAppTile", new Gson().toJson(tile), sectionId);   
         }
     }
 
@@ -119,9 +114,9 @@ public class AppLauncher extends AbstractComponent implements ServerSideHandler 
     @Override
     public Object[] initRequestFromClient() {
         for (final AppSection section : appSections.values()) {
-            addAppSection(section.caption, section.backgroundColor, section.isPermanent);
+            doAddSection(section);
             for (final AppTile tile : section.getAppTiles()) {
-                addAppTile(tile.caption, tile.icon, section.caption);
+                doAddAppTile(tile, section.getCaption());
             }
         }
         return new Object[] {};
@@ -193,10 +188,6 @@ public class AppLauncher extends AbstractComponent implements ServerSideHandler 
 
     public void removeAppActivationListener(final AppActivationListener listener) {
         removeListener("app_activated", AppActivatedEvent.class, listener);
-    }
-    
-    private void fireAppChangedEvent(String appName) {
-        fireEvent(new AppActivatedEvent(this, appName));
     }
     
 

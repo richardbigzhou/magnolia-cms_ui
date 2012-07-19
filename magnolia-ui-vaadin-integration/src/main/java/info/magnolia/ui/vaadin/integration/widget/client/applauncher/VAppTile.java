@@ -35,8 +35,8 @@ package info.magnolia.ui.vaadin.integration.widget.client.applauncher;
 
 import info.magnolia.ui.vaadin.integration.widget.client.applauncher.event.AppActivationEvent;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
@@ -115,9 +115,9 @@ public class VAppTile extends Widget {
             }
         }, MouseOutEvent.getType());
 
-        addDomHandler(new ClickHandler() {
+        addDomHandler(new MouseDownHandler() {
             @Override
-            public void onClick(ClickEvent event) {
+            public void onMouseDown(MouseDownEvent event) {
                 if (!isActive()) {
                     setActive(true);
                     getElement().getStyle().setBackgroundColor(getParent().getColor());
@@ -125,7 +125,7 @@ public class VAppTile extends Widget {
                 }
                 eventBus.fireEvent(new AppActivationEvent(appTileData.getCaption()));
             }
-        }, ClickEvent.getType());
+        }, MouseDownEvent.getType());
     }
 
     public void setActive(boolean isActive) {
