@@ -54,7 +54,7 @@ public abstract class VBubble extends FlowPanel {
     
     protected Element messageEl = DOM.createSpan();
     
-    public VBubble() {
+    protected VBubble() {
         construct();
     }
     

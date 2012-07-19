@@ -1,5 +1,8 @@
 .v-magnolia-shell {
-    background: -moz-linear-gradient(center top, #77A42F 0%, #A9BE2E 100%) repeat scroll 0 0 transparent;
+    background-color:#77a42f;
+	background: linear-gradient(top, #77a42f 0%,#a9be2e 100%);
+	background: -moz-linear-gradient(top, #77a42f 0%, #a9be2e 100%);
+	background: -webkit-linear-gradient(top, #77a42f 0%, #a9be2e 100%);
     color: #444444;
     font-family: sans-serif;
     font-size: 13px;
@@ -120,16 +123,17 @@ button.action-close {
     -webkit-animation-name: zoom-out;
     -webkit-transform:scale(0);
 }
+
 .zoom-in {
     -moz-animation-duration: 0.5s;
-    /*-moz-animation-timing-function: ease-out;*/
     -moz-animation-name: zoom-in;
     -moz-transform:scale(1);
+    /*-moz-animation-timing-function: ease-out;*/
 
     -webkit-animation-duration: 0.5s;
-    /*-webkit-animation-timing-function: ease-out;*/
     -webkit-animation-name: zoom-in;
     -webkit-transform:scale(1);
+    /*-webkit-animation-timing-function: ease-out;*/
 }
 
 @-moz-keyframes zoom-out {
@@ -137,13 +141,6 @@ button.action-close {
       -moz-transform:scale(1)
     } to {
        -moz-transform:scale(0)
-    }
-}
-@-webkit-keyframes zoom-out {
-    from {
-      -webkit-transform:scale(1)
-    } to {
-       -webkit-transform:scale(0)
     }
 }
 
@@ -154,6 +151,15 @@ button.action-close {
        -moz-transform:scale(1);
     }
 }
+
+@-webkit-keyframes zoom-out {
+    from {
+      -webkit-transform:scale(1)
+    } to {
+       -webkit-transform:scale(0)
+    }
+}
+
 @-webkit-keyframes zoom-in {
     from {
       -webkit-transform:scale(0);

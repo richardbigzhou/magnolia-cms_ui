@@ -45,7 +45,6 @@ import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.VShellAppsViewp
 @ClientWidget(value = VShellAppsViewport.class, loadStyle = LoadStyle.EAGER)
 public class ShellAppsViewport extends ShellViewport {
     
-    
     public ShellAppsViewport(BaseMagnoliaShell shell) {
         super(shell);
     }

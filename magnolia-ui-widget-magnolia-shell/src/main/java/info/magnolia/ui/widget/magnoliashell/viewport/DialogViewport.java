@@ -45,7 +45,7 @@ import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.VDialogViewport
  */
 @ClientWidget(value = VDialogViewport.class, loadStyle = LoadStyle.EAGER)
 public class DialogViewport extends ShellViewport{
-
+    
     public DialogViewport(BaseMagnoliaShell shell) {
         super(shell);
     }
