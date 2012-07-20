@@ -44,7 +44,6 @@ import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
-import info.magnolia.ui.admincentral.thumbnail.ThumbnailUtility;
 import org.junit.Test;
 
 /**

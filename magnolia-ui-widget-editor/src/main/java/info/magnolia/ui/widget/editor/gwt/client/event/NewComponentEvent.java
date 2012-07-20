@@ -36,29 +36,29 @@ package info.magnolia.ui.widget.editor.gwt.client.event;
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * NewAreaEvent.
+ * NewComponentEvent.
  */
-public class NewAreaEvent extends GwtEvent<NewAreaEventHandler> {
-
-    public static Type<NewAreaEventHandler> TYPE = new Type<NewAreaEventHandler>();
+public class NewComponentEvent extends GwtEvent<NewComponentEventHandler> {
+    public static Type<NewComponentEventHandler> TYPE = new Type<NewComponentEventHandler>();
     private String workspace;
-    private String nodeType;
     private String path;
+    private String availableComponents;
 
-    public NewAreaEvent(String workspace, String nodeType, String path) {
+
+    public NewComponentEvent(String workspace, String path, String availableComponents) {
         this.workspace = workspace;
-        this.nodeType = nodeType;
         this.path = path;
+        this.availableComponents = availableComponents;
     }
 
     @Override
-    public Type<NewAreaEventHandler> getAssociatedType() {
+    public Type<NewComponentEventHandler> getAssociatedType() {
         return TYPE;
     }
 
     @Override
-    protected void dispatch(NewAreaEventHandler handler) {
-        handler.onNewArea(this);
+    protected void dispatch(NewComponentEventHandler handler) {
+        handler.onNewComponent(this);
     }
 
     public String getWorkSpace() {
@@ -69,7 +69,7 @@ public class NewAreaEvent extends GwtEvent<NewAreaEventHandler> {
         return path;
     }
 
-    public String getNodeType() {
-        return nodeType;
+    public String getAvailableComponents() {
+        return availableComponents;
     }
 }

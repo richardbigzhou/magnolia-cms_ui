@@ -48,17 +48,9 @@ public interface VPageEditorView extends IsWidget {
      * Listener.
      */
     interface Listener {
-        void onDeleteComponent(final String path);
-        //TODO decide how we will handle moving components
-        void onMoveComponent();
-        void onNewComponent(final String workspace, final String path, final String nodeType);
-        void onEditComponent(final String dialog, final String workspace, final String path);
-
         void onFrameLoaded(Frame frame);
     }
 
     void setListener(Listener listener);
-
-    Listener getListener();
 
 }

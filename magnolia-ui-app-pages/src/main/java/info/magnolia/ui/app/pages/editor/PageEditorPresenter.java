@@ -36,18 +36,32 @@ package info.magnolia.ui.app.pages.editor;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.MetaDataUtil;
 import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.registry.RegistrationException;
+import info.magnolia.rendering.template.TemplateDefinition;
+import info.magnolia.rendering.template.registry.TemplateDefinitionRegistry;
 import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
 import info.magnolia.ui.admincentral.event.ContentChangedEvent;
+import info.magnolia.ui.app.pages.field.ComponentSelectorDefinition;
 import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.model.dialog.definition.ConfiguredDialogDefinition;
+import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
+import info.magnolia.ui.model.tab.definition.ConfiguredTabDefinition;
+import info.magnolia.ui.model.tab.definition.TabDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.widget.dialog.DialogView;
 import info.magnolia.ui.widget.editor.PageEditorView;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import java.util.LinkedList;
+import java.util.List;
 
 
 /**
@@ -59,15 +73,24 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
     private EventBus eventBus;
     private final DialogPresenterFactory dialogPresenterFactory;
+    private final TemplateDefinitionRegistry templateDefinitionRegistry;
 
     private PageEditorParameters parameters;
     private String path;
+    private final String NEW_COMPONENT_DIALOG = "ui-pages-app:newComponent";
+    private final String COMPONENT_NODE_TYPE = "mgnl:component";
+    private ConfiguredDialogDefinition dialogDefinition;
+
+    private static final Logger log = LoggerFactory.getLogger(PageEditorPresenter.class);
 
     @Inject
-    public PageEditorPresenter(PageEditorView view, EventBus eventBus, DialogPresenterFactory dialogPresenterFactory) {
+    public PageEditorPresenter(PageEditorView view, EventBus eventBus, DialogPresenterFactory dialogPresenterFactory, TemplateDefinitionRegistry templateDefinitionRegistry) {
         this.view = view;
         this.eventBus = eventBus;
         this.dialogPresenterFactory = dialogPresenterFactory;
+        this.templateDefinitionRegistry = templateDefinitionRegistry;
+
+        this.dialogDefinition = (ConfiguredDialogDefinition) dialogPresenterFactory.getDialogDefinition(NEW_COMPONENT_DIALOG);
 
         registerHandlers();
     }
@@ -99,9 +122,69 @@ public class PageEditorPresenter implements PageEditorView.Listener {
             dialogPresenter.editItem(item);
             setPath(path);
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            log.error("Exception caught: {}", e.getMessage(), e);
         }
     }
+
+    @Override
+    public void newComponent(String workSpace, String path, String availableComponents) {
+
+        updateDialogDefinition(availableComponents);
+        
+        DialogView.Presenter dialogPresenter = dialogPresenterFactory.getDialogPresenter(dialogDefinition);
+
+        try {
+            Session session = MgnlContext.getJCRSession(workSpace);
+
+            if (path == null || !session.itemExists(path)) {
+                path = "/";
+            }
+            session = MgnlContext.getJCRSession(workSpace);
+
+            Node parentNode = session.getNode(path);
+
+            JcrNodeAdapter item = new JcrNewNodeAdapter(parentNode, COMPONENT_NODE_TYPE);
+            DefaultProperty property = new DefaultProperty(item.JCR_NAME, "0");
+            item.addItemProperty(item.JCR_NAME, property);
+            dialogPresenter.editItem(item);
+            setPath(path);
+        } catch (RepositoryException e) {
+            log.error("Exception caught: {}", e.getMessage(), e);
+        }
+
+    }
+
+    private void updateDialogDefinition(String availableComponents) {
+
+        ConfiguredTabDefinition tabDefinition = new ConfiguredTabDefinition();
+        tabDefinition.setLabel("Components");
+
+        ComponentSelectorDefinition selector = new ComponentSelectorDefinition();
+        selector.setName("MetaData/mgnl:template");
+        selector.setLabel("Component");
+        String[] tokens = availableComponents.split(",");
+
+        for (int i=0; i<tokens.length; i++)  {
+            try {
+                TemplateDefinition paragraphInfo = templateDefinitionRegistry.getTemplateDefinition(tokens[i]);
+                SelectFieldOptionDefinition option = new SelectFieldOptionDefinition();
+                option.setValue(paragraphInfo.getId());
+                option.setName(paragraphInfo.getTitle());
+                selector.addOption(option);
+
+            } catch (RegistrationException e) {
+                log.error("Exception caught: {}", e.getMessage(), e);
+            }
+
+
+        }
+        tabDefinition.addField(selector);
+        List<TabDefinition> tabs = new LinkedList<TabDefinition>();
+        tabs.add(tabDefinition);
+        dialogDefinition.setTabs(tabs);
+    }
+
+
 
     @Override
     public void deleteComponent(String workSpace, String path) {
@@ -119,12 +202,12 @@ public class PageEditorPresenter implements PageEditorView.Listener {
             view.refresh();
 
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            log.error("Exception caught: {}", e.getMessage(), e);
         }
     }
 
     @Override
-    public void newComponent(String workSpace, String nodeType, String path) {
+    public void newArea(String workSpace, String nodeType, String path) {
 
         int index = path.lastIndexOf("/");
         String parent = path.substring(0, index);
@@ -141,7 +224,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
             session.save();
             view.refresh();
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            log.error("Exception caught: {}", e.getMessage(), e);
         }
     }
 
@@ -172,7 +255,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
             session.save();
             view.refresh();
         } catch (RepositoryException e) {
-            //log.error("Exception caught: {}", e.getMessage(), e);
+            log.error("Exception caught: {}", e.getMessage(), e);
         }
     }
 

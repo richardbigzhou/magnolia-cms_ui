@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.dialog;
 
+import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 import info.magnolia.ui.widget.dialog.DialogView;
 
 
@@ -43,4 +44,7 @@ public interface DialogPresenterFactory {
 
     DialogView.Presenter createDialog(String dialogName);
 
+    DialogView.Presenter getDialogPresenter(DialogDefinition definition);
+
+    DialogDefinition getDialogDefinition(String dialogName) throws RuntimeException;
 }

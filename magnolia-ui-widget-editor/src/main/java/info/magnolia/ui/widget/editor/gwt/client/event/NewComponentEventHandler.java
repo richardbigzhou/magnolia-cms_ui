@@ -33,43 +33,11 @@
  */
 package info.magnolia.ui.widget.editor.gwt.client.event;
 
-import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.event.shared.EventHandler;
 
 /**
- * NewAreaEvent.
+ * NewComponentEventHandler.
  */
-public class NewAreaEvent extends GwtEvent<NewAreaEventHandler> {
-
-    public static Type<NewAreaEventHandler> TYPE = new Type<NewAreaEventHandler>();
-    private String workspace;
-    private String nodeType;
-    private String path;
-
-    public NewAreaEvent(String workspace, String nodeType, String path) {
-        this.workspace = workspace;
-        this.nodeType = nodeType;
-        this.path = path;
-    }
-
-    @Override
-    public Type<NewAreaEventHandler> getAssociatedType() {
-        return TYPE;
-    }
-
-    @Override
-    protected void dispatch(NewAreaEventHandler handler) {
-        handler.onNewArea(this);
-    }
-
-    public String getWorkSpace() {
-        return workspace;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public String getNodeType() {
-        return nodeType;
-    }
+public interface NewComponentEventHandler extends EventHandler {
+    void onNewComponent(NewComponentEvent newComponentEvent);
 }

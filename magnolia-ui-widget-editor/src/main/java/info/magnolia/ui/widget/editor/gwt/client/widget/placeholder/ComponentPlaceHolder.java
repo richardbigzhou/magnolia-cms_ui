@@ -48,7 +48,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PushButton;
 import info.magnolia.rendering.template.AreaDefinition;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
-import info.magnolia.ui.widget.editor.gwt.client.event.NewAreaEvent;
+import info.magnolia.ui.widget.editor.gwt.client.event.NewComponentEvent;
 import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 
 import java.util.Map;
@@ -100,7 +100,7 @@ public class ComponentPlaceHolder extends AbstractPlaceHolder {
         add(controlBar);
 
         Element marker = getMgnlElement().getComponentElement();
-        boolean onlyBar = (marker != null && marker.getAttribute(AreaDefinition.CMS_ADD).equals("bar")) ? true: false;
+        boolean onlyBar = (marker != null && marker.getAttribute(AreaDefinition.CMS_ADD).equals("bar"));
 
         if (!onlyBar) {
             createBoxPlaceHolder();
@@ -125,7 +125,7 @@ public class ComponentPlaceHolder extends AbstractPlaceHolder {
                     if(event.getNativeButton() == NativeEvent.BUTTON_RIGHT)  {
                         return;
                     }
-                    //PageEditor.addComponent(areaWorkspace, areaPath, null, availableComponents);
+                    getEventBus().fireEvent(new NewComponentEvent(areaWorkspace, areaPath, availableComponents));
                 }
             }, MouseDownEvent.getType());
         }
@@ -144,8 +144,7 @@ public class ComponentPlaceHolder extends AbstractPlaceHolder {
             button.addClickHandler(new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent event) {
-                    //PageEditor.addComponent(areaWorkspace, areaPath, null, availableComponents);
-                    getEventBus().fireEvent(new NewAreaEvent(areaWorkspace, areaPath, availableComponents));
+                    getEventBus().fireEvent(new NewComponentEvent(areaWorkspace, areaPath, availableComponents));
                 }
             });
             buttonWrapper.add(button);
