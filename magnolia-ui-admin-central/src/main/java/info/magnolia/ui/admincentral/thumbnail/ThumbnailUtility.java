@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.content.view;
+package info.magnolia.ui.admincentral.thumbnail;
 
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -52,7 +52,7 @@ public class ThumbnailUtility {
     /**
      * Create a Thumbnail image from the provided original. Thumbnail will have the indicated width, height and quality.
      */
-    public static Image createThumbnail(final Image original, final String format, final int width, final int height, final float quality) throws IOException {
+    public static BufferedImage createThumbnail(final Image original, final String format, final int width, final int height, final float quality) throws IOException {
         int thumbWidth = width;
         int thumbHeight = height;
 
