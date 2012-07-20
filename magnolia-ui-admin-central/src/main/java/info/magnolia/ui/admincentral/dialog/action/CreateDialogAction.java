@@ -33,16 +33,18 @@
  */
 package info.magnolia.ui.admincentral.dialog.action;
 
+import javax.jcr.Node;
+
 import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.widget.dialog.DialogView.Presenter;
 
-import javax.jcr.Node;
-
 /**
  * Opens a dialog for creating a new node in a tree.
+ *
+ * @see CreateDialogActionDefinition
  */
 public class CreateDialogAction extends ActionBase<CreateDialogActionDefinition> {
 

@@ -33,9 +33,8 @@
  */
 package info.magnolia.ui.model.dialog.definition;
 
-
 /**
- * Defines a Email based ValidationDefinition - implemented as proper type so that Field builders know validator type is to be created.
+ * Defines an email validator.
  */
 public class EmailValidatorDefinition extends AbstractValidatorDefinition {
 }

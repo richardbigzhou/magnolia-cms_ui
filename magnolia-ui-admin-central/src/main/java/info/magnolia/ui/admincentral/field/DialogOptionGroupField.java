@@ -56,7 +56,7 @@ public class DialogOptionGroupField extends DialogSelectField<OptionGroupFieldDe
     protected Field buildField() {
         //Set common attributes
         super.buildField();
-        select.setMultiSelect(getFieldDefinition().isMultiselect());
+        select.setMultiSelect(getFieldDefinition().isMultiple());
         return select;
     }
 

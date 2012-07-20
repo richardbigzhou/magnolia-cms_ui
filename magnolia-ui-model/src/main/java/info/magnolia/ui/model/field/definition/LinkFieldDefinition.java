@@ -44,8 +44,6 @@ public class LinkFieldDefinition extends ConfiguredFieldDefinition {
     private String workbench;
     private String width;
     private String buttonLabel;
-
-    // TODO In JCR 2.0 this is called identifier, do we want to adjust to this or maybe call it reference
     private boolean uuid;
 
     public String getWorkspace() {

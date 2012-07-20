@@ -33,18 +33,10 @@
  */
 package info.magnolia.ui.model.dialog.registry;
 
-import info.magnolia.cms.core.MgnlNodeType;
-import info.magnolia.cms.util.ModuleConfigurationObservingManager;
-import info.magnolia.jcr.predicate.NodeTypePredicate;
-import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.jcr.util.NodeVisitor;
-import info.magnolia.module.ModuleRegistry;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.jcr.Node;
@@ -54,6 +46,12 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import info.magnolia.cms.core.MgnlNodeType;
+import info.magnolia.cms.util.ModuleConfigurationObservingManager;
+import info.magnolia.jcr.predicate.NodeTypePredicate;
+import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.jcr.util.NodeVisitor;
+import info.magnolia.module.ModuleRegistry;
 
 /**
  * ObservedManager for dialogs configured in repository.
@@ -61,7 +59,7 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class ConfiguredDialogDefinitionManager extends ModuleConfigurationObservingManager {
 
-    static final String DIALOG_CONFIG_NODE_NAME = "dialogs50";
+    public static final String DIALOG_CONFIG_NODE_NAME = "dialogs50";
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -114,6 +112,6 @@ public class ConfiguredDialogDefinitionManager extends ModuleConfigurationObserv
         final String path = configNode.getPath();
         final String[] pathElements = path.split("/");
         final String moduleName = pathElements[2];
-        return moduleName + ":" + StringUtils.removeStart(path, "/modules/" + moduleName + "/" + DIALOG_CONFIG_NODE_NAME+ "/");
+        return moduleName + ":" + StringUtils.removeStart(path, "/modules/" + moduleName + "/" + DIALOG_CONFIG_NODE_NAME + "/");
     }
 }

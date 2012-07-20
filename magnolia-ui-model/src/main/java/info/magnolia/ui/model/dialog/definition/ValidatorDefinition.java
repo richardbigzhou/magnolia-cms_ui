@@ -34,7 +34,9 @@
 package info.magnolia.ui.model.dialog.definition;
 
 /**
- * Definition for Validators.
+ * Defines a validator.
+ *
+ * @see info.magnolia.ui.model.field.definition.FieldDefinition
  */
 public interface ValidatorDefinition {
 

@@ -35,9 +35,8 @@ package info.magnolia.ui.admincentral.dialog.action;
 
 import info.magnolia.ui.model.action.ActionDefinition;
 
-
 /**
- * SaveDialogActionDefinition.
+ * Defines an action for saving a dialog.
  */
 public class SaveDialogActionDefinition implements ActionDefinition {
 
@@ -47,6 +46,7 @@ public class SaveDialogActionDefinition implements ActionDefinition {
     public String getLabel() {
         return label;
     }
+
     public void setLabel(String label) {
         this.label = label;
     }
@@ -54,9 +54,8 @@ public class SaveDialogActionDefinition implements ActionDefinition {
     public String getName() {
         return name;
     }
+
     public void setName(String name) {
         this.name = name;
     }
-
-
 }

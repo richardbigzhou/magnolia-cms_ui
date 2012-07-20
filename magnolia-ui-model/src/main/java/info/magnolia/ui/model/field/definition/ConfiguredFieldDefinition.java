@@ -33,16 +33,13 @@
  */
 package info.magnolia.ui.model.field.definition;
 
-import info.magnolia.ui.model.dialog.definition.ValidatorDefinition;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import info.magnolia.ui.model.dialog.definition.ValidatorDefinition;
 
 /**
  * Describes a field in a dialog.
- *
- * TODO this should be abstract
  */
 public class ConfiguredFieldDefinition implements FieldDefinition {
 
