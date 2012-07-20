@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.content.view;
 
-import java.awt.Image;
+import java.net.URL;
 
 import javax.jcr.Item;
 
@@ -46,5 +46,5 @@ public interface ThumbnailProvider {
      * Return a thumbnail of the requested size representing the provided item. Depending on the implementation,
      * this thumbnail may be retrieved from cache or created on the fly.
      */
-    Image getThumbnail(Item item, int widht, int height);
+    URL getThumbnail(Item item, int widht, int height);
 }
