@@ -72,6 +72,17 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter{
     }
 
     /**
+     * @param parentNode: Parent of the node to create.
+     * @param nodeType: Type node to create.
+     * @param nodeName: Name of the new node.
+     */
+    public JcrNewNodeAdapter(Node parentNode, String nodeType, String nodeName) {
+        super(parentNode);
+        this.nodeType = nodeType;
+        this.nodeName = nodeName;
+    }
+
+    /**
      * Create pure Vaadin Property fully decoupled for Jcr.
      */
     @Override

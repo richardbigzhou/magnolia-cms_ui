@@ -64,6 +64,8 @@ import info.magnolia.ui.widget.editor.gwt.client.event.EditComponentEvent;
 import info.magnolia.ui.widget.editor.gwt.client.event.EditComponentEventHandler;
 import info.magnolia.ui.widget.editor.gwt.client.event.NewAreaEvent;
 import info.magnolia.ui.widget.editor.gwt.client.event.NewAreaEventHandler;
+import info.magnolia.ui.widget.editor.gwt.client.event.NewComponentEvent;
+import info.magnolia.ui.widget.editor.gwt.client.event.NewComponentEventHandler;
 import info.magnolia.ui.widget.editor.gwt.client.event.SortComponentEvent;
 import info.magnolia.ui.widget.editor.gwt.client.event.SortComponentEventHandler;
 import info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils;
@@ -133,7 +135,7 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
 
     @Override
     public boolean initWidget(Object[] objects) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return false;
     }
 
     @Override
@@ -211,8 +213,15 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
     private void registerEventHandlers() {
         eventBus.addHandler(NewAreaEvent.TYPE, new NewAreaEventHandler() {
             @Override
-            public void onNewComponent(NewAreaEvent newAreaEvent) {
-                proxy.call("newComponent", newAreaEvent.getWorkSpace(), newAreaEvent.getNodeType(), newAreaEvent.getPath());
+            public void onNewArea(NewAreaEvent newAreaEvent) {
+                proxy.call("newArea", newAreaEvent.getWorkSpace(), newAreaEvent.getNodeType(), newAreaEvent.getPath());
+            }
+        });
+
+        eventBus.addHandler(NewComponentEvent.TYPE, new NewComponentEventHandler() {
+            @Override
+            public void onNewComponent(NewComponentEvent newComponentEvent) {
+                proxy.call("newComponent", newComponentEvent.getWorkSpace(), newComponentEvent.getPath(), newComponentEvent.getAvailableComponents());
             }
         });
 
@@ -387,18 +396,6 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
         return view;
     }
 
-
-    @Override
-    public void onNewComponent(String workspace, String path, String nodeType) {
-        eventBus.fireEvent(new NewAreaEvent(workspace, path, nodeType));
-    }
-
-    @Override
-    public void onEditComponent(String dialog, String workspace, String path) {
-        eventBus.fireEvent(new EditComponentEvent(workspace, path, dialog));
-
-    }
-
     @Override
     public void onFrameLoaded(Frame iframe) {
         Element element= iframe.getElement();
@@ -410,18 +407,5 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
         focusModel.toggleRootAreaBar(true);
 
     }
-
-    @Override
-    public void onDeleteComponent(String path) {
-        //eventBus.fireEvent(deleteEvent);
-        Window.alert("Hi, one fine day I will be able to delete component at path [" + path +"]");
-    }
-
-    @Override
-    public void onMoveComponent() {
-        // TODO decide how to handle move action.
-        Window.alert("Move me here, move me there!");
-    }
-
 
 }

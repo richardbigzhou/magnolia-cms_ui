@@ -118,13 +118,23 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
                         listener.editComponent(workSpace, path, dialog);
                     }
                 });
-                register("newComponent", new Method() {
+                register("newArea", new Method() {
                     @Override
                     public void invoke(String methodName, Object[] params) {
                         final String workSpace = String.valueOf(params[0]);
                         final String nodeType = String.valueOf(params[1]);
                         final String path = String.valueOf(params[2]);
-                        listener.newComponent(workSpace, nodeType, path);
+                        listener.newArea(workSpace, nodeType, path);
+                    }
+
+                });
+                register("newComponent", new Method() {
+                    @Override
+                    public void invoke(String methodName, Object[] params) {
+                        final String workSpace = String.valueOf(params[0]);
+                        final String path = String.valueOf(params[1]);
+                        final String availableComponents = String.valueOf(params[2]);
+                        listener.newComponent(workSpace, path, availableComponents);
                     }
 
                 });

@@ -75,7 +75,13 @@ public class DialogPresenterFactoryImpl implements DialogPresenterFactory {
     @Override
     public DialogView.Presenter createDialog(String dialogName) {
 
-        DialogView view = componentProvider.getComponent(DialogView.class);
+        DialogDefinition definition = getDialogDefinition(dialogName);
+        return getDialogPresenter(definition);
+
+    }
+
+    @Override
+    public DialogDefinition getDialogDefinition(String dialogName) throws RuntimeException {
         DialogDefinition dialogDefinition;
         try {
             dialogDefinition = dialogDefinitionRegistry.get(dialogName);
@@ -86,7 +92,14 @@ public class DialogPresenterFactoryImpl implements DialogPresenterFactory {
         if (dialogDefinition == null) {
             throw new IllegalArgumentException("No dialog definition registered for name [" + dialogName + "]");
         }
+        return dialogDefinition;
+    }
 
-        return new DialogPresenter(view, dialogBuilder, dialogFieldFactory, dialogDefinition, shell, eventBus, actionFactory);
+    @Override
+    public DialogView.Presenter getDialogPresenter(DialogDefinition definition) {
+        DialogView view = componentProvider.getComponent(DialogView.class);
+        return new DialogPresenter(view, dialogBuilder, dialogFieldFactory, definition, shell, eventBus, actionFactory);
+
+
     }
 }
