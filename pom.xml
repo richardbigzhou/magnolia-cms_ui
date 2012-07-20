@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>info.magnolia</groupId>
@@ -11,6 +12,7 @@
 	<version>5.0-SNAPSHOT</version>
 	<name>magnolia-ui-project</name>
 	<packaging>pom</packaging>
+
 	<properties>
 		<magnoliaEdition>Community Edition</magnoliaEdition>
 		<magnoliaLicenseStyle>dual</magnoliaLicenseStyle>
@@ -21,19 +23,21 @@
 		<vaadinVersion>6.8.0</vaadinVersion>
 		<gwtVersion>2.4.0</gwtVersion>
 	</properties>
+
 	<scm>
 		<connection>scm:git:http://git.magnolia-cms.com/magnolia_ui</connection>
 		<developerConnection>scm:git:https://git.magnolia-cms.com/magnolia_ui</developerConnection>
 		<url>http://git.magnolia-cms.com/gitweb/?p=magnolia_ui.git</url>
-	  <tag>HEAD</tag>
-  </scm>
+		<tag>HEAD</tag>
+	</scm>
+
 	<dependencyManagement>
 		<dependencies>
-       <dependency>
-          <groupId>info.magnolia</groupId>
-          <artifactId>magnolia-rendering</artifactId>
-          <version>${magnoliaVersion}</version>
-        </dependency>
+			<dependency>
+				<groupId>info.magnolia</groupId>
+				<artifactId>magnolia-rendering</artifactId>
+				<version>${magnoliaVersion}</version>
+			</dependency>
 			<dependency>
 				<groupId>javax.servlet</groupId>
 				<artifactId>servlet-api</artifactId>
@@ -56,9 +60,9 @@
 				<version>1.1.0</version>
 			</dependency>
 			<dependency>
-   				<groupId>org.vaadin.addons</groupId>
-   				<artifactId>gwt-graphics</artifactId>
-   				<version>1.0.0</version>
+				<groupId>org.vaadin.addons</groupId>
+				<artifactId>gwt-graphics</artifactId>
+				<version>1.0.0</version>
 			</dependency>
 			<dependency>
 				<groupId>org.vaadin.addons</groupId>
@@ -124,6 +128,7 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+
 	<build>
 		<pluginManagement>
 			<plugins>
@@ -144,6 +149,7 @@
 			</plugins>
 		</pluginManagement>
 	</build>
+
 	<modules>
 		<module>magnolia-ui-framework</module>
 		<module>magnolia-ui-model</module>
@@ -162,4 +168,11 @@
 		<module>magnolia-ui-app-messages</module>
 		<module>magnolia-ui-app-pages</module>
 	</modules>
+
+	<distributionManagement>
+		<site>
+			<id>${distribSiteId}</id>
+			<url>${distribSiteRoot}/ui/${project.version}</url>
+		</site>
+	</distributionManagement>
 </project>
