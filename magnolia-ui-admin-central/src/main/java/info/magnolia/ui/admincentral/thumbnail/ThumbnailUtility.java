@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.content.view;
+package info.magnolia.ui.admincentral.thumbnail;
 
 import java.awt.Graphics2D;
 import java.awt.Image;
