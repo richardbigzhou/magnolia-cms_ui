@@ -36,7 +36,7 @@ package info.magnolia.ui.admincentral.dialog.builder;
 import info.magnolia.ui.admincentral.dialog.Dialog;
 import info.magnolia.ui.admincentral.dialog.DialogTab;
 import info.magnolia.ui.admincentral.field.DialogField;
-import info.magnolia.ui.admincentral.field.builder.FieldTypeProvider;
+import info.magnolia.ui.admincentral.field.builder.DialogFieldFactory;
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 import info.magnolia.ui.model.dialog.definition.EmailValidatorDefinition;
@@ -66,7 +66,7 @@ public class DialogBuilder {
     /**
      * @return DialogView populated with values from DialogDefinition and Item.
      */
-    public DialogView build(FieldTypeProvider fieldTypeBuilder, DialogDefinition dialogDefinition, Item item, DialogView view) {
+    public DialogView build(DialogFieldFactory dialogFieldFactory, DialogDefinition dialogDefinition, Item item, DialogView view) {
 
         Dialog dialog = new Dialog(dialogDefinition);
 
@@ -83,7 +83,7 @@ public class DialogBuilder {
             for (FieldDefinition fieldDefinition : tabDefinition.getFields()) {
 
                 // Create the DialogField
-                DialogField dialogField = fieldTypeBuilder.create(fieldDefinition, fieldDefinition, item);
+                DialogField dialogField = dialogFieldFactory.create(fieldDefinition, item);
                 dialogField.setParent(tab);
 
                 // Get the Vaadin Field

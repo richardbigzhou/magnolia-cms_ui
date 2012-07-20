@@ -34,6 +34,13 @@
 package info.magnolia.ui.app.pages.field;
 
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import javax.jcr.Node;
+
+import com.vaadin.data.Item;
+
 import info.magnolia.objectfactory.Components;
 import info.magnolia.rendering.template.TemplateDefinition;
 import info.magnolia.rendering.template.assignment.TemplateDefinitionAssignment;
@@ -41,14 +48,6 @@ import info.magnolia.ui.admincentral.field.DialogSelectField;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.jcr.Node;
-
-import com.vaadin.data.Item;
 
 /**
  * Define a Template selector field.
@@ -62,31 +61,31 @@ public class TemplateSelectorField extends DialogSelectField<TemplateSelectorDef
     }
 
     /**
-     * Get the Available templates based on the current Node.
+     * Returns the available templates based on the current node.
      */
     @Override
-    public Map<String, String>  getOptions() {
+    public Map<String, String> getOptions() {
         TemplateDefinitionAssignment templateAssignment = Components.getComponent(TemplateDefinitionAssignment.class);
         Map<String, String> res = new HashMap<String, String>();
 
         Collection<TemplateDefinition> templates = templateAssignment.getAvailableTemplates(getRelatedNode(item));
 
-        for(TemplateDefinition templateDefinition: templates) {
+        for (TemplateDefinition templateDefinition : templates) {
             res.put(templateDefinition.getId(), templateDefinition.getTitle());
         }
         return res;
     }
 
     /**
-     * Return the field related node.
+     * Returns the field related node.
      * If field is of type JcrNewNodeAdapter then return the parent node.
-     * Else get the node associated with the vaadim item.
+     * Else get the node associated with the Vaadin item.
      */
     private Node getRelatedNode(Item fieldRelatedItem) {
-        if(fieldRelatedItem instanceof JcrNewNodeAdapter) {
-            return ((JcrNewNodeAdapter)fieldRelatedItem).getParentNode();
+        if (fieldRelatedItem instanceof JcrNewNodeAdapter) {
+            return ((JcrNewNodeAdapter) fieldRelatedItem).getParentNode();
         } else {
-            return ((JcrNodeAdapter)fieldRelatedItem).getNode();
+            return ((JcrNodeAdapter) fieldRelatedItem).getNode();
         }
     }
 

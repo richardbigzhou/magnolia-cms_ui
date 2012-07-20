@@ -48,7 +48,7 @@ import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.admincentral.field.DialogEditField;
-import info.magnolia.ui.admincentral.field.builder.FieldTypeProvider;
+import info.magnolia.ui.admincentral.field.builder.DialogFieldFactory;
 import info.magnolia.ui.model.dialog.definition.ConfiguredDialogDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 import info.magnolia.ui.model.field.definition.ConfiguredFieldDefinition;
@@ -127,12 +127,12 @@ public class DialogBuilderTest {
         tabDef.addField(fieldDef);
         dialogDef.addTab(tabDef);
 
-        final FieldTypeProvider fieldTypeProvider = mock(FieldTypeProvider.class);
+        final DialogFieldFactory dialogFieldFactory = mock(DialogFieldFactory.class);
         DialogEditField editField = new DialogEditField(fieldTypeDef, item);
-        when(fieldTypeProvider.create(same(fieldDef), same(fieldDef), same(item))).thenReturn(editField);
+        when(dialogFieldFactory.create(same(fieldDef), same(item))).thenReturn(editField);
 
         // WHEN
-        final DialogView result = builder.build(fieldTypeProvider, dialogDef, item, dialog);
+        final DialogView result = builder.build(dialogFieldFactory, dialogDef, item, dialog);
 
         // THEN
         assertEquals(result, dialog);

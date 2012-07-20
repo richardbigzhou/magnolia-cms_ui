@@ -33,31 +33,27 @@
  */
 package info.magnolia.ui.admincentral.field;
 
-import info.magnolia.jcr.util.SessionUtil;
-import info.magnolia.ui.model.field.definition.SelectFieldDefinition;
-import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
-
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.ui.AbstractSelect;
-import com.vaadin.ui.Field;
 import com.vaadin.ui.NativeSelect;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import info.magnolia.jcr.util.SessionUtil;
+import info.magnolia.ui.model.field.definition.SelectFieldDefinition;
+import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
 
 /**
- * Initialize a Selection Field based on the configured informations.
+ * Creates and initializes a selection field based on a field definition.
  *
  * @param <D> type of definition
  */
@@ -68,7 +64,7 @@ public class DialogSelectField<D extends SelectFieldDefinition> extends Abstract
     private String initialSelecteKey;
     private String optionValueName;
     private String optionLabelName;
-    protected List<SelectFieldOptionDefinition>  options;
+    protected List<SelectFieldOptionDefinition> options;
     protected AbstractSelect select;
 
     public DialogSelectField(D definition, Item relatedFieldItem) {
@@ -76,17 +72,17 @@ public class DialogSelectField<D extends SelectFieldDefinition> extends Abstract
     }
 
     @Override
-    protected Field buildField() {
-        select = createVaadinSelectionField();
+    protected AbstractSelect buildField() {
+        select = createSelectionField();
         select.setNullSelectionAllowed(false);
         select.setInvalidAllowed(false);
         select.setMultiSelect(false);
         select.setNewItemsAllowed(false);
-        //Set Style
-        if(StringUtils.isNotBlank(getFieldDefinition().getCssClass())) {
+        // Set style
+        if (StringUtils.isNotBlank(getFieldDefinition().getCssClass())) {
             setStyleName(getFieldDefinition().getCssClass());
         }
-        //Get Options
+        // Set options
         Map<String, String> options = getOptions();
         for (Map.Entry<String, String> entry : options.entrySet()) {
             select.addItem(entry.getKey());
@@ -97,10 +93,9 @@ public class DialogSelectField<D extends SelectFieldDefinition> extends Abstract
     }
 
     /**
-     * Used to initialize the desired subclass of VaadinSelect field component.
-     * Subclass of DialogSelectField should override this method.
+     * Used to initialize the desired subclass of AbstractSelect field component. Subclasses can override this method.
      */
-    protected AbstractSelect createVaadinSelectionField() {
+    protected AbstractSelect createSelectionField() {
         return new NativeSelect();
     }
 
@@ -108,26 +103,26 @@ public class DialogSelectField<D extends SelectFieldDefinition> extends Abstract
      * Default implementation that build the Options map.
      * If options is not empty, took the options defined in this field definition.
      * Else, if path is not empty, build an options list based on the node refereed by
-     *    the path and property value.
+     * the path and property value.
      * Else nothing is define, return an empty option.
      *
      * @return Key: Stored value, Value: Displayed Value
      */
-    public Map<String, String>  getOptions() {
+    public Map<String, String> getOptions() {
         Map<String, String> res = new HashMap<String, String>();
         SelectFieldDefinition selectFieldDefinition = getFieldDefinition();
 
         this.options = selectFieldDefinition.getOptions();
 
-        if(this.options !=null && !this.options.isEmpty()){
-            for(SelectFieldOptionDefinition option : this.options) {
+        if (this.options != null && !this.options.isEmpty()) {
+            for (SelectFieldOptionDefinition option : this.options) {
                 res.put(option.getValue(), option.getLabel());
-                if(option.isSelected()) {
+                if (option.isSelected()) {
                     initialSelecteKey = option.getValue();
                 }
             }
-        }else if(StringUtils.isNotBlank(selectFieldDefinition.getPath())) {
-            //Build an option based on the referred node.
+        } else if (StringUtils.isNotBlank(selectFieldDefinition.getPath())) {
+            // Build an option based on the referred node.
             buildRemoteOptions(res, selectFieldDefinition);
         }
 
@@ -135,7 +130,7 @@ public class DialogSelectField<D extends SelectFieldDefinition> extends Abstract
     }
 
     /**
-     * Set the select item if the datasource is not empty.
+     * Set the selected item if the DataSource is not empty.
      */
     @Override
     public void setPropertyDataSource(Property dataSource) {
@@ -151,18 +146,18 @@ public class DialogSelectField<D extends SelectFieldDefinition> extends Abstract
      */
     private void setDefaultSelectedItem(Property dataSource) {
         String selectedValue = null;
-        if(!dataSource.getValue().toString().isEmpty()) {
+        if (!dataSource.getValue().toString().isEmpty()) {
             selectedValue = dataSource.getValue().toString();
-        } else if (initialSelecteKey !=null) {
+        } else if (initialSelecteKey != null) {
             selectedValue = initialSelecteKey;
-        } else if (options !=null && !options.isEmpty()) {
+        } else if (options != null && !options.isEmpty()) {
             selectedValue = options.get(0).getValue();
         }
         this.field.setValue(selectedValue);
     }
 
     /**
-     * Build Options based on a remote Node.
+     * Build options based on a remote Node.
      * Simply get the remote Node, Iterate his child nodes and for every child
      * try to get the Value and Label property.
      * In addition create an ArrayList<SelectFieldOptionDefinition> representing this options.
@@ -173,32 +168,32 @@ public class DialogSelectField<D extends SelectFieldDefinition> extends Abstract
             optionValueName = selectFieldDefinition.getValueNodeData();
             optionLabelName = selectFieldDefinition.getLabelNodeData();
             options = new ArrayList<SelectFieldOptionDefinition>();
-            //Iterate parent childs
+            // Iterate parent children
             try {
                 NodeIterator iterator = parent.getNodes();
-                while(iterator.hasNext()) {
+                while (iterator.hasNext()) {
                     SelectFieldOptionDefinition option = new SelectFieldOptionDefinition();
                     Node child = iterator.nextNode();
-                    if(child.hasProperty(optionValueName) && child.hasProperty(optionLabelName) ) {
+                    if (child.hasProperty(optionValueName) && child.hasProperty(optionLabelName)) {
                         option.setLabel(child.getProperty(optionLabelName).getString());
                         option.setValue(child.getProperty(optionValueName).getString());
 
                         res.put(option.getValue(), option.getLabel());
-                        if(child.hasProperty(SelectFieldDefinition.OPTION_SELECTED_PROPERTY_NAME)) {
+                        if (child.hasProperty(SelectFieldDefinition.OPTION_SELECTED_PROPERTY_NAME)) {
                             option.setSelected(true);
                             initialSelecteKey = option.getValue();
                         }
-                        if(child.hasProperty(SelectFieldDefinition.OPTION_NAME_PROPERTY_NAME)) {
+                        if (child.hasProperty(SelectFieldDefinition.OPTION_NAME_PROPERTY_NAME)) {
                             option.setName(child.getProperty(SelectFieldDefinition.OPTION_NAME_PROPERTY_NAME).getString());
                         }
-                        if(child.hasProperty(SelectFieldDefinition.OPTION_ICONSRC_PROPERTY_NAME)) {
+                        if (child.hasProperty(SelectFieldDefinition.OPTION_ICONSRC_PROPERTY_NAME)) {
                             option.setIconSrc(child.getProperty(SelectFieldDefinition.OPTION_ICONSRC_PROPERTY_NAME).getString());
                         }
                     }
                     options.add(option);
                 }
-            } catch(Exception e) {
-                log.warn("Not able to buld Options based on option node "+parent.toString(),e);
+            } catch (Exception e) {
+                log.warn("Not able to build options based on option node " + parent.toString(), e);
             }
         }
     }

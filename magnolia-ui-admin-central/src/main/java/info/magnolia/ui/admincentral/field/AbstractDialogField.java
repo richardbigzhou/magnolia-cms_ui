@@ -33,22 +33,21 @@
  */
 package info.magnolia.ui.admincentral.field;
 
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.ui.Field;
+import org.apache.commons.lang.StringUtils;
+
 import info.magnolia.ui.admincentral.dialog.AbstractDialogItem;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 
-import org.apache.commons.lang.StringUtils;
-
-import com.vaadin.data.Item;
-import com.vaadin.data.Property;
-import com.vaadin.ui.Field;
-
 /**
- * Define an Abstract implementation of {@link DialogField}.
- * Initialize the common attributes of a Field definition.
- * Initialize the Field with ValidationRules, Related DataSource.
- * @param <D>.
+ * Abstract DialogField implementations, initializes common attributes and binds Vaadin {@link Field} instances created
+ * by subclasses to the {@link Property} they will be reading and writing to.
+ *
+ * @param <D> definition type
  */
 public abstract class AbstractDialogField<D extends FieldDefinition> extends AbstractDialogItem implements DialogField {
 
@@ -59,15 +58,6 @@ public abstract class AbstractDialogField<D extends FieldDefinition> extends Abs
     protected D definition;
     private String styleName;
 
-    /**
-     * First create the real Item by calling abstract buildField().
-     * Add
-     *   the related property Datasource.
-     *   Validators rules
-     *   Mandatory tag
-     * @param definition
-     * @param relatedFieldItem
-     */
     public AbstractDialogField(D definition, Item relatedFieldItem) {
         this.definition = definition;
         this.item = relatedFieldItem;
@@ -77,20 +67,20 @@ public abstract class AbstractDialogField<D extends FieldDefinition> extends Abs
     public Field getField() {
         if (field == null) {
 
-            // Build the vaadin field
+            // Build the Vaadin field
             this.field = buildField();
 
-            //Get and set the Field Datasource property .
+            // Get and set the DataSource property
             Property property = getOrCreateProperty();
             setPropertyDataSource(property);
 
-            //Set Style
+            // Set style
             this.field.setStyleName(getStyleName());
 
-            //Set Label
+            //Set label
             this.field.setCaption(getMessage(getFieldDefinition().getLabel()));
 
-            ((DefaultProperty)this.field.getPropertyDataSource()).setSaveInfo(definition.getSaveInfo());
+            ((DefaultProperty) this.field.getPropertyDataSource()).setSaveInfo(definition.getSaveInfo());
         }
         return this.field;
     }
@@ -101,33 +91,37 @@ public abstract class AbstractDialogField<D extends FieldDefinition> extends Abs
     }
 
     /**
-     * Set the Datasource of the current field.
+     * Set the DataSource of the current field.
      */
     public void setPropertyDataSource(Property property) {
         this.field.setPropertyDataSource(property);
     }
 
+    /**
+     * Implemented by subclasses to create and initialize the Vaadin Field instance to use.
+     */
     protected abstract Field buildField();
 
     /**
-     * Set the default Css StyleName for the Current field.
+     * Set the default CSS style name for the current field.
      */
     protected void setStyleName(String styleName) {
         this.styleName = styleName;
     }
 
     protected String getStyleName() {
-        return this.styleName !=null ? this.styleName:FIELD_STYLE_NAME;
+        return this.styleName != null ? this.styleName : FIELD_STYLE_NAME;
     }
+
     /**
      * Get a property from the current Item.
      * If the property already exist, return this property.
      * If the property does not exist:
-     *          Create a new property based on the defined Type, default value, and saveInfo.
+     * Create a new property based on the defined Type, default value, and saveInfo.
      */
     private Property getOrCreateProperty() {
-        DefaultProperty property = (DefaultProperty)item.getItemProperty(definition.getName());
-        if(property == null){
+        DefaultProperty property = (DefaultProperty) item.getItemProperty(definition.getName());
+        if (property == null) {
             property = DefaultPropertyUtil.newDefaultProperty(definition.getName(), getFieldType(definition).getSimpleName(), definition.getDefaultValue());
             item.addItemProperty(definition.getName(), property);
         }
@@ -140,7 +134,7 @@ public abstract class AbstractDialogField<D extends FieldDefinition> extends Abs
      * a {@link IllegalArgumentException}:
      */
     protected Class<?> getFieldType(FieldDefinition fieldDefinition) {
-        if(StringUtils.isNotBlank(fieldDefinition.getType())) {
+        if (StringUtils.isNotBlank(fieldDefinition.getType())) {
             return DefaultPropertyUtil.getFieldTypeClass(fieldDefinition.getType());
         }
         return getDefaultFieldType(fieldDefinition);

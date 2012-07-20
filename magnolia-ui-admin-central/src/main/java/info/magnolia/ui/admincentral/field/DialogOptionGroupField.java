@@ -33,37 +33,30 @@
  */
 package info.magnolia.ui.admincentral.field;
 
-import info.magnolia.ui.model.field.definition.OptionGroupFieldDefinition;
-
 import com.vaadin.data.Item;
 import com.vaadin.ui.AbstractSelect;
-import com.vaadin.ui.Field;
 import com.vaadin.ui.OptionGroup;
 
+import info.magnolia.ui.model.field.definition.OptionGroupFieldDefinition;
 
 /**
- * Initialize a DialogOption Field based on the configured informations.
+ * Creates and initializes a select field based on a field definition.
  */
-
 public class DialogOptionGroupField extends DialogSelectField<OptionGroupFieldDefinition> {
 
     public DialogOptionGroupField(OptionGroupFieldDefinition definition, Item relatedFieldItem) {
         super(definition, relatedFieldItem);
     }
 
-
     @Override
-    protected Field buildField() {
-        //Set common attributes
+    protected AbstractSelect buildField() {
         super.buildField();
         select.setMultiSelect(getFieldDefinition().isMultiple());
         return select;
     }
 
     @Override
-    protected AbstractSelect createVaadinSelectionField() {
+    protected AbstractSelect createSelectionField() {
         return new OptionGroup();
     }
-
-
 }

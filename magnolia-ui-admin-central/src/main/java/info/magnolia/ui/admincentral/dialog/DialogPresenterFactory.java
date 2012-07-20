@@ -35,7 +35,6 @@ package info.magnolia.ui.admincentral.dialog;
 
 import info.magnolia.ui.widget.dialog.DialogView;
 
-
 /**
  * Creates {@link DialogPresenter} instances that are use to display a dialog.
  */
