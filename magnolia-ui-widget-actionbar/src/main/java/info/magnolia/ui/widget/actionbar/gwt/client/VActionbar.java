@@ -33,23 +33,25 @@
  */
 package info.magnolia.ui.widget.actionbar.gwt.client;
 
-import java.util.Iterator;
-import java.util.Set;
+import org.vaadin.rpc.client.ClientSideHandler;
+import org.vaadin.rpc.client.ClientSideProxy;
+import org.vaadin.rpc.client.Method;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.EventBus;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
-import com.vaadin.terminal.gwt.client.Container;
 import com.vaadin.terminal.gwt.client.Paintable;
-import com.vaadin.terminal.gwt.client.RenderSpace;
 import com.vaadin.terminal.gwt.client.UIDL;
+import com.vaadin.terminal.gwt.client.ui.Icon;
 
 
 /**
  * Vaadin implementation of Action bar client side (Presenter).
  */
-public class VActionbar extends Composite implements HasWidgets, Container, VActionbarView.Presenter {
+@SuppressWarnings("serial")
+public class VActionbar extends Composite implements Paintable, ClientSideHandler, VActionbarView.Presenter {
 
     protected String paintableId;
 
@@ -57,8 +59,41 @@ public class VActionbar extends Composite implements HasWidgets, Container, VAct
 
     private final VActionbarView view;
 
+    private final EventBus eventBus;
+
+    private final ClientSideProxy proxy = new ClientSideProxy(this) {
+
+        {
+
+            register("addSection", new Method() {
+
+                @Override
+                public void invoke(String methodName, Object[] params) {
+                    final VActionbarSectionJSO section = VActionbarSectionJSO.parse(String.valueOf(params[0]));
+                    view.addSection(section);
+                }
+            });
+
+            register("addAction", new Method() {
+
+                @Override
+                public void invoke(String methodName, Object[] params) {
+                    final VActionbarItemJSO action = VActionbarItemJSO.parse(String.valueOf(params[0]));
+                    String groupName = String.valueOf(params[1]);
+                    String sectionName = String.valueOf(params[2]);
+
+                    Icon icon = new Icon(client, action.getIcon());
+                    view.addAction(action, icon, groupName, sectionName);
+                }
+            });
+
+        }
+    };
+
     public VActionbar() {
-        view = new VActionbarViewImpl();
+        super();
+        eventBus = new SimpleEventBus();
+        view = new VActionbarViewImpl(eventBus);
         view.setPresenter(this);
         initWidget(view.asWidget());
     }
@@ -66,69 +101,22 @@ public class VActionbar extends Composite implements HasWidgets, Container, VAct
     @Override
     public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
         this.client = client;
-        this.paintableId = uidl.getId();
-        if (client.updateComponent(this, uidl, true)) {
-            return;
-        }
-
-        for (final Iterator<Object> it = uidl.getChildIterator(); it.hasNext();) {
-            final UIDL childUidl = (UIDL) it.next();
-            final Paintable child = client.getPaintable(childUidl);
-
-            child.updateFromUIDL(childUidl, client);
-            if (child instanceof VActionButton) {
-                view.addActionButton((VActionButton) child);
-            }
-            else {
-                view.add((Widget) child);
-            }
-        }
+        proxy.update(this, uidl, client);
     }
 
     @Override
-    public void updateCaption(Paintable component, UIDL uidl) {
-    }
-
-    @Override
-    public void replaceChildComponent(Widget oldComponent, Widget newComponent) {
-    }
-
-    @Override
-    public boolean requestLayout(Set<Paintable> children) {
+    public boolean initWidget(Object[] params) {
         return false;
     }
 
     @Override
-    public RenderSpace getAllocatedSpace(Widget child) {
-        if (hasChildComponent(child)) {
-            return new RenderSpace(getOffsetWidth(), getOffsetHeight());
-        }
-        return new RenderSpace();
+    public void handleCallFromServer(String method, Object[] params) {
+        GWT.log("Unknown method call from server: " + method);
     }
 
     @Override
-    public boolean hasChildComponent(Widget component) {
-        return view.hasChildComponent(component);
-    }
-
-    @Override
-    public void add(Widget w) {
-        view.add(w);
-    }
-
-    @Override
-    public void clear() {
-        view.clear();
-    }
-
-    @Override
-    public Iterator<Widget> iterator() {
-        return view.iterator();
-    }
-
-    @Override
-    public boolean remove(Widget w) {
-        return view.remove(w);
+    public void triggerAction(String actionName) {
+        proxy.call("actionTriggered", actionName);
     }
 
 }

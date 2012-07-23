@@ -33,31 +33,39 @@
  */
 package info.magnolia.ui.widget.actionbar.gwt.client;
 
+import info.magnolia.ui.widget.actionbar.gwt.client.event.ActionTriggerEvent;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.ComplexPanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.EventBus;
+import com.vaadin.terminal.gwt.client.ui.Icon;
 
 
 /**
  * The Class VActionbarViewImpl, GWT implementation for the VActionbarView interface.
  */
-public class VActionbarViewImpl extends ComplexPanel implements VActionbarView {
+public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, ActionTriggerEvent.Handler {
 
     public static final String CLASSNAME = "v-actionbar";
 
     private final Element root = DOM.createElement("section");
 
+    private final EventBus eventBus;
+
     private Presenter presenter;
 
     private final Map<String, VActionbarSection> sections = new HashMap<String, VActionbarSection>();
 
-    public VActionbarViewImpl() {
+    public VActionbarViewImpl(final EventBus eventBus) {
         setElement(root);
         setStyleName(CLASSNAME);
+
+        this.eventBus = eventBus;
+        this.eventBus.addHandler(ActionTriggerEvent.TYPE, this);
     }
 
     @Override
@@ -65,68 +73,30 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView {
         this.presenter = presenter;
     }
 
-    private VActionbarSection registerSection(final String sectionTitle) {
-        VActionbarSection section = getSections().get(sectionTitle);
-        if (section == null) {
-            section = new VActionbarSection();
-            section.setLabel(sectionTitle);
-            addSection(section);
+    @Override
+    public void addSection(VActionbarSectionJSO sectionParams) {
+        VActionbarSection section = new VActionbarSection(sectionParams);
+        sections.put(sectionParams.getName(), section);
+        add(section, root);
+    }
+
+    @Override
+    public void addAction(VActionbarItemJSO actionParams, Icon icon, String groupName, String sectionName) {
+        VActionbarSection section = sections.get(sectionName);
+        if (section != null) {
+            VActionbarGroup group = section.getGroups().get(groupName);
+            if (group == null) {
+                group = new VActionbarGroup(groupName);
+                section.addGroup(group);
+            }
+            VActionbarItem action = new VActionbarItem(actionParams, eventBus, icon);
+            group.add(action);
         }
-        return section;
-    }
-
-    private VActionbarGroup registerGroup(final String groupName, VActionbarSection
-        section) {
-        VActionbarGroup group = section.getGroups().get(groupName);
-        if (group == null) {
-            group = new VActionbarGroup();
-            group.setName(groupName);
-            section.addGroup(group);
-        }
-        return group;
-    }
-
-    private VActionbarItem registerItem(final String actionName, VActionbarGroup
-        group) {
-        VActionbarItem item = group.getItems().get(actionName);
-        if (item == null) {
-            item = new VActionbarItem();
-            item.setName(actionName);
-            group.addItem(item);
-        }
-        return item;
-    }
-
-    public Map<String, VActionbarSection> getSections() {
-        return sections;
-    }
-
-    public void addSection(VActionbarSection section) {
-        sections.put(section.getLabel(), section);
-        add(section);
     }
 
     @Override
-    public void addActionButton(VActionButton button) {
-        VActionbarSection section = registerSection(button.getSectionName());
-        VActionbarGroup group = registerGroup(button.getGroupName(), section);
-        VActionbarItem item = registerItem(button.getActionName(), group);
-        item.add(button);
-    }
-
-    @Override
-    public void clearAll() {
-        // not yet implemented
-    }
-
-    @Override
-    public void add(Widget w) {
-        add(w, getElement());
-    }
-
-    @Override
-    public boolean hasChildComponent(Widget component) {
-        return sections.containsValue(component);
+    public void onActionTriggered(ActionTriggerEvent event) {
+        presenter.triggerAction(event.getActionName());
     }
 
 }

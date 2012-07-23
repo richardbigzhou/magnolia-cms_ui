@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,42 +33,37 @@
  */
 package info.magnolia.ui.widget.actionbar.gwt.client;
 
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.vaadin.terminal.gwt.client.ui.Icon;
-
+import com.google.gwt.core.client.JavaScriptObject;
 
 /**
- * View interface of client-side action bar.
+ * Description for client-side action bar item.
  */
-public interface VActionbarView extends HasWidgets, IsWidget {
+public final class VActionbarItemJSO extends JavaScriptObject {
 
-    void setPresenter(Presenter presenter);
+    protected VActionbarItemJSO() {}
 
-    /**
-     * Adds a section to this action bar.
-     * 
-     * @param sectionParams the section parameters
-     */
-    void addSection(VActionbarSectionJSO sectionParams);
+    public static native VActionbarItemJSO parse(String json) /*-{
+       try {
+         return eval('(' + json + ')');
+       } catch(e) {
+           return null;
+       }
+    }-*/;
 
-    /**
-     * Adds an action item to this action bar.
-     * 
-     * @param actionParams the action parameters
-     * @param icon the icon ui object
-     * @param groupName the group name
-     * @param sectionName the section name
-     */
-    void addAction(VActionbarItemJSO actionParams, Icon icon, String groupName, String sectionName);
+    public final native String getName() /*-{
+        return this.name;
+}-*/;
 
-    /**
-     * Presenter for the Actionbar view.
-     */
-    interface Presenter {
+    public final native String getLabel() /*-{
+        return this.label;
+    }-*/;
 
-        void triggerAction(String actionName);
+    public final native String getIcon() /*-{
+        return this.icon;
+    }-*/;
 
-    }
+    public final native boolean isEnabled() /*-{
+        return this.enabled;
+    }-*/;
 
 }

@@ -33,12 +33,7 @@
 }
 
 
-.v-actionbar-item {
-	margin:0;
-	padding:0;
-}
-
-.v-action-button {
+.v-action {
     position:relative;
 	width:100%;
 	height:30px;
@@ -51,31 +46,30 @@
     text-align:left;
 }
 
-.v-action-button:hover {
-	background:#aabf2f;
-}
-
-.v-disabled {
+.v-action.v-disabled {
 	opacity:0.4;
 }
 
-.v-action-button.v-disabled:hover {
-	background:none;
+.v-action.v-disabled:hover {
 	cursor:default;
 }
 
-.v-action-button .v-icon {
+.v-action .v-icon {
     position:absolute;
 	top:6px;
 	left:8px;
     height:17px;
 }
 
-.v-action-button .v-nativebutton-caption {
+.v-action .v-text {
 	position:absolute;
     top:4px;
 	left:46px;
 	color:#fff;
 	font-family:DinRound,Arial;
     font-size:16px;
+}
+
+.v-action:hover .v-text {
+	color:#aabf2f;
 }

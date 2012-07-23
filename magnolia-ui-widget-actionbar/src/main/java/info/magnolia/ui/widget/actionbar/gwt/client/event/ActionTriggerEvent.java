@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,44 +31,43 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.actionbar.gwt.client;
+package info.magnolia.ui.widget.actionbar.gwt.client.event;
 
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.vaadin.terminal.gwt.client.ui.Icon;
+import com.google.web.bindery.event.shared.Event;
 
 
 /**
- * View interface of client-side action bar.
+ * Event for triggering actions based on action name.
  */
-public interface VActionbarView extends HasWidgets, IsWidget {
+public class ActionTriggerEvent extends Event<ActionTriggerEvent.Handler> {
 
-    void setPresenter(Presenter presenter);
+    public static final Type<Handler> TYPE = new Type<Handler>();
 
-    /**
-     * Adds a section to this action bar.
-     * 
-     * @param sectionParams the section parameters
-     */
-    void addSection(VActionbarSectionJSO sectionParams);
+    private final String actionName;
 
-    /**
-     * Adds an action item to this action bar.
-     * 
-     * @param actionParams the action parameters
-     * @param icon the icon ui object
-     * @param groupName the group name
-     * @param sectionName the section name
-     */
-    void addAction(VActionbarItemJSO actionParams, Icon icon, String groupName, String sectionName);
-
-    /**
-     * Presenter for the Actionbar view.
-     */
-    interface Presenter {
-
-        void triggerAction(String actionName);
-
+    public ActionTriggerEvent(final String actionName) {
+        this.actionName = actionName;
     }
 
+    public String getActionName() {
+        return actionName;
+    }
+
+    @Override
+    public Type<Handler> getAssociatedType() {
+        return TYPE;
+    }
+
+    @Override
+    protected void dispatch(Handler handler) {
+        handler.onActionTriggered(this);
+    }
+
+    /**
+     * Handler for the action trigger event.
+     */
+    public interface Handler {
+
+        void onActionTriggered(final ActionTriggerEvent event);
+    }
 }

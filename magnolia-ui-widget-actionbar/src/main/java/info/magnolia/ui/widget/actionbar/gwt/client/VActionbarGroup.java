@@ -33,9 +33,6 @@
  */
 package info.magnolia.ui.widget.actionbar.gwt.client;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.ComplexPanel;
@@ -49,59 +46,28 @@ public class VActionbarGroup extends ComplexPanel {
 
     private static final String CLASSNAME = "v-actionbar-group";
 
-    private final Element root = DOM.createElement("ul");
+    private final Element list = DOM.createElement("ul");
 
-    private String name;
-
-    private final Map<String, VActionbarItem> items = new HashMap<String, VActionbarItem>();
+    private final String name;
 
     /**
      * Instantiates a new action bar group.
      */
-    public VActionbarGroup() {
-        setElement(root);
+    public VActionbarGroup(String name) {
+        setElement(list);
         setStyleName(CLASSNAME);
-    }
-
-    /**
-     * Gets the action group name.
-     * 
-     * @return the group name
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Sets the action group name.
-     * 
-     * @param name the new group name
-     */
-    public void setName(String name) {
         this.name = name;
     }
 
-    /**
-     * Gets the action items registered in this action group.
-     * 
-     * @return the map of actions
-     */
-    public Map<String, VActionbarItem> getItems() {
-        return items;
-    }
-
-    /**
-     * Adds an action to this action group.
-     * 
-     * @param item the action item
-     */
-    public void addItem(VActionbarItem item) {
-        items.put(item.getName(), item);
-        add(item);
+    public String getName() {
+        return name;
     }
 
     @Override
     public void add(Widget w) {
         add(w, getElement());
+    }
+
+    public void update() {
     }
 }

@@ -106,7 +106,7 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
         contentPresenter.initContentView(view);
         view.setListener(this);
         actionbarPresenter.initActionbar(workbenchDefinition.getActionbar());
-        view.addActionbarView(actionbarPresenter.getView());
+        view.addActionbarView(actionbarPresenter.start());
 
         eventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
 

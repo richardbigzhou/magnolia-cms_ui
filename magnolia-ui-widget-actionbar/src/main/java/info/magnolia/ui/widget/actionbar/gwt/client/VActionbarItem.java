@@ -33,43 +33,75 @@
  */
 package info.magnolia.ui.widget.actionbar.gwt.client;
 
+import info.magnolia.ui.widget.actionbar.gwt.client.event.ActionTriggerEvent;
+
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.EventBus;
+import com.vaadin.terminal.gwt.client.ui.Icon;
 
 
 /**
  * The Class VAction, which displays a single action with label and icon within an action group.
  */
-public class VActionbarItem extends SimplePanel {
+public class VActionbarItem extends Widget {
 
-    private static final String CLASSNAME = "v-actionbar-item";
+    private static final String CLASSNAME = "v-action";
 
-    private String name;
+    private final Element root = DOM.createElement("li");
+
+    private final Element text = DOM.createSpan();
+
+    private final Icon icon;
+
+    private final VActionbarItemJSO data;
+
+    private final EventBus eventBus;
 
     /**
-     * Instantiates a new action.
+     * Instantiates a new action in action bar.
+     * 
+     * @param data the data json object
+     * @param eventBus the event bus
+     * @param icon the icon
      */
-    public VActionbarItem() {
-        super(DOM.createElement("li"));
+    public VActionbarItem(VActionbarItemJSO data, EventBus eventBus, Icon icon) {
+        super();
+        this.data = data;
+        this.eventBus = eventBus;
+        this.icon = icon;
+
+        constructDOM();
+        bindHandlers();
+        update();
+    }
+
+    private void constructDOM() {
+        setElement(root);
         setStyleName(CLASSNAME);
+        text.addClassName("v-text");
+        root.appendChild(icon.getElement());
+        root.appendChild(text);
     }
 
-    /**
-     * Gets the action group name.
-     * 
-     * @return the group name
-     */
-    public String getName() {
-        return name;
+    private void bindHandlers() {
+        addDomHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                if (data.isEnabled()) {
+                    eventBus.fireEvent(new ActionTriggerEvent(data.getName()));
+                }
+            }
+        }, ClickEvent.getType());
     }
 
-    /**
-     * Sets the action group name.
-     * 
-     * @param name the new group name
-     */
-    public void setName(String name) {
-        this.name = name;
+    public void update() {
+        text.setInnerText(data.getLabel());
+        icon.setUri(data.getIcon());
     }
 
 }
