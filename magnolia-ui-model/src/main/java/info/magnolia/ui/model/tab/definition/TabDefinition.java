@@ -33,14 +33,15 @@
  */
 package info.magnolia.ui.model.tab.definition;
 
-import info.magnolia.ui.model.field.definition.FieldDefinition;
-
 import java.util.List;
 
+import info.magnolia.ui.model.field.definition.FieldDefinition;
 
 /**
- * TabDefinition.
- * 
+ * Defines a tab within a dialog.
+ *
+ * @see info.magnolia.ui.model.dialog.definition.DialogDefinition
+ * @see FieldDefinition
  */
 public interface TabDefinition {
 

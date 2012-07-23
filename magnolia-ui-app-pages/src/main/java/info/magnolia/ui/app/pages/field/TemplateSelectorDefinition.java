@@ -33,12 +33,11 @@
  */
 package info.magnolia.ui.app.pages.field;
 
-
 import info.magnolia.ui.model.field.definition.SelectFieldDefinition;
 
 /**
  * Definition used for configuring {@link TemplateSelectorField}.
  */
-public class TemplateSelectorDefinition extends SelectFieldDefinition{
-    //
+public class TemplateSelectorDefinition extends SelectFieldDefinition {
+
 }

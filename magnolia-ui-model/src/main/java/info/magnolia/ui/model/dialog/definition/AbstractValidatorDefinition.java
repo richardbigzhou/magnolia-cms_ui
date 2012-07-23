@@ -33,13 +33,13 @@
  */
 package info.magnolia.ui.model.dialog.definition;
 
-
 /**
- * Configures a ValidationDefinition.
+ * Abstract implementation of {@link ValidatorDefinition}.
  */
 public abstract class AbstractValidatorDefinition implements ValidatorDefinition {
 
     private String errorMessage;
+
     @Override
     public String getErrorMessage() {
         return errorMessage;

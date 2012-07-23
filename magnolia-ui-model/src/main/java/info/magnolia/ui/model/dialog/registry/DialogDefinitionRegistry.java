@@ -42,7 +42,6 @@ import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 
 import javax.inject.Singleton;
 
-
 /**
  * Maintains a registry of dialog providers registered by id.
  */
@@ -64,7 +63,7 @@ public class DialogDefinitionRegistry {
         } catch (RegistrationException e) {
             throw new RegistrationException("No dialog definition registered for id: " + id, e);
         }
-        return provider.getDefinition();
+        return provider.getDialogDefinition();
     }
 
     public Set<String> unregisterAndRegister(Set<String> registeredIds, List<DialogDefinitionProvider> providers) {

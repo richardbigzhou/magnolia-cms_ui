@@ -33,6 +33,13 @@
  */
 package info.magnolia.ui.admincentral.dialog.action;
 
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
+import com.vaadin.data.Item;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import info.magnolia.jcr.util.MetaDataUtil;
 import info.magnolia.ui.admincentral.event.ContentChangedEvent;
 import info.magnolia.ui.framework.event.EventBus;
@@ -42,19 +49,15 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.widget.dialog.DialogView;
 import info.magnolia.ui.widget.dialog.DialogView.Presenter;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.vaadin.data.Item;
-
 /**
- * SaveDialogAction.
+ * Saves a dialog.
+ *
+ * @see SaveDialogActionDefinition
  */
 public class SaveDialogAction extends ActionBase<SaveDialogActionDefinition> {
+
     private static final Logger log = LoggerFactory.getLogger(SaveDialogAction.class);
+
     private Item item;
     private EventBus eventBus;
     private Presenter presenter;
@@ -64,14 +67,13 @@ public class SaveDialogAction extends ActionBase<SaveDialogActionDefinition> {
         this.presenter = presenter;
         this.item = presenter.getItem();
         this.eventBus = presenter.getEventBus();
-
     }
 
     @Override
     public void execute() throws ActionExecutionException {
 
-        //First Validate
-        if(presenter.getView().isValid()) {
+        // First Validate
+        if (presenter.getView().isValid()) {
             final JcrNodeAdapter itemChanged = (JcrNodeAdapter) item;
             try {
                 final Node node = itemChanged.getNode();
@@ -87,8 +89,5 @@ public class SaveDialogAction extends ActionBase<SaveDialogActionDefinition> {
         } else {
             //TODO EHE Do something.
         }
-
-
     }
-
 }

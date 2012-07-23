@@ -35,9 +35,9 @@ package info.magnolia.ui.model.dialog.action;
 
 import info.magnolia.ui.model.action.ActionDefinition;
 
-
 /**
- * DialogActionDefinition.
+ * Defines a choice of action for the user interacting with a dialog. Typically save and cancel to persist or stop
+ * editing respectively.
  */
 public interface DialogActionDefinition {
 

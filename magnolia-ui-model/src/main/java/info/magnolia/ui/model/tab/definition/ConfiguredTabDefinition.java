@@ -33,14 +33,13 @@
  */
 package info.magnolia.ui.model.tab.definition;
 
-import info.magnolia.ui.model.field.definition.FieldDefinition;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import info.magnolia.ui.model.field.definition.FieldDefinition;
 
 /**
- * A tab in a dialog. Holds a list of controls contained in the tab.
+ * A tab in a dialog. Holds a list of fields contained in the tab.
  */
 public class ConfiguredTabDefinition implements TabDefinition {
 
@@ -88,7 +87,7 @@ public class ConfiguredTabDefinition implements TabDefinition {
         this.fields = fields;
     }
 
-    public boolean addField(FieldDefinition fieldDefinition) {
-        return fields.add(fieldDefinition);
+    public void addField(FieldDefinition fieldDefinition) {
+        fields.add(fieldDefinition);
     }
 }

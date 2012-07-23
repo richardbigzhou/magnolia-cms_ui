@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2011 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,43 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.field.definition;
+package info.magnolia.ui.admincentral.thumbnail;
+
+import java.net.URL;
+
+import javax.jcr.Item;
 
 /**
- * Field definition for a date picker.
+ * Defines a provider for Thumbnail images.
  */
-public class DateFieldDefinition extends ConfiguredFieldDefinition {
+public interface ThumbnailProvider {
 
-    private boolean time;
-
-    private String dateFormat = "yyyy-MM-dd";
-
-    private String timeFormat = "HH:mm:ss";
-
-    public boolean isTime() {
-        return time;
-    }
-
-    public void setTime(boolean time) {
-        this.time = time;
-    }
-
-    public String getDateFormat() {
-        return dateFormat;
-    }
-
-
-    public void setDateFormat(String dateFormat) {
-        this.dateFormat = dateFormat;
-    }
-
-
-    public String getTimeFormat() {
-        return timeFormat;
-    }
-
-
-    public void setTimeFormat(String timeFormat) {
-        this.timeFormat = timeFormat;
-    }
+    /**
+     * Return a thumbnail of the requested size representing the provided item. Depending on the implementation,
+     * this thumbnail may be retrieved from cache or created on the fly.
+     */
+    URL getThumbnail(Item item, int width, int height);
 }

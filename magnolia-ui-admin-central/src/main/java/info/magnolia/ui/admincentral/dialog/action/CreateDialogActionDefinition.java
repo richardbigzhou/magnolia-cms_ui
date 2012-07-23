@@ -33,13 +33,29 @@
  */
 package info.magnolia.ui.admincentral.dialog.action;
 
+import info.magnolia.ui.model.action.ActionDefinition;
 
 /**
- * Opens a dialog to create an {@link javax.jcr.Node}.
+ * Defines a dialog action that opens a dialog for adding a new node.
  */
-public class CreateDialogActionDefinition extends EditDialogActionDefinition {
+public class CreateDialogActionDefinition implements ActionDefinition {
 
+    private String dialogName;
+
+    /**
+     * The node type to use when saving the dialog results in adding a new node.
+     *
+     * @see info.magnolia.cms.core.MgnlNodeType
+     */
     private String nodeType;
+
+    public String getDialogName() {
+        return dialogName;
+    }
+
+    public void setDialogName(String dialogName) {
+        this.dialogName = dialogName;
+    }
 
     public String getNodeType() {
         return nodeType;

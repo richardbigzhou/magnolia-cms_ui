@@ -33,9 +33,8 @@
  */
 package info.magnolia.ui.model.dialog.definition;
 
-
 /**
- * Defines a Regexp based ValidationDefinition - needs an additional argument: the pattern.
+ * Defines a validator that uses a regular expression to validate the contents of a dialog field.
  */
 public class RegexpValidatorDefinition extends AbstractValidatorDefinition {
 

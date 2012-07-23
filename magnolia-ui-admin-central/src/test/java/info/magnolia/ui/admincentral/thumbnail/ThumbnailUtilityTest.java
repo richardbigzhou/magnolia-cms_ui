@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2011 Magnolia International
+ * This file Copyright (c) 2003-2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,43 +31,43 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.field.definition;
+package info.magnolia.ui.admincentral.thumbnail;
+
+import static junit.framework.Assert.assertEquals;
+
+import java.awt.Image;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.imageio.ImageIO;
+
+import org.junit.Test;
 
 /**
- * Field definition for a date picker.
+ * Tests.
  */
-public class DateFieldDefinition extends ConfiguredFieldDefinition {
+public class ThumbnailUtilityTest {
+    private static final String TEST_PATH = "src/test/resources/image/";
+    private static final String ORIGINAL_IMAGE_NAME = "magnolia.jpg";
+    private static final String FILE_FORMAT = "jpg";
 
-    private boolean time;
+    @Test
+    public void testCreateThumbnail() throws IOException {
+        // GIVEN
+        final File file = new File(TEST_PATH + ORIGINAL_IMAGE_NAME);
+        System.out.println(file.getAbsolutePath());
+        final FileInputStream fis = new FileInputStream(file);
+        final InputStream bis = new BufferedInputStream(fis);
+        final Image image = (Image) ImageIO.read(bis);
 
-    private String dateFormat = "yyyy-MM-dd";
+        // WHEN
+        final Image result = ThumbnailUtility.createThumbnail(image, FILE_FORMAT, 70, 100, 0.75f);
 
-    private String timeFormat = "HH:mm:ss";
-
-    public boolean isTime() {
-        return time;
-    }
-
-    public void setTime(boolean time) {
-        this.time = time;
-    }
-
-    public String getDateFormat() {
-        return dateFormat;
-    }
-
-
-    public void setDateFormat(String dateFormat) {
-        this.dateFormat = dateFormat;
-    }
-
-
-    public String getTimeFormat() {
-        return timeFormat;
-    }
-
-
-    public void setTimeFormat(String timeFormat) {
-        this.timeFormat = timeFormat;
+        // THEN
+        assertEquals(70, result.getWidth(null));
+        assertEquals(47, result.getHeight(null));
     }
 }

@@ -41,6 +41,7 @@ import info.magnolia.ui.widget.dialog.DialogView;
  * Creates an action based on an {@link ActionDefinition}.
  */
 public interface DialogActionFactory {
+
     Action createAction(ActionDefinition actionDefinition, DialogView.Presenter dialogPresenter);
 
 }

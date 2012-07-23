@@ -33,19 +33,17 @@
  */
 package info.magnolia.ui.admincentral.field;
 
-import info.magnolia.ui.model.field.definition.EditFieldDefinition;
-import info.magnolia.ui.model.field.definition.FieldDefinition;
-
-import org.apache.commons.lang.StringUtils;
-
 import com.vaadin.data.Item;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
+import org.apache.commons.lang.StringUtils;
 
+import info.magnolia.ui.model.field.definition.EditFieldDefinition;
+import info.magnolia.ui.model.field.definition.FieldDefinition;
 
 /**
- * .
+ * Creates and initializes an edit field based on a field definition.
  */
 public class DialogEditField extends AbstractDialogField<EditFieldDefinition> {
 
@@ -58,7 +56,7 @@ public class DialogEditField extends AbstractDialogField<EditFieldDefinition> {
         EditFieldDefinition editDefinition = definition;
 
         if (editDefinition.getRows() > 1) {
-            return  createMultiRowEditField(editDefinition);
+            return createMultiRowEditField(editDefinition);
         }
         return createSingleRowEditField(editDefinition);
 

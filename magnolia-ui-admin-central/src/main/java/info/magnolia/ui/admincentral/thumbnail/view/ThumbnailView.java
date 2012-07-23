@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2011 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,43 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.field.definition;
+package info.magnolia.ui.admincentral.thumbnail.view;
+
+import info.magnolia.ui.admincentral.content.view.ContentView;
 
 /**
- * Field definition for a date picker.
+ * Thumbnail view interface.
  */
-public class DateFieldDefinition extends ConfiguredFieldDefinition {
+public interface ThumbnailView extends ContentView {
 
-    private boolean time;
-
-    private String dateFormat = "yyyy-MM-dd";
-
-    private String timeFormat = "HH:mm:ss";
-
-    public boolean isTime() {
-        return time;
-    }
-
-    public void setTime(boolean time) {
-        this.time = time;
-    }
-
-    public String getDateFormat() {
-        return dateFormat;
-    }
-
-
-    public void setDateFormat(String dateFormat) {
-        this.dateFormat = dateFormat;
-    }
-
-
-    public String getTimeFormat() {
-        return timeFormat;
-    }
-
-
-    public void setTimeFormat(String timeFormat) {
-        this.timeFormat = timeFormat;
-    }
 }

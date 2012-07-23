@@ -33,23 +33,23 @@
  */
 package info.magnolia.ui.model.field.definition;
 
-import info.magnolia.repository.RepositoryConstants;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import info.magnolia.repository.RepositoryConstants;
+
 /**
- * Field definition for a select field. This replace the former {@link info.magnolia.cms.gui.dialog.DialogSelect}
+ * Field definition for a select field.
  */
 public class SelectFieldDefinition extends ConfiguredFieldDefinition {
 
-    public static String OPTION_VALUE_PROPERTY_NAME = "value";
-    public static String OPTION_NAME_PROPERTY_NAME = "name";
-    public static String OPTION_SELECTED_PROPERTY_NAME = "selected";
-    public static String OPTION_ICONSRC_PROPERTY_NAME = "iconSrc";
-    public static String OPTION_LABEL_PROPERTY_NAME = "label";
+    public static final String OPTION_VALUE_PROPERTY_NAME = "value";
+    public static final String OPTION_NAME_PROPERTY_NAME = "name";
+    public static final String OPTION_SELECTED_PROPERTY_NAME = "selected";
+    public static final String OPTION_ICONSRC_PROPERTY_NAME = "iconSrc";
+    public static final String OPTION_LABEL_PROPERTY_NAME = "label";
 
-    public static String DEFAULT_REPOSITORY_NAME = RepositoryConstants.CONFIG;
+    public static final String DEFAULT_REPOSITORY_NAME = RepositoryConstants.CONFIG;
 
     private String cssClass;
 
@@ -61,72 +61,57 @@ public class SelectFieldDefinition extends ConfiguredFieldDefinition {
 
     private String labelNodeData = OPTION_LABEL_PROPERTY_NAME;
 
-
     private List<SelectFieldOptionDefinition> options = new ArrayList<SelectFieldOptionDefinition>();
-
 
     public List<SelectFieldOptionDefinition> getOptions() {
         return options;
     }
 
-
     public void setOptions(List<SelectFieldOptionDefinition> options) {
         this.options = options;
     }
-
 
     public void addOption(SelectFieldOptionDefinition option) {
         options.add(option);
     }
 
-
     public String getCssClass() {
         return cssClass;
     }
-
 
     public void setCssClass(String cssClass) {
         this.cssClass = cssClass;
     }
 
-
     public String getPath() {
         return path;
     }
-
 
     public void setPath(String path) {
         this.path = path;
     }
 
-
     public String getRepository() {
         return repository;
     }
-
 
     public void setRepository(String repository) {
         this.repository = repository;
     }
 
-
     public String getValueNodeData() {
         return valueNodeData;
     }
-
 
     public void setValueNodeData(String valueNodeData) {
         this.valueNodeData = valueNodeData;
     }
 
-
     public String getLabelNodeData() {
         return labelNodeData;
     }
 
-
     public void setLabelNodeData(String labelNodeData) {
         this.labelNodeData = labelNodeData;
     }
-
 }

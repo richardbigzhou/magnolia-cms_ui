@@ -39,7 +39,9 @@ import info.magnolia.ui.widget.dialog.DialogView;
 import info.magnolia.ui.widget.dialog.DialogView.Presenter;
 
 /**
- * SaveDialogAction.
+ * Implements an action for canceling a dialog.
+ *
+ * @see CancelDialogActionDefinition
  */
 public class CancelDialogAction extends ActionBase<CancelDialogActionDefinition> {
 

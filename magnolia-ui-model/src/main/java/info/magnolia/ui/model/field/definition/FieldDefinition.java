@@ -33,13 +33,16 @@
  */
 package info.magnolia.ui.model.field.definition;
 
-import info.magnolia.ui.model.dialog.definition.ValidatorDefinition;
-
 import java.util.List;
 
+import info.magnolia.ui.model.dialog.definition.ValidatorDefinition;
 
 /**
- * FieldDefinition .
+ * Defines a field within a dialog.
+ *
+ * @see info.magnolia.ui.model.dialog.definition.DialogDefinition
+ * @see FieldDefinition
+ * @see ValidatorDefinition
  */
 public interface FieldDefinition {
 
@@ -51,6 +54,11 @@ public interface FieldDefinition {
 
     String getDescription();
 
+    /**
+     * The type of this field when stored in a JCR repository expressed as a JCR property type name.
+     *
+     * @see javax.jcr.PropertyType
+     */
     String getType();
 
     boolean isRequired();

@@ -33,20 +33,24 @@
  */
 package info.magnolia.ui.model.dialog.definition;
 
+import java.util.List;
+
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.model.tab.definition.TabDefinition;
 
-import java.util.List;
-
-
 /**
- * DialogDefinition.
+ * Defines a dialog.
+ *
+ * @see TabDefinition
+ * @see info.magnolia.ui.model.field.definition.FieldDefinition
+ * @see DialogActionDefinition
  */
 public interface DialogDefinition {
 
+    /**
+     * Unique identifier for this dialog.
+     */
     String getId();
-
-    String getName();
 
     String getLabel();
 

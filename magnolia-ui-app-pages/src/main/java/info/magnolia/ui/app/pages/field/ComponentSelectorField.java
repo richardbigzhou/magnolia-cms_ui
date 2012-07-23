@@ -33,59 +33,54 @@
  */
 package info.magnolia.ui.app.pages.field;
 
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import javax.jcr.Node;
-
 import com.vaadin.data.Item;
-
-import info.magnolia.objectfactory.Components;
-import info.magnolia.rendering.template.TemplateDefinition;
-import info.magnolia.rendering.template.assignment.TemplateDefinitionAssignment;
 import info.magnolia.ui.admincentral.field.DialogSelectField;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
+import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
-/**
- * Define a Template selector field.
- * The values displayed in the field are initialized based on the
- * related Item (Image of a JCR node) and {@link TemplateDefinitionAssignment}.
- */
-public class TemplateSelectorField extends DialogSelectField<TemplateSelectorDefinition> {
+import javax.jcr.Node;
+import java.util.HashMap;
+import java.util.Map;
 
-    public TemplateSelectorField(TemplateSelectorDefinition definition, Item relatedFieldItem) {
+
+/**
+ * Define a Component selector field.
+ * The values displayed in the field are initialized based on the
+ * related Item (Image of a JCR node) and {@link info.magnolia.rendering.template.assignment.TemplateDefinitionAssignment}.
+ */
+public class ComponentSelectorField extends DialogSelectField<ComponentSelectorDefinition> {
+
+
+    public ComponentSelectorField(ComponentSelectorDefinition definition, Item relatedFieldItem) {
         super(definition, relatedFieldItem);
     }
 
+
     /**
-     * Returns the available templates based on the current node.
+     * Get the Available templates based on the current Node.
      */
     @Override
     public Map<String, String> getOptions() {
-        TemplateDefinitionAssignment templateAssignment = Components.getComponent(TemplateDefinitionAssignment.class);
+
         Map<String, String> res = new HashMap<String, String>();
-
-        Collection<TemplateDefinition> templates = templateAssignment.getAvailableTemplates(getRelatedNode(item));
-
-        for (TemplateDefinition templateDefinition : templates) {
-            res.put(templateDefinition.getId(), templateDefinition.getTitle());
+        for (SelectFieldOptionDefinition option : definition.getOptions()) {
+            res.put(option.getValue(), option.getName());
         }
         return res;
     }
 
     /**
-     * Returns the field related node.
+     * Return the field related node.
      * If field is of type JcrNewNodeAdapter then return the parent node.
-     * Else get the node associated with the Vaadin item.
+     * Else get the node associated with the vaadim item.
      */
     private Node getRelatedNode(Item fieldRelatedItem) {
-        if (fieldRelatedItem instanceof JcrNewNodeAdapter) {
-            return ((JcrNewNodeAdapter) fieldRelatedItem).getParentNode();
+        if(fieldRelatedItem instanceof JcrNewNodeAdapter) {
+            return ((JcrNewNodeAdapter)fieldRelatedItem).getParentNode();
         } else {
-            return ((JcrNodeAdapter) fieldRelatedItem).getNode();
+            return ((JcrNodeAdapter)fieldRelatedItem).getNode();
         }
     }
 
@@ -95,3 +90,5 @@ public class TemplateSelectorField extends DialogSelectField<TemplateSelectorDef
     }
 
 }
+
+

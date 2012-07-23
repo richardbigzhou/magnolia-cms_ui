@@ -33,32 +33,29 @@
  */
 package info.magnolia.ui.model.field.definition;
 
-
 /**
- * Field definition for Radio and check box select field. This replace the former {@link info.magnolia.cms.gui.dialog.DialogButtonSet}
- * This is now used for Control radio and checkbox.
+ * Field definition for radio and check box select field.
  */
 public class OptionGroupFieldDefinition extends SelectFieldDefinition {
 
-    private int cols = 1;
+    private int columns = 1;
 
-    private boolean multiselect = false;
+    private boolean multiple = false;
 
-    public boolean isMultiselect() {
-        return multiselect;
+    public boolean isMultiple() {
+        return multiple;
     }
 
-
-    public void setMultiselect(boolean multiselect) {
-        this.multiselect = multiselect;
+    public void setMultiple(boolean multiple) {
+        this.multiple = multiple;
     }
 
-    public int getCols() {
-        return cols;
+    public int getColumns() {
+        return columns;
     }
 
-    public void setCols(int cols) {
-        this.cols = cols;
+    public void setColumns(int columns) {
+        this.columns = columns;
     }
 
 }

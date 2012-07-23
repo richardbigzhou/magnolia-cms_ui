@@ -33,19 +33,27 @@
  */
 package info.magnolia.ui.admincentral.field;
 
+import com.vaadin.ui.Field;
+
 import info.magnolia.ui.admincentral.dialog.DialogItem;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 
-import com.vaadin.ui.Field;
-
 /**
- * FieldType. Is provided by the {@link info.magnolia.ui.admincentral.field.builder.FieldTypeProvider}.
- * A FieldType is defined for every field in e.g. a dialog-type.
- * It builds a vaadin {@link Field} and maps the necessary labels, validators etc to the field.
+ * A dialog field provides the user interface for a field in a dialog. It creates a Vaadin {@link Field} and configures
+ * it using the definition it is associated with. A class implementing this interface is associated with a
+ * {@link FieldDefinition} in {@link info.magnolia.ui.admincentral.field.builder.DialogFieldFactory}.
  *
+ * Implementations of this interface will be instantiated with the {@link FieldDefinition} they should use for
+ * configuration and the {@link com.vaadin.data.Item} they will be operating on as possible constructor arguments.
+ *
+ * @see FieldDefinition
+ * @see info.magnolia.ui.admincentral.field.builder.DialogFieldFactory
  */
 public interface DialogField extends DialogItem {
 
+    /**
+     * Creates and initializes a Vaadin {@link Field} component.
+     */
     Field getField();
 
     FieldDefinition getFieldDefinition();
