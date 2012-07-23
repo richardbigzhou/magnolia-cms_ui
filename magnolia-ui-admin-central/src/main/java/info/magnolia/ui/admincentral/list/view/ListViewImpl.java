@@ -63,7 +63,7 @@ public class ListViewImpl implements ListView {
 
     private ContentView.Listener listener;
 
-    private final HybridSelectionTable table;
+    private final Table table;
 
     private final VerticalLayout margin = new VerticalLayout();
 
@@ -94,18 +94,18 @@ public class ListViewImpl implements ListView {
                 presenterOnItemSelection((String) event.getProperty().getValue());
             }
         });
-        new EditHandler(table);
 
         table.setEditable(false);
         table.setSelectable(true);
         table.setColumnCollapsingAllowed(true);
 
-        // TODO: check Ticket http://dev.vaadin.com/ticket/5493
-        table.setColumnReorderingAllowed(true);
+        table.setColumnReorderingAllowed(false);
 
         container = new FlatJcrContainer(treeModel, workbenchDefinition);
-        Iterator<ColumnDefinition> iterator = workbenchDefinition.getColumns().iterator();
+        //FIXME fgrilli: we have to set the container data source twice. We set it here so
+        //that checkbox column is placed correctly as first
         table.setContainerDataSource(container);
+        Iterator<ColumnDefinition> iterator = workbenchDefinition.getColumns().iterator();
         while (iterator.hasNext()) {
             ColumnDefinition column = iterator.next();
             String columnName = column.getName();
@@ -115,15 +115,18 @@ public class ListViewImpl implements ListView {
             } else {
                 columnProperty = columnName;
             }
-            // super.setColumnExpandRatio(columnName, treeColumn.getWidth() <= 0 ? 1 :
-            // treeColumn.getWidth());
-            container.addContainerProperty(columnProperty, column.getType(), "");
+            //table.setColumnExpandRatio(columnProperty, column.getWidth() <= 0 ? 1 :column.getWidth());
             table.setColumnHeader(columnProperty, column.getLabel());
+            container.addContainerProperty(columnProperty, column.getType(), "");
         }
+        //FIXME fgrilli: we have to set the container data source twice. We set it here so
+        //that the table actually contains data.
+        table.setContainerDataSource(container);
 
 
         margin.setStyleName("mgnl-content-view");
         margin.addComponent(table);
+        new EditHandler(table);
     }
 
     @Override
