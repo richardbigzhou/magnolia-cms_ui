@@ -70,7 +70,4 @@ public class DateFieldDefinition extends ConfiguredFieldDefinition {
     public void setTimeFormat(String timeFormat) {
         this.timeFormat = timeFormat;
     }
-
-
-
 }

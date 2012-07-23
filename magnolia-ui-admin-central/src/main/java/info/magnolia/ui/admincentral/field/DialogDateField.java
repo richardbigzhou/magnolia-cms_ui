@@ -33,23 +33,20 @@
  */
 package info.magnolia.ui.admincentral.field;
 
-import info.magnolia.ui.model.field.definition.DateFieldDefinition;
-
 import com.vaadin.data.Item;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.PopupDateField;
 
+import info.magnolia.ui.model.field.definition.DateFieldDefinition;
 
 /**
- * Initialize a Date Field based on the configured informations.
+ * Creates and initializes a date field based on a field definition.
  */
-
-public class DialogDateField extends AbstractDialogField<DateFieldDefinition>{
+public class DialogDateField extends AbstractDialogField<DateFieldDefinition> {
 
     public DialogDateField(DateFieldDefinition definition, Item relatedFieldItem) {
         super(definition, relatedFieldItem);
     }
-
 
     @Override
     protected Field buildField() {
@@ -61,7 +58,7 @@ public class DialogDateField extends AbstractDialogField<DateFieldDefinition>{
         // set Resolution
         if (definition.isTime()) {
             popupDateField.setResolution(com.vaadin.ui.DateField.RESOLUTION_MIN);
-            dateFormat = definition.getDateFormat()+":"+definition.getTimeFormat();
+            dateFormat = definition.getDateFormat() + ":" + definition.getTimeFormat();
         } else {
             popupDateField.setResolution(com.vaadin.ui.DateField.RESOLUTION_DAY);
             dateFormat = definition.getDateFormat();
@@ -71,5 +68,4 @@ public class DialogDateField extends AbstractDialogField<DateFieldDefinition>{
 
         return popupDateField;
     }
-
 }

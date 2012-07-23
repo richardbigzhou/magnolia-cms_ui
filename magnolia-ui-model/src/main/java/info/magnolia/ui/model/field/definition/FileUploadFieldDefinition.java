@@ -38,8 +38,6 @@ package info.magnolia.ui.model.field.definition;
  */
 public class FileUploadFieldDefinition extends ConfiguredFieldDefinition {
 
-    // TODO should we change this name? See also info.magnolia.cms.beans.runtime.FileProperties#PROPERTY_TEMPLATE
-    private String nodeDataTemplate;
     private boolean preview = true;
 
     public boolean isPreview() {
@@ -48,13 +46,5 @@ public class FileUploadFieldDefinition extends ConfiguredFieldDefinition {
 
     public void setPreview(boolean preview) {
         this.preview = preview;
-    }
-
-    public String getNodeDataTemplate() {
-        return nodeDataTemplate;
-    }
-
-    public void setNodeDataTemplate(String nodeDataTemplate) {
-        this.nodeDataTemplate = nodeDataTemplate;
     }
 }

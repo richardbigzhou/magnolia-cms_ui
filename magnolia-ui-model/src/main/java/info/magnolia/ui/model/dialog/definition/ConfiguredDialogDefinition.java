@@ -33,12 +33,11 @@
  */
 package info.magnolia.ui.model.dialog.definition;
 
-import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
-import info.magnolia.ui.model.tab.definition.TabDefinition;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
+import info.magnolia.ui.model.tab.definition.TabDefinition;
 
 /**
  * A definition of a configured dialog. Holds a list of tabs.
@@ -46,8 +45,6 @@ import java.util.List;
 public class ConfiguredDialogDefinition implements DialogDefinition {
 
     private String id;
-
-    private String name;
 
     private String label;
 
@@ -66,15 +63,6 @@ public class ConfiguredDialogDefinition implements DialogDefinition {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     @Override

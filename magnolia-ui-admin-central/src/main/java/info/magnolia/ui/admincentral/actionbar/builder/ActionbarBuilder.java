@@ -37,60 +37,47 @@ import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarGroupDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarItemDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarSectionDefinition;
-import info.magnolia.ui.widget.actionbar.ActionButton;
 import info.magnolia.ui.widget.actionbar.Actionbar;
+import info.magnolia.ui.widget.actionbar.ActionbarView;
 import info.magnolia.ui.widget.actionbar.ActionbarView.Listener;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.terminal.Resource;
 import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 
 
 /**
  * Basic builder for an action bar widget based on an action bar definition.
  */
-@SuppressWarnings("serial")
 public class ActionbarBuilder {
 
     private static final Logger log = LoggerFactory.getLogger(ActionbarBuilder.class);
 
-    public static Actionbar build(ActionbarDefinition definition, final Listener listener) {
+    public static ActionbarView build(ActionbarDefinition definition, final Listener listener) {
         Actionbar actionbar = new Actionbar();
         if (definition == null) {
             log.warn("No actionbar definition found. This will result in an empty action bar. Is that intended?");
             return actionbar;
         } else {
-
-            final ClickListener clickListener = new ClickListener() {
-
-                @Override
-                public void buttonClick(ClickEvent event) {
-                    ActionButton button = (ActionButton) event.getButton();
-                    listener.onActionbarItemClicked(button.getActionName());
-                }
-            };
-
             for (ActionbarSectionDefinition section : definition.getSections()) {
+                actionbar.addSection(section.getName(), section.getName());
+
                 for (ActionbarGroupDefinition group : section.getGroups()) {
+                    // standalone groups make no sense
                     for (ActionbarItemDefinition item : group.getItems()) {
 
-                        ActionButton button = new ActionButton(item.getLabel());
-                        try {
-                            button.setIcon(new ThemeResource(item.getIcon()));
-                        } catch (NullPointerException e) {
-                            log.debug("Icon resource not found for Actionbar item '" + item.getName() + "'.");
+                        Resource icon = null;
+                        if (StringUtils.isNotBlank(item.getIcon())) {
+                            try {
+                                icon = new ThemeResource(item.getIcon());
+                            } catch (NullPointerException e) {
+                                log.debug("Icon resource not found for Actionbar item '" + item.getName() + "'.");
+                            }
                         }
-
-                        final String actionName = item.getName();
-                        button.setActionName(actionName);
-                        button.setGroupName(group.getName());
-                        button.setSectionName(section.getName());
-
-                        button.addListener(clickListener);
-                        actionbar.addComponent(button);
+                        actionbar.addAction(item.getName(), item.getLabel(), icon, group.getName(), section.getName());
                     }
                 }
             }

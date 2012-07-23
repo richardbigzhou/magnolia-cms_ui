@@ -53,7 +53,9 @@ public interface PageEditorView extends View {
 
         void editComponent(String workSpace, String path, String dialog);
 
-        void newComponent(String workSpace, String nodeType, String path);
+        void newArea(String workSpace, String nodeType, String path);
+
+        void newComponent(String workSpace, String path, String availableComponents);
 
         void selectComponent(String path);
 

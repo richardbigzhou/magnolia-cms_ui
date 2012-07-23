@@ -35,9 +35,8 @@ package info.magnolia.ui.admincentral.dialog.action;
 
 import info.magnolia.ui.model.action.ActionDefinition;
 
-
 /**
- * Opens a dialog to edit an {@link javax.jcr.Node}.
+ * Defines a dialog action for opening a dialog for editing a node.
  */
 public class EditDialogActionDefinition implements ActionDefinition {
 

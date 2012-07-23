@@ -88,9 +88,4 @@ public class VPageEditorViewImpl extends FlowPanel implements VPageEditorView {
         this.listener = listener;
     }
 
-    @Override
-    public Listener getListener() {
-        return listener;
-    }
-
 }

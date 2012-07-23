@@ -35,42 +35,40 @@ package info.magnolia.ui.widget.actionbar.gwt.client;
 
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+import com.vaadin.terminal.gwt.client.ui.Icon;
 
 
 /**
- * The Interface VActionbarView.
+ * View interface of client-side action bar.
  */
 public interface VActionbarView extends HasWidgets, IsWidget {
 
-    /**
-     * Presenter.
-     */
-    interface Presenter {
-    }
-
-    /**
-     * Sets the presenter.
-     * 
-     * @param presenter the new presenter
-     */
     void setPresenter(Presenter presenter);
 
     /**
-     * Adds an action button to this action bar.
+     * Adds a section to this action bar.
      * 
-     * @param button the action button
+     * @param sectionParams the section parameters
      */
-    void addActionButton(VActionButton button);
+    void addSection(VActionbarSectionJSO sectionParams);
 
     /**
-     * Clears all sections, groups and action buttons of this action bar.
+     * Adds an action item to this action bar.
+     * 
+     * @param actionParams the action parameters
+     * @param icon the icon ui object
+     * @param groupName the group name
+     * @param sectionName the section name
      */
-    void clearAll();
+    void addAction(VActionbarItemJSO actionParams, Icon icon, String groupName, String sectionName);
 
     /**
-     * Checks if given widget is a child of this component.
+     * Presenter for the Actionbar view.
      */
-    boolean hasChildComponent(Widget component);
+    interface Presenter {
+
+        void triggerAction(String actionName);
+
+    }
 
 }

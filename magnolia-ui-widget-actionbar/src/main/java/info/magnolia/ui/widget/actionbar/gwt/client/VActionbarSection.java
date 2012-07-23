@@ -39,11 +39,10 @@ import java.util.Map;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTMLPanel;
 
 
 /**
- * The Class VActionbarSection, which displays a section within the action bar.
+ * The client-side widget for a section of the action bar.
  */
 public class VActionbarSection extends FlowPanel {
 
@@ -53,90 +52,42 @@ public class VActionbarSection extends FlowPanel {
 
     private final Element header = DOM.createElement("header");
 
-    private String label = "";
+    private final Element heading = DOM.createElement("h3");
 
-    private int position;
+    private final VActionbarSectionJSO data;
 
     private final Map<String, VActionbarGroup> groups = new HashMap<String, VActionbarGroup>();
 
-    private final HTMLPanel titleElement = new HTMLPanel(TITLE_TAGNAME, "");
-
     /**
-     * Instantiates a new action bar section with given title.
+     * Instantiates a new action bar section with given data.
      * 
-     * @param title the section title
+     * @param data the data
      */
-    public VActionbarSection() {
+    public VActionbarSection(VActionbarSectionJSO data) {
+        this.data = data;
+
+        // construct DOM
         setStyleName(CLASSNAME);
-
-        // header
         getElement().appendChild(header);
-        titleElement.setStyleName("v-actionbar-section-title");
+        heading.addClassName("v-actionbar-section-title");
+        header.appendChild(heading);
 
-        add(titleElement, header);
+        update();
     }
 
-    /**
-     * Gets the label.
-     * 
-     * @return the label
-     */
-    public String getLabel() {
-        return label;
-    }
-
-    /**
-     * Sets the label.
-     * 
-     * @param label the new label
-     */
-    public void setLabel(String label) {
-        this.label = label;
-        updateLabel();
-    }
-
-    /**
-     * Gets the position.
-     * 
-     * @return the position
-     */
-    public int getPosition() {
-        return position;
-    }
-
-    /**
-     * Sets the position.
-     * 
-     * @param position the new position
-     */
-    public void setPosition(int position) {
-        this.position = position;
-    }
-
-    /**
-     * Gets the groups.
-     * 
-     * @return the groups
-     */
     public Map<String, VActionbarGroup> getGroups() {
         return groups;
     }
 
-    /**
-     * Adds an action group to this section.
-     * 
-     * @param group the action group
-     */
     public void addGroup(VActionbarGroup group) {
         groups.put(group.getName(), group);
         add(group);
     }
 
-    /**
-     * Updates the title label.
-     */
-    public void updateLabel() {
-        titleElement.getElement().setInnerText(getLabel());
+    public void update() {
+        heading.setInnerText(data.getName());
+        heading.setInnerText(data.getCaption());
+        setVisible(data.isVisible());
     }
 
 }

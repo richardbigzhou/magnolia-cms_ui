@@ -125,9 +125,9 @@
       <scope>singleton</scope>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.field.builder.FieldTypeProvider</type>
+      <type>info.magnolia.ui.admincentral.field.builder.DialogFieldFactory</type>
       <workspace>config</workspace>
-      <path>/modules/ui-admin-central/fieldTypeProvider</path>
+      <path>/modules/ui-admin-central/dialogFieldFactory</path>
       <observed>true</observed>
       <scope>singleton</scope>
      </component>

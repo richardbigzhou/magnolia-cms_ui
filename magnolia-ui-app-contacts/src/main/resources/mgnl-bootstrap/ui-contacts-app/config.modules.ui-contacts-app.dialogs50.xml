@@ -568,7 +568,7 @@
             <sv:property sv:name="label" sv:type="String">
               <sv:value>Simple Radio</sv:value>
             </sv:property>
-            <sv:property sv:name="multiselect" sv:type="String">
+            <sv:property sv:name="multiple" sv:type="String">
               <sv:value>false</sv:value>
             </sv:property>
             <sv:property sv:name="type" sv:type="String">
@@ -768,7 +768,7 @@
             <sv:property sv:name="label" sv:type="String">
               <sv:value>Simple Check Box</sv:value>
             </sv:property>
-            <sv:property sv:name="multiselect" sv:type="String">
+            <sv:property sv:name="multiple" sv:type="String">
               <sv:value>true</sv:value>
             </sv:property>
             <sv:property sv:name="type" sv:type="String">

@@ -35,6 +35,7 @@ package info.magnolia.ui.widget.actionbar;
 
 import info.magnolia.ui.framework.view.View;
 
+import com.vaadin.terminal.Resource;
 import com.vaadin.ui.Component;
 
 
@@ -43,11 +44,11 @@ import com.vaadin.ui.Component;
  */
 public interface ActionbarView extends View {
 
-    void addSection(String sectionName);
+    void setListener(Listener listener);
 
-    void addGroup(String groupName, String sectionName);
+    void addSection(String sectionName, String label);
 
-    void addAction(String actionName, String groupName, String sectionName);
+    void addAction(String actionName, String label, Resource icon, String groupName, String sectionName);
 
     void addPreview(Component component, String sectionName);
 
@@ -87,7 +88,7 @@ public interface ActionbarView extends View {
          * 
          * @return the actionbar view
          */
-        ActionbarView getView();
+        ActionbarView start();
 
         /**
          * Event handler invoked on clicking an item in the action bar.

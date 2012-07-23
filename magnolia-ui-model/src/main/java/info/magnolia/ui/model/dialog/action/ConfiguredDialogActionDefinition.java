@@ -35,7 +35,6 @@ package info.magnolia.ui.model.dialog.action;
 
 import info.magnolia.ui.model.action.ActionDefinition;
 
-
 /**
  * ConfiguredDialogActionDefinition.
  */

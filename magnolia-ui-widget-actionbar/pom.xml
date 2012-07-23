@@ -80,30 +80,18 @@
   </build>
 
   <dependencies>
-<!--   	<dependency> -->
-<!--       <groupId>info.magnolia.ui</groupId> -->
-<!--       <artifactId>magnolia-ui-model</artifactId> -->
-<!--       <version>${project.version}</version> -->
-<!--     </dependency> -->
-
     <dependency>
       <groupId>com.vaadin</groupId>
       <artifactId>vaadin</artifactId>
     </dependency>
-
-<!--     <dependency> -->
-<!--       <groupId>info.magnolia.ui</groupId> -->
-<!--       <artifactId>magnolia-ui-vaadin-integration</artifactId> -->
-<!--       <version>${project.version}</version> -->
-<!--     </dependency> -->
-<!--     <dependency> -->
-<!--       <groupId>org.vaadin.addons</groupId> -->
-<!--       <artifactId>widget-rpc</artifactId> -->
-<!--     </dependency> -->
     <dependency>
       <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-framework</artifactId>
+      <artifactId>magnolia-ui-vaadin-integration</artifactId>
       <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.vaadin.addons</groupId>
+      <artifactId>widget-rpc</artifactId>
     </dependency>
     <dependency>
       <groupId>com.google.gwt</groupId>

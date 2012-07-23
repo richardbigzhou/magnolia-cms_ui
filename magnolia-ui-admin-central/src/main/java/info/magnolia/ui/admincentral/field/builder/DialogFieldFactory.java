@@ -33,32 +33,37 @@
  */
 package info.magnolia.ui.admincentral.field.builder;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import javax.inject.Inject;
+
+import com.vaadin.data.Item;
+
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.content.view.builder.DefinitionToImplementationMapping;
 import info.magnolia.ui.admincentral.field.DialogField;
 import info.magnolia.ui.model.builder.FactoryBase;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
-
 /**
- * FieldTypeProvider providing FieldType implementations using content to bean.
+ * Factory for creating DialogField instances using an internal set of mappings connecting a {@link FieldDefinition}
+ * class with a {@link DialogField} class.
  *
+ * @see FieldDefinition
+ * @see DialogField
  */
-public class FieldTypeProvider extends FactoryBase<FieldDefinition, DialogField> implements Serializable {
+public class DialogFieldFactory extends FactoryBase<FieldDefinition, DialogField> implements Serializable {
 
     private List<DefinitionToImplementationMapping<FieldDefinition, DialogField>> definitionToImplementationMappings = new ArrayList<DefinitionToImplementationMapping<FieldDefinition, DialogField>>();
 
     @Inject
-    public FieldTypeProvider(ComponentProvider componentProvider) {
+    public DialogFieldFactory(ComponentProvider componentProvider) {
         super(componentProvider);
     }
-    //Looks like this is needed by proxy
-    public FieldTypeProvider() {
+
+    // Looks like this is needed by proxy
+    public DialogFieldFactory() {
         super(null);
     }
 
@@ -77,8 +82,7 @@ public class FieldTypeProvider extends FactoryBase<FieldDefinition, DialogField>
         addMapping(mapping.getDefinition(), mapping.getImplementation());
     }
 
-    @Override
-    public DialogField create(FieldDefinition fieldTypeDefinition, Object... parameters) {
-        return super.create(fieldTypeDefinition, parameters);
+    public DialogField create(FieldDefinition definition, Item item, Object... parameters) {
+        return super.create(definition, item, parameters);
     }
 }

@@ -33,6 +33,9 @@
  */
 package info.magnolia.ui.model.dialog.registry;
 
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
 import info.magnolia.cms.core.Content;
 import info.magnolia.cms.util.ContentUtil;
 import info.magnolia.content2bean.Content2BeanException;
@@ -40,10 +43,6 @@ import info.magnolia.content2bean.Content2BeanUtil;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.model.dialog.definition.ConfiguredDialogDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
-
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
 
 /**
  * DialogProvider that instantiates a dialog from a configuration node.
@@ -69,7 +68,7 @@ public class ConfiguredDialogDefinitionProvider implements DialogDefinitionProvi
     }
 
     @Override
-    public DialogDefinition getDefinition() throws RegistrationException {
+    public DialogDefinition getDialogDefinition() throws RegistrationException {
         return dialogDefinition;
     }
 }

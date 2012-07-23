@@ -58,7 +58,7 @@ public class NewAreaEvent extends GwtEvent<NewAreaEventHandler> {
 
     @Override
     protected void dispatch(NewAreaEventHandler handler) {
-        handler.onNewComponent(this);
+        handler.onNewArea(this);
     }
 
     public String getWorkSpace() {

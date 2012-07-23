@@ -66,13 +66,14 @@ public class ActionbarPresenter implements ActionbarView.Listener {
     }
 
     @Override
-    public ActionbarView getView() {
+    public ActionbarView start() {
         return actionbar;
     }
 
     public void initActionbar(final ActionbarDefinition definition) {
         this.definition = definition;
         actionbar = ActionbarBuilder.build(definition, this);
+        actionbar.setListener(this);
     }
 
     @Override

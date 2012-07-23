@@ -38,7 +38,7 @@ import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.admincentral.dialog.action.DialogActionFactory;
 import info.magnolia.ui.admincentral.dialog.builder.DialogBuilder;
-import info.magnolia.ui.admincentral.field.builder.FieldTypeProvider;
+import info.magnolia.ui.admincentral.field.builder.DialogFieldFactory;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 import info.magnolia.ui.model.dialog.registry.DialogDefinitionRegistry;
@@ -58,14 +58,14 @@ public class DialogPresenterFactoryImpl implements DialogPresenterFactory {
     private DialogBuilder dialogBuilder;
     private EventBus eventBus;
     private DialogActionFactory actionFactory;
-    private FieldTypeProvider fieldTypeBuilder;
+    private DialogFieldFactory dialogFieldFactory;
     private ComponentProvider componentProvider;
 
     @Inject
-    public DialogPresenterFactoryImpl(ComponentProvider componentProvider, DialogDefinitionRegistry dialogDefinitionRegistry, DialogBuilder dialogBuilder, FieldTypeProvider fieldTypeBuilder, MagnoliaShell shell, EventBus eventBus, final DialogActionFactory actionFactory) {
+    public DialogPresenterFactoryImpl(ComponentProvider componentProvider, DialogDefinitionRegistry dialogDefinitionRegistry, DialogBuilder dialogBuilder, DialogFieldFactory dialogFieldFactory, MagnoliaShell shell, EventBus eventBus, final DialogActionFactory actionFactory) {
         this.dialogDefinitionRegistry = dialogDefinitionRegistry;
         this.dialogBuilder = dialogBuilder;
-        this.fieldTypeBuilder = fieldTypeBuilder;
+        this.dialogFieldFactory = dialogFieldFactory;
         this.shell = shell;
         this.eventBus = eventBus;
         this.actionFactory = actionFactory;
@@ -75,7 +75,13 @@ public class DialogPresenterFactoryImpl implements DialogPresenterFactory {
     @Override
     public DialogView.Presenter createDialog(String dialogName) {
 
-        DialogView view = componentProvider.getComponent(DialogView.class);
+        DialogDefinition definition = getDialogDefinition(dialogName);
+        return getDialogPresenter(definition);
+
+    }
+
+    @Override
+    public DialogDefinition getDialogDefinition(String dialogName) throws RuntimeException {
         DialogDefinition dialogDefinition;
         try {
             dialogDefinition = dialogDefinitionRegistry.get(dialogName);
@@ -86,7 +92,14 @@ public class DialogPresenterFactoryImpl implements DialogPresenterFactory {
         if (dialogDefinition == null) {
             throw new IllegalArgumentException("No dialog definition registered for name [" + dialogName + "]");
         }
+        return dialogDefinition;
+    }
 
-        return new DialogPresenter(view, dialogBuilder, fieldTypeBuilder, dialogDefinition, shell, eventBus, actionFactory);
+    @Override
+    public DialogView.Presenter getDialogPresenter(DialogDefinition definition) {
+        DialogView view = componentProvider.getComponent(DialogView.class);
+        return new DialogPresenter(view, dialogBuilder, dialogFieldFactory, definition, shell, eventBus, actionFactory);
+
+
     }
 }

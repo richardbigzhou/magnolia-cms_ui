@@ -33,20 +33,18 @@
  */
 package info.magnolia.ui.admincentral.dialog.action;
 
+import javax.jcr.Node;
+
 import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.widget.dialog.DialogView.Presenter;
 
-import javax.jcr.Node;
-
-
 /**
- * Opens a dialog for editing a nodeToEdit in a tree.
- * <p/>
- * TODO: add support for configuring supported itemTypes, maybe in base class where no config means all
+ * Opens a dialog for editing a node.
  *
+ * @see EditDialogActionDefinition
  */
 public class EditDialogAction extends ActionBase<EditDialogActionDefinition> {
 
