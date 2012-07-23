@@ -58,7 +58,6 @@ public class ThumbnailUtilityTest {
     public void testCreateThumbnail() throws IOException {
         // GIVEN
         final File file = new File(TEST_PATH + ORIGINAL_IMAGE_NAME);
-        System.out.println(file.getAbsolutePath());
         final FileInputStream fis = new FileInputStream(file);
         final InputStream bis = new BufferedInputStream(fis);
         final Image image = (Image) ImageIO.read(bis);
