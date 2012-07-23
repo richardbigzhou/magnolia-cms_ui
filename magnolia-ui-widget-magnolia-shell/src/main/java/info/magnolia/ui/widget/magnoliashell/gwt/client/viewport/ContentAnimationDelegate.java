@@ -45,9 +45,9 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public interface ContentAnimationDelegate {
     
-    final static int FADE_SPEED = 400;
+    final static int FADE_SPEED = 250;
 
-    final static int SLIDE_SPEED = 700;
+    final static int SLIDE_SPEED = 400;
     
     void show(final Widget w, final Callbacks callbacks);
     
@@ -78,16 +78,24 @@ public interface ContentAnimationDelegate {
 
     final static ContentAnimationDelegate FadingDelegate = new ContentAnimationDelegate() {
         @Override
-        public void hide(Widget w, Callbacks callbacks) {
-            JQueryWrapper.select(w).fadeOut(FADE_SPEED, callbacks);
+        public void hide(Widget w, final Callbacks callbacks) {
+            JQueryWrapper.select(w).animate(FADE_SPEED, new AnimationSettings() {{
+                setProperty("opacity", 0);
+                setProperty("visibility", "hidden");
+                setCallbacks(callbacks);
+            }});
         }
 
         @Override
         public void show(final Widget widget, final Callbacks callbacks) {
             if (widget != null) {
                 final JQueryWrapper jq = JQueryWrapper.select(widget);
-                jq.setCss("display", "none");
-                jq.fadeIn(FADE_SPEED, callbacks);
+                jq.setCss("opacity", "0");
+                jq.animate(FADE_SPEED, new AnimationSettings() {{
+                    setProperty("opacity", 1);
+                    setProperty("visibility", "visible");
+                    setCallbacks(callbacks);
+                }});
             }
         }
     };

@@ -43,7 +43,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 
 /**
- * {@link ComplexPanel} that has a modality curtain when active.
+ * Panel that has a modality curtain when active.
  *
  */
 public class VPanelWithCurtain extends ComplexPanel {
@@ -51,8 +51,14 @@ public class VPanelWithCurtain extends ComplexPanel {
     private Element modalityCurtain = DOM.createDiv();
     
     public VPanelWithCurtain() {
-        modalityCurtain.setId("green-modality-curtain");
+        modalityCurtain.addClassName("green-modality-curtain");
         modalityCurtain.getStyle().setVisibility(Visibility.HIDDEN);
+        /*addTapHandler(new TapHandler() {
+            @Override
+            public void onTap(TapEvent event) {
+                Window.alert("TAP!")
+            }
+        });*/
     }
     
     public Element getModalityCurtain() {
@@ -85,6 +91,6 @@ public class VPanelWithCurtain extends ComplexPanel {
     }
     
     public void hideCurtain() {
-        JQueryWrapper.select(this).setCss("visibility", "hidden");
+        JQueryWrapper.select(modalityCurtain).setCss("visibility", "hidden");
     }
 }

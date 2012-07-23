@@ -33,19 +33,20 @@
  */
 package info.magnolia.ui.vaadin.integration.jcr;
 
-import javax.jcr.Node;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
+import info.magnolia.context.MgnlContext;
+import info.magnolia.test.mock.MockContext;
+import info.magnolia.test.mock.jcr.MockSession;
+
+import javax.jcr.Node;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.vaadin.data.Property;
-
-import info.magnolia.context.MgnlContext;
-import info.magnolia.test.mock.MockContext;
-import info.magnolia.test.mock.jcr.MockSession;
 
 public class JcrNewNodeAdapterTest {
 

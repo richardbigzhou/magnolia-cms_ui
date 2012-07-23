@@ -86,7 +86,7 @@ button.action-close {
     bottom: 0;
 }
 
-#green-modality-curtain {
+.green-modality-curtain {
     position: absolute;
     filter: alpha(opacity = 50);
     opacity: 0.9;
@@ -99,7 +99,7 @@ button.action-close {
     z-index:200;
 }
 
-#black-modality-curtain {
+.black-modality-curtain {
     position: absolute;
     filter: alpha(opacity = 80);
     opacity: 0.8;

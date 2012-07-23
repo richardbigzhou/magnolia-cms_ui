@@ -41,6 +41,6 @@ public class VShellAppsViewport extends VShellViewport {
     public VShellAppsViewport() {
         super();
         setForceContentAlign(true);
-        setContentAnimationDelegate(ContentAnimationDelegate.FadingDelegate);
+        setContentAnimationDelegate(ContentAnimationDelegate.SlidingDelegate);
     }
 }

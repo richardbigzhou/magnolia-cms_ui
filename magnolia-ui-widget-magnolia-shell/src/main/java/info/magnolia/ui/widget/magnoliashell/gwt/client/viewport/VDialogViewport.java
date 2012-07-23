@@ -43,7 +43,7 @@ import com.vaadin.terminal.gwt.client.UIDL;
 public class VDialogViewport extends VShellViewport {
 
     public VDialogViewport() {
-        getModalityCurtain().setId("black-modality-curtain");
+        getModalityCurtain().addClassName("black-modality-curtain");
         getElement().getStyle().setZIndex(500);
         setContentAnimationDelegate(ContentAnimationDelegate.FadingDelegate);
         showCurtain();

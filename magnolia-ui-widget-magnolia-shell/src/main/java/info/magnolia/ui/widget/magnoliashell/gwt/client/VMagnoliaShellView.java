@@ -71,8 +71,6 @@ public interface VMagnoliaShellView extends HasWidgets, IsWidget {
     
     void updateShellAppIndication(ShellAppType type, int increment);
     
-    boolean hasDialogs();
-    
     Presenter getPresenter();
     
     Collection<VShellViewport> getViewports();

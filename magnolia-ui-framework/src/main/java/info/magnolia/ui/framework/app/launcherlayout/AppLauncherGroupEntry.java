@@ -48,7 +48,7 @@ public class AppLauncherGroupEntry {
     private boolean enabled = true;
     private String iconFont;
     private String iconCharacter;
-
+    
     private transient AppDescriptor appDescriptor;
 
     public String getName() {

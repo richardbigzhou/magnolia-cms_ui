@@ -151,10 +151,11 @@ public class MultipleBrowserWindowsApplicationServlet extends MagnoliaIcePushSer
 
         String applicationId = (String) request.getAttribute(ATTRIBUTE_APPLICATION_ID);
         boolean forceApplicationId = (Boolean) request.getAttribute(ATTRIBUTE_FORCE_APPLICATION_ID);
-
+        
         page.write("<script type=\"text/javascript\">\n");
         page.write("//<![CDATA[\n");
-
+        page.write("document.write(\"<script language='javascript' src='../VAADIN/js/jquery-1.7.1.js'><\\/script>\");\n");
+        page.write("document.write(\"<script language='javascript' src='../VAADIN/js/jquery.transition.js'><\\/script>\");\n");
         if (forceApplicationId) {
             page.write("  window.name = \"" + applicationId + "\";\n");
         } else {
@@ -167,6 +168,13 @@ public class MultipleBrowserWindowsApplicationServlet extends MagnoliaIcePushSer
         page.write("//]]>\n</script>\n");
     }
 
+    @Override
+    protected void writeAjaxPageHtmlHeader(BufferedWriter page, String title, String themeUri, HttpServletRequest request)
+            throws IOException {
+        super.writeAjaxPageHtmlHeader(page, title, themeUri, request);
+        page.write("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no\" />");
+    }
+    
     @Override
     protected URL getApplicationUrl(HttpServletRequest request) throws MalformedURLException {
 

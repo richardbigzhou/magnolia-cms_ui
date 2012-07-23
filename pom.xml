@@ -21,7 +21,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<magnoliaVersion>5.0-SNAPSHOT</magnoliaVersion>
 		<vaadinVersion>6.8.0</vaadinVersion>
-		<gwtVersion>2.4.0</gwtVersion>
+		<gwtVersion>2.5.0-rc1</gwtVersion>
 	</properties>
 
 	<scm>
@@ -83,6 +83,11 @@
 				<groupId>org.vaadin.addons</groupId>
 				<artifactId>customfield</artifactId>
 				<version>1.0.0</version>
+			</dependency>
+			<dependency>
+   				<groupId>org.vaadin.addons</groupId>
+   				<artifactId>super-dev-mode-for-vaadin-6</artifactId>
+   				<version>0.9.0</version>
 			</dependency>
 			<dependency>
 				<groupId>com.google.gwt</groupId>

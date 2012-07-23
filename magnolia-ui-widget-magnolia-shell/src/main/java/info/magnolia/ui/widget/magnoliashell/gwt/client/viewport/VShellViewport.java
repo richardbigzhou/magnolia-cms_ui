@@ -43,7 +43,6 @@ import java.util.List;
 import java.util.Set;
 
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.Style.Visibility;
@@ -139,9 +138,7 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
             if (w != visibleWidget) {
                 hideCurrentContent();
             }
-            final Element el = w.getElement();
-            final Style style = el.getStyle();
-            style.setVisibility(Visibility.VISIBLE);
+            w.getElement().getStyle().setVisibility(Visibility.VISIBLE);
             animationDelegate.show(w, Callbacks.create(new JQueryCallback() {
                 @Override
                 public void execute(JQueryWrapper query) {
@@ -150,7 +147,7 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
             }));
         }
     }
-
+    
     public void hideEntireContents() {
         Iterator<Widget> it = iterator();
         while (it.hasNext()) {
@@ -171,7 +168,6 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
                     public void execute(JQueryWrapper query) {
                         final Style style = formerVisible.getElement().getStyle();
                         style.setVisibility(Visibility.HIDDEN);
-                        style.setDisplay(Display.BLOCK);
                     }
                 }));
             }
@@ -238,7 +234,7 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
     }
 
     public boolean hasContent() {
-        return visibleWidget != null;
+        return getWidgetCount() > 0;
     }
 
     public void setContentAnimationDelegate(final ContentAnimationDelegate animationDelegate) {

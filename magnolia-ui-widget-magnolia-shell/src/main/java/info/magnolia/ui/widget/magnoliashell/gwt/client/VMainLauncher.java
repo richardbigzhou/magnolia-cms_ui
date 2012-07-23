@@ -54,35 +54,52 @@ import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.TouchEndEvent;
+import com.google.gwt.event.dom.client.TouchEndHandler;
+import com.google.gwt.event.dom.client.TouchStartEvent;
+import com.google.gwt.event.dom.client.TouchStartHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.HandlerRegistration;
+import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 
 /**
  * Navigation bar.
  */
 public class VMainLauncher extends FlowPanel {
-    
+
     private final static int DIVET_ANIMATION_SPEED = 200;
-    
+
     private final static String ID = "main-launcher";
-    
+
     private HandlerRegistration activationHandlerRegistration;
-    
+
+    private ShellNavigationHandler navigationHandler = new ShellNavigationAdapter() {
+        @Override
+        public void onAppActivated(AppActivatedEvent event) {
+            if (event.isShellApp()) {
+                activateControl(ShellAppType.valueOf(event.getPrefix().toUpperCase()));
+            }
+        }
+    };
+
     private class NavigatorButton extends FlowPanel {
-        
+
         private Element indicator = DOM.createDiv();
-        
+
         private Element buttonWrapper;
-        
+
         private int indication = 0;
-        
+
         private DrawingArea indicatorPad = new DrawingArea(0, 0);
+
+        TouchDelegate delegate = new TouchDelegate(this);
         
         public NavigatorButton(final ShellAppType type) {
             super();
@@ -94,25 +111,58 @@ public class VMainLauncher extends FlowPanel {
             buttonWrapper.getStyle().setPosition(Position.RELATIVE);
             buttonWrapper.appendChild(indicator);
             buttonWrapper.setId(type.getId());
-            
+
             indicatorPad.addStyleName("pad");
-            DOM.sinkEvents(getElement(), Event.MOUSEEVENTS);
+            
             addDomHandler(new ClickHandler() {
                 @Override
-                public void onClick(ClickEvent event) {                    
-                    navigateToShellApp(type);
+                public void onClick(ClickEvent event) {
+                    //navigateToShellApp(type);
                 }
             }, ClickEvent.getType());
+
+            addDomHandler(new TouchStartHandler() {
+                
+                @Override
+                public void onTouchStart(TouchStartEvent event) {
+                    Window.alert("START TOUCH");
+                }
+            }, TouchStartEvent.getType());
+            
+            addDomHandler(new TouchEndHandler() {
+                
+                @Override
+                public void onTouchEnd(TouchEndEvent event) {
+                    Window.alert("END TOUCH");
+                    navigateToShellApp(type);
+                }
+            }, TouchEndEvent.getType());
+            
+            DOM.sinkEvents(getElement(), Event.TOUCHEVENTS);
+            
+            delegate.addTouchStartHandler(new com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler() {
+                @Override
+                public void onTouchStart(com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent event) {
+                }
+            });
+
+            delegate.addTouchEndHandler(new com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler() {
+                
+                @Override
+                public void onTouchEnd(com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent event) {
+                    navigateToShellApp(type);
+                }
+            });
         }
 
         public void incerementIndication(int increment) {
             indication += increment;
-            ((Element)indicator.getFirstChild().cast()).setInnerText(String.valueOf(indication));
+            ((Element) indicator.getFirstChild().cast()).setInnerText(String.valueOf(indication));
             if (indication <= 0) {
                 indicator.getStyle().setDisplay(Display.NONE);
             } else {
                 if (getWidgetIndex(indicatorPad) < 0) {
-                    add(indicatorPad, indicator);   
+                    add(indicatorPad, indicator);
                 }
                 indicator.getStyle().setDisplay(Display.BLOCK);
                 IndicationBubbleFactory.createBubbleForValue(indication, indicatorPad);
@@ -120,25 +170,23 @@ public class VMainLauncher extends FlowPanel {
             }
         }
     };
-    
+
     /**
      * Type of the "shell app" to be loaded.
      */
     public static enum ShellAppType {
-        APPLAUNCHER("btn-appslauncher"),
-        PULSE("btn-pulse"),
-        FAVORITE("btn-favorites");
-        
+        APPLAUNCHER("btn-appslauncher"), PULSE("btn-pulse"), FAVORITE("btn-favorites");
+
         private String classId;
-        
+
         public String getId() {
             return classId;
         }
-        
+
         private ShellAppType(final String styleName) {
             this.classId = styleName;
         }
-        
+
         public static String getTypeByFragmentId(final String id) {
             for (final ShellAppType type : ShellAppType.values()) {
                 if (type.name().equalsIgnoreCase(id)) {
@@ -158,32 +206,57 @@ public class VMainLauncher extends FlowPanel {
             return result;
         }
     };
-  
+
     private int expandedHeight = 0;
-    
+
     private final Element logoWrapper = DOM.createDiv();
-    
+
     private final Element divetWrapper = DOM.createDiv();
-    
+
     private Image logo = new Image(VShellImageBundle.BUNDLE.getLogo());
-    
+
     private Image divet = new Image(VShellImageBundle.BUNDLE.getDivetGreen());
-    
+
     private Map<ShellAppType, NavigatorButton> controlsMap = new EnumMap<ShellAppType, NavigatorButton>(ShellAppType.class);
 
     private final EventBus eventBus;
-    
+
     public VMainLauncher(final EventBus eventBus) {
         super();
         this.eventBus = eventBus;
         getElement().setId(ID);
         construct();
+        addDomHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                //navigateToShellApp(type);
+            }
+        }, ClickEvent.getType());
+
+        addDomHandler(new TouchStartHandler() {
+            
+            @Override
+            public void onTouchStart(TouchStartEvent event) {
+                Window.alert("START TOUCH");
+            }
+        }, TouchStartEvent.getType());
+        
+        addDomHandler(new TouchEndHandler() {
+            
+            @Override
+            public void onTouchEnd(TouchEndEvent event) {
+                Window.alert("END TOUCH");
+                //navigateToShellApp(type);
+            }
+        }, TouchEndEvent.getType());
+        
+        DOM.sinkEvents(getElement(), Event.TOUCHEVENTS);
     }
-    
+
     private void navigateToShellApp(final ShellAppType type) {
         eventBus.fireEvent(new ShellAppNavigationEvent(type, ""));
     }
-    
+
     private void construct() {
         divetWrapper.setId("divet");
         logoWrapper.setId("logo");
@@ -197,32 +270,55 @@ public class VMainLauncher extends FlowPanel {
             add(w);
         }
         divet.setVisible(false);
+
+        /*addTouchEndHandler(new TouchEndHandler() {
+            @Override
+            public void onTouchEnd(TouchEndEvent event) {
+                Window.alert("Main Touch end");
+            }
+        });
+
+        addPinchHandler(new PinchHandler() {
+            @Override
+            public void onPinch(PinchEvent event) {
+                Window.alert("Pinch");
+            }
+        });
+
+        addTapHandler(new TapHandler() {
+            @Override
+            public void onTap(TapEvent event) {
+                Window.alert("tap");
+            }
+        });*/
     }
-    
+
     @Override
     protected void onLoad() {
         super.onLoad();
         expandedHeight = getOffsetHeight();
         getElement().getStyle().setTop(-60, Unit.PX);
-        JQueryWrapper.select(getElement()).animate(250, new AnimationSettings() {{
-            setProperty("top", 0);
-        }});
+        JQueryWrapper.select(getElement()).animate(250, new AnimationSettings() {
+            {
+                setProperty("top", 0);
+            }
+        });
         activationHandlerRegistration = eventBus.addHandler(AppActivatedEvent.TYPE, navigationHandler);
-    } 
-    
+    }
+
     @Override
     protected void onUnload() {
         super.onUnload();
         if (activationHandlerRegistration != null) {
             activationHandlerRegistration.removeHandler();
         }
-    } 
-    
-    final void updateDivet() {
+    }
+
+    public final void updateDivet() {
         final ShellAppType type = getActiveShellType();
         if (type != null) {
             doUpdateDivetPosition(type, false);
-        }  
+        }
     }
 
     public ShellAppType getActiveShellType() {
@@ -235,7 +331,7 @@ public class VMainLauncher extends FlowPanel {
         }
         return null;
     }
-    
+
     protected void activateControl(final ShellAppType type) {
         final ShellAppType currentActive = getActiveShellType();
         if (currentActive != null) {
@@ -261,14 +357,14 @@ public class VMainLauncher extends FlowPanel {
         if (animated) {
             final AnimationSettings settings = new AnimationSettings();
             settings.setProperty("left", divetPos);
-            JQueryWrapper.select(divetWrapper).animate(DIVET_ANIMATION_SPEED, settings);            
+            JQueryWrapper.select(divetWrapper).animate(DIVET_ANIMATION_SPEED, settings);
         } else {
             divetWrapper.getStyle().setLeft(divetPos, Unit.PX);
         }
 
     }
 
-    void deactivateControls() {
+    public void deactivateControls() {
         divet.setVisible(false);
         for (final ShellAppType appType : ShellAppType.values()) {
             controlsMap.get(appType).removeStyleName("active");
@@ -278,21 +374,12 @@ public class VMainLauncher extends FlowPanel {
     public int getExpandedHeight() {
         return expandedHeight;
     }
-    
-    private ShellNavigationHandler navigationHandler = new ShellNavigationAdapter() {
-        @Override
-        public void onAppActivated(AppActivatedEvent event) {
-            if (event.isShellApp()) {
-                activateControl(ShellAppType.valueOf(event.getPrefix().toUpperCase()));
-            }
-        }
-    };
 
     public ShellAppType getNextShellAppType() {
         final ShellAppType cur = getActiveShellType();
         if (cur != null) {
-            final List<ShellAppType> values = Arrays.asList(ShellAppType.values()); 
-            return values.get((values.indexOf(cur) + 1) % values.size());    
+            final List<ShellAppType> values = Arrays.asList(ShellAppType.values());
+            return values.get((values.indexOf(cur) + 1) % values.size());
         }
         return ShellAppType.APPLAUNCHER;
     }

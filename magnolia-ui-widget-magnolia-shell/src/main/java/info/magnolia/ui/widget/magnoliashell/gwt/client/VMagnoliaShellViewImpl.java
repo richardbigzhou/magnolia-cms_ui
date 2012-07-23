@@ -93,7 +93,7 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
     private VMainLauncher mainAppLauncher;
 
     private Presenter presenter;
-
+    
     private EventBus eventBus;
 
     private VShellMessage lowPriorityMessage;
@@ -177,20 +177,16 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
     }
 
     @Override
-    public boolean hasDialogs() {
-        final VShellViewport dialogViewport = getDialogViewport();
-        return dialogViewport != null && dialogViewport.getWidgetCount() > 0;
-    }
-
-    @Override
     public boolean remove(Widget w) {
         presenter.destroyChild(w);
         return super.remove(w);
     }
 
     protected void replaceWidget(final Widget oldWidget, final Widget newWidget) {
-        if (oldWidget != null) {
-            remove(oldWidget);
+        if (oldWidget != newWidget ) {
+            if (oldWidget != null) {
+                remove(oldWidget);
+            }   
         }
         if (getWidgetIndex(newWidget) < 0) {
             add(newWidget, root);

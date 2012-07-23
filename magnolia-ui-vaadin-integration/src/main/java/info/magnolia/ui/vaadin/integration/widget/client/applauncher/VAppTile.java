@@ -44,8 +44,12 @@ import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
+import com.googlecode.mgwt.dom.client.event.tap.TapEvent;
+import com.googlecode.mgwt.dom.client.event.tap.TapHandler;
+import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 
 /**
  * The thumbnail of one single app in AppLauncher.
@@ -126,6 +130,14 @@ public class VAppTile extends Widget {
                 eventBus.fireEvent(new AppActivationEvent(appTileData.getCaption()));
             }
         }, MouseDownEvent.getType());
+        
+        TouchDelegate d = new TouchDelegate(this);
+        d.addTapHandler(new TapHandler() {
+            @Override
+            public void onTap(TapEvent event) {
+                Window.alert("tap");
+            }
+        });
     }
 
     public void setActive(boolean isActive) {
