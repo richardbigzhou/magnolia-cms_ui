@@ -42,10 +42,7 @@ import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.widget.HybridSelectionTreeTable;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -55,7 +52,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
-import com.vaadin.data.Property;
 import com.vaadin.event.Transferable;
 import com.vaadin.event.dd.DragAndDropEvent;
 import com.vaadin.event.dd.DropHandler;
@@ -106,7 +102,7 @@ public class MagnoliaTreeTable extends HybridSelectionTreeTable {
             }
             // super.setColumnExpandRatio(columnName, treeColumn.getWidth() <= 0 ? 1 :
             // treeColumn.getWidth());
-            addContainerProperty(columnProperty, Property.class, "");
+            addContainerProperty(columnProperty, column.getType(), "");
             super.setColumnHeader(columnProperty, column.getLabel());
             visibleColumns.add(columnName);
 
@@ -215,22 +211,9 @@ public class MagnoliaTreeTable extends HybridSelectionTreeTable {
         if (container.containsId(itemId)) {
             container.fireItemSetChange();
         } else {
-            log.warn("No item found for Id: " + itemId);
+            log.warn("No item found for id [{}]", itemId);
         }
 
-    }
-
-    // FIXME This is not the correct way to handle Typed column.
-    // Ticket: SCRUM-1360
-    @Override
-    protected String formatPropertyValue(Object rowId, Object colId, Property property) {
-        Object v = property.getValue();
-        if (v instanceof Date) {
-            Date dateValue = (Date) v;
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            return "Formatted date: " + dateFormat.format(dateValue);
-        }
-        return super.formatPropertyValue(rowId, colId, property);
     }
 
 }

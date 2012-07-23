@@ -483,7 +483,7 @@ public abstract class JcrContainer extends AbstractContainer implements Containe
     /**
      * Determines a new offset for updating the row cache. The offset is calculated from the given
      * index, and will be fixed to match the start of a page, based on the value of pageLength.
-     * 
+     *
      * @param index Index of the item that was requested, but not found in cache
      */
     private void updateOffsetAndCache(int index) {

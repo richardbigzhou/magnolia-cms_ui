@@ -33,14 +33,17 @@
  */
 package info.magnolia.ui.admincentral.list.view;
 
-import info.magnolia.ui.admincentral.column.Column;
 import info.magnolia.ui.admincentral.column.EditHandler;
 import info.magnolia.ui.admincentral.container.JcrContainer;
 import info.magnolia.ui.admincentral.content.view.ContentView;
 import info.magnolia.ui.admincentral.list.container.FlatJcrContainer;
 import info.magnolia.ui.admincentral.tree.model.TreeModel;
+import info.magnolia.ui.model.column.definition.ColumnDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.widget.HybridSelectionTable;
+
+import java.util.Iterator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,13 +57,13 @@ import com.vaadin.ui.VerticalLayout;
 
 /**
  * Vaadin UI component that displays a list.
- * 
+ *
  */
 public class ListViewImpl implements ListView {
 
     private ContentView.Listener listener;
 
-    private final Table table;
+    private final HybridSelectionTable table;
 
     private final VerticalLayout margin = new VerticalLayout();
 
@@ -69,9 +72,8 @@ public class ListViewImpl implements ListView {
     private static final Logger log = LoggerFactory.getLogger(ListViewImpl.class);
 
     public ListViewImpl(WorkbenchDefinition workbenchDefinition, TreeModel treeModel) {
-        table = new Table();
+        table = new HybridSelectionTable();
         table.setSizeFull();
-        table.addStyleName("striped");
 
         // next two lines are required to make the browser (Table) react on selection change via
         // mouse
@@ -88,7 +90,7 @@ public class ListViewImpl implements ListView {
 
             @Override
             public void valueChange(ValueChangeEvent event) {
-                log.debug("Handle value change Event: " + event.getProperty().getValue());
+                log.debug("Handle value change Event: {}", event.getProperty().getValue());
                 presenterOnItemSelection((String) event.getProperty().getValue());
             }
         });
@@ -102,18 +104,23 @@ public class ListViewImpl implements ListView {
         table.setColumnReorderingAllowed(true);
 
         container = new FlatJcrContainer(treeModel, workbenchDefinition);
-
-        for (Column< ? > treeColumn : treeModel.getColumns().values()) {
-            String columnName = treeColumn.getDefinition().getName();
-            String columnProperty = (treeColumn.getDefinition().getPropertyName() != null)
-                ? treeColumn.getDefinition().getPropertyName()
-                : columnName;
-            table.setColumnExpandRatio(columnName, treeColumn.getWidth() <= 0 ? 1 : treeColumn.getWidth());
-            container.addContainerProperty(columnProperty, Component.class, "");
-            table.setColumnHeader(columnProperty, treeColumn.getLabel());
+        Iterator<ColumnDefinition> iterator = workbenchDefinition.getColumns().iterator();
+        table.setContainerDataSource(container);
+        while (iterator.hasNext()) {
+            ColumnDefinition column = iterator.next();
+            String columnName = column.getName();
+            String columnProperty = "";
+            if (column.getPropertyName() != null) {
+                columnProperty = column.getPropertyName();
+            } else {
+                columnProperty = columnName;
+            }
+            // super.setColumnExpandRatio(columnName, treeColumn.getWidth() <= 0 ? 1 :
+            // treeColumn.getWidth());
+            container.addContainerProperty(columnProperty, column.getType(), "");
+            table.setColumnHeader(columnProperty, column.getLabel());
         }
 
-        table.setContainerDataSource(container);
 
         margin.setStyleName("mgnl-content-view");
         margin.addComponent(table);
@@ -160,7 +167,7 @@ public class ListViewImpl implements ListView {
         if (container.containsId(itemId)) {
             container.fireItemSetChange();
         } else {
-            log.warn("No item found for Id: " + itemId);
+            log.warn("No item found for id [{}]", itemId);
         }
     }
 }
