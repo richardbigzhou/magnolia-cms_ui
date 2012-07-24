@@ -35,7 +35,7 @@ package info.magnolia.ui.admincentral.thumbnail;
 
 import java.net.URL;
 
-import javax.jcr.Item;
+import javax.jcr.Node;
 
 /**
  * Defines a provider for Thumbnail images.
@@ -46,5 +46,5 @@ public interface ThumbnailProvider {
      * Return a thumbnail of the requested size representing the provided item. Depending on the implementation,
      * this thumbnail may be retrieved from cache or created on the fly.
      */
-    URL getThumbnail(Item item, int width, int height);
+    URL getThumbnail(Node node, int width, int height);
 }
