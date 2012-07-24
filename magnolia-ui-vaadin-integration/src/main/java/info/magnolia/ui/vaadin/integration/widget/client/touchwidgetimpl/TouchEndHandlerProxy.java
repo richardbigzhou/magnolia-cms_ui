@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,32 +31,31 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.magnoliashell.gwt.client.viewport;
+package info.magnolia.ui.vaadin.integration.widget.client.touchwidgetimpl;
 
+import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
+import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
+import com.vaadin.terminal.gwt.client.VConsole;
 
 /**
- * Shell apps viewport client side.
+ * Proxy implementayion of native gwt {@link com.google.gwt.event.dom.client.TouchEndHandler} that delegates to mgwt {@link TouchEndHandler}.
+ *
  */
-public class VShellAppsViewport extends VShellViewport {
+public class TouchEndHandlerProxy implements com.google.gwt.event.dom.client.TouchEndHandler {
 
-    private ContentAnimationDelegate internalAnimationDelegate = ContentAnimationDelegate.FadingDelegate;
+    private TouchEndHandler delegateHandler;
     
-    private ContentAnimationDelegate transitionalAnimationDelegate = ContentAnimationDelegate.SlidingDelegate;
-    
-    public VShellAppsViewport() {
-        super();
-        setForceContentAlign(true);
-        setContentAnimationDelegate(ContentAnimationDelegate.SlidingDelegate);
+    public TouchEndHandlerProxy(final TouchEndHandler delegateHandler) {
+        this.delegateHandler = delegateHandler;
     }
     
     @Override
-    public void setActive(boolean isActive) {
-        super.setActive(isActive);
-        if (isActive) {
-            setContentAnimationDelegate(internalAnimationDelegate);
-        } else {
-            setContentAnimationDelegate(transitionalAnimationDelegate);
+    public void onTouchEnd(com.google.gwt.event.dom.client.TouchEndEvent event) {
+        try {
+            VConsole.log("Delegating touch end");
+            delegateHandler.onTouchEnd(GwtTouchEventConverter.<TouchEndEvent>convertGWTEvent(event));   
+        } catch (Exception e) {
+            VConsole.log("Touch end delegation error " + e.getMessage());
         }
     }
-    
 }

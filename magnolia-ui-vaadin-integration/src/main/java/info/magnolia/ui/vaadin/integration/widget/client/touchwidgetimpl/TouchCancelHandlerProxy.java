@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,32 +31,24 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.magnoliashell.gwt.client.viewport;
+package info.magnolia.ui.vaadin.integration.widget.client.touchwidgetimpl;
 
+import com.googlecode.mgwt.dom.client.event.touch.TouchCancelEvent;
+import com.googlecode.mgwt.dom.client.event.touch.TouchCancelHandler;
 
 /**
- * Shell apps viewport client side.
+ * Proxy handler that delegates events to {@link TouchCancelHandler}.
  */
-public class VShellAppsViewport extends VShellViewport {
-
-    private ContentAnimationDelegate internalAnimationDelegate = ContentAnimationDelegate.FadingDelegate;
+public class TouchCancelHandlerProxy implements com.google.gwt.event.dom.client.TouchCancelHandler {
     
-    private ContentAnimationDelegate transitionalAnimationDelegate = ContentAnimationDelegate.SlidingDelegate;
+    private TouchCancelHandler delegateHandler;
     
-    public VShellAppsViewport() {
-        super();
-        setForceContentAlign(true);
-        setContentAnimationDelegate(ContentAnimationDelegate.SlidingDelegate);
+    public TouchCancelHandlerProxy(TouchCancelHandler delegateHandler) {
+        this.delegateHandler = delegateHandler;
     }
     
     @Override
-    public void setActive(boolean isActive) {
-        super.setActive(isActive);
-        if (isActive) {
-            setContentAnimationDelegate(internalAnimationDelegate);
-        } else {
-            setContentAnimationDelegate(transitionalAnimationDelegate);
-        }
+    public void onTouchCancel(com.google.gwt.event.dom.client.TouchCancelEvent event) {
+        delegateHandler.onTouchCanceled(GwtTouchEventConverter.<TouchCancelEvent>convertGWTEvent(event));
     }
-    
 }
