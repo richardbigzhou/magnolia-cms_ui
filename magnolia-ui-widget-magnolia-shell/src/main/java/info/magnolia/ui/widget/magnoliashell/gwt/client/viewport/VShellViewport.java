@@ -62,6 +62,10 @@ import com.vaadin.terminal.gwt.client.UIDL;
  */
 public class VShellViewport extends VPanelWithCurtain implements Container, ContainerResizedListener {
 
+    private static int Z_INDEX_HI = 300;
+
+    private static int Z_INDEX_LO = 100;
+    
     protected String paintableId = null;
 
     protected ApplicationConnection client;
@@ -78,6 +82,8 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
 
     private EventBus eventBus;
 
+    private boolean isActive = false;
+    
     public VShellViewport() {
         super();
         setElement(container);
@@ -229,6 +235,15 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
         super.add(child, container);
     }
 
+    public void setActive(boolean isActive) {
+        this.isActive = isActive;
+        getElement().getStyle().setZIndex(isActive ? Z_INDEX_HI : Z_INDEX_LO);
+    }
+    
+    public boolean isActive() {
+        return isActive;
+    }
+    
     public void setForceContentAlign(boolean forceContentAlign) {
         this.forceContentAlign = forceContentAlign;
     }

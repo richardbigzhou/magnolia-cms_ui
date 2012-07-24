@@ -88,10 +88,6 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
 
     public static final String CLASSNAME = "v-magnolia-shell";
 
-    private static int Z_INDEX_HI = 300;
-
-    private static int Z_INDEX_LO = 100;
-
     private Map<ViewportType, VShellViewport> viewports = new EnumMap<ViewportType, VShellViewport>(ViewportType.class);
 
     private ViewportType activeViewportType = null;
@@ -282,8 +278,8 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
     protected void switchViewports(boolean appViewportOnTop) {
         final VShellViewport shellAppViewport = getShellAppViewport();
         final VShellViewport appViewport = getAppViewport();
-        shellAppViewport.getElement().getStyle().setZIndex(appViewportOnTop ? Z_INDEX_LO : Z_INDEX_HI);
-        appViewport.getElement().getStyle().setZIndex(appViewportOnTop ? Z_INDEX_HI : Z_INDEX_LO);
+        shellAppViewport.setActive(!appViewportOnTop);
+        appViewport.setActive(appViewportOnTop);
         if (appViewportOnTop) {
             mainAppLauncher.deactivateControls();
         } else {
