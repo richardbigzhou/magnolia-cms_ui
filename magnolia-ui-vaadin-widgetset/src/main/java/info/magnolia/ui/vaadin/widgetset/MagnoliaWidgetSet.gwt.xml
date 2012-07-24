@@ -11,7 +11,8 @@
 	<inherits name="org.vaadin.artur.icepush.IcepushaddonWidgetset" />
 	<inherits name='org.vaadin.gwtgraphics.GWTGraphics' />
 	<inherits name='org.vaadin.artur.superdevmode.SuperdevmodeaddonWidgetset' />
-	<inherits name="com.googlecode.mgwt.MGWT"/>
+	<inherits name="com.googlecode.mgwt.DOM"/>
+	<inherits name="com.googlecode.mgwt.UI"/>
 	<inherits name="info.magnolia.ui.vaadin.integration.widget.VaadinIntegrationWidgetSet" />
 	<inherits name="info.magnolia.ui.widget.magnoliashell.gwt.MagnoliaShellWidgetSet" />
 
