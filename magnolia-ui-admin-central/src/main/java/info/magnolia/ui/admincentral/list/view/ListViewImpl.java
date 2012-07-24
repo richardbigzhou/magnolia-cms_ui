@@ -33,14 +33,17 @@
  */
 package info.magnolia.ui.admincentral.list.view;
 
-import info.magnolia.ui.admincentral.column.Column;
 import info.magnolia.ui.admincentral.column.EditHandler;
 import info.magnolia.ui.admincentral.container.JcrContainer;
 import info.magnolia.ui.admincentral.content.view.ContentView;
 import info.magnolia.ui.admincentral.list.container.FlatJcrContainer;
 import info.magnolia.ui.admincentral.tree.model.TreeModel;
+import info.magnolia.ui.model.column.definition.ColumnDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.widget.HybridSelectionTable;
+
+import java.util.Iterator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +57,7 @@ import com.vaadin.ui.VerticalLayout;
 
 /**
  * Vaadin UI component that displays a list.
- * 
+ *
  */
 public class ListViewImpl implements ListView {
 
@@ -69,9 +72,8 @@ public class ListViewImpl implements ListView {
     private static final Logger log = LoggerFactory.getLogger(ListViewImpl.class);
 
     public ListViewImpl(WorkbenchDefinition workbenchDefinition, TreeModel treeModel) {
-        table = new Table();
+        table = new HybridSelectionTable();
         table.setSizeFull();
-        table.addStyleName("striped");
 
         // next two lines are required to make the browser (Table) react on selection change via
         // mouse
@@ -88,35 +90,43 @@ public class ListViewImpl implements ListView {
 
             @Override
             public void valueChange(ValueChangeEvent event) {
-                log.debug("Handle value change Event: " + event.getProperty().getValue());
+                log.debug("Handle value change Event: {}", event.getProperty().getValue());
                 presenterOnItemSelection((String) event.getProperty().getValue());
             }
         });
-        new EditHandler(table);
 
         table.setEditable(false);
         table.setSelectable(true);
         table.setColumnCollapsingAllowed(true);
 
-        // TODO: check Ticket http://dev.vaadin.com/ticket/5493
-        table.setColumnReorderingAllowed(true);
+        table.setColumnReorderingAllowed(false);
 
         container = new FlatJcrContainer(treeModel, workbenchDefinition);
-
-        for (Column< ? > treeColumn : treeModel.getColumns().values()) {
-            String columnName = treeColumn.getDefinition().getName();
-            String columnProperty = (treeColumn.getDefinition().getPropertyName() != null)
-                ? treeColumn.getDefinition().getPropertyName()
-                : columnName;
-            table.setColumnExpandRatio(columnName, treeColumn.getWidth() <= 0 ? 1 : treeColumn.getWidth());
-            container.addContainerProperty(columnProperty, Component.class, "");
-            table.setColumnHeader(columnProperty, treeColumn.getLabel());
-        }
-
+        //FIXME fgrilli: we have to set the container data source twice. We set it here so
+        //that checkbox column is placed correctly as first
         table.setContainerDataSource(container);
+        Iterator<ColumnDefinition> iterator = workbenchDefinition.getColumns().iterator();
+        while (iterator.hasNext()) {
+            ColumnDefinition column = iterator.next();
+            String columnName = column.getName();
+            String columnProperty = "";
+            if (column.getPropertyName() != null) {
+                columnProperty = column.getPropertyName();
+            } else {
+                columnProperty = columnName;
+            }
+            //table.setColumnExpandRatio(columnProperty, column.getWidth() <= 0 ? 1 :column.getWidth());
+            table.setColumnHeader(columnProperty, column.getLabel());
+            container.addContainerProperty(columnProperty, column.getType(), "");
+        }
+        //FIXME fgrilli: we have to set the container data source twice. We set it here so
+        //that the table actually contains data.
+        table.setContainerDataSource(container);
+
 
         margin.setStyleName("mgnl-content-view");
         margin.addComponent(table);
+        new EditHandler(table);
     }
 
     @Override
@@ -160,7 +170,7 @@ public class ListViewImpl implements ListView {
         if (container.containsId(itemId)) {
             container.fireItemSetChange();
         } else {
-            log.warn("No item found for Id: " + itemId);
+            log.warn("No item found for id [{}]", itemId);
         }
     }
 }

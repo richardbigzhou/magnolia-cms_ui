@@ -35,7 +35,6 @@ package info.magnolia.ui.admincentral.tree.model;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.admincentral.column.Column;
@@ -63,8 +62,6 @@ import javax.jcr.Session;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.vaadin.ui.Component;
 
 
 /**
@@ -122,7 +119,7 @@ public class TreeModelTest extends RepositoryTestCase {
         configuredWorkbench.addColumn(colDef1);
         configuredWorkbench.addColumn(colDef2);
 
-        treeModel = new TreeModel(configuredWorkbench, columns, workbenchActionFactory);
+        treeModel = new TreeModel(configuredWorkbench, workbenchActionFactory);
         workbenchDefinition = configuredWorkbench;
 
         // Init session
@@ -159,7 +156,7 @@ public class TreeModelTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testisRoot() throws RepositoryException {
+    public void testIsRoot() throws RepositoryException {
         // GIVEN
         Node node1 = JcrContainerTest.createNode(rootNode, "node1", "mgnl:page", colName1, "name1");
         Node node2 = JcrContainerTest.createNode(rootNode, "node2", "mgnl:content", colName1, "name2");
@@ -180,33 +177,6 @@ public class TreeModelTest extends RepositoryTestCase {
 
     }
 
-    @Test
-    public void testGetColumnComponent_exist() throws RepositoryException {
-        // GIVEN
-        Node node1 = JcrContainerTest.createNode(rootNode, "node1", "mgnl:page", colName1, "name1");
-        Node node2 = JcrContainerTest.createNode(rootNode, "node2", "mgnl:content", colName1, "name2");
-        node1.getSession().save();
-
-        // WHEN
-        Component component = treeModel.getColumnComponent("name", node2);
-
-        // THEN
-        assertNotNull(component);
-    }
-
-    @Test
-    public void testGetColumnComponent_doNotexist() throws RepositoryException {
-        // GIVEN
-        Node node1 = JcrContainerTest.createNode(rootNode, "node1", "mgnl:page", colName1, "name1");
-        Node node2 = JcrContainerTest.createNode(rootNode, "node2", "mgnl:content", colName1, "name2");
-        node1.getSession().save();
-
-        // WHEN
-        Component component = treeModel.getColumnComponent("name1", node2);
-
-        // THEN
-        assertNull(component);
-    }
 
     @Test
     public void testSetColumnComponent() {
@@ -387,16 +357,6 @@ public class TreeModelTest extends RepositoryTestCase {
 
         // THEN
         assertEquals("", treeModel.getPathInTree(node1));
-    }
-
-    @Test
-    public void testGetColumns() {
-        // TODO
-        // GIVEN
-
-        // WHEN
-
-        // THEN
     }
 
 }

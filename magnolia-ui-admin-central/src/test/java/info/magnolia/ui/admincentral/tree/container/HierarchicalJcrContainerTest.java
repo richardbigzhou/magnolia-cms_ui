@@ -123,8 +123,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
 
         workbenchDefinition = configuredWorkbench;
 
-        // FIXME.... workbenchDefinition --> has column set && we send also columns???
-        treeModel = new TreeModel(workbenchDefinition, columns, workbenchActionFactory);
+        treeModel = new TreeModel(workbenchDefinition, workbenchActionFactory);
 
         hierarchicalJcrContainer = new HierarchicalJcrContainer(treeModel, workbenchDefinition);
 

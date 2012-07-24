@@ -57,7 +57,9 @@ public class ConfiguredContentViewBuilderTest {
         final MockComponentProvider componentProvider = new MockComponentProvider();
         componentProvider.setInstance(WorkbenchActionFactory.class, new WorkbenchActionFactoryImpl());
         final ConfiguredWorkbenchDefinition workbenchDef = new ConfiguredWorkbenchDefinition();
-        workbenchDef.addColumn(new LabelColumnDefinition());
+        LabelColumnDefinition def = new LabelColumnDefinition();
+        def.setName("foo");
+        workbenchDef.addColumn(def);
 
         // WHEN
         final ConfiguredContentViewBuilder builder = new ConfiguredContentViewBuilder(componentProvider);

@@ -94,6 +94,14 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
             }
         }));
 
+        toolbar.addComponent(new Button("Thumbnail", new Button.ClickListener() {
+
+            @Override
+            public void buttonClick(ClickEvent event) {
+                setGridType(ViewType.THUMBNAIL);
+            }
+        }));
+
         workbenchContainer.setSizeFull();
         workbenchContainer.setStyleName("mgnl-app-view");
         workbenchContainer.addComponent(toolbar);
@@ -141,7 +149,7 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
     public void addActionbarView(final ActionbarView actionbar) {
         root.addComponent((Component) actionbar);
     }
-    
+
     @Override
     public Component asVaadinComponent() {
         return this;

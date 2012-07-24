@@ -111,8 +111,7 @@ public class JcrContainerTest extends RepositoryTestCase{
         configuredWorkbench.addColumn(colDef1);
         configuredWorkbench.addColumn(colDef2);
 
-        //FIXME.... workbenchDefinition --> has column set && we send also columns???
-        treeModel = new TreeModel(configuredWorkbench, columns, workbenchActionFactory);
+        treeModel = new TreeModel(configuredWorkbench, workbenchActionFactory);
 
         jcrContainer = new JcrContainerTestImpl(treeModel, configuredWorkbench);
         workbenchDefinition = configuredWorkbench;
