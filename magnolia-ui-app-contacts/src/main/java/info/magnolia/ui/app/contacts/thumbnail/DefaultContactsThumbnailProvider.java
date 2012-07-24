@@ -96,6 +96,7 @@ public class DefaultContactsThumbnailProvider implements ThumbnailProvider {
                     contactNode.getSession().save();
                 } catch (IOException e) {
                     log.warn("Error creating thumbnail image!", e);
+                    return url;
                 }
             }
 
