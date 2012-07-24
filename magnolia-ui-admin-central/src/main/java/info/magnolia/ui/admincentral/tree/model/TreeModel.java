@@ -37,7 +37,6 @@ import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.ui.admincentral.column.Column;
 import info.magnolia.ui.admincentral.container.JcrContainerSource;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.model.action.Action;
@@ -50,7 +49,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Map;
 
 import javax.jcr.Item;
 import javax.jcr.LoginException;
@@ -65,8 +63,6 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.ui.Component;
-
 /**
  * Model class for tree. Serves as a source for operations by JcrContainer and executes them.
  *
@@ -76,12 +72,10 @@ public class TreeModel implements JcrContainerSource {
     private static final Logger log = LoggerFactory.getLogger(TreeModel.class);
     private WorkbenchActionFactory actionFactory;
     private WorkbenchDefinition workbenchDefinition;
-    private Map<String, Column<?>> columns;
 
-    public TreeModel(WorkbenchDefinition workbenchDefinition, Map<String, Column<?>> columns, WorkbenchActionFactory actionFactory) {
+    public TreeModel(WorkbenchDefinition workbenchDefinition,  WorkbenchActionFactory actionFactory) {
         this.workbenchDefinition = workbenchDefinition;
         this.actionFactory = actionFactory;
-        this.columns = columns;
     }
 
     @Override
@@ -176,25 +170,6 @@ public class TreeModel implements JcrContainerSource {
         return !getChildren(item).isEmpty();
     }
 
-    /**
-     * @return Component if founded or null if the ColumnName does not exist or if
-     * Item does not have this property.
-     */
-    @Override
-    public Component getColumnComponent(String columnName, Item item) throws RepositoryException {
-        Column<?> col = getColumn(columnName);
-        return col!=null ? col.getComponent(item):null;
-    }
-
-    @Override
-    public void setColumnComponent(String columnName, Item item, Component newValue) throws RepositoryException {
-        Column<?> col = getColumn(columnName);
-        if(col != null) {
-            col.setComponent(item, newValue);
-        } else {
-            log.warn(columnName+" does not exist or be linked with this Item: "+item.getPath()+" No setColumnComponent will be performed");
-        }
-    }
 
     @Override
     public String getItemIcon(Item item) throws RepositoryException {
@@ -289,10 +264,6 @@ public class TreeModel implements JcrContainerSource {
         }
     }
 
-    public Map<String,Column<?>> getColumns() {
-        return columns;
-    }
-
     public void execute(ActionDefinition actionDefinition, Item item) throws ActionExecutionException {
         Action action = actionFactory.createAction(actionDefinition, item, null);
         action.execute();
@@ -305,10 +276,6 @@ public class TreeModel implements JcrContainerSource {
 
     private Node getRootNode() throws RepositoryException {
         return getSession().getNode(workbenchDefinition.getPath());
-    }
-
-    private Column<?> getColumn(String columnName) {
-        return columns.get(columnName);
     }
 
     private String getPathInWorkspace(String pathInTree) {

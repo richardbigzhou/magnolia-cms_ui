@@ -48,9 +48,7 @@ import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -93,18 +91,9 @@ public class ConfiguredContentViewBuilder extends FactoryBase<ColumnDefinition, 
 
     @Override
     public ContentView build(WorkbenchDefinition workbenchDefinition, ViewType type) {
-        Map<String, Column< ? >> columns = new LinkedHashMap<String, Column< ? >>();
-        for (ColumnDefinition columnDefinition : workbenchDefinition.getColumns()) {
-            Column< ? > column = createTreeColumn(columnDefinition);
-            // only add if not null - null meaning there's no definitionToImplementationMapping
-            // defined for that column.
-            if (column != null) {
-                columns.put(columnDefinition.getName(), column);
-            }
-        }
         final WorkbenchActionFactory workbenchActionFactory = componentProvider.getComponent(WorkbenchActionFactory.class);
         // FIXME the model should be set by the presenter
-        TreeModel treeModel = new TreeModel(workbenchDefinition, columns, workbenchActionFactory);
+        TreeModel treeModel = new TreeModel(workbenchDefinition, workbenchActionFactory);
         if (type == ViewType.TREE) {
             return componentProvider.newInstance(TreeViewImpl.class, workbenchDefinition, treeModel);
         } else {

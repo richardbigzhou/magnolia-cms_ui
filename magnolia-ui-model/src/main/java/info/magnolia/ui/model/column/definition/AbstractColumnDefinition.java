@@ -94,4 +94,13 @@ public abstract class AbstractColumnDefinition implements ColumnDefinition {
     public void setSortable(boolean sortable) {
         this.sortable = sortable;
     }
+
+    /**
+     * The concrete type represented in this column, ie Long, Double, Date, etc. By default, it assumes a String (which should be a good match in most cases).
+     * Subclasses are responsible for returning the actual type.
+     */
+    @Override
+    public Class<?> getType() {
+        return String.class;
+    }
 }

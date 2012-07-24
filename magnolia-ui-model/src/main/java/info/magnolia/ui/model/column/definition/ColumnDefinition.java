@@ -47,4 +47,6 @@ public interface ColumnDefinition {
     int getWidth();
 
     boolean isSortable();
+
+    Class<?> getType();
 }
