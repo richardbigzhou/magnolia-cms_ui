@@ -70,7 +70,7 @@ public class AdminCentralApplication extends Application {
         log.debug("Read component configurations from module descriptors...");
         ComponentProviderConfigurationBuilder configurationBuilder = new ComponentProviderConfigurationBuilder();
         List<ModuleDefinition> moduleDefinitions = Components.getComponent(ModuleRegistry.class).getModuleDefinitions();
-        ComponentProviderConfiguration adminCentralConfig = configurationBuilder.getComponentsFromModules("admin-central", moduleDefinitions);
+        ComponentProviderConfiguration adminCentralConfig = configurationBuilder.getComponentsFromModules("admincentral", moduleDefinitions);
 
         ComponentProviderConfiguration configuration = adminCentralConfig.clone();
         configuration.addComponent(InstanceConfiguration.valueOf(Application.class, this));

@@ -347,7 +347,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     }
 
     /**
-     * Creates a ComponentProvider as a child of the admin-central ComponentProvider dedicated to the app. This gives us
+     * Creates a ComponentProvider as a child of the admincentral ComponentProvider dedicated to the app. This gives us
      * the ability to inject the AppContext into App components. The components are read from module descriptors using
      * the convention "app-" + name of the app.
      */

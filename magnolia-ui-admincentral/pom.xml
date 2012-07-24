@@ -9,9 +9,9 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>magnolia-ui-admin-central</artifactId>
+  <artifactId>magnolia-ui-admincentral</artifactId>
   <packaging>jar</packaging>
-  <name>magnolia-ui-admin-central</name>
+  <name>magnolia-ui-admincentral</name>
   <properties>
   	<cloverCoverageThreshold>28</cloverCoverageThreshold>
   </properties>
@@ -27,11 +27,11 @@
         <artifactId>jetty-maven-plugin</artifactId>
         <configuration>
           <stopPort>9966</stopPort>
-          <stopKey>ui-admin-central</stopKey>
+          <stopKey>ui-admincentral</stopKey>
           <scanIntervalSeconds>0</scanIntervalSeconds>
           <reload>manual</reload>
           <webAppConfig>
-            <contextPath>/ui-admin-central</contextPath>
+            <contextPath>/ui-admincentral</contextPath>
           </webAppConfig>
         </configuration>
       </plugin>

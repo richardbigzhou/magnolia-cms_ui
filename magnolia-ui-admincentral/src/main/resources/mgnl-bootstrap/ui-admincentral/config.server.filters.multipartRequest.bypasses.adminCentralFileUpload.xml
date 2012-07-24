@@ -16,7 +16,7 @@
     <sv:value>admin</sv:value>
   </sv:property>
   <sv:property sv:name="pattern" sv:type="String">
-    <sv:value>/.magnolia/admin-central</sv:value>
+    <sv:value>/.magnolia/admincentral</sv:value>
   </sv:property>
   <sv:node sv:name="MetaData">
     <sv:property sv:name="jcr:primaryType" sv:type="Name">

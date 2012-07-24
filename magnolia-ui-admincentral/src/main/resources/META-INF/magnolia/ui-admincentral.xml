@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE module SYSTEM "module.dtd">
 <module>
-  <name>ui-admin-central</name>
+  <name>ui-admincentral</name>
   <displayName>Magnolia Velvet Admin Central</displayName>
   <description>New Magnolia Administration GUI</description>
   <class>info.magnolia.ui.admincentral.module.AdminCentralModule</class>
@@ -102,32 +102,32 @@
   </components>
 
     <components>
-        <id>admin-central</id>
+        <id>admincentral</id>
     <component>
       <type>info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilderProvider</type>
       <workspace>config</workspace>
-      <path>/modules/ui-admin-central/contentViewBuilderProvider</path>
+      <path>/modules/ui-admincentral/contentViewBuilderProvider</path>
       <observed>true</observed>
       <scope>singleton</scope>
     </component>
      <component>
       <type>info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory</type>
       <workspace>config</workspace>
-      <path>/modules/ui-admin-central/workbenchActionFactory</path>
+      <path>/modules/ui-admincentral/workbenchActionFactory</path>
       <observed>true</observed>
       <scope>singleton</scope>
     </component>
      <component>
       <type>info.magnolia.ui.admincentral.dialog.action.DialogActionFactory</type>
       <workspace>config</workspace>
-      <path>/modules/ui-admin-central/dialogActionFactory</path>
+      <path>/modules/ui-admincentral/dialogActionFactory</path>
       <observed>true</observed>
       <scope>singleton</scope>
     </component>
     <component>
       <type>info.magnolia.ui.admincentral.field.builder.DialogFieldFactory</type>
       <workspace>config</workspace>
-      <path>/modules/ui-admin-central/dialogFieldFactory</path>
+      <path>/modules/ui-admincentral/dialogFieldFactory</path>
       <observed>true</observed>
       <scope>singleton</scope>
      </component>
@@ -244,8 +244,8 @@
       <name>AdminCentral</name>
       <class>info.magnolia.ui.vaadin.integration.servlet.MultipleBrowserWindowsApplicationServlet</class>
       <mappings>
-        <mapping>/.magnolia/admin-central</mapping>
-        <mapping>/.magnolia/admin-central/*</mapping>
+        <mapping>/.magnolia/admincentral</mapping>
+        <mapping>/.magnolia/admincentral/*</mapping>
       </mappings>
       <params>
         <param>
@@ -262,7 +262,7 @@
         </param>
         <param>
           <name>codeBasePath</name>
-          <value>/.magnolia/admin-central</value>
+          <value>/.magnolia/admincentral</value>
         </param>
       </params>
     </servlet>
