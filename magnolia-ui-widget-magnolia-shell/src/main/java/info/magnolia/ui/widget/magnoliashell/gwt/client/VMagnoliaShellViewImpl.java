@@ -66,8 +66,6 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
@@ -109,8 +107,6 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
     private VShellMessage lowPriorityMessage;
 
     private VShellMessage hiPriorityMessage;
-
-    private HandlerManager handlerManager = new HandlerManager(this);
     
     public VMagnoliaShellViewImpl(final EventBus eventBus) {
         super();
@@ -136,45 +132,6 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
             }
         });
     }
-
-    @Override
-    public void fireEvent(GwtEvent<?> event) {
-        //VConsole.log("FIRING EVENT: " + event.getClass());
-        try {
-            printRegistered();
-            /*
-            VConsole.log("TYPE: " + ((com.google.gwt.event.dom.client.DomEvent.Type)event.getAssociatedType()).getName());
-            VConsole.log("Handler count: " + handlerManager.getHandlerCount(event.getAssociatedType()));
-            VConsole.log("Move Handler count: " + handlerManager.getHandlerCount(TouchMoveEvent.getType()));
-            VConsole.log("Equality : " + (TouchMoveEvent.getType() == event.getAssociatedType()));
-            VConsole.log(handlerManager.getHandler(event.getAssociatedType(), 0).getClass() + "");*/
-            handlerManager.fireEvent(event);
-        } catch (Exception e) {
-            VConsole.log("OOPS: " + e.getMessage());    
-        }
-    }
-    
-    public static native void printRegistered() /*-{
-        var map = @com.google.gwt.event.dom.client.DomEvent::registered;
-        $wnd.console.log("[REGISTERED]");
-        for (key in map) {
-            //$wnd.console.log(key.toString() + " : " + map[key] + "\n");
-            for (it in map[key]) {
-                $wnd.console.log("---" + it + " : " + map[key][it] + "\n");
-                for (itr in map[key][it]) {
-                    if (itr.toString() == 'flyweight'){
-                        $wnd.console.log("----" + itr + " : " + map[key][it][itr] + "\n");
-                        for (itr2 in map[key][it][itr]) {
-                            if (itr2.toString() == '___clazz$') {
-                                $wnd.console.log("-----" + itr2 + " : " + map[key][it][itr][itr2] + "\n");
-                            } 
-                        } 
-                    }
-                }
-            }
-        }
-        $wnd.console.log("[/REGISTERED]");
-    }-*/;
     
     
     @Override
@@ -184,11 +141,6 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
             VConsole.log("Move" + getHandlerCount(TouchMoveEvent.getType()));
         }
         super.onBrowserEvent(event);
-    }
-
-    @Override
-    protected HandlerManager createHandlerManager() {
-        return handlerManager;
     }
     
     private void bindEventHandlers() {
