@@ -9,6 +9,7 @@
     background-color: #FFF;
     min-height: 435px;
     padding: 20px;
+    overflow-y: auto;
 }
 
 .mgnl-workbench-thumbnail-view .asset {

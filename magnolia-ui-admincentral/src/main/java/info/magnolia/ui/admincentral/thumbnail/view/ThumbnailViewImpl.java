@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.admincentral.thumbnail.view;
 
-import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.jcr.predicate.AbstractPredicate;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.admincentral.container.JcrContainer;
 import info.magnolia.ui.admincentral.thumbnail.Thumbnail;
@@ -54,11 +54,16 @@ import org.slf4j.LoggerFactory;
 import com.vaadin.data.Item;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
+import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 
-/**
+/**s
  * ThumbnailViewImpl.
+ * TODO fgrilli:
+ * - implement lazy loading of items, ie load (and cache) only those visible in app view. Keep on loading when scrolling down.
+ *   Serve from local cache when scrolling up.
+ * - extract methods from ctor and clean up.
  *
  */
 public class ThumbnailViewImpl implements ThumbnailView {
@@ -68,10 +73,14 @@ public class ThumbnailViewImpl implements ThumbnailView {
     private Listener listener;
 
     private Thumbnail selectedAsset = null;
+    private WorkbenchDefinition workbenchDefinition;
+    private ThumbnailProvider thumbnailProvider;
 
     public ThumbnailViewImpl(final WorkbenchDefinition definition, final ThumbnailProvider thumbnailProvider) {
+        this.workbenchDefinition = definition;
+        this.thumbnailProvider = thumbnailProvider;
 
-        layout.setSizeFull();
+        layout.setWidth(100, Sizeable.UNITS_PERCENTAGE);
         layout.setStyleName("mgnl-workbench-thumbnail-view");
         layout.addListener(new LayoutClickListener() {
 
@@ -90,23 +99,6 @@ public class ThumbnailViewImpl implements ThumbnailView {
             }
         });
 
-        try {
-            Node parent = MgnlContext.getJCRSession(definition.getWorkspace()).getNode(definition.getPath());
-            Iterable<Node> assets = NodeUtil.getNodes(parent, NodeUtil.MAGNOLIA_FILTER);
-            for(Node asset: assets) {
-                final URL url = thumbnailProvider.getThumbnail(asset, 30, 30);
-                final Thumbnail image = new Thumbnail(asset, url);
-                layout.addComponent(image);
-            }
-
-        } catch (PathNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (LoginException e) {
-            throw new RuntimeException(e);
-        } catch (RepositoryException e) {
-            throw new RuntimeException(e);
-        }
-
     }
 
     @Override
@@ -121,13 +113,31 @@ public class ThumbnailViewImpl implements ThumbnailView {
 
     @Override
     public void refresh() {
-        //TODO fgrilli implement or throw UOE
-        //throw new UnsupportedOperationException();
+        layout.removeAllComponents();
+        try {
+            //FIXME fgrilli the arg to get node must take into account that the current path can change if we navigate in hierarchy.
+            Node parent = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace()).getNode(workbenchDefinition.getPath());
+            final String[] itemTypes = getItemTypes(workbenchDefinition);
+
+            Iterable<Node> assets = NodeUtil.collectAllChildren(parent, new ItemTypePredicate(itemTypes));
+            for(Node asset: assets) {
+                final URL url = thumbnailProvider.getThumbnail(asset, 30, 30);
+                final Thumbnail image = new Thumbnail(asset, url);
+                layout.addComponent(image);
+            }
+
+        } catch (PathNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (LoginException e) {
+            throw new RuntimeException(e);
+        } catch (RepositoryException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void refreshItem(Item item) {
-        //TODO fgrilli implement or throw UOE
+        //TODO fgrilli implement or throw UOE or do nothing
         //throw new UnsupportedOperationException();
     }
 
@@ -139,6 +149,47 @@ public class ThumbnailViewImpl implements ThumbnailView {
     @Override
     public Component asVaadinComponent() {
         return layout;
+    }
+
+    /**
+     * Accepts only nodes of the type(s) passed as argument to the costructor.
+     *
+     */
+    private static class ItemTypePredicate extends AbstractPredicate<Node> {
+        private String[] itemTypes;
+
+        public ItemTypePredicate(final String...itemTypes) {
+            if(itemTypes == null || itemTypes.length == 0) {
+                throw new IllegalArgumentException("itemTypes cannot be null.");
+            }
+            this.itemTypes = itemTypes;
+        }
+        @Override
+        public boolean evaluateTyped(Node node) {
+            try {
+                final String nodeTypeName = node.getPrimaryNodeType().getName();
+                for(int i=0; i < itemTypes.length; i++) {
+                    if(nodeTypeName.equals(itemTypes[i])) {
+                        log.info("found match for node [{}] with node type [{}]", node.getName(), itemTypes[i]);
+                        return true;
+                    }
+                }
+            } catch (RepositoryException e) {
+                log.error("Unable to read nodetype for node {}", node);
+            }
+            return false;
+        }
+    }
+
+    private String[] getItemTypes(final WorkbenchDefinition definition) {
+        if(definition.getItemTypes() == null) {
+            return new String[0];
+        }
+        final String[] itemTypes = new String[definition.getItemTypes().size()];
+        for(int i = 0; i < definition.getItemTypes().size(); i++) {
+            itemTypes[i] = definition.getItemTypes().get(i).getItemType();
+        }
+        return itemTypes;
     }
 
 }
