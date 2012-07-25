@@ -33,6 +33,10 @@
       <type>info.magnolia.ui.admincentral.content.view.ContentPresenter</type>
       <implementation>info.magnolia.ui.admincentral.content.view.ContentPresenter</implementation>
     </component>
+   </components>
+
+   <components>
+    <id>admincentral</id>
     <component>
       <type>info.magnolia.ui.admincentral.thumbnail.ThumbnailProvider</type>
       <workspace>config</workspace>
@@ -40,8 +44,7 @@
       <observed>true</observed>
       <scope>singleton</scope>
     </component>
-
-   </components>
+    </components>
 
   <dependencies>
     <dependency>

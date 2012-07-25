@@ -76,6 +76,9 @@ public class DefaultContactsThumbnailProvider implements ThumbnailProvider {
         try {
             if (!contactNode.hasNode(THUMBNAIL_NODE_NAME)) {
                 // no thumbnail around create and store it
+                if(!contactNode.hasNode(PHOTO_NODE_NAME)) {
+                    return null;
+                }
                 final InputStream stream = contactNode.getNode(PHOTO_NODE_NAME).getProperty(JcrConstants.JCR_DATA).getBinary().getStream();
 
                 BufferedImage thumbnail = null;

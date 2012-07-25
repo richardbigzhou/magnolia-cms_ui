@@ -38,6 +38,8 @@ import info.magnolia.ui.admincentral.column.Column;
 import info.magnolia.ui.admincentral.content.view.ContentView;
 import info.magnolia.ui.admincentral.content.view.ContentView.ViewType;
 import info.magnolia.ui.admincentral.list.view.ListViewImpl;
+import info.magnolia.ui.admincentral.thumbnail.ThumbnailProvider;
+import info.magnolia.ui.admincentral.thumbnail.view.ThumbnailViewImpl;
 import info.magnolia.ui.admincentral.tree.model.TreeModel;
 import info.magnolia.ui.admincentral.tree.view.TreeViewImpl;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
@@ -94,10 +96,17 @@ public class ConfiguredContentViewBuilder extends FactoryBase<ColumnDefinition, 
         final WorkbenchActionFactory workbenchActionFactory = componentProvider.getComponent(WorkbenchActionFactory.class);
         // FIXME the model should be set by the presenter
         TreeModel treeModel = new TreeModel(workbenchDefinition, workbenchActionFactory);
-        if (type == ViewType.TREE) {
+        switch (type) {
+        case TREE:
             return componentProvider.newInstance(TreeViewImpl.class, workbenchDefinition, treeModel);
-        } else {
+        case LIST:
             return componentProvider.newInstance(ListViewImpl.class, workbenchDefinition, treeModel);
+        case THUMBNAIL:
+            ThumbnailProvider thumbnailProvider = componentProvider.getComponent(ThumbnailProvider.class);
+            return componentProvider.newInstance(ThumbnailViewImpl.class, workbenchDefinition,thumbnailProvider);
+        default:
+            throw new RuntimeException("The provided view type ["+ type + "] is not valid.");
         }
+
     }
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,42 +31,45 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.field.definition;
+package info.magnolia.ui.admincentral.thumbnail;
+
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+
+import java.net.URL;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
+import com.vaadin.terminal.ExternalResource;
+import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.Embedded;
 
 /**
- * Field definition for a upload field.
+ * A component capable of displaying an image and holding a reference to the jcr node where the image is stored.
+ *
  */
-public class FileUploadFieldDefinition extends ConfiguredFieldDefinition {
+public class Thumbnail extends Embedded {
+    private JcrNodeAdapter node;
 
-    // Display Thumbnail
-    private boolean preview = true;
-    // Display Image Info
-    private boolean info = true;
-    // Define the upload Binary Node name.
-    private String imageNodeName = "imageBinary";
-
-    public boolean isPreview() {
-        return preview;
+    public Thumbnail(final Node node, final URL url) {
+        this.node = new JcrNodeAdapter(node);
+        setType(TYPE_IMAGE);
+        setSizeUndefined();
+        addStyleName("asset");
+        if(url != null) {
+            setSource(new ExternalResource(url));
+        } else {
+            setSource(new ThemeResource("img/icons/icon-error-red.png"));
+        }
+        try {
+            setDescription(node.getName());
+        } catch (RepositoryException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
-    public void setPreview(boolean preview) {
-        this.preview = preview;
+    public JcrNodeAdapter getNode() {
+        return node;
     }
-
-    public boolean isInfo() {
-        return info;
-    }
-
-    public void setInfo(boolean info) {
-        this.info = info;
-    }
-
-    public String getImageNodeName() {
-        return imageNodeName;
-    }
-
-    public void setImageNodeName(String imageNodeName) {
-        this.imageNodeName = imageNodeName;
-    }
-
 }
