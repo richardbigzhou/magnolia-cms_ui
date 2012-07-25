@@ -35,27 +35,23 @@ package info.magnolia.ui.vaadin.integration.widget.client.touchwidgetimpl;
 
 import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
 import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
-import com.vaadin.terminal.gwt.client.VConsole;
 
 /**
- * Proxy implementayion of native gwt {@link com.google.gwt.event.dom.client.TouchEndHandler} that delegates to mgwt {@link TouchEndHandler}.
- *
+ * Proxy implementayion of native gwt
+ * {@link com.google.gwt.event.dom.client.TouchEndHandler} that delegates to
+ * mgwt {@link TouchEndHandler}.
+ * 
  */
 public class TouchEndHandlerProxy implements com.google.gwt.event.dom.client.TouchEndHandler {
 
     private TouchEndHandler delegateHandler;
-    
+
     public TouchEndHandlerProxy(final TouchEndHandler delegateHandler) {
         this.delegateHandler = delegateHandler;
     }
-    
+
     @Override
     public void onTouchEnd(com.google.gwt.event.dom.client.TouchEndEvent event) {
-        try {
-            VConsole.log("Delegating touch end");
-            delegateHandler.onTouchEnd(GwtTouchEventConverter.<TouchEndEvent>convertGWTEvent(event));   
-        } catch (Exception e) {
-            VConsole.log("Touch end delegation error " + e.getMessage());
-        }
+        delegateHandler.onTouchEnd(GwtTouchEventConverter.<TouchEndEvent> convertGWTEvent(event));
     }
 }
