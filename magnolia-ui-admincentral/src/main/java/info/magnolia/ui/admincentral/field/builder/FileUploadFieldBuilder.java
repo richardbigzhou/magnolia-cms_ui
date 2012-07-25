@@ -78,12 +78,12 @@ public class FileUploadFieldBuilder extends AbstractFieldBuilder<FileUploadField
         Node node = getRelatedNode(item);
         JcrNodeAdapter child = null;
         try {
-            if(node.hasNode(definition.getUploadBinaryNodeName()) && !(item instanceof JcrNewNodeAdapter)) {
-                child = new JcrNodeAdapter(node.getNode(definition.getUploadBinaryNodeName()));
-                ((JcrNodeAdapter)item).addChild(definition.getUploadBinaryNodeName(), child);
+            if(node.hasNode(definition.getImageNodeName()) && !(item instanceof JcrNewNodeAdapter)) {
+                child = new JcrNodeAdapter(node.getNode(definition.getImageNodeName()));
+                ((JcrNodeAdapter)item).addChild(definition.getImageNodeName(), child);
             } else {
-                child = new JcrNewNodeAdapter(node, MgnlNodeType.NT_RESOURCE, definition.getUploadBinaryNodeName());
-                ((JcrNodeAdapter)item).addChild(definition.getUploadBinaryNodeName(), child);
+                child = new JcrNewNodeAdapter(node, MgnlNodeType.NT_RESOURCE, definition.getImageNodeName());
+                ((JcrNodeAdapter)item).addChild(definition.getImageNodeName(), child);
                 initImageProperty(child);
             }
         }

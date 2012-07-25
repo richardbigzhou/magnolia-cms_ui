@@ -43,7 +43,7 @@ public class FileUploadFieldDefinition extends ConfiguredFieldDefinition {
     // Display Image Info
     private boolean info = true;
     // Define the upload Binary Node name.
-    private String uploadBinaryNodeName = "imageBinary";
+    private String imageNodeName = "imageBinary";
 
     public boolean isPreview() {
         return preview;
@@ -61,12 +61,12 @@ public class FileUploadFieldDefinition extends ConfiguredFieldDefinition {
         this.info = info;
     }
 
-    public String getUploadBinaryNodeName() {
-        return uploadBinaryNodeName;
+    public String getImageNodeName() {
+        return imageNodeName;
     }
 
-    public void setUploadBinaryNodeName(String uploadBinaryNodeName) {
-        this.uploadBinaryNodeName = uploadBinaryNodeName;
+    public void setImageNodeName(String imageNodeName) {
+        this.imageNodeName = imageNodeName;
     }
 
 }
