@@ -89,10 +89,26 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
         setImmediate(true);
     }
 
-    public void showFullScreenComponent(final Component c) {
+    public void exitFullScreenMode() {
         closeCurrentFullScreen();
     }
+    
+    public void showFullscreen(final Component c) {
+        closeCurrentFullScreen();
+        doShowFullscreen(c);
+    }
    
+    private void doShowFullscreen(Component c) {
+        if (c != null) {
+            this.fullScreenComponent = c;
+            fullScreenComponent.setParent(this);
+            fullScreenComponent.attach();
+            requestRepaint();
+        } else {
+            throw new RuntimeException("Fullscreen component shouldn't be null!");
+        }
+    }
+
     public void navigateToApp(String prefix, String token) {
         doNavigateWithinViewport(getAppViewport(), DefaultLocation.LOCATION_TYPE_APP, prefix, token);
     }
@@ -202,6 +218,11 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
             entry.getValue().paint(target);
             target.endTag(tagName);
         }
+        if (fullScreenComponent != null) {
+            target.startTag("fullscreenComponent");
+            fullScreenComponent.paint(target);
+            target.endTag("fullscreenComponent");
+        }
         proxy.paintContent(target);
     }
 
@@ -233,7 +254,10 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
 
     private void closeCurrentFullScreen() {
         if (fullScreenComponent != null) {
-            proxy.call("finishFullSreenPreview");
+            fullScreenComponent.setParent(null);
+            fullScreenComponent.detach();
+            fullScreenComponent = null;
+            requestRepaint();
         }
     }
     
