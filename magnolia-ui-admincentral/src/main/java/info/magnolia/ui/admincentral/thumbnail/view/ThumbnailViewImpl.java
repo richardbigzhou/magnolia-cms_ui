@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.thumbnail.view;
 
+import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.admincentral.container.JcrContainer;
@@ -71,17 +72,17 @@ public class ThumbnailViewImpl implements ThumbnailView {
     public ThumbnailViewImpl(final WorkbenchDefinition definition, final ThumbnailProvider thumbnailProvider) {
 
         layout.setSizeFull();
-        layout.setStyleName("mgnl-thumbnail-container");
+        layout.setStyleName("mgnl-workbench-thumbnail-view");
         layout.addListener(new LayoutClickListener() {
 
             @Override
             public void layoutClick(LayoutClickEvent event) {
-                if(selectedAsset != null) {
-                    selectedAsset.removeStyleName("active");
-                }
                 Thumbnail clickedAsset = (Thumbnail) event.getClickedComponent();
                 if(clickedAsset != null && listener != null) {
                     log.info("Clicked on {}", clickedAsset.getDescription());
+                    if(selectedAsset != null) {
+                        selectedAsset.removeStyleName("active");
+                    }
                     selectedAsset = clickedAsset;
                     clickedAsset.addStyleName("active");
                     listener.onItemSelection(clickedAsset.getNode());
@@ -91,7 +92,7 @@ public class ThumbnailViewImpl implements ThumbnailView {
 
         try {
             Node parent = MgnlContext.getJCRSession(definition.getWorkspace()).getNode(definition.getPath());
-            Iterable<Node> assets = NodeUtil.getNodes(parent);
+            Iterable<Node> assets = NodeUtil.getNodes(parent, NodeUtil.MAGNOLIA_FILTER);
             for(Node asset: assets) {
                 final URL url = thumbnailProvider.getThumbnail(asset, 30, 30);
                 final Thumbnail image = new Thumbnail(asset, url);
@@ -115,18 +116,18 @@ public class ThumbnailViewImpl implements ThumbnailView {
 
     @Override
     public void select(String path) {
-        //TODO
+        //TODO fgrilli implement or throw UOE
     }
 
     @Override
     public void refresh() {
-        //TODO
+        //TODO fgrilli implement or throw UOE
         //throw new UnsupportedOperationException();
     }
 
     @Override
     public void refreshItem(Item item) {
-        //TODO
+        //TODO fgrilli implement or throw UOE
         //throw new UnsupportedOperationException();
     }
 

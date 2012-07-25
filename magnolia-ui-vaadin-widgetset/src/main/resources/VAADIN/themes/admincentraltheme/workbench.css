@@ -2,8 +2,8 @@
 .mgnl-app-root .v-horizontallayout-margin {padding-top:20px; padding-left:40px;}
 .mgnl-app-root .v-horizontallayout-spacing-on {padding-left:25px;}
 .mgnl-workbench-toolbar .v-horizontallayout-margin {padding:0 0 20px 0;}
-/* Have the caption right of the text box, bottom-aligned */
-.mgnl-thumbnail-container {
+
+.mgnl-workbench-thumbnail-view {
     line-height: 24px;
     vertical-align: bottom;
     background-color: #FFF;
@@ -11,7 +11,7 @@
     padding: 20px;
 }
 
-.mgnl-thumbnail-container .asset {
+.mgnl-workbench-thumbnail-view .asset {
     border: 1px solid #F0F0F0;
     cursor: pointer;
     display: inline-block;
@@ -21,7 +21,7 @@
     background: none repeat scroll 0 0 transparent
 }
 
-.mgnl-thumbnail-container .asset.active {
+.mgnl-workbench-thumbnail-view .asset.active {
     background-color: #AABF2F;
     color: #FFF;
 }
