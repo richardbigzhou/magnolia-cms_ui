@@ -134,7 +134,7 @@ public class JcrNewNodeAdapterTest {
     }
 
 
-    @Test(expected=IllegalAccessError.class)
+    @Test
     public void testGetNode_Twice() throws Exception {
         // GIVEN
         //Create a NewNodeAdapter
@@ -145,13 +145,13 @@ public class JcrNewNodeAdapterTest {
 
         Property propertyModified= DefaultPropertyUtil.newDefaultProperty("id", null, "");
         adapter.addItemProperty("id", propertyModified);
-        adapter.getNode();
+        Node node1 = adapter.getNode();
 
         // WHEN no duplicate call
-        adapter.getNode();
+        Node node2 = adapter.getNode();
 
         // THEN
-
+        assertEquals(node1, node2);
     }
 
 }

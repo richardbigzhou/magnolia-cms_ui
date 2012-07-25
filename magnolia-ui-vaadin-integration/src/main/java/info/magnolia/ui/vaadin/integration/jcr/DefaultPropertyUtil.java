@@ -38,6 +38,7 @@ import java.util.Date;
 
 import javax.jcr.PropertyType;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +58,7 @@ public class DefaultPropertyUtil {
      * If defaultValue is defined, initialize the Field with the default value.
      * If fieldType is not defined, create a String Value.
      */
-    public static DefaultProperty newDefaultProperty(String name, String fieldType, Object defaultValue) throws NumberFormatException{
+    public static DefaultProperty newDefaultProperty(String name, String fieldType, String defaultValue) throws NumberFormatException{
         Object value = null;
         try {
             value = createTypedValue(name, fieldType, defaultValue);
@@ -75,23 +76,25 @@ public class DefaultPropertyUtil {
      * @throws InstantiationException
      * @throws: In case of the default value could not be parsed to the desired class.
      */
-    public static Object createTypedValue(String name, String fieldType, Object defaultValue) throws NumberFormatException, InstantiationException, IllegalAccessException{
+    public static Object createTypedValue(String name, String fieldType, String defaultValue) throws NumberFormatException, InstantiationException, IllegalAccessException{
         boolean hasDefaultValue = defaultValue != null;
         if (StringUtils.isNotBlank(fieldType)) {
             int valueType = PropertyType.valueFromName(fieldType);
             switch (valueType) {
                 case PropertyType.STRING:
                     return (hasDefaultValue?defaultValue:"");
+                case PropertyType.BINARY:
+                    return null;
                 case PropertyType.LONG:
-                    return (hasDefaultValue?(Long)defaultValue:Long.decode("0"));
+                    return (Long.decode(hasDefaultValue?defaultValue:"0"));
                 case PropertyType.DOUBLE:
-                    return (hasDefaultValue?(Double)defaultValue:Double.valueOf("0"));
-                case PropertyType.DATE:
-                    return (hasDefaultValue?(Date)defaultValue:new Date());
+                    return (Double.valueOf(hasDefaultValue?defaultValue:"0"));
+                case PropertyType.DATE://TODO SCRUM-1398: How should we handle the date format?
+                    return new Date();
                 case PropertyType.BOOLEAN:
-                    return (hasDefaultValue?(Boolean)defaultValue:Boolean.getBoolean(""));
+                    return (BooleanUtils.toBoolean(hasDefaultValue?defaultValue:""));
                 case PropertyType.DECIMAL:
-                    return (hasDefaultValue?(BigDecimal)defaultValue:BigDecimal.valueOf(Long.decode("0")));
+                    return (BigDecimal.valueOf(Long.decode(hasDefaultValue?defaultValue:"0")));
                 default: {
                     String msg = "Unsupported property type " + PropertyType.nameFromValue(valueType);
                     log.error(msg);

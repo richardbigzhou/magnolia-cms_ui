@@ -38,7 +38,12 @@ package info.magnolia.ui.model.field.definition;
  */
 public class FileUploadFieldDefinition extends ConfiguredFieldDefinition {
 
+    // Display Thumbnail
     private boolean preview = true;
+    // Display Image Info
+    private boolean info = true;
+    // Define the upload Binary Node name.
+    private String imageNodeName = "imageBinary";
 
     public boolean isPreview() {
         return preview;
@@ -47,4 +52,21 @@ public class FileUploadFieldDefinition extends ConfiguredFieldDefinition {
     public void setPreview(boolean preview) {
         this.preview = preview;
     }
+
+    public boolean isInfo() {
+        return info;
+    }
+
+    public void setInfo(boolean info) {
+        this.info = info;
+    }
+
+    public String getImageNodeName() {
+        return imageNodeName;
+    }
+
+    public void setImageNodeName(String imageNodeName) {
+        this.imageNodeName = imageNodeName;
+    }
+
 }

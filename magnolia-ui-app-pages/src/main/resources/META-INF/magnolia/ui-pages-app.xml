@@ -43,7 +43,7 @@
 
     <dependencies>
         <dependency>
-            <name>ui-admin-central</name>
+            <name>ui-admincentral</name>
             <version>5.0/*</version>
         </dependency>
     </dependencies>

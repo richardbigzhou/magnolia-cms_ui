@@ -33,11 +33,19 @@
       <type>info.magnolia.ui.admincentral.content.view.ContentPresenter</type>
       <implementation>info.magnolia.ui.admincentral.content.view.ContentPresenter</implementation>
     </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.thumbnail.ThumbnailProvider</type>
+      <workspace>config</workspace>
+      <path>/modules/ui-contacts-app/thumbnailProvider</path>
+      <observed>true</observed>
+      <scope>singleton</scope>
+    </component>
+
    </components>
 
   <dependencies>
     <dependency>
-      <name>ui-admin-central</name>
+      <name>ui-admincentral</name>
       <version>5.0/*</version>
     </dependency>
   </dependencies>

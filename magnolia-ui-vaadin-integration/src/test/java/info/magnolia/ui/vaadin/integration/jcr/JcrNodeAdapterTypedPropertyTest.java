@@ -35,18 +35,20 @@ package info.magnolia.ui.vaadin.integration.jcr;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
+
+import java.math.BigDecimal;
+
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
 
-import java.math.BigDecimal;
-import java.util.Date;
-
 import javax.jcr.Node;
 import javax.jcr.PropertyType;
 
+import org.apache.jackrabbit.value.BinaryValue;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.vaadin.data.Property;
@@ -127,7 +129,7 @@ public class JcrNodeAdapterTypedPropertyTest {
         //Create a NewNodeAdapter
         String nodeName = "rootNode";
         String id = "propertyID";
-        Long value = Long.decode("10000");
+        String value = "10000";
         Node parentNode = session.getRootNode().addNode(nodeName);
         JcrNodeAdapter adapter = new JcrNodeAdapter(parentNode);
 
@@ -141,7 +143,7 @@ public class JcrNodeAdapterTypedPropertyTest {
         // THEN
         assertSame(property, propertyInitial);
         assertEquals(PropertyType.nameFromValue(PropertyType.LONG), property.getType().getSimpleName());
-        assertEquals(value, property.getValue());
+        assertEquals(Long.decode(value), property.getValue());
     }
 
     @Test
@@ -150,7 +152,7 @@ public class JcrNodeAdapterTypedPropertyTest {
         //Create a NewNodeAdapter
         String nodeName = "rootNode";
         String id = "propertyID";
-        Double value = Double.valueOf("10000.99");
+        String value = "10000.99";
         Node parentNode = session.getRootNode().addNode(nodeName);
         JcrNodeAdapter adapter = new JcrNodeAdapter(parentNode);
 
@@ -164,16 +166,17 @@ public class JcrNodeAdapterTypedPropertyTest {
         // THEN
         assertSame(property, propertyInitial);
         assertEquals(PropertyType.nameFromValue(PropertyType.DOUBLE), property.getType().getSimpleName());
-        assertEquals(value, property.getValue());
+        assertEquals(Double.valueOf(value), property.getValue());
     }
 
+    @Ignore // TODO SCRUM-1398
     @Test
     public void testGetItemProperty_Date_CheckInitialization() throws Exception {
         // GIVEN
         //Create a NewNodeAdapter
         String nodeName = "rootNode";
         String id = "propertyID";
-        Date value = new Date(11111111);
+        String value = ""; //TODO SCRUM-1398
         Node parentNode = session.getRootNode().addNode(nodeName);
         JcrNodeAdapter adapter = new JcrNodeAdapter(parentNode);
 
@@ -196,7 +199,7 @@ public class JcrNodeAdapterTypedPropertyTest {
         //Create a NewNodeAdapter
         String nodeName = "rootNode";
         String id = "propertyID";
-        Boolean value = Boolean.TRUE;
+        String value = "true";
         Node parentNode = session.getRootNode().addNode(nodeName);
         JcrNodeAdapter adapter = new JcrNodeAdapter(parentNode);
 
@@ -210,7 +213,7 @@ public class JcrNodeAdapterTypedPropertyTest {
         // THEN
         assertSame(property, propertyInitial);
         assertEquals(PropertyType.nameFromValue(PropertyType.BOOLEAN), property.getType().getSimpleName());
-        assertEquals(value, property.getValue());
+        assertEquals(Boolean.TRUE, property.getValue());
     }
 
     @Test
@@ -219,7 +222,7 @@ public class JcrNodeAdapterTypedPropertyTest {
         //Create a NewNodeAdapter
         String nodeName = "rootNode";
         String id = "propertyID";
-        BigDecimal value = new BigDecimal("1111111");
+        String value ="1111111";
         Node parentNode = session.getRootNode().addNode(nodeName);
         JcrNodeAdapter adapter = new JcrNodeAdapter(parentNode);
 
@@ -233,7 +236,7 @@ public class JcrNodeAdapterTypedPropertyTest {
         // THEN
         assertSame(property, propertyInitial);
         assertEquals("BigDecimal", property.getType().getSimpleName());
-        assertEquals(value, property.getValue());
+        assertEquals( new BigDecimal(value), property.getValue());
     }
 
 
@@ -286,5 +289,29 @@ public class JcrNodeAdapterTypedPropertyTest {
 
     }
 
-}
 
+    @Test
+    public void testGetItemProperty_Binary_CreatedByVaadin_StoreIntoJcr() throws Exception {
+        // GIVEN
+        //Create a NewNodeAdapter
+        String nodeName = "rootNode";
+        String id = "propertyID";
+        BinaryValue value = new BinaryValue("text");
+        Node parentNode = session.getRootNode().addNode(nodeName);
+        JcrNodeAdapter adapter = new JcrNodeAdapter(parentNode);
+
+        //Create the property
+        Property propertyInitial = DefaultPropertyUtil.newDefaultProperty(id, "Binary", null);
+        adapter.addItemProperty(id,propertyInitial);
+        propertyInitial.setValue(value.getBinary());
+
+        // WHEN
+        Node res = adapter.getNode();
+
+        // THEN
+        assertEquals(res.getProperty(id).getType(), PropertyType.BINARY);
+
+    }
+
+
+}

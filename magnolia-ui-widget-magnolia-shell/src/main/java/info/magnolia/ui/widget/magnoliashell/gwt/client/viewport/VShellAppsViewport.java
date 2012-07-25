@@ -33,14 +33,30 @@
  */
 package info.magnolia.ui.widget.magnoliashell.gwt.client.viewport;
 
+
 /**
  * Shell apps viewport client side.
  */
 public class VShellAppsViewport extends VShellViewport {
 
+    private ContentAnimationDelegate internalAnimationDelegate = ContentAnimationDelegate.FadingDelegate;
+    
+    private ContentAnimationDelegate transitionalAnimationDelegate = ContentAnimationDelegate.SlidingDelegate;
+    
     public VShellAppsViewport() {
         super();
         setForceContentAlign(true);
         setContentAnimationDelegate(ContentAnimationDelegate.SlidingDelegate);
     }
+    
+    @Override
+    public void setActive(boolean isActive) {
+        super.setActive(isActive);
+        if (isActive) {
+            setContentAnimationDelegate(internalAnimationDelegate);
+        } else {
+            setContentAnimationDelegate(transitionalAnimationDelegate);
+        }
+    }
+    
 }

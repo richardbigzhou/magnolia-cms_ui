@@ -52,22 +52,18 @@ import org.vaadin.gwtgraphics.client.DrawingArea;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.TouchEndEvent;
-import com.google.gwt.event.dom.client.TouchEndHandler;
-import com.google.gwt.event.dom.client.TouchStartEvent;
-import com.google.gwt.event.dom.client.TouchStartHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.HandlerRegistration;
+import com.googlecode.mgwt.dom.client.event.touch.TouchMoveEvent;
+import com.googlecode.mgwt.dom.client.event.touch.TouchMoveHandler;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
+import com.vaadin.terminal.gwt.client.VConsole;
 
 /**
  * Navigation bar.
@@ -114,29 +110,15 @@ public class VMainLauncher extends FlowPanel {
 
             indicatorPad.addStyleName("pad");
             
-            addDomHandler(new ClickHandler() {
-                @Override
-                public void onClick(ClickEvent event) {
-                    //navigateToShellApp(type);
-                }
-            }, ClickEvent.getType());
-
-            addDomHandler(new TouchStartHandler() {
-                
-                @Override
-                public void onTouchStart(TouchStartEvent event) {
-                    Window.alert("START TOUCH");
-                }
-            }, TouchStartEvent.getType());
-            
-            addDomHandler(new TouchEndHandler() {
+            /*addDomHandler(new TouchEndHandler() {
                 
                 @Override
                 public void onTouchEnd(TouchEndEvent event) {
-                    Window.alert("END TOUCH");
-                    navigateToShellApp(type);
+                    //Window.alert("END TOUCH");
+                    //navigateToShellApp(type);
                 }
-            }, TouchEndEvent.getType());
+            }, TouchEndEvent.getType());*/
+            
             
             DOM.sinkEvents(getElement(), Event.TOUCHEVENTS);
             
@@ -150,7 +132,14 @@ public class VMainLauncher extends FlowPanel {
                 
                 @Override
                 public void onTouchEnd(com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent event) {
+                    //Window.alert("END TOUCH");
                     navigateToShellApp(type);
+                }
+            });
+            
+            delegate.addTouchMoveHandler(new TouchMoveHandler() {
+                @Override
+                public void onTouchMove(TouchMoveEvent event) {
                 }
             });
         }
@@ -171,6 +160,12 @@ public class VMainLauncher extends FlowPanel {
         }
     };
 
+    @Override
+    public void onBrowserEvent(Event event) {
+        super.onBrowserEvent(event);
+        VConsole.log("Event " + event.getTypeInt());
+        int type = event.getTypeInt();
+    }
     /**
      * Type of the "shell app" to be loaded.
      */
@@ -226,30 +221,6 @@ public class VMainLauncher extends FlowPanel {
         this.eventBus = eventBus;
         getElement().setId(ID);
         construct();
-        addDomHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                //navigateToShellApp(type);
-            }
-        }, ClickEvent.getType());
-
-        addDomHandler(new TouchStartHandler() {
-            
-            @Override
-            public void onTouchStart(TouchStartEvent event) {
-                Window.alert("START TOUCH");
-            }
-        }, TouchStartEvent.getType());
-        
-        addDomHandler(new TouchEndHandler() {
-            
-            @Override
-            public void onTouchEnd(TouchEndEvent event) {
-                Window.alert("END TOUCH");
-                //navigateToShellApp(type);
-            }
-        }, TouchEndEvent.getType());
-        
         DOM.sinkEvents(getElement(), Event.TOUCHEVENTS);
     }
 
@@ -270,27 +241,6 @@ public class VMainLauncher extends FlowPanel {
             add(w);
         }
         divet.setVisible(false);
-
-        /*addTouchEndHandler(new TouchEndHandler() {
-            @Override
-            public void onTouchEnd(TouchEndEvent event) {
-                Window.alert("Main Touch end");
-            }
-        });
-
-        addPinchHandler(new PinchHandler() {
-            @Override
-            public void onPinch(PinchEvent event) {
-                Window.alert("Pinch");
-            }
-        });
-
-        addTapHandler(new TapHandler() {
-            @Override
-            public void onTap(TapEvent event) {
-                Window.alert("tap");
-            }
-        });*/
     }
 
     @Override

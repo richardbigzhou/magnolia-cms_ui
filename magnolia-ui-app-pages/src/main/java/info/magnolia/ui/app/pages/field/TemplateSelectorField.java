@@ -34,27 +34,24 @@
 package info.magnolia.ui.app.pages.field;
 
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import javax.jcr.Node;
-
-import com.vaadin.data.Item;
-
 import info.magnolia.objectfactory.Components;
 import info.magnolia.rendering.template.TemplateDefinition;
 import info.magnolia.rendering.template.assignment.TemplateDefinitionAssignment;
-import info.magnolia.ui.admincentral.field.DialogSelectField;
+import info.magnolia.ui.admincentral.field.builder.SelectFieldBuilder;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.vaadin.data.Item;
 
 /**
  * Define a Template selector field.
  * The values displayed in the field are initialized based on the
  * related Item (Image of a JCR node) and {@link TemplateDefinitionAssignment}.
  */
-public class TemplateSelectorField extends DialogSelectField<TemplateSelectorDefinition> {
+public class TemplateSelectorField extends SelectFieldBuilder<TemplateSelectorDefinition> {
 
     public TemplateSelectorField(TemplateSelectorDefinition definition, Item relatedFieldItem) {
         super(definition, relatedFieldItem);
@@ -74,19 +71,6 @@ public class TemplateSelectorField extends DialogSelectField<TemplateSelectorDef
             res.put(templateDefinition.getId(), templateDefinition.getTitle());
         }
         return res;
-    }
-
-    /**
-     * Returns the field related node.
-     * If field is of type JcrNewNodeAdapter then return the parent node.
-     * Else get the node associated with the Vaadin item.
-     */
-    private Node getRelatedNode(Item fieldRelatedItem) {
-        if (fieldRelatedItem instanceof JcrNewNodeAdapter) {
-            return ((JcrNewNodeAdapter) fieldRelatedItem).getParentNode();
-        } else {
-            return ((JcrNodeAdapter) fieldRelatedItem).getNode();
-        }
     }
 
     @Override

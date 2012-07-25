@@ -71,10 +71,25 @@ public class JcrNodeAdapter extends JcrAbstractNodeAdapter  {
     private static final Logger log = LoggerFactory.getLogger(JcrNodeAdapter.class);
     protected Map<String, Property> changedProperties = new HashMap<String,Property>();
     protected Map<String, Property> removedProperties = new HashMap<String,Property>();
+    protected Map<String, JcrNodeAdapter> childs = new HashMap<String, JcrNodeAdapter>();
 
     public JcrNodeAdapter(Node jcrNode) {
         super(jcrNode);
     }
+
+
+    public JcrNodeAdapter getChild(String path) {
+        return childs.get(path);
+    }
+
+    public JcrNodeAdapter addChild(String path, JcrNodeAdapter child) {
+        return childs.put(path, child);
+    }
+
+
+
+
+
 
     /**
      * Get Vaadim Property from a Jcr Property.
@@ -148,9 +163,14 @@ public class JcrNodeAdapter extends JcrAbstractNodeAdapter  {
         Node node = null;
         try {
             node =  getNodeFromRepository();
-            // Update property
+            // Update Node property
             updateProperty(node);
-
+            // Update Child Nodes
+            if(!childs.isEmpty()) {
+                for(JcrNodeAdapter child:childs.values()) {
+                    child.getNode();
+                }
+            }
             return node;
         }
         catch (LoginException e) {
@@ -214,5 +234,4 @@ public class JcrNodeAdapter extends JcrAbstractNodeAdapter  {
             return false;
         }
     }
-
 }
