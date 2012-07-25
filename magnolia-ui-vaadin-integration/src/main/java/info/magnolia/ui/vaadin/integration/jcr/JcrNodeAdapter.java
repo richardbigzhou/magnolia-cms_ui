@@ -60,9 +60,9 @@ import com.vaadin.data.Property.ValueChangeEvent;
  * Implements {Property.ValueChangeListener} in order to inform/change JCR property when a
  * Vaadim property has changed.
  *
- * JcrPropertys are read from Repository as long as they are not modified.
+ * Jcr properties are read from Repository as long as they are not modified.
  *
- * JcrPropertys are updated or created if they:
+ * Jcr properties are updated or created if they:
  *   Previously existed and where modified.
  *   Newly created and set (an empty created property is not stored into Jcr repository)
  */
@@ -92,7 +92,7 @@ public class JcrNodeAdapter extends JcrAbstractNodeAdapter  {
 
 
     /**
-     * Get Vaadim Property from a Jcr Property.
+     * Get Vaadin Property from a Jcr Property.
      * If the Property was already modify, get this Property from the local changedProperties map.
      * Else:
      *   If the corresponding Jcr property don't exist, create a empty Vaadin Property.
