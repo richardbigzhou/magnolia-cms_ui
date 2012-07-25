@@ -55,6 +55,8 @@ public class VDialogViewport extends VShellViewport {
         
         if (getWidgetCount() == 0) {
             removeFromParent();
+        } else {
+            showCurtain();
         }
     }
 }
