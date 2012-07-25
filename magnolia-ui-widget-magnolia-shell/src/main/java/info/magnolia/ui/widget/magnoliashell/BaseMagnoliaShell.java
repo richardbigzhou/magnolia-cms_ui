@@ -81,50 +81,113 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
     
     private ShellViewport activeViewport = null;
 
+    private Component fullScreenComponent = null;
+    
     private ICEPush pusher = new ICEPush();
     
-    protected ServerSideProxy proxy = new ServerSideProxy(this) {{
-        register("activateShellApp", new Method() {
-            @Override
-            public void invoke(String methodName, Object[] params) {
-                navigateToShellApp(String.valueOf(params[0]), String.valueOf(params[1]));
-            }
-        });
-
-        register("activateApp", new Method() {
-            @Override
-            public void invoke(String methodName, Object[] params) {
-                navigateToApp(String.valueOf(params[0]), String.valueOf(params[1]));
-            }
-        });
-        
-        register("removeMessage", new Method() {
-            @Override
-            public void invoke(String methodName, Object[] params) {
-                removeMessage(String.valueOf(params[0]));
-            }
-        });
-
-        register("closeCurrentApp", new Method() {
-            @Override
-            public void invoke(String methodName, Object[] params) {
-                closeCurrentApp();
-            }
-        });
-
-        register("closeCurrentShellApp", new Method() {
-            @Override
-            public void invoke(String methodName, Object[] params) {
-                closeCurrentShellApp();
-            }
-        });
-    }};
-
     public BaseMagnoliaShell() {
-        super();
         setImmediate(true);
     }
 
+    public void showFullScreenComponent(final Component c) {
+        closeCurrentFullScreen();
+    }
+   
+    public void navigateToApp(String prefix, String token) {
+        doNavigateWithinViewport(getAppViewport(), DefaultLocation.LOCATION_TYPE_APP, prefix, token);
+    }
+
+    public void navigateToShellApp(final String prefix, String token) {
+        doNavigateWithinViewport(getShellAppViewport(), DefaultLocation.LOCATION_TYPE_SHELL_APP, prefix , token);
+    }
+
+    public void doNavigateWithinViewport(final ShellViewport viewport, String type,  String prefix, String token) {
+        viewport.setCurrentShellFragment(prefix + ":" + token);
+        setActiveViewport(viewport);
+        notifyOnFragmentChanged(type + ":" + prefix + ":" + token);
+        requestRepaint();
+    }
+
+    public void showInfo(Message message) {
+        synchronized (getApplication()) {
+            proxy.call("showMessage", MessageType.INFO.name(), message.getSubject(), message.getMessage(), message.getId());
+            pusher.push();
+        }
+    }
+    
+    public void showError(Message message) {
+        synchronized (getApplication()) {
+            proxy.call("showMessage", MessageType.ERROR.name(), message.getSubject(), message.getMessage(), message.getId());
+            pusher.push();
+        }
+    }
+
+    public void showWarning(Message message) {
+        synchronized (getApplication()) {
+            proxy.call("showMessage", MessageType.WARNING.name(), message.getSubject(), message.getMessage(), message.getId());
+            pusher.push();
+        }
+    }
+
+    public void updateShellAppIndication(ShellAppType type, int increment) {
+        synchronized (getApplication()) {
+            proxy.call("updateIndication", type.name(), increment);
+            pusher.push();
+        }
+    }
+    
+    public void removeDialog(Component dialog) {
+        viewports.get(ViewportType.DIALOG_VIEWPORT).removeComponent(dialog);
+        requestRepaint();
+    }
+
+    public void addDialog(Component dialog) {
+        viewports.get(ViewportType.DIALOG_VIEWPORT).addComponent(dialog);
+        requestRepaint();
+    }
+
+    public void closeCurrentShellApp() {
+        if (!getAppViewport().isEmpty()) {
+            setActiveViewport(getAppViewport());
+        } else {
+            navigateToShellApp(ShellAppType.APPLAUNCHER.name(), "");
+        }
+    }
+
+    public void removeMessage(String messageId) {}
+    
+    public void closeCurrentApp() {
+        getAppViewport().pop();
+    }
+
+    public void setActiveViewport(ShellViewport activeViewport) {
+        if (this.activeViewport != activeViewport) {
+            this.activeViewport = activeViewport;
+            for (final ViewportType type : ViewportType.values()) {
+                if (this.activeViewport == viewports.get(type)) {
+                    proxy.call("activeViewportChanged", type.name());
+                    break;
+                }
+            }
+        }
+    }
+    
+    public ShellViewport getAppViewport() {
+        return viewports.get(ViewportType.APP_VIEWPORT);
+    }
+
+    public ShellViewport getShellAppViewport() {
+        return viewports.get(ViewportType.SHELL_APP_VIEWPORT);
+    }
+
+    public ShellViewport getDialogViewport() {
+        return viewports.get(ViewportType.DIALOG_VIEWPORT);
+    }
+
+    public ShellViewport getActiveViewport() {
+        return activeViewport;
+    }
+    
     @Override
     public void paintContent(PaintTarget target) throws PaintException {
         super.paintContent(target);
@@ -168,22 +231,16 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
         }
     }
 
-    public ShellViewport getAppViewport() {
-        return viewports.get(ViewportType.APP_VIEWPORT);
+    private void closeCurrentFullScreen() {
+        if (fullScreenComponent != null) {
+            proxy.call("finishFullSreenPreview");
+        }
     }
-
-    public ShellViewport getShellAppViewport() {
-        return viewports.get(ViewportType.SHELL_APP_VIEWPORT);
+    
+    private void notifyOnFragmentChanged(final String fragment) {
+        handlers.dispatch(new FragmentChangedEvent(fragment));
     }
-
-    public ShellViewport getDialogViewport() {
-        return viewports.get(ViewportType.DIALOG_VIEWPORT);
-    }
-
-    public ShellViewport getActiveViewport() {
-        return activeViewport;
-    }
-
+    
     @Override
     public Object[] initRequestFromClient() {
         return new Object[] {};
@@ -201,91 +258,45 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
     public void removeFragmentChangedHanlder(final FragmentChangedHandler handler) {
         handlers.remove(handler);
     }
-
-    public void setActiveViewport(ShellViewport activeViewport) {
-        if (this.activeViewport != activeViewport) {
-            this.activeViewport = activeViewport;
-            for (final ViewportType type : ViewportType.values()) {
-                if (this.activeViewport == viewports.get(type)) {
-                    proxy.call("activeViewportChanged", type.name());
-                    break;
-                }
-            }
-        }
-    }
-
-    protected void navigateToApp(String prefix, String token) {
-        doNavigateWithinViewport(getAppViewport(), DefaultLocation.LOCATION_TYPE_APP, prefix, token);
-    }
-
-    protected void navigateToShellApp(final String prefix, String token) {
-        doNavigateWithinViewport(getShellAppViewport(), DefaultLocation.LOCATION_TYPE_SHELL_APP, prefix , token);
-    }
-
-    protected void doNavigateWithinViewport(final ShellViewport viewport, String type,  String prefix, String token) {
-        viewport.setCurrentShellFragment(prefix + ":" + token);
-        setActiveViewport(viewport);
-        notifyOnFragmentChanged(type + ":" + prefix + ":" + token);
-        requestRepaint();
-    }
-
-    private void notifyOnFragmentChanged(final String fragment) {
-        handlers.dispatch(new FragmentChangedEvent(fragment));
-    }
-
-    public void showInfo(Message message) {
-        synchronized (getApplication()) {
-            proxy.call("showMessage", MessageType.INFO.name(), message.getSubject(), message.getMessage(), message.getId());
-            pusher.push();
-        }
-    }
-    
-    public void showError(Message message) {
-        synchronized (getApplication()) {
-            proxy.call("showMessage", MessageType.ERROR.name(), message.getSubject(), message.getMessage(), message.getId());
-            pusher.push();
-        }
-    }
-
-    public void showWarning(Message message) {
-        synchronized (getApplication()) {
-            proxy.call("showMessage", MessageType.WARNING.name(), message.getSubject(), message.getMessage(), message.getId());
-            pusher.push();
-        }
-    }
-
-    public void updateShellAppIndication(ShellAppType type, int increment) {
-        synchronized (getApplication()) {
-            proxy.call("updateIndication", type.name(), increment);
-            pusher.push();
-        }
-    }
-    
-    public void removeDialog(Component dialog) {
-        viewports.get(ViewportType.DIALOG_VIEWPORT).removeComponent(dialog);
-        requestRepaint();
-    }
-
-    protected void addDialog(Component dialog) {
-        viewports.get(ViewportType.DIALOG_VIEWPORT).addComponent(dialog);
-        requestRepaint();
-    }
-
-    protected void closeCurrentShellApp() {
-        if (!getAppViewport().isEmpty()) {
-            setActiveViewport(getAppViewport());
-        } else {
-            navigateToShellApp(ShellAppType.APPLAUNCHER.name(), "");
-        }
-    }
-
-    protected void removeMessage(String messageId) {}
-    
-    protected void closeCurrentApp() {
-        getAppViewport().pop();
-    }
     
     protected ICEPush getPusher() {
         return pusher; 
     }
+    
+    protected ServerSideProxy proxy = new ServerSideProxy(this) {{
+        register("activateShellApp", new Method() {
+            @Override
+            public void invoke(String methodName, Object[] params) {
+                navigateToShellApp(String.valueOf(params[0]), String.valueOf(params[1]));
+            }
+        });
+
+        register("activateApp", new Method() {
+            @Override
+            public void invoke(String methodName, Object[] params) {
+                navigateToApp(String.valueOf(params[0]), String.valueOf(params[1]));
+            }
+        });
+        
+        register("removeMessage", new Method() {
+            @Override
+            public void invoke(String methodName, Object[] params) {
+                removeMessage(String.valueOf(params[0]));
+            }
+        });
+
+        register("closeCurrentApp", new Method() {
+            @Override
+            public void invoke(String methodName, Object[] params) {
+                closeCurrentApp();
+            }
+        });
+
+        register("closeCurrentShellApp", new Method() {
+            @Override
+            public void invoke(String methodName, Object[] params) {
+                closeCurrentShellApp();
+            }
+        });
+    }};
 }

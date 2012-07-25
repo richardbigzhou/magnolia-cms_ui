@@ -115,7 +115,7 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
     }
 
     @Override
-    protected void closeCurrentApp() {
+    public void closeCurrentApp() {
         super.closeCurrentApp();
         appController.stopCurrentApp();
         if (getAppViewport().isEmpty()) {
@@ -187,7 +187,7 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
     }
 
     @Override
-    protected void removeMessage(String messageId) {
+    public void removeMessage(String messageId) {
         super.removeMessage(messageId);
         messagesManager.clearMessage(MgnlContext.getUser().getName(), messageId);
     }
