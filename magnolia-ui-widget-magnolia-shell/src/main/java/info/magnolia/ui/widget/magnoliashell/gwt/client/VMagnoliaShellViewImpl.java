@@ -68,21 +68,25 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
+import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
+import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
+import com.googlecode.mgwt.dom.client.event.touch.TouchMoveEvent;
+import com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent;
+import com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler;
+import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
+import com.googlecode.mgwt.ui.client.widget.touch.TouchPanel;
+import com.vaadin.terminal.gwt.client.VConsole;
 
 /**
  * GWT implementation of MagnoliaShell client side (the view part basically).
  */
-public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellView, ViewportCloseHandler {
+public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShellView, ViewportCloseHandler {
 
     public static final String CLASSNAME = "v-magnolia-shell";
-
-    private static int Z_INDEX_HI = 300;
-
-    private static int Z_INDEX_LO = 100;
 
     private Map<ViewportType, VShellViewport> viewports = new EnumMap<ViewportType, VShellViewport>(ViewportType.class);
 
@@ -93,13 +97,13 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
     private VMainLauncher mainAppLauncher;
 
     private Presenter presenter;
-    
+
     private EventBus eventBus;
 
     private VShellMessage lowPriorityMessage;
 
     private VShellMessage hiPriorityMessage;
-
+    
     public VMagnoliaShellViewImpl(final EventBus eventBus) {
         super();
         this.eventBus = eventBus;
@@ -108,8 +112,33 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
         setStyleName(CLASSNAME);
         add(mainAppLauncher, root);
         bindEventHandlers();
+        
+        TouchDelegate delegate = new TouchDelegate(this);
+        delegate.addTouchStartHandler(new TouchStartHandler() {
+            @Override
+            public void onTouchStart(TouchStartEvent event) {
+                VConsole.log("TouchStart");
+            }
+        });
+        
+        delegate.addTouchEndHandler(new TouchEndHandler() {
+            @Override
+            public void onTouchEnd(TouchEndEvent event) {
+                VConsole.log("TouchEnd");
+            }
+        });
     }
-
+    
+    
+    @Override
+    public void onBrowserEvent(Event event) {
+        int code = event.getTypeInt();
+        if (code == Event.ONTOUCHMOVE) {
+            VConsole.log("Move" + getHandlerCount(TouchMoveEvent.getType()));
+        }
+        super.onBrowserEvent(event);
+    }
+    
     private void bindEventHandlers() {
         eventBus.addHandler(ViewportCloseEvent.TYPE, this);
         eventBus.addHandler(ShellAppNavigationEvent.TYPE, navigationHandler);
@@ -183,10 +212,10 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
     }
 
     protected void replaceWidget(final Widget oldWidget, final Widget newWidget) {
-        if (oldWidget != newWidget ) {
+        if (oldWidget != newWidget) {
             if (oldWidget != null) {
                 remove(oldWidget);
-            }   
+            }
         }
         if (getWidgetIndex(newWidget) < 0) {
             add(newWidget, root);
@@ -249,8 +278,8 @@ public class VMagnoliaShellViewImpl extends FlowPanel implements VMagnoliaShellV
     protected void switchViewports(boolean appViewportOnTop) {
         final VShellViewport shellAppViewport = getShellAppViewport();
         final VShellViewport appViewport = getAppViewport();
-        shellAppViewport.getElement().getStyle().setZIndex(appViewportOnTop ? Z_INDEX_LO : Z_INDEX_HI);
-        appViewport.getElement().getStyle().setZIndex(appViewportOnTop ? Z_INDEX_HI : Z_INDEX_LO);
+        shellAppViewport.setActive(!appViewportOnTop);
+        appViewport.setActive(appViewportOnTop);
         if (appViewportOnTop) {
             mainAppLauncher.deactivateControls();
         } else {

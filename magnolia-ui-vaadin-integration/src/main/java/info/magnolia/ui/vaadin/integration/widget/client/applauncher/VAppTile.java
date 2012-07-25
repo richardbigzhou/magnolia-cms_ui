@@ -46,6 +46,15 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
+import com.googlecode.mgwt.dom.client.event.touch.TouchCancelEvent;
+import com.googlecode.mgwt.dom.client.event.touch.TouchCancelHandler;
+import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
+import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
+import com.googlecode.mgwt.dom.client.event.touch.TouchMoveEvent;
+import com.googlecode.mgwt.dom.client.event.touch.TouchMoveHandler;
+import com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent;
+import com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler;
+import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 
 /**
  * The thumbnail of one single app in AppLauncher.
@@ -68,6 +77,8 @@ public class VAppTile extends Widget {
     private final EventBus eventBus;
     
     private boolean isActive = false;
+    
+    private TouchDelegate touchDelegate = new TouchDelegate(this);
     
     public VAppTile(EventBus eventBus, VAppTileJSO appTile) {
         super();
@@ -118,6 +129,34 @@ public class VAppTile extends Widget {
         addDomHandler(new MouseDownHandler() {
             @Override
             public void onMouseDown(MouseDownEvent event) {
+            }
+        }, MouseDownEvent.getType());
+        
+        
+        touchDelegate.addTouchStartHandler(new TouchStartHandler() {
+            @Override
+            public void onTouchStart(TouchStartEvent event) {
+                getElement().getStyle().setColor(getParent().getColor());
+                getElement().getStyle().setBackgroundColor("white");                
+            }
+        });
+        
+        touchDelegate.addTouchCancelHandler(new TouchCancelHandler() {
+            @Override
+            public void onTouchCanceled(TouchCancelEvent event) {
+                if (!isActive()) {
+                    getElement().getStyle().setProperty("backgroundColor", "");
+                    getElement().getStyle().setProperty("color", "");
+                } else {
+                    getElement().getStyle().setBackgroundColor(getParent().getColor());
+                    getElement().getStyle().setColor("white");
+                }                
+            }
+        });
+        
+        touchDelegate.addTouchEndHandler(new TouchEndHandler() {
+            @Override
+            public void onTouchEnd(TouchEndEvent event) {
                 if (!isActive()) {
                     setActive(true);
                     getElement().getStyle().setBackgroundColor(getParent().getColor());
@@ -125,7 +164,14 @@ public class VAppTile extends Widget {
                 }
                 eventBus.fireEvent(new AppActivationEvent(appTileData.getCaption()));
             }
-        }, MouseDownEvent.getType());
+        });
+        
+        touchDelegate.addTouchMoveHandler(new TouchMoveHandler() {
+            @Override
+            public void onTouchMove(TouchMoveEvent event) {
+                //VConsole.log("TOUCH MOVE");
+            }
+        });
     }
 
     public void setActive(boolean isActive) {

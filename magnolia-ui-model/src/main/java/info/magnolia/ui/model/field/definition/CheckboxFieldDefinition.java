@@ -38,13 +38,11 @@ package info.magnolia.ui.model.field.definition;
  */
 public class CheckboxFieldDefinition extends ConfiguredFieldDefinition {
 
-    private boolean defaultValue;
 
-    public boolean isDefaultValue() {
-        return defaultValue;
-    }
-
-    public void setDefaultValue(boolean defaultValue) {
-        this.defaultValue = defaultValue;
+    public CheckboxFieldDefinition(){
+       super();
+       if(getDefaultValue() == null) {
+           setDefaultValue("true");
+       }
     }
 }

@@ -40,6 +40,8 @@ public class FileUploadFieldDefinition extends ConfiguredFieldDefinition {
 
     private boolean preview = true;
 
+    private boolean info = true;
+
     public boolean isPreview() {
         return preview;
     }
@@ -47,4 +49,13 @@ public class FileUploadFieldDefinition extends ConfiguredFieldDefinition {
     public void setPreview(boolean preview) {
         this.preview = preview;
     }
+
+    public boolean isInfo() {
+        return info;
+    }
+
+    public void setInfo(boolean info) {
+        this.info = info;
+    }
+
 }

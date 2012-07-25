@@ -25,7 +25,7 @@
     </dependency>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-admin-central</artifactId>
+      <artifactId>magnolia-ui-admincentral</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>

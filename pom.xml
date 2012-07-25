@@ -166,7 +166,7 @@
 		<module>magnolia-ui-widget-dialog</module>
 		<module>magnolia-ui-widget-actionbar</module>
 		<module>magnolia-ui-widget-editor</module>
-		<module>magnolia-ui-admin-central</module>
+		<module>magnolia-ui-admincentral</module>
 		<module>magnolia-ui-webapp</module>
 		<module>magnolia-ui-app-sample</module>
 		<module>magnolia-ui-app-contacts</module>
