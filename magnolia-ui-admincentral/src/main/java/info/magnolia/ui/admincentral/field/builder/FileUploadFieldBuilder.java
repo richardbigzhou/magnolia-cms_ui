@@ -60,7 +60,7 @@ public class FileUploadFieldBuilder extends AbstractFieldBuilder<FileUploadField
 
     @Override
     protected Field buildField() {
-        FileUpload uploadField = new FileUpload((JcrNodeAdapter)getOrCreateItem());
+        FileUpload uploadField = new FileUpload((JcrNodeAdapter)getOrCreateItem(),definition);
         return uploadField;
     }
 

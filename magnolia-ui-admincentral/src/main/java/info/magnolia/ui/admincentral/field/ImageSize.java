@@ -124,4 +124,16 @@ public final class ImageSize {
             IOUtils.closeQuietly(stream);
         }
     }
+
+    public static ImageSize valueOf(InputStream inputStream) {
+        InputStream stream = null;
+        try {
+            ImageInfo imageInfo = new ImageInfo();
+            stream = inputStream;
+            imageInfo.setInput(stream);
+            return imageInfo.check() ? new ImageSize(imageInfo.getWidth(), imageInfo.getHeight()) : null;
+        } finally {
+            IOUtils.closeQuietly(stream);
+        }
+    }
 }
