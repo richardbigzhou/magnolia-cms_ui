@@ -75,10 +75,12 @@ public class ThumbnailViewImpl implements ThumbnailView {
     private Thumbnail selectedAsset = null;
     private WorkbenchDefinition workbenchDefinition;
     private ThumbnailProvider thumbnailProvider;
+    private String[] itemTypes;
 
     public ThumbnailViewImpl(final WorkbenchDefinition definition, final ThumbnailProvider thumbnailProvider) {
         this.workbenchDefinition = definition;
         this.thumbnailProvider = thumbnailProvider;
+        itemTypes = getItemTypes(definition);
 
         layout.setWidth(100, Sizeable.UNITS_PERCENTAGE);
         layout.setStyleName("mgnl-workbench-thumbnail-view");
@@ -117,9 +119,8 @@ public class ThumbnailViewImpl implements ThumbnailView {
         try {
             //FIXME fgrilli the arg to get node must take into account that the current path can change if we navigate in hierarchy.
             Node parent = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace()).getNode(workbenchDefinition.getPath());
-            final String[] itemTypes = getItemTypes(workbenchDefinition);
 
-            Iterable<Node> assets = NodeUtil.collectAllChildren(parent, new ItemTypePredicate(itemTypes));
+            Iterable<Node> assets = NodeUtil.collectAllChildren(parent, itemTypes != null ? new ItemTypePredicate(itemTypes): NodeUtil.MAGNOLIA_FILTER);
             for(Node asset: assets) {
                 final URL url = thumbnailProvider.getThumbnail(asset, 30, 30);
                 final Thumbnail image = new Thumbnail(asset, url);
@@ -183,7 +184,7 @@ public class ThumbnailViewImpl implements ThumbnailView {
 
     private String[] getItemTypes(final WorkbenchDefinition definition) {
         if(definition.getItemTypes() == null) {
-            return new String[0];
+            return null;
         }
         final String[] itemTypes = new String[definition.getItemTypes().size()];
         for(int i = 0; i < definition.getItemTypes().size(); i++) {
