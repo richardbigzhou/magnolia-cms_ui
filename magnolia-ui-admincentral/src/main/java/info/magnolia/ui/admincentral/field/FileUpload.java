@@ -36,21 +36,27 @@ package info.magnolia.ui.admincentral.field;
 import info.magnolia.cms.beans.runtime.FileProperties;
 import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.cms.util.PathUtil;
+import info.magnolia.ui.model.field.definition.FileUploadFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.TimeZone;
 
 import org.apache.jackrabbit.value.BinaryImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.vaadin.easyuploads.UploadField;
 
 import com.vaadin.data.Property;
 import com.vaadin.terminal.Resource;
 import com.vaadin.terminal.StreamResource;
 import com.vaadin.ui.Embedded;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Upload.FinishedEvent;
 
 /**
@@ -61,15 +67,26 @@ import com.vaadin.ui.Upload.FinishedEvent;
  */
 public class FileUpload extends UploadField {
 
+    private static final Logger log = LoggerFactory.getLogger(FileUpload.class);
     private JcrNodeAdapter item;
+    private String lastFileExtension;
+    private long lastImageWidth;
+    private long lastImageHeight;
+    private List<String> imageExtensions = new ArrayList<String>();
+    private FileUploadFieldDefinition definition;
+    private Embedded embedded;
+    private Label displayDetail = new Label("", Label.CONTENT_XHTML);
 
-    public FileUpload ( JcrNodeAdapter item) {
+
+    public FileUpload ( JcrNodeAdapter item, FileUploadFieldDefinition definition) {
         super();
         this.item = item;
+        this.definition = definition;
         // Set Storage and FileType
         setStorageMode(UploadField.StorageMode.MEMORY);
         setFieldType(UploadField.FieldType.BYTE_ARRAY);
 
+        initImageExtensions();
     }
 
     /**
@@ -87,10 +104,14 @@ public class FileUpload extends UploadField {
 //        }
     }
     /**
-     * Populate item Property.
+     * Refresh the view when upload is finished.
+     * First update some basic File property like the extension
+     * Then call super.
+     * At the end Populate the file Properties and Binary into the related Item.
      */
     @Override
     public void uploadFinished(FinishedEvent event) {
+        updateProperty();
         super.uploadFinished(event);
         populateItemProperty();
     }
@@ -98,27 +119,15 @@ public class FileUpload extends UploadField {
 
     @Override
     protected void updateDisplay() {
-        final byte[] pngData = (byte[]) getValue();
-        String filename = getLastFileName()!=null?getLastFileName():(String)item.getItemProperty(FileProperties.PROPERTY_FILENAME).getValue();
-        String mimeType = getLastMimeType()!=null?getLastMimeType():(String)item.getItemProperty(FileProperties.PROPERTY_CONTENTTYPE).getValue();
-        long filesize = getLastFileSize();
-        if (mimeType.equals("image/png")) {
-            Resource resource = new StreamResource(
-                    new StreamResource.StreamSource() {
-                        @Override
-                        public InputStream getStream() {
-                            return new ByteArrayInputStream(pngData);
-                        }
-                    }, "", this.getApplication()) {
-                @Override
-                public String getMIMEType() {
-                    return "image/png";
-                }
-            };
-            Embedded embedded = new Embedded("Image:" + filename + "("
-                    + filesize + " bytes)", resource);
-
+        if (showPreviewForExtension()) {
+            if(embedded!=null && getRootLayout().getComponentIndex(embedded)!=-1) {
+                getRootLayout().removeComponent(embedded);
+                getRootLayout().removeComponent(displayDetail);
+            }
+            displayDetail.setValue(getDisplayDetails());
+            embedded = createThumbnail();
             getRootLayout().addComponent(embedded);
+            getRootLayout().addComponent(displayDetail);
         } else {
             super.updateDisplay();
         }
@@ -139,24 +148,88 @@ public class FileUpload extends UploadField {
                 data.setValue(binaryImpl);
             }
             catch (IOException e) {
-                e.printStackTrace();
+                log.error("Not able to store the binery information ", e);
             }
         }
         item.getItemProperty(FileProperties.PROPERTY_FILENAME).setValue(getLastFileName());
         item.getItemProperty(FileProperties.PROPERTY_CONTENTTYPE).setValue(getLastMimeType());
         item.getItemProperty(FileProperties.PROPERTY_LASTMODIFIED).setValue(new GregorianCalendar(TimeZone.getDefault()));
         item.getItemProperty(FileProperties.PROPERTY_SIZE).setValue(getLastFileSize());
-        String extension = PathUtil.getExtension(getLastFileName());
-        item.getItemProperty(FileProperties.PROPERTY_EXTENSION).setValue(extension);
-
-//        ImageSize imageSize;
-//        try {
-//            imageSize = ImageSize.valueOf(file);
-//            item.getItemProperty(FileProperties.PROPERTY_WIDTH).setValue(imageSize.getWidth());
-//            item.getItemProperty(FileProperties.PROPERTY_HEIGHT).setValue(imageSize.getHeight());
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        }
+        item.getItemProperty(FileProperties.PROPERTY_EXTENSION).setValue(lastFileExtension);
+        item.getItemProperty(FileProperties.PROPERTY_WIDTH).setValue(lastImageWidth);
+        item.getItemProperty(FileProperties.PROPERTY_HEIGHT).setValue(lastImageHeight);
     }
 
+    @Override
+    protected String getDisplayDetails() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("File: ");
+        sb.append(getLastFileName());
+        sb.append("</br> <em>");
+        sb.append("(" + getLastFileSize() + " bytes)");
+        sb.append("</em>");
+        sb.append("</br>width: " + lastImageWidth + " height: " + lastImageHeight);
+        return sb.toString();
+    }
+
+    /**
+     * Create a Thumbnail image as Embedded component.
+     */
+    private Embedded createThumbnail() {
+        Embedded embedded = null;
+        //Set Image Size
+        ImageSize scaledImageSize = ImageSize.valueOf(getContentAsStream()).scaleToFitIfLarger(150, 150);
+        //Create ressource
+        final byte[] pngData = (byte[]) getValue();
+        Resource imageResource = new StreamResource(
+            new StreamResource.StreamSource() {
+                @Override
+                public InputStream getStream() {
+                    return new ByteArrayInputStream(pngData);
+                }
+            }, "", this.getApplication()){
+            @Override
+            public String getMIMEType() {
+                return getLastMimeType();
+            }
+        };
+
+        embedded = new Embedded("", imageResource);
+        embedded.setWidth(scaledImageSize.getWidth() + "px");
+        embedded.setHeight(scaledImageSize.getHeight() + "px");
+        return embedded;
+    }
+
+    /**
+     * Define if we have to display the Thumbnail regarding
+     *   the file extension and
+     *   the fieldDefinition.
+     */
+    private boolean showPreviewForExtension() {
+        return definition.isPreview() && this.getImageExtensions().contains(lastFileExtension.toLowerCase());
+    }
+
+    /**
+     * Update basic property of the uploaded file.
+     *  Define File extension, Image Height and Width.
+     */
+    private void updateProperty() {
+        lastFileExtension = PathUtil.getExtension(getLastFileName());
+        ImageSize imageSize = ImageSize.valueOf(getContentAsStream());
+        lastImageWidth = imageSize.getWidth();
+        lastImageHeight = imageSize.getHeight();
+    }
+
+    private List<String> getImageExtensions() {
+        return this.imageExtensions;
+    }
+
+    private void initImageExtensions() {
+        this.getImageExtensions().add("jpg");
+        this.getImageExtensions().add("jpeg");
+        this.getImageExtensions().add("gif");
+        this.getImageExtensions().add("png");
+        this.getImageExtensions().add("bmp");
+        this.getImageExtensions().add("swf");
+    }
 }

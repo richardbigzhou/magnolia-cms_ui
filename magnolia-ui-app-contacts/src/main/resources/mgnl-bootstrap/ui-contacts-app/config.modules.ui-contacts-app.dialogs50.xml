@@ -1036,6 +1036,9 @@
             <sv:property sv:name="type" sv:type="String">
               <sv:value>String</sv:value>
             </sv:property>
+            <sv:property sv:name="imageNodeName" sv:type="String">
+               <sv:value>photo</sv:value>
+            </sv:property>
             <sv:node sv:name="MetaData">
               <sv:property sv:name="jcr:primaryType" sv:type="Name">
                 <sv:value>mgnl:metaData</sv:value>
