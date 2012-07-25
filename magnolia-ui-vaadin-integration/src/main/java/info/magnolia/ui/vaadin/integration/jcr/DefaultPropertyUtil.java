@@ -34,10 +34,13 @@
 package info.magnolia.ui.vaadin.integration.jcr;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.jcr.PropertyType;
 
+import info.magnolia.cms.util.DateUtil;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -61,7 +64,7 @@ public class DefaultPropertyUtil {
     public static DefaultProperty newDefaultProperty(String name, String fieldType, String defaultValue) throws NumberFormatException{
         Object value = null;
         try {
-            value = createTypedValue(name, fieldType, defaultValue);
+            value = createTypedValue(fieldType, defaultValue);
         }catch(Exception e) {
             log.error("Exception during Value creation", e);
             value = "";
@@ -72,29 +75,32 @@ public class DefaultPropertyUtil {
     /**
      * Create a custom Field Object based on the Type and defaultValue.
      * If the Type is not defined, used he default one (String).
-     * @throws IllegalAccessException
-     * @throws InstantiationException
-     * @throws: In case of the default value could not be parsed to the desired class.
+     *
+     * @throws NumberFormatException In case of the default value could not be parsed to the desired class.
      */
-    public static Object createTypedValue(String name, String fieldType, String defaultValue) throws NumberFormatException, InstantiationException, IllegalAccessException{
+    public static Object createTypedValue(String fieldType, String defaultValue) throws NumberFormatException, InstantiationException, IllegalAccessException{
         boolean hasDefaultValue = defaultValue != null;
         if (StringUtils.isNotBlank(fieldType)) {
             int valueType = PropertyType.valueFromName(fieldType);
             switch (valueType) {
                 case PropertyType.STRING:
-                    return (hasDefaultValue?defaultValue:"");
+                    return (hasDefaultValue ? defaultValue : "");
                 case PropertyType.BINARY:
                     return null;
                 case PropertyType.LONG:
-                    return (Long.decode(hasDefaultValue?defaultValue:"0"));
+                    return (Long.decode(hasDefaultValue ? defaultValue : "0"));
                 case PropertyType.DOUBLE:
-                    return (Double.valueOf(hasDefaultValue?defaultValue:"0"));
-                case PropertyType.DATE://TODO SCRUM-1398: How should we handle the date format?
-                    return new Date();
+                    return (Double.valueOf(hasDefaultValue ? defaultValue : "0"));
+                case PropertyType.DATE:
+                    try {
+                        return hasDefaultValue ? new SimpleDateFormat(DateUtil.YYYY_MM_DD).parse(defaultValue) : new Date();
+                    } catch (ParseException e) {
+                        throw new IllegalArgumentException(e.getMessage());
+                    }
                 case PropertyType.BOOLEAN:
-                    return (BooleanUtils.toBoolean(hasDefaultValue?defaultValue:""));
+                    return (BooleanUtils.toBoolean(hasDefaultValue ? defaultValue : ""));
                 case PropertyType.DECIMAL:
-                    return (BigDecimal.valueOf(Long.decode(hasDefaultValue?defaultValue:"0")));
+                    return (BigDecimal.valueOf(Long.decode(hasDefaultValue ? defaultValue : "0")));
                 default: {
                     String msg = "Unsupported property type " + PropertyType.nameFromValue(valueType);
                     log.error(msg);
@@ -102,7 +108,7 @@ public class DefaultPropertyUtil {
                 }
             }
         } else {
-            return String.valueOf(hasDefaultValue?defaultValue:"");
+            return String.valueOf(hasDefaultValue ? defaultValue : "");
         }
     }
 
