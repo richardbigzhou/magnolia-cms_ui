@@ -47,8 +47,8 @@ import info.magnolia.context.SystemContext;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
-import info.magnolia.ui.admincentral.field.DialogEditField;
 import info.magnolia.ui.admincentral.field.builder.DialogFieldFactory;
+import info.magnolia.ui.admincentral.field.builder.TextFieldBuilder;
 import info.magnolia.ui.model.dialog.definition.ConfiguredDialogDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 import info.magnolia.ui.model.field.definition.ConfiguredFieldDefinition;
@@ -128,7 +128,7 @@ public class DialogBuilderTest {
         dialogDef.addTab(tabDef);
 
         final DialogFieldFactory dialogFieldFactory = mock(DialogFieldFactory.class);
-        DialogEditField editField = new DialogEditField(fieldTypeDef, item);
+        TextFieldBuilder editField = new TextFieldBuilder(fieldTypeDef, item);
         when(dialogFieldFactory.create(same(fieldDef), same(item))).thenReturn(editField);
 
         // WHEN
@@ -139,4 +139,3 @@ public class DialogBuilderTest {
     }
 
 }
-

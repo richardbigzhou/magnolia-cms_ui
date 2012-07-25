@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.field;
+package info.magnolia.ui.admincentral.field.builder;
 
 import static org.junit.Assert.assertEquals;
 import info.magnolia.ui.model.field.definition.ConfiguredFieldDefinition;
@@ -51,11 +51,11 @@ import com.vaadin.ui.TextField;
 
 
 /**
- * Main testcase for {@link AbstractDialogField}.
+ * Main testcase for {@link AbstractFieldBuilder}.
  */
-public class AbstractDialogFieldTest extends AbstractDialogTest<ConfiguredFieldDefinition> {
+public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFieldDefinition> {
 
-    private AbstractDialogField<FieldDefinition> abstractDialogField;
+    private AbstractFieldBuilder<FieldDefinition> abstractDialogField;
 
     @Test
     public void simpleInitializationTest() {
@@ -154,7 +154,7 @@ public class AbstractDialogFieldTest extends AbstractDialogTest<ConfiguredFieldD
     /**
      * Dummy Implementation of AbstractDialogField.
      */
-    private class TestDialogField extends AbstractDialogField<FieldDefinition> {
+    private class TestDialogField extends AbstractFieldBuilder<FieldDefinition> {
 
         public TestDialogField(FieldDefinition definition, Item relatedFieldItem) {
             super(definition, relatedFieldItem);

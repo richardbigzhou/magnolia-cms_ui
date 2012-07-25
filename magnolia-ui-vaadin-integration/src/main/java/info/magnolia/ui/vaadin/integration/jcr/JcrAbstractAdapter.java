@@ -66,7 +66,7 @@ public abstract class JcrAbstractAdapter implements JcrItemAdapter {
     /**
      * Init common Item attributes.
      */
-    private void setCommonAttributes(Item jcrItem) {
+    protected void setCommonAttributes(Item jcrItem) {
         String nodeIdentifier = null;
         String workspace = null;
         String path = null;

@@ -31,18 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.field;
+package info.magnolia.ui.admincentral.field.builder;
 
 import static org.junit.Assert.assertEquals;
+import info.magnolia.ui.model.field.definition.SelectFieldDefinition;
+import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.jcr.Node;
-
-import info.magnolia.ui.model.field.definition.SelectFieldDefinition;
-import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import org.junit.Test;
 
@@ -50,16 +49,16 @@ import com.vaadin.ui.Field;
 import com.vaadin.ui.NativeSelect;
 
 /**
- * Main testcase for {@link DialogDateField}.
+ * Main testcase for {@link DateFieldBuilder}.
  */
-public class DialogSelectFieldTest extends AbstractDialogTest<SelectFieldDefinition> {
+public class SelectFieldBuilderTest extends AbstractBuilderTest<SelectFieldDefinition> {
 
-    private DialogSelectField dialogSelect;
+    private SelectFieldBuilder dialogSelect;
 
     @Test
     public void simpleSelectFieldTest() throws Exception{
         // GIVEN
-        dialogSelect = new DialogSelectField(definition, baseItem);
+        dialogSelect = new SelectFieldBuilder(definition, baseItem);
 
         // WHEN
         Field field = dialogSelect.getField();
@@ -77,7 +76,7 @@ public class DialogSelectFieldTest extends AbstractDialogTest<SelectFieldDefinit
         // GIVEN
         SelectFieldOptionDefinition option = definition.getOptions().get(1);
         option.setSelected(true);
-        dialogSelect = new DialogSelectField(definition, baseItem);
+        dialogSelect = new SelectFieldBuilder(definition, baseItem);
 
         // WHEN
         Field field = dialogSelect.getField();
@@ -91,7 +90,7 @@ public class DialogSelectFieldTest extends AbstractDialogTest<SelectFieldDefinit
         // GIVEN
         baseNode.setProperty(propertyName, "3");
         baseItem = new JcrNodeAdapter(baseNode);
-        dialogSelect = new DialogSelectField(definition, baseItem);
+        dialogSelect = new SelectFieldBuilder(definition, baseItem);
 
         // WHEN
         Field field = dialogSelect.getField();
@@ -115,7 +114,7 @@ public class DialogSelectFieldTest extends AbstractDialogTest<SelectFieldDefinit
         definition.setPath(options.getPath());
         definition.setRepository(workspaceName);
         definition.setOptions(new ArrayList<SelectFieldOptionDefinition>());
-        dialogSelect = new DialogSelectField(definition, baseItem);
+        dialogSelect = new SelectFieldBuilder(definition, baseItem);
 
         // WHEN
         Field field = dialogSelect.getField();
@@ -146,7 +145,7 @@ public class DialogSelectFieldTest extends AbstractDialogTest<SelectFieldDefinit
         definition.setValueNodeData("x");
         definition.setLabelNodeData("z");
 
-        dialogSelect = new DialogSelectField(definition, baseItem);
+        dialogSelect = new SelectFieldBuilder(definition, baseItem);
 
         // WHEN
         Field field = dialogSelect.getField();
@@ -161,7 +160,7 @@ public class DialogSelectFieldTest extends AbstractDialogTest<SelectFieldDefinit
     @Override
     protected void createConfiguredFieldDefinition() {
         SelectFieldDefinition fieldDefinition = new SelectFieldDefinition();
-        fieldDefinition = (SelectFieldDefinition)AbstractDialogFieldTest.createConfiguredFieldDefinition(fieldDefinition, propertyName);
+        fieldDefinition = (SelectFieldDefinition)AbstractFieldBuilderTest.createConfiguredFieldDefinition(fieldDefinition, propertyName);
         fieldDefinition.setDefaultValue(null);
         SelectFieldOptionDefinition option1 = new SelectFieldOptionDefinition();
         option1.setLabel("One");

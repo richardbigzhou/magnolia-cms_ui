@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.vaadin.integration.jcr;
 
+
 import info.magnolia.cms.core.Path;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.MetaDataUtil;
@@ -97,17 +98,18 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter{
     }
 
     /**
-     * Create a new subNode of the parent Node.
-     *
-     * @throws IllegalAccessError: If the node was already created.
+     * Create a new subNode of the parent Node or return the existing one if already created.
+     * In case of exception return null.
      */
     @Override
     public Node getNode() {
-        if(nodeName !=null) {
-            //TODO ehe: Check what exactly to do in this case. throw exception or search for the last
-            // created node. In this case, what to do if the node was created in another session and not yet stored.
-            log.warn("Node already created. getNode() should only be called once. ");
-            throw new IllegalAccessError("Should only call this method once");
+        try {
+            if(nodeName !=null && getParentNode().hasNode(nodeName)) {
+                return getParentNode().getNode(nodeName);
+            }
+        } catch(RepositoryException re) {
+            log.warn("Exception during access of the newly created node "+nodeName,re);
+            return null;
         }
 
         return createNode();
@@ -128,13 +130,23 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter{
         Node node = null;
         try {
             Node parent = (Node)getJcrItem();
-            nodeName = getUniqueNewItemName(parent);
+            nodeName = StringUtils.isNotBlank(nodeName)?nodeName:getUniqueNewItemName(parent);
             node = parent.addNode(nodeName, this.nodeType);
             log.debug("create a new node for parent "+parent.getPath()+" with nodeId "+nodeName);
             //Create MetaData
             MetaDataUtil.getMetaData(node);
             //Update property
             updateProperty(node);
+            //Update child nodes
+            if(!childs.isEmpty()) {
+                for(JcrNodeAdapter child:childs.values()) {
+                    if(child instanceof JcrNewNodeAdapter) {
+                        //Set parent node (parent could be newly created)
+                        child.setCommonAttributes(node);
+                    }
+                    child.getNode();
+                }
+            }
 
             return node;
         }
@@ -161,5 +173,4 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter{
 
         return Path.getUniqueLabel(item.getSession(), item.getPath(), StringUtils.isNotBlank(nodeName)?nodeName:"untitled");
     }
-
 }
