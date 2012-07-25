@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,35 +31,45 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.widget;
+package info.magnolia.ui.admincentral.thumbnail;
 
-import info.magnolia.ui.vaadin.integration.widget.client.VGriddyView;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
-import com.vaadin.terminal.PaintException;
-import com.vaadin.terminal.PaintTarget;
-import com.vaadin.ui.AbstractComponent;
-import com.vaadin.ui.ClientWidget;
-import com.vaadin.ui.ClientWidget.LoadStyle;
+import java.net.URL;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
+import com.vaadin.terminal.ExternalResource;
+import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.Embedded;
 
 /**
- *GriddyView.
+ * A component capable of displaying an image and holding a reference to the jcr node where the image is stored.
  *
  */
-@SuppressWarnings("serial")
-@ClientWidget(value = VGriddyView.class, loadStyle = LoadStyle.EAGER)
-public class GriddyView extends AbstractComponent {
-    private String url;
+public class Thumbnail extends Embedded {
+    private JcrNodeAdapter node;
 
-    public GriddyView(String url) {
-        setSizeFull();
-        setImmediate(false);
-        this.url = url;
+    public Thumbnail(final Node node, final URL url) {
+        this.node = new JcrNodeAdapter(node);
+        setType(TYPE_IMAGE);
+        setSizeUndefined();
+        addStyleName("asset");
+        if(url != null) {
+            setSource(new ExternalResource(url));
+        } else {
+            setSource(new ThemeResource("img/icons/icon-error-red.png"));
+        }
+        try {
+            setDescription(node.getName());
+        } catch (RepositoryException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
-    @Override
-    public void paint(PaintTarget target) throws PaintException {
-        super.paint(target);
-        target.addAttribute("url", url);
+    public JcrNodeAdapter getNode() {
+        return node;
     }
-
 }
