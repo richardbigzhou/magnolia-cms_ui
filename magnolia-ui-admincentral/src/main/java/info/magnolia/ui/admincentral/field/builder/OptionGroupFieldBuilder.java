@@ -31,42 +31,32 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.field.definition;
+package info.magnolia.ui.admincentral.field.builder;
+
+import com.vaadin.data.Item;
+import com.vaadin.ui.AbstractSelect;
+import com.vaadin.ui.OptionGroup;
+
+import info.magnolia.ui.model.field.definition.OptionGroupFieldDefinition;
 
 /**
- * Field definition for a upload field.
+ * Creates and initializes a select field based on a field definition.
  */
-public class FileUploadFieldDefinition extends ConfiguredFieldDefinition {
+public class OptionGroupFieldBuilder extends SelectFieldBuilder<OptionGroupFieldDefinition> {
 
-    // Display Thumbnail
-    private boolean preview = true;
-    // Display Image Info
-    private boolean info = true;
-    // Define the upload Binary Node name.
-    private String uploadBinaryNodeName = "imageBinary";
-
-    public boolean isPreview() {
-        return preview;
+    public OptionGroupFieldBuilder(OptionGroupFieldDefinition definition, Item relatedFieldItem) {
+        super(definition, relatedFieldItem);
     }
 
-    public void setPreview(boolean preview) {
-        this.preview = preview;
+    @Override
+    protected AbstractSelect buildField() {
+        super.buildField();
+        select.setMultiSelect(getFieldDefinition().isMultiple());
+        return select;
     }
 
-    public boolean isInfo() {
-        return info;
+    @Override
+    protected AbstractSelect createSelectionField() {
+        return new OptionGroup();
     }
-
-    public void setInfo(boolean info) {
-        this.info = info;
-    }
-
-    public String getUploadBinaryNodeName() {
-        return uploadBinaryNodeName;
-    }
-
-    public void setUploadBinaryNodeName(String uploadBinaryNodeName) {
-        this.uploadBinaryNodeName = uploadBinaryNodeName;
-    }
-
 }

@@ -136,6 +136,12 @@
    		<version>1.6.5</version>
 	</dependency>
 
+	<dependency>
+	  <groupId>org.devlib.schmidt</groupId>
+	  <artifactId>imageinfo</artifactId>
+	  <version>1.9</version>
+	</dependency>
+
     <!-- For Test -->
      <dependency>
         <groupId>junit</groupId>

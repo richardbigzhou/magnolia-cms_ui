@@ -31,32 +31,41 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.field;
+package info.magnolia.ui.admincentral.field.builder;
 
 import com.vaadin.data.Item;
-import com.vaadin.ui.AbstractSelect;
-import com.vaadin.ui.OptionGroup;
+import com.vaadin.ui.Field;
+import com.vaadin.ui.PopupDateField;
 
-import info.magnolia.ui.model.field.definition.OptionGroupFieldDefinition;
+import info.magnolia.ui.model.field.definition.DateFieldDefinition;
 
 /**
- * Creates and initializes a select field based on a field definition.
+ * Creates and initializes a date field based on a field definition.
  */
-public class DialogOptionGroupField extends DialogSelectField<OptionGroupFieldDefinition> {
+public class DateFieldBuilder extends AbstractFieldBuilder<DateFieldDefinition> {
 
-    public DialogOptionGroupField(OptionGroupFieldDefinition definition, Item relatedFieldItem) {
+    public DateFieldBuilder(DateFieldDefinition definition, Item relatedFieldItem) {
         super(definition, relatedFieldItem);
     }
 
     @Override
-    protected AbstractSelect buildField() {
-        super.buildField();
-        select.setMultiSelect(getFieldDefinition().isMultiple());
-        return select;
-    }
+    protected Field buildField() {
+        DateFieldDefinition definition = getFieldDefinition();
+        PopupDateField popupDateField = new PopupDateField();
 
-    @Override
-    protected AbstractSelect createSelectionField() {
-        return new OptionGroup();
+        String dateFormat = "";
+
+        // set Resolution
+        if (definition.isTime()) {
+            popupDateField.setResolution(com.vaadin.ui.DateField.RESOLUTION_MIN);
+            dateFormat = definition.getDateFormat() + ":" + definition.getTimeFormat();
+        } else {
+            popupDateField.setResolution(com.vaadin.ui.DateField.RESOLUTION_DAY);
+            dateFormat = definition.getDateFormat();
+        }
+
+        popupDateField.setDateFormat(dateFormat);
+
+        return popupDateField;
     }
 }

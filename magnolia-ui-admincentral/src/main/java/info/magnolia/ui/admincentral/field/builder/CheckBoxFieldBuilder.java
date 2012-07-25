@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,44 +31,31 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.field;
+package info.magnolia.ui.admincentral.field.builder;
+
+import info.magnolia.ui.model.field.definition.CheckboxFieldDefinition;
+import info.magnolia.ui.model.field.definition.FieldDefinition;
 
 import com.vaadin.data.Item;
-import com.vaadin.data.Property;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Field;
-import org.vaadin.easyuploads.UploadField;
-
-import info.magnolia.ui.model.field.definition.FileUploadFieldDefinition;
 
 /**
- * Creates and configures a Vaadin UploadField.
+ * Creates and initializes a checkBox field based on a field definition.
  */
-public class FileUploadField extends AbstractDialogField<FileUploadFieldDefinition> {
+public class CheckBoxFieldBuilder extends AbstractFieldBuilder<CheckboxFieldDefinition> {
 
-    public FileUploadField(FileUploadFieldDefinition definition, Item relatedFieldItem) {
+    public CheckBoxFieldBuilder(CheckboxFieldDefinition definition, Item relatedFieldItem) {
         super(definition, relatedFieldItem);
     }
 
     @Override
     protected Field buildField() {
-        UploadField uploadField = new UploadField();
-        uploadField.setStorageMode(UploadField.StorageMode.MEMORY);
-        uploadField.setFieldType(UploadField.FieldType.UTF8_STRING);
-        return uploadField;
+        return new CheckBox();
     }
 
     @Override
-    public void setPropertyDataSource(final Property property) {
-        super.setPropertyDataSource(property);
-
-        // For some reason we need to add this to get the value in the field into the Property. The field does not
-        // do this on its own.
-        field.addListener(new Property.ValueChangeListener() {
-
-            @Override
-            public void valueChange(Property.ValueChangeEvent event) {
-                property.setValue(field.getValue());
-            }
-        });
+    protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {
+        return Boolean.class;
     }
 }

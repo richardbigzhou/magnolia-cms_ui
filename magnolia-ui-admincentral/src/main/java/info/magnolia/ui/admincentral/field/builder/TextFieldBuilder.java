@@ -31,65 +31,58 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.field;
+package info.magnolia.ui.admincentral.field.builder;
 
-import org.junit.Test;
-
+import com.vaadin.data.Item;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
+import org.apache.commons.lang.StringUtils;
 
 import info.magnolia.ui.model.field.definition.EditFieldDefinition;
-import static org.junit.Assert.assertEquals;
+import info.magnolia.ui.model.field.definition.FieldDefinition;
 
 /**
- * Main testcase for {@link DialogEditField}.
+ * Creates and initializes an edit field based on a field definition.
  */
-public class DialogEditFieldTest extends AbstractDialogTest<EditFieldDefinition> {
+public class TextFieldBuilder extends AbstractFieldBuilder<EditFieldDefinition> {
 
-    private DialogEditField dialogEdit;
-
-    @Test
-    public void createSingleRowEditFieldTest() {
-        // GIVEN
-        dialogEdit = new DialogEditField(definition, baseItem);
-
-        // WHEN
-        Field field = dialogEdit.getField();
-
-        // THEN
-        assertEquals(true, field instanceof TextField);
-        assertEquals(50, field.getWidth(),0);
-        assertEquals(8, field.getWidthUnits());
+    public TextFieldBuilder(EditFieldDefinition definition, Item relatedFieldItem) {
+        super(definition, relatedFieldItem);
     }
-
-    @Test
-    public void createMultiRowEditField() {
-        // GIVEN
-        definition.setRows(2);
-        definition.setWidth("88");
-        dialogEdit = new DialogEditField(definition, baseItem);
-
-        // WHEN
-        Field field = dialogEdit.getField();
-
-        // THEN
-        assertEquals(true, field instanceof TextArea);
-        assertEquals(2, ((TextArea)field).getRows());
-        assertEquals(88, field.getWidth(),0);
-        assertEquals(0, field.getWidthUnits());
-    }
-
 
     @Override
-    protected void createConfiguredFieldDefinition() {
-        EditFieldDefinition fieldDefinition = new EditFieldDefinition();
-        fieldDefinition = (EditFieldDefinition)AbstractDialogFieldTest.createConfiguredFieldDefinition(fieldDefinition, propertyName);
+    protected Field buildField() {
+        EditFieldDefinition editDefinition = definition;
 
-        fieldDefinition.setRows(0);
-        fieldDefinition.setMaxLength(0);
-        fieldDefinition.setWidth("50%");
-        this.definition = fieldDefinition;
+        if (editDefinition.getRows() > 1) {
+            return createMultiRowEditField(editDefinition);
+        }
+        return createSingleRowEditField(editDefinition);
+
     }
 
+    private Field createSingleRowEditField(EditFieldDefinition definition) {
+        TextField textField = new TextField();
+        textField.setMaxLength(definition.getMaxLength());
+        if (StringUtils.isNotEmpty(definition.getWidth())) {
+            textField.setWidth(definition.getWidth());
+        }
+        return textField;
+    }
+
+    private Field createMultiRowEditField(EditFieldDefinition definition) {
+        TextArea textArea = new TextArea();
+        textArea.setRows(definition.getRows());
+        if (StringUtils.isNotEmpty(definition.getWidth())) {
+            textArea.setWidth(definition.getWidth());
+        }
+        return textArea;
+    }
+
+    @Override
+    protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {
+        return String.class;
+    }
 }
+

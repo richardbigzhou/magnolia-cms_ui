@@ -76,7 +76,7 @@
         <sv:value>info.magnolia.ui.model.field.definition.EditFieldDefinition</sv:value>
       </sv:property>
       <sv:property sv:name="implementation" sv:type="String">
-        <sv:value>info.magnolia.ui.admincentral.field.DialogEditField</sv:value>
+        <sv:value>info.magnolia.ui.admincentral.field.builder.TextFieldBuilder</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
@@ -116,7 +116,7 @@
         <sv:value>info.magnolia.ui.model.field.definition.DateFieldDefinition</sv:value>
       </sv:property>
       <sv:property sv:name="implementation" sv:type="String">
-        <sv:value>info.magnolia.ui.admincentral.field.DialogDateField</sv:value>
+        <sv:value>info.magnolia.ui.admincentral.field.builder.DateFieldBuilder</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
@@ -156,7 +156,7 @@
         <sv:value>info.magnolia.ui.model.field.definition.SelectFieldDefinition</sv:value>
       </sv:property>
       <sv:property sv:name="implementation" sv:type="String">
-        <sv:value>info.magnolia.ui.admincentral.field.DialogSelectField</sv:value>
+        <sv:value>info.magnolia.ui.admincentral.field.builder.SelectFieldBuilder</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
@@ -196,7 +196,7 @@
         <sv:value>info.magnolia.ui.model.field.definition.OptionGroupFieldDefinition</sv:value>
       </sv:property>
       <sv:property sv:name="implementation" sv:type="String">
-        <sv:value>info.magnolia.ui.admincentral.field.DialogOptionGroupField</sv:value>
+        <sv:value>info.magnolia.ui.admincentral.field.builder.OptionGroupFieldBuilder</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
@@ -236,7 +236,7 @@
         <sv:value>info.magnolia.ui.model.field.definition.FileUploadFieldDefinition</sv:value>
       </sv:property>
       <sv:property sv:name="implementation" sv:type="String">
-        <sv:value>info.magnolia.ui.admincentral.field.FileUploadField</sv:value>
+        <sv:value>info.magnolia.ui.admincentral.field.builder.FileUploadFieldBuilder</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>

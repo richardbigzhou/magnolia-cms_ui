@@ -31,50 +31,54 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.field;
+package info.magnolia.ui.admincentral.field.builder;
 
-import info.magnolia.ui.admincentral.field.builder.SelectFieldBuilder;
-import info.magnolia.ui.model.field.definition.FieldDefinition;
-import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
+import static org.junit.Assert.assertEquals;
+import info.magnolia.ui.model.field.definition.CheckboxFieldDefinition;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.junit.Test;
 
-import com.vaadin.data.Item;
-
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Field;
 
 /**
- * Define a Component selector field.
- * The values displayed in the field are initialized based on the
- * related Item (Image of a JCR node) and {@link info.magnolia.rendering.template.assignment.TemplateDefinitionAssignment}.
+ * Main testcase for {@link CheckBoxFieldBuilder}.
  */
-public class ComponentSelectorField extends SelectFieldBuilder<ComponentSelectorDefinition> {
+public class CheckBoxFieldBuilderTest extends AbstractBuilderTest<CheckboxFieldDefinition> {
 
+    private CheckBoxFieldBuilder checkBoxField;
 
-    public ComponentSelectorField(ComponentSelectorDefinition definition, Item relatedFieldItem) {
-        super(definition, relatedFieldItem);
+    @Test
+    public void simpleCheckBoxFieldTest() throws Exception{
+        // GIVEN
+        checkBoxField = new CheckBoxFieldBuilder(definition, baseItem);
+
+        // WHEN
+        Field field = checkBoxField.getField();
+
+        // THEN
+        assertEquals(true, field instanceof CheckBox);
+        assertEquals(true, field.getValue());
     }
 
+    @Test
+    public void checkBoxField_SetSelectedTest() throws Exception{
+        // GIVEN
+        checkBoxField = new CheckBoxFieldBuilder(definition, baseItem);
+        definition.setDefaultValue("false");
+        // WHEN
+        Field field = checkBoxField.getField();
 
-    /**
-     * Get the Available templates based on the current Node.
-     */
-    @Override
-    public Map<String, String> getOptions() {
-
-        Map<String, String> res = new HashMap<String, String>();
-        for (SelectFieldOptionDefinition option : definition.getOptions()) {
-            res.put(option.getValue(), option.getName());
-        }
-        return res;
+        // THEN
+        assertEquals(true, field instanceof CheckBox);
+        assertEquals(false, field.getValue());
     }
 
-
     @Override
-    protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {
-        return String.class;
+    protected void createConfiguredFieldDefinition() {
+        CheckboxFieldDefinition fieldDefinition = new CheckboxFieldDefinition();
+        fieldDefinition.setName(propertyName);
+        this.definition = fieldDefinition;
     }
 
 }
-
-

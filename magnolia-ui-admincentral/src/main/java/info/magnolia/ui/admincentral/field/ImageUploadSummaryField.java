@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,39 +33,30 @@
  */
 package info.magnolia.ui.admincentral.field;
 
-import com.vaadin.data.Item;
-import com.vaadin.ui.Field;
-import com.vaadin.ui.PopupDateField;
+import info.magnolia.ui.admincentral.field.builder.AbstractFieldBuilder;
+import info.magnolia.ui.model.field.definition.FileUploadFieldDefinition;
 
-import info.magnolia.ui.model.field.definition.DateFieldDefinition;
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.ui.Field;
 
 /**
- * Creates and initializes a date field based on a field definition.
+ * Creates and configures a Vaadin Image Summary Field.
  */
-public class DialogDateField extends AbstractDialogField<DateFieldDefinition> {
+public class ImageUploadSummaryField extends AbstractFieldBuilder<FileUploadFieldDefinition> {
 
-    public DialogDateField(DateFieldDefinition definition, Item relatedFieldItem) {
+    public ImageUploadSummaryField(FileUploadFieldDefinition definition, Item relatedFieldItem) {
         super(definition, relatedFieldItem);
     }
 
     @Override
     protected Field buildField() {
-        DateFieldDefinition definition = getFieldDefinition();
-        PopupDateField popupDateField = new PopupDateField();
 
-        String dateFormat = "";
+        return null;
+    }
 
-        // set Resolution
-        if (definition.isTime()) {
-            popupDateField.setResolution(com.vaadin.ui.DateField.RESOLUTION_MIN);
-            dateFormat = definition.getDateFormat() + ":" + definition.getTimeFormat();
-        } else {
-            popupDateField.setResolution(com.vaadin.ui.DateField.RESOLUTION_DAY);
-            dateFormat = definition.getDateFormat();
-        }
-
-        popupDateField.setDateFormat(dateFormat);
-
-        return popupDateField;
+    @Override
+    public void setPropertyDataSource(final Property property) {
+        super.setPropertyDataSource(property);
     }
 }
