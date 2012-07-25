@@ -102,7 +102,7 @@
   </components>
 
     <components>
-        <id>admincentral</id>
+    <id>admincentral</id>
     <component>
       <type>info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilderProvider</type>
       <workspace>config</workspace>
