@@ -88,7 +88,7 @@ public class ThumbnailViewImpl implements ThumbnailView {
             public void layoutClick(LayoutClickEvent event) {
                 Thumbnail clickedAsset = (Thumbnail) event.getClickedComponent();
                 if(clickedAsset != null && listener != null) {
-                    log.info("Clicked on {}", clickedAsset.getDescription());
+                    log.debug("Clicked on {}", clickedAsset.getDescription());
                     if(selectedAsset != null) {
                         selectedAsset.removeStyleName("active");
                     }
@@ -160,7 +160,7 @@ public class ThumbnailViewImpl implements ThumbnailView {
 
         public ItemTypePredicate(final String...itemTypes) {
             if(itemTypes == null || itemTypes.length == 0) {
-                throw new IllegalArgumentException("itemTypes cannot be null.");
+                throw new IllegalArgumentException("itemTypes cannot be null or empty.");
             }
             this.itemTypes = itemTypes;
         }
@@ -170,7 +170,7 @@ public class ThumbnailViewImpl implements ThumbnailView {
                 final String nodeTypeName = node.getPrimaryNodeType().getName();
                 for(int i=0; i < itemTypes.length; i++) {
                     if(nodeTypeName.equals(itemTypes[i])) {
-                        log.info("found match for node [{}] with node type [{}]", node.getName(), itemTypes[i]);
+                        log.debug("found match for node [{}] with node type [{}]", node.getName(), itemTypes[i]);
                         return true;
                     }
                 }
