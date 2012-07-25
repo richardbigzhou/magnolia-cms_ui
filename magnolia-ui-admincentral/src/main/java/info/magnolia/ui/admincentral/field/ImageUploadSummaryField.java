@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,31 +31,32 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.field.definition;
+package info.magnolia.ui.admincentral.field;
+
+import info.magnolia.ui.admincentral.field.builder.AbstractFieldBuilder;
+import info.magnolia.ui.model.field.definition.FileUploadFieldDefinition;
+
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.ui.Field;
 
 /**
- * Field definition for a upload field.
+ * Creates and configures a Vaadin Image Summary Field.
  */
-public class FileUploadFieldDefinition extends ConfiguredFieldDefinition {
+public class ImageUploadSummaryField extends AbstractFieldBuilder<FileUploadFieldDefinition> {
 
-    private boolean preview = true;
-
-    private boolean info = true;
-
-    public boolean isPreview() {
-        return preview;
+    public ImageUploadSummaryField(FileUploadFieldDefinition definition, Item relatedFieldItem) {
+        super(definition, relatedFieldItem);
     }
 
-    public void setPreview(boolean preview) {
-        this.preview = preview;
+    @Override
+    protected Field buildField() {
+
+        return null;
     }
 
-    public boolean isInfo() {
-        return info;
+    @Override
+    public void setPropertyDataSource(final Property property) {
+        super.setPropertyDataSource(property);
     }
-
-    public void setInfo(boolean info) {
-        this.info = info;
-    }
-
 }
