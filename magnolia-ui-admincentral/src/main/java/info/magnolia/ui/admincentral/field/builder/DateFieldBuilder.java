@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.field;
+package info.magnolia.ui.admincentral.field.builder;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.Field;
@@ -42,9 +42,9 @@ import info.magnolia.ui.model.field.definition.DateFieldDefinition;
 /**
  * Creates and initializes a date field based on a field definition.
  */
-public class DialogDateField extends AbstractDialogField<DateFieldDefinition> {
+public class DateFieldBuilder extends AbstractFieldBuilder<DateFieldDefinition> {
 
-    public DialogDateField(DateFieldDefinition definition, Item relatedFieldItem) {
+    public DateFieldBuilder(DateFieldDefinition definition, Item relatedFieldItem) {
         super(definition, relatedFieldItem);
     }
 

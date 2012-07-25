@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.field;
+package info.magnolia.ui.admincentral.field.builder;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -58,7 +58,7 @@ import com.vaadin.data.Item;
 /**
  * Abstract test class used to initialize the DialogField Tests.
  */
-public abstract class AbstractDialogTest<D extends FieldDefinition> {
+public abstract class AbstractBuilderTest<D extends FieldDefinition> {
 
     protected final String workspaceName = "workspace";
     protected MockSession session;
@@ -102,6 +102,5 @@ public abstract class AbstractDialogTest<D extends FieldDefinition> {
      * Create the specific ConfiguredFieldDefinition or sub class.
      */
     protected abstract void createConfiguredFieldDefinition();
-
 
 }

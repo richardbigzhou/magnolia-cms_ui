@@ -31,17 +31,23 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.field;
+package info.magnolia.ui.admincentral.field.builder;
+
+import info.magnolia.ui.admincentral.dialog.AbstractDialogItem;
+import info.magnolia.ui.admincentral.field.DialogField;
+import info.magnolia.ui.model.field.definition.FieldDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
+import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+
+import javax.jcr.Node;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.ui.Field;
-import org.apache.commons.lang.StringUtils;
-
-import info.magnolia.ui.admincentral.dialog.AbstractDialogItem;
-import info.magnolia.ui.model.field.definition.FieldDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
-import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 
 /**
  * Abstract DialogField implementations, initializes common attributes and binds Vaadin {@link Field} instances created
@@ -49,7 +55,7 @@ import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
  *
  * @param <D> definition type
  */
-public abstract class AbstractDialogField<D extends FieldDefinition> extends AbstractDialogItem implements DialogField {
+public abstract class AbstractFieldBuilder<D extends FieldDefinition> extends AbstractDialogItem implements DialogField {
 
     public static final String FIELD_STYLE_NAME = "textfield";
 
@@ -58,7 +64,7 @@ public abstract class AbstractDialogField<D extends FieldDefinition> extends Abs
     protected D definition;
     private String styleName;
 
-    public AbstractDialogField(D definition, Item relatedFieldItem) {
+    public AbstractFieldBuilder(D definition, Item relatedFieldItem) {
         this.definition = definition;
         this.item = relatedFieldItem;
     }
@@ -80,7 +86,10 @@ public abstract class AbstractDialogField<D extends FieldDefinition> extends Abs
             //Set label
             this.field.setCaption(getMessage(getFieldDefinition().getLabel()));
 
-            ((DefaultProperty) this.field.getPropertyDataSource()).setSaveInfo(definition.getSaveInfo());
+            //Set SaveInfo (field property has to be updated)
+            if(this.field.getPropertyDataSource()!=null) {
+                ((DefaultProperty) this.field.getPropertyDataSource()).setSaveInfo(definition.getSaveInfo());
+            }
         }
         return this.field;
     }
@@ -119,7 +128,7 @@ public abstract class AbstractDialogField<D extends FieldDefinition> extends Abs
      * If the property does not exist:
      * Create a new property based on the defined Type, default value, and saveInfo.
      */
-    private Property getOrCreateProperty() {
+    public Property getOrCreateProperty() {
         DefaultProperty property = (DefaultProperty) item.getItemProperty(definition.getName());
         if (property == null) {
             property = DefaultPropertyUtil.newDefaultProperty(definition.getName(), getFieldType(definition).getSimpleName(), definition.getDefaultValue());
@@ -142,6 +151,19 @@ public abstract class AbstractDialogField<D extends FieldDefinition> extends Abs
 
     protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {
         throw new IllegalArgumentException("Unsupported type " + fieldDefinition.getClass().getName());
+    }
+
+    /**
+     * Returns the field related node.
+     * If field is of type JcrNewNodeAdapter then return the parent node.
+     * Else get the node associated with the Vaadin item.
+     */
+    protected Node getRelatedNode(Item fieldRelatedItem) {
+        if (fieldRelatedItem instanceof JcrNewNodeAdapter) {
+            return ((JcrNewNodeAdapter) fieldRelatedItem).getParentNode();
+        } else {
+            return ((JcrNodeAdapter) fieldRelatedItem).getNode();
+        }
     }
 
     @Override

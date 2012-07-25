@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.field;
+package info.magnolia.ui.admincentral.field.builder;
 
 import static org.junit.Assert.assertEquals;
 import info.magnolia.ui.model.field.definition.DateFieldDefinition;
@@ -46,11 +46,11 @@ import com.vaadin.ui.Field;
 import com.vaadin.ui.PopupDateField;
 
 /**
- * Main testcase for {@link DialogDateField}.
+ * Main testcase for {@link DateFieldBuilder}.
  */
-public class DialogDateFieldTest extends AbstractDialogTest<DateFieldDefinition> {
+public class DateFieldBuilderTest extends AbstractBuilderTest<DateFieldDefinition> {
 
-    private DialogDateField dialogDate;
+    private DateFieldBuilder dialogDate;
 
     @Test
     public void simpleDateFieldTest() throws Exception{
@@ -61,7 +61,7 @@ public class DialogDateFieldTest extends AbstractDialogTest<DateFieldDefinition>
         cal.set(Calendar.YEAR, 2012);
         baseNode.setProperty(propertyName, cal);
         baseItem = new JcrNodeAdapter(baseNode);
-        dialogDate = new DialogDateField(definition, baseItem);
+        dialogDate = new DateFieldBuilder(definition, baseItem);
 
         // WHEN
         Field field = dialogDate.getField();
@@ -82,7 +82,7 @@ public class DialogDateFieldTest extends AbstractDialogTest<DateFieldDefinition>
         cal.set(Calendar.YEAR, 2012);
         baseNode.setProperty(propertyName, cal);
         baseItem = new JcrNodeAdapter(baseNode);
-        dialogDate = new DialogDateField(definition, baseItem);
+        dialogDate = new DateFieldBuilder(definition, baseItem);
         Calendar calNew = Calendar.getInstance();
         calNew.set(Calendar.DAY_OF_MONTH, 20);
         calNew.set(Calendar.MONTH, 2);
@@ -111,7 +111,7 @@ public class DialogDateFieldTest extends AbstractDialogTest<DateFieldDefinition>
         definition.setTimeFormat("HH:mm");
         baseNode.setProperty(propertyName, cal);
         baseItem = new JcrNodeAdapter(baseNode);
-        dialogDate = new DialogDateField(definition, baseItem);
+        dialogDate = new DateFieldBuilder(definition, baseItem);
 
         // WHEN
         Field field = dialogDate.getField();
@@ -127,7 +127,7 @@ public class DialogDateFieldTest extends AbstractDialogTest<DateFieldDefinition>
     @Override
     protected void createConfiguredFieldDefinition() {
         DateFieldDefinition fieldDefinition = new DateFieldDefinition();
-        fieldDefinition = (DateFieldDefinition)AbstractDialogFieldTest.createConfiguredFieldDefinition(fieldDefinition, propertyName);
+        fieldDefinition = (DateFieldDefinition)AbstractFieldBuilderTest.createConfiguredFieldDefinition(fieldDefinition, propertyName);
 
         fieldDefinition.setTime(false);
         fieldDefinition.setDateFormat("yyyy-MM-dd");

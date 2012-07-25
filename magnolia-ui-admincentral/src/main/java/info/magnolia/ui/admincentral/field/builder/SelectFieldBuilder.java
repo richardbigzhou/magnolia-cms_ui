@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.field;
+package info.magnolia.ui.admincentral.field.builder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,9 +57,9 @@ import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
  *
  * @param <D> type of definition
  */
-public class DialogSelectField<D extends SelectFieldDefinition> extends AbstractDialogField<D> {
+public class SelectFieldBuilder<D extends SelectFieldDefinition> extends AbstractFieldBuilder<D> {
 
-    private static final Logger log = LoggerFactory.getLogger(DialogSelectField.class);
+    private static final Logger log = LoggerFactory.getLogger(SelectFieldBuilder.class);
 
     private String initialSelecteKey;
     private String optionValueName;
@@ -67,7 +67,7 @@ public class DialogSelectField<D extends SelectFieldDefinition> extends Abstract
     protected List<SelectFieldOptionDefinition> options;
     protected AbstractSelect select;
 
-    public DialogSelectField(D definition, Item relatedFieldItem) {
+    public SelectFieldBuilder(D definition, Item relatedFieldItem) {
         super(definition, relatedFieldItem);
     }
 

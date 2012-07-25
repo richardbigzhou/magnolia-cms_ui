@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,44 +31,32 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.field;
+package info.magnolia.ui.admincentral.field.builder;
 
 import com.vaadin.data.Item;
-import com.vaadin.data.Property;
-import com.vaadin.ui.Field;
-import org.vaadin.easyuploads.UploadField;
+import com.vaadin.ui.AbstractSelect;
+import com.vaadin.ui.OptionGroup;
 
-import info.magnolia.ui.model.field.definition.FileUploadFieldDefinition;
+import info.magnolia.ui.model.field.definition.OptionGroupFieldDefinition;
 
 /**
- * Creates and configures a Vaadin UploadField.
+ * Creates and initializes a select field based on a field definition.
  */
-public class FileUploadField extends AbstractDialogField<FileUploadFieldDefinition> {
+public class OptionGroupFieldBuilder extends SelectFieldBuilder<OptionGroupFieldDefinition> {
 
-    public FileUploadField(FileUploadFieldDefinition definition, Item relatedFieldItem) {
+    public OptionGroupFieldBuilder(OptionGroupFieldDefinition definition, Item relatedFieldItem) {
         super(definition, relatedFieldItem);
     }
 
     @Override
-    protected Field buildField() {
-        UploadField uploadField = new UploadField();
-        uploadField.setStorageMode(UploadField.StorageMode.MEMORY);
-        uploadField.setFieldType(UploadField.FieldType.UTF8_STRING);
-        return uploadField;
+    protected AbstractSelect buildField() {
+        super.buildField();
+        select.setMultiSelect(getFieldDefinition().isMultiple());
+        return select;
     }
 
     @Override
-    public void setPropertyDataSource(final Property property) {
-        super.setPropertyDataSource(property);
-
-        // For some reason we need to add this to get the value in the field into the Property. The field does not
-        // do this on its own.
-        field.addListener(new Property.ValueChangeListener() {
-
-            @Override
-            public void valueChange(Property.ValueChangeEvent event) {
-                property.setValue(field.getValue());
-            }
-        });
+    protected AbstractSelect createSelectionField() {
+        return new OptionGroup();
     }
 }
