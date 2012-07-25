@@ -40,6 +40,7 @@ import org.vaadin.rpc.client.Method;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.Paintable;
@@ -102,6 +103,13 @@ public class VActionbar extends Composite implements Paintable, ClientSideHandle
     public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
         this.client = client;
         proxy.update(this, uidl, client);
+
+        final UIDL previewUidl = uidl.getChildByTagName("preview");
+        if (previewUidl != null) {
+            final Paintable p = client.getPaintable(previewUidl);
+            ((VActionbarSection) ((VActionbarViewImpl) view).getWidget(0)).add((Widget) p);
+            p.updateFromUIDL(previewUidl, client);
+        }
     }
 
     @Override
@@ -115,8 +123,8 @@ public class VActionbar extends Composite implements Paintable, ClientSideHandle
     }
 
     @Override
-    public void triggerAction(String actionName) {
-        proxy.call("actionTriggered", actionName);
+    public void triggerAction(String actionToken) {
+        proxy.call("actionTriggered", actionToken);
     }
 
 }

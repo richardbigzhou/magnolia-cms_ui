@@ -67,7 +67,7 @@ public interface VActionbarView extends HasWidgets, IsWidget {
      */
     interface Presenter {
 
-        void triggerAction(String actionName);
+        void triggerAction(String actionToken);
 
     }
 

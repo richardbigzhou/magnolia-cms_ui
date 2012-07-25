@@ -35,8 +35,8 @@ package info.magnolia.ui.widget.actionbar;
 
 import info.magnolia.ui.framework.view.View;
 
+import com.vaadin.terminal.Paintable;
 import com.vaadin.terminal.Resource;
-import com.vaadin.ui.Component;
 
 
 /**
@@ -50,14 +50,12 @@ public interface ActionbarView extends View {
 
     void addAction(String actionName, String label, Resource icon, String groupName, String sectionName);
 
-    void addPreview(Component component, String sectionName);
+    void setPreview(Paintable preview, String sectionName);
 
     // ENABLE / DISABLE
     void enable(String actionName);
 
-    void enable(String actionName, String groupName);
-
-    void enable(String actionName, String groupName, String sectionName);
+    void enable(String actionName, String sectionName);
 
     void enableGroup(String groupName);
 
@@ -65,9 +63,7 @@ public interface ActionbarView extends View {
 
     void disable(String actionName);
 
-    void disable(String actionName, String groupName);
-
-    void disable(String actionName, String groupName, String sectionName);
+    void disable(String actionName, String sectionName);
 
     void disableGroup(String groupName);
 
@@ -93,9 +89,9 @@ public interface ActionbarView extends View {
         /**
          * Event handler invoked on clicking an item in the action bar.
          * 
-         * @param actionName the action name
+         * @param actionToken the action token
          */
-        void onActionbarItemClicked(String actionName);
+        void onActionbarItemClicked(String actionToken);
 
     }
 }

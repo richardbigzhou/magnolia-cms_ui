@@ -72,24 +72,36 @@ public class ActionbarPresenter implements ActionbarView.Listener {
 
     public void initActionbar(final ActionbarDefinition definition) {
         this.definition = definition;
-        actionbar = ActionbarBuilder.build(definition, this);
+        actionbar = ActionbarBuilder.build(definition);
         actionbar.setListener(this);
     }
 
     @Override
-    public void onActionbarItemClicked(String actionName) {
-        ActionDefinition actionDefinition = getActionDefinition(actionName);
-        eventBus.fireEvent(new ActionbarClickEvent(actionDefinition));
+    public void onActionbarItemClicked(String actionToken) {
+        ActionDefinition actionDefinition = getActionDefinition(actionToken);
+        if (actionDefinition != null) {
+            eventBus.fireEvent(new ActionbarClickEvent(actionDefinition));
+        }
     }
 
-    private ActionDefinition getActionDefinition(String actionName) {
+    private ActionDefinition getActionDefinition(String actionToken) {
+        final String[] chunks = actionToken.split(":");
+        if (chunks.length != 2) {
+            return null;
+        }
+        final String sectionName = chunks[0];
+        final String actionName = chunks[1];
+
         for (ActionbarSectionDefinition section : definition.getSections()) {
-            for (ActionbarGroupDefinition group : section.getGroups()) {
-                for (ActionbarItemDefinition action : group.getItems()) {
-                    if (actionName.equals(action.getName())) {
-                        return action.getActionDefinition();
+            if (sectionName.equals(section.getName())) {
+                for (ActionbarGroupDefinition group : section.getGroups()) {
+                    for (ActionbarItemDefinition action : group.getItems()) {
+                        if (actionName.equals(action.getName())) {
+                            return action.getActionDefinition();
+                        }
                     }
                 }
+                break;
             }
         }
         return null;

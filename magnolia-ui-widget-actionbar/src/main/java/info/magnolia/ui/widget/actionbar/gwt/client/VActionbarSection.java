@@ -75,6 +75,10 @@ public class VActionbarSection extends FlowPanel {
         update();
     }
 
+    public String getName() {
+        return data.getName();
+    }
+
     public Map<String, VActionbarGroup> getGroups() {
         return groups;
     }
