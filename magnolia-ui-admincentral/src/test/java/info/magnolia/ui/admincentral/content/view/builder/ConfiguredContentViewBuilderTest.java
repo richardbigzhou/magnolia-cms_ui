@@ -35,6 +35,11 @@ package info.magnolia.ui.admincentral.content.view.builder;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import info.magnolia.context.MgnlContext;
 import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.test.mock.MockUtil;
 import info.magnolia.test.mock.jcr.MockSession;
@@ -47,8 +52,12 @@ import info.magnolia.ui.admincentral.tree.view.TreeView;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactoryImpl;
 import info.magnolia.ui.model.column.definition.LabelColumnDefinition;
+import info.magnolia.ui.model.workbench.definition.ConfiguredItemTypeDefinition;
 import info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition;
+import info.magnolia.ui.model.workbench.definition.ItemTypeDefinition;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -56,15 +65,36 @@ import org.junit.Test;
  */
 public class ConfiguredContentViewBuilderTest {
 
-    @Test
-    public void testBuildingListView() {
-        // GIVEN
-        final MockComponentProvider componentProvider = new MockComponentProvider();
+    protected final MockComponentProvider componentProvider = new MockComponentProvider();
+    protected final ConfiguredWorkbenchDefinition workbenchDef = new ConfiguredWorkbenchDefinition();
+
+    @Before
+    public void setUp() throws Exception {
+
+        MockUtil.initMockContext();
+        final String workspace = "website";
+        final MockSession session = new MockSession(workspace);
+        MockUtil.setSessionAndHierarchyManager(session);
+
         componentProvider.setInstance(WorkbenchActionFactory.class, new WorkbenchActionFactoryImpl());
-        final ConfiguredWorkbenchDefinition workbenchDef = new ConfiguredWorkbenchDefinition();
-        LabelColumnDefinition def = new LabelColumnDefinition();
+        componentProvider.setInstance(ThumbnailProvider.class, mock(ThumbnailProvider.class));
+
+        workbenchDef.setWorkspace(workspace);
+        workbenchDef.setPath("/");
+
+        final ConfiguredItemTypeDefinition itemTypeDefinition = new ConfiguredItemTypeDefinition();
+        itemTypeDefinition.setItemType("qux");
+        final List<ItemTypeDefinition> itemTypeDefs = new ArrayList<ItemTypeDefinition>();
+        itemTypeDefs.add(itemTypeDefinition);
+        workbenchDef.setItemTypes(itemTypeDefs);
+        final LabelColumnDefinition def = new LabelColumnDefinition();
         def.setName("foo");
         workbenchDef.addColumn(def);
+    }
+
+    @Test
+    public void testBuildingListView() {
+        // GIVEN all conditions in setUp
 
         // WHEN
         final ConfiguredContentViewBuilder builder = new ConfiguredContentViewBuilder(componentProvider);
@@ -76,10 +106,7 @@ public class ConfiguredContentViewBuilderTest {
 
     @Test
     public void testBuildingTreeView() {
-        // GIVEN
-        final MockComponentProvider componentProvider = new MockComponentProvider();
-        componentProvider.setInstance(WorkbenchActionFactory.class, new WorkbenchActionFactoryImpl());
-        final ConfiguredWorkbenchDefinition workbenchDef = new ConfiguredWorkbenchDefinition();
+        // GIVEN all conditions in setUp
 
         // WHEN
         final ConfiguredContentViewBuilder builder = new ConfiguredContentViewBuilder(componentProvider);
@@ -91,25 +118,19 @@ public class ConfiguredContentViewBuilderTest {
 
     @Test
     public void testBuildingThumbnailView() {
-        // GIVEN
-        MockUtil.initMockContext();
-        final String workspace = "website";
-        final MockSession session = new MockSession(workspace);
-        MockUtil.setSessionAndHierarchyManager(session);
+        // GIVEN all conditions in setUp
 
-        final MockComponentProvider componentProvider = new MockComponentProvider();
-        componentProvider.setInstance(WorkbenchActionFactory.class, new WorkbenchActionFactoryImpl());
-        componentProvider.setInstance(ThumbnailProvider.class, mock(ThumbnailProvider.class));
-
-        final ConfiguredWorkbenchDefinition workbenchDef = new ConfiguredWorkbenchDefinition();
-        workbenchDef.setWorkspace(workspace);
-        workbenchDef.setPath("/");
         // WHEN
         final ConfiguredContentViewBuilder builder = new ConfiguredContentViewBuilder(componentProvider);
         final ContentView result = builder.build(workbenchDef, ViewType.THUMBNAIL);
 
         // THEN
         assertTrue(result instanceof ThumbnailView);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        MgnlContext.setInstance(null);
     }
 
 }
