@@ -33,13 +33,6 @@
  */
 package info.magnolia.ui.admincentral.dialog.action;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
-import com.vaadin.data.Item;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import info.magnolia.jcr.util.MetaDataUtil;
 import info.magnolia.ui.admincentral.event.ContentChangedEvent;
 import info.magnolia.ui.framework.event.EventBus;
@@ -48,6 +41,14 @@ import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.widget.dialog.DialogView;
 import info.magnolia.ui.widget.dialog.DialogView.Presenter;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.vaadin.data.Item;
 
 /**
  * Saves a dialog.
@@ -87,7 +88,8 @@ public class SaveDialogAction extends ActionBase<SaveDialogActionDefinition> {
 
             presenter.closeDialog();
         } else {
-            //TODO EHE Do something.
+            log.warn("View is not valid. No save performed");
         }
     }
+
 }

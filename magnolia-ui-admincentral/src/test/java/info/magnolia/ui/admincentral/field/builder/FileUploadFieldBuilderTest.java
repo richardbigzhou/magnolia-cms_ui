@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,51 +31,44 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.field.definition;
+package info.magnolia.ui.admincentral.field.builder;
+
+import static org.junit.Assert.assertEquals;
+import info.magnolia.ui.admincentral.field.FileUpload;
+import info.magnolia.ui.model.field.definition.FileUploadFieldDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.JcrAbstractNodeAdapter;
+
+import org.junit.Test;
+
+import com.vaadin.ui.Field;
 
 /**
- * Field definition for a upload field.
+ * Main testcase for {@link FileUploadFieldBuilder}.
  */
-public class FileUploadFieldDefinition extends ConfiguredFieldDefinition {
+public class FileUploadFieldBuilderTest extends AbstractBuilderTest<FileUploadFieldDefinition> {
 
-    // Display Thumbnail
-    private boolean preview = true;
-    // Display Image Info
-    private boolean info = true;
-    // Define the upload Binary Node name.
-    private String imageNodeName = "imageBinary";
-    // Define If the Image can be removed (Display a delete Button)
-    private boolean fileDeletesAllowed = false;
+    private FileUploadFieldBuilder fileUploadBuilder;
 
-    public boolean isPreview() {
-        return preview;
+    @Test
+    public void simpleFileUploadFieldBuilderTest() throws Exception{
+        // GIVEN
+        fileUploadBuilder = new FileUploadFieldBuilder(definition, baseItem);
+
+        // WHEN
+        Field field = fileUploadBuilder.getField();
+
+        // THEN
+        assertEquals(true, field instanceof FileUpload);
+        assertEquals(0, ((JcrAbstractNodeAdapter)baseItem).getChilds().size());
     }
 
-    public void setPreview(boolean preview) {
-        this.preview = preview;
+
+
+    @Override
+    protected void createConfiguredFieldDefinition() {
+        FileUploadFieldDefinition fieldDefinition = new FileUploadFieldDefinition();
+        fieldDefinition.setName(propertyName);
+        this.definition = fieldDefinition;
     }
 
-    public boolean isInfo() {
-        return info;
-    }
-
-    public void setInfo(boolean info) {
-        this.info = info;
-    }
-
-    public String getImageNodeName() {
-        return imageNodeName;
-    }
-
-    public void setImageNodeName(String imageNodeName) {
-        this.imageNodeName = imageNodeName;
-    }
-
-    public boolean isFileDeletesAllowed() {
-        return fileDeletesAllowed;
-    }
-
-    public void setFileDeletesAllowed(boolean fileDeletesAllowed) {
-        this.fileDeletesAllowed = fileDeletesAllowed;
-    }
 }

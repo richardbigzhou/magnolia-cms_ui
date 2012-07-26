@@ -50,6 +50,9 @@ import org.junit.Test;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 
+/**
+ * Main test class for {@link JcrNodeAdapter}.
+ */
 public class JcrNodeAdapterTest {
 
 

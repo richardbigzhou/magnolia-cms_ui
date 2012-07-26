@@ -37,11 +37,13 @@ package info.magnolia.ui.admincentral.field.builder;
 import info.magnolia.cms.beans.runtime.FileProperties;
 import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.ui.admincentral.field.FileUpload;
+import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.model.field.definition.FileUploadFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
+import javax.jcr.Binary;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
@@ -80,10 +82,10 @@ public class FileUploadFieldBuilder extends AbstractFieldBuilder<FileUploadField
         try {
             if(node.hasNode(definition.getImageNodeName()) && !(item instanceof JcrNewNodeAdapter)) {
                 child = new JcrNodeAdapter(node.getNode(definition.getImageNodeName()));
-                ((JcrNodeAdapter)item).addChild(definition.getImageNodeName(), child);
+                child.setParent((JcrNodeAdapter)item);
             } else {
                 child = new JcrNewNodeAdapter(node, MgnlNodeType.NT_RESOURCE, definition.getImageNodeName());
-                ((JcrNodeAdapter)item).addChild(definition.getImageNodeName(), child);
+                child.setParent((JcrNodeAdapter)item);
                 initImageProperty(child);
             }
         }
@@ -115,6 +117,11 @@ public class FileUploadFieldBuilder extends AbstractFieldBuilder<FileUploadField
         child.addItemProperty(FileProperties.PROPERTY_EXTENSION, DefaultPropertyUtil.newDefaultProperty(FileProperties.PROPERTY_EXTENSION, "String", null));
         child.addItemProperty(FileProperties.PROPERTY_WIDTH, DefaultPropertyUtil.newDefaultProperty(FileProperties.PROPERTY_WIDTH, "Long", null));
         child.addItemProperty(FileProperties.PROPERTY_HEIGHT, DefaultPropertyUtil.newDefaultProperty(FileProperties.PROPERTY_HEIGHT, "Long", null));
+    }
+
+    @Override
+    protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {
+        return Binary.class;
     }
 
 }
