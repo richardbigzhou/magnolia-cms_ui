@@ -38,6 +38,9 @@ import info.magnolia.objectfactory.ComponentProvider;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A base class for implementing factories which instantiate implementations based on definition objects.
  *
@@ -45,6 +48,7 @@ import java.util.Map;
  * @param <I> implementation parent type
  */
 public abstract class FactoryBase<D, I> {
+    private static final Logger log = LoggerFactory.getLogger(FactoryBase.class);
 
     private ComponentProvider componentProvider;
 
@@ -62,6 +66,7 @@ public abstract class FactoryBase<D, I> {
      * Creates an instance of the implementation configured for the given definition. The parameters are made
      * available for injection when the instance is created. The definition object given is also available for
      * injection.
+     * Returns <code>null</code> if no match is found (most likely a configuration error).
      */
     protected I create(D definition, Object... parameters) {
 
@@ -75,6 +80,7 @@ public abstract class FactoryBase<D, I> {
 
             return componentProvider.newInstance(implementationClass, combinedParameters);
         }
+        log.warn("No matching implementation class was found for definition class [{}]. Please check your configuration.", definition.getClass().getName());
         return null;
     }
 
