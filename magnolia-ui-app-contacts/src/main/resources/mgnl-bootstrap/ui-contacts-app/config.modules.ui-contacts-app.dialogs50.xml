@@ -1027,17 +1027,17 @@
             <sv:property sv:name="class" sv:type="String">
               <sv:value>info.magnolia.ui.model.field.definition.FileUploadFieldDefinition</sv:value>
             </sv:property>
+            <sv:property sv:name="fileDeletesAllowed" sv:type="String">
+              <sv:value>true</sv:value>
+            </sv:property>
+            <sv:property sv:name="imageNodeName" sv:type="String">
+              <sv:value>photo</sv:value>
+            </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
             </sv:property>
             <sv:property sv:name="preview" sv:type="String">
-              <sv:value>true</sv:value>
-            </sv:property>
-            <sv:property sv:name="type" sv:type="String">
-              <sv:value>String</sv:value>
-            </sv:property>
-            <sv:property sv:name="imageNodeName" sv:type="String">
-               <sv:value>photo</sv:value>
+              <sv:value>false</sv:value>
             </sv:property>
             <sv:node sv:name="MetaData">
               <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -1053,7 +1053,7 @@
                 <sv:value>2012-07-19T10:27:24.907+02:00</sv:value>
               </sv:property>
               <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-                <sv:value>2012-07-19T10:46:53.505+02:00</sv:value>
+                <sv:value>2012-07-26T14:26:51.130+02:00</sv:value>
               </sv:property>
             </sv:node>
           </sv:node>

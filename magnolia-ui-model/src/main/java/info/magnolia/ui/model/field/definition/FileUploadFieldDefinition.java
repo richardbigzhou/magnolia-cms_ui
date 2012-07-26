@@ -44,6 +44,8 @@ public class FileUploadFieldDefinition extends ConfiguredFieldDefinition {
     private boolean info = true;
     // Define the upload Binary Node name.
     private String imageNodeName = "imageBinary";
+    // Define If the Image can be removed (Display a delete Button)
+    private boolean fileDeletesAllowed = false;
 
     public boolean isPreview() {
         return preview;
@@ -69,4 +71,11 @@ public class FileUploadFieldDefinition extends ConfiguredFieldDefinition {
         this.imageNodeName = imageNodeName;
     }
 
+    public boolean isFileDeletesAllowed() {
+        return fileDeletesAllowed;
+    }
+
+    public void setFileDeletesAllowed(boolean fileDeletesAllowed) {
+        this.fileDeletesAllowed = fileDeletesAllowed;
+    }
 }
