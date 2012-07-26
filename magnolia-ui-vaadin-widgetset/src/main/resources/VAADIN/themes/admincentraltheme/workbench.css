@@ -2,3 +2,27 @@
 .mgnl-app-root .v-horizontallayout-margin {padding-top:20px; padding-left:40px;}
 .mgnl-app-root .v-horizontallayout-spacing-on {padding-left:25px;}
 .mgnl-workbench-toolbar .v-horizontallayout-margin {padding:0 0 20px 0;}
+
+.mgnl-workbench-thumbnail-view {
+    line-height: 24px;
+    vertical-align: bottom;
+    background-color: #FFF;
+    min-height: 435px;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.mgnl-workbench-thumbnail-view .asset {
+    border: 1px solid #F0F0F0;
+    cursor: pointer;
+    display: inline-block;
+    margin: 1px;
+    padding: 10px;
+    text-align: center;
+    background: none repeat scroll 0 0 transparent
+}
+
+.mgnl-workbench-thumbnail-view .asset.active {
+    background-color: #AABF2F;
+    color: #FFF;
+}

@@ -34,10 +34,15 @@
 package info.magnolia.ui.admincentral.content.view.builder;
 
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 import info.magnolia.test.mock.MockComponentProvider;
+import info.magnolia.test.mock.MockUtil;
+import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.admincentral.content.view.ContentView;
 import info.magnolia.ui.admincentral.content.view.ContentView.ViewType;
 import info.magnolia.ui.admincentral.list.view.ListView;
+import info.magnolia.ui.admincentral.thumbnail.ThumbnailProvider;
+import info.magnolia.ui.admincentral.thumbnail.view.ThumbnailView;
 import info.magnolia.ui.admincentral.tree.view.TreeView;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactoryImpl;
@@ -82,6 +87,29 @@ public class ConfiguredContentViewBuilderTest {
 
         // THEN
         assertTrue(result instanceof TreeView);
+    }
+
+    @Test
+    public void testBuildingThumbnailView() {
+        // GIVEN
+        MockUtil.initMockContext();
+        final String workspace = "website";
+        final MockSession session = new MockSession(workspace);
+        MockUtil.setSessionAndHierarchyManager(session);
+
+        final MockComponentProvider componentProvider = new MockComponentProvider();
+        componentProvider.setInstance(WorkbenchActionFactory.class, new WorkbenchActionFactoryImpl());
+        componentProvider.setInstance(ThumbnailProvider.class, mock(ThumbnailProvider.class));
+
+        final ConfiguredWorkbenchDefinition workbenchDef = new ConfiguredWorkbenchDefinition();
+        workbenchDef.setWorkspace(workspace);
+        workbenchDef.setPath("/");
+        // WHEN
+        final ConfiguredContentViewBuilder builder = new ConfiguredContentViewBuilder(componentProvider);
+        final ContentView result = builder.build(workbenchDef, ViewType.THUMBNAIL);
+
+        // THEN
+        assertTrue(result instanceof ThumbnailView);
     }
 
 }
