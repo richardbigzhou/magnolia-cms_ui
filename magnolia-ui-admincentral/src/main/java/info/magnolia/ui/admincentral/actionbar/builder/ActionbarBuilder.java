@@ -39,7 +39,9 @@ import info.magnolia.ui.model.actionbar.definition.ActionbarItemDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarSectionDefinition;
 import info.magnolia.ui.widget.actionbar.Actionbar;
 import info.magnolia.ui.widget.actionbar.ActionbarView;
-import info.magnolia.ui.widget.actionbar.ActionbarView.Listener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -56,25 +58,32 @@ public class ActionbarBuilder {
 
     private static final Logger log = LoggerFactory.getLogger(ActionbarBuilder.class);
 
-    public static ActionbarView build(ActionbarDefinition definition, final Listener listener) {
+    public static ActionbarView build(ActionbarDefinition definition) {
         Actionbar actionbar = new Actionbar();
         if (definition == null) {
             log.warn("No actionbar definition found. This will result in an empty action bar. Is that intended?");
             return actionbar;
         } else {
+
             for (ActionbarSectionDefinition section : definition.getSections()) {
                 actionbar.addSection(section.getName(), section.getName());
+                List<String> actionNames = new ArrayList<String>();
 
                 for (ActionbarGroupDefinition group : section.getGroups()) {
                     // standalone groups make no sense
-                    for (ActionbarItemDefinition item : group.getItems()) {
 
+                    for (ActionbarItemDefinition item : group.getItems()) {
+                        if (actionNames.contains(item.getName())) {
+                            log.warn("Action was not added: an action with name '" + item.getName()
+                                + "' already exists in section '" + section.getName() + "'.");
+                            continue;
+                        }
                         Resource icon = null;
                         if (StringUtils.isNotBlank(item.getIcon())) {
                             try {
                                 icon = new ThemeResource(item.getIcon());
                             } catch (NullPointerException e) {
-                                log.debug("Icon resource not found for Actionbar item '" + item.getName() + "'.");
+                                log.warn("Icon resource not found for Actionbar item '" + item.getName() + "'.");
                             }
                         }
                         actionbar.addAction(item.getName(), item.getLabel(), icon, group.getName(), section.getName());

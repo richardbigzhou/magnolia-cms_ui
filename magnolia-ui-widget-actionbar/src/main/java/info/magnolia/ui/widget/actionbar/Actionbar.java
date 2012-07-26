@@ -38,10 +38,12 @@ import info.magnolia.ui.widget.actionbar.gwt.client.VActionbar;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.vaadin.rpc.ServerSideHandler;
 import org.vaadin.rpc.ServerSideProxy;
 import org.vaadin.rpc.client.Method;
@@ -64,9 +66,11 @@ import com.vaadin.ui.Component;
 @ClientWidget(value = VActionbar.class, loadStyle = LoadStyle.EAGER)
 public class Actionbar extends AbstractComponent implements ActionbarView, ServerSideHandler {
 
+    private static final Logger log = LoggerFactory.getLogger(Actionbar.class);
+
     private boolean isAttached = false;
 
-    private final Map<String, ActionbarSection> sections = new HashMap<String, ActionbarSection>();
+    private final Map<String, ActionbarSection> sections = new LinkedHashMap<String, ActionbarSection>();
 
     private ActionbarView.Listener listener;
 
@@ -77,8 +81,8 @@ public class Actionbar extends AbstractComponent implements ActionbarView, Serve
 
                 @Override
                 public void invoke(String methodName, Object[] params) {
-                    final String actionName = String.valueOf(params[0]);
-                    listener.onActionbarItemClicked(actionName);
+                    final String actionToken = String.valueOf(params[0]);
+                    listener.onActionbarItemClicked(actionToken);
                 }
             });
         }
@@ -94,12 +98,24 @@ public class Actionbar extends AbstractComponent implements ActionbarView, Serve
     public void paintContent(PaintTarget target) throws PaintException {
         super.paintContent(target);
         proxy.paintContent(target);
+        for (ActionbarSection section : sections.values()) {
+            if (section.getPreview() != null) {
+                target.startTag("preview");
+                section.getPreview().paint(target);
+                target.endTag("preview");
+            }
+        }
     }
 
     @Override
     public void changeVariables(Object source, Map<String, Object> variables) {
         super.changeVariables(source, variables);
         proxy.changeVariables(source, variables);
+        for (ActionbarSection section : sections.values()) {
+            if (section.getPreview() != null && section.getPreview() instanceof AbstractComponent) {
+                ((AbstractComponent) section.getPreview()).changeVariables(source, variables);
+            }
+        }
     }
 
     @Override
@@ -115,6 +131,10 @@ public class Actionbar extends AbstractComponent implements ActionbarView, Serve
 
     private void doAddSection(final ActionbarSection section) {
         proxy.call("addSection", new Gson().toJson(section));
+    }
+
+    private void doRemoveSection(final String sectionName) {
+        proxy.call("removeSection", sectionName);
     }
 
     private void doAddAction(final ActionbarItem action, String sectionName) {
@@ -170,6 +190,13 @@ public class Actionbar extends AbstractComponent implements ActionbarView, Serve
     }
 
     @Override
+    public void removeSection(String sectionName) {
+        sections.remove(sectionName);
+        doRemoveSection(sectionName);
+        // requestRepaint();
+    }
+
+    @Override
     public void addAction(String actionName, String label, Resource icon, String groupName, String sectionName) {
         ActionbarSection section = sections.get(sectionName);
         if (section != null) {
@@ -178,23 +205,36 @@ public class Actionbar extends AbstractComponent implements ActionbarView, Serve
             if (isAttached) {
                 doAddAction(action, sectionName);
             }
+        } else {
+            log.warn("Action was not added: no section found with name '" + sectionName + "'.");
         }
     }
 
     @Override
-    public void addPreview(Component component, String sectionName) {
+    public void setPreview(Component preview, String sectionName) {
+        ActionbarSection section = sections.get(sectionName);
+        if (section != null) {
+            section.setPreview(preview);
+            if (isAttached) {
+                requestRepaint();
+            }
+        } else {
+            log.warn("Preview was not added: no section found with name '" + sectionName + "'.");
+        }
     }
+
+    public Map<String, ActionbarSection> getSections() {
+        return sections;
+    }
+
+    // ENABLE / DISABLE /////////////////////////
 
     @Override
     public void enable(String actionName) {
     }
 
     @Override
-    public void enable(String actionName, String groupName) {
-    }
-
-    @Override
-    public void enable(String actionName, String groupName, String sectionName) {
+    public void enable(String actionName, String sectionName) {
     }
 
     @Override
@@ -210,11 +250,7 @@ public class Actionbar extends AbstractComponent implements ActionbarView, Serve
     }
 
     @Override
-    public void disable(String actionName, String groupName) {
-    }
-
-    @Override
-    public void disable(String actionName, String groupName, String sectionName) {
+    public void disable(String actionName, String sectionName) {
     }
 
     @Override
@@ -225,6 +261,8 @@ public class Actionbar extends AbstractComponent implements ActionbarView, Serve
     public void disableGroup(String groupName, String sectionName) {
     }
 
+    // SHOW / HIDE SECTIONS /////////////////////
+
     @Override
     public void showSection(String sectionName) {
     }
@@ -233,14 +271,16 @@ public class Actionbar extends AbstractComponent implements ActionbarView, Serve
     public void hideSection(String sectionName) {
     }
 
-    // SUB CLASSES //////////////////////////////
+    // SUPPORTING CLASSES ///////////////////////
 
     /**
      * A section of actions in the action bar.
      */
     public static class ActionbarSection implements Serializable {
 
-        private transient List<ActionbarItem> actions = new ArrayList<ActionbarItem>();
+        private transient Map<String, ActionbarItem> actions = new LinkedHashMap<String, ActionbarItem>();
+
+        private transient Component preview;
 
         private final String name;
 
@@ -271,11 +311,19 @@ public class Actionbar extends AbstractComponent implements ActionbarView, Serve
         }
 
         public List<ActionbarItem> getActions() {
-            return actions;
+            return new ArrayList<ActionbarItem>(actions.values());
         }
 
         public void addAction(ActionbarItem action) {
-            actions.add(action);
+            actions.put(action.getName(), action);
+        }
+
+        public Component getPreview() {
+            return preview;
+        }
+
+        public void setPreview(Component preview) {
+            this.preview = preview;
         }
     }
 

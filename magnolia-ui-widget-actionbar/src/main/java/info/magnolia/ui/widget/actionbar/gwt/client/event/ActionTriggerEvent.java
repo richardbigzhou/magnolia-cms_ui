@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.widget.actionbar.gwt.client.event;
 
+import info.magnolia.ui.widget.actionbar.gwt.client.VActionbarItem;
+
 import com.google.web.bindery.event.shared.Event;
 
 
@@ -45,12 +47,18 @@ public class ActionTriggerEvent extends Event<ActionTriggerEvent.Handler> {
 
     private final String actionName;
 
-    public ActionTriggerEvent(final String actionName) {
+    public ActionTriggerEvent(final String actionName, final VActionbarItem source) {
         this.actionName = actionName;
+        setSource(source);
     }
 
     public String getActionName() {
         return actionName;
+    }
+
+    @Override
+    public VActionbarItem getSource() {
+        return (VActionbarItem) super.getSource();
     }
 
     @Override

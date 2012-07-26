@@ -41,15 +41,20 @@ import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarGroupDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarItemDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarSectionDefinition;
+import info.magnolia.ui.widget.actionbar.Actionbar;
 import info.magnolia.ui.widget.actionbar.ActionbarView;
 
 import com.google.inject.Inject;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.VerticalLayout;
 
 
 /**
  * Default presenter for an action bar.
  */
 public class ActionbarPresenter implements ActionbarView.Listener {
+
+    private static final String PREVIEW_SECTION_NAME = "preview";
 
     private ActionbarDefinition definition;
 
@@ -72,24 +77,54 @@ public class ActionbarPresenter implements ActionbarView.Listener {
 
     public void initActionbar(final ActionbarDefinition definition) {
         this.definition = definition;
-        actionbar = ActionbarBuilder.build(definition, this);
+        actionbar = ActionbarBuilder.build(definition);
         actionbar.setListener(this);
     }
 
-    @Override
-    public void onActionbarItemClicked(String actionName) {
-        ActionDefinition actionDefinition = getActionDefinition(actionName);
-        eventBus.fireEvent(new ActionbarClickEvent(actionDefinition));
+    public void setPreview(final Component preview) {
+        if (preview != null) {
+            if (!((Actionbar) actionbar).getSections().containsKey(PREVIEW_SECTION_NAME)) {
+                actionbar.addSection(PREVIEW_SECTION_NAME, "Preview");
+            }
+            preview.setWidth("100%");
+            final VerticalLayout previewContainer = new VerticalLayout();
+            previewContainer.setSizeFull();
+            previewContainer.addComponent(preview);
+            previewContainer.setStyleName("v-actionbar-preview");
+            actionbar.setPreview(previewContainer, PREVIEW_SECTION_NAME);
+        } else {
+            if (((Actionbar) actionbar).getSections().containsKey(PREVIEW_SECTION_NAME)) {
+                actionbar.removeSection(PREVIEW_SECTION_NAME);
+            }
+        }
     }
 
-    private ActionDefinition getActionDefinition(String actionName) {
+    @Override
+    public void onActionbarItemClicked(String actionToken) {
+        ActionDefinition actionDefinition = getActionDefinition(actionToken);
+        if (actionDefinition != null) {
+            eventBus.fireEvent(new ActionbarClickEvent(actionDefinition));
+        }
+    }
+
+    private ActionDefinition getActionDefinition(String actionToken) {
+        final String[] chunks = actionToken.split(":");
+        if (chunks.length != 2) {
+            return null;
+        }
+        final String sectionName = chunks[0];
+        final String actionName = chunks[1];
+
         for (ActionbarSectionDefinition section : definition.getSections()) {
-            for (ActionbarGroupDefinition group : section.getGroups()) {
-                for (ActionbarItemDefinition action : group.getItems()) {
-                    if (actionName.equals(action.getName())) {
-                        return action.getActionDefinition();
+            if (sectionName.equals(section.getName())) {
+                for (ActionbarGroupDefinition group : section.getGroups()) {
+                    for (ActionbarItemDefinition action : group.getItems()) {
+                        if (actionName.equals(action.getName())) {
+                            return action.getActionDefinition();
+                        }
                     }
                 }
+                break;
             }
         }
         return null;

@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.admincentral.content.view;
 
-import javax.inject.Inject;
-
 import info.magnolia.ui.admincentral.app.content.ContentAppDescriptor;
 import info.magnolia.ui.admincentral.content.view.ContentView.ViewType;
 import info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilderProvider;
@@ -46,11 +44,14 @@ import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
+import javax.inject.Inject;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
+
 
 /**
  * Presenter for ContentView.
@@ -60,9 +61,13 @@ public class ContentPresenter implements ContentView.Listener {
     private static final Logger log = LoggerFactory.getLogger(ContentPresenter.class);
 
     private final EventBus eventBus;
+
     private final Shell shell;
+
     private final String workspaceName;
+
     private final ContentViewBuilderProvider contentViewBuilderProvider;
+
     private final WorkbenchDefinition workbenchDefinition;
 
     private String selectedItemId;
@@ -72,8 +77,7 @@ public class ContentPresenter implements ContentView.Listener {
         this.contentViewBuilderProvider = contentViewBuilderProvider;
         this.eventBus = eventbus;
         this.shell = shell;
-        this. workbenchDefinition = ((ContentAppDescriptor) context.getAppDescriptor()).getWorkbench();
-
+        this.workbenchDefinition = ((ContentAppDescriptor) context.getAppDescriptor()).getWorkbench();
         this.workspaceName = ((ContentAppDescriptor) context.getAppDescriptor()).getWorkbench().getWorkspace();
     }
 
@@ -101,7 +105,8 @@ public class ContentPresenter implements ContentView.Listener {
     @Override
     public void onItemSelection(Item item) {
         if (item == null) {
-            log.warn("Got null javax.jcr.Item. No ItemSelectedEvent will be fired.");
+            log.warn("Got null javax.jcr.Item. ItemSelectedEvent will be fired with null path.");
+            eventBus.fireEvent(new ItemSelectedEvent(workspaceName, null));
             return;
         }
         try {

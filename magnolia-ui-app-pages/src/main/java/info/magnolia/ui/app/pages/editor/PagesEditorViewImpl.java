@@ -78,12 +78,16 @@ public class PagesEditorViewImpl implements PagesEditorView {
 
     @Override
     public void setPageEditor(PageEditorView pageEditor) {
+        if (this.pageEditor == null) {
+            container.addComponent(pageEditor.asVaadinComponent());
+        } else {
+            container.replaceComponent(this.pageEditor.asVaadinComponent(), pageEditor.asVaadinComponent());
+        }
         this.pageEditor = pageEditor;
-        container.addComponent(pageEditor.asVaadinComponent());
     }
 
     @Override
-    public void addActionbarView(final ActionbarView actionbar) {
+    public void setActionbarView(final ActionbarView actionbar) {
         if (this.actionbar == null) {
             root.addComponent(actionbar.asVaadinComponent());
         } else {
