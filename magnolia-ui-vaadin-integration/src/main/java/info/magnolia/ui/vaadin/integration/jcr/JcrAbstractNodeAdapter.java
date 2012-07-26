@@ -287,7 +287,6 @@ public abstract class JcrAbstractNodeAdapter extends JcrAbstractAdapter implemen
      */
     public boolean removeChild(JcrAbstractNodeAdapter toRemouve) {
        remouvedChilds.put(toRemouve.getNodeIdentifier(), toRemouve);
-       toRemouve.setParent(null);
        return childs.remove(toRemouve.getNodeIdentifier()) != null;
     }
 

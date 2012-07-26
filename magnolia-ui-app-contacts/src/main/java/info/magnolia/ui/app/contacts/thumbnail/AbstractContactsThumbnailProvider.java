@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.app.contacts.thumbnail;
 
+
 import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.cms.beans.runtime.FileProperties;
 import info.magnolia.cms.util.ContentUtil;
