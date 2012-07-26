@@ -44,7 +44,7 @@ import java.io.IOException;
  */
 public class DefaultContactsThumbnailProvider extends AbstractContactsThumbnailProvider {
     @Override
-    protected BufferedImage createThumbnail(int width, int height, Image contactImage) throws IOException {
-        return ThumbnailUtility.createThumbnail(contactImage, getFormat(), width, height, getQuality());
+    protected BufferedImage createThumbnail(final Image contactImage, final String format, final int width, final int height, final float quality) throws IOException {
+        return ThumbnailUtility.createThumbnail(contactImage, format, width, height, quality);
     }
 }
