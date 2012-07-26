@@ -35,6 +35,11 @@ package info.magnolia.ui.admincentral.content.view.builder;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.test.mock.MockUtil;
 import info.magnolia.test.mock.jcr.MockSession;
@@ -47,7 +52,9 @@ import info.magnolia.ui.admincentral.tree.view.TreeView;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactoryImpl;
 import info.magnolia.ui.model.column.definition.LabelColumnDefinition;
+import info.magnolia.ui.model.workbench.definition.ConfiguredItemTypeDefinition;
 import info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition;
+import info.magnolia.ui.model.workbench.definition.ItemTypeDefinition;
 
 import org.junit.Test;
 
@@ -104,6 +111,12 @@ public class ConfiguredContentViewBuilderTest {
         final ConfiguredWorkbenchDefinition workbenchDef = new ConfiguredWorkbenchDefinition();
         workbenchDef.setWorkspace(workspace);
         workbenchDef.setPath("/");
+
+        final ConfiguredItemTypeDefinition itemTypeDefinition = new ConfiguredItemTypeDefinition();
+        itemTypeDefinition.setItemType("qux");
+        final List<ItemTypeDefinition> itemTypeDefs = new ArrayList<ItemTypeDefinition>();
+        itemTypeDefs.add(itemTypeDefinition);
+        workbenchDef.setItemTypes(itemTypeDefs);
         // WHEN
         final ConfiguredContentViewBuilder builder = new ConfiguredContentViewBuilder(componentProvider);
         final ContentView result = builder.build(workbenchDef, ViewType.THUMBNAIL);
