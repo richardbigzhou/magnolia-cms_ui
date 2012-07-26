@@ -54,11 +54,10 @@ import static org.junit.Assert.assertEquals;
 /**
  * Tests.
  */
-public class DefaultContactsThumbnailProviderTest  {
+public class AbstractContactsThumbnailProviderTest {
     @Test
     public void testGetThumbnailWhenNotYetExisting() throws Exception {
         // GIVEN
-
         Components.setComponentProvider(new MockComponentProvider());
         ComponentsTestUtil.setImplementation(LinkTransformerManager.class, LinkTransformerManager.class);
         ComponentsTestUtil.setImplementation(I18nContentSupport.class, DefaultI18nContentSupport.class);
@@ -80,7 +79,7 @@ public class DefaultContactsThumbnailProviderTest  {
 
         pie.createNodes(root, new ByteArrayInputStream(content.getBytes()));
 
-        DefaultContactsThumbnailProvider provider = new DefaultContactsThumbnailProvider();
+        AbstractContactsThumbnailProvider provider = new DefaultContactsThumbnailProvider();
         provider.setFormat("jpg");
         provider.setQuality(0.75f);
 

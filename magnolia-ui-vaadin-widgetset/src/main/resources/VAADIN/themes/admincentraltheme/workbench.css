@@ -26,3 +26,7 @@
     background-color: #AABF2F;
     color: #FFF;
 }
+.mgnl-workbench-thumbnail-view .asset:hover {
+    border: 1px solid #AABF2F;
+    color: #FFF;
+}

@@ -33,106 +33,18 @@
  */
 package info.magnolia.ui.app.contacts.thumbnail;
 
-import info.magnolia.cms.util.ContentUtil;
-import info.magnolia.link.LinkUtil;
-import info.magnolia.ui.admincentral.thumbnail.ThumbnailProvider;
 import info.magnolia.ui.admincentral.thumbnail.ThumbnailUtility;
 
 import java.awt.Image;
-import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import javax.imageio.ImageIO;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
-import org.apache.jackrabbit.JcrConstants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
- * Thumbnail provider operating on contacts.
- * Will create and store thumbnail if none is around.
+ * Default implementation using ThumbnailUtility to create thumbnails.
  */
-public class DefaultContactsThumbnailProvider implements ThumbnailProvider {
-    private static final Logger log = LoggerFactory.getLogger(DefaultContactsThumbnailProvider.class);
-
-    final static String PHOTO_NODE_NAME = "photo";
-    final static String THUMBNAIL_NODE_NAME = "thumbnail";
-    private String format;
-
-    private float quality;
-
+public class DefaultContactsThumbnailProvider extends AbstractContactsThumbnailProvider {
     @Override
-    public URL getThumbnail(Node contactNode, int width, int height) {
-
-        URL url = null;
-        try {
-            if (!contactNode.hasNode(THUMBNAIL_NODE_NAME)) {
-                // no thumbnail around create and store it
-                if(!contactNode.hasNode(PHOTO_NODE_NAME)) {
-                    return null;
-                }
-                final InputStream stream = contactNode.getNode(PHOTO_NODE_NAME).getProperty(JcrConstants.JCR_DATA).getBinary().getStream();
-
-                BufferedImage thumbnail = null;
-                try {
-                    byte[] array = new byte[stream.available()];
-                    stream.read(array);
-                    stream.close();
-
-                    final Image contactImage = Toolkit.getDefaultToolkit().createImage(array);
-                    thumbnail = ThumbnailUtility.createThumbnail(contactImage, format, width, height, quality);
-                    final Node thumbnailNode = contactNode.addNode(THUMBNAIL_NODE_NAME);
-
-                    final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    ImageIO.write(thumbnail, format, baos);
-                    final InputStream is = new ByteArrayInputStream(baos.toByteArray());
-
-                    thumbnailNode.setProperty(JcrConstants.JCR_DATA, is);
-                    contactNode.getSession().save();
-                } catch (IOException e) {
-                    log.warn("Error creating thumbnail image!", e);
-                    return url;
-                }
-            }
-
-        } catch (RepositoryException e) {
-            log.warn("Could read image from contactNode:", e);
-            return url;
-        }
-
-        try {
-            final String link = LinkUtil.createLink(ContentUtil.asContent(contactNode.getNode(THUMBNAIL_NODE_NAME)));
-            url =  new URL(link);
-        } catch (MalformedURLException e) {
-            log.warn("Couldn't create URL", e);
-        } catch (RepositoryException e) {
-            log.warn("Problems accessing jcr repository", e);
-        }
-
-        return url;
-    }
-
-    public String getFormat() {
-        return format;
-    }
-
-    public void setFormat(String format) {
-        this.format = format;
-    }
-
-    public float getQuality() {
-        return quality;
-    }
-
-    public void setQuality(float quality) {
-        this.quality = quality;
+    protected BufferedImage createThumbnail(int width, int height, Image contactImage) throws IOException {
+        return ThumbnailUtility.createThumbnail(contactImage, getFormat(), width, height, getQuality());
     }
 }
