@@ -48,11 +48,15 @@ import javax.jcr.RepositoryException;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.ui.Field;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Creates and configures a Vaadin UploadField.
  */
 public class FileUploadFieldBuilder extends AbstractFieldBuilder<FileUploadFieldDefinition> {
+
+    private static final Logger log = LoggerFactory.getLogger(FileUploadFieldBuilder.class);
 
     public FileUploadFieldBuilder(FileUploadFieldDefinition definition, Item relatedFieldItem) {
         super(definition, relatedFieldItem);
@@ -72,23 +76,22 @@ public class FileUploadFieldBuilder extends AbstractFieldBuilder<FileUploadField
     public Item getOrCreateItem() {
         //Get the related Node
         Node node = getRelatedNode(item);
+        JcrNodeAdapter child = null;
         try {
-            if(node.hasNode(definition.getUploadBinaryNodeName()) && !(item instanceof JcrNewNodeAdapter)) {
-                JcrNodeAdapter child = new JcrNodeAdapter(node.getNode("imageBinary"));
-                ((JcrNodeAdapter)item).addChild(definition.getUploadBinaryNodeName(), child);
-                return child;
+            if(node.hasNode(definition.getImageNodeName()) && !(item instanceof JcrNewNodeAdapter)) {
+                child = new JcrNodeAdapter(node.getNode(definition.getImageNodeName()));
+                ((JcrNodeAdapter)item).addChild(definition.getImageNodeName(), child);
             } else {
-                JcrNewNodeAdapter child = new JcrNewNodeAdapter(node, MgnlNodeType.NT_RESOURCE, definition.getUploadBinaryNodeName());
-                ((JcrNodeAdapter)item).addChild(definition.getUploadBinaryNodeName(), child);
+                child = new JcrNewNodeAdapter(node, MgnlNodeType.NT_RESOURCE, definition.getImageNodeName());
+                ((JcrNodeAdapter)item).addChild(definition.getImageNodeName(), child);
                 initImageProperty(child);
-                return child;
             }
         }
         catch (RepositoryException e) {
-            e.printStackTrace();
+            log.error("Could get or create item", e);
         }
 
-        return null;
+        return child;
     }
 
     /**
@@ -97,7 +100,6 @@ public class FileUploadFieldBuilder extends AbstractFieldBuilder<FileUploadField
      */
     @Override
     public void setPropertyDataSource(Property property) {
-        ;
     }
 
     /**
