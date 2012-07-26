@@ -61,14 +61,15 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter{
 
     private static final Logger log = LoggerFactory.getLogger(JcrNewNodeAdapter.class);
     private String nodeType;
-    private String nodeName = null;
 
     /**
      * @param parentNode: Parent of the node to create.
      * @param nodeType: Type node to create.
+     * @throws RepositoryException
      */
     public JcrNewNodeAdapter(Node parentNode, String nodeType) {
         super(parentNode);
+        this.nodeName = null;
         this.nodeType = nodeType;
     }
 
@@ -76,6 +77,7 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter{
      * @param parentNode: Parent of the node to create.
      * @param nodeType: Type node to create.
      * @param nodeName: Name of the new node.
+     * @throws RepositoryException
      */
     public JcrNewNodeAdapter(Node parentNode, String nodeType, String nodeName) {
         super(parentNode);
@@ -139,7 +141,7 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter{
             updateProperty(node);
             //Update child nodes
             if(!childs.isEmpty()) {
-                for(JcrNodeAdapter child:childs.values()) {
+                for(JcrAbstractNodeAdapter child:childs.values()) {
                     if(child instanceof JcrNewNodeAdapter) {
                         //Set parent node (parent could be newly created)
                         child.setCommonAttributes(node);

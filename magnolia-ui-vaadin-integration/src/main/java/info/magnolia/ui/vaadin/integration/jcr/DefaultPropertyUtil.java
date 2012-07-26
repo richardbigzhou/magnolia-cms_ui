@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.vaadin.integration.jcr;
 
+import info.magnolia.cms.util.DateUtil;
+
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -40,7 +42,6 @@ import java.util.Date;
 
 import javax.jcr.PropertyType;
 
-import info.magnolia.cms.util.DateUtil;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -78,7 +79,7 @@ public class DefaultPropertyUtil {
      *
      * @throws NumberFormatException In case of the default value could not be parsed to the desired class.
      */
-    public static Object createTypedValue(String fieldType, String defaultValue) throws NumberFormatException, InstantiationException, IllegalAccessException{
+    public static Object createTypedValue(String fieldType, String defaultValue) throws NumberFormatException{
         boolean hasDefaultValue = defaultValue != null;
         if (StringUtils.isNotBlank(fieldType)) {
             int valueType = PropertyType.valueFromName(fieldType);
