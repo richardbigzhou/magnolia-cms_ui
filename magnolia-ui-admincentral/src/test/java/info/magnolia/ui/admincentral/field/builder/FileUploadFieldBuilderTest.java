@@ -31,47 +31,44 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.thumbnail;
+package info.magnolia.ui.admincentral.field.builder;
 
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import static org.junit.Assert.assertEquals;
+import info.magnolia.ui.admincentral.field.FileUpload;
+import info.magnolia.ui.model.field.definition.FileUploadFieldDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.JcrAbstractNodeAdapter;
 
-import java.net.URL;
+import org.junit.Test;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
-import com.vaadin.terminal.ExternalResource;
-import com.vaadin.terminal.Resource;
-import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.Embedded;
+import com.vaadin.ui.Field;
 
 /**
- * A component capable of displaying an image and holding a reference to the jcr node where the image is stored.
- *
+ * Main testcase for {@link FileUploadFieldBuilder}.
  */
-public class Thumbnail extends Embedded {
-    public static final Resource IMAGE_NOT_FOUND = new ThemeResource("img/icons/icon-error-red.png");
-    private JcrNodeAdapter node;
+public class FileUploadFieldBuilderTest extends AbstractBuilderTest<FileUploadFieldDefinition> {
 
-    public Thumbnail(final Node node, final URL url) {
-        this.node = new JcrNodeAdapter(node);
-        setType(TYPE_IMAGE);
-        setSizeUndefined();
-        addStyleName("asset");
-        if(url != null) {
-            setSource(new ExternalResource(url));
-        } else {
-            setSource(IMAGE_NOT_FOUND);
-        }
-        try {
-            setDescription(node.getName());
-        } catch (RepositoryException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+    private FileUploadFieldBuilder fileUploadBuilder;
+
+    @Test
+    public void simpleFileUploadFieldBuilderTest() throws Exception{
+        // GIVEN
+        fileUploadBuilder = new FileUploadFieldBuilder(definition, baseItem);
+
+        // WHEN
+        Field field = fileUploadBuilder.getField();
+
+        // THEN
+        assertEquals(true, field instanceof FileUpload);
+        assertEquals(0, ((JcrAbstractNodeAdapter)baseItem).getChilds().size());
     }
 
-    public JcrNodeAdapter getNode() {
-        return node;
+
+
+    @Override
+    protected void createConfiguredFieldDefinition() {
+        FileUploadFieldDefinition fieldDefinition = new FileUploadFieldDefinition();
+        fieldDefinition.setName(propertyName);
+        this.definition = fieldDefinition;
     }
+
 }

@@ -33,22 +33,12 @@
  */
 package info.magnolia.ui.vaadin.integration.jcr;
 
-import info.magnolia.cms.core.MetaData;
-import info.magnolia.jcr.RuntimeRepositoryException;
-import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.jcr.util.PropertyUtil;
-
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
 
-import javax.jcr.LoginException;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,31 +55,32 @@ import com.vaadin.data.Property.ValueChangeEvent;
  * Jcr properties are updated or created if they:
  *   Previously existed and where modified.
  *   Newly created and set (an empty created property is not stored into Jcr repository)
+ *
+ * Create a JcrNodeAdapter:
+ *   Just create a new JcrNodeAdapter with the related Jcr Node as parameter.
+ *
+ * Properties:
+ *   getItemProperty(Object id) will return the current stored JCR property if not yet modified
+ *     or the modified one.
+ *     If the property do not exist null will be returned.
+ *     In this case we have to create a new Property and attach this property to the JcrNodeAdapter
+ *       property p = DefaultPropertyUtil.newDefaultProperty(...)
+ *      jcrNodeAdapter.addItemProperty(...)
+ *
  */
 public class JcrNodeAdapter extends JcrAbstractNodeAdapter  {
     // Init
     private static final Logger log = LoggerFactory.getLogger(JcrNodeAdapter.class);
-    protected Map<String, Property> changedProperties = new HashMap<String,Property>();
-    protected Map<String, Property> removedProperties = new HashMap<String,Property>();
-    protected Map<String, JcrNodeAdapter> childs = new HashMap<String, JcrNodeAdapter>();
 
     public JcrNodeAdapter(Node jcrNode) {
         super(jcrNode);
+        try {
+            this.nodeName = jcrNode.getName();
+        }
+        catch (RepositoryException e) {
+            log.error("Could not access the Node name.... Should never happen",e);
+        }
     }
-
-
-    public JcrNodeAdapter getChild(String path) {
-        return childs.get(path);
-    }
-
-    public JcrNodeAdapter addChild(String path, JcrNodeAdapter child) {
-        return childs.put(path, child);
-    }
-
-
-
-
-
 
     /**
      * Get Vaadin Property from a Jcr Property.
@@ -152,33 +143,6 @@ public class JcrNodeAdapter extends JcrAbstractNodeAdapter  {
         return res;
     }
 
-    /**
-     * Get the referenced node and update the property.
-     * Update property will:
-     *  remove existing JCR property if requested
-     *  add newly and setted property
-     *  update existing modified property.
-     */
-    public Node getNode() {
-        Node node = null;
-        try {
-            node =  getNodeFromRepository();
-            // Update Node property
-            updateProperty(node);
-            // Update Child Nodes
-            if(!childs.isEmpty()) {
-                for(JcrNodeAdapter child:childs.values()) {
-                    child.getNode();
-                }
-            }
-            return node;
-        }
-        catch (LoginException e) {
-            throw new RuntimeRepositoryException(e);
-        } catch (RepositoryException e) {
-            throw new RuntimeRepositoryException(e);
-        }
-    }
 
     @Override
     public void valueChange(ValueChangeEvent event) {
@@ -189,41 +153,6 @@ public class JcrNodeAdapter extends JcrAbstractNodeAdapter  {
         }
     }
 
-    /**
-     * Update or remove property.
-     * Property wit flag saveInfo to false will not be updated.
-     * Property can refer to node property (like name, title) or
-     * node.MetaData property like (MetaData/template).
-     * Also handle the specific case of node renaming.
-     *  If property JCR_NAME is present, Rename the node.
-     */
-    protected void updateProperty(Node node) throws RepositoryException {
-      //Update property
-        for(Entry<String, Property> entry: changedProperties.entrySet()) {
-            //Check saveInfo Flag
-            if(!((DefaultProperty)entry.getValue()).isSaveInfo() || ((DefaultProperty)entry.getValue()).isReadOnly()) {
-                continue;
-            }
-            // JCRNAME has change --> perform the renaming and continue
-            if(entry.getKey().equals(JCR_NAME) && (entry.getValue() !=null && !entry.getValue().toString().isEmpty())) {
-               node.getSession().move(node.getPath(), NodeUtil.combinePathAndName(node.getParent().getPath(), entry.getValue().getValue().toString()));
-               setPath(node.getPath());
-               continue;
-            }
-            // Check if the field is refereeing to MetaData Property
-            if(entry.getKey().startsWith(MetaData.DEFAULT_META_NODE)) {
-                PropertyUtil.setProperty(node.getNode(MetaData.DEFAULT_META_NODE), StringUtils.removeStart(entry.getKey(),MetaData.DEFAULT_META_NODE+"/"), entry.getValue().getValue());
-            } else {
-                PropertyUtil.setProperty(node, entry.getKey(), entry.getValue().getValue());
-            }
-        }
-        // Remove Property
-        for(Entry<String, Property> entry: removedProperties.entrySet()) {
-            if(node.hasProperty(entry.getKey())) {
-                node.getProperty(entry.getKey()).remove();
-            }
-        }
-    }
 
     private boolean jcrItemHasProperty(String propertyName) {
         try {
