@@ -119,7 +119,6 @@ public class JcrNodeAdapterChieldItemTest {
         assertEquals(true, resBoolean);
         assertEquals(1, res.size());
         assertEquals(null, res.get(childItem.getNodeIdentifier()));
-        assertEquals(null, childItem.getParent());
         assertEquals(newChild, res.get(newChild.getNodeIdentifier()));
         assertEquals(item, newChild.getParent());
         Map<String, JcrAbstractNodeAdapter> resRemobed = item.remouvedChilds;

@@ -47,6 +47,8 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.TimeZone;
 
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.value.BinaryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -271,7 +273,7 @@ public class FileUpload extends UploadField{
     private void updateProperty() {
         lastFileSize = getLastFileSize();
         lastMimeType = getLastMimeType();
-        lastFileName = getLastFileName();
+        lastFileName = StringUtils.substringBefore(getLastFileName(), ".");
         lastFileExtension = PathUtil.getExtension(getLastFileName());
         ImageSize imageSize = ImageSize.valueOf(getContentAsStream());
         lastImageWidth = imageSize.getWidth();
