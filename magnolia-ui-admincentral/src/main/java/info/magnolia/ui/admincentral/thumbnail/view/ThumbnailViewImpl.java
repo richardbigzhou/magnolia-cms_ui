@@ -72,15 +72,22 @@ public class ThumbnailViewImpl implements ThumbnailView {
     private CssLayout layout = new CssLayout();
     private Listener listener;
 
-    private Thumbnail selectedAsset = null;
+    private Thumbnail selectedAsset;
     private WorkbenchDefinition workbenchDefinition;
     private ThumbnailProvider thumbnailProvider;
-    private String[] itemTypes;
+    private AbstractPredicate<Node> filterByItemType;
 
     public ThumbnailViewImpl(final WorkbenchDefinition definition, final ThumbnailProvider thumbnailProvider) {
         this.workbenchDefinition = definition;
         this.thumbnailProvider = thumbnailProvider;
-        itemTypes = getItemTypes(definition);
+        final String[] itemTypes = getItemTypes(definition);
+
+        if(itemTypes != null) {
+            filterByItemType = new ItemTypePredicate(itemTypes);
+        } else {
+            log.warn("Workbench definition contains no item types, node filter will accept all mgnl item types.");
+            filterByItemType = NodeUtil.MAGNOLIA_FILTER;
+        }
 
         layout.setWidth(100, Sizeable.UNITS_PERCENTAGE);
         layout.setStyleName("mgnl-workbench-thumbnail-view");
@@ -88,7 +95,7 @@ public class ThumbnailViewImpl implements ThumbnailView {
 
             @Override
             public void layoutClick(LayoutClickEvent event) {
-                Thumbnail clickedAsset = (Thumbnail) event.getClickedComponent();
+                final Thumbnail clickedAsset = (Thumbnail) event.getClickedComponent();
                 if(clickedAsset != null && listener != null) {
                     log.debug("Clicked on {}", clickedAsset.getDescription());
                     if(selectedAsset != null) {
@@ -120,7 +127,7 @@ public class ThumbnailViewImpl implements ThumbnailView {
             //FIXME fgrilli the arg to get node must take into account that the current path can change if we navigate in hierarchy.
             Node parent = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace()).getNode(workbenchDefinition.getPath());
 
-            Iterable<Node> assets = NodeUtil.collectAllChildren(parent, itemTypes != null ? new ItemTypePredicate(itemTypes): NodeUtil.MAGNOLIA_FILTER);
+            Iterable<Node> assets = NodeUtil.collectAllChildren(parent, filterByItemType);
             for(Node asset: assets) {
                 final URL url = thumbnailProvider.getThumbnail(asset, 30, 30);
                 final Thumbnail image = new Thumbnail(asset, url);
@@ -154,7 +161,6 @@ public class ThumbnailViewImpl implements ThumbnailView {
 
     /**
      * Accepts only nodes of the type(s) passed as argument to the costructor.
-     *
      */
     private static class ItemTypePredicate extends AbstractPredicate<Node> {
         private String[] itemTypes;
@@ -189,6 +195,7 @@ public class ThumbnailViewImpl implements ThumbnailView {
         final String[] itemTypes = new String[definition.getItemTypes().size()];
         for(int i = 0; i < definition.getItemTypes().size(); i++) {
             itemTypes[i] = definition.getItemTypes().get(i).getItemType();
+            log.debug("Adding node filter item type [{}]", itemTypes[i]);
         }
         return itemTypes;
     }
