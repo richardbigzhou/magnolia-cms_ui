@@ -39,6 +39,7 @@ import info.magnolia.ui.admincentral.app.content.ContentAppDescriptor;
 import info.magnolia.ui.admincentral.content.view.ContentPresenter;
 import info.magnolia.ui.admincentral.event.ActionbarClickEvent;
 import info.magnolia.ui.admincentral.event.ContentChangedEvent;
+import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.SubApp;
@@ -58,6 +59,9 @@ import javax.jcr.Session;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.Embedded;
 
 
 /**
@@ -106,13 +110,17 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
         contentPresenter.initContentView(view);
         view.setListener(this);
         actionbarPresenter.initActionbar(workbenchDefinition.getActionbar());
-        view.addActionbarView(actionbarPresenter.start());
+        view.setActionbarView(actionbarPresenter.start());
 
+        bindHandlers();
+    }
+
+    private void bindHandlers() {
         eventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
 
             @Override
             public void onContentChanged(ContentChangedEvent event) {
-                // this should go into the presenter of the treegrid
+                // this should go into the content presenter
                 view.refresh();
             }
         });
@@ -147,6 +155,31 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
                 }
             }
         });
+
+        eventBus.addHandler(ItemSelectedEvent.class, new ItemSelectedEvent.Handler() {
+
+            private final String[] previews = new String[]{"img/previews/about-200.png", "img/previews/demo-project-200.png"};
+
+            private final String[] previewAlts = new String[]{"About page", "Demo Project"};
+
+            private int previewIndex = 0;
+
+            @Override
+            public void onItemSelected(ItemSelectedEvent event) {
+                // TODO 20120713 mgeljic: refresh action bar (context sensitivity)
+
+                // refresh preview like this
+                // you can show images using vaadin Embedded widget, or use any other widget
+                if (event.getPath() == null) {
+                    actionbarPresenter.setPreview(null);
+                } else {
+                    previewIndex = (previewIndex + 1) % previews.length;
+                    Embedded preview = new Embedded(null, new ThemeResource(previews[previewIndex]));
+                    preview.setAlternateText(previewAlts[previewIndex]);
+                    actionbarPresenter.setPreview(preview);
+                }
+            }
+        });
     }
 
     @Override
@@ -166,4 +199,5 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
     public ContentWorkbenchView asView() {
         return view;
     }
+
 }

@@ -35,8 +35,8 @@ package info.magnolia.ui.widget.actionbar;
 
 import info.magnolia.ui.framework.view.View;
 
-import com.vaadin.terminal.Paintable;
 import com.vaadin.terminal.Resource;
+import com.vaadin.ui.Component;
 
 
 /**
@@ -48,9 +48,11 @@ public interface ActionbarView extends View {
 
     void addSection(String sectionName, String label);
 
+    void removeSection(String sectionName);
+
     void addAction(String actionName, String label, Resource icon, String groupName, String sectionName);
 
-    void setPreview(Paintable preview, String sectionName);
+    void setPreview(Component preview, String sectionName);
 
     // ENABLE / DISABLE
     void enable(String actionName);

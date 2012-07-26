@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.widget.actionbar.gwt.client;
 
+import java.util.Set;
+
 import org.vaadin.rpc.client.ClientSideHandler;
 import org.vaadin.rpc.client.ClientSideProxy;
 import org.vaadin.rpc.client.Method;
@@ -43,7 +45,9 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
+import com.vaadin.terminal.gwt.client.Container;
 import com.vaadin.terminal.gwt.client.Paintable;
+import com.vaadin.terminal.gwt.client.RenderSpace;
 import com.vaadin.terminal.gwt.client.UIDL;
 import com.vaadin.terminal.gwt.client.ui.Icon;
 
@@ -52,7 +56,7 @@ import com.vaadin.terminal.gwt.client.ui.Icon;
  * Vaadin implementation of Action bar client side (Presenter).
  */
 @SuppressWarnings("serial")
-public class VActionbar extends Composite implements Paintable, ClientSideHandler, VActionbarView.Presenter {
+public class VActionbar extends Composite implements Paintable, Container, ClientSideHandler, VActionbarView.Presenter {
 
     protected String paintableId;
 
@@ -72,6 +76,15 @@ public class VActionbar extends Composite implements Paintable, ClientSideHandle
                 public void invoke(String methodName, Object[] params) {
                     final VActionbarSectionJSO section = VActionbarSectionJSO.parse(String.valueOf(params[0]));
                     view.addSection(section);
+                }
+            });
+
+            register("removeSection", new Method() {
+
+                @Override
+                public void invoke(String methodName, Object[] params) {
+                    String sectionName = String.valueOf(params[0]);
+                    view.removeSection(sectionName);
                 }
             });
 
@@ -106,9 +119,13 @@ public class VActionbar extends Composite implements Paintable, ClientSideHandle
 
         final UIDL previewUidl = uidl.getChildByTagName("preview");
         if (previewUidl != null) {
-            final Paintable p = client.getPaintable(previewUidl);
-            ((VActionbarSection) ((VActionbarViewImpl) view).getWidget(0)).add((Widget) p);
-            p.updateFromUIDL(previewUidl, client);
+            UIDL childUidl = previewUidl.getChildUIDL(0);
+            final Paintable previewWidget = client.getPaintable(childUidl);
+            VActionbarSection section = ((VActionbarViewImpl) view).getSections().get("preview");
+            if (section != null && previewWidget instanceof Widget) {
+                section.setPreview((Widget) previewWidget);
+                previewWidget.updateFromUIDL(childUidl, client);
+            }
         }
     }
 
@@ -125,6 +142,32 @@ public class VActionbar extends Composite implements Paintable, ClientSideHandle
     @Override
     public void triggerAction(String actionToken) {
         proxy.call("actionTriggered", actionToken);
+    }
+
+    @Override
+    public void updateCaption(Paintable component, UIDL uidl) {
+    }
+
+    @Override
+    public void replaceChildComponent(Widget oldComponent, Widget newComponent) {
+    }
+
+    @Override
+    public boolean requestLayout(Set<Paintable> children) {
+        return false;
+    }
+
+    @Override
+    public RenderSpace getAllocatedSpace(Widget child) {
+        if (hasChildComponent(child)) {
+            return new RenderSpace(child.getOffsetWidth(), getOffsetHeight());
+        }
+        return new RenderSpace(getOffsetWidth(), getOffsetHeight());
+    }
+
+    @Override
+    public boolean hasChildComponent(Widget component) {
+        return view.hasChildComponent(component);
     }
 
 }

@@ -41,15 +41,20 @@ import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarGroupDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarItemDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarSectionDefinition;
+import info.magnolia.ui.widget.actionbar.Actionbar;
 import info.magnolia.ui.widget.actionbar.ActionbarView;
 
 import com.google.inject.Inject;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.VerticalLayout;
 
 
 /**
  * Default presenter for an action bar.
  */
 public class ActionbarPresenter implements ActionbarView.Listener {
+
+    private static final String PREVIEW_SECTION_NAME = "preview";
 
     private ActionbarDefinition definition;
 
@@ -74,6 +79,24 @@ public class ActionbarPresenter implements ActionbarView.Listener {
         this.definition = definition;
         actionbar = ActionbarBuilder.build(definition);
         actionbar.setListener(this);
+    }
+
+    public void setPreview(final Component preview) {
+        if (preview != null) {
+            if (!((Actionbar) actionbar).getSections().containsKey(PREVIEW_SECTION_NAME)) {
+                actionbar.addSection(PREVIEW_SECTION_NAME, "Preview");
+            }
+            preview.setWidth("100%");
+            final VerticalLayout previewContainer = new VerticalLayout();
+            previewContainer.setSizeFull();
+            previewContainer.addComponent(preview);
+            previewContainer.setStyleName("v-actionbar-preview");
+            actionbar.setPreview(previewContainer, PREVIEW_SECTION_NAME);
+        } else {
+            if (((Actionbar) actionbar).getSections().containsKey(PREVIEW_SECTION_NAME)) {
+                actionbar.removeSection(PREVIEW_SECTION_NAME);
+            }
+        }
     }
 
     @Override

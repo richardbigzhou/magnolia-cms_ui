@@ -60,6 +60,8 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
 
     private final Map<ViewType, ContentView> contentViews = new EnumMap<ViewType, ContentView>(ViewType.class);
 
+    private ActionbarView actionbar;
+
     private ViewType currentViewType = ViewType.TREE;
 
     private ContentWorkbenchView.Listener contentWorkbenchViewListener;
@@ -79,6 +81,7 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
         HorizontalLayout toolbar = new HorizontalLayout();
         toolbar.setSizeUndefined();
         toolbar.setStyleName("mgnl-workbench-toolbar");
+        toolbar.setSpacing(true);
         toolbar.addComponent(new Button("Tree", new Button.ClickListener() {
 
             @Override
@@ -124,7 +127,6 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
         workbenchContainer.addComponent(c);
         workbenchContainer.setExpandRatio(c, 1f);
 
-        // split.addComponentAsFirst(c);
         this.currentViewType = type;
         refresh();
     }
@@ -137,7 +139,6 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
     @Override
     public void refresh() {
         contentViews.get(currentViewType).refresh();
-        // TODO 20120713 mgeljic: refresh action bar (context sensitivity)
     }
 
     @Override
@@ -146,8 +147,13 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
     }
 
     @Override
-    public void addActionbarView(final ActionbarView actionbar) {
-        root.addComponent((Component) actionbar);
+    public void setActionbarView(final ActionbarView actionbar) {
+        if (this.actionbar == null) {
+            root.addComponent(actionbar.asVaadinComponent());
+        } else {
+            root.replaceComponent(this.actionbar.asVaadinComponent(), actionbar.asVaadinComponent());
+        }
+        this.actionbar = actionbar;
     }
 
     @Override

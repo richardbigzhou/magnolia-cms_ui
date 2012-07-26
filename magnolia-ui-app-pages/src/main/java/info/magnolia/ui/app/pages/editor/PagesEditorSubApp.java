@@ -80,7 +80,7 @@ public class PagesEditorSubApp implements SubApp, PagesEditorView.Listener {
         view.setPageEditor(pageEditorPresenter.start());
         
         actionbarPresenter.initActionbar(PagesActionbarDefinitionProvider.getPageEditorActionbarDefinition());
-        view.addActionbarView(actionbarPresenter.start());
+        view.setActionbarView(actionbarPresenter.start());
 
         return view;
     }

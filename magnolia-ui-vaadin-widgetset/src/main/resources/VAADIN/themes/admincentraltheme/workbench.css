@@ -2,6 +2,7 @@
 .mgnl-app-root .v-horizontallayout-margin {padding-top:20px; padding-left:40px;}
 .mgnl-app-root .v-horizontallayout-spacing-on {padding-left:25px;}
 .mgnl-workbench-toolbar .v-horizontallayout-margin {padding:0 0 20px 0;}
+.mgnl-workbench-toolbar .v-horizontallayout-spacing-on {padding-left:10px;}
 /* Have the caption right of the text box, bottom-aligned */
 .mgnl-thumbnail-container {
     line-height: 24px;

@@ -38,7 +38,7 @@ import info.magnolia.ui.widget.actionbar.gwt.client.VActionbar;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -52,7 +52,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.vaadin.terminal.PaintException;
 import com.vaadin.terminal.PaintTarget;
-import com.vaadin.terminal.Paintable;
 import com.vaadin.terminal.Resource;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.ClientWidget;
@@ -71,7 +70,7 @@ public class Actionbar extends AbstractComponent implements ActionbarView, Serve
 
     private boolean isAttached = false;
 
-    private final Map<String, ActionbarSection> sections = new HashMap<String, ActionbarSection>();
+    private final Map<String, ActionbarSection> sections = new LinkedHashMap<String, ActionbarSection>();
 
     private ActionbarView.Listener listener;
 
@@ -134,6 +133,10 @@ public class Actionbar extends AbstractComponent implements ActionbarView, Serve
         proxy.call("addSection", new Gson().toJson(section));
     }
 
+    private void doRemoveSection(final String sectionName) {
+        proxy.call("removeSection", sectionName);
+    }
+
     private void doAddAction(final ActionbarItem action, String sectionName) {
         GsonBuilder gson = new GsonBuilder()
             .registerTypeAdapter(Resource.class, new ResourceSerializer());
@@ -187,6 +190,13 @@ public class Actionbar extends AbstractComponent implements ActionbarView, Serve
     }
 
     @Override
+    public void removeSection(String sectionName) {
+        sections.remove(sectionName);
+        doRemoveSection(sectionName);
+        // requestRepaint();
+    }
+
+    @Override
     public void addAction(String actionName, String label, Resource icon, String groupName, String sectionName) {
         ActionbarSection section = sections.get(sectionName);
         if (section != null) {
@@ -201,7 +211,7 @@ public class Actionbar extends AbstractComponent implements ActionbarView, Serve
     }
 
     @Override
-    public void setPreview(Paintable preview, String sectionName) {
+    public void setPreview(Component preview, String sectionName) {
         ActionbarSection section = sections.get(sectionName);
         if (section != null) {
             section.setPreview(preview);
@@ -268,9 +278,9 @@ public class Actionbar extends AbstractComponent implements ActionbarView, Serve
      */
     public static class ActionbarSection implements Serializable {
 
-        private transient Map<String, ActionbarItem> actions = new HashMap<String, ActionbarItem>();
+        private transient Map<String, ActionbarItem> actions = new LinkedHashMap<String, ActionbarItem>();
 
-        private transient Paintable preview;
+        private transient Component preview;
 
         private final String name;
 
@@ -308,11 +318,11 @@ public class Actionbar extends AbstractComponent implements ActionbarView, Serve
             actions.put(action.getName(), action);
         }
 
-        public Paintable getPreview() {
+        public Component getPreview() {
             return preview;
         }
 
-        public void setPreview(Paintable preview) {
+        public void setPreview(Component preview) {
             this.preview = preview;
         }
     }

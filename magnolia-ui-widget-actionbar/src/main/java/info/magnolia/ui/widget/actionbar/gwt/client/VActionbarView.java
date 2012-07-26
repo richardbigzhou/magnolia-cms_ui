@@ -33,8 +33,11 @@
  */
 package info.magnolia.ui.widget.actionbar.gwt.client;
 
+import java.util.Map;
+
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.terminal.gwt.client.ui.Icon;
 
 
@@ -43,6 +46,18 @@ import com.vaadin.terminal.gwt.client.ui.Icon;
  */
 public interface VActionbarView extends HasWidgets, IsWidget {
 
+    /**
+     * Gets the section widgets inside this action bar view.
+     * 
+     * @return the sections
+     */
+    Map<String, VActionbarSection> getSections();
+
+    /**
+     * Sets the presenter.
+     * 
+     * @param presenter the new presenter
+     */
     void setPresenter(Presenter presenter);
 
     /**
@@ -53,6 +68,13 @@ public interface VActionbarView extends HasWidgets, IsWidget {
     void addSection(VActionbarSectionJSO sectionParams);
 
     /**
+     * Removes the section from this action bar.
+     * 
+     * @param sectionName the section name
+     */
+    void removeSection(String sectionName);
+
+    /**
      * Adds an action item to this action bar.
      * 
      * @param actionParams the action parameters
@@ -61,6 +83,14 @@ public interface VActionbarView extends HasWidgets, IsWidget {
      * @param sectionName the section name
      */
     void addAction(VActionbarItemJSO actionParams, Icon icon, String groupName, String sectionName);
+
+    /**
+     * Checks if given widget is a child of this component.
+     * 
+     * @param component the component
+     * @return true, if successful
+     */
+    boolean hasChildComponent(Widget component);
 
     /**
      * Presenter for the Actionbar view.
