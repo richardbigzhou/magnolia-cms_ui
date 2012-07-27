@@ -31,50 +31,52 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.action;
-
-import info.magnolia.ui.framework.location.DefaultLocation;
-import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.location.LocationController;
-import info.magnolia.ui.model.action.ActionBase;
-import info.magnolia.ui.model.action.ActionExecutionException;
+package info.magnolia.ui.app.pages.preview;
 
 import javax.inject.Inject;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
+import info.magnolia.ui.framework.app.SubApp;
+import info.magnolia.ui.framework.location.DefaultLocation;
+import info.magnolia.ui.framework.location.LocationController;
+import info.magnolia.ui.framework.view.View;
 
 /**
- * Opens a page for editing.
+ * SubApp that displays the page preview.
  */
-public class EditPageAction extends ActionBase<EditPageActionDefinition> {
+public class PagePreviewSubApp implements SubApp, PagePreviewView.Listener {
 
-    private static final Logger log = LoggerFactory.getLogger(EditPageAction.class);
-
-    private final Node nodeToEdit;
-
-    private final LocationController locationController;
-
-    private final static String TOKEN = "pageeditor";
-
+    private PagePreviewView view;
+    
+    private ActionbarPresenter actionBarPresenter;
+    
+    LocationController locationController;
+    
     @Inject
-    public EditPageAction(final EditPageActionDefinition definition, Node nodeToEdit, LocationController locationController) {
-        super(definition);
-        this.nodeToEdit = nodeToEdit;
+    public PagePreviewSubApp(final PagePreviewView view, ActionbarPresenter actionbarPresenter, LocationController locationController) {
+        this.view = view;
         this.locationController = locationController;
+        this.actionBarPresenter = actionbarPresenter;
+    }
+    
+    @Override
+    public String getCaption() {
+        return null;
     }
 
     @Override
-    public void execute() throws ActionExecutionException {
-        try {
-            String nodePath = nodeToEdit.getPath();
-            Location pageEditorLocation = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages", TOKEN + ":" + nodePath);
-            locationController.goTo(pageEditorLocation);
-        } catch (RepositoryException e) {
-            log.error(e.getMessage(), e);
-        }
+    public View start() {
+        view.setListener(this);   
+        return view;
     }
+
+    public void setUrl(String url) {
+        view.setUrl(url);
+    }
+
+    @Override
+    public void closePreview() {
+        locationController.goTo(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages", ""));
+    }
+
 }

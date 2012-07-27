@@ -46,8 +46,8 @@ import info.magnolia.ui.framework.app.App;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.app.AppLifecycleEventType;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
+import info.magnolia.ui.framework.app.AppLifecycleEventType;
 import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.framework.event.EventBus;
@@ -203,7 +203,6 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
     @Override
     public void onLocationChanged(LocationChangedEvent event) {
-
         Location newLocation = event.getNewLocation();
         AppDescriptor nextApp = getAppForLocation(newLocation);
 
@@ -211,8 +210,12 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             return;
         }
 
+        if (currentApp != null) {
+            currentApp.exitFullScreenMode();   
+        }
+        
         AppContextImpl nextAppContext = runningApps.get(nextApp.getName());
-
+        
         if (nextAppContext != null) {
             nextAppContext.onLocationUpdate(newLocation);
         } else {
@@ -324,6 +327,11 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         public void openSubApp(SubApp subApp) {
             appFrameView.addTab((ComponentContainer) subApp.start().asVaadinComponent(), subApp.getCaption());
         }
+        
+        @Override
+        public void openSubAppFullScreen(SubApp subApp) {
+            shell.showFullscreen(subApp.start());
+        }
 
         @Override
         public void setAppLocation(Location location) {
@@ -343,6 +351,11 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
         @Override
         public void showConfirmationMessage(String message) {
+        }
+
+        @Override
+        public void exitFullScreenMode() {
+            shell.exitFullScreenMode();
         }
     }
 

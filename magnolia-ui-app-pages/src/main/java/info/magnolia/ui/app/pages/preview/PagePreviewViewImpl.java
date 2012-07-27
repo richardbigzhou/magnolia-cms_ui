@@ -31,32 +31,54 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app;
+package info.magnolia.ui.app.pages.preview;
 
-import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.message.Message;
-
+import com.vaadin.terminal.ExternalResource;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Embedded;
+import com.vaadin.ui.VerticalLayout;
 
 /**
- * Provides functionality used by an app to interact with the Magnolia shell.
+ * Implementation of {@link PagePreviewView}.
  */
-public interface AppContext {
-
-    void openSubApp(SubApp subApp);
+public class PagePreviewViewImpl implements PagePreviewView {
     
-    void openSubAppFullScreen(SubApp subApp);
-
-    void exitFullScreenMode();
+    private VerticalLayout wrapper = new VerticalLayout();
     
-    AppDescriptor getAppDescriptor();
+    private Embedded iframe;
+    
+    protected Listener listener;
+    
+    public PagePreviewViewImpl() {
+        this.iframe = new Embedded();
+        iframe.setType(Embedded.TYPE_BROWSER);
+        iframe.setSizeFull();
+        wrapper.setSizeFull();
+        wrapper.addComponent(new Button("Close Preview", new ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+                listener.closePreview();
+            }
+        }));
+        wrapper.addComponent(iframe);
+        wrapper.setExpandRatio(iframe, 1f);
+    }
+    
+    @Override
+    public void setListener(Listener listener) {
+        this.listener = listener;
+    }
 
-    void setAppLocation(Location location);
+    @Override
+    public Component asVaadinComponent() {
+        return wrapper;
+    }
 
-    void sendLocalMessage(Message message);
-
-    void broadcastMessage(Message message);
-
-    void showConfirmationMessage(String message);
-
-    String getName();
+    @Override
+    public void setUrl(String url) {
+        iframe.setSource(new ExternalResource(url));
+    }
 }

@@ -31,32 +31,25 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app;
+package info.magnolia.ui.app.pages.preview;
 
-import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.message.Message;
-
+import info.magnolia.ui.framework.view.View;
 
 /**
- * Provides functionality used by an app to interact with the Magnolia shell.
+ * Displays the page preview.
+ *
  */
-public interface AppContext {
+public interface PagePreviewView extends View {
 
-    void openSubApp(SubApp subApp);
+    void setListener(final Listener listener);
     
-    void openSubAppFullScreen(SubApp subApp);
+    void setUrl(final String url);
+    /**
+     * Listener interface of the view.
+     */
+    interface Listener {
 
-    void exitFullScreenMode();
-    
-    AppDescriptor getAppDescriptor();
-
-    void setAppLocation(Location location);
-
-    void sendLocalMessage(Message message);
-
-    void broadcastMessage(Message message);
-
-    void showConfirmationMessage(String message);
-
-    String getName();
+        void closePreview();
+        
+    }
 }
