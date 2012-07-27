@@ -60,7 +60,6 @@ import com.vaadin.data.Property;
 public class JcrNewNodeAdapter extends JcrNodeAdapter{
 
     private static final Logger log = LoggerFactory.getLogger(JcrNewNodeAdapter.class);
-    private String nodeType;
 
     /**
      * @param parentNode: Parent of the node to create.
@@ -69,8 +68,8 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter{
      */
     public JcrNewNodeAdapter(Node parentNode, String nodeType) {
         super(parentNode);
-        this.nodeName = null;
-        this.nodeType = nodeType;
+        setPrimaryNodeTypeName(nodeType);
+        setNodeName(null);
     }
 
     /**
@@ -81,8 +80,8 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter{
      */
     public JcrNewNodeAdapter(Node parentNode, String nodeType, String nodeName) {
         super(parentNode);
-        this.nodeType = nodeType;
-        this.nodeName = nodeName;
+        setPrimaryNodeTypeName(nodeType);
+        setNodeName(nodeName);
     }
 
     /**
@@ -106,11 +105,11 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter{
     @Override
     public Node getNode() {
         try {
-            if(nodeName !=null && getParentNode().hasNode(nodeName)) {
-                return getParentNode().getNode(nodeName);
+            if(getNodeName() !=null && getParentNode().hasNode(getNodeName())) {
+                return getParentNode().getNode(getNodeName());
             }
         } catch(RepositoryException re) {
-            log.warn("Exception during access of the newly created node "+nodeName,re);
+            log.warn("Exception during access of the newly created node "+getNodeName(),re);
             return null;
         }
 
@@ -132,19 +131,23 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter{
         Node node = null;
         try {
             Node parent = (Node)getJcrItem();
-            nodeName = StringUtils.isNotBlank(nodeName)?nodeName:getUniqueNewItemName(parent);
-            node = parent.addNode(nodeName, this.nodeType);
-            log.debug("create a new node for parent "+parent.getPath()+" with nodeId "+nodeName);
+            //Create a Node Name if not defined
+            if(StringUtils.isBlank(getNodeName())) {
+                setNodeName(getUniqueNewItemName(parent));
+            }
+
+            node = parent.addNode(getNodeName(), getPrimaryNodeTypeName());
+            log.debug("create a new node for parent "+parent.getPath()+" with nodeId "+getNodeName());
             //Create MetaData
             MetaDataUtil.getMetaData(node);
             //Update property
             updateProperty(node);
             //Update child nodes
             if(!childs.isEmpty()) {
-                for(JcrAbstractNodeAdapter child:childs.values()) {
+                for(JcrItemNodeAdapter child:childs.values()) {
                     if(child instanceof JcrNewNodeAdapter) {
                         //Set parent node (parent could be newly created)
-                        child.setCommonAttributes(node);
+                        ((JcrAbstractAdapter)child).setCommonAttributes(node);
                     }
                     child.getNode();
                 }
