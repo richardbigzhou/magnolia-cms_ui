@@ -35,8 +35,6 @@ package info.magnolia.ui.admincentral.thumbnail;
 
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
-import java.net.URL;
-
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 

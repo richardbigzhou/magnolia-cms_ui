@@ -41,9 +41,6 @@ import info.magnolia.ui.admincentral.thumbnail.Thumbnail;
 import info.magnolia.ui.admincentral.thumbnail.ThumbnailProvider;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import javax.jcr.LoginException;
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
