@@ -41,6 +41,7 @@ import info.magnolia.ui.admincentral.thumbnail.Thumbnail;
 import info.magnolia.ui.admincentral.thumbnail.ThumbnailProvider;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.jcr.LoginException;
@@ -129,8 +130,8 @@ public class ThumbnailViewImpl implements ThumbnailView {
 
             Iterable<Node> assets = NodeUtil.collectAllChildren(parent, filterByItemType);
             for(Node asset: assets) {
-                final URL url = thumbnailProvider.getThumbnail(asset, 30, 30);
-                final Thumbnail image = new Thumbnail(asset, url);
+                final String path = thumbnailProvider.getPath(asset, 30, 30);
+                final Thumbnail image = new Thumbnail(asset, path);
                 layout.addComponent(image);
             }
 
