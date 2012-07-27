@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.admincentral.thumbnail;
 
-import java.net.URL;
-
 import javax.jcr.Node;
 
 /**
