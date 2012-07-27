@@ -102,5 +102,10 @@ public class DialogLayout extends AbstractLayout {
     public Iterator<Component> getComponentIterator() {
         return components.iterator();
     }
+    
+    @Override
+    public void attach() {
+        super.attach();
+    }
 
 }

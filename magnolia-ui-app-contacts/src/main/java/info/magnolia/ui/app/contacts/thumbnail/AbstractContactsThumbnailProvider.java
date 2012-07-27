@@ -54,8 +54,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 /**
  * Abstract Thumbnail provider operating on contacts.
@@ -72,9 +70,9 @@ public abstract class AbstractContactsThumbnailProvider implements ThumbnailProv
     private float quality;
 
     @Override
-    public URL getThumbnail(Node contactNode, int width, int height) {
+    public String getPath(Node contactNode, int width, int height) {
 
-        URL url = null;
+        String path = null;
         try {
             if (!contactNode.hasNode(THUMBNAIL_NODE_NAME)) {
                 // no thumbnail around create and store it
@@ -104,25 +102,22 @@ public abstract class AbstractContactsThumbnailProvider implements ThumbnailProv
                     contactNode.getSession().save();
                 } catch (IOException e) {
                     log.warn("Error creating thumbnail image!", e);
-                    return url;
+                    return path;
                 }
             }
 
         } catch (RepositoryException e) {
             log.warn("Could read image from contactNode:", e);
-            return url;
+            return path;
         }
 
         try {
-            final String link = LinkUtil.createLink(ContentUtil.asContent(contactNode).getNodeData(THUMBNAIL_NODE_NAME));
-            url =  new URL(link);
-        } catch (MalformedURLException e) {
-            log.warn("Couldn't create URL", e);
+            path = LinkUtil.createLink(ContentUtil.asContent(contactNode).getNodeData(THUMBNAIL_NODE_NAME));
         } catch (LinkException e) {
             log.warn("Error creating Link", e);
         }
 
-        return url;
+        return path;
     }
 
     protected abstract BufferedImage createThumbnail(final Image contactImage, final String format, final int width, final int height, final float quality) throws IOException;

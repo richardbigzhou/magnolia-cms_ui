@@ -49,11 +49,11 @@ import com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent;
  */
 public class GwtTouchEventConverter implements Serializable {
     
-    public static Map<Class<? extends DomEvent<?>>, ? extends TouchEvent<?>> map = new HashMap<Class<? extends DomEvent<?>>, TouchEvent<?>>() {{
+    private static final Map<Class<? extends DomEvent<?>>, ? extends TouchEvent<?>> map = new HashMap<Class<? extends DomEvent<?>>, TouchEvent<?>>() {{
        put(com.google.gwt.event.dom.client.TouchEndEvent.class, new TouchEndEvent(){});
        put(com.google.gwt.event.dom.client.TouchStartEvent.class, new TouchStartEvent(){});
-       put(com.google.gwt.event.dom.client.TouchMoveEvent.class, new TouchMoveEvent(){});
        put(com.google.gwt.event.dom.client.TouchMoveEvent.class, new TouchCancelEvent(){});
+       put(com.google.gwt.event.dom.client.TouchMoveEvent.class, new TouchMoveEvent(){});
     }};
     
     @SuppressWarnings("unchecked")

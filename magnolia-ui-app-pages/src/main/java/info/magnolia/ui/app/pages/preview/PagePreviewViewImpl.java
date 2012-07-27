@@ -31,39 +31,58 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.assets;
+package info.magnolia.ui.app.pages.preview;
 
-import info.magnolia.ui.framework.shell.Shell;
-
-import javax.inject.Inject;
-
+import com.vaadin.terminal.ExternalResource;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.Label;
+import com.vaadin.ui.Embedded;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- * View implementation for the Assets app.
+ * Implementation of {@link PagePreviewView}.
  */
-@SuppressWarnings("serial")
-public class AssetsViewImpl implements AssetsView {
-
-    private VerticalLayout layout = new VerticalLayout();
-
-    private Listener listener;
-
-    @Inject
-    public AssetsViewImpl(final Shell shell) {
-        Label label = new Label("<center>Assets App</center>", Label.CONTENT_XHTML);
-        layout.addComponent(label);
+public class PagePreviewViewImpl implements PagePreviewView {
+    
+    private Panel wrapper = new Panel();
+    
+    private Embedded iframe;
+    
+    protected Listener listener;
+    
+    public PagePreviewViewImpl() {
+        this.iframe = new Embedded();
+        iframe.setType(Embedded.TYPE_BROWSER);
+        iframe.setSizeFull();
+        wrapper.setSizeFull();
+        wrapper.getContent().setSizeFull();
+        final Button closePreviewButton = new Button("Close Preview", new ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+                listener.closePreview();
+            }
+        });
+        closePreviewButton.setWidth("100%");
+        wrapper.addComponent(closePreviewButton);
+        wrapper.addComponent(iframe);
+        ((VerticalLayout)wrapper.getContent()).setExpandRatio(iframe, 1f);
+    }
+    
+    @Override
+    public void setListener(Listener listener) {
+        this.listener = listener;
     }
 
     @Override
     public Component asVaadinComponent() {
-        return layout;
+        return wrapper;
     }
 
     @Override
-    public void setListener(Listener listener) {
-        this.listener = listener;
+    public void setUrl(String url) {
+        iframe.setSource(new ExternalResource(url));
     }
 }

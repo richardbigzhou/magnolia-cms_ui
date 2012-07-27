@@ -36,8 +36,7 @@ package info.magnolia.ui.admincentral.field;
 import info.magnolia.cms.beans.runtime.FileProperties;
 import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.cms.util.PathUtil;
-import info.magnolia.ui.model.field.definition.FileUploadFieldDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -46,7 +45,6 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.TimeZone;
-
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.value.BinaryImpl;
@@ -72,7 +70,7 @@ import com.vaadin.ui.Upload.FinishedEvent;
 public class FileUpload extends UploadField{
 
     private static final Logger log = LoggerFactory.getLogger(FileUpload.class);
-    private JcrNodeAdapter item;
+    private JcrItemNodeAdapter item;
     private String lastFileName;
     private String lastFileExtension;
     private String lastMimeType;
@@ -80,17 +78,15 @@ public class FileUpload extends UploadField{
     private long lastImageWidth;
     private long lastImageHeight;
     private List<String> imageExtensions = new ArrayList<String>();
-    private FileUploadFieldDefinition definition;
+    private boolean preview = true;
     private Embedded embedded;
     private Label displayDetail = new Label("", Label.CONTENT_XHTML);
     private Button deleteButton;
 
 
-    public FileUpload ( JcrNodeAdapter item, FileUploadFieldDefinition definition) {
+    public FileUpload ( JcrItemNodeAdapter item) {
         super();
         this.item = item;
-        this.definition = definition;
-        setFileDeletesAllowed(definition.isFileDeletesAllowed());
         // Set Storage and FileType
         setStorageMode(UploadField.StorageMode.MEMORY);
         setFieldType(UploadField.FieldType.BYTE_ARRAY);
@@ -104,7 +100,6 @@ public class FileUpload extends UploadField{
     @Override
     public void attach() {
         super.attach();
-        //TODO SCRUM-1401: Reactivate after resolution of this issue (Applications null)
         //Init values with existing data.
         Property data =  item.getItemProperty(MgnlNodeType.JCR_DATA);
         if(data !=null && data.getValue()!=null) {
@@ -167,7 +162,7 @@ public class FileUpload extends UploadField{
      */
     private void populateItemProperty() {
         //Attach the Item to the parent in order to be stored.
-        item.getParent().addChild(item.getNodeIdentifier(), item);
+        item.getParent().addChild(item);
         //Populate Data
         Property data =  item.getItemProperty(MgnlNodeType.JCR_DATA);
 
@@ -178,7 +173,7 @@ public class FileUpload extends UploadField{
                 data.setValue(binaryImpl);
             }
             catch (IOException e) {
-                log.error("Not able to store the binery information ", e);
+                log.error("Not able to store the binary information ", e);
             }
         }
         item.getItemProperty(FileProperties.PROPERTY_FILENAME).setValue(lastFileName);
@@ -247,7 +242,7 @@ public class FileUpload extends UploadField{
             }, "", this.getApplication()){
             @Override
             public String getMIMEType() {
-                return getLastMimeType();
+                return lastMimeType;
             }
         };
 
@@ -263,7 +258,7 @@ public class FileUpload extends UploadField{
      *   the fieldDefinition.
      */
     private boolean showPreviewForExtension() {
-        return definition.isPreview() && this.getImageExtensions().contains(lastFileExtension.toLowerCase());
+        return this.preview && this.getImageExtensions().contains(lastFileExtension.toLowerCase());
     }
 
     /**
@@ -305,4 +300,7 @@ public class FileUpload extends UploadField{
         this.getImageExtensions().add("swf");
     }
 
+    public void setPreview(boolean preview) {
+        this.preview = preview;
+    }
 }

@@ -8,7 +8,7 @@
     line-height: 24px;
     vertical-align: bottom;
     background-color: #FFF;
-    min-height: 435px;
+    height: 435px;
     padding: 20px;
     overflow-y: auto;
 }

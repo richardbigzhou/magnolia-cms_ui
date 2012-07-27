@@ -107,9 +107,9 @@ public class Dialog extends AbstractComponent implements DialogView, ServerSideH
 
     @Override
     public void attach() {
-        this.tabsheet.attach();
-        this.tabsheet.setParent(this);
         super.attach();
+        this.tabsheet.setParent(this);
+        this.tabsheet.attach();
     }
 
     @Override

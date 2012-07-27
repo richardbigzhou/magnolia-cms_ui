@@ -43,7 +43,11 @@ import info.magnolia.ui.framework.message.Message;
 public interface AppContext {
 
     void openSubApp(SubApp subApp);
+    
+    void openSubAppFullScreen(SubApp subApp);
 
+    void exitFullScreenMode();
+    
     AppDescriptor getAppDescriptor();
 
     void setAppLocation(Location location);
