@@ -102,7 +102,7 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, 
                 section.addGroup(group);
             }
             VActionbarItem action = new VActionbarItem(actionParams, eventBus, icon);
-            group.add(action);
+            group.addAction(action);
         }
     }
 

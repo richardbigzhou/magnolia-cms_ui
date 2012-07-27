@@ -231,34 +231,42 @@ public class Actionbar extends AbstractComponent implements ActionbarView, Serve
 
     @Override
     public void enable(String actionName) {
+        proxy.call("setActionEnabled", true, actionName);
     }
 
     @Override
     public void enable(String actionName, String sectionName) {
+        proxy.call("setActionEnabled", true, actionName, sectionName);
     }
 
     @Override
     public void enableGroup(String groupName) {
+        proxy.call("setGroupEnabled", true, groupName);
     }
 
     @Override
     public void enableGroup(String groupName, String sectionName) {
+        proxy.call("setGroupEnabled", true, groupName, sectionName);
     }
 
     @Override
     public void disable(String actionName) {
+        proxy.call("setActionEnabled", false, actionName);
     }
 
     @Override
     public void disable(String actionName, String sectionName) {
+        proxy.call("setActionEnabled", false, actionName, sectionName);
     }
 
     @Override
     public void disableGroup(String groupName) {
+        proxy.call("setGroupEnabled", false, groupName);
     }
 
     @Override
     public void disableGroup(String groupName, String sectionName) {
+        proxy.call("setGroupEnabled", false, groupName, sectionName);
     }
 
     // SHOW / HIDE SECTIONS /////////////////////
@@ -270,6 +278,8 @@ public class Actionbar extends AbstractComponent implements ActionbarView, Serve
     @Override
     public void hideSection(String sectionName) {
     }
+
+    //
 
     // SUPPORTING CLASSES ///////////////////////
 

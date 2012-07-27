@@ -37,10 +37,12 @@ import info.magnolia.ui.widget.actionbar.gwt.client.event.ActionTriggerEvent;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
+import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.ui.Icon;
 
 
@@ -59,7 +61,11 @@ public class VActionbarItem extends Widget {
 
     private final VActionbarItemJSO data;
 
+    private boolean enabled;
+
     private final EventBus eventBus;
+
+    private HandlerRegistration handler;
 
     /**
      * Instantiates a new action in action bar.
@@ -71,6 +77,7 @@ public class VActionbarItem extends Widget {
     public VActionbarItem(VActionbarItemJSO data, EventBus eventBus, Icon icon) {
         super();
         this.data = data;
+        this.enabled = data.isEnabled();
         this.eventBus = eventBus;
         this.icon = icon;
 
@@ -88,7 +95,7 @@ public class VActionbarItem extends Widget {
     }
 
     private void bindHandlers() {
-        addDomHandler(new ClickHandler() {
+        handler = addDomHandler(new ClickHandler() {
 
             @Override
             public void onClick(ClickEvent event) {
@@ -101,6 +108,19 @@ public class VActionbarItem extends Widget {
 
     public String getName() {
         return data.getName();
+    }
+
+    public void setEnabled(boolean enabled) {
+        if (enabled != this.enabled) {
+            if (enabled) {
+                root.removeClassName(ApplicationConnection.DISABLED_CLASSNAME);
+                bindHandlers();
+            } else {
+                root.addClassName(ApplicationConnection.DISABLED_CLASSNAME);
+                handler.removeHandler();
+            }
+            this.enabled = enabled;
+        }
     }
 
     public void update() {

@@ -53,6 +53,10 @@
 	cursor:default;
 }
 
+.v-action.v-disabled:hover .v-text {
+	color:#fff;
+}
+
 .v-action .v-icon {
     position:absolute;
 	top:6px;

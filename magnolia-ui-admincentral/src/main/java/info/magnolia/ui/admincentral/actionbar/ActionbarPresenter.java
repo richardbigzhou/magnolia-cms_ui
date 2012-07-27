@@ -99,6 +99,14 @@ public class ActionbarPresenter implements ActionbarView.Listener {
         }
     }
 
+    public void enable(String actionName) {
+        actionbar.enable(actionName);
+    }
+
+    public void disable(String actionName) {
+        actionbar.disable(actionName);
+    }
+
     @Override
     public void onActionbarItemClicked(String actionToken) {
         ActionDefinition actionDefinition = getActionDefinition(actionToken);

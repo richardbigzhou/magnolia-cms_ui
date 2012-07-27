@@ -33,6 +33,9 @@
  */
 package info.magnolia.ui.widget.actionbar.gwt.client;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.ComplexPanel;
@@ -47,6 +50,8 @@ public class VActionbarGroup extends ComplexPanel {
     private static final String CLASSNAME = "v-actionbar-group";
 
     private final Element list = DOM.createElement("ul");
+
+    private final List<VActionbarItem> actions = new ArrayList<VActionbarItem>();
 
     private final String name;
 
@@ -66,6 +71,15 @@ public class VActionbarGroup extends ComplexPanel {
     @Override
     public void add(Widget w) {
         add(w, getElement());
+    }
+
+    public List<VActionbarItem> getActions() {
+        return actions;
+    }
+
+    public void addAction(VActionbarItem action) {
+        actions.add(action);
+        add(action);
     }
 
     public void update() {

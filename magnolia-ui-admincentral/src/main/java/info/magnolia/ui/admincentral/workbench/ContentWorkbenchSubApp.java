@@ -50,6 +50,7 @@ import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.widget.actionbar.ActionbarView;
 
 import javax.inject.Inject;
 import javax.jcr.LoginException;
@@ -162,11 +163,41 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
 
             private final String[] previewAlts = new String[]{"About page", "Demo Project"};
 
+            private final String[] pageActions = new String[]{
+                "addSubpage",
+                "deletePage",
+                "previewPage",
+                "editPage",
+                "editPageProperties",
+                "movePage",
+                "duplicatePage"};
+
+            private final String[] contactsActions = new String[]{
+                "newContact",
+                "editContact",
+                "delete"};
+
             private int previewIndex = 0;
 
             @Override
             public void onItemSelected(ItemSelectedEvent event) {
-                // TODO 20120713 mgeljic: refresh action bar (context sensitivity)
+                // refresh action bar (context sensitivity)
+                if (event.getPath() != null) {
+                    actionbarPresenter.enable("deletePage");
+                } else {
+                    actionbarPresenter.disable("deletePage");
+                }
+
+                // too lazy to add dead weight to ActionbarPresenter...
+                String[] actions = event.getWorkspace().equals("website") ? pageActions : contactsActions;
+                ActionbarView actionbar = actionbarPresenter.start();
+                if (previewIndex == 0) {
+                    actionbar.disableGroup(String.valueOf(previewIndex));
+                    actionbar.enable(actions[(int) (Math.random() * actions.length)]);
+                } else {
+                    actionbar.enableGroup(String.valueOf(previewIndex));
+                    actionbar.disable(actions[(int) (Math.random() * actions.length)]);
+                }
 
                 // refresh preview like this
                 // you can show images using vaadin Embedded widget, or use any other widget

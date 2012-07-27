@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.widget.actionbar.gwt.client;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import org.vaadin.rpc.client.ClientSideHandler;
@@ -99,6 +101,44 @@ public class VActionbar extends Composite implements Paintable, Container, Clien
                     Icon icon = new Icon(client, action.getIcon());
                     view.addAction(action, icon, groupName, sectionName);
                 }
+            });
+
+            // ENABLE / DISABLE
+
+            register("setActionEnabled", new Method() {
+
+                @Override
+                public void invoke(String methodName, Object[] params) {
+                    boolean enabled = Boolean.parseBoolean(String.valueOf(params[0]));
+                    String actionName = String.valueOf(params[1]);
+                    String sectionName = null;
+                    if (params.length > 2) {
+                        sectionName = String.valueOf(params[2]);
+                    }
+
+                    for (VActionbarItem action : findActions(actionName, null, sectionName)) {
+                        action.setEnabled(enabled);
+                    }
+                }
+
+            });
+
+            register("setGroupEnabled", new Method() {
+
+                @Override
+                public void invoke(String methodName, Object[] params) {
+                    boolean enabled = Boolean.parseBoolean(String.valueOf(params[0]));
+                    String groupName = String.valueOf(params[1]);
+                    String sectionName = null;
+                    if (params.length > 2) {
+                        sectionName = String.valueOf(params[2]);
+                    }
+
+                    for (VActionbarItem action : findActions(null, groupName, sectionName)) {
+                        action.setEnabled(enabled);
+                    }
+                }
+
             });
 
         }
@@ -168,6 +208,50 @@ public class VActionbar extends Composite implements Paintable, Container, Clien
     @Override
     public boolean hasChildComponent(Widget component) {
         return view.hasChildComponent(component);
+    }
+
+    private List<VActionbarItem> findActions(String actionName, String groupName, String sectionName) {
+        List<VActionbarItem> actions = new ArrayList<VActionbarItem>();
+        List<VActionbarGroup> groups = findGroups(groupName, sectionName);
+        for (VActionbarGroup group : groups) {
+            if (group != null) {
+
+                List<VActionbarItem> groupActions = group.getActions();
+                if (actionName != null) {
+                    for (VActionbarItem action : groupActions) {
+                        if (action.getName().equals(actionName)) {
+                            actions.add(action);
+                        }
+                    }
+                } else {
+                    actions.addAll(groupActions);
+                }
+            }
+        }
+        return actions;
+    }
+
+    private List<VActionbarGroup> findGroups(String groupName, String sectionName) {
+        List<VActionbarGroup> groups = new ArrayList<VActionbarGroup>();
+        List<VActionbarSection> sections = findSections(sectionName);
+        for (VActionbarSection section : sections) {
+            if (groupName != null) {
+                groups.add(section.getGroups().get(groupName));
+            } else {
+                groups.addAll(section.getGroups().values());
+            }
+        }
+        return groups;
+    }
+
+    private List<VActionbarSection> findSections(String sectionName) {
+        List<VActionbarSection> sections = new ArrayList<VActionbarSection>();
+        if (sectionName != null) {
+            sections.add(view.getSections().get(sectionName));
+        } else {
+            sections.addAll(view.getSections().values());
+        }
+        return sections;
     }
 
 }
