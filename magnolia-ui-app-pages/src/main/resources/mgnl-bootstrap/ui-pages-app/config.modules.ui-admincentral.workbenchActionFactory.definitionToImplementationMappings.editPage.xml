@@ -11,19 +11,16 @@
 		<sv:value>3ff0b509-eef5-407f-9f67-6de284b153d6</sv:value>
 	</sv:property>
 	<sv:property sv:name="definition" sv:type="String">
-		<sv:value>info.magnolia.ui.app.pages.action.EditPageActionDefinition
-		</sv:value>
+		<sv:value>info.magnolia.ui.app.pages.action.EditPageActionDefinition</sv:value>
 	</sv:property>
 	<sv:property sv:name="implementation" sv:type="String">
 		<sv:value>info.magnolia.ui.app.pages.action.EditPageAction</sv:value>
 	</sv:property>
 	<sv:property sv:name="definition" sv:type="String">
-		<sv:value>info.magnolia.ui.app.pages.action.PreviewPageActionDefifinition
-		</sv:value>
+		<sv:value>info.magnolia.ui.app.pages.action.PreviewPageActionDefinition</sv:value>
 	</sv:property>
 	<sv:property sv:name="implementation" sv:type="String">
-		<sv:value>info.magnolia.ui.app.pages.action.PreviewPageAction
-		</sv:value>
+		<sv:value>info.magnolia.ui.app.pages.action.PreviewPageAction</sv:value>
 	</sv:property>
 	<sv:property sv:name="jcr:createdBy" sv:type="String">
 		<sv:value>admin</sv:value>
