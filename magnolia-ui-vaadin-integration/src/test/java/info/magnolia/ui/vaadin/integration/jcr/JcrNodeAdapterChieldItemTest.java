@@ -82,13 +82,13 @@ public class JcrNodeAdapterChieldItemTest {
         // Create a child node
         Node child = baseNode.addNode("child");
         JcrNodeAdapter childItem = new JcrNodeAdapter(child);
-        item.addChild(childItem.getNodeIdentifier(), childItem);
+        item.addChild( childItem);
         //Create one new child Item
         JcrNewNodeAdapter newChild = new JcrNewNodeAdapter(baseNode, "mgnl:content");
-        item.addChild(newChild.getNodeIdentifier(), newChild);
+        item.addChild(newChild);
 
         // WHEN
-        Map<String, JcrAbstractNodeAdapter> res = item.getChilds();
+        Map<String, JcrItemNodeAdapter> res = item.getChilds();
 
         // THEN
         assertNotNull(res);
@@ -106,22 +106,22 @@ public class JcrNodeAdapterChieldItemTest {
         // Create a child node
         Node child = baseNode.addNode("child");
         JcrNodeAdapter childItem = new JcrNodeAdapter(child);
-        item.addChild(childItem.getNodeIdentifier(), childItem);
+        item.addChild(childItem);
         //Create one new child Item
         JcrNewNodeAdapter newChild = new JcrNewNodeAdapter(baseNode, "mgnl:content");
-        item.addChild(newChild.getNodeIdentifier(), newChild);
+        item.addChild(newChild);
 
         // WHEN
         boolean resBoolean = item.removeChild(childItem);
 
         // THEN
-        Map<String, JcrAbstractNodeAdapter> res = item.getChilds();
+        Map<String, JcrItemNodeAdapter> res = item.getChilds();
         assertEquals(true, resBoolean);
         assertEquals(1, res.size());
         assertEquals(null, res.get(childItem.getNodeIdentifier()));
         assertEquals(newChild, res.get(newChild.getNodeIdentifier()));
         assertEquals(item, newChild.getParent());
-        Map<String, JcrAbstractNodeAdapter> resRemobed = item.remouvedChilds;
+        Map<String, JcrItemNodeAdapter> resRemobed = item.removedChilds;
         assertEquals(1, resRemobed.size());
         assertEquals(childItem, resRemobed.get(childItem.getNodeIdentifier()));
     }
@@ -135,7 +135,7 @@ public class JcrNodeAdapterChieldItemTest {
         item.addItemProperty("propertyName", property);
         //Create one new child Item
         JcrNewNodeAdapter newChild = new JcrNewNodeAdapter(baseNode, "mgnl:content", "childNode");
-        item.addChild(newChild.getNodeIdentifier(), newChild);
+        item.addChild(newChild);
         //Add property to the child Item
         DefaultProperty childProperty = new DefaultProperty("childPropertyName", "childPropertyValue");
         newChild.addItemProperty("childPropertyName", childProperty);
@@ -163,7 +163,7 @@ public class JcrNodeAdapterChieldItemTest {
         // Create a child node
         Node child = baseNode.addNode("childNode");
         JcrNodeAdapter childItem = new JcrNodeAdapter(child);
-        item.addChild(childItem.getNodeIdentifier(), childItem);
+        item.addChild(childItem);
         //Add property to the child Item
         DefaultProperty childProperty = new DefaultProperty("childPropertyName", "childPropertyValue");
         childItem.addItemProperty("childPropertyName", childProperty);
@@ -191,13 +191,13 @@ public class JcrNodeAdapterChieldItemTest {
         // Create a child node
         Node child = baseNode.addNode("childNode");
         JcrNodeAdapter childItem = new JcrNodeAdapter(child);
-        item.addChild(childItem.getNodeIdentifier(), childItem);
+        item.addChild(childItem);
         //Add property to the child Item
         DefaultProperty childProperty = new DefaultProperty("childPropertyName", "childPropertyValue");
         childItem.addItemProperty("childPropertyName", childProperty);
         //Create one new child Item
         JcrNewNodeAdapter newChild = new JcrNewNodeAdapter(baseNode, "mgnl:content", "newChild");
-        item.addChild(newChild.getNodeIdentifier(), newChild);
+        item.addChild(newChild);
         //Add property to the child Item
         DefaultProperty childPropertyNew = new DefaultProperty("childNewPropertyName", "childNewPropertyValue");
         newChild.addItemProperty("childNewPropertyName", childPropertyNew);
@@ -227,7 +227,7 @@ public class JcrNodeAdapterChieldItemTest {
         item.addItemProperty("propertyName", property);
         //Create one new child Item
         JcrNewNodeAdapter newChild = new JcrNewNodeAdapter(baseNode, "mgnl:content", "childNode");
-        item.addChild(newChild.getNodeIdentifier(), newChild);
+        item.addChild( newChild);
         //Add property to the child Item
         DefaultProperty childProperty = new DefaultProperty("childPropertyName", "childPropertyValue");
         newChild.addItemProperty("childPropertyName", childProperty);
@@ -256,7 +256,7 @@ public class JcrNodeAdapterChieldItemTest {
         // Create a child node
         Node child = baseNode.addNode("childNode");
         JcrNodeAdapter childItem = new JcrNodeAdapter(child);
-        item.addChild(childItem.getNodeIdentifier(), childItem);
+        item.addChild( childItem);
         assertEquals(true, baseNode.hasNode("childNode"));
         //Add property to the child Item
         DefaultProperty childProperty = new DefaultProperty("childPropertyName", "childPropertyValue");
@@ -292,9 +292,9 @@ public class JcrNodeAdapterChieldItemTest {
         childItem.addItemProperty("childPropertyName", childProperty);
 
         // WHEN
-        item.addChild(childItem.getNodeIdentifier(), childItem);
+        item.addChild(childItem);
         item.removeChild(childItem);
-        item.addChild(childItem.getNodeIdentifier(), childItem);
+        item.addChild( childItem);
 
         // THEN
         // Get node
@@ -307,7 +307,7 @@ public class JcrNodeAdapterChieldItemTest {
         assertEquals(true, res.getNode("childNode").hasProperty("childPropertyName"));
         assertEquals("childPropertyValue", res.getNode("childNode").getProperty("childPropertyName").getValue().getString());
         assertEquals(1, item.childs.size());
-        assertEquals(0, item.remouvedChilds.size());
+        assertEquals(0, item.removedChilds.size());
     }
 }
 

@@ -40,6 +40,7 @@ import info.magnolia.ui.admincentral.field.FileUpload;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.model.field.definition.FileUploadFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -66,7 +67,9 @@ public class FileUploadFieldBuilder extends AbstractFieldBuilder<FileUploadField
 
     @Override
     protected Field buildField() {
-        FileUpload uploadField = new FileUpload((JcrNodeAdapter)getOrCreateItem(),definition);
+        FileUpload uploadField = new FileUpload((JcrItemNodeAdapter)getOrCreateItem());
+        uploadField.setFileDeletesAllowed(definition.isFileDeletesAllowed());
+        uploadField.setPreview(definition.isPreview());
         return uploadField;
     }
 
@@ -78,14 +81,14 @@ public class FileUploadFieldBuilder extends AbstractFieldBuilder<FileUploadField
     public Item getOrCreateItem() {
         //Get the related Node
         Node node = getRelatedNode(item);
-        JcrNodeAdapter child = null;
+        JcrItemNodeAdapter child = null;
         try {
             if(node.hasNode(definition.getImageNodeName()) && !(item instanceof JcrNewNodeAdapter)) {
                 child = new JcrNodeAdapter(node.getNode(definition.getImageNodeName()));
-                child.setParent((JcrNodeAdapter)item);
+                child.setParent((JcrItemNodeAdapter)item);
             } else {
                 child = new JcrNewNodeAdapter(node, MgnlNodeType.NT_RESOURCE, definition.getImageNodeName());
-                child.setParent((JcrNodeAdapter)item);
+                child.setParent((JcrItemNodeAdapter)item);
                 initImageProperty(child);
             }
         }
@@ -107,7 +110,7 @@ public class FileUploadFieldBuilder extends AbstractFieldBuilder<FileUploadField
     /**
      * Init the Item property used to store the Uploaded image.
      */
-    private void initImageProperty(JcrNodeAdapter child) {
+    private void initImageProperty(JcrItemNodeAdapter child) {
 
         child.addItemProperty(MgnlNodeType.JCR_DATA, DefaultPropertyUtil.newDefaultProperty(MgnlNodeType.JCR_DATA, "Binary", null));
         child.addItemProperty(FileProperties.PROPERTY_FILENAME, DefaultPropertyUtil.newDefaultProperty(FileProperties.PROPERTY_FILENAME, "String", null));
