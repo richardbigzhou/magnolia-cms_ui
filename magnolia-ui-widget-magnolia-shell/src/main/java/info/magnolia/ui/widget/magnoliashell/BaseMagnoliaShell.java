@@ -239,8 +239,8 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
         pusher.attach();
         pusher.setParent(this);
         for (final ShellViewport viewport : viewports.values()) {
-            viewport.attach();
             viewport.setParent(this);
+            viewport.attach();
         }
     }
 
