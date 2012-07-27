@@ -34,20 +34,22 @@
 package info.magnolia.ui.app.contacts.thumbnail;
 
 
-import info.magnolia.cms.beans.config.ServerConfiguration;
 import info.magnolia.cms.i18n.DefaultI18nContentSupport;
 import info.magnolia.cms.i18n.I18nContentSupport;
+import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.PropertiesImportExport;
 import info.magnolia.link.LinkTransformerManager;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockComponentProvider;
+import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.test.mock.jcr.MockSession;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import javax.jcr.Node;
 import java.io.ByteArrayInputStream;
-import java.net.URL;
 
 import static org.junit.Assert.assertEquals;
 
@@ -55,16 +57,26 @@ import static org.junit.Assert.assertEquals;
  * Tests.
  */
 public class AbstractContactsThumbnailProviderTest {
+
+    @Before
+    public void setUp() throws Exception {
+        MockWebContext webCtx = new MockWebContext();
+        webCtx.setContextPath("/foo");
+        MgnlContext.setInstance(webCtx);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        ComponentsTestUtil.clear();
+        MgnlContext.setInstance(null);
+    }
+
     @Test
     public void testGetThumbnailWhenNotYetExisting() throws Exception {
         // GIVEN
         Components.setComponentProvider(new MockComponentProvider());
         ComponentsTestUtil.setImplementation(LinkTransformerManager.class, LinkTransformerManager.class);
         ComponentsTestUtil.setImplementation(I18nContentSupport.class, DefaultI18nContentSupport.class);
-        final ServerConfiguration serverConfiguration = new ServerConfiguration();
-        serverConfiguration.setDefaultBaseUrl("http://justATest:1234/cool");
-
-        ComponentsTestUtil.setInstance(ServerConfiguration.class, serverConfiguration);
 
         final PropertiesImportExport pie = new PropertiesImportExport();
         final MockSession session  = new MockSession("test");
@@ -85,9 +97,9 @@ public class AbstractContactsThumbnailProviderTest {
 
         // WHEN
         final Node contactNode = root.getNode("contact1");
-        final URL result = provider.getThumbnail(contactNode, 30, 30);
+        final String result = provider.getPath(contactNode, 30, 30);
 
         // THEN
-        assertEquals("/cool/contact1/thumbnail/MaxMustermann.jpg", result.getPath());
+        assertEquals("/contact1/thumbnail/MaxMustermann.jpg", result.toString());
     }
 }
