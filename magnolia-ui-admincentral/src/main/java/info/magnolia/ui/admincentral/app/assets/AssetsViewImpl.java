@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.admincentral.app.assets;
 
+import info.magnolia.ui.framework.shell.Shell;
+
 import javax.inject.Inject;
 
 import com.vaadin.ui.Component;
@@ -50,7 +52,7 @@ public class AssetsViewImpl implements AssetsView {
     private Listener listener;
 
     @Inject
-    public AssetsViewImpl() {
+    public AssetsViewImpl(final Shell shell) {
         Label label = new Label("<center>Assets App</center>", Label.CONTENT_XHTML);
         layout.addComponent(label);
     }

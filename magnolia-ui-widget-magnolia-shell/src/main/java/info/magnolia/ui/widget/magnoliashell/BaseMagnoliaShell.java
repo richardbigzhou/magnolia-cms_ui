@@ -81,7 +81,212 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
     
     private ShellViewport activeViewport = null;
 
+    private Component fullScreenComponent = null;
+    
     private ICEPush pusher = new ICEPush();
+    
+    public BaseMagnoliaShell() {
+        setImmediate(true);
+    }
+
+    
+    public void exitFullScreenMode() {
+        closeCurrentFullScreen();
+    }
+    
+    public void showFullscreen(final Component c) {
+        closeCurrentFullScreen();
+        doShowFullscreen(c);
+    }
+   
+    private void doShowFullscreen(Component c) {
+        if (c != null) {
+            this.fullScreenComponent = c;
+            fullScreenComponent.setParent(this);
+            fullScreenComponent.attach();
+            requestRepaint();
+        } else {
+            throw new RuntimeException("Fullscreen component shouldn't be null!");
+        }
+    }
+
+    public void navigateToApp(String prefix, String token) {
+        doNavigateWithinViewport(getAppViewport(), DefaultLocation.LOCATION_TYPE_APP, prefix, token);
+    }
+
+    public void navigateToShellApp(final String prefix, String token) {
+        doNavigateWithinViewport(getShellAppViewport(), DefaultLocation.LOCATION_TYPE_SHELL_APP, prefix , token);
+    }
+
+    public void doNavigateWithinViewport(final ShellViewport viewport, String type,  String prefix, String token) {
+        viewport.setCurrentShellFragment(prefix + ":" + token);
+        setActiveViewport(viewport);
+        notifyOnFragmentChanged(type + ":" + prefix + ":" + token);
+        requestRepaint();
+    }
+
+    public void showInfo(Message message) {
+        synchronized (getApplication()) {
+            proxy.call("showMessage", MessageType.INFO.name(), message.getSubject(), message.getMessage(), message.getId());
+            pusher.push();
+        }
+    }
+    
+    public void showError(Message message) {
+        synchronized (getApplication()) {
+            proxy.call("showMessage", MessageType.ERROR.name(), message.getSubject(), message.getMessage(), message.getId());
+            pusher.push();
+        }
+    }
+
+    public void showWarning(Message message) {
+        synchronized (getApplication()) {
+            proxy.call("showMessage", MessageType.WARNING.name(), message.getSubject(), message.getMessage(), message.getId());
+            pusher.push();
+        }
+    }
+
+    public void updateShellAppIndication(ShellAppType type, int increment) {
+        synchronized (getApplication()) {
+            proxy.call("updateIndication", type.name(), increment);
+            pusher.push();
+        }
+    }
+    
+    public void removeDialog(Component dialog) {
+        viewports.get(ViewportType.DIALOG_VIEWPORT).removeComponent(dialog);
+        requestRepaint();
+    }
+
+    public void addDialog(Component dialog) {
+        viewports.get(ViewportType.DIALOG_VIEWPORT).addComponent(dialog);
+        requestRepaint();
+    }
+
+    public void closeCurrentShellApp() {
+        if (!getAppViewport().isEmpty()) {
+            setActiveViewport(getAppViewport());
+        } else {
+            navigateToShellApp(ShellAppType.APPLAUNCHER.name(), "");
+        }
+    }
+
+    public void removeMessage(String messageId) {}
+    
+    public void closeCurrentApp() {
+        getAppViewport().pop();
+    }
+
+    public void setActiveViewport(ShellViewport activeViewport) {
+        if (this.activeViewport != activeViewport) {
+            this.activeViewport = activeViewport;
+            for (final ViewportType type : ViewportType.values()) {
+                if (this.activeViewport == viewports.get(type)) {
+                    proxy.call("activeViewportChanged", type.name());
+                    break;
+                }
+            }
+        }
+    }
+    
+    public ShellViewport getAppViewport() {
+        return viewports.get(ViewportType.APP_VIEWPORT);
+    }
+
+    public ShellViewport getShellAppViewport() {
+        return viewports.get(ViewportType.SHELL_APP_VIEWPORT);
+    }
+
+    public ShellViewport getDialogViewport() {
+        return viewports.get(ViewportType.DIALOG_VIEWPORT);
+    }
+
+    public ShellViewport getActiveViewport() {
+        return activeViewport;
+    }
+    
+    @Override
+    public void paintContent(PaintTarget target) throws PaintException {
+        super.paintContent(target);
+        target.startTag("pusher");
+        pusher.paint(target);
+        target.endTag("pusher");
+        final Iterator<Entry<ViewportType, ShellViewport>> it = viewports.entrySet().iterator();
+        while (it.hasNext()) {
+            final Entry<ViewportType, ShellViewport> entry = it.next();
+            final String tagName = entry.getKey().name();
+            target.startTag(tagName);
+            entry.getValue().paint(target);
+            target.endTag(tagName);
+        }
+        if (fullScreenComponent != null) {
+            target.startTag("fullscreenComponent");
+            fullScreenComponent.paint(target);
+            target.endTag("fullscreenComponent");
+        }
+        proxy.paintContent(target);
+    }
+
+    @Override
+    public void changeVariables(Object source, Map<String, Object> variables) {
+        super.changeVariables(source, variables);
+        proxy.changeVariables(source, variables);
+    }
+
+    @Override
+    public void attach() {
+        super.attach();
+        pusher.attach();
+        pusher.setParent(this);
+        for (final ShellViewport viewport : viewports.values()) {
+            viewport.attach();
+            viewport.setParent(this);
+        }
+    }
+
+    @Override
+    public void detach() {
+        super.detach();
+        pusher.detach();
+        for (final ShellViewport viewport : viewports.values()) {
+            viewport.detach();
+        }
+    }
+
+    private void closeCurrentFullScreen() {
+        if (fullScreenComponent != null) {
+            fullScreenComponent.setParent(null);
+            fullScreenComponent.detach();
+            fullScreenComponent = null;
+            requestRepaint();
+        }
+    }
+    
+    private void notifyOnFragmentChanged(final String fragment) {
+        handlers.dispatch(new FragmentChangedEvent(fragment));
+    }
+    
+    @Override
+    public Object[] initRequestFromClient() {
+        return new Object[] {};
+    }
+
+    @Override
+    public void callFromClient(String method, Object[] params) {
+        System.out.println("Client called " + method);
+    }
+
+    public void addFragmentChangedHanlder(final FragmentChangedHandler handler) {
+        handlers.add(handler);
+    }
+
+    public void removeFragmentChangedHanlder(final FragmentChangedHandler handler) {
+        handlers.remove(handler);
+    }
+    
+    protected ICEPush getPusher() {
+        return pusher; 
+    }
     
     protected ServerSideProxy proxy = new ServerSideProxy(this) {{
         register("activateShellApp", new Method() {
@@ -119,173 +324,4 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
             }
         });
     }};
-
-    public BaseMagnoliaShell() {
-        super();
-        setImmediate(true);
-    }
-
-    @Override
-    public void paintContent(PaintTarget target) throws PaintException {
-        super.paintContent(target);
-        target.startTag("pusher");
-        pusher.paint(target);
-        target.endTag("pusher");
-        final Iterator<Entry<ViewportType, ShellViewport>> it = viewports.entrySet().iterator();
-        while (it.hasNext()) {
-            final Entry<ViewportType, ShellViewport> entry = it.next();
-            final String tagName = entry.getKey().name();
-            target.startTag(tagName);
-            entry.getValue().paint(target);
-            target.endTag(tagName);
-        }
-        proxy.paintContent(target);
-    }
-
-    @Override
-    public void changeVariables(Object source, Map<String, Object> variables) {
-        super.changeVariables(source, variables);
-        proxy.changeVariables(source, variables);
-    }
-
-    @Override
-    public void attach() {
-        super.attach();
-        pusher.attach();
-        pusher.setParent(this);
-        for (final ShellViewport viewport : viewports.values()) {
-            viewport.attach();
-            viewport.setParent(this);
-        }
-    }
-
-    @Override
-    public void detach() {
-        super.detach();
-        pusher.detach();
-        for (final ShellViewport viewport : viewports.values()) {
-            viewport.detach();
-        }
-    }
-
-    public ShellViewport getAppViewport() {
-        return viewports.get(ViewportType.APP_VIEWPORT);
-    }
-
-    public ShellViewport getShellAppViewport() {
-        return viewports.get(ViewportType.SHELL_APP_VIEWPORT);
-    }
-
-    public ShellViewport getDialogViewport() {
-        return viewports.get(ViewportType.DIALOG_VIEWPORT);
-    }
-
-    public ShellViewport getActiveViewport() {
-        return activeViewport;
-    }
-
-    @Override
-    public Object[] initRequestFromClient() {
-        return new Object[] {};
-    }
-
-    @Override
-    public void callFromClient(String method, Object[] params) {
-        System.out.println("Client called " + method);
-    }
-
-    public void addFragmentChangedHanlder(final FragmentChangedHandler handler) {
-        handlers.add(handler);
-    }
-
-    public void removeFragmentChangedHanlder(final FragmentChangedHandler handler) {
-        handlers.remove(handler);
-    }
-
-    public void setActiveViewport(ShellViewport activeViewport) {
-        if (this.activeViewport != activeViewport) {
-            this.activeViewport = activeViewport;
-            for (final ViewportType type : ViewportType.values()) {
-                if (this.activeViewport == viewports.get(type)) {
-                    proxy.call("activeViewportChanged", type.name());
-                    break;
-                }
-            }
-        }
-    }
-
-    protected void navigateToApp(String prefix, String token) {
-        doNavigateWithinViewport(getAppViewport(), DefaultLocation.LOCATION_TYPE_APP, prefix, token);
-    }
-
-    protected void navigateToShellApp(final String prefix, String token) {
-        doNavigateWithinViewport(getShellAppViewport(), DefaultLocation.LOCATION_TYPE_SHELL_APP, prefix , token);
-    }
-
-    protected void doNavigateWithinViewport(final ShellViewport viewport, String type,  String prefix, String token) {
-        viewport.setCurrentShellFragment(prefix + ":" + token);
-        setActiveViewport(viewport);
-        notifyOnFragmentChanged(type + ":" + prefix + ":" + token);
-        requestRepaint();
-    }
-
-    private void notifyOnFragmentChanged(final String fragment) {
-        handlers.dispatch(new FragmentChangedEvent(fragment));
-    }
-
-    public void showInfo(Message message) {
-        synchronized (getApplication()) {
-            proxy.call("showMessage", MessageType.INFO.name(), message.getSubject(), message.getMessage(), message.getId());
-            pusher.push();
-        }
-    }
-    
-    public void showError(Message message) {
-        synchronized (getApplication()) {
-            proxy.call("showMessage", MessageType.ERROR.name(), message.getSubject(), message.getMessage(), message.getId());
-            pusher.push();
-        }
-    }
-
-    public void showWarning(Message message) {
-        synchronized (getApplication()) {
-            proxy.call("showMessage", MessageType.WARNING.name(), message.getSubject(), message.getMessage(), message.getId());
-            pusher.push();
-        }
-    }
-
-    public void updateShellAppIndication(ShellAppType type, int increment) {
-        synchronized (getApplication()) {
-            proxy.call("updateIndication", type.name(), increment);
-            pusher.push();
-        }
-    }
-    
-    public void removeDialog(Component dialog) {
-        viewports.get(ViewportType.DIALOG_VIEWPORT).removeComponent(dialog);
-        requestRepaint();
-    }
-
-    protected void addDialog(Component dialog) {
-        viewports.get(ViewportType.DIALOG_VIEWPORT).addComponent(dialog);
-        requestRepaint();
-    }
-
-    protected void closeCurrentShellApp() {
-        if (!getAppViewport().isEmpty()) {
-            setActiveViewport(getAppViewport());
-        } else {
-            navigateToShellApp(ShellAppType.APPLAUNCHER.name(), "");
-        }
-    }
-
-    protected void removeMessage(String messageId) {}
-    
-    protected void closeCurrentApp() {
-        getAppViewport().pop();
-    }
-    
-    protected ICEPush getPusher() {
-        return pusher; 
-    }
 }

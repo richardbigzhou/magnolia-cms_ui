@@ -53,13 +53,13 @@ public class Thumbnail extends Embedded {
     public static final Resource IMAGE_NOT_FOUND = new ThemeResource("img/icons/icon-error-red.png");
     private JcrNodeAdapter node;
 
-    public Thumbnail(final Node node, final URL url) {
+    public Thumbnail(final Node node, final String path) {
         this.node = new JcrNodeAdapter(node);
         setType(TYPE_IMAGE);
         setSizeUndefined();
         addStyleName("asset");
-        if(url != null) {
-            setSource(new ExternalResource(url));
+        if(path != null) {
+            setSource(new ExternalResource(path));
         } else {
             setSource(IMAGE_NOT_FOUND);
         }

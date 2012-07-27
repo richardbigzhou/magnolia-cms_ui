@@ -24,6 +24,14 @@
             <implementation>info.magnolia.ui.app.pages.editor.PagesEditorSubApp</implementation>
         </component>
         <component>
+            <type>info.magnolia.ui.app.pages.preview.PagePreviewSubApp</type>
+            <implementation>info.magnolia.ui.app.pages.preview.PagePreviewSubApp</implementation>
+        </component>
+        <component>
+            <type>info.magnolia.ui.app.pages.preview.PagePreviewView</type>
+            <implementation>info.magnolia.ui.app.pages.preview.PagePreviewViewImpl</implementation>
+        </component>        
+        <component>
             <type>info.magnolia.ui.app.pages.editor.PagesEditorView</type>
             <implementation>info.magnolia.ui.app.pages.editor.PagesEditorViewImpl</implementation>
         </component>

@@ -52,6 +52,7 @@ import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
@@ -86,13 +87,13 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
 
     }
 
-    protected String paintableId;
-
     protected ApplicationConnection client;
 
     private List<String> registeredAppNames = new LinkedList<String>();
     
     private List<String> runningAppNames = new LinkedList<String>();
+    
+    private Paintable fullscreenPaintable = null;
     
     private ClientSideProxy proxy = new ClientSideProxy(this) {
         {
@@ -177,7 +178,6 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
     @Override
     public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
         this.client = client;
-        this.paintableId = uidl.getId();
         for (final ViewportType viewportType : ViewportType.values()) {
             final UIDL tagUidl = uidl.getChildByTagName(viewportType.name());
             if (tagUidl != null) {
@@ -191,6 +191,7 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
             }
         }
         updatePusher(uidl);
+        updateFullScreenComponent(uidl);
         proxy.update(this, uidl, client);
     }
 
@@ -217,6 +218,24 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
     @Override
     public void removeMessage(String id) {
         proxy.call("removeMessage", id);
+    }
+    
+    private void updateFullScreenComponent(UIDL uidl) {
+        final UIDL componentUidl = uidl.getChildByTagName("fullscreenComponent");
+        if (componentUidl != null) {
+            final Paintable paintable = client.getPaintable(componentUidl.getChildUIDL(0));
+            if (paintable != null) {
+                if (!hasChildComponent((Widget)paintable)) {
+                    this.fullscreenPaintable = paintable;
+                    view.setFullscreen((Widget)fullscreenPaintable);
+                    client.runDescendentsLayout(this);
+                }
+                fullscreenPaintable.updateFromUIDL(componentUidl.getChildUIDL(0), client);
+            }
+        } else {
+            fullscreenPaintable = null;
+            view.setFullscreen(null);
+        }
     }
     
     private void updatePusher(final UIDL uidl) {
@@ -265,7 +284,7 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
         while (it.hasNext() && !result) {
             result = component == it.next();
         }
-        return result;
+        return result || component == fullscreenPaintable;
     }
 
     @Override
@@ -278,8 +297,12 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
 
     @Override
     public RenderSpace getAllocatedSpace(Widget child) {
-        if (hasChildComponent(child)) {
-            return new RenderSpace(view.getViewportWidth(), view.getViewportHeight());
+        if (fullscreenPaintable == child) {
+            return new RenderSpace(RootPanel.get().getOffsetWidth(), RootPanel.get().getOffsetHeight());
+        } else {
+            if (hasChildComponent(child)) {
+                return new RenderSpace(view.getViewportWidth(), view.getViewportHeight());
+            }   
         }
         return new RenderSpace();
     }

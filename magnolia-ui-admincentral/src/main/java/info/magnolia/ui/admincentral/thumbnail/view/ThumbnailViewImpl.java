@@ -41,8 +41,6 @@ import info.magnolia.ui.admincentral.thumbnail.Thumbnail;
 import info.magnolia.ui.admincentral.thumbnail.ThumbnailProvider;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 
-import java.net.URL;
-
 import javax.jcr.LoginException;
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
@@ -130,8 +128,9 @@ public class ThumbnailViewImpl implements ThumbnailView {
             Iterable<Node> assets = NodeUtil.collectAllChildren(parent, filterByItemType);
             for(Node asset: assets) {
                 //FIXME this op can become very long with "lots" of items (tested with 2500 fake thumbnails)
-                final URL url = thumbnailProvider.getThumbnail(asset, 30, 30);
-                final Thumbnail image = new Thumbnail(asset, url);
+                final String path = thumbnailProvider.getPath(asset, 30, 30);
+                final Thumbnail image = new Thumbnail(asset, path);
+
                 layout.addComponent(image);
             }
 

@@ -178,7 +178,7 @@ public class FileUpload extends UploadField{
                 data.setValue(binaryImpl);
             }
             catch (IOException e) {
-                log.error("Not able to store the binery information ", e);
+                log.error("Not able to store the binary information ", e);
             }
         }
         item.getItemProperty(FileProperties.PROPERTY_FILENAME).setValue(lastFileName);
