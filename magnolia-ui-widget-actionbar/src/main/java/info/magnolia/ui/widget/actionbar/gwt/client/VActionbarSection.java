@@ -39,6 +39,7 @@ import java.util.Map;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 
 /**
@@ -58,6 +59,8 @@ public class VActionbarSection extends FlowPanel {
 
     private final Map<String, VActionbarGroup> groups = new HashMap<String, VActionbarGroup>();
 
+    private Widget preview;
+
     /**
      * Instantiates a new action bar section with given data.
      * 
@@ -75,6 +78,10 @@ public class VActionbarSection extends FlowPanel {
         update();
     }
 
+    public String getName() {
+        return data.getName();
+    }
+
     public Map<String, VActionbarGroup> getGroups() {
         return groups;
     }
@@ -82,6 +89,14 @@ public class VActionbarSection extends FlowPanel {
     public void addGroup(VActionbarGroup group) {
         groups.put(group.getName(), group);
         add(group);
+    }
+
+    public void setPreview(Widget preview) {
+        if (this.preview != null) {
+            remove(this.preview);
+        }
+        add(preview);
+        this.preview = preview;
     }
 
     public void update() {

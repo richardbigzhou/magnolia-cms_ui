@@ -71,7 +71,7 @@ public interface ContentWorkbenchView extends ComponentContainer, View {
     /**
      * Use this method to add an action bar to this sub app view.
      */
-    void addActionbarView(final ActionbarView actionbar);
+    void setActionbarView(final ActionbarView actionbar);
 
     /**
      * TODO dlipp - ActionBarPresenter should be a proper type as well.

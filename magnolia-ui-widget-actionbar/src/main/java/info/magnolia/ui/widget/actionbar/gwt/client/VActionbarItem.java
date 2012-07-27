@@ -93,10 +93,14 @@ public class VActionbarItem extends Widget {
             @Override
             public void onClick(ClickEvent event) {
                 if (data.isEnabled()) {
-                    eventBus.fireEvent(new ActionTriggerEvent(data.getName()));
+                    eventBus.fireEvent(new ActionTriggerEvent(data.getName(), VActionbarItem.this));
                 }
             }
         }, ClickEvent.getType());
+    }
+
+    public String getName() {
+        return data.getName();
     }
 
     public void update() {

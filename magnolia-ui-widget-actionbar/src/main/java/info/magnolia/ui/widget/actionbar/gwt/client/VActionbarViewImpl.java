@@ -35,12 +35,13 @@ package info.magnolia.ui.widget.actionbar.gwt.client;
 
 import info.magnolia.ui.widget.actionbar.gwt.client.event.ActionTriggerEvent;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.ComplexPanel;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.vaadin.terminal.gwt.client.ui.Icon;
 
@@ -58,7 +59,7 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, 
 
     private Presenter presenter;
 
-    private final Map<String, VActionbarSection> sections = new HashMap<String, VActionbarSection>();
+    private final Map<String, VActionbarSection> sections = new LinkedHashMap<String, VActionbarSection>();
 
     public VActionbarViewImpl(final EventBus eventBus) {
         setElement(root);
@@ -66,6 +67,11 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, 
 
         this.eventBus = eventBus;
         this.eventBus.addHandler(ActionTriggerEvent.TYPE, this);
+    }
+
+    @Override
+    public Map<String, VActionbarSection> getSections() {
+        return sections;
     }
 
     @Override
@@ -78,6 +84,12 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, 
         VActionbarSection section = new VActionbarSection(sectionParams);
         sections.put(sectionParams.getName(), section);
         add(section, root);
+    }
+
+    @Override
+    public void removeSection(String sectionName) {
+        VActionbarSection section = sections.remove(sectionName);
+        section.removeFromParent();
     }
 
     @Override
@@ -96,7 +108,28 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, 
 
     @Override
     public void onActionTriggered(ActionTriggerEvent event) {
-        presenter.triggerAction(event.getActionName());
+        VActionbarItem action = event.getSource();
+        VActionbarSection section = getParentSection(action);
+        presenter.triggerAction(section.getName() + ":" + action.getName());
+    }
+
+    private VActionbarSection getParentSection(VActionbarItem item) {
+        // parent is group, grandparent is section
+        return (VActionbarSection) item.getParent().getParent();
+    }
+
+    @Override
+    public boolean hasChildComponent(Widget component) {
+        if (sections.containsValue(component)) {
+            return true;
+        } else {
+            for (VActionbarSection section : sections.values()) {
+                if (section.getWidgetIndex(component) != -1) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }

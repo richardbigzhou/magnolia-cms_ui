@@ -50,7 +50,7 @@ public interface PagesEditorView extends View {
     /**
      * Use this method to add an action bar to this sub app view.
      */
-    void addActionbarView(final ActionbarView actionbar);
+    void setActionbarView(final ActionbarView actionbar);
 
     /**
      * Listener.

@@ -33,12 +33,20 @@
  */
 package info.magnolia.ui.vaadin.integration.jcr;
 
+import info.magnolia.cms.core.MetaData;
 import info.magnolia.jcr.RuntimeRepositoryException;
+import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import javax.jcr.LoginException;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,7 +63,12 @@ public abstract class JcrAbstractNodeAdapter extends JcrAbstractAdapter implemen
     // Init
     private static final Logger log = LoggerFactory.getLogger(JcrAbstractNodeAdapter.class);
     private String primaryNodeTypeName;
-
+    protected Map<String, Property> changedProperties = new HashMap<String,Property>();
+    protected Map<String, Property> removedProperties = new HashMap<String,Property>();
+    protected Map<String, JcrAbstractNodeAdapter> childs = new HashMap<String, JcrAbstractNodeAdapter>();
+    protected Map<String, JcrAbstractNodeAdapter> remouvedChilds = new HashMap<String, JcrAbstractNodeAdapter>();
+    private JcrAbstractNodeAdapter parent;
+    protected String nodeName = null;
 
     public JcrAbstractNodeAdapter(Node jcrNode) {
        super(jcrNode);
@@ -175,4 +188,116 @@ public abstract class JcrAbstractNodeAdapter extends JcrAbstractAdapter implemen
         }
     }
 
+    /**
+     * Get the referenced node and update the property.
+     * Update property will:
+     *  remove existing JCR property if requested
+     *  add newly and setted property
+     *  update existing modified property.
+     * In addition defined childs nodes are updated or removed.
+     */
+    public Node getNode() {
+        Node node = null;
+        try {
+            node =  getNodeFromRepository();
+            // Update Node property
+            updateProperty(node);
+            // Update Child Nodes
+            if(!childs.isEmpty()) {
+                for(JcrAbstractNodeAdapter child:childs.values()) {
+                    child.getNode();
+                }
+            }
+            // Remove child node if needed
+            if(!remouvedChilds.isEmpty()) {
+                for(JcrAbstractNodeAdapter removedChild:remouvedChilds.values()) {
+                    if(node.hasNode(removedChild.nodeName)) {
+                        node.getNode(removedChild.nodeName).remove();
+                    }
+                }
+            }
+            return node;
+        }
+        catch (LoginException e) {
+            throw new RuntimeRepositoryException(e);
+        } catch (RepositoryException e) {
+            throw new RuntimeRepositoryException(e);
+        }
+    }
+
+    /**
+     * Update or remove property.
+     * Property wit flag saveInfo to false will not be updated.
+     * Property can refer to node property (like name, title) or
+     * node.MetaData property like (MetaData/template).
+     * Also handle the specific case of node renaming.
+     *  If property JCR_NAME is present, Rename the node.
+     */
+    protected void updateProperty(Node node) throws RepositoryException {
+      //Update property
+        for(Entry<String, Property> entry: changedProperties.entrySet()) {
+            //Check saveInfo Flag
+            if(!((DefaultProperty)entry.getValue()).isSaveInfo() || ((DefaultProperty)entry.getValue()).isReadOnly()) {
+                continue;
+            }
+            // JCRNAME has change --> perform the renaming and continue
+            if(entry.getKey().equals(JCR_NAME) && (entry.getValue() !=null && !entry.getValue().toString().isEmpty())) {
+               node.getSession().move(node.getPath(), NodeUtil.combinePathAndName(node.getParent().getPath(), entry.getValue().getValue().toString()));
+               setPath(node.getPath());
+               continue;
+            }
+            // Check if the field is refereeing to MetaData Property
+            if (entry.getKey().startsWith(MetaData.DEFAULT_META_NODE)) {
+                PropertyUtil.setProperty(node.getNode(MetaData.DEFAULT_META_NODE), StringUtils.removeStart(entry.getKey(),MetaData.DEFAULT_META_NODE+"/"), entry.getValue().getValue());
+            } else if (entry.getValue().getValue()!=null){
+                PropertyUtil.setProperty(node, entry.getKey(), entry.getValue().getValue());
+            }
+        }
+        // Remove Property
+        for(Entry<String, Property> entry: removedProperties.entrySet()) {
+            if(node.hasProperty(entry.getKey())) {
+                node.getProperty(entry.getKey()).remove();
+            }
+        }
+    }
+
+
+    public JcrAbstractNodeAdapter getChild(String path) {
+        return childs.get(path);
+    }
+
+    public Map<String, JcrAbstractNodeAdapter> getChilds() {
+        return childs;
+    }
+
+    /**
+     * Add a Item in the child list.
+     * Remove this item from the removedChilds list if present.
+     */
+    public JcrAbstractNodeAdapter addChild(String path, JcrAbstractNodeAdapter child) {
+        if(remouvedChilds.containsKey(path)) {
+            remouvedChilds.remove(path);
+        }
+        child.setParent(this);
+        return childs.put(path, child);
+    }
+
+    /**
+     * Add the removed child in the remouvedChilds map.
+     */
+    public boolean removeChild(JcrAbstractNodeAdapter toRemouve) {
+       remouvedChilds.put(toRemouve.getNodeIdentifier(), toRemouve);
+       return childs.remove(toRemouve.getNodeIdentifier()) != null;
+    }
+
+    /**
+     * Return the parent Item or Null if not yet set.
+     */
+    public JcrAbstractNodeAdapter getParent() {
+        return parent;
+    }
+
+    public void setParent(JcrAbstractNodeAdapter parent) {
+         this.parent = parent;
+    }
 }

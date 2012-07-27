@@ -32,7 +32,6 @@
 	padding-top:0;
 }
 
-
 .v-action {
     position:relative;
 	width:100%;
@@ -72,4 +71,10 @@
 
 .v-action:hover .v-text {
 	color:#aabf2f;
+}
+
+.v-actionbar-preview .v-verticallayout-margin {
+	padding-left:8px;
+	padding-right:18px;
+	padding-bottom:8px;
 }

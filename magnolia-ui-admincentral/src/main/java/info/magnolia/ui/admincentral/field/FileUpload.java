@@ -47,6 +47,8 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.TimeZone;
 
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.value.BinaryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,6 +57,8 @@ import org.vaadin.easyuploads.UploadField;
 import com.vaadin.data.Property;
 import com.vaadin.terminal.Resource;
 import com.vaadin.terminal.StreamResource;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Upload.FinishedEvent;
@@ -65,23 +69,28 @@ import com.vaadin.ui.Upload.FinishedEvent;
  * On success Set all information needed to store the image to the Item.
  *
  */
-public class FileUpload extends UploadField {
+public class FileUpload extends UploadField{
 
     private static final Logger log = LoggerFactory.getLogger(FileUpload.class);
     private JcrNodeAdapter item;
+    private String lastFileName;
     private String lastFileExtension;
+    private String lastMimeType;
+    private long lastFileSize;
     private long lastImageWidth;
     private long lastImageHeight;
     private List<String> imageExtensions = new ArrayList<String>();
     private FileUploadFieldDefinition definition;
     private Embedded embedded;
     private Label displayDetail = new Label("", Label.CONTENT_XHTML);
+    private Button deleteButton;
 
 
     public FileUpload ( JcrNodeAdapter item, FileUploadFieldDefinition definition) {
         super();
         this.item = item;
         this.definition = definition;
+        setFileDeletesAllowed(definition.isFileDeletesAllowed());
         // Set Storage and FileType
         setStorageMode(UploadField.StorageMode.MEMORY);
         setFieldType(UploadField.FieldType.BYTE_ARRAY);
@@ -95,13 +104,14 @@ public class FileUpload extends UploadField {
     @Override
     public void attach() {
         super.attach();
-        //TODO SCRUM-1401: Reactivate after resolution of this issue (Applicationis null)
+        //TODO SCRUM-1401: Reactivate after resolution of this issue (Applications null)
         //Init values with existing data.
-//        Property data =  item.getItemProperty(MgnlNodeType.JCR_DATA);
-//        if(data !=null && data.getValue()!=null) {
-//            setValue(data.getValue());
-//            updateDisplay();
-//        }
+        Property data =  item.getItemProperty(MgnlNodeType.JCR_DATA);
+        if(data !=null && data.getValue()!=null) {
+            setValue(data.getValue());
+            updatePropertyFromRepository();
+            updateDisplay();
+        }
     }
     /**
      * Refresh the view when upload is finished.
@@ -113,7 +123,7 @@ public class FileUpload extends UploadField {
     public void uploadFinished(FinishedEvent event) {
         updateProperty();
         super.uploadFinished(event);
-        populateItemProperty();
+        handleItem();
     }
 
 
@@ -123,13 +133,31 @@ public class FileUpload extends UploadField {
             if(embedded!=null && getRootLayout().getComponentIndex(embedded)!=-1) {
                 getRootLayout().removeComponent(embedded);
                 getRootLayout().removeComponent(displayDetail);
+                getRootLayout().removeComponent(deleteButton);
             }
-            displayDetail.setValue(getDisplayDetails());
-            embedded = createThumbnail();
-            getRootLayout().addComponent(embedded);
-            getRootLayout().addComponent(displayDetail);
+            if(!isEmpty()) {
+                displayDetail.setValue(getDisplayDetails());
+                embedded = createThumbnail();
+                getRootLayout().addComponent(embedded);
+                getRootLayout().addComponent(displayDetail);
+                addDeleteButton();
+            }
         } else {
             super.updateDisplay();
+        }
+    }
+
+    /**
+     * If an Image was uploaded, update the properties.
+     * If no Uploaded image, remove the Item.
+     *   This will remove this Item from repository.
+     */
+    private void handleItem() {
+        if(isEmpty() && item.getParent() != null){
+            //remove Item from the parent --> this item will not be persisted
+            item.getParent().removeChild(item);
+        } else {
+            populateItemProperty();
         }
     }
 
@@ -138,6 +166,8 @@ public class FileUpload extends UploadField {
      * Data is stored as a JCR Binary object.
      */
     private void populateItemProperty() {
+        //Attach the Item to the parent in order to be stored.
+        item.getParent().addChild(item.getNodeIdentifier(), item);
         //Populate Data
         Property data =  item.getItemProperty(MgnlNodeType.JCR_DATA);
 
@@ -151,10 +181,10 @@ public class FileUpload extends UploadField {
                 log.error("Not able to store the binery information ", e);
             }
         }
-        item.getItemProperty(FileProperties.PROPERTY_FILENAME).setValue(getLastFileName());
-        item.getItemProperty(FileProperties.PROPERTY_CONTENTTYPE).setValue(getLastMimeType());
+        item.getItemProperty(FileProperties.PROPERTY_FILENAME).setValue(lastFileName);
+        item.getItemProperty(FileProperties.PROPERTY_CONTENTTYPE).setValue(lastMimeType);
         item.getItemProperty(FileProperties.PROPERTY_LASTMODIFIED).setValue(new GregorianCalendar(TimeZone.getDefault()));
-        item.getItemProperty(FileProperties.PROPERTY_SIZE).setValue(getLastFileSize());
+        item.getItemProperty(FileProperties.PROPERTY_SIZE).setValue(lastFileSize);
         item.getItemProperty(FileProperties.PROPERTY_EXTENSION).setValue(lastFileExtension);
         item.getItemProperty(FileProperties.PROPERTY_WIDTH).setValue(lastImageWidth);
         item.getItemProperty(FileProperties.PROPERTY_HEIGHT).setValue(lastImageHeight);
@@ -164,13 +194,40 @@ public class FileUpload extends UploadField {
     protected String getDisplayDetails() {
         StringBuilder sb = new StringBuilder();
         sb.append("File: ");
-        sb.append(getLastFileName());
+        sb.append(lastFileName);
         sb.append("</br> <em>");
-        sb.append("(" + getLastFileSize() + " bytes)");
+        sb.append("(" + lastFileSize + " bytes)");
         sb.append("</em>");
         sb.append("</br>width: " + lastImageWidth + " height: " + lastImageHeight);
         return sb.toString();
     }
+
+    /**
+     * Adds file delete button, if file deletes are allowed.
+     * Had to Override due to a Null pointer exception when setting the value to null.
+     */
+    @Override
+    protected void addDeleteButton() {
+        if (isFileDeletesAllowed()) {
+            if (deleteButton == null) {
+                deleteButton = new Button("Remove File");
+                deleteButton.addListener(new Button.ClickListener() {
+                    @Override
+                    public void buttonClick(ClickEvent arg0) {
+                        setValue("".getBytes());
+                        getRootLayout().removeComponent(arg0.getButton());
+                        updateDisplay();
+                        handleItem();
+                    }
+                });
+            }
+            if (deleteButton.getApplication() == null) {
+                attachDeleteButton(deleteButton);
+            }
+        }
+    }
+
+
 
     /**
      * Create a Thumbnail image as Embedded component.
@@ -214,10 +271,25 @@ public class FileUpload extends UploadField {
      *  Define File extension, Image Height and Width.
      */
     private void updateProperty() {
+        lastFileSize = getLastFileSize();
+        lastMimeType = getLastMimeType();
+        lastFileName = StringUtils.substringBefore(getLastFileName(), ".");
         lastFileExtension = PathUtil.getExtension(getLastFileName());
         ImageSize imageSize = ImageSize.valueOf(getContentAsStream());
         lastImageWidth = imageSize.getWidth();
         lastImageHeight = imageSize.getHeight();
+    }
+
+    /**
+     * Update the local property based on the stored informations.
+     */
+    private void updatePropertyFromRepository() {
+        lastFileSize = (Long)item.getItemProperty(FileProperties.PROPERTY_SIZE).getValue();
+        lastMimeType = item.getItemProperty(FileProperties.PROPERTY_CONTENTTYPE).getValue().toString();
+        lastFileName = item.getItemProperty(FileProperties.PROPERTY_FILENAME).getValue().toString();
+        lastFileExtension = item.getItemProperty(FileProperties.PROPERTY_EXTENSION).getValue().toString();
+        lastImageWidth = (Long)item.getItemProperty(FileProperties.PROPERTY_WIDTH).getValue();
+        lastImageHeight = (Long)item.getItemProperty(FileProperties.PROPERTY_HEIGHT).getValue();
     }
 
     private List<String> getImageExtensions() {
@@ -232,4 +304,5 @@ public class FileUpload extends UploadField {
         this.getImageExtensions().add("bmp");
         this.getImageExtensions().add("swf");
     }
+
 }

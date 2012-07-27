@@ -41,6 +41,7 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import com.vaadin.terminal.ExternalResource;
+import com.vaadin.terminal.Resource;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Embedded;
 
@@ -49,6 +50,7 @@ import com.vaadin.ui.Embedded;
  *
  */
 public class Thumbnail extends Embedded {
+    public static final Resource IMAGE_NOT_FOUND = new ThemeResource("img/icons/icon-error-red.png");
     private JcrNodeAdapter node;
 
     public Thumbnail(final Node node, final URL url) {
@@ -59,7 +61,7 @@ public class Thumbnail extends Embedded {
         if(url != null) {
             setSource(new ExternalResource(url));
         } else {
-            setSource(new ThemeResource("img/icons/icon-error-red.png"));
+            setSource(IMAGE_NOT_FOUND);
         }
         try {
             setDescription(node.getName());
