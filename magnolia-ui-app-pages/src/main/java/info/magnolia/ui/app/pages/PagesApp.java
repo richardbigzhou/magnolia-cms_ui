@@ -39,6 +39,7 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.app.pages.editor.PageEditorParameters;
 import info.magnolia.ui.app.pages.editor.PagesEditorSubApp;
 import info.magnolia.ui.app.pages.main.PagesMainSubApp;
+import info.magnolia.ui.app.pages.preview.PagePreviewSubApp;
 import info.magnolia.ui.framework.app.AbstractApp;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.SubApp;
@@ -57,6 +58,8 @@ public class PagesApp extends AbstractApp {
 
 
     private static final String PAGEEDITOR_TOKEN = "pageeditor";
+    
+    private static final String PREVIEW_TOKEN = "preview";
 
     private AppContext context;
     private ComponentProvider componentProvider;
@@ -78,16 +81,20 @@ public class PagesApp extends AbstractApp {
 
         final String subAppName = pathParams.remove(0);
 
-        if (subAppName.equals(PAGEEDITOR_TOKEN)) {
+        if (PAGEEDITOR_TOKEN.equals(subAppName)) {
             String contextPath = MgnlContext.getContextPath();
-
             PagesEditorSubApp editorSubApp = componentProvider.newInstance(PagesEditorSubApp.class);
             PageEditorParameters parameters = new PageEditorParameters(contextPath, pathParams.get(0));
             editorSubApp.setParameters(parameters);
             context.openSubApp(editorSubApp);
             context.setAppLocation(location);
+        } else if (PREVIEW_TOKEN.equals(subAppName)) {
+            String contextPath = MgnlContext.getContextPath();
+            PagePreviewSubApp previewSubApp = componentProvider.newInstance(PagePreviewSubApp.class);
+            previewSubApp.setUrl(contextPath + pathParams.get(0));
+            context.openSubAppFullScreen(previewSubApp);
+            context.setAppLocation(location);
         }
-
     }
 
     private List<String> parsePathParamsFromToken(String token) {

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,32 +31,25 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.magnoliashell.gwt.client.viewport;
+package info.magnolia.ui.app.pages.preview;
 
-import com.vaadin.terminal.gwt.client.ApplicationConnection;
-import com.vaadin.terminal.gwt.client.UIDL;
+import info.magnolia.ui.framework.view.View;
 
 /**
- * Dialogs viewport.
+ * Displays the page preview.
  *
  */
-public class VDialogViewport extends VShellViewport {
+public interface PagePreviewView extends View {
 
-    public VDialogViewport() {
-        getModalityCurtain().addClassName("black-modality-curtain");
-        getElement().getStyle().setZIndex(500);
-        setContentAnimationDelegate(ContentAnimationDelegate.FadingDelegate);
-        showCurtain();
-    }
+    void setListener(final Listener listener);
     
-    @Override
-    public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
-        super.updateFromUIDL(uidl, client);
+    void setUrl(final String url);
+    /**
+     * Listener interface of the view.
+     */
+    interface Listener {
+
+        void closePreview();
         
-        if (getWidgetCount() == 0) {
-            removeFromParent();
-        } else {
-            showCurtain();
-        }
     }
 }

@@ -33,12 +33,18 @@
  */
 package info.magnolia.ui.app.pages.action;
 
-import com.google.inject.Inject;
+import info.magnolia.ui.framework.location.DefaultLocation;
+import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.inject.Inject;
 
 
 /**
@@ -46,8 +52,13 @@ import javax.jcr.RepositoryException;
  */
 public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
 
-    private final Node nodeToEdit;
+    private static final Logger log = LoggerFactory.getLogger(PreviewPageAction.class);
+    
+    private final Node nodeToPreview;
 
+    private LocationController locationController;
+    
+    private static final String TOKEN = "preview"; 
     /**
      * Instantiates a new preview page action.
      * 
@@ -55,18 +66,20 @@ public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
      * @param nodeToEdit the node to edit
      */
     @Inject
-    public PreviewPageAction(PreviewPageActionDefinition definition, Node nodeToEdit) {
+    public PreviewPageAction(PreviewPageActionDefinition definition, Node nodeToPreview, LocationController locationController) {
         super(definition);
-        this.nodeToEdit = nodeToEdit;
+        this.locationController = locationController;
+        this.nodeToPreview = nodeToPreview;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
         System.out.println("preview page should open full screen preview.");
         try {
-            System.out.println(nodeToEdit.getPath());
+            final String path = nodeToPreview.getPath(); 
+            locationController.goTo(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages", TOKEN + ":" + path));
         } catch (RepositoryException e) {
-            System.err.println("ERROR GETTING NODE PATH");
+            log.error(e.getMessage());
         }
     }
 

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,32 +31,52 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.magnoliashell.gwt.client.viewport;
+package info.magnolia.ui.app.pages.preview;
 
-import com.vaadin.terminal.gwt.client.ApplicationConnection;
-import com.vaadin.terminal.gwt.client.UIDL;
+import javax.inject.Inject;
+
+import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
+import info.magnolia.ui.framework.app.SubApp;
+import info.magnolia.ui.framework.location.DefaultLocation;
+import info.magnolia.ui.framework.location.LocationController;
+import info.magnolia.ui.framework.view.View;
 
 /**
- * Dialogs viewport.
- *
+ * SubApp that displays the page preview.
  */
-public class VDialogViewport extends VShellViewport {
+public class PagePreviewSubApp implements SubApp, PagePreviewView.Listener {
 
-    public VDialogViewport() {
-        getModalityCurtain().addClassName("black-modality-curtain");
-        getElement().getStyle().setZIndex(500);
-        setContentAnimationDelegate(ContentAnimationDelegate.FadingDelegate);
-        showCurtain();
+    private PagePreviewView view;
+    
+    private ActionbarPresenter actionBarPresenter;
+    
+    LocationController locationController;
+    
+    @Inject
+    public PagePreviewSubApp(final PagePreviewView view, ActionbarPresenter actionbarPresenter, LocationController locationController) {
+        this.view = view;
+        this.locationController = locationController;
+        this.actionBarPresenter = actionbarPresenter;
     }
     
     @Override
-    public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
-        super.updateFromUIDL(uidl, client);
-        
-        if (getWidgetCount() == 0) {
-            removeFromParent();
-        } else {
-            showCurtain();
-        }
+    public String getCaption() {
+        return null;
     }
+
+    @Override
+    public View start() {
+        view.setListener(this);   
+        return view;
+    }
+
+    public void setUrl(String url) {
+        view.setUrl(url);
+    }
+
+    @Override
+    public void closePreview() {
+        locationController.goTo(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages", ""));
+    }
+
 }

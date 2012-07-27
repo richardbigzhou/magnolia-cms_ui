@@ -34,6 +34,7 @@
 package info.magnolia.ui.framework.shell;
 
 import info.magnolia.ui.framework.event.HandlerRegistration;
+import info.magnolia.ui.framework.view.View;
 
 /**
  * Decouples the presenters and the Vaadin application. Provides methods to show messages and configuration dialogs.
@@ -89,4 +90,7 @@ public interface Shell {
 
     Shell createSubShell(String id);
 
+    void showFullscreen(View view);
+
+    void exitFullScreenMode();
 }
