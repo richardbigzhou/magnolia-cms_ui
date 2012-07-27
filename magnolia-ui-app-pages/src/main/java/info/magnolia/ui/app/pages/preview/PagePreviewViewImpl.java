@@ -39,6 +39,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Embedded;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 
 /**
@@ -46,7 +47,7 @@ import com.vaadin.ui.VerticalLayout;
  */
 public class PagePreviewViewImpl implements PagePreviewView {
     
-    private VerticalLayout wrapper = new VerticalLayout();
+    private Panel wrapper = new Panel();
     
     private Embedded iframe;
     
@@ -57,14 +58,17 @@ public class PagePreviewViewImpl implements PagePreviewView {
         iframe.setType(Embedded.TYPE_BROWSER);
         iframe.setSizeFull();
         wrapper.setSizeFull();
-        wrapper.addComponent(new Button("Close Preview", new ClickListener() {
+        wrapper.getContent().setSizeFull();
+        final Button closePreviewButton = new Button("Close Preview", new ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
                 listener.closePreview();
             }
-        }));
+        });
+        closePreviewButton.setWidth("100%");
+        wrapper.addComponent(closePreviewButton);
         wrapper.addComponent(iframe);
-        wrapper.setExpandRatio(iframe, 1f);
+        ((VerticalLayout)wrapper.getContent()).setExpandRatio(iframe, 1f);
     }
     
     @Override

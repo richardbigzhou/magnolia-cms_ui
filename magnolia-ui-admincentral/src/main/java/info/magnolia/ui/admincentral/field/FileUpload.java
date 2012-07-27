@@ -100,7 +100,6 @@ public class FileUpload extends UploadField{
     @Override
     public void attach() {
         super.attach();
-        //TODO SCRUM-1401: Reactivate after resolution of this issue (Applications null)
         //Init values with existing data.
         Property data =  item.getItemProperty(MgnlNodeType.JCR_DATA);
         if(data !=null && data.getValue()!=null) {
@@ -243,7 +242,7 @@ public class FileUpload extends UploadField{
             }, "", this.getApplication()){
             @Override
             public String getMIMEType() {
-                return getLastMimeType();
+                return lastMimeType;
             }
         };
 
