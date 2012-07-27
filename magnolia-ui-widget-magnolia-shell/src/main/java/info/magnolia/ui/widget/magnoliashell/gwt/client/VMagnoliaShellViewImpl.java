@@ -66,20 +66,10 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
-import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
-import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
-import com.googlecode.mgwt.dom.client.event.touch.TouchMoveEvent;
-import com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent;
-import com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler;
-import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchPanel;
-import com.vaadin.terminal.gwt.client.VConsole;
 
 /**
  * GWT implementation of MagnoliaShell client side (the view part basically).
@@ -91,9 +81,7 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
     private Map<ViewportType, VShellViewport> viewports = new EnumMap<ViewportType, VShellViewport>(ViewportType.class);
 
     private ViewportType activeViewportType = null;
-
-    private Element root = DOM.createDiv();
-
+            
     private VMainLauncher mainAppLauncher;
 
     private Presenter presenter;
@@ -104,39 +92,15 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
 
     private VShellMessage hiPriorityMessage;
     
+    private FullscreenWidgetWrapper fullscreenWrapper = new FullscreenWidgetWrapper();
+    
     public VMagnoliaShellViewImpl(final EventBus eventBus) {
         super();
         this.eventBus = eventBus;
-        this.root = getElement();
         this.mainAppLauncher = new VMainLauncher(eventBus);
         setStyleName(CLASSNAME);
-        add(mainAppLauncher, root);
+        add(mainAppLauncher, getElement());
         bindEventHandlers();
-        
-        TouchDelegate delegate = new TouchDelegate(this);
-        delegate.addTouchStartHandler(new TouchStartHandler() {
-            @Override
-            public void onTouchStart(TouchStartEvent event) {
-                VConsole.log("TouchStart");
-            }
-        });
-        
-        delegate.addTouchEndHandler(new TouchEndHandler() {
-            @Override
-            public void onTouchEnd(TouchEndEvent event) {
-                VConsole.log("TouchEnd");
-            }
-        });
-    }
-    
-    
-    @Override
-    public void onBrowserEvent(Event event) {
-        int code = event.getTypeInt();
-        if (code == Event.ONTOUCHMOVE) {
-            VConsole.log("Move" + getHandlerCount(TouchMoveEvent.getType()));
-        }
-        super.onBrowserEvent(event);
     }
     
     private void bindEventHandlers() {
@@ -218,7 +182,7 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
             }
         }
         if (getWidgetIndex(newWidget) < 0) {
-            add(newWidget, root);
+            add(newWidget, getElement());
         }
     }
 
@@ -357,6 +321,14 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
         }
     }
 
+    @Override
+    public void setFullscreen(Widget widget) {
+        fullscreenWrapper.setContent(widget);
+        if (widget != null && getWidgetIndex(fullscreenWrapper) < 0) {
+            add(fullscreenWrapper);   
+        }
+    }
+    
     @Override
     public void updateShellAppIndication(ShellAppType type, int increment) {
         mainAppLauncher.updateIndication(type, increment);

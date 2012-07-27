@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.admincentral.thumbnail;
 
-import java.net.URL;
-
 import javax.jcr.Node;
 
 /**
@@ -43,8 +41,8 @@ import javax.jcr.Node;
 public interface ThumbnailProvider {
 
     /**
-     * Return a thumbnail of the requested size representing the provided item. Depending on the implementation,
+     * Return a path to a thumbnail of the requested size representing the provided item. Depending on the implementation,
      * this thumbnail may be retrieved from cache or created on the fly.
      */
-    URL getThumbnail(Node node, int width, int height);
+    String getPath(Node node, int width, int height);
 }

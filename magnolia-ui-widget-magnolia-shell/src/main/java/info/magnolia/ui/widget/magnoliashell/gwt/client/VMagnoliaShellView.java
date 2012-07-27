@@ -79,6 +79,7 @@ public interface VMagnoliaShellView extends HasWidgets, IsWidget {
     
     void navigateToMessageDetails(String id);
    
+    void setFullscreen(Widget widget);
     /**
      * Presenter. Meant for Vaadin part of MagnoliaShell.
      */

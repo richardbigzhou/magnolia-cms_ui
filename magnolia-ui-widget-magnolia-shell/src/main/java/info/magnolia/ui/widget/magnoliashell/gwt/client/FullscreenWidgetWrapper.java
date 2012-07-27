@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,32 +31,30 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.magnoliashell.gwt.client.viewport;
+package info.magnolia.ui.widget.magnoliashell.gwt.client;
 
-import com.vaadin.terminal.gwt.client.ApplicationConnection;
-import com.vaadin.terminal.gwt.client.UIDL;
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Dialogs viewport.
- *
+ * Container widget for the fullscreen shown component.
  */
-public class VDialogViewport extends VShellViewport {
+public class FullscreenWidgetWrapper extends SimplePanel {
 
-    public VDialogViewport() {
-        getModalityCurtain().addClassName("black-modality-curtain");
-        getElement().getStyle().setZIndex(500);
-        setContentAnimationDelegate(ContentAnimationDelegate.FadingDelegate);
-        showCurtain();
+    public FullscreenWidgetWrapper() {
+        addStyleName("v-fullscreen-wrapper");
     }
     
-    @Override
-    public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
-        super.updateFromUIDL(uidl, client);
-        
-        if (getWidgetCount() == 0) {
-            removeFromParent();
+    public void setContent(final Widget content) {
+        if (content != null) {
+            setWidget(content);   
         } else {
-            showCurtain();
+            hide();
         }
+    }
+    
+    public void hide() {
+        clear();
+        removeFromParent();
     }
 }

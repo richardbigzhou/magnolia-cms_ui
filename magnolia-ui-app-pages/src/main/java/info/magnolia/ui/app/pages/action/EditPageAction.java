@@ -65,7 +65,6 @@ public class EditPageAction extends ActionBase<EditPageActionDefinition> {
         super(definition);
         this.nodeToEdit = nodeToEdit;
         this.locationController = locationController;
-
     }
 
     @Override

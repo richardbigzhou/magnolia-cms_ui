@@ -35,7 +35,6 @@ package info.magnolia.ui.vaadin.integration.widget.client.touchwidgetimpl;
 
 import com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent;
 import com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler;
-import com.vaadin.terminal.gwt.client.VConsole;
 
 
 /**
@@ -51,11 +50,6 @@ public class TouchStartHandlerProxy implements com.google.gwt.event.dom.client.T
     
     @Override
     public void onTouchStart(com.google.gwt.event.dom.client.TouchStartEvent event) {
-        try {
-            VConsole.log("Delegating touch start");
-            delegateHandler.onTouchStart(GwtTouchEventConverter.<TouchStartEvent>convertGWTEvent(event));   
-        } catch (Exception e) {
-            VConsole.log("Touch start delegation error " + e.getMessage());
-        }
+        delegateHandler.onTouchStart(GwtTouchEventConverter.<TouchStartEvent>convertGWTEvent(event));   
     } 
 }
