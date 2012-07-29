@@ -33,18 +33,30 @@
  */
 package info.magnolia.ui.app.pages.action;
 
+
+import com.google.inject.Inject;
+
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.LocationController;
+import info.magnolia.cms.beans.runtime.FileProperties;
+import info.magnolia.cms.core.MgnlNodeType;
+import info.magnolia.cms.security.User;
+import info.magnolia.context.MgnlContext;
+import info.magnolia.module.pageexport.http.MgnlHttpClient;
+import info.magnolia.ui.admincentral.field.ImageSize;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
+import org.apache.jackrabbit.value.BinaryImpl;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.inject.Inject;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 
 /**
@@ -52,35 +64,93 @@ import com.google.inject.Inject;
  */
 public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
 
-    private static final Logger log = LoggerFactory.getLogger(PreviewPageAction.class);
-    
     private final Node nodeToPreview;
+    private static final Logger log = LoggerFactory.getLogger(PreviewPageAction.class);
 
     private LocationController locationController;
-    
-    private static final String TOKEN = "preview"; 
+
+    private static final String TOKEN = "preview";
+
+    private MgnlHttpClient client;
+
     /**
      * Instantiates a new preview page action.
-     * 
+     *
      * @param definition the definition
-     * @param nodeToEdit the node to edit
+     * @param nodeToPreview the node to preview
      */
     @Inject
-    public PreviewPageAction(PreviewPageActionDefinition definition, Node nodeToPreview, LocationController locationController) {
+    public PreviewPageAction(PreviewPageActionDefinition definition, MgnlHttpClient client, LocationController locationController, Node nodeToPreview) {
         super(definition);
         this.locationController = locationController;
         this.nodeToPreview = nodeToPreview;
+        this.client = client;
+
     }
+
 
     @Override
     public void execute() throws ActionExecutionException {
-        System.out.println("preview page should open full screen preview.");
         try {
-            final String path = nodeToPreview.getPath(); 
+            final String path = nodeToPreview.getPath();
             locationController.goTo(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages", TOKEN + ":" + path));
         } catch (RepositoryException e) {
             log.error(e.getMessage());
         }
+
+        User user = MgnlContext.getUser();
+        client.initCredentials(user);
+
+        System.out.println("preview page should open full screen preview.");
+        try {
+            System.out.println(nodeToPreview.getPath());
+            String url = "http://localhost:8080" + nodeToPreview.getPath();
+            client.setUri(url);
+            client.addParameter("exportType", "png");
+            InputStream is = client.get();
+            saveImage(nodeToPreview, is);
+
+        } catch (RepositoryException e) {
+            System.err.println("ERROR GETTING NODE PATH");
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+    }
+
+    private void saveImage(Node node, InputStream inputStream) throws RepositoryException, IOException {
+
+
+
+        String name = "imageBinary";
+        String fileName = "";
+
+        Node child;
+        if (node.hasNode(name)) {
+            child = node.getNode(name);
+        } else {
+            child = node.addNode(name, MgnlNodeType.NT_RESOURCE);
+        }
+
+
+        BinaryImpl binaryImpl = new BinaryImpl(inputStream);
+
+
+
+        child.setProperty(MgnlNodeType.JCR_DATA, binaryImpl);
+
+        child.setProperty(FileProperties.PROPERTY_FILENAME, "bla");
+        child.setProperty(FileProperties.PROPERTY_CONTENTTYPE, "image/png");
+        child.setProperty(FileProperties.PROPERTY_EXTENSION, "png");
+
+        child.setProperty(FileProperties.PROPERTY_LASTMODIFIED, new GregorianCalendar(TimeZone.getDefault()));
+
+        child.setProperty(FileProperties.PROPERTY_SIZE, binaryImpl.getSize());
+
+        ImageSize imageSize = ImageSize.valueOf(binaryImpl.getStream());
+        child.setProperty(FileProperties.PROPERTY_WIDTH, imageSize.getWidth());
+        child.setProperty(FileProperties.PROPERTY_HEIGHT, imageSize.getHeight());
+        child.getSession().save();
+
     }
 
 }

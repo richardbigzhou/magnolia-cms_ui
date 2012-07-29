@@ -33,7 +33,11 @@
  */
 package info.magnolia.ui.admincentral.workbench;
 
+import com.vaadin.terminal.Resource;
+import com.vaadin.terminal.StreamResource;
+import com.vaadin.ui.Embedded;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.app.content.ContentAppDescriptor;
 import info.magnolia.ui.admincentral.content.view.ContentPresenter;
@@ -51,18 +55,19 @@ import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.widget.actionbar.ActionbarView;
-
-import javax.inject.Inject;
-import javax.jcr.LoginException;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.Embedded;
+import javax.inject.Inject;
+import javax.jcr.LoginException;
+import javax.jcr.Node;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 
 /**
@@ -204,10 +209,36 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
                 if (event.getPath() == null) {
                     actionbarPresenter.setPreview(null);
                 } else {
-                    previewIndex = (previewIndex + 1) % previews.length;
-                    Embedded preview = new Embedded(null, new ThemeResource(previews[previewIndex]));
-                    preview.setAlternateText(previewAlts[previewIndex]);
-                    actionbarPresenter.setPreview(preview);
+
+                    final Node parentNode = SessionUtil.getNode(event.getWorkspace(), event.getPath());
+
+                    try {
+                        final Node node= parentNode.getNode("imageBinary");
+                        final byte[] pngData = IOUtils.toByteArray(node.getProperty("jcr:data").getBinary().getStream());
+                        final String nodeType = node.getProperty("jcr:mimeType").getString();
+
+                        Resource imageResource = new StreamResource(
+                                new StreamResource.StreamSource() {
+                                    @Override
+                                    public InputStream getStream() {
+                                        return new ByteArrayInputStream(pngData);
+
+                                    }
+                                }, "", ContentWorkbenchSubApp.this.asView().asVaadinComponent().getApplication()){
+                            @Override
+                            public String getMIMEType() {
+                                    return nodeType;
+                            }
+                        };
+
+                        Embedded preview = new Embedded(null, imageResource);
+                        actionbarPresenter.setPreview(preview);
+                    } catch (RepositoryException e) {
+                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    } catch (IOException e) {
+                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    }
+
                 }
             }
         });

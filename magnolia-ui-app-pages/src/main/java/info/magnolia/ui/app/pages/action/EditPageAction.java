@@ -58,7 +58,7 @@ public class EditPageAction extends ActionBase<EditPageActionDefinition> {
 
     private final LocationController locationController;
 
-    private final static String TOKEN = "pageeditor";
+    private final static String TOKEN = "editor";
 
     @Inject
     public EditPageAction(final EditPageActionDefinition definition, Node nodeToEdit, LocationController locationController) {

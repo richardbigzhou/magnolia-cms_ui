@@ -57,8 +57,7 @@ import java.util.List;
 public class PagesApp extends AbstractApp {
 
 
-    private static final String PAGEEDITOR_TOKEN = "pageeditor";
-    
+    private static final String EDITOR_TOKEN = "editor";
     private static final String PREVIEW_TOKEN = "preview";
 
     private AppContext context;
@@ -81,20 +80,23 @@ public class PagesApp extends AbstractApp {
 
         final String subAppName = pathParams.remove(0);
 
-        if (PAGEEDITOR_TOKEN.equals(subAppName)) {
+        if (subAppName.equals(EDITOR_TOKEN)) {
             String contextPath = MgnlContext.getContextPath();
+
             PagesEditorSubApp editorSubApp = componentProvider.newInstance(PagesEditorSubApp.class);
             PageEditorParameters parameters = new PageEditorParameters(contextPath, pathParams.get(0));
             editorSubApp.setParameters(parameters);
             context.openSubApp(editorSubApp);
             context.setAppLocation(location);
-        } else if (PREVIEW_TOKEN.equals(subAppName)) {
+        }
+        else if (PREVIEW_TOKEN.equals(subAppName)) {
             String contextPath = MgnlContext.getContextPath();
             PagePreviewSubApp previewSubApp = componentProvider.newInstance(PagePreviewSubApp.class);
             previewSubApp.setUrl(contextPath + pathParams.get(0));
             context.openSubAppFullScreen(previewSubApp);
             context.setAppLocation(location);
         }
+
     }
 
     private List<String> parsePathParamsFromToken(String token) {
