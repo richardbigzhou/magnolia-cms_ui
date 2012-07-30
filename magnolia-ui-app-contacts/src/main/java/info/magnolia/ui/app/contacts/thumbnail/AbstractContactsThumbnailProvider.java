@@ -93,6 +93,7 @@ public abstract class AbstractContactsThumbnailProvider implements ThumbnailProv
                     final Node thumbnailNode = contactNode.addNode(THUMBNAIL_NODE_NAME, MgnlNodeType.NT_RESOURCE);
                     thumbnailNode.setProperty(FileProperties.PROPERTY_FILENAME, photoNode.getProperty(FileProperties.PROPERTY_FILENAME).getString());
                     thumbnailNode.setProperty(FileProperties.PROPERTY_EXTENSION, getFormat());
+                    thumbnailNode.setProperty(FileProperties.PROPERTY_SIZE, photoNode.getProperty(FileProperties.PROPERTY_SIZE).getString());
 
                     final ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     ImageIO.write(thumbnail, getFormat(), baos);
