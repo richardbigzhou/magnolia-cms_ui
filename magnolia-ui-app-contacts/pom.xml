@@ -11,7 +11,7 @@
   <packaging>jar</packaging>
   <name>magnolia-ui-app-contacts</name>
   <properties>
-    <cloverCoverageThreshold>24</cloverCoverageThreshold>
+    <cloverCoverageThreshold>20</cloverCoverageThreshold>
   </properties>
   <dependencies>
     <dependency>
