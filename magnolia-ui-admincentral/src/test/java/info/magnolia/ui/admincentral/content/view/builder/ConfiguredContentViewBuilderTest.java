@@ -77,10 +77,12 @@ public class ConfiguredContentViewBuilderTest {
         MockUtil.setSessionAndHierarchyManager(session);
 
         componentProvider.setInstance(WorkbenchActionFactory.class, new WorkbenchActionFactoryImpl());
-        componentProvider.setInstance(ThumbnailProvider.class, mock(ThumbnailProvider.class));
+        final ThumbnailProvider thumbnailProvider = mock(ThumbnailProvider.class);
+        componentProvider.setInstance(ThumbnailProvider.class, thumbnailProvider);
 
         workbenchDef.setWorkspace(workspace);
         workbenchDef.setPath("/");
+        workbenchDef.setThumbnailProvider(thumbnailProvider);
 
         final ConfiguredItemTypeDefinition itemTypeDefinition = new ConfiguredItemTypeDefinition();
         itemTypeDefinition.setItemType("qux");
