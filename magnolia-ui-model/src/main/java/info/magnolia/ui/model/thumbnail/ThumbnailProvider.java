@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2011 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,49 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.workbench.definition;
+package info.magnolia.ui.model.thumbnail;
 
-import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
-import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
-import info.magnolia.ui.model.column.definition.ColumnDefinition;
-import info.magnolia.ui.model.thumbnail.ThumbnailProvider;
-
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.List;
-
+import javax.jcr.Node;
 
 /**
- * Contains all elements which define a workbench configuration.
+ * Defines a provider for Thumbnail images.
  */
-public interface WorkbenchDefinition extends Serializable {
-
-    String getName();
-
-    String getWorkspace();
-
-    String getPath();
-
-    List<ItemTypeDefinition> getItemTypes();
+public interface ThumbnailProvider {
 
     /**
-     * Return the itemType filter criteria in order to be used for searching nodes. like:
-     * "jcr:* | myapp:report | my doc"
+     * Return a path to a thumbnail of the requested size representing the provided item. Depending on the implementation,
+     * this thumbnail may be retrieved from cache or created on the fly.
      */
-    String getItemTypesFilter();
-
-    ColumnDefinition getColumn(String columnId);
-
-    Collection<ColumnDefinition> getColumns();
-
-    /**
-     * Gets the definition for the action bar related to this workbench.
-     */
-    ActionbarDefinition getActionbar();
-
-    ComponentProviderConfiguration getComponents();
-
-
-    ThumbnailProvider getThumbnailProvider();
-
+    String getPath(Node node, int width, int height);
 }

@@ -80,7 +80,7 @@ import java.io.InputStream;
  * <li>a configurable action bar on the right hand side, showing the available operations for the
  * given workspace and the selected item.
  * </ul>
- * 
+ *
  * <p>
  * Its main configuration point is the {@link WorkbenchDefinition} through which one defines the JCR
  * workspace to connect to, the columns/properties to display, the available actions and so on.
@@ -211,8 +211,13 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
                 } else {
 
                     final Node parentNode = SessionUtil.getNode(event.getWorkspace(), event.getPath());
-
                     try {
+
+                        if(!parentNode.hasNode("imageBinary")) {
+                            actionbarPresenter.setPreview(null);
+                            return;
+                        }
+
                         final Node node= parentNode.getNode("imageBinary");
                         final byte[] pngData = IOUtils.toByteArray(node.getProperty("jcr:data").getBinary().getStream());
                         final String nodeType = node.getProperty("jcr:mimeType").getString();

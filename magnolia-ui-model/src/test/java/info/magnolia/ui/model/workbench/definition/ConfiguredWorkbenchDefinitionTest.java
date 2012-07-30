@@ -33,47 +33,31 @@
  */
 package info.magnolia.ui.model.workbench.definition;
 
-import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
-import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
-import info.magnolia.ui.model.column.definition.ColumnDefinition;
-import info.magnolia.ui.model.thumbnail.ThumbnailProvider;
+import info.magnolia.test.RepositoryTestCase;
+import org.junit.Test;
 
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.List;
+import static org.junit.Assert.assertEquals;
 
 
 /**
- * Contains all elements which define a workbench configuration.
+ * Tests.
  */
-public interface WorkbenchDefinition extends Serializable {
+public class ConfiguredWorkbenchDefinitionTest extends RepositoryTestCase {
+    @Test
+    public void testGetItemTypesFilter() throws Exception {
+        // GIVEN
+        ConfiguredWorkbenchDefinition def = new ConfiguredWorkbenchDefinition();
+        ConfiguredItemTypeDefinition itemDef = new ConfiguredItemTypeDefinition();
+        itemDef.setItemType("oneItemType");
+        def.addItemType(itemDef);
+        ConfiguredItemTypeDefinition anotherItemDef = new ConfiguredItemTypeDefinition();
+        anotherItemDef.setItemType("anotherItemType");
+        def.addItemType(anotherItemDef);
 
-    String getName();
+        // WHEN
+        final String result = def.getItemTypesFilter();
 
-    String getWorkspace();
-
-    String getPath();
-
-    List<ItemTypeDefinition> getItemTypes();
-
-    /**
-     * Return the itemType filter criteria in order to be used for searching nodes. like:
-     * "jcr:* | myapp:report | my doc"
-     */
-    String getItemTypesFilter();
-
-    ColumnDefinition getColumn(String columnId);
-
-    Collection<ColumnDefinition> getColumns();
-
-    /**
-     * Gets the definition for the action bar related to this workbench.
-     */
-    ActionbarDefinition getActionbar();
-
-    ComponentProviderConfiguration getComponents();
-
-
-    ThumbnailProvider getThumbnailProvider();
-
+        // THEN
+        assertEquals("  oneItemType |  anotherItemType", result);
+    }
 }

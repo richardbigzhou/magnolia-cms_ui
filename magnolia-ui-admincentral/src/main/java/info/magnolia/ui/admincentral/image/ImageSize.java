@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.field;
+package info.magnolia.ui.admincentral.image;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -114,15 +114,7 @@ public final class ImageSize {
     }
 
     public static ImageSize valueOf(File file) throws FileNotFoundException {
-        InputStream stream = null;
-        try {
-            ImageInfo imageInfo = new ImageInfo();
-            stream = new FileInputStream(file);
-            imageInfo.setInput(stream);
-            return imageInfo.check() ? new ImageSize(imageInfo.getWidth(), imageInfo.getHeight()) : null;
-        } finally {
-            IOUtils.closeQuietly(stream);
-        }
+        return valueOf(new FileInputStream(file));
     }
 
     public static ImageSize valueOf(InputStream inputStream) {

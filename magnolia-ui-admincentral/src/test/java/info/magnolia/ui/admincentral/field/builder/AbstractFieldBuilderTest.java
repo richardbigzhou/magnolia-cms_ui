@@ -42,7 +42,9 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import javax.jcr.Node;
 import javax.jcr.PropertyType;
 
+import org.junit.Ignore;
 import org.junit.Test;
+
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -136,6 +138,21 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
         Property p = baseItem.getItemProperty(propertyName);
         assertEquals("21.98", p.getValue().toString());
         assertEquals(Double.class, p.getValue().getClass());
+    }
+
+    @Ignore
+    @Test
+    public void simpleI18NTest() {
+        // GIVEN
+        definition.setLabel("message.label");
+        abstractDialogField = new TestDialogField(definition, baseItem);
+
+        // WHEN
+        Field field = abstractDialogField.getField();
+        // THEN
+
+        assertEquals("label",field.getCaption());
+
     }
 
 

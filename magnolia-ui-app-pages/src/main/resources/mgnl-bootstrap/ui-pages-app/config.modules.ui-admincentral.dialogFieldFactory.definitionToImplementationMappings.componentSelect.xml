@@ -7,7 +7,7 @@
     <sv:value>mix:lockable</sv:value>
   </sv:property>
   <sv:property sv:name="jcr:uuid" sv:type="String">
-    <sv:value>7d9a8d2f-7b2d-494b-856a-83fcfa299a32</sv:value>
+    <sv:value>a0c93f93-9e14-45c0-9883-fbb185cc362c</sv:value>
   </sv:property>
   <sv:property sv:name="definition" sv:type="String">
     <sv:value>info.magnolia.ui.app.pages.field.ComponentSelectorDefinition</sv:value>
@@ -35,7 +35,7 @@
       <sv:value>2012-06-27T13:56:44.073+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-      <sv:value>2012-07-19T14:02:44.208+02:00</sv:value>
+      <sv:value>2012-07-30T11:24:15.353+02:00</sv:value>
     </sv:property>
   </sv:node>
 </sv:node>

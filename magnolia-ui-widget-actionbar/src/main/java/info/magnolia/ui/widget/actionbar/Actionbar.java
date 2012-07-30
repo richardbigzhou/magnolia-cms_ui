@@ -37,9 +37,7 @@ import info.magnolia.ui.vaadin.integration.widget.serializer.ResourceSerializer;
 import info.magnolia.ui.widget.actionbar.gwt.client.VActionbar;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -122,7 +120,7 @@ public class Actionbar extends AbstractComponent implements ActionbarView, Serve
     public Object[] initRequestFromClient() {
         for (final ActionbarSection section : sections.values()) {
             doAddSection(section);
-            for (final ActionbarItem action : section.getActions()) {
+            for (final ActionbarItem action : section.getActions().values()) {
                 doAddAction(action, section.getName());
             }
         }
@@ -193,7 +191,6 @@ public class Actionbar extends AbstractComponent implements ActionbarView, Serve
     public void removeSection(String sectionName) {
         sections.remove(sectionName);
         doRemoveSection(sectionName);
-        // requestRepaint();
     }
 
     @Override
@@ -231,55 +228,139 @@ public class Actionbar extends AbstractComponent implements ActionbarView, Serve
 
     @Override
     public void enable(String actionName) {
-        proxy.call("setActionEnabled", true, actionName);
+        for (ActionbarSection section : sections.values()) {
+            ActionbarItem action = section.getActions().get(actionName);
+            if (action != null) {
+                action.setEnabled(true);
+            }
+        }
+        if (isAttached) {
+            proxy.call("setActionEnabled", true, actionName);
+        }
     }
 
     @Override
     public void enable(String actionName, String sectionName) {
-        proxy.call("setActionEnabled", true, actionName, sectionName);
+        ActionbarSection section = sections.get(sectionName);
+        if (section != null) {
+            ActionbarItem action = section.getActions().get(actionName);
+            if (action != null) {
+                action.setEnabled(true);
+            }
+        }
+        if (isAttached) {
+            proxy.call("setActionEnabled", true, actionName, sectionName);
+        }
     }
 
     @Override
     public void enableGroup(String groupName) {
-        proxy.call("setGroupEnabled", true, groupName);
+        for (ActionbarSection section : sections.values()) {
+            for (ActionbarItem action : section.getActions().values()) {
+                if (groupName.equals(action.getGroupName())) {
+                    action.setEnabled(true);
+                }
+            }
+        }
+        if (isAttached) {
+            proxy.call("setGroupEnabled", true, groupName);
+        }
     }
 
     @Override
     public void enableGroup(String groupName, String sectionName) {
-        proxy.call("setGroupEnabled", true, groupName, sectionName);
+        ActionbarSection section = sections.get(sectionName);
+        if (section != null) {
+            for (ActionbarItem action : section.getActions().values()) {
+                if (groupName.equals(action.getGroupName())) {
+                    action.setEnabled(true);
+                }
+            }
+        }
+        if (isAttached) {
+            proxy.call("setGroupEnabled", true, groupName, sectionName);
+        }
     }
 
     @Override
     public void disable(String actionName) {
-        proxy.call("setActionEnabled", false, actionName);
+        for (ActionbarSection section : sections.values()) {
+            ActionbarItem action = section.getActions().get(actionName);
+            if (action != null) {
+                action.setEnabled(false);
+            }
+        }
+        if (isAttached) {
+            proxy.call("setActionEnabled", false, actionName);
+        }
     }
 
     @Override
     public void disable(String actionName, String sectionName) {
-        proxy.call("setActionEnabled", false, actionName, sectionName);
+        ActionbarSection section = sections.get(sectionName);
+        if (section != null) {
+            ActionbarItem action = section.getActions().get(actionName);
+            if (action != null) {
+                action.setEnabled(false);
+            }
+        }
+        if (isAttached) {
+            proxy.call("setActionEnabled", false, actionName, sectionName);
+        }
     }
 
     @Override
     public void disableGroup(String groupName) {
-        proxy.call("setGroupEnabled", false, groupName);
+        for (ActionbarSection section : sections.values()) {
+            for (ActionbarItem action : section.getActions().values()) {
+                if (groupName.equals(action.getGroupName())) {
+                    action.setEnabled(false);
+                }
+            }
+        }
+        if (isAttached) {
+            proxy.call("setGroupEnabled", false, groupName);
+        }
     }
 
     @Override
     public void disableGroup(String groupName, String sectionName) {
-        proxy.call("setGroupEnabled", false, groupName, sectionName);
+        ActionbarSection section = sections.get(sectionName);
+        if (section != null) {
+            for (ActionbarItem action : section.getActions().values()) {
+                if (groupName.equals(action.getGroupName())) {
+                    action.setEnabled(false);
+                }
+            }
+        }
+        if (isAttached) {
+            proxy.call("setGroupEnabled", false, groupName, sectionName);
+        }
     }
 
     // SHOW / HIDE SECTIONS /////////////////////
 
     @Override
     public void showSection(String sectionName) {
+        ActionbarSection section = sections.get(sectionName);
+        if (section != null) {
+            section.setVisible(true);
+        }
+        if (isAttached) {
+            proxy.call("setSectionVisible", true, sectionName);
+        }
     }
 
     @Override
     public void hideSection(String sectionName) {
+        ActionbarSection section = sections.get(sectionName);
+        if (section != null) {
+            section.setVisible(false);
+        }
+        if (isAttached) {
+            proxy.call("setSectionVisible", false, sectionName);
+        }
     }
-
-    //
 
     // SUPPORTING CLASSES ///////////////////////
 
@@ -320,8 +401,8 @@ public class Actionbar extends AbstractComponent implements ActionbarView, Serve
             this.visible = visible;
         }
 
-        public List<ActionbarItem> getActions() {
-            return new ArrayList<ActionbarItem>(actions.values());
+        public Map<String, ActionbarItem> getActions() {
+            return actions;
         }
 
         public void addAction(ActionbarItem action) {

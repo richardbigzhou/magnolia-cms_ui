@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2003-2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,18 +31,50 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.thumbnail;
+package info.magnolia.ui.model.thumbnail;
+
 
 import javax.jcr.Node;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 /**
- * Defines a provider for Thumbnail images.
+ * Superclass for all thumbnail providers.
  */
-public interface ThumbnailProvider {
+public abstract class AbstractThumbnailProvider implements ThumbnailProvider {
+    public static final String THUMBNAIL_NODE_NAME = "thumbnail";
+    public static final String DEFAULT_THUMBNAIL_FORMAT = "jpg";
+    public static final float DEFAULT_THUMBNAIL_QUALITY = 0.75f;
 
     /**
-     * Return a path to a thumbnail of the requested size representing the provided item. Depending on the implementation,
-     * this thumbnail may be retrieved from cache or created on the fly.
+     * image format for the thumbnails - jpg, png, ...
      */
-    String getPath(Node node, int width, int height);
+    private String format = DEFAULT_THUMBNAIL_FORMAT;
+
+    /**
+     * Quality of the thumbnails.
+     */
+    private float quality = DEFAULT_THUMBNAIL_QUALITY;
+
+    @Override
+    public abstract String getPath(Node contactNode, int width, int height);
+
+    protected abstract BufferedImage createThumbnail(final Image contactImage, final String format, final int width, final int height, final float quality) throws IOException;
+
+    public String getFormat() {
+        return format;
+    }
+
+    public void setFormat(String format) {
+        this.format = format;
+    }
+
+    public float getQuality() {
+        return quality;
+    }
+
+    public void setQuality(float quality) {
+        this.quality = quality;
+    }
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,49 +31,37 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.workbench.definition;
+package info.magnolia.ui.app.pages.editor;
 
-import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
-import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
-import info.magnolia.ui.model.column.definition.ColumnDefinition;
-import info.magnolia.ui.model.thumbnail.ThumbnailProvider;
-
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.List;
+import info.magnolia.ui.framework.event.Event;
+import info.magnolia.ui.framework.event.EventHandler;
 
 
 /**
- * Contains all elements which define a workbench configuration.
+ * This event is fired when a component is selected in page editor.
  */
-public interface WorkbenchDefinition extends Serializable {
-
-    String getName();
-
-    String getWorkspace();
-
-    String getPath();
-
-    List<ItemTypeDefinition> getItemTypes();
+public class ComponentSelectedEvent implements Event<ComponentSelectedEvent.Handler> {
 
     /**
-     * Return the itemType filter criteria in order to be used for searching nodes. like:
-     * "jcr:* | myapp:report | my doc"
+     * Handles {@link ComponentSelectedEvent} events.
      */
-    String getItemTypesFilter();
+    public static interface Handler extends EventHandler {
 
-    ColumnDefinition getColumn(String columnId);
+        void onItemSelected(ComponentSelectedEvent event);
+    }
 
-    Collection<ColumnDefinition> getColumns();
+    private final String path;
 
-    /**
-     * Gets the definition for the action bar related to this workbench.
-     */
-    ActionbarDefinition getActionbar();
+    @Override
+    public void dispatch(Handler handler) {
+        handler.onItemSelected(this);
+    }
 
-    ComponentProviderConfiguration getComponents();
+    public ComponentSelectedEvent(String path) {
+        this.path = path;
+    }
 
-
-    ThumbnailProvider getThumbnailProvider();
-
+    public String getPath() {
+        return path;
+    }
 }

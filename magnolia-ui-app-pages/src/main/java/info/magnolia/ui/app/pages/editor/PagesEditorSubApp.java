@@ -36,30 +36,53 @@ package info.magnolia.ui.app.pages.editor;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.app.pages.action.PagesActionbarDefinitionProvider;
 import info.magnolia.ui.framework.app.SubApp;
+import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.view.View;
 
 import javax.inject.Inject;
+
 
 /**
  * PagesEditorSubApp.
  */
 public class PagesEditorSubApp implements SubApp, PagesEditorView.Listener {
 
-    private PagesEditorView view;
+    private final PagesEditorView view;
 
-    private PageEditorPresenter pageEditorPresenter;
-    
+    private final EventBus eventBus;
+
+    private final PageEditorPresenter pageEditorPresenter;
+
     private PageEditorParameters parameters;
-    
+
     private final ActionbarPresenter actionbarPresenter;
-    
+
     private String caption;
 
     @Inject
-    public PagesEditorSubApp(PagesEditorView view, PageEditorPresenter pageEditorPresenter, ActionbarPresenter actionbarPresenter) {
+    public PagesEditorSubApp(PagesEditorView view, EventBus eventBus, PageEditorPresenter pageEditorPresenter, ActionbarPresenter actionbarPresenter) {
         this.view = view;
+        this.eventBus = eventBus;
         this.pageEditorPresenter = pageEditorPresenter;
         this.actionbarPresenter = actionbarPresenter;
+
+        bindHandlers();
+    }
+
+    private void bindHandlers() {
+        eventBus.addHandler(ComponentSelectedEvent.class, new ComponentSelectedEvent.Handler() {
+
+            @Override
+            public void onItemSelected(ComponentSelectedEvent event) {
+                // TODO 20120730 mgeljic, review whether presenter should be a proxy for every
+                // single actionbar widget feature
+                if (event.getPath() != null) {
+                    actionbarPresenter.hideSection("Pages");
+                    actionbarPresenter.hideSection("Areas");
+                    actionbarPresenter.showSection("Components");
+                }
+            }
+        });
     }
 
     @Override
@@ -78,8 +101,12 @@ public class PagesEditorSubApp implements SubApp, PagesEditorView.Listener {
         view.setListener(this);
         pageEditorPresenter.setParameters(parameters);
         view.setPageEditor(pageEditorPresenter.start());
-        
+
         actionbarPresenter.initActionbar(PagesActionbarDefinitionProvider.getPageEditorActionbarDefinition());
+        actionbarPresenter.hideSection("Areas");
+        actionbarPresenter.hideSection("Components");
+        actionbarPresenter.showSection("Pages");
+
         view.setActionbarView(actionbarPresenter.start());
 
         return view;
