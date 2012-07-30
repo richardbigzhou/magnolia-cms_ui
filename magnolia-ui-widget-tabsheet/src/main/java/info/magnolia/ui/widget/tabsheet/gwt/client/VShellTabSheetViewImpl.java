@@ -54,22 +54,21 @@ public class VShellTabSheetViewImpl extends FlowPanel implements VShellTabSheetV
 
     private final List<VShellTabContent> tabs = new LinkedList<VShellTabContent>();
 
-    @Override
-    public VShellTabNavigator getTabContainer() {
-        return tabContainer;
-    }
+    private Presenter presenter;
 
-    private EventBus eventBus;
-
-
-    public VShellTabSheetViewImpl(EventBus eventBus) {
+    public VShellTabSheetViewImpl(EventBus eventBus, Presenter presenter) {
         super();
-        this.eventBus = eventBus;
+        this.presenter = presenter;
         this.tabContainer =  new VShellTabNavigator(eventBus);
         addStyleName("v-shell-tabsheet");
         add(tabContainer);
     }
 
+    @Override
+    public VShellTabNavigator getTabContainer() {
+        return tabContainer;
+    }
+    
     @Override
     public void removeTab(VShellTabContent tabToOrphan) {
         if (activeTab == tabToOrphan) {
@@ -84,11 +83,10 @@ public class VShellTabSheetViewImpl extends FlowPanel implements VShellTabSheetV
 
     @Override
     public void setActiveTab(final VShellTabContent tab) {
-
         showAllTabContents(false);
-
         tab.getElement().getStyle().setDisplay(Display.BLOCK);
         activeTab = tab;
+        presenter.updateLayout();
     }
 
     @Override

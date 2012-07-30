@@ -77,7 +77,7 @@ public class VShellTabSheet extends Composite implements HasWidgets, VShellTabSh
 
     public VShellTabSheet() {
         super();
-        this.view = new VShellTabSheetViewImpl(eventBus);
+        this.view = new VShellTabSheetViewImpl(eventBus, this);
 
         eventBus.addHandler(TabCloseEvent.TYPE, new TabCloseEventHandler() {
             @Override
@@ -283,6 +283,11 @@ public class VShellTabSheet extends Composite implements HasWidgets, VShellTabSh
     @Override
     public boolean remove(Widget w) {
         return view.remove(w);
+    }
+
+    @Override
+    public void updateLayout() {
+        client.runDescendentsLayout(VShellTabSheet.this);
     }
 
 }
