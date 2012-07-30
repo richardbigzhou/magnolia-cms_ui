@@ -36,6 +36,7 @@ package info.magnolia.ui.admincentral.field;
 import info.magnolia.cms.beans.runtime.FileProperties;
 import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.cms.util.PathUtil;
+import info.magnolia.ui.admincentral.image.ImageSize;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 
 import java.io.ByteArrayInputStream;

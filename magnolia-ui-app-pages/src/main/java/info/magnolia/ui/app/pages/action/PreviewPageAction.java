@@ -43,7 +43,7 @@ import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.cms.security.User;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.module.pageexport.http.MgnlHttpClient;
-import info.magnolia.ui.admincentral.field.ImageSize;
+import info.magnolia.ui.admincentral.image.ImageSize;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import org.apache.jackrabbit.value.BinaryImpl;
@@ -147,8 +147,8 @@ public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
         child.setProperty(FileProperties.PROPERTY_SIZE, binaryImpl.getSize());
 
         ImageSize imageSize = ImageSize.valueOf(binaryImpl.getStream());
-        child.setProperty(FileProperties.PROPERTY_WIDTH, imageSize.getWidth());
-        child.setProperty(FileProperties.PROPERTY_HEIGHT, imageSize.getHeight());
+        child.setProperty(FileProperties.PROPERTY_WIDTH, imageSize!=null ? imageSize.getWidth():150);
+        child.setProperty(FileProperties.PROPERTY_HEIGHT, imageSize!=null ? imageSize.getHeight():150);
         child.getSession().save();
 
     }
