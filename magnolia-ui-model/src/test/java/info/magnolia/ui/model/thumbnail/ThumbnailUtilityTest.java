@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.thumbnail;
+package info.magnolia.ui.model.thumbnail;
 
 import org.junit.Test;
 

@@ -39,7 +39,7 @@ import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.cms.util.ContentUtil;
 import info.magnolia.link.LinkException;
 import info.magnolia.link.LinkUtil;
-import info.magnolia.ui.admincentral.thumbnail.ThumbnailProvider;
+import info.magnolia.ui.model.thumbnail.ThumbnailProvider;
 
 import java.awt.Image;
 import java.awt.Toolkit;

@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.app.contacts.thumbnail;
 
-import info.magnolia.ui.admincentral.thumbnail.ThumbnailUtility;
+import info.magnolia.ui.model.thumbnail.ThumbnailUtility;
 
 import java.awt.Image;
 import java.awt.image.BufferedImage;
