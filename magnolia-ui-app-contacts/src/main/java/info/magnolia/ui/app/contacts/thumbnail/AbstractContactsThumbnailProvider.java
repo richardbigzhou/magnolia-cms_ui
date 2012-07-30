@@ -55,6 +55,7 @@ import javax.jcr.RepositoryException;
 import javax.swing.ImageIcon;
 
 import org.apache.jackrabbit.JcrConstants;
+import org.apache.tika.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,13 +76,15 @@ public abstract class AbstractContactsThumbnailProvider extends AbstractThumbnai
             if (createThumbnail(contactNode)) {
 
                 Node photoNode = contactNode.getNode(PHOTO_NODE_NAME);
-                final InputStream stream = photoNode.getProperty(JcrConstants.JCR_DATA).getBinary().getStream();
+                final InputStream originalInputStream = photoNode.getProperty(JcrConstants.JCR_DATA).getBinary().getStream();
+                ByteArrayOutputStream thumbnailOutputStream = null;
+                InputStream thumbnailInputStream = null;
 
                 BufferedImage thumbnail = null;
                 try {
-                    byte[] array = new byte[stream.available()];
-                    stream.read(array);
-                    stream.close();
+                    byte[] array = new byte[originalInputStream.available()];
+                    originalInputStream.read(array);
+                    originalInputStream.close();
 
                     Image contactImage = Toolkit.getDefaultToolkit().createImage(array);
                     contactImage = new ImageIcon(contactImage).getImage();
@@ -97,25 +100,31 @@ public abstract class AbstractContactsThumbnailProvider extends AbstractThumbnai
                     thumbnailNode.setProperty(FileProperties.PROPERTY_HEIGHT,  thumbnail.getHeight());
                     thumbnailNode.setProperty(FileProperties.PROPERTY_WIDTH,  thumbnail.getWidth());
 
-                    final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    ImageIO.write(thumbnail, getFormat(), baos);
-                    final int size = baos.size();
+                    thumbnailOutputStream = new ByteArrayOutputStream();
+                    ImageIO.write(thumbnail, getFormat(), thumbnailOutputStream);
+                    final int size = thumbnailOutputStream.size();
                     log.debug("thumbnail size is {} ", size);
 
-                    final InputStream is = new ByteArrayInputStream(baos.toByteArray());
-                    thumbnailNode.setProperty(JcrConstants.JCR_DATA, is);
+                    thumbnailInputStream = new ByteArrayInputStream(thumbnailOutputStream.toByteArray());
+                    thumbnailNode.setProperty(JcrConstants.JCR_DATA, thumbnailInputStream);
                     thumbnailNode.setProperty(FileProperties.PROPERTY_SIZE, size);
 
                     contactNode.getSession().save();
 
+
                 } catch (IOException e) {
                     log.warn("Error creating thumbnail image!", e);
                     return path;
+                } finally {
+                    IOUtils.closeQuietly(thumbnailOutputStream);
+                    IOUtils.closeQuietly(thumbnailInputStream);
+                    IOUtils.closeQuietly(originalInputStream);
                 }
             }
         } catch (RepositoryException e) {
             log.warn("Could read image from contactNode:", e);
             return path;
+
         }
 
         try {

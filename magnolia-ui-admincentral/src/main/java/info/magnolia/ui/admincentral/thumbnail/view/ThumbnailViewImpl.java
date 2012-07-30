@@ -101,6 +101,7 @@ public class ThumbnailViewImpl implements ThumbnailView {
                     if(clickedAsset == null) {
                         //deselect
                         selectedAsset = null;
+                        listener.onItemSelection(null);
                         return;
                     }
                     log.debug("Clicked on {}", clickedAsset.getDescription());
