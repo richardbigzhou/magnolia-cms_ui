@@ -102,16 +102,16 @@ public class ActionbarBuilderTest {
         assertEquals(aSection.getName(), sections.get(SECTION_A).getName());
         assertEquals(bSection.getName(), sections.get(SECTION_B).getName());
 
-        List<ActionbarItem> aActions = sections.get(SECTION_A).getActions();
+        Map<String, ActionbarItem> aActions = sections.get(SECTION_A).getActions();
         assertEquals(aActionCount, aActions.size());
-        assertTrue(containsAction(aActions, "0.0"));
-        assertTrue(containsAction(aActions, "1.1"));
+        assertTrue(aActions.containsKey("0.0"));
+        assertTrue(aActions.containsKey("1.1"));
 
-        List<ActionbarItem> bActions = sections.get(SECTION_B).getActions();
+        Map<String, ActionbarItem> bActions = sections.get(SECTION_B).getActions();
         assertEquals(bActionCount, bActions.size());
-        assertTrue(containsAction(bActions, "0.0"));
-        assertTrue(containsAction(bActions, "1.0"));
-        assertTrue(containsAction(bActions, "2.0"));
+        assertTrue(bActions.containsKey("0.0"));
+        assertTrue(bActions.containsKey("1.0"));
+        assertTrue(bActions.containsKey("2.0"));
     }
 
     @Test
@@ -131,9 +131,9 @@ public class ActionbarBuilderTest {
         ActionbarView actionbar = ActionbarBuilder.build(def);
 
         // THEN
-        List<ActionbarItem> actions = ((Actionbar) actionbar).getSections().get(SECTION_A).getActions();
+        Map<String, ActionbarItem> actions = ((Actionbar) actionbar).getSections().get(SECTION_A).getActions();
         assertEquals(actionCount, actions.size());
-        for (ActionbarItem action : actions) {
+        for (ActionbarItem action : actions.values()) {
             assertTrue(action.getGroupName() != "0");
         }
     }
@@ -167,15 +167,15 @@ public class ActionbarBuilderTest {
         ActionbarView actionbar = ActionbarBuilder.build(def);
 
         // THEN
-        List<ActionbarItem> aActions = ((Actionbar) actionbar).getSections().get(SECTION_A).getActions();
-        List<ActionbarItem> bActions = ((Actionbar) actionbar).getSections().get(SECTION_B).getActions();
+        Map<String, ActionbarItem> aActions = ((Actionbar) actionbar).getSections().get(SECTION_A).getActions();
+        Map<String, ActionbarItem> bActions = ((Actionbar) actionbar).getSections().get(SECTION_B).getActions();
         // duplicates 0.1 and 0.2 shouldn't be added, but duplicate 0.3 should
         assertEquals(aActionCount - 2, aActions.size());
         assertEquals(bActionCount, bActions.size());
-        assertTrue(containsAction(aActions, "0.1"));
-        assertTrue(containsAction(aActions, "0.2"));
-        assertTrue(containsAction(aActions, "0.3"));
-        assertTrue(containsAction(bActions, "0.3"));
+        assertTrue(aActions.containsKey("0.1"));
+        assertTrue(aActions.containsKey("0.2"));
+        assertTrue(aActions.containsKey("0.3"));
+        assertTrue(bActions.containsKey("0.3"));
 
     }
 
