@@ -38,7 +38,7 @@ import info.magnolia.jcr.predicate.AbstractPredicate;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.admincentral.container.JcrContainer;
 import info.magnolia.ui.admincentral.thumbnail.Thumbnail;
-import info.magnolia.ui.admincentral.thumbnail.ThumbnailProvider;
+import info.magnolia.ui.model.thumbnail.ThumbnailProvider;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 
 import javax.jcr.LoginException;

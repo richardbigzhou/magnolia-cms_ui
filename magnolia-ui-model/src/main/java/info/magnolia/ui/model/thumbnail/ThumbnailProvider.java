@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,44 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.magnoliashell.gwt.client.viewport;
+package info.magnolia.ui.model.thumbnail;
 
-import com.google.gwt.user.client.ui.Widget;
-
+import javax.jcr.Node;
 
 /**
- * Shell apps viewport client side.
+ * Defines a provider for Thumbnail images.
  */
-public class VShellAppsViewport extends VShellViewport {
+public interface ThumbnailProvider {
 
-    private ContentAnimationDelegate internalAnimationDelegate = ContentAnimationDelegate.FadingDelegate;
-    
-    private ContentAnimationDelegate transitionalAnimationDelegate = ContentAnimationDelegate.SlidingDelegate;
-    
-    public VShellAppsViewport() {
-        super();
-        setForceContentAlign(true);
-        setContentAnimationDelegate(ContentAnimationDelegate.SlidingDelegate);
-    }
-    
-    @Override
-    public void setActive(boolean isActive) {
-        super.setActive(isActive);
-        if (isActive) {
-            setContentAnimationDelegate(internalAnimationDelegate);
-        } else {
-            setContentAnimationDelegate(transitionalAnimationDelegate);
-        }
-    }
-    
-    @Override
-    protected void setWidgetVisible(Widget w) {
-        if (getAnimationDelegate() == ContentAnimationDelegate.SlidingDelegate) {
-            w.getElement().getStyle().setOpacity(1d);   
-        } else {
-            w.getElement().getStyle().setProperty("top", "");
-        }
-        super.setWidgetVisible(w);
-    }
-    
+    /**
+     * Return a path to a thumbnail of the requested size representing the provided item. Depending on the implementation,
+     * this thumbnail may be retrieved from cache or created on the fly.
+     */
+    String getPath(Node node, int width, int height);
 }

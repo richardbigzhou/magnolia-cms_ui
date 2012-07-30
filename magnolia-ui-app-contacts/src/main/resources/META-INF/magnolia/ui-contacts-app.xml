@@ -35,17 +35,6 @@
     </component>
    </components>
 
-   <components>
-    <id>admincentral</id>
-    <component>
-      <type>info.magnolia.ui.admincentral.thumbnail.ThumbnailProvider</type>
-      <workspace>config</workspace>
-      <path>/modules/ui-contacts-app/thumbnailProvider</path>
-      <observed>true</observed>
-      <scope>singleton</scope>
-    </component>
-    </components>
-
   <dependencies>
     <dependency>
       <name>ui-admincentral</name>

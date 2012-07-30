@@ -36,6 +36,7 @@ package info.magnolia.ui.model.workbench.definition;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.model.column.definition.ColumnDefinition;
+import info.magnolia.ui.model.thumbnail.ThumbnailProvider;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -47,7 +48,6 @@ import java.util.Map;
 /**
  * Default configured implementation for the WorkbenchDefinitionn.
  */
-@SuppressWarnings("serial")
 public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
 
     private String name;
@@ -64,6 +64,7 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
 
     private ComponentProviderConfiguration components;
 
+    private ThumbnailProvider thumbnailProvider;
     @Override
     public String getName() {
         return name;
@@ -141,8 +142,16 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
         return components;
     }
 
+    @Override
+    public ThumbnailProvider getThumbnailProvider() {
+        return thumbnailProvider;
+    }
+
     public void setComponents(ComponentProviderConfiguration components) {
         this.components = components;
     }
 
+    public void setThumbnailProvider(ThumbnailProvider thumbnailProvider) {
+        this.thumbnailProvider = thumbnailProvider;
+    }
 }

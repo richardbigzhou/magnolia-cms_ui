@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,44 +31,37 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.magnoliashell.gwt.client.viewport;
+package info.magnolia.ui.app.pages.editor;
 
-import com.google.gwt.user.client.ui.Widget;
+import info.magnolia.ui.framework.event.Event;
+import info.magnolia.ui.framework.event.EventHandler;
 
 
 /**
- * Shell apps viewport client side.
+ * This event is fired when a component is selected in page editor.
  */
-public class VShellAppsViewport extends VShellViewport {
+public class ComponentSelectedEvent implements Event<ComponentSelectedEvent.Handler> {
 
-    private ContentAnimationDelegate internalAnimationDelegate = ContentAnimationDelegate.FadingDelegate;
-    
-    private ContentAnimationDelegate transitionalAnimationDelegate = ContentAnimationDelegate.SlidingDelegate;
-    
-    public VShellAppsViewport() {
-        super();
-        setForceContentAlign(true);
-        setContentAnimationDelegate(ContentAnimationDelegate.SlidingDelegate);
+    /**
+     * Handles {@link ComponentSelectedEvent} events.
+     */
+    public static interface Handler extends EventHandler {
+
+        void onItemSelected(ComponentSelectedEvent event);
     }
-    
+
+    private final String path;
+
     @Override
-    public void setActive(boolean isActive) {
-        super.setActive(isActive);
-        if (isActive) {
-            setContentAnimationDelegate(internalAnimationDelegate);
-        } else {
-            setContentAnimationDelegate(transitionalAnimationDelegate);
-        }
+    public void dispatch(Handler handler) {
+        handler.onItemSelected(this);
     }
-    
-    @Override
-    protected void setWidgetVisible(Widget w) {
-        if (getAnimationDelegate() == ContentAnimationDelegate.SlidingDelegate) {
-            w.getElement().getStyle().setOpacity(1d);   
-        } else {
-            w.getElement().getStyle().setProperty("top", "");
-        }
-        super.setWidgetVisible(w);
+
+    public ComponentSelectedEvent(String path) {
+        this.path = path;
     }
-    
+
+    public String getPath() {
+        return path;
+    }
 }

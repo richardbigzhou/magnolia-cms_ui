@@ -46,7 +46,7 @@ import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.admincentral.content.view.ContentView;
 import info.magnolia.ui.admincentral.content.view.ContentView.ViewType;
 import info.magnolia.ui.admincentral.list.view.ListView;
-import info.magnolia.ui.admincentral.thumbnail.ThumbnailProvider;
+import info.magnolia.ui.model.thumbnail.ThumbnailProvider;
 import info.magnolia.ui.admincentral.thumbnail.view.ThumbnailView;
 import info.magnolia.ui.admincentral.tree.view.TreeView;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
@@ -77,10 +77,12 @@ public class ConfiguredContentViewBuilderTest {
         MockUtil.setSessionAndHierarchyManager(session);
 
         componentProvider.setInstance(WorkbenchActionFactory.class, new WorkbenchActionFactoryImpl());
-        componentProvider.setInstance(ThumbnailProvider.class, mock(ThumbnailProvider.class));
+        final ThumbnailProvider thumbnailProvider = mock(ThumbnailProvider.class);
+        componentProvider.setInstance(ThumbnailProvider.class, thumbnailProvider);
 
         workbenchDef.setWorkspace(workspace);
         workbenchDef.setPath("/");
+        workbenchDef.setThumbnailProvider(thumbnailProvider);
 
         final ConfiguredItemTypeDefinition itemTypeDefinition = new ConfiguredItemTypeDefinition();
         itemTypeDefinition.setItemType("qux");

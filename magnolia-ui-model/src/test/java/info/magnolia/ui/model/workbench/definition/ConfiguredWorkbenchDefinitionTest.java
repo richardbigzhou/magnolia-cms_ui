@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2010-2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,44 +31,33 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.magnoliashell.gwt.client.viewport;
+package info.magnolia.ui.model.workbench.definition;
 
-import com.google.gwt.user.client.ui.Widget;
+import info.magnolia.test.RepositoryTestCase;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 
 /**
- * Shell apps viewport client side.
+ * Tests.
  */
-public class VShellAppsViewport extends VShellViewport {
+public class ConfiguredWorkbenchDefinitionTest extends RepositoryTestCase {
+    @Test
+    public void testGetItemTypesFilter() throws Exception {
+        // GIVEN
+        ConfiguredWorkbenchDefinition def = new ConfiguredWorkbenchDefinition();
+        ConfiguredItemTypeDefinition itemDef = new ConfiguredItemTypeDefinition();
+        itemDef.setItemType("oneItemType");
+        def.addItemType(itemDef);
+        ConfiguredItemTypeDefinition anotherItemDef = new ConfiguredItemTypeDefinition();
+        anotherItemDef.setItemType("anotherItemType");
+        def.addItemType(anotherItemDef);
 
-    private ContentAnimationDelegate internalAnimationDelegate = ContentAnimationDelegate.FadingDelegate;
-    
-    private ContentAnimationDelegate transitionalAnimationDelegate = ContentAnimationDelegate.SlidingDelegate;
-    
-    public VShellAppsViewport() {
-        super();
-        setForceContentAlign(true);
-        setContentAnimationDelegate(ContentAnimationDelegate.SlidingDelegate);
+        // WHEN
+        final String result = def.getItemTypesFilter();
+
+        // THEN
+        assertEquals("  oneItemType |  anotherItemType", result);
     }
-    
-    @Override
-    public void setActive(boolean isActive) {
-        super.setActive(isActive);
-        if (isActive) {
-            setContentAnimationDelegate(internalAnimationDelegate);
-        } else {
-            setContentAnimationDelegate(transitionalAnimationDelegate);
-        }
-    }
-    
-    @Override
-    protected void setWidgetVisible(Widget w) {
-        if (getAnimationDelegate() == ContentAnimationDelegate.SlidingDelegate) {
-            w.getElement().getStyle().setOpacity(1d);   
-        } else {
-            w.getElement().getStyle().setProperty("top", "");
-        }
-        super.setWidgetVisible(w);
-    }
-    
 }

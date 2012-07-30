@@ -272,4 +272,8 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
     public EventBus getEventBus() {
         return eventBus;
     }
+    
+    protected ContentAnimationDelegate getAnimationDelegate() {
+        return animationDelegate;
+    }
 }

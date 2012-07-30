@@ -36,6 +36,7 @@ package info.magnolia.ui.model.workbench.definition;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.model.column.definition.ColumnDefinition;
+import info.magnolia.ui.model.thumbnail.ThumbnailProvider;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -71,5 +72,8 @@ public interface WorkbenchDefinition extends Serializable {
     ActionbarDefinition getActionbar();
 
     ComponentProviderConfiguration getComponents();
+
+
+    ThumbnailProvider getThumbnailProvider();
 
 }
