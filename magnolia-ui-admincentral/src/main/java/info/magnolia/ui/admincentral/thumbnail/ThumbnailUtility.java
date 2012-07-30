@@ -37,12 +37,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-
-import com.sun.image.codec.jpeg.JPEGCodec;
-import com.sun.image.codec.jpeg.JPEGEncodeParam;
-import com.sun.image.codec.jpeg.JPEGImageEncoder;
 
 /**
  * Utility for creating Thumbnails.
@@ -58,6 +53,8 @@ public class ThumbnailUtility {
 
         final double thumbRatio = (double) thumbWidth / (double) thumbHeight;
         final double imageRatio = (double) original.getWidth(null) / (double) original.getHeight(null);
+        System.out.println("width="+original.getWidth(null));
+        System.out.println("height"+original.getHeight(null));
 
         // This calculation is used to convert the image size according to the pixels mentioned above
         if (thumbRatio < imageRatio) {
@@ -72,13 +69,6 @@ public class ThumbnailUtility {
         graphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         graphics.drawImage(original, 0, 0, thumbWidth, thumbHeight, null);
 
-        final ByteArrayOutputStream out = new ByteArrayOutputStream();
-        final JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
-        final JPEGEncodeParam param = encoder.getDefaultJPEGEncodeParam(thumbnail);
-
-        param.setQuality(quality, false);
-        encoder.setJPEGEncodeParam(param);
-        encoder.encode(thumbnail);
 
         return thumbnail;
     }

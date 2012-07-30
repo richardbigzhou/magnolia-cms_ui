@@ -94,13 +94,18 @@ public class ThumbnailViewImpl implements ThumbnailView {
             @Override
             public void layoutClick(LayoutClickEvent event) {
                 final Thumbnail clickedAsset = (Thumbnail) event.getClickedComponent();
-                if(clickedAsset != null && listener != null) {
-                    log.debug("Clicked on {}", clickedAsset.getDescription());
+                if(listener != null) {
                     if(selectedAsset != null) {
                         selectedAsset.removeStyleName("active");
                     }
-                    selectedAsset = clickedAsset;
+                    if(clickedAsset == null) {
+                        //deselect
+                        selectedAsset = null;
+                        return;
+                    }
+                    log.debug("Clicked on {}", clickedAsset.getDescription());
                     clickedAsset.addStyleName("active");
+                    selectedAsset = clickedAsset;
                     listener.onItemSelection(clickedAsset.getNode());
                 }
             }
