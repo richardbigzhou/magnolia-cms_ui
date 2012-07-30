@@ -33,14 +33,9 @@
  */
 package info.magnolia.ui.vaadin.integration.widget.client.applauncher;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import info.magnolia.ui.widget.jquerywrapper.gwt.client.AnimationSettings;
+import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.RepeatingCommand;
-import com.google.gwt.dom.client.Style.Display;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
 /**
@@ -48,8 +43,10 @@ import com.google.web.bindery.event.shared.EventBus;
  */
 public class VTemporaryAppTileGroup extends VAppTileGroup {
 
-    private boolean isOpen = false;
+    private static final int OPEN_STATE_HEIGHT_PX = 80;
 
+    private static final int VISIBILITY_TOGGLE_SPEED = 200; 
+    
     public VTemporaryAppTileGroup(EventBus eventBus, String color) {
         super(color);
         construct();
@@ -58,107 +55,24 @@ public class VTemporaryAppTileGroup extends VAppTileGroup {
     @Override
     protected void construct() {
         addStyleName("temporary");
-
+        closeSection();
     }
 
     @Override
     public void addAppThumbnail(VAppTile thumbnail) {
         super.addAppThumbnail(thumbnail);
-        thumbnail.getElement().getStyle().setOpacity(0d);
     }
 
-    public void openSection() {
-
-        isOpen = true;
-        if (getWidgetCount() != 0) {
-            final Iterator<Widget> it = iterator();
-            Scheduler.get().scheduleFixedDelay(new RepeatingCommand() {
-                @Override
-                public boolean execute() {
-                    final Widget w = it.next();
-                    w.getElement().getStyle().setProperty("opacity", "1");
-                    w.removeStyleName("anim-turn-in-off");
-                    w.addStyleName("anim-turn-in");
-                    return it.hasNext();
-                }
-            }, 50);
-            cleanUpTransition();
-        }
+    public void closeSection() {
+        JQueryWrapper.select(this).animate(VISIBILITY_TOGGLE_SPEED, new AnimationSettings() {{
+            setProperty("height", 0);
+        }});
     }
 
-    private void cleanUpTransition() {
-        cleanUpTimer.cancel();
-        cleanUpTimer.schedule(50 * getWidgetCount());
+    public void showSection() {
+        JQueryWrapper.select(this).animate(VISIBILITY_TOGGLE_SPEED, new AnimationSettings() {{
+            setProperty("height", OPEN_STATE_HEIGHT_PX);
+        }});
     }
-
-    public void close() {
-        isOpen = false;
-        if (getWidgetCount() != 0) {
-            final Iterator<Widget> it = new ReverseIterator();
-            Scheduler.get().scheduleFixedDelay(new RepeatingCommand() {
-                @Override
-                public boolean execute() {
-                    final Widget w = it.next();
-                    w.getElement().getStyle().setProperty("opacity", "0");
-                    w.removeStyleName("anim-turn-in");
-                    w.addStyleName("anim-turn-in-off");
-                    return it.hasNext();
-                }
-            }, 50);
-            cleanUpTransition();
-        }
-    }
-
-    public void conceal() {
-        getElement().getStyle().setDisplay(Display.NONE);
-        close();
-    }
-
-    public void reveal() {
-        getElement().getStyle().setDisplay(Display.BLOCK);
-        openSection();
-    }
-
-    private class ReverseIterator implements Iterator<Widget> {
-
-        private int index = getWidgetCount();
-
-        @Override
-        public boolean hasNext() {
-            return index > 0;
-        }
-
-        @Override
-        public Widget next() {
-            if (index == 0) {
-                throw new NoSuchElementException();
-            }
-            return getWidget(--index);
-        }
-
-        @Override
-        public void remove() {
-            throw new UnsupportedOperationException();
-        }
-    }
-
-    private Timer cleanUpTimer = new Timer() {
-        @Override
-        public void run() {
-            final Iterator<Widget> it = iterator();
-            while (it.hasNext()) {
-                final Widget w = it.next();
-                if (isOpen && !w.getStyleName().contains("anim-turn-in")) {
-                    w.getElement().getStyle().setProperty("opacity", "1");
-                    w.removeStyleName("anim-turn-in-off");
-                    w.addStyleName("anim-turn-in");
-                } else if (!isOpen && !w.getStyleName().contains("anim-turn-in-off")) {
-                    w.getElement().getStyle().setProperty("opacity", "0");
-                    w.removeStyleName("anim-turn-in");
-                    w.addStyleName("anim-turn-in-off");
-                }
-            }
-        }
-    };
 
 }

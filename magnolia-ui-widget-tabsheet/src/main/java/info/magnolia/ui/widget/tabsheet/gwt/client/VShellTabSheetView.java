@@ -47,7 +47,7 @@ public interface VShellTabSheetView extends HasWidgets, IsWidget {
      * Presenter.
      */
     public interface Presenter {
-
+        void updateLayout();
     }
 
     /**

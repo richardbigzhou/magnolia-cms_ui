@@ -36,6 +36,7 @@ package info.magnolia.ui.admincentral.workbench;
 import com.vaadin.terminal.Resource;
 import com.vaadin.terminal.StreamResource;
 import com.vaadin.ui.Embedded;
+import info.magnolia.cms.beans.runtime.FileProperties;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
@@ -56,6 +57,7 @@ import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.widget.actionbar.ActionbarView;
 import org.apache.commons.io.IOUtils;
+import org.apache.jackrabbit.JcrConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -102,6 +104,9 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
     final ContentPresenter contentPresenter;
 
     final ActionbarPresenter actionbarPresenter;
+
+    final static String PHOTO_NODE_NAME = "photo";
+
 
     @Inject
     public ContentWorkbenchSubApp(final AppContext context, final ContentWorkbenchView view, final EventBus eventbus, final Shell shell, final WorkbenchActionFactory actionFactory, final ContentPresenter contentPresenter, final ActionbarPresenter actionbarPresenter) {
@@ -213,14 +218,14 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
                     final Node parentNode = SessionUtil.getNode(event.getWorkspace(), event.getPath());
                     try {
 
-                        if(!parentNode.hasNode("imageBinary")) {
+                        if(!parentNode.hasNode(PHOTO_NODE_NAME)) {
                             actionbarPresenter.setPreview(null);
                             return;
                         }
 
-                        final Node node= parentNode.getNode("imageBinary");
-                        final byte[] pngData = IOUtils.toByteArray(node.getProperty("jcr:data").getBinary().getStream());
-                        final String nodeType = node.getProperty("jcr:mimeType").getString();
+                        final Node node= parentNode.getNode(PHOTO_NODE_NAME);
+                        final byte[] pngData = IOUtils.toByteArray(node.getProperty(JcrConstants.JCR_DATA).getBinary().getStream());
+                        final String nodeType = node.getProperty(FileProperties.CONTENT_TYPE).getString();
 
                         Resource imageResource = new StreamResource(
                                 new StreamResource.StreamSource() {

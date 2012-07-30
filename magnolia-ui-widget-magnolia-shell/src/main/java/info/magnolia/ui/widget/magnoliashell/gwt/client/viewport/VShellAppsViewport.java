@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.widget.magnoliashell.gwt.client.viewport;
 
+import com.google.gwt.user.client.ui.Widget;
+
 
 /**
  * Shell apps viewport client side.
@@ -57,6 +59,16 @@ public class VShellAppsViewport extends VShellViewport {
         } else {
             setContentAnimationDelegate(transitionalAnimationDelegate);
         }
+    }
+    
+    @Override
+    protected void setWidgetVisible(Widget w) {
+        if (getAnimationDelegate() == ContentAnimationDelegate.SlidingDelegate) {
+            w.getElement().getStyle().setOpacity(1d);   
+        } else {
+            w.getElement().getStyle().setProperty("top", "");
+        }
+        super.setWidgetVisible(w);
     }
     
 }

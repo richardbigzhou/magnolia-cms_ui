@@ -73,6 +73,8 @@ public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
 
     private MgnlHttpClient client;
 
+    final static String PHOTO_NODE_NAME = "photo";
+
     /**
      * Instantiates a new preview page action.
      *
@@ -81,6 +83,7 @@ public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
      */
     @Inject
     public PreviewPageAction(PreviewPageActionDefinition definition, MgnlHttpClient client, LocationController locationController, Node nodeToPreview) {
+
         super(definition);
         this.locationController = locationController;
         this.nodeToPreview = nodeToPreview;
@@ -119,16 +122,12 @@ public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
 
     private void saveImage(Node node, InputStream inputStream) throws RepositoryException, IOException {
 
-
-
-        String name = "imageBinary";
-        String fileName = "";
-
+        String fileName = node.getName();
         Node child;
-        if (node.hasNode(name)) {
-            child = node.getNode(name);
+        if (node.hasNode(PHOTO_NODE_NAME)) {
+            child = node.getNode(PHOTO_NODE_NAME);
         } else {
-            child = node.addNode(name, MgnlNodeType.NT_RESOURCE);
+            child = node.addNode(PHOTO_NODE_NAME, MgnlNodeType.NT_RESOURCE);
         }
 
 
@@ -138,7 +137,7 @@ public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
 
         child.setProperty(MgnlNodeType.JCR_DATA, binaryImpl);
 
-        child.setProperty(FileProperties.PROPERTY_FILENAME, "bla");
+        child.setProperty(FileProperties.PROPERTY_FILENAME, fileName);
         child.setProperty(FileProperties.PROPERTY_CONTENTTYPE, "image/png");
         child.setProperty(FileProperties.PROPERTY_EXTENSION, "png");
 
