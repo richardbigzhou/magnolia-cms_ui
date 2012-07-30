@@ -34,19 +34,13 @@
 package info.magnolia.ui.app.contacts.thumbnail;
 
 
-import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.cms.beans.runtime.FileProperties;
+import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.cms.util.ContentUtil;
 import info.magnolia.link.LinkException;
 import info.magnolia.link.LinkUtil;
 import info.magnolia.ui.admincentral.thumbnail.ThumbnailProvider;
-import org.apache.jackrabbit.JcrConstants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.imageio.ImageIO;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
@@ -54,6 +48,14 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+
+import javax.imageio.ImageIO;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
+import org.apache.jackrabbit.JcrConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Abstract Thumbnail provider operating on contacts.
@@ -92,8 +94,8 @@ public abstract class AbstractContactsThumbnailProvider implements ThumbnailProv
                     thumbnail = createThumbnail(contactImage, getFormat(), width, height, getQuality());
                     final Node thumbnailNode = contactNode.addNode(THUMBNAIL_NODE_NAME, MgnlNodeType.NT_RESOURCE);
                     thumbnailNode.setProperty(FileProperties.PROPERTY_FILENAME, photoNode.getProperty(FileProperties.PROPERTY_FILENAME).getString());
-                    thumbnailNode.setProperty(FileProperties.PROPERTY_EXTENSION, getFormat());
                     thumbnailNode.setProperty(FileProperties.PROPERTY_SIZE, photoNode.getProperty(FileProperties.PROPERTY_SIZE).getString());
+                    thumbnailNode.setProperty(FileProperties.PROPERTY_EXTENSION, getFormat());
 
                     final ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     ImageIO.write(thumbnail, getFormat(), baos);
