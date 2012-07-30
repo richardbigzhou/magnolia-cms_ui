@@ -54,8 +54,9 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.swing.ImageIcon;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.jackrabbit.JcrConstants;
-import org.apache.tika.io.IOUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
