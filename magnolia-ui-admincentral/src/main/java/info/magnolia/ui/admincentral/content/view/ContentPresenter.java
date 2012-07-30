@@ -105,7 +105,7 @@ public class ContentPresenter implements ContentView.Listener {
     @Override
     public void onItemSelection(Item item) {
         if (item == null) {
-            log.warn("Got null javax.jcr.Item. ItemSelectedEvent will be fired with null path.");
+            log.debug("Got null javax.jcr.Item. ItemSelectedEvent will be fired with null path.");
             eventBus.fireEvent(new ItemSelectedEvent(workspaceName, null));
             return;
         }

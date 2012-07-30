@@ -147,8 +147,8 @@ public abstract class AbstractContactsThumbnailProvider extends AbstractThumbnai
         final Node photoNode = contactNode.getNode(PHOTO_NODE_NAME);
         final Node thumbnailNode = contactNode.getNode(THUMBNAIL_NODE_NAME);
         if(photoNode.getProperty(JcrConstants.JCR_LASTMODIFIED).getDate().compareTo(thumbnailNode.getProperty(JcrConstants.JCR_LASTMODIFIED).getDate()) > 0) {
-            log.info("Recreating thumbnail for node [{}]", contactNode.getPath());
-            //photo node must have been updated as its last mod date is after thumbanail last mod date
+            log.debug("Recreating thumbnail for node [{}]", contactNode.getPath());
+            //photo node must have been updated as its last mod date is after thumbnail last mod date
             return true;
         }
         return false;
