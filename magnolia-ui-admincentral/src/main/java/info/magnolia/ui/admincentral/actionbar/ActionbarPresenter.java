@@ -107,6 +107,14 @@ public class ActionbarPresenter implements ActionbarView.Listener {
         actionbar.disable(actionName);
     }
 
+    public void showSection(String sectionName) {
+        actionbar.showSection(sectionName);
+    }
+
+    public void hideSection(String sectionName) {
+        actionbar.hideSection(sectionName);
+    }
+
     @Override
     public void onActionbarItemClicked(String actionToken) {
         ActionDefinition actionDefinition = getActionDefinition(actionToken);

@@ -138,7 +138,18 @@ public class VActionbar extends Composite implements Paintable, Container, Clien
                         action.setEnabled(enabled);
                     }
                 }
+            });
 
+            register("setSectionVisible", new Method() {
+
+                @Override
+                public void invoke(String methodName, Object[] params) {
+                    boolean visible = Boolean.parseBoolean(String.valueOf(params[0]));
+                    String sectionName = String.valueOf(params[1]);
+
+                    VActionbarSection section = findSection(sectionName);
+                    section.setVisible(visible);
+                }
             });
 
         }
@@ -252,6 +263,13 @@ public class VActionbar extends Composite implements Paintable, Container, Clien
             sections.addAll(view.getSections().values());
         }
         return sections;
+    }
+
+    private VActionbarSection findSection(String sectionName) {
+        if (sectionName != null) {
+            return view.getSections().get(sectionName);
+        }
+        return null;
     }
 
 }

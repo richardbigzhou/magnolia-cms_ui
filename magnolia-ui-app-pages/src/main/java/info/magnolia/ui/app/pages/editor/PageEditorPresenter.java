@@ -52,16 +52,18 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.widget.dialog.DialogView;
 import info.magnolia.ui.widget.editor.PageEditorView;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import java.util.LinkedList;
-import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -71,15 +73,21 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
     private final PageEditorView view;
 
-    private EventBus eventBus;
+    private final EventBus eventBus;
+
     private final DialogPresenterFactory dialogPresenterFactory;
+
     private final TemplateDefinitionRegistry templateDefinitionRegistry;
 
     private PageEditorParameters parameters;
+
     private String path;
+
     private final String NEW_COMPONENT_DIALOG = "ui-pages-app:newComponent";
+
     private final String COMPONENT_NODE_TYPE = "mgnl:component";
-    private ConfiguredDialogDefinition dialogDefinition;
+
+    private final ConfiguredDialogDefinition dialogDefinition;
 
     private static final Logger log = LoggerFactory.getLogger(PageEditorPresenter.class);
 
@@ -97,6 +105,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
     private void registerHandlers() {
         eventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
+
             @Override
             public void onContentChanged(ContentChangedEvent event) {
                 if (event.getPath().equals(getPath())) {
@@ -130,7 +139,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
     public void newComponent(String workSpace, String path, String availableComponents) {
 
         updateDialogDefinition(availableComponents);
-        
+
         DialogView.Presenter dialogPresenter = dialogPresenterFactory.getDialogPresenter(dialogDefinition);
 
         try {
@@ -164,7 +173,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
         selector.setLabel("Component");
         String[] tokens = availableComponents.split(",");
 
-        for (int i=0; i<tokens.length; i++)  {
+        for (int i = 0; i < tokens.length; i++) {
             try {
                 TemplateDefinition paragraphInfo = templateDefinitionRegistry.getTemplateDefinition(tokens[i]);
                 SelectFieldOptionDefinition option = new SelectFieldOptionDefinition();
@@ -176,15 +185,12 @@ public class PageEditorPresenter implements PageEditorView.Listener {
                 log.error("Exception caught: {}", e.getMessage(), e);
             }
 
-
         }
         tabDefinition.addField(selector);
         List<TabDefinition> tabs = new LinkedList<TabDefinition>();
         tabs.add(tabDefinition);
         dialogDefinition.setTabs(tabs);
     }
-
-
 
     @Override
     public void deleteComponent(String workSpace, String path) {
@@ -211,7 +217,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
         int index = path.lastIndexOf("/");
         String parent = path.substring(0, index);
-        String relPath = path.substring(index+1);
+        String relPath = path.substring(index + 1);
 
         Session session = null;
         try {
@@ -242,10 +248,10 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
             Session session = MgnlContext.getJCRSession(workSpace);
 
-            Node parent  = session.getNode(parentPath);
+            Node parent = session.getNode(parentPath);
             Node component = parent.getNode(source);
 
-            if("before".equals(order)) {
+            if ("before".equals(order)) {
                 NodeUtil.orderBefore(component, target);
             } else {
                 NodeUtil.orderAfter(component, target);
@@ -262,6 +268,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
     @Override
     public void selectComponent(String path) {
         String selectedComponentPath = path;
+        eventBus.fireEvent(new ComponentSelectedEvent(selectedComponentPath));
     }
 
     public PageEditorView start() {
