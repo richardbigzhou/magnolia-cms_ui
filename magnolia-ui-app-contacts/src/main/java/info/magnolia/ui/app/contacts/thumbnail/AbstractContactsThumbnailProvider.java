@@ -39,7 +39,7 @@ import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.cms.util.ContentUtil;
 import info.magnolia.link.LinkException;
 import info.magnolia.link.LinkUtil;
-import info.magnolia.ui.model.thumbnail.ThumbnailProvider;
+import info.magnolia.ui.model.thumbnail.AbstractThumbnailProvider;
 
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -61,15 +61,10 @@ import org.slf4j.LoggerFactory;
  * Abstract Thumbnail provider operating on contacts.
  * Knows how to navigate a contact's jcr structure.
  */
-public abstract class AbstractContactsThumbnailProvider implements ThumbnailProvider {
+public abstract class AbstractContactsThumbnailProvider extends AbstractThumbnailProvider {
     private static final Logger log = LoggerFactory.getLogger(AbstractContactsThumbnailProvider.class);
 
     final static String PHOTO_NODE_NAME = "photo";
-    final static String THUMBNAIL_NODE_NAME = "thumbnail";
-
-    private String format;
-
-    private float quality;
 
     @Override
     public String getPath(Node contactNode, int width, int height) {
@@ -121,23 +116,5 @@ public abstract class AbstractContactsThumbnailProvider implements ThumbnailProv
         }
 
         return path;
-    }
-
-    protected abstract BufferedImage createThumbnail(final Image contactImage, final String format, final int width, final int height, final float quality) throws IOException;
-
-    public String getFormat() {
-        return format;
-    }
-
-    public void setFormat(String format) {
-        this.format = format;
-    }
-
-    public float getQuality() {
-        return quality;
-    }
-
-    public void setQuality(float quality) {
-        this.quality = quality;
     }
 }
