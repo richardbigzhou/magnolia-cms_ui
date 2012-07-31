@@ -47,6 +47,7 @@ import org.slf4j.LoggerFactory;
 import javax.imageio.ImageIO;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import javax.swing.ImageIcon;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
@@ -83,7 +84,8 @@ public class PagesThumbnailProvider extends AbstractThumbnailProvider {
                     stream.read(array);
                     stream.close();
 
-                    final Image contactImage = Toolkit.getDefaultToolkit().createImage(array);
+                    Image contactImage = Toolkit.getDefaultToolkit().createImage(array);
+                    contactImage = new ImageIcon(contactImage).getImage();
                     thumbnail = createThumbnail(contactImage, getFormat(), width, height, getQuality());
                     final Node thumbnailNode = contactNode.addNode(THUMBNAIL_NODE_NAME, MgnlNodeType.NT_RESOURCE);
                     thumbnailNode.setProperty(FileProperties.PROPERTY_FILENAME, photoNode.getProperty(FileProperties.PROPERTY_FILENAME).getString());
