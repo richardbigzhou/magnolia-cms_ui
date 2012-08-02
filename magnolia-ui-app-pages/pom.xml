@@ -14,7 +14,7 @@
       <dependency>
           <groupId>info.magnolia</groupId>
           <artifactId>magnolia-rendering</artifactId>
-          <version>${project.version}</version>
+          <version>5.0-m5-s5</version>
       </dependency>
       <dependency>
           <groupId>info.magnolia.pageexport</groupId>
