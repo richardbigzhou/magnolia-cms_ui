@@ -35,22 +35,20 @@ package info.magnolia.ui.app.pages.action;
 
 
 import com.google.inject.Inject;
-
-import info.magnolia.ui.framework.location.DefaultLocation;
-import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.cms.beans.runtime.FileProperties;
 import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.cms.security.User;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.module.pageexport.http.MgnlHttpClient;
 import info.magnolia.ui.admincentral.image.ImageSize;
+import info.magnolia.ui.framework.location.DefaultLocation;
+import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import org.apache.jackrabbit.value.BinaryImpl;
-
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import java.io.IOException;
@@ -104,19 +102,17 @@ public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
         User user = MgnlContext.getUser();
         client.initCredentials(user);
 
-        System.out.println("preview page should open full screen preview.");
         try {
-            System.out.println(nodeToPreview.getPath());
-            String url = "http://localhost:8080" + nodeToPreview.getPath();
-            client.setUri(url);
+
+            client.setPath(nodeToPreview.getPath());
             client.addParameter("exportType", "png");
             InputStream is = client.get();
             saveImage(nodeToPreview, is);
 
         } catch (RepositoryException e) {
-            System.err.println("ERROR GETTING NODE PATH");
+            log.error(e.getMessage(), e);
         } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            log.error(e.getMessage(), e);
         }
     }
 
