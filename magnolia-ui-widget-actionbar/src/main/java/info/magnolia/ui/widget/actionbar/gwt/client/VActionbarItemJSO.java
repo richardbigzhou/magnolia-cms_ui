@@ -66,4 +66,8 @@ public final class VActionbarItemJSO extends JavaScriptObject {
         return this.enabled;
     }-*/;
 
+    public final native void setEnabled(boolean enabled) /*-{
+        this.enabled = enabled;
+    }-*/;
+
 }

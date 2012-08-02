@@ -61,8 +61,6 @@ public class VActionbarItem extends Widget {
 
     private final VActionbarItemJSO data;
 
-    private boolean enabled;
-
     private final EventBus eventBus;
 
     private HandlerRegistration handler;
@@ -77,7 +75,6 @@ public class VActionbarItem extends Widget {
     public VActionbarItem(VActionbarItemJSO data, EventBus eventBus, Icon icon) {
         super();
         this.data = data;
-        this.enabled = data.isEnabled();
         this.eventBus = eventBus;
         this.icon = icon;
 
@@ -90,7 +87,9 @@ public class VActionbarItem extends Widget {
         setElement(root);
         setStyleName(CLASSNAME);
         text.addClassName("v-text");
-        root.appendChild(icon.getElement());
+        if (icon != null) {
+            root.appendChild(icon.getElement());
+        }
         root.appendChild(text);
     }
 
@@ -111,21 +110,22 @@ public class VActionbarItem extends Widget {
     }
 
     public void setEnabled(boolean enabled) {
-        if (enabled != this.enabled) {
-            if (enabled) {
-                root.removeClassName(ApplicationConnection.DISABLED_CLASSNAME);
-                bindHandlers();
-            } else {
-                root.addClassName(ApplicationConnection.DISABLED_CLASSNAME);
-                handler.removeHandler();
-            }
-            this.enabled = enabled;
-        }
+        data.setEnabled(enabled);
+        update();
     }
 
     public void update() {
         text.setInnerText(data.getLabel());
-        icon.setUri(data.getIcon());
+        if (icon != null) {
+            icon.setUri(data.getIcon());
+        }
+        if (data.isEnabled() && root.getClassName().contains(ApplicationConnection.DISABLED_CLASSNAME)) {
+            root.removeClassName(ApplicationConnection.DISABLED_CLASSNAME);
+            bindHandlers();
+        } else if (!data.isEnabled() && !root.getClassName().contains(ApplicationConnection.DISABLED_CLASSNAME)) {
+            root.addClassName(ApplicationConnection.DISABLED_CLASSNAME);
+            handler.removeHandler();
+        }
     }
 
 }

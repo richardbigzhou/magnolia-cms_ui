@@ -55,6 +55,7 @@ import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.ClientWidget;
 import com.vaadin.ui.ClientWidget.LoadStyle;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.VerticalLayout;
 
 
 /**
@@ -98,9 +99,9 @@ public class Actionbar extends AbstractComponent implements ActionbarView, Serve
         proxy.paintContent(target);
         for (ActionbarSection section : sections.values()) {
             if (section.getPreview() != null) {
-                target.startTag("preview");
+                target.startTag(section.getName() + ":" + "preview");
                 section.getPreview().paint(target);
-                target.endTag("preview");
+                target.endTag(section.getName() + ":" + "preview");
             }
         }
     }
@@ -211,7 +212,11 @@ public class Actionbar extends AbstractComponent implements ActionbarView, Serve
     public void setPreview(Component preview, String sectionName) {
         ActionbarSection section = sections.get(sectionName);
         if (section != null) {
-            section.setPreview(preview);
+            final VerticalLayout previewContainer = new VerticalLayout();
+            previewContainer.setWidth("100%");
+            previewContainer.addComponent(preview);
+            previewContainer.setStyleName("v-actionbar-preview");
+            section.setPreview(previewContainer);
             if (isAttached) {
                 requestRepaint();
             }
