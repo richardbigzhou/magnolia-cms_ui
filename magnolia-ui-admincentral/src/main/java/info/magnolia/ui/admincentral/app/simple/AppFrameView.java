@@ -40,13 +40,14 @@ import info.magnolia.ui.widget.tabsheet.ShellTabSheet;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
 
+
 /**
  * View used to give all apps a uniform look-and-feel.
  */
 @SuppressWarnings("serial")
 public class AppFrameView implements View {
 
-    private ShellTabSheet tabsheet = new ShellTabSheet();
+    private final ShellTabSheet tabsheet = new ShellTabSheet();
 
     public AppFrameView() {
         super();
@@ -54,10 +55,10 @@ public class AppFrameView implements View {
         tabsheet.addStyleName("app");
     }
 
-    public void addTab(ComponentContainer cc, String caption) {
+    public void addTab(ComponentContainer cc, String caption, boolean closable) {
         final ShellTab tab = new ShellTab(caption, cc);
         tabsheet.addComponent(tab);
-        tabsheet.setTabClosable(tab, true);
+        tabsheet.setTabClosable(tab, closable);
         tabsheet.setActiveTab(tab);
     }
 

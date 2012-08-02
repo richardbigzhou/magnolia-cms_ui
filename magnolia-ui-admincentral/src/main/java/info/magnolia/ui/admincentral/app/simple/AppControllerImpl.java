@@ -76,6 +76,7 @@ import org.slf4j.LoggerFactory;
 
 import com.vaadin.ui.ComponentContainer;
 
+
 /**
  * App controller that manages the lifecycle of running apps and raises callbacks to the app.
  */
@@ -86,16 +87,24 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
     private static final Logger log = LoggerFactory.getLogger(AppControllerImpl.class);
 
-    private ModuleRegistry moduleRegistry;
-    private ComponentProvider componentProvider;
-    private AppLauncherLayoutManager appLauncherLayoutManager;
-    private LocationController locationController;
-    private MessagesManager messagesManager;
-    private Shell shell;
-    private EventBus eventBus;
+    private final ModuleRegistry moduleRegistry;
+
+    private final ComponentProvider componentProvider;
+
+    private final AppLauncherLayoutManager appLauncherLayoutManager;
+
+    private final LocationController locationController;
+
+    private final MessagesManager messagesManager;
+
+    private final Shell shell;
+
+    private final EventBus eventBus;
+
     private ViewPort viewPort;
 
     private final Map<String, AppContextImpl> runningApps = new HashMap<String, AppContextImpl>();
+
     private final LinkedList<AppContextImpl> appHistory = new LinkedList<AppContextImpl>();
 
     private AppContextImpl currentApp;
@@ -184,7 +193,8 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
     private void doStop(AppContextImpl appContext) {
         appContext.stop();
-        while (appHistory.remove(appContext));
+        while (appHistory.remove(appContext))
+            ;
 
         runningApps.remove(appContext.getName());
         if (currentApp == appContext) {
@@ -211,11 +221,11 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         }
 
         if (currentApp != null) {
-            currentApp.exitFullScreenMode();   
+            currentApp.exitFullScreenMode();
         }
-        
+
         AppContextImpl nextAppContext = runningApps.get(nextApp.getName());
-        
+
         if (nextAppContext != null) {
             nextAppContext.onLocationUpdate(newLocation);
         } else {
@@ -250,10 +260,14 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
     private class AppContextImpl implements AppContext {
 
-        private AppDescriptor appDescriptor;
+        private final AppDescriptor appDescriptor;
+
         private App app;
+
         private AppFrameView appFrameView;
+
         private Location currentLocation;
+
         private ComponentProvider appComponentProvider;
 
         public AppContextImpl(AppDescriptor appDescriptor) {
@@ -271,7 +285,8 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         }
 
         /**
-         * Called when the app is launched from the app launcher OR a location change event triggers it to start.
+         * Called when the app is launched from the app launcher OR a location change event triggers
+         * it to start.
          */
         public void start(EventBus eventBus, Location location) {
 
@@ -288,11 +303,12 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             currentLocation = location;
 
             View view = main.start();
-            appFrameView.addTab((ComponentContainer) view.asVaadinComponent(), main.getCaption());
+            appFrameView.addTab((ComponentContainer) view.asVaadinComponent(), main.getCaption(), false);
         }
 
         /**
-         * Called when the app is launched from the app launcher OR if another app is closed and this is to show itself.
+         * Called when the app is launched from the app launcher OR if another app is closed and
+         * this is to show itself.
          */
         public void focus() {
             locationController.goTo(currentLocation);
@@ -302,7 +318,8 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
          * Called when a location change occurs and the app is already running.
          */
         public void onLocationUpdate(Location location) {
-            app.locationChanged(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appDescriptor.getName(), ((DefaultLocation) location).getToken()));
+            app.locationChanged(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appDescriptor.getName(), ((DefaultLocation) location)
+                .getToken()));
         }
 
         public void display(ViewPort viewPort) {
@@ -325,9 +342,9 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
         @Override
         public void openSubApp(SubApp subApp) {
-            appFrameView.addTab((ComponentContainer) subApp.start().asVaadinComponent(), subApp.getCaption());
+            appFrameView.addTab((ComponentContainer) subApp.start().asVaadinComponent(), subApp.getCaption(), true);
         }
-        
+
         @Override
         public void openSubAppFullScreen(SubApp subApp) {
             shell.showFullscreen(subApp.start());
@@ -360,9 +377,9 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     }
 
     /**
-     * Creates a ComponentProvider as a child of the admincentral ComponentProvider dedicated to the app. This gives us
-     * the ability to inject the AppContext into App components. The components are read from module descriptors using
-     * the convention "app-" + name of the app.
+     * Creates a ComponentProvider as a child of the admincentral ComponentProvider dedicated to the
+     * app. This gives us the ability to inject the AppContext into App components. The components
+     * are read from module descriptors using the convention "app-" + name of the app.
      */
     private ComponentProvider createAppComponentProvider(String name, AppContext appContext, EventBus eventBus) {
 
