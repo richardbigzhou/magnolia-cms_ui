@@ -28,10 +28,6 @@
 	list-style:outside none;
 }
 
-.v-actionbar-group:first-child {
-	padding-top:0;
-}
-
 .v-action {
     position:relative;
 	width:100%;

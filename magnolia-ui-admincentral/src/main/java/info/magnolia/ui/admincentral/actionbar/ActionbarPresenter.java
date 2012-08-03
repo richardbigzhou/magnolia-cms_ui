@@ -46,7 +46,6 @@ import info.magnolia.ui.widget.actionbar.ActionbarView;
 
 import com.google.inject.Inject;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.VerticalLayout;
 
 
 /**
@@ -87,11 +86,7 @@ public class ActionbarPresenter implements ActionbarView.Listener {
                 actionbar.addSection(PREVIEW_SECTION_NAME, "Preview");
             }
             preview.setWidth("100%");
-            final VerticalLayout previewContainer = new VerticalLayout();
-            previewContainer.setSizeFull();
-            previewContainer.addComponent(preview);
-            previewContainer.setStyleName("v-actionbar-preview");
-            actionbar.setPreview(previewContainer, PREVIEW_SECTION_NAME);
+            actionbar.setPreview(preview, PREVIEW_SECTION_NAME);
         } else {
             if (((Actionbar) actionbar).getSections().containsKey(PREVIEW_SECTION_NAME)) {
                 actionbar.removeSection(PREVIEW_SECTION_NAME);

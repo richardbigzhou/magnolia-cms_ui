@@ -34,6 +34,7 @@
 package info.magnolia.ui.widget.actionbar.gwt.client;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -98,7 +99,10 @@ public class VActionbar extends Composite implements Paintable, Container, Clien
                     String groupName = String.valueOf(params[1]);
                     String sectionName = String.valueOf(params[2]);
 
-                    Icon icon = new Icon(client, action.getIcon());
+                    Icon icon = null;
+                    if (action.getIcon() != null) {
+                        icon = new Icon(client, action.getIcon());
+                    }
                     view.addAction(action, icon, groupName, sectionName);
                 }
             });
@@ -168,14 +172,21 @@ public class VActionbar extends Composite implements Paintable, Container, Clien
         this.client = client;
         proxy.update(this, uidl, client);
 
-        final UIDL previewUidl = uidl.getChildByTagName("preview");
-        if (previewUidl != null) {
-            UIDL childUidl = previewUidl.getChildUIDL(0);
-            final Paintable previewWidget = client.getPaintable(childUidl);
-            VActionbarSection section = ((VActionbarViewImpl) view).getSections().get("preview");
-            if (section != null && previewWidget instanceof Widget) {
-                section.setPreview((Widget) previewWidget);
-                previewWidget.updateFromUIDL(childUidl, client);
+        Iterator<Object> childIterator = uidl.getChildIterator();
+        while (childIterator.hasNext()) {
+            Object next = childIterator.next();
+            if (next instanceof UIDL) {
+                UIDL childUIDL = (UIDL) next;
+                String[] chunks = childUIDL.getTag().split(":");
+                if (chunks.length == 2 && chunks[1].equals("preview")) {
+                    UIDL previewUidl = childUIDL.getChildUIDL(0);
+                    final Paintable previewWidget = client.getPaintable(previewUidl);
+                    VActionbarSection section = ((VActionbarViewImpl) view).getSections().get(chunks[0]);
+                    if (section != null && previewWidget instanceof Widget) {
+                        section.setPreview((Widget) previewWidget);
+                        previewWidget.updateFromUIDL(previewUidl, client);
+                    }
+                }
             }
         }
     }

@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.app.contacts.thumbnail;
 
-
 import info.magnolia.cms.beans.runtime.FileProperties;
 import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.cms.util.ContentUtil;
@@ -56,15 +55,16 @@ import javax.swing.ImageIcon;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.jackrabbit.JcrConstants;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 /**
- * Abstract Thumbnail provider operating on contacts.
- * Knows how to navigate a contact's jcr structure.
+ * Abstract Thumbnail provider operating on contacts. Knows how to navigate a contact's jcr
+ * structure.
  */
 public abstract class AbstractContactsThumbnailProvider extends AbstractThumbnailProvider {
+
     private static final Logger log = LoggerFactory.getLogger(AbstractContactsThumbnailProvider.class);
 
     final static String PHOTO_NODE_NAME = "photo";
@@ -91,15 +91,15 @@ public abstract class AbstractContactsThumbnailProvider extends AbstractThumbnai
                     contactImage = new ImageIcon(contactImage).getImage();
                     thumbnail = createThumbnail(contactImage, getFormat(), width, height, getQuality());
 
-                    if(contactNode.hasNode(THUMBNAIL_NODE_NAME)) {
+                    if (contactNode.hasNode(THUMBNAIL_NODE_NAME)) {
                         contactNode.getNode(THUMBNAIL_NODE_NAME).remove();
                     }
                     final Node thumbnailNode = contactNode.addNode(THUMBNAIL_NODE_NAME, MgnlNodeType.NT_RESOURCE);
                     thumbnailNode.setProperty(FileProperties.PROPERTY_FILENAME, photoNode.getProperty(FileProperties.PROPERTY_FILENAME).getString());
                     thumbnailNode.setProperty(FileProperties.PROPERTY_EXTENSION, getFormat());
                     thumbnailNode.setProperty(FileProperties.PROPERTY_MIMETYPE, photoNode.getProperty(JcrConstants.JCR_MIMETYPE).getString());
-                    thumbnailNode.setProperty(FileProperties.PROPERTY_HEIGHT,  thumbnail.getHeight());
-                    thumbnailNode.setProperty(FileProperties.PROPERTY_WIDTH,  thumbnail.getWidth());
+                    thumbnailNode.setProperty(FileProperties.PROPERTY_HEIGHT, thumbnail.getHeight());
+                    thumbnailNode.setProperty(FileProperties.PROPERTY_WIDTH, thumbnail.getWidth());
 
                     thumbnailOutputStream = new ByteArrayOutputStream();
                     ImageIO.write(thumbnail, getFormat(), thumbnailOutputStream);
@@ -111,7 +111,6 @@ public abstract class AbstractContactsThumbnailProvider extends AbstractThumbnai
                     thumbnailNode.setProperty(FileProperties.PROPERTY_SIZE, size);
 
                     contactNode.getSession().save();
-
 
                 } catch (IOException e) {
                     log.warn("Error creating thumbnail image!", e);
@@ -138,23 +137,29 @@ public abstract class AbstractContactsThumbnailProvider extends AbstractThumbnai
     }
 
     private boolean createThumbnail(Node contactNode) throws RepositoryException {
-        if(!contactNode.hasNode(THUMBNAIL_NODE_NAME)) {
+        if (!contactNode.hasNode(THUMBNAIL_NODE_NAME)) {
             return true;
         }
-        if(!contactNode.hasNode(PHOTO_NODE_NAME)) {
+        if (!contactNode.hasNode(PHOTO_NODE_NAME)) {
             log.warn("No [{}] node found for contact node [{}]. Cannot create thumbnail.", PHOTO_NODE_NAME, contactNode.getPath());
             return false;
         }
         final Node photoNode = contactNode.getNode(PHOTO_NODE_NAME);
         final Node thumbnailNode = contactNode.getNode(THUMBNAIL_NODE_NAME);
-        if(photoNode.getProperty(JcrConstants.JCR_LASTMODIFIED).getDate().compareTo(thumbnailNode.getProperty(JcrConstants.JCR_LASTMODIFIED).getDate()) > 0) {
+        if (photoNode
+            .getProperty(JcrConstants.JCR_LASTMODIFIED)
+            .getDate()
+            .compareTo(thumbnailNode.getProperty(JcrConstants.JCR_LASTMODIFIED).getDate()) > 0) {
             log.debug("Recreating thumbnail for node [{}]", contactNode.getPath());
-            //photo node must have been updated as its last mod date is after thumbnail last mod date
+            // photo node must have been updated as its last mod date is after thumbnail last mod
+            // date
             return true;
         }
         return false;
     }
 
-    protected abstract BufferedImage createThumbnail(final Image contactImage, final String format, final int width, final int height, final float quality) throws IOException;
+    @Override
+    protected abstract BufferedImage createThumbnail(final Image contactImage, final String format, final int width, final int height,
+        final float quality) throws IOException;
 
 }
