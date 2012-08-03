@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral.column;
 
-import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.column.definition.PropertyValueColumnDefinition;
 
 import java.io.Serializable;
@@ -44,31 +43,26 @@ import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Label;
 
 /**
  * Definition for a column that displays the value of a property.
  */
-public class PropertyValueColumn extends AbstractEditableColumn<PropertyValueColumnDefinition> implements Serializable {
+public class PropertyValueColumn extends AbstractColumn<PropertyValueColumnDefinition> implements Serializable {
 
     @Inject
-    public PropertyValueColumn(PropertyValueColumnDefinition def, Shell shell) {
-        super(def, shell);
+    public PropertyValueColumn(PropertyValueColumnDefinition def) {
+        super(def);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     protected Component getDefaultComponent(Item item) throws RepositoryException {
         if (item.isNode()) {
             return EMPTY_LABEL;
         }
 
-        return new EditableText(item, new PresenterImpl(), item.getName()) {
-
-            @Override
-            protected String getLabelText(Item item) throws RepositoryException {
-                Property property = (Property) item;
-                return property.getString();
-            }
-        };
+        Property property = (Property) item;
+        return new Label(property.getString());
     }
+
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,41 +31,43 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.column;
+package info.magnolia.ui.admincentral.event;
 
-import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.model.column.definition.LabelColumnDefinition;
-
-import java.io.Serializable;
-
-import javax.inject.Inject;
-import javax.jcr.Item;
-import javax.jcr.RepositoryException;
-
-import com.vaadin.ui.Component;
+import info.magnolia.ui.framework.event.Event;
+import info.magnolia.ui.framework.event.EventHandler;
 
 /**
- * Describes a column that contains the label of the item.
+ * This event is fired when an item is double clicked (ie a row in the data grid within the workbench representing either a {@link javax.jcr.Node} or a {@link javax.jcr.Property}).
  */
-public class LabelColumn extends AbstractEditableColumn<LabelColumnDefinition> implements Serializable {
+public class DoubleClickEvent implements Event<DoubleClickEvent.Handler> {
 
-    @Inject
-    public LabelColumn(LabelColumnDefinition def, Shell shell) {
-        super(def, shell);
+    /**
+     * Handles {@link DoubleClickEvent} events.
+     */
+    public static interface Handler extends EventHandler {
+        void onDoubleClick(DoubleClickEvent event);
     }
 
-    @SuppressWarnings("unchecked")
+    private String workspace;
+
+    private String path;
+
     @Override
-    protected Component getDefaultComponent(Item item) throws RepositoryException {
-
-        String path = item.isNode() ? item.getName() : item.getName() + "@name";
-
-        return new EditableText(item, new PresenterImpl(), path) {
-
-            @Override
-            protected String getLabelText(Item item) throws RepositoryException {
-                return item.getName();
-            }
-        };
+    public void dispatch(Handler handler) {
+        handler.onDoubleClick(this);
     }
+
+    public DoubleClickEvent(String workspace, String path) {
+        this.workspace = workspace;
+        this.path = path;
+    }
+
+    public String getWorkspace() {
+        return workspace;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
 }

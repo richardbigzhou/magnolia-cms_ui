@@ -42,6 +42,7 @@ import java.util.Set;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.event.ItemClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.TreeTable;
 import com.vaadin.ui.VerticalLayout;
@@ -49,7 +50,7 @@ import com.vaadin.ui.VerticalLayout;
 
 /**
  * Vaadin UI component that displays a tree.
- * 
+ *
  */
 public class TreeViewImpl implements TreeView {
 
@@ -82,7 +83,15 @@ public class TreeViewImpl implements TreeView {
                 }
             }
         });
+        jcrBrowser.addListener(new ItemClickEvent.ItemClickListener() {
 
+            @Override
+            public void itemClick(ItemClickEvent event) {
+                if(event.isDoubleClick()) {
+                    presenterOnDoubleClick(String.valueOf(event.getPropertyId()));
+                }
+            }
+        });
         margin.setStyleName("mgnl-content-view");
         margin.addComponent(jcrBrowser);
     }
@@ -92,9 +101,14 @@ public class TreeViewImpl implements TreeView {
             listener.onItemSelection(jcrBrowser.getItem(id));
         }
     }
+    private void presenterOnDoubleClick(String id) {
+        if (listener != null) {
+            listener.onDoubleClick(jcrBrowser.getItem(id));
+        }
+    }
 
     /**
-     * 
+     *
      * @param path relative to the tree root, must start with /
      */
     @Override

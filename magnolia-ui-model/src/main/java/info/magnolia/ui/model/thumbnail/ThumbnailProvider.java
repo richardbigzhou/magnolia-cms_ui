@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.model.thumbnail;
 
-import javax.jcr.Node;
 
 /**
  * Defines a provider for Thumbnail images.
@@ -44,5 +43,5 @@ public interface ThumbnailProvider {
      * Return a path to a thumbnail of the requested size representing the provided item. Depending on the implementation,
      * this thumbnail may be retrieved from cache or created on the fly.
      */
-    String getPath(Node node, int width, int height);
+    String getPath(String nodeIdentifier, String workspace, int width, int height);
 }

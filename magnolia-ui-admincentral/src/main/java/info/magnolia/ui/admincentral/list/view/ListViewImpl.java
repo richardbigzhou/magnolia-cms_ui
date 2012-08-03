@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral.list.view;
 
-import info.magnolia.ui.admincentral.column.EditHandler;
 import info.magnolia.ui.admincentral.container.JcrContainer;
 import info.magnolia.ui.admincentral.content.view.ContentView;
 import info.magnolia.ui.admincentral.list.container.FlatJcrContainer;
@@ -50,6 +49,8 @@ import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.event.ItemClickEvent;
+import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
@@ -95,6 +96,16 @@ public class ListViewImpl implements ListView {
             }
         });
 
+        table.addListener(new ItemClickListener() {
+
+            @Override
+            public void itemClick(ItemClickEvent event) {
+                if(event.isDoubleClick()) {
+                    presenterOnDoubleClick(String.valueOf(event.getItemId()));
+                }
+            }
+        });
+
         table.setEditable(false);
         table.setSelectable(true);
         table.setColumnCollapsingAllowed(true);
@@ -126,7 +137,6 @@ public class ListViewImpl implements ListView {
 
         margin.setStyleName("mgnl-content-view");
         margin.addComponent(table);
-        new EditHandler(table);
     }
 
     @Override
@@ -161,6 +171,12 @@ public class ListViewImpl implements ListView {
         if (listener != null) {
             com.vaadin.data.Item item = container.getItem(id);
             listener.onItemSelection(item);
+        }
+    }
+
+    private void presenterOnDoubleClick(String id) {
+        if (listener != null) {
+            listener.onDoubleClick(table.getItem(id));
         }
     }
 

@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.widget.dialog;
 
-
-
 import info.magnolia.ui.widget.dialog.gwt.client.VDialog;
 import info.magnolia.ui.widget.tabsheet.ShellTab;
 import info.magnolia.ui.widget.tabsheet.ShellTabSheet;
@@ -57,43 +55,47 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.Field;
 
+
 /**
  * Server side implementation of the MagnoliaShell container.
  */
 @SuppressWarnings("serial")
-@ClientWidget(value=VDialog.class, loadStyle = LoadStyle.EAGER)
+@ClientWidget(value = VDialog.class, loadStyle = LoadStyle.EAGER)
 public class Dialog extends AbstractComponent implements DialogView, ServerSideHandler, Item.Editor {
 
-    private ShellTabSheet tabsheet = new ShellTabSheet();
+    private final ShellTabSheet tabsheet = new ShellTabSheet();
+
     private final String SHOW_ALL = "show all";
 
     /**
      * Item connected to this dialog as datasource.
      */
     private Item itemDatasource;
+
     List<Field> fields = new LinkedList<Field>();
 
     private Presenter presenter;
 
-
     protected ServerSideProxy proxy = new ServerSideProxy(this) {
-            {
-                register("fireAction", new Method() {
-                    @Override
-                    public void invoke(String methodName, Object[] params) {
-                        final String actionName = String.valueOf(params[0]);
-                        presenter.executeAction(actionName);
-                    }
-                });
-                register("closeDialog", new Method() {
-                    @Override
-                    public void invoke(String methodName, Object[] params) {
-                        presenter.closeDialog();
-                    }
-                });
-            }
-        };
 
+        {
+            register("fireAction", new Method() {
+
+                @Override
+                public void invoke(String methodName, Object[] params) {
+                    final String actionName = String.valueOf(params[0]);
+                    presenter.executeAction(actionName);
+                }
+            });
+            register("closeDialog", new Method() {
+
+                @Override
+                public void invoke(String methodName, Object[] params) {
+                    presenter.closeDialog();
+                }
+            });
+        }
+    };
 
     public Dialog() {
         setImmediate(true);
@@ -124,7 +126,6 @@ public class Dialog extends AbstractComponent implements DialogView, ServerSideH
         tab.setSizeUndefined();
         tabsheet.addComponent(tab);
         tabsheet.setTabClosable(tab, false);
-        tabsheet.setActiveTab(tab);
     }
 
     public void setForm(Item.Editor form) {
@@ -167,6 +168,7 @@ public class Dialog extends AbstractComponent implements DialogView, ServerSideH
         proxy.paintContent(target);
 
     }
+
     @Override
     public void changeVariables(Object source, Map<String, Object> variables) {
         super.changeVariables(source, variables);
@@ -175,7 +177,7 @@ public class Dialog extends AbstractComponent implements DialogView, ServerSideH
 
     @Override
     public Object[] initRequestFromClient() {
-        return new Object[] {};
+        return new Object[]{};
 
     }
 
@@ -212,7 +214,7 @@ public class Dialog extends AbstractComponent implements DialogView, ServerSideH
     @Override
     public boolean isValid() {
         boolean res = true;
-        for(Field field:getFields()) {
+        for (Field field : getFields()) {
             res &= field.isValid();
         }
         return res;
