@@ -56,16 +56,19 @@ import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.vaadin.terminal.gwt.client.UIDL;
 
+
 /**
  * A bar that contains the tab labels and controls the switching between tabs.
  */
 public class VShellTabNavigator extends ComplexPanel {
 
-    private Element tabList = DOM.createElement("ul");
+    private static final String SINGLE_TAB_CLASSNAME = "single-tab";
 
-    private List<VShellTabLabel> tabLabels = new LinkedList<VShellTabLabel>();
+    private final Element tabList = DOM.createElement("ul");
 
-    private Map<VShellTabContent, VShellTabLabel> labelMap = new LinkedHashMap<VShellTabContent, VShellTabLabel>();
+    private final List<VShellTabLabel> tabLabels = new LinkedList<VShellTabLabel>();
+
+    private final Map<VShellTabContent, VShellTabLabel> labelMap = new LinkedHashMap<VShellTabContent, VShellTabLabel>();
 
     VShellShowAllTabLabel showAllTab;
 
@@ -76,7 +79,6 @@ public class VShellTabNavigator extends ComplexPanel {
         setElement(tabList);
         setStyleName("nav");
         addStyleDependentName("tabs");
-
     }
 
     @Override
@@ -88,6 +90,7 @@ public class VShellTabNavigator extends ComplexPanel {
     private void bindHandlers() {
 
         eventBus.addHandler(ActiveTabChangedEvent.TYPE, new ActiveTabChangedHandler() {
+
             @Override
             public void onActiveTabChanged(final ActiveTabChangedEvent event) {
                 final VShellTabContent tab = event.getTab();
@@ -103,6 +106,7 @@ public class VShellTabNavigator extends ComplexPanel {
         });
 
         eventBus.addHandler(TabCloseEvent.TYPE, new TabCloseEventHandler() {
+
             @Override
             public void onTabClosed(TabCloseEvent event) {
                 final VShellTabLabel tabLabel = labelMap.get(event.getTab());
@@ -116,6 +120,7 @@ public class VShellTabNavigator extends ComplexPanel {
                 tabLabels.remove(tabLabel);
                 labelMap.remove(event.getTab());
                 remove(tabLabel);
+                updateSingleTabStyle();
             }
         });
 
@@ -137,7 +142,7 @@ public class VShellTabNavigator extends ComplexPanel {
 
     @Override
     public VShellTabSheet getParent() {
-        return (VShellTabSheet)super.getParent();
+        return (VShellTabSheet) super.getParent();
     }
 
     public void updateTab(final VShellTabContent component, final UIDL uidl) {
@@ -152,6 +157,7 @@ public class VShellTabNavigator extends ComplexPanel {
             label.setClosable(component.isClosable());
 
             add(label, getElement());
+            updateSingleTabStyle();
         }
         label.updateCaption(uidl);
     }
@@ -175,6 +181,18 @@ public class VShellTabNavigator extends ComplexPanel {
         final VShellTabLabel label = labelMap.get(tab);
         if (label != null) {
             label.hideNotification();
+        }
+    }
+
+    public void updateSingleTabStyle() {
+        if (tabLabels.size() <= 1) {
+            if (!tabList.getClassName().contains(SINGLE_TAB_CLASSNAME)) {
+                tabList.addClassName(SINGLE_TAB_CLASSNAME);
+            }
+        } else {
+            if (tabList.getClassName().contains(SINGLE_TAB_CLASSNAME)) {
+                tabList.removeClassName(SINGLE_TAB_CLASSNAME);
+            }
         }
     }
 
@@ -220,13 +238,14 @@ public class VShellTabNavigator extends ComplexPanel {
 
         private void bindHandlers() {
             addDomHandler(new ClickHandler() {
+
                 @Override
                 public void onClick(ClickEvent event) {
-                    final Element target = (Element)event.getNativeEvent().getEventTarget().cast();
+                    final Element target = (Element) event.getNativeEvent().getEventTarget().cast();
 
                     eventBus.fireEvent(isClosing(target) ?
-                            new TabCloseEvent(getTab()):
-                                new ActiveTabChangedEvent(getTab()));
+                        new TabCloseEvent(getTab()) :
+                        new ActiveTabChangedEvent(getTab()));
 
                 }
             }, ClickEvent.getType());
@@ -266,7 +285,7 @@ public class VShellTabNavigator extends ComplexPanel {
                 getElement().appendChild(notificationBox);
                 notificationBox.appendChild(DOM.createSpan());
             }
-            ((Element)notificationBox.getChild(0)).setInnerText(text);
+            ((Element) notificationBox.getChild(0)).setInnerText(text);
         }
 
         public void hideNotification() {
@@ -296,9 +315,10 @@ public class VShellTabNavigator extends ComplexPanel {
 
         private void bindHandlers() {
             addDomHandler(new ClickHandler() {
+
                 @Override
                 public void onClick(ClickEvent event) {
-                    final Element target = (Element)event.getNativeEvent().getEventTarget().cast();
+                    final Element target = (Element) event.getNativeEvent().getEventTarget().cast();
                     eventBus.fireEvent(new ShowAllTabsEvent());
                 }
             }, ClickEvent.getType());
