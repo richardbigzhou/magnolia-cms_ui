@@ -219,12 +219,12 @@
     </dependency>
     <dependency>
       <name>groovy</name>
-      <version>5.0/*</version>
+      <version>1.2.3/*</version>
       <optional>true</optional>
     </dependency>
     <dependency>
       <name>dms</name>
-      <version>5.0/*</version>
+      <version>1.6.2/*</version>
       <optional>true</optional>
     </dependency>
     <dependency>
