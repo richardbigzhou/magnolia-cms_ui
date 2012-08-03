@@ -10,6 +10,7 @@
 	<inherits name="info.magnolia.ui.widget.editor.gwt.PageEditorWidgetSet" />
 	<inherits name="org.vaadin.artur.icepush.IcepushaddonWidgetset" />
 	<inherits name='org.vaadin.gwtgraphics.GWTGraphics' />
+	<inherits name="org.vaadin.csstools.CssToolsWidgetset" />
 	<inherits name='org.vaadin.artur.superdevmode.SuperdevmodeaddonWidgetset' />
 	<inherits name='com.googlecode.mgwt.dom.DOM' />
 	<inherits name='com.googlecode.mgwt.ui.UI' />

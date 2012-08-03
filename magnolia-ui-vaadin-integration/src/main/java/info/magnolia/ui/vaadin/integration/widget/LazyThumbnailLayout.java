@@ -59,14 +59,16 @@ import com.vaadin.ui.ClientWidget;
 @ClientWidget(VLazyThumbnailLayout.class)
 public class LazyThumbnailLayout extends AbstractComponent implements ServerSideHandler {
 
-    private int thumbnailsAmount = 1000;
+    private int thumbnailsAmount = 0;
 
     private int thumbnailWidth = 0;
 
     private int thumbnailHeight = 0;
 
-    private ThumbnailProvider provider;
+    private LazyThumbnailProvider provider;
 
+    private List<ThumbnaSeletionListener> selectionListeners = new ArrayList<LazyThumbnailLayout.ThumbnaSeletionListener>();
+    
     private ArrayList<Resource> resources = new ArrayList<Resource>() {
         @Override
         public Resource get(int index) {
@@ -92,12 +94,12 @@ public class LazyThumbnailLayout extends AbstractComponent implements ServerSide
         }
     };
 
-    public LazyThumbnailLayout(final ThumbnailProvider provider) {
+    public LazyThumbnailLayout(final LazyThumbnailProvider provider) {
         setImmediate(true);
         setProvider(provider);
     }
 
-    private void setProvider(ThumbnailProvider provider) {
+    private void setProvider(LazyThumbnailProvider provider) {
         this.provider = provider;
         setThumbnailAmount(provider.getThumbnailsAmount());
     }
@@ -113,6 +115,15 @@ public class LazyThumbnailLayout extends AbstractComponent implements ServerSide
         proxy.callOnce("setThumbnailSize", width, height);
     }
 
+    public int getThumbnailWidth() {
+        return thumbnailWidth;
+    }
+    
+    
+    public int getThumbnailHeight() {
+        return thumbnailHeight;
+    }
+    
     @Override
     public void paintContent(PaintTarget target) throws PaintException {
         super.paintContent(target);
@@ -127,6 +138,7 @@ public class LazyThumbnailLayout extends AbstractComponent implements ServerSide
 
     @Override
     public Object[] initRequestFromClient() {
+        provider.refresh();
         proxy.callOnce("setThumbnailSize", thumbnailWidth, thumbnailHeight);
         proxy.callOnce("setThumbnailAmount", thumbnailsAmount);
         return new Object[] {};
@@ -134,14 +146,38 @@ public class LazyThumbnailLayout extends AbstractComponent implements ServerSide
 
     @Override
     public void callFromClient(String method, Object[] params) {
-        throw new RuntimeException();
+        throw new RuntimeException("Unknown client side call: " + method);
     }
-
+    
+    public void clear() {
+        resources.clear();
+        proxy.callOnce("clear");
+    }
+    
+    public void refresh() {
+        clear();
+        setThumbnailAmount(provider.getThumbnailsAmount());
+    }
+    
+    public void addThumbnailSelectionListener(final ThumbnaSeletionListener listener) {
+        this.selectionListeners.add(listener);
+    }
+    
+    /**
+     * Listener interface for thumbnail selection.
+     */
+    public interface ThumbnaSeletionListener {
+        
+        void onThumbnailSelected();
+    }
+    
     /**
      * Interface for the providers of the actual thumbnails.
      */
-    public interface ThumbnailProvider {
+    public interface LazyThumbnailProvider {
 
+        void refresh();
+        
         int getThumbnailsAmount();
 
         List<Resource> getThumbnails(int amount);

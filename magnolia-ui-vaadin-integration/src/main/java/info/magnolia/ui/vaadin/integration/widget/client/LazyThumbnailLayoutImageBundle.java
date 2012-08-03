@@ -44,7 +44,7 @@ import com.google.gwt.resources.client.ImageResource;
 public interface LazyThumbnailLayoutImageBundle extends ClientBundle {
     
     
-    final static String imgPath = "org/vaadin/addon/portallayout/demo/public/img/";
+    final static String imgPath = "info/magnolia/ui/vaadin/integration/widget/public/VaadinIntegration/img/";
     
     public static LazyThumbnailLayoutImageBundle INSTANCE = GWT.create(LazyThumbnailLayoutImageBundle.class);
     

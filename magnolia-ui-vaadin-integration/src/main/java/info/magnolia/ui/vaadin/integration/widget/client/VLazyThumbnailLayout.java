@@ -54,6 +54,7 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.Paintable;
 import com.vaadin.terminal.gwt.client.UIDL;
+import com.vaadin.terminal.gwt.client.VConsole;
 
 /**
  * Client side impl of lazy asset thumbnails layout.
@@ -102,6 +103,13 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
                     setThumbnailSize((Integer) params[0], (Integer) params[1]);
                 }
             });
+            
+            register("clear", new Method() {
+                @Override
+                public void invoke(String methodName, Object[] params) {
+                    imageContainer.clear();
+                }
+            });            
         }
     };
 
@@ -112,13 +120,17 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
         scroller.addScrollHandler(new ScrollHandler() {
             @Override
             public void onScroll(ScrollEvent event) {
-                queryTimer.schedule(QUERY_TIMER_DELAY);
-                int thumbnailsNeeded = calculateThumbnailsNeeded();
-                addStubs(thumbnailsNeeded);
+                createStubsAndQueryThumbnails();
             }
         });
     }
 
+    private void createStubsAndQueryThumbnails() {
+        int thumbnailsNeeded = calculateThumbnailsNeeded();
+        addStubs(thumbnailsNeeded);
+        queryTimer.schedule(QUERY_TIMER_DELAY);
+    }
+    
     private void addStubs(int thumbnailsNeeded) {
         for (int i = 0; i < thumbnailsNeeded; ++i) {
             addStub();
@@ -137,6 +149,7 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
         this.thumbnailWidth = width;
         thumbnailStyle.setProperty("width", width + "px");
         thumbnailStyle.setProperty("height", height + "px");
+        createStubsAndQueryThumbnails();
     }
     
     private Timer queryTimer = new Timer() {
@@ -160,16 +173,18 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
         int thumbnailsInRow = (int) (width / (thumbnailWidth + getHorizontalMargin()) * 1d);
         int rows = (int) (thumbnailAmount / thumbnailsInRow * 1d) * (thumbnailHeight + getVerticalMargin());
         imageContainer.getElement().getStyle().setHeight(rows, Unit.PX);
+        createStubsAndQueryThumbnails();
     }
 
     private void doQueryThumbnails(int amount) {
         if (amount > 0) {
-            proxy.call("loadthumbnails", amount);   
+            proxy.call("loadThumbnails", amount);   
         }
     }
 
     @Override
     public void handleCallFromServer(String method, Object[] params) {
+        VConsole.error("Unnknown server call: " + method);
     }
 
     @Override
