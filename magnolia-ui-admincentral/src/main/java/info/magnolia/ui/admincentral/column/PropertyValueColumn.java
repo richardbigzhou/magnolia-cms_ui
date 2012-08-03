@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral.column;
 
-import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.column.definition.PropertyValueColumnDefinition;
 
 import java.io.Serializable;
@@ -52,7 +51,7 @@ import com.vaadin.ui.Label;
 public class PropertyValueColumn extends AbstractColumn<PropertyValueColumnDefinition> implements Serializable {
 
     @Inject
-    public PropertyValueColumn(PropertyValueColumnDefinition def, Shell shell) {
+    public PropertyValueColumn(PropertyValueColumnDefinition def) {
         super(def);
     }
 
