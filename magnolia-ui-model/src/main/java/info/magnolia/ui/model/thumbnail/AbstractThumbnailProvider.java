@@ -57,7 +57,7 @@ public abstract class AbstractThumbnailProvider implements ThumbnailProvider {
     private float quality = DEFAULT_THUMBNAIL_QUALITY;
 
     @Override
-    public abstract String getPath(final String node, final String workspace, int width, int height);
+    public abstract String getPath(final String nodeIdentifier, final String workspace, int width, int height);
 
     protected abstract BufferedImage createThumbnail(final Image image, final String format, final int width, final int height, final float quality) throws IOException;
 
