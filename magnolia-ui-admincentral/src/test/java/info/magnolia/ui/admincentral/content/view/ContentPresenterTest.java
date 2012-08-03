@@ -37,6 +37,7 @@ import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
 import info.magnolia.ui.admincentral.app.content.ContentAppDescriptor;
 import info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilderProvider;
+import info.magnolia.ui.admincentral.event.DoubleClickEvent;
 import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.event.EventBus;
@@ -44,6 +45,7 @@ import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
@@ -52,22 +54,32 @@ import org.mockito.ArgumentCaptor;
  */
 public class ContentPresenterTest {
 
-    @Test
-    public void testOnItemSelectionFiresOnEventBus() {
-        // GIVEN
-        final String testWorkspaceName = "test";
-        final String testItemId = "2";
-        final ContentViewBuilderProvider contentViewBuilderProvider = mock(ContentViewBuilderProvider.class);
-        final AppContext context = mock(AppContext.class);
+    protected ContentViewBuilderProvider contentViewBuilderProvider;
+    protected AppContext context;
+    protected EventBus eventBus;
+    protected Shell shell;
+    protected JcrItemAdapter item;
+    protected static final String TEST_WORKSPACE_NAME = "test";
+    protected static final String TEST_ITEM_ID = "2";
+
+    @Before
+    public void  setUp() {
+        contentViewBuilderProvider = mock(ContentViewBuilderProvider.class);
+        context = mock(AppContext.class);
         final ContentAppDescriptor descr = mock(ContentAppDescriptor.class);
         when(context.getAppDescriptor()).thenReturn(descr);
         final WorkbenchDefinition workbench = mock(WorkbenchDefinition.class);
         when(descr.getWorkbench()).thenReturn(workbench);
-        when(workbench.getWorkspace()).thenReturn(testWorkspaceName);
-        final EventBus eventBus = mock(EventBus.class);
-        final Shell shell = mock(Shell.class);
-        final JcrItemAdapter item = mock(JcrItemAdapter.class);
-        when(item.getItemId()).thenReturn(testItemId);
+        when(workbench.getWorkspace()).thenReturn(TEST_WORKSPACE_NAME);
+        eventBus = mock(EventBus.class);
+        shell = mock(Shell.class);
+        item = mock(JcrItemAdapter.class);
+        when(item.getItemId()).thenReturn(TEST_ITEM_ID);
+    }
+
+    @Test
+    public void testOnItemSelectionFiresOnEventBus() {
+        // GIVEN see setUp
 
         // WHEN
         final ContentPresenter presenter = new ContentPresenter(contentViewBuilderProvider, context, eventBus, shell);
@@ -76,8 +88,21 @@ public class ContentPresenterTest {
         // THEN
         ArgumentCaptor<ItemSelectedEvent> argument = ArgumentCaptor.forClass(ItemSelectedEvent.class);
         verify(eventBus).fireEvent(argument.capture());
-        assertEquals(testWorkspaceName, argument.getValue().getWorkspace());
-        assertEquals(testItemId, argument.getValue().getPath());
+        assertEquals(TEST_WORKSPACE_NAME, argument.getValue().getWorkspace());
+        assertEquals(TEST_ITEM_ID, argument.getValue().getPath());
     }
+    @Test
+    public void testOnDoubleClickFiresOnEventBus() {
+        // GIVEN see setUp
 
+        // WHEN
+        final ContentPresenter presenter = new ContentPresenter(contentViewBuilderProvider, context, eventBus, shell);
+        presenter.onDoubleClick(item);
+
+        // THEN
+        ArgumentCaptor<DoubleClickEvent> argument = ArgumentCaptor.forClass(DoubleClickEvent.class);
+        verify(eventBus).fireEvent(argument.capture());
+        assertEquals(TEST_WORKSPACE_NAME, argument.getValue().getWorkspace());
+        assertEquals(TEST_ITEM_ID, argument.getValue().getPath());
+    }
 }

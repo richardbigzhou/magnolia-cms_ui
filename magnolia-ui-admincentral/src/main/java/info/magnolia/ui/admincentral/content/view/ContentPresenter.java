@@ -36,6 +36,7 @@ package info.magnolia.ui.admincentral.content.view;
 import info.magnolia.ui.admincentral.app.content.ContentAppDescriptor;
 import info.magnolia.ui.admincentral.content.view.ContentView.ViewType;
 import info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilderProvider;
+import info.magnolia.ui.admincentral.event.DoubleClickEvent;
 import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchView;
 import info.magnolia.ui.framework.app.AppContext;
@@ -105,21 +106,40 @@ public class ContentPresenter implements ContentView.Listener {
     @Override
     public void onItemSelection(Item item) {
         if (item == null) {
-            log.debug("Got null javax.jcr.Item. ItemSelectedEvent will be fired with null path.");
+            log.debug("Got null com.vaadin.data.Item. ItemSelectedEvent will be fired with null path.");
             eventBus.fireEvent(new ItemSelectedEvent(workspaceName, null));
             return;
         }
         try {
             selectedItemId = ((JcrItemAdapter) item).getItemId();
-            log.debug("javax.jcr.Item at {} was selected. Firing ItemSelectedEvent...", selectedItemId);
+            log.debug("com.vaadin.data.Item at {} was selected. Firing ItemSelectedEvent...", selectedItemId);
             eventBus.fireEvent(new ItemSelectedEvent(workspaceName, selectedItemId));
         } catch (Exception e) {
             shell.showError("An error occurred while selecting a row in the data grid", e);
         }
     }
 
+    /**
+     * @return the id of the Vaadin item currently selected in one the currently active {@link ContentView}.
+     * It is equivalent to javax.jcr.Item#getPath().
+     * @see JcrItemAdapter#getItemId()
+     */
     public String getSelectedItemId() {
         return selectedItemId;
     }
 
+    @Override
+    public void onDoubleClick(Item item) {
+        if (item == null) {
+            log.warn("Got null com.vaadin.data.Item. No event will be fired.");
+            return;
+        }
+        try {
+            selectedItemId = ((JcrItemAdapter) item).getItemId();
+            log.debug("com.vaadin.data.Item at {} was double clicked. Firing DoubleClickEvent...", selectedItemId);
+            eventBus.fireEvent(new DoubleClickEvent(workspaceName, selectedItemId));
+        } catch (Exception e) {
+            shell.showError("An error occurred while double clicking on a row in the data grid", e);
+        }
+    }
 }

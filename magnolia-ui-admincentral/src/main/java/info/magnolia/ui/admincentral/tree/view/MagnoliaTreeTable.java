@@ -34,7 +34,6 @@
 package info.magnolia.ui.admincentral.tree.view;
 
 import info.magnolia.jcr.RuntimeRepositoryException;
-import info.magnolia.ui.admincentral.column.EditHandler;
 import info.magnolia.ui.admincentral.tree.container.HierarchicalJcrContainer;
 import info.magnolia.ui.admincentral.tree.model.TreeModel;
 import info.magnolia.ui.model.column.definition.ColumnDefinition;
@@ -108,7 +107,6 @@ public class MagnoliaTreeTable extends HybridSelectionTreeTable {
 
         }
         // setVisibleColumns(visibleColumns.toArray());
-        new EditHandler(this);
     }
 
     /**

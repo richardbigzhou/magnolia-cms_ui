@@ -42,8 +42,10 @@ import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.app.content.ContentAppDescriptor;
 import info.magnolia.ui.admincentral.content.view.ContentPresenter;
+import info.magnolia.ui.admincentral.dialog.action.EditDialogActionDefinition;
 import info.magnolia.ui.admincentral.event.ActionbarClickEvent;
 import info.magnolia.ui.admincentral.event.ContentChangedEvent;
+import info.magnolia.ui.admincentral.event.DoubleClickEvent;
 import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.framework.app.AppContext;
@@ -142,28 +144,7 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
             public void onActionbarItemClicked(ActionbarClickEvent event) {
 
                 ActionDefinition actionDefinition = event.getActionDefinition();
-                if (actionDefinition != null) {
-                    try {
-                        Session session = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace());
-                        String selectedItemId = getSelectedItemId();
-                        if (selectedItemId == null || !session.itemExists(selectedItemId)) {
-                            log.debug("{} does not exist anymore. Was it just deleted? Resetting path to root...",
-                                selectedItemId);
-                            selectedItemId = "/";
-                        }
-                        final javax.jcr.Item item = session.getItem(selectedItemId);
-                        Action action = ContentWorkbenchSubApp.this.actionFactory.createAction(actionDefinition, item);
-                        action.execute();
-                    } catch (PathNotFoundException e) {
-                        ContentWorkbenchSubApp.this.shell.showError("Can't execute action.\n" + e.getMessage(), e);
-                    } catch (LoginException e) {
-                        ContentWorkbenchSubApp.this.shell.showError("Can't execute action.\n" + e.getMessage(), e);
-                    } catch (RepositoryException e) {
-                        ContentWorkbenchSubApp.this.shell.showError("Can't execute action.\n" + e.getMessage(), e);
-                    } catch (ActionExecutionException e) {
-                        ContentWorkbenchSubApp.this.shell.showError("Can't execute action.\n" + e.getMessage(), e);
-                    }
-                }
+                createAndExecuteAction(actionDefinition);
             }
         });
 
@@ -252,6 +233,16 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
                 }
             }
         });
+
+        eventBus.addHandler(DoubleClickEvent.class, new DoubleClickEvent.Handler() {
+
+            @Override
+            public void onDoubleClick(DoubleClickEvent event) {
+                EditDialogActionDefinition editDialogActionDefinition = new EditDialogActionDefinition();
+                editDialogActionDefinition.setDialogName("ui-pages-app:pages");
+                createAndExecuteAction(editDialogActionDefinition);
+            }
+        });
     }
 
     @Override
@@ -259,6 +250,9 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
         return view;
     }
 
+    /**
+     * @see ContentPresenter#getSelectedItemId()
+     */
     public String getSelectedItemId() {
         return contentPresenter.getSelectedItemId();
     }
@@ -270,6 +264,30 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
 
     public ContentWorkbenchView asView() {
         return view;
+    }
+
+    private void createAndExecuteAction(final ActionDefinition actionDefinition) {
+        if (actionDefinition != null) {
+            try {
+                final Session session = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace());
+                String selectedItemId = getSelectedItemId();
+                if (selectedItemId == null || !session.itemExists(selectedItemId)) {
+                    log.debug("{} does not exist anymore. Was it just deleted? Resetting path to root...", selectedItemId);
+                    selectedItemId = "/";
+                }
+                final javax.jcr.Item item = session.getItem(selectedItemId);
+                final Action action = this.actionFactory.createAction(actionDefinition, item);
+                action.execute();
+            } catch (PathNotFoundException e) {
+                this.shell.showError("Can't execute action.\n" + e.getMessage(), e);
+            } catch (LoginException e) {
+                this.shell.showError("Can't execute action.\n" + e.getMessage(), e);
+            } catch (RepositoryException e) {
+                shell.showError("Can't execute action.\n" + e.getMessage(), e);
+            } catch (ActionExecutionException e) {
+                this.shell.showError("Can't execute action.\n" + e.getMessage(), e);
+            }
+        }
     }
 
 }

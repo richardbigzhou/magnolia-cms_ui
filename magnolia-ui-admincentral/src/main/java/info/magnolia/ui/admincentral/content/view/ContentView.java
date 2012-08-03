@@ -45,7 +45,6 @@ public interface ContentView extends View {
 
     /**
      * Enumeration for view types.
-     * TODO: use lowercase elements and remove custom code so that C2B support "by name" could be leveraged?
      */
     public enum ViewType {
         LIST("list"),
@@ -94,6 +93,8 @@ public interface ContentView extends View {
     public interface Listener {
 
         void onItemSelection(final Item item);
+
+        void onDoubleClick(final Item item);
 
     }
 }
