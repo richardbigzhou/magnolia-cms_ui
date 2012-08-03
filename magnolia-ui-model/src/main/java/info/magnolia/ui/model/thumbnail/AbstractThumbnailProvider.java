@@ -34,7 +34,6 @@
 package info.magnolia.ui.model.thumbnail;
 
 
-import javax.jcr.Node;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -58,9 +57,9 @@ public abstract class AbstractThumbnailProvider implements ThumbnailProvider {
     private float quality = DEFAULT_THUMBNAIL_QUALITY;
 
     @Override
-    public abstract String getPath(Node contactNode, int width, int height);
+    public abstract String getPath(final String node, final String workspace, int width, int height);
 
-    protected abstract BufferedImage createThumbnail(final Image contactImage, final String format, final int width, final int height, final float quality) throws IOException;
+    protected abstract BufferedImage createThumbnail(final Image image, final String format, final int width, final int height, final float quality) throws IOException;
 
     public String getFormat() {
         return format;

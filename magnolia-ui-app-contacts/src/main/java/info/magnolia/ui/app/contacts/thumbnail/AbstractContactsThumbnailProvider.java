@@ -36,6 +36,7 @@ package info.magnolia.ui.app.contacts.thumbnail;
 import info.magnolia.cms.beans.runtime.FileProperties;
 import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.cms.util.ContentUtil;
+import info.magnolia.context.MgnlContext;
 import info.magnolia.link.LinkException;
 import info.magnolia.link.LinkUtil;
 import info.magnolia.ui.model.thumbnail.AbstractThumbnailProvider;
@@ -51,6 +52,7 @@ import java.io.InputStream;
 import javax.imageio.ImageIO;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import javax.swing.ImageIcon;
 
 import org.apache.commons.io.IOUtils;
@@ -70,10 +72,13 @@ public abstract class AbstractContactsThumbnailProvider extends AbstractThumbnai
     final static String PHOTO_NODE_NAME = "photo";
 
     @Override
-    public String getPath(Node contactNode, int width, int height) {
+    public String getPath(String contactNodeIdentifier, String workspace, int width, int height) {
 
         String path = null;
         try {
+            final Session session = MgnlContext.getJCRSession(workspace);
+            final Node contactNode = session.getNodeByIdentifier(contactNodeIdentifier);
+
             if (createThumbnail(contactNode)) {
 
                 Node photoNode = contactNode.getNode(PHOTO_NODE_NAME);
@@ -111,6 +116,7 @@ public abstract class AbstractContactsThumbnailProvider extends AbstractThumbnai
                     thumbnailNode.setProperty(FileProperties.PROPERTY_SIZE, size);
 
                     contactNode.getSession().save();
+                    path = LinkUtil.createLink(ContentUtil.asContent(contactNode).getNodeData(THUMBNAIL_NODE_NAME));
 
                 } catch (IOException e) {
                     log.warn("Error creating thumbnail image!", e);
@@ -124,15 +130,9 @@ public abstract class AbstractContactsThumbnailProvider extends AbstractThumbnai
         } catch (RepositoryException e) {
             log.warn("Could read image from contactNode:", e);
             return path;
-
-        }
-
-        try {
-            path = LinkUtil.createLink(ContentUtil.asContent(contactNode).getNodeData(THUMBNAIL_NODE_NAME));
         } catch (LinkException e) {
             log.warn("Error creating Link", e);
         }
-
         return path;
     }
 

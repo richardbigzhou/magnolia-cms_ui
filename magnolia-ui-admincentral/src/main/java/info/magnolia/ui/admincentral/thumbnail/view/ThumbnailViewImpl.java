@@ -134,7 +134,7 @@ public class ThumbnailViewImpl implements ThumbnailView {
             Iterable<Node> assets = NodeUtil.collectAllChildren(parent, filterByItemType);
             for(Node asset: assets) {
                 //FIXME this op can become very long with "lots" of items (tested with 2500 fake thumbnails)
-                final String path = thumbnailProvider.getPath(asset, 73, 73);
+                final String path = thumbnailProvider.getPath(asset.getIdentifier(), workbenchDefinition.getWorkspace(), 73, 73);
                 final Thumbnail image = new Thumbnail(asset, path);
 
                 layout.addComponent(image);

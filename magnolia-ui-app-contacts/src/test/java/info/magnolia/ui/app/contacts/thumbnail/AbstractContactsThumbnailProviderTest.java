@@ -34,6 +34,7 @@
 package info.magnolia.ui.app.contacts.thumbnail;
 
 
+import static org.junit.Assert.assertEquals;
 import info.magnolia.cms.i18n.DefaultI18nContentSupport;
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.context.MgnlContext;
@@ -44,25 +45,28 @@ import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.test.mock.jcr.MockSession;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+
+import java.io.ByteArrayInputStream;
 
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 
-import java.io.ByteArrayInputStream;
-
-import static org.junit.Assert.assertEquals;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Tests.
  */
 public class AbstractContactsThumbnailProviderTest {
+    protected String workspaceName = "test";
+    protected MockSession session;
 
     @Before
     public void setUp() throws Exception {
         MockWebContext webCtx = new MockWebContext();
+        session = new MockSession(workspaceName);
+        webCtx.addSession(workspaceName, session);
         webCtx.setContextPath("/foo");
         MgnlContext.setInstance(webCtx);
     }
@@ -71,6 +75,7 @@ public class AbstractContactsThumbnailProviderTest {
     public void tearDown() throws Exception {
         ComponentsTestUtil.clear();
         MgnlContext.setInstance(null);
+        session = null;
     }
 
     @Test
@@ -81,7 +86,7 @@ public class AbstractContactsThumbnailProviderTest {
         ComponentsTestUtil.setImplementation(I18nContentSupport.class, DefaultI18nContentSupport.class);
 
         final PropertiesImportExport pie = new PropertiesImportExport();
-        final MockSession session  = new MockSession("test");
+
         final Node root = session.getRootNode();
 
         final String content =
@@ -100,7 +105,7 @@ public class AbstractContactsThumbnailProviderTest {
 
         // WHEN
         final Node contactNode = root.getNode("contact1");
-        final String result = provider.getPath(contactNode, 30, 30);
+        final String result = provider.getPath(contactNode.getIdentifier(), contactNode.getSession().getWorkspace().getName(), 30, 30);
 
         // THEN
         assertEquals("/contact1/thumbnail/MaxMustermann.jpg", result.toString());
