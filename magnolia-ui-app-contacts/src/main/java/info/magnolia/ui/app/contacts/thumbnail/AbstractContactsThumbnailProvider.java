@@ -116,20 +116,19 @@ public abstract class AbstractContactsThumbnailProvider extends AbstractThumbnai
                     thumbnailNode.setProperty(FileProperties.PROPERTY_SIZE, size);
 
                     contactNode.getSession().save();
-                    path = LinkUtil.createLink(ContentUtil.asContent(contactNode).getNodeData(THUMBNAIL_NODE_NAME));
 
                 } catch (IOException e) {
                     log.warn("Error creating thumbnail image!", e);
-                    return path;
                 } finally {
                     IOUtils.closeQuietly(thumbnailOutputStream);
                     IOUtils.closeQuietly(thumbnailInputStream);
                     IOUtils.closeQuietly(originalInputStream);
                 }
             }
+            //thumbnail already exists and does not need to be regenerated
+            path = LinkUtil.createLink(ContentUtil.asContent(contactNode).getNodeData(THUMBNAIL_NODE_NAME));
         } catch (RepositoryException e) {
             log.warn("Could read image from contactNode:", e);
-            return path;
         } catch (LinkException e) {
             log.warn("Error creating Link", e);
         }
