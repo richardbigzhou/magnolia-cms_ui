@@ -104,9 +104,9 @@ public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
 
         try {
 
-            client.setPath(nodeToPreview.getPath());
+            client.setNodePath(nodeToPreview.getPath(), true);
             client.addParameter("exportType", "png");
-            InputStream is = client.get();
+            InputStream is = client.getInputStream();
             saveImage(nodeToPreview, is);
 
         } catch (RepositoryException e) {
