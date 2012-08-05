@@ -53,9 +53,18 @@ body{
 .clearfix:after { clear: both; }
 .clearfix { *zoom: 1; }
 
+.thumbnail {
+	border: 1px solid #F0F0F0;
+	display: inline-block;
+}
 
+.thumbnail.selected {
+	background-color: #AABF2F;
+}
 
-
+.thumbnail:HOVER {
+	border: 1px solid #AABF2F;
+}
 /*END OF APP LAUNCHER RELATED STYLES*/
 
 

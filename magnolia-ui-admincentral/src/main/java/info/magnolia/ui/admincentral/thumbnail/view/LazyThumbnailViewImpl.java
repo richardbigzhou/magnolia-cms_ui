@@ -39,6 +39,7 @@ import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.admincentral.container.JcrContainer;
 import info.magnolia.ui.model.thumbnail.ThumbnailProvider;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.widget.LazyThumbnailLayout;
 import info.magnolia.ui.vaadin.integration.widget.LazyThumbnailLayout.ThumbnaSeletionListener;
 
@@ -48,6 +49,7 @@ import javax.jcr.LoginException;
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,8 +92,17 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
         }
         layout.addThumbnailSelectionListener(new ThumbnaSeletionListener() {
             @Override
-            public void onThumbnailSelected() {
-                
+            public void onThumbnailSelected(final String thumbnailId) {
+                Session session;
+                try {
+                    session = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace());
+                    final Node imageNode = session.getNodeByIdentifier(thumbnailId);
+                    listener.onItemSelection(new JcrNodeAdapter(imageNode));
+                } catch (LoginException e) {
+                    e.printStackTrace();
+                } catch (RepositoryException e) {
+                    e.printStackTrace();
+                }
             }
         });
         
@@ -129,7 +140,6 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
             container.setThumbnailWidth(73);
             layout.setContainerDataSource(container);
             layout.setThumbnailSize(73, 73);
-            layout.refresh();
             
 
         } catch (PathNotFoundException e) {

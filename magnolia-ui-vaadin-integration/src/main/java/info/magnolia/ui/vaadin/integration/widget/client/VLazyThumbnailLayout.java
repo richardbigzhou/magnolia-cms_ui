@@ -54,7 +54,6 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.Paintable;
@@ -76,9 +75,11 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
 
     private int thumbnailAmount = 0;
 
-    private final List<Image> thumbnails = new ArrayList<Image>();
+    private VThumbnail selectedThumbnail = null; 
+    
+    private final List<VThumbnail> thumbnails = new ArrayList<VThumbnail>();
 
-    private final List<Image> thumbnailStubs = new ArrayList<Image>();
+    private final List<VThumbnail> thumbnailStubs = new ArrayList<VThumbnail>();
 
     private ScrollPanel scroller = new ScrollPanel();
 
@@ -120,7 +121,7 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
     };
 
     public VLazyThumbnailLayout() {
-        thumbnailStyle.setProperty("padding", "10px");
+        thumbnailStyle.setProperty("margin", "10px");
         scroller.setWidget(imageContainer);
         initWidget(scroller);
         scroller.addScrollHandler(new ScrollHandler() {
@@ -137,6 +138,11 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
                 final Element element = event.getNativeEvent().getEventTarget().cast();
                 final VThumbnail thumbnail = Util.findWidget(element, VThumbnail.class);
                 if (thumbnail != null) {
+                    if (selectedThumbnail != null) {
+                        selectedThumbnail.setSelected(false);
+                    }
+                    thumbnail.setSelected(true);
+                    selectedThumbnail = thumbnail;
                     proxy.call("thumbnailSelected", thumbnail.getId());
                 }
             }
@@ -156,10 +162,9 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
     }
     
     private void addStub() {
-        Image image = new Image(LazyThumbnailLayoutImageBundle.INSTANCE.getStubImage().getSafeUri());
-        image.setStyleName("thumbnail-image");
-        thumbnailStubs.add(image);
-        imageContainer.add(image);
+        final VThumbnail thumbnailStub = new VThumbnail();
+        thumbnailStubs.add(thumbnailStub);
+        imageContainer.add(thumbnailStub);
     }
 
     private void setThumbnailSize(int width, int height) {
@@ -179,10 +184,10 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
 
     private void addImages(JsArray<VThumbnailData> urls) {
         for (int i = 0; i < urls.length() && !thumbnailStubs.isEmpty(); ++i) {
-            final Image image = thumbnailStubs.remove(0);
+            final VThumbnail thumbnail = thumbnailStubs.remove(0);
             final VThumbnailData data = urls.get(i); 
-            image.setUrl(data.getSrc());
-            thumbnails.add(image);
+            thumbnail.setData(data);
+            thumbnails.add(thumbnail);
         }
     }
 

@@ -45,18 +45,41 @@ public class VThumbnail extends Composite {
 
     private final SimplePanel panel = new SimplePanel();
     
-    private final Image image = new Image();
+    private final Image image = new Image(LazyThumbnailLayoutImageBundle.INSTANCE.getStubImage().getSafeUri());
     
-    private final VThumbnailData data;
+    private VThumbnailData data;
     
-    public VThumbnail(final VThumbnailData data) {
+    private boolean isSelected = false;
+    
+    public VThumbnail() {
         super();
-        this.data = data;
-        panel.setWidget(image);
         initWidget(panel);
+        addStyleName("thumbnail");
+        image.setStyleName("thumbnail-image");
+        panel.setWidget(image);
     }
     
     public String getId() {
         return data.getId();
+    }
+    
+    public void setData(VThumbnailData data) {
+        this.data = data;
+        if (data != null) {
+            image.setUrl(data.getSrc());
+        }
+    }
+    
+    public void setSelected(boolean isSelected) {
+        this.isSelected = isSelected;
+        if (isSelected) {
+            addStyleName("selected");
+        } else {
+            removeStyleName("selected");
+        }
+    }
+    
+    public boolean isSelected() {
+        return isSelected;
     }
 }
