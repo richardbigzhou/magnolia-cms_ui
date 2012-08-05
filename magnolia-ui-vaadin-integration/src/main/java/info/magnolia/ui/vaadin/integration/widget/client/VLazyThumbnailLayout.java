@@ -42,10 +42,15 @@ import org.vaadin.rpc.client.ClientSideHandler;
 import org.vaadin.rpc.client.ClientSideProxy;
 import org.vaadin.rpc.client.Method;
 
-import com.google.gwt.core.client.JsArrayString;
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -54,6 +59,7 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.Paintable;
 import com.vaadin.terminal.gwt.client.UIDL;
+import com.vaadin.terminal.gwt.client.Util;
 import com.vaadin.terminal.gwt.client.VConsole;
 
 /**
@@ -85,7 +91,7 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
             register("addThumbnails", new Method() {
                 @Override
                 public void invoke(String methodName, Object[] params) {
-                    final JsArrayString urls = parseStringArray(String.valueOf(params[0]));
+                    final JsArray<VThumbnailData> urls = parseStringArray(String.valueOf(params[0]));
                     addImages(urls);
                 }
             });
@@ -114,7 +120,7 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
     };
 
     public VLazyThumbnailLayout() {
-        thumbnailStyle.setProperty("margin", "10px");
+        thumbnailStyle.setProperty("padding", "10px");
         scroller.setWidget(imageContainer);
         initWidget(scroller);
         scroller.addScrollHandler(new ScrollHandler() {
@@ -123,6 +129,18 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
                 createStubsAndQueryThumbnails();
             }
         });
+        
+        DOM.sinkEvents(getElement(), Event.MOUSEEVENTS);
+        addDomHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                final Element element = event.getNativeEvent().getEventTarget().cast();
+                final VThumbnail thumbnail = Util.findWidget(element, VThumbnail.class);
+                if (thumbnail != null) {
+                    proxy.call("thumbnailSelected", thumbnail.getId());
+                }
+            }
+        }, ClickEvent.getType());
     }
 
     private void createStubsAndQueryThumbnails() {
@@ -159,10 +177,11 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
         };
     };
 
-    private void addImages(JsArrayString urls) {
+    private void addImages(JsArray<VThumbnailData> urls) {
         for (int i = 0; i < urls.length() && !thumbnailStubs.isEmpty(); ++i) {
             final Image image = thumbnailStubs.remove(0);
-            image.setUrl(urls.get(i));
+            final VThumbnailData data = urls.get(i); 
+            image.setUrl(data.getSrc());
             thumbnails.add(image);
         }
     }
@@ -224,7 +243,7 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
         queryTimer.schedule(QUERY_TIMER_DELAY);
     }
     
-    public static native JsArrayString parseStringArray(String json) /*-{
+    public static native JsArray<VThumbnailData> parseStringArray(String json) /*-{
         return eval('(' + json + ')');
     }-*/;
     

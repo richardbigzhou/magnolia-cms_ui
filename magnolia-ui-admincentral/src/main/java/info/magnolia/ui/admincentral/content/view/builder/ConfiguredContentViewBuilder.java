@@ -38,7 +38,7 @@ import info.magnolia.ui.admincentral.column.Column;
 import info.magnolia.ui.admincentral.content.view.ContentView;
 import info.magnolia.ui.admincentral.content.view.ContentView.ViewType;
 import info.magnolia.ui.admincentral.list.view.ListViewImpl;
-import info.magnolia.ui.admincentral.thumbnail.view.ThumbnailViewImpl;
+import info.magnolia.ui.admincentral.thumbnail.view.LazyThumbnailViewImpl;
 import info.magnolia.ui.admincentral.tree.model.TreeModel;
 import info.magnolia.ui.admincentral.tree.view.TreeViewImpl;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
@@ -101,7 +101,7 @@ public class ConfiguredContentViewBuilder extends FactoryBase<ColumnDefinition, 
         case LIST:
             return componentProvider.newInstance(ListViewImpl.class, workbenchDefinition, treeModel);
         case THUMBNAIL:
-            return componentProvider.newInstance(ThumbnailViewImpl.class, workbenchDefinition,workbenchDefinition.getThumbnailProvider());
+            return componentProvider.newInstance(LazyThumbnailViewImpl.class, workbenchDefinition,workbenchDefinition.getThumbnailProvider());
         default:
             throw new RuntimeException("The provided view type ["+ type + "] is not valid.");
         }

@@ -36,6 +36,7 @@ package info.magnolia.ui.vaadin.integration.widget;
 import info.magnolia.ui.vaadin.integration.widget.client.VLazyThumbnailLayout;
 import info.magnolia.ui.vaadin.integration.widget.serializer.ResourceSerializer;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +46,10 @@ import org.vaadin.rpc.ServerSideProxy;
 import org.vaadin.rpc.client.Method;
 
 import com.google.gson.GsonBuilder;
+import com.vaadin.data.Container;
+import com.vaadin.data.Container.Ordered;
 import com.vaadin.terminal.ExternalResource;
+import com.vaadin.terminal.KeyMapper;
 import com.vaadin.terminal.PaintException;
 import com.vaadin.terminal.PaintTarget;
 import com.vaadin.terminal.Resource;
@@ -57,7 +61,7 @@ import com.vaadin.ui.ClientWidget;
  * 
  */
 @ClientWidget(VLazyThumbnailLayout.class)
-public class LazyThumbnailLayout extends AbstractComponent implements ServerSideHandler {
+public class LazyThumbnailLayout extends AbstractComponent implements ServerSideHandler, Container.Viewer {
 
     private int thumbnailsAmount = 0;
 
@@ -65,20 +69,14 @@ public class LazyThumbnailLayout extends AbstractComponent implements ServerSide
 
     private int thumbnailHeight = 0;
 
-    private LazyThumbnailProvider provider;
-
     private List<ThumbnaSeletionListener> selectionListeners = new ArrayList<LazyThumbnailLayout.ThumbnaSeletionListener>();
-    
-    private ArrayList<Resource> resources = new ArrayList<Resource>() {
-        @Override
-        public Resource get(int index) {
-            if (size() <= index) {
-                return null;
-            }
-            return super.get(index);
-        };
-    };
 
+    private Ordered container;
+
+    private Object lastQueried = null;
+
+    private KeyMapper mapper = new KeyMapper();
+    
     private ServerSideProxy proxy = new ServerSideProxy(this) {
         {
             register("loadThumbnails", new Method() {
@@ -86,27 +84,50 @@ public class LazyThumbnailLayout extends AbstractComponent implements ServerSide
                 public void invoke(String methodName, Object[] params) {
                     final GsonBuilder gson = new GsonBuilder().registerTypeAdapter(ExternalResource.class, new ResourceSerializer());
                     int amount = (Integer) params[0];
-                    final List<Resource> resources = provider.getThumbnails(amount);
+                    final List<Thumbnail> resources = fetchThumbnails(amount);
                     proxy.call("addThumbnails", gson.create().toJson(resources));
-                    LazyThumbnailLayout.this.resources.addAll(resources);
                 }
             });
+            
+            register("thumbnailSelected", new Method() {
+                @Override
+                public void invoke(String methodName, Object[] params) {
+                    final String key = String.valueOf(params[0]);
+                    final Object itemId = mapper.get(key);
+                    if (itemId != null) {
+                        select(itemId);
+                    }
+                }
+            });            
         }
     };
 
-    public LazyThumbnailLayout(final LazyThumbnailProvider provider) {
+    public LazyThumbnailLayout() {
         setImmediate(true);
-        setProvider(provider);
     }
 
-    private void setProvider(LazyThumbnailProvider provider) {
-        this.provider = provider;
-        setThumbnailAmount(provider.getThumbnailsAmount());
+    private void select(Object itemId) {
+        System.out.println("Selecting " + itemId);
     }
 
-    public void setThumbnailAmount(int thumbnailAmount) {
-        thumbnailAmount = thumbnailAmount > 0 ? thumbnailAmount : 0;
-        proxy.callOnce("setThumbnailAmount", thumbnailAmount);
+    private List<Thumbnail> fetchThumbnails(int amount) {
+        List<Thumbnail> thumbnails = new ArrayList<Thumbnail>();
+        Object id = lastQueried;
+        if (id == null) {
+            id = container.firstItemId();
+        }
+        int i = 0;
+        while (id != null && i < amount) {
+            Resource resource = (Resource)container.getContainerProperty(id, "thumbnail").getValue();
+            thumbnails.add(new Thumbnail(mapper.key(id), resource));
+            id = container.nextItemId(id);
+        }
+        lastQueried = id;
+        return thumbnails;
+    }
+
+    private void setThumbnailAmount(int thumbnailAmount) {
+        proxy.callOnce("setThumbnailAmount", Math.max(thumbnailAmount, 0));
     }
 
     public void setThumbnailSize(int width, int height) {
@@ -118,12 +139,11 @@ public class LazyThumbnailLayout extends AbstractComponent implements ServerSide
     public int getThumbnailWidth() {
         return thumbnailWidth;
     }
-    
-    
+
     public int getThumbnailHeight() {
         return thumbnailHeight;
     }
-    
+
     @Override
     public void paintContent(PaintTarget target) throws PaintException {
         super.paintContent(target);
@@ -138,7 +158,7 @@ public class LazyThumbnailLayout extends AbstractComponent implements ServerSide
 
     @Override
     public Object[] initRequestFromClient() {
-        provider.refresh();
+        lastQueried = null;
         proxy.callOnce("setThumbnailSize", thumbnailWidth, thumbnailHeight);
         proxy.callOnce("setThumbnailAmount", thumbnailsAmount);
         return new Object[] {};
@@ -148,40 +168,79 @@ public class LazyThumbnailLayout extends AbstractComponent implements ServerSide
     public void callFromClient(String method, Object[] params) {
         throw new RuntimeException("Unknown client side call: " + method);
     }
-    
+
     public void clear() {
-        resources.clear();
         proxy.callOnce("clear");
     }
-    
+
     public void refresh() {
         clear();
-        setThumbnailAmount(provider.getThumbnailsAmount());
+        if (container != null) {
+            setThumbnailAmount(container.size());
+        }
     }
-    
+
     public void addThumbnailSelectionListener(final ThumbnaSeletionListener listener) {
         this.selectionListeners.add(listener);
     }
-    
+
+    @Override
+    public void setContainerDataSource(Container newDataSource) {
+        if (newDataSource instanceof Ordered) {
+            this.container = (Ordered) newDataSource;
+            refresh();
+        } else {
+            throw new IllegalArgumentException("Container must be ordered.");   
+        }
+    }
+
+    @Override
+    public Ordered getContainerDataSource() {
+        return container;
+    }
+
     /**
      * Listener interface for thumbnail selection.
      */
     public interface ThumbnaSeletionListener {
-        
+
         void onThumbnailSelected();
     }
-    
+
     /**
      * Interface for the providers of the actual thumbnails.
      */
     public interface LazyThumbnailProvider {
 
         void refresh();
-        
+
         int getThumbnailsAmount();
 
         List<Resource> getThumbnails(int amount);
 
+    }
+    
+    /**
+     * DTO object for thumbnails.
+     */
+    public static class Thumbnail implements Serializable {
+        
+        private final String id;
+        
+        private Resource resource;
+        
+        public Thumbnail(String id, Resource resource) {
+            this.id = id;
+            this.resource = resource;
+        }
+        
+        public Resource getResource() {
+            return resource;
+        }
+        
+        public String getId() {
+            return id;
+        }
     }
 
 }

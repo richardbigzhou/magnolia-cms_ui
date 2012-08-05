@@ -40,11 +40,8 @@ import info.magnolia.ui.admincentral.container.JcrContainer;
 import info.magnolia.ui.model.thumbnail.ThumbnailProvider;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.widget.LazyThumbnailLayout;
-import info.magnolia.ui.vaadin.integration.widget.LazyThumbnailLayout.LazyThumbnailProvider;
 import info.magnolia.ui.vaadin.integration.widget.LazyThumbnailLayout.ThumbnaSeletionListener;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.jcr.LoginException;
@@ -55,9 +52,9 @@ import javax.jcr.RepositoryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 import com.vaadin.data.Item;
-import com.vaadin.terminal.ExternalResource;
-import com.vaadin.terminal.Resource;
 import com.vaadin.ui.Component;
 
 /**
@@ -74,55 +71,14 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
     private Listener listener;
     
     private LazyThumbnailLayout layout;
+
+    private ThumbnailProvider thumbnailProvider;
     
-    private LazyThumbnailProviderImpl lazyThumbnailProvider;
-    
-    private class LazyThumbnailProviderImpl implements LazyThumbnailProvider {
-
-        private ThumbnailProvider thumbnailProvider;
-    
-        private List<Node> nodeList = new ArrayList<Node>();
-        
-        private Iterator<Node> nodeIterator;
-        
-        public LazyThumbnailProviderImpl(final ThumbnailProvider thumbnailProvider) {
-            this.thumbnailProvider = thumbnailProvider;
-        }
-
-        @Override
-        public int getThumbnailsAmount() {
-            return nodeList.size();
-        }
-
-        @Override
-        public List<Resource> getThumbnails(int amount) {
-            final List<Resource> resources = new ArrayList<Resource>();
-            int thumbnailWidth = layout.getThumbnailWidth(); 
-            int thumbnailHeight = layout.getThumbnailHeight();
-            for (int i = 0; i < amount && nodeIterator.hasNext(); ++i) {
-                final String path = thumbnailProvider.getPath(nodeIterator.next(), thumbnailWidth, thumbnailHeight);
-                //final Thumbnail image = new Thumbnail(asset, path);
-                resources.add(new ExternalResource(path));
-            }
-            return resources;
-        }
-        
-        public void setNodeList(List<Node> nodeList) {
-            this.nodeList = nodeList;
-            refresh();
-        }
-
-        @Override
-        public void refresh() {
-            nodeIterator = nodeList.iterator();            
-        }
-    }
     
     public LazyThumbnailViewImpl(final WorkbenchDefinition definition, final ThumbnailProvider thumbnailProvider) {
         this.workbenchDefinition = definition;
-        this.lazyThumbnailProvider = new LazyThumbnailProviderImpl(thumbnailProvider);
-        this.layout = new LazyThumbnailLayout(lazyThumbnailProvider);
-        
+        this.layout = new LazyThumbnailLayout();
+        this.thumbnailProvider = thumbnailProvider;
         layout.setSizeFull();
         
         final String[] itemTypes = getItemTypes(definition);
@@ -132,8 +88,6 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
             log.warn("Workbench definition contains no item types, node filter will accept all mgnl item types.");
             filterByItemType = NodeUtil.MAGNOLIA_FILTER;
         }
-        
-        layout.refresh();
         layout.addThumbnailSelectionListener(new ThumbnaSeletionListener() {
             @Override
             public void onThumbnailSelected() {
@@ -155,12 +109,25 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
 
     @Override
     public void refresh() {
-        layout.clear();
         try {
             //FIXME fgrilli the arg to get node must take into account that the current path can change if we navigate in hierarchy.
             Node parent = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace()).getNode(workbenchDefinition.getPath());
             Iterable<Node> assets = NodeUtil.collectAllChildren(parent, filterByItemType);
-            lazyThumbnailProvider.setNodeList(NodeUtil.asList(assets));
+            final List<String> uuids = Lists.transform(NodeUtil.asList(assets), new Function<Node, String>() {
+                @Override
+                public String apply(Node node) {
+                    try {
+                        return node.getIdentifier();
+                    } catch (RepositoryException e) {
+                        return null;
+                    }
+                }
+            });
+            final ThumbnailContainer container = new ThumbnailContainer(thumbnailProvider, uuids);
+            container.setWorkspaceName(workbenchDefinition.getWorkspace());
+            container.setThumbnailHeight(73);
+            container.setThumbnailWidth(73);
+            layout.setContainerDataSource(container);
             layout.setThumbnailSize(73, 73);
             layout.refresh();
             
