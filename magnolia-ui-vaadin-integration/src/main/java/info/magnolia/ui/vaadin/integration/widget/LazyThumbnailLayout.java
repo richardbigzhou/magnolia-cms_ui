@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -58,7 +58,7 @@ import com.vaadin.ui.ClientWidget;
 
 /**
  * Lazy layout of asset thumbnails.
- * 
+ *
  */
 @ClientWidget(VLazyThumbnailLayout.class)
 public class LazyThumbnailLayout extends AbstractComponent implements ServerSideHandler, Container.Viewer {
@@ -69,7 +69,7 @@ public class LazyThumbnailLayout extends AbstractComponent implements ServerSide
 
     private int thumbnailHeight = 0;
 
-    private List<ThumbnaSeletionListener> selectionListeners = new ArrayList<LazyThumbnailLayout.ThumbnaSeletionListener>();
+    private List<ThumbnailSelectionListener> selectionListeners = new ArrayList<LazyThumbnailLayout.ThumbnailSelectionListener>();
 
     private Ordered container;
 
@@ -107,7 +107,7 @@ public class LazyThumbnailLayout extends AbstractComponent implements ServerSide
     }
 
     private void select(Object itemId) {
-        for (final ThumbnaSeletionListener listener : selectionListeners) {
+        for (final ThumbnailSelectionListener listener : selectionListeners) {
             listener.onThumbnailSelected(String.valueOf(itemId));
         }
     }
@@ -189,7 +189,7 @@ public class LazyThumbnailLayout extends AbstractComponent implements ServerSide
         }
     }
 
-    public void addThumbnailSelectionListener(final ThumbnaSeletionListener listener) {
+    public void addThumbnailSelectionListener(final ThumbnailSelectionListener listener) {
         this.selectionListeners.add(listener);
     }
 
@@ -212,7 +212,7 @@ public class LazyThumbnailLayout extends AbstractComponent implements ServerSide
     /**
      * Listener interface for thumbnail selection.
      */
-    public interface ThumbnaSeletionListener {
+    public interface ThumbnailSelectionListener {
 
         void onThumbnailSelected(String thumbnailId);
     }

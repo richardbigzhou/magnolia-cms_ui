@@ -152,23 +152,20 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Resour
      */
     public class ThumbnailContainerProperty extends AbstractProperty {
 
-        private String itemId;
+        private String resourcePath;
 
-        public ThumbnailContainerProperty(final String itemId) {
-            this.itemId = itemId;
+        public ThumbnailContainerProperty(final String resourcePath) {
+            this.resourcePath = resourcePath;
         }
 
         @Override
         public Resource getValue() {
-            return new ExternalResource(thumbnailProvider.getPath(itemId, getWorkspaceName(), getThumbnailWidth(), getThumbnailHeight()));
+            return new ExternalResource(thumbnailProvider.getPath(resourcePath, getWorkspaceName(), getThumbnailWidth(), getThumbnailHeight()));
         }
 
         @Override
         public void setValue(Object newValue) throws ReadOnlyException, ConversionException {
-            if (!(newValue instanceof Resource)) {
-                throw new IllegalArgumentException("Only accepts resources!");
-            }
-
+            this.resourcePath = String.valueOf(newValue);
         }
 
         @Override
