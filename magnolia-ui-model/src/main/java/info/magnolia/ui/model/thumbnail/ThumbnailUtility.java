@@ -33,12 +33,23 @@
  */
 package info.magnolia.ui.model.thumbnail;
 
+import info.magnolia.context.MgnlContext;
+
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Calendar;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+
+import org.apache.jackrabbit.JcrConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.sun.image.codec.jpeg.JPEGCodec;
 import com.sun.image.codec.jpeg.JPEGEncodeParam;
@@ -49,10 +60,15 @@ import com.sun.image.codec.jpeg.JPEGImageEncoder;
  */
 public class ThumbnailUtility {
 
+    private static final Logger log = LoggerFactory.getLogger(ThumbnailUtility.class);
+
+    private ThumbnailUtility() {
+    }
+
     /**
      * Create a Thumbnail image from the provided original. Thumbnail will have the indicated width, height and quality.
      */
-    public static BufferedImage createThumbnail(final Image original, final String format, final int width, final int height, final float quality) throws IOException {
+    public static final BufferedImage createThumbnail(final Image original, final String format, final int width, final int height, final float quality) throws IOException {
         int thumbWidth = width;
         int thumbHeight = height;
 
@@ -82,4 +98,34 @@ public class ThumbnailUtility {
 
         return thumbnail;
     }
+
+    /**
+     * Checks whether this node contains an image which needs to be generated for the first time or regenerated.
+     * @returns <code>true</code> if the thumbnail has to be created because not yet existing or recreated due to its original image having been updated, else <code>false</code>.
+     * @throws RepositoryException
+     */
+    public static final boolean isThumbnailToBeGenerated(final String nodeIdentifier, final String workspace, final String originalNodeName, final String thumbnailNodeName) throws RepositoryException {
+
+        final Session session = MgnlContext.getJCRSession(workspace);
+        final Node node = session.getNodeByIdentifier(nodeIdentifier);
+
+        if (!node.hasNode(originalNodeName)) {
+            log.warn("No [{}] node found for contact node [{}]. Cannot create thumbnail.", originalNodeName, node.getPath());
+            return false;
+        }
+        if (!node.hasNode(thumbnailNodeName)) {
+            return true;
+        }
+        final Node originalImageNode = node.getNode(originalNodeName);
+        final Node thumbnailNode = node.getNode(thumbnailNodeName);
+        final Calendar originalImageDate = originalImageNode.getProperty(JcrConstants.JCR_LASTMODIFIED).getDate();
+        final Calendar thumbnailNodeDate = thumbnailNode.getProperty(JcrConstants.JCR_LASTMODIFIED).getDate();
+        if (originalImageDate.compareTo(thumbnailNodeDate) > 0) {
+            log.debug("Original image date is {} - thumbnail date is {}. Recreating thumbnail for node [{}]...", new Object[]{ originalImageDate.getTime(), thumbnailNodeDate.getTime(), node.getPath()});
+            // photo node must have been updated as its last mod date is after thumbnail last mod date
+            return true;
+        }
+        return false;
+    }
+
 }

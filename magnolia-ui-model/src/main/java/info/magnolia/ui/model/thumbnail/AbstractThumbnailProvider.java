@@ -48,7 +48,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Calendar;
 
 import javax.imageio.ImageIO;
 import javax.jcr.Node;
@@ -99,7 +98,7 @@ public abstract class AbstractThumbnailProvider implements ThumbnailProvider {
      * If you want to store your binaries under different names you can override them via the provided setters.
      * If your node structure is different from the default one, you need to override this method.<p>
      * This method will also handle whether a thumbnail needs to be created for the very first time, regenerated in case the original image has been updated or can
-     * just be retrieved from the JCR repository by using {@link #isThumbnailToBeGenerated(Node)}.
+     * just be retrieved from the JCR repository by using {@link ThumbnailUtility#isThumbnailToBeGenerated(String, String, String, String)}.
      * @return <code>null</code> if no link could be generated.
      * @see info.magnolia.ui.model.thumbnail.ThumbnailProvider#getPath(java.lang.String, java.lang.String, int, int)
      */
@@ -107,10 +106,11 @@ public abstract class AbstractThumbnailProvider implements ThumbnailProvider {
     public String getPath(final String nodeIdentifier, final String workspace, int width, int height) {
         String path = null;
         try {
-            final Session session = MgnlContext.getJCRSession(workspace);
-            final Node imageNode = session.getNodeByIdentifier(nodeIdentifier);
+            Node imageNode = null;
+            if (ThumbnailUtility.isThumbnailToBeGenerated(nodeIdentifier, workspace, getOriginalImageNodeName(), getThumbnailNodeName())) {
 
-            if (isThumbnailToBeGenerated(imageNode)) {
+                final Session session = MgnlContext.getJCRSession(workspace);
+                imageNode = session.getNodeByIdentifier(nodeIdentifier);
 
                 final Node originalImageNode = imageNode.getNode(getOriginalImageNodeName());
                 final InputStream originalInputStream = originalImageNode.getProperty(JcrConstants.JCR_DATA).getBinary().getStream();
@@ -156,6 +156,10 @@ public abstract class AbstractThumbnailProvider implements ThumbnailProvider {
                     IOUtils.closeQuietly(originalInputStream);
                 }
             }
+            if(imageNode == null) {
+                log.warn("Impossible to retrieve image node needed to create thumbnail. Will return null.");
+                return null;
+            }
             path = LinkUtil.createLink(ContentUtil.asContent(imageNode).getNodeData(getThumbnailNodeName()));
         } catch (RepositoryException e) {
             log.error("A repository exception occurred.", e);
@@ -165,29 +169,6 @@ public abstract class AbstractThumbnailProvider implements ThumbnailProvider {
             return null;
         }
         return path;
-    }
-    /**
-     * Checks whether this node contains an image which needs to be generated for the first time or regenerated.
-     * @throws RepositoryException
-     */
-    protected boolean isThumbnailToBeGenerated(final Node node) throws RepositoryException {
-        if (!node.hasNode(getOriginalImageNodeName())) {
-            log.warn("No [{}] node found for contact node [{}]. Cannot create thumbnail.", getOriginalImageNodeName(), node.getPath());
-            return false;
-        }
-        if (!node.hasNode(getThumbnailNodeName())) {
-            return true;
-        }
-        final Node originalImageNode = node.getNode(getOriginalImageNodeName());
-        final Node thumbnailNode = node.getNode(getThumbnailNodeName());
-        final Calendar originalImageDate = originalImageNode.getProperty(JcrConstants.JCR_LASTMODIFIED).getDate();
-        final Calendar thumbnailNodeDate = thumbnailNode.getProperty(JcrConstants.JCR_LASTMODIFIED).getDate();
-        if (originalImageDate.compareTo(thumbnailNodeDate) > 0) {
-            log.debug("Original image date is {} - thumbnail date is {}. Recreating thumbnail for node [{}]...", new Object[]{ originalImageDate.getTime(), thumbnailNodeDate.getTime(), node.getPath()});
-            // photo node must have been updated as its last mod date is after thumbnail last mod date
-            return true;
-        }
-        return false;
     }
 
     protected abstract BufferedImage createThumbnail(final Image image, final String format, final int width, final int height, final float quality) throws IOException;
