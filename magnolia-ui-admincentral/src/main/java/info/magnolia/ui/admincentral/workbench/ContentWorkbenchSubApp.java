@@ -269,6 +269,7 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
     private void createAndExecuteAction(final ActionDefinition actionDefinition) {
         if (actionDefinition == null) {
             log.warn("Action definition cannot be null. Will do nothing.");
+            return;
         }
         try {
             final Session session = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace());
