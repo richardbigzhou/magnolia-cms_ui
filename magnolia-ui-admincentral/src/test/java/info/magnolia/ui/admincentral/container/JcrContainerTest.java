@@ -33,9 +33,12 @@
  */
 package info.magnolia.ui.admincentral.container;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.RepositoryTestCase;
-import info.magnolia.test.mock.jcr.MockNode;
 import info.magnolia.ui.admincentral.column.Column;
 import info.magnolia.ui.admincentral.column.PropertyTypeColumn;
 import info.magnolia.ui.admincentral.tree.model.TreeModel;
@@ -68,11 +71,8 @@ import org.junit.Test;
 
 import com.vaadin.data.Property;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-
 /**
- * Main test class for {JcrContainer}
+ * Main test class for {JcrContainer}.
  */
 public class JcrContainerTest extends RepositoryTestCase{
 
