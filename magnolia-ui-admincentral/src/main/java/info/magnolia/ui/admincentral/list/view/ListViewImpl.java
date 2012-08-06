@@ -100,7 +100,6 @@ public class ListViewImpl implements ListView {
 
             @Override
             public void itemClick(ItemClickEvent event) {
-                System.out.println(event.isDoubleClick());
                 if(event.isDoubleClick()) {
                     presenterOnDoubleClick(String.valueOf(event.getItemId()));
                 }

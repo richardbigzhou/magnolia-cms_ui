@@ -57,6 +57,7 @@ public class VHybridSelectionTreeTable extends VTreeTable {
 
     public VHybridSelectionTreeTable() {
         super();
+        DOM.sinkEvents(getElement(), Event.MOUSEEVENTS);
         selectAllCheckBox.addStyleName("v-select-all");
         add(selectAllCheckBox, getElement());
         selectAllCheckBox.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
@@ -132,7 +133,6 @@ public class VHybridSelectionTreeTable extends VTreeTable {
                 cb.setPropertyBoolean("checked", true);
             }
             refDiv.appendChild(cb);
-            DOM.sinkEvents(element, Event.MOUSEEVENTS);
         }
     }
 
