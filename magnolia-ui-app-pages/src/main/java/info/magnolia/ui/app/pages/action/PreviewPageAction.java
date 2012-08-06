@@ -45,6 +45,8 @@ import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.model.thumbnail.AbstractThumbnailProvider;
+
 import org.apache.jackrabbit.value.BinaryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,10 +70,9 @@ public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
     private LocationController locationController;
 
     private static final String TOKEN = "preview";
+    private static final String IMAGE_NODE_NAME = AbstractThumbnailProvider.ORIGINAL_IMAGE_NODE_NAME;
 
     private MgnlHttpClient client;
-
-    final static String PHOTO_NODE_NAME = "photo";
 
     /**
      * Instantiates a new preview page action.
@@ -120,10 +121,10 @@ public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
 
         String fileName = node.getName();
         Node child;
-        if (node.hasNode(PHOTO_NODE_NAME)) {
-            child = node.getNode(PHOTO_NODE_NAME);
+        if (node.hasNode(IMAGE_NODE_NAME)) {
+            child = node.getNode(IMAGE_NODE_NAME);
         } else {
-            child = node.addNode(PHOTO_NODE_NAME, MgnlNodeType.NT_RESOURCE);
+            child = node.addNode(IMAGE_NODE_NAME, MgnlNodeType.NT_RESOURCE);
         }
 
 

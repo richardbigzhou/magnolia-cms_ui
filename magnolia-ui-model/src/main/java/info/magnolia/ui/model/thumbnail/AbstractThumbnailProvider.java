@@ -38,7 +38,6 @@ import info.magnolia.cms.beans.runtime.FileProperties;
 import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.cms.util.ContentUtil;
 import info.magnolia.context.MgnlContext;
-import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.link.LinkException;
 import info.magnolia.link.LinkUtil;
 
@@ -101,6 +100,7 @@ public abstract class AbstractThumbnailProvider implements ThumbnailProvider {
      * If your node structure is different from the default one, you need to override this method.<p>
      * This method will also handle whether a thumbnail needs to be created for the very first time, regenerated in case the original image has been updated or can
      * just be retrieved from the JCR repository by using {@link #isThumbnailToBeGenerated(Node)}.
+     * @return <code>null</code> if no link could be generated.
      * @see info.magnolia.ui.model.thumbnail.ThumbnailProvider#getPath(java.lang.String, java.lang.String, int, int)
      */
     @Override
@@ -149,7 +149,7 @@ public abstract class AbstractThumbnailProvider implements ThumbnailProvider {
                     imageNode.getSession().save();
 
                 } catch (IOException e) {
-                    throw new RuntimeException("Error while creating thumbnail image.", e);
+                    log.error("Error while creating thumbnail image.", e);
                 } finally {
                     IOUtils.closeQuietly(thumbnailOutputStream);
                     IOUtils.closeQuietly(thumbnailInputStream);
@@ -158,9 +158,11 @@ public abstract class AbstractThumbnailProvider implements ThumbnailProvider {
             }
             path = LinkUtil.createLink(ContentUtil.asContent(imageNode).getNodeData(getThumbnailNodeName()));
         } catch (RepositoryException e) {
-            throw new RuntimeRepositoryException(e);
+            log.error("A repository exception occurred.", e);
+            return null;
         } catch (LinkException e) {
-            throw new RuntimeException("Error while creating link to thumbnail image.", e);
+            log.error("Error while creating link to thumbnail image.", e);
+            return null;
         }
         return path;
     }
@@ -169,12 +171,12 @@ public abstract class AbstractThumbnailProvider implements ThumbnailProvider {
      * @throws RepositoryException
      */
     protected boolean isThumbnailToBeGenerated(final Node node) throws RepositoryException {
-        if (!node.hasNode(getThumbnailNodeName())) {
-            return true;
-        }
         if (!node.hasNode(getOriginalImageNodeName())) {
             log.warn("No [{}] node found for contact node [{}]. Cannot create thumbnail.", getOriginalImageNodeName(), node.getPath());
             return false;
+        }
+        if (!node.hasNode(getThumbnailNodeName())) {
+            return true;
         }
         final Node originalImageNode = node.getNode(getOriginalImageNodeName());
         final Node thumbnailNode = node.getNode(getThumbnailNodeName());
