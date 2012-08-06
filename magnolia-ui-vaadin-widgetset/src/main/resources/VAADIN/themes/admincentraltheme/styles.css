@@ -14,32 +14,22 @@
 @import url(shell.css);
 @import url(fonts.css);
 
-@font-face{
-    font-family: DinRound;
-    src: url("fonts/dinroundmedium.woff") format("woff");
+@font-face {
+    font-family:DINWebPro;
+    src:url("fonts/DINWebPro.eot");
+    src:url('fonts/DINWebPro.eot?#iefix') format('embedded-opentype'),
+        url('fonts/DINWebPro.woff') format('woff');
+    font-weight:normal;
+    font-style:normal;
+}
+
+@font-face {
+    font-family:DINWebPro;
+    src:url("fonts/DINWebPro-Medium.eot");
+    src:url('fonts/DINWebPro-Medium.eot?#iefix') format('embedded-opentype'),
+        url("fonts/DINWebPro-Medium.woff") format("woff");
     font-weight:bold;
-}
-
-/* first for IE 4Ð8 */
-@font-face {
-    font-family: DINWebPro-Medium;
-    src: url("fonts/DINWebPro-Medium.eot");
-}
-/* then for WOFF-capable browsers */
-@font-face {
-    font-family: DINWebPro-Medium;
-    src: url("fonts/DINWebPro-Medium.woff") format("woff");
-}
-
-/* first for IE 4Ð8 */
-@font-face {
-    font-family: DINWebPro;
-    src: url("fonts/DINWebPro.eot");
-}
-/* then for WOFF-capable browsers */
-@font-face {
-    font-family: DINWebPro;
-    src: url("fonts/DINWebPro.woff") format("woff");
+    font-style:normal;
 }
 
 body{
