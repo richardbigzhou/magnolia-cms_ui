@@ -99,9 +99,9 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
                     final Node imageNode = session.getNodeByIdentifier(thumbnailId);
                     listener.onItemSelection(new JcrNodeAdapter(imageNode));
                 } catch (LoginException e) {
-                    e.printStackTrace();
+                    log.error(e.getMessage());
                 } catch (RepositoryException e) {
-                    e.printStackTrace();
+                    log.error(e.getMessage());
                 }
             }
         });
