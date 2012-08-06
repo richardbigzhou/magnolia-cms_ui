@@ -267,26 +267,27 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
     }
 
     private void createAndExecuteAction(final ActionDefinition actionDefinition) {
-        if (actionDefinition != null) {
-            try {
-                final Session session = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace());
-                String selectedItemId = getSelectedItemId();
-                if (selectedItemId == null || !session.itemExists(selectedItemId)) {
-                    log.debug("{} does not exist anymore. Was it just deleted? Resetting path to root...", selectedItemId);
-                    selectedItemId = "/";
-                }
-                final javax.jcr.Item item = session.getItem(selectedItemId);
-                final Action action = this.actionFactory.createAction(actionDefinition, item);
-                action.execute();
-            } catch (PathNotFoundException e) {
-                this.shell.showError("Can't execute action.\n" + e.getMessage(), e);
-            } catch (LoginException e) {
-                this.shell.showError("Can't execute action.\n" + e.getMessage(), e);
-            } catch (RepositoryException e) {
-                shell.showError("Can't execute action.\n" + e.getMessage(), e);
-            } catch (ActionExecutionException e) {
-                this.shell.showError("Can't execute action.\n" + e.getMessage(), e);
+        if (actionDefinition == null) {
+            log.warn("Action definition cannot be null. Will do nothing.");
+        }
+        try {
+            final Session session = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace());
+            String selectedItemId = getSelectedItemId();
+            if (selectedItemId == null || !session.itemExists(selectedItemId)) {
+                log.debug("{} does not exist anymore. Was it just deleted? Resetting path to root...", selectedItemId);
+                selectedItemId = "/";
             }
+            final javax.jcr.Item item = session.getItem(selectedItemId);
+            final Action action = this.actionFactory.createAction(actionDefinition, item);
+            action.execute();
+        } catch (PathNotFoundException e) {
+            this.shell.showError("Can't execute action.\n" + e.getMessage(), e);
+        } catch (LoginException e) {
+            this.shell.showError("Can't execute action.\n" + e.getMessage(), e);
+        } catch (RepositoryException e) {
+            shell.showError("Can't execute action.\n" + e.getMessage(), e);
+        } catch (ActionExecutionException e) {
+            this.shell.showError("Can't execute action.\n" + e.getMessage(), e);
         }
     }
 

@@ -97,7 +97,7 @@ public abstract class AbstractThumbnailProvider implements ThumbnailProvider {
      * by {@link #ORIGINAL_IMAGE_NODE_NAME} and {@link #THUMBNAIL_NODE_NAME}.<p>
      * If you want to store your binaries under different names you can override them via the provided setters.
      * If your node structure is different from the default one, you need to override this method.<p>
-     * This method will also handle whether a thumbnail needs to created for the very first time, regenerated in case the original image has been updated or can
+     * This method will also handle whether a thumbnail needs to be created for the very first time, regenerated in case the original image has been updated or can
      * just be retrieved from the JCR repository by using {@link #isThumbnailToBeGenerated(Node)}.
      * @see info.magnolia.ui.model.thumbnail.ThumbnailProvider#getPath(java.lang.String, java.lang.String, int, int)
      */
@@ -121,9 +121,9 @@ public abstract class AbstractThumbnailProvider implements ThumbnailProvider {
                     originalInputStream.read(array);
                     originalInputStream.close();
 
-                    Image contactImage = Toolkit.getDefaultToolkit().createImage(array);
-                    contactImage = new ImageIcon(contactImage).getImage();
-                    thumbnail = createThumbnail(contactImage, getFormat(), width, height, getQuality());
+                    Image thumbnailImage = Toolkit.getDefaultToolkit().createImage(array);
+                    thumbnailImage = new ImageIcon(thumbnailImage).getImage();
+                    thumbnail = createThumbnail(thumbnailImage, getFormat(), width, height, getQuality());
 
                     if (imageNode.hasNode(getThumbnailNodeName())) {
                         imageNode.getNode(getThumbnailNodeName()).remove();
