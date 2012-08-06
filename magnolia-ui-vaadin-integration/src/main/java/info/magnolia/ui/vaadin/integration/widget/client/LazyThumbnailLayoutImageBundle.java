@@ -38,16 +38,16 @@ import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
 
 /**
- * ImageBundle for the lazy thumbnail lazyout.
+ * ImageBundle for the lazy thumbnail layout.
  *
  */
 public interface LazyThumbnailLayoutImageBundle extends ClientBundle {
-    
-    
+
+
     final static String imgPath = "info/magnolia/ui/vaadin/integration/widget/public/VaadinIntegration/img/";
-    
+
     public static LazyThumbnailLayoutImageBundle INSTANCE = GWT.create(LazyThumbnailLayoutImageBundle.class);
-    
-    @Source(imgPath + "grey.gif")    
+
+    @Source(imgPath + "thumbnail-placeholder.gif")
     ImageResource getStubImage();
 }

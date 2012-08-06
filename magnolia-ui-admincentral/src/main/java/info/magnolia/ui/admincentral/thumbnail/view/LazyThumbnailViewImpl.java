@@ -41,7 +41,7 @@ import info.magnolia.ui.model.thumbnail.ThumbnailProvider;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.widget.LazyThumbnailLayout;
-import info.magnolia.ui.vaadin.integration.widget.LazyThumbnailLayout.ThumbnaSeletionListener;
+import info.magnolia.ui.vaadin.integration.widget.LazyThumbnailLayout.ThumbnailSelectionListener;
 
 import java.util.List;
 
@@ -60,29 +60,29 @@ import com.vaadin.data.Item;
 import com.vaadin.ui.Component;
 
 /**
- * ThumbnailViewImpl.
+ * LazyThumbnailViewImpl.
  */
 public class LazyThumbnailViewImpl implements ThumbnailView {
 
     private static final Logger log = LoggerFactory.getLogger(LazyThumbnailViewImpl.class);
-    
-    private WorkbenchDefinition workbenchDefinition; 
-    
+
+    private WorkbenchDefinition workbenchDefinition;
+
     private AbstractPredicate<Node> filterByItemType;
-    
+
     private Listener listener;
-    
+
     private LazyThumbnailLayout layout;
 
     private ThumbnailProvider thumbnailProvider;
-    
-    
+
+
     public LazyThumbnailViewImpl(final WorkbenchDefinition definition, final ThumbnailProvider thumbnailProvider) {
         this.workbenchDefinition = definition;
         this.layout = new LazyThumbnailLayout();
         this.thumbnailProvider = thumbnailProvider;
         layout.setSizeFull();
-        
+
         final String[] itemTypes = getItemTypes(definition);
         if(itemTypes != null) {
             filterByItemType = new ItemTypePredicate(itemTypes);
@@ -90,7 +90,7 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
             log.warn("Workbench definition contains no item types, node filter will accept all mgnl item types.");
             filterByItemType = NodeUtil.MAGNOLIA_FILTER;
         }
-        layout.addThumbnailSelectionListener(new ThumbnaSeletionListener() {
+        layout.addThumbnailSelectionListener(new ThumbnailSelectionListener() {
             @Override
             public void onThumbnailSelected(final String thumbnailId) {
                 Session session;
@@ -105,9 +105,9 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
                 }
             }
         });
-        
+
     }
-    
+
     @Override
     public void setListener(Listener listener) {
         this.listener = listener;
@@ -115,13 +115,15 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
 
     @Override
     public void select(String path) {
-        
+
     }
 
     @Override
     public void refresh() {
         try {
-            //FIXME fgrilli the arg to get node must take into account that the current path can change if we navigate in hierarchy.
+            //TODO fgrilli: needs proof but it's probably more performing if we just do a jcr sql 2 query, something like
+            // select [jcr:uuid] from [mgnl:content]
+            //instead of iterating everything and then discard  what we don't need
             Node parent = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace()).getNode(workbenchDefinition.getPath());
             Iterable<Node> assets = NodeUtil.collectAllChildren(parent, filterByItemType);
             final List<String> uuids = Lists.transform(NodeUtil.asList(assets), new Function<Node, String>() {
@@ -140,7 +142,7 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
             container.setThumbnailWidth(73);
             layout.setContainerDataSource(container);
             layout.setThumbnailSize(73, 73);
-            
+
 
         } catch (PathNotFoundException e) {
             throw new RuntimeException(e);
@@ -154,7 +156,7 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
     @Override
     public void refreshItem(Item item) {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
@@ -168,7 +170,7 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
     }
 
     /**
-     * Accepts only nodes of the type(s) passed as argument to the costructor.
+     * Accepts only nodes of the type(s) passed as argument to the constructor.
      */
     private static class ItemTypePredicate extends AbstractPredicate<Node> {
         private String[] itemTypes;
