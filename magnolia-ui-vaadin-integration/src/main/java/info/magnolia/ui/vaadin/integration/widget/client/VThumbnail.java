@@ -31,23 +31,55 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.thumbnail;
+package info.magnolia.ui.vaadin.integration.widget.client;
 
-import info.magnolia.ui.model.thumbnail.AbstractThumbnailProvider;
-import info.magnolia.ui.model.thumbnail.ThumbnailUtility;
-
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
- * PagesThumbnailProvider.
+ * Thumbnail widget.
+ *
  */
-public class PagesThumbnailProvider extends AbstractThumbnailProvider {
+public class VThumbnail extends Composite {
 
-    @Override
-    protected BufferedImage createThumbnail(Image image, String format, int width, int height, float quality) throws IOException {
-        return ThumbnailUtility.createThumbnail(image, format, width, height, quality);
+    private final SimplePanel panel = new SimplePanel();
+
+    private final Image image = new Image(LazyThumbnailLayoutImageBundle.INSTANCE.getStubImage().getSafeUri());
+
+    private VThumbnailData data;
+
+    private boolean isSelected = false;
+
+    public VThumbnail() {
+        super();
+        initWidget(panel);
+        addStyleName("thumbnail");
+        image.setStyleName("thumbnail-image");
+        panel.setWidget(image);
     }
 
+    public String getId() {
+        return data.getId();
+    }
+
+    public void setData(VThumbnailData data) {
+        this.data = data;
+        if (data != null) {
+            image.setUrl(data.getSrc());
+        }
+    }
+
+    public void setSelected(boolean isSelected) {
+        this.isSelected = isSelected;
+        if (isSelected) {
+            addStyleName("selected");
+        } else {
+            removeStyleName("selected");
+        }
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
 }

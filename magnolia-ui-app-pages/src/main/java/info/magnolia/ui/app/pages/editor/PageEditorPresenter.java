@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.app.pages.editor;
 
+import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.MetaDataUtil;
 import info.magnolia.jcr.util.NodeUtil;
@@ -85,7 +86,6 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
     private final String NEW_COMPONENT_DIALOG = "ui-pages-app:newComponent";
 
-    private final String COMPONENT_NODE_TYPE = "mgnl:component";
 
     private final ConfiguredDialogDefinition dialogDefinition;
 
@@ -152,7 +152,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
             Node parentNode = session.getNode(path);
 
-            JcrNodeAdapter item = new JcrNewNodeAdapter(parentNode, COMPONENT_NODE_TYPE);
+            JcrNodeAdapter item = new JcrNewNodeAdapter(parentNode, MgnlNodeType.NT_COMPONENT);
             DefaultProperty property = new DefaultProperty(item.JCR_NAME, "0");
             item.addItemProperty(item.JCR_NAME, property);
             dialogPresenter.editItem(item);

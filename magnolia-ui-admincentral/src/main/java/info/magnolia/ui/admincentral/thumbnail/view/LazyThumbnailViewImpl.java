@@ -37,77 +37,72 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.predicate.AbstractPredicate;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.admincentral.container.JcrContainer;
-import info.magnolia.ui.admincentral.thumbnail.Thumbnail;
 import info.magnolia.ui.model.thumbnail.ThumbnailProvider;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.vaadin.integration.widget.LazyThumbnailLayout;
+import info.magnolia.ui.vaadin.integration.widget.LazyThumbnailLayout.ThumbnailSelectionListener;
+
+import java.util.List;
 
 import javax.jcr.LoginException;
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 import com.vaadin.data.Item;
-import com.vaadin.event.LayoutEvents.LayoutClickEvent;
-import com.vaadin.event.LayoutEvents.LayoutClickListener;
-import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
 
-/**s
- * ThumbnailViewImpl.
- * TODO fgrilli:
- * - implement lazy loading of items, ie load (and cache) only those visible in app view. Keep on loading when scrolling down.
- *   Serve from local cache when scrolling up.
- * - extract methods from ctor and clean up.
- *
+/**
+ * LazyThumbnailViewImpl.
  */
-public class ThumbnailViewImpl implements ThumbnailView {
+public class LazyThumbnailViewImpl implements ThumbnailView {
 
-    private static final Logger log = LoggerFactory.getLogger(ThumbnailViewImpl.class);
-    private CssLayout layout = new CssLayout();
-    private Listener listener;
+    private static final Logger log = LoggerFactory.getLogger(LazyThumbnailViewImpl.class);
 
-    private Thumbnail selectedAsset;
     private WorkbenchDefinition workbenchDefinition;
-    private ThumbnailProvider thumbnailProvider;
+
     private AbstractPredicate<Node> filterByItemType;
 
-    public ThumbnailViewImpl(final WorkbenchDefinition definition, final ThumbnailProvider thumbnailProvider) {
-        this.workbenchDefinition = definition;
-        this.thumbnailProvider = thumbnailProvider;
-        final String[] itemTypes = getItemTypes(definition);
+    private Listener listener;
 
+    private LazyThumbnailLayout layout;
+
+    private ThumbnailProvider thumbnailProvider;
+
+
+    public LazyThumbnailViewImpl(final WorkbenchDefinition definition, final ThumbnailProvider thumbnailProvider) {
+        this.workbenchDefinition = definition;
+        this.layout = new LazyThumbnailLayout();
+        this.thumbnailProvider = thumbnailProvider;
+        layout.setSizeFull();
+        layout.addStyleName("mgnl-workbench-thumbnail-view");
+
+        final String[] itemTypes = getItemTypes(definition);
         if(itemTypes != null) {
             filterByItemType = new ItemTypePredicate(itemTypes);
         } else {
             log.warn("Workbench definition contains no item types, node filter will accept all mgnl item types.");
             filterByItemType = NodeUtil.MAGNOLIA_FILTER;
         }
-
-        layout.setWidth(100, Sizeable.UNITS_PERCENTAGE);
-        layout.setStyleName("mgnl-workbench-thumbnail-view");
-        layout.addListener(new LayoutClickListener() {
-
+        layout.addThumbnailSelectionListener(new ThumbnailSelectionListener() {
             @Override
-            public void layoutClick(LayoutClickEvent event) {
-                final Thumbnail clickedAsset = (Thumbnail) event.getClickedComponent();
-                if(listener != null) {
-                    if(selectedAsset != null) {
-                        selectedAsset.removeStyleName("active");
-                    }
-                    if(clickedAsset == null) {
-                        //deselect
-                        selectedAsset = null;
-                        listener.onItemSelection(null);
-                        return;
-                    }
-                    log.debug("Clicked on {}", clickedAsset.getDescription());
-                    clickedAsset.addStyleName("active");
-                    selectedAsset = clickedAsset;
-                    listener.onItemSelection(clickedAsset.getNode());
+            public void onThumbnailSelected(final String thumbnailId) {
+                Session session;
+                try {
+                    session = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace());
+                    final Node imageNode = session.getNodeByIdentifier(thumbnailId);
+                    listener.onItemSelection(new JcrNodeAdapter(imageNode));
+                } catch (LoginException e) {
+                    log.error(e.getMessage());
+                } catch (RepositoryException e) {
+                    log.error(e.getMessage());
                 }
             }
         });
@@ -121,24 +116,34 @@ public class ThumbnailViewImpl implements ThumbnailView {
 
     @Override
     public void select(String path) {
-        //TODO fgrilli implement or throw UOE
+
     }
 
     @Override
     public void refresh() {
-        layout.removeAllComponents();
         try {
-            //FIXME fgrilli the arg to get node must take into account that the current path can change if we navigate in hierarchy.
+            //TODO fgrilli: needs proof but it's probably more performing if we just do a jcr sql 2 query, something like
+            // select [jcr:uuid] from [mgnl:content]
+            //instead of iterating everything and then discard  what we don't need
             Node parent = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace()).getNode(workbenchDefinition.getPath());
-
             Iterable<Node> assets = NodeUtil.collectAllChildren(parent, filterByItemType);
-            for(Node asset: assets) {
-                //FIXME this op can become very long with "lots" of items (tested with 2500 fake thumbnails)
-                final String path = thumbnailProvider.getPath(asset.getIdentifier(), workbenchDefinition.getWorkspace(), 73, 73);
-                final Thumbnail image = new Thumbnail(asset, path);
+            final List<String> uuids = Lists.transform(NodeUtil.asList(assets), new Function<Node, String>() {
+                @Override
+                public String apply(Node node) {
+                    try {
+                        return node.getIdentifier();
+                    } catch (RepositoryException e) {
+                        return null;
+                    }
+                }
+            });
+            final ThumbnailContainer container = new ThumbnailContainer(thumbnailProvider, uuids);
+            container.setWorkspaceName(workbenchDefinition.getWorkspace());
+            container.setThumbnailHeight(73);
+            container.setThumbnailWidth(73);
+            layout.setContainerDataSource(container);
+            layout.setThumbnailSize(73, 73);
 
-                layout.addComponent(image);
-            }
 
         } catch (PathNotFoundException e) {
             throw new RuntimeException(e);
@@ -151,8 +156,8 @@ public class ThumbnailViewImpl implements ThumbnailView {
 
     @Override
     public void refreshItem(Item item) {
-        //TODO fgrilli implement or throw UOE or do nothing
-        //throw new UnsupportedOperationException();
+        // TODO Auto-generated method stub
+
     }
 
     @Override
@@ -166,7 +171,7 @@ public class ThumbnailViewImpl implements ThumbnailView {
     }
 
     /**
-     * Accepts only nodes of the type(s) passed as argument to the costructor.
+     * Accepts only nodes of the type(s) passed as argument to the constructor.
      */
     private static class ItemTypePredicate extends AbstractPredicate<Node> {
         private String[] itemTypes;
@@ -205,5 +210,4 @@ public class ThumbnailViewImpl implements ThumbnailView {
         }
         return itemTypes;
     }
-
 }

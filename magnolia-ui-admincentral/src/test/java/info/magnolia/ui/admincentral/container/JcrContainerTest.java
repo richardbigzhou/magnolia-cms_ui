@@ -34,6 +34,9 @@
 package info.magnolia.ui.admincentral.container;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.admincentral.column.Column;
@@ -69,7 +72,7 @@ import org.junit.Test;
 import com.vaadin.data.Property;
 
 /**
- * Main test class for {JcrContainer}
+ * Main test class for {JcrContainer}.
  */
 public class JcrContainerTest extends RepositoryTestCase{
 
@@ -337,6 +340,37 @@ public class JcrContainerTest extends RepositoryTestCase{
         assertEquals(containerItemId2, jcrContainer.firstItemId());
     }
 
+    @Test
+    public void testContainsIdWithNull() {
+        // WHEN
+        final boolean result = jcrContainer.containsId(null);
+
+        // THEN
+        assertFalse(result);
+    }
+
+    @Test
+    public void testContainsIdWhenNotAround() {
+        // WHEN
+        final boolean result = jcrContainer.containsId("notAround");
+
+        // THEN
+        assertFalse(result);
+    }
+
+    @Test
+    public void testContainsId() {
+        // GIVEN
+        final String existingKey = "existing";
+        final JcrNodeAdapter adapter = mock(JcrNodeAdapter.class);
+        jcrContainer.getCachedItems().put(existingKey, adapter);
+
+        // WHEN
+        final boolean result = jcrContainer.containsId(existingKey);
+
+        // THEN
+        assertTrue(result);
+    }
 
     /**
      * Define the sorting criteria.

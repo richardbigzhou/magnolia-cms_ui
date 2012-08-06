@@ -31,23 +31,23 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.thumbnail;
+package info.magnolia.ui.vaadin.integration.widget.client;
 
-import info.magnolia.ui.model.thumbnail.AbstractThumbnailProvider;
-import info.magnolia.ui.model.thumbnail.ThumbnailUtility;
-
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.resources.client.ImageResource;
 
 /**
- * PagesThumbnailProvider.
+ * ImageBundle for the lazy thumbnail layout.
+ *
  */
-public class PagesThumbnailProvider extends AbstractThumbnailProvider {
+public interface LazyThumbnailLayoutImageBundle extends ClientBundle {
 
-    @Override
-    protected BufferedImage createThumbnail(Image image, String format, int width, int height, float quality) throws IOException {
-        return ThumbnailUtility.createThumbnail(image, format, width, height, quality);
-    }
 
+    final static String imgPath = "info/magnolia/ui/vaadin/integration/widget/public/VaadinIntegration/img/";
+
+    public static LazyThumbnailLayoutImageBundle INSTANCE = GWT.create(LazyThumbnailLayoutImageBundle.class);
+
+    @Source(imgPath + "thumbnail-placeholder.gif")
+    ImageResource getStubImage();
 }

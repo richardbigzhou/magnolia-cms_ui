@@ -88,7 +88,7 @@ public class TreeViewImpl implements TreeView {
             @Override
             public void itemClick(ItemClickEvent event) {
                 if(event.isDoubleClick()) {
-                    presenterOnDoubleClick(String.valueOf(event.getPropertyId()));
+                    presenterOnDoubleClick(String.valueOf(event.getItemId()));
                 }
             }
         });

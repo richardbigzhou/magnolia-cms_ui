@@ -267,11 +267,11 @@ public abstract class JcrContainer extends AbstractContainer implements Containe
 
     @Override
     public Property getContainerProperty(Object itemId, Object propertyId) {
-        Item item = getItem(itemId);
+        final Item item = getItem(itemId);
         if (item != null) {
             return item.getItemProperty(propertyId);
         } else {
-            log.error("Could not get a Property of an node that don't exist ");
+            log.error("Couldn't find item {} so property {} can't be retrieved!", itemId, propertyId);
             return null;
         }
     }
@@ -290,11 +290,7 @@ public abstract class JcrContainer extends AbstractContainer implements Containe
             return false;
         }
 
-        if (cachedItems.containsKey(itemId)) {
-            return true;
-        }
-
-        return false;
+        return cachedItems.containsKey(itemId);
     }
 
     @Override

@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.app.contacts.thumbnail;
 
+import info.magnolia.ui.model.thumbnail.AbstractThumbnailProvider;
 import info.magnolia.ui.model.thumbnail.ThumbnailUtility;
 
 import java.awt.Image;
@@ -42,7 +43,12 @@ import java.io.IOException;
 /**
  * Default implementation using ThumbnailUtility to create thumbnails.
  */
-public class DefaultContactsThumbnailProvider extends AbstractContactsThumbnailProvider {
+public class DefaultContactsThumbnailProvider extends AbstractThumbnailProvider {
+    protected static final String CONTACT_PHOTO = "photo";
+
+    public DefaultContactsThumbnailProvider() {
+        setOriginalImageNodeName(CONTACT_PHOTO);
+    }
     @Override
     protected BufferedImage createThumbnail(final Image contactImage, final String format, final int width, final int height, final float quality) throws IOException {
         return ThumbnailUtility.createThumbnail(contactImage, format, width, height, quality);

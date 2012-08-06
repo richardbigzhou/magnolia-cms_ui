@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,23 +31,30 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.thumbnail;
+package info.magnolia.ui.vaadin.integration.widget.client;
 
-import info.magnolia.ui.model.thumbnail.AbstractThumbnailProvider;
-import info.magnolia.ui.model.thumbnail.ThumbnailUtility;
-
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
+import com.google.gwt.core.client.JavaScriptObject;
 
 /**
- * PagesThumbnailProvider.
+ * Client side DTO for the thumbnail.
+ * 
  */
-public class PagesThumbnailProvider extends AbstractThumbnailProvider {
+public class VThumbnailData extends JavaScriptObject {
 
-    @Override
-    protected BufferedImage createThumbnail(Image image, String format, int width, int height, float quality) throws IOException {
-        return ThumbnailUtility.createThumbnail(image, format, width, height, quality);
+    protected VThumbnailData() {
+        
     }
+    
+    public static final native VThumbnailData parse(String json) /*-{
+        return eval('(' + json + ')');
+    }-*/;
+
+    public final native String getId() /*-{
+        return this.id;
+    }-*/;
+
+    public final native String getSrc() /*-{
+        return this.resource;
+    }-*/;
 
 }

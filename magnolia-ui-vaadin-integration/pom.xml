@@ -10,7 +10,7 @@
 	<artifactId>magnolia-ui-vaadin-integration</artifactId>
 	<name>magnolia-ui-vaadin-integration</name>
 	<properties>
-		<cloverCoverageThreshold>20</cloverCoverageThreshold>
+		<cloverCoverageThreshold>19</cloverCoverageThreshold>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -77,6 +77,10 @@
 		</dependency>
 		<dependency>
 			<groupId>org.vaadin.addons</groupId>
+			<artifactId>css-tools</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.vaadin.addons</groupId>
 			<artifactId>widget-rpc</artifactId>
 		</dependency>
 		<dependency>
@@ -87,18 +91,11 @@
 		<dependency>
 			<groupId>com.googlecode.mgwt</groupId>
 			<artifactId>mgwt</artifactId>
-			<version>1.1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
-			<version>2.2.2</version>
 			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.googlecode.mgwt</groupId>
-			<artifactId>mgwt</artifactId>
-			<version>1.1.1</version>
 		</dependency>
 	</dependencies>
 	<build>
