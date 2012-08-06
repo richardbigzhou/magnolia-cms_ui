@@ -56,6 +56,7 @@ import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.model.thumbnail.AbstractThumbnailProvider;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.widget.actionbar.ActionbarView;
 import org.apache.commons.io.IOUtils;
@@ -103,11 +104,11 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
 
     private final WorkbenchActionFactory actionFactory;
 
-    final ContentPresenter contentPresenter;
+    private final ContentPresenter contentPresenter;
 
-    final ActionbarPresenter actionbarPresenter;
+    private final ActionbarPresenter actionbarPresenter;
 
-    final static String PHOTO_NODE_NAME = "photo";
+    protected final static String IMAGE_NODE_NAME = AbstractThumbnailProvider.ORIGINAL_IMAGE_NODE_NAME;
 
 
     @Inject
@@ -199,12 +200,12 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
                     final Node parentNode = SessionUtil.getNode(event.getWorkspace(), event.getPath());
                     try {
 
-                        if(!parentNode.hasNode(PHOTO_NODE_NAME)) {
+                        if(!parentNode.hasNode(IMAGE_NODE_NAME)) {
                             actionbarPresenter.setPreview(null);
                             return;
                         }
 
-                        final Node node= parentNode.getNode(PHOTO_NODE_NAME);
+                        final Node node= parentNode.getNode(IMAGE_NODE_NAME);
                         final byte[] pngData = IOUtils.toByteArray(node.getProperty(JcrConstants.JCR_DATA).getBinary().getStream());
                         final String nodeType = node.getProperty(FileProperties.CONTENT_TYPE).getString();
 
@@ -239,6 +240,7 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
             @Override
             public void onDoubleClick(DoubleClickEvent event) {
                 EditDialogActionDefinition editDialogActionDefinition = new EditDialogActionDefinition();
+                //FIXME fgrilli: this must not be hardcoded see SCRUM-1430
                 editDialogActionDefinition.setDialogName("ui-pages-app:pages");
                 createAndExecuteAction(editDialogActionDefinition);
             }
