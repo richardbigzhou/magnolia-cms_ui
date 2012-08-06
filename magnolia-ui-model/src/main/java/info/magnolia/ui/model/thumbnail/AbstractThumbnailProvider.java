@@ -67,7 +67,9 @@ import org.slf4j.LoggerFactory;
  * Superclass for all thumbnail providers.
  */
 public abstract class AbstractThumbnailProvider implements ThumbnailProvider {
+
     private static final Logger log = LoggerFactory.getLogger(AbstractThumbnailProvider.class);
+
     public static final String ORIGINAL_IMAGE_NODE_NAME = "originalImage";
     public static final String THUMBNAIL_NODE_NAME = "thumbnail";
     public static final String DEFAULT_THUMBNAIL_FORMAT = "jpg";
