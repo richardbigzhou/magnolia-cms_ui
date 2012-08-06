@@ -141,4 +141,20 @@ public class ActionbarPresenter implements ActionbarView.Listener {
         return null;
     }
 
+    /**
+     * Public utility method that should return the configured action definition based on an action
+     * name and its section name (to ensure uniqueness). Note that we don't use group name because
+     * widget doesn't allow duplicate action names in a section, even in different groups.
+     * 
+     * Since ActionDefinitions are currently configured under the action bar definition, this is the
+     * way of retrieving a configured action definition for use outside the action bar.
+     * 
+     * @param sectionName the section name
+     * @param actionName the action name
+     * @return the configured action definition
+     */
+    public ActionDefinition getActionDefinition(String sectionName, String actionName) {
+        return getActionDefinition(sectionName + ":" + actionName);
+    }
+
 }
