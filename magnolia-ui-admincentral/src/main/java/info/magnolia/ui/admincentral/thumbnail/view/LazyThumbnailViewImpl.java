@@ -82,6 +82,7 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
         this.layout = new LazyThumbnailLayout();
         this.thumbnailProvider = thumbnailProvider;
         layout.setSizeFull();
+        layout.addStyleName("mgnl-workbench-thumbnail-view");
 
         final String[] itemTypes = getItemTypes(definition);
         if(itemTypes != null) {
