@@ -40,6 +40,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 /**
@@ -68,7 +69,7 @@ public class LocalMessageDispatcher implements MessageListener {
     };
 
     @Inject
-    public LocalMessageDispatcher(final EventBus eventBus) {
+    public LocalMessageDispatcher(@Named("adminCentral") final EventBus eventBus) {
         this.eventBus = eventBus;
         messageQueueThread.setName("LocalMessageDispatcher");
         messageQueueThread.setDaemon(true);

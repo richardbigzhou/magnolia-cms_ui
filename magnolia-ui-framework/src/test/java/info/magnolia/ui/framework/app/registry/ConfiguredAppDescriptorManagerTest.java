@@ -51,8 +51,8 @@ import info.magnolia.test.mock.jcr.MockEvent;
 import info.magnolia.test.mock.jcr.MockObservationManager;
 import info.magnolia.test.mock.jcr.SessionTestUtil;
 import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.event.SimpleSystemEventBus;
-import info.magnolia.ui.framework.event.SystemEventBus;
+import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.event.SimpleEventBus;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -77,7 +77,7 @@ public class ConfiguredAppDescriptorManagerTest {
     @Before
     public void setUp() throws Exception {
         //INIT
-        SystemEventBus eventBus = new SimpleSystemEventBus();
+        EventBus eventBus = new SimpleEventBus();
         ComponentsTestUtil.setImplementation(AppDescriptor.class, ConfiguredAppDescriptor.class);
         session = SessionTestUtil.createSession(RepositoryConstants.CONFIG,
             "/modules/aModule/apps/app1.name=appNameA",

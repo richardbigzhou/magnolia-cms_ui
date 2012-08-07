@@ -57,7 +57,8 @@ import info.magnolia.registry.RegistrationException;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.jcr.MockNode;
 import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.event.SimpleSystemEventBus;
+import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.event.SimpleEventBus;
 
 /**
  * Main Test class for {@link AppDescriptorRegistry}.
@@ -70,7 +71,7 @@ public class AppDescriptorRegistryTest {
     @SuppressWarnings("deprecation")
     @Before
     public void setUp() throws Exception {
-        SimpleSystemEventBus eventBus = new SimpleSystemEventBus();
+        EventBus eventBus = new SimpleEventBus();
         eventHandler = new EventCollectingAppRegistryEventHandler();
         eventBus.addHandler(AppRegistryEvent.class, eventHandler);
 

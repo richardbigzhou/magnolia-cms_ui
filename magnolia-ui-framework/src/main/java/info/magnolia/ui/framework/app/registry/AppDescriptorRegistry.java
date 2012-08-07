@@ -38,6 +38,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -47,7 +48,7 @@ import org.slf4j.LoggerFactory;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.registry.RegistryMap;
 import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.event.SystemEventBus;
+import info.magnolia.ui.framework.event.EventBus;
 
 /**
  * The central registry of all {@link AppDescriptor}s.
@@ -65,11 +66,11 @@ public class AppDescriptorRegistry {
         }
     };
 
-    private SystemEventBus eventBus;
+    private EventBus systemEventBus;
 
     @Inject
-    public AppDescriptorRegistry(SystemEventBus eventBus) {
-        this.eventBus = eventBus;
+    public AppDescriptorRegistry(@Named("system") EventBus systemEventBus) {
+        this.systemEventBus = systemEventBus;
     }
 
     public AppDescriptor getAppDescriptor(String name) throws RegistrationException {
@@ -184,7 +185,7 @@ public class AppDescriptorRegistry {
      */
     private void sendEvent(AppRegistryEventType eventType, Collection<AppDescriptor> appDescriptors) {
         for (AppDescriptor appDescriptor : appDescriptors) {
-            eventBus.fireEvent(new AppRegistryEvent(appDescriptor, eventType));
+            systemEventBus.fireEvent(new AppRegistryEvent(appDescriptor, eventType));
         }
     }
 }

@@ -65,6 +65,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.jcr.LoginException;
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
@@ -98,7 +99,9 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
 
     private final ContentWorkbenchView view;
 
-    private final EventBus eventBus;
+    private final EventBus adminCentralEventBus;
+
+    private final EventBus appEventBus;
 
     private final Shell shell;
 
@@ -112,9 +115,10 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
 
 
     @Inject
-    public ContentWorkbenchSubApp(final AppContext context, final ContentWorkbenchView view, final EventBus eventbus, final Shell shell, final WorkbenchActionFactory actionFactory, final ContentPresenter contentPresenter, final ActionbarPresenter actionbarPresenter) {
+    public ContentWorkbenchSubApp(final AppContext context, final ContentWorkbenchView view, @Named("adminCentral") final EventBus adminCentralEventBus, @Named("app") final EventBus appEventBus, final Shell shell, final WorkbenchActionFactory actionFactory, final ContentPresenter contentPresenter, final ActionbarPresenter actionbarPresenter) {
         this.view = view;
-        this.eventBus = eventbus;
+        this.adminCentralEventBus = adminCentralEventBus;
+        this.appEventBus = appEventBus;
         this.shell = shell;
         this.actionFactory = actionFactory;
         this.contentPresenter = contentPresenter;
@@ -130,7 +134,7 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
     }
 
     private void bindHandlers() {
-        eventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
+        adminCentralEventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
 
             @Override
             public void onContentChanged(ContentChangedEvent event) {
@@ -139,7 +143,7 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
             }
         });
 
-        eventBus.addHandler(ActionbarClickEvent.class, new ActionbarClickEvent.Handler() {
+        appEventBus.addHandler(ActionbarClickEvent.class, new ActionbarClickEvent.Handler() {
 
             @Override
             public void onActionbarItemClicked(ActionbarClickEvent event) {
@@ -149,25 +153,25 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
             }
         });
 
-        eventBus.addHandler(ItemSelectedEvent.class, new ItemSelectedEvent.Handler() {
+        appEventBus.addHandler(ItemSelectedEvent.class, new ItemSelectedEvent.Handler() {
 
             private final String[] previews = new String[]{"img/previews/about-200.png", "img/previews/demo-project-200.png"};
 
             private final String[] previewAlts = new String[]{"About page", "Demo Project"};
 
             private final String[] pageActions = new String[]{
-                "addSubpage",
-                "deletePage",
-                "previewPage",
-                "editPage",
-                "editPageProperties",
-                "movePage",
-                "duplicatePage"};
+                    "addSubpage",
+                    "deletePage",
+                    "previewPage",
+                    "editPage",
+                    "editPageProperties",
+                    "movePage",
+                    "duplicatePage"};
 
             private final String[] contactsActions = new String[]{
-                "newContact",
-                "editContact",
-                "delete"};
+                    "newContact",
+                    "editContact",
+                    "delete"};
 
             private int previewIndex = 0;
 
@@ -200,12 +204,12 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
                     final Node parentNode = SessionUtil.getNode(event.getWorkspace(), event.getPath());
                     try {
 
-                        if(!parentNode.hasNode(IMAGE_NODE_NAME)) {
+                        if (!parentNode.hasNode(IMAGE_NODE_NAME)) {
                             actionbarPresenter.setPreview(null);
                             return;
                         }
 
-                        final Node node= parentNode.getNode(IMAGE_NODE_NAME);
+                        final Node node = parentNode.getNode(IMAGE_NODE_NAME);
                         final byte[] pngData = IOUtils.toByteArray(node.getProperty(JcrConstants.JCR_DATA).getBinary().getStream());
                         final String nodeType = node.getProperty(FileProperties.CONTENT_TYPE).getString();
 
@@ -216,10 +220,10 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
                                         return new ByteArrayInputStream(pngData);
 
                                     }
-                                }, "", ContentWorkbenchSubApp.this.asView().asVaadinComponent().getApplication()){
+                                }, "", ContentWorkbenchSubApp.this.asView().asVaadinComponent().getApplication()) {
                             @Override
                             public String getMIMEType() {
-                                    return nodeType;
+                                return nodeType;
                             }
                         };
 
@@ -235,7 +239,7 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
             }
         });
 
-        eventBus.addHandler(DoubleClickEvent.class, new DoubleClickEvent.Handler() {
+        appEventBus.addHandler(DoubleClickEvent.class, new DoubleClickEvent.Handler() {
 
             @Override
             public void onDoubleClick(DoubleClickEvent event) {

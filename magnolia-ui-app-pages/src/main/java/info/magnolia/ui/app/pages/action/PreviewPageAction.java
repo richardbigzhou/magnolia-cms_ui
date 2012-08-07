@@ -37,8 +37,6 @@ package info.magnolia.ui.app.pages.action;
 import com.google.inject.Inject;
 import info.magnolia.cms.beans.runtime.FileProperties;
 import info.magnolia.cms.core.MgnlNodeType;
-import info.magnolia.cms.security.User;
-import info.magnolia.context.MgnlContext;
 import info.magnolia.module.pageexport.http.MgnlHttpClient;
 import info.magnolia.ui.admincentral.image.ImageSize;
 import info.magnolia.ui.framework.location.DefaultLocation;
@@ -99,7 +97,7 @@ public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
         } catch (RepositoryException e) {
             log.error(e.getMessage());
         }
-
+/*
         User user = MgnlContext.getUser();
         client.initCredentials(user);
 
@@ -115,6 +113,7 @@ public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
+*/
     }
 
     private void saveImage(Node node, InputStream inputStream) throws RepositoryException, IOException {

@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.admincentral.actionbar;
 
+import javax.inject.Named;
+
 import info.magnolia.ui.admincentral.actionbar.builder.ActionbarBuilder;
 import info.magnolia.ui.admincentral.event.ActionbarClickEvent;
 import info.magnolia.ui.framework.event.EventBus;
@@ -59,14 +61,14 @@ public class ActionbarPresenter implements ActionbarView.Listener {
 
     private ActionbarView actionbar;
 
-    private final EventBus eventBus;
+    private final EventBus appEventBus;
 
     /**
      * Instantiates a new action bar presenter.
      */
     @Inject
-    public ActionbarPresenter(EventBus eventBus) {
-        this.eventBus = eventBus;
+    public ActionbarPresenter(@Named("app") EventBus appEventBus) {
+        this.appEventBus = appEventBus;
     }
 
     @Override
@@ -114,7 +116,7 @@ public class ActionbarPresenter implements ActionbarView.Listener {
     public void onActionbarItemClicked(String actionToken) {
         ActionDefinition actionDefinition = getActionDefinition(actionToken);
         if (actionDefinition != null) {
-            eventBus.fireEvent(new ActionbarClickEvent(actionDefinition));
+            appEventBus.fireEvent(new ActionbarClickEvent(actionDefinition));
         }
     }
 

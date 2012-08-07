@@ -46,6 +46,7 @@ import info.magnolia.ui.framework.location.LocationHistoryHandler;
 import info.magnolia.ui.framework.message.MessagesManager;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import com.vaadin.ui.Window;
 
@@ -57,7 +58,7 @@ public class MagnoliaShellPresenter implements MagnoliaShellView.Presenter {
     private final MagnoliaShellView view;
 
     @Inject
-    public MagnoliaShellPresenter(final MagnoliaShellView view, final EventBus eventBus, final AppLauncherLayoutManager appLauncherLayoutManager, final LocationController locationController, final AppController appController, final ShellAppController shellAppController, final LocalMessageDispatcher messageDispatcher, MessagesManager messagesManager) {
+    public MagnoliaShellPresenter(final MagnoliaShellView view, @Named("adminCentral") final EventBus eventBus, final AppLauncherLayoutManager appLauncherLayoutManager, final LocationController locationController, final AppController appController, final ShellAppController shellAppController, final LocalMessageDispatcher messageDispatcher, MessagesManager messagesManager) {
         this.view = view;
         this.view.setPresenter(this);
 

@@ -40,6 +40,7 @@ import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.view.View;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 
 /**
@@ -49,7 +50,7 @@ public class PagesEditorSubApp implements SubApp, PagesEditorView.Listener {
 
     private final PagesEditorView view;
 
-    private final EventBus eventBus;
+    private final EventBus appEventBus;
 
     private final PageEditorPresenter pageEditorPresenter;
 
@@ -60,9 +61,9 @@ public class PagesEditorSubApp implements SubApp, PagesEditorView.Listener {
     private String caption;
 
     @Inject
-    public PagesEditorSubApp(PagesEditorView view, EventBus eventBus, PageEditorPresenter pageEditorPresenter, ActionbarPresenter actionbarPresenter) {
+    public PagesEditorSubApp(PagesEditorView view, @Named("app") EventBus appEventBus, PageEditorPresenter pageEditorPresenter, ActionbarPresenter actionbarPresenter) {
         this.view = view;
-        this.eventBus = eventBus;
+        this.appEventBus = appEventBus;
         this.pageEditorPresenter = pageEditorPresenter;
         this.actionbarPresenter = actionbarPresenter;
 
@@ -70,7 +71,7 @@ public class PagesEditorSubApp implements SubApp, PagesEditorView.Listener {
     }
 
     private void bindHandlers() {
-        eventBus.addHandler(ComponentSelectedEvent.class, new ComponentSelectedEvent.Handler() {
+        appEventBus.addHandler(ComponentSelectedEvent.class, new ComponentSelectedEvent.Handler() {
 
             @Override
             public void onItemSelected(ComponentSelectedEvent event) {

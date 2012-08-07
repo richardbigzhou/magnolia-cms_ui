@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,30 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.tree.action;
+package info.magnolia.ui.framework.event;
 
-import javax.inject.Named;
-import javax.jcr.Item;
-import javax.jcr.RepositoryException;
+import com.google.inject.name.Names;
+import com.google.inject.util.Providers;
 
-import info.magnolia.ui.framework.event.EventBus;
-
+import info.magnolia.objectfactory.guice.AbstractGuiceComponentConfigurer;
 
 /**
- * Deletes a node from the repository.
+ * Configures an {@link EventBus} bound to the name <code>adminCentral</code>.
  */
-public class DeleteItemAction extends RepositoryOperationAction<DeleteItemActionDefinition> {
-
-    public DeleteItemAction(DeleteItemActionDefinition definition, Item item, @Named("adminCentral") EventBus eventBus) {
-        super(definition, item, eventBus);
-    }
+public class AdminCentralEventBusConfigurer extends AbstractGuiceComponentConfigurer {
 
     @Override
-    protected void onExecute(Item item) throws RepositoryException {
-        //avoid JCR logging long stacktraces about root not being removable.
-        if("/".equals(item.getPath())) {
-            return;
-        }
-        item.remove();
+    protected void configure() {
+        bind(EventBus.class).annotatedWith(Names.named("adminCentral")).toProvider(Providers.of(new SimpleEventBus()));
     }
 }

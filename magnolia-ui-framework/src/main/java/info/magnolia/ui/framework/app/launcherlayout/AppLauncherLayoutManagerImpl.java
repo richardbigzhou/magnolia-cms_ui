@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.slf4j.Logger;
@@ -50,7 +51,7 @@ import info.magnolia.ui.framework.app.launcherlayout.definition.AppLauncherLayou
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.framework.app.registry.AppRegistryEvent;
 import info.magnolia.ui.framework.app.registry.AppRegistryEventHandler;
-import info.magnolia.ui.framework.event.SystemEventBus;
+import info.magnolia.ui.framework.event.EventBus;
 
 /**
  * Default {@link AppLauncherLayoutManager} implementation.
@@ -61,11 +62,11 @@ public class AppLauncherLayoutManagerImpl implements AppLauncherLayoutManager {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private AppDescriptorRegistry appDescriptorRegistry;
-    private SystemEventBus systemEventBus;
+    private EventBus systemEventBus;
     private AtomicReference<AppLauncherLayoutDefinition> layoutDefinitionReference = new AtomicReference<AppLauncherLayoutDefinition>();
 
     @Inject
-    public AppLauncherLayoutManagerImpl(AppDescriptorRegistry appDescriptorRegistry, SystemEventBus systemEventBus) {
+    public AppLauncherLayoutManagerImpl(AppDescriptorRegistry appDescriptorRegistry, @Named("system") EventBus systemEventBus) {
         this.appDescriptorRegistry = appDescriptorRegistry;
         this.systemEventBus = systemEventBus;
 

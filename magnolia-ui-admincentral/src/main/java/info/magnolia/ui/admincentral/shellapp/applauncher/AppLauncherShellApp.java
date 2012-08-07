@@ -47,16 +47,16 @@ import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutChangedEve
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutChangedEventHandler;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.event.SystemEventBus;
 import info.magnolia.ui.framework.location.Location;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
- * Activity for the app launcher. Listen to: SystemEventBus: LayoutEvent. Reload
+ * Activity for the app launcher. Listen to: system EventBus: LayoutEvent. Reload
  * the Layout by getting the latest available App from the
  * {AppLauncherLayoutManager}. LocalEventBus : App started and App stop event.
  * In this case, update the App button to indicate if an App is started or
@@ -74,7 +74,7 @@ public class AppLauncherShellApp implements ShellApp, AppLauncherView.Presenter 
 
     @Inject
     public AppLauncherShellApp(MagnoliaShell shell, AppLauncherView view, AppController appController,
-            AppLauncherLayoutManager appLauncherLayoutManager, EventBus eventBus, SystemEventBus systemEventBus) {
+            AppLauncherLayoutManager appLauncherLayoutManager, @Named("adminCentral") EventBus adminCentralEventBus, @Named("system") EventBus systemEventBus) {
         this.view = view;
         this.shell = shell;
         this.appController = appController;
@@ -97,7 +97,7 @@ public class AppLauncherShellApp implements ShellApp, AppLauncherView.Presenter 
          * Add Handler of type AppLifecycleEventHandler in order to catch stop
          * and start App events.
          */
-        eventBus.addHandler(AppLifecycleEvent.class, new AppLifecycleEventHandler.Adapter() {
+        adminCentralEventBus.addHandler(AppLifecycleEvent.class, new AppLifecycleEventHandler.Adapter() {
 
             /**
              * Deactivate the visual triangle on the App Icon.

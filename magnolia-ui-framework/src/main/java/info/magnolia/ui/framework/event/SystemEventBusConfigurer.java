@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,11 +33,18 @@
  */
 package info.magnolia.ui.framework.event;
 
-/**
- * Event bus which fires events to a set of registered handlers.
- *
- * @see EventBus
- */
-public interface SystemEventBus extends EventBus{
+import com.google.inject.name.Names;
+import com.google.inject.util.Providers;
 
+import info.magnolia.objectfactory.guice.AbstractGuiceComponentConfigurer;
+
+/**
+ * Configures an {@link EventBus} bound to the name <code>system</code>.
+ */
+public class SystemEventBusConfigurer extends AbstractGuiceComponentConfigurer {
+
+    @Override
+    protected void configure() {
+        bind(EventBus.class).annotatedWith(Names.named("system")).toProvider(Providers.of(new SimpleEventBus()));
+    }
 }
