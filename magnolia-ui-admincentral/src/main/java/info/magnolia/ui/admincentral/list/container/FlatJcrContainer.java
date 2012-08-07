@@ -37,7 +37,6 @@ package info.magnolia.ui.admincentral.list.container;
 import info.magnolia.ui.admincentral.container.JcrContainer;
 import info.magnolia.ui.admincentral.container.JcrContainerSource;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -64,7 +63,6 @@ public class FlatJcrContainer extends JcrContainer {
     public long update(RowIterator iterator) throws RepositoryException {
         log.debug("updating container...");
         getItemIndexes().clear();
-        getCachedItems().clear();
 
         long rowCount = 0;
         while(iterator.hasNext()){
@@ -72,7 +70,6 @@ public class FlatJcrContainer extends JcrContainer {
             final String id = node.getPath();
             /* Cache item */
             getItemIndexes().put(rowCount++, id);
-            getCachedItems().put(id, new JcrNodeAdapter(node));
 
         }
         setSize(Long.valueOf(rowCount).intValue());

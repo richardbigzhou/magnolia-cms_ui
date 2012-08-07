@@ -37,14 +37,12 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.ui.model.column.definition.ColumnDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -100,8 +98,6 @@ public abstract class JcrContainer extends AbstractContainer implements Containe
 
     /** Item and index caches. */
     private final Map<Long, String> itemIndexes = new HashMap<Long, String>();
-
-    private final LinkedHashMap<String, JcrItemAdapter> cachedItems = new LinkedHashMap<String, JcrItemAdapter>();
 
     private final Map<String, String> sortableProperties = new HashMap<String, String>();
 
@@ -226,10 +222,6 @@ public abstract class JcrContainer extends AbstractContainer implements Containe
         return itemIndexes;
     }
 
-    protected LinkedHashMap<String, JcrItemAdapter> getCachedItems() {
-        return cachedItems;
-    }
-
     public int getPageLength() {
         return pageLength;
     }
@@ -252,12 +244,14 @@ public abstract class JcrContainer extends AbstractContainer implements Containe
 
     @Override
     public Item getItem(Object itemId) {
-        if (!cachedItems.containsKey(itemId)) {
-            int index = indexOfId(itemId);
-            // load the item into cache
-            updateOffsetAndCache(index);
+
+        try {
+            final Session jcrSession = MgnlContext.getJCRSession(workspace);
+            Node node = (Node) jcrSession.getItem((String) itemId);
+            return new JcrNodeAdapter(node);
+        } catch (RepositoryException e) {
+            throw new RuntimeRepositoryException(e);
         }
-        return cachedItems.get(itemId);
     }
 
     @Override
@@ -290,7 +284,12 @@ public abstract class JcrContainer extends AbstractContainer implements Containe
             return false;
         }
 
-        return cachedItems.containsKey(itemId);
+        try {
+            final Session jcrSession = MgnlContext.getJCRSession(workspace);
+            return jcrSession.nodeExists((String) itemId);
+        } catch (RepositoryException e) {
+            throw new RuntimeRepositoryException(e);
+        }
     }
 
     @Override
@@ -318,9 +317,6 @@ public abstract class JcrContainer extends AbstractContainer implements Containe
 
         if (!containsId(itemId)) {
             return -1;
-        }
-        if (cachedItems.isEmpty()) {
-            getPage();
         }
         int size = size();
         boolean wrappedAround = false;
@@ -503,11 +499,10 @@ public abstract class JcrContainer extends AbstractContainer implements Containe
     }
 
     /**
-     * Fetches a page from the data source based on the values of pageLenght and currentOffset.
+     * Fetches a page from the data source based on the values of pageLength and currentOffset.
      * Update the size.
      */
     protected void getPage() {
-        cachedItems.clear();
         itemIndexes.clear();
 
         try {
@@ -516,23 +511,25 @@ public abstract class JcrContainer extends AbstractContainer implements Containe
                 // TODO one workaround to make this faster would be avoiding doing a join when we
                 // know for sure there are no properties from metadata to order by.
                 stmt.append(JOIN_METADATA_ORDER_BY);
+                String sortOrder = "";
                 for (OrderBy orderBy : sorters) {
+                    sortOrder = orderBy.isAscending() ? " asc" : " desc";
                     if (NAME_PROPERTY.equals(orderBy.getProperty())) {
                         // need to use name(..) function here as name or jcr:name is not supported
                         // by JCR2.
                         stmt.append(JCR_NAME_FUNCTION)
-                            .append(orderBy.isAscending() ? " asc" : " desc")
+                            .append(sortOrder)
                             .append(", ");
                         continue;
                     }
                     stmt.append(CONTENT_SELECTOR_NAME + ".[" + orderBy.getProperty() + "]")
-                        .append(orderBy.isAscending() ? " asc" : " desc")
+                        .append(sortOrder)
                         .append(", ");
                     // TODO here we don't know to which primary type this prop belongs to. I would
                     // tend not to clutter the column definition with yet another info about primary
                     // type.
                     stmt.append(METADATA_SELECTOR_NAME + ".[" + orderBy.getProperty() + "]")
-                        .append(orderBy.isAscending() ? " asc" : " desc")
+                        .append(sortOrder)
                         .append(", ");
                 }
                 stmt.delete(stmt.lastIndexOf(","), stmt.length() - 1);
@@ -553,9 +550,8 @@ public abstract class JcrContainer extends AbstractContainer implements Containe
             while (iterator.hasNext()) {
                 Node node = iterator.nextRow().getNode(CONTENT_SELECTOR_NAME);
                 final String id = node.getPath();
-                /* Cache item */
+                log.debug("Adding node {} to cached items.", id);
                 itemIndexes.put(rowCount++, id);
-                cachedItems.put(id, new JcrNodeAdapter(node));
             }
 
             /* Set page size */
