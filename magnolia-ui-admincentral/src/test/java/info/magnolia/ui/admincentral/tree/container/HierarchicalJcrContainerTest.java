@@ -148,23 +148,6 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testContainsId() throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        // GIVEN
-        Node node1 = JcrContainerTest.createNode(rootNode, "node1", "mgnl:content", "name", "name1");
-        node1.getSession().save();
-        String containerItemId = node1.getPath();
-        // It's not yet in the cash
-        assertEquals(false, hierarchicalJcrContainer.containsId(containerItemId));
-        hierarchicalJcrContainer.getItem(containerItemId);
-
-        // WHEN
-        boolean res = hierarchicalJcrContainer.containsId(containerItemId);
-
-        // THEN
-        assertEquals(true, res);
-    }
-
-    @Test
     public void testAreChildrenAllowed_true() throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         // GIVEN
         Node node1 = JcrContainerTest.createNode(rootNode, "node1", "mgnl:content", "name", "name1");
