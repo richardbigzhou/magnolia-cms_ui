@@ -47,12 +47,11 @@ import com.google.gwt.user.client.ui.FlowPanel;
  */
 public class VShellTabSheetViewImpl extends FlowPanel implements VShellTabSheetView {
 
-
     private VShellTabNavigator tabContainer;
 
-    private VShellTabContent activeTab = null;
+    private VShellTab activeTab = null;
 
-    private final List<VShellTabContent> tabs = new LinkedList<VShellTabContent>();
+    private final List<VShellTab> tabs = new LinkedList<VShellTab>();
 
     private Presenter presenter;
 
@@ -70,9 +69,9 @@ public class VShellTabSheetViewImpl extends FlowPanel implements VShellTabSheetV
     }
     
     @Override
-    public void removeTab(VShellTabContent tabToOrphan) {
+    public void removeTab(VShellTab tabToOrphan) {
         if (activeTab == tabToOrphan) {
-            final VShellTabContent nextTab = CollectionUtil.getNext(getTabs(), tabToOrphan);
+            final VShellTab nextTab = CollectionUtil.getNext(getTabs(), tabToOrphan);
             if (nextTab != null) {
                 setActiveTab(nextTab);
             }
@@ -82,7 +81,7 @@ public class VShellTabSheetViewImpl extends FlowPanel implements VShellTabSheetV
     }
 
     @Override
-    public void setActiveTab(final VShellTabContent tab) {
+    public void setActiveTab(final VShellTab tab) {
         showAllTabContents(false);
         tab.getElement().getStyle().setDisplay(Display.BLOCK);
         activeTab = tab;
@@ -90,8 +89,8 @@ public class VShellTabSheetViewImpl extends FlowPanel implements VShellTabSheetV
     }
 
     @Override
-    public VShellTabContent getTabById(String tabId) {
-        for (final VShellTabContent tab : tabs) {
+    public VShellTab getTabById(String tabId) {
+        for (final VShellTab tab : tabs) {
             if (tab.getTabId().equals(tabId)) {
                 return tab;
             }
@@ -99,21 +98,15 @@ public class VShellTabSheetViewImpl extends FlowPanel implements VShellTabSheetV
         return null;
     }
 
-    /* (non-Javadoc)
-     * @see info.magnolia.ui.widget.tabsheet.gwt.client.VShellTabSheetView#getTabs()
-     */
     @Override
-    public List<VShellTabContent> getTabs() {
+    public List<VShellTab> getTabs() {
         return tabs;
     }
 
-    /* (non-Javadoc)
-     * @see info.magnolia.ui.widget.tabsheet.gwt.client.VShellTabSheetView#showAllTabContents()
-     */
     @Override
     public void showAllTabContents(boolean visible) {
         Display display = (visible) ? Display.BLOCK : Display.NONE;
-        for (VShellTabContent tab : tabs) {
+        for (VShellTab tab : tabs) {
             tab.getElement().getStyle().setDisplay(display);
         }
     }

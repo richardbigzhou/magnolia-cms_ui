@@ -33,7 +33,12 @@
  */
 package info.magnolia.ui.widget.tabsheet;
 
-import info.magnolia.ui.widget.tabsheet.gwt.client.VShellTabContent;
+import info.magnolia.ui.widget.tabsheet.gwt.client.VShellTab;
+
+import java.util.Map;
+
+import org.vaadin.rpc.ServerSideHandler;
+import org.vaadin.rpc.ServerSideProxy;
 
 import com.vaadin.terminal.PaintException;
 import com.vaadin.terminal.PaintTarget;
@@ -45,14 +50,20 @@ import com.vaadin.ui.ComponentContainer;
  * A tab in the shell tabsheet.
  */
 @SuppressWarnings("serial")
-@ClientWidget(value=VShellTabContent.class, loadStyle = LoadStyle.EAGER)
-public class ShellTab extends SimplePanel {
+@ClientWidget(value=VShellTab.class, loadStyle = LoadStyle.EAGER)
+public class ShellTab extends SimplePanel implements ServerSideHandler {
 
     private String tabId = null;
     
     private boolean isClosable = false;
     
+    private boolean hasError = false;
+    
     private String notification = null;
+
+    private ServerSideProxy proxy = new ServerSideProxy(this) {{
+        
+    }};
     
     public ShellTab(final String caption, final ComponentContainer c) {
         super(c);
@@ -63,11 +74,18 @@ public class ShellTab extends SimplePanel {
     @Override
     public void paintContent(PaintTarget target) throws PaintException {
         super.paintContent(target);
-        target.addAttribute("shellTabId", tabId);
+        proxy.paintContent(target);
+    }
+    
+    @Override
+    public void changeVariables(Object source, Map<String, Object> variables) {
+        super.changeVariables(source, variables);
+        proxy.changeVariables(source, variables);
     }
     
     public void setTabId(String tabId) {
         this.tabId = tabId;
+        proxy.callOnce("setTabId", tabId);
     }
     
     public String getTabId() {
@@ -80,12 +98,19 @@ public class ShellTab extends SimplePanel {
     
     public void setClosable(boolean isClosable) {
         this.isClosable = isClosable;
+        proxy.callOnce("setClosable", isClosable);
     }
 
     public void setNotification(String text) {
         this.notification = text;
+        proxy.callOnce("updateNotification", text);
     }
 
+    public void hideNotification() {
+        proxy.callOnce("hideNotification");
+        this.notification = null;
+    }
+    
     public String getNotification() {
         return notification;
     }
@@ -93,4 +118,22 @@ public class ShellTab extends SimplePanel {
     public boolean hasNotification() {
         return this.notification != null;
     }
+
+    public boolean hasError() {
+        return hasError;
+    }
+    
+    @Override
+    public Object[] initRequestFromClient() {
+        if (tabId != null) {
+            proxy.callOnce("setTabId", tabId);   
+        }
+        return new Object[] {};
+    }
+
+    @Override
+    public void callFromClient(String method, Object[] params) {
+        throw new RuntimeException("Unhandled method call from client: " + method);
+    }
+
 }

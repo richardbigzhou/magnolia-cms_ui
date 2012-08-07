@@ -195,12 +195,6 @@ public class ShellTabSheet extends AbstractComponentContainer implements ServerS
         return (ShellTab)mapper.get(tabId);
     }
 
-    public void hideTabNotification(final ShellTab tab) {
-        proxy.call("hideTabNotification", tab.getTabId());
-        tab.setNotification(null);
-        requestRepaint();
-    }
-
     @Override
     public Object[] initRequestFromClient() {
         proxy.call("setActiveTab", activeTab.getTabId());
@@ -260,17 +254,14 @@ public class ShellTabSheet extends AbstractComponentContainer implements ServerS
     };
 
     public void setTabClosable(final ShellTab tab, boolean closable) {
-        if (tab.isClosable() != closable) {
-            tab.setClosable(closable);
-            proxy.call("setTabClosable", tab.getTabId(), closable);
-            requestRepaint();
-        }
+        tab.setClosable(closable);
     }
 
     public void updateTabNotification(final ShellTab tab, final String text) {
         tab.setNotification(text);
-        proxy.call("updateTabNotification", tab.getTabId(), text);
-        requestRepaint();
     }
 
+    public void hideTabNotification(final ShellTab tab) {
+        tab.hideNotification();
+    }
 }

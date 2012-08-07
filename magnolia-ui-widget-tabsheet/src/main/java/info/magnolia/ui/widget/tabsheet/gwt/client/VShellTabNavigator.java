@@ -56,7 +56,6 @@ import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.vaadin.terminal.gwt.client.UIDL;
 
-
 /**
  * A bar that contains the tab labels and controls the switching between tabs.
  */
@@ -68,11 +67,11 @@ public class VShellTabNavigator extends ComplexPanel {
 
     private final List<VShellTabLabel> tabLabels = new LinkedList<VShellTabLabel>();
 
-    private final Map<VShellTabContent, VShellTabLabel> labelMap = new LinkedHashMap<VShellTabContent, VShellTabLabel>();
+    private final Map<VShellTab, VShellTabLabel> labelMap = new LinkedHashMap<VShellTab, VShellTabLabel>();
 
-    VShellShowAllTabLabel showAllTab;
+    private VShellShowAllTabLabel showAllTab;
 
-    EventBus eventBus;
+    private EventBus eventBus;
 
     public VShellTabNavigator(EventBus eventBus) {
         this.eventBus = eventBus;
@@ -93,7 +92,7 @@ public class VShellTabNavigator extends ComplexPanel {
 
             @Override
             public void onActiveTabChanged(final ActiveTabChangedEvent event) {
-                final VShellTabContent tab = event.getTab();
+                final VShellTab tab = event.getTab();
                 final VShellTabLabel label = labelMap.get(tab);
                 if (label != null) {
                     for (final VShellTabLabel tabLabel : tabLabels) {
@@ -145,7 +144,7 @@ public class VShellTabNavigator extends ComplexPanel {
         return (VShellTabSheet) super.getParent();
     }
 
-    public void updateTab(final VShellTabContent component, final UIDL uidl) {
+    public void updateTab(final VShellTab component, final UIDL uidl) {
         VShellTabLabel label = labelMap.get(component);
         if (label == null) {
             label = new VShellTabLabel();
@@ -156,32 +155,11 @@ public class VShellTabNavigator extends ComplexPanel {
             label.updateCaption(uidl);
             label.setClosable(component.isClosable());
 
+            component.setLabel(label);
             add(label, getElement());
             updateSingleTabStyle();
         }
         label.updateCaption(uidl);
-    }
-
-    public void setTabClosable(final VShellTabContent tab, boolean isClosable) {
-        final VShellTabLabel label = labelMap.get(tab);
-        if (label != null) {
-            label.setClosable(isClosable);
-        }
-
-    }
-
-    public void updateTabNotification(final VShellTabContent tab, final String text) {
-        final VShellTabLabel label = labelMap.get(tab);
-        if (label != null) {
-            label.updateNotification(text);
-        }
-    }
-
-    public void hideTabNotification(final VShellTabContent tab) {
-        final VShellTabLabel label = labelMap.get(tab);
-        if (label != null) {
-            label.hideNotification();
-        }
     }
 
     public void updateSingleTabStyle() {
@@ -196,21 +174,20 @@ public class VShellTabNavigator extends ComplexPanel {
         }
     }
 
-    /**
-     * @param object
-     */
     public void addShowAllTab(boolean showAll, String label) {
         if (showAll && showAllTab == null) {
             showAllTab = new VShellShowAllTabLabel(label);
             add(showAllTab, getElement());
-        }
-        else if (!showAll && showAllTab != null) {
+        } else if (!showAll && showAllTab != null) {
             remove(showAllTab);
             showAllTab = null;
         }
     }
 
-    private class VShellTabLabel extends SimplePanel {
+    /**
+     * Tab label in the tabbar.
+     */
+    public class VShellTabLabel extends SimplePanel {
 
         private final Element notificationBox = DOM.createDiv();
 
@@ -218,16 +195,14 @@ public class VShellTabNavigator extends ComplexPanel {
 
         private final Element text = DOM.createSpan();
 
-        private VShellTabContent tab;
+        private VShellTab tab;
 
         public VShellTabLabel() {
             super(DOM.createElement("li"));
             closeElement.setClassName("v-shell-tab-close");
             notificationBox.setClassName("v-shell-tab-notification");
             getElement().appendChild(text);
-
             DOM.sinkEvents(getElement(), Event.MOUSEEVENTS);
-
         }
 
         @Override
@@ -243,9 +218,7 @@ public class VShellTabNavigator extends ComplexPanel {
                 public void onClick(ClickEvent event) {
                     final Element target = (Element) event.getNativeEvent().getEventTarget().cast();
 
-                    eventBus.fireEvent(isClosing(target) ?
-                        new TabCloseEvent(getTab()) :
-                        new ActiveTabChangedEvent(getTab()));
+                    eventBus.fireEvent(isClosing(target) ? new TabCloseEvent(getTab()) : new ActiveTabChangedEvent(getTab()));
 
                 }
             }, ClickEvent.getType());
@@ -255,11 +228,11 @@ public class VShellTabNavigator extends ComplexPanel {
             return closeElement.isOrHasChild(target);
         }
 
-        public void setTab(final VShellTabContent tab) {
+        public void setTab(final VShellTab tab) {
             this.tab = tab;
         }
 
-        public VShellTabContent getTab() {
+        public VShellTab getTab() {
             return tab;
         }
 
@@ -315,10 +288,8 @@ public class VShellTabNavigator extends ComplexPanel {
 
         private void bindHandlers() {
             addDomHandler(new ClickHandler() {
-
                 @Override
                 public void onClick(ClickEvent event) {
-                    final Element target = (Element) event.getNativeEvent().getEventTarget().cast();
                     eventBus.fireEvent(new ShowAllTabsEvent());
                 }
             }, ClickEvent.getType());
@@ -326,15 +297,11 @@ public class VShellTabNavigator extends ComplexPanel {
 
     }
 
-    /**
-     * @param showAll
-     */
     public void showAll(boolean showAll) {
         if (showAllTab != null) {
             if (showAll) {
                 showAllTab.addStyleName("active");
-            }
-            else {
+            } else {
                 if (showAllTab.getStyleName().contains("active")) {
                     showAllTab.removeStyleName("active");
                 }

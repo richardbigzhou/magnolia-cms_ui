@@ -59,22 +59,22 @@ public interface VShellTabSheetView extends HasWidgets, IsWidget {
      * @param tabId
      * @return
      */
-    VShellTabContent getTabById(String tabId);
+    VShellTab getTabById(String tabId);
 
     /**
      * @return
      */
-    List<VShellTabContent> getTabs();
+    List<VShellTab> getTabs();
 
     /**
      * @param tab
      */
-    void setActiveTab(VShellTabContent tab);
+    void setActiveTab(VShellTab tab);
 
     /**
      * @param tabToOrphan
      */
-    void removeTab(VShellTabContent tabToOrphan);
+    void removeTab(VShellTab tabToOrphan);
 
     /**
      * @param visible

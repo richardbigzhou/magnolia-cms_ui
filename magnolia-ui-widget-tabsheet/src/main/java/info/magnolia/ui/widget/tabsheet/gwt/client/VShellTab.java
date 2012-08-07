@@ -34,7 +34,13 @@
 package info.magnolia.ui.widget.tabsheet.gwt.client;
 
 
+import info.magnolia.ui.widget.tabsheet.gwt.client.VShellTabNavigator.VShellTabLabel;
+
 import java.util.Set;
+
+import org.vaadin.rpc.client.ClientSideHandler;
+import org.vaadin.rpc.client.ClientSideProxy;
+import org.vaadin.rpc.client.Method;
 
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -43,35 +49,73 @@ import com.vaadin.terminal.gwt.client.Container;
 import com.vaadin.terminal.gwt.client.Paintable;
 import com.vaadin.terminal.gwt.client.RenderSpace;
 import com.vaadin.terminal.gwt.client.UIDL;
+import com.vaadin.terminal.gwt.client.VConsole;
 
 /**
  * Tab class for a tabsheet.
  */
-public class VShellTabContent extends ScrollPanel implements Container {
-
-    protected String paintableId;
+public class VShellTab extends ScrollPanel implements Container, ClientSideHandler {
     
     protected ApplicationConnection client;
     
     private Paintable content;
     
-    private String tabId = null;
-    
     private boolean isClosable = false;
     
-    public VShellTabContent() {
+    private boolean hasError = false;
+    
+    private String tabId = null;
+    
+    private VShellTabLabel label;
+    
+    private ClientSideProxy proxy = new ClientSideProxy(this) {{
+        register("setTabId", new Method() {
+            @Override
+            public void invoke(String methodName, Object[] params) {
+                tabId = String.valueOf(params[0]);
+            }
+        });
+        
+        register("setClosable", new Method() {
+            @Override
+            public void invoke(String methodName, Object[] params) {
+                boolean closable = (Boolean)params[0];
+                setClosable(closable);
+            }
+        });
+        
+        register("setError", new Method() {
+            @Override
+            public void invoke(String methodName, Object[] params) {
+                boolean hasError = (Boolean)params[0];
+                setHasError(hasError);
+            }
+        });
+        
+        register("updateNotification", new Method() {
+            @Override
+            public void invoke(String methodName, Object[] params) {
+                label.updateNotification(String.valueOf(params[0]));
+            }
+        });        
+        
+        register("hideNotification", new Method() {
+            @Override
+            public void invoke(String methodName, Object[] params) {
+                label.hideNotification();
+            }
+        });
+    }};
+            
+    public VShellTab() {
         super();
         setStyleName("v-shell-tab");
     }
     
     @Override
     public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
-        this.paintableId = uidl.getId();
         this.client = client;
         if (!client.updateComponent(this, uidl, true)) {
-            if (uidl.hasAttribute("shellTabId")) {
-                tabId = uidl.getStringAttribute("shellTabId");
-            }
             final Paintable content = client.getPaintable(uidl.getChildUIDL(0));
             if (this.content != content) {
                 if (this.content != null) {
@@ -82,6 +126,7 @@ public class VShellTabContent extends ScrollPanel implements Container {
                 content.updateFromUIDL(uidl.getChildUIDL(0), client);
             }
         }      
+        proxy.update(this, uidl, client);
     }
 
     @Override
@@ -109,12 +154,35 @@ public class VShellTabContent extends ScrollPanel implements Container {
     public String getTabId() {
         return tabId;
     }
+
+    public boolean hasError() {
+        return hasError;
+    }
+    
+    private void setHasError(boolean hasError) {
+        this.hasError = hasError;
+    }
     
     public void setClosable(boolean isClosable) {
         this.isClosable = isClosable;
+        label.setClosable(isClosable);
     }
 
     public boolean isClosable() {
         return isClosable;
+    }
+
+    public void setLabel(VShellTabLabel label) {
+        this.label = label;
+    }
+    
+    @Override
+    public boolean initWidget(Object[] params) {
+        return false;
+    }
+
+    @Override
+    public void handleCallFromServer(String method, Object[] params) {
+        VConsole.error("Unhadled method call from server: " + method);
     }
 }

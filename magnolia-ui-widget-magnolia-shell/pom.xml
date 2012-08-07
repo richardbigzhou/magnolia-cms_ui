@@ -64,7 +64,6 @@
         <configuration>
           <webappDirectory>${project.build.directory}/testwebapp/VAADIN/widgetsets</webappDirectory>
           <hostedWebapp>${project.build.directory}/testwebapp</hostedWebapp>
-          <module>info.magnolia.m5vaadin.shell.demo.ShellTestAppWidgetSet</module>
           <runTarget>http://localhost:9998/</runTarget>
           <style>PRETTY</style>
           <draftCompile>true</draftCompile>
@@ -130,7 +129,6 @@
 	<dependency>
 	      <groupId>com.googlecode.mgwt</groupId>
 	      <artifactId>mgwt</artifactId>
-	      <version>1.1.1</version>
 	</dependency>
 
    <dependency>

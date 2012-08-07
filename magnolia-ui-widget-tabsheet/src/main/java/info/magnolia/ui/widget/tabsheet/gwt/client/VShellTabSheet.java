@@ -106,11 +106,10 @@ public class VShellTabSheet extends Composite implements HasWidgets, VShellTabSh
         initWidget(view.asWidget());
     }
 
-    protected void closeTab(final VShellTabContent tab) {
+    protected void closeTab(final VShellTab tab) {
         if (tab != null) {
             client.unregisterPaintable(tab);
             proxy.call("closeTab", tab.getTabId());
-
             view.removeTab(tab);
         }
     }
@@ -130,19 +129,19 @@ public class VShellTabSheet extends Composite implements HasWidgets, VShellTabSh
         final UIDL tabsUidl = uidl.getChildByTagName("tabs");
         if (tabsUidl != null) {
             final Iterator<?> it = tabsUidl.getChildIterator();
-            final List<VShellTabContent> possibleTabsToOrphan = new ArrayList<VShellTabContent>(view.getTabs());
+            final List<VShellTab> possibleTabsToOrphan = new ArrayList<VShellTab>(view.getTabs());
             while (it.hasNext()) {
                 final UIDL tabUidl = (UIDL)it.next();
                 final Paintable tab = client.getPaintable(tabUidl);
                 if (!view.getTabs().contains(tab)) {
-                    view.getTabs().add((VShellTabContent)tab);
+                    view.getTabs().add((VShellTab)tab);
                     view.add((Widget)tab);
                 }
                 tab.updateFromUIDL(tabUidl, client);
                 possibleTabsToOrphan.remove(tab);
             }
 
-            for (final VShellTabContent tabToOrphan : possibleTabsToOrphan) {
+            for (final VShellTab tabToOrphan : possibleTabsToOrphan) {
                 view.getTabs().remove(tabToOrphan);
                 client.unregisterPaintable(tabToOrphan);
                 view.removeTab(tabToOrphan);
@@ -160,8 +159,8 @@ public class VShellTabSheet extends Composite implements HasWidgets, VShellTabSh
 
     @Override
     public void updateCaption(Paintable component, UIDL uidl) {
-        if (component instanceof VShellTabContent) {
-            view.getTabContainer().updateTab((VShellTabContent)component, uidl);
+        if (component instanceof VShellTab) {
+            view.getTabContainer().updateTab((VShellTab)component, uidl);
         }
     }
 
@@ -178,20 +177,7 @@ public class VShellTabSheet extends Composite implements HasWidgets, VShellTabSh
         return new RenderSpace();
     }
 
-    private void setTabClosable(String tabId, boolean isClosable) {
-        for (final VShellTabContent tab: view.getTabs()) {
-            if (tab.getTabId().equals(tabId)) {
-                boolean isAlreadyClosable = tab.isClosable();
-                if (isAlreadyClosable != isClosable) {
-                    tab.setClosable(isClosable);
-                    view.getTabContainer().setTabClosable(tab, isClosable);
-                    break;
-                }
-            }
-        }
-    }
-
-    void activateTab(final VShellTabContent tab) {
+    void activateTab(final VShellTab tab) {
 
     }
 
@@ -214,7 +200,7 @@ public class VShellTabSheet extends Composite implements HasWidgets, VShellTabSh
         register("setActiveTab", new Method() {
             @Override
             public void invoke(String methodName, Object[] params) {
-                final VShellTabContent tab = view.getTabById(String.valueOf(params[0]));
+                final VShellTab tab = view.getTabById(String.valueOf(params[0]));
                 if (tab != null) {
                     eventBus.fireEvent(new ActiveTabChangedEvent(tab));
                 }
@@ -228,13 +214,6 @@ public class VShellTabSheet extends Composite implements HasWidgets, VShellTabSh
             }
         });
 
-        register("setTabClosable", new Method() {
-            @Override
-            public void invoke(String methodName, Object[] params) {
-                setTabClosable(String.valueOf(params[0]), (Boolean)params[1]);
-            }
-        });
-
         register("addShowAllTab", new Method() {
             @Override
             public void invoke(String methodName, Object[] params) {
@@ -244,25 +223,6 @@ public class VShellTabSheet extends Composite implements HasWidgets, VShellTabSh
             }
         });
 
-        register("updateTabNotification", new Method() {
-            @Override
-            public void invoke(String methodName, Object[] params) {
-                final VShellTabContent tab = view.getTabById(String.valueOf(params[0]));
-                if (tab != null) {
-                    view.getTabContainer().updateTabNotification(tab, String.valueOf(params[1]));
-                }
-            }
-        });
-
-        register("hideTabNotification", new Method() {
-            @Override
-            public void invoke(String methodName, Object[] params) {
-                final VShellTabContent tab = view.getTabById(String.valueOf(params[0]));
-                if (tab != null) {
-                    view.getTabContainer().hideTabNotification(tab);
-                }
-            }
-        });
     }};
 
     @Override

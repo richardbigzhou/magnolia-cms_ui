@@ -122,13 +122,19 @@ public class VDialogLayout extends FlowPanel implements Container, HelpAccessibi
         DialogFieldSection fs = sections.get(component);
         if (fs != null) {
             if (uidl.hasAttribute("error")) {
-                for (final Iterator<?> it = uidl.getErrors().getChildIterator(); it.hasNext();) {
-                    final Object child = it.next();
-                    if (child instanceof String) {
-                        final String errorMessage = (String) child;
-                        fs.showError(errorMessage);
-                        break;
-                    }
+                boolean showError = false;
+                if (uidl.hasAttribute("showError")) {
+                    showError = uidl.getBooleanAttribute("showError");
+                }
+                if (showError) {
+                    for (final Iterator<?> it = uidl.getErrors().getChildIterator(); it.hasNext();) {
+                        final Object child = it.next();
+                        if (child instanceof String) {
+                            final String errorMessage = (String) child;
+                            fs.showError(errorMessage);
+                            break;
+                        }
+                    }   
                 }
             } else {
                 fs.clearErrors();

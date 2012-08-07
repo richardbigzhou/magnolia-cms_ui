@@ -47,6 +47,7 @@ import com.vaadin.ui.AbstractLayout;
 import com.vaadin.ui.ClientWidget;
 import com.vaadin.ui.ClientWidget.LoadStyle;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Field;
 
 /**
  * Dialog layout server side implementation. 
@@ -69,6 +70,11 @@ public class DialogLayout extends AbstractLayout {
         while (it.hasNext()) {
             final Component c = it.next();
             target.startTag("component");
+            if (c instanceof Field) {
+                target.addAttribute("showError", ((Field)c).isModified());   
+            } else {
+                target.addAttribute("showError", false);
+            }
             c.addStyleName("v-dialog-field");
             c.setSizeUndefined();
             c.paint(target);
@@ -101,11 +107,6 @@ public class DialogLayout extends AbstractLayout {
     @Override
     public Iterator<Component> getComponentIterator() {
         return components.iterator();
-    }
-    
-    @Override
-    public void attach() {
-        super.attach();
     }
 
 }
