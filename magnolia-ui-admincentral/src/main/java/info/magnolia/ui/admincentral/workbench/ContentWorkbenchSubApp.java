@@ -205,11 +205,9 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
                         Embedded preview = new Embedded(null, imageResource);
                         actionbarPresenter.setPreview(preview);
                     } catch (RepositoryException e) {
-                        e.printStackTrace(); // To change body of catch statement use File |
-                                             // Settings | File Templates.
+                        log.error(e.getMessage(), e);
                     } catch (IOException e) {
-                        e.printStackTrace(); // To change body of catch statement use File |
-                                             // Settings | File Templates.
+                        log.error(e.getMessage(), e);
                     }
 
                 }
