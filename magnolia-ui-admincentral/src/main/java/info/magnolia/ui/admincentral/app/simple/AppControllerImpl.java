@@ -83,6 +83,7 @@ import com.vaadin.ui.ComponentContainer;
 @Singleton
 public class AppControllerImpl implements AppController, LocationChangedEvent.Handler, LocationChangeRequestedEvent.Handler {
 
+    public static final String COMMON_APP_COMPONENTS_ID = "app";
     public static final String COMPONENTS_ID_PREFIX = "app-";
 
     private static final Logger log = LoggerFactory.getLogger(AppControllerImpl.class);
@@ -377,18 +378,25 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     }
 
     /**
-     * Creates a ComponentProvider as a child of the admincentral ComponentProvider dedicated to the
-     * app. This gives us the ability to inject the AppContext into App components. The components
-     * are read from module descriptors using the convention "app-" + name of the app.
+     * Creates a ComponentProvider dedicated for the app with the AdminCentral ComponentProvider as its parent. This
+     * gives us the ability to inject the AppContext into App components. The components are read from module
+     * descriptors using the convention "app-" + name of the app and merged with the components defined for all apps
+     * with the id "app".
      */
     private ComponentProvider createAppComponentProvider(String name, AppContext appContext, EventBus eventBus) {
 
-        String componentsId = COMPONENTS_ID_PREFIX + name;
-
-        log.debug("Reading component configurations from module descriptors for " + componentsId);
         ComponentProviderConfigurationBuilder configurationBuilder = new ComponentProviderConfigurationBuilder();
         List<ModuleDefinition> moduleDefinitions = moduleRegistry.getModuleDefinitions();
-        ComponentProviderConfiguration configuration = configurationBuilder.getComponentsFromModules(componentsId, moduleDefinitions);
+
+        // Get components common to all apps
+        ComponentProviderConfiguration configuration = configurationBuilder.getComponentsFromModules(COMMON_APP_COMPONENTS_ID, moduleDefinitions);
+
+        // Get components for this specific app
+        String componentsId = COMPONENTS_ID_PREFIX + name;
+        log.debug("Reading component configurations from module descriptors for " + componentsId);
+        ComponentProviderConfiguration appComponents = configurationBuilder.getComponentsFromModules(componentsId, moduleDefinitions);
+
+        configuration.combine(appComponents);
 
         // Add the AppContext instance into the component provider.
         configuration.addComponent(InstanceConfiguration.valueOf(AppContext.class, appContext));

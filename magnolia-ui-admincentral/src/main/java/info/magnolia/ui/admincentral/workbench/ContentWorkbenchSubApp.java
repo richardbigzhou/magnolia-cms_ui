@@ -52,6 +52,7 @@ import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.model.thumbnail.AbstractThumbnailProvider;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.widget.actionbar.ActionbarView;
 
@@ -106,11 +107,11 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
 
     private final WorkbenchActionFactory actionFactory;
 
-    final ContentPresenter contentPresenter;
+    private final ContentPresenter contentPresenter;
 
-    final ActionbarPresenter actionbarPresenter;
+    private final ActionbarPresenter actionbarPresenter;
 
-    final static String PHOTO_NODE_NAME = "photo";
+    protected final static String IMAGE_NODE_NAME = AbstractThumbnailProvider.ORIGINAL_IMAGE_NODE_NAME;
 
     @Inject
     public ContentWorkbenchSubApp(final AppContext context, final ContentWorkbenchView view, final EventBus eventbus, final Shell shell, final WorkbenchActionFactory actionFactory, final ContentPresenter contentPresenter, final ActionbarPresenter actionbarPresenter) {
@@ -176,12 +177,12 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
                     final Node parentNode = SessionUtil.getNode(event.getWorkspace(), event.getPath());
                     try {
 
-                        if (!parentNode.hasNode(PHOTO_NODE_NAME)) {
+                        if (!parentNode.hasNode(IMAGE_NODE_NAME)) {
                             actionbarPresenter.setPreview(null);
                             return;
                         }
 
-                        final Node node = parentNode.getNode(PHOTO_NODE_NAME);
+                        final Node node = parentNode.getNode(IMAGE_NODE_NAME);
                         final byte[] pngData = IOUtils.toByteArray(node.getProperty(JcrConstants.JCR_DATA).getBinary().getStream());
                         final String nodeType = node.getProperty(FileProperties.CONTENT_TYPE).getString();
 
