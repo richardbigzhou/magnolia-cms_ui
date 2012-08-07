@@ -106,11 +106,9 @@ public abstract class AbstractThumbnailProvider implements ThumbnailProvider {
     public String getPath(final String nodeIdentifier, final String workspace, int width, int height) {
         String path = null;
         try {
-            Node imageNode = null;
+            final Session session = MgnlContext.getJCRSession(workspace);
+            final Node imageNode = session.getNodeByIdentifier(nodeIdentifier);
             if (ThumbnailUtility.isThumbnailToBeGenerated(nodeIdentifier, workspace, getOriginalImageNodeName(), getThumbnailNodeName())) {
-
-                final Session session = MgnlContext.getJCRSession(workspace);
-                imageNode = session.getNodeByIdentifier(nodeIdentifier);
 
                 final Node originalImageNode = imageNode.getNode(getOriginalImageNodeName());
                 final InputStream originalInputStream = originalImageNode.getProperty(JcrConstants.JCR_DATA).getBinary().getStream();
@@ -155,10 +153,6 @@ public abstract class AbstractThumbnailProvider implements ThumbnailProvider {
                     IOUtils.closeQuietly(thumbnailInputStream);
                     IOUtils.closeQuietly(originalInputStream);
                 }
-            }
-            if(imageNode == null) {
-                log.warn("Impossible to retrieve image node needed to create thumbnail. Will return null.");
-                return null;
             }
             path = LinkUtil.createLink(ContentUtil.asContent(imageNode).getNodeData(getThumbnailNodeName()));
         } catch (RepositoryException e) {
