@@ -193,9 +193,9 @@ public abstract class AbstractThumbnailProvider implements ThumbnailProvider {
     public void setOriginalImageNodeName(String originalImageNodeName) {
         if(StringUtils.isBlank(originalImageNodeName)) {
             log.warn("originalImageNodeName cannot be null or empty. Will leave default value");
-            return;
+        } else {
+            this.originalImageNodeName = originalImageNodeName;
         }
-        this.originalImageNodeName = originalImageNodeName;
     }
 
     /**
@@ -208,8 +208,8 @@ public abstract class AbstractThumbnailProvider implements ThumbnailProvider {
     public void setThumbnailNodeName(String thumbnailNodeName) {
         if(StringUtils.isBlank(thumbnailNodeName)) {
             log.warn("thumbailNodeName cannot be null or empty. Will leave default value");
-            return;
+        } else {
+            this.thumbnailNodeName = thumbnailNodeName;
         }
-        this.thumbnailNodeName = thumbnailNodeName;
     }
 }
