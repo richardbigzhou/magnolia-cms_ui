@@ -36,7 +36,6 @@ package info.magnolia.ui.admincentral.container;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.admincentral.column.Column;
@@ -85,7 +84,6 @@ public class JcrContainerTest extends RepositoryTestCase{
     private Session session;
     Node rootNode;
 
-    @SuppressWarnings("deprecation")
     @Override
     @Before
     public void setUp() throws Exception{
@@ -352,21 +350,21 @@ public class JcrContainerTest extends RepositoryTestCase{
     @Test
     public void testContainsIdWhenNotAround() {
         // WHEN
-        final boolean result = jcrContainer.containsId("notAround");
+        final boolean result = jcrContainer.containsId("/notAround");
 
         // THEN
         assertFalse(result);
     }
 
     @Test
-    public void testContainsId() {
+    public void testContainsId() throws Exception{
         // GIVEN
         final String existingKey = "existing";
-        final JcrNodeAdapter adapter = mock(JcrNodeAdapter.class);
-        jcrContainer.getCachedItems().put(existingKey, adapter);
+        final Node node1 = createNode(rootNode, existingKey, "mgnl:content", "name", "name1");
+        node1.getSession().save();
 
         // WHEN
-        final boolean result = jcrContainer.containsId(existingKey);
+        final boolean result = jcrContainer.containsId("/" + existingKey);
 
         // THEN
         assertTrue(result);
