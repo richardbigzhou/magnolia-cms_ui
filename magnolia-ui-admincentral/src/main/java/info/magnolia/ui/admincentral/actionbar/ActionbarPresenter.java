@@ -69,15 +69,17 @@ public class ActionbarPresenter implements ActionbarView.Listener {
         this.eventBus = eventBus;
     }
 
-    @Override
-    public ActionbarView start() {
-        return actionbar;
-    }
-
-    public void initActionbar(final ActionbarDefinition definition) {
+    /**
+     * Initializes an actionbar with given definition and returns the view for parent to add it.
+     * 
+     * @param definition the definition
+     * @return the actionbar view
+     */
+    public ActionbarView start(final ActionbarDefinition definition) {
         this.definition = definition;
         actionbar = ActionbarBuilder.build(definition);
         actionbar.setListener(this);
+        return actionbar;
     }
 
     public void setPreview(final Component preview) {
@@ -94,12 +96,22 @@ public class ActionbarPresenter implements ActionbarView.Listener {
         }
     }
 
+    // JUST DELEGATING CONTEXT SENSITIVITY TO WIDGET
+
     public void enable(String actionName) {
         actionbar.enable(actionName);
     }
 
     public void disable(String actionName) {
         actionbar.disable(actionName);
+    }
+
+    public void enableGroup(String groupName) {
+        actionbar.enableGroup(groupName);
+    }
+
+    public void disableGroup(String groupName) {
+        actionbar.disableGroup(groupName);
     }
 
     public void showSection(String sectionName) {
@@ -109,6 +121,8 @@ public class ActionbarPresenter implements ActionbarView.Listener {
     public void hideSection(String sectionName) {
         actionbar.hideSection(sectionName);
     }
+
+    // WIDGET LISTENER
 
     @Override
     public void onActionbarItemClicked(String actionToken) {
@@ -141,20 +155,35 @@ public class ActionbarPresenter implements ActionbarView.Listener {
         return null;
     }
 
+    // DEFAULT ACTION
+
     /**
-     * Public utility method that should return the configured action definition based on an action
-     * name and its section name (to ensure uniqueness). Note that we don't use group name because
-     * widget doesn't allow duplicate action names in a section, even in different groups.
+     * Gets the default action definition, i.e. finds the first action bar item whose name matches
+     * the action bar definition's 'defaultAction' property, and returns its actionDefinition
+     * property.
      * 
-     * Since ActionDefinitions are currently configured under the action bar definition, this is the
-     * way of retrieving a configured action definition for use outside the action bar.
-     * 
-     * @param sectionName the section name
-     * @param actionName the action name
-     * @return the configured action definition
+     * @return the default action definition
      */
-    public ActionDefinition getActionDefinition(String sectionName, String actionName) {
-        return getActionDefinition(sectionName + ":" + actionName);
+    public ActionDefinition getDefaultActionDefinition() {
+        String defaultAction = definition.getDefaultAction();
+
+        // considering actionbar item name unique, returning first match
+        if (!definition.getSections().isEmpty()) {
+            for (ActionbarSectionDefinition sectionDef : definition.getSections()) {
+                if (!sectionDef.getGroups().isEmpty()) {
+                    for (ActionbarGroupDefinition groupDef : sectionDef.getGroups()) {
+                        if (!groupDef.getItems().isEmpty()) {
+                            for (ActionbarItemDefinition itemDef : groupDef.getItems()) {
+                                if (itemDef.getName().equals(defaultAction)) {
+                                    return itemDef.getActionDefinition();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return null;
     }
 
 }

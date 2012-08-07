@@ -82,13 +82,6 @@ public interface ActionbarView extends View {
     interface Listener {
 
         /**
-         * Returns the view for the parent presenter to lay it out somewhere.
-         * 
-         * @return the actionbar view
-         */
-        ActionbarView start();
-
-        /**
          * Event handler invoked on clicking an item in the action bar.
          * 
          * @param actionToken the action token
