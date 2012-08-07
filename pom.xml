@@ -182,11 +182,11 @@
 		<module>magnolia-ui-widget-actionbar</module>
 		<module>magnolia-ui-widget-editor</module>
 		<module>magnolia-ui-admincentral</module>
-		<module>magnolia-ui-webapp</module>
 		<module>magnolia-ui-app-sample</module>
 		<module>magnolia-ui-app-contacts</module>
 		<module>magnolia-ui-app-messages</module>
 		<module>magnolia-ui-app-pages</module>
+		<module>magnolia-ui-webapp</module>
 	</modules>
 
 	<distributionManagement>
