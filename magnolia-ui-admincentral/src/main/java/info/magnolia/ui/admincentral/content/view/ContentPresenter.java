@@ -121,8 +121,8 @@ public class ContentPresenter implements ContentView.Listener {
     }
 
     /**
-     * @return the id of the Vaadin item currently selected in one the currently active {@link ContentView}.
-     * It is equivalent to javax.jcr.Item#getPath().
+     * @return the id of the Vaadin item currently selected in one the currently active
+     * {@link ContentView}. It is equivalent to javax.jcr.Item#getPath().
      * @see JcrItemAdapter#getItemId()
      */
     public String getSelectedItemId() {

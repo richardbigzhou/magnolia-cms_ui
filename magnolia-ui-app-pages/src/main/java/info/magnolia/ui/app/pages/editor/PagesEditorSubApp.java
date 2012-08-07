@@ -38,6 +38,7 @@ import info.magnolia.ui.app.pages.action.PagesActionbarDefinitionProvider;
 import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.widget.actionbar.ActionbarView;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -103,12 +104,12 @@ public class PagesEditorSubApp implements SubApp, PagesEditorView.Listener {
         pageEditorPresenter.setParameters(parameters);
         view.setPageEditor(pageEditorPresenter.start());
 
-        actionbarPresenter.initActionbar(PagesActionbarDefinitionProvider.getPageEditorActionbarDefinition());
+        ActionbarView actionbar = actionbarPresenter.start(PagesActionbarDefinitionProvider.getPageEditorActionbarDefinition());
         actionbarPresenter.hideSection("Areas");
         actionbarPresenter.hideSection("Components");
         actionbarPresenter.showSection("Pages");
 
-        view.setActionbarView(actionbarPresenter.start());
+        view.setActionbarView(actionbar);
 
         return view;
     }

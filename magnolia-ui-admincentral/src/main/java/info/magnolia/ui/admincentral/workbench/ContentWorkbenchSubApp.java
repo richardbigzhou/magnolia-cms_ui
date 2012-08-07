@@ -33,16 +33,12 @@
  */
 package info.magnolia.ui.admincentral.workbench;
 
-import com.vaadin.terminal.Resource;
-import com.vaadin.terminal.StreamResource;
-import com.vaadin.ui.Embedded;
 import info.magnolia.cms.beans.runtime.FileProperties;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.app.content.ContentAppDescriptor;
 import info.magnolia.ui.admincentral.content.view.ContentPresenter;
-import info.magnolia.ui.admincentral.dialog.action.EditDialogActionDefinition;
 import info.magnolia.ui.admincentral.event.ActionbarClickEvent;
 import info.magnolia.ui.admincentral.event.ContentChangedEvent;
 import info.magnolia.ui.admincentral.event.DoubleClickEvent;
@@ -59,10 +55,10 @@ import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.thumbnail.AbstractThumbnailProvider;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.widget.actionbar.ActionbarView;
-import org.apache.commons.io.IOUtils;
-import org.apache.jackrabbit.JcrConstants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -71,9 +67,15 @@ import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.jackrabbit.JcrConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.vaadin.terminal.Resource;
+import com.vaadin.terminal.StreamResource;
+import com.vaadin.ui.Embedded;
 
 
 /**
@@ -86,11 +88,12 @@ import java.io.InputStream;
  * <li>a configurable action bar on the right hand side, showing the available operations for the
  * given workspace and the selected item.
  * </ul>
- *
+ * 
  * <p>
  * Its main configuration point is the {@link WorkbenchDefinition} through which one defines the JCR
  * workspace to connect to, the columns/properties to display, the available actions and so on.
  */
+@SuppressWarnings("serial")
 public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.Listener {
 
     private static final Logger log = LoggerFactory.getLogger(ContentWorkbenchSubApp.class);
@@ -113,7 +116,6 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
 
     protected final static String IMAGE_NODE_NAME = AbstractThumbnailProvider.ORIGINAL_IMAGE_NODE_NAME;
 
-
     @Inject
     public ContentWorkbenchSubApp(final AppContext context, final ContentWorkbenchView view, @Named("adminCentral") final EventBus adminCentralEventBus, @Named("app") final EventBus appEventBus, final Shell shell, final WorkbenchActionFactory actionFactory, final ContentPresenter contentPresenter, final ActionbarPresenter actionbarPresenter) {
         this.view = view;
@@ -127,8 +129,9 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
         workbenchDefinition = ((ContentAppDescriptor) context.getAppDescriptor()).getWorkbench();
         contentPresenter.initContentView(view);
         view.setListener(this);
-        actionbarPresenter.initActionbar(workbenchDefinition.getActionbar());
-        view.setActionbarView(actionbarPresenter.start());
+
+        ActionbarView actionbar = actionbarPresenter.start(workbenchDefinition.getActionbar());
+        view.setActionbarView(actionbar);
 
         bindHandlers();
     }
@@ -155,48 +158,22 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
 
         appEventBus.addHandler(ItemSelectedEvent.class, new ItemSelectedEvent.Handler() {
 
-            private final String[] previews = new String[]{"img/previews/about-200.png", "img/previews/demo-project-200.png"};
-
-            private final String[] previewAlts = new String[]{"About page", "Demo Project"};
-
-            private final String[] pageActions = new String[]{
-                    "addSubpage",
-                    "deletePage",
-                    "previewPage",
-                    "editPage",
-                    "editPageProperties",
-                    "movePage",
-                    "duplicatePage"};
-
-            private final String[] contactsActions = new String[]{
-                    "newContact",
-                    "editContact",
-                    "delete"};
-
-            private int previewIndex = 0;
-
             @Override
             public void onItemSelected(ItemSelectedEvent event) {
                 // refresh action bar (context sensitivity)
                 if (event.getPath() != null) {
-                    actionbarPresenter.enable("deletePage");
+                    actionbarPresenter.enable("delete");
                 } else {
-                    actionbarPresenter.disable("deletePage");
+                    actionbarPresenter.disable("delete");
                 }
 
-                // too lazy to add dead weight to ActionbarPresenter...
-                String[] actions = event.getWorkspace().equals("website") ? pageActions : contactsActions;
-                ActionbarView actionbar = actionbarPresenter.start();
-                if (previewIndex == 0) {
-                    actionbar.disableGroup(String.valueOf(previewIndex));
-                    actionbar.enable(actions[(int) (Math.random() * actions.length)]);
-                } else {
-                    actionbar.enableGroup(String.valueOf(previewIndex));
-                    actionbar.disable(actions[(int) (Math.random() * actions.length)]);
-                }
+                // if you want to enable/disable actions or groups
+                // actionbarPresenter.enable(...);
+                // actionbarPresenter.disable(...);
+                // actionbarPresenter.disableGroup(...);
+                // actionbarPresenter.enableGroup(...);
 
-                // refresh preview like this
-                // you can show images using vaadin Embedded widget, or use any other widget
+                // refresh preview
                 if (event.getPath() == null) {
                     actionbarPresenter.setPreview(null);
                 } else {
@@ -214,13 +191,15 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
                         final String nodeType = node.getProperty(FileProperties.CONTENT_TYPE).getString();
 
                         Resource imageResource = new StreamResource(
-                                new StreamResource.StreamSource() {
-                                    @Override
-                                    public InputStream getStream() {
-                                        return new ByteArrayInputStream(pngData);
+                            new StreamResource.StreamSource() {
 
-                                    }
-                                }, "", ContentWorkbenchSubApp.this.asView().asVaadinComponent().getApplication()) {
+                                @Override
+                                public InputStream getStream() {
+                                    return new ByteArrayInputStream(pngData);
+
+                                }
+                            }, "", ContentWorkbenchSubApp.this.asView().asVaadinComponent().getApplication()) {
+
                             @Override
                             public String getMIMEType() {
                                 return nodeType;
@@ -230,9 +209,9 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
                         Embedded preview = new Embedded(null, imageResource);
                         actionbarPresenter.setPreview(preview);
                     } catch (RepositoryException e) {
-                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                        log.error(e.getMessage(), e);
                     } catch (IOException e) {
-                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                        log.error(e.getMessage(), e);
                     }
 
                 }
@@ -243,10 +222,7 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
 
             @Override
             public void onDoubleClick(DoubleClickEvent event) {
-                EditDialogActionDefinition editDialogActionDefinition = new EditDialogActionDefinition();
-                //FIXME fgrilli: this must not be hardcoded see SCRUM-1430
-                editDialogActionDefinition.setDialogName("ui-pages-app:pages");
-                createAndExecuteAction(editDialogActionDefinition);
+                executeDefaultAction();
             }
         });
     }
@@ -270,6 +246,14 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
 
     public ContentWorkbenchView asView() {
         return view;
+    }
+
+    /**
+     * Executes the workbench's default action, as configured in the defaultAction property.
+     */
+    public void executeDefaultAction() {
+        ActionDefinition defaultActionDef = actionbarPresenter.getDefaultActionDefinition();
+        createAndExecuteAction(defaultActionDef);
     }
 
     private void createAndExecuteAction(final ActionDefinition actionDefinition) {
