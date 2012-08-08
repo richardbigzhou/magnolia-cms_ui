@@ -109,50 +109,7 @@ public abstract class AbstractThumbnailProvider implements ThumbnailProvider {
             final Session session = MgnlContext.getJCRSession(workspace);
             final Node imageNode = session.getNodeByIdentifier(nodeIdentifier);
             if (ThumbnailUtility.isThumbnailToBeGenerated(nodeIdentifier, workspace, getOriginalImageNodeName(), getThumbnailNodeName())) {
-
-                final Node originalImageNode = imageNode.getNode(getOriginalImageNodeName());
-                final InputStream originalInputStream = originalImageNode.getProperty(JcrConstants.JCR_DATA).getBinary().getStream();
-                ByteArrayOutputStream thumbnailOutputStream = null;
-                InputStream thumbnailInputStream = null;
-
-                BufferedImage thumbnail = null;
-                try {
-                    byte[] array = new byte[originalInputStream.available()];
-                    originalInputStream.read(array);
-                    originalInputStream.close();
-
-                    Image thumbnailImage = Toolkit.getDefaultToolkit().createImage(array);
-                    thumbnailImage = new ImageIcon(thumbnailImage).getImage();
-                    thumbnail = createThumbnail(thumbnailImage, getFormat(), width, height, getQuality());
-
-                    if (imageNode.hasNode(getThumbnailNodeName())) {
-                        imageNode.getNode(getThumbnailNodeName()).remove();
-                    }
-                    final Node thumbnailNode = imageNode.addNode(getThumbnailNodeName(), MgnlNodeType.NT_RESOURCE);
-                    thumbnailNode.setProperty(FileProperties.PROPERTY_FILENAME, originalImageNode.getProperty(FileProperties.PROPERTY_FILENAME).getString());
-                    thumbnailNode.setProperty(FileProperties.PROPERTY_EXTENSION, getFormat());
-                    thumbnailNode.setProperty(FileProperties.PROPERTY_MIMETYPE, originalImageNode.getProperty(JcrConstants.JCR_MIMETYPE).getString());
-                    thumbnailNode.setProperty(FileProperties.PROPERTY_HEIGHT, thumbnail.getHeight());
-                    thumbnailNode.setProperty(FileProperties.PROPERTY_WIDTH, thumbnail.getWidth());
-
-                    thumbnailOutputStream = new ByteArrayOutputStream();
-                    ImageIO.write(thumbnail, getFormat(), thumbnailOutputStream);
-                    final int size = thumbnailOutputStream.size();
-                    log.debug("thumbnail size is {} ", size);
-
-                    thumbnailInputStream = new ByteArrayInputStream(thumbnailOutputStream.toByteArray());
-                    thumbnailNode.setProperty(JcrConstants.JCR_DATA, thumbnailInputStream);
-                    thumbnailNode.setProperty(FileProperties.PROPERTY_SIZE, size);
-
-                    imageNode.getSession().save();
-
-                } catch (IOException e) {
-                    log.error("Error while creating thumbnail image.", e);
-                } finally {
-                    IOUtils.closeQuietly(thumbnailOutputStream);
-                    IOUtils.closeQuietly(thumbnailInputStream);
-                    IOUtils.closeQuietly(originalInputStream);
-                }
+                retrieveImageNodeAndCreateThumbnail(imageNode, width, height);
             }
             path = LinkUtil.createLink(ContentUtil.asContent(imageNode).getNodeData(getThumbnailNodeName()));
         } catch (RepositoryException e) {
@@ -210,6 +167,56 @@ public abstract class AbstractThumbnailProvider implements ThumbnailProvider {
             log.warn("thumbailNodeName cannot be null or empty. Will leave default value");
         } else {
             this.thumbnailNodeName = thumbnailNodeName;
+        }
+    }
+
+    private void retrieveImageNodeAndCreateThumbnail(final Node imageNode, int width, int height) throws RepositoryException {
+        log.debug("Generating thumbnail for node at [{}}... ", imageNode.getPath());
+        long start = System.currentTimeMillis();
+
+        final Node originalImageNode = imageNode.getNode(getOriginalImageNodeName());
+        final InputStream originalInputStream = originalImageNode.getProperty(JcrConstants.JCR_DATA).getBinary().getStream();
+        ByteArrayOutputStream thumbnailOutputStream = null;
+        InputStream thumbnailInputStream = null;
+
+        BufferedImage thumbnail = null;
+        try {
+            byte[] array = new byte[originalInputStream.available()];
+            originalInputStream.read(array);
+            originalInputStream.close();
+
+            Image thumbnailImage = Toolkit.getDefaultToolkit().createImage(array);
+            thumbnailImage = new ImageIcon(thumbnailImage).getImage();
+            thumbnail = createThumbnail(thumbnailImage, getFormat(), width, height, getQuality());
+
+            if (imageNode.hasNode(getThumbnailNodeName())) {
+                imageNode.getNode(getThumbnailNodeName()).remove();
+            }
+            final Node thumbnailNode = imageNode.addNode(getThumbnailNodeName(), MgnlNodeType.NT_RESOURCE);
+            thumbnailNode.setProperty(FileProperties.PROPERTY_FILENAME, originalImageNode.getProperty(FileProperties.PROPERTY_FILENAME).getString());
+            thumbnailNode.setProperty(FileProperties.PROPERTY_EXTENSION, getFormat());
+            thumbnailNode.setProperty(FileProperties.PROPERTY_MIMETYPE, originalImageNode.getProperty(JcrConstants.JCR_MIMETYPE).getString());
+            thumbnailNode.setProperty(FileProperties.PROPERTY_HEIGHT, thumbnail.getHeight());
+            thumbnailNode.setProperty(FileProperties.PROPERTY_WIDTH, thumbnail.getWidth());
+
+            thumbnailOutputStream = new ByteArrayOutputStream();
+            ImageIO.write(thumbnail, getFormat(), thumbnailOutputStream);
+            final int size = thumbnailOutputStream.size();
+            log.debug("thumbnail size is {} ", size);
+
+            thumbnailInputStream = new ByteArrayInputStream(thumbnailOutputStream.toByteArray());
+            thumbnailNode.setProperty(JcrConstants.JCR_DATA, thumbnailInputStream);
+            thumbnailNode.setProperty(FileProperties.PROPERTY_SIZE, size);
+
+            imageNode.getSession().save();
+
+            log.debug("thumbnail generated in {} ms", System.currentTimeMillis() - start);
+        } catch (IOException e) {
+            log.error("Error while creating thumbnail image.", e);
+        } finally {
+            IOUtils.closeQuietly(thumbnailOutputStream);
+            IOUtils.closeQuietly(thumbnailInputStream);
+            IOUtils.closeQuietly(originalInputStream);
         }
     }
 }
