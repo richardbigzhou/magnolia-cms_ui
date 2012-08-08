@@ -40,12 +40,12 @@ import info.magnolia.ui.framework.view.View;
  */
 public interface AssetsView extends View {
 
-    void setListener(final Listener listener);
-
     /**
      * Listener.
      */
     public interface Listener {
 
     }
+
+    void setListener(Listener listener);
 }

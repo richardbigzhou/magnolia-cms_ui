@@ -34,6 +34,7 @@
 package info.magnolia.ui.framework.location;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import info.magnolia.ui.framework.event.EventBus;
@@ -53,7 +54,7 @@ public class LocationController {
     private Location where = Location.NOWHERE;
 
     @Inject
-    public LocationController(final EventBus eventBus, Shell shell) {
+    public LocationController(@Named("adminCentral") final EventBus eventBus, Shell shell) {
         this.eventBus = eventBus;
         this.shell = shell;
     }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,45 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.thumbnail;
+package info.magnolia.ui.framework.event;
 
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import com.google.inject.name.Names;
+import com.google.inject.util.Providers;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
-import com.vaadin.terminal.ExternalResource;
-import com.vaadin.terminal.Resource;
-import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.Embedded;
+import info.magnolia.objectfactory.guice.AbstractGuiceComponentConfigurer;
 
 /**
- * A component capable of displaying an image and holding a reference to the jcr node where the image is stored.
- *
+ * Configures an {@link EventBus} bound to the name <code>adminCentral</code>.
  */
-public class Thumbnail extends Embedded {
-    public static final Resource IMAGE_NOT_FOUND = new ThemeResource("img/icons/icon-error-red.png");
-    private JcrNodeAdapter node;
+public class AdminCentralEventBusConfigurer extends AbstractGuiceComponentConfigurer {
 
-    public Thumbnail(final Node node, final String path) {
-        this.node = new JcrNodeAdapter(node);
-        setType(TYPE_IMAGE);
-        setSizeUndefined();
-        addStyleName("asset");
-        if(path != null) {
-            setSource(new ExternalResource(path));
-        } else {
-            setSource(IMAGE_NOT_FOUND);
-        }
-        try {
-            setDescription(node.getName());
-        } catch (RepositoryException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
-
-    public JcrNodeAdapter getNode() {
-        return node;
+    @Override
+    protected void configure() {
+        bind(EventBus.class).annotatedWith(Names.named("adminCentral")).toProvider(Providers.of(new SimpleEventBus()));
     }
 }

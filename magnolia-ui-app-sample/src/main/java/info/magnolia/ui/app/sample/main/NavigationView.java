@@ -40,8 +40,6 @@ import info.magnolia.ui.framework.view.View;
  */
 public interface NavigationView extends View {
 
-    void setListener(Listener listener);
-
     /**
      * Listener.
      */
@@ -49,4 +47,6 @@ public interface NavigationView extends View {
 
         void onItemSelected(String name);
     }
+
+    void setListener(Listener listener);
 }

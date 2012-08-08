@@ -50,7 +50,8 @@ import info.magnolia.ui.framework.app.launcherlayout.definition.ConfiguredAppLau
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.framework.app.registry.AppRegistryEvent;
 import info.magnolia.ui.framework.app.registry.AppRegistryEventType;
-import info.magnolia.ui.framework.event.SimpleSystemEventBus;
+import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.event.SimpleEventBus;
 
 /**
  * Test case for {@link AppLauncherLayoutManagerImpl}.
@@ -62,7 +63,7 @@ public class AppLayoutManagerImplTest {
     private AppDescriptor appDescriptor1;
     private AppDescriptor appDescriptor2;
     private AppDescriptor appDescriptor3;
-    private SimpleSystemEventBus systemEventBus;
+    private EventBus systemEventBus;
     private AppLauncherLayoutManagerImpl appLayoutManager;
 
     @Before
@@ -90,7 +91,7 @@ public class AppLayoutManagerImplTest {
         when(registry.isAppDescriptorRegistered(eq("appDescriptor2"))).thenReturn(true);
         when(registry.isAppDescriptorRegistered(eq("appDescriptor3"))).thenReturn(true);
 
-        systemEventBus = new SimpleSystemEventBus();
+        systemEventBus = new SimpleEventBus();
 
         appLayoutManager = new AppLauncherLayoutManagerImpl(registry, systemEventBus);
         appLayoutManager.setLayout(layoutDefinition);

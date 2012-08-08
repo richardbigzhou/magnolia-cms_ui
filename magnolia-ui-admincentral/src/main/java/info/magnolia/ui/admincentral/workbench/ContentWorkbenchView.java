@@ -43,10 +43,16 @@ import com.vaadin.ui.ComponentContainer;
 
 
 /**
- * Implementors of this interface are responsible for building a workbench and handling the UI
+ * Implementations of this interface are responsible for building a workbench and handling the UI
  * actions associated with it.
  */
 public interface ContentWorkbenchView extends ComponentContainer, View {
+
+    /**
+     * TODO dlipp - ActionBarPresenter should be a proper type as well.
+     */
+    public interface Listener {
+    }
 
     void setListener(final Listener listener);
 
@@ -72,11 +78,4 @@ public interface ContentWorkbenchView extends ComponentContainer, View {
      * Use this method to add an action bar to this sub app view.
      */
     void setActionbarView(final ActionbarView actionbar);
-
-    /**
-     * TODO dlipp - ActionBarPresenter should be a proper type as well.
-     */
-    public interface Listener {
-    }
-
 }

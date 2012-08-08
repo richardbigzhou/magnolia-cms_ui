@@ -56,6 +56,7 @@ import info.magnolia.ui.widget.magnoliashell.viewport.ShellViewport;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.slf4j.Logger;
@@ -74,19 +75,19 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
 
     private static final Logger log = LoggerFactory.getLogger(MagnoliaShell.class);
 
-    private final EventBus eventBus;
+    private final EventBus adminCentralEventBus;
 
     private final AppController appController;
 
     private final MessagesManager messagesManager;
     
     @Inject
-    public MagnoliaShell(EventBus eventBus, AppController appController, MessagesManager messagesManager) {
+    public MagnoliaShell(@Named("adminCentral") EventBus adminCentralEventBus, AppController appController, MessagesManager messagesManager) {
         super();
         this.messagesManager = messagesManager;
-        this.eventBus = eventBus;
+        this.adminCentralEventBus = adminCentralEventBus;
         this.appController = appController;
-        this.eventBus.addHandler(AppLifecycleEvent.class, new AppLifecycleEventHandler.Adapter() {
+        this.adminCentralEventBus.addHandler(AppLifecycleEvent.class, new AppLifecycleEventHandler.Adapter() {
 
             @Override
             public void onAppFocused(AppLifecycleEvent event) {
@@ -112,7 +113,7 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
             }
         });
         
-        this.eventBus.addHandler(MessageEvent.class, this);
+        this.adminCentralEventBus.addHandler(MessageEvent.class, this);
     }
 
     @Override

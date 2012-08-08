@@ -48,13 +48,13 @@ import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarSectionDef
  */
 public class PagesActionbarDefinitionProvider {
 
-    private static String ADD_ICON = "img/actionbar-icons/icon-action-add-tablet.png";
+    private static final String ADD_ICON = "img/actionbar-icons/icon-action-add-tablet.png";
 
-    private static String DELETE_ICON = "img/actionbar-icons/icon-action-delete-tablet.png";
+    private static final String DELETE_ICON = "img/actionbar-icons/icon-action-delete-tablet.png";
 
-    private static String PREVIEW_ICON = "img/actionbar-icons/icon-action-preview-tablet.png";
+    private static final String PREVIEW_ICON = "img/actionbar-icons/icon-action-preview-tablet.png";
 
-    private static String EDIT_ICON = "img/actionbar-icons/icon-action-edit-tablet.png";
+    private static final String EDIT_ICON = "img/actionbar-icons/icon-action-edit-tablet.png";
 
     /**
      * Builds and returns an actionbar definition for the page editor.

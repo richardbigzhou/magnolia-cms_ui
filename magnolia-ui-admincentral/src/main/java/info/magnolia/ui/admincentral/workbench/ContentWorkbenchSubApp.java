@@ -61,6 +61,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.jcr.LoginException;
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
@@ -95,13 +96,17 @@ import com.vaadin.ui.Embedded;
 @SuppressWarnings("serial")
 public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.Listener {
 
+    protected final static String IMAGE_NODE_NAME = AbstractThumbnailProvider.ORIGINAL_IMAGE_NODE_NAME;
+
     private static final Logger log = LoggerFactory.getLogger(ContentWorkbenchSubApp.class);
 
     private final WorkbenchDefinition workbenchDefinition;
 
     private final ContentWorkbenchView view;
 
-    private final EventBus eventBus;
+    private final EventBus adminCentralEventBus;
+
+    private final EventBus appEventBus;
 
     private final Shell shell;
 
@@ -111,12 +116,11 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
 
     private final ActionbarPresenter actionbarPresenter;
 
-    protected final static String IMAGE_NODE_NAME = AbstractThumbnailProvider.ORIGINAL_IMAGE_NODE_NAME;
-
     @Inject
-    public ContentWorkbenchSubApp(final AppContext context, final ContentWorkbenchView view, final EventBus eventbus, final Shell shell, final WorkbenchActionFactory actionFactory, final ContentPresenter contentPresenter, final ActionbarPresenter actionbarPresenter) {
+    public ContentWorkbenchSubApp(final AppContext context, final ContentWorkbenchView view, @Named("adminCentral") final EventBus adminCentralEventBus, @Named("app") final EventBus appEventBus, final Shell shell, final WorkbenchActionFactory actionFactory, final ContentPresenter contentPresenter, final ActionbarPresenter actionbarPresenter) {
         this.view = view;
-        this.eventBus = eventbus;
+        this.adminCentralEventBus = adminCentralEventBus;
+        this.appEventBus = appEventBus;
         this.shell = shell;
         this.actionFactory = actionFactory;
         this.contentPresenter = contentPresenter;
@@ -133,7 +137,7 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
     }
 
     private void bindHandlers() {
-        eventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
+        adminCentralEventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
 
             @Override
             public void onContentChanged(ContentChangedEvent event) {
@@ -142,7 +146,7 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
             }
         });
 
-        eventBus.addHandler(ActionbarClickEvent.class, new ActionbarClickEvent.Handler() {
+        appEventBus.addHandler(ActionbarClickEvent.class, new ActionbarClickEvent.Handler() {
 
             @Override
             public void onActionbarItemClicked(ActionbarClickEvent event) {
@@ -152,7 +156,7 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
             }
         });
 
-        eventBus.addHandler(ItemSelectedEvent.class, new ItemSelectedEvent.Handler() {
+        appEventBus.addHandler(ItemSelectedEvent.class, new ItemSelectedEvent.Handler() {
 
             @Override
             public void onItemSelected(ItemSelectedEvent event) {
@@ -214,7 +218,7 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
             }
         });
 
-        eventBus.addHandler(DoubleClickEvent.class, new DoubleClickEvent.Handler() {
+        appEventBus.addHandler(DoubleClickEvent.class, new DoubleClickEvent.Handler() {
 
             @Override
             public void onDoubleClick(DoubleClickEvent event) {

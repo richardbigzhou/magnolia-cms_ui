@@ -46,13 +46,13 @@ import com.vaadin.ui.VerticalLayout;
  * Implementation of {@link PagePreviewView}.
  */
 public class PagePreviewViewImpl implements PagePreviewView {
-    
+
     private Panel wrapper = new Panel();
-    
+
     private Embedded iframe;
-    
+
     protected Listener listener;
-    
+
     public PagePreviewViewImpl() {
         this.iframe = new Embedded();
         iframe.setType(Embedded.TYPE_BROWSER);
@@ -68,9 +68,9 @@ public class PagePreviewViewImpl implements PagePreviewView {
         closePreviewButton.setWidth("100%");
         wrapper.addComponent(closePreviewButton);
         wrapper.addComponent(iframe);
-        ((VerticalLayout)wrapper.getContent()).setExpandRatio(iframe, 1f);
+        ((VerticalLayout) wrapper.getContent()).setExpandRatio(iframe, 1f);
     }
-    
+
     @Override
     public void setListener(Listener listener) {
         this.listener = listener;

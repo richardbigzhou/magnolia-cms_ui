@@ -34,6 +34,7 @@
 package info.magnolia.ui.app.pages.main;
 
 import com.vaadin.ui.ComponentContainer;
+
 import info.magnolia.ui.framework.view.View;
 
 /**
@@ -41,14 +42,13 @@ import info.magnolia.ui.framework.view.View;
  */
 public interface PagesMainView extends View {
 
-    void setWorkBench(ComponentContainer workbench);
-
     /**
      * Listener.
-     *
      */
     public interface Listener {
     }
 
     void setListener(Listener listener);
+
+    void setWorkBench(ComponentContainer workbench);
 }
