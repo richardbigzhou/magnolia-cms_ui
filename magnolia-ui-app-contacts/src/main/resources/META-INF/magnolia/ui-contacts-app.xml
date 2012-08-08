@@ -26,8 +26,8 @@
       <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbenchViewImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchSubApp</type>
-      <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbenchSubApp</implementation>
+      <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter</type>
+      <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.admincentral.content.view.ContentPresenter</type>

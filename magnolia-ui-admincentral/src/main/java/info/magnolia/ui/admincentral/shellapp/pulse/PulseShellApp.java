@@ -78,8 +78,7 @@ public class PulseShellApp implements ShellApp, PulseView.Presenter {
     }
 
     private List<String> parsePathParamsFromToken(String token) {
-        final List<String> result = new ArrayList<String>(Arrays.asList(token.split("/")));
-        return result;
+        return new ArrayList<String>(Arrays.asList(token.split("/")));
     }
 
     @Override

@@ -40,7 +40,15 @@ import javax.inject.Inject;
  */
 public class NavigationPresenter implements NavigationView.Listener {
 
-    private SampleMainSubApp mainSubApp;
+    /**
+     * Listener for NavigationPresenter.
+     */
+    public interface Listener {
+
+        void onItemSelected(String name);
+    }
+
+    private Listener listener;
     private NavigationView view;
 
     @Inject
@@ -48,8 +56,8 @@ public class NavigationPresenter implements NavigationView.Listener {
         this.view = view;
     }
 
-    public void setMainSubApp(SampleMainSubApp mainSubApp) {
-        this.mainSubApp = mainSubApp;
+    public void setListener(Listener listener) {
+        this.listener = listener;
     }
 
     public NavigationView start() {
@@ -59,6 +67,6 @@ public class NavigationPresenter implements NavigationView.Listener {
 
     @Override
     public void onItemSelected(String name) {
-        mainSubApp.onItemSelected(name);
+        listener.onItemSelected(name);
     }
 }

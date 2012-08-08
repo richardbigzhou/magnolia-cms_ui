@@ -40,5 +40,6 @@ import info.magnolia.ui.framework.view.View;
  * View for the Contacts app.
  */
 public interface ContactsView extends View {
-    
+
+    void setWorkbenchView(View workbenchView);
 }

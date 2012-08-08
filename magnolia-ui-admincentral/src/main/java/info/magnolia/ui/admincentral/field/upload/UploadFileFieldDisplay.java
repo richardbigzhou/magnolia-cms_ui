@@ -31,46 +31,44 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.sample.main;
+package info.magnolia.ui.admincentral.field.upload;
 
-import javax.inject.Inject;
+import com.vaadin.ui.AbstractComponentContainer;
 
-import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalSplitPanel;
-
-import info.magnolia.ui.framework.view.View;
 
 /**
- * View implementation of the main tab in sample app.
+ *.
  */
-public class SampleMainViewImpl implements SampleMainView {
+public interface UploadFileFieldDisplay {
 
-    private Listener listener;
-    private HorizontalSplitPanel layout;
+    /**
+     * Return the root Layout used to display the Upload Field.
+     */
+    public AbstractComponentContainer getRootLayout();
 
-    @Inject
-    public SampleMainViewImpl() {
-        layout = new HorizontalSplitPanel();
-        layout.setSplitPosition(50);
-    }
+    public void setRootLayout(AbstractComponentContainer root);
 
-    @Override
-    public void setListener(Listener listener) {
-        this.listener = listener;
-    }
+    /**
+     * Build the Default Layout.
+     */
+    public void buildDefaultUploadLayout();
 
-    @Override
-    public Component asVaadinComponent() {
-        return layout;
-    }
+    /**
+     * Refresh Layout during Upload.
+     * Used to update the progress Bar / Ration ...
+     */
+    public void refreshOnProgressUploadLayout(long readBytes, long contentLength);
 
-    @Override
-    public void setLeftView(View left) {
-        layout.setFirstComponent(left.asVaadinComponent());
-    }
+    /**
+     * Build the Layout displayed when a download has finish.
+     * Set Preview Image/Icon, Display File Name...
+     */
+    public void buildFinishUploadLayout();
 
-    @Override
-    public void setRightView(View right) {
-        layout.setSecondComponent(right.asVaadinComponent());
-    }
+    /**
+     * Build the Layout displayed during Download.
+     * Set Progress Bar...
+     */
+    public void buildStartUploadLayout();
+
 }
