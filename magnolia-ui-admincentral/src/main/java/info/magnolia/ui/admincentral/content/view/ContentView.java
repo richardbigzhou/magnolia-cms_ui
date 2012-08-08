@@ -35,7 +35,7 @@ package info.magnolia.ui.admincentral.content.view;
 
 import com.vaadin.data.Item;
 
-import info.magnolia.ui.admincentral.container.JcrContainer;
+import info.magnolia.ui.admincentral.container.AbstractJcrContainer;
 import info.magnolia.ui.framework.view.View;
 
 /**
@@ -85,7 +85,7 @@ public interface ContentView extends View {
 
     void refreshItem(final Item item);
 
-    JcrContainer getContainer();
+    AbstractJcrContainer getContainer();
 
     /**
      * Listener for the ContentView.

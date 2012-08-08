@@ -36,7 +36,7 @@ package info.magnolia.ui.admincentral.thumbnail.view;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.predicate.AbstractPredicate;
 import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.ui.admincentral.container.JcrContainer;
+import info.magnolia.ui.admincentral.container.AbstractJcrContainer;
 import info.magnolia.ui.model.thumbnail.ThumbnailProvider;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -161,7 +161,7 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
     }
 
     @Override
-    public JcrContainer getContainer() {
+    public AbstractJcrContainer getContainer() {
         throw new UnsupportedOperationException();
     }
 

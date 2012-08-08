@@ -64,7 +64,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Model class for tree. Serves as a source for operations by JcrContainer and executes them.
+ * Model class for tree. Serves as a source for operations by AbstractJcrContainer and executes them.
  *
  */
 public class TreeModel implements JcrContainerSource {

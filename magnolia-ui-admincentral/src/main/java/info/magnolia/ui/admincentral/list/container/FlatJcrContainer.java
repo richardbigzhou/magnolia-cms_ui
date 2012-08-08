@@ -34,7 +34,7 @@
 package info.magnolia.ui.admincentral.list.container;
 
 
-import info.magnolia.ui.admincentral.container.JcrContainer;
+import info.magnolia.ui.admincentral.container.AbstractJcrContainer;
 import info.magnolia.ui.admincentral.container.JcrContainerSource;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 
@@ -46,9 +46,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A flat implementation of {@link JcrContainer} where relationships are not taken into account.
+ * A flat implementation of {@link info.magnolia.ui.admincentral.container.AbstractJcrContainer} where relationships are not taken into account.
  */
-public class FlatJcrContainer extends JcrContainer {
+public class FlatJcrContainer extends AbstractJcrContainer {
 
     private static final Logger log = LoggerFactory.getLogger(FlatJcrContainer.class);
     /**

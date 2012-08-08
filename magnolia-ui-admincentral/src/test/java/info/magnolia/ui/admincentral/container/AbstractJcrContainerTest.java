@@ -71,9 +71,9 @@ import org.junit.Test;
 import com.vaadin.data.Property;
 
 /**
- * Main test class for {JcrContainer}.
+ * Main test class for {AbstractJcrContainer}.
  */
-public class JcrContainerTest extends RepositoryTestCase{
+public class AbstractJcrContainerTest extends RepositoryTestCase{
 
     private JcrContainerTestImpl jcrContainer;
     private WorkbenchDefinition workbenchDefinition;
@@ -385,10 +385,10 @@ public class JcrContainerTest extends RepositoryTestCase{
     }
 
     /**
-     * Dummy Implementation of the  {JcrContainer}.
+     * Dummy Implementation of the  {AbstractJcrContainer}.
      *
      */
-    public class JcrContainerTestImpl extends JcrContainer {
+    public class JcrContainerTestImpl extends AbstractJcrContainer {
 
         public JcrContainerTestImpl(JcrContainerSource jcrContainerSource, WorkbenchDefinition workbenchDefinition) {
             super(jcrContainerSource, workbenchDefinition);

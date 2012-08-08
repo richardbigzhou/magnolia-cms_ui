@@ -72,9 +72,9 @@ import com.vaadin.data.Property;
  * lazy loading items from a JCR repository and a cache for items and item ids. Inspired by
  * http://vaadin.com/directory#addon/vaadin-sqlcontainer.
  */
-public abstract class JcrContainer extends AbstractContainer implements Container.Sortable, Container.Indexed, Container.ItemSetChangeNotifier, Container.PropertySetChangeNotifier {
+public abstract class AbstractJcrContainer extends AbstractContainer implements Container.Sortable, Container.Indexed, Container.ItemSetChangeNotifier, Container.PropertySetChangeNotifier {
 
-    private static final Logger log = LoggerFactory.getLogger(JcrContainer.class);
+    private static final Logger log = LoggerFactory.getLogger(AbstractJcrContainer.class);
 
     public static final String ITEM_ICON_PROPERTY_ID = "mgnl_item_icon";
 
@@ -86,12 +86,12 @@ public abstract class JcrContainer extends AbstractContainer implements Containe
 
     private int size = Integer.MIN_VALUE;
 
-    /** Page length = number of items contained in one page. Defaults to 100. */
+    /** Page length = number of items contained in one page. */
     private int pageLength = DEFAULT_PAGE_LENGTH;
 
     public static final int DEFAULT_PAGE_LENGTH = 30;
 
-    /** Number of items to cache = cacheRatio x pageLength. Default cache ratio value is 2. */
+    /** Number of items to cache = cacheRatio x pageLength.  */
     private int cacheRatio = DEFAULT_CACHE_RATIO;
 
     public static final int DEFAULT_CACHE_RATIO = 2;
@@ -101,8 +101,6 @@ public abstract class JcrContainer extends AbstractContainer implements Containe
 
     private final Map<String, String> sortableProperties = new HashMap<String, String>();
 
-    /** Filters (WHERE) and sorters (ORDER BY). */
-    // private final List<Filter> filters = new ArrayList<Filter>();
     private final List<OrderBy> sorters = new ArrayList<OrderBy>();
 
     private final String workspace;
@@ -124,7 +122,7 @@ public abstract class JcrContainer extends AbstractContainer implements Containe
 
     private static final String JCR_NAME_FUNCTION = "name(" + CONTENT_SELECTOR_NAME + ")";
 
-    public JcrContainer(JcrContainerSource jcrContainerSource, WorkbenchDefinition workbenchDefinition) {
+    public AbstractJcrContainer(JcrContainerSource jcrContainerSource, WorkbenchDefinition workbenchDefinition) {
         this.jcrContainerSource = jcrContainerSource;
         workspace = workbenchDefinition.getWorkspace();
 
@@ -150,9 +148,7 @@ public abstract class JcrContainer extends AbstractContainer implements Containe
     /**
      * Updates the container with the items pointed to by the {@link RowIterator} passed as
      * argument.
-     * @param iterator
      * @return the number of rows updated
-     * @throws RepositoryException
      */
     public abstract long update(RowIterator iterator) throws RepositoryException;
 
@@ -423,27 +419,6 @@ public abstract class JcrContainer extends AbstractContainer implements Containe
         return true;
     }
 
-    /***********************************************/
-    /** Used by JcrContainerProperty **/
-    /***********************************************/
-    // FIXME Check now who/where to do this
-    // public Object getColumnValue(String propertyId, Object itemId) {
-    // try {
-    // final javax.jcr.Item jcrItem = getJcrItem(((String) itemId));
-    // if (ITEM_ICON_PROPERTY_ID.equals(propertyId)) {
-    // return new ExternalResource(StringUtils.removeEnd(MgnlContext.getContextPath(), "/") + "/" +
-    // StringUtils.removeStart(jcrContainerSource.getItemIcon(jcrItem), "/"));
-    // }
-    // return jcrContainerSource.getColumnComponent(propertyId, jcrItem);
-    // // return jcrContainerSource.getColumnComponent(propertyId, getJcrItem(((ContainerItemId)
-    // itemId)));
-    // }
-    // catch (RepositoryException e) {
-    // throw new RuntimeRepositoryException(e);
-    // }
-    // }
-
-    // Used by JcrBrowser
     protected JcrContainerSource getJcrContainerSource() {
         return jcrContainerSource;
     }
@@ -585,25 +560,6 @@ public abstract class JcrContainer extends AbstractContainer implements Containe
         itemIndexes.clear();
         updateSize();
     }
-
-    // protected int getRowCount() {
-    // //FIXME cache the size cause at present the query to count rows is extremely slow () with
-    // "large" (20000+ nodes) data sets and it's called frequently by Vaadin.
-    // //On the other hand caching this value prevents flat container changes (add/remove nodes) to
-    // be reflected immediately. See http://jira.magnolia-cms.com/browse/SCRUM-151
-    // if(size >= 0){
-    // return size;
-    // }
-    //
-    // QueryResult result = executeQuery(SELECT_CONTENT, Query.JCR_SQL2, 0, 0);
-    // try {
-    // return Long.valueOf(result.getRows().getSize()).intValue();
-    // }
-    // catch (RepositoryException e) {
-    // throw new RuntimeRepositoryException(e);
-    // }
-    //
-    // }
 
     protected void setSize(int size) {
         this.size = size;
