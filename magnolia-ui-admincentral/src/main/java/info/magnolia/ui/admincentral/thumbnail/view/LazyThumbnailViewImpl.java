@@ -127,10 +127,15 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
             //instead of iterating everything and then discard  what we don't need
             Node parent = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace()).getNode(workbenchDefinition.getPath());
             Iterable<Node> assets = NodeUtil.collectAllChildren(parent, filterByItemType);
+            final String workspace = workbenchDefinition.getWorkspace();
             final List<String> uuids = Lists.transform(NodeUtil.asList(assets), new Function<Node, String>() {
                 @Override
                 public String apply(Node node) {
                     try {
+                        final String uuid = node.getIdentifier();
+                        //final String imageNodeName = ThumbnailProvider.getOriginalImageNodeName();
+                        //final String thumbnailNodeName = ThumbnailProvider.getThumbnaillNodeName();
+                        //ThumbnailUtility.isThumbnailToBeGenerated(uuid, workspace, imageNodeName, thumbnailNodeName);
                         return node.getIdentifier();
                     } catch (RepositoryException e) {
                         return null;

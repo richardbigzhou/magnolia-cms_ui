@@ -96,15 +96,15 @@ button.btn-dialog-help {
     border-bottom: 1px solid #C3C3C3;
 }
 
-.dialog-panel .nav > li.active > span {
+.dialog-panel .nav > li.active {
     background-color: #E6E6E6;
 }
 
-.dialog-panel .nav > li > span {
+.dialog-panel .nav > li {
     border-right: 1px solid #C3C3C3;
 }
 
-.dialog-panel .nav > li:not(.active) > span:hover {
+.dialog-panel .nav > li:not(.active):hover {
     background-color: #DDD;
 }
 
@@ -115,9 +115,9 @@ button.btn-dialog-help {
 }
 
 .dialog-panel input[type="text"], .dialog-panel textarea {
+	display: inline-block;
     border: 1px solid #CCCCCC;
     color: #999999;
-    display: inline-block;
     height: 26px;
     padding-left: 10px;
     background: none #FFF;

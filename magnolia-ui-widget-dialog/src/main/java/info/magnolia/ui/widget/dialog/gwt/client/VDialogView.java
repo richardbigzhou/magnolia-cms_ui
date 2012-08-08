@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.widget.dialog.gwt.client;
 
-import info.magnolia.ui.widget.tabsheet.gwt.client.VShellTabSheet;
+import info.magnolia.ui.vaadin.integration.widget.client.tabsheet.VShellTabSheet;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;

@@ -44,8 +44,8 @@ import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
-import info.magnolia.ui.widget.dialog.Dialog;
 import info.magnolia.ui.widget.dialog.DialogView;
+import info.magnolia.ui.widget.dialog.TabDialog;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -85,7 +85,7 @@ public class DialogPresenter implements DialogView.Presenter {
     public void editItem(final Item item) {
         this.item = item;
         dialogBuilder.build(dialogFieldFactory, dialogDefinition, item, view);
-        shell.openDialog((Dialog) view.asVaadinComponent());
+        shell.openDialog((TabDialog) view.asVaadinComponent());
     }
 
     @Override

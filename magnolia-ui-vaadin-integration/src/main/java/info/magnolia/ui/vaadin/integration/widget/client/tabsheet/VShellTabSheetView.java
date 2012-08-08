@@ -31,36 +31,57 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.tabsheet.gwt.client.event;
+package info.magnolia.ui.vaadin.integration.widget.client.tabsheet;
 
-import info.magnolia.ui.widget.tabsheet.gwt.client.VMagnoliaShellTab;
+import java.util.List;
 
-import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.IsWidget;
 
 /**
- * Event fired when the active tab in the tabsheet is changed.
+ * VShellTabView.
  */
-public class ActiveTabChangedEvent extends GwtEvent<ActiveTabChangedHandler>{
+public interface VShellTabSheetView extends HasWidgets, IsWidget {
 
-    public final static Type<ActiveTabChangedHandler> TYPE = new Type<ActiveTabChangedHandler>();
-
-    private final VMagnoliaShellTab tab;
-
-    public ActiveTabChangedEvent(final VMagnoliaShellTab tab) {
-        this.tab = tab;
+    /**
+     * @return
+     */
+    List<VShellTab> getTabs();
+    
+    void addTab(VShellTab tab);
+    
+    /**
+     * Presenter.
+     */
+    public interface Presenter {
+        void updateLayout();
     }
 
-    public VMagnoliaShellTab getTab() {
-        return tab;
-    }
+    /**
+     * @return
+     */
+    VShellTabNavigator getTabContainer();
 
-    @Override
-    protected void dispatch(ActiveTabChangedHandler handler) {
-        handler.onActiveTabChanged(this);
-    }
+    /**
+     * @param tabId
+     * @return
+     */
+    VShellTab getTabById(String tabId);
 
-    @Override
-    public GwtEvent.Type<ActiveTabChangedHandler> getAssociatedType() {
-        return TYPE;
-    }
+    /**
+     * @param tab
+     */
+    void setActiveTab(VShellTab tab);
+
+    /**
+     * @param tabToOrphan
+     */
+    void removeTab(VShellTab tabToOrphan);
+
+    /**
+     * @param visible
+     */
+    void showAllTabContents(boolean visible);
+
+
 }

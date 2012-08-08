@@ -59,7 +59,7 @@ import com.vaadin.terminal.gwt.client.UIDL;
 /**
  * A bar that contains the tab labels and controls the switching between tabs.
  */
-public class VShellTabNavigator extends ComplexPanel {
+public class VMagnoliaTabNavigator extends ComplexPanel {
 
     private static final String SINGLE_TAB_CLASSNAME = "single-tab";
 
@@ -67,13 +67,13 @@ public class VShellTabNavigator extends ComplexPanel {
 
     private final List<VShellTabLabel> tabLabels = new LinkedList<VShellTabLabel>();
 
-    private final Map<VShellTab, VShellTabLabel> labelMap = new LinkedHashMap<VShellTab, VShellTabLabel>();
+    private final Map<VMagnoliaShellTab, VShellTabLabel> labelMap = new LinkedHashMap<VMagnoliaShellTab, VShellTabLabel>();
 
     private VShellShowAllTabLabel showAllTab;
 
     private EventBus eventBus;
 
-    public VShellTabNavigator(EventBus eventBus) {
+    public VMagnoliaTabNavigator(EventBus eventBus) {
         this.eventBus = eventBus;
         setElement(tabList);
         setStyleName("nav");
@@ -92,7 +92,7 @@ public class VShellTabNavigator extends ComplexPanel {
 
             @Override
             public void onActiveTabChanged(final ActiveTabChangedEvent event) {
-                final VShellTab tab = event.getTab();
+                final VMagnoliaShellTab tab = event.getTab();
                 final VShellTabLabel label = labelMap.get(tab);
                 if (label != null) {
                     for (final VShellTabLabel tabLabel : tabLabels) {
@@ -139,12 +139,7 @@ public class VShellTabNavigator extends ComplexPanel {
         return CollectionUtil.getNext(tabLabels, label);
     }
 
-    @Override
-    public VShellTabSheet getParent() {
-        return (VShellTabSheet) super.getParent();
-    }
-
-    public void updateTab(final VShellTab component, final UIDL uidl) {
+    public void updateTab(final VMagnoliaShellTab component, final UIDL uidl) {
         VShellTabLabel label = labelMap.get(component);
         if (label == null) {
             label = new VShellTabLabel();
@@ -189,19 +184,28 @@ public class VShellTabNavigator extends ComplexPanel {
      */
     public class VShellTabLabel extends SimplePanel {
 
+        private final Element indicatorsWrapper = DOM.createDiv();
+                
         private final Element notificationBox = DOM.createDiv();
 
         private final Element closeElement = DOM.createDiv();
+        
+        private final Element errorIndicator = DOM.createDiv();
 
-        private final Element text = DOM.createSpan();
-
-        private VShellTab tab;
+        private VMagnoliaShellTab tab;
 
         public VShellTabLabel() {
             super(DOM.createElement("li"));
+            getElement().appendChild(indicatorsWrapper);
+            
             closeElement.setClassName("v-shell-tab-close");
             notificationBox.setClassName("v-shell-tab-notification");
-            getElement().appendChild(text);
+            errorIndicator.setClassName("v-shell-tab-error");
+            
+            indicatorsWrapper.appendChild(notificationBox);
+            indicatorsWrapper.appendChild(errorIndicator);
+            indicatorsWrapper.appendChild(closeElement);
+            
             DOM.sinkEvents(getElement(), Event.MOUSEEVENTS);
         }
 
@@ -213,33 +217,30 @@ public class VShellTabNavigator extends ComplexPanel {
 
         private void bindHandlers() {
             addDomHandler(new ClickHandler() {
-
                 @Override
                 public void onClick(ClickEvent event) {
                     final Element target = (Element) event.getNativeEvent().getEventTarget().cast();
-
-                    eventBus.fireEvent(isClosing(target) ? new TabCloseEvent(getTab()) : new ActiveTabChangedEvent(getTab()));
-
+                    if (closeElement.isOrHasChild(target) ) {
+                        eventBus.fireEvent(new TabCloseEvent(tab));
+                    } else {
+                        eventBus.fireEvent(new ActiveTabChangedEvent(tab));    
+                    }
                 }
             }, ClickEvent.getType());
         }
 
-        public boolean isClosing(Element target) {
-            return closeElement.isOrHasChild(target);
-        }
-
-        public void setTab(final VShellTab tab) {
+        public void setTab(final VMagnoliaShellTab tab) {
             this.tab = tab;
         }
 
-        public VShellTab getTab() {
+        public VMagnoliaShellTab getTab() {
             return tab;
         }
 
         public void updateCaption(final UIDL uidl) {
             if (uidl.hasAttribute("caption")) {
                 final String caption = uidl.getStringAttribute("caption");
-                text.setInnerHTML(caption);
+                getElement().setInnerText(caption);
             }
         }
 
@@ -249,7 +250,7 @@ public class VShellTabNavigator extends ComplexPanel {
                     getElement().removeChild(closeElement);
                 }
             } else {
-                getElement().insertBefore(closeElement, text);
+                getElement().appendChild(closeElement);
             }
         }
 
@@ -265,6 +266,10 @@ public class VShellTabNavigator extends ComplexPanel {
             if (getElement().isOrHasChild(notificationBox)) {
                 getElement().removeChild(notificationBox);
             }
+        }
+
+        public void setHasError(boolean hasError) {
+            
         }
     }
 

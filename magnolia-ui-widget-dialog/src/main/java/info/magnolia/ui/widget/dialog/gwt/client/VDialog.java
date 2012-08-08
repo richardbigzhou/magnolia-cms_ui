@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.widget.dialog.gwt.client;
 
+import info.magnolia.ui.vaadin.integration.widget.client.tabsheet.VShellTabSheet;
 import info.magnolia.ui.widget.dialog.gwt.client.dialoglayout.HelpAccessibilityEvent;
 import info.magnolia.ui.widget.dialog.gwt.client.dialoglayout.VHelpAccessibilityNotifier;
-import info.magnolia.ui.widget.tabsheet.gwt.client.VShellTabSheet;
 
 import java.util.Set;
 

@@ -31,36 +31,35 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.tabsheet.gwt.client.event;
+package info.magnolia.ui.widget.dialog.gwt.client;
 
-import info.magnolia.ui.widget.tabsheet.gwt.client.VMagnoliaShellTab;
+import info.magnolia.ui.vaadin.integration.widget.client.tabsheet.VShellTabSheetView;
 
-import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Event fired when the active tab in the tabsheet is changed.
+ * VTabDialogView.
  */
-public class ActiveTabChangedEvent extends GwtEvent<ActiveTabChangedHandler>{
+public interface VTabDialogView extends VShellTabSheetView {
 
-    public final static Type<ActiveTabChangedHandler> TYPE = new Type<ActiveTabChangedHandler>();
+    /**
+     * Presenter. Meant for Vaadin part of MagnoliaShell.
+     */
+    public interface Presenter extends VShellTabSheetView.Presenter {
 
-    private final VMagnoliaShellTab tab;
+        void fireAction(String action);
 
-    public ActiveTabChangedEvent(final VMagnoliaShellTab tab) {
-        this.tab = tab;
+        void closeDialog();
+        
+        void notifyOfHelpAccessibilityChange(boolean isAccessible);
     }
 
-    public VMagnoliaShellTab getTab() {
-        return tab;
-    }
+    void setPresenter(Presenter presenter);
 
-    @Override
-    protected void dispatch(ActiveTabChangedHandler handler) {
-        handler.onActiveTabChanged(this);
-    }
+    boolean hasChildComponent(Widget component);
 
-    @Override
-    public GwtEvent.Type<ActiveTabChangedHandler> getAssociatedType() {
-        return TYPE;
-    }
+    void addAction(String label, String action);
+
+    void setDescription(String description);
+    
 }

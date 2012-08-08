@@ -31,36 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.tabsheet.gwt.client.event;
-
-import info.magnolia.ui.widget.tabsheet.gwt.client.VMagnoliaShellTab;
+package info.magnolia.ui.vaadin.integration.widget.client.tabsheet.event;
 
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * Event fired when the active tab in the tabsheet is changed.
+ * ShowAllTabEvent.
  */
-public class ActiveTabChangedEvent extends GwtEvent<ActiveTabChangedHandler>{
+public class ShowAllTabsEvent extends GwtEvent<ShowAllTabsHandler> {
 
-    public final static Type<ActiveTabChangedHandler> TYPE = new Type<ActiveTabChangedHandler>();
-
-    private final VMagnoliaShellTab tab;
-
-    public ActiveTabChangedEvent(final VMagnoliaShellTab tab) {
-        this.tab = tab;
-    }
-
-    public VMagnoliaShellTab getTab() {
-        return tab;
-    }
+    public static Type<ShowAllTabsHandler> TYPE = new Type<ShowAllTabsHandler>();
 
     @Override
-    protected void dispatch(ActiveTabChangedHandler handler) {
-        handler.onActiveTabChanged(this);
-    }
-
-    @Override
-    public GwtEvent.Type<ActiveTabChangedHandler> getAssociatedType() {
+    public GwtEvent.Type<ShowAllTabsHandler> getAssociatedType() {
         return TYPE;
     }
+
+
+    @Override
+    protected void dispatch(ShowAllTabsHandler handler) {
+        handler.onShowAllTabs(this);
+
+    }
+
 }

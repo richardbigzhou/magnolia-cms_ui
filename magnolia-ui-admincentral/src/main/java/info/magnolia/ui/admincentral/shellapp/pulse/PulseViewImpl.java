@@ -35,19 +35,19 @@ package info.magnolia.ui.admincentral.shellapp.pulse;
 
 import info.magnolia.ui.admincentral.components.ActivityItem;
 import info.magnolia.ui.admincentral.components.SplitFeed;
-import info.magnolia.ui.widget.tabsheet.ShellTab;
-import info.magnolia.ui.widget.tabsheet.ShellTabSheet;
+import info.magnolia.ui.vaadin.integration.widget.tabsheet.ShellTab;
+import info.magnolia.ui.vaadin.integration.widget.tabsheet.ShellTabSheet;
 
 import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
 
-import com.vaadin.ui.ComponentContainer;
 import org.apache.commons.collections.BidiMap;
 import org.apache.commons.collections.bidimap.DualHashBidiMap;
 
 import com.vaadin.ui.Component;
+import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 

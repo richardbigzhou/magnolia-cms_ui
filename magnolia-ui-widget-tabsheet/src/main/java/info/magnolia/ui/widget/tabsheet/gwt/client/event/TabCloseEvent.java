@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.widget.tabsheet.gwt.client.event;
 
-import info.magnolia.ui.widget.tabsheet.gwt.client.VShellTab;
+import info.magnolia.ui.widget.tabsheet.gwt.client.VMagnoliaShellTab;
 
 import com.google.gwt.event.shared.GwtEvent;
 
@@ -44,13 +44,13 @@ public class TabCloseEvent extends GwtEvent<TabCloseEventHandler>{
 
     public static Type<TabCloseEventHandler> TYPE = new Type<TabCloseEventHandler>();
     
-    private VShellTab tab;
+    private VMagnoliaShellTab tab;
     
-    public TabCloseEvent(final VShellTab tab) {
+    public TabCloseEvent(final VMagnoliaShellTab tab) {
         this.tab = tab;
     }
     
-    public VShellTab getTab() {
+    public VMagnoliaShellTab getTab() {
         return tab;
     }
     

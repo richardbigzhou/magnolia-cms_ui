@@ -65,7 +65,7 @@ import com.vaadin.terminal.gwt.client.UIDL;
  * Client side implementation of the simple tab sheet.
  */
 @SuppressWarnings("serial")
-public class VShellTabSheet extends Composite implements HasWidgets, VShellTabSheetView.Presenter, Container, ClientSideHandler {
+public class VMagnoliaTabSheet extends Composite implements HasWidgets, VShellTabSheetView.Presenter, Container, ClientSideHandler {
 
     protected String paintableId;
 
@@ -75,7 +75,7 @@ public class VShellTabSheet extends Composite implements HasWidgets, VShellTabSh
     
     private final EventBus eventBus = new SimpleEventBus();
 
-    public VShellTabSheet() {
+    public VMagnoliaTabSheet() {
         super();
         this.view = new VShellTabSheetViewImpl(eventBus, this);
 
@@ -106,7 +106,7 @@ public class VShellTabSheet extends Composite implements HasWidgets, VShellTabSh
         initWidget(view.asWidget());
     }
 
-    protected void closeTab(final VShellTab tab) {
+    protected void closeTab(final VMagnoliaShellTab tab) {
         if (tab != null) {
             client.unregisterPaintable(tab);
             proxy.call("closeTab", tab.getTabId());
@@ -129,19 +129,19 @@ public class VShellTabSheet extends Composite implements HasWidgets, VShellTabSh
         final UIDL tabsUidl = uidl.getChildByTagName("tabs");
         if (tabsUidl != null) {
             final Iterator<?> it = tabsUidl.getChildIterator();
-            final List<VShellTab> possibleTabsToOrphan = new ArrayList<VShellTab>(view.getTabs());
+            final List<VMagnoliaShellTab> possibleTabsToOrphan = new ArrayList<VMagnoliaShellTab>(view.getTabs());
             while (it.hasNext()) {
                 final UIDL tabUidl = (UIDL)it.next();
                 final Paintable tab = client.getPaintable(tabUidl);
                 if (!view.getTabs().contains(tab)) {
-                    view.getTabs().add((VShellTab)tab);
+                    view.getTabs().add((VMagnoliaShellTab)tab);
                     view.add((Widget)tab);
                 }
                 tab.updateFromUIDL(tabUidl, client);
                 possibleTabsToOrphan.remove(tab);
             }
 
-            for (final VShellTab tabToOrphan : possibleTabsToOrphan) {
+            for (final VMagnoliaShellTab tabToOrphan : possibleTabsToOrphan) {
                 view.getTabs().remove(tabToOrphan);
                 client.unregisterPaintable(tabToOrphan);
                 view.removeTab(tabToOrphan);
@@ -159,8 +159,8 @@ public class VShellTabSheet extends Composite implements HasWidgets, VShellTabSh
 
     @Override
     public void updateCaption(Paintable component, UIDL uidl) {
-        if (component instanceof VShellTab) {
-            view.getTabContainer().updateTab((VShellTab)component, uidl);
+        if (component instanceof VMagnoliaShellTab) {
+            view.getTabContainer().updateTab((VMagnoliaShellTab)component, uidl);
         }
     }
 
@@ -177,7 +177,7 @@ public class VShellTabSheet extends Composite implements HasWidgets, VShellTabSh
         return new RenderSpace();
     }
 
-    void activateTab(final VShellTab tab) {
+    void activateTab(final VMagnoliaShellTab tab) {
 
     }
 
@@ -200,7 +200,7 @@ public class VShellTabSheet extends Composite implements HasWidgets, VShellTabSh
         register("setActiveTab", new Method() {
             @Override
             public void invoke(String methodName, Object[] params) {
-                final VShellTab tab = view.getTabById(String.valueOf(params[0]));
+                final VMagnoliaShellTab tab = view.getTabById(String.valueOf(params[0]));
                 if (tab != null) {
                     eventBus.fireEvent(new ActiveTabChangedEvent(tab));
                 }
@@ -247,7 +247,7 @@ public class VShellTabSheet extends Composite implements HasWidgets, VShellTabSh
 
     @Override
     public void updateLayout() {
-        client.runDescendentsLayout(VShellTabSheet.this);
+        client.runDescendentsLayout(VMagnoliaTabSheet.this);
     }
 
 }

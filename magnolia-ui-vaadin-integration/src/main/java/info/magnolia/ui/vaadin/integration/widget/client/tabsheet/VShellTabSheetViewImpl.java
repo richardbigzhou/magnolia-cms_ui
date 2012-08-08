@@ -31,9 +31,9 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.tabsheet.gwt.client;
+package info.magnolia.ui.vaadin.integration.widget.client.tabsheet;
 
-import info.magnolia.ui.widget.tabsheet.gwt.client.util.CollectionUtil;
+import info.magnolia.ui.vaadin.integration.widget.client.tabsheet.util.CollectionUtil;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -41,47 +41,48 @@ import java.util.List;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * VShellTabSheetViewImpl.
  */
 public class VShellTabSheetViewImpl extends FlowPanel implements VShellTabSheetView {
 
-    private VMagnoliaTabNavigator tabContainer;
+    private VShellTabNavigator tabContainer;
 
-    private VMagnoliaShellTab activeTab = null;
+    private VShellTab activeTab = null;
 
-    private final List<VMagnoliaShellTab> tabs = new LinkedList<VMagnoliaShellTab>();
+    private final List<VShellTab> tabs = new LinkedList<VShellTab>();
 
     private Presenter presenter;
 
     public VShellTabSheetViewImpl(EventBus eventBus, Presenter presenter) {
         super();
         this.presenter = presenter;
-        this.tabContainer =  new VMagnoliaTabNavigator(eventBus);
+        this.tabContainer =  new VShellTabNavigator(eventBus);
         addStyleName("v-shell-tabsheet");
         add(tabContainer);
     }
 
     @Override
-    public VMagnoliaTabNavigator getTabContainer() {
+    public VShellTabNavigator getTabContainer() {
         return tabContainer;
     }
     
     @Override
-    public void removeTab(VMagnoliaShellTab tabToOrphan) {
+    public void removeTab(VShellTab tabToOrphan) {
         if (activeTab == tabToOrphan) {
-            final VMagnoliaShellTab nextTab = CollectionUtil.getNext(getTabs(), tabToOrphan);
+            final VShellTab nextTab = CollectionUtil.getNext(getTabs(), tabToOrphan);
             if (nextTab != null) {
                 setActiveTab(nextTab);
             }
         }
-        tabs.remove(tabToOrphan);
+        getTabs().remove(tabToOrphan);
         remove(tabToOrphan);
     }
 
     @Override
-    public void setActiveTab(final VMagnoliaShellTab tab) {
+    public void setActiveTab(final VShellTab tab) {
         showAllTabContents(false);
         tab.getElement().getStyle().setDisplay(Display.BLOCK);
         activeTab = tab;
@@ -89,8 +90,8 @@ public class VShellTabSheetViewImpl extends FlowPanel implements VShellTabSheetV
     }
 
     @Override
-    public VMagnoliaShellTab getTabById(String tabId) {
-        for (final VMagnoliaShellTab tab : tabs) {
+    public VShellTab getTabById(String tabId) {
+        for (final VShellTab tab : getTabs()) {
             if (tab.getTabId().equals(tabId)) {
                 return tab;
             }
@@ -99,16 +100,22 @@ public class VShellTabSheetViewImpl extends FlowPanel implements VShellTabSheetV
     }
 
     @Override
-    public List<VMagnoliaShellTab> getTabs() {
+    public List<VShellTab> getTabs() {
         return tabs;
     }
 
     @Override
     public void showAllTabContents(boolean visible) {
         Display display = (visible) ? Display.BLOCK : Display.NONE;
-        for (VMagnoliaShellTab tab : tabs) {
+        for (VShellTab tab : getTabs()) {
             tab.getElement().getStyle().setDisplay(display);
         }
+    }
+
+    @Override
+    public void addTab(VShellTab tab) {
+        getTabs().add(tab);
+        add((Widget) tab);
     }
 
 }

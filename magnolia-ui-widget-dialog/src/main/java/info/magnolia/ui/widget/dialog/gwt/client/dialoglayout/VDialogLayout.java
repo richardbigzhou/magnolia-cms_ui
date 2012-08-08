@@ -55,34 +55,34 @@ import com.vaadin.terminal.gwt.client.UIDL;
 import com.vaadin.terminal.gwt.client.Util;
 
 /**
- * Layout for the {@link DialogFieldSection} widgets. 
+ * Layout for the {@link DialogFieldSection} widgets.
  */
 public class VDialogLayout extends FlowPanel implements Container, HelpAccessibilityEvent.Handler {
 
     private List<Widget> children = new LinkedList<Widget>();
-    
+
     private Map<Widget, DialogFieldSection> sections = new HashMap<Widget, DialogFieldSection>();
-    
+
     private Element fieldSet = DOM.createElement("fieldset");
-    
+
     private HandlerRegistration helpEventRegistration = null;
-    
+
     public VDialogLayout() {
         super();
         getElement().appendChild(fieldSet);
     }
-    
+
     @Override
     public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
         if (client.updateComponent(this, uidl, true)) {
             return;
         }
-        
+
         final Iterator<?> it = uidl.getChildIterator();
         while (it.hasNext()) {
-            final UIDL childUIdl = (UIDL)it.next();
+            final UIDL childUIdl = (UIDL) it.next();
             final Paintable p = client.getPaintable(childUIdl.getChildUIDL(0));
-            final Widget w = (Widget)p;
+            final Widget w = (Widget) p;
             if (!hasChildComponent(w)) {
                 DialogFieldSection fieldSection = new DialogFieldSection();
                 sections.put(w, fieldSection);
@@ -100,7 +100,7 @@ public class VDialogLayout extends FlowPanel implements Container, HelpAccessibi
              * TODO: Implement ALL the details of Paintable handling here.
              */
         }
-        
+
         if (helpEventRegistration == null) {
             final VDialog dialog = Util.findWidget(getElement(), VDialog.class);
             if (dialog != null) {
@@ -110,7 +110,8 @@ public class VDialogLayout extends FlowPanel implements Container, HelpAccessibi
     }
 
     @Override
-    public void replaceChildComponent(Widget oldComponent, Widget newComponent) {}
+    public void replaceChildComponent(Widget oldComponent, Widget newComponent) {
+    }
 
     @Override
     public boolean hasChildComponent(Widget component) {
@@ -121,30 +122,28 @@ public class VDialogLayout extends FlowPanel implements Container, HelpAccessibi
     public void updateCaption(Paintable component, UIDL uidl) {
         DialogFieldSection fs = sections.get(component);
         if (fs != null) {
-            if (uidl.hasAttribute("error")) {
-                boolean showError = false;
-                if (uidl.hasAttribute("showError")) {
-                    showError = uidl.getBooleanAttribute("showError");
-                }
-                if (showError) {
-                    for (final Iterator<?> it = uidl.getErrors().getChildIterator(); it.hasNext();) {
-                        final Object child = it.next();
-                        if (child instanceof String) {
-                            final String errorMessage = (String) child;
-                            fs.showError(errorMessage);
-                            break;
-                        }
-                    }   
+            boolean errorsOccured = uidl.hasAttribute("error");
+            boolean showError = false;
+            if (uidl.hasAttribute("showError")) {
+                showError = uidl.getBooleanAttribute("showError");
+            }
+            if (errorsOccured && showError) {
+                for (final Iterator<?> it = uidl.getErrors().getChildIterator(); it.hasNext();) {
+                    final Object child = it.next();
+                    if (child instanceof String) {
+                        final String errorMessage = (String) child;
+                        fs.showError(errorMessage);
+                        break;
+                    }
                 }
             } else {
                 fs.clearErrors();
             }
             if (uidl.hasAttribute("caption")) {
                 fs.setCaption(uidl.getStringAttribute("caption"));
-            }   
+            }
         }
     }
-    
 
     @Override
     public boolean requestLayout(Set<Paintable> children) {
@@ -154,8 +153,8 @@ public class VDialogLayout extends FlowPanel implements Container, HelpAccessibi
     @Override
     public RenderSpace getAllocatedSpace(Widget child) {
         final DialogFieldSection fs = sections.get(child);
-        if (fs != null) {  
-            return new RenderSpace(fs.getFieldAreaWidth(), fs.getFieldAreaHeight()); 
+        if (fs != null) {
+            return new RenderSpace(fs.getFieldAreaWidth(), fs.getFieldAreaHeight());
         }
         return new RenderSpace();
     }

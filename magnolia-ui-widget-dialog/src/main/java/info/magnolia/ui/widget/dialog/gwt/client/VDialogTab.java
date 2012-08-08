@@ -31,36 +31,30 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.tabsheet.gwt.client.event;
+package info.magnolia.ui.widget.dialog.gwt.client;
 
-import info.magnolia.ui.widget.tabsheet.gwt.client.VMagnoliaShellTab;
+import com.google.gwt.user.client.ui.Widget;
 
-import com.google.gwt.event.shared.GwtEvent;
+import info.magnolia.ui.vaadin.integration.widget.client.tabsheet.VShellTab;
+import info.magnolia.ui.widget.dialog.gwt.client.dialoglayout.VDialogLayout;
 
 /**
- * Event fired when the active tab in the tabsheet is changed.
+ * Dialog tab.
  */
-public class ActiveTabChangedEvent extends GwtEvent<ActiveTabChangedHandler>{
+public class VDialogTab extends VShellTab {
 
-    public final static Type<ActiveTabChangedHandler> TYPE = new Type<ActiveTabChangedHandler>();
-
-    private final VMagnoliaShellTab tab;
-
-    public ActiveTabChangedEvent(final VMagnoliaShellTab tab) {
-        this.tab = tab;
-    }
-
-    public VMagnoliaShellTab getTab() {
-        return tab;
-    }
-
+    private VDialogLayout content;
+    
     @Override
-    protected void dispatch(ActiveTabChangedHandler handler) {
-        handler.onActiveTabChanged(this);
+    public void setWidget(Widget w) {
+        if (!(w instanceof VDialogLayout)) {
+            throw new RuntimeException("Invalid type of tab content. Must be VDialogLayout. You have used: " + w.getClass());
+        }
+        content = (VDialogLayout)w;
+        super.setWidget(w);
     }
-
-    @Override
-    public GwtEvent.Type<ActiveTabChangedHandler> getAssociatedType() {
-        return TYPE;
+    
+    public VDialogLayout getFields() {
+        return content;
     }
 }

@@ -177,7 +177,7 @@
     </component>
     <component>
       <type>info.magnolia.ui.widget.dialog.DialogView</type>
-      <implementation>info.magnolia.ui.widget.dialog.Dialog</implementation>
+      <implementation>info.magnolia.ui.widget.dialog.TabDialog</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.admincentral.shellapp.pulse.PulseMessagesView</type>

@@ -31,36 +31,21 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.tabsheet.gwt.client.event;
+package info.magnolia.ui.vaadin.integration.widget.client.tabsheet.util;
 
-import info.magnolia.ui.widget.tabsheet.gwt.client.VMagnoliaShellTab;
-
-import com.google.gwt.event.shared.GwtEvent;
+import java.util.List;
 
 /**
- * Event fired when the active tab in the tabsheet is changed.
+ * Util class for the collections operations.
  */
-public class ActiveTabChangedEvent extends GwtEvent<ActiveTabChangedHandler>{
+public class CollectionUtil {
 
-    public final static Type<ActiveTabChangedHandler> TYPE = new Type<ActiveTabChangedHandler>();
-
-    private final VMagnoliaShellTab tab;
-
-    public ActiveTabChangedEvent(final VMagnoliaShellTab tab) {
-        this.tab = tab;
-    }
-
-    public VMagnoliaShellTab getTab() {
-        return tab;
-    }
-
-    @Override
-    protected void dispatch(ActiveTabChangedHandler handler) {
-        handler.onActiveTabChanged(this);
-    }
-
-    @Override
-    public GwtEvent.Type<ActiveTabChangedHandler> getAssociatedType() {
-        return TYPE;
+    public static <T> T getNext(final List<T> items, T item) {
+        int index = items.indexOf(item);
+        if (index >= 0) {
+            int nextIndex = (index + 1) % items.size();
+            return items.get(nextIndex);
+        }
+        return null;
     }
 }

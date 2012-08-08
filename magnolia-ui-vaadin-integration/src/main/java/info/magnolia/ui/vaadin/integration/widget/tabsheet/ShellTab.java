@@ -31,9 +31,9 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.tabsheet;
+package info.magnolia.ui.vaadin.integration.widget.tabsheet;
 
-import info.magnolia.ui.widget.tabsheet.gwt.client.VShellTab;
+import info.magnolia.ui.vaadin.integration.widget.client.tabsheet.VShellTab;
 
 import java.util.Map;
 
@@ -126,7 +126,13 @@ public class ShellTab extends SimplePanel implements ServerSideHandler {
     @Override
     public Object[] initRequestFromClient() {
         if (tabId != null) {
-            proxy.callOnce("setTabId", tabId);   
+            proxy.callOnce("setTabId", tabId);
+            proxy.callOnce("setClosable", isClosable);
+            if (notification != null) {
+                proxy.callOnce("updateNotification", notification);   
+            } else {
+                proxy.callOnce("hideNotification");
+            }
         }
         return new Object[] {};
     }

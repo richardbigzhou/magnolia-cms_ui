@@ -31,36 +31,36 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.tabsheet.gwt.client.event;
+package info.magnolia.ui.vaadin.integration.widget.client.tabsheet.event;
 
-import info.magnolia.ui.widget.tabsheet.gwt.client.VMagnoliaShellTab;
+import info.magnolia.ui.vaadin.integration.widget.client.tabsheet.VShellTab;
 
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * Event fired when the active tab in the tabsheet is changed.
+ * Event that is fired when the tab is closed.
  */
-public class ActiveTabChangedEvent extends GwtEvent<ActiveTabChangedHandler>{
+public class TabCloseEvent extends GwtEvent<TabCloseEventHandler>{
 
-    public final static Type<ActiveTabChangedHandler> TYPE = new Type<ActiveTabChangedHandler>();
-
-    private final VMagnoliaShellTab tab;
-
-    public ActiveTabChangedEvent(final VMagnoliaShellTab tab) {
+    public static Type<TabCloseEventHandler> TYPE = new Type<TabCloseEventHandler>();
+    
+    private VShellTab tab;
+    
+    public TabCloseEvent(final VShellTab tab) {
         this.tab = tab;
     }
-
-    public VMagnoliaShellTab getTab() {
+    
+    public VShellTab getTab() {
         return tab;
     }
-
+    
     @Override
-    protected void dispatch(ActiveTabChangedHandler handler) {
-        handler.onActiveTabChanged(this);
+    protected void dispatch(TabCloseEventHandler handler) {
+        handler.onTabClosed(this);
     }
-
+    
     @Override
-    public GwtEvent.Type<ActiveTabChangedHandler> getAssociatedType() {
+    public GwtEvent.Type<TabCloseEventHandler> getAssociatedType() {
         return TYPE;
     }
 }
