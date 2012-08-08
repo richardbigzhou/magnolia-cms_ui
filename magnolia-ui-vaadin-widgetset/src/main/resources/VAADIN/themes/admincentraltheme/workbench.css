@@ -12,22 +12,3 @@
     padding: 20px;
     overflow-y: auto;
 }
-
-.mgnl-workbench-thumbnail-view .asset {
-    border: 1px solid #F0F0F0;
-    cursor: pointer;
-    display: inline-block;
-    margin: 1px;
-    padding: 10px;
-    text-align: center;
-    background: none repeat scroll 0 0 transparent
-}
-
-.mgnl-workbench-thumbnail-view .asset.active {
-    background-color: #AABF2F;
-    color: #FFF;
-}
-.mgnl-workbench-thumbnail-view .asset:hover {
-    border: 1px solid #AABF2F;
-    color: #FFF;
-}

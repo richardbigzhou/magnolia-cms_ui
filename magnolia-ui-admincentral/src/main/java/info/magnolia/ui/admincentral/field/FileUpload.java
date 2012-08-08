@@ -229,7 +229,6 @@ public class FileUpload extends UploadField{
      * Create a Thumbnail image as Embedded component.
      */
     private Embedded createThumbnail() {
-        Embedded embedded = null;
         //Set Image Size
         ImageSize scaledImageSize = ImageSize.valueOf(getContentAsStream()).scaleToFitIfLarger(150, 150);
         //Create ressource
@@ -247,7 +246,7 @@ public class FileUpload extends UploadField{
             }
         };
 
-        embedded = new Embedded("", imageResource);
+        Embedded embedded = new Embedded("", imageResource);
         embedded.setWidth(scaledImageSize.getWidth() + "px");
         embedded.setHeight(scaledImageSize.getHeight() + "px");
         return embedded;

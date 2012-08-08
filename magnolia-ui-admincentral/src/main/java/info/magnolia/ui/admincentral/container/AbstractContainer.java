@@ -43,9 +43,8 @@ import java.util.Map;
 import com.vaadin.data.Container;
 
 /**
- * Abstract base class for hierarchical containers. Provides support for managing the set of properties (columns) and
+ * Abstract base class for containers. Provides support for managing the set of properties (columns) and
  * an implementation of ItemSetChangeEvent.
- *
  */
 public abstract class AbstractContainer implements Container {
 

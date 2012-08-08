@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.app.pages.editor;
 
+import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.MetaDataUtil;
 import info.magnolia.jcr.util.NodeUtil;
@@ -57,6 +58,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -71,9 +73,15 @@ import org.slf4j.LoggerFactory;
  */
 public class PageEditorPresenter implements PageEditorView.Listener {
 
+    private static final String NEW_COMPONENT_DIALOG = "ui-pages-app:newComponent";
+
+    private static final Logger log = LoggerFactory.getLogger(PageEditorPresenter.class);
+
     private final PageEditorView view;
 
-    private final EventBus eventBus;
+    private final EventBus adminCentralEventBus;
+
+    private final EventBus appEventBus;
 
     private final DialogPresenterFactory dialogPresenterFactory;
 
@@ -83,18 +91,13 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
     private String path;
 
-    private final String NEW_COMPONENT_DIALOG = "ui-pages-app:newComponent";
-
-    private final String COMPONENT_NODE_TYPE = "mgnl:component";
-
     private final ConfiguredDialogDefinition dialogDefinition;
 
-    private static final Logger log = LoggerFactory.getLogger(PageEditorPresenter.class);
-
     @Inject
-    public PageEditorPresenter(PageEditorView view, EventBus eventBus, DialogPresenterFactory dialogPresenterFactory, TemplateDefinitionRegistry templateDefinitionRegistry) {
+    public PageEditorPresenter(PageEditorView view, @Named("adminCentral") EventBus adminCentralEventBus, @Named("app") EventBus appEventBus, DialogPresenterFactory dialogPresenterFactory, TemplateDefinitionRegistry templateDefinitionRegistry) {
         this.view = view;
-        this.eventBus = eventBus;
+        this.adminCentralEventBus = adminCentralEventBus;
+        this.appEventBus = appEventBus;
         this.dialogPresenterFactory = dialogPresenterFactory;
         this.templateDefinitionRegistry = templateDefinitionRegistry;
 
@@ -104,7 +107,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
     }
 
     private void registerHandlers() {
-        eventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
+        adminCentralEventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
 
             @Override
             public void onContentChanged(ContentChangedEvent event) {
@@ -152,7 +155,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
             Node parentNode = session.getNode(path);
 
-            JcrNodeAdapter item = new JcrNewNodeAdapter(parentNode, COMPONENT_NODE_TYPE);
+            JcrNodeAdapter item = new JcrNewNodeAdapter(parentNode, MgnlNodeType.NT_COMPONENT);
             DefaultProperty property = new DefaultProperty(item.JCR_NAME, "0");
             item.addItemProperty(item.JCR_NAME, property);
             dialogPresenter.editItem(item);
@@ -268,7 +271,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
     @Override
     public void selectComponent(String path) {
         String selectedComponentPath = path;
-        eventBus.fireEvent(new ComponentSelectedEvent(selectedComponentPath));
+        appEventBus.fireEvent(new ComponentSelectedEvent(selectedComponentPath));
     }
 
     public PageEditorView start() {

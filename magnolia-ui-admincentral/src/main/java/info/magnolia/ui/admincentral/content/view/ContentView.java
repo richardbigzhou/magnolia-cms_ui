@@ -35,7 +35,7 @@ package info.magnolia.ui.admincentral.content.view;
 
 import com.vaadin.data.Item;
 
-import info.magnolia.ui.admincentral.container.JcrContainer;
+import info.magnolia.ui.admincentral.container.AbstractJcrContainer;
 import info.magnolia.ui.framework.view.View;
 
 /**
@@ -75,17 +75,13 @@ public interface ContentView extends View {
 
     void setListener(Listener listener);
 
-
-    /**
-     * @throws info.magnolia.exception.RuntimeRepositoryException if the path does not exist
-     */
     void select(String path);
 
     void refresh();
 
     void refreshItem(final Item item);
 
-    JcrContainer getContainer();
+    AbstractJcrContainer getContainer();
 
     /**
      * Listener for the ContentView.

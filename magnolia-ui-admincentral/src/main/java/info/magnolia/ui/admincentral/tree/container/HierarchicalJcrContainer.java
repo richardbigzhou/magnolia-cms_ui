@@ -34,7 +34,7 @@
 package info.magnolia.ui.admincentral.tree.container;
 
 import info.magnolia.jcr.RuntimeRepositoryException;
-import info.magnolia.ui.admincentral.container.JcrContainer;
+import info.magnolia.ui.admincentral.container.AbstractJcrContainer;
 import info.magnolia.ui.admincentral.container.JcrContainerSource;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 
@@ -54,9 +54,9 @@ import com.vaadin.data.Container;
 
 
 /**
- * Hierarchical implementation of {@link JcrContainer}.
+ * Hierarchical implementation of {@link info.magnolia.ui.admincentral.container.AbstractJcrContainer}.
  */
-public class HierarchicalJcrContainer extends JcrContainer implements Container.Hierarchical {
+public class HierarchicalJcrContainer extends AbstractJcrContainer implements Container.Hierarchical {
 
     private static final Logger log = LoggerFactory.getLogger(HierarchicalJcrContainer.class);
 

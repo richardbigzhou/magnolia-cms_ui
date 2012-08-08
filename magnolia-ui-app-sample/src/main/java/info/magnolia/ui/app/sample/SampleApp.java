@@ -64,7 +64,6 @@ public class SampleApp extends AbstractApp {
 
     @Override
     public SubApp start(Location location) {
-        this.mainSubApp.setSampleApp(this);
         return mainSubApp;
     }
 

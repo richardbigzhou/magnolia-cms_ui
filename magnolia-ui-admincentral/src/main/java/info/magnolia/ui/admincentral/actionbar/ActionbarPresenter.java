@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.admincentral.actionbar;
 
+import javax.inject.Named;
+
 import info.magnolia.ui.admincentral.actionbar.builder.ActionbarBuilder;
 import info.magnolia.ui.admincentral.event.ActionbarClickEvent;
 import info.magnolia.ui.framework.event.EventBus;
@@ -59,25 +61,27 @@ public class ActionbarPresenter implements ActionbarView.Listener {
 
     private ActionbarView actionbar;
 
-    private final EventBus eventBus;
+    private final EventBus appEventBus;
 
     /**
      * Instantiates a new action bar presenter.
      */
     @Inject
-    public ActionbarPresenter(EventBus eventBus) {
-        this.eventBus = eventBus;
+    public ActionbarPresenter(@Named("app") EventBus appEventBus) {
+        this.appEventBus = appEventBus;
     }
 
-    @Override
-    public ActionbarView start() {
-        return actionbar;
-    }
-
-    public void initActionbar(final ActionbarDefinition definition) {
+    /**
+     * Initializes an actionbar with given definition and returns the view for parent to add it.
+     * 
+     * @param definition the definition
+     * @return the actionbar view
+     */
+    public ActionbarView start(final ActionbarDefinition definition) {
         this.definition = definition;
         actionbar = ActionbarBuilder.build(definition);
         actionbar.setListener(this);
+        return actionbar;
     }
 
     public void setPreview(final Component preview) {
@@ -94,12 +98,22 @@ public class ActionbarPresenter implements ActionbarView.Listener {
         }
     }
 
+    // JUST DELEGATING CONTEXT SENSITIVITY TO WIDGET
+
     public void enable(String actionName) {
         actionbar.enable(actionName);
     }
 
     public void disable(String actionName) {
         actionbar.disable(actionName);
+    }
+
+    public void enableGroup(String groupName) {
+        actionbar.enableGroup(groupName);
+    }
+
+    public void disableGroup(String groupName) {
+        actionbar.disableGroup(groupName);
     }
 
     public void showSection(String sectionName) {
@@ -110,11 +124,13 @@ public class ActionbarPresenter implements ActionbarView.Listener {
         actionbar.hideSection(sectionName);
     }
 
+    // WIDGET LISTENER
+
     @Override
     public void onActionbarItemClicked(String actionToken) {
         ActionDefinition actionDefinition = getActionDefinition(actionToken);
         if (actionDefinition != null) {
-            eventBus.fireEvent(new ActionbarClickEvent(actionDefinition));
+            appEventBus.fireEvent(new ActionbarClickEvent(actionDefinition));
         }
     }
 
@@ -136,6 +152,37 @@ public class ActionbarPresenter implements ActionbarView.Listener {
                     }
                 }
                 break;
+            }
+        }
+        return null;
+    }
+
+    // DEFAULT ACTION
+
+    /**
+     * Gets the default action definition, i.e. finds the first action bar item whose name matches
+     * the action bar definition's 'defaultAction' property, and returns its actionDefinition
+     * property.
+     * 
+     * @return the default action definition
+     */
+    public ActionDefinition getDefaultActionDefinition() {
+        String defaultAction = definition.getDefaultAction();
+
+        // considering actionbar item name unique, returning first match
+        if (!definition.getSections().isEmpty()) {
+            for (ActionbarSectionDefinition sectionDef : definition.getSections()) {
+                if (!sectionDef.getGroups().isEmpty()) {
+                    for (ActionbarGroupDefinition groupDef : sectionDef.getGroups()) {
+                        if (!groupDef.getItems().isEmpty()) {
+                            for (ActionbarItemDefinition itemDef : groupDef.getItems()) {
+                                if (itemDef.getName().equals(defaultAction)) {
+                                    return itemDef.getActionDefinition();
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
         return null;

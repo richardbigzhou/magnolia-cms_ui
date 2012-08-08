@@ -38,7 +38,6 @@ import info.magnolia.cms.beans.runtime.FileProperties;
 import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.cms.util.ContentUtil;
 import info.magnolia.context.MgnlContext;
-import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.link.LinkException;
 import info.magnolia.link.LinkUtil;
 
@@ -49,7 +48,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Calendar;
 
 import javax.imageio.ImageIO;
 import javax.jcr.Node;
@@ -67,7 +65,9 @@ import org.slf4j.LoggerFactory;
  * Superclass for all thumbnail providers.
  */
 public abstract class AbstractThumbnailProvider implements ThumbnailProvider {
+
     private static final Logger log = LoggerFactory.getLogger(AbstractThumbnailProvider.class);
+
     public static final String ORIGINAL_IMAGE_NODE_NAME = "originalImage";
     public static final String THUMBNAIL_NODE_NAME = "thumbnail";
     public static final String DEFAULT_THUMBNAIL_FORMAT = "jpg";
@@ -97,8 +97,9 @@ public abstract class AbstractThumbnailProvider implements ThumbnailProvider {
      * by {@link #ORIGINAL_IMAGE_NODE_NAME} and {@link #THUMBNAIL_NODE_NAME}.<p>
      * If you want to store your binaries under different names you can override them via the provided setters.
      * If your node structure is different from the default one, you need to override this method.<p>
-     * This method will also handle whether a thumbnail needs to created for the very first time, regenerated in case the original image has been updated or can
-     * just be retrieved from the JCR repository by using {@link #isThumbnailToBeGenerated(Node)}.
+     * This method will also handle whether a thumbnail needs to be created for the very first time, regenerated in case the original image has been updated or can
+     * just be retrieved from the JCR repository by using {@link ThumbnailUtility#isThumbnailToBeGenerated(String, String, String, String)}.
+     * @return <code>null</code> if no link could be generated.
      * @see info.magnolia.ui.model.thumbnail.ThumbnailProvider#getPath(java.lang.String, java.lang.String, int, int)
      */
     @Override
@@ -107,83 +108,18 @@ public abstract class AbstractThumbnailProvider implements ThumbnailProvider {
         try {
             final Session session = MgnlContext.getJCRSession(workspace);
             final Node imageNode = session.getNodeByIdentifier(nodeIdentifier);
-
-            if (isThumbnailToBeGenerated(imageNode)) {
-
-                final Node originalImageNode = imageNode.getNode(getOriginalImageNodeName());
-                final InputStream originalInputStream = originalImageNode.getProperty(JcrConstants.JCR_DATA).getBinary().getStream();
-                ByteArrayOutputStream thumbnailOutputStream = null;
-                InputStream thumbnailInputStream = null;
-
-                BufferedImage thumbnail = null;
-                try {
-                    byte[] array = new byte[originalInputStream.available()];
-                    originalInputStream.read(array);
-                    originalInputStream.close();
-
-                    Image contactImage = Toolkit.getDefaultToolkit().createImage(array);
-                    contactImage = new ImageIcon(contactImage).getImage();
-                    thumbnail = createThumbnail(contactImage, getFormat(), width, height, getQuality());
-
-                    if (imageNode.hasNode(getThumbnailNodeName())) {
-                        imageNode.getNode(getThumbnailNodeName()).remove();
-                    }
-                    final Node thumbnailNode = imageNode.addNode(getThumbnailNodeName(), MgnlNodeType.NT_RESOURCE);
-                    thumbnailNode.setProperty(FileProperties.PROPERTY_FILENAME, originalImageNode.getProperty(FileProperties.PROPERTY_FILENAME).getString());
-                    thumbnailNode.setProperty(FileProperties.PROPERTY_EXTENSION, getFormat());
-                    thumbnailNode.setProperty(FileProperties.PROPERTY_MIMETYPE, originalImageNode.getProperty(JcrConstants.JCR_MIMETYPE).getString());
-                    thumbnailNode.setProperty(FileProperties.PROPERTY_HEIGHT, thumbnail.getHeight());
-                    thumbnailNode.setProperty(FileProperties.PROPERTY_WIDTH, thumbnail.getWidth());
-
-                    thumbnailOutputStream = new ByteArrayOutputStream();
-                    ImageIO.write(thumbnail, getFormat(), thumbnailOutputStream);
-                    final int size = thumbnailOutputStream.size();
-                    log.debug("thumbnail size is {} ", size);
-
-                    thumbnailInputStream = new ByteArrayInputStream(thumbnailOutputStream.toByteArray());
-                    thumbnailNode.setProperty(JcrConstants.JCR_DATA, thumbnailInputStream);
-                    thumbnailNode.setProperty(FileProperties.PROPERTY_SIZE, size);
-
-                    imageNode.getSession().save();
-
-                } catch (IOException e) {
-                    throw new RuntimeException("Error while creating thumbnail image.", e);
-                } finally {
-                    IOUtils.closeQuietly(thumbnailOutputStream);
-                    IOUtils.closeQuietly(thumbnailInputStream);
-                    IOUtils.closeQuietly(originalInputStream);
-                }
+            if (ThumbnailUtility.isThumbnailToBeGenerated(nodeIdentifier, workspace, getOriginalImageNodeName(), getThumbnailNodeName())) {
+                retrieveImageNodeAndCreateThumbnail(imageNode, width, height);
             }
             path = LinkUtil.createLink(ContentUtil.asContent(imageNode).getNodeData(getThumbnailNodeName()));
         } catch (RepositoryException e) {
-            throw new RuntimeRepositoryException(e);
+            log.error("A repository exception occurred.", e);
+            return null;
         } catch (LinkException e) {
-            throw new RuntimeException("Error while creating link to thumbnail image.", e);
+            log.error("Error while creating link to thumbnail image.", e);
+            return null;
         }
         return path;
-    }
-    /**
-     * Checks whether this node contains an image which needs to be generated for the first time or regenerated.
-     * @throws RepositoryException
-     */
-    protected boolean isThumbnailToBeGenerated(final Node node) throws RepositoryException {
-        if (!node.hasNode(getThumbnailNodeName())) {
-            return true;
-        }
-        if (!node.hasNode(getOriginalImageNodeName())) {
-            log.warn("No [{}] node found for contact node [{}]. Cannot create thumbnail.", getOriginalImageNodeName(), node.getPath());
-            return false;
-        }
-        final Node originalImageNode = node.getNode(getOriginalImageNodeName());
-        final Node thumbnailNode = node.getNode(getThumbnailNodeName());
-        final Calendar originalImageDate = originalImageNode.getProperty(JcrConstants.JCR_LASTMODIFIED).getDate();
-        final Calendar thumbnailNodeDate = thumbnailNode.getProperty(JcrConstants.JCR_LASTMODIFIED).getDate();
-        if (originalImageDate.compareTo(thumbnailNodeDate) > 0) {
-            log.debug("Original image date is {} - thumbnail date is {}. Recreating thumbnail for node [{}]...", new Object[]{ originalImageDate.getTime(), thumbnailNodeDate.getTime(), node.getPath()});
-            // photo node must have been updated as its last mod date is after thumbnail last mod date
-            return true;
-        }
-        return false;
     }
 
     protected abstract BufferedImage createThumbnail(final Image image, final String format, final int width, final int height, final float quality) throws IOException;
@@ -214,9 +150,9 @@ public abstract class AbstractThumbnailProvider implements ThumbnailProvider {
     public void setOriginalImageNodeName(String originalImageNodeName) {
         if(StringUtils.isBlank(originalImageNodeName)) {
             log.warn("originalImageNodeName cannot be null or empty. Will leave default value");
-            return;
+        } else {
+            this.originalImageNodeName = originalImageNodeName;
         }
-        this.originalImageNodeName = originalImageNodeName;
     }
 
     /**
@@ -229,8 +165,58 @@ public abstract class AbstractThumbnailProvider implements ThumbnailProvider {
     public void setThumbnailNodeName(String thumbnailNodeName) {
         if(StringUtils.isBlank(thumbnailNodeName)) {
             log.warn("thumbailNodeName cannot be null or empty. Will leave default value");
-            return;
+        } else {
+            this.thumbnailNodeName = thumbnailNodeName;
         }
-        this.thumbnailNodeName = thumbnailNodeName;
+    }
+
+    private void retrieveImageNodeAndCreateThumbnail(final Node imageNode, int width, int height) throws RepositoryException {
+        log.debug("Generating thumbnail for node at [{}}... ", imageNode.getPath());
+        long start = System.currentTimeMillis();
+
+        final Node originalImageNode = imageNode.getNode(getOriginalImageNodeName());
+        final InputStream originalInputStream = originalImageNode.getProperty(JcrConstants.JCR_DATA).getBinary().getStream();
+        ByteArrayOutputStream thumbnailOutputStream = null;
+        InputStream thumbnailInputStream = null;
+
+        BufferedImage thumbnail = null;
+        try {
+            byte[] array = new byte[originalInputStream.available()];
+            originalInputStream.read(array);
+            originalInputStream.close();
+
+            Image thumbnailImage = Toolkit.getDefaultToolkit().createImage(array);
+            thumbnailImage = new ImageIcon(thumbnailImage).getImage();
+            thumbnail = createThumbnail(thumbnailImage, getFormat(), width, height, getQuality());
+
+            if (imageNode.hasNode(getThumbnailNodeName())) {
+                imageNode.getNode(getThumbnailNodeName()).remove();
+            }
+            final Node thumbnailNode = imageNode.addNode(getThumbnailNodeName(), MgnlNodeType.NT_RESOURCE);
+            thumbnailNode.setProperty(FileProperties.PROPERTY_FILENAME, originalImageNode.getProperty(FileProperties.PROPERTY_FILENAME).getString());
+            thumbnailNode.setProperty(FileProperties.PROPERTY_EXTENSION, getFormat());
+            thumbnailNode.setProperty(FileProperties.PROPERTY_MIMETYPE, originalImageNode.getProperty(JcrConstants.JCR_MIMETYPE).getString());
+            thumbnailNode.setProperty(FileProperties.PROPERTY_HEIGHT, thumbnail.getHeight());
+            thumbnailNode.setProperty(FileProperties.PROPERTY_WIDTH, thumbnail.getWidth());
+
+            thumbnailOutputStream = new ByteArrayOutputStream();
+            ImageIO.write(thumbnail, getFormat(), thumbnailOutputStream);
+            final int size = thumbnailOutputStream.size();
+            log.debug("thumbnail size is {} ", size);
+
+            thumbnailInputStream = new ByteArrayInputStream(thumbnailOutputStream.toByteArray());
+            thumbnailNode.setProperty(JcrConstants.JCR_DATA, thumbnailInputStream);
+            thumbnailNode.setProperty(FileProperties.PROPERTY_SIZE, size);
+
+            imageNode.getSession().save();
+
+            log.debug("thumbnail generated in {} ms", System.currentTimeMillis() - start);
+        } catch (IOException e) {
+            log.error("Error while creating thumbnail image.", e);
+        } finally {
+            IOUtils.closeQuietly(thumbnailOutputStream);
+            IOUtils.closeQuietly(thumbnailInputStream);
+            IOUtils.closeQuietly(originalInputStream);
+        }
     }
 }

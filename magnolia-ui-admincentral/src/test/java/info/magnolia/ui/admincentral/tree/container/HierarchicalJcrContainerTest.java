@@ -38,7 +38,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.admincentral.column.Column;
 import info.magnolia.ui.admincentral.column.PropertyTypeColumn;
-import info.magnolia.ui.admincentral.container.JcrContainerTest;
+import info.magnolia.ui.admincentral.container.AbstractJcrContainerTest;
 import info.magnolia.ui.admincentral.tree.model.TreeModel;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactoryImpl;
@@ -135,7 +135,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
     @Test
     public void testGetItem_NodeType() throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         // GIVEN
-        Node node1 = JcrContainerTest.createNode(rootNode, "node1", "mgnl:content", "name", "name1");
+        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", "mgnl:content", "name", "name1");
         node1.getSession().save();
         String containerItemId = node1.getPath();
 
@@ -148,26 +148,9 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testContainsId() throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        // GIVEN
-        Node node1 = JcrContainerTest.createNode(rootNode, "node1", "mgnl:content", "name", "name1");
-        node1.getSession().save();
-        String containerItemId = node1.getPath();
-        // It's not yet in the cash
-        assertEquals(false, hierarchicalJcrContainer.containsId(containerItemId));
-        hierarchicalJcrContainer.getItem(containerItemId);
-
-        // WHEN
-        boolean res = hierarchicalJcrContainer.containsId(containerItemId);
-
-        // THEN
-        assertEquals(true, res);
-    }
-
-    @Test
     public void testAreChildrenAllowed_true() throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         // GIVEN
-        Node node1 = JcrContainerTest.createNode(rootNode, "node1", "mgnl:content", "name", "name1");
+        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", "mgnl:content", "name", "name1");
         node1.getSession().save();
         String containerItemId = node1.getPath();
 
@@ -181,7 +164,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
     @Test
     public void testAreChildrenAllowed_false() throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         // GIVEN
-        Node node1 = JcrContainerTest.createNode(rootNode, "node1", "mgnl:content", "name", "name1");
+        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", "mgnl:content", "name", "name1");
         node1.getSession().save();
         String containerItemId = node1.getProperty("name").getPath();
 
@@ -195,10 +178,10 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
     @Test
     public void testRootItemIds() throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         // GIVEN
-        Node node1 = JcrContainerTest.createNode(rootNode, "node1", "mgnl:content", "name", "name1");
-        JcrContainerTest.createNode(node1, "node1_1", "mgnl:content", "name", "name1_1");
-        Node node2 = JcrContainerTest.createNode(rootNode, "node2", "mgnl:content", "name", "name2");
-        JcrContainerTest.createNode(node2, "node2_1", "mgnl:content", "name", "name2_1");
+        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", "mgnl:content", "name", "name1");
+        AbstractJcrContainerTest.createNode(node1, "node1_1", "mgnl:content", "name", "name1_1");
+        Node node2 = AbstractJcrContainerTest.createNode(rootNode, "node2", "mgnl:content", "name", "name2");
+        AbstractJcrContainerTest.createNode(node2, "node2_1", "mgnl:content", "name", "name2_1");
         node1.getSession().save();
 
         String containerItemId1 = node1.getPath();
@@ -216,8 +199,8 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
     @Test
     public void testisRoot_true() throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         // GIVEN
-        Node node1 = JcrContainerTest.createNode(rootNode, "node1", "mgnl:content", "name", "name1");
-        JcrContainerTest.createNode(node1, "node1_1", "mgnl:content", "name", "name1_1");
+        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", "mgnl:content", "name", "name1");
+        AbstractJcrContainerTest.createNode(node1, "node1_1", "mgnl:content", "name", "name1_1");
         node1.getSession().save();
 
         String containerItemId1 = node1.getPath();
@@ -232,8 +215,8 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
     @Test
     public void testisRoot_false() throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         // GIVEN
-        Node node1 = JcrContainerTest.createNode(rootNode, "node1", "mgnl:content", "name", "name1");
-        Node node1_1 = JcrContainerTest.createNode(node1, "node1_1", "mgnl:content", "name", "name1_1");
+        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", "mgnl:content", "name", "name1");
+        Node node1_1 = AbstractJcrContainerTest.createNode(node1, "node1_1", "mgnl:content", "name", "name1_1");
         node1.getSession().save();
 
         String containerItemId1_1 = node1_1.getPath();
@@ -248,10 +231,10 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
     @Test
     public void testGetChildren() throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         // GIVEN
-        Node node1 = JcrContainerTest.createNode(rootNode, "node1", "mgnl:content", "name", "name1");
-        Node node1_1 = JcrContainerTest.createNode(node1, "node1_1", "mgnl:content", "name", "name1_1");
-        Node node2 = JcrContainerTest.createNode(rootNode, "node2", "mgnl:content", "name", "name2");
-        JcrContainerTest.createNode(node2, "node2_1", "mgnl:content", "name", "name2_1");
+        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", "mgnl:content", "name", "name1");
+        Node node1_1 = AbstractJcrContainerTest.createNode(node1, "node1_1", "mgnl:content", "name", "name1_1");
+        Node node2 = AbstractJcrContainerTest.createNode(rootNode, "node2", "mgnl:content", "name", "name2");
+        AbstractJcrContainerTest.createNode(node2, "node2_1", "mgnl:content", "name", "name2_1");
         node1.getSession().save();
 
         String containerItemId1 = node1.getPath();
@@ -267,10 +250,10 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
     @Test
     public void testGetParent() throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         // GIVEN
-        Node node1 = JcrContainerTest.createNode(rootNode, "node1", "mgnl:content", "name", "name1");
-        Node node1_1 = JcrContainerTest.createNode(node1, "node1_1", "mgnl:content", "name", "name1_1");
-        Node node2 = JcrContainerTest.createNode(rootNode, "node2", "mgnl:content", "name", "name2");
-        JcrContainerTest.createNode(node2, "node2_1", "mgnl:content", "name", "name2_1");
+        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", "mgnl:content", "name", "name1");
+        Node node1_1 = AbstractJcrContainerTest.createNode(node1, "node1_1", "mgnl:content", "name", "name1_1");
+        Node node2 = AbstractJcrContainerTest.createNode(rootNode, "node2", "mgnl:content", "name", "name2");
+        AbstractJcrContainerTest.createNode(node2, "node2_1", "mgnl:content", "name", "name2_1");
         node1.getSession().save();
 
         String containerItemId1 = node1.getPath();

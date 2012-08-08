@@ -66,7 +66,7 @@ public class ActionbarBuilder {
         } else {
 
             for (ActionbarSectionDefinition section : definition.getSections()) {
-                actionbar.addSection(section.getName(), section.getName());
+                actionbar.addSection(section.getName(), section.getLabel());
                 List<String> actionNames = new ArrayList<String>();
 
                 for (ActionbarGroupDefinition group : section.getGroups()) {

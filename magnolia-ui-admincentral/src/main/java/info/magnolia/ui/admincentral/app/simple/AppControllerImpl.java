@@ -51,7 +51,6 @@ import info.magnolia.ui.framework.app.AppLifecycleEventType;
 import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.event.ResettableEventBus;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.location.LocationChangeRequestedEvent;
@@ -69,6 +68,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.slf4j.Logger;
@@ -83,6 +83,7 @@ import com.vaadin.ui.ComponentContainer;
 @Singleton
 public class AppControllerImpl implements AppController, LocationChangedEvent.Handler, LocationChangeRequestedEvent.Handler {
 
+    public static final String COMMON_APP_COMPONENTS_ID = "app";
     public static final String COMPONENTS_ID_PREFIX = "app-";
 
     private static final Logger log = LoggerFactory.getLogger(AppControllerImpl.class);
@@ -110,17 +111,17 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     private AppContextImpl currentApp;
 
     @Inject
-    public AppControllerImpl(ModuleRegistry moduleRegistry, ComponentProvider componentProvider, AppLauncherLayoutManager appLauncherLayoutManager, LocationController locationController, MessagesManager messagesManager, Shell shell, EventBus eventBus) {
+    public AppControllerImpl(ModuleRegistry moduleRegistry, ComponentProvider componentProvider, AppLauncherLayoutManager appLauncherLayoutManager, LocationController locationController, MessagesManager messagesManager, Shell shell, @Named("adminCentral") EventBus adminCentralEventBus) {
         this.moduleRegistry = moduleRegistry;
         this.componentProvider = componentProvider;
         this.appLauncherLayoutManager = appLauncherLayoutManager;
         this.locationController = locationController;
         this.messagesManager = messagesManager;
         this.shell = shell;
-        this.eventBus = eventBus;
+        this.eventBus = adminCentralEventBus;
 
-        eventBus.addHandler(LocationChangedEvent.class, this);
-        eventBus.addHandler(LocationChangeRequestedEvent.class, this);
+        adminCentralEventBus.addHandler(LocationChangedEvent.class, this);
+        adminCentralEventBus.addHandler(LocationChangeRequestedEvent.class, this);
     }
 
     @Override
@@ -177,7 +178,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
                 location = appContext.getDefaultLocation();
             }
 
-            appContext.start(eventBus, location);
+            appContext.start(location);
 
             runningApps.put(name, appContext);
             sendEvent(AppLifecycleEventType.STARTED, descriptor);
@@ -288,9 +289,9 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
          * Called when the app is launched from the app launcher OR a location change event triggers
          * it to start.
          */
-        public void start(EventBus eventBus, Location location) {
+        public void start(Location location) {
 
-            this.appComponentProvider = createAppComponentProvider(appDescriptor.getName(), this, eventBus);
+            this.appComponentProvider = createAppComponentProvider(appDescriptor.getName(), this);
 
             DefaultLocation appLocation = (DefaultLocation) location;
 
@@ -332,8 +333,6 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
         public void stop() {
             app.stop();
-            ((ResettableEventBus) appComponentProvider.getComponent(EventBus.class)).reset();
-
         }
 
         public Location getDefaultLocation() {
@@ -377,24 +376,28 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     }
 
     /**
-     * Creates a ComponentProvider as a child of the admincentral ComponentProvider dedicated to the
-     * app. This gives us the ability to inject the AppContext into App components. The components
-     * are read from module descriptors using the convention "app-" + name of the app.
+     * Creates a ComponentProvider dedicated for the app with the AdminCentral ComponentProvider as its parent. This
+     * gives us the ability to inject the AppContext into App components. The components are read from module
+     * descriptors using the convention "app-" + name of the app and merged with the components defined for all apps
+     * with the id "app".
      */
-    private ComponentProvider createAppComponentProvider(String name, AppContext appContext, EventBus eventBus) {
+    private ComponentProvider createAppComponentProvider(String name, AppContext appContext) {
 
-        String componentsId = COMPONENTS_ID_PREFIX + name;
-
-        log.debug("Reading component configurations from module descriptors for " + componentsId);
         ComponentProviderConfigurationBuilder configurationBuilder = new ComponentProviderConfigurationBuilder();
         List<ModuleDefinition> moduleDefinitions = moduleRegistry.getModuleDefinitions();
-        ComponentProviderConfiguration configuration = configurationBuilder.getComponentsFromModules(componentsId, moduleDefinitions);
+
+        // Get components common to all apps
+        ComponentProviderConfiguration configuration = configurationBuilder.getComponentsFromModules(COMMON_APP_COMPONENTS_ID, moduleDefinitions);
+
+        // Get components for this specific app
+        String componentsId = COMPONENTS_ID_PREFIX + name;
+        log.debug("Reading component configurations from module descriptors for " + componentsId);
+        ComponentProviderConfiguration appComponents = configurationBuilder.getComponentsFromModules(componentsId, moduleDefinitions);
+
+        configuration.combine(appComponents);
 
         // Add the AppContext instance into the component provider.
         configuration.addComponent(InstanceConfiguration.valueOf(AppContext.class, appContext));
-
-        // Add a local EventBus (of type ResettableEventBus) into the app component provider.
-        configuration.addComponent(InstanceConfiguration.valueOf(EventBus.class, new ResettableEventBus(eventBus)));
 
         log.debug("Creating component provider for app " + name);
         GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();

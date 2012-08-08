@@ -46,6 +46,7 @@ import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -74,7 +75,7 @@ public class ContentPresenter implements ContentView.Listener {
     private String selectedItemId;
 
     @Inject
-    public ContentPresenter(final ContentViewBuilderProvider contentViewBuilderProvider, final AppContext context, final EventBus eventbus, final Shell shell) {
+    public ContentPresenter(final ContentViewBuilderProvider contentViewBuilderProvider, final AppContext context, @Named("app") final EventBus eventbus, final Shell shell) {
         this.contentViewBuilderProvider = contentViewBuilderProvider;
         this.eventBus = eventbus;
         this.shell = shell;
@@ -120,8 +121,8 @@ public class ContentPresenter implements ContentView.Listener {
     }
 
     /**
-     * @return the id of the Vaadin item currently selected in one the currently active {@link ContentView}.
-     * It is equivalent to javax.jcr.Item#getPath().
+     * @return the id of the Vaadin item currently selected in one the currently active
+     * {@link ContentView}. It is equivalent to javax.jcr.Item#getPath().
      * @see JcrItemAdapter#getItemId()
      */
     public String getSelectedItemId() {

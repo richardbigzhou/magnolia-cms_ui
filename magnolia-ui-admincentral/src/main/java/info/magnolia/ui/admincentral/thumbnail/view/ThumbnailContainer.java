@@ -52,7 +52,9 @@ import com.vaadin.terminal.Resource;
  * Container that provides thumbnails lazily.
  */
 public class ThumbnailContainer extends AbstractInMemoryContainer<String, Resource, ThumbnailItem> implements Container.Ordered {
-    
+
+    public static final String THUMBNAIL_PROPERTY_ID = "thumbnail";
+
     private ThumbnailProvider thumbnailProvider;
 
     private String workspaceName = "";
@@ -69,12 +71,12 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Resour
 
     @Override
     public Collection<String> getContainerPropertyIds() {
-        return Arrays.asList("thumbnail");
+        return Arrays.asList(THUMBNAIL_PROPERTY_ID);
     }
 
     @Override
     public ThumbnailContainerProperty getContainerProperty(Object itemId, Object propertyId) {
-        if ("thumbnail".equals(propertyId)) {
+        if (THUMBNAIL_PROPERTY_ID.equals(propertyId)) {
             return new ThumbnailContainerProperty(String.valueOf(itemId));
         }
         return null;
@@ -82,7 +84,7 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Resour
 
     @Override
     public Class<?> getType(Object propertyId) {
-        if ("thumbnail".equals(propertyId)) {
+        if (THUMBNAIL_PROPERTY_ID.equals(propertyId)) {
             return Resource.class;
         }
         return null;
@@ -152,23 +154,21 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Resour
      */
     public class ThumbnailContainerProperty extends AbstractProperty {
 
-        private String itemId;
+        private String resourcePath;
 
-        public ThumbnailContainerProperty(final String itemId) {
-            this.itemId = itemId;
+        public ThumbnailContainerProperty(final String resourcePath) {
+            this.resourcePath = resourcePath;
         }
 
         @Override
         public Resource getValue() {
-            return new ExternalResource(thumbnailProvider.getPath(itemId, getWorkspaceName(), getThumbnailWidth(), getThumbnailHeight()));
+            final String path = thumbnailProvider.getPath(resourcePath, getWorkspaceName(), getThumbnailWidth(), getThumbnailHeight());
+            return path == null ? null: new ExternalResource(path);
         }
 
         @Override
         public void setValue(Object newValue) throws ReadOnlyException, ConversionException {
-            if (!(newValue instanceof Resource)) {
-                throw new IllegalArgumentException("Only accepts resources!");
-            }
-
+            this.resourcePath = String.valueOf(newValue);
         }
 
         @Override
@@ -191,7 +191,7 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Resour
 
         @Override
         public Property getItemProperty(Object id) {
-            if ("thumbnail".equals(id)) {
+            if (THUMBNAIL_PROPERTY_ID.equals(id)) {
                 return new ThumbnailContainerProperty(this.id);
             }
             return null;
@@ -199,7 +199,7 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Resour
 
         @Override
         public Collection<?> getItemPropertyIds() {
-            return Arrays.asList("thumbnail");
+            return Arrays.asList(THUMBNAIL_PROPERTY_ID);
         }
 
         @Override

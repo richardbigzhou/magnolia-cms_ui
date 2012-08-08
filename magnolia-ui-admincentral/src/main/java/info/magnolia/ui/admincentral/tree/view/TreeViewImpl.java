@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.tree.view;
 
-import info.magnolia.ui.admincentral.container.JcrContainer;
+import info.magnolia.ui.admincentral.container.AbstractJcrContainer;
 import info.magnolia.ui.admincentral.content.view.ContentView;
 import info.magnolia.ui.admincentral.tree.model.TreeModel;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
@@ -88,7 +88,7 @@ public class TreeViewImpl implements TreeView {
             @Override
             public void itemClick(ItemClickEvent event) {
                 if(event.isDoubleClick()) {
-                    presenterOnDoubleClick(String.valueOf(event.getPropertyId()));
+                    presenterOnDoubleClick(String.valueOf(event.getItemId()));
                 }
             }
         });
@@ -132,7 +132,7 @@ public class TreeViewImpl implements TreeView {
     }
 
     @Override
-    public JcrContainer getContainer() {
+    public AbstractJcrContainer getContainer() {
         throw new UnsupportedOperationException(getClass().getName() + " does not support this operation");
     }
 

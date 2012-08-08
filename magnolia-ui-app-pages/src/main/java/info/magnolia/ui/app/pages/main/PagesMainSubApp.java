@@ -44,8 +44,9 @@ import javax.inject.Inject;
  */
 public class PagesMainSubApp implements SubApp, PagesMainView.Listener {
 
+    private static final String CAPTION = "Pages";
+
     private PagesMainView view;
-    private final static String CAPTION = "Pages";
     private ContentWorkbenchSubApp workbench;
 
     @Inject

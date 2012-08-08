@@ -44,13 +44,13 @@ import com.google.gwt.user.client.ui.SimplePanel;
 public class VThumbnail extends Composite {
 
     private final SimplePanel panel = new SimplePanel();
-    
+
     private final Image image = new Image(LazyThumbnailLayoutImageBundle.INSTANCE.getStubImage().getSafeUri());
-    
+
     private VThumbnailData data;
-    
+
     private boolean isSelected = false;
-    
+
     public VThumbnail() {
         super();
         initWidget(panel);
@@ -58,18 +58,18 @@ public class VThumbnail extends Composite {
         image.setStyleName("thumbnail-image");
         panel.setWidget(image);
     }
-    
+
     public String getId() {
         return data.getId();
     }
-    
+
     public void setData(VThumbnailData data) {
         this.data = data;
         if (data != null) {
             image.setUrl(data.getSrc());
         }
     }
-    
+
     public void setSelected(boolean isSelected) {
         this.isSelected = isSelected;
         if (isSelected) {
@@ -78,7 +78,7 @@ public class VThumbnail extends Composite {
             removeStyleName("selected");
         }
     }
-    
+
     public boolean isSelected() {
         return isSelected;
     }

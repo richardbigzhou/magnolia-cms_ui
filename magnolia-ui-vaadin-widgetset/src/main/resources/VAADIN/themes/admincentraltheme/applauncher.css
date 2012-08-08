@@ -18,7 +18,7 @@
     cursor: pointer;
     display: inline-block;
     float: left;
-    font-family: DinRound;
+    font-family: DINWebPro;
     font-size: 12px;
     height: 78px;
     margin: 0 2px 2px 0;
@@ -72,13 +72,13 @@
 .item.section.closed {
 	background-image: url("img/applauncher/style-appslauncher-group-triangle-closed.png");
     background-position: left center;
-    background-repeat: no-repeat;	
+    background-repeat: no-repeat;
 }
 
 .item.section.open {
 	background-image: url("img/applauncher/style-appslauncher-group-triangle-open.png");
     background-position: bottom center;
-    background-repeat: no-repeat;	
+    background-repeat: no-repeat;
 }
 
 /* Animation for tiles */
@@ -113,12 +113,13 @@
 }
 
 .loading-message {
-    color: #777777;
-    font-family: DINWebPro-Medium;
-    font-size: 14px;
-    margin: 70px auto auto;
-    text-transform: uppercase;
-    width: 300px;
+    color:#777777;
+    font-family:DINWebPro;
+    font-weight:bold;
+    font-size:14px;
+    margin:70px auto auto;
+    text-transform:uppercase;
+    width:300px;
 }
 
 

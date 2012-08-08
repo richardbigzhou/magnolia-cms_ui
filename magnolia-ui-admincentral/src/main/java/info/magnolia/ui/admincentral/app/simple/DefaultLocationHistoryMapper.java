@@ -82,11 +82,8 @@ public class DefaultLocationHistoryMapper implements LocationHistoryMapper {
         }
 
         AppLauncherLayout appLauncherLayout = appLauncherLayoutManager.getLayoutForCurrentUser();
-        if (type.equals(DefaultLocation.LOCATION_TYPE_APP) && appLauncherLayout.containsApp(prefix)) {
-            return true;
-        }
+        return type.equals(DefaultLocation.LOCATION_TYPE_APP) && appLauncherLayout.containsApp(prefix);
 
-        return false;
     }
 
 }

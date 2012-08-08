@@ -36,7 +36,6 @@ package info.magnolia.ui.app.sample.main;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import info.magnolia.ui.app.sample.SampleApp;
 import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.view.View;
 
@@ -46,7 +45,6 @@ import info.magnolia.ui.framework.view.View;
 @Singleton
 public class SampleMainSubApp implements SubApp, SampleMainView.Listener {
 
-    private SampleApp sampleApp;
     private SampleMainView sampleMainView;
     private NavigationPresenter navigationPresenter;
     private ContentDisplayPresenter contentDisplayPresenter;
@@ -56,10 +54,6 @@ public class SampleMainSubApp implements SubApp, SampleMainView.Listener {
         this.sampleMainView = sampleMainView;
         this.contentDisplayPresenter = contentDisplayPresenter;
         this.navigationPresenter = navigationPresenter;
-    }
-
-    public void setSampleApp(SampleApp sampleApp) {
-        this.sampleApp = sampleApp;
     }
 
     @Override

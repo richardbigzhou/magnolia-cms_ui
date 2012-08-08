@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,16 +33,18 @@
  */
 package info.magnolia.ui.framework.event;
 
-import javax.inject.Singleton;
+import com.google.inject.name.Names;
+import com.google.inject.util.Providers;
+
+import info.magnolia.objectfactory.guice.AbstractGuiceComponentConfigurer;
 
 /**
- * Event bus implementation.
- *
- * Inspired by {@link com.google.gwt.event.shared.SimpleEventBus}.
- *
- * @see SystemEventBus
+ * Configures an {@link EventBus} bound to the name <code>app</code>.
  */
-@Singleton
-public class SimpleSystemEventBus extends SimpleEventBus implements SystemEventBus {
+public class AppEventBusConfigurer extends AbstractGuiceComponentConfigurer {
 
+    @Override
+    protected void configure() {
+        bind(EventBus.class).annotatedWith(Names.named("app")).toProvider(Providers.of(new SimpleEventBus()));
+    }
 }

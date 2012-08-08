@@ -37,6 +37,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import info.magnolia.objectfactory.ComponentProvider;
@@ -68,16 +69,16 @@ public class ShellAppController implements LocationChangedEvent.Handler, Locatio
     private ShellAppContextImpl currentAppContext = null;
 
     @Inject
-    public ShellAppController(ComponentProvider componentProvider, Shell shell, EventBus eventBus) {
+    public ShellAppController(ComponentProvider componentProvider, Shell shell, @Named("adminCentral") EventBus adminCentralEventBus) {
         this.componentProvider = componentProvider;
         this.shell = shell;
-        this.eventBus = eventBus;
+        this.eventBus = adminCentralEventBus;
         contexts.put("applauncher", create(AppLauncherShellApp.class));
         contexts.put("pulse", create(PulseShellApp.class));
         contexts.put("favorite", create(FavoritesShellApp.class));
 
-        eventBus.addHandler(LocationChangedEvent.class, this);
-        eventBus.addHandler(LocationChangeRequestedEvent.class, this);
+        adminCentralEventBus.addHandler(LocationChangedEvent.class, this);
+        adminCentralEventBus.addHandler(LocationChangeRequestedEvent.class, this);
     }
 
     private ShellAppContextImpl create(Class<? extends ShellApp> clazz) {

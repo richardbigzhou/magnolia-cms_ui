@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.admincentral.app.simple;
 
+import javax.inject.Named;
+
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.event.InvocationCountingTestEventHandler;
@@ -46,7 +48,7 @@ public class AppEventTestImpl extends AppTestImpl {
     public InvocationCountingTestEventHandler handler;
 
     @Inject
-    public AppEventTestImpl(AppContext ctx, AppTestSubApp subApp, EventBus eventBus) {
+    public AppEventTestImpl(AppContext ctx, AppTestSubApp subApp, @Named("app") EventBus eventBus) {
         super(ctx, subApp);
         this.eventBus = eventBus;
 

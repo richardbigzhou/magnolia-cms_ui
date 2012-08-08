@@ -40,10 +40,6 @@ import info.magnolia.ui.framework.view.View;
  */
 public interface ContentDisplayView extends View {
 
-    void setListener(Listener listener);
-
-    void setResource(String name);
-
     /**
      * Listener.
      */
@@ -51,4 +47,8 @@ public interface ContentDisplayView extends View {
 
         void onOpenInNewEditor();
     }
+
+    void setListener(Listener listener);
+
+    void setResource(String name);
 }

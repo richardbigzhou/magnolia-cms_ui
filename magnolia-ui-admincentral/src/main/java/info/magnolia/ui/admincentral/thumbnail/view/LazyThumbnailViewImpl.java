@@ -36,13 +36,14 @@ package info.magnolia.ui.admincentral.thumbnail.view;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.predicate.AbstractPredicate;
 import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.ui.admincentral.container.JcrContainer;
+import info.magnolia.ui.admincentral.container.AbstractJcrContainer;
 import info.magnolia.ui.model.thumbnail.ThumbnailProvider;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.widget.LazyThumbnailLayout;
-import info.magnolia.ui.vaadin.integration.widget.LazyThumbnailLayout.ThumbnaSeletionListener;
+import info.magnolia.ui.vaadin.integration.widget.LazyThumbnailLayout.ThumbnailSelectionListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.jcr.LoginException;
@@ -60,29 +61,30 @@ import com.vaadin.data.Item;
 import com.vaadin.ui.Component;
 
 /**
- * ThumbnailViewImpl.
+ * LazyThumbnailViewImpl.
  */
 public class LazyThumbnailViewImpl implements ThumbnailView {
 
     private static final Logger log = LoggerFactory.getLogger(LazyThumbnailViewImpl.class);
-    
-    private WorkbenchDefinition workbenchDefinition; 
-    
+
+    private WorkbenchDefinition workbenchDefinition;
+
     private AbstractPredicate<Node> filterByItemType;
-    
+
     private Listener listener;
-    
+
     private LazyThumbnailLayout layout;
 
     private ThumbnailProvider thumbnailProvider;
-    
-    
+
+
     public LazyThumbnailViewImpl(final WorkbenchDefinition definition, final ThumbnailProvider thumbnailProvider) {
         this.workbenchDefinition = definition;
         this.layout = new LazyThumbnailLayout();
         this.thumbnailProvider = thumbnailProvider;
         layout.setSizeFull();
-        
+        layout.addStyleName("mgnl-workbench-thumbnail-view");
+
         final String[] itemTypes = getItemTypes(definition);
         if(itemTypes != null) {
             filterByItemType = new ItemTypePredicate(itemTypes);
@@ -90,7 +92,7 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
             log.warn("Workbench definition contains no item types, node filter will accept all mgnl item types.");
             filterByItemType = NodeUtil.MAGNOLIA_FILTER;
         }
-        layout.addThumbnailSelectionListener(new ThumbnaSeletionListener() {
+        layout.addThumbnailSelectionListener(new ThumbnailSelectionListener() {
             @Override
             public void onThumbnailSelected(final String thumbnailId) {
                 Session session;
@@ -99,15 +101,15 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
                     final Node imageNode = session.getNodeByIdentifier(thumbnailId);
                     listener.onItemSelection(new JcrNodeAdapter(imageNode));
                 } catch (LoginException e) {
-                    e.printStackTrace();
+                    log.error(e.getMessage());
                 } catch (RepositoryException e) {
-                    e.printStackTrace();
+                    log.error(e.getMessage());
                 }
             }
         });
-        
+
     }
-    
+
     @Override
     public void setListener(Listener listener) {
         this.listener = listener;
@@ -115,50 +117,28 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
 
     @Override
     public void select(String path) {
-        
+
     }
 
     @Override
-    public void refresh() {
-        try {
-            //FIXME fgrilli the arg to get node must take into account that the current path can change if we navigate in hierarchy.
-            Node parent = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace()).getNode(workbenchDefinition.getPath());
-            Iterable<Node> assets = NodeUtil.collectAllChildren(parent, filterByItemType);
-            final List<String> uuids = Lists.transform(NodeUtil.asList(assets), new Function<Node, String>() {
-                @Override
-                public String apply(Node node) {
-                    try {
-                        return node.getIdentifier();
-                    } catch (RepositoryException e) {
-                        return null;
-                    }
-                }
-            });
-            final ThumbnailContainer container = new ThumbnailContainer(thumbnailProvider, uuids);
-            container.setWorkspaceName(workbenchDefinition.getWorkspace());
-            container.setThumbnailHeight(73);
-            container.setThumbnailWidth(73);
-            layout.setContainerDataSource(container);
-            layout.setThumbnailSize(73, 73);
-            
-
-        } catch (PathNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (LoginException e) {
-            throw new RuntimeException(e);
-        } catch (RepositoryException e) {
-            throw new RuntimeException(e);
-        }
+    public final void refresh() {
+        final List<String> uuids = getAllIdentifiers(workbenchDefinition.getWorkspace(), workbenchDefinition.getPath());
+        final ThumbnailContainer container = new ThumbnailContainer(thumbnailProvider, uuids);
+        container.setWorkspaceName(workbenchDefinition.getWorkspace());
+        container.setThumbnailHeight(73);
+        container.setThumbnailWidth(73);
+        layout.setContainerDataSource(container);
+        layout.setThumbnailSize(73, 73);
     }
 
     @Override
     public void refreshItem(Item item) {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
-    public JcrContainer getContainer() {
+    public AbstractJcrContainer getContainer() {
         throw new UnsupportedOperationException();
     }
 
@@ -168,7 +148,45 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
     }
 
     /**
-     * Accepts only nodes of the type(s) passed as argument to the costructor.
+     * @return a List of JCR identifiers for the all the nodes recursively found under <code>initialPath</code>. This method is called in {@link LazyThumbnailViewImpl#refresh()}.
+     * You can override this method, if you need a different strategy than the default one to fetch the identifiers of the nodes for which thumbnails need to be displayed.
+     * @see ThumbnailContainer
+     * @see LazyThumbnailLayout#refresh()
+     */
+    protected List<String> getAllIdentifiers(final String workspaceName, final String initialPath) {
+        List<String> uuids = new ArrayList<String>();
+        try {
+            //TODO fgrilli: needs proof but it's probably more performing if we just do a jcr sql 2 query, something like
+            // select [jcr:uuid] from [mgnl:content]
+            //instead of iterating over everything and then discard  what we don't need
+            log.debug("Recursively collecting all children at [{}:{}]...", workspaceName, initialPath);
+            long start = System.currentTimeMillis();
+            Node parent = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace()).getNode(workbenchDefinition.getPath());
+            Iterable<Node> assets = NodeUtil.collectAllChildren(parent, filterByItemType);
+            uuids = Lists.transform(NodeUtil.asList(assets), new Function<Node, String>() {
+                @Override
+                public String apply(Node node) {
+                    try {
+                        return node.getIdentifier();
+                    } catch (RepositoryException e) {
+                        return null;
+                    }
+                }
+            });
+            log.debug("Done collecting {} children in {}ms", uuids.size(), System.currentTimeMillis() - start);
+
+        } catch (PathNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (LoginException e) {
+            throw new RuntimeException(e);
+        } catch (RepositoryException e) {
+            throw new RuntimeException(e);
+        }
+        return uuids;
+    }
+
+    /**
+     * Accepts only nodes of the type(s) passed as argument to the constructor.
      */
     private static class ItemTypePredicate extends AbstractPredicate<Node> {
         private String[] itemTypes;
