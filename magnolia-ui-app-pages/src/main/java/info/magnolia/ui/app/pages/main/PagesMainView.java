@@ -50,5 +50,5 @@ public interface PagesMainView extends View {
 
     void setListener(Listener listener);
 
-    void setWorkBench(ComponentContainer workbench);
+    void setWorkbenchView(View workbenchView);
 }

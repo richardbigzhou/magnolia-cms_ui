@@ -63,7 +63,7 @@ public class PagesMainSubApp implements SubApp, PagesMainView.Listener {
 
     @Override
     public View start() {
-        view.setWorkBench(workbench.asView());
+        view.setWorkbenchView(workbench.asView());
         return view;
     }
 }
