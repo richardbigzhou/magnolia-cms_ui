@@ -115,7 +115,7 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
     private final ActionbarPresenter actionbarPresenter;
 
     @Inject
-    public ContentWorkbenchPresenter(final AppContext context, final ContentWorkbenchView view, @Named("adminCentral") final EventBus adminCentralEventBus, @Named("app") final EventBus appEventBus, final Shell shell, final WorkbenchActionFactory actionFactory, final ContentPresenter contentPresenter, final ActionbarPresenter actionbarPresenter) {
+    public ContentWorkbenchPresenter(final AppContext appContext, final ContentWorkbenchView view, @Named("adminCentral") final EventBus adminCentralEventBus, @Named("app") final EventBus appEventBus, final Shell shell, final WorkbenchActionFactory actionFactory, final ContentPresenter contentPresenter, final ActionbarPresenter actionbarPresenter) {
         this.view = view;
         this.adminCentralEventBus = adminCentralEventBus;
         this.appEventBus = appEventBus;
@@ -123,8 +123,10 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
         this.actionFactory = actionFactory;
         this.contentPresenter = contentPresenter;
         this.actionbarPresenter = actionbarPresenter;
+        this.workbenchDefinition = ((ContentAppDescriptor) appContext.getAppDescriptor()).getWorkbench();
+    }
 
-        workbenchDefinition = ((ContentAppDescriptor) context.getAppDescriptor()).getWorkbench();
+    public ContentWorkbenchView start() {
         contentPresenter.initContentView(view);
         view.setListener(this);
 
@@ -132,6 +134,8 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
         view.setActionbarView(actionbar);
 
         bindHandlers();
+
+        return view;
     }
 
     private void bindHandlers() {

@@ -60,7 +60,7 @@ public class ContactsMainSubApp implements SubApp {
 
     @Override
     public View start() {
-        view.setWorkbenchView(workbench.getView());
+        view.setWorkbenchView(workbench.start());
         return view;
     }
 }
