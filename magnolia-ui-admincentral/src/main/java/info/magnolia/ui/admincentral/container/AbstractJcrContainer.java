@@ -48,11 +48,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.jcr.LoginException;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
@@ -533,7 +531,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     }
 
-    private void updateSize() {
+    protected void updateSize() {
 
         try {
             final StringBuilder stmt = new StringBuilder(SELECT_CONTENT);
@@ -587,10 +585,6 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
             return result;
 
-        } catch (LoginException e) {
-            throw new RuntimeRepositoryException(e);
-        } catch (InvalidQueryException e) {
-            throw new RuntimeRepositoryException(e);
         } catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);
         }
