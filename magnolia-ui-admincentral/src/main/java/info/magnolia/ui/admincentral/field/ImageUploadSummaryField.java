@@ -51,12 +51,6 @@ public class ImageUploadSummaryField extends AbstractFieldBuilder<FileUploadFiel
 
     @Override
     protected Field buildField() {
-
         return null;
-    }
-
-    @Override
-    public void setPropertyDataSource(final Property property) {
-        super.setPropertyDataSource(property);
     }
 }

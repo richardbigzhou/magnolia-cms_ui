@@ -246,10 +246,7 @@ public class TreeModel implements JcrContainerSource {
             return false;
         }
         // Source can not be a child of target.
-        if(target.getPath().startsWith(source.getPath())) {
-            return false;
-        }
-        return true;
+        return !target.getPath().startsWith(source.getPath());
     }
 
 

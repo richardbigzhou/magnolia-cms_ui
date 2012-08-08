@@ -104,7 +104,7 @@ public class PulseViewImpl implements PulseView {
 
     @Override
     public String setCurrentPulseTab(final String tabId, final List<String> params) {
-        PulseTabType type = null;
+        PulseTabType type;
         String finalDisplayedTabId = tabId;
         try {
             type = PulseTabType.valueOf(String.valueOf(tabId).toUpperCase());

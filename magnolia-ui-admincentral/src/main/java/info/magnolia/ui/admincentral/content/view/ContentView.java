@@ -75,10 +75,6 @@ public interface ContentView extends View {
 
     void setListener(Listener listener);
 
-
-    /**
-     * @throws info.magnolia.exception.RuntimeRepositoryException if the path does not exist
-     */
     void select(String path);
 
     void refresh();
