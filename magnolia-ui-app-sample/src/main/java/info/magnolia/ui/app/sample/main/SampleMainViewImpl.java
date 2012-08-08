@@ -65,12 +65,12 @@ public class SampleMainViewImpl implements SampleMainView {
     }
 
     @Override
-    public void setRightView(View right) {
-        layout.setSecondComponent(right.asVaadinComponent());
+    public void setLeftView(View left) {
+        layout.setFirstComponent(left.asVaadinComponent());
     }
 
     @Override
-    public void setLeftView(View left) {
-        layout.setFirstComponent(left.asVaadinComponent());
+    public void setRightView(View right) {
+        layout.setSecondComponent(right.asVaadinComponent());
     }
 }
