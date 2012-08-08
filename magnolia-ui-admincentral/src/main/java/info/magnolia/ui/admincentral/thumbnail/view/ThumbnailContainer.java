@@ -54,6 +54,7 @@ import com.vaadin.terminal.Resource;
 public class ThumbnailContainer extends AbstractInMemoryContainer<String, Resource, ThumbnailItem> implements Container.Ordered {
 
     public static final String THUMBNAIL_PROPERTY_ID = "thumbnail";
+
     private ThumbnailProvider thumbnailProvider;
 
     private String workspaceName = "";

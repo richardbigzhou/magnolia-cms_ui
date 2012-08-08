@@ -62,20 +62,19 @@ public class TemplateSelectorField extends SelectFieldBuilder<TemplateSelectorDe
      */
     @Override
     public Map<String, String> getOptions() {
-        TemplateDefinitionAssignment templateAssignment = Components.getComponent(TemplateDefinitionAssignment.class);
-        Map<String, String> res = new HashMap<String, String>();
 
+        TemplateDefinitionAssignment templateAssignment = Components.getComponent(TemplateDefinitionAssignment.class);
         Collection<TemplateDefinition> templates = templateAssignment.getAvailableTemplates(getRelatedNode(item));
 
+        Map<String, String> options = new HashMap<String, String>();
         for (TemplateDefinition templateDefinition : templates) {
-            res.put(templateDefinition.getId(), templateDefinition.getTitle());
+            options.put(templateDefinition.getId(), templateDefinition.getTitle());
         }
-        return res;
+        return options;
     }
 
     @Override
     protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {
         return String.class;
     }
-
 }

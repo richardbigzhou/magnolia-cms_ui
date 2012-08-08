@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.app.pages.field;
 
-
 import info.magnolia.ui.model.field.definition.SelectFieldDefinition;
 
 /**

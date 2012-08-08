@@ -37,19 +37,18 @@ import info.magnolia.ui.framework.view.View;
 
 /**
  * Displays the page preview.
- *
  */
 public interface PagePreviewView extends View {
 
-    void setListener(final Listener listener);
-    
-    void setUrl(final String url);
     /**
      * Listener interface of the view.
      */
     interface Listener {
 
         void closePreview();
-        
     }
+
+    void setListener(Listener listener);
+
+    void setUrl(String url);
 }

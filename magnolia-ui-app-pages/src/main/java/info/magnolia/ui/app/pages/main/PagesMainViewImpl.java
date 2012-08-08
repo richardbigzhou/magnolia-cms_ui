@@ -46,7 +46,6 @@ public class PagesMainViewImpl implements PagesMainView {
     private ComponentContainer view;
     private Listener listener;
 
-
     @Override
     public Component asVaadinComponent() {
         return view;
@@ -54,13 +53,11 @@ public class PagesMainViewImpl implements PagesMainView {
 
     @Override
     public void setWorkBench(ComponentContainer workBench) {
-    this.view = workBench;
+        this.view = workBench;
     }
 
     @Override
     public void setListener(Listener listener) {
         this.listener = listener;
     }
-
-
 }

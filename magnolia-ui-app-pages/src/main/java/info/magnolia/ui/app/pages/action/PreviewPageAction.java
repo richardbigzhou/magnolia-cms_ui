@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.app.pages.action;
 
-
 import com.google.inject.Inject;
 import info.magnolia.cms.beans.runtime.FileProperties;
 import info.magnolia.cms.core.MgnlNodeType;
@@ -66,16 +65,17 @@ import java.util.TimeZone;
  */
 public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
 
-    private final Node nodeToPreview;
+    private static final String TOKEN = "preview";
+    private static final String IMAGE_NODE_NAME = AbstractThumbnailProvider.ORIGINAL_IMAGE_NODE_NAME;
+    private static final String IMAGE_TYPE = "png";
+
     private static final Logger log = LoggerFactory.getLogger(PreviewPageAction.class);
+
+    private final Node nodeToPreview;
 
     private LocationController locationController;
 
-    private static final String TOKEN = "preview";
-    private static final String IMAGE_NODE_NAME = AbstractThumbnailProvider.ORIGINAL_IMAGE_NODE_NAME;
     private RendererRegistry registry;
-
-    private static final String IMAGE_TYPE = "png";
 
     //private PngRenderer renderer;
 
@@ -87,13 +87,11 @@ public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
      */
     @Inject
     public PreviewPageAction(PreviewPageActionDefinition definition, RendererRegistry registry, LocationController locationController, Node nodeToPreview) {
-
         super(definition);
         this.registry = registry;
         this.locationController = locationController;
         this.nodeToPreview = nodeToPreview;
     }
-
 
     @Override
     public void execute() throws ActionExecutionException {
@@ -132,10 +130,7 @@ public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
             child = node.addNode(IMAGE_NODE_NAME, MgnlNodeType.NT_RESOURCE);
         }
 
-
         BinaryImpl binaryImpl = new BinaryImpl(inputStream);
-
-
 
         child.setProperty(MgnlNodeType.JCR_DATA, binaryImpl);
 
@@ -151,7 +146,5 @@ public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
         child.setProperty(FileProperties.PROPERTY_WIDTH, imageSize!=null ? imageSize.getWidth():150);
         child.setProperty(FileProperties.PROPERTY_HEIGHT, imageSize!=null ? imageSize.getHeight():150);
         child.getSession().save();
-
     }
-
 }

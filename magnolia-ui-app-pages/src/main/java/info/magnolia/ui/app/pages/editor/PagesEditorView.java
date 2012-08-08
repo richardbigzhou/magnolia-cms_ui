@@ -43,15 +43,6 @@ import info.magnolia.ui.widget.editor.PageEditorView;
  */
 public interface PagesEditorView extends View {
 
-    void setListener(Listener listener);
-
-    void setPageEditor(PageEditorView pageEditor);
-
-    /**
-     * Use this method to add an action bar to this sub app view.
-     */
-    void setActionbarView(final ActionbarView actionbar);
-
     /**
      * Listener.
      */
@@ -59,4 +50,13 @@ public interface PagesEditorView extends View {
 
         void setParameters(PageEditorParameters parameters);
     }
+
+    void setListener(Listener listener);
+
+    void setPageEditor(PageEditorView pageEditor);
+
+    /**
+     * Use this method to add an action bar to this sub app view.
+     */
+    void setActionbarView(ActionbarView actionbar);
 }

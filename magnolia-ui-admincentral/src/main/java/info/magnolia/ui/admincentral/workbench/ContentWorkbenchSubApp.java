@@ -96,6 +96,8 @@ import com.vaadin.ui.Embedded;
 @SuppressWarnings("serial")
 public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.Listener {
 
+    protected final static String IMAGE_NODE_NAME = AbstractThumbnailProvider.ORIGINAL_IMAGE_NODE_NAME;
+
     private static final Logger log = LoggerFactory.getLogger(ContentWorkbenchSubApp.class);
 
     private final WorkbenchDefinition workbenchDefinition;
@@ -113,8 +115,6 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
     private final ContentPresenter contentPresenter;
 
     private final ActionbarPresenter actionbarPresenter;
-
-    protected final static String IMAGE_NODE_NAME = AbstractThumbnailProvider.ORIGINAL_IMAGE_NODE_NAME;
 
     @Inject
     public ContentWorkbenchSubApp(final AppContext context, final ContentWorkbenchView view, @Named("adminCentral") final EventBus adminCentralEventBus, @Named("app") final EventBus appEventBus, final Shell shell, final WorkbenchActionFactory actionFactory, final ContentPresenter contentPresenter, final ActionbarPresenter actionbarPresenter) {

@@ -73,6 +73,10 @@ import org.slf4j.LoggerFactory;
  */
 public class PageEditorPresenter implements PageEditorView.Listener {
 
+    private static final String NEW_COMPONENT_DIALOG = "ui-pages-app:newComponent";
+
+    private static final Logger log = LoggerFactory.getLogger(PageEditorPresenter.class);
+
     private final PageEditorView view;
 
     private final EventBus adminCentralEventBus;
@@ -87,12 +91,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
     private String path;
 
-    private final String NEW_COMPONENT_DIALOG = "ui-pages-app:newComponent";
-
-
     private final ConfiguredDialogDefinition dialogDefinition;
-
-    private static final Logger log = LoggerFactory.getLogger(PageEditorPresenter.class);
 
     @Inject
     public PageEditorPresenter(PageEditorView view, @Named("adminCentral") EventBus adminCentralEventBus, @Named("app") EventBus appEventBus, DialogPresenterFactory dialogPresenterFactory, TemplateDefinitionRegistry templateDefinitionRegistry) {
