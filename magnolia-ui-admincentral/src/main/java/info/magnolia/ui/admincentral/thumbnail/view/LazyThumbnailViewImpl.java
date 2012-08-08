@@ -43,6 +43,7 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.widget.LazyThumbnailLayout;
 import info.magnolia.ui.vaadin.integration.widget.LazyThumbnailLayout.ThumbnailSelectionListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.jcr.LoginException;
@@ -120,38 +121,14 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
     }
 
     @Override
-    public void refresh() {
-        try {
-            //TODO fgrilli: needs proof but it's probably more performing if we just do a jcr sql 2 query, something like
-            // select [jcr:uuid] from [mgnl:content]
-            //instead of iterating everything and then discard  what we don't need
-            Node parent = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace()).getNode(workbenchDefinition.getPath());
-            Iterable<Node> assets = NodeUtil.collectAllChildren(parent, filterByItemType);
-            final List<String> uuids = Lists.transform(NodeUtil.asList(assets), new Function<Node, String>() {
-                @Override
-                public String apply(Node node) {
-                    try {
-                        return node.getIdentifier();
-                    } catch (RepositoryException e) {
-                        return null;
-                    }
-                }
-            });
-            final ThumbnailContainer container = new ThumbnailContainer(thumbnailProvider, uuids);
-            container.setWorkspaceName(workbenchDefinition.getWorkspace());
-            container.setThumbnailHeight(73);
-            container.setThumbnailWidth(73);
-            layout.setContainerDataSource(container);
-            layout.setThumbnailSize(73, 73);
-
-
-        } catch (PathNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (LoginException e) {
-            throw new RuntimeException(e);
-        } catch (RepositoryException e) {
-            throw new RuntimeException(e);
-        }
+    public final void refresh() {
+        final List<String> uuids = getAllIdentifiers(workbenchDefinition.getWorkspace(), workbenchDefinition.getPath());
+        final ThumbnailContainer container = new ThumbnailContainer(thumbnailProvider, uuids);
+        container.setWorkspaceName(workbenchDefinition.getWorkspace());
+        container.setThumbnailHeight(73);
+        container.setThumbnailWidth(73);
+        layout.setContainerDataSource(container);
+        layout.setThumbnailSize(73, 73);
     }
 
     @Override
@@ -168,6 +145,44 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
     @Override
     public Component asVaadinComponent() {
         return layout;
+    }
+
+    /**
+     * @return a List of JCR identifiers for the all the nodes recursively found under <code>initialPath</code>. This method is called in {@link LazyThumbnailViewImpl#refresh()}.
+     * You can override this method, if you need a different strategy than the default one to fetch the identifiers of the nodes for which thumbnails need to be displayed.
+     * @see ThumbnailContainer
+     * @see LazyThumbnailLayout#refresh()
+     */
+    protected List<String> getAllIdentifiers(final String workspaceName, final String initialPath) {
+        List<String> uuids = new ArrayList<String>();
+        try {
+            //TODO fgrilli: needs proof but it's probably more performing if we just do a jcr sql 2 query, something like
+            // select [jcr:uuid] from [mgnl:content]
+            //instead of iterating over everything and then discard  what we don't need
+            log.debug("Recursively collecting all children at [{}:{}]...", workspaceName, initialPath);
+            long start = System.currentTimeMillis();
+            Node parent = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace()).getNode(workbenchDefinition.getPath());
+            Iterable<Node> assets = NodeUtil.collectAllChildren(parent, filterByItemType);
+            uuids = Lists.transform(NodeUtil.asList(assets), new Function<Node, String>() {
+                @Override
+                public String apply(Node node) {
+                    try {
+                        return node.getIdentifier();
+                    } catch (RepositoryException e) {
+                        return null;
+                    }
+                }
+            });
+            log.debug("Done collecting {} children in {}ms", uuids.size(), System.currentTimeMillis() - start);
+
+        } catch (PathNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (LoginException e) {
+            throw new RuntimeException(e);
+        } catch (RepositoryException e) {
+            throw new RuntimeException(e);
+        }
+        return uuids;
     }
 
     /**

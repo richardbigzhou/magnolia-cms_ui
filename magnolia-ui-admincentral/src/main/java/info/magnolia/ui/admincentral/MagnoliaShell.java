@@ -220,11 +220,6 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
     }
 
     @Override
-    public Object[] initRequestFromClient() {
-        return super.initRequestFromClient();
-    }
-    
-    @Override
     public void messageCleared(MessageEvent event) {
     }
 

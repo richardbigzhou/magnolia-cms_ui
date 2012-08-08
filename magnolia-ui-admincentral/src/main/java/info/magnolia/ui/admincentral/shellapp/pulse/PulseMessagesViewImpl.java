@@ -109,5 +109,5 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
         if (params != null && !params.isEmpty()) {
             messageTable.select(params.get(0));
         }
-    };
+    }
 }

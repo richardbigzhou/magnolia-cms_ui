@@ -483,7 +483,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
                 // TODO one workaround to make this faster would be avoiding doing a join when we
                 // know for sure there are no properties from metadata to order by.
                 stmt.append(JOIN_METADATA_ORDER_BY);
-                String sortOrder = "";
+                String sortOrder;
                 for (OrderBy orderBy : sorters) {
                     sortOrder = orderBy.isAscending() ? " asc" : " desc";
                     if (NAME_PROPERTY.equals(orderBy.getProperty())) {
@@ -494,13 +494,19 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
                             .append(", ");
                         continue;
                     }
-                    stmt.append(CONTENT_SELECTOR_NAME + ".[" + orderBy.getProperty() + "]")
+                    stmt.append(CONTENT_SELECTOR_NAME)
+                        .append(".[")
+                        .append(orderBy.getProperty())
+                        .append("]")
                         .append(sortOrder)
                         .append(", ");
                     // TODO here we don't know to which primary type this prop belongs to. I would
                     // tend not to clutter the column definition with yet another info about primary
                     // type.
-                    stmt.append(METADATA_SELECTOR_NAME + ".[" + orderBy.getProperty() + "]")
+                    stmt.append(METADATA_SELECTOR_NAME)
+                        .append(".[")
+                        .append(orderBy.getProperty())
+                        .append("]")
                         .append(sortOrder)
                         .append(", ");
                 }
@@ -532,10 +538,9 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     }
 
     protected void updateSize() {
-
         try {
-            final StringBuilder stmt = new StringBuilder(SELECT_CONTENT);
-            final QueryResult queryResult = executeQuery(stmt.toString(), Query.JCR_SQL2, 0, 0);
+            // query for all items in order to get the size
+            final QueryResult queryResult = executeQuery(SELECT_CONTENT, Query.JCR_SQL2, 0, 0);
 
             final long pageSize = queryResult.getRows().getSize();
             updateCount((int) pageSize);

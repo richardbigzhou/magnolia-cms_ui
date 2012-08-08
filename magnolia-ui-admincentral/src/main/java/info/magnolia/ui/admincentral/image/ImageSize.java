@@ -99,11 +99,8 @@ public final class ImageSize {
         if (height != imageSize.height) {
             return false;
         }
-        if (width != imageSize.width) {
-            return false;
-        }
+        return width == imageSize.width;
 
-        return true;
     }
 
     @Override
