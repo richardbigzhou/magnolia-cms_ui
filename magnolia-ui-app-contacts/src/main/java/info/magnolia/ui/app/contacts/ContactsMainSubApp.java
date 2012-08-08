@@ -35,7 +35,7 @@ package info.magnolia.ui.app.contacts;
 
 import javax.inject.Inject;
 
-import info.magnolia.ui.admincentral.workbench.ContentWorkbenchSubApp;
+import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
 import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.view.View;
 
@@ -45,10 +45,10 @@ import info.magnolia.ui.framework.view.View;
 public class ContactsMainSubApp implements SubApp {
 
     private ContactsView view;
-    private ContentWorkbenchSubApp workbench;
+    private ContentWorkbenchPresenter workbench;
 
     @Inject
-    public ContactsMainSubApp(ContactsView view, ContentWorkbenchSubApp workbench) {
+    public ContactsMainSubApp(ContactsView view, ContentWorkbenchPresenter workbench) {
         this.view = view;
         this.workbench = workbench;
     }
@@ -60,7 +60,7 @@ public class ContactsMainSubApp implements SubApp {
 
     @Override
     public View start() {
-        view.setWorkbenchView(workbench.asView());
+        view.setWorkbenchView(workbench.getView());
         return view;
     }
 }

@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.app.pages.main;
 
-import com.vaadin.ui.ComponentContainer;
-
 import info.magnolia.ui.framework.view.View;
 
 /**

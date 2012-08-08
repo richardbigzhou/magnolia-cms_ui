@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.app.pages.main;
 
-import info.magnolia.ui.admincentral.workbench.ContentWorkbenchSubApp;
+import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
 import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.view.View;
 
@@ -47,10 +47,10 @@ public class PagesMainSubApp implements SubApp, PagesMainView.Listener {
     private static final String CAPTION = "Pages";
 
     private PagesMainView view;
-    private ContentWorkbenchSubApp workbench;
+    private ContentWorkbenchPresenter workbench;
 
     @Inject
-    public PagesMainSubApp(PagesMainView view, ContentWorkbenchSubApp workbench) {
+    public PagesMainSubApp(PagesMainView view, ContentWorkbenchPresenter workbench) {
         this.view = view;
         this.view.setListener(this);
         this.workbench = workbench;
@@ -63,7 +63,7 @@ public class PagesMainSubApp implements SubApp, PagesMainView.Listener {
 
     @Override
     public View start() {
-        view.setWorkbenchView(workbench.asView());
+        view.setWorkbenchView(workbench.getView());
         return view;
     }
 }
