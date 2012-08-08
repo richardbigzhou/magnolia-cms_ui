@@ -46,7 +46,7 @@ public class ImageUploadSummaryField extends AbstractFieldBuilder<FileUploadFiel
 
     public ImageUploadSummaryField(FileUploadFieldDefinition definition, Item relatedFieldItem) {
         super(definition, relatedFieldItem);
-    }
+    } 
 
     @Override
     protected Field buildField() {
