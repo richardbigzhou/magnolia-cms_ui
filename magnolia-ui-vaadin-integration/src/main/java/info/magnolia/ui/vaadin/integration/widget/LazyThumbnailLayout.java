@@ -123,6 +123,7 @@ public class LazyThumbnailLayout extends AbstractComponent implements ServerSide
             Resource resource = (Resource) container.getContainerProperty(id, "thumbnail").getValue();
             thumbnails.add(new Thumbnail(mapper.key(id), resource));
             id = container.nextItemId(id);
+            ++i;
         }
         lastQueried = id;
         return thumbnails;
