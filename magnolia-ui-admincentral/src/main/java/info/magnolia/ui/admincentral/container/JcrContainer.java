@@ -89,7 +89,7 @@ public abstract class JcrContainer extends AbstractContainer implements Containe
     /** Page length = number of items contained in one page. Defaults to 100. */
     private int pageLength = DEFAULT_PAGE_LENGTH;
 
-    public static final int DEFAULT_PAGE_LENGTH = 100;
+    public static final int DEFAULT_PAGE_LENGTH = 30;
 
     /** Number of items to cache = cacheRatio x pageLength. Default cache ratio value is 2. */
     private int cacheRatio = DEFAULT_CACHE_RATIO;
@@ -503,7 +503,6 @@ public abstract class JcrContainer extends AbstractContainer implements Containe
      * Update the size.
      */
     protected void getPage() {
-        itemIndexes.clear();
 
         try {
             final StringBuilder stmt = new StringBuilder(SELECT_CONTENT);
@@ -553,13 +552,23 @@ public abstract class JcrContainer extends AbstractContainer implements Containe
                 log.debug("Adding node {} to cached items.", id);
                 itemIndexes.put(rowCount++, id);
             }
-
-            /* Set page size */
-            updateCount(iterator.getSize());
         } catch (RepositoryException re) {
             throw new RuntimeRepositoryException(re);
         }
 
+    }
+
+    private void updateSize() {
+
+        try {
+            final StringBuilder stmt = new StringBuilder(SELECT_CONTENT);
+            final QueryResult queryResult = executeQuery(stmt.toString(), Query.JCR_SQL2, 0, 0);
+
+            final long pageSize = queryResult.getRows().getSize();
+            updateCount((int) pageSize);
+        } catch (RepositoryException e){
+            throw new RuntimeRepositoryException(e);
+        }
     }
 
     public String getWorkspace() {
@@ -573,6 +582,8 @@ public abstract class JcrContainer extends AbstractContainer implements Containe
     public void refresh() {
         currentOffset = 0;
         getPage();
+        itemIndexes.clear();
+        updateSize();
     }
 
     // protected int getRowCount() {
