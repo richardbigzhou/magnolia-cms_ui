@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.app.pages.main;
 
-import com.vaadin.ui.ComponentContainer;
-
 import info.magnolia.ui.framework.view.View;
 
 /**
@@ -50,5 +48,5 @@ public interface PagesMainView extends View {
 
     void setListener(Listener listener);
 
-    void setWorkBench(ComponentContainer workbench);
+    void setWorkbenchView(View workbenchView);
 }
