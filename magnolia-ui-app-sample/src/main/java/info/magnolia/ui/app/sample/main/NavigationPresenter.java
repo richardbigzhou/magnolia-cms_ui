@@ -40,6 +40,9 @@ import javax.inject.Inject;
  */
 public class NavigationPresenter implements NavigationView.Listener {
 
+    /**
+     * Listener for NavigationPresenter.
+     */
     public interface Listener {
 
         void onItemSelected(String name);
