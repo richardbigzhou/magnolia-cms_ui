@@ -525,13 +525,12 @@ public abstract class AbstractUploadFileField extends AbstractUploadField implem
 
     @Override
     public AcceptCriterion getAcceptCriterion() {
-        //TODO Filter
         return AcceptAll.get();
     }
 
 
     /**
-     * UploadFileField implementation
+     * UploadFileField implementation.
      */
     @Override
     public void setPreview(boolean preview) {

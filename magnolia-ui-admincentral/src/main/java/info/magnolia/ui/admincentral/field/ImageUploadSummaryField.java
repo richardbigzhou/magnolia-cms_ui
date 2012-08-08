@@ -37,7 +37,6 @@ import info.magnolia.ui.admincentral.field.builder.AbstractFieldBuilder;
 import info.magnolia.ui.model.field.definition.FileUploadFieldDefinition;
 
 import com.vaadin.data.Item;
-import com.vaadin.data.Property;
 import com.vaadin.ui.Field;
 
 /**
