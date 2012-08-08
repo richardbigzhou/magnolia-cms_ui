@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.app.simple;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.junit.After;
@@ -42,7 +43,10 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import info.magnolia.module.ModuleRegistryImpl;
+import info.magnolia.module.ModuleRegistry;
+import info.magnolia.module.model.ComponentsDefinition;
+import info.magnolia.module.model.ConfigurerDefinition;
+import info.magnolia.module.model.ModuleDefinition;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.admincentral.app.simple.AppControllerImplTest.AppEventCollector;
@@ -55,6 +59,7 @@ import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroupEntry;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayout;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManagerImpl;
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
+import info.magnolia.ui.framework.event.AppEventBusConfigurer;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.event.InvocationCountingTestEventHandler;
 import info.magnolia.ui.framework.event.SimpleEventBus;
@@ -78,7 +83,20 @@ public class AppEventTest {
     @Before
     public void setUp() throws Exception {
         setAppLayoutManager();
-        ModuleRegistryImpl moduleRegistry = new ModuleRegistryImpl();
+
+        // Creates a ModuleRegistry with a single module defining a AppEventBusConfigurer for components 'app'
+        ConfigurerDefinition configurerDefinition = new ConfigurerDefinition();
+        configurerDefinition.setClassName(AppEventBusConfigurer.class.getName());
+        ComponentsDefinition components = new ComponentsDefinition();
+        components.setId("app");
+        components.addConfigurer(configurerDefinition);
+        ModuleDefinition moduleDefinition = new ModuleDefinition();
+        moduleDefinition.addComponents(components);
+        ArrayList<ModuleDefinition> moduleDefinitions = new ArrayList<ModuleDefinition>();
+        moduleDefinitions.add(moduleDefinition);
+        ModuleRegistry moduleRegistry = mock(ModuleRegistry.class);
+        when(moduleRegistry.getModuleDefinitions()).thenReturn(moduleDefinitions);
+
         componentProvider = AppControllerImplTest.initComponentProvider();
         Shell shell = mock(MagnoliaShell.class);
         MessagesManager messagesManager = mock(MessagesManagerImpl.class);
@@ -101,26 +119,28 @@ public class AppEventTest {
     }
 
     @Test
-    public void testAppEventBus() {
+    public void testThatEachAppGetsItsOwnEventBus() {
 
         // GIVEN
         String appName = name + "_name";
         // Start an App that has the AppBuss injected and that also add a dumy handler
         appController.startIfNotAlreadyRunningThenFocus(appName);
-        //Initial check
+
+        // Initial check
         assertEquals(2, eventCollector.appLifecycleEvent.size());
         AppControllerImplTest.checkAppEvent(eventCollector, appName, AppLifecycleEventType.STARTED, 0);
         AppControllerImplTest.checkAppEvent(eventCollector, appName, AppLifecycleEventType.FOCUSED, 1);
+
         assertEquals(true, AppTestImpl.res.containsKey("TestPageApp0"));
-        AppEventTestImpl pageApp = (AppEventTestImpl) AppTestImpl.res.get("TestPageApp0");
-        EventBus bus = pageApp.eventBus;
-        InvocationCountingTestEventHandler handler = pageApp.handler;
+        AppEventTestImpl firstAppInstance = (AppEventTestImpl) AppTestImpl.res.get("TestPageApp0");
+        EventBus firstInstanceBus = firstAppInstance.eventBus;
+        InvocationCountingTestEventHandler firstInstanceHandler = firstAppInstance.handler;
 
         // Send Event to this Bus
-        bus.fireEvent(new TestEvent());
+        firstInstanceBus.fireEvent(new TestEvent());
 
         // Check the number of invocation of the handler = 1
-        assertEquals(1, handler.getInvocationCount());
+        assertEquals(1, firstInstanceHandler.getInvocationCount());
 
         // Stop the app
         appController.stopCurrentApp();
@@ -128,16 +148,19 @@ public class AppEventTest {
         // Start app again
         appController.startIfNotAlreadyRunningThenFocus(appName);
 
+        assertEquals(true, AppTestImpl.res.containsKey("TestPageApp1"));
+        AppEventTestImpl secondAppInstance = (AppEventTestImpl) AppTestImpl.res.get("TestPageApp1");
+        EventBus secondInstanceBus = secondAppInstance.eventBus;
+        InvocationCountingTestEventHandler secondInstanceHandler = secondAppInstance.handler;
+
         // WHEN
         // Send Event to this Bus
-        bus.fireEvent(new TestEvent());
+        secondInstanceBus.fireEvent(new TestEvent());
 
         // THEN
-        assertEquals(true, AppTestImpl.res.containsKey("TestPageApp1"));
-        AppEventTestImpl pageApp1 = (AppEventTestImpl) AppTestImpl.res.get("TestPageApp1");
         // Check the number of invocation of the handler should stay 1
-        assertEquals(1, handler.getInvocationCount());
-        assertEquals(1, pageApp1.handler.getInvocationCount());
+        assertEquals(1, firstInstanceHandler.getInvocationCount());
+        assertEquals(1, secondInstanceHandler.getInvocationCount());
     }
 
     /**

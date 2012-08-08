@@ -44,11 +44,13 @@ import java.io.IOException;
  * Default implementation using ThumbnailUtility to create thumbnails.
  */
 public class DefaultContactsThumbnailProvider extends AbstractThumbnailProvider {
-    protected static final String CONTACT_PHOTO = "photo";
+
+    protected static final String CONTACT_PHOTO_NODE_NAME = "photo";
 
     public DefaultContactsThumbnailProvider() {
-        setOriginalImageNodeName(CONTACT_PHOTO);
+        setOriginalImageNodeName(CONTACT_PHOTO_NODE_NAME);
     }
+
     @Override
     protected BufferedImage createThumbnail(final Image contactImage, final String format, final int width, final int height, final float quality) throws IOException {
         return ThumbnailUtility.createThumbnail(contactImage, format, width, height, quality);

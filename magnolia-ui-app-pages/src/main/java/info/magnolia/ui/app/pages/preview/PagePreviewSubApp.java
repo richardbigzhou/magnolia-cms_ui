@@ -47,18 +47,18 @@ import info.magnolia.ui.framework.view.View;
 public class PagePreviewSubApp implements SubApp, PagePreviewView.Listener {
 
     private PagePreviewView view;
-    
+
     private ActionbarPresenter actionBarPresenter;
-    
-    LocationController locationController;
-    
+
+    private LocationController locationController;
+
     @Inject
     public PagePreviewSubApp(final PagePreviewView view, ActionbarPresenter actionbarPresenter, LocationController locationController) {
         this.view = view;
         this.locationController = locationController;
         this.actionBarPresenter = actionbarPresenter;
     }
-    
+
     @Override
     public String getCaption() {
         return null;
@@ -66,7 +66,7 @@ public class PagePreviewSubApp implements SubApp, PagePreviewView.Listener {
 
     @Override
     public View start() {
-        view.setListener(this);   
+        view.setListener(this);
         return view;
     }
 
@@ -78,5 +78,4 @@ public class PagePreviewSubApp implements SubApp, PagePreviewView.Listener {
     public void closePreview() {
         locationController.goTo(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages", ""));
     }
-
 }

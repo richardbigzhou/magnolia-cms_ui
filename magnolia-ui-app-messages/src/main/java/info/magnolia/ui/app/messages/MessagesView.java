@@ -41,8 +41,6 @@ import info.magnolia.ui.framework.view.View;
  */
 public interface MessagesView extends View {
 
-    void setListener(Listener listener);
-
     /**
      * Listener interface for MessagesView.
      */
@@ -54,4 +52,6 @@ public interface MessagesView extends View {
 
         void showConfirmationMessage(String message);
     }
+
+    void setListener(Listener listener);
 }

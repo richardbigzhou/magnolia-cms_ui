@@ -40,14 +40,14 @@ import info.magnolia.ui.framework.view.View;
  */
 public interface SampleEditorView extends View {
 
-    void setListener(Listener listener);
-
-    void setName(String name);
-
     /**
      * Listener for SampleEditorView.
      */
     public interface Listener {
 
     }
+
+    void setListener(Listener listener);
+
+    void setName(String name);
 }

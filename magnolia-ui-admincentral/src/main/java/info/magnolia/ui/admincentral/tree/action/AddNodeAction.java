@@ -38,6 +38,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.MetaDataUtil;
 import info.magnolia.ui.framework.event.EventBus;
 
+import javax.inject.Named;
 import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -50,7 +51,7 @@ import javax.jcr.RepositoryException;
  */
 public class AddNodeAction extends RepositoryOperationAction<AddNodeActionDefinition> implements TreeAction {
 
-    public AddNodeAction(AddNodeActionDefinition definition, Item item, EventBus eventBus) {
+    public AddNodeAction(AddNodeActionDefinition definition, Item item, @Named("adminCentral") EventBus eventBus) {
         super(definition, item, eventBus);
     }
 

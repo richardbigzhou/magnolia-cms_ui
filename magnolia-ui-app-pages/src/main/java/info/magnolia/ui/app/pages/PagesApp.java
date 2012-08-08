@@ -56,7 +56,6 @@ import java.util.List;
  */
 public class PagesApp extends AbstractApp {
 
-
     private static final String EDITOR_TOKEN = "editor";
     private static final String PREVIEW_TOKEN = "preview";
 
@@ -96,7 +95,6 @@ public class PagesApp extends AbstractApp {
             context.openSubAppFullScreen(previewSubApp);
             context.setAppLocation(location);
         }
-
     }
 
     private List<String> parsePathParamsFromToken(String token) {
@@ -112,5 +110,4 @@ public class PagesApp extends AbstractApp {
     @Override
     public void stop() {
     }
-
 }

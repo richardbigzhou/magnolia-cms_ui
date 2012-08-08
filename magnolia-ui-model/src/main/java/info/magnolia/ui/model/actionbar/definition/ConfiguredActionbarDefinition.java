@@ -45,6 +45,8 @@ public class ConfiguredActionbarDefinition implements ActionbarDefinition {
 
     private String name;
 
+    private String defaultAction;
+
     private final List<ActionbarSectionDefinition> sections = new ArrayList<ActionbarSectionDefinition>();
 
     @Override
@@ -52,13 +54,17 @@ public class ConfiguredActionbarDefinition implements ActionbarDefinition {
         return name;
     }
 
-    /**
-     * Sets the action bar name.
-     * 
-     * @param name the new name
-     */
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String getDefaultAction() {
+        return defaultAction;
+    }
+
+    public void setDefaultAction(final String defaultAction) {
+        this.defaultAction = defaultAction;
     }
 
     @Override
@@ -66,11 +72,6 @@ public class ConfiguredActionbarDefinition implements ActionbarDefinition {
         return Collections.unmodifiableList(sections);
     }
 
-    /**
-     * Adds a section to the action bar.
-     * 
-     * @param sectionDefinition the section definition
-     */
     public void addSection(ActionbarSectionDefinition sectionDefinition) {
         sections.add(sectionDefinition);
     }

@@ -50,31 +50,25 @@ import com.vaadin.data.Item;
  */
 public class ComponentSelectorField extends SelectFieldBuilder<ComponentSelectorDefinition> {
 
-
     public ComponentSelectorField(ComponentSelectorDefinition definition, Item relatedFieldItem) {
         super(definition, relatedFieldItem);
     }
 
-
     /**
-     * Get the Available templates based on the current Node.
+     * Get the available templates based on the current Node.
      */
     @Override
     public Map<String, String> getOptions() {
 
-        Map<String, String> res = new HashMap<String, String>();
+        Map<String, String> options = new HashMap<String, String>();
         for (SelectFieldOptionDefinition option : definition.getOptions()) {
-            res.put(option.getValue(), option.getName());
+            options.put(option.getValue(), option.getName());
         }
-        return res;
+        return options;
     }
-
 
     @Override
     protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {
         return String.class;
     }
-
 }
-
-

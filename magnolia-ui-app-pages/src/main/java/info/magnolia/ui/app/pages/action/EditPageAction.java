@@ -52,13 +52,13 @@ import org.slf4j.LoggerFactory;
  */
 public class EditPageAction extends ActionBase<EditPageActionDefinition> {
 
+    private static final String TOKEN = "editor";
+
     private static final Logger log = LoggerFactory.getLogger(EditPageAction.class);
 
     private final Node nodeToEdit;
 
     private final LocationController locationController;
-
-    private final static String TOKEN = "editor";
 
     @Inject
     public EditPageAction(final EditPageActionDefinition definition, Node nodeToEdit, LocationController locationController) {

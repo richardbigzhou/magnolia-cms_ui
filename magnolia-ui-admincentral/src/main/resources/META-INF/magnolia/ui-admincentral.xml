@@ -10,10 +10,11 @@
 
   <components>
     <id>main</id>
-    <component>
-      <type>info.magnolia.ui.framework.event.SystemEventBus</type>
-      <implementation>info.magnolia.ui.framework.event.SimpleSystemEventBus</implementation>
-    </component>
+
+    <configurer>
+      <class>info.magnolia.ui.framework.event.SystemEventBusConfigurer</class>
+    </configurer>
+
     <component>
       <type>info.magnolia.ui.framework.message.MessagesManager</type>
       <implementation>info.magnolia.ui.framework.message.MessagesManagerImpl</implementation>
@@ -101,8 +102,13 @@
     </type-mapping>
   </components>
 
-    <components>
+  <components>
     <id>admincentral</id>
+
+    <configurer>
+      <class>info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer</class>
+    </configurer>
+
     <component>
       <type>info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilderProvider</type>
       <workspace>config</workspace>
@@ -131,10 +137,6 @@
       <observed>true</observed>
       <scope>singleton</scope>
      </component>
-     <component>
-      <type>info.magnolia.ui.framework.event.EventBus</type>
-      <implementation>info.magnolia.ui.framework.event.SimpleEventBus</implementation>
-    </component>
     <component>
       <type>info.magnolia.ui.framework.location.LocationController</type>
       <implementation>info.magnolia.ui.framework.location.LocationController</implementation>
@@ -187,6 +189,14 @@
       <type>info.magnolia.ui.admincentral.shellapp.pulse.PulseMessagesPresenter</type>
       <implementation>info.magnolia.ui.admincentral.shellapp.pulse.PulseMessagesPresenter</implementation>
     </component>
+  </components>
+
+  <components>
+    <id>app</id>
+
+    <configurer>
+      <class>info.magnolia.ui.framework.event.AppEventBusConfigurer</class>
+    </configurer>
   </components>
 
   <components>

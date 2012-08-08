@@ -40,15 +40,15 @@ import info.magnolia.ui.framework.view.View;
  */
 public interface SampleMainView extends View {
 
-    void setListener(Listener listener);
-
-    void setRightView(View right);
-
-    void setLeftView(View left);
-
     /**
      * Listener for SampleMainView.
      */
     public interface Listener {
     }
+
+    void setListener(Listener listener);
+
+    void setRightView(View right);
+
+    void setLeftView(View left);
 }

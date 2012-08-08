@@ -33,13 +33,14 @@
  */
 package info.magnolia.ui.app.pages.action;
 
-
 import com.google.inject.Inject;
 import info.magnolia.cms.beans.runtime.FileProperties;
 import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.cms.security.User;
 import info.magnolia.context.MgnlContext;
-import info.magnolia.module.pageexport.http.MgnlHttpClient;
+import info.magnolia.module.pageexport.renderer.Renderer;
+import info.magnolia.module.pageexport.renderer.definition.RendererDefinition;
+import info.magnolia.module.pageexport.renderer.registry.RendererRegistry;
 import info.magnolia.ui.admincentral.image.ImageSize;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.LocationController;
@@ -64,15 +65,19 @@ import java.util.TimeZone;
  */
 public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
 
-    private final Node nodeToPreview;
+    private static final String TOKEN = "preview";
+    private static final String IMAGE_NODE_NAME = AbstractThumbnailProvider.ORIGINAL_IMAGE_NODE_NAME;
+    private static final String IMAGE_TYPE = "png";
+
     private static final Logger log = LoggerFactory.getLogger(PreviewPageAction.class);
+
+    private final Node nodeToPreview;
 
     private LocationController locationController;
 
-    private static final String TOKEN = "preview";
-    private static final String IMAGE_NODE_NAME = AbstractThumbnailProvider.ORIGINAL_IMAGE_NODE_NAME;
+    private RendererRegistry registry;
 
-    private MgnlHttpClient client;
+    //private PngRenderer renderer;
 
     /**
      * Instantiates a new preview page action.
@@ -81,15 +86,12 @@ public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
      * @param nodeToPreview the node to preview
      */
     @Inject
-    public PreviewPageAction(PreviewPageActionDefinition definition, MgnlHttpClient client, LocationController locationController, Node nodeToPreview) {
-
+    public PreviewPageAction(PreviewPageActionDefinition definition, RendererRegistry registry, LocationController locationController, Node nodeToPreview) {
         super(definition);
+        this.registry = registry;
         this.locationController = locationController;
         this.nodeToPreview = nodeToPreview;
-        this.client = client;
-
     }
-
 
     @Override
     public void execute() throws ActionExecutionException {
@@ -101,23 +103,24 @@ public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
         }
 
         User user = MgnlContext.getUser();
-        client.initCredentials(user);
 
         try {
+            RendererDefinition definition = registry.getDefinition(IMAGE_TYPE);
+            Renderer renderer = registry.getRenderer(definition);
 
-            client.setNodePath(nodeToPreview.getPath(), true);
-            client.addParameter("exportType", "png");
-            InputStream is = client.getInputStream();
-            saveImage(nodeToPreview, is);
+            InputStream is = renderer.render(nodeToPreview.getPath(), user);
+            saveImage(nodeToPreview, is, definition.getContentType(), definition.getName());
 
         } catch (RepositoryException e) {
             log.error(e.getMessage(), e);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
+        } catch (Exception e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
     }
 
-    private void saveImage(Node node, InputStream inputStream) throws RepositoryException, IOException {
+    private void saveImage(Node node, InputStream inputStream, String contentType, String extension) throws RepositoryException, IOException {
 
         String fileName = node.getName();
         Node child;
@@ -127,16 +130,13 @@ public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
             child = node.addNode(IMAGE_NODE_NAME, MgnlNodeType.NT_RESOURCE);
         }
 
-
         BinaryImpl binaryImpl = new BinaryImpl(inputStream);
-
-
 
         child.setProperty(MgnlNodeType.JCR_DATA, binaryImpl);
 
         child.setProperty(FileProperties.PROPERTY_FILENAME, fileName);
-        child.setProperty(FileProperties.PROPERTY_CONTENTTYPE, "image/png");
-        child.setProperty(FileProperties.PROPERTY_EXTENSION, "png");
+        child.setProperty(FileProperties.PROPERTY_CONTENTTYPE, contentType);
+        child.setProperty(FileProperties.PROPERTY_EXTENSION, extension);
 
         child.setProperty(FileProperties.PROPERTY_LASTMODIFIED, new GregorianCalendar(TimeZone.getDefault()));
 
@@ -146,7 +146,5 @@ public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
         child.setProperty(FileProperties.PROPERTY_WIDTH, imageSize!=null ? imageSize.getWidth():150);
         child.setProperty(FileProperties.PROPERTY_HEIGHT, imageSize!=null ? imageSize.getHeight():150);
         child.getSession().save();
-
     }
-
 }
