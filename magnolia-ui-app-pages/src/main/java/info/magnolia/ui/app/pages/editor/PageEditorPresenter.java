@@ -51,7 +51,7 @@ import info.magnolia.ui.model.tab.definition.TabDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.widget.dialog.TabbedDialogView;
+import info.magnolia.ui.widget.dialog.MagnoliaDialogView;
 import info.magnolia.ui.widget.editor.PageEditorView;
 
 import java.util.LinkedList;
@@ -121,7 +121,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
     @Override
     public void editComponent(String workSpace, String path, String dialog) {
-        TabbedDialogView.Presenter dialogPresenter = dialogPresenterFactory.createDialog(dialog);
+        MagnoliaDialogView.Presenter dialogPresenter = dialogPresenterFactory.createDialog(dialog);
 
         try {
             Session session = MgnlContext.getJCRSession(workSpace);
@@ -143,7 +143,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
         updateDialogDefinition(availableComponents);
 
-        TabbedDialogView.Presenter dialogPresenter = dialogPresenterFactory.getDialogPresenter(dialogDefinition);
+        MagnoliaDialogView.Presenter dialogPresenter = dialogPresenterFactory.getDialogPresenter(dialogDefinition);
 
         try {
             Session session = MgnlContext.getJCRSession(workSpace);

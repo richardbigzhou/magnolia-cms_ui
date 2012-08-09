@@ -42,11 +42,11 @@ import org.vaadin.rpc.client.Method;
 /**
  * VTabDialog.
  */
-public class VTabbedDialog extends VMagnoliaTabSheet implements VTabbedDialogView.Presenter {
+public class VMagnoliaDialog extends VMagnoliaTabSheet implements VMagnoliaDialogView.Presenter {
     
     @Override
-    protected VTabbedDialogView getView() {
-        return (VTabbedDialogView)super.getView();
+    protected VMagnoliaDialogView getView() {
+        return (VMagnoliaDialogView)super.getView();
     }
     
     @Override
@@ -80,7 +80,7 @@ public class VTabbedDialog extends VMagnoliaTabSheet implements VTabbedDialogVie
 
     @Override
     protected VMagnoliaTabSheetView createView() {
-        return new VTabbedDialogViewImpl(getEventBus(), this); 
+        return new VMagnoliaDialogViewImpl(getEventBus(), this); 
     }
 
     @Override

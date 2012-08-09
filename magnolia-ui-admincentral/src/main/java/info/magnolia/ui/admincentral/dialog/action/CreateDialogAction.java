@@ -39,7 +39,7 @@ import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
-import info.magnolia.ui.widget.dialog.TabbedDialogView.Presenter;
+import info.magnolia.ui.widget.dialog.MagnoliaDialogView.Presenter;
 
 /**
  * Opens a dialog for creating a new node in a tree.

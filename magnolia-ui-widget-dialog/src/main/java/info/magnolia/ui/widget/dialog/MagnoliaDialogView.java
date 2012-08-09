@@ -31,36 +31,62 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.dialog.gwt.client;
+package info.magnolia.ui.widget.dialog;
 
-import info.magnolia.ui.vaadin.widget.tabsheet.client.VMagnoliaTabSheetView;
+import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.framework.view.View;
 
-import com.google.gwt.user.client.ui.Widget;
+import java.util.List;
+
+import com.vaadin.data.Item;
+import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.Field;
 
 /**
- * VTabDialogView.
+ * DialogView.
  */
-public interface VTabbedDialogView extends VMagnoliaTabSheetView {
+public interface MagnoliaDialogView extends View {
 
     /**
-     * Presenter. Meant for Vaadin part of MagnoliaShell.
+     * DialogView.Presenter.
+     *
      */
-    public interface Presenter extends VMagnoliaTabSheetView.Presenter {
+    interface Presenter {
 
-        void fireAction(String action);
+        Shell getShell();
+
+        MagnoliaDialogView getView();
+
+        Item getItem();
+
+        EventBus getEventBus();
 
         void closeDialog();
+
+        void editItem(Item item);
         
+        void showValidation(boolean isVisible);
+        
+        void executeAction(String actionName);
     }
-    
+
+
+    void setItemDataSource(Item item);
+
+    void addTab(ComponentContainer inputFields, String tabName);
+
     void setPresenter(Presenter presenter);
 
-    boolean hasChildComponent(Widget component);
+    void addAction(String actionName, String actionLabel);
 
-    void addAction(String label, String action);
+    void addField(Field field);
 
     void setDescription(String description);
 
-    void recalculateErrors();
+    void showValidation(boolean isVisible);
     
+    boolean isValid();
+    
+    List<Field> getFields();
 }

@@ -44,7 +44,7 @@ import info.magnolia.ui.model.dialog.definition.RegexpValidatorDefinition;
 import info.magnolia.ui.model.dialog.definition.ValidatorDefinition;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.model.tab.definition.TabDefinition;
-import info.magnolia.ui.widget.dialog.TabbedDialogView;
+import info.magnolia.ui.widget.dialog.MagnoliaDialogView;
 
 import com.vaadin.data.Validator;
 import com.vaadin.data.validator.EmailValidator;
@@ -63,7 +63,7 @@ public class DialogBuilder {
     /**
      * @return DialogView populated with values from DialogDefinition and Item.
      */
-    public TabbedDialogView build(DialogFieldFactory dialogFieldFactory, DialogDefinition dialogDefinition, Item item, TabbedDialogView view) {
+    public MagnoliaDialogView build(DialogFieldFactory dialogFieldFactory, DialogDefinition dialogDefinition, Item item, MagnoliaDialogView view) {
 
         Dialog dialog = new Dialog(dialogDefinition);
 

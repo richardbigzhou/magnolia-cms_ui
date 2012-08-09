@@ -31,37 +31,36 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.dialog;
+package info.magnolia.ui.widget.dialog.gwt.client;
 
-import info.magnolia.ui.vaadin.widget.tabsheet.ShellTab;
-import info.magnolia.ui.widget.dialog.gwt.client.VDialogTab;
+import info.magnolia.ui.vaadin.widget.tabsheet.client.VMagnoliaTabSheetView;
 
-import com.vaadin.terminal.PaintException;
-import com.vaadin.terminal.PaintTarget;
-import com.vaadin.ui.ClientWidget;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Dialog tab.
- *
+ * VTabDialogView.
  */
-@ClientWidget(VDialogTab.class)
-public class DialogTab extends ShellTab {
+public interface VMagnoliaDialogView extends VMagnoliaTabSheetView {
 
-    private final DialogLayout content;
+    /**
+     * Presenter. Meant for Vaadin part of MagnoliaShell.
+     */
+    public interface Presenter extends VMagnoliaTabSheetView.Presenter {
+
+        void fireAction(String action);
+
+        void closeDialog();
+        
+    }
     
-    public DialogTab(String caption, DialogLayout content) {
-        super(caption, content);
-        this.content = content;
-    }
+    void setPresenter(Presenter presenter);
 
-    public void setValidationVisibe(boolean isVisible) {
-        content.setValidationVisible(isVisible);
-    }
+    boolean hasChildComponent(Widget component);
+
+    void addAction(String label, String action);
+
+    void setDescription(String description);
+
+    void recalculateErrors();
     
-    @Override
-    public void paintContent(PaintTarget target) throws PaintException {
-        setHasError(content.hasError());
-        super.paintContent(target);
-    }
-
 }

@@ -178,8 +178,8 @@
       <implementation>info.magnolia.ui.admincentral.dialog.DialogPresenterFactoryImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.widget.dialog.DialogView</type>
-      <implementation>info.magnolia.ui.widget.dialog.TabbedDialog</implementation>
+      <type>info.magnolia.ui.widget.dialog.MagnoliaDialogView</type>
+      <implementation>info.magnolia.ui.widget.dialog.MagnoliaDialog</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.admincentral.shellapp.pulse.PulseMessagesView</type>

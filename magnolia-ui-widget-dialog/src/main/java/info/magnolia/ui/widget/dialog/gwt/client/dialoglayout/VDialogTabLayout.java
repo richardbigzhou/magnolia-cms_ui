@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.widget.dialog.gwt.client.dialoglayout;
 
-import info.magnolia.ui.widget.dialog.gwt.client.VDialogTab;
+import info.magnolia.ui.widget.dialog.gwt.client.VMagnoliaDialogTab;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -143,15 +143,15 @@ public class VDialogTabLayout extends FlowPanel implements Container, HelpAccess
     }
     
     @Override
-    public VDialogTab getParent() {
+    public VMagnoliaDialogTab getParent() {
         final Widget parent = super.getParent();
         if (parent == null) {
             return null;
         }
-        if (!(super.getParent() instanceof VDialogTab)) {
+        if (!(super.getParent() instanceof VMagnoliaDialogTab)) {
             throw new RuntimeException("Parent of VDialogTabLayout must be of type VDialogTab, you have used: " + super.getParent().getClass());
         }
-        return (VDialogTab)super.getParent();
+        return (VMagnoliaDialogTab)super.getParent();
     }
 
     @Override

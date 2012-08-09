@@ -45,7 +45,7 @@ import com.google.gwt.user.client.ui.Label;
 /**
  * VTabbedDialogHeader.
  */
-public class VTabbedDialogHeader extends FlowPanel {
+public class VMagnoliaDialogHeader extends FlowPanel {
 
     private static final String ClASSNAME_ERROR = "dialog-error";
     private static final String CLASSNAME_HEADER = "dialog-header";
@@ -82,7 +82,7 @@ public class VTabbedDialogHeader extends FlowPanel {
     });
     
     
-    public VTabbedDialogHeader(final VDialogHeaderCallback callback) {
+    public VMagnoliaDialogHeader(final VDialogHeaderCallback callback) {
         this.callback = callback;
         callback.onDescriptionVisibilityChanged(false);
         construct();

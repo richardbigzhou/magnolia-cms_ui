@@ -44,8 +44,8 @@ import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
-import info.magnolia.ui.widget.dialog.TabbedDialogView;
-import info.magnolia.ui.widget.dialog.TabbedDialog;
+import info.magnolia.ui.widget.dialog.MagnoliaDialogView;
+import info.magnolia.ui.widget.dialog.MagnoliaDialog;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -55,7 +55,7 @@ import com.vaadin.data.Item;
 /**
  * DialogPresenter.
  */
-public class DialogPresenter implements TabbedDialogView.Presenter {
+public class DialogPresenter implements MagnoliaDialogView.Presenter {
 
     private final DialogBuilder dialogBuilder;
     
@@ -67,7 +67,7 @@ public class DialogPresenter implements TabbedDialogView.Presenter {
     
     private final EventBus eventBus;
     
-    private final TabbedDialogView view;
+    private final MagnoliaDialogView view;
     
     private final DialogActionFactory actionFactory;
     
@@ -75,7 +75,7 @@ public class DialogPresenter implements TabbedDialogView.Presenter {
     
     private Item item;
 
-    public DialogPresenter(final TabbedDialogView view, final DialogBuilder dialogBuilder, final DialogFieldFactory dialogFieldFactory, final DialogDefinition dialogDefinition, final MagnoliaShell shell, final EventBus eventBus, final DialogActionFactory actionFactory) {
+    public DialogPresenter(final MagnoliaDialogView view, final DialogBuilder dialogBuilder, final DialogFieldFactory dialogFieldFactory, final DialogDefinition dialogDefinition, final MagnoliaShell shell, final EventBus eventBus, final DialogActionFactory actionFactory) {
         this.view = view;
         this.dialogBuilder = dialogBuilder;
         this.dialogFieldFactory = dialogFieldFactory;
@@ -93,7 +93,7 @@ public class DialogPresenter implements TabbedDialogView.Presenter {
     public void editItem(final Item item) {
         this.item = item;
         dialogBuilder.build(dialogFieldFactory, dialogDefinition, item, view);
-        shell.openDialog((TabbedDialog) view.asVaadinComponent());
+        shell.openDialog((MagnoliaDialog) view.asVaadinComponent());
     }
 
     @Override
@@ -132,7 +132,7 @@ public class DialogPresenter implements TabbedDialogView.Presenter {
     }
 
     @Override
-    public TabbedDialogView getView() {
+    public MagnoliaDialogView getView() {
         return view;
     }
 

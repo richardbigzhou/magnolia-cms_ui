@@ -4,7 +4,7 @@
 
 	<inherits
 		name="info.magnolia.ui.widget.jquerywrapper.gwt.JQueryWrapperWidgetSet" />
-	<inherits name="info.magnolia.ui.widget.tabsheet.gwt.TabsheetWidgetSet" />
+	<inherits name="info.magnolia.ui.vaadin.widget.tabsheet.TabsheetWidgetSet" />
 	<inherits name="info.magnolia.ui.widget.dialog.gwt.DialogWidgetSet" />
 	<inherits name="info.magnolia.ui.widget.actionbar.gwt.ActionbarWidgetSet" />
 	<inherits name="info.magnolia.ui.widget.editor.gwt.PageEditorWidgetSet" />

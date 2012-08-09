@@ -39,8 +39,8 @@ import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.widget.dialog.TabbedDialogView;
-import info.magnolia.ui.widget.dialog.TabbedDialogView.Presenter;
+import info.magnolia.ui.widget.dialog.MagnoliaDialogView;
+import info.magnolia.ui.widget.dialog.MagnoliaDialogView.Presenter;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -63,7 +63,7 @@ public class SaveDialogAction extends ActionBase<SaveDialogActionDefinition> {
     private EventBus eventBus;
     private Presenter presenter;
 
-    public SaveDialogAction(SaveDialogActionDefinition definition, TabbedDialogView.Presenter presenter) {
+    public SaveDialogAction(SaveDialogActionDefinition definition, MagnoliaDialogView.Presenter presenter) {
         super(definition);
         this.presenter = presenter;
         this.item = presenter.getItem();

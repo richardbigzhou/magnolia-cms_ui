@@ -36,7 +36,7 @@ package info.magnolia.ui.widget.dialog.gwt.client;
 import info.magnolia.ui.vaadin.widget.tabsheet.client.VMagnoliaTab;
 import info.magnolia.ui.vaadin.widget.tabsheet.client.VMagnoliaTabNavigator;
 import info.magnolia.ui.vaadin.widget.tabsheet.client.VMagnoliaTabSheetViewImpl;
-import info.magnolia.ui.widget.dialog.gwt.client.VTabbedDialogHeader.VDialogHeaderCallback;
+import info.magnolia.ui.widget.dialog.gwt.client.VMagnoliaDialogHeader.VDialogHeaderCallback;
 import info.magnolia.ui.widget.dialog.gwt.client.dialoglayout.DialogFieldWrapper;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.AnimationSettings;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryCallback;
@@ -62,7 +62,7 @@ import com.vaadin.terminal.gwt.client.VConsole;
 /**
  * VTabDialogViewImpl.
  */
-public class VTabbedDialogViewImpl extends FlowPanel implements VTabbedDialogView {
+public class VMagnoliaDialogViewImpl extends FlowPanel implements VMagnoliaDialogView {
 
     private static final String CLASSNAME = "dialog-panel";
 
@@ -72,7 +72,7 @@ public class VTabbedDialogViewImpl extends FlowPanel implements VTabbedDialogVie
 
     private static final String CLASSNAME_BUTTON = "btn-dialog";
 
-    private final List<VDialogTab> dialogTabs = new ArrayList<VDialogTab>();
+    private final List<VMagnoliaDialogTab> dialogTabs = new ArrayList<VMagnoliaDialogTab>();
 
     private final Element content = DOM.createDiv();
 
@@ -82,7 +82,7 @@ public class VTabbedDialogViewImpl extends FlowPanel implements VTabbedDialogVie
 
     private DialogFieldWrapper lastShownProblematicField = null;
 
-    private final VTabbedDialogHeader dialogHeader = new VTabbedDialogHeader(new VDialogHeaderCallback() {
+    private final VMagnoliaDialogHeader dialogHeader = new VMagnoliaDialogHeader(new VDialogHeaderCallback() {
 
         @Override
         public void onDescriptionVisibilityChanged(boolean isVisible) {
@@ -96,7 +96,7 @@ public class VTabbedDialogViewImpl extends FlowPanel implements VTabbedDialogVie
 
         @Override
         public void jumpToNextError() {
-            VDialogTab activeTab = getActiveTab();
+            VMagnoliaDialogTab activeTab = getActiveTab();
             final List<DialogFieldWrapper> problematicFields = activeTab.getProblematicFields();
             if (lastShownProblematicField == null && !problematicFields.isEmpty()) {
                 final DialogFieldWrapper field = problematicFields.get(0);
@@ -119,7 +119,7 @@ public class VTabbedDialogViewImpl extends FlowPanel implements VTabbedDialogVie
 
     private Presenter presenter;
 
-    public VTabbedDialogViewImpl(EventBus eventBus, Presenter presenter) {
+    public VMagnoliaDialogViewImpl(EventBus eventBus, Presenter presenter) {
         super();
         impl = new VMagnoliaTabSheetViewImpl(eventBus, presenter);
 
@@ -190,7 +190,7 @@ public class VTabbedDialogViewImpl extends FlowPanel implements VTabbedDialogVie
     }
 
     void setDescriptionVisible(boolean isVisible) {
-        for (final VDialogTab tab : dialogTabs) {
+        for (final VMagnoliaDialogTab tab : dialogTabs) {
             tab.setDescriptionVisible(isVisible);
         }
     }
@@ -233,17 +233,17 @@ public class VTabbedDialogViewImpl extends FlowPanel implements VTabbedDialogVie
 
     @Override
     public void addTab(VMagnoliaTab tab) {
-        if (!(tab instanceof VDialogTab)) {
+        if (!(tab instanceof VMagnoliaDialogTab)) {
             throw new RuntimeException("Tab must be of VDialogTab type. You have used: " + tab.getClass());
         }
-        dialogTabs.add((VDialogTab) tab);
+        dialogTabs.add((VMagnoliaDialogTab) tab);
         impl.addTab(tab);
     }
 
     @Override
     public void recalculateErrors() {
         int totalProblematicFields = 0;
-        for (final VDialogTab tab : dialogTabs) {
+        for (final VMagnoliaDialogTab tab : dialogTabs) {
             totalProblematicFields += tab.getErorAmount();
         }
         dialogHeader.setErrorAmount(totalProblematicFields);
@@ -257,8 +257,8 @@ public class VTabbedDialogViewImpl extends FlowPanel implements VTabbedDialogVie
     }
 
     @Override
-    public VDialogTab getActiveTab() {
-        return (VDialogTab) impl.getActiveTab();
+    public VMagnoliaDialogTab getActiveTab() {
+        return (VMagnoliaDialogTab) impl.getActiveTab();
     }
 
     private void scrollTo(final DialogFieldWrapper field) {

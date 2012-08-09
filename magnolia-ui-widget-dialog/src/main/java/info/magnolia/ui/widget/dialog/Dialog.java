@@ -61,7 +61,7 @@ import com.vaadin.ui.Field;
  */
 @SuppressWarnings("serial")
 @ClientWidget(value = VDialog.class, loadStyle = LoadStyle.EAGER)
-public class Dialog extends AbstractComponent implements TabbedDialogView, ServerSideHandler, Item.Editor {
+public class Dialog extends AbstractComponent implements MagnoliaDialogView, ServerSideHandler, Item.Editor {
 
     private final ShellTabSheet tabsheet = new ShellTabSheet();
 

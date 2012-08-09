@@ -35,8 +35,8 @@ package info.magnolia.ui.admincentral.dialog.action;
 
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.widget.dialog.TabbedDialogView;
-import info.magnolia.ui.widget.dialog.TabbedDialogView.Presenter;
+import info.magnolia.ui.widget.dialog.MagnoliaDialogView;
+import info.magnolia.ui.widget.dialog.MagnoliaDialogView.Presenter;
 
 /**
  * Implements an action for canceling a dialog.
@@ -47,7 +47,7 @@ public class CancelDialogAction extends ActionBase<CancelDialogActionDefinition>
 
     private Presenter presenter;
 
-    public CancelDialogAction(CancelDialogActionDefinition definition, TabbedDialogView.Presenter presenter) {
+    public CancelDialogAction(CancelDialogActionDefinition definition, MagnoliaDialogView.Presenter presenter) {
         super(definition);
         this.presenter = presenter;
     }

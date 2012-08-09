@@ -35,8 +35,8 @@ package info.magnolia.ui.admincentral.shellapp.pulse;
 
 import info.magnolia.ui.admincentral.components.ActivityItem;
 import info.magnolia.ui.admincentral.components.SplitFeed;
-import info.magnolia.ui.vaadin.integration.widget.tabsheet.ShellTab;
-import info.magnolia.ui.vaadin.integration.widget.tabsheet.ShellTabSheet;
+import info.magnolia.ui.vaadin.widget.tabsheet.ShellTab;
+import info.magnolia.ui.vaadin.widget.tabsheet.ShellTabSheet;
 
 import java.util.Date;
 import java.util.List;

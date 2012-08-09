@@ -34,7 +34,7 @@
 package info.magnolia.ui.widget.dialog;
 
 import info.magnolia.ui.vaadin.widget.tabsheet.ShellTabSheet;
-import info.magnolia.ui.widget.dialog.gwt.client.VTabbedDialog;
+import info.magnolia.ui.widget.dialog.gwt.client.VMagnoliaDialog;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -54,12 +54,12 @@ import com.vaadin.ui.Field;
  * Tab Dialog.
  *
  */
-@ClientWidget(VTabbedDialog.class)
-public class TabbedDialog extends ShellTabSheet implements TabbedDialogView, ServerSideHandler, Item.Editor {
+@ClientWidget(VMagnoliaDialog.class)
+public class MagnoliaDialog extends ShellTabSheet implements MagnoliaDialogView, ServerSideHandler, Item.Editor {
 
     private final String SHOW_ALL = "show all";
 
-    private List<DialogTab> dialogTabs = new ArrayList<DialogTab>();
+    private List<MagnoliaDialogTab> dialogTabs = new ArrayList<MagnoliaDialogTab>();
     
     private List<Field> fields = new LinkedList<Field>();
 
@@ -67,7 +67,7 @@ public class TabbedDialog extends ShellTabSheet implements TabbedDialogView, Ser
 
     private Item itemDatasource;
     
-    public TabbedDialog() {
+    public MagnoliaDialog() {
         setImmediate(true);
         setShowAllEnabled(true);
         setHeight("500px");
@@ -104,7 +104,7 @@ public class TabbedDialog extends ShellTabSheet implements TabbedDialogView, Ser
         if (!(cc instanceof DialogLayout)) {
             throw new IllegalArgumentException();
         }
-        final DialogTab tab = new DialogTab(caption, (DialogLayout)cc);
+        final MagnoliaDialogTab tab = new MagnoliaDialogTab(caption, (DialogLayout)cc);
         dialogTabs.add(tab);
         tab.setSizeUndefined();
         tab.setClosable(false);
@@ -152,7 +152,7 @@ public class TabbedDialog extends ShellTabSheet implements TabbedDialogView, Ser
 
     @Override
     public void showValidation(boolean isVisible) {
-        for (final DialogTab tab : dialogTabs) {
+        for (final MagnoliaDialogTab tab : dialogTabs) {
             tab.setValidationVisibe(isVisible);
         }
     }

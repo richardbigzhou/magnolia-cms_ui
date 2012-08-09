@@ -43,7 +43,7 @@ import info.magnolia.ui.admincentral.content.view.builder.DefinitionToImplementa
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.builder.FactoryBase;
-import info.magnolia.ui.widget.dialog.TabbedDialogView;
+import info.magnolia.ui.widget.dialog.MagnoliaDialogView;
 
 /**
  * Creates an action based on an {@link info.magnolia.ui.model.action.ActionDefinition}.
@@ -79,7 +79,7 @@ public class DialogActionFactoryImpl extends FactoryBase<ActionDefinition, Actio
     }
 
     @Override
-    public Action createAction(ActionDefinition actionDefinition, TabbedDialogView.Presenter presenter) {
+    public Action createAction(ActionDefinition actionDefinition, MagnoliaDialogView.Presenter presenter) {
         return create(actionDefinition, presenter);
     }
 }

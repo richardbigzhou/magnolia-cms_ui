@@ -33,60 +33,35 @@
  */
 package info.magnolia.ui.widget.dialog;
 
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.vaadin.widget.tabsheet.ShellTab;
+import info.magnolia.ui.widget.dialog.gwt.client.VMagnoliaDialogTab;
 
-import java.util.List;
-
-import com.vaadin.data.Item;
-import com.vaadin.ui.ComponentContainer;
-import com.vaadin.ui.Field;
+import com.vaadin.terminal.PaintException;
+import com.vaadin.terminal.PaintTarget;
+import com.vaadin.ui.ClientWidget;
 
 /**
- * DialogView.
+ * Dialog tab.
+ *
  */
-public interface TabbedDialogView extends View {
+@ClientWidget(VMagnoliaDialogTab.class)
+public class MagnoliaDialogTab extends ShellTab {
 
-    /**
-     * DialogView.Presenter.
-     *
-     */
-    interface Presenter {
-
-        Shell getShell();
-
-        TabbedDialogView getView();
-
-        Item getItem();
-
-        EventBus getEventBus();
-
-        void closeDialog();
-
-        void editItem(Item item);
-        
-        void showValidation(boolean isVisible);
-        
-        void executeAction(String actionName);
+    private final DialogLayout content;
+    
+    public MagnoliaDialogTab(String caption, DialogLayout content) {
+        super(caption, content);
+        this.content = content;
     }
 
-
-    void setItemDataSource(Item item);
-
-    void addTab(ComponentContainer inputFields, String tabName);
-
-    void setPresenter(Presenter presenter);
-
-    void addAction(String actionName, String actionLabel);
-
-    void addField(Field field);
-
-    void setDescription(String description);
-
-    void showValidation(boolean isVisible);
+    public void setValidationVisibe(boolean isVisible) {
+        content.setValidationVisible(isVisible);
+    }
     
-    boolean isValid();
-    
-    List<Field> getFields();
+    @Override
+    public void paintContent(PaintTarget target) throws PaintException {
+        setHasError(content.hasError());
+        super.paintContent(target);
+    }
+
 }
