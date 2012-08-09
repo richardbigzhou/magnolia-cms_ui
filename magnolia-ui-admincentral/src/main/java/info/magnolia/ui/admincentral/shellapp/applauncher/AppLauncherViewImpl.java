@@ -38,8 +38,6 @@ import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroup;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroupEntry;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayout;
 import info.magnolia.ui.vaadin.integration.widget.AppLauncher;
-import info.magnolia.ui.vaadin.integration.widget.AppLauncher.AppActivatedEvent;
-import info.magnolia.ui.vaadin.integration.widget.AppLauncher.AppActivationListener;
 
 import com.vaadin.ui.Component;
 
@@ -63,12 +61,6 @@ public class AppLauncherViewImpl implements AppLauncherView {
     public AppLauncherViewImpl() {
         appLauncher.setHeight("100%");
         appLauncher.setWidth("720px");
-        appLauncher.addAppActivationListener(new AppActivationListener() {
-            @Override
-            public void onAppActivated(AppActivatedEvent event) {
-                presenter.onAppInvoked(event.getAppName());
-            }
-        });
     }
 
     @Override

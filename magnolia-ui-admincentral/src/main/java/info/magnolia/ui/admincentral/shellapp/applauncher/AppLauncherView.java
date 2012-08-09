@@ -46,7 +46,6 @@ public interface AppLauncherView extends ShellView {
      */
     public interface Presenter {
 
-        void onAppInvoked(String name);
     }
 
     void setPresenter(Presenter presenter);

@@ -50,7 +50,6 @@ import com.vaadin.terminal.PaintTarget;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.ClientWidget;
 import com.vaadin.ui.ClientWidget.LoadStyle;
-import com.vaadin.ui.Component;
 
 /**
  * Server side of AppLauncher. 
@@ -146,50 +145,6 @@ public class AppLauncher extends AbstractComponent implements ServerSideHandler 
     public void callFromClient(String method, Object[] params) {
         throw new RuntimeException("Unknown call from client: " + method);
     }
-
-    /**
-     * Category changed event.
-     */
-    public static class AppActivatedEvent extends Component.Event {
-
-        public static final java.lang.reflect.Method ON_APP_ACTIVATED;
-
-        static {
-            try {
-                ON_APP_ACTIVATED = AppActivationListener.class.getDeclaredMethod("onAppActivated", new Class[] { AppActivatedEvent.class });
-            } catch (final java.lang.NoSuchMethodException e) {
-                throw new java.lang.RuntimeException(e);
-            }
-        }
-
-        private final String appName;
-        
-        public AppActivatedEvent(Component source, String appName) {
-            super(source);
-            this.appName = appName;
-        }
-        
-        public String getAppName() {
-            return appName;
-        }
-
-    }
-
-    /**
-     * App activation listener. 
-     */
-    public interface AppActivationListener {
-        public void onAppActivated(final AppActivatedEvent event);
-    }
-
-    public void addAppActivationListener(final AppActivationListener listener) {
-        addListener("app_activated", AppActivatedEvent.class, listener, AppActivatedEvent.ON_APP_ACTIVATED);
-    }
-
-    public void removeAppActivationListener(final AppActivationListener listener) {
-        removeListener("app_activated", AppActivatedEvent.class, listener);
-    }
-    
 
     public void setAppActive(String appName, boolean isActive) {
         proxy.call("setAppActive", appName, isActive);
