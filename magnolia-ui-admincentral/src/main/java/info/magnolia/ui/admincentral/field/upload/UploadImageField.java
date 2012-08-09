@@ -65,7 +65,11 @@ import com.vaadin.ui.Window.Notification;
 
 
 /**
- * .
+ * Specific Image Upload Implementation of {@link AbstractUploadFileField}.
+ * This specify the Layout used to show Upload in progress / Upload complete / and initial Upload.
+ * It also Handle the Upload/Remove Button and the progress bar.
+ *
+ * This class is responsible to populate the Item properties containing the Uploaded Image (Data / FileName,....)
  */
 public class UploadImageField extends AbstractUploadFileField{
 
@@ -136,7 +140,7 @@ public class UploadImageField extends AbstractUploadFileField{
             item.getItemProperty(FileProperties.PROPERTY_HEIGHT).setValue(imageSize.getHeight());
         } catch (IOException e) {
             log.error("Not able to store the binary information ", e);
-            getWindow().showNotification("Upload failed", "Filenot persisted", Notification.TYPE_WARNING_MESSAGE);
+            getWindow().showNotification("Upload failed", "File Not persisted", Notification.TYPE_WARNING_MESSAGE);
         }
     }
 
