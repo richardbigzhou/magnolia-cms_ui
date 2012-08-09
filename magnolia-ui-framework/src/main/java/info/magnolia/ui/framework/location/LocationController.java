@@ -71,7 +71,7 @@ public class LocationController {
      */
     public void goTo(final Location newLocation) {
 
-        if (getWhere().equals(newLocation)) {
+        if (newLocation == null || getWhere().equals(newLocation)) {
             return;
         }
 
