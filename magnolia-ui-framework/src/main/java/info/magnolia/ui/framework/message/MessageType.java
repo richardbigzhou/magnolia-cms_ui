@@ -60,5 +60,5 @@ public enum MessageType {
         default:
             return true;
         }
-    };
+    }
 }

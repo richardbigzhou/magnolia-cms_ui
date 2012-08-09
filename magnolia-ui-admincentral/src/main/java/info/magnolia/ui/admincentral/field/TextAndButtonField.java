@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,16 +31,48 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.definition;
+package info.magnolia.ui.admincentral.field;
+
+import org.vaadin.addon.customfield.CustomField;
+
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.TextField;
+
 
 /**
- * Defines a validator.
- *
- * @see info.magnolia.ui.model.field.definition.FieldDefinition
+ * A base custom field comprising a text field and a button placed to its immediate right.
  */
-public interface ValidatorDefinition {
+public class TextAndButtonField extends CustomField {
 
-    String getErrorMessageKey();
+    private Button selectButton;
+    private TextField textField;
 
-    void setErrorMessageKey(String errorMessageKey);
+    public TextAndButtonField() {
+        textField = new TextField();
+        selectButton = new Button();
+        HorizontalLayout layout = new HorizontalLayout();
+        layout.setSpacing(true);
+        layout.addComponent(textField);
+        layout.addComponent(selectButton);
+        layout.setComponentAlignment(selectButton, Alignment.MIDDLE_CENTER);
+        setCompositionRoot(layout);
+    }
+
+
+    public TextField getTextField() {
+        return this.textField;
+    }
+
+    public Button getSelectButton() {
+        return this.selectButton;
+    }
+
+
+    @Override
+    public Class< ? > getType() {
+        return getPropertyDataSource().getType();
+    }
+
 }

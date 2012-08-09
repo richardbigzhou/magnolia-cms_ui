@@ -63,6 +63,8 @@ public interface FieldDefinition {
 
     boolean isRequired();
 
+    String getRequiredErrorMessage();
+
     List<ValidatorDefinition> getValidators();
 
     String getDefaultValue();

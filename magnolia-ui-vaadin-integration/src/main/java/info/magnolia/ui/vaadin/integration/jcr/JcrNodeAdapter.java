@@ -84,22 +84,12 @@ public class JcrNodeAdapter extends JcrAbstractNodeAdapter  {
 
     /**
      * Get Vaadin Property from a Jcr Property.
-     * If the Property was already modify, get this Property from the local changedProperties map.
-     * Else:
-     *   If the corresponding Jcr property don't exist, create a empty Vaadin Property.
-     *   If the corresponding Jcr property already exist, create a corresponding Vaadin Property.
+     * If the Property was already modified, get this Property from the local changedProperties map - else
+     * delegate to super implementation.
      */
     @Override
     public Property getItemProperty(Object id) {
-        DefaultProperty property = null;
-
-        if(changedProperties.containsKey(id)) {
-            property = (DefaultProperty) changedProperties.get(id);
-        }
-        else {
-            property = (DefaultProperty) super.getItemProperty(id);
-        }
-        return property;
+        return changedProperties.containsKey(id) ? changedProperties.get(id) : super.getItemProperty(id);
     }
 
     @Override
@@ -131,18 +121,15 @@ public class JcrNodeAdapter extends JcrAbstractNodeAdapter  {
     @Override
     public boolean removeItemProperty(Object id){
         boolean res = false;
-        if(changedProperties.containsKey(id)) {
-            removedProperties.put((String)id, changedProperties.remove(id));
+        if (changedProperties.containsKey(id)) {
+            removedProperties.put((String) id, changedProperties.remove(id));
             res = true;
-        }else if(jcrItemHasProperty((String) id)){
-            removedProperties.put((String)id, super.getItemProperty(id));
+        } else if (jcrItemHasProperty((String) id)) {
+            removedProperties.put((String) id, super.getItemProperty(id));
             res = true;
-        } else {
-            res = false;
         }
         return res;
     }
-
 
     @Override
     public void valueChange(ValueChangeEvent event) {
@@ -152,7 +139,6 @@ public class JcrNodeAdapter extends JcrAbstractNodeAdapter  {
             addItemProperty(name, property);
         }
     }
-
 
     private boolean jcrItemHasProperty(String propertyName) {
         try {

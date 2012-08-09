@@ -36,6 +36,7 @@ package info.magnolia.ui.model.field.definition;
 import java.util.ArrayList;
 import java.util.List;
 
+import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.model.dialog.definition.ValidatorDefinition;
 
 /**
@@ -109,6 +110,11 @@ public class ConfiguredFieldDefinition implements FieldDefinition {
     @Override
     public boolean isRequired() {
         return required;
+    }
+
+    @Override
+    public String getRequiredErrorMessage() {
+        return MessagesUtil.get("validation.message.required", "info.magnolia.ui.model.messages");
     }
 
     public void setRequired(boolean required) {

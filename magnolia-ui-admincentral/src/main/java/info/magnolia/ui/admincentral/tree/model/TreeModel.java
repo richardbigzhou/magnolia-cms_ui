@@ -164,10 +164,7 @@ public class TreeModel implements JcrContainerSource {
 
     @Override
     public boolean hasChildren(Item item) throws RepositoryException {
-        if (!item.isNode()) {
-            return false;
-        }
-        return !getChildren(item).isEmpty();
+        return item.isNode() && !getChildren(item).isEmpty();
     }
 
 

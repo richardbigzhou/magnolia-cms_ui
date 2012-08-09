@@ -40,18 +40,8 @@ package info.magnolia.ui.framework.editor;
  */
 public interface ValueEditor<T> extends HasEditorPath {
 
-    /**
-     * Sets the value.
-     *
-     * @param object
-     */
     void setValue(T object);
 
-    /**
-     * Gets the current value.
-     *
-     * @return the value currently held by the editor.
-     */
     T getValue();
 
     Class<T> getType();

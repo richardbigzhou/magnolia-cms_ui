@@ -240,8 +240,8 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
         jcrContainer.getItem(containerItemId1);
 
         // WHEN
-        boolean containerItemRes1 = (boolean)jcrContainer.isFirstId(containerItemId1);
-        boolean containerItemRes2 = (boolean)jcrContainer.isFirstId(containerItemId2);
+        boolean containerItemRes1 = jcrContainer.isFirstId(containerItemId1);
+        boolean containerItemRes2 = jcrContainer.isFirstId(containerItemId2);
 
         // THEN
         assertEquals(true, containerItemRes1);
@@ -261,8 +261,8 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
         jcrContainer.updateSize();
 
         // WHEN
-        boolean containerItemRes1 = (boolean)jcrContainer.isLastId(containerItemId1);
-        boolean containerItemRes2 = (boolean)jcrContainer.isLastId(containerItemId2);
+        boolean containerItemRes1 = jcrContainer.isLastId(containerItemId1);
+        boolean containerItemRes2 = jcrContainer.isLastId(containerItemId2);
 
         // THEN
         assertEquals(false, containerItemRes1);

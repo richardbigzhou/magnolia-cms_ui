@@ -109,7 +109,7 @@ public abstract class AbstractThumbnailProvider implements ThumbnailProvider {
             final Session session = MgnlContext.getJCRSession(workspace);
             final Node imageNode = session.getNodeByIdentifier(nodeIdentifier);
             if (ThumbnailUtility.isThumbnailToBeGenerated(nodeIdentifier, workspace, getOriginalImageNodeName(), getThumbnailNodeName())) {
-                retrieveImageNodeAndCreateThumbnail(imageNode, width, height);
+                extractImageAndCreateThumbnail(imageNode, width, height);
             }
             path = LinkUtil.createLink(ContentUtil.asContent(imageNode).getNodeData(getThumbnailNodeName()));
         } catch (RepositoryException e) {
@@ -170,7 +170,7 @@ public abstract class AbstractThumbnailProvider implements ThumbnailProvider {
         }
     }
 
-    private void retrieveImageNodeAndCreateThumbnail(final Node imageNode, int width, int height) throws RepositoryException {
+    private void extractImageAndCreateThumbnail(final Node imageNode, int width, int height) throws RepositoryException {
         log.debug("Generating thumbnail for node at [{}}... ", imageNode.getPath());
         long start = System.currentTimeMillis();
 

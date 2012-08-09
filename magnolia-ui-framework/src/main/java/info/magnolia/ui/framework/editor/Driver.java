@@ -46,29 +46,21 @@ public interface Driver<T> {
 
     /**
      * Push the data in an object into the dialog prepared by the initialize() method.
-     *
-     * @param object
      */
     void edit(T object);
 
     /**
      * Update the object with values from the dialog.
-     *
-     * @param object
      */
     void flush(T object);
 
     /**
-     * Indicates if the last call to flush() resulted in any errors.
-     *
-     * @return
+     * @return if the last call to flush() resulted in any errors.
      */
     boolean hasErrors();
 
     /**
-     * Returns any unconsumed(?) errors from the last call to flush().
-     *
-     * @return
+     * @return any unconsumed(?) errors from the last call to flush().
      */
     List<EditorError> getErrors();
 }

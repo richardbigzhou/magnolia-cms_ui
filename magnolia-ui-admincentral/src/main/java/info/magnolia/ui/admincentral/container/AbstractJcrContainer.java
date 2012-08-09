@@ -523,6 +523,9 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
             // performance gets worse.
             final QueryResult queryResult = executeQuery(stmt.toString(), Query.JCR_SQL2, pageLength * cacheRatio, currentOffset);
 
+            long start = System.currentTimeMillis();
+            log.debug("Starting iterating over QueryResult");
+
             final RowIterator iterator = queryResult.getRows();
             long rowCount = currentOffset;
             while (iterator.hasNext()) {
@@ -531,6 +534,9 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
                 log.debug("Adding node {} to cached items.", id);
                 itemIndexes.put(rowCount++, id);
             }
+
+            log.debug("Done in {} ms", System.currentTimeMillis() - start);
+
         } catch (RepositoryException re) {
             throw new RuntimeRepositoryException(re);
         }

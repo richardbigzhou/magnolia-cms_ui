@@ -261,11 +261,7 @@ public abstract class AbstractUploadField extends CssLayout implements Field {
     @Override
     public boolean isValid() {
         if (getReceiver().isEmpty()) {
-            if (isRequired()) {
-                return false;
-            } else {
-                return true;
-            }
+            return !isRequired();
         }
 
         if (validators == null) {
