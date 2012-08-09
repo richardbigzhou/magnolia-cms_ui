@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.app.pages.action;
 
+import info.magnolia.ui.app.pages.PagesApp;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.location.LocationController;
@@ -43,18 +44,11 @@ import javax.inject.Inject;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 
 /**
  * Opens a page for editing.
  */
 public class EditPageAction extends ActionBase<EditPageActionDefinition> {
-
-    private static final String TOKEN = "editor";
-
-    private static final Logger log = LoggerFactory.getLogger(EditPageAction.class);
 
     private final Node nodeToEdit;
 
@@ -71,10 +65,10 @@ public class EditPageAction extends ActionBase<EditPageActionDefinition> {
     public void execute() throws ActionExecutionException {
         try {
             String nodePath = nodeToEdit.getPath();
-            Location pageEditorLocation = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages", TOKEN + ":" + nodePath);
+            Location pageEditorLocation = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages", PagesApp.EDITOR_TOKEN + ":" + nodePath);
             locationController.goTo(pageEditorLocation);
         } catch (RepositoryException e) {
-            log.error(e.getMessage(), e);
+            throw new ActionExecutionException(e);
         }
     }
 }

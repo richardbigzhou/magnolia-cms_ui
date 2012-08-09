@@ -42,8 +42,7 @@ import com.vaadin.ui.VerticalLayout;
 
 
 /**
- * PageEditorViewImpl. TODO: make this a component with a split layout to accomodate the page editor
- * on the left and its related actions on the right.
+ * PageEditorViewImpl.
  */
 @SuppressWarnings("serial")
 public class PagesEditorViewImpl implements PagesEditorView {
