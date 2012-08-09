@@ -120,7 +120,7 @@ public class AbstractThumbnailProviderTest {
         final String result = provider.getPath(contactNode.getIdentifier(), workspaceName, 30, 30);
 
         // THEN
-        assertEquals("/myNode/thumbnail/MaxMustermann.jpg", result.toString());
+        assertEquals("/myNode/thumbnail/MaxMustermann.jpg", result);
     }
 
     @Test(expected=PathNotFoundException.class)
@@ -178,7 +178,7 @@ public class AbstractThumbnailProviderTest {
         final String result = provider.getPath(contactNode.getIdentifier(), workspaceName, 30, 30);
 
         // THEN
-        assertEquals("/contact1/thumbnail/MaxMustermann.jpg", result.toString());
+        assertEquals("/contact1/thumbnail/MaxMustermann.jpg", result);
     }
 
 }
