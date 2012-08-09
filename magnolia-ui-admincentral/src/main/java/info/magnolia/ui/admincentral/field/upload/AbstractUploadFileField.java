@@ -158,7 +158,7 @@ public abstract class AbstractUploadFileField extends AbstractUploadField implem
             @Override
             public FieldType getFieldType() {
                 return FieldType.BYTE_ARRAY;
-            };
+            }
         };
     }
     /**
@@ -487,7 +487,7 @@ public abstract class AbstractUploadFileField extends AbstractUploadField implem
 
                 @Override
                 public void onProgress(StreamingProgressEvent event) {
-                    updateProgress((long) event.getBytesReceived(), (long) event.getContentLength());
+                    updateProgress(event.getBytesReceived(), (long) event.getContentLength());
                 }
 
                 @Override

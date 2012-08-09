@@ -94,13 +94,9 @@ public final class ImageSize {
             return false;
         }
 
-        ImageSize imageSize = (ImageSize) o;
+        final ImageSize imageSize = (ImageSize) o;
 
-        if (height != imageSize.height) {
-            return false;
-        }
-        return width == imageSize.width;
-
+        return height == imageSize.height && width == imageSize.width;
     }
 
     @Override
