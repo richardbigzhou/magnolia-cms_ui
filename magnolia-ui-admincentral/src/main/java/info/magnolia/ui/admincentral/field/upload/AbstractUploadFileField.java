@@ -496,8 +496,6 @@ public abstract class AbstractUploadFileField extends AbstractUploadField implem
                     mime = event.getMimeType();
                     StartedEvent startEvent = new StartedEvent(upload, event.getFileName(), event.getMimeType(), event.getContentLength());
                     uploadStarted(startEvent);
-                    getRootLayout().requestRepaint();
-                    getRootLayout().getParent().requestRepaintRequests();
                 }
 
                 @Override
