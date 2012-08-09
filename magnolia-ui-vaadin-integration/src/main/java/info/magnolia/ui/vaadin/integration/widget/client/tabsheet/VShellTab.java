@@ -83,7 +83,7 @@ public class VShellTab extends ScrollPanel implements Container, ClientSideHandl
                 }
             });
 
-            register("setError", new Method() {
+            register("setHasError", new Method() {
                 @Override
                 public void invoke(String methodName, Object[] params) {
                     setHasError((Boolean) params[0]);
@@ -159,7 +159,7 @@ public class VShellTab extends ScrollPanel implements Container, ClientSideHandl
         return hasError;
     }
 
-    private void setHasError(boolean hasError) {
+    public void setHasError(boolean hasError) {
         this.hasError = hasError;
         label.setHasError(hasError);
     }

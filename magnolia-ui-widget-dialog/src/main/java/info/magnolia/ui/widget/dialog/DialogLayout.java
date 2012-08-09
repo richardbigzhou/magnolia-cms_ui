@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.widget.dialog;
 
-import info.magnolia.ui.widget.dialog.gwt.client.dialoglayout.VDialogLayout;
+import info.magnolia.ui.widget.dialog.gwt.client.dialoglayout.VDialogTabLayout;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -41,20 +41,23 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.vaadin.terminal.ErrorMessage;
 import com.vaadin.terminal.PaintException;
 import com.vaadin.terminal.PaintTarget;
+import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.AbstractLayout;
 import com.vaadin.ui.ClientWidget;
 import com.vaadin.ui.ClientWidget.LoadStyle;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.Field;
 
 /**
  * Dialog layout server side implementation. 
  */
-@ClientWidget(value = VDialogLayout.class, loadStyle = LoadStyle.EAGER)
+@ClientWidget(value = VDialogTabLayout.class, loadStyle = LoadStyle.EAGER)
 public class DialogLayout extends AbstractLayout {
 
+    private boolean isValidationVisible = false;
+    
     private List<Component> components = new LinkedList<Component>();
     
     private Map<Component, String> helpDescriptions = new HashMap<Component, String>();
@@ -67,14 +70,10 @@ public class DialogLayout extends AbstractLayout {
     public void paintContent(PaintTarget target) throws PaintException {
         super.paintContent(target);
         final Iterator<Component> it = getComponentIterator();
+        target.addAttribute("validationVisible", isValidationVisible);
         while (it.hasNext()) {
             final Component c = it.next();
             target.startTag("component");
-            if (c instanceof Field) {
-                target.addAttribute("showError", ((Field)c).isModified());   
-            } else {
-                target.addAttribute("showError", false);
-            }
             c.addStyleName("v-dialog-field");
             c.setSizeUndefined();
             c.paint(target);
@@ -107,6 +106,30 @@ public class DialogLayout extends AbstractLayout {
     @Override
     public Iterator<Component> getComponentIterator() {
         return components.iterator();
+    }
+
+    public void setValidationVisible(boolean isVisible) {
+        this.isValidationVisible = isVisible;
+        requestRepaint();
+    }
+    
+    @Override
+    public ErrorMessage getErrorMessage() {
+        final Iterator<Component> it = getComponentIterator();
+        while (it.hasNext()) {            
+            final Component c = it.next();
+            if (c instanceof AbstractComponent) {
+                final ErrorMessage errMsg = ((AbstractComponent)c).getErrorMessage();
+                if (errMsg != null) {
+                    return errMsg;
+                }
+            }
+        }
+        return super.getErrorMessage();
+    }
+
+    public boolean hasError() {
+        return getErrorMessage() != null && isValidationVisible;
     }
 
 }

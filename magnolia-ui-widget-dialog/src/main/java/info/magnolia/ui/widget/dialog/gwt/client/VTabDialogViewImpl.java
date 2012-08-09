@@ -51,19 +51,53 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * 
  * VTabDialogViewImpl.
- *
  */
 public class VTabDialogViewImpl extends FlowPanel implements VTabDialogView {
 
+    private static final String CLASSNAME = "dialog-panel";
+    
+    private static final String CLASSNAME_HEADER = "dialog-header";
+    
+    private static final String ClASSNAME_DESCRIPTION = "dialog-description";
+    
+    private static final String ClASSNAME_ERROR = "dialog-error";
+
+    private static final String CLASSNAME_CONTENT = "dialog-content";
+
+    private static final String CLASSNAME_FOOTER = "dialog-footer";
+    
+    private static final String ClASSNAME_CLOSE = "dialog-close";
+    
+    private static final String ClASSNAME_HELP = "dialog-help";
+
+    private static final String CLASSNAME_HELPBUTTON = "btn-dialog-help";
+    
+    private static final String CLASSNAME_CLOSEBUTTON = "btn-dialog-close";
+    
+    private static final String CLASSNAME_BUTTON = "btn-dialog";
+    
+    private List<VDialogTab> dialogTabs = new ArrayList<VDialogTab>();
+    
+    private final Element header = DOM.createDiv();
+    
+    private final Element content = DOM.createDiv();
+    
+    private final FlowPanel description = new FlowPanel();
+    
+    private final FlowPanel error = new FlowPanel();
+
+    private final Element footer = DOM.createDiv();
+    
+    private final Element close = DOM.createDiv();
+    
+    private final Element help = DOM.createDiv();
+    
     private final EventBus eventBus;
     
     private Presenter presenter;
     
     private VShellTabSheetViewImpl impl;
-    
-    private List<VDialogTab> dialogTabs = new ArrayList<VDialogTab>();
     
     public VTabDialogViewImpl(EventBus eventBus, Presenter presenter) {
         super();
@@ -93,36 +127,11 @@ public class VTabDialogViewImpl extends FlowPanel implements VTabDialogView {
         getElement().appendChild(content);
         getElement().appendChild(footer);
 
-
+        add(impl, content);
+        setPresenter(presenter);
         setCaption("Edit page properties");
-
         addClose();
     }
-
-    private final Element header = DOM.createDiv();
-    private final Element content = DOM.createDiv();
-    private final FlowPanel description = new FlowPanel();
-    private final FlowPanel error = new FlowPanel();
-
-    private final Element footer = DOM.createDiv();
-    private final Element close = DOM.createDiv();
-    private final Element help = DOM.createDiv();
-
-    private static final String CLASSNAME = "dialog-panel";
-    private static final String CLASSNAME_HEADER = "dialog-header";
-    private static final String ClASSNAME_DESCRIPTION = "dialog-description";
-    private static final String ClASSNAME_ERROR = "dialog-error";
-
-    private static final String CLASSNAME_CONTENT = "dialog-content";
-    private static final String CLASSNAME_FOOTER = "dialog-footer";
-    private static final String ClASSNAME_CLOSE = "dialog-close";
-    private static final String ClASSNAME_HELP = "dialog-help";
-
-    private static final String CLASSNAME_HELPBUTTON = "btn-dialog-help";
-    private static final String CLASSNAME_CLOSEBUTTON = "btn-dialog-close";
-    private static final String CLASSNAME_BUTTON = "btn-dialog";
-
-   
 
     @Override
     public void setPresenter(final Presenter presenter) {
@@ -183,19 +192,15 @@ public class VTabDialogViewImpl extends FlowPanel implements VTabDialogView {
 
     @Override
     public void setDescription(final String dialogDescription) {
-
         final Button helpButton = new Button();
-
         helpButton.setStyleName(CLASSNAME_HELPBUTTON);
         helpButton.addClickHandler(new ClickHandler() {
-
             @Override
             public void onClick(final ClickEvent event) {
                 toggleDescription();
             }
 
         });
-
 
         final Element close = DOM.createDiv();
         close.addClassName(ClASSNAME_CLOSE);
@@ -224,7 +229,9 @@ public class VTabDialogViewImpl extends FlowPanel implements VTabDialogView {
 
     void toggleDescription() {
         description.setVisible(!description.isVisible());
-        presenter.notifyOfHelpAccessibilityChange(description.isVisible());
+        for (final VDialogTab tab : dialogTabs) {
+            tab.setDescriptionVisible(description.isVisible());   
+        }
     }
     
     @Override
@@ -263,5 +270,6 @@ public class VTabDialogViewImpl extends FlowPanel implements VTabDialogView {
             throw new RuntimeException("Tab must be of VDialogTab type. You have used: " + tab.getClass());
         }
         dialogTabs.add((VDialogTab)tab);
+        impl.addTab(tab);
     }
 }

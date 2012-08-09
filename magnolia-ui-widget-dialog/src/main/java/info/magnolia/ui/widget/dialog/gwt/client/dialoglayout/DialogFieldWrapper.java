@@ -44,8 +44,8 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * Wrapper widget that provides help and error indication. 
  */
-public class DialogFieldSection extends FlowPanel {
-
+public class DialogFieldWrapper extends FlowPanel {
+    
     private Element label = DOM.createDiv();
 
     private Element fieldWrapper = DOM.createDiv();
@@ -56,13 +56,13 @@ public class DialogFieldSection extends FlowPanel {
     
     private Button errorAction = new Button();
     
-    private VBubble errorSection = null;
+    private VInlineErrorMessage errorSection = null;
     
-    private VBubble helpSection = null;
+    private VInlineErrorMessage helpSection = null;
     
     private String helpDescription = null;
     
-    public DialogFieldSection() {
+    public DialogFieldWrapper() {
         super();
         addStyleName("v-dialog-field-section");
         root = super.getElement();
@@ -87,7 +87,7 @@ public class DialogFieldSection extends FlowPanel {
     }
 
     protected void showHelp() {
-        helpSection = VBubble.createHelpSection();
+        helpSection = VInlineErrorMessage.createHelpMessage();
         helpSection.setMessage(helpDescription);
         add(helpSection);
     }
@@ -107,7 +107,7 @@ public class DialogFieldSection extends FlowPanel {
     public void showError(final String errorDescription) {
         errorAction.setVisible(true);
         fieldWrapper.addClassName("validation-hilight");
-        errorSection = VBubble.createErrorSection();
+        errorSection = VInlineErrorMessage.createErrorMessage();
         errorSection.setMessage(errorDescription);
         add(errorSection);
     }
@@ -158,4 +158,9 @@ public class DialogFieldSection extends FlowPanel {
             helpSection.setMessage(helpDescription);
         }
     }
+    
+    public boolean hasError() {
+        return errorSection != null && errorSection.isVisible();
+    }
+    
 }

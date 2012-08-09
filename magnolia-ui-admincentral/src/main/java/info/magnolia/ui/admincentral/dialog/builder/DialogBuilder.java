@@ -52,6 +52,7 @@ import com.vaadin.data.validator.RegexpValidator;
 import org.apache.commons.lang.StringUtils;
 
 import com.vaadin.data.Item;
+import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Field;
 
 /**
@@ -89,6 +90,9 @@ public class DialogBuilder {
                 // Get the Vaadin Field
                 Field field = dialogField.getField();
 
+                if (field instanceof AbstractComponent) {
+                    ((AbstractComponent)field).setImmediate(true);
+                }
                 //Add Validation
                 setRestriction(fieldDefinition, field);
 

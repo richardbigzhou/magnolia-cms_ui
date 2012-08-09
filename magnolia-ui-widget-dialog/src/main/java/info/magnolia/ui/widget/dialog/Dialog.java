@@ -217,4 +217,10 @@ public class Dialog extends AbstractComponent implements DialogView, ServerSideH
         return res;
     }
 
+    @Override
+    public void showValidation(boolean isVisible) {
+        // TODO Auto-generated method stub
+        
+    }
+
 }

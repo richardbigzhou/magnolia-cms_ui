@@ -54,8 +54,6 @@ public interface DialogView extends View {
      */
     interface Presenter {
 
-        void executeAction(String actionName);
-
         Shell getShell();
 
         DialogView getView();
@@ -67,6 +65,10 @@ public interface DialogView extends View {
         void closeDialog();
 
         void editItem(Item item);
+        
+        void showValidation(boolean isVisible);
+        
+        void executeAction(String actionName);
     }
 
 
@@ -78,11 +80,13 @@ public interface DialogView extends View {
 
     void addAction(String actionName, String actionLabel);
 
-    List<Field> getFields();
-
     void addField(Field field);
 
     void setDescription(String description);
 
+    void showValidation(boolean isVisible);
+    
     boolean isValid();
+    
+    List<Field> getFields();
 }

@@ -51,7 +51,6 @@ public interface VTabDialogView extends VShellTabSheetView {
 
         void closeDialog();
         
-        void notifyOfHelpAccessibilityChange(boolean isAccessible);
     }
 
     void setPresenter(Presenter presenter);

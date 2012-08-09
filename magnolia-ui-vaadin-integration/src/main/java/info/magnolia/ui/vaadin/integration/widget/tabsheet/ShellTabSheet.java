@@ -133,7 +133,7 @@ public class ShellTabSheet extends AbstractComponentContainer implements ServerS
         proxy.call("addShowAllTab", new Boolean(showAll), label);
     }
 
-    private void closeTab(final String tabId) {
+    protected void closeTab(final String tabId) {
         final ShellTab tab = (ShellTab) mapper.get(tabId);
         if (tab != null) {
             if (activeTab == tab) {
@@ -146,7 +146,7 @@ public class ShellTabSheet extends AbstractComponentContainer implements ServerS
         }
     }
 
-    private void doAddTab(final ShellTab tab) {
+    protected void doAddTab(final ShellTab tab) {
         super.addComponent(tab);
         tab.setTabId(mapper.key(tab));
         tabs.add(tab);

@@ -114,8 +114,10 @@ public class VShellTabSheetViewImpl extends FlowPanel implements VShellTabSheetV
 
     @Override
     public void addTab(VShellTab tab) {
-        getTabs().add(tab);
-        add((Widget) tab);
+        if (!tabs.contains(tab)) {
+            getTabs().add(tab);
+            add((Widget) tab);   
+        }
     }
 
 }

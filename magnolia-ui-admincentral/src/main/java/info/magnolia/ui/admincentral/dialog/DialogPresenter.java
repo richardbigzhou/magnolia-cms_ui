@@ -45,7 +45,7 @@ import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 import info.magnolia.ui.widget.dialog.DialogView;
-import info.magnolia.ui.widget.dialog.TabDialog;
+import info.magnolia.ui.widget.dialog.TabbedDialog;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -58,13 +58,21 @@ import com.vaadin.data.Item;
 public class DialogPresenter implements DialogView.Presenter {
 
     private final DialogBuilder dialogBuilder;
+    
     private final DialogFieldFactory dialogFieldFactory;
+    
     private final DialogDefinition dialogDefinition;
+    
     private final MagnoliaShell shell;
+    
     private final EventBus eventBus;
+    
     private final DialogView view;
+    
     private final DialogActionFactory actionFactory;
+    
     private final Map<String, ActionDefinition> actionMap = new HashMap<String, ActionDefinition>();
+    
     private Item item;
 
     public DialogPresenter(final DialogView view, final DialogBuilder dialogBuilder, final DialogFieldFactory dialogFieldFactory, final DialogDefinition dialogDefinition, final MagnoliaShell shell, final EventBus eventBus, final DialogActionFactory actionFactory) {
@@ -85,7 +93,7 @@ public class DialogPresenter implements DialogView.Presenter {
     public void editItem(final Item item) {
         this.item = item;
         dialogBuilder.build(dialogFieldFactory, dialogDefinition, item, view);
-        shell.openDialog((TabDialog) view.asVaadinComponent());
+        shell.openDialog((TabbedDialog) view.asVaadinComponent());
     }
 
     @Override
@@ -113,6 +121,11 @@ public class DialogPresenter implements DialogView.Presenter {
         }
     }
 
+    @Override
+    public void showValidation(boolean isVisible) {
+        view.showValidation(isVisible);
+    }
+    
     @Override
     public Shell getShell() {
         return shell;

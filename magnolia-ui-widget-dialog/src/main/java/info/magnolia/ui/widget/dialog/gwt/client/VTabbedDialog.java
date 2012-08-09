@@ -35,22 +35,14 @@ package info.magnolia.ui.widget.dialog.gwt.client;
 
 import info.magnolia.ui.vaadin.integration.widget.client.tabsheet.VShellTabSheet;
 import info.magnolia.ui.vaadin.integration.widget.client.tabsheet.VShellTabSheetView;
-import info.magnolia.ui.widget.dialog.gwt.client.dialoglayout.HelpAccessibilityEvent;
-import info.magnolia.ui.widget.dialog.gwt.client.dialoglayout.VHelpAccessibilityNotifier;
 
 import org.vaadin.rpc.client.ClientSideProxy;
 import org.vaadin.rpc.client.Method;
 
-import com.google.web.bindery.event.shared.HandlerRegistration;
-
 /**
  * VTabDialog.
  */
-public class VTabDialog extends VShellTabSheet implements VTabDialogView.Presenter, VHelpAccessibilityNotifier {
-
-    private boolean isHelpAccessible = false;
-    
-    private VHelpAccessibilityNotifier.Delegate delegate = new Delegate();
+public class VTabbedDialog extends VShellTabSheet implements VTabDialogView.Presenter {
     
     @Override
     protected VTabDialogView getView() {
@@ -60,6 +52,7 @@ public class VTabDialog extends VShellTabSheet implements VTabDialogView.Present
     @Override
     protected ClientSideProxy createProxy() {
         final ClientSideProxy proxy = super.createProxy();
+        
         proxy.register("addAction", new Method() {
             @Override
             public void invoke(String methodName, Object[] params) {
@@ -68,6 +61,7 @@ public class VTabDialog extends VShellTabSheet implements VTabDialogView.Present
                 getView().addAction(name, label);
             }
         });
+        
         proxy.register("setDescription", new Method() {
             @Override
             public void invoke(String methodName, Object[] params) {
@@ -75,12 +69,13 @@ public class VTabDialog extends VShellTabSheet implements VTabDialogView.Present
                 getView().setDescription(description);
             }
         });
+        
         return proxy; 
     }
 
     @Override
     protected VShellTabSheetView createView() {
-        return new VTabDialogViewImpl(getEventBus(), this);
+        return new VTabDialogViewImpl(getEventBus(), this); 
     }
 
     @Override
@@ -91,23 +86,5 @@ public class VTabDialog extends VShellTabSheet implements VTabDialogView.Present
     @Override
     public void closeDialog() {
         getProxy().call("closeDialog");
-    }
-    
-    @Override
-    public HandlerRegistration addHelpAccessibilityHandler(HelpAccessibilityEvent.Handler handler) {
-        return delegate.addHelpAccessibilityHandler(handler);
-    }
-
-
-    @Override
-    public void changeHelpAccessibility(boolean isEnabled) {
-        delegate.changeHelpAccessibility(isHelpAccessible);
-    }
-
-
-    @Override
-    public void notifyOfHelpAccessibilityChange(boolean isAccessible) {
-        isHelpAccessible = !isHelpAccessible;
-        changeHelpAccessibility(isHelpAccessible);
     }
 }

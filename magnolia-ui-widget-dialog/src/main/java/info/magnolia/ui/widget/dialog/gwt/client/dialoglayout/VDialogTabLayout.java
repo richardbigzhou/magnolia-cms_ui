@@ -34,9 +34,11 @@
 package info.magnolia.ui.widget.dialog.gwt.client.dialoglayout;
 
 import info.magnolia.ui.widget.dialog.gwt.client.VDialog;
+import info.magnolia.ui.widget.dialog.gwt.client.VDialogTab;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -55,19 +57,23 @@ import com.vaadin.terminal.gwt.client.UIDL;
 import com.vaadin.terminal.gwt.client.Util;
 
 /**
- * Layout for the {@link DialogFieldSection} widgets.
+ * Layout for the {@link DialogFieldWrapper} widgets.
  */
-public class VDialogLayout extends FlowPanel implements Container, HelpAccessibilityEvent.Handler {
+public class VDialogTabLayout extends FlowPanel implements Container, HelpAccessibilityEvent.Handler {
 
     private List<Widget> children = new LinkedList<Widget>();
 
-    private Map<Widget, DialogFieldSection> sections = new HashMap<Widget, DialogFieldSection>();
+    private Map<Widget, DialogFieldWrapper> sections = new LinkedHashMap<Widget, DialogFieldWrapper>();
 
-    private Element fieldSet = DOM.createElement("fieldset");
-
+    private List<DialogFieldWrapper> problematicSections = new ArrayList<DialogFieldWrapper>();
+    
     private HandlerRegistration helpEventRegistration = null;
 
-    public VDialogLayout() {
+    private Element fieldSet = DOM.createElement("fieldset");
+    
+    private boolean isValidationVisible = false;
+    
+    public VDialogTabLayout() {
         super();
         getElement().appendChild(fieldSet);
     }
@@ -77,14 +83,15 @@ public class VDialogLayout extends FlowPanel implements Container, HelpAccessibi
         if (client.updateComponent(this, uidl, true)) {
             return;
         }
-
+        
+        isValidationVisible = uidl.getBooleanAttribute("validationVisible");
         final Iterator<?> it = uidl.getChildIterator();
         while (it.hasNext()) {
             final UIDL childUIdl = (UIDL) it.next();
             final Paintable p = client.getPaintable(childUIdl.getChildUIDL(0));
             final Widget w = (Widget) p;
             if (!hasChildComponent(w)) {
-                DialogFieldSection fieldSection = new DialogFieldSection();
+                DialogFieldWrapper fieldSection = new DialogFieldWrapper();
                 sections.put(w, fieldSection);
                 children.add(w);
                 fieldSection.setField(w);
@@ -92,7 +99,7 @@ public class VDialogLayout extends FlowPanel implements Container, HelpAccessibi
             }
             if (childUIdl.hasAttribute("helpDescription")) {
                 String description = childUIdl.getStringAttribute("helpDescription");
-                DialogFieldSection fieldSection = sections.get(w);
+                DialogFieldWrapper fieldSection = sections.get(w);
                 fieldSection.setHelpDescription(description);
             }
             p.updateFromUIDL(childUIdl.getChildUIDL(0), client);
@@ -108,7 +115,7 @@ public class VDialogLayout extends FlowPanel implements Container, HelpAccessibi
             }
         }
     }
-
+    
     @Override
     public void replaceChildComponent(Widget oldComponent, Widget newComponent) {
     }
@@ -120,39 +127,47 @@ public class VDialogLayout extends FlowPanel implements Container, HelpAccessibi
 
     @Override
     public void updateCaption(Paintable component, UIDL uidl) {
-        DialogFieldSection fs = sections.get(component);
+        DialogFieldWrapper fs = sections.get(component);
         if (fs != null) {
             boolean errorsOccured = uidl.hasAttribute("error");
-            boolean showError = false;
-            if (uidl.hasAttribute("showError")) {
-                showError = uidl.getBooleanAttribute("showError");
-            }
-            if (errorsOccured && showError) {
+            if (errorsOccured && isValidationVisible) {
                 for (final Iterator<?> it = uidl.getErrors().getChildIterator(); it.hasNext();) {
                     final Object child = it.next();
                     if (child instanceof String) {
                         final String errorMessage = (String) child;
                         fs.showError(errorMessage);
+                        if (!problematicSections.contains(fs)) {
+                            problematicSections.add(fs);
+                        }
                         break;
                     }
                 }
             } else {
+                problematicSections.remove(fs);
                 fs.clearErrors();
             }
+            getParent().setHasError(!problematicSections.isEmpty());
             if (uidl.hasAttribute("caption")) {
                 fs.setCaption(uidl.getStringAttribute("caption"));
             }
         }
     }
-
+    
     @Override
-    public boolean requestLayout(Set<Paintable> children) {
-        return false;
+    public VDialogTab getParent() {
+        final Widget parent = super.getParent();
+        if (parent == null) {
+            return null;
+        }
+        if (!(super.getParent() instanceof VDialogTab)) {
+            throw new RuntimeException("Parent of VDialogTabLayout must be of type VDialogTab, you have used: " + super.getParent().getClass());
+        }
+        return (VDialogTab)super.getParent();
     }
 
     @Override
     public RenderSpace getAllocatedSpace(Widget child) {
-        final DialogFieldSection fs = sections.get(child);
+        final DialogFieldWrapper fs = sections.get(child);
         if (fs != null) {
             return new RenderSpace(fs.getFieldAreaWidth(), fs.getFieldAreaHeight());
         }
@@ -161,9 +176,23 @@ public class VDialogLayout extends FlowPanel implements Container, HelpAccessibi
 
     @Override
     public void onHelpAccessibilityChanged(HelpAccessibilityEvent event) {
-        for (final DialogFieldSection fs : sections.values()) {
+        for (final DialogFieldWrapper fs : sections.values()) {
             fs.setHelpEnabled(event.isHelpAccesible());
         }
     }
+    
+    public void setDescriptionVisible(boolean isAccessible) {
+        for (final DialogFieldWrapper fs : sections.values()) {
+            fs.setHelpEnabled(isAccessible);
+        }        
+    }
 
+    @Override
+    public boolean requestLayout(Set<Paintable> children) {
+        return false;
+    }
+    
+    public void setValidationVisible(boolean isVisible) {
+        this.isValidationVisible = isVisible;
+    }
 }

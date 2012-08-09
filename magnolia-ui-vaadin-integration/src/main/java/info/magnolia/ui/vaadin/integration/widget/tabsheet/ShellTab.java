@@ -61,13 +61,12 @@ public class ShellTab extends SimplePanel implements ServerSideHandler {
     
     private String notification = null;
 
-    private ServerSideProxy proxy = new ServerSideProxy(this) {{
-        
-    }};
+    private ServerSideProxy proxy = new ServerSideProxy(this);
     
     public ShellTab(final String caption, final ComponentContainer c) {
         super(c);
         setSizeFull();
+        setImmediate(true);
         setCaption(caption);
     }
     
@@ -106,6 +105,11 @@ public class ShellTab extends SimplePanel implements ServerSideHandler {
         proxy.callOnce("updateNotification", text);
     }
 
+    public void setHasError(boolean hasError) {
+        this.hasError = hasError;
+        proxy.callOnce("setHasError", hasError);
+    }
+    
     public void hideNotification() {
         proxy.callOnce("hideNotification");
         this.notification = null;
@@ -128,6 +132,7 @@ public class ShellTab extends SimplePanel implements ServerSideHandler {
         if (tabId != null) {
             proxy.callOnce("setTabId", tabId);
             proxy.callOnce("setClosable", isClosable);
+            proxy.callOnce("setError", hasError);
             if (notification != null) {
                 proxy.callOnce("updateNotification", notification);   
             } else {

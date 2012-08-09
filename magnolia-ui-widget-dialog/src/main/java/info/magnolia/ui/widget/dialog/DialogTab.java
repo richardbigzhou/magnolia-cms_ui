@@ -31,42 +31,37 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.dialog.gwt.client;
+package info.magnolia.ui.widget.dialog;
 
-import com.google.gwt.user.client.ui.Widget;
+import info.magnolia.ui.vaadin.integration.widget.tabsheet.ShellTab;
+import info.magnolia.ui.widget.dialog.gwt.client.VDialogTab;
 
-import info.magnolia.ui.vaadin.integration.widget.client.tabsheet.VShellTab;
-import info.magnolia.ui.widget.dialog.gwt.client.dialoglayout.VDialogTabLayout;
+import com.vaadin.terminal.PaintException;
+import com.vaadin.terminal.PaintTarget;
+import com.vaadin.ui.ClientWidget;
 
 /**
  * Dialog tab.
+ *
  */
-public class VDialogTab extends VShellTab {
+@ClientWidget(VDialogTab.class)
+public class DialogTab extends ShellTab {
 
-    private VDialogTabLayout content;
+    private final DialogLayout content;
+    
+    public DialogTab(String caption, DialogLayout content) {
+        super(caption, content);
+        this.content = content;
+    }
+
+    public void setValidationVisibe(boolean isVisible) {
+        content.setValidationVisible(isVisible);
+    }
     
     @Override
-    public void setWidget(Widget w) {
-        if (!(w instanceof VDialogTabLayout)) {
-            throw new RuntimeException("Invalid type of tab content. Must be VDialogLayout. You have used: " + w.getClass());
-        }
-        content = (VDialogTabLayout)w;
-        super.setWidget(w);
-    }
-    
-    public VDialogTabLayout getFields() {
-        return content;
+    public void paintContent(PaintTarget target) throws PaintException {
+        setHasError(content.hasError());
+        super.paintContent(target);
     }
 
-    public void setDescriptionVisible(boolean visible) {
-        if (content != null) {
-            content.setDescriptionVisible(visible);
-        }
-    }
-
-    public void setValidationVisible(boolean isVisible) {
-        if (content != null) {
-            content.setValidationVisible(isVisible);
-        }
-    }
 }

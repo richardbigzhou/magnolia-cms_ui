@@ -72,8 +72,8 @@ public class SaveDialogAction extends ActionBase<SaveDialogActionDefinition> {
 
     @Override
     public void execute() throws ActionExecutionException {
-
         // First Validate
+        presenter.showValidation(true);
         if (presenter.getView().isValid()) {
             final JcrNodeAdapter itemChanged = (JcrNodeAdapter) item;
             try {
@@ -85,7 +85,6 @@ public class SaveDialogAction extends ActionBase<SaveDialogActionDefinition> {
                 throw new ActionExecutionException(e);
             }
             eventBus.fireEvent(new ContentChangedEvent(itemChanged.getWorkspace(), itemChanged.getItemId()));
-
             presenter.closeDialog();
         } else {
             log.warn("View is not valid. No save performed");

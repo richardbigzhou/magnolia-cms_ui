@@ -44,7 +44,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * Error/Help bubble widget. 
  */
-public abstract class VBubble extends FlowPanel {
+public abstract class VInlineErrorMessage extends FlowPanel {
     
     protected Widget triangleSVG = createErrorDecoration();
     
@@ -54,13 +54,12 @@ public abstract class VBubble extends FlowPanel {
     
     protected Element messageEl = DOM.createSpan();
     
-    protected VBubble() {
+    protected VInlineErrorMessage() {
         construct();
     }
     
     private void construct() {
         applyStyles();
-        
         add(triangleSVG);
         getElement().appendChild(messageWrapper);
         messageWrapper.appendChild(icon);
@@ -86,8 +85,8 @@ public abstract class VBubble extends FlowPanel {
         messageEl.setInnerHTML(message);
     }
     
-    public static VBubble createErrorSection() {
-        final VBubble result = new VBubble() {
+    public static VInlineErrorMessage createErrorMessage() {
+        final VInlineErrorMessage result = new VInlineErrorMessage() {
             @Override
             protected void applyStyles() {
                 addStyleName("validation-message-inline");
@@ -99,8 +98,8 @@ public abstract class VBubble extends FlowPanel {
         return result;
     }
     
-    public static VBubble createHelpSection() {
-        final VBubble result = new VBubble() {
+    public static VInlineErrorMessage createHelpMessage() {
+        final VInlineErrorMessage result = new VInlineErrorMessage() {
             @Override
             protected void applyStyles() {
                 addStyleName("help-message-inline");

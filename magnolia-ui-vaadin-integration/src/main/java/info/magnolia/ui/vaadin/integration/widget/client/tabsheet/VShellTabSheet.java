@@ -172,9 +172,7 @@ public class VShellTabSheet extends Composite implements HasWidgets, VShellTabSh
             while (it.hasNext()) {
                 final UIDL tabUidl = (UIDL) it.next();
                 final Paintable tab = client.getPaintable(tabUidl);
-                if (!view.getTabs().contains(tab)) {
                     view.addTab((VShellTab) tab);
-                }
                 tab.updateFromUIDL(tabUidl, client);
                 possibleTabsToOrphan.remove(tab);
             }
@@ -188,8 +186,7 @@ public class VShellTabSheet extends Composite implements HasWidgets, VShellTabSh
     }
 
     @Override
-    public void replaceChildComponent(Widget oldComponent, Widget newComponent) {
-    }
+    public void replaceChildComponent(Widget oldComponent, Widget newComponent) {}
 
     @Override
     public boolean hasChildComponent(Widget component) {

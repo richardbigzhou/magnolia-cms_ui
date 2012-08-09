@@ -33,10 +33,10 @@
  */
 package info.magnolia.ui.widget.dialog;
 
-import info.magnolia.ui.vaadin.integration.widget.tabsheet.ShellTab;
 import info.magnolia.ui.vaadin.integration.widget.tabsheet.ShellTabSheet;
-import info.magnolia.ui.widget.dialog.gwt.client.VTabDialog;
+import info.magnolia.ui.widget.dialog.gwt.client.VTabbedDialog;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -54,20 +54,22 @@ import com.vaadin.ui.Field;
  * Tab Dialog.
  *
  */
-@ClientWidget(VTabDialog.class)
-public class TabDialog extends ShellTabSheet implements DialogView, ServerSideHandler, Item.Editor {
+@ClientWidget(VTabbedDialog.class)
+public class TabbedDialog extends ShellTabSheet implements DialogView, ServerSideHandler, Item.Editor {
 
     private final String SHOW_ALL = "show all";
 
-    private Item itemDatasource;
-
+    private List<DialogTab> dialogTabs = new ArrayList<DialogTab>();
+    
     private List<Field> fields = new LinkedList<Field>();
 
     private Presenter presenter;
 
-    public TabDialog() {
+    private Item itemDatasource;
+    
+    public TabbedDialog() {
         setImmediate(true);
-        showAllTab(true);
+        setShowAllEnabled(true);
     }
 
     @Override
@@ -98,17 +100,17 @@ public class TabDialog extends ShellTabSheet implements DialogView, ServerSideHa
 
     @Override
     public void addTab(ComponentContainer cc, String caption) {
-        final ShellTab tab = new ShellTab(caption, cc);
+        if (!(cc instanceof DialogLayout)) {
+            throw new IllegalArgumentException();
+        }
+        final DialogTab tab = new DialogTab(caption, (DialogLayout)cc);
+        dialogTabs.add(tab);
         tab.setSizeUndefined();
-        addComponent(tab);
-        setTabClosable(tab, false);
+        tab.setClosable(false);
+        doAddTab(tab);
     }
 
-    public void closeTab(ComponentContainer c) {
-        removeComponent(c);
-    }
-
-    public void showAllTab(boolean showAll) {
+    public void setShowAllEnabled(boolean showAll) {
         showAllTab(showAll, SHOW_ALL);
     }
 
@@ -148,6 +150,13 @@ public class TabDialog extends ShellTabSheet implements DialogView, ServerSideHa
     }
 
     @Override
+    public void showValidation(boolean isVisible) {
+        for (final DialogTab tab : dialogTabs) {
+            tab.setValidationVisibe(isVisible);
+        }
+    }
+    
+    @Override
     public boolean isValid() {
         boolean res = true;
         for (Field field : getFields()) {
@@ -155,5 +164,4 @@ public class TabDialog extends ShellTabSheet implements DialogView, ServerSideHa
         }
         return res;
     }
-    
 }
