@@ -249,8 +249,8 @@
                 <sv:property sv:name="class" sv:type="String">
                   <sv:value>info.magnolia.ui.model.dialog.definition.RegexpValidatorDefinition</sv:value>
                 </sv:property>
-                <sv:property sv:name="errorMessage" sv:type="String">
-                  <sv:value>Must only contain letters! (to be i18n'd)</sv:value>
+                <sv:property sv:name="errorMessageKey" sv:type="String">
+                  <sv:value>validation.message.only.letters</sv:value>
                 </sv:property>
                 <sv:property sv:name="jcr:createdBy" sv:type="String">
                   <sv:value>admin</sv:value>
@@ -851,8 +851,8 @@
                 <sv:property sv:name="class" sv:type="String">
                   <sv:value>info.magnolia.ui.model.dialog.definition.RegexpValidatorDefinition</sv:value>
                 </sv:property>
-                <sv:property sv:name="errorMessage" sv:type="String">
-                  <sv:value>Must only contain digits! (to be i18n'd)</sv:value>
+                <sv:property sv:name="errorMessageKey" sv:type="String">
+                  <sv:value>validation.message.only.digits</sv:value>
                 </sv:property>
                 <sv:property sv:name="jcr:createdBy" sv:type="String">
                   <sv:value>admin</sv:value>
@@ -1263,8 +1263,8 @@
                 <sv:property sv:name="class" sv:type="String">
                   <sv:value>info.magnolia.ui.model.dialog.definition.EmailValidatorDefinition</sv:value>
                 </sv:property>
-                <sv:property sv:name="errorMessage" sv:type="String">
-                  <sv:value>{0} is not a valid email-adress (to be i18n'd)</sv:value>
+                <sv:property sv:name="errorMessageKey" sv:type="String">
+                  <sv:value>validation.message.non.valid.email</sv:value>
                 </sv:property>
                 <sv:property sv:name="jcr:createdBy" sv:type="String">
                   <sv:value>admin</sv:value>
