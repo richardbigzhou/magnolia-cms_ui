@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.widget.dialog.gwt.client;
 
+import info.magnolia.ui.vaadin.integration.widget.client.tabsheet.VMagnoliaTabSheetView;
 import info.magnolia.ui.vaadin.integration.widget.client.tabsheet.VShellTabSheet;
-import info.magnolia.ui.vaadin.integration.widget.client.tabsheet.VShellTabSheetView;
 
 import org.vaadin.rpc.client.ClientSideProxy;
 import org.vaadin.rpc.client.Method;
@@ -42,11 +42,11 @@ import org.vaadin.rpc.client.Method;
 /**
  * VTabDialog.
  */
-public class VTabbedDialog extends VShellTabSheet implements VTabDialogView.Presenter {
+public class VTabbedDialog extends VShellTabSheet implements VTabbedDialogView.Presenter {
     
     @Override
-    protected VTabDialogView getView() {
-        return (VTabDialogView)super.getView();
+    protected VTabbedDialogView getView() {
+        return (VTabbedDialogView)super.getView();
     }
     
     @Override
@@ -72,10 +72,15 @@ public class VTabbedDialog extends VShellTabSheet implements VTabDialogView.Pres
         
         return proxy; 
     }
+    
+    @Override
+    public void setHeight(String height) {
+        super.setHeight(height);
+    }
 
     @Override
-    protected VShellTabSheetView createView() {
-        return new VTabDialogViewImpl(getEventBus(), this); 
+    protected VMagnoliaTabSheetView createView() {
+        return new VTabbedDialogViewImpl(getEventBus(), this); 
     }
 
     @Override
@@ -86,5 +91,9 @@ public class VTabbedDialog extends VShellTabSheet implements VTabDialogView.Pres
     @Override
     public void closeDialog() {
         getProxy().call("closeDialog");
+    }
+
+    public void updateErrorAmount() {
+        getView().recalculateErrors();
     }
 }

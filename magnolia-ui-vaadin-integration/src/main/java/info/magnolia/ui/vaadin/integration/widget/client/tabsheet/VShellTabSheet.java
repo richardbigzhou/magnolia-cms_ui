@@ -59,18 +59,19 @@ import com.vaadin.terminal.gwt.client.Container;
 import com.vaadin.terminal.gwt.client.Paintable;
 import com.vaadin.terminal.gwt.client.RenderSpace;
 import com.vaadin.terminal.gwt.client.UIDL;
+import com.vaadin.terminal.gwt.client.VConsole;
 
 /**
  * Client side implementation of the simple tab sheet.
  */
 @SuppressWarnings("serial")
-public class VShellTabSheet extends Composite implements HasWidgets, VShellTabSheetView.Presenter, Container, ClientSideHandler {
+public class VShellTabSheet extends Composite implements HasWidgets, VMagnoliaTabSheetView.Presenter, Container, ClientSideHandler {
 
     protected String paintableId;
 
     protected ApplicationConnection client;
 
-    private VShellTabSheetView view;
+    private VMagnoliaTabSheetView view;
 
     private EventBus eventBus = new SimpleEventBus();
 
@@ -109,8 +110,8 @@ public class VShellTabSheet extends Composite implements HasWidgets, VShellTabSh
         initWidget(view.asWidget());
     }
 
-    protected VShellTabSheetView createView() {
-        return new VShellTabSheetViewImpl(eventBus, this); 
+    protected VMagnoliaTabSheetView createView() {
+        return new VMagnoliaTabSheetViewImpl(eventBus, this); 
     }
 
     protected ClientSideProxy createProxy() {
@@ -212,10 +213,6 @@ public class VShellTabSheet extends Composite implements HasWidgets, VShellTabSh
         }
         return new RenderSpace();
     }
-    
-    void activateTab(final VShellTab tab) {
-
-    }
 
     @Override
     public boolean initWidget(Object[] params) {
@@ -224,14 +221,14 @@ public class VShellTabSheet extends Composite implements HasWidgets, VShellTabSh
 
     @Override
     public void handleCallFromServer(String method, Object[] params) {
-
+        VConsole.error("Unhandled method call from the server: " + method);
     }
 
     public EventBus getEventBus() {
         return eventBus;
     }
 
-    protected VShellTabSheetView getView() {
+    protected VMagnoliaTabSheetView getView() {
         return view;
     }
 
@@ -262,6 +259,12 @@ public class VShellTabSheet extends Composite implements HasWidgets, VShellTabSh
     @Override
     public void updateLayout() {
         client.runDescendentsLayout(VShellTabSheet.this);
+    }
+    
+    @Override
+    public void setHeight(String height) {
+        super.setHeight(height);
+        view.asWidget().setHeight(height);
     }
 
 }

@@ -33,10 +33,14 @@
  */
 package info.magnolia.ui.widget.dialog.gwt.client;
 
-import com.google.gwt.user.client.ui.Widget;
+import java.util.List;
 
 import info.magnolia.ui.vaadin.integration.widget.client.tabsheet.VShellTab;
+import info.magnolia.ui.widget.dialog.gwt.client.dialoglayout.DialogFieldWrapper;
 import info.magnolia.ui.widget.dialog.gwt.client.dialoglayout.VDialogTabLayout;
+
+import com.google.gwt.user.client.ui.Widget;
+import com.vaadin.terminal.gwt.client.Util;
 
 /**
  * Dialog tab.
@@ -69,4 +73,26 @@ public class VDialogTab extends VShellTab {
             content.setValidationVisible(isVisible);
         }
     }
+
+    @Override
+    public void setHasError(boolean hasError) {
+        super.setHasError(hasError);
+        final VTabbedDialog dialog = getDialog();
+        if (dialog != null) {
+            dialog.updateErrorAmount();
+        }
+    }
+   
+    private VTabbedDialog getDialog() {
+        return Util.findWidget(getElement(), VTabbedDialog.class);
+    }
+
+    public int getErorAmount() {
+        return content.getErrorAmount();
+    }
+
+    public List<DialogFieldWrapper> getProblematicFields() {
+        return content.getProblematicFields();
+    }
+
 }

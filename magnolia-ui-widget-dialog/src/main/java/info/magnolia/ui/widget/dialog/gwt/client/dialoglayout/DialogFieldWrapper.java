@@ -40,6 +40,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.impl.FocusImpl;
 
 /**
  * Wrapper widget that provides help and error indication. 
@@ -62,6 +63,8 @@ public class DialogFieldWrapper extends FlowPanel {
     
     private String helpDescription = null;
     
+    private Widget field = null;
+            
     public DialogFieldWrapper() {
         super();
         addStyleName("v-dialog-field-section");
@@ -130,6 +133,7 @@ public class DialogFieldWrapper extends FlowPanel {
     }
 
     public void setField(Widget child) {
+        this.field = child;
         child.removeFromParent();
         getChildren().add(child);
         fieldWrapper.insertBefore(child.getElement(), helpButton.getElement());
@@ -161,6 +165,12 @@ public class DialogFieldWrapper extends FlowPanel {
     
     public boolean hasError() {
         return errorSection != null && errorSection.isVisible();
+    }
+
+    public void focusField() {
+        if (field != null) {
+            FocusImpl.getFocusImplForWidget().focus(field.getElement());
+        }
     }
     
 }

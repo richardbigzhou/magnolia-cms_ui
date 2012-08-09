@@ -33,104 +33,115 @@
  */
 package info.magnolia.ui.widget.dialog.gwt.client;
 
+import info.magnolia.ui.vaadin.integration.widget.client.tabsheet.VMagnoliaTabSheetViewImpl;
 import info.magnolia.ui.vaadin.integration.widget.client.tabsheet.VShellTab;
 import info.magnolia.ui.vaadin.integration.widget.client.tabsheet.VShellTabNavigator;
-import info.magnolia.ui.vaadin.integration.widget.client.tabsheet.VShellTabSheetViewImpl;
+import info.magnolia.ui.widget.dialog.gwt.client.VTabbedDialogHeader.VDialogHeaderCallback;
+import info.magnolia.ui.widget.dialog.gwt.client.dialoglayout.DialogFieldWrapper;
+import info.magnolia.ui.widget.jquerywrapper.gwt.client.AnimationSettings;
+import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryCallback;
+import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.ScrollEvent;
+import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.vaadin.terminal.gwt.client.Util;
+import com.vaadin.terminal.gwt.client.VConsole;
 
 /**
  * VTabDialogViewImpl.
  */
-public class VTabDialogViewImpl extends FlowPanel implements VTabDialogView {
+public class VTabbedDialogViewImpl extends FlowPanel implements VTabbedDialogView {
 
     private static final String CLASSNAME = "dialog-panel";
-    
-    private static final String CLASSNAME_HEADER = "dialog-header";
-    
-    private static final String ClASSNAME_DESCRIPTION = "dialog-description";
-    
-    private static final String ClASSNAME_ERROR = "dialog-error";
 
     private static final String CLASSNAME_CONTENT = "dialog-content";
 
     private static final String CLASSNAME_FOOTER = "dialog-footer";
-    
-    private static final String ClASSNAME_CLOSE = "dialog-close";
-    
-    private static final String ClASSNAME_HELP = "dialog-help";
 
-    private static final String CLASSNAME_HELPBUTTON = "btn-dialog-help";
-    
-    private static final String CLASSNAME_CLOSEBUTTON = "btn-dialog-close";
-    
     private static final String CLASSNAME_BUTTON = "btn-dialog";
-    
-    private List<VDialogTab> dialogTabs = new ArrayList<VDialogTab>();
-    
-    private final Element header = DOM.createDiv();
-    
+
+    private final List<VDialogTab> dialogTabs = new ArrayList<VDialogTab>();
+
     private final Element content = DOM.createDiv();
-    
-    private final FlowPanel description = new FlowPanel();
-    
-    private final FlowPanel error = new FlowPanel();
 
     private final Element footer = DOM.createDiv();
-    
-    private final Element close = DOM.createDiv();
-    
-    private final Element help = DOM.createDiv();
-    
-    private final EventBus eventBus;
-    
+
+    private final VMagnoliaTabSheetViewImpl impl;
+
+    private DialogFieldWrapper lastShownProblematicField = null;
+
+    private final VTabbedDialogHeader dialogHeader = new VTabbedDialogHeader(new VDialogHeaderCallback() {
+
+        @Override
+        public void onDescriptionVisibilityChanged(boolean isVisible) {
+            setDescriptionVisible(isVisible);
+        }
+
+        @Override
+        public void onCloseFired() {
+            getPresenter().closeDialog();
+        }
+
+        @Override
+        public void jumpToNextError() {
+            VDialogTab activeTab = getActiveTab();
+            final List<DialogFieldWrapper> problematicFields = activeTab.getProblematicFields();
+            if (lastShownProblematicField == null && !problematicFields.isEmpty()) {
+                final DialogFieldWrapper field = problematicFields.get(0);
+                scrollTo(field);
+                lastShownProblematicField = field;
+            } else {
+                int index = problematicFields.indexOf(lastShownProblematicField) + 1;
+                if (index <= problematicFields.size() - 1) {
+                    final DialogFieldWrapper nextField = problematicFields.get(index);
+                    lastShownProblematicField = nextField;
+                    scrollTo(lastShownProblematicField);
+                } else {
+                    final List<VShellTab> tabs = getTabs();
+                    setActiveTab(tabs.get((getTabs().indexOf(getActiveTab()) + 1) % getTabs().size()));
+                    jumpToNextError();
+                }
+            }
+        }
+    });
+
     private Presenter presenter;
-    
-    private VShellTabSheetViewImpl impl;
-    
-    public VTabDialogViewImpl(EventBus eventBus, Presenter presenter) {
+
+    public VTabbedDialogViewImpl(EventBus eventBus, Presenter presenter) {
         super();
-        impl = new VShellTabSheetViewImpl(eventBus, presenter);
-        
+        impl = new VMagnoliaTabSheetViewImpl(eventBus, presenter);
+
         setStylePrimaryName(CLASSNAME);
-        header.addClassName(CLASSNAME_HEADER);
         content.addClassName(CLASSNAME_CONTENT);
-        description.setStyleName(ClASSNAME_DESCRIPTION);
-        error.setStyleName(ClASSNAME_ERROR);
         footer.addClassName(CLASSNAME_FOOTER);
-        close.addClassName(ClASSNAME_CLOSE);
-        help.addClassName(ClASSNAME_HELP);
 
-        header.appendChild(close);
-        header.appendChild(help);
-
-        this.eventBus = eventBus;
-        getElement().appendChild(header);
-
-
-        description.setVisible(false);
-        error.setVisible(false);
-        add(description, getElement());
-        add(error, getElement());
+        add(dialogHeader);
 
         getElement().appendChild(content);
         getElement().appendChild(footer);
 
         add(impl, content);
-        setPresenter(presenter);
+        this.presenter = presenter;
         setCaption("Edit page properties");
-        addClose();
+
+        addScrollHandler(new ScrollHandler() {
+            @Override
+            public void onScroll(ScrollEvent event) {
+                VConsole.log("jsjdlkajslkdjaslkdjalskdjaslkdjasldjaskl");
+            }
+        });
     }
 
     @Override
@@ -170,70 +181,20 @@ public class VTabDialogViewImpl extends FlowPanel implements VTabDialogView {
     }
 
     void setCaption(final String caption) {
-        final Label label = new Label(caption);
-        add(label, header);
-    }
-
-    public void addClose() {
-        final Button closeButton = new Button();
-        closeButton.setStyleName(CLASSNAME_CLOSEBUTTON);
-        closeButton.addStyleName("green");
-        closeButton.addClickHandler(new ClickHandler() {
-
-            @Override
-            public void onClick(final com.google.gwt.event.dom.client.ClickEvent event) {
-                getPresenter().closeDialog();
-            }
-
-        });
-        add(closeButton, close);
-
+        dialogHeader.setDialogCaption(caption);
     }
 
     @Override
     public void setDescription(final String dialogDescription) {
-        final Button helpButton = new Button();
-        helpButton.setStyleName(CLASSNAME_HELPBUTTON);
-        helpButton.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(final ClickEvent event) {
-                toggleDescription();
-            }
-
-        });
-
-        final Element close = DOM.createDiv();
-        close.addClassName(ClASSNAME_CLOSE);
-        final Button closeButton = new Button();
-        closeButton.setStyleName(CLASSNAME_CLOSEBUTTON);
-        closeButton.addClickHandler(new ClickHandler() {
-
-            @Override
-            public void onClick(final com.google.gwt.event.dom.client.ClickEvent event) {
-                toggleDescription();
-            }
-
-        });
-
-        add(closeButton, close);
-        description.getElement().appendChild(close);
-
-        final Element content = DOM.createSpan();
-        content.setInnerText(dialogDescription);
-        description.getElement().appendChild(content);
-
-
-        add(helpButton, help);
-
+        dialogHeader.setDescription(dialogDescription);
     }
 
-    void toggleDescription() {
-        description.setVisible(!description.isVisible());
+    void setDescriptionVisible(boolean isVisible) {
         for (final VDialogTab tab : dialogTabs) {
-            tab.setDescriptionVisible(description.isVisible());   
+            tab.setDescriptionVisible(isVisible);
         }
     }
-    
+
     @Override
     public VShellTabNavigator getTabContainer() {
         return impl.getTabContainer();
@@ -251,6 +212,7 @@ public class VTabDialogViewImpl extends FlowPanel implements VTabDialogView {
 
     @Override
     public void setActiveTab(VShellTab tab) {
+        lastShownProblematicField = null;
         impl.setActiveTab(tab);
     }
 
@@ -265,11 +227,53 @@ public class VTabDialogViewImpl extends FlowPanel implements VTabDialogView {
     }
 
     @Override
+    public HandlerRegistration addScrollHandler(ScrollHandler handler) {
+        return impl.addScrollHandler(handler);
+    }
+
+    @Override
     public void addTab(VShellTab tab) {
         if (!(tab instanceof VDialogTab)) {
             throw new RuntimeException("Tab must be of VDialogTab type. You have used: " + tab.getClass());
         }
-        dialogTabs.add((VDialogTab)tab);
+        dialogTabs.add((VDialogTab) tab);
         impl.addTab(tab);
+    }
+
+    @Override
+    public void recalculateErrors() {
+        int totalProblematicFields = 0;
+        for (final VDialogTab tab : dialogTabs) {
+            totalProblematicFields += tab.getErorAmount();
+        }
+        dialogHeader.setErrorAmount(totalProblematicFields);
+    }
+
+    @Override
+    public void setHeight(String height) {
+        super.setHeight(height);
+        int heightPx = JQueryWrapper.parseInt(height);
+        impl.setHeight((heightPx - dialogHeader.getOffsetHeight() - footer.getOffsetHeight()) + "px");
+    }
+
+    @Override
+    public VDialogTab getActiveTab() {
+        return (VDialogTab) impl.getActiveTab();
+    }
+
+    private void scrollTo(final DialogFieldWrapper field) {
+        final int top = JQueryWrapper.select(field).position().top();
+        final ScrollPanel scroller = Util.findWidget(field.getElement(), ScrollPanel.class);
+        JQueryWrapper.select(scroller).animate(300, new AnimationSettings() {
+            {
+                setProperty("scrollTop", top - 30);
+                addCallback(new JQueryCallback() {
+                    @Override
+                    public void execute(JQueryWrapper query) {
+                        field.focusField();
+                    }
+                });
+            }
+        });
     }
 }

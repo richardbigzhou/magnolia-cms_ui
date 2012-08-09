@@ -184,7 +184,7 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
     public void setHeight(String height) {
         super.setHeight(height);
         if (visibleWidget != null) {
-            visibleWidget.setHeight(height);
+            //visibleWidget.setHeight(height);
         }
     }
 

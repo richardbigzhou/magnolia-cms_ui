@@ -50,36 +50,17 @@ public interface VShellTabSheetView extends HasWidgets, IsWidget {
         void updateLayout();
     }
 
-    /**
-     * @return
-     */
     VMagnoliaTabNavigator getTabContainer();
 
-    /**
-     * @param tabId
-     * @return
-     */
     VMagnoliaShellTab getTabById(String tabId);
 
-    /**
-     * @return
-     */
     List<VMagnoliaShellTab> getTabs();
 
-    /**
-     * @param tab
-     */
     void setActiveTab(VMagnoliaShellTab tab);
-
-    /**
-     * @param tabToOrphan
-     */
+    
     void removeTab(VMagnoliaShellTab tabToOrphan);
 
-    /**
-     * @param visible
-     */
     void showAllTabContents(boolean visible);
-
+    
 
 }

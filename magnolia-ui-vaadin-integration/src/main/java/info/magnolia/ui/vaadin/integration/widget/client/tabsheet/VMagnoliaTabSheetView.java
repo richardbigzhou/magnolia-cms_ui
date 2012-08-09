@@ -31,34 +31,41 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.dialog.gwt.client;
+package info.magnolia.ui.vaadin.integration.widget.client.tabsheet;
 
-import info.magnolia.ui.vaadin.integration.widget.client.tabsheet.VShellTabSheetView;
+import java.util.List;
 
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.event.dom.client.HasScrollHandlers;
+import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.IsWidget;
 
 /**
- * VTabDialogView.
+ * VShellTabView.
  */
-public interface VTabDialogView extends VShellTabSheetView {
+public interface VMagnoliaTabSheetView extends HasWidgets, IsWidget, HasScrollHandlers {
 
+    List<VShellTab> getTabs();
+    
+    void addTab(VShellTab tab);
+    
     /**
-     * Presenter. Meant for Vaadin part of MagnoliaShell.
+     * Presenter.
      */
-    public interface Presenter extends VShellTabSheetView.Presenter {
-
-        void fireAction(String action);
-
-        void closeDialog();
-        
+    public interface Presenter {
+        void updateLayout();
     }
 
-    void setPresenter(Presenter presenter);
+    VShellTabNavigator getTabContainer();
 
-    boolean hasChildComponent(Widget component);
+    VShellTab getTabById(String tabId);
 
-    void addAction(String label, String action);
-
-    void setDescription(String description);
+    VShellTab getActiveTab();
     
+    void setActiveTab(VShellTab tab);
+
+    void removeTab(VShellTab tabToOrphan);
+
+    void showAllTabContents(boolean visible);
+
+
 }

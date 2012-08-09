@@ -70,6 +70,7 @@ public class TabbedDialog extends ShellTabSheet implements DialogView, ServerSid
     public TabbedDialog() {
         setImmediate(true);
         setShowAllEnabled(true);
+        setHeight("500px");
     }
 
     @Override
@@ -155,6 +156,7 @@ public class TabbedDialog extends ShellTabSheet implements DialogView, ServerSid
             tab.setValidationVisibe(isVisible);
         }
     }
+    
     
     @Override
     public boolean isValid() {

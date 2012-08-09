@@ -34,34 +34,46 @@
 package info.magnolia.ui.vaadin.integration.widget.client.tabsheet;
 
 import info.magnolia.ui.vaadin.integration.widget.client.tabsheet.util.CollectionUtil;
+import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
  * VShellTabSheetViewImpl.
  */
-public class VShellTabSheetViewImpl extends FlowPanel implements VShellTabSheetView {
+public class VMagnoliaTabSheetViewImpl extends FlowPanel implements VMagnoliaTabSheetView {
 
+    private ScrollPanel scroller = new ScrollPanel();
+    
+    private FlowPanel tabPanel = new FlowPanel();
+    
+    private final List<VShellTab> tabs = new LinkedList<VShellTab>();
+    
     private VShellTabNavigator tabContainer;
 
     private VShellTab activeTab = null;
-
-    private final List<VShellTab> tabs = new LinkedList<VShellTab>();
-
+    
     private Presenter presenter;
-
-    public VShellTabSheetViewImpl(EventBus eventBus, Presenter presenter) {
+    
+    public VMagnoliaTabSheetViewImpl(EventBus eventBus, Presenter presenter) {
         super();
         this.presenter = presenter;
         this.tabContainer =  new VShellTabNavigator(eventBus);
         addStyleName("v-shell-tabsheet");
+        scroller.addStyleName("v-shell-tabsheet-scroller");
+        tabPanel.addStyleName("v-shell-tabsheet-tab-wrapper");
         add(tabContainer);
+        add(scroller);
+        scroller.setWidget(tabPanel);
     }
 
     @Override
@@ -78,7 +90,7 @@ public class VShellTabSheetViewImpl extends FlowPanel implements VShellTabSheetV
             }
         }
         getTabs().remove(tabToOrphan);
-        remove(tabToOrphan);
+        tabPanel.remove(tabToOrphan);
     }
 
     @Override
@@ -116,8 +128,26 @@ public class VShellTabSheetViewImpl extends FlowPanel implements VShellTabSheetV
     public void addTab(VShellTab tab) {
         if (!tabs.contains(tab)) {
             getTabs().add(tab);
-            add((Widget) tab);   
+            tabPanel.add((Widget) tab);   
         }
+    }
+    
+    @Override
+    public void setHeight(String height) {
+        super.setHeight(height);
+        int heightPx = JQueryWrapper.parseInt(height);
+        int scrollerHeight = heightPx - tabContainer.getOffsetHeight();
+        scroller.setHeight(scrollerHeight + "px");
+    }
+
+    @Override
+    public HandlerRegistration addScrollHandler(ScrollHandler handler) {
+        return scroller.addScrollHandler(handler);
+    }
+
+    @Override
+    public VShellTab getActiveTab() {
+        return activeTab;
     }
 
 }

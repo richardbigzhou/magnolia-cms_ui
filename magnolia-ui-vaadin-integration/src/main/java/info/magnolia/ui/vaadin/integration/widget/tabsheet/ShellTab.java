@@ -132,7 +132,7 @@ public class ShellTab extends SimplePanel implements ServerSideHandler {
         if (tabId != null) {
             proxy.callOnce("setTabId", tabId);
             proxy.callOnce("setClosable", isClosable);
-            proxy.callOnce("setError", hasError);
+            proxy.callOnce("setHasError", hasError);
             if (notification != null) {
                 proxy.callOnce("updateNotification", notification);   
             } else {

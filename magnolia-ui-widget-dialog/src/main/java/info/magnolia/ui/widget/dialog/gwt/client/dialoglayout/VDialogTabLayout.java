@@ -33,10 +33,10 @@
  */
 package info.magnolia.ui.widget.dialog.gwt.client.dialoglayout;
 
-import info.magnolia.ui.widget.dialog.gwt.client.VDialog;
 import info.magnolia.ui.widget.dialog.gwt.client.VDialogTab;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -48,13 +48,11 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.event.shared.HandlerRegistration;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.Container;
 import com.vaadin.terminal.gwt.client.Paintable;
 import com.vaadin.terminal.gwt.client.RenderSpace;
 import com.vaadin.terminal.gwt.client.UIDL;
-import com.vaadin.terminal.gwt.client.Util;
 
 /**
  * Layout for the {@link DialogFieldWrapper} widgets.
@@ -66,8 +64,6 @@ public class VDialogTabLayout extends FlowPanel implements Container, HelpAccess
     private Map<Widget, DialogFieldWrapper> sections = new LinkedHashMap<Widget, DialogFieldWrapper>();
 
     private List<DialogFieldWrapper> problematicSections = new ArrayList<DialogFieldWrapper>();
-    
-    private HandlerRegistration helpEventRegistration = null;
 
     private Element fieldSet = DOM.createElement("fieldset");
     
@@ -106,13 +102,6 @@ public class VDialogTabLayout extends FlowPanel implements Container, HelpAccess
             /**
              * TODO: Implement ALL the details of Paintable handling here.
              */
-        }
-
-        if (helpEventRegistration == null) {
-            final VDialog dialog = Util.findWidget(getElement(), VDialog.class);
-            if (dialog != null) {
-                helpEventRegistration = dialog.addHelpAccessibilityHandler(this);
-            }
         }
     }
     
@@ -194,5 +183,13 @@ public class VDialogTabLayout extends FlowPanel implements Container, HelpAccess
     
     public void setValidationVisible(boolean isVisible) {
         this.isValidationVisible = isVisible;
+    }
+
+    public int getErrorAmount() {
+        return problematicSections.size();
+    }
+
+    public List<DialogFieldWrapper> getProblematicFields() {
+        return Collections.unmodifiableList(problematicSections);
     }
 }
