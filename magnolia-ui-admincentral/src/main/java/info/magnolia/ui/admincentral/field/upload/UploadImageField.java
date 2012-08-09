@@ -44,6 +44,7 @@ import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.NumberFormat;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
@@ -56,8 +57,6 @@ import org.vaadin.easyuploads.FileBuffer;
 import com.vaadin.data.Property;
 import com.vaadin.terminal.Resource;
 import com.vaadin.terminal.StreamResource;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
@@ -74,6 +73,7 @@ public class UploadImageField extends AbstractUploadFileField{
     private GridLayout layout;
     private Label uploadFileLocation;
     private Label uploadFileRatio;
+    private Label uploadFileProgress;
 
     public UploadImageField(JcrItemNodeAdapter item) {
         super(item);
@@ -91,6 +91,7 @@ public class UploadImageField extends AbstractUploadFileField{
         //Init Upload Progress Label
         uploadFileLocation = new Label("Uploading File ");
         uploadFileRatio = new Label("Uploaded ");
+        uploadFileProgress = new Label("");
 
     }
 
@@ -171,6 +172,7 @@ public class UploadImageField extends AbstractUploadFileField{
     public void refreshOnProgressUploadLayout(long readBytes, long contentLength) {
         super.refreshOnProgressUploadLayout(readBytes, contentLength);
         ((Label)layout.getComponent(0,0)).setValue("Uploading File "+getReceiver().getLastFileName());
+        ((Label)layout.getComponent(1,1)).setValue(createPercentage(readBytes, contentLength));
         ((Label)layout.getComponent(0,2)).setValue("Uploaded "+FileUtils.byteCountToDisplaySize(readBytes)+" of "+FileUtils.byteCountToDisplaySize(contentLength));
 
         //JUST TO MAKE THE PROGRESS BAR VISIBLE
@@ -180,6 +182,16 @@ public class UploadImageField extends AbstractUploadFileField{
         catch (InterruptedException e) {
             log.error("",e);
         }
+    }
+
+    private String createPercentage(long readBytes, long contentLength ) {
+        double read = Double.valueOf(readBytes);
+        double from = Double.valueOf(contentLength);
+
+        NumberFormat defaultFormat = NumberFormat.getPercentInstance();
+        defaultFormat.setMinimumFractionDigits(2);
+
+        return defaultFormat.format((read/from));
     }
 
     /**
@@ -227,18 +239,19 @@ public class UploadImageField extends AbstractUploadFileField{
         // Add ratio
         layout.addComponent(uploadFileRatio,0,2);
         // Add Stop Button
-        final Button cancelProcessing = new Button("Cancel");
-        cancelProcessing.addListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(ClickEvent event) {
-                getUpload().interruptUpload();
-                setValue(null);
-            }
-        });
-        cancelProcessing.setVisible(true);
-        cancelProcessing.setStyleName("small");
-
-        layout.addComponent(cancelProcessing,1,1);
+//        final Button cancelProcessing = new Button("Cancel");
+//        cancelProcessing.addListener(new Button.ClickListener() {
+//            @Override
+//            public void buttonClick(ClickEvent event) {
+//                getUpload().interruptUpload();
+//                setValue(null);
+//            }
+//        });
+//        cancelProcessing.setVisible(true);
+//        cancelProcessing.setStyleName("small");
+//
+//        layout.addComponent(cancelProcessing,1,1);
+        layout.addComponent(uploadFileProgress,1,1);
         //set Color
         getRootLayout().setStyleName("upload-start");
 
