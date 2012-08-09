@@ -31,13 +31,41 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.tabsheet.gwt.client.event;
+package info.magnolia.ui.vaadin.widget.tabsheet.client;
 
-import com.google.gwt.event.shared.EventHandler;
+import java.util.List;
+
+import com.google.gwt.event.dom.client.HasScrollHandlers;
+import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.IsWidget;
 
 /**
- * ShowAllTabHandler.
+ * VShellTabView.
  */
-public interface ShowAllTabsHandler extends EventHandler {
-    void onShowAllTabs(final ShowAllTabsEvent event);
+public interface VMagnoliaTabSheetView extends HasWidgets, IsWidget, HasScrollHandlers {
+
+    List<VMagnoliaTab> getTabs();
+    
+    void addTab(VMagnoliaTab tab);
+    
+    /**
+     * Presenter.
+     */
+    public interface Presenter {
+        void updateLayout();
+    }
+
+    VMagnoliaTabNavigator getTabContainer();
+
+    VMagnoliaTab getTabById(String tabId);
+
+    VMagnoliaTab getActiveTab();
+    
+    void setActiveTab(VMagnoliaTab tab);
+
+    void removeTab(VMagnoliaTab tabToOrphan);
+
+    void showAllTabContents(boolean visible);
+
+
 }

@@ -31,21 +31,22 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.tabsheet.gwt.client;
+package info.magnolia.ui.vaadin.widget.tabsheet.client;
 
-import info.magnolia.ui.widget.tabsheet.gwt.client.event.ActiveTabChangedEvent;
-import info.magnolia.ui.widget.tabsheet.gwt.client.event.ActiveTabChangedHandler;
-import info.magnolia.ui.widget.tabsheet.gwt.client.event.ShowAllTabsEvent;
-import info.magnolia.ui.widget.tabsheet.gwt.client.event.ShowAllTabsHandler;
-import info.magnolia.ui.widget.tabsheet.gwt.client.event.TabCloseEvent;
-import info.magnolia.ui.widget.tabsheet.gwt.client.event.TabCloseEventHandler;
-import info.magnolia.ui.widget.tabsheet.gwt.client.util.CollectionUtil;
+import info.magnolia.ui.vaadin.widget.tabsheet.client.event.ActiveTabChangedEvent;
+import info.magnolia.ui.vaadin.widget.tabsheet.client.event.ActiveTabChangedHandler;
+import info.magnolia.ui.vaadin.widget.tabsheet.client.event.ShowAllTabsEvent;
+import info.magnolia.ui.vaadin.widget.tabsheet.client.event.ShowAllTabsHandler;
+import info.magnolia.ui.vaadin.widget.tabsheet.client.event.TabCloseEvent;
+import info.magnolia.ui.vaadin.widget.tabsheet.client.event.TabCloseEventHandler;
+import info.magnolia.ui.vaadin.widget.tabsheet.client.util.CollectionUtil;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
@@ -67,7 +68,7 @@ public class VMagnoliaTabNavigator extends ComplexPanel {
 
     private final List<VShellTabLabel> tabLabels = new LinkedList<VShellTabLabel>();
 
-    private final Map<VMagnoliaShellTab, VShellTabLabel> labelMap = new LinkedHashMap<VMagnoliaShellTab, VShellTabLabel>();
+    private final Map<VMagnoliaTab, VShellTabLabel> labelMap = new LinkedHashMap<VMagnoliaTab, VShellTabLabel>();
 
     private VShellShowAllTabLabel showAllTab;
 
@@ -92,7 +93,7 @@ public class VMagnoliaTabNavigator extends ComplexPanel {
 
             @Override
             public void onActiveTabChanged(final ActiveTabChangedEvent event) {
-                final VMagnoliaShellTab tab = event.getTab();
+                final VMagnoliaTab tab = event.getTab();
                 final VShellTabLabel label = labelMap.get(tab);
                 if (label != null) {
                     for (final VShellTabLabel tabLabel : tabLabels) {
@@ -139,7 +140,7 @@ public class VMagnoliaTabNavigator extends ComplexPanel {
         return CollectionUtil.getNext(tabLabels, label);
     }
 
-    public void updateTab(final VMagnoliaShellTab component, final UIDL uidl) {
+    public void updateTab(final VMagnoliaTab component, final UIDL uidl) {
         VShellTabLabel label = labelMap.get(component);
         if (label == null) {
             label = new VShellTabLabel();
@@ -184,7 +185,7 @@ public class VMagnoliaTabNavigator extends ComplexPanel {
      */
     public class VShellTabLabel extends SimplePanel {
 
-        private final Element indicatorsWrapper = DOM.createDiv();
+        private  Element indicatorsWrapper = DOM.createDiv();
                 
         private final Element notificationBox = DOM.createDiv();
 
@@ -192,21 +193,31 @@ public class VMagnoliaTabNavigator extends ComplexPanel {
         
         private final Element errorIndicator = DOM.createDiv();
 
-        private VMagnoliaShellTab tab;
+        private final Element textWrapper = DOM.createSpan();
+        
+        private VMagnoliaTab tab;
 
         public VShellTabLabel() {
             super(DOM.createElement("li"));
-            getElement().appendChild(indicatorsWrapper);
+            
+            getElement().addClassName("clearfix");
+            
+            indicatorsWrapper.addClassName("indicators-wrapper");
+            getElement().appendChild(textWrapper);
+            
+            indicatorsWrapper = getElement();
             
             closeElement.setClassName("v-shell-tab-close");
             notificationBox.setClassName("v-shell-tab-notification");
             errorIndicator.setClassName("v-shell-tab-error");
             
-            indicatorsWrapper.appendChild(notificationBox);
-            indicatorsWrapper.appendChild(errorIndicator);
-            indicatorsWrapper.appendChild(closeElement);
+            getElement().appendChild(closeElement);
+            getElement().appendChild(notificationBox);
+            getElement().appendChild(errorIndicator);
             
             DOM.sinkEvents(getElement(), Event.MOUSEEVENTS);
+            hideNotification();
+            setHasError(false);
         }
 
         @Override
@@ -229,47 +240,36 @@ public class VMagnoliaTabNavigator extends ComplexPanel {
             }, ClickEvent.getType());
         }
 
-        public void setTab(final VMagnoliaShellTab tab) {
+        public void setTab(final VMagnoliaTab tab) {
             this.tab = tab;
         }
 
-        public VMagnoliaShellTab getTab() {
+        public VMagnoliaTab getTab() {
             return tab;
         }
 
         public void updateCaption(final UIDL uidl) {
             if (uidl.hasAttribute("caption")) {
                 final String caption = uidl.getStringAttribute("caption");
-                getElement().setInnerText(caption);
+                textWrapper.setInnerText(caption);
             }
         }
 
         public void setClosable(boolean isClosable) {
-            if (!isClosable) {
-                if (getElement().isOrHasChild(closeElement)) {
-                    getElement().removeChild(closeElement);
-                }
-            } else {
-                getElement().appendChild(closeElement);
-            }
+            closeElement.getStyle().setDisplay(isClosable ? Display.INLINE_BLOCK : Display.NONE);
         }
 
         public void updateNotification(final String text) {
-            if (!getElement().isOrHasChild(notificationBox)) {
-                getElement().appendChild(notificationBox);
-                notificationBox.appendChild(DOM.createSpan());
-            }
+            notificationBox.getStyle().setDisplay(Display.INLINE_BLOCK);
             ((Element) notificationBox.getChild(0)).setInnerText(text);
         }
 
         public void hideNotification() {
-            if (getElement().isOrHasChild(notificationBox)) {
-                getElement().removeChild(notificationBox);
-            }
+            notificationBox.getStyle().setDisplay(Display.NONE);
         }
 
         public void setHasError(boolean hasError) {
-            
+            errorIndicator.getStyle().setDisplay(hasError ? Display.INLINE_BLOCK : Display.NONE);
         }
     }
 

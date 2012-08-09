@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.widget.dialog.gwt.client;
 
-import info.magnolia.ui.vaadin.integration.widget.client.tabsheet.VMagnoliaTabSheetView;
-import info.magnolia.ui.vaadin.integration.widget.client.tabsheet.VShellTabSheet;
+import info.magnolia.ui.vaadin.widget.tabsheet.client.VMagnoliaTabSheet;
+import info.magnolia.ui.vaadin.widget.tabsheet.client.VMagnoliaTabSheetView;
 
 import org.vaadin.rpc.client.ClientSideProxy;
 import org.vaadin.rpc.client.Method;
@@ -42,7 +42,7 @@ import org.vaadin.rpc.client.Method;
 /**
  * VTabDialog.
  */
-public class VTabbedDialog extends VShellTabSheet implements VTabbedDialogView.Presenter {
+public class VTabbedDialog extends VMagnoliaTabSheet implements VTabbedDialogView.Presenter {
     
     @Override
     protected VTabbedDialogView getView() {

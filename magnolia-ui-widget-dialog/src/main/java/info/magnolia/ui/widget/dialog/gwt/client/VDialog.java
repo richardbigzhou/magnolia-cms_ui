@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.widget.dialog.gwt.client;
 
-import info.magnolia.ui.vaadin.integration.widget.client.tabsheet.VShellTabSheet;
+import info.magnolia.ui.vaadin.widget.tabsheet.client.VMagnoliaTabSheet;
 import info.magnolia.ui.widget.dialog.gwt.client.dialoglayout.HelpAccessibilityEvent;
 import info.magnolia.ui.widget.dialog.gwt.client.dialoglayout.VHelpAccessibilityNotifier;
 
@@ -118,8 +118,8 @@ public class VDialog extends Composite implements VHelpAccessibilityNotifier, Co
         if (tagUidl != null) {
             final UIDL dialogUidl = tagUidl.getChildUIDL(0);
             final Paintable p = client.getPaintable(dialogUidl);
-            if (p instanceof VShellTabSheet) {
-                final VShellTabSheet tabsheet = (VShellTabSheet) p;
+            if (p instanceof VMagnoliaTabSheet) {
+                final VMagnoliaTabSheet tabsheet = (VMagnoliaTabSheet) p;
                 if (view.getTabSheet() == null) {
                     view.addTabSheet(tabsheet);
                 }

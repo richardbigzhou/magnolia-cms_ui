@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.widget.dialog;
 
-import info.magnolia.ui.vaadin.integration.widget.tabsheet.ShellTab;
+import info.magnolia.ui.vaadin.widget.tabsheet.ShellTab;
 import info.magnolia.ui.widget.dialog.gwt.client.VDialogTab;
 
 import com.vaadin.terminal.PaintException;

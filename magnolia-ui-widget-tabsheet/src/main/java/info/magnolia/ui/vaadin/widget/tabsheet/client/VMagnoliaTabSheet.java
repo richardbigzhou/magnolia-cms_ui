@@ -31,15 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.tabsheet.gwt.client;
+package info.magnolia.ui.vaadin.widget.tabsheet.client;
 
-
-import info.magnolia.ui.widget.tabsheet.gwt.client.event.ActiveTabChangedEvent;
-import info.magnolia.ui.widget.tabsheet.gwt.client.event.ActiveTabChangedHandler;
-import info.magnolia.ui.widget.tabsheet.gwt.client.event.ShowAllTabsEvent;
-import info.magnolia.ui.widget.tabsheet.gwt.client.event.ShowAllTabsHandler;
-import info.magnolia.ui.widget.tabsheet.gwt.client.event.TabCloseEvent;
-import info.magnolia.ui.widget.tabsheet.gwt.client.event.TabCloseEventHandler;
+import info.magnolia.ui.vaadin.widget.tabsheet.client.event.ActiveTabChangedEvent;
+import info.magnolia.ui.vaadin.widget.tabsheet.client.event.ActiveTabChangedHandler;
+import info.magnolia.ui.vaadin.widget.tabsheet.client.event.ShowAllTabsEvent;
+import info.magnolia.ui.vaadin.widget.tabsheet.client.event.ShowAllTabsHandler;
+import info.magnolia.ui.vaadin.widget.tabsheet.client.event.TabCloseEvent;
+import info.magnolia.ui.vaadin.widget.tabsheet.client.event.TabCloseEventHandler;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -60,25 +59,29 @@ import com.vaadin.terminal.gwt.client.Container;
 import com.vaadin.terminal.gwt.client.Paintable;
 import com.vaadin.terminal.gwt.client.RenderSpace;
 import com.vaadin.terminal.gwt.client.UIDL;
+import com.vaadin.terminal.gwt.client.VConsole;
 
 /**
  * Client side implementation of the simple tab sheet.
  */
 @SuppressWarnings("serial")
-public class VMagnoliaTabSheet extends Composite implements HasWidgets, VShellTabSheetView.Presenter, Container, ClientSideHandler {
+public class VMagnoliaTabSheet extends Composite implements HasWidgets, VMagnoliaTabSheetView.Presenter, Container, ClientSideHandler {
 
     protected String paintableId;
 
     protected ApplicationConnection client;
 
-    private final VShellTabSheetView view;
-    
-    private final EventBus eventBus = new SimpleEventBus();
+    private VMagnoliaTabSheetView view;
+
+    private EventBus eventBus = new SimpleEventBus();
+
+    private ClientSideProxy proxy;
 
     public VMagnoliaTabSheet() {
         super();
-        this.view = new VShellTabSheetViewImpl(eventBus, this);
-
+        this.view = createView();
+        this.proxy = createProxy();
+        
         eventBus.addHandler(TabCloseEvent.TYPE, new TabCloseEventHandler() {
             @Override
             public void onTabClosed(TabCloseEvent event) {
@@ -90,7 +93,8 @@ public class VMagnoliaTabSheet extends Composite implements HasWidgets, VShellTa
             @Override
             public void onActiveTabChanged(ActiveTabChangedEvent event) {
                 view.setActiveTab(event.getTab());
-                proxy.call("activateTab", event.getTab().getTabId());            }
+                proxy.call("activateTab", event.getTab().getTabId());
+            }
         });
 
         eventBus.addHandler(ShowAllTabsEvent.TYPE, new ShowAllTabsHandler() {
@@ -106,7 +110,43 @@ public class VMagnoliaTabSheet extends Composite implements HasWidgets, VShellTa
         initWidget(view.asWidget());
     }
 
-    protected void closeTab(final VMagnoliaShellTab tab) {
+    protected VMagnoliaTabSheetView createView() {
+        return new VMagnoliaTabSheetViewImpl(eventBus, this); 
+    }
+
+    protected ClientSideProxy createProxy() {
+        return new ClientSideProxy(this) {
+            {
+                register("setActiveTab", new Method() {
+                    @Override
+                    public void invoke(String methodName, Object[] params) {
+                        final VMagnoliaTab tab = view.getTabById(String.valueOf(params[0]));
+                        if (tab != null) {
+                            eventBus.fireEvent(new ActiveTabChangedEvent(tab));
+                        }
+                    }
+                });
+
+                register("closeTab", new Method() {
+                    @Override
+                    public void invoke(String methodName, Object[] params) {
+
+                    }
+                });
+
+                register("addShowAllTab", new Method() {
+                    @Override
+                    public void invoke(String methodName, Object[] params) {
+                        boolean showAll = (Boolean) params[0];
+                        String label = String.valueOf(params[1]);
+                        view.getTabContainer().addShowAllTab(showAll, label);
+                    }
+                });
+
+            }};
+    }
+    
+    protected void closeTab(final VMagnoliaTab tab) {
         if (tab != null) {
             client.unregisterPaintable(tab);
             proxy.call("closeTab", tab.getTabId());
@@ -129,19 +169,16 @@ public class VMagnoliaTabSheet extends Composite implements HasWidgets, VShellTa
         final UIDL tabsUidl = uidl.getChildByTagName("tabs");
         if (tabsUidl != null) {
             final Iterator<?> it = tabsUidl.getChildIterator();
-            final List<VMagnoliaShellTab> possibleTabsToOrphan = new ArrayList<VMagnoliaShellTab>(view.getTabs());
+            final List<VMagnoliaTab> possibleTabsToOrphan = new ArrayList<VMagnoliaTab>(view.getTabs());
             while (it.hasNext()) {
-                final UIDL tabUidl = (UIDL)it.next();
+                final UIDL tabUidl = (UIDL) it.next();
                 final Paintable tab = client.getPaintable(tabUidl);
-                if (!view.getTabs().contains(tab)) {
-                    view.getTabs().add((VMagnoliaShellTab)tab);
-                    view.add((Widget)tab);
-                }
+                    view.addTab((VMagnoliaTab) tab);
                 tab.updateFromUIDL(tabUidl, client);
                 possibleTabsToOrphan.remove(tab);
             }
 
-            for (final VMagnoliaShellTab tabToOrphan : possibleTabsToOrphan) {
+            for (final VMagnoliaTab tabToOrphan : possibleTabsToOrphan) {
                 view.getTabs().remove(tabToOrphan);
                 client.unregisterPaintable(tabToOrphan);
                 view.removeTab(tabToOrphan);
@@ -159,8 +196,8 @@ public class VMagnoliaTabSheet extends Composite implements HasWidgets, VShellTa
 
     @Override
     public void updateCaption(Paintable component, UIDL uidl) {
-        if (component instanceof VMagnoliaShellTab) {
-            view.getTabContainer().updateTab((VMagnoliaShellTab)component, uidl);
+        if (component instanceof VMagnoliaTab) {
+            view.getTabContainer().updateTab((VMagnoliaTab) component, uidl);
         }
     }
 
@@ -177,10 +214,6 @@ public class VMagnoliaTabSheet extends Composite implements HasWidgets, VShellTa
         return new RenderSpace();
     }
 
-    void activateTab(final VMagnoliaShellTab tab) {
-
-    }
-
     @Override
     public boolean initWidget(Object[] params) {
         return false;
@@ -188,43 +221,21 @@ public class VMagnoliaTabSheet extends Composite implements HasWidgets, VShellTa
 
     @Override
     public void handleCallFromServer(String method, Object[] params) {
-
+        VConsole.error("Unhandled method call from the server: " + method);
     }
 
     public EventBus getEventBus() {
         return eventBus;
     }
 
+    protected VMagnoliaTabSheetView getView() {
+        return view;
+    }
 
-    private ClientSideProxy proxy = new ClientSideProxy(this) {{
-        register("setActiveTab", new Method() {
-            @Override
-            public void invoke(String methodName, Object[] params) {
-                final VMagnoliaShellTab tab = view.getTabById(String.valueOf(params[0]));
-                if (tab != null) {
-                    eventBus.fireEvent(new ActiveTabChangedEvent(tab));
-                }
-            }
-        });
-
-        register("closeTab", new Method() {
-            @Override
-            public void invoke(String methodName, Object[] params) {
-
-            }
-        });
-
-        register("addShowAllTab", new Method() {
-            @Override
-            public void invoke(String methodName, Object[] params) {
-                boolean showAll = (Boolean) params[0];
-                String label = String.valueOf(params[1]);
-                view.getTabContainer().addShowAllTab(showAll, label);
-            }
-        });
-
-    }};
-
+    protected ClientSideProxy getProxy() {
+        return proxy;
+    }
+    
     @Override
     public void add(Widget w) {
         view.add(w);
@@ -248,6 +259,12 @@ public class VMagnoliaTabSheet extends Composite implements HasWidgets, VShellTa
     @Override
     public void updateLayout() {
         client.runDescendentsLayout(VMagnoliaTabSheet.this);
+    }
+    
+    @Override
+    public void setHeight(String height) {
+        super.setHeight(height);
+        view.asWidget().setHeight(height);
     }
 
 }

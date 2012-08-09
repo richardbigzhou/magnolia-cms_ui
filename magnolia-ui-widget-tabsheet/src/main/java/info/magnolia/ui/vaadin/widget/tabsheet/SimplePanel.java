@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.tabsheet;
+package info.magnolia.ui.vaadin.widget.tabsheet;
 
 import java.util.Iterator;
 

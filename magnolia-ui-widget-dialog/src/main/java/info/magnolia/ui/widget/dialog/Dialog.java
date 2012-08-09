@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.widget.dialog;
 
-import info.magnolia.ui.vaadin.integration.widget.tabsheet.ShellTab;
-import info.magnolia.ui.vaadin.integration.widget.tabsheet.ShellTabSheet;
+import info.magnolia.ui.vaadin.widget.tabsheet.ShellTab;
+import info.magnolia.ui.vaadin.widget.tabsheet.ShellTabSheet;
 import info.magnolia.ui.widget.dialog.gwt.client.VDialog;
 
 import java.util.LinkedList;
@@ -61,7 +61,7 @@ import com.vaadin.ui.Field;
  */
 @SuppressWarnings("serial")
 @ClientWidget(value = VDialog.class, loadStyle = LoadStyle.EAGER)
-public class Dialog extends AbstractComponent implements DialogView, ServerSideHandler, Item.Editor {
+public class Dialog extends AbstractComponent implements TabbedDialogView, ServerSideHandler, Item.Editor {
 
     private final ShellTabSheet tabsheet = new ShellTabSheet();
 

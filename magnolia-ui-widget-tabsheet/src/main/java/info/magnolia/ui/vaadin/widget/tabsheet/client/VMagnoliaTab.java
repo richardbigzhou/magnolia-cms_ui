@@ -31,10 +31,9 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.tabsheet.gwt.client;
+package info.magnolia.ui.vaadin.widget.tabsheet.client;
 
-
-import info.magnolia.ui.widget.tabsheet.gwt.client.VMagnoliaTabNavigator.VShellTabLabel;
+import info.magnolia.ui.vaadin.widget.tabsheet.client.VMagnoliaTabNavigator.VShellTabLabel;
 
 import java.util.Set;
 
@@ -54,62 +53,64 @@ import com.vaadin.terminal.gwt.client.VConsole;
 /**
  * Tab class for a tabsheet.
  */
-public class VMagnoliaShellTab extends ScrollPanel implements Container, ClientSideHandler {
-    
+public class VMagnoliaTab extends ScrollPanel implements Container, ClientSideHandler {
+
     protected ApplicationConnection client;
-    
+
     private Paintable content;
-    
+
     private boolean isClosable = false;
-    
+
     private boolean hasError = false;
-    
+
     private String tabId = null;
-    
+
     private VShellTabLabel label;
-    
-    private ClientSideProxy proxy = new ClientSideProxy(this) {{
-        register("setTabId", new Method() {
-            @Override
-            public void invoke(String methodName, Object[] params) {
-                tabId = String.valueOf(params[0]);
-            }
-        });
-        
-        register("setClosable", new Method() {
-            @Override
-            public void invoke(String methodName, Object[] params) {
-                setClosable((Boolean)params[0]);
-            }
-        });
-        
-        register("setError", new Method() {
-            @Override
-            public void invoke(String methodName, Object[] params) {
-                setHasError((Boolean)params[0]);
-            }
-        });
-        
-        register("updateNotification", new Method() {
-            @Override
-            public void invoke(String methodName, Object[] params) {
-                label.updateNotification(String.valueOf(params[0]));
-            }
-        });        
-        
-        register("hideNotification", new Method() {
-            @Override
-            public void invoke(String methodName, Object[] params) {
-                label.hideNotification();
-            }
-        });
-    }};
-            
-    public VMagnoliaShellTab() {
+
+    private ClientSideProxy proxy = new ClientSideProxy(this) {
+        {
+            register("setTabId", new Method() {
+                @Override
+                public void invoke(String methodName, Object[] params) {
+                    tabId = String.valueOf(params[0]);
+                }
+            });
+
+            register("setClosable", new Method() {
+                @Override
+                public void invoke(String methodName, Object[] params) {
+                    setClosable((Boolean) params[0]);
+                }
+            });
+
+            register("setHasError", new Method() {
+                @Override
+                public void invoke(String methodName, Object[] params) {
+                    setHasError((Boolean) params[0]);
+                }
+            });
+
+            register("updateNotification", new Method() {
+                @Override
+                public void invoke(String methodName, Object[] params) {
+                    label.updateNotification(String.valueOf(params[0]));
+                }
+            });
+
+            register("hideNotification", new Method() {
+                @Override
+                public void invoke(String methodName, Object[] params) {
+                    label.hideNotification();
+                }
+            });
+        }
+    };
+
+    public VMagnoliaTab() {
         super();
         setStyleName("v-shell-tab");
     }
-    
+
     @Override
     public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
         this.client = client;
@@ -120,10 +121,10 @@ public class VMagnoliaShellTab extends ScrollPanel implements Container, ClientS
                     client.unregisterPaintable(this.content);
                 }
                 this.content = content;
-                setWidget((Widget)content);
+                setWidget((Widget) content);
                 content.updateFromUIDL(uidl.getChildUIDL(0), client);
             }
-        }      
+        }
         proxy.update(this, uidl, client);
     }
 
@@ -134,20 +135,21 @@ public class VMagnoliaShellTab extends ScrollPanel implements Container, ClientS
 
     @Override
     public RenderSpace getAllocatedSpace(Widget child) {
-        if (hasChildComponent(child)) {
-            return new RenderSpace(getOffsetWidth(), getOffsetHeight());
-        }
-        return new RenderSpace();
+        return new RenderSpace(hasChildComponent(child) ? getOffsetWidth() : 0, hasChildComponent(child) ? getOffsetHeight() : 0);
     }
 
     @Override
-    public void updateCaption(Paintable component, UIDL uidl) {}
+    public void updateCaption(Paintable component, UIDL uidl) {
+    }
 
     @Override
-    public void replaceChildComponent(Widget oldComponent, Widget newComponent) {}
-    
+    public void replaceChildComponent(Widget oldComponent, Widget newComponent) {
+    }
+
     @Override
-    public boolean requestLayout(Set<Paintable> children) {return false;}
+    public boolean requestLayout(Set<Paintable> children) {
+        return false;
+    }
 
     public String getTabId() {
         return tabId;
@@ -156,12 +158,12 @@ public class VMagnoliaShellTab extends ScrollPanel implements Container, ClientS
     public boolean hasError() {
         return hasError;
     }
-    
-    private void setHasError(boolean hasError) {
+
+    public void setHasError(boolean hasError) {
         this.hasError = hasError;
         label.setHasError(hasError);
     }
-    
+
     public void setClosable(boolean isClosable) {
         this.isClosable = isClosable;
         label.setClosable(isClosable);
@@ -174,7 +176,7 @@ public class VMagnoliaShellTab extends ScrollPanel implements Container, ClientS
     public void setLabel(VShellTabLabel label) {
         this.label = label;
     }
-    
+
     @Override
     public boolean initWidget(Object[] params) {
         return false;

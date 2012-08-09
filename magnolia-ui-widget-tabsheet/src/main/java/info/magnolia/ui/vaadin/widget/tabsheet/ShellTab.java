@@ -31,9 +31,9 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.tabsheet;
+package info.magnolia.ui.vaadin.widget.tabsheet;
 
-import info.magnolia.ui.widget.tabsheet.gwt.client.VMagnoliaShellTab;
+import info.magnolia.ui.vaadin.widget.tabsheet.client.VMagnoliaTab;
 
 import java.util.Map;
 
@@ -50,8 +50,8 @@ import com.vaadin.ui.ComponentContainer;
  * A tab in the shell tabsheet.
  */
 @SuppressWarnings("serial")
-@ClientWidget(value=VMagnoliaShellTab.class, loadStyle = LoadStyle.EAGER)
-public class MagnoliaTab extends SimplePanel implements ServerSideHandler {
+@ClientWidget(value=VMagnoliaTab.class, loadStyle = LoadStyle.EAGER)
+public class ShellTab extends SimplePanel implements ServerSideHandler {
 
     private String tabId = null;
     
@@ -61,13 +61,12 @@ public class MagnoliaTab extends SimplePanel implements ServerSideHandler {
     
     private String notification = null;
 
-    private ServerSideProxy proxy = new ServerSideProxy(this) {{
-        
-    }};
+    private ServerSideProxy proxy = new ServerSideProxy(this);
     
-    public MagnoliaTab(final String caption, final ComponentContainer c) {
+    public ShellTab(final String caption, final ComponentContainer c) {
         super(c);
         setSizeFull();
+        setImmediate(true);
         setCaption(caption);
     }
     
@@ -106,6 +105,11 @@ public class MagnoliaTab extends SimplePanel implements ServerSideHandler {
         proxy.callOnce("updateNotification", text);
     }
 
+    public void setHasError(boolean hasError) {
+        this.hasError = hasError;
+        proxy.callOnce("setHasError", hasError);
+    }
+    
     public void hideNotification() {
         proxy.callOnce("hideNotification");
         this.notification = null;
@@ -126,7 +130,14 @@ public class MagnoliaTab extends SimplePanel implements ServerSideHandler {
     @Override
     public Object[] initRequestFromClient() {
         if (tabId != null) {
-            proxy.callOnce("setTabId", tabId);   
+            proxy.callOnce("setTabId", tabId);
+            proxy.callOnce("setClosable", isClosable);
+            proxy.callOnce("setHasError", hasError);
+            if (notification != null) {
+                proxy.callOnce("updateNotification", notification);   
+            } else {
+                proxy.callOnce("hideNotification");
+            }
         }
         return new Object[] {};
     }

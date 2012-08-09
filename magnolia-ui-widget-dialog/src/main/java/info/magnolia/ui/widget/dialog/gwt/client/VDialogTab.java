@@ -35,7 +35,7 @@ package info.magnolia.ui.widget.dialog.gwt.client;
 
 import java.util.List;
 
-import info.magnolia.ui.vaadin.integration.widget.client.tabsheet.VShellTab;
+import info.magnolia.ui.vaadin.widget.tabsheet.client.VMagnoliaTab;
 import info.magnolia.ui.widget.dialog.gwt.client.dialoglayout.DialogFieldWrapper;
 import info.magnolia.ui.widget.dialog.gwt.client.dialoglayout.VDialogTabLayout;
 
@@ -45,7 +45,7 @@ import com.vaadin.terminal.gwt.client.Util;
 /**
  * Dialog tab.
  */
-public class VDialogTab extends VShellTab {
+public class VDialogTab extends VMagnoliaTab {
 
     private VDialogTabLayout content;
     

@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.widget.client.tabsheet.event;
+package info.magnolia.ui.vaadin.widget.tabsheet.client.event;
 
 import com.google.gwt.event.shared.GwtEvent;
 

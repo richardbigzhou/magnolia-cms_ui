@@ -31,27 +31,21 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.tabsheet.gwt.client.event;
+package info.magnolia.ui.vaadin.widget.tabsheet.client.util;
 
-import com.google.gwt.event.shared.GwtEvent;
+import java.util.List;
 
 /**
- * ShowAllTabEvent.
+ * Util class for the collections operations.
  */
-public class ShowAllTabsEvent extends GwtEvent<ShowAllTabsHandler> {
+public class CollectionUtil {
 
-    public static Type<ShowAllTabsHandler> TYPE = new Type<ShowAllTabsHandler>();
-
-    @Override
-    public GwtEvent.Type<ShowAllTabsHandler> getAssociatedType() {
-        return TYPE;
+    public static <T> T getNext(final List<T> items, T item) {
+        int index = items.indexOf(item);
+        if (index >= 0) {
+            int nextIndex = (index + 1) % items.size();
+            return items.get(nextIndex);
+        }
+        return null;
     }
-
-
-    @Override
-    protected void dispatch(ShowAllTabsHandler handler) {
-        handler.onShowAllTabs(this);
-
-    }
-
 }

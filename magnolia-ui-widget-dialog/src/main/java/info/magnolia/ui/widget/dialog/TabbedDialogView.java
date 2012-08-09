@@ -31,14 +31,62 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.tabsheet.gwt.client.event;
+package info.magnolia.ui.widget.dialog;
 
-import com.google.gwt.event.shared.EventHandler;
+import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.framework.view.View;
+
+import java.util.List;
+
+import com.vaadin.data.Item;
+import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.Field;
 
 /**
- * Handler of the events fired when the tab is closed.
+ * DialogView.
  */
-public interface TabCloseEventHandler extends EventHandler {
+public interface TabbedDialogView extends View {
+
+    /**
+     * DialogView.Presenter.
+     *
+     */
+    interface Presenter {
+
+        Shell getShell();
+
+        TabbedDialogView getView();
+
+        Item getItem();
+
+        EventBus getEventBus();
+
+        void closeDialog();
+
+        void editItem(Item item);
+        
+        void showValidation(boolean isVisible);
+        
+        void executeAction(String actionName);
+    }
+
+
+    void setItemDataSource(Item item);
+
+    void addTab(ComponentContainer inputFields, String tabName);
+
+    void setPresenter(Presenter presenter);
+
+    void addAction(String actionName, String actionLabel);
+
+    void addField(Field field);
+
+    void setDescription(String description);
+
+    void showValidation(boolean isVisible);
     
-    void onTabClosed(final TabCloseEvent event);
+    boolean isValid();
+    
+    List<Field> getFields();
 }

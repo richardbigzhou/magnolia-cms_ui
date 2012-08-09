@@ -31,10 +31,10 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.widget.tabsheet;
+package info.magnolia.ui.vaadin.widget.tabsheet;
 
-import info.magnolia.ui.vaadin.integration.widget.client.tabsheet.VShellTabSheet;
-import info.magnolia.ui.vaadin.integration.widget.client.tabsheet.util.CollectionUtil;
+import info.magnolia.ui.vaadin.widget.tabsheet.client.VMagnoliaTabSheet;
+import info.magnolia.ui.vaadin.widget.tabsheet.client.util.CollectionUtil;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -59,7 +59,7 @@ import com.vaadin.ui.VerticalLayout;
  * Simple lightweight tabsheet component.
  */
 @SuppressWarnings("serial")
-@ClientWidget(value = VShellTabSheet.class, loadStyle = LoadStyle.EAGER)
+@ClientWidget(value = VMagnoliaTabSheet.class, loadStyle = LoadStyle.EAGER)
 public class ShellTabSheet extends AbstractComponentContainer implements ServerSideHandler {
 
     private final KeyMapper mapper = new KeyMapper();

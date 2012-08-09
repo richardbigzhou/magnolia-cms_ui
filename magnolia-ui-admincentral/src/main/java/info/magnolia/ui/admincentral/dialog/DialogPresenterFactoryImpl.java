@@ -42,7 +42,7 @@ import info.magnolia.ui.admincentral.field.builder.DialogFieldFactory;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 import info.magnolia.ui.model.dialog.registry.DialogDefinitionRegistry;
-import info.magnolia.ui.widget.dialog.DialogView;
+import info.magnolia.ui.widget.dialog.TabbedDialogView;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -74,7 +74,7 @@ public class DialogPresenterFactoryImpl implements DialogPresenterFactory {
     }
 
     @Override
-    public DialogView.Presenter createDialog(String dialogName) {
+    public TabbedDialogView.Presenter createDialog(String dialogName) {
 
         DialogDefinition definition = getDialogDefinition(dialogName);
         return getDialogPresenter(definition);
@@ -97,8 +97,8 @@ public class DialogPresenterFactoryImpl implements DialogPresenterFactory {
     }
 
     @Override
-    public DialogView.Presenter getDialogPresenter(DialogDefinition definition) {
-        DialogView view = componentProvider.getComponent(DialogView.class);
+    public TabbedDialogView.Presenter getDialogPresenter(DialogDefinition definition) {
+        TabbedDialogView view = componentProvider.getComponent(TabbedDialogView.class);
         return new DialogPresenter(view, dialogBuilder, dialogFieldFactory, definition, shell, eventBus, actionFactory);
 
 

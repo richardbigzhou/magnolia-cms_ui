@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.widget.dialog.gwt.client;
 
-import info.magnolia.ui.vaadin.integration.widget.client.tabsheet.VMagnoliaTabSheetViewImpl;
-import info.magnolia.ui.vaadin.integration.widget.client.tabsheet.VShellTab;
-import info.magnolia.ui.vaadin.integration.widget.client.tabsheet.VShellTabNavigator;
+import info.magnolia.ui.vaadin.widget.tabsheet.client.VMagnoliaTab;
+import info.magnolia.ui.vaadin.widget.tabsheet.client.VMagnoliaTabNavigator;
+import info.magnolia.ui.vaadin.widget.tabsheet.client.VMagnoliaTabSheetViewImpl;
 import info.magnolia.ui.widget.dialog.gwt.client.VTabbedDialogHeader.VDialogHeaderCallback;
 import info.magnolia.ui.widget.dialog.gwt.client.dialoglayout.DialogFieldWrapper;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.AnimationSettings;
@@ -109,7 +109,7 @@ public class VTabbedDialogViewImpl extends FlowPanel implements VTabbedDialogVie
                     lastShownProblematicField = nextField;
                     scrollTo(lastShownProblematicField);
                 } else {
-                    final List<VShellTab> tabs = getTabs();
+                    final List<VMagnoliaTab> tabs = getTabs();
                     setActiveTab(tabs.get((getTabs().indexOf(getActiveTab()) + 1) % getTabs().size()));
                     jumpToNextError();
                 }
@@ -196,28 +196,28 @@ public class VTabbedDialogViewImpl extends FlowPanel implements VTabbedDialogVie
     }
 
     @Override
-    public VShellTabNavigator getTabContainer() {
+    public VMagnoliaTabNavigator getTabContainer() {
         return impl.getTabContainer();
     }
 
     @Override
-    public VShellTab getTabById(String tabId) {
+    public VMagnoliaTab getTabById(String tabId) {
         return impl.getTabById(tabId);
     }
 
     @Override
-    public List<VShellTab> getTabs() {
+    public List<VMagnoliaTab> getTabs() {
         return impl.getTabs();
     }
 
     @Override
-    public void setActiveTab(VShellTab tab) {
+    public void setActiveTab(VMagnoliaTab tab) {
         lastShownProblematicField = null;
         impl.setActiveTab(tab);
     }
 
     @Override
-    public void removeTab(VShellTab tabToOrphan) {
+    public void removeTab(VMagnoliaTab tabToOrphan) {
         impl.removeTab(tabToOrphan);
     }
 
@@ -232,7 +232,7 @@ public class VTabbedDialogViewImpl extends FlowPanel implements VTabbedDialogVie
     }
 
     @Override
-    public void addTab(VShellTab tab) {
+    public void addTab(VMagnoliaTab tab) {
         if (!(tab instanceof VDialogTab)) {
             throw new RuntimeException("Tab must be of VDialogTab type. You have used: " + tab.getClass());
         }

@@ -31,62 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.dialog;
+package info.magnolia.ui.vaadin.widget.tabsheet.client.event;
 
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.framework.view.View;
-
-import java.util.List;
-
-import com.vaadin.data.Item;
-import com.vaadin.ui.ComponentContainer;
-import com.vaadin.ui.Field;
+import com.google.gwt.event.shared.EventHandler;
 
 /**
- * DialogView.
+ * Handler of the active tab changed event.
  */
-public interface DialogView extends View {
-
-    /**
-     * DialogView.Presenter.
-     *
-     */
-    interface Presenter {
-
-        Shell getShell();
-
-        DialogView getView();
-
-        Item getItem();
-
-        EventBus getEventBus();
-
-        void closeDialog();
-
-        void editItem(Item item);
-        
-        void showValidation(boolean isVisible);
-        
-        void executeAction(String actionName);
-    }
-
-
-    void setItemDataSource(Item item);
-
-    void addTab(ComponentContainer inputFields, String tabName);
-
-    void setPresenter(Presenter presenter);
-
-    void addAction(String actionName, String actionLabel);
-
-    void addField(Field field);
-
-    void setDescription(String description);
-
-    void showValidation(boolean isVisible);
-    
-    boolean isValid();
-    
-    List<Field> getFields();
+public interface ActiveTabChangedHandler extends EventHandler {
+    void onActiveTabChanged(final ActiveTabChangedEvent event);
 }

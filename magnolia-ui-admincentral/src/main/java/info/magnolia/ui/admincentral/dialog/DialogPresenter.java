@@ -44,7 +44,7 @@ import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
-import info.magnolia.ui.widget.dialog.DialogView;
+import info.magnolia.ui.widget.dialog.TabbedDialogView;
 import info.magnolia.ui.widget.dialog.TabbedDialog;
 
 import java.util.HashMap;
@@ -55,7 +55,7 @@ import com.vaadin.data.Item;
 /**
  * DialogPresenter.
  */
-public class DialogPresenter implements DialogView.Presenter {
+public class DialogPresenter implements TabbedDialogView.Presenter {
 
     private final DialogBuilder dialogBuilder;
     
@@ -67,7 +67,7 @@ public class DialogPresenter implements DialogView.Presenter {
     
     private final EventBus eventBus;
     
-    private final DialogView view;
+    private final TabbedDialogView view;
     
     private final DialogActionFactory actionFactory;
     
@@ -75,7 +75,7 @@ public class DialogPresenter implements DialogView.Presenter {
     
     private Item item;
 
-    public DialogPresenter(final DialogView view, final DialogBuilder dialogBuilder, final DialogFieldFactory dialogFieldFactory, final DialogDefinition dialogDefinition, final MagnoliaShell shell, final EventBus eventBus, final DialogActionFactory actionFactory) {
+    public DialogPresenter(final TabbedDialogView view, final DialogBuilder dialogBuilder, final DialogFieldFactory dialogFieldFactory, final DialogDefinition dialogDefinition, final MagnoliaShell shell, final EventBus eventBus, final DialogActionFactory actionFactory) {
         this.view = view;
         this.dialogBuilder = dialogBuilder;
         this.dialogFieldFactory = dialogFieldFactory;
@@ -132,7 +132,7 @@ public class DialogPresenter implements DialogView.Presenter {
     }
 
     @Override
-    public DialogView getView() {
+    public TabbedDialogView getView() {
         return view;
     }
 

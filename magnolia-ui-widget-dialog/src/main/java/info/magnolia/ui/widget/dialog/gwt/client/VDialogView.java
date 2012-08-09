@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.widget.dialog.gwt.client;
 
-import info.magnolia.ui.vaadin.integration.widget.client.tabsheet.VShellTabSheet;
+import info.magnolia.ui.vaadin.widget.tabsheet.client.VMagnoliaTabSheet;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
@@ -64,7 +64,7 @@ public interface VDialogView extends IsWidget {
 
     void addAction(String label, String action);
 
-    void addTabSheet(VShellTabSheet tabsheet);
+    void addTabSheet(VMagnoliaTabSheet tabsheet);
 
     void setDescription(String description);
 

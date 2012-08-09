@@ -56,7 +56,7 @@ import info.magnolia.ui.model.field.definition.EditFieldDefinition;
 import info.magnolia.ui.model.tab.definition.ConfiguredTabDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.widget.dialog.Dialog;
-import info.magnolia.ui.widget.dialog.DialogView;
+import info.magnolia.ui.widget.dialog.TabbedDialogView;
 
 import javax.jcr.Node;
 
@@ -100,7 +100,7 @@ public class DialogBuilderTest {
         final Dialog dialog = new Dialog();
 
         // WHEN
-        final DialogView result = builder.build(null, def, null, dialog);
+        final TabbedDialogView result = builder.build(null, def, null, dialog);
 
         // THEN
         assertEquals(result, dialog);
@@ -132,7 +132,7 @@ public class DialogBuilderTest {
         when(dialogFieldFactory.create(same(fieldDef), same(item))).thenReturn(editField);
 
         // WHEN
-        final DialogView result = builder.build(dialogFieldFactory, dialogDef, item, dialog);
+        final TabbedDialogView result = builder.build(dialogFieldFactory, dialogDef, item, dialog);
 
         // THEN
         assertEquals(result, dialog);

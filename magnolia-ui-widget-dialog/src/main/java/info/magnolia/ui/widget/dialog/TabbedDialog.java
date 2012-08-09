@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.widget.dialog;
 
-import info.magnolia.ui.vaadin.integration.widget.tabsheet.ShellTabSheet;
+import info.magnolia.ui.vaadin.widget.tabsheet.ShellTabSheet;
 import info.magnolia.ui.widget.dialog.gwt.client.VTabbedDialog;
 
 import java.util.ArrayList;
@@ -55,7 +55,7 @@ import com.vaadin.ui.Field;
  *
  */
 @ClientWidget(VTabbedDialog.class)
-public class TabbedDialog extends ShellTabSheet implements DialogView, ServerSideHandler, Item.Editor {
+public class TabbedDialog extends ShellTabSheet implements TabbedDialogView, ServerSideHandler, Item.Editor {
 
     private final String SHOW_ALL = "show all";
 
