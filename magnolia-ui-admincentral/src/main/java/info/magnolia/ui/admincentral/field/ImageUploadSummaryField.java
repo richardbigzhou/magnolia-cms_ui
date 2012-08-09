@@ -37,7 +37,6 @@ import info.magnolia.ui.admincentral.field.builder.AbstractFieldBuilder;
 import info.magnolia.ui.model.field.definition.FileUploadFieldDefinition;
 
 import com.vaadin.data.Item;
-import com.vaadin.data.Property;
 import com.vaadin.ui.Field;
 
 /**
@@ -47,16 +46,10 @@ public class ImageUploadSummaryField extends AbstractFieldBuilder<FileUploadFiel
 
     public ImageUploadSummaryField(FileUploadFieldDefinition definition, Item relatedFieldItem) {
         super(definition, relatedFieldItem);
-    }
+    } 
 
     @Override
     protected Field buildField() {
-
         return null;
-    }
-
-    @Override
-    public void setPropertyDataSource(final Property property) {
-        super.setPropertyDataSource(property);
     }
 }

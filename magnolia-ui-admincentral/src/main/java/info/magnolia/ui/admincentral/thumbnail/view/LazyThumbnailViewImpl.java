@@ -36,13 +36,14 @@ package info.magnolia.ui.admincentral.thumbnail.view;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.predicate.AbstractPredicate;
 import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.ui.admincentral.container.JcrContainer;
+import info.magnolia.ui.admincentral.container.AbstractJcrContainer;
 import info.magnolia.ui.model.thumbnail.ThumbnailProvider;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.widget.LazyThumbnailLayout;
 import info.magnolia.ui.vaadin.integration.widget.LazyThumbnailLayout.ThumbnailSelectionListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.jcr.LoginException;
@@ -120,15 +121,49 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
     }
 
     @Override
-    public void refresh() {
+    public final void refresh() {
+        final List<String> uuids = getAllIdentifiers(workbenchDefinition.getWorkspace(), workbenchDefinition.getPath());
+        final ThumbnailContainer container = new ThumbnailContainer(thumbnailProvider, uuids);
+        container.setWorkspaceName(workbenchDefinition.getWorkspace());
+        container.setThumbnailHeight(73);
+        container.setThumbnailWidth(73);
+        layout.setContainerDataSource(container);
+        layout.setThumbnailSize(73, 73);
+    }
+
+    @Override
+    public void refreshItem(Item item) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public AbstractJcrContainer getContainer() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Component asVaadinComponent() {
+        return layout;
+    }
+
+    /**
+     * @return a List of JCR identifiers for the all the nodes recursively found under <code>initialPath</code>. This method is called in {@link LazyThumbnailViewImpl#refresh()}.
+     * You can override it, if you need a different strategy than the default one to fetch the identifiers of the nodes for which thumbnails need to be displayed.
+     * @see ThumbnailContainer
+     * @see LazyThumbnailLayout#refresh()
+     */
+    protected List<String> getAllIdentifiers(final String workspaceName, final String initialPath) {
+        List<String> uuids = new ArrayList<String>();
         try {
             //TODO fgrilli: needs proof but it's probably more performing if we just do a jcr sql 2 query, something like
             // select [jcr:uuid] from [mgnl:content]
-            //instead of iterating everything and then discard  what we don't need
+            //instead of iterating over everything and then discard  what we don't need
+            log.debug("Recursively collecting all children at [{}:{}]...", workspaceName, initialPath);
+            long start = System.currentTimeMillis();
             Node parent = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace()).getNode(workbenchDefinition.getPath());
             Iterable<Node> assets = NodeUtil.collectAllChildren(parent, filterByItemType);
-            final String workspace = workbenchDefinition.getWorkspace();
-            final List<String> uuids = Lists.transform(NodeUtil.asList(assets), new Function<Node, String>() {
+            uuids = Lists.transform(NodeUtil.asList(assets), new Function<Node, String>() {
                 @Override
                 public String apply(Node node) {
                     try {
@@ -142,13 +177,7 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
                     }
                 }
             });
-            final ThumbnailContainer container = new ThumbnailContainer(thumbnailProvider, uuids);
-            container.setWorkspaceName(workbenchDefinition.getWorkspace());
-            container.setThumbnailHeight(73);
-            container.setThumbnailWidth(73);
-            layout.setContainerDataSource(container);
-            layout.setThumbnailSize(73, 73);
-
+            log.debug("Done collecting {} children in {}ms", uuids.size(), System.currentTimeMillis() - start);
 
         } catch (PathNotFoundException e) {
             throw new RuntimeException(e);
@@ -157,22 +186,7 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
         } catch (RepositoryException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @Override
-    public void refreshItem(Item item) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public JcrContainer getContainer() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Component asVaadinComponent() {
-        return layout;
+        return uuids;
     }
 
     /**

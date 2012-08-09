@@ -58,8 +58,6 @@ public class PagesActionbarDefinitionProvider {
 
     /**
      * Builds and returns an actionbar definition for the page editor.
-     * 
-     * @return an actionbar definition
      */
     public static ActionbarDefinition getPageEditorActionbarDefinition() {
 

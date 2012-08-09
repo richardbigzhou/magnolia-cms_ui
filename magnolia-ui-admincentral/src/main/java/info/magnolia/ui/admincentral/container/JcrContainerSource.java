@@ -41,7 +41,7 @@ import javax.jcr.RepositoryException;
 
 
 /**
- * Backing implementation for JcrContainer.
+ * Backing implementation for AbstractJcrContainer.
  */
 public interface JcrContainerSource {
 

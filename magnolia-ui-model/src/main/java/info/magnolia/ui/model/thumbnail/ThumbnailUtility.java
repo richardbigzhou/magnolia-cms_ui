@@ -67,6 +67,7 @@ public class ThumbnailUtility {
 
     /**
      * Create a Thumbnail image from the provided original. Thumbnail will have the indicated width, height and quality.
+     * @return the generated Thumbnail
      */
     public static final BufferedImage createThumbnail(final Image original, final String format, final int width, final int height, final float quality) throws IOException {
         int thumbWidth = width;
@@ -101,7 +102,7 @@ public class ThumbnailUtility {
 
     /**
      * Checks whether this node contains an image which needs to be generated for the first time or regenerated.
-     * @returns <code>true</code> if the thumbnail has to be created because not yet existing or recreated due to its original image having been updated, else <code>false</code>.
+     * @return <code>true</code> if the thumbnail has to be created because not yet existing or recreated due to its original image having been updated, else <code>false</code>.
      * @throws RepositoryException
      */
     public static final boolean isThumbnailToBeGenerated(final String nodeIdentifier, final String workspace, final String originalNodeName, final String thumbnailNodeName) throws RepositoryException {
@@ -110,7 +111,7 @@ public class ThumbnailUtility {
         final Node node = session.getNodeByIdentifier(nodeIdentifier);
 
         if (!node.hasNode(originalNodeName)) {
-            log.warn("No [{}] node found for contact node [{}]. Cannot create thumbnail.", originalNodeName, node.getPath());
+            log.warn("No originalImageNode called [{}] found for node [{}]. Cannot create thumbnail.", originalNodeName, node.getPath());
             return false;
         }
         if (!node.hasNode(thumbnailNodeName)) {

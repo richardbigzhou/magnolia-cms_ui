@@ -36,7 +36,7 @@ package info.magnolia.ui.admincentral.field.builder;
 
 import info.magnolia.cms.beans.runtime.FileProperties;
 import info.magnolia.cms.core.MgnlNodeType;
-import info.magnolia.ui.admincentral.field.FileUpload;
+import info.magnolia.ui.admincentral.field.upload.UploadImageField;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.model.field.definition.FileUploadFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
@@ -48,11 +48,12 @@ import javax.jcr.Binary;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.ui.Field;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Creates and configures a Vaadin UploadField.
@@ -67,9 +68,13 @@ public class FileUploadFieldBuilder extends AbstractFieldBuilder<FileUploadField
 
     @Override
     protected Field buildField() {
-        FileUpload uploadField = new FileUpload((JcrItemNodeAdapter)getOrCreateItem());
-        uploadField.setFileDeletesAllowed(definition.isFileDeletesAllowed());
-        uploadField.setPreview(definition.isPreview());
+        UploadImageField uploadField = new UploadImageField((JcrItemNodeAdapter)getOrCreateItem());
+        uploadField.setInfo(true);
+        uploadField.setProgressInfo(true);
+        uploadField.setProgressIndicatorCaption("Progress");
+        uploadField.setFileDeletion(true);
+        uploadField.setFileDeletionButtonCaption("Delete");
+        uploadField.setPreview(true);
         return uploadField;
     }
 

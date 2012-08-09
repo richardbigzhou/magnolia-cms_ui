@@ -45,10 +45,8 @@ import info.magnolia.ui.admincentral.event.DoubleClickEvent;
 import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
@@ -94,11 +92,11 @@ import com.vaadin.ui.Embedded;
  * workspace to connect to, the columns/properties to display, the available actions and so on.
  */
 @SuppressWarnings("serial")
-public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.Listener {
+public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener {
 
     protected final static String IMAGE_NODE_NAME = AbstractThumbnailProvider.ORIGINAL_IMAGE_NODE_NAME;
 
-    private static final Logger log = LoggerFactory.getLogger(ContentWorkbenchSubApp.class);
+    private static final Logger log = LoggerFactory.getLogger(ContentWorkbenchPresenter.class);
 
     private final WorkbenchDefinition workbenchDefinition;
 
@@ -117,7 +115,7 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
     private final ActionbarPresenter actionbarPresenter;
 
     @Inject
-    public ContentWorkbenchSubApp(final AppContext context, final ContentWorkbenchView view, @Named("adminCentral") final EventBus adminCentralEventBus, @Named("app") final EventBus appEventBus, final Shell shell, final WorkbenchActionFactory actionFactory, final ContentPresenter contentPresenter, final ActionbarPresenter actionbarPresenter) {
+    public ContentWorkbenchPresenter(final AppContext appContext, final ContentWorkbenchView view, @Named("adminCentral") final EventBus adminCentralEventBus, @Named("app") final EventBus appEventBus, final Shell shell, final WorkbenchActionFactory actionFactory, final ContentPresenter contentPresenter, final ActionbarPresenter actionbarPresenter) {
         this.view = view;
         this.adminCentralEventBus = adminCentralEventBus;
         this.appEventBus = appEventBus;
@@ -125,8 +123,10 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
         this.actionFactory = actionFactory;
         this.contentPresenter = contentPresenter;
         this.actionbarPresenter = actionbarPresenter;
+        this.workbenchDefinition = ((ContentAppDescriptor) appContext.getAppDescriptor()).getWorkbench();
+    }
 
-        workbenchDefinition = ((ContentAppDescriptor) context.getAppDescriptor()).getWorkbench();
+    public ContentWorkbenchView start() {
         contentPresenter.initContentView(view);
         view.setListener(this);
 
@@ -134,6 +134,8 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
         view.setActionbarView(actionbar);
 
         bindHandlers();
+
+        return view;
     }
 
     private void bindHandlers() {
@@ -198,7 +200,7 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
                                     return new ByteArrayInputStream(pngData);
 
                                 }
-                            }, "", ContentWorkbenchSubApp.this.asView().asVaadinComponent().getApplication()) {
+                            }, "", ContentWorkbenchPresenter.this.getView().asVaadinComponent().getApplication()) {
 
                             @Override
                             public String getMIMEType() {
@@ -227,11 +229,6 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
         });
     }
 
-    @Override
-    public View start() {
-        return view;
-    }
-
     /**
      * @see ContentPresenter#getSelectedItemId()
      */
@@ -239,12 +236,7 @@ public class ContentWorkbenchSubApp implements SubApp, ContentWorkbenchView.List
         return contentPresenter.getSelectedItemId();
     }
 
-    @Override
-    public String getCaption() {
-        return "Content-Workbench";
-    }
-
-    public ContentWorkbenchView asView() {
+    public ContentWorkbenchView getView() {
         return view;
     }
 

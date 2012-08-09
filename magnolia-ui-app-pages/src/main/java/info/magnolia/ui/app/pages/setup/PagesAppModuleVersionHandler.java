@@ -36,7 +36,7 @@ package info.magnolia.ui.app.pages.setup;
 import info.magnolia.module.DefaultModuleVersionHandler;
 
 /**
- * Version handler for Dummy app module.
+ * Version handler for the pages app module.
  */
 public class PagesAppModuleVersionHandler extends DefaultModuleVersionHandler {
 }

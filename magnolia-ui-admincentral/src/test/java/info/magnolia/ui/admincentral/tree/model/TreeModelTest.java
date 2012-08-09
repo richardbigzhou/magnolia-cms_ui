@@ -39,7 +39,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.admincentral.column.Column;
 import info.magnolia.ui.admincentral.column.PropertyTypeColumn;
-import info.magnolia.ui.admincentral.container.JcrContainerTest;
+import info.magnolia.ui.admincentral.container.AbstractJcrContainerTest;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactoryImpl;
 import info.magnolia.ui.model.column.definition.AbstractColumnDefinition;
@@ -137,9 +137,9 @@ public class TreeModelTest extends RepositoryTestCase {
     @Test
     public void testGetRootItemIds() throws RepositoryException {
         // GIVEN
-        Node node1 = JcrContainerTest.createNode(rootNode, "node1", "mgnl:page", colName1, "name1");
-        Node node2 = JcrContainerTest.createNode(rootNode, "node2", "mgnl:content", colName1, "name2");
-        Node node2_1 = JcrContainerTest.createNode(node2, "node2_1", "mgnl:content", colName1, "name2_1");
+        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", "mgnl:page", colName1, "name1");
+        Node node2 = AbstractJcrContainerTest.createNode(rootNode, "node2", "mgnl:content", colName1, "name2");
+        Node node2_1 = AbstractJcrContainerTest.createNode(node2, "node2_1", "mgnl:content", colName1, "name2_1");
         node1.getSession().save();
         // Initial check
         Collection<Item> res = treeModel.getRootItemIds();
@@ -158,9 +158,9 @@ public class TreeModelTest extends RepositoryTestCase {
     @Test
     public void testIsRoot() throws RepositoryException {
         // GIVEN
-        Node node1 = JcrContainerTest.createNode(rootNode, "node1", "mgnl:page", colName1, "name1");
-        Node node2 = JcrContainerTest.createNode(rootNode, "node2", "mgnl:content", colName1, "name2");
-        Node node2_1 = JcrContainerTest.createNode(node2, "node2_1", "mgnl:content", colName1, "name2_1");
+        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", "mgnl:page", colName1, "name1");
+        Node node2 = AbstractJcrContainerTest.createNode(rootNode, "node2", "mgnl:content", colName1, "name2");
+        Node node2_1 = AbstractJcrContainerTest.createNode(node2, "node2_1", "mgnl:content", colName1, "name2_1");
         node1.getSession().save();
 
         // WHEN
@@ -191,7 +191,7 @@ public class TreeModelTest extends RepositoryTestCase {
     @Test
     public void testGetItemIcon_Node() throws RepositoryException {
         // GIVEN
-        Node node1 = JcrContainerTest.createNode(rootNode, "node1", "mgnl:content", colName1, "name1");
+        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", "mgnl:content", colName1, "name1");
         node1.getSession().save();
 
         // WHEN
@@ -215,7 +215,7 @@ public class TreeModelTest extends RepositoryTestCase {
     @Test
     public void testGetNodeByIdentifier() throws RepositoryException {
         // GIVEN
-        Node node1 = JcrContainerTest.createNode(rootNode, "node1", "mgnl:content", colName1, "name1");
+        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", "mgnl:content", colName1, "name1");
         node1.getSession().save();
 
         // WHEN
@@ -229,7 +229,7 @@ public class TreeModelTest extends RepositoryTestCase {
     @Test
     public void testGetItemByPath_Node() throws RepositoryException {
         // GIVEN
-        Node node1 = JcrContainerTest.createNode(rootNode, "node1", "mgnl:content", colName1, "name1");
+        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", "mgnl:content", colName1, "name1");
         node1.getSession().save();
 
         // WHEN
@@ -243,7 +243,7 @@ public class TreeModelTest extends RepositoryTestCase {
     @Test
     public void testGetItemByPath_Property() throws RepositoryException {
         // GIVEN
-        Node node1 = JcrContainerTest.createNode(rootNode, "node1", "mgnl:content", colName1, "name1");
+        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", "mgnl:content", colName1, "name1");
         node1.getSession().save();
 
         // WHEN
@@ -287,9 +287,9 @@ public class TreeModelTest extends RepositoryTestCase {
     @Test
     public void testGetChildren_OnlyNode_oneNodeType() throws RepositoryException {
         // GIVEN
-        Node node1 = JcrContainerTest.createNode(rootNode, "node1", "mgnl:content", "name", "name1");
-        Node node2 = JcrContainerTest.createNode(rootNode, "node2", "mgnl:page", "name", "name2");
-        JcrContainerTest.createNode(node2, "node2_1", "mgnl:contentNode", "name", "name2_1");
+        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", "mgnl:content", "name", "name1");
+        Node node2 = AbstractJcrContainerTest.createNode(rootNode, "node2", "mgnl:page", "name", "name2");
+        AbstractJcrContainerTest.createNode(node2, "node2_1", "mgnl:contentNode", "name", "name2_1");
         node1.getSession().save();
 
         // WHEN
@@ -305,9 +305,9 @@ public class TreeModelTest extends RepositoryTestCase {
     @Test
     public void testGetChildren_OnlyNode_twoNodeType() throws RepositoryException {
         // GIVEN
-        Node node1 = JcrContainerTest.createNode(rootNode, "node1", "mgnl:content", "name", "name1");
-        Node node2 = JcrContainerTest.createNode(rootNode, "node2", "mgnl:contentNode", "name", "name2");
-        JcrContainerTest.createNode(node2, "node2_1", "mgnl:contentNode", "name", "name2_1");
+        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", "mgnl:content", "name", "name1");
+        Node node2 = AbstractJcrContainerTest.createNode(rootNode, "node2", "mgnl:contentNode", "name", "name2");
+        AbstractJcrContainerTest.createNode(node2, "node2_1", "mgnl:contentNode", "name", "name2_1");
         node1.getSession().save();
         ConfiguredItemTypeDefinition type1 = new ConfiguredItemTypeDefinition();
         type1.setItemType("mgnl:contentNode");
@@ -325,8 +325,8 @@ public class TreeModelTest extends RepositoryTestCase {
     @Test
     public void testGetChildren_NodeAndProperty() throws RepositoryException {
         // GIVEN
-        Node node1 = JcrContainerTest.createNode(rootNode, "node1", "mgnl:content", "name", "name1");
-        Node node2 = JcrContainerTest.createNode(rootNode, "node2", "mgnl:content", "name", "name2");
+        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", "mgnl:content", "name", "name1");
+        Node node2 = AbstractJcrContainerTest.createNode(rootNode, "node2", "mgnl:content", "name", "name2");
         rootNode.setProperty("jcr:name", "excluded");
         rootNode.setProperty("name", "included");
         node1.getSession().save();
@@ -347,7 +347,7 @@ public class TreeModelTest extends RepositoryTestCase {
     @Test
     public void testPathInTree() throws RepositoryException {
         // GIVEN
-        Node node1 = JcrContainerTest.createNode(rootNode, "node1", "mgnl:content", colName1, "name1");
+        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", "mgnl:content", colName1, "name1");
         node1.getSession().save();
         // Initial Check
         assertEquals("/node1", treeModel.getPathInTree(node1));

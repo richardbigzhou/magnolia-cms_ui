@@ -40,7 +40,7 @@ package info.magnolia.ui.model.dialog.definition;
  */
 public interface ValidatorDefinition {
 
-    String getErrorMessage();
+    String getErrorMessageKey();
 
-    void setErrorMessage(String errorMessage);
+    void setErrorMessageKey(String errorMessageKey);
 }

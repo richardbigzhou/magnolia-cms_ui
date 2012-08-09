@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.list.view;
 
-import info.magnolia.ui.admincentral.container.JcrContainer;
+import info.magnolia.ui.admincentral.container.AbstractJcrContainer;
 import info.magnolia.ui.admincentral.content.view.ContentView;
 import info.magnolia.ui.admincentral.list.container.FlatJcrContainer;
 import info.magnolia.ui.admincentral.tree.model.TreeModel;
@@ -68,7 +68,7 @@ public class ListViewImpl implements ListView {
 
     private final VerticalLayout margin = new VerticalLayout();
 
-    private final JcrContainer container;
+    private final AbstractJcrContainer container;
 
     private static final Logger log = LoggerFactory.getLogger(ListViewImpl.class);
 
@@ -84,7 +84,7 @@ public class ListViewImpl implements ListView {
         table.setMultiSelect(false);
 
         // Important do not set page length and cache ratio on the Table, rather set them by using
-        // JcrContainer corresponding methods. Setting
+        // AbstractJcrContainer corresponding methods. Setting
         // those value explicitly on the Table will cause the same jcr query to be repeated twice
         // thus degrading performance greatly.
         table.addListener(new Table.ValueChangeListener() {
@@ -163,7 +163,7 @@ public class ListViewImpl implements ListView {
     }
 
     @Override
-    public JcrContainer getContainer() {
+    public AbstractJcrContainer getContainer() {
         return container;
     }
 

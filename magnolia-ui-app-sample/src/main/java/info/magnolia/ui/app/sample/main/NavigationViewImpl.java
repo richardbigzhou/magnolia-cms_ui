@@ -45,7 +45,6 @@ public class NavigationViewImpl implements NavigationView {
 
     private Listener listener;
     private VerticalLayout layout;
-    private String name;
 
     public NavigationViewImpl() {
     }

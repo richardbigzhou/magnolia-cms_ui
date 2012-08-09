@@ -56,8 +56,8 @@ import java.util.List;
  */
 public class PagesApp extends AbstractApp {
 
-    private static final String EDITOR_TOKEN = "editor";
-    private static final String PREVIEW_TOKEN = "preview";
+    public static final String EDITOR_TOKEN = "editor";
+    public static final String PREVIEW_TOKEN = "preview";
 
     private AppContext context;
     private ComponentProvider componentProvider;
@@ -73,13 +73,13 @@ public class PagesApp extends AbstractApp {
     @Override
     public void locationChanged(Location location) {
 
-        DefaultLocation l = (DefaultLocation) location;
+        DefaultLocation defaultLocation = (DefaultLocation) location;
 
-        List<String> pathParams = parsePathParamsFromToken(l.getToken());
+        List<String> pathParams = parsePathParamsFromToken(defaultLocation.getToken());
 
         final String subAppName = pathParams.remove(0);
 
-        if (subAppName.equals(EDITOR_TOKEN)) {
+        if (EDITOR_TOKEN.equals(subAppName)) {
             String contextPath = MgnlContext.getContextPath();
 
             PagesEditorSubApp editorSubApp = componentProvider.newInstance(PagesEditorSubApp.class);
@@ -87,8 +87,7 @@ public class PagesApp extends AbstractApp {
             editorSubApp.setParameters(parameters);
             context.openSubApp(editorSubApp);
             context.setAppLocation(location);
-        }
-        else if (PREVIEW_TOKEN.equals(subAppName)) {
+        } else if (PREVIEW_TOKEN.equals(subAppName)) {
             String contextPath = MgnlContext.getContextPath();
             PagePreviewSubApp previewSubApp = componentProvider.newInstance(PagePreviewSubApp.class);
             previewSubApp.setUrl(contextPath + pathParams.get(0));
@@ -98,8 +97,7 @@ public class PagesApp extends AbstractApp {
     }
 
     private List<String> parsePathParamsFromToken(String token) {
-        final List<String> result = new ArrayList<String>(Arrays.asList(token.split(":")));
-        return result;
+        return new ArrayList<String>(Arrays.asList(token.split(":")));
     }
 
     @Override

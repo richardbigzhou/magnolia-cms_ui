@@ -39,11 +39,11 @@ package info.magnolia.ui.model.field.definition;
  */
 public class LinkFieldDefinition extends ConfiguredFieldDefinition {
 
-    private String workspace;
+    private String workspace = "website";
     private String extension;
-    private String workbench;
-    private String width;
-    private String buttonLabel;
+    private String listView;
+    private String width = "100%";
+    private String buttonLabel = "Select";
     private boolean uuid;
 
     public String getWorkspace() {
@@ -62,12 +62,12 @@ public class LinkFieldDefinition extends ConfiguredFieldDefinition {
         this.extension = extension;
     }
 
-    public String getWorkbench() {
-        return workbench;
+    public String getListView() {
+        return listView;
     }
 
-    public void setWorkbench(String workbench) {
-        this.workbench = workbench;
+    public void setListView(String listView) {
+        this.listView = listView;
     }
 
     public String getWidth() {

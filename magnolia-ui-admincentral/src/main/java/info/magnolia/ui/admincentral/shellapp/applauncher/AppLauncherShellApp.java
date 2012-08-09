@@ -130,11 +130,6 @@ public class AppLauncherShellApp implements ShellApp, AppLauncherView.Presenter 
     public void locationChanged(Location location) {
     }
 
-    @Override
-    public void onAppInvoked(String name) {
-        appController.startIfNotAlreadyRunningThenFocus(name);
-    }
-
     /**
      * Initialize the view.
      */

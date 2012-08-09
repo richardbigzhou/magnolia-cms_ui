@@ -60,10 +60,6 @@ import com.vaadin.ui.Field;
  */
 public class DialogBuilder {
 
-    private static final String REQUIRED_ERROR = "This field is required! (to be i18n'd)";
-
-    //private static final String FIELD_STYLE_NAME = "field";
-
     /**
      * @return DialogView populated with values from DialogDefinition and Item.
      */
@@ -141,7 +137,7 @@ public class DialogBuilder {
 
         if(fieldDefinition.isRequired()) {
             input.setRequired(true);
-            input.setRequiredError(REQUIRED_ERROR);
+            input.setRequiredError(fieldDefinition.getRequiredErrorMessage());
         }
     }
 }

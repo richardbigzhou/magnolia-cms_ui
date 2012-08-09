@@ -30,7 +30,7 @@
         <component>
             <type>info.magnolia.ui.app.pages.preview.PagePreviewView</type>
             <implementation>info.magnolia.ui.app.pages.preview.PagePreviewViewImpl</implementation>
-        </component>        
+        </component>
         <component>
             <type>info.magnolia.ui.app.pages.editor.PagesEditorView</type>
             <implementation>info.magnolia.ui.app.pages.editor.PagesEditorViewImpl</implementation>
@@ -44,8 +44,8 @@
             <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbenchViewImpl</implementation>
         </component>
         <component>
-            <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchSubApp</type>
-            <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbenchSubApp</implementation>
+            <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter</type>
+            <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter</implementation>
         </component>
     </components>
 

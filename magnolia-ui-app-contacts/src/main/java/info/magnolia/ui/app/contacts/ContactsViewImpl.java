@@ -33,11 +33,9 @@
  */
 package info.magnolia.ui.app.contacts;
 
-import javax.inject.Inject;
-
 import com.vaadin.ui.Component;
 
-import info.magnolia.ui.admincentral.workbench.ContentWorkbenchSubApp;
+import info.magnolia.ui.framework.view.View;
 
 
 /**
@@ -46,15 +44,15 @@ import info.magnolia.ui.admincentral.workbench.ContentWorkbenchSubApp;
 @SuppressWarnings("serial")
 public class ContactsViewImpl implements ContactsView {
 
-    private final ContentWorkbenchSubApp workbench;
-
-    @Inject
-    public ContactsViewImpl(final ContentWorkbenchSubApp workbench) {
-        this.workbench = workbench;
-    }
+    private View workbenchView;
 
     @Override
     public Component asVaadinComponent() {
-        return workbench.asView();
+        return workbenchView.asVaadinComponent();
+    }
+
+    @Override
+    public void setWorkbenchView(View workbenchView) {
+        this.workbenchView = workbenchView;
     }
 }
