@@ -54,14 +54,14 @@ public interface ContentWorkbenchView extends ComponentContainer, View {
     public interface Listener {
     }
 
-    void setListener(final Listener listener);
+    void setListener(Listener listener);
 
-    void setGridType(final ContentView.ViewType type);
+    void setGridType(ContentView.ViewType type);
 
     /**
      * Causes a view refresh only if the current node exists in the repository.
      */
-    void refreshItem(final Item item);
+    void refreshItem(Item item);
 
     /**
      * TODO review the for two methods to perform the view refresh. Had to add this one to refresh
@@ -72,10 +72,10 @@ public interface ContentWorkbenchView extends ComponentContainer, View {
     /**
      * Use this method to add sub views hosted by this view.
      */
-    void addContentView(final ViewType type, final ContentView view);
+    void addContentView(ViewType type, ContentView view);
 
     /**
      * Use this method to add an action bar to this sub app view.
      */
-    void setActionbarView(final ActionbarView actionbar);
+    void setActionbarView(ActionbarView actionbar);
 }

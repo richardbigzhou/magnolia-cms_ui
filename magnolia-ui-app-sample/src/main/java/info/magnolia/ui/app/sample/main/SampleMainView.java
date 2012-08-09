@@ -48,7 +48,7 @@ public interface SampleMainView extends View {
 
     void setListener(Listener listener);
 
-    void setRightView(View right);
-
     void setLeftView(View left);
+
+    void setRightView(View right);
 }

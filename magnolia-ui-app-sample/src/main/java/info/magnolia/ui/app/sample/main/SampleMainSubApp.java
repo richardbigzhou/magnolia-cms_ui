@@ -43,7 +43,7 @@ import info.magnolia.ui.framework.view.View;
  * SubApp for the main tab in sample app.
  */
 @Singleton
-public class SampleMainSubApp implements SubApp, SampleMainView.Listener {
+public class SampleMainSubApp implements SubApp, SampleMainView.Listener, NavigationPresenter.Listener {
 
     private SampleMainView sampleMainView;
     private NavigationPresenter navigationPresenter;
@@ -61,7 +61,7 @@ public class SampleMainSubApp implements SubApp, SampleMainView.Listener {
 
         ContentDisplayView contentDisplayView = contentDisplayPresenter.start();
 
-        navigationPresenter.setMainSubApp(this);
+        navigationPresenter.setListener(this);
         NavigationView navigationView = navigationPresenter.start();
 
         sampleMainView.setListener(this);
@@ -75,6 +75,7 @@ public class SampleMainSubApp implements SubApp, SampleMainView.Listener {
         return "Sample";
     }
 
+    @Override
     public void onItemSelected(String name) {
         contentDisplayPresenter.setResourceToDisplay(name);
     }

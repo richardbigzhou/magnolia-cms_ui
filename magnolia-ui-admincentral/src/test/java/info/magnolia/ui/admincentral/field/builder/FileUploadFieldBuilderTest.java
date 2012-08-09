@@ -34,12 +34,14 @@
 package info.magnolia.ui.admincentral.field.builder;
 
 import static org.junit.Assert.assertEquals;
-import info.magnolia.ui.admincentral.field.FileUpload;
+import info.magnolia.ui.admincentral.field.upload.AbstractUploadFileField.DefaultComponent;
+import info.magnolia.ui.admincentral.field.upload.UploadImageField;
 import info.magnolia.ui.model.field.definition.FileUploadFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrAbstractNodeAdapter;
 
 import org.junit.Test;
 
+import com.vaadin.ui.DragAndDropWrapper;
 import com.vaadin.ui.Field;
 
 /**
@@ -58,10 +60,23 @@ public class FileUploadFieldBuilderTest extends AbstractBuilderTest<FileUploadFi
         Field field = fileUploadBuilder.getField();
 
         // THEN
-        assertEquals(true, field instanceof FileUpload);
+        assertEquals(true, field instanceof UploadImageField);
         assertEquals(0, ((JcrAbstractNodeAdapter)baseItem).getChilds().size());
     }
 
+    @Test
+    public void buildDefaultUploadLayoutTest() throws Exception{
+        // GIVEN
+        fileUploadBuilder = new FileUploadFieldBuilder(definition, baseItem);
+        UploadImageField field = (UploadImageField)fileUploadBuilder.getField();
+
+        // WHEN
+        field.buildDefaultUploadLayout();
+
+        // THEN
+        assertEquals(true, field.getDefaultComponent(DefaultComponent.UPLOAD).isVisible());
+        assertEquals(true, field.getRootLayout() instanceof DragAndDropWrapper);
+    }
 
 
     @Override

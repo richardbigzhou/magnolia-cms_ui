@@ -34,8 +34,8 @@
 package info.magnolia.ui.app.pages.main;
 
 import com.vaadin.ui.Component;
-import com.vaadin.ui.ComponentContainer;
 
+import info.magnolia.ui.framework.view.View;
 
 /**
  * View implementation for the Pages app.
@@ -43,17 +43,17 @@ import com.vaadin.ui.ComponentContainer;
 @SuppressWarnings("serial")
 public class PagesMainViewImpl implements PagesMainView {
 
-    private ComponentContainer view;
+    private View workbenchView;
     private Listener listener;
 
     @Override
     public Component asVaadinComponent() {
-        return view;
+        return workbenchView.asVaadinComponent();
     }
 
     @Override
-    public void setWorkBench(ComponentContainer workBench) {
-        this.view = workBench;
+    public void setWorkbenchView(View workbenchView) {
+        this.workbenchView = workbenchView;
     }
 
     @Override

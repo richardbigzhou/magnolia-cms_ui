@@ -149,7 +149,7 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
 
     /**
      * @return a List of JCR identifiers for the all the nodes recursively found under <code>initialPath</code>. This method is called in {@link LazyThumbnailViewImpl#refresh()}.
-     * You can override this method, if you need a different strategy than the default one to fetch the identifiers of the nodes for which thumbnails need to be displayed.
+     * You can override it, if you need a different strategy than the default one to fetch the identifiers of the nodes for which thumbnails need to be displayed.
      * @see ThumbnailContainer
      * @see LazyThumbnailLayout#refresh()
      */
