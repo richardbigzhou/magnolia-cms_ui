@@ -167,6 +167,10 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
                 @Override
                 public String apply(Node node) {
                     try {
+                        final String uuid = node.getIdentifier();
+                        //final String imageNodeName = ThumbnailProvider.getOriginalImageNodeName();
+                        //final String thumbnailNodeName = ThumbnailProvider.getThumbnaillNodeName();
+                        //ThumbnailUtility.isThumbnailToBeGenerated(uuid, workspace, imageNodeName, thumbnailNodeName);
                         return node.getIdentifier();
                     } catch (RepositoryException e) {
                         return null;

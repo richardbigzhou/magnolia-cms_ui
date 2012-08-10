@@ -124,6 +124,7 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
         thumbnailStyle.setProperty("margin", "10px");
         scroller.setWidget(imageContainer);
         initWidget(scroller);
+        scroller.addStyleName("thumbnail-scroller");
         scroller.addScrollHandler(new ScrollHandler() {
             @Override
             public void onScroll(ScrollEvent event) {
@@ -131,7 +132,7 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
             }
         });
         
-        DOM.sinkEvents(getElement(), Event.MOUSEEVENTS);
+        DOM.sinkEvents(getElement(), Event.MOUSEEVENTS | Event.ONSCROLL);
         addDomHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {

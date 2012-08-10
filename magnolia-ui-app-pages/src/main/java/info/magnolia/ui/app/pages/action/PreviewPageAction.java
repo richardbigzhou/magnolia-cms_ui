@@ -42,6 +42,7 @@ import info.magnolia.module.pageexport.renderer.Renderer;
 import info.magnolia.module.pageexport.renderer.definition.RendererDefinition;
 import info.magnolia.module.pageexport.renderer.registry.RendererRegistry;
 import info.magnolia.ui.admincentral.image.ImageSize;
+import info.magnolia.ui.app.pages.PagesApp;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.model.action.ActionBase;
@@ -65,7 +66,6 @@ import java.util.TimeZone;
  */
 public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
 
-    private static final String TOKEN = "preview";
     private static final String IMAGE_NODE_NAME = AbstractThumbnailProvider.ORIGINAL_IMAGE_NODE_NAME;
     private static final String IMAGE_TYPE = "png";
 
@@ -97,7 +97,7 @@ public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
     public void execute() throws ActionExecutionException {
         try {
             final String path = nodeToPreview.getPath();
-            locationController.goTo(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages", TOKEN + ":" + path));
+            locationController.goTo(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages", PagesApp.PREVIEW_TOKEN + ":" + path));
         } catch (RepositoryException e) {
             log.error(e.getMessage());
         }

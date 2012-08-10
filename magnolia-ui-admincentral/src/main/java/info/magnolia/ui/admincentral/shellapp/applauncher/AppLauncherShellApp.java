@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral.shellapp.applauncher;
 
-import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventHandler;
@@ -48,6 +47,7 @@ import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutChangedEve
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.framework.shell.Shell;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -70,10 +70,10 @@ public class AppLauncherShellApp implements ShellApp, AppLauncherView.Presenter 
 
     private AppLauncherLayoutManager appLauncherLayoutManager;
 
-    private MagnoliaShell shell;
+    private Shell shell;
 
     @Inject
-    public AppLauncherShellApp(MagnoliaShell shell, AppLauncherView view, AppController appController,
+    public AppLauncherShellApp(Shell shell, AppLauncherView view, AppController appController,
             AppLauncherLayoutManager appLauncherLayoutManager, @Named("adminCentral") EventBus adminCentralEventBus, @Named("system") EventBus systemEventBus) {
         this.view = view;
         this.shell = shell;
@@ -141,7 +141,7 @@ public class AppLauncherShellApp implements ShellApp, AppLauncherView.Presenter 
                 appNames.add(entry.getName());
             }
         }
-        shell.setRegisteredAppNames(appNames);
+        shell.registerApps(appNames);
     }
 
     /**

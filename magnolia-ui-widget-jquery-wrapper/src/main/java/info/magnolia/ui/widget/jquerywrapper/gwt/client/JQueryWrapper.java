@@ -205,6 +205,10 @@ public class JQueryWrapper extends JavaScriptObject {
           return @info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper::parseInt(Ljava/lang/String;)(result);
     }-*/;
 
+    public final native Position position() /*-{
+        return this.position();
+    }-*/; 
+    
     public native final Element get(int index) /*-{
           return this.get(index);
     }-*/;

@@ -1,8 +1,8 @@
-.dialog-header, .dialog-footer, .dialog-description {
+.dialog-header, .dialog-footer, .dialog-description, .dialog-error {
     padding: 12px 16px 12px 25px;
 }
 
-.dialog-description, .dialog-footer, .dialog-content {
+.dialog-description, .dialog-footer, .dialog-content, .dialog-error {
     border-top: 2px solid black;
 }
 
@@ -20,6 +20,11 @@
 
 .dialog-description {
     background: none repeat scroll 0 0 #C1D8DF;
+}
+
+.dialog-error {
+	background: none repeat scroll 0 0 #9A3333;
+    color: white;
 }
 
 .dialog-description span {
@@ -70,6 +75,8 @@ button.btn-dialog-close {
     width: 24px;
     margin: 0;
     padding: 4px;
+    float: right;
+    margin-right: 0;
 
 }
 
@@ -84,6 +91,8 @@ button.btn-dialog-help {
     width: 20px;
     margin: 0 6px 0 0;
     padding: 1px;
+    float: right;
+    margin-right: 0;
 }
 
 /* tabsheet styling */
@@ -96,15 +105,15 @@ button.btn-dialog-help {
     border-bottom: 1px solid #C3C3C3;
 }
 
-.dialog-panel .nav > li.active > span {
+.dialog-panel .nav > li.active {
     background-color: #E6E6E6;
 }
 
-.dialog-panel .nav > li > span {
+.dialog-panel .nav > li {
     border-right: 1px solid #C3C3C3;
 }
 
-.dialog-panel .nav > li:not(.active) > span:hover {
+.dialog-panel .nav > li:not(.active):hover {
     background-color: #DDD;
 }
 
@@ -115,9 +124,9 @@ button.btn-dialog-help {
 }
 
 .dialog-panel input[type="text"], .dialog-panel textarea {
+	display: inline-block;
     border: 1px solid #CCCCCC;
     color: #999999;
-    display: inline-block;
     height: 26px;
     padding-left: 10px;
     background: none #FFF;

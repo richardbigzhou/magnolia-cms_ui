@@ -128,7 +128,7 @@ public class VHybridSelectionUtils {
     public static void updateSelectAllControl(final CheckBox selectAllCheckBox) {
         final JsArray<Element> selectedRows = JQueryWrapper.select(".v-selected").get();
         final JsArray<Element> totalRows = JQueryWrapper.select(".v-table-row, .v-table-row-odd").get();
-        selectAllCheckBox.setValue(selectedRows.length() == totalRows.length());
+        selectAllCheckBox.setValue(totalRows.length() > 0 && selectedRows.length() == totalRows.length());
     }
 
     public static void deselectAllCheckBoxes() {

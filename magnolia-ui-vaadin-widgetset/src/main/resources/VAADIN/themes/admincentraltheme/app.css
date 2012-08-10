@@ -7,15 +7,15 @@
     border-bottom:1px solid #c3c3c3;
 }
 
-.v-shell-tabsheet-app .nav > li.active > span {
+.v-shell-tabsheet-app .nav > li.active /*> span*/ {
     background-color:#e6e6e6;
 }
 
-.v-shell-tabsheet-app .nav > li > span {
+.v-shell-tabsheet-app .nav > li /*> span*/ {
     border-right:1px solid #c3c3c3;
 }
 
-.v-shell-tabsheet-app .nav > li:not(.active) > span:hover {
+.v-shell-tabsheet-app .nav > li:not(.active)/* > span*/:hover {
     background-color:#ddd;
 }
 
@@ -24,6 +24,6 @@
 	border-bottom:1px solid #e6e6e6;
 }
 
-.v-shell-tabsheet-app .single-tab > li > span, .v-preloader .nav > li > span {
+.v-shell-tabsheet-app .single-tab > li > span, .v-preloader .nav > li /*> span*/ {
 	border-right:none;
 }

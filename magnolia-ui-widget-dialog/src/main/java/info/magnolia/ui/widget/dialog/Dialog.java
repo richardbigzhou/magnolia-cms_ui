@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.widget.dialog;
 
+import info.magnolia.ui.vaadin.widget.tabsheet.ShellTab;
+import info.magnolia.ui.vaadin.widget.tabsheet.ShellTabSheet;
 import info.magnolia.ui.widget.dialog.gwt.client.VDialog;
-import info.magnolia.ui.widget.tabsheet.ShellTab;
-import info.magnolia.ui.widget.tabsheet.ShellTabSheet;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -61,18 +61,15 @@ import com.vaadin.ui.Field;
  */
 @SuppressWarnings("serial")
 @ClientWidget(value = VDialog.class, loadStyle = LoadStyle.EAGER)
-public class Dialog extends AbstractComponent implements DialogView, ServerSideHandler, Item.Editor {
+public class Dialog extends AbstractComponent implements MagnoliaDialogView, ServerSideHandler, Item.Editor {
 
     private final ShellTabSheet tabsheet = new ShellTabSheet();
 
     private final String SHOW_ALL = "show all";
 
-    /**
-     * Item connected to this dialog as datasource.
-     */
     private Item itemDatasource;
 
-    List<Field> fields = new LinkedList<Field>();
+    private List<Field> fields = new LinkedList<Field>();
 
     private Presenter presenter;
 
@@ -218,6 +215,12 @@ public class Dialog extends AbstractComponent implements DialogView, ServerSideH
             res &= field.isValid();
         }
         return res;
+    }
+
+    @Override
+    public void showValidation(boolean isVisible) {
+        // TODO Auto-generated method stub
+        
     }
 
 }

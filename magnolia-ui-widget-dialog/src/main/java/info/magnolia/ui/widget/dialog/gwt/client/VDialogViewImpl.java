@@ -34,7 +34,7 @@
 package info.magnolia.ui.widget.dialog.gwt.client;
 
 
-import info.magnolia.ui.widget.tabsheet.gwt.client.VShellTabSheet;
+import info.magnolia.ui.vaadin.widget.tabsheet.client.VMagnoliaTabSheet;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -61,7 +61,7 @@ public class VDialogViewImpl extends FlowPanel implements VDialogView {
     private final Element help = DOM.createDiv();
 
     private final Element root;
-    private VShellTabSheet tabsheet;
+    private VMagnoliaTabSheet tabsheet;
     private Presenter presenter;
     private final EventBus eventBus;
     private static final String CLASSNAME = "dialog-panel";
@@ -122,13 +122,13 @@ public class VDialogViewImpl extends FlowPanel implements VDialogView {
     }
 
     @Override
-    public VShellTabSheet getTabSheet() {
+    public VMagnoliaTabSheet getTabSheet() {
         return tabsheet;
     }
 
 
     @Override
-    public void addTabSheet(final VShellTabSheet tabsheet) {
+    public void addTabSheet(final VMagnoliaTabSheet tabsheet) {
         this.tabsheet = tabsheet;
         add(tabsheet, content);
     }

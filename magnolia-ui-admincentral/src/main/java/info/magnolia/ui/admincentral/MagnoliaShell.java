@@ -48,7 +48,7 @@ import info.magnolia.ui.framework.shell.ConfirmationHandler;
 import info.magnolia.ui.framework.shell.FragmentChangedHandler;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.framework.view.View;
-import info.magnolia.ui.widget.dialog.Dialog;
+import info.magnolia.ui.widget.dialog.MagnoliaDialog;
 import info.magnolia.ui.widget.magnoliashell.BaseMagnoliaShell;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
 import info.magnolia.ui.widget.magnoliashell.viewport.ShellViewport;
@@ -194,11 +194,11 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
         messagesManager.clearMessage(MgnlContext.getUser().getName(), messageId);
     }
     
-    public void openDialog(Dialog component) {
+    public void openDialog(MagnoliaDialog component) {
         addDialog(component.asVaadinComponent());
     }
 
-    public void removeDialog(Dialog dialog) {
+    public void removeDialog(MagnoliaDialog dialog) {
         removeDialog(dialog.asVaadinComponent());
     }
 
@@ -223,7 +223,8 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
     public void messageCleared(MessageEvent event) {
     }
 
-    public void setRegisteredAppNames(List<String> appNames) {
+    @Override
+    public void registerApps(List<String> appNames) {
         proxy.call("registerApps", new Gson().toJson(appNames));
     }
 

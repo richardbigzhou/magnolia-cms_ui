@@ -39,8 +39,8 @@ import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.widget.dialog.DialogView;
-import info.magnolia.ui.widget.dialog.DialogView.Presenter;
+import info.magnolia.ui.widget.dialog.MagnoliaDialogView;
+import info.magnolia.ui.widget.dialog.MagnoliaDialogView.Presenter;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -63,7 +63,7 @@ public class SaveDialogAction extends ActionBase<SaveDialogActionDefinition> {
     private EventBus eventBus;
     private Presenter presenter;
 
-    public SaveDialogAction(SaveDialogActionDefinition definition, DialogView.Presenter presenter) {
+    public SaveDialogAction(SaveDialogActionDefinition definition, MagnoliaDialogView.Presenter presenter) {
         super(definition);
         this.presenter = presenter;
         this.item = presenter.getItem();
@@ -72,8 +72,8 @@ public class SaveDialogAction extends ActionBase<SaveDialogActionDefinition> {
 
     @Override
     public void execute() throws ActionExecutionException {
-
         // First Validate
+        presenter.showValidation(true);
         if (presenter.getView().isValid()) {
             final JcrNodeAdapter itemChanged = (JcrNodeAdapter) item;
             try {
@@ -85,7 +85,6 @@ public class SaveDialogAction extends ActionBase<SaveDialogActionDefinition> {
                 throw new ActionExecutionException(e);
             }
             eventBus.fireEvent(new ContentChangedEvent(itemChanged.getWorkspace(), itemChanged.getItemId()));
-
             presenter.closeDialog();
         } else {
             log.warn("View is not valid. No save performed");
