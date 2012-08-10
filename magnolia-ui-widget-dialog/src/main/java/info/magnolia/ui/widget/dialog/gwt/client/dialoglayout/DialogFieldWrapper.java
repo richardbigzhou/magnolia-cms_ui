@@ -35,6 +35,10 @@ package info.magnolia.ui.widget.dialog.gwt.client.dialoglayout;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.dom.client.HasFocusHandlers;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Button;
@@ -45,7 +49,7 @@ import com.google.gwt.user.client.ui.impl.FocusImpl;
 /**
  * Wrapper widget that provides help and error indication. 
  */
-public class DialogFieldWrapper extends FlowPanel {
+public class DialogFieldWrapper extends FlowPanel implements HasFocusHandlers {
     
     private Element label = DOM.createDiv();
 
@@ -57,9 +61,9 @@ public class DialogFieldWrapper extends FlowPanel {
     
     private Button errorAction = new Button();
     
-    private VInlineErrorMessage errorSection = null;
+    private VInlineMessage errorSection = null;
     
-    private VInlineErrorMessage helpSection = null;
+    private VInlineMessage helpSection = null;
     
     private String helpDescription = null;
     
@@ -90,9 +94,9 @@ public class DialogFieldWrapper extends FlowPanel {
     }
 
     protected void showHelp() {
-        helpSection = VInlineErrorMessage.createHelpMessage();
+        helpSection = VInlineMessage.createHelpMessage();
         helpSection.setMessage(helpDescription);
-        add(helpSection);
+        add(helpSection, root);
     }
 
     private void construct() {
@@ -101,7 +105,7 @@ public class DialogFieldWrapper extends FlowPanel {
         helpButton.addStyleName("action-dialog-help");
         errorAction.addStyleName("action-validation");
         
-        root.appendChild(label);
+        fieldWrapper.appendChild(label);
         root.appendChild(fieldWrapper);
         add(helpButton, fieldWrapper);
         add(errorAction, fieldWrapper);
@@ -110,9 +114,11 @@ public class DialogFieldWrapper extends FlowPanel {
     public void showError(final String errorDescription) {
         errorAction.setVisible(true);
         fieldWrapper.addClassName("validation-hilight");
-        errorSection = VInlineErrorMessage.createErrorMessage();
-        errorSection.setMessage(errorDescription);
-        add(errorSection);
+        if (errorSection == null) {
+            errorSection = VInlineMessage.createErrorMessage();   
+        }
+        errorSection.addMessage(errorDescription);
+        add(errorSection, root);
     }
     
     public void setCaption(String caption) {
@@ -133,11 +139,16 @@ public class DialogFieldWrapper extends FlowPanel {
     }
 
     public void setField(Widget child) {
+        if (this.field != null) {
+            remove(field);
+        }
         this.field = child;
-        child.removeFromParent();
-        getChildren().add(child);
-        fieldWrapper.insertBefore(child.getElement(), helpButton.getElement());
-        adopt(child);   
+        if (child != null) {
+            child.removeFromParent();
+            getChildren().add(child);
+            fieldWrapper.insertBefore(child.getElement(), helpButton.getElement());
+            adopt(child);   
+        }   
     }
     
     public void clearErrors() {
@@ -170,6 +181,17 @@ public class DialogFieldWrapper extends FlowPanel {
     public void focusField() {
         if (field != null) {
             FocusImpl.getFocusImplForWidget().focus(field.getElement());
+        }
+    }
+
+    @Override
+    public HandlerRegistration addFocusHandler(FocusHandler handler) {
+        return field.addDomHandler(handler, FocusEvent.getType());
+    }
+
+    public void resetErrorMessage() {
+        if (errorSection != null) {
+            errorSection.setMessage("");
         }
     }
     

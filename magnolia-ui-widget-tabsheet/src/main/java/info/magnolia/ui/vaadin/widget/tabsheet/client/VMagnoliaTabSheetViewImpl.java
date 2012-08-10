@@ -150,4 +150,9 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements VMagnoliaTab
         return activeTab;
     }
 
+    @Override
+    public Widget getScroller() {
+        return scroller;
+    }
+
 }

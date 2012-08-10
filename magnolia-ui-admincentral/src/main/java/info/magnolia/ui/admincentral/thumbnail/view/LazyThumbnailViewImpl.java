@@ -102,7 +102,6 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
                 }
             }
         });
-
     }
 
     @Override

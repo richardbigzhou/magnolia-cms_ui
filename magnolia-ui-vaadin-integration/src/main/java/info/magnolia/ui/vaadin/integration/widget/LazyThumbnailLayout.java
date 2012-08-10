@@ -71,6 +71,8 @@ public class LazyThumbnailLayout extends AbstractComponent implements ServerSide
 
     private List<ThumbnailSelectionListener> selectionListeners = new ArrayList<LazyThumbnailLayout.ThumbnailSelectionListener>();
 
+    private List<ThumbnailDblClickListener> dblClickListeners = new ArrayList<LazyThumbnailLayout.ThumbnailDblClickListener>();
+    
     private Ordered container;
 
     private Object lastQueried = null;
@@ -99,6 +101,17 @@ public class LazyThumbnailLayout extends AbstractComponent implements ServerSide
                     }
                 }
             });
+            
+            register("thumbnailDoubleClicked", new Method() {
+                @Override
+                public void invoke(String methodName, Object[] params) {
+                    final String key = String.valueOf(params[0]);
+                    final Object itemId = mapper.get(key);
+                    if (itemId != null) {
+                        onThumbnailDoubleClicked(itemId);
+                    }
+                }
+            });
         }
     };
 
@@ -106,6 +119,12 @@ public class LazyThumbnailLayout extends AbstractComponent implements ServerSide
         setImmediate(true);
     }
 
+    private void onThumbnailDoubleClicked(Object itemId) {
+        for (final ThumbnailDblClickListener listener : dblClickListeners) {
+            listener.onThumbnailDblClicked(String.valueOf(itemId));
+        }
+    }
+    
     private void select(Object itemId) {
         for (final ThumbnailSelectionListener listener : selectionListeners) {
             listener.onThumbnailSelected(String.valueOf(itemId));
@@ -193,6 +212,10 @@ public class LazyThumbnailLayout extends AbstractComponent implements ServerSide
     public void addThumbnailSelectionListener(final ThumbnailSelectionListener listener) {
         this.selectionListeners.add(listener);
     }
+    
+    public void addDoubleClickListener(final ThumbnailDblClickListener listener) {
+        this.dblClickListeners.add(listener);
+    }
 
     @Override
     public void setContainerDataSource(Container newDataSource) {
@@ -214,10 +237,16 @@ public class LazyThumbnailLayout extends AbstractComponent implements ServerSide
      * Listener interface for thumbnail selection.
      */
     public interface ThumbnailSelectionListener {
-
         void onThumbnailSelected(String thumbnailId);
     }
 
+    /**
+     * Listener for thumbnail double clicks.
+     */
+    public interface ThumbnailDblClickListener {
+        void onThumbnailDblClicked(String thumbnailId);
+    }
+    
     /**
      * Interface for the providers of the actual thumbnails.
      */

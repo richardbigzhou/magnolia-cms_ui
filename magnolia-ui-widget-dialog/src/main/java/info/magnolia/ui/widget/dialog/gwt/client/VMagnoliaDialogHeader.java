@@ -38,8 +38,10 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 
 /**
@@ -134,13 +136,20 @@ public class VMagnoliaDialogHeader extends FlowPanel {
     public void setErrorAmount(int totalProblematicFields) {
         errorPanel.setVisible(totalProblematicFields > 0);
         if (totalProblematicFields > 0) {
-            errorPanel.getElement().setInnerText("You have to fix " + totalProblematicFields + "errors");
-            errorPanel.add(new Button("Next", new ClickHandler() {
+            errorPanel.getElement().setInnerHTML("<span>Please correct the <b>" + totalProblematicFields + 
+                    " errors </b> in this form </span>");
+
+            
+            final HTML errorButton = new HTML("[Jump to next error]");
+            errorButton.setStyleName("action-jump-to-next-error");
+            DOM.sinkEvents(errorButton.getElement(), Event.MOUSEEVENTS);
+            errorButton.addDomHandler(new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent event) {
                     callback.jumpToNextError();
                 }
-            }));
+            }, ClickEvent.getType());
+            errorPanel.add(errorButton);
         }
     }
     

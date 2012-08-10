@@ -38,6 +38,7 @@ import java.util.List;
 import com.google.gwt.event.dom.client.HasScrollHandlers;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * VShellTabView.
@@ -55,6 +56,8 @@ public interface VMagnoliaTabSheetView extends HasWidgets, IsWidget, HasScrollHa
         void updateLayout();
     }
 
+    Widget getScroller();
+    
     VMagnoliaTabNavigator getTabContainer();
 
     VMagnoliaTab getTabById(String tabId);
@@ -66,6 +69,5 @@ public interface VMagnoliaTabSheetView extends HasWidgets, IsWidget, HasScrollHa
     void removeTab(VMagnoliaTab tabToOrphan);
 
     void showAllTabContents(boolean visible);
-
-
+    
 }
