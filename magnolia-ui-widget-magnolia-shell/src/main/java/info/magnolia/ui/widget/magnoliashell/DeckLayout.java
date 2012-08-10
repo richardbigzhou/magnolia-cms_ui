@@ -82,6 +82,7 @@ public class DeckLayout extends AbstractComponentContainer {
         if (!children.contains(c)) {
             children.add(c);
         }
+        display(c);
         requestRepaint();
     }
 
