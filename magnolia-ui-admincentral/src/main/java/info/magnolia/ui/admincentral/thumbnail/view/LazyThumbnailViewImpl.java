@@ -40,6 +40,7 @@ import info.magnolia.ui.model.thumbnail.ThumbnailProvider;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.widget.LazyThumbnailLayout;
+import info.magnolia.ui.vaadin.integration.widget.LazyThumbnailLayout.ThumbnailDblClickListener;
 import info.magnolia.ui.vaadin.integration.widget.LazyThumbnailLayout.ThumbnailSelectionListener;
 
 import java.util.ArrayList;
@@ -90,16 +91,17 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
         layout.addThumbnailSelectionListener(new ThumbnailSelectionListener() {
             @Override
             public void onThumbnailSelected(final String thumbnailId) {
-                Session session;
-                try {
-                    session = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace());
-                    final Node imageNode = session.getNodeByIdentifier(thumbnailId);
-                    listener.onItemSelection(new JcrNodeAdapter(imageNode));
-                } catch (LoginException e) {
-                    log.error(e.getMessage());
-                } catch (RepositoryException e) {
-                    log.error(e.getMessage());
-                }
+                JcrNodeAdapter node = getThumbnailNodeAdapterByIdentifier(thumbnailId);
+                listener.onItemSelection(node);
+            }
+        });
+
+        layout.addDoubleClickListener(new ThumbnailDblClickListener() {
+
+            @Override
+            public void onThumbnailDblClicked(final String thumbnailId) {
+                JcrNodeAdapter node = getThumbnailNodeAdapterByIdentifier(thumbnailId);
+                listener.onDoubleClick(node);
             }
         });
     }
@@ -111,7 +113,7 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
 
     @Override
     public void select(String path) {
-
+      //do something?
     }
 
     @Override
@@ -127,8 +129,7 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
 
     @Override
     public void refreshItem(Item item) {
-        // TODO Auto-generated method stub
-
+        //do nothing
     }
 
     @Override
@@ -150,16 +151,18 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
     protected List<String> getAllIdentifiers(final String workspaceName, final String initialPath) {
         List<String> uuids = new ArrayList<String>();
         try {
+            log.debug("Executing query [statement {}] on workspace {}", jcrSQL2QueryStatement, workspaceName);
 
-            log.debug("Collecting all nodes at [{}:{}]...", workspaceName, initialPath);
             long start = System.currentTimeMillis();
-            QueryManager qm = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace()).getWorkspace().getQueryManager();
+            QueryManager qm = MgnlContext.getJCRSession(workspaceName).getWorkspace().getQueryManager();
             Query q = qm.createQuery(jcrSQL2QueryStatement, Query.JCR_SQL2);
             QueryResult queryResult = q.execute();
             NodeIterator iter = queryResult.getNodes();
+
             while(iter.hasNext()) {
                uuids.add(iter.nextNode().getIdentifier());
             }
+
             log.debug("Done collecting {} nodes in {}ms", uuids.size(), System.currentTimeMillis() - start);
 
         } catch (PathNotFoundException e) {
@@ -192,5 +195,18 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
             log.debug("Adding node filter item type [{}]", itemTypes[i]);
         }
         return itemTypes;
+    }
+
+    private JcrNodeAdapter getThumbnailNodeAdapterByIdentifier(final String thumbnailId) {
+        try {
+            Session session = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace());
+            final Node imageNode = session.getNodeByIdentifier(thumbnailId);
+            return new JcrNodeAdapter(imageNode);
+        } catch (LoginException e) {
+            log.error(e.getMessage());
+        } catch (RepositoryException e) {
+            log.error(e.getMessage());
+        }
+        return null;
     }
 }
