@@ -46,6 +46,8 @@ public interface MessagesView extends View {
      */
     public interface Listener {
 
+        void handleUserMessage(String user, MessageType type, String subject, String message);
+
         void handleLocalMessage(MessageType type, String subject, String message);
 
         void handleGlobalMessage(MessageType type, String subject, String message);

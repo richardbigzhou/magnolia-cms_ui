@@ -52,6 +52,8 @@ public interface AppContext {
 
     void setAppLocation(Location location);
 
+    void sendUserMessage(String user, Message message);
+
     void sendLocalMessage(Message message);
 
     void broadcastMessage(Message message);

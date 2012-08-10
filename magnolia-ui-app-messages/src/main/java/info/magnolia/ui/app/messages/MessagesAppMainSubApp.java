@@ -73,22 +73,27 @@ public class MessagesAppMainSubApp implements SubApp, MessagesView.Listener {
     }
 
     @Override
+    public void handleUserMessage(String user, MessageType type, String subject, String message) {
+        appContext.sendUserMessage(user, createMessage(type, subject, message));
+    }
+
+    @Override
     public void handleLocalMessage(MessageType type, String subject, String message) {
-        final Message msg = new Message();
-        msg.setSubject(subject);
-        msg.setMessage(message);
-        msg.setType(type);
-        msg.setTimestamp(new Date().getTime());
-        appContext.sendLocalMessage(msg);
+        appContext.sendLocalMessage(createMessage(type, subject, message));
     }
 
     @Override
     public void handleGlobalMessage(MessageType type, String subject, String message) {
+        appContext.broadcastMessage(createMessage(type, subject, message));
+    }
+
+    private Message createMessage(MessageType type, String subject, String message) {
         final Message msg = new Message();
         msg.setSubject(subject);
         msg.setMessage(message);
         msg.setType(type);
         msg.setTimestamp(new Date().getTime());
-        appContext.broadcastMessage(msg);
+        return msg;
     }
+
 }
