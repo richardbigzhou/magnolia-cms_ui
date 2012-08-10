@@ -511,8 +511,6 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
                         .append(", ");
                 }
                 stmt.delete(stmt.lastIndexOf(","), stmt.length() - 1);
-            } else {
-                stmt.append("order by ").append(JCR_NAME_FUNCTION);
             }
 
             // FIXME sql2 query is much slower than its xpath/sql1 counterpart (on average 80 times
@@ -587,14 +585,14 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
             if (offset >= 0) {
                 query.setOffset(offset);
             }
-            log.info("Executing query against workspace [{}] with statement [{}] and limit {} and offset {}...", new Object[]{
+            log.debug("Executing query against workspace [{}] with statement [{}] and limit {} and offset {}...", new Object[]{
                 getWorkspace(),
                 statement,
                 limit,
                 offset});
             long start = System.currentTimeMillis();
             final QueryResult result = query.execute();
-            log.info("Query execution took {} ms", System.currentTimeMillis() - start);
+            log.debug("Query execution took {} ms", System.currentTimeMillis() - start);
 
             return result;
 
