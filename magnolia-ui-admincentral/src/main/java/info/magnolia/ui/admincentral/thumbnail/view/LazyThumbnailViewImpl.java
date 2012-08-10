@@ -77,7 +77,7 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
 
     private ThumbnailProvider thumbnailProvider;
 
-    private String jcrSQL2QueryStatement = "select * from ["+MgnlNodeType.NT_CONTENT+"]";
+    private String jcrSQL2QueryStatement = "select * from ["+MgnlNodeType.NT_CONTENT+"] as t order by name(t)";
 
     public LazyThumbnailViewImpl(final WorkbenchDefinition definition, final ThumbnailProvider thumbnailProvider) {
         this.workbenchDefinition = definition;
@@ -178,7 +178,7 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
     private String prepareJcrSQL2Query(){
         final String[] itemTypes = getItemTypes(workbenchDefinition);
         if(itemTypes != null && itemTypes.length == 1) {
-            jcrSQL2QueryStatement = "select * from ["+itemTypes[0]+"]";
+            jcrSQL2QueryStatement = "select * from ["+itemTypes[0]+"] as t order by name(t)";
         } else {
             log.warn("Workbench definition contains {} item types. Defaulting to {}", (itemTypes != null ? itemTypes.length : 0), MgnlNodeType.NT_CONTENT);
         }
