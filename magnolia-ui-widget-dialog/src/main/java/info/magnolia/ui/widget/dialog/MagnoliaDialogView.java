@@ -33,50 +33,39 @@
  */
 package info.magnolia.ui.widget.dialog;
 
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.framework.view.View;
-
 import java.util.List;
-
 import com.vaadin.data.Item;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.Field;
 
 /**
- * DialogView.
+ * DialogView definition.
+ * Define also the Listener interface.
  */
 public interface MagnoliaDialogView extends View {
 
     /**
-     * DialogView.Presenter.
-     *
+     * Base interface for an MagnoliaDialogView listener.
      */
-    interface Presenter {
-
-        Shell getShell();
-
-        MagnoliaDialogView getView();
-
-        Item getItem();
-
-        EventBus getEventBus();
-
-        void closeDialog();
-
-        void editItem(Item item);
-        
-        void showValidation(boolean isVisible);
-        
+    interface Listener {
+        /**
+         * Execute a specific action {@link info.magnolia.ui.model.action.Action}.
+         */
         void executeAction(String actionName);
+
+        /**
+         * Close current Dialog.
+         */
+        void closeDialog();
     }
 
+
+    void setListener(Listener listener);
 
     void setItemDataSource(Item item);
 
     void addTab(ComponentContainer inputFields, String tabName);
-
-    void setPresenter(Presenter presenter);
 
     void addAction(String actionName, String actionLabel);
 
@@ -85,8 +74,8 @@ public interface MagnoliaDialogView extends View {
     void setDescription(String description);
 
     void showValidation(boolean isVisible);
-    
+
     boolean isValid();
-    
+
     List<Field> getFields();
 }

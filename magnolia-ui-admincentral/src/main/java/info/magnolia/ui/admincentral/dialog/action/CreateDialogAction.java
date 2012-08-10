@@ -33,13 +33,16 @@
  */
 package info.magnolia.ui.admincentral.dialog.action;
 
-import javax.jcr.Node;
-
 import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
+import info.magnolia.ui.admincentral.event.ContentChangedEvent;
+import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
-import info.magnolia.ui.widget.dialog.MagnoliaDialogView.Presenter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.widget.dialog.MagnoloaDialogPresenter;
+
+import javax.jcr.Node;
 
 /**
  * Opens a dialog for creating a new node in a tree.
@@ -49,7 +52,6 @@ import info.magnolia.ui.widget.dialog.MagnoliaDialogView.Presenter;
 public class CreateDialogAction extends ActionBase<CreateDialogActionDefinition> {
 
     private DialogPresenterFactory dialogPresenterFactory;
-
     private Node parent;
 
     public CreateDialogAction(CreateDialogActionDefinition definition, Node parent, DialogPresenterFactory dialogPresenterFactory) {
@@ -60,8 +62,23 @@ public class CreateDialogAction extends ActionBase<CreateDialogActionDefinition>
 
     @Override
     public void execute() throws ActionExecutionException {
-        Presenter dialogPresenter = dialogPresenterFactory.createDialog(getDefinition().getDialogName());
-        dialogPresenter.editItem(new JcrNewNodeAdapter(parent, getDefinition().getNodeType()));
+        final MagnoloaDialogPresenter.Presenter dialogPresenter = dialogPresenterFactory.createDialog(getDefinition().getDialogName());
+
+        final EventBus eventBus = dialogPresenter.getEventBus();
+        final JcrNodeAdapter item = new JcrNewNodeAdapter(parent, getDefinition().getNodeType());
+        dialogPresenter.start(new JcrNewNodeAdapter(parent, getDefinition().getNodeType()), new MagnoloaDialogPresenter.Presenter.CallBack() {
+
+            @Override
+            public void onSuccess(String actionName) {
+                eventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), item.getItemId()));
+                dialogPresenter.closeDialog();
+            }
+
+            @Override
+            public void onCancel() {
+                dialogPresenter.closeDialog();
+            }
+        });
     }
 
 }

@@ -31,29 +31,56 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog.action;
+package info.magnolia.ui.widget.dialog;
 
-import info.magnolia.ui.model.action.ActionBase;
-import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.widget.dialog.MagnoloaDialogPresenter;
+import info.magnolia.ui.framework.shell.Shell;
+import com.vaadin.data.Item;
+import info.magnolia.ui.framework.event.EventBus;
 
 /**
- * Implements an action for canceling a dialog.
- *
- * @see CancelDialogActionDefinition
+ * Definition of the Dialog Presenter (used to communicate with the outer world).
+ * Also define a call back inner interface.
  */
-public class CancelDialogAction extends ActionBase<CancelDialogActionDefinition> {
+public interface MagnoloaDialogPresenter {
 
-    private MagnoloaDialogPresenter.Presenter presenter;
 
-    public CancelDialogAction(CancelDialogActionDefinition definition, MagnoloaDialogPresenter.Presenter presenter) {
-        super(definition);
-        this.presenter = presenter;
+    void setPresenter(MagnoloaDialogPresenter presenter);
+
+    /**
+     * DialogView.Presenter.
+     *
+     */
+    interface Presenter {
+
+        /**
+         * Call Back Interface for DialogView.Presenter.
+         */
+        interface CallBack {
+
+            void onCancel();
+
+            void onSuccess(String actionName);
+        }
+
+        CallBack getCallBack();
+
+        Shell getShell();
+
+        MagnoliaDialogView getView();
+
+        Item getItem();
+
+        EventBus getEventBus();
+
+        /**
+         * Start create the dialog.
+         */
+        MagnoliaDialogView start(Item item, CallBack callBack);
+
+        void showValidation(boolean isVisible);
+
+        //FIXME Should it still be called so?
+        void closeDialog();
+
     }
-
-    @Override
-    public void execute() throws ActionExecutionException {
-        presenter.getCallBack().onCancel();
-    }
-
 }

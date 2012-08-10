@@ -86,5 +86,6 @@ public class SampleApp extends AbstractApp {
         SampleEditorSubApp editorSubApp = componentProvider.getComponent(SampleEditorSubApp.class);
         editorSubApp.setName(name);
         context.openSubApp(editorSubApp);
+        context.setAppLocation(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "sample", name));
     }
 }
