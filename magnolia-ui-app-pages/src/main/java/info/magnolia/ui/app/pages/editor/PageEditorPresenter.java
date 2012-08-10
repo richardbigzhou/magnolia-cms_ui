@@ -51,7 +51,7 @@ import info.magnolia.ui.model.tab.definition.TabDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.widget.dialog.MagnoliaDialogView;
+import info.magnolia.ui.widget.dialog.MagnoloaDialogPresenter;
 import info.magnolia.ui.widget.editor.PageEditorView;
 
 import java.util.LinkedList;
@@ -121,7 +121,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
     @Override
     public void editComponent(String workSpace, String path, String dialog) {
-        MagnoliaDialogView.Presenter dialogPresenter = dialogPresenterFactory.createDialog(dialog);
+        MagnoloaDialogPresenter.Presenter dialogPresenter = dialogPresenterFactory.createDialog(dialog);
 
         try {
             Session session = MgnlContext.getJCRSession(workSpace);
@@ -131,7 +131,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
             }
             final Node node = session.getNode(path);
             JcrNodeAdapter item = new JcrNodeAdapter(node);
-            dialogPresenter.editItem(item);
+            dialogPresenter.start(item, null);
             setPath(path);
         } catch (RepositoryException e) {
             log.error("Exception caught: {}", e.getMessage(), e);
@@ -143,7 +143,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
         updateDialogDefinition(availableComponents);
 
-        MagnoliaDialogView.Presenter dialogPresenter = dialogPresenterFactory.getDialogPresenter(dialogDefinition);
+        MagnoloaDialogPresenter.Presenter dialogPresenter = dialogPresenterFactory.getDialogPresenter(dialogDefinition);
 
         try {
             Session session = MgnlContext.getJCRSession(workSpace);
@@ -158,7 +158,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
             JcrNodeAdapter item = new JcrNewNodeAdapter(parentNode, MgnlNodeType.NT_COMPONENT);
             DefaultProperty property = new DefaultProperty(item.JCR_NAME, "0");
             item.addItemProperty(item.JCR_NAME, property);
-            dialogPresenter.editItem(item);
+            dialogPresenter.start(item, null);
             setPath(path);
         } catch (RepositoryException e) {
             log.error("Exception caught: {}", e.getMessage(), e);

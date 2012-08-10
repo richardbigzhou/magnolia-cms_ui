@@ -33,13 +33,15 @@
  */
 package info.magnolia.ui.admincentral.dialog.action;
 
-import javax.jcr.Node;
-
 import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
+import info.magnolia.ui.admincentral.event.ContentChangedEvent;
+import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.widget.dialog.MagnoliaDialogView.Presenter;
+import info.magnolia.ui.widget.dialog.MagnoloaDialogPresenter;
+
+import javax.jcr.Node;
 
 /**
  * Opens a dialog for editing a node.
@@ -49,7 +51,6 @@ import info.magnolia.ui.widget.dialog.MagnoliaDialogView.Presenter;
 public class EditDialogAction extends ActionBase<EditDialogActionDefinition> {
 
     private DialogPresenterFactory dialogPresenterFactory;
-
     private Node nodeToEdit;
 
     public EditDialogAction(EditDialogActionDefinition definition, Node nodeToEdit, DialogPresenterFactory dialogPresenterFactory) {
@@ -60,7 +61,22 @@ public class EditDialogAction extends ActionBase<EditDialogActionDefinition> {
 
     @Override
     public void execute() throws ActionExecutionException {
-        Presenter dialogPresenter = dialogPresenterFactory.createDialog(getDefinition().getDialogName());
-        dialogPresenter.editItem(new JcrNodeAdapter(nodeToEdit));
+        final MagnoloaDialogPresenter.Presenter dialogPresenter = dialogPresenterFactory.createDialog(getDefinition().getDialogName());
+
+        final EventBus eventBus = dialogPresenter.getEventBus();
+        final JcrNodeAdapter item = new JcrNodeAdapter(nodeToEdit);
+        dialogPresenter.start(item, new MagnoloaDialogPresenter.Presenter.CallBack() {
+
+            @Override
+            public void onSuccess(String actionName) {
+                eventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), item.getItemId()));
+                dialogPresenter.closeDialog();
+            }
+
+            @Override
+            public void onCancel() {
+                dialogPresenter.closeDialog();
+            }
+        });
     }
 }

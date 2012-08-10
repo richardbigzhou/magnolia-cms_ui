@@ -33,17 +33,18 @@
  */
 package info.magnolia.ui.admincentral.dialog.action;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.content.view.builder.DefinitionToImplementationMapping;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.builder.FactoryBase;
-import info.magnolia.ui.widget.dialog.MagnoliaDialogView;
+import info.magnolia.ui.widget.dialog.MagnoloaDialogPresenter;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /**
  * Creates an action based on an {@link info.magnolia.ui.model.action.ActionDefinition}.
@@ -79,7 +80,7 @@ public class DialogActionFactoryImpl extends FactoryBase<ActionDefinition, Actio
     }
 
     @Override
-    public Action createAction(ActionDefinition actionDefinition, MagnoliaDialogView.Presenter presenter) {
+    public Action createAction(ActionDefinition actionDefinition, MagnoloaDialogPresenter.Presenter presenter) {
         return create(actionDefinition, presenter);
     }
 }

@@ -71,7 +71,7 @@ public class Dialog extends AbstractComponent implements MagnoliaDialogView, Ser
 
     private List<Field> fields = new LinkedList<Field>();
 
-    private Presenter presenter;
+    private MagnoliaDialogView.Listener listener;
 
     protected ServerSideProxy proxy = new ServerSideProxy(this) {
 
@@ -81,14 +81,14 @@ public class Dialog extends AbstractComponent implements MagnoliaDialogView, Ser
                 @Override
                 public void invoke(String methodName, Object[] params) {
                     final String actionName = String.valueOf(params[0]);
-                    presenter.executeAction(actionName);
+                    listener.executeAction(actionName);
                 }
             });
             register("closeDialog", new Method() {
 
                 @Override
                 public void invoke(String methodName, Object[] params) {
-                    presenter.closeDialog();
+                    listener.closeDialog();
                 }
             });
         }
@@ -100,8 +100,8 @@ public class Dialog extends AbstractComponent implements MagnoliaDialogView, Ser
     }
 
     @Override
-    public void setPresenter(Presenter presenter) {
-        this.presenter = presenter;
+    public void setListener(MagnoliaDialogView.Listener listener) {
+        this.listener = listener;
     }
 
     @Override
@@ -220,7 +220,7 @@ public class Dialog extends AbstractComponent implements MagnoliaDialogView, Ser
     @Override
     public void showValidation(boolean isVisible) {
         // TODO Auto-generated method stub
-        
+
     }
 
 }
