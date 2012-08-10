@@ -36,6 +36,7 @@ package info.magnolia.ui.widget.dialog.gwt.client;
 import info.magnolia.ui.vaadin.widget.tabsheet.client.VMagnoliaTab;
 import info.magnolia.ui.vaadin.widget.tabsheet.client.VMagnoliaTabNavigator;
 import info.magnolia.ui.vaadin.widget.tabsheet.client.VMagnoliaTabSheetViewImpl;
+import info.magnolia.ui.vaadin.widget.tabsheet.client.event.ActiveTabChangedEvent;
 import info.magnolia.ui.widget.dialog.gwt.client.VMagnoliaDialogHeader.VDialogHeaderCallback;
 import info.magnolia.ui.widget.dialog.gwt.client.dialoglayout.DialogFieldWrapper;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.AnimationSettings;
@@ -82,6 +83,8 @@ public class VMagnoliaDialogViewImpl extends FlowPanel implements VMagnoliaDialo
 
     private DialogFieldWrapper lastShownProblematicField = null;
 
+    private EventBus eventBus;
+    
     private final VMagnoliaDialogHeader dialogHeader = new VMagnoliaDialogHeader(new VDialogHeaderCallback() {
 
         @Override
@@ -110,7 +113,7 @@ public class VMagnoliaDialogViewImpl extends FlowPanel implements VMagnoliaDialo
                     scrollTo(lastShownProblematicField);
                 } else {
                     final List<VMagnoliaTab> tabs = getTabs();
-                    setActiveTab(tabs.get((getTabs().indexOf(getActiveTab()) + 1) % getTabs().size()));
+                    eventBus.fireEvent(new ActiveTabChangedEvent(tabs.get((getTabs().indexOf(getActiveTab()) + 1) % getTabs().size())));
                     jumpToNextError();
                 }
             }
@@ -121,6 +124,9 @@ public class VMagnoliaDialogViewImpl extends FlowPanel implements VMagnoliaDialo
 
     public VMagnoliaDialogViewImpl(EventBus eventBus, Presenter presenter) {
         super();
+        this.eventBus = eventBus;
+        this.presenter = presenter;
+        
         impl = new VMagnoliaTabSheetViewImpl(eventBus, presenter);
 
         setStylePrimaryName(CLASSNAME);
@@ -133,7 +139,7 @@ public class VMagnoliaDialogViewImpl extends FlowPanel implements VMagnoliaDialo
         getElement().appendChild(footer);
 
         add(impl, content);
-        this.presenter = presenter;
+        
         setCaption("Edit page properties");
 
         addScrollHandler(new ScrollHandler() {
