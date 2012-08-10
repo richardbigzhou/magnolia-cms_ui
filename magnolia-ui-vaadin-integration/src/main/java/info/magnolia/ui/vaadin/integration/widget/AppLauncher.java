@@ -54,12 +54,11 @@ import com.vaadin.ui.ClientWidget.LoadStyle;
 /**
  * Server side of AppLauncher. 
  */
-
 @SuppressWarnings("serial")
 @ClientWidget(value = VAppLauncher.class, loadStyle = LoadStyle.EAGER)
 public class AppLauncher extends AbstractComponent implements ServerSideHandler {
 
-    private Map<String, AppSection> appSections = new HashMap<String, AppLauncher.AppSection>();
+    private Map<String, AppGroup> appGroups = new HashMap<String, AppGroup>();
     
     private ServerSideProxy proxy = new ServerSideProxy(this);
 
@@ -71,30 +70,30 @@ public class AppLauncher extends AbstractComponent implements ServerSideHandler 
         setImmediate(true);
     }
 
-    public void addAppSection(String caption, String color, boolean isPermanent) {
-        final AppSection section = new AppSection(caption, color, isPermanent); 
-        appSections.put(caption, section);
-        doAddSection(section);
+    public void addAppGroup(String name, String caption, String color, boolean isPermanent) {
+        final AppGroup group = new AppGroup(name, caption, color, isPermanent);
+        appGroups.put(name, group);
+        doAddGroup(group);
     }
 
-    private void doAddSection(final AppSection section) {
+    private void doAddGroup(final AppGroup group) {
         if (isAttached) {
-            proxy.call("addSection", new Gson().toJson(section));     
+            proxy.call("addAppGroup", new Gson().toJson(group));
         }
     }
 
-    public void addAppTile(String caption, String icon, String sectionId) {
-        final AppSection section = appSections.get(sectionId);
-        if (section != null) {
-            final AppTile tile = new AppTile(caption, icon);
-            section.addAppTile(tile);
-            doAddAppTile(tile, sectionId);   
+    public void addAppTile(String name, String caption, String icon, String groupName) {
+        final AppGroup group = appGroups.get(groupName);
+        if (group != null) {
+            final AppTile tile = new AppTile(name, caption, icon);
+            group.addAppTile(tile);
+            doAddAppTile(tile, groupName);
         }
     }
 
-    private void doAddAppTile(final AppTile tile, String sectionId) {
+    private void doAddAppTile(final AppTile tile, String groupName) {
         if (isAttached) {
-            proxy.call("addAppTile", new Gson().toJson(tile), sectionId);   
+            proxy.call("addAppTile", new Gson().toJson(tile), groupName);
         }
     }
 
@@ -112,10 +111,10 @@ public class AppLauncher extends AbstractComponent implements ServerSideHandler 
 
     @Override
     public Object[] initRequestFromClient() {
-        for (final AppSection section : appSections.values()) {
-            doAddSection(section);
-            for (final AppTile tile : section.getAppTiles()) {
-                doAddAppTile(tile, section.getCaption());
+        for (final AppGroup group : appGroups.values()) {
+            doAddGroup(group);
+            for (final AppTile tile : group.getAppTiles()) {
+                doAddAppTile(tile, group.getName());
             }
         }
         return new Object[] {};
@@ -135,10 +134,10 @@ public class AppLauncher extends AbstractComponent implements ServerSideHandler 
     
     public void clear() {
         isAttached = false;
-        for (final AppSection section : appSections.values()) {
-            section.getAppTiles().clear();
+        for (final AppGroup group : appGroups.values()) {
+            group.getAppTiles().clear();
         }
-        appSections.clear();
+        appGroups.clear();
     }
     
     @Override
@@ -154,16 +153,23 @@ public class AppLauncher extends AbstractComponent implements ServerSideHandler 
      * Represents one tile in the AppLauncher. 
      */
     public static class AppTile implements Serializable {
-        
+
+        private String name;
+
         private String caption;
-        
+
         private String icon;
         
-        public AppTile(String caption, String icon) {
+        public AppTile(String name, String caption, String icon) {
+            this.name = name;
             this.caption = caption;
             this.icon = icon;
         }
-        
+
+        public String getName() {
+            return name;
+        }
+
         public String getCaption() {
             return caption;
         }
@@ -174,19 +180,22 @@ public class AppLauncher extends AbstractComponent implements ServerSideHandler 
     }
     
     /**
-     * Represents a section of tiles in the AppLauncher. 
+     * Represents a group of tiles in the AppLauncher.
      */
-    public static class AppSection implements Serializable {
+    public static class AppGroup implements Serializable {
         
         private transient List<AppTile> appTiles = new ArrayList<AppTile>();
-        
+
+        private String name;
+
         private String caption;
         
         private String backgroundColor;
         
         private boolean isPermanent;
         
-        public AppSection(String caption, String backgroundColor, boolean isPermanent) {
+        public AppGroup(String name, String caption, String backgroundColor, boolean isPermanent) {
+            this.name = name;
             this.caption = caption;
             this.backgroundColor = backgroundColor;
             this.isPermanent = isPermanent;
@@ -195,8 +204,11 @@ public class AppLauncher extends AbstractComponent implements ServerSideHandler 
         public void addAppTile(final AppTile tile) {
             appTiles.add(tile);
         }
-        
-        
+
+        public String getName() {
+            return name;
+        }
+
         public String getCaption() {
             return caption;
         }

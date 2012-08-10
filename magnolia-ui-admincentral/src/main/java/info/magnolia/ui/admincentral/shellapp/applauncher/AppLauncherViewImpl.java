@@ -86,10 +86,10 @@ public class AppLauncherViewImpl implements AppLauncherView {
     @Override
     public void registerApp(AppLauncherLayout layout) {
         for (AppLauncherGroup group : layout.getGroups()) {
-            appLauncher.addAppSection(group.getLabel(), group.getColor(), group.isPermanent());
+            appLauncher.addAppGroup(group.getName(), group.getLabel(), group.getColor(), group.isPermanent());
             for (AppLauncherGroupEntry entry : group.getApps()) {
                 AppDescriptor descriptor = entry.getAppDescriptor();
-                appLauncher.addAppTile(descriptor.getName(), descriptor.getIcon(), descriptor.getCategoryName());
+                appLauncher.addAppTile(descriptor.getName(), descriptor.getLabel(), descriptor.getIcon(), group.getName());
             }
         }
     }

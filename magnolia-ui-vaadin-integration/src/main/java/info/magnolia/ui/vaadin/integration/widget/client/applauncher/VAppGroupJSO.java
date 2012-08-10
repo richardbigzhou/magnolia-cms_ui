@@ -36,21 +36,26 @@ package info.magnolia.ui.vaadin.integration.widget.client.applauncher;
 import com.google.gwt.core.client.JavaScriptObject;
 
 /**
- * Client side of App section description class.
+ * Client side of App group description class.
  *
+ * @see info.magnolia.ui.vaadin.integration.widget.AppLauncher.AppGroup
  */
-public final class VAppSectionJSO extends JavaScriptObject {
+public final class VAppGroupJSO extends JavaScriptObject {
     
-    protected VAppSectionJSO() {}
+    protected VAppGroupJSO() {}
     
-    public static native VAppSectionJSO parse(String json) /*-{
+    public static native VAppGroupJSO parse(String json) /*-{
        try {
          return eval('(' + json + ')');
        } catch(e) {
            return null;
        } 
     }-*/;
-    
+
+    public native final String  getName() /*-{
+        return this.name;
+    }-*/;
+
     public final native String getCaption() /*-{
         return this.caption;
     }-*/; 

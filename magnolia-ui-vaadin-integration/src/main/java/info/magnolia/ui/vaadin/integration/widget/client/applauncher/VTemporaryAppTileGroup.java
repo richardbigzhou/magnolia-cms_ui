@@ -59,8 +59,8 @@ public class VTemporaryAppTileGroup extends VAppTileGroup {
     }
 
     @Override
-    public void addAppThumbnail(VAppTile thumbnail) {
-        super.addAppThumbnail(thumbnail);
+    public void addAppTile(VAppTile tile) {
+        super.addAppTile(tile);
     }
 
     public void closeSection() {

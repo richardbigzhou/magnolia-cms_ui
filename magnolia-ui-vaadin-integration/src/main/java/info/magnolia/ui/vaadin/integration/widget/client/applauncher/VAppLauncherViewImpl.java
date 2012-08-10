@@ -36,7 +36,6 @@ package info.magnolia.ui.vaadin.integration.widget.client.applauncher;
 import info.magnolia.ui.vaadin.integration.widget.client.applauncher.event.AppActivationEvent;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -70,33 +69,31 @@ public class VAppLauncherViewImpl extends FlowPanel implements VAppLauncherView,
         this.eventBus.addHandler(AppActivationEvent.TYPE,  this);
     }
 
-    
     @Override
-    public void addAppSection(VAppSectionJSO section) {
-        if (section.isPermanent()) {
-            addPermanentAppGroup(section.getCaption(), section.getBackgroundColor());
+    public void addAppGroup(VAppGroupJSO group) {
+        if (group.isPermanent()) {
+            addPermanentAppGroup(group.getName(), group.getCaption(), group.getBackgroundColor());
         } else {
-            addTemporaryAppGroup(section.getCaption(), section.getBackgroundColor());
+            addTemporaryAppGroup(group.getName(), group.getCaption(), group.getBackgroundColor());
         }
     }
 
-    public void addTemporaryAppGroup(String caption, String color) {
+    public void addTemporaryAppGroup(String name, String caption, String color) {
         final VAppTileGroup group = new VTemporaryAppTileGroup(eventBus, color);
-        groups.put(caption, group);
+        groups.put(name, group);
         temporarySectionsBar.addGroup(caption, group);
         add(group, rootEl);
     }
     
-    public void addPermanentAppGroup(String caption, String color) {
+    public void addPermanentAppGroup(String name, String caption, String color) {
         final VPermanentAppTileGroup group = new VPermanentAppTileGroup(eventBus, caption, color);
-        groups.put(caption, group);
+        groups.put(name, group);
         add(group, rootEl);
     }
 
-
     @Override
     public void onAppActivated(AppActivationEvent event) {
-        presenter.activateApp(event.getAppId());
+        presenter.activateApp(event.getAppName());
     }
 
     @Override
@@ -106,9 +103,7 @@ public class VAppLauncherViewImpl extends FlowPanel implements VAppLauncherView,
 
     @Override
     public void setAppActive(String appName, boolean isActive) {
-        final Iterator<Entry<String, VAppTileGroup>> it = groups.entrySet().iterator();
-        while (it.hasNext()) {
-            Entry<String, VAppTileGroup> entry = it.next();
+        for (Entry<String, VAppTileGroup> entry : groups.entrySet()) {
             if (entry.getValue().hasApp(appName)) {
                 final VAppTile tile = entry.getValue().getAppTile(appName);
                 tile.setActive(isActive);
@@ -116,13 +111,12 @@ public class VAppLauncherViewImpl extends FlowPanel implements VAppLauncherView,
         }
     }
 
-
     @Override
-    public void addAppThumbnail(VAppTileJSO appTile, String categoryId) {
-        final VAppTile thumbnail = new VAppTile(eventBus, appTile);
-        final VAppTileGroup group = groups.get(categoryId);
+    public void addAppTile(VAppTileJSO tileJSO, String groupName) {
+        final VAppTile tile = new VAppTile(eventBus, tileJSO);
+        final VAppTileGroup group = groups.get(groupName);
         if (group != null) {
-            group.addAppThumbnail(thumbnail);
+            group.addAppTile(tile);
         }
     }
 }

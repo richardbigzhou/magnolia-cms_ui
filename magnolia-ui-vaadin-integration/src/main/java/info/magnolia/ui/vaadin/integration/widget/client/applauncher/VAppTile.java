@@ -57,7 +57,7 @@ import com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 
 /**
- * The thumbnail of one single app in AppLauncher.
+ * The tile of one single app in AppLauncher.
  * 
  */
 public class VAppTile extends Widget {
@@ -162,7 +162,7 @@ public class VAppTile extends Widget {
                     getElement().getStyle().setBackgroundColor(getParent().getColor());
                     getElement().getStyle().setColor("white");
                 }
-                eventBus.fireEvent(new AppActivationEvent(appTileData.getCaption()));
+                eventBus.fireEvent(new AppActivationEvent(appTileData.getName()));
             }
         });
         
@@ -183,6 +183,10 @@ public class VAppTile extends Widget {
             getElement().getStyle().setBackgroundColor(getParent().getColor());
             getElement().getStyle().setColor("white");
         }
+    }
+
+    public String getName() {
+        return appTileData.getName();
     }
 
     public String getCaption() {

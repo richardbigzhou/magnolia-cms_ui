@@ -68,9 +68,9 @@ public abstract class VAppTileGroup extends ComplexPanel {
         return color;
     }
 
-    public void addAppThumbnail(final VAppTile thumbnail) {
-        add(thumbnail, getElement());
-        appTileMap.put(thumbnail.getCaption(), thumbnail);
+    public void addAppTile(final VAppTile tile) {
+        add(tile, getElement());
+        appTileMap.put(tile.getName(), tile);
     }
 
     public boolean hasApp(String appName) {

@@ -36,25 +36,24 @@ package info.magnolia.ui.vaadin.integration.widget.client.applauncher;
 import com.google.gwt.user.client.ui.IsWidget;
 
 /**
- * Viw interface of client side AppLauncher.
+ * View interface of client side AppLauncher.
  * 
  */
 public interface VAppLauncherView extends IsWidget {
+
+    /**
+     * Presenter for the AppLauncher view.
+     */
+    public interface Presenter {
+
+        void activateApp(String appName);
+    }
 
     void setPresenter(Presenter presenter);
     
     void setAppActive(String appName, boolean isActive);
     
-    void addAppSection(VAppSectionJSO section);
+    void addAppGroup(VAppGroupJSO group);
 
-    void addAppThumbnail(VAppTileJSO appTile, String categoryId);
-    
-    /**
-     * Presenter for the AppLauncher view. 
-     */
-    interface Presenter {
-
-        void activateApp(String appId);
-
-    }
+    void addAppTile(VAppTileJSO appTile, String groupName);
 }

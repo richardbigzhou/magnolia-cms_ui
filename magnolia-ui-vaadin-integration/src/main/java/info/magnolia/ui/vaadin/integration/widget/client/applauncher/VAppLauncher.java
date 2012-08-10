@@ -55,12 +55,11 @@ public class VAppLauncher extends Composite implements Paintable, ClientSideHand
 
     private ClientSideProxy proxy = new ClientSideProxy(this) {
         {
-
-            register("addSection", new Method() {
+            register("addAppGroup", new Method() {
                 @Override
                 public void invoke(String methodName, Object[] params) {
-                    final VAppSectionJSO section = VAppSectionJSO.parse(String.valueOf(params[0]));
-                    view.addAppSection(section);
+                    final VAppGroupJSO group = VAppGroupJSO.parse(String.valueOf(params[0]));
+                    view.addAppGroup(group);
                 }
             });
 
@@ -68,8 +67,8 @@ public class VAppLauncher extends Composite implements Paintable, ClientSideHand
                 @Override
                 public void invoke(String methodName, Object[] params) {
                     final VAppTileJSO appTile = VAppTileJSO.parse(String.valueOf(params[0]));
-                    final String categoryId = String.valueOf(params[1]);
-                    view.addAppThumbnail(appTile, categoryId);
+                    final String groupName = String.valueOf(params[1]);
+                    view.addAppTile(appTile, groupName);
                 }
             });
             
@@ -111,8 +110,8 @@ public class VAppLauncher extends Composite implements Paintable, ClientSideHand
     }
 
     @Override
-    public void activateApp(String appId) {
-        History.newItem("app:" + appId, true);
+    public void activateApp(String appName) {
+        History.newItem("app:" + appName, true);
     }
 
 }

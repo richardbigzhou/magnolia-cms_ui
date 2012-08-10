@@ -34,7 +34,6 @@
 package info.magnolia.ui.vaadin.integration.widget.client.applauncher;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -95,9 +94,7 @@ public class VTemporaryAppGroupBar extends FlowPanel {
 
     protected void closeCurrentOpenExpander() {
         if (currentOpenGroup != null) {
-            final Iterator<Entry<Element, VTemporaryAppTileGroup>> it = groupMap.entrySet().iterator();
-            while (it.hasNext()) {
-                Entry<Element, VTemporaryAppTileGroup> entry = it.next();
+            for (Entry<Element, VTemporaryAppTileGroup> entry : groupMap.entrySet()) {
                 if (currentOpenGroup == entry.getValue()) {
                     entry.getKey().addClassName("closed");
                     entry.getKey().removeClassName("open");
