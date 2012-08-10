@@ -33,9 +33,8 @@
  */
 package info.magnolia.ui.admincentral.thumbnail.view;
 
+import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.context.MgnlContext;
-import info.magnolia.jcr.predicate.AbstractPredicate;
-import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.admincentral.container.AbstractJcrContainer;
 import info.magnolia.ui.model.thumbnail.ThumbnailProvider;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
@@ -48,15 +47,17 @@ import java.util.List;
 
 import javax.jcr.LoginException;
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryManager;
+import javax.jcr.query.QueryResult;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
 import com.vaadin.data.Item;
 import com.vaadin.ui.Component;
 
@@ -69,14 +70,13 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
 
     private WorkbenchDefinition workbenchDefinition;
 
-    private AbstractPredicate<Node> filterByItemType;
-
     private Listener listener;
 
     private LazyThumbnailLayout layout;
 
     private ThumbnailProvider thumbnailProvider;
 
+    private String jcrSQL2QueryStatement = "select * from ["+MgnlNodeType.NT_CONTENT+"]";
 
     public LazyThumbnailViewImpl(final WorkbenchDefinition definition, final ThumbnailProvider thumbnailProvider) {
         this.workbenchDefinition = definition;
@@ -85,13 +85,8 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
         layout.setSizeFull();
         layout.addStyleName("mgnl-workbench-thumbnail-view");
 
-        final String[] itemTypes = getItemTypes(definition);
-        if(itemTypes != null) {
-            filterByItemType = new ItemTypePredicate(itemTypes);
-        } else {
-            log.warn("Workbench definition contains no item types, node filter will accept all mgnl item types.");
-            filterByItemType = NodeUtil.MAGNOLIA_FILTER;
-        }
+        prepareJcrSQL2Query();
+
         layout.addThumbnailSelectionListener(new ThumbnailSelectionListener() {
             @Override
             public void onThumbnailSelected(final String thumbnailId) {
@@ -156,28 +151,17 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
     protected List<String> getAllIdentifiers(final String workspaceName, final String initialPath) {
         List<String> uuids = new ArrayList<String>();
         try {
-            //TODO fgrilli: needs proof but it's probably more performing if we just do a jcr sql 2 query, something like
-            // select [jcr:uuid] from [mgnl:content]
-            //instead of iterating over everything and then discard  what we don't need
-            log.debug("Recursively collecting all children at [{}:{}]...", workspaceName, initialPath);
+
+            log.debug("Collecting all children at [{}:{}]...", workspaceName, initialPath);
             long start = System.currentTimeMillis();
-            Node parent = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace()).getNode(workbenchDefinition.getPath());
-            Iterable<Node> assets = NodeUtil.collectAllChildren(parent, filterByItemType);
-            uuids = Lists.transform(NodeUtil.asList(assets), new Function<Node, String>() {
-                @Override
-                public String apply(Node node) {
-                    try {
-                        final String uuid = node.getIdentifier();
-                        //final String imageNodeName = ThumbnailProvider.getOriginalImageNodeName();
-                        //final String thumbnailNodeName = ThumbnailProvider.getThumbnaillNodeName();
-                        //ThumbnailUtility.isThumbnailToBeGenerated(uuid, workspace, imageNodeName, thumbnailNodeName);
-                        return node.getIdentifier();
-                    } catch (RepositoryException e) {
-                        return null;
-                    }
-                }
-            });
-            log.debug("Done collecting {} children in {}ms", uuids.size(), System.currentTimeMillis() - start);
+            QueryManager qm = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace()).getWorkspace().getQueryManager();
+            Query q = qm.createQuery(getJcrSQL2QueryStatement(), Query.JCR_SQL2);
+            QueryResult queryResult = q.execute();
+            NodeIterator iter = queryResult.getNodes();
+            while(iter.hasNext()) {
+               uuids.add(iter.nextNode().getIdentifier());
+            }
+            log.debug("Done collecting {} nodes in {}ms", uuids.size(), System.currentTimeMillis() - start);
 
         } catch (PathNotFoundException e) {
             throw new RuntimeException(e);
@@ -190,32 +174,21 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
     }
 
     /**
-     * Accepts only nodes of the type(s) passed as argument to the constructor.
+     * @return prepare the query statement to fetch the nodes whose thumbnail we want to display.
+     * @see #getAllIdentifiers(String, String)
      */
-    private static class ItemTypePredicate extends AbstractPredicate<Node> {
-        private String[] itemTypes;
+    protected String prepareJcrSQL2Query(){
+        final String[] itemTypes = getItemTypes(workbenchDefinition);
+        if(itemTypes != null && itemTypes.length == 1) {
+            jcrSQL2QueryStatement = "select * from ["+itemTypes[0]+"]";
+        } else {
+            log.warn("Workbench definition contains {} item types. Defaulting to {}", (itemTypes != null ? itemTypes.length : 0), MgnlNodeType.NT_CONTENT);
+        }
+        return jcrSQL2QueryStatement;
+    }
 
-        public ItemTypePredicate(final String...itemTypes) {
-            if(itemTypes == null || itemTypes.length == 0) {
-                throw new IllegalArgumentException("itemTypes cannot be null or empty.");
-            }
-            this.itemTypes = itemTypes;
-        }
-        @Override
-        public boolean evaluateTyped(Node node) {
-            try {
-                final String nodeTypeName = node.getPrimaryNodeType().getName();
-                for(int i=0; i < itemTypes.length; i++) {
-                    if(nodeTypeName.equals(itemTypes[i])) {
-                        log.debug("found match for node [{}] with node type [{}]", node.getName(), itemTypes[i]);
-                        return true;
-                    }
-                }
-            } catch (RepositoryException e) {
-                log.error("Unable to read nodetype for node {}", node);
-            }
-            return false;
-        }
+    public String getJcrSQL2QueryStatement() {
+        return jcrSQL2QueryStatement;
     }
 
     private String[] getItemTypes(final WorkbenchDefinition definition) {
