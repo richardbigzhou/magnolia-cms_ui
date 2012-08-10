@@ -142,23 +142,24 @@ public abstract class JcrAbstractNodeAdapter extends JcrAbstractAdapter implemen
     }
 
     /**
-     * @return: the property if it already exist on the JCR Item a new property if this property
+     * @return the property if it already exist on the JCR Item a new property if this property
      * refer to the JCR Node name null if the property doesn't exist yet.
      */
     @Override
     public Property getItemProperty(Object id) {
         Object value;
         try {
-            if (!this.getNodeFromRepository().hasProperty((String) id)) {
+            final Node jcrNode = getNodeFromRepository();
+            if (!jcrNode.hasProperty((String) id)) {
                 if (JCR_NAME.equals(id)) {
-                    value = getNodeFromRepository().getName();
+                    value = jcrNode.getName();
                 }
                 else {
                     return null;
                 }
             }
             else {
-                value = PropertyUtil.getPropertyValueObject(getNodeFromRepository(), (String) id);
+                value = PropertyUtil.getPropertyValueObject(jcrNode, (String) id);
             }
         }
         catch (RepositoryException e) {
