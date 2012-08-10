@@ -192,4 +192,8 @@ public class VDialogTabLayout extends FlowPanel implements Container, HelpAccess
     public List<DialogFieldWrapper> getProblematicFields() {
         return Collections.unmodifiableList(problematicSections);
     }
+
+    public List<DialogFieldWrapper> getFields() {
+        return new ArrayList<DialogFieldWrapper>(sections.values());
+    }
 }

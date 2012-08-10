@@ -35,17 +35,23 @@ package info.magnolia.ui.widget.dialog.gwt.client.dialoglayout;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.dom.client.HasFocusHandlers;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.impl.FocusImpl;
+import com.vaadin.terminal.gwt.client.VConsole;
 
 /**
  * Wrapper widget that provides help and error indication. 
  */
-public class DialogFieldWrapper extends FlowPanel {
+public class DialogFieldWrapper extends FlowPanel implements HasFocusHandlers {
     
     private Element label = DOM.createDiv();
 
@@ -133,11 +139,25 @@ public class DialogFieldWrapper extends FlowPanel {
     }
 
     public void setField(Widget child) {
+        if (this.field != null) {
+            remove(field);
+        }
         this.field = child;
-        child.removeFromParent();
-        getChildren().add(child);
-        fieldWrapper.insertBefore(child.getElement(), helpButton.getElement());
-        adopt(child);   
+        if (child != null) {
+            DOM.sinkEvents(child.getElement(), Event.ONFOCUS | Event.ONBLUR);
+            child.removeFromParent();
+            getChildren().add(child);
+            fieldWrapper.insertBefore(child.getElement(), helpButton.getElement());
+            adopt(child);   
+        }   
+    }
+    
+    @Override
+    public void onBrowserEvent(Event event) {
+        super.onBrowserEvent(event);
+        if (event.getTypeInt() == Event.ONBLUR || event.getTypeInt() == Event.ONFOCUS) {
+            VConsole.log("Field focused!");
+        }
     }
     
     public void clearErrors() {
@@ -171,6 +191,11 @@ public class DialogFieldWrapper extends FlowPanel {
         if (field != null) {
             FocusImpl.getFocusImplForWidget().focus(field.getElement());
         }
+    }
+
+    @Override
+    public HandlerRegistration addFocusHandler(FocusHandler handler) {
+        return field.addDomHandler(handler, FocusEvent.getType());
     }
     
 }
