@@ -63,50 +63,6 @@
       <artifactId>magnolia-module-groovy</artifactId>
       <version>1.2.4-SNAPSHOT</version>
     </dependency>
-      <!-- TODO dlipp - this is temp stuff - do not commit -->
-      <dependency>
-          <groupId>info.magnolia</groupId>
-          <artifactId>magnolia-module-dms</artifactId>
-          <version>1.6.2</version>
-      </dependency>
-      <dependency>
-          <groupId>info.magnolia</groupId>
-          <artifactId>magnolia-module-fckeditor</artifactId>
-          <version>5.0-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-          <groupId>info.magnolia</groupId>
-          <artifactId>magnolia-module-categorization</artifactId>
-          <version>1.2.1</version>
-      </dependency>
-      <dependency>
-          <groupId>info.magnolia</groupId>
-          <artifactId>magnolia-module-standard-templating-kit</artifactId>
-          <version>2.0.3</version>
-      </dependency>
-      <dependency>
-          <groupId>info.magnolia</groupId>
-          <artifactId>magnolia-demo-project</artifactId>
-          <version>2.0.3</version>
-      </dependency>
-      <dependency>
-          <groupId>info.magnolia</groupId>
-          <artifactId>magnolia-theme-pop</artifactId>
-          <version>2.0.3</version>
-      </dependency>
-      <dependency>
-          <groupId>info.magnolia</groupId>
-          <artifactId>magnolia-module-commenting</artifactId>
-          <version>1.2.2</version>
-      </dependency>
-      <dependency>
-          <groupId>info.magnolia</groupId>
-          <artifactId>magnolia-module-workflow</artifactId>
-          <version>5.0-SNAPSHOT</version>
-          <classifier>bundle</classifier>
-          <type>tar.gz</type>
-      </dependency>
-
   </dependencies>
 
   <build>
