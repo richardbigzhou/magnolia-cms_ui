@@ -152,10 +152,10 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
         List<String> uuids = new ArrayList<String>();
         try {
 
-            log.debug("Collecting all children at [{}:{}]...", workspaceName, initialPath);
+            log.debug("Collecting all nodes at [{}:{}]...", workspaceName, initialPath);
             long start = System.currentTimeMillis();
             QueryManager qm = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace()).getWorkspace().getQueryManager();
-            Query q = qm.createQuery(getJcrSQL2QueryStatement(), Query.JCR_SQL2);
+            Query q = qm.createQuery(jcrSQL2QueryStatement, Query.JCR_SQL2);
             QueryResult queryResult = q.execute();
             NodeIterator iter = queryResult.getNodes();
             while(iter.hasNext()) {
@@ -173,21 +173,13 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
         return uuids;
     }
 
-    /**
-     * @return prepare the query statement to fetch the nodes whose thumbnail we want to display.
-     * @see #getAllIdentifiers(String, String)
-     */
-    protected String prepareJcrSQL2Query(){
+    private String prepareJcrSQL2Query(){
         final String[] itemTypes = getItemTypes(workbenchDefinition);
         if(itemTypes != null && itemTypes.length == 1) {
             jcrSQL2QueryStatement = "select * from ["+itemTypes[0]+"]";
         } else {
             log.warn("Workbench definition contains {} item types. Defaulting to {}", (itemTypes != null ? itemTypes.length : 0), MgnlNodeType.NT_CONTENT);
         }
-        return jcrSQL2QueryStatement;
-    }
-
-    public String getJcrSQL2QueryStatement() {
         return jcrSQL2QueryStatement;
     }
 
