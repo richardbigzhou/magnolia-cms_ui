@@ -41,12 +41,10 @@ import com.google.gwt.event.dom.client.HasFocusHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.impl.FocusImpl;
-import com.vaadin.terminal.gwt.client.VConsole;
 
 /**
  * Wrapper widget that provides help and error indication. 
@@ -107,7 +105,7 @@ public class DialogFieldWrapper extends FlowPanel implements HasFocusHandlers {
         helpButton.addStyleName("action-dialog-help");
         errorAction.addStyleName("action-validation");
         
-        root.appendChild(label);
+        fieldWrapper.appendChild(label);
         root.appendChild(fieldWrapper);
         add(helpButton, fieldWrapper);
         add(errorAction, fieldWrapper);
@@ -118,7 +116,7 @@ public class DialogFieldWrapper extends FlowPanel implements HasFocusHandlers {
         fieldWrapper.addClassName("validation-hilight");
         errorSection = VInlineErrorMessage.createErrorMessage();
         errorSection.setMessage(errorDescription);
-        add(errorSection);
+        add(errorSection, root);
     }
     
     public void setCaption(String caption) {
@@ -144,20 +142,11 @@ public class DialogFieldWrapper extends FlowPanel implements HasFocusHandlers {
         }
         this.field = child;
         if (child != null) {
-            DOM.sinkEvents(child.getElement(), Event.ONFOCUS | Event.ONBLUR);
             child.removeFromParent();
             getChildren().add(child);
             fieldWrapper.insertBefore(child.getElement(), helpButton.getElement());
             adopt(child);   
         }   
-    }
-    
-    @Override
-    public void onBrowserEvent(Event event) {
-        super.onBrowserEvent(event);
-        if (event.getTypeInt() == Event.ONBLUR || event.getTypeInt() == Event.ONFOCUS) {
-            VConsole.log("Field focused!");
-        }
     }
     
     public void clearErrors() {

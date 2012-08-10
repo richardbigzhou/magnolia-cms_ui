@@ -69,12 +69,12 @@ public abstract class VInlineErrorMessage extends FlowPanel {
     protected abstract void applyStyles();
 
     private static Widget createErrorDecoration() {
-        final DrawingArea canvas = new DrawingArea(30, 20);
+        final DrawingArea canvas = new DrawingArea(20, 10);
         canvas.clear();
-        final Path path = new Path(0, 20);
+        final Path path = new Path(0, 10);
         path.setStrokeColor(null);
-        path.lineTo(15, 0);
-        path.lineTo(30, 20);
+        path.lineTo(10, 0);
+        path.lineTo(20, 10);
         path.close();
         canvas.add(path);
         canvas.getElement().getStyle().setProperty("width", "");
