@@ -151,7 +151,7 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
     protected List<String> getAllIdentifiers(final String workspaceName, final String initialPath) {
         List<String> uuids = new ArrayList<String>();
         try {
-            log.debug("Executing query [statement {}] on workspace {}", jcrSQL2QueryStatement, workspaceName);
+            log.debug("Executing query statement [{}] on workspace [{}]", jcrSQL2QueryStatement, workspaceName);
 
             long start = System.currentTimeMillis();
             QueryManager qm = MgnlContext.getJCRSession(workspaceName).getWorkspace().getQueryManager();
