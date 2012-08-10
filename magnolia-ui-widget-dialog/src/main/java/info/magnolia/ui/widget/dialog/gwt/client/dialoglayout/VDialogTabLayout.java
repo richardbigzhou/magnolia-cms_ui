@@ -120,6 +120,7 @@ public class VDialogTabLayout extends FlowPanel implements Container, HelpAccess
         if (fs != null) {
             boolean errorsOccured = uidl.hasAttribute("error");
             if (errorsOccured && isValidationVisible) {
+                fs.resetErrorMessage();
                 for (final Iterator<?> it = uidl.getErrors().getChildIterator(); it.hasNext();) {
                     final Object child = it.next();
                     if (child instanceof String) {
@@ -128,7 +129,6 @@ public class VDialogTabLayout extends FlowPanel implements Container, HelpAccess
                         if (!problematicSections.contains(fs)) {
                             problematicSections.add(fs);
                         }
-                        break;
                     }
                 }
             } else {

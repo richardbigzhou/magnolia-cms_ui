@@ -114,8 +114,10 @@ public class DialogFieldWrapper extends FlowPanel implements HasFocusHandlers {
     public void showError(final String errorDescription) {
         errorAction.setVisible(true);
         fieldWrapper.addClassName("validation-hilight");
-        errorSection = VInlineMessage.createErrorMessage();
-        errorSection.setMessage(errorDescription);
+        if (errorSection == null) {
+            errorSection = VInlineMessage.createErrorMessage();   
+        }
+        errorSection.addMessage(errorDescription);
         add(errorSection, root);
     }
     
@@ -185,6 +187,12 @@ public class DialogFieldWrapper extends FlowPanel implements HasFocusHandlers {
     @Override
     public HandlerRegistration addFocusHandler(FocusHandler handler) {
         return field.addDomHandler(handler, FocusEvent.getType());
+    }
+
+    public void resetErrorMessage() {
+        if (errorSection != null) {
+            errorSection.setMessage("");
+        }
     }
     
 }

@@ -110,5 +110,14 @@ public abstract class VInlineMessage extends FlowPanel {
         };
         return result;
     }
-    
+
+    public void addMessage(String newMessage) {
+        final String message = messageEl.getInnerHTML();
+        final StringBuilder sb = new StringBuilder(message);
+        if (!message.isEmpty()) {
+            sb.append("<br/>");
+        }
+        sb.append(newMessage);
+        messageEl.setInnerHTML(sb.toString());
+    }
 }
