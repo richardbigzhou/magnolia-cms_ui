@@ -175,7 +175,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             appContext = new AppContextImpl(descriptor);
 
             if (location == null) {
-                location = appContext.getDefaultLocation();
+                location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, name, "");
             }
 
             appContext.start(location);
@@ -187,7 +187,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     }
 
     private void doFocus(AppContextImpl appContext) {
-        appContext.focus();
+        locationController.goTo(appContext.getCurrentLocation());
         appHistory.addFirst(appContext);
         sendEvent(AppLifecycleEventType.FOCUSED, appContext.getAppDescriptor());
     }
@@ -233,7 +233,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             nextAppContext = doStartIfNotAlreadyRunning(nextApp.getName(), newLocation);
         }
 
-        nextAppContext.display(viewPort);
+        viewPort.setView(nextAppContext.getView());
         currentApp = nextAppContext;
     }
 
@@ -285,6 +285,10 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             return appDescriptor;
         }
 
+        public View getView() {
+            return appFrameView;
+        }
+
         /**
          * Called when the app is launched from the app launcher OR a location change event triggers
          * it to start.
@@ -293,13 +297,11 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
             this.appComponentProvider = createAppComponentProvider(appDescriptor.getName(), this);
 
-            DefaultLocation appLocation = (DefaultLocation) location;
-
             app = appComponentProvider.newInstance(appDescriptor.getAppClass());
 
             appFrameView = new AppFrameView();
 
-            SubApp main = app.start(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appDescriptor.getName(), appLocation.getToken()));
+            SubApp main = app.start(location);
 
             currentLocation = location;
 
@@ -308,23 +310,10 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         }
 
         /**
-         * Called when the app is launched from the app launcher OR if another app is closed and
-         * this is to show itself.
-         */
-        public void focus() {
-            locationController.goTo(currentLocation);
-        }
-
-        /**
          * Called when a location change occurs and the app is already running.
          */
         public void onLocationUpdate(Location location) {
-            app.locationChanged(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appDescriptor.getName(), ((DefaultLocation) location)
-                .getToken()));
-        }
-
-        public void display(ViewPort viewPort) {
-            viewPort.setView(appFrameView);
+            app.locationChanged(location);
         }
 
         public String mayStop() {
@@ -335,8 +324,8 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             app.stop();
         }
 
-        public Location getDefaultLocation() {
-            return new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appDescriptor.getName(), "");
+        public Location getCurrentLocation() {
+            return currentLocation;
         }
 
         @Override

@@ -34,6 +34,7 @@
 package info.magnolia.ui.admincentral;
 
 import info.magnolia.context.MgnlContext;
+import info.magnolia.ui.admincentral.app.simple.ShellAppController;
 import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventHandler;
@@ -57,8 +58,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Provider;
 import javax.inject.Singleton;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vaadin.rpc.client.Method;
@@ -78,15 +81,17 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
     private final EventBus adminCentralEventBus;
 
     private final AppController appController;
+    private final Provider<ShellAppController> shellAppControllerProvider;
 
     private final MessagesManager messagesManager;
     
     @Inject
-    public MagnoliaShell(@Named("adminCentral") EventBus adminCentralEventBus, AppController appController, MessagesManager messagesManager) {
+    public MagnoliaShell(@Named("adminCentral") EventBus adminCentralEventBus, Provider<ShellAppController> shellAppControllerProvider, AppController appController, MessagesManager messagesManager) {
         super();
         this.messagesManager = messagesManager;
         this.adminCentralEventBus = adminCentralEventBus;
         this.appController = appController;
+        this.shellAppControllerProvider = shellAppControllerProvider;
         this.adminCentralEventBus.addHandler(AppLifecycleEvent.class, new AppLifecycleEventHandler.Adapter() {
 
             @Override
@@ -150,12 +155,13 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
     public String getFragment() {
         final ShellViewport activeViewport = getActiveViewport();
         String viewPortName = "";
-        if (activeViewport == getShellAppViewport())
+        if (activeViewport == getShellAppViewport()) {
             viewPortName = "shell";
-        else if (activeViewport == getAppViewport())
+        } else if (activeViewport == getAppViewport()) {
             viewPortName = "app";
-        else if (activeViewport == getDialogViewport())
+        } else if (activeViewport == getDialogViewport()) {
             viewPortName = "dialog";
+        }
         return viewPortName + ":" + (activeViewport == null ? "" : activeViewport.getCurrentShellFragment());
     }
 
@@ -231,5 +237,31 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
     @Override
     public void showFullscreen(View view) {
         showFullscreen(view.asVaadinComponent());
+    }
+
+    @Override
+    public void navigateToApp(String prefix, String token) {
+        if (StringUtils.isEmpty(token)) {
+            ShellViewport viewport = getAppViewport();
+            viewport.setCurrentShellFragment(prefix + ":" + token);
+            setActiveViewport(viewport);
+            appController.startIfNotAlreadyRunningThenFocus(prefix);
+            requestRepaint();
+        } else {
+            super.navigateToApp(prefix, token);
+        }
+    }
+
+    @Override
+    public void navigateToShellApp(String prefix, String token) {
+        if (StringUtils.isEmpty(token)) {
+            ShellViewport viewport = getShellAppViewport();
+            viewport.setCurrentShellFragment(prefix + ":" + token);
+            setActiveViewport(viewport);
+            shellAppControllerProvider.get().focusShellApp(prefix);
+            requestRepaint();
+        } else {
+            super.navigateToShellApp(prefix, token);
+        }
     }
 }
