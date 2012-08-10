@@ -356,6 +356,11 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         }
 
         @Override
+        public void sendUserMessage(String user, Message message) {
+            messagesManager.sendMessage(user, message);
+        }
+
+        @Override
         public void sendLocalMessage(Message message) {
             messagesManager.sendMessage(MgnlContext.getUser().getName(), message);
         }
@@ -367,6 +372,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
         @Override
         public void showConfirmationMessage(String message) {
+            log.info("If confirmation message was already implemented you'd get a {} now...", message);
         }
 
         @Override

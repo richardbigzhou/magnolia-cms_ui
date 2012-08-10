@@ -46,7 +46,9 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.BaseTheme;
 
 
 /**
@@ -57,6 +59,12 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
     private final HorizontalLayout root = new HorizontalLayout();
 
     private final VerticalLayout workbenchContainer = new VerticalLayout();
+
+    private final Button treeButton;
+
+    private final Button listButton;
+
+    private final Button thumbsButton;
 
     private final Map<ViewType, ContentView> contentViews = new EnumMap<ViewType, ContentView>(ViewType.class);
 
@@ -82,32 +90,63 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
         toolbar.setSizeUndefined();
         toolbar.setStyleName("mgnl-workbench-toolbar");
         toolbar.setSpacing(true);
-        toolbar.addComponent(new Button("Tree", new Button.ClickListener() {
 
-            @Override
-            public void buttonClick(ClickEvent event) {
-                setGridType(ViewType.TREE);
-            }
-        }));
-        toolbar.addComponent(new Button("List", new Button.ClickListener() {
+        treeButton = buildButton(ViewType.TREE, "tree", true);
+        listButton = buildButton(ViewType.LIST, "list", false);
+        thumbsButton = buildButton(ViewType.THUMBNAIL, "thumbs", false);
 
-            @Override
-            public void buttonClick(ClickEvent event) {
-                setGridType(ViewType.LIST);
-            }
-        }));
-
-        toolbar.addComponent(new Button("Thumbnail", new Button.ClickListener() {
-
-            @Override
-            public void buttonClick(ClickEvent event) {
-                setGridType(ViewType.THUMBNAIL);
-            }
-        }));
+        toolbar.addComponent(treeButton);
+        toolbar.addComponent(buildSeparator());
+        toolbar.addComponent(listButton);
+        toolbar.addComponent(buildSeparator());
+        toolbar.addComponent(thumbsButton);
 
         workbenchContainer.setSizeFull();
         workbenchContainer.setStyleName("mgnl-app-view");
         workbenchContainer.addComponent(toolbar);
+    }
+
+    private Button buildButton(final ViewType viewType, final String icon, final boolean active) {
+        Button button = new Button(null, new Button.ClickListener() {
+
+            @Override
+            public void buttonClick(ClickEvent event) {
+                setGridType(viewType);
+
+                treeButton.removeStyleName("active");
+                listButton.removeStyleName("active");
+                thumbsButton.removeStyleName("active");
+                switch (viewType) {
+                    case TREE :
+                        treeButton.addStyleName("active");
+                        break;
+                    case LIST :
+                        listButton.addStyleName("active");
+                        break;
+                    case THUMBNAIL :
+                        thumbsButton.addStyleName("active");
+                        break;
+                    default :
+                        break;
+                }
+            }
+        });
+        button.setWidth("24px");
+        button.setHeight("24px");
+        button.setStyleName(BaseTheme.BUTTON_LINK);
+        button.addStyleName("icon-view");
+        button.addStyleName("icon-view-" + icon);
+        if (active) {
+            button.addStyleName("active");
+        }
+        return button;
+    }
+
+    private Label buildSeparator() {
+        Label separator = new Label("<div class=\"btn-view-separator\"></div>", Label.CONTENT_XHTML);
+        separator.setWidth("1px");
+        separator.setHeight("24px");
+        return separator;
     }
 
     public ContentWorkbenchView.Listener getListener() {

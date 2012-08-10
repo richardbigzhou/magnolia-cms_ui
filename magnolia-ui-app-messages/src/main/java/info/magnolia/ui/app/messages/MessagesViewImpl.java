@@ -75,11 +75,17 @@ public class MessagesViewImpl implements MessagesView {
 
         final OptionGroup scopes = new OptionGroup("Scope");
         scopes.setNullSelectionAllowed(false);
+        scopes.addItem("User");
         scopes.addItem("Local");
         scopes.addItem("Global");
         scopes.setValue("Local");
         middle.addComponent(scopes);
+
+        final TextField userField = new TextField("User");
+        middle.addComponent(userField);
+
         layout.addComponent(middle);
+
 
         layout.addComponent(new Button("Send system message", new Button.ClickListener() {
 
@@ -91,10 +97,13 @@ public class MessagesViewImpl implements MessagesView {
                 MessageType type = MessageType.valueOf(((String) types.getValue()).toUpperCase());
                 String scope = (String) scopes.getValue();
 
-                if (scope.equals("Local")) {
+                if ("Local".equals(scope)) {
                     listener.handleLocalMessage(type, subject, message);
-                } else {
+                } else if ("Global".equals(scope)){
                     listener.handleGlobalMessage(type, subject, message);
+                } else {
+                    final String userName = (String) userField.getValue();
+                    listener.handleUserMessage(userName, type, subject, message);
                 }
             }
         }));

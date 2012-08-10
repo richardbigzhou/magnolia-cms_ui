@@ -61,3 +61,28 @@
 .icon-security:before {
 	content: "\2d";
 }
+
+/* CONTENT VIEW ICONS */
+@font-face {
+	font-family: 'ContentViewIcons';
+	src: url('fonts/ContentViewIcons.eot');
+	src: url('fonts/ContentViewIcons.eot?#iefix') format('embedded-opentype'),
+		url('fonts/ContentViewIcons.svg#ContentViewIcons') format('svg'),
+		url('fonts/ContentViewIcons.woff') format('woff'),
+		url('fonts/ContentViewIcons.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+.icon-view-tree .v-button-wrap:before {
+	content: "\21";
+}
+.icon-view-list .v-button-wrap:before {
+	content: "\23";
+}
+.icon-view-thumbs .v-button-wrap:before {
+	content: "\22";
+}
+.icon-view-mask .v-button-wrap:before {
+	content: "\24";
+}

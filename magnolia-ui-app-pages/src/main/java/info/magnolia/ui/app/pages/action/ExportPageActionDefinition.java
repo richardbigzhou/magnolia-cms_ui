@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,34 +31,21 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app;
+package info.magnolia.ui.app.pages.action;
 
-import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.message.Message;
-
+import info.magnolia.ui.model.action.ActionDefinition;
 
 /**
- * Provides functionality used by an app to interact with the Magnolia shell.
+ * ExportPageActionDefinition.
  */
-public interface AppContext {
+public class ExportPageActionDefinition implements ActionDefinition {
+    private String exportType;
 
-    void openSubApp(SubApp subApp);
-    
-    void openSubAppFullScreen(SubApp subApp);
+    public String getExportType() {
+        return exportType;
+    }
 
-    void exitFullScreenMode();
-    
-    AppDescriptor getAppDescriptor();
-
-    void setAppLocation(Location location);
-
-    void sendUserMessage(String user, Message message);
-
-    void sendLocalMessage(Message message);
-
-    void broadcastMessage(Message message);
-
-    void showConfirmationMessage(String message);
-
-    String getName();
+    public void setExportType(String exportType) {
+        this.exportType = exportType;
+    }
 }
