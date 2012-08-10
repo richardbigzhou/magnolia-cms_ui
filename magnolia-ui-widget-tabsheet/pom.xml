@@ -31,7 +31,7 @@
 						</manifest>
 						<manifestEntries>
 							<Vaadin-Package-Version>1</Vaadin-Package-Version>
-							<Vaadin-Widgetsets>info.magnolia.ui.widget.tabsheet.gwt.TabsheetWidgetSet</Vaadin-Widgetsets>
+							<Vaadin-Widgetsets>info.magnolia.ui.vaadin.widget.tabsheet.TabsheetWidgetSet</Vaadin-Widgetsets>
 						</manifestEntries>
 					</archive>
 				</configuration>
@@ -41,7 +41,7 @@
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
 				<configuration>
-					<module>info.magnolia.ui.widget.tabsheet.gwt.TabsheetWidgetSet</module>
+					<module>info.magnolia.ui.vaadin.widget.tabsheet.TabsheetWidgetSet</module>
 					<style>PRETTY</style>
 					<draftCompile>true</draftCompile>
 					<compileReport>true</compileReport>
