@@ -34,31 +34,16 @@
 package info.magnolia.ui.app.pages.action;
 
 import com.google.inject.Inject;
-import info.magnolia.cms.beans.runtime.FileProperties;
-import info.magnolia.cms.core.MgnlNodeType;
-import info.magnolia.cms.security.User;
-import info.magnolia.context.MgnlContext;
-import info.magnolia.module.pageexport.renderer.Renderer;
-import info.magnolia.module.pageexport.renderer.definition.RendererDefinition;
-import info.magnolia.module.pageexport.renderer.registry.RendererRegistry;
-import info.magnolia.ui.admincentral.image.ImageSize;
 import info.magnolia.ui.app.pages.PagesApp;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.model.thumbnail.AbstractThumbnailProvider;
-
-import org.apache.jackrabbit.value.BinaryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.GregorianCalendar;
-import java.util.TimeZone;
 
 
 /**
@@ -66,18 +51,11 @@ import java.util.TimeZone;
  */
 public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
 
-    private static final String IMAGE_NODE_NAME = AbstractThumbnailProvider.ORIGINAL_IMAGE_NODE_NAME;
-    private static final String IMAGE_TYPE = "png";
-
     private static final Logger log = LoggerFactory.getLogger(PreviewPageAction.class);
 
     private final Node nodeToPreview;
 
     private LocationController locationController;
-
-    private RendererRegistry registry;
-
-    //private PngRenderer renderer;
 
     /**
      * Instantiates a new preview page action.
@@ -86,9 +64,8 @@ public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
      * @param nodeToPreview the node to preview
      */
     @Inject
-    public PreviewPageAction(PreviewPageActionDefinition definition, RendererRegistry registry, LocationController locationController, Node nodeToPreview) {
+    public PreviewPageAction(PreviewPageActionDefinition definition, LocationController locationController, Node nodeToPreview) {
         super(definition);
-        this.registry = registry;
         this.locationController = locationController;
         this.nodeToPreview = nodeToPreview;
     }
@@ -101,50 +78,5 @@ public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
         } catch (RepositoryException e) {
             log.error(e.getMessage());
         }
-
-        User user = MgnlContext.getUser();
-
-        try {
-            RendererDefinition definition = registry.getDefinition(IMAGE_TYPE);
-            Renderer renderer = registry.getRenderer(definition);
-
-            InputStream is = renderer.render(nodeToPreview.getPath(), user);
-            saveImage(nodeToPreview, is, definition.getContentType(), definition.getName());
-
-        } catch (RepositoryException e) {
-            log.error(e.getMessage(), e);
-        } catch (IOException e) {
-            log.error(e.getMessage(), e);
-        } catch (Exception e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-    }
-
-    private void saveImage(Node node, InputStream inputStream, String contentType, String extension) throws RepositoryException, IOException {
-
-        String fileName = node.getName();
-        Node child;
-        if (node.hasNode(IMAGE_NODE_NAME)) {
-            child = node.getNode(IMAGE_NODE_NAME);
-        } else {
-            child = node.addNode(IMAGE_NODE_NAME, MgnlNodeType.NT_RESOURCE);
-        }
-
-        BinaryImpl binaryImpl = new BinaryImpl(inputStream);
-
-        child.setProperty(MgnlNodeType.JCR_DATA, binaryImpl);
-
-        child.setProperty(FileProperties.PROPERTY_FILENAME, fileName);
-        child.setProperty(FileProperties.PROPERTY_CONTENTTYPE, contentType);
-        child.setProperty(FileProperties.PROPERTY_EXTENSION, extension);
-
-        child.setProperty(FileProperties.PROPERTY_LASTMODIFIED, new GregorianCalendar(TimeZone.getDefault()));
-
-        child.setProperty(FileProperties.PROPERTY_SIZE, binaryImpl.getSize());
-
-        ImageSize imageSize = ImageSize.valueOf(binaryImpl.getStream());
-        child.setProperty(FileProperties.PROPERTY_WIDTH, imageSize!=null ? imageSize.getWidth():150);
-        child.setProperty(FileProperties.PROPERTY_HEIGHT, imageSize!=null ? imageSize.getHeight():150);
-        child.getSession().save();
     }
 }
