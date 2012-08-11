@@ -8,11 +8,4 @@
 .icon-view:hover, .icon-view.active {color:#fff;}
 .btn-view-separator {height:24px; border-left:1px solid #bbb;}
 
-.mgnl-workbench-thumbnail-view {
-    line-height: 24px;
-    vertical-align: bottom;
-    background-color: #FFF;
-    height: 435px;
-    padding: 20px;
-    overflow-y: auto;
-}
+.mgnl-workbench-thumbnail-view { background-color: #FFF;}

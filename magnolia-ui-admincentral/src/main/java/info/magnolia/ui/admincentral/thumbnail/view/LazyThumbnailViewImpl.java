@@ -143,7 +143,7 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
     }
 
     /**
-     * @return a List of JCR identifiers for the all the nodes recursively found under <code>initialPath</code>. This method is called in {@link LazyThumbnailViewImpl#refresh()}.
+     * @return a List of JCR identifiers for all the nodes recursively found under <code>initialPath</code>. This method is called in {@link LazyThumbnailViewImpl#refresh()}.
      * You can override it, if you need a different strategy than the default one to fetch the identifiers of the nodes for which thumbnails need to be displayed.
      * @see ThumbnailContainer
      * @see LazyThumbnailLayout#refresh()
@@ -151,11 +151,12 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
     protected List<String> getAllIdentifiers(final String workspaceName, final String initialPath) {
         List<String> uuids = new ArrayList<String>();
         try {
-            log.debug("Executing query statement [{}] on workspace [{}]", jcrSQL2QueryStatement, workspaceName);
-
-            long start = System.currentTimeMillis();
             QueryManager qm = MgnlContext.getJCRSession(workspaceName).getWorkspace().getQueryManager();
             Query q = qm.createQuery(jcrSQL2QueryStatement, Query.JCR_SQL2);
+
+            log.debug("Executing query statement [{}] on workspace [{}]", jcrSQL2QueryStatement, workspaceName);
+            long start = System.currentTimeMillis();
+
             QueryResult queryResult = q.execute();
             NodeIterator iter = queryResult.getNodes();
 
