@@ -68,7 +68,7 @@ import com.vaadin.data.Property.ValueChangeEvent;
  *      jcrNodeAdapter.addItemProperty(...)
  *
  */
-public class JcrNodeAdapter extends JcrAbstractNodeAdapter  {
+public class JcrNodeAdapter extends AbstractJcrNodeAdapter {
     // Init
     private static final Logger log = LoggerFactory.getLogger(JcrNodeAdapter.class);
 

@@ -49,7 +49,7 @@ import com.vaadin.data.Property;
  * Base implementation of an {@link com.vaadin.data.Item} wrapping/representing a {@link javax.jcr.Property}.
  */
 
-public class JcrPropertyAdapter extends JcrAbstractAdapter {
+public class JcrPropertyAdapter extends AbstractJcrAdapter {
     //Init
     private static final Logger log = LoggerFactory.getLogger(JcrPropertyAdapter.class);
     private String jcrPropertyName;

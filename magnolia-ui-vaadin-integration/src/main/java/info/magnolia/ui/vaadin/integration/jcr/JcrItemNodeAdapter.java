@@ -68,7 +68,7 @@ public interface JcrItemNodeAdapter extends Item{
     public Node getNode();
 
     /**
-     * @param nodeIdentifier: JcrAbstractAdapter.getNodeIdentifier().
+     * @param nodeIdentifier: AbstractJcrAdapter.getNodeIdentifier().
      * @return child JcrItemNodeAdapter if part of the childs, or
      *         Null if not defined.
      */

@@ -49,7 +49,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-public class JcrAbstractAdapterTest {
+public class AbstractJcrAdapterTest {
 
     private String worksapceName = "workspace";
     private MockSession session;
@@ -78,7 +78,7 @@ public class JcrAbstractAdapterTest {
         Node testNode = session.getRootNode().addNode(nodeName);
 
         // WHEN
-        AbstractAdapterTest adapter = new AbstractAdapterTest(testNode);
+        DummyJcrAdapter adapter = new DummyJcrAdapter(testNode);
 
         // THEN
         assertEquals(true, adapter.isNode());
@@ -99,7 +99,7 @@ public class JcrAbstractAdapterTest {
         Property testProperty = testNode.setProperty(propertyName, propertyValue);
 
         // WHEN
-        AbstractAdapterTest adapter = new AbstractAdapterTest(testProperty);
+        DummyJcrAdapter adapter = new DummyJcrAdapter(testProperty);
 
         // THEN
         assertEquals(false, adapter.isNode());
@@ -117,7 +117,7 @@ public class JcrAbstractAdapterTest {
         Node testNode = session.getRootNode().addNode(nodeName);
 
         // WHEN
-        AbstractAdapterTest adapter = new AbstractAdapterTest(testNode);
+        DummyJcrAdapter adapter = new DummyJcrAdapter(testNode);
 
         // THEN
         assertEquals(true, adapter.getJcrItem() !=null);
@@ -130,7 +130,7 @@ public class JcrAbstractAdapterTest {
         Node testNode = session.getRootNode().addNode(nodeName);
         testNode.remove();
         // WHEN
-        AbstractAdapterTest adapter = new AbstractAdapterTest(testNode);
+        DummyJcrAdapter adapter = new DummyJcrAdapter(testNode);
 
         // THEN
         assertEquals(true, adapter.getJcrItem() == null);
@@ -146,7 +146,7 @@ public class JcrAbstractAdapterTest {
         Property testProperty = testNode.setProperty(propertyName, propertyValue);
 
         // WHEN
-        AbstractAdapterTest adapter = new AbstractAdapterTest(testProperty);
+        DummyJcrAdapter adapter = new DummyJcrAdapter(testProperty);
 
         // THEN
         assertEquals(true, adapter.getJcrItem() !=null);
@@ -163,7 +163,7 @@ public class JcrAbstractAdapterTest {
         testNode.remove();
 
         // WHEN
-        AbstractAdapterTest adapter = new AbstractAdapterTest(testProperty);
+        DummyJcrAdapter adapter = new DummyJcrAdapter(testProperty);
 
         // THEN
         assertEquals(true, adapter.getJcrItem() == null);
@@ -173,8 +173,8 @@ public class JcrAbstractAdapterTest {
     /**
      * Dummy implementation of the Abstract class.
      */
-    public class AbstractAdapterTest extends JcrAbstractAdapter {
-        public AbstractAdapterTest(Item jcrItem) {
+    public class DummyJcrAdapter extends AbstractJcrAdapter {
+        public DummyJcrAdapter(Item jcrItem) {
             super(jcrItem);
         }
         @Override

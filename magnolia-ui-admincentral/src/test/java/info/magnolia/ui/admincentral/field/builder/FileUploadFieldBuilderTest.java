@@ -37,7 +37,7 @@ import static org.junit.Assert.assertEquals;
 import info.magnolia.ui.admincentral.field.upload.AbstractUploadFileField.DefaultComponent;
 import info.magnolia.ui.admincentral.field.upload.UploadImageField;
 import info.magnolia.ui.model.field.definition.FileUploadFieldDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.JcrAbstractNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 
 import org.junit.Test;
 
@@ -61,7 +61,7 @@ public class FileUploadFieldBuilderTest extends AbstractBuilderTest<FileUploadFi
 
         // THEN
         assertEquals(true, field instanceof UploadImageField);
-        assertEquals(0, ((JcrAbstractNodeAdapter)baseItem).getChilds().size());
+        assertEquals(0, ((AbstractJcrNodeAdapter)baseItem).getChilds().size());
     }
 
     @Test

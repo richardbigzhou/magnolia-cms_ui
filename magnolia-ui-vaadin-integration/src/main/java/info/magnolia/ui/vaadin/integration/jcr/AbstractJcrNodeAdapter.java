@@ -59,10 +59,10 @@ import com.vaadin.data.Property.ValueChangeEvent;
  * {@link javax.jcr.Node}. Implements {Property.ValueChangeListener} in order to inform/change JCR
  * property when a Vaadim property has changed. Access JCR repository for all read Jcr Property.
  */
-public abstract class JcrAbstractNodeAdapter extends JcrAbstractAdapter implements Property.ValueChangeListener, JcrItemNodeAdapter {
+public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implements Property.ValueChangeListener, JcrItemNodeAdapter {
 
     // Init
-    private static final Logger log = LoggerFactory.getLogger(JcrAbstractNodeAdapter.class);
+    private static final Logger log = LoggerFactory.getLogger(AbstractJcrNodeAdapter.class);
 
     private String primaryNodeTypeName;
 
@@ -78,7 +78,7 @@ public abstract class JcrAbstractNodeAdapter extends JcrAbstractAdapter implemen
 
     private String nodeName = null;
 
-    public JcrAbstractNodeAdapter(Node jcrNode) {
+    public AbstractJcrNodeAdapter(Node jcrNode) {
         super(jcrNode);
         setPrimaryNodeTypeName(jcrNode);
     }
@@ -297,11 +297,11 @@ public abstract class JcrAbstractNodeAdapter extends JcrAbstractAdapter implemen
      */
     @Override
     public JcrItemNodeAdapter addChild(JcrItemNodeAdapter child) {
-        if (removedChilds.containsKey(((JcrAbstractAdapter)child).getNodeIdentifier())) {
-            removedChilds.remove(((JcrAbstractAdapter)child).getNodeIdentifier());
+        if (removedChilds.containsKey(((AbstractJcrAdapter)child).getNodeIdentifier())) {
+            removedChilds.remove(((AbstractJcrAdapter)child).getNodeIdentifier());
         }
         child.setParent(this);
-        return childs.put(((JcrAbstractAdapter)child).getNodeIdentifier(), child);
+        return childs.put(((AbstractJcrAdapter)child).getNodeIdentifier(), child);
     }
 
     /**
@@ -309,8 +309,8 @@ public abstract class JcrAbstractNodeAdapter extends JcrAbstractAdapter implemen
      */
     @Override
     public boolean removeChild(JcrItemNodeAdapter toRemouve) {
-        removedChilds.put(((JcrAbstractAdapter)toRemouve).getNodeIdentifier(), toRemouve);
-        return childs.remove(((JcrAbstractAdapter)toRemouve).getNodeIdentifier()) != null;
+        removedChilds.put(((AbstractJcrAdapter)toRemouve).getNodeIdentifier(), toRemouve);
+        return childs.remove(((AbstractJcrAdapter)toRemouve).getNodeIdentifier()) != null;
     }
 
     /**

@@ -50,7 +50,7 @@ import org.junit.Test;
 import com.vaadin.data.Property;
 
 
-public class JcrAbstractNodeAdapterTest {
+public class AbstractJcrNodeAdapterTest {
 
     private String worksapceName = "workspace";
     private MockSession session;
@@ -77,7 +77,7 @@ public class JcrAbstractNodeAdapterTest {
         final String propertyName = "TEST";
         final String propertyValue = "value";
         underlyingNode.setProperty(propertyName, propertyValue);
-        final AbstractNodeAdapterTest item = new AbstractNodeAdapterTest(underlyingNode);
+        final DummyJcrNodeAdapter item = new DummyJcrNodeAdapter(underlyingNode);
 
         // WHEN
         final Property prop = item.getItemProperty(propertyName);
@@ -94,7 +94,7 @@ public class JcrAbstractNodeAdapterTest {
         final String propertyName = "TEST";
         final String propertyValue = "value";
         underlyingNode.setProperty(propertyName, propertyValue);
-        final AbstractNodeAdapterTest item = new AbstractNodeAdapterTest(underlyingNode);
+        final DummyJcrNodeAdapter item = new DummyJcrNodeAdapter(underlyingNode);
 
         // WHEN
         final Property prop = item.getItemProperty(propertyName+"_1");
@@ -109,7 +109,7 @@ public class JcrAbstractNodeAdapterTest {
         final Node underlyingNode = session.getRootNode().addNode("underlying");
         final String propertyName = "TEST";
         final String propertyValue = "value";
-        final AbstractNodeAdapterTest item = new AbstractNodeAdapterTest(underlyingNode);
+        final DummyJcrNodeAdapter item = new DummyJcrNodeAdapter(underlyingNode);
         Property property = DefaultPropertyUtil.newDefaultProperty(propertyName, PropertyType.TYPENAME_STRING, propertyValue);
         item.addItemProperty(propertyName, property);
 
@@ -127,7 +127,7 @@ public class JcrAbstractNodeAdapterTest {
         String propertyName = "TEST";
         String propertyValue = "value";
         javax.jcr.Property jcrProperty = underlyingNode.setProperty(propertyName, propertyValue);
-        AbstractNodeAdapterTest item = new AbstractNodeAdapterTest(underlyingNode);
+        DummyJcrNodeAdapter item = new DummyJcrNodeAdapter(underlyingNode);
 
         // WHEN
         Property nodePorperty = item.getItemProperty(propertyName);
@@ -143,7 +143,7 @@ public class JcrAbstractNodeAdapterTest {
         // GIVEN
         Node underlyingNode = session.getRootNode().addNode("underlying");
         String propertyName = "TEST";
-        AbstractNodeAdapterTest item = new AbstractNodeAdapterTest(underlyingNode);
+        DummyJcrNodeAdapter item = new DummyJcrNodeAdapter(underlyingNode);
 
         // WHEN
         Property itemPorperty = DefaultPropertyUtil.newDefaultProperty(propertyName, PropertyType.TYPENAME_STRING, propertyName);
@@ -159,9 +159,9 @@ public class JcrAbstractNodeAdapterTest {
     /**
      * Dummy implementation of the Abstract class.
      */
-    public class AbstractNodeAdapterTest extends JcrAbstractNodeAdapter {
+    public class DummyJcrNodeAdapter extends AbstractJcrNodeAdapter {
 
-        public AbstractNodeAdapterTest(Node jcrNode) {
+        public DummyJcrNodeAdapter(Node jcrNode) {
             super(jcrNode);
         }
 

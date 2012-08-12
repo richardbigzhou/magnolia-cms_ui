@@ -48,9 +48,9 @@ import org.slf4j.LoggerFactory;
 /**
  * Common base for {JcrItemAdapter} implementation.
  */
-public abstract class JcrAbstractAdapter implements JcrItemAdapter {
+public abstract class AbstractJcrAdapter implements JcrItemAdapter {
 
-    private static final Logger log = LoggerFactory.getLogger(JcrAbstractAdapter.class);
+    private static final Logger log = LoggerFactory.getLogger(AbstractJcrAdapter.class);
 
     static final String UN_IDENTIFIED = "?";
     //Common variable
@@ -59,7 +59,7 @@ public abstract class JcrAbstractAdapter implements JcrItemAdapter {
     private  String jcrWorkspace;
     private  String jcrPath;
 
-    public JcrAbstractAdapter (Item jcrItem) {
+    public AbstractJcrAdapter (Item jcrItem) {
         setCommonAttributes(jcrItem);
     }
 
