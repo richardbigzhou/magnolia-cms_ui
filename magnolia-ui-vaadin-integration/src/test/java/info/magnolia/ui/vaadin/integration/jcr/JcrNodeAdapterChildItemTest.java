@@ -54,18 +54,17 @@ import org.junit.Test;
  * Add/Remove Existing/New Child Items
  */
 
-public class JcrNodeAdapterChieldItemTest {
+public class JcrNodeAdapterChildItemTest {
 
-
-    private String worksapceName = "workspace";
+    private String workspaceName = "workspace";
     private MockSession session;
     private Node baseNode;
 
     @Before
     public void setUp() throws RepositoryException {
-        session = new MockSession(worksapceName);
+        session = new MockSession(workspaceName);
         MockContext ctx = new MockContext();
-        ctx.addSession(worksapceName, session);
+        ctx.addSession(workspaceName, session);
         MgnlContext.setInstance(ctx);
         baseNode = session.getRootNode().addNode("baseNode");
     }
