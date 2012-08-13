@@ -38,7 +38,6 @@ import static org.junit.Assert.assertSame;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
-import java.util.Date;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.mock.MockContext;
@@ -50,23 +49,20 @@ import javax.jcr.PropertyType;
 import org.apache.jackrabbit.value.BinaryValue;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.vaadin.data.Property;
 
 public class JcrNodeAdapterTypedPropertyTest {
 
-
-    private String worksapceName = "workspace";
+    private String workspaceName = "workspace";
     private MockSession session;
-
 
     @Before
     public void setUp() {
-        session = new MockSession(worksapceName);
+        session = new MockSession(workspaceName);
         MockContext ctx = new MockContext();
-        ctx.addSession(worksapceName, session);
+        ctx.addSession(workspaceName, session);
         MgnlContext.setInstance(ctx);
     }
 
