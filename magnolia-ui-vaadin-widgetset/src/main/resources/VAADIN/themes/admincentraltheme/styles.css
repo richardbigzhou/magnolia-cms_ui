@@ -15,23 +15,6 @@
 @import url(fonts.css);
 @import url(field.css);
 
-@font-face {
-    font-family:DINWebPro;
-    src:url("fonts/DINWebPro.eot");
-    src:url('fonts/DINWebPro.eot?#iefix') format('embedded-opentype'),
-        url('fonts/DINWebPro.woff') format('woff');
-    font-weight:normal;
-    font-style:normal;
-}
-
-@font-face {
-    font-family:DINWebPro;
-    src:url("fonts/DINWebPro-Medium.eot");
-    src:url('fonts/DINWebPro-Medium.eot?#iefix') format('embedded-opentype'),
-        url("fonts/DINWebPro-Medium.woff") format("woff");
-    font-weight:bold;
-    font-style:normal;
-}
 
 body{
     -webkit-user-select: none; /* Disable content selection on mobile safari */

@@ -219,7 +219,16 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
     public void removeMessage(String id) {
         proxy.call("removeMessage", id);
     }
-    
+
+    @Override
+    protected void onLoad() {
+        doOnLoad();
+    }
+
+    private final native void doOnLoad() /*-{
+
+    }-*/;
+
     private void updateFullScreenComponent(UIDL uidl) {
         final UIDL componentUidl = uidl.getChildByTagName("fullscreenComponent");
         if (componentUidl != null) {
