@@ -116,7 +116,7 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
             register("clear", new Method() {
                 @Override
                 public void invoke(String methodName, Object[] params) {
-                    imageContainer.clear();
+                    reset();
                 }
             });            
         }
@@ -230,12 +230,21 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
 
     @Override
     public boolean initWidget(Object[] params) {
-        int thumbnailsNeeded = calculateThumbnailsNeeded();
-        addStubs(thumbnailsNeeded);
-        doQueryThumbnails(thumbnailsNeeded);
+        reset();
         return false;
     }
 
+    private void reset() {
+        thumbnails.clear();
+        thumbnailStubs.clear();
+        imageContainer.clear();
+        selectedThumbnail = null;
+        thumbnailAmount = 0;
+        int thumbnailsNeeded = calculateThumbnailsNeeded();
+        addStubs(thumbnailsNeeded);
+        doQueryThumbnails(thumbnailsNeeded);
+    }
+    
     private int calculateThumbnailsNeeded() {
         int totalHeight = scroller.getVerticalScrollPosition() + getOffsetHeight();
         int width = getOffsetWidth();

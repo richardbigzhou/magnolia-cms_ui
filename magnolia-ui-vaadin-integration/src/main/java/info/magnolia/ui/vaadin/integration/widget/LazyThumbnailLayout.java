@@ -187,7 +187,7 @@ public class LazyThumbnailLayout extends AbstractComponent implements ServerSide
 
     @Override
     public Object[] initRequestFromClient() {
-        lastQueried = null;
+        refresh();
         proxy.callOnce("setThumbnailSize", thumbnailWidth, thumbnailHeight);
         proxy.callOnce("setThumbnailAmount", thumbnailsAmount);
         return new Object[] {};
@@ -199,6 +199,8 @@ public class LazyThumbnailLayout extends AbstractComponent implements ServerSide
     }
 
     public void clear() {
+        lastQueried = null;
+        mapper.removeAll();
         proxy.callOnce("clear");
     }
 
