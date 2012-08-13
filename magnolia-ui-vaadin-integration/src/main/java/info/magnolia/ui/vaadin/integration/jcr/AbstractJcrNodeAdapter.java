@@ -264,7 +264,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
         // Update property
         for (Entry<String, Property> entry : changedProperties.entrySet()) {
             // Check saveInfo Flag
-            if (!((DefaultProperty) entry.getValue()).isSaveInfo() || ((DefaultProperty) entry.getValue()).isReadOnly()) {
+            if (!((DefaultProperty) entry.getValue()).isSaveInfo() || entry.getValue().isReadOnly()) {
                 continue;
             }
             // JCRNAME has change --> perform the renaming and continue
