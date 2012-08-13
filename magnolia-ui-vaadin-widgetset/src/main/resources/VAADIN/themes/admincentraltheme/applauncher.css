@@ -40,6 +40,8 @@
     margin-right: auto;
     position: absolute;
     right: 0;
+    font-weight: bold;
+
 }
 
 .clearfix:before, .clearfix:after { content: ""; display: table; }
@@ -56,6 +58,8 @@
     padding-left: 10px;
     padding-top: 10px;
     display: block;
+    font-weight: bold;
+
 }
 
 .app-list.sections {

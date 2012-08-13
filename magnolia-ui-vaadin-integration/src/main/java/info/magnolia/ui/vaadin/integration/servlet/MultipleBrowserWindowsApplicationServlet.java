@@ -173,6 +173,23 @@ public class MultipleBrowserWindowsApplicationServlet extends MagnoliaIcePushSer
             throws IOException {
         super.writeAjaxPageHtmlHeader(page, title, themeUri, request);
         page.write("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no\" />");
+
+        // Add a CSS file based on browser in order to normalize the weight of the DinWebPro font.
+        /*
+        page.write("<script type=\"text/javascript\">\n");
+        page.write("//<![CDATA[\n");
+        page.write("if (navigator.userAgent.toLowerCase().indexOf('webkit')>-1 || navigator.appName == 'Microsoft Internet Explorer') {\n");
+        page.write("    document.write(\"<link rel='stylesheet' type='text/css' href='../VAADIN/themes/admincentraltheme/css-conditional/fonts-heavy.css' \\/>\");\n");
+        page.write("} else {\n");
+        page.write("    document.write(\"<link rel='stylesheet' type='text/css' href='../VAADIN/themes/admincentraltheme/css-conditional/fonts-default.css' \\/>\");\n");
+        page.write("}\n");
+        page.write("//]]>\n</script>\n");
+        */
+
+        page.write("<script type=\"text/javascript\">\n");
+        page.write("//<![CDATA[\n");
+        page.write("document.write(\"<script language='javascript' src='../VAADIN/js/conditional-css-include.js'><\\/script>\");\n");
+        page.write("//]]>\n</script>\n");
     }
     
     @Override
