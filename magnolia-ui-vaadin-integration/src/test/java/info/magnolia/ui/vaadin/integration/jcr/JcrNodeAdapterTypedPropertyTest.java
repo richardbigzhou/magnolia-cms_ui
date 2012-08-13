@@ -37,6 +37,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
 import java.math.BigDecimal;
+import java.util.Calendar;
+import java.util.Date;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.mock.MockContext;
@@ -72,9 +74,6 @@ public class JcrNodeAdapterTypedPropertyTest {
     public void tearDown() {
         MgnlContext.setInstance(null);
     }
-
-
-
 
     @Test
     public void testGetItemProperty_Untyped_CheckInitialization() throws Exception {
@@ -169,14 +168,21 @@ public class JcrNodeAdapterTypedPropertyTest {
         assertEquals(Double.valueOf(value), property.getValue());
     }
 
-    @Ignore // TODO SCRUM-1398
     @Test
     public void testGetItemProperty_Date_CheckInitialization() throws Exception {
         // GIVEN
         //Create a NewNodeAdapter
         String nodeName = "rootNode";
         String id = "propertyID";
-        String value = ""; //TODO SCRUM-1398
+        String value = "1970-07-04";
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, 1970);
+        calendar.set(Calendar.MONTH, 6);
+        calendar.set(Calendar.DAY_OF_MONTH, 4);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
         Node parentNode = session.getRootNode().addNode(nodeName);
         JcrNodeAdapter adapter = new JcrNodeAdapter(parentNode);
 
@@ -190,7 +196,7 @@ public class JcrNodeAdapterTypedPropertyTest {
         // THEN
         assertSame(property, propertyInitial);
         assertEquals(PropertyType.nameFromValue(PropertyType.DATE), property.getType().getSimpleName());
-        assertEquals(value, property.getValue());
+        assertEquals(calendar.getTime(), property.getValue());
     }
 
     @Test
@@ -239,7 +245,6 @@ public class JcrNodeAdapterTypedPropertyTest {
         assertEquals( new BigDecimal(value), property.getValue());
     }
 
-
     @Test
     public void testGetItemProperty_String_FromJcr() throws Exception {
         // GIVEN
@@ -286,9 +291,7 @@ public class JcrNodeAdapterTypedPropertyTest {
         assertEquals(PropertyType.nameFromValue(PropertyType.BOOLEAN), property.getType().getSimpleName());
         assertEquals(res.getProperty(id).getType(), PropertyType.BOOLEAN);
         assertEquals(res.getProperty(id).getBoolean(), property.getValue());
-
     }
-
 
     @Test
     public void testGetItemProperty_Binary_CreatedByVaadin_StoreIntoJcr() throws Exception {
@@ -310,8 +313,5 @@ public class JcrNodeAdapterTypedPropertyTest {
 
         // THEN
         assertEquals(res.getProperty(id).getType(), PropertyType.BINARY);
-
     }
-
-
 }
