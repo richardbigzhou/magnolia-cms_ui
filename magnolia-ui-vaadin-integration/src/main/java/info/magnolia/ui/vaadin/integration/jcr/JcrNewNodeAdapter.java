@@ -62,9 +62,8 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter{
     private static final Logger log = LoggerFactory.getLogger(JcrNewNodeAdapter.class);
 
     /**
-     * @param parentNode: Parent of the node to create.
-     * @param nodeType: Type node to create.
-     * @throws RepositoryException
+     * @param parentNode Parent of the node to create.
+     * @param nodeType Type node to create.
      */
     public JcrNewNodeAdapter(Node parentNode, String nodeType) {
         super(parentNode);
@@ -73,10 +72,9 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter{
     }
 
     /**
-     * @param parentNode: Parent of the node to create.
-     * @param nodeType: Type node to create.
-     * @param nodeName: Name of the new node.
-     * @throws RepositoryException
+     * @param parentNode Parent of the node to create.
+     * @param nodeType Type node to create.
+     * @param nodeName Name of the new node.
      */
     public JcrNewNodeAdapter(Node parentNode, String nodeType, String nodeName) {
         super(parentNode);
@@ -91,8 +89,8 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter{
     public Property getItemProperty(Object id) {
         DefaultProperty property = null;
 
-        if(changedProperties.containsKey(id)) {
-            property = (DefaultProperty) changedProperties.get(id);
+        if(getChangedProperties().containsKey(id)) {
+            property = (DefaultProperty) getChangedProperties().get(id);
         }
 
         return property;
@@ -143,8 +141,8 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter{
             //Update property
             updateProperty(node);
             //Update child nodes
-            if(!childs.isEmpty()) {
-                for(JcrItemNodeAdapter child:childs.values()) {
+            if(!getChildren().isEmpty()) {
+                for(JcrItemNodeAdapter child: getChildren().values()) {
                     if(child instanceof JcrNewNodeAdapter) {
                         //Set parent node (parent could be newly created)
                         ((AbstractJcrAdapter)child).setCommonAttributes(node);
@@ -171,9 +169,9 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter{
             throw new IllegalArgumentException("Item cannot be null.");
         }
         String nodeName = "";
-        if(changedProperties.containsKey(JCR_NAME)) {
-            nodeName = changedProperties.get(JCR_NAME).toString();
-            changedProperties.remove(JCR_NAME);
+        if(getChangedProperties().containsKey(JCR_NAME)) {
+            nodeName = getChangedProperties().get(JCR_NAME).toString();
+            getChangedProperties().remove(JCR_NAME);
         }
 
         return Path.getUniqueLabel(item.getSession(), item.getPath(), StringUtils.isNotBlank(nodeName)?nodeName:"untitled");

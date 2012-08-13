@@ -68,13 +68,13 @@ public interface JcrItemNodeAdapter extends Item{
     public Node getNode();
 
     /**
-     * @param nodeIdentifier: AbstractJcrAdapter.getNodeIdentifier().
-     * @return child JcrItemNodeAdapter if part of the childs, or
+     * @param nodeIdentifier AbstractJcrAdapter.getNodeIdentifier().
+     * @return child JcrItemNodeAdapter if part of the children, or
      *         Null if not defined.
      */
     public JcrItemNodeAdapter getChild(String nodeIdentifier);
 
-    public Map<String, JcrItemNodeAdapter> getChilds();
+    public Map<String, JcrItemNodeAdapter> getChildren();
 
     /**
      * Add a child JcrItemNodeAdapter to the current Item.
@@ -85,10 +85,10 @@ public interface JcrItemNodeAdapter extends Item{
     /**
      * Remove a Child Node from the child list.
      * <b>When removing a JcrItemNodeAdapter, this Child will be added to the Remove Child List even if
-     * this Item was not part of the current childs list.
+     * this Item was not part of the current children list.
      * All Item part from the removed list are removed from the Jcr repository.</b>
      */
-    public boolean removeChild(JcrItemNodeAdapter toRemouve);
+    public boolean removeChild(JcrItemNodeAdapter toRemove);
 
     /**
      * Return the current Parent Item (If Item is a child).
