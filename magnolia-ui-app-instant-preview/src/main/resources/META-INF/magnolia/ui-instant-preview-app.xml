@@ -2,8 +2,8 @@
 <!DOCTYPE module SYSTEM "module.dtd">
 <module>
   <name>ui-instant-preview-app</name>
-  <displayName>UI Messages app</displayName>
-  <description>UI Messages app</description>
+  <displayName>Instant Preview app</displayName>
+  <description>Instant Preview  app</description>
   <version>${project.version}</version>
 
   <!-- Components App definition. -->
@@ -18,6 +18,14 @@
     <component>
       <type>info.magnolia.ui.app.instantpreview.InstantPreviewView</type>
       <implementation>info.magnolia.ui.app.instantpreview.InstantPreviewViewImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.app.instantpreview.join.InstantPreviewAppJoinSubApp</type>
+      <implementation>info.magnolia.ui.app.instantpreview.join.InstantPreviewAppJoinSubApp</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.app.instantpreview.join.InstantPreviewJoinView</type>
+      <implementation>info.magnolia.ui.app.instantpreview.join.InstantPreviewJoinViewImpl</implementation>
     </component>
   </components>
 
