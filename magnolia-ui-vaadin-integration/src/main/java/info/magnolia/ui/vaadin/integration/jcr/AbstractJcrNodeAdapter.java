@@ -108,7 +108,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
     }
 
     /**
-     * @return: Corresponding node or null if not existing.
+     * @return Corresponding node or null if not existing.
      */
     @Override
     public Node getNodeFromRepository() {

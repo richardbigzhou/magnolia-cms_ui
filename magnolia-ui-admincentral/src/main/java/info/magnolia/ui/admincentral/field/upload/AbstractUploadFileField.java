@@ -604,7 +604,7 @@ public abstract class AbstractUploadFileField extends AbstractUploadField implem
      * Best effort to create an ImageSize.
      * If the ImageSize created based on the receiver is null
      * try to create it from the Item property.
-     * @return: null if receiver and item don't have relevant information.
+     * @return null if receiver and item don't have relevant information.
      */
     protected ImageSize createImageSize() throws FileNotFoundException {
         ImageSize imageSize = ImageSize.valueOf(receiver.getFile());
@@ -617,7 +617,7 @@ public abstract class AbstractUploadFileField extends AbstractUploadField implem
      * Best effort to get the File MimeType.
      * If the receiver MimeType is null
      * try to get it from the Item property.
-     * @return: null if receiver and item MimeType are not define.
+     * @return null if receiver and item MimeType are not define.
      */
     protected String getLastMIMEType() {
         String mimeType = receiver.getLastMimeType();
@@ -630,7 +630,7 @@ public abstract class AbstractUploadFileField extends AbstractUploadField implem
      * Best effort to get the FileName.
      * If the receiver FileName is null
      * try to get it from the Item property.
-     * @return: null if receiver and item FileName are not define.
+     * @return null if receiver and item FileName are not define.
      */
     protected String getLastFileName() {
         String fileName = receiver.getLastFileName();
