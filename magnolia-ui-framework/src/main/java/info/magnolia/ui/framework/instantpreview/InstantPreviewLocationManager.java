@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,52 +31,26 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.main;
-
-import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
-import info.magnolia.ui.framework.app.SubApp;
-import info.magnolia.ui.framework.instantpreview.InstantPreviewDispatcher;
-import info.magnolia.ui.framework.view.View;
-
-import javax.inject.Inject;
+package info.magnolia.ui.framework.instantpreview;
 
 /**
- * PagesMainSubApp.
+ * InstantPreviewLocationManager. 
  */
-public class PagesMainSubApp implements SubApp, PagesMainView.Listener {
+public interface InstantPreviewLocationManager {
 
-    private static final String CAPTION = "Pages";
-
-    private PagesMainView view;
-    private ContentWorkbenchPresenter workbench;
-    private InstantPreviewDispatcher dispatcher;
+    String registerInstantPreviewHost();
     
-    @Inject
-    public PagesMainSubApp(PagesMainView view, ContentWorkbenchPresenter workbench, InstantPreviewDispatcher dispatcher) {
-        this.view = view;
-        this.dispatcher = dispatcher;
-        this.view.setListener(this);
-        this.workbench = workbench;
-    }
-
-    @Override
-    public String getCaption() {
-        return CAPTION;
-    }
-
-    @Override
-    public View start() {
-        view.setWorkbenchView(workbench.start());
-        return view;
-    }
-
-    @Override
-    public void share() {
-        dispatcher.share();
-    }
-
-    @Override
-    public void subscribe(String hostId) {
-        dispatcher.subscribeTo(hostId);
+    void subscribeTo(String hostId, PreviewLocationListener listener);
+    
+    void unsubscribeFrom(String hostId, PreviewLocationListener listener);
+    
+    void sendPreviewToken(String hostId, String token);
+    
+    /**
+     * PreviewLocationListener.
+     */
+    public interface PreviewLocationListener {
+        
+        void onPreviewLocationReceived(String location);
     }
 }
