@@ -51,6 +51,7 @@ import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.location.LocationChangeRequestedEvent;
 import info.magnolia.ui.framework.location.LocationChangedEvent;
+import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.framework.view.ViewPort;
@@ -63,29 +64,30 @@ public class ShellAppController implements LocationChangedEvent.Handler, Locatio
 
     private ComponentProvider componentProvider;
     private Shell shell;
-    private EventBus eventBus;
     private ViewPort viewPort;
+    private LocationController locationController;
+
     private final Map<String, ShellAppContextImpl> contexts = new HashMap<String, ShellAppContextImpl>();
-    private ShellAppContextImpl currentAppContext = null;
 
     @Inject
-    public ShellAppController(ComponentProvider componentProvider, Shell shell, @Named("adminCentral") EventBus adminCentralEventBus) {
+    public ShellAppController(ComponentProvider componentProvider, Shell shell, @Named("adminCentral") EventBus adminCentralEventBus, LocationController locationController) {
         this.componentProvider = componentProvider;
         this.shell = shell;
-        this.eventBus = adminCentralEventBus;
-        contexts.put("applauncher", create(AppLauncherShellApp.class));
-        contexts.put("pulse", create(PulseShellApp.class));
-        contexts.put("favorite", create(FavoritesShellApp.class));
+        this.locationController = locationController;
+
+        addShellApp("applauncher", AppLauncherShellApp.class);
+        addShellApp("pulse", PulseShellApp.class);
+        addShellApp("favorite", FavoritesShellApp.class);
 
         adminCentralEventBus.addHandler(LocationChangedEvent.class, this);
         adminCentralEventBus.addHandler(LocationChangeRequestedEvent.class, this);
     }
 
-    private ShellAppContextImpl create(Class<? extends ShellApp> clazz) {
-        ShellAppContextImpl appContext = new ShellAppContextImpl();
+    private void addShellApp(String name, Class<? extends ShellApp> clazz) {
+        ShellAppContextImpl appContext = new ShellAppContextImpl(name);
         appContext.setAppClass(clazz);
         appContext.start();
-        return appContext;
+        contexts.put(name, appContext);
     }
 
     public void setViewPort(ViewPort viewPort) {
@@ -101,47 +103,65 @@ public class ShellAppController implements LocationChangedEvent.Handler, Locatio
 
         DefaultLocation newLocation = (DefaultLocation) event.getNewLocation();
         if (!newLocation.getType().equals(DefaultLocation.LOCATION_TYPE_SHELL_APP)) {
-            currentAppContext = null;
             viewPort.setView(null);
             return;
         }
 
         ShellAppContextImpl nextContext = contexts.get(newLocation.getPrefix());
         if (nextContext == null) {
-            currentAppContext = null;
             viewPort.setView(null);
             return;
         }
 
-        currentAppContext = nextContext;
-        currentAppContext.onLocationUpdate(newLocation);
-        currentAppContext.display(viewPort);
+        nextContext.onLocationUpdate(newLocation);
+        viewPort.setView(nextContext.getView());
+    }
+
+    public void focusShellApp(String name) {
+        ShellAppContextImpl nextContext = contexts.get(name);
+        if (nextContext != null) {
+            locationController.goTo(nextContext.getCurrentLocation());
+        }
     }
 
     private class ShellAppContextImpl implements ShellAppContext {
 
+        private String name;
         private ShellApp shellApp;
         private View view;
         private Location currentLocation;
         private Class<? extends ShellApp> appClass;
 
+        public ShellAppContextImpl(String name) {
+            this.name = name;
+            this.currentLocation = new DefaultLocation(DefaultLocation.LOCATION_TYPE_SHELL_APP, name, "");
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public Location getCurrentLocation() {
+            return currentLocation;
+        }
+
+        public View getView() {
+            return view;
+        }
+
         @Override
         public void setAppLocation(Location location) {
-            this.currentLocation = location;
+            currentLocation = location;
             shell.setFragment(location.toString());
         }
 
         public void setAppClass(Class<? extends ShellApp> clazz) {
-            this.appClass = clazz;
+            appClass = clazz;
         }
 
         public void start() {
             shellApp = componentProvider.newInstance(appClass);
             view = shellApp.start(this);
-        }
-
-        public void display(ViewPort viewPort) {
-            viewPort.setView(view);
         }
 
         public void onLocationUpdate(DefaultLocation newLocation) {

@@ -33,11 +33,12 @@
  */
 package info.magnolia.ui.widget.dialog.gwt.client;
 
-import java.util.List;
-
 import info.magnolia.ui.vaadin.widget.tabsheet.client.VMagnoliaTab;
 import info.magnolia.ui.widget.dialog.gwt.client.dialoglayout.DialogFieldWrapper;
 import info.magnolia.ui.widget.dialog.gwt.client.dialoglayout.VDialogTabLayout;
+
+import java.util.LinkedList;
+import java.util.List;
 
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.terminal.gwt.client.Util;
@@ -58,8 +59,11 @@ public class VMagnoliaDialogTab extends VMagnoliaTab {
         super.setWidget(w);
     }
     
-    public VDialogTabLayout getFields() {
-        return content;
+    public List<DialogFieldWrapper> getFields() {
+        if (content != null) {
+            return content.getFields();
+        }
+        return new LinkedList<DialogFieldWrapper>();
     }
 
     public void setDescriptionVisible(boolean visible) {

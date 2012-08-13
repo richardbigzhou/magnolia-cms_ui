@@ -47,6 +47,7 @@ body{
 .thumbnail {
 	border: 1px solid #F0F0F0;
 	display: inline-block;
+	margin: 3px;
 }
 
 .thumbnail.selected {

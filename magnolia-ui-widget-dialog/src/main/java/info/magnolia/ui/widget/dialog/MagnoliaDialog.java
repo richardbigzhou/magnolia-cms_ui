@@ -60,13 +60,13 @@ public class MagnoliaDialog extends ShellTabSheet implements MagnoliaDialogView,
     private final String SHOW_ALL = "show all";
 
     private List<MagnoliaDialogTab> dialogTabs = new ArrayList<MagnoliaDialogTab>();
-    
+
     private List<Field> fields = new LinkedList<Field>();
 
-    private Presenter presenter;
+    private MagnoliaDialogView.Listener listener;
 
     private Item itemDatasource;
-    
+
     public MagnoliaDialog() {
         setImmediate(true);
         setShowAllEnabled(true);
@@ -81,22 +81,22 @@ public class MagnoliaDialog extends ShellTabSheet implements MagnoliaDialogView,
             @Override
             public void invoke(String methodName, Object[] params) {
                 final String actionName = String.valueOf(params[0]);
-                presenter.executeAction(actionName);
+                listener.executeAction(actionName);
             }
         });
         proxy.register("closeDialog", new Method() {
 
             @Override
             public void invoke(String methodName, Object[] params) {
-                presenter.closeDialog();
+                listener.closeDialog();
             }
         });
         return proxy;
     }
-    
+
     @Override
-    public void setPresenter(Presenter presenter) {
-        this.presenter = presenter;
+    public void setListener(MagnoliaDialogView.Listener listener) {
+        this.listener = listener;
     }
 
     @Override
@@ -156,8 +156,8 @@ public class MagnoliaDialog extends ShellTabSheet implements MagnoliaDialogView,
             tab.setValidationVisibe(isVisible);
         }
     }
-    
-    
+
+
     @Override
     public boolean isValid() {
         boolean res = true;

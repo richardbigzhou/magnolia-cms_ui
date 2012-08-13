@@ -34,16 +34,16 @@
 package info.magnolia.ui.admincentral.dialog;
 
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
-import info.magnolia.ui.widget.dialog.MagnoliaDialogView;
+import info.magnolia.ui.widget.dialog.MagnoloaDialogPresenter;
 
 /**
  * Creates {@link DialogPresenter} instances that are use to display a dialog.
  */
 public interface DialogPresenterFactory {
 
-    MagnoliaDialogView.Presenter createDialog(String dialogName);
+    MagnoloaDialogPresenter.Presenter createDialog(String dialogName);
 
-    MagnoliaDialogView.Presenter getDialogPresenter(DialogDefinition definition);
+    MagnoloaDialogPresenter.Presenter getDialogPresenter(DialogDefinition definition);
 
     DialogDefinition getDialogDefinition(String dialogName) throws RuntimeException;
 }

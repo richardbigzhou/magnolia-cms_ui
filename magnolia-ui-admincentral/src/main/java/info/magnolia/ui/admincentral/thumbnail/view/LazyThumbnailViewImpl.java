@@ -40,6 +40,7 @@ import info.magnolia.ui.model.thumbnail.ThumbnailProvider;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.widget.LazyThumbnailLayout;
+import info.magnolia.ui.vaadin.integration.widget.LazyThumbnailLayout.ThumbnailDblClickListener;
 import info.magnolia.ui.vaadin.integration.widget.LazyThumbnailLayout.ThumbnailSelectionListener;
 
 import java.util.ArrayList;
@@ -76,7 +77,7 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
 
     private ThumbnailProvider thumbnailProvider;
 
-    private String jcrSQL2QueryStatement = "select * from ["+MgnlNodeType.NT_CONTENT+"]";
+    private String jcrSQL2QueryStatement = "select * from ["+MgnlNodeType.NT_CONTENT+"] as t order by name(t)";
 
     public LazyThumbnailViewImpl(final WorkbenchDefinition definition, final ThumbnailProvider thumbnailProvider) {
         this.workbenchDefinition = definition;
@@ -90,19 +91,19 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
         layout.addThumbnailSelectionListener(new ThumbnailSelectionListener() {
             @Override
             public void onThumbnailSelected(final String thumbnailId) {
-                Session session;
-                try {
-                    session = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace());
-                    final Node imageNode = session.getNodeByIdentifier(thumbnailId);
-                    listener.onItemSelection(new JcrNodeAdapter(imageNode));
-                } catch (LoginException e) {
-                    log.error(e.getMessage());
-                } catch (RepositoryException e) {
-                    log.error(e.getMessage());
-                }
+                JcrNodeAdapter node = getThumbnailNodeAdapterByIdentifier(thumbnailId);
+                listener.onItemSelection(node);
             }
         });
 
+        layout.addDoubleClickListener(new ThumbnailDblClickListener() {
+
+            @Override
+            public void onThumbnailDblClicked(final String thumbnailId) {
+                JcrNodeAdapter node = getThumbnailNodeAdapterByIdentifier(thumbnailId);
+                listener.onDoubleClick(node);
+            }
+        });
     }
 
     @Override
@@ -112,7 +113,7 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
 
     @Override
     public void select(String path) {
-
+      //do something?
     }
 
     @Override
@@ -128,8 +129,7 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
 
     @Override
     public void refreshItem(Item item) {
-        // TODO Auto-generated method stub
-
+        //do nothing
     }
 
     @Override
@@ -143,7 +143,7 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
     }
 
     /**
-     * @return a List of JCR identifiers for the all the nodes recursively found under <code>initialPath</code>. This method is called in {@link LazyThumbnailViewImpl#refresh()}.
+     * @return a List of JCR identifiers for all the nodes recursively found under <code>initialPath</code>. This method is called in {@link LazyThumbnailViewImpl#refresh()}.
      * You can override it, if you need a different strategy than the default one to fetch the identifiers of the nodes for which thumbnails need to be displayed.
      * @see ThumbnailContainer
      * @see LazyThumbnailLayout#refresh()
@@ -151,16 +151,19 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
     protected List<String> getAllIdentifiers(final String workspaceName, final String initialPath) {
         List<String> uuids = new ArrayList<String>();
         try {
-
-            log.debug("Collecting all nodes at [{}:{}]...", workspaceName, initialPath);
-            long start = System.currentTimeMillis();
-            QueryManager qm = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace()).getWorkspace().getQueryManager();
+            QueryManager qm = MgnlContext.getJCRSession(workspaceName).getWorkspace().getQueryManager();
             Query q = qm.createQuery(jcrSQL2QueryStatement, Query.JCR_SQL2);
+
+            log.debug("Executing query statement [{}] on workspace [{}]", jcrSQL2QueryStatement, workspaceName);
+            long start = System.currentTimeMillis();
+
             QueryResult queryResult = q.execute();
             NodeIterator iter = queryResult.getNodes();
+
             while(iter.hasNext()) {
                uuids.add(iter.nextNode().getIdentifier());
             }
+
             log.debug("Done collecting {} nodes in {}ms", uuids.size(), System.currentTimeMillis() - start);
 
         } catch (PathNotFoundException e) {
@@ -176,7 +179,7 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
     private String prepareJcrSQL2Query(){
         final String[] itemTypes = getItemTypes(workbenchDefinition);
         if(itemTypes != null && itemTypes.length == 1) {
-            jcrSQL2QueryStatement = "select * from ["+itemTypes[0]+"]";
+            jcrSQL2QueryStatement = "select * from ["+itemTypes[0]+"] as t order by name(t)";
         } else {
             log.warn("Workbench definition contains {} item types. Defaulting to {}", (itemTypes != null ? itemTypes.length : 0), MgnlNodeType.NT_CONTENT);
         }
@@ -193,5 +196,18 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
             log.debug("Adding node filter item type [{}]", itemTypes[i]);
         }
         return itemTypes;
+    }
+
+    private JcrNodeAdapter getThumbnailNodeAdapterByIdentifier(final String thumbnailId) {
+        try {
+            Session session = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace());
+            final Node imageNode = session.getNodeByIdentifier(thumbnailId);
+            return new JcrNodeAdapter(imageNode);
+        } catch (LoginException e) {
+            log.error(e.getMessage());
+        } catch (RepositoryException e) {
+            log.error(e.getMessage());
+        }
+        return null;
     }
 }

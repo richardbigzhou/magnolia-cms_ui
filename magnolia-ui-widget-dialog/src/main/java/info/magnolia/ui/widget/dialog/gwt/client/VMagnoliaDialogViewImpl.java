@@ -36,6 +36,7 @@ package info.magnolia.ui.widget.dialog.gwt.client;
 import info.magnolia.ui.vaadin.widget.tabsheet.client.VMagnoliaTab;
 import info.magnolia.ui.vaadin.widget.tabsheet.client.VMagnoliaTabNavigator;
 import info.magnolia.ui.vaadin.widget.tabsheet.client.VMagnoliaTabSheetViewImpl;
+import info.magnolia.ui.vaadin.widget.tabsheet.client.event.ActiveTabChangedEvent;
 import info.magnolia.ui.widget.dialog.gwt.client.VMagnoliaDialogHeader.VDialogHeaderCallback;
 import info.magnolia.ui.widget.dialog.gwt.client.dialoglayout.DialogFieldWrapper;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.AnimationSettings;
@@ -46,7 +47,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.ScrollEvent;
+import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -54,10 +56,8 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.terminal.gwt.client.Util;
-import com.vaadin.terminal.gwt.client.VConsole;
 
 /**
  * VTabDialogViewImpl.
@@ -81,6 +81,34 @@ public class VMagnoliaDialogViewImpl extends FlowPanel implements VMagnoliaDialo
     private final VMagnoliaTabSheetViewImpl impl;
 
     private DialogFieldWrapper lastShownProblematicField = null;
+
+    private EventBus eventBus;
+
+    private FocusHandler problematicFieldFocusHandler = new FocusHandler() {
+        @Override
+        public void onFocus(FocusEvent event) {
+            final Element target = event.getRelativeElement().cast();
+            final DialogFieldWrapper field = Util.findWidget(target, DialogFieldWrapper.class);
+            if (field != null) {
+                lastShownProblematicField = null;
+                final List<DialogFieldWrapper> fields = getActiveTab().getFields();
+                int index = fields.indexOf(field);
+                if (index >= 0) {
+                    if (field.hasError()) {
+                        lastShownProblematicField = field;
+                    } else {
+                        while (index > 0) {
+                            --index;
+                            if (fields.get(index).hasError()) {
+                                lastShownProblematicField = fields.get(index);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    };
 
     private final VMagnoliaDialogHeader dialogHeader = new VMagnoliaDialogHeader(new VDialogHeaderCallback() {
 
@@ -110,7 +138,8 @@ public class VMagnoliaDialogViewImpl extends FlowPanel implements VMagnoliaDialo
                     scrollTo(lastShownProblematicField);
                 } else {
                     final List<VMagnoliaTab> tabs = getTabs();
-                    setActiveTab(tabs.get((getTabs().indexOf(getActiveTab()) + 1) % getTabs().size()));
+                    VMagnoliaTab nextTab = tabs.get((tabs.indexOf(activeTab) + 1) % tabs.size());
+                    eventBus.fireEvent(new ActiveTabChangedEvent(nextTab));
                     jumpToNextError();
                 }
             }
@@ -121,6 +150,9 @@ public class VMagnoliaDialogViewImpl extends FlowPanel implements VMagnoliaDialo
 
     public VMagnoliaDialogViewImpl(EventBus eventBus, Presenter presenter) {
         super();
+        this.eventBus = eventBus;
+        this.presenter = presenter;
+
         impl = new VMagnoliaTabSheetViewImpl(eventBus, presenter);
 
         setStylePrimaryName(CLASSNAME);
@@ -133,15 +165,8 @@ public class VMagnoliaDialogViewImpl extends FlowPanel implements VMagnoliaDialo
         getElement().appendChild(footer);
 
         add(impl, content);
-        this.presenter = presenter;
-        setCaption("Edit page properties");
 
-        addScrollHandler(new ScrollHandler() {
-            @Override
-            public void onScroll(ScrollEvent event) {
-                VConsole.log("jsjdlkajslkdjaslkdjalskdjaslkdjasldjaskl");
-            }
-        });
+        setCaption("Edit page properties");
     }
 
     @Override
@@ -238,6 +263,10 @@ public class VMagnoliaDialogViewImpl extends FlowPanel implements VMagnoliaDialo
         }
         dialogTabs.add((VMagnoliaDialogTab) tab);
         impl.addTab(tab);
+        final List<DialogFieldWrapper> fields = ((VMagnoliaDialogTab) tab).getFields();
+        for (final DialogFieldWrapper field : fields) {
+            field.addFocusHandler(problematicFieldFocusHandler);
+        }
     }
 
     @Override
@@ -245,6 +274,10 @@ public class VMagnoliaDialogViewImpl extends FlowPanel implements VMagnoliaDialo
         int totalProblematicFields = 0;
         for (final VMagnoliaDialogTab tab : dialogTabs) {
             totalProblematicFields += tab.getErorAmount();
+            final VMagnoliaDialogTab dialogTab = (VMagnoliaDialogTab) tab;
+            for (final DialogFieldWrapper field : dialogTab.getFields()) {
+                field.addFocusHandler(problematicFieldFocusHandler);
+            }
         }
         dialogHeader.setErrorAmount(totalProblematicFields);
     }
@@ -263,8 +296,7 @@ public class VMagnoliaDialogViewImpl extends FlowPanel implements VMagnoliaDialo
 
     private void scrollTo(final DialogFieldWrapper field) {
         final int top = JQueryWrapper.select(field).position().top();
-        final ScrollPanel scroller = Util.findWidget(field.getElement(), ScrollPanel.class);
-        JQueryWrapper.select(scroller).animate(300, new AnimationSettings() {
+        JQueryWrapper.select(getScroller()).animate(300, new AnimationSettings() {
             {
                 setProperty("scrollTop", top - 30);
                 addCallback(new JQueryCallback() {
@@ -275,5 +307,10 @@ public class VMagnoliaDialogViewImpl extends FlowPanel implements VMagnoliaDialo
                 });
             }
         });
+    }
+
+    @Override
+    public Widget getScroller() {
+        return impl.getScroller();
     }
 }

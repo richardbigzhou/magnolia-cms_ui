@@ -44,7 +44,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * Error/Help bubble widget. 
  */
-public abstract class VInlineErrorMessage extends FlowPanel {
+public abstract class VInlineMessage extends FlowPanel {
     
     protected Widget triangleSVG = createErrorDecoration();
     
@@ -54,7 +54,7 @@ public abstract class VInlineErrorMessage extends FlowPanel {
     
     protected Element messageEl = DOM.createSpan();
     
-    protected VInlineErrorMessage() {
+    protected VInlineMessage() {
         construct();
     }
     
@@ -69,12 +69,12 @@ public abstract class VInlineErrorMessage extends FlowPanel {
     protected abstract void applyStyles();
 
     private static Widget createErrorDecoration() {
-        final DrawingArea canvas = new DrawingArea(30, 20);
+        final DrawingArea canvas = new DrawingArea(20, 10);
         canvas.clear();
-        final Path path = new Path(0, 20);
+        final Path path = new Path(0, 10);
         path.setStrokeColor(null);
-        path.lineTo(15, 0);
-        path.lineTo(30, 20);
+        path.lineTo(10, 0);
+        path.lineTo(20, 10);
         path.close();
         canvas.add(path);
         canvas.getElement().getStyle().setProperty("width", "");
@@ -85,8 +85,8 @@ public abstract class VInlineErrorMessage extends FlowPanel {
         messageEl.setInnerHTML(message);
     }
     
-    public static VInlineErrorMessage createErrorMessage() {
-        final VInlineErrorMessage result = new VInlineErrorMessage() {
+    public static VInlineMessage createErrorMessage() {
+        final VInlineMessage result = new VInlineMessage() {
             @Override
             protected void applyStyles() {
                 addStyleName("validation-message-inline");
@@ -98,8 +98,8 @@ public abstract class VInlineErrorMessage extends FlowPanel {
         return result;
     }
     
-    public static VInlineErrorMessage createHelpMessage() {
-        final VInlineErrorMessage result = new VInlineErrorMessage() {
+    public static VInlineMessage createHelpMessage() {
+        final VInlineMessage result = new VInlineMessage() {
             @Override
             protected void applyStyles() {
                 addStyleName("help-message-inline");
@@ -110,5 +110,14 @@ public abstract class VInlineErrorMessage extends FlowPanel {
         };
         return result;
     }
-    
+
+    public void addMessage(String newMessage) {
+        final String message = messageEl.getInnerHTML();
+        final StringBuilder sb = new StringBuilder(message);
+        if (!message.isEmpty()) {
+            sb.append("<br/>");
+        }
+        sb.append(newMessage);
+        messageEl.setInnerHTML(sb.toString());
+    }
 }

@@ -2,7 +2,7 @@
 <!DOCTYPE module SYSTEM "module.dtd">
 <module>
   <name>vaadin</name>
-  <displayName>Magnolia Vaadin Module</displayName>
+  <displayName>Magnolia Vaadin Integration Module</displayName>
   <class>info.magnolia.ui.vaadin.integration.module.VaadinModule</class>
   <version>${project.version}</version>
   <dependencies>

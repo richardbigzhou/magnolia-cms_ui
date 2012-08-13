@@ -46,6 +46,8 @@ import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.DoubleClickEvent;
+import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.user.client.DOM;
@@ -148,6 +150,15 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
                 }
             }
         }, ClickEvent.getType());
+        
+        addDomHandler(new DoubleClickHandler() {
+            @Override
+            public void onDoubleClick(DoubleClickEvent event) {
+                final Element element = event.getNativeEvent().getEventTarget().cast();
+                final VThumbnail thumbnail = Util.findWidget(element, VThumbnail.class);
+                proxy.call("thumbnailDoubleClicked", thumbnail.getId());
+            }
+        }, DoubleClickEvent.getType());
     }
 
     private void createStubsAndQueryThumbnails() {
