@@ -61,6 +61,7 @@ import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.VerticalLayout;
 
 /**
  * LazyThumbnailViewImpl.
@@ -77,7 +78,9 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
 
     private ThumbnailProvider thumbnailProvider;
 
-    private String jcrSQL2QueryStatement = "select * from ["+MgnlNodeType.NT_CONTENT+"] as t order by name(t)";
+    private String jcrSQL2QueryStatement;
+
+    private VerticalLayout margin = new VerticalLayout();
 
     public LazyThumbnailViewImpl(final WorkbenchDefinition definition, final ThumbnailProvider thumbnailProvider) {
         this.workbenchDefinition = definition;
@@ -86,7 +89,7 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
         layout.setSizeFull();
         layout.addStyleName("mgnl-workbench-thumbnail-view");
 
-        prepareJcrSQL2Query();
+        jcrSQL2QueryStatement = prepareJcrSQL2Query();
 
         layout.addThumbnailSelectionListener(new ThumbnailSelectionListener() {
             @Override
@@ -104,6 +107,9 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
                 listener.onDoubleClick(node);
             }
         });
+        margin.setSizeFull();
+        margin.setStyleName("mgnl-content-view");
+        margin.addComponent(layout);
     }
 
     @Override
@@ -139,7 +145,7 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
 
     @Override
     public Component asVaadinComponent() {
-        return layout;
+        return margin;
     }
 
     /**
@@ -178,12 +184,14 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
 
     private String prepareJcrSQL2Query(){
         final String[] itemTypes = getItemTypes(workbenchDefinition);
+        String stmt = null;
         if(itemTypes != null && itemTypes.length == 1) {
-            jcrSQL2QueryStatement = "select * from ["+itemTypes[0]+"] as t order by name(t)";
+            stmt = "select * from ["+itemTypes[0]+"] as t order by name(t)";
         } else {
             log.warn("Workbench definition contains {} item types. Defaulting to {}", (itemTypes != null ? itemTypes.length : 0), MgnlNodeType.NT_CONTENT);
+            stmt = "select * from ["+MgnlNodeType.NT_CONTENT+"] as t order by name(t)";
         }
-        return jcrSQL2QueryStatement;
+        return stmt;
     }
 
     private String[] getItemTypes(final WorkbenchDefinition definition) {
