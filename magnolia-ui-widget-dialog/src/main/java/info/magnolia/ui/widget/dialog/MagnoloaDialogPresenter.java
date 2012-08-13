@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.widget.dialog;
 
-import info.magnolia.ui.framework.shell.Shell;
-import com.vaadin.data.Item;
 import info.magnolia.ui.framework.event.EventBus;
+
+import com.vaadin.data.Item;
 
 /**
  * Definition of the Dialog Presenter (used to communicate with the outer world).
@@ -63,8 +63,6 @@ public interface MagnoloaDialogPresenter {
         }
 
         CallBack getCallBack();
-
-        Shell getShell();
 
         MagnoliaDialogView getView();
 
