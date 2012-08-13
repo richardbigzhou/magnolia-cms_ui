@@ -61,7 +61,7 @@ public class FileUploadFieldBuilderTest extends AbstractBuilderTest<FileUploadFi
 
         // THEN
         assertEquals(true, field instanceof UploadImageField);
-        assertEquals(0, ((AbstractJcrNodeAdapter)baseItem).getChilds().size());
+        assertEquals(0, ((AbstractJcrNodeAdapter)baseItem).getChildren().size());
     }
 
     @Test

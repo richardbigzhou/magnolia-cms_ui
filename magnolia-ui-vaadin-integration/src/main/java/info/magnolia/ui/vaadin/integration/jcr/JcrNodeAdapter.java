@@ -89,12 +89,12 @@ public class JcrNodeAdapter extends AbstractJcrNodeAdapter {
      */
     @Override
     public Property getItemProperty(Object id) {
-        return changedProperties.containsKey(id) ? changedProperties.get(id) : super.getItemProperty(id);
+        return getChangedProperties().containsKey(id) ? getChangedProperties().get(id) : super.getItemProperty(id);
     }
 
     @Override
     public Collection<?> getItemPropertyIds() {
-        return Collections.unmodifiableCollection(changedProperties.keySet());
+        return Collections.unmodifiableCollection(getChangedProperties().keySet());
     }
 
     @Override
@@ -107,7 +107,7 @@ public class JcrNodeAdapter extends AbstractJcrNodeAdapter {
         }
 
         //Store Property.
-        changedProperties.put((String) id, property);
+        getChangedProperties().put((String) id, property);
 
         return true;
     }
@@ -121,11 +121,11 @@ public class JcrNodeAdapter extends AbstractJcrNodeAdapter {
     @Override
     public boolean removeItemProperty(Object id){
         boolean res = false;
-        if (changedProperties.containsKey(id)) {
-            removedProperties.put((String) id, changedProperties.remove(id));
+        if (getChangedProperties().containsKey(id)) {
+            getRemovedProperties().put((String) id, getChangedProperties().remove(id));
             res = true;
         } else if (jcrItemHasProperty((String) id)) {
-            removedProperties.put((String) id, super.getItemProperty(id));
+            getRemovedProperties().put((String) id, super.getItemProperty(id));
             res = true;
         }
         return res;
