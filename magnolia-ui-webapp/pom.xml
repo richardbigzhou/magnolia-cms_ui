@@ -54,7 +54,7 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>info.magnolia</groupId>
+      <groupId>info.magnolia.ui</groupId>
       <artifactId>magnolia-ui-app-instant-preview</artifactId>
       <version>${project.version}</version>
     </dependency>
