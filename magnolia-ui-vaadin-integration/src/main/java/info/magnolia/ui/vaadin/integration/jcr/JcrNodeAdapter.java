@@ -48,7 +48,7 @@ import com.vaadin.data.Property.ValueChangeEvent;
 /**
  * Base implementation of an {@link com.vaadin.data.Item} wrapping/representing a {@link javax.jcr.Node}.
  * Implements {Property.ValueChangeListener} in order to inform/change JCR property when a
- * Vaadim property has changed.
+ * Vaadin property has changed.
  *
  * Jcr properties are read from Repository as long as they are not modified.
  *
