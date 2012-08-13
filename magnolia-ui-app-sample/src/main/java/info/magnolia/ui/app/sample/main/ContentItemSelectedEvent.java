@@ -33,32 +33,32 @@
  */
 package info.magnolia.ui.app.sample.main;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.event.Event;
+import info.magnolia.ui.framework.event.EventHandler;
 
 /**
- * Presenter for the navigation.
+ * Event fired when an item is selected in the navigation view.
+ *
+ * @see NavigationPresenter
  */
-public class NavigationPresenter implements NavigationView.Listener {
+public class ContentItemSelectedEvent implements Event<ContentItemSelectedEvent.Handler> {
 
-    private EventBus appEventBus;
-    private NavigationView view;
+    /**
+     * Handler.
+     */
+    public interface Handler extends EventHandler {
 
-    @Inject
-    public NavigationPresenter(@Named("app") EventBus appEventBus, NavigationView view) {
-        this.appEventBus = appEventBus;
-        this.view = view;
+        void onContentItemSelected(String name);
     }
 
-    public NavigationView start() {
-        view.setListener(this);
-        return view;
+    private final String name;
+
+    public ContentItemSelectedEvent(String name) {
+        this.name = name;
     }
 
     @Override
-    public void onItemSelected(String name) {
-        appEventBus.fireEvent(new ContentItemSelectedEvent(name));
+    public void dispatch(Handler handler) {
+        handler.onContentItemSelected(this.name);
     }
 }

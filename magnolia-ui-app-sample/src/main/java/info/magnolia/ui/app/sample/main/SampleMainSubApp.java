@@ -34,26 +34,36 @@
 package info.magnolia.ui.app.sample.main;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import info.magnolia.ui.framework.app.SubApp;
+import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.view.View;
 
 /**
  * SubApp for the main tab in sample app.
  */
 @Singleton
-public class SampleMainSubApp implements SubApp, SampleMainView.Listener, NavigationPresenter.Listener {
+public class SampleMainSubApp implements SubApp, SampleMainView.Listener {
 
     private SampleMainView sampleMainView;
     private NavigationPresenter navigationPresenter;
     private ContentDisplayPresenter contentDisplayPresenter;
 
     @Inject
-    public SampleMainSubApp(SampleMainView sampleMainView, NavigationPresenter navigationPresenter, ContentDisplayPresenter contentDisplayPresenter) {
+    public SampleMainSubApp(@Named("app") EventBus appEventBus, SampleMainView sampleMainView, NavigationPresenter navigationPresenter, final ContentDisplayPresenter contentDisplayPresenter) {
         this.sampleMainView = sampleMainView;
         this.contentDisplayPresenter = contentDisplayPresenter;
         this.navigationPresenter = navigationPresenter;
+
+        appEventBus.addHandler(ContentItemSelectedEvent.class, new ContentItemSelectedEvent.Handler() {
+
+            @Override
+            public void onContentItemSelected(String name) {
+                contentDisplayPresenter.setResourceToDisplay(name);
+            }
+        });
     }
 
     @Override
@@ -61,7 +71,6 @@ public class SampleMainSubApp implements SubApp, SampleMainView.Listener, Naviga
 
         ContentDisplayView contentDisplayView = contentDisplayPresenter.start();
 
-        navigationPresenter.setListener(this);
         NavigationView navigationView = navigationPresenter.start();
 
         sampleMainView.setListener(this);
@@ -73,10 +82,5 @@ public class SampleMainSubApp implements SubApp, SampleMainView.Listener, Naviga
     @Override
     public String getCaption() {
         return "Sample";
-    }
-
-    @Override
-    public void onItemSelected(String name) {
-        contentDisplayPresenter.setResourceToDisplay(name);
     }
 }
