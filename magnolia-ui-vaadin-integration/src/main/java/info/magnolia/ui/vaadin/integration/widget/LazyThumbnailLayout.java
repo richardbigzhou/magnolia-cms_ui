@@ -168,12 +168,6 @@ public class LazyThumbnailLayout extends AbstractComponent implements ServerSide
     }
 
     @Override
-    public void detach() {
-        super.detach();
-        selectionListeners.clear();
-    }
-
-    @Override
     public void paintContent(PaintTarget target) throws PaintException {
         super.paintContent(target);
         proxy.paintContent(target);
