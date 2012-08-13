@@ -71,7 +71,7 @@
         </supertypes>
     </nodeType>
 
-    <nodeType name="mgnl:message" isMixin="false" hasOrderableChildNodes="true" primaryItemName="">
+    <nodeType name="mgnl:systemMessage" isMixin="false" hasOrderableChildNodes="true" primaryItemName="">
         <supertypes>
             <supertype>mgnl:messageBase</supertype>
       </supertypes>

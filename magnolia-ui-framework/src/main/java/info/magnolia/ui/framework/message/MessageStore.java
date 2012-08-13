@@ -60,7 +60,7 @@ public class MessageStore {
 
     private static final String WORKSPACE_NAME = "messages";
     private static final String WORKSPACE_PATH = "/";
-    private static final String MESSAGE_NODE_TYPE = "mgnl:message";
+    private static final String MESSAGE_NODE_TYPE = "mgnl:systemMessage";
     private static final String USER_NODE_TYPE = MgnlNodeType.NT_CONTENT;
 
     /**
