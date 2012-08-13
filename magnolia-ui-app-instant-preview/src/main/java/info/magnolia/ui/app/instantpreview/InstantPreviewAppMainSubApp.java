@@ -36,6 +36,8 @@ package info.magnolia.ui.app.instantpreview;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.instantpreview.InstantPreviewDispatcher;
+import info.magnolia.ui.framework.message.Message;
+import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.framework.view.View;
 
 import javax.inject.Inject;
@@ -86,6 +88,16 @@ public class InstantPreviewAppMainSubApp implements SubApp, InstantPreviewView.L
     @Override
     public void leaveSession(String hostId) {
         dispatcher.unsubscribeFrom(hostId);
+    }
+
+    @Override
+    public void showError(String error) {
+        Message message = new Message();
+        message.setMessage(error);
+        message.setType(MessageType.ERROR);
+        message.setTimestamp(System.currentTimeMillis());
+        appContext.broadcastMessage(message);
+
     }
 
 }

@@ -93,7 +93,7 @@ public class InstantPreviewViewImpl implements InstantPreviewView {
 
     protected TextField buildInputCode() {
         final TextField inputCode = new TextField();
-        inputCode.setInputPrompt("Enter host id, i.e. 123-456-789");
+        inputCode.setInputPrompt("Enter host id");
         inputCode.setMaxLength(11);
         inputCode.setImmediate(true);
         inputCode.addListener(new Property.ValueChangeListener() {
@@ -115,29 +115,34 @@ public class InstantPreviewViewImpl implements InstantPreviewView {
 
             @Override
             public void buttonClick(ClickEvent event) {
-                if(joinButton.isEnabled()) {
-                    if(joinButton.getData() == InstantPreviewActionType.JOIN) {
-                        if(StringUtils.isNotBlank(hostId)) {
-                            //join session
-                            hostId = (String) inputCode.getValue();
-                            listener.joinSession(hostId);
-                            hostIdLink.setVisible(false);
-                            joinButton.setCaption("Leave");
-                            joinButton.setData(InstantPreviewActionType.LEAVE);
-                            getShareButton().setEnabled(false);
-                            getInputCode().setEnabled(false);
-                        } else {
-                            //raise error.
-                            log.error("code to join session cannot be empty or null");
+                try {
+                    if(joinButton.isEnabled()) {
+                        if(joinButton.getData() == InstantPreviewActionType.JOIN) {
+                            if(StringUtils.isNotBlank(hostId)) {
+                                //join session
+                                hostId = (String) inputCode.getValue();
+                                listener.joinSession(hostId);
+                                hostIdLink.setVisible(false);
+                                joinButton.setCaption("Leave");
+                                joinButton.setData(InstantPreviewActionType.LEAVE);
+                                getShareButton().setEnabled(false);
+                                getInputCode().setEnabled(false);
+                            } else {
+                                log.error("Host id cannot be empty or null");
+                                listener.showError("Host id cannot be empty or null");
+                            }
+                        } else if(joinButton.getData()==InstantPreviewActionType.LEAVE) {
+                            listener.leaveSession(hostId);
+                            hostIdLink.setVisible(true);
+                            joinButton.setCaption("Join");
+                            joinButton.setData(InstantPreviewActionType.JOIN);
+                            getShareButton().setEnabled(true);
+                            getInputCode().setEnabled(true);
                         }
-                    } else if(joinButton.getData()==InstantPreviewActionType.LEAVE) {
-                        listener.leaveSession(hostId);
-                        hostIdLink.setVisible(true);
-                        joinButton.setCaption("Join");
-                        joinButton.setData(InstantPreviewActionType.JOIN);
-                        getShareButton().setEnabled(true);
-                        getInputCode().setEnabled(true);
                     }
+                } catch (IllegalArgumentException e) {
+                    log.error("", e);
+                    listener.showError(e.getMessage() + "\nIs the code correct? It is also possible that the host stopped sharing the session.");
                 }
             }
         });

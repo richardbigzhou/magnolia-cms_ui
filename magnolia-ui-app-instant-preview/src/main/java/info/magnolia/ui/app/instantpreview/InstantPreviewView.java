@@ -54,6 +54,8 @@ public interface InstantPreviewView extends View {
         void leaveSession(String hostId);
 
         void unshareSession(String hostId);
+
+        void showError(String error);
     }
 
     void setListener(Listener listener);
