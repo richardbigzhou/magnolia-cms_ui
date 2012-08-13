@@ -45,7 +45,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * InstantPreviewDispatcher.
@@ -53,22 +54,22 @@ import org.apache.log4j.Logger;
 @Singleton
 public class InstantPreviewDispatcher implements PreviewLocationListener {
 
-    private Logger log = Logger.getLogger(InstantPreviewLocationManager.class.getName());
-    
+    private static final Logger log = LoggerFactory.getLogger(InstantPreviewDispatcher.class);
+
     private final InstantPreviewLocationManager manager;
-    
+
     private final LocationController controller;
-    
+
     private final Shell shell;
-    
+
     private String hostId = null;
-    
+
     @Inject
     public InstantPreviewDispatcher(InstantPreviewLocationManager manager, LocationController controller, Shell shell, @Named("adminCentral")EventBus eventBus) {
         this.manager = manager;
         this.controller = controller;
         this.shell = shell;
-        
+
         eventBus.addHandler(LocationChangedEvent.class, new LocationChangedEvent.Handler() {
             @Override
             public void onLocationChanged(LocationChangedEvent event) {
@@ -83,16 +84,22 @@ public class InstantPreviewDispatcher implements PreviewLocationListener {
             }
         });
     }
-    
+
     public boolean isSharing() {
         return hostId != null;
     }
-    
-    public void share() {
+
+    public String share() {
         this.hostId = manager.registerInstantPreviewHost();
-        log.info("Started sharing with host id: " + hostId);
+        log.info("Started sharing with host id {}", hostId);
+        return hostId;
     }
-    
+    public void unshare(String hostId) {
+        manager.unregisterInstantPreviewHost(hostId);
+        log.info("Stopped sharing host with id {}", hostId);
+        this.hostId = null;
+    }
+
     @Override
     public void onPreviewLocationReceived(String path) {
         final Location location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages", path);
@@ -102,9 +109,11 @@ public class InstantPreviewDispatcher implements PreviewLocationListener {
 
     public void subscribeTo(String hostId) {
         manager.subscribeTo(hostId, this);
+        log.info("Subscribed to host with id {}", hostId);
     }
-    
+
     public void unsubscribeFrom(String hostId) {
         manager.unsubscribeFrom(hostId, this);
+        log.info("Unsubscribed from host with id {}", hostId);
     }
 }

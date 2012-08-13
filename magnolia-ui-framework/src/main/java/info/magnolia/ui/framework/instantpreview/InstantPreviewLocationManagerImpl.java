@@ -52,16 +52,16 @@ import com.google.common.collect.Multimaps;
 public class InstantPreviewLocationManagerImpl implements InstantPreviewLocationManager {
 
     private final Random idGenerator;
-    
+
     private List<String> hosts = Collections.synchronizedList(Lists.<String>newArrayList());
-    
-    private ListMultimap<String, PreviewLocationListener> listeners = Multimaps.synchronizedListMultimap(ArrayListMultimap.<String, PreviewLocationListener>create()); 
-    
+
+    private ListMultimap<String, PreviewLocationListener> listeners = Multimaps.synchronizedListMultimap(ArrayListMultimap.<String, PreviewLocationListener>create());
+
     @Inject
     public InstantPreviewLocationManagerImpl() {
         idGenerator = new Random(System.currentTimeMillis());
     }
-    
+
     @Override
     public String registerInstantPreviewHost() {
         final String id = String.valueOf(Math.abs(idGenerator.nextInt()));
@@ -70,11 +70,20 @@ public class InstantPreviewLocationManagerImpl implements InstantPreviewLocation
     }
 
     @Override
+    public void unregisterInstantPreviewHost(String hostId) {
+        if (!hosts.contains(hostId)) {
+            throw new IllegalArgumentException("Host with id: " + hostId + " does not exist!");
+        }
+        hosts.remove(hostId);
+        listeners.get(hostId).clear();
+    }
+
+    @Override
     public void subscribeTo(String hostId, PreviewLocationListener listener) throws IllegalArgumentException {
         if (!hosts.contains(hostId)) {
             throw new IllegalArgumentException("Host with id: " + hostId + " does not exist!");
         }
-        listeners.put(hostId, listener); 
+        listeners.put(hostId, listener);
     }
 
     @Override
@@ -91,4 +100,5 @@ public class InstantPreviewLocationManagerImpl implements InstantPreviewLocation
             listener.onPreviewLocationReceived(token);
         }
     }
+
 }

@@ -34,23 +34,25 @@
 package info.magnolia.ui.framework.instantpreview;
 
 /**
- * InstantPreviewLocationManager. 
+ * InstantPreviewLocationManager.
  */
 public interface InstantPreviewLocationManager {
 
     String registerInstantPreviewHost();
-    
+
+    void unregisterInstantPreviewHost(String hostId);
+
     void subscribeTo(String hostId, PreviewLocationListener listener);
-    
+
     void unsubscribeFrom(String hostId, PreviewLocationListener listener);
-    
+
     void sendPreviewToken(String hostId, String token);
-    
+
     /**
      * PreviewLocationListener.
      */
     public interface PreviewLocationListener {
-        
+
         void onPreviewLocationReceived(String location);
     }
 }
