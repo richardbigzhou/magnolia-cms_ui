@@ -44,9 +44,13 @@ public interface PagesMainView extends View {
      * Listener.
      */
     public interface Listener {
+        void share();
+
+        void subscribe(String hostId);
     }
 
     void setListener(Listener listener);
 
     void setWorkbenchView(View workbenchView);
+    
 }
