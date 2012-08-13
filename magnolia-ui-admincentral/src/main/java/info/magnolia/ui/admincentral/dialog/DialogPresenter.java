@@ -38,7 +38,6 @@ import info.magnolia.ui.admincentral.dialog.action.DialogActionFactory;
 import info.magnolia.ui.admincentral.dialog.builder.DialogBuilder;
 import info.magnolia.ui.admincentral.field.builder.DialogFieldFactory;
 import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
@@ -131,10 +130,6 @@ public class DialogPresenter implements MagnoloaDialogPresenter.Presenter,  Magn
         view.showValidation(isVisible);
     }
 
-    @Override
-    public Shell getShell() {
-        return shell;
-    }
 
     @Override
     public MagnoliaDialogView getView() {
