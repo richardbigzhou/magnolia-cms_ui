@@ -135,7 +135,7 @@ public class MessagesManagerImplTest {
         assertFalse(session.nodeExists("/charlie"));
 
         assertTrue(session.getNode("/alice").getPrimaryNodeType().getName().equals(MgnlNodeType.NT_CONTENT));
-        assertTrue(session.getNode("/alice/0").getPrimaryNodeType().getName().equals("mgnl:systemMessage"));
+        assertTrue(session.getNode("/alice/0").getPrimaryNodeType().getName().equals(MessageStore.MESSAGE_NODE_TYPE));
 
         assertEquals(1, messagesManager.getMessagesForUser("alice").size());
         assertEquals(1, messagesManager.getMessagesForUser("bob").size());
@@ -171,7 +171,7 @@ public class MessagesManagerImplTest {
         assertFalse(session.nodeExists("/charlie"));
 
         assertTrue(session.getNode("/bob").getPrimaryNodeType().getName().equals(MgnlNodeType.NT_CONTENT));
-        assertTrue(session.getNode("/bob/0").getPrimaryNodeType().getName().equals("mgnl:systemMessage"));
+        assertTrue(session.getNode("/bob/0").getPrimaryNodeType().getName().equals(MessageStore.MESSAGE_NODE_TYPE));
     }
 
     @Test
