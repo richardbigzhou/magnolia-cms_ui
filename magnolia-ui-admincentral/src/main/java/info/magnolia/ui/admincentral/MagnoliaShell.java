@@ -67,7 +67,6 @@ import org.slf4j.LoggerFactory;
 import org.vaadin.rpc.client.Method;
 
 import com.google.gson.Gson;
-import com.vaadin.terminal.ExternalResource;
 
 /**
  * Admin shell.
@@ -146,12 +145,7 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
     public void showError(String message, Exception e) {
         throw new UnsupportedOperationException("Use MessagesManager class for messages dispatching");
     }
-
-    @Override
-    public void openWindow(String uri, String windowName) {
-        getWindow().open(new ExternalResource(uri), windowName);
-    }
-
+    
     @Override
     public String getFragment() {
         final ShellViewport activeViewport = getActiveViewport();
@@ -188,11 +182,6 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
                 removeFragmentChangedHanlder(handler);
             }
         };
-    }
-
-    @Override
-    public Shell createSubShell(String id) {
-        throw new UnsupportedOperationException("MagnoliaShell is not capable of opening the subshells.");
     }
 
     @Override
@@ -263,6 +252,13 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
             requestRepaint();
         } else {
             super.navigateToShellApp(prefix, token);
+        }
+    }
+
+    @Override
+    public void pushToClient() {
+        synchronized (getApplication()) {
+            getPusher().push();
         }
     }
 }

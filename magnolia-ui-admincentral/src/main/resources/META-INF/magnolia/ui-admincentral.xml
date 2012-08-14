@@ -19,6 +19,12 @@
       <type>info.magnolia.ui.framework.message.MessagesManager</type>
       <implementation>info.magnolia.ui.framework.message.MessagesManagerImpl</implementation>
     </component>
+    
+    <component>
+      <type>info.magnolia.ui.framework.instantpreview.InstantPreviewLocationManager</type>
+      <implementation>info.magnolia.ui.framework.instantpreview.InstantPreviewLocationManagerImpl</implementation>
+    </component>
+    
     <component>
       <type>info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptorManager</type>
       <implementation>info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptorManager</implementation>

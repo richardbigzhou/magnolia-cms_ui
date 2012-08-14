@@ -37,7 +37,6 @@ import info.magnolia.context.MgnlContext;
 
 import javax.jcr.Item;
 import javax.jcr.Node;
-import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
@@ -72,7 +71,7 @@ public abstract class AbstractJcrAdapter implements JcrItemAdapter {
         String path = null;
         try {
             isNode = jcrItem.isNode();
-            Node node = isNode ? ((Node)jcrItem) : ((Property)jcrItem).getParent();
+            Node node = isNode ? ((Node)jcrItem) : jcrItem.getParent();
             nodeIdentifier = node.getIdentifier();
             workspace = node.getSession().getWorkspace().getName();
             path = jcrItem.getPath();

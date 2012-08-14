@@ -33,8 +33,21 @@
  */
 package info.magnolia.ui.app.instantpreview;
 
+import info.magnolia.ui.framework.instantpreview.InstantPreviewHostNotFoundException;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.BaseTheme;
 
 /**
  * View implementation for the InstantPreview app.
@@ -42,15 +55,146 @@ import com.vaadin.ui.VerticalLayout;
 @SuppressWarnings("serial")
 public class InstantPreviewViewImpl implements InstantPreviewView {
 
+    private static final Logger log = LoggerFactory.getLogger(InstantPreviewViewImpl.class);
+
     private Listener listener;
-    private final Component component;
+    private final VerticalLayout layout = new VerticalLayout();
+    private String hostId;
+    private Button shareButton;
+    private Button joinButton;
+    private TextField inputHostId;
+    private Button hostIdLink;
+
+    /**
+     * InstantPreviewActionType.
+     */
+    public enum InstantPreviewActionType {
+        SHARE, UNSHARE, JOIN, LEAVE
+    }
 
     public InstantPreviewViewImpl() {
-        VerticalLayout layout = new VerticalLayout();
-        layout.setMargin(true);
         layout.setSpacing(true);
+        layout.setMargin(true);
 
-        component = layout;
+        shareButton = buildShareButton();
+        shareButton.focus();
+
+        joinButton = buildJoinButton();
+
+        inputHostId = buildHostIdInputText();
+
+        layout.addComponent(shareButton);
+        hostIdLink = new Button(hostId != null ? hostId: "");
+        hostIdLink.setImmediate(true);
+        hostIdLink.setStyleName(BaseTheme.BUTTON_LINK);
+
+        layout.addComponent(hostIdLink);
+        layout.addComponent(joinButton);
+        layout.addComponent(inputHostId);
+
+    }
+
+    protected TextField buildHostIdInputText() {
+        final TextField inputCode = new TextField();
+        inputCode.setInputPrompt("Enter host id");
+        inputCode.setMaxLength(11);
+        inputCode.setImmediate(true);
+        inputCode.addListener(new Property.ValueChangeListener() {
+
+            @Override
+            public void valueChange(ValueChangeEvent event) {
+                hostId = event.getProperty().toString();
+            }
+
+        });
+        //TODO add validator
+        return inputCode;
+    }
+
+    protected Button buildJoinButton() {
+        final Button joinButton = new Button("Join");
+        joinButton.setData(InstantPreviewActionType.JOIN);
+        joinButton.addListener(new ClickListener() {
+
+            @Override
+            public void buttonClick(ClickEvent event) {
+                try {
+                    if(joinButton.isEnabled()) {
+                        if(joinButton.getData() == InstantPreviewActionType.JOIN) {
+                            if(StringUtils.isNotBlank(hostId)) {
+                                //join session
+                                hostId = (String) inputHostId.getValue();
+                                listener.joinSession(hostId);
+                                hostIdLink.setVisible(false);
+                                joinButton.setCaption("Leave");
+                                joinButton.setData(InstantPreviewActionType.LEAVE);
+                                getShareButton().setEnabled(false);
+                                getInputHostId().setEnabled(false);
+                            } else {
+                                log.error("Host id cannot be empty or null");
+                                listener.showError("Host id cannot be empty or null");
+                            }
+                        } else if(joinButton.getData()==InstantPreviewActionType.LEAVE) {
+                            listener.leaveSession(hostId);
+                            hostIdLink.setVisible(true);
+                            joinButton.setCaption("Join");
+                            joinButton.setData(InstantPreviewActionType.JOIN);
+                            getShareButton().setEnabled(true);
+                            getInputHostId().setEnabled(true);
+                        }
+                    }
+                } catch (InstantPreviewHostNotFoundException e) {
+                    log.error("", e);
+                    listener.showError(e.getMessage());
+                }
+            }
+        });
+        return joinButton;
+    }
+
+    protected Button buildShareButton() {
+        final Button shareButton = new Button("Share");
+        shareButton.setData(InstantPreviewActionType.SHARE);
+        shareButton.addListener(new ClickListener() {
+
+            @Override
+            public void buttonClick(ClickEvent event) {
+                if(shareButton.isEnabled()) {
+                    if(shareButton.getData()==InstantPreviewActionType.SHARE) {
+                        //generate code and start session
+                        hostId = listener.shareSession();
+                        hostIdLink.setCaption(hostId);
+                        hostIdLink.setVisible(true);
+                        shareButton.setCaption("Unshare");
+                        shareButton.setData(InstantPreviewActionType.UNSHARE);
+                        getJoinButton().setEnabled(false);
+                        getInputHostId().setEnabled(false);
+                    } else if(shareButton.getData()==InstantPreviewActionType.UNSHARE) {
+                        listener.unshareSession(hostId);
+                        hostId = null;
+                        hostIdLink.setCaption("");
+                        hostIdLink.setVisible(false);
+                        shareButton.setCaption("Share");
+                        shareButton.setData(InstantPreviewActionType.SHARE);
+                        getJoinButton().setEnabled(true);
+                        getInputHostId().setEnabled(true);
+                    }
+                }
+            }
+        });
+        return shareButton;
+    }
+
+    public Button getShareButton() {
+        return shareButton;
+    }
+
+    public Button getJoinButton() {
+        return joinButton;
+    }
+
+    public TextField getInputHostId() {
+        return inputHostId;
     }
 
     @Override
@@ -60,6 +204,6 @@ public class InstantPreviewViewImpl implements InstantPreviewView {
 
     @Override
     public Component asVaadinComponent() {
-        return component;
+        return layout;
     }
 }

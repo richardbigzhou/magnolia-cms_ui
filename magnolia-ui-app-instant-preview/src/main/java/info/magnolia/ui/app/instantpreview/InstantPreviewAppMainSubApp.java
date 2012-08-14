@@ -35,22 +35,27 @@ package info.magnolia.ui.app.instantpreview;
 
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.SubApp;
+import info.magnolia.ui.framework.instantpreview.InstantPreviewDispatcher;
+import info.magnolia.ui.framework.message.Message;
+import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.framework.view.View;
 
 import javax.inject.Inject;
 
 /**
- * Sub app for the main tab in the instan preview app.
+ * Sub app for the main tab in the instant preview app.
  */
 public class InstantPreviewAppMainSubApp implements SubApp, InstantPreviewView.Listener {
 
     private AppContext appContext;
     private InstantPreviewView view;
+    private InstantPreviewDispatcher dispatcher;
 
     @Inject
-    public InstantPreviewAppMainSubApp(AppContext appContext, InstantPreviewView view) {
+    public InstantPreviewAppMainSubApp(AppContext appContext, InstantPreviewView view, InstantPreviewDispatcher dispatcher) {
         this.appContext = appContext;
         this.view = view;
+        this.dispatcher = dispatcher;
         view.setListener(this);
     }
 
@@ -66,14 +71,32 @@ public class InstantPreviewAppMainSubApp implements SubApp, InstantPreviewView.L
 
     @Override
     public String shareSession() {
-        // TODO Auto-generated method stub
-        return null;
+        return dispatcher.share();
+
     }
 
     @Override
-    public void unshareSession() {
-        // TODO Auto-generated method stub
+    public void unshareSession(String hostId) {
+        dispatcher.unshare(hostId);
+    }
 
+    @Override
+    public void joinSession(String hostId) {
+        dispatcher.subscribeTo(hostId);
+    }
+
+    @Override
+    public void leaveSession(String hostId) {
+        dispatcher.unsubscribeFrom(hostId);
+    }
+
+    @Override
+    public void showError(String error) {
+        Message message = new Message();
+        message.setMessage(error);
+        message.setType(MessageType.ERROR);
+        message.setTimestamp(System.currentTimeMillis());
+        appContext.broadcastMessage(message);
     }
 
 }

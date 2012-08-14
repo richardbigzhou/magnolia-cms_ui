@@ -38,6 +38,7 @@ import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.instantpreview.InstantPreviewDispatcher;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.view.View;
 
@@ -53,10 +54,12 @@ public class PagesMainSubApp implements SubApp, PagesMainView.Listener {
 
     private PagesMainView view;
     private ContentWorkbenchPresenter workbench;
-
+    private InstantPreviewDispatcher dispatcher;
+    
     @Inject
-    public PagesMainSubApp(final AppContext appContext, PagesMainView view, ContentWorkbenchPresenter workbench, @Named("app") EventBus eventBus) {
+    public PagesMainSubApp(final AppContext appContext, PagesMainView view, ContentWorkbenchPresenter workbench, @Named("app") EventBus eventBus, InstantPreviewDispatcher dispatcher) {
         this.view = view;
+        this.dispatcher = dispatcher;
         this.view.setListener(this);
         this.workbench = workbench;
         eventBus.addHandler(ItemSelectedEvent.class, new ItemSelectedEvent.Handler() {
@@ -77,5 +80,15 @@ public class PagesMainSubApp implements SubApp, PagesMainView.Listener {
     public View start() {
         view.setWorkbenchView(workbench.start());
         return view;
+    }
+
+    @Override
+    public void share() {
+        dispatcher.share();
+    }
+
+    @Override
+    public void subscribe(String hostId) {
+        dispatcher.subscribeTo(hostId);
     }
 }

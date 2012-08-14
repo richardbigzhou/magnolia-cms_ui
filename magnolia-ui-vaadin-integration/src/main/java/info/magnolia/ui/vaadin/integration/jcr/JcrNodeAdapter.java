@@ -142,7 +142,7 @@ public class JcrNodeAdapter extends AbstractJcrNodeAdapter {
 
     private boolean jcrItemHasProperty(String propertyName) {
         try {
-            return ((Node) getJcrItem()).hasProperty((String) propertyName);
+            return ((Node) getJcrItem()).hasProperty(propertyName);
         }
         catch (RepositoryException e) {
             log.error("", e);

@@ -31,49 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.instantpreview.join;
-
-import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.app.SubApp;
-import info.magnolia.ui.framework.view.View;
-
-import javax.inject.Inject;
+package info.magnolia.ui.framework.instantpreview;
 
 /**
- * Sub app for the preview tab, the one opening if you join a session.
+ * A runtime exception which can be raised when an instant preview host does not exist either because the caller used an invalid id or because
+ * the host stopped sharing his session.
  */
-public class InstantPreviewAppJoinSubApp implements SubApp, InstantPreviewJoinView.Listener {
+public class InstantPreviewHostNotFoundException extends RuntimeException {
 
-    private AppContext appContext;
-    private InstantPreviewJoinView view;
+    private static final long serialVersionUID = 1L;
 
-    @Inject
-    public InstantPreviewAppJoinSubApp(AppContext appContext, InstantPreviewJoinView view) {
-        this.appContext = appContext;
-        this.view = view;
-        view.setListener(this);
-    }
-
-    @Override
-    public String getCaption() {
-        return "Instant Preview";
-    }
-
-    @Override
-    public View start() {
-        return view;
-    }
-
-    @Override
-    public void joinSession(String id) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void leaveSession() {
-        // TODO Auto-generated method stub
-
+    public InstantPreviewHostNotFoundException(String message) {
+        super(message);
     }
 
 }

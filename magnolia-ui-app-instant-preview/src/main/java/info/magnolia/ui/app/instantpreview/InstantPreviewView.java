@@ -44,10 +44,18 @@ public interface InstantPreviewView extends View {
      * Listener interface for InstantPreviewView.
      */
     public interface Listener {
+        /**
+         * @return the generated host id.
+         */
         String shareSession();
 
-        void unshareSession();
+        void unshareSession(String hostId);
 
+        void joinSession(String hostId);
+
+        void leaveSession(String hostId);
+
+        void showError(String error);
     }
 
     void setListener(Listener listener);

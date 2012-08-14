@@ -31,24 +31,28 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.instantpreview.join;
-
-import info.magnolia.ui.framework.view.View;
+package info.magnolia.ui.framework.instantpreview;
 
 /**
- * View for the InstantPreview app.
+ * InstantPreviewLocationManager.
  */
-public interface InstantPreviewJoinView extends View {
+public interface InstantPreviewLocationManager {
+
+    String registerInstantPreviewHost();
+
+    void unregisterInstantPreviewHost(String hostId) throws InstantPreviewHostNotFoundException;
+
+    void subscribeTo(String hostId, PreviewLocationListener listener) throws InstantPreviewHostNotFoundException;
+
+    void unsubscribeFrom(String hostId, PreviewLocationListener listener) throws InstantPreviewHostNotFoundException;
+
+    void sendPreviewToken(String hostId, String token) throws InstantPreviewHostNotFoundException;
 
     /**
-     * Listener interface for InstantPreviewJoinView.
+     * PreviewLocationListener.
      */
-    public interface Listener {
+    public interface PreviewLocationListener {
 
-        void joinSession(String id);
-
-        void leaveSession();
+        void onPreviewLocationReceived(String location);
     }
-
-    void setListener(Listener listener);
 }
