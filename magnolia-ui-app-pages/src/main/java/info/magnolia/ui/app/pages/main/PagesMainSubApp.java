@@ -33,11 +33,16 @@
  */
 package info.magnolia.ui.app.pages.main;
 
+import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
+import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.SubApp;
+import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.view.View;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  * PagesMainSubApp.
@@ -50,10 +55,17 @@ public class PagesMainSubApp implements SubApp, PagesMainView.Listener {
     private ContentWorkbenchPresenter workbench;
 
     @Inject
-    public PagesMainSubApp(PagesMainView view, ContentWorkbenchPresenter workbench) {
+    public PagesMainSubApp(final AppContext appContext, PagesMainView view, ContentWorkbenchPresenter workbench, @Named("app") EventBus eventBus) {
         this.view = view;
         this.view.setListener(this);
         this.workbench = workbench;
+        eventBus.addHandler(ItemSelectedEvent.class, new ItemSelectedEvent.Handler() {
+
+            @Override
+            public void onItemSelected(ItemSelectedEvent event) {
+                appContext.setSubAppLocation(PagesMainSubApp.this, new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages", "main:" + event.getPath()));
+            }
+        });
     }
 
     @Override
