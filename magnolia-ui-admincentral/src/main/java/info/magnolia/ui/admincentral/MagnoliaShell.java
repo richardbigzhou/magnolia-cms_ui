@@ -113,6 +113,7 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
         proxy.register("startApp", new Method() {
             @Override
             public void invoke(String methodName, Object[] params) {
+                setActiveViewport(getAppViewport());
                 final String appName = String.valueOf(params[0]);
                 MagnoliaShell.this.appController.startIfNotAlreadyRunningThenFocus(appName);
             }
