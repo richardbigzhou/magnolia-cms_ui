@@ -43,7 +43,7 @@ import info.magnolia.ui.framework.view.View;
 import javax.inject.Inject;
 
 /**
- * Sub app for the main tab in the instan preview app.
+ * Sub app for the main tab in the instant preview app.
  */
 public class InstantPreviewAppMainSubApp implements SubApp, InstantPreviewView.Listener {
 
@@ -97,7 +97,6 @@ public class InstantPreviewAppMainSubApp implements SubApp, InstantPreviewView.L
         message.setType(MessageType.ERROR);
         message.setTimestamp(System.currentTimeMillis());
         appContext.broadcastMessage(message);
-
     }
 
 }

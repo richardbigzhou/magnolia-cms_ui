@@ -64,7 +64,10 @@ public class InstantPreviewLocationManagerImpl implements InstantPreviewLocation
 
     @Override
     public String registerInstantPreviewHost() {
-        final String id = String.valueOf(Math.abs(idGenerator.nextInt()));
+        String id = String.valueOf(Math.abs(idGenerator.nextInt()));
+        while(hosts.contains(id)) {
+            id = String.valueOf(Math.abs(idGenerator.nextInt()));
+        }
         hosts.add(id);
         return id;
     }
@@ -72,24 +75,24 @@ public class InstantPreviewLocationManagerImpl implements InstantPreviewLocation
     @Override
     public void unregisterInstantPreviewHost(String hostId) {
         if (!hosts.contains(hostId)) {
-            throw new IllegalArgumentException("Host with id: " + hostId + " does not exist!");
+            throw new IllegalArgumentException("Host with id " + hostId + " does not exist. It is possible that you specified an invalid id or that the host has stopped sharing.");
         }
         hosts.remove(hostId);
-        listeners.get(hostId).clear();
+        listeners.removeAll(hostId);
     }
 
     @Override
-    public void subscribeTo(String hostId, PreviewLocationListener listener) throws IllegalArgumentException {
+    public void subscribeTo(String hostId, PreviewLocationListener listener) throws InstantPreviewHostNotFoundException {
         if (!hosts.contains(hostId)) {
-            throw new IllegalArgumentException("Host with id: " + hostId + " does not exist!");
+            throw new InstantPreviewHostNotFoundException("Host with id " + hostId + " does not exist. It is possible that you specified an invalid id or that the host has stopped sharing.");
         }
         listeners.put(hostId, listener);
     }
 
     @Override
-    public void unsubscribeFrom(String hostId, PreviewLocationListener listener) throws IllegalArgumentException {
+    public void unsubscribeFrom(String hostId, PreviewLocationListener listener) throws InstantPreviewHostNotFoundException {
         if (!hosts.contains(hostId)) {
-            throw new IllegalArgumentException("Host with id: " + hostId + " does not exist!");
+            throw new InstantPreviewHostNotFoundException("Host with id " + hostId + " does not exist. It is possible that you specified an invalid id or that the host has stopped sharing.");
         }
         listeners.remove(hostId, listener);
     }
@@ -99,6 +102,20 @@ public class InstantPreviewLocationManagerImpl implements InstantPreviewLocation
         for (final PreviewLocationListener listener : listeners.get(hostId)) {
             listener.onPreviewLocationReceived(token);
         }
+    }
+
+    /**
+     * @return an unmodifiable list with the host ids. Exposed here mainly for testing purposes.
+     */
+    protected final List<String> getHosts() {
+        return Collections.unmodifiableList(hosts);
+    }
+
+    /**
+     * @return an unmodifiable multimap list with the listeners bound to each host. Exposed here mainly for testing purposes.
+     */
+    protected final ListMultimap<String, PreviewLocationListener> getListeners() {
+        return Multimaps.unmodifiableListMultimap(listeners);
     }
 
 }

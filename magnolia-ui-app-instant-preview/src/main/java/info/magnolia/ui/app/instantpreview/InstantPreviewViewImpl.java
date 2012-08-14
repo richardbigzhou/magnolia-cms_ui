@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.app.instantpreview;
 
+import info.magnolia.ui.framework.instantpreview.InstantPreviewHostNotFoundException;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,8 +63,9 @@ public class InstantPreviewViewImpl implements InstantPreviewView {
     private String hostId;
     private Button shareButton;
     private Button joinButton;
-    private IdField inputCode;
+    private IdField inputHostId;
     private Button hostIdLink;
+
     /**
      * InstantPreviewActionType.
      */
@@ -74,12 +77,12 @@ public class InstantPreviewViewImpl implements InstantPreviewView {
         layout.setSpacing(true);
         layout.setMargin(true);
 
-        shareButton = constructShareButton();
+        shareButton = buildShareButton();
         shareButton.focus();
 
-        joinButton = constructJoinButton();
+        joinButton = buildJoinButton();
 
-        inputCode = buildInputCode();
+        inputHostId = buildHostIdInputText();
 
         layout.addComponent(shareButton);
         hostIdLink = new Button(hostId != null ? hostId: "");
@@ -88,12 +91,11 @@ public class InstantPreviewViewImpl implements InstantPreviewView {
 
         layout.addComponent(hostIdLink);
         layout.addComponent(joinButton);
-        layout.addComponent(inputCode);
-        
+        layout.addComponent(inputHostId);
 
     }
 
-    protected IdField buildInputCode() {
+    protected IdField buildHostIdInputText() {
         final IdField inputCode = new IdField();
         inputCode.setInputPrompt("Enter host id");
         inputCode.setMaxLength(11);
@@ -110,7 +112,7 @@ public class InstantPreviewViewImpl implements InstantPreviewView {
         return inputCode;
     }
 
-    protected Button constructJoinButton() {
+    protected Button buildJoinButton() {
         final Button joinButton = new Button("Join");
         joinButton.setData(InstantPreviewActionType.JOIN);
         joinButton.addListener(new ClickListener() {
@@ -122,13 +124,13 @@ public class InstantPreviewViewImpl implements InstantPreviewView {
                         if(joinButton.getData() == InstantPreviewActionType.JOIN) {
                             if(StringUtils.isNotBlank(hostId)) {
                                 //join session
-                                hostId = String.valueOf(inputCode.getValue()) ;
+                                hostId = String.valueOf(inputHostId.getValue());
                                 listener.joinSession(hostId);
                                 hostIdLink.setVisible(false);
                                 joinButton.setCaption("Leave");
                                 joinButton.setData(InstantPreviewActionType.LEAVE);
                                 getShareButton().setEnabled(false);
-                                getInputCode().setEnabled(false);
+                                getInputHostId().setEnabled(false);
                             } else {
                                 log.error("Host id cannot be empty or null");
                                 listener.showError("Host id cannot be empty or null");
@@ -139,19 +141,19 @@ public class InstantPreviewViewImpl implements InstantPreviewView {
                             joinButton.setCaption("Join");
                             joinButton.setData(InstantPreviewActionType.JOIN);
                             getShareButton().setEnabled(true);
-                            getInputCode().setEnabled(true);
+                            getInputHostId().setEnabled(true);
                         }
                     }
-                } catch (IllegalArgumentException e) {
+                } catch (InstantPreviewHostNotFoundException e) {
                     log.error("", e);
-                    listener.showError(e.getMessage() + "\nIs the code correct? It is also possible that the host stopped sharing the session.");
+                    listener.showError(e.getMessage());
                 }
             }
         });
         return joinButton;
     }
 
-    protected Button constructShareButton() {
+    protected Button buildShareButton() {
         final Button shareButton = new Button("Share");
         shareButton.setData(InstantPreviewActionType.SHARE);
         shareButton.addListener(new ClickListener() {
@@ -167,7 +169,7 @@ public class InstantPreviewViewImpl implements InstantPreviewView {
                         shareButton.setCaption("Unshare");
                         shareButton.setData(InstantPreviewActionType.UNSHARE);
                         getJoinButton().setEnabled(false);
-                        getInputCode().setEnabled(false);
+                        getInputHostId().setEnabled(false);
                     } else if(shareButton.getData()==InstantPreviewActionType.UNSHARE) {
                         listener.unshareSession(hostId);
                         hostId = null;
@@ -176,7 +178,7 @@ public class InstantPreviewViewImpl implements InstantPreviewView {
                         shareButton.setCaption("Share");
                         shareButton.setData(InstantPreviewActionType.SHARE);
                         getJoinButton().setEnabled(true);
-                        getInputCode().setEnabled(true);
+                        getInputHostId().setEnabled(true);
                     }
                 }
             }
@@ -192,8 +194,8 @@ public class InstantPreviewViewImpl implements InstantPreviewView {
         return joinButton;
     }
 
-    public TextField getInputCode() {
-        return inputCode;
+    public TextField getInputHostId() {
+        return inputHostId;
     }
 
     @Override

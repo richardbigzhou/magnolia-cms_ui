@@ -34,25 +34,15 @@
 package info.magnolia.ui.framework.instantpreview;
 
 /**
- * InstantPreviewLocationManager.
+ * A runtime exception which can be raised when an instant preview host does not exist either because the caller used an invalid id or because
+ * the host stopped sharing his session.
  */
-public interface InstantPreviewLocationManager {
+public class InstantPreviewHostNotFoundException extends RuntimeException {
 
-    String registerInstantPreviewHost();
+    private static final long serialVersionUID = 1L;
 
-    void unregisterInstantPreviewHost(String hostId) throws InstantPreviewHostNotFoundException;
-
-    void subscribeTo(String hostId, PreviewLocationListener listener) throws InstantPreviewHostNotFoundException;
-
-    void unsubscribeFrom(String hostId, PreviewLocationListener listener) throws InstantPreviewHostNotFoundException;
-
-    void sendPreviewToken(String hostId, String token) throws InstantPreviewHostNotFoundException;
-
-    /**
-     * PreviewLocationListener.
-     */
-    public interface PreviewLocationListener {
-
-        void onPreviewLocationReceived(String location);
+    public InstantPreviewHostNotFoundException(String message) {
+        super(message);
     }
+
 }
