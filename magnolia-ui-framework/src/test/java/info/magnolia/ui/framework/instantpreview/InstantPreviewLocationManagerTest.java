@@ -83,15 +83,15 @@ public class InstantPreviewLocationManagerTest{
 
     @Test
     public void ensureRegisterInstantPreviewHostGeneratesUniqueIdTest() {
-        //GIVEN see setUp
+        //GIVEN see also setUp
+        String id1 = manager.getHosts().get(0);
+        String id2 = manager.getHosts().get(1);
+        String id3 = manager.getHosts().get(2);
 
         //WHEN
         String newId = manager.registerInstantPreviewHost();
 
         //THEN
-        String id1 = manager.getHosts().get(0);
-        String id2 = manager.getHosts().get(1);
-        String id3 = manager.getHosts().get(2);
         assertNotSame(newId, id1);
         assertNotSame(newId, id2);
         assertNotSame(newId, id3);
@@ -125,22 +125,20 @@ public class InstantPreviewLocationManagerTest{
 
     @Test(expected=InstantPreviewHostNotFoundException.class)
     public void subscribeToNonExistingHostThrowsExceptionTest() {
-        //GIVEN see setUp
-
-        //WHEN
+        //GIVEN see also setUp
         String hostId = manager.getHosts().get(0);
         manager.unregisterInstantPreviewHost(hostId);
         assertEquals(2, manager.getHosts().size());
 
-        //THEN boooom!
+        //WHEN
         manager.subscribeTo(hostId, mock(PreviewLocationListener.class));
+
+        //THEN boooom!
     }
 
     @Test
     public void unsubscribeFromTest(){
-        //GIVEN see setUp
-
-        //WHEN
+        //GIVEN see also setUp
         String hostId = manager.getHosts().get(1);
         assertEquals(1, manager.getListeners().get(hostId).size());
 
@@ -148,6 +146,7 @@ public class InstantPreviewLocationManagerTest{
         manager.subscribeTo(hostId, listener);
         assertEquals(2, manager.getListeners().get(hostId).size());
 
+        //WHEN
         manager.unsubscribeFrom(hostId, listener);
 
         //THEN
