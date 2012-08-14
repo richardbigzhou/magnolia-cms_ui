@@ -124,6 +124,7 @@ public class InstantPreviewDispatcherTest {
 
         //THEN
         assertNotNull(id);
+        assertTrue(manager.getHosts().contains(id));
     }
 
     @Test
