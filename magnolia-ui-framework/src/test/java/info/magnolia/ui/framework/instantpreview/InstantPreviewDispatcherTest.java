@@ -33,7 +33,10 @@
  */
 package info.magnolia.ui.framework.instantpreview;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.event.SimpleEventBus;
@@ -86,7 +89,7 @@ public class InstantPreviewDispatcherTest {
 
     @Test
     public void onPreviewLocationReceivedTest() throws InterruptedException {
-        // GIVEN see SetUp
+        // GIVEN see setUp
 
         // WHEN
         String path1 = "/foo/bar";
@@ -152,7 +155,20 @@ public class InstantPreviewDispatcherTest {
 
         //THEN
         assertEquals(1, manager.getListeners().get(hostId).size());
+    }
 
+    @Test(expected=InstantPreviewHostNotFoundException.class)
+    public void subscribeToUnavailableHostThrowsExceptionTest() {
+        // GIVEN see also setUp
+        String hostId = dispatcher.share();
+        assertTrue(dispatcher.isSharing());
+        dispatcher.unshare(hostId);
+        assertFalse(dispatcher.isSharing());
+
+        //WHEN
+        dispatcher.subscribeTo(hostId);
+
+        //THEN exception
     }
 
     @Test
@@ -168,7 +184,6 @@ public class InstantPreviewDispatcherTest {
 
         //THEN
         assertEquals(0, manager.getListeners().get(hostId).size());
-
     }
 
     private static final class CollectingLocationChangedEventHandler implements Handler {
