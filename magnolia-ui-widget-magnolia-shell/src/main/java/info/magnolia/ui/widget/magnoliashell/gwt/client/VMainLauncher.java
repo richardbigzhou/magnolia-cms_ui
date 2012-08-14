@@ -60,8 +60,6 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.HandlerRegistration;
-import com.googlecode.mgwt.dom.client.event.touch.TouchMoveEvent;
-import com.googlecode.mgwt.dom.client.event.touch.TouchMoveHandler;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 import com.vaadin.terminal.gwt.client.VConsole;
 
@@ -107,39 +105,13 @@ public class VMainLauncher extends FlowPanel {
             buttonWrapper.getStyle().setPosition(Position.RELATIVE);
             buttonWrapper.appendChild(indicator);
             buttonWrapper.setId(type.getId());
-
             indicatorPad.addStyleName("pad");
             
-            /*addDomHandler(new TouchEndHandler() {
-                
-                @Override
-                public void onTouchEnd(TouchEndEvent event) {
-                    //Window.alert("END TOUCH");
-                    //navigateToShellApp(type);
-                }
-            }, TouchEndEvent.getType());*/
-            
-            
             DOM.sinkEvents(getElement(), Event.TOUCHEVENTS);
-            
-            delegate.addTouchStartHandler(new com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler() {
-                @Override
-                public void onTouchStart(com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent event) {
-                }
-            });
-
             delegate.addTouchEndHandler(new com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler() {
-                
                 @Override
                 public void onTouchEnd(com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent event) {
-                    //Window.alert("END TOUCH");
                     navigateToShellApp(type);
-                }
-            });
-            
-            delegate.addTouchMoveHandler(new TouchMoveHandler() {
-                @Override
-                public void onTouchMove(TouchMoveEvent event) {
                 }
             });
         }

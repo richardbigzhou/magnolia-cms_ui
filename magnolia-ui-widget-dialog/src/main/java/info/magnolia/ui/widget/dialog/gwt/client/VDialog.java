@@ -34,170 +34,66 @@
 package info.magnolia.ui.widget.dialog.gwt.client;
 
 import info.magnolia.ui.vaadin.widget.tabsheet.client.VMagnoliaTabSheet;
-import info.magnolia.ui.widget.dialog.gwt.client.dialoglayout.HelpAccessibilityEvent;
-import info.magnolia.ui.widget.dialog.gwt.client.dialoglayout.VHelpAccessibilityNotifier;
+import info.magnolia.ui.vaadin.widget.tabsheet.client.VMagnoliaTabSheetView;
 
-import java.util.Set;
-
-import org.vaadin.rpc.client.ClientSideHandler;
 import org.vaadin.rpc.client.ClientSideProxy;
 import org.vaadin.rpc.client.Method;
 
-import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.event.shared.SimpleEventBus;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.event.shared.HandlerRegistration;
-import com.vaadin.terminal.gwt.client.ApplicationConnection;
-import com.vaadin.terminal.gwt.client.Container;
-import com.vaadin.terminal.gwt.client.Paintable;
-import com.vaadin.terminal.gwt.client.RenderSpace;
-import com.vaadin.terminal.gwt.client.UIDL;
-import com.vaadin.terminal.gwt.client.VConsole;
-
-
 /**
- * Vaadin implementation of Dialog client side (Presenter).
+ * VTabDialog.
  */
-@SuppressWarnings("serial")
-public class VDialog extends Composite implements VHelpAccessibilityNotifier, Container, VDialogView.Presenter, ClientSideHandler {
-
-    protected String paintableId;
-
-    protected ApplicationConnection client;
-
-    private final VDialogView view;
-
-    private boolean isHelpAccessible = false;
+public class VDialog extends VMagnoliaTabSheet implements VDialogView.Presenter {
     
-    private final EventBus eventBus;
-    
-    private ClientSideProxy proxy = new ClientSideProxy(this) {
-        {
-            register("addAction", new Method() {
-                @Override
-                public void invoke(String methodName, Object[] params) {
-                    final String name = String.valueOf(params[0]);
-                    final String label = String.valueOf(params[1]);
-                    view.addAction(name, label);
-                }
-            });
-            register("setDescription", new Method() {
-                @Override
-                public void invoke(String methodName, Object[] params) {
-                    final String description = String.valueOf(params[0]);
-                    view.setDescription(description);
-                }
-            });
-        }
-    };
-
-    public VDialog() {
-        eventBus = new SimpleEventBus();
-        this.view = new VDialogViewImpl(eventBus);
-        initWidget(view.asWidget());
-        view.setPresenter(this);
-
-    }
-
-
     @Override
-    public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
-        this.client = client;
-        this.paintableId = uidl.getId();
-        if (client.updateComponent(this, uidl, true)) {
-            return;
-        }
-        updateTabs(uidl);
-
-        proxy.update(this, uidl, client);
+    protected VDialogView getView() {
+        return (VDialogView)super.getView();
     }
-
-    private void updateTabs(UIDL uidl) {
-        final UIDL tagUidl = uidl.getChildByTagName("tabsheet");
-        if (tagUidl != null) {
-            final UIDL dialogUidl = tagUidl.getChildUIDL(0);
-            final Paintable p = client.getPaintable(dialogUidl);
-            if (p instanceof VMagnoliaTabSheet) {
-                final VMagnoliaTabSheet tabsheet = (VMagnoliaTabSheet) p;
-                if (view.getTabSheet() == null) {
-                    view.addTabSheet(tabsheet);
-                }
-                 this.view.getTabSheet().updateFromUIDL(dialogUidl, client);
+    
+    @Override
+    protected ClientSideProxy createProxy() {
+        final ClientSideProxy proxy = super.createProxy();
+        
+        proxy.register("addAction", new Method() {
+            @Override
+            public void invoke(String methodName, Object[] params) {
+                final String name = String.valueOf(params[0]);
+                final String label = String.valueOf(params[1]);
+                getView().addAction(name, label);
             }
-        }
+        });
+        
+        proxy.register("setDescription", new Method() {
+            @Override
+            public void invoke(String methodName, Object[] params) {
+                final String description = String.valueOf(params[0]);
+                getView().setDescription(description);
+            }
+        });
+        
+        return proxy; 
+    }
+    
+    @Override
+    public void setHeight(String height) {
+        super.setHeight(height);
     }
 
     @Override
-    public void replaceChildComponent(Widget oldComponent, Widget newComponent) {}
-
-    @Override
-    public void updateCaption(Paintable component, UIDL uidl) {}
-
-    @Override
-    public boolean requestLayout(Set<Paintable> children) {
-        return false;
+    protected VMagnoliaTabSheetView createView() {
+        return new VDialogViewImpl(getEventBus(), this); 
     }
 
-    @Override
-    public RenderSpace getAllocatedSpace(Widget child) {
-        if (hasChildComponent(child)) {
-            return new RenderSpace(getOffsetWidth(), getOffsetHeight());
-        }
-        return new RenderSpace();
-    }
-
-    @Override
-    public boolean hasChildComponent(Widget component) {
-        return view.hasChildComponent(component);
-    }
-
-    @Override
-    public boolean initWidget(Object[] params) {
-        return false;
-    }
-
-    @Override
-    public void handleCallFromServer(String method, Object[] params) {
-        VConsole.error("Unhandled RPC call from server: " + method);
-    }
-
-
-    /* (non-Javadoc)
-     * @see info.magnolia.ui.widget.dialog.gwt.client.VDialogView.Presenter#fireAction(java.lang.String)
-     */
     @Override
     public void fireAction(String action) {
-        proxy.call("fireAction", action);
+        getProxy().call("fireAction", action);
     }
 
-
-    /* (non-Javadoc)
-     * @see info.magnolia.ui.widget.dialog.gwt.client.VDialogView.Presenter#closeDialog()
-     */
     @Override
     public void closeDialog() {
-        proxy.call("closeDialog");
+        getProxy().call("closeDialog");
     }
 
-
-    VHelpAccessibilityNotifier.Delegate delegate = new Delegate();
-    
-    @Override
-    public HandlerRegistration addHelpAccessibilityHandler(HelpAccessibilityEvent.Handler handler) {
-        return delegate.addHelpAccessibilityHandler(handler);
-    }
-
-
-    @Override
-    public void changeHelpAccessibility(boolean isEnabled) {
-        delegate.changeHelpAccessibility(isHelpAccessible);
-    }
-
-
-    @Override
-    public void notifyOfHelpAccessibilityChange(boolean isAccessible) {
-        isHelpAccessible = !isHelpAccessible;
-        changeHelpAccessibility(isHelpAccessible);
+    public void updateErrorAmount() {
+        getView().recalculateErrors();
     }
 }

@@ -33,39 +33,34 @@
  */
 package info.magnolia.ui.widget.dialog.gwt.client;
 
-import info.magnolia.ui.vaadin.widget.tabsheet.client.VMagnoliaTabSheet;
+import info.magnolia.ui.vaadin.widget.tabsheet.client.VMagnoliaTabSheetView;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import com.vaadin.terminal.gwt.client.Paintable;
 
 /**
- * VDialogView.
+ * VTabDialogView.
  */
-public interface VDialogView extends IsWidget {
+public interface VDialogView extends VMagnoliaTabSheetView {
 
     /**
      * Presenter. Meant for Vaadin part of MagnoliaShell.
      */
-    public interface Presenter {
+    public interface Presenter extends VMagnoliaTabSheetView.Presenter {
 
         void fireAction(String action);
 
         void closeDialog();
         
-        void notifyOfHelpAccessibilityChange(boolean isAccessible);
     }
-
-    Paintable getTabSheet();
-
+    
     void setPresenter(Presenter presenter);
 
     boolean hasChildComponent(Widget component);
 
     void addAction(String label, String action);
 
-    void addTabSheet(VMagnoliaTabSheet tabsheet);
-
     void setDescription(String description);
 
+    void recalculateErrors();
+    
 }
