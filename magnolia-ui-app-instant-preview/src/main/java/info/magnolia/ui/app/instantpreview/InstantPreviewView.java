@@ -49,11 +49,11 @@ public interface InstantPreviewView extends View {
          */
         String shareSession();
 
-        void joinSession(String id);
+        void unshareSession(String hostId);
+
+        void joinSession(String hostId);
 
         void leaveSession(String hostId);
-
-        void unshareSession(String hostId);
 
         void showError(String error);
     }

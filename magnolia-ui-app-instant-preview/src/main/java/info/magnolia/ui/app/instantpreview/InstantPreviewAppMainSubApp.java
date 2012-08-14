@@ -97,7 +97,6 @@ public class InstantPreviewAppMainSubApp implements SubApp, InstantPreviewView.L
         message.setType(MessageType.ERROR);
         message.setTimestamp(System.currentTimeMillis());
         appContext.broadcastMessage(message);
-
     }
 
 }
