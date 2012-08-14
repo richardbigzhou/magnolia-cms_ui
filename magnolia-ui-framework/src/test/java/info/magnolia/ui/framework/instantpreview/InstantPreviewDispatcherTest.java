@@ -33,26 +33,25 @@
  */
 package info.magnolia.ui.framework.instantpreview;
 
+import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.instantpreview.InstantPreviewLocationManager.PreviewLocationListener;
+import info.magnolia.ui.framework.location.DefaultLocation;
+import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.framework.location.LocationChangedEvent;
+import info.magnolia.ui.framework.location.LocationController;
+import info.magnolia.ui.framework.shell.Shell;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
- * InstantPreviewLocationManager.
+ * InstantPreviewDispatcher.
  */
-public interface InstantPreviewLocationManager {
+public class InstantPreviewDispatcherTest {
 
-    String registerInstantPreviewHost();
 
-    void unregisterInstantPreviewHost(String hostId) throws InstantPreviewHostNotFoundException;
-
-    void subscribeTo(String hostId, PreviewLocationListener listener) throws InstantPreviewHostNotFoundException;
-
-    void unsubscribeFrom(String hostId, PreviewLocationListener listener) throws InstantPreviewHostNotFoundException;
-
-    void sendPreviewToken(String hostId, String token) throws InstantPreviewHostNotFoundException;
-
-    /**
-     * PreviewLocationListener.
-     */
-    public interface PreviewLocationListener {
-
-        void onPreviewLocationReceived(String location);
-    }
 }
