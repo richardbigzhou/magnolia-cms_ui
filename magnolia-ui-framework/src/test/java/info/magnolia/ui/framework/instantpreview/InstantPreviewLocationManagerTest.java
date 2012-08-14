@@ -43,9 +43,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Implementation of {@link InstantPreviewLocationManager}.
+ * InstantPreviewLocationManagerTest.
  */
-
 public class InstantPreviewLocationManagerTest{
     private InstantPreviewLocationManagerImpl manager;
 
