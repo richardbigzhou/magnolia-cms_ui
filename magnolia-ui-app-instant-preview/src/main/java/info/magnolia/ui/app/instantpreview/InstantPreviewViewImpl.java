@@ -60,7 +60,7 @@ public class InstantPreviewViewImpl implements InstantPreviewView {
     private static final Logger log = LoggerFactory.getLogger(InstantPreviewViewImpl.class);
 
     private Listener listener;
-    private final VerticalLayout layout = new VerticalLayout();
+    private final VerticalLayout layout;
     private String hostId;
     private Button shareButton;
     private Button joinButton;
@@ -75,25 +75,29 @@ public class InstantPreviewViewImpl implements InstantPreviewView {
     }
 
     public InstantPreviewViewImpl() {
+        layout = new VerticalLayout();
         layout.setSpacing(true);
         layout.setMargin(true);
 
         shareButton = buildShareButton();
         shareButton.focus();
 
+        hostIdLink = buildHostIdLink(hostId);
         joinButton = buildJoinButton();
-
         inputHostId = buildHostIdInputText();
 
         layout.addComponent(shareButton);
-        hostIdLink = new Button(hostId != null ? hostId: "");
-        hostIdLink.setImmediate(true);
-        hostIdLink.setStyleName(BaseTheme.BUTTON_LINK);
-
         layout.addComponent(hostIdLink);
         layout.addComponent(joinButton);
         layout.addComponent(inputHostId);
 
+    }
+
+    protected Button buildHostIdLink(final String hostId) {
+        Button button = new Button(hostId != null ? formatHostId(hostId): "");
+        button.setImmediate(true);
+        button.setStyleName(BaseTheme.BUTTON_LINK);
+        return button;
     }
 
     protected PreviewTokenField buildHostIdInputText() {
@@ -108,7 +112,6 @@ public class InstantPreviewViewImpl implements InstantPreviewView {
             }
 
         });
-        //TODO add validator
         return inputCode;
     }
 
@@ -122,9 +125,8 @@ public class InstantPreviewViewImpl implements InstantPreviewView {
                 try {
                     if(joinButton.isEnabled()) {
                         if(joinButton.getData() == InstantPreviewActionType.JOIN) {
+                            hostId = String.valueOf(inputHostId.getValue());
                             if(StringUtils.isNotBlank(hostId)) {
-                                //join session
-                                hostId = String.valueOf(inputHostId.getValue());
                                 listener.joinSession(hostId);
                                 hostIdLink.setVisible(false);
                                 joinButton.setCaption("Leave");
@@ -164,7 +166,7 @@ public class InstantPreviewViewImpl implements InstantPreviewView {
                     if(shareButton.getData()==InstantPreviewActionType.SHARE) {
                         //generate code and start session
                         hostId = listener.shareSession();
-                        hostIdLink.setCaption(hostId);
+                        hostIdLink.setCaption(formatHostId(hostId));
                         hostIdLink.setVisible(true);
                         shareButton.setCaption("Unshare");
                         shareButton.setData(InstantPreviewActionType.UNSHARE);
@@ -207,22 +209,30 @@ public class InstantPreviewViewImpl implements InstantPreviewView {
     public Component asVaadinComponent() {
         return layout;
     }
-    
-    private static class IdField extends IntegerField { 
-        
+
+    private static class IdField extends IntegerField {
+
         public IdField() {
             addReplaceRule("([0-9][0-9][0-9])", "$1-");
         }
-        
+
         @Override
         protected String prepareStringForNumberParsing(String string) {
             return string.replaceAll("-", "");
         }
-        
+
         @SuppressWarnings("deprecation")
         @Override
         protected String getFormattedValue() {
             return applyRules(super.getFormattedValue());
         }
     }
+
+    /**
+     * Given <code>123456789</code> returns <code>123-456-789</code>.
+     */
+    private String formatHostId(final String hostId) {
+        return hostId.replaceAll("([\\d]{3})([\\d]{3})([\\d]{3})", "$1-$2-$3");
+    }
+
 }
