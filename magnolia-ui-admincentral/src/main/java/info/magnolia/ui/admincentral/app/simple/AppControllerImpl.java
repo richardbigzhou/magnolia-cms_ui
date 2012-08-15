@@ -361,7 +361,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         public void onActiveTabSet(ShellTab tab) {
             SubAppContext activeSubAppContext = getActiveSubAppContext();
             if (activeSubAppContext.tab == tab) {
-                shell.setFragment(activeSubAppContext.location.toString());
+                locationController.goTo(activeSubAppContext.location);
             }
         }
 
