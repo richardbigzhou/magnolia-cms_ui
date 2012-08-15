@@ -109,7 +109,6 @@ public class ExportPageAction extends ActionBase<ExportPageActionDefinition> {
             child = node.addNode(IMAGE_NODE_NAME, MgnlNodeType.NT_RESOURCE);
         }
 
-        final ImageSize imageSize = ImageSize.valueOf(inputStream);
         BinaryImpl binaryImpl = new BinaryImpl(inputStream);
 
         child.setProperty(MgnlNodeType.JCR_DATA, binaryImpl);
@@ -122,8 +121,14 @@ public class ExportPageAction extends ActionBase<ExportPageActionDefinition> {
 
         child.setProperty(FileProperties.PROPERTY_SIZE, binaryImpl.getSize());
 
+        final InputStream streamFromBinary = binaryImpl.getStream();
+        ImageSize imageSize = ImageSize.valueOf(streamFromBinary);
+
         child.setProperty(FileProperties.PROPERTY_WIDTH, imageSize == null ? 150 : imageSize.getWidth());
         child.setProperty(FileProperties.PROPERTY_HEIGHT, imageSize == null ? 150 : imageSize.getHeight());
+
+        streamFromBinary.close();
+        binaryImpl.dispose();
         child.getSession().save();
     }
 }

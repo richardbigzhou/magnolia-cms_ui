@@ -43,7 +43,7 @@ import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
-import info.magnolia.ui.widget.dialog.MagnoliaDialog;
+import info.magnolia.ui.widget.dialog.Dialog;
 import info.magnolia.ui.widget.dialog.MagnoliaDialogView;
 import info.magnolia.ui.widget.dialog.MagnoloaDialogPresenter;
 
@@ -96,7 +96,7 @@ public class DialogPresenter implements MagnoloaDialogPresenter.Presenter,  Magn
         this.item = item;
         this.callBack = callBack;
         dialogBuilder.build(dialogFieldFactory, dialogDefinition, item, view);
-        shell.openDialog((MagnoliaDialog) view.asVaadinComponent());
+        shell.openDialog((Dialog) view.asVaadinComponent());
         return view;
     }
 

@@ -185,7 +185,7 @@
     </component>
     <component>
       <type>info.magnolia.ui.widget.dialog.MagnoliaDialogView</type>
-      <implementation>info.magnolia.ui.widget.dialog.MagnoliaDialog</implementation>
+      <implementation>info.magnolia.ui.widget.dialog.Dialog</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.admincentral.shellapp.pulse.PulseMessagesView</type>

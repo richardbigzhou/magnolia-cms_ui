@@ -46,7 +46,7 @@ import com.vaadin.terminal.gwt.client.Util;
 /**
  * Dialog tab.
  */
-public class VMagnoliaDialogTab extends VMagnoliaTab {
+public class VDialogTab extends VMagnoliaTab {
 
     private VDialogTabLayout content;
     
@@ -81,14 +81,14 @@ public class VMagnoliaDialogTab extends VMagnoliaTab {
     @Override
     public void setHasError(boolean hasError) {
         super.setHasError(hasError);
-        final VMagnoliaDialog dialog = getDialog();
+        final VDialog dialog = getDialog();
         if (dialog != null) {
             dialog.updateErrorAmount();
         }
     }
    
-    private VMagnoliaDialog getDialog() {
-        return Util.findWidget(getElement(), VMagnoliaDialog.class);
+    private VDialog getDialog() {
+        return Util.findWidget(getElement(), VDialog.class);
     }
 
     public int getErorAmount() {
