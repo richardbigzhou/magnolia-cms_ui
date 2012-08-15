@@ -34,6 +34,7 @@
 package info.magnolia.ui.app.instantpreview;
 
 import info.magnolia.ui.framework.instantpreview.InstantPreviewHostNotFoundException;
+import info.magnolia.ui.vaadin.integration.widget.PreviewTokenField;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -63,7 +64,7 @@ public class InstantPreviewViewImpl implements InstantPreviewView {
     private String hostId;
     private Button shareButton;
     private Button joinButton;
-    private IdField inputHostId;
+    private PreviewTokenField inputHostId;
     private Button hostIdLink;
 
     /**
@@ -95,13 +96,12 @@ public class InstantPreviewViewImpl implements InstantPreviewView {
 
     }
 
-    protected IdField buildHostIdInputText() {
-        final IdField inputCode = new IdField();
+    protected PreviewTokenField buildHostIdInputText() {
+        final PreviewTokenField inputCode = new PreviewTokenField();
         inputCode.setInputPrompt("Enter host id");
         inputCode.setMaxLength(11);
         inputCode.setImmediate(true);
         inputCode.addListener(new Property.ValueChangeListener() {
-
             @Override
             public void valueChange(ValueChangeEvent event) {
                 hostId = event.getProperty().toString();
