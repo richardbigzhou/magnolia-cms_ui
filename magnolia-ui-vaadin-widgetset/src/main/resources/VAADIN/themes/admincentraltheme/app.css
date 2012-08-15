@@ -24,6 +24,6 @@
 	border-bottom:1px solid #e6e6e6;
 }
 
-.v-shell-tabsheet-app .single-tab > li > span, .v-preloader .nav > li /*> span*/ {
+.v-shell-tabsheet-app .single-tab > li, .v-preloader .nav > li {
 	border-right:none;
 }
