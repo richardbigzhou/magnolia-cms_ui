@@ -3,7 +3,7 @@
 }
 
 .nav {
-    height: 26px;
+    height: 24px;
     overflow: hidden;
     background: #eee;
     margin: 0;
@@ -16,7 +16,7 @@
     min-width: 130px;
     float: left;
     margin: 0;
-    padding:3px 0 0 25px;
+    padding:3px 0 2px 24px;
     border-right: 1px solid #ddd;
     cursor: pointer;
     color: #999;
