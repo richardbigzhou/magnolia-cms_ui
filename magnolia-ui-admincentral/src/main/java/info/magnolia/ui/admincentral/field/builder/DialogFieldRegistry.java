@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,39 +31,39 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.workbench.action;
+package info.magnolia.ui.admincentral.field.builder;
 
-import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.content.view.builder.DefinitionToImplementationMapping;
-import info.magnolia.ui.model.action.AbstractActionFactory;
-import info.magnolia.ui.model.action.Action;
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.admincentral.field.FieldBuilder;
+import info.magnolia.ui.model.field.definition.FieldDefinition;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.jcr.Item;
-
 
 /**
- * Creates an action based on an {@link info.magnolia.ui.model.action.ActionDefinition}.
+ * Dialog Field Registry. This registry currently listen to changes
+ * coming from the following path: /modules/ui-admincentral/dialogFieldRegistry
  */
 @Singleton
-public class WorkbenchActionFactoryImpl extends AbstractActionFactory<ActionDefinition, Action> implements WorkbenchActionFactory, Serializable {
+public class DialogFieldRegistry implements Serializable {
 
-    @Inject
-    public WorkbenchActionFactoryImpl(ComponentProvider componentProvider, WorkbenchActionRegistry workbenchActionRegistry) {
-        super(componentProvider);
+    private List<DefinitionToImplementationMapping<FieldDefinition, FieldBuilder>> definitionToImplementationMappings = new ArrayList<DefinitionToImplementationMapping<FieldDefinition, FieldBuilder>>();
 
-        for (DefinitionToImplementationMapping<ActionDefinition, Action> definitionToImplementationMapping : workbenchActionRegistry.getDefinitionToImplementationMappings()) {
-            addMapping(definitionToImplementationMapping.getDefinition(), definitionToImplementationMapping.getImplementation());
-        }
+    public DialogFieldRegistry() {
+        super();
     }
 
-    @Override
-    public Action createAction(final ActionDefinition actionDefinition, final Item item) {
-        return create(actionDefinition, item);
+    public List<DefinitionToImplementationMapping<FieldDefinition, FieldBuilder>> getDefinitionToImplementationMappings() {
+        return this.definitionToImplementationMappings;
     }
 
+    public void setDefinitionToImplementationMappings(List<DefinitionToImplementationMapping<FieldDefinition, FieldBuilder>> definitionToImplementationMappings) {
+        this.definitionToImplementationMappings = definitionToImplementationMappings;
+    }
+    public void addDefinitionToImplementationMapping(DefinitionToImplementationMapping<FieldDefinition, FieldBuilder> mapping) {
+        this.definitionToImplementationMappings.add(mapping);
+    }
 }

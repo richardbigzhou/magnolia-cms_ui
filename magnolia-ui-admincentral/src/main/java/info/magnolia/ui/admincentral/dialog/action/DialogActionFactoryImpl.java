@@ -40,9 +40,6 @@ import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.builder.FactoryBase;
 import info.magnolia.ui.widget.dialog.MagnoloaDialogPresenter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -52,32 +49,15 @@ import javax.inject.Singleton;
 @Singleton
 public class DialogActionFactoryImpl extends FactoryBase<ActionDefinition, Action> implements DialogActionFactory {
 
-    private List<DefinitionToImplementationMapping<ActionDefinition, Action>> definitionToImplementationMappings = new ArrayList<DefinitionToImplementationMapping<ActionDefinition, Action>>();
-
-    @Inject
-    public DialogActionFactoryImpl(ComponentProvider componentProvider) {
+   @Inject
+   public DialogActionFactoryImpl(ComponentProvider componentProvider, DialogActionRegistry dialogActionRegistry) {
         super(componentProvider);
-    }
 
-    //Looks like this is needed by proxy
-    public DialogActionFactoryImpl() {
-        super(null);
-    }
-
-    public List<DefinitionToImplementationMapping<ActionDefinition, Action>> getDefinitionToImplementationMappings() {
-        return this.definitionToImplementationMappings;
-    }
-
-    public void setDefinitionToImplementationMappings(List<DefinitionToImplementationMapping<ActionDefinition, Action>> definitionToImplementationMappings) {
-        this.definitionToImplementationMappings = definitionToImplementationMappings;
-        for (DefinitionToImplementationMapping<ActionDefinition, Action> definitionToImplementationMapping : definitionToImplementationMappings) {
-            addDefinitionToImplementationMapping(definitionToImplementationMapping);
+        for (DefinitionToImplementationMapping<ActionDefinition, Action> definitionToImplementationMapping : dialogActionRegistry.getDefinitionToImplementationMappings()) {
+            addMapping(definitionToImplementationMapping.getDefinition(), definitionToImplementationMapping.getImplementation());
         }
     }
 
-    public void addDefinitionToImplementationMapping(DefinitionToImplementationMapping<ActionDefinition, Action> mapping) {
-        addMapping(mapping.getDefinition(), mapping.getImplementation());
-    }
 
     @Override
     public Action createAction(ActionDefinition actionDefinition, MagnoloaDialogPresenter.Presenter presenter) {
