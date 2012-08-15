@@ -33,70 +33,65 @@
  */
 package info.magnolia.ui.widget.dialog;
 
-import info.magnolia.ui.vaadin.widget.tabsheet.ShellTab;
 import info.magnolia.ui.vaadin.widget.tabsheet.ShellTabSheet;
 import info.magnolia.ui.widget.dialog.gwt.client.VDialog;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import org.vaadin.rpc.ServerSideHandler;
 import org.vaadin.rpc.ServerSideProxy;
 import org.vaadin.rpc.client.Method;
 
 import com.vaadin.data.Item;
-import com.vaadin.terminal.PaintException;
-import com.vaadin.terminal.PaintTarget;
-import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.ClientWidget;
-import com.vaadin.ui.ClientWidget.LoadStyle;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.Field;
 
-
 /**
- * Server side implementation of the MagnoliaShell container.
+ * Tab Dialog.
+ *
  */
-@SuppressWarnings("serial")
-@ClientWidget(value = VDialog.class, loadStyle = LoadStyle.EAGER)
-public class Dialog extends AbstractComponent implements MagnoliaDialogView, ServerSideHandler, Item.Editor {
-
-    private final ShellTabSheet tabsheet = new ShellTabSheet();
+@ClientWidget(VDialog.class)
+public class Dialog extends ShellTabSheet implements MagnoliaDialogView, ServerSideHandler, Item.Editor {
 
     private final String SHOW_ALL = "show all";
 
-    private Item itemDatasource;
+    private List<MagnoliaDialogTab> dialogTabs = new ArrayList<MagnoliaDialogTab>();
 
     private List<Field> fields = new LinkedList<Field>();
 
     private MagnoliaDialogView.Listener listener;
 
-    protected ServerSideProxy proxy = new ServerSideProxy(this) {
-
-        {
-            register("fireAction", new Method() {
-
-                @Override
-                public void invoke(String methodName, Object[] params) {
-                    final String actionName = String.valueOf(params[0]);
-                    listener.executeAction(actionName);
-                }
-            });
-            register("closeDialog", new Method() {
-
-                @Override
-                public void invoke(String methodName, Object[] params) {
-                    listener.closeDialog();
-                }
-            });
-        }
-    };
+    private Item itemDatasource;
 
     public Dialog() {
         setImmediate(true);
-        showAllTab(true);
+        setShowAllEnabled(true);
+        setHeight("500px");
+    }
+
+    @Override
+    protected ServerSideProxy createProxy() {
+        ServerSideProxy proxy = super.createProxy();
+        proxy.register("fireAction", new Method() {
+
+            @Override
+            public void invoke(String methodName, Object[] params) {
+                final String actionName = String.valueOf(params[0]);
+                listener.executeAction(actionName);
+            }
+        });
+        proxy.register("closeDialog", new Method() {
+
+            @Override
+            public void invoke(String methodName, Object[] params) {
+                listener.closeDialog();
+            }
+        });
+        return proxy;
     }
 
     @Override
@@ -105,39 +100,18 @@ public class Dialog extends AbstractComponent implements MagnoliaDialogView, Ser
     }
 
     @Override
-    public void attach() {
-        super.attach();
-        this.tabsheet.setParent(this);
-        this.tabsheet.attach();
-    }
-
-    @Override
-    public void detach() {
-        super.detach();
-        this.tabsheet.detach();
-    }
-
-    @Override
     public void addTab(ComponentContainer cc, String caption) {
-        final ShellTab tab = new ShellTab(caption, cc);
+        if (!(cc instanceof DialogLayout)) {
+            throw new IllegalArgumentException();
+        }
+        final MagnoliaDialogTab tab = new MagnoliaDialogTab(caption, (DialogLayout)cc);
+        dialogTabs.add(tab);
         tab.setSizeUndefined();
-        tabsheet.addComponent(tab);
-        tabsheet.setTabClosable(tab, false);
+        tab.setClosable(false);
+        doAddTab(tab);
     }
 
-    public void setForm(Item.Editor form) {
-
-    }
-
-    public void closeTab(ComponentContainer c) {
-        tabsheet.removeComponent(c);
-    }
-
-    public void showAllTab(boolean showAll, String label) {
-        tabsheet.showAllTab(showAll, label);
-    }
-
-    public void showAllTab(boolean showAll) {
+    public void setShowAllEnabled(boolean showAll) {
         showAllTab(showAll, SHOW_ALL);
     }
 
@@ -147,40 +121,8 @@ public class Dialog extends AbstractComponent implements MagnoliaDialogView, Ser
     }
 
     @Override
-    public void setCaption(String caption) {
-
-    }
-
-    @Override
     public Component asVaadinComponent() {
         return this;
-    }
-
-    @Override
-    public void paintContent(PaintTarget target) throws PaintException {
-        super.paintContent(target);
-        target.startTag("tabsheet");
-        this.tabsheet.paint(target);
-        target.endTag("tabsheet");
-        proxy.paintContent(target);
-
-    }
-
-    @Override
-    public void changeVariables(Object source, Map<String, Object> variables) {
-        super.changeVariables(source, variables);
-        proxy.changeVariables(source, variables);
-    }
-
-    @Override
-    public Object[] initRequestFromClient() {
-        return new Object[]{};
-
-    }
-
-    @Override
-    public void callFromClient(String method, Object[] params) {
-        System.out.println("Client called " + method);
     }
 
     @Override
@@ -209,6 +151,14 @@ public class Dialog extends AbstractComponent implements MagnoliaDialogView, Ser
     }
 
     @Override
+    public void showValidation(boolean isVisible) {
+        for (final MagnoliaDialogTab tab : dialogTabs) {
+            tab.setValidationVisibe(isVisible);
+        }
+    }
+
+
+    @Override
     public boolean isValid() {
         boolean res = true;
         for (Field field : getFields()) {
@@ -216,11 +166,4 @@ public class Dialog extends AbstractComponent implements MagnoliaDialogView, Ser
         }
         return res;
     }
-
-    @Override
-    public void showValidation(boolean isVisible) {
-        // TODO Auto-generated method stub
-
-    }
-
 }

@@ -49,7 +49,7 @@ import info.magnolia.ui.framework.shell.ConfirmationHandler;
 import info.magnolia.ui.framework.shell.FragmentChangedHandler;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.framework.view.View;
-import info.magnolia.ui.widget.dialog.MagnoliaDialog;
+import info.magnolia.ui.widget.dialog.Dialog;
 import info.magnolia.ui.widget.magnoliashell.BaseMagnoliaShell;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
 import info.magnolia.ui.widget.magnoliashell.viewport.ShellViewport;
@@ -189,11 +189,11 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
         messagesManager.clearMessage(MgnlContext.getUser().getName(), messageId);
     }
     
-    public void openDialog(MagnoliaDialog component) {
+    public void openDialog(Dialog component) {
         addDialog(component.asVaadinComponent());
     }
 
-    public void removeDialog(MagnoliaDialog dialog) {
+    public void removeDialog(Dialog dialog) {
         removeDialog(dialog.asVaadinComponent());
     }
 

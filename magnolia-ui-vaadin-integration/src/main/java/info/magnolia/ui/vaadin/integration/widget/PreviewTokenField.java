@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,36 +31,37 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.dialog.gwt.client;
+package info.magnolia.ui.vaadin.integration.widget;
 
-import info.magnolia.ui.vaadin.widget.tabsheet.client.VMagnoliaTabSheetView;
+import info.magnolia.ui.vaadin.integration.widget.client.VPreviewTokenField;
 
-import com.google.gwt.user.client.ui.Widget;
+import com.vaadin.ui.ClientWidget;
+import com.vaadin.ui.TextField;
 
 /**
- * VTabDialogView.
+ * ###-###-### type text field.
  */
-public interface VMagnoliaDialogView extends VMagnoliaTabSheetView {
+@ClientWidget(VPreviewTokenField.class)
+public class PreviewTokenField extends TextField {
 
-    /**
-     * Presenter. Meant for Vaadin part of MagnoliaShell.
-     */
-    public interface Presenter extends VMagnoliaTabSheetView.Presenter {
-
-        void fireAction(String action);
-
-        void closeDialog();
-        
+    public PreviewTokenField() {
+        setNullRepresentation("");
     }
     
-    void setPresenter(Presenter presenter);
-
-    boolean hasChildComponent(Widget component);
-
-    void addAction(String label, String action);
-
-    void setDescription(String description);
-
-    void recalculateErrors();
     
+    @Override
+    public Long getValue() {
+        final String strValue = String.valueOf(super.getValue()).replaceAll("-", "");
+        try {
+            long value = Long.parseLong(strValue);
+            return value;
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+    
+    @Override
+    public Class<Long> getType() {
+        return Long.class;
+    }
 }

@@ -34,10 +34,12 @@
 package info.magnolia.ui.app.instantpreview;
 
 import info.magnolia.ui.framework.instantpreview.InstantPreviewHostNotFoundException;
+import info.magnolia.ui.vaadin.integration.widget.PreviewTokenField;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.vaadin.autoreplacefield.IntegerField;
 
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -62,7 +64,7 @@ public class InstantPreviewViewImpl implements InstantPreviewView {
     private String hostId;
     private Button shareButton;
     private Button joinButton;
-    private TextField inputHostId;
+    private PreviewTokenField inputHostId;
     private Button hostIdLink;
 
     /**
@@ -94,13 +96,12 @@ public class InstantPreviewViewImpl implements InstantPreviewView {
 
     }
 
-    protected TextField buildHostIdInputText() {
-        final TextField inputCode = new TextField();
+    protected PreviewTokenField buildHostIdInputText() {
+        final PreviewTokenField inputCode = new PreviewTokenField();
         inputCode.setInputPrompt("Enter host id");
         inputCode.setMaxLength(11);
         inputCode.setImmediate(true);
         inputCode.addListener(new Property.ValueChangeListener() {
-
             @Override
             public void valueChange(ValueChangeEvent event) {
                 hostId = event.getProperty().toString();
@@ -123,7 +124,7 @@ public class InstantPreviewViewImpl implements InstantPreviewView {
                         if(joinButton.getData() == InstantPreviewActionType.JOIN) {
                             if(StringUtils.isNotBlank(hostId)) {
                                 //join session
-                                hostId = (String) inputHostId.getValue();
+                                hostId = String.valueOf(inputHostId.getValue());
                                 listener.joinSession(hostId);
                                 hostIdLink.setVisible(false);
                                 joinButton.setCaption("Leave");
@@ -205,5 +206,23 @@ public class InstantPreviewViewImpl implements InstantPreviewView {
     @Override
     public Component asVaadinComponent() {
         return layout;
+    }
+    
+    private static class IdField extends IntegerField { 
+        
+        public IdField() {
+            addReplaceRule("([0-9][0-9][0-9])", "$1-");
+        }
+        
+        @Override
+        protected String prepareStringForNumberParsing(String string) {
+            return string.replaceAll("-", "");
+        }
+        
+        @SuppressWarnings("deprecation")
+        @Override
+        protected String getFormattedValue() {
+            return applyRules(super.getFormattedValue());
+        }
     }
 }
