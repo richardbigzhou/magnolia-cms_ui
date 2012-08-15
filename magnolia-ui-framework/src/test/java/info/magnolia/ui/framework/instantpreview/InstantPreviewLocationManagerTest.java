@@ -170,12 +170,6 @@ public class InstantPreviewLocationManagerTest{
         assertEquals(9, hostId.length());
 
         //WHEN
-        hostId = manager.generateNineDigitsRandomNumberAsString(0, 444);
-
-        //THEN
-        assertEquals(9, hostId.length());
-
-        //WHEN
         hostId = manager.generateNineDigitsRandomNumberAsString(0, 999999999);
 
         //THEN
