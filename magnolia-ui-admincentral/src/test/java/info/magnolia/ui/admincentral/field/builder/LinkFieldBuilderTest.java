@@ -50,9 +50,9 @@ public class LinkFieldBuilderTest extends AbstractBuilderTest<LinkFieldDefinitio
     private LinkFieldBuilder linkFieldBuilder;
 
     @Test
-    public void simpleCheckBoxFieldTest() throws Exception{
+    public void simpleLinkFieldTest() throws Exception{
         // GIVEN
-        linkFieldBuilder = new LinkFieldBuilder(definition, baseItem);
+        linkFieldBuilder = new LinkFieldBuilder(definition, baseItem, null);
 
         // WHEN
         Field field = linkFieldBuilder.getField();
@@ -62,9 +62,9 @@ public class LinkFieldBuilderTest extends AbstractBuilderTest<LinkFieldDefinitio
     }
 
     @Test
-    public void checkBoxField_SetButtonCaptionTest() throws Exception{
+    public void linkField_SetButtonCaptionTest() throws Exception{
         // GIVEN
-        linkFieldBuilder = new LinkFieldBuilder(definition, baseItem);
+        linkFieldBuilder = new LinkFieldBuilder(definition, baseItem, null);
         definition.setButtonLabel("Button Select");
         // WHEN
         Field field = linkFieldBuilder.getField();
@@ -75,12 +75,12 @@ public class LinkFieldBuilderTest extends AbstractBuilderTest<LinkFieldDefinitio
     }
 
     @Test
-    public void checkBoxField_SetFieldPropagation() throws Exception{
+    public void linkField_SetFieldPropagation() throws Exception{
         // GIVEN
         definition.setName(propertyName);
         baseNode.setProperty(propertyName, "notChanged");
         baseItem = new JcrNodeAdapter(baseNode);
-        linkFieldBuilder = new LinkFieldBuilder(definition, baseItem);
+        linkFieldBuilder = new LinkFieldBuilder(definition, baseItem, null);
         Field field = linkFieldBuilder.getField();
         assertEquals("notChanged", (String)((TextAndButtonField)field).getTextField().getValue());
         // WHEN
@@ -94,6 +94,7 @@ public class LinkFieldBuilderTest extends AbstractBuilderTest<LinkFieldDefinitio
     protected void createConfiguredFieldDefinition() {
         LinkFieldDefinition fieldDefinition = new LinkFieldDefinition();
         fieldDefinition.setName(propertyName);
+        fieldDefinition.setDialogName("dialogName");
         this.definition = fieldDefinition;
     }
 
