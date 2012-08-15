@@ -97,7 +97,6 @@ public class InstantPreviewLocationManagerTest{
         assertNotSame(newId, id3);
     }
 
-
     @Test
     public void unregisterInstantPreviewHostTest() {
         //GIVEN see setUp
@@ -153,4 +152,38 @@ public class InstantPreviewLocationManagerTest{
         assertEquals(1, manager.getListeners().get(hostId).size());
     }
 
+
+    @Test(expected=IllegalArgumentException.class)
+    public void ensureHostIdIsANineDigitsStringTest() throws Exception {
+        //GIVEN see setUp
+
+        //WHEN
+        String hostId = manager.generateNineDigitsRandomNumberAsString(0, 1);
+
+        //THEN
+        assertEquals(9, hostId.length());
+
+        //WHEN
+        hostId = manager.generateNineDigitsRandomNumberAsString(0, 444);
+
+        //THEN
+        assertEquals(9, hostId.length());
+
+        //WHEN
+        hostId = manager.generateNineDigitsRandomNumberAsString(0, 444);
+
+        //THEN
+        assertEquals(9, hostId.length());
+
+        //WHEN
+        hostId = manager.generateNineDigitsRandomNumberAsString(0, 999999999);
+
+        //THEN
+        assertEquals(9, hostId.length());
+
+        //WHEN
+        hostId = manager.generateNineDigitsRandomNumberAsString(0, Integer.MAX_VALUE-1);
+
+        //THEN IllegalArgumentException
+    }
 }

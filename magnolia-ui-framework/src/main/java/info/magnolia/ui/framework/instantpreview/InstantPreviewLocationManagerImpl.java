@@ -57,6 +57,10 @@ public class InstantPreviewLocationManagerImpl implements InstantPreviewLocation
 
     private ListMultimap<String, PreviewLocationListener> listeners = Multimaps.synchronizedListMultimap(ArrayListMultimap.<String, PreviewLocationListener>create());
 
+    private static final int MIN = 0;
+
+    private static final int MAX = 999999999;
+
     @Inject
     public InstantPreviewLocationManagerImpl() {
         idGenerator = new Random(System.currentTimeMillis());
@@ -64,9 +68,9 @@ public class InstantPreviewLocationManagerImpl implements InstantPreviewLocation
 
     @Override
     public String registerInstantPreviewHost() {
-        String id = String.valueOf(Math.abs(idGenerator.nextInt()));
+        String id = generateNineDigitsRandomNumberAsString(MIN, MAX);
         while(hosts.contains(id)) {
-            id = String.valueOf(Math.abs(idGenerator.nextInt()));
+            id = generateNineDigitsRandomNumberAsString(MIN, MAX);
         }
         hosts.add(id);
         return id;
@@ -117,5 +121,14 @@ public class InstantPreviewLocationManagerImpl implements InstantPreviewLocation
     protected final ListMultimap<String, PreviewLocationListener> getListeners() {
         return Multimaps.unmodifiableListMultimap(listeners);
     }
-
+    /**
+     * @return a String representation of a random number in the range [min, max]. If the number is less than max, the returned string is left-padded with zeros.
+     */
+    protected final String generateNineDigitsRandomNumberAsString(int min, int max) {
+        if((min < MIN || max > MAX) || (min > max)) {
+            throw new IllegalArgumentException("Got invalid arguments: min = " + min + " and max = " + max);
+        }
+        int random = Math.abs(idGenerator.nextInt(max - min + 1) + min);
+        return String.format("%09d", random);
+    }
 }
