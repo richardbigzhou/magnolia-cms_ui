@@ -91,12 +91,12 @@ public class InstantPreviewAppMainSubApp implements SubApp, InstantPreviewView.L
     }
 
     @Override
-    public void showError(String error) {
+    public void sendLocalMessage(String msg, MessageType type) {
         Message message = new Message();
-        message.setMessage(error);
-        message.setType(MessageType.ERROR);
+        message.setMessage(msg);
+        message.setType(type);
         message.setTimestamp(System.currentTimeMillis());
-        appContext.broadcastMessage(message);
+        appContext.sendLocalMessage(message);
     }
 
 }
