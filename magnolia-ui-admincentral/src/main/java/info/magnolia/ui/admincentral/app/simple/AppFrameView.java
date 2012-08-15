@@ -53,6 +53,8 @@ public class AppFrameView implements View {
     public interface Listener {
 
         void onActiveTabSet(ShellTab tab);
+
+        void onTabClosed(ShellTab tab);
     }
 
     private final ShellTabSheet tabsheet = new ShellTabSheet() {
@@ -61,6 +63,13 @@ public class AppFrameView implements View {
         public void onActiveTabSet(String tabId) {
             super.onActiveTabSet(tabId);
             listener.onActiveTabSet(super.getTabById(tabId));
+        }
+
+        @Override
+        protected void closeTab(String tabId) {
+            ShellTab tab = super.getTabById(tabId);
+            super.closeTab(tabId);
+            listener.onTabClosed(tab);
         }
     };
 

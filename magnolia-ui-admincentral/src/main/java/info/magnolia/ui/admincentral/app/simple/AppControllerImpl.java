@@ -365,6 +365,14 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             }
         }
 
+        @Override
+        public void onTabClosed(ShellTab tab) {
+            SubAppContext subAppContext = getSubAppContextForTab(tab);
+            if (subAppContext != null) {
+                subAppContexts.remove(subAppContext.name);
+            }
+        }
+
         public String mayStop() {
             return null;
         }
