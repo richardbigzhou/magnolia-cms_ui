@@ -16,7 +16,7 @@
     <sv:value>MANAGE</sv:value>
   </sv:property>
   <sv:property sv:name="icon" sv:type="String">
-    <sv:value>img/icon-app-default.png</sv:value>
+    <sv:value>icon-view</sv:value>
   </sv:property>
   <sv:property sv:name="jcr:createdBy" sv:type="String">
     <sv:value>admin</sv:value>
@@ -25,7 +25,7 @@
     <sv:value>Instant Preview</sv:value>
   </sv:property>
   <sv:property sv:name="name" sv:type="String">
-    <sv:value>instantpreview</sv:value>
+    <sv:value>icon-instantpreview-app</sv:value>
   </sv:property>
   <sv:node sv:name="MetaData">
     <sv:property sv:name="jcr:primaryType" sv:type="Name">

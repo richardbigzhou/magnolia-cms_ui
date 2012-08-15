@@ -89,7 +89,6 @@ public class Actionbar extends AbstractComponent implements ActionbarView, Serve
 
     public Actionbar() {
         setSizeFull();
-        setWidth("270px");
         setImmediate(true);
     }
 

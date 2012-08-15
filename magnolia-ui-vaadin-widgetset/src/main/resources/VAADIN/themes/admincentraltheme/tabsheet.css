@@ -4,33 +4,27 @@
 
 .nav {
     height: 26px;
-    background: #EEE;
+    overflow: hidden;
+    background: #eee;
     margin: 0;
     padding: 0;
-    border-bottom: 1px solid #DDD;
+    border-bottom: 1px solid #ddd;
     list-style: none outside none;
 }
 
 .nav > li {
-    float: left;
-    cursor: pointer;
-    position: relative;
-}
-
-.nav > li {
-    margin: 0;
     min-width: 130px;
-    border-right: 1px solid #DDD;
+    float: left;
+    margin: 0;
+    padding:3px 0 0 25px;
+    border-right: 1px solid #ddd;
+    cursor: pointer;
     color: #999;
-    font-family: DINWebPro,Arial;
-    text-transform: uppercase;
+    font-family: DINWebPro, sans-serif;
     font-size: 14px;
-    line-height: 16px;
-    text-align: left;
-    padding-left: 25px;
-    padding-top: 2px;
-    padding-bottom: 3px;
-    height: 22px;
+    line-height: 1.0;
+    font-weight: bold;
+    text-transform: uppercase;
 }
 
 .nav > li > span {
@@ -38,10 +32,10 @@
     padding-right: 10px;
     vertical-align: text-bottom;
 }
-    
+
 .nav > li.active  {
     background-color: #FFF;
-    color: #555;
+    color: #666;
     cursor: default;
 }
 

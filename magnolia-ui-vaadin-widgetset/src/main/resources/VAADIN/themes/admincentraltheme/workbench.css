@@ -1,11 +1,12 @@
-.mgnl-app-root {background-color:#e6e6e6;}
-.mgnl-app-root .v-horizontallayout-margin {padding-top:20px; padding-left:40px;}
-.mgnl-app-root .v-horizontallayout-spacing-on {padding-left:25px;}
-.mgnl-workbench-toolbar .v-horizontallayout-margin {padding:0 0 20px 35px;}
-.mgnl-workbench-toolbar .v-horizontallayout-spacing-on {padding-left:14px;}
+.workbench {background-color:#e6e6e6;}
+.workbench .v-horizontallayout-margin {padding-top:20px; padding-left:40px;}
+.workbench .v-horizontallayout-spacing-on {padding-left:25px;}
 
-.icon-view {font-family:'ContentViewIcons'; font-style:normal; font-size:24px; color:#989898;}
-.icon-view:hover, .icon-view.active {color:#fff;}
-.btn-view-separator {height:24px; border-left:1px solid #bbb;}
+.view-modes {padding-left:21px; padding-bottom:20px;}
+.view-modes .v-nativebutton {font-style:normal; font-size:24px; color:#989898; line-height:1.0; padding:0 14px; border-left:1px solid #bbb;}
+.view-modes .v-nativebutton:first-child {border-left:none;}
+.view-modes .v-nativebutton:hover, .view-modes .v-nativebutton:focus, .view-modes .v-nativebutton-active {color:#fff;}
+.view-modes .v-nativebutton::-moz-focus-inner {padding:0; border:0}
+.view-modes .v-nativebutton-caption {text-decoration:none;}
 
 .mgnl-workbench-thumbnail-view { background-color: #FFF;}
