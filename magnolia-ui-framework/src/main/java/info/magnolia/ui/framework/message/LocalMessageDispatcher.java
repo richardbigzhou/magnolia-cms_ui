@@ -69,7 +69,7 @@ public class LocalMessageDispatcher implements MessageListener {
     };
 
     @Inject
-    public LocalMessageDispatcher(@Named("adminCentral") final EventBus eventBus) {
+    public LocalMessageDispatcher(@Named("admincentral") final EventBus eventBus) {
         this.eventBus = eventBus;
         messageQueueThread.setName("LocalMessageDispatcher");
         messageQueueThread.setDaemon(true);

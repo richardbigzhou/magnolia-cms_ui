@@ -46,7 +46,7 @@ import javax.jcr.RepositoryException;
  */
 public class AddPropertyAction extends RepositoryOperationAction<AddPropertyActionDefinition> implements TreeAction {
 
-    public AddPropertyAction(AddPropertyActionDefinition definition, Item item, @Named("adminCentral") EventBus eventBus) {
+    public AddPropertyAction(AddPropertyActionDefinition definition, Item item, @Named("admincentral") EventBus eventBus) {
         super(definition, item, eventBus);
     }
 

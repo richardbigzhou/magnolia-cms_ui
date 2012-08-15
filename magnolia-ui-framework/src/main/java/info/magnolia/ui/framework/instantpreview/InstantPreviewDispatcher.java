@@ -65,7 +65,7 @@ public class InstantPreviewDispatcher implements PreviewLocationListener {
     private String hostId = null;
 
     @Inject
-    public InstantPreviewDispatcher(InstantPreviewLocationManager manager, LocationController controller, Shell shell, @Named("adminCentral")EventBus eventBus) {
+    public InstantPreviewDispatcher(InstantPreviewLocationManager manager, LocationController controller, Shell shell, @Named("admincentral")EventBus eventBus) {
         this.manager = manager;
         this.controller = controller;
         this.shell = shell;

@@ -54,7 +54,7 @@ public class LocationController {
     private Location where = Location.NOWHERE;
 
     @Inject
-    public LocationController(@Named("adminCentral") final EventBus eventBus, Shell shell) {
+    public LocationController(@Named("admincentral") final EventBus eventBus, Shell shell) {
         this.eventBus = eventBus;
         this.shell = shell;
     }

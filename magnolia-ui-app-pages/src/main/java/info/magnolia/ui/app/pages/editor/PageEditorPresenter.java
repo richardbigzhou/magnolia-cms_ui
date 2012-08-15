@@ -79,7 +79,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
     private final PageEditorView view;
 
-    private final EventBus adminCentralEventBus;
+    private final EventBus admincentralEventBus;
 
     private final EventBus appEventBus;
 
@@ -94,9 +94,9 @@ public class PageEditorPresenter implements PageEditorView.Listener {
     private final ConfiguredDialogDefinition dialogDefinition;
 
     @Inject
-    public PageEditorPresenter(PageEditorView view, @Named("adminCentral") EventBus adminCentralEventBus, @Named("app") EventBus appEventBus, DialogPresenterFactory dialogPresenterFactory, TemplateDefinitionRegistry templateDefinitionRegistry) {
+    public PageEditorPresenter(PageEditorView view, @Named("admincentral") EventBus admincentralEventBus, @Named("app") EventBus appEventBus, DialogPresenterFactory dialogPresenterFactory, TemplateDefinitionRegistry templateDefinitionRegistry) {
         this.view = view;
-        this.adminCentralEventBus = adminCentralEventBus;
+        this.admincentralEventBus = admincentralEventBus;
         this.appEventBus = appEventBus;
         this.dialogPresenterFactory = dialogPresenterFactory;
         this.templateDefinitionRegistry = templateDefinitionRegistry;
@@ -107,7 +107,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
     }
 
     private void registerHandlers() {
-        adminCentralEventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
+        admincentralEventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
 
             @Override
             public void onContentChanged(ContentChangedEvent event) {
