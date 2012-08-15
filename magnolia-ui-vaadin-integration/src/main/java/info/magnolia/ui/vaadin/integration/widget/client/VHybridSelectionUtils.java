@@ -59,10 +59,13 @@ public class VHybridSelectionUtils {
     public static class VHybridSelectionMouseUpHandler implements MouseUpHandler {
         
         private final CheckBox selectAllCheckBox;
+       
+        private Widget widget;
         
-        public VHybridSelectionMouseUpHandler(final CheckBox selectAllCheckBox) {
+        public VHybridSelectionMouseUpHandler(final CheckBox selectAllCheckBox, final Widget widget) {
             super();
             this.selectAllCheckBox = selectAllCheckBox;
+            this.widget = widget;
         }
         
         @Override
@@ -74,15 +77,15 @@ public class VHybridSelectionUtils {
                     if (rowEl != null) {
                         toggleRowCheckBox(rowEl);
                     }   
-                    updateSelectAllControl(selectAllCheckBox);
+                    updateSelectAllControl(selectAllCheckBox, widget);
                 } else {
-                    JsArray<Element> selectedRows = JQueryWrapper.select(".v-selected").get();
+                    JsArray<Element> selectedRows = JQueryWrapper.select(widget).find(".v-selected").get();
                     if (selectedRows != null) {
                         for (int i = 0; i < selectedRows.length(); ++i) {
                             toggleRowCheckBox(selectedRows.get(i));
                         }
                     }
-                    updateSelectAllControl(selectAllCheckBox);
+                    updateSelectAllControl(selectAllCheckBox, widget);
                 }
             }
         }
@@ -125,21 +128,23 @@ public class VHybridSelectionUtils {
         return null;
     }
     
-    public static void updateSelectAllControl(final CheckBox selectAllCheckBox) {
-        final JsArray<Element> selectedRows = JQueryWrapper.select(".v-selected").get();
-        final JsArray<Element> totalRows = JQueryWrapper.select(".v-table-row, .v-table-row-odd").get();
-        selectAllCheckBox.setValue(totalRows.length() > 0 && selectedRows.length() == totalRows.length());
+    public static void updateSelectAllControl(final CheckBox selectAllCheckBox, Widget widget) {
+        final JQueryWrapper jq = JQueryWrapper.select(widget);
+        final JsArray<Element> selectedRows = jq.find(".v-selected").get();
+        final JsArray<Element> totalRows = jq.find(".v-table-row, .v-table-row-odd").get();
+        boolean value = totalRows.length() > 0 && selectedRows.length() == totalRows.length();
+        selectAllCheckBox.setValue(value);
     }
 
-    public static void deselectAllCheckBoxes() {
-        final JsArray<Element> cbs = JQueryWrapper.select(".v-selection-cb").get();
+    public static void deselectAllCheckBoxes(Widget widget) {
+        final JsArray<Element> cbs = JQueryWrapper.select(widget).find(".v-selection-cb").get();
         for (int i = 0; i < cbs.length(); ++i) {
             cbs.get(i).setPropertyBoolean("checked", false);
         }
     }
 
-    public static void updateCheckBoxesForSelectedRows() {
-        final JsArray<Element> rows = JQueryWrapper.select(".v-table-row, .v-table-row-odd").get();
+    public static void updateCheckBoxesForSelectedRows(final Widget widget) {
+        final JsArray<Element> rows = JQueryWrapper.select(widget).find(".v-table-row, .v-table-row-odd").get();
         if (rows != null && rows.length() != 0) {
             for (int i = 0; i < rows.length(); ++i) {
                 final VScrollTableRow row = VHybridSelectionUtils.findWidget(rows.get(i), VScrollTableRow.class);

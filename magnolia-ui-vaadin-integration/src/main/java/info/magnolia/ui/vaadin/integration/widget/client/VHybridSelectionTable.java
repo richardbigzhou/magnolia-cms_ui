@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.vaadin.integration.widget.client;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -65,7 +67,7 @@ public class VHybridSelectionTable extends VScrollTable {
             }
         });
 
-        addDomHandler(new VHybridSelectionUtils.VHybridSelectionMouseUpHandler(selectAllCheckBox), MouseUpEvent.getType());
+        addDomHandler(new VHybridSelectionUtils.VHybridSelectionMouseUpHandler(selectAllCheckBox, this), MouseUpEvent.getType());
 
         Event.addNativePreviewHandler(new NativePreviewHandler() {
             @Override
@@ -99,14 +101,19 @@ public class VHybridSelectionTable extends VScrollTable {
     @Override
     public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
         super.updateFromUIDL(uidl, client);
-        VHybridSelectionUtils.updateCheckBoxesForSelectedRows();
-        VHybridSelectionUtils.updateSelectAllControl(selectAllCheckBox);
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+            @Override
+            public void execute() {
+                VHybridSelectionUtils.updateCheckBoxesForSelectedRows(VHybridSelectionTable.this);
+                VHybridSelectionUtils.updateSelectAllControl(selectAllCheckBox, VHybridSelectionTable.this);
+            }
+        });
     }
 
     @Override
     public void deselectAll() {
         super.deselectAll();
-        VHybridSelectionUtils.deselectAllCheckBoxes();
+        VHybridSelectionUtils.deselectAllCheckBoxes(this);
     }
     
     /**
