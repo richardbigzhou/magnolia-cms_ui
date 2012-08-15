@@ -86,7 +86,7 @@ public class InstantPreviewDispatcherTest {
 
     @Test
     public void onPreviewLocationReceivedTest() throws InterruptedException {
-        // GIVEN see SetUp
+        // GIVEN see setUp
 
         // WHEN
         String path1 = "/foo/bar";
@@ -124,6 +124,7 @@ public class InstantPreviewDispatcherTest {
 
         //THEN
         assertNotNull(id);
+        assertTrue(manager.getHosts().contains(id));
     }
 
     @Test
@@ -152,7 +153,20 @@ public class InstantPreviewDispatcherTest {
 
         //THEN
         assertEquals(1, manager.getListeners().get(hostId).size());
+    }
 
+    @Test(expected=InstantPreviewHostNotFoundException.class)
+    public void subscribeToUnavailableHostThrowsExceptionTest() {
+        // GIVEN see also setUp
+        String hostId = dispatcher.share();
+        assertTrue(dispatcher.isSharing());
+        dispatcher.unshare(hostId);
+        assertFalse(dispatcher.isSharing());
+
+        //WHEN
+        dispatcher.subscribeTo(hostId);
+
+        //THEN exception
     }
 
     @Test
@@ -168,7 +182,6 @@ public class InstantPreviewDispatcherTest {
 
         //THEN
         assertEquals(0, manager.getListeners().get(hostId).size());
-
     }
 
     private static final class CollectingLocationChangedEventHandler implements Handler {

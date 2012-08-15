@@ -64,7 +64,7 @@ public class DialogPresenterFactoryImpl implements DialogPresenterFactory {
     private ComponentProvider componentProvider;
 
     @Inject
-    public DialogPresenterFactoryImpl(ComponentProvider componentProvider, DialogDefinitionRegistry dialogDefinitionRegistry, DialogBuilder dialogBuilder, DialogFieldFactory dialogFieldFactory, MagnoliaShell shell, @Named("adminCentral") EventBus eventBus, final DialogActionFactory actionFactory) {
+    public DialogPresenterFactoryImpl(ComponentProvider componentProvider, DialogDefinitionRegistry dialogDefinitionRegistry, DialogBuilder dialogBuilder, DialogFieldFactory dialogFieldFactory, MagnoliaShell shell, @Named("admincentral") EventBus eventBus, final DialogActionFactory actionFactory) {
         this.dialogDefinitionRegistry = dialogDefinitionRegistry;
         this.dialogBuilder = dialogBuilder;
         this.dialogFieldFactory = dialogFieldFactory;

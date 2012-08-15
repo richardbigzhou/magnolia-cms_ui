@@ -45,7 +45,7 @@ import info.magnolia.ui.framework.event.EventBus;
  */
 public class DeleteItemAction extends RepositoryOperationAction<DeleteItemActionDefinition> {
 
-    public DeleteItemAction(DeleteItemActionDefinition definition, Item item, @Named("adminCentral") EventBus eventBus) {
+    public DeleteItemAction(DeleteItemActionDefinition definition, Item item, @Named("admincentral") EventBus eventBus) {
         super(definition, item, eventBus);
     }
 

@@ -73,9 +73,9 @@ public class InstantPreviewLocationManagerImpl implements InstantPreviewLocation
     }
 
     @Override
-    public void unregisterInstantPreviewHost(String hostId) {
+    public void unregisterInstantPreviewHost(String hostId) throws InstantPreviewHostNotFoundException {
         if (!hosts.contains(hostId)) {
-            throw new IllegalArgumentException("Host with id " + hostId + " does not exist. It is possible that you specified an invalid id or that the host has stopped sharing.");
+            throw new InstantPreviewHostNotFoundException("Host with id " + hostId + " does not exist. It is possible that you specified an invalid id or that the host has stopped sharing.");
         }
         hosts.remove(hostId);
         listeners.removeAll(hostId);

@@ -70,7 +70,7 @@ public class ShellAppController implements LocationChangedEvent.Handler, Locatio
     private final Map<String, ShellAppContextImpl> contexts = new HashMap<String, ShellAppContextImpl>();
 
     @Inject
-    public ShellAppController(ComponentProvider componentProvider, Shell shell, @Named("adminCentral") EventBus adminCentralEventBus, LocationController locationController) {
+    public ShellAppController(ComponentProvider componentProvider, Shell shell, @Named("admincentral") EventBus admincentralEventBus, LocationController locationController) {
         this.componentProvider = componentProvider;
         this.shell = shell;
         this.locationController = locationController;
@@ -79,8 +79,8 @@ public class ShellAppController implements LocationChangedEvent.Handler, Locatio
         addShellApp("pulse", PulseShellApp.class);
         addShellApp("favorite", FavoritesShellApp.class);
 
-        adminCentralEventBus.addHandler(LocationChangedEvent.class, this);
-        adminCentralEventBus.addHandler(LocationChangeRequestedEvent.class, this);
+        admincentralEventBus.addHandler(LocationChangedEvent.class, this);
+        admincentralEventBus.addHandler(LocationChangeRequestedEvent.class, this);
     }
 
     private void addShellApp(String name, Class<? extends ShellApp> clazz) {

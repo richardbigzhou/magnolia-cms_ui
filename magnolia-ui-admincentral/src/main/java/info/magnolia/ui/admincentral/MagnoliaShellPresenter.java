@@ -58,7 +58,7 @@ public class MagnoliaShellPresenter implements MagnoliaShellView.Presenter {
     private final MagnoliaShellView view;
 
     @Inject
-    public MagnoliaShellPresenter(final MagnoliaShellView view, @Named("adminCentral") final EventBus eventBus, final AppLauncherLayoutManager appLauncherLayoutManager, final LocationController locationController, final AppController appController, final ShellAppController shellAppController, final LocalMessageDispatcher messageDispatcher, MessagesManager messagesManager) {
+    public MagnoliaShellPresenter(final MagnoliaShellView view, @Named("admincentral") final EventBus eventBus, final AppLauncherLayoutManager appLauncherLayoutManager, final LocationController locationController, final AppController appController, final ShellAppController shellAppController, final LocalMessageDispatcher messageDispatcher, MessagesManager messagesManager) {
         this.view = view;
         this.view.setPresenter(this);
 

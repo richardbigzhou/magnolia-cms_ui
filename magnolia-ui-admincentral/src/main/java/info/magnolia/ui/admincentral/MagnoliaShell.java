@@ -77,7 +77,7 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
 
     private static final Logger log = LoggerFactory.getLogger(MagnoliaShell.class);
 
-    private final EventBus adminCentralEventBus;
+    private final EventBus admincentralEventBus;
 
     private final AppController appController;
     private final Provider<ShellAppController> shellAppControllerProvider;
@@ -85,13 +85,13 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
     private final MessagesManager messagesManager;
     
     @Inject
-    public MagnoliaShell(@Named("adminCentral") EventBus adminCentralEventBus, Provider<ShellAppController> shellAppControllerProvider, AppController appController, MessagesManager messagesManager) {
+    public MagnoliaShell(@Named("admincentral") EventBus admincentralEventBus, Provider<ShellAppController> shellAppControllerProvider, AppController appController, MessagesManager messagesManager) {
         super();
         this.messagesManager = messagesManager;
-        this.adminCentralEventBus = adminCentralEventBus;
+        this.admincentralEventBus = admincentralEventBus;
         this.appController = appController;
         this.shellAppControllerProvider = shellAppControllerProvider;
-        this.adminCentralEventBus.addHandler(AppLifecycleEvent.class, new AppLifecycleEventHandler.Adapter() {
+        this.admincentralEventBus.addHandler(AppLifecycleEvent.class, new AppLifecycleEventHandler.Adapter() {
 
             @Override
             public void onAppFocused(AppLifecycleEvent event) {
@@ -117,7 +117,7 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
             }
         });
         
-        this.adminCentralEventBus.addHandler(MessageEvent.class, this);
+        this.admincentralEventBus.addHandler(MessageEvent.class, this);
     }
 
     @Override

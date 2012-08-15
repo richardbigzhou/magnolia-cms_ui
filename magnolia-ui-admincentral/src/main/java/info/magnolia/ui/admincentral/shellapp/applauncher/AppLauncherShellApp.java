@@ -74,7 +74,7 @@ public class AppLauncherShellApp implements ShellApp, AppLauncherView.Presenter 
 
     @Inject
     public AppLauncherShellApp(Shell shell, AppLauncherView view, AppController appController,
-            AppLauncherLayoutManager appLauncherLayoutManager, @Named("adminCentral") EventBus adminCentralEventBus, @Named("system") EventBus systemEventBus) {
+            AppLauncherLayoutManager appLauncherLayoutManager, @Named("admincentral") EventBus admincentralEventBus, @Named("system") EventBus systemEventBus) {
         this.view = view;
         this.shell = shell;
         this.appController = appController;
@@ -97,7 +97,7 @@ public class AppLauncherShellApp implements ShellApp, AppLauncherView.Presenter 
          * Add Handler of type AppLifecycleEventHandler in order to catch stop
          * and start App events.
          */
-        adminCentralEventBus.addHandler(AppLifecycleEvent.class, new AppLifecycleEventHandler.Adapter() {
+        admincentralEventBus.addHandler(AppLifecycleEvent.class, new AppLifecycleEventHandler.Adapter() {
 
             /**
              * Deactivate the visual triangle on the App Icon.
