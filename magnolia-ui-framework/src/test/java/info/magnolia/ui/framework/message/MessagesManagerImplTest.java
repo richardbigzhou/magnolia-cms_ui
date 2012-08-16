@@ -38,6 +38,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import com.google.inject.util.Providers;
+import info.magnolia.test.mock.MockWebContext;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -108,7 +109,7 @@ public class MessagesManagerImplTest {
 
     @Test
     public void testBroadcastMessage() throws RepositoryException {
-
+        // GIVEN
         MessagesManager.MessageListener listenerA = mock(MessagesManager.MessageListener.class);
         messagesManager.registerMessagesListener("alice", listenerA);
         MessagesManager.MessageListener listenerB = mock(MessagesManager.MessageListener.class);
@@ -144,7 +145,7 @@ public class MessagesManagerImplTest {
 
     @Test
     public void testSendMessage() throws RepositoryException {
-
+        // GIVEN
         MessagesManager.MessageListener listenerA = mock(MessagesManager.MessageListener.class);
         messagesManager.registerMessagesListener("alice", listenerA);
         MessagesManager.MessageListener listenerB = mock(MessagesManager.MessageListener.class);
@@ -172,6 +173,27 @@ public class MessagesManagerImplTest {
 
         assertTrue(session.getNode("/bob").getPrimaryNodeType().getName().equals(MgnlNodeType.NT_CONTENT));
         assertTrue(session.getNode("/bob/0").getPrimaryNodeType().getName().equals(MessageStore.MESSAGE_NODE_TYPE));
+    }
+
+    @Test
+    public void testSendLocalMessage() throws RepositoryException {
+        // GIVEN
+        final User me = createMockUser("me");
+        ((MockWebContext) MgnlContext.getInstance()).setUser(me);
+        MessagesManager.MessageListener listenerA = mock(MessagesManager.MessageListener.class);
+        messagesManager.registerMessagesListener(me.getName(), listenerA);
+
+        // WHEN
+        Message message = new Message();
+        message.setType(MessageType.INFO);
+        message.setSubject("subject");
+        message.setMessage("message");
+        messagesManager.sendLocalMessage(message);
+
+        // THEN
+        assertNull("Local messages have to have id == null", message.getId());
+        verify(listenerA).messageSent(any(Message.class));
+        assertFalse("Local message must not be persisted.", session.nodeExists("/me"));
     }
 
     @Test
