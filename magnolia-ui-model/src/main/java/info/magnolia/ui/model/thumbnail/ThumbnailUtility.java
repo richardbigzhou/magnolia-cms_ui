@@ -111,7 +111,7 @@ public class ThumbnailUtility {
         final Node node = session.getNodeByIdentifier(nodeIdentifier);
 
         if (!node.hasNode(originalNodeName)) {
-            log.warn("No originalImageNode called [{}] found for node [{}]. Cannot create thumbnail.", originalNodeName, node.getPath());
+            log.debug("No originalImageNode called {} found for node [{}]. Cannot create thumbnail.", originalNodeName, node.getPath());
             return false;
         }
         if (!node.hasNode(thumbnailNodeName)) {
