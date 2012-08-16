@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral.app.simple;
 
-import info.magnolia.context.MgnlContext;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.model.ModuleDefinition;
 import info.magnolia.objectfactory.ComponentProvider;
@@ -425,7 +424,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
         @Override
         public void sendLocalMessage(Message message) {
-            messagesManager.sendMessage(MgnlContext.getUser().getName(), message);
+            messagesManager.sendLocalMessage(message);
         }
 
         @Override

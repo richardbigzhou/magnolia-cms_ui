@@ -41,6 +41,7 @@ import javax.inject.Singleton;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
+import info.magnolia.context.MgnlContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -100,6 +101,19 @@ public class MessagesManagerImpl implements MessagesManager {
         messageStore.saveMessage(userId, message);
         sendMessageSentEvent(userId, message);
     }
+
+    /**
+     * Send local message that won't be persisted.
+     *
+     * @param message message to send
+     */
+    @Override
+    public void sendLocalMessage(Message message) {
+        message.setId(null);
+        sendMessageSentEvent(MgnlContext.getUser().getName(), message);
+    }
+
+
 
     @Override
     public void clearMessage(final String userId, final String messageId) {
