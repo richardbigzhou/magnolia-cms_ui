@@ -92,7 +92,6 @@ public class MessagesAppMainSubApp implements SubApp, MessagesView.Listener {
         msg.setSubject(subject);
         msg.setMessage(message);
         msg.setType(type);
-        msg.setTimestamp(new Date().getTime());
         return msg;
     }
 
