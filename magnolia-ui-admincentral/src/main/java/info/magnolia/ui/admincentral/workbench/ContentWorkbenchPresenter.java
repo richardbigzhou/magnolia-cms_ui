@@ -102,7 +102,7 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
 
     private final ContentWorkbenchView view;
 
-    private final EventBus adminCentralEventBus;
+    private final EventBus admincentralEventBus;
 
     private final EventBus appEventBus;
 
@@ -115,9 +115,9 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
     private final ActionbarPresenter actionbarPresenter;
 
     @Inject
-    public ContentWorkbenchPresenter(final AppContext appContext, final ContentWorkbenchView view, @Named("adminCentral") final EventBus adminCentralEventBus, @Named("app") final EventBus appEventBus, final Shell shell, final WorkbenchActionFactory actionFactory, final ContentPresenter contentPresenter, final ActionbarPresenter actionbarPresenter) {
+    public ContentWorkbenchPresenter(final AppContext appContext, final ContentWorkbenchView view, @Named("admincentral") final EventBus admincentralEventBus, @Named("app") final EventBus appEventBus, final Shell shell, final WorkbenchActionFactory actionFactory, final ContentPresenter contentPresenter, final ActionbarPresenter actionbarPresenter) {
         this.view = view;
-        this.adminCentralEventBus = adminCentralEventBus;
+        this.admincentralEventBus = admincentralEventBus;
         this.appEventBus = appEventBus;
         this.shell = shell;
         this.actionFactory = actionFactory;
@@ -139,7 +139,7 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
     }
 
     private void bindHandlers() {
-        adminCentralEventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
+        admincentralEventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
 
             @Override
             public void onContentChanged(ContentChangedEvent event) {

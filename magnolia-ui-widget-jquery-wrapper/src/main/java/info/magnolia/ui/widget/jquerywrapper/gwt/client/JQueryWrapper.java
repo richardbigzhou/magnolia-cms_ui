@@ -78,6 +78,10 @@ public class JQueryWrapper extends JavaScriptObject {
         return this.children(selector);
     }-*/;
     
+    public final native JQueryWrapper find(String selector) /*-{
+        return this.find(selector);
+    }-*/;
+    
     public final native void on(String eventId, String selector, Callbacks callbacks) /*-{
         this.on(
               eventId, selector,
@@ -88,10 +92,6 @@ public class JQueryWrapper extends JavaScriptObject {
                       }
                });
     }-*/;
-
-    public static void test(JavaScriptObject jso) {
-
-    }
 
     public final native void animate(int duration, AnimationSettings settings) /*-{
           var json = settings.@info.magnolia.ui.widget.jquerywrapper.gwt.client.AnimationSettings::asJSO()();

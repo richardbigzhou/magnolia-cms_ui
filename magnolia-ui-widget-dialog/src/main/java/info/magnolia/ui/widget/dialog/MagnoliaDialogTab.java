@@ -34,7 +34,7 @@
 package info.magnolia.ui.widget.dialog;
 
 import info.magnolia.ui.vaadin.widget.tabsheet.ShellTab;
-import info.magnolia.ui.widget.dialog.gwt.client.VMagnoliaDialogTab;
+import info.magnolia.ui.widget.dialog.gwt.client.VDialogTab;
 
 import com.vaadin.terminal.PaintException;
 import com.vaadin.terminal.PaintTarget;
@@ -44,7 +44,7 @@ import com.vaadin.ui.ClientWidget;
  * Dialog tab.
  *
  */
-@ClientWidget(VMagnoliaDialogTab.class)
+@ClientWidget(VDialogTab.class)
 public class MagnoliaDialogTab extends ShellTab {
 
     private final DialogLayout content;

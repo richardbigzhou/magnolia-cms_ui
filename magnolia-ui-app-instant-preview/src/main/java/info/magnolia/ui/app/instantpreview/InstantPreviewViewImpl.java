@@ -34,10 +34,13 @@
 package info.magnolia.ui.app.instantpreview;
 
 import info.magnolia.ui.framework.instantpreview.InstantPreviewHostNotFoundException;
+import info.magnolia.ui.framework.message.MessageType;
+import info.magnolia.ui.vaadin.integration.widget.PreviewTokenField;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.vaadin.autoreplacefield.IntegerField;
 
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -58,11 +61,11 @@ public class InstantPreviewViewImpl implements InstantPreviewView {
     private static final Logger log = LoggerFactory.getLogger(InstantPreviewViewImpl.class);
 
     private Listener listener;
-    private final VerticalLayout layout = new VerticalLayout();
+    private final VerticalLayout layout;
     private String hostId;
     private Button shareButton;
     private Button joinButton;
-    private TextField inputHostId;
+    private PreviewTokenField inputHostId;
     private Button hostIdLink;
 
     /**
@@ -73,41 +76,43 @@ public class InstantPreviewViewImpl implements InstantPreviewView {
     }
 
     public InstantPreviewViewImpl() {
+        layout = new VerticalLayout();
         layout.setSpacing(true);
         layout.setMargin(true);
 
         shareButton = buildShareButton();
         shareButton.focus();
 
+        hostIdLink = buildHostIdLink(hostId);
         joinButton = buildJoinButton();
-
         inputHostId = buildHostIdInputText();
 
         layout.addComponent(shareButton);
-        hostIdLink = new Button(hostId != null ? hostId: "");
-        hostIdLink.setImmediate(true);
-        hostIdLink.setStyleName(BaseTheme.BUTTON_LINK);
-
         layout.addComponent(hostIdLink);
         layout.addComponent(joinButton);
         layout.addComponent(inputHostId);
 
     }
 
-    protected TextField buildHostIdInputText() {
-        final TextField inputCode = new TextField();
-        inputCode.setInputPrompt("Enter host id");
+    protected Button buildHostIdLink(final String hostId) {
+        Button button = new Button(hostId != null ? formatHostId(hostId): "");
+        button.setImmediate(true);
+        button.setStyleName(BaseTheme.BUTTON_LINK);
+        return button;
+    }
+
+    protected PreviewTokenField buildHostIdInputText() {
+        final PreviewTokenField inputCode = new PreviewTokenField();
+        inputCode.setInputPrompt("Enter id, e.g. 123-456-789");
         inputCode.setMaxLength(11);
         inputCode.setImmediate(true);
         inputCode.addListener(new Property.ValueChangeListener() {
-
             @Override
             public void valueChange(ValueChangeEvent event) {
                 hostId = event.getProperty().toString();
             }
 
         });
-        //TODO add validator
         return inputCode;
     }
 
@@ -121,18 +126,18 @@ public class InstantPreviewViewImpl implements InstantPreviewView {
                 try {
                     if(joinButton.isEnabled()) {
                         if(joinButton.getData() == InstantPreviewActionType.JOIN) {
+                            hostId = String.valueOf(inputHostId.getValue());
                             if(StringUtils.isNotBlank(hostId)) {
-                                //join session
-                                hostId = (String) inputHostId.getValue();
                                 listener.joinSession(hostId);
                                 hostIdLink.setVisible(false);
                                 joinButton.setCaption("Leave");
                                 joinButton.setData(InstantPreviewActionType.LEAVE);
                                 getShareButton().setEnabled(false);
                                 getInputHostId().setEnabled(false);
+                                listener.sendLocalMessage("You have joined host with id " + formatHostId(hostId), MessageType.INFO);
                             } else {
                                 log.error("Host id cannot be empty or null");
-                                listener.showError("Host id cannot be empty or null");
+                                listener.sendLocalMessage("Host id cannot be empty or null", MessageType.WARNING);
                             }
                         } else if(joinButton.getData()==InstantPreviewActionType.LEAVE) {
                             listener.leaveSession(hostId);
@@ -145,7 +150,7 @@ public class InstantPreviewViewImpl implements InstantPreviewView {
                     }
                 } catch (InstantPreviewHostNotFoundException e) {
                     log.error("", e);
-                    listener.showError(e.getMessage());
+                    listener.sendLocalMessage(e.getMessage(), MessageType.WARNING);
                 }
             }
         });
@@ -163,12 +168,13 @@ public class InstantPreviewViewImpl implements InstantPreviewView {
                     if(shareButton.getData()==InstantPreviewActionType.SHARE) {
                         //generate code and start session
                         hostId = listener.shareSession();
-                        hostIdLink.setCaption(hostId);
+                        hostIdLink.setCaption(formatHostId(hostId));
                         hostIdLink.setVisible(true);
                         shareButton.setCaption("Unshare");
                         shareButton.setData(InstantPreviewActionType.UNSHARE);
                         getJoinButton().setEnabled(false);
                         getInputHostId().setEnabled(false);
+                        listener.sendLocalMessage("You are now sharing with host id " + hostIdLink.getCaption(), MessageType.INFO);
                     } else if(shareButton.getData()==InstantPreviewActionType.UNSHARE) {
                         listener.unshareSession(hostId);
                         hostId = null;
@@ -206,4 +212,30 @@ public class InstantPreviewViewImpl implements InstantPreviewView {
     public Component asVaadinComponent() {
         return layout;
     }
+
+    private static class IdField extends IntegerField {
+
+        public IdField() {
+            addReplaceRule("([0-9][0-9][0-9])", "$1-");
+        }
+
+        @Override
+        protected String prepareStringForNumberParsing(String string) {
+            return string.replaceAll("-", "");
+        }
+
+        @SuppressWarnings("deprecation")
+        @Override
+        protected String getFormattedValue() {
+            return applyRules(super.getFormattedValue());
+        }
+    }
+
+    /**
+     * Given <code>123456789</code> returns <code>123-456-789</code>.
+     */
+    private String formatHostId(final String hostId) {
+        return hostId.replaceAll("([\\d]{3})([\\d]{3})([\\d]{3})", "$1-$2-$3");
+    }
+
 }

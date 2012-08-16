@@ -39,7 +39,7 @@ import info.magnolia.ui.model.dialog.definition.DialogDefinition;
  * Represents a dialog.
  *
  * @see DialogTab
- * @see info.magnolia.ui.admincentral.field.DialogField
+ * @see info.magnolia.ui.admincentral.field.FieldBuilder
  */
 public class Dialog extends AbstractDialogItem {
 

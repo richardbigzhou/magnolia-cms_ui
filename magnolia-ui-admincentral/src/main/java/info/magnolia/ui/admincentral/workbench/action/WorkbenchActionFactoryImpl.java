@@ -39,8 +39,7 @@ import info.magnolia.ui.model.action.AbstractActionFactory;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.Serializable;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -51,34 +50,15 @@ import javax.jcr.Item;
  * Creates an action based on an {@link info.magnolia.ui.model.action.ActionDefinition}.
  */
 @Singleton
-public class WorkbenchActionFactoryImpl extends AbstractActionFactory<ActionDefinition, Action> implements WorkbenchActionFactory {
-
-    private List<DefinitionToImplementationMapping<ActionDefinition, Action>> definitionToImplementationMappings = new ArrayList<DefinitionToImplementationMapping<ActionDefinition, Action>>();
+public class WorkbenchActionFactoryImpl extends AbstractActionFactory<ActionDefinition, Action> implements WorkbenchActionFactory, Serializable {
 
     @Inject
-    public WorkbenchActionFactoryImpl(ComponentProvider componentProvider) {
+    public WorkbenchActionFactoryImpl(ComponentProvider componentProvider, WorkbenchActionRegistry workbenchActionRegistry) {
         super(componentProvider);
-    }
 
-    // Looks like this is needed by proxy
-    public WorkbenchActionFactoryImpl() {
-        super(null);
-    }
-
-    public List<DefinitionToImplementationMapping<ActionDefinition, Action>> getDefinitionToImplementationMappings() {
-        return this.definitionToImplementationMappings;
-    }
-
-    public void setDefinitionToImplementationMappings(
-        List<DefinitionToImplementationMapping<ActionDefinition, Action>> definitionToImplementationMappings) {
-        this.definitionToImplementationMappings = definitionToImplementationMappings;
-        for (DefinitionToImplementationMapping<ActionDefinition, Action> definitionToImplementationMapping : definitionToImplementationMappings) {
-            addDefinitionToImplementationMapping(definitionToImplementationMapping);
+        for (DefinitionToImplementationMapping<ActionDefinition, Action> definitionToImplementationMapping : workbenchActionRegistry.getDefinitionToImplementationMappings()) {
+            addMapping(definitionToImplementationMapping.getDefinition(), definitionToImplementationMapping.getImplementation());
         }
-    }
-
-    public void addDefinitionToImplementationMapping(DefinitionToImplementationMapping<ActionDefinition, Action> mapping) {
-        addMapping(mapping.getDefinition(), mapping.getImplementation());
     }
 
     @Override

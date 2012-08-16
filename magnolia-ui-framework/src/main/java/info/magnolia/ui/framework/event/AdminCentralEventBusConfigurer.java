@@ -39,12 +39,12 @@ import com.google.inject.util.Providers;
 import info.magnolia.objectfactory.guice.AbstractGuiceComponentConfigurer;
 
 /**
- * Configures an {@link EventBus} bound to the name <code>adminCentral</code>.
+ * Configures an {@link EventBus} bound to the name <code>admincentral</code>.
  */
 public class AdminCentralEventBusConfigurer extends AbstractGuiceComponentConfigurer {
 
     @Override
     protected void configure() {
-        bind(EventBus.class).annotatedWith(Names.named("adminCentral")).toProvider(Providers.of(new SimpleEventBus()));
+        bind(EventBus.class).annotatedWith(Names.named("admincentral")).toProvider(Providers.of(new SimpleEventBus()));
     }
 }

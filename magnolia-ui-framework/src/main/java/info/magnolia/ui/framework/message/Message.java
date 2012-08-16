@@ -34,13 +34,13 @@
 package info.magnolia.ui.framework.message;
 
 /**
- * A message.
+ * Models a message. Except timestamp all fields are optional.
  */
 public class Message implements Cloneable {
 
     private String id;
 
-    private long timestamp;
+    private final long timestamp;
 
     private MessageType type;
 
@@ -50,12 +50,16 @@ public class Message implements Cloneable {
 
     private boolean cleared;
 
-    public long getTimestamp() {
-        return timestamp;
+    public Message() {
+        this(System.currentTimeMillis());
     }
 
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
+    public Message(long timestampInMillis) {
+        this.timestamp = timestampInMillis;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
     }
 
     public String getMessage() {

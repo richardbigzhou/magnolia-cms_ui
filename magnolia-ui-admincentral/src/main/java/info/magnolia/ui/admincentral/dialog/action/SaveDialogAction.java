@@ -57,14 +57,12 @@ public class SaveDialogAction extends ActionBase<SaveDialogActionDefinition> {
     private static final Logger log = LoggerFactory.getLogger(SaveDialogAction.class);
 
     private Item item;
-//    private EventBus eventBus;
     private MagnoloaDialogPresenter.Presenter presenter;
 
     public SaveDialogAction(SaveDialogActionDefinition definition, MagnoloaDialogPresenter.Presenter presenter) {
         super(definition);
         this.presenter = presenter;
         this.item = presenter.getItem();
-//        this.eventBus = presenter.getEventBus();
     }
 
     @Override

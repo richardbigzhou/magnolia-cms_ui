@@ -34,7 +34,7 @@
 package info.magnolia.ui.admincentral.field.builder;
 
 import info.magnolia.ui.admincentral.dialog.AbstractDialogItem;
-import info.magnolia.ui.admincentral.field.DialogField;
+import info.magnolia.ui.admincentral.field.FieldBuilder;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
@@ -55,7 +55,7 @@ import com.vaadin.ui.Field;
  *
  * @param <D> definition type
  */
-public abstract class AbstractFieldBuilder<D extends FieldDefinition> extends AbstractDialogItem implements DialogField {
+public abstract class AbstractFieldBuilder<D extends FieldDefinition> extends AbstractDialogItem implements FieldBuilder {
 
     public static final String FIELD_STYLE_NAME = "textfield";
 

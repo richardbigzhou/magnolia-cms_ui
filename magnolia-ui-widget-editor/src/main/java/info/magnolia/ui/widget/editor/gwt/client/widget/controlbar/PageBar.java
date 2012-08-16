@@ -190,14 +190,14 @@ public class PageBar extends AbstractBar {
 
         addButton(preview, Float.LEFT, "mgnlEditorPreviewButton");
 
-        Button adminCentral = new Button(getI18nMessage("buttons.admincentral.js"));
-        adminCentral.addClickHandler(new ClickHandler() {
+        Button admincentral = new Button(getI18nMessage("buttons.admincentral.js"));
+        admincentral.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 //PageEditor.showTree(workspace, path);
             }
         });
-        addButton(adminCentral, Float.LEFT);
+        addButton(admincentral, Float.LEFT);
 
         addStyleName("mgnlEditorMainbar");
 

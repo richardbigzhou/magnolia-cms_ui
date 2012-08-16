@@ -49,7 +49,7 @@ import info.magnolia.ui.model.field.definition.FieldDefinition;
  * @see FieldDefinition
  * @see info.magnolia.ui.admincentral.field.builder.DialogFieldFactory
  */
-public interface DialogField extends DialogItem {
+public interface FieldBuilder extends DialogItem {
 
     /**
      * Creates and initializes a Vaadin {@link Field} component.

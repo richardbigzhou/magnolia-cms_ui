@@ -41,24 +41,26 @@ import java.util.EnumMap;
 import java.util.Map;
 
 import com.vaadin.data.Item;
+import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.themes.BaseTheme;
 
 
 /**
  * Implementation of {@link ContentWorkbenchView}.
  */
+@SuppressWarnings("serial")
 public class ContentWorkbenchViewImpl extends CustomComponent implements ContentWorkbenchView {
 
     private final HorizontalLayout root = new HorizontalLayout();
 
-    private final VerticalLayout workbenchContainer = new VerticalLayout();
+    private final CssLayout contentViewContainer = new CssLayout();
 
     private final Button treeButton;
 
@@ -80,34 +82,30 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
         setSizeFull();
 
         root.setSizeFull();
-        root.setStyleName("mgnl-app-root");
-        root.addComponent(workbenchContainer);
-        root.setExpandRatio(workbenchContainer, 1f);
-        root.setMargin(false);
+        root.setStyleName("workbench");
+        root.addComponent(contentViewContainer);
+        root.setExpandRatio(contentViewContainer, 1);
         root.setSpacing(true);
+        root.setMargin(false);
 
-        HorizontalLayout toolbar = new HorizontalLayout();
-        toolbar.setSizeUndefined();
-        toolbar.setStyleName("mgnl-workbench-toolbar");
-        toolbar.setSpacing(true);
+        CssLayout viewModes = new CssLayout();
+        viewModes.setStyleName("view-modes");
+        viewModes.setMargin(false);
 
-        treeButton = buildButton(ViewType.TREE, "tree", true);
-        listButton = buildButton(ViewType.LIST, "list", false);
-        thumbsButton = buildButton(ViewType.THUMBNAIL, "thumbs", false);
+        treeButton = buildButton(ViewType.TREE, "icon-view-tree", true);
+        listButton = buildButton(ViewType.LIST, "icon-view-list", false);
+        thumbsButton = buildButton(ViewType.THUMBNAIL, "icon-view-thumbnails", false);
 
-        toolbar.addComponent(treeButton);
-        toolbar.addComponent(buildSeparator());
-        toolbar.addComponent(listButton);
-        toolbar.addComponent(buildSeparator());
-        toolbar.addComponent(thumbsButton);
+        viewModes.addComponent(treeButton);
+        viewModes.addComponent(listButton);
+        viewModes.addComponent(thumbsButton);
 
-        workbenchContainer.setSizeFull();
-        workbenchContainer.setStyleName("mgnl-app-view");
-        workbenchContainer.addComponent(toolbar);
+        contentViewContainer.setSizeFull();
+        contentViewContainer.addComponent(viewModes);
     }
 
     private Button buildButton(final ViewType viewType, final String icon, final boolean active) {
-        Button button = new Button(null, new Button.ClickListener() {
+        NativeButton button = new NativeButton(null, new Button.ClickListener() {
 
             @Override
             public void buttonClick(ClickEvent event) {
@@ -131,22 +129,15 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
                 }
             }
         });
-        button.setWidth("24px");
-        button.setHeight("24px");
         button.setStyleName(BaseTheme.BUTTON_LINK);
-        button.addStyleName("icon-view");
-        button.addStyleName("icon-view-" + icon);
+        // button.addStyleName(icon);
+
+        button.setHtmlContentAllowed(true);
+        button.setCaption("<span class=\"" + icon + "\"></span>");
         if (active) {
             button.addStyleName("active");
         }
         return button;
-    }
-
-    private Label buildSeparator() {
-        Label separator = new Label("<div class=\"btn-view-separator\"></div>", Label.CONTENT_XHTML);
-        separator.setWidth("1px");
-        separator.setHeight("24px");
-        return separator;
     }
 
     public ContentWorkbenchView.Listener getListener() {
@@ -160,11 +151,11 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
 
     @Override
     public void setGridType(ViewType type) {
-        workbenchContainer.removeComponent(contentViews.get(currentViewType).asVaadinComponent());
+        contentViewContainer.removeComponent(contentViews.get(currentViewType).asVaadinComponent());
         final Component c = contentViews.get(type).asVaadinComponent();
 
-        workbenchContainer.addComponent(c);
-        workbenchContainer.setExpandRatio(c, 1f);
+        c.setSizeFull();
+        contentViewContainer.addComponent(c);
 
         this.currentViewType = type;
         refresh();
@@ -187,6 +178,7 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
 
     @Override
     public void setActionbarView(final ActionbarView actionbar) {
+        actionbar.asVaadinComponent().setWidth(Sizeable.SIZE_UNDEFINED, 0);
         if (this.actionbar == null) {
             root.addComponent(actionbar.asVaadinComponent());
         } else {

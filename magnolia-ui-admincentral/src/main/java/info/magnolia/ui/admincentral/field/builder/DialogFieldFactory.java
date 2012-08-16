@@ -33,56 +33,38 @@
  */
 package info.magnolia.ui.admincentral.field.builder;
 
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.admincentral.content.view.builder.DefinitionToImplementationMapping;
+import info.magnolia.ui.admincentral.field.FieldBuilder;
+import info.magnolia.ui.model.builder.FactoryBase;
+import info.magnolia.ui.model.field.definition.FieldDefinition;
+
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+
 import javax.inject.Inject;
 
 import com.vaadin.data.Item;
 
-import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.admincentral.content.view.builder.DefinitionToImplementationMapping;
-import info.magnolia.ui.admincentral.field.DialogField;
-import info.magnolia.ui.model.builder.FactoryBase;
-import info.magnolia.ui.model.field.definition.FieldDefinition;
-
 /**
  * Factory for creating DialogField instances using an internal set of mappings connecting a {@link FieldDefinition}
- * class with a {@link DialogField} class.
+ * class with a {@link FieldBuilder} class.
  *
  * @see FieldDefinition
- * @see DialogField
+ * @see FieldBuilder
  */
-public class DialogFieldFactory extends FactoryBase<FieldDefinition, DialogField> implements Serializable {
+public class DialogFieldFactory extends FactoryBase<FieldDefinition, FieldBuilder> implements Serializable {
 
-    private List<DefinitionToImplementationMapping<FieldDefinition, DialogField>> definitionToImplementationMappings = new ArrayList<DefinitionToImplementationMapping<FieldDefinition, DialogField>>();
 
     @Inject
-    public DialogFieldFactory(ComponentProvider componentProvider) {
+    public DialogFieldFactory(ComponentProvider componentProvider, DialogFieldRegistry dialogFieldRegistery) {
         super(componentProvider);
-    }
 
-    // Looks like this is needed by proxy
-    public DialogFieldFactory() {
-        super(null);
-    }
-
-    public List<DefinitionToImplementationMapping<FieldDefinition, DialogField>> getDefinitionToImplementationMappings() {
-        return this.definitionToImplementationMappings;
-    }
-
-    public void setDefinitionToImplementationMappings(List<DefinitionToImplementationMapping<FieldDefinition, DialogField>> definitionToImplementationMappings) {
-        this.definitionToImplementationMappings = definitionToImplementationMappings;
-        for (DefinitionToImplementationMapping<FieldDefinition, DialogField> definitionToImplementationMapping : definitionToImplementationMappings) {
-            addDefinitionToImplementationMapping(definitionToImplementationMapping);
+        for (DefinitionToImplementationMapping<FieldDefinition, FieldBuilder> definitionToImplementationMapping : dialogFieldRegistery.getDefinitionToImplementationMappings()) {
+            addMapping(definitionToImplementationMapping.getDefinition(), definitionToImplementationMapping.getImplementation());
         }
     }
 
-    public void addDefinitionToImplementationMapping(DefinitionToImplementationMapping<FieldDefinition, DialogField> mapping) {
-        addMapping(mapping.getDefinition(), mapping.getImplementation());
-    }
-
-    public DialogField create(FieldDefinition definition, Item item, Object... parameters) {
+    public FieldBuilder create(FieldDefinition definition, Item item, Object... parameters) {
         return super.create(definition, item, parameters);
     }
 }

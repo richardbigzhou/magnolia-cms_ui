@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.app.instantpreview;
 
+import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.framework.view.View;
 
 /**
@@ -45,7 +46,7 @@ public interface InstantPreviewView extends View {
      */
     public interface Listener {
         /**
-         * @return the generated host id.
+         * Starts sharing the session and returns the generated host id.
          */
         String shareSession();
 
@@ -55,7 +56,7 @@ public interface InstantPreviewView extends View {
 
         void leaveSession(String hostId);
 
-        void showError(String error);
+        void sendLocalMessage(String message, MessageType type);
     }
 
     void setListener(Listener listener);

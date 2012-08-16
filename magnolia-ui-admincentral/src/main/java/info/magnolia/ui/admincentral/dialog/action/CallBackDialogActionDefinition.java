@@ -31,36 +31,61 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.dialog.gwt.client;
+package info.magnolia.ui.admincentral.dialog.action;
 
-import info.magnolia.ui.vaadin.widget.tabsheet.client.VMagnoliaTabSheetView;
-
-import com.google.gwt.user.client.ui.Widget;
+import info.magnolia.ui.model.action.ActionDefinition;
 
 /**
- * VTabDialogView.
+ * Defines a dialog action configuration for simple call back actions.
  */
-public interface VMagnoliaDialogView extends VMagnoliaTabSheetView {
+public class CallBackDialogActionDefinition implements ActionDefinition {
+
+    private String name;
+    private String label;
+    private boolean callSuccess = true;
+    private String successActionName = "success";
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+
+    public boolean isCallSuccess() {
+        return this.callSuccess;
+    }
 
     /**
-     * Presenter. Meant for Vaadin part of MagnoliaShell.
+     * @param   true (default) call CallBack.onSuccess(String action).
+     *          false call CallBack.onCancel()
      */
-    public interface Presenter extends VMagnoliaTabSheetView.Presenter {
-
-        void fireAction(String action);
-
-        void closeDialog();
-        
+    public void setCallSuccess(boolean callSuccess) {
+        this.callSuccess = callSuccess;
     }
-    
-    void setPresenter(Presenter presenter);
 
-    boolean hasChildComponent(Widget component);
 
-    void addAction(String label, String action);
+    public String getSuccessActionName() {
+        return this.successActionName;
+    }
 
-    void setDescription(String description);
+    /**
+     * @param successActionName will be passed as parameter to CallBack.onSuccess(String successActionName)
+     * in case of callSuccess = true.
+     */
+    public void setSuccessActionName(String successActionName) {
+        this.successActionName = successActionName;
+    }
 
-    void recalculateErrors();
-    
+
 }
