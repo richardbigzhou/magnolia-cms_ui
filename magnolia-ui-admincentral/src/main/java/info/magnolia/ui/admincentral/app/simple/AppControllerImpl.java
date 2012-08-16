@@ -131,16 +131,16 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     }
 
     @Override
-    public void startIfNotAlreadyRunningThenFocus(String name) {
-        AppContextImpl appContext = doStartIfNotAlreadyRunning(name, null);
+    public void startIfNotAlreadyRunningThenFocus(String name, Location location) {
+        AppContextImpl appContext = doStartIfNotAlreadyRunning(name, location);
         if (appContext != null) {
             doFocus(appContext);
         }
     }
 
     @Override
-    public void startIfNotAlreadyRunning(String name) {
-        doStartIfNotAlreadyRunning(name, null);
+    public void startIfNotAlreadyRunning(String name, Location location) {
+        doStartIfNotAlreadyRunning(name, location);
     }
 
     @Override
@@ -319,7 +319,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             subAppContext.subApp = main;
             subAppContext.name = "main";
             subAppContext.tab = tab;
-            subAppContext.location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appDescriptor.getName(), "");
+            subAppContext.location = location;
 
             subAppContexts.put(subAppContext.name, subAppContext);
         }

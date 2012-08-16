@@ -55,7 +55,8 @@ public class PagesMainSubApp implements SubApp, PagesMainView.Listener {
     private PagesMainView view;
     private ContentWorkbenchPresenter workbench;
     private InstantPreviewDispatcher dispatcher;
-    
+    private String selectedPath;
+
     @Inject
     public PagesMainSubApp(final AppContext appContext, PagesMainView view, ContentWorkbenchPresenter workbench, @Named("app") EventBus eventBus, InstantPreviewDispatcher dispatcher) {
         this.view = view;
@@ -79,6 +80,9 @@ public class PagesMainSubApp implements SubApp, PagesMainView.Listener {
     @Override
     public View start() {
         view.setWorkbenchView(workbench.start());
+        if (selectedPath != null) {
+            workbench.selectPath(selectedPath);
+        }
         return view;
     }
 
@@ -90,5 +94,9 @@ public class PagesMainSubApp implements SubApp, PagesMainView.Listener {
     @Override
     public void subscribe(String hostId) {
         dispatcher.subscribeTo(hostId);
+    }
+
+    public void setSelectedPath(String selectedPath) {
+        this.selectedPath = selectedPath;
     }
 }

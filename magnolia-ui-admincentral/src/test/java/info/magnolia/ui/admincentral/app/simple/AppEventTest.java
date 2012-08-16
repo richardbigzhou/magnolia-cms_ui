@@ -64,6 +64,7 @@ import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.event.InvocationCountingTestEventHandler;
 import info.magnolia.ui.framework.event.SimpleEventBus;
 import info.magnolia.ui.framework.event.TestEvent;
+import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.message.MessagesManagerImpl;
@@ -124,7 +125,7 @@ public class AppEventTest {
         // GIVEN
         String appName = name + "_name";
         // Start an App that has the AppBuss injected and that also add a dumy handler
-        appController.startIfNotAlreadyRunningThenFocus(appName);
+        appController.startIfNotAlreadyRunningThenFocus(appName, new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appName, ""));
 
         // Initial check
         assertEquals(2, eventCollector.appLifecycleEvent.size());
@@ -146,7 +147,7 @@ public class AppEventTest {
         appController.stopCurrentApp();
 
         // Start app again
-        appController.startIfNotAlreadyRunningThenFocus(appName);
+        appController.startIfNotAlreadyRunningThenFocus(appName, new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appName, ""));
 
         assertEquals(true, AppTestImpl.res.containsKey("TestPageApp1"));
         AppEventTestImpl secondAppInstance = (AppEventTestImpl) AppTestImpl.res.get("TestPageApp1");

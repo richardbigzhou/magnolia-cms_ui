@@ -52,6 +52,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * Pages app.
  */
@@ -77,8 +79,9 @@ public class PagesApp extends AbstractApp {
         DefaultLocation defaultLocation = (DefaultLocation) location;
 
         List<String> pathParams = parsePathParamsFromToken(defaultLocation.getToken());
-        if (pathParams.size() < 2)
+        if (pathParams.size() < 2) {
             return;
+        }
 
         final String subAppName = pathParams.get(0);
         final String pagePath = pathParams.get(1);
@@ -106,6 +109,18 @@ public class PagesApp extends AbstractApp {
 
     @Override
     public SubApp start(Location location) {
+        DefaultLocation defaultLocation = (DefaultLocation) location;
+
+        String[] parts = defaultLocation.getToken().split(":");
+
+        if (parts.length >= 2) {
+            final String subAppName = parts[0];
+            final String pagePath = parts[1];
+            if (subAppName.equals("main") && StringUtils.isNotEmpty(pagePath)) {
+                mainSubApp.setSelectedPath(pagePath);
+            }
+        }
+
         return mainSubApp;
     }
 

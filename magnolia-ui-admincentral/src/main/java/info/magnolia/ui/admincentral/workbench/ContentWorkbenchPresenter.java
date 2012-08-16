@@ -274,4 +274,7 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
         }
     }
 
+    public void selectPath(String path) {
+        this.view.selectPath(path);
+    }
 }

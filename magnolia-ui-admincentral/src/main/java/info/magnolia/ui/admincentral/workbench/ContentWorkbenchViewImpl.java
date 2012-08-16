@@ -199,4 +199,11 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
     public Component asVaadinComponent() {
         return this;
     }
+
+    @Override
+    public void selectPath(String path) {
+        for (ContentView contentView : contentViews.values()) {
+            contentView.select(path);
+        }
+    }
 }
