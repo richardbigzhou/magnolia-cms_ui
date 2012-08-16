@@ -33,6 +33,10 @@
  */
 package info.magnolia.ui.widget.magnoliashell.gwt.client;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.RootPanel;
+import com.googlecode.mgwt.ui.client.MGWT;
+import com.googlecode.mgwt.ui.client.OsDetection;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.AnimationSettings;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryCallback;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper;
@@ -101,6 +105,27 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
         setStyleName(CLASSNAME);
         add(mainAppLauncher, getElement());
         bindEventHandlers();
+
+
+        // Apply the tablet class to the body element so that the application can update its UI based on device type.
+        // OsDetectionGenerator
+        //OsDetection detector = GWT.create(OsDetection.class);
+
+        /*
+        if (! MGWT.getOsDetection().isDesktop() || defaultdevice=="tablet") {
+            RootPanel.get().addStyleName("tablet");
+            globalDevice = "tablet";
+        }  else{
+            globalDevice = "desktop" ;
+        }
+        */
+
+
+        // Testing - always apply class
+        RootPanel.get().addStyleName("tablet");
+
+
+
     }
     
     private void bindEventHandlers() {

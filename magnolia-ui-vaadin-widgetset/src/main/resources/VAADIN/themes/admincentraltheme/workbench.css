@@ -9,3 +9,14 @@
 .btn-view-separator {height:24px; border-left:1px solid #bbb;}
 
 .mgnl-workbench-thumbnail-view { background-color: #FFF;}
+
+.content-view-container{
+    float:left;
+    width:100%;
+    margin-left:-290px;
+}
+
+.tablet .content-view-container{
+    float:left;
+    margin-left:-100px;
+}

@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.widget.actionbar;
 
+import com.google.gwt.user.client.ui.RootPanel;
+import com.vaadin.terminal.Sizeable;
 import info.magnolia.ui.vaadin.integration.widget.serializer.ResourceSerializer;
 import info.magnolia.ui.widget.actionbar.gwt.client.VActionbar;
 
@@ -89,8 +91,10 @@ public class Actionbar extends AbstractComponent implements ActionbarView, Serve
 
     public Actionbar() {
         setSizeFull();
-        setWidth("270px");
+        //setWidth("270px");
+        setWidth(Sizeable.SIZE_UNDEFINED, 0);
         setImmediate(true);
+
     }
 
     @Override

@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.admincentral.workbench;
 
+import com.vaadin.terminal.Sizeable;
+import com.vaadin.ui.*;
 import info.magnolia.ui.admincentral.content.view.ContentView;
 import info.magnolia.ui.admincentral.content.view.ContentView.ViewType;
 import info.magnolia.ui.widget.actionbar.ActionbarView;
@@ -41,13 +43,7 @@ import java.util.EnumMap;
 import java.util.Map;
 
 import com.vaadin.data.Item;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
 
 
@@ -56,9 +52,10 @@ import com.vaadin.ui.themes.BaseTheme;
  */
 public class ContentWorkbenchViewImpl extends CustomComponent implements ContentWorkbenchView {
 
-    private final HorizontalLayout root = new HorizontalLayout();
+    //private final HorizontalLayout root = new HorizontalLayout();
+    private final CssLayout root = new CssLayout();
 
-    private final VerticalLayout workbenchContainer = new VerticalLayout();
+    private final VerticalLayout contentViewContainer = new VerticalLayout();
 
     private final Button treeButton;
 
@@ -81,10 +78,9 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
 
         root.setSizeFull();
         root.setStyleName("mgnl-app-root");
-        root.addComponent(workbenchContainer);
-        root.setExpandRatio(workbenchContainer, 1f);
+
+        root.addComponent(contentViewContainer);
         root.setMargin(false);
-        root.setSpacing(true);
 
         HorizontalLayout toolbar = new HorizontalLayout();
         toolbar.setSizeUndefined();
@@ -101,9 +97,9 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
         toolbar.addComponent(buildSeparator());
         toolbar.addComponent(thumbsButton);
 
-        workbenchContainer.setSizeFull();
-        workbenchContainer.setStyleName("mgnl-app-view");
-        workbenchContainer.addComponent(toolbar);
+        contentViewContainer.setWidth(Sizeable.SIZE_UNDEFINED, 0);
+        contentViewContainer.setStyleName("content-view-container");
+        contentViewContainer.addComponent(toolbar);
     }
 
     private Button buildButton(final ViewType viewType, final String icon, final boolean active) {
@@ -160,11 +156,11 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
 
     @Override
     public void setGridType(ViewType type) {
-        workbenchContainer.removeComponent(contentViews.get(currentViewType).asVaadinComponent());
+        contentViewContainer.removeComponent(contentViews.get(currentViewType).asVaadinComponent());
         final Component c = contentViews.get(type).asVaadinComponent();
 
-        workbenchContainer.addComponent(c);
-        workbenchContainer.setExpandRatio(c, 1f);
+        contentViewContainer.addComponent(c);
+        contentViewContainer.setExpandRatio(c, 1f);
 
         this.currentViewType = type;
         refresh();

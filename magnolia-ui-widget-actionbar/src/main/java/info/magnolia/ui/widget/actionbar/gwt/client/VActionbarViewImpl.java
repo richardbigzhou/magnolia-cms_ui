@@ -33,6 +33,9 @@
  */
 package info.magnolia.ui.widget.actionbar.gwt.client;
 
+import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.event.dom.client.MouseDownHandler;
+import com.google.gwt.user.client.ui.FocusPanel;
 import info.magnolia.ui.widget.actionbar.gwt.client.event.ActionTriggerEvent;
 
 import java.util.LinkedHashMap;
@@ -45,6 +48,10 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.vaadin.terminal.gwt.client.ui.Icon;
 
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.ui.Image;
+
 
 /**
  * The Class VActionbarViewImpl, GWT implementation for the VActionbarView interface.
@@ -55,18 +62,76 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, 
 
     private final Element root = DOM.createElement("section");
 
+    //private final Element tabletToggleInternal = DOM.createElement("div");
+
+    //private final Image tabletToggle = new HTML("TAB TOG");//tabletToggleInternal);
+
+    private final HTML tabletToggle = new HTML("");//tabletToggleInternal);
+
     private final EventBus eventBus;
 
     private Presenter presenter;
+
+
+    private int tabletRow = -1;
+    private int tabletColumn = 0;
+
+    private boolean isHorizontalCollapsed = false;
 
     private final Map<String, VActionbarSection> sections = new LinkedHashMap<String, VActionbarSection>();
 
     public VActionbarViewImpl(final EventBus eventBus) {
         setElement(root);
-        setStyleName(CLASSNAME);
+        String cssClasses = CLASSNAME + " tablet";  //CLZ This totally does not work - why?
+
+        addStyleName(cssClasses);  //IS IT?? Is not actually used - vaadin applies v-actionbar style by itself.
+        //setStyleName(CLASSNAME + " tablet");
+        //addStyleName("tablet");
 
         this.eventBus = eventBus;
         this.eventBus.addHandler(ActionTriggerEvent.TYPE, this);
+
+        // Prepare Tablet button
+        prepareTablet();
+    }
+
+
+
+    private void prepareTablet(){
+        tabletToggle.addStyleName("v-tablet-toggle");
+        add(tabletToggle,root);
+
+        DOM.sinkEvents(tabletToggle.getElement(), Event.ONMOUSEDOWN);
+
+        tabletToggle.addDomHandler(new MouseDownHandler() {
+            @Override
+            public void onMouseDown(MouseDownEvent event) {
+                isHorizontalCollapsed = !isHorizontalCollapsed;
+
+                if (isHorizontalCollapsed){
+                    tabletToggle.removeStyleName("open");
+
+                    // Remove "open" style from all actions
+                    for (final VActionbarSection section : sections.values()) {
+                        for (final VActionbarGroup group: section.getGroups().values()) {
+                            group.removeStyleName("open");
+                        }
+                    }
+
+                }else{
+                    tabletToggle.addStyleName("open");
+
+                    // Add "open" style from all actions
+                    for (final VActionbarSection section : sections.values()) {
+                        for (final VActionbarGroup group: section.getGroups().values())  {
+                            group.addStyleName("open");
+                        }
+                    }
+                }
+            }
+        },MouseDownEvent.getType());
+
+
     }
 
     @Override
@@ -98,11 +163,19 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, 
         if (section != null) {
             VActionbarGroup group = section.getGroups().get(groupName);
             if (group == null) {
+                tabletColumn = 0;
+                tabletRow ++;
                 group = new VActionbarGroup(groupName);
                 section.addGroup(group);
+
+                // Position tabletToggle button at bottom of stack.
+                tabletToggle.removeStyleName("row-" + (tabletRow));
+                tabletToggle.addStyleName("row-" + (tabletRow+1));
             }
-            VActionbarItem action = new VActionbarItem(actionParams, eventBus, icon);
+            String cssClasses = "row-" + tabletRow + " col-" + tabletColumn + " open";
+            VActionbarItem action = new VActionbarItem(actionParams, group, eventBus, icon, cssClasses);
             group.addAction(action);
+            tabletColumn++;
         }
     }
 

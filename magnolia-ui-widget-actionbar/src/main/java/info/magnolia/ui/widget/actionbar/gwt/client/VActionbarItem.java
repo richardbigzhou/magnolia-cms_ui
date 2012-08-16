@@ -33,13 +33,17 @@
  */
 package info.magnolia.ui.widget.actionbar.gwt.client;
 
+import com.google.gwt.user.client.*;
+
+import com.googlecode.mgwt.dom.client.event.touch.*;
+import com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler;
+import com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent;
+import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 import info.magnolia.ui.widget.actionbar.gwt.client.event.ActionTriggerEvent;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
@@ -57,6 +61,8 @@ public class VActionbarItem extends Widget {
 
     private final Element text = DOM.createSpan();
 
+    //private final Element flyoutIndicator = DOM.createSpan();
+
     private final Icon icon;
 
     private final VActionbarItemJSO data;
@@ -65,45 +71,97 @@ public class VActionbarItem extends Widget {
 
     private HandlerRegistration handler;
 
+    private VActionbarGroup group;
+
+    TouchDelegate delegate = new TouchDelegate(this);
+
+    HandlerRegistration touchEndHandler;
+
     /**
      * Instantiates a new action in action bar.
      * 
      * @param data the data json object
      * @param eventBus the event bus
      * @param icon the icon
+     * @param cssClasses css classes to be added to the item
      */
-    public VActionbarItem(VActionbarItemJSO data, EventBus eventBus, Icon icon) {
+    public VActionbarItem(VActionbarItemJSO data, VActionbarGroup group, EventBus eventBus, Icon icon, String cssClasses) {
         super();
         this.data = data;
+        this.group = group;
         this.eventBus = eventBus;
         this.icon = icon;
 
-        constructDOM();
+        constructDOM(cssClasses);
         bindHandlers();
         update();
     }
 
-    private void constructDOM() {
+    private void constructDOM(String cssClasses) {
         setElement(root);
         setStyleName(CLASSNAME);
+        addStyleName(cssClasses);
+
         text.addClassName("v-text");
         if (icon != null) {
             root.appendChild(icon.getElement());
         }
         root.appendChild(text);
+
+        /*flyoutIndicator.addClassName("v-flyout-indicator");
+        flyoutIndicator.setInnerText("v"); //TODO: CLZ - add flyout icon. Toggle it based on row state.
+        root.appendChild(flyoutIndicator);     */
     }
 
     private void bindHandlers() {
-        handler = addDomHandler(new ClickHandler() {
+        /* handler = addDomHandler(new ClickHandler() {
 
             @Override
             public void onClick(ClickEvent event) {
-                if (data.isEnabled()) {
+               if (data.isEnabled()) {
                     eventBus.fireEvent(new ActionTriggerEvent(data.getName(), VActionbarItem.this));
                 }
             }
         }, ClickEvent.getType());
+*/
+
+        DOM.sinkEvents(getElement(), Event.TOUCHEVENTS);
+
+        delegate.addTouchStartHandler(new TouchStartHandler() {
+            @Override
+            public void onTouchStart(com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent event) {
+
+                // Expand group row on timeout.
+                final Timer t = new Timer() {
+                    public void run() {
+
+                        group.toggleHorizontalCollapse();
+
+                        touchEndHandler.removeHandler();
+                    }
+                };
+                t.schedule(400);
+
+                // Fire standard action on click.
+                touchEndHandler  = delegate.addTouchEndHandler(new com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler() {
+                    @Override
+                    public void onTouchEnd(com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent event) {
+
+                        t.cancel();
+                        touchEndHandler.removeHandler();
+
+                        if (data.isEnabled()) {
+                            eventBus.fireEvent(new ActionTriggerEvent(data.getName(), VActionbarItem.this));
+                        }
+
+                        group.horizontalCollapse();
+                    }
+                });
+
+            }
+        });
     }
+
 
     public String getName() {
         return data.getName();

@@ -1,7 +1,14 @@
 .v-actionbar {
+   float:right;
+    width:270px;
 	margin-top:5px;
 	background:#666;
 	color:#fff;
+
+}
+
+.v-tablet-toggle{
+    display:none;
 }
 
 .v-actionbar-section {
@@ -73,8 +80,150 @@
 	color:#aabf2f;
 }
 
+.v-action .v-flyout-indicator{
+    display:none;
+}
+
 .v-actionbar-preview .v-verticallayout-margin {
 	padding-left:8px;
 	padding-right:18px;
 	padding-bottom:8px;
+}
+
+
+
+/****  Handling Tablet ****/
+
+.tablet .v-actionbar{
+    position:relative;
+    width:69px;
+    background:none;
+}
+
+.tablet .v-actionbar-section > header {
+    /*width:69px;
+    background:#666666;    */
+    display:none;
+}
+
+.tablet .v-actionbar-section-title{
+    display:none;
+}
+
+.tablet .v-actionbar-group{
+    border:none;
+}
+
+.tablet .v-action{
+    position:absolute;
+    display:block;
+    left:1px;
+    width:69px;
+    height:78px;
+    border:none;
+    background:#666 ;
+    text-align:center;
+
+    color:#fff;
+    font-size:12px;
+}
+
+.tablet .v-tablet-toggle{
+    position:absolute;
+    display:block;
+    left:1px;
+    width:69px;
+    height:30px;
+    border:none;
+    background:#666 ;
+    text-align:center;
+
+    color:#fff;
+    font-size:12px;
+
+    background-image: url("img/actionbar-toggle-close.png");
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+.tablet .v-tablet-toggle.open{
+    background-image: url("img/actionbar-toggle-open.png");
+}
+
+.tablet .v-action .v-icon{
+    left:20px;
+    height:24px;
+}
+
+.tablet .v-action .v-text{
+    left:4px;
+    width:62px;
+    font-size:12px;
+    top:35px;
+}
+
+.tablet .v-action .v-flyout-indicator{
+    display:inline;
+    left:2px;
+    bottom:0px;
+    position:absolute;
+}
+
+
+.tablet .v-action.col-0{
+    left:1px;
+    z-index:100;
+
+    background-image: url("img/actionbar-tablet-flyout-toggle-close.png");
+    background-position: 3px 66px;
+    background-repeat: no-repeat;
+}
+.tablet .v-actionbar-group.open .v-action.col-0{
+    background-image: url("img/actionbar-tablet-flyout-toggle-open.png");
+}
+
+
+
+.tablet .v-actionbar-group.open .v-action.col-1{
+    left:-70px;
+}
+.tablet .v-actionbar-group.open .v-action.col-2{
+    left:-140px;
+}
+.tablet .v-actionbar-group.open .v-action.col-3{
+    left:-210px;
+}
+.tablet .v-actionbar-group.open .v-action.col-4{
+    left:-280px;
+}
+.tablet .v-actionbar-group.open .v-action.col-5{
+    left:-350px;
+}
+
+
+
+
+.tablet .v-actionbar .row-0{
+    top:40px;
+}
+.tablet .v-actionbar .row-1{
+    top:120px;
+}
+.tablet .v-actionbar .row-2{
+    top:200px;
+}
+.tablet .v-actionbar .row-3{
+    top:280px;
+}
+.tablet .v-actionbar .row-4{
+    top:360px;
+}
+.tablet .v-actionbar .row-5{
+    top:440px;
+}
+.tablet .v-actionbar .row-6{
+    top:520px;
+}
+.tablet .v-actionbar .row-7{
+    top:600px;
 }
