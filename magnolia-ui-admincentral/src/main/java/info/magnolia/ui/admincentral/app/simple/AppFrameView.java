@@ -47,7 +47,33 @@ import com.vaadin.ui.ComponentContainer;
 @SuppressWarnings("serial")
 public class AppFrameView implements View {
 
-    private final ShellTabSheet tabsheet = new ShellTabSheet();
+    /**
+     * Listener.
+     */
+    public interface Listener {
+
+        void onActiveTabSet(ShellTab tab);
+
+        void onTabClosed(ShellTab tab);
+    }
+
+    private final ShellTabSheet tabsheet = new ShellTabSheet() {
+
+        @Override
+        public void onActiveTabSet(String tabId) {
+            super.onActiveTabSet(tabId);
+            listener.onActiveTabSet(super.getTabById(tabId));
+        }
+
+        @Override
+        protected void closeTab(String tabId) {
+            ShellTab tab = super.getTabById(tabId);
+            super.closeTab(tabId);
+            listener.onTabClosed(tab);
+        }
+    };
+
+    private Listener listener;
 
     public AppFrameView() {
         super();
@@ -55,11 +81,16 @@ public class AppFrameView implements View {
         tabsheet.addStyleName("app");
     }
 
-    public void addTab(ComponentContainer cc, String caption, boolean closable) {
+    public void setListener(Listener listener) {
+        this.listener = listener;
+    }
+
+    public ShellTab addTab(ComponentContainer cc, String caption, boolean closable) {
         final ShellTab tab = new ShellTab(caption, cc);
         tabsheet.addComponent(tab);
         tabsheet.setTabClosable(tab, closable);
         tabsheet.setActiveTab(tab);
+        return tab;
     }
 
     public void closeTab(ComponentContainer cc) {
@@ -69,5 +100,13 @@ public class AppFrameView implements View {
     @Override
     public Component asVaadinComponent() {
         return tabsheet;
+    }
+
+    public void setActiveTab(ShellTab tab) {
+        tabsheet.setActiveTab(tab);
+    }
+
+    public ShellTab getActiveTab() {
+        return tabsheet.getActiveTab();
     }
 }

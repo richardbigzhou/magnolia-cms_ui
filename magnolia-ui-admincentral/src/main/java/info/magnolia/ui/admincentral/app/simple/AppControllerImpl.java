@@ -61,6 +61,7 @@ import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.framework.view.ViewPort;
+import info.magnolia.ui.vaadin.widget.tabsheet.ShellTab;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -130,16 +131,16 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     }
 
     @Override
-    public void startIfNotAlreadyRunningThenFocus(String name) {
-        AppContextImpl appContext = doStartIfNotAlreadyRunning(name, null);
+    public void startIfNotAlreadyRunningThenFocus(String name, Location location) {
+        AppContextImpl appContext = doStartIfNotAlreadyRunning(name, location);
         if (appContext != null) {
             doFocus(appContext);
         }
     }
 
     @Override
-    public void startIfNotAlreadyRunning(String name) {
-        doStartIfNotAlreadyRunning(name, null);
+    public void startIfNotAlreadyRunning(String name, Location location) {
+        doStartIfNotAlreadyRunning(name, location);
     }
 
     @Override
@@ -259,15 +260,22 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         return appLauncherLayoutManager.getLayoutForCurrentUser().getAppDescriptor(name);
     }
 
-    private class AppContextImpl implements AppContext {
+    private class AppContextImpl implements AppContext, AppFrameView.Listener {
+
+        private class SubAppContext {
+            private SubApp subApp;
+            private String name;
+            private Location location;
+            private ShellTab tab;
+        }
+
+        private Map<String, SubAppContext> subAppContexts = new HashMap<String, SubAppContext>();
 
         private final AppDescriptor appDescriptor;
 
         private App app;
 
         private AppFrameView appFrameView;
-
-        private Location currentLocation;
 
         private ComponentProvider appComponentProvider;
 
@@ -300,20 +308,69 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             app = appComponentProvider.newInstance(appDescriptor.getAppClass());
 
             appFrameView = new AppFrameView();
+            appFrameView.setListener(this);
 
             SubApp main = app.start(location);
 
-            currentLocation = location;
-
             View view = main.start();
-            appFrameView.addTab((ComponentContainer) view.asVaadinComponent(), main.getCaption(), false);
+            ShellTab tab = appFrameView.addTab((ComponentContainer) view.asVaadinComponent(), main.getCaption(), false);
+
+            SubAppContext subAppContext = new SubAppContext();
+            subAppContext.subApp = main;
+            subAppContext.name = "main";
+            subAppContext.tab = tab;
+            subAppContext.location = location;
+
+            subAppContexts.put(subAppContext.name, subAppContext);
         }
 
         /**
          * Called when a location change occurs and the app is already running.
          */
         public void onLocationUpdate(Location location) {
+
+            String name = extractSubAppName(((DefaultLocation) location).getToken());
+
+            // The location targets the current display state, update the fragment only
+            if (name.length() == 0) {
+                SubAppContext subAppContext = getActiveSubAppContext();
+                if (subAppContext != null) {
+                    shell.setFragment(subAppContext.location.toString());
+                }
+                return;
+            }
+
+            // If the location targets an existing sub app then activate it and update its location
+            SubAppContext subAppContext = subAppContexts.get(name);
+            if (subAppContext != null) {
+                appFrameView.setActiveTab(subAppContext.tab);
+                subAppContext.location = location;
+                // TODO we'd want to notify the sub app here so it can react to the rest of the token
+                return;
+            }
+
             app.locationChanged(location);
+        }
+
+        private String extractSubAppName(String token) {
+            int i = token.indexOf(':');
+            return i != -1 ? token.substring(0, i) : token;
+        }
+
+        @Override
+        public void onActiveTabSet(ShellTab tab) {
+            SubAppContext activeSubAppContext = getActiveSubAppContext();
+            if (activeSubAppContext.tab == tab) {
+                locationController.goTo(activeSubAppContext.location);
+            }
+        }
+
+        @Override
+        public void onTabClosed(ShellTab tab) {
+            SubAppContext subAppContext = getSubAppContextForTab(tab);
+            if (subAppContext != null) {
+                subAppContexts.remove(subAppContext.name);
+            }
         }
 
         public String mayStop() {
@@ -325,12 +382,24 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         }
 
         public Location getCurrentLocation() {
-            return currentLocation;
+            SubAppContext subAppContext = getActiveSubAppContext();
+            if (subAppContext != null) {
+                return subAppContext.location;
+            }
+            return new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appDescriptor.getName(), "");
         }
 
         @Override
-        public void openSubApp(SubApp subApp) {
-            appFrameView.addTab((ComponentContainer) subApp.start().asVaadinComponent(), subApp.getCaption(), true);
+        public void openSubApp(String name, SubApp subApp) {
+            ShellTab tab = appFrameView.addTab((ComponentContainer) subApp.start().asVaadinComponent(), subApp.getCaption(), true);
+
+            SubAppContext subAppContext = new SubAppContext();
+            subAppContext.subApp = subApp;
+            subAppContext.name = name;
+            subAppContext.tab = tab;
+            subAppContext.location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appDescriptor.getName(), name);
+
+            subAppContexts.put(subAppContext.name, subAppContext);
         }
 
         @Override
@@ -339,9 +408,14 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         }
 
         @Override
-        public void setAppLocation(Location location) {
-            currentLocation = location;
-            shell.setFragment(location.toString());
+        public void setSubAppLocation(SubApp subApp, Location location) {
+            SubAppContext subAppContext = getSubAppContextForSubApp(subApp);
+            if (subAppContext != null) {
+                subAppContext.location = location;
+                if (currentApp == this && getActiveSubAppContext() == subAppContext) {
+                    shell.setFragment(location.toString());
+                }
+            }
         }
 
         @Override
@@ -367,6 +441,28 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         @Override
         public void exitFullScreenMode() {
             shell.exitFullScreenMode();
+        }
+
+        private SubAppContext getActiveSubAppContext() {
+            ShellTab tab = appFrameView.getActiveTab();
+            return getSubAppContextForTab(tab);
+        }
+
+        private SubAppContext getSubAppContextForTab(ShellTab tab) {
+            for (SubAppContext subAppContext : subAppContexts.values()) {
+                if (subAppContext.tab.equals(tab)) {
+                    return subAppContext;
+                }
+            }
+            return null;
+        }
+
+        private SubAppContext getSubAppContextForSubApp(SubApp subApp) {
+            for (SubAppContext subAppContext : subAppContexts.values()) {
+                if (subAppContext.subApp == subApp)
+                    return subAppContext;
+            }
+            return null;
         }
     }
 
