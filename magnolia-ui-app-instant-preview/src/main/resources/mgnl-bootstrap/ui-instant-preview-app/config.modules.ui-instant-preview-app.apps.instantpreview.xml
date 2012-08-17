@@ -25,7 +25,7 @@
     <sv:value>Instant Preview</sv:value>
   </sv:property>
   <sv:property sv:name="name" sv:type="String">
-    <sv:value>icon-instantpreview-app</sv:value>
+    <sv:value>instantpreview</sv:value>
   </sv:property>
   <sv:node sv:name="MetaData">
     <sv:property sv:name="jcr:primaryType" sv:type="Name">

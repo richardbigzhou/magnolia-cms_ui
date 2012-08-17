@@ -33,42 +33,73 @@
  */
 package info.magnolia.ui.admincentral.field;
 
+import info.magnolia.ui.admincentral.workbench.ContentWorkbenchView;
+
 import org.vaadin.addon.customfield.CustomField;
 
 import com.vaadin.data.Property;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.VerticalLayout;
 
 
 /**
- * A base custom field comprising a text field and a button placed to its immediate right.
+ * A base custom field allowing to display a {@link ContentWorkbenchView} and a TextField.
+ *  - Text field can be Hide, or place on top or button.
+ *  This Field is mainly use do perform some selection in a list and to
+ *  Grape the selected value into the Text input field
  */
-public class TextAndButtonField extends CustomField {
+public class TextAndContentViewField extends CustomField {
 
-    private Button selectButton;
+
+    private ContentWorkbenchView contentView;
+    private VerticalLayout layout;
     private TextField textField;
+    private boolean displayTextFieldOnTop;
 
-    public TextAndButtonField() {
+    public TextAndContentViewField(boolean displayTextField, boolean displayTextFieldOnTop) {
+        this.displayTextFieldOnTop = displayTextFieldOnTop;
         textField = new TextField();
-        selectButton = new Button();
-        HorizontalLayout layout = new HorizontalLayout();
+        layout = new VerticalLayout();
         layout.setSpacing(true);
-        layout.addComponent(textField);
-        layout.addComponent(selectButton);
-        layout.setComponentAlignment(selectButton, Alignment.MIDDLE_CENTER);
+        addTextFieldToLayout(displayTextField);
         setCompositionRoot(layout);
+    }
+
+    /**
+     * Set textField visible or not.
+     */
+    private void addTextFieldToLayout(boolean displayTextField) {
+        textField = new TextField();
+        if(! displayTextField) {
+            textField.setVisible(false);
+            return;
+        }
+        layout.addComponent(textField);
     }
 
     public TextField getTextField() {
         return this.textField;
     }
 
-    public Button getSelectButton() {
-        return this.selectButton;
+    public ContentWorkbenchView getContentView() {
+        return this.contentView;
     }
 
+    /**
+     * Set contentView, and Add it to the Layout.
+     * Based on displayTextFieldOnTop, put it before or after the TextField.
+     */
+    public void setContentView (ContentWorkbenchView contentView) {
+        if(this.contentView != null) {
+            layout.removeComponent(this.contentView.asVaadinComponent());
+        }
+        this.contentView = contentView;
+        if(!displayTextFieldOnTop) {
+            layout.addComponentAsFirst(this.contentView.asVaadinComponent());
+        }else {
+            layout.addComponent(this.contentView.asVaadinComponent());
+        }
+    }
 
     @Override
     public Object getValue() {
@@ -94,5 +125,4 @@ public class TextAndButtonField extends CustomField {
     public Class< ? > getType() {
         return getPropertyDataSource().getType();
     }
-
 }

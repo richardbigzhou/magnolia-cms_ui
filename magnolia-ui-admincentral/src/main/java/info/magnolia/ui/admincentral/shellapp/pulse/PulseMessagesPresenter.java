@@ -122,8 +122,11 @@ public class PulseMessagesPresenter implements Serializable {
     }
 
     private void addMessageAsItem(Message message) {
-        final Item item = container.addItem(message.getId());
-        assignPropertiesFromMessage(message, item);
+        // filter out local messages that have id == null
+        if (message.getId() != null) {
+            final Item item = container.addItem(message.getId());
+            assignPropertiesFromMessage(message, item);
+        }
     }
 
     private void assignPropertiesFromMessage(Message message, final Item item) {

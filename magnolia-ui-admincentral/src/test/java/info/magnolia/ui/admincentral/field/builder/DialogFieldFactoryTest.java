@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,45 +31,11 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.event;
-
-import info.magnolia.ui.framework.event.Event;
-import info.magnolia.ui.framework.event.EventHandler;
-
+package info.magnolia.ui.admincentral.field.builder;
 
 /**
- * This event is fired when an item is selected (ie a row in the data grid within the workbench representing either a
- * {@link javax.jcr.Node} or a {@link javax.jcr.Property}).
+ * Main test class for {@link DialogFieldFactory}
  */
-public class ItemSelectedEvent implements Event<ItemSelectedEvent.Handler> {
+public class DialogFieldFactoryTest {
 
-    /**
-     * Handles {@link ItemSelectedEvent} events.
-     */
-    public interface Handler extends EventHandler {
-
-        void onItemSelected(ItemSelectedEvent event);
-    }
-
-    private String workspace;
-
-    private String path;
-
-    public ItemSelectedEvent(String workspace, String path) {
-        this.workspace = workspace;
-        this.path = path;
-    }
-
-    public String getWorkspace() {
-        return workspace;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    @Override
-    public void dispatch(Handler handler) {
-        handler.onItemSelected(this);
-    }
 }

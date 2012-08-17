@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.framework.app;
 
+import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.view.ViewPort;
 
 /**
@@ -40,9 +41,9 @@ import info.magnolia.ui.framework.view.ViewPort;
  */
 public interface AppController {
 
-    void startIfNotAlreadyRunning(String name);
+    void startIfNotAlreadyRunning(String name, Location location);
 
-    void startIfNotAlreadyRunningThenFocus(String name);
+    void startIfNotAlreadyRunningThenFocus(String name, Location location);
 
     void stopApp(String name);
 

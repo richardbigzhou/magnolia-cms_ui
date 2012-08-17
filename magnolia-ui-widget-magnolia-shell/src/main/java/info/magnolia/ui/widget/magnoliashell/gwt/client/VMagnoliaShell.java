@@ -354,8 +354,8 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
     }
 
     @Override
-    public void startApp(String appName) {
-        proxy.call("startApp", appName);
+    public void startApp(String appName, String token) {
+        proxy.call("startApp", appName, token);
     }
     
     private void registerApps(JsArrayString appNames) {

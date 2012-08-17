@@ -65,7 +65,7 @@ public class EditPageAction extends ActionBase<EditPageActionDefinition> {
     public void execute() throws ActionExecutionException {
         try {
             String nodePath = nodeToEdit.getPath();
-            Location pageEditorLocation = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages", PagesApp.EDITOR_TOKEN + ":" + nodePath);
+            Location pageEditorLocation = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages", PagesApp.EDITOR_TOKEN + ";" + nodePath);
             locationController.goTo(pageEditorLocation);
         } catch (RepositoryException e) {
             throw new ActionExecutionException(e);

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,45 +31,44 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.event;
-
-import info.magnolia.ui.framework.event.Event;
-import info.magnolia.ui.framework.event.EventHandler;
-
+package info.magnolia.ui.model.field.definition;
 
 /**
- * This event is fired when an item is selected (ie a row in the data grid within the workbench representing either a
- * {@link javax.jcr.Node} or a {@link javax.jcr.Property}).
+ * Configuration definition for a LinkFieldSelection field Display.
+ * This Definition allows to configure:
+ *   - Column name. The value of the defined column will be propagated and display into the Input Text field.
+ *   - Display the Input Text Field.
+ *   - Position of the Input Text Field (before or after the ContentWorkbenchView)
  */
-public class ItemSelectedEvent implements Event<ItemSelectedEvent.Handler> {
+public class LinkFieldSelectionDefinition extends ConfiguredFieldDefinition {
 
-    /**
-     * Handles {@link ItemSelectedEvent} events.
-     */
-    public interface Handler extends EventHandler {
 
-        void onItemSelected(ItemSelectedEvent event);
+    private String columnName;
+    private boolean displayTextField = true;
+    private boolean displayTextFieldOnTop = false;
+
+    public String getColumnName() {
+        return columnName;
     }
 
-    private String workspace;
-
-    private String path;
-
-    public ItemSelectedEvent(String workspace, String path) {
-        this.workspace = workspace;
-        this.path = path;
+    public void setColumnName(String columnName) {
+        this.columnName = columnName;
     }
 
-    public String getWorkspace() {
-        return workspace;
+    public boolean isDisplayTextField() {
+        return displayTextField;
     }
 
-    public String getPath() {
-        return path;
+    public void setDisplayTextField(boolean displayTextField) {
+        this.displayTextField = displayTextField;
     }
 
-    @Override
-    public void dispatch(Handler handler) {
-        handler.onItemSelected(this);
+    public boolean isDisplayTextFieldOnTop() {
+        return displayTextFieldOnTop;
     }
+
+    public void setDisplayTextFieldOnTop(boolean displayTextFieldOnTop) {
+        this.displayTextFieldOnTop = displayTextFieldOnTop;
+    }
+
 }

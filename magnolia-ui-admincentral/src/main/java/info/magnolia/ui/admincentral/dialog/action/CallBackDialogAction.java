@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,45 +31,35 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.event;
+package info.magnolia.ui.admincentral.dialog.action;
 
-import info.magnolia.ui.framework.event.Event;
-import info.magnolia.ui.framework.event.EventHandler;
-
+import info.magnolia.ui.model.action.ActionBase;
+import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.widget.dialog.MagnoloaDialogPresenter;
 
 /**
- * This event is fired when an item is selected (ie a row in the data grid within the workbench representing either a
- * {@link javax.jcr.Node} or a {@link javax.jcr.Property}).
+ * Implements an action for CallBack handling on dialog {@link MagnoloaDialogPresenter.Presenter.CallBack}.
+ * This Action can be configured to perform a cancel or a success Action.
+ *
+ * @see CallBackDialogActionDefinition
  */
-public class ItemSelectedEvent implements Event<ItemSelectedEvent.Handler> {
+public class CallBackDialogAction extends ActionBase<CallBackDialogActionDefinition> {
 
-    /**
-     * Handles {@link ItemSelectedEvent} events.
-     */
-    public interface Handler extends EventHandler {
+    private MagnoloaDialogPresenter.Presenter presenter;
 
-        void onItemSelected(ItemSelectedEvent event);
-    }
-
-    private String workspace;
-
-    private String path;
-
-    public ItemSelectedEvent(String workspace, String path) {
-        this.workspace = workspace;
-        this.path = path;
-    }
-
-    public String getWorkspace() {
-        return workspace;
-    }
-
-    public String getPath() {
-        return path;
+    public CallBackDialogAction(CallBackDialogActionDefinition definition, MagnoloaDialogPresenter.Presenter presenter) {
+        super(definition);
+        this.presenter = presenter;
     }
 
     @Override
-    public void dispatch(Handler handler) {
-        handler.onItemSelected(this);
+    public void execute() throws ActionExecutionException {
+
+        if(getDefinition().isCallSuccess()) {
+            presenter.getCallBack().onSuccess(getDefinition().getSuccessActionName());
+        } else {
+            presenter.getCallBack().onCancel();
+        }
     }
+
 }

@@ -33,12 +33,17 @@
  */
 package info.magnolia.ui.app.pages.main;
 
+import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
+import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.SubApp;
+import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.instantpreview.InstantPreviewDispatcher;
+import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.view.View;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  * PagesMainSubApp.
@@ -50,13 +55,21 @@ public class PagesMainSubApp implements SubApp, PagesMainView.Listener {
     private PagesMainView view;
     private ContentWorkbenchPresenter workbench;
     private InstantPreviewDispatcher dispatcher;
-    
+    private String selectedPath;
+
     @Inject
-    public PagesMainSubApp(PagesMainView view, ContentWorkbenchPresenter workbench, InstantPreviewDispatcher dispatcher) {
+    public PagesMainSubApp(final AppContext appContext, PagesMainView view, ContentWorkbenchPresenter workbench, @Named("app") EventBus eventBus, InstantPreviewDispatcher dispatcher) {
         this.view = view;
         this.dispatcher = dispatcher;
         this.view.setListener(this);
         this.workbench = workbench;
+        eventBus.addHandler(ItemSelectedEvent.class, new ItemSelectedEvent.Handler() {
+
+            @Override
+            public void onItemSelected(ItemSelectedEvent event) {
+                appContext.setSubAppLocation(PagesMainSubApp.this, new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages", "main:" + event.getPath()));
+            }
+        });
     }
 
     @Override
@@ -67,6 +80,9 @@ public class PagesMainSubApp implements SubApp, PagesMainView.Listener {
     @Override
     public View start() {
         view.setWorkbenchView(workbench.start());
+        if (selectedPath != null) {
+            workbench.selectPath(selectedPath);
+        }
         return view;
     }
 
@@ -78,5 +94,9 @@ public class PagesMainSubApp implements SubApp, PagesMainView.Listener {
     @Override
     public void subscribe(String hostId) {
         dispatcher.subscribeTo(hostId);
+    }
+
+    public void setSelectedPath(String selectedPath) {
+        this.selectedPath = selectedPath;
     }
 }

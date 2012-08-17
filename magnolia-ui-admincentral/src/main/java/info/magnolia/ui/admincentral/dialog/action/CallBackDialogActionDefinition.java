@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,79 +31,61 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.message;
+package info.magnolia.ui.admincentral.dialog.action;
+
+import info.magnolia.ui.model.action.ActionDefinition;
 
 /**
- * Models a message. Except timestamp all fields are optional.
+ * Defines a dialog action configuration for simple call back actions.
  */
-public class Message implements Cloneable {
+public class CallBackDialogActionDefinition implements ActionDefinition {
 
-    private String id;
+    private String name;
+    private String label;
+    private boolean callSuccess = true;
+    private String successActionName = "success";
 
-    private final long timestamp;
-
-    private MessageType type;
-
-    private String subject;
-
-    private String message;
-
-    private boolean cleared;
-
-    public Message() {
-        this(System.currentTimeMillis());
+    public String getName() {
+        return name;
     }
 
-    public Message(long timestampInMillis) {
-        this.timestamp = timestampInMillis;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public long getTimestamp() {
-        return timestamp;
+    public String getLabel() {
+        return label;
     }
 
-    public String getMessage() {
-        return message;
+    public void setLabel(String label) {
+        this.label = label;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+
+    public boolean isCallSuccess() {
+        return this.callSuccess;
     }
 
-    public String getSubject() {
-        return subject;
+    /**
+     * @param   true (default) call CallBack.onSuccess(String action).
+     *          false call CallBack.onCancel()
+     */
+    public void setCallSuccess(boolean callSuccess) {
+        this.callSuccess = callSuccess;
     }
 
-    public void setSubject(String subject) {
-        this.subject = subject;
+
+    public String getSuccessActionName() {
+        return this.successActionName;
     }
 
-    public MessageType getType() {
-        return type;
+    /**
+     * @param successActionName will be passed as parameter to CallBack.onSuccess(String successActionName)
+     * in case of callSuccess = true.
+     */
+    public void setSuccessActionName(String successActionName) {
+        this.successActionName = successActionName;
     }
 
-    public void setType(MessageType type) {
-        this.type = type;
-    }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public boolean isCleared() {
-        return cleared;
-    }
-
-    public void setCleared(boolean cleared) {
-        this.cleared = cleared;
-    }
-
-    @Override
-    protected Message clone() throws CloneNotSupportedException {
-        return (Message) super.clone();
-    }
 }

@@ -78,4 +78,6 @@ public interface ContentWorkbenchView extends ComponentContainer, View {
      * Use this method to add an action bar to this sub app view.
      */
     void setActionbarView(ActionbarView actionbar);
+
+    void selectPath(String path);
 }

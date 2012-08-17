@@ -103,6 +103,6 @@ public interface VMagnoliaShellView extends HasWidgets, IsWidget {
         
         boolean isAppRunning(String appName);
 
-        void startApp(String appName);
+        void startApp(String appName, String token);
     }
 }

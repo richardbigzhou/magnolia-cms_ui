@@ -35,7 +35,7 @@ package info.magnolia.ui.admincentral.content.view;
 
 import info.magnolia.ui.admincentral.app.content.ContentAppDescriptor;
 import info.magnolia.ui.admincentral.content.view.ContentView.ViewType;
-import info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilderProvider;
+import info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilder;
 import info.magnolia.ui.admincentral.event.DoubleClickEvent;
 import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchView;
@@ -68,15 +68,15 @@ public class ContentPresenter implements ContentView.Listener {
 
     private final String workspaceName;
 
-    private final ContentViewBuilderProvider contentViewBuilderProvider;
+    private final ContentViewBuilder contentViewBuilder;
 
     private final WorkbenchDefinition workbenchDefinition;
 
     private String selectedItemId;
 
     @Inject
-    public ContentPresenter(final ContentViewBuilderProvider contentViewBuilderProvider, final AppContext context, @Named("app") final EventBus eventbus, final Shell shell) {
-        this.contentViewBuilderProvider = contentViewBuilderProvider;
+    public ContentPresenter(final ContentViewBuilder contentViewBuilder, final AppContext context, @Named("app") final EventBus eventbus, final Shell shell) {
+        this.contentViewBuilder = contentViewBuilder;
         this.eventBus = eventbus;
         this.shell = shell;
         this.workbenchDefinition = ((ContentAppDescriptor) context.getAppDescriptor()).getWorkbench();
@@ -90,7 +90,7 @@ public class ContentPresenter implements ContentView.Listener {
         log.debug("Initializing workbench {}...", workbenchDefinition.getName());
 
         for (final ViewType type : ViewType.values()) {
-            final ContentView contentView = contentViewBuilderProvider.getBuilder().build(workbenchDefinition, type);
+            final ContentView contentView = contentViewBuilder.build(workbenchDefinition, type);
             contentView.setListener(this);
             contentView.select(StringUtils.defaultIfEmpty(workbenchDefinition.getPath(), "/"));
             parentView.addContentView(type, contentView);

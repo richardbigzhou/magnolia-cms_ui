@@ -34,6 +34,7 @@
 package info.magnolia.ui.app.instantpreview;
 
 import info.magnolia.ui.framework.instantpreview.InstantPreviewHostNotFoundException;
+import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.vaadin.integration.widget.PreviewTokenField;
 
 import org.apache.commons.lang.StringUtils;
@@ -102,7 +103,7 @@ public class InstantPreviewViewImpl implements InstantPreviewView {
 
     protected PreviewTokenField buildHostIdInputText() {
         final PreviewTokenField inputCode = new PreviewTokenField();
-        inputCode.setInputPrompt("Enter host id");
+        inputCode.setInputPrompt("Enter id, e.g. 123-456-789");
         inputCode.setMaxLength(11);
         inputCode.setImmediate(true);
         inputCode.addListener(new Property.ValueChangeListener() {
@@ -133,9 +134,10 @@ public class InstantPreviewViewImpl implements InstantPreviewView {
                                 joinButton.setData(InstantPreviewActionType.LEAVE);
                                 getShareButton().setEnabled(false);
                                 getInputHostId().setEnabled(false);
+                                listener.sendLocalMessage("You have joined host with id " + formatHostId(hostId), MessageType.INFO);
                             } else {
                                 log.error("Host id cannot be empty or null");
-                                listener.showError("Host id cannot be empty or null");
+                                listener.sendLocalMessage("Host id cannot be empty or null", MessageType.WARNING);
                             }
                         } else if(joinButton.getData()==InstantPreviewActionType.LEAVE) {
                             listener.leaveSession(hostId);
@@ -148,7 +150,7 @@ public class InstantPreviewViewImpl implements InstantPreviewView {
                     }
                 } catch (InstantPreviewHostNotFoundException e) {
                     log.error("", e);
-                    listener.showError(e.getMessage());
+                    listener.sendLocalMessage(e.getMessage(), MessageType.WARNING);
                 }
             }
         });
@@ -172,6 +174,7 @@ public class InstantPreviewViewImpl implements InstantPreviewView {
                         shareButton.setData(InstantPreviewActionType.UNSHARE);
                         getJoinButton().setEnabled(false);
                         getInputHostId().setEnabled(false);
+                        listener.sendLocalMessage("You are now sharing with host id " + hostIdLink.getCaption(), MessageType.INFO);
                     } else if(shareButton.getData()==InstantPreviewActionType.UNSHARE) {
                         listener.unshareSession(hostId);
                         hostId = null;

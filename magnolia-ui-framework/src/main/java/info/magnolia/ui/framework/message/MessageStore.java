@@ -58,6 +58,12 @@ public class MessageStore {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
+    public static final String TIMESTAMP = "timestamp";
+    public static final String SUBJECT = "subject";
+    public static final String TYPE = "type";
+    public static final String MESSAGE = "message";
+    public static final String CLEARED = "cleared";
+
     static final String MESSAGE_NODE_TYPE = "mgnl:systemMessage";
 
     private static final String WORKSPACE_NAME = "messages";
@@ -111,7 +117,7 @@ public class MessageStore {
 
                     int n = 0;
                     for (Node messageNode : NodeUtil.getNodes(getOrCreateUserNode(session, userId), MESSAGE_NODE_TYPE)) {
-                        if (!messageNode.getProperty("cleared").getBoolean()) {
+                        if (!messageNode.getProperty(CLEARED).getBoolean()) {
                             n++;
                         }
                     }
@@ -176,22 +182,29 @@ public class MessageStore {
         });
     }
 
-    private void marshallMessage(Message message, Node node) throws RepositoryException {
-        node.setProperty("timestamp", message.getTimestamp());
-        node.setProperty("type", message.getType().name());
-        node.setProperty("subject", message.getSubject());
-        node.setProperty("message", message.getMessage());
-        node.setProperty("cleared", message.isCleared());
+    void marshallMessage(Message message, Node node) throws RepositoryException {
+        node.setProperty(TIMESTAMP, message.getTimestamp());
+        node.setProperty(TYPE, message.getType().name());
+        node.setProperty(SUBJECT, message.getSubject());
+        node.setProperty(MESSAGE, message.getMessage());
+        node.setProperty(CLEARED, message.isCleared());
     }
 
-    private Message unmarshallMessage(Node node) throws RepositoryException {
-        Message message = new Message();
+    Message unmarshallMessage(Node node) throws RepositoryException {
+        final Message message = new Message(node.getProperty(TIMESTAMP).getLong());
         message.setId(node.getName());
-        message.setTimestamp(node.getProperty("timestamp").getLong());
-        message.setType(MessageType.valueOf(node.getProperty("type").getString()));
-        message.setSubject(node.getProperty("subject").getString());
-        message.setMessage(node.getProperty("message").getString());
-        message.setCleared(node.getProperty("cleared").getBoolean());
+        if (node.hasProperty(TYPE)) {
+            message.setType(MessageType.valueOf(node.getProperty(TYPE).getString()));
+        }
+        if (node.hasProperty(SUBJECT)) {
+            message.setSubject(node.getProperty(SUBJECT).getString());
+        }
+        if (node.hasProperty(MESSAGE)) {
+            message.setMessage(node.getProperty(MESSAGE).getString());
+        }
+        if (node.hasProperty(CLEARED)) {
+            message.setCleared(node.getProperty(CLEARED).getBoolean());
+        }
         return message;
     }
 

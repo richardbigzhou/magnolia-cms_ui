@@ -42,15 +42,13 @@ import info.magnolia.ui.framework.message.Message;
  */
 public interface AppContext {
 
-    void openSubApp(SubApp subApp);
-    
+    void openSubApp(String name, SubApp subApp);
+
     void openSubAppFullScreen(SubApp subApp);
 
     void exitFullScreenMode();
     
     AppDescriptor getAppDescriptor();
-
-    void setAppLocation(Location location);
 
     void sendUserMessage(String user, Message message);
 
@@ -61,4 +59,6 @@ public interface AppContext {
     void showConfirmationMessage(String message);
 
     String getName();
+
+    void setSubAppLocation(SubApp subApp, Location location);
 }

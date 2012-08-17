@@ -44,6 +44,7 @@ import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessageEvent;
 import info.magnolia.ui.framework.message.MessageEventHandler;
+import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.ConfirmationHandler;
 import info.magnolia.ui.framework.shell.FragmentChangedHandler;
@@ -112,8 +113,10 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
         proxy.register("startApp", new Method() {
             @Override
             public void invoke(String methodName, Object[] params) {
+                setActiveViewport(getAppViewport());
                 final String appName = String.valueOf(params[0]);
-                MagnoliaShell.this.appController.startIfNotAlreadyRunningThenFocus(appName);
+                final String token = String.valueOf(params[1]);
+                MagnoliaShell.this.appController.startIfNotAlreadyRunningThenFocus(appName, new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appName, token));
             }
         });
         
@@ -134,17 +137,23 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
     }
 
     @Override
-    @Deprecated
-    public void showNotification(String message) {
-        throw new UnsupportedOperationException("Use MessagesManager class for messages dispatching");
+    public void showNotification(String messageText) {
+        showMessage(messageText, MessageType.INFO);
     }
 
     @Override
-    @Deprecated
-    public void showError(String message, Exception e) {
-        throw new UnsupportedOperationException("Use MessagesManager class for messages dispatching");
+    public void showError(String messageText, Exception e) {
+        showMessage(messageText, MessageType.ERROR);
     }
-    
+
+    private void showMessage(String messageText, MessageType type) {
+        final Message message = new Message();
+        message.setMessage(messageText);
+        message.setType(type);
+        messagesManager.sendLocalMessage(message);
+    }
+
+
     @Override
     public String getFragment() {
         final ShellViewport activeViewport = getActiveViewport();
@@ -234,7 +243,7 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
             ShellViewport viewport = getAppViewport();
             viewport.setCurrentShellFragment(prefix + ":" + token);
             setActiveViewport(viewport);
-            appController.startIfNotAlreadyRunningThenFocus(prefix);
+            appController.startIfNotAlreadyRunningThenFocus(prefix, new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, prefix, token));
             requestRepaint();
         } else {
             super.navigateToApp(prefix, token);

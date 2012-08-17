@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.app.messages;
 
-import java.util.Date;
 import javax.inject.Inject;
 
 import info.magnolia.ui.framework.app.AppContext;
@@ -92,7 +91,6 @@ public class MessagesAppMainSubApp implements SubApp, MessagesView.Listener {
         msg.setSubject(subject);
         msg.setMessage(message);
         msg.setType(type);
-        msg.setTimestamp(new Date().getTime());
         return msg;
     }
 

@@ -33,10 +33,12 @@
  */
 package info.magnolia.ui.admincentral.content.view;
 
-import static org.mockito.Mockito.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import info.magnolia.ui.admincentral.app.content.ContentAppDescriptor;
-import info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilderProvider;
+import info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilder;
 import info.magnolia.ui.admincentral.event.DoubleClickEvent;
 import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.framework.app.AppContext;
@@ -54,7 +56,7 @@ import org.mockito.ArgumentCaptor;
  */
 public class ContentPresenterTest {
 
-    protected ContentViewBuilderProvider contentViewBuilderProvider;
+    protected ContentViewBuilder contentViewBuilder;
     protected AppContext context;
     protected EventBus eventBus;
     protected Shell shell;
@@ -64,7 +66,7 @@ public class ContentPresenterTest {
 
     @Before
     public void  setUp() {
-        contentViewBuilderProvider = mock(ContentViewBuilderProvider.class);
+        contentViewBuilder = mock(ContentViewBuilder.class);
         context = mock(AppContext.class);
         final ContentAppDescriptor descr = mock(ContentAppDescriptor.class);
         when(context.getAppDescriptor()).thenReturn(descr);
@@ -82,7 +84,7 @@ public class ContentPresenterTest {
         // GIVEN see setUp
 
         // WHEN
-        final ContentPresenter presenter = new ContentPresenter(contentViewBuilderProvider, context, eventBus, shell);
+        final ContentPresenter presenter = new ContentPresenter(contentViewBuilder, context, eventBus, shell);
         presenter.onItemSelection(item);
 
         // THEN
@@ -96,7 +98,7 @@ public class ContentPresenterTest {
         // GIVEN see setUp
 
         // WHEN
-        final ContentPresenter presenter = new ContentPresenter(contentViewBuilderProvider, context, eventBus, shell);
+        final ContentPresenter presenter = new ContentPresenter(contentViewBuilder, context, eventBus, shell);
         presenter.onDoubleClick(item);
 
         // THEN

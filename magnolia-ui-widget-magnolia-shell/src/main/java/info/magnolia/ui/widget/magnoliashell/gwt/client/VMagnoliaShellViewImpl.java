@@ -129,7 +129,7 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
 
                                 @Override
                                 public void onPreloaderShown(String appName) {
-                                    presenter.startApp(appName);
+                                    presenter.startApp(appName, token);
                                 }
                             });
                         } else {
