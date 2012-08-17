@@ -50,7 +50,6 @@ import java.util.Map.Entry;
 import org.vaadin.gwtgraphics.client.DrawingArea;
 
 import com.google.gwt.dom.client.Style.Display;
-import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
@@ -63,6 +62,7 @@ import com.google.web.bindery.event.shared.HandlerRegistration;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 import com.vaadin.terminal.gwt.client.VConsole;
 
+
 /**
  * Navigation bar.
  */
@@ -74,7 +74,8 @@ public class VMainLauncher extends FlowPanel {
 
     private HandlerRegistration activationHandlerRegistration;
 
-    private ShellNavigationHandler navigationHandler = new ShellNavigationAdapter() {
+    private final ShellNavigationHandler navigationHandler = new ShellNavigationAdapter() {
+
         @Override
         public void onAppActivated(AppActivatedEvent event) {
             if (event.isShellApp()) {
@@ -85,16 +86,16 @@ public class VMainLauncher extends FlowPanel {
 
     private class NavigatorButton extends FlowPanel {
 
-        private Element indicator = DOM.createDiv();
+        private final Element indicator = DOM.createDiv();
 
-        private Element buttonWrapper;
+        private final Element buttonWrapper;
 
         private int indication = 0;
 
-        private DrawingArea indicatorPad = new DrawingArea(0, 0);
+        private final DrawingArea indicatorPad = new DrawingArea(0, 0);
 
         TouchDelegate delegate = new TouchDelegate(this);
-        
+
         public NavigatorButton(final ShellAppType type) {
             super();
             buttonWrapper = getElement();
@@ -102,13 +103,14 @@ public class VMainLauncher extends FlowPanel {
             indicator.addClassName("indicator");
             indicator.getStyle().setDisplay(Display.NONE);
             indicator.appendChild(DOM.createSpan());
-            buttonWrapper.getStyle().setPosition(Position.RELATIVE);
             buttonWrapper.appendChild(indicator);
-            buttonWrapper.setId(type.getId());
+            buttonWrapper.setId("btn-" + type.getId());
+            buttonWrapper.addClassName("icon-" + type.getId());
             indicatorPad.addStyleName("pad");
-            
+
             DOM.sinkEvents(getElement(), Event.TOUCHEVENTS);
             delegate.addTouchEndHandler(new com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler() {
+
                 @Override
                 public void onTouchEnd(com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent event) {
                     navigateToShellApp(type);
@@ -138,11 +140,12 @@ public class VMainLauncher extends FlowPanel {
         VConsole.log("Event " + event.getTypeInt());
         int type = event.getTypeInt();
     }
+
     /**
      * Type of the "shell app" to be loaded.
      */
     public static enum ShellAppType {
-        APPLAUNCHER("btn-appslauncher"), PULSE("btn-pulse"), FAVORITE("btn-favorites");
+        APPLAUNCHER("appslauncher"), PULSE("pulse"), FAVORITE("favorites");
 
         private String classId;
 
@@ -180,11 +183,11 @@ public class VMainLauncher extends FlowPanel {
 
     private final Element divetWrapper = DOM.createDiv();
 
-    private Image logo = new Image(VShellImageBundle.BUNDLE.getLogo());
+    private final Image logo = new Image(VShellImageBundle.BUNDLE.getLogo());
 
-    private Image divet = new Image(VShellImageBundle.BUNDLE.getDivetGreen());
+    private final Image divet = new Image(VShellImageBundle.BUNDLE.getDivetGreen());
 
-    private Map<ShellAppType, NavigatorButton> controlsMap = new EnumMap<ShellAppType, NavigatorButton>(ShellAppType.class);
+    private final Map<ShellAppType, NavigatorButton> controlsMap = new EnumMap<ShellAppType, NavigatorButton>(ShellAppType.class);
 
     private final EventBus eventBus;
 
@@ -221,6 +224,7 @@ public class VMainLauncher extends FlowPanel {
         expandedHeight = getOffsetHeight();
         getElement().getStyle().setTop(-60, Unit.PX);
         JQueryWrapper.select(getElement()).animate(250, new AnimationSettings() {
+
             {
                 setProperty("top", 0);
             }
@@ -269,12 +273,12 @@ public class VMainLauncher extends FlowPanel {
         int divetPos = w.getAbsoluteLeft() + (w.getOffsetWidth() / 2) - divetWrapper.getOffsetWidth() / 2;
         divet.setVisible(true);
         switch (type) {
-        case APPLAUNCHER:
-            divet.setResource(VShellImageBundle.BUNDLE.getDivetGreen());
-            break;
-        default:
-            divet.setResource(VShellImageBundle.BUNDLE.getDivetWhite());
-            break;
+            case APPLAUNCHER :
+                divet.setResource(VShellImageBundle.BUNDLE.getDivetGreen());
+                break;
+            default :
+                divet.setResource(VShellImageBundle.BUNDLE.getDivetWhite());
+                break;
         }
         if (animated) {
             final AnimationSettings settings = new AnimationSettings();

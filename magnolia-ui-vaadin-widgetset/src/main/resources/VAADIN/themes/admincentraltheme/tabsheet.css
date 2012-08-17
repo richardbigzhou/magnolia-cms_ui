@@ -1,75 +1,93 @@
-.v-shell-tabsheet {
-    background-color: #FFF;
+/* color definitions */
+.v-shell-tabsheet {background-color:#e6e6e6;}
+.v-shell-tabsheet .nav {background-color:#ccc; border-color:#999;}
+.v-shell-tabsheet .nav li {border-color:#999; color:#999;}
+.v-shell-tabsheet .nav li:hover {background-color:#e6e6e6;}
+.v-shell-tabsheet .nav li.show-all {border-color:transparent;}
+.v-shell-tabsheet .nav li.active {background-color:#e6e6e6; border-color:#999; color:#666;}
+
+.v-shell-tabsheet-light {background-color:#fff;}
+.v-shell-tabsheet-light .nav {background-color:#e6e6e6; border-color:#ccc;}
+.v-shell-tabsheet-light .nav li {border-color:#ccc;}
+.v-shell-tabsheet-light .nav li:hover {background-color:#fff;}
+.v-shell-tabsheet-light .nav li.active {background-color:#fff; border-color:#ccc;}
+
+.dialog-panel .v-shell-tabsheet .nav li.active {color:#000;}
+
+/* tabs */
+.v-shell-tabsheet .nav {
+    height:24px;
+    margin:0;
+    padding:0;
+    border-style:solid;
+    border-width:0 0 1px 0;
+    list-style:none outside;
 }
 
-.nav {
-    height: 24px;
-    overflow: hidden;
-    background: #eee;
-    margin: 0;
-    padding: 0;
-    border-bottom: 1px solid #ddd;
-    list-style: none outside none;
+.v-shell-tabsheet .nav li {
+    float:left;
+    height:19px;
+    margin:0;
+    padding:3px 48px 2px 24px;
+    border-style:solid;
+    border-width:0 1px 0 0;
+    font-size:14px;
+    line-height:normal;
+    cursor:pointer;
 }
 
-.nav > li {
-    min-width: 130px;
-    float: left;
-    margin: 0;
-    padding:3px 0 2px 24px;
-    border-right: 1px solid #ddd;
-    cursor: pointer;
-    color: #999;
-    font-family: DINWebPro, sans-serif;
-    font-size: 14px;
-    line-height: 1.0;
-    font-weight: bold;
-    text-transform: uppercase;
+.v-shell-tabsheet .nav li.show-all {
+    float:right;
+    padding-right:24px;
+    border-width:0 0 0 1px;
 }
 
-.nav > li > span {
-    display: inline-block;
-    padding-right: 10px;
-    vertical-align: text-bottom;
+.v-shell-tabsheet .nav li.active  {
+    padding-bottom:3px;
+    cursor:default;
 }
 
-.nav > li.active  {
-    background-color: #FFF;
-    color: #666;
-    cursor: default;
+/* tab text */
+.v-shell-tabsheet .tab-title {
+    font-family:DINWebPro, sans-serif;
+    font-weight:bold;
+    text-transform:uppercase;
 }
 
-.nav > li.show-all, .nav-pills > li.show-all {
-    float: right;
+.v-shell-tabsheet .tab-subtitle {
+	font-family:Verdana, sans-serif;
 }
 
-.nav > li.show-all span {
-    text-align: right;
-    padding-left: 15px;
-    padding-right: 20px;
-    border-left: 1px solid #C3C3C3;
-    border-right: none;
-}
-
-
-/*SHELL TAB SHEET RELATED STYLES*/
-
+/* close icon */
 .v-shell-tab-close {
-    background: url("img/icon-close-16.png") no-repeat scroll 2px 2px transparent;
+	position:absolute;
+	margin-left:26px;
+	font-size:16px;
+    cursor:pointer;
+}
+
+.v-shell-tab-close:hover, .v-shell-tab-close:focus {
+	opacity:0.6;
+}
+
+/* single tab */
+.v-shell-tabsheet .single-tab {
+	background-color:transparent;
+	padding-bottom:1px;
+	border-bottom:none;
+}
+
+.v-shell-tabsheet .single-tab > li {
+	border-right:none;
+}
+
+/* shell tabs and notifications */
+.v-shell-tab {
+	position: absolute;
 }
 
 .v-shell-tab-notification {
     background: url("img/message-circle-pulse-tab.png") no-repeat scroll 0 0 transparent;
-}
-
-.v-shell-tab-close {
-    width: 22px;
-    height: 22px;
-    z-index: 1000;
-    float: right;
-}
-
-.v-shell-tab-notification {
 	display: inline-block;
     height: 22px;
     width: 22px;
@@ -86,10 +104,6 @@
     float: right;
 }
 
-.v-shell-tab {
-	position: absolute;
-}
-
 .v-shell-tab-notification > span {
     color: #FFFFFF;
     font-size: 12px;
@@ -99,7 +113,3 @@
     z-index: 4001;
     text-align: center;
 }
-
-/*END OF SHELL TAB SHEET RELATED STYLES*/
-
-
