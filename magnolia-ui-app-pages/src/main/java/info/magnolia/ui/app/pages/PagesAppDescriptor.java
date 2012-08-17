@@ -39,7 +39,7 @@ import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 
 /**
  * The pages app descriptor which exposes the descriptor for the editor subapp.
- * @See {@link PagesSubAppDescriptor}.
+ * @see {@link PagesSubAppDescriptor}.
  *
  */
 public class PagesAppDescriptor extends ConfiguredContentAppDescriptor {
