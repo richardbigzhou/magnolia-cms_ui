@@ -45,17 +45,15 @@ import javax.inject.Inject;
  */
 public class MessagesApp extends AbstractApp {
 
-    private AppContext context;
-    private MessagesAppMainSubApp subApp;
+    private AppContext appContext;
 
     @Inject
-    public MessagesApp(AppContext context, MessagesAppMainSubApp subApp) {
-        this.context = context;
-        this.subApp = subApp;
+    public MessagesApp(AppContext appContext) {
+        this.appContext = appContext;
     }
 
     @Override
-    public SubApp start(Location location) {
-        return subApp;
+    public void start(Location location) {
+        appContext.openSubApp("main", MessagesAppMainSubApp.class, location, "main");
     }
 }

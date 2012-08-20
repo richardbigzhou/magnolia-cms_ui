@@ -11,6 +11,10 @@
 	   in the apps configuration repository of the admin central. (config/module/apps/appname/name:appname) -->
   <components>
     <id>app-messages</id>
+  </components>
+
+  <components>
+    <id>app-messages-main</id>
     <component>
       <type>info.magnolia.ui.app.messages.MessagesAppMainSubApp</type>
       <implementation>info.magnolia.ui.app.messages.MessagesAppMainSubApp</implementation>
