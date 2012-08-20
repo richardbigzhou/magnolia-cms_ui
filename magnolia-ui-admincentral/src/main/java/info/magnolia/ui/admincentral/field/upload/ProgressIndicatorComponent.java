@@ -31,60 +31,36 @@
  * intact.
  *
  */
+
 package info.magnolia.ui.admincentral.field.upload;
 
-import java.io.File;
-
+import com.vaadin.ui.ProgressIndicator;
 
 /**
- * Configure the UploadFileField based on the UploadField Definition.
+ * Definition used to create a custom display for {@link ProgressIndicator}.
  */
-public interface UploadFileField {
+public interface ProgressIndicatorComponent {
 
     /**
-     * Define if the preview Image/Icon has to be displayed.
+     * Refresh Upload Layout.
+     * Used to update the ProgressIndicator Components.
      */
-    public void setPreview(boolean preview);
+    public void refreshOnProgressUploadLayout(long readBytes, long contentLength, String fileName);
 
     /**
-     * Define if the Uploaded file Info has to be displayed.
+     * Return the {@link ProgressIndicator} used internally.
+     * Could be needed for Upload File Field.
      */
-    public void setInfo(boolean info);
+    public ProgressIndicator getProgressIndicator();
 
     /**
-     * Define if the Progress Bar has to be displayed.
+     * Convenience setter allowing to directly set the value of the {@link ProgressIndicator} component.
      */
-    public void setProgressInfo(boolean progressInfo);
+    public void setProgressIndicatorValue(Object newValue);
 
     /**
-     * Define if the Uploaded file can be deleted.
-     * @param: fileDeletion true will add a delete Button.
+     * Set the Component Visible or not.
      */
-    public void setFileDeletion(boolean fileDeletion);
-
-    /**
-     * Define if the Drag And Drop is allowed.
-     */
-    public void setDragAndDrop(boolean dragAndDrop);
-
-    /**
-     * Set the Upload Button Caption.
-     */
-    public void setUploadButtonCaption(String uploadButtonCaption);
-
-    /**
-     * Set the Delete Button Caption.
-     */
-    public void setFileDeletionButtonCaption(String deleteButtonCaption);
-
-    /**
-     * Define the Tmp Folder used by the main Upload process.
-     */
-    public void setUploadFileDirectory(File directory);
-
-    /**
-     * Define the Maximum Upload File size in bytes.
-     */
-    public void setMaxUploadSize(long maxUploadSize);
+    public void setVisible(boolean visible);
 
 }
