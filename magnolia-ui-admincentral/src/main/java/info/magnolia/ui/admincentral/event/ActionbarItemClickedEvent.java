@@ -35,39 +35,34 @@ package info.magnolia.ui.admincentral.event;
 
 import info.magnolia.ui.framework.event.Event;
 import info.magnolia.ui.framework.event.EventHandler;
+import info.magnolia.ui.model.action.ActionDefinition;
+
 
 /**
- * This event is fired when an item is double clicked (ie a row in the data grid within the workbench representing either a {@link javax.jcr.Node} or a {@link javax.jcr.Property}).
+ * This event is fired when an item in the action bar is clicked.
  */
-public class DoubleClickEvent implements Event<DoubleClickEvent.Handler> {
+public class ActionbarItemClickedEvent implements Event<ActionbarItemClickedEvent.Handler> {
 
     /**
-     * Handles {@link DoubleClickEvent} events.
+     * Handles {@link ActionbarItemClickedEvent} events.
      */
-    public static interface Handler extends EventHandler {
-        void onDoubleClick(DoubleClickEvent event);
+    public interface Handler extends EventHandler {
+
+        void onActionbarItemClicked(ActionbarItemClickedEvent event);
     }
 
-    private String workspace;
+    private final ActionDefinition actionDefinition;
 
-    private String path;
+    public ActionbarItemClickedEvent(ActionDefinition actionDefinition) {
+        this.actionDefinition = actionDefinition;
+    }
+
+    public ActionDefinition getActionDefinition() {
+        return actionDefinition;
+    }
 
     @Override
     public void dispatch(Handler handler) {
-        handler.onDoubleClick(this);
+        handler.onActionbarItemClicked(this);
     }
-
-    public DoubleClickEvent(String workspace, String path) {
-        this.workspace = workspace;
-        this.path = path;
-    }
-
-    public String getWorkspace() {
-        return workspace;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
 }

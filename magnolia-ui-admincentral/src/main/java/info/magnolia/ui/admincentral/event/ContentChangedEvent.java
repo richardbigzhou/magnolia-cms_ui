@@ -46,18 +46,14 @@ public class ContentChangedEvent implements Event<ContentChangedEvent.Handler> {
     /**
      * Handles {@link ContentChangedEvent} events.
      */
-    public static interface Handler extends EventHandler {
+    public interface Handler extends EventHandler {
+
         void onContentChanged(ContentChangedEvent event);
     }
 
     private String workspace;
 
     private String path;
-
-    @Override
-    public void dispatch(Handler handler) {
-        handler.onContentChanged(this);
-    }
 
     public ContentChangedEvent(String workspace, String path) {
         this.workspace = workspace;
@@ -70,5 +66,10 @@ public class ContentChangedEvent implements Event<ContentChangedEvent.Handler> {
 
     public String getPath() {
         return path;
+    }
+
+    @Override
+    public void dispatch(Handler handler) {
+        handler.onContentChanged(this);
     }
 }

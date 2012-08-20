@@ -60,12 +60,12 @@ public class PagesMainSubApp extends AbstractSubApp implements PagesMainView.Lis
     private InstantPreviewDispatcher dispatcher;
 
     @Inject
-    public PagesMainSubApp(final AppContext appContext, PagesMainView view, ContentWorkbenchPresenter workbench, @Named("app") EventBus eventBus, InstantPreviewDispatcher dispatcher) {
+    public PagesMainSubApp(final AppContext appContext, PagesMainView view, ContentWorkbenchPresenter workbench, @Named("subapp") EventBus subAppEventBus, InstantPreviewDispatcher dispatcher) {
         this.view = view;
         this.dispatcher = dispatcher;
         this.view.setListener(this);
         this.workbench = workbench;
-        eventBus.addHandler(ItemSelectedEvent.class, new ItemSelectedEvent.Handler() {
+        subAppEventBus.addHandler(ItemSelectedEvent.class, new ItemSelectedEvent.Handler() {
 
             @Override
             public void onItemSelected(ItemSelectedEvent event) {

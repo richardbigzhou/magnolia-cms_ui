@@ -39,7 +39,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import info.magnolia.ui.admincentral.app.content.ContentAppDescriptor;
 import info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilder;
-import info.magnolia.ui.admincentral.event.DoubleClickEvent;
+import info.magnolia.ui.admincentral.event.ItemDoubleClickedEvent;
 import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.event.EventBus;
@@ -102,7 +102,7 @@ public class ContentPresenterTest {
         presenter.onDoubleClick(item);
 
         // THEN
-        ArgumentCaptor<DoubleClickEvent> argument = ArgumentCaptor.forClass(DoubleClickEvent.class);
+        ArgumentCaptor<ItemDoubleClickedEvent> argument = ArgumentCaptor.forClass(ItemDoubleClickedEvent.class);
         verify(eventBus).fireEvent(argument.capture());
         assertEquals(TEST_WORKSPACE_NAME, argument.getValue().getWorkspace());
         assertEquals(TEST_ITEM_ID, argument.getValue().getPath());

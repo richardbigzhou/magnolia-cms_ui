@@ -37,7 +37,7 @@ package info.magnolia.ui.app.pages.editor;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
-import info.magnolia.ui.admincentral.event.ActionbarClickEvent;
+import info.magnolia.ui.admincentral.event.ActionbarItemClickedEvent;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.app.pages.PagesApp;
 import info.magnolia.ui.app.pages.PagesAppDescriptor;
@@ -120,10 +120,10 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
 
     private void bindHandlers() {
 
-        subAppEventBus.addHandler(ActionbarClickEvent.class, new ActionbarClickEvent.Handler() {
+        subAppEventBus.addHandler(ActionbarItemClickedEvent.class, new ActionbarItemClickedEvent.Handler() {
 
             @Override
-            public void onActionbarItemClicked(ActionbarClickEvent event) {
+            public void onActionbarItemClicked(ActionbarItemClickedEvent event) {
                 try {
                     ActionDefinition actionDefinition = event.getActionDefinition();
                     actionbarPresenter.createAndExecuteAction(actionDefinition, appDescriptor.getWorkbench().getWorkspace(), parameters.getNodePath());

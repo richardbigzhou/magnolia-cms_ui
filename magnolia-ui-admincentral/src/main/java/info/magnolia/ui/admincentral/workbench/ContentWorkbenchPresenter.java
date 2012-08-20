@@ -38,9 +38,9 @@ import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.app.content.ContentAppDescriptor;
 import info.magnolia.ui.admincentral.content.view.ContentPresenter;
-import info.magnolia.ui.admincentral.event.ActionbarClickEvent;
+import info.magnolia.ui.admincentral.event.ActionbarItemClickedEvent;
 import info.magnolia.ui.admincentral.event.ContentChangedEvent;
-import info.magnolia.ui.admincentral.event.DoubleClickEvent;
+import info.magnolia.ui.admincentral.event.ItemDoubleClickedEvent;
 import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.framework.app.AppContext;
@@ -99,8 +99,6 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
 
     private final EventBus admincentralEventBus;
 
-    private final EventBus appEventBus;
-
     private final EventBus subAppEventBus;
 
     private final Shell shell;
@@ -112,10 +110,9 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
     private final ActionbarPresenter actionbarPresenter;
 
     @Inject
-    public ContentWorkbenchPresenter(final AppContext appContext, final ContentWorkbenchView view, @Named("admincentral") final EventBus admincentralEventBus, @Named("app") final EventBus appEventBus, final @Named("subapp") EventBus subAppEventBus, final Shell shell, final WorkbenchActionFactory actionFactory, final ContentPresenter contentPresenter, final ActionbarPresenter actionbarPresenter) {
+    public ContentWorkbenchPresenter(final AppContext appContext, final ContentWorkbenchView view, @Named("admincentral") final EventBus admincentralEventBus, final @Named("subapp") EventBus subAppEventBus, final Shell shell, final WorkbenchActionFactory actionFactory, final ContentPresenter contentPresenter, final ActionbarPresenter actionbarPresenter) {
         this.view = view;
         this.admincentralEventBus = admincentralEventBus;
-        this.appEventBus = appEventBus;
         this.subAppEventBus = subAppEventBus;
         this.shell = shell;
         this.actionFactory = actionFactory;
@@ -146,10 +143,10 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
             }
         });
 
-        subAppEventBus.addHandler(ActionbarClickEvent.class, new ActionbarClickEvent.Handler() {
+        subAppEventBus.addHandler(ActionbarItemClickedEvent.class, new ActionbarItemClickedEvent.Handler() {
 
             @Override
-            public void onActionbarItemClicked(ActionbarClickEvent event) {
+            public void onActionbarItemClicked(ActionbarItemClickedEvent event) {
                 try {
                     ActionDefinition actionDefinition = event.getActionDefinition();
                     actionbarPresenter.createAndExecuteAction(actionDefinition, workbenchDefinition.getWorkspace(), getSelectedItemId());
@@ -159,7 +156,7 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
             }
         });
 
-        appEventBus.addHandler(ItemSelectedEvent.class, new ItemSelectedEvent.Handler() {
+        subAppEventBus.addHandler(ItemSelectedEvent.class, new ItemSelectedEvent.Handler() {
 
             @Override
             public void onItemSelected(ItemSelectedEvent event) {
@@ -221,10 +218,10 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
             }
         });
 
-        appEventBus.addHandler(DoubleClickEvent.class, new DoubleClickEvent.Handler() {
+        subAppEventBus.addHandler(ItemDoubleClickedEvent.class, new ItemDoubleClickedEvent.Handler() {
 
             @Override
-            public void onDoubleClick(DoubleClickEvent event) {
+            public void onItemDoubleClicked(ItemDoubleClickedEvent event) {
                 executeDefaultAction();
             }
         });
