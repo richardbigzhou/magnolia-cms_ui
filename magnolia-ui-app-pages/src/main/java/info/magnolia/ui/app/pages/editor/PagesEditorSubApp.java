@@ -33,17 +33,22 @@
  */
 package info.magnolia.ui.app.pages.editor;
 
+
 import info.magnolia.context.MgnlContext;
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.event.ActionbarClickEvent;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.app.pages.PagesApp;
 import info.magnolia.ui.app.pages.PagesAppDescriptor;
+import info.magnolia.ui.app.pages.editor.preview.PagesPreviewFullView;
+import info.magnolia.ui.app.pages.editor.preview.PagesPreviewView;
 import info.magnolia.ui.framework.app.AbstractSubApp;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
@@ -81,15 +86,34 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
 
     private WorkbenchActionFactory actionFactory;
 
+    private LocationController locationController;
+
+    private boolean full;
+
+    private boolean preview;
+
     @Inject
-    public PagesEditorSubApp(final AppContext ctx, final PagesEditorView view, final @Named("app") EventBus appEventBus, final @Named("subapp") EventBus subAppEventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final WorkbenchActionFactory actionFactory) {
-        this.view = view;
+    public PagesEditorSubApp(final AppContext ctx, final ComponentProvider componentProvider, final @Named("app") EventBus appEventBus, final @Named("subapp") EventBus subAppEventBus, final PageEditorPresenter pageEditorPresenter, final LocationController locationController, final ActionbarPresenter actionbarPresenter, final WorkbenchActionFactory actionFactory) {
+
+        final String token = DefaultLocation.extractToken(locationController.getWhere().toString());
+        this.preview =  token.contains(PagesApp.PREVIEW_FULL_TOKEN) || token.contains(PagesApp.PREVIEW_TOKEN);
+        this.full = isPreview() && token.contains(PagesApp.PREVIEW_FULL_TOKEN);
+        if(isPreview()) {
+            log.debug("Preview type detected is {}", full ? "full" : "normal");
+            this.view = full ? componentProvider.newInstance(PagesPreviewFullView.class) : componentProvider.newInstance(PagesPreviewView.class);
+        } else {
+            log.debug("We're in edit mode");
+            this.view = componentProvider.newInstance(PagesEditorView.class);
+        }
+        this.view.setListener(this);
+
         this.appEventBus = appEventBus;
         this.subAppEventBus = subAppEventBus;
         this.pageEditorPresenter = pageEditorPresenter;
         this.actionbarPresenter = actionbarPresenter;
         this.appDescriptor = (PagesAppDescriptor)ctx.getAppDescriptor();
         this.actionFactory = actionFactory;
+        this.locationController = locationController;
 
         bindHandlers();
     }
@@ -145,8 +169,13 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
         setParameters(new PageEditorParameters(MgnlContext.getContextPath(), path));
         pageEditorPresenter.setParameters(parameters);
 
-        view.setListener(this);
-        view.setPageEditor(pageEditorPresenter.start());
+        if (isPreview() && isFull()) {
+            view.setUrl(parameters.getNodePath());
+            return view;
+        } else if(!isPreview()) {
+            view.setPageEditor(pageEditorPresenter.start());
+        }
+
         ActionbarDefinition actionbarDefinition = appDescriptor.getEditor().getActionbar();
         ActionbarView actionbar = actionbarPresenter.start(actionbarDefinition, actionFactory);
         actionbarPresenter.hideSection("Areas");
@@ -158,16 +187,34 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
         return view;
     }
 
+
     private String getEditorPath(Location location) {
         String token = ((DefaultLocation) location).getToken();
         String[] parts = token.split(";");
         if (parts.length < 2) {
             return null;
         }
-        if (!parts[0].equals(PagesApp.EDITOR_TOKEN)) {
+        if (!parts[0].contains(PagesApp.EDITOR_TOKEN)) {
             return null;
         }
         return parts[1];
+    }
+
+    @Override
+    public void closePreview() {
+        locationController.goTo(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages", ""));
+    }
+
+    public boolean isPreview() {
+        return preview;
+    }
+
+    public boolean isFull() {
+        return full;
+    }
+
+    public void setUrl(String url) {
+        view.setUrl(url);
     }
 
 }

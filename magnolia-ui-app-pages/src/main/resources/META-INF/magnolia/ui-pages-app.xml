@@ -47,18 +47,18 @@
       <type>info.magnolia.ui.widget.editor.PageEditorView</type>
       <implementation>info.magnolia.ui.widget.editor.PageEditor</implementation>
     </component>
-  </components>
-
-  <components>
-    <id>app-pages-preview</id>
-    <component>
-      <type>info.magnolia.ui.app.pages.preview.PagesPreviewSubApp</type>
-      <implementation>info.magnolia.ui.app.pages.preview.PagesPreviewSubApp</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.app.pages.preview.PagesPreviewView</type>
-      <implementation>info.magnolia.ui.app.pages.preview.PagesPreviewViewImpl</implementation>
-    </component>
+    <type-mapping>
+      <type>info.magnolia.ui.app.pages.editor.preview.PagesPreviewView</type>
+      <implementation>info.magnolia.ui.app.pages.editor.preview.PagesPreviewViewImpl</implementation>
+    </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.app.pages.editor.preview.PagesPreviewFullView</type>
+      <implementation>info.magnolia.ui.app.pages.editor.preview.PagesPreviewFullViewImpl</implementation>
+    </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.app.pages.editor.PagesEditorView</type>
+      <implementation>info.magnolia.ui.app.pages.editor.PagesEditorViewImpl</implementation>
+    </type-mapping>
   </components>
 
   <dependencies>

@@ -38,7 +38,6 @@ import info.magnolia.ui.admincentral.app.content.ContentApp;
 import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
 import info.magnolia.ui.app.pages.editor.PagesEditorSubApp;
 import info.magnolia.ui.app.pages.main.PagesMainSubApp;
-import info.magnolia.ui.app.pages.preview.PagesPreviewSubApp;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
@@ -58,7 +57,7 @@ public class PagesApp extends ContentApp {
 
     public static final String EDITOR_TOKEN = "editor";
     public static final String PREVIEW_TOKEN = "preview";
-    public static final String PREVIEW_FULL_TOKEN = "previewFull";
+    public static final String PREVIEW_FULL_TOKEN = "previewfull";
 
     private AppContext context;
 
@@ -78,15 +77,33 @@ public class PagesApp extends ContentApp {
             return;
         }
 
-        final String subAppName = pathParams.get(0);
+        final String[] parts = pathParams.get(0).split(":");
+        String subAppName = null;
+        String previewMode = null;
+        if(parts.length >= 2) {
+            subAppName = parts[0];
+            previewMode = parts[1];
+        } else {
+            subAppName = parts[0];
+        }
+
         final String pagePath = pathParams.get(1);
 
         if (EDITOR_TOKEN.equals(subAppName)) {
-            context.openSubApp(PagesApp.EDITOR_TOKEN, PagesEditorSubApp.class, location, subAppName + ";" + pagePath);
-        } else if (PREVIEW_TOKEN.equals(subAppName)) {
-            context.openSubApp(PagesApp.PREVIEW_TOKEN, PagesPreviewSubApp.class, location, subAppName + ";" + pagePath);
-        } else if(PREVIEW_FULL_TOKEN.equals(subAppName)) {
-            context.openSubAppFullScreen(PagesApp.PREVIEW_TOKEN, PagesPreviewSubApp.class, location);
+
+            if (PREVIEW_TOKEN.equals(previewMode)) {
+                final String token = subAppName + ":"+PREVIEW_TOKEN + ";" + pagePath;
+                final DefaultLocation newLocation = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, context.getName(), token);
+                context.openSubApp(PagesApp.EDITOR_TOKEN, PagesEditorSubApp.class, newLocation, subAppName + ";" + pagePath);
+
+            } else if(PREVIEW_FULL_TOKEN.equals(previewMode)) {
+                final String token = subAppName  + ":"+ PREVIEW_FULL_TOKEN + ";" + pagePath;
+                final DefaultLocation newLocation = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, context.getName(), token);
+                context.openSubAppFullScreen(PagesApp.EDITOR_TOKEN, PagesEditorSubApp.class, newLocation);
+
+            } else {
+                context.openSubApp(PagesApp.EDITOR_TOKEN, PagesEditorSubApp.class, location, subAppName + ";" + pagePath);
+            }
         }
     }
 

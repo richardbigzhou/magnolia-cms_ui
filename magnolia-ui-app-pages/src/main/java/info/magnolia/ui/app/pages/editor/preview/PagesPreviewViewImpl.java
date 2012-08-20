@@ -31,74 +31,35 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.editor;
+package info.magnolia.ui.app.pages.editor.preview;
 
+import info.magnolia.ui.app.pages.editor.PagesEditorView;
+import info.magnolia.ui.app.pages.editor.PagesEditorView.Listener;
 import info.magnolia.ui.widget.actionbar.ActionbarView;
 import info.magnolia.ui.widget.editor.PageEditorView;
 
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
 
 /**
- * PageEditorViewImpl.
+ * Implementation of {@link PagesPreviewView}.
  */
-@SuppressWarnings("serial")
-public class PagesEditorViewImpl implements PagesEditorView {
+public class PagesPreviewViewImpl implements PagesEditorView {
 
-    private final HorizontalLayout root = new HorizontalLayout();
-
-    private final VerticalLayout container = new VerticalLayout();
-
-    private Listener listener;
-
-    private PageEditorView pageEditor;
-
+    private VerticalLayout wrapper;
     private ActionbarView actionbar;
 
-    public PagesEditorViewImpl() {
-        root.setSizeFull();
-        root.setStyleName("workbench");
-        root.addComponent(container);
-        root.setExpandRatio(container, 1);
-        root.setSpacing(true);
-        root.setMargin(false);
-
-        container.setSizeFull();
-        container.setImmediate(true);
+    public PagesPreviewViewImpl() {
+        wrapper = new VerticalLayout();
+        wrapper.addComponent(new Label("Non fullscreen preview here"));
     }
-
-    @Override
-    public void setListener(Listener listener) {
-        this.listener = listener;
-    }
-
-    @Override
-    public void setPageEditor(PageEditorView pageEditor) {
-        if (this.pageEditor == null) {
-            container.addComponent(pageEditor.asVaadinComponent());
-        } else {
-            container.replaceComponent(this.pageEditor.asVaadinComponent(), pageEditor.asVaadinComponent());
-        }
-        this.pageEditor = pageEditor;
-    }
-
-    @Override
-    public void setActionbarView(final ActionbarView actionbar) {
-        actionbar.asVaadinComponent().setWidth(Sizeable.SIZE_UNDEFINED, 0);
-        if (this.actionbar == null) {
-            root.addComponent(actionbar.asVaadinComponent());
-        } else {
-            root.replaceComponent(this.actionbar.asVaadinComponent(), actionbar.asVaadinComponent());
-        }
-        this.actionbar = actionbar;
-    }
-
     @Override
     public Component asVaadinComponent() {
-        return root;
+        // TODO Auto-generated method stub
+        return wrapper;
     }
 
     @Override
@@ -106,4 +67,26 @@ public class PagesEditorViewImpl implements PagesEditorView {
         // TODO Auto-generated method stub
 
     }
+
+    @Override
+    public void setActionbarView(ActionbarView actionbar) {
+        actionbar.asVaadinComponent().setWidth(Sizeable.SIZE_UNDEFINED, 0);
+        if (this.actionbar == null) {
+            wrapper.addComponent(actionbar.asVaadinComponent());
+        } else {
+            wrapper.replaceComponent(this.actionbar.asVaadinComponent(), actionbar.asVaadinComponent());
+        }
+        this.actionbar = actionbar;
+    }
+    @Override
+    public void setListener(Listener listener) {
+        // TODO Auto-generated method stub
+
+    }
+    @Override
+    public void setPageEditor(PageEditorView pageEditor) {
+        // TODO Auto-generated method stub
+
+    }
+
 }

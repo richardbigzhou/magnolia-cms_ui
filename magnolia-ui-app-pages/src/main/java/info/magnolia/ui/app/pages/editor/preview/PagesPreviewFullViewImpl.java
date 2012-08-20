@@ -31,12 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.preview;
+package info.magnolia.ui.app.pages.editor.preview;
 
 import info.magnolia.ui.widget.actionbar.ActionbarView;
+import info.magnolia.ui.widget.editor.PageEditorView;
 
 import com.vaadin.terminal.ExternalResource;
-import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -46,9 +46,9 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- * Implementation of {@link PagesPreviewView}.
+ * Implementation of {@link PagesPreviewFullViewView}.
  */
-public class PagesPreviewViewImpl implements PagesPreviewView {
+public class PagesPreviewFullViewImpl implements PagesPreviewFullView {
 
     private Panel wrapper = new Panel();
 
@@ -56,9 +56,7 @@ public class PagesPreviewViewImpl implements PagesPreviewView {
 
     protected Listener listener;
 
-    private ActionbarView actionbar;
-
-    public PagesPreviewViewImpl() {
+    public PagesPreviewFullViewImpl() {
         this.iframe = new Embedded();
         iframe.setType(Embedded.TYPE_BROWSER);
         iframe.setSizeFull();
@@ -93,12 +91,12 @@ public class PagesPreviewViewImpl implements PagesPreviewView {
 
     @Override
     public void setActionbarView(final ActionbarView actionbar) {
-        actionbar.asVaadinComponent().setWidth(Sizeable.SIZE_UNDEFINED, 0);
-        if (this.actionbar == null) {
-            wrapper.addComponent(actionbar.asVaadinComponent());
-        } else {
-            wrapper.replaceComponent(this.actionbar.asVaadinComponent(), actionbar.asVaadinComponent());
-        }
-        this.actionbar = actionbar;
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setPageEditor(PageEditorView pageEditor) {
+        // TODO Auto-generated method stub
+
     }
 }

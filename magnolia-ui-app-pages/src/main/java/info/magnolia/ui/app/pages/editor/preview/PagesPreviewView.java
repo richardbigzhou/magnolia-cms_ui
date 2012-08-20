@@ -31,39 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.editor;
+package info.magnolia.ui.app.pages.editor.preview;
 
-import info.magnolia.ui.framework.view.View;
-import info.magnolia.ui.widget.actionbar.ActionbarView;
-import info.magnolia.ui.widget.editor.PageEditorView;
+import info.magnolia.ui.app.pages.editor.PagesEditorView;
 
 
 /**
- * PagesEditorView.
+ * Displays the page preview.
  */
-public interface PagesEditorView extends View {
+public interface PagesPreviewView extends PagesEditorView {
 
-    /**
-     * Listener.
-     */
-    public interface Listener {
-
-        void setParameters(PageEditorParameters parameters);
-
-        void closePreview();
-    }
-
-    void setListener(Listener listener);
-
-    void setPageEditor(PageEditorView pageEditor);
-
-    /**
-     * Use this method to add an action bar to this sub app view.
-     */
-    void setActionbarView(ActionbarView actionbar);
-
-    /**
-     * Set this to the url of the page we want to display in preview mode.
-     */
-    void setUrl(String url);
 }
