@@ -214,7 +214,7 @@
   </components>
 
   <components>
-    <id>subApp</id>
+    <id>subapp</id>
     <configurer>
       <class>info.magnolia.ui.framework.event.SubAppEventBusConfigurer</class>
     </configurer>

@@ -84,7 +84,7 @@ import com.vaadin.ui.ComponentContainer;
 public class AppControllerImpl implements AppController, LocationChangedEvent.Handler, LocationChangeRequestedEvent.Handler {
 
     public static final String COMMON_APP_COMPONENTS_ID = "app";
-    public static final String COMMON_SUB_APP_COMPONENTS_ID = "subApp";
+    public static final String COMMON_SUB_APP_COMPONENTS_ID = "subapp";
     public static final String COMPONENTS_ID_PREFIX = "app-";
 
     private static final Logger log = LoggerFactory.getLogger(AppControllerImpl.class);
@@ -264,7 +264,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
         private class SubAppContext {
 
-            private String key;
+            private String subAppId;
             private SubApp subApp;
             private Location location;
             private ShellTab tab;
@@ -316,7 +316,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             app.start(location);
         }
 
-        private SubAppContext startSubApp(String name, Class<? extends SubApp> subAppClass, Location location, String key) {
+        private SubAppContext startSubApp(String name, Class<? extends SubApp> subAppClass, Location location, String subAppId) {
 
             ComponentProvider subAppComponentProvider = createSubAppComponentProvider(appDescriptor.getName(), name, appComponentProvider);
 
@@ -328,13 +328,13 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
             SubAppContext subAppContext = new SubAppContext();
             subAppContext.subApp = subApp;
-            subAppContext.key = key;
+            subAppContext.subAppId = subAppId;
             subAppContext.tab = tab;
             subAppContext.location = location;
             subAppContext.view = view;
             subAppContext.subAppComponentProvider = subAppComponentProvider;
 
-            subAppContexts.put(subAppContext.key, subAppContext);
+            subAppContexts.put(subAppContext.subAppId, subAppContext);
 
             return subAppContext;
         }
@@ -344,10 +344,10 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
          */
         public void onLocationUpdate(Location location) {
 
-            String key = extractSubAppKey(((DefaultLocation) location).getToken());
+            String subAppId = extractSubAppSubAppId(((DefaultLocation) location).getToken());
 
             // The location targets the current display state, update the fragment only
-            if (key.length() == 0) {
+            if (subAppId.length() == 0) {
                 SubAppContext subAppContext = getActiveSubAppContext();
                 if (subAppContext != null) {
                     shell.setFragment(subAppContext.location.toString());
@@ -356,7 +356,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             }
 
             // If the location targets an existing sub app then activate it and update its location
-            SubAppContext subAppContext = subAppContexts.get(key);
+            SubAppContext subAppContext = subAppContexts.get(subAppId);
             if (subAppContext != null) {
                 appFrameView.setActiveTab(subAppContext.tab);
                 subAppContext.location = location;
@@ -367,7 +367,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             app.locationChanged(location);
         }
 
-        private String extractSubAppKey(String token) {
+        private String extractSubAppSubAppId(String token) {
             int i = token.indexOf(':');
             return i != -1 ? token.substring(0, i) : token;
         }
@@ -384,7 +384,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         public void onTabClosed(ShellTab tab) {
             SubAppContext subAppContext = getSubAppContextForTab(tab);
             if (subAppContext != null) {
-                subAppContexts.remove(subAppContext.key);
+                subAppContexts.remove(subAppContext.subAppId);
             }
         }
 
@@ -405,8 +405,8 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         }
 
         @Override
-        public void openSubApp(String name, Class<? extends SubApp> subAppClass, Location location, String key) {
-            startSubApp(name, subAppClass, location, key);
+        public void openSubApp(String name, Class<? extends SubApp> subAppClass, Location location, String subAppId) {
+            startSubApp(name, subAppClass, location, subAppId);
         }
 
         @Override
