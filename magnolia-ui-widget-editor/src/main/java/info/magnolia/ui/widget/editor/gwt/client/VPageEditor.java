@@ -252,7 +252,7 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
         cssLink.setType("text/css");
         cssLink.setRel("stylesheet");
         //cssLink.setHref(contextPath + "/VAADIN/widgetsets/info.magnolia.ui.vaadin.widgetset.MagnoliaWidgetSet/editor/styles.css");
-        cssLink.setHref(contextPath + "VAADIN/themes/admincentraltheme/pageeditor.css");
+        cssLink.setHref(contextPath + "/VAADIN/themes/admincentraltheme/pageeditor.css");
         head.insertFirst(cssLink);
     }
 

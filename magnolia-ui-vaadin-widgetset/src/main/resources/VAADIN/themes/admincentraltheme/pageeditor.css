@@ -1,3 +1,5 @@
+@import "fonts.css";
+
 /* ---------------------------
  * Edit bars definitions
  * ---------------------------
@@ -165,6 +167,15 @@ div.mgnlEditorPushButton {
     cursor: pointer !important;
 }
 
+
+/**
+ * Icon classes.
+ */
+div.editorIcon {
+    font-size: 14px !important;
+    cursor: pointer !important;
+    padding: 0 5px !important;
+}
 
 /*
  * Buttons on area edit bars.
