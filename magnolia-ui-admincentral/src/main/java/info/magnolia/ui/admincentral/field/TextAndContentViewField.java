@@ -125,4 +125,12 @@ public class TextAndContentViewField extends CustomField {
     public Class< ? > getType() {
         return getPropertyDataSource().getType();
     }
+
+    /**
+     * Do not allowed to set Caption.
+     */
+    @Override
+    public void setCaption(String caption) {
+        super.setCaption(null);
+    }
 }

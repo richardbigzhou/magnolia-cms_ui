@@ -33,7 +33,10 @@
  */
 package info.magnolia.ui.app.pages.preview;
 
+import info.magnolia.ui.widget.actionbar.ActionbarView;
+
 import com.vaadin.terminal.ExternalResource;
+import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -43,9 +46,9 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- * Implementation of {@link PagePreviewView}.
+ * Implementation of {@link PagesPreviewView}.
  */
-public class PagePreviewViewImpl implements PagePreviewView {
+public class PagesPreviewViewImpl implements PagesPreviewView {
 
     private Panel wrapper = new Panel();
 
@@ -53,7 +56,9 @@ public class PagePreviewViewImpl implements PagePreviewView {
 
     protected Listener listener;
 
-    public PagePreviewViewImpl() {
+    private ActionbarView actionbar;
+
+    public PagesPreviewViewImpl() {
         this.iframe = new Embedded();
         iframe.setType(Embedded.TYPE_BROWSER);
         iframe.setSizeFull();
@@ -84,5 +89,16 @@ public class PagePreviewViewImpl implements PagePreviewView {
     @Override
     public void setUrl(String url) {
         iframe.setSource(new ExternalResource(url));
+    }
+
+    @Override
+    public void setActionbarView(final ActionbarView actionbar) {
+        actionbar.asVaadinComponent().setWidth(Sizeable.SIZE_UNDEFINED, 0);
+        if (this.actionbar == null) {
+            wrapper.addComponent(actionbar.asVaadinComponent());
+        } else {
+            wrapper.replaceComponent(this.actionbar.asVaadinComponent(), actionbar.asVaadinComponent());
+        }
+        this.actionbar = actionbar;
     }
 }

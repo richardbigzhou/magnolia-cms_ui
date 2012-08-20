@@ -40,5 +40,13 @@ import info.magnolia.ui.model.action.ActionDefinition;
  * Definition interface for the preview page action.
  */
 public class PreviewPageActionDefinition implements ActionDefinition {
+    private boolean full;
+
+    public void setFull(boolean full) {
+        this.full = full;
+    }
+    public boolean isFull() {
+        return full;
+    }
 
 }

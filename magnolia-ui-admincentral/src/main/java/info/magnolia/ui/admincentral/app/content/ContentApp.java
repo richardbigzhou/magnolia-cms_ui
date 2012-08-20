@@ -33,12 +33,30 @@
  */
 package info.magnolia.ui.admincentral.app.content;
 
+import javax.inject.Inject;
+
+import com.vaadin.data.Item;
+
+import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
 import info.magnolia.ui.framework.app.AbstractApp;
+import info.magnolia.ui.widget.dialog.MagnoloaDialogPresenter.Presenter;
 
 
 /**
  * Abstract base app class for content apps.
  */
 public abstract class ContentApp extends AbstractApp {
+
+    private DialogPresenterFactory dialogPresenterFactory;
+
+    @Inject
+    public ContentApp(DialogPresenterFactory dialogPresenterFactory) {
+        this.dialogPresenterFactory = dialogPresenterFactory;
+    }
+
+    public void openChooseDialog(String dialogName, Presenter.CallBack callBack, Item item) {
+        Presenter dialogPresenter = dialogPresenterFactory.createDialog(dialogName);
+        dialogPresenter.start(item, callBack);
+    }
 
 }

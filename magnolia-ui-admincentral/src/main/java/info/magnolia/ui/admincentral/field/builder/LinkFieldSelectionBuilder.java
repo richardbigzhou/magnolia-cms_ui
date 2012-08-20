@@ -57,8 +57,8 @@ import com.vaadin.ui.Field;
 /**
  * Creates and initializes a {@link TextAndContentViewField} field based on a field definition.
  * This field is used to create an Input text field with a large ContentView area.
- * The column value to handle is coming from the definition. If this value is not set, or the column not part of the
- * row elements, the <b>Node Name is be used</b>.
+ * The column value to handle is coming from the definition. If this value is not set, or the column is not part of the
+ * row elements, the <b>Node Path is used</b>.
  */
 public class LinkFieldSelectionBuilder extends AbstractFieldBuilder<LinkFieldSelectionDefinition> {
     private static final Logger log = LoggerFactory.getLogger(LinkFieldSelectionBuilder.class);
@@ -95,7 +95,7 @@ public class LinkFieldSelectionBuilder extends AbstractFieldBuilder<LinkFieldSel
                         if(StringUtils.isNotBlank(definition.getColumnName()) && selected.hasProperty(definition.getColumnName())) {
                             textContent.setValue(selected.getProperty(definition.getColumnName()).getString());
                         } else {
-                            textContent.setValue(selected.getName());
+                            textContent.setValue(selected.getPath());
                         }
                     }
                     catch (RepositoryException e) {
@@ -106,9 +106,9 @@ public class LinkFieldSelectionBuilder extends AbstractFieldBuilder<LinkFieldSel
             }
 
         });
-
         return textContent;
     }
+
 
     @Override
     protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {

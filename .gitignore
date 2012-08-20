@@ -8,6 +8,8 @@ target
 .classpath
 .settings
 .checkstyle
+.metadata
+Servers
 
 src/main/java/META-INF
 
