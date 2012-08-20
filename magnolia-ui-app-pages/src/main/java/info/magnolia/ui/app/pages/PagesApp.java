@@ -33,16 +33,12 @@
  */
 package info.magnolia.ui.app.pages;
 
-
 import info.magnolia.context.MgnlContext;
-import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.app.pages.editor.PageEditorParameters;
 import info.magnolia.ui.app.pages.editor.PagesEditorSubApp;
 import info.magnolia.ui.app.pages.main.PagesMainSubApp;
 import info.magnolia.ui.app.pages.preview.PagePreviewSubApp;
 import info.magnolia.ui.framework.app.AbstractApp;
 import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 
@@ -63,14 +59,10 @@ public class PagesApp extends AbstractApp {
     public static final String PREVIEW_TOKEN = "preview";
 
     private AppContext context;
-    private ComponentProvider componentProvider;
-    private PagesMainSubApp mainSubApp;
 
     @Inject
-    public PagesApp(AppContext context, ComponentProvider componentProvider, PagesMainSubApp mainSubApp) {
+    public PagesApp(AppContext context) {
         this.context = context;
-        this.componentProvider = componentProvider;
-        this.mainSubApp = mainSubApp;
     }
 
     @Override
@@ -87,19 +79,9 @@ public class PagesApp extends AbstractApp {
         final String pagePath = pathParams.get(1);
 
         if (EDITOR_TOKEN.equals(subAppName)) {
-            String contextPath = MgnlContext.getContextPath();
-
-            PagesEditorSubApp editorSubApp = componentProvider.newInstance(PagesEditorSubApp.class);
-            PageEditorParameters parameters = new PageEditorParameters(contextPath, pagePath);
-            editorSubApp.setParameters(parameters);
-            context.openSubApp(subAppName + ";" + pagePath, editorSubApp);
-
+            context.openSubApp(subAppName, PagesEditorSubApp.class, location, subAppName + ";" + pagePath);
         } else if (PREVIEW_TOKEN.equals(subAppName)) {
-
-            String contextPath = MgnlContext.getContextPath();
-            PagePreviewSubApp previewSubApp = componentProvider.newInstance(PagePreviewSubApp.class);
-            previewSubApp.setUrl(contextPath + pagePath);
-            context.openSubAppFullScreen(previewSubApp);
+            context.openSubAppFullScreen(subAppName, PagePreviewSubApp.class, location);
         }
     }
 
@@ -108,20 +90,27 @@ public class PagesApp extends AbstractApp {
     }
 
     @Override
-    public SubApp start(Location location) {
-        DefaultLocation defaultLocation = (DefaultLocation) location;
+    public void start(Location location) {
 
-        String[] parts = defaultLocation.getToken().split(":");
-
-        if (parts.length >= 2) {
-            final String subAppName = parts[0];
-            final String pagePath = parts[1];
-            if (subAppName.equals("main") && StringUtils.isNotEmpty(pagePath)) {
-                mainSubApp.setSelectedPath(pagePath);
-            }
+        Location mainLocation;
+        String selectedItemPath = getSelectedItemPath(location);
+        if (selectedItemPath != null) {
+            mainLocation = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, context.getName(), "main:" + selectedItemPath);
+        } else {
+            mainLocation = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, context.getName(), "main");
         }
 
-        return mainSubApp;
+        context.openSubApp("main", PagesMainSubApp.class, mainLocation, "main");
+
+        // TODO tmattsson - we should start an editor as well if the location is for an editor
+    }
+
+    private String getSelectedItemPath(Location location) {
+        DefaultLocation defaultLocation = (DefaultLocation) location;
+        if (defaultLocation.getToken().startsWith("main:")) {
+            return StringUtils.removeStart(defaultLocation.getToken(), "main:");
+        }
+        return null;
     }
 
     @Override

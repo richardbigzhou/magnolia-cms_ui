@@ -33,10 +33,14 @@
  */
 package info.magnolia.ui.app.pages.editor;
 
+import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
+import info.magnolia.ui.app.pages.PagesApp;
 import info.magnolia.ui.app.pages.action.PagesActionbarDefinitionProvider;
-import info.magnolia.ui.framework.app.SubApp;
+import info.magnolia.ui.framework.app.AbstractSubApp;
 import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.location.DefaultLocation;
+import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.widget.actionbar.ActionbarView;
 
@@ -47,7 +51,7 @@ import javax.inject.Named;
 /**
  * PagesEditorSubApp.
  */
-public class PagesEditorSubApp implements SubApp, PagesEditorView.Listener {
+public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView.Listener {
 
     private final PagesEditorView view;
 
@@ -99,9 +103,16 @@ public class PagesEditorSubApp implements SubApp, PagesEditorView.Listener {
     }
 
     @Override
-    public View start() {
-        view.setListener(this);
+    public View start(Location location) {
+
+        String path = getEditorPath(location);
+        if (path == null)
+            path = "/";
+
+        setParameters(new PageEditorParameters(MgnlContext.getContextPath(), path));
         pageEditorPresenter.setParameters(parameters);
+
+        view.setListener(this);
         view.setPageEditor(pageEditorPresenter.start());
 
         ActionbarView actionbar = actionbarPresenter.start(PagesActionbarDefinitionProvider.getPageEditorActionbarDefinition());
@@ -112,6 +123,18 @@ public class PagesEditorSubApp implements SubApp, PagesEditorView.Listener {
         view.setActionbarView(actionbar);
 
         return view;
+    }
+
+    private String getEditorPath(Location location) {
+        String token = ((DefaultLocation) location).getToken();
+        String[] parts = token.split(";");
+        if (parts.length < 2) {
+            return null;
+        }
+        if (!parts[0].equals(PagesApp.EDITOR_TOKEN)) {
+            return null;
+        }
+        return parts[1];
     }
 
 }

@@ -35,16 +35,19 @@ package info.magnolia.ui.app.pages.preview;
 
 import javax.inject.Inject;
 
+import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
-import info.magnolia.ui.framework.app.SubApp;
+import info.magnolia.ui.app.pages.PagesApp;
+import info.magnolia.ui.framework.app.AbstractSubApp;
 import info.magnolia.ui.framework.location.DefaultLocation;
+import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.view.View;
 
 /**
  * SubApp that displays the page preview.
  */
-public class PagePreviewSubApp implements SubApp, PagePreviewView.Listener {
+public class PagePreviewSubApp extends AbstractSubApp implements PagePreviewView.Listener {
 
     private PagePreviewView view;
 
@@ -65,17 +68,31 @@ public class PagePreviewSubApp implements SubApp, PagePreviewView.Listener {
     }
 
     @Override
-    public View start() {
+    public View start(Location location) {
+        String path = getPreviewPath(location);
+        if (path == null) {
+            path = "/";
+        }
+
+        view.setUrl(MgnlContext.getContextPath() + path);
         view.setListener(this);
         return view;
-    }
-
-    public void setUrl(String url) {
-        view.setUrl(url);
     }
 
     @Override
     public void closePreview() {
         locationController.goTo(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages", ""));
+    }
+
+    private String getPreviewPath(Location location) {
+        String token = ((DefaultLocation) location).getToken();
+        String[] parts = token.split(";");
+        if (parts.length < 2) {
+            return null;
+        }
+        if (!parts[0].equals(PagesApp.PREVIEW_TOKEN)) {
+            return null;
+        }
+        return parts[1];
     }
 }
