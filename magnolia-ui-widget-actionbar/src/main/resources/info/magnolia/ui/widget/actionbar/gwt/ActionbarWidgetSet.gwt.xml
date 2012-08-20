@@ -3,4 +3,5 @@
 	<inherits name="com.vaadin.terminal.gwt.DefaultWidgetSet" />
 	<!-- <inherits name="org.vaadin.rpc.WidgetRPC" /> -->
 	<stylesheet src="actionbar/styles.css" />
+    <inherits name="com.googlecode.mgwt.ui.UI"/>
 </module>

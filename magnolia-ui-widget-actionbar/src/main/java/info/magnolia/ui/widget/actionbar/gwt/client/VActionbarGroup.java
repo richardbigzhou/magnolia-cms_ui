@@ -55,6 +55,10 @@ public class VActionbarGroup extends ComplexPanel {
 
     private final String name;
 
+    private boolean isOpenHorizontal = false;
+
+
+
     /**
      * Instantiates a new action bar group.
      */
@@ -66,6 +70,25 @@ public class VActionbarGroup extends ComplexPanel {
 
     public String getName() {
         return name;
+    }
+
+    public void toggleHorizontal(){
+        isOpenHorizontal = !isOpenHorizontal;
+        if (isOpenHorizontal){
+            addStyleName("open");
+        }else{
+            removeStyleName("open");
+        }
+    }
+
+    public void closeHorizontal(){
+        isOpenHorizontal = false;
+        removeStyleName("open");
+    }
+
+    public void openHorizontal(){
+        isOpenHorizontal = true;
+        addStyleName("open");
     }
 
     @Override

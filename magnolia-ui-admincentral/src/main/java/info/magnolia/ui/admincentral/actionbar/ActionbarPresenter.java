@@ -170,6 +170,7 @@ public class ActionbarPresenter implements ActionbarView.Listener {
                         }
                     }
                 }
+
                 break;
             }
         }

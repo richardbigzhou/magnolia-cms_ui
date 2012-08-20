@@ -44,6 +44,10 @@ public class LinkFieldDefinition extends ConfiguredFieldDefinition {
     // Sub Dialog Name. Used by the LinkField to create the
     // sub dialog. like 'ui-admincentral:link'
     private String dialogName;
+    // Target App Name used to create the ContentView.
+    // 'pages'
+    private String appName;
+
     private String listView;
     private String width = "100%";
     private String buttonLabel = "Select";
@@ -103,5 +107,13 @@ public class LinkFieldDefinition extends ConfiguredFieldDefinition {
 
     public void setDialogName(String dialogName) {
         this.dialogName = dialogName;
+    }
+
+    public String getAppName() {
+        return appName;
+    }
+
+    public void setAppName(String appName) {
+        this.appName = appName;
     }
 }

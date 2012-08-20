@@ -33,6 +33,9 @@
  */
 package info.magnolia.ui.widget.actionbar;
 
+
+import com.vaadin.terminal.Sizeable;
+import com.vaadin.ui.ClientWidget;
 import info.magnolia.ui.vaadin.integration.widget.serializer.ResourceSerializer;
 import info.magnolia.ui.widget.actionbar.gwt.client.VActionbar;
 
@@ -52,7 +55,7 @@ import com.vaadin.terminal.PaintException;
 import com.vaadin.terminal.PaintTarget;
 import com.vaadin.terminal.Resource;
 import com.vaadin.ui.AbstractComponent;
-import com.vaadin.ui.ClientWidget;
+
 import com.vaadin.ui.ClientWidget.LoadStyle;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.VerticalLayout;
@@ -89,7 +92,10 @@ public class Actionbar extends AbstractComponent implements ActionbarView, Serve
 
     public Actionbar() {
         setSizeFull();
+        //setWidth("270px");
+        setWidth(Sizeable.SIZE_UNDEFINED, 0);
         setImmediate(true);
+
     }
 
     @Override

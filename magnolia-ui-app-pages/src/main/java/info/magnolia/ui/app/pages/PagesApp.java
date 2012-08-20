@@ -34,10 +34,11 @@
 package info.magnolia.ui.app.pages;
 
 
+import info.magnolia.ui.admincentral.app.content.ContentApp;
+import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
 import info.magnolia.ui.app.pages.editor.PagesEditorSubApp;
 import info.magnolia.ui.app.pages.main.PagesMainSubApp;
 import info.magnolia.ui.app.pages.preview.PagesPreviewSubApp;
-import info.magnolia.ui.framework.app.AbstractApp;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
@@ -53,7 +54,7 @@ import org.apache.commons.lang.StringUtils;
 /**
  * Pages app.
  */
-public class PagesApp extends AbstractApp {
+public class PagesApp extends ContentApp {
 
     public static final String EDITOR_TOKEN = "editor";
     public static final String PREVIEW_TOKEN = "preview";
@@ -62,7 +63,8 @@ public class PagesApp extends AbstractApp {
     private AppContext context;
 
     @Inject
-    public PagesApp(AppContext context) {
+    public PagesApp(AppContext context, DialogPresenterFactory dialogPresenterFactory) {
+        super(dialogPresenterFactory);
         this.context = context;
     }
 

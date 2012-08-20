@@ -33,6 +33,9 @@
  */
 package info.magnolia.ui.widget.magnoliashell.gwt.client;
 
+import com.google.gwt.user.client.Window;
+import com.googlecode.mgwt.ui.client.MGWT;
+import com.google.gwt.user.client.ui.RootPanel;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.AnimationSettings;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryCallback;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper;
@@ -71,7 +74,6 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchPanel;
 
-
 /**
  * GWT implementation of MagnoliaShell client side (the view part basically).
  */
@@ -79,22 +81,22 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
 
     public static final String CLASSNAME = "v-magnolia-shell";
 
-    private final Map<ViewportType, VShellViewport> viewports = new EnumMap<ViewportType, VShellViewport>(ViewportType.class);
+    private Map<ViewportType, VShellViewport> viewports = new EnumMap<ViewportType, VShellViewport>(ViewportType.class);
 
     private ViewportType activeViewportType = null;
-
-    private final VMainLauncher mainAppLauncher;
+            
+    private VMainLauncher mainAppLauncher;
 
     private Presenter presenter;
 
-    private final EventBus eventBus;
+    private EventBus eventBus;
 
     private VShellMessage lowPriorityMessage;
 
     private VShellMessage hiPriorityMessage;
-
-    private final FullscreenWidgetWrapper fullscreenWrapper = new FullscreenWidgetWrapper();
-
+    
+    private FullscreenWidgetWrapper fullscreenWrapper = new FullscreenWidgetWrapper();
+    
     public VMagnoliaShellViewImpl(final EventBus eventBus) {
         super();
         this.eventBus = eventBus;
@@ -102,22 +104,43 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
         setStyleName(CLASSNAME);
         add(mainAppLauncher, getElement());
         bindEventHandlers();
+
+
+        // Apply the tablet class to the body element so that the application can update its UI based on device type.
+
+        if (initIsDeviceTablet()){
+            RootPanel.get().addStyleName("tablet");
+        }
+
     }
 
+
+    /**
+     * Determine if device is tablet.
+     * Allows option to add a querystring parameter of tablet=true for testing.
+     * TODO: Christopher Zimmermann - there should be only one instance of this code in the project.
+     * @return Whether device is tablet.
+     */
+    private boolean initIsDeviceTablet(){
+
+        boolean isDeviceTabletOverride = Window.Location.getQueryString().indexOf("tablet=true") >= 0;
+        if (! MGWT.getOsDetection().isDesktop() || isDeviceTabletOverride) {
+            return true;
+        }  else{
+            return false;
+        }
+    }
+
+    
     private void bindEventHandlers() {
         eventBus.addHandler(ViewportCloseEvent.TYPE, this);
         eventBus.addHandler(ShellAppNavigationEvent.TYPE, navigationHandler);
         eventBus.addHandler(AppActivatedEvent.TYPE, navigationHandler);
         History.addValueChangeHandler(new ValueChangeHandler<String>() {
-
             @Override
             public void onValueChange(ValueChangeEvent<String> event) {
                 final String fragment = event.getValue();
                 final FragmentDTO dto = FragmentDTO.fromFragment(fragment);
-
-                // set shell app icon inactive immediately
-                mainAppLauncher.deactivateControls();
-
                 if (dto.getType() == FragmentType.SHELL_APP) {
                     eventBus.fireEvent(new ShellAppNavigationEvent(ShellAppType.resolveType(dto.getPrefix()), dto.getToken()));
                 } else {
@@ -126,10 +149,9 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
                     if (presenter.isAppRegistered(prefix)) {
                         if (!presenter.isAppRunning(prefix)) {
                             getAppViewport().showAppPreloader(prefix, new PreloaderCallback() {
-
                                 @Override
                                 public void onPreloaderShown(String appName) {
-                                    presenter.startApp(appName, token);
+                                    presenter.startApp(appName,token);
                                 }
                             });
                         } else {
@@ -167,7 +189,7 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
     @Override
     public int getViewportHeight() {
         int errorMessageHeight = hiPriorityMessage == null && (getWidgetIndex(hiPriorityMessage) > -1) ? hiPriorityMessage
-            .getOffsetHeight() : 0;
+                .getOffsetHeight() : 0;
         return getOffsetHeight() - mainAppLauncher.getExpandedHeight() - errorMessageHeight;
     }
 
@@ -212,32 +234,31 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
     public void showMessage(MessageType type, String topic, String message, String id) {
         final VShellMessage msg;
         switch (type) {
-            case WARNING :
-                msg = new VWarningMessage(this, topic, message, id);
-                if (lowPriorityMessage != null && getWidgetIndex(lowPriorityMessage) != -1) {
-                    lowPriorityMessage.hide();
-                }
-                lowPriorityMessage = msg;
-                break;
-            case INFO :
-                msg = new VInfoMessage(this, topic, message, id);
-                if (lowPriorityMessage != null && getWidgetIndex(lowPriorityMessage) != -1) {
-                    lowPriorityMessage.hide();
-                }
-                lowPriorityMessage = msg;
-                break;
-            case ERROR :
-                msg = new VShellErrorMessage(this, topic, message, id);
-                if (hiPriorityMessage != null && getWidgetIndex(hiPriorityMessage) != -1) {
-                    hiPriorityMessage.hide();
-                }
-                hiPriorityMessage = msg;
-                break;
-            default :
-                msg = null;
+        case WARNING:
+            msg = new VWarningMessage(this, topic, message, id);
+            if (lowPriorityMessage != null && getWidgetIndex(lowPriorityMessage) != -1) {
+                lowPriorityMessage.hide();
+            }
+            lowPriorityMessage = msg;
+            break;
+        case INFO:
+            msg = new VInfoMessage(this, topic, message, id);
+            if (lowPriorityMessage != null && getWidgetIndex(lowPriorityMessage) != -1) {
+                lowPriorityMessage.hide();
+            }
+            lowPriorityMessage = msg;
+            break;
+        case ERROR:
+            msg = new VShellErrorMessage(this, topic, message, id);
+            if (hiPriorityMessage != null && getWidgetIndex(hiPriorityMessage) != -1) {
+                hiPriorityMessage.hide();
+            }
+            hiPriorityMessage = msg;
+            break;
+        default:
+            msg = null;
         }
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-
             @Override
             public void execute() {
                 if (msg != null) {
@@ -269,7 +290,6 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
     }
 
     private final ShellNavigationHandler navigationHandler = new ShellNavigationHandler() {
-
         @Override
         public void onAppActivated(AppActivatedEvent event) {
             final String fragment = activeViewportType.getFragmentPrefix() + event.getPrefix() + ":" + event.getToken();
@@ -314,7 +334,6 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
             settings.setProperty("top", "+=" + shiftPx);
             settings.setProperty("height", "+=" + -shiftPx);
             settings.addCallback(new JQueryCallback() {
-
                 @Override
                 public void execute(JQueryWrapper query) {
                     getPresenter().updateViewportLayout(viewport);
@@ -335,10 +354,10 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
     public void setFullscreen(Widget widget) {
         fullscreenWrapper.setContent(widget);
         if (widget != null && getWidgetIndex(fullscreenWrapper) < 0) {
-            add(fullscreenWrapper);
+            add(fullscreenWrapper);   
         }
     }
-
+    
     @Override
     public void updateShellAppIndication(ShellAppType type, int increment) {
         mainAppLauncher.updateIndication(type, increment);

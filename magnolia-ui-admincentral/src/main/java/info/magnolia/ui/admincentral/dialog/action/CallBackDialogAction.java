@@ -60,6 +60,7 @@ public class CallBackDialogAction extends ActionBase<CallBackDialogActionDefinit
         } else {
             presenter.getCallBack().onCancel();
         }
+        presenter.closeDialog();
     }
 
 }

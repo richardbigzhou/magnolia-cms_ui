@@ -34,6 +34,7 @@
 package info.magnolia.ui.app.contacts;
 
 import info.magnolia.ui.admincentral.app.content.ContentApp;
+import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.location.Location;
 
@@ -42,14 +43,15 @@ import javax.inject.Inject;
 
 /**
  * The Contacts app, extending base content app.
- * 
+ *
  */
 public class ContactsApp extends ContentApp {
 
     private final AppContext appContext;
 
     @Inject
-    public ContactsApp(AppContext appContext) {
+    public ContactsApp(AppContext appContext, DialogPresenterFactory dialogPresenterFactory) {
+        super(dialogPresenterFactory);
         this.appContext = appContext;
     }
 

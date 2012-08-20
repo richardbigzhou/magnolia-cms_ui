@@ -38,6 +38,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import com.google.gwt.user.client.Window;
+import com.googlecode.mgwt.ui.client.MGWT;
 import org.vaadin.rpc.client.ClientSideHandler;
 import org.vaadin.rpc.client.ClientSideProxy;
 import org.vaadin.rpc.client.Method;
@@ -196,7 +198,9 @@ public class VActionbar extends Composite implements Paintable, Container, Clien
 
     @Override
     public boolean initWidget(Object[] params) {
-        addStyleDependentName("open");
+        if (!initIsDeviceTablet()){
+            addStyleDependentName("open");
+        }
         return false;
     }
 
@@ -285,6 +289,26 @@ public class VActionbar extends Composite implements Paintable, Container, Clien
             return view.getSections().get(sectionName);
         }
         return null;
+    }
+
+    public void forceLayout(){
+        client.forceLayout();
+    }
+
+    /**
+     * Determine if device is tablet.
+     * Allows option to add a querystring parameter of tablet=true for testing.
+     * TODO: Christopher Zimmermann - there should be only one instance of this code in the project.
+     * @return Whether device is tablet.
+     */
+    private boolean initIsDeviceTablet(){
+
+        boolean isDeviceTabletOverride = Window.Location.getQueryString().indexOf("tablet=true") >= 0;
+        if (! MGWT.getOsDetection().isDesktop() || isDeviceTabletOverride) {
+            return true;
+        }  else{
+            return false;
+        }
     }
 
 }

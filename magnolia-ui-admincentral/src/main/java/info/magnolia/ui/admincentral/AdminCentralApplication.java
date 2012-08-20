@@ -60,7 +60,13 @@ public class AdminCentralApplication extends Application {
 
     private static final Logger log = LoggerFactory.getLogger(AdminCentralApplication.class);
 
+    private static final Boolean isDeviceOverrideTablet = true;
+
     private Window window;
+
+    public boolean getIsDeviceOverrideTablet(){
+        return isDeviceOverrideTablet;
+    }
 
     @Override
     public void init() {

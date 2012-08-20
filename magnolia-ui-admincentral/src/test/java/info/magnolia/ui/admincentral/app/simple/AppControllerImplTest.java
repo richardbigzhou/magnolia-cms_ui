@@ -33,6 +33,32 @@
  */
 package info.magnolia.ui.admincentral.app.simple;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import info.magnolia.module.ModuleRegistryImpl;
+import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
+import info.magnolia.objectfactory.guice.GuiceComponentProvider;
+import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
+import info.magnolia.ui.admincentral.MagnoliaShell;
+import info.magnolia.ui.framework.app.App;
+import info.magnolia.ui.framework.app.AppDescriptor;
+import info.magnolia.ui.framework.app.AppLifecycleEvent;
+import info.magnolia.ui.framework.app.AppLifecycleEventHandler;
+import info.magnolia.ui.framework.app.AppLifecycleEventType;
+import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroup;
+import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroupEntry;
+import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayout;
+import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
+import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManagerImpl;
+import info.magnolia.ui.framework.event.SimpleEventBus;
+import info.magnolia.ui.framework.location.DefaultLocation;
+import info.magnolia.ui.framework.location.LocationController;
+import info.magnolia.ui.framework.message.MessagesManager;
+import info.magnolia.ui.framework.message.MessagesManagerImpl;
+import info.magnolia.ui.framework.shell.Shell;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,31 +66,6 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import info.magnolia.module.ModuleRegistryImpl;
-import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
-import info.magnolia.objectfactory.guice.GuiceComponentProvider;
-import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
-import info.magnolia.ui.admincentral.MagnoliaShell;
-import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.app.AppLifecycleEvent;
-import info.magnolia.ui.framework.app.AppLifecycleEventHandler;
-import info.magnolia.ui.framework.app.AppLifecycleEventType;
-import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
-import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManagerImpl;
-import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroup;
-import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroupEntry;
-import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayout;
-import info.magnolia.ui.framework.event.SimpleEventBus;
-import info.magnolia.ui.framework.location.DefaultLocation;
-import info.magnolia.ui.framework.location.LocationController;
-import info.magnolia.ui.framework.message.MessagesManager;
-import info.magnolia.ui.framework.message.MessagesManagerImpl;
-import info.magnolia.ui.framework.shell.Shell;
 
 /**
  * Test case for {@link info.magnolia.ui.framework.app.AppController}.
@@ -107,10 +108,12 @@ public class AppControllerImplTest {
         String appName = appName_1 + "_name";
 
         // WHEN
-        appController.startIfNotAlreadyRunning(appName, new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appName, ""));
+        App app = appController.startIfNotAlreadyRunning(appName, new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appName, ""));
 
         // THEN
         //Check Events
+        assertEquals(true, app != null);
+        assertEquals(AppTestImpl.class.getName(), app.getClass().getName());
         assertEquals(1, eventCollector.appLifecycleEvent.size());
         assertEquals(AppLifecycleEventType.STARTED, eventCollector.appLifecycleEvent.get(0).getEventType());
         //Check App

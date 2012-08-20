@@ -54,7 +54,7 @@ public interface AppContext {
     void openSubAppFullScreen(String name, Class<? extends SubApp> subAppClass, Location location);
 
     void exitFullScreenMode();
-    
+
     AppDescriptor getAppDescriptor();
 
     void sendUserMessage(String user, Message message);

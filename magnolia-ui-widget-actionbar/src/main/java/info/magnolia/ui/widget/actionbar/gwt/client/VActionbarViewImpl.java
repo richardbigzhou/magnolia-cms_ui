@@ -33,18 +33,27 @@
  */
 package info.magnolia.ui.widget.actionbar.gwt.client;
 
+import com.google.gwt.core.shared.GWT;
+//import com.google.gwt.user.client.*;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Window;
+
+import com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler;
+import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
+
+import com.google.gwt.user.client.ui.ComplexPanel;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Widget;
+import com.googlecode.mgwt.ui.client.MGWT;
 import info.magnolia.ui.widget.actionbar.gwt.client.event.ActionTriggerEvent;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.ComplexPanel;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.vaadin.terminal.gwt.client.ui.Icon;
-
 
 /**
  * The Class VActionbarViewImpl, GWT implementation for the VActionbarView interface.
@@ -55,18 +64,137 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, 
 
     private final Element root = DOM.createElement("section");
 
+    private final FlowPanel toggleButton = new FlowPanel(); // Must be a widget so that it can capture events.
+
+    private final Element toggleButtonIcon = DOM.createElement("span");
+
     private final EventBus eventBus;
 
     private Presenter presenter;
+
+    private int tabletRow = -1; // Used to assign rows and columns to each action item
+    private int tabletColumn = 0;
+
+    private boolean isDeviceTablet;
+
+    private boolean isToggledOpen = false;
+
+    TouchDelegate delegate = new TouchDelegate(toggleButton);
 
     private final Map<String, VActionbarSection> sections = new LinkedHashMap<String, VActionbarSection>();
 
     public VActionbarViewImpl(final EventBus eventBus) {
         setElement(root);
-        setStyleName(CLASSNAME);
+        addStyleName(CLASSNAME);
 
         this.eventBus = eventBus;
         this.eventBus.addHandler(ActionTriggerEvent.TYPE, this);
+
+        isDeviceTablet = initIsDeviceTablet();
+
+        prepareToggling();
+
+        if (isDeviceTablet){
+            isToggledOpen = false;
+        }else{
+            isToggledOpen = true;
+        }
+
+        actualizeToggleState(isToggledOpen);
+    }
+
+    /**
+     * Determine if device is tablet.
+     * Allows option to add a querystring parameter of tablet=true for testing.
+     * TODO: Christopher Zimmermann - there should be only one instance of this code in the project.
+     * @return Whether device is tablet.
+     */
+    private boolean initIsDeviceTablet(){
+
+        boolean isDeviceTabletOverride = Window.Location.getQueryString().indexOf("tablet=true") >= 0;
+        if (! MGWT.getOsDetection().isDesktop() || isDeviceTabletOverride) {
+            return true;
+        }  else{
+            return false;
+        }
+    }
+
+
+
+
+    private void prepareToggling(){
+
+        toggleButton.addStyleName("v-actionbar-toggle");
+        add(toggleButton, root);
+
+        toggleButtonIcon.addClassName("v-actionbar-toggle-icon");
+        toggleButton.getElement().appendChild(toggleButtonIcon);
+
+
+        DOM.sinkEvents(toggleButton.getElement(), Event.TOUCHEVENTS);
+
+        delegate.addTouchStartHandler(new TouchStartHandler() {
+            @Override
+            public void onTouchStart(com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent event) {
+                GWT.log("Toggler TouchStart");
+                isToggledOpen = !isToggledOpen;
+                actualizeToggleState(isToggledOpen);
+                presenter.forceLayout();
+            }
+        });
+
+        /*
+           DOM.sinkEvents(toggleButton.getElement(), Event.ONMOUSEDOWN);
+        /*
+           toggleButton.addDomHandler(new MouseDownHandler() {
+               @Override
+               public void onMouseDown(MouseDownEvent event) {
+                   isToggledOpen = !isToggledOpen;
+
+                   actualizeToggleState(isToggledOpen);
+
+                   presenter.forceLayout();
+               }
+
+           }, MouseDownEvent.getType());
+       }     */
+    }
+
+       /**
+        * Actualize the state of the actionbar 'openness' by setting classes on html elements.
+        */
+    private void actualizeToggleState(boolean isOpen){
+        if (isOpen) {
+            toggleButtonIcon.addClassName("open");//NOTE:CLZ:With icon fonts this class name will change.
+
+            root.addClassName("v-actionbar-open");
+
+
+            // For Tablet: Add "open" style from all actions
+            if (isDeviceTablet){
+                for (final VActionbarSection section : sections.values()) {
+                    for (final VActionbarGroup group : section.getGroups().values()) {
+                        group.openHorizontal();
+                    }
+                }
+            }
+
+
+        } else {
+            toggleButtonIcon.removeClassName("open");//NOTE:CLZ:With icon fonts this class name will change.
+
+            root.removeClassName("v-actionbar-open");
+
+            // For Tablet: Remove "open" style from all actions
+            if (isDeviceTablet){
+                for (final VActionbarSection section : sections.values()) {
+                    for (final VActionbarGroup group : section.getGroups().values()) {
+                        group.removeStyleName("open");
+                    }
+                }
+            }
+
+        }
     }
 
     @Override
@@ -98,11 +226,27 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, 
         if (section != null) {
             VActionbarGroup group = section.getGroups().get(groupName);
             if (group == null) {
+                tabletColumn = 0;
+                tabletRow ++;
                 group = new VActionbarGroup(groupName);
                 section.addGroup(group);
+
+                // Position toggleButton button at bottom of stack.
+                toggleButton.removeStyleName("row-" + (tabletRow));
+                toggleButton.addStyleName("row-" + (tabletRow + 1));
             }
-            VActionbarItem action = new VActionbarItem(actionParams, eventBus, icon);
+            String cssClasses = "row-" + tabletRow + " col-" + tabletColumn + " open";
+
+            VActionbarItem action;
+
+            if (isDeviceTablet){
+                action = new VActionbarItemTablet(actionParams, group, eventBus, icon, cssClasses);
+            }else{
+                action = new VActionbarItem(actionParams, group, eventBus, icon, cssClasses);
+            }
+
             group.addAction(action);
+            tabletColumn++;
         }
     }
 
