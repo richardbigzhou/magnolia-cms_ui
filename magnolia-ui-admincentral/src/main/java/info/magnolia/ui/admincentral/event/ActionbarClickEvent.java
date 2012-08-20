@@ -53,11 +53,6 @@ public class ActionbarClickEvent implements Event<ActionbarClickEvent.Handler> {
 
     private final ActionDefinition actionDefinition;
 
-    @Override
-    public void dispatch(Handler handler) {
-        handler.onActionbarItemClicked(this);
-    }
-
     public ActionbarClickEvent(ActionDefinition actionDefinition) {
         this.actionDefinition = actionDefinition;
     }
@@ -66,4 +61,8 @@ public class ActionbarClickEvent implements Event<ActionbarClickEvent.Handler> {
         return actionDefinition;
     }
 
+    @Override
+    public void dispatch(Handler handler) {
+        handler.onActionbarItemClicked(this);
+    }
 }
