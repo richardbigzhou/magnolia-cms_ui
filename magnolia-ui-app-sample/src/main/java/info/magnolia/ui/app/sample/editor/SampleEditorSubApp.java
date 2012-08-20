@@ -35,15 +35,16 @@ package info.magnolia.ui.app.sample.editor;
 
 import javax.inject.Inject;
 
-import info.magnolia.ui.framework.app.SubApp;
+import info.magnolia.ui.framework.app.AbstractSubApp;
+import info.magnolia.ui.framework.location.DefaultLocation;
+import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.view.View;
 
 /**
  * SubApp for editor tabs in sample app.
  */
-public class SampleEditorSubApp implements SubApp, SampleEditorView.Listener {
+public class SampleEditorSubApp extends AbstractSubApp implements SampleEditorView.Listener {
 
-    private String name;
     private final SampleEditorView view;
 
     @Inject
@@ -51,22 +52,14 @@ public class SampleEditorSubApp implements SubApp, SampleEditorView.Listener {
         this.view = view;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
     @Override
     public String getCaption() {
-        return "Editor " + name;
+        return "Editor " + view.getName();
     }
 
     @Override
-    public View start() {
-        this.view.setName(name);
+    public View start(Location location) {
+        this.view.setName(((DefaultLocation) location).getToken());
         this.view.setListener(this);
         return view;
     }

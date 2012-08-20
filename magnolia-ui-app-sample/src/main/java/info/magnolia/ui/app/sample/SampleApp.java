@@ -51,20 +51,16 @@ import info.magnolia.ui.framework.location.Location;
  */
 public class SampleApp extends AbstractApp {
 
-    private AppContext context;
-    private ComponentProvider componentProvider;
-    private SampleMainSubApp mainSubApp;
+    private AppContext appContext;
 
     @Inject
-    public SampleApp(AppContext context, ComponentProvider componentProvider, SampleMainSubApp mainSubApp) {
-        this.context = context;
-        this.componentProvider = componentProvider;
-        this.mainSubApp = mainSubApp;
+    public SampleApp(AppContext appContext) {
+        this.appContext = appContext;
     }
 
     @Override
-    public SubApp start(Location location) {
-        return mainSubApp;
+    public void start(Location location) {
+        appContext.openSubApp("main", SampleMainSubApp.class, location, "main");
     }
 
     @Override
@@ -73,18 +69,13 @@ public class SampleApp extends AbstractApp {
 
     @Override
     public void locationChanged(Location location) {
-
-        DefaultLocation l = (DefaultLocation) location;
-
-        String token = l.getToken();
+        String token = ((DefaultLocation) location).getToken();
         if (StringUtils.isNotBlank(token)) {
-            openNewEditor(token);
+            openNewEditor(token, location);
         }
     }
 
-    private void openNewEditor(String name) {
-        SampleEditorSubApp editor = componentProvider.getComponent(SampleEditorSubApp.class);
-        editor.setName(name);
-        context.openSubApp(name, editor);
+    private void openNewEditor(String name, Location location) {
+        appContext.openSubApp("editor", SampleEditorSubApp.class, location, name);
     }
 }

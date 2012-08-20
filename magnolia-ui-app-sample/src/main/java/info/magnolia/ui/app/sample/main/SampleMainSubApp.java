@@ -37,15 +37,16 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import info.magnolia.ui.framework.app.SubApp;
+import info.magnolia.ui.framework.app.AbstractSubApp;
 import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.view.View;
 
 /**
  * SubApp for the main tab in sample app.
  */
 @Singleton
-public class SampleMainSubApp implements SubApp, SampleMainView.Listener {
+public class SampleMainSubApp extends AbstractSubApp implements SampleMainView.Listener {
 
     private SampleMainView sampleMainView;
     private NavigationPresenter navigationPresenter;
@@ -67,7 +68,7 @@ public class SampleMainSubApp implements SubApp, SampleMainView.Listener {
     }
 
     @Override
-    public View start() {
+    public View start(Location location) {
 
         ContentDisplayView contentDisplayView = contentDisplayPresenter.start();
 
