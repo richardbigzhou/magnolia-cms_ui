@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,24 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.column.definition;
+package info.magnolia.ui.admincentral.column;
+import com.vaadin.ui.Table;
 
 /**
- * Interface for a column definition.
+ * Common definition for Column formatter.
  */
-public interface ColumnDefinition {
+public interface ColumnFormatter extends Table.ColumnGenerator{
 
-    String getName();
-
-    String getPropertyName();
-
-    String getLabel();
-
-    int getWidth();
-
-    boolean isSortable();
-
-    String getFormatterClass();
-
-    Class<?> getType();
 }

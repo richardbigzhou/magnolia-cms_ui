@@ -48,6 +48,8 @@ public abstract class AbstractColumnDefinition implements ColumnDefinition {
 
     private boolean sortable = false;
 
+    private String formatterClass;
+
     private String propertyName;
 
     @Override
@@ -93,6 +95,15 @@ public abstract class AbstractColumnDefinition implements ColumnDefinition {
 
     public void setSortable(boolean sortable) {
         this.sortable = sortable;
+    }
+
+    @Override
+    public String getFormatterClass() {
+        return this.formatterClass;
+    }
+
+    public void setFormatterClass(String formatter) {
+        this.formatterClass = formatter;
     }
 
     /**

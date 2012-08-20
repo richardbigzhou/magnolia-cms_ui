@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,24 +31,22 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.column.definition;
+package info.magnolia.ui.admincentral.column;
+
+import info.magnolia.ui.model.column.definition.ColumnDefinition;
+
+
 
 /**
- * Interface for a column definition.
+ * Abstract ColumnFormatter implementations, initializes common attributes.
+ *
+ * @param <D> definition type
  */
-public interface ColumnDefinition {
+public abstract class AbstractColumnFormatter <D extends ColumnDefinition> implements ColumnFormatter{
 
-    String getName();
+    protected D definition;
 
-    String getPropertyName();
-
-    String getLabel();
-
-    int getWidth();
-
-    boolean isSortable();
-
-    String getFormatterClass();
-
-    Class<?> getType();
+    public AbstractColumnFormatter(D definition) {
+        this.definition = definition;
+    }
 }
