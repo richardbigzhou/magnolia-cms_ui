@@ -86,7 +86,7 @@ import com.vaadin.ui.Embedded;
  * <li>a configurable action bar on the right hand side, showing the available operations for the
  * given workspace and the selected item.
  * </ul>
- * 
+ *
  * <p>
  * Its main configuration point is the {@link WorkbenchDefinition} through which one defines the JCR
  * workspace to connect to, the columns/properties to display, the available actions and so on.
@@ -130,7 +130,7 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
         contentPresenter.initContentView(view);
         view.setListener(this);
 
-        ActionbarView actionbar = actionbarPresenter.start(workbenchDefinition.getActionbar());
+        ActionbarView actionbar = actionbarPresenter.start(workbenchDefinition.getActionbar(), actionFactory);
         view.setActionbarView(actionbar);
 
         bindHandlers();
@@ -152,9 +152,12 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
 
             @Override
             public void onActionbarItemClicked(ActionbarClickEvent event) {
-
-                ActionDefinition actionDefinition = event.getActionDefinition();
-                createAndExecuteAction(actionDefinition);
+                try {
+                    ActionDefinition actionDefinition = event.getActionDefinition();
+                    actionbarPresenter.createAndExecuteAction(actionDefinition, workbenchDefinition.getWorkspace(), getSelectedItemId());
+                } catch (ActionExecutionException e) {
+                    log.error("An error occurred while executing an action.", e);
+                }
             }
         });
 
@@ -245,32 +248,10 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
      */
     public void executeDefaultAction() {
         ActionDefinition defaultActionDef = actionbarPresenter.getDefaultActionDefinition();
-        createAndExecuteAction(defaultActionDef);
-    }
-
-    private void createAndExecuteAction(final ActionDefinition actionDefinition) {
-        if (actionDefinition == null) {
-            log.warn("Action definition cannot be null. Will do nothing.");
-            return;
-        }
         try {
-            final Session session = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace());
-            String selectedItemId = getSelectedItemId();
-            if (selectedItemId == null || !session.itemExists(selectedItemId)) {
-                log.debug("{} does not exist anymore. Was it just deleted? Resetting path to root...", selectedItemId);
-                selectedItemId = "/";
-            }
-            final javax.jcr.Item item = session.getItem(selectedItemId);
-            final Action action = this.actionFactory.createAction(actionDefinition, item);
-            action.execute();
-        } catch (PathNotFoundException e) {
-            this.shell.showError("Can't execute action.\n" + e.getMessage(), e);
-        } catch (LoginException e) {
-            this.shell.showError("Can't execute action.\n" + e.getMessage(), e);
-        } catch (RepositoryException e) {
-            shell.showError("Can't execute action.\n" + e.getMessage(), e);
+            actionbarPresenter.createAndExecuteAction(defaultActionDef, workbenchDefinition.getWorkspace(), getSelectedItemId());
         } catch (ActionExecutionException e) {
-            this.shell.showError("Can't execute action.\n" + e.getMessage(), e);
+            log.error("An error occurred while executing an action.", e);
         }
     }
 
