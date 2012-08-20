@@ -33,42 +33,25 @@
  */
 package info.magnolia.ui.admincentral.field.upload;
 
-import com.vaadin.ui.AbstractComponentContainer;
+import java.io.File;
+import java.io.IOException;
 
+import org.vaadin.easyuploads.FileFactory;
 
 /**
- *.
+ * Default {@link FileFactory} used if no directory defined.
  */
-public interface UploadFileFieldDisplay {
+public class DefaultFileFactory implements FileFactory {
 
-    /**
-     * Return the root Layout used to display the Upload Field.
-     */
-    public AbstractComponentContainer getRootLayout();
-
-    public void setRootLayout(AbstractComponentContainer root);
-
-    /**
-     * Build the Default Layout.
-     */
-    public void buildDefaultUploadLayout();
-
-    /**
-     * Refresh Layout during Upload.
-     * Used to update the progress Bar / Ration ...
-     */
-    public void refreshOnProgressUploadLayout(long readBytes, long contentLength);
-
-    /**
-     * Build the Layout displayed when a download has finish.
-     * Set Preview Image/Icon, Display File Name...
-     */
-    public void buildFinishUploadLayout();
-
-    /**
-     * Build the Layout displayed during Download.
-     * Set Progress Bar...
-     */
-    public void buildStartUploadLayout();
+        @Override
+        public File createFile(String fileName, String mimeType) {
+                final String tempFileName = "upload_tmpfile_"
+                                + System.currentTimeMillis();
+                try {
+                        return File.createTempFile(tempFileName, null);
+                } catch (IOException e) {
+                        throw new RuntimeException(e);
+                }
+        }
 
 }

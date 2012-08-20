@@ -41,9 +41,9 @@ import info.magnolia.ui.framework.view.ViewPort;
  */
 public interface AppController {
 
-    void startIfNotAlreadyRunning(String name, Location location);
+    App startIfNotAlreadyRunning(String name, Location location);
 
-    void startIfNotAlreadyRunningThenFocus(String name, Location location);
+    App startIfNotAlreadyRunningThenFocus(String name, Location location);
 
     void stopApp(String name);
 

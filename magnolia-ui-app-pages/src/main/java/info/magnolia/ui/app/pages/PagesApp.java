@@ -36,11 +36,12 @@ package info.magnolia.ui.app.pages;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.admincentral.app.content.ContentApp;
+import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
 import info.magnolia.ui.app.pages.editor.PageEditorParameters;
 import info.magnolia.ui.app.pages.editor.PagesEditorSubApp;
 import info.magnolia.ui.app.pages.main.PagesMainSubApp;
-import info.magnolia.ui.app.pages.preview.PagePreviewSubApp;
-import info.magnolia.ui.framework.app.AbstractApp;
+import info.magnolia.ui.app.pages.preview.PagesPreviewSubApp;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.location.DefaultLocation;
@@ -57,17 +58,19 @@ import org.apache.commons.lang.StringUtils;
 /**
  * Pages app.
  */
-public class PagesApp extends AbstractApp {
+public class PagesApp extends ContentApp {
 
     public static final String EDITOR_TOKEN = "editor";
     public static final String PREVIEW_TOKEN = "preview";
+    public static final String PREVIEW_FULL_TOKEN = "previewFull";
 
     private AppContext context;
     private ComponentProvider componentProvider;
     private PagesMainSubApp mainSubApp;
 
     @Inject
-    public PagesApp(AppContext context, ComponentProvider componentProvider, PagesMainSubApp mainSubApp) {
+    public PagesApp(AppContext context, ComponentProvider componentProvider, PagesMainSubApp mainSubApp, DialogPresenterFactory dialogPresenterFactory) {
+        super(dialogPresenterFactory);
         this.context = context;
         this.componentProvider = componentProvider;
         this.mainSubApp = mainSubApp;
@@ -97,7 +100,13 @@ public class PagesApp extends AbstractApp {
         } else if (PREVIEW_TOKEN.equals(subAppName)) {
 
             String contextPath = MgnlContext.getContextPath();
-            PagePreviewSubApp previewSubApp = componentProvider.newInstance(PagePreviewSubApp.class);
+            PagesPreviewSubApp previewSubApp = componentProvider.newInstance(PagesPreviewSubApp.class);
+            previewSubApp.setUrl(contextPath + pagePath);
+            context.openSubApp(contextPath + pagePath, previewSubApp);
+
+        } else if(PREVIEW_FULL_TOKEN.equals(subAppName)) {
+            String contextPath = MgnlContext.getContextPath();
+            PagesPreviewSubApp previewSubApp = componentProvider.newInstance(PagesPreviewSubApp.class);
             previewSubApp.setUrl(contextPath + pagePath);
             context.openSubAppFullScreen(previewSubApp);
         }

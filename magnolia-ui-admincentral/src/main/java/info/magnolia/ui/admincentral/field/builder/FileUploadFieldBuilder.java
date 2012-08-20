@@ -36,7 +36,9 @@ package info.magnolia.ui.admincentral.field.builder;
 
 import info.magnolia.cms.beans.runtime.FileProperties;
 import info.magnolia.cms.core.MgnlNodeType;
+import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.admincentral.field.upload.UploadImageField;
+import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.model.field.definition.FileUploadFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
@@ -44,6 +46,7 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
+import javax.inject.Inject;
 import javax.jcr.Binary;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -61,17 +64,19 @@ import com.vaadin.ui.Field;
 public class FileUploadFieldBuilder extends AbstractFieldBuilder<FileUploadFieldDefinition> {
 
     private static final Logger log = LoggerFactory.getLogger(FileUploadFieldBuilder.class);
+    private MagnoliaShell magnoliaShel;
 
-    public FileUploadFieldBuilder(FileUploadFieldDefinition definition, Item relatedFieldItem) {
+    @Inject
+    public FileUploadFieldBuilder(FileUploadFieldDefinition definition, Item relatedFieldItem, Shell shell) {
         super(definition, relatedFieldItem);
+        this.magnoliaShel = (MagnoliaShell)shell;
     }
 
     @Override
     protected Field buildField() {
-        UploadImageField uploadField = new UploadImageField((JcrItemNodeAdapter)getOrCreateItem());
+        UploadImageField uploadField = new UploadImageField((JcrItemNodeAdapter)getOrCreateItem(), magnoliaShel);
         uploadField.setInfo(true);
         uploadField.setProgressInfo(true);
-        uploadField.setProgressIndicatorCaption("Progress");
         uploadField.setFileDeletion(true);
         uploadField.setFileDeletionButtonCaption("Delete");
         uploadField.setPreview(true);

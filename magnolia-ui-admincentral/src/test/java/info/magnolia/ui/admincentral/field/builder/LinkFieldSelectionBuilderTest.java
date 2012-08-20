@@ -81,7 +81,8 @@ public class LinkFieldSelectionBuilderTest extends AbstractBuilderTest<LinkField
         eventBus.fireEvent(new ItemSelectedEvent(baseNode.getSession().getWorkspace().getName(), baseNode.getPath()));
 
         // THEN
-        assertEquals(baseNode.getName(), field.getValue());
+        // as No columnName defined return the Item path as Value property
+        assertEquals(baseNode.getPath(), field.getValue());
     }
 
     @Test

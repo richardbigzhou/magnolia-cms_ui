@@ -34,6 +34,8 @@
 package info.magnolia.ui.admincentral.tree.view;
 
 import info.magnolia.jcr.RuntimeRepositoryException;
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.admincentral.column.ColumnFormatter;
 import info.magnolia.ui.admincentral.tree.container.HierarchicalJcrContainer;
 import info.magnolia.ui.admincentral.tree.model.TreeModel;
 import info.magnolia.ui.model.column.definition.ColumnDefinition;
@@ -47,6 +49,7 @@ import java.util.List;
 
 import javax.jcr.RepositoryException;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,7 +75,7 @@ public class MagnoliaTreeTable extends HybridSelectionTreeTable {
 
     private final TreeModel treeModel;
 
-    public MagnoliaTreeTable(WorkbenchDefinition workbenchDefinition, TreeModel treeModel) {
+    public MagnoliaTreeTable(WorkbenchDefinition workbenchDefinition, TreeModel treeModel, ComponentProvider componentProvider) {
         super();
         this.treeModel = treeModel;
 
@@ -104,7 +107,15 @@ public class MagnoliaTreeTable extends HybridSelectionTreeTable {
             addContainerProperty(columnProperty, column.getType(), "");
             super.setColumnHeader(columnProperty, column.getLabel());
             visibleColumns.add(columnName);
-
+            //Set Formatter
+            if(StringUtils.isNotBlank(column.getFormatterClass())) {
+                try {
+                    this.addGeneratedColumn(columnName, (ColumnFormatter)componentProvider.newInstance(Class.forName(column.getFormatterClass()),column));
+                }
+                catch (ClassNotFoundException e) {
+                    log.error("Not able to create the Formatter",e);
+                }
+            }
         }
         // setVisibleColumns(visibleColumns.toArray());
     }

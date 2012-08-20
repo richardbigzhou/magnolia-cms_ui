@@ -39,8 +39,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.RepositoryTestCase;
-import info.magnolia.ui.admincentral.column.Column;
-import info.magnolia.ui.admincentral.column.PropertyTypeColumn;
 import info.magnolia.ui.admincentral.container.AbstractJcrContainerTest;
 import info.magnolia.ui.admincentral.content.view.builder.DefinitionToImplementationMapping;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
@@ -48,7 +46,6 @@ import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactoryImpl
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionRegistry;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
-import info.magnolia.ui.model.column.definition.AbstractColumnDefinition;
 import info.magnolia.ui.model.column.definition.PropertyTypeColumnDefinition;
 import info.magnolia.ui.model.workbench.definition.ConfiguredItemTypeDefinition;
 import info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition;
@@ -57,8 +54,6 @@ import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 import javax.jcr.Item;
 import javax.jcr.Node;
@@ -104,26 +99,21 @@ public class TreeModelTest extends RepositoryTestCase {
 
         ConfiguredItemTypeDefinition type1 = new ConfiguredItemTypeDefinition();
         type1.setItemType("mgnl:content");
-        type1.setIcon("icone1");
+        type1.setIcon("icone1");http://wiki.magnolia-cms.com/download/attachments/54001974/02_Uploading_image.png
         configuredWorkbench.addItemType(type1);
         // Init col
 
-        Map<String, Column< ? >> columns = new LinkedHashMap<String, Column< ? >>();
         PropertyTypeColumnDefinition colDef1 = new PropertyTypeColumnDefinition();
         colDef1.setSortable(true);
         colDef1.setName(colName1);
         colDef1.setLabel("Label_" + colName1);
         colDef1.setPropertyName("PropertyName_" + colName1);
-        Column<AbstractColumnDefinition> col1 = new PropertyTypeColumn(colDef1);
         PropertyTypeColumnDefinition colDef2 = new PropertyTypeColumnDefinition();
         colDef2.setSortable(false);
         colDef2.setName(colName2);
         colDef2.setLabel("Label_" + colName2);
         colDef2.setPropertyName("PropertyName_" + colName2);
-        Column<AbstractColumnDefinition> col2 = new PropertyTypeColumn(colDef2);
 
-        columns.put(colName1, col1);
-        columns.put(colName2, col2);
         configuredWorkbench.addColumn(colDef1);
         configuredWorkbench.addColumn(colDef2);
 

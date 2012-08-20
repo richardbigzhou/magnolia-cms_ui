@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2011 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,11 +33,10 @@
  */
 package info.magnolia.ui.admincentral.column;
 
+import info.magnolia.cms.core.MetaData;
 import info.magnolia.jcr.util.MetaDataUtil;
 import info.magnolia.ui.model.column.definition.StatusColumnDefinition;
-
-import java.io.Serializable;
-import java.security.AccessControlException;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
 import javax.inject.Inject;
 import javax.jcr.Item;
@@ -45,94 +44,83 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import com.vaadin.terminal.Sizeable;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.Embedded;
-
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Table;
 
 /**
- * A column that displays icons for permissions and activation status.
- *
+ * Status Column formatter.
+ * Used to create activation and permission Icons based on the related Item.
+ * Use the Definition to configure Icon's to be displayed.
  */
-public class StatusColumn extends AbstractColumn<StatusColumnDefinition> implements Serializable {
-
-    private boolean activation = true;
-
-    private boolean permissions = false;
+public class StatusColumnFormatter extends AbstractColumnFormatter<StatusColumnDefinition> {
 
     @Inject
-    public StatusColumn(StatusColumnDefinition def) {
-        super(def);
-    }
-
-    public boolean isActivation() {
-        return activation;
-    }
-
-    public void setActivation(boolean activation) {
-        this.activation = activation;
-    }
-
-    public boolean isPermissions() {
-        return permissions;
-    }
-
-    public void setPermissions(boolean permissions) {
-        this.permissions = permissions;
+    public StatusColumnFormatter(StatusColumnDefinition definition) {
+        super(definition);
     }
 
     @Override
-    protected Component getDefaultComponent(Item item) throws RepositoryException {
-        if (item.isNode()) {
-            Node node = (Node) item;
-            // return new ActivationStatus(node, activation, permissions);
+    public Object generateCell(Table source, Object itemId, Object columnId) {
+
+        final JcrItemAdapter item = (JcrItemAdapter)source.getItem(itemId);
+        Item jcrItem = item.getJcrItem();
+        if(jcrItem != null && jcrItem.isNode()) {
+            Node node = (Node) jcrItem;
             Integer status;
-            Embedded activationStatus = null;
-            Embedded permissionStatus = null;
-            if (activation) {
+            Label activationStatus = null;
+            Label permissionStatus = null;
+            if (definition.isActivation()) {
+                activationStatus = new Label();
+                activationStatus.setStyleName("icon-shape-circle");
+                activationStatus.addStyleName("activation-status");
+                // Get Status
+                String color = "";
                 status = MetaDataUtil.getMetaData(node).getActivationStatus();
-                activationStatus = new Embedded();
-                activationStatus.setType(Embedded.TYPE_IMAGE);
-                //TODO fgrilli: activation status icon
-                //activationStatus.setSource(new ExternalResource(UIUtil.getActivationStatusIconURL(node)));
-                activationStatus.setWidth(16, Sizeable.UNITS_PIXELS);
-                activationStatus.setHeight(16, Sizeable.UNITS_PIXELS);
+                switch (status) {
+                    case MetaData.ACTIVATION_STATUS_MODIFIED:
+                        color = "color-yellow";
+                        break;
+                    case MetaData.ACTIVATION_STATUS_ACTIVATED:
+                        color = "color-green";
+                        break;
+                    default:
+                        color = "color-red";
+                    }
+
+                activationStatus.addStyleName(color);
             }
-            if (permissions) {
+            if (definition.isPermissions()) {
                 try {
+                    permissionStatus = new Label();
+                    permissionStatus.setStyleName("icon-edit");
                     // TODO dlipp: verify, this shows the same behavior as old Content-API based
                     // implementation:
                     // if (permissions && !node.isGranted(info.magnolia.cms.security.Permission.WRITE))
                     node.getSession().checkPermission(node.getPath(), Session.ACTION_SET_PROPERTY);
+                    permissionStatus.addStyleName("color-blue");
                 }
-                catch (AccessControlException e) {
+                catch (RepositoryException e) {
                     // does not have permission to set properties - in that case will return two Icons
                     // in a layout for being displayed...
-                    permissionStatus = new Embedded();
-                    permissionStatus.setType(Embedded.TYPE_IMAGE);
-                    //TODO fgrilli: icon
-                    /*permissionStatus.setSource(new ExternalResource(MgnlContext.getContextPath()
-                        + UIUtil.RESOURCES_ICONS_16_PATH
-                        + "pen_blue_canceled.gif"));*/
-                    permissionStatus.setWidth(16, Sizeable.UNITS_PIXELS);
-                    permissionStatus.setHeight(16, Sizeable.UNITS_PIXELS);
+                    permissionStatus.addStyleName("color-red");
                 }
             }
-            if (activation && permissions) {
+            if (definition.isActivation() && definition.isPermissions()) {
                 CssLayout root = new CssLayout();
                 root.addComponent(activationStatus);
                 root.addComponent(permissionStatus);
                 return root;
             }
-            else if (activation) {
+            else if (definition.isActivation()) {
                 return activationStatus;
             }
-            else if (permissions) {
+            else if (definition.isPermissions()) {
                 return permissionStatus;
             }
             return new CssLayout();
         }
         return null;
     }
+
 }
