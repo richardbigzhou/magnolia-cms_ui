@@ -75,6 +75,7 @@ public class ActionbarPresenter implements ActionbarView.Listener {
     private ActionbarView actionbar;
 
     private final EventBus appEventBus;
+    private final EventBus subappEventBus;
 
     private ActionFactory<ActionDefinition, Action> actionFactory;
 
@@ -82,8 +83,9 @@ public class ActionbarPresenter implements ActionbarView.Listener {
      * Instantiates a new action bar presenter.
      */
     @Inject
-    public ActionbarPresenter(@Named("app") EventBus appEventBus) {
+    public ActionbarPresenter(@Named("app") EventBus appEventBus, @Named("subapp") EventBus subAppEventBus) {
         this.appEventBus = appEventBus;
+        this.subappEventBus = subAppEventBus;
     }
 
     /**
@@ -143,7 +145,7 @@ public class ActionbarPresenter implements ActionbarView.Listener {
     public void onActionbarItemClicked(String actionToken) {
         ActionDefinition actionDefinition = getActionDefinition(actionToken);
         if (actionDefinition != null) {
-            appEventBus.fireEvent(new ActionbarClickEvent(actionDefinition));
+            subappEventBus.fireEvent(new ActionbarClickEvent(actionDefinition));
         }
     }
 

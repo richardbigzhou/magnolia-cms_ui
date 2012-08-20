@@ -532,7 +532,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
         log.debug("Creating component provider for sub app " + subAppName);
         GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
-        builder.withConfiguration(subAppComponents);
+        builder.withConfiguration(configuration);
         builder.withParent((GuiceComponentProvider) parent);
 
         return builder.build();

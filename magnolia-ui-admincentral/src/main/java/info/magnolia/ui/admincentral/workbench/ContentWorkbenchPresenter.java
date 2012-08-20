@@ -101,6 +101,8 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
 
     private final EventBus appEventBus;
 
+    private final EventBus subAppEventBus;
+
     private final Shell shell;
 
     private final WorkbenchActionFactory actionFactory;
@@ -110,10 +112,11 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
     private final ActionbarPresenter actionbarPresenter;
 
     @Inject
-    public ContentWorkbenchPresenter(final AppContext appContext, final ContentWorkbenchView view, @Named("admincentral") final EventBus admincentralEventBus, @Named("app") final EventBus appEventBus, final Shell shell, final WorkbenchActionFactory actionFactory, final ContentPresenter contentPresenter, final ActionbarPresenter actionbarPresenter) {
+    public ContentWorkbenchPresenter(final AppContext appContext, final ContentWorkbenchView view, @Named("admincentral") final EventBus admincentralEventBus, @Named("app") final EventBus appEventBus, final @Named("subapp") EventBus subAppEventBus, final Shell shell, final WorkbenchActionFactory actionFactory, final ContentPresenter contentPresenter, final ActionbarPresenter actionbarPresenter) {
         this.view = view;
         this.admincentralEventBus = admincentralEventBus;
         this.appEventBus = appEventBus;
+        this.subAppEventBus = subAppEventBus;
         this.shell = shell;
         this.actionFactory = actionFactory;
         this.contentPresenter = contentPresenter;
@@ -143,7 +146,7 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
             }
         });
 
-        appEventBus.addHandler(ActionbarClickEvent.class, new ActionbarClickEvent.Handler() {
+        subAppEventBus.addHandler(ActionbarClickEvent.class, new ActionbarClickEvent.Handler() {
 
             @Override
             public void onActionbarItemClicked(ActionbarClickEvent event) {

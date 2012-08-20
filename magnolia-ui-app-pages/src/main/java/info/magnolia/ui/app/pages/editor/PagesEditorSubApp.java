@@ -67,6 +67,8 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
 
     private final EventBus appEventBus;
 
+    private final EventBus subAppEventBus;
+
     private final PageEditorPresenter pageEditorPresenter;
 
     private PageEditorParameters parameters;
@@ -80,9 +82,10 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
     private WorkbenchActionFactory actionFactory;
 
     @Inject
-    public PagesEditorSubApp(final AppContext ctx, final PagesEditorView view, final @Named("app") EventBus appEventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final WorkbenchActionFactory actionFactory) {
+    public PagesEditorSubApp(final AppContext ctx, final PagesEditorView view, final @Named("app") EventBus appEventBus, final @Named("subapp") EventBus subAppEventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final WorkbenchActionFactory actionFactory) {
         this.view = view;
         this.appEventBus = appEventBus;
+        this.subAppEventBus = subAppEventBus;
         this.pageEditorPresenter = pageEditorPresenter;
         this.actionbarPresenter = actionbarPresenter;
         this.appDescriptor = (PagesAppDescriptor)ctx.getAppDescriptor();
@@ -93,7 +96,7 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
 
     private void bindHandlers() {
 
-        appEventBus.addHandler(ActionbarClickEvent.class, new ActionbarClickEvent.Handler() {
+        subAppEventBus.addHandler(ActionbarClickEvent.class, new ActionbarClickEvent.Handler() {
 
             @Override
             public void onActionbarItemClicked(ActionbarClickEvent event) {
