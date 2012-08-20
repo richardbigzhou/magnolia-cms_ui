@@ -52,11 +52,6 @@ public class DoubleClickEvent implements Event<DoubleClickEvent.Handler> {
 
     private String path;
 
-    @Override
-    public void dispatch(Handler handler) {
-        handler.onDoubleClick(this);
-    }
-
     public DoubleClickEvent(String workspace, String path) {
         this.workspace = workspace;
         this.path = path;
@@ -70,4 +65,8 @@ public class DoubleClickEvent implements Event<DoubleClickEvent.Handler> {
         return path;
     }
 
+    @Override
+    public void dispatch(Handler handler) {
+        handler.onDoubleClick(this);
+    }
 }
