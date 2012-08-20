@@ -41,7 +41,6 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
 import com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler;
-import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
 import info.magnolia.ui.widget.actionbar.gwt.client.event.ActionTriggerEvent;
 
 import com.google.web.bindery.event.shared.EventBus;

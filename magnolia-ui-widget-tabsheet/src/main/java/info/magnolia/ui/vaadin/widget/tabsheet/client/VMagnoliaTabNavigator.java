@@ -57,6 +57,7 @@ import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.vaadin.terminal.gwt.client.UIDL;
 
+
 /**
  * A bar that contains the tab labels and controls the switching between tabs.
  */
@@ -72,7 +73,7 @@ public class VMagnoliaTabNavigator extends ComplexPanel {
 
     private VShellShowAllTabLabel showAllTab;
 
-    private EventBus eventBus;
+    private final EventBus eventBus;
 
     public VMagnoliaTabNavigator(EventBus eventBus) {
         this.eventBus = eventBus;
@@ -185,36 +186,40 @@ public class VMagnoliaTabNavigator extends ComplexPanel {
      */
     public class VShellTabLabel extends SimplePanel {
 
-        private  Element indicatorsWrapper = DOM.createDiv();
-                
+        private Element indicatorsWrapper = DOM.createDiv();
+
         private final Element notificationBox = DOM.createDiv();
 
-        private final Element closeElement = DOM.createDiv();
-        
+        private final Element closeElement = DOM.createSpan();
+
         private final Element errorIndicator = DOM.createDiv();
 
         private final Element textWrapper = DOM.createSpan();
-        
+
         private VMagnoliaTab tab;
 
         public VShellTabLabel() {
             super(DOM.createElement("li"));
-            
+
             getElement().addClassName("clearfix");
-            
+
             indicatorsWrapper.addClassName("indicators-wrapper");
+            textWrapper.setClassName("tab-title");
             getElement().appendChild(textWrapper);
-            
+
+            // TODO 20120816 mgeljic: implement subtitle
+
             indicatorsWrapper = getElement();
-            
+
             closeElement.setClassName("v-shell-tab-close");
+            closeElement.addClassName("icon-close");
             notificationBox.setClassName("v-shell-tab-notification");
             errorIndicator.setClassName("v-shell-tab-error");
-            
+
             getElement().appendChild(closeElement);
             getElement().appendChild(notificationBox);
             getElement().appendChild(errorIndicator);
-            
+
             DOM.sinkEvents(getElement(), Event.MOUSEEVENTS);
             hideNotification();
             setHasError(false);
@@ -228,13 +233,14 @@ public class VMagnoliaTabNavigator extends ComplexPanel {
 
         private void bindHandlers() {
             addDomHandler(new ClickHandler() {
+
                 @Override
                 public void onClick(ClickEvent event) {
                     final Element target = (Element) event.getNativeEvent().getEventTarget().cast();
-                    if (closeElement.isOrHasChild(target) ) {
+                    if (closeElement.isOrHasChild(target)) {
                         eventBus.fireEvent(new TabCloseEvent(tab));
                     } else {
-                        eventBus.fireEvent(new ActiveTabChangedEvent(tab));    
+                        eventBus.fireEvent(new ActiveTabChangedEvent(tab));
                     }
                 }
             }, ClickEvent.getType());
@@ -256,7 +262,7 @@ public class VMagnoliaTabNavigator extends ComplexPanel {
         }
 
         public void setClosable(boolean isClosable) {
-            closeElement.getStyle().setDisplay(isClosable ? Display.INLINE_BLOCK : Display.NONE);
+            closeElement.getStyle().setDisplay(isClosable ? Display.INLINE : Display.NONE);
         }
 
         public void updateNotification(final String text) {
@@ -281,6 +287,7 @@ public class VMagnoliaTabNavigator extends ComplexPanel {
             super(DOM.createElement("li"));
             addStyleName("show-all");
             text.setInnerHTML(label);
+            text.setClassName("tab-title");
             getElement().appendChild(text);
 
         }
@@ -293,6 +300,7 @@ public class VMagnoliaTabNavigator extends ComplexPanel {
 
         private void bindHandlers() {
             addDomHandler(new ClickHandler() {
+
                 @Override
                 public void onClick(ClickEvent event) {
                     eventBus.fireEvent(new ShowAllTabsEvent());

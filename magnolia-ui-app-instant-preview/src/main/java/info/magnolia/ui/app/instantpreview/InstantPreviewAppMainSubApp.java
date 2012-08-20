@@ -95,7 +95,7 @@ public class InstantPreviewAppMainSubApp implements SubApp, InstantPreviewView.L
         Message message = new Message();
         message.setMessage(msg);
         message.setType(type);
-        message.setTimestamp(System.currentTimeMillis());
+        message.setSubject(getCaption());
         appContext.sendLocalMessage(message);
     }
 

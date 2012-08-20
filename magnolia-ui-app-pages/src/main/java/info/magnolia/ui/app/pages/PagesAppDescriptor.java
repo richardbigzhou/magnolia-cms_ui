@@ -31,79 +31,56 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.message;
+package info.magnolia.ui.app.pages;
+
+import info.magnolia.ui.admincentral.app.content.ConfiguredContentAppDescriptor;
+import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
+import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 
 /**
- * Models a message. Except timestamp all fields are optional.
+ * The pages app descriptor which exposes the descriptor for the editor subapp.
+ * @see {@link PagesSubAppDescriptor}.
+ *
  */
-public class Message implements Cloneable {
+public class PagesAppDescriptor extends ConfiguredContentAppDescriptor {
 
-    private String id;
+    private static final long serialVersionUID = 1L;
 
-    private final long timestamp;
+    private PagesSubAppDescriptor editor;
 
-    private MessageType type;
-
-    private String subject;
-
-    private String message;
-
-    private boolean cleared;
-
-    public Message() {
-        this(System.currentTimeMillis());
+    public PagesSubAppDescriptor getEditor() {
+        return editor;
     }
 
-    public Message(long timestampInMillis) {
-        this.timestamp = timestampInMillis;
+    public void setEditor(PagesSubAppDescriptor editor) {
+        this.editor = editor;
     }
 
-    public long getTimestamp() {
-        return timestamp;
-    }
+    /**
+     * Exposes an {@link ActionbarDefinition} specific to the subapp.
+     */
+    public static class PagesSubAppDescriptor extends ConfiguredAppDescriptor {
 
-    public String getMessage() {
-        return message;
-    }
+        private static final long serialVersionUID = 1L;
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
+        private ActionbarDefinition actionbar;
 
-    public String getSubject() {
-        return subject;
-    }
+        private String name;
 
-    public void setSubject(String subject) {
-        this.subject = subject;
-    }
+        public String getName() {
+            return name;
+        }
 
-    public MessageType getType() {
-        return type;
-    }
+        public void setName(String name) {
+            this.name = name;
+        }
 
-    public void setType(MessageType type) {
-        this.type = type;
-    }
+        public ActionbarDefinition getActionbar() {
+            return actionbar;
+        }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public boolean isCleared() {
-        return cleared;
-    }
-
-    public void setCleared(boolean cleared) {
-        this.cleared = cleared;
-    }
-
-    @Override
-    protected Message clone() throws CloneNotSupportedException {
-        return (Message) super.clone();
+        public void setActionbar(ActionbarDefinition actionbar) {
+            this.actionbar = actionbar;
+        }
     }
 }

@@ -33,31 +33,27 @@
  */
 package info.magnolia.ui.admincentral.event;
 
-
 import info.magnolia.ui.framework.event.Event;
 import info.magnolia.ui.framework.event.EventHandler;
 
 
 /**
- * This event is fired when an item is selected (ie a row in the data grid within the workbench representing either a {@link javax.jcr.Node} or a {@link javax.jcr.Property}).
+ * This event is fired when an item is selected (ie a row in the data grid within the workbench representing either a
+ * {@link javax.jcr.Node} or a {@link javax.jcr.Property}).
  */
 public class ItemSelectedEvent implements Event<ItemSelectedEvent.Handler> {
 
     /**
      * Handles {@link ItemSelectedEvent} events.
      */
-    public static interface Handler extends EventHandler {
+    public interface Handler extends EventHandler {
+
         void onItemSelected(ItemSelectedEvent event);
     }
 
     private String workspace;
 
     private String path;
-
-    @Override
-    public void dispatch(Handler handler) {
-        handler.onItemSelected(this);
-    }
 
     public ItemSelectedEvent(String workspace, String path) {
         this.workspace = workspace;
@@ -70,5 +66,10 @@ public class ItemSelectedEvent implements Event<ItemSelectedEvent.Handler> {
 
     public String getPath() {
         return path;
+    }
+
+    @Override
+    public void dispatch(Handler handler) {
+        handler.onItemSelected(this);
     }
 }

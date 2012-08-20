@@ -37,6 +37,7 @@ import com.google.gwt.core.shared.GWT;
 //import com.google.gwt.user.client.*;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 
 import com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler;
@@ -85,9 +86,6 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, 
     public VActionbarViewImpl(final EventBus eventBus) {
         setElement(root);
         addStyleName(CLASSNAME);
-        addStyleName("open");         //THIS DOES NOT WORK - so the actualize does not work either.
-
-
 
         this.eventBus = eventBus;
         this.eventBus.addHandler(ActionTriggerEvent.TYPE, this);
@@ -108,7 +106,8 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, 
     /**
      * Determine if device is tablet.
      * Allows option to add a querystring parameter of tablet=true for testing.
-     * @return
+     * TODO: Christopher Zimmermann - there should be only one instance of this code in the project.
+     * @return Whether device is tablet.
      */
     private boolean initIsDeviceTablet(){
 

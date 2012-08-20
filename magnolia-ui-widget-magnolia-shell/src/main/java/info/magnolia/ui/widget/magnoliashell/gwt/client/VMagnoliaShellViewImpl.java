@@ -114,6 +114,13 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
 
     }
 
+
+    /**
+     * Determine if device is tablet.
+     * Allows option to add a querystring parameter of tablet=true for testing.
+     * TODO: Christopher Zimmermann - there should be only one instance of this code in the project.
+     * @return Whether device is tablet.
+     */
     private boolean initIsDeviceTablet(){
 
         boolean isDeviceTabletOverride = Window.Location.getQueryString().indexOf("tablet=true") >= 0;
@@ -144,7 +151,7 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
                             getAppViewport().showAppPreloader(prefix, new PreloaderCallback() {
                                 @Override
                                 public void onPreloaderShown(String appName) {
-                                    presenter.startApp(appName);
+                                    presenter.startApp(appName,token);
                                 }
                             });
                         } else {

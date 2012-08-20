@@ -33,11 +33,9 @@
  */
 package info.magnolia.ui.widget.actionbar.gwt.client;
 
-//import com.google.gwt.user.client.Element;
-//import com.google.gwt.user.client.DOM;
-
-//import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.*;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Event;
 
 import com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
