@@ -167,7 +167,8 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, 
         if (isOpen) {
             toggleButtonIcon.addClassName("open");//NOTE:CLZ:With icon fonts this class name will change.
 
-            root.addClassName("open");
+            root.addClassName("v-actionbar-open");
+
 
             // For Tablet: Add "open" style from all actions
             if (isDeviceTablet){
@@ -182,7 +183,7 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, 
         } else {
             toggleButtonIcon.removeClassName("open");//NOTE:CLZ:With icon fonts this class name will change.
 
-            root.removeClassName("open");
+            root.removeClassName("v-actionbar-open");
 
             // For Tablet: Remove "open" style from all actions
             if (isDeviceTablet){

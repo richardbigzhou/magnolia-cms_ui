@@ -7,7 +7,7 @@
 	color:#fff;
 }
 
-.v-actionbar.open{
+.v-actionbar.v-actionbar-open{
     width:270px;
 }
 
@@ -22,7 +22,7 @@
     padding:5px 5px 5px 8px;
 }
 
-.v-actionbar.open .v-actionbar-section-title {
+.v-actionbar.v-actionbar-open .v-actionbar-section-title {
     display:block;
 
 	margin:0;
@@ -144,7 +144,7 @@
 }
 
 .tablet .v-actionbar-section{
-    position: absolute;
+    /*position: absolute; */
     top:0px;
 }
 
@@ -166,7 +166,7 @@
 .tablet .v-action{
     position:absolute;
     display:block;
-    left:0px;
+    right:0px;
     width:69px;
     height:78px;
     border:none;
@@ -207,7 +207,7 @@
 }
 
 .tablet .v-action.col-0{
-    left:0px;
+    right:0px;
     z-index:100;
 
     background-image: url("img/actionbar-tablet-flyout-toggle-open.png");
@@ -219,21 +219,20 @@
 }
 
 
-
 .tablet .v-actionbar-group.open .v-action.col-1{
-    left:-70px;
+    right:70px;
 }
 .tablet .v-actionbar-group.open .v-action.col-2{
-    left:-140px;
+    right:140px;
 }
 .tablet .v-actionbar-group.open .v-action.col-3{
-    left:-210px;
+    right:210px;
 }
 .tablet .v-actionbar-group.open .v-action.col-4{
-    left:-280px;
+    right:280px;
 }
 .tablet .v-actionbar-group.open .v-action.col-5{
-    left:-350px;
+    right:350px;
 }
 
 
