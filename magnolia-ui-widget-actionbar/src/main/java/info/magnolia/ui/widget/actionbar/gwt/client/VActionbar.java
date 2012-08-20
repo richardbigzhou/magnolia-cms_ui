@@ -170,6 +170,9 @@ public class VActionbar extends Composite implements Paintable, Container, Clien
     @Override
     public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
         this.client = client;
+        if (client.updateComponent(this, uidl, true)) {
+            return;
+        }
         proxy.update(this, uidl, client);
 
         Iterator<Object> childIterator = uidl.getChildIterator();
@@ -193,6 +196,7 @@ public class VActionbar extends Composite implements Paintable, Container, Clien
 
     @Override
     public boolean initWidget(Object[] params) {
+        addStyleDependentName("open");
         return false;
     }
 

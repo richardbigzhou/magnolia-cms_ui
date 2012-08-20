@@ -45,15 +45,16 @@ import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.UIDL;
 
+
 /**
  * Client side implementation of Apps viewport.
  */
 public class VAppsViewport extends VShellViewport {
 
-    private VAppPreloader preloader = new VAppPreloader();
-    
+    private final VAppPreloader preloader = new VAppPreloader();
+
     private final Element closeWrapper = DOM.createDiv();
-    
+
     public VAppsViewport() {
         super();
         setForceContentAlign(false);
@@ -63,9 +64,10 @@ public class VAppsViewport extends VShellViewport {
         closeButton.setClassName("action-close");
         closeWrapper.appendChild(closeButton);
         addDomHandler(new ClickHandler() {
+
             @Override
             public void onClick(ClickEvent event) {
-                if (closeWrapper.isOrHasChild((Element)event.getNativeEvent().getEventTarget().cast())) {
+                if (closeWrapper.isOrHasChild((Element) event.getNativeEvent().getEventTarget().cast())) {
                     getEventBus().fireEvent(new ViewportCloseEvent(VAppsViewport.this));
                 }
             }
@@ -78,6 +80,7 @@ public class VAppsViewport extends VShellViewport {
         super.updateFromUIDL(uidl, client);
         if (RootPanel.get().getWidgetIndex(preloader) >= 0) {
             new Timer() {
+
                 @Override
                 public void run() {
                     RootPanel.get().remove(preloader);
@@ -85,10 +88,12 @@ public class VAppsViewport extends VShellViewport {
             }.schedule(1000);
         }
     }
+
     /**
      * Called when the transition of preloader is finished.
      */
     public interface PreloaderCallback {
+
         void onPreloaderShown(String appName);
     }
 
@@ -98,14 +103,14 @@ public class VAppsViewport extends VShellViewport {
         RootPanel.get().add(preloader);
         preloader.addStyleName("zoom-in");
         new Timer() {
+
             @Override
             public void run() {
                 callback.onPreloaderShown(appName);
             }
         }.schedule(500);
     }
-    
-    
+
     @Override
     protected void setWidgetVisible(Widget w) {
         super.setWidgetVisible(w);
@@ -117,44 +122,39 @@ public class VAppsViewport extends VShellViewport {
      */
     class VAppPreloader extends Widget {
 
-        private Element root = DOM.createDiv();
+        private final Element root = DOM.createDiv();
 
-        private Element navigator = DOM.createElement("ul");
+        private final Element navigator = DOM.createElement("ul");
 
-        private Element tab = DOM.createElement("li");
-        
-        private Element captionSpan = DOM.createSpan();
+        private final Element tab = DOM.createElement("li");
+
+        private final Element captionSpan = DOM.createSpan();
 
         public VAppPreloader() {
             super();
             setElement(root);
-            addStyleName("v-shell-tabsheet");
-            addStyleName("v-preloader");
-            navigator.addClassName("nav");
-            navigator.addClassName("nav-tabs");
+            setStyleName("v-shell-vieport v-shell-tabsheet");
+            navigator.addClassName("nav nav-tabs single-tab");
+            tab.addClassName("clearfix active");
+            captionSpan.setClassName("tab-title");
 
-            root.appendChild(navigator);
-            navigator.appendChild(tab);
             tab.appendChild(captionSpan);
-           
+            navigator.appendChild(tab);
+            root.appendChild(navigator);
 
             Element preloadingScreen = DOM.createDiv();
             preloadingScreen.addClassName("loading-screen");
-            preloadingScreen.setInnerHTML(
-                    "<div class=\"loading-message-wrapper\"> " +
-                    "   <div class=\"loading-message\">" +
-                    "       <div class=\"spinner\">" +
-                    "           </div> Loading </div>" +
-                    "</div>");
-            getElement().appendChild(preloadingScreen);
+            preloadingScreen.setInnerHTML("<div class=\"loading-message-wrapper\"> " +
+                "<div class=\"loading-message\"><div class=\"spinner\"></div> Loading </div></div>");
+            root.appendChild(preloadingScreen);
         }
-        
+
         @Override
         protected void onLoad() {
             super.onLoad();
             getElement().getStyle().setZIndex(301);
         }
-        
+
         public void setCaption(String caption) {
             captionSpan.setInnerHTML(caption);
         }

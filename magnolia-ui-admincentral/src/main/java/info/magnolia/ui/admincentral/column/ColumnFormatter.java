@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -32,12 +32,11 @@
  *
  */
 package info.magnolia.ui.admincentral.column;
-
-import info.magnolia.ui.model.column.definition.PropertyColumnDefinition;
+import com.vaadin.ui.Table;
 
 /**
- * Definition for ReadOnlyPropertyColumns.
+ * Common definition for Column formatter.
  */
-public class ReadOnlyPropertyColumnDefinition extends PropertyColumnDefinition {
+public interface ColumnFormatter extends Table.ColumnGenerator{
 
 }

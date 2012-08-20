@@ -31,60 +31,58 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.field.upload;
+package info.magnolia.ui.app.pages;
 
-import java.io.File;
-
+import info.magnolia.ui.admincentral.app.content.ConfiguredContentAppDescriptor;
+import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
+import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 
 /**
- * Configure the UploadFileField based on the UploadField Definition.
+ * The pages app descriptor which exposes the descriptor for the editor subapp.
+ * @see {@link PagesSubAppDescriptor}.
+ *
  */
-public interface UploadFileField {
+public class PagesAppDescriptor extends ConfiguredContentAppDescriptor {
+
+    private static final long serialVersionUID = 1L;
+
+    private PagesSubAppDescriptor editor;
+
+    public PagesSubAppDescriptor getEditor() {
+        return editor;
+    }
+
+    public void setEditor(PagesSubAppDescriptor editor) {
+        this.editor = editor;
+    }
 
     /**
-     * Define if the preview Image/Icon has to be displayed.
+     * Exposes an {@link ActionbarDefinition} specific to the subapp.
      */
-    public void setPreview(boolean preview);
+    public static class PagesSubAppDescriptor extends ConfiguredAppDescriptor {
 
-    /**
-     * Define if the Uploaded file Info has to be displayed.
-     */
-    public void setInfo(boolean info);
+        private static final long serialVersionUID = 1L;
 
-    /**
-     * Define if the Progress Bar has to be displayed.
-     */
-    public void setProgressInfo(boolean progressInfo);
+        private ActionbarDefinition actionbar;
 
-    /**
-     * Define if the Uploaded file can be deleted.
-     * @param: fileDeletion true will add a delete Button.
-     */
-    public void setFileDeletion(boolean fileDeletion);
+        private String name;
 
-    /**
-     * Define if the Drag And Drop is allowed.
-     */
-    public void setDragAndDrop(boolean dragAndDrop);
+        @Override
+        public String getName() {
+            return name;
+        }
 
-    /**
-     * Set the Upload Button Caption.
-     */
-    public void setUploadButtonCaption(String uploadButtonCaption);
+        @Override
+        public void setName(String name) {
+            this.name = name;
+        }
 
-    /**
-     * Set the Delete Button Caption.
-     */
-    public void setFileDeletionButtonCaption(String deleteButtonCaption);
+        public ActionbarDefinition getActionbar() {
+            return actionbar;
+        }
 
-    /**
-     * Define the Tmp Folder used by the main Upload process.
-     */
-    public void setUploadFileDirectory(File directory);
-
-    /**
-     * Define the Maximum Upload File size in bytes.
-     */
-    public void setMaxUploadSize(long maxUploadSize);
-
+        public void setActionbar(ActionbarDefinition actionbar) {
+            this.actionbar = actionbar;
+        }
+    }
 }

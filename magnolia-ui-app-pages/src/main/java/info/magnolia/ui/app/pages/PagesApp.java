@@ -33,9 +33,10 @@
  */
 package info.magnolia.ui.app.pages;
 
+
 import info.magnolia.ui.app.pages.editor.PagesEditorSubApp;
 import info.magnolia.ui.app.pages.main.PagesMainSubApp;
-import info.magnolia.ui.app.pages.preview.PagePreviewSubApp;
+import info.magnolia.ui.app.pages.preview.PagesPreviewSubApp;
 import info.magnolia.ui.framework.app.AbstractApp;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.location.DefaultLocation;
@@ -56,6 +57,7 @@ public class PagesApp extends AbstractApp {
 
     public static final String EDITOR_TOKEN = "editor";
     public static final String PREVIEW_TOKEN = "preview";
+    public static final String PREVIEW_FULL_TOKEN = "previewFull";
 
     private AppContext context;
 
@@ -78,9 +80,11 @@ public class PagesApp extends AbstractApp {
         final String pagePath = pathParams.get(1);
 
         if (EDITOR_TOKEN.equals(subAppName)) {
-            context.openSubApp(subAppName, PagesEditorSubApp.class, location, subAppName + ";" + pagePath);
+            context.openSubApp(PagesApp.EDITOR_TOKEN, PagesEditorSubApp.class, location, subAppName + ";" + pagePath);
         } else if (PREVIEW_TOKEN.equals(subAppName)) {
-            context.openSubAppFullScreen(subAppName, PagePreviewSubApp.class, location);
+            context.openSubApp(PagesApp.PREVIEW_TOKEN, PagesPreviewSubApp.class, location, subAppName + ";" + pagePath);
+        } else if(PREVIEW_FULL_TOKEN.equals(subAppName)) {
+            context.openSubAppFullScreen(PagesApp.PREVIEW_TOKEN, PagesPreviewSubApp.class, location);
         }
     }
 

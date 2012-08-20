@@ -37,29 +37,43 @@ import javax.inject.Inject;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
+import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.app.pages.PagesApp;
+import info.magnolia.ui.app.pages.PagesAppDescriptor;
 import info.magnolia.ui.framework.app.AbstractSubApp;
+import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
+import info.magnolia.ui.widget.actionbar.ActionbarView;
 
 /**
  * SubApp that displays the page preview.
  */
-public class PagePreviewSubApp extends AbstractSubApp implements PagePreviewView.Listener {
+public class PagesPreviewSubApp extends AbstractSubApp implements PagesPreviewView.Listener {
 
-    private PagePreviewView view;
+    private PagesPreviewView view;
 
-    private ActionbarPresenter actionBarPresenter;
+    private ActionbarPresenter actionbarPresenter;
 
     private LocationController locationController;
 
+    private boolean full;
+
+    private PagesAppDescriptor appDescriptor;
+
+    private WorkbenchActionFactory actionFactory;
+
     @Inject
-    public PagePreviewSubApp(final PagePreviewView view, ActionbarPresenter actionbarPresenter, LocationController locationController) {
+    public PagesPreviewSubApp(final AppContext ctx, final PagesPreviewView view, final ActionbarPresenter actionbarPresenter, final LocationController locationController, final WorkbenchActionFactory actionFactory) {
         this.view = view;
         this.locationController = locationController;
-        this.actionBarPresenter = actionbarPresenter;
+        this.actionbarPresenter = actionbarPresenter;
+        this.full  = DefaultLocation.extractToken(locationController.getWhere().toString()).contains(PagesApp.PREVIEW_FULL_TOKEN);
+        this.appDescriptor =  (PagesAppDescriptor)ctx.getAppDescriptor();
+        this.actionFactory =  actionFactory;
     }
 
     @Override
@@ -76,6 +90,11 @@ public class PagePreviewSubApp extends AbstractSubApp implements PagePreviewView
 
         view.setUrl(MgnlContext.getContextPath() + path);
         view.setListener(this);
+        if(!isFull()) {
+            ActionbarDefinition actionbarDefinition = appDescriptor.getEditor().getActionbar();
+            ActionbarView actionbar = actionbarPresenter.start(actionbarDefinition, actionFactory);
+            view.setActionbarView(actionbar);
+        }
         return view;
     }
 
@@ -94,5 +113,9 @@ public class PagePreviewSubApp extends AbstractSubApp implements PagePreviewView
             return null;
         }
         return parts[1];
+    }
+
+    public boolean isFull() {
+        return full;
     }
 }

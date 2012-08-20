@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.tree.view;
 
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.container.AbstractJcrContainer;
 import info.magnolia.ui.admincentral.content.view.ContentView;
 import info.magnolia.ui.admincentral.tree.model.TreeModel;
@@ -60,9 +61,9 @@ public class TreeViewImpl implements TreeView {
 
     private ContentView.Listener listener;
 
-    public TreeViewImpl(WorkbenchDefinition workbenchDefinition, TreeModel treeModel) {
+    public TreeViewImpl(WorkbenchDefinition workbenchDefinition, TreeModel treeModel,ComponentProvider componentProvider) {
 
-        jcrBrowser = new MagnoliaTreeTable(workbenchDefinition, treeModel);
+        jcrBrowser = new MagnoliaTreeTable(workbenchDefinition, treeModel, componentProvider);
         // next two lines are required to make the browser (TreeTable) react on selection change via
         // mouse
         jcrBrowser.setImmediate(true);

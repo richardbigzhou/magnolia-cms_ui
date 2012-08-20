@@ -52,12 +52,12 @@
   <components>
     <id>app-pages-preview</id>
     <component>
-      <type>info.magnolia.ui.app.pages.preview.PagePreviewSubApp</type>
-      <implementation>info.magnolia.ui.app.pages.preview.PagePreviewSubApp</implementation>
+      <type>info.magnolia.ui.app.pages.preview.PagesPreviewSubApp</type>
+      <implementation>info.magnolia.ui.app.pages.preview.PagesPreviewSubApp</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.app.pages.preview.PagePreviewView</type>
-      <implementation>info.magnolia.ui.app.pages.preview.PagePreviewViewImpl</implementation>
+      <type>info.magnolia.ui.app.pages.preview.PagesPreviewView</type>
+      <implementation>info.magnolia.ui.app.pages.preview.PagesPreviewViewImpl</implementation>
     </component>
   </components>
 

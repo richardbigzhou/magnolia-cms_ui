@@ -35,23 +35,33 @@ package info.magnolia.ui.app.pages.editor;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
+import info.magnolia.ui.admincentral.event.ActionbarClickEvent;
+import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.app.pages.PagesApp;
-import info.magnolia.ui.app.pages.action.PagesActionbarDefinitionProvider;
+import info.magnolia.ui.app.pages.PagesAppDescriptor;
 import info.magnolia.ui.framework.app.AbstractSubApp;
+import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.widget.actionbar.ActionbarView;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * PagesEditorSubApp.
  */
 public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView.Listener {
+
+    private static final Logger log = LoggerFactory.getLogger(PagesEditorSubApp.class);
 
     private final PagesEditorView view;
 
@@ -65,17 +75,37 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
 
     private String caption;
 
+    private PagesAppDescriptor appDescriptor;
+
+    private WorkbenchActionFactory actionFactory;
+
     @Inject
-    public PagesEditorSubApp(PagesEditorView view, @Named("app") EventBus appEventBus, PageEditorPresenter pageEditorPresenter, ActionbarPresenter actionbarPresenter) {
+    public PagesEditorSubApp(final AppContext ctx, final PagesEditorView view, final @Named("app") EventBus appEventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final WorkbenchActionFactory actionFactory) {
         this.view = view;
         this.appEventBus = appEventBus;
         this.pageEditorPresenter = pageEditorPresenter;
         this.actionbarPresenter = actionbarPresenter;
+        this.appDescriptor = (PagesAppDescriptor)ctx.getAppDescriptor();
+        this.actionFactory = actionFactory;
 
         bindHandlers();
     }
 
     private void bindHandlers() {
+
+        appEventBus.addHandler(ActionbarClickEvent.class, new ActionbarClickEvent.Handler() {
+
+            @Override
+            public void onActionbarItemClicked(ActionbarClickEvent event) {
+                try {
+                    ActionDefinition actionDefinition = event.getActionDefinition();
+                    actionbarPresenter.createAndExecuteAction(actionDefinition, appDescriptor.getWorkbench().getWorkspace(), parameters.getNodePath());
+                } catch (ActionExecutionException e) {
+                    log.error("An error occurred while executing an action.", e);
+                }
+            }
+        });
+
         appEventBus.addHandler(ComponentSelectedEvent.class, new ComponentSelectedEvent.Handler() {
 
             @Override
@@ -114,8 +144,8 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
 
         view.setListener(this);
         view.setPageEditor(pageEditorPresenter.start());
-
-        ActionbarView actionbar = actionbarPresenter.start(PagesActionbarDefinitionProvider.getPageEditorActionbarDefinition());
+        ActionbarDefinition actionbarDefinition = appDescriptor.getEditor().getActionbar();
+        ActionbarView actionbar = actionbarPresenter.start(actionbarDefinition, actionFactory);
         actionbarPresenter.hideSection("Areas");
         actionbarPresenter.hideSection("Components");
         actionbarPresenter.showSection("Pages");

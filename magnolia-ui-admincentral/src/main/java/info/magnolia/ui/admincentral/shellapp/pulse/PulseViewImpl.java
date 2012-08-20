@@ -48,8 +48,10 @@ import org.apache.commons.collections.bidimap.DualHashBidiMap;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Panel;
+import com.vaadin.ui.Layout;
+
 
 /**
  * Default view implementation for Pulse.
@@ -57,7 +59,7 @@ import com.vaadin.ui.Panel;
 @SuppressWarnings("serial")
 public class PulseViewImpl implements PulseView {
 
-    private ShellTabSheet tabsheet = new ShellTabSheet() {
+    private final ShellTabSheet tabsheet = new ShellTabSheet() {
 
         @Override
         public void onActiveTabSet(String tabId) {
@@ -76,7 +78,7 @@ public class PulseViewImpl implements PulseView {
 
     private Presenter presenter;
 
-    private BidiMap m = new DualHashBidiMap();
+    private final BidiMap m = new DualHashBidiMap();
 
     private final PulseMessagesView messagesView;
 
@@ -84,6 +86,7 @@ public class PulseViewImpl implements PulseView {
     public PulseViewImpl(final PulseMessagesView messagesView) {
 
         this.messagesView = messagesView;
+        tabsheet.addStyleName("v-shell-tabsheet-light");
         final ShellTab stats = tabsheet.addTab("stats".toUpperCase(), createStatsLayout());
         final ShellTab messages = tabsheet.addTab("messages".toUpperCase(), (ComponentContainer) messagesView.asVaadinComponent());
         final ShellTab dashboard = tabsheet.addTab("dashboard".toUpperCase(), createPulseFeedLayout());
@@ -118,11 +121,11 @@ public class PulseViewImpl implements PulseView {
         }
 
         switch (type) {
-        case MESSAGES:
-            messagesView.update(params);
-            break;
-        default:
-            break;
+            case MESSAGES :
+                messagesView.update(params);
+                break;
+            default :
+                break;
         }
         return finalDisplayedTabId;
     }
@@ -148,8 +151,8 @@ public class PulseViewImpl implements PulseView {
         return pulseFeed;
     }
 
-    private Panel createStatsLayout() {
-        final Panel layout = new Panel();
+    private Layout createStatsLayout() {
+        final CssLayout layout = new CssLayout();
         layout.setSizeFull();
         layout.addComponent(new Label("Test2".toUpperCase()));
         return layout;

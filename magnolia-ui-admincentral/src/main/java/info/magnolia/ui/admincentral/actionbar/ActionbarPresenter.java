@@ -33,18 +33,29 @@
  */
 package info.magnolia.ui.admincentral.actionbar;
 
-import javax.inject.Named;
-
+import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.admincentral.actionbar.builder.ActionbarBuilder;
 import info.magnolia.ui.admincentral.event.ActionbarClickEvent;
 import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.model.action.ActionFactory;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarGroupDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarItemDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarSectionDefinition;
 import info.magnolia.ui.widget.actionbar.Actionbar;
 import info.magnolia.ui.widget.actionbar.ActionbarView;
+
+import javax.inject.Named;
+import javax.jcr.LoginException;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 import com.vaadin.ui.Component;
@@ -55,6 +66,8 @@ import com.vaadin.ui.Component;
  */
 public class ActionbarPresenter implements ActionbarView.Listener {
 
+    private static final Logger log = LoggerFactory.getLogger(ActionbarPresenter.class);
+
     private static final String PREVIEW_SECTION_NAME = "preview";
 
     private ActionbarDefinition definition;
@@ -62,6 +75,8 @@ public class ActionbarPresenter implements ActionbarView.Listener {
     private ActionbarView actionbar;
 
     private final EventBus appEventBus;
+
+    private ActionFactory<ActionDefinition, Action> actionFactory;
 
     /**
      * Instantiates a new action bar presenter.
@@ -73,12 +88,10 @@ public class ActionbarPresenter implements ActionbarView.Listener {
 
     /**
      * Initializes an actionbar with given definition and returns the view for parent to add it.
-     * 
-     * @param definition the definition
-     * @return the actionbar view
      */
-    public ActionbarView start(final ActionbarDefinition definition) {
+    public ActionbarView start(final ActionbarDefinition definition, final ActionFactory<ActionDefinition, Action> actionFactory) {
         this.definition = definition;
+        this.actionFactory = actionFactory;
         actionbar = ActionbarBuilder.build(definition);
         actionbar.setListener(this);
         return actionbar;
@@ -137,6 +150,8 @@ public class ActionbarPresenter implements ActionbarView.Listener {
     private ActionDefinition getActionDefinition(String actionToken) {
         final String[] chunks = actionToken.split(":");
         if (chunks.length != 2) {
+            log.warn("Invalid actionToken [{}]: it is expected to be in the form sectionName:actionName. ActionDefintion cannot be retrieved. Please, check [{}] actionbar definition.",
+                    actionToken, definition.getName());
             return null;
         }
         final String sectionName = chunks[0];
@@ -147,13 +162,18 @@ public class ActionbarPresenter implements ActionbarView.Listener {
                 for (ActionbarGroupDefinition group : section.getGroups()) {
                     for (ActionbarItemDefinition action : group.getItems()) {
                         if (actionName.equals(action.getName())) {
-                            return action.getActionDefinition();
+                           final ActionDefinition actionDefinition = action.getActionDefinition();
+                           if(actionDefinition == null) {
+                               log.warn("No action definition found for actionToken [{}]. Please check [{}] actionbar definition.", actionToken, definition.getName());
+                           }
+                           return actionDefinition;
                         }
                     }
                 }
                 break;
             }
         }
+        log.warn("No action definition found for actionToken [{}]. Please check [{}] actionbar definition.", actionToken, definition.getName());
         return null;
     }
 
@@ -163,11 +183,13 @@ public class ActionbarPresenter implements ActionbarView.Listener {
      * Gets the default action definition, i.e. finds the first action bar item whose name matches
      * the action bar definition's 'defaultAction' property, and returns its actionDefinition
      * property.
-     * 
-     * @return the default action definition
      */
     public ActionDefinition getDefaultActionDefinition() {
         String defaultAction = definition.getDefaultAction();
+        if(StringUtils.isBlank(defaultAction)){
+            log.warn("Default action is null. Please check [{}] actionbar definition.", definition.getName());
+            return null;
+        }
 
         // considering actionbar item name unique, returning first match
         if (!definition.getSections().isEmpty()) {
@@ -175,9 +197,13 @@ public class ActionbarPresenter implements ActionbarView.Listener {
                 if (!sectionDef.getGroups().isEmpty()) {
                     for (ActionbarGroupDefinition groupDef : sectionDef.getGroups()) {
                         if (!groupDef.getItems().isEmpty()) {
-                            for (ActionbarItemDefinition itemDef : groupDef.getItems()) {
-                                if (itemDef.getName().equals(defaultAction)) {
-                                    return itemDef.getActionDefinition();
+                            for (ActionbarItemDefinition action : groupDef.getItems()) {
+                                if (action.getName().equals(defaultAction)) {
+                                    final ActionDefinition actionDefinition = action.getActionDefinition();
+                                    if(actionDefinition == null) {
+                                        log.warn("No action definition found for default action [{}]. Please check [{}] actionbar definition.", defaultAction, definition.getName());
+                                    }
+                                    return actionDefinition;
                                 }
                             }
                         }
@@ -185,7 +211,32 @@ public class ActionbarPresenter implements ActionbarView.Listener {
                 }
             }
         }
+        log.warn("No action definition found for default action [{}]. Please check [{}] actionbar definition.", defaultAction, definition.getName());
         return null;
+    }
+
+    public void createAndExecuteAction(final ActionDefinition actionDefinition, String workspace, String absPath) throws ActionExecutionException {
+        if (actionDefinition == null) {
+            log.warn("Action definition cannot be null. Will do nothing.");
+            return;
+        }
+        try {
+            Session session = MgnlContext.getJCRSession(workspace);
+            if (absPath == null || !session.itemExists(absPath)) {
+                log.debug("{} does not exist anymore. Was it just deleted? Resetting path to root...", absPath);
+                absPath = "/";
+            }
+            final javax.jcr.Item item = session.getItem(absPath);
+            final Action action = this.actionFactory.createAction(actionDefinition, item);
+            if(action == null) {
+                throw new ActionExecutionException("Could not create action from actionDefinition. Action is null.");
+            }
+            action.execute();
+        } catch (LoginException e) {
+            throw new ActionExecutionException(e);
+        } catch (RepositoryException e) {
+            throw new ActionExecutionException(e);
+        }
     }
 
 }

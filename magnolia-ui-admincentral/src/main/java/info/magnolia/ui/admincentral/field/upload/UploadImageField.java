@@ -35,150 +35,152 @@ package info.magnolia.ui.admincentral.field.upload;
 
 import info.magnolia.cms.beans.runtime.FileProperties;
 import info.magnolia.cms.core.MgnlNodeType;
-import info.magnolia.cms.util.PathUtil;
-import info.magnolia.jcr.util.BinaryInFile;
 import info.magnolia.ui.admincentral.image.ImageSize;
+import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 
 import java.io.ByteArrayInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
-import java.text.NumberFormat;
-import java.util.GregorianCalendar;
-import java.util.TimeZone;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.vaadin.easyuploads.FileBuffer;
 
 import com.vaadin.data.Property;
 import com.vaadin.terminal.Resource;
 import com.vaadin.terminal.StreamResource;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Window.Notification;
+import com.vaadin.ui.Upload.StartedEvent;
 
 
 /**
- * Specific Image Upload Implementation of {@link AbstractUploadFileField}.
- * This specify the Layout used to show Upload in progress / Upload complete / and initial Upload.
- * It also Handle the Upload/Remove Button and the progress bar.
+ * Implementation of the Abstract {@link AbstractUploadFileField}.
+ * Define the Layout for
+ *  - Initial Display (no Images are yet uploaded)
+ *  - Progress Display (ProgressBar / Cancel Button...)
+ *  - Upload Finish Display (File Detail / Preview ...)
+ * Create the Preview Component.
  *
- * This class is responsible to populate the Item properties containing the Uploaded Image (Data / FileName,....)
+ * Override update methods to add the specific images informations to the Item (Width / Height)
  */
-public class UploadImageField extends AbstractUploadFileField{
+public class UploadImageField extends AbstractUploadFileField {
 
     private static final Logger log = LoggerFactory.getLogger(UploadImageField.class);
+    private static final String DEFAULT_UPLOAD_INITIAL_BUTTON_CAPTION = "Choose an image";
+    private static final String DEFAULT_UPLOAD_ANOTHERL_BUTTON_CAPTION = "Choose another image";
+    private static final String DEFAULT_DROP_ZONE_IMAGE_CAPTION = "Drag and Drop an Image";
     private GridLayout layout;
-    private Label uploadFileLocation;
-    private Label uploadFileRatio;
-    private Label uploadFileProgress;
+    private JcrItemNodeAdapter item;
+    private long imageWidth;
+    private long imageHeight;
 
-    public UploadImageField(JcrItemNodeAdapter item) {
-        super(item);
-
+    /**
+     * Initialize basic components.
+     */
+    public UploadImageField(JcrItemNodeAdapter item,  Shell shell) {
+        super(item, shell);
+        this.item = item;
         layout = new GridLayout(2,3);
         layout.setSizeFull();
-        //Define the root Layout.
+        layout.setStyleName("v-gridlayout-spacing-on");
+        //Define the GridLayout as the whole drop zone and as root element.
         setRootLayout(createDropZone(layout));
+        setCompositionRoot(getRootLayout());
+
         //Initialize a default Progress Indicator
         createProgressIndicator();
-        //Initialize a default Delete Button
+        //Create cancel Button
+        createCancelButton();
+        //Create Delete Button
         createDeleteButton();
         //Init File Detail
         createFileDetail();
-        //Init Upload Progress Label
-        uploadFileLocation = new Label("Uploading File ");
-        uploadFileRatio = new Label("Uploaded ");
-        uploadFileProgress = new Label("");
-
     }
 
-
     /**
-     * Handle the Uploaded or Removed Image.
+     * Initialize the root component.
+     * Build the initial layout:
+     *  - Default Layout if the incoming Item is empty.
+     *  - Upload Finish Layout with the Item Information if this Item is not empty.
      */
     @Override
-    protected void handleFile() {
-        if(hasRequestForFileDeletion() || getReceiver().isEmpty()){
-            //remove Item from the parent --> this item will not be persisted
-            getItem().getParent().removeChild(getItem());
-        } else {
-            populateItemProperty();
-        }
-    }
+    public void attach() {
+        super.attach();
 
-    /**
-     * Populate the Item property (data/image name/...)
-     * Data is stored as a JCR Binary object.
-     */
-    private void populateItemProperty() {
-        JcrItemNodeAdapter item = getItem();
-        FileBuffer receiver = getReceiver();
-        //Attach the Item to the parent in order to be stored.
-        item.getParent().addChild(item);
-        //Populate Data
+        //Init values with existing data.
         Property data =  item.getItemProperty(MgnlNodeType.JCR_DATA);
-        try {
-            if(data!=null) {
-                BinaryInFile binaryImpl;
-                binaryImpl = new BinaryInFile(getReceiver().getFile());
-                data.setValue(binaryImpl);
-            }
-            item.getItemProperty(FileProperties.PROPERTY_FILENAME).setValue(StringUtils.substringBefore(receiver.getLastFileName(), "."));
-            item.getItemProperty(FileProperties.PROPERTY_CONTENTTYPE).setValue(receiver.getLastMimeType());
-            item.getItemProperty(FileProperties.PROPERTY_LASTMODIFIED).setValue(new GregorianCalendar(TimeZone.getDefault()));
-            item.getItemProperty(FileProperties.PROPERTY_SIZE).setValue(receiver.getLastFileSize());
-            item.getItemProperty(FileProperties.PROPERTY_EXTENSION).setValue(PathUtil.getExtension(receiver.getLastFileName()));
-            ImageSize imageSize = ImageSize.valueOf(receiver.getFile());
-            item.getItemProperty(FileProperties.PROPERTY_WIDTH).setValue( imageSize.getWidth());
-            item.getItemProperty(FileProperties.PROPERTY_HEIGHT).setValue(imageSize.getHeight());
-        } catch (IOException e) {
-            log.error("Not able to store the binary information ", e);
-            getWindow().showNotification("Upload failed", "File Not persisted", Notification.TYPE_WARNING_MESSAGE);
+        if(data !=null && data.getValue()!=null) {
+            setLastUploadData(item);
         }
-    }
-
-
-    /**
-     * Initialization of the display.
-     * Called once when the Field is attached.
-     */
-    @Override
-    protected void initDisplay() {
-        buildDefaultUploadLayout();
+        updateDisplay();
     }
 
     /**
-     * Default View.
+     * Populate specific file informations to the Item.
      */
     @Override
-    public void buildDefaultUploadLayout() {
+    protected void populateItemProperty() {
+        super.populateItemProperty();
+        item.getItemProperty(FileProperties.PROPERTY_WIDTH).setValue(imageWidth);
+        item.getItemProperty(FileProperties.PROPERTY_HEIGHT).setValue(imageHeight);
+    }
+    /**
+     * Clear specific file informations.
+     */
+    @Override
+    public void clearLastUploadDatas() {
+        super.clearLastUploadDatas();
+        imageWidth = -1;
+        imageHeight = -1;
+    }
+
+    @Override
+    public void setLastUploadDatas() {
+        super.setLastUploadDatas();
+        ImageSize imageSize;
+        imageSize = ImageSize.valueOf(new ByteArrayInputStream(getLastBytesFile()));
+        imageWidth = imageSize.getWidth();
+        imageHeight = imageSize.getHeight();
+    }
+
+    @Override
+    public void setLastUploadData(JcrItemNodeAdapter item) {
+        super.setLastUploadData(item);
+        ImageSize imageSize = new ImageSize((Long)item.getItemProperty(FileProperties.PROPERTY_WIDTH).getValue(), (Long)item.getItemProperty(FileProperties.PROPERTY_HEIGHT).getValue());
+        imageWidth = imageSize.getWidth();
+        imageHeight = imageSize.getHeight();
+    }
+
+    /**
+     * Define the acceptance Upload Image criteria.
+     * The current implementation only check if the MimeType start with image.
+     */
+    @Override
+    public boolean isValidFile(StartedEvent event) {
+        return event.getMIMEType().startsWith("image/");
+    }
+
+
+    @Override
+    protected void buildDefaultUploadLayout() {
         layout.removeAllComponents();
-        setUploadButtonCaption("Choose an image");
+        setUploadButtonCaption(DEFAULT_UPLOAD_INITIAL_BUTTON_CAPTION);
         layout.addComponent(getDefaultComponent(DefaultComponent.UPLOAD),0,1);
-        Label uploadText = new Label("Drag and Drop an Image");
+        Label uploadText = new Label(DEFAULT_DROP_ZONE_IMAGE_CAPTION);
         layout.addComponent(uploadText,1,1);
+        //define alignement
+        layout.setComponentAlignment(getDefaultComponent(DefaultComponent.UPLOAD), Alignment.MIDDLE_CENTER);
+        layout.setComponentAlignment(uploadText, Alignment.MIDDLE_CENTER);
         //set Color
         getRootLayout().setStyleName("upload-initial");
-        super.buildDefaultUploadLayout();
     }
 
-    /**
-     * Handle Progress View.
-     */
     @Override
     public void refreshOnProgressUploadLayout(long readBytes, long contentLength) {
         super.refreshOnProgressUploadLayout(readBytes, contentLength);
-        ((Label)layout.getComponent(0,0)).setValue("Uploading File "+getReceiver().getLastFileName());
-        ((Label)layout.getComponent(1,1)).setValue(createPercentage(readBytes, contentLength));
-        ((Label)layout.getComponent(0,2)).setValue("Uploaded "+FileUtils.byteCountToDisplaySize(readBytes)+" of "+FileUtils.byteCountToDisplaySize(contentLength));
-
         //JUST TO MAKE THE PROGRESS BAR VISIBLE
         try {
             Thread.sleep(5);
@@ -188,16 +190,6 @@ public class UploadImageField extends AbstractUploadFileField{
         }
     }
 
-    private String createPercentage(long readBytes, long contentLength ) {
-        double read = Double.valueOf(readBytes);
-        double from = Double.valueOf(contentLength);
-
-        NumberFormat defaultFormat = NumberFormat.getPercentInstance();
-        defaultFormat.setMinimumFractionDigits(2);
-
-        return defaultFormat.format((read/from));
-    }
-
     /**
      * Handle View when the Upload is finished.
      */
@@ -205,79 +197,48 @@ public class UploadImageField extends AbstractUploadFileField{
     public void buildFinishUploadLayout() {
         layout.removeAllComponents();
         // Display Detail
-        Label detail = (Label)getDefaultComponent(DefaultComponent.FILE_DETAIL);
-        detail.setValue(getDisplayDetails());
-        layout.addComponent(detail,0,0,0,1);
-
+        if (info) {
+            Label detail = (Label)getDefaultComponent(DefaultComponent.FILE_DETAIL);
+            detail.setValue(getDisplayDetails());
+            layout.addComponent(detail,0,0,0,1);
+        }
         // Action Button. Default is always Upload
         HorizontalLayout actionLayout = new HorizontalLayout();
 
         //Change the Label of the Upload Button
-        setUploadButtonCaption("Choose different image");
+        setUploadButtonCaption(DEFAULT_UPLOAD_ANOTHERL_BUTTON_CAPTION);
         actionLayout.addComponent(getDefaultComponent(DefaultComponent.UPLOAD));
         // if an Image was already uploaded, give the ability to remove it.
-        if(getItem().getParent() != null) {
+        if(item.getParent() != null && fileDeletion) {
             actionLayout.addComponent(getDefaultComponent(DefaultComponent.DELETE_BUTTON));
         }
         layout.addComponent(actionLayout,0,2);
 
         //Create preview Image
-        if(!getReceiver().isEmpty()) {
+        if(preview && getLastBytesFile() != null) {
             Embedded preview = createPreview();
             layout.addComponent(preview,1,0,1,2);
+            layout.setComponentAlignment(preview, Alignment.MIDDLE_CENTER);
         }
         //set Color
         getRootLayout().setStyleName("upload-finish");
     }
 
-    /**
-     * Handle View before Upload start.
-     */
     @Override
     public void buildStartUploadLayout() {
+        super.buildStartUploadLayout();
         layout.removeAllComponents();
-        // Add Uploading path
-        layout.addComponent(uploadFileLocation,0,0);
         // Add Progress Bar
-        layout.addComponent(getDefaultComponent(DefaultComponent.PROGRESS_BAR),0,1);
-        // Add ratio
-        layout.addComponent(uploadFileRatio,0,2);
-        // Add Stop Button
-//        final Button cancelProcessing = new Button("Cancel");
-//        cancelProcessing.addListener(new Button.ClickListener() {
-//            @Override
-//            public void buttonClick(ClickEvent event) {
-//                getUpload().interruptUpload();
-//                setValue(null);
-//            }
-//        });
-//        cancelProcessing.setVisible(true);
-//        cancelProcessing.setStyleName("small");
-//
-//        layout.addComponent(cancelProcessing,1,1);
-        layout.addComponent(uploadFileProgress,1,1);
+        if(progressInfo) {
+            layout.addComponent(getDefaultComponent(DefaultComponent.PROGRESS_BAR),0,1);
+        }
+        // Add Cancel Button
+        layout.addComponent(getDefaultComponent(DefaultComponent.CANCEL_BUTTON),1,1);
+        // Set Alignment
+        layout.setComponentAlignment(getDefaultComponent(DefaultComponent.CANCEL_BUTTON), Alignment.MIDDLE_RIGHT);
         //set Color
         getRootLayout().setStyleName("upload-start");
-
-        super.buildStartUploadLayout();
     }
-
-
-    @Override
-    protected String getDisplayDetails() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(super.getDisplayDetails());
-        ImageSize imageSize;
-        try {
-            imageSize = createImageSize();
-            sb.append("</br>width: " + imageSize.getWidth() + " height: " + imageSize.getHeight());
-        }
-        catch (FileNotFoundException e) {
-            log.error("",e);
-        }
-        return sb.toString();
-    }
-
 
 
     /**
@@ -286,17 +247,11 @@ public class UploadImageField extends AbstractUploadFileField{
     @Override
     public Embedded createPreview() {
         Embedded embedded = null;
-        //Set Image Size
         ImageSize scaledImageSize;
-        try {
-            scaledImageSize = createImageSize().scaleToFitIfLarger(150, 150);
-        }
-        catch (FileNotFoundException e) {
-            log.error("",e);
-            return embedded;
-        }
+        scaledImageSize = createImageSize().scaleToFitIfLarger(150, 150);
+
         //Create ressource
-        final byte[] pngData = (byte[]) getValue();
+        final byte[] pngData = (byte[]) getLastBytesFile();
         Resource imageResource = new StreamResource(
             new StreamResource.StreamSource() {
                 @Override
@@ -306,7 +261,7 @@ public class UploadImageField extends AbstractUploadFileField{
             }, "", this.getApplication()){
             @Override
             public String getMIMEType() {
-                return getLastMIMEType();
+                return getLastMimeType();
             }
         };
 
@@ -320,5 +275,27 @@ public class UploadImageField extends AbstractUploadFileField{
         return embedded;
     }
 
+    @Override
+    protected String getDisplayDetails() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(super.getDisplayDetails());
+        ImageSize imageSize;
+        imageSize = createImageSize();
+        sb.append("</br>width: " + imageSize.getWidth() + " height: " + imageSize.getHeight());
+        return sb.toString();
+    }
 
+    /**
+     * Best effort to create an ImageSize.
+     * If the ImageSize created based on the receiver is null
+     * try to create it from the Item property.
+     * @return: null if receiver and item don't have relevant information.
+     */
+    protected ImageSize createImageSize() {
+        ImageSize imageSize = ImageSize.valueOf(new ByteArrayInputStream(getLastBytesFile()));
+        if(imageSize == null && item.getItemProperty(FileProperties.PROPERTY_WIDTH) != null && item.getItemProperty(FileProperties.PROPERTY_HEIGHT) != null) {
+             imageSize = new ImageSize((Long)item.getItemProperty(FileProperties.PROPERTY_WIDTH).getValue(), (Long)item.getItemProperty(FileProperties.PROPERTY_HEIGHT).getValue());
+         }
+        return imageSize;
+    }
 }

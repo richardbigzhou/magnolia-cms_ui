@@ -79,6 +79,13 @@ public interface MessagesManager {
     void sendMessage(String userId, Message message);
 
     /**
+     * Send local message.
+     *
+     * @param message message to send
+     */
+    void sendLocalMessage(Message message);
+
+    /**
      * Sends a message to all users.
      *
      * @param message message to send

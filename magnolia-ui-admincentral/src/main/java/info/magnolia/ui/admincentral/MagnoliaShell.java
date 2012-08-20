@@ -44,6 +44,7 @@ import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessageEvent;
 import info.magnolia.ui.framework.message.MessageEventHandler;
+import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.ConfirmationHandler;
 import info.magnolia.ui.framework.shell.FragmentChangedHandler;
@@ -136,17 +137,23 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
     }
 
     @Override
-    @Deprecated
-    public void showNotification(String message) {
-        throw new UnsupportedOperationException("Use MessagesManager class for messages dispatching");
+    public void showNotification(String messageText) {
+        showMessage(messageText, MessageType.INFO);
     }
 
     @Override
-    @Deprecated
-    public void showError(String message, Exception e) {
-        throw new UnsupportedOperationException("Use MessagesManager class for messages dispatching");
+    public void showError(String messageText, Exception e) {
+        showMessage(messageText, MessageType.ERROR);
     }
-    
+
+    private void showMessage(String messageText, MessageType type) {
+        final Message message = new Message();
+        message.setMessage(messageText);
+        message.setType(type);
+        messagesManager.sendLocalMessage(message);
+    }
+
+
     @Override
     public String getFragment() {
         final ShellViewport activeViewport = getActiveViewport();
