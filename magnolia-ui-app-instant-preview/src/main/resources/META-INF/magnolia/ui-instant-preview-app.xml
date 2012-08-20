@@ -11,6 +11,10 @@
 	   in the apps configuration repository of the admin central. (config/module/apps/appname/name:appname) -->
   <components>
     <id>app-instantpreview</id>
+  </components>
+
+  <components>
+    <id>app-instantpreview-main</id>
     <component>
       <type>info.magnolia.ui.app.instantpreview.InstantPreviewAppMainSubApp</type>
       <implementation>info.magnolia.ui.app.instantpreview.InstantPreviewAppMainSubApp</implementation>

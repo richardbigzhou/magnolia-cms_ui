@@ -45,17 +45,15 @@ import javax.inject.Inject;
  */
 public class InstantPreviewApp extends AbstractApp {
 
-    private AppContext context;
-    private InstantPreviewAppMainSubApp subApp;
+    private AppContext appContext;
 
     @Inject
-    public InstantPreviewApp(AppContext context, InstantPreviewAppMainSubApp subApp) {
-        this.context = context;
-        this.subApp = subApp;
+    public InstantPreviewApp(AppContext appContext) {
+        this.appContext = appContext;
     }
 
     @Override
-    public SubApp start(Location location) {
-        return subApp;
+    public void start(Location location) {
+        appContext.openSubApp("main", InstantPreviewAppMainSubApp.class, location, "main");
     }
 }
