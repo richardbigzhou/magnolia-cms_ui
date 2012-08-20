@@ -41,6 +41,11 @@ div.mgnlEditorBar.component.focus, div.mgnlEditorBar.area.focus {
     color: #FFF !important;
 }
 
+div.mgnlEditorBar.area.childFocus {
+    background-color: #689600 !important;
+    color: #FFF !important;
+}
+
 /*
  * Page edit bar.
  */
@@ -92,6 +97,16 @@ div.mgnlEditorBar.area.end {
     height: 7px !important;
     border-radius: 0 0 5px 5px !important;
     margin: 5px 0 !important;
+}
+
+div.mgnlEditorBar.area.end.focus {
+    background-color: #666666 !important;
+    color: #FFF !important;
+}
+
+div.mgnlEditorBar.area.end.childFocus {
+    background-color: #689600 !important;
+    color: #FFF !important;
 }
 
 /*

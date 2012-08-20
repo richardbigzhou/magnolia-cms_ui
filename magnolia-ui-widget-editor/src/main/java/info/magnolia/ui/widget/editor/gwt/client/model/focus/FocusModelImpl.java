@@ -44,6 +44,7 @@ public class FocusModelImpl implements FocusModel {
 
     private Model model;
     private boolean rootSelected = false;
+    private MgnlElement focusedElement = null;
 
     public FocusModelImpl(Model model) {
         super();
@@ -55,89 +56,103 @@ public class FocusModelImpl implements FocusModel {
 
         MgnlElement mgnlElement = model.getMgnlElement(element);
 
-        if (mgnlElement == null) {
-            reset();
-            return;
-        }
 
-        MgnlElement area;
+        MgnlElement area = null;
+        MgnlElement component = null;
 
-        if (mgnlElement.isComponent()) {
-            area = mgnlElement.getParentArea();
-        }
-        else {
-            area = mgnlElement;
-        }
-
-        MgnlElement currentArea = model.getSelectedMgnlAreaElement();
-
-        if (currentArea != area) {
-
-            if (!area.isRelated(currentArea)) {
-                reset();
+        if (mgnlElement != null) {
+            if (mgnlElement.isComponent()) {
+                component = mgnlElement;
+                area = mgnlElement.getParentArea();
             }
-            else if(!currentArea.getDescendants().contains(area)) {
-                toggleChildComponentSelection(currentArea, false);
+            else {
+                area = mgnlElement;
             }
-
-            toggleAreaSelection(area, true);
-            toggleChildComponentSelection(area, true);
-
-        }
-        if (mgnlElement.isComponent()) {
-            toggleComponentSelection(mgnlElement);
-        }
-    }
-
-    @Override
-    public void onLoadSelect(MgnlElement selectedMgnlElement) {
-        model.setSelectedMgnlAreaElement(selectedMgnlElement);
-        toggleRootAreaBar(false);
-        //showRootPlaceHolder();
-        toggleAreaSelection(selectedMgnlElement, true);
-    }
-
-    @Override
-    public void reset() {
-        MgnlElement currentArea = model.getSelectedMgnlAreaElement();
-
-        if (currentArea != null) {
-
-            toggleAreaSelection(currentArea, false);
-            toggleChildComponentSelection(currentArea, false);
         }
 
-        toggleComponentSelection(null);
+        // first set the component, then set the area. the selected component is used for setting the corrent area class.
+        setComponentSelection(component);
+        setAreaSelection(area);
+
+
     }
 
     /**
      * Takes care of the selection of components. keeps track of last selected element and toggles the focus.
      * If a null-value is passed it will reset the currently selected component.
-     * @param component the MgnlElement component
+     * @param component the MgnlElement component, can be null.
      */
-    private void toggleComponentSelection(MgnlElement component) {
+    private void setComponentSelection(MgnlElement component) {
         MgnlElement currentComponent = model.getSelectedMgnlComponentElement();
         if (currentComponent == component) {
             return;
         }
         if (currentComponent != null) {
             if(model.getEditBar(currentComponent) != null) {
-                model.getEditBar(currentComponent).setFocus(false, false);
+                model.getEditBar(currentComponent).removeFocus();
             }
         }
         if(model.getEditBar(component) != null) {
-            model.getEditBar(component).setFocus(true, false);
+            model.getEditBar(component).setFocus(false);
         }
         model.setSelectedMgnlComponentElement(component);
 
     }
 
-    private void toggleAreaSelection(MgnlElement area, boolean visible) {
+    /**
+     * This method takes care of selecting and deselecting areas.
+     * @param area selected area, can be null.
+     */
+    private void setAreaSelection(MgnlElement area) {
+        MgnlElement selectedArea = model.getSelectedMgnlAreaElement();
+        MgnlElement currentComponent = model.getSelectedMgnlComponentElement();
+
+        if (selectedArea != null) {
+
+            if (model.getEditBar(selectedArea) != null) {
+                model.getEditBar(selectedArea).removeFocus();
+            }
+
+            if (model.getAreaEndBar(selectedArea) != null) {
+                model.getAreaEndBar(selectedArea).removeFocus();
+            }
+
+
+            // always reset current area selection unless area and current area are related
+            if (!selectedArea.isRelated(area)) {
+
+                toggleChildComponentVisibility(selectedArea, false);
+                toggleAreaVisibility(selectedArea, false);
+            }
+
+            // hide child components if area is an ascendant of current area or selectedArea is not a descendant
+            else if(selectedArea.getAscendants().contains(area) || (area!=null && !area.getDescendants().contains(selectedArea))) {
+                toggleChildComponentVisibility(selectedArea, false);
+            }
+        }
+
+        // set focus on new selected area
+        if (area != null) {
+            toggleAreaVisibility(area, true);
+            toggleChildComponentVisibility(area, true);
+
+
+            if (model.getEditBar(area) != null) {
+                model.getEditBar(area).setFocus((currentComponent != null));
+            }
+            if (model.getAreaEndBar(area) != null) {
+                model.getAreaEndBar(area).setFocus((currentComponent != null));
+            }
+        }
+        model.setSelectedMgnlAreaElement(area);
+    }
+
+    private void toggleAreaVisibility(MgnlElement area, boolean visible) {
 
         MgnlElement parentArea = area.getParentArea();
         if (parentArea != null) {
-            toggleAreaSelection(parentArea, visible);
-            toggleChildComponentSelection(parentArea, visible);
+            toggleAreaVisibility(parentArea, visible);
+            toggleChildComponentVisibility(parentArea, visible);
 
         }
         // root areas are always visible
@@ -172,15 +187,10 @@ public class FocusModelImpl implements FocusModel {
         }
 
 
-        if (visible) {
-            model.setSelectedMgnlAreaElement(area);
-        }
-        else {
-            //model.setSelectedMgnlAreaElement(null);
-        }
+
     }
 
-    private void toggleChildComponentSelection(MgnlElement area, boolean visible) {
+    private void toggleChildComponentVisibility(MgnlElement area, boolean visible) {
         for (MgnlElement component : area.getComponents()) {
 
             // toggle all child-components editbar visibility - does this case occur?
@@ -208,7 +218,6 @@ public class FocusModelImpl implements FocusModel {
 
     @Override
     public void toggleRootAreaBar(boolean visible) {
-        reset();
 
         this.rootSelected = !this.rootSelected;
         for (MgnlElement root : model.getRootElements()) {

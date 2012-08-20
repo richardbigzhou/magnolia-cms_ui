@@ -61,6 +61,9 @@ public abstract class AbstractBar extends FlowPanel {
     private Model model;
     private EventBus eventBus;
 
+    private final static String FOCUS_CLASSNAME = "focus";
+    private final static String CHILD_FOCUS_CLASSNAME = "childFocus";
+
     public AbstractBar(Model model, EventBus eventBus, MgnlElement mgnlElement) {
         this.model = model;
         this.eventBus = eventBus;
@@ -217,13 +220,13 @@ public abstract class AbstractBar extends FlowPanel {
         return eventBus;
     }
 
-    public void setFocus(boolean focus, boolean child) {
-        String className = (child) ? "childFocus" : "focus";
-        if (focus) {
-            addStyleName(className);
-        }
-        else {
-            removeStyleName(className);
-        }
+    public void removeFocus() {
+        removeStyleName(FOCUS_CLASSNAME);
+        removeStyleName(CHILD_FOCUS_CLASSNAME);
+    }
+
+    public void setFocus(boolean child) {
+        String className = (child) ? CHILD_FOCUS_CLASSNAME : FOCUS_CLASSNAME;
+        addStyleName(className);
     }
 }

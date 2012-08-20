@@ -47,8 +47,4 @@ public interface FocusModel {
 
     void toggleRootAreaBar(boolean visible);
 
-    void reset();
-
-    void onLoadSelect(MgnlElement selectedMgnlElement);
-
 }
