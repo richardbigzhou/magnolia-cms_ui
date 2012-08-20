@@ -35,18 +35,19 @@ package info.magnolia.ui.widget.editor.gwt.client.model.focus;
 
 import com.google.gwt.dom.client.Element;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
-import info.magnolia.ui.widget.editor.gwt.client.model.ModelStorage;
+import info.magnolia.ui.widget.editor.gwt.client.model.ModelImpl;
 import info.magnolia.ui.widget.editor.gwt.client.widget.dnd.LegacyDragAndDrop;
 
 /**
  * Helper class to keep tack on selected items.
  */
+@Deprecated
 public class FocusModelImpl3 implements FocusModel {
 
-    private ModelStorage model;
+    private ModelImpl model;
     private boolean rootSelected = false;
 
-    public FocusModelImpl3(ModelStorage model) {
+    public FocusModelImpl3(ModelImpl model) {
         super();
         this.model = model;
     }

@@ -97,4 +97,13 @@ public class AreaEndBar extends FlowPanel {
         return model;
     }
 
- }
+    public void setFocus(boolean focus, boolean child) {
+        String className = (child) ? "childFocus" : "focus";
+        if (focus) {
+            addStyleName(className);
+        }
+        else {
+            removeStyleName(className);
+        }
+    }
+}

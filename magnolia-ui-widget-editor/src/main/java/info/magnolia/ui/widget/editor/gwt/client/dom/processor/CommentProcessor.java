@@ -44,17 +44,17 @@ import info.magnolia.ui.widget.editor.gwt.client.model.Model;
  */
 public class CommentProcessor {
 
-    public static MgnlElement process(Model model, Node node, MgnlElement mgnlElement) throws Exception {
+    public static MgnlElement process(Model model, Node node, MgnlElement parent) throws Exception {
 
         CMSComment comment = CMSComment.as(node);
+        MgnlElement mgnlElement = null;
 
-
-        GWT.log("processing comment " + comment);
+                GWT.log("processing comment " + comment);
 
         if (!comment.isClosing()) {
 
                 try {
-                    mgnlElement = new MgnlElement(comment, mgnlElement);
+                    mgnlElement = new MgnlElement(comment, parent);
 
                     if (mgnlElement.getParent() == null) {
                         model.addRoot(mgnlElement);
@@ -66,9 +66,9 @@ public class CommentProcessor {
                     GWT.log("Not MgnlElement, skipping: " + e.toString());
                 }
 
-        } else if (mgnlElement != null) {
-            mgnlElement.setEndComment(comment);
-            mgnlElement = mgnlElement.getParent();
+        } else if (parent != null) {
+            parent.setEndComment(comment);
+            mgnlElement = parent.getParent();
         }
 
         return mgnlElement;
