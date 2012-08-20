@@ -133,9 +133,10 @@ public class MgnlElement {
 
     public List<MgnlElement> getAscendants() {
         List<MgnlElement> ascendants = new LinkedList<MgnlElement>();
-        while (parent != null) {
-            ascendants.add(parent);
-            parent = parent.getParent();
+        MgnlElement ascendant = parent;
+        while (ascendant != null) {
+            ascendants.add(ascendant);
+            ascendant = ascendant.getParent();
         }
         return ascendants;
     }
@@ -152,7 +153,7 @@ public class MgnlElement {
 
     public MgnlElement getParentArea() {
         MgnlElement parentArea = null;
-        for (MgnlElement parent = this; parent != null; parent = parent.getParent()) {
+        for (MgnlElement parent = getParent(); parent != null; parent = parent.getParent()) {
             if (parent.isArea()) {
                 parentArea = parent;
                 break;
@@ -195,10 +196,7 @@ public class MgnlElement {
 
     public boolean isRelated(MgnlElement relative) {
 
-        if (relative != null && this.getRoot() == relative.getRoot()) {
-                return true;
-        }
-        return false;
+        return relative != null && this.getRoot() == relative.getRoot();
     }
 
     public void delete() {
@@ -267,5 +265,10 @@ public class MgnlElement {
     }
     public Map<String, String> getAttributes() {
         return this.attributes;
+    }
+
+    @Override
+    public String toString() {
+        return comment.toString();
     }
 }

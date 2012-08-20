@@ -69,9 +69,10 @@ import info.magnolia.ui.widget.editor.gwt.client.event.NewComponentEventHandler;
 import info.magnolia.ui.widget.editor.gwt.client.event.SortComponentEvent;
 import info.magnolia.ui.widget.editor.gwt.client.event.SortComponentEventHandler;
 import info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils;
-import info.magnolia.ui.widget.editor.gwt.client.model.ModelStorage;
+import info.magnolia.ui.widget.editor.gwt.client.model.Model;
+import info.magnolia.ui.widget.editor.gwt.client.model.ModelImpl;
 import info.magnolia.ui.widget.editor.gwt.client.model.focus.FocusModel;
-import info.magnolia.ui.widget.editor.gwt.client.model.focus.FocusModelImpl3;
+import info.magnolia.ui.widget.editor.gwt.client.model.focus.FocusModelImpl;
 import org.vaadin.rpc.client.ClientSideHandler;
 import org.vaadin.rpc.client.ClientSideProxy;
 import org.vaadin.rpc.client.Method;
@@ -84,7 +85,6 @@ import java.util.List;
  * Vaadin implementation of PageEditor client side.
  * TODO fgrilli: this class badly needs clean up and refactoring.
  */
-@SuppressWarnings("serial")
 public class VPageEditor extends Composite implements VPageEditorView.Listener, Paintable, ClientSideHandler {
 
     private static boolean isPreview = false;
@@ -94,7 +94,7 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
 
     private static String locale;
 
-    private final ModelStorage model;
+    private final Model model;
 
     private final EventBus eventBus;
 
@@ -112,8 +112,8 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
     public VPageEditor() {
         this.eventBus = new SimpleEventBus();
         this.view = new VPageEditorViewImpl(eventBus);
-        this.model = new ModelStorage();
-        this.focusModel = new FocusModelImpl3(model);
+        this.model = new ModelImpl();
+        this.focusModel = new FocusModelImpl(model);
 
         view.setListener(this);
         registerEventHandlers();
@@ -157,7 +157,7 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
         proxy.update(this, uidl, client);
     }
 
-    public ModelStorage getModel() {
+    public Model getModel() {
         return model;
     }
 
@@ -251,18 +251,18 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
         LinkElement cssLink = document.createLinkElement();
         cssLink.setType("text/css");
         cssLink.setRel("stylesheet");
-        cssLink.setHref(contextPath + "/VAADIN/widgetsets/info.magnolia.ui.vaadin.widgetset.MagnoliaWidgetSet/editor/styles.css");
-
+        //cssLink.setHref(contextPath + "/VAADIN/widgetsets/info.magnolia.ui.vaadin.widgetset.MagnoliaWidgetSet/editor/styles.css");
+        cssLink.setHref(contextPath + "/VAADIN/themes/admincentraltheme/pageeditor.css");
         head.insertFirst(cssLink);
     }
 
     private native void onPageEditorReady() /*-{
         var callbacks = $wnd.mgnl.PageEditor.onPageEditorReadyCallbacks
         if(typeof callbacks != 'undefined') {
-             for(var i=0; i < callbacks.length; i++) {
+            for(var i=0; i < callbacks.length; i++) {
                 callbacks[i].apply();
-             }
-         }
+            }
+        }
     }-*/;
 
     protected native void reloadIFrame(Element iframeElement) /*-{
