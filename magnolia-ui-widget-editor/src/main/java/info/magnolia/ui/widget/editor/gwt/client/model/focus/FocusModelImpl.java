@@ -63,22 +63,16 @@ public class FocusModelImpl implements FocusModel {
         MgnlElement area;
 
         if (mgnlElement.isComponent()) {
-            toggleComponentSelection(mgnlElement);
             area = mgnlElement.getParentArea();
         }
         else {
-            toggleComponentSelection(null);
             area = mgnlElement;
         }
 
-        if (area != model.getSelectedMgnlAreaElement()) {
-            MgnlElement currentArea = model.getSelectedMgnlAreaElement();
+        MgnlElement currentArea = model.getSelectedMgnlAreaElement();
 
-            MgnlElement parentArea = area.getParent();
+        if (currentArea != area) {
 
-            if (currentArea == area) {
-                return;
-            }
             if (!area.isRelated(currentArea)) {
                 reset();
             }
@@ -86,34 +80,34 @@ public class FocusModelImpl implements FocusModel {
                 toggleChildComponentSelection(currentArea, false);
             }
 
-/*            for (MgnlElement ascendant : area.getAscendants()) {
-                if (ascendant.isArea()) {
-                    toggleAreaSelection(ascendant, true);
-                    toggleChildComponentSelection(ascendant, true);
-                }
-            }*/
-
-
-
             toggleAreaSelection(area, true);
             toggleChildComponentSelection(area, true);
 
         }
-
+        if (mgnlElement.isComponent()) {
+            toggleComponentSelection(mgnlElement);
+        }
     }
 
     @Override
     public void onLoadSelect(MgnlElement selectedMgnlElement) {
         model.setSelectedMgnlAreaElement(selectedMgnlElement);
         toggleRootAreaBar(false);
-        showRootPlaceHolder();
+        //showRootPlaceHolder();
         toggleAreaSelection(selectedMgnlElement, true);
     }
+
     @Override
     public void reset() {
-        deSelect();
-        //toggleRootAreaBar(true);
-        showRootPlaceHolder();
+        MgnlElement currentArea = model.getSelectedMgnlAreaElement();
+
+        if (currentArea != null) {
+
+            toggleAreaSelection(currentArea, false);
+            toggleChildComponentSelection(currentArea, false);
+        }
+
+        toggleComponentSelection(null);
     }
 
     /**
@@ -212,21 +206,9 @@ public class FocusModelImpl implements FocusModel {
         }
     }
 
-    private void deSelect() {
-        MgnlElement currentArea = model.getSelectedMgnlAreaElement();
-
-        if (currentArea != null) {
-
-            toggleAreaSelection(currentArea, false);
-            toggleChildComponentSelection(currentArea, false);
-        }
-
-        toggleComponentSelection(null);
-    }
-
     @Override
     public void toggleRootAreaBar(boolean visible) {
-        deSelect();
+        reset();
 
         this.rootSelected = !this.rootSelected;
         for (MgnlElement root : model.getRootElements()) {
@@ -238,15 +220,6 @@ public class FocusModelImpl implements FocusModel {
             }
             if (model.getAreaPlaceHolder(root) != null) {
                 model.getAreaPlaceHolder(root).setVisible(visible);
-            }
-        }
-    }
-
-    private void showRootPlaceHolder() {
-        for (MgnlElement root : model.getRootElements()) {
-            if (model.getAreaPlaceHolder(root) != null) {
-                model.getAreaPlaceHolder(root).setVisible(true);
-                model.getAreaPlaceHolder(root).setActive(false);
             }
         }
     }
