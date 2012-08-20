@@ -49,6 +49,9 @@ public class AreaEndBar extends FlowPanel {
     private Model model;
     private MgnlElement mgnlElement;
 
+    private final static String FOCUS_CLASSNAME = "focus";
+    private final static String CHILD_FOCUS_CLASSNAME = "childFocus";
+
     public AreaEndBar(Model model, MgnlElement mgnlElement) {
         this.model = model;
 
@@ -97,4 +100,23 @@ public class AreaEndBar extends FlowPanel {
         return model;
     }
 
- }
+    public void setFocus(boolean focus, boolean child) {
+        String className = (child) ? "childFocus" : "focus";
+        if (focus) {
+            addStyleName(className);
+        }
+        else {
+            removeStyleName(className);
+        }
+    }
+
+    public void removeFocus() {
+        removeStyleName(FOCUS_CLASSNAME);
+        removeStyleName(CHILD_FOCUS_CLASSNAME);
+    }
+
+    public void setFocus(boolean child) {
+        String className = (child) ? CHILD_FOCUS_CLASSNAME : FOCUS_CLASSNAME;
+        addStyleName(className);
+    }
+}

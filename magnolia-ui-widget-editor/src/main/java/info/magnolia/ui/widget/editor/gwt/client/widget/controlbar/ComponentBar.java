@@ -45,6 +45,7 @@ import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PushButton;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 import info.magnolia.ui.widget.editor.gwt.client.event.DeleteComponentEvent;
@@ -70,6 +71,11 @@ public class ComponentBar extends AbstractBar  {
     private boolean isInherited;
     private boolean editable = true;
 
+    private final static String ICON_CLASSNAME = "editorIcon";
+    private final static String EDIT_CLASSNAME = "icon-edit";
+    private final static String REMOVE_CLASSNAME = "icon-trash";
+
+
     public ComponentBar(Model model, EventBus eventBus, MgnlElement mgnlElement) throws IllegalArgumentException {
 
         super(model, eventBus, mgnlElement);
@@ -82,7 +88,7 @@ public class ComponentBar extends AbstractBar  {
 
         }
         if (!this.isInherited) {
-            createButtons();
+            createControls();
             createMouseEventsHandlers();
         }
 
@@ -213,5 +219,43 @@ public class ComponentBar extends AbstractBar  {
             edit.addStyleName("edit");
             addPrimaryButton(edit);
         }
+    }
+
+    private void createControls() {
+
+
+/*        final Label remove = new Label();
+        remove.setStyleName(ICON_CLASSNAME);
+        remove.addStyleName(REMOVE_CLASSNAME);
+        remove.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                getEventBus().fireEvent(new DeleteComponentEvent(workspace, path));
+            }
+        });
+        addSecondaryButton(remove);
+
+
+        final Label move = new Label();
+        move.setStyleName("icon icon-trash");
+        move.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                getEventBus().fireEvent(new DeleteComponentEvent(workspace, path));
+            }
+        });
+        addSecondaryButton(move);*/
+
+        final Label edit = new Label();
+        edit.setStyleName(ICON_CLASSNAME);
+        edit.addStyleName(EDIT_CLASSNAME);
+        edit.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                getEventBus().fireEvent(new EditComponentEvent(workspace, path, dialog));
+            }
+        });
+        addPrimaryButton(edit);
+
     }
 }

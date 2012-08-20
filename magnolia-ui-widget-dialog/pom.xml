@@ -37,7 +37,7 @@
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
         <configuration>
-          <module>info.magnolia.ui.widget.tabsheet.gwt.TabsheetWidgetSet</module>
+          <module>info.magnolia.ui.widget.dialog.gwt.DialogWidgetSet</module>
           <style>PRETTY</style>
           <draftCompile>true</draftCompile>
           <compileReport>true</compileReport>

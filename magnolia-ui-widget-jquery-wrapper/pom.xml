@@ -29,6 +29,17 @@
           <rootPath>$${admincentral.root}</rootPath>
         </configuration>
       </plugin>
+        <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>gwt-maven-plugin</artifactId>
+            <configuration>
+                <module>info.magnolia.ui.widget.jquerywrapper.gwt.JQueryWrapperWidgetSet</module>
+                <style>PRETTY</style>
+                <draftCompile>true</draftCompile>
+                <compileReport>true</compileReport>
+                <noServer>true</noServer>
+            </configuration>
+        </plugin>
     </plugins>
     <resources>
       <resource>
