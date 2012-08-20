@@ -37,10 +37,11 @@ import info.magnolia.ui.admincentral.app.content.ConfiguredContentAppDescriptor;
 import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 
+
 /**
  * The pages app descriptor which exposes the descriptor for the editor subapp.
  * @see {@link PagesSubAppDescriptor}.
- *
+ * 
  */
 public class PagesAppDescriptor extends ConfiguredContentAppDescriptor {
 
@@ -67,10 +68,12 @@ public class PagesAppDescriptor extends ConfiguredContentAppDescriptor {
 
         private String name;
 
+        @Override
         public String getName() {
             return name;
         }
 
+        @Override
         public void setName(String name) {
             this.name = name;
         }
