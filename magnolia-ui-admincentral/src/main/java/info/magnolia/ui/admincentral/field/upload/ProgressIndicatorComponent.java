@@ -31,13 +31,12 @@
  * intact.
  *
  */
-
 package info.magnolia.ui.admincentral.field.upload;
 
 import com.vaadin.ui.ProgressIndicator;
 
 /**
- * Definition used to create a custom display for {@link ProgressIndicator}.
+ * Definition used to create a custom display for {@link com.vaadin.ui.ProgressIndicator}.
  */
 public interface ProgressIndicatorComponent {
 
