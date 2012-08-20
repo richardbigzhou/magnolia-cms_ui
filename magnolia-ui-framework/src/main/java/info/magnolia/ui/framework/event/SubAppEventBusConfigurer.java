@@ -31,34 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app;
+package info.magnolia.ui.framework.event;
 
-import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.message.Message;
+import com.google.inject.name.Names;
+import com.google.inject.util.Providers;
 
+import info.magnolia.objectfactory.guice.AbstractGuiceComponentConfigurer;
 
 /**
- * Provides functionality used by an app to interact with the Magnolia shell.
+ * Configures an {@link info.magnolia.ui.framework.event.EventBus} bound to the name <code>subApp</code>.
  */
-public interface AppContext {
+public class SubAppEventBusConfigurer extends AbstractGuiceComponentConfigurer {
 
-    void openSubApp(String name, Class<? extends SubApp> subAppClass, Location location, String key);
-
-    void openSubAppFullScreen(String name, Class<? extends SubApp> subAppClass, Location location);
-
-    void exitFullScreenMode();
-    
-    AppDescriptor getAppDescriptor();
-
-    void sendUserMessage(String user, Message message);
-
-    void sendLocalMessage(Message message);
-
-    void broadcastMessage(Message message);
-
-    void showConfirmationMessage(String message);
-
-    String getName();
-
-    void setSubAppLocation(SubApp subApp, Location location);
+    @Override
+    protected void configure() {
+        bind(EventBus.class).annotatedWith(Names.named("subApp")).toProvider(Providers.of(new SimpleEventBus()));
+    }
 }

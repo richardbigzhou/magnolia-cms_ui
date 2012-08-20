@@ -85,6 +85,7 @@ import com.vaadin.ui.ComponentContainer;
 public class AppControllerImpl implements AppController, LocationChangedEvent.Handler, LocationChangeRequestedEvent.Handler {
 
     public static final String COMMON_APP_COMPONENTS_ID = "app";
+    public static final String COMMON_SUB_APP_COMPONENTS_ID = "subApp";
     public static final String COMPONENTS_ID_PREFIX = "app-";
 
     private static final Logger log = LoggerFactory.getLogger(AppControllerImpl.class);
@@ -176,7 +177,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             appContext = new AppContextImpl(descriptor);
 
             if (location == null) {
-                location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, name, "");
+                location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, name, "main");
             }
 
             appContext.start(location);
@@ -263,10 +264,13 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     private class AppContextImpl implements AppContext, AppFrameView.Listener {
 
         private class SubAppContext {
+
+            private String key;
             private SubApp subApp;
-            private String name;
             private Location location;
             private ShellTab tab;
+            private ComponentProvider subAppComponentProvider;
+            public View view;
         }
 
         private Map<String, SubAppContext> subAppContexts = new HashMap<String, SubAppContext>();
@@ -310,18 +314,30 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             appFrameView = new AppFrameView();
             appFrameView.setListener(this);
 
-            SubApp main = app.start(location);
+            app.start(location);
+        }
 
-            View view = main.start();
-            ShellTab tab = appFrameView.addTab((ComponentContainer) view.asVaadinComponent(), main.getCaption(), false);
+        private SubAppContext startSubApp(String name, Class<? extends SubApp> subAppClass, Location location, String key) {
+
+            ComponentProvider subAppComponentProvider = createSubAppComponentProvider(appDescriptor.getName(), name, appComponentProvider);
+
+            SubApp subApp = subAppComponentProvider.newInstance(subAppClass);
+
+            View view = subApp.start(location);
+
+            ShellTab tab = appFrameView.addTab((ComponentContainer) view.asVaadinComponent(), subApp.getCaption(), false);
 
             SubAppContext subAppContext = new SubAppContext();
-            subAppContext.subApp = main;
-            subAppContext.name = "main";
+            subAppContext.subApp = subApp;
+            subAppContext.key = key;
             subAppContext.tab = tab;
             subAppContext.location = location;
+            subAppContext.view = view;
+            subAppContext.subAppComponentProvider = subAppComponentProvider;
 
-            subAppContexts.put(subAppContext.name, subAppContext);
+            subAppContexts.put(subAppContext.key, subAppContext);
+
+            return subAppContext;
         }
 
         /**
@@ -329,10 +345,10 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
          */
         public void onLocationUpdate(Location location) {
 
-            String name = extractSubAppName(((DefaultLocation) location).getToken());
+            String key = extractSubAppKey(((DefaultLocation) location).getToken());
 
             // The location targets the current display state, update the fragment only
-            if (name.length() == 0) {
+            if (key.length() == 0) {
                 SubAppContext subAppContext = getActiveSubAppContext();
                 if (subAppContext != null) {
                     shell.setFragment(subAppContext.location.toString());
@@ -341,18 +357,18 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             }
 
             // If the location targets an existing sub app then activate it and update its location
-            SubAppContext subAppContext = subAppContexts.get(name);
+            SubAppContext subAppContext = subAppContexts.get(key);
             if (subAppContext != null) {
                 appFrameView.setActiveTab(subAppContext.tab);
                 subAppContext.location = location;
-                // TODO we'd want to notify the sub app here so it can react to the rest of the token
+                subAppContext.subApp.locationChanged(location);
                 return;
             }
 
             app.locationChanged(location);
         }
 
-        private String extractSubAppName(String token) {
+        private String extractSubAppKey(String token) {
             int i = token.indexOf(':');
             return i != -1 ? token.substring(0, i) : token;
         }
@@ -369,7 +385,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         public void onTabClosed(ShellTab tab) {
             SubAppContext subAppContext = getSubAppContextForTab(tab);
             if (subAppContext != null) {
-                subAppContexts.remove(subAppContext.name);
+                subAppContexts.remove(subAppContext.key);
             }
         }
 
@@ -390,21 +406,19 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         }
 
         @Override
-        public void openSubApp(String name, SubApp subApp) {
-            ShellTab tab = appFrameView.addTab((ComponentContainer) subApp.start().asVaadinComponent(), subApp.getCaption(), true);
-
-            SubAppContext subAppContext = new SubAppContext();
-            subAppContext.subApp = subApp;
-            subAppContext.name = name;
-            subAppContext.tab = tab;
-            subAppContext.location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appDescriptor.getName(), name);
-
-            subAppContexts.put(subAppContext.name, subAppContext);
+        public void openSubApp(String name, Class<? extends SubApp> subAppClass, Location location, String key) {
+            startSubApp(name, subAppClass, location, key);
         }
 
         @Override
-        public void openSubAppFullScreen(SubApp subApp) {
-            shell.showFullscreen(subApp.start());
+        public void openSubAppFullScreen(String name, Class<? extends SubApp> subAppClass, Location location) {
+            ComponentProvider subAppComponentProvider = createSubAppComponentProvider(appDescriptor.getName(), name, appComponentProvider);
+
+            SubApp subApp = subAppComponentProvider.newInstance(subAppClass);
+
+            View view = subApp.start(location);
+
+            shell.showFullscreen(view);
         }
 
         @Override
@@ -494,6 +508,29 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
         builder.withConfiguration(configuration);
         builder.withParent((GuiceComponentProvider) componentProvider);
+
+        return builder.build();
+    }
+
+    private ComponentProvider createSubAppComponentProvider(String appName, String subAppName, ComponentProvider parent) {
+
+        ComponentProviderConfigurationBuilder configurationBuilder = new ComponentProviderConfigurationBuilder();
+        List<ModuleDefinition> moduleDefinitions = moduleRegistry.getModuleDefinitions();
+
+        // Get components common to all apps
+        ComponentProviderConfiguration configuration = configurationBuilder.getComponentsFromModules(COMMON_SUB_APP_COMPONENTS_ID, moduleDefinitions);
+
+        // Get components for this specific sub app
+        String componentsId = COMPONENTS_ID_PREFIX + appName + "-" + subAppName;
+        log.debug("Reading component configurations from module descriptors for " + componentsId);
+        ComponentProviderConfiguration subAppComponents = configurationBuilder.getComponentsFromModules(componentsId, moduleDefinitions);
+
+        configuration.combine(subAppComponents);
+
+        log.debug("Creating component provider for sub app " + subAppName);
+        GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
+        builder.withConfiguration(subAppComponents);
+        builder.withParent((GuiceComponentProvider) parent);
 
         return builder.build();
     }
