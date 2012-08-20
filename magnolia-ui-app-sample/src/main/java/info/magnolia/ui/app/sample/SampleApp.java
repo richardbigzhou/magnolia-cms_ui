@@ -37,12 +37,10 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang.StringUtils;
 
-import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.app.sample.editor.SampleEditorSubApp;
 import info.magnolia.ui.app.sample.main.SampleMainSubApp;
 import info.magnolia.ui.framework.app.AbstractApp;
 import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 

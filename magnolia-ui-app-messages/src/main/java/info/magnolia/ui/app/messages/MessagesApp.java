@@ -35,7 +35,6 @@ package info.magnolia.ui.app.messages;
 
 import info.magnolia.ui.framework.app.AbstractApp;
 import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.location.Location;
 
 import javax.inject.Inject;

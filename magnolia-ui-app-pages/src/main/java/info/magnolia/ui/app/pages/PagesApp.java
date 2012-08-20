@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.app.pages;
 
-import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.app.pages.editor.PagesEditorSubApp;
 import info.magnolia.ui.app.pages.main.PagesMainSubApp;
 import info.magnolia.ui.app.pages.preview.PagePreviewSubApp;
