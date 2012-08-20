@@ -38,12 +38,13 @@ import info.magnolia.ui.admincentral.dialog.action.DialogActionFactory;
 import info.magnolia.ui.admincentral.dialog.builder.DialogBuilder;
 import info.magnolia.ui.admincentral.field.builder.DialogFieldFactory;
 import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
-import info.magnolia.ui.widget.dialog.MagnoliaDialog;
+import info.magnolia.ui.widget.dialog.Dialog;
 import info.magnolia.ui.widget.dialog.MagnoliaDialogView;
 import info.magnolia.ui.widget.dialog.MagnoloaDialogPresenter;
 
@@ -77,12 +78,12 @@ public class DialogPresenter implements MagnoloaDialogPresenter.Presenter,  Magn
 
     private CallBack callBack;
 
-    public DialogPresenter(final MagnoliaDialogView view, final DialogBuilder dialogBuilder, final DialogFieldFactory dialogFieldFactory, final DialogDefinition dialogDefinition, final MagnoliaShell shell, final EventBus eventBus, final DialogActionFactory actionFactory) {
+    public DialogPresenter(final MagnoliaDialogView view, final DialogBuilder dialogBuilder, final DialogFieldFactory dialogFieldFactory, final DialogDefinition dialogDefinition, final Shell shell, final EventBus eventBus, final DialogActionFactory actionFactory) {
         this.view = view;
         this.dialogBuilder = dialogBuilder;
         this.dialogFieldFactory = dialogFieldFactory;
         this.dialogDefinition = dialogDefinition;
-        this.shell = shell;
+        this.shell = (MagnoliaShell)shell;
         this.eventBus = eventBus;
         this.actionFactory = actionFactory;
 
@@ -96,7 +97,7 @@ public class DialogPresenter implements MagnoloaDialogPresenter.Presenter,  Magn
         this.item = item;
         this.callBack = callBack;
         dialogBuilder.build(dialogFieldFactory, dialogDefinition, item, view);
-        shell.openDialog((MagnoliaDialog) view.asVaadinComponent());
+        shell.openDialog((Dialog) view.asVaadinComponent());
         return view;
     }
 

@@ -51,7 +51,7 @@ import javax.jcr.RepositoryException;
  */
 public class AddNodeAction extends RepositoryOperationAction<AddNodeActionDefinition> implements TreeAction {
 
-    public AddNodeAction(AddNodeActionDefinition definition, Item item, @Named("adminCentral") EventBus eventBus) {
+    public AddNodeAction(AddNodeActionDefinition definition, Item item, @Named("admincentral") EventBus eventBus) {
         super(definition, item, eventBus);
     }
 

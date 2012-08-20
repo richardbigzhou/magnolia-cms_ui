@@ -35,6 +35,7 @@ package info.magnolia.ui.admincentral.content.view.builder;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +52,9 @@ import info.magnolia.ui.admincentral.thumbnail.view.ThumbnailView;
 import info.magnolia.ui.admincentral.tree.view.TreeView;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactoryImpl;
+import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionRegistry;
+import info.magnolia.ui.model.action.Action;
+import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.column.definition.LabelColumnDefinition;
 import info.magnolia.ui.model.workbench.definition.ConfiguredItemTypeDefinition;
 import info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition;
@@ -75,8 +79,10 @@ public class ConfiguredContentViewBuilderTest {
         final String workspace = "website";
         final MockSession session = new MockSession(workspace);
         MockUtil.setSessionAndHierarchyManager(session);
+        WorkbenchActionRegistry workbenchActionRegistry = mock(WorkbenchActionRegistry.class);
+        when(workbenchActionRegistry.getDefinitionToImplementationMappings()).thenReturn(new ArrayList<DefinitionToImplementationMapping<ActionDefinition,Action>>());
 
-        componentProvider.setInstance(WorkbenchActionFactory.class, new WorkbenchActionFactoryImpl());
+        componentProvider.setInstance(WorkbenchActionFactory.class, new WorkbenchActionFactoryImpl(null, workbenchActionRegistry));
         final ThumbnailProvider thumbnailProvider = mock(ThumbnailProvider.class);
         componentProvider.setInstance(ThumbnailProvider.class, thumbnailProvider);
 
@@ -99,7 +105,7 @@ public class ConfiguredContentViewBuilderTest {
         // GIVEN all conditions in setUp
 
         // WHEN
-        final ConfiguredContentViewBuilder builder = new ConfiguredContentViewBuilder(componentProvider);
+        final ContentViewBuilderImpl builder = new ContentViewBuilderImpl(componentProvider);
         final ContentView result = builder.build(workbenchDef, ViewType.LIST);
 
         // THEN
@@ -111,7 +117,7 @@ public class ConfiguredContentViewBuilderTest {
         // GIVEN all conditions in setUp
 
         // WHEN
-        final ConfiguredContentViewBuilder builder = new ConfiguredContentViewBuilder(componentProvider);
+        final ContentViewBuilderImpl builder = new ContentViewBuilderImpl(componentProvider);
         final ContentView result = builder.build(workbenchDef, ViewType.TREE);
 
         // THEN
@@ -123,7 +129,7 @@ public class ConfiguredContentViewBuilderTest {
         // GIVEN all conditions in setUp
 
         // WHEN
-        final ConfiguredContentViewBuilder builder = new ConfiguredContentViewBuilder(componentProvider);
+        final ContentViewBuilderImpl builder = new ContentViewBuilderImpl(componentProvider);
         final ContentView result = builder.build(workbenchDef, ViewType.THUMBNAIL);
 
         // THEN

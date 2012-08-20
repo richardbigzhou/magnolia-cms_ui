@@ -49,7 +49,7 @@ import info.magnolia.ui.framework.shell.ConfirmationHandler;
 import info.magnolia.ui.framework.shell.FragmentChangedHandler;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.framework.view.View;
-import info.magnolia.ui.widget.dialog.MagnoliaDialog;
+import info.magnolia.ui.widget.dialog.Dialog;
 import info.magnolia.ui.widget.magnoliashell.BaseMagnoliaShell;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
 import info.magnolia.ui.widget.magnoliashell.viewport.ShellViewport;
@@ -67,7 +67,6 @@ import org.slf4j.LoggerFactory;
 import org.vaadin.rpc.client.Method;
 
 import com.google.gson.Gson;
-import com.vaadin.terminal.ExternalResource;
 
 /**
  * Admin shell.
@@ -78,7 +77,7 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
 
     private static final Logger log = LoggerFactory.getLogger(MagnoliaShell.class);
 
-    private final EventBus adminCentralEventBus;
+    private final EventBus admincentralEventBus;
 
     private final AppController appController;
     private final Provider<ShellAppController> shellAppControllerProvider;
@@ -86,13 +85,13 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
     private final MessagesManager messagesManager;
     
     @Inject
-    public MagnoliaShell(@Named("adminCentral") EventBus adminCentralEventBus, Provider<ShellAppController> shellAppControllerProvider, AppController appController, MessagesManager messagesManager) {
+    public MagnoliaShell(@Named("admincentral") EventBus admincentralEventBus, Provider<ShellAppController> shellAppControllerProvider, AppController appController, MessagesManager messagesManager) {
         super();
         this.messagesManager = messagesManager;
-        this.adminCentralEventBus = adminCentralEventBus;
+        this.admincentralEventBus = admincentralEventBus;
         this.appController = appController;
         this.shellAppControllerProvider = shellAppControllerProvider;
-        this.adminCentralEventBus.addHandler(AppLifecycleEvent.class, new AppLifecycleEventHandler.Adapter() {
+        this.admincentralEventBus.addHandler(AppLifecycleEvent.class, new AppLifecycleEventHandler.Adapter() {
 
             @Override
             public void onAppFocused(AppLifecycleEvent event) {
@@ -118,7 +117,7 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
             }
         });
         
-        this.adminCentralEventBus.addHandler(MessageEvent.class, this);
+        this.admincentralEventBus.addHandler(MessageEvent.class, this);
     }
 
     @Override
@@ -145,12 +144,7 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
     public void showError(String message, Exception e) {
         throw new UnsupportedOperationException("Use MessagesManager class for messages dispatching");
     }
-
-    @Override
-    public void openWindow(String uri, String windowName) {
-        getWindow().open(new ExternalResource(uri), windowName);
-    }
-
+    
     @Override
     public String getFragment() {
         final ShellViewport activeViewport = getActiveViewport();
@@ -190,21 +184,16 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
     }
 
     @Override
-    public Shell createSubShell(String id) {
-        throw new UnsupportedOperationException("MagnoliaShell is not capable of opening the subshells.");
-    }
-
-    @Override
     public void removeMessage(String messageId) {
         super.removeMessage(messageId);
         messagesManager.clearMessage(MgnlContext.getUser().getName(), messageId);
     }
     
-    public void openDialog(MagnoliaDialog component) {
+    public void openDialog(Dialog component) {
         addDialog(component.asVaadinComponent());
     }
 
-    public void removeDialog(MagnoliaDialog dialog) {
+    public void removeDialog(Dialog dialog) {
         removeDialog(dialog.asVaadinComponent());
     }
 
@@ -262,6 +251,13 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
             requestRepaint();
         } else {
             super.navigateToShellApp(prefix, token);
+        }
+    }
+
+    @Override
+    public void pushToClient() {
+        synchronized (getApplication()) {
+            getPusher().push();
         }
     }
 }

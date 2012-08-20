@@ -19,7 +19,7 @@
     <sv:value>info.magnolia.ui.admincentral.app.content.ContentAppDescriptor</sv:value>
   </sv:property>
   <sv:property sv:name="icon" sv:type="String">
-    <sv:value>icon-contacts</sv:value>
+    <sv:value>icon-people</sv:value>
   </sv:property>
   <sv:property sv:name="jcr:createdBy" sv:type="String">
     <sv:value>admin</sv:value>

@@ -136,7 +136,12 @@ public class MagnoliaTreeTable extends HybridSelectionTreeTable {
                     // On which side of the target the item was dropped
                     VerticalDropLocation location = target.getDropLocation();
 
-                    log.debug("DropLocation: " + location.name());
+                    if(location == null) {
+                        log.debug("DropLocation is null. Do nothing.");
+                        return;
+                    }
+
+                    log.debug("DropLocation: {}", location.name());
 
                     HierarchicalJcrContainer containerWrapper = (HierarchicalJcrContainer) getContainerDataSource();
                     // Drop right on an item -> make it a child -
@@ -151,7 +156,7 @@ public class MagnoliaTreeTable extends HybridSelectionTreeTable {
                     else if (location == VerticalDropLocation.TOP) {
                         Object parentId = containerWrapper.getParent(targetItemId);
                         if (parentId != null) {
-                            log.debug("Parent:" + containerWrapper.getItem(parentId));
+                            log.debug("Parent: {}",containerWrapper.getItem(parentId));
                             JcrItemAdapter sourceItem = (JcrItemAdapter) container.getItem(sourceItemId);
                             JcrItemAdapter targetItem = (JcrItemAdapter) container.getItem(targetItemId);
                             if (treeModel.moveItemBefore(sourceItem.getJcrItem(), targetItem.getJcrItem())) {

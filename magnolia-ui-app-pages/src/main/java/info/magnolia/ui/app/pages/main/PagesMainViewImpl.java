@@ -33,9 +33,11 @@
  */
 package info.magnolia.ui.app.pages.main;
 
-import com.vaadin.ui.Component;
-
 import info.magnolia.ui.framework.view.View;
+
+import com.vaadin.ui.Component;
+import com.vaadin.ui.VerticalLayout;
+
 
 /**
  * View implementation for the Pages app.
@@ -44,16 +46,45 @@ import info.magnolia.ui.framework.view.View;
 public class PagesMainViewImpl implements PagesMainView {
 
     private View workbenchView;
+
     private Listener listener;
+
+    private final VerticalLayout root = new VerticalLayout();
+
+    public PagesMainViewImpl() {
+        root.setSizeFull();
+
+        // final HorizontalLayout sharingStuff = new HorizontalLayout();
+        // sharingStuff.addComponent(new Button("Share", new ClickListener() {
+        // @Override
+        // public void buttonClick(ClickEvent event) {
+        // listener.share();
+        // }
+        // }));
+        //
+        // final TextField hostIdTf = new TextField();
+        // sharingStuff.addComponent(hostIdTf);
+        // sharingStuff.addComponent(new Button("Subscribe", new ClickListener() {
+        // @Override
+        // public void buttonClick(ClickEvent event) {
+        // listener.subscribe(String.valueOf(hostIdTf.getValue()));
+        // }
+        // }));
+        // sharingStuff.setSizeUndefined();
+        // root.addComponent(sharingStuff);
+    }
 
     @Override
     public Component asVaadinComponent() {
-        return workbenchView.asVaadinComponent();
+        return root;// workbenchView.asVaadinComponent();
     }
 
     @Override
     public void setWorkbenchView(View workbenchView) {
         this.workbenchView = workbenchView;
+        root.addComponent(workbenchView.asVaadinComponent());
+        root.setExpandRatio(workbenchView.asVaadinComponent(), 1f);
+
     }
 
     @Override

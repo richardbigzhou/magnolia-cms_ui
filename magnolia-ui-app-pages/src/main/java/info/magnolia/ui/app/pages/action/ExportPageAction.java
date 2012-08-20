@@ -44,12 +44,14 @@ import info.magnolia.ui.admincentral.image.ImageSize;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.thumbnail.AbstractThumbnailProvider;
-import org.apache.jackrabbit.value.BinaryImpl;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.Binary;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.GregorianCalendar;
@@ -84,6 +86,7 @@ public class ExportPageAction extends ActionBase<ExportPageActionDefinition> {
 
             InputStream is = renderer.render(nodeToExport.getPath(), user);
             saveImage(nodeToExport, is, definition.getContentType(), definition.getName());
+            is.close();
 
         } catch (RepositoryException e) {
             log.error(e.getMessage(), e);
@@ -94,6 +97,10 @@ public class ExportPageAction extends ActionBase<ExportPageActionDefinition> {
         }
     }
 
+    /**
+     * Save the image to jcr.
+     * @param inputStream containing the image. Caution: it'll not be closed in here.
+     */
     private void saveImage(Node node, InputStream inputStream, String contentType, String extension) throws RepositoryException, IOException {
 
         String fileName = node.getName();
@@ -104,9 +111,10 @@ public class ExportPageAction extends ActionBase<ExportPageActionDefinition> {
             child = node.addNode(IMAGE_NODE_NAME, MgnlNodeType.NT_RESOURCE);
         }
 
-        BinaryImpl binaryImpl = new BinaryImpl(inputStream);
+        final Session session = node.getSession();
+        final Binary binary = session.getValueFactory().createBinary(inputStream);
 
-        child.setProperty(MgnlNodeType.JCR_DATA, binaryImpl);
+        child.setProperty(MgnlNodeType.JCR_DATA, binary);
 
         child.setProperty(FileProperties.PROPERTY_FILENAME, fileName);
         child.setProperty(FileProperties.PROPERTY_CONTENTTYPE, contentType);
@@ -114,11 +122,16 @@ public class ExportPageAction extends ActionBase<ExportPageActionDefinition> {
 
         child.setProperty(FileProperties.PROPERTY_LASTMODIFIED, new GregorianCalendar(TimeZone.getDefault()));
 
-        child.setProperty(FileProperties.PROPERTY_SIZE, binaryImpl.getSize());
+        child.setProperty(FileProperties.PROPERTY_SIZE, binary.getSize());
 
-        ImageSize imageSize = ImageSize.valueOf(binaryImpl.getStream());
-        child.setProperty(FileProperties.PROPERTY_WIDTH, imageSize!=null ? imageSize.getWidth():150);
-        child.setProperty(FileProperties.PROPERTY_HEIGHT, imageSize!=null ? imageSize.getHeight():150);
+        final InputStream streamFromBinary = binary.getStream();
+        ImageSize imageSize = ImageSize.valueOf(streamFromBinary);
+
+        child.setProperty(FileProperties.PROPERTY_WIDTH, imageSize == null ? 150 : imageSize.getWidth());
+        child.setProperty(FileProperties.PROPERTY_HEIGHT, imageSize == null ? 150 : imageSize.getHeight());
+
         child.getSession().save();
+        streamFromBinary.close();
+        binary.dispose();
     }
 }

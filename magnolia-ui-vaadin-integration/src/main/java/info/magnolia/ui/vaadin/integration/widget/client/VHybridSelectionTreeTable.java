@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.vaadin.integration.widget.client;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -67,7 +69,7 @@ public class VHybridSelectionTreeTable extends VTreeTable {
             }
         });
 
-        addDomHandler(new VHybridSelectionUtils.VHybridSelectionMouseUpHandler(selectAllCheckBox), MouseUpEvent.getType());
+        addDomHandler(new VHybridSelectionUtils.VHybridSelectionMouseUpHandler(selectAllCheckBox, this), MouseUpEvent.getType());
 
         Event.addNativePreviewHandler(new NativePreviewHandler() {
             @Override
@@ -76,7 +78,9 @@ public class VHybridSelectionTreeTable extends VTreeTable {
                 int eventCode = event.getTypeInt();
                 if (eventCode == Event.ONMOUSEUP) {
                     final Element target = nativeEvent.getEventTarget().cast();
-                    if (target.getTagName().equalsIgnoreCase("input") && target.getClassName().contains("v-selection-cb")) {
+                    if (target.getTagName().equalsIgnoreCase("input") && 
+                        target.getClassName().contains("v-selection-cb") &&
+                        getElement().isOrHasChild(target)) {
                         event.cancel();
                         final Element rowElement = VHybridSelectionUtils.findParentRowElement(target);
                         if (rowElement != null) {
@@ -103,8 +107,13 @@ public class VHybridSelectionTreeTable extends VTreeTable {
     @Override
     public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
         super.updateFromUIDL(uidl, client);
-        VHybridSelectionUtils.updateCheckBoxesForSelectedRows();
-        VHybridSelectionUtils.updateSelectAllControl(selectAllCheckBox);
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+            @Override
+            public void execute() {
+                VHybridSelectionUtils.updateCheckBoxesForSelectedRows(VHybridSelectionTreeTable.this);
+                VHybridSelectionUtils.updateSelectAllControl(selectAllCheckBox, VHybridSelectionTreeTable.this);
+            }
+        });
     }
 
     private native void addDOMCallbacks(Element body) /*-{
@@ -139,7 +148,7 @@ public class VHybridSelectionTreeTable extends VTreeTable {
     @Override
     public void deselectAll() {
         super.deselectAll();
-        VHybridSelectionUtils.deselectAllCheckBoxes();
+        VHybridSelectionUtils.deselectAllCheckBoxes(this);
     }
 
 }

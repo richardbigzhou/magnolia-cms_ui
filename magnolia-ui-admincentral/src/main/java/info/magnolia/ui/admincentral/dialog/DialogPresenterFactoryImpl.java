@@ -35,11 +35,11 @@ package info.magnolia.ui.admincentral.dialog;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.registry.RegistrationException;
-import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.admincentral.dialog.action.DialogActionFactory;
 import info.magnolia.ui.admincentral.dialog.builder.DialogBuilder;
 import info.magnolia.ui.admincentral.field.builder.DialogFieldFactory;
 import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 import info.magnolia.ui.model.dialog.registry.DialogDefinitionRegistry;
 import info.magnolia.ui.widget.dialog.MagnoliaDialogView;
@@ -56,7 +56,7 @@ import javax.inject.Singleton;
 public class DialogPresenterFactoryImpl implements DialogPresenterFactory {
 
     private DialogDefinitionRegistry dialogDefinitionRegistry;
-    private MagnoliaShell shell;
+    private Shell shell;
     private DialogBuilder dialogBuilder;
     private EventBus eventBus;
     private DialogActionFactory actionFactory;
@@ -64,7 +64,7 @@ public class DialogPresenterFactoryImpl implements DialogPresenterFactory {
     private ComponentProvider componentProvider;
 
     @Inject
-    public DialogPresenterFactoryImpl(ComponentProvider componentProvider, DialogDefinitionRegistry dialogDefinitionRegistry, DialogBuilder dialogBuilder, DialogFieldFactory dialogFieldFactory, MagnoliaShell shell, @Named("adminCentral") EventBus eventBus, final DialogActionFactory actionFactory) {
+    public DialogPresenterFactoryImpl(ComponentProvider componentProvider, DialogDefinitionRegistry dialogDefinitionRegistry, DialogBuilder dialogBuilder, DialogFieldFactory dialogFieldFactory, Shell shell, @Named("admincentral") EventBus eventBus, final DialogActionFactory actionFactory) {
         this.dialogDefinitionRegistry = dialogDefinitionRegistry;
         this.dialogBuilder = dialogBuilder;
         this.dialogFieldFactory = dialogFieldFactory;

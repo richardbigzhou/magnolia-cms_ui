@@ -34,14 +34,20 @@
 package info.magnolia.ui.admincentral.tree.container;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.admincentral.column.Column;
 import info.magnolia.ui.admincentral.column.PropertyTypeColumn;
 import info.magnolia.ui.admincentral.container.AbstractJcrContainerTest;
+import info.magnolia.ui.admincentral.content.view.builder.DefinitionToImplementationMapping;
 import info.magnolia.ui.admincentral.tree.model.TreeModel;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactoryImpl;
+import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionRegistry;
+import info.magnolia.ui.model.action.Action;
+import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.column.definition.AbstractColumnDefinition;
 import info.magnolia.ui.model.column.definition.PropertyTypeColumnDefinition;
 import info.magnolia.ui.model.workbench.definition.ConfiguredItemTypeDefinition;
@@ -50,6 +56,7 @@ import info.magnolia.ui.model.workbench.definition.ItemTypeDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -98,7 +105,9 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         configuredWorkbench.setWorkspace(workspace);
         configuredWorkbench.setPath("/");
         // Init workBench
-        WorkbenchActionFactory workbenchActionFactory = new WorkbenchActionFactoryImpl();
+        WorkbenchActionRegistry workbenchActionRegistry = mock(WorkbenchActionRegistry.class);
+        when(workbenchActionRegistry.getDefinitionToImplementationMappings()).thenReturn(new ArrayList<DefinitionToImplementationMapping<ActionDefinition,Action>>());
+        WorkbenchActionFactory workbenchActionFactory = new WorkbenchActionFactoryImpl(null,workbenchActionRegistry);
         // Init col
         Map<String, Column< ? >> columns = new LinkedHashMap<String, Column< ? >>();
         PropertyTypeColumnDefinition colDef1 = new PropertyTypeColumnDefinition();

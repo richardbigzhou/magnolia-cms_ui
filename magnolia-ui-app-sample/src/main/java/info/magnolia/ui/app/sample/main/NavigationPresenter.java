@@ -34,30 +34,22 @@
 package info.magnolia.ui.app.sample.main;
 
 import javax.inject.Inject;
+import javax.inject.Named;
+
+import info.magnolia.ui.framework.event.EventBus;
 
 /**
  * Presenter for the navigation.
  */
 public class NavigationPresenter implements NavigationView.Listener {
 
-    /**
-     * Listener for NavigationPresenter.
-     */
-    public interface Listener {
-
-        void onItemSelected(String name);
-    }
-
-    private Listener listener;
+    private EventBus appEventBus;
     private NavigationView view;
 
     @Inject
-    public NavigationPresenter(NavigationView view) {
+    public NavigationPresenter(@Named("app") EventBus appEventBus, NavigationView view) {
+        this.appEventBus = appEventBus;
         this.view = view;
-    }
-
-    public void setListener(Listener listener) {
-        this.listener = listener;
     }
 
     public NavigationView start() {
@@ -67,6 +59,6 @@ public class NavigationPresenter implements NavigationView.Listener {
 
     @Override
     public void onItemSelected(String name) {
-        listener.onItemSelected(name);
+        appEventBus.fireEvent(new ContentItemSelectedEvent(name));
     }
 }

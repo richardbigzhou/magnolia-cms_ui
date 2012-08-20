@@ -35,6 +35,7 @@ package info.magnolia.ui.admincentral.field;
 
 import org.vaadin.addon.customfield.CustomField;
 
+import com.vaadin.data.Property;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
@@ -60,7 +61,6 @@ public class TextAndButtonField extends CustomField {
         setCompositionRoot(layout);
     }
 
-
     public TextField getTextField() {
         return this.textField;
     }
@@ -69,6 +69,26 @@ public class TextAndButtonField extends CustomField {
         return this.selectButton;
     }
 
+
+    @Override
+    public Object getValue() {
+        return textField.getValue();
+    }
+
+    @Override
+    public void setValue(Object newValue) throws ReadOnlyException, ConversionException {
+        textField.setValue(newValue);
+    }
+
+    @Override
+    public void setPropertyDataSource(Property newDataSource) {
+        textField.setPropertyDataSource(newDataSource);
+    }
+
+    @Override
+    public Property getPropertyDataSource() {
+        return textField.getPropertyDataSource();
+    }
 
     @Override
     public Class< ? > getType() {

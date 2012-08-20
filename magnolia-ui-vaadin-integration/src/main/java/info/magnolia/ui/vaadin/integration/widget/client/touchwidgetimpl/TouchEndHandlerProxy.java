@@ -37,7 +37,7 @@ import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
 import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
 
 /**
- * Proxy implementayion of native gwt
+ * Proxy implementation of native gwt
  * {@link com.google.gwt.event.dom.client.TouchEndHandler} that delegates to
  * mgwt {@link TouchEndHandler}.
  * 

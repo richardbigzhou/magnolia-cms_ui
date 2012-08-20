@@ -41,6 +41,9 @@ public class LinkFieldDefinition extends ConfiguredFieldDefinition {
 
     private String workspace = "website";
     private String extension;
+    // Sub Dialog Name. Used by the LinkField to create the
+    // sub dialog. like 'ui-admincentral:link'
+    private String dialogName;
     private String listView;
     private String width = "100%";
     private String buttonLabel = "Select";
@@ -92,5 +95,13 @@ public class LinkFieldDefinition extends ConfiguredFieldDefinition {
 
     public void setUuid(boolean uuid) {
         this.uuid = uuid;
+    }
+
+    public String getDialogName() {
+        return this.dialogName;
+    }
+
+    public void setDialogName(String dialogName) {
+        this.dialogName = dialogName;
     }
 }

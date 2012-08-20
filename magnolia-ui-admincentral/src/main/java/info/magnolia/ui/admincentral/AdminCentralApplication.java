@@ -60,7 +60,13 @@ public class AdminCentralApplication extends Application {
 
     private static final Logger log = LoggerFactory.getLogger(AdminCentralApplication.class);
 
+    private static final Boolean isDeviceOverrideTablet = true;
+
     private Window window;
+
+    public boolean getIsDeviceOverrideTablet(){
+        return isDeviceOverrideTablet;
+    }
 
     @Override
     public void init() {
@@ -70,9 +76,9 @@ public class AdminCentralApplication extends Application {
         log.debug("Read component configurations from module descriptors...");
         ComponentProviderConfigurationBuilder configurationBuilder = new ComponentProviderConfigurationBuilder();
         List<ModuleDefinition> moduleDefinitions = Components.getComponent(ModuleRegistry.class).getModuleDefinitions();
-        ComponentProviderConfiguration adminCentralConfig = configurationBuilder.getComponentsFromModules("admincentral", moduleDefinitions);
+        ComponentProviderConfiguration admincentralConfig = configurationBuilder.getComponentsFromModules("admincentral", moduleDefinitions);
 
-        ComponentProviderConfiguration configuration = adminCentralConfig.clone();
+        ComponentProviderConfiguration configuration = admincentralConfig.clone();
         configuration.addComponent(InstanceConfiguration.valueOf(Application.class, this));
 
         log.debug("Creating the component provider...");

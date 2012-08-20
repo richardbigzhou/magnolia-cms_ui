@@ -1,15 +1,17 @@
 .v-actionbar {
    float:right;
-    width:270px;
+
+    width:50px;
 	margin-top:5px;
 	background:#666;
 	color:#fff;
-
 }
 
-.v-tablet-toggle{
-    display:none;
+.v-actionbar.open{
+    width:270px;
 }
+
+
 
 .v-actionbar-section {
 	padding-left:10px;
@@ -20,12 +22,17 @@
     padding:5px 5px 5px 8px;
 }
 
-.v-actionbar-section-title {
+.v-actionbar.open .v-actionbar-section-title {
+    display:block;
+
 	margin:0;
 	color:#aabf2f;
 	font-family:DINWebPro,Verdana;
     font-size:16px;
     font-weight:normal;
+}
+.v-actionbar .v-actionbar-section-title {
+    display:none;
 }
 
 .v-actionbar-group {
@@ -92,17 +99,59 @@
 
 
 
+.v-actionbar-toggle {
+    position:absolute;
+    display:block;
+    right:0px;
+    width:50px;
+    height:30px;
+    border:none;
+    background:#666 ;
+    text-align:center;
+
+    color:#fff;
+    font-size:12px;
+
+    z-index:20;
+}
+
+
+
+.v-actionbar-toggle-icon {
+    display:block;
+    width:30px;
+    height:40px;
+    color:#fff;
+    font-size:12px;
+    background-image: url("img/actionbar-toggle-open.png");
+    background-position: center center;
+    background-repeat: no-repeat;
+    float:right;
+
+}
+
+.v-actionbar-toggle-icon.open{
+    background-image: url("img/actionbar-toggle-close.png");
+}
+
+
 /****  Handling Tablet ****/
 
 .tablet .v-actionbar{
-    position:relative;
+
     width:69px;
     background:none;
+}
+
+.tablet .v-actionbar-section{
+    position: absolute;
+    top:0px;
 }
 
 .tablet .v-actionbar-section > header {
     /*width:69px;
     background:#666666;    */
+
     display:none;
 }
 
@@ -117,38 +166,21 @@
 .tablet .v-action{
     position:absolute;
     display:block;
-    left:1px;
+    left:0px;
     width:69px;
     height:78px;
     border:none;
     background:#666 ;
     text-align:center;
 
-    color:#fff;
-    font-size:12px;
-}
-
-.tablet .v-tablet-toggle{
-    position:absolute;
-    display:block;
-    left:1px;
-    width:69px;
-    height:30px;
-    border:none;
-    background:#666 ;
-    text-align:center;
+    border-left:solid 1px white;
+    margin-left:-1px;
 
     color:#fff;
     font-size:12px;
-
-    background-image: url("img/actionbar-toggle-close.png");
-    background-position: center center;
-    background-repeat: no-repeat;
+    z-index:10;
 }
 
-.tablet .v-tablet-toggle.open{
-    background-image: url("img/actionbar-toggle-open.png");
-}
 
 .tablet .v-action .v-icon{
     left:20px;
@@ -169,17 +201,21 @@
     position:absolute;
 }
 
+.tablet .v-actionbar-toggle {
+    width:69px;
+    height:40px;
+}
 
 .tablet .v-action.col-0{
-    left:1px;
+    left:0px;
     z-index:100;
 
-    background-image: url("img/actionbar-tablet-flyout-toggle-close.png");
+    background-image: url("img/actionbar-tablet-flyout-toggle-open.png");
     background-position: 3px 66px;
     background-repeat: no-repeat;
 }
 .tablet .v-actionbar-group.open .v-action.col-0{
-    background-image: url("img/actionbar-tablet-flyout-toggle-open.png");
+    background-image: url("img/actionbar-tablet-flyout-toggle-close.png");
 }
 
 

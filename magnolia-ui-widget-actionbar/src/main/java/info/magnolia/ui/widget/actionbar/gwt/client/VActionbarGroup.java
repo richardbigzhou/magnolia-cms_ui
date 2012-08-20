@@ -55,7 +55,7 @@ public class VActionbarGroup extends ComplexPanel {
 
     private final String name;
 
-    private boolean isHorizontalCollapsed = false;
+    private boolean isOpenHorizontal = false;
 
 
 
@@ -72,18 +72,23 @@ public class VActionbarGroup extends ComplexPanel {
         return name;
     }
 
-    public void toggleHorizontalCollapse(){
-        isHorizontalCollapsed = !isHorizontalCollapsed;
-        if (isHorizontalCollapsed){
-            removeStyleName("open");
-        }else{
+    public void toggleHorizontal(){
+        isOpenHorizontal = !isOpenHorizontal;
+        if (isOpenHorizontal){
             addStyleName("open");
+        }else{
+            removeStyleName("open");
         }
     }
 
-    public void horizontalCollapse(){
-        isHorizontalCollapsed = false;
+    public void closeHorizontal(){
+        isOpenHorizontal = false;
         removeStyleName("open");
+    }
+
+    public void openHorizontal(){
+        isOpenHorizontal = true;
+        addStyleName("open");
     }
 
     @Override

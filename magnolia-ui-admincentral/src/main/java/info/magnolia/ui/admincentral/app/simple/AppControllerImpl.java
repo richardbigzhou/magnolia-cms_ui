@@ -111,17 +111,17 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     private AppContextImpl currentApp;
 
     @Inject
-    public AppControllerImpl(ModuleRegistry moduleRegistry, ComponentProvider componentProvider, AppLauncherLayoutManager appLauncherLayoutManager, LocationController locationController, MessagesManager messagesManager, Shell shell, @Named("adminCentral") EventBus adminCentralEventBus) {
+    public AppControllerImpl(ModuleRegistry moduleRegistry, ComponentProvider componentProvider, AppLauncherLayoutManager appLauncherLayoutManager, LocationController locationController, MessagesManager messagesManager, Shell shell, @Named("admincentral") EventBus admincentralEventBus) {
         this.moduleRegistry = moduleRegistry;
         this.componentProvider = componentProvider;
         this.appLauncherLayoutManager = appLauncherLayoutManager;
         this.locationController = locationController;
         this.messagesManager = messagesManager;
         this.shell = shell;
-        this.eventBus = adminCentralEventBus;
+        this.eventBus = admincentralEventBus;
 
-        adminCentralEventBus.addHandler(LocationChangedEvent.class, this);
-        adminCentralEventBus.addHandler(LocationChangeRequestedEvent.class, this);
+        admincentralEventBus.addHandler(LocationChangedEvent.class, this);
+        admincentralEventBus.addHandler(LocationChangeRequestedEvent.class, this);
     }
 
     @Override

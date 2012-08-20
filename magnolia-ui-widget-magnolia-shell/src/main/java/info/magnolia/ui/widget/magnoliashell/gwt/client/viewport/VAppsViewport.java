@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.widget.magnoliashell.gwt.client.viewport;
 
+import com.google.gwt.core.shared.GWT;
 import com.googlecode.mgwt.dom.client.recognizer.swipe.SwipeMoveEvent;
 import com.googlecode.mgwt.dom.client.recognizer.swipe.SwipeMoveHandler;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
@@ -82,6 +83,7 @@ public class VAppsViewport extends VShellViewport {
             public void onSwipeMove(SwipeMoveEvent event) {
                 //log.warn("Test logging on Swipe");
                 System.out.println("Got a swipe.");
+                GWT.log("VAppsViewport.java GWT Got a swipe.");
             }
         });
     }

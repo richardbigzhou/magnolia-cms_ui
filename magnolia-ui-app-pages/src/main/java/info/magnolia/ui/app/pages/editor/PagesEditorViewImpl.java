@@ -36,6 +36,7 @@ package info.magnolia.ui.app.pages.editor;
 import info.magnolia.ui.widget.actionbar.ActionbarView;
 import info.magnolia.ui.widget.editor.PageEditorView;
 
+import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
@@ -59,14 +60,13 @@ public class PagesEditorViewImpl implements PagesEditorView {
 
     public PagesEditorViewImpl() {
         root.setSizeFull();
-        root.setStyleName("mgnl-app-root");
+        root.setStyleName("workbench");
         root.addComponent(container);
-        root.setExpandRatio(container, 1f);
-        root.setMargin(false);
+        root.setExpandRatio(container, 1);
         root.setSpacing(true);
+        root.setMargin(false);
 
         container.setSizeFull();
-        container.setStyleName("mgnl-app-view");
         container.setImmediate(true);
     }
 
@@ -87,6 +87,7 @@ public class PagesEditorViewImpl implements PagesEditorView {
 
     @Override
     public void setActionbarView(final ActionbarView actionbar) {
+        actionbar.asVaadinComponent().setWidth(Sizeable.SIZE_UNDEFINED, 0);
         if (this.actionbar == null) {
             root.addComponent(actionbar.asVaadinComponent());
         } else {

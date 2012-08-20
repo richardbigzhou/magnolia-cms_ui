@@ -44,7 +44,7 @@ import com.vaadin.ui.Field;
  * Represents a tab in a dialog.
  *
  * @see Dialog
- * @see info.magnolia.ui.admincentral.field.DialogField
+ * @see info.magnolia.ui.admincentral.field.FieldBuilder
  */
 public class DialogTab extends AbstractDialogItem {
 

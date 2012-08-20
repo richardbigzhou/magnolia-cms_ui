@@ -57,7 +57,7 @@ import com.vaadin.data.Property.ValueChangeEvent;
 /**
  * Abstract implementation of an {@link com.vaadin.data.Item} wrapping/representing a
  * {@link javax.jcr.Node}. Implements {Property.ValueChangeListener} in order to inform/change JCR
- * property when a Vaadim property has changed. Access JCR repository for all read Jcr Property.
+ * property when a Vaadin property has changed. Access JCR repository for all read Jcr Property.
  */
 public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implements Property.ValueChangeListener, JcrItemNodeAdapter {
 
@@ -66,13 +66,13 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
 
     private String primaryNodeTypeName;
 
-    protected Map<String, Property> changedProperties = new HashMap<String, Property>();
+    private Map<String, Property> changedProperties = new HashMap<String, Property>();
 
-    protected Map<String, Property> removedProperties = new HashMap<String, Property>();
+    private Map<String, Property> removedProperties = new HashMap<String, Property>();
 
-    protected Map<String, JcrItemNodeAdapter> childs = new HashMap<String, JcrItemNodeAdapter>();
+    private Map<String, JcrItemNodeAdapter> children = new HashMap<String, JcrItemNodeAdapter>();
 
-    protected Map<String, JcrItemNodeAdapter> removedChilds = new HashMap<String, JcrItemNodeAdapter>();
+    private Map<String, JcrItemNodeAdapter> removedChildren = new HashMap<String, JcrItemNodeAdapter>();
 
     private JcrItemNodeAdapter parent;
 
@@ -105,6 +105,18 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
     @Override
     public String getPrimaryNodeTypeName() {
         return primaryNodeTypeName;
+    }
+
+    protected Map<String, Property> getChangedProperties() {
+        return changedProperties;
+    }
+
+    protected Map<String, Property> getRemovedProperties() {
+        return removedProperties;
+    }
+
+    protected Map<String, JcrItemNodeAdapter> getRemovedChildren() {
+        return removedChildren;
     }
 
     /**
@@ -173,7 +185,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
 
     /**
      * Listener to DefaultProperty value change event. Get this event when a property has changed,
-     * and propagate this VaadimProperty value change to the corresponding JCR property.
+     * and propagate this Vaadin Property value change to the corresponding JCR property.
      */
     @Override
     public void valueChange(ValueChangeEvent event) {
@@ -183,7 +195,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
             Object value = property.getValue();
             try {
                 if (getNodeFromRepository().hasProperty(name)) {
-                    log.debug("Update existing propertie: " + name + " with value: " + value);
+                    log.debug("Update existing property: {} with value: {}.", name, value);
                     PropertyUtil.getProperty(getNodeFromRepository(), name).setValue((String) value);
                 }
                 else {
@@ -209,7 +221,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
     /**
      * Get the referenced node and update the property. Update property will: remove existing JCR
      * property if requested add newly and setted property update existing modified property. In
-     * addition defined childs nodes are updated or removed.
+     * addition defined children nodes are updated or removed.
      */
     @Override
     public Node getNode() {
@@ -219,14 +231,14 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
             // Update Node property
             updateProperty(node);
             // Update Child Nodes
-            if (!childs.isEmpty()) {
-                for (JcrItemNodeAdapter child : childs.values()) {
+            if (!children.isEmpty()) {
+                for (JcrItemNodeAdapter child : children.values()) {
                     child.getNode();
                 }
             }
             // Remove child node if needed
-            if (!removedChilds.isEmpty()) {
-                for (JcrItemNodeAdapter removedChild : removedChilds.values()) {
+            if (!removedChildren.isEmpty()) {
+                for (JcrItemNodeAdapter removedChild : removedChildren.values()) {
                     if (node.hasNode(removedChild.getNodeName())) {
                         node.getNode(removedChild.getNodeName()).remove();
                     }
@@ -252,7 +264,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
         // Update property
         for (Entry<String, Property> entry : changedProperties.entrySet()) {
             // Check saveInfo Flag
-            if (!((DefaultProperty) entry.getValue()).isSaveInfo() || ((DefaultProperty) entry.getValue()).isReadOnly()) {
+            if (!((DefaultProperty) entry.getValue()).isSaveInfo() || entry.getValue().isReadOnly()) {
                 continue;
             }
             // JCRNAME has change --> perform the renaming and continue
@@ -284,33 +296,33 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
 
     @Override
     public JcrItemNodeAdapter getChild(String id) {
-        return childs.get(id);
+        return children.get(id);
     }
 
     @Override
-    public Map<String, JcrItemNodeAdapter> getChilds() {
-        return childs;
+    public Map<String, JcrItemNodeAdapter> getChildren() {
+        return children;
     }
 
     /**
-     * Add a Item in the child list. Remove this item from the removedChilds list if present.
+     * Add a Item in the child list. Remove this item from the removedChildren list if present.
      */
     @Override
     public JcrItemNodeAdapter addChild(JcrItemNodeAdapter child) {
-        if (removedChilds.containsKey(((AbstractJcrAdapter)child).getNodeIdentifier())) {
-            removedChilds.remove(((AbstractJcrAdapter)child).getNodeIdentifier());
+        if (removedChildren.containsKey(((AbstractJcrAdapter)child).getNodeIdentifier())) {
+            removedChildren.remove(((AbstractJcrAdapter)child).getNodeIdentifier());
         }
         child.setParent(this);
-        return childs.put(((AbstractJcrAdapter)child).getNodeIdentifier(), child);
+        return children.put(((AbstractJcrAdapter)child).getNodeIdentifier(), child);
     }
 
     /**
-     * Add the removed child in the remouvedChilds map.
+     * Add the removed child in the removedChildren map.
      */
     @Override
-    public boolean removeChild(JcrItemNodeAdapter toRemouve) {
-        removedChilds.put(((AbstractJcrAdapter)toRemouve).getNodeIdentifier(), toRemouve);
-        return childs.remove(((AbstractJcrAdapter)toRemouve).getNodeIdentifier()) != null;
+    public boolean removeChild(JcrItemNodeAdapter toRemove) {
+        removedChildren.put(((AbstractJcrAdapter) toRemove).getNodeIdentifier(), toRemove);
+        return children.remove(((AbstractJcrAdapter)toRemove).getNodeIdentifier()) != null;
     }
 
     /**

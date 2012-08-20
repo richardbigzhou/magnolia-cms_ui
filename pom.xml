@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>info.magnolia</groupId>
@@ -97,7 +98,7 @@
 				<groupId>com.google.gwt</groupId>
 				<artifactId>gwt-user</artifactId>
 				<version>${gwtVersion}</version>
-				<scope>provided</scope>
+				<scope>compile</scope>
 			</dependency>
 			<dependency>
 				<groupId>com.google.gwt</groupId>
@@ -146,6 +147,11 @@
 				<version>1.8.5</version>
 				<scope>test</scope>
 			</dependency>
+			<dependency>
+				<groupId>org.vaadin.addons</groupId>
+				<artifactId>autoreplacefield</artifactId>
+				<version>1.0.1</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -186,7 +192,7 @@
 		<module>magnolia-ui-app-contacts</module>
 		<module>magnolia-ui-app-messages</module>
 		<module>magnolia-ui-app-pages</module>
-		<module>magnolia-ui-webapp</module>
+		<module>magnolia-ui-app-instant-preview</module>
 	</modules>
 
 	<distributionManagement>
