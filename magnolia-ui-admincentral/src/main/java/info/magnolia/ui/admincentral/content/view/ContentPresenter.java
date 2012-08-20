@@ -36,7 +36,7 @@ package info.magnolia.ui.admincentral.content.view;
 import info.magnolia.ui.admincentral.app.content.ContentAppDescriptor;
 import info.magnolia.ui.admincentral.content.view.ContentView.ViewType;
 import info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilder;
-import info.magnolia.ui.admincentral.event.DoubleClickEvent;
+import info.magnolia.ui.admincentral.event.ItemDoubleClickedEvent;
 import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchView;
 import info.magnolia.ui.framework.app.AppContext;
@@ -62,7 +62,7 @@ public class ContentPresenter implements ContentView.Listener {
 
     private static final Logger log = LoggerFactory.getLogger(ContentPresenter.class);
 
-    private final EventBus eventBus;
+    private final EventBus subAppEventBus;
 
     private final Shell shell;
 
@@ -75,9 +75,9 @@ public class ContentPresenter implements ContentView.Listener {
     private String selectedItemId;
 
     @Inject
-    public ContentPresenter(final ContentViewBuilder contentViewBuilder, final AppContext context, @Named("app") final EventBus eventbus, final Shell shell) {
+    public ContentPresenter(final ContentViewBuilder contentViewBuilder, final AppContext context, @Named("subapp") final EventBus subAppEventBus, final Shell shell) {
         this.contentViewBuilder = contentViewBuilder;
-        this.eventBus = eventbus;
+        this.subAppEventBus = subAppEventBus;
         this.shell = shell;
         this.workbenchDefinition = ((ContentAppDescriptor) context.getAppDescriptor()).getWorkbench();
         this.workspaceName = ((ContentAppDescriptor) context.getAppDescriptor()).getWorkbench().getWorkspace();
@@ -108,13 +108,13 @@ public class ContentPresenter implements ContentView.Listener {
     public void onItemSelection(Item item) {
         if (item == null) {
             log.debug("Got null com.vaadin.data.Item. ItemSelectedEvent will be fired with null path.");
-            eventBus.fireEvent(new ItemSelectedEvent(workspaceName, null));
+            subAppEventBus.fireEvent(new ItemSelectedEvent(workspaceName, null));
             return;
         }
         try {
             selectedItemId = ((JcrItemAdapter) item).getItemId();
             log.debug("com.vaadin.data.Item at {} was selected. Firing ItemSelectedEvent...", selectedItemId);
-            eventBus.fireEvent(new ItemSelectedEvent(workspaceName, selectedItemId));
+            subAppEventBus.fireEvent(new ItemSelectedEvent(workspaceName, selectedItemId));
         } catch (Exception e) {
             shell.showError("An error occurred while selecting a row in the data grid", e);
         }
@@ -137,8 +137,8 @@ public class ContentPresenter implements ContentView.Listener {
         }
         try {
             selectedItemId = ((JcrItemAdapter) item).getItemId();
-            log.debug("com.vaadin.data.Item at {} was double clicked. Firing DoubleClickEvent...", selectedItemId);
-            eventBus.fireEvent(new DoubleClickEvent(workspaceName, selectedItemId));
+            log.debug("com.vaadin.data.Item at {} was double clicked. Firing ItemDoubleClickedEvent...", selectedItemId);
+            subAppEventBus.fireEvent(new ItemDoubleClickedEvent(workspaceName, selectedItemId));
         } catch (Exception e) {
             shell.showError("An error occurred while double clicking on a row in the data grid", e);
         }

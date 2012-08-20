@@ -46,7 +46,8 @@ public class ContentChangedEvent implements Event<ContentChangedEvent.Handler> {
     /**
      * Handles {@link ContentChangedEvent} events.
      */
-    public static interface Handler extends EventHandler {
+    public interface Handler extends EventHandler {
+
         void onContentChanged(ContentChangedEvent event);
     }
 
