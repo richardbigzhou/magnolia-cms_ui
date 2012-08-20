@@ -72,10 +72,9 @@ public class AppTestImpl extends AbstractApp {
     }
 
     @Override
-    public SubApp start(Location location) {
+    public void start(Location location) {
         events.add("start() with location "+location);
         currentLocation = location;
-        return subApp;
     }
 
     @Override
