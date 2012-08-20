@@ -98,7 +98,7 @@ public class PagesEditorSubApp implements SubApp, PagesEditorView.Listener {
                     ActionDefinition actionDefinition = event.getActionDefinition();
                     actionbarPresenter.createAndExecuteAction(actionDefinition, appDescriptor.getWorkbench().getWorkspace(), parameters.getNodePath());
                 } catch (ActionExecutionException e) {
-                    log.error("An error occurred while executung an action.", e);
+                    log.error("An error occurred while executing an action.", e);
                 }
             }
         });

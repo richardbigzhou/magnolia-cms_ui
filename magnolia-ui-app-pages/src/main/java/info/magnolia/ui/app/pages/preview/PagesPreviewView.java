@@ -34,11 +34,12 @@
 package info.magnolia.ui.app.pages.preview;
 
 import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.widget.actionbar.ActionbarView;
 
 /**
  * Displays the page preview.
  */
-public interface PagePreviewView extends View {
+public interface PagesPreviewView extends View {
 
     /**
      * Listener interface of the view.
@@ -51,4 +52,6 @@ public interface PagePreviewView extends View {
     void setListener(Listener listener);
 
     void setUrl(String url);
+
+    void setActionbarView(ActionbarView actionbar);
 }
