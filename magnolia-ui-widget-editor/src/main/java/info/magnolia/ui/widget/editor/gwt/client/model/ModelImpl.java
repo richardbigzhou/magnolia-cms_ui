@@ -52,7 +52,7 @@ import com.google.gwt.dom.client.Node;
 /**
  * Singleton keeping the model.
  */
-public class ModelStorage implements Model {
+public class ModelImpl implements Model {
 
     private final Map<MgnlElement, AbstractBar> editBars = new HashMap<MgnlElement, AbstractBar>();
 

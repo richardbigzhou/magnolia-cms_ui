@@ -48,5 +48,7 @@ public interface ColumnDefinition {
 
     boolean isSortable();
 
+    String getFormatterClass();
+
     Class<?> getType();
 }

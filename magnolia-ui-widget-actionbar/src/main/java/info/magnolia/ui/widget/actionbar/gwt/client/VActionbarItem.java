@@ -35,13 +35,14 @@ package info.magnolia.ui.widget.actionbar.gwt.client;
 
 import info.magnolia.ui.widget.actionbar.gwt.client.event.ActionTriggerEvent;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
+import com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler;
+import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.ui.Icon;
 
@@ -57,15 +58,23 @@ public class VActionbarItem extends Widget {
 
     private final Element text = DOM.createSpan();
 
+    // private final Element flyoutIndicator = DOM.createSpan();
+
     private final Element icon = DOM.createSpan();
 
     private final Icon iconImage;
 
-    private final VActionbarItemJSO data;
+    protected final VActionbarItemJSO data;
 
-    private final EventBus eventBus;
+    protected final EventBus eventBus;
 
     private HandlerRegistration handler;
+
+    protected VActionbarGroup group;
+
+    TouchDelegate delegate = new TouchDelegate(this);
+
+    HandlerRegistration touchEndHandler;
 
     /**
      * Instantiates a new action in action bar.
@@ -73,17 +82,19 @@ public class VActionbarItem extends Widget {
      * @param data the data json object
      * @param eventBus the event bus
      * @param icon the icon
+     * @param cssClasses css classes to be added to the item
      * 
      * Use {@link #VActionbarItem(VActionbarItemJSO, EventBus)} instead.
      */
     @Deprecated
-    public VActionbarItem(VActionbarItemJSO data, EventBus eventBus, Icon icon) {
+    public VActionbarItem(VActionbarItemJSO data, VActionbarGroup group, EventBus eventBus, Icon icon, String cssClasses) {
         super();
         this.data = data;
+        this.group = group;
         this.eventBus = eventBus;
         this.iconImage = icon;
 
-        constructDOM();
+        constructDOM(cssClasses);
         bindHandlers();
         update();
     }
@@ -93,21 +104,25 @@ public class VActionbarItem extends Widget {
      * 
      * @param data the data json object
      * @param eventBus the event bus
+     * @param cssClasses css classes to be added to the item
      */
-    public VActionbarItem(VActionbarItemJSO data, EventBus eventBus) {
+    public VActionbarItem(VActionbarItemJSO data, VActionbarGroup group, EventBus eventBus, String cssClasses) {
         super();
         this.data = data;
+        this.group = group;
         this.eventBus = eventBus;
         this.iconImage = null;
 
-        constructDOM();
+        constructDOM(cssClasses);
         bindHandlers();
         update();
     }
 
-    private void constructDOM() {
+    private void constructDOM(String cssClasses) {
         setElement(root);
         setStyleName(CLASSNAME);
+        addStyleName(cssClasses);
+
         text.addClassName("v-text");
         icon.addClassName("v-icon");
         if (iconImage == null) {
@@ -116,18 +131,26 @@ public class VActionbarItem extends Widget {
             root.appendChild(iconImage.getElement());
         }
         root.appendChild(text);
+
+        /*flyoutIndicator.addClassName("v-flyout-indicator");
+        flyoutIndicator.setInnerText("v"); //TODO: CLZ - add flyout icon. (currently implemented as background style.) Toggle it based on row state.
+        root.appendChild(flyoutIndicator);     */
     }
 
-    private void bindHandlers() {
-        handler = addDomHandler(new ClickHandler() {
+    protected void bindHandlers() {
+
+        DOM.sinkEvents(getElement(), Event.TOUCHEVENTS);
+
+        delegate.addTouchStartHandler(new TouchStartHandler() {
 
             @Override
-            public void onClick(ClickEvent event) {
+            public void onTouchStart(com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent event) {
+
                 if (data.isEnabled()) {
                     eventBus.fireEvent(new ActionTriggerEvent(data.getName(), VActionbarItem.this));
                 }
             }
-        }, ClickEvent.getType());
+        });
     }
 
     public String getName() {

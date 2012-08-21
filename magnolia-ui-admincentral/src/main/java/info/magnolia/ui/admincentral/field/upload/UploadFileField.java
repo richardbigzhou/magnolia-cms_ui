@@ -34,7 +34,6 @@
 package info.magnolia.ui.admincentral.field.upload;
 
 import java.io.File;
-import java.util.List;
 
 
 /**
@@ -69,17 +68,6 @@ public interface UploadFileField {
     public void setDragAndDrop(boolean dragAndDrop);
 
     /**
-     * Define the allowed file extension.
-     * List<String> ["jpg", "gif"]
-     */
-    public void setFileExtensionFilter(List<String> fileExtensions);
-
-    /**
-     * Define the allowed file extension as a RegExp.
-     */
-    public void setFileExtensionFilter(String fileExtensionsRegExp);
-
-    /**
      * Set the Upload Button Caption.
      */
     public void setUploadButtonCaption(String uploadButtonCaption);
@@ -90,18 +78,6 @@ public interface UploadFileField {
     public void setFileDeletionButtonCaption(String deleteButtonCaption);
 
     /**
-     * Set the Progress Indicator Caption.
-     * @param:  not null will display the input text followed by the ration in %.
-     *          null: nothing will be displayed.
-     */
-    public void setProgressIndicatorCaption(String progressIndicatorCaption);
-
-    /**
-     * Set the Drop Zone Caption.
-     */
-    public void setDropZoneCaption(String dropZoneCaption);
-
-    /**
      * Define the Tmp Folder used by the main Upload process.
      */
     public void setUploadFileDirectory(File directory);
@@ -110,4 +86,5 @@ public interface UploadFileField {
      * Define the Maximum Upload File size in bytes.
      */
     public void setMaxUploadSize(long maxUploadSize);
+
 }

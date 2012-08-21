@@ -31,43 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.event;
+package info.magnolia.ui.framework.event;
 
-import info.magnolia.ui.framework.event.Event;
-import info.magnolia.ui.framework.event.EventHandler;
+import com.google.inject.name.Names;
+import com.google.inject.util.Providers;
+
+import info.magnolia.objectfactory.guice.AbstractGuiceComponentConfigurer;
 
 /**
- * This event is fired when an item is double clicked (ie a row in the data grid within the workbench representing either a {@link javax.jcr.Node} or a {@link javax.jcr.Property}).
+ * Configures an {@link info.magnolia.ui.framework.event.EventBus} bound to the name <code>subapp</code>.
  */
-public class DoubleClickEvent implements Event<DoubleClickEvent.Handler> {
-
-    /**
-     * Handles {@link DoubleClickEvent} events.
-     */
-    public static interface Handler extends EventHandler {
-        void onDoubleClick(DoubleClickEvent event);
-    }
-
-    private String workspace;
-
-    private String path;
+public class SubAppEventBusConfigurer extends AbstractGuiceComponentConfigurer {
 
     @Override
-    public void dispatch(Handler handler) {
-        handler.onDoubleClick(this);
+    protected void configure() {
+        bind(EventBus.class).annotatedWith(Names.named("subapp")).toProvider(Providers.of(new SimpleEventBus()));
     }
-
-    public DoubleClickEvent(String workspace, String path) {
-        this.workspace = workspace;
-        this.path = path;
-    }
-
-    public String getWorkspace() {
-        return workspace;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
 }

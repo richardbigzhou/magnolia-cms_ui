@@ -31,51 +31,19 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.preview;
+package info.magnolia.ui.framework.app;
 
-import javax.inject.Inject;
+import info.magnolia.ui.framework.location.Location;
 
-import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
-import info.magnolia.ui.framework.app.SubApp;
-import info.magnolia.ui.framework.location.DefaultLocation;
-import info.magnolia.ui.framework.location.LocationController;
-import info.magnolia.ui.framework.view.View;
 
 /**
- * SubApp that displays the page preview.
+ * Abstract implementation with default behavior suitable for most sub apps.
+ * 
+ * @see info.magnolia.ui.framework.app.SubApp
  */
-public class PagePreviewSubApp implements SubApp, PagePreviewView.Listener {
-
-    private PagePreviewView view;
-
-    private ActionbarPresenter actionBarPresenter;
-
-    private LocationController locationController;
-
-    @Inject
-    public PagePreviewSubApp(final PagePreviewView view, ActionbarPresenter actionbarPresenter, LocationController locationController) {
-        this.view = view;
-        this.locationController = locationController;
-        this.actionBarPresenter = actionbarPresenter;
-    }
+public abstract class AbstractSubApp implements SubApp {
 
     @Override
-    public String getCaption() {
-        return null;
-    }
-
-    @Override
-    public View start() {
-        view.setListener(this);
-        return view;
-    }
-
-    public void setUrl(String url) {
-        view.setUrl(url);
-    }
-
-    @Override
-    public void closePreview() {
-        locationController.goTo(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages", ""));
+    public void locationChanged(Location location) {
     }
 }

@@ -31,25 +31,43 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.field;
+package info.magnolia.ui.admincentral.event;
 
-import info.magnolia.ui.admincentral.field.builder.AbstractFieldBuilder;
-import info.magnolia.ui.model.field.definition.FileUploadFieldDefinition;
-
-import com.vaadin.data.Item;
-import com.vaadin.ui.Field;
+import info.magnolia.ui.framework.event.Event;
+import info.magnolia.ui.framework.event.EventHandler;
 
 /**
- * Creates and configures a Vaadin Image Summary Field.
+ * This event is fired when an item is double clicked (ie a row in the data grid within the workbench representing either a {@link javax.jcr.Node} or a {@link javax.jcr.Property}).
  */
-public class ImageUploadSummaryField extends AbstractFieldBuilder<FileUploadFieldDefinition> {
+public class ItemDoubleClickedEvent implements Event<ItemDoubleClickedEvent.Handler> {
 
-    public ImageUploadSummaryField(FileUploadFieldDefinition definition, Item relatedFieldItem) {
-        super(definition, relatedFieldItem);
-    } 
+    /**
+     * Handles {@link ItemDoubleClickedEvent} events.
+     */
+    public interface Handler extends EventHandler {
+
+        void onItemDoubleClicked(ItemDoubleClickedEvent event);
+    }
+
+    private String workspace;
+
+    private String path;
+
+    public ItemDoubleClickedEvent(String workspace, String path) {
+        this.workspace = workspace;
+        this.path = path;
+    }
+
+    public String getWorkspace() {
+        return workspace;
+    }
+
+    public String getPath() {
+        return path;
+    }
 
     @Override
-    protected Field buildField() {
-        return null;
+    public void dispatch(Handler handler) {
+        handler.onItemDoubleClicked(this);
     }
 }

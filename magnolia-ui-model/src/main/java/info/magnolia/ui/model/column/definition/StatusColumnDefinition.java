@@ -37,4 +37,25 @@ package info.magnolia.ui.model.column.definition;
  * Definition for StatusColumns.
  */
 public class StatusColumnDefinition extends AbstractColumnDefinition {
+
+    //Show Activation Status
+    private boolean activation = true;
+    //Show Permission Status
+    private boolean permissions = false;
+
+    public boolean isActivation() {
+        return activation;
+    }
+
+    public void setActivation(boolean activation) {
+        this.activation = activation;
+    }
+
+    public boolean isPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(boolean permissions) {
+        this.permissions = permissions;
+    }
 }

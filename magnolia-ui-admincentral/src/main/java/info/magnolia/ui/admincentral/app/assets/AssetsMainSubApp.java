@@ -35,13 +35,14 @@ package info.magnolia.ui.admincentral.app.assets;
 
 import javax.inject.Inject;
 
-import info.magnolia.ui.framework.app.SubApp;
+import info.magnolia.ui.framework.app.AbstractSubApp;
+import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.view.View;
 
 /**
  * Sub app for the main tab in the assets app.
  */
-public class AssetsMainSubApp implements SubApp {
+public class AssetsMainSubApp extends AbstractSubApp {
 
     private AssetsView assetsView;
 
@@ -56,7 +57,7 @@ public class AssetsMainSubApp implements SubApp {
     }
 
     @Override
-    public View start() {
+    public View start(Location location) {
         return assetsView;
     }
 }

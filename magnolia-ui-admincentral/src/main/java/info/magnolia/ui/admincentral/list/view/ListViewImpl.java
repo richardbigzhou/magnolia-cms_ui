@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.admincentral.list.view;
 
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.admincentral.column.ColumnFormatter;
 import info.magnolia.ui.admincentral.container.AbstractJcrContainer;
 import info.magnolia.ui.admincentral.content.view.ContentView;
 import info.magnolia.ui.admincentral.list.container.FlatJcrContainer;
@@ -44,6 +46,7 @@ import info.magnolia.ui.vaadin.integration.widget.HybridSelectionTable;
 
 import java.util.Iterator;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,7 +75,7 @@ public class ListViewImpl implements ListView {
 
     private static final Logger log = LoggerFactory.getLogger(ListViewImpl.class);
 
-    public ListViewImpl(WorkbenchDefinition workbenchDefinition, TreeModel treeModel) {
+    public ListViewImpl(WorkbenchDefinition workbenchDefinition, TreeModel treeModel, ComponentProvider componentProvider) {
         table = new HybridSelectionTable();
         table.setSizeFull();
 
@@ -113,9 +116,8 @@ public class ListViewImpl implements ListView {
         table.setColumnReorderingAllowed(false);
 
         container = new FlatJcrContainer(treeModel, workbenchDefinition);
-        //FIXME fgrilli: we have to set the container data source twice. We set it here so
-        //that checkbox column is placed correctly as first
         table.setContainerDataSource(container);
+        // Set Column definition.
         Iterator<ColumnDefinition> iterator = workbenchDefinition.getColumns().iterator();
         while (iterator.hasNext()) {
             ColumnDefinition column = iterator.next();
@@ -129,11 +131,19 @@ public class ListViewImpl implements ListView {
             //table.setColumnExpandRatio(columnProperty, column.getWidth() <= 0 ? 1 :column.getWidth());
             table.setColumnHeader(columnProperty, column.getLabel());
             container.addContainerProperty(columnProperty, column.getType(), "");
+            //Set Formatter
+            if(StringUtils.isNotBlank(column.getFormatterClass())) {
+                try {
+                    table.addGeneratedColumn(columnName, (ColumnFormatter)componentProvider.newInstance(Class.forName(column.getFormatterClass()),column));
+                }
+                catch (ClassNotFoundException e) {
+                    log.error("Not able to create the Formatter",e);
+                }
+            }
         }
         //FIXME fgrilli: we have to set the container data source twice. We set it here so
         //that the table actually contains data.
         table.setContainerDataSource(container);
-
 
         margin.setStyleName("mgnl-content-view");
         margin.addComponent(table);

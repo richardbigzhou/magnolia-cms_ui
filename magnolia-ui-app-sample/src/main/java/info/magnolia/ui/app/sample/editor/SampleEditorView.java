@@ -49,5 +49,7 @@ public interface SampleEditorView extends View {
 
     void setListener(Listener listener);
 
+    String getName();
+
     void setName(String name);
 }

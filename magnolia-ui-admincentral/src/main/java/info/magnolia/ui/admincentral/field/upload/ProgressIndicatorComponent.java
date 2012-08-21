@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,38 +31,35 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.column;
+package info.magnolia.ui.admincentral.field.upload;
 
-import info.magnolia.ui.model.column.definition.PropertyValueColumnDefinition;
-
-import java.io.Serializable;
-
-import javax.inject.Inject;
-import javax.jcr.Item;
-import javax.jcr.Property;
-import javax.jcr.RepositoryException;
-
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Label;
+import com.vaadin.ui.ProgressIndicator;
 
 /**
- * Definition for a column that displays the value of a property.
+ * Definition used to create a custom display for {@link com.vaadin.ui.ProgressIndicator}.
  */
-public class PropertyValueColumn extends AbstractColumn<PropertyValueColumnDefinition> implements Serializable {
+public interface ProgressIndicatorComponent {
 
-    @Inject
-    public PropertyValueColumn(PropertyValueColumnDefinition def) {
-        super(def);
-    }
+    /**
+     * Refresh Upload Layout.
+     * Used to update the ProgressIndicator Components.
+     */
+    public void refreshOnProgressUploadLayout(long readBytes, long contentLength, String fileName);
 
-    @Override
-    protected Component getDefaultComponent(Item item) throws RepositoryException {
-        if (item.isNode()) {
-            return EMPTY_LABEL;
-        }
+    /**
+     * Return the {@link ProgressIndicator} used internally.
+     * Could be needed for Upload File Field.
+     */
+    public ProgressIndicator getProgressIndicator();
 
-        Property property = (Property) item;
-        return new Label(property.getString());
-    }
+    /**
+     * Convenience setter allowing to directly set the value of the {@link ProgressIndicator} component.
+     */
+    public void setProgressIndicatorValue(Object newValue);
+
+    /**
+     * Set the Component Visible or not.
+     */
+    public void setVisible(boolean visible);
 
 }

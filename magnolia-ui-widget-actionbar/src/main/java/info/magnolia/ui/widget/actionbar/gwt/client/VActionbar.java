@@ -44,9 +44,11 @@ import org.vaadin.rpc.client.Method;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.SimpleEventBus;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
+import com.googlecode.mgwt.ui.client.MGWT;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.Container;
 import com.vaadin.terminal.gwt.client.Paintable;
@@ -201,7 +203,9 @@ public class VActionbar extends Composite implements Paintable, Container, Clien
 
     @Override
     public boolean initWidget(Object[] params) {
-        addStyleDependentName("open");
+        if (!initIsDeviceTablet()) {
+            addStyleDependentName("open");
+        }
         return false;
     }
 
@@ -290,6 +294,27 @@ public class VActionbar extends Composite implements Paintable, Container, Clien
             return view.getSections().get(sectionName);
         }
         return null;
+    }
+
+    @Override
+    public void forceLayout() {
+        client.forceLayout();
+    }
+
+    /**
+     * Determine if device is tablet. Allows option to add a querystring parameter of tablet=true
+     * for testing. TODO: Christopher Zimmermann - there should be only one instance of this code in
+     * the project.
+     * @return Whether device is tablet.
+     */
+    private boolean initIsDeviceTablet() {
+
+        boolean isDeviceTabletOverride = Window.Location.getQueryString().indexOf("tablet=true") >= 0;
+        if (!MGWT.getOsDetection().isDesktop() || isDeviceTabletOverride) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }

@@ -35,35 +35,37 @@ package info.magnolia.ui.app.pages.main;
 
 import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
+import info.magnolia.ui.framework.app.AbstractSubApp;
 import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.instantpreview.InstantPreviewDispatcher;
 import info.magnolia.ui.framework.location.DefaultLocation;
+import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.view.View;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * PagesMainSubApp.
  */
-public class PagesMainSubApp implements SubApp, PagesMainView.Listener {
+public class PagesMainSubApp extends AbstractSubApp implements PagesMainView.Listener {
 
     private static final String CAPTION = "Pages";
 
     private PagesMainView view;
     private ContentWorkbenchPresenter workbench;
     private InstantPreviewDispatcher dispatcher;
-    private String selectedPath;
 
     @Inject
-    public PagesMainSubApp(final AppContext appContext, PagesMainView view, ContentWorkbenchPresenter workbench, @Named("app") EventBus eventBus, InstantPreviewDispatcher dispatcher) {
+    public PagesMainSubApp(final AppContext appContext, PagesMainView view, ContentWorkbenchPresenter workbench, @Named("subapp") EventBus subAppEventBus, InstantPreviewDispatcher dispatcher) {
         this.view = view;
         this.dispatcher = dispatcher;
         this.view.setListener(this);
         this.workbench = workbench;
-        eventBus.addHandler(ItemSelectedEvent.class, new ItemSelectedEvent.Handler() {
+        subAppEventBus.addHandler(ItemSelectedEvent.class, new ItemSelectedEvent.Handler() {
 
             @Override
             public void onItemSelected(ItemSelectedEvent event) {
@@ -78,12 +80,29 @@ public class PagesMainSubApp implements SubApp, PagesMainView.Listener {
     }
 
     @Override
-    public View start() {
+    public View start(Location location) {
         view.setWorkbenchView(workbench.start());
-        if (selectedPath != null) {
-            workbench.selectPath(selectedPath);
+        String selectedItemPath = getSelectedItemPath(location);
+        if (selectedItemPath != null) {
+            workbench.selectPath(selectedItemPath);
         }
         return view;
+    }
+
+    @Override
+    public void locationChanged(Location location) {
+        String selectedItemPath = getSelectedItemPath(location);
+        if (selectedItemPath != null) {
+            workbench.selectPath(selectedItemPath);
+        }
+    }
+
+    private String getSelectedItemPath(Location location) {
+        DefaultLocation defaultLocation = (DefaultLocation) location;
+        if (defaultLocation.getToken().startsWith("main:")) {
+            return StringUtils.substringAfter(defaultLocation.getToken(), "main:");
+        }
+        return null;
     }
 
     @Override
@@ -94,9 +113,5 @@ public class PagesMainSubApp implements SubApp, PagesMainView.Listener {
     @Override
     public void subscribe(String hostId) {
         dispatcher.subscribeTo(hostId);
-    }
-
-    public void setSelectedPath(String selectedPath) {
-        this.selectedPath = selectedPath;
     }
 }

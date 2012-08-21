@@ -11,45 +11,57 @@
          in the apps configuration repository of the admin central. (config/module/apps/appname/name:appname) -->
     <components>
         <id>app-pages</id>
-        <component>
-            <type>info.magnolia.ui.app.pages.main.PagesMainSubApp</type>
-            <implementation>info.magnolia.ui.app.pages.main.PagesMainSubApp</implementation>
-        </component>
-        <component>
-            <type>info.magnolia.ui.app.pages.main.PagesMainView</type>
-            <implementation>info.magnolia.ui.app.pages.main.PagesMainViewImpl</implementation>
-        </component>
-        <component>
-            <type>info.magnolia.ui.app.pages.editor.PagesEditorSubApp</type>
-            <implementation>info.magnolia.ui.app.pages.editor.PagesEditorSubApp</implementation>
-        </component>
-        <component>
-            <type>info.magnolia.ui.app.pages.preview.PagePreviewSubApp</type>
-            <implementation>info.magnolia.ui.app.pages.preview.PagePreviewSubApp</implementation>
-        </component>
-        <component>
-            <type>info.magnolia.ui.app.pages.preview.PagePreviewView</type>
-            <implementation>info.magnolia.ui.app.pages.preview.PagePreviewViewImpl</implementation>
-        </component>
-        <component>
-            <type>info.magnolia.ui.app.pages.editor.PagesEditorView</type>
-            <implementation>info.magnolia.ui.app.pages.editor.PagesEditorViewImpl</implementation>
-        </component>
-        <component>
-            <type>info.magnolia.ui.widget.editor.PageEditorView</type>
-            <implementation>info.magnolia.ui.widget.editor.PageEditor</implementation>
-        </component>
-        <component>
-            <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchView</type>
-            <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbenchViewImpl</implementation>
-        </component>
-        <component>
-            <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter</type>
-            <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter</implementation>
-        </component>
     </components>
 
-    <dependencies>
+  <components>
+    <id>app-pages-main</id>
+    <component>
+      <type>info.magnolia.ui.app.pages.main.PagesMainSubApp</type>
+      <implementation>info.magnolia.ui.app.pages.main.PagesMainSubApp</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.app.pages.main.PagesMainView</type>
+      <implementation>info.magnolia.ui.app.pages.main.PagesMainViewImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchView</type>
+      <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbenchViewImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter</type>
+      <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter</implementation>
+    </component>
+  </components>
+
+  <components>
+    <id>app-pages-editor</id>
+    <component>
+      <type>info.magnolia.ui.app.pages.editor.PagesEditorSubApp</type>
+      <implementation>info.magnolia.ui.app.pages.editor.PagesEditorSubApp</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.app.pages.editor.PagesEditorView</type>
+      <implementation>info.magnolia.ui.app.pages.editor.PagesEditorViewImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.widget.editor.PageEditorView</type>
+      <implementation>info.magnolia.ui.widget.editor.PageEditor</implementation>
+    </component>
+    <type-mapping>
+      <type>info.magnolia.ui.app.pages.editor.preview.PagesPreviewView</type>
+      <implementation>info.magnolia.ui.app.pages.editor.preview.PagesPreviewViewImpl</implementation>
+    </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.app.pages.editor.preview.PagesPreviewFullView</type>
+      <implementation>info.magnolia.ui.app.pages.editor.preview.PagesPreviewFullViewImpl</implementation>
+    </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.app.pages.editor.PagesEditorView</type>
+      <implementation>info.magnolia.ui.app.pages.editor.PagesEditorViewImpl</implementation>
+    </type-mapping>
+  </components>
+
+  <dependencies>
         <dependency>
             <name>ui-admincentral</name>
             <version>5.0/*</version>

@@ -42,12 +42,19 @@ import info.magnolia.ui.framework.message.Message;
  */
 public interface AppContext {
 
-    void openSubApp(String name, SubApp subApp);
+    /**
+     *
+     * @param name name of the sub app
+     * @param subAppClass
+     * @param location
+     * @param subAppId uniquely identifies the sub app instance within the app
+     */
+    void openSubApp(String name, Class<? extends SubApp> subAppClass, Location location, String subAppId);
 
-    void openSubAppFullScreen(SubApp subApp);
+    void openSubAppFullScreen(String name, Class<? extends SubApp> subAppClass, Location location);
 
     void exitFullScreenMode();
-    
+
     AppDescriptor getAppDescriptor();
 
     void sendUserMessage(String user, Message message);

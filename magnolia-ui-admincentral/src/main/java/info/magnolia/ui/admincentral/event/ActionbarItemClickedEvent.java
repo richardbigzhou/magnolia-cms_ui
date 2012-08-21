@@ -31,13 +31,38 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.column;
+package info.magnolia.ui.admincentral.event;
 
-import info.magnolia.ui.model.column.definition.PropertyColumnDefinition;
+import info.magnolia.ui.framework.event.Event;
+import info.magnolia.ui.framework.event.EventHandler;
+import info.magnolia.ui.model.action.ActionDefinition;
+
 
 /**
- * Definition for ReadOnlyPropertyColumns.
+ * This event is fired when an item in the action bar is clicked.
  */
-public class ReadOnlyPropertyColumnDefinition extends PropertyColumnDefinition {
+public class ActionbarItemClickedEvent implements Event<ActionbarItemClickedEvent.Handler> {
 
+    /**
+     * Handles {@link ActionbarItemClickedEvent} events.
+     */
+    public interface Handler extends EventHandler {
+
+        void onActionbarItemClicked(ActionbarItemClickedEvent event);
+    }
+
+    private final ActionDefinition actionDefinition;
+
+    public ActionbarItemClickedEvent(ActionDefinition actionDefinition) {
+        this.actionDefinition = actionDefinition;
+    }
+
+    public ActionDefinition getActionDefinition() {
+        return actionDefinition;
+    }
+
+    @Override
+    public void dispatch(Handler handler) {
+        handler.onActionbarItemClicked(this);
+    }
 }

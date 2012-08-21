@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,39 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.event;
-
-import info.magnolia.ui.framework.event.Event;
-import info.magnolia.ui.framework.event.EventHandler;
-import info.magnolia.ui.model.action.ActionDefinition;
-
+package info.magnolia.ui.admincentral.column;
+import com.vaadin.ui.Table;
 
 /**
- * This event is fired when an item in the action bar is clicked.
+ * Common definition for Column formatter.
  */
-public class ActionbarClickEvent implements Event<ActionbarClickEvent.Handler> {
-
-    /**
-     * Handles {@link ActionbarClickEvent} events.
-     */
-    public static interface Handler extends EventHandler {
-
-        void onActionbarItemClicked(ActionbarClickEvent event);
-    }
-
-    private final ActionDefinition actionDefinition;
-
-    @Override
-    public void dispatch(Handler handler) {
-        handler.onActionbarItemClicked(this);
-    }
-
-    public ActionbarClickEvent(ActionDefinition actionDefinition) {
-        this.actionDefinition = actionDefinition;
-    }
-
-    public ActionDefinition getActionDefinition() {
-        return actionDefinition;
-    }
+public interface ColumnFormatter extends Table.ColumnGenerator{
 
 }

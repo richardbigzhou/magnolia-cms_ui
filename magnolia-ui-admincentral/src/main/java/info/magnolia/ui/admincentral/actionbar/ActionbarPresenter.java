@@ -33,22 +33,29 @@
  */
 package info.magnolia.ui.admincentral.actionbar;
 
-import javax.inject.Named;
-
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.admincentral.actionbar.builder.ActionbarBuilder;
-import info.magnolia.ui.admincentral.event.ActionbarClickEvent;
+import info.magnolia.ui.admincentral.event.ActionbarItemClickedEvent;
 import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.model.action.ActionFactory;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarGroupDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarItemDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarSectionDefinition;
 import info.magnolia.ui.widget.actionbar.Actionbar;
 import info.magnolia.ui.widget.actionbar.ActionbarView;
+
+import javax.inject.Named;
+import javax.jcr.LoginException;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 import com.vaadin.ui.Component;
@@ -67,21 +74,24 @@ public class ActionbarPresenter implements ActionbarView.Listener {
 
     private ActionbarView actionbar;
 
-    private final EventBus appEventBus;
+    private final EventBus subAppEventBus;
+
+    private ActionFactory<ActionDefinition, Action> actionFactory;
 
     /**
      * Instantiates a new action bar presenter.
      */
     @Inject
-    public ActionbarPresenter(@Named("app") EventBus appEventBus) {
-        this.appEventBus = appEventBus;
+    public ActionbarPresenter(@Named("subapp") EventBus subAppEventBus) {
+        this.subAppEventBus = subAppEventBus;
     }
 
     /**
      * Initializes an actionbar with given definition and returns the view for parent to add it.
      */
-    public ActionbarView start(final ActionbarDefinition definition) {
+    public ActionbarView start(final ActionbarDefinition definition, final ActionFactory<ActionDefinition, Action> actionFactory) {
         this.definition = definition;
+        this.actionFactory = actionFactory;
         actionbar = ActionbarBuilder.build(definition);
         actionbar.setListener(this);
         return actionbar;
@@ -133,14 +143,14 @@ public class ActionbarPresenter implements ActionbarView.Listener {
     public void onActionbarItemClicked(String actionToken) {
         ActionDefinition actionDefinition = getActionDefinition(actionToken);
         if (actionDefinition != null) {
-            appEventBus.fireEvent(new ActionbarClickEvent(actionDefinition));
+            subAppEventBus.fireEvent(new ActionbarItemClickedEvent(actionDefinition));
         }
     }
 
     private ActionDefinition getActionDefinition(String actionToken) {
         final String[] chunks = actionToken.split(":");
         if (chunks.length != 2) {
-            log.warn("invalid actionToken [{}]: it is expected to be in the form sectionName:actionName. ActionDefintion cannot be retrieved. Please, check [{}] actionbar definition.",
+            log.warn("Invalid actionToken [{}]: it is expected to be in the form sectionName:actionName. ActionDefintion cannot be retrieved. Please, check [{}] actionbar definition.",
                     actionToken, definition.getName());
             return null;
         }
@@ -160,6 +170,7 @@ public class ActionbarPresenter implements ActionbarView.Listener {
                         }
                     }
                 }
+
                 break;
             }
         }
@@ -203,6 +214,29 @@ public class ActionbarPresenter implements ActionbarView.Listener {
         }
         log.warn("No action definition found for default action [{}]. Please check [{}] actionbar definition.", defaultAction, definition.getName());
         return null;
+    }
+
+    public void createAndExecuteAction(final ActionDefinition actionDefinition, String workspace, String absPath) throws ActionExecutionException {
+        if (actionDefinition == null || StringUtils.isBlank(workspace)) {
+            throw new ActionExecutionException("Got invalid arguments: action definition is "+ actionDefinition + ", workspace is "+ workspace);
+        }
+        try {
+            Session session = MgnlContext.getJCRSession(workspace);
+            if (absPath == null || !session.itemExists(absPath)) {
+                log.debug("{} does not exist anymore. Was it just deleted? Resetting path to root...", absPath);
+                absPath = "/";
+            }
+            final javax.jcr.Item item = session.getItem(absPath);
+            final Action action = this.actionFactory.createAction(actionDefinition, item);
+            if(action == null) {
+                throw new ActionExecutionException("Could not create action from actionDefinition. Action is null.");
+            }
+            action.execute();
+        } catch (LoginException e) {
+            throw new ActionExecutionException(e);
+        } catch (RepositoryException e) {
+            throw new ActionExecutionException(e);
+        }
     }
 
 }

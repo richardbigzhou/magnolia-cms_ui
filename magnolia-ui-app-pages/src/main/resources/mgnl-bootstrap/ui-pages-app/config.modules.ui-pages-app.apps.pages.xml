@@ -207,7 +207,7 @@
           <sv:value>68b06e8d-3487-466e-8f4e-09c0df9001e4</sv:value>
         </sv:property>
         <sv:property sv:name="class" sv:type="String">
-          <sv:value>info.magnolia.ui.admincentral.column.ReadOnlyPropertyColumnDefinition</sv:value>
+          <sv:value>info.magnolia.ui.model.column.definition.PropertyColumnDefinition</sv:value>
         </sv:property>
         <sv:property sv:name="jcr:createdBy" sv:type="String">
           <sv:value>admin</sv:value>
@@ -250,7 +250,7 @@
           <sv:value>c65c2588-0a1c-43ef-b42d-df9c1a920910</sv:value>
         </sv:property>
         <sv:property sv:name="class" sv:type="String">
-          <sv:value>info.magnolia.ui.admincentral.column.ReadOnlyPropertyColumnDefinition</sv:value>
+          <sv:value>info.magnolia.ui.model.column.definition.PropertyColumnDefinition</sv:value>
         </sv:property>
         <sv:property sv:name="jcr:createdBy" sv:type="String">
           <sv:value>admin</sv:value>
@@ -333,7 +333,7 @@
           <sv:value>05440034-9471-4f4e-b7ed-d252c60758d1</sv:value>
         </sv:property>
         <sv:property sv:name="class" sv:type="String">
-          <sv:value>info.magnolia.ui.admincentral.column.ReadOnlyPropertyColumnDefinition</sv:value>
+          <sv:value>info.magnolia.ui.model.column.definition.PropertyColumnDefinition</sv:value>
         </sv:property>
         <sv:property sv:name="jcr:createdBy" sv:type="String">
           <sv:value>admin</sv:value>

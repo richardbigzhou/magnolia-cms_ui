@@ -57,6 +57,8 @@ public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
 
     private LocationController locationController;
 
+    private boolean full;
+
     /**
      * Instantiates a new preview page action.
      *
@@ -68,15 +70,18 @@ public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
         super(definition);
         this.locationController = locationController;
         this.nodeToPreview = nodeToPreview;
+        this.full =  definition.isFull();
     }
 
     @Override
     public void execute() throws ActionExecutionException {
         try {
             final String path = nodeToPreview.getPath();
-            locationController.goTo(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages", PagesApp.PREVIEW_TOKEN + ";" + path));
+            final String token = PagesApp.EDITOR_TOKEN + ":" + (full ? PagesApp.PREVIEW_FULL_TOKEN: PagesApp.PREVIEW_TOKEN) + ";" + path;
+            log.debug("token is {}", token);
+            locationController.goTo(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages", token));
         } catch (RepositoryException e) {
-            log.error(e.getMessage());
+            throw new ActionExecutionException(e);
         }
     }
 }

@@ -114,15 +114,7 @@
     <configurer>
       <class>info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer</class>
     </configurer>
-
-<!--     <component> -->
-<!--       <type>info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilderProvider</type> -->
-<!--       <workspace>config</workspace> -->
-<!--       <path>/modules/ui-admincentral/contentViewRegistry</path> -->
-<!--       <observed>true</observed> -->
-<!--       <scope>singleton</scope> -->
-<!--     </component> -->
-     <component>
+    <component>
       <type>info.magnolia.ui.admincentral.workbench.action.WorkbenchActionRegistry</type>
       <workspace>config</workspace>
       <path>/modules/ui-admincentral/workbenchActionRegistry</path>
@@ -179,14 +171,6 @@
       <type>info.magnolia.ui.admincentral.MagnoliaShellPresenter</type>
       <implementation>info.magnolia.ui.admincentral.MagnoliaShellPresenter</implementation>
     </component>
-<!--     <component> -->
-<!--       <type>info.magnolia.ui.admincentral.dialog.DialogPresenterFactory</type> -->
-<!--       <implementation>info.magnolia.ui.admincentral.dialog.DialogPresenterFactoryImpl</implementation> -->
-<!--     </component> -->
-<!--     <component> -->
-<!--       <type>info.magnolia.ui.widget.dialog.MagnoliaDialogView</type> -->
-<!--       <implementation>info.magnolia.ui.widget.dialog.MagnoliaDialog</implementation> -->
-<!--     </component> -->
     <component>
       <type>info.magnolia.ui.admincentral.shellapp.pulse.PulseMessagesView</type>
       <implementation>info.magnolia.ui.admincentral.shellapp.pulse.PulseMessagesViewImpl</implementation>
@@ -215,7 +199,6 @@
       <type>info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilder</type>
       <implementation>info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilderImpl</implementation>
     </component>
-
     <component>
       <type>info.magnolia.ui.admincentral.field.builder.DialogFieldFactory</type>
       <implementation>info.magnolia.ui.admincentral.field.builder.DialogFieldFactory</implementation>
@@ -231,7 +214,18 @@
   </components>
 
   <components>
+    <id>subapp</id>
+    <configurer>
+      <class>info.magnolia.ui.framework.event.SubAppEventBusConfigurer</class>
+    </configurer>
+  </components>
+
+  <components>
     <id>app-assets</id>
+  </components>
+
+  <components>
+    <id>app-assets-main</id>
     <component>
       <type>info.magnolia.ui.admincentral.app.assets.AssetsMainSubApp</type>
       <implementation>info.magnolia.ui.admincentral.app.assets.AssetsMainSubApp</implementation>

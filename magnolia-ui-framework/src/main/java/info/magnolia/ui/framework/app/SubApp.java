@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.framework.app;
 
+import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.view.View;
 
 /**
@@ -42,5 +43,7 @@ public interface SubApp {
 
     String getCaption();
 
-    View start();
+    View start(Location location);
+
+    void locationChanged(Location location);
 }

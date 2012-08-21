@@ -33,6 +33,10 @@
  */
 package info.magnolia.ui.widget.magnoliashell.gwt.client.viewport;
 
+import com.google.gwt.core.shared.GWT;
+import com.googlecode.mgwt.dom.client.recognizer.swipe.SwipeMoveEvent;
+import com.googlecode.mgwt.dom.client.recognizer.swipe.SwipeMoveHandler;
+import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.event.ViewportCloseEvent;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -72,6 +76,17 @@ public class VAppsViewport extends VShellViewport {
                 }
             }
         }, ClickEvent.getType());
+
+        /* CLZ Testing swipe detection */
+        final TouchDelegate delegate = new TouchDelegate(this);
+        delegate.addSwipeMoveHandler(new SwipeMoveHandler() {
+            @Override
+            public void onSwipeMove(SwipeMoveEvent event) {
+                //log.warn("Test logging on Swipe");
+                System.out.println("Got a swipe.");
+                GWT.log("VAppsViewport.java GWT Got a swipe.");
+            }
+        });
     }
 
     @Override

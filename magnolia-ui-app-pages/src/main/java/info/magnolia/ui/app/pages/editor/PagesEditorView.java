@@ -49,6 +49,8 @@ public interface PagesEditorView extends View {
     public interface Listener {
 
         void setParameters(PageEditorParameters parameters);
+
+        void closePreview();
     }
 
     void setListener(Listener listener);
@@ -59,4 +61,9 @@ public interface PagesEditorView extends View {
      * Use this method to add an action bar to this sub app view.
      */
     void setActionbarView(ActionbarView actionbar);
+
+    /**
+     * Set this to the url of the page we want to display in preview mode.
+     */
+    void setUrl(String url);
 }

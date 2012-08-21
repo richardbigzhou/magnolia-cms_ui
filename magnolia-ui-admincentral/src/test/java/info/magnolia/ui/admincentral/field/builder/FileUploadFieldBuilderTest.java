@@ -54,7 +54,7 @@ public class FileUploadFieldBuilderTest extends AbstractBuilderTest<FileUploadFi
     @Test
     public void simpleFileUploadFieldBuilderTest() throws Exception{
         // GIVEN
-        fileUploadBuilder = new FileUploadFieldBuilder(definition, baseItem);
+        fileUploadBuilder = new FileUploadFieldBuilder(definition, baseItem, null);
 
         // WHEN
         Field field = fileUploadBuilder.getField();
@@ -67,11 +67,11 @@ public class FileUploadFieldBuilderTest extends AbstractBuilderTest<FileUploadFi
     @Test
     public void buildDefaultUploadLayoutTest() throws Exception{
         // GIVEN
-        fileUploadBuilder = new FileUploadFieldBuilder(definition, baseItem);
+        fileUploadBuilder = new FileUploadFieldBuilder(definition, baseItem, null);
         UploadImageField field = (UploadImageField)fileUploadBuilder.getField();
 
         // WHEN
-        field.buildDefaultUploadLayout();
+        field.buildStartUploadLayout();
 
         // THEN
         assertEquals(true, field.getDefaultComponent(DefaultComponent.UPLOAD).isVisible());

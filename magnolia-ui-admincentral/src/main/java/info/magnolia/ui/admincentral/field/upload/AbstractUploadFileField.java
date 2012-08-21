@@ -35,21 +35,23 @@ package info.magnolia.ui.admincentral.field.upload;
 
 import info.magnolia.cms.beans.runtime.FileProperties;
 import info.magnolia.cms.core.MgnlNodeType;
-import info.magnolia.ui.admincentral.image.ImageSize;
+import info.magnolia.cms.util.PathUtil;
+import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.vaadin.addon.customfield.CustomField;
 import org.vaadin.easyuploads.DirectoryFileFactory;
 import org.vaadin.easyuploads.FileBuffer;
 import org.vaadin.easyuploads.FileFactory;
@@ -62,7 +64,6 @@ import com.vaadin.event.dd.acceptcriteria.AcceptAll;
 import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
 import com.vaadin.terminal.StreamVariable;
 import com.vaadin.ui.AbstractComponentContainer;
-import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
@@ -71,7 +72,6 @@ import com.vaadin.ui.DragAndDropWrapper.WrapperTransferable;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Html5File;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.ProgressIndicator;
 import com.vaadin.ui.Upload;
 import com.vaadin.ui.Upload.FailedEvent;
 import com.vaadin.ui.Upload.FailedListener;
@@ -85,7 +85,17 @@ import com.vaadin.ui.Upload.StartedListener;
 
 /**
  * Main implementation of the UploadFile field.
- * Mainly inspired from the {@link org.vaadin.easyuploads.UploadField}
+ * This implementation used some features of {@link org.vaadin.easyuploads.UploadField} and associated classes.
+ *
+ * This class handle Upload features (Open file chooser/drag and drop) and components (progress bar, cancel/delete button...),
+ * and expose functions that allows to customize the 3 main upload states:
+ *   on {@link StartedEvent}:   buildStartUploadLayout() is called and allows to initialize the upload progress view.
+ *   on {@link FinishedEvent}:  buildFinishUploadLayout() is used to initialize the success Upload view (preview image, File summary..)
+ *   on Initialization, implement abstract buildDefaultUploadLayout() to initialize the initial Upload view (Upload Button...)
+ *
+ * In addition, this class create basic components defined by {@link DefaultComponent}.
+ * From your code: calling createCancelButton(), will add the button to the defaultComponent Map,
+ * and later to access this button, just perform a getDefaultComponent(DefaultComponent defaultComponent).
  *
  * {@link org.vaadin.easyuploads.FileFactory} is defined based on the UploadFileDirectory set.
  *  If this directory is null, {@link org.vaadin.easyuploads.TempFileFactory} is used.
@@ -97,24 +107,21 @@ import com.vaadin.ui.Upload.StartedListener;
  *   byte[] property ({@link org.vaadin.easyuploads.UploadField.FieldType#BYTE_ARRAY})
  *
  */
-public abstract class AbstractUploadFileField extends AbstractUploadField implements UploadFileField, UploadFileFieldDisplay, StartedListener, FinishedListener, ProgressListener, FailedListener, DropHandler{
+public abstract class AbstractUploadFileField extends CustomField implements StartedListener, FinishedListener, ProgressListener, FailedListener, DropHandler, UploadFileField {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractUploadFileField.class);
-    private static final String DEFAULT_UPLOAD_BUTTON_CAPTION = "Choose File";
-    private static final String DEFAULT_DELETE_BUTTON_CAPTION = "Delete File";
+    protected static final String DEFAULT_DELETE_BUTTON_CAPTION = "Delete File";
+    protected static final String DEFAULT_CANCEL_BUTTON_CAPTION = "Cancel";
+    protected static final String DEFAULT_DROP_ZONE_CAPTION = "Drag and Drop an File";
+
+    protected boolean preview = true;
+    protected boolean info = true;
+    protected boolean progressInfo = true;
+    protected boolean fileDeletion = true;
+    protected boolean dragAndDrop = true;
+
 
     // Define global variable used by UploadFileField
-    private boolean preview = true;
-    private boolean info = true;
-    private boolean fileDeletion = true;
-    private boolean dragAndDrop = true;
-    private boolean progressInfo;
-    private List<String> fileExtensions = new ArrayList<String>();
-    private String uploadButtonCaption = DEFAULT_UPLOAD_BUTTON_CAPTION;
-    private String deleteButtonCaption = DEFAULT_DELETE_BUTTON_CAPTION;
-    private boolean requestForFileDeletion = false;
-    private String progressIndicatorCaption;
-    private String dropZoneCaption;
     private File directory;
     private long maxUploadSize = Long.MAX_VALUE;
 
@@ -122,28 +129,56 @@ public abstract class AbstractUploadFileField extends AbstractUploadField implem
     private JcrItemNodeAdapter item;
     private FileBuffer receiver;
     private FileFactory fileFactory;
-    private Map<AbstractUploadFileField.DefaultComponent, Component> defaultComponent = new HashMap<AbstractUploadFileField.DefaultComponent, Component>();
+    private Map<DefaultComponent, Component> defaultComponent = new HashMap<DefaultComponent, Component>();
+
 
     // Define default component
     private Upload upload;
-    private ProgressIndicator progress;
+    private ProgressIndicatorComponent progress;
     private Label fileDetail;
     private Embedded previewImage;
     private Button deleteButton;
+    private Button cancelButton;
     private AbstractComponentContainer root;
     private DragAndDropWrapper dropZone;
 
+    // Define last successful Upload datas
+    private byte[] lastBytesFile;
+    private String lastMimeType;
+    private String lastFileName;
+    private long lastFileSize;
+    //Used to force the refresh of the Uploading view in cse of Drag and Drop.
+    private Shell shell;
+
     /**
-     *
-     * @param item: Vaadin Item representing the Jcr Node to store the file.
+     * Basic constructor.
+     * @param item used to store the File properties like binary data, file name....
      */
-    public AbstractUploadFileField(JcrItemNodeAdapter item) {
-        super();
+    public AbstractUploadFileField(JcrItemNodeAdapter item, Shell shell) {
         this.item = item;
+        this.shell = shell;
         setStorageMode();
-        setDefaultComponent();
+        createUpload();
     }
 
+
+    /**
+     * Set the Upload field Components layout based on the current state.
+     *  - Complete: --> buildFinishUploadLayout()
+     *  - Initial:  --> buildDefaultUploadLayout()
+     */
+    protected void updateDisplay() {
+        if(getLastBytesFile()==null) {
+            buildDefaultUploadLayout();
+        } else {
+            buildFinishUploadLayout();
+        }
+    }
+
+    /**
+     * Define the Default Upload Layout.
+     */
+    abstract protected void buildDefaultUploadLayout();
 
     /**
      * Define the Default Storage Mode.
@@ -154,17 +189,112 @@ public abstract class AbstractUploadFileField extends AbstractUploadField implem
             public FileFactory getFileFactory() {
                 return AbstractUploadFileField.this.getFileFactory();
             }
-
             @Override
             public FieldType getFieldType() {
                 return FieldType.BYTE_ARRAY;
-            }
+            };
         };
     }
+
     /**
-     * Set the minimal required components (upload).
+     * Define the FileFactory to Use.
+     * <b>If no directory set, use the TempFileFactory.</b>
      */
-    private void setDefaultComponent() {
+    public FileFactory getFileFactory() {
+        if (this.directory != null && fileFactory == null) {
+            fileFactory = new DirectoryFileFactory(directory);
+        }
+        else {
+            fileFactory = new DefaultFileFactory();
+        }
+        return fileFactory;
+    }
+
+    @Override
+    public Class< ? > getType() {
+        return Byte[].class;
+    }
+
+    /**
+     * Drop zone Handler.
+     */
+    @Override
+    public void drop(DragAndDropEvent event) {
+        DragAndDropWrapper.WrapperTransferable transferable = (WrapperTransferable) event.getTransferable();
+        Html5File[] files = transferable.getFiles();
+        for (final Html5File html5File : files) {
+            html5File.setStreamVariable(new StreamVariable() {
+
+                private String name;
+                private String mime;
+
+                @Override
+                public OutputStream getOutputStream() {
+                    return receiver.receiveUpload(name, mime);
+                }
+
+                @Override
+                public boolean listenProgress() {
+                    return true;
+                }
+
+                @Override
+                public void onProgress(StreamingProgressEvent event) {
+                    updateProgress((long) event.getBytesReceived(), (long) event.getContentLength());
+                }
+
+                @Override
+                public void streamingStarted(StreamingStartEvent event) {
+                    setDragAndDropUploadInterrupted(false);
+                    name = event.getFileName();
+                    mime = event.getMimeType();
+                    StartedEvent startEvent = new StartedEvent(upload, event.getFileName(), event.getMimeType(), event.getContentLength());
+                    uploadStarted(startEvent);
+                    shell.pushToClient();
+                }
+
+
+                @Override
+                public void streamingFinished(StreamingEndEvent event) {
+                    FinishedEvent uploadEvent = new FinishedEvent(upload, event.getFileName(), event.getMimeType(), event.getContentLength());
+                    uploadFinished(uploadEvent);
+                }
+
+                @Override
+                public void streamingFailed(StreamingErrorEvent event) {
+                    FailedEvent failedEvent = new FailedEvent(upload, event.getFileName(), event.getMimeType(), event.getContentLength());
+                    uploadFailed(failedEvent);
+                }
+
+                @Override
+                public boolean isInterrupted() {
+                    return isDragAndDropUploadInterrupted();
+                }
+
+            });
+        }
+    }
+
+    // Used to handle Cancel / Interrupted upload in the DragAndDrop implementation.
+    private boolean interruptedDragAndDropUpload = false;
+    private void setDragAndDropUploadInterrupted(boolean isInterrupetd) {
+        interruptedDragAndDropUpload = isInterrupetd;
+    }
+    private boolean isDragAndDropUploadInterrupted() {
+        return interruptedDragAndDropUpload;
+    }
+
+    @Override
+    public AcceptCriterion getAcceptCriterion() {
+        return AcceptAll.get();
+    }
+
+
+
+    /**
+     * Create the Upload component.
+     */
+    private void createUpload() {
         this.upload = new Upload(null, receiver);
         this.upload.addListener((StartedListener) this);
         this.upload.addListener((FinishedListener) this);
@@ -174,7 +304,9 @@ public abstract class AbstractUploadFileField extends AbstractUploadField implem
     }
 
     /**
-     * Default Components Creation.
+     * Create a dummy Preview component.
+     * Sub class should override this method to define their own
+     * preview display.
      */
     public Embedded createPreview() {
         this.previewImage = new Embedded();
@@ -192,14 +324,17 @@ public abstract class AbstractUploadFileField extends AbstractUploadField implem
         return this.dropZone;
     }
 
+    /**
+     * Create Delete button.
+     */
     public Button createDeleteButton() {
-        this.deleteButton = new Button(this.deleteButtonCaption);
+        this.deleteButton = new Button(DEFAULT_DELETE_BUTTON_CAPTION);
         this.deleteButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(ClickEvent arg0) {
-                setValue(null);
-                requestForFileDeletion = true;
-                handleFile();
+                //Remove link between item and parent. In this case the child File Item will not be persisted.
+                item.getParent().removeChild(item);
+                clearLastUploadDatas();
                 updateDisplay();
             }
         });
@@ -207,61 +342,46 @@ public abstract class AbstractUploadFileField extends AbstractUploadField implem
         return this.deleteButton;
     }
 
+    /**
+     * Create Cancel button.
+     */
+    public Button createCancelButton() {
+        this.cancelButton = new Button(DEFAULT_CANCEL_BUTTON_CAPTION);
+        this.cancelButton.addListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent arg0) {
+                upload.interruptUpload();
+                // Also inform DragAndDrop
+                setDragAndDropUploadInterrupted(true);
+            }
+        });
+        this.cancelButton.setStyleName("small");
+        defaultComponent.put(DefaultComponent.CANCEL_BUTTON, this.cancelButton);
+        return this.cancelButton;
+    }
+
+    /**
+     * Create the Default File Detail.
+     */
     public Label createFileDetail() {
         this.fileDetail = new Label("", Label.CONTENT_XHTML);
         defaultComponent.put(DefaultComponent.FILE_DETAIL, this.fileDetail);
         return this.fileDetail;
     }
 
-    public ProgressIndicator createProgressIndicator() {
-        progress = new ProgressIndicator();
-        progress.setVisible(false);
-        progress.setPollingInterval(500);
-        defaultComponent.put(DefaultComponent.PROGRESS_BAR, this.progress);
+    /**
+     * Create the ProgressIndicator component.
+     */
+    public ProgressIndicatorComponent createProgressIndicator() {
+        progress = new ProgressIndicatorComponentDefaultImpl();
+        defaultComponent.put(DefaultComponent.PROGRESS_BAR, (Component)this.progress);
         return this.progress;
     }
 
-    /**
-     * Handle the Uploaded File.
-     * Used to populate Item property based on the uploaded file.
-     * This method is triggered when
-     *    download success --> uploadFinished(FinishedEvent event)
-     *    download failed --> uploadFailed(FailedEvent event)
-     *    download removed --> deleteButton click listener.
-     */
-    abstract protected void handleFile();
-
-    /**
-     * Create the Upload field Components layout.
-     */
-    abstract protected void initDisplay();
-
-    /**
-     * Initialize the root component.
-     * Build Layout
-     *  - Default Layout if the incoming Item is empty.
-     *  - Upload Finish Layout with the Item Information if this Item is not empty.
-     */
-    @Override
-    public void attach() {
-        super.attach();
-        initDisplay();
-        addComponent(getRootLayout());
-
-        //Init values with existing data.
-        Property data =  item.getItemProperty(MgnlNodeType.JCR_DATA);
-        if(data !=null && data.getValue()!=null) {
-            setValue(data.getValue());
-        }
-        updateDisplay();
-    }
-
-    @Override
     public AbstractComponentContainer getRootLayout() {
         return this.root;
     }
 
-    @Override
     public void setRootLayout(AbstractComponentContainer root) {
         this.root = root;
     }
@@ -270,76 +390,36 @@ public abstract class AbstractUploadFileField extends AbstractUploadField implem
      * Default component key definition.
      */
     public enum DefaultComponent {
-        UPLOAD, PROGRESS_BAR, FILE_DETAIL, PREVIEW, DELETE_BUTTON, DROP_ZONE
+        UPLOAD, PROGRESS_BAR, FILE_DETAIL, PREVIEW, DELETE_BUTTON, CANCEL_BUTTON, DROP_ZONE
     }
 
     /**
      * Return the desired defaultComponent.
      */
-    public Component getDefaultComponent(AbstractUploadFileField.DefaultComponent defaultComponent) {
+    public Component getDefaultComponent(DefaultComponent defaultComponent) {
         return this.defaultComponent.get(defaultComponent);
     }
 
-    public Map<AbstractUploadFileField.DefaultComponent, Component> getDefaultComponents() {
+    public Map<DefaultComponent, Component> getDefaultComponents() {
         return this.defaultComponent;
     }
 
-    @Override
-    public FileBuffer getReceiver() {
-        return this.receiver;
-    }
 
-    protected Upload getUpload() {
-        return this.upload;
-    }
-
-    protected JcrItemNodeAdapter getItem() {
-        return this.item;
-    }
-
-    /**
-     * Define the FileFactory to Use.
-     * If no directory set, use the TempFileFactory.
-     */
-    public FileFactory getFileFactory() {
-        if (this.directory != null && fileFactory == null) {
-            fileFactory = new DirectoryFileFactory(directory);
-        }else {
-            fileFactory = new TempFileFactory();
-        }
-        return fileFactory;
-    }
 
     @Override
-    public void setMaxUploadSize(long maxUploadSize) {
-        this.maxUploadSize = maxUploadSize;
+    public void uploadFailed(FailedEvent event) {
+        //TODO Inform the end user.
+        updateDisplay();
+        log.info("Upload Faild for file: "+event.getFilename());
     }
 
     /**
-     * Default {@link FileFactory} used if no directory defined.
-     */
-    private class TempFileFactory implements FileFactory {
-
-        @Override
-        public File createFile(String fileName, String mimeType) {
-                final String tempFileName = "upload_tmpfile_"
-                                + System.currentTimeMillis();
-                try {
-                        return File.createTempFile(tempFileName, null);
-                } catch (IOException e) {
-                        throw new RuntimeException(e);
-                }
-        }
-
-    }
-
-    /**
-     * Progress Listener.
+     * Update the Progress Component.
+     * At the same time, check if the uploaded File
+     * is not bigger as expected. Interrupt the Upload in this case.
      */
     @Override
     public void updateProgress(long readBytes, long contentLength) {
-        // if readBytes or contentLength exceed the max upload size, then
-        // interrupt it.
         if (readBytes > this.maxUploadSize || contentLength > this.maxUploadSize) {
             this.upload.interruptUpload();
             return;
@@ -347,105 +427,36 @@ public abstract class AbstractUploadFileField extends AbstractUploadField implem
         refreshOnProgressUploadLayout(readBytes, contentLength);
     }
 
-    @Override
     public void refreshOnProgressUploadLayout(long readBytes, long contentLength) {
-        if(this.progressInfo && progress!=null) {
-            progress.setValue(new Float(readBytes / (float) contentLength));
+        if (progress != null && progressInfo) {
+            progress.refreshOnProgressUploadLayout(readBytes, contentLength, receiver.getLastFileName());
         }
     }
 
     /**
-     * Called when Upload Finish.
-     * Set Display for Upload Finish.
+     * Handle the {@link FinishedEvent}.
+     * In case of success:
+     *  - Populate the Uploaded Information to the local variables used in the later steps.
+     *  - Build the Finish Upload Layout.
+     *  - Populate the Uploaded data to the Item (Binary / File name / size...)
+     *  In case of {@link FailedEvent} (this event is send on a Cancel upload)
+     *  - Do not populate data and call indirectly updateDisplay().
      */
     @Override
     public void uploadFinished(FinishedEvent event) {
-        this.upload.setVisible(true);
-
-        if(event instanceof FailedEvent) {
-            uploadFailed((FailedEvent)event);
+        if (event instanceof FailedEvent) {
+            uploadFailed((FailedEvent) event);
             return;
         }
-
-        updateDisplay();
+        setLastUploadDatas();
+        buildFinishUploadLayout();
         fireValueChange(true);
-        handleFile();
+        populateItemProperty();
     }
 
-
-    @Override
     public void buildFinishUploadLayout() {
-        if(this.progressInfo && this.progress !=null) {
-            progress.setVisible(false);
-        }if(this.info && this.fileDetail!=null) {
+        if (this.fileDetail != null) {
             fileDetail.setValue(getDisplayDetails());
-        }
-    }
-
-    /**
-     * Call when Upload start.
-     * Set display for Upload in progress.
-     */
-    @Override
-    public void uploadStarted(StartedEvent event) {
-        // make the upload invisible when started
-        this.upload.setVisible(false);
-        buildStartUploadLayout();
-        //TODO Check if file is valid.
-    }
-
-
-    @Override
-    public void buildStartUploadLayout() {
-        if(this.progressInfo && this.progress !=null) {
-            this.progress.setVisible(true);
-            this.progress.setValue(0);
-        }
-    }
-
-    /**
-     * Emits the value change event. The value contained in the field is
-     * validated before the event is created.
-     */
-    protected void fireValueChange(boolean repaintIsNotNeeded) {
-        fireEvent(new AbstractField.ValueChangeEvent(this));
-        if (!repaintIsNotNeeded) {
-            requestRepaint();
-        }
-    }
-
-    @Override
-    public void uploadFailed(FailedEvent event) {
-        String message = "File: "+event.getFilename()+" was not uploaded";
-        log.warn("Upload failed "+message);
-//        getWindow().showNotification("Upload failed", message, Notification.TYPE_WARNING_MESSAGE);
-        if(item.getItemProperty(MgnlNodeType.JCR_DATA) == null || item.getItemProperty(MgnlNodeType.JCR_DATA).getValue() == null) {
-            setValue(null);
-        }
-        updateDisplay();
-    }
-
-
-    /**
-     * Update the main display.
-     * Called when action is done: either a Upload has be done, or
-     * Upload is not yet started.
-     */
-    @Override
-    public void updateDisplay() {
-        if(this.receiver.isEmpty()) {
-            buildDefaultUploadLayout();
-        } else {
-            buildFinishUploadLayout();
-        }
-    }
-
-    @Override
-    public void buildDefaultUploadLayout(){
-        this.upload.setVisible(true);
-        this.requestForFileDeletion = false;
-        if(this.progressInfo && this.progress != null) {
-            progress.setVisible(false);
         }
     }
 
@@ -457,79 +468,142 @@ public abstract class AbstractUploadFileField extends AbstractUploadField implem
         sb.append("File: ");
         sb.append(getLastFileName());
         sb.append("</br> <em>");
-        sb.append("(" + FileUtils.byteCountToDisplaySize(receiver.getLastFileSize())+" )");
+        sb.append("(" + FileUtils.byteCountToDisplaySize(getLastFileSize()) + " )");
         sb.append("</em>");
         return sb.toString();
     }
 
     /**
-     * Drag and Drop Handler section.
+     * Start Upload if the file is supported.
+     * In case of not supported file, interrupt the Upload.
      */
-
     @Override
-    public void drop(DragAndDropEvent event) {
-        DragAndDropWrapper.WrapperTransferable transferable = (WrapperTransferable) event.getTransferable();
-        Html5File[] files = transferable.getFiles();
-        for (final Html5File html5File : files) {
-            html5File.setStreamVariable(new StreamVariable() {
-                private String name;
-                private String mime;
+    public void uploadStarted(StartedEvent event) {
+        if(isValidFile(event)) {
+            buildStartUploadLayout();
+        } else {
+            setDragAndDropUploadInterrupted(true);
+            getWindow().showNotification("Upload Canceleld: Unsuported FileType "+event.getMIMEType());
+            upload.interruptUpload();
+        }
+    }
 
-                @Override
-                public OutputStream getOutputStream() {
-                    return receiver.receiveUpload(name, mime);
-                }
-
-                @Override
-                public boolean listenProgress() {
-                    return true;
-                }
-
-                @Override
-                public void onProgress(StreamingProgressEvent event) {
-                    updateProgress(event.getBytesReceived(), (long) event.getContentLength());
-                }
-
-                @Override
-                public void streamingStarted(StreamingStartEvent event) {
-                    name = event.getFileName();
-                    mime = event.getMimeType();
-                    StartedEvent startEvent = new StartedEvent(upload, event.getFileName(), event.getMimeType(), event.getContentLength());
-                    uploadStarted(startEvent);
-                }
-
-                @Override
-                public void streamingFinished(StreamingEndEvent event) {
-                    FinishedEvent finishEvent = new FinishedEvent(upload, event.getFileName(), event.getMimeType(), event.getContentLength());
-                    uploadFinished(finishEvent);
-                }
-
-                @Override
-                public void streamingFailed(StreamingErrorEvent event) {
-                    FailedEvent failedEvent = new FailedEvent(upload, event.getFileName(), event.getMimeType(), event.getContentLength());
-                    uploadFailed(failedEvent);
-                }
-
-                @Override
-                public boolean isInterrupted() {
-                    return false;
-                }
-
-            });
+    public void buildStartUploadLayout() {
+        if (this.progress != null) {
+            this.progress.setVisible(true);
+            this.progress.setProgressIndicatorValue(0);
         }
     }
 
 
-
-    @Override
-    public AcceptCriterion getAcceptCriterion() {
-        return AcceptAll.get();
+    /**
+     * Clear local Uploaded file Info.
+     * Mainly called by the Delete Action Button.
+     */
+    public void clearLastUploadDatas() {
+        setLastBytesFile(null);
+        setLastFileName(null);
+        setLastFileSize(-1);
+        setLastMimeType(null);
     }
 
 
+    public void setLastUploadDatas() {
+        setLastBytesFile((byte[])receiver.getValue());
+        setLastFileName(receiver.getLastFileName());
+        setLastFileSize(receiver.getLastFileSize());
+        setLastMimeType(receiver.getLastMimeType());
+    }
+
     /**
-     * UploadFileField implementation.
+     * Convenience method used to populate FileUpload informations
+     * coming from a previously stored File.
      */
+    public void setLastUploadData(JcrItemNodeAdapter item) {
+        setLastFileName((String) item.getItemProperty(FileProperties.PROPERTY_FILENAME).getValue());
+
+        Property data = item.getItemProperty(MgnlNodeType.JCR_DATA);
+        if (data != null) {
+            byte[] binaryData = (byte[]) data.getValue();
+            setLastBytesFile(binaryData);
+            setLastFileSize((Long) item.getItemProperty(FileProperties.PROPERTY_SIZE).getValue());
+            setLastMimeType((String) item.getItemProperty(FileProperties.PROPERTY_CONTENTTYPE).getValue());
+        }
+    }
+
+    /**
+     * Default implementation return always true.
+     * Child class should always override this method.
+     */
+    public boolean isValidFile(StartedEvent event) {
+        return true;
+    }
+
+    /**
+     * Populate the Item property (data/image name/...) Data is stored as a JCR Binary object.
+     */
+    protected void populateItemProperty() {
+        // Attach the Item to the parent in order to be stored.
+        item.getParent().addChild(item);
+        // Populate Data
+        Property data = item.getItemProperty(MgnlNodeType.JCR_DATA);
+
+        if (getLastBytesFile() != null) {
+            data.setValue(new ByteArrayInputStream(getLastBytesFile()) );
+        }
+        item.getItemProperty(FileProperties.PROPERTY_FILENAME).setValue(StringUtils.substringBefore(getLastFileName(), "."));
+        item.getItemProperty(FileProperties.PROPERTY_CONTENTTYPE).setValue(getLastMimeType());
+        item.getItemProperty(FileProperties.PROPERTY_LASTMODIFIED).setValue(new GregorianCalendar(TimeZone.getDefault()));
+        item.getItemProperty(FileProperties.PROPERTY_SIZE).setValue(getLastFileSize());
+        item.getItemProperty(FileProperties.PROPERTY_EXTENSION).setValue(PathUtil.getExtension(getLastFileName()));
+    }
+
+    public byte[] getLastBytesFile() {
+        return lastBytesFile;
+    }
+
+    public void setLastBytesFile(byte[] lastBytesFile) {
+        this.lastBytesFile = lastBytesFile;
+    }
+
+    public String getLastMimeType() {
+        return lastMimeType;
+    }
+
+    public void setLastMimeType(String lastMimeType) {
+        this.lastMimeType = lastMimeType;
+    }
+
+    public String getLastFileName() {
+        return lastFileName;
+    }
+
+    public void setLastFileName(String lastFileName) {
+        this.lastFileName = lastFileName;
+    }
+
+    public long getLastFileSize() {
+        return lastFileSize;
+    }
+
+    public void setLastFileSize(long lastFileSize) {
+        this.lastFileSize = lastFileSize;
+    }
+    /**
+     * Define the maximum file size in bite.
+     */
+    @Override
+    public void setMaxUploadSize(long maxUploadSize) {
+        this.maxUploadSize = maxUploadSize;
+    }
+    /**
+     * Set the caption of the Upload Button.
+     */
+    @Override
+    public void setUploadButtonCaption(String uploadButtonCaption) {
+        this.upload.setButtonCaption(uploadButtonCaption);
+    }
+
     @Override
     public void setPreview(boolean preview) {
         this.preview = preview;
@@ -556,87 +630,14 @@ public abstract class AbstractUploadFileField extends AbstractUploadField implem
     }
 
     @Override
-    public void setFileExtensionFilter(List<String> fileExtensions) {
-        if(fileExtensions != null) {
-            this.fileExtensions = fileExtensions;
-        }
-    }
-
-    @Override
-    public void setFileExtensionFilter(String fileExtensionsRegExp) {
-        //TODO
-    }
-
-    @Override
-    public void setUploadButtonCaption(String uploadButtonCaption) {
-        this.uploadButtonCaption = uploadButtonCaption;
-        this.upload.setButtonCaption(this.uploadButtonCaption);
-    }
-
-    @Override
     public void setFileDeletionButtonCaption(String deleteButtonCaption) {
-        this.deleteButtonCaption = deleteButtonCaption;
         if(this.deleteButton != null) {
-            this.deleteButton.setCaption(this.deleteButtonCaption);
+            this.deleteButton.setCaption(deleteButtonCaption);
         }
-    }
-
-    @Override
-    public void setProgressIndicatorCaption(String progressIndicatorCaption) {
-        this.progressIndicatorCaption = progressIndicatorCaption;
-    }
-
-    @Override
-    public void setDropZoneCaption(String dropZoneCaption) {
-        this.dropZoneCaption = dropZoneCaption;
     }
 
     @Override
     public void setUploadFileDirectory(File directory) {
         this.directory = directory;
-    }
-
-    public boolean hasRequestForFileDeletion() {
-        return this.requestForFileDeletion;
-    }
-
-    /**
-     * Best effort to create an ImageSize.
-     * If the ImageSize created based on the receiver is null
-     * try to create it from the Item property.
-     * @return null if receiver and item don't have relevant information.
-     */
-    protected ImageSize createImageSize() throws FileNotFoundException {
-        ImageSize imageSize = ImageSize.valueOf(receiver.getFile());
-        if(imageSize == null && item.getItemProperty(FileProperties.PROPERTY_WIDTH) != null && item.getItemProperty(FileProperties.PROPERTY_HEIGHT) != null) {
-             imageSize = new ImageSize((Long)item.getItemProperty(FileProperties.PROPERTY_WIDTH).getValue(), (Long)item.getItemProperty(FileProperties.PROPERTY_HEIGHT).getValue());
-         }
-        return imageSize;
-    }
-    /**
-     * Best effort to get the File MimeType.
-     * If the receiver MimeType is null
-     * try to get it from the Item property.
-     * @return null if receiver and item MimeType are not define.
-     */
-    protected String getLastMIMEType() {
-        String mimeType = receiver.getLastMimeType();
-        if(mimeType == null) {
-            mimeType = (String)item.getItemProperty(FileProperties.PROPERTY_CONTENTTYPE).getValue();
-        }
-        return mimeType;
-    }
-    /**
-     * Best effort to get the FileName.
-     * If the receiver FileName is null
-     * try to get it from the Item property.
-     * @return null if receiver and item FileName are not define.
-     */
-    protected String getLastFileName() {
-        String fileName = receiver.getLastFileName();
-        if(fileName == null) {
-            fileName = (String)item.getItemProperty(FileProperties.PROPERTY_FILENAME).getValue();
-        }
-        return fileName;
     }
 }

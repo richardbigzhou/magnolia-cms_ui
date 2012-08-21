@@ -31,7 +31,10 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.preview;
+package info.magnolia.ui.app.pages.editor.preview;
+
+import info.magnolia.ui.widget.actionbar.ActionbarView;
+import info.magnolia.ui.widget.editor.PageEditorView;
 
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Button;
@@ -43,9 +46,9 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- * Implementation of {@link PagePreviewView}.
+ * Implementation of {@link PagesPreviewFullViewView}.
  */
-public class PagePreviewViewImpl implements PagePreviewView {
+public class PagesPreviewFullViewImpl implements PagesPreviewFullView {
 
     private Panel wrapper = new Panel();
 
@@ -53,7 +56,7 @@ public class PagePreviewViewImpl implements PagePreviewView {
 
     protected Listener listener;
 
-    public PagePreviewViewImpl() {
+    public PagesPreviewFullViewImpl() {
         this.iframe = new Embedded();
         iframe.setType(Embedded.TYPE_BROWSER);
         iframe.setSizeFull();
@@ -84,5 +87,16 @@ public class PagePreviewViewImpl implements PagePreviewView {
     @Override
     public void setUrl(String url) {
         iframe.setSource(new ExternalResource(url));
+    }
+
+    @Override
+    public void setActionbarView(final ActionbarView actionbar) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setPageEditor(PageEditorView pageEditor) {
+        // TODO Auto-generated method stub
+
     }
 }
