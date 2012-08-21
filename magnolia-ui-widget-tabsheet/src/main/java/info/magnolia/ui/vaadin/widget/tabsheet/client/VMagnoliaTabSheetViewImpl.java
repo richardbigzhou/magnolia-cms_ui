@@ -44,8 +44,10 @@ import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.vaadin.terminal.gwt.client.Util;
 
 /**
  * VShellTabSheetViewImpl.
@@ -63,6 +65,8 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements VMagnoliaTab
     private VMagnoliaTab activeTab = null;
     
     private Presenter presenter;
+    
+    private boolean isActiveTabFullscreen = false;
     
     public VMagnoliaTabSheetViewImpl(EventBus eventBus, Presenter presenter) {
         super();
@@ -135,9 +139,14 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements VMagnoliaTab
     @Override
     public void setHeight(String height) {
         super.setHeight(height);
-        int heightPx = JQueryWrapper.parseInt(height);
-        int scrollerHeight = heightPx - tabContainer.getOffsetHeight();
-        scroller.setHeight(scrollerHeight + "px");
+        if (!isActiveTabFullscreen) {
+            int heightPx = JQueryWrapper.parseInt(height);
+            int scrollerHeight = heightPx - tabContainer.getOffsetHeight();
+            scroller.setHeight(scrollerHeight + "px");   
+        } else {
+            scroller.setHeight(RootPanel.get().getOffsetHeight() + "px");
+        }
+        Util.runWebkitOverflowAutoFix(scroller.getElement());
     }
 
     @Override
@@ -153,6 +162,28 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements VMagnoliaTab
     @Override
     public Widget getScroller() {
         return scroller;
+    }
+
+    @Override
+    public void setShowActiveTabFullscreen(boolean isFullscreen) {
+        this.isActiveTabFullscreen = isFullscreen;
+        if (isFullscreen) {
+            scroller.addStyleName("fullscreen");
+            scroller.setHeight(RootPanel.get().getOffsetHeight() + "px");
+        } else {
+            scroller.removeStyleName("fullscreen");
+            int scrollerHeight = getOffsetHeight() - tabContainer.getOffsetHeight();
+            scroller.setHeight(scrollerHeight + "px");   
+        }
+    }
+
+    @Override
+    public int getTabHeight(VMagnoliaTab tab) {
+        if (!isActiveTabFullscreen || tab != getActiveTab()) {
+            return getOffsetHeight() - tabContainer.getOffsetHeight();
+        } else {
+            return RootPanel.get().getOffsetHeight();
+        }
     }
 
 }

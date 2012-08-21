@@ -58,7 +58,6 @@ public class PagesPreviewViewImpl implements PagesEditorView {
     }
     @Override
     public Component asVaadinComponent() {
-        // TODO Auto-generated method stub
         return wrapper;
     }
 

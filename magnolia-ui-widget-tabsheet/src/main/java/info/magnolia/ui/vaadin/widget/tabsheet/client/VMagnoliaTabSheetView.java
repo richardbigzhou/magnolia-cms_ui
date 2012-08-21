@@ -64,10 +64,14 @@ public interface VMagnoliaTabSheetView extends HasWidgets, IsWidget, HasScrollHa
 
     VMagnoliaTab getActiveTab();
     
+    void setShowActiveTabFullscreen(boolean isFullscreen);
+    
     void setActiveTab(VMagnoliaTab tab);
 
     void removeTab(VMagnoliaTab tabToOrphan);
 
     void showAllTabContents(boolean visible);
+
+    int getTabHeight(VMagnoliaTab child);
     
 }

@@ -70,6 +70,8 @@ public class ShellTabSheet extends AbstractComponentContainer implements ServerS
 
     protected ServerSideProxy proxy = createProxy();
 
+    private boolean isFullscreen = false;
+    
     public ShellTabSheet() {
         super();
         setImmediate(true);
@@ -133,6 +135,13 @@ public class ShellTabSheet extends AbstractComponentContainer implements ServerS
         proxy.call("addShowAllTab", new Boolean(showAll), label);
     }
 
+    public void setFullscreen(boolean isFullscreen) {
+        if (this.isFullscreen != isFullscreen) {
+            this.isFullscreen = isFullscreen;
+            proxy.call("setActiveTabFullscreen", isFullscreen);   
+        }
+    }
+    
     protected void closeTab(final String tabId) {
         final ShellTab tab = (ShellTab) mapper.get(tabId);
         if (tab != null) {
@@ -202,6 +211,7 @@ public class ShellTabSheet extends AbstractComponentContainer implements ServerS
     @Override
     public Object[] initRequestFromClient() {
         proxy.call("setActiveTab", activeTab.getTabId());
+        proxy.call("setActiveTabFullscreen", isFullscreen);
         for (final ShellTab tab : tabs) {
             if (tab.isClosable()) {
                 proxy.call("setTabClosable", tab.getTabId(), true);
@@ -268,4 +278,5 @@ public class ShellTabSheet extends AbstractComponentContainer implements ServerS
     public void hideTabNotification(final ShellTab tab) {
         tab.hideNotification();
     }
+
 }
