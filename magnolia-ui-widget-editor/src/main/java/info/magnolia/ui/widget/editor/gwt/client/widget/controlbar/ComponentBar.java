@@ -64,8 +64,6 @@ import static info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils.get
  */
 public class ComponentBar extends AbstractBar  {
 
-    private String workspace;
-    private String path;
     private String dialog;
     private String nodeName;
     private boolean isInherited;
@@ -113,10 +111,11 @@ public class ComponentBar extends AbstractBar  {
     private void checkMandatories(Map<String, String> attributes) {
         String content = attributes.get("content");
         int i = content.indexOf(':');
-        this.workspace = content.substring(0, i);
-        this.path = content.substring(i + 1);
 
-        this.nodeName = path.substring(path.lastIndexOf("/") + 1);
+        setWorkspace(content.substring(0, i));
+        setPath(content.substring(i + 1));
+
+        this.nodeName = getPath().substring(getPath().lastIndexOf("/") + 1);
 
         setId("__" + nodeName);
 
@@ -134,16 +133,8 @@ public class ComponentBar extends AbstractBar  {
 
     }
 
-    public String getWorkspace() {
-        return workspace;
-    }
-
     public String getNodeName() {
         return nodeName;
-    }
-
-    public String getPath() {
-        return path;
     }
 
     private void createDragAndDropHandlers() {
@@ -184,7 +175,7 @@ public class ComponentBar extends AbstractBar  {
         remove.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                getEventBus().fireEvent(new DeleteComponentEvent(workspace, path));
+                getEventBus().fireEvent(new DeleteComponentEvent(getWorkspace(), getPath()));
             }
         });
         remove.setTitle(getI18nMessage("buttons.component.delete.js"));
@@ -211,7 +202,7 @@ public class ComponentBar extends AbstractBar  {
             edit.addClickHandler(new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent event) {
-                    getEventBus().fireEvent(new EditComponentEvent(workspace, path, dialog));
+                    getEventBus().fireEvent(new EditComponentEvent(getWorkspace(), getPath(), dialog));
                 }
             });
             edit.setTitle(getI18nMessage("buttons.component.edit.js"));
@@ -252,7 +243,7 @@ public class ComponentBar extends AbstractBar  {
         edit.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                getEventBus().fireEvent(new EditComponentEvent(workspace, path, dialog));
+                getEventBus().fireEvent(new EditComponentEvent(getWorkspace(), getPath(), dialog));
             }
         });
         addPrimaryButton(edit);

@@ -33,17 +33,19 @@
  */
 package info.magnolia.ui.widget.actionbar.gwt.client;
 
+import info.magnolia.ui.widget.actionbar.gwt.client.event.ActionTriggerEvent;
+
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.ui.Widget;
 
 import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
-import info.magnolia.ui.widget.actionbar.gwt.client.event.ActionTriggerEvent;
 
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
+
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.ui.Icon;
 
@@ -59,9 +61,11 @@ public class VActionbarItem extends Widget {
 
     private final Element text = DOM.createSpan();
 
-    //private final Element flyoutIndicator = DOM.createSpan();
+    // private final Element flyoutIndicator = DOM.createSpan();
 
-    private final Icon icon;
+    private final Element icon = DOM.createSpan();
+
+    private final Icon iconImage;
 
     protected final VActionbarItemJSO data;
 
@@ -70,6 +74,7 @@ public class VActionbarItem extends Widget {
     private HandlerRegistration handler;
 
     protected VActionbarGroup group;
+
 
     protected TouchDelegate delegate = new TouchDelegate((Widget)this);
 
@@ -82,13 +87,35 @@ public class VActionbarItem extends Widget {
      * @param eventBus the event bus
      * @param icon the icon
      * @param cssClasses css classes to be added to the item
+     * 
+     * Use {@link #VActionbarItem(VActionbarItemJSO, EventBus)} instead.
      */
+    @Deprecated
     public VActionbarItem(VActionbarItemJSO data, VActionbarGroup group, EventBus eventBus, Icon icon, String cssClasses) {
         super();
         this.data = data;
         this.group = group;
         this.eventBus = eventBus;
-        this.icon = icon;
+        this.iconImage = icon;
+
+        constructDOM(cssClasses);
+        bindHandlers();
+        update();
+    }
+
+    /**
+     * Instantiates a new action in action bar.
+     * 
+     * @param data the data json object
+     * @param eventBus the event bus
+     * @param cssClasses css classes to be added to the item
+     */
+    public VActionbarItem(VActionbarItemJSO data, VActionbarGroup group, EventBus eventBus, String cssClasses) {
+        super();
+        this.data = data;
+        this.group = group;
+        this.eventBus = eventBus;
+        this.iconImage = null;
 
         constructDOM(cssClasses);
         bindHandlers();
@@ -101,8 +128,11 @@ public class VActionbarItem extends Widget {
         addStyleName(cssClasses);
 
         text.addClassName("v-text");
-        if (icon != null) {
-            root.appendChild(icon.getElement());
+        icon.addClassName("v-icon");
+        if (iconImage == null) {
+            root.appendChild(icon);
+        } else {
+            root.appendChild(iconImage.getElement());
         }
         root.appendChild(text);
 
@@ -115,7 +145,9 @@ public class VActionbarItem extends Widget {
 
         DOM.sinkEvents(getElement(), Event.TOUCHEVENTS);
 
+
         delegate.addTouchEndHandler(new TouchEndHandler() {
+
             @Override
             public void onTouchEnd(com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent event) {
 
@@ -125,7 +157,6 @@ public class VActionbarItem extends Widget {
             }
         });
     }
-
 
     public String getName() {
         return data.getName();
@@ -138,9 +169,14 @@ public class VActionbarItem extends Widget {
 
     public void update() {
         text.setInnerText(data.getLabel());
-        if (icon != null) {
-            icon.setUri(data.getIcon());
+
+        if (data.getIcon() != null) {
+            icon.setClassName("v-icon");
+            icon.addClassName(data.getIcon());
+        } else if (iconImage != null) {
+            iconImage.setUri(data.getIcon());
         }
+
         if (data.isEnabled() && root.getClassName().contains(ApplicationConnection.DISABLED_CLASSNAME)) {
             root.removeClassName(ApplicationConnection.DISABLED_CLASSNAME);
             bindHandlers();

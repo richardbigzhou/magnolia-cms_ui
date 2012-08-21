@@ -269,9 +269,8 @@ public class PageEditorPresenter implements PageEditorView.Listener {
     }
 
     @Override
-    public void selectComponent(String path) {
-        String selectedComponentPath = path;
-        appEventBus.fireEvent(new ComponentSelectedEvent(selectedComponentPath));
+    public void selectNode(String workSpace, String path) {
+        appEventBus.fireEvent(new NodeSelectedEvent(path, workSpace));
     }
 
     public PageEditorView start() {
