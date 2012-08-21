@@ -88,7 +88,7 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
 
     private LocationController locationController;
 
-    private boolean full;
+    private boolean fullPreview;
 
     private boolean preview;
 
@@ -97,12 +97,12 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
 
         final String token = DefaultLocation.extractToken(locationController.getWhere().toString());
         this.preview =  token.contains(PagesApp.PREVIEW_FULL_TOKEN) || token.contains(PagesApp.PREVIEW_TOKEN);
-        this.full = isPreview() && token.contains(PagesApp.PREVIEW_FULL_TOKEN);
+        this.fullPreview = isPreview() && token.contains(PagesApp.PREVIEW_FULL_TOKEN);
+
         if(isPreview()) {
-            log.debug("Preview type detected is {}", full ? "full" : "normal");
-            this.view = full ? componentProvider.newInstance(PagesPreviewFullView.class) : componentProvider.newInstance(PagesPreviewView.class);
+            log.debug("Preview type detected is {}", isFullPreview() ? "fullPreview" : "normal");
+            this.view = isFullPreview() ? componentProvider.newInstance(PagesPreviewFullView.class) : componentProvider.newInstance(PagesPreviewView.class);
         } else {
-            log.debug("We're in edit mode");
             this.view = componentProvider.newInstance(PagesEditorView.class);
         }
         this.view.setListener(this);
@@ -169,11 +169,11 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
         setParameters(new PageEditorParameters(MgnlContext.getContextPath(), path));
         pageEditorPresenter.setParameters(parameters);
 
-        if (isPreview() && isFull()) {
-            view.setUrl(parameters.getNodePath());
-            return view;
-        } else if(!isPreview()) {
+        if (isEdit()) {
             view.setPageEditor(pageEditorPresenter.start());
+        } else if (isFullPreview()) {
+            view.setUrl(parameters.getContextPath() + parameters.getNodePath());
+            return view;
         }
 
         ActionbarDefinition actionbarDefinition = appDescriptor.getEditor().getActionbar();
@@ -209,8 +209,12 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
         return preview;
     }
 
-    public boolean isFull() {
-        return full;
+    public boolean isEdit() {
+        return !preview;
+    }
+
+    public boolean isFullPreview() {
+        return fullPreview;
     }
 
     public void setUrl(String url) {
