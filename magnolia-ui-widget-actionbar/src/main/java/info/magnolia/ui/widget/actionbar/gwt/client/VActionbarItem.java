@@ -35,14 +35,17 @@ package info.magnolia.ui.widget.actionbar.gwt.client;
 
 import info.magnolia.ui.widget.actionbar.gwt.client.event.ActionTriggerEvent;
 
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.event.shared.EventBus;
-import com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler;
+
+import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
+
+import com.google.web.bindery.event.shared.EventBus;
+
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.ui.Icon;
 
@@ -72,9 +75,10 @@ public class VActionbarItem extends Widget {
 
     protected VActionbarGroup group;
 
-    TouchDelegate delegate = new TouchDelegate(this);
 
-    HandlerRegistration touchEndHandler;
+    protected TouchDelegate delegate = new TouchDelegate((Widget)this);
+
+    protected HandlerRegistration touchEndHandler;
 
     /**
      * Instantiates a new action in action bar.
@@ -141,10 +145,11 @@ public class VActionbarItem extends Widget {
 
         DOM.sinkEvents(getElement(), Event.TOUCHEVENTS);
 
-        delegate.addTouchStartHandler(new TouchStartHandler() {
+
+        delegate.addTouchEndHandler(new TouchEndHandler() {
 
             @Override
-            public void onTouchStart(com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent event) {
+            public void onTouchEnd(com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent event) {
 
                 if (data.isEnabled()) {
                     eventBus.fireEvent(new ActionTriggerEvent(data.getName(), VActionbarItem.this));

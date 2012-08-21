@@ -109,10 +109,12 @@ public class VMainLauncher extends FlowPanel {
             indicatorPad.addStyleName("pad");
 
             DOM.sinkEvents(getElement(), Event.TOUCHEVENTS);
-            delegate.addTouchEndHandler(new com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler() {
+
+
+            delegate.addTouchStartHandler(new com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler() {
 
                 @Override
-                public void onTouchEnd(com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent event) {
+                public void onTouchStart(com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent event) {
                     navigateToShellApp(type);
                 }
             });

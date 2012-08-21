@@ -37,12 +37,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.Event;
+
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent;
+import com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler;
+import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 
 /**
  * The holder of the temporary app group expanders.
@@ -53,7 +54,9 @@ public class VTemporaryAppGroupBar extends FlowPanel {
     private Map<Element, VTemporaryAppTileGroup> groupMap = new HashMap<Element, VTemporaryAppTileGroup>();
     
     private VTemporaryAppTileGroup currentOpenGroup = null;
-    
+
+    private TouchDelegate touchDelegate = new TouchDelegate(this);
+
     public VTemporaryAppGroupBar() {
         super();
         addStyleName("app-list");
@@ -62,6 +65,7 @@ public class VTemporaryAppGroupBar extends FlowPanel {
     }
 
     private void construct() {
+        /*
         DOM.sinkEvents(getElement(), Event.MOUSEEVENTS);
         addDomHandler(new ClickHandler() {
             @Override
@@ -84,7 +88,30 @@ public class VTemporaryAppGroupBar extends FlowPanel {
                 }
             }
         }, ClickEvent.getType());
-        
+        */
+
+        touchDelegate.addTouchStartHandler(new TouchStartHandler() {
+            @Override
+            public void onTouchStart(TouchStartEvent event) {
+                final Element target = event.getNativeEvent().getEventTarget().cast();
+                final VTemporaryAppTileGroup group = groupMap.get(target);
+                closeCurrentOpenExpander();
+                if (group != null) {
+                    if (currentOpenGroup != group) {
+                        if (currentOpenGroup != null) {
+                            currentOpenGroup.closeSection();
+                        }
+                        group.showSection();
+                        currentOpenGroup = group;
+                        openExpander(target);
+                    } else {
+                        currentOpenGroup.closeSection();
+                        currentOpenGroup = null;
+                    }
+                }
+
+            }
+        });
     }
 
     protected void openExpander(Element target) {
