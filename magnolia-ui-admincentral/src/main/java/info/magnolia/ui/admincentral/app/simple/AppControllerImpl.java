@@ -420,7 +420,8 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
             View view = subApp.start(location);
 
-            shell.showFullscreen(view);
+            appFrameView.asVaadinComponent().setFullscreen(true);
+            //shell.showFullscreen(view);
         }
 
         @Override
@@ -456,7 +457,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
         @Override
         public void exitFullScreenMode() {
-            shell.exitFullScreenMode();
+            appFrameView.asVaadinComponent().setFullscreen(false);
         }
 
         private SubAppContext getActiveSubAppContext() {

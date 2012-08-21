@@ -27,7 +27,6 @@
     background-color: #689600;
     color: #48630A;
     height: 60px;
-    z-index: 400;
 }
 
 .btn-shell {
@@ -85,7 +84,7 @@ button.action-close {
 
 .v-shell-vieport {
     position: absolute;
-    overflow: hidden;
+    overflow: visible;
     top: 60px;
     width: 100%;
     bottom: 0;
