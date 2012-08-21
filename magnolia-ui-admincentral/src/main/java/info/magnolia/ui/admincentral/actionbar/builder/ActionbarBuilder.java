@@ -78,8 +78,14 @@ public class ActionbarBuilder {
                                 + "' already exists in section '" + section.getName() + "'.");
                             continue;
                         }
+
                         Resource icon = null;
                         if (StringUtils.isNotBlank(item.getIcon())) {
+                            if (item.getIcon().startsWith("icon-")) {
+                                actionbar.addAction(item.getName(), item.getLabel(), item.getIcon(), group.getName(), section.getName());
+                                continue;
+                            }
+
                             try {
                                 icon = new ThemeResource(item.getIcon());
                             } catch (NullPointerException e) {

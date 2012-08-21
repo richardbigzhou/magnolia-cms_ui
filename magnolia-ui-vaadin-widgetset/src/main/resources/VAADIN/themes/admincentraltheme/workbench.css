@@ -1,5 +1,5 @@
 .workbench {background-color:#e6e6e6;}
-.workbench .v-horizontallayout-margin {padding-top:20px; padding-left:40px;}
+.workbench .v-horizontallayout-margin {padding-top:20px; padding-left:40px; padding-bottom:40px;}
 .workbench .v-horizontallayout-spacing-on {padding-left:25px;}
 
 .view-modes {padding-left:21px; padding-bottom:20px;}

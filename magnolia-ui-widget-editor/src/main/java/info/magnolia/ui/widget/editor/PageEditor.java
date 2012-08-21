@@ -109,6 +109,16 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
 
         proxy = new ServerSideProxy(this) {
             {
+
+
+                register("selectElement", new Method() {
+                    @Override
+                    public void invoke(String methodName, Object[] params) {
+                        final String workSpace = String.valueOf(params[0]);
+                        final String path = String.valueOf(params[1]);
+                        listener.selectNode(workSpace, path);
+                    }
+                });
                 register("editComponent", new Method() {
                     @Override
                     public void invoke(String methodName, Object[] params) {
@@ -155,13 +165,6 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
                         final String target = String.valueOf(params[3]);
                         final String order = String.valueOf(params[4]);
                         listener.sortComponent(workSpace, parentPath, source, target, order);
-                    }
-                });
-                register("onComponentSelect", new Method() {
-                    @Override
-                    public void invoke(String methodName, Object[] params) {
-                        final String path = String.valueOf(params[0]);
-                        listener.selectComponent(path);
                     }
                 });
             }

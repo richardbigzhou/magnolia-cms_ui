@@ -50,7 +50,13 @@ public interface ActionbarView extends View {
 
     void removeSection(String sectionName);
 
+    /**
+     * Use {@link #addAction(String, String, String, String, String)} instead.
+     */
+    @Deprecated
     void addAction(String actionName, String label, Resource icon, String groupName, String sectionName);
+
+    void addAction(String actionName, String label, String icon, String groupName, String sectionName);
 
     void setPreview(Component preview, String sectionName);
 

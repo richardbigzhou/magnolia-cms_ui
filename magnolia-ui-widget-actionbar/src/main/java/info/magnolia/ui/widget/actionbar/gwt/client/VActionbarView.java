@@ -81,8 +81,20 @@ public interface VActionbarView extends HasWidgets, IsWidget {
      * @param icon the icon ui object
      * @param groupName the group name
      * @param sectionName the section name
+     * 
+     * use {@link #addAction(VActionbarItemJSO, String, String)} instead.
      */
+    @Deprecated
     void addAction(VActionbarItemJSO actionParams, Icon icon, String groupName, String sectionName);
+
+    /**
+     * Adds an action item to this action bar.
+     * 
+     * @param actionParams the action parameters including the icon CSS class name
+     * @param groupName the group name
+     * @param sectionName the section name
+     */
+    void addAction(VActionbarItemJSO actionParams, String groupName, String sectionName);
 
     /**
      * Checks if given widget is a child of this component.

@@ -51,6 +51,7 @@
 	border:none;
 	background:none;
     cursor:pointer;
+	color:#fff;
     font-size:18px;
     text-align:left;
 }
@@ -63,7 +64,7 @@
 	cursor:default;
 }
 
-.v-action.v-disabled:hover .v-text {
+.v-action.v-disabled:hover {
 	color:#fff;
 }
 
@@ -72,18 +73,22 @@
 	top:6px;
 	left:8px;
     height:17px;
+    font-size:24px;
+}
+
+.v-action span.v-icon {
+	top:-3px;
 }
 
 .v-action .v-text {
 	position:absolute;
     top:4px;
 	left:46px;
-	color:#fff;
 	font-family:DINWebPro,Arial;
     font-size:16px;
 }
 
-.v-action:hover .v-text {
+.v-action:hover {
 	color:#aabf2f;
 }
 
