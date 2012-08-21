@@ -44,30 +44,20 @@ import com.vaadin.ui.Component;
 
 
 /**
- * Component container capable of holding a single component.
+ * Component container showing only the most recently added component and keeping previously shown components in a stack
+ * for easy switching to the previously shown.
  */
 @SuppressWarnings("serial")
 public class DeckLayout extends AbstractComponentContainer {
 
     private LinkedList<Component> children = new LinkedList<Component>();
-    
-    private Component visibleChild = null;
 
     public void display(Component content) {
         if (content != null) {
-            if (!children.contains(content)) {
-                addComponent(content);
-            }
-            children.remove(content);
-            children.offerFirst(content);
-            requestRepaint();   
+            addComponent(content);
         }
     }
 
-    public Component getVisibleChild() {
-        return visibleChild;
-    }
-    
     @Override
     public void paintContent(PaintTarget target) throws PaintException {
         super.paintContent(target);
@@ -78,11 +68,17 @@ public class DeckLayout extends AbstractComponentContainer {
 
     @Override
     public void addComponent(Component c) {
-        super.addComponent(c);
-        if (!children.contains(c)) {
-            children.add(c);
+
+        // Check first if this is the same as the currently shown, saves a paint request and eliminates flicker
+        if (!children.isEmpty() && children.getFirst() == c) {
+            return;
         }
-        display(c);
+
+        super.addComponent(c);
+        if (children.contains(c)) {
+            children.remove(c);
+        }
+        children.addFirst(c);
         requestRepaint();
     }
 
@@ -117,8 +113,8 @@ public class DeckLayout extends AbstractComponentContainer {
     }
     
     public void pop() {
-        if (children.size() > 0) {
-            final Component currentVisible = children.poll();
+        if (!children.isEmpty()) {
+            final Component currentVisible = children.removeFirst();
             removeComponent(currentVisible);
             requestRepaint();
         } 
