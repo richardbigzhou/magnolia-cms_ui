@@ -52,4 +52,6 @@ public interface AppController {
     boolean isAppStarted(String name);
 
     void setViewPort(ViewPort viewport);
+
+    void focusCurrentApp();
 }

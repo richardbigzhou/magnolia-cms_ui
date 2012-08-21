@@ -167,6 +167,12 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         return runningApps.containsKey(name);
     }
 
+    @Override
+    public void focusCurrentApp(){
+        doFocus(currentApp);
+    }
+
+
     private AppContextImpl doStartIfNotAlreadyRunning(String name, Location location) {
         AppContextImpl appContext = runningApps.get(name);
         if (appContext == null) {
@@ -370,9 +376,11 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             app.locationChanged(location);
         }
 
-        private String extractSubAppSubAppId(String token) {
-            int i = token.indexOf(':');
-            return i != -1 ? token.substring(0, i) : token;
+        private String extractSubAppSubAppId(final String token) {
+            int i = token.indexOf(";");
+            final String tokenStrippedFromParams = i != -1 ? token.substring(0, i) : token;
+            i = tokenStrippedFromParams.indexOf(':');
+            return i != -1 ? tokenStrippedFromParams.substring(0, i) : tokenStrippedFromParams;
         }
 
         @Override

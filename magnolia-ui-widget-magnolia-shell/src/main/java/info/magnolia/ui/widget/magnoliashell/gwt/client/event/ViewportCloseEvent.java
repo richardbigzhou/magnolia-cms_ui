@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.widget.magnoliashell.gwt.client.event;
 
+import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShell.ViewportType;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.event.handler.ViewportCloseHandler;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.VShellViewport;
 
 import com.google.gwt.event.shared.GwtEvent;
 
@@ -45,10 +45,10 @@ public class ViewportCloseEvent extends GwtEvent<ViewportCloseHandler>{
 
     public static final Type<ViewportCloseHandler> TYPE = new Type<ViewportCloseHandler>();
 
-    private final VShellViewport viewport;
+    private final ViewportType viewportType;
 
-    public ViewportCloseEvent(final VShellViewport viewport) {
-        this.viewport = viewport;
+    public ViewportCloseEvent(final ViewportType viewportType) {
+        this.viewportType = viewportType;
     }
 
     @Override
@@ -61,7 +61,7 @@ public class ViewportCloseEvent extends GwtEvent<ViewportCloseHandler>{
         return TYPE;
     };
 
-    public VShellViewport getViewport() {
-        return viewport;
+    public ViewportType getViewportType() {
+        return viewportType;
     }
 }
