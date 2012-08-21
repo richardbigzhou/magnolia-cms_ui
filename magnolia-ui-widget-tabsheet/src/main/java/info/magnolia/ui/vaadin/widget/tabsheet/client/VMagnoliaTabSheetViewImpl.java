@@ -47,6 +47,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.vaadin.terminal.gwt.client.Util;
 
 /**
  * VShellTabSheetViewImpl.
@@ -145,6 +146,7 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements VMagnoliaTab
         } else {
             scroller.setHeight(RootPanel.get().getOffsetHeight() + "px");
         }
+        Util.runWebkitOverflowAutoFix(scroller.getElement());
     }
 
     @Override

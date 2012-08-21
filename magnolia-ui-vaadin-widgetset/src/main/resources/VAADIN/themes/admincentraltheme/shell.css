@@ -1,3 +1,7 @@
+.v-view {
+	overflow: hidden !important;
+}
+
 .v-magnolia-shell {
     background-color:#77a42f;
 	background: linear-gradient(top, #77a42f 0%,#a9be2e 100%);
