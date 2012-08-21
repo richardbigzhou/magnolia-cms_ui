@@ -88,11 +88,6 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
     public BaseMagnoliaShell() {
         setImmediate(true);
     }
-
-    
-    public void exitFullScreenMode() {
-        closeCurrentFullScreen();
-    }
     
     public void showFullscreen(final Component c) {
         closeCurrentFullScreen();

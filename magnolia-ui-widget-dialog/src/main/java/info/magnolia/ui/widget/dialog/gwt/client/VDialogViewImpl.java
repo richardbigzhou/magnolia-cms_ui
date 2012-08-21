@@ -313,4 +313,14 @@ public class VDialogViewImpl extends FlowPanel implements VDialogView {
     public Widget getScroller() {
         return impl.getScroller();
     }
+
+    @Override
+    public void setShowActiveTabFullscreen(boolean isFullscreen) {
+        impl.setShowActiveTabFullscreen(isFullscreen);
+    }
+
+    @Override
+    public int getTabHeight(VMagnoliaTab tab) {
+        return impl.getTabHeight(tab);
+    }
 }
