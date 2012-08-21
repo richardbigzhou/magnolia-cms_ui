@@ -62,8 +62,4 @@ public interface PagesEditorView extends View {
      */
     void setActionbarView(ActionbarView actionbar);
 
-    /**
-     * Set this to the url of the page we want to display in preview mode.
-     */
-    void setUrl(String url);
 }

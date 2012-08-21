@@ -100,10 +100,4 @@ public class PagesEditorViewImpl implements PagesEditorView {
     public Component asVaadinComponent() {
         return root;
     }
-
-    @Override
-    public void setUrl(String url) {
-        // TODO Auto-generated method stub
-
-    }
 }
