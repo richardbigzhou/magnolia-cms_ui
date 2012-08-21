@@ -34,6 +34,10 @@
 package info.magnolia.ui.app.pages.editor;
 
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import info.magnolia.context.MgnlContext;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
@@ -63,6 +67,8 @@ import javax.jcr.Session;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static info.magnolia.ui.app.pages.PagesApp.*;
 
 /**
  * PagesEditorSubApp.
@@ -95,8 +101,10 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
 
     private boolean preview;
 
+    private AppContext appContext;
+
     @Inject
-    public PagesEditorSubApp(final AppContext ctx, final ComponentProvider componentProvider, final @Named("app") EventBus appEventBus, final @Named("subapp") EventBus subAppEventBus, final PageEditorPresenter pageEditorPresenter, final LocationController locationController, final ActionbarPresenter actionbarPresenter, final WorkbenchActionFactory actionFactory) {
+    public PagesEditorSubApp(final AppContext appContext, final ComponentProvider componentProvider, final @Named("app") EventBus appEventBus, final @Named("subapp") EventBus subAppEventBus, final PageEditorPresenter pageEditorPresenter, final LocationController locationController, final ActionbarPresenter actionbarPresenter, final WorkbenchActionFactory actionFactory) {
 
         final String token = DefaultLocation.extractToken(locationController.getWhere().toString());
         this.preview =  token.contains(PagesApp.PREVIEW_FULL_TOKEN) || token.contains(PagesApp.PREVIEW_TOKEN);
@@ -114,7 +122,10 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
         this.subAppEventBus = subAppEventBus;
         this.pageEditorPresenter = pageEditorPresenter;
         this.actionbarPresenter = actionbarPresenter;
-        this.appDescriptor = (PagesAppDescriptor) ctx.getAppDescriptor();
+
+        this.appContext = appContext;
+        this.appDescriptor = (PagesAppDescriptor)appContext.getAppDescriptor();
+
         this.actionFactory = actionFactory;
         this.locationController = locationController;
 
@@ -208,22 +219,30 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
         setParameters(new PageEditorParameters(MgnlContext.getContextPath(), path));
         pageEditorPresenter.setParameters(parameters, isPreview());
 
-        if (isEdit()) {
-            view.setPageEditor(pageEditorPresenter.start());
-        } else if (isFullPreview()) {
-            view.setUrl(parameters.getContextPath() + parameters.getNodePath());
-            return view;
-        }
-
         ActionbarDefinition actionbarDefinition = appDescriptor.getEditor().getActionbar();
         ActionbarView actionbar = actionbarPresenter.start(actionbarDefinition, actionFactory);
-        actionbarPresenter.hideSection("pagePreviewActions");
+
         actionbarPresenter.hideSection("areaActions");
         actionbarPresenter.hideSection("optionalAreaActions");
         actionbarPresenter.hideSection("editableAreaActions");
         actionbarPresenter.hideSection("optionalEditableAreaActions");
         actionbarPresenter.hideSection("componentActions");
-        actionbarPresenter.showSection("pageActions"); // or pagePreviewActions if preview
+
+        if (isFullPreview()) {
+            actionbarPresenter.showSection("pagePreviewActions");
+            view.setUrl(parameters.getContextPath() + parameters.getNodePath());
+            return view;
+        }
+
+        if (isEdit()) {
+            actionbarPresenter.hideSection("pagePreviewActions");
+            actionbarPresenter.showSection("pageActions");
+            view.setPageEditor(pageEditorPresenter.start());
+          //normal (no fullscreen) preview
+        } else if(isPreview()) {
+            actionbarPresenter.hideSection("pageActions");
+            actionbarPresenter.showSection("pagePreviewActions");
+        }
 
         view.setActionbarView(actionbar);
 
@@ -245,6 +264,34 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
     @Override
     public void closePreview() {
         locationController.goTo(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages", ""));
+    }
+
+    @Override
+    public void locationChanged(Location location) {
+        DefaultLocation defaultLocation = (DefaultLocation) location;
+
+        List<String> pathParams = parsePathParamsFromToken(defaultLocation.getToken());
+        if (pathParams.size() < 3) {
+            return;
+        }
+
+        final String pagePath = pathParams.get(1);
+        final String previewMode = pathParams.get(2);
+
+
+        if (PREVIEW_TOKEN.equals(previewMode)) {
+            final String token = EDITOR_TOKEN + ";" + pagePath + ";" +PREVIEW_TOKEN ;
+            final DefaultLocation newLocation = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appContext.getName(), token);
+            //TODO fgrilli here we will call PageEditor method to display page w/o edit bars
+        } else if(PREVIEW_FULL_TOKEN.equals(previewMode)) {
+            final String token = EDITOR_TOKEN + ";" + pagePath + ";" +PREVIEW_FULL_TOKEN ;
+            final DefaultLocation newLocation = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appContext.getName(), token);
+            appContext.openSubAppFullScreen(PagesApp.EDITOR_TOKEN, PagesEditorSubApp.class, newLocation);
+        }
+    }
+
+    private List<String> parsePathParamsFromToken(String token) {
+        return new ArrayList<String>(Arrays.asList(token.split(";")));
     }
 
     public boolean isPreview() {
