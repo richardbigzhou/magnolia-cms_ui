@@ -9,25 +9,28 @@ target
 .settings
 .checkstyle
 .metadata
+.clover
 Servers
 
 src/main/java/META-INF
 
-/magnolia-ui-webapp/overlays
-/magnolia-ui-webapp/repositories
-/magnolia-ui-webapp/src/main/webapp/repositories
-/magnolia-ui-webapp/src/main/webapp/cache
-/magnolia-ui-webapp/src/main/webapp/tmp
-/magnolia-ui-webapp/src/main/webapp/logs
-/magnolia-ui-webapp/src/main/webapp/admintemplates
-/magnolia-ui-webapp/src/main/webapp/META-INF
-/magnolia-ui-webapp/src/main/webapp/templates
-/magnolia-ui-webapp/src/main/webapp/WEB-INF/classes
-/magnolia-ui-webapp/src/main/webapp/WEB-INF/config/*.tmp
-/magnolia-ui-webapp/src/main/webapp/WEB-INF/config/centrino
-/magnolia-ui-webapp/src/main/webapp/WEB-INF/config/kentrino
-/magnolia-ui-webapp/src/main/webapp/docroot/samples
-/magnolia-ui-webapp/src/main/webapp/docroot/rssaggregator
+magnolia-ui-webapp/overlays
+magnolia-ui-webapp/repositories
+magnolia-ui-webapp/src/main/webapp/repositories
+magnolia-ui-webapp/src/main/webapp/cache
+magnolia-ui-webapp/src/main/webapp/tmp
+magnolia-ui-webapp/src/main/webapp/logs
+magnolia-ui-webapp/src/main/webapp/admintemplates
+magnolia-ui-webapp/src/main/webapp/META-INF
+magnolia-ui-webapp/src/main/webapp/templates
+magnolia-ui-webapp/src/main/webapp/WEB-INF/classes
+magnolia-ui-webapp/src/main/webapp/WEB-INF/config/*.tmp
+magnolia-ui-webapp/src/main/webapp/WEB-INF/config/centrino
+magnolia-ui-webapp/src/main/webapp/WEB-INF/config/kentrino
+magnolia-ui-webapp/src/main/webapp/docroot/samples
+magnolia-ui-webapp/src/main/webapp/docroot/rssaggregator
 
-/magnolia-ui-vaadin-widgetset/src/main/resources/VAADIN/widgetsets
+magnolia-ui-vaadin-widgetset/webapp/
+magnolia-ui-vaadin-widgetset/src/main/resources/VAADIN/gwt-unitCache/
+magnolia-ui-vaadin-widgetset/src/main/resources/VAADIN/widgetsets
 magnolia-ui-webapp/src

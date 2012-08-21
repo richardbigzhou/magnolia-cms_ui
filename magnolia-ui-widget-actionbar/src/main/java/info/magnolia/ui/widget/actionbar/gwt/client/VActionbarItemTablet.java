@@ -33,18 +33,14 @@
  */
 package info.magnolia.ui.widget.actionbar.gwt.client;
 
-import com.google.gwt.core.shared.GWT;
-import com.google.gwt.user.client.DOM;
-
-//import com.google.gwt.event.shared.HandlerRegistration;
-
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Timer;
-import com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler;
 import info.magnolia.ui.widget.actionbar.gwt.client.event.ActionTriggerEvent;
 
+import com.google.gwt.core.shared.GWT;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Timer;
 import com.google.web.bindery.event.shared.EventBus;
-
+import com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler;
 import com.vaadin.terminal.gwt.client.ui.Icon;
 
 
@@ -53,24 +49,29 @@ import com.vaadin.terminal.gwt.client.ui.Icon;
  */
 public class VActionbarItemTablet extends VActionbarItem {
 
-
     public VActionbarItemTablet(VActionbarItemJSO data, VActionbarGroup group, EventBus eventBus, Icon icon, String cssClasses) {
-        super( data,  group,  eventBus,  icon,  cssClasses);
+        super(data, group, eventBus, icon, cssClasses);
+    }
+
+    public VActionbarItemTablet(VActionbarItemJSO data, VActionbarGroup group, EventBus eventBus, String cssClasses) {
+        super(data, group, eventBus, cssClasses);
     }
 
     @Override
     protected void bindHandlers() {
 
-
         DOM.sinkEvents(getElement(), Event.TOUCHEVENTS);
 
         delegate.addTouchStartHandler(new TouchStartHandler() {
+
             @Override
             public void onTouchStart(com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent event) {
 
                 GWT.log("Button TouchStart");
                 // Expand group row on timeout.
                 final Timer t = new Timer() {
+
+                    @Override
                     public void run() {
 
                         group.toggleHorizontal();
@@ -81,7 +82,8 @@ public class VActionbarItemTablet extends VActionbarItem {
                 t.schedule(400);
 
                 // Fire standard action on click.
-                touchEndHandler  = delegate.addTouchEndHandler(new com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler() {
+                touchEndHandler = delegate.addTouchEndHandler(new com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler() {
+
                     @Override
                     public void onTouchEnd(com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent event) {
 
