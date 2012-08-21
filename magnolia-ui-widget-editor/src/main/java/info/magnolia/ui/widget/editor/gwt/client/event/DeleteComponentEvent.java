@@ -43,11 +43,11 @@ public class DeleteComponentEvent extends Event<DeleteComponentEventHandler> {
 
     public static GwtEvent.Type<DeleteComponentEventHandler> TYPE = new GwtEvent.Type<DeleteComponentEventHandler>();
 
-    private String workSpace;
+    private String workspace;
     private String path;
 
-    public DeleteComponentEvent(String workSpace, String path) {
-        this.workSpace = workSpace;
+    public DeleteComponentEvent(String workspace, String path) {
+        this.workspace = workspace;
         this.path = path;
     }
 
@@ -65,7 +65,7 @@ public class DeleteComponentEvent extends Event<DeleteComponentEventHandler> {
         return path;
     }
 
-    public String getWorkSpace() {
-        return workSpace;
+    public String getWorkspace() {
+        return workspace;
     }
 }

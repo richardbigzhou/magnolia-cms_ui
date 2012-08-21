@@ -220,7 +220,7 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
 
             @Override
             public void onSelectElement(SelectElementEvent selectElementEvent) {
-                proxy.call("selectElement", selectElementEvent.getWorkSpace(), selectElementEvent.getPath());
+                proxy.call("selectElement", selectElementEvent.getWorkspace(), selectElementEvent.getPath());
             }
 
         });
@@ -242,20 +242,20 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
         eventBus.addHandler(EditComponentEvent.TYPE, new EditComponentEventHandler() {
             @Override
             public void onEditComponent(EditComponentEvent editComponentEvent) {
-                proxy.call("editComponent", editComponentEvent.getWorkSpace(), editComponentEvent.getPath(), editComponentEvent.getDialog());
+                proxy.call("editComponent", editComponentEvent.getWorkspace(), editComponentEvent.getPath(), editComponentEvent.getDialog());
             }
         });
 
         eventBus.addHandler(DeleteComponentEvent.TYPE, new DeleteComponentEventHandler() {
             @Override
             public void onDeleteComponent(DeleteComponentEvent deleteComponentEvent) {
-                proxy.call("deleteComponent", deleteComponentEvent.getWorkSpace(), deleteComponentEvent.getPath());
+                proxy.call("deleteComponent", deleteComponentEvent.getWorkspace(), deleteComponentEvent.getPath());
             }
         });
         eventBus.addHandler(SortComponentEvent.TYPE, new SortComponentEventHandler() {
             @Override
             public void onSortComponent(SortComponentEvent sortComponentEvent) {
-                proxy.call("sortComponent", sortComponentEvent.getWorkSpace(), sortComponentEvent.getParentPath(), sortComponentEvent.getSourcePath(), sortComponentEvent.getTargetPath(), sortComponentEvent.getOrder());
+                proxy.call("sortComponent", sortComponentEvent.getWorkspace(), sortComponentEvent.getParentPath(), sortComponentEvent.getSourcePath(), sortComponentEvent.getTargetPath(), sortComponentEvent.getOrder());
             }
         });
     }

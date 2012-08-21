@@ -41,12 +41,12 @@ import com.google.gwt.event.shared.GwtEvent;
 public class EditComponentEvent extends GwtEvent<EditComponentEventHandler> {
 
     public static Type<EditComponentEventHandler> TYPE = new Type<EditComponentEventHandler>();
-    private String workSpace;
+    private String workspace;
     private String path;
     private String dialog;
 
-    public EditComponentEvent(String workSpace, String path, String dialog) {
-        this.workSpace = workSpace;
+    public EditComponentEvent(String workspace, String path, String dialog) {
+        this.workspace = workspace;
         this.path = path;
         this.dialog = dialog;
     }
@@ -61,8 +61,8 @@ public class EditComponentEvent extends GwtEvent<EditComponentEventHandler> {
         handler.onEditComponent(this);
     }
 
-    public String getWorkSpace() {
-        return workSpace;
+    public String getWorkspace() {
+        return workspace;
     }
 
     public String getPath() {

@@ -153,10 +153,10 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
             public void onItemSelected(NodeSelectedEvent event) {
                 // TODO 20120730 mgeljic, review whether presenter should be a proxy for every
                 // single actionbar widget feature
-                String workSpace = event.getWorkSpace();
+                String workspace = event.getWorkspace();
                 String path = event.getPath();
                 try {
-                    Session session = MgnlContext.getJCRSession(workSpace);
+                    Session session = MgnlContext.getJCRSession(workspace);
 
                     if (path == null || !session.itemExists(path)) {
                         path = "/";
