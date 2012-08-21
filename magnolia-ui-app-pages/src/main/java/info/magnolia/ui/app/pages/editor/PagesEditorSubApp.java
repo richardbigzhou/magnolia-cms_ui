@@ -78,9 +78,9 @@ public class PagesEditorSubApp implements SubApp, PagesEditorView.Listener {
 
     private String caption;
 
-    private PagesAppDescriptor appDescriptor;
+    private final PagesAppDescriptor appDescriptor;
 
-    private WorkbenchActionFactory actionFactory;
+    private final WorkbenchActionFactory actionFactory;
 
     @Inject
     public PagesEditorSubApp(final AppContext ctx, final PagesEditorView view, final @Named("app") EventBus appEventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final WorkbenchActionFactory actionFactory) {
@@ -88,7 +88,7 @@ public class PagesEditorSubApp implements SubApp, PagesEditorView.Listener {
         this.appEventBus = appEventBus;
         this.pageEditorPresenter = pageEditorPresenter;
         this.actionbarPresenter = actionbarPresenter;
-        this.appDescriptor = (PagesAppDescriptor)ctx.getAppDescriptor();
+        this.appDescriptor = (PagesAppDescriptor) ctx.getAppDescriptor();
         this.actionFactory = actionFactory;
 
         bindHandlers();
@@ -114,9 +114,13 @@ public class PagesEditorSubApp implements SubApp, PagesEditorView.Listener {
                 // TODO 20120730 mgeljic, review whether presenter should be a proxy for every
                 // single actionbar widget feature
                 if (event.getPath() != null) {
-                    actionbarPresenter.hideSection("Pages");
-                    actionbarPresenter.hideSection("Areas");
-                    actionbarPresenter.showSection("Components");
+                    actionbarPresenter.hideSection("pagePreviewActions");
+                    actionbarPresenter.hideSection("pageActions");
+                    actionbarPresenter.hideSection("areaActions");
+                    actionbarPresenter.hideSection("optionalAreaActions");
+                    actionbarPresenter.hideSection("editableAreaActions");
+                    actionbarPresenter.hideSection("optionalEditableAreaActions");
+                    actionbarPresenter.showSection("componentActions");
                 }
             }
         });
@@ -140,16 +144,22 @@ public class PagesEditorSubApp implements SubApp, PagesEditorView.Listener {
         view.setPageEditor(pageEditorPresenter.start());
         ActionbarDefinition actionbarDefinition = appDescriptor.getEditor().getActionbar();
         ActionbarView actionbar = actionbarPresenter.start(actionbarDefinition);
-        actionbarPresenter.hideSection("Areas");
-        actionbarPresenter.hideSection("Components");
-        actionbarPresenter.showSection("Pages");
+        actionbarPresenter.hideSection("pagePreviewActions");
+        actionbarPresenter.hideSection("areaActions");
+        actionbarPresenter.hideSection("optionalAreaActions");
+        actionbarPresenter.hideSection("editableAreaActions");
+        actionbarPresenter.hideSection("optionalEditableAreaActions");
+        actionbarPresenter.hideSection("componentActions");
+        actionbarPresenter.showSection("pageActions"); // or pagePreviewActions if preview
 
         view.setActionbarView(actionbar);
 
         return view;
     }
-    //TODO fgrilli handle exceptions, ie notify to UI.
-    //This method copied from ContentWorkbenchPresenter, need to reuse it instead of duplicating code.
+
+    // TODO fgrilli handle exceptions, ie notify to UI.
+    // This method copied from ContentWorkbenchPresenter, need to reuse it instead of duplicating
+    // code.
     private void createAndExecuteAction(final ActionDefinition actionDefinition) {
         if (actionDefinition == null) {
             log.warn("Action definition cannot be null. Will do nothing.");
