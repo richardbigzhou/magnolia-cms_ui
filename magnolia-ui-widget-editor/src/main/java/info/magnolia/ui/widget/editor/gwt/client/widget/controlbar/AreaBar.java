@@ -56,9 +56,6 @@ import static info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils.get
  */
 public class AreaBar extends AbstractBar {
 
-    private String workspace;
-    private String path;
-
     private String name;
     private String type;
     private String dialog;
@@ -93,7 +90,7 @@ public class AreaBar extends AbstractBar {
                 editButton.addClickHandler(new ClickHandler() {
                     @Override
                     public void onClick(ClickEvent event) {
-                        getEventBus().fireEvent(new EditComponentEvent(dialog, workspace, path));
+                        getEventBus().fireEvent(new EditComponentEvent(dialog, getWorkspace(), getPath()));
                     }
                 });
                 editButton.setTitle(getI18nMessage("buttons.area.edit.js"));
@@ -108,7 +105,7 @@ public class AreaBar extends AbstractBar {
                 removeButton.addClickHandler(new ClickHandler() {
                     @Override
                     public void onClick(ClickEvent event) {
-                        getEventBus().fireEvent(new DeleteComponentEvent(workspace, path));
+                        getEventBus().fireEvent(new DeleteComponentEvent(getWorkspace(), getPath()));
                     }
                 });
                 removeButton.setTitle(getI18nMessage("buttons.area.delete.js"));
@@ -123,7 +120,7 @@ public class AreaBar extends AbstractBar {
                 createbutton.addClickHandler(new ClickHandler() {
                     @Override
                     public void onClick(ClickEvent event) {
-                        getEventBus().fireEvent(new NewAreaEvent(workspace, NODE_TYPE, path));
+                        getEventBus().fireEvent(new NewAreaEvent(getWorkspace(), NODE_TYPE, getPath()));
                     }
                 });
                 createbutton.setTitle(getI18nMessage("buttons.area.add.js"));
@@ -141,8 +138,8 @@ public class AreaBar extends AbstractBar {
         if (content != null) {
             int i = content.indexOf(':');
 
-            this.workspace = content.substring(0, i);
-            this.path = content.substring(i + 1);
+            this.setWorkspace(content.substring(0, i));
+            this.setPath(content.substring(i + 1));
         }
 
         this.name = attributes.get("name");

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,36 +31,43 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.editor;
+package info.magnolia.ui.app.pages.editor;
 
-import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.framework.event.Event;
+import info.magnolia.ui.framework.event.EventHandler;
+
 
 /**
- *  PageEditorView.
+ * This event is fired when a component is selected in page editor.
  */
-public interface PageEditorView extends View {
-
-    void setListener(Listener listener);
-
-    void init(String contextPath, String nodePath);
-
-    void refresh();
+public class NodeSelectedEvent implements Event<NodeSelectedEvent.Handler> {
 
     /**
-     * Listener.
+     * Handles {@link NodeSelectedEvent} events.
      */
-    public interface Listener {
+    public static interface Handler extends EventHandler {
 
-        void editComponent(String workSpace, String path, String dialog);
+        void onItemSelected(NodeSelectedEvent event);
+    }
 
-        void newArea(String workSpace, String nodeType, String path);
+    private final String path;
+    private final String workSpace;
 
-        void newComponent(String workSpace, String path, String availableComponents);
+    @Override
+    public void dispatch(Handler handler) {
+        handler.onItemSelected(this);
+    }
 
-        void deleteComponent(String workSpace, String path);
+    public NodeSelectedEvent(String path, String workSpace) {
+        this.path = path;
+        this.workSpace = workSpace;
+    }
 
-        void sortComponent(String workSpace, String parentPath, String source, String target, String order);
+    public String getPath() {
+        return path;
+    }
 
-        void selectNode(String workSpace, String path);
+    public String getWorkSpace() {
+        return workSpace;
     }
 }

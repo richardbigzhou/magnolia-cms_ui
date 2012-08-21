@@ -57,6 +57,9 @@ import info.magnolia.ui.widget.actionbar.ActionbarView;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -133,20 +136,52 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
             }
         });
 
-        appEventBus.addHandler(ComponentSelectedEvent.class, new ComponentSelectedEvent.Handler() {
+        appEventBus.addHandler(NodeSelectedEvent.class, new NodeSelectedEvent.Handler() {
 
             @Override
-            public void onItemSelected(ComponentSelectedEvent event) {
+            public void onItemSelected(NodeSelectedEvent event) {
                 // TODO 20120730 mgeljic, review whether presenter should be a proxy for every
                 // single actionbar widget feature
-                if (event.getPath() != null) {
-                    actionbarPresenter.hideSection("pagePreviewActions");
-                    actionbarPresenter.hideSection("pageActions");
-                    actionbarPresenter.hideSection("areaActions");
-                    actionbarPresenter.hideSection("optionalAreaActions");
-                    actionbarPresenter.hideSection("editableAreaActions");
-                    actionbarPresenter.hideSection("optionalEditableAreaActions");
-                    actionbarPresenter.showSection("componentActions");
+                String workSpace = event.getWorkSpace();
+                String path = event.getPath();
+                try {
+                    Session session = MgnlContext.getJCRSession(workSpace);
+
+                    if (path == null || !session.itemExists(path)) {
+                        path = "/";
+                    }
+                    Node node = session.getNode(path);
+
+                    final String PAGE_NODE_TYPE = "mgnl:page";
+                    final String AREA_NODE_TYPE = "mgnl:area";
+                    final String COMPONENT_NODE_TYPE = "mgnl:component";
+
+                    if (node.isNodeType(PAGE_NODE_TYPE)) {
+                        actionbarPresenter.showSection("pageActions");
+                        actionbarPresenter.hideSection("areaActions");
+                        actionbarPresenter.hideSection("componentActions");
+                    }
+                    else if (node.isNodeType(AREA_NODE_TYPE)) {
+                        actionbarPresenter.showSection("areaActions");
+                        actionbarPresenter.hideSection("pageActions");
+                        actionbarPresenter.hideSection("componentActions");
+                    }
+                    else if (node.isNodeType(COMPONENT_NODE_TYPE)) {
+                        actionbarPresenter.showSection("componentActions");
+                        actionbarPresenter.hideSection("areaActions");
+                        actionbarPresenter.hideSection("pageActions");
+                    }
+                    else {
+                        actionbarPresenter.hideSection("pagePreviewActions");
+                        actionbarPresenter.hideSection("pageActions");
+                        actionbarPresenter.hideSection("areaActions");
+                        actionbarPresenter.hideSection("optionalAreaActions");
+                        actionbarPresenter.hideSection("editableAreaActions");
+                        actionbarPresenter.hideSection("optionalEditableAreaActions");
+                        actionbarPresenter.hideSection("componentActions");
+                    }
+                } catch (RepositoryException e) {
+                    log.error("Exception caught: {}", e.getMessage(), e);
                 }
             }
         });

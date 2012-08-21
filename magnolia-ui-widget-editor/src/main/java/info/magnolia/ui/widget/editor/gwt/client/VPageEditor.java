@@ -66,6 +66,8 @@ import info.magnolia.ui.widget.editor.gwt.client.event.NewAreaEvent;
 import info.magnolia.ui.widget.editor.gwt.client.event.NewAreaEventHandler;
 import info.magnolia.ui.widget.editor.gwt.client.event.NewComponentEvent;
 import info.magnolia.ui.widget.editor.gwt.client.event.NewComponentEventHandler;
+import info.magnolia.ui.widget.editor.gwt.client.event.SelectElementEvent;
+import info.magnolia.ui.widget.editor.gwt.client.event.SelectElementEventHandler;
 import info.magnolia.ui.widget.editor.gwt.client.event.SortComponentEvent;
 import info.magnolia.ui.widget.editor.gwt.client.event.SortComponentEventHandler;
 import info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils;
@@ -113,7 +115,7 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
         this.eventBus = new SimpleEventBus();
         this.view = new VPageEditorViewImpl(eventBus);
         this.model = new ModelImpl();
-        this.focusModel = new FocusModelImpl(model);
+        this.focusModel = new FocusModelImpl(eventBus, model);
 
         view.setListener(this);
         registerEventHandlers();
@@ -194,10 +196,6 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
 
     public void onMouseUp(final Element element) {
         focusModel.onMouseUp(element);
-        MgnlElement selectedMgnlComponentElement = model.getSelectedMgnlComponentElement();
-        if (selectedMgnlComponentElement != null) {
-            proxy.call("onComponentSelect", selectedMgnlComponentElement.getAttribute("content"));
-        }
     }
 
     private native void initNativeHandlers(Element element) /*-{
@@ -211,6 +209,16 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
     }-*/;
 
     private void registerEventHandlers() {
+
+        eventBus.addHandler(SelectElementEvent.TYPE, new SelectElementEventHandler() {
+
+            @Override
+            public void onSelectElement(SelectElementEvent selectElementEvent) {
+                proxy.call("selectElement", selectElementEvent.getWorkSpace(), selectElementEvent.getPath());
+            }
+
+        });
+
         eventBus.addHandler(NewAreaEvent.TYPE, new NewAreaEventHandler() {
             @Override
             public void onNewArea(NewAreaEvent newAreaEvent) {

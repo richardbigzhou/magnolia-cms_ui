@@ -34,8 +34,11 @@
 package info.magnolia.ui.widget.editor.gwt.client.model.focus;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.shared.EventBus;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
+import info.magnolia.ui.widget.editor.gwt.client.event.SelectElementEvent;
 import info.magnolia.ui.widget.editor.gwt.client.model.Model;
+import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.AbstractBar;
 
 /**
  * Helper class to keep track of selected items. Welcome to the MindTwister.
@@ -45,9 +48,11 @@ public class FocusModelImpl implements FocusModel {
     private Model model;
     private boolean rootSelected = false;
     private MgnlElement focusedElement = null;
+    private EventBus eventBus;
 
-    public FocusModelImpl(Model model) {
+    public FocusModelImpl(EventBus eventBus, Model model) {
         super();
+        this.eventBus = eventBus;
         this.model = model;
     }
 
@@ -68,6 +73,12 @@ public class FocusModelImpl implements FocusModel {
             else {
                 area = mgnlElement;
             }
+
+            AbstractBar editBar = model.getEditBar(mgnlElement);
+            eventBus.fireEvent(new SelectElementEvent(editBar.getPath(), editBar.getWorkspace()));
+        }
+        else {
+            // send page as selected element
         }
 
         // first set the component, then set the area. the selected component is used for setting the corrent area class.

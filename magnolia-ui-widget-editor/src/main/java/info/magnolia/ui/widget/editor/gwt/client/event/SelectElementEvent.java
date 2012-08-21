@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,36 +31,41 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.editor;
+package info.magnolia.ui.widget.editor.gwt.client.event;
 
-import info.magnolia.ui.framework.view.View;
+import com.google.gwt.event.shared.GwtEvent;
+import com.google.web.bindery.event.shared.Event;
 
 /**
- *  PageEditorView.
+ * SelectElementEvent.
  */
-public interface PageEditorView extends View {
+public class SelectElementEvent extends Event<SelectElementEventHandler> {
 
-    void setListener(Listener listener);
+    public static GwtEvent.Type<SelectElementEventHandler> TYPE = new GwtEvent.Type<SelectElementEventHandler>();
 
-    void init(String contextPath, String nodePath);
+    private final String path;
+    private final String workSpace;
 
-    void refresh();
+    public SelectElementEvent(String path, String workSpace) {
+        this.path = path;
+        this.workSpace = workSpace;
+    }
 
-    /**
-     * Listener.
-     */
-    public interface Listener {
+    @Override
+    public Type<SelectElementEventHandler> getAssociatedType() {
+        return TYPE;
+    }
 
-        void editComponent(String workSpace, String path, String dialog);
+    @Override
+    protected void dispatch(SelectElementEventHandler handler) {
+        handler.onSelectElement(this);
+    }
 
-        void newArea(String workSpace, String nodeType, String path);
+    public String getPath() {
+        return path;
+    }
 
-        void newComponent(String workSpace, String path, String availableComponents);
-
-        void deleteComponent(String workSpace, String path);
-
-        void sortComponent(String workSpace, String parentPath, String source, String target, String order);
-
-        void selectNode(String workSpace, String path);
+    public String getWorkSpace() {
+        return workSpace;
     }
 }

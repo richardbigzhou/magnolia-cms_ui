@@ -82,9 +82,6 @@ import static info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils.get
 @Deprecated
 public class PageBar extends AbstractBar {
 
-
-    private String workspace;
-    private String path;
     private String dialog;
     private String currentURI;
     private Map<String,String> availableLocales = new HashMap<String, String>();
@@ -102,8 +99,8 @@ public class PageBar extends AbstractBar {
 
         String content = comment.getAttribute("content");
         int i = content.indexOf(':');
-        workspace = content.substring(0, i);
-        path = content.substring(i + 1);
+        setWorkspace(content.substring(0, i));
+        setPath(content.substring(i + 1));
         dialog = comment.getAttribute("dialog");
 
         currentURI = comment.getAttribute("currentURI");

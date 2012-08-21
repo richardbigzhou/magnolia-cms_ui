@@ -51,6 +51,9 @@ import info.magnolia.ui.widget.editor.gwt.client.model.Model;
  */
 public abstract class AbstractBar extends FlowPanel {
 
+    private String workspace;
+    private String path;
+
     private String label = "";
     private FlowPanel buttonWrapper;
     private MgnlElement mgnlElement;
@@ -228,5 +231,21 @@ public abstract class AbstractBar extends FlowPanel {
     public void setFocus(boolean child) {
         String className = (child) ? CHILD_FOCUS_CLASSNAME : FOCUS_CLASSNAME;
         addStyleName(className);
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public String getWorkspace() {
+        return workspace;
+    }
+
+    public void setWorkspace(String workspace) {
+        this.workspace = workspace;
     }
 }

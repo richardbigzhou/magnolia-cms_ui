@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,36 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.editor;
+package info.magnolia.ui.widget.editor.gwt.client.event;
 
-import info.magnolia.ui.framework.view.View;
+import com.google.gwt.event.shared.EventHandler;
 
 /**
- *  PageEditorView.
+ * SelectElementEventHandler.
  */
-public interface PageEditorView extends View {
-
-    void setListener(Listener listener);
-
-    void init(String contextPath, String nodePath);
-
-    void refresh();
-
-    /**
-     * Listener.
-     */
-    public interface Listener {
-
-        void editComponent(String workSpace, String path, String dialog);
-
-        void newArea(String workSpace, String nodeType, String path);
-
-        void newComponent(String workSpace, String path, String availableComponents);
-
-        void deleteComponent(String workSpace, String path);
-
-        void sortComponent(String workSpace, String parentPath, String source, String target, String order);
-
-        void selectNode(String workSpace, String path);
-    }
+public interface SelectElementEventHandler extends EventHandler {
+    public void onSelectElement(SelectElementEvent selectElementEvent);
 }
