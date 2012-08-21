@@ -79,19 +79,20 @@ public class ActionbarBuilder {
                             continue;
                         }
 
+                        Resource icon = null;
                         if (StringUtils.isNotBlank(item.getIcon())) {
                             if (item.getIcon().startsWith("icon-")) {
                                 actionbar.addAction(item.getName(), item.getLabel(), item.getIcon(), group.getName(), section.getName());
-                            } else {
-                                Resource icon = null;
-                                try {
-                                    icon = new ThemeResource(item.getIcon());
-                                } catch (NullPointerException e) {
-                                    log.warn("Icon resource not found for Actionbar item '" + item.getName() + "'.");
-                                }
-                                actionbar.addAction(item.getName(), item.getLabel(), icon, group.getName(), section.getName());
+                                continue;
+                            }
+
+                            try {
+                                icon = new ThemeResource(item.getIcon());
+                            } catch (NullPointerException e) {
+                                log.warn("Icon resource not found for Actionbar item '" + item.getName() + "'.");
                             }
                         }
+                        actionbar.addAction(item.getName(), item.getLabel(), icon, group.getName(), section.getName());
                     }
                 }
             }
