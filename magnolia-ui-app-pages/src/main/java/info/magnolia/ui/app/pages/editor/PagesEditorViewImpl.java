@@ -79,14 +79,16 @@ public class PagesEditorViewImpl implements PagesEditorView {
     public void setPageEditor(PageEditorView pageEditor) {
         if (this.pageEditor == null) {
             container.addComponent(pageEditor.asVaadinComponent());
+            this.pageEditor = pageEditor;
         } else {
             container.replaceComponent(this.pageEditor.asVaadinComponent(), pageEditor.asVaadinComponent());
+            this.pageEditor = pageEditor;
+            this.pageEditor.refresh();
         }
-        this.pageEditor = pageEditor;
     }
 
     @Override
-    public void setActionbarView(final ActionbarView actionbar) {
+    public void setActionbar(final ActionbarView actionbar) {
         actionbar.asVaadinComponent().setWidth(Sizeable.SIZE_UNDEFINED, 0);
         if (this.actionbar == null) {
             root.addComponent(actionbar.asVaadinComponent());
@@ -99,5 +101,12 @@ public class PagesEditorViewImpl implements PagesEditorView {
     @Override
     public Component asVaadinComponent() {
         return root;
+    }
+
+    @Override
+    public void hideActionbar(boolean hide) {
+        if(actionbar != null) {
+            actionbar.asVaadinComponent().setVisible(!hide);
+        }
     }
 }

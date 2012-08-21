@@ -60,6 +60,11 @@ public interface PagesEditorView extends View {
     /**
      * Use this method to add an action bar to this sub app view.
      */
-    void setActionbarView(ActionbarView actionbar);
+    void setActionbar(ActionbarView actionbar);
+
+    /**
+     * Shows/hides the actionbar. It has no effect if the actionbar hasn't yet been set.
+     */
+    void hideActionbar(boolean hide);
 
 }

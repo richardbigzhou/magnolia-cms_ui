@@ -220,7 +220,7 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
             actionbarPresenter.showSection("pagePreviewActions");
         }
         view.setPageEditor(pageEditorPresenter.start());
-        view.setActionbarView(actionbar);
+        view.setActionbar(actionbar);
 
         return view;
     }
@@ -252,27 +252,14 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
         if(pathParams.size() == 3) {
             previewMode = pathParams.get(2);
         }
-        //reset actionbar
-        hideAllActions(actionbarPresenter);
 
         if (PREVIEW_TOKEN.equals(previewMode)) {
-            actionbarPresenter.hideSection("pageActions");
-            actionbarPresenter.showSection("pagePreviewActions");
-            pageEditorPresenter.setParameters(parameters, true);
-            view.setPageEditor(pageEditorPresenter.start());
-
+            showPreview();
         } else if(PREVIEW_FULL_TOKEN.equals(previewMode)) {
-            appContext.openSubAppFullScreen(PagesApp.EDITOR_TOKEN, PagesEditorSubApp.class, defaultLocation);
+            showFullPreview(defaultLocation);
         } else {
-            actionbarPresenter.hideSection("pagePreviewActions");
-            actionbarPresenter.showSection("pageActions");
-            pageEditorPresenter.setParameters(parameters, false);
-            view.setPageEditor(pageEditorPresenter.start());
+            showEditor();
         }
-    }
-
-    private List<String> parsePathParamsFromToken(String token) {
-        return new ArrayList<String>(Arrays.asList(token.split(";")));
     }
 
     public boolean isPreview() {
@@ -295,6 +282,36 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
         presenter.hideSection("editableAreaActions");
         presenter.hideSection("optionalEditableAreaActions");
         presenter.hideSection("componentActions");
+    }
+
+    private void resetActionbar() {
+        //view.hideActionbar(false);
+        hideAllActions(actionbarPresenter);
+    }
+
+    private void showEditor() {
+        resetActionbar();
+        actionbarPresenter.hideSection("pagePreviewActions");
+        actionbarPresenter.showSection("pageActions");
+        pageEditorPresenter.setParameters(parameters, false);
+        view.setPageEditor(pageEditorPresenter.start());
+    }
+
+    private void showFullPreview(final Location defaultLocation) {
+        showPreview();
+        appContext.openSubAppFullScreen(PagesApp.EDITOR_TOKEN, PagesEditorSubApp.class, defaultLocation);
+    }
+
+    private void showPreview() {
+        resetActionbar();
+        actionbarPresenter.hideSection("pageActions");
+        actionbarPresenter.showSection("pagePreviewActions");
+        pageEditorPresenter.setParameters(parameters, true);
+        view.setPageEditor(pageEditorPresenter.start());
+    }
+
+    private List<String> parsePathParamsFromToken(String token) {
+        return new ArrayList<String>(Arrays.asList(token.split(";")));
     }
 
 }
