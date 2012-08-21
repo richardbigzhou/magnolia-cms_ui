@@ -57,7 +57,9 @@ public class VActionbarItem extends Widget {
 
     private final Element text = DOM.createSpan();
 
-    private final Icon icon;
+    private final Element icon = DOM.createSpan();
+
+    private final Icon iconImage;
 
     private final VActionbarItemJSO data;
 
@@ -71,12 +73,32 @@ public class VActionbarItem extends Widget {
      * @param data the data json object
      * @param eventBus the event bus
      * @param icon the icon
+     * 
+     * Use {@link #VActionbarItem(VActionbarItemJSO, EventBus)} instead.
      */
+    @Deprecated
     public VActionbarItem(VActionbarItemJSO data, EventBus eventBus, Icon icon) {
         super();
         this.data = data;
         this.eventBus = eventBus;
-        this.icon = icon;
+        this.iconImage = icon;
+
+        constructDOM();
+        bindHandlers();
+        update();
+    }
+
+    /**
+     * Instantiates a new action in action bar.
+     * 
+     * @param data the data json object
+     * @param eventBus the event bus
+     */
+    public VActionbarItem(VActionbarItemJSO data, EventBus eventBus) {
+        super();
+        this.data = data;
+        this.eventBus = eventBus;
+        this.iconImage = null;
 
         constructDOM();
         bindHandlers();
@@ -87,8 +109,11 @@ public class VActionbarItem extends Widget {
         setElement(root);
         setStyleName(CLASSNAME);
         text.addClassName("v-text");
-        if (icon != null) {
-            root.appendChild(icon.getElement());
+        icon.addClassName("v-icon");
+        if (iconImage == null) {
+            root.appendChild(icon);
+        } else {
+            root.appendChild(iconImage.getElement());
         }
         root.appendChild(text);
     }
@@ -116,9 +141,14 @@ public class VActionbarItem extends Widget {
 
     public void update() {
         text.setInnerText(data.getLabel());
-        if (icon != null) {
-            icon.setUri(data.getIcon());
+
+        if (data.getIcon() != null) {
+            icon.setClassName("v-icon");
+            icon.addClassName(data.getIcon());
+        } else if (iconImage != null) {
+            iconImage.setUri(data.getIcon());
         }
+
         if (data.isEnabled() && root.getClassName().contains(ApplicationConnection.DISABLED_CLASSNAME)) {
             root.removeClassName(ApplicationConnection.DISABLED_CLASSNAME);
             bindHandlers();

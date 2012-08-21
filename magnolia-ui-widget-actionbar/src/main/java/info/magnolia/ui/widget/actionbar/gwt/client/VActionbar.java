@@ -95,15 +95,20 @@ public class VActionbar extends Composite implements Paintable, Container, Clien
 
                 @Override
                 public void invoke(String methodName, Object[] params) {
-                    final VActionbarItemJSO action = VActionbarItemJSO.parse(String.valueOf(params[0]));
+                    String jsonIcon = String.valueOf(params[0]);
+                    final VActionbarItemJSO action = VActionbarItemJSO.parse(jsonIcon);
                     String groupName = String.valueOf(params[1]);
                     String sectionName = String.valueOf(params[2]);
 
-                    Icon icon = null;
-                    if (action.getIcon() != null) {
-                        icon = new Icon(client, action.getIcon());
+                    if (action.getIcon().startsWith("icon-")) {
+                        view.addAction(action, groupName, sectionName);
+                    } else {
+                        Icon icon = null;
+                        if (action.getIcon() != null) {
+                            icon = new Icon(client, action.getIcon());
+                        }
+                        view.addAction(action, icon, groupName, sectionName);
                     }
-                    view.addAction(action, icon, groupName, sectionName);
                 }
             });
 

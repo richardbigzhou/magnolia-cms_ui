@@ -197,7 +197,21 @@ public class Actionbar extends AbstractComponent implements ActionbarView, Serve
     public void addAction(String actionName, String label, Resource icon, String groupName, String sectionName) {
         ActionbarSection section = sections.get(sectionName);
         if (section != null) {
-            final ActionbarItem action = new ActionbarItem(actionName, label, icon, groupName);
+            final ActionbarItem action = new ActionbarResourceItem(actionName, label, icon, groupName);
+            section.addAction(action);
+            if (isAttached) {
+                doAddAction(action, sectionName);
+            }
+        } else {
+            log.warn("Action was not added: no section found with name '" + sectionName + "'.");
+        }
+    }
+
+    @Override
+    public void addAction(String actionName, String label, String icon, String groupName, String sectionName) {
+        ActionbarSection section = sections.get(sectionName);
+        if (section != null) {
+            final ActionbarItem action = new ActionbarFontItem(actionName, label, icon, groupName);
             section.addAction(action);
             if (isAttached) {
                 doAddAction(action, sectionName);
@@ -425,7 +439,7 @@ public class Actionbar extends AbstractComponent implements ActionbarView, Serve
     /**
      * A group of actions in a section of the action bar.
      */
-    public static class ActionbarItem implements Serializable {
+    public static abstract class ActionbarItem implements Serializable {
 
         private transient String groupName;
 
@@ -433,14 +447,11 @@ public class Actionbar extends AbstractComponent implements ActionbarView, Serve
 
         private final String label;
 
-        private final Resource icon;
-
         private boolean enabled;
 
-        public ActionbarItem(String name, String label, Resource icon, String groupName) {
+        public ActionbarItem(String name, String label, String groupName) {
             this.name = name;
             this.label = label;
-            this.icon = icon;
             this.groupName = groupName;
             this.enabled = true;
         }
@@ -449,17 +460,15 @@ public class Actionbar extends AbstractComponent implements ActionbarView, Serve
             return name;
         }
 
+        public String getGroupName() {
+            return groupName;
+        }
+
         public String getLabel() {
             return label;
         }
 
-        public Resource getIcon() {
-            return icon;
-        }
-
-        public String getGroupName() {
-            return groupName;
-        }
+        abstract Object getIcon();
 
         public boolean isEnabled() {
             return enabled;
@@ -467,6 +476,48 @@ public class Actionbar extends AbstractComponent implements ActionbarView, Serve
 
         public void setEnabled(boolean enabled) {
             this.enabled = enabled;
+        }
+
+    }
+
+    /**
+     * Class for GSON serialization of actionbar items using the icon font.
+     */
+    public static class ActionbarFontItem extends ActionbarItem {
+
+        private final String icon;
+
+        public ActionbarFontItem(String name, String label, String icon, String groupName) {
+            super(name, label, groupName);
+            this.icon = icon;
+        }
+
+        @Override
+        String getIcon() {
+            return icon;
+        }
+    }
+
+    /**
+     * Legacy class for compatibility of GSON serialization of Resources, in case the item uses an
+     * image icon.
+     */
+    public static class ActionbarResourceItem extends ActionbarItem {
+
+        private final Resource icon;
+
+        /**
+         * Use {@link ActionbarItem#ActionbarItem(String, String, String, String)} instead.
+         */
+        @Deprecated
+        public ActionbarResourceItem(String name, String label, Resource icon, String groupName) {
+            super(name, label, groupName);
+            this.icon = icon;
+        }
+
+        @Override
+        Resource getIcon() {
+            return icon;
         }
     }
 }

@@ -78,15 +78,20 @@ public class ActionbarBuilder {
                                 + "' already exists in section '" + section.getName() + "'.");
                             continue;
                         }
-                        Resource icon = null;
+
                         if (StringUtils.isNotBlank(item.getIcon())) {
-                            try {
-                                icon = new ThemeResource(item.getIcon());
-                            } catch (NullPointerException e) {
-                                log.warn("Icon resource not found for Actionbar item '" + item.getName() + "'.");
+                            if (item.getIcon().startsWith("icon-")) {
+                                actionbar.addAction(item.getName(), item.getLabel(), item.getIcon(), group.getName(), section.getName());
+                            } else {
+                                Resource icon = null;
+                                try {
+                                    icon = new ThemeResource(item.getIcon());
+                                } catch (NullPointerException e) {
+                                    log.warn("Icon resource not found for Actionbar item '" + item.getName() + "'.");
+                                }
+                                actionbar.addAction(item.getName(), item.getLabel(), icon, group.getName(), section.getName());
                             }
                         }
-                        actionbar.addAction(item.getName(), item.getLabel(), icon, group.getName(), section.getName());
                     }
                 }
             }

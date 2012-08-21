@@ -107,6 +107,20 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, 
     }
 
     @Override
+    public void addAction(VActionbarItemJSO actionParams, String groupName, String sectionName) {
+        VActionbarSection section = sections.get(sectionName);
+        if (section != null) {
+            VActionbarGroup group = section.getGroups().get(groupName);
+            if (group == null) {
+                group = new VActionbarGroup(groupName);
+                section.addGroup(group);
+            }
+            VActionbarItem action = new VActionbarItem(actionParams, eventBus);
+            group.addAction(action);
+        }
+    }
+
+    @Override
     public void onActionTriggered(ActionTriggerEvent event) {
         VActionbarItem action = event.getSource();
         VActionbarSection section = getParentSection(action);
