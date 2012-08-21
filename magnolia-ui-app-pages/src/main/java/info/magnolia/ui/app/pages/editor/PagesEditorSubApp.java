@@ -36,6 +36,7 @@ package info.magnolia.ui.app.pages.editor;
 
 import static info.magnolia.ui.app.pages.PagesApp.PREVIEW_FULL_TOKEN;
 import static info.magnolia.ui.app.pages.PagesApp.PREVIEW_TOKEN;
+import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.event.ActionbarItemClickedEvent;
@@ -158,33 +159,20 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
                     }
                     Node node = session.getNode(path);
 
-                    final String PAGE_NODE_TYPE = "mgnl:page";
-                    final String AREA_NODE_TYPE = "mgnl:area";
-                    final String COMPONENT_NODE_TYPE = "mgnl:component";
-
-                    if (node.isNodeType(PAGE_NODE_TYPE)) {
+                    if (node.isNodeType(MgnlNodeType.NT_PAGE)) {
                         actionbarPresenter.showSection("pageActions");
                         actionbarPresenter.hideSection("areaActions");
                         actionbarPresenter.hideSection("componentActions");
-                    }
-                    else if (node.isNodeType(AREA_NODE_TYPE)) {
+                    } else if (node.isNodeType(MgnlNodeType.NT_AREA)) {
                         actionbarPresenter.showSection("areaActions");
                         actionbarPresenter.hideSection("pageActions");
                         actionbarPresenter.hideSection("componentActions");
-                    }
-                    else if (node.isNodeType(COMPONENT_NODE_TYPE)) {
+                    } else if (node.isNodeType(MgnlNodeType.NT_COMPONENT)) {
                         actionbarPresenter.showSection("componentActions");
                         actionbarPresenter.hideSection("areaActions");
                         actionbarPresenter.hideSection("pageActions");
-                    }
-                    else {
-                        actionbarPresenter.hideSection("pagePreviewActions");
-                        actionbarPresenter.hideSection("pageActions");
-                        actionbarPresenter.hideSection("areaActions");
-                        actionbarPresenter.hideSection("optionalAreaActions");
-                        actionbarPresenter.hideSection("editableAreaActions");
-                        actionbarPresenter.hideSection("optionalEditableAreaActions");
-                        actionbarPresenter.hideSection("componentActions");
+                    } else {
+                        hideAllActions(actionbarPresenter);
                     }
                 } catch (RepositoryException e) {
                     log.error("Exception caught: {}", e.getMessage(), e);
@@ -221,12 +209,7 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
         ActionbarDefinition actionbarDefinition = appDescriptor.getEditor().getActionbar();
         ActionbarView actionbar = actionbarPresenter.start(actionbarDefinition, actionFactory);
 
-        actionbarPresenter.hideSection("areaActions");
-        actionbarPresenter.hideSection("optionalAreaActions");
-        actionbarPresenter.hideSection("editableAreaActions");
-        actionbarPresenter.hideSection("optionalEditableAreaActions");
-        actionbarPresenter.hideSection("componentActions");
-
+        hideAllActions(actionbarPresenter);
 
         if (isEdit()) {
             actionbarPresenter.hideSection("pagePreviewActions");
@@ -269,13 +252,20 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
         if(pathParams.size() == 3) {
             previewMode = pathParams.get(2);
         }
+        //reset actionbar
+        hideAllActions(actionbarPresenter);
 
         if (PREVIEW_TOKEN.equals(previewMode)) {
+            actionbarPresenter.hideSection("pageActions");
+            actionbarPresenter.showSection("pagePreviewActions");
             pageEditorPresenter.setParameters(parameters, true);
             view.setPageEditor(pageEditorPresenter.start());
+
         } else if(PREVIEW_FULL_TOKEN.equals(previewMode)) {
             appContext.openSubAppFullScreen(PagesApp.EDITOR_TOKEN, PagesEditorSubApp.class, defaultLocation);
         } else {
+            actionbarPresenter.hideSection("pagePreviewActions");
+            actionbarPresenter.showSection("pageActions");
             pageEditorPresenter.setParameters(parameters, false);
             view.setPageEditor(pageEditorPresenter.start());
         }
@@ -297,8 +287,14 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
         return fullPreview;
     }
 
-    public void setUrl(String url) {
-        view.setUrl(url);
+    private void hideAllActions(final ActionbarPresenter presenter) {
+        presenter.hideSection("pagePreviewActions");
+        presenter.hideSection("pageActions");
+        presenter.hideSection("areaActions");
+        presenter.hideSection("optionalAreaActions");
+        presenter.hideSection("editableAreaActions");
+        presenter.hideSection("optionalEditableAreaActions");
+        presenter.hideSection("componentActions");
     }
 
 }
