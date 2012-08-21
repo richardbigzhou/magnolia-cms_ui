@@ -61,6 +61,7 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
      */
     private Resource source;
     private String contextPath;
+    private boolean preview = false;
     private PageEditorView.Listener listener;
     protected ServerSideProxy proxy;
 
@@ -81,10 +82,12 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
         if (getSource() != null) {
             target.addAttribute("src", getSource());
         }
-        if (getSource() != null) {
+        if (contextPath != null) {
             target.addAttribute("contextPath", getContextPath());
         }
-
+        if (preview) {
+            target.addAttribute("preview", isPreview());
+        }
         proxy.paintContent(target);
     }
 
@@ -103,12 +106,23 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
     }
 
     @Override
-    public void init(String contextPath, String nodePath) {
+    public void init(String contextPath, String nodePath, boolean preview) {
         this.contextPath = contextPath;
+        this.preview = preview;
         this.source = new ExternalResource(contextPath + nodePath);
 
         proxy = new ServerSideProxy(this) {
             {
+
+
+                register("selectElement", new Method() {
+                    @Override
+                    public void invoke(String methodName, Object[] params) {
+                        final String workSpace = String.valueOf(params[0]);
+                        final String path = String.valueOf(params[1]);
+                        listener.selectNode(workSpace, path);
+                    }
+                });
                 register("editComponent", new Method() {
                     @Override
                     public void invoke(String methodName, Object[] params) {
@@ -157,13 +171,6 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
                         listener.sortComponent(workSpace, parentPath, source, target, order);
                     }
                 });
-                register("onComponentSelect", new Method() {
-                    @Override
-                    public void invoke(String methodName, Object[] params) {
-                        final String path = String.valueOf(params[0]);
-                        listener.selectComponent(path);
-                    }
-                });
             }
         };
 
@@ -188,5 +195,9 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
     @Override
     public void callFromClient(String method, Object[] params) {
         System.out.println("Client called " + method);
+    }
+
+    public boolean isPreview() {
+        return preview;
     }
 }

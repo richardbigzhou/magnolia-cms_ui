@@ -370,9 +370,11 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             app.locationChanged(location);
         }
 
-        private String extractSubAppSubAppId(String token) {
-            int i = token.indexOf(':');
-            return i != -1 ? token.substring(0, i) : token;
+        private String extractSubAppSubAppId(final String token) {
+            int i = token.indexOf(";");
+            final String tokenStrippedFromParams = i != -1 ? token.substring(0, i) : token;
+            i = tokenStrippedFromParams.indexOf(':');
+            return i != -1 ? tokenStrippedFromParams.substring(0, i) : tokenStrippedFromParams;
         }
 
         @Override

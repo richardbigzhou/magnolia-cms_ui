@@ -6,5 +6,6 @@
 	<inherits name="org.vaadin.rpc.WidgetRPC" />
 	<inherits name="info.magnolia.ui.widget.jquerywrapper.gwt.JQueryWrapperWidgetSet"/>
     <inherits name="com.googlecode.mgwt.ui.UI"/>
+    <inherits name="org.vaadin.gwtgraphics.GWTGraphics"/>
     <stylesheet src="MagnoliaShell/styles.css"/>
 </module>

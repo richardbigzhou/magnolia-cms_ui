@@ -38,17 +38,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import com.google.gwt.user.client.Window;
-import com.googlecode.mgwt.ui.client.MGWT;
 import org.vaadin.rpc.client.ClientSideHandler;
 import org.vaadin.rpc.client.ClientSideProxy;
 import org.vaadin.rpc.client.Method;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.SimpleEventBus;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
+import com.googlecode.mgwt.ui.client.MGWT;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.Container;
 import com.vaadin.terminal.gwt.client.Paintable;
@@ -97,15 +97,20 @@ public class VActionbar extends Composite implements Paintable, Container, Clien
 
                 @Override
                 public void invoke(String methodName, Object[] params) {
-                    final VActionbarItemJSO action = VActionbarItemJSO.parse(String.valueOf(params[0]));
+                    String jsonIcon = String.valueOf(params[0]);
+                    final VActionbarItemJSO action = VActionbarItemJSO.parse(jsonIcon);
                     String groupName = String.valueOf(params[1]);
                     String sectionName = String.valueOf(params[2]);
 
-                    Icon icon = null;
-                    if (action.getIcon() != null) {
-                        icon = new Icon(client, action.getIcon());
+                    if (action.getIcon().startsWith("icon-")) {
+                        view.addAction(action, groupName, sectionName);
+                    } else {
+                        Icon icon = null;
+                        if (action.getIcon() != null) {
+                            icon = new Icon(client, action.getIcon());
+                        }
+                        view.addAction(action, icon, groupName, sectionName);
                     }
-                    view.addAction(action, icon, groupName, sectionName);
                 }
             });
 
@@ -198,7 +203,7 @@ public class VActionbar extends Composite implements Paintable, Container, Clien
 
     @Override
     public boolean initWidget(Object[] params) {
-        if (!initIsDeviceTablet()){
+        if (!initIsDeviceTablet()) {
             addStyleDependentName("open");
         }
         return false;
@@ -291,22 +296,23 @@ public class VActionbar extends Composite implements Paintable, Container, Clien
         return null;
     }
 
-    public void forceLayout(){
+    @Override
+    public void forceLayout() {
         client.forceLayout();
     }
 
     /**
-     * Determine if device is tablet.
-     * Allows option to add a querystring parameter of tablet=true for testing.
-     * TODO: Christopher Zimmermann - there should be only one instance of this code in the project.
+     * Determine if device is tablet. Allows option to add a querystring parameter of tablet=true
+     * for testing. TODO: Christopher Zimmermann - there should be only one instance of this code in
+     * the project.
      * @return Whether device is tablet.
      */
-    private boolean initIsDeviceTablet(){
+    private boolean initIsDeviceTablet() {
 
         boolean isDeviceTabletOverride = Window.Location.getQueryString().indexOf("tablet=true") >= 0;
-        if (! MGWT.getOsDetection().isDesktop() || isDeviceTabletOverride) {
+        if (!MGWT.getOsDetection().isDesktop() || isDeviceTabletOverride) {
             return true;
-        }  else{
+        } else {
             return false;
         }
     }

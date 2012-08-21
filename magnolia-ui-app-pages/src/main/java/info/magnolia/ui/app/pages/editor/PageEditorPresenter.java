@@ -89,6 +89,8 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
     private PageEditorParameters parameters;
 
+    private boolean preview;
+
     private String path;
 
     private final ConfiguredDialogDefinition dialogDefinition;
@@ -121,7 +123,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
     @Override
     public void editComponent(String workSpace, String path, String dialog) {
-        MagnoloaDialogPresenter.Presenter dialogPresenter = dialogPresenterFactory.createDialog(dialog);
+        final MagnoloaDialogPresenter.Presenter dialogPresenter = dialogPresenterFactory.createDialog(dialog);
 
         try {
             Session session = MgnlContext.getJCRSession(workSpace);
@@ -130,9 +132,9 @@ public class PageEditorPresenter implements PageEditorView.Listener {
                 path = "/";
             }
             final Node node = session.getNode(path);
-            JcrNodeAdapter item = new JcrNodeAdapter(node);
-            dialogPresenter.start(item, null);
+            final JcrNodeAdapter item = new JcrNodeAdapter(node);
             setPath(path);
+            createDialogAction(item, dialogPresenter);
         } catch (RepositoryException e) {
             log.error("Exception caught: {}", e.getMessage(), e);
         }
@@ -158,12 +160,33 @@ public class PageEditorPresenter implements PageEditorView.Listener {
             JcrNodeAdapter item = new JcrNewNodeAdapter(parentNode, MgnlNodeType.NT_COMPONENT);
             DefaultProperty property = new DefaultProperty(item.JCR_NAME, "0");
             item.addItemProperty(item.JCR_NAME, property);
-            dialogPresenter.start(item, null);
             setPath(path);
+
+            createDialogAction(item, dialogPresenter);
         } catch (RepositoryException e) {
             log.error("Exception caught: {}", e.getMessage(), e);
         }
 
+    }
+
+    /**
+     * Create a Dialog and define the call back actions.
+     */
+    private void createDialogAction(final JcrNodeAdapter item, final MagnoloaDialogPresenter.Presenter dialogPresenter) {
+        final EventBus eventBus = dialogPresenter.getEventBus();
+        dialogPresenter.start(item, new MagnoloaDialogPresenter.Presenter.CallBack() {
+
+            @Override
+            public void onSuccess(String actionName) {
+                eventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), item.getItemId()));
+                dialogPresenter.closeDialog();
+            }
+
+            @Override
+            public void onCancel() {
+                dialogPresenter.closeDialog();
+            }
+        });
     }
 
     private void updateDialogDefinition(String availableComponents) {
@@ -269,19 +292,19 @@ public class PageEditorPresenter implements PageEditorView.Listener {
     }
 
     @Override
-    public void selectComponent(String path) {
-        String selectedComponentPath = path;
-        appEventBus.fireEvent(new ComponentSelectedEvent(selectedComponentPath));
+    public void selectNode(String workSpace, String path) {
+        appEventBus.fireEvent(new NodeSelectedEvent(path, workSpace));
     }
 
     public PageEditorView start() {
         view.setListener(this);
-        view.init(parameters.getContextPath(), parameters.getNodePath());
+        view.init(parameters.getContextPath(), parameters.getNodePath(), preview);
         return view;
     }
 
-    public void setParameters(PageEditorParameters parameters) {
+    public void setParameters(PageEditorParameters parameters, boolean preview) {
         this.parameters = parameters;
+        this.preview = preview;
     }
 
     public String getPath() {
@@ -291,4 +314,9 @@ public class PageEditorPresenter implements PageEditorView.Listener {
     public void setPath(String path) {
         this.path = path;
     }
+
+    public boolean isPreview() {
+        return preview;
+    }
+
 }

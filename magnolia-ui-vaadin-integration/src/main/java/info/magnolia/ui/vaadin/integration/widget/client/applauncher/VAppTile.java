@@ -129,6 +129,7 @@ public class VAppTile extends Widget {
         addDomHandler(new MouseDownHandler() {
             @Override
             public void onMouseDown(MouseDownEvent event) {
+                // Nothing - because the Touch events handle the actual clicks.
             }
         }, MouseDownEvent.getType());
         
@@ -137,7 +138,9 @@ public class VAppTile extends Widget {
             @Override
             public void onTouchStart(TouchStartEvent event) {
                 getElement().getStyle().setColor(getParent().getColor());
-                getElement().getStyle().setBackgroundColor("white");                
+                getElement().getStyle().setBackgroundColor("white");
+
+                eventBus.fireEvent(new AppActivationEvent(appTileData.getName()));
             }
         });
         
@@ -162,7 +165,7 @@ public class VAppTile extends Widget {
                     getElement().getStyle().setBackgroundColor(getParent().getColor());
                     getElement().getStyle().setColor("white");
                 }
-                eventBus.fireEvent(new AppActivationEvent(appTileData.getName()));
+                //Testing. Moved to touchStart! eventBus.fireEvent(new AppActivationEvent(appTileData.getName()));
             }
         });
         
