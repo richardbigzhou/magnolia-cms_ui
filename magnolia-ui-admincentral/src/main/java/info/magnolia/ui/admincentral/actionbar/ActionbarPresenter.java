@@ -217,9 +217,8 @@ public class ActionbarPresenter implements ActionbarView.Listener {
     }
 
     public void createAndExecuteAction(final ActionDefinition actionDefinition, String workspace, String absPath) throws ActionExecutionException {
-        if (actionDefinition == null) {
-            log.warn("Action definition cannot be null. Will do nothing.");
-            return;
+        if (actionDefinition == null || StringUtils.isBlank(workspace)) {
+            throw new ActionExecutionException("Got invaliud arguments: action definition is "+ actionDefinition + ", workspace is "+ workspace + ". Will do nothing.");
         }
         try {
             Session session = MgnlContext.getJCRSession(workspace);
