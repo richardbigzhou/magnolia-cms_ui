@@ -92,7 +92,7 @@ public class LinkFieldBuilder extends AbstractFieldBuilder<LinkFieldDefinition> 
 
     /**
      * Create the Button click Listener.
-     * On click: Create a Dialog and Initialize callBack handling.
+     * On click: Create a Dialog and Initialize callback handling.
      */
     private Button.ClickListener createButtonClickListener(final String dialogName, final String appName) {
         Button.ClickListener res = new Button.ClickListener() {
@@ -110,7 +110,7 @@ public class LinkFieldBuilder extends AbstractFieldBuilder<LinkFieldDefinition> 
                 Property property = DefaultPropertyUtil.newDefaultProperty("transiantPorps", null, (String)textButton.getTextField().getValue());
                 item.addItemProperty("transiantPorps", property);
                 // Create the call Back
-                MagnoloaDialogPresenter.Presenter.CallBack callBack = new MagnoloaDialogPresenter.Presenter.CallBack() {
+                MagnoloaDialogPresenter.Presenter.Callback callback = new MagnoloaDialogPresenter.Presenter.Callback() {
                     @Override
                     public void onSuccess(String actionName) {
                         Property p = item.getItemProperty("transiantPorps");
@@ -125,7 +125,7 @@ public class LinkFieldBuilder extends AbstractFieldBuilder<LinkFieldDefinition> 
 
 
                 if(targetApp instanceof ContentApp) {
-                    ((ContentApp)targetApp).openChooseDialog( dialogName, callBack, item);
+                    ((ContentApp)targetApp).openChooseDialog( dialogName, callback, item);
                 }
 
             }

@@ -174,7 +174,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
      */
     private void createDialogAction(final JcrNodeAdapter item, final MagnoloaDialogPresenter.Presenter dialogPresenter) {
         final EventBus eventBus = dialogPresenter.getEventBus();
-        dialogPresenter.start(item, new MagnoloaDialogPresenter.Presenter.CallBack() {
+        dialogPresenter.start(item, new MagnoloaDialogPresenter.Presenter.Callback() {
 
             @Override
             public void onSuccess(String actionName) {

@@ -54,9 +54,9 @@ public abstract class ContentApp extends AbstractApp {
         this.dialogPresenterFactory = dialogPresenterFactory;
     }
 
-    public void openChooseDialog(String dialogName, Presenter.CallBack callBack, Item item) {
+    public void openChooseDialog(String dialogName, Presenter.Callback callback, Item item) {
         Presenter dialogPresenter = dialogPresenterFactory.createDialog(dialogName);
-        dialogPresenter.start(item, callBack);
+        dialogPresenter.start(item, callback);
     }
 
 }

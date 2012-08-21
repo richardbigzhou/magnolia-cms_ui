@@ -38,16 +38,16 @@ import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.widget.dialog.MagnoloaDialogPresenter;
 
 /**
- * Implements an action for CallBack handling on dialog {@link MagnoloaDialogPresenter.Presenter.CallBack}.
+ * Implements an action for Callback handling on dialog {@link info.magnolia.ui.widget.dialog.MagnoloaDialogPresenter.Presenter.Callback}.
  * This Action can be configured to perform a cancel or a success Action.
  *
- * @see CallBackDialogActionDefinition
+ * @see CallbackDialogActionDefinition
  */
-public class CallBackDialogAction extends ActionBase<CallBackDialogActionDefinition> {
+public class CallbackDialogAction extends ActionBase<CallbackDialogActionDefinition> {
 
     private MagnoloaDialogPresenter.Presenter presenter;
 
-    public CallBackDialogAction(CallBackDialogActionDefinition definition, MagnoloaDialogPresenter.Presenter presenter) {
+    public CallbackDialogAction(CallbackDialogActionDefinition definition, MagnoloaDialogPresenter.Presenter presenter) {
         super(definition);
         this.presenter = presenter;
     }
@@ -56,9 +56,9 @@ public class CallBackDialogAction extends ActionBase<CallBackDialogActionDefinit
     public void execute() throws ActionExecutionException {
 
         if(getDefinition().isCallSuccess()) {
-            presenter.getCallBack().onSuccess(getDefinition().getSuccessActionName());
+            presenter.getCallback().onSuccess(getDefinition().getSuccessActionName());
         } else {
-            presenter.getCallBack().onCancel();
+            presenter.getCallback().onCancel();
         }
         presenter.closeDialog();
     }

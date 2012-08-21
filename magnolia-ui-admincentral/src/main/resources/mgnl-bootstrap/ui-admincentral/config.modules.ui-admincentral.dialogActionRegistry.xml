@@ -145,7 +145,7 @@
         </sv:property>
       </sv:node>
     </sv:node>
-    <sv:node sv:name="callBack">
+    <sv:node sv:name="callback">
       <sv:property sv:name="jcr:primaryType" sv:type="Name">
         <sv:value>mgnl:contentNode</sv:value>
       </sv:property>
@@ -156,10 +156,10 @@
         <sv:value>147a7677-657f-412b-8130-3282b5b38088</sv:value>
       </sv:property>
       <sv:property sv:name="definition" sv:type="String">
-        <sv:value>info.magnolia.ui.admincentral.dialog.action.CallBackDialogActionDefinition</sv:value>
+        <sv:value>info.magnolia.ui.admincentral.dialog.action.CallbackDialogActionDefinition</sv:value>
       </sv:property>
       <sv:property sv:name="implementation" sv:type="String">
-        <sv:value>info.magnolia.ui.admincentral.dialog.action.CallBackDialogAction</sv:value>
+        <sv:value>info.magnolia.ui.admincentral.dialog.action.CallbackDialogAction</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>

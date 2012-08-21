@@ -50,19 +50,19 @@ public interface MagnoloaDialogPresenter {
      * DialogView.Presenter.
      *
      */
-    interface Presenter {
+    public interface Presenter {
 
         /**
-         * Call Back Interface for DialogView.Presenter.
+         * Callback interface for DialogView.Presenter.
          */
-        interface CallBack {
+        public interface Callback {
 
             void onCancel();
 
             void onSuccess(String actionName);
         }
 
-        CallBack getCallBack();
+        Callback getCallback();
 
         MagnoliaDialogView getView();
 
@@ -73,7 +73,7 @@ public interface MagnoloaDialogPresenter {
         /**
          * Start create the dialog.
          */
-        MagnoliaDialogView start(Item item, CallBack callBack);
+        MagnoliaDialogView start(Item item, Callback callback);
 
         void showValidation(boolean isVisible);
 
