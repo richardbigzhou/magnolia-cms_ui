@@ -42,7 +42,7 @@ public interface PageEditorView extends View {
 
     void setListener(Listener listener);
 
-    void init(String contextPath, String nodePath);
+    void init(String contextPath, String nodePath, boolean preview);
 
     void refresh();
 

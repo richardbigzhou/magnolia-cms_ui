@@ -109,6 +109,7 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
     protected String paintableId;
     private FocusModel focusModel;
     private String contextPath;
+    private boolean preview = false;
 
 
     public VPageEditor() {
@@ -156,6 +157,7 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
         view.getIframe().setUrl(getSrc(uidl, client));
 
         setContextPathFromUIDL(uidl);
+        setPreviewFromUIDL(uidl);
         proxy.update(this, uidl, client);
     }
 
@@ -192,6 +194,10 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
             contextPath = "";
         }
         this.contextPath = contextPath;
+    }
+
+    private void setPreviewFromUIDL(UIDL uidl) {
+        this.preview = uidl.getBooleanAttribute("preview");
     }
 
     public void onMouseUp(final Element element) {
@@ -324,6 +330,9 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
     }
 
     private void process(final Document document) {
+
+
+
         //TODO how will we handle preview in 5.0?
         /*String mgnlVersion = Window.Location.getParameter(MGNL_VERSION_PARAMETER);
         if(mgnlVersion != null) {
@@ -406,6 +415,9 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
 
     @Override
     public void onFrameLoaded(Frame iframe) {
+        if (preview) {
+            return;
+        }
         Element element= iframe.getElement();
         initNativeHandlers(element);
 

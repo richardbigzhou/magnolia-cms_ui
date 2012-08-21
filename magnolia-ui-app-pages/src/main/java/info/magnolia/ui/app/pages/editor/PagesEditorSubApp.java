@@ -206,7 +206,7 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
             path = "/";
 
         setParameters(new PageEditorParameters(MgnlContext.getContextPath(), path));
-        pageEditorPresenter.setParameters(parameters);
+        pageEditorPresenter.setParameters(parameters, isPreview());
 
         if (isEdit()) {
             view.setPageEditor(pageEditorPresenter.start());
