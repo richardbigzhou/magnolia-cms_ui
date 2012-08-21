@@ -79,7 +79,7 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, 
 
     private boolean isToggledOpen = false;
 
-    TouchDelegate delegate = new TouchDelegate(toggleButton);
+    private TouchDelegate delegate = new TouchDelegate(toggleButton);
 
     private final Map<String, VActionbarSection> sections = new LinkedHashMap<String, VActionbarSection>();
 

@@ -71,9 +71,9 @@ public class VActionbarItem extends Widget {
 
     protected VActionbarGroup group;
 
-    TouchDelegate delegate = new TouchDelegate((Widget)this);
+    protected TouchDelegate delegate = new TouchDelegate((Widget)this);
 
-    HandlerRegistration touchEndHandler;
+    protected HandlerRegistration touchEndHandler;
 
     /**
      * Instantiates a new action in action bar.
