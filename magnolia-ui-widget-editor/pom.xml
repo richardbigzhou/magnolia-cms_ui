@@ -33,6 +33,17 @@
           </archive>
         </configuration>
       </plugin>
+        <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>gwt-maven-plugin</artifactId>
+            <configuration>
+                <module>info.magnolia.ui.widget.editor.gwt.PageEditorWidgetSet</module>
+                <style>PRETTY</style>
+                <draftCompile>true</draftCompile>
+                <compileReport>true</compileReport>
+                <noServer>true</noServer>
+            </configuration>
+        </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>

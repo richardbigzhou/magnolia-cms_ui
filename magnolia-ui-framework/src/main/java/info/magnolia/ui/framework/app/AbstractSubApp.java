@@ -34,38 +34,16 @@
 package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.message.Message;
 
 
 /**
- * Provides functionality used by an app to interact with the Magnolia shell.
+ * Abstract implementation with default behavior suitable for most sub apps.
+ * 
+ * @see info.magnolia.ui.framework.app.SubApp
  */
-public interface AppContext {
+public abstract class AbstractSubApp implements SubApp {
 
-    /**
-     *
-     * @param name name of the sub app
-     * @param subAppClass
-     * @param location
-     * @param subAppId uniquely identifies the sub app instance within the app
-     */
-    void openSubApp(String name, Class<? extends SubApp> subAppClass, Location location, String subAppId);
-
-    void openSubAppFullScreen(String name, Class<? extends SubApp> subAppClass, Location location);
-
-    void exitFullScreenMode();
-
-    AppDescriptor getAppDescriptor();
-
-    void sendUserMessage(String user, Message message);
-
-    void sendLocalMessage(Message message);
-
-    void broadcastMessage(Message message);
-
-    void showConfirmationMessage(String message);
-
-    String getName();
-
-    void setSubAppLocation(SubApp subApp, Location location);
+    @Override
+    public void locationChanged(Location location) {
+    }
 }

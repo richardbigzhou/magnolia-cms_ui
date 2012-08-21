@@ -34,7 +34,7 @@
 package info.magnolia.ui.admincentral.app.assets;
 
 import info.magnolia.ui.framework.app.AbstractApp;
-import info.magnolia.ui.framework.app.SubApp;
+import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.location.Location;
 
 import javax.inject.Inject;
@@ -44,15 +44,15 @@ import javax.inject.Inject;
  */
 public class AssetsApp extends AbstractApp {
 
-    private AssetsMainSubApp subApp;
+    private final AppContext appContext;
 
     @Inject
-    public AssetsApp(AssetsMainSubApp subApp) {
-        this.subApp = subApp;
+    public AssetsApp(AppContext appContext) {
+        this.appContext = appContext;
     }
 
     @Override
-    public SubApp start(Location location) {
-        return subApp;
+    public void start(Location location) {
+        appContext.openSubApp("main", AssetsMainSubApp.class, location, "main");
     }
 }

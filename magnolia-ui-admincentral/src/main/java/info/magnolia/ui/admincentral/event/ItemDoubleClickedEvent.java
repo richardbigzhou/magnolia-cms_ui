@@ -31,41 +31,43 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app;
+package info.magnolia.ui.admincentral.event;
 
-import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.message.Message;
-
+import info.magnolia.ui.framework.event.Event;
+import info.magnolia.ui.framework.event.EventHandler;
 
 /**
- * Provides functionality used by an app to interact with the Magnolia shell.
+ * This event is fired when an item is double clicked (ie a row in the data grid within the workbench representing either a {@link javax.jcr.Node} or a {@link javax.jcr.Property}).
  */
-public interface AppContext {
+public class ItemDoubleClickedEvent implements Event<ItemDoubleClickedEvent.Handler> {
 
     /**
-     *
-     * @param name name of the sub app
-     * @param subAppClass
-     * @param location
-     * @param subAppId uniquely identifies the sub app instance within the app
+     * Handles {@link ItemDoubleClickedEvent} events.
      */
-    void openSubApp(String name, Class<? extends SubApp> subAppClass, Location location, String subAppId);
+    public interface Handler extends EventHandler {
 
-    void openSubAppFullScreen(String name, Class<? extends SubApp> subAppClass, Location location);
+        void onItemDoubleClicked(ItemDoubleClickedEvent event);
+    }
 
-    void exitFullScreenMode();
+    private String workspace;
 
-    AppDescriptor getAppDescriptor();
+    private String path;
 
-    void sendUserMessage(String user, Message message);
+    public ItemDoubleClickedEvent(String workspace, String path) {
+        this.workspace = workspace;
+        this.path = path;
+    }
 
-    void sendLocalMessage(Message message);
+    public String getWorkspace() {
+        return workspace;
+    }
 
-    void broadcastMessage(Message message);
+    public String getPath() {
+        return path;
+    }
 
-    void showConfirmationMessage(String message);
-
-    String getName();
-
-    void setSubAppLocation(SubApp subApp, Location location);
+    @Override
+    public void dispatch(Handler handler) {
+        handler.onItemDoubleClicked(this);
+    }
 }

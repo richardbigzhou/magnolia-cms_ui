@@ -35,8 +35,9 @@ package info.magnolia.ui.app.messages;
 
 import javax.inject.Inject;
 
+import info.magnolia.ui.framework.app.AbstractSubApp;
 import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.app.SubApp;
+import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.framework.view.View;
@@ -44,7 +45,7 @@ import info.magnolia.ui.framework.view.View;
 /**
  * Sub app for the main tab in the message app.
  */
-public class MessagesAppMainSubApp implements SubApp, MessagesView.Listener {
+public class MessagesAppMainSubApp extends AbstractSubApp implements MessagesView.Listener {
 
     private AppContext appContext;
     private MessagesView view;
@@ -62,7 +63,7 @@ public class MessagesAppMainSubApp implements SubApp, MessagesView.Listener {
     }
 
     @Override
-    public View start() {
+    public View start(Location location) {
         return view;
     }
 

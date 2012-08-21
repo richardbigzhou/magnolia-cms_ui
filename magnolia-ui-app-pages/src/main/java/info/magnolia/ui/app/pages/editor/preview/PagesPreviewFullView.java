@@ -31,27 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.preview;
+package info.magnolia.ui.app.pages.editor.preview;
 
-import info.magnolia.ui.framework.view.View;
-import info.magnolia.ui.widget.actionbar.ActionbarView;
+import info.magnolia.ui.app.pages.editor.PagesEditorView;
+
 
 /**
- * Displays the page preview.
+ * Displays the full page preview.
  */
-public interface PagesPreviewView extends View {
+public interface PagesPreviewFullView extends PagesEditorView {
 
-    /**
-     * Listener interface of the view.
-     */
-    interface Listener {
 
-        void closePreview();
-    }
-
-    void setListener(Listener listener);
-
-    void setUrl(String url);
-
-    void setActionbarView(ActionbarView actionbar);
 }

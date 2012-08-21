@@ -36,13 +36,14 @@ package info.magnolia.ui.app.contacts;
 import javax.inject.Inject;
 
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
-import info.magnolia.ui.framework.app.SubApp;
+import info.magnolia.ui.framework.app.AbstractSubApp;
+import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.view.View;
 
 /**
  * Sub app for the main tab in the contacts app.
  */
-public class ContactsMainSubApp implements SubApp {
+public class ContactsMainSubApp extends AbstractSubApp {
 
     private ContactsView view;
     private ContentWorkbenchPresenter workbench;
@@ -59,7 +60,7 @@ public class ContactsMainSubApp implements SubApp {
     }
 
     @Override
-    public View start() {
+    public View start(Location location) {
         view.setWorkbenchView(workbench.start());
         return view;
     }

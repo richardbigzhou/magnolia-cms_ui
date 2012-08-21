@@ -33,9 +33,10 @@
  */
 package info.magnolia.ui.app.instantpreview;
 
+import info.magnolia.ui.framework.app.AbstractSubApp;
 import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.instantpreview.InstantPreviewDispatcher;
+import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.framework.view.View;
@@ -45,7 +46,7 @@ import javax.inject.Inject;
 /**
  * Sub app for the main tab in the instant preview app.
  */
-public class InstantPreviewAppMainSubApp implements SubApp, InstantPreviewView.Listener {
+public class InstantPreviewAppMainSubApp extends AbstractSubApp implements InstantPreviewView.Listener {
 
     private AppContext appContext;
     private InstantPreviewView view;
@@ -65,7 +66,7 @@ public class InstantPreviewAppMainSubApp implements SubApp, InstantPreviewView.L
     }
 
     @Override
-    public View start() {
+    public View start(Location location) {
         return view;
     }
 

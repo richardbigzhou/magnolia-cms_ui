@@ -77,7 +77,7 @@ public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
     public void execute() throws ActionExecutionException {
         try {
             final String path = nodeToPreview.getPath();
-            final String token = (full ? PagesApp.PREVIEW_FULL_TOKEN: PagesApp.PREVIEW_TOKEN) + ";" + path;
+            final String token = PagesApp.EDITOR_TOKEN + ":" + (full ? PagesApp.PREVIEW_FULL_TOKEN: PagesApp.PREVIEW_TOKEN) + ";" + path;
             log.debug("token is {}", token);
             locationController.goTo(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages", token));
         } catch (RepositoryException e) {

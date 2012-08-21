@@ -34,7 +34,6 @@
 package info.magnolia.ui.widget.editor.gwt.client.model.focus;
 
 import com.google.gwt.dom.client.Element;
-import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 
 
 
@@ -46,9 +45,5 @@ public interface FocusModel {
     void onMouseUp(Element element);
 
     void toggleRootAreaBar(boolean visible);
-
-    void reset();
-
-    void onLoadSelect(MgnlElement selectedMgnlElement);
 
 }

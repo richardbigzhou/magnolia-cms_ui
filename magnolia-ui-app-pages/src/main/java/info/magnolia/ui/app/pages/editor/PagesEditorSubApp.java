@@ -33,13 +33,22 @@
  */
 package info.magnolia.ui.app.pages.editor;
 
+
+import info.magnolia.context.MgnlContext;
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
-import info.magnolia.ui.admincentral.event.ActionbarClickEvent;
+import info.magnolia.ui.admincentral.event.ActionbarItemClickedEvent;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
+import info.magnolia.ui.app.pages.PagesApp;
 import info.magnolia.ui.app.pages.PagesAppDescriptor;
+import info.magnolia.ui.app.pages.editor.preview.PagesPreviewFullView;
+import info.magnolia.ui.app.pages.editor.preview.PagesPreviewView;
+import info.magnolia.ui.framework.app.AbstractSubApp;
 import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.location.DefaultLocation;
+import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
@@ -52,17 +61,18 @@ import javax.inject.Named;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * PagesEditorSubApp.
  */
-public class PagesEditorSubApp implements SubApp, PagesEditorView.Listener {
+public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView.Listener {
 
     private static final Logger log = LoggerFactory.getLogger(PagesEditorSubApp.class);
 
     private final PagesEditorView view;
 
     private final EventBus appEventBus;
+
+    private final EventBus subAppEventBus;
 
     private final PageEditorPresenter pageEditorPresenter;
 
@@ -76,24 +86,44 @@ public class PagesEditorSubApp implements SubApp, PagesEditorView.Listener {
 
     private WorkbenchActionFactory actionFactory;
 
+    private LocationController locationController;
+
+    private boolean fullPreview;
+
+    private boolean preview;
+
     @Inject
-    public PagesEditorSubApp(final AppContext ctx, final PagesEditorView view, final @Named("app") EventBus appEventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final WorkbenchActionFactory actionFactory) {
-        this.view = view;
+    public PagesEditorSubApp(final AppContext ctx, final ComponentProvider componentProvider, final @Named("app") EventBus appEventBus, final @Named("subapp") EventBus subAppEventBus, final PageEditorPresenter pageEditorPresenter, final LocationController locationController, final ActionbarPresenter actionbarPresenter, final WorkbenchActionFactory actionFactory) {
+
+        final String token = DefaultLocation.extractToken(locationController.getWhere().toString());
+        this.preview =  token.contains(PagesApp.PREVIEW_FULL_TOKEN) || token.contains(PagesApp.PREVIEW_TOKEN);
+        this.fullPreview = isPreview() && token.contains(PagesApp.PREVIEW_FULL_TOKEN);
+
+        if(isPreview()) {
+            log.debug("Preview type detected is {}", isFullPreview() ? "fullPreview" : "normal");
+            this.view = isFullPreview() ? componentProvider.newInstance(PagesPreviewFullView.class) : componentProvider.newInstance(PagesPreviewView.class);
+        } else {
+            this.view = componentProvider.newInstance(PagesEditorView.class);
+        }
+        this.view.setListener(this);
+
         this.appEventBus = appEventBus;
+        this.subAppEventBus = subAppEventBus;
         this.pageEditorPresenter = pageEditorPresenter;
         this.actionbarPresenter = actionbarPresenter;
         this.appDescriptor = (PagesAppDescriptor)ctx.getAppDescriptor();
         this.actionFactory = actionFactory;
+        this.locationController = locationController;
 
         bindHandlers();
     }
 
     private void bindHandlers() {
 
-        appEventBus.addHandler(ActionbarClickEvent.class, new ActionbarClickEvent.Handler() {
+        subAppEventBus.addHandler(ActionbarItemClickedEvent.class, new ActionbarItemClickedEvent.Handler() {
 
             @Override
-            public void onActionbarItemClicked(ActionbarClickEvent event) {
+            public void onActionbarItemClicked(ActionbarItemClickedEvent event) {
                 try {
                     ActionDefinition actionDefinition = event.getActionDefinition();
                     actionbarPresenter.createAndExecuteAction(actionDefinition, appDescriptor.getWorkbench().getWorkspace(), parameters.getNodePath());
@@ -130,10 +160,22 @@ public class PagesEditorSubApp implements SubApp, PagesEditorView.Listener {
     }
 
     @Override
-    public View start() {
-        view.setListener(this);
+    public View start(Location location) {
+
+        String path = getEditorPath(location);
+        if (path == null)
+            path = "/";
+
+        setParameters(new PageEditorParameters(MgnlContext.getContextPath(), path));
         pageEditorPresenter.setParameters(parameters);
-        view.setPageEditor(pageEditorPresenter.start());
+
+        if (isEdit()) {
+            view.setPageEditor(pageEditorPresenter.start());
+        } else if (isFullPreview()) {
+            view.setUrl(parameters.getContextPath() + parameters.getNodePath());
+            return view;
+        }
+
         ActionbarDefinition actionbarDefinition = appDescriptor.getEditor().getActionbar();
         ActionbarView actionbar = actionbarPresenter.start(actionbarDefinition, actionFactory);
         actionbarPresenter.hideSection("Areas");
@@ -143,6 +185,40 @@ public class PagesEditorSubApp implements SubApp, PagesEditorView.Listener {
         view.setActionbarView(actionbar);
 
         return view;
+    }
+
+
+    private String getEditorPath(Location location) {
+        String token = ((DefaultLocation) location).getToken();
+        String[] parts = token.split(";");
+        if (parts.length < 2) {
+            return null;
+        }
+        if (!parts[0].contains(PagesApp.EDITOR_TOKEN)) {
+            return null;
+        }
+        return parts[1];
+    }
+
+    @Override
+    public void closePreview() {
+        locationController.goTo(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages", ""));
+    }
+
+    public boolean isPreview() {
+        return preview;
+    }
+
+    public boolean isEdit() {
+        return !preview;
+    }
+
+    public boolean isFullPreview() {
+        return fullPreview;
+    }
+
+    public void setUrl(String url) {
+        view.setUrl(url);
     }
 
 }

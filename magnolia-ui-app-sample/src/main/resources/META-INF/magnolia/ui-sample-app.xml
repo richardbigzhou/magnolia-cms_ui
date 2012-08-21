@@ -12,21 +12,17 @@
 	     in the apps configuration repository of the admin central. (config/module/apps/appname/name:appname) -->
   <components>
     <id>app-sample</id>
+  </components>
+
+  <components>
+    <id>app-sample-main</id>
     <component>
       <type>info.magnolia.ui.app.sample.main.SampleMainSubApp</type>
       <implementation>info.magnolia.ui.app.sample.main.SampleMainSubApp</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.app.sample.editor.SampleEditorSubApp</type>
-      <implementation>info.magnolia.ui.app.sample.editor.SampleEditorSubApp</implementation>
-    </component>
-    <component>
       <type>info.magnolia.ui.app.sample.main.SampleMainView</type>
       <implementation>info.magnolia.ui.app.sample.main.SampleMainViewImpl</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.app.sample.editor.SampleEditorView</type>
-      <implementation>info.magnolia.ui.app.sample.editor.SampleEditorViewImpl</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.app.sample.main.NavigationView</type>
@@ -35,6 +31,26 @@
     <component>
       <type>info.magnolia.ui.app.sample.main.ContentDisplayView</type>
       <implementation>info.magnolia.ui.app.sample.main.ContentDisplayViewImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.app.sample.main.NavigationPresenter</type>
+      <implementation>info.magnolia.ui.app.sample.main.NavigationPresenter</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.app.sample.main.ContentDisplayPresenter</type>
+      <implementation>info.magnolia.ui.app.sample.main.ContentDisplayPresenter</implementation>
+    </component>
+  </components>
+
+  <components>
+    <id>app-sample-editor</id>
+    <component>
+      <type>info.magnolia.ui.app.sample.editor.SampleEditorSubApp</type>
+      <implementation>info.magnolia.ui.app.sample.editor.SampleEditorSubApp</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.app.sample.editor.SampleEditorView</type>
+      <implementation>info.magnolia.ui.app.sample.editor.SampleEditorViewImpl</implementation>
     </component>
   </components>
 

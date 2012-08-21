@@ -41,24 +41,19 @@ import info.magnolia.ui.model.action.ActionDefinition;
 /**
  * This event is fired when an item in the action bar is clicked.
  */
-public class ActionbarClickEvent implements Event<ActionbarClickEvent.Handler> {
+public class ActionbarItemClickedEvent implements Event<ActionbarItemClickedEvent.Handler> {
 
     /**
-     * Handles {@link ActionbarClickEvent} events.
+     * Handles {@link ActionbarItemClickedEvent} events.
      */
-    public static interface Handler extends EventHandler {
+    public interface Handler extends EventHandler {
 
-        void onActionbarItemClicked(ActionbarClickEvent event);
+        void onActionbarItemClicked(ActionbarItemClickedEvent event);
     }
 
     private final ActionDefinition actionDefinition;
 
-    @Override
-    public void dispatch(Handler handler) {
-        handler.onActionbarItemClicked(this);
-    }
-
-    public ActionbarClickEvent(ActionDefinition actionDefinition) {
+    public ActionbarItemClickedEvent(ActionDefinition actionDefinition) {
         this.actionDefinition = actionDefinition;
     }
 
@@ -66,4 +61,8 @@ public class ActionbarClickEvent implements Event<ActionbarClickEvent.Handler> {
         return actionDefinition;
     }
 
+    @Override
+    public void dispatch(Handler handler) {
+        handler.onActionbarItemClicked(this);
+    }
 }

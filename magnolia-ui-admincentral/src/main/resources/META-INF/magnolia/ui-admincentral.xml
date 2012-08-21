@@ -214,7 +214,18 @@
   </components>
 
   <components>
+    <id>subapp</id>
+    <configurer>
+      <class>info.magnolia.ui.framework.event.SubAppEventBusConfigurer</class>
+    </configurer>
+  </components>
+
+  <components>
     <id>app-assets</id>
+  </components>
+
+  <components>
+    <id>app-assets-main</id>
     <component>
       <type>info.magnolia.ui.admincentral.app.assets.AssetsMainSubApp</type>
       <implementation>info.magnolia.ui.admincentral.app.assets.AssetsMainSubApp</implementation>

@@ -37,7 +37,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 
-import com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler;
+import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 import info.magnolia.ui.widget.actionbar.gwt.client.event.ActionTriggerEvent;
 
@@ -115,9 +115,9 @@ public class VActionbarItem extends Widget {
 
         DOM.sinkEvents(getElement(), Event.TOUCHEVENTS);
 
-        delegate.addTouchStartHandler(new TouchStartHandler() {
+        delegate.addTouchEndHandler(new TouchEndHandler() {
             @Override
-            public void onTouchStart(com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent event) {
+            public void onTouchEnd(com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent event) {
 
                 if (data.isEnabled()) {
                     eventBus.fireEvent(new ActionTriggerEvent(data.getName(), VActionbarItem.this));

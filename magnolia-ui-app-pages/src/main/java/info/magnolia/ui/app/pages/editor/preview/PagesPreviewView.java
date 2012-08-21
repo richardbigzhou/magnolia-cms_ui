@@ -31,41 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app;
+package info.magnolia.ui.app.pages.editor.preview;
 
-import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.message.Message;
+import info.magnolia.ui.app.pages.editor.PagesEditorView;
 
 
 /**
- * Provides functionality used by an app to interact with the Magnolia shell.
+ * Displays the page preview.
  */
-public interface AppContext {
+public interface PagesPreviewView extends PagesEditorView {
 
-    /**
-     *
-     * @param name name of the sub app
-     * @param subAppClass
-     * @param location
-     * @param subAppId uniquely identifies the sub app instance within the app
-     */
-    void openSubApp(String name, Class<? extends SubApp> subAppClass, Location location, String subAppId);
-
-    void openSubAppFullScreen(String name, Class<? extends SubApp> subAppClass, Location location);
-
-    void exitFullScreenMode();
-
-    AppDescriptor getAppDescriptor();
-
-    void sendUserMessage(String user, Message message);
-
-    void sendLocalMessage(Message message);
-
-    void broadcastMessage(Message message);
-
-    void showConfirmationMessage(String message);
-
-    String getName();
-
-    void setSubAppLocation(SubApp subApp, Location location);
 }

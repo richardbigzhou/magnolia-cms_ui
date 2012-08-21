@@ -36,6 +36,7 @@ package info.magnolia.ui.admincentral.app.simple;
 import javax.inject.Inject;
 
 import info.magnolia.ui.framework.app.SubApp;
+import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.view.View;
 
 /**
@@ -52,11 +53,15 @@ public class AppTestSubApp implements SubApp {
 
     @Override
     public String getCaption() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     @Override
-    public View start() {
+    public View start(Location location) {
         return view;
+    }
+
+    @Override
+    public void locationChanged(Location location) {
     }
 }

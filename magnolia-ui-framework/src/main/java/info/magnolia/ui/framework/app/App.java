@@ -40,7 +40,7 @@ import info.magnolia.ui.framework.location.Location;
  */
 public interface App {
 
-    SubApp start(Location location);
+    void start(Location location);
 
     void locationChanged(Location location);
 
