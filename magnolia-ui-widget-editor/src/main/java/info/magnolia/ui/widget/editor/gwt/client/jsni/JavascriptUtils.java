@@ -46,6 +46,7 @@ import com.google.gwt.user.client.Window;
 /**
  * A JSNI wrapper around native javascript functions found in general.js, inline.js and others plus some utilities.
  */
+@Deprecated
 public final class JavascriptUtils {
 
     private static Dictionary dictionary;

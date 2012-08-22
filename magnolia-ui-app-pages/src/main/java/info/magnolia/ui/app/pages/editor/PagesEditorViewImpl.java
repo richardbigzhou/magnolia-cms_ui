@@ -76,13 +76,15 @@ public class PagesEditorViewImpl implements PagesEditorView {
     }
 
     @Override
-    public void setPageEditor(PageEditorView pageEditor) {
+    public void setPageEditorView(PageEditorView pageEditor) {
         if (this.pageEditor == null) {
             container.addComponent(pageEditor.asVaadinComponent());
+            this.pageEditor = pageEditor;
         } else {
             container.replaceComponent(this.pageEditor.asVaadinComponent(), pageEditor.asVaadinComponent());
+            this.pageEditor = pageEditor;
+            this.pageEditor.refresh();
         }
-        this.pageEditor = pageEditor;
     }
 
     @Override
@@ -99,5 +101,12 @@ public class PagesEditorViewImpl implements PagesEditorView {
     @Override
     public Component asVaadinComponent() {
         return root;
+    }
+
+    @Override
+    public void hideActionbar(boolean hide) {
+        if(actionbar != null) {
+            actionbar.asVaadinComponent().setVisible(!hide);
+        }
     }
 }

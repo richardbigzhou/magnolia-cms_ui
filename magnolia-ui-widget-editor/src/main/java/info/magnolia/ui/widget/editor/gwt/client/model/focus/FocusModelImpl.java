@@ -51,8 +51,6 @@ public class FocusModelImpl implements FocusModel {
 
     private boolean rootSelected = false;
 
-    private final MgnlElement focusedElement = null;
-
     private final EventBus eventBus;
 
     public FocusModelImpl(EventBus eventBus, Model model) {
@@ -69,6 +67,8 @@ public class FocusModelImpl implements FocusModel {
         MgnlElement area = null;
         MgnlElement component = null;
 
+        AbstractBar editBar;
+
         if (mgnlElement != null) {
             if (mgnlElement.isComponent()) {
                 component = mgnlElement;
@@ -77,13 +77,11 @@ public class FocusModelImpl implements FocusModel {
             else {
                 area = mgnlElement;
             }
-
-            AbstractBar editBar = model.getEditBar(mgnlElement);
-            eventBus.fireEvent(new SelectElementEvent(editBar.getPath(), editBar.getWorkspace(), editBar.getDialog()));
+            editBar = model.getEditBar(mgnlElement);
+        } else {
+            editBar = model.getPageBar();
         }
-        else {
-            // send page as selected element
-        }
+        eventBus.fireEvent(new SelectElementEvent(editBar.getPath(), editBar.getWorkspace(), editBar.getDialog()));
 
         // first set the component, then set the area. the selected component is used for setting
         // the corrent area class.

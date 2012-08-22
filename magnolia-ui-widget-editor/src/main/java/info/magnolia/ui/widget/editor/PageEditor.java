@@ -41,7 +41,6 @@ import org.vaadin.rpc.ServerSideHandler;
 import org.vaadin.rpc.ServerSideProxy;
 import org.vaadin.rpc.client.Method;
 
-import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.PaintException;
 import com.vaadin.terminal.PaintTarget;
 import com.vaadin.terminal.Resource;
@@ -69,6 +68,7 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
     private PageEditorView.Listener listener;
 
     protected ServerSideProxy proxy;
+    private String nodePath;
 
     public PageEditor() {
         setSizeFull();
@@ -83,11 +83,12 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
     @Override
     public void paintContent(PaintTarget target) throws PaintException {
         super.paintContent(target);
-        if (getSource() != null) {
-            target.addAttribute("src", getSource());
-        }
+        
         if (contextPath != null) {
             target.addAttribute("contextPath", getContextPath());
+        }
+        if (nodePath != null) {
+            target.addAttribute("nodePath", getNodePath());
         }
         if (preview) {
             target.addAttribute("preview", isPreview());
@@ -101,9 +102,6 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
         proxy.changeVariables(source, variables);
     }
 
-    protected Resource getSource() {
-        return source;
-    }
 
     public String getContextPath() {
         return contextPath;
@@ -112,8 +110,8 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
     @Override
     public void init(String contextPath, String nodePath, boolean preview) {
         this.contextPath = contextPath;
+        this.nodePath = nodePath;
         this.preview = preview;
-        this.source = new ExternalResource(contextPath + nodePath);
 
         proxy = new ServerSideProxy(this) {
 
@@ -213,5 +211,9 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
 
     public boolean isPreview() {
         return preview;
+    }
+
+    public String getNodePath() {
+        return nodePath;
     }
 }
