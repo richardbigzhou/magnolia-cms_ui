@@ -166,7 +166,7 @@
               <sv:value>30dd5c8f-0caa-451e-ae84-f17ed93510e9</sv:value>
             </sv:property>
             <sv:property sv:name="class" sv:type="String">
-              <sv:value>info.magnolia.ui.model.field.definition.EditFieldDefinition</sv:value>
+              <sv:value>info.magnolia.ui.model.field.definition.TextFieldDefinition</sv:value>
             </sv:property>
             <sv:property sv:name="description" sv:type="String">
               <sv:value>Enter the User Id. In Fact the User Name.  </sv:value>
@@ -289,7 +289,7 @@
               <sv:value>e293e263-4921-4ea5-b8b0-a6e441ba8a24</sv:value>
             </sv:property>
             <sv:property sv:name="class" sv:type="String">
-              <sv:value>info.magnolia.ui.model.field.definition.EditFieldDefinition</sv:value>
+              <sv:value>info.magnolia.ui.model.field.definition.TextFieldDefinition</sv:value>
             </sv:property>
             <sv:property sv:name="description" sv:type="String">
               <sv:value>Define Salutation.  </sv:value>
@@ -332,7 +332,7 @@
               <sv:value>c094169e-4fc0-4f85-abb2-46e0ea1e722d</sv:value>
             </sv:property>
             <sv:property sv:name="class" sv:type="String">
-              <sv:value>info.magnolia.ui.model.field.definition.EditFieldDefinition</sv:value>
+              <sv:value>info.magnolia.ui.model.field.definition.TextFieldDefinition</sv:value>
             </sv:property>
             <sv:property sv:name="description" sv:type="String">
               <sv:value>Please enter the Contact First Name. Field is mandatory.  </sv:value>
@@ -381,7 +381,7 @@
               <sv:value>3e4ba3c4-4e3e-411e-abbf-a265badf49a9</sv:value>
             </sv:property>
             <sv:property sv:name="class" sv:type="String">
-              <sv:value>info.magnolia.ui.model.field.definition.EditFieldDefinition</sv:value>
+              <sv:value>info.magnolia.ui.model.field.definition.TextFieldDefinition</sv:value>
             </sv:property>
             <sv:property sv:name="description" sv:type="String">
               <sv:value>Please enter the contact surname.  </sv:value>
@@ -473,7 +473,7 @@
               <sv:value>0544d9b7-be54-4760-9565-a9c2951fe027</sv:value>
             </sv:property>
             <sv:property sv:name="class" sv:type="String">
-              <sv:value>info.magnolia.ui.model.field.definition.EditFieldDefinition</sv:value>
+              <sv:value>info.magnolia.ui.model.field.definition.TextFieldDefinition</sv:value>
             </sv:property>
             <sv:property sv:name="description" sv:type="String">
               <sv:value>Please define a Photo Caption.  </sv:value>
@@ -519,7 +519,7 @@
               <sv:value>9e5e6fc0-7157-4864-8efa-7e1cc1873188</sv:value>
             </sv:property>
             <sv:property sv:name="class" sv:type="String">
-              <sv:value>info.magnolia.ui.model.field.definition.EditFieldDefinition</sv:value>
+              <sv:value>info.magnolia.ui.model.field.definition.TextFieldDefinition</sv:value>
             </sv:property>
             <sv:property sv:name="description" sv:type="String">
               <sv:value>Please define a Photo Alt Text.  </sv:value>
@@ -633,7 +633,7 @@
               <sv:value>a1dd56a8-87cb-403c-8c0a-2724f5fd3968</sv:value>
             </sv:property>
             <sv:property sv:name="class" sv:type="String">
-              <sv:value>info.magnolia.ui.model.field.definition.EditFieldDefinition</sv:value>
+              <sv:value>info.magnolia.ui.model.field.definition.TextFieldDefinition</sv:value>
             </sv:property>
             <sv:property sv:name="description" sv:type="String">
               <sv:value>Enter the Organization Name.  </sv:value>
@@ -682,7 +682,7 @@
               <sv:value>ce830402-b6fd-4259-9e86-638c658d4ef8</sv:value>
             </sv:property>
             <sv:property sv:name="class" sv:type="String">
-              <sv:value>info.magnolia.ui.model.field.definition.EditFieldDefinition</sv:value>
+              <sv:value>info.magnolia.ui.model.field.definition.TextFieldDefinition</sv:value>
             </sv:property>
             <sv:property sv:name="description" sv:type="String">
               <sv:value>Enter the Organization Unit Name.  </sv:value>
@@ -725,7 +725,7 @@
               <sv:value>0c8b06c9-189f-401c-9a14-339a71575f17</sv:value>
             </sv:property>
             <sv:property sv:name="class" sv:type="String">
-              <sv:value>info.magnolia.ui.model.field.definition.EditFieldDefinition</sv:value>
+              <sv:value>info.magnolia.ui.model.field.definition.TextFieldDefinition</sv:value>
             </sv:property>
             <sv:property sv:name="description" sv:type="String">
               <sv:value>Please enter the Company Street Address</sv:value>
@@ -774,7 +774,7 @@
               <sv:value>a7698b96-f5f3-4f85-b8b7-3dd3bb75b9c4</sv:value>
             </sv:property>
             <sv:property sv:name="class" sv:type="String">
-              <sv:value>info.magnolia.ui.model.field.definition.EditFieldDefinition</sv:value>
+              <sv:value>info.magnolia.ui.model.field.definition.TextFieldDefinition</sv:value>
             </sv:property>
             <sv:property sv:name="description" sv:type="String">
               <sv:value>Please enter the Zip Code.  </sv:value>
@@ -894,7 +894,7 @@
               <sv:value>6806bd70-e788-4085-8552-5e14e88b1727</sv:value>
             </sv:property>
             <sv:property sv:name="class" sv:type="String">
-              <sv:value>info.magnolia.ui.model.field.definition.EditFieldDefinition</sv:value>
+              <sv:value>info.magnolia.ui.model.field.definition.TextFieldDefinition</sv:value>
             </sv:property>
             <sv:property sv:name="description" sv:type="String">
               <sv:value>Please enter the Company City  </sv:value>
@@ -940,7 +940,7 @@
               <sv:value>c3996828-bc3c-4c3d-ba25-4d4442468743</sv:value>
             </sv:property>
             <sv:property sv:name="class" sv:type="String">
-              <sv:value>info.magnolia.ui.model.field.definition.EditFieldDefinition</sv:value>
+              <sv:value>info.magnolia.ui.model.field.definition.TextFieldDefinition</sv:value>
             </sv:property>
             <sv:property sv:name="description" sv:type="String">
               <sv:value>Please enter the Company Country</sv:value>
@@ -1051,7 +1051,7 @@
               <sv:value>b234d36d-aa09-4015-b54d-17394e222a83</sv:value>
             </sv:property>
             <sv:property sv:name="class" sv:type="String">
-              <sv:value>info.magnolia.ui.model.field.definition.EditFieldDefinition</sv:value>
+              <sv:value>info.magnolia.ui.model.field.definition.TextFieldDefinition</sv:value>
             </sv:property>
             <sv:property sv:name="description" sv:type="String">
               <sv:value>Please enter the Office Phone Number.  </sv:value>
@@ -1097,7 +1097,7 @@
               <sv:value>627e7b4a-00a0-4f20-82d1-3c4206e3c3ca</sv:value>
             </sv:property>
             <sv:property sv:name="class" sv:type="String">
-              <sv:value>info.magnolia.ui.model.field.definition.EditFieldDefinition</sv:value>
+              <sv:value>info.magnolia.ui.model.field.definition.TextFieldDefinition</sv:value>
             </sv:property>
             <sv:property sv:name="description" sv:type="String">
               <sv:value>Please enter the Office Fax Number.  </sv:value>
@@ -1140,7 +1140,7 @@
               <sv:value>fa7e0f1a-fb41-4787-bcab-4850992f1a67</sv:value>
             </sv:property>
             <sv:property sv:name="class" sv:type="String">
-              <sv:value>info.magnolia.ui.model.field.definition.EditFieldDefinition</sv:value>
+              <sv:value>info.magnolia.ui.model.field.definition.TextFieldDefinition</sv:value>
             </sv:property>
             <sv:property sv:name="description" sv:type="String">
               <sv:value>Please enter the Mobile Phone Number.  </sv:value>
@@ -1183,7 +1183,7 @@
               <sv:value>3da2d24d-5382-4b24-8d0b-216a345fae03</sv:value>
             </sv:property>
             <sv:property sv:name="class" sv:type="String">
-              <sv:value>info.magnolia.ui.model.field.definition.EditFieldDefinition</sv:value>
+              <sv:value>info.magnolia.ui.model.field.definition.TextFieldDefinition</sv:value>
             </sv:property>
             <sv:property sv:name="description" sv:type="String">
               <sv:value>Please enter the E-Mail address</sv:value>
@@ -1303,7 +1303,7 @@
               <sv:value>5f1eab14-0ed4-410f-b91e-beff68774a07</sv:value>
             </sv:property>
             <sv:property sv:name="class" sv:type="String">
-              <sv:value>info.magnolia.ui.model.field.definition.EditFieldDefinition</sv:value>
+              <sv:value>info.magnolia.ui.model.field.definition.TextFieldDefinition</sv:value>
             </sv:property>
             <sv:property sv:name="description" sv:type="String">
               <sv:value>Please enter the Website  </sv:value>

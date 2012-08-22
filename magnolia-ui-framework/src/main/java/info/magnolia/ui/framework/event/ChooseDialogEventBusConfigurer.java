@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,36 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.field.builder;
+package info.magnolia.ui.framework.event;
 
-import info.magnolia.ui.model.field.definition.FieldDefinition;
-import info.magnolia.ui.model.field.definition.RichEditFieldDefinition;
+import com.google.inject.name.Names;
+import com.google.inject.util.Providers;
 
-import com.vaadin.data.Item;
-import com.vaadin.ui.Field;
-import com.vaadin.ui.RichTextArea;
+import info.magnolia.objectfactory.guice.AbstractGuiceComponentConfigurer;
 
 /**
- * Creates and initializes an edit field based on a field definition.
+ * Configures an {@link info.magnolia.ui.framework.event.EventBus} bound to the name <code>choosedialog</code>.
  */
-public class RichEditFieldBuilder extends AbstractFieldBuilder<RichEditFieldDefinition> {
-
-    public RichEditFieldBuilder(RichEditFieldDefinition definition, Item relatedFieldItem) {
-        super(definition, relatedFieldItem);
-    }
+public class ChooseDialogEventBusConfigurer extends AbstractGuiceComponentConfigurer {
 
     @Override
-    protected Field buildField() {
-        RichEditFieldDefinition editDefinition = definition;
-        return new RichTextArea();
-
-    }
-
-
-
-    @Override
-    protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {
-        return String.class;
+    protected void configure() {
+        bind(EventBus.class).annotatedWith(Names.named("choosedialog")).toProvider(Providers.of(new SimpleEventBus()));
     }
 }
-
