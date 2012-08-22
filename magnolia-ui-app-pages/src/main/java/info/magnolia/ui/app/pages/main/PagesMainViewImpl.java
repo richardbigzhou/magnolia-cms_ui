@@ -45,8 +45,6 @@ import com.vaadin.ui.VerticalLayout;
 @SuppressWarnings("serial")
 public class PagesMainViewImpl implements PagesMainView {
 
-    private View workbenchView;
-
     private Listener listener;
 
     private final VerticalLayout root = new VerticalLayout();
@@ -62,10 +60,8 @@ public class PagesMainViewImpl implements PagesMainView {
 
     @Override
     public void setWorkbenchView(View workbenchView) {
-        this.workbenchView = workbenchView;
         root.addComponent(workbenchView.asVaadinComponent());
         root.setExpandRatio(workbenchView.asVaadinComponent(), 1f);
-
     }
 
     @Override
