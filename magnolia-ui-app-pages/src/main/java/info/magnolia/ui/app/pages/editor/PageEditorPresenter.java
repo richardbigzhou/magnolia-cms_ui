@@ -122,11 +122,11 @@ public class PageEditorPresenter implements PageEditorView.Listener {
     }
 
     @Override
-    public void editComponent(String workSpace, String path, String dialog) {
+    public void editComponent(String workspace, String path, String dialog) {
         final MagnoloaDialogPresenter.Presenter dialogPresenter = dialogPresenterFactory.createDialog(dialog);
 
         try {
-            Session session = MgnlContext.getJCRSession(workSpace);
+            Session session = MgnlContext.getJCRSession(workspace);
 
             if (path == null || !session.itemExists(path)) {
                 path = "/";
@@ -141,19 +141,19 @@ public class PageEditorPresenter implements PageEditorView.Listener {
     }
 
     @Override
-    public void newComponent(String workSpace, String path, String availableComponents) {
+    public void newComponent(String workspace, String path, String availableComponents) {
 
         updateDialogDefinition(availableComponents);
 
         MagnoloaDialogPresenter.Presenter dialogPresenter = dialogPresenterFactory.getDialogPresenter(dialogDefinition);
 
         try {
-            Session session = MgnlContext.getJCRSession(workSpace);
+            Session session = MgnlContext.getJCRSession(workspace);
 
             if (path == null || !session.itemExists(path)) {
                 path = "/";
             }
-            session = MgnlContext.getJCRSession(workSpace);
+            session = MgnlContext.getJCRSession(workspace);
 
             Node parentNode = session.getNode(path);
 
@@ -174,7 +174,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
      */
     private void createDialogAction(final JcrNodeAdapter item, final MagnoloaDialogPresenter.Presenter dialogPresenter) {
         final EventBus eventBus = dialogPresenter.getEventBus();
-        dialogPresenter.start(item, new MagnoloaDialogPresenter.Presenter.CallBack() {
+        dialogPresenter.start(item, new MagnoloaDialogPresenter.Presenter.Callback() {
 
             @Override
             public void onSuccess(String actionName) {
@@ -219,13 +219,13 @@ public class PageEditorPresenter implements PageEditorView.Listener {
     }
 
     @Override
-    public void deleteComponent(String workSpace, String path) {
+    public void deleteComponent(String workspace, String path) {
 
         int index = path.lastIndexOf("/");
         String parent = path.substring(0, index);
 
         try {
-            Session session = MgnlContext.getJCRSession(workSpace);
+            Session session = MgnlContext.getJCRSession(workspace);
 
             Node parentNode = session.getNode(parent);
             session.removeItem(path);
@@ -239,7 +239,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
     }
 
     @Override
-    public void newArea(String workSpace, String nodeType, String path) {
+    public void newArea(String workspace, String nodeType, String path) {
 
         int index = path.lastIndexOf("/");
         String parent = path.substring(0, index);
@@ -247,7 +247,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
         Session session = null;
         try {
-            session = MgnlContext.getJCRSession(workSpace);
+            session = MgnlContext.getJCRSession(workspace);
 
             Node parentNode = session.getNode(parent);
 
@@ -261,7 +261,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
     }
 
     @Override
-    public void sortComponent(String workSpace, String parentPath, String source, String target, String order) {
+    public void sortComponent(String workspace, String parentPath, String source, String target, String order) {
         try {
 
             if (StringUtils.isBlank(order)) {
@@ -272,7 +272,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
                 target = null;
             }
 
-            Session session = MgnlContext.getJCRSession(workSpace);
+            Session session = MgnlContext.getJCRSession(workspace);
 
             Node parent = session.getNode(parentPath);
             Node component = parent.getNode(source);
@@ -292,8 +292,8 @@ public class PageEditorPresenter implements PageEditorView.Listener {
     }
 
     @Override
-    public void selectNode(String workSpace, String path) {
-        appEventBus.fireEvent(new NodeSelectedEvent(path, workSpace));
+    public void selectNode(String workspace, String path) {
+        appEventBus.fireEvent(new NodeSelectedEvent(path, workspace));
     }
 
     public PageEditorView start() {

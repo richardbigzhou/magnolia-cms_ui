@@ -177,6 +177,7 @@ public class VActionbar extends Composite implements Paintable, Container, Clien
     @Override
     public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
         this.client = client;
+        this.paintableId = uidl.getId();
         if (client.updateComponent(this, uidl, true)) {
             return;
         }
@@ -204,7 +205,7 @@ public class VActionbar extends Composite implements Paintable, Container, Clien
     @Override
     public boolean initWidget(Object[] params) {
         if (!initIsDeviceTablet()) {
-            addStyleDependentName("open");
+            setOpened(true);
         }
         return false;
     }
@@ -299,6 +300,14 @@ public class VActionbar extends Composite implements Paintable, Container, Clien
     @Override
     public void forceLayout() {
         client.forceLayout();
+    }
+
+    @Override
+    public void setOpened(boolean opened) {
+        setStyleDependentName("open", opened);
+        if (paintableId != null && client != null) {
+            client.updateVariable(paintableId, "opened", opened, false);
+        }
     }
 
     /**

@@ -44,11 +44,11 @@ public class SelectElementEvent extends Event<SelectElementEventHandler> {
     public static GwtEvent.Type<SelectElementEventHandler> TYPE = new GwtEvent.Type<SelectElementEventHandler>();
 
     private final String path;
-    private final String workSpace;
+    private final String workspace;
 
-    public SelectElementEvent(String path, String workSpace) {
+    public SelectElementEvent(String path, String workspace) {
         this.path = path;
-        this.workSpace = workSpace;
+        this.workspace = workspace;
     }
 
     @Override
@@ -65,7 +65,7 @@ public class SelectElementEvent extends Event<SelectElementEventHandler> {
         return path;
     }
 
-    public String getWorkSpace() {
-        return workSpace;
+    public String getWorkspace() {
+        return workspace;
     }
 }

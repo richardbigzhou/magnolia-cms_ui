@@ -38,7 +38,7 @@ import info.magnolia.ui.model.action.ActionDefinition;
 /**
  * Defines a dialog action configuration for simple call back actions.
  */
-public class CallBackDialogActionDefinition implements ActionDefinition {
+public class CallbackDialogActionDefinition implements ActionDefinition {
 
     private String name;
     private String label;
@@ -67,8 +67,8 @@ public class CallBackDialogActionDefinition implements ActionDefinition {
     }
 
     /**
-     * @param   true (default) call CallBack.onSuccess(String action).
-     *          false call CallBack.onCancel()
+     * @param callSuccess  true (default) call Callback.onSuccess(String action).
+     *          false call Callback.onCancel()
      */
     public void setCallSuccess(boolean callSuccess) {
         this.callSuccess = callSuccess;
@@ -80,7 +80,7 @@ public class CallBackDialogActionDefinition implements ActionDefinition {
     }
 
     /**
-     * @param successActionName will be passed as parameter to CallBack.onSuccess(String successActionName)
+     * @param successActionName will be passed as parameter to Callback.onSuccess(String successActionName)
      * in case of callSuccess = true.
      */
     public void setSuccessActionName(String successActionName) {

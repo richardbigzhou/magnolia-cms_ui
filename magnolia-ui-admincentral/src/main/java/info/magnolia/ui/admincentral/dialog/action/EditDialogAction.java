@@ -65,7 +65,7 @@ public class EditDialogAction extends ActionBase<EditDialogActionDefinition> {
 
         final EventBus eventBus = dialogPresenter.getEventBus();
         final JcrNodeAdapter item = new JcrNodeAdapter(nodeToEdit);
-        dialogPresenter.start(item, new MagnoloaDialogPresenter.Presenter.CallBack() {
+        dialogPresenter.start(item, new MagnoloaDialogPresenter.Presenter.Callback() {
 
             @Override
             public void onSuccess(String actionName) {

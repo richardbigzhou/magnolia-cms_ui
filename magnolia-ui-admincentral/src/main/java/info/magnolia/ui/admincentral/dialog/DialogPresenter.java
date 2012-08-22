@@ -76,7 +76,7 @@ public class DialogPresenter implements MagnoloaDialogPresenter.Presenter,  Magn
 
     private Item item;
 
-    private CallBack callBack;
+    private Callback callback;
 
     public DialogPresenter(final MagnoliaDialogView view, final DialogBuilder dialogBuilder, final DialogFieldFactory dialogFieldFactory, final DialogDefinition dialogDefinition, final Shell shell, final EventBus eventBus, final DialogActionFactory actionFactory) {
         this.view = view;
@@ -93,9 +93,9 @@ public class DialogPresenter implements MagnoloaDialogPresenter.Presenter,  Magn
     }
 
     @Override
-    public MagnoliaDialogView start(final Item item, CallBack callBack) {
+    public MagnoliaDialogView start(final Item item, Callback callback) {
         this.item = item;
-        this.callBack = callBack;
+        this.callback = callback;
         dialogBuilder.build(dialogFieldFactory, dialogDefinition, item, view);
         shell.openDialog((Dialog) view.asVaadinComponent());
         return view;
@@ -148,8 +148,8 @@ public class DialogPresenter implements MagnoloaDialogPresenter.Presenter,  Magn
     }
 
     @Override
-    public CallBack getCallBack() {
-        return this.callBack;
+    public Callback getCallback() {
+        return this.callback;
     }
 
 }

@@ -66,7 +66,7 @@ public class CreateDialogAction extends ActionBase<CreateDialogActionDefinition>
 
         final EventBus eventBus = dialogPresenter.getEventBus();
         final JcrNodeAdapter item = new JcrNewNodeAdapter(parent, getDefinition().getNodeType());
-        dialogPresenter.start(new JcrNewNodeAdapter(parent, getDefinition().getNodeType()), new MagnoloaDialogPresenter.Presenter.CallBack() {
+        dialogPresenter.start(new JcrNewNodeAdapter(parent, getDefinition().getNodeType()), new MagnoloaDialogPresenter.Presenter.Callback() {
 
             @Override
             public void onSuccess(String actionName) {

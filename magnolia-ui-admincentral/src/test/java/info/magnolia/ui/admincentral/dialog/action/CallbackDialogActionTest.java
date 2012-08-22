@@ -50,18 +50,18 @@ import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.Field;
 
 /**
- * Main test class for {@link CallBackDialogAction} and
- * {@link CallBackDialogActionDefinition}.
+ * Main test class for {@link CallbackDialogAction} and
+ * {@link CallbackDialogActionDefinition}.
  */
 
-public class CallBackDialogActionTest {
-    private CallBackDialogAction dialogAction;
-    private CallBackDialogActionDefinition dialogActionDefinition;
+public class CallbackDialogActionTest {
+    private CallbackDialogAction dialogAction;
+    private CallbackDialogActionDefinition dialogActionDefinition;
     private DialogPresenterTest presenter;
 
     @Before
     public void setUp() {
-        this.dialogActionDefinition = new CallBackDialogActionDefinition();
+        this.dialogActionDefinition = new CallbackDialogActionDefinition();
         this.presenter = new DialogPresenterTest();
     }
 
@@ -69,39 +69,39 @@ public class CallBackDialogActionTest {
     public void executeDefaultOnSuccessTest() throws ActionExecutionException {
         // GIVEN
         initDefinition("name", "label", null, null);
-        dialogAction = new CallBackDialogAction(dialogActionDefinition, presenter);
+        dialogAction = new CallbackDialogAction(dialogActionDefinition, presenter);
 
         // WHEN
         dialogAction.execute();
 
         // THEN
-        assertEquals("onSuccess(success)", presenter.callBackActionCalled);
+        assertEquals("onSuccess(success)", presenter.callbackActionCalled);
     }
 
     @Test
     public void executeCustomOnSuccessTest() throws ActionExecutionException {
         // GIVEN
         initDefinition("name", "label", null, "reload");
-        dialogAction = new CallBackDialogAction(dialogActionDefinition, presenter);
+        dialogAction = new CallbackDialogAction(dialogActionDefinition, presenter);
 
         // WHEN
         dialogAction.execute();
 
         // THEN
-        assertEquals("onSuccess(reload)", presenter.callBackActionCalled);
+        assertEquals("onSuccess(reload)", presenter.callbackActionCalled);
     }
 
     @Test
     public void executeOnCancelTest() throws ActionExecutionException {
         // GIVEN
         initDefinition("name", "label", false, null);
-        dialogAction = new CallBackDialogAction(dialogActionDefinition, presenter);
+        dialogAction = new CallbackDialogAction(dialogActionDefinition, presenter);
 
         // WHEN
         dialogAction.execute();
 
         // THEN
-        assertEquals("onCancel()", presenter.callBackActionCalled);
+        assertEquals("onCancel()", presenter.callbackActionCalled);
     }
 
     /**
@@ -116,9 +116,9 @@ public class CallBackDialogActionTest {
 
     public static class DialogPresenterTest implements MagnoloaDialogPresenter.Presenter {
 
-        private String callBackActionCalled;
-        public String getCallBackActionCalled() {
-            return callBackActionCalled;
+        private String callbackActionCalled;
+        public String getCallbackActionCalled() {
+            return callbackActionCalled;
         }
         private Item item;
         public void setTestItem(Item item) {
@@ -126,17 +126,17 @@ public class CallBackDialogActionTest {
         }
 
         @Override
-        public CallBack getCallBack() {
-            return new CallBack() {
+        public Callback getCallback() {
+            return new Callback() {
 
                 @Override
                 public void onSuccess(String actionName) {
-                    callBackActionCalled = "onSuccess("+actionName+")";
+                    callbackActionCalled = "onSuccess("+actionName+")";
                 }
 
                 @Override
                 public void onCancel() {
-                    callBackActionCalled = "onCancel()";
+                    callbackActionCalled = "onCancel()";
                 }
             };
         }
@@ -201,7 +201,7 @@ public class CallBackDialogActionTest {
         }
 
         @Override
-        public MagnoliaDialogView start(Item item, CallBack callBack) {
+        public MagnoliaDialogView start(Item item, Callback callback) {
             return null;
         }
 

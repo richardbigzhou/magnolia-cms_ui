@@ -34,19 +34,15 @@
 package info.magnolia.ui.app.pages.editor;
 
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import static info.magnolia.ui.app.pages.PagesApp.PREVIEW_FULL_TOKEN;
+import static info.magnolia.ui.app.pages.PagesApp.PREVIEW_TOKEN;
+import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.context.MgnlContext;
-import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.event.ActionbarItemClickedEvent;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.app.pages.PagesApp;
 import info.magnolia.ui.app.pages.PagesAppDescriptor;
-import info.magnolia.ui.app.pages.editor.preview.PagesPreviewFullView;
-import info.magnolia.ui.app.pages.editor.preview.PagesPreviewView;
 import info.magnolia.ui.framework.app.AbstractSubApp;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.event.EventBus;
@@ -59,6 +55,10 @@ import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.widget.actionbar.ActionbarView;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jcr.Node;
@@ -67,8 +67,6 @@ import javax.jcr.Session;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static info.magnolia.ui.app.pages.PagesApp.*;
 
 /**
  * PagesEditorSubApp.
@@ -104,7 +102,7 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
     private AppContext appContext;
 
     @Inject
-    public PagesEditorSubApp(final AppContext appContext, final ComponentProvider componentProvider, final @Named("app") EventBus appEventBus, final @Named("subapp") EventBus subAppEventBus, final PageEditorPresenter pageEditorPresenter, final LocationController locationController, final ActionbarPresenter actionbarPresenter, final WorkbenchActionFactory actionFactory) {
+    public PagesEditorSubApp(final AppContext appContext, final PagesEditorView view, final @Named("app") EventBus appEventBus, final @Named("subapp") EventBus subAppEventBus, final PageEditorPresenter pageEditorPresenter, final LocationController locationController, final ActionbarPresenter actionbarPresenter, final WorkbenchActionFactory actionFactory) {
 
         final String token = DefaultLocation.extractToken(locationController.getWhere().toString());
         this.preview =  token.contains(PagesApp.PREVIEW_FULL_TOKEN) || token.contains(PagesApp.PREVIEW_TOKEN);
@@ -112,10 +110,8 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
 
         if(isPreview()) {
             log.debug("Preview type detected is {}", isFullPreview() ? "fullPreview" : "normal");
-            this.view = isFullPreview() ? componentProvider.newInstance(PagesPreviewFullView.class) : componentProvider.newInstance(PagesPreviewView.class);
-        } else {
-            this.view = componentProvider.newInstance(PagesEditorView.class);
         }
+        this.view = view;
         this.view.setListener(this);
 
         this.appEventBus = appEventBus;
@@ -153,43 +149,30 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
             public void onItemSelected(NodeSelectedEvent event) {
                 // TODO 20120730 mgeljic, review whether presenter should be a proxy for every
                 // single actionbar widget feature
-                String workSpace = event.getWorkSpace();
+                String workspace = event.getWorkspace();
                 String path = event.getPath();
                 try {
-                    Session session = MgnlContext.getJCRSession(workSpace);
+                    Session session = MgnlContext.getJCRSession(workspace);
 
                     if (path == null || !session.itemExists(path)) {
                         path = "/";
                     }
                     Node node = session.getNode(path);
 
-                    final String PAGE_NODE_TYPE = "mgnl:page";
-                    final String AREA_NODE_TYPE = "mgnl:area";
-                    final String COMPONENT_NODE_TYPE = "mgnl:component";
-
-                    if (node.isNodeType(PAGE_NODE_TYPE)) {
+                    if (node.isNodeType(MgnlNodeType.NT_PAGE)) {
                         actionbarPresenter.showSection("pageActions");
                         actionbarPresenter.hideSection("areaActions");
                         actionbarPresenter.hideSection("componentActions");
-                    }
-                    else if (node.isNodeType(AREA_NODE_TYPE)) {
+                    } else if (node.isNodeType(MgnlNodeType.NT_AREA)) {
                         actionbarPresenter.showSection("areaActions");
                         actionbarPresenter.hideSection("pageActions");
                         actionbarPresenter.hideSection("componentActions");
-                    }
-                    else if (node.isNodeType(COMPONENT_NODE_TYPE)) {
+                    } else if (node.isNodeType(MgnlNodeType.NT_COMPONENT)) {
                         actionbarPresenter.showSection("componentActions");
                         actionbarPresenter.hideSection("areaActions");
                         actionbarPresenter.hideSection("pageActions");
-                    }
-                    else {
-                        actionbarPresenter.hideSection("pagePreviewActions");
-                        actionbarPresenter.hideSection("pageActions");
-                        actionbarPresenter.hideSection("areaActions");
-                        actionbarPresenter.hideSection("optionalAreaActions");
-                        actionbarPresenter.hideSection("editableAreaActions");
-                        actionbarPresenter.hideSection("optionalEditableAreaActions");
-                        actionbarPresenter.hideSection("componentActions");
+                    } else {
+                        hideAllActions(actionbarPresenter);
                     }
                 } catch (RepositoryException e) {
                     log.error("Exception caught: {}", e.getMessage(), e);
@@ -212,6 +195,10 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
     @Override
     public View start(Location location) {
 
+        if (isFullPreview()) {
+            return view;
+        }
+
         String path = getEditorPath(location);
         if (path == null)
             path = "/";
@@ -222,29 +209,18 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
         ActionbarDefinition actionbarDefinition = appDescriptor.getEditor().getActionbar();
         ActionbarView actionbar = actionbarPresenter.start(actionbarDefinition, actionFactory);
 
-        actionbarPresenter.hideSection("areaActions");
-        actionbarPresenter.hideSection("optionalAreaActions");
-        actionbarPresenter.hideSection("editableAreaActions");
-        actionbarPresenter.hideSection("optionalEditableAreaActions");
-        actionbarPresenter.hideSection("componentActions");
-
-        if (isFullPreview()) {
-            actionbarPresenter.showSection("pagePreviewActions");
-            view.setUrl(parameters.getContextPath() + parameters.getNodePath());
-            return view;
-        }
+        hideAllActions(actionbarPresenter);
 
         if (isEdit()) {
             actionbarPresenter.hideSection("pagePreviewActions");
             actionbarPresenter.showSection("pageActions");
-            view.setPageEditor(pageEditorPresenter.start());
           //normal (no fullscreen) preview
         } else if(isPreview()) {
             actionbarPresenter.hideSection("pageActions");
             actionbarPresenter.showSection("pagePreviewActions");
         }
-
-        view.setActionbarView(actionbar);
+        view.setPageEditor(pageEditorPresenter.start());
+        view.setActionbar(actionbar);
 
         return view;
     }
@@ -271,27 +247,19 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
         DefaultLocation defaultLocation = (DefaultLocation) location;
 
         List<String> pathParams = parsePathParamsFromToken(defaultLocation.getToken());
-        if (pathParams.size() < 3) {
-            return;
+
+        String previewMode = "";
+        if(pathParams.size() == 3) {
+            previewMode = pathParams.get(2);
         }
-
-        final String pagePath = pathParams.get(1);
-        final String previewMode = pathParams.get(2);
-
 
         if (PREVIEW_TOKEN.equals(previewMode)) {
-            final String token = EDITOR_TOKEN + ";" + pagePath + ";" +PREVIEW_TOKEN ;
-            final DefaultLocation newLocation = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appContext.getName(), token);
-            //TODO fgrilli here we will call PageEditor method to display page w/o edit bars
+            showPreview();
         } else if(PREVIEW_FULL_TOKEN.equals(previewMode)) {
-            final String token = EDITOR_TOKEN + ";" + pagePath + ";" +PREVIEW_FULL_TOKEN ;
-            final DefaultLocation newLocation = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appContext.getName(), token);
-            appContext.openSubAppFullScreen(PagesApp.EDITOR_TOKEN, PagesEditorSubApp.class, newLocation);
+            showFullPreview(defaultLocation);
+        } else {
+            showEditor();
         }
-    }
-
-    private List<String> parsePathParamsFromToken(String token) {
-        return new ArrayList<String>(Arrays.asList(token.split(";")));
     }
 
     public boolean isPreview() {
@@ -306,8 +274,44 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
         return fullPreview;
     }
 
-    public void setUrl(String url) {
-        view.setUrl(url);
+    private void hideAllActions(final ActionbarPresenter presenter) {
+        presenter.hideSection("pagePreviewActions");
+        presenter.hideSection("pageActions");
+        presenter.hideSection("areaActions");
+        presenter.hideSection("optionalAreaActions");
+        presenter.hideSection("editableAreaActions");
+        presenter.hideSection("optionalEditableAreaActions");
+        presenter.hideSection("componentActions");
+    }
+
+    private void resetActionbar() {
+        //view.hideActionbar(false);
+        hideAllActions(actionbarPresenter);
+    }
+
+    private void showEditor() {
+        resetActionbar();
+        actionbarPresenter.hideSection("pagePreviewActions");
+        actionbarPresenter.showSection("pageActions");
+        pageEditorPresenter.setParameters(parameters, false);
+        view.setPageEditor(pageEditorPresenter.start());
+    }
+
+    private void showFullPreview(final Location defaultLocation) {
+        showPreview();
+        appContext.openSubAppFullScreen(PagesApp.EDITOR_TOKEN, PagesEditorSubApp.class, defaultLocation);
+    }
+
+    private void showPreview() {
+        resetActionbar();
+        actionbarPresenter.hideSection("pageActions");
+        actionbarPresenter.showSection("pagePreviewActions");
+        pageEditorPresenter.setParameters(parameters, true);
+        view.setPageEditor(pageEditorPresenter.start());
+    }
+
+    private List<String> parsePathParamsFromToken(String token) {
+        return new ArrayList<String>(Arrays.asList(token.split(";")));
     }
 
 }

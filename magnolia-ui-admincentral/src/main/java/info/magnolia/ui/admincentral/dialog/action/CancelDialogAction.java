@@ -53,7 +53,7 @@ public class CancelDialogAction extends ActionBase<CancelDialogActionDefinition>
 
     @Override
     public void execute() throws ActionExecutionException {
-        presenter.getCallBack().onCancel();
+        presenter.getCallback().onCancel();
     }
 
 }

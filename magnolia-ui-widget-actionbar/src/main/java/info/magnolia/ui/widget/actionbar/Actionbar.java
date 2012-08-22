@@ -33,9 +33,6 @@
  */
 package info.magnolia.ui.widget.actionbar;
 
-
-import com.vaadin.terminal.Sizeable;
-import com.vaadin.ui.ClientWidget;
 import info.magnolia.ui.vaadin.integration.widget.serializer.ResourceSerializer;
 import info.magnolia.ui.widget.actionbar.gwt.client.VActionbar;
 
@@ -54,8 +51,9 @@ import com.google.gson.GsonBuilder;
 import com.vaadin.terminal.PaintException;
 import com.vaadin.terminal.PaintTarget;
 import com.vaadin.terminal.Resource;
+import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.AbstractComponent;
-
+import com.vaadin.ui.ClientWidget;
 import com.vaadin.ui.ClientWidget.LoadStyle;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.VerticalLayout;
@@ -73,6 +71,8 @@ public class Actionbar extends AbstractComponent implements ActionbarView, Serve
     private boolean isAttached = false;
 
     private final Map<String, ActionbarSection> sections = new LinkedHashMap<String, ActionbarSection>();
+
+    private boolean opened;
 
     private ActionbarView.Listener listener;
 
@@ -92,10 +92,9 @@ public class Actionbar extends AbstractComponent implements ActionbarView, Serve
 
     public Actionbar() {
         setSizeFull();
-        //setWidth("270px");
         setWidth(Sizeable.SIZE_UNDEFINED, 0);
         setImmediate(true);
-
+        setOpened(true);
     }
 
     @Override
@@ -115,6 +114,11 @@ public class Actionbar extends AbstractComponent implements ActionbarView, Serve
     public void changeVariables(Object source, Map<String, Object> variables) {
         super.changeVariables(source, variables);
         proxy.changeVariables(source, variables);
+
+        if (variables.containsKey("opened")) {
+            setOpened((Boolean) variables.get("opened"));
+        }
+
         for (ActionbarSection section : sections.values()) {
             if (section.getPreview() != null && section.getPreview() instanceof AbstractComponent) {
                 ((AbstractComponent) section.getPreview()).changeVariables(source, variables);
@@ -180,6 +184,15 @@ public class Actionbar extends AbstractComponent implements ActionbarView, Serve
     @Override
     public void setListener(ActionbarView.Listener listener) {
         this.listener = listener;
+    }
+
+    public void setOpened(boolean opened) {
+        if (opened && !getStyleName().contains("open")) {
+            addStyleName("open");
+        } else if (!opened && getStyleName().contains("open")) {
+            removeStyleName("open");
+        }
+        this.opened = opened;
     }
 
     // ACTION BAR API ///////////////////////////

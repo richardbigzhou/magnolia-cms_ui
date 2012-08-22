@@ -118,57 +118,57 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
                 register("selectElement", new Method() {
                     @Override
                     public void invoke(String methodName, Object[] params) {
-                        final String workSpace = String.valueOf(params[0]);
+                        final String workspace = String.valueOf(params[0]);
                         final String path = String.valueOf(params[1]);
-                        listener.selectNode(workSpace, path);
+                        listener.selectNode(workspace, path);
                     }
                 });
                 register("editComponent", new Method() {
                     @Override
                     public void invoke(String methodName, Object[] params) {
-                        final String workSpace = String.valueOf(params[0]);
+                        final String workspace = String.valueOf(params[0]);
                         final String path = String.valueOf(params[1]);
                         final String dialog = String.valueOf(params[2]);
-                        listener.editComponent(workSpace, path, dialog);
+                        listener.editComponent(workspace, path, dialog);
                     }
                 });
                 register("newArea", new Method() {
                     @Override
                     public void invoke(String methodName, Object[] params) {
-                        final String workSpace = String.valueOf(params[0]);
+                        final String workspace = String.valueOf(params[0]);
                         final String nodeType = String.valueOf(params[1]);
                         final String path = String.valueOf(params[2]);
-                        listener.newArea(workSpace, nodeType, path);
+                        listener.newArea(workspace, nodeType, path);
                     }
 
                 });
                 register("newComponent", new Method() {
                     @Override
                     public void invoke(String methodName, Object[] params) {
-                        final String workSpace = String.valueOf(params[0]);
+                        final String workspace = String.valueOf(params[0]);
                         final String path = String.valueOf(params[1]);
                         final String availableComponents = String.valueOf(params[2]);
-                        listener.newComponent(workSpace, path, availableComponents);
+                        listener.newComponent(workspace, path, availableComponents);
                     }
 
                 });
                 register("deleteComponent", new Method() {
                     @Override
                     public void invoke(String methodName, Object[] params) {
-                        final String workSpace = String.valueOf(params[0]);
+                        final String workspace = String.valueOf(params[0]);
                         final String path = String.valueOf(params[1]);
-                        listener.deleteComponent(workSpace, path);
+                        listener.deleteComponent(workspace, path);
                     }
                 });
                 register("sortComponent", new Method() {
                     @Override
                     public void invoke(String methodName, Object[] params) {
-                        final String workSpace = String.valueOf(params[0]);
+                        final String workspace = String.valueOf(params[0]);
                         final String parentPath = String.valueOf(params[1]);
                         final String source = String.valueOf(params[2]);
                         final String target = String.valueOf(params[3]);
                         final String order = String.valueOf(params[4]);
-                        listener.sortComponent(workSpace, parentPath, source, target, order);
+                        listener.sortComponent(workspace, parentPath, source, target, order);
                     }
                 });
             }

@@ -79,7 +79,7 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, 
 
     private boolean isToggledOpen = false;
 
-    private TouchDelegate delegate = new TouchDelegate(toggleButton);
+    private final TouchDelegate delegate = new TouchDelegate(toggleButton);
 
     private final Map<String, VActionbarSection> sections = new LinkedHashMap<String, VActionbarSection>();
 
@@ -165,7 +165,9 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, 
             toggleButtonIcon.addClassName("open");// NOTE:CLZ:With icon fonts this class name will
                                                   // change.
 
-            root.addClassName("v-actionbar-open");
+            if (presenter != null) {
+                presenter.setOpened(true);
+            }
 
             // For Tablet: Add "open" style from all actions
             if (isDeviceTablet) {
@@ -180,7 +182,9 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, 
             toggleButtonIcon.removeClassName("open");// NOTE:CLZ:With icon fonts this class name
                                                      // will change.
 
-            root.removeClassName("v-actionbar-open");
+            if (presenter != null) {
+                presenter.setOpened(false);
+            }
 
             // For Tablet: Remove "open" style from all actions
             if (isDeviceTablet) {

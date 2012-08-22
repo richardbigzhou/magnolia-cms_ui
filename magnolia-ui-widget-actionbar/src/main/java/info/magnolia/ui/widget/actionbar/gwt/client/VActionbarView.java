@@ -112,6 +112,8 @@ public interface VActionbarView extends HasWidgets, IsWidget {
         void triggerAction(String actionToken);
 
         void forceLayout();
+
+        void setOpened(boolean opened);
     }
 
 }

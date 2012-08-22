@@ -39,7 +39,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
-import info.magnolia.ui.admincentral.dialog.action.CallBackDialogActionTest.DialogPresenterTest;
+import info.magnolia.ui.admincentral.dialog.action.CallbackDialogActionTest.DialogPresenterTest;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -96,7 +96,7 @@ public class SaveDialogActionTest extends RepositoryTestCase{
         dialogAction.execute();
 
         // THEN
-        assertEquals("onSuccess(name)", this.presenter.getCallBackActionCalled());
+        assertEquals("onSuccess(name)", this.presenter.getCallbackActionCalled());
     }
 
     @Test
