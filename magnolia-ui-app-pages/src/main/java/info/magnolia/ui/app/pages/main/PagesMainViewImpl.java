@@ -40,7 +40,7 @@ import com.vaadin.ui.VerticalLayout;
 
 
 /**
- * View implementation for the Pages app.
+ * View implementation for the Pages main app.
  */
 @SuppressWarnings("serial")
 public class PagesMainViewImpl implements PagesMainView {
@@ -53,30 +53,11 @@ public class PagesMainViewImpl implements PagesMainView {
 
     public PagesMainViewImpl() {
         root.setSizeFull();
-
-        // final HorizontalLayout sharingStuff = new HorizontalLayout();
-        // sharingStuff.addComponent(new Button("Share", new ClickListener() {
-        // @Override
-        // public void buttonClick(ClickEvent event) {
-        // listener.share();
-        // }
-        // }));
-        //
-        // final TextField hostIdTf = new TextField();
-        // sharingStuff.addComponent(hostIdTf);
-        // sharingStuff.addComponent(new Button("Subscribe", new ClickListener() {
-        // @Override
-        // public void buttonClick(ClickEvent event) {
-        // listener.subscribe(String.valueOf(hostIdTf.getValue()));
-        // }
-        // }));
-        // sharingStuff.setSizeUndefined();
-        // root.addComponent(sharingStuff);
     }
 
     @Override
     public Component asVaadinComponent() {
-        return root;// workbenchView.asVaadinComponent();
+        return root;
     }
 
     @Override
