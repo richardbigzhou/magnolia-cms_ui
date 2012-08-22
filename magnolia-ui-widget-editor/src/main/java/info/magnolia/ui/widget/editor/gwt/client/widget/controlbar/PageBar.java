@@ -34,7 +34,6 @@
 package info.magnolia.ui.widget.editor.gwt.client.widget.controlbar;
 
 import static info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils.getI18nMessage;
-import info.magnolia.ui.widget.editor.gwt.client.VPageEditor;
 import info.magnolia.ui.widget.editor.gwt.client.dom.CMSComment;
 import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 import info.magnolia.ui.widget.editor.gwt.client.widget.PreviewChannel.Orientation;
@@ -72,10 +71,10 @@ import com.google.gwt.user.client.ui.MenuItem;
  * <p>
  * The placeholder is styled to be automatically centered in the main bar. See this module's
  * editor.css file (id selector #mgnlEditorMainbarPlaceholder).
- * 
+ *
  * Note: This class is no longer used. Functionality provided by actionbar etc.
- * 
- * 
+ *
+ *
  */
 @Deprecated
 public class PageBar extends AbstractBar {
