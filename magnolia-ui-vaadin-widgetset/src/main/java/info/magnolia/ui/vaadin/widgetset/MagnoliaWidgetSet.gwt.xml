@@ -1,25 +1,27 @@
 <module>
-  <!-- WS Compiler: manually edited -->
-  <inherits name="com.vaadin.terminal.gwt.DefaultWidgetSet" />
+    <!-- WS Compiler: manually edited -->
+    <inherits name="com.vaadin.terminal.gwt.DefaultWidgetSet" />
 
-  <inherits name="info.magnolia.ui.widget.jquerywrapper.gwt.JQueryWrapperWidgetSet" />
-  <inherits name="info.magnolia.ui.vaadin.widget.tabsheet.TabsheetWidgetSet" />
-  <inherits name="info.magnolia.ui.widget.dialog.gwt.DialogWidgetSet" />
-  <inherits name="info.magnolia.ui.widget.actionbar.gwt.ActionbarWidgetSet" />
-  <inherits name="info.magnolia.ui.widget.editor.gwt.PageEditorWidgetSet" />
-  <inherits name="org.vaadin.autoreplacefield.AutoreplacefieldWidgetset" />
+    <inherits name="info.magnolia.ui.widget.jquerywrapper.gwt.JQueryWrapperWidgetSet" />
+    <inherits name="info.magnolia.ui.vaadin.widget.tabsheet.TabsheetWidgetSet" />
+    <inherits name="info.magnolia.ui.widget.dialog.gwt.DialogWidgetSet" />
+    <inherits name="info.magnolia.ui.widget.actionbar.gwt.ActionbarWidgetSet" />
+    <inherits name="info.magnolia.ui.widget.editor.gwt.PageEditorWidgetSet" />
+    <inherits name="info.magnolia.ui.vaadin.integration.widget.VaadinIntegrationWidgetSet" />
+    <inherits name="info.magnolia.ui.widget.magnoliashell.gwt.MagnoliaShellWidgetSet" />
 
-  <inherits name="org.vaadin.artur.icepush.IcepushaddonWidgetset" />
-  <inherits name='org.vaadin.gwtgraphics.GWTGraphics' />
-  <inherits name="org.vaadin.csstools.CssToolsWidgetset" />
-  <inherits name='org.vaadin.artur.superdevmode.SuperdevmodeaddonWidgetset' />
-  <inherits name='com.googlecode.mgwt.dom.DOM' />
-  <inherits name='com.googlecode.mgwt.ui.UI' />
-  <inherits name="info.magnolia.ui.vaadin.integration.widget.VaadinIntegrationWidgetSet" />
-  <inherits name="info.magnolia.ui.widget.magnoliashell.gwt.MagnoliaShellWidgetSet" />
-  <add-linker name="xsiframe" />
-  <set-configuration-property name="devModeRedirectEnabled" value="true" />
-  <!-- uncomment to improve compile time -->
-  <!--  set-property name="user.agent" value="gecko1_8,safari" /-->
-  <!--  set-property name="mgwt.os" value="ipad,desktop" /-->
+    <inherits name="org.vaadin.autoreplacefield.AutoreplacefieldWidgetset" />
+    <inherits name="org.vaadin.artur.icepush.IcepushaddonWidgetset" />
+    <inherits name='org.vaadin.gwtgraphics.GWTGraphics' />
+    <inherits name="org.vaadin.csstools.CssToolsWidgetset" />
+    <inherits name='org.vaadin.artur.superdevmode.SuperdevmodeaddonWidgetset' />
+
+    <inherits name='com.googlecode.mgwt.dom.DOM' />
+    <inherits name='com.googlecode.mgwt.ui.UI' />
+
+    <add-linker name="xsiframe" />
+    <set-configuration-property name="devModeRedirectEnabled" value="true" />
+    <!-- uncomment to improve compile time -->
+    <!--  set-property name="user.agent" value="gecko1_8,safari" /-->
+    <!--  set-property name="mgwt.os" value="ipad,desktop" /-->
 </module>
