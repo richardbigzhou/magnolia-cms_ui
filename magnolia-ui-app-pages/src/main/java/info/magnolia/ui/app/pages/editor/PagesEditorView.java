@@ -49,18 +49,16 @@ public interface PagesEditorView extends View {
     public interface Listener {
 
         void setParameters(PageEditorParameters parameters);
-
-        void closePreview();
     }
 
     void setListener(Listener listener);
 
-    void setPageEditor(PageEditorView pageEditor);
+    void setPageEditorView(PageEditorView pageEditor);
 
     /**
      * Use this method to add an action bar to this sub app view.
      */
-    void setActionbar(ActionbarView actionbar);
+    void setActionbarView(ActionbarView actionbar);
 
     /**
      * Shows/hides the actionbar. It has no effect if the actionbar hasn't yet been set.

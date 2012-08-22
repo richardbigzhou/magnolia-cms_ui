@@ -76,7 +76,7 @@ public class PagesEditorViewImpl implements PagesEditorView {
     }
 
     @Override
-    public void setPageEditor(PageEditorView pageEditor) {
+    public void setPageEditorView(PageEditorView pageEditor) {
         if (this.pageEditor == null) {
             container.addComponent(pageEditor.asVaadinComponent());
             this.pageEditor = pageEditor;
@@ -88,7 +88,7 @@ public class PagesEditorViewImpl implements PagesEditorView {
     }
 
     @Override
-    public void setActionbar(final ActionbarView actionbar) {
+    public void setActionbarView(final ActionbarView actionbar) {
         actionbar.asVaadinComponent().setWidth(Sizeable.SIZE_UNDEFINED, 0);
         if (this.actionbar == null) {
             root.addComponent(actionbar.asVaadinComponent());
