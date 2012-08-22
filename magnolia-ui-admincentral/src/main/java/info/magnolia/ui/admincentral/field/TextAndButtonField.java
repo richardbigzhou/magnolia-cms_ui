@@ -34,6 +34,7 @@
 package info.magnolia.ui.admincentral.field;
 
 import org.vaadin.addon.customfield.CustomField;
+import org.vaadin.addon.propertytranslator.PropertyTranslator;
 
 import com.vaadin.data.Property;
 import com.vaadin.ui.Alignment;
@@ -44,13 +45,17 @@ import com.vaadin.ui.TextField;
 
 /**
  * A base custom field comprising a text field and a button placed to its immediate right.
+ * A {@link PropertyTranslator} can be set in order to have a different display and property stored.
+ * For example, display can be the Item path and value stored is the UUID of the Item.
  */
 public class TextAndButtonField extends CustomField {
 
     private Button selectButton;
     private TextField textField;
+    private PropertyTranslator translator;
 
-    public TextAndButtonField() {
+    public TextAndButtonField(PropertyTranslator translator) {
+        this.translator = translator;
         textField = new TextField();
         selectButton = new Button();
         HorizontalLayout layout = new HorizontalLayout();
@@ -80,14 +85,27 @@ public class TextAndButtonField extends CustomField {
         textField.setValue(newValue);
     }
 
+    /**
+     * Set propertyDatasource.
+     * If the translator is not null, set it as datasource.
+     */
     @Override
     public void setPropertyDataSource(Property newDataSource) {
-        textField.setPropertyDataSource(newDataSource);
+        if(translator!=null) {
+            translator.setPropertyDataSource(newDataSource);
+            textField.setPropertyDataSource(translator);
+        } else {
+            textField.setPropertyDataSource(newDataSource);
+        }
     }
 
     @Override
     public Property getPropertyDataSource() {
-        return textField.getPropertyDataSource();
+        if(translator!=null) {
+            return translator.getPropertyDataSource();
+        } else {
+            return textField.getPropertyDataSource();
+        }
     }
 
     @Override

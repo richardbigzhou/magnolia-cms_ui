@@ -186,6 +186,10 @@
     <configurer>
       <class>info.magnolia.ui.framework.event.AppEventBusConfigurer</class>
     </configurer>
+        <configurer>
+      <class>info.magnolia.ui.framework.event.ChooseDialogEventBusConfigurer</class>
+    </configurer>
+
     <component>
       <type>info.magnolia.ui.admincentral.dialog.DialogPresenterFactory</type>
       <implementation>info.magnolia.ui.admincentral.dialog.DialogPresenterFactoryImpl</implementation>
@@ -210,6 +214,10 @@
     <component>
       <type>info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory</type>
       <implementation>info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactoryImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.content.view.ChooseDialogContentPresenter</type>
+      <implementation>info.magnolia.ui.admincentral.content.view.ChooseDialogContentPresenter</implementation>
     </component>
   </components>
 

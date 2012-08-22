@@ -35,7 +35,7 @@ package info.magnolia.ui.admincentral.field.builder;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
-import info.magnolia.ui.admincentral.content.view.ContentPresenter;
+import info.magnolia.ui.admincentral.content.view.ChooseDialogContentPresenter;
 import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.admincentral.field.TextAndContentViewField;
 import info.magnolia.ui.framework.event.SimpleEventBus;
@@ -58,7 +58,7 @@ public class LinkFieldSelectionBuilderTest extends AbstractBuilderTest<LinkField
     @Test
     public void buildFieldSimpleTest() {
         // GIVEN
-        ContentPresenter presenter = mock(ContentPresenter.class);
+        ChooseDialogContentPresenter presenter = mock(ChooseDialogContentPresenter.class);
         SimpleEventBus eventBus = new SimpleEventBus();
         builder = new LinkFieldSelectionBuilder(definition, baseItem, presenter, eventBus);
 
@@ -73,7 +73,7 @@ public class LinkFieldSelectionBuilderTest extends AbstractBuilderTest<LinkField
     @Test
     public void fieldEventTest() throws RepositoryException {
         // GIVEN
-        ContentPresenter presenter = mock(ContentPresenter.class);
+        ChooseDialogContentPresenter presenter = mock(ChooseDialogContentPresenter.class);
         SimpleEventBus eventBus = new SimpleEventBus();
         builder = new LinkFieldSelectionBuilder(definition, baseItem, presenter, eventBus);
         Field field = builder.getField();
@@ -88,7 +88,7 @@ public class LinkFieldSelectionBuilderTest extends AbstractBuilderTest<LinkField
     @Test
     public void fieldEventCustomPropertyTest() throws RepositoryException {
         // GIVEN
-        ContentPresenter presenter = mock(ContentPresenter.class);
+        ChooseDialogContentPresenter presenter = mock(ChooseDialogContentPresenter.class);
         SimpleEventBus eventBus = new SimpleEventBus();
         definition.setColumnName("newProperty");
         baseNode.setProperty("newProperty", "initial");

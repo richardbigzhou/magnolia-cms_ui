@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,38 +31,11 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.editor;
-
-import info.magnolia.ui.framework.view.View;
-import info.magnolia.ui.widget.actionbar.ActionbarView;
-import info.magnolia.ui.widget.editor.PageEditorView;
-
+package info.magnolia.ui.model.field.definition;
 
 /**
- * PagesEditorView.
+ * Field definition for a rich edit field.
  */
-public interface PagesEditorView extends View {
-
-    /**
-     * Listener.
-     */
-    public interface Listener {
-
-        void setParameters(PageEditorParameters parameters);
-    }
-
-    void setListener(Listener listener);
-
-    void setPageEditorView(PageEditorView pageEditor);
-
-    /**
-     * Use this method to add an action bar to this sub app view.
-     */
-    void setActionbarView(ActionbarView actionbar);
-
-    /**
-     * Shows/hides the actionbar. It has no effect if the actionbar hasn't yet been set.
-     */
-    void hideActionbar(boolean hide);
+public class RichTextFieldDefinition extends ConfiguredFieldDefinition {
 
 }

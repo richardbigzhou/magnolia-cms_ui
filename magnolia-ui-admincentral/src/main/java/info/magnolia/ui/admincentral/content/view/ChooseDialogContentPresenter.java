@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,38 +31,25 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.editor;
+package info.magnolia.ui.admincentral.content.view;
 
-import info.magnolia.ui.framework.view.View;
-import info.magnolia.ui.widget.actionbar.ActionbarView;
-import info.magnolia.ui.widget.editor.PageEditorView;
+import javax.inject.Inject;
+import javax.inject.Named;
 
+import info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilder;
+import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.shell.Shell;
 
 /**
- * PagesEditorView.
+ * ChooseDialog ContentPresenter.
+ * Used to inject a specific EventBuss, and to handle specific ChooseDialog logic.
  */
-public interface PagesEditorView extends View {
+public class ChooseDialogContentPresenter extends ContentPresenter {
 
-    /**
-     * Listener.
-     */
-    public interface Listener {
-
-        void setParameters(PageEditorParameters parameters);
+    @Inject
+    public ChooseDialogContentPresenter(ContentViewBuilder contentViewBuilder, AppContext context, @Named("choosedialog") EventBus subAppEventBus, Shell shell) {
+        super(contentViewBuilder, context, subAppEventBus, shell);
     }
-
-    void setListener(Listener listener);
-
-    void setPageEditorView(PageEditorView pageEditor);
-
-    /**
-     * Use this method to add an action bar to this sub app view.
-     */
-    void setActionbarView(ActionbarView actionbar);
-
-    /**
-     * Shows/hides the actionbar. It has no effect if the actionbar hasn't yet been set.
-     */
-    void hideActionbar(boolean hide);
 
 }

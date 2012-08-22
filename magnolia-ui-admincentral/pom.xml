@@ -125,6 +125,13 @@
 	 	<groupId>org.vaadin.addons</groupId>
 		<artifactId>customfield</artifactId>
 	</dependency>
+
+	<dependency>
+	 	<groupId>org.vaadin.addon</groupId>
+		<artifactId>propertytranslator</artifactId>
+		<version>0.0.2</version>
+	</dependency>
+
 	<dependency>
    		<groupId>org.vaadin.addons</groupId>
    		<artifactId>easyuploads</artifactId>

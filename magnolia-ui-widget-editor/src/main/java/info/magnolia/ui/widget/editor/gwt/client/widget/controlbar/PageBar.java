@@ -33,27 +33,9 @@
  */
 package info.magnolia.ui.widget.editor.gwt.client.widget.controlbar;
 
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style.Float;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.MouseDownEvent;
-import com.google.gwt.event.dom.client.MouseDownHandler;
-import com.google.gwt.event.dom.client.MouseUpEvent;
-import com.google.gwt.event.dom.client.MouseUpHandler;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.InlineLabel;
-import com.google.gwt.user.client.ui.MenuItem;
-import info.magnolia.ui.widget.editor.gwt.client.VPageEditor;
+import static info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils.getI18nMessage;
 import info.magnolia.ui.widget.editor.gwt.client.dom.CMSComment;
-import info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils;
 import info.magnolia.ui.widget.editor.gwt.client.model.Model;
-import info.magnolia.ui.widget.editor.gwt.client.model.focus.FocusModel;
 import info.magnolia.ui.widget.editor.gwt.client.widget.PreviewChannel.Orientation;
 import info.magnolia.ui.widget.editor.gwt.client.widget.button.LocaleSelector;
 import info.magnolia.ui.widget.editor.gwt.client.widget.button.PreviewButton;
@@ -63,17 +45,32 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils.getI18nMessage;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style.Float;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.InlineLabel;
+import com.google.gwt.user.client.ui.MenuItem;
+
 
 /**
- * Page bar. The HTML output by this widget contains an empty <code>span</code> element with an id called <code>mgnlEditorMainbarPlaceholder</code> as a convenience which can be used by other modules to inject
- * their own DOM elements into the main bar, <strong>once the page editor is loaded (see {@link VPageEditor} and <code>mgnl.PageEditor.onReady(..)</code>)</strong>.
- * <p>I.e., assuming usage of jQuery, a module's own javascript could do something like this
+ * Page bar. The HTML output by this widget contains an empty <code>span</code> element with an id
+ * called <code>mgnlEditorMainbarPlaceholder</code> as a convenience which can be used by other
+ * modules to inject their own DOM elements into the main bar, <strong>once the page editor is
+ * loaded (see {@link VPageEditor} and <code>mgnl.PageEditor.onReady(..)</code>)</strong>.
  * <p>
- * {@code
- *  jQuery('#mgnlEditorMainbarPlaceholder').append('<p>Blah</p>')
+ * I.e., assuming usage of jQuery, a module's own javascript could do something like this
+ * <p>
+ * {@code jQuery('#mgnlEditorMainbarPlaceholder').append('
+ * <p>Blah</p>
+ * ')
  * }
- * <p>The placeholder is styled to be automatically centered in the main bar. See this module's editor.css file (id selector #mgnlEditorMainbarPlaceholder).
+ * <p>
+ * The placeholder is styled to be automatically centered in the main bar. See this module's
+ * editor.css file (id selector #mgnlEditorMainbarPlaceholder).
  *
  * Note: This class is no longer used. Functionality provided by actionbar etc.
  *
@@ -82,90 +79,92 @@ import static info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils.get
 @Deprecated
 public class PageBar extends AbstractBar {
 
-    private String dialog;
-    private String currentURI;
-    private Map<String,String> availableLocales = new HashMap<String, String>();
+    private final String dialog;
+
+    private final String currentURI;
+
+    private final Map<String, String> availableLocales = new HashMap<String, String>();
+
     private FlowPanel mainBarWrapper;
 
-    private Model model;
-    private final FocusModel focusModel;
-    private Document document;
+    private final Model model;
 
-    public PageBar(Model model, final FocusModel focusModel, final Document document, final CMSComment comment) {
+    public PageBar(Model model, final CMSComment comment) {
         super(model, null, null);
         this.model = model;
-        this.focusModel = focusModel;
-        this.document = document;
 
         String content = comment.getAttribute("content");
         int i = content.indexOf(':');
         setWorkspace(content.substring(0, i));
         setPath(content.substring(i + 1));
+
         dialog = comment.getAttribute("dialog");
 
         currentURI = comment.getAttribute("currentURI");
 
         boolean isPreview = Boolean.parseBoolean(comment.getAttribute("preview"));
-        //FIXME create method
-        //VPageEditor.setPreview(isPreview);
+        // FIXME create method
+        // VPageEditor.setPreview(isPreview);
 
-        if(VPageEditor.isPreview()){
-            createPreviewModeBar();
-        } else {
+        /*        if(VPageEditor.isPreview()){
+                    createPreviewModeBar();
+                } else {
 
-            String availableLocalesAttribute = comment.getAttribute("availableLocales");
+                    String availableLocalesAttribute = comment.getAttribute("availableLocales");
 
-            if(JavascriptUtils.isNotEmpty(availableLocalesAttribute)) {
-                String[] localeAndUris = availableLocalesAttribute.split(",");
+                    if(JavascriptUtils.isNotEmpty(availableLocalesAttribute)) {
+                        String[] localeAndUris = availableLocalesAttribute.split(",");
 
-                for(String localeAndUri: localeAndUris) {
-                    String[] tmp = localeAndUri.split(":");
-                    if(tmp.length != 2) {
-                        GWT.log("Could not split string [" + tmp + "] while getting locales and uris");
-                        continue;
+                        for(String localeAndUri: localeAndUris) {
+                            String[] tmp = localeAndUri.split(":");
+                            if(tmp.length != 2) {
+                                GWT.log("Could not split string [" + tmp + "] while getting locales and uris");
+                                continue;
+                            }
+                            GWT.log("Found available locale [" + tmp[0] + "," + tmp[1] + "]");
+                            availableLocales.put(tmp[0],tmp[1]);
+                        }
                     }
-                    GWT.log("Found available locale [" + tmp[0] + "," + tmp[1] + "]");
-                    availableLocales.put(tmp[0],tmp[1]);
-                }
-            }
-            createAuthoringModeBar();
-        }
+                    createAuthoringModeBar();
+                }*/
 
-        addDomHandler(new MouseDownHandler() {
-            @Override
-            public void onMouseDown(MouseDownEvent event) {
-                focusModel.toggleRootAreaBar(true);
-                event.stopPropagation();
-            }
-        }, MouseDownEvent.getType());
+        /*        addDomHandler(new MouseDownHandler() {
+                    @Override
+                    public void onMouseDown(MouseDownEvent event) {
+                        focusModel.toggleRootAreaBar(true);
+                        event.stopPropagation();
+                    }
+                }, MouseDownEvent.getType());
 
-        addDomHandler(new MouseUpHandler() {
-            @Override
-            public void onMouseUp(MouseUpEvent event) {
-                event.stopPropagation();
-            }
-        }, MouseUpEvent.getType());
+                addDomHandler(new MouseUpHandler() {
+                    @Override
+                    public void onMouseUp(MouseUpEvent event) {
+                        event.stopPropagation();
+                    }
+                }, MouseUpEvent.getType());*/
 
     }
 
+    @Deprecated
     private void createAuthoringModeBar() {
         InlineLabel mainbarPlaceholder = new InlineLabel();
         mainbarPlaceholder.getElement().setId("mgnlEditorMainbarPlaceholder");
         mainbarPlaceholder.setStylePrimaryName("mgnlMainbarPlaceholder");
-        //the placeholder must be added as the first child of the bar element (before the buttons wrapper) so that the style applied to it centers it correctly.
+        // the placeholder must be added as the first child of the bar element (before the buttons
+        // wrapper) so that the style applied to it centers it correctly.
         getElement().insertFirst(mainbarPlaceholder.getElement());
-
 
         Button properties = new Button(getI18nMessage("buttons.properties.js"));
         properties.addClickHandler(new ClickHandler() {
+
             @Override
             public void onClick(ClickEvent event) {
-                //PageEditor.openDialog(dialog, workspace, path);
+                // PageEditor.openDialog(dialog, workspace, path);
             }
         });
         addButton(properties, Float.RIGHT);
 
-        if(!availableLocales.isEmpty()) {
+        if (!availableLocales.isEmpty()) {
             LocaleSelector localeSelector = new LocaleSelector(availableLocales, currentURI);
             addButton(localeSelector, Float.RIGHT, "mgnlEditorLocaleSelector");
         }
@@ -189,9 +188,10 @@ public class PageBar extends AbstractBar {
 
         Button admincentral = new Button(getI18nMessage("buttons.admincentral.js"));
         admincentral.addClickHandler(new ClickHandler() {
+
             @Override
             public void onClick(ClickEvent event) {
-                //PageEditor.showTree(workspace, path);
+                // PageEditor.showTree(workspace, path);
             }
         });
         addButton(admincentral, Float.LEFT);
@@ -204,67 +204,77 @@ public class PageBar extends AbstractBar {
 
     }
 
+    @Deprecated
     private void createPreviewModeBar() {
         Button preview = new Button(getI18nMessage("buttons.preview.hidden.js"));
         preview.setTitle(getI18nMessage("buttons.preview.switchToEdit.js"));
 
         preview.addClickHandler(new ClickHandler() {
+
             @Override
             public void onClick(ClickEvent event) {
-                //PageEditor.enablePreview(false);
+                // PageEditor.enablePreview(false);
             }
         });
         addButton(preview, Float.LEFT);
         setStyleName("mgnlEditorMainbarPreview");
     }
 
+    @Deprecated
     private class SmartphonePreviewCommand implements Command {
 
-        private Orientation orientation;
+        private final Orientation orientation;
 
         public SmartphonePreviewCommand(final Orientation orientation) {
-           this.orientation = orientation;
+            this.orientation = orientation;
         }
 
         @Override
         public void execute() {
-            //PageEditor.createChannelPreview("smartphone", orientation);
+            // PageEditor.createChannelPreview("smartphone", orientation);
         }
     }
 
+    @Deprecated
     private class DesktopPreviewCommand implements Command {
 
         @Override
         public void execute() {
-            //PageEditor.enablePreview(true);
+            // PageEditor.enablePreview(true);
         }
     }
 
     @Override
-    public void attach() {
-        final Element bar = mainBarWrapper != null ? mainBarWrapper.getElement(): getElement();
-        document.getBody().insertFirst(bar);
+    public void attach(Element body) {
+        final Element bar = mainBarWrapper != null ? mainBarWrapper.getElement() : getElement();
+        body.insertFirst(bar);
+        getModel().setPageBar(this);
         onAttach();
     }
 
     private class TabletPreviewCommand implements Command {
 
-        private Orientation orientation;
+        private final Orientation orientation;
 
         public TabletPreviewCommand(final Orientation orientation) {
-           this.orientation = orientation;
+            this.orientation = orientation;
         }
 
         @Override
         public void execute() {
-            //FIXME create method
-            //VPageEditor.createChannelPreview("tablet", orientation);
+            // FIXME create method
+            // VPageEditor.createChannelPreview("tablet", orientation);
         }
     }
 
     @Override
     public Model getModel() {
         return model;
+    }
+
+    @Override
+    public String getDialog() {
+        return dialog;
     }
 
 }
