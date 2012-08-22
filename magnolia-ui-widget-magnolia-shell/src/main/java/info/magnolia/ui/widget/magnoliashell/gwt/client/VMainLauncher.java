@@ -60,7 +60,6 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.HandlerRegistration;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
-import com.vaadin.terminal.gwt.client.VConsole;
 
 
 /**
@@ -135,13 +134,6 @@ public class VMainLauncher extends FlowPanel {
             }
         }
     };
-
-    @Override
-    public void onBrowserEvent(Event event) {
-        super.onBrowserEvent(event);
-        VConsole.log("Event " + event.getTypeInt());
-        int type = event.getTypeInt();
-    }
 
     /**
      * Type of the "shell app" to be loaded.

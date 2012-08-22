@@ -33,32 +33,43 @@
  */
 package info.magnolia.ui.widget.magnoliashell.gwt.client.viewport;
 
-import com.google.gwt.core.shared.GWT;
-import com.googlecode.mgwt.dom.client.recognizer.swipe.SwipeMoveEvent;
-import com.googlecode.mgwt.dom.client.recognizer.swipe.SwipeMoveHandler;
-import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
+import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.event.ViewportCloseEvent;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.googlecode.mgwt.dom.client.event.touch.TouchCancelEvent;
+import com.googlecode.mgwt.dom.client.event.touch.TouchCancelHandler;
+import com.googlecode.mgwt.dom.client.recognizer.swipe.HasSwipeHandlers;
+import com.googlecode.mgwt.dom.client.recognizer.swipe.SwipeEndEvent;
+import com.googlecode.mgwt.dom.client.recognizer.swipe.SwipeEndHandler;
+import com.googlecode.mgwt.dom.client.recognizer.swipe.SwipeEvent.DIRECTION;
+import com.googlecode.mgwt.dom.client.recognizer.swipe.SwipeMoveEvent;
+import com.googlecode.mgwt.dom.client.recognizer.swipe.SwipeMoveHandler;
+import com.googlecode.mgwt.dom.client.recognizer.swipe.SwipeStartEvent;
+import com.googlecode.mgwt.dom.client.recognizer.swipe.SwipeStartHandler;
+import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.UIDL;
-
 
 /**
  * Client side implementation of Apps viewport.
  */
-public class VAppsViewport extends VShellViewport {
+public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
 
     private final VAppPreloader preloader = new VAppPreloader();
 
     private final Element closeWrapper = DOM.createDiv();
 
+    private final TouchDelegate delegate = new TouchDelegate(this);
+    
     public VAppsViewport() {
         super();
         setForceContentAlign(false);
@@ -68,7 +79,6 @@ public class VAppsViewport extends VShellViewport {
         closeButton.setClassName("action-close");
         closeWrapper.appendChild(closeButton);
         addDomHandler(new ClickHandler() {
-
             @Override
             public void onClick(ClickEvent event) {
                 if (closeWrapper.isOrHasChild((Element) event.getNativeEvent().getEventTarget().cast())) {
@@ -77,14 +87,36 @@ public class VAppsViewport extends VShellViewport {
             }
         }, ClickEvent.getType());
 
-        /* CLZ Testing swipe detection */
-        final TouchDelegate delegate = new TouchDelegate(this);
-        delegate.addSwipeMoveHandler(new SwipeMoveHandler() {
+        DOM.sinkEvents(getElement(), Event.TOUCHEVENTS);
+        delegate.addTouchHandler(new MagnoliaSwipeHandler(delegate));
+        
+        addSwipeStartHandler(new SwipeStartHandler() {
+            @Override
+            public void onSwipeStart(SwipeStartEvent event) {
+            }
+        });
+
+        addSwipeMoveHandler(new SwipeMoveHandler() {
             @Override
             public void onSwipeMove(SwipeMoveEvent event) {
-                //log.warn("Test logging on Swipe");
-                System.out.println("Got a swipe.");
-                GWT.log("VAppsViewport.java GWT Got a swipe.");
+                final DIRECTION direction = event.getDirection();
+                if (direction == DIRECTION.LEFT_TO_RIGHT) {
+                    JQueryWrapper.select(getVisibleWidget()).setCss("-webkit-transform", "translate3d("+ event.getDistance() + "px,0,0)");
+                }
+            }
+        });
+        
+        addSwipeEndHandler(new SwipeEndHandler() {
+            @Override
+            public void onSwipeEnd(SwipeEndEvent event) {
+                JQueryWrapper.select(getVisibleWidget()).setCss("-webkit-transform", "translateX("+ 0 + "px)");
+            }
+        });
+        
+        delegate.addTouchCancelHandler(new TouchCancelHandler() {
+            @Override
+            public void onTouchCanceled(TouchCancelEvent event) {
+                JQueryWrapper.select(getVisibleWidget()).setCss("-webkit-transform", "translateX("+ 0 + "px)");
             }
         });
     }
@@ -95,7 +127,6 @@ public class VAppsViewport extends VShellViewport {
         super.updateFromUIDL(uidl, client);
         if (RootPanel.get().getWidgetIndex(preloader) >= 0) {
             new Timer() {
-
                 @Override
                 public void run() {
                     RootPanel.get().remove(preloader);
@@ -104,6 +135,21 @@ public class VAppsViewport extends VShellViewport {
         }
     }
 
+    @Override
+    public HandlerRegistration addSwipeStartHandler(SwipeStartHandler handler) {
+        return addHandler(handler, SwipeStartEvent.getType());
+    }
+
+    @Override
+    public HandlerRegistration addSwipeMoveHandler(SwipeMoveHandler handler) {
+        return addHandler(handler, SwipeMoveEvent.getType());
+    }
+
+    @Override
+    public HandlerRegistration addSwipeEndHandler(SwipeEndHandler handler) {
+        return addHandler(handler, SwipeEndEvent.getType());
+    }
+    
     /**
      * Called when the transition of preloader is finished.
      */
@@ -159,8 +205,8 @@ public class VAppsViewport extends VShellViewport {
 
             Element preloadingScreen = DOM.createDiv();
             preloadingScreen.addClassName("loading-screen");
-            preloadingScreen.setInnerHTML("<div class=\"loading-message-wrapper\"> " +
-                "<div class=\"loading-message\"><div class=\"spinner\"></div> Loading </div></div>");
+            preloadingScreen.setInnerHTML("<div class=\"loading-message-wrapper\"> "
+                    + "<div class=\"loading-message\"><div class=\"spinner\"></div> Loading </div></div>");
             root.appendChild(preloadingScreen);
         }
 
@@ -174,4 +220,5 @@ public class VAppsViewport extends VShellViewport {
             captionSpan.setInnerHTML(caption);
         }
     }
+
 }
