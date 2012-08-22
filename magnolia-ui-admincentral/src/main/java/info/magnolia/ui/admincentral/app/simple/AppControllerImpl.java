@@ -327,6 +327,10 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
         private SubAppContext startSubApp(String name, Class<? extends SubApp> subAppClass, Location location, String subAppId) {
 
+            if (subAppContexts.containsKey(subAppId)) {
+                throw new IllegalStateException("Sub app already exists with sub app id " + subAppId);
+            }
+
             ComponentProvider subAppComponentProvider = createSubAppComponentProvider(appDescriptor.getName(), name, appComponentProvider);
 
             SubApp subApp = subAppComponentProvider.newInstance(subAppClass);
@@ -380,15 +384,17 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         }
 
         private String extractSubAppSubAppId(final String token) {
-            int i = token.indexOf(";");
-            final String tokenStrippedFromParams = i != -1 ? token.substring(0, i) : token;
-            i = tokenStrippedFromParams.indexOf(':');
-            return i != -1 ? tokenStrippedFromParams.substring(0, i) : tokenStrippedFromParams;
+            int i = token.indexOf(':');
+            return i != -1 ? token.substring(0, i) : token;
         }
 
         @Override
         public void onActiveTabSet(ShellTab tab) {
             SubAppContext activeSubAppContext = getActiveSubAppContext();
+            if (activeSubAppContext == null) {
+                log.warn("There's no active sub app currently set");
+                return;
+            }
             if (activeSubAppContext.tab == tab) {
                 locationController.goTo(activeSubAppContext.location);
             }
