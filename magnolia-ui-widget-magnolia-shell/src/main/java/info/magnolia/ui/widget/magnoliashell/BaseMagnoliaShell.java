@@ -117,6 +117,7 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
         viewport.setCurrentShellFragment(prefix + ":" + token);
         setActiveViewport(viewport);
         notifyOnFragmentChanged(type + ":" + prefix + ":" + token);
+        viewport.requestRepaint();
         requestRepaint();
     }
 
