@@ -33,6 +33,16 @@
  */
 package info.magnolia.ui.widget.editor.gwt.client.widget.controlbar;
 
+import static info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils.getI18nMessage;
+import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
+import info.magnolia.ui.widget.editor.gwt.client.event.DeleteComponentEvent;
+import info.magnolia.ui.widget.editor.gwt.client.event.EditComponentEvent;
+import info.magnolia.ui.widget.editor.gwt.client.model.Model;
+import info.magnolia.ui.widget.editor.gwt.client.widget.dnd.DragAndDrop;
+import info.magnolia.ui.widget.editor.gwt.client.widget.dnd.LegacyDragAndDrop;
+
+import java.util.Map;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -47,32 +57,26 @@ import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PushButton;
-import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
-import info.magnolia.ui.widget.editor.gwt.client.event.DeleteComponentEvent;
-import info.magnolia.ui.widget.editor.gwt.client.event.EditComponentEvent;
-import info.magnolia.ui.widget.editor.gwt.client.model.Model;
-import info.magnolia.ui.widget.editor.gwt.client.widget.dnd.DragAndDrop;
-import info.magnolia.ui.widget.editor.gwt.client.widget.dnd.LegacyDragAndDrop;
-
-import java.util.Map;
-
-import static info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils.getI18nMessage;
 
 
 /**
  * Edit bar.
  */
-public class ComponentBar extends AbstractBar  {
+public class ComponentBar extends AbstractBar {
 
     private String dialog;
+
     private String nodeName;
+
     private boolean isInherited;
+
     private boolean editable = true;
 
     private final static String ICON_CLASSNAME = "editorIcon";
-    private final static String EDIT_CLASSNAME = "icon-edit";
-    private final static String REMOVE_CLASSNAME = "icon-trash";
 
+    private final static String EDIT_CLASSNAME = "icon-edit";
+
+    private final static String REMOVE_CLASSNAME = "icon-trash";
 
     public ComponentBar(Model model, EventBus eventBus, MgnlElement mgnlElement) throws IllegalArgumentException {
 
@@ -81,7 +85,7 @@ public class ComponentBar extends AbstractBar  {
         checkMandatories(mgnlElement.getAttributes());
         addStyleName("component");
 
-        if(DragDropEventBase.isSupported()) {
+        if (DragDropEventBase.isSupported()) {
             createDragAndDropHandlers();
 
         }
@@ -96,7 +100,7 @@ public class ComponentBar extends AbstractBar  {
     }
 
     public void setDraggable(boolean draggable) {
-        if(DragDropEventBase.isSupported()) {
+        if (DragDropEventBase.isSupported()) {
             if (draggable) {
                 this.getElement().setDraggable(Element.DRAGGABLE_TRUE);
                 getStyle().setCursor(Cursor.MOVE);
@@ -173,6 +177,7 @@ public class ComponentBar extends AbstractBar  {
 
         final PushButton remove = new PushButton();
         remove.addClickHandler(new ClickHandler() {
+
             @Override
             public void onClick(ClickEvent event) {
                 getEventBus().fireEvent(new DeleteComponentEvent(getWorkspace(), getPath()));
@@ -186,6 +191,7 @@ public class ComponentBar extends AbstractBar  {
 
         final PushButton move = new PushButton();
         move.addClickHandler(new ClickHandler() {
+
             @Override
             public void onClick(ClickEvent event) {
                 toggleButtons(false);
@@ -200,6 +206,7 @@ public class ComponentBar extends AbstractBar  {
         if (dialog != null) {
             final PushButton edit = new PushButton();
             edit.addClickHandler(new ClickHandler() {
+
                 @Override
                 public void onClick(ClickEvent event) {
                     getEventBus().fireEvent(new EditComponentEvent(getWorkspace(), getPath(), dialog));
@@ -214,33 +221,33 @@ public class ComponentBar extends AbstractBar  {
 
     private void createControls() {
 
+        /*        final Label remove = new Label();
+                remove.setStyleName(ICON_CLASSNAME);
+                remove.addStyleName(REMOVE_CLASSNAME);
+                remove.addClickHandler(new ClickHandler() {
+                    @Override
+                    public void onClick(ClickEvent event) {
+                        getEventBus().fireEvent(new DeleteComponentEvent(workspace, path));
+                    }
+                });
+                addSecondaryButton(remove);
 
-/*        final Label remove = new Label();
-        remove.setStyleName(ICON_CLASSNAME);
-        remove.addStyleName(REMOVE_CLASSNAME);
-        remove.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                getEventBus().fireEvent(new DeleteComponentEvent(workspace, path));
-            }
-        });
-        addSecondaryButton(remove);
 
-
-        final Label move = new Label();
-        move.setStyleName("icon icon-trash");
-        move.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                getEventBus().fireEvent(new DeleteComponentEvent(workspace, path));
-            }
-        });
-        addSecondaryButton(move);*/
+                final Label move = new Label();
+                move.setStyleName("icon icon-trash");
+                move.addClickHandler(new ClickHandler() {
+                    @Override
+                    public void onClick(ClickEvent event) {
+                        getEventBus().fireEvent(new DeleteComponentEvent(workspace, path));
+                    }
+                });
+                addSecondaryButton(move);*/
 
         final Label edit = new Label();
         edit.setStyleName(ICON_CLASSNAME);
         edit.addStyleName(EDIT_CLASSNAME);
         edit.addClickHandler(new ClickHandler() {
+
             @Override
             public void onClick(ClickEvent event) {
                 getEventBus().fireEvent(new EditComponentEvent(getWorkspace(), getPath(), dialog));
@@ -248,5 +255,10 @@ public class ComponentBar extends AbstractBar  {
         });
         addPrimaryButton(edit);
 
+    }
+
+    @Override
+    public String getDialog() {
+        return dialog;
     }
 }

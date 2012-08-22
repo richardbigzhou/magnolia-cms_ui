@@ -51,6 +51,7 @@ public class NodeSelectedEvent implements Event<NodeSelectedEvent.Handler> {
     }
 
     private final String path;
+
     private final String workspace;
 
     @Override

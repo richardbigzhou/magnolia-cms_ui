@@ -35,8 +35,9 @@ package info.magnolia.ui.widget.editor;
 
 import info.magnolia.ui.framework.view.View;
 
+
 /**
- *  PageEditorView.
+ * PageEditorView.
  */
 public interface PageEditorView extends View {
 
@@ -61,6 +62,6 @@ public interface PageEditorView extends View {
 
         void sortComponent(String workspace, String parentPath, String source, String target, String order);
 
-        void selectNode(String workspace, String path);
+        void selectNode(String workspace, String path, String dialog);
     }
 }

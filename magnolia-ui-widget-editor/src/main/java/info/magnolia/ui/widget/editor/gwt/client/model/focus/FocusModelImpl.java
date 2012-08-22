@@ -33,22 +33,27 @@
  */
 package info.magnolia.ui.widget.editor.gwt.client.model.focus;
 
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.event.shared.EventBus;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 import info.magnolia.ui.widget.editor.gwt.client.event.SelectElementEvent;
 import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.AbstractBar;
+
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.shared.EventBus;
+
 
 /**
  * Helper class to keep track of selected items. Welcome to the MindTwister.
  */
 public class FocusModelImpl implements FocusModel {
 
-    private Model model;
+    private final Model model;
+
     private boolean rootSelected = false;
-    private MgnlElement focusedElement = null;
-    private EventBus eventBus;
+
+    private final MgnlElement focusedElement = null;
+
+    private final EventBus eventBus;
 
     public FocusModelImpl(EventBus eventBus, Model model) {
         super();
@@ -60,7 +65,6 @@ public class FocusModelImpl implements FocusModel {
     public void onMouseUp(Element element) {
 
         MgnlElement mgnlElement = model.getMgnlElement(element);
-
 
         MgnlElement area = null;
         MgnlElement component = null;
@@ -75,22 +79,22 @@ public class FocusModelImpl implements FocusModel {
             }
 
             AbstractBar editBar = model.getEditBar(mgnlElement);
-            eventBus.fireEvent(new SelectElementEvent(editBar.getPath(), editBar.getWorkspace()));
+            eventBus.fireEvent(new SelectElementEvent(editBar.getPath(), editBar.getWorkspace(), editBar.getDialog()));
         }
         else {
             // send page as selected element
         }
 
-        // first set the component, then set the area. the selected component is used for setting the corrent area class.
+        // first set the component, then set the area. the selected component is used for setting
+        // the corrent area class.
         setComponentSelection(component);
         setAreaSelection(area);
-
 
     }
 
     /**
-     * Takes care of the selection of components. keeps track of last selected element and toggles the focus.
-     * If a null-value is passed it will reset the currently selected component.
+     * Takes care of the selection of components. keeps track of last selected element and toggles
+     * the focus. If a null-value is passed it will reset the currently selected component.
      * @param component the MgnlElement component, can be null.
      */
     private void setComponentSelection(MgnlElement component) {
@@ -99,11 +103,11 @@ public class FocusModelImpl implements FocusModel {
             return;
         }
         if (currentComponent != null) {
-            if(model.getEditBar(currentComponent) != null) {
+            if (model.getEditBar(currentComponent) != null) {
                 model.getEditBar(currentComponent).removeFocus();
             }
         }
-        if(model.getEditBar(component) != null) {
+        if (model.getEditBar(component) != null) {
             model.getEditBar(component).setFocus(false);
         }
         model.setSelectedMgnlComponentElement(component);
@@ -128,7 +132,6 @@ public class FocusModelImpl implements FocusModel {
                 model.getAreaEndBar(selectedArea).removeFocus();
             }
 
-
             // always reset current area selection unless area and current area are related
             if (!selectedArea.isRelated(area)) {
 
@@ -136,8 +139,9 @@ public class FocusModelImpl implements FocusModel {
                 toggleAreaVisibility(selectedArea, false);
             }
 
-            // hide child components if area is an ascendant of current area or selectedArea is not a descendant
-            else if(selectedArea.getAscendants().contains(area) || (area!=null && !area.getDescendants().contains(selectedArea))) {
+            // hide child components if area is an ascendant of current area or selectedArea is not
+            // a descendant
+            else if (selectedArea.getAscendants().contains(area) || (area != null && !area.getDescendants().contains(selectedArea))) {
                 toggleChildComponentVisibility(selectedArea, false);
             }
         }
@@ -146,7 +150,6 @@ public class FocusModelImpl implements FocusModel {
         if (area != null) {
             toggleAreaVisibility(area, true);
             toggleChildComponentVisibility(area, true);
-
 
             if (model.getEditBar(area) != null) {
                 model.getEditBar(area).setFocus((currentComponent != null));
@@ -178,7 +181,7 @@ public class FocusModelImpl implements FocusModel {
 
         if (!area.isRelated(model.getSelectedMgnlAreaElement())) {
 
-            if (model.getAreaPlaceHolder(area)!= null) {
+            if (model.getAreaPlaceHolder(area) != null) {
                 model.getAreaPlaceHolder(area).setActive(visible);
             }
 
@@ -196,8 +199,6 @@ public class FocusModelImpl implements FocusModel {
                 }
             }
         }
-
-
 
     }
 

@@ -220,7 +220,7 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
 
             @Override
             public void onSelectElement(SelectElementEvent selectElementEvent) {
-                proxy.call("selectElement", selectElementEvent.getWorkspace(), selectElementEvent.getPath());
+                proxy.call("selectElement", selectElementEvent.getWorkspace(), selectElementEvent.getPath(), selectElementEvent.getDialog());
             }
 
         });

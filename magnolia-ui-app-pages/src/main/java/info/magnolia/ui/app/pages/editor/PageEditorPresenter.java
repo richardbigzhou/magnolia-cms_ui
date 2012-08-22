@@ -93,6 +93,8 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
     private String path;
 
+    private String dialog;
+
     private final ConfiguredDialogDefinition dialogDefinition;
 
     @Inject
@@ -116,6 +118,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
                 if (event.getPath().equals(getPath())) {
                     view.refresh();
                     setPath(null);
+                    setDialog(null);
                 }
             }
         });
@@ -134,6 +137,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
             final Node node = session.getNode(path);
             final JcrNodeAdapter item = new JcrNodeAdapter(node);
             setPath(path);
+            setDialog(dialog);
             createDialogAction(item, dialogPresenter);
         } catch (RepositoryException e) {
             log.error("Exception caught: {}", e.getMessage(), e);
@@ -161,6 +165,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
             DefaultProperty property = new DefaultProperty(item.JCR_NAME, "0");
             item.addItemProperty(item.JCR_NAME, property);
             setPath(path);
+            setDialog(NEW_COMPONENT_DIALOG);
 
             createDialogAction(item, dialogPresenter);
         } catch (RepositoryException e) {
@@ -292,7 +297,9 @@ public class PageEditorPresenter implements PageEditorView.Listener {
     }
 
     @Override
-    public void selectNode(String workspace, String path) {
+    public void selectNode(String workspace, String path, String dialog) {
+        setPath(path);
+        setDialog(dialog);
         appEventBus.fireEvent(new NodeSelectedEvent(path, workspace));
     }
 
@@ -313,6 +320,14 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public String getDialog() {
+        return dialog;
+    }
+
+    public void setDialog(String dialog) {
+        this.dialog = dialog;
     }
 
     public boolean isPreview() {

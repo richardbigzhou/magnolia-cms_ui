@@ -33,6 +33,9 @@
  */
 package info.magnolia.ui.widget.editor.gwt.client.widget.controlbar;
 
+import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
+import info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils;
+import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
@@ -42,9 +45,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
-import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
-import info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils;
-import info.magnolia.ui.widget.editor.gwt.client.model.Model;
+
 
 /**
  * Base class for horizontal bars with buttons.
@@ -52,19 +53,25 @@ import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 public abstract class AbstractBar extends FlowPanel {
 
     private String workspace;
+
     private String path;
 
     private String label = "";
-    private FlowPanel buttonWrapper;
+
+    private final FlowPanel buttonWrapper;
+
     private MgnlElement mgnlElement;
 
     private FlowPanel primaryButtons;
+
     private FlowPanel secondaryButtons;
 
-    private Model model;
-    private EventBus eventBus;
+    private final Model model;
+
+    private final EventBus eventBus;
 
     private final static String FOCUS_CLASSNAME = "focus";
+
     private final static String CHILD_FOCUS_CLASSNAME = "childFocus";
 
     public AbstractBar(Model model, EventBus eventBus, MgnlElement mgnlElement) {
@@ -82,11 +89,11 @@ public abstract class AbstractBar extends FlowPanel {
             this.label = mgnlElement.getAttribute("label");
             if (label != null && !label.isEmpty()) {
                 Label areaName = new Label(this.label);
-                //tooltip. Nice to have when area label is truncated because too long.
+                // tooltip. Nice to have when area label is truncated because too long.
                 areaName.setTitle(this.label);
                 areaName.setStylePrimaryName("mgnlEditorBarLabel");
 
-                //setStylePrimaryName(..) replaces gwt default css class, in this case gwt-Label
+                // setStylePrimaryName(..) replaces gwt default css class, in this case gwt-Label
                 add(areaName);
             }
         }
@@ -94,12 +101,13 @@ public abstract class AbstractBar extends FlowPanel {
         setStyleName("mgnlEditor mgnlEditorBar");
     }
 
-    protected void setId(String id){
+    protected void setId(String id) {
         getElement().setId(id);
     }
 
     /**
-     * Adds this widget to this bar as a button. The default (primary) style applied is <code>mgnlEditorButton</code>. See also <code>editor.css</code>.
+     * Adds this widget to this bar as a button. The default (primary) style applied is
+     * <code>mgnlEditorButton</code>. See also <code>editor.css</code>.
      */
     protected void addButton(final Widget button, final Float cssFloat) {
         button.setStylePrimaryName("mgnlEditorButton");
@@ -109,7 +117,8 @@ public abstract class AbstractBar extends FlowPanel {
     }
 
     /**
-     * Adds this widget to this bar as a button. The default (primary) style applied is <code>mgnlEditorButton</code>. See also <code>editor.css</code>.
+     * Adds this widget to this bar as a button. The default (primary) style applied is
+     * <code>mgnlEditorButton</code>. See also <code>editor.css</code>.
      */
     protected void addSecondaryButton(final Widget button) {
         if (secondaryButtons == null) {
@@ -121,7 +130,8 @@ public abstract class AbstractBar extends FlowPanel {
     }
 
     /**
-     * Adds this widget to this bar as a button. The default (primary) style applied is <code>mgnlEditorButton</code>. See also <code>editor.css</code>.
+     * Adds this widget to this bar as a button. The default (primary) style applied is
+     * <code>mgnlEditorButton</code>. See also <code>editor.css</code>.
      */
     protected void addPrimaryButton(final Widget button) {
         if (primaryButtons == null) {
@@ -134,12 +144,13 @@ public abstract class AbstractBar extends FlowPanel {
     }
 
     /**
-     * Adds this widget to this bar as a button. It allows overriding the default (primary) style applied <code>mgnlEditorButton</code>. See also <code>editor.css</code>.
+     * Adds this widget to this bar as a button. It allows overriding the default (primary) style
+     * applied <code>mgnlEditorButton</code>. See also <code>editor.css</code>.
      */
     protected void addButton(final Widget button, final Float cssFloat, final String primaryStyleName) {
-        if(JavascriptUtils.isEmpty(primaryStyleName)) {
-             addButton(button, cssFloat);
-             return;
+        if (JavascriptUtils.isEmpty(primaryStyleName)) {
+            addButton(button, cssFloat);
+            return;
         }
         button.setStylePrimaryName(primaryStyleName);
         button.getElement().getStyle().setFloat(cssFloat);
@@ -149,14 +160,15 @@ public abstract class AbstractBar extends FlowPanel {
 
     /**
      * Shorthand for <code>getElement().getStyle()</code>.
-     * @return the element's underlying {@link Style}. You can use this object to manipulate the css style attribute of this bar widget.
+     * @return the element's underlying {@link Style}. You can use this object to manipulate the css
+     * style attribute of this bar widget.
      */
     protected Style getStyle() {
         return getElement().getStyle();
     }
 
     /**
-     *  TODO: we should not have to call onAttach ourself?
+     * TODO: we should not have to call onAttach ourself?
      */
     public void attach() {
         if (getMgnlElement().getEditElement() != null) {
@@ -248,4 +260,6 @@ public abstract class AbstractBar extends FlowPanel {
     public void setWorkspace(String workspace) {
         this.workspace = workspace;
     }
+
+    public abstract String getDialog();
 }
