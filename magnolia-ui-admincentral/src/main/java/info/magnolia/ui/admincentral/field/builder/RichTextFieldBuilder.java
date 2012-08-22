@@ -34,7 +34,7 @@
 package info.magnolia.ui.admincentral.field.builder;
 
 import info.magnolia.ui.model.field.definition.FieldDefinition;
-import info.magnolia.ui.model.field.definition.RichEditFieldDefinition;
+import info.magnolia.ui.model.field.definition.RichTextFieldDefinition;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.Field;
@@ -43,20 +43,18 @@ import com.vaadin.ui.RichTextArea;
 /**
  * Creates and initializes an edit field based on a field definition.
  */
-public class RichEditFieldBuilder extends AbstractFieldBuilder<RichEditFieldDefinition> {
+public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefinition> {
 
-    public RichEditFieldBuilder(RichEditFieldDefinition definition, Item relatedFieldItem) {
+    public RichTextFieldBuilder(RichTextFieldDefinition definition, Item relatedFieldItem) {
         super(definition, relatedFieldItem);
     }
 
     @Override
     protected Field buildField() {
-        RichEditFieldDefinition editDefinition = definition;
+        RichTextFieldDefinition editDefinition = definition;
         return new RichTextArea();
 
     }
-
-
 
     @Override
     protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {
