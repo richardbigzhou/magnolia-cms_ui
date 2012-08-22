@@ -66,6 +66,8 @@ public class MagnoliaSwipeHandler implements TouchHandler {
 
     private int touchCount;
 
+    private int desiredTouchCount;
+    
     private enum State {
         INVALID, READY, FINDER_DOWN, FOUND_DIRECTION
     }
@@ -89,8 +91,9 @@ public class MagnoliaSwipeHandler implements TouchHandler {
     }
 
     public MagnoliaSwipeHandler(HasHandlers source, int minDistance, int threshold) {
-        if (source == null)
-            throw new IllegalArgumentException("source can not be null");
+        if (source == null) {
+            throw new IllegalArgumentException("source can not be null");   
+        }
 
         if (minDistance <= 0 || minDistance < threshold) {
             throw new IllegalArgumentException("minDistance > 0 and minDistance > threshold");
@@ -100,60 +103,45 @@ public class MagnoliaSwipeHandler implements TouchHandler {
             throw new IllegalArgumentException("threshold > 0");
         }
 
+        this.desiredTouchCount = 1;
         this.source = source;
         this.minDistance = minDistance;
         this.threshold = threshold;
         this.touchCount = 0;
-        state = State.READY;
+        this.state = State.READY;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler#onTouchStart(com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent)
-     */
     @Override
     public void onTouchStart(TouchStartEvent event) {
         touchCount = event.getTouches().length();
-        VConsole.log("Touch count " + touchCount);
         switch (state) {
         case INVALID:
             break;
-
         case READY:
-            //if (touchCount == 3) {
-                VConsole.log("State.FINDER_DOWN");
+            if (touchCount == desiredTouchCount) {
                 state = State.FINDER_DOWN;
                 touchStartX = event.getTouches().get(0).getPageX();
                 touchStartY = event.getTouches().get(0).getPageY();   
-            //}
+            }
             break;
         case FINDER_DOWN:
-        default:
-            state = State.INVALID;    
+        default:    
             break;
         }
-
     }
 
-    /*
-     * (non-Javadoc)
-     * @see com.googlecode.mgwt.dom.client.event.touch.TouchMoveHandler#onTouchMove(com.googlecode.mgwt.dom.client.event.touch.TouchMoveEvent)
-     */
     @Override
     public void onTouchMove(TouchMoveEvent event) {
         Touch touch = event.getTouches().get(0);
 
         switch (state) {
         case INVALID:
-
-            break;
         case READY:
-            //WTF?
-            state = State.INVALID;
             break;
         case FINDER_DOWN:
             if (Math.abs(touch.getPageX() - touchStartX) >= threshold) {
                 state = State.FOUND_DIRECTION;
+                VConsole.log("Dx" + (touch.getPageX() - touchStartX));
                 direction = touch.getPageX() - touchStartX > 0 ? DIRECTION.LEFT_TO_RIGHT : DIRECTION.RIGHT_TO_LEFT;
                 SwipeStartEvent swipeStartEvent = new SwipeStartEvent(touch, touch.getPageX() - touchStartX, direction);
                 getEventPropagator().fireEvent(source, swipeStartEvent);
@@ -166,50 +154,43 @@ public class MagnoliaSwipeHandler implements TouchHandler {
                     getEventPropagator().fireEvent(source, swipeStartEvent);
 
                 }
-
             }
             break;
 
         case FOUND_DIRECTION:
-
+            DIRECTION currentDirection = null;
             switch (direction) {
             case TOP_TO_BOTTOM:
             case BOTTOM_TO_TOP:
                 lastDistance = Math.abs(touch.getPageY() - touchStartY);
-                getEventPropagator().fireEvent(source, new SwipeMoveEvent(touch, lastDistance > minDistance, lastDistance, direction));
+                currentDirection = touch.getPageY() - touchStartY > 0 ? DIRECTION.TOP_TO_BOTTOM : DIRECTION.BOTTOM_TO_TOP;
                 break;
-
             case LEFT_TO_RIGHT:
             case RIGHT_TO_LEFT:
                 lastDistance = Math.abs(touch.getPageX() - touchStartX);
-                getEventPropagator().fireEvent(source, new SwipeMoveEvent(touch, lastDistance > minDistance, lastDistance, direction));
-
+                currentDirection = touch.getPageX() - touchStartX > 0 ? DIRECTION.LEFT_TO_RIGHT : DIRECTION.RIGHT_TO_LEFT;
                 break;
-
             default:
                 break;
             }
-
+            getEventPropagator().fireEvent(source, new SwipeMoveEvent(touch, lastDistance > minDistance, lastDistance, currentDirection));
             break;
-
         default:
             break;
         }
 
     }
 
-    /*
-     * (non-Javadoc)
-     * @see com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler#onTouchEnd(com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent)
-     */
     @Override
     public void onTouchEnd(TouchEndEvent event) {
-        touchCount--;
+        touchCount = event.getTouches().length();
 
         switch (state) {
         case FOUND_DIRECTION:
-            getEventPropagator().fireEvent(source, new SwipeEndEvent(lastDistance > minDistance, lastDistance, direction));
-            reset();
+            if (touchCount < desiredTouchCount) {
+                getEventPropagator().fireEvent(source, new SwipeEndEvent(lastDistance > minDistance, lastDistance, direction));
+                reset();   
+            }
             break;
 
         default:
@@ -219,10 +200,6 @@ public class MagnoliaSwipeHandler implements TouchHandler {
 
     }
 
-    /*
-     * (non-Javadoc)
-     * @see com.googlecode.mgwt.dom.client.event.touch.TouchCancelHandler#onTouchCanceled(com.googlecode.mgwt.dom.client.event.touch.TouchCancelEvent)
-     */
     @Override
     public void onTouchCanceled(TouchCancelEvent event) {
         touchCount--;

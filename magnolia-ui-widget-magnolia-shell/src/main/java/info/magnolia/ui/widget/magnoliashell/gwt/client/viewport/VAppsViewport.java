@@ -33,9 +33,15 @@
  */
 package info.magnolia.ui.widget.magnoliashell.gwt.client.viewport;
 
+import info.magnolia.ui.widget.jquerywrapper.gwt.client.AnimationSettings;
+import info.magnolia.ui.widget.jquerywrapper.gwt.client.Callbacks;
+import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryCallback;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.event.ViewportCloseEvent;
 
+import java.util.Iterator;
+
+import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -58,12 +64,15 @@ import com.googlecode.mgwt.dom.client.recognizer.swipe.SwipeStartHandler;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.UIDL;
+import com.vaadin.terminal.gwt.client.VConsole;
 
 /**
  * Client side implementation of Apps viewport.
  */
 public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
 
+    private static final int SWIPE_OUT_THRESHOLD = 300;
+            
     private final VAppPreloader preloader = new VAppPreloader();
 
     private final Element closeWrapper = DOM.createDiv();
@@ -88,11 +97,12 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
         }, ClickEvent.getType());
 
         DOM.sinkEvents(getElement(), Event.TOUCHEVENTS);
-        delegate.addTouchHandler(new MagnoliaSwipeHandler(delegate));
+        delegate.addTouchHandler(new MagnoliaSwipeHandler(delegate, SWIPE_OUT_THRESHOLD));
         
         addSwipeStartHandler(new SwipeStartHandler() {
             @Override
             public void onSwipeStart(SwipeStartEvent event) {
+                
             }
         });
 
@@ -100,25 +110,92 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
             @Override
             public void onSwipeMove(SwipeMoveEvent event) {
                 final DIRECTION direction = event.getDirection();
-                if (direction == DIRECTION.LEFT_TO_RIGHT) {
-                    JQueryWrapper.select(getVisibleWidget()).setCss("-webkit-transform", "translate3d("+ event.getDistance() + "px,0,0)");
+                int translationValue = event.getDistance() * (direction == DIRECTION.LEFT_TO_RIGHT ? 1 : -1);
+                JQueryWrapper.select(getVisibleWidget()).setCss("-webkit-transform", "translate3d("+ translationValue + "px,0,0)");
+                if (getWidgetCount() > 1) {
+                    final Widget nextWidget = getNextWidget();
+                    final Widget previousWidget = getPreviousWidget();
+                    
+                    if (translationValue >= 0) {
+                        
+                        previousWidget.getElement().getStyle().setVisibility(Visibility.VISIBLE);
+                        previousWidget.getElement().getStyle().setOpacity(1d);
+                        
+                        if (nextWidget != previousWidget) {
+                            nextWidget.getElement().getStyle().setVisibility(Visibility.HIDDEN);
+                            nextWidget.getElement().getStyle().setOpacity(0d);
+                        }
+                        
+                        previousWidget.getElement().getStyle().setZIndex(250);
+                        getVisibleWidget().getElement().getStyle().setZIndex(251);
+                    } else {
+                        nextWidget.getElement().getStyle().setOpacity(1d);
+                        nextWidget.getElement().getStyle().setVisibility(Visibility.VISIBLE);
+                        
+                        if (nextWidget != previousWidget) {
+                            previousWidget.getElement().getStyle().setOpacity(0d);
+                            previousWidget.getElement().getStyle().setVisibility(Visibility.HIDDEN);   
+                        }
+
+                        nextWidget.getElement().getStyle().setZIndex(250);
+                        getVisibleWidget().getElement().getStyle().setZIndex(251);
+                    }
                 }
             }
         });
         
+        
         addSwipeEndHandler(new SwipeEndHandler() {
             @Override
             public void onSwipeEnd(SwipeEndEvent event) {
-                JQueryWrapper.select(getVisibleWidget()).setCss("-webkit-transform", "translateX("+ 0 + "px)");
+                dropZIndeces();
+                final DIRECTION direction = event.getDirection();
+                final Widget newVisibleWidget = direction == DIRECTION.LEFT_TO_RIGHT ? getPreviousWidget() : getNextWidget();  
+                if (event.isDistanceReached()) {
+                    JQueryWrapper.select(getVisibleWidget()).animate(300, new AnimationSettings() {{
+                        setProperty("left", getOffsetWidth());
+                        setCallbacks(Callbacks.create(new JQueryCallback() {
+                            @Override
+                            public void execute(JQueryWrapper query) {    
+                                query.setCss("opacity", "0");
+                                query.setCss("left", "");
+                                query.setCss("-webkit-transform", "translate3d(0,0,0)");
+                                query.setCss("visibility", "hidden");
+                                setVisibleWidget(newVisibleWidget);
+                            }
+                        }));
+                    }});
+                } else {
+                    JQueryWrapper.select(getVisibleWidget()).setCss("-webkit-transform", "translate3d(0,0,0)");
+                }
             }
         });
         
         delegate.addTouchCancelHandler(new TouchCancelHandler() {
             @Override
             public void onTouchCanceled(TouchCancelEvent event) {
-                JQueryWrapper.select(getVisibleWidget()).setCss("-webkit-transform", "translateX("+ 0 + "px)");
+                JQueryWrapper.select(getVisibleWidget()).setCss("-webkit-transform", "translate3d(0,0,0)");
+                dropZIndeces();
             }
         });
+    }
+
+    protected Widget getNextWidget() {
+        int index = getWidgetIndex(getVisibleWidget());
+        return getWidget((index + 1) % getWidgetCount());
+    }
+    
+    protected Widget getPreviousWidget() {
+        int index = getWidgetIndex(getVisibleWidget());
+        int count = getWidgetCount();
+        return getWidget((index + (count - 1)) % count);        
+    }
+    
+    protected void dropZIndeces() {
+        final Iterator<Widget> it = iterator();
+        while (it.hasNext()) {
+            it.next().getElement().getStyle().setProperty("zIndex", "");
+        }
     }
 
     @Override
@@ -173,8 +250,8 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
     }
 
     @Override
-    protected void setWidgetVisible(Widget w) {
-        super.setWidgetVisible(w);
+    protected void setWidgetVisibleWithTransition(Widget w) {
+        super.setWidgetVisibleWithTransition(w);
         w.getElement().appendChild(closeWrapper);
     }
 
