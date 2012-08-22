@@ -238,6 +238,7 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
             viewport.setCurrentShellFragment(prefix + ":" + token);
             setActiveViewport(viewport);
             appController.startIfNotAlreadyRunningThenFocus(prefix, new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, prefix, token));
+            viewport.requestRepaint();
             requestRepaint();
         } else {
             super.navigateToApp(prefix, token);
@@ -251,9 +252,24 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
             viewport.setCurrentShellFragment(prefix + ":" + token);
             setActiveViewport(viewport);
             shellAppControllerProvider.get().focusShellApp(prefix);
+            viewport.requestRepaint();
             requestRepaint();
         } else {
             super.navigateToShellApp(prefix, token);
+        }
+    }
+
+    @Override
+    public void closeCurrentShellApp() {
+        if (!getAppViewport().isEmpty()) {
+            // An app is open.
+            setActiveViewport(getAppViewport());
+            appController.focusCurrentApp();
+
+        } else {
+            // No apps are open.
+            String appLauncherNameLower = ShellAppType.APPLAUNCHER.name().toLowerCase();
+            navigateToShellApp(appLauncherNameLower, "");
         }
     }
 
