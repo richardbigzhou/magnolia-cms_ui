@@ -85,20 +85,22 @@ public class PagesApp extends ContentApp {
 
     @Override
     public void locationChanged(Location location) {
-        DefaultLocation defaultLocation = (DefaultLocation) location;
 
-        List<String> pathParams = parsePathParamsFromToken(defaultLocation.getToken());
+        List<String> pathParams = parsePathParamsFromToken(location);
         if (pathParams.size() < 2) {
             return;
         }
-        final String subAppId = pathParams.get(0);
 
-        if (EDITOR_TOKEN.equals(subAppId)) {
-             appContext.openSubApp(PagesApp.EDITOR_TOKEN, PagesEditorSubApp.class, location, subAppId);
+        final String subAppName = pathParams.get(0);
+        final String subAppId = subAppName + ";" + pathParams.get(1);
+
+        if (EDITOR_TOKEN.equals(subAppName)) {
+            appContext.openSubApp(PagesApp.EDITOR_TOKEN, PagesEditorSubApp.class, location, subAppId);
         }
     }
 
-    private List<String> parsePathParamsFromToken(String token) {
+    private List<String> parsePathParamsFromToken(Location location) {
+        String token = ((DefaultLocation) location).getToken();
         return new ArrayList<String>(Arrays.asList(token.split(";")));
     }
 

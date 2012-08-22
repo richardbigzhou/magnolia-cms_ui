@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,14 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app;
+package info.magnolia.ui.admincentral.field.builder;
 
-import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.model.field.definition.FieldDefinition;
+import info.magnolia.ui.model.field.definition.RichTextFieldDefinition;
+
+import com.vaadin.data.Item;
+import com.vaadin.ui.Field;
+import com.vaadin.ui.RichTextArea;
 
 /**
- * A view inside an app.
+ * Creates and initializes an edit field based on a field definition.
  */
-public interface AppView extends View {
+public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefinition> {
 
-    String getCaption();
+    public RichTextFieldBuilder(RichTextFieldDefinition definition, Item relatedFieldItem) {
+        super(definition, relatedFieldItem);
+    }
+
+    @Override
+    protected Field buildField() {
+        RichTextFieldDefinition editDefinition = definition;
+        return new RichTextArea();
+
+    }
+
+    @Override
+    protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {
+        return String.class;
+    }
 }
+

@@ -35,6 +35,7 @@ package info.magnolia.ui.admincentral.field.builder;
 
 import info.magnolia.ui.admincentral.app.content.ContentApp;
 import info.magnolia.ui.admincentral.field.TextAndButtonField;
+import info.magnolia.ui.admincentral.field.translator.UuidToPathTranslator;
 import info.magnolia.ui.framework.app.App;
 import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.location.DefaultLocation;
@@ -46,6 +47,8 @@ import info.magnolia.ui.widget.dialog.MagnoloaDialogPresenter;
 import javax.inject.Inject;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -53,13 +56,12 @@ import com.vaadin.data.util.PropertysetItem;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Field;
-import com.vaadin.ui.Window.Notification;
 
 /**
  * Creates and initializes a LinkField field based on a field definition.
  */
 public class LinkFieldBuilder extends AbstractFieldBuilder<LinkFieldDefinition> {
-
+    private static final Logger log = LoggerFactory.getLogger(LinkFieldBuilder.class);
     TextAndButtonField textButton;
     final AppController appController;
 
@@ -71,7 +73,12 @@ public class LinkFieldBuilder extends AbstractFieldBuilder<LinkFieldDefinition> 
 
     @Override
     protected Field buildField() {
-        textButton = new TextAndButtonField();
+        // Create Translator if we need to store UUID
+        UuidToPathTranslator translator = null;
+        if(definition.isUuid()) {
+            translator = new UuidToPathTranslator(definition.getWorkspace());
+        }
+        textButton = new TextAndButtonField(translator);
         Button selectButton = textButton.getSelectButton();
         // Set Button Caption
         selectButton.setCaption(getMessage(definition.getButtonLabel()));
@@ -115,15 +122,15 @@ public class LinkFieldBuilder extends AbstractFieldBuilder<LinkFieldDefinition> 
                     public void onSuccess(String actionName) {
                         Property p = item.getItemProperty("transiantPorps");
                         textButton.setValue(p.getValue());
-                        textButton.getWindow().showNotification("Got following value from Sub Window " +p.getValue(), Notification.TYPE_HUMANIZED_MESSAGE);
+                        log.debug("Got following value from Sub Window " +p.getValue());
                     }
                     @Override
                     public void onCancel() {
-                        textButton.getWindow().showNotification("Cancel from Sub Window", Notification.TYPE_HUMANIZED_MESSAGE);
+                        log.debug("Cancel from Sub Window");
                     }
                 };
 
-
+                // Open the Select Dialog
                 if(targetApp instanceof ContentApp) {
                     ((ContentApp)targetApp).openChooseDialog( dialogName, callback, item);
                 }

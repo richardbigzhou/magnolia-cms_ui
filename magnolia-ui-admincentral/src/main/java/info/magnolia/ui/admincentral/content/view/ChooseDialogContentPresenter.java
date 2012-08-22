@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2011 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,38 +31,25 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.field.definition;
+package info.magnolia.ui.admincentral.content.view;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilder;
+import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.shell.Shell;
 
 /**
- * Field definition for an edit box.
+ * ChooseDialog ContentPresenter.
+ * Used to inject a specific EventBuss, and to handle specific ChooseDialog logic.
  */
-public class EditFieldDefinition extends ConfiguredFieldDefinition {
+public class ChooseDialogContentPresenter extends ContentPresenter {
 
-    private int rows;
-    private int maxLength = -1;
-    private String width;
-
-    public int getRows() {
-        return rows;
+    @Inject
+    public ChooseDialogContentPresenter(ContentViewBuilder contentViewBuilder, AppContext context, @Named("choosedialog") EventBus subAppEventBus, Shell shell) {
+        super(contentViewBuilder, context, subAppEventBus, shell);
     }
 
-    public void setRows(int rows) {
-        this.rows = rows;
-    }
-
-    public int getMaxLength() {
-        return maxLength;
-    }
-
-    public void setMaxLength(int maxLength) {
-        this.maxLength = maxLength;
-    }
-
-    public String getWidth() {
-        return width;
-    }
-
-    public void setWidth(String width) {
-        this.width = width;
-    }
 }

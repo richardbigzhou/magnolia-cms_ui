@@ -33,6 +33,13 @@
  */
 package info.magnolia.ui.widget.editor;
 
+import info.magnolia.ui.widget.editor.gwt.client.VPageEditor;
+
+import java.util.Map;
+
+import org.vaadin.rpc.ServerSideHandler;
+import org.vaadin.rpc.ServerSideProxy;
+import org.vaadin.rpc.client.Method;
 
 import com.vaadin.terminal.PaintException;
 import com.vaadin.terminal.PaintTarget;
@@ -40,28 +47,26 @@ import com.vaadin.terminal.Resource;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.ClientWidget;
 import com.vaadin.ui.Component;
-import info.magnolia.ui.widget.editor.gwt.client.VPageEditor;
-import org.vaadin.rpc.ServerSideHandler;
-import org.vaadin.rpc.ServerSideProxy;
-import org.vaadin.rpc.client.Method;
 
-import java.util.Map;
 
 /**
  * PageEditor widget server side implementation.
  */
 @SuppressWarnings("serial")
-@ClientWidget(value=VPageEditor.class, loadStyle = ClientWidget.LoadStyle.EAGER)
+@ClientWidget(value = VPageEditor.class, loadStyle = ClientWidget.LoadStyle.EAGER)
 public class PageEditor extends AbstractComponent implements PageEditorView, ServerSideHandler {
-
 
     /**
      * Source of the embedded object.
      */
     private Resource source;
+
     private String contextPath;
+
     private boolean preview = false;
+
     private PageEditorView.Listener listener;
+
     protected ServerSideProxy proxy;
     private String nodePath;
 
@@ -74,7 +79,6 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
     public void setListener(PageEditorView.Listener listener) {
         this.listener = listener;
     }
-
 
     @Override
     public void paintContent(PaintTarget target) throws PaintException {
@@ -110,18 +114,24 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
         this.preview = preview;
 
         proxy = new ServerSideProxy(this) {
+
             {
 
-
                 register("selectElement", new Method() {
+
                     @Override
                     public void invoke(String methodName, Object[] params) {
                         final String workspace = String.valueOf(params[0]);
                         final String path = String.valueOf(params[1]);
-                        listener.selectNode(workspace, path);
+                        String dialog = null;
+                        if (params.length > 2) {
+                            dialog = String.valueOf(params[2]);
+                        }
+                        listener.selectNode(workspace, path, dialog);
                     }
                 });
                 register("editComponent", new Method() {
+
                     @Override
                     public void invoke(String methodName, Object[] params) {
                         final String workspace = String.valueOf(params[0]);
@@ -131,6 +141,7 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
                     }
                 });
                 register("newArea", new Method() {
+
                     @Override
                     public void invoke(String methodName, Object[] params) {
                         final String workspace = String.valueOf(params[0]);
@@ -141,6 +152,7 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
 
                 });
                 register("newComponent", new Method() {
+
                     @Override
                     public void invoke(String methodName, Object[] params) {
                         final String workspace = String.valueOf(params[0]);
@@ -151,6 +163,7 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
 
                 });
                 register("deleteComponent", new Method() {
+
                     @Override
                     public void invoke(String methodName, Object[] params) {
                         final String workspace = String.valueOf(params[0]);
@@ -159,6 +172,7 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
                     }
                 });
                 register("sortComponent", new Method() {
+
                     @Override
                     public void invoke(String methodName, Object[] params) {
                         final String workspace = String.valueOf(params[0]);
@@ -186,7 +200,7 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
 
     @Override
     public Object[] initRequestFromClient() {
-        return new Object[] {};
+        return new Object[]{};
 
     }
 

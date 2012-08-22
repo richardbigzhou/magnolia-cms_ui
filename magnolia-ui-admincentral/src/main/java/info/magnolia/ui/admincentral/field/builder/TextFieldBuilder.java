@@ -39,21 +39,21 @@ import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import org.apache.commons.lang.StringUtils;
 
-import info.magnolia.ui.model.field.definition.EditFieldDefinition;
+import info.magnolia.ui.model.field.definition.TextFieldDefinition;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 
 /**
  * Creates and initializes an edit field based on a field definition.
  */
-public class TextFieldBuilder extends AbstractFieldBuilder<EditFieldDefinition> {
+public class TextFieldBuilder extends AbstractFieldBuilder<TextFieldDefinition> {
 
-    public TextFieldBuilder(EditFieldDefinition definition, Item relatedFieldItem) {
+    public TextFieldBuilder(TextFieldDefinition definition, Item relatedFieldItem) {
         super(definition, relatedFieldItem);
     }
 
     @Override
     protected Field buildField() {
-        EditFieldDefinition editDefinition = definition;
+        TextFieldDefinition editDefinition = definition;
 
         if (editDefinition.getRows() > 1) {
             return createMultiRowEditField(editDefinition);
@@ -62,7 +62,7 @@ public class TextFieldBuilder extends AbstractFieldBuilder<EditFieldDefinition> 
 
     }
 
-    private Field createSingleRowEditField(EditFieldDefinition definition) {
+    private Field createSingleRowEditField(TextFieldDefinition definition) {
         TextField textField = new TextField();
         textField.setMaxLength(definition.getMaxLength());
         if (StringUtils.isNotEmpty(definition.getWidth())) {
@@ -71,7 +71,7 @@ public class TextFieldBuilder extends AbstractFieldBuilder<EditFieldDefinition> 
         return textField;
     }
 
-    private Field createMultiRowEditField(EditFieldDefinition definition) {
+    private Field createMultiRowEditField(TextFieldDefinition definition) {
         TextArea textArea = new TextArea();
         textArea.setRows(definition.getRows());
         if (StringUtils.isNotEmpty(definition.getWidth())) {

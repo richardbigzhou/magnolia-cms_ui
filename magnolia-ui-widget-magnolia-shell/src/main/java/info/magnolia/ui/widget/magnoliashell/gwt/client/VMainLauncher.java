@@ -37,6 +37,7 @@ import info.magnolia.ui.widget.jquerywrapper.gwt.client.AnimationSettings;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.event.AppActivatedEvent;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.event.ShellAppNavigationEvent;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.event.ViewportCloseEvent;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.event.handler.ShellNavigationAdapter;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.event.handler.ShellNavigationHandler;
 
@@ -104,8 +105,8 @@ public class VMainLauncher extends FlowPanel {
             indicator.getStyle().setDisplay(Display.NONE);
             indicator.appendChild(DOM.createSpan());
             buttonWrapper.appendChild(indicator);
-            buttonWrapper.setId("btn-" + type.getId());
-            buttonWrapper.addClassName("icon-" + type.getId());
+            buttonWrapper.setId("btn-" + type.getClassId());
+            buttonWrapper.addClassName("icon-" + type.getClassId());
             indicatorPad.addStyleName("pad");
 
             DOM.sinkEvents(getElement(), Event.TOUCHEVENTS);
@@ -115,7 +116,15 @@ public class VMainLauncher extends FlowPanel {
 
                 @Override
                 public void onTouchStart(com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent event) {
-                    navigateToShellApp(type);
+
+                    // Has user clicked on the active shell app?
+                    if (type == getActiveShellType()){
+                        //if open then close it.
+                        eventBus.fireEvent(new ViewportCloseEvent(VMagnoliaShell.ViewportType.SHELL_APP_VIEWPORT));
+                    }else{
+                        // If closed, then open it.
+                        navigateToShellApp(type);
+                    }
                 }
             });
         }
@@ -151,12 +160,12 @@ public class VMainLauncher extends FlowPanel {
 
         private String classId;
 
-        public String getId() {
+        public String getClassId() {
             return classId;
         }
 
-        private ShellAppType(final String styleName) {
-            this.classId = styleName;
+        private ShellAppType(final String classId) {
+            this.classId = classId;
         }
 
         public static String getTypeByFragmentId(final String id) {
@@ -203,6 +212,7 @@ public class VMainLauncher extends FlowPanel {
 
     private void navigateToShellApp(final ShellAppType type) {
         eventBus.fireEvent(new ShellAppNavigationEvent(type, ""));
+
     }
 
     private void construct() {

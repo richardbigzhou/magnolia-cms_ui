@@ -73,7 +73,7 @@
         <sv:value>1a6ba7be-65fb-4130-9be3-94a95c8e10bb</sv:value>
       </sv:property>
       <sv:property sv:name="definition" sv:type="String">
-        <sv:value>info.magnolia.ui.model.field.definition.EditFieldDefinition</sv:value>
+        <sv:value>info.magnolia.ui.model.field.definition.TextFieldDefinition</sv:value>
       </sv:property>
       <sv:property sv:name="implementation" sv:type="String">
         <sv:value>info.magnolia.ui.admincentral.field.builder.TextFieldBuilder</sv:value>
@@ -430,10 +430,10 @@
         <sv:value>f6ccf72d-8907-4732-b9df-0b0f8e071626</sv:value>
       </sv:property>
       <sv:property sv:name="definition" sv:type="String">
-        <sv:value>info.magnolia.ui.model.field.definition.RichEditFieldDefinition</sv:value>
+        <sv:value>info.magnolia.ui.model.field.definition.RichTextFieldDefinition</sv:value>
       </sv:property>
       <sv:property sv:name="implementation" sv:type="String">
-        <sv:value>info.magnolia.ui.admincentral.field.builder.RichEditFieldBuilder</sv:value>
+        <sv:value>info.magnolia.ui.admincentral.field.builder.RichTextFieldBuilder</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>

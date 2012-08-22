@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2010-2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,37 +31,11 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.editor;
-
-import info.magnolia.ui.framework.view.View;
-
+package info.magnolia.ui.model.field.definition;
 
 /**
- * PageEditorView.
+ * Field definition for a rich edit field.
  */
-public interface PageEditorView extends View {
+public class RichTextFieldDefinition extends ConfiguredFieldDefinition {
 
-    void setListener(Listener listener);
-
-    void init(String contextPath, String nodePath, boolean preview);
-
-    void refresh();
-
-    /**
-     * Listener.
-     */
-    public interface Listener {
-
-        void editComponent(String workspace, String path, String dialog);
-
-        void newArea(String workspace, String nodeType, String path);
-
-        void newComponent(String workspace, String path, String availableComponents);
-
-        void deleteComponent(String workspace, String path);
-
-        void sortComponent(String workspace, String parentPath, String source, String target, String order);
-
-        void selectNode(String workspace, String path, String dialog);
-    }
 }

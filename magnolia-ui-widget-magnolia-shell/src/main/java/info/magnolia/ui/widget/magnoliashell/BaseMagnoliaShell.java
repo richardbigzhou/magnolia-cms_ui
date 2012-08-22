@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.widget.magnoliashell;
 
+
 import info.magnolia.ui.framework.event.EventHandlerCollection;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.message.Message;
@@ -117,6 +118,7 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
         viewport.setCurrentShellFragment(prefix + ":" + token);
         setActiveViewport(viewport);
         notifyOnFragmentChanged(type + ":" + prefix + ":" + token);
+        viewport.requestRepaint();
         requestRepaint();
     }
 
@@ -158,13 +160,7 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
         requestRepaint();
     }
 
-    public void closeCurrentShellApp() {
-        if (!getAppViewport().isEmpty()) {
-            setActiveViewport(getAppViewport());
-        } else {
-            navigateToShellApp(ShellAppType.APPLAUNCHER.name(), "");
-        }
-    }
+    public abstract void closeCurrentShellApp();
 
     public void removeMessage(String messageId) {}
     
