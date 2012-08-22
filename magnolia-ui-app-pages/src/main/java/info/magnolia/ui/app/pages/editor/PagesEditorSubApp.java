@@ -56,7 +56,6 @@ import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.widget.actionbar.ActionbarView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -104,15 +103,7 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
     @Inject
     public PagesEditorSubApp(final AppContext appContext, final PagesEditorView view, final @Named("app") EventBus appEventBus, final @Named("subapp") EventBus subAppEventBus, final PageEditorPresenter pageEditorPresenter, final LocationController locationController, final ActionbarPresenter actionbarPresenter, final WorkbenchActionFactory actionFactory) {
 
-        final String token = DefaultLocation.extractToken(locationController.getWhere().toString());
-        this.preview =  token.contains(PagesApp.PREVIEW_FULL_TOKEN) || token.contains(PagesApp.PREVIEW_TOKEN);
-        this.fullPreview = isPreview() && token.contains(PagesApp.PREVIEW_FULL_TOKEN);
-
-        if(isPreview()) {
-            log.debug("Preview type detected is {}", isFullPreview() ? "fullPreview" : "normal");
-        }
         this.view = view;
-        this.view.setListener(this);
 
         this.appEventBus = appEventBus;
         this.subAppEventBus = subAppEventBus;
@@ -195,13 +186,21 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
     @Override
     public View start(Location location) {
 
+        this.preview = PagesApp.PREVIEW_TOKEN.equals(getEditorMode(location)) || PagesApp.PREVIEW_FULL_TOKEN.equals(getEditorMode(location));
+        this.fullPreview = PagesApp.PREVIEW_FULL_TOKEN.equals(getEditorMode(location));
+
+        if(isPreview()) {
+            log.debug("Preview type detected is {}", isFullPreview() ? "fullPreview" : "normal");
+        }
+
         if (isFullPreview()) {
             return view;
         }
 
         String path = getEditorPath(location);
-        if (path == null)
+        if (path == null) {
             path = "/";
+        }
 
         setParameters(new PageEditorParameters(MgnlContext.getContextPath(), path));
         pageEditorPresenter.setParameters(parameters, isPreview());
@@ -219,22 +218,12 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
             actionbarPresenter.hideSection("pageActions");
             actionbarPresenter.showSection("pagePreviewActions");
         }
+
+        view.setListener(this);
         view.setPageEditor(pageEditorPresenter.start());
         view.setActionbar(actionbar);
 
         return view;
-    }
-
-    private String getEditorPath(Location location) {
-        String token = ((DefaultLocation) location).getToken();
-        String[] parts = token.split(";");
-        if (parts.length < 2) {
-            return null;
-        }
-        if (!parts[0].contains(PagesApp.EDITOR_TOKEN)) {
-            return null;
-        }
-        return parts[1];
     }
 
     @Override
@@ -244,19 +233,13 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
 
     @Override
     public void locationChanged(Location location) {
-        DefaultLocation defaultLocation = (DefaultLocation) location;
 
-        List<String> pathParams = parsePathParamsFromToken(defaultLocation.getToken());
+        String mode = getEditorMode(location);
 
-        String previewMode = "";
-        if(pathParams.size() == 3) {
-            previewMode = pathParams.get(2);
-        }
-
-        if (PREVIEW_TOKEN.equals(previewMode)) {
+        if (PREVIEW_TOKEN.equals(mode)) {
             showPreview();
-        } else if(PREVIEW_FULL_TOKEN.equals(previewMode)) {
-            showFullPreview(defaultLocation);
+        } else if(PREVIEW_FULL_TOKEN.equals(mode)) {
+            showFullPreview(location);
         } else {
             showEditor();
         }
@@ -297,9 +280,9 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
         view.setPageEditor(pageEditorPresenter.start());
     }
 
-    private void showFullPreview(final Location defaultLocation) {
+    private void showFullPreview(final Location location) {
         showPreview();
-        appContext.openSubAppFullScreen(PagesApp.EDITOR_TOKEN, PagesEditorSubApp.class, defaultLocation);
+        appContext.openSubAppFullScreen(PagesApp.EDITOR_TOKEN, PagesEditorSubApp.class, location);
     }
 
     private void showPreview() {
@@ -310,8 +293,43 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
         view.setPageEditor(pageEditorPresenter.start());
     }
 
-    private List<String> parsePathParamsFromToken(String token) {
-        return new ArrayList<String>(Arrays.asList(token.split(";")));
+    private List<String> parseLocationToken(Location location) {
+        ArrayList<String> parts = new ArrayList<String>();
+
+        DefaultLocation l = (DefaultLocation) location;
+        String token = l.getToken();
+
+        // editor
+        int i = token.indexOf(';');
+        if (i == -1) {
+            parts.add(token);
+            return parts;
+        }
+        parts.add(token.substring(0, i));
+        token = token.substring(i + 1);
+
+        // path
+        i = token.indexOf(':');
+        if (i == -1) {
+            parts.add(token);
+            return parts;
+        }
+        parts.add(token.substring(0, i));
+        token = token.substring(i + 1);
+
+        // mode
+        parts.add(token);
+
+        return parts;
     }
 
+    private String getEditorPath(Location location) {
+        List<String> parts = parseLocationToken(location);
+        return parts.size() >= 2 ? parts.get(1) : null;
+    }
+
+    private String getEditorMode(Location location) {
+        List<String> parts = parseLocationToken(location);
+        return parts.size() >= 3 ? parts.get(2) : null;
+    }
 }
