@@ -290,6 +290,7 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
                         actionDefinition,
                         appDescriptor.getWorkbench().getWorkspace(),
                         pageEditorPresenter.getPath());
+
                 } catch (ActionExecutionException e) {
                     log.error("An error occurred while executing an action.", e);
                 }
