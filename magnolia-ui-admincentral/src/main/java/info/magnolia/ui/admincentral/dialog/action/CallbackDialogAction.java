@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,14 +31,36 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.editor.preview;
+package info.magnolia.ui.admincentral.dialog.action;
 
-import info.magnolia.ui.app.pages.editor.PagesEditorView;
-
+import info.magnolia.ui.model.action.ActionBase;
+import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.widget.dialog.MagnoloaDialogPresenter;
 
 /**
- * Displays the page preview.
+ * Implements an action for Callback handling on dialog {@link info.magnolia.ui.widget.dialog.MagnoloaDialogPresenter.Presenter.Callback}.
+ * This Action can be configured to perform a cancel or a success Action.
+ *
+ * @see CallbackDialogActionDefinition
  */
-public interface PagesPreviewView extends PagesEditorView {
+public class CallbackDialogAction extends ActionBase<CallbackDialogActionDefinition> {
+
+    private MagnoloaDialogPresenter.Presenter presenter;
+
+    public CallbackDialogAction(CallbackDialogActionDefinition definition, MagnoloaDialogPresenter.Presenter presenter) {
+        super(definition);
+        this.presenter = presenter;
+    }
+
+    @Override
+    public void execute() throws ActionExecutionException {
+
+        if(getDefinition().isCallSuccess()) {
+            presenter.getCallback().onSuccess(getDefinition().getSuccessActionName());
+        } else {
+            presenter.getCallback().onCancel();
+        }
+        presenter.closeDialog();
+    }
 
 }

@@ -89,8 +89,6 @@ import java.util.List;
  */
 public class VPageEditor extends Composite implements VPageEditorView.Listener, Paintable, ClientSideHandler {
 
-    private static boolean isPreview = false;
-
     // In case we're in preview mode, we will stop processing the document, after the pagebar has been injected.
     private static boolean keepProcessing = true;
 
@@ -108,8 +106,10 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
 
     protected String paintableId;
     private FocusModel focusModel;
-    private String contextPath;
 
+    private String contextPath;
+    private String pagePath;
+    private boolean preview = false;
 
     public VPageEditor() {
         this.eventBus = new SimpleEventBus();
@@ -152,10 +152,11 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
         if (client.updateComponent(this, uidl, true)) {
             return;
         }
-        view.getIframe().getElement().setId(paintableId);
-        view.getIframe().setUrl(getSrc(uidl, client));
+        getInitParameters(uidl);
 
-        setContextPathFromUIDL(uidl);
+        view.getIframe().getElement().setId(paintableId);
+        view.getIframe().setUrl(getContextPath() + getPagePath());
+
         proxy.update(this, uidl, client);
     }
 
@@ -163,35 +164,24 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
         return model;
     }
 
-    public static boolean isPreview() {
-        return false;
-    }
-
-    public static void setKeepProcessing(boolean process) {
-        keepProcessing = process;
-    }
-
-    /**
-     * Helper to return translated src-attribute from embedded's UIDL
-     * Copied verbatim from Vaadin's VEmbedded class.
-     */
-    private String getSrc(UIDL uidl, ApplicationConnection client) {
-        String url = client.translateVaadinUri(uidl.getStringAttribute("src"));
-        if (url == null) {
-            return "";
-        }
-        return url;
-    }
-
     /**
      * Helper to return the contextPath sent from server.
      */
-    private void setContextPathFromUIDL(UIDL uidl) {
+    private void getInitParameters(UIDL uidl) {
+
         String contextPath = uidl.getStringAttribute("contextPath");
         if (contextPath == null) {
             contextPath = "";
         }
+        String pagePath = uidl.getStringAttribute("nodePath");
+        if (pagePath == null) {
+            pagePath = "";
+        }
+
         this.contextPath = contextPath;
+        this.pagePath = pagePath;
+        this.preview = uidl.getBooleanAttribute("preview");
+
     }
 
     public void onMouseUp(final Element element) {
@@ -214,7 +204,7 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
 
             @Override
             public void onSelectElement(SelectElementEvent selectElementEvent) {
-                proxy.call("selectElement", selectElementEvent.getWorkSpace(), selectElementEvent.getPath());
+                proxy.call("selectElement", selectElementEvent.getWorkspace(), selectElementEvent.getPath(), selectElementEvent.getDialog());
             }
 
         });
@@ -236,20 +226,20 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
         eventBus.addHandler(EditComponentEvent.TYPE, new EditComponentEventHandler() {
             @Override
             public void onEditComponent(EditComponentEvent editComponentEvent) {
-                proxy.call("editComponent", editComponentEvent.getWorkSpace(), editComponentEvent.getPath(), editComponentEvent.getDialog());
+                proxy.call("editComponent", editComponentEvent.getWorkspace(), editComponentEvent.getPath(), editComponentEvent.getDialog());
             }
         });
 
         eventBus.addHandler(DeleteComponentEvent.TYPE, new DeleteComponentEventHandler() {
             @Override
             public void onDeleteComponent(DeleteComponentEvent deleteComponentEvent) {
-                proxy.call("deleteComponent", deleteComponentEvent.getWorkSpace(), deleteComponentEvent.getPath());
+                proxy.call("deleteComponent", deleteComponentEvent.getWorkspace(), deleteComponentEvent.getPath());
             }
         });
         eventBus.addHandler(SortComponentEvent.TYPE, new SortComponentEventHandler() {
             @Override
             public void onSortComponent(SortComponentEvent sortComponentEvent) {
-                proxy.call("sortComponent", sortComponentEvent.getWorkSpace(), sortComponentEvent.getParentPath(), sortComponentEvent.getSourcePath(), sortComponentEvent.getTargetPath(), sortComponentEvent.getOrder());
+                proxy.call("sortComponent", sortComponentEvent.getWorkspace(), sortComponentEvent.getParentPath(), sortComponentEvent.getSourcePath(), sortComponentEvent.getTargetPath(), sortComponentEvent.getOrder());
             }
         });
     }
@@ -259,7 +249,6 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
         LinkElement cssLink = document.createLinkElement();
         cssLink.setType("text/css");
         cssLink.setRel("stylesheet");
-        //cssLink.setHref(contextPath + "/VAADIN/widgetsets/info.magnolia.ui.vaadin.widgetset.MagnoliaWidgetSet/editor/styles.css");
         cssLink.setHref(contextPath + "/VAADIN/themes/admincentraltheme/pageeditor.css");
         head.insertFirst(cssLink);
     }
@@ -324,26 +313,8 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
     }
 
     private void process(final Document document) {
-        //TODO how will we handle preview in 5.0?
-        /*String mgnlVersion = Window.Location.getParameter(MGNL_VERSION_PARAMETER);
-        if(mgnlVersion != null) {
-            return false;
-        }
 
-        String mgnlChannel = Window.Location.getParameter(MGNL_CHANNEL_PARAMETER);
-        boolean isMobile = "smartphone".equals(mgnlChannel) || "tablet".equals(mgnlChannel);
 
-        if(isMobile) {
-            GWT.log("Found " + mgnlChannel + " in request, post processing links...");
-            postProcessLinksOnMobilePreview(Document.get().getDocumentElement(), mgnlChannel);
-            return false;
-        }*/
-
-        JavascriptUtils.setWindowLocation(Window.Location.getPath());
-        //JavascriptUtils.getCookiePosition();
-        locale = JavascriptUtils.detectCurrentLocale();
-
-        //inject editor stylesheet inside head of doc contained in iframe.
         injectEditorStyles(document);
 
         long startTime = System.currentTimeMillis();
@@ -352,11 +323,6 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
 
         GWT.log("Time spent to process cms comments: " + (System.currentTimeMillis() - startTime) + "ms");
 
-        //JavascriptUtils.getCookieContentId();
-        //JavascriptUtils.resetEditorCookies();
-
-        //GWT.log("Running onPageEditorReady callbacks...");
-        //onPageEditorReady();
     }
 
     private void processDocument(Node node, MgnlElement mgnlElement) {
@@ -400,12 +366,11 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
 
     }
 
-    public static VPageEditorView getView() {
-        return view;
-    }
-
     @Override
     public void onFrameLoaded(Frame iframe) {
+        if (preview) {
+            return;
+        }
         Element element= iframe.getElement();
         initNativeHandlers(element);
 
@@ -416,4 +381,11 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
 
     }
 
+    public String getPagePath() {
+        return pagePath;
+    }
+
+    public String getContextPath() {
+        return contextPath;
+    }
 }

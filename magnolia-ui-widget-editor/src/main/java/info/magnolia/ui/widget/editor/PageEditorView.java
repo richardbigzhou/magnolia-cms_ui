@@ -35,14 +35,15 @@ package info.magnolia.ui.widget.editor;
 
 import info.magnolia.ui.framework.view.View;
 
+
 /**
- *  PageEditorView.
+ * PageEditorView.
  */
 public interface PageEditorView extends View {
 
     void setListener(Listener listener);
 
-    void init(String contextPath, String nodePath);
+    void init(String contextPath, String nodePath, boolean preview);
 
     void refresh();
 
@@ -51,16 +52,16 @@ public interface PageEditorView extends View {
      */
     public interface Listener {
 
-        void editComponent(String workSpace, String path, String dialog);
+        void editComponent(String workspace, String path, String dialog);
 
-        void newArea(String workSpace, String nodeType, String path);
+        void newArea(String workspace, String nodeType, String path);
 
-        void newComponent(String workSpace, String path, String availableComponents);
+        void newComponent(String workspace, String path, String availableComponents);
 
-        void deleteComponent(String workSpace, String path);
+        void deleteComponent(String workspace, String path);
 
-        void sortComponent(String workSpace, String parentPath, String source, String target, String order);
+        void sortComponent(String workspace, String parentPath, String source, String target, String order);
 
-        void selectNode(String workSpace, String path);
+        void selectNode(String workspace, String path, String dialog);
     }
 }

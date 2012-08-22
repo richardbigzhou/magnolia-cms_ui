@@ -79,7 +79,7 @@ public class SaveDialogAction extends ActionBase<SaveDialogActionDefinition> {
             } catch (final RepositoryException e) {
                 throw new ActionExecutionException(e);
             }
-            presenter.getCallBack().onSuccess(getDefinition().getName());
+            presenter.getCallback().onSuccess(getDefinition().getName());
 
         } else {
             log.warn("View is not valid. No save performed");

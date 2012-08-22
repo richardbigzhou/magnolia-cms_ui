@@ -47,7 +47,7 @@ import javax.jcr.RepositoryException;
 
 
 /**
- * The Class PreviewPageAction. Opens a full screen preview of the selected page.
+ *  Opens a preview of the selected page, either in full screen or non full screen, depending on the {@link PreviewPageActionDefinition#isFull()} return value.
  */
 public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
 
@@ -77,7 +77,7 @@ public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
     public void execute() throws ActionExecutionException {
         try {
             final String path = nodeToPreview.getPath();
-            final String token = PagesApp.EDITOR_TOKEN + ":" + (full ? PagesApp.PREVIEW_FULL_TOKEN: PagesApp.PREVIEW_TOKEN) + ";" + path;
+            final String token = PagesApp.EDITOR_TOKEN + ";" + path + ";" + (full ? PagesApp.PREVIEW_FULL_TOKEN: PagesApp.PREVIEW_TOKEN) ;
             log.debug("token is {}", token);
             locationController.goTo(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages", token));
         } catch (RepositoryException e) {

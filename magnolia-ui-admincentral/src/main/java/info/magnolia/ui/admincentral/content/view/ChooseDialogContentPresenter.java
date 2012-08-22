@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,36 +31,25 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog.action;
+package info.magnolia.ui.admincentral.content.view;
 
-import info.magnolia.ui.model.action.ActionBase;
-import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.widget.dialog.MagnoloaDialogPresenter;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilder;
+import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.shell.Shell;
 
 /**
- * Implements an action for CallBack handling on dialog {@link MagnoloaDialogPresenter.Presenter.CallBack}.
- * This Action can be configured to perform a cancel or a success Action.
- *
- * @see CallBackDialogActionDefinition
+ * ChooseDialog ContentPresenter.
+ * Used to inject a specific EventBuss, and to handle specific ChooseDialog logic.
  */
-public class CallBackDialogAction extends ActionBase<CallBackDialogActionDefinition> {
+public class ChooseDialogContentPresenter extends ContentPresenter {
 
-    private MagnoloaDialogPresenter.Presenter presenter;
-
-    public CallBackDialogAction(CallBackDialogActionDefinition definition, MagnoloaDialogPresenter.Presenter presenter) {
-        super(definition);
-        this.presenter = presenter;
-    }
-
-    @Override
-    public void execute() throws ActionExecutionException {
-
-        if(getDefinition().isCallSuccess()) {
-            presenter.getCallBack().onSuccess(getDefinition().getSuccessActionName());
-        } else {
-            presenter.getCallBack().onCancel();
-        }
-        presenter.closeDialog();
+    @Inject
+    public ChooseDialogContentPresenter(ContentViewBuilder contentViewBuilder, AppContext context, @Named("choosedialog") EventBus subAppEventBus, Shell shell) {
+        super(contentViewBuilder, context, subAppEventBus, shell);
     }
 
 }

@@ -334,6 +334,9 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             View view = subApp.start(location);
 
             ShellTab tab = appFrameView.addTab((ComponentContainer) view.asVaadinComponent(), subApp.getCaption(), false);
+            if (!subAppContexts.isEmpty()) {
+                tab.setClosable(true);
+            }
 
             SubAppContext subAppContext = new SubAppContext();
             subAppContext.subApp = subApp;
@@ -428,7 +431,8 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
             View view = subApp.start(location);
 
-            shell.showFullscreen(view);
+            appFrameView.asVaadinComponent().setFullscreen(true);
+            //shell.showFullscreen(view);
         }
 
         @Override
@@ -464,7 +468,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
         @Override
         public void exitFullScreenMode() {
-            shell.exitFullScreenMode();
+            appFrameView.asVaadinComponent().setFullscreen(false);
         }
 
         private SubAppContext getActiveSubAppContext() {

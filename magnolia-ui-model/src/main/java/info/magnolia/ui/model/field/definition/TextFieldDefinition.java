@@ -34,8 +34,35 @@
 package info.magnolia.ui.model.field.definition;
 
 /**
- * Field definition for a rich edit field.
+ * Field definition for an edit box.
  */
-public class RichEditFieldDefinition extends ConfiguredFieldDefinition {
+public class TextFieldDefinition extends ConfiguredFieldDefinition {
 
+    private int rows;
+    private int maxLength = -1;
+    private String width;
+
+    public int getRows() {
+        return rows;
+    }
+
+    public void setRows(int rows) {
+        this.rows = rows;
+    }
+
+    public int getMaxLength() {
+        return maxLength;
+    }
+
+    public void setMaxLength(int maxLength) {
+        this.maxLength = maxLength;
+    }
+
+    public String getWidth() {
+        return width;
+    }
+
+    public void setWidth(String width) {
+        this.width = width;
+    }
 }

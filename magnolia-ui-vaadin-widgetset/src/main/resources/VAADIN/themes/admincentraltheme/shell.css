@@ -1,3 +1,7 @@
+.v-view {
+	overflow: hidden !important;
+}
+
 .v-magnolia-shell {
     background-color:#77a42f;
 	background: linear-gradient(top, #77a42f 0%,#a9be2e 100%);
@@ -27,7 +31,6 @@
     background-color: #689600;
     color: #48630A;
     height: 60px;
-    z-index: 400;
 }
 
 .btn-shell {
@@ -85,7 +88,7 @@ button.action-close {
 
 .v-shell-vieport {
     position: absolute;
-    overflow: hidden;
+    overflow: visible;
     top: 60px;
     width: 100%;
     bottom: 0;

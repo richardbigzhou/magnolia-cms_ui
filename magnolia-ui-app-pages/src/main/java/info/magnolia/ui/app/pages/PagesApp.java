@@ -59,56 +59,12 @@ public class PagesApp extends ContentApp {
     public static final String PREVIEW_TOKEN = "preview";
     public static final String PREVIEW_FULL_TOKEN = "previewfull";
 
-    private AppContext context;
+    private AppContext appContext;
 
     @Inject
     public PagesApp(AppContext context, DialogPresenterFactory dialogPresenterFactory) {
         super(dialogPresenterFactory);
-        this.context = context;
-    }
-
-    @Override
-    public void locationChanged(Location location) {
-
-        DefaultLocation defaultLocation = (DefaultLocation) location;
-
-        List<String> pathParams = parsePathParamsFromToken(defaultLocation.getToken());
-        if (pathParams.size() < 2) {
-            return;
-        }
-
-        final String[] parts = pathParams.get(0).split(":");
-        String subAppName = null;
-        String previewMode = null;
-        if(parts.length >= 2) {
-            subAppName = parts[0];
-            previewMode = parts[1];
-        } else {
-            subAppName = parts[0];
-        }
-
-        final String pagePath = pathParams.get(1);
-
-        if (EDITOR_TOKEN.equals(subAppName)) {
-
-            if (PREVIEW_TOKEN.equals(previewMode)) {
-                final String token = subAppName + ":"+PREVIEW_TOKEN + ";" + pagePath;
-                final DefaultLocation newLocation = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, context.getName(), token);
-                context.openSubApp(PagesApp.EDITOR_TOKEN, PagesEditorSubApp.class, newLocation, subAppName + ";" + pagePath);
-
-            } else if(PREVIEW_FULL_TOKEN.equals(previewMode)) {
-                final String token = subAppName  + ":"+ PREVIEW_FULL_TOKEN + ";" + pagePath;
-                final DefaultLocation newLocation = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, context.getName(), token);
-                context.openSubAppFullScreen(PagesApp.EDITOR_TOKEN, PagesEditorSubApp.class, newLocation);
-
-            } else {
-                context.openSubApp(PagesApp.EDITOR_TOKEN, PagesEditorSubApp.class, location, subAppName + ";" + pagePath);
-            }
-        }
-    }
-
-    private List<String> parsePathParamsFromToken(String token) {
-        return new ArrayList<String>(Arrays.asList(token.split(";")));
+        this.appContext = context;
     }
 
     @Override
@@ -117,14 +73,33 @@ public class PagesApp extends ContentApp {
         Location mainLocation;
         String selectedItemPath = getSelectedItemPath(location);
         if (selectedItemPath != null) {
-            mainLocation = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, context.getName(), "main:" + selectedItemPath);
+            mainLocation = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appContext.getName(), "main:" + selectedItemPath);
         } else {
-            mainLocation = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, context.getName(), "main");
+            mainLocation = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appContext.getName(), "main");
         }
 
-        context.openSubApp("main", PagesMainSubApp.class, mainLocation, "main");
+        appContext.openSubApp("main", PagesMainSubApp.class, mainLocation, "main");
 
         // TODO tmattsson - we should start an editor as well if the location is for an editor
+    }
+
+    @Override
+    public void locationChanged(Location location) {
+        DefaultLocation defaultLocation = (DefaultLocation) location;
+
+        List<String> pathParams = parsePathParamsFromToken(defaultLocation.getToken());
+        if (pathParams.size() < 2) {
+            return;
+        }
+        final String subAppId = pathParams.get(0);
+
+        if (EDITOR_TOKEN.equals(subAppId)) {
+             appContext.openSubApp(PagesApp.EDITOR_TOKEN, PagesEditorSubApp.class, location, subAppId);
+        }
+    }
+
+    private List<String> parsePathParamsFromToken(String token) {
+        return new ArrayList<String>(Arrays.asList(token.split(";")));
     }
 
     private String getSelectedItemPath(Location location) {

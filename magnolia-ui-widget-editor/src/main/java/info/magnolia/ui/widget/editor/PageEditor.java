@@ -33,36 +33,42 @@
  */
 package info.magnolia.ui.widget.editor;
 
+import info.magnolia.ui.widget.editor.gwt.client.VPageEditor;
 
-import com.vaadin.terminal.ExternalResource;
+import java.util.Map;
+
+import org.vaadin.rpc.ServerSideHandler;
+import org.vaadin.rpc.ServerSideProxy;
+import org.vaadin.rpc.client.Method;
+
 import com.vaadin.terminal.PaintException;
 import com.vaadin.terminal.PaintTarget;
 import com.vaadin.terminal.Resource;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.ClientWidget;
 import com.vaadin.ui.Component;
-import info.magnolia.ui.widget.editor.gwt.client.VPageEditor;
-import org.vaadin.rpc.ServerSideHandler;
-import org.vaadin.rpc.ServerSideProxy;
-import org.vaadin.rpc.client.Method;
 
-import java.util.Map;
 
 /**
  * PageEditor widget server side implementation.
  */
 @SuppressWarnings("serial")
-@ClientWidget(value=VPageEditor.class, loadStyle = ClientWidget.LoadStyle.EAGER)
+@ClientWidget(value = VPageEditor.class, loadStyle = ClientWidget.LoadStyle.EAGER)
 public class PageEditor extends AbstractComponent implements PageEditorView, ServerSideHandler {
-
 
     /**
      * Source of the embedded object.
      */
     private Resource source;
+
     private String contextPath;
+
+    private boolean preview = false;
+
     private PageEditorView.Listener listener;
+
     protected ServerSideProxy proxy;
+    private String nodePath;
 
     public PageEditor() {
         setSizeFull();
@@ -74,17 +80,19 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
         this.listener = listener;
     }
 
-
     @Override
     public void paintContent(PaintTarget target) throws PaintException {
         super.paintContent(target);
-        if (getSource() != null) {
-            target.addAttribute("src", getSource());
-        }
-        if (getSource() != null) {
+        
+        if (contextPath != null) {
             target.addAttribute("contextPath", getContextPath());
         }
-
+        if (nodePath != null) {
+            target.addAttribute("nodePath", getNodePath());
+        }
+        if (preview) {
+            target.addAttribute("preview", isPreview());
+        }
         proxy.paintContent(target);
     }
 
@@ -94,77 +102,85 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
         proxy.changeVariables(source, variables);
     }
 
-    protected Resource getSource() {
-        return source;
-    }
 
     public String getContextPath() {
         return contextPath;
     }
 
     @Override
-    public void init(String contextPath, String nodePath) {
+    public void init(String contextPath, String nodePath, boolean preview) {
         this.contextPath = contextPath;
-        this.source = new ExternalResource(contextPath + nodePath);
+        this.nodePath = nodePath;
+        this.preview = preview;
 
         proxy = new ServerSideProxy(this) {
+
             {
 
-
                 register("selectElement", new Method() {
+
                     @Override
                     public void invoke(String methodName, Object[] params) {
-                        final String workSpace = String.valueOf(params[0]);
+                        final String workspace = String.valueOf(params[0]);
                         final String path = String.valueOf(params[1]);
-                        listener.selectNode(workSpace, path);
+                        String dialog = null;
+                        if (params.length > 2) {
+                            dialog = String.valueOf(params[2]);
+                        }
+                        listener.selectNode(workspace, path, dialog);
                     }
                 });
                 register("editComponent", new Method() {
+
                     @Override
                     public void invoke(String methodName, Object[] params) {
-                        final String workSpace = String.valueOf(params[0]);
+                        final String workspace = String.valueOf(params[0]);
                         final String path = String.valueOf(params[1]);
                         final String dialog = String.valueOf(params[2]);
-                        listener.editComponent(workSpace, path, dialog);
+                        listener.editComponent(workspace, path, dialog);
                     }
                 });
                 register("newArea", new Method() {
+
                     @Override
                     public void invoke(String methodName, Object[] params) {
-                        final String workSpace = String.valueOf(params[0]);
+                        final String workspace = String.valueOf(params[0]);
                         final String nodeType = String.valueOf(params[1]);
                         final String path = String.valueOf(params[2]);
-                        listener.newArea(workSpace, nodeType, path);
+                        listener.newArea(workspace, nodeType, path);
                     }
 
                 });
                 register("newComponent", new Method() {
+
                     @Override
                     public void invoke(String methodName, Object[] params) {
-                        final String workSpace = String.valueOf(params[0]);
+                        final String workspace = String.valueOf(params[0]);
                         final String path = String.valueOf(params[1]);
                         final String availableComponents = String.valueOf(params[2]);
-                        listener.newComponent(workSpace, path, availableComponents);
+                        listener.newComponent(workspace, path, availableComponents);
                     }
 
                 });
                 register("deleteComponent", new Method() {
+
                     @Override
                     public void invoke(String methodName, Object[] params) {
-                        final String workSpace = String.valueOf(params[0]);
+                        final String workspace = String.valueOf(params[0]);
                         final String path = String.valueOf(params[1]);
-                        listener.deleteComponent(workSpace, path);
+                        listener.deleteComponent(workspace, path);
                     }
                 });
                 register("sortComponent", new Method() {
+
                     @Override
                     public void invoke(String methodName, Object[] params) {
-                        final String workSpace = String.valueOf(params[0]);
+                        final String workspace = String.valueOf(params[0]);
                         final String parentPath = String.valueOf(params[1]);
                         final String source = String.valueOf(params[2]);
                         final String target = String.valueOf(params[3]);
                         final String order = String.valueOf(params[4]);
-                        listener.sortComponent(workSpace, parentPath, source, target, order);
+                        listener.sortComponent(workspace, parentPath, source, target, order);
                     }
                 });
             }
@@ -184,12 +200,20 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
 
     @Override
     public Object[] initRequestFromClient() {
-        return new Object[] {};
+        return new Object[]{};
 
     }
 
     @Override
     public void callFromClient(String method, Object[] params) {
         System.out.println("Client called " + method);
+    }
+
+    public boolean isPreview() {
+        return preview;
+    }
+
+    public String getNodePath() {
+        return nodePath;
     }
 }

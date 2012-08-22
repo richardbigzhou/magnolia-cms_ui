@@ -122,7 +122,6 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
      * @return Whether device is tablet.
      */
     private boolean initIsDeviceTablet(){
-
         boolean isDeviceTabletOverride = Window.Location.getQueryString().indexOf("tablet=true") >= 0;
         if (! MGWT.getOsDetection().isDesktop() || isDeviceTabletOverride) {
             return true;

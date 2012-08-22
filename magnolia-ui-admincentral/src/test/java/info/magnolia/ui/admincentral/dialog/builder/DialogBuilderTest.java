@@ -52,7 +52,7 @@ import info.magnolia.ui.admincentral.field.builder.TextFieldBuilder;
 import info.magnolia.ui.model.dialog.definition.ConfiguredDialogDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 import info.magnolia.ui.model.field.definition.ConfiguredFieldDefinition;
-import info.magnolia.ui.model.field.definition.EditFieldDefinition;
+import info.magnolia.ui.model.field.definition.TextFieldDefinition;
 import info.magnolia.ui.model.tab.definition.ConfiguredTabDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.widget.dialog.Dialog;
@@ -112,7 +112,7 @@ public class DialogBuilderTest {
         final String propertyName = "test";
         final DialogBuilder builder = new DialogBuilder();
         final ConfiguredDialogDefinition dialogDef = new ConfiguredDialogDefinition();
-        final EditFieldDefinition fieldTypeDef = new EditFieldDefinition();
+        final TextFieldDefinition fieldTypeDef = new TextFieldDefinition();
         fieldTypeDef.setName(propertyName);
 
         final Node underlyingNode = session.getRootNode().addNode("underlying");

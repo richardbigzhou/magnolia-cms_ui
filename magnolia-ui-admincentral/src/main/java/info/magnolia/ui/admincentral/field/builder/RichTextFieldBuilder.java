@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,37 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.editor;
+package info.magnolia.ui.admincentral.field.builder;
 
-import info.magnolia.ui.framework.event.Event;
-import info.magnolia.ui.framework.event.EventHandler;
+import info.magnolia.ui.model.field.definition.FieldDefinition;
+import info.magnolia.ui.model.field.definition.RichTextFieldDefinition;
 
+import com.vaadin.data.Item;
+import com.vaadin.ui.Field;
+import com.vaadin.ui.RichTextArea;
 
 /**
- * This event is fired when a component is selected in page editor.
+ * Creates and initializes an edit field based on a field definition.
  */
-public class ComponentSelectedEvent implements Event<ComponentSelectedEvent.Handler> {
+public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefinition> {
 
-    /**
-     * Handles {@link ComponentSelectedEvent} events.
-     */
-    public static interface Handler extends EventHandler {
-
-        void onItemSelected(ComponentSelectedEvent event);
+    public RichTextFieldBuilder(RichTextFieldDefinition definition, Item relatedFieldItem) {
+        super(definition, relatedFieldItem);
     }
-
-    private final String path;
 
     @Override
-    public void dispatch(Handler handler) {
-        handler.onItemSelected(this);
+    protected Field buildField() {
+        RichTextFieldDefinition editDefinition = definition;
+        return new RichTextArea();
+
     }
 
-    public ComponentSelectedEvent(String path) {
-        this.path = path;
-    }
-
-    public String getPath() {
-        return path;
+    @Override
+    protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {
+        return String.class;
     }
 }
+

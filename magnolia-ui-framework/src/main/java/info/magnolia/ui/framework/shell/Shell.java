@@ -34,7 +34,6 @@
 package info.magnolia.ui.framework.shell;
 
 import info.magnolia.ui.framework.event.HandlerRegistration;
-import info.magnolia.ui.framework.view.View;
 
 import java.util.List;
 
@@ -54,10 +53,6 @@ public interface Shell {
     void setFragment(String fragment);
 
     HandlerRegistration addFragmentChangedHandler(FragmentChangedHandler handler);
-
-    void showFullscreen(View view);
-
-    void exitFullScreenMode();
     
     void registerApps(List<String> appNames);
     

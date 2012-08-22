@@ -51,23 +51,24 @@ public class NodeSelectedEvent implements Event<NodeSelectedEvent.Handler> {
     }
 
     private final String path;
-    private final String workSpace;
+
+    private final String workspace;
 
     @Override
     public void dispatch(Handler handler) {
         handler.onItemSelected(this);
     }
 
-    public NodeSelectedEvent(String path, String workSpace) {
+    public NodeSelectedEvent(String path, String workspace) {
         this.path = path;
-        this.workSpace = workSpace;
+        this.workspace = workspace;
     }
 
     public String getPath() {
         return path;
     }
 
-    public String getWorkSpace() {
-        return workSpace;
+    public String getWorkspace() {
+        return workspace;
     }
 }

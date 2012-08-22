@@ -38,6 +38,7 @@ import com.google.gwt.dom.client.Node;
 import info.magnolia.ui.widget.editor.gwt.client.dom.CMSComment;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 import info.magnolia.ui.widget.editor.gwt.client.model.Model;
+import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.PageBar;
 
 /**
  * Processor for comment elements.
@@ -53,6 +54,13 @@ public class CommentProcessor {
 
         if (!comment.isClosing()) {
 
+            if ("cms:page".equals(comment.getTagName())) {
+                GWT.log("element was detected as page edit bar. Injecting it...");
+                PageBar pageBarWidget = new PageBar(model, comment);
+                pageBarWidget.attach(node.getOwnerDocument().getBody());
+
+
+            } else {
                 try {
                     mgnlElement = new MgnlElement(comment, parent);
 
@@ -65,6 +73,7 @@ public class CommentProcessor {
                 } catch (IllegalArgumentException e) {
                     GWT.log("Not MgnlElement, skipping: " + e.toString());
                 }
+            }
 
         } else if (parent != null) {
             parent.setEndComment(comment);

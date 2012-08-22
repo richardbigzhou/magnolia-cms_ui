@@ -134,6 +134,15 @@ public class VMagnoliaTabSheet extends Composite implements HasWidgets, VMagnoli
                     }
                 });
 
+                register("setActiveTabFullscreen", new Method() {
+                    @Override
+                    public void invoke(String methodName, Object[] params) {
+                        boolean isFullscreen = (Boolean)params[0];
+                        view.setShowActiveTabFullscreen(isFullscreen);
+                        client.runDescendentsLayout(VMagnoliaTabSheet.this);
+                    }
+                });
+                
                 register("addShowAllTab", new Method() {
                     @Override
                     public void invoke(String methodName, Object[] params) {
@@ -173,7 +182,7 @@ public class VMagnoliaTabSheet extends Composite implements HasWidgets, VMagnoli
             while (it.hasNext()) {
                 final UIDL tabUidl = (UIDL) it.next();
                 final Paintable tab = client.getPaintable(tabUidl);
-                    view.addTab((VMagnoliaTab) tab);
+                view.addTab((VMagnoliaTab) tab);
                 tab.updateFromUIDL(tabUidl, client);
                 possibleTabsToOrphan.remove(tab);
             }
@@ -208,8 +217,8 @@ public class VMagnoliaTabSheet extends Composite implements HasWidgets, VMagnoli
 
     @Override
     public RenderSpace getAllocatedSpace(Widget child) {
-        if (hasChildComponent(child)) {
-            return new RenderSpace(getOffsetWidth(), getOffsetHeight() - view.getTabContainer().getOffsetHeight());
+        if (child instanceof VMagnoliaTab && hasChildComponent(child)) {
+            return new RenderSpace(getOffsetWidth(), view.getTabHeight((VMagnoliaTab)child));
         }
         return new RenderSpace();
     }

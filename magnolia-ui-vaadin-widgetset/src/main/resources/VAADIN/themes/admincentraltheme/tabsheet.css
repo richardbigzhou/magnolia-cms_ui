@@ -14,6 +14,15 @@
 
 .dialog-panel .v-shell-tabsheet .nav li.active {color:#000;}
 
+.v-shell-tabsheet-scroller.fullscreen { 
+	position: absolute !important;
+	zoom: 1;
+	top: -60px;
+	z-index: 500;
+	bottom: 0;
+	background-color: #FFFFFF;
+}
+
 /* tabs */
 .v-shell-tabsheet .nav {
     height:24px;

@@ -31,15 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.editor.preview;
+package info.magnolia.ui.framework.event;
 
-import info.magnolia.ui.app.pages.editor.PagesEditorView;
+import com.google.inject.name.Names;
+import com.google.inject.util.Providers;
 
+import info.magnolia.objectfactory.guice.AbstractGuiceComponentConfigurer;
 
 /**
- * Displays the full page preview.
+ * Configures an {@link info.magnolia.ui.framework.event.EventBus} bound to the name <code>choosedialog</code>.
  */
-public interface PagesPreviewFullView extends PagesEditorView {
+public class ChooseDialogEventBusConfigurer extends AbstractGuiceComponentConfigurer {
 
-
+    @Override
+    protected void configure() {
+        bind(EventBus.class).annotatedWith(Names.named("choosedialog")).toProvider(Providers.of(new SimpleEventBus()));
+    }
 }
