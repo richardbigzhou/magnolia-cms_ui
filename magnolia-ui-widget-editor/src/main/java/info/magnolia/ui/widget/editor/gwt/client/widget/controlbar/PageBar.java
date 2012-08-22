@@ -34,26 +34,17 @@
 package info.magnolia.ui.widget.editor.gwt.client.widget.controlbar;
 
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Float;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.MouseDownEvent;
-import com.google.gwt.event.dom.client.MouseDownHandler;
-import com.google.gwt.event.dom.client.MouseUpEvent;
-import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.MenuItem;
-import info.magnolia.ui.widget.editor.gwt.client.VPageEditor;
 import info.magnolia.ui.widget.editor.gwt.client.dom.CMSComment;
-import info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils;
 import info.magnolia.ui.widget.editor.gwt.client.model.Model;
-import info.magnolia.ui.widget.editor.gwt.client.model.focus.FocusModel;
 import info.magnolia.ui.widget.editor.gwt.client.widget.PreviewChannel.Orientation;
 import info.magnolia.ui.widget.editor.gwt.client.widget.button.LocaleSelector;
 import info.magnolia.ui.widget.editor.gwt.client.widget.button.PreviewButton;
@@ -88,19 +79,16 @@ public class PageBar extends AbstractBar {
     private FlowPanel mainBarWrapper;
 
     private Model model;
-    private final FocusModel focusModel;
-    private Document document;
 
-    public PageBar(Model model, final FocusModel focusModel, final Document document, final CMSComment comment) {
+    public PageBar(Model model, final CMSComment comment) {
         super(model, null, null);
         this.model = model;
-        this.focusModel = focusModel;
-        this.document = document;
 
         String content = comment.getAttribute("content");
         int i = content.indexOf(':');
         setWorkspace(content.substring(0, i));
         setPath(content.substring(i + 1));
+
         dialog = comment.getAttribute("dialog");
 
         currentURI = comment.getAttribute("currentURI");
@@ -109,7 +97,7 @@ public class PageBar extends AbstractBar {
         //FIXME create method
         //VPageEditor.setPreview(isPreview);
 
-        if(VPageEditor.isPreview()){
+/*        if(VPageEditor.isPreview()){
             createPreviewModeBar();
         } else {
 
@@ -129,9 +117,9 @@ public class PageBar extends AbstractBar {
                 }
             }
             createAuthoringModeBar();
-        }
+        }*/
 
-        addDomHandler(new MouseDownHandler() {
+/*        addDomHandler(new MouseDownHandler() {
             @Override
             public void onMouseDown(MouseDownEvent event) {
                 focusModel.toggleRootAreaBar(true);
@@ -144,10 +132,11 @@ public class PageBar extends AbstractBar {
             public void onMouseUp(MouseUpEvent event) {
                 event.stopPropagation();
             }
-        }, MouseUpEvent.getType());
+        }, MouseUpEvent.getType());*/
 
     }
 
+    @Deprecated
     private void createAuthoringModeBar() {
         InlineLabel mainbarPlaceholder = new InlineLabel();
         mainbarPlaceholder.getElement().setId("mgnlEditorMainbarPlaceholder");
@@ -204,6 +193,7 @@ public class PageBar extends AbstractBar {
 
     }
 
+    @Deprecated
     private void createPreviewModeBar() {
         Button preview = new Button(getI18nMessage("buttons.preview.hidden.js"));
         preview.setTitle(getI18nMessage("buttons.preview.switchToEdit.js"));
@@ -218,6 +208,7 @@ public class PageBar extends AbstractBar {
         setStyleName("mgnlEditorMainbarPreview");
     }
 
+    @Deprecated
     private class SmartphonePreviewCommand implements Command {
 
         private Orientation orientation;
@@ -232,6 +223,7 @@ public class PageBar extends AbstractBar {
         }
     }
 
+    @Deprecated
     private class DesktopPreviewCommand implements Command {
 
         @Override
@@ -240,10 +232,12 @@ public class PageBar extends AbstractBar {
         }
     }
 
+
     @Override
-    public void attach() {
+    public void attach(Element body) {
         final Element bar = mainBarWrapper != null ? mainBarWrapper.getElement(): getElement();
-        document.getBody().insertFirst(bar);
+        body.insertFirst(bar);
+        getModel().setPageBar(this);
         onAttach();
     }
 

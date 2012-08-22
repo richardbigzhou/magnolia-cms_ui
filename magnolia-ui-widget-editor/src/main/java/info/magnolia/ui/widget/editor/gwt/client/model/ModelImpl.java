@@ -75,6 +75,17 @@ public class ModelImpl implements Model {
     private MgnlElement selectedMgnlComponentElement = null;
 
     @Override
+    public AbstractBar getPageBar() {
+        return pageBar;
+    }
+    @Override
+    public void setPageBar(AbstractBar pageBar) {
+        this.pageBar = pageBar;
+    }
+
+    private AbstractBar pageBar = null;
+
+    @Override
     public void addOverlay(MgnlElement mgnlElement, AbstractOverlay overlayWidget) {
         overlays.put(mgnlElement, overlayWidget);
     }
