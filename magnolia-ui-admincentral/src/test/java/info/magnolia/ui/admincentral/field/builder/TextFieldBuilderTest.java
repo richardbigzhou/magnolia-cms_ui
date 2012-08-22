@@ -34,7 +34,7 @@
 package info.magnolia.ui.admincentral.field.builder;
 
 import static org.junit.Assert.assertEquals;
-import info.magnolia.ui.model.field.definition.EditFieldDefinition;
+import info.magnolia.ui.model.field.definition.TextFieldDefinition;
 
 import org.junit.Test;
 
@@ -45,7 +45,7 @@ import com.vaadin.ui.TextField;
 /**
  * Main testcase for {@link TextFieldBuilder}.
  */
-public class TextFieldBuilderTest extends AbstractBuilderTest<EditFieldDefinition> {
+public class TextFieldBuilderTest extends AbstractBuilderTest<TextFieldDefinition> {
 
     private TextFieldBuilder dialogEdit;
 
@@ -83,8 +83,8 @@ public class TextFieldBuilderTest extends AbstractBuilderTest<EditFieldDefinitio
 
     @Override
     protected void createConfiguredFieldDefinition() {
-        EditFieldDefinition fieldDefinition = new EditFieldDefinition();
-        fieldDefinition = (EditFieldDefinition)AbstractFieldBuilderTest.createConfiguredFieldDefinition(fieldDefinition, propertyName);
+        TextFieldDefinition fieldDefinition = new TextFieldDefinition();
+        fieldDefinition = (TextFieldDefinition)AbstractFieldBuilderTest.createConfiguredFieldDefinition(fieldDefinition, propertyName);
 
         fieldDefinition.setRows(0);
         fieldDefinition.setMaxLength(0);

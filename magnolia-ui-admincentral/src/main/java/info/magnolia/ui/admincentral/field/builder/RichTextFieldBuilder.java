@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2011 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,38 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.field.definition;
+package info.magnolia.ui.admincentral.field.builder;
+
+import info.magnolia.ui.model.field.definition.FieldDefinition;
+import info.magnolia.ui.model.field.definition.RichTextFieldDefinition;
+
+import com.vaadin.data.Item;
+import com.vaadin.ui.Field;
+import com.vaadin.ui.RichTextArea;
 
 /**
- * Field definition for an edit box.
+ * Creates and initializes an edit field based on a field definition.
  */
-public class EditFieldDefinition extends ConfiguredFieldDefinition {
+public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefinition> {
 
-    private int rows;
-    private int maxLength = -1;
-    private String width;
-
-    public int getRows() {
-        return rows;
+    public RichTextFieldBuilder(RichTextFieldDefinition definition, Item relatedFieldItem) {
+        super(definition, relatedFieldItem);
     }
 
-    public void setRows(int rows) {
-        this.rows = rows;
+    @Override
+    protected Field buildField() {
+        RichTextFieldDefinition editDefinition = definition;
+        return new RichTextArea();
+
     }
 
-    public int getMaxLength() {
-        return maxLength;
-    }
-
-    public void setMaxLength(int maxLength) {
-        this.maxLength = maxLength;
-    }
-
-    public String getWidth() {
-        return width;
-    }
-
-    public void setWidth(String width) {
-        this.width = width;
+    @Override
+    protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {
+        return String.class;
     }
 }
+

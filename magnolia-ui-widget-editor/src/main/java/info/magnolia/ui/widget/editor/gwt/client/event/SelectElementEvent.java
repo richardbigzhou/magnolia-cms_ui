@@ -36,6 +36,7 @@ package info.magnolia.ui.widget.editor.gwt.client.event;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.web.bindery.event.shared.Event;
 
+
 /**
  * SelectElementEvent.
  */
@@ -44,11 +45,15 @@ public class SelectElementEvent extends Event<SelectElementEventHandler> {
     public static GwtEvent.Type<SelectElementEventHandler> TYPE = new GwtEvent.Type<SelectElementEventHandler>();
 
     private final String path;
+
     private final String workspace;
 
-    public SelectElementEvent(String path, String workspace) {
+    private final String dialog;
+
+    public SelectElementEvent(String path, String workspace, String dialog) {
         this.path = path;
         this.workspace = workspace;
+        this.dialog = dialog;
     }
 
     @Override
@@ -67,5 +72,9 @@ public class SelectElementEvent extends Event<SelectElementEventHandler> {
 
     public String getWorkspace() {
         return workspace;
+    }
+
+    public String getDialog() {
+        return dialog;
     }
 }

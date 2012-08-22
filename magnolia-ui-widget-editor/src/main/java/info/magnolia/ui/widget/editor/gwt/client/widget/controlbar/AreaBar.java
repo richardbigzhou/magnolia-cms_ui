@@ -33,12 +33,7 @@
  */
 package info.magnolia.ui.widget.editor.gwt.client.widget.controlbar;
 
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.ui.PushButton;
+import static info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils.getI18nMessage;
 import info.magnolia.rendering.template.AreaDefinition;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 import info.magnolia.ui.widget.editor.gwt.client.event.DeleteComponentEvent;
@@ -48,7 +43,11 @@ import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 
 import java.util.Map;
 
-import static info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils.getI18nMessage;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.ui.PushButton;
 
 
 /**
@@ -57,20 +56,25 @@ import static info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils.get
 public class AreaBar extends AbstractBar {
 
     private String name;
+
     private String type;
+
     private String dialog;
+
     private boolean optional;
+
     private boolean created;
+
     private boolean editable = true;
+
     private static final String NODE_TYPE = "mgnl:area";
 
     public AreaBar(Model model, EventBus eventBus, MgnlElement mgnlElement) throws IllegalArgumentException {
         super(model, eventBus, mgnlElement);
 
-
         checkMandatories(mgnlElement.getAttributes());
 
-        GWT.log("Area ["+this.name+"] is of type " + this.type);
+        GWT.log("Area [" + this.name + "] is of type " + this.type);
 
         this.addStyleName("area");
 
@@ -88,6 +92,7 @@ public class AreaBar extends AbstractBar {
             if (!this.optional || (this.optional && this.created)) {
                 PushButton editButton = new PushButton();
                 editButton.addClickHandler(new ClickHandler() {
+
                     @Override
                     public void onClick(ClickEvent event) {
                         getEventBus().fireEvent(new EditComponentEvent(dialog, getWorkspace(), getPath()));
@@ -99,10 +104,11 @@ public class AreaBar extends AbstractBar {
                 addPrimaryButton(editButton);
             }
         }
-        if(this.optional) {
+        if (this.optional) {
             if (this.created) {
                 PushButton removeButton = new PushButton();
                 removeButton.addClickHandler(new ClickHandler() {
+
                     @Override
                     public void onClick(ClickEvent event) {
                         getEventBus().fireEvent(new DeleteComponentEvent(getWorkspace(), getPath()));
@@ -118,6 +124,7 @@ public class AreaBar extends AbstractBar {
                 createbutton.setStylePrimaryName("mgnlEditorButton");
 
                 createbutton.addClickHandler(new ClickHandler() {
+
                     @Override
                     public void onClick(ClickEvent event) {
                         getEventBus().fireEvent(new NewAreaEvent(getWorkspace(), NODE_TYPE, getPath()));
@@ -152,7 +159,7 @@ public class AreaBar extends AbstractBar {
         }
 
         String availableComponents = "";
-        if(!AreaDefinition.TYPE_NO_COMPONENT.equals(this.type)) {
+        if (!AreaDefinition.TYPE_NO_COMPONENT.equals(this.type)) {
             availableComponents = attributes.get("availableComponents");
         }
 
@@ -166,7 +173,7 @@ public class AreaBar extends AbstractBar {
         }
 
         // area can be deleted or created
-       if (this.optional) {
+        if (this.optional) {
             return;
         }
 
@@ -187,6 +194,11 @@ public class AreaBar extends AbstractBar {
         else {
             throw new IllegalArgumentException("Not injecting any Areabar");
         }
+    }
+
+    @Override
+    public String getDialog() {
+        return editable ? dialog : null;
     }
 
 }

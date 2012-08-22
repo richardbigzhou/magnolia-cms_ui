@@ -90,4 +90,8 @@ public interface Model {
     void removeMgnlElement(MgnlElement mgnlElement);
 
     MgnlElement findMgnlElementByContentId(String contentId);
+
+    AbstractBar getPageBar();
+
+    void setPageBar(AbstractBar pageBar);
 }

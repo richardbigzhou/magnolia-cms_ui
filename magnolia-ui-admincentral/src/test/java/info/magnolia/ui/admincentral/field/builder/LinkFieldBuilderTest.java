@@ -62,6 +62,25 @@ public class LinkFieldBuilderTest extends AbstractBuilderTest<LinkFieldDefinitio
     }
 
     @Test
+    public void simpleLinkFieldUuidTest() throws Exception{
+        // GIVEN
+        definition.setUuid(true);
+        definition.setName(propertyName);
+        definition.setWorkspace(workspaceName);
+        baseNode.setProperty(propertyName, baseNode.getIdentifier());
+        baseItem = new JcrNodeAdapter(baseNode);
+        linkFieldBuilder = new LinkFieldBuilder(definition, baseItem, null);
+
+        // WHEN
+        Field field = linkFieldBuilder.getField();
+
+        // THEN
+        assertEquals(true, field instanceof TextAndButtonField);
+        // Propert way set to the UUID baseNode.getIdentifier() and we display the path
+        assertEquals(baseNode.getPath(), field.getValue());
+    }
+
+    @Test
     public void linkField_SetButtonCaptionTest() throws Exception{
         // GIVEN
         linkFieldBuilder = new LinkFieldBuilder(definition, baseItem, null);

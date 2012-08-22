@@ -39,6 +39,7 @@ package info.magnolia.ui.model.field.definition;
  */
 public class LinkFieldDefinition extends ConfiguredFieldDefinition {
 
+    // Define the target link workspace.
     private String workspace = "website";
     private String extension;
     // Sub Dialog Name. Used by the LinkField to create the
@@ -51,7 +52,8 @@ public class LinkFieldDefinition extends ConfiguredFieldDefinition {
     private String listView;
     private String width = "100%";
     private String buttonLabel = "Select";
-    private boolean uuid;
+    // Define if we should store the UUID of the selected Item
+    private boolean uuid = false;
 
     public String getWorkspace() {
         return workspace;
