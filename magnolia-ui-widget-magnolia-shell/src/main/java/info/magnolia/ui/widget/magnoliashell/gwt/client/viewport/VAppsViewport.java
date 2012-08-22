@@ -64,7 +64,6 @@ import com.googlecode.mgwt.dom.client.recognizer.swipe.SwipeStartHandler;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.UIDL;
-import com.vaadin.terminal.gwt.client.VConsole;
 
 /**
  * Client side implementation of Apps viewport.
@@ -97,7 +96,7 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
         }, ClickEvent.getType());
 
         DOM.sinkEvents(getElement(), Event.TOUCHEVENTS);
-        delegate.addTouchHandler(new MagnoliaSwipeHandler(delegate, SWIPE_OUT_THRESHOLD));
+        delegate.addTouchHandler(new MagnoliaSwipeRecognizer(delegate, SWIPE_OUT_THRESHOLD));
         
         addSwipeStartHandler(new SwipeStartHandler() {
             @Override
@@ -113,33 +112,7 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
                 int translationValue = event.getDistance() * (direction == DIRECTION.LEFT_TO_RIGHT ? 1 : -1);
                 JQueryWrapper.select(getVisibleWidget()).setCss("-webkit-transform", "translate3d("+ translationValue + "px,0,0)");
                 if (getWidgetCount() > 1) {
-                    final Widget nextWidget = getNextWidget();
-                    final Widget previousWidget = getPreviousWidget();
-                    
-                    if (translationValue >= 0) {
-                        
-                        previousWidget.getElement().getStyle().setVisibility(Visibility.VISIBLE);
-                        previousWidget.getElement().getStyle().setOpacity(1d);
-                        
-                        if (nextWidget != previousWidget) {
-                            nextWidget.getElement().getStyle().setVisibility(Visibility.HIDDEN);
-                            nextWidget.getElement().getStyle().setOpacity(0d);
-                        }
-                        
-                        previousWidget.getElement().getStyle().setZIndex(250);
-                        getVisibleWidget().getElement().getStyle().setZIndex(251);
-                    } else {
-                        nextWidget.getElement().getStyle().setOpacity(1d);
-                        nextWidget.getElement().getStyle().setVisibility(Visibility.VISIBLE);
-                        
-                        if (nextWidget != previousWidget) {
-                            previousWidget.getElement().getStyle().setOpacity(0d);
-                            previousWidget.getElement().getStyle().setVisibility(Visibility.HIDDEN);   
-                        }
-
-                        nextWidget.getElement().getStyle().setZIndex(250);
-                        getVisibleWidget().getElement().getStyle().setZIndex(251);
-                    }
+                    showCandidateApp(translationValue  > 0);
                 }
             }
         });
@@ -178,6 +151,37 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
                 dropZIndeces();
             }
         });
+    }
+
+    protected void showCandidateApp(boolean isNext) {
+        final Widget nextWidget = getNextWidget();
+        final Widget previousWidget = getPreviousWidget();
+        
+        if (isNext) {
+            
+            previousWidget.getElement().getStyle().setVisibility(Visibility.VISIBLE);
+            previousWidget.getElement().getStyle().setOpacity(1d);
+            
+            if (nextWidget != previousWidget) {
+                nextWidget.getElement().getStyle().setVisibility(Visibility.HIDDEN);
+                nextWidget.getElement().getStyle().setOpacity(0d);
+            }
+            
+            previousWidget.getElement().getStyle().setZIndex(250);
+            getVisibleWidget().getElement().getStyle().setZIndex(251);
+        } else {
+            nextWidget.getElement().getStyle().setOpacity(1d);
+            nextWidget.getElement().getStyle().setVisibility(Visibility.VISIBLE);
+            
+            if (nextWidget != previousWidget) {
+                previousWidget.getElement().getStyle().setOpacity(0d);
+                previousWidget.getElement().getStyle().setVisibility(Visibility.HIDDEN);   
+            }
+
+            nextWidget.getElement().getStyle().setZIndex(250);
+            getVisibleWidget().getElement().getStyle().setZIndex(251);
+        }
+        
     }
 
     protected Widget getNextWidget() {

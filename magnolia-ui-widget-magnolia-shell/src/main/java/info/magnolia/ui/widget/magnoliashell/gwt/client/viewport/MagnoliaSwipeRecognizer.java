@@ -47,13 +47,14 @@ import com.googlecode.mgwt.dom.client.recognizer.swipe.SwipeEndEvent;
 import com.googlecode.mgwt.dom.client.recognizer.swipe.SwipeEvent.DIRECTION;
 import com.googlecode.mgwt.dom.client.recognizer.swipe.SwipeMoveEvent;
 import com.googlecode.mgwt.dom.client.recognizer.swipe.SwipeStartEvent;
-import com.vaadin.terminal.gwt.client.VConsole;
 
 /**
  * MagnoliaSwipeHandler.
  */
-public class MagnoliaSwipeHandler implements TouchHandler {
+public class MagnoliaSwipeRecognizer implements TouchHandler {
 
+    private static final int DEFAULT_TOUCH_TRESHOLD = 3; 
+    
     private static EventPropagator DEFAULT_EVENT_PROPAGATOR;
 
     private final HasHandlers source;
@@ -82,15 +83,15 @@ public class MagnoliaSwipeHandler implements TouchHandler {
     
     private int touchStartY = Integer.MIN_VALUE;
     
-    public MagnoliaSwipeHandler(HasHandlers source) {
+    public MagnoliaSwipeRecognizer(HasHandlers source) {
         this(source, 40);
     }
 
-    public MagnoliaSwipeHandler(HasHandlers source, int minDistance) {
+    public MagnoliaSwipeRecognizer(HasHandlers source, int minDistance) {
         this(source, minDistance, 10);
     }
 
-    public MagnoliaSwipeHandler(HasHandlers source, int minDistance, int threshold) {
+    public MagnoliaSwipeRecognizer(HasHandlers source, int minDistance, int threshold) {
         if (source == null) {
             throw new IllegalArgumentException("source can not be null");   
         }
@@ -103,7 +104,7 @@ public class MagnoliaSwipeHandler implements TouchHandler {
             throw new IllegalArgumentException("threshold > 0");
         }
 
-        this.desiredTouchCount = 1;
+        this.desiredTouchCount = DEFAULT_TOUCH_TRESHOLD;
         this.source = source;
         this.minDistance = minDistance;
         this.threshold = threshold;
@@ -141,7 +142,6 @@ public class MagnoliaSwipeHandler implements TouchHandler {
         case FINDER_DOWN:
             if (Math.abs(touch.getPageX() - touchStartX) >= threshold) {
                 state = State.FOUND_DIRECTION;
-                VConsole.log("Dx" + (touch.getPageX() - touchStartX));
                 direction = touch.getPageX() - touchStartX > 0 ? DIRECTION.LEFT_TO_RIGHT : DIRECTION.RIGHT_TO_LEFT;
                 SwipeStartEvent swipeStartEvent = new SwipeStartEvent(touch, touch.getPageX() - touchStartX, direction);
                 getEventPropagator().fireEvent(source, swipeStartEvent);
