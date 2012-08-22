@@ -47,7 +47,7 @@ import javax.jcr.RepositoryException;
 
 
 /**
- * The Class PreviewPageAction. Opens a full screen preview of the selected page.
+ *  Opens a preview of the selected page, either in full screen or non full screen, depending on the {@link PreviewPageActionDefinition#isFull()} return value.
  */
 public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
 
