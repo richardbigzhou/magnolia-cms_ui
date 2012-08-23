@@ -38,17 +38,10 @@ import info.magnolia.ui.admincentral.dialog.action.EditDialogActionDefinition;
 
 /**
  * Defines an action for editing an element (page/area/component) of the page editor.
+ * 
+ * Does not have an concrete action implementation, but is intercepted by the editor subapp to
+ * delegate execution to PageEditorPresenter.
  */
 public class EditElementActionDefinition extends EditDialogActionDefinition {
-
-    // private PageEditorView.Listener elementPresenter;
-    //
-    // public PageEditorView.Listener getElementPresenter() {
-    // return elementPresenter;
-    // }
-    //
-    // public void setElementPresenter(PageEditorView.Listener elementPresenter) {
-    // this.elementPresenter = elementPresenter;
-    // }
 
 }
