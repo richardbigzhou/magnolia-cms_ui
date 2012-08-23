@@ -52,6 +52,8 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.googlecode.mgwt.dom.client.event.animation.TransitionEndEvent;
+import com.googlecode.mgwt.dom.client.event.animation.TransitionEndHandler;
 import com.googlecode.mgwt.dom.client.event.touch.TouchCancelEvent;
 import com.googlecode.mgwt.dom.client.event.touch.TouchCancelHandler;
 import com.googlecode.mgwt.dom.client.recognizer.swipe.HasSwipeHandlers;
@@ -79,6 +81,20 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
 
     private final TouchDelegate delegate = new TouchDelegate(this);
     
+    @Override
+    public void add(Widget child) {
+        super.add(child);
+        final TransitionEndHandler handler = new TransitionEndHandler() {
+            @Override
+            public void onTransitionEnd(TransitionEndEvent event) {
+                Element target = event.getRelativeElement().cast();
+                target.removeClassName("app-slider");
+                target.getStyle().setProperty("-webkit-transform", "");
+            }
+        }; 
+        child.addDomHandler(handler, TransitionEndEvent.getType());
+    }
+    
     public VAppsViewport() {
         super();
         setForceContentAlign(false);
@@ -102,19 +118,14 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
         addSwipeStartHandler(new SwipeStartHandler() {
             @Override
             public void onSwipeStart(SwipeStartEvent event) {
-                
+                processSwipe(event.getDistance() * (event.getDirection() == DIRECTION.LEFT_TO_RIGHT ? 1 : -1));
             }
         });
 
         addSwipeMoveHandler(new SwipeMoveHandler() {
             @Override
             public void onSwipeMove(SwipeMoveEvent event) {
-                final DIRECTION direction = event.getDirection();
-                int translationValue = event.getDistance() * (direction == DIRECTION.LEFT_TO_RIGHT ? 1 : -1);
-                JQueryWrapper.select(getVisibleWidget()).setCss("-webkit-transform", "translate3d("+ translationValue + "px,0,0)");
-                if (getWidgetCount() > 1) {
-                    showCandidateApp(translationValue  > 0);
-                }
+                processSwipe(event.getDistance() * (event.getDirection() == DIRECTION.LEFT_TO_RIGHT ? 1 : -1));
             }
         });
         
@@ -122,28 +133,42 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
         addSwipeEndHandler(new SwipeEndHandler() {
             @Override
             public void onSwipeEnd(SwipeEndEvent event) {
-                dropZIndeces();
                 final DIRECTION direction = event.getDirection();
                 final Widget newVisibleWidget = direction == DIRECTION.LEFT_TO_RIGHT ? getPreviousWidget() : getNextWidget();  
                 if (event.isDistanceReached() && getWidgetCount() > 1) {
-                    JQueryWrapper.select(getVisibleWidget()).animate(300, new AnimationSettings() {{
-                        setProperty("left", getOffsetWidth());
+                    final JQueryWrapper jq = JQueryWrapper.select(getVisibleWidget());
+                    jq.animate(450, new AnimationSettings() {{
+                        setProperty("left", getOffsetWidth() * (direction == DIRECTION.LEFT_TO_RIGHT ? 1 : -1) - jq.position().left());
                         setCallbacks(Callbacks.create(new JQueryCallback() {
                             @Override
-                            public void execute(JQueryWrapper query) {    
-                                query.setCss("opacity", "0");
+                            public void execute(JQueryWrapper query) {
+                                query.setCss("-webkit-transform", "");
                                 query.setCss("left", "");
-                                query.setCss("-webkit-transform", "translate3d(0,0,0)");
+                                query.setCss("opacity", "0");
                                 query.setCss("visibility", "hidden");
                                 setVisibleWidget(newVisibleWidget);
+                                dropZIndeces();
                             }
                         }));
                     }});
+                    
+                    if (direction == DIRECTION.RIGHT_TO_LEFT && getWidgetCount() > 2) {
+                        final JQueryWrapper query = JQueryWrapper.select(newVisibleWidget);
+                        query.setCss("-webkit-transform", "");
+                        newVisibleWidget.addStyleName("app-slider");
+                        new Timer() {
+                            @Override
+                            public void run() {
+                                newVisibleWidget.removeStyleName("app-slider");        
+                            }
+                        }.schedule(500);
+                    }
                 } else {
-                    final JQueryWrapper jq = JQueryWrapper.select(getVisibleWidget()); 
-                    jq.animate(300, new AnimationSettings() {{
+                    final JQueryWrapper jq = JQueryWrapper.select(getVisibleWidget());
+                    jq.setCssPx("left", jq.position().left());
+                    jq.setCss("-webkit-transform", "");
+                    jq.animate(500, new AnimationSettings() {{
                         setProperty("left", 0);
-                        jq.setCss("-webkit-transform", "translate3d(0,0,0)");
                     }});
                 }
             }
@@ -152,40 +177,39 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
         delegate.addTouchCancelHandler(new TouchCancelHandler() {
             @Override
             public void onTouchCanceled(TouchCancelEvent event) {
-                //JQueryWrapper.select(getVisibleWidget()).setCss("-webkit-transform", "translate3d(0,0,0)");
+                JQueryWrapper.select(getVisibleWidget()).setCss("-webkit-transform", "");
                 dropZIndeces();
             }
         });
     }
 
-    protected void showCandidateApp(boolean isNext) {
+    private void processSwipe(int translationValue) {
+        JQueryWrapper.select(getVisibleWidget()).setCss("-webkit-transform", "translate3d("+ translationValue + "px,0,0)");
+        if (getWidgetCount() > 1) {
+            showCandidateApp(translationValue);
+        }
+    }
+    
+    protected void showCandidateApp(int translationValue) {
         final Widget nextWidget = getNextWidget();
         final Widget previousWidget = getPreviousWidget();
-        
+        boolean isNext = translationValue < 0;
         if (isNext) {
-            previousWidget.getElement().getStyle().setOpacity(1d);
-            previousWidget.getElement().getStyle().setVisibility(Visibility.VISIBLE);
-            
-            if (nextWidget != previousWidget) {
-                nextWidget.getElement().getStyle().setVisibility(Visibility.HIDDEN);
-                nextWidget.getElement().getStyle().setOpacity(0d);
-            }
-            
-            previousWidget.getElement().getStyle().setZIndex(250);
+            nextWidget.getElement().getStyle().setZIndex(250);
             getVisibleWidget().getElement().getStyle().setZIndex(251);
         } else {
-            nextWidget.getElement().getStyle().setOpacity(1d);
-            nextWidget.getElement().getStyle().setVisibility(Visibility.VISIBLE);
-            
-            if (nextWidget != previousWidget) {
-                previousWidget.getElement().getStyle().setOpacity(0d);
-                previousWidget.getElement().getStyle().setVisibility(Visibility.HIDDEN);   
-            }
-
-            nextWidget.getElement().getStyle().setZIndex(250);
+            previousWidget.getElement().getStyle().setZIndex(250);
             getVisibleWidget().getElement().getStyle().setZIndex(251);
         }
         
+        if (isNext && getWidgetCount() > 2) {
+            JQueryWrapper.select(nextWidget).setCss("-webkit-transform", "translate3d("+  (translationValue + getVisibleWidget().getOffsetWidth()) + "px,0,0)");
+        }
+        nextWidget.getElement().getStyle().setVisibility(isNext || nextWidget == previousWidget ? Visibility.VISIBLE : Visibility.HIDDEN);
+        previousWidget.getElement().getStyle().setVisibility(!isNext || nextWidget == previousWidget ? Visibility.VISIBLE : Visibility.HIDDEN);
+        
+        nextWidget.getElement().getStyle().setOpacity(isNext || nextWidget == previousWidget ? 1 : 0);
+        previousWidget.getElement().getStyle().setOpacity(!isNext || nextWidget == previousWidget ? 1 : 0);
     }
 
     protected Widget getNextWidget() {
@@ -216,7 +240,7 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
                 public void run() {
                     RootPanel.get().remove(preloader);
                 }
-            }.schedule(1000);
+            }.schedule(500);
         }
     }
 
@@ -258,8 +282,8 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
     }
 
     @Override
-    protected void setWidgetVisibleWithTransition(Widget w) {
-        super.setWidgetVisibleWithTransition(w);
+    protected void setVisibleWidget(Widget w) {
+        super.setVisibleWidget(w);
         w.getElement().appendChild(closeWrapper);
     }
 
