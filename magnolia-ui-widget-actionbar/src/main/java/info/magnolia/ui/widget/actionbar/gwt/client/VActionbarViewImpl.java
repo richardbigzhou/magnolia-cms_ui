@@ -33,8 +33,11 @@
  */
 package info.magnolia.ui.widget.actionbar.gwt.client;
 
+import com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent;
+import com.googlecode.mgwt.ui.client.widget.touch.TouchPanel;
 import info.magnolia.ui.widget.actionbar.gwt.client.event.ActionTriggerEvent;
 
+//import java.awt.event.WindowAdapter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -62,10 +65,11 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, 
 
     private final Element root = DOM.createElement("section");
 
-    private final FlowPanel toggleButton = new FlowPanel(); // Must be a widget so that it can
-                                                            // capture events.
-
+    private final FlowPanel toggleButton = new FlowPanel(); // Must be a widget so that it can capture events
     private final Element toggleButtonIcon = DOM.createElement("span");
+
+    private final TouchPanel fullScreenButton = new TouchPanel(); // Must be a widget so that it can capture events
+    private final Element fullScreenButtonIcon = DOM.createElement("span");
 
     private final EventBus eventBus;
 
@@ -78,6 +82,8 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, 
     private final boolean isDeviceTablet;
 
     private boolean isToggledOpen = false;
+
+    private boolean isFullScreen = false;
 
     private final TouchDelegate delegate = new TouchDelegate(toggleButton);
 
@@ -93,6 +99,7 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, 
         isDeviceTablet = initIsDeviceTablet();
 
         prepareToggling();
+        prepareFullScreenButton();
 
         if (isDeviceTablet) {
             isToggledOpen = false;
@@ -133,30 +140,49 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, 
 
             @Override
             public void onTouchStart(com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent event) {
-                GWT.log("Toggler TouchStart");
                 isToggledOpen = !isToggledOpen;
                 actualizeToggleState(isToggledOpen);
                 presenter.forceLayout();
             }
         });
-
-        /*
-           DOM.sinkEvents(toggleButton.getElement(), Event.ONMOUSEDOWN);
-        /*
-           toggleButton.addDomHandler(new MouseDownHandler() {
-               @Override
-               public void onMouseDown(MouseDownEvent event) {
-                   isToggledOpen = !isToggledOpen;
-
-                   actualizeToggleState(isToggledOpen);
-
-                   presenter.forceLayout();
-               }
-
-           }, MouseDownEvent.getType());
-        }     */
     }
 
+    private void prepareFullScreenButton() {
+
+        fullScreenButton.addStyleName("v-actionbar-fullscreen");
+
+        add(fullScreenButton, root);
+
+        fullScreenButtonIcon.addClassName("v-actionbar-fullscreen-icon");
+        fullScreenButtonIcon.addClassName("icon-open-fullscreen");
+
+        fullScreenButton.getElement().appendChild(fullScreenButtonIcon);
+
+        DOM.sinkEvents(fullScreenButton.getElement(), Event.TOUCHEVENTS);
+
+        fullScreenButton.addTouchStartHandler(new TouchStartHandler() {
+
+            @Override
+            public void onTouchStart(TouchStartEvent event) {
+                GWT.log("FullScreen TouchStart");
+                isFullScreen = !isFullScreen;
+                actualizeFullScreenState(isFullScreen);
+            }
+        });
+    }
+
+    /**
+     * Actualize the state of the actionbar fullscreen button.
+     */
+    private void actualizeFullScreenState(boolean isFullScreen) {
+         if (isFullScreen){
+             fullScreenButtonIcon.addClassName("icon-close-fullscreen");
+             fullScreenButtonIcon.removeClassName("icon-open-fullscreen");
+         }   else{
+             fullScreenButtonIcon.addClassName("icon-open-fullscreen");
+             fullScreenButtonIcon.removeClassName("icon-close-fullscreen");
+         }
+    }
     /**
      * Actualize the state of the actionbar 'openness' by setting classes on html elements.
      */
@@ -232,9 +258,8 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, 
                 group = new VActionbarGroup(groupName);
                 section.addGroup(group);
 
-                // Position toggleButton button at bottom of stack.
-                toggleButton.removeStyleName("row-" + (tabletRow));
-                toggleButton.addStyleName("row-" + (tabletRow + 1));
+                setToggleAndFullScreenButtonHeights(tabletRow);
+
             }
             String cssClasses = "row-" + tabletRow + " col-" + tabletColumn + " open";
 
@@ -262,9 +287,7 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, 
                 group = new VActionbarGroup(groupName);
                 section.addGroup(group);
 
-                // Position toggleButton button at bottom of stack.
-                toggleButton.removeStyleName("row-" + (tabletRow));
-                toggleButton.addStyleName("row-" + (tabletRow + 1));
+                setToggleAndFullScreenButtonHeights(tabletRow);
             }
             String cssClasses = "row-" + tabletRow + " col-" + tabletColumn + " open";
 
@@ -280,6 +303,20 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, 
             tabletColumn++;
         }
     }
+
+    /**
+     * For tablet mode, position these buttons at the bottom of the button stack.
+     * @return
+     */
+    private void setToggleAndFullScreenButtonHeights(int tabletRow){
+        // Position toggleButton button at bottom of stack.
+        toggleButton.removeStyleName("row-" + (tabletRow));
+        toggleButton.addStyleName("row-" + (tabletRow + 1));
+        fullScreenButton.removeStyleName("row-" + (tabletRow));
+        fullScreenButton.addStyleName("row-" + (tabletRow + 1));
+    }
+
+
 
     @Override
     public void onActionTriggered(ActionTriggerEvent event) {
