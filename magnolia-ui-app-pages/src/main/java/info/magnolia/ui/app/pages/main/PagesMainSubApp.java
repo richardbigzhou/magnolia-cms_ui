@@ -33,6 +33,9 @@
  */
 package info.magnolia.ui.app.pages.main;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
 import info.magnolia.ui.framework.app.AbstractSubApp;
@@ -69,7 +72,7 @@ public class PagesMainSubApp extends AbstractSubApp implements PagesMainView.Lis
 
             @Override
             public void onItemSelected(ItemSelectedEvent event) {
-                appContext.setSubAppLocation(PagesMainSubApp.this, new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages", "main:" + event.getPath()));
+                appContext.setSubAppLocation(PagesMainSubApp.this, createLocation(event.getPath()));
             }
         });
     }
@@ -97,14 +100,6 @@ public class PagesMainSubApp extends AbstractSubApp implements PagesMainView.Lis
         }
     }
 
-    private String getSelectedItemPath(Location location) {
-        DefaultLocation defaultLocation = (DefaultLocation) location;
-        if (defaultLocation.getToken().startsWith("main:")) {
-            return StringUtils.substringAfter(defaultLocation.getToken(), "main:");
-        }
-        return null;
-    }
-
     @Override
     public void share() {
         dispatcher.share();
@@ -113,5 +108,62 @@ public class PagesMainSubApp extends AbstractSubApp implements PagesMainView.Lis
     @Override
     public void subscribe(String hostId) {
         dispatcher.subscribeTo(hostId);
+    }
+
+    // Location token handling, format is main:<selectedItemPath>
+
+    public static boolean supportsLocation(Location location) {
+        List<String> parts = parseLocationToken(location);
+        return parts.size() >= 1 && parts.get(0).equals("main");
+    }
+
+    public static DefaultLocation createLocation(String selectedItemPath) {
+        String token = "main";
+        if (StringUtils.isNotEmpty(selectedItemPath)) {
+            token = token + ":" + selectedItemPath;
+        }
+        return new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages", token);
+    }
+
+    public static String getSubAppId(Location location) {
+        List<String> parts = parseLocationToken(location);
+        return parts.get(0);
+    }
+
+    public static String getSelectedItemPath(Location location) {
+        List<String> parts = parseLocationToken(location);
+        return parts.size() >= 2 ? parts.get(1) : null;
+    }
+
+    private static List<String> parseLocationToken(Location location) {
+
+        ArrayList<String> parts = new ArrayList<String>();
+
+        DefaultLocation l = (DefaultLocation) location;
+        String token = l.getToken();
+
+        // "main"
+        int i = token.indexOf(':');
+        if (i == -1) {
+            if (!token.equals("main")) {
+                return new ArrayList<String>();
+            }
+            parts.add(token);
+            return parts;
+        }
+
+        String subAppName = token.substring(0, i);
+        if (!subAppName.equals("main")) {
+            return new ArrayList<String>();
+        }
+        parts.add(subAppName);
+        token = token.substring(i + 1);
+
+        // selectedItemPath
+        if (token.length() > 0) {
+            parts.add(token);
+        }
+
+        return parts;
     }
 }

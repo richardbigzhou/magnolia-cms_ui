@@ -48,7 +48,6 @@ import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
@@ -64,6 +63,7 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -103,7 +103,7 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
 
     @Inject
     public PagesEditorSubApp(final AppContext appContext, final PagesEditorView view, final @Named("app") EventBus appEventBus, final @Named("subapp") EventBus subAppEventBus,
-        final PageEditorPresenter pageEditorPresenter, final LocationController locationController, final ActionbarPresenter actionbarPresenter, final WorkbenchActionFactory actionFactory) {
+                             final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final WorkbenchActionFactory actionFactory) {
 
         this.view = view;
         this.view.setListener(this);
@@ -147,8 +147,9 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
         }
 
         String path = getEditorPath(location);
-        if (path == null)
+        if (StringUtils.isEmpty(path)) {
             path = "/";
+        }
 
         setParameters(new PageEditorParameters(MgnlContext.getContextPath(), path));
 
@@ -309,44 +310,72 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
         });
     }
 
+    // Location token handling, format is editor;<editorPath>:<previewMode>
 
-    private List<String> parseLocationToken(Location location) {
+    public static boolean supportsLocation(Location location) {
+        List<String> parts = parseLocationToken(location);
+        return parts.size() >= 1 && parts.get(0).equals("editor");
+    }
+
+    public static  DefaultLocation createLocation(String editorPath, String previewMode) {
+        String token = "editor;" + editorPath;
+        if (StringUtils.isNotEmpty(previewMode)) {
+            token += ":" + previewMode;
+        }
+        return new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages", token);
+    }
+
+    public static String getSubAppId(Location location) {
+        List<String> parts = parseLocationToken(location);
+        return parts.get(0) + ";" + parts.get(1);
+    }
+
+    public static String getEditorPath(Location location) {
+        List<String> parts = parseLocationToken(location);
+        return parts.size() >= 2 ? parts.get(1) : null;
+    }
+
+    public static String getPreviewMode(Location location) {
+        List<String> parts = parseLocationToken(location);
+        return parts.size() >= 3 ? parts.get(2) : null;
+    }
+
+    private static List<String> parseLocationToken(Location location) {
+
         ArrayList<String> parts = new ArrayList<String>();
 
         DefaultLocation l = (DefaultLocation) location;
         String token = l.getToken();
 
-        // editor
+        // "editor"
         int i = token.indexOf(';');
         if (i == -1) {
-            parts.add(token);
-            return parts;
+            return new ArrayList<String>();
         }
-        parts.add(token.substring(0, i));
+        String subAppName = token.substring(0, i);
+        if (!subAppName.equals(PagesApp.EDITOR_TOKEN)) {
+            return new ArrayList<String>();
+        }
+        parts.add(subAppName);
         token = token.substring(i + 1);
 
-        // path
+        // editorPath
         i = token.indexOf(':');
         if (i == -1) {
+            if (token.length() == 0) {
+                return new ArrayList<String>();
+            }
             parts.add(token);
             return parts;
         }
         parts.add(token.substring(0, i));
         token = token.substring(i + 1);
 
-        // mode
-        parts.add(token);
+        // previewMode
+        if (token.length() > 0) {
+            parts.add(token);
+        }
 
         return parts;
-    }
-
-    private String getEditorPath(Location location) {
-        List<String> parts = parseLocationToken(location);
-        return parts.size() >= 2 ? parts.get(1) : null;
-    }
-
-    private String getPreviewMode(Location location) {
-        List<String> parts = parseLocationToken(location);
-        return parts.size() >= 3 ? parts.get(2) : null;
     }
 }

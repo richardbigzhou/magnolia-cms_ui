@@ -33,9 +33,7 @@
  */
 package info.magnolia.ui.app.pages.action;
 
-import info.magnolia.ui.app.pages.PagesApp;
-import info.magnolia.ui.framework.location.DefaultLocation;
-import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.app.pages.editor.PagesEditorSubApp;
 import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
@@ -64,9 +62,9 @@ public class EditPageAction extends ActionBase<EditPageActionDefinition> {
     @Override
     public void execute() throws ActionExecutionException {
         try {
-            String nodePath = nodeToEdit.getPath();
-            Location pageEditorLocation = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages", PagesApp.EDITOR_TOKEN + ";" + nodePath);
-            locationController.goTo(pageEditorLocation);
+
+            locationController.goTo(PagesEditorSubApp.createLocation(nodeToEdit.getPath(), null));
+
         } catch (RepositoryException e) {
             throw new ActionExecutionException(e);
         }
