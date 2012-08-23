@@ -304,10 +304,11 @@ public class PageEditorPresenter implements PageEditorView.Listener {
     }
 
     public PageEditorView start() {
-        setPath(parameters.getNodePath());
-        setDialog("ui-pages-app:pages");
         view.setListener(this);
         view.init(parameters.getContextPath(), parameters.getNodePath(), preview);
+        setPath(parameters.getNodePath());
+        // TODO 20120823 mgeljic get page dialog from page editor view
+        setDialog("ui-pages-app:pages");
         return view;
     }
 

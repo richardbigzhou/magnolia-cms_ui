@@ -38,11 +38,11 @@ import static info.magnolia.ui.app.pages.PagesApp.PREVIEW_TOKEN;
 import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
-import info.magnolia.ui.admincentral.dialog.action.EditDialogActionDefinition;
 import info.magnolia.ui.admincentral.event.ActionbarItemClickedEvent;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.app.pages.PagesApp;
 import info.magnolia.ui.app.pages.PagesAppDescriptor;
+import info.magnolia.ui.app.pages.action.EditElementActionDefinition;
 import info.magnolia.ui.framework.app.AbstractSubApp;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.event.EventBus;
@@ -261,13 +261,17 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
             public void onActionbarItemClicked(ActionbarItemClickedEvent event) {
                 try {
                     ActionDefinition actionDefinition = event.getActionDefinition();
-                    if (actionDefinition instanceof EditDialogActionDefinition) {
-                        ((EditDialogActionDefinition) actionDefinition).setDialogName(pageEditorPresenter.getDialog());
+                    if (actionDefinition instanceof EditElementActionDefinition) {
+                        pageEditorPresenter.editComponent(
+                            appDescriptor.getWorkbench().getWorkspace(),
+                            pageEditorPresenter.getPath(),
+                            pageEditorPresenter.getDialog());
+                    } else {
+                        actionbarPresenter.createAndExecuteAction(
+                            actionDefinition,
+                            appDescriptor.getWorkbench().getWorkspace(),
+                            pageEditorPresenter.getPath());
                     }
-                    actionbarPresenter.createAndExecuteAction(
-                        actionDefinition,
-                        appDescriptor.getWorkbench().getWorkspace(),
-                        pageEditorPresenter.getPath());
 
                 } catch (ActionExecutionException e) {
                     log.error("An error occurred while executing an action.", e);
@@ -309,7 +313,6 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
             }
         });
     }
-
 
     private List<String> parseLocationToken(Location location) {
         ArrayList<String> parts = new ArrayList<String>();
