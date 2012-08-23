@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.app.pages;
 
-
 import info.magnolia.ui.admincentral.app.content.ContentApp;
 import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
 import info.magnolia.ui.app.pages.editor.PagesEditorSubApp;
@@ -45,16 +44,21 @@ import info.magnolia.ui.framework.location.Location;
 import javax.inject.Inject;
 
 
+
 /**
  * Pages app.
  */
 public class PagesApp extends ContentApp {
 
     public static final String EDITOR_TOKEN = "editor";
+
     public static final String PREVIEW_TOKEN = "preview";
+
+    public static final String EDITOR_FULL_TOKEN = "editorfull";
+
     public static final String PREVIEW_FULL_TOKEN = "previewfull";
 
-    private AppContext appContext;
+    private final AppContext appContext;
 
     @Inject
     public PagesApp(AppContext context, DialogPresenterFactory dialogPresenterFactory) {

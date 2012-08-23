@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,37 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.magnoliashell.gwt.client.event;
+package info.magnolia.ui.app.pages.action;
 
-import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShell.ViewportType;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.event.handler.ViewportCloseHandler;
+import info.magnolia.ui.admincentral.dialog.action.EditDialogActionDefinition;
 
-import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * Event fired when the viewport is closed.
+ * Defines an action for editing an element (page/area/component) of the page editor.
+ * 
+ * Does not have an concrete action implementation, but is intercepted by the editor subapp to
+ * delegate execution to PageEditorPresenter.
  */
-public class ViewportCloseEvent extends GwtEvent<ViewportCloseHandler>{
+public class EditElementActionDefinition extends EditDialogActionDefinition {
 
-    public static final Type<ViewportCloseHandler> TYPE = new Type<ViewportCloseHandler>();
-
-    private final ViewportType viewportType;
-
-    public ViewportCloseEvent(final ViewportType viewportType) {
-        this.viewportType = viewportType;
-    }
-
-    @Override
-    protected void dispatch(ViewportCloseHandler handler) {
-        handler.onViewportClose(this);
-    }
-
-    @Override
-    public GwtEvent.Type<ViewportCloseHandler> getAssociatedType() {
-        return TYPE;
-    };
-
-    public ViewportType getViewportType() {
-        return viewportType;
-    }
 }

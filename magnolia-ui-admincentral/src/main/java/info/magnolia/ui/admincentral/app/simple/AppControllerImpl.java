@@ -167,6 +167,12 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         return runningApps.containsKey(name);
     }
 
+    @Override
+    public void focusCurrentApp(){
+        doFocus(currentApp);
+    }
+
+
     private AppContextImpl doStartIfNotAlreadyRunning(String name, Location location) {
         AppContextImpl appContext = runningApps.get(name);
         if (appContext == null) {

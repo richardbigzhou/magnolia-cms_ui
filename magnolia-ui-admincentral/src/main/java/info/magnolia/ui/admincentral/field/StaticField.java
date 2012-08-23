@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,37 +31,37 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.magnoliashell.gwt.client.event;
+package info.magnolia.ui.admincentral.field;
 
-import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShell.ViewportType;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.event.handler.ViewportCloseHandler;
+import org.vaadin.addon.customfield.CustomField;
 
-import com.google.gwt.event.shared.GwtEvent;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+
 
 /**
- * Event fired when the viewport is closed.
+ * A base custom field displaying a simple text.
  */
-public class ViewportCloseEvent extends GwtEvent<ViewportCloseHandler>{
+public class StaticField extends CustomField {
 
-    public static final Type<ViewportCloseHandler> TYPE = new Type<ViewportCloseHandler>();
+    private Label label;
 
-    private final ViewportType viewportType;
+    public StaticField() {
 
-    public ViewportCloseEvent(final ViewportType viewportType) {
-        this.viewportType = viewportType;
+        HorizontalLayout layout = new HorizontalLayout();
+        layout.setSpacing(true);
+        label = new Label();
+        layout.addComponent(label);
+        setCompositionRoot(layout);
+    }
+
+    public Label getLabel() {
+        return this.label;
     }
 
     @Override
-    protected void dispatch(ViewportCloseHandler handler) {
-        handler.onViewportClose(this);
+    public Class< ? > getType() {
+        return getPropertyDataSource().getType();
     }
 
-    @Override
-    public GwtEvent.Type<ViewportCloseHandler> getAssociatedType() {
-        return TYPE;
-    };
-
-    public ViewportType getViewportType() {
-        return viewportType;
-    }
 }

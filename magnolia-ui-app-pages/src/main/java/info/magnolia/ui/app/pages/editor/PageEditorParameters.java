@@ -33,17 +33,24 @@
  */
 package info.magnolia.ui.app.pages.editor;
 
+import info.magnolia.ui.app.pages.PagesApp;
+
+
 /**
  * PageEditorParameters.
  */
 public class PageEditorParameters {
 
-    private String contextPath;
-    private String nodePath;
+    private final String contextPath;
 
-    public PageEditorParameters(String contextPath, String nodePath) {
+    private final String nodePath;
+
+    private final String editingMode;
+
+    public PageEditorParameters(String contextPath, String nodePath, String editingMode) {
         this.contextPath = contextPath;
         this.nodePath = nodePath;
+        this.editingMode = editingMode;
     }
 
     public String getContextPath() {
@@ -52,5 +59,17 @@ public class PageEditorParameters {
 
     public String getNodePath() {
         return nodePath;
+    }
+
+    public String getEditingFlowMode() {
+        return editingMode;
+    }
+
+    public boolean isPreview() {
+        return PagesApp.PREVIEW_TOKEN.equals(editingMode) || PagesApp.PREVIEW_FULL_TOKEN.equals(editingMode);
+    }
+
+    public boolean isFullScreen() {
+        return PagesApp.PREVIEW_FULL_TOKEN.equals(editingMode) || PagesApp.EDITOR_FULL_TOKEN.equals(editingMode);
     }
 }

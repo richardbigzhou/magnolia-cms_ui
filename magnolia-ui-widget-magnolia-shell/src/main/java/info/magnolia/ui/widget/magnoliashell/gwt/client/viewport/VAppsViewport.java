@@ -37,6 +37,7 @@ import com.google.gwt.core.shared.GWT;
 import com.googlecode.mgwt.dom.client.recognizer.swipe.SwipeMoveEvent;
 import com.googlecode.mgwt.dom.client.recognizer.swipe.SwipeMoveHandler;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShell;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.event.ViewportCloseEvent;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -72,7 +73,7 @@ public class VAppsViewport extends VShellViewport {
             @Override
             public void onClick(ClickEvent event) {
                 if (closeWrapper.isOrHasChild((Element) event.getNativeEvent().getEventTarget().cast())) {
-                    getEventBus().fireEvent(new ViewportCloseEvent(VAppsViewport.this));
+                    getEventBus().fireEvent(new ViewportCloseEvent(VMagnoliaShell.ViewportType.APP_VIEWPORT));
                 }
             }
         }, ClickEvent.getType());

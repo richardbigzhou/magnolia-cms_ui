@@ -31,37 +31,43 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.magnoliashell.gwt.client.event;
+package info.magnolia.ui.admincentral.field.builder;
 
-import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShell.ViewportType;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.event.handler.ViewportCloseHandler;
+import info.magnolia.ui.admincentral.field.StaticField;
+import info.magnolia.ui.model.field.definition.FieldDefinition;
+import info.magnolia.ui.model.field.definition.StaticFieldDefinition;
 
-import com.google.gwt.event.shared.GwtEvent;
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.ui.Field;
 
 /**
- * Event fired when the viewport is closed.
+ * Creates and initializes an static field definition.
  */
-public class ViewportCloseEvent extends GwtEvent<ViewportCloseHandler>{
+public class StaticFieldBuilder extends AbstractFieldBuilder<StaticFieldDefinition> {
 
-    public static final Type<ViewportCloseHandler> TYPE = new Type<ViewportCloseHandler>();
-
-    private final ViewportType viewportType;
-
-    public ViewportCloseEvent(final ViewportType viewportType) {
-        this.viewportType = viewportType;
+    public StaticFieldBuilder(StaticFieldDefinition definition, Item relatedFieldItem) {
+        super(definition, relatedFieldItem);
     }
 
     @Override
-    protected void dispatch(ViewportCloseHandler handler) {
-        handler.onViewportClose(this);
+    protected Field buildField() {
+        StaticField field = new StaticField();
+        field.getLabel().setCaption("Field not yet supported");
+        return field;
+    }
+
+
+    /**
+     * Do not set datasource for a Static field.
+     */
+    @Override
+    public void setPropertyDataSource(Property property) {
     }
 
     @Override
-    public GwtEvent.Type<ViewportCloseHandler> getAssociatedType() {
-        return TYPE;
-    };
-
-    public ViewportType getViewportType() {
-        return viewportType;
+    protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {
+        return String.class;
     }
 }
+

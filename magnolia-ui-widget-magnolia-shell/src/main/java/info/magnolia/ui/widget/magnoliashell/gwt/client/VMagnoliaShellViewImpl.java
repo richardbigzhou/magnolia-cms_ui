@@ -303,10 +303,10 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
 
     @Override
     public void onViewportClose(ViewportCloseEvent event) {
-        final VShellViewport viewport = event.getViewport();
-        if (viewport == getShellAppViewport()) {
+        final VMagnoliaShell.ViewportType viewportType = event.getViewportType();
+        if (viewportType == ViewportType.SHELL_APP_VIEWPORT) {
             presenter.closeCurrentShellApp();
-        } else if (viewport == getAppViewport()) {
+        } else if (viewportType == ViewportType.APP_VIEWPORT) {
             presenter.closeCurrentApp();
         }
     }

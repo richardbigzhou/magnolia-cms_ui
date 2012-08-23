@@ -260,6 +260,20 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
     }
 
     @Override
+    public void closeCurrentShellApp() {
+        if (!getAppViewport().isEmpty()) {
+            // An app is open.
+            setActiveViewport(getAppViewport());
+            appController.focusCurrentApp();
+
+        } else {
+            // No apps are open.
+            String appLauncherNameLower = ShellAppType.APPLAUNCHER.name().toLowerCase();
+            navigateToShellApp(appLauncherNameLower, "");
+        }
+    }
+
+    @Override
     public void pushToClient() {
         synchronized (getApplication()) {
             getPusher().push();
