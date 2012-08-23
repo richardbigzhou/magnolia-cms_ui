@@ -89,8 +89,6 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
     private PageEditorParameters parameters;
 
-    private boolean preview;
-
     private String path;
 
     private String dialog;
@@ -305,16 +303,15 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
     public PageEditorView start() {
         view.setListener(this);
-        view.init(parameters.getContextPath(), parameters.getNodePath(), preview);
+        view.init(parameters.getContextPath(), parameters.getNodePath(), parameters.isPreview());
         setPath(parameters.getNodePath());
         // TODO 20120823 mgeljic get page dialog from page editor view
         setDialog("ui-pages-app:pages");
         return view;
     }
 
-    public void setParameters(PageEditorParameters parameters, boolean preview) {
+    public void setParameters(PageEditorParameters parameters) {
         this.parameters = parameters;
-        this.preview = preview;
     }
 
     public String getPath() {
@@ -331,10 +328,6 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
     public void setDialog(String dialog) {
         this.dialog = dialog;
-    }
-
-    public boolean isPreview() {
-        return preview;
     }
 
 }

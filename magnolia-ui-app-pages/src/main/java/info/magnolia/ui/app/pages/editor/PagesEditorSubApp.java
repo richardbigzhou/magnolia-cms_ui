@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.app.pages.editor;
 
-import static info.magnolia.ui.app.pages.PagesApp.PREVIEW_FULL_TOKEN;
-import static info.magnolia.ui.app.pages.PagesApp.PREVIEW_TOKEN;
 import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
@@ -93,13 +91,7 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
 
     private final WorkbenchActionFactory actionFactory;
 
-    private boolean fullPreview;
-
-    private boolean preview;
-
     private final AppContext appContext;
-
-    private boolean editorPreview;
 
     @Inject
     public PagesEditorSubApp(final AppContext appContext, final PagesEditorView view, final @Named("app") EventBus appEventBus, final @Named("subapp") EventBus subAppEventBus,
@@ -133,33 +125,17 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
     @Override
     public View start(Location location) {
 
-        String mode = getPreviewMode(location);
-
-        this.preview = PagesApp.PREVIEW_FULL_TOKEN.equals(mode) || PagesApp.PREVIEW_TOKEN.equals(mode);
-        this.fullPreview = isPreview() && PagesApp.PREVIEW_FULL_TOKEN.equals(mode);
-        this.editorPreview = isPreview() && !PagesApp.PREVIEW_FULL_TOKEN.equals(mode);
-
-        if (isPreview()) {
-            log.debug("Preview type detected is {}", isFullPreview() ? "full preview" : "editor preview");
-        }
-        if (isFullPreview()) {
-            return view;
-        }
-
-        String path = getEditorPath(location);
-        if (path == null)
-            path = "/";
-
-        setParameters(new PageEditorParameters(MgnlContext.getContextPath(), path));
+        initParameters(location);
 
         ActionbarDefinition actionbarDefinition = appDescriptor.getEditor().getActionbar();
         ActionbarView actionbar = actionbarPresenter.start(actionbarDefinition, actionFactory);
         view.setActionbarView(actionbar);
 
-        if (isEdit()) {
+        if (parameters.isPreview()) {
+            log.debug("Preview type detected is {}", parameters.isFullScreen() ? "full preview" : "normal preview");
+            showPreview();
+        } else {
             showEditor();
-        } else if (isEditorPreview()) {
-            showEditorPreview();
         }
 
         return view;
@@ -167,36 +143,29 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
 
     @Override
     public void locationChanged(Location location) {
-
-        String previewMode = getPreviewMode(location);
-
-        if (PREVIEW_TOKEN.equals(previewMode)) {
-            showEditorPreview();
-        } else if (PREVIEW_FULL_TOKEN.equals(previewMode)) {
-            showFullPreview(location);
+        initParameters(location);
+        if (parameters.isPreview()) {
+            if (parameters.isFullScreen()) {
+                showFullPreview(location);
+            } else {
+                showPreview();
+            }
         } else {
-            showEditor();
+            if (parameters.isFullScreen()) {
+                showFullEditor(location);
+            } else {
+                showEditor();
+            }
         }
     }
 
-    /**
-     * @return <code>true</code> if we are in preview mode, either editor preview or fullscreen
-     * preview. <code>false</code> otherwise.
-     */
-    public boolean isPreview() {
-        return preview;
-    }
-
-    public boolean isEdit() {
-        return !preview;
-    }
-
-    public boolean isFullPreview() {
-        return fullPreview;
-    }
-
-    public boolean isEditorPreview() {
-        return editorPreview;
+    private void initParameters(Location location) {
+        String editingMode = getEditingMode(location);
+        String path = getEditorPath(location);
+        if (path == null) {
+            path = "/";
+        }
+        setParameters(new PageEditorParameters(MgnlContext.getContextPath(), path, editingMode));
     }
 
     private void hideAllSections() {
@@ -209,48 +178,28 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
         actionbarPresenter.hideSection("componentActions");
     }
 
-    private void resetActionbar() {
-        // view.hideActionbar(false);
+    private void showEditor() {
         hideAllSections();
+        actionbarPresenter.showSection("pageActions");
+        pageEditorPresenter.setParameters(parameters);
+        view.setPageEditorView(pageEditorPresenter.start());
     }
 
-    private void showEditor() {
-        resetActionbar();
-        actionbarPresenter.hideSection("pagePreviewActions");
-        actionbarPresenter.showSection("pageActions");
-        pageEditorPresenter.setParameters(parameters, false);
+    private void showPreview() {
+        hideAllSections();
+        actionbarPresenter.showSection("pagePreviewActions");
+        pageEditorPresenter.setParameters(parameters);
         view.setPageEditorView(pageEditorPresenter.start());
     }
 
     private void showFullPreview(final Location defaultLocation) {
-        showEditorPreview();
+        showPreview();
         appContext.openSubAppFullScreen(PagesApp.EDITOR_TOKEN, PagesEditorSubApp.class, defaultLocation);
     }
 
-    private void showEditorPreview() {
-        resetActionbar();
-        actionbarPresenter.hideSection("pageActions");
-        actionbarPresenter.showSection("pagePreviewActions");
-        pageEditorPresenter.setParameters(parameters, true);
-        view.setPageEditorView(pageEditorPresenter.start());
-    }
-
-    private void showPageActions() {
-        actionbarPresenter.showSection("pageActions");
-        actionbarPresenter.hideSection("areaActions");
-        actionbarPresenter.hideSection("componentActions");
-    }
-
-    private void showAreaActions() {
-        actionbarPresenter.showSection("areaActions");
-        actionbarPresenter.hideSection("pageActions");
-        actionbarPresenter.hideSection("componentActions");
-    }
-
-    private void showComponentActions() {
-        actionbarPresenter.showSection("componentActions");
-        actionbarPresenter.hideSection("areaActions");
-        actionbarPresenter.hideSection("pageActions");
+    private void showFullEditor(final Location defaultLocation) {
+        showEditor();
+        appContext.openSubAppFullScreen(PagesApp.EDITOR_TOKEN, PagesEditorSubApp.class, defaultLocation);
     }
 
     private void bindHandlers() {
@@ -349,7 +298,7 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
         return parts.size() >= 2 ? parts.get(1) : null;
     }
 
-    private String getPreviewMode(Location location) {
+    private String getEditingMode(Location location) {
         List<String> parts = parseLocationToken(location);
         return parts.size() >= 3 ? parts.get(2) : null;
     }
