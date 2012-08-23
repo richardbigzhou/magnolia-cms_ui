@@ -124,7 +124,7 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
                 dropZIndeces();
                 final DIRECTION direction = event.getDirection();
                 final Widget newVisibleWidget = direction == DIRECTION.LEFT_TO_RIGHT ? getPreviousWidget() : getNextWidget();  
-                if (event.isDistanceReached()) {
+                if (event.isDistanceReached() && getWidgetCount() > 1) {
                     JQueryWrapper.select(getVisibleWidget()).animate(300, new AnimationSettings() {{
                         setProperty("left", getOffsetWidth());
                         setCallbacks(Callbacks.create(new JQueryCallback() {
@@ -139,7 +139,11 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
                         }));
                     }});
                 } else {
-                    JQueryWrapper.select(getVisibleWidget()).setCss("-webkit-transform", "translate3d(0,0,0)");
+                    final JQueryWrapper jq = JQueryWrapper.select(getVisibleWidget()); 
+                    jq.animate(300, new AnimationSettings() {{
+                        setProperty("left", 0);
+                        jq.setCss("-webkit-transform", "translate3d(0,0,0)");
+                    }});
                 }
             }
         });
@@ -147,7 +151,7 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
         delegate.addTouchCancelHandler(new TouchCancelHandler() {
             @Override
             public void onTouchCanceled(TouchCancelEvent event) {
-                JQueryWrapper.select(getVisibleWidget()).setCss("-webkit-transform", "translate3d(0,0,0)");
+                //JQueryWrapper.select(getVisibleWidget()).setCss("-webkit-transform", "translate3d(0,0,0)");
                 dropZIndeces();
             }
         });
@@ -158,9 +162,8 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
         final Widget previousWidget = getPreviousWidget();
         
         if (isNext) {
-            
-            previousWidget.getElement().getStyle().setVisibility(Visibility.VISIBLE);
             previousWidget.getElement().getStyle().setOpacity(1d);
+            previousWidget.getElement().getStyle().setVisibility(Visibility.VISIBLE);
             
             if (nextWidget != previousWidget) {
                 nextWidget.getElement().getStyle().setVisibility(Visibility.HIDDEN);
