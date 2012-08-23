@@ -62,6 +62,6 @@ public interface PageEditorView extends View {
 
         void sortComponent(String workspace, String parentPath, String source, String target, String order);
 
-        void selectNode(String workspace, String path, String dialog);
+        void selectNode(String workspace, String path, String params);
     }
 }
