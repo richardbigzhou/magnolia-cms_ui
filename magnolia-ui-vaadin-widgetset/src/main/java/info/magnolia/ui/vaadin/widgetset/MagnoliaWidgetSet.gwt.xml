@@ -23,5 +23,5 @@
     <set-configuration-property name="devModeRedirectEnabled" value="true" />
     <!-- uncomment to improve compile time -->
     <set-property name="user.agent" value="gecko1_8,safari" />
-    <set-property name="mgwt.os" value="ipad,desktop" />
+    <set-property name="mgwt.os" value="ipad,desktop,ipad_retina" />
 </module>
