@@ -1,0 +1,38 @@
+/*
+For Webkit - we use the actual fonts - because this matches the design
+because we are also using 3d transforms everywhere to correct other problems.
+*/
+
+
+/*
+Note that we are using lighter fonts here
+to match the Fireworks Anti-Aliasing: "Smooth Anti-Alias" used by the designers.
+*/
+
+/* first for IE 4–8 */
+@font-face {
+    font-family: DINWebPro-Medium;
+    src: url("fonts/DINWebPro.eot");
+}
+/* then for WOFF-capable browsers */
+@font-face {
+    font-family: DINWebPro-Medium;
+    src: url("fonts/DINWebPro.woff") format("woff");
+}
+
+/* first for IE 4–8 */
+@font-face {
+    font-family: DINWebPro;
+    src: url("fonts/DINWebPro-Light.eot");
+}
+/* then for WOFF-capable browsers */
+@font-face {
+    font-family: DINWebPro;
+    src: url("fonts/DINWebPro-Light.woff") format("woff");
+}
+
+/*
+body{
+    background-color:red;
+    background: -webkit-linear-gradient(top, red 0%, black 100%);
+}*/
