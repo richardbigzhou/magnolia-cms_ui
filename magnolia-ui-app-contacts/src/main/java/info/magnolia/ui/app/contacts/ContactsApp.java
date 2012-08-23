@@ -36,6 +36,7 @@ package info.magnolia.ui.app.contacts;
 import info.magnolia.ui.admincentral.app.content.ContentApp;
 import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
 import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 
 import javax.inject.Inject;
@@ -57,6 +58,12 @@ public class ContactsApp extends ContentApp {
 
     @Override
     public void start(Location location) {
-        appContext.openSubApp("main", ContactsMainSubApp.class, location, "main");
+
+        if (ContactsMainSubApp.supportsLocation(location)) {
+            appContext.openSubApp("main", ContactsMainSubApp.class, location, ContactsMainSubApp.getSubAppId(location));
+        } else {
+            Location mainLocation = ContactsMainSubApp.createLocation(null);
+            appContext.openSubApp("main", ContactsMainSubApp.class, mainLocation, ContactsMainSubApp.getSubAppId(mainLocation));
+        }
     }
 }
