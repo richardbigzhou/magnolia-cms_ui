@@ -120,8 +120,6 @@
     z-index:20;
 }
 
-
-
 .v-actionbar-toggle-icon {
     display:block;
     width:30px;
@@ -138,6 +136,30 @@
 .v-actionbar-toggle-icon.open{
     background-image: url("img/actionbar-toggle-close.png");
 }
+
+
+
+.v-actionbar-fullscreen {
+    position:absolute;
+    display:block;
+    right:0px;
+    bottom:40px;
+    width:40px;
+    height:40px;
+
+    padding-top:10px;
+    border:none;
+    background:#666 ;
+    text-align:center;
+
+    color:#fff;
+    font-size:24px;
+
+    z-index:20;
+}
+
+
+
 
 
 /****  Handling Tablet ****/
@@ -209,6 +231,16 @@
 .tablet .v-actionbar-toggle {
     width:69px;
     height:40px;
+}
+
+.tablet .v-actionbar-fullscreen {
+    right:40px;
+    width:20px;
+    height:30px;
+
+    padding-top:7px;
+
+    font-size:20px;
 }
 
 .tablet .v-action.col-0{

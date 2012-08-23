@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,45 +31,37 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.editor;
+package info.magnolia.ui.admincentral.field;
 
-import info.magnolia.ui.app.pages.PagesApp;
+import org.vaadin.addon.customfield.CustomField;
+
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 
 
 /**
- * PageEditorParameters.
+ * A base custom field displaying a simple text.
  */
-public class PageEditorParameters {
+public class StaticField extends CustomField {
 
-    private final String contextPath;
+    private Label label;
 
-    private final String nodePath;
+    public StaticField() {
 
-    private final String editingMode;
-
-    public PageEditorParameters(String contextPath, String nodePath, String editingMode) {
-        this.contextPath = contextPath;
-        this.nodePath = nodePath;
-        this.editingMode = editingMode;
+        HorizontalLayout layout = new HorizontalLayout();
+        layout.setSpacing(true);
+        label = new Label();
+        layout.addComponent(label);
+        setCompositionRoot(layout);
     }
 
-    public String getContextPath() {
-        return contextPath;
+    public Label getLabel() {
+        return this.label;
     }
 
-    public String getNodePath() {
-        return nodePath;
+    @Override
+    public Class< ? > getType() {
+        return getPropertyDataSource().getType();
     }
 
-    public String getEditingFlowMode() {
-        return editingMode;
-    }
-
-    public boolean isPreview() {
-        return PagesApp.PREVIEW_TOKEN.equals(editingMode) || PagesApp.PREVIEW_FULL_TOKEN.equals(editingMode);
-    }
-
-    public boolean isFullScreen() {
-        return PagesApp.PREVIEW_FULL_TOKEN.equals(editingMode) || PagesApp.EDITOR_FULL_TOKEN.equals(editingMode);
-    }
 }

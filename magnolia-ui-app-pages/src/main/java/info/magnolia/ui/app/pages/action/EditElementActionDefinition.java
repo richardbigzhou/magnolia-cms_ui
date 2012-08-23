@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,45 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.editor;
+package info.magnolia.ui.app.pages.action;
 
-import info.magnolia.ui.app.pages.PagesApp;
+import info.magnolia.ui.admincentral.dialog.action.EditDialogActionDefinition;
 
 
 /**
- * PageEditorParameters.
+ * Defines an action for editing an element (page/area/component) of the page editor.
+ * 
+ * Does not have an concrete action implementation, but is intercepted by the editor subapp to
+ * delegate execution to PageEditorPresenter.
  */
-public class PageEditorParameters {
+public class EditElementActionDefinition extends EditDialogActionDefinition {
 
-    private final String contextPath;
-
-    private final String nodePath;
-
-    private final String editingMode;
-
-    public PageEditorParameters(String contextPath, String nodePath, String editingMode) {
-        this.contextPath = contextPath;
-        this.nodePath = nodePath;
-        this.editingMode = editingMode;
-    }
-
-    public String getContextPath() {
-        return contextPath;
-    }
-
-    public String getNodePath() {
-        return nodePath;
-    }
-
-    public String getEditingFlowMode() {
-        return editingMode;
-    }
-
-    public boolean isPreview() {
-        return PagesApp.PREVIEW_TOKEN.equals(editingMode) || PagesApp.PREVIEW_FULL_TOKEN.equals(editingMode);
-    }
-
-    public boolean isFullScreen() {
-        return PagesApp.PREVIEW_FULL_TOKEN.equals(editingMode) || PagesApp.EDITOR_FULL_TOKEN.equals(editingMode);
-    }
 }
