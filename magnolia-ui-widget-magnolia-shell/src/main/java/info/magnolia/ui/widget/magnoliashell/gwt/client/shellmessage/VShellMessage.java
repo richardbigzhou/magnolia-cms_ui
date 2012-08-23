@@ -155,7 +155,7 @@ public abstract class VShellMessage extends HTML {
     public void onBrowserEvent(Event event) {
         super.onBrowserEvent(event);
         int eventCode = event.getTypeInt();
-        if (eventCode == Event.ONMOUSEDOWN) {
+        if (eventCode == Event.ONTOUCHSTART) {
             final Element target = event.getEventTarget().cast();
             if (target == closeEl) {
                 close();

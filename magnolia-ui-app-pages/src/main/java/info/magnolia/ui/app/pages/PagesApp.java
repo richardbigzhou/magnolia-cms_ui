@@ -41,13 +41,8 @@ import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import javax.inject.Inject;
 
-import org.apache.commons.lang.StringUtils;
 
 
 /**
@@ -74,46 +69,24 @@ public class PagesApp extends ContentApp {
     @Override
     public void start(Location location) {
 
-        Location mainLocation;
-        String selectedItemPath = getSelectedItemPath(location);
-        if (selectedItemPath != null) {
-            mainLocation = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appContext.getName(), "main:" + selectedItemPath);
+        if (PagesMainSubApp.supportsLocation(location)) {
+            appContext.openSubApp("main", PagesMainSubApp.class, location, PagesMainSubApp.getSubAppId(location));
         } else {
-            mainLocation = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appContext.getName(), "main");
+            DefaultLocation mainLocation = PagesMainSubApp.createLocation(null);
+            appContext.openSubApp("main", PagesMainSubApp.class, mainLocation, PagesMainSubApp.getSubAppId(mainLocation));
+
+            if (PagesEditorSubApp.supportsLocation(location)) {
+                appContext.openSubApp(EDITOR_TOKEN, PagesEditorSubApp.class, location, PagesEditorSubApp.getSubAppId(location));
+            }
         }
-
-        appContext.openSubApp("main", PagesMainSubApp.class, mainLocation, "main");
-
-        // TODO tmattsson - we should start an editor as well if the location is for an editor
     }
 
     @Override
     public void locationChanged(Location location) {
 
-        List<String> pathParams = parsePathParamsFromToken(location);
-        if (pathParams.size() < 2) {
-            return;
+        if (PagesEditorSubApp.supportsLocation(location)) {
+            appContext.openSubApp(EDITOR_TOKEN, PagesEditorSubApp.class, location, PagesEditorSubApp.getSubAppId(location));
         }
-
-        final String subAppName = pathParams.get(0);
-        final String subAppId = subAppName + ";" + pathParams.get(1);
-
-        if (EDITOR_TOKEN.equals(subAppName)) {
-            appContext.openSubApp(PagesApp.EDITOR_TOKEN, PagesEditorSubApp.class, location, subAppId);
-        }
-    }
-
-    private List<String> parsePathParamsFromToken(Location location) {
-        String token = ((DefaultLocation) location).getToken();
-        return new ArrayList<String>(Arrays.asList(token.split(";")));
-    }
-
-    private String getSelectedItemPath(Location location) {
-        DefaultLocation defaultLocation = (DefaultLocation) location;
-        if (defaultLocation.getToken().startsWith("main:")) {
-            return StringUtils.removeStart(defaultLocation.getToken(), "main:");
-        }
-        return null;
     }
 
     @Override
