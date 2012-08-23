@@ -87,16 +87,14 @@ public class PulseViewImpl implements PulseView {
 
         this.messagesView = messagesView;
         tabsheet.addStyleName("v-shell-tabsheet-light");
-        final ShellTab stats = tabsheet.addTab("stats".toUpperCase(), createStatsLayout());
-        final ShellTab messages = tabsheet.addTab("messages".toUpperCase(), (ComponentContainer) messagesView.asVaadinComponent());
         final ShellTab dashboard = tabsheet.addTab("dashboard".toUpperCase(), createPulseFeedLayout());
+        final ShellTab messages = tabsheet.addTab("messages".toUpperCase(), (ComponentContainer) messagesView.asVaadinComponent());
 
         tabsheet.addStyleName("v-pulse");
         tabsheet.setSizeFull();
         tabsheet.setWidth("900px");
 
         m.put(PulseTabType.DASHBOARD, dashboard);
-        m.put(PulseTabType.STATISTIC, stats);
         m.put(PulseTabType.MESSAGES, messages);
     }
 
@@ -149,12 +147,5 @@ public class PulseViewImpl implements PulseView {
         pulseFeed.getLeftContainer().addComponent(new ActivityItem("Test", "Lorem ipsum...", "Say hi", "green", new Date()));
         pulseFeed.getLeftContainer().addComponent(new ActivityItem("Test", "Lorem ipsum once again", "Say hi", "red", new Date()));
         return pulseFeed;
-    }
-
-    private Layout createStatsLayout() {
-        final CssLayout layout = new CssLayout();
-        layout.setSizeFull();
-        layout.addComponent(new Label("Test2".toUpperCase()));
-        return layout;
     }
 }
