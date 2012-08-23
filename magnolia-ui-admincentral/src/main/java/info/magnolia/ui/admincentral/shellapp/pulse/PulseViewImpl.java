@@ -48,9 +48,7 @@ import org.apache.commons.collections.bidimap.DualHashBidiMap;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
-import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Layout;
 
 
 /**
