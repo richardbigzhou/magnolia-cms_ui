@@ -31,45 +31,43 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.editor;
+package info.magnolia.ui.admincentral.field.builder;
 
-import info.magnolia.ui.app.pages.PagesApp;
+import info.magnolia.ui.admincentral.field.StaticField;
+import info.magnolia.ui.model.field.definition.FieldDefinition;
+import info.magnolia.ui.model.field.definition.StaticFieldDefinition;
 
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.ui.Field;
 
 /**
- * PageEditorParameters.
+ * Creates and initializes an static field definition.
  */
-public class PageEditorParameters {
+public class StaticFieldBuilder extends AbstractFieldBuilder<StaticFieldDefinition> {
 
-    private final String contextPath;
-
-    private final String nodePath;
-
-    private final String editingMode;
-
-    public PageEditorParameters(String contextPath, String nodePath, String editingMode) {
-        this.contextPath = contextPath;
-        this.nodePath = nodePath;
-        this.editingMode = editingMode;
+    public StaticFieldBuilder(StaticFieldDefinition definition, Item relatedFieldItem) {
+        super(definition, relatedFieldItem);
     }
 
-    public String getContextPath() {
-        return contextPath;
+    @Override
+    protected Field buildField() {
+        StaticField field = new StaticField();
+        field.getLabel().setCaption("Field not yet supported");
+        return field;
     }
 
-    public String getNodePath() {
-        return nodePath;
+
+    /**
+     * Do not set datasource for a Static field.
+     */
+    @Override
+    public void setPropertyDataSource(Property property) {
     }
 
-    public String getEditingFlowMode() {
-        return editingMode;
-    }
-
-    public boolean isPreview() {
-        return PagesApp.PREVIEW_TOKEN.equals(editingMode) || PagesApp.PREVIEW_FULL_TOKEN.equals(editingMode);
-    }
-
-    public boolean isFullScreen() {
-        return PagesApp.PREVIEW_FULL_TOKEN.equals(editingMode) || PagesApp.EDITOR_FULL_TOKEN.equals(editingMode);
+    @Override
+    protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {
+        return String.class;
     }
 }
+

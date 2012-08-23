@@ -688,10 +688,7 @@
                   <sv:value>b19be1e2-3e9e-4f2e-bec6-6d78bcd8ebca</sv:value>
                 </sv:property>
                 <sv:property sv:name="class" sv:type="String">
-                  <sv:value>info.magnolia.ui.admincentral.dialog.action.EditDialogActionDefinition</sv:value>
-                </sv:property>
-                <sv:property sv:name="dialogName" sv:type="String">
-                  <sv:value>ui-pages-app:pages</sv:value>
+                  <sv:value>info.magnolia.ui.app.pages.action.EditElementActionDefinition</sv:value>
                 </sv:property>
                 <sv:property sv:name="jcr:createdBy" sv:type="String">
                   <sv:value>admin</sv:value>
@@ -713,7 +710,7 @@
                     <sv:value>2010-09-08T15:04:05.467+02:00</sv:value>
                   </sv:property>
                   <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-                    <sv:value>2012-08-20T11:40:12.107+02:00</sv:value>
+                    <sv:value>2012-08-23T13:53:19.025+02:00</sv:value>
                   </sv:property>
                 </sv:node>
               </sv:node>
@@ -2745,10 +2742,7 @@
                   <sv:value>9f8a251b-a667-4c6a-b51e-f2422659aa6e</sv:value>
                 </sv:property>
                 <sv:property sv:name="class" sv:type="String">
-                  <sv:value>info.magnolia.ui.admincentral.dialog.action.EditDialogActionDefinition</sv:value>
-                </sv:property>
-                <sv:property sv:name="dialogName" sv:type="String">
-                  <sv:value>ui-pages-app:area</sv:value>
+                  <sv:value>info.magnolia.ui.app.pages.action.EditElementActionDefinition</sv:value>
                 </sv:property>
                 <sv:property sv:name="jcr:createdBy" sv:type="String">
                   <sv:value>admin</sv:value>
@@ -2770,7 +2764,7 @@
                     <sv:value>2010-09-08T15:04:05.467+02:00</sv:value>
                   </sv:property>
                   <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-                    <sv:value>2012-08-20T17:15:26.963+02:00</sv:value>
+                    <sv:value>2012-08-23T13:53:45.255+02:00</sv:value>
                   </sv:property>
                 </sv:node>
               </sv:node>
@@ -3608,10 +3602,7 @@
                   <sv:value>7d947fbb-ad78-4d10-bacf-7724572c5915</sv:value>
                 </sv:property>
                 <sv:property sv:name="class" sv:type="String">
-                  <sv:value>info.magnolia.ui.admincentral.dialog.action.EditDialogActionDefinition</sv:value>
-                </sv:property>
-                <sv:property sv:name="dialogName" sv:type="String">
-                  <sv:value>ui-pages-app:area</sv:value>
+                  <sv:value>info.magnolia.ui.app.pages.action.EditElementActionDefinition</sv:value>
                 </sv:property>
                 <sv:property sv:name="jcr:createdBy" sv:type="String">
                   <sv:value>admin</sv:value>
@@ -3633,7 +3624,7 @@
                     <sv:value>2010-09-08T15:04:05.467+02:00</sv:value>
                   </sv:property>
                   <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-                    <sv:value>2012-08-20T17:13:04.672+02:00</sv:value>
+                    <sv:value>2012-08-23T12:38:25.407+02:00</sv:value>
                   </sv:property>
                 </sv:node>
               </sv:node>
@@ -4305,10 +4296,7 @@
                   <sv:value>485d6064-a24c-4a96-8165-26764ca62561</sv:value>
                 </sv:property>
                 <sv:property sv:name="class" sv:type="String">
-                  <sv:value>info.magnolia.ui.admincentral.dialog.action.EditDialogActionDefinition</sv:value>
-                </sv:property>
-                <sv:property sv:name="dialogName" sv:type="String">
-                  <sv:value>ui-pages-app:component</sv:value>
+                  <sv:value>info.magnolia.ui.app.pages.action.EditElementActionDefinition</sv:value>
                 </sv:property>
                 <sv:property sv:name="jcr:createdBy" sv:type="String">
                   <sv:value>admin</sv:value>
@@ -4330,7 +4318,7 @@
                     <sv:value>2010-09-08T15:04:05.467+02:00</sv:value>
                   </sv:property>
                   <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-                    <sv:value>2012-08-20T13:04:17.873+02:00</sv:value>
+                    <sv:value>2012-08-23T12:37:53.044+02:00</sv:value>
                   </sv:property>
                 </sv:node>
               </sv:node>
