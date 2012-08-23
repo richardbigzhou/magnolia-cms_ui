@@ -168,14 +168,10 @@ public class PageEditorPresenter implements PageEditorView.Listener {
             setDialog(NEW_COMPONENT_DIALOG);
 
             // perform custom chaining of dialogs
-            // createDialogAction(item, dialogPresenter);
-
             dialogPresenter.start(item, new MagnoloaDialogPresenter.Presenter.Callback() {
 
                 @Override
                 public void onSuccess(String actionName) {
-                    // eventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(),
-                    // item.getItemId()));
                     JcrNodeAdapter myItem = item;
                     String templateId = String.valueOf(myItem.getItemProperty("MetaData/mgnl:template").getValue());
 
