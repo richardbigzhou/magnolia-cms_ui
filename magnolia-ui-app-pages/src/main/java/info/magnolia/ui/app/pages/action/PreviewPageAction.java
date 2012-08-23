@@ -35,6 +35,7 @@ package info.magnolia.ui.app.pages.action;
 
 import com.google.inject.Inject;
 import info.magnolia.ui.app.pages.PagesApp;
+import info.magnolia.ui.app.pages.editor.PagesEditorSubApp;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.model.action.ActionBase;
@@ -76,10 +77,16 @@ public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
     @Override
     public void execute() throws ActionExecutionException {
         try {
-            final String path = nodeToPreview.getPath();
-            final String token = PagesApp.EDITOR_TOKEN + ";" + path + ":" + (full ? PagesApp.PREVIEW_FULL_TOKEN: PagesApp.PREVIEW_TOKEN) ;
-            log.debug("token is {}", token);
-            locationController.goTo(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages", token));
+
+            final String editorPath = nodeToPreview.getPath();
+            final String previewMode = full ? PagesApp.PREVIEW_FULL_TOKEN : PagesApp.PREVIEW_TOKEN;
+
+            DefaultLocation location = PagesEditorSubApp.createLocation(editorPath, previewMode);
+
+            log.debug("token is {}", location.getToken());
+
+            locationController.goTo(location);
+
         } catch (RepositoryException e) {
             throw new ActionExecutionException(e);
         }
