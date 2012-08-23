@@ -37,6 +37,7 @@ import info.magnolia.ui.widget.jquerywrapper.gwt.client.AnimationSettings;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.Callbacks;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryCallback;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShell;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.event.ViewportCloseEvent;
 
 import java.util.Iterator;
@@ -90,7 +91,7 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
             @Override
             public void onClick(ClickEvent event) {
                 if (closeWrapper.isOrHasChild((Element) event.getNativeEvent().getEventTarget().cast())) {
-                    getEventBus().fireEvent(new ViewportCloseEvent(VAppsViewport.this));
+                    getEventBus().fireEvent(new ViewportCloseEvent(VMagnoliaShell.ViewportType.APP_VIEWPORT));
                 }
             }
         }, ClickEvent.getType());
