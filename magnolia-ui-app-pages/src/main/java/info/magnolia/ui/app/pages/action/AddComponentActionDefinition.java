@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,50 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.editor.gwt.client.event;
+package info.magnolia.ui.app.pages.action;
 
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.web.bindery.event.shared.Event;
+import info.magnolia.ui.model.action.ActionDefinition;
 
 
 /**
- * SelectElementEvent.
+ * Defines an action for adding a component in an area of the page editor.
+ * 
+ * Does not have a concrete action implementation, but is intercepted by the editor subapp to
+ * delegate execution to PageEditorPresenter.
  */
-public class SelectElementEvent extends Event<SelectElementEventHandler> {
+public class AddComponentActionDefinition implements ActionDefinition {
 
-    public static GwtEvent.Type<SelectElementEventHandler> TYPE = new GwtEvent.Type<SelectElementEventHandler>();
-
-    private final String path;
-
-    private final String workspace;
-
-    private final String params;
-
-    public SelectElementEvent(String path, String workspace, String params) {
-        this.path = path;
-        this.workspace = workspace;
-        this.params = params;
-    }
-
-    @Override
-    public Type<SelectElementEventHandler> getAssociatedType() {
-        return TYPE;
-    }
-
-    @Override
-    protected void dispatch(SelectElementEventHandler handler) {
-        handler.onSelectElement(this);
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public String getWorkspace() {
-        return workspace;
-    }
-
-    public String getParams() {
-        return params;
-    }
 }
