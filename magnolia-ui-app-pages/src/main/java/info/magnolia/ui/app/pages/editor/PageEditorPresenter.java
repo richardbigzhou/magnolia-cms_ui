@@ -166,7 +166,9 @@ public class PageEditorPresenter implements PageEditorView.Listener {
                         TemplateDefinition templateDef = templateDefinitionRegistry.getTemplateDefinition(templateId);
                         String dialog = templateDef.getDialog();
                         editComponent(item.getWorkspace(), item.getNode().getPath(), dialog);
-                    } catch (Exception e) {
+                    } catch (RepositoryException e) {
+                        log.error("Exception caught: {}", e.getMessage(), e);
+                    } catch (RegistrationException e) {
                         log.error("Exception caught: {}", e.getMessage(), e);
                     } finally {
                         dialogPresenter.closeDialog();
