@@ -39,6 +39,7 @@ import info.magnolia.ui.admincentral.content.view.ContentView;
 import info.magnolia.ui.admincentral.tree.model.TreeModel;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import com.vaadin.data.Item;
@@ -61,23 +62,32 @@ public class TreeViewImpl implements TreeView {
 
     private ContentView.Listener listener;
 
+    private Set<?> defaultValue = null;
+    
     public TreeViewImpl(WorkbenchDefinition workbenchDefinition, TreeModel treeModel,ComponentProvider componentProvider) {
 
         jcrBrowser = new MagnoliaTreeTable(workbenchDefinition, treeModel, componentProvider);
-        // next two lines are required to make the browser (TreeTable) react on selection change via
-        // mouse
         jcrBrowser.setImmediate(true);
         jcrBrowser.setNullSelectionAllowed(false);
         jcrBrowser.setSizeFull();
+        
         jcrBrowser.addListener(new TreeTable.ValueChangeListener() {
 
             @Override
             public void valueChange(ValueChangeEvent event) {
+                if (defaultValue == null && event.getProperty().getValue() instanceof Set) {
+                    defaultValue = (Set<?>)event.getProperty().getValue();
+                }
+                if (asVaadinComponent().getApplication() != null) {
+                    asVaadinComponent().getApplication().getMainWindow().showNotification(
+                            event.getProperty().getValue() + " " + event.getProperty().getValue().getClass().getCanonicalName());                    
+                }
                 final Object value = event.getProperty().getValue();
                 if (value instanceof String) {
                     presenterOnItemSelection(String.valueOf(value));
                 } else if (value instanceof Set) {
-                    final Set< ? > set = (Set< ? >) value;
+                    final Set< ? > set = new HashSet<Object>((Set< ? >) value);
+                    set.removeAll(defaultValue);
                     if (set.size() == 1) {
                         presenterOnItemSelection(String.valueOf(set.iterator().next()));
                     }
