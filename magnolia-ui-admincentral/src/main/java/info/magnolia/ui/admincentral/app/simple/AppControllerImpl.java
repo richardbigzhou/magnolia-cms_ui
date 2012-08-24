@@ -172,6 +172,10 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         doFocus(currentApp);
     }
 
+    public Location getCurrentLocation(String name) {
+        AppContextImpl appContext = runningApps.get(name);
+        return appContext == null ? null : appContext.getCurrentLocation();
+    }
 
     private AppContextImpl doStartIfNotAlreadyRunning(String name, Location location) {
         AppContextImpl appContext = runningApps.get(name);
@@ -241,6 +245,10 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             nextAppContext.onLocationUpdate(newLocation);
         } else {
             nextAppContext = doStartIfNotAlreadyRunning(nextApp.getName(), newLocation);
+        }
+
+        if (currentApp != nextAppContext) {
+            appHistory.addFirst(nextAppContext);
         }
 
         viewPort.setView(nextAppContext.getView());
@@ -374,9 +382,11 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             // If the location targets an existing sub app then activate it and update its location
             SubAppContext subAppContext = subAppContexts.get(subAppId);
             if (subAppContext != null) {
-                appFrameView.setActiveTab(subAppContext.tab);
                 subAppContext.location = location;
                 subAppContext.subApp.locationChanged(location);
+                if (subAppContext.tab != appFrameView.getActiveTab()) {
+                    appFrameView.setActiveTab(subAppContext.tab);
+                }
                 return;
             }
 
@@ -390,13 +400,9 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
         @Override
         public void onActiveTabSet(ShellTab tab) {
-            SubAppContext activeSubAppContext = getActiveSubAppContext();
-            if (activeSubAppContext == null) {
-                log.warn("There's no active sub app currently set");
-                return;
-            }
-            if (activeSubAppContext.tab == tab) {
-                locationController.goTo(activeSubAppContext.location);
+            SubAppContext subAppContext = getSubAppContextForTab(tab);
+            if (subAppContext != null) {
+                locationController.goTo(subAppContext.location);
             }
         }
 
