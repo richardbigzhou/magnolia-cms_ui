@@ -40,9 +40,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
@@ -101,8 +103,15 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements VMagnoliaTab
     public void setActiveTab(final VMagnoliaTab tab) {
         showAllTabContents(false);
         tab.getElement().getStyle().setDisplay(Display.BLOCK);
-        activeTab = tab;
+        tab.getElement().getStyle().setVisibility(Visibility.HIDDEN);
         presenter.updateLayout();
+        new Timer() {
+            @Override
+            public void run() {
+                activeTab = tab;
+                tab.getElement().getStyle().setVisibility(Visibility.VISIBLE);
+            }
+        }.schedule(300);
     }
 
     @Override

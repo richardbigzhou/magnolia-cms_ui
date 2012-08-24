@@ -53,7 +53,7 @@ import com.googlecode.mgwt.dom.client.recognizer.swipe.SwipeStartEvent;
  */
 public class MagnoliaSwipeRecognizer implements TouchHandler {
 
-    private static final int DEFAULT_TOUCH_TRESHOLD = 1; 
+    private static final int DEFAULT_TOUCH_TRESHOLD = 3; 
     
     private static EventPropagator DEFAULT_EVENT_PROPAGATOR;
 

@@ -431,11 +431,11 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
         @Override
         public void openSubAppFullScreen(String name, Class<? extends SubApp> subAppClass, Location location) {
-            ComponentProvider subAppComponentProvider = createSubAppComponentProvider(appDescriptor.getName(), name, appComponentProvider);
+            //ComponentProvider subAppComponentProvider = createSubAppComponentProvider(appDescriptor.getName(), name, appComponentProvider);
 
-            SubApp subApp = subAppComponentProvider.newInstance(subAppClass);
+            //SubApp subApp = subAppComponentProvider.newInstance(subAppClass);
 
-            View view = subApp.start(location);
+            //View view = subApp.start(location);
 
             appFrameView.asVaadinComponent().setFullscreen(true);
             //shell.showFullscreen(view);
