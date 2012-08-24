@@ -80,7 +80,7 @@ public class SaveContactDialogAction extends SaveDialogAction {
     private void generateUniqueNodeNameForContact(final Node node) throws RepositoryException {
         String firstName = node.getProperty("firstName").getString();
         String lastName =  node.getProperty("lastName").getString();
-        String newNodeName = (firstName.charAt(0) + lastName).toLowerCase();
+        String newNodeName = (firstName.charAt(0) + lastName.replaceAll("\\s+", "")).toLowerCase();
         String parentPath = node.getParent().getPath();
         String newNodeAbsPath = NodeUtil.combinePathAndName(parentPath, newNodeName);
         int i = 1;
