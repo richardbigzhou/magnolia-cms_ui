@@ -319,7 +319,7 @@ public class DialogMigrationTask  extends AbstractTask {
     }
 
     /**
-     * Insert the toInsert ("/tabs") before the last /
+     * Insert the toInsert ("/tabs") before the last /.
      */
     private String insertBeforeLastSlash(String reference, String toInsert) {
         String beging = reference.substring(0, reference.lastIndexOf("/"));
