@@ -33,10 +33,19 @@
  */
 package info.magnolia.ui.app.contacts;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.inject.Inject;
+import javax.inject.Named;
 
+import org.apache.commons.lang.StringUtils;
+
+import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
 import info.magnolia.ui.framework.app.AbstractSubApp;
+import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.view.View;
 
@@ -49,9 +58,16 @@ public class ContactsMainSubApp extends AbstractSubApp {
     private ContentWorkbenchPresenter workbench;
 
     @Inject
-    public ContactsMainSubApp(ContactsView view, ContentWorkbenchPresenter workbench) {
+    public ContactsMainSubApp(final AppContext appContext, ContactsView view, ContentWorkbenchPresenter workbench, @Named("subapp") EventBus subAppEventBus) {
         this.view = view;
         this.workbench = workbench;
+        subAppEventBus.addHandler(ItemSelectedEvent.class, new ItemSelectedEvent.Handler() {
+
+            @Override
+            public void onItemSelected(ItemSelectedEvent event) {
+                appContext.setSubAppLocation(ContactsMainSubApp.this, createLocation(event.getPath()));
+            }
+        });
     }
 
     @Override
@@ -62,6 +78,75 @@ public class ContactsMainSubApp extends AbstractSubApp {
     @Override
     public View start(Location location) {
         view.setWorkbenchView(workbench.start());
+        String selectedItemPath = getSelectedItemPath(location);
+        if (selectedItemPath != null) {
+            workbench.selectPath(selectedItemPath);
+        }
         return view;
+    }
+
+    @Override
+    public void locationChanged(Location location) {
+        String selectedItemPath = getSelectedItemPath(location);
+        if (selectedItemPath != null) {
+            workbench.selectPath(selectedItemPath);
+        }
+    }
+
+    // Location token handling, format is main:<selectedItemPath>
+
+    public static boolean supportsLocation(Location location) {
+        List<String> parts = parseLocationToken(location);
+        return parts.size() >= 1 && parts.get(0).equals("main");
+    }
+
+    public static DefaultLocation createLocation(String selectedItemPath) {
+        String token = "main";
+        if (StringUtils.isNotEmpty(selectedItemPath)) {
+            token = token + ":" + selectedItemPath;
+        }
+        return new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "contacts", token);
+    }
+
+    public static String getSubAppId(Location location) {
+        List<String> parts = parseLocationToken(location);
+        return parts.get(0);
+    }
+
+    public static String getSelectedItemPath(Location location) {
+        List<String> parts = parseLocationToken(location);
+        return parts.size() >= 2 ? parts.get(1) : null;
+    }
+
+    private static List<String> parseLocationToken(Location location) {
+
+        ArrayList<String> parts = new ArrayList<String>();
+
+        DefaultLocation l = (DefaultLocation) location;
+        String token = l.getToken();
+
+        // "main"
+        int i = token.indexOf(':');
+        if (i == -1) {
+            if (!token.equals("main")) {
+                return new ArrayList<String>();
+            }
+            parts.add(token);
+            return parts;
+        }
+
+        String subAppName = token.substring(0, i);
+        if (!subAppName.equals("main")) {
+            return new ArrayList<String>();
+        }
+        parts.add(subAppName);
+        token = token.substring(i + 1);
+
+        // selectedItemPath
+        if (token.length() > 0) {
+            parts.add(token);
+        }
+
+        return parts;
     }
 }

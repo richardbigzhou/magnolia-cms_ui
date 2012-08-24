@@ -31,38 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts;
+package info.magnolia.ui.app.pages.action;
 
-import info.magnolia.ui.admincentral.app.content.ContentApp;
-import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
-import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.location.Location;
-
-import javax.inject.Inject;
+import info.magnolia.ui.model.action.ActionDefinition;
 
 
 /**
- * The Contacts app, extending base content app.
- *
+ * Defines an action for adding a component in an area of the page editor.
+ * 
+ * Does not have a concrete action implementation, but is intercepted by the editor subapp to
+ * delegate execution to PageEditorPresenter.
  */
-public class ContactsApp extends ContentApp {
+public class AddComponentActionDefinition implements ActionDefinition {
 
-    private final AppContext appContext;
-
-    @Inject
-    public ContactsApp(AppContext appContext, DialogPresenterFactory dialogPresenterFactory) {
-        super(dialogPresenterFactory);
-        this.appContext = appContext;
-    }
-
-    @Override
-    public void start(Location location) {
-
-        if (ContactsMainSubApp.supportsLocation(location)) {
-            appContext.openSubApp("main", ContactsMainSubApp.class, location, ContactsMainSubApp.getSubAppId(location));
-        } else {
-            Location mainLocation = ContactsMainSubApp.createLocation(null);
-            appContext.openSubApp("main", ContactsMainSubApp.class, mainLocation, ContactsMainSubApp.getSubAppId(mainLocation));
-        }
-    }
 }

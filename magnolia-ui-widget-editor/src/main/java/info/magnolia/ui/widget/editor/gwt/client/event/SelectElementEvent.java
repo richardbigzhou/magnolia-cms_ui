@@ -48,12 +48,12 @@ public class SelectElementEvent extends Event<SelectElementEventHandler> {
 
     private final String workspace;
 
-    private final String dialog;
+    private final String params;
 
-    public SelectElementEvent(String path, String workspace, String dialog) {
+    public SelectElementEvent(String path, String workspace, String params) {
         this.path = path;
         this.workspace = workspace;
-        this.dialog = dialog;
+        this.params = params;
     }
 
     @Override
@@ -74,7 +74,7 @@ public class SelectElementEvent extends Event<SelectElementEventHandler> {
         return workspace;
     }
 
-    public String getDialog() {
-        return dialog;
+    public String getParams() {
+        return params;
     }
 }
