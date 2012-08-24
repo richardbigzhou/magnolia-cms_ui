@@ -86,4 +86,12 @@ public class SaveDialogAction extends ActionBase<SaveDialogActionDefinition> {
         }
     }
 
+    protected MagnoloaDialogPresenter.Presenter getPresenter() {
+        return presenter;
+    }
+
+    protected Item getItem() {
+        return item;
+    }
+
 }

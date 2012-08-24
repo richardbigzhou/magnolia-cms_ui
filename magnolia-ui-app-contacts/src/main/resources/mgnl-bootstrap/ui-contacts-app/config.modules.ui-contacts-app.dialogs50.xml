@@ -155,129 +155,6 @@
               <sv:value>2012-07-27T12:08:46.438+02:00</sv:value>
             </sv:property>
           </sv:node>
-          <sv:node sv:name="userId">
-            <sv:property sv:name="jcr:primaryType" sv:type="Name">
-              <sv:value>mgnl:contentNode</sv:value>
-            </sv:property>
-            <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
-              <sv:value>mix:lockable</sv:value>
-            </sv:property>
-            <sv:property sv:name="jcr:uuid" sv:type="String">
-              <sv:value>30dd5c8f-0caa-451e-ae84-f17ed93510e9</sv:value>
-            </sv:property>
-            <sv:property sv:name="class" sv:type="String">
-              <sv:value>info.magnolia.ui.model.field.definition.TextFieldDefinition</sv:value>
-            </sv:property>
-            <sv:property sv:name="description" sv:type="String">
-              <sv:value>Enter the User Id. In Fact the User Name.  </sv:value>
-            </sv:property>
-            <sv:property sv:name="jcr:createdBy" sv:type="String">
-              <sv:value>admin</sv:value>
-            </sv:property>
-            <sv:property sv:name="label" sv:type="String">
-              <sv:value>User id</sv:value>
-            </sv:property>
-            <sv:property sv:name="name" sv:type="String">
-              <sv:value>jcrName</sv:value>
-            </sv:property>
-            <sv:property sv:name="required" sv:type="String">
-              <sv:value>true</sv:value>
-            </sv:property>
-            <sv:property sv:name="rows" sv:type="String">
-              <sv:value>1</sv:value>
-            </sv:property>
-            <sv:node sv:name="MetaData">
-              <sv:property sv:name="jcr:primaryType" sv:type="Name">
-                <sv:value>mgnl:metaData</sv:value>
-              </sv:property>
-              <sv:property sv:name="jcr:createdBy" sv:type="String">
-                <sv:value>admin</sv:value>
-              </sv:property>
-              <sv:property sv:name="mgnl:activated" sv:type="Boolean">
-                <sv:value>false</sv:value>
-              </sv:property>
-              <sv:property sv:name="mgnl:authorid" sv:type="String">
-                <sv:value>superuser</sv:value>
-              </sv:property>
-              <sv:property sv:name="mgnl:creationdate" sv:type="Date">
-                <sv:value>2012-06-11T13:55:35.862+02:00</sv:value>
-              </sv:property>
-              <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-                <sv:value>2012-08-24T11:04:12.752+02:00</sv:value>
-              </sv:property>
-            </sv:node>
-            <sv:node sv:name="validators">
-              <sv:property sv:name="jcr:primaryType" sv:type="Name">
-                <sv:value>mgnl:contentNode</sv:value>
-              </sv:property>
-              <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
-                <sv:value>mix:lockable</sv:value>
-              </sv:property>
-              <sv:property sv:name="jcr:uuid" sv:type="String">
-                <sv:value>df7863e6-d0ab-440a-98a6-d3a1a6f77221</sv:value>
-              </sv:property>
-              <sv:property sv:name="jcr:createdBy" sv:type="String">
-                <sv:value>admin</sv:value>
-              </sv:property>
-              <sv:node sv:name="MetaData">
-                <sv:property sv:name="jcr:primaryType" sv:type="Name">
-                  <sv:value>mgnl:metaData</sv:value>
-                </sv:property>
-                <sv:property sv:name="jcr:createdBy" sv:type="String">
-                  <sv:value>admin</sv:value>
-                </sv:property>
-                <sv:property sv:name="mgnl:authorid" sv:type="String">
-                  <sv:value>superuser</sv:value>
-                </sv:property>
-                <sv:property sv:name="mgnl:creationdate" sv:type="Date">
-                  <sv:value>2012-07-27T12:42:34.275+02:00</sv:value>
-                </sv:property>
-                <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-                  <sv:value>2012-07-27T12:42:37.481+02:00</sv:value>
-                </sv:property>
-              </sv:node>
-              <sv:node sv:name="charOnly">
-                <sv:property sv:name="jcr:primaryType" sv:type="Name">
-                  <sv:value>mgnl:contentNode</sv:value>
-                </sv:property>
-                <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
-                  <sv:value>mix:lockable</sv:value>
-                </sv:property>
-                <sv:property sv:name="jcr:uuid" sv:type="String">
-                  <sv:value>83b0d7fb-ee75-4550-bde7-656538c2dbae</sv:value>
-                </sv:property>
-                <sv:property sv:name="class" sv:type="String">
-                  <sv:value>info.magnolia.ui.model.dialog.definition.RegexpValidatorDefinition</sv:value>
-                </sv:property>
-                <sv:property sv:name="errorMessageKey" sv:type="String">
-                  <sv:value>validation.message.only.letters</sv:value>
-                </sv:property>
-                <sv:property sv:name="jcr:createdBy" sv:type="String">
-                  <sv:value>admin</sv:value>
-                </sv:property>
-                <sv:property sv:name="pattern" sv:type="String">
-                  <sv:value>^[a-zA-Z]+$</sv:value>
-                </sv:property>
-                <sv:node sv:name="MetaData">
-                  <sv:property sv:name="jcr:primaryType" sv:type="Name">
-                    <sv:value>mgnl:metaData</sv:value>
-                  </sv:property>
-                  <sv:property sv:name="jcr:createdBy" sv:type="String">
-                    <sv:value>admin</sv:value>
-                  </sv:property>
-                  <sv:property sv:name="mgnl:authorid" sv:type="String">
-                    <sv:value>superuser</sv:value>
-                  </sv:property>
-                  <sv:property sv:name="mgnl:creationdate" sv:type="Date">
-                    <sv:value>2012-07-27T12:42:53.727+02:00</sv:value>
-                  </sv:property>
-                  <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-                    <sv:value>2012-07-27T12:44:25.786+02:00</sv:value>
-                  </sv:property>
-                </sv:node>
-              </sv:node>
-            </sv:node>
-          </sv:node>
           <sv:node sv:name="salutation">
             <sv:property sv:name="jcr:primaryType" sv:type="Name">
               <sv:value>mgnl:contentNode</sv:value>
@@ -292,7 +169,7 @@
               <sv:value>info.magnolia.ui.model.field.definition.TextFieldDefinition</sv:value>
             </sv:property>
             <sv:property sv:name="description" sv:type="String">
-              <sv:value>Define Salutation.  </sv:value>
+              <sv:value>Define Salutation</sv:value>
             </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
@@ -317,7 +194,7 @@
                 <sv:value>2012-06-11T13:55:35.862+02:00</sv:value>
               </sv:property>
               <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-                <sv:value>2012-07-27T12:09:03.504+02:00</sv:value>
+                <sv:value>2012-08-24T11:44:09.102+02:00</sv:value>
               </sv:property>
             </sv:node>
           </sv:node>
@@ -335,7 +212,7 @@
               <sv:value>info.magnolia.ui.model.field.definition.TextFieldDefinition</sv:value>
             </sv:property>
             <sv:property sv:name="description" sv:type="String">
-              <sv:value>Please enter the Contact First Name. Field is mandatory.  </sv:value>
+              <sv:value>Please enter the contact first name. Field is mandatory</sv:value>
             </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
@@ -363,7 +240,7 @@
                 <sv:value>2012-06-11T13:55:35.862+02:00</sv:value>
               </sv:property>
               <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-                <sv:value>2012-08-24T11:04:08.262+02:00</sv:value>
+                <sv:value>2012-08-24T11:32:26.605+02:00</sv:value>
               </sv:property>
             </sv:node>
           </sv:node>
@@ -381,7 +258,7 @@
               <sv:value>info.magnolia.ui.model.field.definition.TextFieldDefinition</sv:value>
             </sv:property>
             <sv:property sv:name="description" sv:type="String">
-              <sv:value>Please enter the contact last name.  </sv:value>
+              <sv:value>Please enter the contact last name. Field is mandatory</sv:value>
             </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
@@ -409,7 +286,7 @@
                 <sv:value>2012-06-11T13:55:35.862+02:00</sv:value>
               </sv:property>
               <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-                <sv:value>2012-08-24T10:53:56.392+02:00</sv:value>
+                <sv:value>2012-08-24T11:32:47.174+02:00</sv:value>
               </sv:property>
             </sv:node>
           </sv:node>
@@ -1397,7 +1274,7 @@
             <sv:value>b5333825-c6cd-4577-8c9a-e2f6f8d2cf4f</sv:value>
           </sv:property>
           <sv:property sv:name="class" sv:type="String">
-            <sv:value>info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition</sv:value>
+            <sv:value>info.magnolia.ui.app.contacts.dialog.action.SaveContactDialogActionDefinition</sv:value>
           </sv:property>
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
@@ -1416,7 +1293,7 @@
               <sv:value>2012-06-18T13:19:19.449+02:00</sv:value>
             </sv:property>
             <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-              <sv:value>2012-06-19T11:23:05.285+02:00</sv:value>
+              <sv:value>2012-08-24T15:50:48.608+02:00</sv:value>
             </sv:property>
           </sv:node>
         </sv:node>

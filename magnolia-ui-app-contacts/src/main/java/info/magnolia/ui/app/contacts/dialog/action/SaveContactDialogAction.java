@@ -36,7 +36,6 @@ package info.magnolia.ui.app.contacts.dialog.action;
 import info.magnolia.jcr.util.MetaDataUtil;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.admincentral.dialog.action.SaveDialogAction;
-import info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.widget.dialog.MagnoloaDialogPresenter.Presenter;
@@ -50,7 +49,7 @@ import javax.jcr.RepositoryException;
  */
 public class SaveContactDialogAction extends SaveDialogAction {
 
-    public SaveContactDialogAction(final SaveDialogActionDefinition definition, final Presenter presenter) {
+    public SaveContactDialogAction(final SaveContactDialogActionDefinition definition, final Presenter presenter) {
         super(definition, presenter);
     }
 
@@ -63,7 +62,9 @@ public class SaveContactDialogAction extends SaveDialogAction {
 
             try {
                 final Node node = itemChanged.getNode();
-                generateUniqueNodeNameForContact(node);
+                if(node.isNew()) {
+                   generateUniqueNodeNameForContact(node);
+                }
                 MetaDataUtil.updateMetaData(node);
                 node.getSession().save();
             } catch (final RepositoryException e) {
@@ -72,14 +73,24 @@ public class SaveContactDialogAction extends SaveDialogAction {
             getPresenter().getCallback().onSuccess(getDefinition().getName());
 
         } else {
+            //validation errors are displayed in the UI.
         }
     }
 
     private void generateUniqueNodeNameForContact(final Node node) throws RepositoryException {
         String firstName = node.getProperty("firstName").getString();
         String lastName =  node.getProperty("lastName").getString();
-        String nodeName = firstName.charAt(0) + lastName;
-        node.getSession().move(node.getPath(), NodeUtil.combinePathAndName(node.getParent().getPath(), nodeName));
+        String newNodeName = (firstName.charAt(0) + lastName).toLowerCase();
+        String parentPath = node.getParent().getPath();
+        String newNodeAbsPath = NodeUtil.combinePathAndName(parentPath, newNodeName);
+        int i = 1;
+
+        while(node.getSession().itemExists(newNodeAbsPath)) {
+            newNodeName+=i;
+            newNodeAbsPath = NodeUtil.combinePathAndName(parentPath, newNodeName);
+            i++;
+        }
+        node.getSession().move(node.getPath(), newNodeAbsPath);
     }
 
 }
