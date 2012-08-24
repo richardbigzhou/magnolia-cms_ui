@@ -87,7 +87,7 @@ button.action-close {
     padding-top: 45px;
 }
 
-.v-shell-vieport {
+.v-shell-viewport {
     position: absolute;
     overflow: visible;
     top: 60px;
@@ -199,4 +199,12 @@ button.action-close {
 	left: 0;
 	right: 0;
 	z-index: 100000;
+}
+
+
+.app-slider {
+    -webkit-transition: -webkit-transform 0.5s;
+    -webkit-transform: translate3d(0,0,0);
+}
+
 }

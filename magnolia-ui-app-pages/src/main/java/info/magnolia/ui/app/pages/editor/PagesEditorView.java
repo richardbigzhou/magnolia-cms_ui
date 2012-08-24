@@ -48,7 +48,6 @@ public interface PagesEditorView extends View {
      */
     public interface Listener {
 
-        void setParameters(PageEditorParameters parameters);
     }
 
     void setListener(Listener listener);

@@ -62,13 +62,13 @@ public class VShellAppsViewport extends VShellViewport {
     }
     
     @Override
-    protected void setWidgetVisible(Widget w) {
+    protected void setWidgetVisibleWithTransition(Widget w) {
         if (getAnimationDelegate() == ContentAnimationDelegate.SlidingDelegate) {
             w.getElement().getStyle().setOpacity(1d);   
         } else {
             w.getElement().getStyle().setProperty("top", "");
         }
-        super.setWidgetVisible(w);
+        super.setWidgetVisibleWithTransition(w);
     }
     
 }

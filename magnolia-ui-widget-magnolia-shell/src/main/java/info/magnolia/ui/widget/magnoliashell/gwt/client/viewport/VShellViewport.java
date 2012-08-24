@@ -33,6 +33,10 @@
  */
 package info.magnolia.ui.widget.magnoliashell.gwt.client.viewport;
 
+
+import com.google.gwt.user.client.Event;
+import com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent;
+import com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.Callbacks;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryCallback;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper;
@@ -56,6 +60,8 @@ import com.vaadin.terminal.gwt.client.ContainerResizedListener;
 import com.vaadin.terminal.gwt.client.Paintable;
 import com.vaadin.terminal.gwt.client.RenderSpace;
 import com.vaadin.terminal.gwt.client.UIDL;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShell;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.event.ViewportCloseEvent;
 
 /**
  * An overlay that displays the open app in the shell on top of each other.
@@ -87,7 +93,27 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
     public VShellViewport() {
         super();
         setElement(container);
-        addStyleName("v-shell-vieport");
+        addStyleName("v-shell-viewport");
+
+        bindHandlers();
+
+    }
+
+    private void bindHandlers(){
+
+        DOM.sinkEvents(getElement(), Event.TOUCHEVENTS);
+
+        addTouchStartHandler(new TouchStartHandler() {
+
+            @Override
+            // If user clicks in the space behind the ShellApp - the ShellApp is closed.
+            public void onTouchStart(TouchStartEvent event) {
+                final Element target = event.getNativeEvent().getEventTarget().cast();
+                if (target == getElement()) {
+                    eventBus.fireEvent(new ViewportCloseEvent(VMagnoliaShell.ViewportType.SHELL_APP_VIEWPORT));
+                }
+            }
+        });
     }
 
     @Override
@@ -106,7 +132,7 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
                     updatePosition(w);
                     paintable.updateFromUIDL(childUIdl, client);
                     if (forceContentAlign) {alignChild(w);}
-                    if (idx == 0) {setWidgetVisible(w);}
+                    if (idx == 0) {setWidgetVisibleWithTransition(w);}
                 }
             } else {
                 visibleWidget = null;
@@ -139,7 +165,7 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
         return result;
     }
 
-    protected void setWidgetVisible(final Widget w) {
+    protected void setWidgetVisibleWithTransition(final Widget w) {
         if (hasChildComponent(w)) {
             if (w != visibleWidget) {
                 hideCurrentContent();
@@ -148,12 +174,16 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
             animationDelegate.show(w, Callbacks.create(new JQueryCallback() {
                 @Override
                 public void execute(JQueryWrapper query) {
-                    visibleWidget = w;
+                    setVisibleWidget(w);
                 }
             }));
         }
     }
     
+    protected void setVisibleWidget(Widget w) {
+        this.visibleWidget = w;
+    }
+
     public void hideEntireContents() {
         Iterator<Widget> it = iterator();
         while (it.hasNext()) {
@@ -177,14 +207,6 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
                     }
                 }));
             }
-        }
-    }
-
-    @Override
-    public void setHeight(String height) {
-        super.setHeight(height);
-        if (visibleWidget != null) {
-            //visibleWidget.setHeight(height);
         }
     }
 
