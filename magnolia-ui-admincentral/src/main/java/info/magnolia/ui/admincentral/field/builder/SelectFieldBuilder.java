@@ -86,7 +86,7 @@ public class SelectFieldBuilder<D extends SelectFieldDefinition> extends Abstrac
         Map<String, String> options = getOptions();
         for (Map.Entry<String, String> entry : options.entrySet()) {
             select.addItem(entry.getKey());
-            select.setItemCaption(entry.getKey(), entry.getValue());
+            select.setItemCaption(entry.getKey(), getMessage(entry.getValue()));
         }
 
         return select;
@@ -116,7 +116,7 @@ public class SelectFieldBuilder<D extends SelectFieldDefinition> extends Abstrac
 
         if (this.options != null && !this.options.isEmpty()) {
             for (SelectFieldOptionDefinition option : this.options) {
-                res.put(option.getValue(), option.getLabel());
+                res.put(option.getValue(), getMessage(option.getLabel()));
                 if (option.isSelected()) {
                     initialSelecteKey = option.getValue();
                 }
@@ -175,7 +175,7 @@ public class SelectFieldBuilder<D extends SelectFieldDefinition> extends Abstrac
                     SelectFieldOptionDefinition option = new SelectFieldOptionDefinition();
                     Node child = iterator.nextNode();
                     if (child.hasProperty(optionValueName) && child.hasProperty(optionLabelName)) {
-                        option.setLabel(child.getProperty(optionLabelName).getString());
+                        option.setLabel(getMessage(child.getProperty(optionLabelName).getString()));
                         option.setValue(child.getProperty(optionValueName).getString());
 
                         res.put(option.getValue(), option.getLabel());

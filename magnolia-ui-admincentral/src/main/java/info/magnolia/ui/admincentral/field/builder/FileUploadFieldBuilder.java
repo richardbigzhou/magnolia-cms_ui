@@ -41,6 +41,7 @@ import info.magnolia.ui.admincentral.field.upload.UploadImageField;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.model.field.definition.FileUploadFieldDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
@@ -74,6 +75,16 @@ public class FileUploadFieldBuilder extends AbstractFieldBuilder<FileUploadField
 
     @Override
     protected Field buildField() {
+        //Temp Solution as long as we don't support DMS
+        DefaultProperty property = (DefaultProperty) item.getItemProperty("image");
+        if (property == null) {
+            property = DefaultPropertyUtil.newDefaultProperty("image", null, "upload");
+            item.addItemProperty("image", property);
+        }else {
+            property.setValue("upload");
+        }
+
+
         UploadImageField uploadField = new UploadImageField((JcrItemNodeAdapter)getOrCreateItem(), magnoliaShel);
         uploadField.setInfo(true);
         uploadField.setProgressInfo(true);

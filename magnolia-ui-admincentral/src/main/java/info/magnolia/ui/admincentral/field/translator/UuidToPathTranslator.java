@@ -38,6 +38,7 @@ import info.magnolia.context.MgnlContext;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vaadin.addon.propertytranslator.PropertyTranslator;
@@ -61,7 +62,10 @@ public class UuidToPathTranslator extends PropertyTranslator{
      */
     @Override
     public Object translateFromDatasource(Object uuid) {
-        String res = null;
+        String res = StringUtils.EMPTY;
+        if(StringUtils.isBlank((String)uuid)) {
+            return res;
+        }
         try {
             Session session = MgnlContext.getJCRSession(workspace);
             res = session.getNodeByIdentifier(uuid.toString()).getPath();
@@ -75,7 +79,10 @@ public class UuidToPathTranslator extends PropertyTranslator{
      */
     @Override
     public Object translateToDatasource(Object path) throws Exception {
-        String res = null;
+        String res  = StringUtils.EMPTY;
+        if(StringUtils.isBlank((String)path)) {
+            return res;
+        }
         try {
             Session session = MgnlContext.getJCRSession(workspace);
             res = session.getNode(path.toString()).getIdentifier();

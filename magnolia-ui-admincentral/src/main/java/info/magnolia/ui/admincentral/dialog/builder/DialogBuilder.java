@@ -96,7 +96,7 @@ public class DialogBuilder {
                 //Set Help
                 if(StringUtils.isNotBlank(fieldDefinition.getDescription())) {
                     //TODO EHE SCRUM-1344 Add i18n to Dialog/Tab definition.
-                    tab.setComponentHelpDescription(field, fieldDefinition.getDescription());
+                    tab.setComponentHelpDescription(field, tab.getMessage(fieldDefinition.getDescription()));
                 }
                 view.addField(field);
             }
