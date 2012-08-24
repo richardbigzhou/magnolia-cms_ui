@@ -172,6 +172,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         doFocus(currentApp);
     }
 
+    @Override
     public Location getCurrentLocation(String name) {
         AppContextImpl appContext = runningApps.get(name);
         return appContext == null ? null : appContext.getCurrentLocation();

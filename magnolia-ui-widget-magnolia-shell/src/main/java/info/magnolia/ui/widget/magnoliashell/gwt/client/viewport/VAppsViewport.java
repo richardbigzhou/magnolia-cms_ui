@@ -33,33 +33,52 @@
  */
 package info.magnolia.ui.widget.magnoliashell.gwt.client.viewport;
 
-import com.google.gwt.core.shared.GWT;
-import com.googlecode.mgwt.dom.client.recognizer.swipe.SwipeMoveEvent;
-import com.googlecode.mgwt.dom.client.recognizer.swipe.SwipeMoveHandler;
-import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
+import info.magnolia.ui.widget.jquerywrapper.gwt.client.AnimationSettings;
+import info.magnolia.ui.widget.jquerywrapper.gwt.client.Callbacks;
+import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryCallback;
+import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShell;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.event.ViewportCloseEvent;
 
+import java.util.Iterator;
+
+import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.googlecode.mgwt.dom.client.event.touch.TouchCancelEvent;
+import com.googlecode.mgwt.dom.client.event.touch.TouchCancelHandler;
+import com.googlecode.mgwt.dom.client.recognizer.swipe.HasSwipeHandlers;
+import com.googlecode.mgwt.dom.client.recognizer.swipe.SwipeEndEvent;
+import com.googlecode.mgwt.dom.client.recognizer.swipe.SwipeEndHandler;
+import com.googlecode.mgwt.dom.client.recognizer.swipe.SwipeEvent.DIRECTION;
+import com.googlecode.mgwt.dom.client.recognizer.swipe.SwipeMoveEvent;
+import com.googlecode.mgwt.dom.client.recognizer.swipe.SwipeMoveHandler;
+import com.googlecode.mgwt.dom.client.recognizer.swipe.SwipeStartEvent;
+import com.googlecode.mgwt.dom.client.recognizer.swipe.SwipeStartHandler;
+import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.UIDL;
-
 
 /**
  * Client side implementation of Apps viewport.
  */
-public class VAppsViewport extends VShellViewport {
+public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
 
+    private static final int SWIPE_OUT_THRESHOLD = 300;
+            
     private final VAppPreloader preloader = new VAppPreloader();
 
     private final Element closeWrapper = DOM.createDiv();
 
+    private final TouchDelegate delegate = new TouchDelegate(this);
+    
     public VAppsViewport() {
         super();
         setForceContentAlign(false);
@@ -69,7 +88,6 @@ public class VAppsViewport extends VShellViewport {
         closeButton.setClassName("action-close");
         closeWrapper.appendChild(closeButton);
         addDomHandler(new ClickHandler() {
-
             @Override
             public void onClick(ClickEvent event) {
                 if (closeWrapper.isOrHasChild((Element) event.getNativeEvent().getEventTarget().cast())) {
@@ -78,16 +96,122 @@ public class VAppsViewport extends VShellViewport {
             }
         }, ClickEvent.getType());
 
-        /* CLZ Testing swipe detection */
-        final TouchDelegate delegate = new TouchDelegate(this);
-        delegate.addSwipeMoveHandler(new SwipeMoveHandler() {
+        DOM.sinkEvents(getElement(), Event.TOUCHEVENTS);
+        delegate.addTouchHandler(new MagnoliaSwipeRecognizer(delegate, SWIPE_OUT_THRESHOLD));
+        
+        addSwipeStartHandler(new SwipeStartHandler() {
             @Override
-            public void onSwipeMove(SwipeMoveEvent event) {
-                //log.warn("Test logging on Swipe");
-                System.out.println("Got a swipe.");
-                GWT.log("VAppsViewport.java GWT Got a swipe.");
+            public void onSwipeStart(SwipeStartEvent event) {
+                processSwipe(event.getDistance() * (event.getDirection() == DIRECTION.LEFT_TO_RIGHT ? 1 : -1));
             }
         });
+
+        addSwipeMoveHandler(new SwipeMoveHandler() {
+            @Override
+            public void onSwipeMove(SwipeMoveEvent event) {
+                processSwipe(event.getDistance() * (event.getDirection() == DIRECTION.LEFT_TO_RIGHT ? 1 : -1));
+            }
+        });
+        
+        
+        addSwipeEndHandler(new SwipeEndHandler() {
+            @Override
+            public void onSwipeEnd(SwipeEndEvent event) {
+                final DIRECTION direction = event.getDirection();
+                final Widget newVisibleWidget = direction == DIRECTION.LEFT_TO_RIGHT ? getPreviousWidget() : getNextWidget();  
+                if (event.isDistanceReached() && getWidgetCount() > 1) {
+                    final JQueryWrapper jq = JQueryWrapper.select(getVisibleWidget());
+                    jq.animate(450, new AnimationSettings() {{
+                        setProperty("left", getOffsetWidth() * (direction == DIRECTION.LEFT_TO_RIGHT ? 1 : -1) - jq.position().left());
+                        setCallbacks(Callbacks.create(new JQueryCallback() {
+                            @Override
+                            public void execute(JQueryWrapper query) {
+                                query.setCss("-webkit-transform", "");
+                                query.setCss("left", "");
+                                query.setCss("opacity", "0");
+                                query.setCss("visibility", "hidden");
+                                setVisibleWidget(newVisibleWidget);
+                                dropZIndeces();
+                            }
+                        }));
+                    }});
+                    
+                    if (direction == DIRECTION.RIGHT_TO_LEFT && getWidgetCount() > 2) {
+                        final JQueryWrapper query = JQueryWrapper.select(newVisibleWidget);
+                        query.setCss("-webkit-transform", "");
+                        newVisibleWidget.addStyleName("app-slider");
+                        new Timer() {
+                            @Override
+                            public void run() {
+                                newVisibleWidget.removeStyleName("app-slider");        
+                            }
+                        }.schedule(500);
+                    }
+                } else {
+                    final JQueryWrapper jq = JQueryWrapper.select(getVisibleWidget());
+                    jq.setCssPx("left", jq.position().left());
+                    jq.setCss("-webkit-transform", "");
+                    jq.animate(500, new AnimationSettings() {{
+                        setProperty("left", 0);
+                    }});
+                }
+            }
+        });
+        
+        delegate.addTouchCancelHandler(new TouchCancelHandler() {
+            @Override
+            public void onTouchCanceled(TouchCancelEvent event) {
+                JQueryWrapper.select(getVisibleWidget()).setCss("-webkit-transform", "");
+                dropZIndeces();
+            }
+        });
+    }
+
+    private void processSwipe(int translationValue) {
+        JQueryWrapper.select(getVisibleWidget()).setCss("-webkit-transform", "translate3d("+ translationValue + "px,0,0)");
+        if (getWidgetCount() > 1) {
+            showCandidateApp(translationValue);
+        }
+    }
+    
+    protected void showCandidateApp(int translationValue) {
+        final Widget nextWidget = getNextWidget();
+        final Widget previousWidget = getPreviousWidget();
+        boolean isNext = translationValue < 0;
+        if (isNext) {
+            nextWidget.getElement().getStyle().setZIndex(250);
+            getVisibleWidget().getElement().getStyle().setZIndex(251);
+        } else {
+            previousWidget.getElement().getStyle().setZIndex(250);
+            getVisibleWidget().getElement().getStyle().setZIndex(251);
+        }
+        
+        if (isNext && getWidgetCount() > 2) {
+            JQueryWrapper.select(nextWidget).setCss("-webkit-transform", "translate3d("+  (translationValue + getVisibleWidget().getOffsetWidth()) + "px,0,0)");
+        }
+        nextWidget.getElement().getStyle().setVisibility(isNext || nextWidget == previousWidget ? Visibility.VISIBLE : Visibility.HIDDEN);
+        previousWidget.getElement().getStyle().setVisibility(!isNext || nextWidget == previousWidget ? Visibility.VISIBLE : Visibility.HIDDEN);
+        
+        nextWidget.getElement().getStyle().setOpacity(isNext || nextWidget == previousWidget ? 1 : 0);
+        previousWidget.getElement().getStyle().setOpacity(!isNext || nextWidget == previousWidget ? 1 : 0);
+    }
+
+    protected Widget getNextWidget() {
+        int index = getWidgetIndex(getVisibleWidget());
+        return getWidget((index + 1) % getWidgetCount());
+    }
+    
+    protected Widget getPreviousWidget() {
+        int index = getWidgetIndex(getVisibleWidget());
+        int count = getWidgetCount();
+        return getWidget((index + (count - 1)) % count);        
+    }
+    
+    protected void dropZIndeces() {
+        final Iterator<Widget> it = iterator();
+        while (it.hasNext()) {
+            it.next().getElement().getStyle().setProperty("zIndex", "");
+        }
     }
 
     @Override
@@ -96,15 +220,29 @@ public class VAppsViewport extends VShellViewport {
         super.updateFromUIDL(uidl, client);
         if (RootPanel.get().getWidgetIndex(preloader) >= 0) {
             new Timer() {
-
                 @Override
                 public void run() {
                     RootPanel.get().remove(preloader);
                 }
-            }.schedule(1000);
+            }.schedule(500);
         }
     }
 
+    @Override
+    public HandlerRegistration addSwipeStartHandler(SwipeStartHandler handler) {
+        return addHandler(handler, SwipeStartEvent.getType());
+    }
+
+    @Override
+    public HandlerRegistration addSwipeMoveHandler(SwipeMoveHandler handler) {
+        return addHandler(handler, SwipeMoveEvent.getType());
+    }
+
+    @Override
+    public HandlerRegistration addSwipeEndHandler(SwipeEndHandler handler) {
+        return addHandler(handler, SwipeEndEvent.getType());
+    }
+    
     /**
      * Called when the transition of preloader is finished.
      */
@@ -119,7 +257,6 @@ public class VAppsViewport extends VShellViewport {
         RootPanel.get().add(preloader);
         preloader.addStyleName("zoom-in");
         new Timer() {
-
             @Override
             public void run() {
                 callback.onPreloaderShown(appName);
@@ -128,8 +265,8 @@ public class VAppsViewport extends VShellViewport {
     }
 
     @Override
-    protected void setWidgetVisible(Widget w) {
-        super.setWidgetVisible(w);
+    protected void setVisibleWidget(Widget w) {
+        super.setVisibleWidget(w);
         w.getElement().appendChild(closeWrapper);
     }
 
@@ -160,8 +297,8 @@ public class VAppsViewport extends VShellViewport {
 
             Element preloadingScreen = DOM.createDiv();
             preloadingScreen.addClassName("loading-screen");
-            preloadingScreen.setInnerHTML("<div class=\"loading-message-wrapper\"> " +
-                "<div class=\"loading-message\"><div class=\"spinner\"></div> Loading </div></div>");
+            preloadingScreen.setInnerHTML("<div class=\"loading-message-wrapper\"> "
+                    + "<div class=\"loading-message\"><div class=\"spinner\"></div> Loading </div></div>");
             root.appendChild(preloadingScreen);
         }
 
@@ -175,4 +312,5 @@ public class VAppsViewport extends VShellViewport {
             captionSpan.setInnerHTML(caption);
         }
     }
+
 }

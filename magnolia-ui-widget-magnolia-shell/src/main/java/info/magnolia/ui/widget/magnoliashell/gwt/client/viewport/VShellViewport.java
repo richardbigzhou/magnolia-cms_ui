@@ -106,7 +106,7 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
                     updatePosition(w);
                     paintable.updateFromUIDL(childUIdl, client);
                     if (forceContentAlign) {alignChild(w);}
-                    if (idx == 0) {setWidgetVisible(w);}
+                    if (idx == 0) {setWidgetVisibleWithTransition(w);}
                 }
             } else {
                 visibleWidget = null;
@@ -139,7 +139,7 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
         return result;
     }
 
-    protected void setWidgetVisible(final Widget w) {
+    protected void setWidgetVisibleWithTransition(final Widget w) {
         if (hasChildComponent(w)) {
             if (w != visibleWidget) {
                 hideCurrentContent();
@@ -148,12 +148,16 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
             animationDelegate.show(w, Callbacks.create(new JQueryCallback() {
                 @Override
                 public void execute(JQueryWrapper query) {
-                    visibleWidget = w;
+                    setVisibleWidget(w);
                 }
             }));
         }
     }
     
+    protected void setVisibleWidget(Widget w) {
+        this.visibleWidget = w;
+    }
+
     public void hideEntireContents() {
         Iterator<Widget> it = iterator();
         while (it.hasNext()) {
@@ -177,14 +181,6 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
                     }
                 }));
             }
-        }
-    }
-
-    @Override
-    public void setHeight(String height) {
-        super.setHeight(height);
-        if (visibleWidget != null) {
-            //visibleWidget.setHeight(height);
         }
     }
 
