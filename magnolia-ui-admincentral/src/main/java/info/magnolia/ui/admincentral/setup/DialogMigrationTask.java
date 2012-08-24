@@ -191,7 +191,7 @@ public class DialogMigrationTask  extends AbstractTask {
 
     /**
      * Change controlType to the equivalent class.
-     * Change the extend path
+     * Change the extend path.
      */
     private void handleField(Node fieldNode) throws RepositoryException {
         if(fieldNode.hasProperty("controlType")){
@@ -319,7 +319,7 @@ public class DialogMigrationTask  extends AbstractTask {
     }
 
     /**
-     * Insert the toInsert ("/tabs") before the last /
+     * Insert the toInsert ("/tabs") before the last /.
      */
     private String insertBeforeLastSlash(String reference, String toInsert) {
         String beging = reference.substring(0, reference.lastIndexOf("/"));
@@ -328,7 +328,7 @@ public class DialogMigrationTask  extends AbstractTask {
     }
 
     /**
-     * Session based copy operation. As JCR only supports workspace based copies this operation is performed
+     * Session based copy operation. As JCR only supports workspace based copies this operation is performed.
      * by using export import operations.
      */
     private void copyInSession(Node src, String dest) throws RepositoryException {
