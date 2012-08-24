@@ -42,6 +42,8 @@ import info.magnolia.ui.app.pages.PagesApp;
 import info.magnolia.ui.app.pages.PagesAppDescriptor;
 import info.magnolia.ui.app.pages.action.AddComponentActionDefinition;
 import info.magnolia.ui.app.pages.action.EditElementActionDefinition;
+import info.magnolia.ui.app.pages.action.EditPageActionDefinition;
+import info.magnolia.ui.app.pages.action.PreviewPageActionDefinition;
 import info.magnolia.ui.framework.app.AbstractSubApp;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.event.EventBus;
@@ -220,7 +222,11 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
                                 appDescriptor.getWorkbench().getWorkspace(),
                                 pageEditorPresenter.getSelectedElement().getPath(),
                                 ((PageEditor.AreaElement) pageEditorPresenter.getSelectedElement()).getAvailableComponents());
-                    } else {
+                    }
+                    else if (actionDefinition instanceof PreviewPageActionDefinition || actionDefinition instanceof EditPageActionDefinition) {
+                        actionbarPresenter.createAndExecuteAction(actionDefinition, appDescriptor.getWorkbench().getWorkspace(), parameters.getNodePath());
+                    }
+                    else {
                         actionbarPresenter.createAndExecuteAction(
                                 actionDefinition,
                                 appDescriptor.getWorkbench().getWorkspace(),
