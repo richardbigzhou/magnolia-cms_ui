@@ -41,6 +41,8 @@ import info.magnolia.ui.framework.app.AppLifecycleEventHandler;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.event.HandlerRegistration;
 import info.magnolia.ui.framework.location.DefaultLocation;
+import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessageEvent;
 import info.magnolia.ui.framework.message.MessageEventHandler;
@@ -85,7 +87,7 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
     private final MessagesManager messagesManager;
     
     @Inject
-    public MagnoliaShell(@Named("admincentral") EventBus admincentralEventBus, Provider<ShellAppController> shellAppControllerProvider, AppController appController, MessagesManager messagesManager) {
+    public MagnoliaShell(@Named("admincentral") EventBus admincentralEventBus, Provider<ShellAppController> shellAppControllerProvider, AppController appController, MessagesManager messagesManager, final Provider<LocationController> locationControllerProvider) {
         super();
         this.messagesManager = messagesManager;
         this.admincentralEventBus = admincentralEventBus;
@@ -115,7 +117,7 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
                 setActiveViewport(getAppViewport());
                 final String appName = String.valueOf(params[0]);
                 final String token = String.valueOf(params[1]);
-                MagnoliaShell.this.appController.startIfNotAlreadyRunningThenFocus(appName, new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appName, token));
+                locationControllerProvider.get().goTo(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appName, token));
             }
         });
         
@@ -234,12 +236,13 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
     @Override
     public void navigateToApp(String prefix, String token) {
         if (StringUtils.isEmpty(token)) {
-            ShellViewport viewport = getAppViewport();
-            viewport.setCurrentShellFragment(prefix + ":" + token);
-            setActiveViewport(viewport);
-            appController.startIfNotAlreadyRunningThenFocus(prefix, new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, prefix, token));
-            viewport.requestRepaint();
-            requestRepaint();
+
+            Location location = appController.getCurrentLocation(prefix);
+            if (location == null) {
+                location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, prefix, token);
+            }
+            super.navigateToApp(prefix, ((DefaultLocation) location).getToken());
+
         } else {
             super.navigateToApp(prefix, token);
         }
@@ -248,12 +251,13 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
     @Override
     public void navigateToShellApp(String prefix, String token) {
         if (StringUtils.isEmpty(token)) {
-            ShellViewport viewport = getShellAppViewport();
-            viewport.setCurrentShellFragment(prefix + ":" + token);
-            setActiveViewport(viewport);
-            shellAppControllerProvider.get().focusShellApp(prefix);
-            viewport.requestRepaint();
-            requestRepaint();
+
+            Location location = shellAppControllerProvider.get().getCurrentLocation(prefix);
+            if (location == null) {
+                location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_SHELL_APP, prefix, token);
+            }
+            super.navigateToShellApp(prefix, ((DefaultLocation) location).getToken());
+
         } else {
             super.navigateToShellApp(prefix, token);
         }
