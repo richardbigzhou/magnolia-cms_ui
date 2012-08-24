@@ -56,7 +56,6 @@ import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.ValueFormatException;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
