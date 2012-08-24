@@ -35,8 +35,8 @@ package info.magnolia.ui.widget.magnoliashell.gwt.client.viewport;
 
 
 import com.google.gwt.user.client.Event;
-import com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent;
 import com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler;
+import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.Callbacks;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryCallback;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper;
@@ -89,6 +89,8 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
     private EventBus eventBus;
 
     private boolean isActive = false;
+
+    private final TouchDelegate delegate = new TouchDelegate((Widget)this);
     
     public VShellViewport() {
         super();
@@ -101,13 +103,12 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
 
     private void bindHandlers(){
 
-        DOM.sinkEvents(getElement(), Event.TOUCHEVENTS);
+        DOM.sinkEvents(this.getElement(), Event.TOUCHEVENTS);
 
-        addTouchStartHandler(new TouchStartHandler() {
+        delegate.addTouchStartHandler(new TouchStartHandler() {
 
             @Override
-            // If user clicks in the space behind the ShellApp - the ShellApp is closed.
-            public void onTouchStart(TouchStartEvent event) {
+            public void onTouchStart(com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent event) {
                 final Element target = event.getNativeEvent().getEventTarget().cast();
                 if (target == getElement()) {
                     eventBus.fireEvent(new ViewportCloseEvent(VMagnoliaShell.ViewportType.SHELL_APP_VIEWPORT));
