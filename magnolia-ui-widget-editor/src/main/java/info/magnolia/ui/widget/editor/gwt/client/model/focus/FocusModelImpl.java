@@ -37,6 +37,7 @@ import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 import info.magnolia.ui.widget.editor.gwt.client.event.SelectElementEvent;
 import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.AbstractBar;
+import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.AreaBar;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.shared.EventBus;
@@ -73,15 +74,25 @@ public class FocusModelImpl implements FocusModel {
             if (mgnlElement.isComponent()) {
                 component = mgnlElement;
                 area = mgnlElement.getParentArea();
-            }
-            else {
+            } else {
                 area = mgnlElement;
             }
             editBar = model.getEditBar(mgnlElement);
         } else {
             editBar = model.getPageBar();
         }
-        eventBus.fireEvent(new SelectElementEvent(editBar.getPath(), editBar.getWorkspace(), editBar.getDialog()));
+
+        String params = "";
+        if (editBar.getDialog() != null) {
+            params += "dialog:" + editBar.getDialog() + ";";
+        }
+        if (area != null && area == mgnlElement) {
+            if (((AreaBar) editBar).getAvailableComponents() != null && !((AreaBar) editBar).getAvailableComponents().isEmpty()) {
+                params += "availableComponents:" + ((AreaBar) editBar).getAvailableComponents() + ";";
+            }
+        }
+
+        eventBus.fireEvent(new SelectElementEvent(editBar.getPath(), editBar.getWorkspace(), params.substring(0, params.length() - 1)));
 
         // first set the component, then set the area. the selected component is used for setting
         // the corrent area class.

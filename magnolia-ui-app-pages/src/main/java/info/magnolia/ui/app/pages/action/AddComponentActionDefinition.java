@@ -33,40 +33,15 @@
  */
 package info.magnolia.ui.app.pages.action;
 
-import info.magnolia.ui.app.pages.editor.PagesEditorSubApp;
-import info.magnolia.ui.framework.location.LocationController;
-import info.magnolia.ui.model.action.ActionBase;
-import info.magnolia.ui.model.action.ActionExecutionException;
-
-import javax.inject.Inject;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
+import info.magnolia.ui.model.action.ActionDefinition;
 
 
 /**
- * Opens a page for editing.
+ * Defines an action for adding a component in an area of the page editor.
+ * 
+ * Does not have a concrete action implementation, but is intercepted by the editor subapp to
+ * delegate execution to PageEditorPresenter.
  */
-public class EditPageAction extends ActionBase<EditPageActionDefinition> {
+public class AddComponentActionDefinition implements ActionDefinition {
 
-    private final Node nodeToEdit;
-
-    private final LocationController locationController;
-
-    @Inject
-    public EditPageAction(final EditPageActionDefinition definition, Node nodeToEdit, LocationController locationController) {
-        super(definition);
-        this.nodeToEdit = nodeToEdit;
-        this.locationController = locationController;
-    }
-
-    @Override
-    public void execute() throws ActionExecutionException {
-        try {
-
-            locationController.goTo(PagesEditorSubApp.createLocation(nodeToEdit.getPath(), null));
-
-        } catch (RepositoryException e) {
-            throw new ActionExecutionException(e);
-        }
-    }
 }

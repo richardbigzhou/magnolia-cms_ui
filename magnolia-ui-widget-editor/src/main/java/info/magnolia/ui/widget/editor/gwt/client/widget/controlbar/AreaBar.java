@@ -61,6 +61,8 @@ public class AreaBar extends AbstractBar {
 
     private String dialog;
 
+    private String availableComponents;
+
     private boolean optional;
 
     private boolean created;
@@ -158,7 +160,7 @@ public class AreaBar extends AbstractBar {
             this.editable = Boolean.parseBoolean(attributes.get("editable"));
         }
 
-        String availableComponents = "";
+        availableComponents = "";
         if (!AreaDefinition.TYPE_NO_COMPONENT.equals(this.type)) {
             availableComponents = attributes.get("availableComponents");
         }
@@ -199,6 +201,10 @@ public class AreaBar extends AbstractBar {
     @Override
     public String getDialog() {
         return editable ? dialog : null;
+    }
+
+    public String getAvailableComponents() {
+        return availableComponents;
     }
 
 }

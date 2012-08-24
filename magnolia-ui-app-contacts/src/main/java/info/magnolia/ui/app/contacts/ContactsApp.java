@@ -57,6 +57,12 @@ public class ContactsApp extends ContentApp {
 
     @Override
     public void start(Location location) {
-        appContext.openSubApp("main", ContactsMainSubApp.class, location, "main");
+
+        if (ContactsMainSubApp.supportsLocation(location)) {
+            appContext.openSubApp("main", ContactsMainSubApp.class, location, ContactsMainSubApp.getSubAppId(location));
+        } else {
+            Location mainLocation = ContactsMainSubApp.createLocation(null);
+            appContext.openSubApp("main", ContactsMainSubApp.class, mainLocation, ContactsMainSubApp.getSubAppId(mainLocation));
+        }
     }
 }

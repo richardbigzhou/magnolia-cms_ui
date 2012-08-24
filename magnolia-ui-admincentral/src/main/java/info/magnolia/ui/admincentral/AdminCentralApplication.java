@@ -87,7 +87,7 @@ public class AdminCentralApplication extends Application {
         builder.withParent((GuiceComponentProvider) Components.getComponentProvider());
         GuiceComponentProvider componentProvider = builder.build();
 
-        window = new Window("Magnolia shell test");
+        window = new Window("Magnolia 5.0");
         window.setContent(new CssLayout());
         window.getContent().setSizeFull();
         ((CssLayout) window.getContent()).setMargin(false);

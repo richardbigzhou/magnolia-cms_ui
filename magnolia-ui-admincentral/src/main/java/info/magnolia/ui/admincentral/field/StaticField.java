@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,42 +31,37 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.action;
+package info.magnolia.ui.admincentral.field;
 
-import info.magnolia.ui.app.pages.editor.PagesEditorSubApp;
-import info.magnolia.ui.framework.location.LocationController;
-import info.magnolia.ui.model.action.ActionBase;
-import info.magnolia.ui.model.action.ActionExecutionException;
+import org.vaadin.addon.customfield.CustomField;
 
-import javax.inject.Inject;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 
 
 /**
- * Opens a page for editing.
+ * A base custom field displaying a simple text.
  */
-public class EditPageAction extends ActionBase<EditPageActionDefinition> {
+public class StaticField extends CustomField {
 
-    private final Node nodeToEdit;
+    private Label label;
 
-    private final LocationController locationController;
+    public StaticField() {
 
-    @Inject
-    public EditPageAction(final EditPageActionDefinition definition, Node nodeToEdit, LocationController locationController) {
-        super(definition);
-        this.nodeToEdit = nodeToEdit;
-        this.locationController = locationController;
+        HorizontalLayout layout = new HorizontalLayout();
+        layout.setSpacing(true);
+        label = new Label();
+        layout.addComponent(label);
+        setCompositionRoot(layout);
+    }
+
+    public Label getLabel() {
+        return this.label;
     }
 
     @Override
-    public void execute() throws ActionExecutionException {
-        try {
-
-            locationController.goTo(PagesEditorSubApp.createLocation(nodeToEdit.getPath(), null));
-
-        } catch (RepositoryException e) {
-            throw new ActionExecutionException(e);
-        }
+    public Class< ? > getType() {
+        return getPropertyDataSource().getType();
     }
+
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,42 +31,43 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.action;
+package info.magnolia.ui.admincentral.field.builder;
 
-import info.magnolia.ui.app.pages.editor.PagesEditorSubApp;
-import info.magnolia.ui.framework.location.LocationController;
-import info.magnolia.ui.model.action.ActionBase;
-import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.admincentral.field.StaticField;
+import info.magnolia.ui.model.field.definition.FieldDefinition;
+import info.magnolia.ui.model.field.definition.StaticFieldDefinition;
 
-import javax.inject.Inject;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.ui.Field;
 
 /**
- * Opens a page for editing.
+ * Creates and initializes an static field definition.
  */
-public class EditPageAction extends ActionBase<EditPageActionDefinition> {
+public class StaticFieldBuilder extends AbstractFieldBuilder<StaticFieldDefinition> {
 
-    private final Node nodeToEdit;
-
-    private final LocationController locationController;
-
-    @Inject
-    public EditPageAction(final EditPageActionDefinition definition, Node nodeToEdit, LocationController locationController) {
-        super(definition);
-        this.nodeToEdit = nodeToEdit;
-        this.locationController = locationController;
+    public StaticFieldBuilder(StaticFieldDefinition definition, Item relatedFieldItem) {
+        super(definition, relatedFieldItem);
     }
 
     @Override
-    public void execute() throws ActionExecutionException {
-        try {
+    protected Field buildField() {
+        StaticField field = new StaticField();
+        field.getLabel().setCaption("Field not yet supported");
+        return field;
+    }
 
-            locationController.goTo(PagesEditorSubApp.createLocation(nodeToEdit.getPath(), null));
 
-        } catch (RepositoryException e) {
-            throw new ActionExecutionException(e);
-        }
+    /**
+     * Do not set datasource for a Static field.
+     */
+    @Override
+    public void setPropertyDataSource(Property property) {
+    }
+
+    @Override
+    protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {
+        return String.class;
     }
 }
+
