@@ -96,62 +96,57 @@ public class MessagesManagerImpl implements MessagesManager {
     }
 
     @Override
-    public void sendMessage(String userId, Message message) {
+    public void sendMessage(String userName, Message message) {
         message.setId(null);
-        messageStore.saveMessage(userId, message);
-        sendMessageSentEvent(userId, message);
+        messageStore.saveMessage(userName, message);
+        sendMessageSentEvent(userName, message);
     }
 
-    /**
-     * Send local message that won't be persisted.
-     *
-     * @param message message to send
-     */
     @Override
     public void sendLocalMessage(Message message) {
         message.setId(null);
-        sendMessageSentEvent(MgnlContext.getUser().getName(), message);
+        String userName = MgnlContext.getUser().getName();
+        messageStore.saveMessage(userName, message);
+        sendMessageSentEvent(userName, message);
     }
 
-
-
     @Override
-    public void clearMessage(final String userId, final String messageId) {
-        final Message message = messageStore.findMessageById(userId, messageId);
+    public void clearMessage(final String userName, final String messageId) {
+        final Message message = messageStore.findMessageById(userName, messageId);
         if (message != null) {
             message.setCleared(true);
-            messageStore.saveMessage(userId, message);
-            sendMessageClearedEvent(userId, message);
+            messageStore.saveMessage(userName, message);
+            sendMessageClearedEvent(userName, message);
         }
     }
 
     @Override
-    public int getNumberOfUnclearedMessagesForUser(String userId) {
-        return messageStore.getNumberOfUnclearedMessagesForUser(userId);
+    public int getNumberOfUnclearedMessagesForUser(String userName) {
+        return messageStore.getNumberOfUnclearedMessagesForUser(userName);
     }
 
     @Override
-    public List<Message> getMessagesForUser(String userId) {
-        return messageStore.findAllMessagesForUser(userId);
+    public List<Message> getMessagesForUser(String userName) {
+        return messageStore.findAllMessagesForUser(userName);
     }
 
     @Override
-    public void registerMessagesListener(String userId, MessageListener listener) {
+    public void registerMessagesListener(String userName, MessageListener listener) {
         synchronized (listeners) {
-            listeners.put(userId, listener);
+            listeners.put(userName, listener);
         }
     }
 
     @Override
-    public void unregisterMessagesListener(String userId, MessageListener listener) {
+    public void unregisterMessagesListener(String userName, MessageListener listener) {
         synchronized (listeners) {
-            listeners.remove(userId, listener);
+            listeners.remove(userName, listener);
         }
     }
 
-    private void sendMessageClearedEvent(String userId, Message message) {
+    private void sendMessageClearedEvent(String userName, Message message) {
         synchronized (listeners) {
-            final List<MessageListener> listenerList = listeners.get(userId);
+            final List<MessageListener> listenerList = listeners.get(userName);
             if (listenerList != null) {
                 for (final MessageListener listener : listenerList) {
                     listener.messageCleared(message);
@@ -160,9 +155,9 @@ public class MessagesManagerImpl implements MessagesManager {
         }
     }
 
-    private void sendMessageSentEvent(String userId, Message message) {
+    private void sendMessageSentEvent(String userName, Message message) {
         synchronized (listeners) {
-            for (final MessageListener listener : listeners.get(userId)) {
+            for (final MessageListener listener : listeners.get(userName)) {
                 if (listener != null) {
                     try {
                         listener.messageSent(cloneMessage(message));
