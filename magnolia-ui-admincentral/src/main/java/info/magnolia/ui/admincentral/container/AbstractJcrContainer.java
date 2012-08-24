@@ -70,6 +70,7 @@ import com.vaadin.data.Property;
  * lazy loading items from a JCR repository and a cache for items and item ids. Inspired by
  * http://vaadin.com/directory#addon/vaadin-sqlcontainer.
  */
+@SuppressWarnings("serial")
 public abstract class AbstractJcrContainer extends AbstractContainer implements Container.Sortable, Container.Indexed, Container.ItemSetChangeNotifier, Container.PropertySetChangeNotifier {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractJcrContainer.class);
@@ -238,13 +239,19 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     @Override
     public Item getItem(Object itemId) {
-
+        if(itemId == null) {
+            return null;
+        }
         try {
             final Session jcrSession = MgnlContext.getJCRSession(workspace);
+            if(!jcrSession.itemExists((String) itemId)) {
+                return null;
+            }
             Node node = (Node) jcrSession.getItem((String) itemId);
             return new JcrNodeAdapter(node);
         } catch (RepositoryException e) {
-            throw new RuntimeRepositoryException(e);
+            log.error("", e);
+            return null;
         }
     }
 
