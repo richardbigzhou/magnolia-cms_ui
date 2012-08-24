@@ -52,6 +52,7 @@ import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.widget.dialog.MagnoloaDialogPresenter;
+import info.magnolia.ui.widget.editor.PageEditor;
 import info.magnolia.ui.widget.editor.PageEditorView;
 
 import java.util.LinkedList;
@@ -79,9 +80,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
     private final PageEditorView view;
 
-    private final EventBus admincentralEventBus;
-
-    private final EventBus appEventBus;
+    private final EventBus eventBus;
 
     private final DialogPresenterFactory dialogPresenterFactory;
 
@@ -89,19 +88,14 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
     private PageEditorParameters parameters;
 
-    private String path;
-
-    private String dialog;
-
-    private String availableComponents;
-
     private final ConfiguredDialogDefinition dialogDefinition;
 
+    private PageEditor.AbstractElement selectedElement;
+
     @Inject
-    public PageEditorPresenter(PageEditorView view, @Named("admincentral") EventBus admincentralEventBus, @Named("app") EventBus appEventBus, DialogPresenterFactory dialogPresenterFactory, TemplateDefinitionRegistry templateDefinitionRegistry) {
+    public PageEditorPresenter(PageEditorView view, @Named("subapp") EventBus eventBus, DialogPresenterFactory dialogPresenterFactory, TemplateDefinitionRegistry templateDefinitionRegistry) {
         this.view = view;
-        this.admincentralEventBus = admincentralEventBus;
-        this.appEventBus = appEventBus;
+        this.eventBus = eventBus;
         this.dialogPresenterFactory = dialogPresenterFactory;
         this.templateDefinitionRegistry = templateDefinitionRegistry;
 
@@ -111,15 +105,11 @@ public class PageEditorPresenter implements PageEditorView.Listener {
     }
 
     private void registerHandlers() {
-        admincentralEventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
+        eventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
 
             @Override
             public void onContentChanged(ContentChangedEvent event) {
-                if (event.getPath().equals(getPath())) {
-                    view.refresh();
-                    setPath(null);
-                    setDialog(null);
-                }
+                view.refresh();
             }
         });
     }
@@ -136,8 +126,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
             }
             final Node node = session.getNode(path);
             final JcrNodeAdapter item = new JcrNodeAdapter(node);
-            setPath(path);
-            setDialog(dialog);
+
             createDialogAction(item, dialogPresenter);
         } catch (RepositoryException e) {
             log.error("Exception caught: {}", e.getMessage(), e);
@@ -164,8 +153,6 @@ public class PageEditorPresenter implements PageEditorView.Listener {
             final JcrNodeAdapter item = new JcrNewNodeAdapter(parentNode, MgnlNodeType.NT_COMPONENT);
             DefaultProperty property = new DefaultProperty(item.JCR_NAME, "0");
             item.addItemProperty(item.JCR_NAME, property);
-            setPath(path);
-            setDialog(NEW_COMPONENT_DIALOG);
 
             // perform custom chaining of dialogs
             dialogPresenter.start(item, new MagnoloaDialogPresenter.Presenter.Callback() {
@@ -202,7 +189,6 @@ public class PageEditorPresenter implements PageEditorView.Listener {
      * Create a Dialog and define the call back actions.
      */
     private void createDialogAction(final JcrNodeAdapter item, final MagnoloaDialogPresenter.Presenter dialogPresenter) {
-        final EventBus eventBus = dialogPresenter.getEventBus();
         dialogPresenter.start(item, new MagnoloaDialogPresenter.Presenter.Callback() {
 
             @Override
@@ -321,60 +307,27 @@ public class PageEditorPresenter implements PageEditorView.Listener {
     }
 
     @Override
-    public void selectNode(String workspace, String path, String params) {
-        setPath(path);
-        String[] values = params.split(";");
-        setDialog(findParameter("dialog", values));
-        setAvailableComponents(findParameter("availableComponents", values));
-        appEventBus.fireEvent(new NodeSelectedEvent(path, workspace));
+    public void selectElement(PageEditor.AbstractElement selectedElement) {
+        this.selectedElement = selectedElement;
+        eventBus.fireEvent(new NodeSelectedEvent(selectedElement.getPath(), selectedElement.getWorkspace()));
     }
 
     public PageEditorView start() {
         view.setListener(this);
         view.init(parameters.getContextPath(), parameters.getNodePath(), parameters.isPreview());
-        setPath(parameters.getNodePath());
-        // TODO 20120823 mgeljic get page dialog from page editor view
-        setDialog("samples:mainProperties");
         return view;
     }
 
-    public String findParameter(String key, String... params) {
-        if (params != null) {
-            for (String value : params) {
-                if (value.startsWith(key + ":")) {
-                    return value.substring(key.length() + 1);
-                }
-            }
-        }
-        return null;
+    public PageEditorParameters getParameters() {
+        return parameters;
     }
 
     public void setParameters(PageEditorParameters parameters) {
         this.parameters = parameters;
     }
 
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
-
-    public String getDialog() {
-        return dialog;
-    }
-
-    public void setDialog(String dialog) {
-        this.dialog = dialog;
-    }
-
-    public String getAvailableComponents() {
-        return availableComponents;
-    }
-
-    private void setAvailableComponents(String availableComponents) {
-        this.availableComponents = availableComponents;
+    public PageEditor.AbstractElement getSelectedElement() {
+        return selectedElement;
     }
 
 }

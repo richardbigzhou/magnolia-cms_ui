@@ -62,6 +62,7 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import info.magnolia.ui.widget.editor.PageEditor;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,9 +77,7 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
 
     private final PagesEditorView view;
 
-    private final EventBus appEventBus;
-
-    private final EventBus subAppEventBus;
+    private final EventBus eventBus;
 
     private final PageEditorPresenter pageEditorPresenter;
 
@@ -95,14 +94,12 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
     private final AppContext appContext;
 
     @Inject
-    public PagesEditorSubApp(final AppContext appContext, final PagesEditorView view, final @Named("app") EventBus appEventBus, final @Named("subapp") EventBus subAppEventBus,
+    public PagesEditorSubApp(final AppContext appContext, final PagesEditorView view, final @Named("subapp") EventBus eventBus,
         final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final WorkbenchActionFactory actionFactory) {
 
         this.view = view;
         this.view.setListener(this);
-
-        this.appEventBus = appEventBus;
-        this.subAppEventBus = subAppEventBus;
+        this.eventBus = eventBus;
         this.pageEditorPresenter = pageEditorPresenter;
         this.actionbarPresenter = actionbarPresenter;
         this.appContext = appContext;
@@ -205,7 +202,7 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
 
     private void bindHandlers() {
 
-        subAppEventBus.addHandler(ActionbarItemClickedEvent.class, new ActionbarItemClickedEvent.Handler() {
+        eventBus.addHandler(ActionbarItemClickedEvent.class, new ActionbarItemClickedEvent.Handler() {
 
             @Override
             public void onActionbarItemClicked(ActionbarItemClickedEvent event) {
@@ -213,19 +210,21 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
                     ActionDefinition actionDefinition = event.getActionDefinition();
                     if (actionDefinition instanceof EditElementActionDefinition) {
                         pageEditorPresenter.editComponent(
-                            appDescriptor.getWorkbench().getWorkspace(),
-                            pageEditorPresenter.getPath(),
-                            pageEditorPresenter.getDialog());
+                                appDescriptor.getWorkbench().getWorkspace(),
+                                pageEditorPresenter.getSelectedElement().getPath(),
+                                pageEditorPresenter.getSelectedElement().getDialog());
                     } else if (actionDefinition instanceof AddComponentActionDefinition) {
+
+                        // casting to AreaElement, because this action is only defined for areas
                         pageEditorPresenter.newComponent(
-                            appDescriptor.getWorkbench().getWorkspace(),
-                            pageEditorPresenter.getPath(),
-                            pageEditorPresenter.getAvailableComponents());
+                                appDescriptor.getWorkbench().getWorkspace(),
+                                pageEditorPresenter.getSelectedElement().getPath(),
+                                ((PageEditor.AreaElement) pageEditorPresenter.getSelectedElement()).getAvailableComponents());
                     } else {
                         actionbarPresenter.createAndExecuteAction(
-                            actionDefinition,
-                            appDescriptor.getWorkbench().getWorkspace(),
-                            pageEditorPresenter.getPath());
+                                actionDefinition,
+                                appDescriptor.getWorkbench().getWorkspace(),
+                                pageEditorPresenter.getSelectedElement().getPath());
                     }
 
                 } catch (ActionExecutionException e) {
@@ -234,13 +233,13 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
             }
         });
 
-        appEventBus.addHandler(NodeSelectedEvent.class, new NodeSelectedEvent.Handler() {
+        eventBus.addHandler(NodeSelectedEvent.class, new NodeSelectedEvent.Handler() {
 
             @Override
             public void onItemSelected(NodeSelectedEvent event) {
                 String workspace = event.getWorkspace();
                 String path = event.getPath();
-                String dialog = pageEditorPresenter.getDialog();
+                String dialog = pageEditorPresenter.getSelectedElement().getDialog();
 
                 try {
                     Session session = MgnlContext.getJCRSession(workspace);

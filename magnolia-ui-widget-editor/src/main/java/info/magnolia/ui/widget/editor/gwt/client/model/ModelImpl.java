@@ -33,20 +33,17 @@
  */
 package info.magnolia.ui.widget.editor.gwt.client.model;
 
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Node;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.AbstractBar;
 import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.AreaEndBar;
-import info.magnolia.ui.widget.editor.gwt.client.widget.overlay.AbstractOverlay;
-import info.magnolia.ui.widget.editor.gwt.client.widget.placeholder.AreaPlaceHolder;
 import info.magnolia.ui.widget.editor.gwt.client.widget.placeholder.ComponentPlaceHolder;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Node;
 
 
 /**
@@ -56,13 +53,9 @@ public class ModelImpl implements Model {
 
     private final Map<MgnlElement, AbstractBar> editBars = new HashMap<MgnlElement, AbstractBar>();
 
-    private final Map<MgnlElement, AbstractOverlay> overlays = new HashMap<MgnlElement, AbstractOverlay>();
-
     private final Map<MgnlElement, List<Element>> elements = new HashMap<MgnlElement, List<Element>>();
 
     private final Map<Element, MgnlElement> mgnlElements = new HashMap<Element, MgnlElement>();
-
-    private final Map<MgnlElement, AreaPlaceHolder> areaPlaceHolders = new HashMap<MgnlElement, AreaPlaceHolder>();
 
     private final Map<MgnlElement, ComponentPlaceHolder> componentPlaceHolders = new HashMap<MgnlElement, ComponentPlaceHolder>();
 
@@ -84,16 +77,6 @@ public class ModelImpl implements Model {
     }
 
     private AbstractBar pageBar = null;
-
-    @Override
-    public void addOverlay(MgnlElement mgnlElement, AbstractOverlay overlayWidget) {
-        overlays.put(mgnlElement, overlayWidget);
-    }
-
-    @Override
-    public AbstractOverlay getOverlay(MgnlElement mgnlElement) {
-        return overlays.get(mgnlElement);
-    }
 
     @Override
     public void addEditBar(MgnlElement mgnlElement, AbstractBar editBar) {
@@ -173,16 +156,6 @@ public class ModelImpl implements Model {
     @Override
     public MgnlElement getSelectedMgnlAreaElement() {
         return selectedMgnlAreaElement;
-    }
-
-    @Override
-    public void addAreaPlaceHolder(MgnlElement mgnlElement, AreaPlaceHolder placeHolder) {
-        areaPlaceHolders.put(mgnlElement, placeHolder);
-    }
-
-    @Override
-    public AreaPlaceHolder getAreaPlaceHolder(MgnlElement mgnlElement) {
-        return areaPlaceHolders.get(mgnlElement);
     }
 
     @Override
