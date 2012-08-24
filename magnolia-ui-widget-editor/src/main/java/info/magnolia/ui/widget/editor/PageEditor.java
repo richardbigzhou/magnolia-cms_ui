@@ -68,6 +68,7 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
     private PageEditorView.Listener listener;
 
     protected ServerSideProxy proxy;
+
     private String nodePath;
 
     public PageEditor() {
@@ -83,7 +84,7 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
     @Override
     public void paintContent(PaintTarget target) throws PaintException {
         super.paintContent(target);
-        
+
         if (contextPath != null) {
             target.addAttribute("contextPath", getContextPath());
         }
@@ -101,7 +102,6 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
         super.changeVariables(source, variables);
         proxy.changeVariables(source, variables);
     }
-
 
     public String getContextPath() {
         return contextPath;
@@ -123,11 +123,11 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
                     public void invoke(String methodName, Object[] params) {
                         final String workspace = String.valueOf(params[0]);
                         final String path = String.valueOf(params[1]);
-                        String dialog = null;
+                        String parameters = null;
                         if (params.length > 2) {
-                            dialog = String.valueOf(params[2]);
+                            parameters = String.valueOf(params[2]);
                         }
-                        listener.selectNode(workspace, path, dialog);
+                        listener.selectNode(workspace, path, parameters);
                     }
                 });
                 register("editComponent", new Method() {

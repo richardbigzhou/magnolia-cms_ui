@@ -93,6 +93,8 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
     private String dialog;
 
+    private String availableComponents;
+
     private final ConfiguredDialogDefinition dialogDefinition;
 
     @Inject
@@ -147,7 +149,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
         updateDialogDefinition(availableComponents);
 
-        MagnoloaDialogPresenter.Presenter dialogPresenter = dialogPresenterFactory.getDialogPresenter(dialogDefinition);
+        final MagnoloaDialogPresenter.Presenter dialogPresenter = dialogPresenterFactory.getDialogPresenter(dialogDefinition);
 
         try {
             Session session = MgnlContext.getJCRSession(workspace);
@@ -159,13 +161,37 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
             Node parentNode = session.getNode(path);
 
-            JcrNodeAdapter item = new JcrNewNodeAdapter(parentNode, MgnlNodeType.NT_COMPONENT);
+            final JcrNodeAdapter item = new JcrNewNodeAdapter(parentNode, MgnlNodeType.NT_COMPONENT);
             DefaultProperty property = new DefaultProperty(item.JCR_NAME, "0");
             item.addItemProperty(item.JCR_NAME, property);
             setPath(path);
             setDialog(NEW_COMPONENT_DIALOG);
 
-            createDialogAction(item, dialogPresenter);
+            // perform custom chaining of dialogs
+            dialogPresenter.start(item, new MagnoloaDialogPresenter.Presenter.Callback() {
+
+                @Override
+                public void onSuccess(String actionName) {
+                    JcrNodeAdapter myItem = item;
+                    String templateId = String.valueOf(myItem.getItemProperty("MetaData/mgnl:template").getValue());
+
+                    try {
+                        TemplateDefinition templateDef = templateDefinitionRegistry.getTemplateDefinition(templateId);
+                        String dialog = templateDef.getDialog();
+                        editComponent(item.getWorkspace(), item.getNode().getPath(), dialog);
+                    } catch (Exception e) {
+                        log.error("Exception caught: {}", e.getMessage(), e);
+                    } finally {
+                        dialogPresenter.closeDialog();
+                    }
+                }
+
+                @Override
+                public void onCancel() {
+                    dialogPresenter.closeDialog();
+                }
+            });
+
         } catch (RepositoryException e) {
             log.error("Exception caught: {}", e.getMessage(), e);
         }
@@ -295,9 +321,11 @@ public class PageEditorPresenter implements PageEditorView.Listener {
     }
 
     @Override
-    public void selectNode(String workspace, String path, String dialog) {
+    public void selectNode(String workspace, String path, String params) {
         setPath(path);
-        setDialog(dialog);
+        String[] values = params.split(";");
+        setDialog(findParameter("dialog", values));
+        setAvailableComponents(findParameter("availableComponents", values));
         appEventBus.fireEvent(new NodeSelectedEvent(path, workspace));
     }
 
@@ -306,8 +334,19 @@ public class PageEditorPresenter implements PageEditorView.Listener {
         view.init(parameters.getContextPath(), parameters.getNodePath(), parameters.isPreview());
         setPath(parameters.getNodePath());
         // TODO 20120823 mgeljic get page dialog from page editor view
-        setDialog("ui-pages-app:pages");
+        setDialog("samples:mainProperties");
         return view;
+    }
+
+    public String findParameter(String key, String... params) {
+        if (params != null) {
+            for (String value : params) {
+                if (value.startsWith(key + ":")) {
+                    return value.substring(key.length() + 1);
+                }
+            }
+        }
+        return null;
     }
 
     public void setParameters(PageEditorParameters parameters) {
@@ -328,6 +367,14 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
     public void setDialog(String dialog) {
         this.dialog = dialog;
+    }
+
+    public String getAvailableComponents() {
+        return availableComponents;
+    }
+
+    private void setAvailableComponents(String availableComponents) {
+        this.availableComponents = availableComponents;
     }
 
 }
