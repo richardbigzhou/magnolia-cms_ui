@@ -37,8 +37,6 @@ import com.google.gwt.dom.client.Element;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.AbstractBar;
 import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.AreaEndBar;
-import info.magnolia.ui.widget.editor.gwt.client.widget.overlay.AbstractOverlay;
-import info.magnolia.ui.widget.editor.gwt.client.widget.placeholder.AreaPlaceHolder;
 import info.magnolia.ui.widget.editor.gwt.client.widget.placeholder.ComponentPlaceHolder;
 
 import java.util.List;
@@ -47,9 +45,6 @@ import java.util.List;
  * Interface for the model storing all elements used across application.
  */
 public interface Model {
-    void addOverlay(MgnlElement mgnlElement, AbstractOverlay overlayWidget);
-
-    AbstractOverlay getOverlay(MgnlElement mgnlElement);
 
     void addEditBar(MgnlElement mgnlElement, AbstractBar editBar);
 
@@ -74,10 +69,6 @@ public interface Model {
     void setSelectedMgnlComponentElement(MgnlElement selectedMgnlComponentElement);
 
     MgnlElement getSelectedMgnlComponentElement();
-
-    void addAreaPlaceHolder(MgnlElement mgnlElement, AreaPlaceHolder placeHolder);
-
-    AreaPlaceHolder getAreaPlaceHolder(MgnlElement mgnlElement);
 
     void addComponentPlaceHolder(MgnlElement mgnlElement, ComponentPlaceHolder placeHolder);
 

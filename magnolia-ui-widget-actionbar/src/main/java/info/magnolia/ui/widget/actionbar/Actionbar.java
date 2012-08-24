@@ -87,6 +87,15 @@ public class Actionbar extends AbstractComponent implements ActionbarView, Serve
                     listener.onActionbarItemClicked(actionToken);
                 }
             });
+
+            register("changeFullScreen", new Method() {
+
+                @Override
+                public void invoke(String methodName, Object[] params) {
+                    final boolean isFullScreen = (Boolean) params[0];
+                    listener.onChangeFullScreen(isFullScreen);
+                }
+            });
         }
     };
 

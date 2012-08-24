@@ -172,6 +172,11 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         doFocus(currentApp);
     }
 
+    @Override
+    public Location getCurrentLocation(String name) {
+        AppContextImpl appContext = runningApps.get(name);
+        return appContext == null ? null : appContext.getCurrentLocation();
+    }
 
     private AppContextImpl doStartIfNotAlreadyRunning(String name, Location location) {
         AppContextImpl appContext = runningApps.get(name);
@@ -241,6 +246,10 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             nextAppContext.onLocationUpdate(newLocation);
         } else {
             nextAppContext = doStartIfNotAlreadyRunning(nextApp.getName(), newLocation);
+        }
+
+        if (currentApp != nextAppContext) {
+            appHistory.addFirst(nextAppContext);
         }
 
         viewPort.setView(nextAppContext.getView());
@@ -374,9 +383,11 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             // If the location targets an existing sub app then activate it and update its location
             SubAppContext subAppContext = subAppContexts.get(subAppId);
             if (subAppContext != null) {
-                appFrameView.setActiveTab(subAppContext.tab);
                 subAppContext.location = location;
                 subAppContext.subApp.locationChanged(location);
+                if (subAppContext.tab != appFrameView.getActiveTab()) {
+                    appFrameView.setActiveTab(subAppContext.tab);
+                }
                 return;
             }
 
@@ -390,13 +401,9 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
         @Override
         public void onActiveTabSet(ShellTab tab) {
-            SubAppContext activeSubAppContext = getActiveSubAppContext();
-            if (activeSubAppContext == null) {
-                log.warn("There's no active sub app currently set");
-                return;
-            }
-            if (activeSubAppContext.tab == tab) {
-                locationController.goTo(activeSubAppContext.location);
+            SubAppContext subAppContext = getSubAppContextForTab(tab);
+            if (subAppContext != null) {
+                locationController.goTo(subAppContext.location);
             }
         }
 
@@ -430,18 +437,6 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         }
 
         @Override
-        public void openSubAppFullScreen(String name, Class<? extends SubApp> subAppClass, Location location) {
-            ComponentProvider subAppComponentProvider = createSubAppComponentProvider(appDescriptor.getName(), name, appComponentProvider);
-
-            SubApp subApp = subAppComponentProvider.newInstance(subAppClass);
-
-            View view = subApp.start(location);
-
-            appFrameView.asVaadinComponent().setFullscreen(true);
-            //shell.showFullscreen(view);
-        }
-
-        @Override
         public void setSubAppLocation(SubApp subApp, Location location) {
             SubAppContext subAppContext = getSubAppContextForSubApp(subApp);
             if (subAppContext != null) {
@@ -470,6 +465,12 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         @Override
         public void showConfirmationMessage(String message) {
             log.info("If confirmation message was already implemented you'd get a {} now...", message);
+        }
+
+        @Override
+        public void enterFullScreenMode() {
+            appFrameView.asVaadinComponent().setFullscreen(true);
+            //shell.showFullscreen(view);
         }
 
         @Override

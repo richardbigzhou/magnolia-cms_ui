@@ -45,7 +45,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public interface ContentAnimationDelegate {
     
-    final static int FADE_SPEED = 250;
+    final static int FADE_SPEED = 600;
 
     final static int SLIDE_SPEED = 400;
     
@@ -79,6 +79,7 @@ public interface ContentAnimationDelegate {
     final static ContentAnimationDelegate FadingDelegate = new ContentAnimationDelegate() {
         @Override
         public void hide(Widget w, final Callbacks callbacks) {
+            w.getElement().getStyle().setProperty("opacity", "0");
             JQueryWrapper.select(w).animate(FADE_SPEED, new AnimationSettings() {{
                 setProperty("opacity", 0);
                 setProperty("visibility", "hidden");

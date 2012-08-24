@@ -117,11 +117,9 @@ public class ShellAppController implements LocationChangedEvent.Handler, Locatio
         viewPort.setView(nextContext.getView());
     }
 
-    public void focusShellApp(String name) {
-        ShellAppContextImpl nextContext = contexts.get(name);
-        if (nextContext != null) {
-            locationController.goTo(nextContext.getCurrentLocation());
-        }
+    public Location getCurrentLocation(String name) {
+        ShellAppContextImpl context = contexts.get(name);
+        return context != null ? context.getCurrentLocation() : null;
     }
 
     private class ShellAppContextImpl implements ShellAppContext {

@@ -75,11 +75,11 @@ public class MessageStore {
      * message is respected if present otherwise a new unique one is used. When the method returns the message has been
      * updated with a new id.
      *
-     * @param userId user to save the message for
+     * @param userName user to save the message for
      * @param message message to save
      * @return true if saving was successful or false if it failed
      */
-    public boolean saveMessage(final String userId, final Message message) {
+    public boolean saveMessage(final String userName, final Message message) {
 
         return MgnlContext.doInSystemContext(new MgnlContext.Op<Boolean, RuntimeException>() {
 
@@ -89,24 +89,24 @@ public class MessageStore {
                     Session session = MgnlContext.getJCRSession(WORKSPACE_NAME);
 
                     if (message.getId() == null) {
-                        message.setId(getUniqueMessageId(getOrCreateUserNode(session, userId)));
+                        message.setId(getUniqueMessageId(getOrCreateUserNode(session, userName)));
                     }
 
-                    marshallMessage(message, getOrCreateMessageNode(session, userId, message));
+                    marshallMessage(message, getOrCreateMessageNode(session, userName, message));
 
                     session.save();
 
                     return true;
 
                 } catch (RepositoryException e) {
-                    logger.error("Saving message failed for user: " + userId, e);
+                    logger.error("Saving message failed for user: " + userName, e);
                     return false;
                 }
             }
         });
     }
 
-    public int getNumberOfUnclearedMessagesForUser(final String userId) {
+    public int getNumberOfUnclearedMessagesForUser(final String userName) {
 
         return MgnlContext.doInSystemContext(new MgnlContext.Op<Integer, RuntimeException>() {
 
@@ -116,7 +116,7 @@ public class MessageStore {
                     Session session = MgnlContext.getJCRSession(WORKSPACE_NAME);
 
                     int n = 0;
-                    for (Node messageNode : NodeUtil.getNodes(getOrCreateUserNode(session, userId), MESSAGE_NODE_TYPE)) {
+                    for (Node messageNode : NodeUtil.getNodes(getOrCreateUserNode(session, userName), MESSAGE_NODE_TYPE)) {
                         if (!messageNode.getProperty(CLEARED).getBoolean()) {
                             n++;
                         }
@@ -124,14 +124,14 @@ public class MessageStore {
                     return n;
 
                 } catch (RepositoryException e) {
-                    logger.warn("Failed to find the number of uncleared messages for user: " + userId, e);
+                    logger.warn("Failed to find the number of uncleared messages for user: " + userName, e);
                     return 0;
                 }
             }
         });
     }
 
-    public List<Message> findAllMessagesForUser(final String userId) {
+    public List<Message> findAllMessagesForUser(final String userName) {
         return MgnlContext.doInSystemContext(new MgnlContext.Op<List<Message>, RuntimeException>() {
 
             @Override
@@ -141,7 +141,7 @@ public class MessageStore {
 
                     ArrayList<Message> messages = new ArrayList<Message>();
 
-                    for (Node messageNode : NodeUtil.getNodes(getOrCreateUserNode(session, userId), MESSAGE_NODE_TYPE)) {
+                    for (Node messageNode : NodeUtil.getNodes(getOrCreateUserNode(session, userName), MESSAGE_NODE_TYPE)) {
 
                         Message message = unmarshallMessage(messageNode);
 
@@ -150,14 +150,14 @@ public class MessageStore {
                     return messages;
 
                 } catch (RepositoryException e) {
-                    logger.error("Saving message failed for user: " + userId, e);
+                    logger.error("Saving message failed for user: " + userName, e);
                     return new ArrayList<Message>();
                 }
             }
         });
     }
 
-    public Message findMessageById(final String userId, final String messageId) {
+    public Message findMessageById(final String userName, final String messageId) {
 
         return MgnlContext.doInSystemContext(new MgnlContext.Op<Message, RuntimeException>() {
 
@@ -166,7 +166,7 @@ public class MessageStore {
                 try {
                     Session session = MgnlContext.getJCRSession(WORKSPACE_NAME);
 
-                    Node messageNode = getMessageNode(session, userId, messageId);
+                    Node messageNode = getMessageNode(session, userName, messageId);
 
                     if (messageNode == null) {
                         return null;
@@ -175,7 +175,7 @@ public class MessageStore {
                     return unmarshallMessage(messageNode);
 
                 } catch (RepositoryException e) {
-                    logger.error("Unable to read message: " + messageId + " for user: " + userId, e);
+                    logger.error("Unable to read message: " + messageId + " for user: " + userName, e);
                     return null;
                 }
             }
@@ -208,16 +208,16 @@ public class MessageStore {
         return message;
     }
 
-    private Node getOrCreateUserNode(Session session, String userId) throws RepositoryException {
-        return JcrUtils.getOrCreateByPath(WORKSPACE_PATH + userId, USER_NODE_TYPE, session);
+    private Node getOrCreateUserNode(Session session, String userName) throws RepositoryException {
+        return JcrUtils.getOrCreateByPath(WORKSPACE_PATH + userName, USER_NODE_TYPE, session);
     }
 
-    private Node getOrCreateMessageNode(Session session, String userId, Message message) throws RepositoryException {
-        return getOrCreateUserNode(session, userId).addNode(message.getId(), MESSAGE_NODE_TYPE);
+    private Node getOrCreateMessageNode(Session session, String userName, Message message) throws RepositoryException {
+        return getOrCreateUserNode(session, userName).addNode(message.getId(), MESSAGE_NODE_TYPE);
     }
 
-    private Node getMessageNode(Session session, String userId, String messageId) throws RepositoryException {
-        String absolutePath = WORKSPACE_PATH + userId + "/" + messageId;
+    private Node getMessageNode(Session session, String userName, String messageId) throws RepositoryException {
+        String absolutePath = WORKSPACE_PATH + userName + "/" + messageId;
         if (session.nodeExists(absolutePath)) {
             return session.getNode(absolutePath);
         }

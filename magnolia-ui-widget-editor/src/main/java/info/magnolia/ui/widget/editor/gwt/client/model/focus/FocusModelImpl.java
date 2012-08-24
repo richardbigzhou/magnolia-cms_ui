@@ -33,14 +33,17 @@
  */
 package info.magnolia.ui.widget.editor.gwt.client.model.focus;
 
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONString;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 import info.magnolia.ui.widget.editor.gwt.client.event.SelectElementEvent;
 import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.AbstractBar;
-import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.AreaBar;
 
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.event.shared.EventBus;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -70,29 +73,33 @@ public class FocusModelImpl implements FocusModel {
 
         AbstractBar editBar;
 
+        Map<String, String> attr;
+        String type;
         if (mgnlElement != null) {
             if (mgnlElement.isComponent()) {
                 component = mgnlElement;
                 area = mgnlElement.getParentArea();
-            } else {
+            }
+            else {
                 area = mgnlElement;
             }
-            editBar = model.getEditBar(mgnlElement);
+
+            type = mgnlElement.getComment().getTagName();
+            attr = mgnlElement.getAttributes();
         } else {
+
+
+            // ugly hack!!!
             editBar = model.getPageBar();
+            type = "cms:page";
+            attr = new HashMap<String, String>();
+            attr.put("workspace", editBar.getWorkspace());
+            attr.put("path", editBar.getPath());
+            attr.put("dialog", editBar.getDialog());
+
         }
 
-        String params = "";
-        if (editBar.getDialog() != null) {
-            params += "dialog:" + editBar.getDialog() + ";";
-        }
-        if (area != null && area == mgnlElement) {
-            if (((AreaBar) editBar).getAvailableComponents() != null && !((AreaBar) editBar).getAvailableComponents().isEmpty()) {
-                params += "availableComponents:" + ((AreaBar) editBar).getAvailableComponents() + ";";
-            }
-        }
-
-        eventBus.fireEvent(new SelectElementEvent(editBar.getPath(), editBar.getWorkspace(), params.substring(0, params.length() - 1)));
+        select(type, attr);
 
         // first set the component, then set the area. the selected component is used for setting
         // the corrent area class.
@@ -190,16 +197,16 @@ public class FocusModelImpl implements FocusModel {
 
         if (!area.isRelated(model.getSelectedMgnlAreaElement())) {
 
-            if (model.getAreaPlaceHolder(area) != null) {
+/*            if (model.getAreaPlaceHolder(area) != null) {
                 model.getAreaPlaceHolder(area).setActive(visible);
-            }
+            }*/
 
             // toggle all direct child-areas placeholders visibility
             for (MgnlElement childArea : area.getAreas()) {
 
-                if (model.getAreaPlaceHolder(childArea) != null) {
+/*                if (model.getAreaPlaceHolder(childArea) != null) {
                     model.getAreaPlaceHolder(childArea).setVisible(visible);
-                }
+                }*/
                 if (model.getEditBar(childArea) != null) {
                     model.getEditBar(childArea).setVisible(visible);
                 }
@@ -224,9 +231,9 @@ public class FocusModelImpl implements FocusModel {
             // toggle all child-components-area placeholder visibility
             for (MgnlElement childArea : component.getAreas()) {
 
-                if (model.getAreaPlaceHolder(childArea) != null) {
+/*                if (model.getAreaPlaceHolder(childArea) != null) {
                     model.getAreaPlaceHolder(childArea).setVisible(visible);
-                }
+                }*/
                 if (model.getEditBar(childArea) != null) {
                     model.getEditBar(childArea).setVisible(visible);
                 }
@@ -248,10 +255,41 @@ public class FocusModelImpl implements FocusModel {
             if (model.getAreaEndBar(root) != null) {
                 model.getAreaEndBar(root).setVisible(visible);
             }
-            if (model.getAreaPlaceHolder(root) != null) {
-                model.getAreaPlaceHolder(root).setVisible(visible);
+            if (model.getComponentPlaceHolder(root) != null) {
+                model.getComponentPlaceHolder(root).setVisible(visible);
             }
         }
+
+        // ugly hack!!!
+        AbstractBar editBar = model.getPageBar();
+        String type = "cms:page";
+
+        Map<String, String> attr = new HashMap<String, String>();
+        attr.put("workspace", editBar.getWorkspace());
+        attr.put("path", editBar.getPath());
+        attr.put("dialog", editBar.getDialog());
+
+        select(type, attr);
+    }
+
+    private void select(String type, Map<String, String> attr) {
+        JSONObject json = new JSONObject();
+
+        for ( String key : attr.keySet()) {
+            String value = attr.get(key);
+
+            // hack to get correct path and workspace
+            if (key.equals("content")) {
+                int i = value.indexOf(':');
+
+                json.put("workspace", new JSONString(value.substring(0, i)));
+                json.put("path", new JSONString(value.substring(i+1)));
+            }
+            else {
+                json.put(key, new JSONString(value));
+            }
+        }
+        eventBus.fireEvent(new SelectElementEvent(type, json.toString()));
     }
 
 }

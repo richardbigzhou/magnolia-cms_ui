@@ -52,7 +52,7 @@ public class GwtTouchEventConverter implements Serializable {
     private static final Map<Class<? extends DomEvent<?>>, ? extends TouchEvent<?>> map = new HashMap<Class<? extends DomEvent<?>>, TouchEvent<?>>() {{
        put(com.google.gwt.event.dom.client.TouchEndEvent.class, new TouchEndEvent(){});
        put(com.google.gwt.event.dom.client.TouchStartEvent.class, new TouchStartEvent(){});
-       put(com.google.gwt.event.dom.client.TouchMoveEvent.class, new TouchCancelEvent(){});
+       put(com.google.gwt.event.dom.client.TouchCancelEvent.class, new TouchCancelEvent(){});
        put(com.google.gwt.event.dom.client.TouchMoveEvent.class, new TouchMoveEvent(){});
     }};
     
