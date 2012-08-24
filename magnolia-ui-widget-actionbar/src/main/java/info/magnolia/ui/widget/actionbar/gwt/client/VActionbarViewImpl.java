@@ -41,7 +41,6 @@ import info.magnolia.ui.widget.actionbar.gwt.client.event.ActionTriggerEvent;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.google.gwt.core.shared.GWT;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
@@ -164,7 +163,6 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, 
 
             @Override
             public void onTouchStart(TouchStartEvent event) {
-                GWT.log("FullScreen TouchStart");
                 isFullScreen = !isFullScreen;
                 actualizeFullScreenState(isFullScreen);
             }

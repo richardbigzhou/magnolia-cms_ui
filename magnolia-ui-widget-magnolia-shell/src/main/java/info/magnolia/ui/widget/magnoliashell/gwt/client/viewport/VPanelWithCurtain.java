@@ -33,12 +33,12 @@
  */
 package info.magnolia.ui.widget.magnoliashell.gwt.client.viewport;
 
+import com.googlecode.mgwt.ui.client.widget.touch.TouchPanel;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper;
 
 import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 
 
@@ -46,19 +46,13 @@ import com.google.gwt.user.client.ui.RootPanel;
  * Panel that has a modality curtain when active.
  *
  */
-public class VPanelWithCurtain extends ComplexPanel {
+public class VPanelWithCurtain extends TouchPanel {
     
     private Element modalityCurtain = DOM.createDiv();
     
     public VPanelWithCurtain() {
         modalityCurtain.addClassName("green-modality-curtain");
         modalityCurtain.getStyle().setVisibility(Visibility.HIDDEN);
-        /*addTapHandler(new TapHandler() {
-            @Override
-            public void onTap(TapEvent event) {
-                Window.alert("TAP!")
-            }
-        });*/
     }
     
     public Element getModalityCurtain() {
