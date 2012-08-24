@@ -430,18 +430,6 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         }
 
         @Override
-        public void openSubAppFullScreen(String name, Class<? extends SubApp> subAppClass, Location location) {
-            ComponentProvider subAppComponentProvider = createSubAppComponentProvider(appDescriptor.getName(), name, appComponentProvider);
-
-            SubApp subApp = subAppComponentProvider.newInstance(subAppClass);
-
-            View view = subApp.start(location);
-
-            appFrameView.asVaadinComponent().setFullscreen(true);
-            //shell.showFullscreen(view);
-        }
-
-        @Override
         public void setSubAppLocation(SubApp subApp, Location location) {
             SubAppContext subAppContext = getSubAppContextForSubApp(subApp);
             if (subAppContext != null) {
@@ -470,6 +458,12 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         @Override
         public void showConfirmationMessage(String message) {
             log.info("If confirmation message was already implemented you'd get a {} now...", message);
+        }
+
+        @Override
+        public void enterFullScreenMode() {
+            appFrameView.asVaadinComponent().setFullscreen(true);
+            //shell.showFullscreen(view);
         }
 
         @Override

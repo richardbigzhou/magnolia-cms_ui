@@ -194,12 +194,12 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
 
     private void showFullPreview(final Location defaultLocation) {
         showPreview();
-        appContext.openSubAppFullScreen(PagesApp.EDITOR_TOKEN, PagesEditorSubApp.class, defaultLocation);
+        appContext.enterFullScreenMode();
     }
 
     private void showFullEditor(final Location defaultLocation) {
         showEditor();
-        appContext.openSubAppFullScreen(PagesApp.EDITOR_TOKEN, PagesEditorSubApp.class, defaultLocation);
+        appContext.enterFullScreenMode();
     }
 
     private void bindHandlers() {
