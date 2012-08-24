@@ -44,11 +44,10 @@ import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
 
 /**
  * Base implementation of an {@link com.vaadin.data.Item} wrapping/representing a {@link javax.jcr.Node}.
- * Implements {@link ValueChangeListener} in order to inform/change JCR property when a
+ * Implements {@link com.vaadin.data.Property.ValueChangeListener} in order to inform/change JCR property when a
  * Vaadin property has changed.
  *<p>
  * Jcr properties are read from Repository as long as they are not modified.
