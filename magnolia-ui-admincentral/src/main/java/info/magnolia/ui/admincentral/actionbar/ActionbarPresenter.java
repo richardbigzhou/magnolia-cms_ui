@@ -36,6 +36,7 @@ package info.magnolia.ui.admincentral.actionbar;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.admincentral.actionbar.builder.ActionbarBuilder;
 import info.magnolia.ui.admincentral.event.ActionbarItemClickedEvent;
+import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
@@ -76,14 +77,17 @@ public class ActionbarPresenter implements ActionbarView.Listener {
 
     private final EventBus subAppEventBus;
 
+    private final AppContext appContext;
+
     private ActionFactory<ActionDefinition, Action> actionFactory;
 
     /**
      * Instantiates a new action bar presenter.
      */
     @Inject
-    public ActionbarPresenter(@Named("subapp") EventBus subAppEventBus) {
+    public ActionbarPresenter(@Named("subapp") EventBus subAppEventBus, AppContext appContext) {
         this.subAppEventBus = subAppEventBus;
+        this.appContext = appContext;
     }
 
     /**
@@ -144,6 +148,15 @@ public class ActionbarPresenter implements ActionbarView.Listener {
         ActionDefinition actionDefinition = getActionDefinition(actionToken);
         if (actionDefinition != null) {
             subAppEventBus.fireEvent(new ActionbarItemClickedEvent(actionDefinition));
+        }
+    }
+
+    @Override
+    public void onChangeFullScreen(boolean isFullScreen) {
+        if (isFullScreen){
+            appContext.enterFullScreenMode();
+        }   else{
+            appContext.exitFullScreenMode();
         }
     }
 

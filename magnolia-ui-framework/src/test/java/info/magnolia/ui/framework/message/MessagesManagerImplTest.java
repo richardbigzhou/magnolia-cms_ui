@@ -191,9 +191,9 @@ public class MessagesManagerImplTest {
         messagesManager.sendLocalMessage(message);
 
         // THEN
-        assertNull("Local messages have to have id == null", message.getId());
+        assertNotNull("Local messages have id", message.getId());
         verify(listenerA).messageSent(any(Message.class));
-        assertFalse("Local message must not be persisted.", session.nodeExists("/me"));
+        assertTrue("Local message are persisted.", session.nodeExists("/me"));
     }
 
     @Test

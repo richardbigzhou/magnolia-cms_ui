@@ -54,4 +54,6 @@ public interface AppController {
     void setViewPort(ViewPort viewport);
 
     void focusCurrentApp();
+
+    Location getCurrentLocation(String name);
 }

@@ -182,7 +182,11 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, 
              fullScreenButtonIcon.addClassName("icon-open-fullscreen");
              fullScreenButtonIcon.removeClassName("icon-close-fullscreen");
          }
+
+        presenter.changeFullScreen(isFullScreen);
     }
+
+
     /**
      * Actualize the state of the actionbar 'openness' by setting classes on html elements.
      */

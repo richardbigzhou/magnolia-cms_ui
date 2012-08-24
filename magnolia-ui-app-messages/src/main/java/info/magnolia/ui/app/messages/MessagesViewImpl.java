@@ -64,6 +64,7 @@ public class MessagesViewImpl implements MessagesView {
         layout.addComponent(messageField);
 
         HorizontalLayout middle = new HorizontalLayout();
+        middle.setSpacing(true);
 
         final OptionGroup types = new OptionGroup("Type");
         types.setNullSelectionAllowed(false);
@@ -76,8 +77,11 @@ public class MessagesViewImpl implements MessagesView {
         final OptionGroup scopes = new OptionGroup("Scope");
         scopes.setNullSelectionAllowed(false);
         scopes.addItem("User");
+        scopes.setItemCaption("User", "Specific user");
         scopes.addItem("Local");
+        scopes.setItemCaption("Local", "Current user");
         scopes.addItem("Global");
+        scopes.setItemCaption("Global", "All users");
         scopes.setValue("Local");
         middle.addComponent(scopes);
 
@@ -85,7 +89,6 @@ public class MessagesViewImpl implements MessagesView {
         middle.addComponent(userField);
 
         layout.addComponent(middle);
-
 
         layout.addComponent(new Button("Send system message", new Button.ClickListener() {
 
@@ -107,7 +110,7 @@ public class MessagesViewImpl implements MessagesView {
                 }
             }
         }));
-
+/*
         layout.addComponent(new Button("Send confirmation message", new Button.ClickListener() {
 
             @Override
@@ -115,7 +118,7 @@ public class MessagesViewImpl implements MessagesView {
                 listener.showConfirmationMessage("Confirmation - " + messageField.getValue());
             }
         }));
-
+*/
         component = layout;
     }
 

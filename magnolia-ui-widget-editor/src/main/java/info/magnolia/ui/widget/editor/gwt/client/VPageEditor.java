@@ -33,6 +33,25 @@
  */
 package info.magnolia.ui.widget.editor.gwt.client;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.AnchorElement;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.FormElement;
+import com.google.gwt.dom.client.HeadElement;
+import com.google.gwt.dom.client.IFrameElement;
+import com.google.gwt.dom.client.LinkElement;
+import com.google.gwt.dom.client.Node;
+import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.SimpleEventBus;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Frame;
+import com.vaadin.terminal.gwt.client.ApplicationConnection;
+import com.vaadin.terminal.gwt.client.Paintable;
+import com.vaadin.terminal.gwt.client.UIDL;
+import com.vaadin.terminal.gwt.client.VConsole;
 import info.magnolia.ui.widget.editor.gwt.client.dom.Comment;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 import info.magnolia.ui.widget.editor.gwt.client.dom.processor.CommentProcessor;
@@ -56,43 +75,21 @@ import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 import info.magnolia.ui.widget.editor.gwt.client.model.ModelImpl;
 import info.magnolia.ui.widget.editor.gwt.client.model.focus.FocusModel;
 import info.magnolia.ui.widget.editor.gwt.client.model.focus.FocusModelImpl;
-
-import java.util.LinkedList;
-import java.util.List;
-
 import org.vaadin.rpc.client.ClientSideHandler;
 import org.vaadin.rpc.client.ClientSideProxy;
 import org.vaadin.rpc.client.Method;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.AnchorElement;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.FormElement;
-import com.google.gwt.dom.client.HeadElement;
-import com.google.gwt.dom.client.IFrameElement;
-import com.google.gwt.dom.client.LinkElement;
-import com.google.gwt.dom.client.Node;
-import com.google.gwt.dom.client.NodeList;
-import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.event.shared.SimpleEventBus;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Frame;
-import com.vaadin.terminal.gwt.client.ApplicationConnection;
-import com.vaadin.terminal.gwt.client.Paintable;
-import com.vaadin.terminal.gwt.client.UIDL;
-import com.vaadin.terminal.gwt.client.VConsole;
+import java.util.LinkedList;
+import java.util.List;
 
 
 /**
- * Vaadin implementation of PageEditor client side. TODO fgrilli: this class badly needs clean up
- * and refactoring.
+ * Vaadin implementation of PageEditor client side.
+ * TODO fgrilli: this class badly needs clean up and refactoring.
  */
 public class VPageEditor extends Composite implements VPageEditorView.Listener, Paintable, ClientSideHandler {
 
-    // In case we're in preview mode, we will stop processing the document, after the pagebar has
-    // been injected.
+    // In case we're in preview mode, we will stop processing the document, after the pagebar has been injected.
     private static boolean keepProcessing = true;
 
     private static String locale;
@@ -101,20 +98,17 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
 
     private final EventBus eventBus;
 
-    private final ClientSideProxy proxy;
+    private ClientSideProxy proxy;
 
     private static VPageEditorView view;
 
     protected ApplicationConnection client;
 
     protected String paintableId;
-
-    private final FocusModel focusModel;
+    private FocusModel focusModel;
 
     private String contextPath;
-
     private String pagePath;
-
     private boolean preview = false;
 
     public VPageEditor() {
@@ -129,10 +123,8 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
         initWidget(view.asWidget());
 
         proxy = new ClientSideProxy(this) {
-
             {
                 register("refresh", new Method() {
-
                     @Override
                     public void invoke(String methodName, Object[] params) {
                         reloadIFrame(view.getIframe().getElement());
@@ -196,8 +188,7 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
         focusModel.onMouseUp(element);
     }
 
-    private native void initNativeHandlers(Element element)
-    /*-{
+    private native void initNativeHandlers(Element element) /*-{
         if (element != 'undefined') {
             var ref = this;
             element.contentDocument.onmouseup = function(event) {
@@ -213,13 +204,12 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
 
             @Override
             public void onSelectElement(SelectElementEvent selectElementEvent) {
-                proxy.call("selectElement", selectElementEvent.getWorkspace(), selectElementEvent.getPath(), selectElementEvent.getParams());
+                proxy.call("selectElement", selectElementEvent.getType(), selectElementEvent.getJson());
             }
 
         });
 
         eventBus.addHandler(NewAreaEvent.TYPE, new NewAreaEventHandler() {
-
             @Override
             public void onNewArea(NewAreaEvent newAreaEvent) {
                 proxy.call("newArea", newAreaEvent.getWorkSpace(), newAreaEvent.getNodeType(), newAreaEvent.getPath());
@@ -227,7 +217,6 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
         });
 
         eventBus.addHandler(NewComponentEvent.TYPE, new NewComponentEventHandler() {
-
             @Override
             public void onNewComponent(NewComponentEvent newComponentEvent) {
                 proxy.call("newComponent", newComponentEvent.getWorkSpace(), newComponentEvent.getPath(), newComponentEvent.getAvailableComponents());
@@ -235,7 +224,6 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
         });
 
         eventBus.addHandler(EditComponentEvent.TYPE, new EditComponentEventHandler() {
-
             @Override
             public void onEditComponent(EditComponentEvent editComponentEvent) {
                 proxy.call("editComponent", editComponentEvent.getWorkspace(), editComponentEvent.getPath(), editComponentEvent.getDialog());
@@ -243,23 +231,15 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
         });
 
         eventBus.addHandler(DeleteComponentEvent.TYPE, new DeleteComponentEventHandler() {
-
             @Override
             public void onDeleteComponent(DeleteComponentEvent deleteComponentEvent) {
                 proxy.call("deleteComponent", deleteComponentEvent.getWorkspace(), deleteComponentEvent.getPath());
             }
         });
         eventBus.addHandler(SortComponentEvent.TYPE, new SortComponentEventHandler() {
-
             @Override
             public void onSortComponent(SortComponentEvent sortComponentEvent) {
-                proxy.call(
-                    "sortComponent",
-                    sortComponentEvent.getWorkspace(),
-                    sortComponentEvent.getParentPath(),
-                    sortComponentEvent.getSourcePath(),
-                    sortComponentEvent.getTargetPath(),
-                    sortComponentEvent.getOrder());
+                proxy.call("sortComponent", sortComponentEvent.getWorkspace(), sortComponentEvent.getParentPath(), sortComponentEvent.getSourcePath(), sortComponentEvent.getTargetPath(), sortComponentEvent.getOrder());
             }
         });
     }
@@ -273,8 +253,7 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
         head.insertFirst(cssLink);
     }
 
-    private native void onPageEditorReady()
-    /*-{
+    private native void onPageEditorReady() /*-{
         var callbacks = $wnd.mgnl.PageEditor.onPageEditorReadyCallbacks
         if(typeof callbacks != 'undefined') {
             for(var i=0; i < callbacks.length; i++) {
@@ -283,24 +262,22 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
         }
     }-*/;
 
-    protected native void reloadIFrame(Element iframeElement)
-    /*-{
+    protected native void reloadIFrame(Element iframeElement) /*-{
         iframeElement.contentWindow.location.reload(true);
     }-*/;
 
-    // FIXME submitting forms still renders website channel and edit bars
+    //FIXME submitting forms still renders website channel and edit bars
     private void postProcessLinksOnMobilePreview(Element root, String channel) {
         NodeList<Element> anchors = root.getElementsByTagName("a");
 
-        final String mobilePreviewParams = "";// MGNL_CHANNEL_PARAMETER+"="+channel+"&"+
-                                              // MGNL_PREVIEW_PARAMETER+"=true";
+        final String mobilePreviewParams = "";//MGNL_CHANNEL_PARAMETER+"="+channel+"&"+ MGNL_PREVIEW_PARAMETER+"=true";
 
         for (int i = 0; i < anchors.getLength(); i++) {
             AnchorElement anchor = AnchorElement.as(anchors.getItem(i));
 
             GWT.log("Starting to process link " + anchor.getHref());
 
-            if (JavascriptUtils.isEmpty(anchor.getHref())) {
+            if(JavascriptUtils.isEmpty(anchor.getHref())) {
                 continue;
             }
             String manipulatedHref = anchor.getHref().replaceFirst(Window.Location.getProtocol() + "//" + Window.Location.getHost(), "");
@@ -308,15 +285,15 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
 
             GWT.log("query string is " + queryString);
 
-            String queryStringRegex = queryString.replaceFirst("\\?", "\\\\?");
+            String queryStringRegex =  queryString.replaceFirst("\\?", "\\\\?");
             manipulatedHref = manipulatedHref.replaceFirst(queryStringRegex, "");
             int indexOfHash = manipulatedHref.indexOf("#");
 
-            if (indexOfHash != -1) {
+            if(indexOfHash != -1) {
                 manipulatedHref = manipulatedHref.substring(indexOfHash);
             } else {
-                if (!queryString.contains(mobilePreviewParams)) {
-                    if (queryString.startsWith("?")) {
+                if(!queryString.contains(mobilePreviewParams)) {
+                    if(queryString.startsWith("?")) {
                         queryString += "&" + mobilePreviewParams;
                     } else {
                         queryString = "?" + mobilePreviewParams;
@@ -331,11 +308,12 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
 
         for (int i = 0; i < forms.getLength(); i++) {
             FormElement form = FormElement.as(forms.getItem(i));
-            form.setAction(form.getAction().concat("?" + mobilePreviewParams));
+            form.setAction(form.getAction().concat("?"+ mobilePreviewParams));
         }
     }
 
     private void process(final Document document) {
+
 
         injectEditorStyles(document);
 
@@ -348,7 +326,7 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
     }
 
     private void processDocument(Node node, MgnlElement mgnlElement) {
-        if (keepProcessing) {
+        if(keepProcessing) {
             for (int i = 0; i < node.getChildCount(); i++) {
                 Node childNode = node.getChild(i);
                 if (childNode.getNodeType() == Comment.COMMENT_NODE) {
@@ -393,7 +371,7 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
         if (preview) {
             return;
         }
-        Element element = iframe.getElement();
+        Element element= iframe.getElement();
         initNativeHandlers(element);
 
         IFrameElement frameElement = IFrameElement.as(element);
@@ -410,4 +388,5 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
     public String getContextPath() {
         return contextPath;
     }
+
 }

@@ -51,7 +51,7 @@ public interface AppContext {
      */
     void openSubApp(String name, Class<? extends SubApp> subAppClass, Location location, String subAppId);
 
-    void openSubAppFullScreen(String name, Class<? extends SubApp> subAppClass, Location location);
+    void enterFullScreenMode();
 
     void exitFullScreenMode();
 
