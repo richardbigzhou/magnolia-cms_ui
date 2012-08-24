@@ -34,6 +34,7 @@
 }
 
 .btn-shell {
+    position:relative; /* So that the indicators (position:absolute) are correctly positioned */
     margin-top: 3px;
     margin-left: 12px;
     margin-right: 12px;

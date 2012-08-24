@@ -35,6 +35,7 @@ package info.magnolia.ui.widget.editor;
 
 import info.magnolia.ui.widget.editor.gwt.client.VPageEditor;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import org.vaadin.rpc.ServerSideHandler;
@@ -48,6 +49,7 @@ import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.ClientWidget;
 import com.vaadin.ui.Component;
 
+import com.google.gson.Gson;
 
 /**
  * PageEditor widget server side implementation.
@@ -68,8 +70,10 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
     private PageEditorView.Listener listener;
 
     protected ServerSideProxy proxy;
-
     private String nodePath;
+    private String PAGE_ELEMENT = "cms:page";
+    private String AREA_ELEMENT = "cms:area";
+    private String COMPONENT_ELEMENT = "cms:component";
 
     public PageEditor() {
         setSizeFull();
@@ -84,7 +88,7 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
     @Override
     public void paintContent(PaintTarget target) throws PaintException {
         super.paintContent(target);
-
+        
         if (contextPath != null) {
             target.addAttribute("contextPath", getContextPath());
         }
@@ -102,6 +106,7 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
         super.changeVariables(source, variables);
         proxy.changeVariables(source, variables);
     }
+
 
     public String getContextPath() {
         return contextPath;
@@ -121,13 +126,12 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
 
                     @Override
                     public void invoke(String methodName, Object[] params) {
-                        final String workspace = String.valueOf(params[0]);
-                        final String path = String.valueOf(params[1]);
-                        String parameters = null;
-                        if (params.length > 2) {
-                            parameters = String.valueOf(params[2]);
-                        }
-                        listener.selectNode(workspace, path, parameters);
+                        final String type = String.valueOf(params[0]);
+                        final String json = String.valueOf(params[1]);
+
+                        AbstractElement element = resolveElement(type, json);
+
+                        listener.selectElement(element);
                     }
                 });
                 register("editComponent", new Method() {
@@ -188,6 +192,21 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
 
     }
 
+    private AbstractElement resolveElement(String type, String json) {
+        AbstractElement element = null;
+        Gson gson = new Gson();
+        if (type.equals(PAGE_ELEMENT)) {
+            element = gson.fromJson(String.valueOf(json), PageElement.class);
+        }
+        else if (type.equals(AREA_ELEMENT)) {
+            element = gson.fromJson(String.valueOf(json), AreaElement.class);
+        }
+        else if (type.equals(COMPONENT_ELEMENT)) {
+            element = gson.fromJson(String.valueOf(json), ComponentElement.class);
+        }
+        return element;
+    }
+
     @Override
     public void refresh() {
         proxy.call("refresh");
@@ -215,5 +234,85 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
 
     public String getNodePath() {
         return nodePath;
+    }
+
+    /**
+     * Class for GSON serialization of area elements.
+     */
+    public static class AreaElement extends AbstractElement {
+
+        private String availableComponents;
+
+        public AreaElement(String workspace, String path, String dialog, String availableComponents) {
+            super(workspace, path, dialog);
+            this.availableComponents = availableComponents;
+        }
+
+        public String getAvailableComponents() {
+            return availableComponents;
+        }
+    }
+
+    /**
+     * Class for GSON serialization of area elements.
+     */
+    public static class ComponentElement extends AbstractElement {
+
+        public ComponentElement(String workspace, String path, String dialog) {
+            super(workspace, path, dialog);
+        }
+
+    }
+
+    /**
+     * Class for GSON serialization of area elements.
+     */
+    public static class PageElement extends AbstractElement {
+
+        public PageElement(String workspace, String path, String dialog) {
+            super(workspace, path, dialog);
+        }
+
+    }
+
+    /**
+     *  AbstractElement.
+     */
+    public static abstract class AbstractElement implements Serializable {
+
+        private String workspace;
+
+        public void setWorkspace(String workspace) {
+            this.workspace = workspace;
+        }
+
+        public void setPath(String path) {
+            this.path = path;
+        }
+
+        public void setDialog(String dialog) {
+            this.dialog = dialog;
+        }
+
+        private String path;
+        private String dialog;
+
+        public AbstractElement(String workspace, String path, String dialog) {
+            this.workspace = workspace;
+            this.path = path;
+            this.dialog = dialog;
+        }
+
+        public String getWorkspace() {
+            return workspace;
+        }
+
+        public String getPath() {
+            return path;
+        }
+
+        public String getDialog() {
+            return dialog;
+        }
     }
 }

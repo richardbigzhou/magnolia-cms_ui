@@ -94,5 +94,12 @@ public interface ActionbarView extends View {
          */
         void onActionbarItemClicked(String actionToken);
 
+        /**
+         * Event handler invoked on clicking full screen button on actionbar.
+         *
+         * @param isFullScreen whether to activate or deactivate full screen mode
+         */
+        void onChangeFullScreen(boolean isFullScreen);
+
     }
 }

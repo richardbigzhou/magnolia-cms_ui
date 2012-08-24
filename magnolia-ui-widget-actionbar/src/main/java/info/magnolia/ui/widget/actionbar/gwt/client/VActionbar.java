@@ -221,6 +221,12 @@ public class VActionbar extends Composite implements Paintable, Container, Clien
     }
 
     @Override
+    public void changeFullScreen(boolean isFullScreen){
+        proxy.call("changeFullScreen",isFullScreen);
+    };
+
+
+    @Override
     public void updateCaption(Paintable component, UIDL uidl) {
     }
 

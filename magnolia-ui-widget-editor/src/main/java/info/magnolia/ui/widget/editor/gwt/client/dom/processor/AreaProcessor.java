@@ -39,7 +39,6 @@ import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.AreaBar;
 import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.AreaEndBar;
-import info.magnolia.ui.widget.editor.gwt.client.widget.placeholder.AreaPlaceHolder;
 import info.magnolia.ui.widget.editor.gwt.client.widget.placeholder.ComponentPlaceHolder;
 
 /**
@@ -57,12 +56,6 @@ public class AreaProcessor extends MgnlElementProcessor {
         try {
             areaBar = new AreaBar(getModel(), getEventBus(), getMgnlElement());
 
-            try {
-                new AreaPlaceHolder(getModel(), getEventBus(), getMgnlElement());
-            }
-            catch(IllegalArgumentException e) {
-                GWT.log("Not creating area placeholder for this element. Missing parameters.");
-            }
             try {
                 new ComponentPlaceHolder(getModel(), getEventBus(), getMgnlElement());
             }

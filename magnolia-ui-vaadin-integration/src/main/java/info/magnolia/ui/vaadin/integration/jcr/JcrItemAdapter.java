@@ -47,7 +47,7 @@ public interface JcrItemAdapter extends Item {
      * The special property {@value #JCR_NAME} is reserved and can only be used to set the new node name. If not found, the default name (that is the relative path)
      * of the underlying transient node is used (which is likely to be something like <code>untitled</code>).
      */
-     static final String JCR_NAME = "jcrName";
+    static final String JCR_NAME = "jcrName";
 
     boolean isNode();
 

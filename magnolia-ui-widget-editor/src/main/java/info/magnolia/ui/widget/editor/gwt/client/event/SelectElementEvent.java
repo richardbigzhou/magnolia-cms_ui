@@ -44,16 +44,15 @@ public class SelectElementEvent extends Event<SelectElementEventHandler> {
 
     public static GwtEvent.Type<SelectElementEventHandler> TYPE = new GwtEvent.Type<SelectElementEventHandler>();
 
-    private final String path;
+    private final String type;
 
-    private final String workspace;
+    private final String json;
 
-    private final String params;
 
-    public SelectElementEvent(String path, String workspace, String params) {
-        this.path = path;
-        this.workspace = workspace;
-        this.params = params;
+    public SelectElementEvent(String type, String json) {
+        this.type = type;
+        this.json = json;
+
     }
 
     @Override
@@ -66,15 +65,12 @@ public class SelectElementEvent extends Event<SelectElementEventHandler> {
         handler.onSelectElement(this);
     }
 
-    public String getPath() {
-        return path;
+    public String getType() {
+        return type;
     }
 
-    public String getWorkspace() {
-        return workspace;
+    public String getJson() {
+        return json;
     }
 
-    public String getParams() {
-        return params;
-    }
 }

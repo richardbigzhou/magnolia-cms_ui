@@ -52,8 +52,6 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.googlecode.mgwt.dom.client.event.animation.TransitionEndEvent;
-import com.googlecode.mgwt.dom.client.event.animation.TransitionEndHandler;
 import com.googlecode.mgwt.dom.client.event.touch.TouchCancelEvent;
 import com.googlecode.mgwt.dom.client.event.touch.TouchCancelHandler;
 import com.googlecode.mgwt.dom.client.recognizer.swipe.HasSwipeHandlers;
@@ -80,20 +78,6 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
     private final Element closeWrapper = DOM.createDiv();
 
     private final TouchDelegate delegate = new TouchDelegate(this);
-    
-    @Override
-    public void add(Widget child) {
-        super.add(child);
-        final TransitionEndHandler handler = new TransitionEndHandler() {
-            @Override
-            public void onTransitionEnd(TransitionEndEvent event) {
-                Element target = event.getRelativeElement().cast();
-                target.removeClassName("app-slider");
-                target.getStyle().setProperty("-webkit-transform", "");
-            }
-        }; 
-        child.addDomHandler(handler, TransitionEndEvent.getType());
-    }
     
     public VAppsViewport() {
         super();
@@ -273,7 +257,6 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
         RootPanel.get().add(preloader);
         preloader.addStyleName("zoom-in");
         new Timer() {
-
             @Override
             public void run() {
                 callback.onPreloaderShown(appName);

@@ -50,36 +50,36 @@ public interface MessagesManager {
         void messageCleared(Message message);
     }
 
-    void registerMessagesListener(String userId, MessageListener listener);
+    void registerMessagesListener(String userName, MessageListener listener);
 
-    void unregisterMessagesListener(String userId, MessageListener listener);
+    void unregisterMessagesListener(String userName, MessageListener listener);
 
     /**
      * Returns how many of the messages kept for a specific user that hasn't been cleared.
      *
-     * @param userId id of the user
+     * @param userName name of the user
      * @return number of uncleared messages
      */
-    int getNumberOfUnclearedMessagesForUser(String userId);
+    int getNumberOfUnclearedMessagesForUser(String userName);
 
     /**
      * Returns all messages kept for a specific user.
      *
-     * @param userId id of the user
+     * @param userName name of the user
      * @return list of messages kept for the user
      */
-    List<Message> getMessagesForUser(String userId);
+    List<Message> getMessagesForUser(String userName);
 
     /**
      * Send message to a specific user.
      *
-     * @param userId id of the user to receive the message
+     * @param userName name of the user to receive the message
      * @param message message to send
      */
-    void sendMessage(String userId, Message message);
+    void sendMessage(String userName, Message message);
 
     /**
-     * Send local message.
+     * Send message to the current user.
      *
      * @param message message to send
      */
@@ -95,8 +95,8 @@ public interface MessagesManager {
     /**
      * Marks a message as cleared.
      *
-     * @param userId id of the user the message belongs to
+     * @param userName name of the user the message belongs to
      * @param messageId id of message
      */
-    void clearMessage(String userId, String messageId);
+    void clearMessage(String userName, String messageId);
 }

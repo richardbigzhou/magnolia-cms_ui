@@ -47,29 +47,37 @@ import com.vaadin.data.Property.ValueChangeEvent;
 
 /**
  * Base implementation of an {@link com.vaadin.data.Item} wrapping/representing a {@link javax.jcr.Node}.
- * Implements {Property.ValueChangeListener} in order to inform/change JCR property when a
+ * Implements {@link com.vaadin.data.Property.ValueChangeListener} in order to inform/change JCR property when a
  * Vaadin property has changed.
- *
+ *<p>
  * Jcr properties are read from Repository as long as they are not modified.
- *
+ *<p>
  * Jcr properties are updated or created if they:
- *   Previously existed and where modified.
- *   Newly created and set (an empty created property is not stored into Jcr repository)
- *
+ * <ul>
+ *   <li>Previously existed and where modified.
+ *   <li>Newly created and set (an empty created property is not stored into Jcr repository)
+ * </ul>
+ * <p>
  * Create a JcrNodeAdapter:
- *   Just create a new JcrNodeAdapter with the related Jcr Node as parameter.
- *
+ * <ul>
+ *   <li>Just create a new JcrNodeAdapter with the related Jcr Node as parameter.
+ * </ul>
+ *<p>
  * Properties:
- *   getItemProperty(Object id) will return the current stored JCR property if not yet modified
- *     or the modified one.
- *     If the property do not exist null will be returned.
- *     In this case we have to create a new Property and attach this property to the JcrNodeAdapter
- *       property p = DefaultPropertyUtil.newDefaultProperty(...)
- *      jcrNodeAdapter.addItemProperty(...)
+ * <ul>
+ *   <li>getItemProperty(Object id) will return the current stored JCR property if not yet modified or the modified one.
+ *   <li>If the property do not exist null will be returned.
+ *   <li>In this case we have to create a new Property and attach this property to the JcrNodeAdapter, i.e.
+ *   <p>
+ *   <code>property p = DefaultPropertyUtil.newDefaultProperty(...)
+ *         jcrNodeAdapter.addItemProperty(...)
+ *   </code>
+ * </ul>
  *
  */
+@SuppressWarnings("serial")
 public class JcrNodeAdapter extends AbstractJcrNodeAdapter {
-    // Init
+
     private static final Logger log = LoggerFactory.getLogger(JcrNodeAdapter.class);
 
     public JcrNodeAdapter(Node jcrNode) {
