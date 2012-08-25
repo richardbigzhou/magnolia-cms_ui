@@ -68,9 +68,8 @@ public abstract class AbstractThumbnailProvider implements ThumbnailProvider {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractThumbnailProvider.class);
 
-    public static final String ORIGINAL_IMAGE_NODE_NAME = "originalImage";
-    public static final String THUMBNAIL_NODE_NAME = "thumbnail";
     public static final String DEFAULT_THUMBNAIL_FORMAT = "jpg";
+
     public static final float DEFAULT_THUMBNAIL_QUALITY = 0.75f;
 
     /**
@@ -140,9 +139,7 @@ public abstract class AbstractThumbnailProvider implements ThumbnailProvider {
         this.quality = quality;
     }
 
-    /**
-     * Defaults to {@link AbstractThumbnailProvider#ORIGINAL_IMAGE_NODE_NAME}.
-     */
+    @Override
     public String getOriginalImageNodeName() {
         return originalImageNodeName;
     }
@@ -155,9 +152,7 @@ public abstract class AbstractThumbnailProvider implements ThumbnailProvider {
         }
     }
 
-    /**
-     * Defaults to {@link AbstractThumbnailProvider#THUMBNAIL_NODE_NAME}.
-     */
+    @Override
     public String getThumbnailNodeName() {
         return thumbnailNodeName;
     }

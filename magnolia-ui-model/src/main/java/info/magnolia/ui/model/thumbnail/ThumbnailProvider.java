@@ -39,9 +39,23 @@ package info.magnolia.ui.model.thumbnail;
  */
 public interface ThumbnailProvider {
 
+    static final String ORIGINAL_IMAGE_NODE_NAME = "originalImage";
+
+    static final String THUMBNAIL_NODE_NAME = "thumbnail";
+
     /**
      * Return a path to a thumbnail of the requested size representing the provided item. Depending on the implementation,
      * this thumbnail may be retrieved from cache or created on the fly.
      */
     String getPath(String nodeIdentifier, String workspace, int width, int height);
+
+    /**
+     * Defaults to {@value #ORIGINAL_IMAGE_NODE_NAME}.
+     */
+    String getOriginalImageNodeName();
+
+    /**
+     * Defaults to {@value #THUMBNAIL_NODE_NAME}.
+     */
+    String getThumbnailNodeName();
 }
