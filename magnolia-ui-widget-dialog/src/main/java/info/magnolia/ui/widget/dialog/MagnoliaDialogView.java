@@ -78,4 +78,6 @@ public interface MagnoliaDialogView extends View {
     boolean isValid();
 
     List<Field> getFields();
+
+    void setShowAllEnabled(boolean showAll);
 }
