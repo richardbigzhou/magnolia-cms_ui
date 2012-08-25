@@ -38,7 +38,7 @@ import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.admincentral.dialog.action.SaveDialogAction;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.widget.dialog.MagnoloaDialogPresenter.Presenter;
+import info.magnolia.ui.widget.dialog.MagnoliaDialogPresenter.Presenter;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -86,8 +86,7 @@ public class SaveContactDialogAction extends SaveDialogAction {
         int i = 1;
 
         while(node.getSession().itemExists(newNodeAbsPath)) {
-            newNodeName+=i;
-            newNodeAbsPath = NodeUtil.combinePathAndName(parentPath, newNodeName);
+            newNodeAbsPath = NodeUtil.combinePathAndName(parentPath, newNodeName + i);
             i++;
         }
         node.getSession().move(node.getPath(), newNodeAbsPath);
