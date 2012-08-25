@@ -66,7 +66,6 @@ public class DialogBuilder {
     public MagnoliaDialogView build(DialogFieldFactory dialogFieldFactory, DialogDefinition dialogDefinition, Item item, MagnoliaDialogView view) {
 
         Dialog dialog = new Dialog(dialogDefinition);
-
         view.setItemDataSource(item);
 
         if (StringUtils.isNotBlank(dialogDefinition.getDescription())) {
@@ -102,6 +101,12 @@ public class DialogBuilder {
             }
 
             view.addTab(tab.getContainer(), tab.getMessage(tabDefinition.getLabel()));
+        }
+
+        if(dialogDefinition.getTabs().size() <=1) {
+            view.setShowAllEnabled(false);
+        } else {
+            view.setShowAllEnabled(true);
         }
 
         for (DialogActionDefinition action : dialogDefinition.getActions()) {

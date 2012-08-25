@@ -37,7 +37,7 @@ import info.magnolia.jcr.util.MetaDataUtil;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.widget.dialog.MagnoloaDialogPresenter;
+import info.magnolia.ui.widget.dialog.MagnoliaDialogPresenter;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -57,9 +57,9 @@ public class SaveDialogAction extends ActionBase<SaveDialogActionDefinition> {
     private static final Logger log = LoggerFactory.getLogger(SaveDialogAction.class);
 
     private Item item;
-    private MagnoloaDialogPresenter.Presenter presenter;
+    private MagnoliaDialogPresenter.Presenter presenter;
 
-    public SaveDialogAction(SaveDialogActionDefinition definition, MagnoloaDialogPresenter.Presenter presenter) {
+    public SaveDialogAction(SaveDialogActionDefinition definition, MagnoliaDialogPresenter.Presenter presenter) {
         super(definition);
         this.presenter = presenter;
         this.item = presenter.getItem();
@@ -86,7 +86,7 @@ public class SaveDialogAction extends ActionBase<SaveDialogActionDefinition> {
         }
     }
 
-    protected MagnoloaDialogPresenter.Presenter getPresenter() {
+    protected MagnoliaDialogPresenter.Presenter getPresenter() {
         return presenter;
     }
 

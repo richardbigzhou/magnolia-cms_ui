@@ -46,7 +46,7 @@ import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 import info.magnolia.ui.widget.dialog.Dialog;
 import info.magnolia.ui.widget.dialog.MagnoliaDialogView;
-import info.magnolia.ui.widget.dialog.MagnoloaDialogPresenter;
+import info.magnolia.ui.widget.dialog.MagnoliaDialogPresenter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -56,7 +56,7 @@ import com.vaadin.data.Item;
 /**
  * Dialog Presenter and Listener implementation.
  */
-public class DialogPresenter implements MagnoloaDialogPresenter.Presenter,  MagnoliaDialogView.Listener{
+public class DialogPresenter implements MagnoliaDialogPresenter.Presenter,  MagnoliaDialogView.Listener{
 
     private final DialogBuilder dialogBuilder;
 
