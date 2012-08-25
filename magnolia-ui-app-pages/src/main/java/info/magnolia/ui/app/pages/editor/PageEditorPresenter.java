@@ -51,7 +51,7 @@ import info.magnolia.ui.model.tab.definition.TabDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.widget.dialog.MagnoloaDialogPresenter;
+import info.magnolia.ui.widget.dialog.MagnoliaDialogPresenter;
 import info.magnolia.ui.widget.editor.PageEditor;
 import info.magnolia.ui.widget.editor.PageEditorView;
 
@@ -116,7 +116,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
     @Override
     public void editComponent(String workspace, String path, String dialog) {
-        final MagnoloaDialogPresenter.Presenter dialogPresenter = dialogPresenterFactory.createDialog(dialog);
+        final MagnoliaDialogPresenter.Presenter dialogPresenter = dialogPresenterFactory.createDialog(dialog);
 
         try {
             Session session = MgnlContext.getJCRSession(workspace);
@@ -138,7 +138,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
         updateDialogDefinition(availableComponents);
 
-        final MagnoloaDialogPresenter.Presenter dialogPresenter = dialogPresenterFactory.getDialogPresenter(dialogDefinition);
+        final MagnoliaDialogPresenter.Presenter dialogPresenter = dialogPresenterFactory.getDialogPresenter(dialogDefinition);
 
         try {
             Session session = MgnlContext.getJCRSession(workspace);
@@ -155,7 +155,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
             item.addItemProperty(item.JCR_NAME, property);
 
             // perform custom chaining of dialogs
-            dialogPresenter.start(item, new MagnoloaDialogPresenter.Presenter.Callback() {
+            dialogPresenter.start(item, new MagnoliaDialogPresenter.Presenter.Callback() {
 
                 @Override
                 public void onSuccess(String actionName) {
@@ -190,8 +190,8 @@ public class PageEditorPresenter implements PageEditorView.Listener {
     /**
      * Create a Dialog and define the call back actions.
      */
-    private void createDialogAction(final JcrNodeAdapter item, final MagnoloaDialogPresenter.Presenter dialogPresenter) {
-        dialogPresenter.start(item, new MagnoloaDialogPresenter.Presenter.Callback() {
+    private void createDialogAction(final JcrNodeAdapter item, final MagnoliaDialogPresenter.Presenter dialogPresenter) {
+        dialogPresenter.start(item, new MagnoliaDialogPresenter.Presenter.Callback() {
 
             @Override
             public void onSuccess(String actionName) {
