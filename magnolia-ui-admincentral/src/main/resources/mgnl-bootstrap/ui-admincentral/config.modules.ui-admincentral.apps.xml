@@ -33,6 +33,9 @@
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>a7c7d0df-e7e4-4107-9035-dfbfb618c05a</sv:value>
     </sv:property>
+    <sv:property sv:name="appClass" sv:type="String">
+      <sv:value>info.magnolia.ui.admincentral.app.dummy.DummyApp</sv:value>
+    </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-documents-app</sv:value>
     </sv:property>
@@ -59,7 +62,7 @@
         <sv:value>2012-08-26T09:12:03.138+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-        <sv:value>2012-08-26T09:18:01.541+02:00</sv:value>
+        <sv:value>2012-08-26T10:20:55.277+02:00</sv:value>
       </sv:property>
     </sv:node>
   </sv:node>
@@ -72,6 +75,9 @@
     </sv:property>
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>8fbc996f-c836-48a3-bc71-0969ec067c44</sv:value>
+    </sv:property>
+    <sv:property sv:name="appClass" sv:type="String">
+      <sv:value>info.magnolia.ui.admincentral.app.dummy.DummyApp</sv:value>
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-app</sv:value>
@@ -99,7 +105,7 @@
         <sv:value>2012-08-26T09:12:03.138+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-        <sv:value>2012-08-26T09:24:14.316+02:00</sv:value>
+        <sv:value>2012-08-26T10:57:19.694+02:00</sv:value>
       </sv:property>
     </sv:node>
   </sv:node>
@@ -112,6 +118,9 @@
     </sv:property>
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>17617cdc-a61e-4caf-bcd6-ed8057a042cf</sv:value>
+    </sv:property>
+    <sv:property sv:name="appClass" sv:type="String">
+      <sv:value>info.magnolia.ui.admincentral.app.dummy.DummyApp</sv:value>
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-companies</sv:value>
@@ -139,7 +148,7 @@
         <sv:value>2012-08-26T09:12:03.138+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-        <sv:value>2012-08-26T09:24:27.724+02:00</sv:value>
+        <sv:value>2012-08-26T10:58:55.135+02:00</sv:value>
       </sv:property>
     </sv:node>
   </sv:node>
@@ -152,6 +161,9 @@
     </sv:property>
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>497bac5e-6f4f-4f44-9feb-7b664d7d4b5b</sv:value>
+    </sv:property>
+    <sv:property sv:name="appClass" sv:type="String">
+      <sv:value>info.magnolia.ui.admincentral.app.dummy.DummyApp</sv:value>
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-content-app</sv:value>
@@ -179,7 +191,7 @@
         <sv:value>2012-08-26T09:12:03.138+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-        <sv:value>2012-08-26T09:25:20.771+02:00</sv:value>
+        <sv:value>2012-08-26T10:59:34.357+02:00</sv:value>
       </sv:property>
     </sv:node>
   </sv:node>
@@ -192,6 +204,9 @@
     </sv:property>
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>b4bf4b0a-43a2-4a14-b84b-8e28aab9135f</sv:value>
+    </sv:property>
+    <sv:property sv:name="appClass" sv:type="String">
+      <sv:value>info.magnolia.ui.admincentral.app.dummy.DummyApp</sv:value>
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-rssfeed</sv:value>
@@ -219,7 +234,7 @@
         <sv:value>2012-08-26T09:12:03.138+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-        <sv:value>2012-08-26T09:25:46.044+02:00</sv:value>
+        <sv:value>2012-08-26T10:59:49.148+02:00</sv:value>
       </sv:property>
     </sv:node>
   </sv:node>
@@ -232,6 +247,9 @@
     </sv:property>
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>488dbe67-951d-4339-9954-8e43386baf88</sv:value>
+    </sv:property>
+    <sv:property sv:name="appClass" sv:type="String">
+      <sv:value>info.magnolia.ui.admincentral.app.dummy.DummyApp</sv:value>
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-templating-app</sv:value>
@@ -256,7 +274,7 @@
         <sv:value>2012-08-26T09:12:03.138+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-        <sv:value>2012-08-26T09:28:44.415+02:00</sv:value>
+        <sv:value>2012-08-26T11:00:02.924+02:00</sv:value>
       </sv:property>
     </sv:node>
   </sv:node>
@@ -269,6 +287,9 @@
     </sv:property>
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>99b1372d-8532-48bf-90e1-bf26d75e40ce</sv:value>
+    </sv:property>
+    <sv:property sv:name="appClass" sv:type="String">
+      <sv:value>info.magnolia.ui.admincentral.app.dummy.DummyApp</sv:value>
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-security-app</sv:value>
@@ -296,7 +317,7 @@
         <sv:value>2012-08-26T09:12:03.138+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-        <sv:value>2012-08-26T09:28:25.297+02:00</sv:value>
+        <sv:value>2012-08-26T11:00:15.266+02:00</sv:value>
       </sv:property>
     </sv:node>
   </sv:node>
@@ -309,6 +330,9 @@
     </sv:property>
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>2046ce4f-e9ab-43c4-97cd-bbde08188efd</sv:value>
+    </sv:property>
+    <sv:property sv:name="appClass" sv:type="String">
+      <sv:value>info.magnolia.ui.admincentral.app.dummy.DummyApp</sv:value>
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-configuration-app</sv:value>
@@ -336,7 +360,7 @@
         <sv:value>2012-08-26T09:12:03.138+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-        <sv:value>2012-08-26T09:29:16.108+02:00</sv:value>
+        <sv:value>2012-08-26T11:00:33.807+02:00</sv:value>
       </sv:property>
     </sv:node>
   </sv:node>
@@ -349,6 +373,9 @@
     </sv:property>
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>9f44054f-38da-4c40-8833-80796a4ca9a5</sv:value>
+    </sv:property>
+    <sv:property sv:name="appClass" sv:type="String">
+      <sv:value>info.magnolia.ui.admincentral.app.dummy.DummyApp</sv:value>
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-language-app</sv:value>
@@ -376,7 +403,7 @@
         <sv:value>2012-08-26T09:12:03.138+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-        <sv:value>2012-08-26T09:29:38.371+02:00</sv:value>
+        <sv:value>2012-08-26T11:00:43.256+02:00</sv:value>
       </sv:property>
     </sv:node>
   </sv:node>
@@ -389,6 +416,9 @@
     </sv:property>
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>dbcee30e-8c30-42fb-8941-f9ec3ccf325a</sv:value>
+    </sv:property>
+    <sv:property sv:name="appClass" sv:type="String">
+      <sv:value>info.magnolia.ui.admincentral.app.dummy.DummyApp</sv:value>
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-contents</sv:value>
@@ -416,7 +446,7 @@
         <sv:value>2012-08-26T09:12:03.138+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-        <sv:value>2012-08-26T09:30:25.416+02:00</sv:value>
+        <sv:value>2012-08-26T11:01:29.452+02:00</sv:value>
       </sv:property>
     </sv:node>
   </sv:node>
@@ -429,6 +459,9 @@
     </sv:property>
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>a27c7e48-0c2e-430f-bf56-0f5db98404e8</sv:value>
+    </sv:property>
+    <sv:property sv:name="appClass" sv:type="String">
+      <sv:value>info.magnolia.ui.admincentral.app.dummy.DummyApp</sv:value>
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-jcr-app</sv:value>
@@ -456,7 +489,7 @@
         <sv:value>2012-08-24T16:01:00.026+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-        <sv:value>2012-08-26T09:36:03.019+02:00</sv:value>
+        <sv:value>2012-08-26T11:01:25.614+02:00</sv:value>
       </sv:property>
     </sv:node>
   </sv:node>
@@ -469,6 +502,9 @@
     </sv:property>
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>ccfee5c3-5f81-4b10-bb16-2e2e717a1e29</sv:value>
+    </sv:property>
+    <sv:property sv:name="appClass" sv:type="String">
+      <sv:value>info.magnolia.ui.admincentral.app.dummy.DummyApp</sv:value>
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-audit-app</sv:value>
@@ -496,7 +532,7 @@
         <sv:value>2012-08-24T16:04:53.904+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-        <sv:value>2012-08-26T09:39:56.195+02:00</sv:value>
+        <sv:value>2012-08-26T11:01:21.320+02:00</sv:value>
       </sv:property>
     </sv:node>
   </sv:node>
@@ -509,6 +545,9 @@
     </sv:property>
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>610856bb-ce1a-447d-a267-f7b42acbda60</sv:value>
+    </sv:property>
+    <sv:property sv:name="appClass" sv:type="String">
+      <sv:value>info.magnolia.ui.admincentral.app.dummy.DummyApp</sv:value>
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-logging-app</sv:value>
@@ -536,7 +575,7 @@
         <sv:value>2012-08-24T16:04:54.964+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-        <sv:value>2012-08-26T09:38:57.606+02:00</sv:value>
+        <sv:value>2012-08-26T11:01:54.512+02:00</sv:value>
       </sv:property>
     </sv:node>
   </sv:node>
@@ -549,6 +588,9 @@
     </sv:property>
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>2ae2d2c2-063b-4887-879e-4aa0705d9f1a</sv:value>
+    </sv:property>
+    <sv:property sv:name="appClass" sv:type="String">
+      <sv:value>info.magnolia.ui.admincentral.app.dummy.DummyApp</sv:value>
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-backup-app</sv:value>
@@ -576,7 +618,7 @@
         <sv:value>2012-08-24T16:04:55.588+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-        <sv:value>2012-08-26T09:39:08.047+02:00</sv:value>
+        <sv:value>2012-08-26T11:02:05.831+02:00</sv:value>
       </sv:property>
     </sv:node>
   </sv:node>
@@ -589,6 +631,9 @@
     </sv:property>
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>2e88d8e4-7119-4fd2-aa29-459c0a3250b3</sv:value>
+    </sv:property>
+    <sv:property sv:name="appClass" sv:type="String">
+      <sv:value>info.magnolia.ui.admincentral.app.dummy.DummyApp</sv:value>
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-news</sv:value>
@@ -616,7 +661,7 @@
         <sv:value>2012-08-24T16:04:56.453+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-        <sv:value>2012-08-26T09:39:47.701+02:00</sv:value>
+        <sv:value>2012-08-26T11:02:35.016+02:00</sv:value>
       </sv:property>
     </sv:node>
   </sv:node>
@@ -629,6 +674,9 @@
     </sv:property>
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>4cd99d07-c4b8-42bb-9a21-4b569f6634d6</sv:value>
+    </sv:property>
+    <sv:property sv:name="appClass" sv:type="String">
+      <sv:value>info.magnolia.ui.admincentral.app.dummy.DummyApp</sv:value>
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-app</sv:value>
@@ -656,7 +704,7 @@
         <sv:value>2012-08-24T16:04:56.861+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-        <sv:value>2012-08-26T09:40:51.063+02:00</sv:value>
+        <sv:value>2012-08-26T11:02:46.355+02:00</sv:value>
       </sv:property>
     </sv:node>
   </sv:node>
@@ -669,6 +717,9 @@
     </sv:property>
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>b6a631ac-2b18-4594-aad0-143f379bdc49</sv:value>
+    </sv:property>
+    <sv:property sv:name="appClass" sv:type="String">
+      <sv:value>info.magnolia.ui.admincentral.app.dummy.DummyApp</sv:value>
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-app</sv:value>
@@ -693,7 +744,7 @@
         <sv:value>2012-08-26T09:44:04.271+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-        <sv:value>2012-08-26T09:47:49.880+02:00</sv:value>
+        <sv:value>2012-08-26T11:02:57.576+02:00</sv:value>
       </sv:property>
     </sv:node>
   </sv:node>
@@ -706,6 +757,9 @@
     </sv:property>
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>31b0451f-3b3b-47c6-9cc7-cf4f79354196</sv:value>
+    </sv:property>
+    <sv:property sv:name="appClass" sv:type="String">
+      <sv:value>info.magnolia.ui.admincentral.app.dummy.DummyApp</sv:value>
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-develpment_app</sv:value>
@@ -730,7 +784,7 @@
         <sv:value>2012-08-26T09:44:04.541+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-        <sv:value>2012-08-26T09:47:43.257+02:00</sv:value>
+        <sv:value>2012-08-26T11:03:07.788+02:00</sv:value>
       </sv:property>
     </sv:node>
   </sv:node>
@@ -743,6 +797,9 @@
     </sv:property>
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>bcd8797c-ad32-4254-bb11-f6b95a31016e</sv:value>
+    </sv:property>
+    <sv:property sv:name="appClass" sv:type="String">
+      <sv:value>info.magnolia.ui.admincentral.app.dummy.DummyApp</sv:value>
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-packager-app</sv:value>
@@ -767,7 +824,7 @@
         <sv:value>2012-08-26T09:44:04.959+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-        <sv:value>2012-08-26T09:46:03.559+02:00</sv:value>
+        <sv:value>2012-08-26T11:03:20.993+02:00</sv:value>
       </sv:property>
     </sv:node>
   </sv:node>
@@ -780,6 +837,9 @@
     </sv:property>
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>9e27fa43-e4c2-4872-bcb0-0702215b8264</sv:value>
+    </sv:property>
+    <sv:property sv:name="appClass" sv:type="String">
+      <sv:value>info.magnolia.ui.admincentral.app.dummy.DummyApp</sv:value>
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-app</sv:value>
@@ -804,7 +864,7 @@
         <sv:value>2012-08-26T09:50:16.263+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-        <sv:value>2012-08-26T09:53:54.421+02:00</sv:value>
+        <sv:value>2012-08-26T11:03:32.213+02:00</sv:value>
       </sv:property>
     </sv:node>
   </sv:node>
@@ -817,6 +877,9 @@
     </sv:property>
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>bd0dea2d-28fa-4984-b1f3-ecdbeb47832c</sv:value>
+    </sv:property>
+    <sv:property sv:name="appClass" sv:type="String">
+      <sv:value>info.magnolia.ui.admincentral.app.dummy.DummyApp</sv:value>
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-app</sv:value>
@@ -841,7 +904,7 @@
         <sv:value>2012-08-26T09:50:16.419+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-        <sv:value>2012-08-26T09:54:01.702+02:00</sv:value>
+        <sv:value>2012-08-26T11:03:40.227+02:00</sv:value>
       </sv:property>
     </sv:node>
   </sv:node>
@@ -854,6 +917,9 @@
     </sv:property>
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>a24ff678-d5df-4822-8edb-85e3d610f6bb</sv:value>
+    </sv:property>
+    <sv:property sv:name="appClass" sv:type="String">
+      <sv:value>info.magnolia.ui.admincentral.app.dummy.DummyApp</sv:value>
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-app</sv:value>
@@ -878,7 +944,7 @@
         <sv:value>2012-08-26T09:50:16.594+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-        <sv:value>2012-08-26T09:54:06.461+02:00</sv:value>
+        <sv:value>2012-08-26T11:03:51.969+02:00</sv:value>
       </sv:property>
     </sv:node>
   </sv:node>
