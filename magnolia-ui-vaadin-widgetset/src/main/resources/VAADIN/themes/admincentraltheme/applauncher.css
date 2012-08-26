@@ -59,7 +59,7 @@
     padding-top: 10px;
     display: block;
     font-weight: bold;
-
+	text-transform:uppercase;
 }
 
 .app-list.sections {
