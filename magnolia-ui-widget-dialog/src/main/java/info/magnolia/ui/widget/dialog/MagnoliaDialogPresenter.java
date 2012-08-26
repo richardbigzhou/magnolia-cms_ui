@@ -41,10 +41,10 @@ import com.vaadin.data.Item;
  * Definition of the Dialog Presenter (used to communicate with the outer world).
  * Also define a call back inner interface.
  */
-public interface MagnoloaDialogPresenter {
+public interface MagnoliaDialogPresenter {
 
 
-    void setPresenter(MagnoloaDialogPresenter presenter);
+    void setPresenter(MagnoliaDialogPresenter presenter);
 
     /**
      * DialogView.Presenter.

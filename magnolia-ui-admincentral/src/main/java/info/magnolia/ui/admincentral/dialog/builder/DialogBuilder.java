@@ -66,7 +66,6 @@ public class DialogBuilder {
     public MagnoliaDialogView build(DialogFieldFactory dialogFieldFactory, DialogDefinition dialogDefinition, Item item, MagnoliaDialogView view) {
 
         Dialog dialog = new Dialog(dialogDefinition);
-
         view.setItemDataSource(item);
 
         if (StringUtils.isNotBlank(dialogDefinition.getDescription())) {
@@ -96,12 +95,18 @@ public class DialogBuilder {
                 //Set Help
                 if(StringUtils.isNotBlank(fieldDefinition.getDescription())) {
                     //TODO EHE SCRUM-1344 Add i18n to Dialog/Tab definition.
-                    tab.setComponentHelpDescription(field, fieldDefinition.getDescription());
+                    tab.setComponentHelpDescription(field, tab.getMessage(fieldDefinition.getDescription()));
                 }
                 view.addField(field);
             }
 
             view.addTab(tab.getContainer(), tab.getMessage(tabDefinition.getLabel()));
+        }
+
+        if(dialogDefinition.getTabs().size() <=1) {
+            view.setShowAllEnabled(false);
+        } else {
+            view.setShowAllEnabled(true);
         }
 
         for (DialogActionDefinition action : dialogDefinition.getActions()) {

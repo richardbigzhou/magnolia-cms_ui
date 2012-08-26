@@ -57,6 +57,10 @@ a, a:focus {
 :focus {outline:none;}
 ::-moz-focus-inner {border:0;}
 
+/*avoid hot pink selection text*/
+::-moz-selection { background: #93BAC6; color: #fff; text-shadow: none; }
+::selection { background: #93BAC6; color: #fff; text-shadow: none; }
+
 /*
 temporary commented out as otherwise input fields don't work at least on desktops
 * {
@@ -85,10 +89,7 @@ body{
 }
 
 
-h1,h2,h3,h4,h5,h6,.tagline,
-.preview-header,
-.app-area-header,
-#shell-header{
+.tagline {
     font-family: DINWebPro-Medium;
     text-transform:capitalize;
 }
@@ -114,16 +115,7 @@ body{
 
 }
 
-/*
-h4{
-    font-size:12px;
-}
-*/
-
-
-
 /***********           FORM (Login)          ***********/
-
 
  .btn-submit{
  	background:#555;
@@ -132,20 +124,6 @@ h4{
  	padding:6px 12px;
  	font-family:DINWebPro-Medium;
  	font-size:15px;
- }
-
- .btn-standard{
-	background:@color-dark-green;
-	color:white;
-	text-transform:uppercase;
-	display: inline-block;
-    font-family: DINWebPro-Medium;
-    font-size:11px;
-    padding: 6px 10px;
-    border:none;
-}
- .btn-grey{
-     background:#666666;
  }
 
 .form-large{
@@ -206,25 +184,8 @@ h4{
     min-width:768px;
 }
 
-/*
-#content{
-    -webkit-transform-origin: 50% 50% 50%;
-    -webkit-transform: perspective(0);
-    -webkit-transform: rotate3d(0.5, 1, 0, 25deg);
-    -webkit-transform-style: preserve-3d;
-    -moz-transform-origin: 50% 50% 50%;
-    -moz-transform: perspective(0);
-    -moz-transform: rotate3d(0.5, 1, 0, 25deg);
-    -moz-transform-style: preserve-3d;
-}
-*/
-
-
-
-
-.shell-app-panel{
+.login-panel{
     display:none;
-
    border:none;
     width:900px;
     height:100%;
@@ -242,89 +203,6 @@ h4{
 
     -moz-transform:translate3d(0px, 0px, 0px);
     -webkit-transform:translate3d(0px, 0px, 0px);
-}
-
-
-.validation-bubble, .help-bubble{
-    display:none;
-    position:absolute;
-    left:0px;
-    width:200px;
-    /*min-height:150px;*/
-    border:blue;
-    z-index:10;
-}
-
-/*
-@media all and (max-width: 1280px) {
-    .validation-bubble, .help-bubble{
-        width:450px;
-    }
-}*/
-
-
-.bubble-pointer-left{
-    position:absolute;
-    left:-9px;
-}
-.bubble-pointer-top{
-    position:absolute;
-    top:-10px;
-
-}
-.bubble-pointer-bottom{
-
-}
-
-.validation-bubble .close, .help-bubble .close{
-    margin-top:-5px;
-    margin-right:-10px;
-}
-.validation-message, .help-message{
-
-    display:block;
-
-    background:#9a3333;
-    color:white;
-    width:100%;
-    padding:10px;
-
-    box-shadow: 0px 0px 5px #333333;
-}
-.help-message{
-    background: @color-help-background;
-    color:black;
-}
-
-fieldset .validation-message,
-fieldset .help-message{
-    box-shadow: none;
-}
-
-.help-bubble .help-message{
-    margin-top:-75px;
-}
-
-.validation-message-inline,.help-message-inline {
-    display:none;
-    width:644px;
-    margin-bottom: 10px;
-    position: relative;
-}
-
-.validation-message i{
-    vertical-align:top;
-}
-
-.validation-bubble .validation-message{
-    margin-top:-45px;
-}
-
-a.action-jump-to-next-error{
-    color:#999999;
-}
-a.action-jump-to-next-error:hover{
-    color:#ffffff;
 }
 
 
@@ -349,14 +227,7 @@ form label{
     color:#999999;
 }
 
-/*
-form div.control-set{
-    display:inline-block;
-    vertical-align:top;
-}
-*/
-
-select, input[type="text"], textarea {
+input[type="text"] {
     display:inline-block;
     width: 425px;   /* Width should be narrow enough to accomodate scrollbar and help icon.*/
     padding-left:10px;
@@ -365,70 +236,20 @@ select, input[type="text"], textarea {
     border:solid 1px #cccccc;
     color:#999999;
 }
-select{
-    width:440px;
-}
 
-select, input[type="text"] {
+input[type="text"] {
      height:26px;
  }
-textarea{
-    padding:5px;
-    height:2.2em;
-}
 
-.wide textarea{
-    width: 565px;   /* Width should be narrow enough to accomodate scrollbar and help icon.*/
-}
-
-textarea.tall{
-    height:8em;
-}
-
-textarea.checkbox{
-    margin-left:22px;
-    margin-top:5px;
-}
-textarea[disabled]{
-    background:#e6e6e6;
-    border:solid 1px #cccccc;
-    color:#999999;
-}
-
-input[type="checkbox"]{
-    margin-right:5px;
-}
-
-legend{
-    font-weight:bold;
-    padding: 5px 0px;
-}
-
-select.error, input.error {
-    background: url(../img/icons/icon-error-red.png) #ffffff no-repeat 440px;
-    border:solid 1px @color-error;
- }
-select.warning, input.warning {
-    background: url(../img/icons/icon-error-yellow.png) #ffffff no-repeat 440px;
-    border:solid 1px @color-warning;
-}
-
-select:focus, input[type="text"]:focus , input[type="password"]:focus,
-textarea:focus{
+input[type="text"]:focus , input[type="password"]:focus {
     border:solid 1px #93bac6;
     box-shadow:0px 0px 1px 0px #93bac6;
     color:#777777;
 }
-select.help-focus, input[type="text"].help-focus , input[type="checkbox"].help-focus,
-textarea.help-focus{
-    border:solid 1px #93bac6;
-    box-shadow:0px 0px 3px 2px #93bac6;
-}
-
 
 /***********     LOGIN   ***********/
 
-#login.shell-app-panel{
+#login.login-panel{
 	width:440px;
 	margin-left:-225px;
 	padding:0px;

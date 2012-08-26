@@ -35,19 +35,19 @@ package info.magnolia.ui.admincentral.dialog.action;
 
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.widget.dialog.MagnoloaDialogPresenter;
+import info.magnolia.ui.widget.dialog.MagnoliaDialogPresenter;
 
 /**
- * Implements an action for Callback handling on dialog {@link info.magnolia.ui.widget.dialog.MagnoloaDialogPresenter.Presenter.Callback}.
+ * Implements an action for Callback handling on dialog {@link info.magnolia.ui.widget.dialog.MagnoliaDialogPresenter.Presenter.Callback}.
  * This Action can be configured to perform a cancel or a success Action.
  *
  * @see CallbackDialogActionDefinition
  */
 public class CallbackDialogAction extends ActionBase<CallbackDialogActionDefinition> {
 
-    private MagnoloaDialogPresenter.Presenter presenter;
+    private MagnoliaDialogPresenter.Presenter presenter;
 
-    public CallbackDialogAction(CallbackDialogActionDefinition definition, MagnoloaDialogPresenter.Presenter presenter) {
+    public CallbackDialogAction(CallbackDialogActionDefinition definition, MagnoliaDialogPresenter.Presenter presenter) {
         super(definition);
         this.presenter = presenter;
     }

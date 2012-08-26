@@ -37,7 +37,7 @@ import static org.junit.Assert.assertEquals;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.widget.dialog.MagnoliaDialogView;
-import info.magnolia.ui.widget.dialog.MagnoloaDialogPresenter;
+import info.magnolia.ui.widget.dialog.MagnoliaDialogPresenter;
 
 import java.util.List;
 
@@ -114,7 +114,7 @@ public class CallbackDialogActionTest {
         this.dialogActionDefinition.setSuccessActionName(successActionName!=null?successActionName:"success");
     }
 
-    public static class DialogPresenterTest implements MagnoloaDialogPresenter.Presenter {
+    public static class DialogPresenterTest implements MagnoliaDialogPresenter.Presenter {
 
         private String callbackActionCalled;
         public String getCallbackActionCalled() {
@@ -186,6 +186,11 @@ public class CallbackDialogActionTest {
 
                 @Override
                 public void addAction(String actionName, String actionLabel) {
+                }
+
+                @Override
+                public void setShowAllEnabled(boolean showAll) {
+
                 }
             };
         }

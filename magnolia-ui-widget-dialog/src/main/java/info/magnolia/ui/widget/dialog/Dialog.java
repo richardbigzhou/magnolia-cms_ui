@@ -111,6 +111,7 @@ public class Dialog extends ShellTabSheet implements MagnoliaDialogView, ServerS
         doAddTab(tab);
     }
 
+    @Override
     public void setShowAllEnabled(boolean showAll) {
         showAllTab(showAll, SHOW_ALL);
     }

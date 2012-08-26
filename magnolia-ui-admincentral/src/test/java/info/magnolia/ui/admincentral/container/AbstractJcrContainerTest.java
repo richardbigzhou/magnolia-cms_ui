@@ -33,9 +33,8 @@
  */
 package info.magnolia.ui.admincentral.container;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import info.magnolia.context.MgnlContext;
@@ -151,6 +150,26 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
 
         // THEN
         assertEquals(node1.getPath(), ((JcrNodeAdapter)item).getJcrItem().getPath());
+    }
+
+    @Test
+    public void testGetItemAfterNodeDeletionReturnsNull() throws Exception {
+        // GIVEN
+        final Node node1 = createNode(rootNode, "node1", "mgnl:content", "name", "name1");
+        node1.getSession().save();
+        final String containerItemId = node1.getPath();
+        com.vaadin.data.Item item = jcrContainer.getItem(containerItemId);
+        assertNotNull(item);
+
+        Session session = node1.getSession();
+        session.removeItem(node1.getPath());
+        session.save();
+
+        // WHEN
+        item = jcrContainer.getItem(containerItemId);
+
+        // THEN
+        assertNull(item);
     }
 
     @Test

@@ -68,7 +68,7 @@ public class TemplateSelectorField extends SelectFieldBuilder<TemplateSelectorDe
 
         Map<String, String> options = new HashMap<String, String>();
         for (TemplateDefinition templateDefinition : templates) {
-            options.put(templateDefinition.getId(), templateDefinition.getTitle());
+            options.put(templateDefinition.getId(), getMessage(templateDefinition.getTitle()));
         }
         return options;
     }

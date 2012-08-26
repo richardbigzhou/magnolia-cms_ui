@@ -39,7 +39,7 @@ import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.widget.dialog.MagnoloaDialogPresenter;
+import info.magnolia.ui.widget.dialog.MagnoliaDialogPresenter;
 
 import javax.jcr.Node;
 
@@ -61,11 +61,11 @@ public class EditDialogAction extends ActionBase<EditDialogActionDefinition> {
 
     @Override
     public void execute() throws ActionExecutionException {
-        final MagnoloaDialogPresenter.Presenter dialogPresenter = dialogPresenterFactory.createDialog(getDefinition().getDialogName());
+        final MagnoliaDialogPresenter.Presenter dialogPresenter = dialogPresenterFactory.createDialog(getDefinition().getDialogName());
 
         final EventBus eventBus = dialogPresenter.getEventBus();
         final JcrNodeAdapter item = new JcrNodeAdapter(nodeToEdit);
-        dialogPresenter.start(item, new MagnoloaDialogPresenter.Presenter.Callback() {
+        dialogPresenter.start(item, new MagnoliaDialogPresenter.Presenter.Callback() {
 
             @Override
             public void onSuccess(String actionName) {

@@ -42,6 +42,8 @@ import info.magnolia.ui.app.pages.PagesApp;
 import info.magnolia.ui.app.pages.PagesAppDescriptor;
 import info.magnolia.ui.app.pages.action.AddComponentActionDefinition;
 import info.magnolia.ui.app.pages.action.EditElementActionDefinition;
+import info.magnolia.ui.app.pages.action.EditPageActionDefinition;
+import info.magnolia.ui.app.pages.action.PreviewPageActionDefinition;
 import info.magnolia.ui.framework.app.AbstractSubApp;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.event.EventBus;
@@ -52,17 +54,18 @@ import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.widget.actionbar.ActionbarView;
+import info.magnolia.ui.widget.editor.PageEditor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.jcr.LoginException;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import info.magnolia.ui.widget.editor.PageEditor;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -115,12 +118,6 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
     }
 
     @Override
-    public void setParameters(PageEditorParameters parameters) {
-        this.parameters = parameters;
-        this.caption = parameters.getNodePath();
-    }
-
-    @Override
     public View start(Location location) {
 
         initParameters(location);
@@ -163,7 +160,23 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
         if (path == null) {
             path = "/";
         }
-        setParameters(new PageEditorParameters(MgnlContext.getContextPath(), path, editingMode));
+        this.parameters = new PageEditorParameters(MgnlContext.getContextPath(), path, editingMode);
+        this.caption = getPageTitle(path);
+    }
+
+    private String getPageTitle(String path) {
+        String caption = null;
+        try {
+            Session session = MgnlContext.getJCRSession(appDescriptor.getWorkbench().getWorkspace());
+            Node node = session.getNode(path);
+            caption = node.getProperty("title").getString();
+
+        } catch (LoginException e) {
+            log.error("Exception caught: {}", e.getMessage(), e);
+        } catch (RepositoryException e) {
+            log.error("Exception caught: {}", e.getMessage(), e);
+        }
+        return caption;
     }
 
     private void hideAllSections() {
@@ -210,21 +223,26 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
                     ActionDefinition actionDefinition = event.getActionDefinition();
                     if (actionDefinition instanceof EditElementActionDefinition) {
                         pageEditorPresenter.editComponent(
-                                appDescriptor.getWorkbench().getWorkspace(),
-                                pageEditorPresenter.getSelectedElement().getPath(),
-                                pageEditorPresenter.getSelectedElement().getDialog());
+                            appDescriptor.getWorkbench().getWorkspace(),
+                            pageEditorPresenter.getSelectedElement().getPath(),
+                            pageEditorPresenter.getSelectedElement().getDialog());
                     } else if (actionDefinition instanceof AddComponentActionDefinition) {
 
                         // casting to AreaElement, because this action is only defined for areas
                         pageEditorPresenter.newComponent(
-                                appDescriptor.getWorkbench().getWorkspace(),
-                                pageEditorPresenter.getSelectedElement().getPath(),
-                                ((PageEditor.AreaElement) pageEditorPresenter.getSelectedElement()).getAvailableComponents());
+                            appDescriptor.getWorkbench().getWorkspace(),
+                            pageEditorPresenter.getSelectedElement().getPath(),
+                            ((PageEditor.AreaElement) pageEditorPresenter.getSelectedElement()).getAvailableComponents());
+                    } else if (actionDefinition instanceof PreviewPageActionDefinition || actionDefinition instanceof EditPageActionDefinition) {
+                        actionbarPresenter.createAndExecuteAction(
+                            actionDefinition,
+                            appDescriptor.getWorkbench().getWorkspace(),
+                            parameters.getNodePath());
                     } else {
                         actionbarPresenter.createAndExecuteAction(
-                                actionDefinition,
-                                appDescriptor.getWorkbench().getWorkspace(),
-                                pageEditorPresenter.getSelectedElement().getPath());
+                            actionDefinition,
+                            appDescriptor.getWorkbench().getWorkspace(),
+                            pageEditorPresenter.getSelectedElement().getPath());
                     }
 
                 } catch (ActionExecutionException e) {
@@ -275,7 +293,7 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
         return parts.size() >= 1 && parts.get(0).equals("editor");
     }
 
-    public static  DefaultLocation createLocation(String editorPath, String previewMode) {
+    public static DefaultLocation createLocation(String editorPath, String previewMode) {
         String token = "editor;" + editorPath;
         if (StringUtils.isNotEmpty(previewMode)) {
             token += ":" + previewMode;

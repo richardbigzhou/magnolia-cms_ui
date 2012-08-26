@@ -33,6 +33,10 @@
  */
 package info.magnolia.ui.widget.magnoliashell.gwt.client.viewport;
 
+
+import com.google.gwt.user.client.Event;
+import com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler;
+import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.Callbacks;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryCallback;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper;
@@ -56,6 +60,8 @@ import com.vaadin.terminal.gwt.client.ContainerResizedListener;
 import com.vaadin.terminal.gwt.client.Paintable;
 import com.vaadin.terminal.gwt.client.RenderSpace;
 import com.vaadin.terminal.gwt.client.UIDL;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShell;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.event.ViewportCloseEvent;
 
 /**
  * An overlay that displays the open app in the shell on top of each other.
@@ -83,11 +89,32 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
     private EventBus eventBus;
 
     private boolean isActive = false;
+
+    private final TouchDelegate delegate = new TouchDelegate((Widget)this);
     
     public VShellViewport() {
         super();
         setElement(container);
-        addStyleName("v-shell-vieport");
+        addStyleName("v-shell-viewport");
+
+        bindHandlers();
+
+    }
+
+    private void bindHandlers(){
+
+        DOM.sinkEvents(this.getElement(), Event.TOUCHEVENTS);
+
+        delegate.addTouchStartHandler(new TouchStartHandler() {
+
+            @Override
+            public void onTouchStart(com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent event) {
+                final Element target = event.getNativeEvent().getEventTarget().cast();
+                if (target == getElement()) {
+                    eventBus.fireEvent(new ViewportCloseEvent(VMagnoliaShell.ViewportType.SHELL_APP_VIEWPORT));
+                }
+            }
+        });
     }
 
     @Override

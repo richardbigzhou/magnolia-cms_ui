@@ -511,7 +511,7 @@
       <sv:value>116b8fbc-4a26-49e6-9327-6a9b393993d7</sv:value>
     </sv:property>
     <sv:property sv:name="description" sv:type="String">
-      <sv:value>If an entire section ahould use the some keywords, use "inherit keywords from parent page". If you’d like to add some keywords in addition, choose "add keywords to those from parent page". If you’d like to replace all possibly inherited keywords with your own, choose the last option.</sv:value>
+      <sv:value>Select the component you wish to add among the list of available components, then click the choose button.</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -783,7 +783,7 @@
           <sv:value>admin</sv:value>
         </sv:property>
         <sv:property sv:name="label" sv:type="String">
-          <sv:value>save changes</sv:value>
+          <sv:value>Choose</sv:value>
         </sv:property>
         <sv:node sv:name="MetaData">
           <sv:property sv:name="jcr:primaryType" sv:type="Name">

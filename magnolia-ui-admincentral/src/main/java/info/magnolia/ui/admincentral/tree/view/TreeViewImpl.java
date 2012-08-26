@@ -78,10 +78,6 @@ public class TreeViewImpl implements TreeView {
                 if (defaultValue == null && event.getProperty().getValue() instanceof Set) {
                     defaultValue = (Set<?>)event.getProperty().getValue();
                 }
-                if (asVaadinComponent().getApplication() != null) {
-                    asVaadinComponent().getApplication().getMainWindow().showNotification(
-                            event.getProperty().getValue() + " " + event.getProperty().getValue().getClass().getCanonicalName());                    
-                }
                 final Object value = event.getProperty().getValue();
                 if (value instanceof String) {
                     presenterOnItemSelection(String.valueOf(value));
