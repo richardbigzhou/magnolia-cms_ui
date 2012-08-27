@@ -167,12 +167,10 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
             @Override
             public void onItemSelected(ItemSelectedEvent event) {
                 // refresh action bar (context sensitivity)
-                if (event.getPath() != null || !"/".equals(event.getPath())) {
+                if (event.getPath() != null) {
                     actionbarPresenter.enable("delete");
-                    actionbarPresenter.enable("edit");
                 } else {
                     actionbarPresenter.disable("delete");
-                    actionbarPresenter.disable("edit");
                 }
 
                 // if you want to enable/disable actions or groups
