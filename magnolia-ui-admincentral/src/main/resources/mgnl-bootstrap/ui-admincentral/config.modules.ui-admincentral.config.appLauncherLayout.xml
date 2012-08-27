@@ -221,37 +221,6 @@
             </sv:property>
           </sv:node>
         </sv:node>
-        <sv:node sv:name="forums">
-          <sv:property sv:name="jcr:primaryType" sv:type="Name">
-            <sv:value>mgnl:contentNode</sv:value>
-          </sv:property>
-          <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
-            <sv:value>mix:lockable</sv:value>
-          </sv:property>
-          <sv:property sv:name="jcr:uuid" sv:type="String">
-            <sv:value>542ee93b-56d7-4db3-9e5a-23d89b096242</sv:value>
-          </sv:property>
-          <sv:property sv:name="jcr:createdBy" sv:type="String">
-            <sv:value>admin</sv:value>
-          </sv:property>
-          <sv:node sv:name="MetaData">
-            <sv:property sv:name="jcr:primaryType" sv:type="Name">
-              <sv:value>mgnl:metaData</sv:value>
-            </sv:property>
-            <sv:property sv:name="jcr:createdBy" sv:type="String">
-              <sv:value>admin</sv:value>
-            </sv:property>
-            <sv:property sv:name="mgnl:authorid" sv:type="String">
-              <sv:value>superuser</sv:value>
-            </sv:property>
-            <sv:property sv:name="mgnl:creationdate" sv:type="Date">
-              <sv:value>2012-08-24T15:46:49.837+02:00</sv:value>
-            </sv:property>
-            <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-              <sv:value>2012-08-24T15:47:04.481+02:00</sv:value>
-            </sv:property>
-          </sv:node>
-        </sv:node>
         <sv:node sv:name="company">
           <sv:property sv:name="jcr:primaryType" sv:type="Name">
             <sv:value>mgnl:contentNode</sv:value>
@@ -1128,6 +1097,9 @@
       <sv:property sv:name="jcr:uuid" sv:type="String">
         <sv:value>1a06b585-c543-45b6-a463-9a06c10a1c77</sv:value>
       </sv:property>
+      <sv:property sv:name="clientGroup" sv:type="Boolean">
+        <sv:value>true</sv:value>
+      </sv:property>
       <sv:property sv:name="color" sv:type="String">
         <sv:value>#FFFFFF</sv:value>
       </sv:property>
@@ -1154,7 +1126,7 @@
           <sv:value>2012-08-24T16:06:28.338+02:00</sv:value>
         </sv:property>
         <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-          <sv:value>2012-08-24T16:08:20.370+02:00</sv:value>
+          <sv:value>2012-08-27T16:51:01.924+02:00</sv:value>
         </sv:property>
       </sv:node>
       <sv:node sv:name="apps">

@@ -39,23 +39,23 @@ import java.util.Map.Entry;
 
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
-
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent;
 import com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 
+
 /**
  * The holder of the temporary app group expanders.
- *
+ * 
  */
 public class VTemporaryAppGroupBar extends FlowPanel {
- 
-    private Map<Element, VTemporaryAppTileGroup> groupMap = new HashMap<Element, VTemporaryAppTileGroup>();
-    
+
+    private final Map<Element, VTemporaryAppTileGroup> groupMap = new HashMap<Element, VTemporaryAppTileGroup>();
+
     private VTemporaryAppTileGroup currentOpenGroup = null;
 
-    private TouchDelegate touchDelegate = new TouchDelegate(this);
+    private final TouchDelegate touchDelegate = new TouchDelegate(this);
 
     public VTemporaryAppGroupBar() {
         super();
@@ -73,13 +73,13 @@ public class VTemporaryAppGroupBar extends FlowPanel {
                 final Element target = event.getNativeEvent().getEventTarget().cast();
                 final VTemporaryAppTileGroup group = groupMap.get(target);
                 closeCurrentOpenExpander();
-                if (group != null) {                    
+                if (group != null) {
                     if (currentOpenGroup != group) {
                         if (currentOpenGroup != null) {
                             currentOpenGroup.closeSection();
                         }
                         group.showSection();
-                        currentOpenGroup = group;  
+                        currentOpenGroup = group;
                         openExpander(target);
                     } else {
                         currentOpenGroup.closeSection();
@@ -91,6 +91,7 @@ public class VTemporaryAppGroupBar extends FlowPanel {
         */
 
         touchDelegate.addTouchStartHandler(new TouchStartHandler() {
+
             @Override
             public void onTouchStart(TouchStartEvent event) {
                 final Element target = event.getNativeEvent().getEventTarget().cast();
@@ -137,17 +138,23 @@ public class VTemporaryAppGroupBar extends FlowPanel {
             groupThumbnail.addClassName("item");
             groupThumbnail.addClassName("section");
             groupThumbnail.addClassName("closed");
-            groupThumbnail.getStyle().setBackgroundColor(group.getColor());
-            
+
+            if (group.isClientGroup()) {
+                groupThumbnail.addClassName("client-group");
+                groupThumbnail.getStyle().setColor(group.getColor());
+            } else {
+                groupThumbnail.getStyle().setBackgroundColor(group.getColor());
+            }
+
             final Element label = DOM.createSpan();
             label.addClassName("label");
             label.setInnerText(caption);
-            
+
             groupThumbnail.appendChild(label);
-            
-            groupMap.put(groupThumbnail, (VTemporaryAppTileGroup)group);
+
+            groupMap.put(groupThumbnail, (VTemporaryAppTileGroup) group);
             getElement().appendChild(groupThumbnail);
         }
     }
-    
+
 }

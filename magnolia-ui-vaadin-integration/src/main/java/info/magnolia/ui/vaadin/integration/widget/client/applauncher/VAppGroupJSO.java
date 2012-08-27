@@ -41,15 +41,15 @@ import com.google.gwt.core.client.JavaScriptObject;
  * @see info.magnolia.ui.vaadin.integration.widget.AppLauncher.AppGroup
  */
 public final class VAppGroupJSO extends JavaScriptObject {
-    
+
     protected VAppGroupJSO() {}
-    
+
     public static native VAppGroupJSO parse(String json) /*-{
        try {
          return eval('(' + json + ')');
        } catch(e) {
            return null;
-       } 
+       }
     }-*/;
 
     public native final String  getName() /*-{
@@ -58,13 +58,17 @@ public final class VAppGroupJSO extends JavaScriptObject {
 
     public final native String getCaption() /*-{
         return this.caption;
-    }-*/; 
-    
+    }-*/;
+
     public final native String getBackgroundColor() /*-{
         return this.backgroundColor;
     }-*/;
-    
+
     public final native boolean isPermanent() /*-{
         return this.isPermanent;
+    }-*/;
+
+    public final native boolean isClientGroup() /*-{
+        return this.clientGroup;
     }-*/;
 }

@@ -36,9 +36,10 @@ package info.magnolia.ui.framework.app.launcherlayout;
 import java.util.ArrayList;
 import java.util.List;
 
+
 /**
  * Defines a group of apps displayed in the app launcher including display properties of the group.
- *
+ * 
  * @see AppLauncherLayout
  * @see AppLauncherGroupEntry
  * @see AppLauncherLayoutManager
@@ -46,9 +47,15 @@ import java.util.List;
 public class AppLauncherGroup {
 
     private String name;
+
     private String label;
+
     private boolean permanent;
+
+    private boolean clientGroup;
+
     private String color;
+
     private List<AppLauncherGroupEntry> apps;
 
     public String getName() {
@@ -73,6 +80,14 @@ public class AppLauncherGroup {
 
     public void setPermanent(boolean permanent) {
         this.permanent = permanent;
+    }
+
+    public boolean isClientGroup() {
+        return clientGroup;
+    }
+
+    public void setClientGroup(boolean clientGroup) {
+        this.clientGroup = clientGroup;
     }
 
     public String getColor() {
