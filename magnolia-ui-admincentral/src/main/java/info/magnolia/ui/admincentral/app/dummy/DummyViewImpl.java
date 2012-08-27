@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.app.dummy;
 
+import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.shell.Shell;
 
 import javax.inject.Inject;
@@ -52,11 +53,17 @@ public class DummyViewImpl implements DummyView {
 
     private Listener listener;
 
+    private final AppContext appContext;
+
     @Inject
-    public DummyViewImpl(final Shell shell) {
-        // Label label = new Label("<center>" + ((DummyMainSubApp) listener).getCaption() +
-        // "</center>", Label.CONTENT_XHTML);
-        Label label = new Label("<center>Dummy app</center>", Label.CONTENT_XHTML);
+    public DummyViewImpl(final Shell shell, final AppContext appContext) {
+        this.appContext = appContext;
+        Label icon = new Label("");
+        Label label = new Label(appContext.getAppDescriptor().getLabel());
+        icon.setStyleName("dummy-app-icon");
+        icon.addStyleName(appContext.getAppDescriptor().getIcon());
+        label.setStyleName("dummy-app-teaser");
+        layout.addComponent(icon);
         layout.addComponent(label);
     }
 
