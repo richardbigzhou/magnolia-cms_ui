@@ -59,7 +59,7 @@
     padding-top: 10px;
     display: block;
     font-weight: bold;
-
+	text-transform:uppercase;
 }
 
 .app-list.sections {
@@ -122,4 +122,19 @@
     height: 24px;
     margin: auto auto 6px;
     width: 24px;
+}
+
+/* DUMMY APPS TEASER */
+.dummy-app-teaser {
+	text-align:center;
+	font-family:DINWebPro, sans-serif;
+	font-size:2em;
+}
+
+.dummy-app-icon {
+	text-align:center;
+	font-size:300px;
+	text-shadow:0 1px 0px #fff, 0 -1px 0px #aaa;
+	color:#ccc;
+	line-height:1.0;
 }
