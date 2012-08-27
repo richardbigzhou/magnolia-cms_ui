@@ -62,7 +62,7 @@ public class ComponentSelectorField extends SelectFieldBuilder<ComponentSelector
 
         Map<String, String> options = new HashMap<String, String>();
         for (SelectFieldOptionDefinition option : definition.getOptions()) {
-            options.put(option.getValue(), option.getName());
+            options.put(option.getValue(), getMessage(option.getName()));
         }
         return options;
     }

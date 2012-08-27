@@ -209,6 +209,9 @@ public class DialogMigrationTask  extends AbstractTask {
             }else if(fieldNode.getProperty("controlType").getString().equals("checkbox")){
                 fieldNode.getProperty("controlType").remove();
                 fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.OptionGroupFieldDefinition");
+            }else if(fieldNode.getProperty("controlType").getString().equals("checkboxSwitch")){
+                fieldNode.getProperty("controlType").remove();
+                fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.CheckboxFieldDefinition");
             }else if(fieldNode.getProperty("controlType").getString().equals("radio")){
                 fieldNode.getProperty("controlType").remove();
                 fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.OptionGroupFieldDefinition");
@@ -216,12 +219,21 @@ public class DialogMigrationTask  extends AbstractTask {
                 fieldNode.getProperty("controlType").remove();
                 fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.FileUploadFieldDefinition");
             }else if(fieldNode.getProperty("controlType").getString().equals("uuidLink")){
-                if(fieldNode.hasProperty("repository") && fieldNode.getProperty("repository").getString().equals("website"))
-                fieldNode.getProperty("controlType").remove();
-                fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.LinkFieldDefinition");
-                fieldNode.setProperty("appName", "pages");
-                fieldNode.setProperty("dialogName", "ui-admincentral:link");
-                fieldNode.setProperty("uuid", "true");
+                if(fieldNode.hasProperty("repository")) {
+                    fieldNode.getProperty("controlType").remove();
+                    fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.LinkFieldDefinition");
+                    fieldNode.setProperty("dialogName", "ui-admincentral:link");
+                    fieldNode.setProperty("uuid", "true");
+                    if(fieldNode.getProperty("repository").getString().equals("website")) {
+                        fieldNode.setProperty("appName", "pages");
+                    }else if (fieldNode.getProperty("repository").getString().equals("data")) {
+                        // Handle contacts
+                        if(fieldNode.hasProperty("tree") && fieldNode.getProperty("tree").getString().equals("Contact")) {
+                            fieldNode.setProperty("appName", "contacts");
+                            fieldNode.setProperty("workspace", "contacts");
+                        }
+                    }
+                }
             }else {
                 fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.StaticFieldDefinition");
             }
