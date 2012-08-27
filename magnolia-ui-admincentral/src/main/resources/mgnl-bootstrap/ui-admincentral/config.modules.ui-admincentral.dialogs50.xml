@@ -183,14 +183,11 @@
             <sv:property sv:name="class" sv:type="String">
               <sv:value>info.magnolia.ui.model.field.definition.LinkFieldSelectionDefinition</sv:value>
             </sv:property>
-            <sv:property sv:name="columnName" sv:type="String">
-              <sv:value>firstName</sv:value>
-            </sv:property>
             <sv:property sv:name="description" sv:type="String">
               <sv:value>Select a Link</sv:value>
             </sv:property>
             <sv:property sv:name="displayTextField" sv:type="Boolean">
-              <sv:value>true</sv:value>
+              <sv:value>false</sv:value>
             </sv:property>
             <sv:property sv:name="displayTextFieldOnTop" sv:type="Boolean">
               <sv:value>true</sv:value>
@@ -224,7 +221,7 @@
                 <sv:value>2012-06-11T13:55:35.862+02:00</sv:value>
               </sv:property>
               <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-                <sv:value>2012-08-15T15:17:03.394+02:00</sv:value>
+                <sv:value>2012-08-27T09:19:01.752+02:00</sv:value>
               </sv:property>
             </sv:node>
           </sv:node>
