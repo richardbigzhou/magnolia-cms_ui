@@ -33,12 +33,12 @@
  */
 package info.magnolia.ui.widget.magnoliashell.gwt.client.viewport;
 
+import com.google.gwt.user.client.ui.ComplexPanel;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper;
 
 import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 
 
@@ -53,12 +53,6 @@ public class VPanelWithCurtain extends ComplexPanel {
     public VPanelWithCurtain() {
         modalityCurtain.addClassName("green-modality-curtain");
         modalityCurtain.getStyle().setVisibility(Visibility.HIDDEN);
-        /*addTapHandler(new TapHandler() {
-            @Override
-            public void onTap(TapEvent event) {
-                Window.alert("TAP!")
-            }
-        });*/
     }
     
     public Element getModalityCurtain() {

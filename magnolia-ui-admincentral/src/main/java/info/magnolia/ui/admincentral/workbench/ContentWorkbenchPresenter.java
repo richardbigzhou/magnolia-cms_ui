@@ -48,7 +48,7 @@ import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.model.thumbnail.AbstractThumbnailProvider;
+import info.magnolia.ui.model.thumbnail.ThumbnailProvider;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.widget.actionbar.ActionbarView;
 
@@ -77,7 +77,7 @@ import com.vaadin.ui.Embedded;
  * <ul>
  * <li>a configurable data grid.
  * <li>a configurable function toolbar on top of the data grid, providing operations such as
- * switching from tree to list view or performing searches on data.
+ * switching from tree to list view or thumbnail view or performing searches on data.
  * <li>a configurable action bar on the right hand side, showing the available operations for the
  * given workspace and the selected item.
  * </ul>
@@ -89,7 +89,7 @@ import com.vaadin.ui.Embedded;
 @SuppressWarnings("serial")
 public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener {
 
-    protected final static String IMAGE_NODE_NAME = AbstractThumbnailProvider.ORIGINAL_IMAGE_NODE_NAME;
+    protected static String IMAGE_NODE_NAME = ThumbnailProvider.ORIGINAL_IMAGE_NODE_NAME;
 
     private static final Logger log = LoggerFactory.getLogger(ContentWorkbenchPresenter.class);
 
@@ -119,6 +119,11 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
         this.contentPresenter = contentPresenter;
         this.actionbarPresenter = actionbarPresenter;
         this.workbenchDefinition = ((ContentAppDescriptor) appContext.getAppDescriptor()).getWorkbench();
+
+        if(this.workbenchDefinition.getThumbnailProvider() != null) {
+            IMAGE_NODE_NAME = this.workbenchDefinition.getThumbnailProvider().getOriginalImageNodeName();
+            log.debug("Original image node name is {}", IMAGE_NODE_NAME);
+        }
     }
 
     public ContentWorkbenchView start() {

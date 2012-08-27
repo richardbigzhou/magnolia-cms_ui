@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,54 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.dialog;
+package info.magnolia.ui.app.contacts.dialog.action;
 
-import info.magnolia.ui.framework.event.EventBus;
-
-import com.vaadin.data.Item;
-
+import info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition;
 /**
- * Definition of the Dialog Presenter (used to communicate with the outer world).
- * Also define a call back inner interface.
+ * Definition for our custom contact save action.
  */
-public interface MagnoloaDialogPresenter {
+public class SaveContactDialogActionDefinition extends SaveDialogActionDefinition {
 
-
-    void setPresenter(MagnoloaDialogPresenter presenter);
-
-    /**
-     * DialogView.Presenter.
-     *
-     */
-    public interface Presenter {
-
-        /**
-         * Callback interface for DialogView.Presenter.
-         */
-        public interface Callback {
-
-            void onCancel();
-
-            void onSuccess(String actionName);
-        }
-
-        Callback getCallback();
-
-        MagnoliaDialogView getView();
-
-        Item getItem();
-
-        EventBus getEventBus();
-
-        /**
-         * Start create the dialog.
-         */
-        MagnoliaDialogView start(Item item, Callback callback);
-
-        void showValidation(boolean isVisible);
-
-        //FIXME Should it still be called so?
-        void closeDialog();
-
-    }
 }

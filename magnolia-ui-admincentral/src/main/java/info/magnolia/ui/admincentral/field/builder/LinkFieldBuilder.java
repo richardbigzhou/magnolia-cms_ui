@@ -42,7 +42,7 @@ import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.model.field.definition.LinkFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
-import info.magnolia.ui.widget.dialog.MagnoloaDialogPresenter;
+import info.magnolia.ui.widget.dialog.MagnoliaDialogPresenter;
 
 import javax.inject.Inject;
 
@@ -117,7 +117,7 @@ public class LinkFieldBuilder extends AbstractFieldBuilder<LinkFieldDefinition> 
                 Property property = DefaultPropertyUtil.newDefaultProperty("transiantPorps", null, (String)textButton.getTextField().getValue());
                 item.addItemProperty("transiantPorps", property);
                 // Create the call Back
-                MagnoloaDialogPresenter.Presenter.Callback callback = new MagnoloaDialogPresenter.Presenter.Callback() {
+                MagnoliaDialogPresenter.Presenter.Callback callback = new MagnoliaDialogPresenter.Presenter.Callback() {
                     @Override
                     public void onSuccess(String actionName) {
                         Property p = item.getItemProperty("transiantPorps");

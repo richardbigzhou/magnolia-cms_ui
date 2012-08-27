@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,67 +31,65 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog.action;
+package info.magnolia.ui.app.contacts.dialog.action;
 
 import info.magnolia.jcr.util.MetaDataUtil;
-import info.magnolia.ui.model.action.ActionBase;
+import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.ui.admincentral.dialog.action.SaveDialogAction;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.widget.dialog.MagnoliaDialogPresenter;
+import info.magnolia.ui.widget.dialog.MagnoliaDialogPresenter.Presenter;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.vaadin.data.Item;
-
 /**
- * Saves a dialog.
+ * A custom save action for contacts. It automatically creates a unique node name for a new contact.
  *
- * @see SaveDialogActionDefinition
  */
-public class SaveDialogAction extends ActionBase<SaveDialogActionDefinition> {
+public class SaveContactDialogAction extends SaveDialogAction {
 
-    private static final Logger log = LoggerFactory.getLogger(SaveDialogAction.class);
-
-    private Item item;
-    private MagnoliaDialogPresenter.Presenter presenter;
-
-    public SaveDialogAction(SaveDialogActionDefinition definition, MagnoliaDialogPresenter.Presenter presenter) {
-        super(definition);
-        this.presenter = presenter;
-        this.item = presenter.getItem();
+    public SaveContactDialogAction(final SaveContactDialogActionDefinition definition, final Presenter presenter) {
+        super(definition, presenter);
     }
 
     @Override
     public void execute() throws ActionExecutionException {
         // First Validate
-        presenter.showValidation(true);
-        if (presenter.getView().isValid()) {
-            final JcrNodeAdapter itemChanged = (JcrNodeAdapter) item;
+        getPresenter().showValidation(true);
+        if (getPresenter().getView().isValid()) {
+            final JcrNodeAdapter itemChanged = (JcrNodeAdapter) getItem();
+
             try {
                 final Node node = itemChanged.getNode();
-                //Update MetaData
+                if(node.isNew()) {
+                   generateUniqueNodeNameForContact(node);
+                }
                 MetaDataUtil.updateMetaData(node);
                 node.getSession().save();
             } catch (final RepositoryException e) {
                 throw new ActionExecutionException(e);
             }
-            presenter.getCallback().onSuccess(getDefinition().getName());
+            getPresenter().getCallback().onSuccess(getDefinition().getName());
 
         } else {
-            log.warn("View is not valid. No save performed");
+            //validation errors are displayed in the UI.
         }
     }
 
-    protected MagnoliaDialogPresenter.Presenter getPresenter() {
-        return presenter;
-    }
+    private void generateUniqueNodeNameForContact(final Node node) throws RepositoryException {
+        String firstName = node.getProperty("firstName").getString();
+        String lastName =  node.getProperty("lastName").getString();
+        String newNodeName = (firstName.charAt(0) + lastName.replaceAll("\\s+", "")).toLowerCase();
+        String parentPath = node.getParent().getPath();
+        String newNodeAbsPath = NodeUtil.combinePathAndName(parentPath, newNodeName);
+        int i = 1;
 
-    protected Item getItem() {
-        return item;
+        while(node.getSession().itemExists(newNodeAbsPath)) {
+            newNodeAbsPath = NodeUtil.combinePathAndName(parentPath, newNodeName + i);
+            i++;
+        }
+        node.getSession().move(node.getPath(), newNodeAbsPath);
     }
 
 }

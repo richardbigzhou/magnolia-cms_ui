@@ -33,51 +33,52 @@
  */
 package info.magnolia.ui.widget.dialog;
 
-import info.magnolia.ui.framework.view.View;
-import java.util.List;
+import info.magnolia.ui.framework.event.EventBus;
+
 import com.vaadin.data.Item;
-import com.vaadin.ui.ComponentContainer;
-import com.vaadin.ui.Field;
 
 /**
- * DialogView definition.
- * Define also the Listener interface.
+ * Definition of the Dialog Presenter (used to communicate with the outer world).
+ * Also define a call back inner interface.
  */
-public interface MagnoliaDialogView extends View {
+public interface MagnoliaDialogPresenter {
+
+
+    void setPresenter(MagnoliaDialogPresenter presenter);
 
     /**
-     * Base interface for an MagnoliaDialogView listener.
+     * DialogView.Presenter.
+     *
      */
-    interface Listener {
-        /**
-         * Execute a specific action {@link info.magnolia.ui.model.action.Action}.
-         */
-        void executeAction(String actionName);
+    public interface Presenter {
 
         /**
-         * Close current Dialog.
+         * Callback interface for DialogView.Presenter.
          */
+        public interface Callback {
+
+            void onCancel();
+
+            void onSuccess(String actionName);
+        }
+
+        Callback getCallback();
+
+        MagnoliaDialogView getView();
+
+        Item getItem();
+
+        EventBus getEventBus();
+
+        /**
+         * Start create the dialog.
+         */
+        MagnoliaDialogView start(Item item, Callback callback);
+
+        void showValidation(boolean isVisible);
+
+        //FIXME Should it still be called so?
         void closeDialog();
+
     }
-
-
-    void setListener(Listener listener);
-
-    void setItemDataSource(Item item);
-
-    void addTab(ComponentContainer inputFields, String tabName);
-
-    void addAction(String actionName, String actionLabel);
-
-    void addField(Field field);
-
-    void setDescription(String description);
-
-    void showValidation(boolean isVisible);
-
-    boolean isValid();
-
-    List<Field> getFields();
-
-    void setShowAllEnabled(boolean showAll);
 }

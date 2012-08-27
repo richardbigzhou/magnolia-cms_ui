@@ -286,7 +286,7 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
         public VAppPreloader() {
             super();
             setElement(root);
-            setStyleName("v-shell-vieport v-shell-tabsheet");
+            setStyleName("v-shell-viewport v-shell-tabsheet");
             navigator.addClassName("nav nav-tabs single-tab");
             tab.addClassName("clearfix active");
             captionSpan.setClassName("tab-title");

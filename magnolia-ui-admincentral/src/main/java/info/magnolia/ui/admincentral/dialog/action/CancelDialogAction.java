@@ -35,7 +35,7 @@ package info.magnolia.ui.admincentral.dialog.action;
 
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.widget.dialog.MagnoloaDialogPresenter;
+import info.magnolia.ui.widget.dialog.MagnoliaDialogPresenter;
 
 /**
  * Implements an action for canceling a dialog.
@@ -44,9 +44,9 @@ import info.magnolia.ui.widget.dialog.MagnoloaDialogPresenter;
  */
 public class CancelDialogAction extends ActionBase<CancelDialogActionDefinition> {
 
-    private MagnoloaDialogPresenter.Presenter presenter;
+    private MagnoliaDialogPresenter.Presenter presenter;
 
-    public CancelDialogAction(CancelDialogActionDefinition definition, MagnoloaDialogPresenter.Presenter presenter) {
+    public CancelDialogAction(CancelDialogActionDefinition definition, MagnoliaDialogPresenter.Presenter presenter) {
         super(definition);
         this.presenter = presenter;
     }

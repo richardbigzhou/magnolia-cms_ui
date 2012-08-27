@@ -39,7 +39,7 @@ import com.vaadin.data.Item;
 
 import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
 import info.magnolia.ui.framework.app.AbstractApp;
-import info.magnolia.ui.widget.dialog.MagnoloaDialogPresenter.Presenter;
+import info.magnolia.ui.widget.dialog.MagnoliaDialogPresenter.Presenter;
 
 
 /**
