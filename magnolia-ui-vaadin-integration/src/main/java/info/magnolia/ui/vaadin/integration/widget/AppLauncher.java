@@ -37,7 +37,7 @@ import info.magnolia.ui.vaadin.integration.widget.client.applauncher.VAppLaunche
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -51,27 +51,28 @@ import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.ClientWidget;
 import com.vaadin.ui.ClientWidget.LoadStyle;
 
+
 /**
- * Server side of AppLauncher. 
+ * Server side of AppLauncher.
  */
 @SuppressWarnings("serial")
 @ClientWidget(value = VAppLauncher.class, loadStyle = LoadStyle.EAGER)
 public class AppLauncher extends AbstractComponent implements ServerSideHandler {
 
-    private Map<String, AppGroup> appGroups = new HashMap<String, AppGroup>();
-    
-    private ServerSideProxy proxy = new ServerSideProxy(this);
+    private final Map<String, AppGroup> appGroups = new LinkedHashMap<String, AppGroup>();
+
+    private final ServerSideProxy proxy = new ServerSideProxy(this);
 
     private boolean isAttached = false;
-    
+
     public AppLauncher() {
         super();
         setSizeFull();
         setImmediate(true);
     }
 
-    public void addAppGroup(String name, String caption, String color, boolean isPermanent) {
-        final AppGroup group = new AppGroup(name, caption, color, isPermanent);
+    public void addAppGroup(String name, String caption, String color, boolean isPermanent, boolean clientGroup) {
+        final AppGroup group = new AppGroup(name, caption, color, isPermanent, clientGroup);
         appGroups.put(name, group);
         doAddGroup(group);
     }
@@ -117,7 +118,7 @@ public class AppLauncher extends AbstractComponent implements ServerSideHandler 
                 doAddAppTile(tile, group.getName());
             }
         }
-        return new Object[] {};
+        return new Object[]{};
     }
 
     @Override
@@ -125,13 +126,13 @@ public class AppLauncher extends AbstractComponent implements ServerSideHandler 
         super.attach();
         isAttached = true;
     }
-    
+
     @Override
     public void detach() {
         super.detach();
         clear();
     }
-    
+
     public void clear() {
         isAttached = false;
         for (final AppGroup group : appGroups.values()) {
@@ -139,7 +140,7 @@ public class AppLauncher extends AbstractComponent implements ServerSideHandler 
         }
         appGroups.clear();
     }
-    
+
     @Override
     public void callFromClient(String method, Object[] params) {
         throw new RuntimeException("Unknown call from client: " + method);
@@ -148,18 +149,18 @@ public class AppLauncher extends AbstractComponent implements ServerSideHandler 
     public void setAppActive(String appName, boolean isActive) {
         proxy.call("setAppActive", appName, isActive);
     }
-    
+
     /**
-     * Represents one tile in the AppLauncher. 
+     * Represents one tile in the AppLauncher.
      */
     public static class AppTile implements Serializable {
 
-        private String name;
+        private final String name;
 
-        private String caption;
+        private final String caption;
 
-        private String icon;
-        
+        private final String icon;
+
         public AppTile(String name, String caption, String icon) {
             this.name = name;
             this.caption = caption;
@@ -173,34 +174,37 @@ public class AppLauncher extends AbstractComponent implements ServerSideHandler 
         public String getCaption() {
             return caption;
         }
-        
+
         public String getIcon() {
             return icon;
         }
     }
-    
+
     /**
      * Represents a group of tiles in the AppLauncher.
      */
     public static class AppGroup implements Serializable {
-        
+
         private transient List<AppTile> appTiles = new ArrayList<AppTile>();
 
-        private String name;
+        private final String name;
 
-        private String caption;
-        
-        private String backgroundColor;
-        
-        private boolean isPermanent;
-        
-        public AppGroup(String name, String caption, String backgroundColor, boolean isPermanent) {
+        private final String caption;
+
+        private final String backgroundColor;
+
+        private final boolean isPermanent;
+
+        private final boolean clientGroup;
+
+        public AppGroup(String name, String caption, String backgroundColor, boolean isPermanent, boolean clientGroup) {
             this.name = name;
             this.caption = caption;
             this.backgroundColor = backgroundColor;
             this.isPermanent = isPermanent;
+            this.clientGroup = clientGroup;
         }
-        
+
         public void addAppTile(final AppTile tile) {
             appTiles.add(tile);
         }
@@ -212,17 +216,21 @@ public class AppLauncher extends AbstractComponent implements ServerSideHandler 
         public String getCaption() {
             return caption;
         }
-        
+
         public String getBackgroundColor() {
             return backgroundColor;
         }
-        
+
         public List<AppTile> getAppTiles() {
             return appTiles;
         }
-        
+
         public boolean isPermanent() {
             return isPermanent;
+        }
+
+        public boolean isClientGroup() {
+            return clientGroup;
         }
     }
 }

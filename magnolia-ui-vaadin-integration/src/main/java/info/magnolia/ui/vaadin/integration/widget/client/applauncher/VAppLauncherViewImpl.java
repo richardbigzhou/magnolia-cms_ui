@@ -44,50 +44,53 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.web.bindery.event.shared.EventBus;
 
+
 /**
- * Implementation of AppLauncher view. 
- *
+ * Implementation of AppLauncher view.
+ * 
  */
 public class VAppLauncherViewImpl extends FlowPanel implements VAppLauncherView, AppActivationEvent.Handler {
 
-    private Map<String, VAppTileGroup> groups = new HashMap<String, VAppTileGroup>();
-    
-    private VTemporaryAppGroupBar temporarySectionsBar = new VTemporaryAppGroupBar();
-    
+    private final Map<String, VAppTileGroup> groups = new HashMap<String, VAppTileGroup>();
+
+    private final VTemporaryAppGroupBar temporarySectionsBar = new VTemporaryAppGroupBar();
+
     private final EventBus eventBus;
-    
+
     private Presenter presenter;
-    
-    private Element rootEl = DOM.createDiv();
-    
+
+    private final Element rootEl = DOM.createDiv();
+
     public VAppLauncherViewImpl(final EventBus eventBus) {
         super();
         getElement().appendChild(rootEl);
         this.eventBus = eventBus;
         rootEl.addClassName("v-app-launcher");
-        add(temporarySectionsBar);        
-        this.eventBus.addHandler(AppActivationEvent.TYPE,  this);
+        add(temporarySectionsBar);
+        this.eventBus.addHandler(AppActivationEvent.TYPE, this);
     }
 
     @Override
     public void addAppGroup(VAppGroupJSO group) {
         if (group.isPermanent()) {
-            addPermanentAppGroup(group.getName(), group.getCaption(), group.getBackgroundColor());
+            addPermanentAppGroup(group);
         } else {
-            addTemporaryAppGroup(group.getName(), group.getCaption(), group.getBackgroundColor());
+            addTemporaryAppGroup(group);
         }
     }
 
-    public void addTemporaryAppGroup(String name, String caption, String color) {
-        final VAppTileGroup group = new VTemporaryAppTileGroup(eventBus, color);
-        groups.put(name, group);
-        temporarySectionsBar.addGroup(caption, group);
+    public void addTemporaryAppGroup(VAppGroupJSO groupParams) {
+        final VAppTileGroup group = new VTemporaryAppTileGroup(eventBus, groupParams.getBackgroundColor());
+        group.setClientGroup(groupParams.isClientGroup());
+        groups.put(groupParams.getName(), group);
+        temporarySectionsBar.addGroup(groupParams.getCaption(), group);
         add(group, rootEl);
     }
-    
-    public void addPermanentAppGroup(String name, String caption, String color) {
-        final VPermanentAppTileGroup group = new VPermanentAppTileGroup(eventBus, caption, color);
-        groups.put(name, group);
+
+    public void addPermanentAppGroup(VAppGroupJSO groupParams) {
+        final VPermanentAppTileGroup group = new VPermanentAppTileGroup(eventBus, groupParams.getCaption(), groupParams.getBackgroundColor());
+        group.setClientGroup(groupParams.isClientGroup());
+        groups.put(groupParams.getName(), group);
         add(group, rootEl);
     }
 

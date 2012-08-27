@@ -36,15 +36,23 @@ package info.magnolia.ui.framework.app.launcherlayout.definition;
 import java.util.ArrayList;
 import java.util.List;
 
+
 /**
- * Default implementation of {@link AppLauncherGroupDefinition} used for configuration in the repository.
+ * Default implementation of {@link AppLauncherGroupDefinition} used for configuration in the
+ * repository.
  */
 public class ConfiguredAppLauncherGroupDefinition implements AppLauncherGroupDefinition {
 
     private String name;
+
     private String label;
+
     private boolean permanent;
+
+    private boolean clientGroup;
+
     private String color;
+
     private List<AppLauncherGroupEntryDefinition> apps = new ArrayList<AppLauncherGroupEntryDefinition>();
 
     @Override
@@ -72,6 +80,15 @@ public class ConfiguredAppLauncherGroupDefinition implements AppLauncherGroupDef
 
     public void setPermanent(boolean permanent) {
         this.permanent = permanent;
+    }
+
+    @Override
+    public boolean isClientGroup() {
+        return clientGroup;
+    }
+
+    public void setClientGroup(boolean clientGroup) {
+        this.clientGroup = clientGroup;
     }
 
     @Override

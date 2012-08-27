@@ -33,16 +33,6 @@
  */
 package info.magnolia.ui.framework.app.launcherlayout;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.launcherlayout.definition.AppLauncherGroupDefinition;
@@ -53,6 +43,18 @@ import info.magnolia.ui.framework.app.registry.AppRegistryEvent;
 import info.magnolia.ui.framework.app.registry.AppRegistryEventHandler;
 import info.magnolia.ui.framework.event.EventBus;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
 /**
  * Default {@link AppLauncherLayoutManager} implementation.
  */
@@ -61,9 +63,11 @@ public class AppLauncherLayoutManagerImpl implements AppLauncherLayoutManager {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private AppDescriptorRegistry appDescriptorRegistry;
-    private EventBus systemEventBus;
-    private AtomicReference<AppLauncherLayoutDefinition> layoutDefinitionReference = new AtomicReference<AppLauncherLayoutDefinition>();
+    private final AppDescriptorRegistry appDescriptorRegistry;
+
+    private final EventBus systemEventBus;
+
+    private final AtomicReference<AppLauncherLayoutDefinition> layoutDefinitionReference = new AtomicReference<AppLauncherLayoutDefinition>();
 
     @Inject
     public AppLauncherLayoutManagerImpl(AppDescriptorRegistry appDescriptorRegistry, @Named("system") EventBus systemEventBus) {
@@ -71,7 +75,9 @@ public class AppLauncherLayoutManagerImpl implements AppLauncherLayoutManager {
         this.systemEventBus = systemEventBus;
 
         /**
-         * Propagate events from {@link info.magnolia.ui.framework.app.registry.AppDescriptorRegistry} to notify listeners that the layout has changed.
+         * Propagate events from
+         * {@link info.magnolia.ui.framework.app.registry.AppDescriptorRegistry} to notify listeners
+         * that the layout has changed.
          */
         systemEventBus.addHandler(AppRegistryEvent.class, new AppRegistryEventHandler() {
 
@@ -134,6 +140,7 @@ public class AppLauncherLayoutManagerImpl implements AppLauncherLayoutManager {
                 group.setLabel(groupDefinition.getLabel());
                 group.setColor(groupDefinition.getColor());
                 group.setPermanent(groupDefinition.isPermanent());
+                group.setClientGroup(groupDefinition.isClientGroup());
                 group.setApps(entries);
                 layout.addGroup(group);
             }
