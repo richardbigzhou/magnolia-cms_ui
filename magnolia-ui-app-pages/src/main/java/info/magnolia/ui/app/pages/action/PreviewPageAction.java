@@ -34,6 +34,9 @@
 package info.magnolia.ui.app.pages.action;
 
 import com.google.inject.Inject;
+
+import info.magnolia.cms.core.MgnlNodeType;
+import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.app.pages.PagesApp;
 import info.magnolia.ui.app.pages.editor.PagesEditorSubApp;
 import info.magnolia.ui.framework.location.DefaultLocation;
@@ -77,6 +80,10 @@ public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
     @Override
     public void execute() throws ActionExecutionException {
         try {
+
+            if (!NodeUtil.isNodeType(nodeToPreview, MgnlNodeType.NT_CONTENT)) {
+                return;
+            }
 
             final String editorPath = nodeToPreview.getPath();
             final String previewMode = full ? PagesApp.PREVIEW_FULL_TOKEN : PagesApp.PREVIEW_TOKEN;

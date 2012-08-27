@@ -62,6 +62,7 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.JcrConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -143,7 +144,7 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
 
             @Override
             public void onContentChanged(ContentChangedEvent event) {
-                // this should go into the content presenter
+                refreshActionbarPreviewImage(event.getPath(), event.getWorkspace());
                 view.refresh();
             }
         });
@@ -178,48 +179,7 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
                 // actionbarPresenter.disableGroup(...);
                 // actionbarPresenter.enableGroup(...);
 
-                // refresh preview
-                if (event.getPath() == null) {
-                    actionbarPresenter.setPreview(null);
-                } else {
-
-                    final Node parentNode = SessionUtil.getNode(event.getWorkspace(), event.getPath());
-                    try {
-
-                        if (!parentNode.hasNode(IMAGE_NODE_NAME)) {
-                            actionbarPresenter.setPreview(null);
-                            return;
-                        }
-
-                        final Node node = parentNode.getNode(IMAGE_NODE_NAME);
-                        final byte[] pngData = IOUtils.toByteArray(node.getProperty(JcrConstants.JCR_DATA).getBinary().getStream());
-                        final String nodeType = node.getProperty(FileProperties.CONTENT_TYPE).getString();
-
-                        Resource imageResource = new StreamResource(
-                            new StreamResource.StreamSource() {
-
-                                @Override
-                                public InputStream getStream() {
-                                    return new ByteArrayInputStream(pngData);
-
-                                }
-                            }, "", ContentWorkbenchPresenter.this.getView().asVaadinComponent().getApplication()) {
-
-                            @Override
-                            public String getMIMEType() {
-                                return nodeType;
-                            }
-                        };
-
-                        Embedded preview = new Embedded(null, imageResource);
-                        actionbarPresenter.setPreview(preview);
-                    } catch (RepositoryException e) {
-                        log.error(e.getMessage(), e);
-                    } catch (IOException e) {
-                        log.error(e.getMessage(), e);
-                    }
-
-                }
+                refreshActionbarPreviewImage(event.getPath(), event.getWorkspace());
             }
         });
 
@@ -257,5 +217,46 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
 
     public void selectPath(String path) {
         this.view.selectPath(path);
+    }
+
+    private void refreshActionbarPreviewImage(final String path, final String workspace) {
+        if (StringUtils.isBlank(path)) {
+            actionbarPresenter.setPreview(null);
+        } else {
+
+            final Node parentNode = SessionUtil.getNode(workspace, path);
+            try {
+
+                if (!parentNode.hasNode(IMAGE_NODE_NAME)) {
+                    actionbarPresenter.setPreview(null);
+                    return;
+                }
+
+                final Node node = parentNode.getNode(IMAGE_NODE_NAME);
+                final byte[] pngData = IOUtils.toByteArray(node.getProperty(JcrConstants.JCR_DATA).getBinary().getStream());
+                final String nodeType = node.getProperty(FileProperties.CONTENT_TYPE).getString();
+
+                Resource imageResource = new StreamResource(
+                        new StreamResource.StreamSource() {
+                            @Override
+                            public InputStream getStream() {
+                                return new ByteArrayInputStream(pngData);
+                            }
+                        }, "", ContentWorkbenchPresenter.this.getView().asVaadinComponent().getApplication()) {
+
+                    @Override
+                    public String getMIMEType() {
+                        return nodeType;
+                    }
+                };
+
+                Embedded preview = new Embedded(null, imageResource);
+                actionbarPresenter.setPreview(preview);
+            } catch (RepositoryException e) {
+                log.error(e.getMessage(), e);
+            } catch (IOException e) {
+                log.error(e.getMessage(), e);
+            }
+        }
     }
 }

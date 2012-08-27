@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,39 +31,36 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts;
+package info.magnolia.ui.vaadin.integration.widget.client.pinch;
 
-import info.magnolia.module.ModuleLifecycle;
-import info.magnolia.module.ModuleLifecycleContext;
-import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.inject.Inject;
-
+import com.google.gwt.event.shared.EventHandler;
 
 /**
- * Module lifecycle handler for the contacts app, that may register app and its configuration.
+ * MagnoliaPinchStartEvent.
  */
-@SuppressWarnings("serial")
-public class ContactsAppModule implements ModuleLifecycle {
-
-    private static final Logger logger = LoggerFactory.getLogger(ContactsAppModule.class);
-
-    private final AppDescriptorRegistry appRegistry;
-
-    @Inject
-    public ContactsAppModule(AppDescriptorRegistry appRegistry) {
-        this.appRegistry = appRegistry;
+public class MagnoliaPinchStartEvent extends MagnoliaPinchEvent<MagnoliaPinchStartEvent.Handler> {
+ 
+    public static Type<Handler> TYPE = new Type<Handler>();
+    
+    public MagnoliaPinchStartEvent(int x, int y, double scaleFactor) {
+        super(x, y, scaleFactor);
+    }
+    
+    /**
+     * Event handler.
+     */
+    public interface Handler extends EventHandler {
+        void onPinchStart(final MagnoliaPinchStartEvent event);
     }
 
     @Override
-    public void start(ModuleLifecycleContext moduleLifecycleContext) {
+    public Type<Handler> getAssociatedType() {
+        return TYPE;
     }
 
     @Override
-    public void stop(ModuleLifecycleContext moduleLifecycleContext) {
+    protected void dispatch(Handler handler) {
+        handler.onPinchStart(this);
     }
-
 }
