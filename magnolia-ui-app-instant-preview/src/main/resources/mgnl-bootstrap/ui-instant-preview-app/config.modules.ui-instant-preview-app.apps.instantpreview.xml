@@ -16,7 +16,7 @@
     <sv:value>MANAGE</sv:value>
   </sv:property>
   <sv:property sv:name="icon" sv:type="String">
-    <sv:value>icon-view</sv:value>
+    <sv:value>icon-instant_preview</sv:value>
   </sv:property>
   <sv:property sv:name="jcr:createdBy" sv:type="String">
     <sv:value>admin</sv:value>
