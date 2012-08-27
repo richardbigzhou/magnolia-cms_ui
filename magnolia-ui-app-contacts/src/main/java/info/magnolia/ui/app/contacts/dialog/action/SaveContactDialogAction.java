@@ -44,7 +44,7 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 /**
- * A custom save action for contacts. It automatically creates a unique node name for a new contact based on their <code>firstName</code> and <code>lastName</code>.
+ * A custom save action for contacts. It automatically creates a unique node name for a new contact based on their <code>firstName</code> and <code>lastName</code>
  * properties.
  */
 public class SaveContactDialogAction extends SaveDialogAction {
