@@ -209,6 +209,9 @@ public class DialogMigrationTask  extends AbstractTask {
             }else if(fieldNode.getProperty("controlType").getString().equals("checkbox")){
                 fieldNode.getProperty("controlType").remove();
                 fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.OptionGroupFieldDefinition");
+            }else if(fieldNode.getProperty("controlType").getString().equals("checkboxSwitch")){
+                fieldNode.getProperty("controlType").remove();
+                fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.CheckboxFieldDefinition");
             }else if(fieldNode.getProperty("controlType").getString().equals("radio")){
                 fieldNode.getProperty("controlType").remove();
                 fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.OptionGroupFieldDefinition");
