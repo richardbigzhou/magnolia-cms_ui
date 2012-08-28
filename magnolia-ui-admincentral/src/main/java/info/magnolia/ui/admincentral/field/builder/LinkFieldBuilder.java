@@ -60,7 +60,7 @@ import com.vaadin.ui.Field;
 /**
  * Creates and initializes a LinkField field based on a field definition.
  */
-public class LinkFieldBuilder extends AbstractFieldBuilder<LinkFieldDefinition> {
+public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBuilder<LinkFieldDefinition> {
     private static final Logger log = LoggerFactory.getLogger(LinkFieldBuilder.class);
     TextAndButtonField textButton;
     final AppController appController;
