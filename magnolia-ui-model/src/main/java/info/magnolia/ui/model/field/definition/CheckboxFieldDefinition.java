@@ -38,11 +38,22 @@ package info.magnolia.ui.model.field.definition;
  */
 public class CheckboxFieldDefinition extends ConfiguredFieldDefinition {
 
+    private String selected = "true";
+    private String buttonLabel;
 
-    public CheckboxFieldDefinition(){
-       super();
-       if(getDefaultValue() == null) {
-           setDefaultValue("true");
-       }
+    public String getSelected() {
+        return selected;
+    }
+
+    public void setSelected(String selected) {
+        this.selected = selected;
+    }
+
+    public String getButtonLabel() {
+        return buttonLabel;
+    }
+
+    public void setButtonLabel(String buttonLabel) {
+        this.buttonLabel = buttonLabel;
     }
 }
