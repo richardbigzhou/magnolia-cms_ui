@@ -110,78 +110,49 @@ public class VAppTile extends Widget {
             @Override
             public void onMouseOver(MouseOverEvent event) {
 
-                /*getElement().getStyle().setColor(getParent().getColor());
-                getElement().getStyle().setBackgroundColor("white");
-                  */
                 getElement().addClassName("hover");
-                /* getElement().getStyle().setColor(colorItemHover);
-                getElement().getStyle().setBackgroundColor("white");*/
             }
         }, MouseOverEvent.getType());
 
         addDomHandler(new MouseOutHandler() {
             @Override
             public void onMouseOut(MouseOutEvent event) {
-                /*
-                if (!isActive()) {
-
-                    getElement().getStyle().setProperty("backgroundColor", "");
-                    getElement().getStyle().setProperty("color", "");
-                } else {
-                    getElement().getStyle().setBackgroundColor(getParent().getColor());
-                    getElement().getStyle().setColor("white");
-                }   */
 
                 getElement().removeClassName("hover");
-                 /*
-                if (!isActive()) {
-                    getElement().getStyle().setProperty("backgroundColor", colorItem);
-                    getElement().getStyle().setProperty("color", "");
-                } else {
-                    getElement().getStyle().setBackgroundColor(getParent().getColor());
-                    getElement().getStyle().setColor("white");
-                }    */
-
             }
         }, MouseOutEvent.getType());
 
 
+        /*
+        Currently no ability to cancel because we are using touchstart.
+        touchDelegate.addTouchCancelHandler(new TouchCancelHandler() {
+
+            @Override
+
+            public void onTouchCanceled(TouchCancelEvent event) {
+                updateColors();
+            }
+        });
+        */
         
         touchDelegate.addTouchStartHandler(new TouchStartHandler() {
             @Override
             public void onTouchStart(TouchStartEvent event) {
 
                 getElement().removeClassName("hover");
-
-                getElement().getStyle().setColor(getParent().getColor());
-                getElement().getStyle().setBackgroundColor("white");
+                setColorsClick();
 
                 eventBus.fireEvent(new AppActivationEvent(appTileData.getName()));
             }
         });
-        
-        touchDelegate.addTouchCancelHandler(new TouchCancelHandler() {
-            @Override
-            public void onTouchCanceled(TouchCancelEvent event) {
-                if (!isActive()) {
-                    getElement().getStyle().setProperty("backgroundColor", "");
-                    getElement().getStyle().setProperty("color", "");
-                } else {
-                    getElement().getStyle().setBackgroundColor(getParent().getColor());
-                    getElement().getStyle().setColor("white");
-                }                
-            }
-        });
-        
+
+
         touchDelegate.addTouchEndHandler(new TouchEndHandler() {
             @Override
             public void onTouchEnd(TouchEndEvent event) {
                 if (!isActive()) {
                     setActive(true);
-                    getElement().getStyle().setBackgroundColor(getParent().getColor());
-                    getElement().getStyle().setColor("white");
                 }
-                //Testing. Moved to touchStart! eventBus.fireEvent(new AppActivationEvent(appTileData.getName()));
             }
         });
         
@@ -193,12 +164,42 @@ public class VAppTile extends Widget {
         });
     }
 
+
     public void setActive(boolean isActive) {
         this.isActive = isActive;
+        updateColors();
+    }
+
+    private void updateColors(){
         if (!isActive()) {
-            getElement().getStyle().setProperty("backgroundColor", "");
-            getElement().getStyle().setProperty("color", "");
+            setColorsOff();
         } else {
+            setColorsActive();
+        }
+    }
+
+    private void setColorsOff(){
+        getElement().getStyle().setProperty("backgroundColor", "");
+        getElement().getStyle().setProperty("color", "");
+    }
+
+    private void setColorsClick(){
+        if (getParent().isClientGroup() ){
+            getElement().getStyle().setBackgroundColor(getParent().getColor());
+            getElement().getStyle().setColor("white");
+        }else{
+            getElement().getStyle().setColor(getParent().getColor());
+            getElement().getStyle().setBackgroundColor("white");
+
+        }
+    }
+
+    private void setColorsActive(){
+        // Active
+        if (getParent().isClientGroup() ){
+            getElement().getStyle().setColor(getParent().getColor());
+            getElement().getStyle().setBackgroundColor("white");
+        }else{
             getElement().getStyle().setBackgroundColor(getParent().getColor());
             getElement().getStyle().setColor("white");
         }

@@ -31,9 +31,11 @@
 
 .item.hover{
     background-color:#3f5900 !important;   /* dark green */
+    color:white !important;
 }
 .item.section.hover{
     background-color:#8da924 !important;   /* light green */
+    color:white !important;
 }
 
 
