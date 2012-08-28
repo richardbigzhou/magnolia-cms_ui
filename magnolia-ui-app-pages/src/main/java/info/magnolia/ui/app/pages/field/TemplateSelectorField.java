@@ -77,4 +77,10 @@ public class TemplateSelectorField extends SelectFieldBuilder<TemplateSelectorDe
     protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {
         return String.class;
     }
+
+    @Override
+    protected String getI18nBasename() {
+        return "info.magnolia.module.templatingkit.messages";
+    }
+
 }
