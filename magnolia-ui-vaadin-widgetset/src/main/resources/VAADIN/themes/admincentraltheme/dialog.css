@@ -117,6 +117,7 @@ button.btn-dialog-help {
 	width: 460px;
 }
 .dialog-panel textarea {
+	width: 460px !important;
 	overflow-y: auto;
 }
 .v-dialog-field-label {
