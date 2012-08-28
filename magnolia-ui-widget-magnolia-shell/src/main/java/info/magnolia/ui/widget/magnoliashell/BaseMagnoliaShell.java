@@ -48,8 +48,10 @@ import info.magnolia.ui.widget.magnoliashell.viewport.DialogViewport;
 import info.magnolia.ui.widget.magnoliashell.viewport.ShellAppsViewport;
 import info.magnolia.ui.widget.magnoliashell.viewport.ShellViewport;
 
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -58,6 +60,7 @@ import org.vaadin.rpc.ServerSideHandler;
 import org.vaadin.rpc.ServerSideProxy;
 import org.vaadin.rpc.client.Method;
 
+import com.google.gson.Gson;
 import com.vaadin.terminal.PaintException;
 import com.vaadin.terminal.PaintTarget;
 import com.vaadin.ui.AbstractComponent;
@@ -81,29 +84,15 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
     }};
     
     private ShellViewport activeViewport = null;
-
-    private Component fullScreenComponent = null;
     
     private ICEPush pusher = new ICEPush();
     
+    private List<String> registeredApps = new ArrayList<String>();
+    
+    private List<String> runningApps = new ArrayList<String>();
+    
     public BaseMagnoliaShell() {
         setImmediate(true);
-    }
-    
-    public void showFullscreen(final Component c) {
-        closeCurrentFullScreen();
-        doShowFullscreen(c);
-    }
-   
-    private void doShowFullscreen(Component c) {
-        if (c != null) {
-            this.fullScreenComponent = c;
-            fullScreenComponent.setParent(this);
-            fullScreenComponent.attach();
-            requestRepaint();
-        } else {
-            throw new RuntimeException("Fullscreen component shouldn't be null!");
-        }
     }
 
     public void navigateToApp(String prefix, String token) {
@@ -115,6 +104,7 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
     }
 
     public void doNavigateWithinViewport(final ShellViewport viewport, String type,  String prefix, String token) {
+        System.out.println("[NAVIGATING TO] " + prefix + " " + type + " " + token);
         viewport.setCurrentShellFragment(prefix + ":" + token);
         setActiveViewport(viewport);
         notifyOnFragmentChanged(type + ":" + prefix + ":" + token);
@@ -210,11 +200,7 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
             entry.getValue().paint(target);
             target.endTag(tagName);
         }
-        if (fullScreenComponent != null) {
-            target.startTag("fullscreenComponent");
-            fullScreenComponent.paint(target);
-            target.endTag("fullscreenComponent");
-        }
+
         proxy.paintContent(target);
     }
 
@@ -243,15 +229,6 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
             viewport.detach();
         }
     }
-
-    private void closeCurrentFullScreen() {
-        if (fullScreenComponent != null) {
-            fullScreenComponent.setParent(null);
-            fullScreenComponent.detach();
-            fullScreenComponent = null;
-            requestRepaint();
-        }
-    }
     
     private void notifyOnFragmentChanged(final String fragment) {
         handlers.dispatch(new FragmentChangedEvent(fragment));
@@ -259,6 +236,18 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
     
     @Override
     public Object[] initRequestFromClient() {
+        proxy.call("registerApps", new Gson().toJson(registeredApps));
+        for (final String runningAppName : runningApps) {
+            proxy.call("onAppStarted", runningAppName);
+        }
+        if (activeViewport != null) {
+            for (final ViewportType type : ViewportType.values()) {
+                if (this.activeViewport == viewports.get(type)) {
+                    proxy.call("activeViewportChanged", type.name());
+                    break;
+                }
+            }   
+        } 
         return new Object[] {};
     }
 
@@ -277,6 +266,24 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
     
     protected ICEPush getPusher() {
         return pusher; 
+    }
+    
+    protected void doRegisterApps(List<String> appNames) {
+        registeredApps.clear();
+        registeredApps.addAll(appNames);
+        proxy.call("registerApps", new Gson().toJson(appNames));
+    }
+    
+    protected void onAppStarted(String appName) {
+        proxy.call("onAppStarted", appName);
+        if (!runningApps.contains(appName)) {
+            runningApps.add(appName);
+        }
+    }
+    
+    protected void onAppStopped(String appName) {
+        proxy.call("onAppStopped", appName);
+        runningApps.remove(appName);
     }
     
     protected ServerSideProxy proxy = new ServerSideProxy(this) {{

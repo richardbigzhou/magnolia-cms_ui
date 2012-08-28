@@ -77,4 +77,11 @@ public class AppActivatedEvent extends GwtEvent<ShellNavigationHandler>{
         handler.onAppActivated(this);
     }
 
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("[App Activated event]");
+        sb.append("type: ").append(isShellApp ? "SHELLAPP" : "APP").append(" token: ").append(token).append(" prefix: ").append(prefix);
+        
+        return sb.toString();
+    }
 }

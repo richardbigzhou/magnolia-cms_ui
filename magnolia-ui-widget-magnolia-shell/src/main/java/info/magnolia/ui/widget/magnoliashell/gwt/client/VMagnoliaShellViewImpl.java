@@ -36,7 +36,6 @@ package info.magnolia.ui.widget.magnoliashell.gwt.client;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.AnimationSettings;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryCallback;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.FragmentDTO.FragmentType;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShell.ViewportType;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.event.AppActivatedEvent;
@@ -139,29 +138,7 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
         History.addValueChangeHandler(new ValueChangeHandler<String>() {
             @Override
             public void onValueChange(ValueChangeEvent<String> event) {
-                final String fragment = event.getValue();
-                final FragmentDTO dto = FragmentDTO.fromFragment(fragment);
-                if (dto.getType() == FragmentType.SHELL_APP) {
-                    eventBus.fireEvent(new ShellAppNavigationEvent(ShellAppType.resolveType(dto.getPrefix()), dto.getToken()));
-                } else {
-                    final String prefix = dto.getPrefix();
-                    final String token = dto.getToken();
-                    if (presenter.isAppRegistered(prefix)) {
-                        if (!presenter.isAppRunning(prefix)) {
-                            getAppViewport().showAppPreloader(prefix, new PreloaderCallback() {
-                                @Override
-                                public void onPreloaderShown(String appName) {
-                                    presenter.startApp(appName,token);
-                                }
-                            });
-                        } else {
-                            getAppViewport().hideEntireContents();
-                            presenter.loadApp(prefix, token);
-                        }
-                    } else {
-                        eventBus.fireEvent(new ShellAppNavigationEvent(ShellAppType.APPLAUNCHER, dto.getToken()));
-                    }
-                }
+                presenter.handleHistoryChange(event.getValue());
             }
         });
     }
@@ -388,5 +365,11 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
         replaceWidget(oldViewport, viewport);
         viewport.setEventBus(eventBus);
         viewports.put(shellAppViewport, viewport);
+    }
+
+
+    @Override
+    public void showAppPreloader(String prefix, PreloaderCallback preloaderCallback) {
+        getAppViewport().showAppPreloader(prefix, preloaderCallback);
     }
 }

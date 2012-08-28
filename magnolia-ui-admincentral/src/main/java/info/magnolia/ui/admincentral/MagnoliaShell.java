@@ -68,8 +68,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vaadin.rpc.client.Method;
 
-import com.google.gson.Gson;
-
 /**
  * Admin shell.
  */
@@ -102,12 +100,12 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
             
             @Override
             public void onAppStarted(AppLifecycleEvent event) {
-                proxy.call("onAppStarted", event.getAppDescriptor().getName());
+                MagnoliaShell.this.onAppStarted(event.getAppDescriptor().getName());
             }
-            
+
             @Override
             public void onAppStopped(AppLifecycleEvent event) {
-                proxy.call("onAppStopped", event.getAppDescriptor().getName());
+                MagnoliaShell.this.onAppStopped(event.getAppDescriptor().getName());
             }
         });
         
@@ -230,7 +228,7 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
 
     @Override
     public void registerApps(List<String> appNames) {
-        proxy.call("registerApps", new Gson().toJson(appNames));
+        doRegisterApps(appNames);
     }
 
     @Override

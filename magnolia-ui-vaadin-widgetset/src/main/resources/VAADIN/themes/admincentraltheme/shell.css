@@ -90,7 +90,7 @@ button.action-close {
 .v-shell-viewport {
     position: absolute;
     overflow: visible;
-    margin-top: 60px;
+    top: 60px;
     width: 100%;
     bottom: 0;
 }
