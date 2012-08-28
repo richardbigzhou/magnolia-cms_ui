@@ -43,21 +43,18 @@ import com.vaadin.ui.Component;
 
 
 /**
- * Default view implementation for the app launcher.
- * Handle the following AppLifecycleEvent:
- *   StopApp : Remove the runningApp Icon
- *   StartApp: Add the runningApp Icon
- *   RegisterApp: Create a new App & Group Icon/Section
- *   UnregisterApp: Remove the App & Group Icon/Section
- *
+ * Default view implementation for the app launcher. Handle the following AppLifecycleEvent: StopApp
+ * : Remove the runningApp Icon StartApp: Add the runningApp Icon RegisterApp: Create a new App &
+ * Group Icon/Section UnregisterApp: Remove the App & Group Icon/Section
+ * 
  */
 @SuppressWarnings("serial")
 public class AppLauncherViewImpl implements AppLauncherView {
 
     private Presenter presenter;
 
-    private AppLauncher appLauncher = new AppLauncher();
-    
+    private final AppLauncher appLauncher = new AppLauncher();
+
     public AppLauncherViewImpl() {
         appLauncher.setHeight("100%");
         appLauncher.setWidth("720px");
@@ -86,7 +83,7 @@ public class AppLauncherViewImpl implements AppLauncherView {
     @Override
     public void registerApp(AppLauncherLayout layout) {
         for (AppLauncherGroup group : layout.getGroups()) {
-            appLauncher.addAppGroup(group.getName(), group.getLabel(), group.getColor(), group.isPermanent());
+            appLauncher.addAppGroup(group.getName(), group.getLabel(), group.getColor(), group.isPermanent(), group.isClientGroup());
             for (AppLauncherGroupEntry entry : group.getApps()) {
                 AppDescriptor descriptor = entry.getAppDescriptor();
                 appLauncher.addAppTile(descriptor.getName(), descriptor.getLabel(), descriptor.getIcon(), group.getName());

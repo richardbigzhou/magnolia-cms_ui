@@ -79,7 +79,7 @@ public class InstantPreviewViewImpl implements InstantPreviewView {
         layout = new VerticalLayout();
         layout.setSpacing(true);
         layout.setMargin(true);
-
+        layout.setSizeFull();
         shareButton = buildShareButton();
         shareButton.focus();
 
@@ -90,6 +90,7 @@ public class InstantPreviewViewImpl implements InstantPreviewView {
         layout.addComponent(shareButton);
         layout.addComponent(hostIdLink);
         layout.addComponent(joinButton);
+        layout.setExpandRatio(joinButton, 1f);
         layout.addComponent(inputHostId);
 
     }

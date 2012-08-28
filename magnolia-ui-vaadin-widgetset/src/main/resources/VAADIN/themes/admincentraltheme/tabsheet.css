@@ -14,7 +14,7 @@
 
 .dialog-panel .v-shell-tabsheet .nav li.active {color:#000;}
 
-.v-shell-tabsheet-scroller.fullscreen { 
+.v-shell-tabsheet-scroller.fullscreen {
 	position: absolute !important;
 	zoom: 1;
 	top: -60px;

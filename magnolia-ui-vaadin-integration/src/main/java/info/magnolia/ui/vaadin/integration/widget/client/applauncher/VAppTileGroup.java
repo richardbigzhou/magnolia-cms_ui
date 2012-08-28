@@ -39,15 +39,18 @@ import java.util.Map;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.ComplexPanel;
 
+
 /**
  * The unit that groups semantically close apps.
  */
 public abstract class VAppTileGroup extends ComplexPanel {
-    
+
     private String color;
 
-    private Map<String, VAppTile> appTileMap = new HashMap<String, VAppTile>();
-    
+    private boolean clientGroup;
+
+    private final Map<String, VAppTile> appTileMap = new HashMap<String, VAppTile>();
+
     public VAppTileGroup(String color) {
         super();
         this.color = color;
@@ -63,9 +66,17 @@ public abstract class VAppTileGroup extends ComplexPanel {
     public void setColor(String color) {
         this.color = color;
     }
-    
+
     public String getColor() {
         return color;
+    }
+
+    public boolean isClientGroup() {
+        return clientGroup;
+    }
+
+    public void setClientGroup(boolean clientGroup) {
+        this.clientGroup = clientGroup;
     }
 
     public void addAppTile(final VAppTile tile) {
@@ -76,7 +87,7 @@ public abstract class VAppTileGroup extends ComplexPanel {
     public boolean hasApp(String appName) {
         return appTileMap.containsKey(appName);
     }
-    
+
     public VAppTile getAppTile(String appName) {
         return appTileMap.get(appName);
     }
