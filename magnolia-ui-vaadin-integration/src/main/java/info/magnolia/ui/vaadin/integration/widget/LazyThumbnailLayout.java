@@ -112,6 +112,13 @@ public class LazyThumbnailLayout extends AbstractComponent implements ServerSide
                     }
                 }
             });
+            
+            register("clear", new Method() {
+                @Override
+                public void invoke(String methodName, Object[] params) {
+                    clearSelf();
+                }
+            });
         }
     };
 
@@ -193,9 +200,13 @@ public class LazyThumbnailLayout extends AbstractComponent implements ServerSide
     }
 
     public void clear() {
+        clearSelf();
+        proxy.callOnce("clear");
+    }
+
+    private void clearSelf() {
         lastQueried = null;
         mapper.removeAll();
-        proxy.callOnce("clear");
     }
 
     public void refresh() {
