@@ -92,9 +92,9 @@ public class JcrNodeAdapterChildItemTest {
         // THEN
         assertNotNull(res);
         assertEquals(2, res.size());
-        assertEquals(childItem, res.get(childItem.getNodeIdentifier()));
+        assertEquals(childItem, res.get(childItem.getNodeName()));
         assertEquals(item, childItem.getParent());
-        assertEquals(newChild, res.get(newChild.getNodeIdentifier()));
+        assertEquals(newChild, res.get(newChild.getNodeName()));
         assertEquals(item, newChild.getParent());
     }
 
@@ -117,12 +117,12 @@ public class JcrNodeAdapterChildItemTest {
         Map<String, JcrItemNodeAdapter> res = item.getChildren();
         assertEquals(true, resBoolean);
         assertEquals(1, res.size());
-        assertEquals(null, res.get(childItem.getNodeIdentifier()));
-        assertEquals(newChild, res.get(newChild.getNodeIdentifier()));
+        assertEquals(null, res.get(childItem.getNodeName()));
+        assertEquals(newChild, res.get(newChild.getNodeName()));
         assertEquals(item, newChild.getParent());
         Map<String, JcrItemNodeAdapter> resRemobed = item.getRemovedChildren();
         assertEquals(1, resRemobed.size());
-        assertEquals(childItem, resRemobed.get(childItem.getNodeIdentifier()));
+        assertEquals(childItem, resRemobed.get(childItem.getNodeName()));
     }
 
     @Test
