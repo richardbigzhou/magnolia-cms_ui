@@ -219,6 +219,11 @@
       <type>info.magnolia.ui.admincentral.content.view.ChooseDialogContentPresenter</type>
       <implementation>info.magnolia.ui.admincentral.content.view.ChooseDialogContentPresenter</implementation>
     </component>
+
+    <component>
+      <type>info.magnolia.ui.admincentral.image.ImageThumbnailProvider</type>
+      <implementation>info.magnolia.ui.admincentral.image.ImageThumbnailProvider</implementation>
+    </component>
   </components>
 
   <components>

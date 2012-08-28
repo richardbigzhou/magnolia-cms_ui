@@ -71,4 +71,9 @@ public class ComponentSelectorField extends SelectFieldBuilder<ComponentSelector
     protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {
         return String.class;
     }
+
+    @Override
+    protected String getI18nBasename() {
+        return "info.magnolia.module.templatingkit.messages";
+    }
 }
