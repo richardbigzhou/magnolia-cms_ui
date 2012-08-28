@@ -33,24 +33,26 @@
  */
 package info.magnolia.ui.admincentral.field.builder;
 
+import info.magnolia.jcr.util.SessionUtil;
+import info.magnolia.ui.model.field.definition.SelectFieldDefinition;
+import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
+
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.NativeSelect;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import info.magnolia.jcr.util.SessionUtil;
-import info.magnolia.ui.model.field.definition.SelectFieldDefinition;
-import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
 
 /**
  * Creates and initializes a selection field based on a field definition.
@@ -79,8 +81,8 @@ public class SelectFieldBuilder<D extends SelectFieldDefinition> extends Abstrac
         select.setMultiSelect(false);
         select.setNewItemsAllowed(false);
         // Set style
-        if (StringUtils.isNotBlank(getFieldDefinition().getCssClass())) {
-            setStyleName(getFieldDefinition().getCssClass());
+        if (StringUtils.isNotBlank(definition.getCssClass())) {
+            setStyleName(definition.getCssClass());
         }
         // Set options
         Map<String, String> options = getOptions();
@@ -109,24 +111,47 @@ public class SelectFieldBuilder<D extends SelectFieldDefinition> extends Abstrac
      * @return Key: Stored value, Value: Displayed Value
      */
     public Map<String, String> getOptions() {
-        Map<String, String> res = new HashMap<String, String>();
-        SelectFieldDefinition selectFieldDefinition = getFieldDefinition();
+        Map<String, String> res = new TreeMap<String, String>();
 
-        this.options = selectFieldDefinition.getOptions();
+        this.options = definition.getOptions();
 
         if (this.options != null && !this.options.isEmpty()) {
             for (SelectFieldOptionDefinition option : this.options) {
-                res.put(option.getValue(), getMessage(option.getLabel()));
+
+                res.put(getValue(option), getMessage(getLabel(option)));
                 if (option.isSelected()) {
-                    initialSelecteKey = option.getValue();
+                    initialSelecteKey = getValue(option);
                 }
             }
-        } else if (StringUtils.isNotBlank(selectFieldDefinition.getPath())) {
+        } else if (StringUtils.isNotBlank(definition.getPath())) {
             // Build an option based on the referred node.
-            buildRemoteOptions(res, selectFieldDefinition);
+            buildRemoteOptions(res);
         }
 
         return res;
+    }
+
+    /**
+     * Backward compatibility.
+     * If value is null, get the Label as value.
+     */
+    private String getValue(SelectFieldOptionDefinition option) {
+        if(StringUtils.isBlank(option.getValue())) {
+            return getMessage(getLabel(option));
+        } else {
+            return option.getValue();
+        }
+    }
+    /**
+     * Backward compatibility.
+     * If label is null, get the Value.
+     */
+    private String getLabel(SelectFieldOptionDefinition option) {
+        if(StringUtils.isBlank(option.getLabel())) {
+            return option.getValue();
+        } else {
+            return option.getLabel();
+        }
     }
 
     /**
@@ -162,11 +187,11 @@ public class SelectFieldBuilder<D extends SelectFieldDefinition> extends Abstrac
      * try to get the Value and Label property.
      * In addition create an ArrayList<SelectFieldOptionDefinition> representing this options.
      */
-    private void buildRemoteOptions(Map<String, String> res, SelectFieldDefinition selectFieldDefinition) {
-        Node parent = SessionUtil.getNode(selectFieldDefinition.getRepository(), selectFieldDefinition.getPath());
+    private void buildRemoteOptions(Map<String, String> res) {
+        Node parent = SessionUtil.getNode(definition.getRepository(), definition.getPath());
         if (parent != null) {
-            optionValueName = selectFieldDefinition.getValueNodeData();
-            optionLabelName = selectFieldDefinition.getLabelNodeData();
+            optionValueName = definition.getValueNodeData();
+            optionLabelName = definition.getLabelNodeData();
             options = new ArrayList<SelectFieldOptionDefinition>();
             // Iterate parent children
             try {

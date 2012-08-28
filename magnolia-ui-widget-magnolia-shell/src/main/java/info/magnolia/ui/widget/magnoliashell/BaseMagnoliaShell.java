@@ -104,7 +104,6 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
     }
 
     public void doNavigateWithinViewport(final ShellViewport viewport, String type,  String prefix, String token) {
-        System.out.println("[NAVIGATING TO] " + prefix + " " + type + " " + token);
         viewport.setCurrentShellFragment(prefix + ":" + token);
         setActiveViewport(viewport);
         notifyOnFragmentChanged(type + ":" + prefix + ":" + token);
