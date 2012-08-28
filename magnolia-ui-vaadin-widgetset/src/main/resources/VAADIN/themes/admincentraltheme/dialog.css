@@ -1,3 +1,23 @@
+.v-dialog-layout {
+	background-color: #E6E6E6;
+	margin-top: 25px;
+}
+
+.v-dialog-layout {
+	background-color: #E6E6E6;
+	margin-top: 25px;
+}
+
+.v-dialog-layout > .v-dialog-field-section, .v-dialog-field-label, .v-dialog-field {
+	font-family: Verdana, Helvetica, sans-serif !important;
+	font-size: 12px !important;
+}
+
+.v-dialog-layout .v-dialog-field {
+	display: inline-block;
+	width: 425px;
+	vertical-align: middle;
+}
 
 .dialog-header,.dialog-footer,.dialog-description,.dialog-error {
 	padding: 12px 16px 12px 24px;
@@ -149,22 +169,6 @@ button.btn-dialog-help {
 .v-dialog-field-section {
 	color: #000;
 	margin-bottom: 11px;
-}
-
-.v-dialog-layout {
-	background-color: #E6E6E6;
-	margin-top: 25px;
-}
-
-.v-dialog-layout * {
-	font-family: Verdana, Helvetica, sans-serif !important;
-	font-size: 12px !important;
-}
-
-.v-dialog-layout .v-dialog-field {
-	display: inline-block;
-	width: 425px;
-	vertical-align: middle;
 }
 
 .triangle {
