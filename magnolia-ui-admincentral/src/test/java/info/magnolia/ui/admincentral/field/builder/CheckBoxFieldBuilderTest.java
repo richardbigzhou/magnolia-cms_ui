@@ -34,11 +34,11 @@
 package info.magnolia.ui.admincentral.field.builder;
 
 import static org.junit.Assert.assertEquals;
+import info.magnolia.ui.admincentral.field.CheckBoxAndLabelField;
 import info.magnolia.ui.model.field.definition.CheckboxFieldDefinition;
 
 import org.junit.Test;
 
-import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Field;
 
 /**
@@ -57,20 +57,19 @@ public class CheckBoxFieldBuilderTest extends AbstractBuilderTest<CheckboxFieldD
         Field field = checkBoxField.getField();
 
         // THEN
-        assertEquals(true, field instanceof CheckBox);
-        assertEquals(true, field.getValue());
+        assertEquals(true, field instanceof CheckBoxAndLabelField);
     }
 
     @Test
     public void checkBoxField_SetSelectedTest() throws Exception{
         // GIVEN
         checkBoxField = new CheckBoxFieldBuilder(definition, baseItem);
-        definition.setDefaultValue("false");
+        definition.setSelected("false");
         // WHEN
         Field field = checkBoxField.getField();
 
         // THEN
-        assertEquals(true, field instanceof CheckBox);
+        assertEquals(true, field instanceof CheckBoxAndLabelField);
         assertEquals(false, field.getValue());
     }
 
