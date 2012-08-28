@@ -35,8 +35,6 @@ package info.magnolia.ui.vaadin.integration.widget.client.applauncher;
 
 import info.magnolia.ui.vaadin.integration.widget.client.applauncher.event.AppActivationEvent;
 
-import com.google.gwt.event.dom.client.MouseDownEvent;
-import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
@@ -79,7 +77,10 @@ public class VAppTile extends Widget {
     private boolean isActive = false;
     
     private TouchDelegate touchDelegate = new TouchDelegate(this);
-    
+
+    private final String colorItemHover = "#3f5900";
+    private final String colorSectionHover = "#3f5900";
+
     public VAppTile(EventBus eventBus, VAppTileJSO appTile) {
         super();
         this.appTileData = appTile;
@@ -108,35 +109,50 @@ public class VAppTile extends Widget {
         addDomHandler(new MouseOverHandler() {
             @Override
             public void onMouseOver(MouseOverEvent event) {
-                getElement().getStyle().setColor(getParent().getColor());
+
+                /*getElement().getStyle().setColor(getParent().getColor());
                 getElement().getStyle().setBackgroundColor("white");
+                  */
+                getElement().addClassName("hover");
+                /* getElement().getStyle().setColor(colorItemHover);
+                getElement().getStyle().setBackgroundColor("white");*/
             }
         }, MouseOverEvent.getType());
 
         addDomHandler(new MouseOutHandler() {
             @Override
             public void onMouseOut(MouseOutEvent event) {
+                /*
                 if (!isActive()) {
+
                     getElement().getStyle().setProperty("backgroundColor", "");
                     getElement().getStyle().setProperty("color", "");
                 } else {
                     getElement().getStyle().setBackgroundColor(getParent().getColor());
                     getElement().getStyle().setColor("white");
-                }
+                }   */
+
+                getElement().removeClassName("hover");
+                 /*
+                if (!isActive()) {
+                    getElement().getStyle().setProperty("backgroundColor", colorItem);
+                    getElement().getStyle().setProperty("color", "");
+                } else {
+                    getElement().getStyle().setBackgroundColor(getParent().getColor());
+                    getElement().getStyle().setColor("white");
+                }    */
+
             }
         }, MouseOutEvent.getType());
 
-        addDomHandler(new MouseDownHandler() {
-            @Override
-            public void onMouseDown(MouseDownEvent event) {
-                // Nothing - because the Touch events handle the actual clicks.
-            }
-        }, MouseDownEvent.getType());
-        
+
         
         touchDelegate.addTouchStartHandler(new TouchStartHandler() {
             @Override
             public void onTouchStart(TouchStartEvent event) {
+
+                getElement().removeClassName("hover");
+
                 getElement().getStyle().setColor(getParent().getColor());
                 getElement().getStyle().setBackgroundColor("white");
 

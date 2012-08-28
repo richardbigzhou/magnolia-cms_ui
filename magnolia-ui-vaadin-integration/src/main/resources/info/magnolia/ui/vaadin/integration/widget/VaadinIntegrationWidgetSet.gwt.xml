@@ -4,9 +4,10 @@
 	<!-- WS Compiler: manually edited -->
 	<inherits name="com.vaadin.terminal.gwt.DefaultWidgetSet" />
 	<inherits name="org.vaadin.rpc.WidgetRPC" />
+    <inherits name="com.googlecode.mgwt.ui.UI"/>
 
 
-	<replace-with
+    <replace-with
 		class="info.magnolia.ui.vaadin.integration.widget.client.touchwidgetimpl.MobileSafariTouchWidgetImplProxy">
 		<when-type-is
 			class="com.googlecode.mgwt.ui.client.widget.touch.TouchWidgetImpl" />
