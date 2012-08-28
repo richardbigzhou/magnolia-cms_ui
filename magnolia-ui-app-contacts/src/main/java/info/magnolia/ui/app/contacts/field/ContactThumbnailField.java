@@ -41,7 +41,7 @@ import javax.jcr.RepositoryException;
 
 /**
  * Specific Contact Thumbnail field that override the createFieldDetail(String nodePath)
- * of {@link ThumbnailField}
+ * of {@link ThumbnailField}.
  */
 public class ContactThumbnailField extends ThumbnailField{
 
