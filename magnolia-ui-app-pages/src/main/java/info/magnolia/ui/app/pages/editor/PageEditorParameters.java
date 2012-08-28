@@ -61,15 +61,12 @@ public class PageEditorParameters {
         return nodePath;
     }
 
-    public String getEditingFlowMode() {
+    public String getEditingMode() {
         return editingMode;
     }
 
     public boolean isPreview() {
-        return PagesApp.PREVIEW_TOKEN.equals(editingMode) || PagesApp.PREVIEW_FULL_TOKEN.equals(editingMode);
+        return PagesApp.PREVIEW_TOKEN.equals(editingMode);
     }
 
-    public boolean isFullScreen() {
-        return PagesApp.PREVIEW_FULL_TOKEN.equals(editingMode) || PagesApp.EDITOR_FULL_TOKEN.equals(editingMode);
-    }
 }
