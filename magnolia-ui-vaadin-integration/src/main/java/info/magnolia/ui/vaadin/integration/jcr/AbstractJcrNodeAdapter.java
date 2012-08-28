@@ -309,11 +309,14 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
      */
     @Override
     public JcrItemNodeAdapter addChild(JcrItemNodeAdapter child) {
-        if (removedChildren.containsKey(((AbstractJcrAdapter)child).getNodeIdentifier())) {
-            removedChildren.remove(((AbstractJcrAdapter)child).getNodeIdentifier());
+        if (removedChildren.containsKey(child.getNodeName())) {
+            removedChildren.remove(child.getNodeName());
         }
         child.setParent(this);
-        return children.put(((AbstractJcrAdapter)child).getNodeIdentifier(), child);
+        if(children.containsKey(child.getNodeName())) {
+            children.remove(child.getNodeName());
+        }
+        return children.put(child.getNodeName(), child);
     }
 
     /**
@@ -321,8 +324,8 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
      */
     @Override
     public boolean removeChild(JcrItemNodeAdapter toRemove) {
-        removedChildren.put(((AbstractJcrAdapter) toRemove).getNodeIdentifier(), toRemove);
-        return children.remove(((AbstractJcrAdapter)toRemove).getNodeIdentifier()) != null;
+        removedChildren.put(toRemove.getNodeName(), toRemove);
+        return children.remove(toRemove.getNodeName()) != null;
     }
 
     /**

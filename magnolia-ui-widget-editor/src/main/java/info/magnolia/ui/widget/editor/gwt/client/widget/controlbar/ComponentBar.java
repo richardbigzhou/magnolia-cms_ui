@@ -85,13 +85,13 @@ public class ComponentBar extends AbstractBar {
         checkMandatories(mgnlElement.getAttributes());
         addStyleName("component");
 
-        if (DragDropEventBase.isSupported()) {
+/*        if (DragDropEventBase.isSupported()) {
             createDragAndDropHandlers();
 
-        }
+        }*/
         if (!this.isInherited) {
             createControls();
-            createMouseEventsHandlers();
+            //createMouseEventsHandlers();
         }
 
         setVisible(false);

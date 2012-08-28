@@ -43,10 +43,14 @@ import com.vaadin.ui.Component;
 
 
 /**
- * Default view implementation for the app launcher. Handle the following AppLifecycleEvent: StopApp
- * : Remove the runningApp Icon StartApp: Add the runningApp Icon RegisterApp: Create a new App &
- * Group Icon/Section UnregisterApp: Remove the App & Group Icon/Section
- * 
+ * Default view implementation for the app launcher. It handles the following AppLifecycleEvent:
+ * <ul>
+ * <li>StopApp: Remove the runningApp Icon
+ * <li>StartApp: Add the runningApp Icon
+ * <li>RegisterApp: Create a new App and Group Icon/Section
+ * <li>UnregisterApp: Remove the App and Group Icon/Section
+ * </ul>
+ *
  */
 @SuppressWarnings("serial")
 public class AppLauncherViewImpl implements AppLauncherView {

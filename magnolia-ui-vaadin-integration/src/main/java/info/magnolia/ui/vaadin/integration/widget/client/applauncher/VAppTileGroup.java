@@ -41,7 +41,7 @@ import com.google.gwt.user.client.ui.ComplexPanel;
 
 
 /**
- * The unit that groups semantically close apps.
+ * The container that groups semantically similar apps.
  */
 public abstract class VAppTileGroup extends ComplexPanel {
 

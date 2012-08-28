@@ -1,123 +1,125 @@
-.dialog-header, .dialog-footer, .dialog-description, .dialog-error {
-     padding: 12px 16px 12px 24px;
+.dialog-header,.dialog-footer,.dialog-description,.dialog-error {
+	padding: 12px 16px 12px 24px;
 }
 
-.dialog-description, .dialog-footer, .dialog-content, .dialog-error {
-     border-top: 2px solid black;
-     font-family: Verdana, Helvetica, sans-serif;
-     font-size: 12px;
+.dialog-description,.dialog-footer,.dialog-content,.dialog-error {
+	border-top: 2px solid black;
+	font-family: Verdana, Helvetica, sans-serif;
+	font-size: 12px;
 }
 
 .dialog-header {
-     background-color: #666666;
-     display: block;
-     height: 16px;
-     color: #AABF2F;
+	background-color: #666;
+	display: block;
+	height: 16px;
+	color: #AABF2F;
 }
 
 .dialog-header span {
-    font-family: DINWebPro;
-    font-size: 18px;
-    font-weight: bold;
-    line-height: 18px;
+	font-family: DINWebPro;
+	font-size: 18px;
+	font-weight: bold;
+	line-height: 18px;
 }
 
 .dialog-description {
-     background: none repeat scroll 0px 0px #C1D8DF;
+	background: none repeat scroll 0px 0px #C1D8DF;
 }
 
 .dialog-error {
-     background: none repeat scroll 0px 0px #9A3333;
-     color: white;
+	background: none repeat scroll 0px 0px #9A3333;
+	color: white;
 }
 
 .dialog-description span {
-     margin-right: 35px;
+	margin-right: 35px;
 }
 
 .dialog-panel {
-     background: none repeat scroll 0px 0px #E6E6E6;
-     border: medium none;
-     left: 50%;
-     margin: auto auto auto -360px;
-     padding: 0;
-     position: absolute;
-     width: 720px;
-     z-index: 1000;
+	background: none repeat scroll 0px 0px #E6E6E6;
+	border: medium none;
+	left: 50%;
+	margin: auto auto auto -360px;
+	padding: 0;
+	position: absolute;
+	width: 720px;
+	z-index: 1000;
 }
 
 .dialog-footer {
-     background: none repeat scroll 0px 0px #CCCCCC;
-     text-align: right;
+	background: none repeat scroll 0px 0px #CCCCCC;
+	text-align: right;
 }
 
-.dialog-close, .dialog-help {
-     float: right;
-     margin-right: 0px;
+.dialog-close,.dialog-help {
+	float: right;
+	margin-right: 0px;
 }
 
 button.btn-dialog {
-	 font-family: DINWebPro;
-	 font-size: 12px;
-	 font-weight: bold;
-     background: none repeat scroll 0px 0px #666666;
-     border: medium none;
-     color: #FFF;
-     cursor: pointer;
-     margin-left: 10px;
-     padding: 4px 12px;
-     text-transform: uppercase;
+	font-family: DINWebPro;
+	font-size: 12px;
+	font-weight: bold;
+	background: none repeat scroll 0px 0px #666666;
+	border: medium none;
+	color: #FFF;
+	cursor: pointer;
+	padding: 4px 12px;
+	text-transform: uppercase;
 }
-
+button.btn-dialog-select {
+	margin-left: 5px;
+}
 button.btn-dialog-commit {
-     background: none repeat scroll 0px 0px #689600;
-     float: right;
+	background: none repeat scroll 0px 0px #689600;
+	margin-left:10px;
+	float: right;
 }
 
 button.btn-dialog-close {
-     background: url("img/icon-close-16.png") no-repeat scroll 0px 0px transparent;
-     border: medium none;
-     display: inline-block;
-     float: right;
-     height: 16px;
-     margin-left: 13px;
-     margin-top: 2px;
-     padding: 0;
-     width: 16px;
+	background: url("img/icon-close-16.png") no-repeat scroll 0px 0px transparent;
+	border: medium none;
+	display: inline-block;
+	float: right;
+	height: 16px;
+	margin-left: 13px;
+	margin-top: 2px;
+	padding: 0;
+	width: 16px;
 }
 
 button.btn-dialog-close.green {
-     background: url("img/icon-close-green-16.png") no-repeat scroll 0px 0px transparent;
+	background: url("img/icon-close-green-16.png") no-repeat scroll 0px 0px transparent;
 }
 
 button.btn-dialog-help {
-     background: url("img/icon-help.png") no-repeat scroll 1px 1px transparent;
-     border: medium none;
-     float: right;
-     height: 20px;
-     margin: 0;
-     padding: 0;
-     width: 20px;
+	background: url("img/icon-help.png") no-repeat scroll 1px 1px transparent;
+	border: medium none;
+	float: right;
+	height: 20px;
+	margin: 0;
+	padding: 0;
+	width: 20px;
 }
 
 .dialog-panel .field-container {
-     color: #999999;
+	color: #999;
 }
 
-.dialog-panel input[type="text"], .dialog-panel textarea {
-	 font-family: Verdana, Helvetica, sans-serif;
-	 font-size: 12px;
-     background: none repeat scroll 0% 0% #FFFFFF;
-     border-radius: 0px 0px 0px 0px;
-     border: 1px solid #999;
-     color: #000;
-     display: inline-block;
-     height: 15px;
-     margin: 0px;
-     padding: 6px 7px 6px 7px;
-     width: 460px;
+.dialog-panel input[type="text"],.dialog-panel textarea {
+	background: #FFF;
+	border-radius: 0px 0px 0px 0px;
+	border: 1px solid #999;
+	color: #000;
+	display: inline-block;
+	margin: 0px;
+	padding: 6px 7px 6px 7px;
+	width: 460px;
 }
-
+.dialog-panel textarea {
+	width: 460px !important;
+	overflow-y: auto;
+}
 .v-dialog-field-label {
      display: inline-block;
      text-align: right;
@@ -128,125 +130,136 @@ button.btn-dialog-help {
 }
 
 .v-dialog-field-container {
-     display: block;
-     position: relative;
-     vertical-align: top;
+	display: block;
+	position: relative;
 }
 
 .validation-hilight {
-     border: 2px solid #9A3333;
-     padding: 3px;
+	border: 2px solid #9A3333;
+	padding: 3px;
 }
 
 .v-dialog-field-section {
-     margin-bottom: 11px;
+	font-family: Verdana, Helvetica, sans-serif !important;
+	font-size: 12px !important;
+	color: #000;
+	margin-bottom: 11px;
 }
 
 .v-dialog-layout {
-     background-color: #E6E6E6;
-     color: #000;
-     font-family: Verdana, Helvetica, sans-serif;
-     font-size: 12px;
-     margin-top: 25px;
+	background-color: #E6E6E6;
+	margin-top: 25px;
 }
 
 .v-dialog-layout .v-dialog-field {
-     display: inline-block;
-     width: 425px;
+	display: inline-block;
+	width: 425px;
+	vertical-align: middle;
 }
 
 .triangle {
 
 }
 
-.validation-message-inline, .help-message-inline {
-     margin-bottom: 10px;
-     padding-top: 5px;
-     position: relative;
+.validation-message-inline,.help-message-inline {
+	margin-bottom: 10px;
+	padding-top: 5px;
+	position: relative;
 }
 
-.validation-message, .help-message {
-     background: none repeat scroll 0px 0px #9A3333;
-     color: white;
-     display: block;
-     padding: 10px;
+.validation-message,.help-message {
+	background: none repeat scroll 0px 0px #9A3333;
+	color: white;
+	display: block;
+	padding: 10px;
 }
 
 .help-message {
-     background: none repeat scroll 0px 0px #C1D8DF;
-     color: black;
+	background: none repeat scroll 0px 0px #C1D8DF;
+	color: black;
 }
 
 .triangle.red path {
-     fill: #9A3333;
+	fill: #9A3333;
 }
 
 .triangle.blue path {
-     fill: #C1D8DF;
+	fill: #C1D8DF;
 }
 
 .triangle {
-     text-align: center;
+	text-align: center;
 }
 
 .icon-error-white {
-     background: url("img/icons/icon-error-white.png") no-repeat scroll 1px 1px transparent;
-     border: medium none;
-     display: inline-block;
-     height: 20px;
-     margin: 0px 6px 0px 0px;
-     padding: 1px;
-     vertical-align: middle;
-     width: 20px;
+	background: url("img/icons/icon-error-white.png") no-repeat scroll 1px
+		1px transparent;
+	border: medium none;
+	display: inline-block;
+	height: 20px;
+	margin: 0px 6px 0px 0px;
+	padding: 1px;
+	vertical-align: middle;
+	width: 20px;
 }
 
-select:focus, input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
-     border: 1px solid #4B8E9E;
-     box-shadow: 0px 0px 1px 0px #4B8E9E;
-     color: #777777;
+select:focus,input[type="text"]:focus,input[type="password"]:focus,textarea:focus
+	{
+	border: 1px solid #4B8E9E;
+	box-shadow: 0px 0px 1px 0px #4B8E9E;
+	color: #777777;
 }
 
 .action-jump-to-next-error {
-     -moz-user-select: text;
-     background: none repeat scroll 0% 0% transparent;
-     border: medium none;
-     color: #999999 ! important;
-     display: inline;
-     padding-left: 5px;
+	-moz-user-select: text;
+	background: none repeat scroll 0% 0% transparent;
+	border: medium none;
+	color: #999999 ! important;
+	display: inline;
+	padding-left: 5px;
 }
 
 .action-jump-to-next-error:hover {
-     color: #FFFFFF ! important;
+	color: #FFFFFF ! important;
 }
 
 .action-jump-to-next-error:focus {
-     outline-offset: -3px;
+	outline-offset: -3px;
 }
 
-.icon-error, .action-validation {
-     background: url("img/icons/icon-error-red.png") no-repeat scroll 1px 1px transparent;
-     border: medium none;
-     display: inline-block;
-     height: 16px;
-     margin: 0px 1px 0px 2px;
-     padding: 0px;
-     vertical-align: middle;
-     width: 19px;
+.icon-error,.action-validation {
+	background: url("img/icons/icon-error-red.png") no-repeat scroll 1px 1px
+		transparent;
+	border: medium none;
+	display: inline-block;
+	height: 16px;
+	margin: 0px 1px 0px 2px;
+	padding: 0px;
+	vertical-align: middle;
+	width: 19px;
 }
 
 .action-dialog-help {
-     background: url("img/icons/icon-help.png") no-repeat scroll 1px 1px transparent;
-     border: medium none;
-     display: inline-block;
-     height: 20px;
-     margin: 0px 1px 0px 2px;
-     padding: 0px;
-     vertical-align: middle;
-     width: 20px;
+	background: url("img/icons/icon-help.png") no-repeat scroll 1px 1px
+		transparent;
+	border: medium none;
+	display: inline-block;
+	height: 20px;
+	margin: 0px 1px 0px 2px;
+	padding: 0px;
+	vertical-align: middle;
+	width: 20px;
 }
 
 fieldset {
+<<<<<<< HEAD
      border: 0px none;
      margin: 0;
      padding:0;
 }
+=======
+	border: 0px none;
+	margin: 0;
+	padding: 0;
+}
+>>>>>>> a9c3b15501902e5620d8b0c0beb9ae41f4968ad2

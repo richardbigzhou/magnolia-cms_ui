@@ -37,95 +37,49 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent;
-import com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler;
-import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 
 
 /**
- * The holder of the temporary app group expanders.
+ * The holder of the temporary app group tiles - the ones that expand to show the temporary app group.
  * 
  */
 public class VTemporaryAppGroupBar extends FlowPanel {
 
-    private final Map<Element, VTemporaryAppTileGroup> groupMap = new HashMap<Element, VTemporaryAppTileGroup>();
+    private final Map<VTemporaryAppGroupBarTile, VTemporaryAppTileGroup> groupMap = new HashMap<VTemporaryAppGroupBarTile, VTemporaryAppTileGroup>();
 
     private VTemporaryAppTileGroup currentOpenGroup = null;
-
-    private final TouchDelegate touchDelegate = new TouchDelegate(this);
 
     public VTemporaryAppGroupBar() {
         super();
         addStyleName("app-list");
         addStyleName("sections");
-        construct();
     }
 
-    private void construct() {
-        /*
-        DOM.sinkEvents(getElement(), Event.MOUSEEVENTS);
-        addDomHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                final Element target = event.getNativeEvent().getEventTarget().cast();
-                final VTemporaryAppTileGroup group = groupMap.get(target);
-                closeCurrentOpenExpander();
-                if (group != null) {
-                    if (currentOpenGroup != group) {
-                        if (currentOpenGroup != null) {
-                            currentOpenGroup.closeSection();
-                        }
-                        group.showSection();
-                        currentOpenGroup = group;
-                        openExpander(target);
-                    } else {
-                        currentOpenGroup.closeSection();
-                        currentOpenGroup = null;
-                    }
+
+
+    protected void handleTileClick(VTemporaryAppTileGroup group, VTemporaryAppGroupBarTile groupTile){
+        closeCurrentOpenExpander();
+        if (group != null) {
+            if (currentOpenGroup != group) {
+                if (currentOpenGroup != null) {
+                    currentOpenGroup.closeSection();
                 }
+                group.showSection();
+                currentOpenGroup = group;
+                groupTile.openExpander();
+            } else {
+                currentOpenGroup.closeSection();
+                currentOpenGroup = null;
             }
-        }, ClickEvent.getType());
-        */
-
-        touchDelegate.addTouchStartHandler(new TouchStartHandler() {
-
-            @Override
-            public void onTouchStart(TouchStartEvent event) {
-                final Element target = event.getNativeEvent().getEventTarget().cast();
-                final VTemporaryAppTileGroup group = groupMap.get(target);
-                closeCurrentOpenExpander();
-                if (group != null) {
-                    if (currentOpenGroup != group) {
-                        if (currentOpenGroup != null) {
-                            currentOpenGroup.closeSection();
-                        }
-                        group.showSection();
-                        currentOpenGroup = group;
-                        openExpander(target);
-                    } else {
-                        currentOpenGroup.closeSection();
-                        currentOpenGroup = null;
-                    }
-                }
-
-            }
-        });
-    }
-
-    protected void openExpander(Element target) {
-        target.removeClassName("closed");
-        target.addClassName("open");
+        }
     }
 
     protected void closeCurrentOpenExpander() {
         if (currentOpenGroup != null) {
-            for (Entry<Element, VTemporaryAppTileGroup> entry : groupMap.entrySet()) {
+            for (Entry<VTemporaryAppGroupBarTile, VTemporaryAppTileGroup> entry : groupMap.entrySet()) {
                 if (currentOpenGroup == entry.getValue()) {
-                    entry.getKey().addClassName("closed");
-                    entry.getKey().removeClassName("open");
+                    entry.getKey().closeExpander();
                     break;
                 }
             }
@@ -133,28 +87,10 @@ public class VTemporaryAppGroupBar extends FlowPanel {
     }
 
     public void addGroup(String caption, VAppTileGroup group) {
-        if (group instanceof VTemporaryAppTileGroup) {
-            final Element groupThumbnail = DOM.createDiv();
-            groupThumbnail.addClassName("item");
-            groupThumbnail.addClassName("section");
-            groupThumbnail.addClassName("closed");
+        VTemporaryAppGroupBarTile groupTile  = new VTemporaryAppGroupBarTile(caption, group, this);
+        groupMap.put(groupTile, (VTemporaryAppTileGroup) group);
 
-            if (group.isClientGroup()) {
-                groupThumbnail.addClassName("client-group");
-                groupThumbnail.getStyle().setColor(group.getColor());
-            } else {
-                groupThumbnail.getStyle().setBackgroundColor(group.getColor());
-            }
-
-            final Element label = DOM.createSpan();
-            label.addClassName("label");
-            label.setInnerText(caption);
-
-            groupThumbnail.appendChild(label);
-
-            groupMap.put(groupThumbnail, (VTemporaryAppTileGroup) group);
-            getElement().appendChild(groupThumbnail);
-        }
+        add(groupTile);
     }
 
 }
