@@ -283,17 +283,19 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
             }
         }
     }
+    
+    private final Timer mainLauncherUnlockTimer = new Timer() {
+        @Override
+        public void run() {
+            mainAppLauncher.setNavigationLocked(false);
+        }
+    };
 
     @Override
     public void updateViewport(VShellViewport viewport, ViewportType type) {
         doUpdateViewport(viewport, type);
         if (type == ViewportType.SHELL_APP_VIEWPORT) {
-            new Timer() {
-                @Override
-                public void run() {
-                    mainAppLauncher.setNavigationLocked(false);
-                }
-            }.schedule(5000);
+            mainLauncherUnlockTimer.schedule(700);
         }
     }
 
