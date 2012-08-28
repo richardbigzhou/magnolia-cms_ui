@@ -166,7 +166,6 @@ public class VDialogViewImpl extends FlowPanel implements VDialogView {
 
         add(impl, content);
 
-        setCaption("Edit page properties");
     }
 
     @Override
@@ -205,7 +204,8 @@ public class VDialogViewImpl extends FlowPanel implements VDialogView {
         add(button, footer);
     }
 
-    void setCaption(final String caption) {
+    @Override
+    public void setCaption(final String caption) {
         dialogHeader.setDialogCaption(caption);
     }
 
