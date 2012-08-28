@@ -19,7 +19,10 @@ body{
     -webkit-user-select: none; /* Disable content selection on mobile safari */
     -webkit-tap-highlight-color: rgba(0,0,0,0); /* Disable grey box when you click on something */
     -webkit-touch-callout: none;/* Remove Callout Context menu when tapping on something */
-    -webkit-backface-visibility: hidden;
+}
+
+* {
+	-webkit-backface-visibility: hidden;
 }
 
 .clearfix:before, .clearfix:after { content: ""; display: table; }

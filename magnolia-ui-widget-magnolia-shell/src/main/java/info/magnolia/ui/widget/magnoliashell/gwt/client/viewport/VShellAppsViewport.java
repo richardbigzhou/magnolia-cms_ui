@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.widget.magnoliashell.gwt.client.viewport;
 
-import java.util.Iterator;
-
 import com.google.gwt.user.client.ui.Widget;
 
 
@@ -69,13 +67,6 @@ public class VShellAppsViewport extends VShellViewport {
             w.getElement().getStyle().setOpacity(1d);   
         } else {
             w.getElement().getStyle().setProperty("top", "");
-        }
-        final Iterator<Widget> it = iterator();
-        while (it.hasNext()) {
-            final Widget wIt = it.next();
-            final String zIndex = w == wIt ? String.valueOf(getElement().getStyle().getZIndex()) : ""; 
-            wIt.getElement().getStyle().setProperty("zIndex", zIndex); 
-            
         }
         super.setWidgetVisibleWithTransition(w);
     }

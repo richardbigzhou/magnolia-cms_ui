@@ -195,6 +195,10 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
                 ref.@info.magnolia.ui.widget.editor.gwt.client.VPageEditor::onMouseUp(Lcom/google/gwt/dom/client/Element;)(event.target);
                 event.stopPropagation();
             }
+            element.contentDocument.ontouchend = function(event) {
+                ref.@info.magnolia.ui.widget.editor.gwt.client.VPageEditor::onMouseUp(Lcom/google/gwt/dom/client/Element;)(event.target);
+                event.stopPropagation();
+            }
         }
     }-*/;
 

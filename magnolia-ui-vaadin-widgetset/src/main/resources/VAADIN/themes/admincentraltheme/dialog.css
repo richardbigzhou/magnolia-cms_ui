@@ -121,12 +121,12 @@ button.btn-dialog-help {
 	overflow-y: auto;
 }
 .v-dialog-field-label {
-	display: inline-block;
-	text-align: right;
-	width: 140px;
-	margin-right: 12px;
-	color: #666;
-	vertical-align: middle;
+     display: inline-block;
+     text-align: right;
+     width: 160px;
+     margin-right: 12px;
+     color: #666;
+     vertical-align: top;
 }
 
 .v-dialog-field-container {
@@ -252,7 +252,14 @@ select:focus,input[type="text"]:focus,input[type="password"]:focus,textarea:focu
 }
 
 fieldset {
+<<<<<<< HEAD
+     border: 0px none;
+     margin: 0;
+     padding:0;
+}
+=======
 	border: 0px none;
 	margin: 0;
 	padding: 0;
 }
+>>>>>>> a9c3b15501902e5620d8b0c0beb9ae41f4968ad2

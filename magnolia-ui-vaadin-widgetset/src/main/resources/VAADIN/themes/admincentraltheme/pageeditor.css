@@ -177,109 +177,6 @@ div.editorIcon {
     padding: 0 5px !important;
 }
 
-/*
- * Buttons on area edit bars.
- */
-
-/* edit */
-.mgnlEditorBar.area .mgnlEditorPushButton.edit {
-    background: transparent no-repeat url("img/bars/area.buttons/edit.png") !important;
-}
-
-.mgnlEditorBar.area .mgnlEditorPushButton.mgnlEditorPushButton-up-hovering.edit {
-    background: transparent no-repeat url("img/bars/area.buttons/edit_hover.png") !important;
-}
-
-.mgnlEditorBar.area .mgnlEditorPushButton.mgnlEditorPushButton-down-hovering.edit {
-    background: transparent no-repeat url("img/bars/area.buttons/edit_click.png") !important;
-}
-
-/* add */
-.mgnlEditorBar.area .mgnlEditorPushButton.add {
-    background: transparent no-repeat url("img/bars/area.buttons/add.png") !important;
-}
-
-.mgnlEditorBar.area .mgnlEditorPushButton.mgnlEditorPushButton-up-hovering.add {
-    background: transparent no-repeat url("img/bars/area.buttons/add_hover.png") !important;
-}
-
-.mgnlEditorBar.area .mgnlEditorPushButton.mgnlEditorPushButton-down-hovering.add {
-    background: transparent no-repeat url("img/bars/area.buttons/add_click.png") !important;
-}
-
-/* remove */
-.mgnlEditorBar.area .mgnlEditorPushButton.remove {
-    background: transparent no-repeat url("img/bars/area.buttons/delete.png") !important;
-}
-
-.mgnlEditorBar.area .mgnlEditorPushButton.mgnlEditorPushButton-up-hovering.remove {
-    background: transparent no-repeat url("img/bars/area.buttons/delete_hover.png") !important;
-}
-
-.mgnlEditorBar.area .mgnlEditorPushButton.mgnlEditorPushButton-down-hovering.remove {
-    background: transparent no-repeat url("img/bars/area.buttons/delete_click.png") !important;
-}
-
-/*
- * Buttons on component edit bars.
- */
-
-/* edit */
-.mgnlEditorBar.component .mgnlEditorPushButton.edit {
-    background: transparent no-repeat url("img/bars/component.buttons/edit.png") !important;
-}
-
-.mgnlEditorBar.component .mgnlEditorPushButton.mgnlEditorPushButton-up-hovering.edit {
-    background: transparent no-repeat url("img/bars/component.buttons/edit_hover.png") !important;
-}
-
-.mgnlEditorBar.component .mgnlEditorPushButton.mgnlEditorPushButton-down-hovering.edit {
-    background: transparent no-repeat url("img/bars/component.buttons/edit_click.png") !important;
-}
-
-/* move (fallback on old browsers) */
-.mgnlEditorBar.component .mgnlEditorPushButton.move {
-    background: transparent no-repeat url("img/bars/component.buttons/move.png") !important;
-}
-
-.mgnlEditorBar.component .mgnlEditorPushButton.mgnlEditorPushButton-up-hovering.move {
-    background: transparent no-repeat url("img/bars/component.buttons/move_hover.png") !important;
-}
-
-.mgnlEditorBar.component .mgnlEditorPushButton.mgnlEditorPushButton-down-hovering.move {
-    background: transparent no-repeat url("img/bars/component.buttons/move_click.png") !important;
-}
-
-/* remove */
-.mgnlEditorBar.component .mgnlEditorPushButton.remove {
-    background: transparent no-repeat url("img/bars/component.buttons/delete.png") !important;
-}
-
-.mgnlEditorBar.component .mgnlEditorPushButton.mgnlEditorPushButton-up-hovering.remove {
-    background: transparent no-repeat url("img/bars/component.buttons/delete_hover.png") !important;
-}
-
-.mgnlEditorBar.component .mgnlEditorPushButton.mgnlEditorPushButton-down-hovering.remove {
-    background: transparent no-repeat url("img/bars/component.buttons/delete_click.png") !important;
-}
-
-
-/*
- * Buttons on component placeholders.
- */
-/* add */
-.mgnlEditorPlaceholder.component .mgnlEditorPushButton.add {
-    background: transparent no-repeat url("img/bars/component.buttons/add.png") !important;
-}
-
-.mgnlEditorPlaceholder.component .mgnlEditorPushButton.mgnlEditorPushButton-up-hovering.add {
-    background: transparent no-repeat url("img/bars/component.buttons/add_hover.png") !important;
-}
-
-.mgnlEditorPlaceholder.component .mgnlEditorPushButton.mgnlEditorPushButton-down-hovering.add {
-    background: transparent no-repeat url("img/bars/component.buttons/add_click.png") !important;
-}
-
 
 /*
  * Text buttons on page edit bar.
@@ -435,7 +332,6 @@ div.mgnlEditorPlaceholder.component .mgnlEditorPlaceholderElements {
     border-left: 1px solid #deeab7 !important;
     border-bottom: 1px solid #b3c587 !important;
     border-right: 1px solid #b3c587 !important;
-    background-image: url("img/bars/mgnl-bar.component.deemphasized.png") !important;
 }
 
 .mgnlEditorPlaceholder.component.moveOngoing .mgnlEditorPlaceholderElements {
@@ -453,7 +349,6 @@ div.mgnlEditorPlaceholder.component .mgnlEditorPlaceholderElements {
 
 div.mgnlEditorMoveDiv {
     position: absolute !important;
-    background-image: url("img/bars/mgnl-bar.component.deemphasized.png") !important;
     z-index: 1000 !important;
 }
 
@@ -503,8 +398,6 @@ div.mgnlEditorMoveDiv {
 .mgnlEditorButton-previewMenuButton {
     margin-right: 4px !important;
     border-left: 0px !important;
-
-    background: center no-repeat url(img/preview/down-arrow-white.gif) !important;
     background-color: #538D0B !important;
     text-indent: -1000px !important; /* Ensure that the text on the button we need for aligning the button, is invisible. */
 }
@@ -525,7 +418,6 @@ div.mgnlEditorMoveDiv {
 }
 
 .mobilePreview.tabletLandscape {
-    background: url(img/preview/mobile/tablet/landscape.png) no-repeat !important;
     width: 1300px !important;
     height: 1025px !important;
 }
@@ -539,7 +431,6 @@ div.mgnlEditorMoveDiv {
 }
 
 .mobilePreview.tabletPortrait {
-    background: url(img/preview/mobile/tablet/portrait.png) no-repeat !important;
     width: 1020px !important;
     height: 1300px !important;
 }
@@ -553,7 +444,6 @@ div.mgnlEditorMoveDiv {
 }
 
 .mobilePreview.smartphoneLandscape {
-    background: url(img/preview/mobile/smartphone/landscape.png) no-repeat !important;
     width: 752px !important;
     height: 461px !important;
 }
@@ -567,7 +457,6 @@ div.mgnlEditorMoveDiv {
 }
 
 .mobilePreview.smartphonePortrait {
-    background: url(img/preview/mobile/smartphone/portrait.png) no-repeat !important;
     width: 393px !important;
     height: 756px !important;
 }
@@ -584,7 +473,6 @@ div.mgnlEditorMoveDiv {
     border: none !important;
     width: 100% !important;
     height: 100% !important;
-    background: center no-repeat url(img/preview/mobile/loading.gif) !important;
 }
 
 /* --- End of mobile preview definitions --- */

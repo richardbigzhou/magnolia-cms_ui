@@ -34,12 +34,11 @@
 package info.magnolia.ui.widget.magnoliashell.gwt.client.viewport;
 
 
-import com.google.gwt.user.client.Event;
-import com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler;
-import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.Callbacks;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryCallback;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShell;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.event.ViewportCloseEvent;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -52,16 +51,17 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
+import com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler;
+import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.Container;
 import com.vaadin.terminal.gwt.client.ContainerResizedListener;
 import com.vaadin.terminal.gwt.client.Paintable;
 import com.vaadin.terminal.gwt.client.RenderSpace;
 import com.vaadin.terminal.gwt.client.UIDL;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShell;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.event.ViewportCloseEvent;
 
 /**
  * An overlay that displays the open app in the shell on top of each other.
@@ -133,7 +133,11 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
                     updatePosition(w);
                     paintable.updateFromUIDL(childUIdl, client);
                     if (forceContentAlign) {alignChild(w);}
-                    if (idx == 0) {setWidgetVisibleWithTransition(w);}
+                    if (idx == 0) {
+                        setWidgetVisibleWithTransition(w);
+                    } else {
+                        w.getElement().getStyle().setProperty("zIndex", "");
+                    }
                 }
             } else {
                 visibleWidget = null;
@@ -171,6 +175,7 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
             if (w != visibleWidget) {
                 hideCurrentContent();
             }
+            w.getElement().getStyle().setProperty("zIndex", getElement().getStyle().getZIndex());
             w.getElement().getStyle().setVisibility(Visibility.VISIBLE);
             animationDelegate.show(w, Callbacks.create(new JQueryCallback() {
                 @Override

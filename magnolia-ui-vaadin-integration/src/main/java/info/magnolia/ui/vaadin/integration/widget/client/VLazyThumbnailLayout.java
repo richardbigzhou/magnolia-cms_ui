@@ -68,7 +68,6 @@ import com.vaadin.terminal.gwt.client.Paintable;
 import com.vaadin.terminal.gwt.client.UIDL;
 import com.vaadin.terminal.gwt.client.Util;
 import com.vaadin.terminal.gwt.client.VConsole;
-import com.vaadin.terminal.gwt.client.ui.TouchScrollDelegate;
 
 /**
  * Client side impl of lazy asset thumbnails layout.
@@ -130,8 +129,7 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
     };
 
     public VLazyThumbnailLayout() {
-        
-        TouchScrollDelegate.enableTouchScrolling(scroller, scroller.getElement());
+        //TouchScrollDelegate.enableTouchScrolling(scroller, scroller.getElement());
         thumbnailStyle.setProperty("margin", "10px");
         scroller.setWidget(imageContainer);
         initWidget(scroller);
@@ -144,9 +142,9 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
         });
         
 
-        final TouchDelegate touchDelegate = new TouchDelegate(scroller);
+        final TouchDelegate touchDelegate = new TouchDelegate(this);
         touchDelegate.addTouchHandler(new MagnoliaPinchRecognizer(touchDelegate, new UIObjectToOffsetProvider(scroller)));
-        scroller.addHandler(new MagnoliaPinchMoveEvent.Handler() {
+        addHandler(new MagnoliaPinchMoveEvent.Handler() {
             @Override
             public void onPinchMove(MagnoliaPinchMoveEvent event) {
                 double scaleFactor = 1 / event.getScaleFactor();
@@ -159,7 +157,7 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
             }
         }, MagnoliaPinchMoveEvent.TYPE);
         
-        scroller.addHandler(new MagnoliaPinchStartEvent.Handler() {
+        addHandler(new MagnoliaPinchStartEvent.Handler() {
             @Override
             public void onPinchStart(MagnoliaPinchStartEvent event) {
                 thumbnailStubs.addAll(thumbnails);
@@ -287,7 +285,6 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
         int rows = (int) Math.ceil(1d * totalHeight / (thumbnailHeight + getVerticalMargin()));
         int totalThumbnailsPossible = Math.min(thumbnailAmount, thumbnailsInRow * rows);
         int thumbnailsNeeded = Math.max(totalThumbnailsPossible  - thumbnailStubs.size() - thumbnails.size(), 0);
-        VConsole.log("Need: " + thumbnailsNeeded);
         return thumbnailsNeeded;
     }
 

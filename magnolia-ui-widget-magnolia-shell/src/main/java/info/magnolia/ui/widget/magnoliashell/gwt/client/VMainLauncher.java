@@ -72,6 +72,8 @@ public class VMainLauncher extends FlowPanel {
 
     private final static String ID = "main-launcher";
 
+    private boolean navigationLocked = false;
+    
     private HandlerRegistration activationHandlerRegistration;
 
     private final ShellNavigationHandler navigationHandler = new ShellNavigationAdapter() {
@@ -83,6 +85,11 @@ public class VMainLauncher extends FlowPanel {
             }
         }
     };
+    
+    public void setNavigationLocked(boolean isNavigationLocked) {
+        log("Lock set to " + isNavigationLocked);
+        this.navigationLocked = isNavigationLocked;
+    }
 
     private class NavigatorButton extends FlowPanel {
 
@@ -94,7 +101,7 @@ public class VMainLauncher extends FlowPanel {
 
         private final DrawingArea indicatorPad = new DrawingArea(0, 0);
 
-        TouchDelegate delegate = new TouchDelegate(this);
+        private TouchDelegate delegate = new TouchDelegate(this);
 
         public NavigatorButton(final ShellAppType type) {
             super();
@@ -110,19 +117,22 @@ public class VMainLauncher extends FlowPanel {
 
             DOM.sinkEvents(getElement(), Event.TOUCHEVENTS);
 
-
             delegate.addTouchStartHandler(new com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler() {
-
                 @Override
                 public void onTouchStart(com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent event) {
-
-                    // Has user clicked on the active shell app?
-                    if (type == getActiveShellType()){
-                        //if open then close it.
-                        eventBus.fireEvent(new ViewportCloseEvent(VMagnoliaShell.ViewportType.SHELL_APP_VIEWPORT));
-                    }else{
-                        // If closed, then open it.
-                        navigateToShellApp(type);
+                    if (!navigationLocked) {
+                        setNavigationLocked(true);
+                        // Has user clicked on the active shell app?
+                        if (type == getActiveShellType()){
+                            //if open then close it.
+                            eventBus.fireEvent(new ViewportCloseEvent(VMagnoliaShell.ViewportType.SHELL_APP_VIEWPORT));
+                        }else{
+                            log("Going to " + type);    
+                            // If closed, then open it.
+                            navigateToShellApp(type);
+                        }                        
+                    } else {
+                        log("Nav rejected");
                     }
                 }
             });
@@ -144,6 +154,10 @@ public class VMainLauncher extends FlowPanel {
         }
     };
 
+    private final native void log(String msg) /*-{
+        $wnd.console.log(msg);
+    }-*/;
+    
     /**
      * Type of the "shell app" to be loaded.
      */
@@ -227,12 +241,9 @@ public class VMainLauncher extends FlowPanel {
         super.onLoad();
         expandedHeight = getOffsetHeight();
         getElement().getStyle().setTop(-60, Unit.PX);
-        JQueryWrapper.select(getElement()).animate(250, new AnimationSettings() {
-
-            {
+        JQueryWrapper.select(getElement()).animate(250, new AnimationSettings() {{
                 setProperty("top", 0);
-            }
-        });
+        }});
         activationHandlerRegistration = eventBus.addHandler(AppActivatedEvent.TYPE, navigationHandler);
     }
 
