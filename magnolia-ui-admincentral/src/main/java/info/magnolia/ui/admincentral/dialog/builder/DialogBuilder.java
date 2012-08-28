@@ -74,11 +74,11 @@ public class DialogBuilder {
         final String basename = dialogDefinition.getI18nBasename();
 
         if (StringUtils.isNotBlank(description)) {
-            String i18nDescription = MessagesUtil.get(description, basename);
+            String i18nDescription = MessagesUtil.getWithDefault(description, description, basename);
             view.setDescription(i18nDescription);
         }
         if (StringUtils.isNotBlank(label)) {
-            String i18nLabel = MessagesUtil.get(label, basename);
+            String i18nLabel = MessagesUtil.getWithDefault(label, label, basename);
             view.setCaption(i18nLabel);
         }
 

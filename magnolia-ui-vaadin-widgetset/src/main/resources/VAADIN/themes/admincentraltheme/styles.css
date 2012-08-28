@@ -44,5 +44,11 @@ body{
 }
 /*END OF APP LAUNCHER RELATED STYLES*/
 
+/*AdminCentral module styles */
+button.btn-dialog-selectCallBack {
+	background: none repeat scroll 0px 0px #689600;
+	margin-left:10px;
+	float: right;
+}
 
 
