@@ -43,16 +43,16 @@ import org.vaadin.rpc.client.Method;
  * VTabDialog.
  */
 public class VDialog extends VMagnoliaTabSheet implements VDialogView.Presenter {
-    
+
     @Override
     protected VDialogView getView() {
         return (VDialogView)super.getView();
     }
-    
+
     @Override
     protected ClientSideProxy createProxy() {
         final ClientSideProxy proxy = super.createProxy();
-        
+
         proxy.register("addAction", new Method() {
             @Override
             public void invoke(String methodName, Object[] params) {
@@ -61,7 +61,7 @@ public class VDialog extends VMagnoliaTabSheet implements VDialogView.Presenter 
                 getView().addAction(name, label);
             }
         });
-        
+
         proxy.register("setDescription", new Method() {
             @Override
             public void invoke(String methodName, Object[] params) {
@@ -69,10 +69,18 @@ public class VDialog extends VMagnoliaTabSheet implements VDialogView.Presenter 
                 getView().setDescription(description);
             }
         });
-        
-        return proxy; 
+
+        proxy.register("setCaption", new Method() {
+            @Override
+            public void invoke(String methodName, Object[] params) {
+                final String caption = String.valueOf(params[0]);
+                getView().setCaption(caption);
+            }
+        });
+
+        return proxy;
     }
-    
+
     @Override
     public void setHeight(String height) {
         super.setHeight(height);
@@ -80,7 +88,7 @@ public class VDialog extends VMagnoliaTabSheet implements VDialogView.Presenter 
 
     @Override
     protected VMagnoliaTabSheetView createView() {
-        return new VDialogViewImpl(getEventBus(), this); 
+        return new VDialogViewImpl(getEventBus(), this);
     }
 
     @Override

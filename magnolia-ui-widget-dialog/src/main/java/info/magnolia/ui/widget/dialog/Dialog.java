@@ -167,4 +167,9 @@ public class Dialog extends ShellTabSheet implements MagnoliaDialogView, ServerS
         }
         return res;
     }
+
+    @Override
+    public void setCaption(String caption) {
+        proxy.call("setCaption", caption);
+    }
 }

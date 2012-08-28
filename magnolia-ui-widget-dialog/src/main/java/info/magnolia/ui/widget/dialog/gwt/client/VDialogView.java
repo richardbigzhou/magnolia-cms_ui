@@ -50,9 +50,9 @@ public interface VDialogView extends VMagnoliaTabSheetView {
         void fireAction(String action);
 
         void closeDialog();
-        
+
     }
-    
+
     void setPresenter(Presenter presenter);
 
     boolean hasChildComponent(Widget component);
@@ -61,6 +61,8 @@ public interface VDialogView extends VMagnoliaTabSheetView {
 
     void setDescription(String description);
 
+    void setCaption(String caption);
+
     void recalculateErrors();
-    
+
 }
