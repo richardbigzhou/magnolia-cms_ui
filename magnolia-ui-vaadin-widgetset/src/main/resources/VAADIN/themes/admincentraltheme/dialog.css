@@ -1,11 +1,10 @@
+
 .dialog-header,.dialog-footer,.dialog-description,.dialog-error {
 	padding: 12px 16px 12px 24px;
 }
 
 .dialog-description,.dialog-footer,.dialog-content,.dialog-error {
 	border-top: 2px solid black;
-	font-family: Verdana, Helvetica, sans-serif;
-	font-size: 12px;
 }
 
 .dialog-header {
@@ -37,7 +36,7 @@
 
 .dialog-panel {
 	background: none repeat scroll 0px 0px #E6E6E6;
-	border: medium none;
+	border: none;
 	left: 50%;
 	margin: auto auto auto -360px;
 	padding: 0;
@@ -61,15 +60,23 @@ button.btn-dialog {
 	font-size: 12px;
 	font-weight: bold;
 	background: none repeat scroll 0px 0px #666666;
-	border: medium none;
+	border: none;
 	color: #FFF;
 	cursor: pointer;
 	padding: 4px 12px;
 	text-transform: uppercase;
 }
+
 button.btn-dialog-select {
-	margin-left: 5px;
+	margin-left: 2px;
 }
+
+.btn-dialog-select span {
+	font-family: DINWebPro !important;
+	font-size: 12px !important;
+	font-weight: bold !important;
+}
+
 button.btn-dialog-commit {
 	background: none repeat scroll 0px 0px #689600;
 	margin-left:10px;
@@ -78,7 +85,7 @@ button.btn-dialog-commit {
 
 button.btn-dialog-close {
 	background: url("img/icon-close-16.png") no-repeat scroll 0px 0px transparent;
-	border: medium none;
+	border: none;
 	display: inline-block;
 	float: right;
 	height: 16px;
@@ -94,7 +101,7 @@ button.btn-dialog-close.green {
 
 button.btn-dialog-help {
 	background: url("img/icon-help.png") no-repeat scroll 1px 1px transparent;
-	border: medium none;
+	border: none;
 	float: right;
 	height: 20px;
 	margin: 0;
@@ -121,12 +128,12 @@ button.btn-dialog-help {
 	overflow-y: auto;
 }
 .v-dialog-field-label {
-     display: inline-block;
-     text-align: right;
-     width: 160px;
-     margin-right: 12px;
-     color: #666;
-     vertical-align: top;
+	display: inline-block;
+	text-align: right;
+	width: 140px;
+	margin-right: 12px;
+	color: #666;
+	vertical-align: middle;
 }
 
 .v-dialog-field-container {
@@ -140,8 +147,6 @@ button.btn-dialog-help {
 }
 
 .v-dialog-field-section {
-	font-family: Verdana, Helvetica, sans-serif !important;
-	font-size: 12px !important;
 	color: #000;
 	margin-bottom: 11px;
 }
@@ -149,6 +154,11 @@ button.btn-dialog-help {
 .v-dialog-layout {
 	background-color: #E6E6E6;
 	margin-top: 25px;
+}
+
+.v-dialog-layout * {
+	font-family: Verdana, Helvetica, sans-serif !important;
+	font-size: 12px !important;
 }
 
 .v-dialog-layout .v-dialog-field {
@@ -192,8 +202,7 @@ button.btn-dialog-help {
 }
 
 .icon-error-white {
-	background: url("img/icons/icon-error-white.png") no-repeat scroll 1px
-		1px transparent;
+	background: url("img/icons/icon-error-white.png") no-repeat scroll 1px 1px transparent;
 	border: medium none;
 	display: inline-block;
 	height: 20px;
@@ -207,20 +216,20 @@ select:focus,input[type="text"]:focus,input[type="password"]:focus,textarea:focu
 	{
 	border: 1px solid #4B8E9E;
 	box-shadow: 0px 0px 1px 0px #4B8E9E;
-	color: #777777;
+	color: #777;
 }
 
 .action-jump-to-next-error {
 	-moz-user-select: text;
 	background: none repeat scroll 0% 0% transparent;
 	border: medium none;
-	color: #999999 ! important;
+	color: #999 !important;
 	display: inline;
 	padding-left: 5px;
 }
 
 .action-jump-to-next-error:hover {
-	color: #FFFFFF ! important;
+	color: #FFF ! important;
 }
 
 .action-jump-to-next-error:focus {
@@ -228,9 +237,8 @@ select:focus,input[type="text"]:focus,input[type="password"]:focus,textarea:focu
 }
 
 .icon-error,.action-validation {
-	background: url("img/icons/icon-error-red.png") no-repeat scroll 1px 1px
-		transparent;
-	border: medium none;
+	background: url("img/icons/icon-error-red.png") no-repeat scroll 1px 1px transparent;
+	border: none;
 	display: inline-block;
 	height: 16px;
 	margin: 0px 1px 0px 2px;
@@ -240,9 +248,8 @@ select:focus,input[type="text"]:focus,input[type="password"]:focus,textarea:focu
 }
 
 .action-dialog-help {
-	background: url("img/icons/icon-help.png") no-repeat scroll 1px 1px
-		transparent;
-	border: medium none;
+	background: url("img/icons/icon-help.png") no-repeat scroll 1px 1px transparent;
+	border: none;
 	display: inline-block;
 	height: 20px;
 	margin: 0px 1px 0px 2px;
@@ -252,14 +259,7 @@ select:focus,input[type="text"]:focus,input[type="password"]:focus,textarea:focu
 }
 
 fieldset {
-<<<<<<< HEAD
-     border: 0px none;
-     margin: 0;
-     padding:0;
-}
-=======
 	border: 0px none;
 	margin: 0;
 	padding: 0;
 }
->>>>>>> a9c3b15501902e5620d8b0c0beb9ae41f4968ad2
