@@ -31,6 +31,10 @@
     background-color: #689600;
     color: #48630A;
     height: 60px;
+    z-index:500;
+}
+.fullscreen #main-launcher{
+    display:none;
 }
 
 .btn-shell {
