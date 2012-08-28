@@ -40,6 +40,7 @@ import com.vaadin.data.Property;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.TextField;
 
 
@@ -57,9 +58,12 @@ public class TextAndButtonField extends CustomField {
     public TextAndButtonField(PropertyTranslator translator) {
         this.translator = translator;
         textField = new TextField();
-        selectButton = new Button();
+        textField.addStyleName("v-dialog-field");
+        selectButton = new NativeButton();
+        selectButton.addStyleName("btn-dialog btn-dialog-select");
+
         HorizontalLayout layout = new HorizontalLayout();
-        layout.setSpacing(true);
+        layout.setSizeFull();
         layout.addComponent(textField);
         layout.addComponent(selectButton);
         layout.setComponentAlignment(selectButton, Alignment.MIDDLE_CENTER);
