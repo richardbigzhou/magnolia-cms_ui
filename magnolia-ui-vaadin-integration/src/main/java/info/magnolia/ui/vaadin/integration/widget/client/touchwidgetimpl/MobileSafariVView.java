@@ -56,6 +56,7 @@ public class MobileSafariVView extends VView {
     }
     
     public MobileSafariVView() {
+        addStyleName("tablet");
         Event.addNativePreviewHandler(new NativePreviewHandler() {
             @Override
             public void onPreviewNativeEvent(NativePreviewEvent event) {

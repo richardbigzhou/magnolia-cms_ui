@@ -65,6 +65,8 @@ public class AppLauncher extends AbstractComponent implements ServerSideHandler 
 
     private boolean isAttached = false;
 
+    private List<String> runningApps = new ArrayList<String>();
+    
     public AppLauncher() {
         super();
         setSizeFull();
@@ -118,6 +120,9 @@ public class AppLauncher extends AbstractComponent implements ServerSideHandler 
                 doAddAppTile(tile, group.getName());
             }
         }
+        for (final String appName : runningApps) {
+            proxy.call("setAppActive", appName, true);
+        }
         return new Object[]{};
     }
 
@@ -125,12 +130,6 @@ public class AppLauncher extends AbstractComponent implements ServerSideHandler 
     public void attach() {
         super.attach();
         isAttached = true;
-    }
-
-    @Override
-    public void detach() {
-        super.detach();
-        clear();
     }
 
     public void clear() {
@@ -148,6 +147,11 @@ public class AppLauncher extends AbstractComponent implements ServerSideHandler 
 
     public void setAppActive(String appName, boolean isActive) {
         proxy.call("setAppActive", appName, isActive);
+        if (isActive && !runningApps.contains(appName)) {
+            runningApps.add(appName);
+        } else {
+            runningApps.remove(appName);
+        }
     }
 
     /**

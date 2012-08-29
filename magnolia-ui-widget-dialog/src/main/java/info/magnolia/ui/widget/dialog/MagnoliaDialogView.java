@@ -80,4 +80,6 @@ public interface MagnoliaDialogView extends View {
     List<Field> getFields();
 
     void setShowAllEnabled(boolean showAll);
+
+    void setCaption(String caption);
 }

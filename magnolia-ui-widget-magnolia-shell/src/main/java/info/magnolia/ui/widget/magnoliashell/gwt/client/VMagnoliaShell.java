@@ -33,14 +33,20 @@
  */
 package info.magnolia.ui.widget.magnoliashell.gwt.client;
 
+import info.magnolia.ui.widget.magnoliashell.gwt.client.FragmentDTO.FragmentType;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.event.ShellAppNavigationEvent;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VShellMessage.MessageType;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.util.JSONUtil;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.VAppsViewport.PreloaderCallback;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.VShellViewport;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.vaadin.artur.icepush.client.ui.VICEPush;
@@ -52,8 +58,8 @@ import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.Event;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
@@ -93,8 +99,6 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
     
     private List<String> runningAppNames = new LinkedList<String>();
     
-    private Paintable fullscreenPaintable = null;
-    
     private ClientSideProxy proxy = new ClientSideProxy(this) {
         {
 
@@ -125,17 +129,18 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
             register("navigate", new Method() {
                 @Override
                 public void invoke(String methodName, Object[] params) {
-                    final String prefix = String.valueOf(params[0]);
-                    final String token = params.length > 1 ? String.valueOf(params[1]) : "";
-                    view.navigate(prefix, token);
+                    if (proxy.isClientInitialized()) {
+                        final String prefix = String.valueOf(params[0]);
+                        final String token = params.length > 1 ? String.valueOf(params[1]) : "";
+                        view.navigate(prefix, token);   
+                    }
                 }
             });
 
             register("activeViewportChanged", new Method() {
                 @Override
                 public void invoke(String methodName, Object[] params) {
-                    ViewportType type = params.length > 0 ? ViewportType.valueOf(String.valueOf(params[0]))
-                            : ViewportType.SHELL_APP_VIEWPORT;
+                    ViewportType type = params.length > 0 ? ViewportType.valueOf(String.valueOf(params[0])) : ViewportType.SHELL_APP_VIEWPORT;
                     view.changeActiveViewport(type);
                 }
             });
@@ -169,30 +174,62 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
 
     public VMagnoliaShell() {
         super();
-        eventBus = new SimpleEventBus();
+        eventBus = new SimpleEventBus() {
+            @Override
+            public void fireEvent(Event<?> event) {
+                VConsole.log("[FIRING EVENT]" + String.valueOf(event));
+                log("[FIRING EVENT]" + String.valueOf(event));
+                super.fireEvent(event);
+            }
+        };
         view = new VMagnoliaShellViewImpl(eventBus);
         view.setPresenter(this);
         initWidget(view.asWidget());
     }
 
+    protected final native void log(String string) /*-{
+        $wnd.console.log(string);        
+    }-*/;
+
     @Override
-    public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
+    public void updateFromUIDL(UIDL uidl, final ApplicationConnection client) {
         this.client = client;
-        for (final ViewportType viewportType : ViewportType.values()) {
-            final UIDL tagUidl = uidl.getChildByTagName(viewportType.name());
-            if (tagUidl != null) {
-                final UIDL viewportUidl = tagUidl.getChildUIDL(0);
-                final Paintable p = client.getPaintable(viewportUidl);
-                if (p instanceof VShellViewport) {
-                    final VShellViewport viewport = (VShellViewport) p;
-                    view.updateViewport(viewport, viewportType);
-                    p.updateFromUIDL(viewportUidl, client);
+        if (!client.updateComponent(this, uidl, true)) {
+            ViewportType explicitActiveViewportType = null;
+            final Map<Paintable, UIDL> postponedViewportUidls = new HashMap<Paintable, UIDL>();
+            for (final ViewportType viewportType : ViewportType.values()) {
+                final UIDL tagUidl = uidl.getChildByTagName(viewportType.name());
+                if (tagUidl != null) {
+                    final UIDL viewportUidl = tagUidl.getChildUIDL(0);
+                    final Paintable p = client.getPaintable(viewportUidl);
+                    if (p instanceof VShellViewport) {
+                        final VShellViewport viewport = (VShellViewport) p;
+                        view.updateViewport(viewport, viewportType);
+                        if (tagUidl.hasAttribute("active")) {
+                            explicitActiveViewportType = ViewportType.valueOf(tagUidl.getStringAttribute("active"));
+                            viewport.getElement().getStyle().setZIndex(300);
+                            p.updateFromUIDL(viewportUidl, client);
+                        } else {
+                            postponedViewportUidls.put(p, viewportUidl);   
+                        }
+                    }
                 }
             }
+            
+            for (final Entry<Paintable, UIDL> entry : postponedViewportUidls.entrySet()) {
+                entry.getKey().updateFromUIDL(entry.getValue(), client);
+            }
+            
+            if (explicitActiveViewportType != null) {
+                view.changeActiveViewport(explicitActiveViewportType);
+            }
+            updatePusher(uidl);
         }
-        updatePusher(uidl);
-        updateFullScreenComponent(uidl);
-        proxy.update(this, uidl, client);
+        boolean handleCurrentHistory = !proxy.isClientInitialized();
+        proxy.update(this, uidl, client); 
+        if (handleCurrentHistory) {
+            History.fireCurrentHistoryState();  
+        }
     }
 
     @Override
@@ -218,33 +255,6 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
     @Override
     public void removeMessage(String id) {
         proxy.call("removeMessage", id);
-    }
-
-    @Override
-    protected void onLoad() {
-        doOnLoad();
-    }
-
-    private final native void doOnLoad() /*-{
-
-    }-*/;
-
-    private void updateFullScreenComponent(UIDL uidl) {
-        final UIDL componentUidl = uidl.getChildByTagName("fullscreenComponent");
-        if (componentUidl != null) {
-            final Paintable paintable = client.getPaintable(componentUidl.getChildUIDL(0));
-            if (paintable != null) {
-                if (!hasChildComponent((Widget)paintable)) {
-                    this.fullscreenPaintable = paintable;
-                    view.setFullscreen((Widget)fullscreenPaintable);
-                    client.runDescendentsLayout(this);
-                }
-                fullscreenPaintable.updateFromUIDL(componentUidl.getChildUIDL(0), client);
-            }
-        } else {
-            fullscreenPaintable = null;
-            view.setFullscreen(null);
-        }
     }
     
     private void updatePusher(final UIDL uidl) {
@@ -273,7 +283,6 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
 
     @Override
     public boolean initWidget(Object[] params) {
-        History.fireCurrentHistoryState();
         return false;
     }
 
@@ -293,7 +302,7 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
         while (it.hasNext() && !result) {
             result = component == it.next();
         }
-        return result || component == fullscreenPaintable;
+        return result;
     }
 
     @Override
@@ -306,12 +315,8 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
 
     @Override
     public RenderSpace getAllocatedSpace(Widget child) {
-        if (fullscreenPaintable == child) {
-            return new RenderSpace(RootPanel.get().getOffsetWidth(), RootPanel.get().getOffsetHeight());
-        } else {
-            if (hasChildComponent(child)) {
-                return new RenderSpace(view.getViewportWidth(), view.getViewportHeight());
-            }   
+        if (hasChildComponent(child)) {
+            return new RenderSpace(view.getViewportWidth(), view.getViewportHeight());
         }
         return new RenderSpace();
     }
@@ -362,6 +367,34 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
         registeredAppNames.clear();
         for (int i = 0; i < appNames.length(); ++i) {
             registeredAppNames.add(appNames.get(i));
+        }
+    }
+
+    @Override
+    public void handleHistoryChange(String fragment) {
+        if (!proxy.isClientInitialized()) {
+            return;
+        }
+        final FragmentDTO dto = FragmentDTO.fromFragment(fragment);
+        if (dto.getType() == FragmentType.SHELL_APP) {
+            eventBus.fireEvent(new ShellAppNavigationEvent(ShellAppType.resolveType(dto.getPrefix()), dto.getToken()));
+        } else {
+            final String prefix = dto.getPrefix();
+            final String token = dto.getToken();
+            if (isAppRegistered(prefix)) {
+                if (!isAppRunning(prefix)) {
+                    view.showAppPreloader(prefix, new PreloaderCallback() {
+                        @Override
+                        public void onPreloaderShown(String appName) {
+                            startApp(appName,token);
+                        }
+                    });
+                } else {
+                    loadApp(prefix, token);
+                }
+            } else {
+                eventBus.fireEvent(new ShellAppNavigationEvent(ShellAppType.APPLAUNCHER, dto.getToken()));
+            }
         }
     }
 

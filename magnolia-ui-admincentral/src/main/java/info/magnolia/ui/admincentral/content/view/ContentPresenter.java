@@ -70,7 +70,7 @@ public class ContentPresenter implements ContentView.Listener {
 
     private final ContentViewBuilder contentViewBuilder;
 
-    private final WorkbenchDefinition workbenchDefinition;
+    protected WorkbenchDefinition workbenchDefinition;
 
     private String selectedItemId;
 

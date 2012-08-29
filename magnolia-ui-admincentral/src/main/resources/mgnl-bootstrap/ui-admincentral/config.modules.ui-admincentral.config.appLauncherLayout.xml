@@ -1101,7 +1101,7 @@
         <sv:value>true</sv:value>
       </sv:property>
       <sv:property sv:name="color" sv:type="String">
-        <sv:value>#FFFFFF</sv:value>
+        <sv:value>#F06905</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>

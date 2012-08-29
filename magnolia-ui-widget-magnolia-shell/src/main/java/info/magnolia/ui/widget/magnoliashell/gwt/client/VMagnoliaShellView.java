@@ -36,6 +36,7 @@ package info.magnolia.ui.widget.magnoliashell.gwt.client;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShell.ViewportType;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VShellMessage.MessageType;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.VAppsViewport.PreloaderCallback;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.VShellViewport;
 
 import java.util.Collection;
@@ -78,8 +79,8 @@ public interface VMagnoliaShellView extends HasWidgets, IsWidget {
     void closeMessageEager(String id);
     
     void navigateToMessageDetails(String id);
-   
-    void setFullscreen(Widget widget);
+    
+    void showAppPreloader(String prefix, PreloaderCallback preloaderCallback);
     /**
      * Presenter. Meant for Vaadin part of MagnoliaShell.
      */
@@ -104,5 +105,7 @@ public interface VMagnoliaShellView extends HasWidgets, IsWidget {
         boolean isAppRunning(String appName);
 
         void startApp(String appName, String token);
+
+        void handleHistoryChange(String fragment);
     }
 }

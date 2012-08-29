@@ -150,7 +150,7 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements VMagnoliaTab
         super.setHeight(height);
         if (!isActiveTabFullscreen) {
             int heightPx = JQueryWrapper.parseInt(height);
-            int scrollerHeight = heightPx - tabContainer.getOffsetHeight();
+            int scrollerHeight = Math.max(heightPx - tabContainer.getOffsetHeight(), 0);
             scroller.setHeight(scrollerHeight + "px");   
         } else {
             scroller.setHeight(RootPanel.get().getOffsetHeight() + "px");
@@ -176,11 +176,13 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements VMagnoliaTab
     @Override
     public void setShowActiveTabFullscreen(boolean isFullscreen) {
         this.isActiveTabFullscreen = isFullscreen;
+
+        // apply fullscreen style to top of dom tree so that all elements can react to it. ie main-launcher.
         if (isFullscreen) {
-            scroller.addStyleName("fullscreen");
+            RootPanel.get().addStyleName("fullscreen");
             scroller.setHeight(RootPanel.get().getOffsetHeight() + "px");
         } else {
-            scroller.removeStyleName("fullscreen");
+            RootPanel.get().removeStyleName("fullscreen");
             int scrollerHeight = getOffsetHeight() - tabContainer.getOffsetHeight();
             scroller.setHeight(scrollerHeight + "px");   
         }

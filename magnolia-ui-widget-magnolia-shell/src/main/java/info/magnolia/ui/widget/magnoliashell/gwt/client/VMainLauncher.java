@@ -50,6 +50,7 @@ import java.util.Map.Entry;
 
 import org.vaadin.gwtgraphics.client.DrawingArea;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.DOM;
@@ -72,6 +73,8 @@ public class VMainLauncher extends FlowPanel {
 
     private final static String ID = "main-launcher";
 
+    private boolean navigationLocked = false;
+
     private HandlerRegistration activationHandlerRegistration;
 
     private final ShellNavigationHandler navigationHandler = new ShellNavigationAdapter() {
@@ -84,6 +87,11 @@ public class VMainLauncher extends FlowPanel {
         }
     };
 
+    public void setNavigationLocked(boolean isNavigationLocked) {
+        log("Lock set to " + isNavigationLocked);
+        this.navigationLocked = isNavigationLocked;
+    }
+
     private class NavigatorButton extends FlowPanel {
 
         private final Element indicator = DOM.createDiv();
@@ -94,7 +102,7 @@ public class VMainLauncher extends FlowPanel {
 
         private final DrawingArea indicatorPad = new DrawingArea(0, 0);
 
-        TouchDelegate delegate = new TouchDelegate(this);
+        private final TouchDelegate delegate = new TouchDelegate(this);
 
         public NavigatorButton(final ShellAppType type) {
             super();
@@ -110,19 +118,23 @@ public class VMainLauncher extends FlowPanel {
 
             DOM.sinkEvents(getElement(), Event.TOUCHEVENTS);
 
-
             delegate.addTouchStartHandler(new com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler() {
 
                 @Override
                 public void onTouchStart(com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent event) {
-
-                    // Has user clicked on the active shell app?
-                    if (type == getActiveShellType()){
-                        //if open then close it.
-                        eventBus.fireEvent(new ViewportCloseEvent(VMagnoliaShell.ViewportType.SHELL_APP_VIEWPORT));
-                    }else{
-                        // If closed, then open it.
-                        navigateToShellApp(type);
+                    if (!navigationLocked) {
+                        setNavigationLocked(true);
+                        // Has user clicked on the active shell app?
+                        if (type == getActiveShellType()) {
+                            // if open then close it.
+                            eventBus.fireEvent(new ViewportCloseEvent(VMagnoliaShell.ViewportType.SHELL_APP_VIEWPORT));
+                        } else {
+                            log("Going to " + type);
+                            // If closed, then open it.
+                            navigateToShellApp(type);
+                        }
+                    } else {
+                        log("Nav rejected");
                     }
                 }
             });
@@ -143,6 +155,10 @@ public class VMainLauncher extends FlowPanel {
             }
         }
     };
+
+    private final native void log(String msg) /*-{
+                                              $wnd.console.log(msg);
+                                              }-*/;
 
     /**
      * Type of the "shell app" to be loaded.
@@ -182,11 +198,9 @@ public class VMainLauncher extends FlowPanel {
 
     private int expandedHeight = 0;
 
-    private final Element logoWrapper = DOM.createDiv();
-
     private final Element divetWrapper = DOM.createDiv();
 
-    private final Image logo = new Image(VShellImageBundle.BUNDLE.getLogo());
+    private final Element logo = DOM.createImg();
 
     private final Image divet = new Image(VShellImageBundle.BUNDLE.getDivetGreen());
 
@@ -209,10 +223,11 @@ public class VMainLauncher extends FlowPanel {
 
     private void construct() {
         divetWrapper.setId("divet");
-        logoWrapper.setId("logo");
-        getElement().appendChild(logoWrapper);
+        logo.setId("logo");
+        String baseUrl = GWT.getModuleBaseURL().replace("widgetsets/" + GWT.getModuleName() + "/", "");
+        logo.setAttribute("src", baseUrl + "themes/admincentraltheme/img/logo-magnolia.svg");
+        getElement().appendChild(logo);
         getElement().appendChild(divetWrapper);
-        add(logo, logoWrapper);
         add(divet, divetWrapper);
         for (final ShellAppType appType : ShellAppType.values()) {
             final NavigatorButton w = new NavigatorButton(appType);

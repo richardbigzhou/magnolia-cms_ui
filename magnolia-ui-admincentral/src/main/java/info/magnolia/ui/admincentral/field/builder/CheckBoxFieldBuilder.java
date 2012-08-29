@@ -33,11 +33,11 @@
  */
 package info.magnolia.ui.admincentral.field.builder;
 
+import info.magnolia.ui.admincentral.field.CheckBoxAndLabelField;
 import info.magnolia.ui.model.field.definition.CheckboxFieldDefinition;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 
 import com.vaadin.data.Item;
-import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Field;
 
 /**
@@ -51,7 +51,10 @@ public class CheckBoxFieldBuilder extends AbstractFieldBuilder<CheckboxFieldDefi
 
     @Override
     protected Field buildField() {
-        return new CheckBox();
+        CheckBoxAndLabelField field = new CheckBoxAndLabelField();
+        field.setValue(Boolean.valueOf(definition.getSelected()));
+        field.getLabel().setValue(getMessage(definition.getButtonLabel()));
+        return field;
     }
 
     @Override

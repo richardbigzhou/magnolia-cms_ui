@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.dialog.builder;
 
+import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.admincentral.dialog.Dialog;
 import info.magnolia.ui.admincentral.dialog.DialogTab;
 import info.magnolia.ui.admincentral.field.FieldBuilder;
@@ -68,8 +69,17 @@ public class DialogBuilder {
         Dialog dialog = new Dialog(dialogDefinition);
         view.setItemDataSource(item);
 
-        if (StringUtils.isNotBlank(dialogDefinition.getDescription())) {
-            view.setDescription(dialogDefinition.getDescription());
+        final String description = dialogDefinition.getDescription();
+        final String label = dialogDefinition.getLabel();
+        final String basename = dialogDefinition.getI18nBasename();
+
+        if (StringUtils.isNotBlank(description)) {
+            String i18nDescription = MessagesUtil.getWithDefault(description, description, basename);
+            view.setDescription(i18nDescription);
+        }
+        if (StringUtils.isNotBlank(label)) {
+            String i18nLabel = MessagesUtil.getWithDefault(label, label, basename);
+            view.setCaption(i18nLabel);
         }
 
         for (TabDefinition tabDefinition : dialogDefinition.getTabs()) {

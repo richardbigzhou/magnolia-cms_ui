@@ -93,7 +93,9 @@ public class VMagnoliaTabSheet extends Composite implements HasWidgets, VMagnoli
             @Override
             public void onActiveTabChanged(ActiveTabChangedEvent event) {
                 view.setActiveTab(event.getTab());
-                proxy.call("activateTab", event.getTab().getTabId());
+                if (event.isNotifyServer()) {
+                    proxy.call("activateTab", event.getTab().getTabId());   
+                }
             }
         });
 
@@ -122,7 +124,7 @@ public class VMagnoliaTabSheet extends Composite implements HasWidgets, VMagnoli
                     public void invoke(String methodName, Object[] params) {
                         final VMagnoliaTab tab = view.getTabById(String.valueOf(params[0]));
                         if (tab != null) {
-                            eventBus.fireEvent(new ActiveTabChangedEvent(tab));
+                            eventBus.fireEvent(new ActiveTabChangedEvent(tab, false));
                         }
                     }
                 });

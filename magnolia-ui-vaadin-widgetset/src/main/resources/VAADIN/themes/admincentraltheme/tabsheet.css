@@ -14,7 +14,7 @@
 
 .dialog-panel .v-shell-tabsheet .nav li.active {color:#000;}
 
-.v-shell-tabsheet-scroller.fullscreen {
+.fullscreen .v-shell-tabsheet-scroller {
 	position: absolute !important;
 	zoom: 1;
 	top: -60px;
@@ -58,8 +58,9 @@
 
 /* tab text */
 .v-shell-tabsheet .tab-title {
-    font-family:DINWebPro, sans-serif;
+    font-family:DINWebPro;
     font-weight:bold;
+    font-size: 14px;
     text-transform:uppercase;
 }
 

@@ -14,11 +14,10 @@
 }
 
 #logo {
-    left: 24px;
-    position: absolute;
-    top: 14px;
-    width: 120px;
-    text-align: left;
+	width:132px;
+    position:absolute;
+	top:7px;
+	left:17px;
 }
 
 #main-launcher {
@@ -31,6 +30,10 @@
     background-color: #689600;
     color: #48630A;
     height: 60px;
+    z-index:500;
+}
+.fullscreen #main-launcher{
+    display:none;
 }
 
 .btn-shell {

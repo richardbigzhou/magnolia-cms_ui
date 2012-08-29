@@ -71,4 +71,11 @@ public class ShellAppNavigationEvent extends GwtEvent<ShellNavigationHandler> {
     public String getToken() {
         return token;
     }
+    
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("[Shell App Navigation]");
+        sb.append("type: ").append(type).append(" token: ").append(token);
+        return sb.toString();
+    }
 }

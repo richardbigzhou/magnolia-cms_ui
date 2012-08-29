@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.field.builder;
 
-import info.magnolia.ui.admincentral.app.content.ContentApp;
+import info.magnolia.ui.admincentral.app.content.AbstractContentApp;
 import info.magnolia.ui.admincentral.field.TextAndButtonField;
 import info.magnolia.ui.admincentral.field.translator.UuidToPathTranslator;
 import info.magnolia.ui.framework.app.App;
@@ -132,8 +132,8 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
                 };
 
                 // Open the Select Dialog
-                if(targetApp instanceof ContentApp) {
-                    ((ContentApp)targetApp).openChooseDialog( dialogName, callback, item);
+                if(targetApp instanceof AbstractContentApp) {
+                    ((AbstractContentApp)targetApp).openChooseDialog( dialogName, callback, item);
                 }
 
             }
