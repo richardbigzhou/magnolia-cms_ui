@@ -63,6 +63,8 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
     private ActionbarDefinition actionbar;
 
     private ComponentProviderConfiguration components;
+    //Default is always False.
+    private boolean dialodWorkbensh = false;
 
     private ThumbnailProvider thumbnailProvider;
     @Override
@@ -154,4 +156,15 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
     public void setThumbnailProvider(ThumbnailProvider thumbnailProvider) {
         this.thumbnailProvider = thumbnailProvider;
     }
+
+
+    @Override
+    public boolean isDialodWorkbensh() {
+        return dialodWorkbensh;
+    }
+
+    public void setDialodWorkbensh(boolean dialodWorkbensh) {
+        this.dialodWorkbensh = dialodWorkbensh;
+    }
+
 }
