@@ -88,11 +88,7 @@ public class PagesEditorSubAppViewImpl implements PagesEditorSubAppView {
     @Override
     public void setActionbarView(final ActionbarView actionbar) {
         actionbar.asVaadinComponent().setWidth(Sizeable.SIZE_UNDEFINED, 0);
-        if (this.actionbar == null) {
-            root.addComponent(actionbar.asVaadinComponent());
-        } else {
-            root.replaceComponent(this.actionbar.asVaadinComponent(), actionbar.asVaadinComponent());
-        }
+        root.addComponent(actionbar.asVaadinComponent());
         this.actionbar = actionbar;
     }
 

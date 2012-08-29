@@ -64,7 +64,7 @@ public class FocusModelImpl implements FocusModel {
     }
 
     @Override
-    public void onMouseUp(Element element) {
+    public void selectElement(Element element) {
 
         MgnlElement mgnlElement = model.getMgnlElement(element);
 

@@ -80,5 +80,5 @@ public interface WorkbenchDefinition extends Serializable {
      * Define if this workbensh is used for Dialog.
      * This is set during the cloning of the workbench in ChooseDialogContentPresenter.
      */
-    boolean isDialodWorkbensh();
+    boolean isDialogWorkbench();
 }
