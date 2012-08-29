@@ -43,6 +43,7 @@ import info.magnolia.rendering.template.registry.TemplateDefinitionRegistry;
 import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
 import info.magnolia.ui.admincentral.event.ContentChangedEvent;
 import info.magnolia.ui.app.pages.field.ComponentSelectorDefinition;
+import info.magnolia.ui.app.pages.field.TemplateSelectorField;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.dialog.definition.ConfiguredDialogDefinition;
 import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
@@ -220,7 +221,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
                 TemplateDefinition paragraphInfo = templateDefinitionRegistry.getTemplateDefinition(tokens[i]);
                 SelectFieldOptionDefinition option = new SelectFieldOptionDefinition();
                 option.setValue(paragraphInfo.getId());
-                option.setName(paragraphInfo.getTitle());
+                option.setName(TemplateSelectorField.getI18nTitle(paragraphInfo));
                 selector.addOption(option);
 
             } catch (RegistrationException e) {

@@ -80,12 +80,11 @@ public class TemplateSelectorField extends SelectFieldBuilder<TemplateSelectorDe
         return String.class;
     }
 
-    @Override
-    protected String getI18nBasename() {
-        return "info.magnolia.module.templatingkit.messages";
-    }
-
-    private String getI18nTitle(TemplateDefinition templateDefinition) {
+    /**
+     * Get i18n Template title.
+     */
+    //FIXME: SCRUM-1635 (ehe) review PageEditorPresenter and way Templates are parsed.
+    public static synchronized String getI18nTitle(TemplateDefinition templateDefinition) {
         Messages messages = MessagesManager.getMessages(templateDefinition.getI18nBasename());
         return messages.getWithDefault(templateDefinition.getTitle(), templateDefinition.getTitle());
     }
