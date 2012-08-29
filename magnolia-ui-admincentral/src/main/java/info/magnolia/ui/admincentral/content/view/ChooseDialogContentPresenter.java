@@ -55,7 +55,7 @@ public class ChooseDialogContentPresenter extends ContentPresenter {
         super(contentViewBuilder, context, subAppEventBus, shell);
         Cloner cloner = new Cloner();
         workbenchDefinition = cloner.deepClone(workbenchDefinition);
-        ((ConfiguredWorkbenchDefinition)workbenchDefinition).setDialodWorkbensh(true);
+        ((ConfiguredWorkbenchDefinition)workbenchDefinition).setDialogWorkbench(true);
     }
 
 }

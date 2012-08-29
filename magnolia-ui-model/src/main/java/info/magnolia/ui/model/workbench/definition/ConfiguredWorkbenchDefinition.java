@@ -64,7 +64,7 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
 
     private ComponentProviderConfiguration components;
     //Default is always False.
-    private boolean dialodWorkbensh = false;
+    private boolean dialogWorkbench = false;
 
     private ThumbnailProvider thumbnailProvider;
     @Override
@@ -159,12 +159,12 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
 
 
     @Override
-    public boolean isDialodWorkbensh() {
-        return dialodWorkbensh;
+    public boolean isDialogWorkbench() {
+        return dialogWorkbench;
     }
 
-    public void setDialodWorkbensh(boolean dialodWorkbensh) {
-        this.dialodWorkbensh = dialodWorkbensh;
+    public void setDialogWorkbench(boolean dialogWorkbench) {
+        this.dialogWorkbench = dialogWorkbench;
     }
 
 }
