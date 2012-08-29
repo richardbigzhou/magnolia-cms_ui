@@ -62,7 +62,9 @@ public interface VMagnoliaShellView extends HasWidgets, IsWidget {
 
     void setPresenter(final Presenter presenter);
     
-    void showMessage(final MessageType type, String text, String message, String id); 
+    void showMessage(final MessageType type, String text, String message, String id);
+
+    void hideAllMessages();
 
     void navigate(String prefix, String token);
     

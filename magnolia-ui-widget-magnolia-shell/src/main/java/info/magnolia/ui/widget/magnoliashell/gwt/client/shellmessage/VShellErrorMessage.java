@@ -79,6 +79,12 @@ public class VShellErrorMessage extends VShellMessage {
     }
 
     @Override
+    public void hideWithoutTransition() {
+        getShell().shiftViewportsVertically(-getOffsetHeight(), false);
+        super.hideWithoutTransition();
+    }
+
+    @Override
     protected String getMessageTypeCaption() {
         return "Error: ";
     }

@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse;
 
+import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.framework.app.ShellApp;
 import info.magnolia.ui.framework.app.ShellAppContext;
 import info.magnolia.ui.framework.app.ShellView;
@@ -53,10 +54,12 @@ public class PulseShellApp implements ShellApp, PulseView.Presenter {
     private PulseView pulseView;
 
     private ShellAppContext context;
+    private MagnoliaShell shell;
 
     @Inject
-    public PulseShellApp(PulseView pulseView) {
+    public PulseShellApp(PulseView pulseView, MagnoliaShell shell) {
         this.pulseView = pulseView;
+        this.shell = shell;
     }
 
     @Override
@@ -74,6 +77,7 @@ public class PulseShellApp implements ShellApp, PulseView.Presenter {
             final String tabName = pathParams.remove(0);
             pulseView.setCurrentPulseTab(tabName, pathParams);
         }
+        shell.hideAllMessages();
 //        pulsePlace.setCurrentPulseTab(displayedTabId);
     }
 
