@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,28 +31,35 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.assets;
+package info.magnolia.ui.admincentral.field.builder;
 
-import info.magnolia.ui.framework.app.AbstractApp;
-import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.model.field.definition.FieldDefinition;
+import info.magnolia.ui.model.field.definition.HiddenFieldDefinition;
 
-import javax.inject.Inject;
+import com.vaadin.data.Item;
+import com.vaadin.ui.Field;
+import com.vaadin.ui.TextField;
 
 /**
- * Assets app.
+ * Creates and initializes a checkBox field based on a field definition.
  */
-public class AssetsApp extends AbstractApp {
+public class HiddenFieldBuilder extends AbstractFieldBuilder<HiddenFieldDefinition> {
 
-    private final AppContext appContext;
 
-    @Inject
-    public AssetsApp(AppContext appContext) {
-        this.appContext = appContext;
+    public HiddenFieldBuilder(HiddenFieldDefinition definition, Item relatedFieldItem) {
+        super(definition, relatedFieldItem);
     }
 
     @Override
-    public void start(Location location) {
-        appContext.openSubApp("main", AssetsMainSubApp.class, location, "main");
+    protected Field buildField() {
+        TextField field = new TextField();
+        field.setValue(definition.getDefaultValue());
+        field.setVisible(false);
+        return field;
+    }
+
+    @Override
+    protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {
+        return String.class;
     }
 }

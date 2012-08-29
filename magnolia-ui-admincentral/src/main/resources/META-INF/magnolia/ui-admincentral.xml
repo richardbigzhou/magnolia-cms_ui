@@ -233,23 +233,9 @@
     </configurer>
   </components>
 
-  <components>
-    <id>app-assets</id>
-  </components>
-
-  <components>
-    <id>app-assets-main</id>
-    <component>
-      <type>info.magnolia.ui.admincentral.app.assets.AssetsMainSubApp</type>
-      <implementation>info.magnolia.ui.admincentral.app.assets.AssetsMainSubApp</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.admincentral.app.assets.AssetsView</type>
-      <implementation>info.magnolia.ui.admincentral.app.assets.AssetsViewImpl</implementation>
-    </component>
-  </components>
 
   <!-- Declaring dummy view for all fake apps -->
+  <components><id>app-assets-main</id><component><type>info.magnolia.ui.admincentral.app.dummy.DummyView</type><implementation>info.magnolia.ui.admincentral.app.dummy.DummyViewImpl</implementation></component></components>
   <components><id>app-documents-main</id><component><type>info.magnolia.ui.admincentral.app.dummy.DummyView</type><implementation>info.magnolia.ui.admincentral.app.dummy.DummyViewImpl</implementation></component></components>
   <components><id>app-forums-main</id><component><type>info.magnolia.ui.admincentral.app.dummy.DummyView</type><implementation>info.magnolia.ui.admincentral.app.dummy.DummyViewImpl</implementation></component></components>
   <components><id>app-company-main</id><component><type>info.magnolia.ui.admincentral.app.dummy.DummyView</type><implementation>info.magnolia.ui.admincentral.app.dummy.DummyViewImpl</implementation></component></components>
@@ -329,6 +315,10 @@
         <param>
           <name>widgetset</name>
           <value>info.magnolia.ui.vaadin.widgetset.MagnoliaWidgetSet</value>
+        </param>
+        <param>
+          <name>caption</name>
+          <value>Magnolia 5.0</value>
         </param>
         <param>
           <name>theme</name>

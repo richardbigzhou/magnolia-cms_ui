@@ -46,7 +46,7 @@ public class ActiveTabChangedEvent extends GwtEvent<ActiveTabChangedHandler>{
 
     private final VMagnoliaTab tab;
 
-    private boolean notifyServer = false;
+    private boolean notifyServer = true;
     
     public ActiveTabChangedEvent(final VMagnoliaTab tab) {
         this.tab = tab;

@@ -192,6 +192,11 @@ public class CallbackDialogActionTest {
                 public void setShowAllEnabled(boolean showAll) {
 
                 }
+
+                @Override
+                public void setCaption(String caption) {
+
+                }
             };
         }
 

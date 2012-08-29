@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,33 +31,11 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.assets;
-
-import javax.inject.Inject;
-
-import info.magnolia.ui.framework.app.AbstractSubApp;
-import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.view.View;
+package info.magnolia.ui.model.field.definition;
 
 /**
- * Sub app for the main tab in the assets app.
+ * Hidden Field Definition.
  */
-public class AssetsMainSubApp extends AbstractSubApp {
-
-    private AssetsView assetsView;
-
-    @Inject
-    public AssetsMainSubApp(AssetsView assetsView) {
-        this.assetsView = assetsView;
-    }
-
-    @Override
-    public String getCaption() {
-        return "Assets";
-    }
-
-    @Override
-    public View start(Location location) {
-        return assetsView;
-    }
+public class HiddenFieldDefinition extends ConfiguredFieldDefinition {
+    //No Specific variable yet.
 }
