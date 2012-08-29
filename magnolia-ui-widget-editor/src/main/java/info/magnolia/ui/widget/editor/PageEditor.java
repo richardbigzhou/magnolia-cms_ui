@@ -33,23 +33,19 @@
  */
 package info.magnolia.ui.widget.editor;
 
+import com.google.gson.Gson;
+import com.vaadin.terminal.PaintException;
+import com.vaadin.terminal.PaintTarget;
+import com.vaadin.ui.AbstractComponent;
+import com.vaadin.ui.ClientWidget;
+import com.vaadin.ui.Component;
 import info.magnolia.ui.widget.editor.gwt.client.VPageEditor;
-
-import java.io.Serializable;
-import java.util.Map;
-
 import org.vaadin.rpc.ServerSideHandler;
 import org.vaadin.rpc.ServerSideProxy;
 import org.vaadin.rpc.client.Method;
 
-import com.vaadin.terminal.PaintException;
-import com.vaadin.terminal.PaintTarget;
-import com.vaadin.terminal.Resource;
-import com.vaadin.ui.AbstractComponent;
-import com.vaadin.ui.ClientWidget;
-import com.vaadin.ui.Component;
-
-import com.google.gson.Gson;
+import java.io.Serializable;
+import java.util.Map;
 
 /**
  * PageEditor widget server side implementation.
@@ -61,19 +57,16 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
     /**
      * Source of the embedded object.
      */
-    private Resource source;
-
-    private String contextPath;
 
     private boolean preview = false;
 
     private PageEditorView.Listener listener;
 
     protected ServerSideProxy proxy;
-    private String nodePath;
     private String PAGE_ELEMENT = "cms:page";
     private String AREA_ELEMENT = "cms:area";
     private String COMPONENT_ELEMENT = "cms:component";
+    private PageEditorParameters parameters;
 
     public PageEditor() {
         setSizeFull();
@@ -88,16 +81,6 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
     @Override
     public void paintContent(PaintTarget target) throws PaintException {
         super.paintContent(target);
-        
-        if (contextPath != null) {
-            target.addAttribute("contextPath", getContextPath());
-        }
-        if (nodePath != null) {
-            target.addAttribute("nodePath", getNodePath());
-        }
-        if (preview) {
-            target.addAttribute("preview", isPreview());
-        }
         proxy.paintContent(target);
     }
 
@@ -107,21 +90,21 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
         proxy.changeVariables(source, variables);
     }
 
-
-    public String getContextPath() {
-        return contextPath;
+    @Override
+    public void load(PageEditorParameters parameters) {
+        this.parameters = parameters;
+        Gson gson = new Gson();
+        String json = gson.toJson(parameters);
+        proxy.call("load", json);
+        requestRepaint();
     }
 
     @Override
-    public void init(String contextPath, String nodePath, boolean preview) {
-        this.contextPath = contextPath;
-        this.nodePath = nodePath;
-        this.preview = preview;
+    public void init() {
 
         proxy = new ServerSideProxy(this) {
 
             {
-
                 register("selectElement", new Method() {
 
                     @Override
@@ -226,14 +209,6 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
     @Override
     public void callFromClient(String method, Object[] params) {
         System.out.println("Client called " + method);
-    }
-
-    public boolean isPreview() {
-        return preview;
-    }
-
-    public String getNodePath() {
-        return nodePath;
     }
 
     /**

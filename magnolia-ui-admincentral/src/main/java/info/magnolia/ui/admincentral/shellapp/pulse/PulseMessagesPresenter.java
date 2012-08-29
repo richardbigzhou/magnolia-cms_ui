@@ -93,13 +93,11 @@ public class PulseMessagesPresenter implements Serializable {
     }
 
     public void setInitialUnreadMessagesIndicator() {
-        // TODO -tobias- Calling this here results in an NPE because
-        // MagnoliaShell doesn't have an Application instance to synchronize on
-        // yet
-        shell.updateShellAppIndication(VMainLauncher.ShellAppType.PULSE,
-        messagesManager.getNumberOfUnclearedMessagesForUser(MgnlContext.getUser().getName()));    
+        shell.setIndication(
+                VMainLauncher.ShellAppType.PULSE,
+                messagesManager.getNumberOfUnclearedMessagesForUser(MgnlContext.getUser().getName()));
     }
-    
+
     public Container getMessageDataSource() {
         if (container == null) {
             createMessageDataSource();

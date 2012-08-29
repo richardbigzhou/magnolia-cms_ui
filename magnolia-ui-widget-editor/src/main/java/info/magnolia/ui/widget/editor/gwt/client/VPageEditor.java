@@ -34,18 +34,14 @@
 package info.magnolia.ui.widget.editor.gwt.client;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.AnchorElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.FormElement;
 import com.google.gwt.dom.client.HeadElement;
 import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.dom.client.LinkElement;
 import com.google.gwt.dom.client.Node;
-import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Frame;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
@@ -70,7 +66,6 @@ import info.magnolia.ui.widget.editor.gwt.client.event.SelectElementEvent;
 import info.magnolia.ui.widget.editor.gwt.client.event.SelectElementEventHandler;
 import info.magnolia.ui.widget.editor.gwt.client.event.SortComponentEvent;
 import info.magnolia.ui.widget.editor.gwt.client.event.SortComponentEventHandler;
-import info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils;
 import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 import info.magnolia.ui.widget.editor.gwt.client.model.ModelImpl;
 import info.magnolia.ui.widget.editor.gwt.client.model.focus.FocusModel;
@@ -89,31 +84,23 @@ import java.util.List;
  */
 public class VPageEditor extends Composite implements VPageEditorView.Listener, Paintable, ClientSideHandler {
 
-    // In case we're in preview mode, we will stop processing the document, after the pagebar has been injected.
-    private static boolean keepProcessing = true;
 
-    private static String locale;
+    private static final String PAGE_EDITOR_CSS = "/VAADIN/themes/admincentraltheme/pageeditor.css";
 
+    private final VPageEditorView view;
     private final Model model;
-
     private final EventBus eventBus;
-
-    private ClientSideProxy proxy;
-
-    private static VPageEditorView view;
+    private final FocusModel focusModel;
 
     protected ApplicationConnection client;
+    private ClientSideProxy proxy;
+    private String paintableId;
 
-    protected String paintableId;
-    private FocusModel focusModel;
-
-    private String contextPath;
-    private String pagePath;
-    private boolean preview = false;
+    private VPageEditorParameters pageEditorParameters;
 
     public VPageEditor() {
         this.eventBus = new SimpleEventBus();
-        this.view = new VPageEditorViewImpl(eventBus);
+        this.view = new VPageEditorViewImpl();
         this.model = new ModelImpl();
         this.focusModel = new FocusModelImpl(eventBus, model);
 
@@ -127,7 +114,18 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
                 register("refresh", new Method() {
                     @Override
                     public void invoke(String methodName, Object[] params) {
-                        reloadIFrame(view.getIframe().getElement());
+                        view.reload();
+                    }
+                });
+
+                register("load", new Method() {
+                    @Override
+                    public void invoke(String methodName, Object[] params) {
+                        String json = String.valueOf(params[0]);
+
+                        pageEditorParameters = VPageEditorParameters.parse(json);
+                        view.setUrl(pageEditorParameters.getContextPath() + pageEditorParameters.getNodePath());
+
                     }
                 });
             }
@@ -152,55 +150,9 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
         if (client.updateComponent(this, uidl, true)) {
             return;
         }
-        getInitParameters(uidl);
-
-        view.getIframe().getElement().setId(paintableId);
-        view.getIframe().setUrl(getContextPath() + getPagePath());
 
         proxy.update(this, uidl, client);
     }
-
-    public Model getModel() {
-        return model;
-    }
-
-    /**
-     * Helper to return the contextPath sent from server.
-     */
-    private void getInitParameters(UIDL uidl) {
-
-        String contextPath = uidl.getStringAttribute("contextPath");
-        if (contextPath == null) {
-            contextPath = "";
-        }
-        String pagePath = uidl.getStringAttribute("nodePath");
-        if (pagePath == null) {
-            pagePath = "";
-        }
-
-        this.contextPath = contextPath;
-        this.pagePath = pagePath;
-        this.preview = uidl.getBooleanAttribute("preview");
-
-    }
-
-    public void onMouseUp(final Element element) {
-        focusModel.onMouseUp(element);
-    }
-
-    private native void initNativeHandlers(Element element) /*-{
-        if (element != 'undefined') {
-            var ref = this;
-            element.contentDocument.onmouseup = function(event) {
-                ref.@info.magnolia.ui.widget.editor.gwt.client.VPageEditor::onMouseUp(Lcom/google/gwt/dom/client/Element;)(event.target);
-                event.stopPropagation();
-            }
-            element.contentDocument.ontouchend = function(event) {
-                ref.@info.magnolia.ui.widget.editor.gwt.client.VPageEditor::onMouseUp(Lcom/google/gwt/dom/client/Element;)(event.target);
-                event.stopPropagation();
-            }
-        }
-    }-*/;
 
     private void registerEventHandlers() {
 
@@ -248,12 +200,34 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
         });
     }
 
+    public Model getModel() {
+        return model;
+    }
+
+    public void selectElement(final Element element) {
+        focusModel.selectElement(element);
+    }
+
+    private native void initNativeHandlers(Element element) /*-{
+        if (element != 'undefined') {
+            var ref = this;
+            element.contentDocument.onmouseup = function(event) {
+                ref.@info.magnolia.ui.widget.editor.gwt.client.VPageEditor::selectElement(Lcom/google/gwt/dom/client/Element;)(event.target);
+                event.stopPropagation();
+            }
+            element.contentDocument.ontouchend = function(event) {
+                ref.@info.magnolia.ui.widget.editor.gwt.client.VPageEditor::selectElement(Lcom/google/gwt/dom/client/Element;)(event.target);
+                event.stopPropagation();
+            }
+        }
+    }-*/;
+
     private void injectEditorStyles(final Document document) {
         HeadElement head = HeadElement.as(document.getElementsByTagName("head").getItem(0));
         LinkElement cssLink = document.createLinkElement();
         cssLink.setType("text/css");
         cssLink.setRel("stylesheet");
-        cssLink.setHref(contextPath + "/VAADIN/themes/admincentraltheme/pageeditor.css");
+        cssLink.setHref(pageEditorParameters.getContextPath() + PAGE_EDITOR_CSS);
         head.insertFirst(cssLink);
     }
 
@@ -266,59 +240,8 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
         }
     }-*/;
 
-    protected native void reloadIFrame(Element iframeElement) /*-{
-        iframeElement.contentWindow.location.reload(true);
-    }-*/;
-
-    //FIXME submitting forms still renders website channel and edit bars
-    private void postProcessLinksOnMobilePreview(Element root, String channel) {
-        NodeList<Element> anchors = root.getElementsByTagName("a");
-
-        final String mobilePreviewParams = "";//MGNL_CHANNEL_PARAMETER+"="+channel+"&"+ MGNL_PREVIEW_PARAMETER+"=true";
-
-        for (int i = 0; i < anchors.getLength(); i++) {
-            AnchorElement anchor = AnchorElement.as(anchors.getItem(i));
-
-            GWT.log("Starting to process link " + anchor.getHref());
-
-            if(JavascriptUtils.isEmpty(anchor.getHref())) {
-                continue;
-            }
-            String manipulatedHref = anchor.getHref().replaceFirst(Window.Location.getProtocol() + "//" + Window.Location.getHost(), "");
-            String queryString = Window.Location.getQueryString() != null ? Window.Location.getQueryString() : "";
-
-            GWT.log("query string is " + queryString);
-
-            String queryStringRegex =  queryString.replaceFirst("\\?", "\\\\?");
-            manipulatedHref = manipulatedHref.replaceFirst(queryStringRegex, "");
-            int indexOfHash = manipulatedHref.indexOf("#");
-
-            if(indexOfHash != -1) {
-                manipulatedHref = manipulatedHref.substring(indexOfHash);
-            } else {
-                if(!queryString.contains(mobilePreviewParams)) {
-                    if(queryString.startsWith("?")) {
-                        queryString += "&" + mobilePreviewParams;
-                    } else {
-                        queryString = "?" + mobilePreviewParams;
-                    }
-                }
-                manipulatedHref += queryString;
-            }
-            GWT.log("Resulting link is " + manipulatedHref);
-            anchor.setHref(manipulatedHref);
-        }
-        NodeList<Element> forms = root.getElementsByTagName("form");
-
-        for (int i = 0; i < forms.getLength(); i++) {
-            FormElement form = FormElement.as(forms.getItem(i));
-            form.setAction(form.getAction().concat("?"+ mobilePreviewParams));
-        }
-    }
 
     private void process(final Document document) {
-
-
         injectEditorStyles(document);
 
         long startTime = System.currentTimeMillis();
@@ -330,25 +253,24 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
     }
 
     private void processDocument(Node node, MgnlElement mgnlElement) {
-        if(keepProcessing) {
-            for (int i = 0; i < node.getChildCount(); i++) {
-                Node childNode = node.getChild(i);
-                if (childNode.getNodeType() == Comment.COMMENT_NODE) {
+        for (int i = 0; i < node.getChildCount(); i++) {
+            Node childNode = node.getChild(i);
+            if (childNode.getNodeType() == Comment.COMMENT_NODE) {
 
-                    try {
-                        mgnlElement = CommentProcessor.process(model, childNode, mgnlElement);
-                    } catch (IllegalArgumentException e) {
-                        GWT.log("Not CMSComment element, skipping: " + e.toString());
-                    } catch (Exception e) {
-                        GWT.log("Caught undefined exception: " + e.toString());
-                    }
-                } else if (childNode.getNodeType() == Node.ELEMENT_NODE && mgnlElement != null) {
-                    ElementProcessor.process(model, childNode, mgnlElement);
+                try {
+                    mgnlElement = CommentProcessor.process(model, childNode, mgnlElement);
+                } catch (IllegalArgumentException e) {
+                    GWT.log("Not CMSComment element, skipping: " + e.toString());
+                } catch (Exception e) {
+                    GWT.log("Caught undefined exception: " + e.toString());
                 }
-
-                processDocument(childNode, mgnlElement);
+            } else if (childNode.getNodeType() == Node.ELEMENT_NODE && mgnlElement != null) {
+                ElementProcessor.process(model, childNode, mgnlElement);
             }
+
+            processDocument(childNode, mgnlElement);
         }
+
     }
 
     private void processMgnlElements() {
@@ -372,7 +294,8 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
 
     @Override
     public void onFrameLoaded(Frame iframe) {
-        if (preview) {
+
+        if (pageEditorParameters.isPreview()) {
             return;
         }
         Element element= iframe.getElement();
@@ -383,14 +306,6 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
         process(contentDocument);
         focusModel.toggleRootAreaBar(true);
 
-    }
-
-    public String getPagePath() {
-        return pagePath;
-    }
-
-    public String getContextPath() {
-        return contextPath;
     }
 
 }

@@ -52,6 +52,8 @@ public abstract class AbstractColumnDefinition implements ColumnDefinition {
 
     private String propertyName;
 
+    private boolean toDisplayInDialog = true;
+
     @Override
     public String getPropertyName() {
         return propertyName;
@@ -113,5 +115,14 @@ public abstract class AbstractColumnDefinition implements ColumnDefinition {
     @Override
     public Class<?> getType() {
         return String.class;
+    }
+
+    @Override
+    public boolean isToDisplayInDialog() {
+        return toDisplayInDialog;
+    }
+
+    public void setToDisplayInDialog(boolean toDisplayInDialog) {
+        this.toDisplayInDialog = toDisplayInDialog;
     }
 }

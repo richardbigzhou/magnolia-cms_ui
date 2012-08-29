@@ -132,12 +132,6 @@ public class AppLauncher extends AbstractComponent implements ServerSideHandler 
         isAttached = true;
     }
 
-    @Override
-    public void detach() {
-        super.detach();
-        clear();
-    }
-
     public void clear() {
         isAttached = false;
         for (final AppGroup group : appGroups.values()) {
