@@ -192,7 +192,9 @@
 		<module>magnolia-ui-app-contacts</module>
 		<module>magnolia-ui-app-messages</module>
 		<module>magnolia-ui-app-pages</module>
+		<!-- temporarily disabled see SCRUM-1670 
 		<module>magnolia-ui-app-instant-preview</module>
+		-->
 	</modules>
 
 	<distributionManagement>
