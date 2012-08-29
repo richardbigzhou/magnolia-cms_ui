@@ -51,4 +51,6 @@ public interface ColumnDefinition {
     String getFormatterClass();
 
     Class<?> getType();
+
+    boolean isToDisplayInDialog();
 }
