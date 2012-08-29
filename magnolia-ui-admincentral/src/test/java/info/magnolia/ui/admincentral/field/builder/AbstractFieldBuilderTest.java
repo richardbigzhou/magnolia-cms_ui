@@ -157,7 +157,7 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
     }
 
     @Test
-    public void requiredFieldContainsAsteriskTest() {
+    public void requiredFieldIsMarkedByAsteriskTest() {
         // GIVEN
         definition.setRequired(true);
         abstractDialogField = new TestDialogField(definition, baseItem);
