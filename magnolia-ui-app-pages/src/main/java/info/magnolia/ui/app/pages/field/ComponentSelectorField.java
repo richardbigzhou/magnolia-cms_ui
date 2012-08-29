@@ -62,7 +62,7 @@ public class ComponentSelectorField extends SelectFieldBuilder<ComponentSelector
 
         Map<String, String> options = new HashMap<String, String>();
         for (SelectFieldOptionDefinition option : definition.getOptions()) {
-            options.put(option.getValue(), getMessage(option.getName()));
+            options.put(option.getValue(), option.getName());
         }
         return options;
     }
@@ -72,8 +72,4 @@ public class ComponentSelectorField extends SelectFieldBuilder<ComponentSelector
         return String.class;
     }
 
-    @Override
-    protected String getI18nBasename() {
-        return "info.magnolia.module.templatingkit.messages";
-    }
 }

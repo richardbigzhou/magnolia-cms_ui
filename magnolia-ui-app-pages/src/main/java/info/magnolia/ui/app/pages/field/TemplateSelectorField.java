@@ -34,6 +34,8 @@
 package info.magnolia.ui.app.pages.field;
 
 
+import info.magnolia.cms.i18n.Messages;
+import info.magnolia.cms.i18n.MessagesManager;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.rendering.template.TemplateDefinition;
 import info.magnolia.rendering.template.assignment.TemplateDefinitionAssignment;
@@ -68,7 +70,7 @@ public class TemplateSelectorField extends SelectFieldBuilder<TemplateSelectorDe
 
         Map<String, String> options = new HashMap<String, String>();
         for (TemplateDefinition templateDefinition : templates) {
-            options.put(templateDefinition.getId(), getMessage(templateDefinition.getTitle()));
+            options.put(templateDefinition.getId(), getI18nTitle(templateDefinition));
         }
         return options;
     }
@@ -78,9 +80,12 @@ public class TemplateSelectorField extends SelectFieldBuilder<TemplateSelectorDe
         return String.class;
     }
 
-    @Override
-    protected String getI18nBasename() {
-        return "info.magnolia.module.templatingkit.messages";
+    /**
+     * Get i18n Template title.
+     */
+    //FIXME: SCRUM-1635 (ehe) review PageEditorPresenter and way Templates are parsed.
+    public static synchronized String getI18nTitle(TemplateDefinition templateDefinition) {
+        Messages messages = MessagesManager.getMessages(templateDefinition.getI18nBasename());
+        return messages.getWithDefault(templateDefinition.getTitle(), templateDefinition.getTitle());
     }
-
 }

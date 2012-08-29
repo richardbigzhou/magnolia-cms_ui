@@ -268,3 +268,23 @@ fieldset {
 	margin: 0;
 	padding: 0;
 }
+
+.v-datefield {
+  white-space: nowrap;
+}
+
+.v-datefield-button {
+	background: #dadada url(img/date-btn.png) repeat-x 50% 0;
+	border: 1px solid #666;
+	-webkit-border-top-right-radius: 3px;
+	-webkit-border-bottom-right-radius: 3px;
+	-moz-border-radius-topright: 3px;
+	-moz-border-radius-bottomright: 3px;
+	width: 25px;
+	padding: .2em 0;
+	-webkit-box-sizing: content-box;
+	-moz-box-sizing: content-box;
+	-ms-box-sizing: content-box;
+	box-sizing: content-box;
+	margin-left: 2px 0 0 2px;
+}
