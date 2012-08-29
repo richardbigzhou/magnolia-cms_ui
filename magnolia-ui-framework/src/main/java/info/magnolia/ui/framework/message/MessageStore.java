@@ -209,19 +209,18 @@ public class MessageStore {
     }
 
     private Node getOrCreateUserNode(Session session, String userName) throws RepositoryException {
-        return JcrUtils.getOrCreateByPath(WORKSPACE_PATH + userName, USER_NODE_TYPE, session);
+        String userNodePath = WORKSPACE_PATH + userName;
+        return JcrUtils.getOrCreateByPath(userNodePath, USER_NODE_TYPE, session);
     }
 
     private Node getOrCreateMessageNode(Session session, String userName, Message message) throws RepositoryException {
-        return getOrCreateUserNode(session, userName).addNode(message.getId(), MESSAGE_NODE_TYPE);
+        String messageNodePath = WORKSPACE_PATH + userName + "/" + message.getId();
+        return JcrUtils.getOrCreateByPath(messageNodePath, false, USER_NODE_TYPE, MESSAGE_NODE_TYPE, session, false);
     }
 
     private Node getMessageNode(Session session, String userName, String messageId) throws RepositoryException {
-        String absolutePath = WORKSPACE_PATH + userName + "/" + messageId;
-        if (session.nodeExists(absolutePath)) {
-            return session.getNode(absolutePath);
-        }
-        return null;
+        String messageNodePath = WORKSPACE_PATH + userName + "/" + messageId;
+        return session.nodeExists(messageNodePath) ? session.getNode(messageNodePath) : null;
     }
 
     private String getUniqueMessageId(Node userNode) throws RepositoryException {
