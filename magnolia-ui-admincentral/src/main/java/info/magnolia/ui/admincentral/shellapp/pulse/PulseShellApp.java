@@ -47,7 +47,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 /**
- * Activity for pulse.
+ * Pulse shell app.
  */
 public class PulseShellApp implements ShellApp, PulseView.Presenter {
     
