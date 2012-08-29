@@ -31,38 +31,32 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts;
-
-import info.magnolia.ui.admincentral.app.content.AbstractContentApp;
-import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
-import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.location.Location;
+package info.magnolia.ui.admincentral.app.content;
 
 import javax.inject.Inject;
 
+import com.vaadin.data.Item;
+
+import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
+import info.magnolia.ui.framework.app.AbstractApp;
+import info.magnolia.ui.widget.dialog.MagnoliaDialogPresenter.Presenter;
+
 
 /**
- * The Contacts app, extending base content app.
- *
+ * Abstract base app class for content apps.
  */
-public class ContactsApp extends AbstractContentApp {
+public abstract class AbstractContentApp extends AbstractApp {
 
-    private final AppContext appContext;
+    private DialogPresenterFactory dialogPresenterFactory;
 
     @Inject
-    public ContactsApp(AppContext appContext, DialogPresenterFactory dialogPresenterFactory) {
-        super(dialogPresenterFactory);
-        this.appContext = appContext;
+    public AbstractContentApp(DialogPresenterFactory dialogPresenterFactory) {
+        this.dialogPresenterFactory = dialogPresenterFactory;
     }
 
-    @Override
-    public void start(Location location) {
-
-        if (ContactsMainSubApp.supportsLocation(location)) {
-            appContext.openSubApp("main", ContactsMainSubApp.class, location, ContactsMainSubApp.getSubAppId(location));
-        } else {
-            Location mainLocation = ContactsMainSubApp.createLocation(null);
-            appContext.openSubApp("main", ContactsMainSubApp.class, mainLocation, ContactsMainSubApp.getSubAppId(mainLocation));
-        }
+    public void openChooseDialog(String dialogName, Presenter.Callback callback, Item item) {
+        Presenter dialogPresenter = dialogPresenterFactory.createDialog(dialogName);
+        dialogPresenter.start(item, callback);
     }
+
 }
