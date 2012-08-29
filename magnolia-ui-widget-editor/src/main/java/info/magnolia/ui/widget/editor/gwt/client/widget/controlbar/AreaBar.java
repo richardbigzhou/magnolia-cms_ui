@@ -34,6 +34,8 @@
 package info.magnolia.ui.widget.editor.gwt.client.widget.controlbar;
 
 import static info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils.getI18nMessage;
+
+import com.google.gwt.user.client.ui.Label;
 import info.magnolia.rendering.template.AreaDefinition;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 import info.magnolia.ui.widget.editor.gwt.client.event.DeleteComponentEvent;
@@ -71,17 +73,17 @@ public class AreaBar extends AbstractBar {
 
     private static final String NODE_TYPE = "mgnl:area";
 
-    public AreaBar(Model model, EventBus eventBus, MgnlElement mgnlElement) throws IllegalArgumentException {
+    public AreaBar(Model model, EventBus eventBus, MgnlElement mgnlElement) {
         super(model, eventBus, mgnlElement);
 
-        checkMandatories(mgnlElement.getAttributes());
+        setFields(mgnlElement.getAttributes());
 
         GWT.log("Area [" + this.name + "] is of type " + this.type);
 
         this.addStyleName("area");
 
         setVisible(false);
-        createButtons();
+        createControls();
 
         attach();
 
@@ -141,7 +143,55 @@ public class AreaBar extends AbstractBar {
 
     }
 
-    private void checkMandatories(Map<String, String> attributes) throws IllegalArgumentException {
+    private void createControls() {
+        if (this.optional) {
+            if (this.created) {
+                final Label remove = new Label();
+                remove.setStyleName(ICON_CLASSNAME);
+                remove.addStyleName(REMOVE_CLASSNAME);
+                remove.addClickHandler(new ClickHandler() {
+                    @Override
+                    public void onClick(ClickEvent event) {
+                        getEventBus().fireEvent(new DeleteComponentEvent(getWorkspace(), getPath()));
+                    }
+                });
+                addSecondaryButton(remove);
+
+            }
+            else {
+                final Label add = new Label();
+                add.setStyleName(ICON_CLASSNAME);
+                add.addStyleName(ADD_CLASSNAME);
+                add.addClickHandler(new ClickHandler() {
+                    @Override
+                    public void onClick(ClickEvent event) {
+                        getEventBus().fireEvent(new NewAreaEvent(getWorkspace(), NODE_TYPE, getPath()));
+                    }
+                });
+                addSecondaryButton(add);
+            }
+        }
+
+        if (this.dialog != null) {
+            // do not show edit-icon if the area has not been created
+            if (!this.optional || (this.optional && this.created)) {
+                final Label edit = new Label();
+                edit.setStyleName(ICON_CLASSNAME);
+                edit.addStyleName(EDIT_CLASSNAME);
+                edit.addClickHandler(new ClickHandler() {
+
+                    @Override
+                    public void onClick(ClickEvent event) {
+                        getEventBus().fireEvent(new EditComponentEvent(getWorkspace(), getPath(), dialog));
+                    }
+                });
+                addPrimaryButton(edit);
+            }
+        }
+
+    }
+
+    private void setFields(Map<String, String> attributes) throws IllegalArgumentException {
 
         String content = attributes.get("content");
         if (content != null) {
@@ -168,34 +218,6 @@ public class AreaBar extends AbstractBar {
         boolean showAddButton = Boolean.parseBoolean(attributes.get("showAddButton"));
         this.optional = Boolean.parseBoolean(attributes.get("optional"));
         this.created = Boolean.parseBoolean(attributes.get("created"));
-
-        // break no matter what follows
-        if (!this.editable) {
-            throw new IllegalArgumentException("Not injecting any Areabar");
-        }
-
-        // area can be deleted or created
-        if (this.optional) {
-            return;
-        }
-
-        else if (this.type.equals(AreaDefinition.TYPE_SINGLE)) {
-            return;
-        }
-
-        // can add components to area
-        else if (showAddButton && !availableComponents.isEmpty()) {
-            return;
-        }
-
-        // area can be edited
-        else if (dialog != null && !dialog.isEmpty()) {
-            return;
-        }
-
-        else {
-            throw new IllegalArgumentException("Not injecting any Areabar");
-        }
     }
 
     @Override

@@ -35,11 +35,14 @@ package info.magnolia.ui.widget.editor.gwt.client.dom.processor;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
+import info.magnolia.rendering.template.AreaDefinition;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.AreaBar;
 import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.AreaEndBar;
 import info.magnolia.ui.widget.editor.gwt.client.widget.placeholder.ComponentPlaceHolder;
+
+import java.util.Map;
 
 /**
  * Factory Class for MgnlElement processors.
@@ -53,23 +56,20 @@ public class AreaProcessor extends MgnlElementProcessor {
     @Override
     public void process() {
         AreaBar areaBar = null;
-        try {
+
+        if (hasControlBar(getMgnlElement().getAttributes())) {
             areaBar = new AreaBar(getModel(), getEventBus(), getMgnlElement());
 
-            try {
+            if (hasComponentPlaceHolder(getMgnlElement().getAttributes())) {
                 new ComponentPlaceHolder(getModel(), getEventBus(), getMgnlElement());
             }
-            catch(IllegalArgumentException e) {
-                GWT.log("Not creating component placeholder for this element. Missing parameters.");
-            }
-
             new AreaEndBar(getModel(), getMgnlElement());
         }
-        catch (IllegalArgumentException e) {
-            GWT.log("Not creating areabar and area endbar for this element. Missing parameters. Will be deleted.");
-        }
 
-        if (areaBar == null) {
+        else {
+
+            GWT.log("Not creating areabar and area endbar for this element. Missing parameters. Will be deleted.");
+
             // if the area has no controls we, don't want it in the structure.
 
             // delete the element from the tree
@@ -80,6 +80,75 @@ public class AreaProcessor extends MgnlElementProcessor {
             // remove it from the Model
             getModel().removeMgnlElement(getMgnlElement());
         }
+    }
+
+    private boolean hasComponentPlaceHolder(Map<String, String> attributes) {
+
+        String type = attributes.get("type");
+
+
+        String availableComponents = "";
+        if(AreaDefinition.TYPE_NO_COMPONENT.equals(type)) {
+            availableComponents = "";
+        }
+        else {
+            availableComponents = attributes.get("availableComponents");
+        }
+
+        if (availableComponents.equals("")) {
+            return false;
+        }
+
+        if (type.equals(AreaDefinition.TYPE_SINGLE) && !getMgnlElement().getComponents().isEmpty()) {
+            return false;
+        }
+        return true;
+
+    }
+
+    private boolean hasControlBar(Map<String, String> attributes) {
+
+        String type = attributes.get("type");
+        String dialog = attributes.get("dialog");
+
+        boolean editable = true;
+        if (attributes.containsKey("editable")) {
+            editable = Boolean.parseBoolean(attributes.get("editable"));
+        }
+
+        String availableComponents = "";
+        if (!AreaDefinition.TYPE_NO_COMPONENT.equals(type)) {
+            availableComponents = attributes.get("availableComponents");
+        }
+
+        boolean showAddButton = Boolean.parseBoolean(attributes.get("showAddButton"));
+        boolean optional = Boolean.parseBoolean(attributes.get("optional"));
+
+        // break no matter what follows
+        if (!editable) {
+            return false;
+        }
+
+        // area can be deleted or created
+        if (optional) {
+            return true;
+        }
+
+        else if (type.equals(AreaDefinition.TYPE_SINGLE)) {
+            return true;
+        }
+
+        // can add components to area
+        else if (showAddButton && !availableComponents.isEmpty()) {
+            return true;
+        }
+
+        // area can be edited
+        else if (dialog != null && !dialog.isEmpty()) {
+            return true;
+        }
+
+        return false;
     }
 
 }

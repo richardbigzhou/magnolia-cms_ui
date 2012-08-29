@@ -159,15 +159,12 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
                 @Override
                 public void onSuccess(String actionName) {
-                    JcrNodeAdapter myItem = item;
-                    String templateId = String.valueOf(myItem.getItemProperty("MetaData/mgnl:template").getValue());
-
+                    String templateId = String.valueOf(item.getItemProperty("MetaData/mgnl:template").getValue());
                     try {
                         TemplateDefinition templateDef = templateDefinitionRegistry.getTemplateDefinition(templateId);
                         String dialog = templateDef.getDialog();
-                        editComponent(item.getWorkspace(), item.getNode().getPath(), dialog);
-                    } catch (RepositoryException e) {
-                        log.error("Exception caught: {}", e.getMessage(), e);
+                        final MagnoliaDialogPresenter.Presenter dialogPresenter = dialogPresenterFactory.createDialog(dialog);
+                        createDialogAction(item, dialogPresenter);
                     } catch (RegistrationException e) {
                         log.error("Exception caught: {}", e.getMessage(), e);
                     } finally {
