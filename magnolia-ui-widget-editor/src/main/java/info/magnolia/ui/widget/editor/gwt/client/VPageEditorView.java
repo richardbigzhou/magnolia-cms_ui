@@ -53,4 +53,8 @@ public interface VPageEditorView extends IsWidget {
 
     void setListener(Listener listener);
 
+    void setUrl(String url);
+
+    void reload();
+
 }

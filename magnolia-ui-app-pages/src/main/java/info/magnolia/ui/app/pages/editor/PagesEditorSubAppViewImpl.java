@@ -46,7 +46,7 @@ import com.vaadin.ui.VerticalLayout;
  * PageEditorViewImpl.
  */
 @SuppressWarnings("serial")
-public class PagesEditorViewImpl implements PagesEditorView {
+public class PagesEditorSubAppViewImpl implements PagesEditorSubAppView {
 
     private final HorizontalLayout root = new HorizontalLayout();
 
@@ -58,7 +58,8 @@ public class PagesEditorViewImpl implements PagesEditorView {
 
     private ActionbarView actionbar;
 
-    public PagesEditorViewImpl() {
+    public PagesEditorSubAppViewImpl() {
+
         root.setSizeFull();
         root.setStyleName("workbench");
         root.addComponent(container);
@@ -68,6 +69,7 @@ public class PagesEditorViewImpl implements PagesEditorView {
 
         container.setSizeFull();
         container.setImmediate(true);
+
     }
 
     @Override
@@ -75,16 +77,12 @@ public class PagesEditorViewImpl implements PagesEditorView {
         this.listener = listener;
     }
 
+
+
     @Override
     public void setPageEditorView(PageEditorView pageEditor) {
-        if (this.pageEditor == null) {
-            container.addComponent(pageEditor.asVaadinComponent());
-            this.pageEditor = pageEditor;
-        } else {
-            container.replaceComponent(this.pageEditor.asVaadinComponent(), pageEditor.asVaadinComponent());
-            this.pageEditor = pageEditor;
-            this.pageEditor.refresh();
-        }
+        container.addComponent(pageEditor.asVaadinComponent());
+        this.pageEditor = pageEditor;
     }
 
     @Override

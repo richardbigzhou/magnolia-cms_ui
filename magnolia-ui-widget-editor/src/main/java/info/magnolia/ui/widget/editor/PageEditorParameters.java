@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,37 +33,32 @@
  */
 package info.magnolia.ui.widget.editor;
 
-import info.magnolia.ui.framework.view.View;
-
-
 /**
- * PageEditorView.
+ * PageEditorParameters.
  */
-public interface PageEditorView extends View {
+public class PageEditorParameters {
 
-    void setListener(Listener listener);
+    private final String contextPath;
 
-    void refresh();
+    private final String nodePath;
 
-    void load(PageEditorParameters parameters);
+    private final boolean preview;
 
-    void init();
+    public PageEditorParameters(String contextPath, String nodePath, boolean preview) {
+        this.contextPath = contextPath;
+        this.nodePath = nodePath;
+        this.preview = preview;
+    }
 
-    /**
-     * Listener.
-     */
-    public interface Listener {
+    public String getContextPath() {
+        return contextPath;
+    }
 
-        void editComponent(String workspace, String path, String dialog);
+    public String getNodePath() {
+        return nodePath;
+    }
 
-        void newArea(String workspace, String nodeType, String path);
-
-        void newComponent(String workspace, String path, String availableComponents);
-
-        void deleteComponent(String workspace, String path);
-
-        void sortComponent(String workspace, String parentPath, String source, String target, String order);
-
-        void selectElement(PageEditor.AbstractElement nodeSelection);
+    public boolean isPreview() {
+        return preview;
     }
 }

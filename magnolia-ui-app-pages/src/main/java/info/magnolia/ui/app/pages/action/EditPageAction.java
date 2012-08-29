@@ -35,7 +35,6 @@ package info.magnolia.ui.app.pages.action;
 
 import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.ui.app.pages.PagesApp;
 import info.magnolia.ui.app.pages.editor.PagesEditorSubApp;
 import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.model.action.ActionBase;

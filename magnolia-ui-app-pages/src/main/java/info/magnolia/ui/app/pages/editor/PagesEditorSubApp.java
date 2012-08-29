@@ -55,6 +55,7 @@ import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.widget.actionbar.ActionbarView;
 import info.magnolia.ui.widget.editor.PageEditor;
+import info.magnolia.ui.widget.editor.PageEditorParameters;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,11 +73,11 @@ import java.util.List;
 /**
  * PagesEditorSubApp.
  */
-public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView.Listener {
+public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubAppView.Listener {
 
     private static final Logger log = LoggerFactory.getLogger(PagesEditorSubApp.class);
 
-    private final PagesEditorView view;
+    private final PagesEditorSubAppView view;
 
     private final EventBus eventBus;
 
@@ -93,7 +94,7 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
     private final WorkbenchActionFactory actionFactory;
 
     @Inject
-    public PagesEditorSubApp(final AppContext appContext, final PagesEditorView view, final @Named("subapp") EventBus eventBus,
+    public PagesEditorSubApp(final AppContext appContext, final PagesEditorSubAppView view, final @Named("subapp") EventBus eventBus,
         final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final WorkbenchActionFactory actionFactory) {
 
         this.view = view;
@@ -118,6 +119,7 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
         ActionbarDefinition actionbarDefinition = appDescriptor.getEditor().getActionbar();
         ActionbarView actionbar = actionbarPresenter.start(actionbarDefinition, actionFactory);
         view.setActionbarView(actionbar);
+        view.setPageEditorView(pageEditorPresenter.start());
 
         goToLocation(location);
 
@@ -143,18 +145,18 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
     }
 
     private void setPageEditorParameters(List<String> locationTokens) {
-        String editingMode = getEditingMode(locationTokens);
+        boolean isPreview = isPreview(locationTokens);
         String path = getEditorPath(locationTokens);
 
-        this.parameters = new PageEditorParameters(MgnlContext.getContextPath(), path, editingMode);
+        this.parameters = new PageEditorParameters(MgnlContext.getContextPath(), path, isPreview);
         this.caption = getPageTitle(path);
     }
 
     private boolean isLocationChanged(List<String> locationTokens) {
-        String editingMode = getEditingMode(locationTokens);
+        boolean isPreview = isPreview(locationTokens);
         String path = getEditorPath(locationTokens);
 
-        if (parameters != null && (parameters.getNodePath().equals(path) && parameters.getEditingMode().equals(editingMode))) {
+        if (parameters != null && (parameters.getNodePath().equals(path) && parameters.isPreview() == isPreview)) {
             return false;
         }
         return true;
@@ -188,15 +190,13 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
     private void showEditor() {
         hideAllSections();
         actionbarPresenter.showSection("pageActions");
-        pageEditorPresenter.setParameters(parameters);
-        view.setPageEditorView(pageEditorPresenter.start());
+        pageEditorPresenter.loadPageEditor(parameters);
     }
 
     private void showPreview() {
         hideAllSections();
         actionbarPresenter.showSection("pagePreviewActions");
-        pageEditorPresenter.setParameters(parameters);
-        view.setPageEditorView(pageEditorPresenter.start());
+        pageEditorPresenter.loadPageEditor(parameters);
     }
 
     private void bindHandlers() {
@@ -296,8 +296,8 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorView
         return locationTokens.size() >= 2 ? locationTokens.get(1) : "";
     }
 
-    public static String getEditingMode(List<String> locationTokens) {
-        return locationTokens.size() >= 3 ? locationTokens.get(2) : "";
+    public static boolean isPreview(List<String> locationTokens) {
+        return locationTokens.size() >= 3 ? locationTokens.get(2).equals(PagesApp.PREVIEW_TOKEN) : false;
     }
 
     private static List<String> parseLocationToken(Location location) {
