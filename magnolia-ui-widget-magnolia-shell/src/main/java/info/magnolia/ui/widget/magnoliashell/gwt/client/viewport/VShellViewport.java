@@ -54,6 +54,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
+import com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent;
 import com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
@@ -96,19 +97,14 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
         super();
         setElement(container);
         addStyleName("v-shell-viewport");
-
+        DOM.sinkEvents(this.getElement(), Event.TOUCHEVENTS);
         bindHandlers();
-
     }
 
     private void bindHandlers(){
-
-        DOM.sinkEvents(this.getElement(), Event.TOUCHEVENTS);
-
         delegate.addTouchStartHandler(new TouchStartHandler() {
-
             @Override
-            public void onTouchStart(com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent event) {
+            public void onTouchStart(TouchStartEvent event) {
                 final Element target = event.getNativeEvent().getEventTarget().cast();
                 if (target == getElement()) {
                     eventBus.fireEvent(new ViewportCloseEvent(VMagnoliaShell.ViewportType.SHELL_APP_VIEWPORT));
@@ -134,7 +130,12 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
                     paintable.updateFromUIDL(childUIdl, client);
                     if (forceContentAlign) {alignChild(w);}
                     if (idx == 0) {
-                        setWidgetVisibleWithTransition(w);
+                        String zIndex = getElement().getStyle().getZIndex();
+                        w.getElement().getStyle().setProperty("zIndex", zIndex);
+                        w.getElement().getStyle().setVisibility(Visibility.VISIBLE);
+                        if (w != visibleWidget) {
+                            setWidgetVisibleWithTransition(w);
+                        }
                     } else {
                         w.getElement().getStyle().setProperty("zIndex", "");
                     }
@@ -166,6 +167,7 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
         }
         if (w != visibleWidget) {
             w.getElement().getStyle().setVisibility(Visibility.HIDDEN);
+            w.getElement().getStyle().setOpacity(0);
         }
         return result;
     }
@@ -175,8 +177,6 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
             if (w != visibleWidget) {
                 hideCurrentContent();
             }
-            w.getElement().getStyle().setProperty("zIndex", getElement().getStyle().getZIndex());
-            w.getElement().getStyle().setVisibility(Visibility.VISIBLE);
             animationDelegate.show(w, Callbacks.create(new JQueryCallback() {
                 @Override
                 public void execute(JQueryWrapper query) {
@@ -257,8 +257,8 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
     @Override
     protected void add(final Widget child, Element container) {
         if (child instanceof Paintable) {
-            paintables.add((Paintable)child);
             child.getElement().getStyle().setPosition(Position.ABSOLUTE);
+            paintables.add((Paintable)child);
         }
         super.add(child, container);
     }

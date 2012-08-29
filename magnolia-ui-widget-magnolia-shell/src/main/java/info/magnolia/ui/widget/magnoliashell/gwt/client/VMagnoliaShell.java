@@ -38,12 +38,15 @@ import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppTy
 import info.magnolia.ui.widget.magnoliashell.gwt.client.event.ShellAppNavigationEvent;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VShellMessage.MessageType;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.util.JSONUtil;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.VShellViewport;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.VAppsViewport.PreloaderCallback;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.VShellViewport;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.vaadin.artur.icepush.client.ui.VICEPush;
@@ -55,7 +58,6 @@ import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.Event;
 import com.google.web.bindery.event.shared.EventBus;
@@ -96,8 +98,6 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
     private List<String> registeredAppNames = new LinkedList<String>();
     
     private List<String> runningAppNames = new LinkedList<String>();
-    
-    private Paintable fullscreenPaintable = null;
     
     private ClientSideProxy proxy = new ClientSideProxy(this) {
         {
@@ -192,22 +192,39 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
     }-*/;
 
     @Override
-    public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
+    public void updateFromUIDL(UIDL uidl, final ApplicationConnection client) {
         this.client = client;
-        for (final ViewportType viewportType : ViewportType.values()) {
-            final UIDL tagUidl = uidl.getChildByTagName(viewportType.name());
-            if (tagUidl != null) {
-                final UIDL viewportUidl = tagUidl.getChildUIDL(0);
-                final Paintable p = client.getPaintable(viewportUidl);
-                if (p instanceof VShellViewport) {
-                    final VShellViewport viewport = (VShellViewport) p;
-                    view.updateViewport(viewport, viewportType);
-                    p.updateFromUIDL(viewportUidl, client);
+        if (!client.updateComponent(this, uidl, true)) {
+            ViewportType explicitActiveViewportType = null;
+            final Map<Paintable, UIDL> postponedViewportUidls = new HashMap<Paintable, UIDL>();
+            for (final ViewportType viewportType : ViewportType.values()) {
+                final UIDL tagUidl = uidl.getChildByTagName(viewportType.name());
+                if (tagUidl != null) {
+                    final UIDL viewportUidl = tagUidl.getChildUIDL(0);
+                    final Paintable p = client.getPaintable(viewportUidl);
+                    if (p instanceof VShellViewport) {
+                        final VShellViewport viewport = (VShellViewport) p;
+                        view.updateViewport(viewport, viewportType);
+                        if (tagUidl.hasAttribute("active")) {
+                            explicitActiveViewportType = ViewportType.valueOf(tagUidl.getStringAttribute("active"));
+                            viewport.getElement().getStyle().setZIndex(300);
+                            p.updateFromUIDL(viewportUidl, client);
+                        } else {
+                            postponedViewportUidls.put(p, viewportUidl);   
+                        }
+                    }
                 }
             }
+            
+            for (final Entry<Paintable, UIDL> entry : postponedViewportUidls.entrySet()) {
+                entry.getKey().updateFromUIDL(entry.getValue(), client);
+            }
+            
+            if (explicitActiveViewportType != null) {
+                view.changeActiveViewport(explicitActiveViewportType);
+            }
+            updatePusher(uidl);
         }
-        updatePusher(uidl);
-        updateFullScreenComponent(uidl);
         boolean handleCurrentHistory = !proxy.isClientInitialized();
         proxy.update(this, uidl, client); 
         if (handleCurrentHistory) {
@@ -238,24 +255,6 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
     @Override
     public void removeMessage(String id) {
         proxy.call("removeMessage", id);
-    }
-
-    private void updateFullScreenComponent(UIDL uidl) {
-        final UIDL componentUidl = uidl.getChildByTagName("fullscreenComponent");
-        if (componentUidl != null) {
-            final Paintable paintable = client.getPaintable(componentUidl.getChildUIDL(0));
-            if (paintable != null) {
-                if (!hasChildComponent((Widget)paintable)) {
-                    this.fullscreenPaintable = paintable;
-                    view.setFullscreen((Widget)fullscreenPaintable);
-                    client.runDescendentsLayout(this);
-                }
-                fullscreenPaintable.updateFromUIDL(componentUidl.getChildUIDL(0), client);
-            }
-        } else {
-            fullscreenPaintable = null;
-            view.setFullscreen(null);
-        }
     }
     
     private void updatePusher(final UIDL uidl) {
@@ -303,7 +302,7 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
         while (it.hasNext() && !result) {
             result = component == it.next();
         }
-        return result || component == fullscreenPaintable;
+        return result;
     }
 
     @Override
@@ -316,12 +315,8 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
 
     @Override
     public RenderSpace getAllocatedSpace(Widget child) {
-        if (fullscreenPaintable == child) {
-            return new RenderSpace(RootPanel.get().getOffsetWidth(), RootPanel.get().getOffsetHeight());
-        } else {
-            if (hasChildComponent(child)) {
-                return new RenderSpace(view.getViewportWidth(), view.getViewportHeight());
-            }   
+        if (hasChildComponent(child)) {
+            return new RenderSpace(view.getViewportWidth(), view.getViewportHeight());
         }
         return new RenderSpace();
     }
@@ -395,7 +390,6 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
                         }
                     });
                 } else {
-                    //getAppViewport().hideEntireContents();
                     loadApp(prefix, token);
                 }
             } else {

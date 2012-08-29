@@ -198,6 +198,9 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
             final String tagName = entry.getKey().name();
             target.startTag(tagName);
             entry.getValue().paint(target);
+            if (entry.getValue() == activeViewport) {
+                target.addAttribute("active", entry.getKey().name());    
+            }
             target.endTag(tagName);
         }
 
