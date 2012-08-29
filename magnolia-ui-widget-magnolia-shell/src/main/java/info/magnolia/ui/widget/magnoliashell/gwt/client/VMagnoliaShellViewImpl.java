@@ -81,7 +81,7 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
     private Map<ViewportType, VShellViewport> viewports = new EnumMap<ViewportType, VShellViewport>(ViewportType.class);
 
     private ViewportType activeViewportType = null;
-            
+
     private VMainLauncher mainAppLauncher;
 
     private Presenter presenter;
@@ -91,7 +91,7 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
     private VShellMessage lowPriorityMessage;
 
     private VShellMessage hiPriorityMessage;
-    
+
     public VMagnoliaShellViewImpl(final EventBus eventBus) {
         super();
         this.eventBus = eventBus;
@@ -100,7 +100,7 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
         add(mainAppLauncher, getElement());
         bindEventHandlers();
     }
-    
+
     private void bindEventHandlers() {
         eventBus.addHandler(ViewportCloseEvent.TYPE, this);
         eventBus.addHandler(ShellAppNavigationEvent.TYPE, navigationHandler);
@@ -135,7 +135,7 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
 
     @Override
     public int getViewportHeight() {
-        int errorMessageHeight = hiPriorityMessage == null && 
+        int errorMessageHeight = hiPriorityMessage == null &&
                 (getWidgetIndex(hiPriorityMessage) > -1) ? hiPriorityMessage.getOffsetHeight() : 0;
         return getOffsetHeight() - mainAppLauncher.getExpandedHeight() - errorMessageHeight;
     }
@@ -230,7 +230,7 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
             }
         }
     }
-    
+
     private final Timer mainLauncherUnlockTimer = new Timer() {
         @Override
         public void run() {
@@ -306,7 +306,7 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
             insert(pusher, 0);
         }
     }
-    
+
     @Override
     public void updateShellAppIndication(ShellAppType type, int increment) {
         mainAppLauncher.updateIndication(type, increment);

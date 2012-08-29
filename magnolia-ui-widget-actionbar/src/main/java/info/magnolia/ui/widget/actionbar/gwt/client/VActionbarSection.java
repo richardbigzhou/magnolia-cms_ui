@@ -34,6 +34,7 @@
 package info.magnolia.ui.widget.actionbar.gwt.client;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.google.gwt.user.client.DOM;
@@ -57,13 +58,13 @@ public class VActionbarSection extends FlowPanel {
 
     private final VActionbarSectionJSO data;
 
-    private final Map<String, VActionbarGroup> groups = new HashMap<String, VActionbarGroup>();
+    private final Map<String, VActionbarGroup> groups = new LinkedHashMap<String, VActionbarGroup>();
 
     private Widget preview;
 
     /**
      * Instantiates a new action bar section with given data.
-     * 
+     *
      * @param data the data
      */
     public VActionbarSection(VActionbarSectionJSO data) {

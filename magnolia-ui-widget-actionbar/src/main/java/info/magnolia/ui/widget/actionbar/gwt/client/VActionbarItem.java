@@ -82,12 +82,12 @@ public class VActionbarItem extends Widget {
 
     /**
      * Instantiates a new action in action bar.
-     * 
+     *
      * @param data the data json object
      * @param eventBus the event bus
      * @param icon the icon
      * @param cssClasses css classes to be added to the item
-     * 
+     *
      * Use {@link #VActionbarItem(VActionbarItemJSO, EventBus)} instead.
      */
     @Deprecated
@@ -105,7 +105,7 @@ public class VActionbarItem extends Widget {
 
     /**
      * Instantiates a new action in action bar.
-     * 
+     *
      * @param data the data json object
      * @param eventBus the event bus
      * @param cssClasses css classes to be added to the item
@@ -156,6 +156,10 @@ public class VActionbarItem extends Widget {
                 }
             }
         });
+    }
+
+    public void resetStyleNames(String cssClasses){
+    	setStyleName(CLASSNAME + " " + cssClasses);
     }
 
     public String getName() {
