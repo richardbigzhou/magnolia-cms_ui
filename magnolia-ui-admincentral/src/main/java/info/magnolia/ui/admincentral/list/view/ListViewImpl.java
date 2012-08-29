@@ -121,7 +121,7 @@ public class ListViewImpl implements ListView {
         Iterator<ColumnDefinition> iterator = workbenchDefinition.getColumns().iterator();
         while (iterator.hasNext()) {
             ColumnDefinition column = iterator.next();
-            if(workbenchDefinition.isDialodWorkbensh() && ! column.isToDisplayInDialog()) {
+            if(workbenchDefinition.isDialogWorkbench() && ! column.isToDisplayInDialog()) {
                 continue;
             }
             String columnName = column.getName();

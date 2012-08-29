@@ -138,7 +138,7 @@ public class PageBar extends AbstractBar {
 
                 addDomHandler(new MouseUpHandler() {
                     @Override
-                    public void onMouseUp(MouseUpEvent event) {
+                    public void selectElement(MouseUpEvent event) {
                         event.stopPropagation();
                     }
                 }, MouseUpEvent.getType());*/
