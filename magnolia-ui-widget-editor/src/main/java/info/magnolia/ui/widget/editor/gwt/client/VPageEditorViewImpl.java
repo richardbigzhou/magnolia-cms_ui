@@ -63,7 +63,6 @@ public class VPageEditorViewImpl extends FlowPanel implements VPageEditorView {
                 //other handlers are initialized here b/c we need to know the document inside the iframe.
                 //make sure we process  html only when the document inside the iframe is loaded.
                 listener.onFrameLoaded(iframe);
-
             }
         });
 
