@@ -213,11 +213,10 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
             var ref = this;
             element.contentDocument.onmouseup = function(event) {
                 ref.@info.magnolia.ui.widget.editor.gwt.client.VPageEditor::selectElement(Lcom/google/gwt/dom/client/Element;)(event.target);
-                event.stopPropagation();
+
             }
             element.contentDocument.ontouchend = function(event) {
                 ref.@info.magnolia.ui.widget.editor.gwt.client.VPageEditor::selectElement(Lcom/google/gwt/dom/client/Element;)(event.target);
-                event.stopPropagation();
             }
         }
     }-*/;
@@ -304,7 +303,11 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
         IFrameElement frameElement = IFrameElement.as(element);
         Document contentDocument = frameElement.getContentDocument();
         process(contentDocument);
-        focusModel.toggleRootAreaBar(true);
+
+        // fix this
+        model.getPageBar().setPageTitle(contentDocument.getTitle());
+
+        focusModel.selectPage();
 
     }
 

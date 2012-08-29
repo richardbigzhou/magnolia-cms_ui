@@ -52,7 +52,7 @@ public class ComponentProcessor extends MgnlElementProcessor {
 
     @Override
     public void process() {
-        if (hasControlbar(getMgnlElement().getAttributes())) {
+        if (hasControlBar(getMgnlElement().getAttributes())) {
             GWT.log("Component has edit bar. Injecting it..");
             ComponentBar editBarWidget = new ComponentBar(getModel(), getEventBus(), getMgnlElement());
         }
@@ -61,7 +61,7 @@ public class ComponentProcessor extends MgnlElementProcessor {
         }
     }
 
-    private boolean hasControlbar(Map<String, String>attributes) {
+    private boolean hasControlBar(Map<String, String> attributes) {
 
         boolean isInherited = Boolean.parseBoolean(attributes.get("inherited"));
         boolean editable = true;

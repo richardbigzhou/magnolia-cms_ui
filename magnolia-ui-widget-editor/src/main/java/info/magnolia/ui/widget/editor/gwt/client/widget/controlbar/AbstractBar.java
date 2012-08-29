@@ -55,7 +55,7 @@ public abstract class AbstractBar extends FlowPanel {
     protected final static String ICON_CLASSNAME = "editorIcon";
     protected final static String EDIT_CLASSNAME = "icon-edit";
     protected final static String REMOVE_CLASSNAME = "icon-trash";
-    protected final static String ADD_CLASSNAME = "icon-add-item";
+    protected final static String ADD_CLASSNAME = "icon-add";
 
     private String workspace;
 
@@ -267,4 +267,5 @@ public abstract class AbstractBar extends FlowPanel {
     }
 
     public abstract String getDialog();
+
 }
