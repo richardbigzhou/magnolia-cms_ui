@@ -107,13 +107,11 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
     protected String paintableId;
     private FocusModel focusModel;
 
-    private String contextPath;
-    private String pagePath;
-    private boolean preview = false;
+    private VPageEditorParameters pageEditorParameters;
 
     public VPageEditor() {
         this.eventBus = new SimpleEventBus();
-        this.view = new VPageEditorViewImpl(eventBus);
+        this.view = new VPageEditorViewImpl();
         this.model = new ModelImpl();
         this.focusModel = new FocusModelImpl(eventBus, model);
 
@@ -127,7 +125,16 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
                 register("refresh", new Method() {
                     @Override
                     public void invoke(String methodName, Object[] params) {
-                        reloadIFrame(view.getIframe().getElement());
+                        view.reload();
+                    }
+                });
+
+                register("load", new Method() {
+                    @Override
+                    public void invoke(String methodName, Object[] params) {
+                        String json = String.valueOf(params[0]);
+                        pageEditorParameters =  VPageEditorParameters.parse(json);
+                        view.setUrl(pageEditorParameters.getContextPath() + pageEditorParameters.getNodePath());
                     }
                 });
             }
@@ -152,36 +159,14 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
         if (client.updateComponent(this, uidl, true)) {
             return;
         }
-        getInitParameters(uidl);
-
         view.getIframe().getElement().setId(paintableId);
-        view.getIframe().setUrl(getContextPath() + getPagePath());
+
 
         proxy.update(this, uidl, client);
     }
 
     public Model getModel() {
         return model;
-    }
-
-    /**
-     * Helper to return the contextPath sent from server.
-     */
-    private void getInitParameters(UIDL uidl) {
-
-        String contextPath = uidl.getStringAttribute("contextPath");
-        if (contextPath == null) {
-            contextPath = "";
-        }
-        String pagePath = uidl.getStringAttribute("nodePath");
-        if (pagePath == null) {
-            pagePath = "";
-        }
-
-        this.contextPath = contextPath;
-        this.pagePath = pagePath;
-        this.preview = uidl.getBooleanAttribute("preview");
-
     }
 
     public void onMouseUp(final Element element) {
@@ -253,7 +238,7 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
         LinkElement cssLink = document.createLinkElement();
         cssLink.setType("text/css");
         cssLink.setRel("stylesheet");
-        cssLink.setHref(contextPath + "/VAADIN/themes/admincentraltheme/pageeditor.css");
+        cssLink.setHref(pageEditorParameters.getContextPath() + "/VAADIN/themes/admincentraltheme/pageeditor.css");
         head.insertFirst(cssLink);
     }
 
@@ -264,10 +249,6 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
                 callbacks[i].apply();
             }
         }
-    }-*/;
-
-    protected native void reloadIFrame(Element iframeElement) /*-{
-        iframeElement.contentWindow.location.reload(true);
     }-*/;
 
     //FIXME submitting forms still renders website channel and edit bars
@@ -372,6 +353,10 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
 
     @Override
     public void onFrameLoaded(Frame iframe) {
+        String param1= pageEditorParameters.getContextPath();
+        String param2 = pageEditorParameters.getNodePath();
+        boolean preview = pageEditorParameters.isPreview();
+
         if (preview) {
             return;
         }
@@ -383,14 +368,6 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
         process(contentDocument);
         focusModel.toggleRootAreaBar(true);
 
-    }
-
-    public String getPagePath() {
-        return pagePath;
-    }
-
-    public String getContextPath() {
-        return contextPath;
     }
 
 }

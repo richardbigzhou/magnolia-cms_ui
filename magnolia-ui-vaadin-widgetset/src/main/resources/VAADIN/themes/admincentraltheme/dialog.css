@@ -8,7 +8,9 @@
 	margin-top: 25px;
 }
 
-.v-dialog-layout > .v-dialog-field-section, .v-dialog-field-label, .v-dialog-field {
+.v-dialog-layout > .v-dialog-field-section, .v-dialog-field-label,
+.v-dialog-field, .validation-message-inline span, .help-message-inline span,
+.dialog-description * {
 	font-family: Verdana, Helvetica, sans-serif !important;
 	font-size: 12px !important;
 }
@@ -62,7 +64,6 @@
 	padding: 0;
 	position: absolute;
 	width: 720px;
-	z-index: 1000;
 }
 
 .dialog-footer {

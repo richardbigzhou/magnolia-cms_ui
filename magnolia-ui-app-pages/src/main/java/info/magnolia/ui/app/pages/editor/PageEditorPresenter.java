@@ -53,6 +53,7 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.widget.dialog.MagnoliaDialogPresenter;
 import info.magnolia.ui.widget.editor.PageEditor;
+import info.magnolia.ui.widget.editor.PageEditorParameters;
 import info.magnolia.ui.widget.editor.PageEditorView;
 
 import java.util.LinkedList;
@@ -85,8 +86,6 @@ public class PageEditorPresenter implements PageEditorView.Listener {
     private final DialogPresenterFactory dialogPresenterFactory;
 
     private final TemplateDefinitionRegistry templateDefinitionRegistry;
-
-    private PageEditorParameters parameters;
 
     private final ConfiguredDialogDefinition dialogDefinition;
 
@@ -316,20 +315,15 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
     public PageEditorView start() {
         view.setListener(this);
-        view.init(parameters.getContextPath(), parameters.getNodePath(), parameters.isPreview());
+        view.init();
         return view;
-    }
-
-    public PageEditorParameters getParameters() {
-        return parameters;
-    }
-
-    public void setParameters(PageEditorParameters parameters) {
-        this.parameters = parameters;
     }
 
     public PageEditor.AbstractElement getSelectedElement() {
         return selectedElement;
     }
 
+    public void loadPageEditor(PageEditorParameters parameters) {
+        view.load(parameters);
+    }
 }

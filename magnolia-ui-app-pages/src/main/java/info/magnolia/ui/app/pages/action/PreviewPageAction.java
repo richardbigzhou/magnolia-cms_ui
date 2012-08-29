@@ -34,7 +34,6 @@
 package info.magnolia.ui.app.pages.action;
 
 import com.google.inject.Inject;
-
 import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.app.pages.PagesApp;
@@ -61,8 +60,6 @@ public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
 
     private LocationController locationController;
 
-    private boolean full;
-
     /**
      * Instantiates a new preview page action.
      *
@@ -74,7 +71,6 @@ public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
         super(definition);
         this.locationController = locationController;
         this.nodeToPreview = nodeToPreview;
-        this.full =  definition.isFull();
     }
 
     @Override
@@ -85,10 +81,11 @@ public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
                 return;
             }
 
-            final String editorPath = nodeToPreview.getPath();
-            final String previewMode = full ? PagesApp.PREVIEW_FULL_TOKEN : PagesApp.PREVIEW_TOKEN;
+            final String pageNodePath = nodeToPreview.getPath();
 
-            DefaultLocation location = PagesEditorSubApp.createLocation(editorPath, previewMode);
+
+
+            DefaultLocation location = PagesEditorSubApp.createLocation(pageNodePath, PagesApp.PREVIEW_TOKEN);
 
             log.debug("token is {}", location.getToken());
 

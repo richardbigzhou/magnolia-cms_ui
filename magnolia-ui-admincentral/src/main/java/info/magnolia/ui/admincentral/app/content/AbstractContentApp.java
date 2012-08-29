@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,30 +31,32 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.magnoliashell.gwt.client;
+package info.magnolia.ui.admincentral.app.content;
 
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.Widget;
+import javax.inject.Inject;
+
+import com.vaadin.data.Item;
+
+import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
+import info.magnolia.ui.framework.app.AbstractApp;
+import info.magnolia.ui.widget.dialog.MagnoliaDialogPresenter.Presenter;
+
 
 /**
- * Container widget for the fullscreen shown component.
+ * Abstract base app class for content apps.
  */
-public class FullscreenWidgetWrapper extends SimplePanel {
+public abstract class AbstractContentApp extends AbstractApp {
 
-    public FullscreenWidgetWrapper() {
-        addStyleName("v-fullscreen-wrapper");
+    private DialogPresenterFactory dialogPresenterFactory;
+
+    @Inject
+    public AbstractContentApp(DialogPresenterFactory dialogPresenterFactory) {
+        this.dialogPresenterFactory = dialogPresenterFactory;
     }
-    
-    public void setContent(final Widget content) {
-        if (content != null) {
-            setWidget(content);   
-        } else {
-            hide();
-        }
+
+    public void openChooseDialog(String dialogName, Presenter.Callback callback, Item item) {
+        Presenter dialogPresenter = dialogPresenterFactory.createDialog(dialogName);
+        dialogPresenter.start(item, callback);
     }
-    
-    public void hide() {
-        clear();
-        removeFromParent();
-    }
+
 }

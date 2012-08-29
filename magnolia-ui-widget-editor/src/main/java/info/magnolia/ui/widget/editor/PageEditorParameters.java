@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,31 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.content.view;
-
-import info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilder;
-import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import com.rits.cloning.Cloner;
+package info.magnolia.ui.widget.editor;
 
 /**
- * ChooseDialog ContentPresenter.
- * Used to inject a specific EventBuss, and to handle specific ChooseDialog logic.
+ * PageEditorParameters.
  */
-public class ChooseDialogContentPresenter extends ContentPresenter {
+public class PageEditorParameters {
 
-    @Inject
-    public ChooseDialogContentPresenter(ContentViewBuilder contentViewBuilder, AppContext context, @Named("choosedialog") EventBus subAppEventBus, Shell shell) {
-        super(contentViewBuilder, context, subAppEventBus, shell);
-        Cloner cloner = new Cloner();
-        workbenchDefinition = cloner.deepClone(workbenchDefinition);
-        ((ConfiguredWorkbenchDefinition)workbenchDefinition).setDialodWorkbensh(true);
+    private final String contextPath;
+
+    private final String nodePath;
+
+    private final boolean preview;
+
+    public PageEditorParameters(String contextPath, String nodePath, boolean preview) {
+        this.contextPath = contextPath;
+        this.nodePath = nodePath;
+        this.preview = preview;
     }
 
+    public String getContextPath() {
+        return contextPath;
+    }
+
+    public String getNodePath() {
+        return nodePath;
+    }
+
+    public boolean isPreview() {
+        return preview;
+    }
 }
