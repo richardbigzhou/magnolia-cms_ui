@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,31 +31,32 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.content.view;
-
-import info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilder;
-import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition;
+package info.magnolia.ui.admincentral.app.content;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
-import com.rits.cloning.Cloner;
+import com.vaadin.data.Item;
+
+import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
+import info.magnolia.ui.framework.app.AbstractApp;
+import info.magnolia.ui.widget.dialog.MagnoliaDialogPresenter.Presenter;
+
 
 /**
- * ChooseDialog ContentPresenter.
- * Used to inject a specific EventBuss, and to handle specific ChooseDialog logic.
+ * Abstract base app class for content apps.
  */
-public class ChooseDialogContentPresenter extends ContentPresenter {
+public abstract class AbstractContentApp extends AbstractApp {
+
+    private DialogPresenterFactory dialogPresenterFactory;
 
     @Inject
-    public ChooseDialogContentPresenter(ContentViewBuilder contentViewBuilder, AppContext context, @Named("choosedialog") EventBus subAppEventBus, Shell shell) {
-        super(contentViewBuilder, context, subAppEventBus, shell);
-        Cloner cloner = new Cloner();
-        workbenchDefinition = cloner.deepClone(workbenchDefinition);
-        ((ConfiguredWorkbenchDefinition)workbenchDefinition).setDialodWorkbensh(true);
+    public AbstractContentApp(DialogPresenterFactory dialogPresenterFactory) {
+        this.dialogPresenterFactory = dialogPresenterFactory;
+    }
+
+    public void openChooseDialog(String dialogName, Presenter.Callback callback, Item item) {
+        Presenter dialogPresenter = dialogPresenterFactory.createDialog(dialogName);
+        dialogPresenter.start(item, callback);
     }
 
 }

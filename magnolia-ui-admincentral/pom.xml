@@ -148,7 +148,11 @@
 	  <artifactId>imageinfo</artifactId>
 	  <version>1.9</version>
 	</dependency>
-
+	<dependency>
+      <groupId>uk.com.robust-it</groupId>
+      <artifactId>cloning</artifactId>
+      <version>1.8.2</version>
+    </dependency>
     <!-- For Test -->
      <dependency>
         <groupId>junit</groupId>

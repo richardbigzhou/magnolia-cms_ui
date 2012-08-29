@@ -270,8 +270,14 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
 
         } else {
             // No apps are open.
-            String appLauncherNameLower = ShellAppType.APPLAUNCHER.name().toLowerCase();
-            navigateToShellApp(appLauncherNameLower, "");
+            String appLauncherNameLower = ShellAppType.APPLAUNCHER.name().toLowerCase() ;
+
+            //Only navigate if the requested location is not the applauncher
+            String fragmentCurrent = getActiveViewport().getCurrentShellFragment();
+
+            if (!fragmentCurrent.startsWith(appLauncherNameLower)  ){
+                navigateToShellApp(appLauncherNameLower, "");
+            }
         }
     }
 
