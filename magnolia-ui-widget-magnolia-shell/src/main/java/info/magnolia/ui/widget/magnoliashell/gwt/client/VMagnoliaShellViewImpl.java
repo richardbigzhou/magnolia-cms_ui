@@ -313,6 +313,11 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
     }
 
     @Override
+    public void setShellAppIndication(ShellAppType type, int indication) {
+        mainAppLauncher.setIndication(type, indication);
+    }
+
+    @Override
     public void closeMessageEager(final String id) {
         presenter.removeMessage(id);
     }
