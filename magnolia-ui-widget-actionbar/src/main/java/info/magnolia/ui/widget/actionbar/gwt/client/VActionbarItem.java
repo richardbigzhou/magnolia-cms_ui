@@ -38,6 +38,12 @@ import info.magnolia.ui.widget.actionbar.gwt.client.event.ActionTriggerEvent;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.event.dom.client.MouseDownHandler;
+import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseOutHandler;
+import com.google.gwt.event.dom.client.MouseUpEvent;
+import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -143,8 +149,32 @@ public class VActionbarItem extends Widget {
 
     protected void bindHandlers() {
 
-        DOM.sinkEvents(getElement(), Event.TOUCHEVENTS);
+        DOM.sinkEvents(getElement(), Event.MOUSEEVENTS);
 
+        addDomHandler(new MouseDownHandler() {
+            @Override
+            public void onMouseDown(MouseDownEvent event) {
+                addStyleName("mousedown");
+            }
+        }, MouseDownEvent.getType());
+
+        addDomHandler(new MouseUpHandler() {
+            @Override
+            public void onMouseUp(MouseUpEvent event) {
+                removeStyleName("mousedown");
+            }
+        }, MouseUpEvent.getType());
+
+        addDomHandler(new MouseOutHandler() {
+            @Override
+            public void onMouseOut(MouseOutEvent event) {
+                removeStyleName("mousedown");
+            }
+        }, MouseOutEvent.getType());
+
+
+
+        /*
 
         delegate.addTouchEndHandler(new TouchEndHandler() {
 
@@ -156,6 +186,7 @@ public class VActionbarItem extends Widget {
                 }
             }
         });
+        */
     }
 
     public void resetStyleNames(String cssClasses){
