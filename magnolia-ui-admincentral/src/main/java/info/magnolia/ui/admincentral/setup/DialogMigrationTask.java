@@ -285,7 +285,6 @@ public class DialogMigrationTask  extends AbstractTask {
      * Check if the extends and reference are correct. If not try to do the best
      * to found a correct path.
      * @throws RepositoryException
-     * @throws ValueFormatException
      */
     private void postProcessForExtendsAndReference() throws RepositoryException  {
         for(Property p:extendsAndReferenceProperty) {
