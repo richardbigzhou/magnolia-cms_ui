@@ -195,8 +195,4 @@ public class DialogFieldWrapper extends FlowPanel implements HasFocusHandlers {
         }
     }
 
-    protected Element getLabel() {
-        return label;
-    }
-
 }

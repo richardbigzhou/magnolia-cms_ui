@@ -50,6 +50,7 @@ import com.vaadin.ui.VerticalLayout;
  *  put the selected value into the text input field.
  *  </ul>
  */
+@SuppressWarnings("serial")
 public class TextAndContentViewField extends CustomField {
 
     private ContentWorkbenchView contentView;
@@ -132,5 +133,11 @@ public class TextAndContentViewField extends CustomField {
     @Override
     public void setCaption(String caption) {
         super.setCaption(null);
+    }
+
+    @Override
+    public void attach() {
+        super.attach();
+        getParent().addStyleName("content-view-field-wrapper");
     }
 }

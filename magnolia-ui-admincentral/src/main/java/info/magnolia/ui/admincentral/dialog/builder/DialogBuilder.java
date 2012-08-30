@@ -104,11 +104,6 @@ public class DialogBuilder {
                 //Add Validation
                 setConstraints(fieldDefinition, field);
 
-                //hide label for this field
-                if(fieldDefinition.isHideLabel()) {
-                    field.addStyleName("hide-label");
-                }
-
                 tab.addField(field);
                 //Set Help
                 if(StringUtils.isNotBlank(fieldDefinition.getDescription())) {

@@ -44,7 +44,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -98,11 +97,6 @@ public class VDialogTabLayout extends FlowPanel implements Container, HelpAccess
                 String description = childUIdl.getStringAttribute("helpDescription");
                 DialogFieldWrapper fieldSection = sections.get(w);
                 fieldSection.setHelpDescription(description);
-            }
-
-            if (childUIdl.getBooleanAttribute("hideLabel")) {
-                DialogFieldWrapper fieldSection = sections.get(w);
-                fieldSection.getLabel().getStyle().setDisplay(Display.NONE);
             }
 
             p.updateFromUIDL(childUIdl.getChildUIDL(0), client);

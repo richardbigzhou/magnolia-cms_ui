@@ -284,3 +284,10 @@ fieldset {
     vertical-align: -20%;
     margin-left: 3px;
 }
+
+.content-view-field-wrapper {
+    margin:0px;
+}
+.content-view-field-wrapper .v-dialog-field-label {
+	display: none;
+}
