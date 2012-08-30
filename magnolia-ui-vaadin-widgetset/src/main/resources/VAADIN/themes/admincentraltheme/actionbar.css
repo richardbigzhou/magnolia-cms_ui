@@ -91,6 +91,14 @@
 .v-action:hover {
 	color:#aabf2f;
 }
+.v-action.mousedown:hover {
+	color:#ffffff;
+}
+
+.tablet .v-action.hover{
+	color:#666666;
+	background-color:#E6E6E6;
+}
 
 .v-action .v-flyout-indicator{
     display:none;

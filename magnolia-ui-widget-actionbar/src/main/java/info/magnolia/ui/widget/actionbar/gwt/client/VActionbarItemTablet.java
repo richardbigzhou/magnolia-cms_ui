@@ -68,12 +68,14 @@ public class VActionbarItemTablet extends VActionbarItem {
             public void onTouchStart(com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent event) {
 
                 GWT.log("Button TouchStart");
+                addStyleName("hover");
+
                 // Expand group row on timeout.
                 final Timer t = new Timer() {
 
                     @Override
                     public void run() {
-
+                        removeStyleName("hover");
                         group.toggleHorizontal();
 
                         touchEndHandler.removeHandler();
@@ -86,6 +88,7 @@ public class VActionbarItemTablet extends VActionbarItem {
 
                     @Override
                     public void onTouchEnd(com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent event) {
+                        removeStyleName("hover");
 
                         t.cancel();
                         touchEndHandler.removeHandler();
