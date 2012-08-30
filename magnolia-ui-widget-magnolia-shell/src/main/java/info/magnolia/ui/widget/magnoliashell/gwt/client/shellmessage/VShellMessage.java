@@ -124,11 +124,15 @@ public abstract class VShellMessage extends HTML {
         
         header.setClassName("header");
         getElement().appendChild(header);
-        
-        closeEl.setClassName("close");
+
+        applyCloseIconStyles(closeEl);
         header.appendChild(closeEl);
         
         messageTypeEl.setInnerHTML(getMessageTypeCaption());
+    }
+
+    protected void applyCloseIconStyles(Element element) {
+        element.setClassName("close");
     }
 
     protected abstract String getMessageTypeCaption();
