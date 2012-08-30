@@ -86,7 +86,7 @@ public class ConfiguredDialogDefinitionManager extends ModuleConfigurationObserv
                 @Override
                 public void visit(Node current) throws RepositoryException {
                     for (Node dialogNode : NodeUtil.getNodes(current, MgnlNodeType.NT_CONTENTNODE)) {
-                        if(dialogNode.hasNode(ConfiguredDialogDefinition.TABS_NODE_NAME) || dialogNode.hasNode(ConfiguredDialogDefinition.ACTIONS_NODE_NAME) ) {
+                        if(isDialog(dialogNode)) {
                             // Handle as Dialog only if it has sub nodes tabs or actions.
                             // This will filter the Fields and Tab definition in dialogs used by the extends mechanism.
                             DialogDefinitionProvider provider = createProvider(dialogNode);
@@ -102,6 +102,15 @@ public class ConfiguredDialogDefinitionManager extends ModuleConfigurationObserv
         }
 
         this.registeredIds = dialogDefinitionRegistry.unregisterAndRegister(registeredIds, providers);
+    }
+
+    /**
+     * Check if this node can be handle as a ConfiguredDialogDefinition.
+     */
+    private boolean isDialog(Node dialogNode) throws RepositoryException {
+        return dialogNode.hasNode(ConfiguredDialogDefinition.TABS_NODE_NAME)
+            || dialogNode.hasNode(ConfiguredDialogDefinition.ACTIONS_NODE_NAME)
+            || dialogNode.hasProperty(ConfiguredDialogDefinition.EXTEND_PROPERTY_NAME);
     }
 
     protected DialogDefinitionProvider createProvider(Node dialogNode) throws RepositoryException {
