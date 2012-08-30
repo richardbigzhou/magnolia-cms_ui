@@ -92,12 +92,12 @@ public class MagnoliaTreeTable extends HybridSelectionTreeTable {
         setContainerDataSource(container);
 
         final List<Object> visibleColumns = new ArrayList<Object>();
-        Iterator<ColumnDefinition> iterator = workbenchDefinition.getColumns().iterator();
+        Iterator<ColumnDefinition> iterator = workbenchDefinition.getFilteredColumns().iterator();
         while (iterator.hasNext()) {
             ColumnDefinition column = iterator.next();
-            if(workbenchDefinition.isDialogWorkbench() && ! column.isToDisplayInDialog()) {
-                continue;
-            }
+//            if(workbenchDefinition.isDialogWorkbench() && ! column.isToDisplayInDialog()) {
+//                continue;
+//            }
             String columnName = column.getName();
             String columnProperty = "";
             if (column.getPropertyName() != null) {

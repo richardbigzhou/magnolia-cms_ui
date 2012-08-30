@@ -118,12 +118,12 @@ public class ListViewImpl implements ListView {
         container = new FlatJcrContainer(treeModel, workbenchDefinition);
         table.setContainerDataSource(container);
         // Set Column definition.
-        Iterator<ColumnDefinition> iterator = workbenchDefinition.getColumns().iterator();
+        Iterator<ColumnDefinition> iterator = workbenchDefinition.getFilteredColumns().iterator();
         while (iterator.hasNext()) {
             ColumnDefinition column = iterator.next();
-            if(workbenchDefinition.isDialogWorkbench() && ! column.isToDisplayInDialog()) {
-                continue;
-            }
+//            if(workbenchDefinition.isDialogWorkbench() && ! column.isToDisplayInDialog()) {
+//                continue;
+//            }
             String columnName = column.getName();
             String columnProperty = "";
             if (column.getPropertyName() != null) {
