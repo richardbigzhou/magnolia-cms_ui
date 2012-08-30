@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.widget.magnoliashell.gwt.client;
 
+import com.google.gwt.user.client.ui.RootPanel;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.AnimationSettings;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryCallback;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper;
@@ -99,6 +100,9 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
         setStyleName(CLASSNAME);
         add(mainAppLauncher, getElement());
         bindEventHandlers();
+
+        //TODO CLZ
+        //RootPanel.get().addStyleName("tablet");
     }
 
     private void bindEventHandlers() {
