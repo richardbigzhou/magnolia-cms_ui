@@ -40,14 +40,14 @@ public class OptionGroupFieldDefinition extends SelectFieldDefinition {
 
     private int columns = 1;
 
-    private boolean multiple = false;
+    private boolean multiselect = false;
 
-    public boolean isMultiple() {
-        return multiple;
+    public boolean isMultiselect() {
+        return multiselect;
     }
 
-    public void setMultiple(boolean multiple) {
-        this.multiple = multiple;
+    public void setMultiselect(boolean multiple) {
+        this.multiselect = multiple;
     }
 
     public int getColumns() {

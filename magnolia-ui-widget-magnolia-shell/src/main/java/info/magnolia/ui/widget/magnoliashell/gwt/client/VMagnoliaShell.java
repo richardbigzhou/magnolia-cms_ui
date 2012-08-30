@@ -156,6 +156,13 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
                 }
             });
 
+            register("hideAllMessages", new Method() {
+                @Override
+                public void invoke(String methodName, Object[] params) {
+                    view.hideAllMessages();
+                }
+            });
+
             register("updateIndication", new Method() {
                 @Override
                 public void invoke(String methodName, Object[] params) {

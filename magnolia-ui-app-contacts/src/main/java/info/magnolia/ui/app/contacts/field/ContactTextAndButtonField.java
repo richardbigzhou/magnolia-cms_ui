@@ -39,11 +39,11 @@ import info.magnolia.ui.admincentral.image.ImageThumbnailProvider;
 import org.vaadin.addon.customfield.CustomField;
 
 import com.vaadin.data.Property;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.HorizontalLayout;
 
 
 /**
- * Specific Contact TextAndButtonField field that add a Thumbnail under the select action and field
+ * Specific Contact TextAndButtonField field that add a Thumbnail before the select action and field
  * see basic implementation {@link TextAndButtonField}.
  */
 public class ContactTextAndButtonField extends CustomField{
@@ -53,11 +53,14 @@ public class ContactTextAndButtonField extends CustomField{
     public ContactTextAndButtonField(TextAndButtonField textAndButtonField, ImageThumbnailProvider imageThumbnailProvider, String workspace, int width, int height) {
         //used to set the correct property and values
         this.textAndButtonField = textAndButtonField;
-        VerticalLayout layout = new VerticalLayout();
-        layout.addComponent(textAndButtonField);
+        HorizontalLayout layout = new HorizontalLayout();
+        // Add Thumbnail Field
         ContactThumbnailField thumbnail = new ContactThumbnailField(imageThumbnailProvider, workspace, width, height);
         thumbnail.ValueChangeListener(textAndButtonField.getTextField());
         layout.addComponent(thumbnail);
+        // Add Select Field
+        layout.addComponent(textAndButtonField);
+
         setCompositionRoot(layout);
     }
 

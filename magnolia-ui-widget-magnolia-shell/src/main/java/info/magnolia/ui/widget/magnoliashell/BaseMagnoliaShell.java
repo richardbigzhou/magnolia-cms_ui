@@ -132,6 +132,13 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
         }
     }
 
+    public void hideAllMessages() {
+        synchronized (getApplication()) {
+            proxy.call("hideAllMessages");
+            pusher.push();
+        }
+    }
+
     public void updateShellAppIndication(ShellAppType type, int increment) {
         synchronized (getApplication()) {
             proxy.call("updateIndication", type.name(), increment);

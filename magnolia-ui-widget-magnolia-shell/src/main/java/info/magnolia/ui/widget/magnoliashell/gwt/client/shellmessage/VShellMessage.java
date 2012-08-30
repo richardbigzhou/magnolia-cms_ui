@@ -56,7 +56,7 @@ public abstract class VShellMessage extends HTML {
      * Enumeration of possible message types.
      */
     public enum MessageType {
-        WARNING, ERROR, INFO;
+        WARNING, ERROR, INFO
     }
     
     private static final String STYLE_NAME = "v-shell-notification";
@@ -150,7 +150,11 @@ public abstract class VShellMessage extends HTML {
             }
         }));
     }
-    
+
+    public void hideWithoutTransition() {
+        removeFromParent();
+    }
+
     @Override
     public void onBrowserEvent(Event event) {
         super.onBrowserEvent(event);

@@ -53,6 +53,8 @@ public class VPageEditorViewImpl extends FlowPanel implements VPageEditorView {
 
     public VPageEditorViewImpl() {
         super();
+        setStyleName("pageEditor");
+
         iframe = new Frame();
 
         iframe.addLoadHandler(new LoadHandler() {

@@ -209,6 +209,7 @@ public class DialogMigrationTask  extends AbstractTask {
             }else if(fieldNode.getProperty("controlType").getString().equals("checkbox")){
                 fieldNode.getProperty("controlType").remove();
                 fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.OptionGroupFieldDefinition");
+                fieldNode.setProperty("multiselect", "true");
             }else if(fieldNode.getProperty("controlType").getString().equals("checkboxSwitch")){
                 fieldNode.getProperty("controlType").remove();
                 fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.CheckboxFieldDefinition");
@@ -222,21 +223,24 @@ public class DialogMigrationTask  extends AbstractTask {
                 fieldNode.getProperty("controlType").remove();
                 fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.HiddenFieldDefinition");
             }else if(fieldNode.getProperty("controlType").getString().equals("uuidLink")){
-                if(fieldNode.hasProperty("repository")) {
+                if(fieldNode.hasProperty("repository") && !fieldNode.getProperty("repository").getString().equals("dms")) {
                     fieldNode.getProperty("controlType").remove();
-                    fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.LinkFieldDefinition");
-                    fieldNode.setProperty("dialogName", "ui-admincentral:link");
                     fieldNode.setProperty("uuid", "true");
                     if(fieldNode.getProperty("repository").getString().equals("website")) {
                         fieldNode.setProperty("appName", "pages");
+                        fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.LinkFieldDefinition");
+                        fieldNode.setProperty("dialogName", "ui-admincentral:link");
                     }else if (fieldNode.getProperty("repository").getString().equals("data")) {
                         // Handle contacts
                         if(fieldNode.hasProperty("tree") && fieldNode.getProperty("tree").getString().equals("Contact")) {
                             fieldNode.setProperty("appName", "contacts");
                             fieldNode.setProperty("workspace", "contacts");
+                            fieldNode.setProperty("dialogName", "ui-contacts-app:link");
                             fieldNode.setProperty("class", "info.magnolia.ui.app.contacts.field.definition.ContactLinkFieldDefinition");
                         }
                     }
+                }else {
+                    fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.StaticFieldDefinition");
                 }
             }else {
                 fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.StaticFieldDefinition");
@@ -283,7 +287,6 @@ public class DialogMigrationTask  extends AbstractTask {
      * Check if the extends and reference are correct. If not try to do the best
      * to found a correct path.
      * @throws RepositoryException
-     * @throws ValueFormatException
      */
     private void postProcessForExtendsAndReference() throws RepositoryException  {
         for(Property p:extendsAndReferenceProperty) {

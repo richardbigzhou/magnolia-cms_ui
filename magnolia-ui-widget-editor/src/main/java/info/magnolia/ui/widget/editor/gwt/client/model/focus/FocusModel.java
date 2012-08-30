@@ -46,4 +46,5 @@ public interface FocusModel {
 
     void toggleRootAreaBar(boolean visible);
 
+    void selectPage();
 }

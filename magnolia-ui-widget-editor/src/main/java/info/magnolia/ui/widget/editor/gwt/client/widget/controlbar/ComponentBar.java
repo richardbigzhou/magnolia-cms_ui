@@ -72,17 +72,11 @@ public class ComponentBar extends AbstractBar {
 
     private boolean editable = true;
 
-    private final static String ICON_CLASSNAME = "editorIcon";
-
-    private final static String EDIT_CLASSNAME = "icon-edit";
-
-    private final static String REMOVE_CLASSNAME = "icon-trash";
-
-    public ComponentBar(Model model, EventBus eventBus, MgnlElement mgnlElement) throws IllegalArgumentException {
+    public ComponentBar(Model model, EventBus eventBus, MgnlElement mgnlElement) {
 
         super(model, eventBus, mgnlElement);
 
-        checkMandatories(mgnlElement.getAttributes());
+        setFields(mgnlElement.getAttributes());
         addStyleName("component");
 
 /*        if (DragDropEventBase.isSupported()) {
@@ -112,7 +106,7 @@ public class ComponentBar extends AbstractBar {
         }
     }
 
-    private void checkMandatories(Map<String, String> attributes) {
+    private void setFields(Map<String, String> attributes) {
         String content = attributes.get("content");
         int i = content.indexOf(':');
 
@@ -129,10 +123,6 @@ public class ComponentBar extends AbstractBar {
 
         if (attributes.containsKey("editable")) {
             this.editable = Boolean.parseBoolean(attributes.get("editable"));
-        }
-
-        if (this.isInherited || !this.editable) {
-            throw new IllegalArgumentException();
         }
 
     }

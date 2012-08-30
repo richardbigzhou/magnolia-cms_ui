@@ -61,8 +61,9 @@ public class ContactLinkFieldBuilder extends LinkFieldBuilder<ContactLinkFieldDe
     @Override
     protected Field buildField() {
         TextAndButtonField textAndButton = (TextAndButtonField)super.buildField();
+        //hide the TextField.
+        textAndButton.getTextField().setVisible(false);
         ContactTextAndButtonField field = new ContactTextAndButtonField(textAndButton,imageThumbnailProvider,definition.getWorkspace(),150,150);
-
         return field;
     }
 }

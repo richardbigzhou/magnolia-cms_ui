@@ -120,7 +120,6 @@ public class MagnoliaTreeTable extends HybridSelectionTreeTable {
                 }
             }
         }
-        // setVisibleColumns(visibleColumns.toArray());
     }
 
     /**
