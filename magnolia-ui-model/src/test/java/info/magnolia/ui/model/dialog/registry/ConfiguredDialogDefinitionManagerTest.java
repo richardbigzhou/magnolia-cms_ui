@@ -39,6 +39,7 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import info.magnolia.content2bean.Content2BeanProcessor;
+import info.magnolia.content2bean.TypeMapping;
 import info.magnolia.content2bean.impl.Content2BeanProcessorImpl;
 import info.magnolia.content2bean.impl.TypeMappingImpl;
 import info.magnolia.module.ModuleRegistry;
@@ -49,8 +50,12 @@ import info.magnolia.test.mock.MockUtil;
 import info.magnolia.test.mock.jcr.MockEvent;
 import info.magnolia.test.mock.jcr.MockObservationManager;
 import info.magnolia.test.mock.jcr.SessionTestUtil;
+import info.magnolia.ui.model.dialog.action.ConfiguredDialogActionDefinition;
+import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.model.dialog.definition.ConfiguredDialogDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
+import info.magnolia.ui.model.tab.definition.ConfiguredTabDefinition;
+import info.magnolia.ui.model.tab.definition.TabDefinition;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -71,7 +76,6 @@ public class ConfiguredDialogDefinitionManagerTest {
     private static final String A_DIALOG_PATH = "/modules/aModule/" + ConfiguredDialogDefinitionManager.DIALOG_CONFIG_NODE_NAME + "/aDialog";
     private static final String B_DIALOG_PATH = "/modules/bModule/" + ConfiguredDialogDefinitionManager.DIALOG_CONFIG_NODE_NAME + "/bDialog";
 
-
     private ModuleRegistry moduleRegistry;
 
     private DialogDefinitionRegistry dialogRegistry;
@@ -82,9 +86,17 @@ public class ConfiguredDialogDefinitionManagerTest {
     public void setUp() throws Exception {
 
         ComponentsTestUtil.setImplementation(DialogDefinition.class, ConfiguredDialogDefinition.class);
+        ComponentsTestUtil.setImplementation(TabDefinition.class, ConfiguredTabDefinition.class);
+        ComponentsTestUtil.setImplementation(DialogActionDefinition.class, ConfiguredDialogActionDefinition.class);
+
         session = SessionTestUtil.createSession(RepositoryConstants.CONFIG,
             A_DIALOG_PATH + ".id=aModule:aDialog",
-            B_DIALOG_PATH + ".id=bModule:bDialog"
+            A_DIALOG_PATH + ".class="+ConfiguredDialogDefinition.class.getName(),
+            A_DIALOG_PATH + "/tabs/taba",
+            A_DIALOG_PATH + "/tabs/taba.label=label",
+            B_DIALOG_PATH + ".id=bModule:bDialog",
+            B_DIALOG_PATH + "/actions/actionb",
+            B_DIALOG_PATH + "/actions/actionb.label=label"
             );
         MockUtil.initMockContext();
         MockUtil.setSystemContextSessionAndHierarchyManager(session);
@@ -99,6 +111,7 @@ public class ConfiguredDialogDefinitionManagerTest {
 
         TypeMappingImpl typeMapping = new TypeMappingImpl();
         ComponentsTestUtil.setInstance(Content2BeanProcessor.class, new Content2BeanProcessorImpl(typeMapping));
+        ComponentsTestUtil.setImplementation(TypeMapping.class, TypeMappingImpl.class);
     }
 
     @Test
@@ -119,7 +132,7 @@ public class ConfiguredDialogDefinitionManagerTest {
         assertEquals("bModule:bDialog", bDialog.getId());
     }
 
-    @Test
+    @Test(expected=RegistrationException.class)
     public void testDialogDefinitionReloadsOnChange() throws RegistrationException, UnsupportedRepositoryOperationException, RepositoryException, InterruptedException {
         // GIVEN
         MockObservationManager observationManager = (MockObservationManager) session.getWorkspace().getObservationManager();
@@ -174,7 +187,6 @@ public class ConfiguredDialogDefinitionManagerTest {
         } catch (RegistrationException expected) {
         }
         bDialog = dialogRegistry.get("bModule:cDialog");
-        assertNotNull(bDialog);
     }
 
 }

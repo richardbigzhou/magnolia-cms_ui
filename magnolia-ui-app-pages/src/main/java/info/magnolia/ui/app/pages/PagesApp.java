@@ -54,10 +54,6 @@ public class PagesApp extends AbstractContentApp {
 
     public static final String PREVIEW_TOKEN = "preview";
 
-    public static final String EDITOR_FULL_TOKEN = "editorfull";
-
-    public static final String PREVIEW_FULL_TOKEN = "previewfull";
-
     private final AppContext appContext;
 
     @Inject

@@ -80,5 +80,12 @@ public interface WorkbenchDefinition extends Serializable {
      * Define if this workbensh is used for Dialog.
      * This is set during the cloning of the workbench in ChooseDialogContentPresenter.
      */
-    boolean isDialodWorkbensh();
+    boolean isDialogWorkbench();
+
+    /**
+     * Return the filtered Collection of CulumnDefinition.
+     * This filtering can be used to exclude column based
+     * on workbench definition like isDialogWorkbench().
+     */
+    Collection<ColumnDefinition> getFilteredColumns();
 }

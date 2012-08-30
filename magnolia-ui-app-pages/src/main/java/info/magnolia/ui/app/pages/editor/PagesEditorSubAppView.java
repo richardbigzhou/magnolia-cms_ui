@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,43 +33,35 @@
  */
 package info.magnolia.ui.app.pages.editor;
 
-import info.magnolia.ui.app.pages.PagesApp;
+import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.widget.actionbar.ActionbarView;
+import info.magnolia.ui.widget.editor.PageEditorView;
 
 
 /**
- * PageEditorParameters.
+ * PagesEditorSubAppView.
  */
-public class PageEditorParameters {
+public interface PagesEditorSubAppView extends View {
 
-    private final String contextPath;
+    /**
+     * Listener.
+     */
+    public interface Listener {
 
-    private final String nodePath;
-
-    private final String editingMode;
-
-    public PageEditorParameters(String contextPath, String nodePath, String editingMode) {
-        this.contextPath = contextPath;
-        this.nodePath = nodePath;
-        this.editingMode = editingMode;
     }
 
-    public String getContextPath() {
-        return contextPath;
-    }
+    void setListener(Listener listener);
 
-    public String getNodePath() {
-        return nodePath;
-    }
+    void setPageEditorView(PageEditorView pageEditor);
 
-    public String getEditingFlowMode() {
-        return editingMode;
-    }
+    /**
+     * Use this method to add an action bar to this sub app view.
+     */
+    void setActionbarView(ActionbarView actionbar);
 
-    public boolean isPreview() {
-        return PagesApp.PREVIEW_TOKEN.equals(editingMode) || PagesApp.PREVIEW_FULL_TOKEN.equals(editingMode);
-    }
+    /**
+     * Shows/hides the actionbar. It has no effect if the actionbar hasn't yet been set.
+     */
+    void hideActionbar(boolean hide);
 
-    public boolean isFullScreen() {
-        return PagesApp.PREVIEW_FULL_TOKEN.equals(editingMode) || PagesApp.EDITOR_FULL_TOKEN.equals(editingMode);
-    }
 }

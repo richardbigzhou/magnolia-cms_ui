@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,32 +31,36 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.content;
+package info.magnolia.ui.widget.editor.gwt.client;
 
-import javax.inject.Inject;
-
-import com.vaadin.data.Item;
-
-import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
-import info.magnolia.ui.framework.app.AbstractApp;
-import info.magnolia.ui.widget.dialog.MagnoliaDialogPresenter.Presenter;
-
+import com.google.gwt.core.client.JavaScriptObject;
 
 /**
- * Abstract base app class for content apps.
+ * VPageEditorParameters.
  */
-public abstract class ContentApp extends AbstractApp {
+public class VPageEditorParameters  extends JavaScriptObject {
 
-    private DialogPresenterFactory dialogPresenterFactory;
+    protected VPageEditorParameters() {}
 
-    @Inject
-    public ContentApp(DialogPresenterFactory dialogPresenterFactory) {
-        this.dialogPresenterFactory = dialogPresenterFactory;
-    }
+    public static native VPageEditorParameters parse(String json) /*-{
+        try {
+            return eval('(' + json + ')');
+        } catch(e) {
+            return null;
+        }
+    }-*/;
 
-    public void openChooseDialog(String dialogName, Presenter.Callback callback, Item item) {
-        Presenter dialogPresenter = dialogPresenterFactory.createDialog(dialogName);
-        dialogPresenter.start(item, callback);
-    }
+    public final native String getContextPath() /*-{
+        return this.contextPath;
+    }-*/;
+
+    public final native String getNodePath() /*-{
+        return this.nodePath;
+    }-*/;
+
+    public final native boolean isPreview() /*-{
+        return this.preview;
+    }-*/;
 
 }
+

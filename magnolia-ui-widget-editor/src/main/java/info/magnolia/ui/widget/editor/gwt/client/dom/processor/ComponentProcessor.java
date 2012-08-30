@@ -39,6 +39,8 @@ import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.ComponentBar;
 
+import java.util.Map;
+
 /**
  * Factory Class for MgnlElement processors.
  */
@@ -50,14 +52,29 @@ public class ComponentProcessor extends MgnlElementProcessor {
 
     @Override
     public void process() {
-        GWT.log("element is edit bar placeholder. Injecting it...");
-        try {
+        if (hasControlBar(getMgnlElement().getAttributes())) {
+            GWT.log("Component has edit bar. Injecting it..");
             ComponentBar editBarWidget = new ComponentBar(getModel(), getEventBus(), getMgnlElement());
         }
-        catch(IllegalArgumentException e) {
-            GWT.log("This component is inherited. Skipping..");
-
+        else {
+            GWT.log("Component is inherited or not editable. Skipping..");
         }
+    }
+
+    private boolean hasControlBar(Map<String, String> attributes) {
+
+        boolean isInherited = Boolean.parseBoolean(attributes.get("inherited"));
+        boolean editable = true;
+
+        if (attributes.containsKey("editable")) {
+            editable = Boolean.parseBoolean(attributes.get("editable"));
+        }
+
+        if (isInherited || !editable) {
+            return false;
+        }
+        return true;
+
     }
 
 }

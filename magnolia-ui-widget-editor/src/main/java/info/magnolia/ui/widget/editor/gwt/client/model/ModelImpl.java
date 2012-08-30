@@ -38,6 +38,7 @@ import com.google.gwt.dom.client.Node;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.AbstractBar;
 import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.AreaEndBar;
+import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.PageBar;
 import info.magnolia.ui.widget.editor.gwt.client.widget.placeholder.ComponentPlaceHolder;
 
 import java.util.HashMap;
@@ -68,15 +69,15 @@ public class ModelImpl implements Model {
     private MgnlElement selectedMgnlComponentElement = null;
 
     @Override
-    public AbstractBar getPageBar() {
+    public PageBar getPageBar() {
         return pageBar;
     }
     @Override
-    public void setPageBar(AbstractBar pageBar) {
+    public void setPageBar(PageBar pageBar) {
         this.pageBar = pageBar;
     }
 
-    private AbstractBar pageBar = null;
+    private PageBar pageBar = null;
 
     @Override
     public void addEditBar(MgnlElement mgnlElement, AbstractBar editBar) {

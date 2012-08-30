@@ -47,6 +47,8 @@ import info.magnolia.ui.model.tab.definition.TabDefinition;
  */
 public interface DialogDefinition {
 
+    public static String TABS_NODE_NAME = "tabs";
+    public static String ACTIONS_NODE_NAME = "actions";
     /**
      * Unique identifier for this dialog.
      */

@@ -816,7 +816,7 @@
             <sv:value>b371ed95-9cdc-42b7-8e61-2db08154ae17</sv:value>
           </sv:property>
           <sv:property sv:name="class" sv:type="String">
-            <sv:value>info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition</sv:value>
+            <sv:value>info.magnolia.ui.admincentral.dialog.action.CallbackDialogActionDefinition</sv:value>
           </sv:property>
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>

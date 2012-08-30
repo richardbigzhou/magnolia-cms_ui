@@ -60,6 +60,9 @@ import static info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils.get
  */
 public class ComponentPlaceHolder extends AbstractPlaceHolder {
 
+    protected final static String ICON_CLASSNAME = "editorIcon";
+    protected final static String ADD_CLASSNAME = "icon-add-item";
+
     private boolean showAddButton = false;
     private String availableComponents = "";
     private String type = "";
@@ -76,7 +79,7 @@ public class ComponentPlaceHolder extends AbstractPlaceHolder {
         super(model, eventBus, mgnlElement);
         this.model = model;
 
-        checkMandatories(mgnlElement.getAttributes());
+        setFields(mgnlElement.getAttributes());
 
         this.addStyleName("component");
 
@@ -107,7 +110,7 @@ public class ComponentPlaceHolder extends AbstractPlaceHolder {
         }
 
         setVisible(false);
-        createButtons();
+        createControls();
         attach();
     }
 
@@ -151,6 +154,22 @@ public class ComponentPlaceHolder extends AbstractPlaceHolder {
         }
     }
 
+    private void createControls() {
+
+        if (this.showAddButton){
+            final Label add = new Label();
+            add.setStyleName(ICON_CLASSNAME);
+            add.addStyleName(ADD_CLASSNAME);
+            add.addClickHandler(new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent event) {
+                    getEventBus().fireEvent(new NewComponentEvent(areaWorkspace, areaPath, availableComponents));
+                }
+            });
+            buttonWrapper.add(add);
+        }
+    }
+
     public void attach() {
         Element parent = getMgnlElement().getComponentElement();
 
@@ -181,7 +200,7 @@ public class ComponentPlaceHolder extends AbstractPlaceHolder {
         parentNode.insertBefore(getElement(), element);
     }
 
-    private void checkMandatories(Map<String, String> attributes) throws IllegalArgumentException {
+    private void setFields(Map<String, String> attributes) throws IllegalArgumentException {
 
         this.showAddButton = Boolean.parseBoolean(attributes.get("showAddButton"));
         this.type = attributes.get("type");
@@ -198,14 +217,6 @@ public class ComponentPlaceHolder extends AbstractPlaceHolder {
         }
         else {
             this.availableComponents = attributes.get("availableComponents");
-        }
-
-        if (availableComponents.equals("")) {
-            throw new IllegalArgumentException();
-        }
-
-        if (this.type.equals(AreaDefinition.TYPE_SINGLE) && !getMgnlElement().getComponents().isEmpty()) {
-            throw new IllegalArgumentException();
         }
     }
 

@@ -56,7 +56,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 /**
- * Activity for the app launcher. Listen to: system EventBus: LayoutEvent. Reload
+ * App launcher shell app. Listen to: system EventBus: LayoutEvent. Reload
  * the Layout by getting the latest available App from the
  * {AppLauncherLayoutManager}. LocalEventBus : App started and App stop event.
  * In this case, update the App button to indicate if an App is started or

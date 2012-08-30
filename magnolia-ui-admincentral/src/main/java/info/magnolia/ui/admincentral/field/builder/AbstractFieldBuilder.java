@@ -84,8 +84,7 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition> extends Ab
             this.field.setStyleName(getStyleName());
 
             //Set label
-            this.field.setCaption(getMessage(getFieldDefinition().getLabel()));
-
+            this.field.setCaption(getMessage(getFieldDefinition().getLabel()) + (getFieldDefinition().isRequired() ? "<span class=\"requiredfield\">*</span>" : ""));
             //Set SaveInfo (field property has to be updated)
             if(this.field.getPropertyDataSource()!=null) {
                 ((DefaultProperty) this.field.getPropertyDataSource()).setSaveInfo(definition.getSaveInfo());

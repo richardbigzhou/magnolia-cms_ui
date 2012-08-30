@@ -52,6 +52,7 @@ import info.magnolia.jcr.predicate.NodeTypePredicate;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.NodeVisitor;
 import info.magnolia.module.ModuleRegistry;
+import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 
 /**
  * ObservedManager for dialogs configured in repository.
@@ -84,9 +85,15 @@ public class ConfiguredDialogDefinitionManager extends ModuleConfigurationObserv
                 @Override
                 public void visit(Node current) throws RepositoryException {
                     for (Node dialogNode : NodeUtil.getNodes(current, MgnlNodeType.NT_CONTENTNODE)) {
-                        DialogDefinitionProvider provider = createProvider(dialogNode);
-                        if (provider != null) {
-                            providers.add(provider);
+                        if(dialogNode.hasNode(DialogDefinition.TABS_NODE_NAME) || dialogNode.hasNode(DialogDefinition.ACTIONS_NODE_NAME) ) {
+                            // Handle as Dialog only if it has sub nodes tabs or actions.
+                            // This will filter the Fields and Tab definition in dialogs used by the extends mechanism.
+                            DialogDefinitionProvider provider = createProvider(dialogNode);
+                            if (provider != null) {
+                                providers.add(provider);
+                            }
+                        }else {
+                            log.info("node "+dialogNode.getName()+" will not be handle as Dialog.");
                         }
                     }
                 }

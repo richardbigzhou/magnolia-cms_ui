@@ -34,6 +34,8 @@
 package info.magnolia.ui.widget.editor.gwt.client.widget.controlbar;
 
 import static info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils.getI18nMessage;
+
+import com.google.gwt.user.client.ui.Label;
 import info.magnolia.ui.widget.editor.gwt.client.dom.CMSComment;
 import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 import info.magnolia.ui.widget.editor.gwt.client.widget.PreviewChannel.Orientation;
@@ -76,7 +78,6 @@ import com.google.gwt.user.client.ui.MenuItem;
  *
  *
  */
-@Deprecated
 public class PageBar extends AbstractBar {
 
     private final String dialog;
@@ -93,6 +94,9 @@ public class PageBar extends AbstractBar {
         super(model, null, null);
         this.model = model;
 
+
+
+
         String content = comment.getAttribute("content");
         int i = content.indexOf(':');
         setWorkspace(content.substring(0, i));
@@ -103,6 +107,8 @@ public class PageBar extends AbstractBar {
         currentURI = comment.getAttribute("currentURI");
 
         boolean isPreview = Boolean.parseBoolean(comment.getAttribute("preview"));
+        this.addStyleName("page");
+
         // FIXME create method
         // VPageEditor.setPreview(isPreview);
 
@@ -138,7 +144,7 @@ public class PageBar extends AbstractBar {
 
                 addDomHandler(new MouseUpHandler() {
                     @Override
-                    public void onMouseUp(MouseUpEvent event) {
+                    public void selectElement(MouseUpEvent event) {
                         event.stopPropagation();
                     }
                 }, MouseUpEvent.getType());*/
@@ -218,6 +224,16 @@ public class PageBar extends AbstractBar {
         });
         addButton(preview, Float.LEFT);
         setStyleName("mgnlEditorMainbarPreview");
+    }
+
+    public void setPageTitle(String title) {
+        title += " - " + getPath();
+
+        Label areaName = new Label(title);
+        // tooltip. Nice to have when area label is truncated because too long.
+        areaName.setTitle(title);
+        areaName.setStylePrimaryName("mgnlEditorBarLabel");
+        add(areaName);
     }
 
     @Deprecated

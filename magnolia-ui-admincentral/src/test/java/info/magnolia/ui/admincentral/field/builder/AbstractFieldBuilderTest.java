@@ -34,6 +34,7 @@
 package info.magnolia.ui.admincentral.field.builder;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import info.magnolia.ui.model.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
@@ -153,6 +154,21 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
 
         assertEquals("label",field.getCaption());
 
+    }
+
+    @Test
+    public void requiredFieldIsMarkedByAsteriskTest() {
+        // GIVEN
+        definition.setRequired(true);
+        abstractDialogField = new TestDialogField(definition, baseItem);
+
+        // WHEN
+        Field field = abstractDialogField.getField();
+        field.setRequired(definition.isRequired());
+
+        // THEN
+        assertEquals(true, field.isRequired());
+        assertTrue(field.getCaption().contains("*"));
     }
 
 

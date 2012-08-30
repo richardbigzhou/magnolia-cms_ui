@@ -42,8 +42,9 @@ import com.google.gwt.dom.client.Element;
  */
 public interface FocusModel {
 
-    void onMouseUp(Element element);
+    void selectElement(Element element);
 
     void toggleRootAreaBar(boolean visible);
 
+    void selectPage();
 }
