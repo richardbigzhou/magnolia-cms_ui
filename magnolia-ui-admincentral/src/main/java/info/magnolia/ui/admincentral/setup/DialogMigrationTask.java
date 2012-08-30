@@ -234,6 +234,7 @@ public class DialogMigrationTask  extends AbstractTask {
                         if(fieldNode.hasProperty("tree") && fieldNode.getProperty("tree").getString().equals("Contact")) {
                             fieldNode.setProperty("appName", "contacts");
                             fieldNode.setProperty("workspace", "contacts");
+                            fieldNode.setProperty("dialogName", "ui-contacts-app:link");
                             fieldNode.setProperty("class", "info.magnolia.ui.app.contacts.field.definition.ContactLinkFieldDefinition");
                         }
                     }
