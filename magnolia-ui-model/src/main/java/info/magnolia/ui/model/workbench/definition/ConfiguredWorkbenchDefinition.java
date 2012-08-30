@@ -44,9 +44,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Predicate;
-
 
 /**
  * Default configured implementation for the WorkbenchDefinitionn.
@@ -129,25 +126,6 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
         return columns.values();
     }
 
-    /**
-     * The filtering will return only column define for a specific environment:
-     * if isDialogWorkbench:
-     *    Return only Column that are defined to be displayed in Dialog
-     * else
-     *    Return all column.
-     */
-    @Override
-    public Collection<ColumnDefinition> getFilteredColumns() {
-        Collection<ColumnDefinition> res = columns.values();
-        CollectionUtils.filter(res, new Predicate() {
-
-            @Override
-            public boolean evaluate(Object object) {
-                return !isDialogWorkbench() || ((ColumnDefinition)object).isToDisplayInDialog() ;
-            }
-        });
-        return res;
-    }
 
     public void addColumn(ColumnDefinition treeColumn) {
         columns.put(treeColumn.getLabel(), treeColumn);

@@ -82,10 +82,4 @@ public interface WorkbenchDefinition extends Serializable {
      */
     boolean isDialogWorkbench();
 
-    /**
-     * Return the filtered Collection of CulumnDefinition.
-     * This filtering can be used to exclude column based
-     * on workbench definition like isDialogWorkbench().
-     */
-    Collection<ColumnDefinition> getFilteredColumns();
 }
