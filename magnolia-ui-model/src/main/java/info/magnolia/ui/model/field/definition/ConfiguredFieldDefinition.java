@@ -62,6 +62,8 @@ public class ConfiguredFieldDefinition implements FieldDefinition {
 
     private List<ValidatorDefinition> validators = new ArrayList<ValidatorDefinition>();
 
+    private boolean hideLabel = false;
+
     @Override
     public String getName() {
         return name;
@@ -150,6 +152,15 @@ public class ConfiguredFieldDefinition implements FieldDefinition {
     @Override
     public boolean getSaveInfo() {
         return this.saveInfo;
+    }
+
+    @Override
+    public boolean isHideLabel() {
+        return hideLabel;
+    }
+
+    public void setHideLabel(boolean hideLabel) {
+        this.hideLabel = hideLabel;
     }
 
 }
