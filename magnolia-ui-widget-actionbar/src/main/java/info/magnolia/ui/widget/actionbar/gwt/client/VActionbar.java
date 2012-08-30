@@ -160,6 +160,8 @@ public class VActionbar extends Composite implements Paintable, Container, Clien
 
                     VActionbarSection section = findSection(sectionName);
                     section.setVisible(visible);
+
+                    view.refreshActionsPositionsTablet();
                 }
             });
 
@@ -173,6 +175,8 @@ public class VActionbar extends Composite implements Paintable, Container, Clien
         view.setPresenter(this);
         initWidget(view.asWidget());
     }
+
+
 
     @Override
     public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
@@ -200,6 +204,12 @@ public class VActionbar extends Composite implements Paintable, Container, Clien
                 }
             }
         }
+
+        // TODO: Christopher Zimmermann Check if this is inefficient as updateFromUIDL might be called a fair amount.
+        // But we need some way to ensure this is called once the actionbar is built.
+        view.refreshActionsPositionsTablet();
+        //GWT.log("actionbar uidl");
+        //VConsole.log("actionbar uidl (vconsole)");
     }
 
     @Override

@@ -59,7 +59,7 @@ import com.vaadin.data.util.IndexedContainer;
 @SuppressWarnings("serial")
 public class PulseMessagesPresenter implements Serializable {
 
-    private static final String[] order = new String[] { "CB", "new", "type", "text", "sender", "date", "quickdo" };
+    private static final String[] order = new String[] { "new", "type", "text", "sender", "date", "quickdo" };
 
     private Filterable container = null;
 

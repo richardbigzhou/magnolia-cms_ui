@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.widget.magnoliashell.gwt.client.viewport;
 
-
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.Callbacks;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryCallback;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper;
@@ -64,6 +63,7 @@ import com.vaadin.terminal.gwt.client.Paintable;
 import com.vaadin.terminal.gwt.client.RenderSpace;
 import com.vaadin.terminal.gwt.client.UIDL;
 
+
 /**
  * An overlay that displays the open app in the shell on top of each other.
  */
@@ -72,7 +72,7 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
     private static int Z_INDEX_HI = 300;
 
     private static int Z_INDEX_LO = 100;
-    
+
     protected String paintableId = null;
 
     protected ApplicationConnection client;
@@ -81,7 +81,7 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
 
     private Widget visibleWidget = null;
 
-    private List<Paintable> paintables = new LinkedList<Paintable>();
+    private final List<Paintable> paintables = new LinkedList<Paintable>();
 
     private ContentAnimationDelegate animationDelegate;
 
@@ -91,8 +91,8 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
 
     private boolean isActive = false;
 
-    private final TouchDelegate delegate = new TouchDelegate((Widget)this);
-    
+    private final TouchDelegate delegate = new TouchDelegate(this);
+
     public VShellViewport() {
         super();
         setElement(container);
@@ -101,8 +101,9 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
         bindHandlers();
     }
 
-    private void bindHandlers(){
+    private void bindHandlers() {
         delegate.addTouchStartHandler(new TouchStartHandler() {
+
             @Override
             public void onTouchStart(TouchStartEvent event) {
                 final Element target = event.getNativeEvent().getEventTarget().cast();
@@ -121,19 +122,21 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
             final List<Paintable> orpanCandidates = new LinkedList<Paintable>(paintables);
             if (uidl.getChildCount() > 0) {
                 int idx = 0;
-                for (;idx < uidl.getChildCount(); ++idx) {
+                for (; idx < uidl.getChildCount(); ++idx) {
                     final UIDL childUIdl = uidl.getChildUIDL(idx);
                     final Paintable paintable = client.getPaintable(childUIdl);
                     orpanCandidates.remove(paintable);
-                    final Widget w = (Widget)paintable;
+                    final Widget w = (Widget) paintable;
                     updatePosition(w);
                     paintable.updateFromUIDL(childUIdl, client);
-                    if (forceContentAlign) {alignChild(w);}
+                    if (forceContentAlign) {
+                        alignChild(w);
+                    }
                     if (idx == 0) {
                         String zIndex = getElement().getStyle().getZIndex();
                         w.getElement().getStyle().setProperty("zIndex", zIndex);
                         w.getElement().getStyle().setVisibility(Visibility.VISIBLE);
-                        if (w != visibleWidget) {
+                        if (w != visibleWidget || !isActive) {
                             setWidgetVisibleWithTransition(w);
                         }
                     } else {
@@ -146,7 +149,7 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
 
             for (final Paintable paintable : orpanCandidates) {
                 client.unregisterPaintable(paintable);
-                remove((Widget)paintable);
+                remove((Widget) paintable);
             }
         }
     }
@@ -178,6 +181,7 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
                 hideCurrentContent();
             }
             animationDelegate.show(w, Callbacks.create(new JQueryCallback() {
+
                 @Override
                 public void execute(JQueryWrapper query) {
                     setVisibleWidget(w);
@@ -185,7 +189,7 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
             }));
         }
     }
-    
+
     protected void setVisibleWidget(Widget w) {
         this.visibleWidget = w;
     }
@@ -196,7 +200,7 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
             it.next().getElement().getStyle().setVisibility(Visibility.HIDDEN);
         }
     }
-    
+
     public Widget getVisibleWidget() {
         return visibleWidget;
     }
@@ -206,6 +210,7 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
             final Widget formerVisible = visibleWidget;
             if (animationDelegate != null) {
                 animationDelegate.hide(formerVisible, Callbacks.create(new JQueryCallback() {
+
                     @Override
                     public void execute(JQueryWrapper query) {
                         final Style style = formerVisible.getElement().getStyle();
@@ -235,10 +240,12 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
     }
 
     @Override
-    public void updateCaption(Paintable component, UIDL uidl) {}
+    public void updateCaption(Paintable component, UIDL uidl) {
+    }
 
     @Override
-    public void replaceChildComponent(Widget oldComponent, Widget newComponent) {}
+    public void replaceChildComponent(Widget oldComponent, Widget newComponent) {
+    }
 
     @Override
     public void clear() {
@@ -250,7 +257,7 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
     protected void insert(Widget child, Element container, int beforeIndex, boolean domInsert) {
         super.insert(child, container, beforeIndex, domInsert);
         if (child instanceof Paintable) {
-            paintables.add((Paintable)child);
+            paintables.add((Paintable) child);
         }
     }
 
@@ -258,7 +265,7 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
     protected void add(final Widget child, Element container) {
         if (child instanceof Paintable) {
             child.getElement().getStyle().setPosition(Position.ABSOLUTE);
-            paintables.add((Paintable)child);
+            paintables.add((Paintable) child);
         }
         super.add(child, container);
     }
@@ -267,11 +274,11 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
         this.isActive = isActive;
         getElement().getStyle().setZIndex(isActive ? Z_INDEX_HI : Z_INDEX_LO);
     }
-    
+
     public boolean isActive() {
         return isActive;
     }
-    
+
     public void setForceContentAlign(boolean forceContentAlign) {
         this.forceContentAlign = forceContentAlign;
     }
@@ -292,7 +299,7 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
             }
         }
     }
-    
+
     public void setEventBus(EventBus eventBus) {
         this.eventBus = eventBus;
     }
@@ -300,7 +307,7 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
     public EventBus getEventBus() {
         return eventBus;
     }
-    
+
     protected ContentAnimationDelegate getAnimationDelegate() {
         return animationDelegate;
     }

@@ -91,9 +91,12 @@ public class WorkbenchTreeTable extends MagnoliaTreeTable {
         setContainerDataSource(container);
 
         final List<Object> visibleColumns = new ArrayList<Object>();
-        Iterator<ColumnDefinition> iterator = workbenchDefinition.getFilteredColumns().iterator();
+        Iterator<ColumnDefinition> iterator = workbenchDefinition.getColumns().iterator();
         while (iterator.hasNext()) {
             ColumnDefinition column = iterator.next();
+            if(workbenchDefinition.isDialogWorkbench() && ! column.isToDisplayInDialog()) {
+                continue;
+            }
             String columnName = column.getName();
             String columnProperty = "";
             if (column.getPropertyName() != null) {
@@ -113,7 +116,6 @@ public class WorkbenchTreeTable extends MagnoliaTreeTable {
                 }
             }
         }
-        setColumnWidth(visibleColumns.get(0), 300);
     }
 
     /**

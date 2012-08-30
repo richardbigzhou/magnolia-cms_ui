@@ -83,6 +83,9 @@ public class LinkFieldSelectionBuilder extends AbstractFieldBuilder<LinkFieldSel
         contentPresenter.initContentView(parentView);
         textContent.setContentView(parentView);
 
+        // Set selected item.
+        setSelected(parentView);
+
         //AddHandler.
         // On a selected Item, propagate the specified Column Value to the TextField.
         appEventBus.addHandler(ItemSelectedEvent.class, new ItemSelectedEvent.Handler() {
@@ -113,5 +116,17 @@ public class LinkFieldSelectionBuilder extends AbstractFieldBuilder<LinkFieldSel
     @Override
     protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {
         return String.class;
+    }
+
+    /**
+     * Set the selected item <b> only </b> if the
+     * property is the Item id (node path).
+     */
+    private void setSelected(ContentWorkbenchViewImpl parentView) {
+        String path = contentPresenter.getRootPath();
+        if(StringUtils.isBlank(definition.getColumnName()) && item.getItemProperty(LinkFieldBuilder.TRANSIENT_PROPERTY_NAME)!=null && StringUtils.isNotBlank(item.getItemProperty(LinkFieldBuilder.TRANSIENT_PROPERTY_NAME).getValue().toString())) {
+            path = item.getItemProperty(LinkFieldBuilder.TRANSIENT_PROPERTY_NAME).getValue().toString();
+        }
+        parentView.selectPath(path);
     }
 }

@@ -44,15 +44,15 @@ public class VDialogViewport extends VShellViewport {
 
     public VDialogViewport() {
         getModalityCurtain().addClassName("black-modality-curtain");
-        getElement().getStyle().setZIndex(500);
+        getElement().getStyle().setZIndex(499);
         setContentAnimationDelegate(ContentAnimationDelegate.FadingDelegate);
         showCurtain();
     }
-    
+
     @Override
     public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
         super.updateFromUIDL(uidl, client);
-        
+
         if (getWidgetCount() == 0) {
             removeFromParent();
         } else {

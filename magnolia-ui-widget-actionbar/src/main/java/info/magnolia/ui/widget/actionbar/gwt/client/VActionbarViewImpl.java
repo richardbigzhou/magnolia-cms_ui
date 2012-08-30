@@ -61,6 +61,8 @@ import com.vaadin.terminal.gwt.client.ui.Icon;
 public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, ActionTriggerEvent.Handler {
 
     public static final String CLASSNAME = "v-actionbar";
+    public static final String CLASSNAME_TOGGLE = "v-actionbar-toggle";
+    public static final String CLASSNAME_FULLSCREEN = "v-actionbar-fullscreen";
 
     private final Element root = DOM.createElement("section");
 
@@ -92,10 +94,12 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, 
         setElement(root);
         addStyleName(CLASSNAME);
 
+
         this.eventBus = eventBus;
         this.eventBus.addHandler(ActionTriggerEvent.TYPE, this);
 
         isDeviceTablet = initIsDeviceTablet();
+        tabletRow = -1;
 
         prepareToggling();
         prepareFullScreenButton();
@@ -127,7 +131,7 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, 
 
     private void prepareToggling() {
 
-        toggleButton.addStyleName("v-actionbar-toggle");
+        toggleButton.addStyleName(CLASSNAME_TOGGLE);
         add(toggleButton, root);
 
         toggleButtonIcon.addClassName("v-actionbar-toggle-icon");
@@ -146,9 +150,43 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, 
         });
     }
 
+    /*
+     * Actions positions in tablet mode are set via row_x and col_x classes.
+     * These need to be updated anytime a section is hidden or shown.
+     */
+    public void refreshActionsPositionsTablet(){
+
+        if (!isDeviceTablet){
+            return;
+        }
+
+        tabletRow = -1; // Used to assign rows and columns to each action item
+        tabletColumn = 0;
+
+         for (final VActionbarSection section : sections.values()) {
+
+            //if section is visible - then update rows & cols
+            if (section.isVisible()){
+
+            for (final VActionbarGroup group : section.getGroups().values()) {
+
+                    tabletColumn = 0;
+                    tabletRow++;
+
+                    for (VActionbarItem action : group.getActions()) {
+                        String cssClasses = "row-" + tabletRow + " col-" + tabletColumn + " open";
+                        action.resetStyleNames(cssClasses);
+                        tabletColumn++;
+                    }
+                }
+            }
+        }
+        setToggleAndFullScreenButtonHeights(tabletRow);
+    }
+
     private void prepareFullScreenButton() {
 
-        fullScreenButton.addStyleName("v-actionbar-fullscreen");
+        fullScreenButton.addStyleName(CLASSNAME_FULLSCREEN);
 
         add(fullScreenButton, root);
 
@@ -218,7 +256,7 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, 
             if (isDeviceTablet) {
                 for (final VActionbarSection section : sections.values()) {
                     for (final VActionbarGroup group : section.getGroups().values()) {
-                        group.removeStyleName("open");
+                        group.closeHorizontal();
                     }
                 }
             }
@@ -254,16 +292,12 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, 
         VActionbarSection section = sections.get(sectionName);
         if (section != null) {
             VActionbarGroup group = section.getGroups().get(groupName);
+
             if (group == null) {
-                tabletColumn = 0;
-                tabletRow++;
                 group = new VActionbarGroup(groupName);
                 section.addGroup(group);
-
-                setToggleAndFullScreenButtonHeights(tabletRow);
-
             }
-            String cssClasses = "row-" + tabletRow + " col-" + tabletColumn + " open";
+            String cssClasses = "open";
 
             VActionbarItem action;
 
@@ -274,7 +308,6 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, 
             }
 
             group.addAction(action);
-            tabletColumn++;
         }
     }
 
@@ -311,11 +344,11 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, 
      * @return
      */
     private void setToggleAndFullScreenButtonHeights(int tabletRow){
-        // Position toggleButton button at bottom of stack.
-        toggleButton.removeStyleName("row-" + (tabletRow));
-        toggleButton.addStyleName("row-" + (tabletRow + 1));
-        fullScreenButton.removeStyleName("row-" + (tabletRow));
-        fullScreenButton.addStyleName("row-" + (tabletRow + 1));
+        // Position toggleButton and fullScreenButton at bottom of stack.
+
+        toggleButton.setStyleName(CLASSNAME_TOGGLE + " row-" + (tabletRow + 1));
+
+        fullScreenButton.setStyleName(CLASSNAME_FULLSCREEN + " row-" + (tabletRow + 1));
     }
 
 

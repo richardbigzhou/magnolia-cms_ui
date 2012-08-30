@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.widget.magnoliashell.gwt.client;
 
+import com.google.gwt.user.client.ui.RootPanel;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.AnimationSettings;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryCallback;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper;
@@ -67,6 +68,7 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchPanel;
@@ -81,7 +83,7 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
     private Map<ViewportType, VShellViewport> viewports = new EnumMap<ViewportType, VShellViewport>(ViewportType.class);
 
     private ViewportType activeViewportType = null;
-            
+
     private VMainLauncher mainAppLauncher;
 
     private Presenter presenter;
@@ -91,7 +93,7 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
     private VShellMessage lowPriorityMessage;
 
     private VShellMessage hiPriorityMessage;
-    
+
     public VMagnoliaShellViewImpl(final EventBus eventBus) {
         super();
         this.eventBus = eventBus;
@@ -99,8 +101,16 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
         setStyleName(CLASSNAME);
         add(mainAppLauncher, getElement());
         bindEventHandlers();
+
+        //TODO:Very useful for debugging/development - but perhaps should be removed -  Christopher Zimmermann
+        if (Window.Location.getQueryString().indexOf("tablet=true") >= 0){
+            RootPanel.get().addStyleName("tablet");
+        }
     }
-    
+
+
+
+
     private void bindEventHandlers() {
         eventBus.addHandler(ViewportCloseEvent.TYPE, this);
         eventBus.addHandler(ShellAppNavigationEvent.TYPE, navigationHandler);
@@ -135,7 +145,7 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
 
     @Override
     public int getViewportHeight() {
-        int errorMessageHeight = hiPriorityMessage == null && 
+        int errorMessageHeight = hiPriorityMessage == null &&
                 (getWidgetIndex(hiPriorityMessage) > -1) ? hiPriorityMessage.getOffsetHeight() : 0;
         return getOffsetHeight() - mainAppLauncher.getExpandedHeight() - errorMessageHeight;
     }
@@ -243,7 +253,7 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
             }
         }
     }
-    
+
     private final Timer mainLauncherUnlockTimer = new Timer() {
         @Override
         public void run() {
@@ -319,7 +329,7 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
             insert(pusher, 0);
         }
     }
-    
+
     @Override
     public void updateShellAppIndication(ShellAppType type, int increment) {
         mainAppLauncher.updateIndication(type, increment);

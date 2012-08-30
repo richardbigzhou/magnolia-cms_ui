@@ -75,6 +75,7 @@ public class ConfiguredDialogDefinitionManagerTest {
 
     private static final String A_DIALOG_PATH = "/modules/aModule/" + ConfiguredDialogDefinitionManager.DIALOG_CONFIG_NODE_NAME + "/aDialog";
     private static final String B_DIALOG_PATH = "/modules/bModule/" + ConfiguredDialogDefinitionManager.DIALOG_CONFIG_NODE_NAME + "/bDialog";
+    private static final String C_DIALOG_PATH = "/modules/bModule/" + ConfiguredDialogDefinitionManager.DIALOG_CONFIG_NODE_NAME + "/cDialog";
 
     private ModuleRegistry moduleRegistry;
 
@@ -96,7 +97,8 @@ public class ConfiguredDialogDefinitionManagerTest {
             A_DIALOG_PATH + "/tabs/taba.label=label",
             B_DIALOG_PATH + ".id=bModule:bDialog",
             B_DIALOG_PATH + "/actions/actionb",
-            B_DIALOG_PATH + "/actions/actionb.label=label"
+            B_DIALOG_PATH + "/actions/actionb.label=label",
+            C_DIALOG_PATH + ".id=cModule:cDialog"
             );
         MockUtil.initMockContext();
         MockUtil.setSystemContextSessionAndHierarchyManager(session);
@@ -186,7 +188,7 @@ public class ConfiguredDialogDefinitionManagerTest {
             fail();
         } catch (RegistrationException expected) {
         }
-        bDialog = dialogRegistry.get("bModule:cDialog");
+        bDialog = dialogRegistry.get("cModule:cDialog");
     }
 
 }
