@@ -203,13 +203,14 @@
     display:block;
     right:0px;
     width:69px;
-    height:78px;
+    height:79px;
     border:none;
     background:#666 ;
     text-align:center;
 
-    border-left:solid 1px white;
-    margin-left:-1px;
+	border-width:0px;
+    border-right:solid 1px white;
+
 
     color:#fff;
     font-size:12px;
@@ -220,13 +221,18 @@
 .tablet .v-action .v-icon{
     left:20px;
     height:24px;
+    font-size:34px;
+    top:2px;
 }
 
 .tablet .v-action .v-text{
     left:4px;
     width:62px;
     font-size:12px;
-    top:35px;
+    line-height:12px;
+
+    top:auto;
+    bottom:5px;
 }
 
 .tablet .v-action .v-flyout-indicator{
@@ -237,7 +243,7 @@
 }
 
 .tablet .v-actionbar-toggle {
-    width:69px;
+    width:70px;
     height:40px;
 }
 
@@ -253,7 +259,7 @@
 
 .tablet .v-action.flyout{
     background-image: url("img/actionbar-tablet-flyout-toggle-open.png");
-    background-position: 3px 66px;
+    background-position: 3px 63px;
     background-repeat: no-repeat;
 }
 
@@ -264,7 +270,7 @@
 .tablet .v-action.col-0{
     right:0px;
     z-index:100;
-
+	border-right:solid 1px #666;
 
 }
 .tablet .v-actionbar-group.open .v-action.col-0{
