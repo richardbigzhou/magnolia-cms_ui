@@ -41,7 +41,7 @@ import info.magnolia.ui.admincentral.tree.model.TreeModel;
 import info.magnolia.ui.model.column.definition.ColumnDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
-import info.magnolia.ui.vaadin.integration.widget.HybridSelectionTreeTable;
+import info.magnolia.ui.vaadin.integration.widget.grid.MagnoliaTreeTable;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -67,7 +67,7 @@ import com.vaadin.terminal.gwt.client.ui.dd.VerticalDropLocation;
  * invoking command callbacks.
  */
 @SuppressWarnings("serial")
-public class MagnoliaTreeTable extends HybridSelectionTreeTable {
+public class WorkbenchTreeTable extends MagnoliaTreeTable {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -75,7 +75,7 @@ public class MagnoliaTreeTable extends HybridSelectionTreeTable {
 
     private final TreeModel treeModel;
 
-    public MagnoliaTreeTable(WorkbenchDefinition workbenchDefinition, TreeModel treeModel, ComponentProvider componentProvider) {
+    public WorkbenchTreeTable(WorkbenchDefinition workbenchDefinition, TreeModel treeModel, ComponentProvider componentProvider) {
         super();
         this.treeModel = treeModel;
 
@@ -83,9 +83,8 @@ public class MagnoliaTreeTable extends HybridSelectionTreeTable {
         setEditable(false);
         setSelectable(true);
         setColumnCollapsingAllowed(true);
-        setImmediate(true);
         setColumnReorderingAllowed(false);
-
+        setImmediate(true);
         addDragAndDrop();
 
         container = new HierarchicalJcrContainer(treeModel, workbenchDefinition);
@@ -105,12 +104,9 @@ public class MagnoliaTreeTable extends HybridSelectionTreeTable {
             } else {
                 columnProperty = columnName;
             }
-            // super.setColumnExpandRatio(columnName, treeColumn.getWidth() <= 0 ? 1 :
-            // treeColumn.getWidth());
             addContainerProperty(columnProperty, column.getType(), "");
-            super.setColumnHeader(columnProperty, column.getLabel());
+            setColumnHeader(columnProperty, column.getLabel());
             visibleColumns.add(columnName);
-            //Set Formatter
             if(StringUtils.isNotBlank(column.getFormatterClass())) {
                 try {
                     this.addGeneratedColumn(columnName, (ColumnFormatter)componentProvider.newInstance(Class.forName(column.getFormatterClass()),column));
@@ -138,7 +134,7 @@ public class MagnoliaTreeTable extends HybridSelectionTreeTable {
                     Transferable t = event.getTransferable();
 
                     // Make sure the drag source is the same tree
-                    if (t.getSourceComponent() != MagnoliaTreeTable.this) {
+                    if (t.getSourceComponent() != WorkbenchTreeTable.this) {
                         return;
                     }
 

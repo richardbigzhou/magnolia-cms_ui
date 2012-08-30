@@ -256,7 +256,7 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, 
             if (isDeviceTablet) {
                 for (final VActionbarSection section : sections.values()) {
                     for (final VActionbarGroup group : section.getGroups().values()) {
-                        group.removeStyleName("open");
+                        group.closeHorizontal();
                     }
                 }
             }
