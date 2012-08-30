@@ -4381,7 +4381,7 @@ public class VMagnoliaTable extends FlowPanel implements Table, ScrollHandler, V
                 for (Widget row : renderedRows) {
                     if (!(row instanceof VScrollTableGeneratedRow)) {
                         TableRowElement tr = row.getElement().cast();
-                        Element wrapperdiv = tr.getCells().getItem(columnIndex).getFirstChildElement().cast();
+                        Element wrapperdiv = tr.getCells().getItem(columnIndex + 1).getFirstChildElement().cast();
                         return wrapperdiv.getOffsetWidth();
                     }
                 }
@@ -4551,6 +4551,7 @@ public class VMagnoliaTable extends FlowPanel implements Table, ScrollHandler, V
                 rowElement = Document.get().createTRElement();
                 setElement(rowElement);
                 final Element td = DOM.createTD();
+                td.addClassName("v-table-cell-content");
                 td.appendChild(selectionCheckBox.getElement());
                 selectionCheckBox.addValueChangeHandler(selectionCheckBoxValueChangeHandler);
                 selectionCheckBox.addStyleName("v-selection-cb");

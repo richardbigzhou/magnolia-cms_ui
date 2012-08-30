@@ -49,6 +49,9 @@ public class MagnoliaTreeTable extends TreeTable {
 
     public MagnoliaTreeTable() {
         addStyleName("v-magnolia-table");
+        setSelectable(true);
+        setImmediate(true);
+        setMultiSelect(true);
     }
     
     @Override

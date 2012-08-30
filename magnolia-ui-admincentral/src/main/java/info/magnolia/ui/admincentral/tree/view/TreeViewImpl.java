@@ -99,6 +99,7 @@ public class TreeViewImpl implements TreeView {
                 }
             }
         });
+        margin.setSizeFull();
         margin.setStyleName("mgnl-content-view");
         margin.addComponent(jcrBrowser);
     }

@@ -49,6 +49,9 @@ public class MagnoliaTable extends Table {
 
     public MagnoliaTable() {
         addStyleName("v-magnolia-table");
+        setSelectable(true);
+        setImmediate(true);
+        setMultiSelect(true);
     }
     
     @Override

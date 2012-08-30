@@ -83,9 +83,8 @@ public class WorkbenchTreeTable extends MagnoliaTreeTable {
         setEditable(false);
         setSelectable(true);
         setColumnCollapsingAllowed(true);
-        setImmediate(true);
         setColumnReorderingAllowed(false);
-
+        setImmediate(true);
         addDragAndDrop();
 
         container = new HierarchicalJcrContainer(treeModel, workbenchDefinition);
@@ -95,9 +94,6 @@ public class WorkbenchTreeTable extends MagnoliaTreeTable {
         Iterator<ColumnDefinition> iterator = workbenchDefinition.getFilteredColumns().iterator();
         while (iterator.hasNext()) {
             ColumnDefinition column = iterator.next();
-//            if(workbenchDefinition.isDialogWorkbench() && ! column.isToDisplayInDialog()) {
-//                continue;
-//            }
             String columnName = column.getName();
             String columnProperty = "";
             if (column.getPropertyName() != null) {
@@ -105,12 +101,9 @@ public class WorkbenchTreeTable extends MagnoliaTreeTable {
             } else {
                 columnProperty = columnName;
             }
-            // super.setColumnExpandRatio(columnName, treeColumn.getWidth() <= 0 ? 1 :
-            // treeColumn.getWidth());
             addContainerProperty(columnProperty, column.getType(), "");
-            super.setColumnHeader(columnProperty, column.getLabel());
+            setColumnHeader(columnProperty, column.getLabel());
             visibleColumns.add(columnName);
-            //Set Formatter
             if(StringUtils.isNotBlank(column.getFormatterClass())) {
                 try {
                     this.addGeneratedColumn(columnName, (ColumnFormatter)componentProvider.newInstance(Class.forName(column.getFormatterClass()),column));
@@ -120,7 +113,7 @@ public class WorkbenchTreeTable extends MagnoliaTreeTable {
                 }
             }
         }
-        // setVisibleColumns(visibleColumns.toArray());
+        setColumnWidth(visibleColumns.get(0), 300);
     }
 
     /**
