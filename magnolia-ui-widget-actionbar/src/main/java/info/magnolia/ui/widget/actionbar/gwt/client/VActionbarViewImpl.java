@@ -154,6 +154,7 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, 
      * Actions positions in tablet mode are set via row_x and col_x classes.
      * These need to be updated anytime a section is hidden or shown.
      */
+    @Override
     public void refreshActionsPositionsTablet(){
 
         if (!isDeviceTablet){
@@ -168,13 +169,21 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, 
             //if section is visible - then update rows & cols
             if (section.isVisible()){
 
-            for (final VActionbarGroup group : section.getGroups().values()) {
+                for (final VActionbarGroup group : section.getGroups().values()) {
 
+                    boolean test = false;
                     tabletColumn = 0;
                     tabletRow++;
 
                     for (VActionbarItem action : group.getActions()) {
                         String cssClasses = "row-" + tabletRow + " col-" + tabletColumn + " open";
+
+                        // Add a flyout indicator if this is the first action and there are other actions
+                        if (group.getNumActions() > 1){
+                            if (tabletColumn==0){
+                                cssClasses = cssClasses + " flyout";
+                            }
+                        }
                         action.resetStyleNames(cssClasses);
                         tabletColumn++;
                     }

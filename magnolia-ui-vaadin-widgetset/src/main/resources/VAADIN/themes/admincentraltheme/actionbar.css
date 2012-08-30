@@ -251,16 +251,24 @@
     font-size:20px;
 }
 
-.tablet .v-action.col-0{
-    right:0px;
-    z-index:100;
-
+.tablet .v-action.flyout{
     background-image: url("img/actionbar-tablet-flyout-toggle-open.png");
     background-position: 3px 66px;
     background-repeat: no-repeat;
 }
+
+.tablet .v-actionbar-group.open .v-action.flyout{
+	background-image: url("img/actionbar-tablet-flyout-toggle-close.png");
+}
+
+.tablet .v-action.col-0{
+    right:0px;
+    z-index:100;
+
+
+}
 .tablet .v-actionbar-group.open .v-action.col-0{
-    background-image: url("img/actionbar-tablet-flyout-toggle-close.png");
+
 }
 
 
