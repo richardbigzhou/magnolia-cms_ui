@@ -52,6 +52,7 @@ import com.google.web.bindery.event.shared.EventBus;
 
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.ui.Icon;
+import info.magnolia.ui.widget.actionbar.gwt.client.event.ActionTriggerEvent;
 
 
 /**
@@ -160,6 +161,10 @@ public class VActionbarItem extends Widget {
             @Override
             public void onMouseUp(MouseUpEvent event) {
                 removeStyleName("mousedown");
+
+                if (data.isEnabled()) {
+                    eventBus.fireEvent(new ActionTriggerEvent(data.getName(), VActionbarItem.this));
+                }
             }
         }, MouseUpEvent.getType());
 
