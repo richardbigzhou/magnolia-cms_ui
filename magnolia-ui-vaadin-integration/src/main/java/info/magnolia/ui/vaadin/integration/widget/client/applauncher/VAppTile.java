@@ -54,7 +54,7 @@ import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 
 /**
  * The tile of one single app in AppLauncher.
- * 
+ *
  */
 public class VAppTile extends Widget {
 
@@ -69,11 +69,11 @@ public class VAppTile extends Widget {
     private final Element iconContent = DOM.createSpan();
 
     private final VAppTileJSO appTileData;
-    
+
     private final EventBus eventBus;
-    
+
     private boolean isActive = false;
-    
+
     private TouchDelegate touchDelegate = new TouchDelegate(this);
 
     private final String colorItemHover = "#3f5900";
@@ -97,9 +97,9 @@ public class VAppTile extends Widget {
         addStyleName("item");
         icon.addClassName("icon");
         label.addClassName("label");
-        
+
         icon.appendChild(iconContent);
-        
+
         DOM.sinkEvents(getElement(), Event.MOUSEEVENTS);
     }
 
@@ -113,10 +113,12 @@ public class VAppTile extends Widget {
         }, MouseOverEvent.getType());
 
         addDomHandler(new MouseOutHandler() {
+
             @Override
             public void onMouseOut(MouseOutEvent event) {
 
                 getElement().removeClassName("hover");
+                updateColors();
             }
         }, MouseOutEvent.getType());
 
@@ -132,7 +134,7 @@ public class VAppTile extends Widget {
             }
         });
         */
-        
+
         touchDelegate.addTouchStartHandler(new TouchStartHandler() {
             @Override
             public void onTouchStart(TouchStartEvent event) {
@@ -151,9 +153,10 @@ public class VAppTile extends Widget {
                 if (!isActive()) {
                     setActive(true);
                 }
+                updateColors();
             }
         });
-        
+
         touchDelegate.addTouchMoveHandler(new TouchMoveHandler() {
             @Override
             public void onTouchMove(TouchMoveEvent event) {
@@ -168,7 +171,7 @@ public class VAppTile extends Widget {
         updateColors();
     }
 
-    private void updateColors(){
+    public void updateColors(){
         if (!isActive()) {
             setColorsOff();
         } else {
@@ -210,7 +213,7 @@ public class VAppTile extends Widget {
     public String getCaption() {
         return appTileData.getCaption();
     }
-    
+
     public boolean isActive() {
         return isActive;
     }
@@ -222,7 +225,7 @@ public class VAppTile extends Widget {
 
     public void updateCaption() {
         if (appTileData != null) {
-            label.setInnerText(appTileData.getCaption());   
+            label.setInnerText(appTileData.getCaption());
         }
     }
 
