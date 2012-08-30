@@ -102,7 +102,12 @@ public class DialogBuilder {
                     ((AbstractComponent)field).setImmediate(true);
                 }
                 //Add Validation
-                setRestriction(fieldDefinition, field);
+                setConstraints(fieldDefinition, field);
+
+                //hide label for this field
+                if(fieldDefinition.isHideLabel()) {
+                    field.addStyleName("hide-label");
+                }
 
                 tab.addField(field);
                 //Set Help
@@ -130,12 +135,12 @@ public class DialogBuilder {
 
 
     /**
-     * Set all restrictions linked to a field. Add:
+     * Set all constraints linked to a field. Add:
      *   Validation rules
      *   Mandatory field
      *   SaveInfo property
      */
-    private void setRestriction(FieldDefinition fieldDefinition, Field input) {
+    private void setConstraints(FieldDefinition fieldDefinition, Field input) {
 
         Validator vaadinValidator = null;
         for (ValidatorDefinition current: fieldDefinition.getValidators()) {
@@ -157,6 +162,7 @@ public class DialogBuilder {
             input.setRequired(true);
             input.setRequiredError(fieldDefinition.getRequiredErrorMessage());
         }
+
     }
 }
 

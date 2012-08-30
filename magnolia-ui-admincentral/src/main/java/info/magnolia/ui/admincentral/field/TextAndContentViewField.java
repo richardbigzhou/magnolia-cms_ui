@@ -44,12 +44,13 @@ import com.vaadin.ui.VerticalLayout;
 
 /**
  * A base custom field allowing to display a {@link ContentWorkbenchView} and a TextField.
- *  - Text field can be Hide, or place on top or button.
- *  This Field is mainly use do perform some selection in a list and to
- *  Grape the selected value into the Text input field
+ *  <ul>
+ *  <li>Text field can be hidden or placed on top or button.
+ *  <li>This field is mainly used to perform some selection in a list and to
+ *  put the selected value into the text input field.
+ *  </ul>
  */
 public class TextAndContentViewField extends CustomField {
-
 
     private ContentWorkbenchView contentView;
     private VerticalLayout layout;
@@ -69,8 +70,7 @@ public class TextAndContentViewField extends CustomField {
      * Set textField visible or not.
      */
     private void addTextFieldToLayout(boolean displayTextField) {
-        textField = new TextField();
-        if(! displayTextField) {
+        if(!displayTextField) {
             textField.setVisible(false);
             return;
         }

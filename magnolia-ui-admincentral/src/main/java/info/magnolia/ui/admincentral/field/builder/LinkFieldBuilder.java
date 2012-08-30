@@ -63,9 +63,10 @@ import com.vaadin.ui.Field;
  */
 public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBuilder<LinkFieldDefinition> {
     private static final Logger log = LoggerFactory.getLogger(LinkFieldBuilder.class);
-    public static String TRANSIENT_PROPERTY_NAME = "transientProps";
-    TextAndButtonField textButton;
-    final AppController appController;
+    public static final String TRANSIENT_PROPERTY_NAME = "transientProps";
+
+    private TextAndButtonField textButton;
+    private AppController appController;
 
     @Inject
     public LinkFieldBuilder(LinkFieldDefinition definition, Item relatedFieldItem, AppController appController ) {
@@ -103,6 +104,7 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
      * Create the Button click Listener.
      * On click: Create a Dialog and Initialize callback handling.
      */
+    @SuppressWarnings("serial")
     private Button.ClickListener createButtonClickListener(final String dialogName, final String appName) {
         Button.ClickListener res = new Button.ClickListener() {
             @Override
@@ -124,7 +126,7 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
                     public void onSuccess(String actionName) {
                         Property p = item.getItemProperty(TRANSIENT_PROPERTY_NAME);
                         textButton.setValue(p.getValue());
-                        log.debug("Got following value from Sub Window " +p.getValue());
+                        log.debug("Got following value from Sub Window {}", p.getValue());
                     }
                     @Override
                     public void onCancel() {

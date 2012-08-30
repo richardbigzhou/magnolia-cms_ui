@@ -189,6 +189,9 @@
             <sv:property sv:name="displayTextFieldOnTop" sv:type="Boolean">
               <sv:value>true</sv:value>
             </sv:property>
+            <sv:property sv:name="hideLabel" sv:type="Boolean">
+              <sv:value>true</sv:value>
+            </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
             </sv:property>
@@ -218,7 +221,7 @@
                 <sv:value>2012-06-11T13:55:35.862+02:00</sv:value>
               </sv:property>
               <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-                <sv:value>2012-08-30T09:02:42.180+02:00</sv:value>
+                <sv:value>2012-08-30T19:29:41.241+02:00</sv:value>
               </sv:property>
             </sv:node>
           </sv:node>
