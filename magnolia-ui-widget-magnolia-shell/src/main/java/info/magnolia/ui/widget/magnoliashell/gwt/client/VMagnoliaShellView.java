@@ -62,7 +62,9 @@ public interface VMagnoliaShellView extends HasWidgets, IsWidget {
 
     void setPresenter(final Presenter presenter);
     
-    void showMessage(final MessageType type, String text, String message, String id); 
+    void showMessage(final MessageType type, String text, String message, String id);
+
+    void hideAllMessages();
 
     void navigate(String prefix, String token);
     
@@ -71,7 +73,9 @@ public interface VMagnoliaShellView extends HasWidgets, IsWidget {
     void setPusher(VICEPush pusher);
     
     void updateShellAppIndication(ShellAppType type, int increment);
-    
+
+    void setShellAppIndication(ShellAppType type, int indication);
+
     Presenter getPresenter();
     
     Collection<VShellViewport> getViewports();
@@ -81,6 +85,7 @@ public interface VMagnoliaShellView extends HasWidgets, IsWidget {
     void navigateToMessageDetails(String id);
     
     void showAppPreloader(String prefix, PreloaderCallback preloaderCallback);
+
     /**
      * Presenter. Meant for Vaadin part of MagnoliaShell.
      */

@@ -33,10 +33,19 @@
  */
 package info.magnolia.ui.model.dialog.registry;
 
+import info.magnolia.cms.core.MgnlNodeType;
+import info.magnolia.cms.util.ModuleConfigurationObservingManager;
+import info.magnolia.jcr.predicate.NodeTypePredicate;
+import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.jcr.util.NodeVisitor;
+import info.magnolia.module.ModuleRegistry;
+import info.magnolia.ui.model.dialog.definition.ConfiguredDialogDefinition;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.jcr.Node;
@@ -45,13 +54,6 @@ import javax.jcr.RepositoryException;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import info.magnolia.cms.core.MgnlNodeType;
-import info.magnolia.cms.util.ModuleConfigurationObservingManager;
-import info.magnolia.jcr.predicate.NodeTypePredicate;
-import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.jcr.util.NodeVisitor;
-import info.magnolia.module.ModuleRegistry;
 
 /**
  * ObservedManager for dialogs configured in repository.
@@ -84,9 +86,15 @@ public class ConfiguredDialogDefinitionManager extends ModuleConfigurationObserv
                 @Override
                 public void visit(Node current) throws RepositoryException {
                     for (Node dialogNode : NodeUtil.getNodes(current, MgnlNodeType.NT_CONTENTNODE)) {
-                        DialogDefinitionProvider provider = createProvider(dialogNode);
-                        if (provider != null) {
-                            providers.add(provider);
+                        if(isDialog(dialogNode)) {
+                            // Handle as Dialog only if it has sub nodes tabs or actions.
+                            // This will filter the Fields and Tab definition in dialogs used by the extends mechanism.
+                            DialogDefinitionProvider provider = createProvider(dialogNode);
+                            if (provider != null) {
+                                providers.add(provider);
+                            }
+                        }else {
+                            log.warn("node "+dialogNode.getName()+" will not be handle as Dialog.");
                         }
                     }
                 }
@@ -94,6 +102,15 @@ public class ConfiguredDialogDefinitionManager extends ModuleConfigurationObserv
         }
 
         this.registeredIds = dialogDefinitionRegistry.unregisterAndRegister(registeredIds, providers);
+    }
+
+    /**
+     * Check if this node can be handle as a ConfiguredDialogDefinition.
+     */
+    private boolean isDialog(Node dialogNode) throws RepositoryException {
+        return dialogNode.hasNode(ConfiguredDialogDefinition.TABS_NODE_NAME)
+            || dialogNode.hasNode(ConfiguredDialogDefinition.ACTIONS_NODE_NAME)
+            || dialogNode.hasProperty(ConfiguredDialogDefinition.EXTEND_PROPERTY_NAME);
     }
 
     protected DialogDefinitionProvider createProvider(Node dialogNode) throws RepositoryException {

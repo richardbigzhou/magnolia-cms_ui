@@ -64,14 +64,13 @@ public class FocusModelImpl implements FocusModel {
     }
 
     @Override
-    public void onMouseUp(Element element) {
+    public void selectElement(Element element) {
 
         MgnlElement mgnlElement = model.getMgnlElement(element);
 
         MgnlElement area = null;
         MgnlElement component = null;
 
-        AbstractBar editBar;
 
         Map<String, String> attr;
         String type;
@@ -86,25 +85,44 @@ public class FocusModelImpl implements FocusModel {
 
             type = mgnlElement.getComment().getTagName();
             attr = mgnlElement.getAttributes();
+
+            // remove together with selectPage ASAP
+            AbstractBar pageEditBar = model.getPageBar();
+            pageEditBar.removeFocus();
+
+            select(type, attr);
+
+
         } else {
-
-
-            // ugly hack!!!
-            editBar = model.getPageBar();
-            type = "cms:page";
-            attr = new HashMap<String, String>();
-            attr.put("workspace", editBar.getWorkspace());
-            attr.put("path", editBar.getPath());
-            attr.put("dialog", editBar.getDialog());
+            selectPage();
 
         }
 
-        select(type, attr);
 
         // first set the component, then set the area. the selected component is used for setting
         // the corrent area class.
         setComponentSelection(component);
         setAreaSelection(area);
+
+    }
+
+    @Override
+    public void selectPage() {
+        AbstractBar pageEditBar = model.getPageBar();
+
+        Map<String, String> attr;
+        String type;
+
+        pageEditBar.setFocus(false);
+        // ugly hack!!!
+        type = "cms:page";
+        attr = new HashMap<String, String>();
+        attr.put("workspace", pageEditBar.getWorkspace());
+        attr.put("path", pageEditBar.getPath());
+        attr.put("dialog", pageEditBar.getDialog());
+        select(type, attr);
+
+        toggleRootAreaBar(true);
 
     }
 
@@ -259,17 +277,6 @@ public class FocusModelImpl implements FocusModel {
                 model.getComponentPlaceHolder(root).setVisible(visible);
             }
         }
-
-        // ugly hack!!!
-        AbstractBar editBar = model.getPageBar();
-        String type = "cms:page";
-
-        Map<String, String> attr = new HashMap<String, String>();
-        attr.put("workspace", editBar.getWorkspace());
-        attr.put("path", editBar.getPath());
-        attr.put("dialog", editBar.getDialog());
-
-        select(type, attr);
     }
 
     private void select(String type, Map<String, String> attr) {

@@ -63,6 +63,8 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
     private ActionbarDefinition actionbar;
 
     private ComponentProviderConfiguration components;
+    //Default is always False.
+    private boolean dialogWorkbench = false;
 
     private ThumbnailProvider thumbnailProvider;
     @Override
@@ -124,6 +126,7 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
         return columns.values();
     }
 
+
     public void addColumn(ColumnDefinition treeColumn) {
         columns.put(treeColumn.getLabel(), treeColumn);
     }
@@ -154,4 +157,15 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
     public void setThumbnailProvider(ThumbnailProvider thumbnailProvider) {
         this.thumbnailProvider = thumbnailProvider;
     }
+
+
+    @Override
+    public boolean isDialogWorkbench() {
+        return dialogWorkbench;
+    }
+
+    public void setDialogWorkbench(boolean dialogWorkbench) {
+        this.dialogWorkbench = dialogWorkbench;
+    }
+
 }

@@ -40,8 +40,8 @@
       <implementation>info.magnolia.ui.app.pages.editor.PagesEditorSubApp</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.app.pages.editor.PagesEditorView</type>
-      <implementation>info.magnolia.ui.app.pages.editor.PagesEditorViewImpl</implementation>
+      <type>info.magnolia.ui.app.pages.editor.PagesEditorSubAppView</type>
+      <implementation>info.magnolia.ui.app.pages.editor.PagesEditorSubAppViewImpl</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.widget.editor.PageEditorView</type>

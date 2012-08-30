@@ -63,6 +63,7 @@ public class VShellErrorMessage extends VShellMessage {
         if (targetEl == detailsLinkEl) {
             getShell().navigateToMessageDetails(getId());
         }
+        super.onMessageClicked(targetEl);
     }
     
     @Override
@@ -75,6 +76,12 @@ public class VShellErrorMessage extends VShellMessage {
     public void hide() {
         getShell().shiftViewportsVertically(-getOffsetHeight(), false);
         super.hide();
+    }
+
+    @Override
+    public void hideWithoutTransition() {
+        getShell().shiftViewportsVertically(-getOffsetHeight(), false);
+        super.hideWithoutTransition();
     }
 
     @Override

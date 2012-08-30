@@ -64,7 +64,6 @@
 	padding: 0;
 	position: absolute;
 	width: 720px;
-	z-index: 1000;
 }
 
 .dialog-footer {
@@ -155,7 +154,6 @@ button.btn-dialog-help {
 	width: 140px;
 	margin-right: 12px;
 	color: #666;
-	vertical-align: middle;
 }
 
 .v-dialog-field-container {
@@ -268,4 +266,21 @@ fieldset {
 	border: 0px none;
 	margin: 0;
 	padding: 0;
+}
+
+.v-dialog-field-container .v-datefield {
+  float: none;
+  display: inline;
+}
+
+.v-dialog-field-container .v-datefield-button {
+	margin: 4px 0 0 3px;
+}
+
+.v-dialog-field-label  span.requiredfield {
+    color: black;
+    font-family: inherit;
+    font-size: 18px;
+    vertical-align: -20%;
+    margin-left: 3px;
 }

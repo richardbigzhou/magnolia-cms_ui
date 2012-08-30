@@ -219,6 +219,19 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
         });
     }
 
+    @Override
+    public void hideAllMessages() {
+        if (hiPriorityMessage != null && getWidgetIndex(hiPriorityMessage) != -1) {
+            hiPriorityMessage.hideWithoutTransition();
+        }
+        hiPriorityMessage = null;
+
+        if (lowPriorityMessage != null && getWidgetIndex(lowPriorityMessage) != -1) {
+            lowPriorityMessage.hideWithoutTransition();
+        }
+        lowPriorityMessage = null;
+    }
+
     protected void switchViewports(boolean appViewportOnTop) {
         final VShellViewport shellAppViewport = getShellAppViewport();
         final VShellViewport appViewport = getAppViewport();
@@ -314,6 +327,11 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
     @Override
     public void updateShellAppIndication(ShellAppType type, int increment) {
         mainAppLauncher.updateIndication(type, increment);
+    }
+
+    @Override
+    public void setShellAppIndication(ShellAppType type, int indication) {
+        mainAppLauncher.setIndication(type, indication);
     }
 
     @Override

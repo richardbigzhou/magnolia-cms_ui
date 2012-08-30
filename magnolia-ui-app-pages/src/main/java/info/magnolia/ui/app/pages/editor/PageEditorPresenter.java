@@ -43,6 +43,7 @@ import info.magnolia.rendering.template.registry.TemplateDefinitionRegistry;
 import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
 import info.magnolia.ui.admincentral.event.ContentChangedEvent;
 import info.magnolia.ui.app.pages.field.ComponentSelectorDefinition;
+import info.magnolia.ui.app.pages.field.TemplateSelectorField;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.dialog.definition.ConfiguredDialogDefinition;
 import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
@@ -53,6 +54,7 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.widget.dialog.MagnoliaDialogPresenter;
 import info.magnolia.ui.widget.editor.PageEditor;
+import info.magnolia.ui.widget.editor.PageEditorParameters;
 import info.magnolia.ui.widget.editor.PageEditorView;
 
 import java.util.LinkedList;
@@ -85,8 +87,6 @@ public class PageEditorPresenter implements PageEditorView.Listener {
     private final DialogPresenterFactory dialogPresenterFactory;
 
     private final TemplateDefinitionRegistry templateDefinitionRegistry;
-
-    private PageEditorParameters parameters;
 
     private final ConfiguredDialogDefinition dialogDefinition;
 
@@ -159,15 +159,12 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
                 @Override
                 public void onSuccess(String actionName) {
-                    JcrNodeAdapter myItem = item;
-                    String templateId = String.valueOf(myItem.getItemProperty("MetaData/mgnl:template").getValue());
-
+                    String templateId = String.valueOf(item.getItemProperty("MetaData/mgnl:template").getValue());
                     try {
                         TemplateDefinition templateDef = templateDefinitionRegistry.getTemplateDefinition(templateId);
                         String dialog = templateDef.getDialog();
-                        editComponent(item.getWorkspace(), item.getNode().getPath(), dialog);
-                    } catch (RepositoryException e) {
-                        log.error("Exception caught: {}", e.getMessage(), e);
+                        final MagnoliaDialogPresenter.Presenter dialogPresenter = dialogPresenterFactory.createDialog(dialog);
+                        createDialogAction(item, dialogPresenter);
                     } catch (RegistrationException e) {
                         log.error("Exception caught: {}", e.getMessage(), e);
                     } finally {
@@ -221,7 +218,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
                 TemplateDefinition paragraphInfo = templateDefinitionRegistry.getTemplateDefinition(tokens[i]);
                 SelectFieldOptionDefinition option = new SelectFieldOptionDefinition();
                 option.setValue(paragraphInfo.getId());
-                option.setName(paragraphInfo.getTitle());
+                option.setName(TemplateSelectorField.getI18nTitle(paragraphInfo));
                 selector.addOption(option);
 
             } catch (RegistrationException e) {
@@ -316,20 +313,15 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
     public PageEditorView start() {
         view.setListener(this);
-        view.init(parameters.getContextPath(), parameters.getNodePath(), parameters.isPreview());
+        view.init();
         return view;
-    }
-
-    public PageEditorParameters getParameters() {
-        return parameters;
-    }
-
-    public void setParameters(PageEditorParameters parameters) {
-        this.parameters = parameters;
     }
 
     public PageEditor.AbstractElement getSelectedElement() {
         return selectedElement;
     }
 
+    public void loadPageEditor(PageEditorParameters parameters) {
+        view.load(parameters);
+    }
 }

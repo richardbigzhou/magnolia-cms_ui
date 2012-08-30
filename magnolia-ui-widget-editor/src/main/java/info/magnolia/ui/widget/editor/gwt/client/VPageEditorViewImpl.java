@@ -39,7 +39,6 @@ import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Frame;
-import com.google.web.bindery.event.shared.EventBus;
 
 /**
  * GWT implementation of MagnoliaShell client side (the view part basically).
@@ -49,14 +48,15 @@ public class VPageEditorViewImpl extends FlowPanel implements VPageEditorView {
 
 
     private Listener listener;
-    private EventBus eventBus;
     private Frame iframe;
+    private String url;
 
-
-    public VPageEditorViewImpl(final EventBus eventBus) {
+    public VPageEditorViewImpl() {
         super();
-        this.eventBus = eventBus;
+        setStyleName("pageEditor");
+
         iframe = new Frame();
+
         iframe.addLoadHandler(new LoadHandler() {
 
             @Override
@@ -65,7 +65,6 @@ public class VPageEditorViewImpl extends FlowPanel implements VPageEditorView {
                 //other handlers are initialized here b/c we need to know the document inside the iframe.
                 //make sure we process  html only when the document inside the iframe is loaded.
                 listener.onFrameLoaded(iframe);
-
             }
         });
 
@@ -87,5 +86,28 @@ public class VPageEditorViewImpl extends FlowPanel implements VPageEditorView {
     public void setListener(Listener listener) {
         this.listener = listener;
     }
+
+    @Override
+    public void setUrl(String url) {
+        // if the page is already loaded, force a reload
+        if (url.equals(this.url)) {
+            reload();
+        }
+        else {
+            getIframe().setUrl(url);
+            this.url = url;
+
+        }
+    }
+
+    @Override
+    public void reload() {
+        reloadIFrame(getIframe().getElement());
+    }
+
+    protected native void reloadIFrame(Element iframeElement) /*-{
+        iframeElement.contentWindow.location.reload(true);
+    }-*/;
+
 
 }

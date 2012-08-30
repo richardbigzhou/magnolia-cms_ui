@@ -45,12 +45,12 @@ import info.magnolia.ui.widget.dialog.MagnoliaDialogPresenter.Presenter;
 /**
  * Abstract base app class for content apps.
  */
-public abstract class ContentApp extends AbstractApp {
+public abstract class AbstractContentApp extends AbstractApp {
 
     private DialogPresenterFactory dialogPresenterFactory;
 
     @Inject
-    public ContentApp(DialogPresenterFactory dialogPresenterFactory) {
+    public AbstractContentApp(DialogPresenterFactory dialogPresenterFactory) {
         this.dialogPresenterFactory = dialogPresenterFactory;
     }
 

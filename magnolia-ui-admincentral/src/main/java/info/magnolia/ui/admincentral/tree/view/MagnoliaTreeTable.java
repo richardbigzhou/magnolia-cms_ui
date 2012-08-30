@@ -95,6 +95,9 @@ public class MagnoliaTreeTable extends HybridSelectionTreeTable {
         Iterator<ColumnDefinition> iterator = workbenchDefinition.getColumns().iterator();
         while (iterator.hasNext()) {
             ColumnDefinition column = iterator.next();
+            if(workbenchDefinition.isDialogWorkbench() && ! column.isToDisplayInDialog()) {
+                continue;
+            }
             String columnName = column.getName();
             String columnProperty = "";
             if (column.getPropertyName() != null) {
@@ -117,7 +120,6 @@ public class MagnoliaTreeTable extends HybridSelectionTreeTable {
                 }
             }
         }
-        // setVisibleColumns(visibleColumns.toArray());
     }
 
     /**

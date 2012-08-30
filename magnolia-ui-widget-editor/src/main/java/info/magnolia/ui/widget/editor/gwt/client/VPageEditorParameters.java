@@ -31,45 +31,36 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.editor;
+package info.magnolia.ui.widget.editor.gwt.client;
 
-import info.magnolia.ui.app.pages.PagesApp;
-
+import com.google.gwt.core.client.JavaScriptObject;
 
 /**
- * PageEditorParameters.
+ * VPageEditorParameters.
  */
-public class PageEditorParameters {
+public class VPageEditorParameters  extends JavaScriptObject {
 
-    private final String contextPath;
+    protected VPageEditorParameters() {}
 
-    private final String nodePath;
+    public static native VPageEditorParameters parse(String json) /*-{
+        try {
+            return eval('(' + json + ')');
+        } catch(e) {
+            return null;
+        }
+    }-*/;
 
-    private final String editingMode;
+    public final native String getContextPath() /*-{
+        return this.contextPath;
+    }-*/;
 
-    public PageEditorParameters(String contextPath, String nodePath, String editingMode) {
-        this.contextPath = contextPath;
-        this.nodePath = nodePath;
-        this.editingMode = editingMode;
-    }
+    public final native String getNodePath() /*-{
+        return this.nodePath;
+    }-*/;
 
-    public String getContextPath() {
-        return contextPath;
-    }
+    public final native boolean isPreview() /*-{
+        return this.preview;
+    }-*/;
 
-    public String getNodePath() {
-        return nodePath;
-    }
-
-    public String getEditingFlowMode() {
-        return editingMode;
-    }
-
-    public boolean isPreview() {
-        return PagesApp.PREVIEW_TOKEN.equals(editingMode) || PagesApp.PREVIEW_FULL_TOKEN.equals(editingMode);
-    }
-
-    public boolean isFullScreen() {
-        return PagesApp.PREVIEW_FULL_TOKEN.equals(editingMode) || PagesApp.EDITOR_FULL_TOKEN.equals(editingMode);
-    }
 }
+

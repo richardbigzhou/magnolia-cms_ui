@@ -140,8 +140,12 @@ public class VMainLauncher extends FlowPanel {
             });
         }
 
-        public void incerementIndication(int increment) {
-            indication += increment;
+        public void incrementIndication(int increment) {
+            setIndication(indication + increment);
+        }
+
+        public void setIndication(int indication) {
+            this.indication = indication;
             ((Element) indicator.getFirstChild().cast()).setInnerText(String.valueOf(indication));
             if (indication <= 0) {
                 indicator.getStyle().setDisplay(Display.NONE);
@@ -330,6 +334,10 @@ public class VMainLauncher extends FlowPanel {
     }
 
     public void updateIndication(ShellAppType type, int increment) {
-        controlsMap.get(type).incerementIndication(increment);
+        controlsMap.get(type).incrementIndication(increment);
+    }
+
+    public void setIndication(ShellAppType type, int indication) {
+        controlsMap.get(type).setIndication(indication);
     }
 }

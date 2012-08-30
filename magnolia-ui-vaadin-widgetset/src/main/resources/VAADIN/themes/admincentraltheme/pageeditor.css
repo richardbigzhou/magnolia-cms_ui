@@ -43,7 +43,7 @@ div.mgnlEditorBar.component.focus, div.mgnlEditorBar.area.focus {
     color: #FFF !important;
 }
 
-div.mgnlEditorBar.area.childFocus {
+div.mgnlEditorBar.page.focus, div.mgnlEditorBar.area.childFocus {
     background-color: #689600 !important;
     color: #FFF !important;
 }
@@ -89,10 +89,13 @@ div.mgnlEditorBar.area.childFocus {
  */
 div.mgnlEditorBar.area {
     border-radius: 5px 5px 0 0 !important;
+    margin: 0 0 5px 0 !important;
+}
+
+div.mgnlEditorBar.page, div.mgnlEditorBar.area {
     background-color: #E6E6E6 !important;
     color: #689600 !important;
     clear: both !important;
-    margin: 0 0 5px 0 !important;
 }
 
 div.mgnlEditorBar.area.end {

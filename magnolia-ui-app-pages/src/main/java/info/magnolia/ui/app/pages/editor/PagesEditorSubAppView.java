@@ -39,9 +39,9 @@ import info.magnolia.ui.widget.editor.PageEditorView;
 
 
 /**
- * PagesEditorView.
+ * PagesEditorSubAppView.
  */
-public interface PagesEditorView extends View {
+public interface PagesEditorSubAppView extends View {
 
     /**
      * Listener.

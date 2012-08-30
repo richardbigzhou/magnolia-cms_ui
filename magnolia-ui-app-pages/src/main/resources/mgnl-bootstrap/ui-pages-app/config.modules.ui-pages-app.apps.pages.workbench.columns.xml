@@ -7,7 +7,7 @@
     <sv:value>mix:lockable</sv:value>
   </sv:property>
   <sv:property sv:name="jcr:uuid" sv:type="String">
-    <sv:value>97360693-7109-4f91-a78b-57cf2f0bbc54</sv:value>
+    <sv:value>d4d7f099-3d19-4774-94c3-cb878264d01e</sv:value>
   </sv:property>
   <sv:property sv:name="jcr:createdBy" sv:type="String">
     <sv:value>admin</sv:value>
@@ -29,10 +29,10 @@
       <sv:value>2010-09-08T11:44:17.255+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-      <sv:value>2012-07-09T13:23:48.543+02:00</sv:value>
+      <sv:value>2012-07-06T17:27:11.973+02:00</sv:value>
     </sv:property>
   </sv:node>
-  <sv:node sv:name="firstName">
+  <sv:node sv:name="page">
     <sv:property sv:name="jcr:primaryType" sv:type="Name">
       <sv:value>mgnl:contentNode</sv:value>
     </sv:property>
@@ -40,7 +40,7 @@
       <sv:value>mix:lockable</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:uuid" sv:type="String">
-      <sv:value>1b4e01b3-7b7e-4987-b8dc-9f11e9f88900</sv:value>
+      <sv:value>68b06e8d-3487-466e-8f4e-09c0df9001e4</sv:value>
     </sv:property>
     <sv:property sv:name="class" sv:type="String">
       <sv:value>info.magnolia.ui.model.column.definition.PropertyColumnDefinition</sv:value>
@@ -49,7 +49,10 @@
       <sv:value>admin</sv:value>
     </sv:property>
     <sv:property sv:name="label" sv:type="String">
-      <sv:value>First name</sv:value>
+      <sv:value>Page</sv:value>
+    </sv:property>
+    <sv:property sv:name="propertyName" sv:type="String">
+      <sv:value>jcrName</sv:value>
     </sv:property>
     <sv:node sv:name="MetaData">
       <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -68,11 +71,11 @@
         <sv:value>2010-09-08T11:44:25.527+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-        <sv:value>2012-08-16T17:46:25.399+02:00</sv:value>
+        <sv:value>2012-07-06T17:27:11.975+02:00</sv:value>
       </sv:property>
     </sv:node>
   </sv:node>
-  <sv:node sv:name="lastName">
+  <sv:node sv:name="title">
     <sv:property sv:name="jcr:primaryType" sv:type="Name">
       <sv:value>mgnl:contentNode</sv:value>
     </sv:property>
@@ -80,7 +83,7 @@
       <sv:value>mix:lockable</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:uuid" sv:type="String">
-      <sv:value>b6608b44-118d-4a34-9633-fbb662f2c58d</sv:value>
+      <sv:value>c65c2588-0a1c-43ef-b42d-df9c1a920910</sv:value>
     </sv:property>
     <sv:property sv:name="class" sv:type="String">
       <sv:value>info.magnolia.ui.model.column.definition.PropertyColumnDefinition</sv:value>
@@ -89,7 +92,10 @@
       <sv:value>admin</sv:value>
     </sv:property>
     <sv:property sv:name="label" sv:type="String">
-      <sv:value>Last name</sv:value>
+      <sv:value>Title</sv:value>
+    </sv:property>
+    <sv:property sv:name="propertyName" sv:type="String">
+      <sv:value>title</sv:value>
     </sv:property>
     <sv:node sv:name="MetaData">
       <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -108,11 +114,11 @@
         <sv:value>2010-09-08T11:44:25.527+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-        <sv:value>2012-08-16T17:46:16.544+02:00</sv:value>
+        <sv:value>2012-07-06T17:27:11.976+02:00</sv:value>
       </sv:property>
     </sv:node>
   </sv:node>
-  <sv:node sv:name="email">
+  <sv:node sv:name="template">
     <sv:property sv:name="jcr:primaryType" sv:type="Name">
       <sv:value>mgnl:contentNode</sv:value>
     </sv:property>
@@ -120,7 +126,7 @@
       <sv:value>mix:lockable</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:uuid" sv:type="String">
-      <sv:value>0dd89c12-fc95-4264-87e1-6b0b01eeffea</sv:value>
+      <sv:value>05440034-9471-4f4e-b7ed-d252c60758d1</sv:value>
     </sv:property>
     <sv:property sv:name="class" sv:type="String">
       <sv:value>info.magnolia.ui.model.column.definition.PropertyColumnDefinition</sv:value>
@@ -129,7 +135,10 @@
       <sv:value>admin</sv:value>
     </sv:property>
     <sv:property sv:name="label" sv:type="String">
-      <sv:value>Email</sv:value>
+      <sv:value>Template</sv:value>
+    </sv:property>
+    <sv:property sv:name="propertyName" sv:type="String">
+      <sv:value>MetaData/mgnl:template</sv:value>
     </sv:property>
     <sv:node sv:name="MetaData">
       <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -148,7 +157,7 @@
         <sv:value>2010-09-08T11:44:25.527+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-        <sv:value>2012-08-16T17:46:12.415+02:00</sv:value>
+        <sv:value>2012-07-06T17:27:11.978+02:00</sv:value>
       </sv:property>
     </sv:node>
   </sv:node>
@@ -160,7 +169,7 @@
       <sv:value>mix:lockable</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:uuid" sv:type="String">
-      <sv:value>d73b833f-bc7f-420c-b6a5-0f830553dadb</sv:value>
+      <sv:value>f034ed59-5b2d-4562-82c4-01a96f4bb904</sv:value>
     </sv:property>
     <sv:property sv:name="class" sv:type="String">
       <sv:value>info.magnolia.ui.model.column.definition.StatusColumnDefinition</sv:value>
@@ -194,7 +203,7 @@
         <sv:value>2010-09-08T11:44:25.527+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-        <sv:value>2012-08-29T10:39:24.587+02:00</sv:value>
+        <sv:value>2012-08-30T08:57:12.333+02:00</sv:value>
       </sv:property>
     </sv:node>
   </sv:node>
@@ -206,7 +215,7 @@
       <sv:value>mix:lockable</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:uuid" sv:type="String">
-      <sv:value>87a3963e-d7e4-45f7-a934-711256421111</sv:value>
+      <sv:value>02635bc5-559f-4f58-83d6-03a8bea780e4</sv:value>
     </sv:property>
     <sv:property sv:name="class" sv:type="String">
       <sv:value>info.magnolia.ui.model.column.definition.MetaDataColumnDefinition</sv:value>
@@ -215,7 +224,7 @@
       <sv:value>admin</sv:value>
     </sv:property>
     <sv:property sv:name="label" sv:type="String">
-      <sv:value>Mod. date</sv:value>
+      <sv:value>Modification Date</sv:value>
     </sv:property>
     <sv:property sv:name="propertyName" sv:type="String">
       <sv:value>MetaData/mgnl:lastmodified</sv:value>
@@ -240,7 +249,7 @@
         <sv:value>2010-09-08T11:44:25.527+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-        <sv:value>2012-08-29T10:39:13.961+02:00</sv:value>
+        <sv:value>2012-08-29T10:35:57.601+02:00</sv:value>
       </sv:property>
     </sv:node>
   </sv:node>

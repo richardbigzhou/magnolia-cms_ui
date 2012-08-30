@@ -52,8 +52,7 @@ public class ContactThumbnailField extends ThumbnailField{
     @Override
     public String createFieldDetail(Node parentNode) throws RepositoryException {
         StringBuffer sb = new StringBuffer();
-        sb.append("<b>Contact</b> ");
-        sb.append("</br>Name"+parentNode.getProperty("lastName").getString());
+        sb.append("</br>Name :"+parentNode.getProperty("lastName").getString());
         sb.append("</br>FirstName :"+parentNode.getProperty("firstName").getString());
         sb.append("</br>Organization :"+parentNode.getProperty("organizationName").getString());
         sb.append("</br>Email :"+parentNode.getProperty("email").getString());

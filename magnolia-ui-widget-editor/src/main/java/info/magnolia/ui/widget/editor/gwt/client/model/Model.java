@@ -37,6 +37,7 @@ import com.google.gwt.dom.client.Element;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.AbstractBar;
 import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.AreaEndBar;
+import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.PageBar;
 import info.magnolia.ui.widget.editor.gwt.client.widget.placeholder.ComponentPlaceHolder;
 
 import java.util.List;
@@ -82,7 +83,7 @@ public interface Model {
 
     MgnlElement findMgnlElementByContentId(String contentId);
 
-    AbstractBar getPageBar();
+    PageBar getPageBar();
 
-    void setPageBar(AbstractBar pageBar);
+    void setPageBar(PageBar pageBar);
 }

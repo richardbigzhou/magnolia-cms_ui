@@ -15,7 +15,7 @@
 			<when-property-is name="mobile.user.agent" value="mobilesafari" />
 		</all>
 	</replace-with>
-	
+
 	<replace-with
 		class="info.magnolia.ui.vaadin.integration.widget.client.touchwidgetimpl.MobileSafariVView">
 		<when-type-is
@@ -24,5 +24,14 @@
 			<when-property-is name="mobile.user.agent" value="mobilesafari" />
 		</all>
 	</replace-with>
-	
+
+	<replace-with
+		class="info.magnolia.ui.vaadin.integration.widget.client.touchwidgetimpl.DesktopVView">
+		<when-type-is
+			class="com.vaadin.terminal.gwt.client.ui.VView" />
+		<all>
+			<when-property-is name="mgwt.os" value="desktop" />
+		</all>
+	</replace-with>
+
 </module>
