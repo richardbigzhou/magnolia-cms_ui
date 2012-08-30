@@ -70,9 +70,5 @@ public interface FieldDefinition {
     String getDefaultValue();
 
     boolean getSaveInfo();
-    /**
-     * Check whether the label for this field has to be hidden or not. By default it returns <code>false</code>.
-     */
-    boolean isHideLabel();
 
 }
