@@ -4371,6 +4371,8 @@ public class VMagnoliaTable extends FlowPanel implements Table, ScrollHandler, V
          * 
          * @param columnIndex
          * @return
+         * @NOTE In fork we have selection checkboxes as first column - so accessing the proper data column should be done
+         * by columnIndex + 1. 
          */
         public int getColWidth(int columnIndex) {
             if (tBodyMeasurementsDone) {
