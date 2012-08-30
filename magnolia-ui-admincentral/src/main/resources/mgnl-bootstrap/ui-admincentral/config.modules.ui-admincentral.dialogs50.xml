@@ -196,7 +196,7 @@
               <sv:value>Selected</sv:value>
             </sv:property>
             <sv:property sv:name="name" sv:type="String">
-              <sv:value>transiantPorps</sv:value>
+              <sv:value>transientProps</sv:value>
             </sv:property>
             <sv:property sv:name="required" sv:type="String">
               <sv:value>true</sv:value>
