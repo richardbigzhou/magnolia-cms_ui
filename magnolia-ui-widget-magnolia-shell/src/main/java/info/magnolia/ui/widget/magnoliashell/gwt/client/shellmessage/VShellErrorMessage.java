@@ -88,4 +88,10 @@ public class VShellErrorMessage extends VShellMessage {
     protected String getMessageTypeCaption() {
         return "Error: ";
     }
+
+    @Override
+    protected void applyCloseIconStyles(Element element) {
+        super.applyCloseIconStyles(element);
+        element.addClassName("close-error");
+    }
 }

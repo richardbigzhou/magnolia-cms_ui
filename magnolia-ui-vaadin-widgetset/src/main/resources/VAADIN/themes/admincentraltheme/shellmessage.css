@@ -42,6 +42,10 @@
     top: 0;
 }
 
+.v-shell-notification .close-error {
+    background: url("img/icon-close-white-16.png")no-repeat scroll 4px 4px transparent;
+}
+
 .v-shell-notification .details-expander {
 	margin-left: 20px;
 }

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>info.magnolia</groupId>
@@ -22,6 +21,7 @@
 		<magnoliaVersion>5.0-prev1-rc1</magnoliaVersion>
 		<vaadinVersion>6.8.0</vaadinVersion>
 		<gwtVersion>2.5.0-rc1</gwtVersion>
+		<scmTagPrefix>magnolia-ui</scmTagPrefix>
 	</properties>
 
 	<scm>
