@@ -19,7 +19,7 @@
 		<javaVersion>1.6</javaVersion>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<magnoliaVersion>5.0-SNAPSHOT</magnoliaVersion>
+		<magnoliaVersion>5.0-prev1-rc1</magnoliaVersion>
 		<vaadinVersion>6.8.0</vaadinVersion>
 		<gwtVersion>2.5.0-rc1</gwtVersion>
 	</properties>
@@ -38,6 +38,11 @@
 				<artifactId>magnolia-rendering</artifactId>
 				<version>${magnoliaVersion}</version>
 			</dependency>
+			<dependency>
+          		<groupId>info.magnolia.pageexport</groupId>
+          		<artifactId>magnolia-module-page-export</artifactId>
+          		<version>0.9-prev1-rc1</version>
+            </dependency>
 			<dependency>
 				<groupId>javax.servlet</groupId>
 				<artifactId>servlet-api</artifactId>
@@ -192,7 +197,7 @@
 		<module>magnolia-ui-app-contacts</module>
 		<module>magnolia-ui-app-messages</module>
 		<module>magnolia-ui-app-pages</module>
-		<!-- temporarily disabled see SCRUM-1670 
+		<!-- temporarily disabled see SCRUM-1670
 		<module>magnolia-ui-app-instant-preview</module>
 		-->
 	</modules>
