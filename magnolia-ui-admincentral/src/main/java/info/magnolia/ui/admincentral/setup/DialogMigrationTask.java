@@ -223,13 +223,13 @@ public class DialogMigrationTask  extends AbstractTask {
                 fieldNode.getProperty("controlType").remove();
                 fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.HiddenFieldDefinition");
             }else if(fieldNode.getProperty("controlType").getString().equals("uuidLink")){
-                if(fieldNode.hasProperty("repository")) {
+                if(fieldNode.hasProperty("repository") && !fieldNode.getProperty("repository").getString().equals("dms")) {
                     fieldNode.getProperty("controlType").remove();
-                    fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.LinkFieldDefinition");
-                    fieldNode.setProperty("dialogName", "ui-admincentral:link");
                     fieldNode.setProperty("uuid", "true");
                     if(fieldNode.getProperty("repository").getString().equals("website")) {
                         fieldNode.setProperty("appName", "pages");
+                        fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.LinkFieldDefinition");
+                        fieldNode.setProperty("dialogName", "ui-admincentral:link");
                     }else if (fieldNode.getProperty("repository").getString().equals("data")) {
                         // Handle contacts
                         if(fieldNode.hasProperty("tree") && fieldNode.getProperty("tree").getString().equals("Contact")) {
@@ -239,6 +239,8 @@ public class DialogMigrationTask  extends AbstractTask {
                             fieldNode.setProperty("class", "info.magnolia.ui.app.contacts.field.definition.ContactLinkFieldDefinition");
                         }
                     }
+                }else {
+                    fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.StaticFieldDefinition");
                 }
             }else {
                 fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.StaticFieldDefinition");
