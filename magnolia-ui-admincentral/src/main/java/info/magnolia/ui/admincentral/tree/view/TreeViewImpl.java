@@ -56,7 +56,7 @@ import com.vaadin.ui.VerticalLayout;
  */
 public class TreeViewImpl implements TreeView {
 
-    private final MagnoliaTreeTable jcrBrowser;
+    private final WorkbenchTreeTable jcrBrowser;
 
     private final VerticalLayout margin = new VerticalLayout();
 
@@ -66,7 +66,7 @@ public class TreeViewImpl implements TreeView {
     
     public TreeViewImpl(WorkbenchDefinition workbenchDefinition, TreeModel treeModel,ComponentProvider componentProvider) {
 
-        jcrBrowser = new MagnoliaTreeTable(workbenchDefinition, treeModel, componentProvider);
+        jcrBrowser = new WorkbenchTreeTable(workbenchDefinition, treeModel, componentProvider);
         jcrBrowser.setImmediate(true);
         jcrBrowser.setNullSelectionAllowed(false);
         jcrBrowser.setSizeFull();

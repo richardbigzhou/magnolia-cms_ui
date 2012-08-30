@@ -42,7 +42,7 @@ import info.magnolia.ui.admincentral.tree.model.TreeModel;
 import info.magnolia.ui.model.column.definition.ColumnDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
-import info.magnolia.ui.vaadin.integration.widget.HybridSelectionTable;
+import info.magnolia.ui.vaadin.integration.widget.grid.MagnoliaTable;
 
 import java.util.Iterator;
 
@@ -76,7 +76,7 @@ public class ListViewImpl implements ListView {
     private static final Logger log = LoggerFactory.getLogger(ListViewImpl.class);
 
     public ListViewImpl(WorkbenchDefinition workbenchDefinition, TreeModel treeModel, ComponentProvider componentProvider) {
-        table = new HybridSelectionTable();
+        table = new MagnoliaTable();
         table.setSizeFull();
 
         // next two lines are required to make the browser (Table) react on selection change via
