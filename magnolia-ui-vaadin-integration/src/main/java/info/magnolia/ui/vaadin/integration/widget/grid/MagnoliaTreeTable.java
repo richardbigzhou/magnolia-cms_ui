@@ -52,6 +52,15 @@ public class MagnoliaTreeTable extends TreeTable {
         setSelectable(true);
         setImmediate(true);
         setMultiSelect(true);
+        addListener(new ValueChangeListener() {
+
+            @Override
+            public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
+                if (getWindow() != null) {
+                    getWindow().showNotification("TEST");                    
+                }
+            }
+        });
     }
     
     @Override

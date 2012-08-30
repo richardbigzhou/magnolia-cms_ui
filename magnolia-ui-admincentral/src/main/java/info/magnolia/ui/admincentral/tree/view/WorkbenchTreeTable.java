@@ -61,10 +61,9 @@ import com.vaadin.event.dd.acceptcriteria.AcceptAll;
 import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
 import com.vaadin.terminal.gwt.client.ui.dd.VerticalDropLocation;
 
-
 /**
- * User interface component that extends TreeTable and uses a WorkbenchDefinition for layout and
- * invoking command callbacks.
+ * User interface component that extends TreeTable and uses a
+ * WorkbenchDefinition for layout and invoking command callbacks.
  */
 @SuppressWarnings("serial")
 public class WorkbenchTreeTable extends MagnoliaTreeTable {
@@ -94,7 +93,7 @@ public class WorkbenchTreeTable extends MagnoliaTreeTable {
         Iterator<ColumnDefinition> iterator = workbenchDefinition.getColumns().iterator();
         while (iterator.hasNext()) {
             ColumnDefinition column = iterator.next();
-            if(workbenchDefinition.isDialogWorkbench() && ! column.isToDisplayInDialog()) {
+            if (workbenchDefinition.isDialogWorkbench() && !column.isToDisplayInDialog()) {
                 continue;
             }
             String columnName = column.getName();
@@ -107,12 +106,12 @@ public class WorkbenchTreeTable extends MagnoliaTreeTable {
             addContainerProperty(columnProperty, column.getType(), "");
             setColumnHeader(columnProperty, column.getLabel());
             visibleColumns.add(columnName);
-            if(StringUtils.isNotBlank(column.getFormatterClass())) {
+            if (StringUtils.isNotBlank(column.getFormatterClass())) {
                 try {
-                    this.addGeneratedColumn(columnName, (ColumnFormatter)componentProvider.newInstance(Class.forName(column.getFormatterClass()),column));
-                }
-                catch (ClassNotFoundException e) {
-                    log.error("Not able to create the Formatter",e);
+                    this.addGeneratedColumn(columnName,
+                            (ColumnFormatter) componentProvider.newInstance(Class.forName(column.getFormatterClass()), column));
+                } catch (ClassNotFoundException e) {
+                    log.error("Not able to create the Formatter", e);
                 }
             }
         }
@@ -145,7 +144,7 @@ public class WorkbenchTreeTable extends MagnoliaTreeTable {
                     // On which side of the target the item was dropped
                     VerticalDropLocation location = target.getDropLocation();
 
-                    if(location == null) {
+                    if (location == null) {
                         log.debug("DropLocation is null. Do nothing.");
                         return;
                     }
@@ -165,7 +164,7 @@ public class WorkbenchTreeTable extends MagnoliaTreeTable {
                     else if (location == VerticalDropLocation.TOP) {
                         Object parentId = containerWrapper.getParent(targetItemId);
                         if (parentId != null) {
-                            log.debug("Parent: {}",containerWrapper.getItem(parentId));
+                            log.debug("Parent: {}", containerWrapper.getItem(parentId));
                             JcrItemAdapter sourceItem = (JcrItemAdapter) container.getItem(sourceItemId);
                             JcrItemAdapter targetItem = (JcrItemAdapter) container.getItem(targetItemId);
                             if (treeModel.moveItemBefore(sourceItem.getJcrItem(), targetItem.getJcrItem())) {
