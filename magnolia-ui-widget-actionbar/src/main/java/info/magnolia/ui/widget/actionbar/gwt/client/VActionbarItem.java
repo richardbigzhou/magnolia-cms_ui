@@ -159,7 +159,7 @@ public class VActionbarItem extends Widget {
     }
 
     public void resetStyleNames(String cssClasses){
-    	setStyleName(CLASSNAME + " " + cssClasses);
+        setStyleName(CLASSNAME + " " + cssClasses);
     }
 
     public String getName() {

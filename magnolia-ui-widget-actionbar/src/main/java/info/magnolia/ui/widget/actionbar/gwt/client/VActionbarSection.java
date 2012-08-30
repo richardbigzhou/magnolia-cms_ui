@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.widget.actionbar.gwt.client;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 

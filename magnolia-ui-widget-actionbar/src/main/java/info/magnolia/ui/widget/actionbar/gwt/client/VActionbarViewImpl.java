@@ -39,7 +39,6 @@ import info.magnolia.ui.widget.actionbar.gwt.client.event.ActionTriggerEvent;
 
 //import java.awt.event.WindowAdapter;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.user.client.DOM;
@@ -157,30 +156,30 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, 
      */
     public void refreshActionsPositionsTablet(){
 
-    	if (!isDeviceTablet){
-    		return;
-    	}
+        if (!isDeviceTablet){
+            return;
+        }
 
-    	 tabletRow = -1; // Used to assign rows and columns to each action item
-         tabletColumn = 0;
+        tabletRow = -1; // Used to assign rows and columns to each action item
+        tabletColumn = 0;
 
          for (final VActionbarSection section : sections.values()) {
 
-        	//if section is visible - then update rows & cols
-        	if (section.isVisible()){
+            //if section is visible - then update rows & cols
+            if (section.isVisible()){
 
-        		for (final VActionbarGroup group : section.getGroups().values()) {
+            for (final VActionbarGroup group : section.getGroups().values()) {
 
-	        		tabletColumn = 0;
-	                tabletRow++;
+                    tabletColumn = 0;
+                    tabletRow++;
 
-	        		for (VActionbarItem action : group.getActions()) {
-	        			String cssClasses = "row-" + tabletRow + " col-" + tabletColumn + " open";
-	        			action.resetStyleNames(cssClasses);
-	        			tabletColumn++;
-	                }
-        		}
-        	}
+                    for (VActionbarItem action : group.getActions()) {
+                        String cssClasses = "row-" + tabletRow + " col-" + tabletColumn + " open";
+                        action.resetStyleNames(cssClasses);
+                        tabletColumn++;
+                    }
+                }
+            }
         }
         setToggleAndFullScreenButtonHeights(tabletRow);
     }
