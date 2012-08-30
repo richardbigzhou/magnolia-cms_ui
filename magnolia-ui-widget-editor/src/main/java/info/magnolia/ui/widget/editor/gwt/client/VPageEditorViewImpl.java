@@ -34,17 +34,19 @@
 package info.magnolia.ui.widget.editor.gwt.client;
 
 
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Frame;
+import com.google.gwt.user.client.ui.ScrollPanel;
 
 /**
  * GWT implementation of MagnoliaShell client side (the view part basically).
  *
  */
-public class VPageEditorViewImpl extends FlowPanel implements VPageEditorView {
+public class VPageEditorViewImpl extends ScrollPanel implements VPageEditorView {
 
 
     private Listener listener;
@@ -65,6 +67,7 @@ public class VPageEditorViewImpl extends FlowPanel implements VPageEditorView {
                 //other handlers are initialized here b/c we need to know the document inside the iframe.
                 //make sure we process  html only when the document inside the iframe is loaded.
                 listener.onFrameLoaded(iframe);
+                addIframeTouchMoveListener(((IFrameElement)iframe.getElement().cast()).getContentDocument(), getElement());
             }
         });
 
@@ -77,6 +80,37 @@ public class VPageEditorViewImpl extends FlowPanel implements VPageEditorView {
 
     }
 
+    private int X = 0;
+    
+    private int Y = 0;
+    
+    private final native void addIframeTouchMoveListener(Document doc, Element cont) /*-{
+        var w = $wnd;     
+        var content = cont;
+        var that = this;
+        doc.body.addEventListener('touchmove',
+        function(event) {
+            event.preventDefault();
+            var newX = event.targetTouches[0].pageX;
+            var newY = event.targetTouches[0].pageY;
+            var deltaY = newY - that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorViewImpl::Y;
+            var deltaX = newY - that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorViewImpl::X;
+            cont.scrollLeft -= deltaX;
+            cont.scrollTop -= deltaY;
+            w.console.log("top " + cont.scrollTop + " newY " + newY + " delta " + (newY - that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorViewImpl::Y));
+            that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorViewImpl::X = newX - deltaX;
+            that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorViewImpl::Y = newY - deltaY;
+        });
+    
+        doc.body.addEventListener('touchstart',
+        function (event) {
+            event.preventDefault();
+            //parent.window.scrollTo(0, 0);
+            that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorViewImpl::X = event.targetTouches[0].pageX;
+            that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorViewImpl::Y = event.targetTouches[0].pageY;
+        });
+    }-*/;
+    
     @Override
     public Frame getIframe() {
         return iframe;

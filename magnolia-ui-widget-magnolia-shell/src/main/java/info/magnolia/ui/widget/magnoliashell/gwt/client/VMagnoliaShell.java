@@ -59,7 +59,6 @@ import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.event.shared.Event;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
@@ -190,22 +189,11 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
 
     public VMagnoliaShell() {
         super();
-        eventBus = new SimpleEventBus() {
-            @Override
-            public void fireEvent(Event<?> event) {
-                VConsole.log("[FIRING EVENT]" + String.valueOf(event));
-                log("[FIRING EVENT]" + String.valueOf(event));
-                super.fireEvent(event);
-            }
-        };
+        eventBus = new SimpleEventBus();
         view = new VMagnoliaShellViewImpl(eventBus);
         view.setPresenter(this);
         initWidget(view.asWidget());
     }
-
-    protected final native void log(String string) /*-{
-        $wnd.console.log(string);        
-    }-*/;
 
     @Override
     public void updateFromUIDL(UIDL uidl, final ApplicationConnection client) {
