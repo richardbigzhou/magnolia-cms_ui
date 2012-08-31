@@ -98,6 +98,15 @@ button.action-close {
     bottom: 0;
 }
 
+.v-dialog-viewport {
+	position: absolute;
+    overflow: visible;
+    top: 60px;
+    width: 100%;
+    bottom: 0;
+	z-index:500 !important;
+}
+
 .v-shell-app {
 	position: absolute;
 	bottom: 0px;
@@ -130,7 +139,7 @@ button.action-close {
     bottom: 0;
     top: 0;
     left:0;
-    z-index:200;
+    z-index:499 !important;
 }
 
 .zoom-out {

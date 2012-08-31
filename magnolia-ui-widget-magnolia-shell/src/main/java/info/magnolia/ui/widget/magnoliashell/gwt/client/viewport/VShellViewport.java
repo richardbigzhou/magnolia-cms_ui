@@ -52,6 +52,7 @@ import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent;
@@ -81,6 +82,8 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
     private ApplicationConnection client;
 
     private final Element container = DOM.createDiv();
+
+    private boolean closingWidget;
 
     private Widget visibleWidget = null;
 
@@ -137,23 +140,27 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
         this.eventBus = eventBus;
     }
 
+    protected void setClosingWidget(boolean closingWidget) {
+        this.closingWidget = closingWidget;
+    }
+
     public void setViewportShowAnimationDelegate(AnimationDelegate animationDelegate) {
-        GWT.log((curtainAnimated ? "SHELL" : "APPS") + ": setting viewport show animation delegate to " + animationDelegate.toString());
+        GWT.log((curtainAnimated ? "SHELL" : "APPS") + ": setting viewport show animation delegate to " + animationDelegate);
         this.viewportShowAnimationDelegate = animationDelegate;
     }
 
     public void setViewportHideAnimationDelegate(AnimationDelegate animationDelegate) {
-        GWT.log((curtainAnimated ? "SHELL" : "APPS") + ": setting viewport hide animation delegate to " + animationDelegate.toString());
+        GWT.log((curtainAnimated ? "SHELL" : "APPS") + ": setting viewport hide animation delegate to " + animationDelegate);
         this.viewportHideAnimationDelegate = animationDelegate;
     }
 
     public void setContentShowAnimationDelegate(AnimationDelegate animationDelegate) {
-        GWT.log((curtainAnimated ? "SHELL" : "APPS") + ": setting content show animation delegate to " + animationDelegate.toString());
+        GWT.log((curtainAnimated ? "SHELL" : "APPS") + ": setting content show animation delegate to " + animationDelegate);
         this.contentShowAnimationDelegate = animationDelegate;
     }
 
     public void setContentHideAnimationDelegate(AnimationDelegate animationDelegate) {
-        GWT.log((curtainAnimated ? "SHELL" : "APPS") + ": setting content hide animation delegate to " + animationDelegate.toString());
+        GWT.log((curtainAnimated ? "SHELL" : "APPS") + ": setting content hide animation delegate to " + animationDelegate);
         this.contentHideAnimationDelegate = animationDelegate;
     }
 
@@ -230,15 +237,9 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
 
                     {
                         setProperty("opacity", initialOpacity);
-                        // setCallbacks(Callbacks.create(new JQueryCallback() {
-                        //
-                        // @Override
-                        // public void execute(JQueryWrapper query) {
                     }
                 });
                 viewportShowAnimationDelegate.show(VShellViewport.this, callback);
-                // }
-                // }));
 
             } else {
                 if (curtainVisible) {
@@ -248,16 +249,39 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
             }
         } else {
             if (curtainVisible) {
-                showCurtain();
+                if (curtainAnimated) {
+                    getModalityCurtain().getStyle().setProperty("opacity", "");
+                    JQueryWrapper jq = JQueryWrapper.select(getModalityCurtain());
+                    final double initialOpacity = Double.valueOf(jq.css("opacity"));
+                    jq.setCss("opacity", "0");
+                    showCurtain();
+                    jq.animate(CURTAIN_FADE_SPEED, new AnimationSettings() {
+
+                        {
+                            setProperty("opacity", initialOpacity);
+                        }
+                    });
+                } else {
+                    showCurtain();
+                }
             }
             getElement().getStyle().setZIndex(Z_INDEX_HI);
+            getElement().getStyle().setProperty("opacity", "");
+            getElement().getStyle().setVisibility(Visibility.VISIBLE);
         }
     }
 
     private void hideViewport() {
         if (viewportHideAnimationDelegate != null) {
             animatingViewport = true;
-            Callbacks callbacks = Callbacks.create();
+            Callbacks callbacks = Callbacks.create(new JQueryCallback() {
+
+                @Override
+                public void execute(JQueryWrapper query) {
+                    animatingViewport = false;
+                }
+
+            });
             if (curtainAnimated) {
                 if (viewportHideAnimationDelegate != AnimationDelegate.FADING_DELEGATE) {
                     getModalityCurtain().getStyle().setZIndex(Z_INDEX_HI + 9);
@@ -266,7 +290,6 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
 
                     @Override
                     public void execute(JQueryWrapper query) {
-                        animatingViewport = false;
                         JQueryWrapper.select(getModalityCurtain()).animate(CURTAIN_FADE_SPEED, new AnimationSettings() {
 
                             {
@@ -322,6 +345,7 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
         this.client = client;
         if (!client.updateComponent(this, uidl, true)) {
             final List<Paintable> orpanCandidates = new LinkedList<Paintable>(paintables);
+            Widget formerWidget = visibleWidget;
             if (uidl.getChildCount() > 0) {
                 int idx = 0;
                 for (; idx < uidl.getChildCount(); ++idx) {
@@ -346,7 +370,18 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
 
             for (final Paintable paintable : orpanCandidates) {
                 client.unregisterPaintable(paintable);
-                remove((Widget) paintable);
+                if (closingWidget && formerWidget == paintable) {
+                    new Timer() {
+
+                        @Override
+                        public void run() {
+                            remove((Widget) paintable);
+                            setClosingWidget(false);
+                        }
+                    }.schedule(500);
+                } else {
+                    remove((Widget) paintable);
+                }
             }
         }
     }
@@ -424,7 +459,7 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
     }
 
     public boolean hasContent() {
-        return getWidgetCount() > 0;
+        return getWidgetCount() - (closingWidget ? 1 : 0) > 0;
     }
 
     @Override

@@ -46,6 +46,9 @@ import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
@@ -54,9 +57,11 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.googlecode.mgwt.ui.client.MGWT;
 import com.vaadin.terminal.gwt.client.Util;
 
 /**
@@ -84,9 +89,12 @@ public class VDialogViewImpl extends FlowPanel implements VDialogView {
 
     private EventBus eventBus;
 
+    public boolean isAFieldFocussed; //Whether a field in the view has focus, required for iPad Keyboard closing.
+
     private FocusHandler problematicFieldFocusHandler = new FocusHandler() {
         @Override
         public void onFocus(FocusEvent event) {
+            isAFieldFocussed = true;
             final Element target = event.getRelativeElement().cast();
             final DialogFieldWrapper field = Util.findWidget(target, DialogFieldWrapper.class);
             if (field != null) {
@@ -109,6 +117,31 @@ public class VDialogViewImpl extends FlowPanel implements VDialogView {
             }
         }
     };
+
+
+    /**
+     * On field blur - if no element got focussed, then scroll document to top.
+     * This is to fix the iOS problem where the keyboard shifts the layout up, but when the keyboard dissappears
+     * it does not shift the layout all the way back down.
+     * Note: blur event is triggered when keyboard is closed.
+     */
+    private BlurHandler iosKeyboardCloseHandler = new BlurHandler() {
+        @Override
+        public void onBlur(BlurEvent event) {
+            isAFieldFocussed = false;
+
+            Timer timer = new Timer() {
+                @Override
+                public void run() {
+                    if (!isAFieldFocussed){
+                        Document.get().getBody().setScrollTop(0);
+                    }
+                }
+           };
+           timer.schedule(10);
+        }
+    };
+
 
     private final VDialogHeader dialogHeader = new VDialogHeader(new VDialogHeaderCallback() {
 
@@ -266,6 +299,10 @@ public class VDialogViewImpl extends FlowPanel implements VDialogView {
         final List<DialogFieldWrapper> fields = ((VDialogTab) tab).getFields();
         for (final DialogFieldWrapper field : fields) {
             field.addFocusHandler(problematicFieldFocusHandler);
+            if (!MGWT.getOsDetection().isDesktop()){
+                //On iOS, shift page down when keyboard is closed.
+                field.addBlurHandler(iosKeyboardCloseHandler);
+            }
         }
     }
 
@@ -277,6 +314,10 @@ public class VDialogViewImpl extends FlowPanel implements VDialogView {
             final VDialogTab dialogTab = (VDialogTab) tab;
             for (final DialogFieldWrapper field : dialogTab.getFields()) {
                 field.addFocusHandler(problematicFieldFocusHandler);
+                if (!MGWT.getOsDetection().isDesktop()){
+                    //On iOS, shift page down when keyboard is closed.
+                    field.addBlurHandler(iosKeyboardCloseHandler);
+                }
             }
         }
         dialogHeader.setErrorAmount(totalProblematicFields);
