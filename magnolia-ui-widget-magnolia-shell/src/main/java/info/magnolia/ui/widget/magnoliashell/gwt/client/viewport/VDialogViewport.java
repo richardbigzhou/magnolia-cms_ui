@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.widget.magnoliashell.gwt.client.viewport;
 
+import com.google.gwt.dom.client.Style.Visibility;
+import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.UIDL;
 
@@ -44,11 +46,14 @@ import com.vaadin.terminal.gwt.client.UIDL;
 public class VDialogViewport extends VShellViewport {
 
     public VDialogViewport() {
+        setStyleName("v-dialog-viewport");
+        getElement().getStyle().setVisibility(Visibility.HIDDEN);
         getModalityCurtain().addClassName("black-modality-curtain");
-        getElement().getStyle().setZIndex(499);
-        setViewportShowAnimationDelegate(AnimationDelegate.FADING_DELEGATE);
+        setContentShowAnimationDelegate(AnimationDelegate.FADING_DELEGATE);
+        setContentHideAnimationDelegate(AnimationDelegate.FADING_DELEGATE);
         setViewportHideAnimationDelegate(AnimationDelegate.FADING_DELEGATE);
-        showCurtain();
+        setCurtainVisible(true);
+        setCurtainAnimated(true);
     }
 
     @Override
@@ -56,9 +61,17 @@ public class VDialogViewport extends VShellViewport {
         super.updateFromUIDL(uidl, client);
 
         if (getWidgetCount() == 0) {
-            removeFromParent();
+            setActive(false);
         } else {
-            showCurtain();
+            setActive(true);
         }
+    }
+
+    @Override
+    public void setVisibleWidget(Widget w) {
+        if (w != null) {
+            setActive(true);
+        }
+        super.setVisibleWidget(w);
     }
 }

@@ -230,15 +230,9 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
 
                     {
                         setProperty("opacity", initialOpacity);
-                        // setCallbacks(Callbacks.create(new JQueryCallback() {
-                        //
-                        // @Override
-                        // public void execute(JQueryWrapper query) {
                     }
                 });
                 viewportShowAnimationDelegate.show(VShellViewport.this, callback);
-                // }
-                // }));
 
             } else {
                 if (curtainVisible) {
@@ -248,9 +242,25 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
             }
         } else {
             if (curtainVisible) {
-                showCurtain();
+                if (curtainAnimated) {
+                    getModalityCurtain().getStyle().setProperty("opacity", "");
+                    JQueryWrapper jq = JQueryWrapper.select(getModalityCurtain());
+                    final double initialOpacity = Double.valueOf(jq.css("opacity"));
+                    jq.setCss("opacity", "0");
+                    showCurtain();
+                    jq.animate(CURTAIN_FADE_SPEED, new AnimationSettings() {
+
+                        {
+                            setProperty("opacity", initialOpacity);
+                        }
+                    });
+                } else {
+                    showCurtain();
+                }
             }
             getElement().getStyle().setZIndex(Z_INDEX_HI);
+            getElement().getStyle().setProperty("opacity", "");
+            getElement().getStyle().setVisibility(Visibility.VISIBLE);
         }
     }
 
