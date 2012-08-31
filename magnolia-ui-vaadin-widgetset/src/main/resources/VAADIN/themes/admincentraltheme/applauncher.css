@@ -41,8 +41,10 @@
 
 .app-list .item .icon {
     font-size: 36px;
-    margin-top: 7px;
+    margin-top: 4px;
 }
+
+
 
 .app-list .item:not(.section) .label {
     bottom: 8px;
@@ -52,6 +54,7 @@
     position: absolute;
     right: 0;
     font-weight: bold;
+    line-height:11px;
 
 }
 

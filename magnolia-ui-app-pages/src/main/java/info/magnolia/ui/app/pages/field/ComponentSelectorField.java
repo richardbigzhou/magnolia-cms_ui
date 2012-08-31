@@ -37,8 +37,8 @@ import info.magnolia.ui.admincentral.field.builder.SelectFieldBuilder;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import com.vaadin.data.Item;
 
@@ -60,7 +60,7 @@ public class ComponentSelectorField extends SelectFieldBuilder<ComponentSelector
     @Override
     public Map<String, String> getOptions() {
 
-        Map<String, String> options = new HashMap<String, String>();
+        Map<String, String> options = new TreeMap<String, String>();
         for (SelectFieldOptionDefinition option : definition.getOptions()) {
             options.put(option.getValue(), option.getName());
         }

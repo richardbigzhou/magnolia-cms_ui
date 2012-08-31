@@ -44,7 +44,9 @@ public abstract class AbstractColumnDefinition implements ColumnDefinition {
 
     private String label;
 
-    private int width = 1;
+    private int width = -1;
+
+    private float expandRatio = 1.0f;
 
     private boolean sortable = false;
 
@@ -52,7 +54,7 @@ public abstract class AbstractColumnDefinition implements ColumnDefinition {
 
     private String propertyName;
 
-    private boolean toDisplayInDialog = true;
+    private boolean displayInDialog = true;
 
     @Override
     public String getPropertyName() {
@@ -71,7 +73,10 @@ public abstract class AbstractColumnDefinition implements ColumnDefinition {
     public void setName(String name) {
         this.name = name;
     }
-
+    /**
+     * {@inheritDoc}
+     * <p>Default value is -1, meaning no explicit width assigned.
+     */
     @Override
     public int getWidth() {
         return width;
@@ -116,13 +121,28 @@ public abstract class AbstractColumnDefinition implements ColumnDefinition {
     public Class<?> getType() {
         return String.class;
     }
-
+    /**
+     * By default returns <code>true</code>.
+     */
     @Override
-    public boolean isToDisplayInDialog() {
-        return toDisplayInDialog;
+    public boolean isDisplayInDialog() {
+        return displayInDialog;
     }
 
-    public void setToDisplayInDialog(boolean toDisplayInDialog) {
-        this.toDisplayInDialog = toDisplayInDialog;
+    public void setDisplayInDialog(boolean displayInDialog) {
+        this.displayInDialog = displayInDialog;
+    }
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Default value is 1.0.
+     */
+    @Override
+    public float getExpandRatio() {
+        return expandRatio;
+    }
+
+    public void setExpandRatio(float expandRatio) {
+        this.expandRatio = expandRatio;
     }
 }

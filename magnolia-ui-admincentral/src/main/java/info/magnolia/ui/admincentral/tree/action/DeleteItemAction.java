@@ -45,6 +45,8 @@ import info.magnolia.ui.framework.event.EventBus;
  */
 public class DeleteItemAction extends RepositoryOperationAction<DeleteItemActionDefinition> {
 
+    private String path;
+
     public DeleteItemAction(DeleteItemActionDefinition definition, Item item, @Named("admincentral") EventBus eventBus) {
         super(definition, item, eventBus);
     }
@@ -53,8 +55,16 @@ public class DeleteItemAction extends RepositoryOperationAction<DeleteItemAction
     protected void onExecute(Item item) throws RepositoryException {
         //avoid JCR logging long stacktraces about root not being removable.
         if("/".equals(item.getPath())) {
+            path = item.getPath();
             return;
         }
+        path = item.getParent().getPath();
         item.remove();
+    }
+
+
+    @Override
+    protected String getItemPath() throws RepositoryException {
+        return path;
     }
 }

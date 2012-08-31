@@ -291,21 +291,3 @@ fieldset {
 .content-view-field-wrapper .v-dialog-field-label {
 	display: none;
 }
-
-
-.thumbnail-info ul {
-    list-style-type: none;
-    padding-left: 0;
-    width: 220px;
-}
-.thumbnail-info ul > li {
-    margin-bottom:2px;
-    margin-right: 3px;
-}
-
-.thumbnail-info ul > li span.left  {
-    font-weight:bold;
-}
-.thumbnail-info ul > li span.right  {
-    float: right;
-}

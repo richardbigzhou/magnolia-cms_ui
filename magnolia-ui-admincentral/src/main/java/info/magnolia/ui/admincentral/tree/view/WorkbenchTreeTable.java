@@ -45,7 +45,6 @@ import info.magnolia.ui.vaadin.integration.widget.grid.MagnoliaTreeTable;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import javax.jcr.RepositoryException;
 
@@ -87,34 +86,8 @@ public class WorkbenchTreeTable extends MagnoliaTreeTable {
         addDragAndDrop();
 
         container = new HierarchicalJcrContainer(treeModel, workbenchDefinition);
-        setContainerDataSource(container);
 
-        final List<Object> visibleColumns = new ArrayList<Object>();
-        Iterator<ColumnDefinition> iterator = workbenchDefinition.getColumns().iterator();
-        while (iterator.hasNext()) {
-            ColumnDefinition column = iterator.next();
-            if (workbenchDefinition.isDialogWorkbench() && !column.isToDisplayInDialog()) {
-                continue;
-            }
-            String columnName = column.getName();
-            String columnProperty = "";
-            if (column.getPropertyName() != null) {
-                columnProperty = column.getPropertyName();
-            } else {
-                columnProperty = columnName;
-            }
-            addContainerProperty(columnProperty, column.getType(), "");
-            setColumnHeader(columnProperty, column.getLabel());
-            visibleColumns.add(columnName);
-            if (StringUtils.isNotBlank(column.getFormatterClass())) {
-                try {
-                    this.addGeneratedColumn(columnName,
-                            (ColumnFormatter) componentProvider.newInstance(Class.forName(column.getFormatterClass()), column));
-                } catch (ClassNotFoundException e) {
-                    log.error("Not able to create the Formatter", e);
-                }
-            }
-        }
+        buildColumns(workbenchDefinition, componentProvider);
     }
 
     /**
@@ -225,6 +198,53 @@ public class WorkbenchTreeTable extends MagnoliaTreeTable {
             log.warn("No item found for id [{}]", itemId);
         }
 
+    }
+
+    private void buildColumns(WorkbenchDefinition workbenchDefinition, ComponentProvider componentProvider) {
+        final Iterator<ColumnDefinition> iterator = workbenchDefinition.getColumns().iterator();
+        ArrayList<String> columnOrder = new ArrayList<String>();
+
+        while (iterator.hasNext()) {
+            ColumnDefinition column = iterator.next();
+            if(workbenchDefinition.isDialogWorkbench() && !column.isDisplayInDialog()) {
+                continue;
+            }
+            String columnName = column.getName();
+            String columnProperty = "";
+            if (column.getPropertyName() != null) {
+                columnProperty = column.getPropertyName();
+            } else {
+                columnProperty = columnName;
+            }
+            //FIXME fgrilli workaround for conference
+            //when setting cols width in dialogs we are forced to use explicit px value instead of expand ratios, which for some reason don't work
+            if(workbenchDefinition.isDialogWorkbench()) {
+                setColumnWidth(columnProperty, 300);
+            } else {
+                if(column.getWidth() > 0 ) {
+                    setColumnWidth(columnProperty, column.getWidth());
+                } else {
+                    setColumnExpandRatio(columnProperty, column.getExpandRatio());
+                }
+            }
+
+            setColumnHeader(columnProperty, column.getLabel());
+            container.addContainerProperty(columnProperty, column.getType(), "");
+            //Set Formatter
+            if(StringUtils.isNotBlank(column.getFormatterClass())) {
+                try {
+                    addGeneratedColumn(columnProperty, (ColumnFormatter)componentProvider.newInstance(Class.forName(column.getFormatterClass()),column));
+                } catch (ClassNotFoundException e) {
+                    log.error("Not able to create the Formatter",e);
+                }
+            } else {
+                container.addContainerProperty(columnProperty, column.getType(), "");
+            }
+            columnOrder.add(columnProperty);
+        }
+        setContainerDataSource(container);
+        //Set Column order
+        setVisibleColumns(columnOrder.toArray());
     }
 
 }

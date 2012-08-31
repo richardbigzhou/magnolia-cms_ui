@@ -43,8 +43,16 @@ public interface ColumnDefinition {
     String getPropertyName();
 
     String getLabel();
-
+    /**
+     * Sets columns width (in pixels). See {@link #getExpandRatio()}.
+     */
     int getWidth();
+    /**
+     * Expand ratios can be defined to customize the way how excess space is divided among columns.
+     * A table can have excess space if it has its width defined and there is horizontally more space than columns consume naturally.
+     * Excess space is the space that is not used by columns with explicit width (see {@link #getWidth()}) or with natural width (no width nor expand ratio).
+     */
+    float getExpandRatio();
 
     boolean isSortable();
 
@@ -52,5 +60,5 @@ public interface ColumnDefinition {
 
     Class<?> getType();
 
-    boolean isToDisplayInDialog();
+    boolean isDisplayInDialog();
 }

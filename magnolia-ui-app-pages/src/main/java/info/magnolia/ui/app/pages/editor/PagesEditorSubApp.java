@@ -37,6 +37,7 @@ import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.event.ActionbarItemClickedEvent;
+import info.magnolia.ui.admincentral.tree.action.DeleteItemActionDefinition;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.app.pages.PagesApp;
 import info.magnolia.ui.app.pages.PagesAppDescriptor;
@@ -213,12 +214,13 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
                             pageEditorPresenter.getSelectedElement().getPath(),
                             pageEditorPresenter.getSelectedElement().getDialog());
                     } else if (actionDefinition instanceof AddComponentActionDefinition) {
-
                         // casting to AreaElement, because this action is only defined for areas
                         pageEditorPresenter.newComponent(
                             appDescriptor.getWorkbench().getWorkspace(),
                             pageEditorPresenter.getSelectedElement().getPath(),
                             ((PageEditor.AreaElement) pageEditorPresenter.getSelectedElement()).getAvailableComponents());
+                    } else if (actionDefinition instanceof DeleteItemActionDefinition) {
+                        pageEditorPresenter.deleteComponent(appDescriptor.getWorkbench().getWorkspace(), pageEditorPresenter.getSelectedElement().getPath());
                     } else if (actionDefinition instanceof PreviewPageActionDefinition || actionDefinition instanceof EditPageActionDefinition) {
                         actionbarPresenter.createAndExecuteAction(
                             actionDefinition,

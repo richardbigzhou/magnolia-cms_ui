@@ -33,32 +33,32 @@
  */
 package info.magnolia.ui.widget.magnoliashell.gwt.client.viewport;
 
-import com.google.gwt.user.client.ui.ComplexPanel;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper;
 
 import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 
 
 /**
  * Panel that has a modality curtain when active.
- *
+ * 
  */
 public class VPanelWithCurtain extends ComplexPanel {
-    
-    private Element modalityCurtain = DOM.createDiv();
-    
+
+    private final Element modalityCurtain = DOM.createDiv();
+
     public VPanelWithCurtain() {
         modalityCurtain.addClassName("green-modality-curtain");
         modalityCurtain.getStyle().setVisibility(Visibility.HIDDEN);
     }
-    
+
     public Element getModalityCurtain() {
         return modalityCurtain;
     }
-    
+
     @Override
     protected void onLoad() {
         super.onLoad();
@@ -70,20 +70,19 @@ public class VPanelWithCurtain extends ComplexPanel {
         super.onUnload();
         RootPanel.get().getElement().removeChild(modalityCurtain);
     }
-    
+
     public void showCurtain() {
         final JQueryWrapper jq = JQueryWrapper.select(modalityCurtain);
         jq.setCss("visibility", "visible");
         jq.setCss("zIndex", String.valueOf(JQueryWrapper.select(this).cssInt("zIndex") - 1));
     }
-    
 
     @Override
     public void removeFromParent() {
         super.removeFromParent();
         hideCurtain();
     }
-    
+
     public void hideCurtain() {
         JQueryWrapper.select(modalityCurtain).setCss("visibility", "hidden");
     }
