@@ -176,7 +176,6 @@ public class ListViewImpl implements ListView {
 
     private void buildColumns(WorkbenchDefinition workbenchDefinition, ComponentProvider componentProvider) {
         final Iterator<ColumnDefinition> iterator = workbenchDefinition.getColumns().iterator();
-
         while (iterator.hasNext()) {
             ColumnDefinition column = iterator.next();
             if(workbenchDefinition.isDialogWorkbench() && ! column.isDisplayInDialog()) {
@@ -202,15 +201,15 @@ public class ListViewImpl implements ListView {
             }
 
             table.setColumnHeader(columnProperty, column.getLabel());
-            container.addContainerProperty(columnProperty, column.getType(), "");
             //Set Formatter
             if(StringUtils.isNotBlank(column.getFormatterClass())) {
                 try {
                     table.addGeneratedColumn(columnName, (ColumnFormatter)componentProvider.newInstance(Class.forName(column.getFormatterClass()),column));
-                }
-                catch (ClassNotFoundException e) {
+                } catch (ClassNotFoundException e) {
                     log.error("Not able to create the Formatter",e);
                 }
+            } else {
+                container.addContainerProperty(columnProperty, column.getType(), "");
             }
         }
         table.setContainerDataSource(container);

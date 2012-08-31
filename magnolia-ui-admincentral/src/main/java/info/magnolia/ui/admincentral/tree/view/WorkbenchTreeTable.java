@@ -226,7 +226,6 @@ public class WorkbenchTreeTable extends MagnoliaTreeTable {
                 }
             }
 
-            container.addContainerProperty(columnProperty, column.getType(), "");
             setColumnHeader(columnProperty, column.getLabel());
             //Set Formatter
             if(StringUtils.isNotBlank(column.getFormatterClass())) {
@@ -236,6 +235,8 @@ public class WorkbenchTreeTable extends MagnoliaTreeTable {
                 catch (ClassNotFoundException e) {
                     log.error("Not able to create the Formatter",e);
                 }
+            } else {
+                container.addContainerProperty(columnProperty, column.getType(), "");
             }
         }
         setContainerDataSource(container);
