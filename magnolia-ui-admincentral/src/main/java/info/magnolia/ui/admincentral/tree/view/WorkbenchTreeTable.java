@@ -43,6 +43,7 @@ import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.widget.grid.MagnoliaTreeTable;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import javax.jcr.RepositoryException;
@@ -201,6 +202,7 @@ public class WorkbenchTreeTable extends MagnoliaTreeTable {
 
     private void buildColumns(WorkbenchDefinition workbenchDefinition, ComponentProvider componentProvider) {
         final Iterator<ColumnDefinition> iterator = workbenchDefinition.getColumns().iterator();
+        ArrayList<String> columnOrder = new ArrayList<String>();
 
         while (iterator.hasNext()) {
             ColumnDefinition column = iterator.next();
@@ -226,19 +228,21 @@ public class WorkbenchTreeTable extends MagnoliaTreeTable {
                 }
             }
 
-            container.addContainerProperty(columnProperty, column.getType(), "");
             setColumnHeader(columnProperty, column.getLabel());
+            container.addContainerProperty(columnProperty, column.getType(), "");
             //Set Formatter
             if(StringUtils.isNotBlank(column.getFormatterClass())) {
                 try {
-                    addGeneratedColumn(columnName, (ColumnFormatter)componentProvider.newInstance(Class.forName(column.getFormatterClass()),column));
-                }
-                catch (ClassNotFoundException e) {
+                    addGeneratedColumn(columnProperty, (ColumnFormatter)componentProvider.newInstance(Class.forName(column.getFormatterClass()),column));
+                } catch (ClassNotFoundException e) {
                     log.error("Not able to create the Formatter",e);
                 }
             }
+            columnOrder.add(columnProperty);
         }
         setContainerDataSource(container);
+        //Set Column order
+        setVisibleColumns(columnOrder.toArray());
     }
 
 }
