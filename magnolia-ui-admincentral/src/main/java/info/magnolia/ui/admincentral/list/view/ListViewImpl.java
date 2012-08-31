@@ -119,9 +119,6 @@ public class ListViewImpl implements ListView {
         // Set Column definition.
         Iterator<ColumnDefinition> iterator = workbenchDefinition.getColumns().iterator();
         buildColumns(workbenchDefinition, componentProvider, iterator);
-        //FIXME fgrilli: we have to set the container data source twice. We set it here so
-        //that the table actually contains data.
-        table.setContainerDataSource(container);
 
         margin.setStyleName("mgnl-content-view");
         margin.addComponent(table);
@@ -215,5 +212,6 @@ public class ListViewImpl implements ListView {
                 }
             }
         }
+        table.setContainerDataSource(container);
     }
 }

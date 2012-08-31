@@ -46,7 +46,7 @@
       <sv:value>info.magnolia.ui.model.column.definition.PropertyColumnDefinition</sv:value>
     </sv:property>
     <sv:property sv:name="expandRatio" sv:type="Double">
-      <sv:value>0.0</sv:value>
+      <sv:value>1.5</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
