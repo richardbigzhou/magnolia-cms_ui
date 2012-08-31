@@ -72,6 +72,7 @@ public class StatusColumnFormatter extends AbstractColumnFormatter<StatusColumnD
             Label permissionStatus = null;
             if (definition.isActivation()) {
                 activationStatus = new Label();
+                activationStatus.setSizeUndefined();
                 activationStatus.setStyleName("icon-shape-circle");
                 activationStatus.addStyleName("activation-status");
                 // Get Status
@@ -93,6 +94,7 @@ public class StatusColumnFormatter extends AbstractColumnFormatter<StatusColumnD
             if (definition.isPermissions()) {
                 try {
                     permissionStatus = new Label();
+                    permissionStatus.setSizeUndefined();
                     permissionStatus.setStyleName("icon-edit");
                     // TODO dlipp: verify, this shows the same behavior as old Content-API based
                     // implementation:

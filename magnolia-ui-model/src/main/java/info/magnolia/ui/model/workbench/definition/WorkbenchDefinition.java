@@ -77,7 +77,7 @@ public interface WorkbenchDefinition extends Serializable {
     ThumbnailProvider getThumbnailProvider();
 
     /**
-     * Define if this workbensh is used for Dialog.
+     * Define if this workbench is used for Dialog.
      * This is set during the cloning of the workbench in ChooseDialogContentPresenter.
      */
     boolean isDialogWorkbench();

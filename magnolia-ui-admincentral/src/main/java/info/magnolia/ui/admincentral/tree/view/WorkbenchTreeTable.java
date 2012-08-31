@@ -87,34 +87,8 @@ public class WorkbenchTreeTable extends MagnoliaTreeTable {
         addDragAndDrop();
 
         container = new HierarchicalJcrContainer(treeModel, workbenchDefinition);
-        setContainerDataSource(container);
-
-        final List<Object> visibleColumns = new ArrayList<Object>();
         Iterator<ColumnDefinition> iterator = workbenchDefinition.getColumns().iterator();
-        while (iterator.hasNext()) {
-            ColumnDefinition column = iterator.next();
-            if (workbenchDefinition.isDialogWorkbench() && !column.isToDisplayInDialog()) {
-                continue;
-            }
-            String columnName = column.getName();
-            String columnProperty = "";
-            if (column.getPropertyName() != null) {
-                columnProperty = column.getPropertyName();
-            } else {
-                columnProperty = columnName;
-            }
-            addContainerProperty(columnProperty, column.getType(), "");
-            setColumnHeader(columnProperty, column.getLabel());
-            visibleColumns.add(columnName);
-            if (StringUtils.isNotBlank(column.getFormatterClass())) {
-                try {
-                    this.addGeneratedColumn(columnName,
-                            (ColumnFormatter) componentProvider.newInstance(Class.forName(column.getFormatterClass()), column));
-                } catch (ClassNotFoundException e) {
-                    log.error("Not able to create the Formatter", e);
-                }
-            }
-        }
+        buildColumns(workbenchDefinition, componentProvider, iterator);
     }
 
     /**
@@ -225,6 +199,46 @@ public class WorkbenchTreeTable extends MagnoliaTreeTable {
             log.warn("No item found for id [{}]", itemId);
         }
 
+    }
+
+    private void buildColumns(WorkbenchDefinition workbenchDefinition, ComponentProvider componentProvider,Iterator<ColumnDefinition> iterator) {
+        while (iterator.hasNext()) {
+            ColumnDefinition column = iterator.next();
+            if(workbenchDefinition.isDialogWorkbench() && !column.isDisplayInDialog()) {
+                continue;
+            }
+            String columnName = column.getName();
+            String columnProperty = "";
+            if (column.getPropertyName() != null) {
+                columnProperty = column.getPropertyName();
+            } else {
+                columnProperty = columnName;
+            }
+            //FIXME fgrilli workaround for conference
+            //when setting cols width in dialogs we are forced to use explicit px value instead of expand ratios, which for some reason don't work
+            if(workbenchDefinition.isDialogWorkbench()) {
+                setColumnWidth(columnProperty, 300);
+            } else {
+                if(column.getWidth() > 0 ) {
+                    setColumnWidth(columnProperty, column.getWidth());
+                } else {
+                    setColumnExpandRatio(columnProperty, column.getExpandRatio());
+                }
+            }
+
+            container.addContainerProperty(columnProperty, column.getType(), "");
+            setColumnHeader(columnProperty, column.getLabel());
+            //Set Formatter
+            if(StringUtils.isNotBlank(column.getFormatterClass())) {
+                try {
+                    addGeneratedColumn(columnName, (ColumnFormatter)componentProvider.newInstance(Class.forName(column.getFormatterClass()),column));
+                }
+                catch (ClassNotFoundException e) {
+                    log.error("Not able to create the Formatter",e);
+                }
+            }
+        }
+        setContainerDataSource(container);
     }
 
 }
