@@ -104,7 +104,6 @@ public class VPageEditorViewImpl extends ScrollPanel implements VPageEditorView 
     
         doc.body.addEventListener('touchstart',
         function (event) {
-            event.preventDefault();
             //parent.window.scrollTo(0, 0);
             that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorViewImpl::X = event.targetTouches[0].pageX;
             that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorViewImpl::Y = event.targetTouches[0].pageY;
