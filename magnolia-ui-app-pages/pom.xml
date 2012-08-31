@@ -12,10 +12,6 @@
   <name>magnolia-ui-app-pages</name>
   <dependencies>
       <dependency>
-          <groupId>info.magnolia</groupId>
-          <artifactId>magnolia-rendering</artifactId>
-      </dependency>
-      <dependency>
           <groupId>info.magnolia.pageexport</groupId>
           <artifactId>magnolia-module-page-export</artifactId>
       </dependency>
