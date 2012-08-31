@@ -225,9 +225,9 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
         } else {
 
             final Node parentNode = SessionUtil.getNode(workspace, path);
-            try {
 
-                if (!parentNode.hasNode(IMAGE_NODE_NAME)) {
+            try {
+                if (parentNode == null || !parentNode.hasNode(IMAGE_NODE_NAME)) {
                     actionbarPresenter.setPreview(null);
                     return;
                 }
