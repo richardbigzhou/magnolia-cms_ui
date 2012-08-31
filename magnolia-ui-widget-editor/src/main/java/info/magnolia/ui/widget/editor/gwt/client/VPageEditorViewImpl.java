@@ -39,35 +39,51 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.vaadin.terminal.gwt.client.BrowserInfo;
 
 /**
  * GWT implementation of MagnoliaShell client side (the view part basically).
  *
  */
-public class VPageEditorViewImpl extends ScrollPanel implements VPageEditorView {
+public class VPageEditorViewImpl extends Composite implements VPageEditorView {
 
 
     private Listener listener;
-    private Frame iframe;
+    private Frame iframe = new Frame();
     private String url;
 
+    final SimplePanel content; 
+            
     public VPageEditorViewImpl() {
         super();
+        if (BrowserInfo.get().isTouchDevice()) {
+            content = new ScrollPanel();
+        } else {
+            content = new SimplePanel();
+        }
+        content.setWidget(iframe);
+        initWidget(content);
         setStyleName("pageEditor");
-
-        iframe = new Frame();
 
         iframe.addLoadHandler(new LoadHandler() {
 
             @Override
             public void onLoad(LoadEvent event) {
-
                 //other handlers are initialized here b/c we need to know the document inside the iframe.
                 //make sure we process  html only when the document inside the iframe is loaded.
                 listener.onFrameLoaded(iframe);
-                addIframeTouchMoveListener(((IFrameElement)iframe.getElement().cast()).getContentDocument(), getElement());
+                final IFrameElement iframeEl = (IFrameElement)iframe.getElement().cast();
+                /*iframeEl.getContentDocument().getBody().getStyle().setProperty("-webkit-user-select", "none");
+                iframeEl.getContentDocument().getBody().getStyle().setProperty("-webkit-tap-highlight-color", "rgba(0,0,0,0)");
+                iframeEl.getContentDocument().getBody().getStyle().setProperty("-webkit-tap-highlight-color", "none");*/
+                if (BrowserInfo.get().isTouchDevice()) {
+                    addIframeTouchMoveListener(iframeEl.getContentDocument(), content.getElement());   
+                }
             }
         });
 
@@ -76,8 +92,7 @@ public class VPageEditorViewImpl extends ScrollPanel implements VPageEditorView 
         iframeElement.setAttribute("height", "100%");
         iframeElement.setAttribute("allowTransparency", "true");
         iframeElement.setAttribute("frameborder", "0");
-        add(iframe);
-
+        
     }
 
     private int X = 0;
@@ -97,14 +112,13 @@ public class VPageEditorViewImpl extends ScrollPanel implements VPageEditorView 
             var deltaX = newY - that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorViewImpl::X;
             cont.scrollLeft -= deltaX;
             cont.scrollTop -= deltaY;
-            w.console.log("top " + cont.scrollTop + " newY " + newY + " delta " + (newY - that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorViewImpl::Y));
             that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorViewImpl::X = newX - deltaX;
             that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorViewImpl::Y = newY - deltaY;
         });
     
         doc.body.addEventListener('touchstart',
         function (event) {
-            //parent.window.scrollTo(0, 0);
+            parent.window.scrollTo(0, 1);
             that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorViewImpl::X = event.targetTouches[0].pageX;
             that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorViewImpl::Y = event.targetTouches[0].pageY;
         });
@@ -136,6 +150,7 @@ public class VPageEditorViewImpl extends ScrollPanel implements VPageEditorView 
     @Override
     public void reload() {
         reloadIFrame(getIframe().getElement());
+        Window.alert("RELOAD");
     }
 
     protected native void reloadIFrame(Element iframeElement) /*-{

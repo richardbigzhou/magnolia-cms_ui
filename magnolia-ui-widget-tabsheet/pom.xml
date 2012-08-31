@@ -79,6 +79,10 @@
 	</build>
 	<dependencies>
 		<dependency>
+			<groupId>com.googlecode.mgwt</groupId>
+			<artifactId>mgwt</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>info.magnolia.ui</groupId>
 			<artifactId>magnolia-ui-widget-jquery-wrapper</artifactId>
 			<version>${project.version}</version>

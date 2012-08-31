@@ -64,6 +64,10 @@ import org.vaadin.artur.icepush.client.ui.VICEPush;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.IFrameElement;
+import com.google.gwt.dom.client.Style.Position;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.History;
@@ -109,6 +113,18 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
         if (Window.Location.getQueryString().indexOf("tablet=true") >= 0) {
             RootPanel.get().addStyleName("tablet");
         }
+        
+        final IFrameElement iframe = Document.get().createIFrameElement();
+        getElement().appendChild(iframe);
+        iframe.setPropertyString("width", "100%");
+        iframe.setPropertyString("height", "100%");
+        //iframe.setSrc("http://www.sport-express.ru");
+        iframe.getStyle().setPosition(Position.ABSOLUTE);
+        iframe.getStyle().setLeft(0, Unit.PX);
+        iframe.getStyle().setTop(0, Unit.PX);
+        iframe.getStyle().setWidth(100, Unit.PCT);
+        iframe.getStyle().setHeight(100, Unit.PCT);
+        //iframe.getStyle().setZIndex(1000);
     }
 
     private void bindEventHandlers() {
@@ -255,6 +271,22 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
         lowPriorityMessage = null;
     }
 
+    protected void switchViewports(boolean appViewportOnTop) {
+        final VShellViewport shellAppViewport = getShellAppViewport();
+        final VShellViewport appViewport = getAppViewport();
+        shellAppViewport.setActive(!appViewportOnTop);
+        appViewport.setActive(appViewportOnTop);
+        if (appViewportOnTop) {
+            mainAppLauncher.deactivateControls();
+        } else {
+            if (appViewport.hasContent()) {
+                shellAppViewport.showCurtain();
+            } else {
+                shellAppViewport.hideCurtain();
+            }
+        }
+    }
+
     private final Timer mainLauncherUnlockTimer = new Timer() {
 
         @Override
@@ -288,9 +320,12 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
     @Override
     public void onViewportClose(ViewportCloseEvent event) {
         final VMagnoliaShell.ViewportType viewportType = event.getViewportType();
-        if (viewportType == ViewportType.SHELL_APP_VIEWPORT && getAppViewport().hasContent()) {
-            getShellAppViewport().setViewportHideAnimationDelegate(AnimationDelegate.SLIDING_DELEGATE);
+        if (viewportType == ViewportType.SHELL_APP_VIEWPORT) {
+            if ( getAppViewport().hasContent()){
+                getShellAppViewport().setViewportHideAnimationDelegate(AnimationDelegate.SLIDING_DELEGATE);
+            }
             presenter.closeCurrentShellApp();
+
         } else if (viewportType == ViewportType.APP_VIEWPORT) {
             if (!getAppViewport().hasContent()) {
                 getAppViewport().setViewportHideAnimationDelegate(AnimationDelegate.ZOOMING_DELEGATE);

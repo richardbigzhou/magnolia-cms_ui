@@ -98,6 +98,8 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
 
     private VPageEditorParameters pageEditorParameters;
 
+    static boolean external = false;
+    
     public VPageEditor() {
         this.eventBus = new SimpleEventBus();
         this.view = new VPageEditorViewImpl();
@@ -109,6 +111,7 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
 
         initWidget(view.asWidget());
 
+        
         proxy = new ClientSideProxy(this) {
             {
                 register("refresh", new Method() {
@@ -122,10 +125,8 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
                     @Override
                     public void invoke(String methodName, Object[] params) {
                         String json = String.valueOf(params[0]);
-
                         pageEditorParameters = VPageEditorParameters.parse(json);
                         view.setUrl(pageEditorParameters.getContextPath() + pageEditorParameters.getNodePath());
-
                     }
                 });
             }
