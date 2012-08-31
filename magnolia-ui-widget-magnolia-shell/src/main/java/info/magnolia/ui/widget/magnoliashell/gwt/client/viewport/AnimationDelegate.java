@@ -35,86 +35,177 @@ package info.magnolia.ui.widget.magnoliashell.gwt.client.viewport;
 
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.AnimationSettings;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.Callbacks;
+import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryCallback;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper;
 
+import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.user.client.ui.Widget;
 
-/**
- * Viewports might have different ways of displaying the content. 
- * This interface helps to define them from outside.
- */
-public interface ContentAnimationDelegate {
-    
-    final static int FADE_SPEED = 600;
 
-    final static int SLIDE_SPEED = 400;
-    
+/**
+ * Viewports might have different ways of displaying the content. This interface helps to define
+ * them from outside.
+ */
+public interface AnimationDelegate {
+
+    final static int FADE_SPEED = 400;
+
+    final static int SLIDE_IN_SPEED = 600;
+
+    final static int SLIDE_OUT_SPEED = 600;
+
     void show(final Widget w, final Callbacks callbacks);
-    
+
     void hide(final Widget w, final Callbacks callbacks);
-    
-    final static ContentAnimationDelegate SlidingDelegate = new ContentAnimationDelegate() {
-        @Override
-        public void hide(final Widget w, final Callbacks callbacks) {
-            final JQueryWrapper jq = JQueryWrapper.select(w);
-            jq.animate(SLIDE_SPEED, new AnimationSettings() {{
-                setProperty("top", "-=" + w.getOffsetHeight());
-                setCallbacks(callbacks);
-            }});
-        }
+
+    final static AnimationDelegate SLIDING_DELEGATE = new AnimationDelegate() {
 
         @Override
         public void show(final Widget w, final Callbacks callbacks) {
-            if (w != null) {
-                final JQueryWrapper jq = JQueryWrapper.select(w);
-                jq.setCssPx("top", -w.getOffsetHeight());
-                jq.animate(SLIDE_SPEED, new AnimationSettings() {{
+            // first reset inline style to calculate initial and target positions
+            w.getElement().getStyle().setProperty("opacity", "");
+            w.getElement().getStyle().setProperty("top", "");
+            final JQueryWrapper jq = JQueryWrapper.select(w);
+            final int initialTop = Integer.valueOf(jq.css("top").replaceAll("px", ""));
+            jq.setCssPx("top", -w.getOffsetHeight() + initialTop);
+
+            // only then set it visible
+            w.getElement().getStyle().setVisibility(Visibility.VISIBLE);
+            w.getElement().getStyle().setZIndex(VShellViewport.Z_INDEX_HI);
+
+            jq.animate(SLIDE_IN_SPEED, new AnimationSettings() {
+
+                {
                     setProperty("top", "+=" + w.getOffsetHeight());
-                    setCallbacks(callbacks);
-                }});
-            }
-        }
-    };
+                    callbacks.add(new JQueryCallback() {
 
-    final static ContentAnimationDelegate FadingDelegate = new ContentAnimationDelegate() {
-        @Override
-        public void hide(Widget w, final Callbacks callbacks) {
-            w.getElement().getStyle().setProperty("opacity", "0");
-            JQueryWrapper.select(w).animate(FADE_SPEED, new AnimationSettings() {{
-                setProperty("opacity", 0);
-                setProperty("visibility", "hidden");
-                setCallbacks(callbacks);
-            }});
+                        @Override
+                        public void execute(JQueryWrapper query) {
+                            // remove inline style when animation complete
+                            w.getElement().getStyle().setProperty("top", "");
+                        }
+
+                    });
+                    setCallbacks(callbacks);
+                }
+            });
         }
 
         @Override
-        public void show(final Widget widget, final Callbacks callbacks) {
-            if (widget != null) {
-                final JQueryWrapper jq = JQueryWrapper.select(widget);
-                jq.setCss("opacity", "0");
-                jq.animate(FADE_SPEED, new AnimationSettings() {{
-                    setProperty("opacity", 1);
-                    setProperty("visibility", "visible");
+        public void hide(final Widget w, final Callbacks callbacks) {
+            // keep z-index top-most because other viewport may immediately take z-index hi
+            w.getElement().getStyle().setZIndex(VShellViewport.Z_INDEX_HI + 10);
+
+            final JQueryWrapper jq = JQueryWrapper.select(w);
+            jq.animate(SLIDE_OUT_SPEED, new AnimationSettings() {
+
+                {
+                    setProperty("top", "-=" + w.getOffsetHeight());
+                    callbacks.add(new JQueryCallback() {
+
+                        @Override
+                        public void execute(JQueryWrapper query) {
+                            // set hidden once animation complete
+                            w.getElement().getStyle().setVisibility(Visibility.HIDDEN);
+                            w.getElement().getStyle().setZIndex(VShellViewport.Z_INDEX_LO);
+                        }
+
+                    });
                     setCallbacks(callbacks);
-                }});
-            }
+                }
+            });
         }
-    };
-    
-    final static ContentAnimationDelegate ZoomingDelegate = new ContentAnimationDelegate() {
-        
+
         @Override
-        public void hide(Widget widget, Callbacks callbacks) {
-            widget.removeStyleName("zoom-in");
-            widget.addStyleName("zoom-out");
+        public String toString() {
+            return "SLIDING_DELEGATE";
+        };
+    };
+
+    final static AnimationDelegate FADING_DELEGATE = new AnimationDelegate() {
+
+        @Override
+        public void show(final Widget w, final Callbacks callbacks) {
+            final JQueryWrapper jq = JQueryWrapper.select(w);
+            jq.setCss("opacity", "0");
+
+            w.getElement().getStyle().setVisibility(Visibility.VISIBLE);
+            w.getElement().getStyle().setZIndex(VShellViewport.Z_INDEX_HI);
+
+            jq.animate(FADE_SPEED, new AnimationSettings() {
+
+                {
+                    setProperty("opacity", 1d);
+                    setCallbacks(callbacks);
+                }
+            });
+        }
+
+        @Override
+        public void hide(final Widget w, final Callbacks callbacks) {
+            // keep z-index top-most because other viewport may immediately take z-index hi
+            w.getElement().getStyle().setZIndex(VShellViewport.Z_INDEX_HI + 10);
+
+            JQueryWrapper.select(w).animate(FADE_SPEED, new AnimationSettings() {
+
+                {
+                    setProperty("opacity", 0);
+                    callbacks.add(new JQueryCallback() {
+
+                        @Override
+                        public void execute(JQueryWrapper query) {
+                            // set hidden once animation complete
+                            w.getElement().getStyle().setVisibility(Visibility.HIDDEN);
+                            w.getElement().getStyle().setZIndex(VShellViewport.Z_INDEX_LO);
+                        }
+
+                    });
+                    setCallbacks(callbacks);
+                }
+            });
+        }
+
+        @Override
+        public String toString() {
+            return "FADING_DELEGATE";
+        };
+    };
+
+    final static AnimationDelegate ZOOMING_DELEGATE = new AnimationDelegate() {
+
+        @Override
+        public void show(final Widget w, final Callbacks callbacks) {
+            w.getElement().getStyle().setVisibility(Visibility.VISIBLE);
+            w.getElement().getStyle().setZIndex(VShellViewport.Z_INDEX_HI);
+
+            w.removeStyleName("zoom-out");
+            w.addStyleName("zoom-in");
             callbacks.fire();
         }
 
         @Override
-        public void show(final Widget widget, final Callbacks callbacks) {
-            widget.removeStyleName("zoom-out");
-            widget.addStyleName("zoom-in");
+        public void hide(final Widget w, Callbacks callbacks) {
+            // keep z-index top-most because other viewport may immediately take z-index hi
+            w.getElement().getStyle().setZIndex(VShellViewport.Z_INDEX_HI + 10);
+
+            w.removeStyleName("zoom-in");
+            w.addStyleName("zoom-out");
+            callbacks.add(new JQueryCallback() {
+
+                @Override
+                public void execute(JQueryWrapper query) {
+                    // set hidden once animation complete
+                    w.getElement().getStyle().setVisibility(Visibility.HIDDEN);
+                    w.getElement().getStyle().setZIndex(VShellViewport.Z_INDEX_LO);
+                }
+
+            });
             callbacks.fire();
         }
+
+        @Override
+        public String toString() {
+            return "ZOOMING_DELEGATE";
+        };
     };
 }

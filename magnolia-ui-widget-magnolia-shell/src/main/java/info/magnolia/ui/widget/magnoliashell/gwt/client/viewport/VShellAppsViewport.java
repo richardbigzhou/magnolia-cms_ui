@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.widget.magnoliashell.gwt.client.viewport;
 
-import com.google.gwt.user.client.ui.Widget;
 
 
 /**
@@ -41,34 +40,24 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class VShellAppsViewport extends VShellViewport {
 
-    private ContentAnimationDelegate internalAnimationDelegate = ContentAnimationDelegate.FadingDelegate;
-    
-    private ContentAnimationDelegate transitionalAnimationDelegate = ContentAnimationDelegate.SlidingDelegate;
-    
     public VShellAppsViewport() {
         super();
         setForceContentAlign(true);
-        setContentAnimationDelegate(ContentAnimationDelegate.SlidingDelegate);
+
+        setViewportShowAnimationDelegate(AnimationDelegate.SLIDING_DELEGATE);
+        setViewportHideAnimationDelegate(AnimationDelegate.FADING_DELEGATE);
+        setContentShowAnimationDelegate(AnimationDelegate.FADING_DELEGATE);
+        setContentHideAnimationDelegate(AnimationDelegate.FADING_DELEGATE);
+        setCurtainAnimated(true);
     }
-    
+
     @Override
-    public void setActive(boolean isActive) {
-        super.setActive(isActive);
-        if (isActive) {
-            setContentAnimationDelegate(internalAnimationDelegate);
-        } else {
-            setContentAnimationDelegate(transitionalAnimationDelegate);
+    public void setActive(boolean active) {
+        if (active) {
+            // reset to fade out transition if closing shell app turned it to slide out
+            setViewportHideAnimationDelegate(AnimationDelegate.FADING_DELEGATE);
         }
+        super.setActive(active);
     }
-    
-    @Override
-    protected void setWidgetVisibleWithTransition(Widget w) {
-        if (getAnimationDelegate() == ContentAnimationDelegate.SlidingDelegate) {
-            w.getElement().getStyle().setOpacity(1d);   
-        } else {
-            w.getElement().getStyle().setProperty("top", "");
-        }
-        super.setWidgetVisibleWithTransition(w);
-    }
-    
+
 }

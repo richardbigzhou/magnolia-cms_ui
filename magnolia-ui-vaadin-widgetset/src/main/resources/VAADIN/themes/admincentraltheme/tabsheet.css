@@ -93,7 +93,8 @@
 
 /* shell tabs and notifications */
 .v-shell-tab {
-	position: absolute;
+	position:absolute;
+	visibility:inherit !important; /* do not show tab content if parent is set to hidden */
 }
 
 .v-shell-tab-notification {
