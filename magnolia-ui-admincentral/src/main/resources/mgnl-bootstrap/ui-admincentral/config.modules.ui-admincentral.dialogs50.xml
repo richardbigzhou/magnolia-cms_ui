@@ -196,7 +196,7 @@
               <sv:value>Selected</sv:value>
             </sv:property>
             <sv:property sv:name="name" sv:type="String">
-              <sv:value>transiantPorps</sv:value>
+              <sv:value>transientProps</sv:value>
             </sv:property>
             <sv:property sv:name="required" sv:type="String">
               <sv:value>true</sv:value>
@@ -218,7 +218,7 @@
                 <sv:value>2012-06-11T13:55:35.862+02:00</sv:value>
               </sv:property>
               <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-                <sv:value>2012-08-30T09:02:42.180+02:00</sv:value>
+                <sv:value>2012-08-30T19:29:41.241+02:00</sv:value>
               </sv:property>
             </sv:node>
           </sv:node>

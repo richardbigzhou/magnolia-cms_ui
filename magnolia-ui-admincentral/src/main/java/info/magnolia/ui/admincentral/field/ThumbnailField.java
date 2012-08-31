@@ -44,14 +44,13 @@ import org.slf4j.LoggerFactory;
 import org.vaadin.addon.customfield.CustomField;
 
 import com.vaadin.terminal.ExternalResource;
-import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 
 /**
- * A base custom field comprising of a Thumbnail and related Image informations.
+ * A base custom field comprising of a Thumbnail and related image information.
  * This Field is waiting for path Node value.
  */
 public class ThumbnailField extends CustomField{
@@ -73,15 +72,17 @@ public class ThumbnailField extends CustomField{
         this.width = width;
         // Init layout
         label = new Label("", Label.CONTENT_XHTML);
-        embedded = new Embedded();
+        label.addStyleName("thumbnail-info");
+        embedded = new Embedded(null);
+        embedded.setType(Embedded.TYPE_IMAGE);
         layout = new HorizontalLayout();
-        layout.setSpacing(true);
 
         layout.addComponent(embedded);
         layout.addComponent(label);
-        layout.setComponentAlignment(embedded, Alignment.MIDDLE_CENTER);
-        layout.setComponentAlignment(label, Alignment.MIDDLE_CENTER);
         setCompositionRoot(layout);
+
+        addStyleName("thumbnail-field");
+        setSizeUndefined();
     }
 
     @Override
@@ -104,12 +105,12 @@ public class ThumbnailField extends CustomField{
                     if(!currentIdentifier.equals(identifier)) {
                         String path = imageThumbnailProvider.getPath(identifier, workspace, width, height);
                         layout.removeComponent(embedded);
-                        embedded = new Embedded("",new ExternalResource(path));
+                        embedded = new Embedded("", new ExternalResource(path));
                         label.setValue(createFieldDetail(parentNode));
                         layout.addComponent(embedded);
                     }
                 } catch (RepositoryException e) {
-                    log.warn("Not able to refresh the Thumbnail Field view for the following Node path: "+event.getProperty().getValue());
+                    log.warn("Not able to refresh the Thumbnail Field view for the following Node path: {}", event.getProperty().getValue(), e);
                 }
             }
         });

@@ -66,9 +66,9 @@ public class VDialogTabLayout extends FlowPanel implements Container, HelpAccess
     private List<DialogFieldWrapper> problematicSections = new ArrayList<DialogFieldWrapper>();
 
     private Element fieldSet = DOM.createElement("fieldset");
-    
+
     private boolean isValidationVisible = false;
-    
+
     public VDialogTabLayout() {
         super();
         getElement().appendChild(fieldSet);
@@ -79,7 +79,7 @@ public class VDialogTabLayout extends FlowPanel implements Container, HelpAccess
         if (client.updateComponent(this, uidl, true)) {
             return;
         }
-        
+
         isValidationVisible = uidl.getBooleanAttribute("validationVisible");
         final Iterator<?> it = uidl.getChildIterator();
         while (it.hasNext()) {
@@ -98,13 +98,14 @@ public class VDialogTabLayout extends FlowPanel implements Container, HelpAccess
                 DialogFieldWrapper fieldSection = sections.get(w);
                 fieldSection.setHelpDescription(description);
             }
+
             p.updateFromUIDL(childUIdl.getChildUIDL(0), client);
             /**
              * TODO: Implement ALL the details of Paintable handling here.
              */
         }
     }
-    
+
     @Override
     public void replaceChildComponent(Widget oldComponent, Widget newComponent) {
     }
@@ -141,7 +142,7 @@ public class VDialogTabLayout extends FlowPanel implements Container, HelpAccess
             }
         }
     }
-    
+
     @Override
     public VDialogTab getParent() {
         final Widget parent = super.getParent();
@@ -169,18 +170,18 @@ public class VDialogTabLayout extends FlowPanel implements Container, HelpAccess
             fs.setHelpEnabled(event.isHelpAccesible());
         }
     }
-    
+
     public void setDescriptionVisible(boolean isAccessible) {
         for (final DialogFieldWrapper fs : sections.values()) {
             fs.setHelpEnabled(isAccessible);
-        }        
+        }
     }
 
     @Override
     public boolean requestLayout(Set<Paintable> children) {
         return false;
     }
-    
+
     public void setValidationVisible(boolean isVisible) {
         this.isValidationVisible = isVisible;
     }

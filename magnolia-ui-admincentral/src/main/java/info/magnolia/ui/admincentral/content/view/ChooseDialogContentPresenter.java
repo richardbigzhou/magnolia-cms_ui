@@ -42,6 +42,8 @@ import info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.rits.cloning.Cloner;
 
 /**
@@ -56,6 +58,13 @@ public class ChooseDialogContentPresenter extends ContentPresenter {
         Cloner cloner = new Cloner();
         workbenchDefinition = cloner.deepClone(workbenchDefinition);
         ((ConfiguredWorkbenchDefinition)workbenchDefinition).setDialogWorkbench(true);
+    }
+
+    /**
+     * Return the Root path.
+     */
+    public String getRootPath() {
+        return StringUtils.defaultIfEmpty(workbenchDefinition.getPath(), "/");
     }
 
 }

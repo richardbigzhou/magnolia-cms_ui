@@ -10,3 +10,9 @@
 .view-modes .v-nativebutton-caption {text-decoration:none;}
 
 .mgnl-workbench-thumbnail-view { background-color: #FFF;}
+
+
+.activation-status {font-size:16px;}
+.color-green {color:#689600;}
+.color-yellow {color:#FFBF28;}
+.color-red {color:#9A3332;}

@@ -49,6 +49,7 @@ import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.NativeButton;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
 
 
@@ -60,7 +61,7 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
 
     private final HorizontalLayout root = new HorizontalLayout();
 
-    private final CssLayout contentViewContainer = new CssLayout();
+    private final VerticalLayout contentViewContainer = new VerticalLayout();
 
     private final Button treeButton;
 
@@ -156,7 +157,8 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
 
         c.setSizeFull();
         contentViewContainer.addComponent(c);
-
+        contentViewContainer.setExpandRatio(c,  1f);
+        
         this.currentViewType = type;
         refresh();
     }

@@ -31,48 +31,29 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.widget;
+package info.magnolia.ui.vaadin.integration.widget.grid;
 
-import info.magnolia.ui.vaadin.integration.widget.client.VHybridSelectionTable;
+import info.magnolia.ui.vaadin.integration.widget.client.grid.VMagnoliaTable;
 
 import java.util.Collection;
 import java.util.Map;
 
-import com.vaadin.data.Container;
 import com.vaadin.ui.ClientWidget;
-import com.vaadin.ui.ClientWidget.LoadStyle;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.themes.ChameleonTheme;
 
 /**
- * Hybrid selection table.
+ * MagnoliaTable.
  */
-@SuppressWarnings("serial")
-@ClientWidget(value = VHybridSelectionTable.class, loadStyle = LoadStyle.EAGER)
-public class HybridSelectionTable extends Table {
+@ClientWidget(VMagnoliaTable.class)
+public class MagnoliaTable extends Table {
 
-    private final static String CHECKBOX_COLUMN_ID = "CB";
-    
-    public HybridSelectionTable() {
-        super();
-        addStyleName("v-hybrid-selection-table");
-        addStyleName(ChameleonTheme.TABLE_BORDERLESS);
+    public MagnoliaTable() {
+        addStyleName("v-magnolia-table");
+        setEditable(false);
         setSelectable(true);
         setImmediate(true);
         setMultiSelect(true);
     }
-    
-    @Override
-    public void setContainerDataSource(Container newDataSource) {
-        final Container current = items;
-        super.setContainerDataSource(newDataSource);
-        if (current != null) {
-            addContainerProperty(CHECKBOX_COLUMN_ID, String.class, "");
-            setColumnHeader(CHECKBOX_COLUMN_ID, "");
-            setColumnWidth(CHECKBOX_COLUMN_ID, 20);
-        }
-    }
-    
     
     @Override
     public void changeVariables(Object source, Map<String, Object> variables) {

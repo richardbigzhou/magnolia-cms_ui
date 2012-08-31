@@ -30,7 +30,7 @@
     background-color: #689600;
     color: #48630A;
     height: 60px;
-    z-index:500;
+    z-index:498;
 }
 .fullscreen #main-launcher{
     display:none;
@@ -208,6 +208,4 @@ button.action-close {
 .app-slider {
     -webkit-transition: -webkit-transform 0.5s;
     -webkit-transform: translate3d(0,0,0);
-}
-
 }

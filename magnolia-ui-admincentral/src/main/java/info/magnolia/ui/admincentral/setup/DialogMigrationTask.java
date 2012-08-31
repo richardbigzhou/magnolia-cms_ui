@@ -229,7 +229,7 @@ public class DialogMigrationTask  extends AbstractTask {
                     if(fieldNode.getProperty("repository").getString().equals("website")) {
                         fieldNode.setProperty("appName", "pages");
                         fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.LinkFieldDefinition");
-                        fieldNode.setProperty("dialogName", "ui-admincentral:link");
+                        fieldNode.setProperty("dialogName", "ui-pages-app:link");
                     }else if (fieldNode.getProperty("repository").getString().equals("data")) {
                         // Handle contacts
                         if(fieldNode.hasProperty("tree") && fieldNode.getProperty("tree").getString().equals("Contact")) {

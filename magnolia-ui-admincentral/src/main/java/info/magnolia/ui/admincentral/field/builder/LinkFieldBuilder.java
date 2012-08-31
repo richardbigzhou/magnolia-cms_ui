@@ -63,8 +63,10 @@ import com.vaadin.ui.Field;
  */
 public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBuilder<LinkFieldDefinition> {
     private static final Logger log = LoggerFactory.getLogger(LinkFieldBuilder.class);
-    TextAndButtonField textButton;
-    final AppController appController;
+    public static final String TRANSIENT_PROPERTY_NAME = "transientProps";
+
+    private TextAndButtonField textButton;
+    private AppController appController;
 
     @Inject
     public LinkFieldBuilder(LinkFieldDefinition definition, Item relatedFieldItem, AppController appController ) {
@@ -102,6 +104,7 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
      * Create the Button click Listener.
      * On click: Create a Dialog and Initialize callback handling.
      */
+    @SuppressWarnings("serial")
     private Button.ClickListener createButtonClickListener(final String dialogName, final String appName) {
         Button.ClickListener res = new Button.ClickListener() {
             @Override
@@ -115,15 +118,15 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
 
                 // Create the Transient Item used to propagate the property between Dialogs.
                 final PropertysetItem item = new PropertysetItem();
-                Property property = DefaultPropertyUtil.newDefaultProperty("transiantPorps", null, (String)textButton.getTextField().getValue());
-                item.addItemProperty("transiantPorps", property);
+                Property property = DefaultPropertyUtil.newDefaultProperty(TRANSIENT_PROPERTY_NAME, null, (String)textButton.getTextField().getValue());
+                item.addItemProperty(TRANSIENT_PROPERTY_NAME, property);
                 // Create the call Back
                 MagnoliaDialogPresenter.Presenter.Callback callback = new MagnoliaDialogPresenter.Presenter.Callback() {
                     @Override
                     public void onSuccess(String actionName) {
-                        Property p = item.getItemProperty("transiantPorps");
+                        Property p = item.getItemProperty(TRANSIENT_PROPERTY_NAME);
                         textButton.setValue(p.getValue());
-                        log.debug("Got following value from Sub Window " +p.getValue());
+                        log.debug("Got following value from Sub Window {}", p.getValue());
                     }
                     @Override
                     public void onCancel() {

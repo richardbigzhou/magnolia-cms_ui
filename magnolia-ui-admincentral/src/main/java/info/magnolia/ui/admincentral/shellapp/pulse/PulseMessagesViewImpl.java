@@ -33,11 +33,11 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse;
 
-import java.util.List;
-
 import info.magnolia.ui.admincentral.shellapp.pulse.PulseMessageCategoryNavigator.CategoryChangedEvent;
 import info.magnolia.ui.admincentral.shellapp.pulse.PulseMessageCategoryNavigator.MessageCategoryChangedListener;
-import info.magnolia.ui.vaadin.integration.widget.HybridSelectionTable;
+import info.magnolia.ui.vaadin.integration.widget.grid.MagnoliaTable;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -53,17 +53,17 @@ import com.vaadin.ui.VerticalLayout;
 public class PulseMessagesViewImpl extends CustomComponent implements PulseMessagesView {
     
     private static final String[] headers = new String[] {
-            "", "New", "Type", "Message Text", "Sender", "Date", "Quick Do"
+           "New", "Type", "Message Text", "Sender", "Date", "Quick Do"
     };
     
-    private final Table messageTable = new HybridSelectionTable();
+    private final Table messageTable = new MagnoliaTable();
    
     private VerticalLayout root = new VerticalLayout();
     
     private PulseMessageCategoryNavigator navigator = new PulseMessageCategoryNavigator();
     
     private final PulseMessagesPresenter presenter;
-    
+
     @Inject
     public PulseMessagesViewImpl(final PulseMessagesPresenter presenter) {
         this.presenter = presenter;

@@ -39,6 +39,7 @@ import info.magnolia.ui.admincentral.image.ImageThumbnailProvider;
 import org.vaadin.addon.customfield.CustomField;
 
 import com.vaadin.data.Property;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
 
 
@@ -60,6 +61,8 @@ public class ContactTextAndButtonField extends CustomField{
         layout.addComponent(thumbnail);
         // Add Select Field
         layout.addComponent(textAndButtonField);
+        layout.setComponentAlignment(textAndButtonField, Alignment.MIDDLE_RIGHT);
+        layout.setMargin(true);
 
         setCompositionRoot(layout);
     }

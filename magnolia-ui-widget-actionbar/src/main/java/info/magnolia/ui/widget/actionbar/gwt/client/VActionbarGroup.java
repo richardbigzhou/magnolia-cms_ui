@@ -100,6 +100,10 @@ public class VActionbarGroup extends ComplexPanel {
         return actions;
     }
 
+    public int getNumActions(){
+        return actions.size() ;
+    }
+
     public void addAction(VActionbarItem action) {
         actions.add(action);
         add(action);

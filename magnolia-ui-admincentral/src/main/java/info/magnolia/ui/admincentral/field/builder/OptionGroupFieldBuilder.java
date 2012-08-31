@@ -52,6 +52,9 @@ public class OptionGroupFieldBuilder extends SelectFieldBuilder<OptionGroupField
     protected AbstractSelect buildField() {
         super.buildField();
         select.setMultiSelect(getFieldDefinition().isMultiselect());
+        if(select.isMultiSelect()) {
+            select.setNullSelectionAllowed(true);
+        }
         return select;
     }
 

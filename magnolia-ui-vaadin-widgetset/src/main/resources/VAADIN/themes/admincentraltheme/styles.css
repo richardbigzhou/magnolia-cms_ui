@@ -21,9 +21,15 @@ body{
     -webkit-touch-callout: none;/* Remove Callout Context menu when tapping on something */
 }
 
+/*
+CLZ TODO: Discuss and test.
+Was causing problems with actionbar tablet mode - touch events went right through to the treegrid below it.
 * {
 	-webkit-backface-visibility: hidden;
 }
+v2
+*/
+
 
 .clearfix:before, .clearfix:after { content: ""; display: table; }
 .clearfix:after { clear: both; }

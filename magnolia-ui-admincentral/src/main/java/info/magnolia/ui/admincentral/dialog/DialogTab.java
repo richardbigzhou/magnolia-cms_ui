@@ -51,7 +51,7 @@ public class DialogTab extends AbstractDialogItem {
     //private static final String FIELD_CONTAINER_STYLE_NAME = "field-container";
 
     private TabDefinition definition;
-    
+
     private final DialogLayout container = new DialogLayout();
 
     public DialogTab(TabDefinition definition) {
@@ -75,4 +75,5 @@ public class DialogTab extends AbstractDialogItem {
     public void setComponentHelpDescription(Field field, String helpDescription) {
         container.setComponentHelpDescription(field, helpDescription);
     }
+
 }

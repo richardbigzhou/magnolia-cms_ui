@@ -33,21 +33,26 @@
  */
 package info.magnolia.ui.widget.actionbar.gwt.client;
 
-import info.magnolia.ui.widget.actionbar.gwt.client.event.ActionTriggerEvent;
 
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.event.dom.client.MouseDownHandler;
+import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseOutHandler;
+import com.google.gwt.event.dom.client.MouseUpEvent;
+import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Widget;
 
-import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 
 import com.google.web.bindery.event.shared.EventBus;
 
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.ui.Icon;
+import info.magnolia.ui.widget.actionbar.gwt.client.event.ActionTriggerEvent;
 
 
 /**
@@ -82,12 +87,12 @@ public class VActionbarItem extends Widget {
 
     /**
      * Instantiates a new action in action bar.
-     * 
+     *
      * @param data the data json object
      * @param eventBus the event bus
      * @param icon the icon
      * @param cssClasses css classes to be added to the item
-     * 
+     *
      * Use {@link #VActionbarItem(VActionbarItemJSO, EventBus)} instead.
      */
     @Deprecated
@@ -105,7 +110,7 @@ public class VActionbarItem extends Widget {
 
     /**
      * Instantiates a new action in action bar.
-     * 
+     *
      * @param data the data json object
      * @param eventBus the event bus
      * @param cssClasses css classes to be added to the item
@@ -143,8 +148,36 @@ public class VActionbarItem extends Widget {
 
     protected void bindHandlers() {
 
-        DOM.sinkEvents(getElement(), Event.TOUCHEVENTS);
+        DOM.sinkEvents(getElement(), Event.MOUSEEVENTS);
 
+        addDomHandler(new MouseDownHandler() {
+            @Override
+            public void onMouseDown(MouseDownEvent event) {
+                addStyleName("mousedown");
+            }
+        }, MouseDownEvent.getType());
+
+        addDomHandler(new MouseUpHandler() {
+            @Override
+            public void onMouseUp(MouseUpEvent event) {
+                removeStyleName("mousedown");
+
+                if (data.isEnabled()) {
+                    eventBus.fireEvent(new ActionTriggerEvent(data.getName(), VActionbarItem.this));
+                }
+            }
+        }, MouseUpEvent.getType());
+
+        addDomHandler(new MouseOutHandler() {
+            @Override
+            public void onMouseOut(MouseOutEvent event) {
+                removeStyleName("mousedown");
+            }
+        }, MouseOutEvent.getType());
+
+
+
+        /*
 
         delegate.addTouchEndHandler(new TouchEndHandler() {
 
@@ -156,6 +189,11 @@ public class VActionbarItem extends Widget {
                 }
             }
         });
+        */
+    }
+
+    public void resetStyleNames(String cssClasses){
+        setStyleName(CLASSNAME + " " + cssClasses);
     }
 
     public String getName() {
