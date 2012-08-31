@@ -150,7 +150,6 @@ public class VPageEditorViewImpl extends Composite implements VPageEditorView {
     @Override
     public void reload() {
         reloadIFrame(getIframe().getElement());
-        Window.alert("RELOAD");
     }
 
     protected native void reloadIFrame(Element iframeElement) /*-{
