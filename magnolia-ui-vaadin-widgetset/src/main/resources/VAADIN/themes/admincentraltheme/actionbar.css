@@ -203,7 +203,7 @@
     display:block;
     right:0px;
     width:69px;
-    height:79px;
+    height:78px;
     border:none;
     background:#666 ;
     text-align:center;
@@ -221,8 +221,12 @@
 .tablet .v-action .v-icon{
     left:20px;
     height:24px;
-    font-size:34px;
-    top:2px;
+    font-size:32px;
+    top:0px;
+}
+
+.tablet .v-action img.v-icon{
+    top:7px;
 }
 
 .tablet .v-action .v-text{

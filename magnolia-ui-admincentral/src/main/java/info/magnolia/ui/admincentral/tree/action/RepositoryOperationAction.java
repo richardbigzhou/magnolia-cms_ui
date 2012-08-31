@@ -54,7 +54,7 @@ import javax.jcr.Session;
  */
 public abstract class RepositoryOperationAction<D extends ActionDefinition> extends ActionBase<D> {
 
-    private final Item item;
+    protected final Item item;
 
     private final EventBus eventBus;
 
@@ -71,14 +71,21 @@ public abstract class RepositoryOperationAction<D extends ActionDefinition> exte
     public void execute() throws ActionExecutionException {
         try {
             Session session = item.getSession();
-            final String path = item.getPath();
             onExecute(item);
             session.save();
-            eventBus.fireEvent(new ContentChangedEvent(session.getWorkspace().getName(), path));
+            eventBus.fireEvent(new ContentChangedEvent(session.getWorkspace().getName(), getItemPath()));
         }
         catch (RepositoryException e) {
             throw new ActionExecutionException("Can't execute repository operation.\n" + e.getMessage(), e);
         }
+    }
+
+    /**
+     * Get Item Path.
+     * Used by subclass to define the item path (for a deleted Item, should be the parent).
+     */
+    protected String getItemPath() throws RepositoryException {
+        return item.getPath();
     }
 
     protected abstract void onExecute(Item item) throws RepositoryException;
