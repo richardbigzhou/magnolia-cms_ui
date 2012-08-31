@@ -1,11 +1,39 @@
-/*FAVORITES RELATED STYLES*/
+/* FAVORITES STYLES */
 
-.v-split-feed .v-entry-icon.newpages {
-    background: url("img/icon-favorites-new-page.png") no-repeat scroll 0 0 transparent;
+.favorites .v-splitpanel-hsplitter-locked {
+	border:none;
 }
 
-.v-split-feed .v-entry-icon.shortcuts {
-    background: url("img/icon-favorites-shortcut.png") no-repeat scroll 0 0 transparent;
+.v-caption-favorites-section {
+	padding-bottom:8px;
+	color:#679600;
+	font-family:DINWebPro, sans-serif;
+	font-size:18px;
+	font-weight:bold;
 }
 
-/*END OF FAVORITES RELATED STYLES*/
+.favorites-section {
+	padding-bottom:48px;
+}
+
+.v-favorites-entry {
+	border-bottom: 1px solid #CCCCCC;
+	padding: 10px 10px 10px 3px;
+	font-size:15px;
+	line-height:18px;
+	height:24px;
+}
+
+.v-favorites-entry .v-label {
+	display:inline-block;
+}
+
+.v-favorites-entry .v-label-icon {
+	width:24px;
+	height:24px;
+	color:#679600;
+	margin-right:10px;
+	font-size:24px;
+	position: relative;
+    top: 5px;
+}
