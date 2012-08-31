@@ -99,7 +99,6 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
         super();
         setForceContentAlign(false);
         addDomHandler(closeHandler, ClickEvent.getType());
-        setContentHideAnimationDelegate(AnimationDelegate.ZOOMING_DELEGATE);
 
         bindTouchHandlers();
     }
@@ -108,6 +107,9 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
     protected void setClosingWidget(boolean closingWidget) {
         if (!closingWidget) {
             setViewportHideAnimationDelegate(null);
+            setContentHideAnimationDelegate(null);
+        } else {
+            setContentHideAnimationDelegate(AnimationDelegate.ZOOMING_DELEGATE);
         }
         super.setClosingWidget(closingWidget);
     }

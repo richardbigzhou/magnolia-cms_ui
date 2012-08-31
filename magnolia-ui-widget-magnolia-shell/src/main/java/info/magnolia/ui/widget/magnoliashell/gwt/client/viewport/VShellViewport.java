@@ -370,7 +370,7 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
 
             for (final Paintable paintable : orpanCandidates) {
                 client.unregisterPaintable(paintable);
-                if (formerWidget == paintable) {
+                if (closingWidget && formerWidget == paintable) {
                     new Timer() {
 
                         @Override

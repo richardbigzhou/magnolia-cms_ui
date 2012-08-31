@@ -60,7 +60,7 @@ public class VDialogViewport extends VShellViewport {
     public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
         super.updateFromUIDL(uidl, client);
 
-        if (getWidgetCount() == 0) {
+        if (!hasContent()) {
             setActive(false);
         } else {
             setActive(true);
