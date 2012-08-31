@@ -33,10 +33,13 @@
  */
 package info.magnolia.ui.widget.dialog.gwt.client.dialoglayout;
 
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.dom.client.HasBlurHandlers;
 import com.google.gwt.event.dom.client.HasFocusHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
@@ -49,7 +52,7 @@ import com.google.gwt.user.client.ui.impl.FocusImpl;
 /**
  * Wrapper widget that provides help and error indication.
  */
-public class DialogFieldWrapper extends FlowPanel implements HasFocusHandlers {
+public class DialogFieldWrapper extends FlowPanel implements HasFocusHandlers, HasBlurHandlers {
 
     private Element label = DOM.createDiv();
 
@@ -189,10 +192,17 @@ public class DialogFieldWrapper extends FlowPanel implements HasFocusHandlers {
         return field.addDomHandler(handler, FocusEvent.getType());
     }
 
+    @Override
+    public HandlerRegistration addBlurHandler(BlurHandler handler) {
+        return field.addDomHandler(handler, BlurEvent.getType());
+    }
+
     public void resetErrorMessage() {
         if (errorSection != null) {
             errorSection.setMessage("");
         }
     }
+
+
 
 }
