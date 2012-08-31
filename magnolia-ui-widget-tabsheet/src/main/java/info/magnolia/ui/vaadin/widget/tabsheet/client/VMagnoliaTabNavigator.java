@@ -55,6 +55,9 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent;
+import com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler;
+import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 import com.vaadin.terminal.gwt.client.UIDL;
 
 
@@ -198,6 +201,8 @@ public class VMagnoliaTabNavigator extends ComplexPanel {
 
         private VMagnoliaTab tab;
 
+        private TouchDelegate touchDelegate = new TouchDelegate(this);
+        
         public VShellTabLabel() {
             super(DOM.createElement("li"));
 
@@ -220,7 +225,7 @@ public class VMagnoliaTabNavigator extends ComplexPanel {
             getElement().appendChild(notificationBox);
             getElement().appendChild(errorIndicator);
 
-            DOM.sinkEvents(getElement(), Event.MOUSEEVENTS);
+            DOM.sinkEvents(getElement(), Event.MOUSEEVENTS | Event.TOUCHEVENTS);
             hideNotification();
             setHasError(false);
         }
@@ -232,10 +237,10 @@ public class VMagnoliaTabNavigator extends ComplexPanel {
         }
 
         private void bindHandlers() {
-            addDomHandler(new ClickHandler() {
-
+            touchDelegate.addTouchStartHandler(new TouchStartHandler() {
+                
                 @Override
-                public void onClick(ClickEvent event) {
+                public void onTouchStart(TouchStartEvent event) {
                     final Element target = (Element) event.getNativeEvent().getEventTarget().cast();
                     if (closeElement.isOrHasChild(target)) {
                         eventBus.fireEvent(new TabCloseEvent(tab));
@@ -243,7 +248,7 @@ public class VMagnoliaTabNavigator extends ComplexPanel {
                         eventBus.fireEvent(new ActiveTabChangedEvent(tab));
                     }
                 }
-            }, ClickEvent.getType());
+            });
         }
 
         public void setTab(final VMagnoliaTab tab) {
