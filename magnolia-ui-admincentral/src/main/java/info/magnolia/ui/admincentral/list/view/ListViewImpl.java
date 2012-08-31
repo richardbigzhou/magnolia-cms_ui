@@ -44,6 +44,7 @@ import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.widget.grid.MagnoliaTable;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.apache.commons.lang.StringUtils;
@@ -176,6 +177,8 @@ public class ListViewImpl implements ListView {
 
     private void buildColumns(WorkbenchDefinition workbenchDefinition, ComponentProvider componentProvider) {
         final Iterator<ColumnDefinition> iterator = workbenchDefinition.getColumns().iterator();
+
+        ArrayList<String> columnOrder = new ArrayList<String>();
         while (iterator.hasNext()) {
             ColumnDefinition column = iterator.next();
             if(workbenchDefinition.isDialogWorkbench() && ! column.isDisplayInDialog()) {
@@ -201,17 +204,20 @@ public class ListViewImpl implements ListView {
             }
 
             table.setColumnHeader(columnProperty, column.getLabel());
+            container.addContainerProperty(columnProperty, column.getType(), "");
             //Set Formatter
             if(StringUtils.isNotBlank(column.getFormatterClass())) {
                 try {
-                    table.addGeneratedColumn(columnName, (ColumnFormatter)componentProvider.newInstance(Class.forName(column.getFormatterClass()),column));
-                } catch (ClassNotFoundException e) {
+                    table.addGeneratedColumn(columnProperty, (ColumnFormatter)componentProvider.newInstance(Class.forName(column.getFormatterClass()),column));
+               } catch (ClassNotFoundException e) {
                     log.error("Not able to create the Formatter",e);
-                }
-            } else {
-                container.addContainerProperty(columnProperty, column.getType(), "");
+               }
             }
+            columnOrder.add(columnProperty);
+
         }
         table.setContainerDataSource(container);
+        //Set Column order
+        table.setVisibleColumns(columnOrder.toArray());
     }
 }

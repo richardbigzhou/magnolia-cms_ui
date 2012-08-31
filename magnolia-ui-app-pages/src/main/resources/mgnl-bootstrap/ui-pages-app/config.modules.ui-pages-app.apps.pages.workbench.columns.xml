@@ -46,7 +46,7 @@
       <sv:value>info.magnolia.ui.model.column.definition.PropertyColumnDefinition</sv:value>
     </sv:property>
     <sv:property sv:name="expandRatio" sv:type="Double">
-      <sv:value>1.0</sv:value>
+      <sv:value>2.0</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -74,7 +74,7 @@
         <sv:value>2010-09-08T11:44:25.527+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-        <sv:value>2012-07-06T17:27:11.975+02:00</sv:value>
+        <sv:value>2012-08-31T16:40:01.675+02:00</sv:value>
       </sv:property>
     </sv:node>
   </sv:node>
@@ -91,6 +91,9 @@
     <sv:property sv:name="class" sv:type="String">
       <sv:value>info.magnolia.ui.model.column.definition.PropertyColumnDefinition</sv:value>
     </sv:property>
+    <sv:property sv:name="expandRatio" sv:type="Long">
+      <sv:value>1</sv:value>
+    </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
     </sv:property>
@@ -99,9 +102,6 @@
     </sv:property>
     <sv:property sv:name="propertyName" sv:type="String">
       <sv:value>title</sv:value>
-    </sv:property>
-    <sv:property sv:name="width" sv:type="String">
-      <sv:value>350</sv:value>
     </sv:property>
     <sv:node sv:name="MetaData">
       <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -120,7 +120,7 @@
         <sv:value>2010-09-08T11:44:25.527+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-        <sv:value>2012-07-06T17:27:11.976+02:00</sv:value>
+        <sv:value>2012-08-31T16:38:35.802+02:00</sv:value>
       </sv:property>
     </sv:node>
   </sv:node>
@@ -137,11 +137,14 @@
     <sv:property sv:name="class" sv:type="String">
       <sv:value>info.magnolia.ui.model.column.definition.TemplateColumnDefinition</sv:value>
     </sv:property>
-    <sv:property sv:name="formatterClass" sv:type="String">
-      <sv:value>info.magnolia.ui.admincentral.column.TemplateColumnFormatter</sv:value>
-    </sv:property>
     <sv:property sv:name="displayInDialog" sv:type="Boolean">
       <sv:value>false</sv:value>
+    </sv:property>
+    <sv:property sv:name="expandRatio" sv:type="Double">
+      <sv:value>1.0</sv:value>
+    </sv:property>
+    <sv:property sv:name="formatterClass" sv:type="String">
+      <sv:value>info.magnolia.ui.admincentral.column.TemplateColumnFormatter</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -151,9 +154,6 @@
     </sv:property>
     <sv:property sv:name="propertyName" sv:type="String">
       <sv:value>MetaData/mgnl:template</sv:value>
-    </sv:property>
-    <sv:property sv:name="width" sv:type="Long">
-      <sv:value>300</sv:value>
     </sv:property>
     <sv:node sv:name="MetaData">
       <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -172,7 +172,7 @@
         <sv:value>2010-09-08T11:44:25.527+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-        <sv:value>2012-08-31T13:22:12.382+02:00</sv:value>
+        <sv:value>2012-08-31T16:45:17.163+02:00</sv:value>
       </sv:property>
     </sv:node>
   </sv:node>
@@ -189,7 +189,7 @@
     <sv:property sv:name="class" sv:type="String">
       <sv:value>info.magnolia.ui.model.column.definition.StatusColumnDefinition</sv:value>
     </sv:property>
-    <sv:property sv:name="displayInDialog" sv:type="String">
+    <sv:property sv:name="displayInDialog" sv:type="Boolean">
       <sv:value>false</sv:value>
     </sv:property>
     <sv:property sv:name="formatterClass" sv:type="String">
@@ -221,7 +221,7 @@
         <sv:value>2010-09-08T11:44:25.527+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-        <sv:value>2012-08-30T08:57:12.333+02:00</sv:value>
+        <sv:value>2012-08-31T16:55:01.956+02:00</sv:value>
       </sv:property>
     </sv:node>
   </sv:node>
@@ -238,6 +238,9 @@
     <sv:property sv:name="class" sv:type="String">
       <sv:value>info.magnolia.ui.model.column.definition.MetaDataColumnDefinition</sv:value>
     </sv:property>
+    <sv:property sv:name="displayInDialog" sv:type="Boolean">
+      <sv:value>false</sv:value>
+    </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
     </sv:property>
@@ -246,9 +249,6 @@
     </sv:property>
     <sv:property sv:name="propertyName" sv:type="String">
       <sv:value>MetaData/mgnl:lastmodified</sv:value>
-    </sv:property>
-    <sv:property sv:name="toDisplayInDialog" sv:type="String">
-      <sv:value>false</sv:value>
     </sv:property>
     <sv:property sv:name="width" sv:type="Long">
       <sv:value>250</sv:value>
@@ -270,7 +270,7 @@
         <sv:value>2010-09-08T11:44:25.527+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-        <sv:value>2012-08-29T10:35:57.601+02:00</sv:value>
+        <sv:value>2012-08-31T16:55:10.987+02:00</sv:value>
       </sv:property>
     </sv:node>
   </sv:node>
