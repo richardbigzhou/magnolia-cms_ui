@@ -101,7 +101,7 @@
       <sv:value>title</sv:value>
     </sv:property>
     <sv:property sv:name="width" sv:type="String">
-      <sv:value>350</sv:value>
+      <sv:value>400</sv:value>
     </sv:property>
     <sv:node sv:name="MetaData">
       <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -153,7 +153,7 @@
       <sv:value>MetaData/mgnl:template</sv:value>
     </sv:property>
     <sv:property sv:name="width" sv:type="Long">
-      <sv:value>300</sv:value>
+      <sv:value>350</sv:value>
     </sv:property>
     <sv:node sv:name="MetaData">
       <sv:property sv:name="jcr:primaryType" sv:type="Name">
