@@ -87,8 +87,8 @@ public class WorkbenchTreeTable extends MagnoliaTreeTable {
         addDragAndDrop();
 
         container = new HierarchicalJcrContainer(treeModel, workbenchDefinition);
-        Iterator<ColumnDefinition> iterator = workbenchDefinition.getColumns().iterator();
-        buildColumns(workbenchDefinition, componentProvider, iterator);
+
+        buildColumns(workbenchDefinition, componentProvider);
     }
 
     /**
@@ -201,7 +201,9 @@ public class WorkbenchTreeTable extends MagnoliaTreeTable {
 
     }
 
-    private void buildColumns(WorkbenchDefinition workbenchDefinition, ComponentProvider componentProvider,Iterator<ColumnDefinition> iterator) {
+    private void buildColumns(WorkbenchDefinition workbenchDefinition, ComponentProvider componentProvider) {
+        final Iterator<ColumnDefinition> iterator = workbenchDefinition.getColumns().iterator();
+
         while (iterator.hasNext()) {
             ColumnDefinition column = iterator.next();
             if(workbenchDefinition.isDialogWorkbench() && !column.isDisplayInDialog()) {

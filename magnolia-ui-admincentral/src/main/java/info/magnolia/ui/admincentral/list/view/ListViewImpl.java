@@ -116,9 +116,8 @@ public class ListViewImpl implements ListView {
         table.setColumnReorderingAllowed(false);
 
         container = new FlatJcrContainer(treeModel, workbenchDefinition);
-        // Set Column definition.
-        Iterator<ColumnDefinition> iterator = workbenchDefinition.getColumns().iterator();
-        buildColumns(workbenchDefinition, componentProvider, iterator);
+
+        buildColumns(workbenchDefinition, componentProvider);
 
         margin.setStyleName("mgnl-content-view");
         margin.addComponent(table);
@@ -175,7 +174,9 @@ public class ListViewImpl implements ListView {
         }
     }
 
-    private void buildColumns(WorkbenchDefinition workbenchDefinition, ComponentProvider componentProvider,Iterator<ColumnDefinition> iterator) {
+    private void buildColumns(WorkbenchDefinition workbenchDefinition, ComponentProvider componentProvider) {
+        final Iterator<ColumnDefinition> iterator = workbenchDefinition.getColumns().iterator();
+
         while (iterator.hasNext()) {
             ColumnDefinition column = iterator.next();
             if(workbenchDefinition.isDialogWorkbench() && ! column.isDisplayInDialog()) {
