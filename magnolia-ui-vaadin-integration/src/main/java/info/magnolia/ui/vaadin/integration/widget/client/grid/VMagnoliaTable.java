@@ -4906,7 +4906,10 @@ public class VMagnoliaTable extends FlowPanel implements Table, ScrollHandler, V
                     // A specific column was clicked
                     int childIndex = DOM.getChildIndex(getElement(), targetTdOrTr);
                     String colKey = null;
-                    colKey = tHead.getHeaderCell(childIndex).getColKey();
+                    /**
+                     * @NOTE that index is changed due to the fork.
+                     */
+                    colKey = tHead.getHeaderCell(childIndex - 1).getColKey();
                     client.updateVariable(paintableId, "clickedColKey", colKey, false);
                 }
 
@@ -5337,9 +5340,12 @@ public class VMagnoliaTable extends FlowPanel implements Table, ScrollHandler, V
                 transferable.setDragSource(VMagnoliaTable.this);
                 transferable.setData("itemId", "" + rowKey);
                 NodeList<TableCellElement> cells = rowElement.getCells();
-                for (int i = 0; i < cells.getLength(); i++) {
+                /**
+                 * @NOTE index is changed due to the fork.
+                 */
+                for (int i = 1; i < cells.getLength(); i++) {
                     if (cells.getItem(i).isOrHasChild(targetTdOrTr)) {
-                        HeaderCell headerCell = tHead.getHeaderCell(i);
+                        HeaderCell headerCell = tHead.getHeaderCell(i - 1);
                         transferable.setData("propertyId", headerCell.cid);
                         break;
                     }
@@ -6294,7 +6300,10 @@ public class VMagnoliaTable extends FlowPanel implements Table, ScrollHandler, V
                     element = (Element) element.getParentElement();
                 }
                 int childIndex = DOM.getChildIndex(tr, element);
-                dropDetails.colkey = tHead.getHeaderCell(childIndex).getColKey();
+                /**
+                 *  @NOTE index is changed by the fork. 
+                 */
+                dropDetails.colkey = tHead.getHeaderCell(childIndex - 1).getColKey();
                 dropDetails.dropLocation = DDUtil.getVerticalDropLocation(row.getElement(), drag.getCurrentGwtEvent(), 0.2);
             }
 
