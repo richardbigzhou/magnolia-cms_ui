@@ -86,6 +86,7 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
         public void onClick(ClickEvent event) {
             final Element target = (Element) event.getNativeEvent().getEventTarget().cast();
             if (target.getClassName().contains(CLOSE_CLASSNAME)) {
+                setClosingWidget(true);
                 getEventBus().fireEvent(new ViewportCloseEvent(VMagnoliaShell.ViewportType.APP_VIEWPORT));
             }
         }
@@ -98,8 +99,17 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
         super();
         setForceContentAlign(false);
         addDomHandler(closeHandler, ClickEvent.getType());
+        setContentHideAnimationDelegate(AnimationDelegate.ZOOMING_DELEGATE);
 
         bindTouchHandlers();
+    }
+
+    @Override
+    protected void setClosingWidget(boolean closingWidget) {
+        if (!closingWidget) {
+            setViewportHideAnimationDelegate(null);
+        }
+        super.setClosingWidget(closingWidget);
     }
 
     @Override

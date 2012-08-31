@@ -184,7 +184,7 @@ public interface AnimationDelegate {
         }
 
         @Override
-        public void hide(final Widget w, Callbacks callbacks) {
+        public void hide(final Widget w, final Callbacks callbacks) {
             // keep z-index top-most because other viewport may immediately take z-index hi
             w.getElement().getStyle().setZIndex(VShellViewport.Z_INDEX_HI + 10);
 
@@ -200,7 +200,14 @@ public interface AnimationDelegate {
                 }
 
             });
-            callbacks.fire();
+
+            JQueryWrapper.select(w).animate(FADE_SPEED, new AnimationSettings() {
+
+                {
+                    setProperty("opacity", 1d);
+                    setCallbacks(callbacks);
+                }
+            });
         }
 
         @Override
