@@ -54,6 +54,11 @@
     </dependency>
 
     <dependency>
+      <groupId>info.magnolia</groupId>
+      <artifactId>magnolia-rendering</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>info.magnolia.ui</groupId>
       <artifactId>magnolia-ui-model</artifactId>
       <version>${project.version}</version>
