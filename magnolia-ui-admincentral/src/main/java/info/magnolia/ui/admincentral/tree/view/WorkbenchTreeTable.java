@@ -237,6 +237,8 @@ public class WorkbenchTreeTable extends MagnoliaTreeTable {
                 } catch (ClassNotFoundException e) {
                     log.error("Not able to create the Formatter",e);
                 }
+            } else {
+                container.addContainerProperty(columnProperty, column.getType(), "");
             }
             columnOrder.add(columnProperty);
         }

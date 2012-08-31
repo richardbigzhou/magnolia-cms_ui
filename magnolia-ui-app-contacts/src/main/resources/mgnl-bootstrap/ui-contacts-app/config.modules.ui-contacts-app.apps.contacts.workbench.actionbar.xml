@@ -196,7 +196,7 @@
                 <sv:value>dccd631b-b8a3-4060-b4fc-7b8e4b470d39</sv:value>
               </sv:property>
               <sv:property sv:name="icon" sv:type="String">
-                <sv:value>img/actionbar-icons/icon-action-add-tablet.png</sv:value>
+                <sv:value>icon-add-item</sv:value>
               </sv:property>
               <sv:property sv:name="jcr:createdBy" sv:type="String">
                 <sv:value>admin</sv:value>
@@ -341,7 +341,7 @@
                 <sv:value>e7ac9cc1-51d2-4d21-90e1-6479c6290f93</sv:value>
               </sv:property>
               <sv:property sv:name="icon" sv:type="String">
-                <sv:value>img/actionbar-icons/icon-action-edit-tablet.png</sv:value>
+                <sv:value>icon-edit</sv:value>
               </sv:property>
               <sv:property sv:name="jcr:createdBy" sv:type="String">
                 <sv:value>admin</sv:value>
@@ -421,7 +421,7 @@
                 <sv:value>b69add45-c10f-43bc-8d8c-93aed68fdbb6</sv:value>
               </sv:property>
               <sv:property sv:name="icon" sv:type="String">
-                <sv:value>img/actionbar-icons/icon-action-delete-tablet.png</sv:value>
+                <sv:value>icon-delete</sv:value>
               </sv:property>
               <sv:property sv:name="jcr:createdBy" sv:type="String">
                 <sv:value>admin</sv:value>

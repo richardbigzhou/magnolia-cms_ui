@@ -177,8 +177,8 @@ public class ListViewImpl implements ListView {
 
     private void buildColumns(WorkbenchDefinition workbenchDefinition, ComponentProvider componentProvider) {
         final Iterator<ColumnDefinition> iterator = workbenchDefinition.getColumns().iterator();
-        ArrayList<String> columnOrder = new ArrayList<String>();
 
+        ArrayList<String> columnOrder = new ArrayList<String>();
         while (iterator.hasNext()) {
             ColumnDefinition column = iterator.next();
             if(workbenchDefinition.isDialogWorkbench() && ! column.isDisplayInDialog()) {
@@ -209,9 +209,9 @@ public class ListViewImpl implements ListView {
             if(StringUtils.isNotBlank(column.getFormatterClass())) {
                 try {
                     table.addGeneratedColumn(columnProperty, (ColumnFormatter)componentProvider.newInstance(Class.forName(column.getFormatterClass()),column));
-                } catch (ClassNotFoundException e) {
+               } catch (ClassNotFoundException e) {
                     log.error("Not able to create the Formatter",e);
-                }
+               }
             }
             columnOrder.add(columnProperty);
 
