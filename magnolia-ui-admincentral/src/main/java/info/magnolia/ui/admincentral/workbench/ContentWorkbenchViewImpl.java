@@ -42,11 +42,13 @@ import java.util.Map;
 
 import com.vaadin.data.Item;
 import com.vaadin.terminal.Sizeable;
+import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.VerticalLayout;
@@ -68,6 +70,8 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
     private final Button listButton;
 
     private final Button thumbsButton;
+
+    private final Embedded viewTypeArrow;
 
     private final Map<ViewType, ContentView> contentViews = new EnumMap<ViewType, ContentView>(ViewType.class);
 
@@ -103,6 +107,17 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
 
         contentViewContainer.setSizeFull();
         contentViewContainer.addComponent(viewModes);
+        viewTypeArrow = buildViewTypeArrow();
+        contentViewContainer.addComponent(viewTypeArrow);
+    }
+
+    private Embedded buildViewTypeArrow() {
+        ThemeResource img = new ThemeResource("img/arrow-up-white.png");
+        Embedded arrow = new Embedded(null, img);
+        arrow.setType(Embedded.TYPE_IMAGE);
+        arrow.setSizeUndefined();
+        arrow.addStyleName("view-type-arrow");
+        return arrow;
     }
 
     private Button buildButton(final ViewType viewType, final String icon, final boolean active) {
@@ -115,15 +130,23 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
                 treeButton.removeStyleName("active");
                 listButton.removeStyleName("active");
                 thumbsButton.removeStyleName("active");
+
+                viewTypeArrow.removeStyleName("tree");
+                viewTypeArrow.removeStyleName("list");
+                viewTypeArrow.removeStyleName("thumbs");
+
                 switch (viewType) {
                     case TREE :
                         treeButton.addStyleName("active");
+                        viewTypeArrow.addStyleName("tree");
                         break;
                     case LIST :
                         listButton.addStyleName("active");
+                        viewTypeArrow.addStyleName("list");
                         break;
                     case THUMBNAIL :
                         thumbsButton.addStyleName("active");
+                        viewTypeArrow.addStyleName("thumbs");
                         break;
                     default :
                         break;
@@ -158,7 +181,7 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
         c.setSizeFull();
         contentViewContainer.addComponent(c);
         contentViewContainer.setExpandRatio(c,  1f);
-        
+
         this.currentViewType = type;
         refresh();
     }
