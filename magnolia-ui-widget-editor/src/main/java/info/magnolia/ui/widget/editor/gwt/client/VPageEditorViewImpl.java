@@ -34,17 +34,16 @@
 package info.magnolia.ui.widget.editor.gwt.client;
 
 
-import com.google.gwt.dom.client.Document;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.IFrameElement;
-import com.google.gwt.event.dom.client.LoadEvent;
-import com.google.gwt.event.dom.client.LoadHandler;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Frame;
+import info.magnolia.ui.widget.editor.gwt.client.jsni.NativeDomHandler;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.Composite;
+
 import com.vaadin.terminal.gwt.client.BrowserInfo;
+
 
 /**
  * GWT implementation of MagnoliaShell client side (the view part basically).
@@ -56,6 +55,7 @@ public class VPageEditorViewImpl extends Composite implements VPageEditorView {
     private Listener listener;
     private Frame iframe = new Frame();
     private String url;
+    private NativeDomHandler handler = GWT.create(NativeDomHandler.class);
 
     final SimplePanel content; 
             
@@ -70,63 +70,22 @@ public class VPageEditorViewImpl extends Composite implements VPageEditorView {
         initWidget(content);
         setStyleName("pageEditor");
 
-        iframe.addLoadHandler(new LoadHandler() {
-
-            @Override
-            public void onLoad(LoadEvent event) {
-                //other handlers are initialized here b/c we need to know the document inside the iframe.
-                //make sure we process  html only when the document inside the iframe is loaded.
-                listener.onFrameLoaded(iframe);
-                final IFrameElement iframeEl = (IFrameElement)iframe.getElement().cast();
-                /*iframeEl.getContentDocument().getBody().getStyle().setProperty("-webkit-user-select", "none");
-                iframeEl.getContentDocument().getBody().getStyle().setProperty("-webkit-tap-highlight-color", "rgba(0,0,0,0)");
-                iframeEl.getContentDocument().getBody().getStyle().setProperty("-webkit-tap-highlight-color", "none");*/
-                if (BrowserInfo.get().isTouchDevice()) {
-                    addIframeTouchMoveListener(iframeEl.getContentDocument(), content.getElement());   
-                }
-            }
-        });
-
         final Element iframeElement = iframe.getElement();
         iframeElement.setAttribute("width", "100%");
         iframeElement.setAttribute("height", "100%");
         iframeElement.setAttribute("allowTransparency", "true");
         iframeElement.setAttribute("frameborder", "0");
-        
+
     }
 
-    private int X = 0;
-    
-    private int Y = 0;
-    
-    private final native void addIframeTouchMoveListener(Document doc, Element cont) /*-{
-        var w = $wnd;     
-        var content = cont;
-        var that = this;
-        doc.body.addEventListener('touchmove',
-        function(event) {
-            event.preventDefault();
-            var newX = event.targetTouches[0].pageX;
-            var newY = event.targetTouches[0].pageY;
-            var deltaY = newY - that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorViewImpl::Y;
-            var deltaX = newY - that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorViewImpl::X;
-            cont.scrollLeft -= deltaX;
-            cont.scrollTop -= deltaY;
-            that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorViewImpl::X = newX - deltaX;
-            that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorViewImpl::Y = newY - deltaY;
-        });
-    
-        doc.body.addEventListener('touchstart',
-        function (event) {
-            parent.window.scrollTo(0, 1);
-            that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorViewImpl::X = event.targetTouches[0].pageX;
-            that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorViewImpl::Y = event.targetTouches[0].pageY;
-        });
-    }-*/;
-    
     @Override
     public Frame getIframe() {
         return iframe;
+    }
+
+    @Override
+    public void registerHandlers() {
+        handler.registerOnReady(iframe, listener);
     }
 
     @Override
@@ -149,13 +108,6 @@ public class VPageEditorViewImpl extends Composite implements VPageEditorView {
 
     @Override
     public void reload() {
-        reloadIFrame(getIframe().getElement());
-        Window.alert("RELOAD");
+        handler.reloadIFrame(iframe.getElement());
     }
-
-    protected native void reloadIFrame(Element iframeElement) /*-{
-        iframeElement.contentWindow.location.reload(true);
-    }-*/;
-
-
 }

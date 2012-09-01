@@ -43,7 +43,6 @@ import com.google.gwt.dom.client.Node;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Frame;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.Paintable;
 import com.vaadin.terminal.gwt.client.UIDL;
@@ -80,7 +79,6 @@ import java.util.List;
 
 /**
  * Vaadin implementation of PageEditor client side.
- * TODO fgrilli: this class badly needs clean up and refactoring.
  */
 public class VPageEditor extends Composite implements VPageEditorView.Listener, Paintable, ClientSideHandler {
 
@@ -106,10 +104,14 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
         this.model = new ModelImpl();
         this.focusModel = new FocusModelImpl(eventBus, model);
 
+        initWidget(view.asWidget());
+
         view.setListener(this);
+        view.registerHandlers();
+
+
         registerEventHandlers();
 
-        initWidget(view.asWidget());
 
         
         proxy = new ClientSideProxy(this) {
@@ -293,12 +295,12 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
     }
 
     @Override
-    public void onFrameLoaded(Frame iframe) {
+    public void onFrameLoaded() {
 
         if (pageEditorParameters.isPreview()) {
             return;
         }
-        Element element= iframe.getElement();
+        Element element= view.getIframe().getElement();
         initNativeHandlers(element);
 
         IFrameElement frameElement = IFrameElement.as(element);

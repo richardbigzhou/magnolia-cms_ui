@@ -31,32 +31,21 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.editor.gwt.client;
+package info.magnolia.ui.widget.editor.gwt.client.jsni;
 
-
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.Frame;
-import com.google.gwt.user.client.ui.IsWidget;
+import info.magnolia.ui.widget.editor.gwt.client.VPageEditorView;
 
 /**
- * VPageEditorView.
+ * NativeDomHandler.
  */
-public interface VPageEditorView extends IsWidget {
+abstract public class NativeDomHandler {
 
-    Frame getIframe();
+    public native void reloadIFrame(Element iframeElement) /*-{
+        iframeElement.contentWindow.location.reload(true);
+    }-*/;
 
-    void registerHandlers();
-
-    /**
-     * Listener.
-     */
-    interface Listener {
-        void onFrameLoaded();
-    }
-
-    void setListener(Listener listener);
-
-    void setUrl(String url);
-
-    void reload();
+    public abstract void registerOnReady(Frame frame, VPageEditorView.Listener handler);
 
 }
