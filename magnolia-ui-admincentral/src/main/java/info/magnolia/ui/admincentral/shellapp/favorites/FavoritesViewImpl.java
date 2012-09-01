@@ -36,9 +36,12 @@ package info.magnolia.ui.admincentral.shellapp.favorites;
 import info.magnolia.ui.admincentral.components.SplitFeed;
 import info.magnolia.ui.admincentral.components.SplitFeed.FeedSection;
 
+import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Label;
+
 
 /**
  * Default view implementation for favorites.
@@ -46,74 +49,87 @@ import com.vaadin.ui.Label;
 @SuppressWarnings("serial")
 public class FavoritesViewImpl extends CustomComponent implements FavoritesView {
 
-    private SplitFeed splitPanel = new SplitFeed();
-    
+    private final SplitFeed splitPanel = new SplitFeed();
+
     public FavoritesViewImpl() {
         super();
         setHeight("100%");
         setWidth("900px");
         setCompositionRoot(splitPanel);
+        splitPanel.addStyleName("favorites");
         construct();
     }
 
     private void construct() {
-        final FeedSection newPagesConatiner = splitPanel.getLeftContainer();
-        final FeedSection shortcutContainer = splitPanel.getRightContainer();
-        
-        newPagesConatiner.setTitle("New Pages");
-        shortcutContainer.setTitle("Shortcuts");    
-        
-        newPagesConatiner.addComponent(new FavoriteEntry(FavoriteEntry.EntryType.ET_NEWPAGES));
-        newPagesConatiner.addComponent(new FavoriteEntry(FavoriteEntry.EntryType.ET_NEWPAGES));
-        
-        shortcutContainer.addComponent(new FavoriteEntry(FavoriteEntry.EntryType.ET_SHORTCUTS));
-        shortcutContainer.addComponent(new FavoriteEntry(FavoriteEntry.EntryType.ET_SHORTCUTS));
+        final FeedSection leftSide = splitPanel.getLeftContainer();
+        final FeedSection rightSide = splitPanel.getRightContainer();
+
+        FavoritesSection newPages = new FavoritesSection();
+        newPages.setCaption("New Pages");
+        newPages.addComponent(new FavoriteEntry("Add new product page", "icon-add-item"));
+        newPages.addComponent(new FavoriteEntry("Add new product review", "icon-add-item"));
+
+        FavoritesSection newCampaigns = new FavoritesSection();
+        newCampaigns.setCaption("New Campaigns");
+        newCampaigns.addComponent(new FavoriteEntry("Add a special offer", "icon-add-item"));
+        newCampaigns.addComponent(new FavoriteEntry("Add a landing page", "icon-add-item"));
+        newCampaigns.addComponent(new FavoriteEntry("Edit main landing page", "icon-edit"));
+        newCampaigns.addComponent(new FavoriteEntry("Create a new micro site", "icon-add-item"));
+        newCampaigns.addComponent(new FavoriteEntry("Add a seasonal campaign", "icon-add-item"));
+
+        FavoritesSection assetShortcuts = new FavoritesSection();
+        assetShortcuts.setCaption("Asset Shortcuts");
+        assetShortcuts.addComponent(new FavoriteEntry("Add a product image", "icon-add-item"));
+        assetShortcuts.addComponent(new FavoriteEntry("Upload image(s) to image pool", "icon-assets-app"));
+        assetShortcuts.addComponent(new FavoriteEntry("Upload review video", "icon-assets-app"));
+
+        leftSide.addComponent(newPages);
+        leftSide.addComponent(newCampaigns);
+        rightSide.addComponent(assetShortcuts);
     }
 
     @Override
     public Component asVaadinComponent() {
         return this;
     }
-    
-    private static class FavoriteEntry extends Label {
-        
-        public enum EntryType {
-            ET_NEWPAGES("newpages"),
-            ET_SHORTCUTS("shortcuts");
-            
-            private final String id;
-            
-            private EntryType(final String id) {
-                this.id = id;
-            }
-            
-            public String getId() {
-                return id;
-            }
-        }
-        
-        private EntryType type;
-        
-        public FavoriteEntry(final EntryType type) {
-            super();
-            this.type = type;
-            addStyleName("v-feed-entry");
+    /**
+     * Favorite entry.
+     */
+    public static class FavoriteEntry extends CssLayout {
+
+        private final Label textElement = new Label();
+
+        private final Label iconElement = new Label();
+
+        public FavoriteEntry(final String text, final String icon) {
+            addStyleName("v-favorites-entry");
             setSizeUndefined();
-            setContentMode(Label.CONTENT_XHTML);
-            setValue("Add news article");
+            setText(text);
+            setIcon(icon);
+            iconElement.setContentMode(Label.CONTENT_XHTML);
+            iconElement.setWidth(Sizeable.SIZE_UNDEFINED, 0);
+            iconElement.setStyleName("icon");
+            textElement.setStyleName("text");
+            textElement.setWidth(Sizeable.SIZE_UNDEFINED, 0);
+            addComponent(iconElement);
+            addComponent(textElement);
         }
-        
-        @Override
-        public void setValue(Object newValue) {
-            final StringBuilder sb = new StringBuilder();
-            sb.append("<div class=\"v-entry-content\">");
-            sb.append("<div class=\"v-entry-icon ");
-            sb.append(type.getId());
-            sb.append("\"");
-            sb.append("></div>");
-            sb.append(newValue);
-            sb.append("</div>");
-            super.setValue(sb.toString());
+
+        public void setText(String text) {
+            textElement.setValue(text);
+        }
+
+        public void setIcon(String icon) {
+            iconElement.setValue("<span class=\"" + icon + "\"></span>");
+        }
+    }
+    /**
+     * Favorite section.
+     */
+    public static class FavoritesSection extends CssLayout {
+
+        public FavoritesSection() {
+            addStyleName("favorites-section");
         }
     }
 }
