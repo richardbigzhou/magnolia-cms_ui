@@ -56,12 +56,16 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.HandlerRegistration;
+import com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent;
+import com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
+import com.googlecode.mgwt.ui.client.widget.touch.TouchPanel;
 
 
 /**
@@ -204,7 +208,8 @@ public class VMainLauncher extends FlowPanel {
 
     private final Element divetWrapper = DOM.createDiv();
 
-    private final Element logo = DOM.createImg();
+    private final TouchPanel logo = new TouchPanel();
+    private final Element logoImg = DOM.createImg();
 
     private final Image divet = new Image(VShellImageBundle.BUNDLE.getDivetGreen());
 
@@ -217,7 +222,8 @@ public class VMainLauncher extends FlowPanel {
         this.eventBus = eventBus;
         getElement().setId(ID);
         construct();
-        DOM.sinkEvents(getElement(), Event.TOUCHEVENTS);
+        bindHandlers();
+
     }
 
     private void navigateToShellApp(final ShellAppType type) {
@@ -227,10 +233,16 @@ public class VMainLauncher extends FlowPanel {
 
     private void construct() {
         divetWrapper.setId("divet");
-        logo.setId("logo");
+
+        //logo
+
+        logoImg.setId("logo");
         String baseUrl = GWT.getModuleBaseURL().replace("widgetsets/" + GWT.getModuleName() + "/", "");
-        logo.setAttribute("src", baseUrl + "themes/admincentraltheme/img/logo-magnolia.svg");
-        getElement().appendChild(logo);
+        logoImg.setAttribute("src", baseUrl + "themes/admincentraltheme/img/logo-magnolia.svg");
+
+        logo.getElement().appendChild(logoImg);
+        add(logo);
+
         getElement().appendChild(divetWrapper);
         add(divet, divetWrapper);
         for (final ShellAppType appType : ShellAppType.values()) {
@@ -239,6 +251,29 @@ public class VMainLauncher extends FlowPanel {
             add(w);
         }
         divet.setVisible(false);
+    }
+
+    private void bindHandlers(){
+        DOM.sinkEvents(getElement(), Event.TOUCHEVENTS);
+
+        logo.addTouchStartHandler(new TouchStartHandler() {
+
+            @Override
+            public void onTouchStart(TouchStartEvent event) {
+                emergencyRestartApplication();
+            }
+        });
+
+    }
+
+    /**
+     * Restart the application by appending the &restartApplication querystring to the URL.
+     * This is handy as the application is not totally stable yet.
+     * TODO: Christopher Zimmermann CLZ Developer Preview feature.
+     */
+    private void emergencyRestartApplication(){
+        String newHref = Window.Location.getPath() + "?restartApplication";
+        Window.Location.assign(newHref);
     }
 
     @Override

@@ -30,6 +30,9 @@ Was causing problems with actionbar tablet mode - touch events went right throug
 v2
 */
 
+.v-csslayout-container {
+	overflow: hidden;
+}
 
 .clearfix:before, .clearfix:after { content: ""; display: table; }
 .clearfix:after { clear: both; }

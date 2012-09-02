@@ -250,7 +250,7 @@ public class VMagnoliaTable extends FlowPanel implements Table, ScrollHandler, V
 
     private String[] bodyActionKeys;
 
-    private boolean enableDebug = false;
+    private boolean enableDebug = true;
 
     private static final boolean hasNativeTouchScrolling = BrowserInfo.get().isTouchDevice() && !BrowserInfo.get().requiresTouchScrollDelegate();
 
@@ -1495,7 +1495,8 @@ public class VMagnoliaTable extends FlowPanel implements Table, ScrollHandler, V
     protected void discardRowsOutsideCacheWindow() {
         int firstRowToKeep = (int) (firstRowInViewPort - pageLength * cache_rate);
         int lastRowToKeep = (int) (firstRowInViewPort + pageLength + pageLength * cache_rate);
-        debug("Client side calculated cache rows to keep: " + firstRowToKeep + "-" + lastRowToKeep);
+        
+        debug("Client side calculated cache rows to keep: " + firstRowToKeep + "-" + lastRowToKeep + " Page length: " + pageLength);
 
         if (serverCacheFirst != -1) {
             firstRowToKeep = serverCacheFirst;
@@ -1506,7 +1507,7 @@ public class VMagnoliaTable extends FlowPanel implements Table, ScrollHandler, V
                         + "-" + scrollBody.getLastRendered() + " rendered!");
             }
         }
-        discardRowsOutsideOf(firstRowToKeep, lastRowToKeep);
+        //discardRowsOutsideOf(firstRowToKeep, lastRowToKeep);
 
         scrollBody.fixSpacers();
 
@@ -5809,6 +5810,7 @@ public class VMagnoliaTable extends FlowPanel implements Table, ScrollHandler, V
             rowsAtOnce++;
         }
         if (pageLength != rowsAtOnce) {
+            debug("Page length is now " + rowsAtOnce + " and used to be " + pageLength);
             pageLength = rowsAtOnce;
             client.updateVariable(paintableId, "pagelength", pageLength, false);
 
@@ -6082,6 +6084,7 @@ public class VMagnoliaTable extends FlowPanel implements Table, ScrollHandler, V
         setContainerHeight();
 
         if (initializedAndAttached) {
+            debug("Height: " + height);
             updatePageLength();
         }
         if (!rendering) {
