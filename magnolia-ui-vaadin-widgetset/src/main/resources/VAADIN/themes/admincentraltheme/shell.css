@@ -73,6 +73,7 @@
     position: absolute;
     top: 4px;
     right: 4px;
+    cursor:pointer;
 }
 
 button.action-close {
