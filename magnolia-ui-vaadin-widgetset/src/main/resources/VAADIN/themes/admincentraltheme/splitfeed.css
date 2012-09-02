@@ -10,12 +10,6 @@
 	position: relative;
 }
 
-.v-feed-title-link {
-	position: absolute;
-	top: 30px;
-	right: 18px;
-}
-
 .v-split-feed .v-csslayout-margin-top {
     padding-top: 30px;
 }
@@ -30,15 +24,16 @@
 
 .v-split-feed .v-splitpanel-hsplitter, .v-splitpanel-hsplitter-locked {
     background: #CCCCCC;
-    margin-top: 30px;
+    margin-top: 10px;
     width: 2px;
 }
 
 .v-split-feed .v-feed-title {
-	color: #679600;
-    font-size: 18px;
-    margin-bottom: 24px;
-    font-family: DINWebPro;
+	padding-bottom:8px;
+	color:#679600;
+	font-family:DINWebPro, sans-serif;
+	font-size:18px;
+	font-weight:bold;
 }
 
 .v-feed-entry {
@@ -49,21 +44,5 @@
 	padding-left: 3px;
 	padding-right: 10px;
 	border-bottom: 1px solid #CCCCCC;
-	font-size: 15px; 
-}
-
-.v-feed-entry .v-entry-content > div {
-	float: left;
-}
-
-.v-favorites-column:first-of-type {
-	border-right: 2px solid #CCCCCC;
-    padding-right: 28px;
-    width: 400px;	
-}
-
-.v-split-feed .v-entry-icon {
-    height: 21px;
-    width: 18px;
-    margin-right: 14px;
+	font-size: 15px;
 }
