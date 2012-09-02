@@ -16,3 +16,15 @@
 .color-green {color:#689600;}
 .color-yellow {color:#FFBF28;}
 .color-red {color:#9A3332;}
+
+.view-type-arrow {
+    position: absolute;
+    top: 55px;
+    left: 75px;
+}
+
+.view-type-arrow.tree {left: 75px;}
+
+.view-type-arrow.list {left: 130px;}
+
+.view-type-arrow.thumbs {left: 183px;}

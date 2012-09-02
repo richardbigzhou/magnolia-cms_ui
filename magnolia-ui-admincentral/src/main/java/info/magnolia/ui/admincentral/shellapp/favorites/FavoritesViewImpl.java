@@ -92,7 +92,9 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
     public Component asVaadinComponent() {
         return this;
     }
-
+    /**
+     * Favorite entry.
+     */
     public static class FavoriteEntry extends CssLayout {
 
         private final Label textElement = new Label();
@@ -121,7 +123,9 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
             iconElement.setValue("<span class=\"" + icon + "\"></span>");
         }
     }
-
+    /**
+     * Favorite section.
+     */
     public static class FavoritesSection extends CssLayout {
 
         public FavoritesSection() {

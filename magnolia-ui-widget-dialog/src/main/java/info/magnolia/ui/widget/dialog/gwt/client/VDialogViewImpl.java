@@ -171,9 +171,15 @@ public class VDialogViewImpl extends FlowPanel implements VDialogView {
                     scrollTo(lastShownProblematicField);
                 } else {
                     final List<VMagnoliaTab> tabs = getTabs();
-                    VMagnoliaTab nextTab = tabs.get((tabs.indexOf(activeTab) + 1) % tabs.size());
-                    eventBus.fireEvent(new ActiveTabChangedEvent(nextTab));
-                    jumpToNextError();
+                    int tabIndex = tabs.indexOf(activeTab);
+                    for (int i = 0; i < tabs.size() - 1; ++i) {
+                        final VDialogTab nextTab = (VDialogTab)tabs.get(++tabIndex % tabs.size());
+                        if (nextTab.getProblematicFields().size() > 0) {
+                            eventBus.fireEvent(new ActiveTabChangedEvent(nextTab));
+                            lastShownProblematicField = null;
+                            jumpToNextError();      
+                        }
+                    }
                 }
             }
         }
@@ -337,7 +343,7 @@ public class VDialogViewImpl extends FlowPanel implements VDialogView {
 
     private void scrollTo(final DialogFieldWrapper field) {
         final int top = JQueryWrapper.select(field).position().top();
-        JQueryWrapper.select(getScroller()).animate(300, new AnimationSettings() {
+        JQueryWrapper.select(getScroller()).animate(500, new AnimationSettings() {
             {
                 setProperty("scrollTop", top - 30);
                 addCallback(new JQueryCallback() {
