@@ -40,8 +40,8 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.MetaElement;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.http.client.UrlBuilder;
-import com.google.gwt.i18n.client.Dictionary;
 import com.google.gwt.user.client.Window;
+import info.magnolia.ui.widget.editor.gwt.client.i18n.DummyDictionary;
 
 /**
  * A JSNI wrapper around native javascript functions found in general.js, inline.js and others plus some utilities.
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.Window;
 @Deprecated
 public final class JavascriptUtils {
 
-    private static Dictionary dictionary;
+    private static DummyDictionary dictionary = new DummyDictionary();
 
     private static String windowLocation;
 
@@ -130,14 +130,7 @@ public final class JavascriptUtils {
      * <p><strong>WARNING: this way of exposing i18n messages to GWT is very likely to change in 5.0</strong>
      */
     public static String getI18nMessage(final String key) {
-        try {
-            //return dictionary.get(key);
-            return "dummy";
-
-        } catch(RuntimeException e) {
-            GWT.log("key ["+ key +"] was not found in dictionary", e);
-            return "???" + key + "???";
-        }
+        return dictionary.get(key);
     }
 
     /**

@@ -53,4 +53,9 @@ public class NativeDomHandlerImpl extends NativeDomHandler {
             }
         });
     }
+
+    @Override
+    public void notifyUrlChange() {
+
+    }
 }

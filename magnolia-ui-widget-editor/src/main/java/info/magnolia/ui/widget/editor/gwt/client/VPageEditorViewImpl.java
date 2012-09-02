@@ -102,8 +102,8 @@ public class VPageEditorViewImpl extends Composite implements VPageEditorView {
         else {
             getIframe().setUrl(url);
             this.url = url;
-
         }
+        handler.notifyUrlChange();
     }
 
     @Override

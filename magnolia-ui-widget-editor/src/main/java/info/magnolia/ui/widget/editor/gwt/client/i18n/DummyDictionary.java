@@ -31,22 +31,31 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.editor.gwt.client.jsni;
+package info.magnolia.ui.widget.editor.gwt.client.i18n;
 
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.ui.Frame;
-import info.magnolia.ui.widget.editor.gwt.client.VPageEditorView;
+import java.util.HashMap;
 
 /**
- * NativeDomHandler.
+ * DummyDictionary.
  */
-abstract public class NativeDomHandler {
+public class DummyDictionary {
 
-    public native void reloadIFrame(Element iframeElement) /*-{
-        iframeElement.contentWindow.location.reload(true);
-    }-*/;
+    private static final HashMap<String, String> dictionary = new HashMap<String, String>();
 
-    public abstract void registerOnReady(Frame frame, VPageEditorView.Listener handler);
+    public DummyDictionary() {
+        dictionary.put("buttons.component.new.js", "New Component");
+        dictionary.put("buttons.new.js", "New");
+        dictionary.put("buttons.component.js", "Component");
+        dictionary.put("buttons.add.js", "Add");
 
-    public abstract void notifyUrlChange();
+    }
+
+    public String get(String key) {
+        if (dictionary.containsKey(key)) {
+            return dictionary.get(key);
+        }
+        else {
+            return "Dummy";
+        }
+    }
 }

@@ -95,7 +95,6 @@ public class ReadyStateWatch {
 
         var element = e;
         var handleStateChange = function(){
-            $wnd.alert("statechsangr");
             self.@info.magnolia.ui.widget.editor.gwt.client.jsni.ReadyStateWatch::fireReadyStateChange()();
         };
         if (element.addEventListener) {

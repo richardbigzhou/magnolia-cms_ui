@@ -36,8 +36,8 @@ package info.magnolia.ui.widget.editor.gwt.client.jsni;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.dom.client.LoadEvent;
+import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Frame;
 import info.magnolia.ui.widget.editor.gwt.client.VPageEditorView;
@@ -85,33 +85,22 @@ public class NativeDomHandlerWebkit extends NativeDomHandler {
 
     @Override
     public void registerOnReady(Frame frame, final VPageEditorView.Listener listener) {
-/*
+        frame.addLoadHandler(new LoadHandler() {
+            @Override
+            public void onLoad(LoadEvent event) {
+                timer.cancel();
+                listener.onFrameLoaded();
+            }
+        });
         timer.setIframe(frame);
         timer.setListener(listener);
         timer.scheduleRepeating(100);
-*/
 
-        new ReadyStateWatch(frame).addReadyStateChangeHandler(
-            new ValueChangeHandler<ReadyStateWatch.ReadyState>() {
-
-
-                @Override
-                public void onValueChange(ValueChangeEvent<ReadyStateWatch.ReadyState> event) {
-                    GWT.log(event.getValue().toString());
-                }
-            });
-
-/*        frame.addLoadHandler(new LoadHandler() {
-    @Override
-    public void onLoad(LoadEvent event) {
-        timer.cancel();
-
-        listener.onFrameLoaded();
     }
-});*/
 
-        registerOnUnload(frame.getElement(), timer);
-
+    @Override
+    public void notifyUrlChange() {
+        timer.scheduleRepeating(100);
     }
 
 
@@ -122,11 +111,11 @@ public class NativeDomHandlerWebkit extends NativeDomHandler {
         };
 
 
-        element.addEventListener('unload', poll, false);
+        element.contentWindow.addEventListener('unload', poll, false);
 
     }-*/;
 
-    private static class MyTimer extends Timer {
+    private class MyTimer extends Timer {
 
         public void setIframe(Frame iframe) {
             this.iframe = iframe;
@@ -143,20 +132,26 @@ public class NativeDomHandlerWebkit extends NativeDomHandler {
         @Override
         public void run() {
             GWT.log("timer started");
-            String readystate = iframe.getElement().getPropertyString("readystate");
+            String readyState = getReadyState(iframe.getElement());
 
-
-            String readyState = iframe.getElement().getPropertyString("readyState");
             if (readyState != null && !readyState.isEmpty()) {
                 GWT.log("doc.readyState" + readyState);
             }
-            if (readystate != null && !readystate.isEmpty()) {
-                GWT.log("doc.readystate" + readystate);
-            }
+
             if ("interactive".equals(readyState)) {
-                listener.onFrameLoaded();
                 cancel();
+                registerOnUnload(iframe.getElement(), this);
+                listener.onFrameLoaded();
             }
         }
+
+        public final native String getReadyState(Element element) /*-{
+            if (element.contentWindow != null) {
+                return element.contentWindow.document.readyState;
+            }
+            return '';
+        }-*/;
+
+
     }
 }
