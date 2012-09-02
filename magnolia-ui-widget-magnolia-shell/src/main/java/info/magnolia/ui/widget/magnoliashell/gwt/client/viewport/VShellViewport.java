@@ -71,7 +71,9 @@ import com.vaadin.terminal.gwt.client.UIDL;
  */
 public class VShellViewport extends VPanelWithCurtain implements Container, ContainerResizedListener {
 
-    private static int CURTAIN_FADE_SPEED = 200;
+    private static int CURTAIN_FADE_IN_SPEED = 500;
+
+    private static int CURTAIN_FADE_OUT_SPEED = 400;
 
     public static int Z_INDEX_HI = 300;
 
@@ -233,7 +235,7 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
                 final double initialOpacity = Double.valueOf(jq.css("opacity"));
                 jq.setCss("opacity", "0");
                 showCurtain();
-                jq.animate(CURTAIN_FADE_SPEED, new AnimationSettings() {
+                jq.animate(CURTAIN_FADE_IN_SPEED, new AnimationSettings() {
 
                     {
                         setProperty("opacity", initialOpacity);
@@ -255,7 +257,7 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
                     final double initialOpacity = Double.valueOf(jq.css("opacity"));
                     jq.setCss("opacity", "0");
                     showCurtain();
-                    jq.animate(CURTAIN_FADE_SPEED, new AnimationSettings() {
+                    jq.animate(CURTAIN_FADE_IN_SPEED, new AnimationSettings() {
 
                         {
                             setProperty("opacity", initialOpacity);
@@ -286,11 +288,11 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
                 if (viewportHideAnimationDelegate != AnimationDelegate.FADING_DELEGATE) {
                     getModalityCurtain().getStyle().setZIndex(Z_INDEX_HI + 9);
                 }
-                JQueryCallback callback = new JQueryCallback() {
+                final JQueryCallback callback = new JQueryCallback() {
 
                     @Override
                     public void execute(JQueryWrapper query) {
-                        JQueryWrapper.select(getModalityCurtain()).animate(CURTAIN_FADE_SPEED, new AnimationSettings() {
+                        JQueryWrapper.select(getModalityCurtain()).animate(CURTAIN_FADE_OUT_SPEED, new AnimationSettings() {
 
                             {
                                 setProperty("opacity", "0");
@@ -306,7 +308,13 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
                     }
                 };
                 if (viewportHideAnimationDelegate == AnimationDelegate.SLIDING_DELEGATE) {
-                    callbacks.add(callback);
+                    JQueryWrapper.select(getModalityCurtain()).animate(200, new AnimationSettings() {
+
+                        {
+                            setProperty("text-indent", "-200px");
+                            setCallbacks(Callbacks.create(callback));
+                        }
+                    });
                 } else {
                     callback.execute(JQueryWrapper.select(getModalityCurtain()));
                 }
