@@ -17,9 +17,12 @@
 
 .v-dialog-layout .v-dialog-field {
 	display: inline-block;
-	width: 425px !important;
 	vertical-align: middle;
 	height: auto !important;
+}
+
+.v-dialog-layout .upload-field {
+	width: 425px !important;
 }
 
 .dialog-header,.dialog-footer,.dialog-description,.dialog-error {
