@@ -64,6 +64,11 @@
 	width: 100px !important;
 	margin-left: 5px !important;
 }
+.v-button.cancel {
+	width: 100px !important;
+	margin-top: 10px !important;
+
+}
 .initial .v-button {
 	margin-top: 45px;
 	line-height: inherit;
@@ -80,7 +85,6 @@
 	margin-right: 20px;
 	float: right;
 }
-
 
 .v-ddwrapper-over {
 	background-color: #C1D8DF;
