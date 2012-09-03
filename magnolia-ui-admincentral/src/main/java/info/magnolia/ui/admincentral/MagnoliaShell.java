@@ -53,6 +53,7 @@ import info.magnolia.ui.framework.shell.FragmentChangedHandler;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.widget.dialog.Dialog;
 import info.magnolia.ui.widget.magnoliashell.BaseMagnoliaShell;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
 import info.magnolia.ui.widget.magnoliashell.viewport.ShellViewport;
 
@@ -83,7 +84,7 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
     private final Provider<ShellAppController> shellAppControllerProvider;
 
     private final MessagesManager messagesManager;
-    
+
     @Inject
     public MagnoliaShell(@Named("admincentral") EventBus admincentralEventBus, Provider<ShellAppController> shellAppControllerProvider, AppController appController, MessagesManager messagesManager, final Provider<LocationController> locationControllerProvider) {
         super();
@@ -97,7 +98,7 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
             public void onAppFocused(AppLifecycleEvent event) {
                 setActiveViewport(getAppViewport());
             }
-            
+
             @Override
             public void onAppStarted(AppLifecycleEvent event) {
                 MagnoliaShell.this.onAppStarted(event.getAppDescriptor().getName());
@@ -108,7 +109,7 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
                 MagnoliaShell.this.onAppStopped(event.getAppDescriptor().getName());
             }
         });
-        
+
         proxy.register("startApp", new Method() {
             @Override
             public void invoke(String methodName, Object[] params) {
@@ -118,7 +119,7 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
                 locationControllerProvider.get().goTo(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appName, token));
             }
         });
-        
+
         this.admincentralEventBus.addHandler(MessageEvent.class, this);
     }
 
@@ -196,7 +197,7 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
         super.removeMessage(messageId);
         messagesManager.clearMessage(MgnlContext.getUser().getName(), messageId);
     }
-    
+
     public void openDialog(Dialog component) {
         addDialog(component.asVaadinComponent());
     }
@@ -224,6 +225,12 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
 
     @Override
     public void messageCleared(MessageEvent event) {
+    }
+
+    public void setIndicationOnPulseToNumberOfUnclearedMessagesForCurrentUser(){
+        setIndication(
+                VMainLauncher.ShellAppType.PULSE,
+                messagesManager.getNumberOfUnclearedMessagesForUser(MgnlContext.getUser().getName()));
     }
 
     @Override

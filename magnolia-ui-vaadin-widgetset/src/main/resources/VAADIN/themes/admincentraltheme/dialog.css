@@ -17,8 +17,9 @@
 
 .v-dialog-layout .v-dialog-field {
 	display: inline-block;
-	width: 425px;
+	width: 425px !important;
 	vertical-align: middle;
+	height: auto !important;
 }
 
 .dialog-header,.dialog-footer,.dialog-description,.dialog-error {
@@ -290,4 +291,8 @@ fieldset {
 }
 .content-view-field-wrapper .v-dialog-field-label {
 	display: none;
+}
+
+.v-dialog-field.v-richtextarea {
+	width: 438px !important;
 }
