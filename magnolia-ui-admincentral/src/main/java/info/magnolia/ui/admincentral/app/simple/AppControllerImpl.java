@@ -413,6 +413,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             if (subAppContext != null) {
                 subAppContexts.remove(subAppContext.subAppId);
             }
+            onActiveTabSet(this.appFrameView.getActiveTab());
         }
 
         public String mayStop() {

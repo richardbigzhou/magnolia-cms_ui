@@ -111,7 +111,7 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements VMagnoliaTab
                 activeTab = tab;
                 tab.getElement().getStyle().setVisibility(Visibility.VISIBLE);
             }
-        }.schedule(300);
+        }.schedule(500);
     }
 
     @Override

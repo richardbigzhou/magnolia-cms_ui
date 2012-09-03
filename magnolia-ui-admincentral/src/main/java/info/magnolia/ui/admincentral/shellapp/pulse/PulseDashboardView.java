@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,33 +31,11 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.editor.gwt.client;
-
-
-import com.google.gwt.user.client.ui.Frame;
-import com.google.gwt.user.client.ui.IsWidget;
+package info.magnolia.ui.admincentral.shellapp.pulse;
 
 /**
- * VPageEditorView.
+ * Dashboard Pulse tab UI.
  */
-public interface VPageEditorView extends IsWidget {
-
-    Frame getIframe();
-
-    /**
-     * Listener.
-     */
-    interface Listener {
-        void onFrameLoaded(Frame frame);
-    }
-
-    void setListener(Listener listener);
-
-    void setUrl(String url);
-
-    void reload();
-
-    boolean isScroll();
-    void resetScrollTop();
+public interface PulseDashboardView extends PulseSubView {
 
 }

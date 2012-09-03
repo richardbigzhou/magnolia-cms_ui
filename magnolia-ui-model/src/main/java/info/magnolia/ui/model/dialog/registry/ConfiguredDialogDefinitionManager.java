@@ -119,10 +119,13 @@ public class ConfiguredDialogDefinitionManager extends ModuleConfigurationObserv
 
         try {
             return new ConfiguredDialogDefinitionProvider(id, dialogNode);
+        } catch (IllegalArgumentException e) {
+            // TODO dlipp - suppress stacktrace as long as SCRUM-1749 is not fixed
+            log.error("Unable to create provider for dialog [" + id + "]: " + e);
         } catch (Exception e) {
             log.error("Unable to create provider for dialog [" + id + "]", e);
-            return null;
         }
+        return null;
     }
 
     protected String createId(Node configNode) throws RepositoryException {

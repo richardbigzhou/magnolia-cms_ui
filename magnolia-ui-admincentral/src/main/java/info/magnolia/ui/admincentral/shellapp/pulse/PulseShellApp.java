@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse;
 
+
 import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.framework.app.ShellApp;
 import info.magnolia.ui.framework.app.ShellAppContext;
@@ -50,7 +51,7 @@ import javax.inject.Inject;
  * Pulse shell app.
  */
 public class PulseShellApp implements ShellApp, PulseView.Presenter {
-    
+
     private PulseView pulseView;
 
     private ShellAppContext context;
@@ -60,12 +61,24 @@ public class PulseShellApp implements ShellApp, PulseView.Presenter {
     public PulseShellApp(PulseView pulseView, MagnoliaShell shell) {
         this.pulseView = pulseView;
         this.shell = shell;
+
+
+
+
+    /*    shell.setIndication(
+                VMainLauncher.ShellAppType.PULSE,
+                messagesManager.getNumberOfUnclearedMessagesForUser(MgnlContext.getUser().getName()));
+   */
     }
 
     @Override
     public ShellView start(ShellAppContext context) {
         this.context = context;
         pulseView.setPresenter(this);
+
+        //Causes a Juice error - probably the messagesManager is not ready yet or something.
+        //shell.setIndicationOnPulseToNumberOfUnclearedMessagesForCurrentUser();
+
         return pulseView;
     }
 
