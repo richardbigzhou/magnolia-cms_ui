@@ -102,11 +102,18 @@ public class ThumbnailField extends CustomField{
                 try {
                     Node parentNode = MgnlContext.getJCRSession(workspace).getNode(event.getProperty().getValue().toString());
                     String identifier = parentNode.getIdentifier();
+
                     if(!currentIdentifier.equals(identifier)) {
+                        // Set Text info
+                        label.setValue(createFieldDetail(parentNode));
+                        // Set Thumbnail
                         String path = imageThumbnailProvider.getPath(identifier, workspace, width, height);
                         layout.removeComponent(embedded);
-                        embedded = new Embedded("", new ExternalResource(path));
-                        label.setValue(createFieldDetail(parentNode));
+                        if(path != null) {
+                            embedded = new Embedded("", new ExternalResource(path));
+                        } else {
+                            embedded = new Embedded(null);
+                        }
                         layout.addComponent(embedded);
                     }
                 } catch (RepositoryException e) {
