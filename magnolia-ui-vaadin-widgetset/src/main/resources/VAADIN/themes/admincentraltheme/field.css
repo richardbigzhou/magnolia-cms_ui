@@ -1,12 +1,89 @@
-
-.upload-start {
-    background-color: #B8B8B8;
-}
-
-.upload-finish {
+.upload {
     background-color: #E6E6E6;
+    height: 118px !important;
+	width: 400px !important;
+	border: 1px solid #999;
+	padding-top: 18px;
+	padding-bottom: 18px;
+	padding-left: 10px;
+	padding-right: 10px;
+	border-radius: 0px;
+	-webkit-border-radius: 0px;
+	-moz-border-radius: 0px;
 }
 
-.upload-initial {
-    background-color: #F0F0F0;
+.start {
+	height: 118px !important;
+}
+
+.finish {
+	height: 188px !important;
+}
+
+.initial {
+	height: 118px !important;
+}
+
+.file-details {
+	float: left;
+	margin-left: 2px;
+}
+
+.image {
+	position: absolute;
+	right: 10px;
+	top: 35px;
+}
+
+.buttons {
+	margin-top: 30px;
+	padding: 0;
+	float: left;
+}
+
+.v-button {
+	font-family: DINWebPro;
+	font-size: 12px;
+	font-weight: bold;
+	background: none repeat scroll 0px 0px #666 !important;
+	border: none;
+	color: #FFF;
+	cursor: pointer;
+	padding: 4px 12px;
+	text-transform: uppercase;
+	text-shadow:none;
+	border-radius: 0px;
+	-webkit-border-radius: 0px;
+	-moz-border-radius: 0px;
+	width: 160px !important;
+}
+.buttons .v-button .v-button-wrap {
+	background:none;
+}
+.v-button.delete {
+	width: 100px !important;
+	margin-left: 5px !important;
+}
+.initial .v-button {
+	margin-top: 45px;
+	line-height: inherit;
+}
+.initial .v-button .v-button-wrap {
+	background:none;
+}
+.buttons .v-button .v-button-caption {
+	line-height: inherit;
+}
+.upload-text {
+	width: auto !important;
+	margin-top: -25px;
+	margin-right: 20px;
+	float: right;
+}
+
+
+.v-ddwrapper-over {
+	background-color: #C1D8DF;
+	border: 1px solid: #4B8E9E;
+}
 }
