@@ -183,7 +183,7 @@ public class UploadImageField extends AbstractUploadFileField {
         super.refreshOnProgressUploadLayout(readBytes, contentLength);
         //JUST TO MAKE THE PROGRESS BAR VISIBLE
         try {
-            Thread.sleep(50);
+            Thread.sleep(10);
         }
         catch (InterruptedException e) {
             log.error("",e);
