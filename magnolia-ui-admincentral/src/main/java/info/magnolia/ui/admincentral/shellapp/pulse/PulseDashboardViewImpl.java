@@ -111,7 +111,7 @@ public class PulseDashboardViewImpl extends CustomComponent implements PulseDash
             "Peter Twist has rejected your changes to page ",
             Page.FITNESS,
             cal.getTime(),
-            "Erich, it needs to be a bit more to the point..."));
+            "It needs to be a bit more to the point..."));
 
         cal.add(Calendar.MINUTE, -90);
         entries.add(new DashboardEntry(Icon.WARNING,
@@ -131,7 +131,7 @@ public class PulseDashboardViewImpl extends CustomComponent implements PulseDash
             "Peter Twist has rejected your changes to page ",
             Page.MORE,
             cal.getTime(),
-            "Erich, it needs to be a bit more to the point..."));
+            "Check the typos :)"));
 
         return entries;
     }
@@ -183,6 +183,7 @@ public class PulseDashboardViewImpl extends CustomComponent implements PulseDash
 
         public DashboardSection() {
             addStyleName("pulse-dashboard-section");
+            setWidth(100, Sizeable.UNITS_PERCENTAGE);
         }
     }
 
@@ -207,21 +208,25 @@ public class PulseDashboardViewImpl extends CustomComponent implements PulseDash
 
         public DashboardEntry(final Icon icon, final String text, final Page page, final Date date) {
             addStyleName("v-dashboard-entry");
-            setSizeUndefined();
+            setWidth(100, Sizeable.UNITS_PERCENTAGE);
+            setMargin(true, false, true, false);
+            // setSpacing(true);
             iconElement.setContentMode(Label.CONTENT_XHTML);
             iconElement.setWidth(Sizeable.SIZE_UNDEFINED, 0);
             iconElement.setStyleName("icon");
             textElement.setContentMode(Label.CONTENT_XHTML);
             textElement.setStyleName("text");
             commentElement.setStyleName("comment");
-            commentElement.setWidth(48, Sizeable.UNITS_PERCENTAGE);
             commentElement.setContentMode(Label.CONTENT_XHTML);
             dateElement.setStyleName("date");
             wrapper.addStyleName("content");
+            wrapper.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+            wrapper.setMargin(false, false, false, true);
             wrapper.addComponent(textElement);
             wrapper.addComponent(dateElement);
             addComponent(iconElement);
             addComponent(wrapper);
+            // setExpandRatio(wrapper, 1.0f);
 
             this.date = date;
             setIcon(icon);

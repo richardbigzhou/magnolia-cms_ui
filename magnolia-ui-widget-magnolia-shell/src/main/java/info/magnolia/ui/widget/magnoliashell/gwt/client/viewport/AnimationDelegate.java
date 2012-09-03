@@ -48,7 +48,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public interface AnimationDelegate {
 
-    final static int FADE_SPEED = 400;
+    final static int FADE_SPEED = 600;
 
     final static int SLIDE_IN_SPEED = 600;
 

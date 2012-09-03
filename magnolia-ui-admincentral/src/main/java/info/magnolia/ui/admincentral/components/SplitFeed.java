@@ -106,6 +106,7 @@ public class SplitFeed extends CustomComponent {
 
         public FeedSection() {
             super();
+            setSizeFull();
             addStyleName("v-feed-section");
             link.setStyleName(BaseTheme.BUTTON_LINK);
             link.addStyleName("icon-rssfeed");
