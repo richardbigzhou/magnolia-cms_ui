@@ -160,8 +160,6 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
         this.shell = shell;
         setStorageMode();
         createUpload();
-        super.setWidth("460px");
-        super.setHeight("200px");
     }
 
 
