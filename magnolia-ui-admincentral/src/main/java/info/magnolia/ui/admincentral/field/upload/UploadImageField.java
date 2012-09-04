@@ -89,6 +89,10 @@ public class UploadImageField extends AbstractUploadFileField {
         setRootLayout(createDropZone(layout));
         setCompositionRoot(getRootLayout());
 
+        addStyleName("upload-image-field");
+        addStyleName("no-horizontal-drag-hints");
+        addStyleName("no-vertical-drag-hints");
+
         //Initialize a default Progress Indicator
         createProgressIndicator();
         //Create cancel Button
@@ -115,8 +119,6 @@ public class UploadImageField extends AbstractUploadFileField {
             setLastUploadData(item);
         }
         updateDisplay();
-        getParent().addStyleName("no-horizontal-drag-hints");
-        getParent().addStyleName("no-vertical-drag-hints");
     }
 
     /**

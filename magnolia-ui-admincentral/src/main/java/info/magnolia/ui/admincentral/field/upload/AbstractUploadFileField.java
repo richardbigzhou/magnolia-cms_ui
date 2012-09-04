@@ -69,6 +69,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.DragAndDropWrapper;
 import com.vaadin.ui.DragAndDropWrapper.WrapperTransferable;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Html5File;
 import com.vaadin.ui.Label;
@@ -159,6 +160,8 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
         this.shell = shell;
         setStorageMode();
         createUpload();
+        super.setWidth("460px");
+        super.setHeight("200px");
     }
 
 
@@ -288,8 +291,6 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
     public AcceptCriterion getAcceptCriterion() {
         return AcceptAll.get();
     }
-
-
 
     /**
      * Create the Upload component.

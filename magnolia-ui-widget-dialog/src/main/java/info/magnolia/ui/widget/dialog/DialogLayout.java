@@ -76,10 +76,6 @@ public class DialogLayout extends AbstractLayout {
             final Component c = it.next();
             target.startTag("component");
             c.addStyleName("v-dialog-field");
-            // TODO 20120903 mgeljic: should be cleaned-up
-            if (c.getClass().getSimpleName().equals("UploadImageField")) {
-                c.addStyleName("upload-field");
-            }
             c.setSizeUndefined();
             c.paint(target);
             if (helpDescriptions.containsKey(c)) {
