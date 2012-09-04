@@ -1,12 +1,107 @@
-
-.upload-start {
-    background-color: #B8B8B8;
+.upload-image-field {
+	width: 475px !important;
+	height: auto !important;
 }
 
-.upload-finish {
-    background-color: #E6E6E6;
+.upload-image-field .v-csslayout-container {
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 5px;
+	padding-right: 5px;
 }
 
-.upload-initial {
-    background-color: #F0F0F0;
+.upload {
+	background-color: #E6E6E6;
+	height: 118px !important;
+	width: 463px !important;
+	border: 1px solid #999;
+	border-radius: 0px;
+	-webkit-border-radius: 0px;
+	-moz-border-radius: 0px;
+}
+
+.start {
+	height: 118px !important;
+}
+
+.finish {
+	height: 188px !important;
+}
+
+.initial {
+	height: 118px !important;
+}
+
+.file-details {
+	float: left;
+	margin-left: 2px;
+}
+
+.image {
+	position: absolute;
+	right: 10px;
+	top: 20px;
+}
+
+.buttons {
+	top: 80px;
+	padding: 0;
+	position: absolute;
+}
+
+.v-button {
+	font-family: DINWebPro;
+	font-size: 12px;
+	font-weight: bold;
+	background: none repeat scroll 0px 0px #666 !important;
+	border: none;
+	color: #FFF;
+	cursor: pointer;
+	padding: 4px 12px;
+	text-transform: uppercase;
+	text-shadow: none;
+	border-radius: 0px;
+	-webkit-border-radius: 0px;
+	-moz-border-radius: 0px;
+	width: 160px !important;
+}
+
+.buttons .v-button .v-button-wrap {
+	background: none;
+}
+
+.v-button.delete {
+	width: 100px !important;
+	margin-left: 5px !important;
+}
+
+.initial .v-button.cancel {
+	width: 100px !important;
+	margin-top: 2px !important;
+}
+
+.initial .v-button {
+	margin-top: 35px;
+	line-height: inherit;
+}
+
+.initial .v-button .v-button-wrap {
+	background: none;
+}
+
+.buttons .v-button .v-button-caption {
+	line-height: inherit;
+}
+
+.upload-text {
+	width: auto !important;
+	margin-top: -25px;
+	margin-right: 20px;
+	float: right;
+}
+
+.v-ddwrapper-over {
+	background-color: #C1D8DF;
+	border: 1px solid:  #4B8E9E;
+}
 }

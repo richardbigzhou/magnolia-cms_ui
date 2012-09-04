@@ -57,4 +57,7 @@ public interface VPageEditorView extends IsWidget {
 
     void reload();
 
+    boolean isScroll();
+    void resetScrollTop();
+
 }

@@ -57,8 +57,6 @@ import com.vaadin.ui.Field;
  */
 public abstract class AbstractFieldBuilder<D extends FieldDefinition> extends AbstractDialogItem implements FieldBuilder {
 
-    public static final String FIELD_STYLE_NAME = "textfield";
-
     protected Item item;
     protected Field field;
     protected D definition;
@@ -79,9 +77,6 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition> extends Ab
             // Get and set the DataSource property
             Property property = getOrCreateProperty();
             setPropertyDataSource(property);
-
-            // Set style
-            this.field.setStyleName(getStyleName());
 
             //Set label
             this.field.setCaption(getMessage(getFieldDefinition().getLabel()) + (getFieldDefinition().isRequired() ? "<span class=\"requiredfield\">*</span>" : ""));
@@ -118,7 +113,7 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition> extends Ab
     }
 
     protected String getStyleName() {
-        return this.styleName != null ? this.styleName : FIELD_STYLE_NAME;
+        return this.styleName != null ? this.styleName : "";
     }
 
     /**

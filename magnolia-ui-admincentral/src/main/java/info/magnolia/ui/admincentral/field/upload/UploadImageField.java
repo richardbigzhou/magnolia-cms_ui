@@ -47,10 +47,10 @@ import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Property;
 import com.vaadin.terminal.Resource;
+import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.StreamResource;
-import com.vaadin.ui.Alignment;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Embedded;
-import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Upload.StartedEvent;
@@ -69,10 +69,10 @@ import com.vaadin.ui.Upload.StartedEvent;
 public class UploadImageField extends AbstractUploadFileField {
 
     private static final Logger log = LoggerFactory.getLogger(UploadImageField.class);
-    private static final String DEFAULT_UPLOAD_INITIAL_BUTTON_CAPTION = "Choose an image";
-    private static final String DEFAULT_UPLOAD_ANOTHERL_BUTTON_CAPTION = "Choose another image";
-    private static final String DEFAULT_DROP_ZONE_IMAGE_CAPTION = "Drag and Drop an Image";
-    private GridLayout layout;
+    private static final String DEFAULT_UPLOAD_INITIAL_BUTTON_CAPTION = "Select an image";
+    private static final String DEFAULT_UPLOAD_ANOTHERL_BUTTON_CAPTION = "Choose new";
+    private static final String DEFAULT_DROP_ZONE_IMAGE_CAPTION = "or drag an image into this area";
+    private CssLayout layout;
     private JcrItemNodeAdapter item;
     private long imageWidth;
     private long imageHeight;
@@ -83,12 +83,15 @@ public class UploadImageField extends AbstractUploadFileField {
     public UploadImageField(JcrItemNodeAdapter item,  Shell shell) {
         super(item, shell);
         this.item = item;
-        layout = new GridLayout(2,3);
-        layout.setSizeFull();
-        layout.setStyleName("v-gridlayout-spacing-on");
+        layout = new CssLayout();
+        layout.setSizeUndefined();
         //Define the GridLayout as the whole drop zone and as root element.
         setRootLayout(createDropZone(layout));
         setCompositionRoot(getRootLayout());
+
+        addStyleName("upload-image-field");
+        addStyleName("no-horizontal-drag-hints");
+        addStyleName("no-vertical-drag-hints");
 
         //Initialize a default Progress Indicator
         createProgressIndicator();
@@ -168,14 +171,13 @@ public class UploadImageField extends AbstractUploadFileField {
     protected void buildDefaultUploadLayout() {
         layout.removeAllComponents();
         setUploadButtonCaption(DEFAULT_UPLOAD_INITIAL_BUTTON_CAPTION);
-        layout.addComponent(getDefaultComponent(DefaultComponent.UPLOAD),0,1);
+        layout.addComponent(getDefaultComponent(DefaultComponent.UPLOAD));
         Label uploadText = new Label(DEFAULT_DROP_ZONE_IMAGE_CAPTION);
-        layout.addComponent(uploadText,1,1);
-        //define alignement
-        layout.setComponentAlignment(getDefaultComponent(DefaultComponent.UPLOAD), Alignment.MIDDLE_CENTER);
-        layout.setComponentAlignment(uploadText, Alignment.MIDDLE_CENTER);
-        //set Color
-        getRootLayout().setStyleName("upload-initial");
+        uploadText.addStyleName("upload-text");
+        layout.addComponent(uploadText);
+        getRootLayout().removeStyleName("finish");
+        getRootLayout().addStyleName("upload");
+        getRootLayout().addStyleName("initial");
     }
 
     @Override
@@ -183,7 +185,7 @@ public class UploadImageField extends AbstractUploadFileField {
         super.refreshOnProgressUploadLayout(readBytes, contentLength);
         //JUST TO MAKE THE PROGRESS BAR VISIBLE
         try {
-            Thread.sleep(5);
+            Thread.sleep(10);
         }
         catch (InterruptedException e) {
             log.error("",e);
@@ -200,10 +202,12 @@ public class UploadImageField extends AbstractUploadFileField {
         if (info) {
             Label detail = (Label)getDefaultComponent(DefaultComponent.FILE_DETAIL);
             detail.setValue(getDisplayDetails());
-            layout.addComponent(detail,0,0,0,1);
+            layout.addComponent(detail);
         }
         // Action Button. Default is always Upload
         HorizontalLayout actionLayout = new HorizontalLayout();
+        actionLayout.setSizeUndefined();
+        actionLayout.addStyleName("buttons");
 
         //Change the Label of the Upload Button
         setUploadButtonCaption(DEFAULT_UPLOAD_ANOTHERL_BUTTON_CAPTION);
@@ -212,16 +216,18 @@ public class UploadImageField extends AbstractUploadFileField {
         if(item.getParent() != null && fileDeletion) {
             actionLayout.addComponent(getDefaultComponent(DefaultComponent.DELETE_BUTTON));
         }
-        layout.addComponent(actionLayout,0,2);
+        layout.addComponent(actionLayout);
 
         //Create preview Image
         if(preview && getLastBytesFile() != null) {
             Embedded preview = createPreview();
-            layout.addComponent(preview,1,0,1,2);
-            layout.setComponentAlignment(preview, Alignment.MIDDLE_CENTER);
+            layout.addComponent(preview);
         }
         //set Color
-        getRootLayout().setStyleName("upload-finish");
+        getRootLayout().addStyleName("upload");
+        getRootLayout().removeStyleName("start");
+        getRootLayout().removeStyleName("initial");
+        getRootLayout().addStyleName("finish");
     }
 
     @Override
@@ -230,14 +236,15 @@ public class UploadImageField extends AbstractUploadFileField {
         layout.removeAllComponents();
         // Add Progress Bar
         if(progressInfo) {
-            layout.addComponent(getDefaultComponent(DefaultComponent.PROGRESS_BAR),0,1);
+            layout.addComponent(getDefaultComponent(DefaultComponent.PROGRESS_BAR));
         }
         // Add Cancel Button
-        layout.addComponent(getDefaultComponent(DefaultComponent.CANCEL_BUTTON),1,1);
-        // Set Alignment
-        layout.setComponentAlignment(getDefaultComponent(DefaultComponent.CANCEL_BUTTON), Alignment.MIDDLE_RIGHT);
-        //set Color
-        getRootLayout().setStyleName("upload-start");
+        layout.addComponent(getDefaultComponent(DefaultComponent.CANCEL_BUTTON));
+
+        getRootLayout().removeStyleName("finish");
+        getRootLayout().addStyleName("upload");
+        getRootLayout().addStyleName("initial");
+        getRootLayout().addStyleName("start");
     }
 
 
@@ -246,11 +253,10 @@ public class UploadImageField extends AbstractUploadFileField {
      */
     @Override
     public Embedded createPreview() {
-        Embedded embedded = null;
         ImageSize scaledImageSize;
         scaledImageSize = createImageSize().scaleToFitIfLarger(150, 150);
 
-        //Create ressource
+        //Create resource
         final byte[] pngData = (byte[]) getLastBytesFile();
         Resource imageResource = new StreamResource(
             new StreamResource.StreamSource() {
@@ -265,11 +271,12 @@ public class UploadImageField extends AbstractUploadFileField {
             }
         };
 
-        embedded = new Embedded("", imageResource);
-        embedded.setWidth(scaledImageSize.getWidth() + "px");
-        embedded.setHeight(scaledImageSize.getHeight() + "px");
+        Embedded embedded = new Embedded(null, imageResource);
+        embedded.setType(Embedded.TYPE_IMAGE);
+        embedded.setWidth(scaledImageSize.getWidth(), Sizeable.UNITS_PIXELS);
+        embedded.setHeight(scaledImageSize.getHeight(), Sizeable.UNITS_PIXELS);
+        embedded.addStyleName("image");
 
-        getDefaultComponents().remove(DefaultComponent.PREVIEW);
         getDefaultComponents().put(DefaultComponent.PREVIEW, embedded);
 
         return embedded;

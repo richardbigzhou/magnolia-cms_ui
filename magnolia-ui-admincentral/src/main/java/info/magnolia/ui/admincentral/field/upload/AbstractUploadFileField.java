@@ -289,8 +289,6 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
         return AcceptAll.get();
     }
 
-
-
     /**
      * Create the Upload component.
      */
@@ -319,7 +317,6 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
     public DragAndDropWrapper createDropZone(Component c) {
         dropZone = new DragAndDropWrapper(c);
         dropZone.setDropHandler(this);
-        dropZone.setStyleName("v-multifileupload-dropzone");
         defaultComponent.put(DefaultComponent.DROP_ZONE, this.dropZone);
         return this.dropZone;
     }
@@ -331,13 +328,14 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
         this.deleteButton = new Button(DEFAULT_DELETE_BUTTON_CAPTION);
         this.deleteButton.addListener(new Button.ClickListener() {
             @Override
-            public void buttonClick(ClickEvent arg0) {
+            public void buttonClick(ClickEvent event) {
                 //Remove link between item and parent. In this case the child File Item will not be persisted.
                 item.getParent().removeChild(item);
                 clearLastUploadDatas();
                 updateDisplay();
             }
         });
+        this.deleteButton.addStyleName("delete");
         defaultComponent.put(DefaultComponent.DELETE_BUTTON, this.deleteButton);
         return this.deleteButton;
     }
@@ -349,13 +347,13 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
         this.cancelButton = new Button(DEFAULT_CANCEL_BUTTON_CAPTION);
         this.cancelButton.addListener(new Button.ClickListener() {
             @Override
-            public void buttonClick(ClickEvent arg0) {
+            public void buttonClick(ClickEvent event) {
                 upload.interruptUpload();
                 // Also inform DragAndDrop
                 setDragAndDropUploadInterrupted(true);
             }
         });
-        this.cancelButton.setStyleName("small");
+        this.cancelButton.addStyleName("cancel");
         defaultComponent.put(DefaultComponent.CANCEL_BUTTON, this.cancelButton);
         return this.cancelButton;
     }
@@ -365,6 +363,8 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
      */
     public Label createFileDetail() {
         this.fileDetail = new Label("", Label.CONTENT_XHTML);
+        this.fileDetail.setSizeUndefined();
+        this.fileDetail.addStyleName("file-details");
         defaultComponent.put(DefaultComponent.FILE_DETAIL, this.fileDetail);
         return this.fileDetail;
     }
@@ -410,7 +410,7 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
     public void uploadFailed(FailedEvent event) {
         //TODO Inform the end user.
         updateDisplay();
-        log.info("Upload Faild for file: "+event.getFilename());
+        log.info("Upload Faild for file {} ", event.getFilename());
     }
 
     /**
