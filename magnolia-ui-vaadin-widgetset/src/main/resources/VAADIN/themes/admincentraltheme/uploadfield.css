@@ -1,5 +1,5 @@
 .upload-image-field {
-	width: 475px !important;
+	width: 476px !important;
 	height: auto !important;
 }
 
@@ -9,11 +9,19 @@
 	padding-left: 5px;
 	padding-right: 5px;
 }
+.upload-image-field  .v-ddwrapper {
+	padding:0;
+}
+
+.upload-image-field  .v-ddwrapper.v-ddwrapper-over {
+	background-color: #C1D8DF !important;
+	border: 1px solid #4B8E9E !important;
+}
 
 .upload {
 	background-color: #E6E6E6;
 	height: 118px !important;
-	width: 463px !important;
+	width: 474px !important;
 	border: 1px solid #999;
 	border-radius: 0px;
 	-webkit-border-radius: 0px;
@@ -96,12 +104,7 @@
 .upload-text {
 	width: auto !important;
 	margin-top: -25px;
-	margin-right: 20px;
+	margin-right: 65px;
 	float: right;
 }
 
-.v-ddwrapper-over {
-	background-color: #C1D8DF;
-	border: 1px solid:  #4B8E9E;
-}
-}
