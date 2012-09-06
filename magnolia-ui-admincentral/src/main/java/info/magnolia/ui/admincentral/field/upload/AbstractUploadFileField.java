@@ -222,6 +222,9 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
     public void drop(DragAndDropEvent event) {
         DragAndDropWrapper.WrapperTransferable transferable = (WrapperTransferable) event.getTransferable();
         Html5File[] files = transferable.getFiles();
+        if(files == null) {
+            return;
+        }
         for (final Html5File html5File : files) {
             html5File.setStreamVariable(new StreamVariable() {
 
