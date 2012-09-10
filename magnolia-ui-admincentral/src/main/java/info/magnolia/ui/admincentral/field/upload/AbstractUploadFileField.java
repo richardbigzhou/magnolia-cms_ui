@@ -86,26 +86,28 @@ import com.vaadin.ui.Upload.StartedListener;
 /**
  * Main implementation of the UploadFile field.
  * This implementation used some features of {@link org.vaadin.easyuploads.UploadField} and associated classes.
- *
+ *<p>
  * This class handle Upload features (Open file chooser/drag and drop) and components (progress bar, cancel/delete button...),
  * and expose functions that allows to customize the 3 main upload states:
- *   on {@link StartedEvent}:   buildStartUploadLayout() is called and allows to initialize the upload progress view.
- *   on {@link FinishedEvent}:  buildFinishUploadLayout() is used to initialize the success Upload view (preview image, File summary..)
- *   on Initialization, implement abstract buildDefaultUploadLayout() to initialize the initial Upload view (Upload Button...)
- *
+ * <ul>
+ *   <li>on {@link StartedEvent}:   buildStartUploadLayout() is called and allows to initialize the upload progress view.
+ *   <li>on {@link FinishedEvent}:  buildFinishUploadLayout() is used to initialize the success Upload view (preview image, File summary..)
+ *   <li>on Initialization, implement abstract buildDefaultUploadLayout() to initialize the initial Upload view (Upload Button...)
+ * </ul>
  * In addition, this class create basic components defined by {@link DefaultComponent}.
  * From your code: calling createCancelButton(), will add the button to the defaultComponent Map,
  * and later to access this button, just perform a getDefaultComponent(DefaultComponent defaultComponent).
- *
+ *<p>
  * {@link org.vaadin.easyuploads.FileFactory} is defined based on the UploadFileDirectory set.
  *  If this directory is null, {@link org.vaadin.easyuploads.TempFileFactory} is used.
  *  Else {@link org.vaadin.easyuploads.DirectoryFileFactory} is used.
- *
+ *<p>
  * <b>Restriction:</b>
- *  In opposite to {@link org.vaadin.easyuploads.UploadField} we only support
- *   file storage mode: {@link org.vaadin.easyuploads.UploadField.StorageMode#FILE}
- *   byte[] property ({@link org.vaadin.easyuploads.UploadField.FieldType#BYTE_ARRAY})
- *
+ *  Unlike {@link org.vaadin.easyuploads.UploadField} we only support
+ *  <ul>
+ *  <li>file storage mode: {@link org.vaadin.easyuploads.UploadField.StorageMode#FILE}
+ *  <li>byte[] property ({@link org.vaadin.easyuploads.UploadField.FieldType#BYTE_ARRAY})
+ *  </ul>
  */
 public abstract class AbstractUploadFileField extends CustomField implements StartedListener, FinishedListener, ProgressListener, FailedListener, DropHandler, UploadFileField {
 
@@ -164,8 +166,10 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
 
     /**
      * Set the Upload field Components layout based on the current state.
-     *  - Complete: --> buildFinishUploadLayout()
-     *  - Initial:  --> buildDefaultUploadLayout()
+     * <ul>
+     * <li>- Initial:  --> buildDefaultUploadLayout()
+     * <li>- Complete: --> buildFinishUploadLayout()
+     * </ul>
      */
     protected void updateDisplay() {
         if(getLastBytesFile()==null) {
@@ -280,6 +284,7 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
 
     // Used to handle Cancel / Interrupted upload in the DragAndDrop implementation.
     private boolean interruptedDragAndDropUpload = false;
+
     private void setDragAndDropUploadInterrupted(boolean isInterrupetd) {
         interruptedDragAndDropUpload = isInterrupetd;
     }

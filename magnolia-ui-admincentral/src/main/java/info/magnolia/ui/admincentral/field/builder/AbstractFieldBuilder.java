@@ -130,7 +130,6 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition> extends Ab
      */
     protected abstract Field buildField();
 
-
     /**
      * Get a property from the current Item.
      * If the property already exist, return this property.

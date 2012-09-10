@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -41,16 +41,17 @@ import info.magnolia.ui.admincentral.field.validator.builder.ValidatorFieldFacto
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 
 /**
- * A dialog FieldBuilder is responsible to create a Vaadin {@link Field} configured based on his
- * associated FieldDefinition. FieldBuilder and  {@link FieldDefinition} are linked together
+ * A dialog FieldBuilder is responsible for creating a Vaadin {@link Field} configured based on his
+ * associated FieldDefinition.
+ * <p>FieldBuilder and  {@link FieldDefinition} are linked together
  * using {@link info.magnolia.ui.admincentral.field.builder.DialogFieldFactory}.
- *
+ *<p>
  * Implementations of this interface will be instantiated with the
- *   {@link FieldDefinition} they should use for configuration
- *   {@link com.vaadin.data.Item} they will be operating on
- *   additional injected constructor arguments.
- *
- * <b>FieldBuilder are responsible to create/initialize Items that are by the Vaadin Field.</b>
+ * <ul>
+ * <li>{@link FieldDefinition} they should use for configuration
+ * <li>{@link com.vaadin.data.Item} they will be operating on additional injected constructor arguments.
+ * </ul>
+ * <strong>FieldBuilder are responsible to create/initialize Items that are by the Vaadin Field.</strong>
  *
  * @see FieldDefinition
  * @see info.magnolia.ui.admincentral.field.builder.DialogFieldFactory
