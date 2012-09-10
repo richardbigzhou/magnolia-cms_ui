@@ -44,6 +44,10 @@ public class RegexpValidatorDefinition extends ConfiguredFieldValidatorDefinitio
         return pattern;
     }
 
+    /**
+     * For the Java regular expression syntax, see
+     * {@link java.util.regex.Pattern#sum}
+     */
     public void setPattern(String pattern) {
         this.pattern = pattern;
     }
