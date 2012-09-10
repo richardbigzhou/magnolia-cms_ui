@@ -110,3 +110,9 @@
 	color:#CCCCCC;
     font-size: 20px;
 }
+
+.navigator-button {
+	background: none;
+	border: none;
+	border-right: 1px solid gray;
+}

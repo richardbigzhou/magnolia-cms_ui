@@ -50,22 +50,23 @@ import com.vaadin.ui.ClientWidget;
 import com.vaadin.ui.ClientWidget.LoadStyle;
 import com.vaadin.ui.Component;
 
+
 /**
- * Dialog layout server side implementation. 
+ * Dialog layout server side implementation.
  */
 @ClientWidget(value = VDialogTabLayout.class, loadStyle = LoadStyle.EAGER)
 public class DialogLayout extends AbstractLayout {
 
     private boolean isValidationVisible = false;
-    
-    private List<Component> components = new LinkedList<Component>();
-    
-    private Map<Component, String> helpDescriptions = new HashMap<Component, String>();
-    
+
+    private final List<Component> components = new LinkedList<Component>();
+
+    private final Map<Component, String> helpDescriptions = new HashMap<Component, String>();
+
     public DialogLayout() {
         addStyleName("v-dialog-layout");
     }
-    
+
     @Override
     public void paintContent(PaintTarget target) throws PaintException {
         super.paintContent(target);
@@ -83,25 +84,26 @@ public class DialogLayout extends AbstractLayout {
             target.endTag("component");
         }
     }
-    
+
     public void setComponentHelpDescription(Component c, String description) {
         if (components.contains(c)) {
             helpDescriptions.put(c, description);
-            requestRepaint();   
+            requestRepaint();
         } else {
             throw new IllegalArgumentException("Layout doesn't contain this component.");
         }
     }
-    
+
     @Override
     public void addComponent(Component c) {
         super.addComponent(c);
         components.add(c);
         requestRepaint();
     }
-    
+
     @Override
-    public void replaceComponent(Component oldComponent, Component newComponent) {}
+    public void replaceComponent(Component oldComponent, Component newComponent) {
+    }
 
     @Override
     public Iterator<Component> getComponentIterator() {
@@ -112,14 +114,14 @@ public class DialogLayout extends AbstractLayout {
         this.isValidationVisible = isVisible;
         requestRepaint();
     }
-    
+
     @Override
     public ErrorMessage getErrorMessage() {
         final Iterator<Component> it = getComponentIterator();
-        while (it.hasNext()) {            
+        while (it.hasNext()) {
             final Component c = it.next();
             if (c instanceof AbstractComponent) {
-                final ErrorMessage errMsg = ((AbstractComponent)c).getErrorMessage();
+                final ErrorMessage errMsg = ((AbstractComponent) c).getErrorMessage();
                 if (errMsg != null) {
                     return errMsg;
                 }

@@ -17,7 +17,7 @@
 
 .v-dialog-layout .v-dialog-field {
 	display: inline-block;
-	width: 425px;
+	width: 460px;
 	vertical-align: middle;
 }
 
@@ -143,6 +143,7 @@ button.btn-dialog-help {
 	margin: 0px;
 	padding: 6px 7px 6px 7px;
 	width: 460px;
+	height: 14px;
 }
 .dialog-panel textarea {
 	width: 460px !important;
@@ -290,4 +291,8 @@ fieldset {
 }
 .content-view-field-wrapper .v-dialog-field-label {
 	display: none;
+}
+
+.v-dialog-field.v-richtextarea {
+	width: 473px !important;
 }
