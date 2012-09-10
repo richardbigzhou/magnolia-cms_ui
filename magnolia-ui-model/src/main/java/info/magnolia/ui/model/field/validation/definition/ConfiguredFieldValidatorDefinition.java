@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,49 +31,37 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog;
+package info.magnolia.ui.model.field.validation.definition;
 
-import info.magnolia.ui.model.tab.definition.TabDefinition;
-import info.magnolia.ui.widget.dialog.DialogLayout;
-
-import com.vaadin.ui.Component;
-import com.vaadin.ui.ComponentContainer;
-import com.vaadin.ui.Field;
 
 /**
- * Represents a tab in a dialog.
- *
- * @see Dialog
- * @see info.magnolia.ui.admincentral.field.FieldBuilder
+ * Default implementation of {@link FieldValidatorDefinition}.
  */
-public class DialogTab extends AbstractDialogItem {
+public class ConfiguredFieldValidatorDefinition implements FieldValidatorDefinition {
 
-    //private static final String FIELD_CONTAINER_STYLE_NAME = "field-container";
+    private String errorMessage;
 
-    private TabDefinition definition;
+    private String i18nBasename;
 
-    private final DialogLayout container = new DialogLayout();
-
-    public DialogTab(TabDefinition definition) {
-        this.definition = definition;
-        //container.setStyleName(FIELD_CONTAINER_STYLE_NAME);
-    }
-
-    public void addField(Component component) {
-        this.container.addComponent(component);
-    }
-
-    public ComponentContainer getContainer() {
-        return container;
+    @Override
+    public String getErrorMessage() {
+        return errorMessage;
     }
 
     @Override
-    protected String getI18nBasename() {
-        return definition.getI18nBasename();
+    public String getI18nBasename() {
+        return i18nBasename;
     }
 
-    public void setComponentHelpDescription(Field field, String helpDescription) {
-        container.setComponentHelpDescription(field, getMessage(helpDescription));
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
+
+
+    public void setI18nBasename(String i18nBasename) {
+        this.i18nBasename = i18nBasename;
+    }
+
 
 }

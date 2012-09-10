@@ -40,6 +40,7 @@ import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import info.magnolia.cms.i18n.DefaultI18nContentSupport;
 import info.magnolia.cms.i18n.DefaultMessagesManager;
 import info.magnolia.cms.i18n.MessagesManager;
 import info.magnolia.context.MgnlContext;
@@ -129,6 +130,9 @@ public class DialogBuilderTest {
 
         final DialogFieldFactory dialogFieldFactory = mock(DialogFieldFactory.class);
         TextFieldBuilder editField = new TextFieldBuilder(fieldTypeDef, item);
+        DefaultI18nContentSupport i18nContentSupport = new DefaultI18nContentSupport();
+        i18nContentSupport.setFallbackLocale(new Locale("en"));
+        editField.setI18nContentSupport(i18nContentSupport);
         when(dialogFieldFactory.create(same(fieldDef), same(item))).thenReturn(editField);
 
         // WHEN

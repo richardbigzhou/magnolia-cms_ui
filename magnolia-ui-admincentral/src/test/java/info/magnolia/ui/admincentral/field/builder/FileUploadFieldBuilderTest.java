@@ -55,7 +55,7 @@ public class FileUploadFieldBuilderTest extends AbstractBuilderTest<FileUploadFi
     public void simpleFileUploadFieldBuilderTest() throws Exception{
         // GIVEN
         fileUploadBuilder = new FileUploadFieldBuilder(definition, baseItem, null);
-
+        fileUploadBuilder.setI18nContentSupport(i18nContentSupport);
         // WHEN
         Field field = fileUploadBuilder.getField();
 
@@ -68,6 +68,7 @@ public class FileUploadFieldBuilderTest extends AbstractBuilderTest<FileUploadFi
     public void buildDefaultUploadLayoutTest() throws Exception{
         // GIVEN
         fileUploadBuilder = new FileUploadFieldBuilder(definition, baseItem, null);
+        fileUploadBuilder.setI18nContentSupport(i18nContentSupport);
         UploadImageField field = (UploadImageField)fileUploadBuilder.getField();
 
         // WHEN

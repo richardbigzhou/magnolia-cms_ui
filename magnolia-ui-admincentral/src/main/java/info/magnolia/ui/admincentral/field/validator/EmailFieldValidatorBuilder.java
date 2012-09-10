@@ -31,49 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog;
+package info.magnolia.ui.admincentral.field.validator;
 
-import info.magnolia.ui.model.tab.definition.TabDefinition;
-import info.magnolia.ui.widget.dialog.DialogLayout;
+import info.magnolia.ui.model.field.validation.definition.EmailValidatorDefinition;
 
-import com.vaadin.ui.Component;
-import com.vaadin.ui.ComponentContainer;
-import com.vaadin.ui.Field;
+import com.vaadin.data.Validator;
+import com.vaadin.data.validator.EmailValidator;
+
+
 
 /**
- * Represents a tab in a dialog.
- *
- * @see Dialog
- * @see info.magnolia.ui.admincentral.field.FieldBuilder
+ * Build a {@link EmailValidator}.
  */
-public class DialogTab extends AbstractDialogItem {
+public class EmailFieldValidatorBuilder extends AbstractFieldValidatorBuilder<EmailValidatorDefinition>{
 
-    //private static final String FIELD_CONTAINER_STYLE_NAME = "field-container";
-
-    private TabDefinition definition;
-
-    private final DialogLayout container = new DialogLayout();
-
-    public DialogTab(TabDefinition definition) {
-        this.definition = definition;
-        //container.setStyleName(FIELD_CONTAINER_STYLE_NAME);
-    }
-
-    public void addField(Component component) {
-        this.container.addComponent(component);
-    }
-
-    public ComponentContainer getContainer() {
-        return container;
+    public EmailFieldValidatorBuilder(EmailValidatorDefinition definition) {
+        super(definition);
     }
 
     @Override
-    protected String getI18nBasename() {
-        return definition.getI18nBasename();
-    }
-
-    public void setComponentHelpDescription(Field field, String helpDescription) {
-        container.setComponentHelpDescription(field, getMessage(helpDescription));
+    public Validator buildValidator() {
+        return new EmailValidator(getI18nErrorMessage());
     }
 
 }

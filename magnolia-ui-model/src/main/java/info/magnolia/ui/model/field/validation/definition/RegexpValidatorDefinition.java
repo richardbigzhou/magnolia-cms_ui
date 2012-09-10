@@ -31,10 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.definition;
+package info.magnolia.ui.model.field.validation.definition;
 
 /**
- * Defines an email validator.
+ * Defines a validator that uses a regular expression to validate the contents of a dialog field.
  */
-public class EmailValidatorDefinition extends AbstractValidatorDefinition {
+public class RegexpValidatorDefinition extends ConfiguredFieldValidatorDefinition {
+
+    private String pattern;
+
+    public String getPattern() {
+        return pattern;
+    }
+
+    public void setPattern(String pattern) {
+        this.pattern = pattern;
+    }
 }
