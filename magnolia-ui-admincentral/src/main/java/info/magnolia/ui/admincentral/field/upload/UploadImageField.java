@@ -70,9 +70,9 @@ import com.vaadin.ui.Upload.StartedEvent;
 public class UploadImageField extends AbstractUploadFileField {
 
     private static final Logger log = LoggerFactory.getLogger(UploadImageField.class);
-    private static final String DEFAULT_UPLOAD_INITIAL_BUTTON_CAPTION = "Select an image";
+    private static final String DEFAULT_UPLOAD_INITIAL_BUTTON_CAPTION = "Select image...";
     private static final String DEFAULT_UPLOAD_ANOTHERL_BUTTON_CAPTION = "Choose new";
-    private static final String DEFAULT_DROP_ZONE_IMAGE_CAPTION = "or drag an image into this area";
+    private static final String DEFAULT_DROP_ZONE_IMAGE_CAPTION = "or <em>drag an image into this area</em> to upload it";
     private CssLayout layout;
     private JcrItemNodeAdapter item;
     private long imageWidth;
@@ -86,7 +86,6 @@ public class UploadImageField extends AbstractUploadFileField {
         this.item = item;
         layout = new CssLayout();
         layout.setSizeUndefined();
-        //Define the GridLayout as the whole drop zone and as root element.
         setRootLayout(createDropZone(layout));
         setCompositionRoot(getRootLayout());
 
@@ -169,7 +168,7 @@ public class UploadImageField extends AbstractUploadFileField {
         layout.removeAllComponents();
         setUploadButtonCaption(DEFAULT_UPLOAD_INITIAL_BUTTON_CAPTION);
         layout.addComponent(getDefaultComponent(DefaultComponent.UPLOAD));
-        Label uploadText = new Label(DEFAULT_DROP_ZONE_IMAGE_CAPTION);
+        Label uploadText = new Label(DEFAULT_DROP_ZONE_IMAGE_CAPTION, Label.CONTENT_XHTML);
         uploadText.addStyleName("upload-text");
         layout.addComponent(uploadText);
         getRootLayout().removeStyleName("start");
