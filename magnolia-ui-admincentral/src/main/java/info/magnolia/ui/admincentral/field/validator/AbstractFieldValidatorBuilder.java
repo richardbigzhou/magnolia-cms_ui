@@ -31,49 +31,32 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog;
+package info.magnolia.ui.admincentral.field.validator;
 
-import info.magnolia.ui.model.tab.definition.TabDefinition;
-import info.magnolia.ui.widget.dialog.DialogLayout;
 
-import com.vaadin.ui.Component;
-import com.vaadin.ui.ComponentContainer;
-import com.vaadin.ui.Field;
+import info.magnolia.ui.admincentral.dialog.AbstractDialogItem;
+import info.magnolia.ui.model.field.validation.definition.ConfiguredFieldValidatorDefinition;
 
 /**
- * Represents a tab in a dialog.
  *
- * @see Dialog
- * @see info.magnolia.ui.admincentral.field.FieldBuilder
+ * .
+ * @param <D> definition type.
  */
-public class DialogTab extends AbstractDialogItem {
+public abstract class AbstractFieldValidatorBuilder<D extends ConfiguredFieldValidatorDefinition> extends AbstractDialogItem implements FieldValidatorBuilder {
 
-    //private static final String FIELD_CONTAINER_STYLE_NAME = "field-container";
+    protected D definition;
 
-    private TabDefinition definition;
-
-    private final DialogLayout container = new DialogLayout();
-
-    public DialogTab(TabDefinition definition) {
+    public AbstractFieldValidatorBuilder(D definition) {
         this.definition = definition;
-        //container.setStyleName(FIELD_CONTAINER_STYLE_NAME);
     }
 
-    public void addField(Component component) {
-        this.container.addComponent(component);
-    }
-
-    public ComponentContainer getContainer() {
-        return container;
+    public String getI18nErrorMessage() {
+        return getMessage(definition.getErrorMessage());
     }
 
     @Override
     protected String getI18nBasename() {
         return definition.getI18nBasename();
-    }
-
-    public void setComponentHelpDescription(Field field, String helpDescription) {
-        container.setComponentHelpDescription(field, getMessage(helpDescription));
     }
 
 }

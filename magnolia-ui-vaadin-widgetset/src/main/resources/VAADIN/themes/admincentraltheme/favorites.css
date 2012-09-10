@@ -2,6 +2,11 @@
 
 .favorites .v-splitpanel-hsplitter-locked {
 	border:none;
+	margin-top:35px;
+}
+
+.favorites .v-feed-section > .v-csslayout-margin-top {
+    padding-top:37px;
 }
 
 .v-caption-favorites-section {

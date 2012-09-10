@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -47,7 +47,7 @@ import com.vaadin.ui.TextField;
 /**
  * A base custom field comprising a text field and a button placed to its immediate right.
  * A {@link PropertyTranslator} can be set in order to have a different display and property stored.
- * For example, display can be the Item path and value stored is the UUID of the Item.
+ * For example, display can be the Item path and value stored is the identifier of the Item.
  */
 public class TextAndButtonField extends CustomField {
 
@@ -58,12 +58,13 @@ public class TextAndButtonField extends CustomField {
     public TextAndButtonField(PropertyTranslator translator) {
         this.translator = translator;
         textField = new TextField();
+        textField.setSizeUndefined();
         textField.addStyleName("v-dialog-field");
         selectButton = new NativeButton();
         selectButton.addStyleName("btn-dialog btn-dialog-select");
 
         HorizontalLayout layout = new HorizontalLayout();
-        layout.setSizeFull();
+        layout.setSizeUndefined();
         layout.addComponent(textField);
         layout.addComponent(selectButton);
         layout.setComponentAlignment(selectButton, Alignment.MIDDLE_CENTER);

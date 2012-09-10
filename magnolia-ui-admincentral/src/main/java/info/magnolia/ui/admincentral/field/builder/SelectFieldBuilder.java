@@ -80,10 +80,7 @@ public class SelectFieldBuilder<D extends SelectFieldDefinition> extends Abstrac
         select.setInvalidAllowed(false);
         select.setMultiSelect(false);
         select.setNewItemsAllowed(false);
-        // Set style
-        if (StringUtils.isNotBlank(definition.getCssClass())) {
-            setStyleName(definition.getCssClass());
-        }
+
         // Set options
         Map<String, String> options = getOptions();
         for (Map.Entry<String, String> entry : options.entrySet()) {

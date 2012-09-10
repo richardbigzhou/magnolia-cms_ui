@@ -33,12 +33,9 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse;
 
-import info.magnolia.ui.admincentral.components.ActivityItem;
-import info.magnolia.ui.admincentral.components.SplitFeed;
 import info.magnolia.ui.vaadin.widget.tabsheet.ShellTab;
 import info.magnolia.ui.vaadin.widget.tabsheet.ShellTabSheet;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -48,7 +45,6 @@ import org.apache.commons.collections.bidimap.DualHashBidiMap;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
-import com.vaadin.ui.Label;
 
 
 /**
@@ -81,12 +77,12 @@ public class PulseViewImpl implements PulseView {
     private final PulseMessagesView messagesView;
 
     @Inject
-    public PulseViewImpl(final PulseMessagesView messagesView) {
+    public PulseViewImpl(final PulseMessagesView messagesView, final PulseDashboardView dashboardView) {
 
         this.messagesView = messagesView;
         tabsheet.addStyleName("v-shell-tabsheet-light");
-        final ShellTab dashboard = tabsheet.addTab("dashboard".toUpperCase(), createPulseFeedLayout());
-        final ShellTab messages = tabsheet.addTab("messages".toUpperCase(), (ComponentContainer) messagesView.asVaadinComponent());
+        final ShellTab dashboard = tabsheet.addTab("Dashboard", (ComponentContainer) dashboardView.asVaadinComponent());
+        final ShellTab messages = tabsheet.addTab("Messages", (ComponentContainer) messagesView.asVaadinComponent());
 
         tabsheet.addStyleName("v-pulse");
         tabsheet.setSizeFull();
@@ -129,21 +125,5 @@ public class PulseViewImpl implements PulseView {
     @Override
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
-    }
-
-    private SplitFeed createPulseFeedLayout() {
-        final SplitFeed pulseFeed = new SplitFeed();
-        pulseFeed.getLeftContainer().setTitle("Activity Stream");
-        pulseFeed.getLeftContainer().setTitleLinkEnabled(true);
-
-        pulseFeed.getRightContainer().setTitle("Pages I changed recently");
-        pulseFeed.getRightContainer().setTitleLinkEnabled(true);
-
-        final Label l = new Label("Today");
-        l.addStyleName("category-separartor");
-        pulseFeed.getLeftContainer().addComponent(l);
-        pulseFeed.getLeftContainer().addComponent(new ActivityItem("Test", "Lorem ipsum...", "Say hi", "green", new Date()));
-        pulseFeed.getLeftContainer().addComponent(new ActivityItem("Test", "Lorem ipsum once again", "Say hi", "red", new Date()));
-        return pulseFeed;
     }
 }

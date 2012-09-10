@@ -31,48 +31,39 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.field.builder;
+package info.magnolia.ui.admincentral.field.validator.builder;
 
-import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.content.view.builder.DefinitionToImplementationMapping;
-import info.magnolia.ui.admincentral.field.FieldBuilder;
-import info.magnolia.ui.admincentral.field.validator.builder.ValidatorFieldFactory;
+import info.magnolia.ui.admincentral.field.validator.FieldValidatorBuilder;
 import info.magnolia.ui.model.builder.FactoryBase;
-import info.magnolia.ui.model.field.definition.FieldDefinition;
+import info.magnolia.ui.model.field.validation.definition.FieldValidatorDefinition;
 
 import java.io.Serializable;
 
 import javax.inject.Inject;
 
-import com.vaadin.data.Item;
-
 /**
- * Factory for creating DialogField instances using an internal set of mappings connecting a {@link FieldDefinition}
- * class with a {@link FieldBuilder} class.
+ * Factory for creating DialogField instances using an internal set of mappings connecting a {@link FieldValidatorDefinition}
+ * class with a {@link FieldValidatorBuilder} class.
  *
  * @see FieldDefinition
  * @see FieldBuilder
  */
-public class DialogFieldFactory extends FactoryBase<FieldDefinition, FieldBuilder> implements Serializable {
+public class ValidatorFieldFactory extends FactoryBase<FieldValidatorDefinition, FieldValidatorBuilder> implements Serializable {
 
-    private ValidatorFieldFactory validatorFieldFactory;
-    private I18nContentSupport i18nContentSupport;
 
     @Inject
-    public DialogFieldFactory(ComponentProvider componentProvider, DialogFieldRegistry dialogFieldRegistery, ValidatorFieldFactory validatorFieldFactory, I18nContentSupport i18nContentSupport) {
+    public ValidatorFieldFactory(ComponentProvider componentProvider, ValidatorFieldRegistry validatorFieldRegistery) {
         super(componentProvider);
-        this.validatorFieldFactory = validatorFieldFactory;
-        this.i18nContentSupport = i18nContentSupport;
-        for (DefinitionToImplementationMapping<FieldDefinition, FieldBuilder> definitionToImplementationMapping : dialogFieldRegistery.getDefinitionToImplementationMappings()) {
+
+        for (DefinitionToImplementationMapping<FieldValidatorDefinition, FieldValidatorBuilder> definitionToImplementationMapping : validatorFieldRegistery.getDefinitionToImplementationMappings()) {
             addMapping(definitionToImplementationMapping.getDefinition(), definitionToImplementationMapping.getImplementation());
         }
     }
 
-    public FieldBuilder create(FieldDefinition definition, Item item, Object... parameters) {
-        FieldBuilder fieldBuilder = super.create(definition, item, parameters);
-        fieldBuilder.setValidatorFieldFactory(validatorFieldFactory);
-        fieldBuilder.setI18nContentSupport(i18nContentSupport);
-        return fieldBuilder;
+    @Override
+    public FieldValidatorBuilder create(FieldValidatorDefinition definition, Object... parameters) {
+        return super.create(definition, parameters);
     }
 }

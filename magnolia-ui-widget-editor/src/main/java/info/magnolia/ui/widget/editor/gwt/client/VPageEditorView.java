@@ -34,6 +34,7 @@
 package info.magnolia.ui.widget.editor.gwt.client;
 
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.IsWidget;
 
@@ -44,19 +45,28 @@ public interface VPageEditorView extends IsWidget {
 
     Frame getIframe();
 
-    void registerHandlers();
-
     /**
      * Listener.
      */
     interface Listener {
-        void onFrameLoaded();
+
+        void onFrameLoaded(Frame frame);
+
+        void selectElement(Element element);
     }
+
+    Frame getIframe();
 
     void setListener(Listener listener);
 
     void setUrl(String url);
 
     void reload();
+
+    void initNativeSelectionListener(Element element, Listener listener);
+
+    boolean isTouchScrolling();
+
+    void resetScrollTop();
 
 }

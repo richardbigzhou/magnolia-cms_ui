@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,32 +31,11 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.definition;
-
-import info.magnolia.cms.i18n.MessagesUtil;
+package info.magnolia.ui.admincentral.shellapp.pulse;
 
 /**
- * Abstract implementation of {@link ValidatorDefinition}.
+ * Dashboard Pulse tab UI.
  */
-public abstract class AbstractValidatorDefinition implements ValidatorDefinition {
+public interface PulseDashboardView extends PulseSubView {
 
-    private String errorMessageKey;
-
-    @Override
-    public String getErrorMessageKey() {
-        return errorMessageKey;
-    }
-
-    @Override
-    public void setErrorMessageKey(String errorMessageKey) {
-        this.errorMessageKey = errorMessageKey;
-    }
-
-    protected String getDefaultPath() {
-        return "info.magnolia.ui.model.messages";
-    }
-
-    public String getErrorMessage() {
-        return MessagesUtil.get(getErrorMessageKey(), getDefaultPath());
-    }
 }

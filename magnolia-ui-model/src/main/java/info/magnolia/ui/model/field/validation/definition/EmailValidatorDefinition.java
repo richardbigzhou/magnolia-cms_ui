@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,16 +31,11 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.definition;
+package info.magnolia.ui.model.field.validation.definition;
 
 /**
- * Defines a validator.
- *
- * @see info.magnolia.ui.model.field.definition.FieldDefinition
+ * Defines an email validator.
  */
-public interface ValidatorDefinition {
-
-    String getErrorMessageKey();
-
-    void setErrorMessageKey(String errorMessageKey);
+public class EmailValidatorDefinition extends ConfiguredFieldValidatorDefinition {
+    // No Specific property.
 }

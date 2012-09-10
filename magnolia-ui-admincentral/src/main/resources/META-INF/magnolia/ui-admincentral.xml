@@ -134,7 +134,14 @@
       <path>/modules/ui-admincentral/dialogFieldRegistry</path>
       <observed>true</observed>
       <scope>singleton</scope>
-     </component>
+    </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.field.validator.builder.ValidatorFieldRegistry</type>
+      <workspace>config</workspace>
+      <path>/modules/ui-admincentral/dialogFieldValidatorRegistry</path>
+      <observed>true</observed>
+      <scope>singleton</scope>
+    </component>
     <component>
       <type>info.magnolia.ui.framework.location.LocationController</type>
       <implementation>info.magnolia.ui.framework.location.LocationController</implementation>
@@ -179,6 +186,10 @@
       <type>info.magnolia.ui.admincentral.shellapp.pulse.PulseMessagesPresenter</type>
       <implementation>info.magnolia.ui.admincentral.shellapp.pulse.PulseMessagesPresenter</implementation>
     </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.shellapp.pulse.PulseDashboardView</type>
+      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.PulseDashboardViewImpl</implementation>
+    </component>
   </components>
 
   <components>
@@ -206,6 +217,10 @@
     <component>
       <type>info.magnolia.ui.admincentral.field.builder.DialogFieldFactory</type>
       <implementation>info.magnolia.ui.admincentral.field.builder.DialogFieldFactory</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.field.validator.builder.ValidatorFieldFactory</type>
+      <implementation>info.magnolia.ui.admincentral.field.validator.builder.ValidatorFieldFactory</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.admincentral.dialog.action.DialogActionFactory</type>

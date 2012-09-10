@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral.components;
 
-
 import java.util.Iterator;
 
 import com.vaadin.ui.Component;
@@ -42,6 +41,8 @@ import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeButton;
+import com.vaadin.ui.themes.BaseTheme;
+
 
 /**
  * Split panel that displays two column feed.
@@ -49,11 +50,11 @@ import com.vaadin.ui.NativeButton;
 @SuppressWarnings("serial")
 public class SplitFeed extends CustomComponent {
 
-    private HorizontalSplitPanel splitPanel = new HorizontalSplitPanel();
+    private final HorizontalSplitPanel splitPanel = new HorizontalSplitPanel();
 
-    private FeedSection leftConatiner = new FeedSection();
+    private final FeedSection leftContainer = new FeedSection();
 
-    private FeedSection rightContainer = new FeedSection();
+    private final FeedSection rightContainer = new FeedSection();
 
     public SplitFeed() {
         super();
@@ -67,16 +68,16 @@ public class SplitFeed extends CustomComponent {
     }
 
     private void construct() {
-        leftConatiner.setSizeFull();
+        leftContainer.setSizeFull();
         rightContainer.setSizeFull();
-        leftConatiner.setMargin(true);
+        leftContainer.setMargin(true);
         rightContainer.setMargin(true);
-        splitPanel.setFirstComponent(leftConatiner);
+        splitPanel.setFirstComponent(leftContainer);
         splitPanel.setSecondComponent(rightContainer);
     }
 
     public FeedSection getLeftContainer() {
-        return leftConatiner;
+        return leftContainer;
     }
 
     public FeedSection getRightContainer() {
@@ -101,12 +102,14 @@ public class SplitFeed extends CustomComponent {
      */
     public static class FeedSection extends CssLayout {
 
-        private NativeButton link = new NativeButton();
+        private final NativeButton link = new NativeButton();
 
         public FeedSection() {
             super();
+            setSizeFull();
             addStyleName("v-feed-section");
-            link.setStyleName("v-feed-title-link");
+            link.setStyleName(BaseTheme.BUTTON_LINK);
+            link.addStyleName("icon-rssfeed");
         }
 
         public void setTitleLinkEnabled(boolean enabled) {

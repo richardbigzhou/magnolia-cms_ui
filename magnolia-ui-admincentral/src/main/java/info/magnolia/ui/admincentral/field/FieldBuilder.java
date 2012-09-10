@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -35,16 +35,23 @@ package info.magnolia.ui.admincentral.field;
 
 import com.vaadin.ui.Field;
 
+import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.ui.admincentral.dialog.DialogItem;
+import info.magnolia.ui.admincentral.field.validator.builder.ValidatorFieldFactory;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 
 /**
- * A dialog field provides the user interface for a field in a dialog. It creates a Vaadin {@link Field} and configures
- * it using the definition it is associated with. A class implementing this interface is associated with a
- * {@link FieldDefinition} in {@link info.magnolia.ui.admincentral.field.builder.DialogFieldFactory}.
- *
- * Implementations of this interface will be instantiated with the {@link FieldDefinition} they should use for
- * configuration and the {@link com.vaadin.data.Item} they will be operating on as possible constructor arguments.
+ * A dialog FieldBuilder is responsible for creating a Vaadin {@link Field} configured based on his
+ * associated FieldDefinition.
+ * <p>FieldBuilder and  {@link FieldDefinition} are linked together
+ * using {@link info.magnolia.ui.admincentral.field.builder.DialogFieldFactory}.
+ *<p>
+ * Implementations of this interface will be instantiated with the
+ * <ul>
+ * <li>{@link FieldDefinition} they should use for configuration
+ * <li>{@link com.vaadin.data.Item} they will be operating on additional injected constructor arguments.
+ * </ul>
+ * <strong>FieldBuilder are responsible to create/initialize Items that are by the Vaadin Field.</strong>
  *
  * @see FieldDefinition
  * @see info.magnolia.ui.admincentral.field.builder.DialogFieldFactory
@@ -57,4 +64,8 @@ public interface FieldBuilder extends DialogItem {
     Field getField();
 
     FieldDefinition getFieldDefinition();
+
+    void setValidatorFieldFactory(ValidatorFieldFactory validatorFieldFactory);
+
+    void setI18nContentSupport(I18nContentSupport i18nContentSupport);
 }

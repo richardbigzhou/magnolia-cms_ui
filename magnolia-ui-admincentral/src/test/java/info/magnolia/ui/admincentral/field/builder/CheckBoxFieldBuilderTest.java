@@ -52,6 +52,7 @@ public class CheckBoxFieldBuilderTest extends AbstractBuilderTest<CheckboxFieldD
     public void simpleCheckBoxFieldTest() throws Exception{
         // GIVEN
         checkBoxField = new CheckBoxFieldBuilder(definition, baseItem);
+        checkBoxField.setI18nContentSupport(i18nContentSupport);
 
         // WHEN
         Field field = checkBoxField.getField();
@@ -64,6 +65,7 @@ public class CheckBoxFieldBuilderTest extends AbstractBuilderTest<CheckboxFieldD
     public void checkBoxField_SetSelectedTest() throws Exception{
         // GIVEN
         checkBoxField = new CheckBoxFieldBuilder(definition, baseItem);
+        checkBoxField.setI18nContentSupport(i18nContentSupport);
         definition.setSelected("false");
         // WHEN
         Field field = checkBoxField.getField();

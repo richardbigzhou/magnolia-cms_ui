@@ -75,6 +75,7 @@ public class ProgressIndicatorComponentDefaultImpl extends CustomComponent imple
         uploadFileProgress = new Label("");
         //Init base progress Indicator
         progressIndicator = new ProgressIndicator();
+        progressIndicator.addStyleName("v-progressindicator-big");
         progressIndicator.setVisible(false);
         progressIndicator.setPollingInterval(500);
         progressIndicator.setWidth("100%");

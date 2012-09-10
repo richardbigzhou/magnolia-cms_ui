@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,49 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog;
-
-import info.magnolia.ui.model.tab.definition.TabDefinition;
-import info.magnolia.ui.widget.dialog.DialogLayout;
-
-import com.vaadin.ui.Component;
-import com.vaadin.ui.ComponentContainer;
-import com.vaadin.ui.Field;
+package info.magnolia.ui.model.field.validation.definition;
 
 /**
- * Represents a tab in a dialog.
- *
- * @see Dialog
- * @see info.magnolia.ui.admincentral.field.FieldBuilder
+ * Defines a validator that uses a regular expression to validate the contents of a dialog field.
  */
-public class DialogTab extends AbstractDialogItem {
+public class RegexpValidatorDefinition extends ConfiguredFieldValidatorDefinition {
 
-    //private static final String FIELD_CONTAINER_STYLE_NAME = "field-container";
+    private String pattern;
 
-    private TabDefinition definition;
-
-    private final DialogLayout container = new DialogLayout();
-
-    public DialogTab(TabDefinition definition) {
-        this.definition = definition;
-        //container.setStyleName(FIELD_CONTAINER_STYLE_NAME);
+    public String getPattern() {
+        return pattern;
     }
 
-    public void addField(Component component) {
-        this.container.addComponent(component);
+    public void setPattern(String pattern) {
+        this.pattern = pattern;
     }
-
-    public ComponentContainer getContainer() {
-        return container;
-    }
-
-    @Override
-    protected String getI18nBasename() {
-        return definition.getI18nBasename();
-    }
-
-    public void setComponentHelpDescription(Field field, String helpDescription) {
-        container.setComponentHelpDescription(field, getMessage(helpDescription));
-    }
-
 }

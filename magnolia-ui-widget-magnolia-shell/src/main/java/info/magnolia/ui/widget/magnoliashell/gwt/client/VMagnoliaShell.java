@@ -62,11 +62,13 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
+import com.vaadin.terminal.gwt.client.BrowserInfo;
 import com.vaadin.terminal.gwt.client.Container;
 import com.vaadin.terminal.gwt.client.Paintable;
 import com.vaadin.terminal.gwt.client.RenderSpace;
 import com.vaadin.terminal.gwt.client.UIDL;
 import com.vaadin.terminal.gwt.client.VConsole;
+
 
 /**
  * Vaadin implementation of MagnoliaShell client side.
@@ -94,11 +96,12 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
 
     protected ApplicationConnection client;
 
-    private List<String> registeredAppNames = new LinkedList<String>();
-    
-    private List<String> runningAppNames = new LinkedList<String>();
-    
-    private ClientSideProxy proxy = new ClientSideProxy(this) {
+    private final List<String> registeredAppNames = new LinkedList<String>();
+
+    private final List<String> runningAppNames = new LinkedList<String>();
+
+    private final ClientSideProxy proxy = new ClientSideProxy(this) {
+
         {
 
             register("onAppStarted", new Method() {
@@ -126,17 +129,19 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
             });
 
             register("navigate", new Method() {
+
                 @Override
                 public void invoke(String methodName, Object[] params) {
                     if (proxy.isClientInitialized()) {
                         final String prefix = String.valueOf(params[0]);
                         final String token = params.length > 1 ? String.valueOf(params[1]) : "";
-                        view.navigate(prefix, token);   
+                        view.navigate(prefix, token);
                     }
                 }
             });
 
             register("activeViewportChanged", new Method() {
+
                 @Override
                 public void invoke(String methodName, Object[] params) {
                     ViewportType type = params.length > 0 ? ViewportType.valueOf(String.valueOf(params[0])) : ViewportType.SHELL_APP_VIEWPORT;
@@ -145,6 +150,7 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
             });
 
             register("showMessage", new Method() {
+
                 @Override
                 public void invoke(String methodName, Object[] params) {
                     final MessageType type = MessageType.valueOf(String.valueOf(params[0]));
@@ -156,6 +162,7 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
             });
 
             register("hideAllMessages", new Method() {
+
                 @Override
                 public void invoke(String methodName, Object[] params) {
                     view.hideAllMessages();
@@ -163,6 +170,7 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
             });
 
             register("updateIndication", new Method() {
+
                 @Override
                 public void invoke(String methodName, Object[] params) {
                     final ShellAppType type = ShellAppType.valueOf(String.valueOf(params[0]));
@@ -172,6 +180,7 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
             });
 
             register("setIndication", new Method() {
+
                 @Override
                 public void invoke(String methodName, Object[] params) {
                     final ShellAppType type = ShellAppType.valueOf(String.valueOf(params[0]));
@@ -181,7 +190,6 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
             });
         }
     };
-    
 
     private final VMagnoliaShellView view;
 
@@ -214,25 +222,25 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
                             viewport.getElement().getStyle().setZIndex(300);
                             p.updateFromUIDL(viewportUidl, client);
                         } else {
-                            postponedViewportUidls.put(p, viewportUidl);   
+                            postponedViewportUidls.put(p, viewportUidl);
                         }
                     }
                 }
             }
-            
+
             for (final Entry<Paintable, UIDL> entry : postponedViewportUidls.entrySet()) {
                 entry.getKey().updateFromUIDL(entry.getValue(), client);
             }
-            
+
             if (explicitActiveViewportType != null) {
                 view.changeActiveViewport(explicitActiveViewportType);
             }
             updatePusher(uidl);
         }
         boolean handleCurrentHistory = !proxy.isClientInitialized();
-        proxy.update(this, uidl, client); 
+        proxy.update(this, uidl, client);
         if (handleCurrentHistory) {
-            History.fireCurrentHistoryState();  
+            History.fireCurrentHistoryState();
         }
     }
 
@@ -260,17 +268,22 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
     public void removeMessage(String id) {
         proxy.call("removeMessage", id);
     }
-    
+
     private void updatePusher(final UIDL uidl) {
-        final UIDL pusherUidl = uidl.getChildByTagName("pusher");
-        if (pusherUidl != null) {
-            final Paintable pusherPaintable = client.getPaintable(pusherUidl.getChildUIDL(0));
-            if (pusherPaintable instanceof VICEPush) {
-                if (!hasChildComponent((VICEPush) pusherPaintable)) {
-                    view.setPusher((VICEPush) pusherPaintable);
+        // currently disabling push for the ipad to avoid page editor sluggishness.
+        if (!BrowserInfo.get().isTouchDevice()) {
+
+            final UIDL pusherUidl = uidl.getChildByTagName("pusher");
+            if (pusherUidl != null) {
+                final Paintable pusherPaintable = client.getPaintable(pusherUidl.getChildUIDL(0));
+                if (pusherPaintable instanceof VICEPush) {
+                    if (!hasChildComponent((VICEPush) pusherPaintable)) {
+                        view.setPusher((VICEPush) pusherPaintable);
+                    }
+                    pusherPaintable.updateFromUIDL(pusherUidl.getChildUIDL(0), client);
                 }
-                pusherPaintable.updateFromUIDL(pusherUidl.getChildUIDL(0), client);
             }
+
         }
     }
 
@@ -279,7 +292,7 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
         view.asWidget().setWidth(width);
         super.setWidth(width);
     }
-    
+
     @Override
     public void updateViewportLayout(VShellViewport viewport) {
         client.runDescendentsLayout(viewport);
@@ -310,7 +323,8 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
     }
 
     @Override
-    public void updateCaption(Paintable component, UIDL uidl) {}
+    public void updateCaption(Paintable component, UIDL uidl) {
+    }
 
     @Override
     public boolean requestLayout(Set<Paintable> children) {
@@ -366,7 +380,7 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
     public void startApp(String appName, String token) {
         proxy.call("startApp", appName, token);
     }
-    
+
     private void registerApps(JsArrayString appNames) {
         registeredAppNames.clear();
         for (int i = 0; i < appNames.length(); ++i) {
@@ -388,9 +402,10 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
             if (isAppRegistered(prefix)) {
                 if (!isAppRunning(prefix)) {
                     view.showAppPreloader(prefix, new PreloaderCallback() {
+
                         @Override
                         public void onPreloaderShown(String appName) {
-                            startApp(appName,token);
+                            startApp(appName, token);
                         }
                     });
                 } else {
