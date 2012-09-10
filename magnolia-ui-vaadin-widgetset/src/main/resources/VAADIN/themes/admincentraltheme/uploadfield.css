@@ -133,7 +133,7 @@
 .uploading-progress-indicator .uploading-file-progress {
     position: absolute;
     color:white;
-    top:49px;
+    top:50px;
     left: 45%;
     font-size:11px;
 }
@@ -141,7 +141,7 @@
 .upload-image-field button.cancel {
     background: url("img/icon-close-16.png") no-repeat scroll 0px 0px transparent;
     position: absolute;
-    top: 49px;
+    top: 50px;
     right: 20px;
     padding:0;
     margin:0;
@@ -156,5 +156,5 @@
  }
 
 .uploading-progress-indicator .uploaded-file {
-    margin-left:120px
+    margin-left:135px
 }
