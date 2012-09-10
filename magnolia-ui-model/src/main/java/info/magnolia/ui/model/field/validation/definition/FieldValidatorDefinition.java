@@ -31,40 +31,22 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.field;
-
-import com.vaadin.ui.Field;
-
-import info.magnolia.cms.i18n.I18nContentSupport;
-import info.magnolia.ui.admincentral.dialog.DialogItem;
-import info.magnolia.ui.admincentral.field.validator.builder.ValidatorFieldFactory;
-import info.magnolia.ui.model.field.definition.FieldDefinition;
+package info.magnolia.ui.model.field.validation.definition;
 
 /**
- * A dialog FieldBuilder is responsible to create a Vaadin {@link Field} configured based on his
- * associated FieldDefinition. FieldBuilder and  {@link FieldDefinition} are linked together
- * using {@link info.magnolia.ui.admincentral.field.builder.DialogFieldFactory}.
+ * Defines a validator.
  *
- * Implementations of this interface will be instantiated with the
- *   {@link FieldDefinition} they should use for configuration
- *   {@link com.vaadin.data.Item} they will be operating on
- *   additional injected constructor arguments.
- *
- * <b>FieldBuilder are responsible to create/initialize Items that are by the Vaadin Field.</b>
- *
- * @see FieldDefinition
- * @see info.magnolia.ui.admincentral.field.builder.DialogFieldFactory
+ * @see info.magnolia.ui.model.field.definition.FieldDefinition
  */
-public interface FieldBuilder extends DialogItem {
+public interface FieldValidatorDefinition {
 
     /**
-     * Creates and initializes a Vaadin {@link Field} component.
+     * Return the ErrorMessage to be displayed.
      */
-    Field getField();
+    String getErrorMessage();
 
-    FieldDefinition getFieldDefinition();
-
-    void setValidatorFieldFactory(ValidatorFieldFactory validatorFieldFactory);
-
-    void setI18nContentSupport(I18nContentSupport i18nContentSupport);
+    /**
+     * Message bundle for localized field labels.
+     */
+    String getI18nBasename();
 }

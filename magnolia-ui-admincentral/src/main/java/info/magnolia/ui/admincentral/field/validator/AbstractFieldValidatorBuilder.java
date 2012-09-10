@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,10 +31,32 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.definition;
+package info.magnolia.ui.admincentral.field.validator;
+
+
+import info.magnolia.ui.admincentral.dialog.AbstractDialogItem;
+import info.magnolia.ui.model.field.validation.definition.ConfiguredFieldValidatorDefinition;
 
 /**
- * Defines an email validator.
+ *
+ * .
+ * @param <D> definition type.
  */
-public class EmailValidatorDefinition extends AbstractValidatorDefinition {
+public abstract class AbstractFieldValidatorBuilder<D extends ConfiguredFieldValidatorDefinition> extends AbstractDialogItem implements FieldValidatorBuilder {
+
+    protected D definition;
+
+    public AbstractFieldValidatorBuilder(D definition) {
+        this.definition = definition;
+    }
+
+    public String getI18nErrorMessage() {
+        return getMessage(definition.getErrorMessage());
+    }
+
+    @Override
+    protected String getI18nBasename() {
+        return definition.getI18nBasename();
+    }
+
 }
