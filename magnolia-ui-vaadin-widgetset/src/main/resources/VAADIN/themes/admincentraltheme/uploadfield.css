@@ -115,7 +115,7 @@
     height: auto;
 }
 
-.uploading-progress-indicator .v-progressindicator-wrapper {
+.uploading-progress-indicator .v-progressindicator-wrapper, .v-progressindicator-indicator {
     background: #94B9C6;
     height: 22px;
     border:none;
@@ -127,7 +127,6 @@
 
 .uploading-progress-indicator  .v-progressindicator-wrapper .v-progressindicator-indicator {
     background: #666;
-    height: 22px;
  }
 
 .uploading-progress-indicator .uploading-file-progress {
