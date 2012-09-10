@@ -100,8 +100,7 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
 
     private VPageEditorParameters pageEditorParameters;
 
-    static boolean external = false;
-
+   
     public VPageEditor() {
         this.eventBus = new SimpleEventBus();
         this.view = new VPageEditorViewImpl();
@@ -113,7 +112,7 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
 
         initWidget(view.asWidget());
 
-
+        
         proxy = new ClientSideProxy(this) {
             {
                 register("refresh", new Method() {
@@ -207,28 +206,10 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
         return model;
     }
 
+    @Override
     public void selectElement(final Element element) {
         focusModel.selectElement(element);
     }
-
-    private native void initNativeHandlers(Element element, VPageEditorView view) /*-{
-        if (element != 'undefined') {
-            var ref = this;
-            var that = view;
-            element.contentDocument.onmouseup = function(event) {
-                ref.@info.magnolia.ui.widget.editor.gwt.client.VPageEditor::selectElement(Lcom/google/gwt/dom/client/Element;)(event.target);
-
-            }
-            element.contentDocument.ontouchend = function(event) {
-                //console.log('touchend received');
-                if (!$wnd.scrolling) {
-                    //console.log('is not scrolling');
-                    ref.@info.magnolia.ui.widget.editor.gwt.client.VPageEditor::selectElement(Lcom/google/gwt/dom/client/Element;)(event.target);
-                    that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorView::resetScrollTop()();
-                }
-            }
-        }
-    }-*/;
 
     private void injectEditorStyles(final Document document) {
         HeadElement head = HeadElement.as(document.getElementsByTagName("head").getItem(0));
@@ -307,7 +288,8 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
             return;
         }
         Element element= iframe.getElement();
-        initNativeHandlers(element, view);
+
+        view.initNativeSelectionListener(element, this);
 
         IFrameElement frameElement = IFrameElement.as(element);
         Document contentDocument = frameElement.getContentDocument();
