@@ -14,7 +14,7 @@
   padding:0;
 }
 
-.upload-image-field  .v-ddwrapper.v-ddwrapper-over {
+.upload-image-field  .v-ddwrapper.v-ddwrapper-over, .start {
   background-color: #C1D8DF !important;
   border: 1px solid #4B8E9E !important;
 }
@@ -108,7 +108,53 @@
   margin-right: 65px;
   float: right;
 }
+/* Progress indicator styles*/
+.uploading-progress-indicator {
+    margin: 0 0 0 25px;
+    padding: 0;
+    height: auto;
+}
 
-.upload-image-field .v-upload-immediate input {
-    cursor:pointer;
+.uploading-progress-indicator .v-progressindicator-wrapper {
+    background: #94B9C6;
+    height: 22px;
+    border:none;
+    width: 400px;
+    border-radius: 0px;
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+}
+
+.uploading-progress-indicator  .v-progressindicator-wrapper .v-progressindicator-indicator {
+    background: #666;
+    height: 22px;
+ }
+
+.uploading-progress-indicator .uploading-file-progress {
+    position: absolute;
+    color:white;
+    top:49px;
+    left: 45%;
+    font-size:11px;
+}
+
+.upload-image-field button.cancel {
+    background: url("img/icon-close-16.png") no-repeat scroll 0px 0px transparent;
+    position: absolute;
+    top: 49px;
+    right: 20px;
+    padding:0;
+    margin:0;
+    height:16px;
+    width:16px;
+    border: none;
+ }
+
+.uploading-progress-indicator .uploading-file, .uploaded-file {
+    margin-top:10px;
+    margin-bottom:10px;
+ }
+
+.uploading-progress-indicator .uploaded-file {
+    margin-left:120px
 }
