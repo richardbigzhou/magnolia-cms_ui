@@ -42,7 +42,7 @@ import info.magnolia.ui.model.field.definition.FieldDefinition;
  * A dialog field provides the user interface for a field in a dialog. It creates a Vaadin {@link Field} and configures
  * it using the definition it is associated with. A class implementing this interface is associated with a
  * {@link FieldDefinition} in {@link info.magnolia.ui.admincentral.field.builder.DialogFieldFactory}.
- *
+ * <p>
  * Implementations of this interface will be instantiated with the {@link FieldDefinition} they should use for
  * configuration and the {@link com.vaadin.data.Item} they will be operating on as possible constructor arguments.
  *

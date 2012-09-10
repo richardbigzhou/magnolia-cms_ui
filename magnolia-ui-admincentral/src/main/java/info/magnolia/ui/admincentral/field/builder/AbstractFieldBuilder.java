@@ -105,13 +105,6 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition> extends Ab
      */
     protected abstract Field buildField();
 
-    /**
-     * Set the default CSS style name for the current field.
-     */
-    protected void setStyleName(String styleName) {
-        this.styleName = styleName;
-    }
-
     protected String getStyleName() {
         return this.styleName != null ? this.styleName : "";
     }

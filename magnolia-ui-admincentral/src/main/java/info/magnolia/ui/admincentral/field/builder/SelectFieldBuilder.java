@@ -82,7 +82,7 @@ public class SelectFieldBuilder<D extends SelectFieldDefinition> extends Abstrac
         select.setNewItemsAllowed(false);
         // Set style
         if (StringUtils.isNotBlank(definition.getCssClass())) {
-            setStyleName(definition.getCssClass());
+            select.addStyleName(definition.getCssClass());
         }
         // Set options
         Map<String, String> options = getOptions();
