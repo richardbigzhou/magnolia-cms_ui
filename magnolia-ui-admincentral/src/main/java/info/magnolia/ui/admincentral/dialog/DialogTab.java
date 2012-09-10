@@ -73,7 +73,7 @@ public class DialogTab extends AbstractDialogItem {
     }
 
     public void setComponentHelpDescription(Field field, String helpDescription) {
-        container.setComponentHelpDescription(field, helpDescription);
+        container.setComponentHelpDescription(field, getMessage(helpDescription));
     }
 
 }
