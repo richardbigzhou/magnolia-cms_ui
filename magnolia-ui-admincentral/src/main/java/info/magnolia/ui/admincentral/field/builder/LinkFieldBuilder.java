@@ -91,7 +91,6 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
         } else {
             selectButton.setCaption("No Select Menu or Target App Defined");
         }
-
         return textButton;
     }
 

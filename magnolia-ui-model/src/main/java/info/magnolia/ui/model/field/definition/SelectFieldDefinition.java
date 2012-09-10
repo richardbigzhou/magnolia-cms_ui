@@ -51,8 +51,6 @@ public class SelectFieldDefinition extends ConfiguredFieldDefinition {
 
     public static final String DEFAULT_REPOSITORY_NAME = RepositoryConstants.CONFIG;
 
-    private String cssClass;
-
     private String path;
 
     private String repository = DEFAULT_REPOSITORY_NAME;
@@ -73,14 +71,6 @@ public class SelectFieldDefinition extends ConfiguredFieldDefinition {
 
     public void addOption(SelectFieldOptionDefinition option) {
         options.add(option);
-    }
-
-    public String getCssClass() {
-        return cssClass;
-    }
-
-    public void setCssClass(String cssClass) {
-        this.cssClass = cssClass;
     }
 
     public String getPath() {
