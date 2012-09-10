@@ -94,6 +94,7 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition> extends Ab
             this.field = buildField();
 
             // Get and set the DataSource property
+            // Set i18n property name
             Property property = getOrCreateProperty();
             setPropertyDataSource(property);
 
@@ -108,7 +109,6 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition> extends Ab
             // Set Constraints
             setConstraints();
 
-            // Set i18n property name
         }
         return this.field;
     }
