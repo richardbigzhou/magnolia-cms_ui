@@ -61,7 +61,7 @@ public class LinkFieldSelectionBuilderTest extends AbstractBuilderTest<LinkField
         ChooseDialogContentPresenter presenter = mock(ChooseDialogContentPresenter.class);
         SimpleEventBus eventBus = new SimpleEventBus();
         builder = new LinkFieldSelectionBuilder(definition, baseItem, presenter, eventBus);
-
+        builder.setI18nContentSupport(i18nContentSupport);
         // WHEN
         Field field = builder.getField();
 
@@ -76,6 +76,7 @@ public class LinkFieldSelectionBuilderTest extends AbstractBuilderTest<LinkField
         ChooseDialogContentPresenter presenter = mock(ChooseDialogContentPresenter.class);
         SimpleEventBus eventBus = new SimpleEventBus();
         builder = new LinkFieldSelectionBuilder(definition, baseItem, presenter, eventBus);
+        builder.setI18nContentSupport(i18nContentSupport);
         Field field = builder.getField();
         // WHEN
         eventBus.fireEvent(new ItemSelectedEvent(baseNode.getSession().getWorkspace().getName(), baseNode.getPath()));
@@ -94,6 +95,7 @@ public class LinkFieldSelectionBuilderTest extends AbstractBuilderTest<LinkField
         baseNode.setProperty("newProperty", "initial");
         baseItem = new JcrNodeAdapter(baseNode);
         builder = new LinkFieldSelectionBuilder(definition, baseItem, presenter, eventBus);
+        builder.setI18nContentSupport(i18nContentSupport);
         Field field = builder.getField();
 
         // WHEN

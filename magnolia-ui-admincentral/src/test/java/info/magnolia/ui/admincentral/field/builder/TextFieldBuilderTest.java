@@ -53,7 +53,7 @@ public class TextFieldBuilderTest extends AbstractBuilderTest<TextFieldDefinitio
     public void createSingleRowEditFieldTest() {
         // GIVEN
         dialogEdit = new TextFieldBuilder(definition, baseItem);
-
+        dialogEdit.setI18nContentSupport(i18nContentSupport);
         // WHEN
         Field field = dialogEdit.getField();
 
@@ -69,7 +69,7 @@ public class TextFieldBuilderTest extends AbstractBuilderTest<TextFieldDefinitio
         definition.setRows(2);
         definition.setWidth("88");
         dialogEdit = new TextFieldBuilder(definition, baseItem);
-
+        dialogEdit.setI18nContentSupport(i18nContentSupport);
         // WHEN
         Field field = dialogEdit.getField();
 

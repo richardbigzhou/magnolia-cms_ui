@@ -35,6 +35,7 @@ package info.magnolia.ui.admincentral.field.builder;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import info.magnolia.cms.i18n.DefaultI18nContentSupport;
 import info.magnolia.cms.i18n.DefaultMessagesManager;
 import info.magnolia.cms.i18n.MessagesManager;
 import info.magnolia.context.MgnlContext;
@@ -59,7 +60,8 @@ import com.vaadin.data.Item;
  * Abstract test class used to initialize the DialogField Tests.
  */
 public abstract class AbstractBuilderTest<D extends FieldDefinition> {
-
+    protected static final Locale DEFAULT_LOCALE = new Locale("en");
+    protected DefaultI18nContentSupport i18nContentSupport;
     protected final String workspaceName = "workspace";
     protected MockSession session;
     protected String propertyName = "propertyName";
@@ -74,7 +76,7 @@ public abstract class AbstractBuilderTest<D extends FieldDefinition> {
         DefaultMessagesManager manager = new DefaultMessagesManager();
         ComponentsTestUtil.setInstance(MessagesManager.class, manager);
         SystemContext systemContext = mock(SystemContext.class);
-        when(systemContext.getLocale()).thenReturn(new Locale("en"));
+        when(systemContext.getLocale()).thenReturn(DEFAULT_LOCALE);
         ComponentsTestUtil.setInstance(SystemContext.class, systemContext);
 
         //Init Session
@@ -90,6 +92,11 @@ public abstract class AbstractBuilderTest<D extends FieldDefinition> {
         Node rootNode = session.getRootNode();
         baseNode = rootNode.addNode(itemName);
         baseItem = new JcrNodeAdapter(baseNode);
+
+        // Init i18n
+        i18nContentSupport = new DefaultI18nContentSupport();
+        i18nContentSupport.setFallbackLocale(DEFAULT_LOCALE);
+
     }
 
     @After
