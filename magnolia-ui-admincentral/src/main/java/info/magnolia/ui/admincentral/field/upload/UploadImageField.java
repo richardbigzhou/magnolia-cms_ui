@@ -67,7 +67,7 @@ import com.vaadin.ui.Upload.StartedEvent;
  *  <li>Upload done Display (File Detail / Preview ...)
  * </ul>
  * Create the Preview Component.
- * Override update methods to add the specific images informations to the Item (Width / Height)
+ * Override update methods to add the specific images information to the Item (Width / Height).
  */
 public class UploadImageField extends AbstractUploadFileField {
 
