@@ -43,6 +43,7 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,7 +64,7 @@ import com.vaadin.ui.Upload.StartedEvent;
  * <ul>
  *  <li>Initial Display (no Images are yet uploaded)
  *  <li>Progress Display (ProgressBar / Cancel Button...)
- *  <li>Upload Finish Display (File Detail / Preview ...)
+ *  <li>Upload done Display (File Detail / Preview ...)
  * </ul>
  * Create the Preview Component.
  * Override update methods to add the specific images informations to the Item (Width / Height)
@@ -71,9 +72,13 @@ import com.vaadin.ui.Upload.StartedEvent;
 public class UploadImageField extends AbstractUploadFileField {
 
     private static final Logger log = LoggerFactory.getLogger(UploadImageField.class);
-    private String selectImage;
-    private String chooseNew;
-    private String dragHint;
+
+    private String selectImageCaption;
+    private String chooseNewCaption;
+    private String dragHintCaption;
+    private String fileNameCaption;
+    private String fileSizeCaption;
+
     private CssLayout layout;
     private JcrItemNodeAdapter item;
     private long imageWidth;
@@ -85,9 +90,9 @@ public class UploadImageField extends AbstractUploadFileField {
     public UploadImageField(JcrItemNodeAdapter item,  Shell shell) {
         super(item, shell);
         this.item = item;
-        selectImage = MessagesUtil.get("field.upload.select.image");
-        chooseNew = MessagesUtil.get("field.upload.choose.new");
-        dragHint = MessagesUtil.get("field.upload.drag.hint");
+
+        initMessages();
+
         layout = new CssLayout();
         layout.setSizeUndefined();
         setRootLayout(createDropZone(layout));
@@ -107,7 +112,7 @@ public class UploadImageField extends AbstractUploadFileField {
      * Initialize the root component.
      * Build the initial layout:
      *  - Default Layout if the incoming Item is empty.
-     *  - Upload Finish Layout with the Item Information if this Item is not empty.
+     *  - Upload done Layout with the Item Information if this Item is not empty.
      */
     @Override
     public void attach() {
@@ -170,13 +175,13 @@ public class UploadImageField extends AbstractUploadFileField {
     @Override
     protected void buildDefaultUploadLayout() {
         layout.removeAllComponents();
-        setUploadButtonCaption(selectImage);
+        setUploadButtonCaption(selectImageCaption);
         layout.addComponent(getDefaultComponent(DefaultComponent.UPLOAD));
-        Label uploadText = new Label(dragHint, Label.CONTENT_XHTML);
+        Label uploadText = new Label(dragHintCaption, Label.CONTENT_XHTML);
         uploadText.addStyleName("upload-text");
         layout.addComponent(uploadText);
         getRootLayout().removeStyleName("start");
-        getRootLayout().removeStyleName("finish");
+        getRootLayout().removeStyleName("done");
         getRootLayout().addStyleName("upload");
         getRootLayout().addStyleName("initial");
     }
@@ -184,15 +189,19 @@ public class UploadImageField extends AbstractUploadFileField {
     @Override
     public void refreshOnProgressUploadLayout(long readBytes, long contentLength) {
         super.refreshOnProgressUploadLayout(readBytes, contentLength);
+
+        try {
+            Thread.sleep(300);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
-    /**
-     * Handle View when the Upload is finished.
-     */
     @Override
-    public void buildFinishUploadLayout() {
+    public void buildDoneUploadLayout() {
         layout.removeAllComponents();
-        // Display Detail
+
         if (info) {
             Label detail = (Label)getDefaultComponent(DefaultComponent.FILE_DETAIL);
             detail.setValue(getDisplayDetails());
@@ -204,7 +213,7 @@ public class UploadImageField extends AbstractUploadFileField {
         actionLayout.addStyleName("buttons");
 
         //Change the Label of the Upload Button
-        setUploadButtonCaption(chooseNew);
+        setUploadButtonCaption(chooseNewCaption);
         actionLayout.addComponent(getDefaultComponent(DefaultComponent.UPLOAD));
         // if an Image was already uploaded, give the ability to remove it.
         if(item.getParent() != null && fileDeletion) {
@@ -218,39 +227,36 @@ public class UploadImageField extends AbstractUploadFileField {
             layout.addComponent(preview);
         }
         getRootLayout().addStyleName("upload");
-        getRootLayout().removeStyleName("start");
+        getRootLayout().removeStyleName("in-progress");
         getRootLayout().removeStyleName("initial");
-        getRootLayout().addStyleName("finish");
+        getRootLayout().addStyleName("done");
     }
 
     @Override
     public void buildStartUploadLayout() {
         super.buildStartUploadLayout();
         layout.removeAllComponents();
-        // Add Progress Bar
+
         if(progressInfo) {
             layout.addComponent(getDefaultComponent(DefaultComponent.PROGRESS_BAR));
         }
-        // Add Cancel Button
         layout.addComponent(getDefaultComponent(DefaultComponent.CANCEL_BUTTON));
 
-        getRootLayout().removeStyleName("finish");
+        getRootLayout().removeStyleName("done");
         getRootLayout().addStyleName("upload");
         getRootLayout().addStyleName("initial");
-        getRootLayout().addStyleName("start");
+        getRootLayout().addStyleName("in-progress");
     }
 
 
-    /**
-     * Create the Preview Image.
-     */
     @Override
     public Embedded createPreview() {
         ImageSize scaledImageSize;
         scaledImageSize = createImageSize().scaleToFitIfLarger(150, 150);
 
-        //Create resource
         final byte[] pngData = (byte[]) getLastBytesFile();
+
+        @SuppressWarnings("serial")
         Resource imageResource = new StreamResource(
             new StreamResource.StreamSource() {
                 @Override
@@ -278,10 +284,25 @@ public class UploadImageField extends AbstractUploadFileField {
     @Override
     protected String getDisplayDetails() {
         StringBuilder sb = new StringBuilder();
-        sb.append(super.getDisplayDetails());
-        ImageSize imageSize;
-        imageSize = createImageSize();
-        sb.append("</br>width: " + imageSize.getWidth() + " height: " + imageSize.getHeight());
+
+        sb.append("<span class=\"key\">");
+        sb.append(fileNameCaption);
+        sb.append("</span>");
+        sb.append("<span class=\"value\">");
+        sb.append(getLastFileName());
+        sb.append("</span>");
+
+        sb.append("</br>");
+
+        ImageSize imageSize = createImageSize();
+        sb.append("<span class=\"key\">");
+        sb.append(fileSizeCaption);
+        sb.append("</span>");
+        sb.append("<span class=\"value\">");
+        sb.append(imageSize.getWidth() + " x " + imageSize.getHeight() + ", ");
+        sb.append(FileUtils.byteCountToDisplaySize(getLastFileSize()));
+        sb.append("</span>");
+
         return sb.toString();
     }
 
@@ -297,5 +318,13 @@ public class UploadImageField extends AbstractUploadFileField {
              imageSize = new ImageSize((Long)item.getItemProperty(FileProperties.PROPERTY_WIDTH).getValue(), (Long)item.getItemProperty(FileProperties.PROPERTY_HEIGHT).getValue());
          }
         return imageSize;
+    }
+
+    private void initMessages() {
+        selectImageCaption = MessagesUtil.get("field.upload.select.image");
+        chooseNewCaption = MessagesUtil.get("field.upload.choose.new");
+        dragHintCaption = MessagesUtil.get("field.upload.drag.hint");
+        fileNameCaption = MessagesUtil.get("field.upload.file.name");
+        fileSizeCaption = MessagesUtil.get("field.upload.file.size");
     }
 }

@@ -48,7 +48,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -125,7 +124,7 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
     // Define global variable used by UploadFileField
     private File directory;
     private long maxUploadSize = Long.MAX_VALUE;
-    private String deleteFile;
+    private String deleteFileCaption;
 
     // Define global variable used by this implementation
     private JcrItemNodeAdapter item;
@@ -154,12 +153,12 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
 
     /**
      * Basic constructor.
-     * @param item used to store the File properties like binary data, file name....
+     * @param item used to store the File properties like binary data, file name, etc.
      */
     public AbstractUploadFileField(JcrItemNodeAdapter item, Shell shell) {
         this.item = item;
         this.shell = shell;
-        deleteFile = MessagesUtil.get("field.upload.delete.file");
+        deleteFileCaption = MessagesUtil.get("field.upload.delete.file");
         setStorageMode();
         createUpload();
     }
@@ -169,14 +168,14 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
      * Set the Upload field Components layout based on the current state.
      * <ul>
      * <li>- Initial:  --> buildDefaultUploadLayout()
-     * <li>- Complete: --> buildFinishUploadLayout()
+     * <li>- Complete: --> buildDoneUploadLayout()
      * </ul>
      */
     protected void updateDisplay() {
         if(getLastBytesFile()==null) {
             buildDefaultUploadLayout();
         } else {
-            buildFinishUploadLayout();
+            buildDoneUploadLayout();
         }
     }
 
@@ -334,7 +333,7 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
      * Create Delete button.
      */
     public Button createDeleteButton() {
-        this.deleteButton = new Button(deleteFile);
+        this.deleteButton = new Button(deleteFileCaption);
         this.deleteButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
@@ -414,7 +413,6 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
 
     @Override
     public void uploadFailed(FailedEvent event) {
-        //TODO Inform the end user.
         updateDisplay();
         log.warn("Upload failed for file {} ", event.getFilename());
     }
@@ -455,28 +453,22 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
             return;
         }
         setLastUploadData();
-        buildFinishUploadLayout();
+        buildDoneUploadLayout();
         fireValueChange(true);
         populateItemProperty();
     }
 
-    public void buildFinishUploadLayout() {
+    public void buildDoneUploadLayout() {
         if (this.fileDetail != null) {
             fileDetail.setValue(getDisplayDetails());
         }
     }
 
     /**
-     * @return the string representing the file. The default implementation
+     * @return a string representing relevant file info. By default returns an empty string.
      **/
     protected String getDisplayDetails() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("File: ");
-        sb.append(getLastFileName());
-        sb.append("</br> <em>");
-        sb.append("(" + FileUtils.byteCountToDisplaySize(getLastFileSize()) + " )");
-        sb.append("</em>");
-        return sb.toString();
+        return "";
     }
 
     /**
@@ -538,15 +530,15 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
     }
 
     /**
-     * Default implementation return always true.
-     * Child class should always override this method.
+     * Default implementation returns always true.
+     * Extending classes should always override this method.
      */
     public boolean isValidFile(StartedEvent event) {
         return true;
     }
 
     /**
-     * Populate the Item property (data/image name/...) Data is stored as a JCR Binary object.
+     * Populates the Item property (data/image name/...). Data is stored as a JCR Binary object.
      */
     protected void populateItemProperty() {
         // Attach the Item to the parent in order to be stored.

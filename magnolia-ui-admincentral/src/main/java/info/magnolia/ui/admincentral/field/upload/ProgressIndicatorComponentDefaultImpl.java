@@ -112,9 +112,14 @@ public class ProgressIndicatorComponentDefaultImpl extends CustomComponent imple
 
     @Override
     public void refreshOnProgressUploadLayout(long readBytes, long contentLength, String fileName) {
+        //TODO fgrilli for some reason this does not work with Double or Long and needs casting to primitive float. Not
+        //doing so won't update the progress indicator.
         progressIndicator.setValue(Float.valueOf(readBytes /(float)contentLength));
+
         uploadFileLocation.setValue(MessagesUtil.get("field.upload.uploading.file", new String[]{fileName}));
+
         uploadFileProgress.setValue(createPercentage(readBytes, contentLength));
+
         String bytesRead = FileUtils.byteCountToDisplaySize(readBytes);
         String totalBytes = FileUtils.byteCountToDisplaySize(contentLength);
         uploadFileRatio.setValue(MessagesUtil.get("field.upload.uploaded.file", new String[]{bytesRead, totalBytes}));
