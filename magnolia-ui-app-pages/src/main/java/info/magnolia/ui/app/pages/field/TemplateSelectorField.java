@@ -41,10 +41,11 @@ import info.magnolia.rendering.template.TemplateDefinition;
 import info.magnolia.rendering.template.assignment.TemplateDefinitionAssignment;
 import info.magnolia.ui.admincentral.field.builder.SelectFieldBuilder;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
+import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 import com.vaadin.data.Item;
 
@@ -63,16 +64,18 @@ public class TemplateSelectorField extends SelectFieldBuilder<TemplateSelectorDe
      * Returns the available templates based on the current node.
      */
     @Override
-    public Map<String, String> getOptions() {
-
+    public List<SelectFieldOptionDefinition> getSelectFieldOptionDefinition(){
+        List<SelectFieldOptionDefinition> res = new ArrayList<SelectFieldOptionDefinition>();
         TemplateDefinitionAssignment templateAssignment = Components.getComponent(TemplateDefinitionAssignment.class);
         Collection<TemplateDefinition> templates = templateAssignment.getAvailableTemplates(getRelatedNode(item));
 
-        Map<String, String> options = new HashMap<String, String>();
         for (TemplateDefinition templateDefinition : templates) {
-            options.put(templateDefinition.getId(), getI18nTitle(templateDefinition));
+            SelectFieldOptionDefinition option = new SelectFieldOptionDefinition();
+            option.setValue(templateDefinition.getId());
+            option.setLabel(getI18nTitle(templateDefinition));
+            res.add(option);
         }
-        return options;
+        return res;
     }
 
     @Override
