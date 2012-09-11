@@ -115,10 +115,13 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     private static final String SELECT_CONTENT = "select * from [mgnl:content] as content ";
 
-    private static final String JOIN_METADATA_ORDER_BY = "inner join [mgnl:metaData] as metaData on ischildnode(metaData,content) order by ";
+    private static final String JOIN_METADATA = "inner join [mgnl:metaData] as metaData on ischildnode(metaData,content) ";
+
+    private static final String ORDER_BY = "order by ";
 
     private static final String NAME_PROPERTY = "name";
 
+    // need to use name(..) function as name or jcr:name is not supported by JCR2.
     private static final String JCR_NAME_FUNCTION = "name(" + CONTENT_SELECTOR_NAME + ")";
 
     public AbstractJcrContainer(JcrContainerSource jcrContainerSource, WorkbenchDefinition workbenchDefinition) {
@@ -486,16 +489,20 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
         try {
             final StringBuilder stmt = new StringBuilder(SELECT_CONTENT);
-            if (!sorters.isEmpty()) {
+            if (sorters.isEmpty()) {
+                // no sorters set - apply default (sort by name)
+                stmt.append(ORDER_BY)
+                    .append(JCR_NAME_FUNCTION)
+                    .append(" asc");
+            } else {
                 // TODO one workaround to make this faster would be avoiding doing a join when we
                 // know for sure there are no properties from metadata to order by.
-                stmt.append(JOIN_METADATA_ORDER_BY);
+                stmt.append(JOIN_METADATA)
+                    .append(ORDER_BY);
                 String sortOrder;
                 for (OrderBy orderBy : sorters) {
                     sortOrder = orderBy.isAscending() ? " asc" : " desc";
                     if (NAME_PROPERTY.equals(orderBy.getProperty())) {
-                        // need to use name(..) function here as name or jcr:name is not supported
-                        // by JCR2.
                         stmt.append(JCR_NAME_FUNCTION)
                             .append(sortOrder)
                             .append(", ");

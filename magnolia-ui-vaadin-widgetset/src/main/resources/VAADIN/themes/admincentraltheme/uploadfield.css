@@ -14,7 +14,7 @@
   padding:0;
 }
 
-.upload-image-field  .v-ddwrapper.v-ddwrapper-over, .start {
+.upload-image-field  .v-ddwrapper.v-ddwrapper-over, .in-progress {
   background-color: #C1D8DF !important;
   border: 1px solid #4B8E9E !important;
 }
@@ -29,11 +29,11 @@
   -moz-border-radius: 0px;
 }
 
-.start {
+.in-progress {
   height: 118px !important;
 }
 
-.finish {
+.done {
   height: 188px !important;
 }
 
@@ -42,21 +42,35 @@
 }
 
 .file-details {
-  float: left;
-  margin-left: 2px;
+  top: 70px;
+  left: 185px;
+  position: absolute;
+}
+
+.file-details .key {
+  color: #666;
+  margin-right: 12px;
+  text-align: right;
+  width: 50px;
+  display: inline-block;
+}
+
+.file-details .value {
+ display: inline-block;
 }
 
 .image {
   position: absolute;
-  right: 10px;
-  top: 20px;
+  left: 20px;
+  top:20px;
+  bottom:20px;
 }
 
 .upload-image-field .buttons {
-  top: 70px;
+  bottom:20px;
+  left: 200px;
   padding: 0;
   position: absolute;
-  margin-left: 20px;
 }
 
 .upload-image-field .v-button {
@@ -73,6 +87,7 @@
   border-radius: 0px;
   -webkit-border-radius: 0px;
   -moz-border-radius: 0px;
+  height: 25px;
 }
 
 .upload-image-field .v-button .v-button-wrap {
@@ -93,6 +108,7 @@
 .initial .v-button {
   margin-top:30px;
   margin-left:20px;
+  width: 120px;
 }
 
 .upload-image-field  .v-button .v-button-caption {
