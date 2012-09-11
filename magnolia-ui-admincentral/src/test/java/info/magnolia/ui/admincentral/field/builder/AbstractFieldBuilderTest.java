@@ -193,7 +193,7 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
     /**
      * Dummy Implementation of AbstractDialogField.
      */
-    private class TestDialogField extends AbstractFieldBuilder<FieldDefinition> {
+    public static class TestDialogField extends AbstractFieldBuilder<FieldDefinition> {
 
         public TestDialogField(FieldDefinition definition, Item relatedFieldItem) {
             super(definition, relatedFieldItem);

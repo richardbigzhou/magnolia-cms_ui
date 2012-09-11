@@ -33,19 +33,21 @@
  */
 package info.magnolia.ui.admincentral.field.builder;
 
+import info.magnolia.ui.model.field.definition.FieldDefinition;
+import info.magnolia.ui.model.field.definition.TextFieldDefinition;
+
 import com.vaadin.data.Item;
+import com.vaadin.ui.AbstractTextField;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
-import org.apache.commons.lang.StringUtils;
-
-import info.magnolia.ui.model.field.definition.TextFieldDefinition;
-import info.magnolia.ui.model.field.definition.FieldDefinition;
 
 /**
  * Creates and initializes an edit field based on a field definition.
  */
 public class TextFieldBuilder extends AbstractFieldBuilder<TextFieldDefinition> {
+
+    private AbstractTextField field;
 
     public TextFieldBuilder(TextFieldDefinition definition, Item relatedFieldItem) {
         super(definition, relatedFieldItem);
@@ -53,32 +55,19 @@ public class TextFieldBuilder extends AbstractFieldBuilder<TextFieldDefinition> 
 
     @Override
     protected Field buildField() {
-        TextFieldDefinition editDefinition = definition;
-
-        if (editDefinition.getRows() > 1) {
-            return createMultiRowEditField(editDefinition);
+        // Create a TextArea if the rows > 1
+        if (definition.getRows() > 1) {
+            TextArea textArea = new TextArea();
+            textArea.setRows(definition.getRows());
+            field = textArea;
+        } else {
+            field = new TextField();
         }
-        return createSingleRowEditField(editDefinition);
+        field.setMaxLength(definition.getMaxLength());
 
+        return field;
     }
 
-    private Field createSingleRowEditField(TextFieldDefinition definition) {
-        TextField textField = new TextField();
-        textField.setMaxLength(definition.getMaxLength());
-        if (StringUtils.isNotEmpty(definition.getWidth())) {
-            textField.setWidth(definition.getWidth());
-        }
-        return textField;
-    }
-
-    private Field createMultiRowEditField(TextFieldDefinition definition) {
-        TextArea textArea = new TextArea();
-        textArea.setRows(definition.getRows());
-        if (StringUtils.isNotEmpty(definition.getWidth())) {
-            textArea.setWidth(definition.getWidth());
-        }
-        return textArea;
-    }
 
     @Override
     protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {

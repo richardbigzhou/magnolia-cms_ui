@@ -58,20 +58,21 @@ import com.vaadin.ui.Upload.StartedEvent;
 
 /**
  * Implementation of the Abstract {@link AbstractUploadFileField}.
- * Define the Layout for
- *  - Initial Display (no Images are yet uploaded)
- *  - Progress Display (ProgressBar / Cancel Button...)
- *  - Upload Finish Display (File Detail / Preview ...)
+ * <p>Define the Layout for
+ * <ul>
+ *  <li>Initial Display (no Images are yet uploaded)
+ *  <li>Progress Display (ProgressBar / Cancel Button...)
+ *  <li>Upload Finish Display (File Detail / Preview ...)
+ * </ul>
  * Create the Preview Component.
- *
  * Override update methods to add the specific images informations to the Item (Width / Height)
  */
 public class UploadImageField extends AbstractUploadFileField {
 
     private static final Logger log = LoggerFactory.getLogger(UploadImageField.class);
-    private static final String DEFAULT_UPLOAD_INITIAL_BUTTON_CAPTION = "Select an image";
+    private static final String DEFAULT_UPLOAD_INITIAL_BUTTON_CAPTION = "Select image...";
     private static final String DEFAULT_UPLOAD_ANOTHERL_BUTTON_CAPTION = "Choose new";
-    private static final String DEFAULT_DROP_ZONE_IMAGE_CAPTION = "or drag an image into this area";
+    private static final String DEFAULT_DROP_ZONE_IMAGE_CAPTION = "or <em>drag an image into this area</em> to upload it";
     private CssLayout layout;
     private JcrItemNodeAdapter item;
     private long imageWidth;
@@ -85,7 +86,6 @@ public class UploadImageField extends AbstractUploadFileField {
         this.item = item;
         layout = new CssLayout();
         layout.setSizeUndefined();
-        //Define the GridLayout as the whole drop zone and as root element.
         setRootLayout(createDropZone(layout));
         setCompositionRoot(getRootLayout());
 
@@ -93,13 +93,9 @@ public class UploadImageField extends AbstractUploadFileField {
         addStyleName("no-horizontal-drag-hints");
         addStyleName("no-vertical-drag-hints");
 
-        //Initialize a default Progress Indicator
         createProgressIndicator();
-        //Create cancel Button
         createCancelButton();
-        //Create Delete Button
         createDeleteButton();
-        //Init File Detail
         createFileDetail();
     }
 
@@ -134,15 +130,15 @@ public class UploadImageField extends AbstractUploadFileField {
      * Clear specific file informations.
      */
     @Override
-    public void clearLastUploadDatas() {
-        super.clearLastUploadDatas();
+    public void clearLastUploadData() {
+        super.clearLastUploadData();
         imageWidth = -1;
         imageHeight = -1;
     }
 
     @Override
-    public void setLastUploadDatas() {
-        super.setLastUploadDatas();
+    public void setLastUploadData() {
+        super.setLastUploadData();
         ImageSize imageSize;
         imageSize = ImageSize.valueOf(new ByteArrayInputStream(getLastBytesFile()));
         imageWidth = imageSize.getWidth();
@@ -172,9 +168,10 @@ public class UploadImageField extends AbstractUploadFileField {
         layout.removeAllComponents();
         setUploadButtonCaption(DEFAULT_UPLOAD_INITIAL_BUTTON_CAPTION);
         layout.addComponent(getDefaultComponent(DefaultComponent.UPLOAD));
-        Label uploadText = new Label(DEFAULT_DROP_ZONE_IMAGE_CAPTION);
+        Label uploadText = new Label(DEFAULT_DROP_ZONE_IMAGE_CAPTION, Label.CONTENT_XHTML);
         uploadText.addStyleName("upload-text");
         layout.addComponent(uploadText);
+        getRootLayout().removeStyleName("start");
         getRootLayout().removeStyleName("finish");
         getRootLayout().addStyleName("upload");
         getRootLayout().addStyleName("initial");
@@ -183,13 +180,6 @@ public class UploadImageField extends AbstractUploadFileField {
     @Override
     public void refreshOnProgressUploadLayout(long readBytes, long contentLength) {
         super.refreshOnProgressUploadLayout(readBytes, contentLength);
-        //JUST TO MAKE THE PROGRESS BAR VISIBLE
-        try {
-            Thread.sleep(10);
-        }
-        catch (InterruptedException e) {
-            log.error("",e);
-        }
     }
 
     /**
@@ -223,7 +213,6 @@ public class UploadImageField extends AbstractUploadFileField {
             Embedded preview = createPreview();
             layout.addComponent(preview);
         }
-        //set Color
         getRootLayout().addStyleName("upload");
         getRootLayout().removeStyleName("start");
         getRootLayout().removeStyleName("initial");
