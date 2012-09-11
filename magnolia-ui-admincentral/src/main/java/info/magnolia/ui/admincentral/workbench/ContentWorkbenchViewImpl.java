@@ -100,6 +100,7 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
         treeButton = buildButton(ViewType.TREE, "icon-view-tree", true);
         listButton = buildButton(ViewType.LIST, "icon-view-list", false);
         thumbsButton = buildButton(ViewType.THUMBNAIL, "icon-view-thumbnails", false);
+        viewTypeArrow = buildViewTypeArrow();
 
         viewModes.addComponent(treeButton);
         viewModes.addComponent(listButton);
@@ -107,7 +108,6 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
 
         contentViewContainer.setSizeFull();
         contentViewContainer.addComponent(viewModes);
-        viewTypeArrow = buildViewTypeArrow();
         contentViewContainer.addComponent(viewTypeArrow);
     }
 
