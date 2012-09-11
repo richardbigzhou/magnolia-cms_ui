@@ -82,7 +82,7 @@ import com.vaadin.ui.Embedded;
  * <li>a configurable action bar on the right hand side, showing the available operations for the
  * given workspace and the selected item.
  * </ul>
- *
+ * 
  * <p>
  * Its main configuration point is the {@link WorkbenchDefinition} through which one defines the JCR
  * workspace to connect to, the columns/properties to display, the available actions and so on.
@@ -121,7 +121,7 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
         this.actionbarPresenter = actionbarPresenter;
         this.workbenchDefinition = ((ContentAppDescriptor) appContext.getAppDescriptor()).getWorkbench();
 
-        if(this.workbenchDefinition.getThumbnailProvider() != null) {
+        if (this.workbenchDefinition.getThumbnailProvider() != null) {
             IMAGE_NODE_NAME = this.workbenchDefinition.getThumbnailProvider().getOriginalImageNodeName();
             log.debug("Original image node name is {}", IMAGE_NODE_NAME);
         }
@@ -135,7 +135,6 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
         view.setActionbarView(actionbar);
 
         bindHandlers();
-
         return view;
     }
 
@@ -166,19 +165,6 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
 
             @Override
             public void onItemSelected(ItemSelectedEvent event) {
-                // refresh action bar (context sensitivity)
-                if (event.getPath() != null) {
-                    actionbarPresenter.enable("delete");
-                } else {
-                    actionbarPresenter.disable("delete");
-                }
-
-                // if you want to enable/disable actions or groups
-                // actionbarPresenter.enable(...);
-                // actionbarPresenter.disable(...);
-                // actionbarPresenter.disableGroup(...);
-                // actionbarPresenter.enableGroup(...);
-
                 refreshActionbarPreviewImage(event.getPath(), event.getWorkspace());
             }
         });
@@ -201,6 +187,10 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
 
     public ContentWorkbenchView getView() {
         return view;
+    }
+
+    public ActionbarPresenter getActionbarPresenter() {
+        return actionbarPresenter;
     }
 
     /**
@@ -237,12 +227,13 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
                 final String nodeType = node.getProperty(FileProperties.CONTENT_TYPE).getString();
 
                 Resource imageResource = new StreamResource(
-                        new StreamResource.StreamSource() {
-                            @Override
-                            public InputStream getStream() {
-                                return new ByteArrayInputStream(pngData);
-                            }
-                        }, "", ContentWorkbenchPresenter.this.getView().asVaadinComponent().getApplication()) {
+                    new StreamResource.StreamSource() {
+
+                        @Override
+                        public InputStream getStream() {
+                            return new ByteArrayInputStream(pngData);
+                        }
+                    }, "", ContentWorkbenchPresenter.this.getView().asVaadinComponent().getApplication()) {
 
                     @Override
                     public String getMIMEType() {

@@ -219,6 +219,10 @@
     z-index:10;
 }
 
+.tablet .v-action.v-disabled {opacity:1;}
+.tablet .v-action.v-disabled .v-icon,
+.tablet .v-action.v-disabled .v-text {opacity:0.4;}
+
 
 .tablet .v-action .v-icon{
     left:20px;

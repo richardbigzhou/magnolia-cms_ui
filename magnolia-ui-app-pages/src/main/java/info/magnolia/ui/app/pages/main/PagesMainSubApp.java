@@ -33,9 +33,7 @@
  */
 package info.magnolia.ui.app.pages.main;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
 import info.magnolia.ui.framework.app.AbstractSubApp;
@@ -46,10 +44,14 @@ import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.view.View;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.commons.lang.StringUtils;
+
 
 /**
  * PagesMainSubApp.
@@ -58,9 +60,11 @@ public class PagesMainSubApp extends AbstractSubApp implements PagesMainView.Lis
 
     private static final String CAPTION = "Pages";
 
-    private PagesMainView view;
-    private ContentWorkbenchPresenter workbench;
-    private InstantPreviewDispatcher dispatcher;
+    private final PagesMainView view;
+
+    private final ContentWorkbenchPresenter workbench;
+
+    private final InstantPreviewDispatcher dispatcher;
 
     @Inject
     public PagesMainSubApp(final AppContext appContext, PagesMainView view, ContentWorkbenchPresenter workbench, @Named("subapp") EventBus subAppEventBus, InstantPreviewDispatcher dispatcher) {
@@ -73,6 +77,7 @@ public class PagesMainSubApp extends AbstractSubApp implements PagesMainView.Lis
             @Override
             public void onItemSelected(ItemSelectedEvent event) {
                 appContext.setSubAppLocation(PagesMainSubApp.this, createLocation(event.getPath()));
+                updateActions();
             }
         });
     }
@@ -89,7 +94,31 @@ public class PagesMainSubApp extends AbstractSubApp implements PagesMainView.Lis
         if (selectedItemPath != null) {
             workbench.selectPath(selectedItemPath);
         }
+        updateActions();
         return view;
+    }
+
+    private void updateActions() {
+        ActionbarPresenter actionbar = workbench.getActionbarPresenter();
+
+        // actions currently always disabled
+        actionbar.disable("move");
+        actionbar.disable("duplicate");
+
+        // actions disabled based on selection
+        if (workbench.getSelectedItemId() == null || workbench.getSelectedItemId().equals("/")) {
+            actionbar.disable("delete");
+            actionbar.disable("preview");
+            actionbar.disable("edit");
+            actionbar.disable("editProperties");
+            actionbar.disable("export");
+        } else {
+            actionbar.enable("delete");
+            actionbar.enable("preview");
+            actionbar.enable("edit");
+            actionbar.enable("editProperties");
+            actionbar.enable("export");
+        }
     }
 
     @Override
@@ -98,6 +127,7 @@ public class PagesMainSubApp extends AbstractSubApp implements PagesMainView.Lis
         if (selectedItemPath != null) {
             workbench.selectPath(selectedItemPath);
         }
+        updateActions();
     }
 
     @Override
