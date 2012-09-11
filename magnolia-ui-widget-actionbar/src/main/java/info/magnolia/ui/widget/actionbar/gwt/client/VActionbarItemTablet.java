@@ -35,7 +35,6 @@ package info.magnolia.ui.widget.actionbar.gwt.client;
 
 import info.magnolia.ui.widget.actionbar.gwt.client.event.ActionTriggerEvent;
 
-import com.google.gwt.core.shared.GWT;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
@@ -49,12 +48,47 @@ import com.vaadin.terminal.gwt.client.ui.Icon;
  */
 public class VActionbarItemTablet extends VActionbarItem {
 
-    public VActionbarItemTablet(VActionbarItemJSO data, VActionbarGroup group, EventBus eventBus, Icon icon, String cssClasses) {
-        super(data, group, eventBus, icon, cssClasses);
+    private boolean holdingTouch;
+
+    private Timer holdTimer;
+
+    private int row;
+
+    private int column;
+
+    public VActionbarItemTablet(VActionbarItemJSO data, VActionbarGroup group, EventBus eventBus, Icon icon) {
+        super(data, group, eventBus, icon);
+        initialize();
     }
 
-    public VActionbarItemTablet(VActionbarItemJSO data, VActionbarGroup group, EventBus eventBus, String cssClasses) {
-        super(data, group, eventBus, cssClasses);
+    public VActionbarItemTablet(VActionbarItemJSO data, VActionbarGroup group, EventBus eventBus) {
+        super(data, group, eventBus);
+        initialize();
+    }
+
+    public void setRow(int row) {
+        removeStyleName("row-" + this.row);
+        addStyleName("row-" + row);
+        this.row = row;
+    }
+
+    public void setColumn(int column) {
+        removeStyleName("col-" + this.column);
+        addStyleName("col-" + column);
+        this.column = column;
+    }
+
+    private void initialize() {
+        // Expand group row on timeout.
+        holdTimer = new Timer() {
+
+            @Override
+            public void run() {
+                holdingTouch = true;
+                removeStyleName("hover");
+                group.toggleHorizontal();
+            }
+        };
     }
 
     @Override
@@ -62,46 +96,31 @@ public class VActionbarItemTablet extends VActionbarItem {
 
         DOM.sinkEvents(getElement(), Event.TOUCHEVENTS);
 
-        delegate.addTouchStartHandler(new TouchStartHandler() {
+        handlers.add(delegate.addTouchStartHandler(new TouchStartHandler() {
 
             @Override
             public void onTouchStart(com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent event) {
-
-                GWT.log("Button TouchStart");
+                holdingTouch = false;
                 addStyleName("hover");
-
-                // Expand group row on timeout.
-                final Timer t = new Timer() {
-
-                    @Override
-                    public void run() {
-                        removeStyleName("hover");
-                        group.toggleHorizontal();
-
-                        touchEndHandler.removeHandler();
-                    }
-                };
-                t.schedule(400);
-
-                // Fire standard action on click.
-                touchEndHandler = delegate.addTouchEndHandler(new com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler() {
-
-                    @Override
-                    public void onTouchEnd(com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent event) {
-                        removeStyleName("hover");
-
-                        t.cancel();
-                        touchEndHandler.removeHandler();
-
-                        if (data.isEnabled()) {
-                            eventBus.fireEvent(new ActionTriggerEvent(data.getName(), VActionbarItemTablet.this));
-                        }
-
-                        group.closeHorizontal();
-                    }
-                });
-
+                if (column == 0) {
+                    holdTimer.schedule(400);
+                }
             }
-        });
+        }));
+
+        handlers.add(delegate.addTouchEndHandler(new com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler() {
+
+            @Override
+            public void onTouchEnd(com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent event) {
+                removeStyleName("hover");
+                holdTimer.cancel();
+
+                if (!holdingTouch) {
+                    eventBus.fireEvent(new ActionTriggerEvent(data.getName(), VActionbarItemTablet.this));
+                    group.closeHorizontal();
+                }
+            }
+        }));
+
     }
 }

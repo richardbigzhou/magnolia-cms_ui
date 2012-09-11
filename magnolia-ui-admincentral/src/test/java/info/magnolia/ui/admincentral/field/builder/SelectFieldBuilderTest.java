@@ -46,10 +46,10 @@ import javax.jcr.Node;
 import org.junit.Test;
 
 import com.vaadin.ui.Field;
-import com.vaadin.ui.NativeSelect;
+import com.vaadin.ui.Select;
 
 /**
- * Main testcase for {@link DateFieldBuilder}.
+ * Main testcase for {@link SelectFieldBuilder}.
  */
 public class SelectFieldBuilderTest extends AbstractBuilderTest<SelectFieldDefinition> {
 
@@ -65,8 +65,8 @@ public class SelectFieldBuilderTest extends AbstractBuilderTest<SelectFieldDefin
         Field field = dialogSelect.getField();
 
         // THEN
-        assertEquals(true, field instanceof NativeSelect);
-        Collection<?> items = ((NativeSelect)field).getItemIds();
+        assertEquals(true, field instanceof Select);
+        Collection<?> items = ((Select)field).getItemIds();
         assertEquals(3, items.size());
         assertEquals("1", field.getValue().toString());
     }
@@ -124,7 +124,7 @@ public class SelectFieldBuilderTest extends AbstractBuilderTest<SelectFieldDefin
         Field field = dialogSelect.getField();
 
         // THEN
-        Collection<?> items = ((NativeSelect)field).getItemIds();
+        Collection<?> items = ((Select)field).getItemIds();
         assertEquals(2, items.size());
         assertEquals("en", field.getValue().toString());
     }
@@ -156,7 +156,7 @@ public class SelectFieldBuilderTest extends AbstractBuilderTest<SelectFieldDefin
         Field field = dialogSelect.getField();
 
         // THEN
-        Collection<?> items = ((NativeSelect)field).getItemIds();
+        Collection<?> items = ((Select)field).getItemIds();
         assertEquals(2, items.size());
         assertEquals("fr", field.getValue().toString());
     }
