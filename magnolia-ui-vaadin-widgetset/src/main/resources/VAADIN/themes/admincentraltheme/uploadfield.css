@@ -73,6 +73,7 @@
   border-radius: 0px;
   -webkit-border-radius: 0px;
   -moz-border-radius: 0px;
+  height: 25px;
 }
 
 .upload-image-field .v-button .v-button-wrap {
@@ -93,6 +94,7 @@
 .initial .v-button {
   margin-top:30px;
   margin-left:20px;
+  width: 120px;
 }
 
 .upload-image-field  .v-button .v-button-caption {
