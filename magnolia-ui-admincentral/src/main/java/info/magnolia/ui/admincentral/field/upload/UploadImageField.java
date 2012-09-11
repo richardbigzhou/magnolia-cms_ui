@@ -35,6 +35,7 @@ package info.magnolia.ui.admincentral.field.upload;
 
 import info.magnolia.cms.beans.runtime.FileProperties;
 import info.magnolia.cms.core.MgnlNodeType;
+import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.admincentral.image.ImageSize;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
@@ -70,9 +71,9 @@ import com.vaadin.ui.Upload.StartedEvent;
 public class UploadImageField extends AbstractUploadFileField {
 
     private static final Logger log = LoggerFactory.getLogger(UploadImageField.class);
-    private static final String DEFAULT_UPLOAD_INITIAL_BUTTON_CAPTION = "Select image...";
-    private static final String DEFAULT_UPLOAD_ANOTHERL_BUTTON_CAPTION = "Choose new";
-    private static final String DEFAULT_DROP_ZONE_IMAGE_CAPTION = "or <em>drag an image into this area</em> to upload it";
+    private String selectImage;
+    private String chooseNew;
+    private String dragHint;
     private CssLayout layout;
     private JcrItemNodeAdapter item;
     private long imageWidth;
@@ -84,6 +85,9 @@ public class UploadImageField extends AbstractUploadFileField {
     public UploadImageField(JcrItemNodeAdapter item,  Shell shell) {
         super(item, shell);
         this.item = item;
+        selectImage = MessagesUtil.get("field.upload.select.image");
+        chooseNew = MessagesUtil.get("field.upload.choose.new");
+        dragHint = MessagesUtil.get("field.upload.drag.hint");
         layout = new CssLayout();
         layout.setSizeUndefined();
         setRootLayout(createDropZone(layout));
@@ -166,9 +170,9 @@ public class UploadImageField extends AbstractUploadFileField {
     @Override
     protected void buildDefaultUploadLayout() {
         layout.removeAllComponents();
-        setUploadButtonCaption(DEFAULT_UPLOAD_INITIAL_BUTTON_CAPTION);
+        setUploadButtonCaption(selectImage);
         layout.addComponent(getDefaultComponent(DefaultComponent.UPLOAD));
-        Label uploadText = new Label(DEFAULT_DROP_ZONE_IMAGE_CAPTION, Label.CONTENT_XHTML);
+        Label uploadText = new Label(dragHint, Label.CONTENT_XHTML);
         uploadText.addStyleName("upload-text");
         layout.addComponent(uploadText);
         getRootLayout().removeStyleName("start");
@@ -200,7 +204,7 @@ public class UploadImageField extends AbstractUploadFileField {
         actionLayout.addStyleName("buttons");
 
         //Change the Label of the Upload Button
-        setUploadButtonCaption(DEFAULT_UPLOAD_ANOTHERL_BUTTON_CAPTION);
+        setUploadButtonCaption(chooseNew);
         actionLayout.addComponent(getDefaultComponent(DefaultComponent.UPLOAD));
         // if an Image was already uploaded, give the ability to remove it.
         if(item.getParent() != null && fileDeletion) {
