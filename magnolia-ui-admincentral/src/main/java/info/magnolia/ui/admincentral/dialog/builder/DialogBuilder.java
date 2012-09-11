@@ -82,14 +82,12 @@ public class DialogBuilder {
 
             for (FieldDefinition fieldDefinition : tabDefinition.getFields()) {
 
-                // Create the DialogField
                 FieldBuilder dialogField = dialogFieldFactory.create(fieldDefinition, item);
                 if(dialogField == null) {
                     continue; //This happen in case of extends=override. fieldDefinition is ConfiguredFieldDefinition and of course no builder is linked to this.
                 }
                 dialogField.setParent(tab);
 
-                // Get the Vaadin Field
                 Field field = dialogField.getField();
 
                 if (field instanceof AbstractComponent) {

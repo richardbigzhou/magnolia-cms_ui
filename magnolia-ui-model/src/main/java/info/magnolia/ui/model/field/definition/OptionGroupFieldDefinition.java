@@ -38,8 +38,6 @@ package info.magnolia.ui.model.field.definition;
  */
 public class OptionGroupFieldDefinition extends SelectFieldDefinition {
 
-    private int columns = 1;
-
     private boolean multiselect = false;
 
     public boolean isMultiselect() {
@@ -48,14 +46,6 @@ public class OptionGroupFieldDefinition extends SelectFieldDefinition {
 
     public void setMultiselect(boolean multiple) {
         this.multiselect = multiple;
-    }
-
-    public int getColumns() {
-        return columns;
-    }
-
-    public void setColumns(int columns) {
-        this.columns = columns;
     }
 
 }

@@ -218,7 +218,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
                 TemplateDefinition paragraphInfo = templateDefinitionRegistry.getTemplateDefinition(tokens[i]);
                 SelectFieldOptionDefinition option = new SelectFieldOptionDefinition();
                 option.setValue(paragraphInfo.getId());
-                option.setName(TemplateSelectorField.getI18nTitle(paragraphInfo));
+                option.setLabel(TemplateSelectorField.getI18nTitle(paragraphInfo));
                 selector.addOption(option);
 
             } catch (RegistrationException e) {

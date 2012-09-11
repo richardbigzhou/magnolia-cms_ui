@@ -1,0 +1,148 @@
+/**
+ * This file Copyright (c) 2010-2012 Magnolia International
+ * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
+ *
+ *
+ * This file is dual-licensed under both the Magnolia
+ * Network Agreement and the GNU General Public License.
+ * You may elect to use one or the other of these licenses.
+ *
+ * This file is distributed in the hope that it will be
+ * useful, but AS-IS and WITHOUT ANY WARRANTY; without even the
+ * implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE, TITLE, or NONINFRINGEMENT.
+ * Redistribution, except as permitted by whichever of the GPL
+ * or MNA you select, is prohibited.
+ *
+ * 1. For the GPL license (GPL), you can redistribute and/or
+ * modify this file under the terms of the GNU General
+ * Public License, Version 3, as published by the Free Software
+ * Foundation.  You should have received a copy of the GNU
+ * General Public License, Version 3 along with this program;
+ * if not, write to the Free Software Foundation, Inc., 51
+ * Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ * 2. For the Magnolia Network Agreement (MNA), this file
+ * and the accompanying materials are made available under the
+ * terms of the MNA which accompanies this distribution, and
+ * is available at http://www.magnolia-cms.com/mna.html
+ *
+ * Any modifications to this file must keep this entire header
+ * intact.
+ *
+ */
+package info.magnolia.ui.admincentral.field.builder;
+
+import static org.junit.Assert.assertEquals;
+import info.magnolia.ui.model.field.definition.OptionGroupFieldDefinition;
+import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+import org.junit.Test;
+
+import com.vaadin.ui.Field;
+import com.vaadin.ui.OptionGroup;
+
+/**
+ * Main testcase for {@link OptionGroupFieldBuilder}.
+ */
+public class OptionGroupFieldBuilderTest extends AbstractBuilderTest<OptionGroupFieldDefinition> {
+
+    private OptionGroupFieldBuilder dialogSelect;
+
+    @Test
+    public void simpleRadioFieldTest() throws Exception{
+        // GIVEN
+        dialogSelect = new OptionGroupFieldBuilder(definition, baseItem);
+        dialogSelect.setI18nContentSupport(i18nContentSupport);
+
+        // WHEN
+        Field field = dialogSelect.getField();
+
+        // THEN
+        assertEquals(true, field instanceof OptionGroup);
+        Collection<?> items = ((OptionGroup)field).getItemIds();
+        assertEquals(3, items.size());
+        assertEquals("1", field.getValue().toString());
+    }
+
+    @Test
+    public void selectedRadioFieldTest() throws Exception{
+        // GIVEN
+        definition.setDefaultValue("3");
+        dialogSelect = new OptionGroupFieldBuilder(definition, baseItem);
+        dialogSelect.setI18nContentSupport(i18nContentSupport);
+
+        // WHEN
+        Field field = dialogSelect.getField();
+
+        // THEN
+        assertEquals("3", field.getValue().toString());
+    }
+
+
+    @Test
+    public void simpleCheckBoxFieldTest() throws Exception{
+        // GIVEN
+        definition.setMultiselect(true);
+        dialogSelect = new OptionGroupFieldBuilder(definition, baseItem);
+        dialogSelect.setI18nContentSupport(i18nContentSupport);
+
+        // WHEN
+        Field field = dialogSelect.getField();
+
+        // THEN
+        assertEquals(true, field instanceof OptionGroup);
+        Collection<?> items = ((OptionGroup)field).getItemIds();
+        assertEquals(3, items.size());
+        assertEquals("[]", field.getValue().toString());
+    }
+
+    @SuppressWarnings("rawtypes")
+    @Test
+    public void multiSelectCheckBoxFieldTest() throws Exception{
+        // GIVEN
+        definition.setMultiselect(true);
+        dialogSelect = new OptionGroupFieldBuilder(definition, baseItem);
+        dialogSelect.setI18nContentSupport(i18nContentSupport);
+        Field field = dialogSelect.getField();
+        // WHEN
+        ArrayList<String> selected = new ArrayList<String>();
+        selected.add("1");
+        selected.add("3");
+        ((OptionGroup)field).setValue(selected);
+
+        // THEN
+        assertEquals(2, ((Collection)field.getValue()).toArray().length);
+        assertEquals("3", ((Collection)field.getValue()).toArray()[0]);
+        assertEquals("1", ((Collection)field.getValue()).toArray()[1]);
+    }
+
+
+    @Override
+    protected void createConfiguredFieldDefinition() {
+        OptionGroupFieldDefinition fieldDefinition = new OptionGroupFieldDefinition();
+        fieldDefinition = (OptionGroupFieldDefinition)AbstractFieldBuilderTest.createConfiguredFieldDefinition(fieldDefinition, propertyName);
+        fieldDefinition.setDefaultValue(null);
+        SelectFieldOptionDefinition option1 = new SelectFieldOptionDefinition();
+        option1.setLabel("One");
+        option1.setValue("1");
+
+        SelectFieldOptionDefinition option2 = new SelectFieldOptionDefinition();
+        option2.setLabel("Two");
+        option2.setValue("2");
+
+        SelectFieldOptionDefinition option3 = new SelectFieldOptionDefinition();
+        option3.setLabel("Three");
+        option3.setValue("3");
+
+        fieldDefinition.addOption(option1);
+        fieldDefinition.addOption(option2);
+        fieldDefinition.addOption(option3);
+
+        this.definition = fieldDefinition;
+    }
+
+}
