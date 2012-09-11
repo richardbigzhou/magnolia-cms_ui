@@ -53,30 +53,29 @@ public class TextFieldBuilderTest extends AbstractBuilderTest<TextFieldDefinitio
     public void createSingleRowEditFieldTest() {
         // GIVEN
         dialogEdit = new TextFieldBuilder(definition, baseItem);
-
+        dialogEdit.setI18nContentSupport(i18nContentSupport);
         // WHEN
         Field field = dialogEdit.getField();
 
         // THEN
         assertEquals(true, field instanceof TextField);
-        assertEquals(50, field.getWidth(),0);
-        assertEquals(8, field.getWidthUnits());
+        assertEquals(-1, ((TextField)field).getMaxLength());
     }
 
     @Test
     public void createMultiRowEditField() {
         // GIVEN
         definition.setRows(2);
-        definition.setWidth("88");
+        definition.setMaxLength(250);
         dialogEdit = new TextFieldBuilder(definition, baseItem);
-
+        dialogEdit.setI18nContentSupport(i18nContentSupport);
         // WHEN
         Field field = dialogEdit.getField();
 
         // THEN
         assertEquals(true, field instanceof TextArea);
         assertEquals(2, ((TextArea)field).getRows());
-        assertEquals(88, field.getWidth(),0);
+        assertEquals(250, ((TextArea)field).getMaxLength());
         assertEquals(0, field.getWidthUnits());
     }
 
@@ -87,8 +86,7 @@ public class TextFieldBuilderTest extends AbstractBuilderTest<TextFieldDefinitio
         fieldDefinition = (TextFieldDefinition)AbstractFieldBuilderTest.createConfiguredFieldDefinition(fieldDefinition, propertyName);
 
         fieldDefinition.setRows(0);
-        fieldDefinition.setMaxLength(0);
-        fieldDefinition.setWidth("50%");
+
         this.definition = fieldDefinition;
     }
 

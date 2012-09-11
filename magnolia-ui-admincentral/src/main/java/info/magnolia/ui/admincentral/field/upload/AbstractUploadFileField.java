@@ -35,6 +35,7 @@ package info.magnolia.ui.admincentral.field.upload;
 
 import info.magnolia.cms.beans.runtime.FileProperties;
 import info.magnolia.cms.core.MgnlNodeType;
+import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.cms.util.PathUtil;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
@@ -72,6 +73,7 @@ import com.vaadin.ui.DragAndDropWrapper.WrapperTransferable;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Html5File;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.Upload;
 import com.vaadin.ui.Upload.FailedEvent;
 import com.vaadin.ui.Upload.FailedListener;
@@ -86,33 +88,32 @@ import com.vaadin.ui.Upload.StartedListener;
 /**
  * Main implementation of the UploadFile field.
  * This implementation used some features of {@link org.vaadin.easyuploads.UploadField} and associated classes.
- *
+ *<p>
  * This class handle Upload features (Open file chooser/drag and drop) and components (progress bar, cancel/delete button...),
  * and expose functions that allows to customize the 3 main upload states:
- *   on {@link StartedEvent}:   buildStartUploadLayout() is called and allows to initialize the upload progress view.
- *   on {@link FinishedEvent}:  buildFinishUploadLayout() is used to initialize the success Upload view (preview image, File summary..)
- *   on Initialization, implement abstract buildDefaultUploadLayout() to initialize the initial Upload view (Upload Button...)
- *
+ * <ul>
+ *   <li>on {@link StartedEvent}:   buildStartUploadLayout() is called and allows to initialize the upload progress view.
+ *   <li>on {@link FinishedEvent}:  buildFinishUploadLayout() is used to initialize the success Upload view (preview image, File summary..)
+ *   <li>on Initialization, implement abstract buildDefaultUploadLayout() to initialize the initial Upload view (Upload Button...)
+ * </ul>
  * In addition, this class create basic components defined by {@link DefaultComponent}.
  * From your code: calling createCancelButton(), will add the button to the defaultComponent Map,
  * and later to access this button, just perform a getDefaultComponent(DefaultComponent defaultComponent).
- *
+ *<p>
  * {@link org.vaadin.easyuploads.FileFactory} is defined based on the UploadFileDirectory set.
  *  If this directory is null, {@link org.vaadin.easyuploads.TempFileFactory} is used.
  *  Else {@link org.vaadin.easyuploads.DirectoryFileFactory} is used.
- *
+ *<p>
  * <b>Restriction:</b>
- *  In opposite to {@link org.vaadin.easyuploads.UploadField} we only support
- *   file storage mode: {@link org.vaadin.easyuploads.UploadField.StorageMode#FILE}
- *   byte[] property ({@link org.vaadin.easyuploads.UploadField.FieldType#BYTE_ARRAY})
- *
+ *  Unlike {@link org.vaadin.easyuploads.UploadField} we only support
+ *  <ul>
+ *  <li>file storage mode: {@link org.vaadin.easyuploads.UploadField.StorageMode#FILE}
+ *  <li>byte[] property ({@link org.vaadin.easyuploads.UploadField.FieldType#BYTE_ARRAY})
+ *  </ul>
  */
 public abstract class AbstractUploadFileField extends CustomField implements StartedListener, FinishedListener, ProgressListener, FailedListener, DropHandler, UploadFileField {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractUploadFileField.class);
-    protected static final String DEFAULT_DELETE_BUTTON_CAPTION = "Delete File";
-    protected static final String DEFAULT_CANCEL_BUTTON_CAPTION = "Cancel";
-    protected static final String DEFAULT_DROP_ZONE_CAPTION = "Drag and Drop an File";
 
     protected boolean preview = true;
     protected boolean info = true;
@@ -124,6 +125,7 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
     // Define global variable used by UploadFileField
     private File directory;
     private long maxUploadSize = Long.MAX_VALUE;
+    private String deleteFile;
 
     // Define global variable used by this implementation
     private JcrItemNodeAdapter item;
@@ -142,12 +144,12 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
     private AbstractComponentContainer root;
     private DragAndDropWrapper dropZone;
 
-    // Define last successful Upload datas
+    // Define last successful Upload data
     private byte[] lastBytesFile;
     private String lastMimeType;
     private String lastFileName;
     private long lastFileSize;
-    //Used to force the refresh of the Uploading view in cse of Drag and Drop.
+    //Used to force the refresh of the Uploading view in case of Drag and Drop.
     private Shell shell;
 
     /**
@@ -157,6 +159,7 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
     public AbstractUploadFileField(JcrItemNodeAdapter item, Shell shell) {
         this.item = item;
         this.shell = shell;
+        deleteFile = MessagesUtil.get("field.upload.delete.file");
         setStorageMode();
         createUpload();
     }
@@ -164,8 +167,10 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
 
     /**
      * Set the Upload field Components layout based on the current state.
-     *  - Complete: --> buildFinishUploadLayout()
-     *  - Initial:  --> buildDefaultUploadLayout()
+     * <ul>
+     * <li>- Initial:  --> buildDefaultUploadLayout()
+     * <li>- Complete: --> buildFinishUploadLayout()
+     * </ul>
      */
     protected void updateDisplay() {
         if(getLastBytesFile()==null) {
@@ -280,6 +285,7 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
 
     // Used to handle Cancel / Interrupted upload in the DragAndDrop implementation.
     private boolean interruptedDragAndDropUpload = false;
+
     private void setDragAndDropUploadInterrupted(boolean isInterrupetd) {
         interruptedDragAndDropUpload = isInterrupetd;
     }
@@ -328,13 +334,13 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
      * Create Delete button.
      */
     public Button createDeleteButton() {
-        this.deleteButton = new Button(DEFAULT_DELETE_BUTTON_CAPTION);
+        this.deleteButton = new Button(deleteFile);
         this.deleteButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
                 //Remove link between item and parent. In this case the child File Item will not be persisted.
                 item.getParent().removeChild(item);
-                clearLastUploadDatas();
+                clearLastUploadData();
                 updateDisplay();
             }
         });
@@ -347,8 +353,7 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
      * Create Cancel button.
      */
     public Button createCancelButton() {
-        this.cancelButton = new Button(DEFAULT_CANCEL_BUTTON_CAPTION);
-        this.cancelButton.addListener(new Button.ClickListener() {
+        this.cancelButton = new NativeButton(null, new Button.ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
                 upload.interruptUpload();
@@ -407,13 +412,11 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
         return this.defaultComponent;
     }
 
-
-
     @Override
     public void uploadFailed(FailedEvent event) {
         //TODO Inform the end user.
         updateDisplay();
-        log.info("Upload Faild for file {} ", event.getFilename());
+        log.warn("Upload failed for file {} ", event.getFilename());
     }
 
     /**
@@ -451,7 +454,7 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
             uploadFailed((FailedEvent) event);
             return;
         }
-        setLastUploadDatas();
+        setLastUploadData();
         buildFinishUploadLayout();
         fireValueChange(true);
         populateItemProperty();
@@ -486,7 +489,7 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
             buildStartUploadLayout();
         } else {
             setDragAndDropUploadInterrupted(true);
-            getWindow().showNotification("Upload Canceleld: Unsuported FileType "+event.getMIMEType());
+            getWindow().showNotification("Upload canceled due to unsupported file type "+ event.getMIMEType());
             upload.interruptUpload();
         }
     }
@@ -503,7 +506,7 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
      * Clear local Uploaded file Info.
      * Mainly called by the Delete Action Button.
      */
-    public void clearLastUploadDatas() {
+    public void clearLastUploadData() {
         setLastBytesFile(null);
         setLastFileName(null);
         setLastFileSize(-1);
@@ -511,7 +514,7 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
     }
 
 
-    public void setLastUploadDatas() {
+    public void setLastUploadData() {
         setLastBytesFile((byte[])receiver.getValue());
         setLastFileName(receiver.getLastFileName());
         setLastFileSize(receiver.getLastFileSize());

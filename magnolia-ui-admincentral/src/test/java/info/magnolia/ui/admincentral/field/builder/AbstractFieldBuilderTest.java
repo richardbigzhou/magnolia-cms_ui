@@ -64,6 +64,7 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
     public void simpleInitializationTest() {
         // GIVEN
         abstractDialogField = new TestDialogField(definition, baseItem);
+        abstractDialogField.setI18nContentSupport(i18nContentSupport);
         // WHEN
         Field field = abstractDialogField.getField();
         // THEN
@@ -80,6 +81,7 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
     public void changePropertyValueTest() throws Exception{
         // GIVEN
         abstractDialogField = new TestDialogField(definition, baseItem);
+        abstractDialogField.setI18nContentSupport(i18nContentSupport);
         Field field = abstractDialogField.getField();
 
         // WHEN
@@ -102,8 +104,9 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
         baseNode.setProperty(propertyName, "value");
         baseItem = new JcrNodeAdapter(baseNode);
         //Set do not change
-        definition.setSaveInfo(false);
+        definition.setReadOnly(false);
         abstractDialogField = new TestDialogField(definition, baseItem);
+        abstractDialogField.setI18nContentSupport(i18nContentSupport);
         Field field = abstractDialogField.getField();
 
         // WHEN
@@ -112,7 +115,7 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
         // THEN
         Node res = ((JcrNodeAdapter)baseItem).getNode();
         assertEquals(true, res.hasProperty(propertyName));
-        assertEquals("value", res.getProperty(propertyName).getString());
+        assertEquals("new Value", res.getProperty(propertyName).getString());
         Property p = baseItem.getItemProperty(propertyName);
         assertEquals("new Value", p.getValue().toString());
 
@@ -125,6 +128,7 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
         definition.setType("Double");
         definition.setDefaultValue("");
         abstractDialogField = new TestDialogField(definition, baseItem);
+        abstractDialogField.setI18nContentSupport(i18nContentSupport);
         Field field = abstractDialogField.getField();
 
         // WHEN
@@ -147,6 +151,7 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
         // GIVEN
         definition.setLabel("message.label");
         abstractDialogField = new TestDialogField(definition, baseItem);
+        abstractDialogField.setI18nContentSupport(i18nContentSupport);
 
         // WHEN
         Field field = abstractDialogField.getField();
@@ -161,6 +166,7 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
         // GIVEN
         definition.setRequired(true);
         abstractDialogField = new TestDialogField(definition, baseItem);
+        abstractDialogField.setI18nContentSupport(i18nContentSupport);
 
         // WHEN
         Field field = abstractDialogField.getField();
@@ -179,7 +185,7 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
         configureFieldDefinition.setLabel("label");
         configureFieldDefinition.setName(propertyName);
         configureFieldDefinition.setRequired(false);
-        configureFieldDefinition.setSaveInfo(true);
+        configureFieldDefinition.setReadOnly(false);
         configureFieldDefinition.setType("String");
         return configureFieldDefinition;
     }
@@ -187,7 +193,7 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
     /**
      * Dummy Implementation of AbstractDialogField.
      */
-    private class TestDialogField extends AbstractFieldBuilder<FieldDefinition> {
+    public static class TestDialogField extends AbstractFieldBuilder<FieldDefinition> {
 
         public TestDialogField(FieldDefinition definition, Item relatedFieldItem) {
             super(definition, relatedFieldItem);

@@ -14,7 +14,7 @@
   padding:0;
 }
 
-.upload-image-field  .v-ddwrapper.v-ddwrapper-over {
+.upload-image-field  .v-ddwrapper.v-ddwrapper-over, .start {
   background-color: #C1D8DF !important;
   border: 1px solid #4B8E9E !important;
 }
@@ -53,9 +53,10 @@
 }
 
 .upload-image-field .buttons {
-  top: 80px;
+  top: 70px;
   padding: 0;
   position: absolute;
+  margin-left: 20px;
 }
 
 .upload-image-field .v-button {
@@ -72,11 +73,12 @@
   border-radius: 0px;
   -webkit-border-radius: 0px;
   -moz-border-radius: 0px;
-  width: 160px !important;
+  height: 25px;
 }
 
-.buttons .v-button .v-button-wrap {
+.upload-image-field .v-button .v-button-wrap {
   background: none;
+  padding:0;
 }
 
 .upload-image-field .v-button.delete {
@@ -90,25 +92,74 @@
 }
 
 .initial .v-button {
-  margin-top: 35px;
-  line-height: inherit;
+  margin-top:30px;
+  margin-left:20px;
+  width: 120px;
 }
 
-.initial .v-button .v-button-wrap {
-  background: none;
-}
-
-.buttons .v-button .v-button-caption {
-  line-height: inherit;
+.upload-image-field  .v-button .v-button-caption {
+  line-height: normal;
 }
 
 .upload-text {
   width: auto !important;
-  margin-top: -25px;
-  margin-right: 65px;
-  float: right;
+  position: absolute;
+  top: 46px;
+  left: 160px;
+  color: #999
 }
 
-.upload-image-field .v-upload-immediate input {
-    cursor:pointer;
+.upload-text em {
+  color: black ;
+  font-style: normal;
+}
+
+/* Progress indicator styles*/
+.uploading-progress-indicator {
+    margin: 0 0 0 20px;
+    padding: 0;
+    height: auto;
+}
+
+.uploading-progress-indicator .v-progressindicator-wrapper, .v-progressindicator-indicator {
+    background: #94B9C6;
+    height: 22px;
+    border:none;
+    width: 400px;
+    border-radius: 0px;
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+}
+
+.uploading-progress-indicator  .v-progressindicator-wrapper .v-progressindicator-indicator {
+    background: #666;
+ }
+
+.uploading-progress-indicator .uploading-file-progress {
+    position: absolute;
+    color:white;
+    top:50px;
+    left: 45%;
+    font-size:11px;
+}
+
+.upload-image-field button.cancel {
+    background: url("img/icon-close-16.png") no-repeat scroll 0px 0px transparent;
+    position: absolute;
+    top: 50px;
+    right: 20px;
+    padding:0;
+    margin:0;
+    height:16px;
+    width:16px;
+    border: none;
+ }
+
+.uploading-progress-indicator .uploading-file, .uploaded-file {
+    margin-top:10px;
+    margin-bottom:10px;
+ }
+
+.uploading-progress-indicator .uploaded-file {
+    margin-left:135px
 }

@@ -389,7 +389,7 @@ public class JcrNodeAdapterTest {
         JcrNodeAdapter adapter = new JcrNodeAdapter(node);
         // Create a new Vaadin property
         DefaultProperty newProperty = DefaultPropertyUtil.newDefaultProperty(id_3, null, "");
-        newProperty.setSaveInfo(false);
+        newProperty.setReadOnly(true);
         adapter.addItemProperty(id_3, newProperty);
 
         // WHEN
@@ -397,7 +397,7 @@ public class JcrNodeAdapterTest {
         newProperty.setValue(value_3);
         DefaultProperty jcrProperty = (DefaultProperty) adapter.getItemProperty(propertyName);
         jcrProperty.setValue(propertyValue + modified);
-        jcrProperty.setSaveInfo(false);
+        jcrProperty.setReadOnly(true);
         Node res = adapter.getNode();
 
         // THEN

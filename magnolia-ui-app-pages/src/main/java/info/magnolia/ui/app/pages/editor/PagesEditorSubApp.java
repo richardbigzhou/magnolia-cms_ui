@@ -57,9 +57,9 @@ import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.widget.actionbar.ActionbarView;
 import info.magnolia.ui.widget.editor.PageEditor;
 import info.magnolia.ui.widget.editor.PageEditorParameters;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -67,8 +67,10 @@ import javax.jcr.LoginException;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import java.util.ArrayList;
-import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -123,13 +125,25 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
         view.setPageEditorView(pageEditorPresenter.start());
 
         goToLocation(location);
-
+        updateActions();
         return view;
+    }
+
+    private void updateActions() {
+
+        // actions currently always disabled
+        actionbarPresenter.disable("moveComponent");
+        actionbarPresenter.disable("copyComponent");
+        actionbarPresenter.disable("pasteComponent");
+        actionbarPresenter.disable("undo");
+        actionbarPresenter.disable("redo");
+
     }
 
     @Override
     public void locationChanged(Location location) {
         goToLocation(location);
+        updateActions();
     }
 
     private void goToLocation(Location location) {
@@ -220,7 +234,9 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
                             pageEditorPresenter.getSelectedElement().getPath(),
                             ((PageEditor.AreaElement) pageEditorPresenter.getSelectedElement()).getAvailableComponents());
                     } else if (actionDefinition instanceof DeleteItemActionDefinition) {
-                        pageEditorPresenter.deleteComponent(appDescriptor.getWorkbench().getWorkspace(), pageEditorPresenter.getSelectedElement().getPath());
+                        pageEditorPresenter.deleteComponent(appDescriptor.getWorkbench().getWorkspace(), pageEditorPresenter
+                            .getSelectedElement()
+                            .getPath());
                     } else if (actionDefinition instanceof PreviewPageActionDefinition || actionDefinition instanceof EditPageActionDefinition) {
                         actionbarPresenter.createAndExecuteAction(
                             actionDefinition,
@@ -270,6 +286,8 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
                 } catch (RepositoryException e) {
                     log.error("Exception caught: {}", e.getMessage(), e);
                 }
+
+                updateActions();
             }
         });
     }

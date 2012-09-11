@@ -46,26 +46,27 @@ import javax.jcr.Node;
 import org.junit.Test;
 
 import com.vaadin.ui.Field;
-import com.vaadin.ui.NativeSelect;
+import com.vaadin.ui.Select;
 
 /**
- * Main testcase for {@link DateFieldBuilder}.
+ * Main testcase for {@link SelectFieldBuilder}.
  */
 public class SelectFieldBuilderTest extends AbstractBuilderTest<SelectFieldDefinition> {
 
-    private SelectFieldBuilder dialogSelect;
+    private SelectFieldBuilder<SelectFieldDefinition> dialogSelect;
 
     @Test
     public void simpleSelectFieldTest() throws Exception{
         // GIVEN
-        dialogSelect = new SelectFieldBuilder(definition, baseItem);
+        dialogSelect = new SelectFieldBuilder<SelectFieldDefinition>(definition, baseItem);
+        dialogSelect.setI18nContentSupport(i18nContentSupport);
 
         // WHEN
         Field field = dialogSelect.getField();
 
         // THEN
-        assertEquals(true, field instanceof NativeSelect);
-        Collection<?> items = ((NativeSelect)field).getItemIds();
+        assertEquals(true, field instanceof Select);
+        Collection<?> items = ((Select)field).getItemIds();
         assertEquals(3, items.size());
         assertEquals("1", field.getValue().toString());
     }
@@ -76,7 +77,8 @@ public class SelectFieldBuilderTest extends AbstractBuilderTest<SelectFieldDefin
         // GIVEN
         SelectFieldOptionDefinition option = definition.getOptions().get(1);
         option.setSelected(true);
-        dialogSelect = new SelectFieldBuilder(definition, baseItem);
+        dialogSelect = new SelectFieldBuilder<SelectFieldDefinition>(definition, baseItem);
+        dialogSelect.setI18nContentSupport(i18nContentSupport);
 
         // WHEN
         Field field = dialogSelect.getField();
@@ -90,7 +92,8 @@ public class SelectFieldBuilderTest extends AbstractBuilderTest<SelectFieldDefin
         // GIVEN
         baseNode.setProperty(propertyName, "3");
         baseItem = new JcrNodeAdapter(baseNode);
-        dialogSelect = new SelectFieldBuilder(definition, baseItem);
+        dialogSelect = new SelectFieldBuilder<SelectFieldDefinition>(definition, baseItem);
+        dialogSelect.setI18nContentSupport(i18nContentSupport);
 
         // WHEN
         Field field = dialogSelect.getField();
@@ -114,13 +117,14 @@ public class SelectFieldBuilderTest extends AbstractBuilderTest<SelectFieldDefin
         definition.setPath(options.getPath());
         definition.setRepository(workspaceName);
         definition.setOptions(new ArrayList<SelectFieldOptionDefinition>());
-        dialogSelect = new SelectFieldBuilder(definition, baseItem);
+        dialogSelect = new SelectFieldBuilder<SelectFieldDefinition>(definition, baseItem);
+        dialogSelect.setI18nContentSupport(i18nContentSupport);
 
         // WHEN
         Field field = dialogSelect.getField();
 
         // THEN
-        Collection<?> items = ((NativeSelect)field).getItemIds();
+        Collection<?> items = ((Select)field).getItemIds();
         assertEquals(2, items.size());
         assertEquals("en", field.getValue().toString());
     }
@@ -145,13 +149,14 @@ public class SelectFieldBuilderTest extends AbstractBuilderTest<SelectFieldDefin
         definition.setValueNodeData("x");
         definition.setLabelNodeData("z");
 
-        dialogSelect = new SelectFieldBuilder(definition, baseItem);
+        dialogSelect = new SelectFieldBuilder<SelectFieldDefinition>(definition, baseItem);
+        dialogSelect.setI18nContentSupport(i18nContentSupport);
 
         // WHEN
         Field field = dialogSelect.getField();
 
         // THEN
-        Collection<?> items = ((NativeSelect)field).getItemIds();
+        Collection<?> items = ((Select)field).getItemIds();
         assertEquals(2, items.size());
         assertEquals("fr", field.getValue().toString());
     }

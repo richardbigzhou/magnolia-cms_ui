@@ -33,32 +33,33 @@
  */
 package info.magnolia.ui.admincentral.field.upload;
 
+import info.magnolia.cms.i18n.MessagesUtil;
+
 import java.text.NumberFormat;
 
 import org.apache.commons.io.FileUtils;
 
 import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.ProgressIndicator;
 import com.vaadin.ui.VerticalLayout;
 
 /**
  * Custom Component used to create a custom display for {@link ProgressIndicator}.
+ * <p>
  * This view normally contains a progress bar and label indicating the uploaded percentage, filename....
- * Refresh of the view is done by calling refreshOnProgressUploadLayout(..
- *
+ * Refresh of the view is done by calling refreshOnProgressUploadLayout(..)
+ *<p>
  * Layout composition:
- *        Label.FileName
- *  ProgressBar + Label.percentage
- *        Label.UploadexOfy
+ * <ul>
+ *  <li>Label.FileName
+ *  <li>ProgressBar
+ *  <li>Label.percentage
+ *  <li>Label.UploadexOfy
+ *  </ul>
  *
  */
 public class ProgressIndicatorComponentDefaultImpl extends CustomComponent implements ProgressIndicatorComponent {
-
-    private static final String DEFAULT_FILE_LOCATION_CAPTION = "Uploading File ";
-    private static final String DEFAULT_FILE_RATIO_CAPTION = "Uploaded ";
-    private static final String DEFAULT_FILE_RATIO_OF_CAPTION = " of ";
 
     private ProgressIndicator progressIndicator;
     private Label uploadFileLocation;
@@ -66,33 +67,36 @@ public class ProgressIndicatorComponentDefaultImpl extends CustomComponent imple
     private Label uploadFileProgress;
 
     private VerticalLayout mainLayout;
-    private HorizontalLayout progressLayout;
 
     public ProgressIndicatorComponentDefaultImpl () {
-        //Init Label
-        uploadFileLocation = new Label(DEFAULT_FILE_LOCATION_CAPTION);
-        uploadFileRatio = new Label(DEFAULT_FILE_RATIO_CAPTION);
+
+        uploadFileLocation = new Label("");
+        uploadFileLocation.setSizeUndefined();
+        uploadFileLocation.addStyleName("uploading-file");
+
+        uploadFileRatio = new Label("");
+        uploadFileRatio.setSizeUndefined();
+        uploadFileRatio.addStyleName("uploaded-file");
+
         uploadFileProgress = new Label("");
-        //Init base progress Indicator
+        uploadFileProgress.setSizeUndefined();
+        uploadFileProgress.addStyleName("uploading-file-progress");
+
         progressIndicator = new ProgressIndicator();
-        progressIndicator.addStyleName("v-progressindicator-big");
         progressIndicator.setVisible(false);
         progressIndicator.setPollingInterval(500);
         progressIndicator.setWidth("100%");
-        //Init Layout
+
         mainLayout = new VerticalLayout();
-        progressLayout = new HorizontalLayout();
-        //Set Layout
+        mainLayout.setSizeFull();
+
         mainLayout.addComponent(uploadFileLocation);
-        progressLayout.addComponent(progressIndicator);
-        progressLayout.addComponent(uploadFileProgress);
-        progressLayout.setExpandRatio(uploadFileProgress, 5);
-        progressLayout.setExpandRatio(progressIndicator, 1);
-        mainLayout.addComponent(progressLayout);
+        mainLayout.addComponent(progressIndicator);
+        mainLayout.addComponent(uploadFileProgress);
         mainLayout.addComponent(uploadFileRatio);
 
         setCompositionRoot(mainLayout);
-        setSizeFull();
+        addStyleName("uploading-progress-indicator");
     }
 
     @Override
@@ -108,10 +112,12 @@ public class ProgressIndicatorComponentDefaultImpl extends CustomComponent imple
 
     @Override
     public void refreshOnProgressUploadLayout(long readBytes, long contentLength, String fileName) {
-        progressIndicator.setValue(new Float(readBytes / (float) contentLength));
-        uploadFileLocation.setValue(DEFAULT_FILE_LOCATION_CAPTION+fileName);
+        progressIndicator.setValue(Float.valueOf(readBytes /(float)contentLength));
+        uploadFileLocation.setValue(MessagesUtil.get("field.upload.uploading.file", new String[]{fileName}));
         uploadFileProgress.setValue(createPercentage(readBytes, contentLength));
-        uploadFileRatio.setValue(DEFAULT_FILE_RATIO_CAPTION+FileUtils.byteCountToDisplaySize(readBytes)+DEFAULT_FILE_RATIO_OF_CAPTION+FileUtils.byteCountToDisplaySize(contentLength));
+        String bytesRead = FileUtils.byteCountToDisplaySize(readBytes);
+        String totalBytes = FileUtils.byteCountToDisplaySize(contentLength);
+        uploadFileRatio.setValue(MessagesUtil.get("field.upload.uploaded.file", new String[]{bytesRead, totalBytes}));
     }
 
     @Override
@@ -120,15 +126,13 @@ public class ProgressIndicatorComponentDefaultImpl extends CustomComponent imple
     }
 
     /**
-     * Create a percentage representation of the upload currently in progress.
-     * @return Percentage xxx.xx %
+     * Creates a percentage representation of the upload currently in progress.
      */
-    private String createPercentage(long readBytes, long contentLength ) {
+    private String createPercentage(long readBytes, long contentLength) {
         double read = Double.valueOf(readBytes);
         double from = Double.valueOf(contentLength);
 
         NumberFormat defaultFormat = NumberFormat.getPercentInstance();
-        defaultFormat.setMinimumFractionDigits(2);
 
         return defaultFormat.format((read/from));
     }

@@ -45,7 +45,6 @@ public class DefaultProperty extends AbstractProperty {
     private Object value;
     private boolean readOnly;
     private String propertyName;
-    private boolean saveInfo = true;
 
     public DefaultProperty(String propertyName, Object value) {
         this.propertyName = propertyName;
@@ -60,7 +59,7 @@ public class DefaultProperty extends AbstractProperty {
     @Override
     public void setValue(Object newValue) throws ReadOnlyException, ConversionException {
         if (readOnly) {
-            throw new ReadOnlyException("Can't setValue for readonly-Property");
+            return;
         }
         value = newValue;
         fireValueChange();
@@ -83,16 +82,6 @@ public class DefaultProperty extends AbstractProperty {
 
     public String getPropertyName() {
         return this.propertyName;
-    }
-
-
-    public boolean isSaveInfo() {
-        return saveInfo;
-    }
-
-
-    public void setSaveInfo(boolean saveInfo) {
-        this.saveInfo = saveInfo;
     }
 
     @Override

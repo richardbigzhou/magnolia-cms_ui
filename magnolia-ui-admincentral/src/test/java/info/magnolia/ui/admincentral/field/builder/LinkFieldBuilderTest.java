@@ -53,7 +53,7 @@ public class LinkFieldBuilderTest extends AbstractBuilderTest<LinkFieldDefinitio
     public void simpleLinkFieldTest() throws Exception{
         // GIVEN
         linkFieldBuilder = new LinkFieldBuilder(definition, baseItem, null);
-
+        linkFieldBuilder.setI18nContentSupport(i18nContentSupport);
         // WHEN
         Field field = linkFieldBuilder.getField();
 
@@ -70,7 +70,7 @@ public class LinkFieldBuilderTest extends AbstractBuilderTest<LinkFieldDefinitio
         baseNode.setProperty(propertyName, baseNode.getIdentifier());
         baseItem = new JcrNodeAdapter(baseNode);
         linkFieldBuilder = new LinkFieldBuilder(definition, baseItem, null);
-
+        linkFieldBuilder.setI18nContentSupport(i18nContentSupport);
         // WHEN
         Field field = linkFieldBuilder.getField();
 
@@ -84,6 +84,7 @@ public class LinkFieldBuilderTest extends AbstractBuilderTest<LinkFieldDefinitio
     public void linkField_SetButtonCaptionTest() throws Exception{
         // GIVEN
         linkFieldBuilder = new LinkFieldBuilder(definition, baseItem, null);
+        linkFieldBuilder.setI18nContentSupport(i18nContentSupport);
         definition.setButtonLabel("Button Select");
         // WHEN
         Field field = linkFieldBuilder.getField();
@@ -100,6 +101,7 @@ public class LinkFieldBuilderTest extends AbstractBuilderTest<LinkFieldDefinitio
         baseNode.setProperty(propertyName, "notChanged");
         baseItem = new JcrNodeAdapter(baseNode);
         linkFieldBuilder = new LinkFieldBuilder(definition, baseItem, null);
+        linkFieldBuilder.setI18nContentSupport(i18nContentSupport);
         Field field = linkFieldBuilder.getField();
         assertEquals("notChanged", (String)((TextAndButtonField)field).getTextField().getValue());
         // WHEN

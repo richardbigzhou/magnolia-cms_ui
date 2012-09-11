@@ -31,32 +31,11 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.definition;
-
-import info.magnolia.cms.i18n.MessagesUtil;
+package info.magnolia.ui.model.field.validation.definition;
 
 /**
- * Abstract implementation of {@link ValidatorDefinition}.
+ * Defines an email validator.
  */
-public abstract class AbstractValidatorDefinition implements ValidatorDefinition {
-
-    private String errorMessageKey;
-
-    @Override
-    public String getErrorMessageKey() {
-        return errorMessageKey;
-    }
-
-    @Override
-    public void setErrorMessageKey(String errorMessageKey) {
-        this.errorMessageKey = errorMessageKey;
-    }
-
-    protected String getDefaultPath() {
-        return "info.magnolia.ui.model.messages";
-    }
-
-    public String getErrorMessage() {
-        return MessagesUtil.get(getErrorMessageKey(), getDefaultPath());
-    }
+public class EmailValidatorDefinition extends ConfiguredFieldValidatorDefinition {
+    // No Specific property.
 }

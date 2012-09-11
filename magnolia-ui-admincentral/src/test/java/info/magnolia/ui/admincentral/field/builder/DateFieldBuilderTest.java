@@ -62,7 +62,7 @@ public class DateFieldBuilderTest extends AbstractBuilderTest<DateFieldDefinitio
         baseNode.setProperty(propertyName, cal);
         baseItem = new JcrNodeAdapter(baseNode);
         dialogDate = new DateFieldBuilder(definition, baseItem);
-
+        dialogDate.setI18nContentSupport(i18nContentSupport);
         // WHEN
         Field field = dialogDate.getField();
 
@@ -83,6 +83,7 @@ public class DateFieldBuilderTest extends AbstractBuilderTest<DateFieldDefinitio
         baseNode.setProperty(propertyName, cal);
         baseItem = new JcrNodeAdapter(baseNode);
         dialogDate = new DateFieldBuilder(definition, baseItem);
+        dialogDate.setI18nContentSupport(i18nContentSupport);
         Calendar calNew = Calendar.getInstance();
         calNew.set(Calendar.DAY_OF_MONTH, 20);
         calNew.set(Calendar.MONTH, 2);
@@ -112,7 +113,7 @@ public class DateFieldBuilderTest extends AbstractBuilderTest<DateFieldDefinitio
         baseNode.setProperty(propertyName, cal);
         baseItem = new JcrNodeAdapter(baseNode);
         dialogDate = new DateFieldBuilder(definition, baseItem);
-
+        dialogDate.setI18nContentSupport(i18nContentSupport);
         // WHEN
         Field field = dialogDate.getField();
 

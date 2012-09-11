@@ -33,13 +33,7 @@
  */
 package info.magnolia.ui.app.contacts;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import org.apache.commons.lang.StringUtils;
-
+import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
 import info.magnolia.ui.framework.app.AbstractSubApp;
@@ -49,13 +43,23 @@ import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.view.View;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.apache.commons.lang.StringUtils;
+
+
 /**
  * Sub app for the main tab in the contacts app.
  */
 public class ContactsMainSubApp extends AbstractSubApp {
 
-    private ContactsView view;
-    private ContentWorkbenchPresenter workbench;
+    private final ContactsView view;
+
+    private final ContentWorkbenchPresenter workbench;
 
     @Inject
     public ContactsMainSubApp(final AppContext appContext, ContactsView view, ContentWorkbenchPresenter workbench, @Named("subapp") EventBus subAppEventBus) {
@@ -66,6 +70,7 @@ public class ContactsMainSubApp extends AbstractSubApp {
             @Override
             public void onItemSelected(ItemSelectedEvent event) {
                 appContext.setSubAppLocation(ContactsMainSubApp.this, createLocation(event.getPath()));
+                updateActions();
             }
         });
     }
@@ -82,7 +87,21 @@ public class ContactsMainSubApp extends AbstractSubApp {
         if (selectedItemPath != null) {
             workbench.selectPath(selectedItemPath);
         }
+        updateActions();
         return view;
+    }
+
+    private void updateActions() {
+        ActionbarPresenter actionbar = workbench.getActionbarPresenter();
+
+        // actions disabled based on selection
+        if (workbench.getSelectedItemId() == null || workbench.getSelectedItemId().equals("/")) {
+            actionbar.disable("edit");
+            actionbar.disable("delete");
+        } else {
+            actionbar.enable("edit");
+            actionbar.enable("delete");
+        }
     }
 
     @Override
@@ -91,6 +110,7 @@ public class ContactsMainSubApp extends AbstractSubApp {
         if (selectedItemPath != null) {
             workbench.selectPath(selectedItemPath);
         }
+        updateActions();
     }
 
     // Location token handling, format is main:<selectedItemPath>

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,16 +31,24 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.definition;
+package info.magnolia.ui.model.field.validation.definition;
 
 /**
- * Defines a validator.
- *
- * @see info.magnolia.ui.model.field.definition.FieldDefinition
+ * Defines a validator that uses a regular expression to validate the contents of a dialog field.
  */
-public interface ValidatorDefinition {
+public class RegexpValidatorDefinition extends ConfiguredFieldValidatorDefinition {
 
-    String getErrorMessageKey();
+    private String pattern;
 
-    void setErrorMessageKey(String errorMessageKey);
+    public String getPattern() {
+        return pattern;
+    }
+
+    /**
+     * For the Java regular expression syntax, see
+     * {@link java.util.regex.Pattern#sum}.
+     */
+    public void setPattern(String pattern) {
+        this.pattern = pattern;
+    }
 }

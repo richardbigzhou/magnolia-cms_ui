@@ -714,9 +714,9 @@
                   <sv:value>695be94f-4d1f-417d-94b3-9db59d8d1786</sv:value>
                 </sv:property>
                 <sv:property sv:name="class" sv:type="String">
-                  <sv:value>info.magnolia.ui.model.dialog.definition.RegexpValidatorDefinition</sv:value>
+                  <sv:value>info.magnolia.ui.model.field.validation.definition.RegexpValidatorDefinition</sv:value>
                 </sv:property>
-                <sv:property sv:name="errorMessageKey" sv:type="String">
+                <sv:property sv:name="errorMessage" sv:type="String">
                   <sv:value>validation.message.only.digits</sv:value>
                 </sv:property>
                 <sv:property sv:name="jcr:createdBy" sv:type="String">
@@ -742,7 +742,7 @@
                     <sv:value>2012-07-27T12:42:53.727+02:00</sv:value>
                   </sv:property>
                   <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-                    <sv:value>2012-08-30T08:59:54.975+02:00</sv:value>
+                    <sv:value>2012-09-05T15:24:52.305+02:00</sv:value>
                   </sv:property>
                 </sv:node>
               </sv:node>
@@ -1123,9 +1123,9 @@
                   <sv:value>71f2b18a-c172-48c7-a132-3c6641ac276b</sv:value>
                 </sv:property>
                 <sv:property sv:name="class" sv:type="String">
-                  <sv:value>info.magnolia.ui.model.dialog.definition.EmailValidatorDefinition</sv:value>
+                  <sv:value>info.magnolia.ui.model.field.validation.definition.EmailValidatorDefinition</sv:value>
                 </sv:property>
-                <sv:property sv:name="errorMessageKey" sv:type="String">
+                <sv:property sv:name="errorMessage" sv:type="String">
                   <sv:value>validation.message.non.valid.email</sv:value>
                 </sv:property>
                 <sv:property sv:name="jcr:createdBy" sv:type="String">
@@ -1148,7 +1148,7 @@
                     <sv:value>2012-07-27T12:42:53.727+02:00</sv:value>
                   </sv:property>
                   <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-                    <sv:value>2012-08-30T08:59:54.982+02:00</sv:value>
+                    <sv:value>2012-09-05T15:24:14.683+02:00</sv:value>
                   </sv:property>
                 </sv:node>
               </sv:node>

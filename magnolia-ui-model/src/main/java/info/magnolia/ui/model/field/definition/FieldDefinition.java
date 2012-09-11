@@ -35,40 +35,78 @@ package info.magnolia.ui.model.field.definition;
 
 import java.util.List;
 
-import info.magnolia.ui.model.dialog.definition.ValidatorDefinition;
+import info.magnolia.ui.model.field.validation.definition.ConfiguredFieldValidatorDefinition;
 
 /**
  * Defines a field within a dialog.
  *
  * @see info.magnolia.ui.model.dialog.definition.DialogDefinition
  * @see FieldDefinition
- * @see ValidatorDefinition
+ * @see ConfiguredFieldValidatorDefinition
  */
 public interface FieldDefinition {
 
+    /**
+     * Determines the name of the data property where the value entered by the user is stored.
+     */
     String getName();
 
-    String getLabel();
+    /**
+     *  Makes the field mandatory.
+     */
+    boolean isRequired();
 
-    String getI18nBasename();
-
-    String getDescription();
+    /**
+     * Error message text displayed in case of required = true.
+     */
+    String getRequiredErrorMessage();
 
     /**
      * The type of this field when stored in a JCR repository expressed as a JCR property type name.
-     *
      * @see javax.jcr.PropertyType
      */
     String getType();
 
-    boolean isRequired();
+    /**
+     * Text displayed as field label.
+     */
+    String getLabel();
 
-    String getRequiredErrorMessage();
+    /**
+     * Message bundle for localized field labels.
+     */
+    String getI18nBasename();
 
-    List<ValidatorDefinition> getValidators();
+    /**
+     * Description displayed to the user when clicking on the Info Button.
+     */
+    String getDescription();
 
+    /**
+     * Pre-filled value displayed in the field. The value can be overwritten by the user.
+     */
     String getDefaultValue();
 
-    boolean getSaveInfo();
+    /**
+     * Determines if a Field Property can be changed.
+     */
+    boolean isReadOnly();
+
+    /**
+     * Enables i18n authoring support.
+     * This allows authors to write foreign language or regionally targeted content.
+     * A two-letter language identifier (en, ge, fr etc.) is displayed on controls
+     * where i18n is set to true.
+     */
+    boolean isI18n();
+
+    /**
+     * Define a specific Field styleName. This style definition will be added to the Field Style by calling
+     * AbstractComponent.addStyleName.
+     */
+    String getStyleName();
+
+
+    List<ConfiguredFieldValidatorDefinition> getValidators();
 
 }

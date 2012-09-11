@@ -40,16 +40,10 @@ import info.magnolia.ui.admincentral.field.FieldBuilder;
 import info.magnolia.ui.admincentral.field.builder.DialogFieldFactory;
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
-import info.magnolia.ui.model.dialog.definition.EmailValidatorDefinition;
-import info.magnolia.ui.model.dialog.definition.RegexpValidatorDefinition;
-import info.magnolia.ui.model.dialog.definition.ValidatorDefinition;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.model.tab.definition.TabDefinition;
 import info.magnolia.ui.widget.dialog.MagnoliaDialogView;
 
-import com.vaadin.data.Validator;
-import com.vaadin.data.validator.EmailValidator;
-import com.vaadin.data.validator.RegexpValidator;
 import org.apache.commons.lang.StringUtils;
 
 import com.vaadin.data.Item;
@@ -88,28 +82,24 @@ public class DialogBuilder {
 
             for (FieldDefinition fieldDefinition : tabDefinition.getFields()) {
 
-                // Create the DialogField
                 FieldBuilder dialogField = dialogFieldFactory.create(fieldDefinition, item);
                 if(dialogField == null) {
                     continue; //This happen in case of extends=override. fieldDefinition is ConfiguredFieldDefinition and of course no builder is linked to this.
                 }
                 dialogField.setParent(tab);
 
-                // Get the Vaadin Field
                 Field field = dialogField.getField();
 
                 if (field instanceof AbstractComponent) {
                     ((AbstractComponent)field).setImmediate(true);
                 }
-                //Add Validation
-                setConstraints(fieldDefinition, field);
 
                 tab.addField(field);
                 //Set Help
                 if(StringUtils.isNotBlank(fieldDefinition.getDescription())) {
-                    //TODO EHE SCRUM-1344 Add i18n to Dialog/Tab definition.
-                    tab.setComponentHelpDescription(field, tab.getMessage(fieldDefinition.getDescription()));
+                    tab.setComponentHelpDescription(field, fieldDefinition.getDescription());
                 }
+
                 view.addField(field);
             }
 
@@ -126,38 +116,6 @@ public class DialogBuilder {
             view.addAction(action.getName(), action.getLabel());
         }
         return view;
-    }
-
-
-    /**
-     * Set all constraints linked to a field. Add:
-     *   Validation rules
-     *   Mandatory field
-     *   SaveInfo property
-     */
-    private void setConstraints(FieldDefinition fieldDefinition, Field input) {
-
-        Validator vaadinValidator = null;
-        for (ValidatorDefinition current: fieldDefinition.getValidators()) {
-            // TODO dlipp - this is what was defined for Sprint III. Of course this has to be enhanced later - when we have a better picture of how we want to validate.
-            if (current instanceof EmailValidatorDefinition) {
-                EmailValidatorDefinition def = (EmailValidatorDefinition) current;
-                vaadinValidator = new EmailValidator(def.getErrorMessage());
-            } else if (current instanceof RegexpValidatorDefinition) {
-                RegexpValidatorDefinition def = (RegexpValidatorDefinition) current;
-                vaadinValidator = new RegexpValidator(def.getPattern(), def.getErrorMessage());
-            }
-
-            if (vaadinValidator != null) {
-                input.addValidator(vaadinValidator);
-            }
-        }
-
-        if(fieldDefinition.isRequired()) {
-            input.setRequired(true);
-            input.setRequiredError(fieldDefinition.getRequiredErrorMessage());
-        }
-
     }
 }
 

@@ -33,9 +33,11 @@
  */
 package info.magnolia.ui.admincentral.field.builder;
 
+import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.content.view.builder.DefinitionToImplementationMapping;
 import info.magnolia.ui.admincentral.field.FieldBuilder;
+import info.magnolia.ui.admincentral.field.validator.builder.ValidatorFieldFactory;
 import info.magnolia.ui.model.builder.FactoryBase;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 
@@ -54,17 +56,23 @@ import com.vaadin.data.Item;
  */
 public class DialogFieldFactory extends FactoryBase<FieldDefinition, FieldBuilder> implements Serializable {
 
+    private ValidatorFieldFactory validatorFieldFactory;
+    private I18nContentSupport i18nContentSupport;
 
     @Inject
-    public DialogFieldFactory(ComponentProvider componentProvider, DialogFieldRegistry dialogFieldRegistery) {
+    public DialogFieldFactory(ComponentProvider componentProvider, DialogFieldRegistry dialogFieldRegistery, ValidatorFieldFactory validatorFieldFactory, I18nContentSupport i18nContentSupport) {
         super(componentProvider);
-
+        this.validatorFieldFactory = validatorFieldFactory;
+        this.i18nContentSupport = i18nContentSupport;
         for (DefinitionToImplementationMapping<FieldDefinition, FieldBuilder> definitionToImplementationMapping : dialogFieldRegistery.getDefinitionToImplementationMappings()) {
             addMapping(definitionToImplementationMapping.getDefinition(), definitionToImplementationMapping.getImplementation());
         }
     }
 
     public FieldBuilder create(FieldDefinition definition, Item item, Object... parameters) {
-        return super.create(definition, item, parameters);
+        FieldBuilder fieldBuilder = super.create(definition, item, parameters);
+        fieldBuilder.setValidatorFieldFactory(validatorFieldFactory);
+        fieldBuilder.setI18nContentSupport(i18nContentSupport);
+        return fieldBuilder;
     }
 }

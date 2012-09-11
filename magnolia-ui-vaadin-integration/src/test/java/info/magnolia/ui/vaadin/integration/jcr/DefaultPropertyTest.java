@@ -37,8 +37,6 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import com.vaadin.data.Property.ReadOnlyException;
-
 public class DefaultPropertyTest {
 
     @Test
@@ -81,7 +79,7 @@ public class DefaultPropertyTest {
         assertEquals(newValue, property.getValue());
     }
 
-    @Test(expected=ReadOnlyException.class)
+    @Test
     public void testSetReadOnlyValue() throws Exception {
         // GIVEN
         final String value = "old";
@@ -91,6 +89,9 @@ public class DefaultPropertyTest {
 
         // WHEN
         property.setValue("new");
+
+        // THEN
+        assertEquals(value, property.getValue());
     }
 
 }

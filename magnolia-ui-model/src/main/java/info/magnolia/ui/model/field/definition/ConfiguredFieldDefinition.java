@@ -33,11 +33,10 @@
  */
 package info.magnolia.ui.model.field.definition;
 
+import info.magnolia.ui.model.field.validation.definition.ConfiguredFieldValidatorDefinition;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import info.magnolia.cms.i18n.MessagesUtil;
-import info.magnolia.ui.model.dialog.definition.ValidatorDefinition;
 
 /**
  * Describes a field in a dialog.
@@ -50,25 +49,27 @@ public class ConfiguredFieldDefinition implements FieldDefinition {
 
     private String i18nBasename;
 
+    private boolean i18n = false;
+
     private String description; // not relevant for controlType=static
 
-    private String type; // JCR Property type name see javax.jcr.PropertyType
+    private String type = "String"; // JCR Property type name see javax.jcr.PropertyType
 
-    private boolean required; // Not relevant for checkbox
+    private boolean required = false; // Not relevant for checkbox
 
-    private boolean saveInfo = true; // Specify if the property has to be saved
+    private String requiredErrorMessage = "validation.message.required";
+
+    private boolean readOnly = false; // Specify if the property has to be saved
 
     private String defaultValue; // Specify the default value
 
-    private List<ValidatorDefinition> validators = new ArrayList<ValidatorDefinition>();
+    private String styleName;
+
+    private List<ConfiguredFieldValidatorDefinition> validators = new ArrayList<ConfiguredFieldValidatorDefinition>();
 
     @Override
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     @Override
@@ -76,26 +77,14 @@ public class ConfiguredFieldDefinition implements FieldDefinition {
         return label;
     }
 
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    @Override
+     @Override
     public String getI18nBasename() {
         return i18nBasename;
     }
 
-    public void setI18nBasename(String i18nBasename) {
-        this.i18nBasename = i18nBasename;
-    }
-
-    @Override
+     @Override
     public String getDescription() {
         return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     @Override
@@ -103,39 +92,19 @@ public class ConfiguredFieldDefinition implements FieldDefinition {
         return type;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    @Override
+       @Override
     public boolean isRequired() {
         return required;
     }
 
     @Override
     public String getRequiredErrorMessage() {
-        return MessagesUtil.get("validation.message.required", "info.magnolia.ui.model.messages");
+        return requiredErrorMessage;
     }
 
-    public void setRequired(boolean required) {
-        this.required = required;
-    }
-
-    @Override
-    public List<ValidatorDefinition> getValidators() {
+     @Override
+    public List<ConfiguredFieldValidatorDefinition> getValidators() {
         return validators;
-    }
-
-    public void setValidators(List<ValidatorDefinition> validators) {
-        this.validators = validators;
-    }
-
-    public void addValidator(ValidatorDefinition validator) {
-        validators.add(validator);
-    }
-
-    public void setDefaultValue(String defaultValue) {
-        this.defaultValue = defaultValue;
     }
 
     @Override
@@ -143,13 +112,73 @@ public class ConfiguredFieldDefinition implements FieldDefinition {
         return this.defaultValue;
     }
 
-    public void setSaveInfo(boolean saveInfo) {
-        this.saveInfo = saveInfo;
+    @Override
+    public boolean isReadOnly() {
+        return this.readOnly;
     }
 
     @Override
-    public boolean getSaveInfo() {
-        return this.saveInfo;
+    public boolean isI18n() {
+        return i18n;
+    }
+
+    @Override
+    public String getStyleName() {
+        return styleName;
+    }
+
+    public void setStyleName(String styleName) {
+        this.styleName = styleName;
+    }
+
+    public void setI18n(boolean i18n) {
+        this.i18n = i18n;
+    }
+
+
+    public void setRequiredErrorMessage(String requiredErrorMessage) {
+        this.requiredErrorMessage = requiredErrorMessage;
+    }
+
+
+    public void setReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public void setI18nBasename(String i18nBasename) {
+        this.i18nBasename = i18nBasename;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setRequired(boolean required) {
+        this.required = required;
+    }
+
+    public void setValidators(List<ConfiguredFieldValidatorDefinition> validators) {
+        this.validators = validators;
+    }
+
+    public void addValidator(ConfiguredFieldValidatorDefinition validator) {
+        validators.add(validator);
+    }
+
+    public void setDefaultValue(String defaultValue) {
+        this.defaultValue = defaultValue;
     }
 
 }
