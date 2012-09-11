@@ -36,20 +36,19 @@ package info.magnolia.ui.widget.editor.gwt.client.jsni;
 import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.user.client.ui.Frame;
-import info.magnolia.ui.widget.editor.gwt.client.VPageEditorView;
+import info.magnolia.ui.widget.editor.gwt.client.jsni.event.FrameLoadedEvent;
 
 /**
  * NativeDomHandlerImpl.
  */
 public class NativeDomHandlerImpl extends NativeDomHandler {
 
-
-    @Override
-    public void registerLoadHandler(Frame frame, final VPageEditorView.Listener listener) {
+    public void registerLoadHandler() {
+        Frame frame = getView().getIframe();
         frame.addLoadHandler(new LoadHandler() {
             @Override
             public void onLoad(LoadEvent event) {
-                listener.onFrameLoaded();
+                getEventBus().fireEvent(new FrameLoadedEvent());
             }
         });
     }
@@ -57,5 +56,10 @@ public class NativeDomHandlerImpl extends NativeDomHandler {
     @Override
     public void notifyUrlChange() {
 
+    }
+
+    @Override
+    public void init() {
+        registerLoadHandler();
     }
 }

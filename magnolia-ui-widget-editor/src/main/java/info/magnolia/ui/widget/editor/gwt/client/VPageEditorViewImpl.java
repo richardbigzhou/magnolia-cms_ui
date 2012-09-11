@@ -34,12 +34,14 @@
 package info.magnolia.ui.widget.editor.gwt.client;
 
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.EventBus;
 import com.vaadin.terminal.gwt.client.BrowserInfo;
 import info.magnolia.ui.widget.editor.gwt.client.jsni.NativeDomHandler;
 
@@ -55,12 +57,16 @@ public class VPageEditorViewImpl extends Composite implements VPageEditorView {
     private String url;
 
     final SimplePanel content;
-    private boolean touchScrolling = false;
-    private NativeDomHandler handler;
 
-    public VPageEditorViewImpl(NativeDomHandler handler) {
+    private NativeDomHandler handler;
+    private EventBus eventBus;
+    public VPageEditorViewImpl(EventBus eventBus) {
         super();
-        this.handler = handler;
+        this.eventBus = eventBus;
+        this.handler = GWT.create(NativeDomHandler.class);
+        handler.setView(this);
+        handler.setEventBus(eventBus);
+
         if (BrowserInfo.get().isTouchDevice()) {
             content = new ScrollPanel();
         } else {
@@ -75,14 +81,10 @@ public class VPageEditorViewImpl extends Composite implements VPageEditorView {
         iframeElement.setAttribute("height", "100%");
         iframeElement.setAttribute("allowTransparency", "true");
         iframeElement.setAttribute("frameborder", "0");
-        
+
+        handler.init();
+
     }
-
-    private int X = 0;
-
-    private int Y = 0;
-    private int lastY = 0;
-
 
     @Override
     public Frame getIframe() {
@@ -90,8 +92,8 @@ public class VPageEditorViewImpl extends Composite implements VPageEditorView {
     }
 
     @Override
-    public void registerHandlers() {
-        handler.registerLoadHandler(iframe, listener);
+    public Widget getContent() {
+        return content;
     }
 
     @Override
@@ -119,33 +121,8 @@ public class VPageEditorViewImpl extends Composite implements VPageEditorView {
     }
 
     @Override
-    public void initNativeSelectionListener(Element element, Listener listener) {
-
-    }
-
-    @Override
-    public boolean isTouchScrolling() {
-        return touchScrolling;
-    }
-
-    @Override
-    public void resetScrollTop() {
-
-        Timer timer = new Timer(){
-            @Override
-            public void run() {
-                content.getElement().setScrollTop(lastY);
-            }
-        };
-        timer.schedule(1);
-
-        Timer timer2 = new Timer(){
-            @Override
-            public void run() {
-                content.getElement().setScrollTop(lastY);
-            }
-        };
-        timer2.schedule(100);
+    public void initNativeSelectionListener() {
+        handler.initNativeSelectionListener(iframe.getElement(), listener);
     }
 
 }

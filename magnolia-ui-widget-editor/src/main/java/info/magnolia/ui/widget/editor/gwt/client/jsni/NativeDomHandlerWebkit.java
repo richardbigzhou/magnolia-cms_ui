@@ -36,103 +36,84 @@ package info.magnolia.ui.widget.editor.gwt.client.jsni;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.event.dom.client.DomEvent;
 import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Frame;
-import info.magnolia.ui.widget.editor.gwt.client.VPageEditorView;
+import info.magnolia.ui.widget.editor.gwt.client.jsni.event.FrameLoadedEvent;
 
 /**
- * NativeDomHandlerWebkit.
+ * NativeDomHandlerWebkit. This class takes care of handling the load events on webkit browsers.
+ * See SCRUM-1593 for details.
  */
 public class NativeDomHandlerWebkit extends NativeDomHandler {
 
-    private int X = 0;
-
-    private int Y = 0;
-    private boolean registered = false;
-
     private MyTimer timer = new MyTimer();
-
-
-    private final native void addIframeTouchMoveListener(Document doc, Element cont) /*-{
-        var w = $wnd;
-        var content = cont;
-        var that = this;
-        var X = 0;
-        var Y = 0;
-        doc.body.addEventListener('touchmove',
-                function(event) {
-                    that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorViewImpl::touchScrolling = true;
-                    event.preventDefault();
-                    var newX = event.targetTouches[0].pageX;
-                    var newY = event.targetTouches[0].pageY;
-                    var deltaY = newY - that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorViewImpl::Y;
-                    var deltaX = newX - that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorViewImpl::X;
-                    cont.scrollLeft -= deltaX;
-                    cont.scrollTop -= deltaY;
-
-                    that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorViewImpl::lastY = cont.scrollTop;
-
-                    that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorViewImpl::X = newX - deltaX;
-                    that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorViewImpl::Y = newY - deltaY;
-                });
-
-        doc.body.addEventListener('touchstart',
-                function (event) {
-                    that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorViewImpl::touchScrolling = false;
-                    parent.window.scrollTo(0, 1);
-                    that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorViewImpl::X = event.targetTouches[0].pageX;
-                    that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorViewImpl::Y = event.targetTouches[0].pageY;
-                });
-    }-*/;
+    private boolean loaded = false;
 
 
     @Override
-    public void registerLoadHandler(Frame frame, final VPageEditorView.Listener listener) {
+    public void init() {
+        super.init();
+        registerLoadHandler();
+
+
+    }
+
+    /**
+     * Registers two separated implementations of an onload event.
+     * In case the onload is not triggered it's supposed to fallback on a readystate poller.
+     * We have to make sure, that they don't interfere by using a loaded boolean.
+     */
+    public void registerLoadHandler() {
+        Frame frame = getView().getIframe();
+
         frame.addLoadHandler(new LoadHandler() {
             @Override
             public void onLoad(LoadEvent event) {
+                if (loaded) {
+                    return;
+                }
+                loaded = true;
                 timer.cancel();
-                listener.onFrameLoaded();
+                getEventBus().fireEvent(new FrameLoadedEvent());
+                registerUnloadHandler(getView().getIframe().getElement(), timer);
             }
         });
         timer.setIframe(frame);
-        timer.setListener(listener);
         timer.scheduleRepeating(100);
 
     }
 
     @Override
     public void notifyUrlChange() {
+        loaded = false;
         timer.scheduleRepeating(100);
     }
 
-
-    private native void registerOnUnload(Element element, Timer timer) /*-{
+    /**
+     * This function is supposed to trigger an unload event, when the page inside the Iframe is changed.
+     * Doesn't work, that's why browsing inside the iframe is broke for webkit.
+     */
+    public native void registerUnloadHandler(Element element, Timer timer) /*-{
         var that = timer;
         var poll = function(){
             that.@com.google.gwt.user.client.Timer::scheduleRepeating(I)(100);
         };
 
-
         element.contentWindow.addEventListener('unload', poll, false);
 
     }-*/;
 
+
+    /**
+     * Poller to check the readystate of the contentdocument in the iframe.
+     */
     private class MyTimer extends Timer {
 
-        public void setIframe(Frame iframe) {
-            this.iframe = iframe;
-        }
-
         Frame iframe;
-
-        public void setListener(VPageEditorView.Listener listener) {
-            this.listener = listener;
-        }
-
-        VPageEditorView.Listener listener;
 
         @Override
         public void run() {
@@ -144,10 +125,14 @@ public class NativeDomHandlerWebkit extends NativeDomHandler {
             }
 
             if ("interactive".equals(readyState)) {
-                cancel();
-                registerOnUnload(iframe.getElement(), this);
-                listener.onFrameLoaded();
+                NativeEvent event = Document.get().createLoadEvent();
+                DomEvent.fireNativeEvent(event, iframe);
             }
+        }
+
+
+        public void setIframe(Frame iframe) {
+            this.iframe = iframe;
         }
 
         public final native String getReadyState(Element element) /*-{

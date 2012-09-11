@@ -31,37 +31,36 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.editor.gwt.client;
+package info.magnolia.ui.widget.editor.gwt.client.jsni.event;
 
-
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.ui.Frame;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.GwtEvent;
+import com.google.web.bindery.event.shared.Event;
 
 /**
- * VPageEditorView.
+ * FrameLoadedEvent. Fired when the iFrame is loaded.
  */
-public interface VPageEditorView extends IsWidget {
-
-    void initNativeSelectionListener();
-
-    Widget getContent();
+public class FrameLoadedEvent extends Event<FrameLoadedEvent.Handler> {
 
     /**
-     * Listener.
+     * Handler.
      */
-    interface Listener {
-
-        void selectElement(Element element);
+    public interface Handler extends EventHandler {
+        void handle(FrameLoadedEvent frameLoadedEvent);
     }
 
-    Frame getIframe();
 
-    void setListener(Listener listener);
+    public static GwtEvent.Type<Handler> TYPE = new GwtEvent.Type<Handler>();
 
-    void setUrl(String url);
+    public FrameLoadedEvent() {}
 
-    void reload();
+    @Override
+    public GwtEvent.Type<Handler> getAssociatedType() {
+        return TYPE;
+    }
 
+    @Override
+    protected void dispatch(Handler handler) {
+        handler.handle(this);
+    }
 }

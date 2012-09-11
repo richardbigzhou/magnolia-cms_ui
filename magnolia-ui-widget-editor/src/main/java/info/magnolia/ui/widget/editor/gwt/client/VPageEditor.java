@@ -65,7 +65,7 @@ import info.magnolia.ui.widget.editor.gwt.client.event.SelectElementEvent;
 import info.magnolia.ui.widget.editor.gwt.client.event.SelectElementEventHandler;
 import info.magnolia.ui.widget.editor.gwt.client.event.SortComponentEvent;
 import info.magnolia.ui.widget.editor.gwt.client.event.SortComponentEventHandler;
-import info.magnolia.ui.widget.editor.gwt.client.jsni.NativeDomHandler;
+import info.magnolia.ui.widget.editor.gwt.client.jsni.event.FrameLoadedEvent;
 import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 import info.magnolia.ui.widget.editor.gwt.client.model.ModelImpl;
 import info.magnolia.ui.widget.editor.gwt.client.model.focus.FocusModel;
@@ -86,7 +86,6 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
 
     private static final String PAGE_EDITOR_CSS = "/VAADIN/themes/admincentraltheme/pageeditor.css";
 
-    private NativeDomHandler handler;
 
     private final VPageEditorView view;
     private final Model model;
@@ -102,8 +101,8 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
    
     public VPageEditor() {
         this.eventBus = new SimpleEventBus();
-        this.handler = GWT.create(NativeDomHandler.class);
-        this.view = new VPageEditorViewImpl(handler);
+
+        this.view = new VPageEditorViewImpl(eventBus);
         this.model = new ModelImpl();
         this.focusModel = new FocusModelImpl(eventBus, model);
 
@@ -111,10 +110,9 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
         initWidget(view.asWidget());
 
         view.setListener(this);
-        view.registerHandlers();
 
-
-        registerEventHandlers();
+        registerDomEventHandlers();
+        registerEditorEventHandlers();
 
 
         
@@ -161,7 +159,33 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
         proxy.update(this, uidl, client);
     }
 
-    private void registerEventHandlers() {
+    private void registerDomEventHandlers() {
+
+        eventBus.addHandler(FrameLoadedEvent.TYPE, new FrameLoadedEvent.Handler() {
+
+            @Override
+            public void handle(FrameLoadedEvent event) {
+                if (pageEditorParameters.isPreview()) {
+                    return;
+                }
+                Element element= view.getIframe().getElement();
+
+                view.initNativeSelectionListener();
+
+                IFrameElement frameElement = IFrameElement.as(element);
+                Document contentDocument = frameElement.getContentDocument();
+                process(contentDocument);
+
+                // fix this
+                if (model.getPageBar() != null) {
+                    model.getPageBar().setPageTitle(contentDocument.getTitle());
+                }
+                focusModel.selectPage();
+            }
+
+        });
+    }
+    private void registerEditorEventHandlers() {
 
         eventBus.addHandler(SelectElementEvent.TYPE, new SelectElementEventHandler() {
 
@@ -273,28 +297,6 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
                 }
             }
         }
-
-    }
-
-    @Override
-    public void onFrameLoaded() {
-
-        if (pageEditorParameters.isPreview()) {
-            return;
-        }
-        Element element= view.getIframe().getElement();
-
-        view.initNativeSelectionListener(element, this);
-
-        IFrameElement frameElement = IFrameElement.as(element);
-        Document contentDocument = frameElement.getContentDocument();
-        process(contentDocument);
-
-        // fix this
-        if (model.getPageBar() != null) {
-            model.getPageBar().setPageTitle(contentDocument.getTitle());
-        }
-        focusModel.selectPage();
 
     }
 

@@ -33,14 +33,24 @@
  */
 package info.magnolia.ui.widget.editor.gwt.client.jsni;
 
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.ui.Frame;
+import com.google.gwt.dom.client.IFrameElement;
+import com.google.gwt.user.client.Timer;
+import com.google.web.bindery.event.shared.EventBus;
 import info.magnolia.ui.widget.editor.gwt.client.VPageEditorView;
 
 /**
  * NativeDomHandler.
  */
 abstract public class NativeDomHandler {
+
+
+    private EventBus eventBus;
+
+    private VPageEditorView view;
+    private boolean touchScrolling = false;
+    private int lastY = 0;
 
     /**
      * Takes care of the mouse up and touchend events for selecting elements inside the page editor.
@@ -57,10 +67,10 @@ abstract public class NativeDomHandler {
 
             }
             element.contentDocument.ontouchend = function(event) {
-                var isTouchScrolling = ref.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorView::isTouchScrolling()();
+                var isTouchScrolling = ref.@info.magnolia.ui.widget.editor.gwt.client.jsni.NativeDomHandler::isTouchScrolling()();
                 if (!isTouchScrolling) {
                     that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditor::selectElement(Lcom/google/gwt/dom/client/Element;)(event.target);
-                    ref.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorView::resetScrollTop()();
+                    ref.@info.magnolia.ui.widget.editor.gwt.client.jsni.NativeDomHandler::resetScrollTop()();
                 }
             }
         }
@@ -70,10 +80,11 @@ abstract public class NativeDomHandler {
         iframeElement.contentWindow.location.reload(true);
     }-*/;
 
-    public abstract void registerLoadHandler(Frame frame, VPageEditorView.Listener handler);
-
     public abstract void notifyUrlChange();
 
+    /**
+     * This functionality was added in 4.5. Not triggered at the moment.
+     */
     private native void onPageEditorReady() /*-{
         var callbacks = $wnd.mgnl.PageEditor.onPageEditorReadyCallbacks
         if(typeof callbacks != 'undefined') {
@@ -82,4 +93,81 @@ abstract public class NativeDomHandler {
             }
         }
     }-*/;
+
+    public EventBus getEventBus() {
+        return eventBus;
+    }
+
+    public void setEventBus(EventBus eventBus) {
+        this.eventBus = eventBus;
+    }
+
+    public void setView(VPageEditorView view) {
+        this.view = view;
+    }
+
+    public VPageEditorView getView() {
+        return view;
+    }
+
+    public void init() {
+        IFrameElement frameElement = IFrameElement.as(getView().getIframe().getElement());
+       // Document contentDocument = frameElement.getContentDocument();
+       // addIframeTouchMoveListener(contentDocument, getView().getContent().getElement());
+    }
+
+
+    private final native void addIframeTouchMoveListener(Document doc, Element cont) /*-{
+        var content = cont;
+        var that = this;
+        var X = 0;
+        var Y = 0;
+        var lastY = 0;
+        doc.body.addEventListener('touchmove',
+                function(event) {
+                    that.@info.magnolia.ui.widget.editor.gwt.client.jsni.NativeDomHandler::touchScrolling = true;
+                    event.preventDefault();
+                    var newX = event.targetTouches[0].pageX;
+                    var newY = event.targetTouches[0].pageY;
+                    var deltaY = newY - Y;
+                    var deltaX = newX - X;
+                    cont.scrollLeft -= deltaX;
+                    cont.scrollTop -= deltaY;
+
+                    that.@info.magnolia.ui.widget.editor.gwt.client.jsni.NativeDomHandler::lastY = cont.scrollTop;
+
+                    X = newX - deltaX;
+                    Y = newY - deltaY;
+                });
+
+        doc.body.addEventListener('touchstart',
+                function (event) {
+                    that.@info.magnolia.ui.widget.editor.gwt.client.jsni.NativeDomHandler::touchScrolling = false;
+                    parent.window.scrollTo(0, 1);
+                    X = event.targetTouches[0].pageX;
+                    Y = event.targetTouches[0].pageY;
+                });
+    }-*/;
+    public boolean isTouchScrolling() {
+        return touchScrolling;
+    }
+
+    public void resetScrollTop() {
+
+        Timer timer = new Timer(){
+            @Override
+            public void run() {
+                getView().getContent().getElement().setScrollTop(lastY);
+            }
+        };
+        timer.schedule(1);
+
+        Timer timer2 = new Timer(){
+            @Override
+            public void run() {
+                getView().getContent().getElement().setScrollTop(lastY);
+            }
+        };
+        timer2.schedule(100);
+    }
 }
