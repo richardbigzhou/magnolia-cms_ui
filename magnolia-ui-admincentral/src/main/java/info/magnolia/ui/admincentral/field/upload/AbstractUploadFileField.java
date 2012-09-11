@@ -35,6 +35,7 @@ package info.magnolia.ui.admincentral.field.upload;
 
 import info.magnolia.cms.beans.runtime.FileProperties;
 import info.magnolia.cms.core.MgnlNodeType;
+import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.cms.util.PathUtil;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
@@ -113,8 +114,6 @@ import com.vaadin.ui.Upload.StartedListener;
 public abstract class AbstractUploadFileField extends CustomField implements StartedListener, FinishedListener, ProgressListener, FailedListener, DropHandler, UploadFileField {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractUploadFileField.class);
-    protected static final String DEFAULT_DELETE_BUTTON_CAPTION = "Delete File";
-    protected static final String DEFAULT_DROP_ZONE_CAPTION = "Drag and Drop a File";
 
     protected boolean preview = true;
     protected boolean info = true;
@@ -126,6 +125,7 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
     // Define global variable used by UploadFileField
     private File directory;
     private long maxUploadSize = Long.MAX_VALUE;
+    private String deleteFile;
 
     // Define global variable used by this implementation
     private JcrItemNodeAdapter item;
@@ -144,12 +144,12 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
     private AbstractComponentContainer root;
     private DragAndDropWrapper dropZone;
 
-    // Define last successful Upload datas
+    // Define last successful Upload data
     private byte[] lastBytesFile;
     private String lastMimeType;
     private String lastFileName;
     private long lastFileSize;
-    //Used to force the refresh of the Uploading view in cse of Drag and Drop.
+    //Used to force the refresh of the Uploading view in case of Drag and Drop.
     private Shell shell;
 
     /**
@@ -159,6 +159,7 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
     public AbstractUploadFileField(JcrItemNodeAdapter item, Shell shell) {
         this.item = item;
         this.shell = shell;
+        deleteFile = MessagesUtil.get("field.upload.delete.file");
         setStorageMode();
         createUpload();
     }
@@ -333,7 +334,7 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
      * Create Delete button.
      */
     public Button createDeleteButton() {
-        this.deleteButton = new Button(DEFAULT_DELETE_BUTTON_CAPTION);
+        this.deleteButton = new Button(deleteFile);
         this.deleteButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
@@ -415,7 +416,7 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
     public void uploadFailed(FailedEvent event) {
         //TODO Inform the end user.
         updateDisplay();
-        log.info("Upload failed for file {} ", event.getFilename());
+        log.warn("Upload failed for file {} ", event.getFilename());
     }
 
     /**
@@ -488,7 +489,7 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
             buildStartUploadLayout();
         } else {
             setDragAndDropUploadInterrupted(true);
-            getWindow().showNotification("Upload cancelled due to unsupported file type "+ event.getMIMEType());
+            getWindow().showNotification("Upload canceled due to unsupported file type "+ event.getMIMEType());
             upload.interruptUpload();
         }
     }
