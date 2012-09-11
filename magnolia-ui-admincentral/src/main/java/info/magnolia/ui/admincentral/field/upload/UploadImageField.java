@@ -171,7 +171,6 @@ public class UploadImageField extends AbstractUploadFileField {
         return event.getMIMEType().startsWith("image/");
     }
 
-
     @Override
     protected void buildDefaultUploadLayout() {
         layout.removeAllComponents();
@@ -189,17 +188,10 @@ public class UploadImageField extends AbstractUploadFileField {
     @Override
     public void refreshOnProgressUploadLayout(long readBytes, long contentLength) {
         super.refreshOnProgressUploadLayout(readBytes, contentLength);
-
-        try {
-            Thread.sleep(300);
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
     }
 
     @Override
-    public void buildDoneUploadLayout() {
+    public void buildUploadDoneLayout() {
         layout.removeAllComponents();
 
         if (info) {
@@ -233,8 +225,8 @@ public class UploadImageField extends AbstractUploadFileField {
     }
 
     @Override
-    public void buildStartUploadLayout() {
-        super.buildStartUploadLayout();
+    public void buildUploadStartedLayout() {
+        super.buildUploadStartedLayout();
         layout.removeAllComponents();
 
         if(progressInfo) {

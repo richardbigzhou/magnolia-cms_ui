@@ -175,7 +175,7 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
         if(getLastBytesFile()==null) {
             buildDefaultUploadLayout();
         } else {
-            buildDoneUploadLayout();
+            buildUploadDoneLayout();
         }
     }
 
@@ -453,12 +453,12 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
             return;
         }
         setLastUploadData();
-        buildDoneUploadLayout();
+        buildUploadDoneLayout();
         fireValueChange(true);
         populateItemProperty();
     }
 
-    public void buildDoneUploadLayout() {
+    public void buildUploadDoneLayout() {
         if (this.fileDetail != null) {
             fileDetail.setValue(getDisplayDetails());
         }
@@ -478,7 +478,7 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
     @Override
     public void uploadStarted(StartedEvent event) {
         if(isValidFile(event)) {
-            buildStartUploadLayout();
+            buildUploadStartedLayout();
         } else {
             setDragAndDropUploadInterrupted(true);
             getWindow().showNotification("Upload canceled due to unsupported file type "+ event.getMIMEType());
@@ -486,7 +486,7 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
         }
     }
 
-    public void buildStartUploadLayout() {
+    public void buildUploadStartedLayout() {
         if (this.progress != null) {
             this.progress.setVisible(true);
             this.progress.setProgressIndicatorValue(0);
