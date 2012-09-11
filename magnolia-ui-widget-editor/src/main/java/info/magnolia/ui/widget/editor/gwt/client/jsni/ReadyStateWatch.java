@@ -40,7 +40,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Frame;
 
 /**
- * ReadyStateWatch.
+ * ReadyStateWatch. Unused, maybe usable for IE.
  */
 public class ReadyStateWatch {
     /**

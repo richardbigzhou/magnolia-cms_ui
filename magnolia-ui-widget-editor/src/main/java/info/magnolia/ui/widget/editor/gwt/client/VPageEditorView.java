@@ -43,14 +43,14 @@ import com.google.gwt.user.client.ui.IsWidget;
  */
 public interface VPageEditorView extends IsWidget {
 
-    Frame getIframe();
+    void registerHandlers();
 
     /**
      * Listener.
      */
     interface Listener {
 
-        void onFrameLoaded(Frame frame);
+        void onFrameLoaded();
 
         void selectElement(Element element);
     }

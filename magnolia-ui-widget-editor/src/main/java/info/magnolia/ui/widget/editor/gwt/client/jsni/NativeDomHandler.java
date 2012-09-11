@@ -42,11 +42,44 @@ import info.magnolia.ui.widget.editor.gwt.client.VPageEditorView;
  */
 abstract public class NativeDomHandler {
 
+    /**
+     * Takes care of the mouse up and touchend events for selecting elements inside the page editor.
+     * Unfortunately the GWT handlers do not work, so using jsni.
+     * @param element
+     * @param listener
+     */
+    public native void initNativeSelectionListener(Element element, VPageEditorView.Listener listener) /*-{
+        if (element != 'undefined') {
+            var ref = this;
+            var that = listener;
+            element.contentDocument.onmouseup = function(event) {
+                that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditor::selectElement(Lcom/google/gwt/dom/client/Element;)(event.target);
+
+            }
+            element.contentDocument.ontouchend = function(event) {
+                var isTouchScrolling = ref.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorView::isTouchScrolling()();
+                if (!isTouchScrolling) {
+                    that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditor::selectElement(Lcom/google/gwt/dom/client/Element;)(event.target);
+                    ref.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorView::resetScrollTop()();
+                }
+            }
+        }
+    }-*/;
+
     public native void reloadIFrame(Element iframeElement) /*-{
         iframeElement.contentWindow.location.reload(true);
     }-*/;
 
-    public abstract void registerOnReady(Frame frame, VPageEditorView.Listener handler);
+    public abstract void registerLoadHandler(Frame frame, VPageEditorView.Listener handler);
 
     public abstract void notifyUrlChange();
+
+    private native void onPageEditorReady() /*-{
+        var callbacks = $wnd.mgnl.PageEditor.onPageEditorReadyCallbacks
+        if(typeof callbacks != 'undefined') {
+            for(var i=0; i < callbacks.length; i++) {
+                callbacks[i].apply();
+            }
+        }
+    }-*/;
 }

@@ -43,7 +43,6 @@ import com.google.gwt.dom.client.Node;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Frame;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.Paintable;
 import com.vaadin.terminal.gwt.client.UIDL;
@@ -66,6 +65,7 @@ import info.magnolia.ui.widget.editor.gwt.client.event.SelectElementEvent;
 import info.magnolia.ui.widget.editor.gwt.client.event.SelectElementEventHandler;
 import info.magnolia.ui.widget.editor.gwt.client.event.SortComponentEvent;
 import info.magnolia.ui.widget.editor.gwt.client.event.SortComponentEventHandler;
+import info.magnolia.ui.widget.editor.gwt.client.jsni.NativeDomHandler;
 import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 import info.magnolia.ui.widget.editor.gwt.client.model.ModelImpl;
 import info.magnolia.ui.widget.editor.gwt.client.model.focus.FocusModel;
@@ -86,6 +86,8 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
 
     private static final String PAGE_EDITOR_CSS = "/VAADIN/themes/admincentraltheme/pageeditor.css";
 
+    private NativeDomHandler handler;
+
     private final VPageEditorView view;
     private final Model model;
     private final EventBus eventBus;
@@ -100,9 +102,11 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
    
     public VPageEditor() {
         this.eventBus = new SimpleEventBus();
-        this.view = new VPageEditorViewImpl();
+        this.handler = GWT.create(NativeDomHandler.class);
+        this.view = new VPageEditorViewImpl(handler);
         this.model = new ModelImpl();
         this.focusModel = new FocusModelImpl(eventBus, model);
+
 
         initWidget(view.asWidget());
 
@@ -221,16 +225,6 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
         head.insertFirst(cssLink);
     }
 
-    private native void onPageEditorReady() /*-{
-        var callbacks = $wnd.mgnl.PageEditor.onPageEditorReadyCallbacks
-        if(typeof callbacks != 'undefined') {
-            for(var i=0; i < callbacks.length; i++) {
-                callbacks[i].apply();
-            }
-        }
-    }-*/;
-
-
     private void process(final Document document) {
         injectEditorStyles(document);
 
@@ -283,12 +277,12 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
     }
 
     @Override
-    public void onFrameLoaded(Frame iframe) {
+    public void onFrameLoaded() {
 
         if (pageEditorParameters.isPreview()) {
             return;
         }
-        Element element= iframe.getElement();
+        Element element= view.getIframe().getElement();
 
         view.initNativeSelectionListener(element, this);
 

@@ -54,37 +54,42 @@ public class NativeDomHandlerWebkit extends NativeDomHandler {
 
     private MyTimer timer = new MyTimer();
 
-    public final native void addIframeTouchMoveListener(Document doc) /*-{
+
+    private final native void addIframeTouchMoveListener(Document doc, Element cont) /*-{
+        var w = $wnd;
+        var content = cont;
+        var that = this;
         var X = 0;
         var Y = 0;
-        var w = $wnd;
-        var content = view.element;
-        var that = view;
         doc.body.addEventListener('touchmove',
                 function(event) {
+                    that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorViewImpl::touchScrolling = true;
                     event.preventDefault();
                     var newX = event.targetTouches[0].pageX;
                     var newY = event.targetTouches[0].pageY;
-                    var deltaY = newY - Y;
-                    var deltaX = newY - X;
+                    var deltaY = newY - that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorViewImpl::Y;
+                    var deltaX = newX - that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorViewImpl::X;
                     cont.scrollLeft -= deltaX;
                     cont.scrollTop -= deltaY;
-                    w.console.log("top " + cont.scrollTop + " newY " + newY + " delta " + (newY - Y));
-                    X = newX - deltaX;
-                    Y = newY - deltaY;
+
+                    that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorViewImpl::lastY = cont.scrollTop;
+
+                    that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorViewImpl::X = newX - deltaX;
+                    that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorViewImpl::Y = newY - deltaY;
                 });
 
         doc.body.addEventListener('touchstart',
                 function (event) {
-                    event.preventDefault();
-                    //parent.window.scrollTo(0, 0);
-                    X = event.targetTouches[0].pageX;
-                    Y = event.targetTouches[0].pageY;
+                    that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorViewImpl::touchScrolling = false;
+                    parent.window.scrollTo(0, 1);
+                    that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorViewImpl::X = event.targetTouches[0].pageX;
+                    that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorViewImpl::Y = event.targetTouches[0].pageY;
                 });
     }-*/;
 
+
     @Override
-    public void registerOnReady(Frame frame, final VPageEditorView.Listener listener) {
+    public void registerLoadHandler(Frame frame, final VPageEditorView.Listener listener) {
         frame.addLoadHandler(new LoadHandler() {
             @Override
             public void onLoad(LoadEvent event) {

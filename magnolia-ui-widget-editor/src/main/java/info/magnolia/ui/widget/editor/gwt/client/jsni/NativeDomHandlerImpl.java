@@ -45,7 +45,7 @@ public class NativeDomHandlerImpl extends NativeDomHandler {
 
 
     @Override
-    public void registerOnReady(Frame frame, final VPageEditorView.Listener listener) {
+    public void registerLoadHandler(Frame frame, final VPageEditorView.Listener listener) {
         frame.addLoadHandler(new LoadHandler() {
             @Override
             public void onLoad(LoadEvent event) {
