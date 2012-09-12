@@ -39,8 +39,6 @@ import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -51,8 +49,11 @@ import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
+import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.terminal.Resource;
+import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.AbstractSelect;
-import com.vaadin.ui.NativeSelect;
+import com.vaadin.ui.Select;
 
 /**
  * Creates and initializes a selection field based on a field definition.
@@ -66,7 +67,9 @@ public class SelectFieldBuilder<D extends SelectFieldDefinition> extends Abstrac
     private String initialSelecteKey;
     private String optionValueName;
     private String optionLabelName;
-    protected List<SelectFieldOptionDefinition> options;
+    private String optionIconeName = SelectFieldDefinition.OPTION_ICONSRC_PROPERTY_NAME;
+    private boolean hasOptionIcon = false;
+
     protected AbstractSelect select;
 
     public SelectFieldBuilder(D definition, Item relatedFieldItem) {
@@ -75,18 +78,22 @@ public class SelectFieldBuilder<D extends SelectFieldDefinition> extends Abstrac
 
     @Override
     protected AbstractSelect buildField() {
+        // Get name of the Label and Value property.
+        optionValueName = definition.getValueNodeData();
+        optionLabelName = definition.getLabelNodeData();
+
         select = createSelectionField();
+        select.setContainerDataSource(buildOptions());
         select.setNullSelectionAllowed(false);
         select.setInvalidAllowed(false);
         select.setMultiSelect(false);
         select.setNewItemsAllowed(false);
-
-        // Set options
-        Map<String, String> options = getOptions();
-        for (Map.Entry<String, String> entry : options.entrySet()) {
-            select.addItem(entry.getKey());
-            select.setItemCaption(entry.getKey(), getMessage(entry.getValue()));
+        if(select instanceof Select) {
+            ((Select)select).setFilteringMode(definition.getFilteringMode());
         }
+        select.setItemCaptionMode(Select.ITEM_CAPTION_MODE_PROPERTY);
+        select.setItemCaptionPropertyId(optionLabelName);
+
 
         return select;
     }
@@ -95,38 +102,78 @@ public class SelectFieldBuilder<D extends SelectFieldDefinition> extends Abstrac
      * Used to initialize the desired subclass of AbstractSelect field component. Subclasses can override this method.
      */
     protected AbstractSelect createSelectionField() {
-        return new NativeSelect();
+        return new Select();
+    }
+
+
+
+    /**
+     * Create a IndexContainer containing the options.
+     * First element of the container is the Value.
+     * Second element is the Label
+     * Third element is the Icon is defined.
+     */
+    private IndexedContainer buildOptions() {
+        IndexedContainer optionContainer = new IndexedContainer();
+        List<SelectFieldOptionDefinition> options =  getSelectFieldOptionDefinition();
+        if(!options.isEmpty()) {
+            optionContainer.addContainerProperty(optionValueName, String.class, null);
+            optionContainer.addContainerProperty(optionLabelName, String.class, null);
+            if(hasOptionIcon) {
+                optionContainer.addContainerProperty(optionIconeName, Resource.class, null);
+            }
+            for(SelectFieldOptionDefinition option : options) {
+                Item item = optionContainer.addItem(option.getValue());
+                item.getItemProperty(optionValueName).setValue(option.getValue());
+                item.getItemProperty(optionLabelName).setValue(option.getLabel());
+                if(StringUtils.isNotBlank(option.getIconSrc())) {
+                    item.getItemProperty(optionIconeName).setValue(getIconResource(option));
+                }
+            }
+        }
+        return optionContainer;
     }
 
     /**
-     * Default implementation that build the Options map.
+     * Get the list of SelectFieldOptionDefinition.
      * If options is not empty, took the options defined in this field definition.
      * Else, if path is not empty, build an options list based on the node refereed by
      * the path and property value.
      * Else nothing is define, return an empty option.
-     *
-     * @return Key: Stored value, Value: Displayed Value
+     * <b>Default value and i18n of the Label is also part of the responsibility of this method.</b>
      */
-    public Map<String, String> getOptions() {
-        Map<String, String> res = new TreeMap<String, String>();
+    public List<SelectFieldOptionDefinition> getSelectFieldOptionDefinition() {
+        List<SelectFieldOptionDefinition> res = new ArrayList<SelectFieldOptionDefinition>();
 
-        this.options = definition.getOptions();
-
-        if (this.options != null && !this.options.isEmpty()) {
-            for (SelectFieldOptionDefinition option : this.options) {
-
-                res.put(getValue(option), getMessage(getLabel(option)));
+        if(definition.getOptions() != null && !definition.getOptions().isEmpty()) {
+            for (SelectFieldOptionDefinition option : definition.getOptions()) {
+                option.setValue(getValue(option));
+                option.setLabel(getMessage(getLabel(option)));
                 if (option.isSelected()) {
                     initialSelecteKey = getValue(option);
                 }
+                if(!hasOptionIcon && StringUtils.isNotBlank(option.getIconSrc())) {
+                    hasOptionIcon = true;
+                }
+                res.add(option);
             }
-        } else if (StringUtils.isNotBlank(definition.getPath())) {
+        }else if (StringUtils.isNotBlank(definition.getPath())) {
             // Build an option based on the referred node.
             buildRemoteOptions(res);
         }
 
         return res;
     }
+
+    /**
+     * Default Implementation to retrieve an Icon.
+     * Sub class should override this method in order to retrieve
+     * others Resource.
+     */
+    public Resource getIconResource(SelectFieldOptionDefinition option) {
+        return new ThemeResource(option.getIconSrc());
+    }
+
 
     /**
      * Backward compatibility.
@@ -172,8 +219,8 @@ public class SelectFieldBuilder<D extends SelectFieldDefinition> extends Abstrac
             selectedValue = dataSource.getValue().toString();
         } else if (initialSelecteKey != null) {
             selectedValue = initialSelecteKey;
-        } else if (options != null && !options.isEmpty()) {
-            selectedValue = options.get(0).getValue();
+        } else if (definition.getOptions() != null && !definition.getOptions().isEmpty()) {
+            selectedValue = definition.getOptions().get(0).getValue();
         }
         this.field.setValue(selectedValue);
     }
@@ -184,12 +231,9 @@ public class SelectFieldBuilder<D extends SelectFieldDefinition> extends Abstrac
      * try to get the Value and Label property.
      * In addition create an ArrayList<SelectFieldOptionDefinition> representing this options.
      */
-    private void buildRemoteOptions(Map<String, String> res) {
+    private void buildRemoteOptions(List<SelectFieldOptionDefinition> res) {
         Node parent = SessionUtil.getNode(definition.getRepository(), definition.getPath());
         if (parent != null) {
-            optionValueName = definition.getValueNodeData();
-            optionLabelName = definition.getLabelNodeData();
-            options = new ArrayList<SelectFieldOptionDefinition>();
             // Iterate parent children
             try {
                 NodeIterator iterator = parent.getNodes();
@@ -200,7 +244,6 @@ public class SelectFieldBuilder<D extends SelectFieldDefinition> extends Abstrac
                         option.setLabel(getMessage(child.getProperty(optionLabelName).getString()));
                         option.setValue(child.getProperty(optionValueName).getString());
 
-                        res.put(option.getValue(), option.getLabel());
                         if (child.hasProperty(SelectFieldDefinition.OPTION_SELECTED_PROPERTY_NAME)) {
                             option.setSelected(true);
                             initialSelecteKey = option.getValue();
@@ -210,10 +253,12 @@ public class SelectFieldBuilder<D extends SelectFieldDefinition> extends Abstrac
                         }
                         if (child.hasProperty(SelectFieldDefinition.OPTION_ICONSRC_PROPERTY_NAME)) {
                             option.setIconSrc(child.getProperty(SelectFieldDefinition.OPTION_ICONSRC_PROPERTY_NAME).getString());
+                            hasOptionIcon = true;
                         }
+                        res.add(option);
                     }
-                    options.add(option);
                 }
+                definition.setOptions(res);
             } catch (Exception e) {
                 log.warn("Not able to build options based on option node " + parent.toString(), e);
             }

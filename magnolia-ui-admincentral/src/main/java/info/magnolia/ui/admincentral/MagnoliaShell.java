@@ -53,7 +53,6 @@ import info.magnolia.ui.framework.shell.FragmentChangedHandler;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.widget.dialog.Dialog;
 import info.magnolia.ui.widget.magnoliashell.BaseMagnoliaShell;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
 import info.magnolia.ui.widget.magnoliashell.viewport.ShellViewport;
 
@@ -225,12 +224,6 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
 
     @Override
     public void messageCleared(MessageEvent event) {
-    }
-
-    public void setIndicationOnPulseToNumberOfUnclearedMessagesForCurrentUser(){
-        setIndication(
-                VMainLauncher.ShellAppType.PULSE,
-                messagesManager.getNumberOfUnclearedMessagesForUser(MgnlContext.getUser().getName()));
     }
 
     @Override

@@ -64,7 +64,7 @@ public class LinkFieldBuilderTest extends AbstractBuilderTest<LinkFieldDefinitio
     @Test
     public void simpleLinkFieldUuidTest() throws Exception{
         // GIVEN
-        definition.setUuid(true);
+        definition.setIdentifier(true);
         definition.setName(propertyName);
         definition.setWorkspace(workspaceName);
         baseNode.setProperty(propertyName, baseNode.getIdentifier());

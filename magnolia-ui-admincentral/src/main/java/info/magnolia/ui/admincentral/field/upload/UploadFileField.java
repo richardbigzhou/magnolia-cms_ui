@@ -73,11 +73,6 @@ public interface UploadFileField {
     public void setUploadButtonCaption(String uploadButtonCaption);
 
     /**
-     * Set the Delete Button Caption.
-     */
-    public void setFileDeletionButtonCaption(String deleteButtonCaption);
-
-    /**
      * Define the Tmp Folder used by the main Upload process.
      */
     public void setUploadFileDirectory(File directory);

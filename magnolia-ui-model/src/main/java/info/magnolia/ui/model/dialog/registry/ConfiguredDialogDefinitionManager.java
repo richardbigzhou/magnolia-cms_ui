@@ -94,7 +94,7 @@ public class ConfiguredDialogDefinitionManager extends ModuleConfigurationObserv
                                 providers.add(provider);
                             }
                         }else {
-                            log.warn("node "+dialogNode.getName()+" will not be handle as Dialog.");
+                            log.warn("node " + dialogNode.getName() + " will not be handled as Dialog.");
                         }
                     }
                 }

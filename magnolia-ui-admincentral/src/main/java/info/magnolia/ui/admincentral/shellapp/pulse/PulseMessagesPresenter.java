@@ -90,9 +90,7 @@ public class PulseMessagesPresenter implements Serializable {
                 }
             }
         });
-    }
 
-    public void setInitialUnreadMessagesIndicator() {
         shell.setIndication(
                 VMainLauncher.ShellAppType.PULSE,
                 messagesManager.getNumberOfUnclearedMessagesForUser(MgnlContext.getUser().getName()));
@@ -172,5 +170,9 @@ public class PulseMessagesPresenter implements Serializable {
             
         };
         container.addContainerFilter(filter);
+    }
+
+    public void onMessageClicked(String messageId) {
+        this.messagesManager.clearMessage(MgnlContext.getUser().getName(), messageId);
     }
 }

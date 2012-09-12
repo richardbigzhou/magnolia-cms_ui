@@ -50,11 +50,14 @@ import info.magnolia.ui.widget.magnoliashell.viewport.ShellViewport;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.vaadin.Application;
+import org.apache.commons.lang.mutable.MutableInt;
 import org.vaadin.artur.icepush.ICEPush;
 import org.vaadin.rpc.ServerSideHandler;
 import org.vaadin.rpc.ServerSideProxy;
@@ -90,9 +93,14 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
     private List<String> registeredApps = new ArrayList<String>();
     
     private List<String> runningApps = new ArrayList<String>();
-    
+
+    private Map<ShellAppType, MutableInt> indications = new HashMap<ShellAppType, MutableInt>();
+
     public BaseMagnoliaShell() {
         setImmediate(true);
+        for (ShellAppType type : ShellAppType.values()) {
+            indications.put(type, new MutableInt());
+        }
     }
 
     public void navigateToApp(String prefix, String token) {
@@ -141,15 +149,20 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
 
     public void updateShellAppIndication(ShellAppType type, int increment) {
         synchronized (getApplication()) {
+            this.indications.get(type).add(increment);
             proxy.call("updateIndication", type.name(), increment);
             pusher.push();
         }
     }
 
     public void setIndication(ShellAppType type, int indication) {
-        synchronized (getApplication()) {
-            proxy.call("setIndication", type.name(), indication);
-            pusher.push();
+        this.indications.get(type).setValue(indication);
+        Application application = getApplication();
+        if (application != null) {
+            synchronized (application) {
+                proxy.call("setIndication", type.name(), indication);
+                pusher.push();
+            }
         }
     }
 
@@ -216,6 +229,11 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
             }
             target.endTag(tagName);
         }
+        target.startTag("indications");
+        for (Entry<ShellAppType, MutableInt> entry : indications.entrySet()) {
+            target.addAttribute(entry.getKey().name(), entry.getValue().intValue());
+        }
+        target.endTag("indications");
 
         proxy.paintContent(target);
     }

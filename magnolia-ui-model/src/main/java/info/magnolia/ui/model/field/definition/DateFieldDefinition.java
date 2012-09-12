@@ -38,7 +38,7 @@ package info.magnolia.ui.model.field.definition;
  */
 public class DateFieldDefinition extends ConfiguredFieldDefinition {
 
-    private boolean time;
+    private boolean time = false;
 
     private String dateFormat = "yyyy-MM-dd";
 
