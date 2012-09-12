@@ -48,11 +48,11 @@ import org.vaadin.addon.propertytranslator.PropertyTranslator;
  * In general, if the translation is not possible, return null.
  */
 @SuppressWarnings("unchecked")
-public class UuidToPathTranslator extends PropertyTranslator{
-    private static final Logger log = LoggerFactory.getLogger(UuidToPathTranslator.class);
+public class IdentifierToPathTranslator extends PropertyTranslator {
+    private static final Logger log = LoggerFactory.getLogger(IdentifierToPathTranslator.class);
     private String workspace;
 
-    public UuidToPathTranslator(String workspace) {
+    public IdentifierToPathTranslator(String workspace) {
         this.workspace = workspace;
     }
 
