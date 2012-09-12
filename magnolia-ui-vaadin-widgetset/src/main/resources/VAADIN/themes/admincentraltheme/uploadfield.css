@@ -42,7 +42,7 @@
 }
 
 .file-details {
-  top: 70px;
+  top: 20px;
   left: 185px;
   position: absolute;
 }
@@ -74,6 +74,7 @@
 }
 
 .upload-image-field .v-button {
+  height: 25px;
   font-family: DINWebPro;
   font-size: 12px;
   font-weight: bold;
@@ -87,7 +88,6 @@
   border-radius: 0px;
   -webkit-border-radius: 0px;
   -moz-border-radius: 0px;
-  height: 25px;
 }
 
 .upload-image-field .v-button .v-button-wrap {
@@ -96,12 +96,12 @@
 }
 
 .upload-image-field .v-button.delete {
-  width: 100px !important;
+  width: 80px !important;
   margin-left: 5px !important;
 }
 
 .initial .v-button.cancel {
-  width: 100px !important;
+  width: 80px !important;
   margin-top: 2px !important;
 }
 
