@@ -211,16 +211,16 @@ public class ComponentBar extends AbstractBar {
 
     private void createControls() {
 
-        final Label remove = new Label();
-        remove.setStyleName(ICON_CLASSNAME);
-        remove.addStyleName(REMOVE_CLASSNAME);
-        remove.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                getEventBus().fireEvent(new DeleteComponentEvent(getWorkspace(), getPath()));
-            }
-        });
-        addSecondaryButton(remove);
+               final Label remove = new Label();
+                remove.setStyleName(ICON_CLASSNAME);
+                remove.addStyleName(REMOVE_CLASSNAME);
+                remove.addClickHandler(new ClickHandler() {
+                    @Override
+                    public void onClick(ClickEvent event) {
+                        getEventBus().fireEvent(new DeleteComponentEvent(getWorkspace(), getPath()));
+                    }
+                });
+                addSecondaryButton(remove);
 
 
         /* final Label move = new Label();

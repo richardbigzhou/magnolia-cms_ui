@@ -31,37 +31,36 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.editor.gwt.client;
+package info.magnolia.ui.widget.editor.gwt.client.jsni;
 
-
-import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.LoadEvent;
+import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.user.client.ui.Frame;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
- * VPageEditorView.
+ * GenericFrameEventHandler. The generic implementation to handle iFrame events. Used by firefox so far.
  */
-public interface VPageEditorView extends IsWidget {
+public class GenericFrameEventHandler extends AbstractFrameEventHandler {
 
-    void initSelectionListener();
-
-    Widget getContent();
-
-    /**
-     * Listener.
-     */
-    interface Listener {
-
-        void selectElement(Element element);
+    @Override
+    public void init() {
+        registerLoadHandler();
     }
 
-    Frame getFrame();
+    public void registerLoadHandler() {
+        Frame frame = getView().getFrame();
+        frame.addLoadHandler(new LoadHandler() {
+            @Override
+            public void onLoad(LoadEvent event) {
+                onFrameReady();
+            }
+        });
+    }
 
-    void setListener(Listener listener);
+    @Override
+    public void notifyUrlChange() {
 
-    void setUrl(String url);
+    }
 
-    void reload();
 
 }

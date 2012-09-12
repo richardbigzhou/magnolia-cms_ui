@@ -214,7 +214,7 @@ public class VActionbar extends Composite implements Paintable, Container, Clien
 
     @Override
     public boolean initWidget(Object[] params) {
-        if (!initIsDeviceTablet()) {
+        if (!isDeviceTablet()) {
             setOpened(true);
         }
         return false;
@@ -328,18 +328,12 @@ public class VActionbar extends Composite implements Paintable, Container, Clien
 
     /**
      * Determine if device is tablet. Allows option to add a querystring parameter of tablet=true
-     * for testing. TODO: Christopher Zimmermann - there should be only one instance of this code in
-     * the project.
+     * for testing.
+     * TODO: Christopher Zimmermann - there should be only one instance of this code in the project.
      * @return Whether device is tablet.
      */
-    private boolean initIsDeviceTablet() {
-
-        boolean isDeviceTabletOverride = Window.Location.getQueryString().indexOf("tablet=true") >= 0;
-        if (!MGWT.getOsDetection().isDesktop() || isDeviceTabletOverride) {
-            return true;
-        } else {
-            return false;
-        }
+    private boolean isDeviceTablet() {
+        return !(MGWT.getOsDetection().isDesktop() || Window.Location.getQueryString().indexOf("tablet=true") >= 0);
     }
 
 }

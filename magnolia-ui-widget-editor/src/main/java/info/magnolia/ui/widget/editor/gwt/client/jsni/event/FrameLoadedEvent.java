@@ -31,37 +31,53 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.editor.gwt.client;
+package info.magnolia.ui.widget.editor.gwt.client.jsni.event;
 
-
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.IFrameElement;
+import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.user.client.ui.Frame;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.Event;
 
 /**
- * VPageEditorView.
+ * FrameLoadedEvent. Fired when the iFrame is loaded.
  */
-public interface VPageEditorView extends IsWidget {
+public class FrameLoadedEvent extends Event<FrameLoadedEvent.Handler> {
 
-    void initSelectionListener();
-
-    Widget getContent();
+    private Frame frame;
 
     /**
-     * Listener.
+     * Handler.
      */
-    interface Listener {
-
-        void selectElement(Element element);
+    public interface Handler extends EventHandler {
+        void handle(FrameLoadedEvent frameLoadedEvent);
     }
 
-    Frame getFrame();
+    public static GwtEvent.Type<Handler> TYPE = new GwtEvent.Type<Handler>();
 
-    void setListener(Listener listener);
+    public FrameLoadedEvent(Frame frame) {
+        this.frame = frame;
+    }
 
-    void setUrl(String url);
+    @Override
+    public GwtEvent.Type<Handler> getAssociatedType() {
+        return TYPE;
+    }
 
-    void reload();
+    @Override
+    protected void dispatch(Handler handler) {
+        handler.handle(this);
+    }
 
+    public Frame getFrame() {
+        return frame;
+    }
+
+    public Document getFrameDocument() {
+        Element element = frame.getElement();
+        IFrameElement iframeElement = IFrameElement.as(element);
+        return iframeElement.getContentDocument();
+    }
 }

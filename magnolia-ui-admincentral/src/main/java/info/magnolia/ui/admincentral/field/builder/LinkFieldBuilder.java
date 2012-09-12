@@ -63,7 +63,7 @@ import com.vaadin.ui.Field;
  */
 public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBuilder<LinkFieldDefinition> {
     private static final Logger log = LoggerFactory.getLogger(LinkFieldBuilder.class);
-    public static final String TRANSIENT_PROPERTY_NAME = "transientProps";
+    public static final String PATH_PROPERTY_NAME = "transientPathProperty";
 
     private TextAndButtonField textButton;
     private AppController appController;
@@ -76,20 +76,18 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
 
     @Override
     protected Field buildField() {
-        // Create Translator if we need to store UUID
+        // Create Translator if we need to store the Identifier
         IdentifierToPathTranslator translator = null;
         if(definition.isIdentifier()) {
             translator = new IdentifierToPathTranslator(definition.getWorkspace());
         }
-        textButton = new TextAndButtonField(translator);
+        textButton = new TextAndButtonField(translator, getMessage(definition.getButtonSelectNewLabel()), getMessage(definition.getButtonSelectOtherLabel()));
         Button selectButton = textButton.getSelectButton();
-
-        selectButton.setCaption(getMessage(definition.getButtonLabel()));
 
         if(StringUtils.isNotBlank(definition.getDialogName()) || StringUtils.isNotBlank(definition.getAppName())) {
             selectButton.addListener(createButtonClickListener(definition.getDialogName(), definition.getAppName()));
         } else {
-            selectButton.setCaption("No Select Menu or Target App Defined");
+            selectButton.setCaption(getMessage("field.link.select.error"));
         }
         return textButton;
     }
@@ -108,7 +106,8 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
         Button.ClickListener res = new Button.ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
-
+                // Get the property name to propagate.
+                final String propertyName = getPropertyName();
                 // Get the specified App
                 App targetApp = appController.startIfNotAlreadyRunning(appName, new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appName, ""));
                 if(targetApp == null) {
@@ -117,13 +116,13 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
 
                 // Create the Transient Item used to propagate the property between Dialogs.
                 final PropertysetItem item = new PropertysetItem();
-                Property property = DefaultPropertyUtil.newDefaultProperty(TRANSIENT_PROPERTY_NAME, null, (String)textButton.getTextField().getValue());
-                item.addItemProperty(TRANSIENT_PROPERTY_NAME, property);
+                Property property = DefaultPropertyUtil.newDefaultProperty(propertyName, null, (String)textButton.getTextField().getValue());
+                item.addItemProperty(propertyName, property);
                 // Create the call Back
                 MagnoliaDialogPresenter.Presenter.Callback callback = new MagnoliaDialogPresenter.Presenter.Callback() {
                     @Override
                     public void onSuccess(String actionName) {
-                        Property p = item.getItemProperty(TRANSIENT_PROPERTY_NAME);
+                        Property p = item.getItemProperty(propertyName);
                         textButton.setValue(p.getValue());
                         log.debug("Got following value from Sub Window {}", p.getValue());
                     }
@@ -137,9 +136,12 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
                 if(targetApp instanceof AbstractContentApp) {
                     ((AbstractContentApp)targetApp).openChooseDialog( dialogName, callback, item);
                 }
-
             }
         };
         return res;
+    }
+
+    private String getPropertyName() {
+        return StringUtils.isEmpty(definition.getPropertyName())?PATH_PROPERTY_NAME:definition.getPropertyName();
     }
 }

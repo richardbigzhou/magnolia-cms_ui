@@ -40,6 +40,7 @@ import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.admincentral.field.TextAndContentViewField;
 import info.magnolia.ui.framework.event.SimpleEventBus;
 import info.magnolia.ui.model.field.definition.LinkFieldSelectionDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.jcr.RepositoryException;
@@ -60,6 +61,7 @@ public class LinkFieldSelectionBuilderTest extends AbstractBuilderTest<LinkField
         // GIVEN
         ChooseDialogContentPresenter presenter = mock(ChooseDialogContentPresenter.class);
         SimpleEventBus eventBus = new SimpleEventBus();
+        baseItem.addItemProperty(LinkFieldBuilder.PATH_PROPERTY_NAME, DefaultPropertyUtil.newDefaultProperty(LinkFieldBuilder.PATH_PROPERTY_NAME, null, null));
         builder = new LinkFieldSelectionBuilder(definition, baseItem, presenter, eventBus);
         builder.setI18nContentSupport(i18nContentSupport);
         // WHEN
@@ -75,6 +77,7 @@ public class LinkFieldSelectionBuilderTest extends AbstractBuilderTest<LinkField
         // GIVEN
         ChooseDialogContentPresenter presenter = mock(ChooseDialogContentPresenter.class);
         SimpleEventBus eventBus = new SimpleEventBus();
+        baseItem.addItemProperty(LinkFieldBuilder.PATH_PROPERTY_NAME, DefaultPropertyUtil.newDefaultProperty(LinkFieldBuilder.PATH_PROPERTY_NAME, null, null));
         builder = new LinkFieldSelectionBuilder(definition, baseItem, presenter, eventBus);
         builder.setI18nContentSupport(i18nContentSupport);
         Field field = builder.getField();
@@ -91,9 +94,9 @@ public class LinkFieldSelectionBuilderTest extends AbstractBuilderTest<LinkField
         // GIVEN
         ChooseDialogContentPresenter presenter = mock(ChooseDialogContentPresenter.class);
         SimpleEventBus eventBus = new SimpleEventBus();
-        definition.setColumnName("newProperty");
         baseNode.setProperty("newProperty", "initial");
         baseItem = new JcrNodeAdapter(baseNode);
+        baseItem.addItemProperty("newProperty", DefaultPropertyUtil.newDefaultProperty("newProperty", null, "initial"));
         builder = new LinkFieldSelectionBuilder(definition, baseItem, presenter, eventBus);
         builder.setI18nContentSupport(i18nContentSupport);
         Field field = builder.getField();
@@ -109,7 +112,6 @@ public class LinkFieldSelectionBuilderTest extends AbstractBuilderTest<LinkField
     protected void createConfiguredFieldDefinition() {
         LinkFieldSelectionDefinition fieldDefinition = new LinkFieldSelectionDefinition();
         fieldDefinition = (LinkFieldSelectionDefinition)AbstractFieldBuilderTest.createConfiguredFieldDefinition(fieldDefinition, propertyName);
-
         this.definition = fieldDefinition;
     }
 

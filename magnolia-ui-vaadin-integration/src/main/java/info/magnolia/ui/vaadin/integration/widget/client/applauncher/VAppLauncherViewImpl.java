@@ -80,7 +80,7 @@ public class VAppLauncherViewImpl extends FlowPanel implements VAppLauncherView,
     }
 
     public void addTemporaryAppGroup(VAppGroupJSO groupParams) {
-        final VAppTileGroup group = new VTemporaryAppTileGroup(eventBus, groupParams.getBackgroundColor());
+        final VAppTileGroup group = new VTemporaryAppTileGroup(groupParams.getBackgroundColor());
         group.setClientGroup(groupParams.isClientGroup());
         groups.put(groupParams.getName(), group);
         temporarySectionsBar.addGroup(groupParams.getCaption(), group);
@@ -88,7 +88,7 @@ public class VAppLauncherViewImpl extends FlowPanel implements VAppLauncherView,
     }
 
     public void addPermanentAppGroup(VAppGroupJSO groupParams) {
-        final VPermanentAppTileGroup group = new VPermanentAppTileGroup(eventBus, groupParams.getCaption(), groupParams.getBackgroundColor());
+        final VPermanentAppTileGroup group = new VPermanentAppTileGroup(groupParams.getCaption(), groupParams.getBackgroundColor());
         group.setClientGroup(groupParams.isClientGroup());
         groups.put(groupParams.getName(), group);
         add(group, rootEl);
