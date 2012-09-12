@@ -1,5 +1,4 @@
 .upload-image-field {
-  width: 476px !important;
   height: auto !important;
 }
 
@@ -22,7 +21,7 @@
 .upload {
   background-color: #E6E6E6;
   height: 118px !important;
-  width: 474px !important;
+  width: 523px !important;
   border: 1px solid #999;
   border-radius: 0px;
   -webkit-border-radius: 0px;
@@ -139,7 +138,7 @@
     background: #94B9C6;
     height: 22px;
     border:none;
-    width: 400px;
+    width: 455px;
     border-radius: 0px;
     -webkit-border-radius: 0px;
     -moz-border-radius: 0px;
@@ -153,7 +152,7 @@
     position: absolute;
     color:white;
     top:50px;
-    left: 45%;
+    left: 46%;
     font-size:11px;
 }
 
@@ -175,5 +174,5 @@
  }
 
 .uploading-progress-indicator .uploaded-file {
-    margin-left:135px
+    margin-left:160px
 }

@@ -83,9 +83,9 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
         }
         textButton = new TextAndButtonField(translator);
         Button selectButton = textButton.getSelectButton();
-        // Set Button Caption
+
         selectButton.setCaption(getMessage(definition.getButtonLabel()));
-        // Set Button Listener
+
         if(StringUtils.isNotBlank(definition.getDialogName()) || StringUtils.isNotBlank(definition.getAppName())) {
             selectButton.addListener(createButtonClickListener(definition.getDialogName(), definition.getAppName()));
         } else {

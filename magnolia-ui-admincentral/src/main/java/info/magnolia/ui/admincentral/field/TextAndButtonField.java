@@ -59,12 +59,12 @@ public class TextAndButtonField extends CustomField {
         this.translator = translator;
         textField = new TextField();
         textField.setSizeUndefined();
-        textField.addStyleName("v-dialog-field");
+        textField.addStyleName("small-textfield");
         selectButton = new NativeButton();
         selectButton.addStyleName("btn-dialog btn-dialog-select");
 
         HorizontalLayout layout = new HorizontalLayout();
-        layout.setSizeUndefined();
+        layout.setWidth("100%");
         layout.addComponent(textField);
         layout.addComponent(selectButton);
         layout.setComponentAlignment(selectButton, Alignment.MIDDLE_CENTER);

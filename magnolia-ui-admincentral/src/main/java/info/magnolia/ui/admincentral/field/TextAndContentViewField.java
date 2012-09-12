@@ -62,8 +62,8 @@ public class TextAndContentViewField extends CustomField {
         this.displayTextFieldOnTop = displayTextFieldOnTop;
         textField = new TextField();
         layout = new VerticalLayout();
-        layout.setSpacing(true);
         addTextFieldToLayout(displayTextField);
+        addStyleName("text-and-content");
         setCompositionRoot(layout);
     }
 
