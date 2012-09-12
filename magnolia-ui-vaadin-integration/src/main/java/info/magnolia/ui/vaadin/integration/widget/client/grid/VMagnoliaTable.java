@@ -145,6 +145,7 @@ import com.vaadin.terminal.gwt.client.ui.dd.VerticalDropLocation;
  * we have rows rendered and
  * 
  * TODO implement unregistering for child components in Cells
+ * TODO dlipp: this type is to be streamlined. See SCRUM-1776 for additional info.
  */
 public class VMagnoliaTable extends FlowPanel implements Table, ScrollHandler, VHasDropHandler, FocusHandler, BlurHandler, Focusable, ActionOwner {
     static int checkboxWidth = -1;

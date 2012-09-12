@@ -34,18 +34,16 @@
 package info.magnolia.ui.widget.editor.gwt.client;
 
 
-import com.google.gwt.dom.client.Document;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.IFrameElement;
-import com.google.gwt.event.dom.client.LoadEvent;
-import com.google.gwt.event.dom.client.LoadHandler;
-//import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.EventBus;
 import com.vaadin.terminal.gwt.client.BrowserInfo;
+import info.magnolia.ui.widget.editor.gwt.client.jsni.AbstractFrameEventHandler;
 
 /**
  * GWT implementation of MagnoliaShell client side (the view part basically).
@@ -60,36 +58,23 @@ public class VPageEditorViewImpl extends Composite implements VPageEditorView {
 
     final SimplePanel content;
 
-    public VPageEditorViewImpl() {
+    private AbstractFrameEventHandler handler;
+    private EventBus eventBus;
+    public VPageEditorViewImpl(EventBus eventBus) {
         super();
+        this.eventBus = eventBus;
+        this.handler = GWT.create(AbstractFrameEventHandler.class);
+        handler.setView(this);
+        handler.setEventBus(eventBus);
+
         if (BrowserInfo.get().isTouchDevice()) {
             content = new ScrollPanel();
         } else {
             content = new SimplePanel();
         }
         content.setWidget(iframe);
-
         initWidget(content);
-        //content.getElement().setId("page-editor-scroller");
-
         setStyleName("pageEditor");
-
-        iframe.addLoadHandler(new LoadHandler() {
-
-            @Override
-            public void onLoad(LoadEvent event) {
-                //other handlers are initialized here b/c we need to know the document inside the iframe.
-                //make sure we process  html only when the document inside the iframe is loaded.
-                listener.onFrameLoaded(iframe);
-                final IFrameElement iframeEl = (IFrameElement)iframe.getElement().cast();
-                /*iframeEl.getContentDocument().getBody().getStyle().setProperty("-webkit-user-select", "none");
-                iframeEl.getContentDocument().getBody().getStyle().setProperty("-webkit-tap-highlight-color", "rgba(0,0,0,0)");
-                iframeEl.getContentDocument().getBody().getStyle().setProperty("-webkit-tap-highlight-color", "none");*/
-                if (BrowserInfo.get().isTouchDevice()) {
-                    addIframeTouchMoveListener(iframeEl.getContentDocument(), content.getElement());
-                }
-            }
-        });
 
         final Element iframeElement = iframe.getElement();
         iframeElement.setAttribute("width", "100%");
@@ -97,66 +82,18 @@ public class VPageEditorViewImpl extends Composite implements VPageEditorView {
         iframeElement.setAttribute("allowTransparency", "true");
         iframeElement.setAttribute("frameborder", "0");
 
-        iframeElement.setId("page-editor-iframe");
+        handler.init();
+
     }
 
-    private int X = 0;
-    private boolean scroll = false;
-
-    private int Y = 0;
-    private int lastY = 0;
-
-    private final native void addIframeTouchMoveListener(Document doc, Element cont) /*-{
-        var w = $wnd;
-        var content = cont;
-        var that = this;
-
-
-
-
-        doc.body.addEventListener('touchmove',
-        function(event) {
-            //console.log("touchMove() START:" + cont.scrollTop );
-
-            $wnd.scrolling = true;
-
-            event.preventDefault();
-            var touchX = event.targetTouches[0].pageX;
-            var touchY = event.targetTouches[0].pageY;
-            var deltaY = touchY - that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorViewImpl::Y;
-            var deltaX = touchX - that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorViewImpl::X;
-
-            //console.log("touchMove() scrollTop:" + cont.scrollTop + " deltaY:" + deltaY);
-
-
-            cont.scrollLeft -= deltaX;
-            cont.scrollTop -= deltaY;
-
-            that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorViewImpl::lastY = cont.scrollTop;
-
-
-            that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorViewImpl::X = touchX - deltaX;
-            that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorViewImpl::Y = touchY - deltaY;
-
-        });
-
-        doc.body.addEventListener('touchstart',
-        function (event) {
-            //console.log("touchStart()");
-
-            $wnd.scrolling = false;
-
-            parent.window.scrollTo(0, 1);
-            that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorViewImpl::X = event.targetTouches[0].pageX;
-            that.@info.magnolia.ui.widget.editor.gwt.client.VPageEditorViewImpl::Y = event.targetTouches[0].pageY;
-        });
-
-
-    }-*/;
+    @Override
+    public Frame getFrame() {
+        return iframe;
+    }
 
     @Override
-    public Frame getIframe() {
-        return iframe;
+    public Widget getContent() {
+        return content;
     }
 
     @Override
@@ -171,69 +108,26 @@ public class VPageEditorViewImpl extends Composite implements VPageEditorView {
             reload();
         }
         else {
-            getIframe().setUrl(url);
+            getFrame().setUrl(url);
             this.url = url;
 
         }
+        handler.notifyUrlChange();
     }
 
     @Override
     public void reload() {
-        reloadIFrame(getIframe().getElement());
+        handler.reloadIFrame(iframe.getElement());
     }
 
-    protected native void reloadIFrame(Element iframeElement) /*-{
-        iframeElement.contentWindow.location.reload(true);
-    }-*/;
-
-    /* (non-Javadoc)
-     * @see info.magnolia.ui.widget.editor.gwt.client.VPageEditorView#isScroll()
-     */
     @Override
-    public boolean isScroll() {
-        return scroll;
+    public void initSelectionListener() {
+        if (BrowserInfo.get().isTouchDevice()) {
+            handler.initNativeTouchSelectionListener(iframe.getElement(), listener);
+        }
+        else {
+            handler.initNativeMouseSelectionListener(iframe.getElement(), listener);
+        }
     }
-
-    /* (non-Javadoc)
-     * @see info.magnolia.ui.widget.editor.gwt.client.VPageEditorView#resetScrollTop()
-     */
-    @Override
-    public void resetScrollTop() {
-        int scrollTop = content.getElement().getScrollTop();
-        //browserLog("resetScrollTop()1 Y:" + lastY);
-
-         Timer timer = new Timer(){
-            @Override
-            public void run() {
-                content.getElement().setScrollTop(lastY);
-                //browserLog("resetScrollTop() timer Y:" + lastY);
-            }
-        };
-        timer.schedule(1);
-
-        Timer timer2 = new Timer(){
-            @Override
-            public void run() {
-                content.getElement().setScrollTop(lastY);
-                //browserLog("resetScrollTop() timer Y:" + lastY);
-            }
-        };
-        timer2.schedule(100);
-
-        //browserLog("resetScrollTop()2 Y:" + lastY);
-    }
-
-
-    private static native void browserLog(String message) /*-{
-
-    var iframe = $wnd.document.getElementById("page-editor-scroller");
-
-    if (iframe){
-        console.log( iframe.scrollTop + " " + message);
-    }else{
-        console.log("iframe is null");
-    }
-   }-*/;
-
 
 }

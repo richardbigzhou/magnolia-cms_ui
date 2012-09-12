@@ -35,7 +35,7 @@ package info.magnolia.ui.admincentral.field.builder;
 
 import info.magnolia.ui.admincentral.app.content.AbstractContentApp;
 import info.magnolia.ui.admincentral.field.TextAndButtonField;
-import info.magnolia.ui.admincentral.field.translator.UuidToPathTranslator;
+import info.magnolia.ui.admincentral.field.translator.IdentifierToPathTranslator;
 import info.magnolia.ui.framework.app.App;
 import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.location.DefaultLocation;
@@ -77,9 +77,9 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
     @Override
     protected Field buildField() {
         // Create Translator if we need to store UUID
-        UuidToPathTranslator translator = null;
-        if(definition.isUuid()) {
-            translator = new UuidToPathTranslator(definition.getWorkspace());
+        IdentifierToPathTranslator translator = null;
+        if(definition.isIdentifier()) {
+            translator = new IdentifierToPathTranslator(definition.getWorkspace());
         }
         textButton = new TextAndButtonField(translator);
         Button selectButton = textButton.getSelectButton();

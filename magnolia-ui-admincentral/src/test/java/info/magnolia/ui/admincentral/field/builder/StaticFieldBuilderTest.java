@@ -31,37 +31,47 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.editor.gwt.client;
+package info.magnolia.ui.admincentral.field.builder;
 
+import static org.junit.Assert.assertEquals;
+import info.magnolia.ui.admincentral.field.StaticField;
+import info.magnolia.ui.model.field.definition.StaticFieldDefinition;
 
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.ui.Frame;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+import org.junit.Test;
+
+import com.vaadin.ui.Field;
 
 /**
- * VPageEditorView.
+ * Main testcase for {@link StaticFieldBuilder}.
  */
-public interface VPageEditorView extends IsWidget {
+public class StaticFieldBuilderTest extends AbstractBuilderTest<StaticFieldDefinition> {
 
-    void initSelectionListener();
+    private StaticFieldBuilder staticFieldBuilder;
 
-    Widget getContent();
+    @Test
+    public void simpleStaticFieldBuilderTest() {
+        // GIVEN
+        staticFieldBuilder = new StaticFieldBuilder(definition, baseItem);
+        staticFieldBuilder.setI18nContentSupport(i18nContentSupport);
+        // WHEN
+        Field field = staticFieldBuilder.getField();
 
-    /**
-     * Listener.
-     */
-    interface Listener {
-
-        void selectElement(Element element);
+        // THEN
+        assertEquals(true, field instanceof StaticField);
+        assertEquals("value to display", ((StaticField)field).getLabel().getCaption());
     }
 
-    Frame getFrame();
 
-    void setListener(Listener listener);
 
-    void setUrl(String url);
 
-    void reload();
+    @Override
+    protected void createConfiguredFieldDefinition() {
+        StaticFieldDefinition fieldDefinition = new StaticFieldDefinition();
+        fieldDefinition = (StaticFieldDefinition)AbstractFieldBuilderTest.createConfiguredFieldDefinition(fieldDefinition, propertyName);
+
+        fieldDefinition.setValue("value to display");
+
+        this.definition = fieldDefinition;
+    }
 
 }

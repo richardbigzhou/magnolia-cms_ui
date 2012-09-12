@@ -41,6 +41,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import com.vaadin.event.ItemClickEvent;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Table;
@@ -84,12 +85,6 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
         constructTable();
     }
 
-    @Override
-    public void attach() {
-        super.attach();
-        presenter.setInitialUnreadMessagesIndicator();
-    }
-    
     private void constructTable() {
         root.addComponent(messageTable);
         root.setExpandRatio(messageTable, 1f);
@@ -97,6 +92,14 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
         messageTable.setContainerDataSource(presenter.getMessageDataSource());
         messageTable.setVisibleColumns(presenter.getColumnOrder());
         messageTable.setColumnHeaders(headers);
+        messageTable.addListener(new ItemClickEvent.ItemClickListener() {
+
+            @Override
+            public void itemClick(ItemClickEvent event) {
+                Object itemId = event.getItemId();
+                presenter.onMessageClicked((String)itemId);
+            }
+        });
     }
 
     @Override

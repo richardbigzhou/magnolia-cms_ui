@@ -236,6 +236,15 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
                 view.changeActiveViewport(explicitActiveViewportType);
             }
             updatePusher(uidl);
+
+            if (uidl.getChildByTagName("indications") != null) {
+                UIDL indications = uidl.getChildByTagName("indications");
+                for (ShellAppType type : ShellAppType.values()) {
+                    if (indications.hasAttribute(type.name())) {
+                        this.view.setShellAppIndication(type, indications.getIntAttribute(type.name()));
+                    }
+                }
+            }
         }
         boolean handleCurrentHistory = !proxy.isClientInitialized();
         proxy.update(this, uidl, client);
