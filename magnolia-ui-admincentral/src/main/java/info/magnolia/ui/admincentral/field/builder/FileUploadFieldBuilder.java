@@ -89,7 +89,6 @@ public class FileUploadFieldBuilder extends AbstractFieldBuilder<FileUploadField
         uploadField.setInfo(true);
         uploadField.setProgressInfo(true);
         uploadField.setFileDeletion(true);
-        uploadField.setFileDeletionButtonCaption("Delete");
         uploadField.setPreview(true);
         return uploadField;
     }

@@ -158,7 +158,7 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
     public AbstractUploadFileField(JcrItemNodeAdapter item, Shell shell) {
         this.item = item;
         this.shell = shell;
-        deleteFileCaption = MessagesUtil.get("field.upload.delete.file");
+        deleteFileCaption = MessagesUtil.get("field.upload.remove.file");
         setStorageMode();
         createUpload();
     }
@@ -315,7 +315,7 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
      * preview display.
      */
     public Embedded createPreview() {
-        this.previewImage = new Embedded();
+        this.previewImage = new Embedded(null);
         defaultComponent.put(DefaultComponent.PREVIEW, this.previewImage);
         return this.previewImage;
     }
@@ -357,6 +357,7 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
             public void buttonClick(ClickEvent event) {
                 upload.interruptUpload();
                 // Also inform DragAndDrop
+                getRootLayout().removeStyleName("in-progress");
                 setDragAndDropUploadInterrupted(true);
             }
         });
@@ -482,6 +483,7 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
         } else {
             setDragAndDropUploadInterrupted(true);
             getWindow().showNotification("Upload canceled due to unsupported file type "+ event.getMIMEType());
+            getRootLayout().removeStyleName("in-progress");
             upload.interruptUpload();
         }
     }
@@ -625,13 +627,6 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
     @Override
     public void setDragAndDrop(boolean dragAndDrop) {
         this.dragAndDrop = dragAndDrop;
-    }
-
-    @Override
-    public void setFileDeletionButtonCaption(String deleteButtonCaption) {
-        if(this.deleteButton != null) {
-            this.deleteButton.setCaption(deleteButtonCaption);
-        }
     }
 
     @Override

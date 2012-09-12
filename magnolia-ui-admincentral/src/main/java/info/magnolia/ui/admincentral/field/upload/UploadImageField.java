@@ -188,6 +188,12 @@ public class UploadImageField extends AbstractUploadFileField {
     @Override
     public void refreshOnProgressUploadLayout(long readBytes, long contentLength) {
         super.refreshOnProgressUploadLayout(readBytes, contentLength);
+        try {
+            Thread.sleep(300);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     @Override
