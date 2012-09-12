@@ -111,8 +111,18 @@
     font-size: 20px;
 }
 
-.navigator-button {
-	background: none;
-	border: none;
-	border-right: 1px solid gray;
+.v-pulse .navigator .v-csslayout-margin {padding:13px 0 20px 4px;}
+.v-pulse .navigator-button {
+	height:12px;
+	border-right:1px solid #ccc;
+	padding:0 42px 0 20px;
+	color:#ccc;
+	font-family:DINWebPro, sans-serif;
+	font-size:14px;
+	font-weight:bold;
+	line-height:1;
+	text-transform:uppercase;
 }
+.v-pulse .v-nativebutton-active {color:#666;}
+.v-pulse .v-nativebutton::-moz-focus-inner {padding:0; border:0}
+.v-pulse .navigator-button .v-nativebutton-caption {text-decoration:none;}
