@@ -85,8 +85,6 @@ public class AreaBar extends AbstractBar {
         setVisible(false);
         createControls();
 
-        attach();
-
     }
 
     private void createButtons() {

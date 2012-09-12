@@ -42,8 +42,8 @@ import info.magnolia.ui.widget.editor.gwt.client.model.Model;
  */
 public class MgnlElementProcessorFactory {
 
-    public static MgnlElementProcessor getProcessor(Model model, EventBus eventBus, MgnlElement mgnlElement) throws IllegalArgumentException {
-        MgnlElementProcessor processor;
+    public static AbstractMgnlElementProcessor getProcessor(Model model, EventBus eventBus, MgnlElement mgnlElement) throws IllegalArgumentException {
+        AbstractMgnlElementProcessor processor;
 
         if (mgnlElement.isArea()) {
             processor = new AreaProcessor(model, eventBus, mgnlElement);

@@ -89,7 +89,6 @@ public class ComponentBar extends AbstractBar {
         }
 
         setVisible(false);
-        attach();
 
     }
 

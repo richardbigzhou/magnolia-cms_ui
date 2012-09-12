@@ -260,7 +260,6 @@ public class PageBar extends AbstractBar {
         }
     }
 
-    @Override
     public void attach(Element body) {
         final Element bar = mainBarWrapper != null ? mainBarWrapper.getElement() : getElement();
         body.insertFirst(bar);

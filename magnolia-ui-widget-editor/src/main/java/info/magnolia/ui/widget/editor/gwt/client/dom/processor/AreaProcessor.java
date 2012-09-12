@@ -47,7 +47,7 @@ import java.util.Map;
 /**
  * Factory Class for MgnlElement processors.
  */
-public class AreaProcessor extends MgnlElementProcessor {
+public class AreaProcessor extends AbstractMgnlElementProcessor {
 
     public AreaProcessor(Model model, EventBus eventBus, MgnlElement mgnlElement) {
         super(model, eventBus, mgnlElement);
@@ -59,11 +59,15 @@ public class AreaProcessor extends MgnlElementProcessor {
 
         if (hasControlBar(getMgnlElement().getAttributes())) {
             areaBar = new AreaBar(getModel(), getEventBus(), getMgnlElement());
+            setEditBar(areaBar);
+            attachWidget();
 
             if (hasComponentPlaceHolder(getMgnlElement().getAttributes())) {
                 new ComponentPlaceHolder(getModel(), getEventBus(), getMgnlElement());
             }
+
             new AreaEndBar(getModel(), getMgnlElement());
+
         }
 
         else {

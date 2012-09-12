@@ -37,8 +37,6 @@ import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 import info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils;
 import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Float;
 import com.google.gwt.event.shared.EventBus;
@@ -104,6 +102,11 @@ public abstract class AbstractBar extends FlowPanel {
         }
 
         setStyleName("mgnlEditor mgnlEditorBar");
+    }
+
+    @Override
+    public void onAttach() {
+        super.onAttach();
     }
 
     protected void setId(String id) {
@@ -172,47 +175,12 @@ public abstract class AbstractBar extends FlowPanel {
         return getElement().getStyle();
     }
 
-    /**
-     * TODO: we should not have to call onAttach ourself?
-     */
-    public void attach() {
-        if (getMgnlElement().getEditElement() != null) {
-            Element parent = getMgnlElement().getEditElement();
-            parent.insertFirst(getElement());
-            onAttach();
-        }
-        else if (getMgnlElement().getFirstElement() != null && getMgnlElement().getFirstElement() == getMgnlElement().getLastElement()) {
-            attach(getMgnlElement());
-        }
-        else {
-            attach(getMgnlElement().getComment().getElement());
-        }
-    }
 
-    public void attach(MgnlElement mgnlElement) {
-        Element element = mgnlElement.getFirstElement();
-        if (element != null) {
-            element.insertFirst(getElement());
-        }
-        onAttach();
-    }
-
-    public void attach(Element element) {
-        final Node parentNode = element.getParentNode();
-        parentNode.insertAfter(getElement(), element);
-        onAttach();
-    }
 
     public void toggleVisible() {
         setVisible(!isVisible());
     }
 
-    @Override
-    protected void onAttach() {
-        getModel().addElements(this.getMgnlElement(), getElement());
-        getModel().addEditBar(this.getMgnlElement(), this);
-        super.onAttach();
-    }
 
     public void setMgnlElement(MgnlElement mgnlElement) {
         this.mgnlElement = mgnlElement;
