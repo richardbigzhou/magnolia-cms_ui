@@ -46,7 +46,7 @@ import java.util.Map;
 
 
 /**
- * Default configured implementation for the WorkbenchDefinitionn.
+ * Default configured implementation for the WorkbenchDefinition.
  */
 public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
 
