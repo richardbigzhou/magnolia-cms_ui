@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2011 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,39 +31,41 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.field.definition;
+package info.magnolia.ui.admincentral.field.translator;
+
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang.StringUtils;
+import org.vaadin.addon.propertytranslator.PropertyTranslator;
 
 /**
- * Field definition for a password field.
+ * {@link PropertyTranslator} used to encode and decode password fields see {link Base64}.
+ * In general, if the translation is not possible, return emptyString.
  */
-public class PasswordFieldDefinition extends ConfiguredFieldDefinition {
+@SuppressWarnings("unchecked")
+public class Base64Translator extends PropertyTranslator {
 
-    private boolean verification = true;
-    private String verificationMessage= "field.password.verificationMessage";
-    private String verificationErrorMessage = "field.password.verificationErrorMessage";
-
-    public boolean isVerification() {
-        return verification;
+    public Base64Translator() {
     }
 
-    public void setVerification(boolean verification) {
-        this.verification = verification;
+    /**
+     * Decode.
+     */
+    @Override
+    public Object translateFromDatasource(Object encoded) {
+        if(StringUtils.isBlank((String)encoded)) {
+            return StringUtils.EMPTY;
+        }
+        return new String(Base64.decodeBase64(((String)encoded).getBytes()));
     }
-
-    public String getVerificationMessage() {
-        return verificationMessage;
-    }
-
-    public void setVerificationMessage(String verificationMessage) {
-        this.verificationMessage = verificationMessage;
-    }
-
-    public String getVerificationErrorMessage() {
-        return verificationErrorMessage;
-    }
-
-    public void setVerificationErrorMessage(String verificationErrorMessage) {
-        this.verificationErrorMessage = verificationErrorMessage;
+    /**
+     * Encode.
+     */
+    @Override
+    public Object translateToDatasource(Object decoded) throws Exception {
+        if(StringUtils.isBlank((String)decoded)) {
+            return StringUtils.EMPTY;
+        }
+        return  new String(Base64.encodeBase64(((String)decoded).getBytes()));
     }
 
 }
