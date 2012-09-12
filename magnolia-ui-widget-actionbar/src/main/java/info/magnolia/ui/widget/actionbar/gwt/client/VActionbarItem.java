@@ -35,6 +35,9 @@ package info.magnolia.ui.widget.actionbar.gwt.client;
 
 import info.magnolia.ui.widget.actionbar.gwt.client.event.ActionTriggerEvent;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.dom.client.MouseOutEvent;
@@ -73,13 +76,11 @@ public class VActionbarItem extends Widget {
 
     protected final EventBus eventBus;
 
-    private HandlerRegistration handler;
-
     protected VActionbarGroup group;
 
     protected TouchDelegate delegate = new TouchDelegate(this);
 
-    protected HandlerRegistration touchEndHandler;
+    protected List<HandlerRegistration> handlers = new ArrayList<HandlerRegistration>();
 
     /**
      * Instantiates a new action in action bar.
@@ -87,19 +88,18 @@ public class VActionbarItem extends Widget {
      * @param data the data json object
      * @param eventBus the event bus
      * @param icon the icon
-     * @param cssClasses css classes to be added to the item
      * 
-     * Use {@link #VActionbarItem(VActionbarItemJSO, EventBus)} instead.
+     * Use {@link #VActionbarItem(VActionbarItemJSO, VActionbarGroup, EventBus)} instead.
      */
     @Deprecated
-    public VActionbarItem(VActionbarItemJSO data, VActionbarGroup group, EventBus eventBus, Icon icon, String cssClasses) {
+    public VActionbarItem(VActionbarItemJSO data, VActionbarGroup group, EventBus eventBus, Icon icon) {
         super();
         this.data = data;
         this.group = group;
         this.eventBus = eventBus;
         this.iconImage = icon;
 
-        constructDOM(cssClasses);
+        constructDOM();
         bindHandlers();
         update();
     }
@@ -108,25 +108,24 @@ public class VActionbarItem extends Widget {
      * Instantiates a new action in action bar.
      * 
      * @param data the data json object
+     * @param group the group
      * @param eventBus the event bus
-     * @param cssClasses css classes to be added to the item
      */
-    public VActionbarItem(VActionbarItemJSO data, VActionbarGroup group, EventBus eventBus, String cssClasses) {
+    public VActionbarItem(VActionbarItemJSO data, VActionbarGroup group, EventBus eventBus) {
         super();
         this.data = data;
         this.group = group;
         this.eventBus = eventBus;
         this.iconImage = null;
 
-        constructDOM(cssClasses);
+        constructDOM();
         bindHandlers();
         update();
     }
 
-    private void constructDOM(String cssClasses) {
+    private void constructDOM() {
         setElement(root);
         setStyleName(CLASSNAME);
-        addStyleName(cssClasses);
 
         text.addClassName("v-text");
         icon.addClassName("v-icon");
@@ -146,51 +145,41 @@ public class VActionbarItem extends Widget {
 
         DOM.sinkEvents(getElement(), Event.MOUSEEVENTS);
 
-        addDomHandler(new MouseDownHandler() {
+        handlers.add(addDomHandler(new MouseDownHandler() {
 
             @Override
             public void onMouseDown(MouseDownEvent event) {
                 addStyleName("mousedown");
             }
-        }, MouseDownEvent.getType());
+        }, MouseDownEvent.getType()));
 
-        addDomHandler(new MouseUpHandler() {
-
-            @Override
-            public void onMouseUp(MouseUpEvent event) {
-                removeStyleName("mousedown");
-
-                if (data.isEnabled()) {
-                    eventBus.fireEvent(new ActionTriggerEvent(data.getName(), VActionbarItem.this));
-                }
-            }
-        }, MouseUpEvent.getType());
-
-        addDomHandler(new MouseOutHandler() {
+        handlers.add(addDomHandler(new MouseOutHandler() {
 
             @Override
             public void onMouseOut(MouseOutEvent event) {
                 removeStyleName("mousedown");
             }
-        }, MouseOutEvent.getType());
+        }, MouseOutEvent.getType()));
 
-        /*
-
-        delegate.addTouchEndHandler(new TouchEndHandler() {
+        handlers.add(addDomHandler(new MouseUpHandler() {
 
             @Override
-            public void onTouchEnd(com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent event) {
-
-                if (data.isEnabled()) {
-                    eventBus.fireEvent(new ActionTriggerEvent(data.getName(), VActionbarItem.this));
-                }
+            public void onMouseUp(MouseUpEvent event) {
+                removeStyleName("mousedown");
+                eventBus.fireEvent(new ActionTriggerEvent(data.getName(), VActionbarItem.this));
             }
-        });
-        */
+        }, MouseUpEvent.getType()));
     }
 
-    public void resetStyleNames(String cssClasses) {
-        setStyleName(CLASSNAME + " " + cssClasses);
+    /**
+     * Unbinds all handlers to freeze visual state and not fire actions.
+     */
+    private void unbindHandlers() {
+        if (handlers != null && !handlers.isEmpty()) {
+            for (HandlerRegistration handler : handlers) {
+                handler.removeHandler();
+            }
+        }
     }
 
     public String getName() {
@@ -217,9 +206,7 @@ public class VActionbarItem extends Widget {
             bindHandlers();
         } else if (!data.isEnabled() && !root.getClassName().contains(ApplicationConnection.DISABLED_CLASSNAME)) {
             root.addClassName(ApplicationConnection.DISABLED_CLASSNAME);
-            // TODO 20120903 mgeljic: restore assigning of handler correctly so that disable can
-            // unregister it, see SCRUM-1706; right now avoiding NPE
-            // handler.removeHandler();
+            unbindHandlers();
         }
     }
 

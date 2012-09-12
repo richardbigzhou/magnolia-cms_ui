@@ -37,8 +37,7 @@ import info.magnolia.ui.admincentral.field.builder.SelectFieldBuilder;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
 
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.List;
 
 import com.vaadin.data.Item;
 
@@ -52,19 +51,15 @@ public class ComponentSelectorField extends SelectFieldBuilder<ComponentSelector
 
     public ComponentSelectorField(ComponentSelectorDefinition definition, Item relatedFieldItem) {
         super(definition, relatedFieldItem);
+        definition.setFilteringMode(2);
     }
 
     /**
      * Get the available templates based on the current Node.
      */
     @Override
-    public Map<String, String> getOptions() {
-
-        Map<String, String> options = new TreeMap<String, String>();
-        for (SelectFieldOptionDefinition option : definition.getOptions()) {
-            options.put(option.getValue(), option.getName());
-        }
-        return options;
+    public List<SelectFieldOptionDefinition> getSelectFieldOptionDefinition(){
+        return definition.getOptions();
     }
 
     @Override

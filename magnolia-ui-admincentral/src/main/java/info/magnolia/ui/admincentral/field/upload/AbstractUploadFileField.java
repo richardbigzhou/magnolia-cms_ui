@@ -35,6 +35,7 @@ package info.magnolia.ui.admincentral.field.upload;
 
 import info.magnolia.cms.beans.runtime.FileProperties;
 import info.magnolia.cms.core.MgnlNodeType;
+import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.cms.util.PathUtil;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
@@ -47,7 +48,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -113,8 +113,6 @@ import com.vaadin.ui.Upload.StartedListener;
 public abstract class AbstractUploadFileField extends CustomField implements StartedListener, FinishedListener, ProgressListener, FailedListener, DropHandler, UploadFileField {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractUploadFileField.class);
-    protected static final String DEFAULT_DELETE_BUTTON_CAPTION = "Delete File";
-    protected static final String DEFAULT_DROP_ZONE_CAPTION = "Drag and Drop a File";
 
     protected boolean preview = true;
     protected boolean info = true;
@@ -126,6 +124,7 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
     // Define global variable used by UploadFileField
     private File directory;
     private long maxUploadSize = Long.MAX_VALUE;
+    private String deleteFileCaption;
 
     // Define global variable used by this implementation
     private JcrItemNodeAdapter item;
@@ -144,21 +143,22 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
     private AbstractComponentContainer root;
     private DragAndDropWrapper dropZone;
 
-    // Define last successful Upload datas
+    // Define last successful Upload data
     private byte[] lastBytesFile;
     private String lastMimeType;
     private String lastFileName;
     private long lastFileSize;
-    //Used to force the refresh of the Uploading view in cse of Drag and Drop.
+    //Used to force the refresh of the Uploading view in case of Drag and Drop.
     private Shell shell;
 
     /**
      * Basic constructor.
-     * @param item used to store the File properties like binary data, file name....
+     * @param item used to store the File properties like binary data, file name, etc.
      */
     public AbstractUploadFileField(JcrItemNodeAdapter item, Shell shell) {
         this.item = item;
         this.shell = shell;
+        deleteFileCaption = MessagesUtil.get("field.upload.delete.file");
         setStorageMode();
         createUpload();
     }
@@ -168,14 +168,14 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
      * Set the Upload field Components layout based on the current state.
      * <ul>
      * <li>- Initial:  --> buildDefaultUploadLayout()
-     * <li>- Complete: --> buildFinishUploadLayout()
+     * <li>- Complete: --> buildDoneUploadLayout()
      * </ul>
      */
     protected void updateDisplay() {
         if(getLastBytesFile()==null) {
             buildDefaultUploadLayout();
         } else {
-            buildFinishUploadLayout();
+            buildUploadDoneLayout();
         }
     }
 
@@ -333,7 +333,7 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
      * Create Delete button.
      */
     public Button createDeleteButton() {
-        this.deleteButton = new Button(DEFAULT_DELETE_BUTTON_CAPTION);
+        this.deleteButton = new Button(deleteFileCaption);
         this.deleteButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
@@ -413,9 +413,8 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
 
     @Override
     public void uploadFailed(FailedEvent event) {
-        //TODO Inform the end user.
         updateDisplay();
-        log.info("Upload failed for file {} ", event.getFilename());
+        log.warn("Upload failed for file {} ", event.getFilename());
     }
 
     /**
@@ -454,28 +453,22 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
             return;
         }
         setLastUploadData();
-        buildFinishUploadLayout();
+        buildUploadDoneLayout();
         fireValueChange(true);
         populateItemProperty();
     }
 
-    public void buildFinishUploadLayout() {
+    public void buildUploadDoneLayout() {
         if (this.fileDetail != null) {
             fileDetail.setValue(getDisplayDetails());
         }
     }
 
     /**
-     * @return the string representing the file. The default implementation
+     * @return a string representing relevant file info. By default returns an empty string.
      **/
     protected String getDisplayDetails() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("File: ");
-        sb.append(getLastFileName());
-        sb.append("</br> <em>");
-        sb.append("(" + FileUtils.byteCountToDisplaySize(getLastFileSize()) + " )");
-        sb.append("</em>");
-        return sb.toString();
+        return "";
     }
 
     /**
@@ -485,15 +478,15 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
     @Override
     public void uploadStarted(StartedEvent event) {
         if(isValidFile(event)) {
-            buildStartUploadLayout();
+            buildUploadStartedLayout();
         } else {
             setDragAndDropUploadInterrupted(true);
-            getWindow().showNotification("Upload cancelled due to unsupported file type "+ event.getMIMEType());
+            getWindow().showNotification("Upload canceled due to unsupported file type "+ event.getMIMEType());
             upload.interruptUpload();
         }
     }
 
-    public void buildStartUploadLayout() {
+    public void buildUploadStartedLayout() {
         if (this.progress != null) {
             this.progress.setVisible(true);
             this.progress.setProgressIndicatorValue(0);
@@ -537,15 +530,15 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
     }
 
     /**
-     * Default implementation return always true.
-     * Child class should always override this method.
+     * Default implementation returns always true.
+     * Extending classes should always override this method.
      */
     public boolean isValidFile(StartedEvent event) {
         return true;
     }
 
     /**
-     * Populate the Item property (data/image name/...) Data is stored as a JCR Binary object.
+     * Populates the Item property (data/image name/...). Data is stored as a JCR Binary object.
      */
     protected void populateItemProperty() {
         // Attach the Item to the parent in order to be stored.

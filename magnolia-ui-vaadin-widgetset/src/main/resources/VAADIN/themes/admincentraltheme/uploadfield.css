@@ -14,7 +14,7 @@
   padding:0;
 }
 
-.upload-image-field  .v-ddwrapper.v-ddwrapper-over, .start {
+.upload-image-field  .v-ddwrapper.v-ddwrapper-over, .in-progress {
   background-color: #C1D8DF !important;
   border: 1px solid #4B8E9E !important;
 }
@@ -29,11 +29,11 @@
   -moz-border-radius: 0px;
 }
 
-.start {
+.in-progress {
   height: 118px !important;
 }
 
-.finish {
+.done {
   height: 188px !important;
 }
 
@@ -42,18 +42,33 @@
 }
 
 .file-details {
-  float: left;
-  margin-left: 2px;
+  top: 70px;
+  left: 185px;
+  position: absolute;
+}
+
+.file-details .key {
+  color: #666;
+  margin-right: 12px;
+  text-align: right;
+  width: 50px;
+  display: inline-block;
+}
+
+.file-details .value {
+ display: inline-block;
 }
 
 .image {
   position: absolute;
-  right: 10px;
-  top: 20px;
+  left: 20px;
+  top:20px;
+  bottom:20px;
 }
 
 .upload-image-field .buttons {
-  top: 80px;
+  bottom:20px;
+  left: 200px;
   padding: 0;
   position: absolute;
 }
@@ -72,11 +87,12 @@
   border-radius: 0px;
   -webkit-border-radius: 0px;
   -moz-border-radius: 0px;
-  width: 160px !important;
+  height: 25px;
 }
 
-.buttons .v-button .v-button-wrap {
+.upload-image-field .v-button .v-button-wrap {
   background: none;
+  padding:0;
 }
 
 .upload-image-field .v-button.delete {
@@ -90,32 +106,36 @@
 }
 
 .initial .v-button {
-  margin-top: 35px;
-  line-height: inherit;
+  margin-top:30px;
+  margin-left:20px;
+  width: 120px;
 }
 
-.initial .v-button .v-button-wrap {
-  background: none;
-}
-
-.buttons .v-button .v-button-caption {
-  line-height: inherit;
+.upload-image-field  .v-button .v-button-caption {
+  line-height: normal;
 }
 
 .upload-text {
   width: auto !important;
-  margin-top: -25px;
-  margin-right: 65px;
-  float: right;
+  position: absolute;
+  top: 46px;
+  left: 160px;
+  color: #999
 }
+
+.upload-text em {
+  color: black ;
+  font-style: normal;
+}
+
 /* Progress indicator styles*/
 .uploading-progress-indicator {
-    margin: 0 0 0 25px;
+    margin: 0 0 0 20px;
     padding: 0;
     height: auto;
 }
 
-.uploading-progress-indicator .v-progressindicator-wrapper {
+.uploading-progress-indicator .v-progressindicator-wrapper, .v-progressindicator-indicator {
     background: #94B9C6;
     height: 22px;
     border:none;
@@ -127,13 +147,12 @@
 
 .uploading-progress-indicator  .v-progressindicator-wrapper .v-progressindicator-indicator {
     background: #666;
-    height: 22px;
  }
 
 .uploading-progress-indicator .uploading-file-progress {
     position: absolute;
     color:white;
-    top:49px;
+    top:50px;
     left: 45%;
     font-size:11px;
 }
@@ -141,7 +160,7 @@
 .upload-image-field button.cancel {
     background: url("img/icon-close-16.png") no-repeat scroll 0px 0px transparent;
     position: absolute;
-    top: 49px;
+    top: 50px;
     right: 20px;
     padding:0;
     margin:0;
@@ -156,5 +175,5 @@
  }
 
 .uploading-progress-indicator .uploaded-file {
-    margin-left:120px
+    margin-left:135px
 }

@@ -33,15 +33,18 @@
  */
 package info.magnolia.ui.model.field.definition;
 
+import info.magnolia.repository.RepositoryConstants;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import info.magnolia.repository.RepositoryConstants;
+import com.vaadin.ui.AbstractSelect;
 
 /**
  * Field definition for a select field.
  */
 public class SelectFieldDefinition extends ConfiguredFieldDefinition {
+
 
     public static final String OPTION_VALUE_PROPERTY_NAME = "value";
     public static final String OPTION_NAME_PROPERTY_NAME = "name";
@@ -58,6 +61,9 @@ public class SelectFieldDefinition extends ConfiguredFieldDefinition {
     private String valueNodeData = OPTION_VALUE_PROPERTY_NAME;
 
     private String labelNodeData = OPTION_LABEL_PROPERTY_NAME;
+
+    private int filteringMode = 0;
+
 
     private List<SelectFieldOptionDefinition> options = new ArrayList<SelectFieldOptionDefinition>();
 
@@ -103,5 +109,23 @@ public class SelectFieldDefinition extends ConfiguredFieldDefinition {
 
     public void setLabelNodeData(String labelNodeData) {
         this.labelNodeData = labelNodeData;
+    }
+
+    public int getFilteringMode() {
+        switch (filteringMode) {
+            case 0 :
+                return AbstractSelect.Filtering.FILTERINGMODE_OFF;
+            case 1 :
+                return AbstractSelect.Filtering.FILTERINGMODE_CONTAINS;
+            case 2 :
+                return AbstractSelect.Filtering.FILTERINGMODE_STARTSWITH;
+            default :
+                return AbstractSelect.Filtering.FILTERINGMODE_OFF;
+        }
+    }
+
+
+    public void setFilteringMode(int filteringMode) {
+        this.filteringMode = filteringMode;
     }
 }
