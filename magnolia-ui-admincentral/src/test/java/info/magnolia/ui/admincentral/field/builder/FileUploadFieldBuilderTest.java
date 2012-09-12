@@ -72,7 +72,7 @@ public class FileUploadFieldBuilderTest extends AbstractBuilderTest<FileUploadFi
         UploadImageField field = (UploadImageField)fileUploadBuilder.getField();
 
         // WHEN
-        field.buildStartUploadLayout();
+        field.buildUploadStartedLayout();
 
         // THEN
         assertEquals(true, field.getDefaultComponent(DefaultComponent.UPLOAD).isVisible());
