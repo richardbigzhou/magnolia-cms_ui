@@ -33,63 +33,39 @@
  */
 package info.magnolia.ui.admincentral.field.translator;
 
-import info.magnolia.context.MgnlContext;
-
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.vaadin.addon.propertytranslator.PropertyTranslator;
 
 /**
- * {@link PropertyTranslator} used to convert a UUID to a Path and Path to UUID.
- * In general, if the translation is not possible, return null.
+ * {@link PropertyTranslator} used to encode and decode password fields see {link Base64}.
+ * In general, if the translation is not possible, return emptyString.
  */
 @SuppressWarnings("unchecked")
-public class UuidToPathTranslator extends PropertyTranslator{
-    private static final Logger log = LoggerFactory.getLogger(UuidToPathTranslator.class);
-    private String workspace;
+public class Base64Translator extends PropertyTranslator {
 
-    public UuidToPathTranslator(String workspace) {
-        this.workspace = workspace;
+    public Base64Translator() {
     }
 
-
     /**
-     * Transform the UUID to Path.
+     * Decode.
      */
     @Override
-    public Object translateFromDatasource(Object uuid) {
-        String res = StringUtils.EMPTY;
-        if(StringUtils.isBlank((String)uuid)) {
-            return res;
+    public Object translateFromDatasource(Object encoded) {
+        if(StringUtils.isBlank((String)encoded)) {
+            return StringUtils.EMPTY;
         }
-        try {
-            Session session = MgnlContext.getJCRSession(workspace);
-            res = session.getNodeByIdentifier(uuid.toString()).getPath();
-        } catch (RepositoryException e) {
-            log.error("Unable to convert UUID to Path",e);
-        }
-        return res;
+        return new String(Base64.decodeBase64(((String)encoded).getBytes()));
     }
     /**
-     * Transform the Path to UUID.
+     * Encode.
      */
     @Override
-    public Object translateToDatasource(Object path) throws Exception {
-        String res  = StringUtils.EMPTY;
-        if(StringUtils.isBlank((String)path)) {
-            return res;
+    public Object translateToDatasource(Object decoded) throws Exception {
+        if(StringUtils.isBlank((String)decoded)) {
+            return StringUtils.EMPTY;
         }
-        try {
-            Session session = MgnlContext.getJCRSession(workspace);
-            res = session.getNode(path.toString()).getIdentifier();
-        } catch (RepositoryException e) {
-            log.error("Unable to convert Path to UUID",e);
-        }
-        return res;
+        return  new String(Base64.encodeBase64(((String)decoded).getBytes()));
     }
 
 }

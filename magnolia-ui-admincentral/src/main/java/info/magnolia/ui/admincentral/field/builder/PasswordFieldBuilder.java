@@ -33,37 +33,37 @@
  */
 package info.magnolia.ui.admincentral.field.builder;
 
-import info.magnolia.ui.admincentral.field.StaticField;
+import info.magnolia.ui.admincentral.field.PasswordFields;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
-import info.magnolia.ui.model.field.definition.StaticFieldDefinition;
+import info.magnolia.ui.model.field.definition.PasswordFieldDefinition;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.vaadin.data.Item;
-import com.vaadin.data.Property;
 import com.vaadin.ui.Field;
 
 /**
- * Creates and initializes an static field definition.
+ * Creates and initializes an password field based on a field definition.
  */
-public class StaticFieldBuilder extends AbstractFieldBuilder<StaticFieldDefinition> {
+public class PasswordFieldBuilder extends AbstractFieldBuilder<PasswordFieldDefinition> {
 
-    public StaticFieldBuilder(StaticFieldDefinition definition, Item relatedFieldItem) {
+
+    public PasswordFieldBuilder(PasswordFieldDefinition definition, Item relatedFieldItem) {
         super(definition, relatedFieldItem);
     }
 
     @Override
     protected Field buildField() {
-        StaticField field = new StaticField();
-        field.getLabel().setCaption(definition.getValue());
-        return field;
+        String verificationErrorMessage = StringUtils.EMPTY;
+        String verificationMessage = StringUtils.EMPTY;
+        if(definition.isVerification()) {
+            verificationErrorMessage = getMessage(definition.getVerificationErrorMessage());
+            verificationMessage = getMessage(definition.getVerificationMessage());
+        }
+        // Create Field
+        return new PasswordFields(definition.isVerification(), verificationMessage, verificationErrorMessage);
     }
 
-
-    /**
-     * Do not set datasource for a Static field.
-     */
-    @Override
-    public void setPropertyDataSource(Property property) {
-    }
 
     @Override
     protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {

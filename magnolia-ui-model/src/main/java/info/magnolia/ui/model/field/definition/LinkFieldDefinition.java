@@ -52,8 +52,8 @@ public class LinkFieldDefinition extends ConfiguredFieldDefinition {
     private String listView;
     private String width = "100%";
     private String buttonLabel = "Select";
-    // Define if we should store the UUID of the selected Item
-    private boolean uuid = false;
+    // Define if we should store the Identifier of the selected Item
+    private boolean identifier = false;
 
     public String getWorkspace() {
         return workspace;
@@ -95,12 +95,12 @@ public class LinkFieldDefinition extends ConfiguredFieldDefinition {
         this.buttonLabel = buttonLabel;
     }
 
-    public boolean isUuid() {
-        return uuid;
+    public boolean isIdentifier() {
+        return identifier;
     }
 
-    public void setUuid(boolean uuid) {
-        this.uuid = uuid;
+    public void setIdentifier(boolean identifier) {
+        this.identifier = identifier;
     }
 
     public String getDialogName() {

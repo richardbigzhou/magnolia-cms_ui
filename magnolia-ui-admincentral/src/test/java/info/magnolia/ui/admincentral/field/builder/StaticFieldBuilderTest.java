@@ -33,41 +33,45 @@
  */
 package info.magnolia.ui.admincentral.field.builder;
 
+import static org.junit.Assert.assertEquals;
 import info.magnolia.ui.admincentral.field.StaticField;
-import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.model.field.definition.StaticFieldDefinition;
 
-import com.vaadin.data.Item;
-import com.vaadin.data.Property;
+import org.junit.Test;
+
 import com.vaadin.ui.Field;
 
 /**
- * Creates and initializes an static field definition.
+ * Main testcase for {@link StaticFieldBuilder}.
  */
-public class StaticFieldBuilder extends AbstractFieldBuilder<StaticFieldDefinition> {
+public class StaticFieldBuilderTest extends AbstractBuilderTest<StaticFieldDefinition> {
 
-    public StaticFieldBuilder(StaticFieldDefinition definition, Item relatedFieldItem) {
-        super(definition, relatedFieldItem);
+    private StaticFieldBuilder staticFieldBuilder;
+
+    @Test
+    public void simpleStaticFieldBuilderTest() {
+        // GIVEN
+        staticFieldBuilder = new StaticFieldBuilder(definition, baseItem);
+        staticFieldBuilder.setI18nContentSupport(i18nContentSupport);
+        // WHEN
+        Field field = staticFieldBuilder.getField();
+
+        // THEN
+        assertEquals(true, field instanceof StaticField);
+        assertEquals("value to display", ((StaticField)field).getLabel().getCaption());
     }
+
+
+
 
     @Override
-    protected Field buildField() {
-        StaticField field = new StaticField();
-        field.getLabel().setCaption(definition.getValue());
-        return field;
+    protected void createConfiguredFieldDefinition() {
+        StaticFieldDefinition fieldDefinition = new StaticFieldDefinition();
+        fieldDefinition = (StaticFieldDefinition)AbstractFieldBuilderTest.createConfiguredFieldDefinition(fieldDefinition, propertyName);
+
+        fieldDefinition.setValue("value to display");
+
+        this.definition = fieldDefinition;
     }
 
-
-    /**
-     * Do not set datasource for a Static field.
-     */
-    @Override
-    public void setPropertyDataSource(Property property) {
-    }
-
-    @Override
-    protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {
-        return String.class;
-    }
 }
-
