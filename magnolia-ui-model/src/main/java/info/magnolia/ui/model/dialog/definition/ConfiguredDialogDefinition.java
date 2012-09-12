@@ -44,9 +44,9 @@ import info.magnolia.ui.model.tab.definition.TabDefinition;
  */
 public class ConfiguredDialogDefinition implements DialogDefinition {
 
-    public static String TABS_NODE_NAME = "tabs";
-    public static String ACTIONS_NODE_NAME = "actions";
-    public static String EXTEND_PROPERTY_NAME = "extends";
+    public static final String TABS_NODE_NAME = "tabs";
+    public static final String ACTIONS_NODE_NAME = "actions";
+    public static final String EXTEND_PROPERTY_NAME = "extends";
 
     private String id;
 
