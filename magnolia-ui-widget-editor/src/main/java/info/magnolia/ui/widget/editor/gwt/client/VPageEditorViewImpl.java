@@ -43,7 +43,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.vaadin.terminal.gwt.client.BrowserInfo;
-import info.magnolia.ui.widget.editor.gwt.client.jsni.NativeDomHandler;
+import info.magnolia.ui.widget.editor.gwt.client.jsni.AbstractFrameEventHandler;
 
 /**
  * GWT implementation of MagnoliaShell client side (the view part basically).
@@ -58,12 +58,12 @@ public class VPageEditorViewImpl extends Composite implements VPageEditorView {
 
     final SimplePanel content;
 
-    private NativeDomHandler handler;
+    private AbstractFrameEventHandler handler;
     private EventBus eventBus;
     public VPageEditorViewImpl(EventBus eventBus) {
         super();
         this.eventBus = eventBus;
-        this.handler = GWT.create(NativeDomHandler.class);
+        this.handler = GWT.create(AbstractFrameEventHandler.class);
         handler.setView(this);
         handler.setEventBus(eventBus);
 
@@ -87,7 +87,7 @@ public class VPageEditorViewImpl extends Composite implements VPageEditorView {
     }
 
     @Override
-    public Frame getIframe() {
+    public Frame getFrame() {
         return iframe;
     }
 
@@ -108,7 +108,7 @@ public class VPageEditorViewImpl extends Composite implements VPageEditorView {
             reload();
         }
         else {
-            getIframe().setUrl(url);
+            getFrame().setUrl(url);
             this.url = url;
 
         }
@@ -121,8 +121,13 @@ public class VPageEditorViewImpl extends Composite implements VPageEditorView {
     }
 
     @Override
-    public void initNativeSelectionListener() {
-        handler.initNativeSelectionListener(iframe.getElement(), listener);
+    public void initSelectionListener() {
+        if (BrowserInfo.get().isTouchDevice()) {
+            handler.initNativeTouchSelectionListener(iframe.getElement(), listener);
+        }
+        else {
+            handler.initNativeMouseSelectionListener(iframe.getElement(), listener);
+        }
     }
 
 }

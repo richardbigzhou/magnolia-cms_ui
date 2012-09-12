@@ -44,7 +44,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public interface VPageEditorView extends IsWidget {
 
-    void initNativeSelectionListener();
+    void initSelectionListener();
 
     Widget getContent();
 
@@ -56,7 +56,7 @@ public interface VPageEditorView extends IsWidget {
         void selectElement(Element element);
     }
 
-    Frame getIframe();
+    Frame getFrame();
 
     void setListener(Listener listener);
 

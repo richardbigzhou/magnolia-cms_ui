@@ -37,7 +37,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.HeadElement;
-import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.dom.client.LinkElement;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.event.shared.EventBus;
@@ -168,17 +167,15 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
                 if (pageEditorParameters.isPreview()) {
                     return;
                 }
-                Element element= view.getIframe().getElement();
 
-                view.initNativeSelectionListener();
+                view.initSelectionListener();
 
-                IFrameElement frameElement = IFrameElement.as(element);
-                Document contentDocument = frameElement.getContentDocument();
-                process(contentDocument);
+                Document document = event.getFrameDocument();
+                process(event.getFrameDocument());
 
                 // fix this
                 if (model.getPageBar() != null) {
-                    model.getPageBar().setPageTitle(contentDocument.getTitle());
+                    model.getPageBar().setPageTitle(document.getTitle());
                 }
                 focusModel.selectPage();
             }

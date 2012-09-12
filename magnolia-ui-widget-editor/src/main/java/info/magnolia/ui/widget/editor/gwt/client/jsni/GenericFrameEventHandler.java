@@ -36,19 +36,23 @@ package info.magnolia.ui.widget.editor.gwt.client.jsni;
 import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.user.client.ui.Frame;
-import info.magnolia.ui.widget.editor.gwt.client.jsni.event.FrameLoadedEvent;
 
 /**
- * NativeDomHandlerImpl.
+ * GenericFrameEventHandler. The generic implementation to handle iFrame events. Used by firefox so far.
  */
-public class NativeDomHandlerImpl extends NativeDomHandler {
+public class GenericFrameEventHandler extends AbstractFrameEventHandler {
+
+    @Override
+    public void init() {
+        registerLoadHandler();
+    }
 
     public void registerLoadHandler() {
-        Frame frame = getView().getIframe();
+        Frame frame = getView().getFrame();
         frame.addLoadHandler(new LoadHandler() {
             @Override
             public void onLoad(LoadEvent event) {
-                getEventBus().fireEvent(new FrameLoadedEvent());
+                onFrameReady();
             }
         });
     }
@@ -58,8 +62,5 @@ public class NativeDomHandlerImpl extends NativeDomHandler {
 
     }
 
-    @Override
-    public void init() {
-        registerLoadHandler();
-    }
+
 }
