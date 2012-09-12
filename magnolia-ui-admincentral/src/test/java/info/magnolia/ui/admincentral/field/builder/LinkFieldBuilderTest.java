@@ -81,17 +81,36 @@ public class LinkFieldBuilderTest extends AbstractBuilderTest<LinkFieldDefinitio
     }
 
     @Test
-    public void linkField_SetButtonCaptionTest() throws Exception{
+    public void linkField_SetButtonCaptionNewTest() throws Exception{
         // GIVEN
         linkFieldBuilder = new LinkFieldBuilder(definition, baseItem, null);
         linkFieldBuilder.setI18nContentSupport(i18nContentSupport);
-        definition.setButtonLabel("Button Select");
+        definition.setButtonSelectNewLabel("New");
+        definition.setButtonSelectOtherLabel("Other");
         // WHEN
         Field field = linkFieldBuilder.getField();
 
         // THEN
         assertEquals(true, field instanceof TextAndButtonField);
-        assertEquals("Button Select", ((TextAndButtonField)field).getSelectButton().getCaption());
+        assertEquals("New", ((TextAndButtonField)field).getSelectButton().getCaption());
+    }
+
+    @Test
+    public void linkField_SetButtonCaptionOtherTest() throws Exception{
+        // GIVEN
+        definition.setName(propertyName);
+        baseNode.setProperty(propertyName, "notChanged");
+        baseItem = new JcrNodeAdapter(baseNode);
+        linkFieldBuilder = new LinkFieldBuilder(definition, baseItem, null);
+        linkFieldBuilder.setI18nContentSupport(i18nContentSupport);
+        definition.setButtonSelectNewLabel("New");
+        definition.setButtonSelectOtherLabel("Other");
+        // WHEN
+        Field field = linkFieldBuilder.getField();
+
+        // THEN
+        assertEquals(true, field instanceof TextAndButtonField);
+        assertEquals("Other", ((TextAndButtonField)field).getSelectButton().getCaption());
     }
 
     @Test
