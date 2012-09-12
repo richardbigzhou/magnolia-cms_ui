@@ -59,11 +59,6 @@ public class VTemporaryAppTileGroup extends VAppTileGroup {
         closeSection();
     }
 
-    @Override
-    public void addAppTile(VAppTile tile) {
-        super.addAppTile(tile);
-    }
-
     public void closeSection() {
         JQueryWrapper.select(this).animate(VISIBILITY_TOGGLE_SPEED, new AnimationSettings() {
 
