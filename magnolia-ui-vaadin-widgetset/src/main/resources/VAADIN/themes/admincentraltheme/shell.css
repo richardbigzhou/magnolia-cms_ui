@@ -69,11 +69,18 @@
     position: absolute;
 }
 
-.close {
-    position: absolute;
-    top: 4px;
-    right: 4px;
+.v-app-close {
+    position:absolute;
+    top:1px;
+    right:0;
     cursor:pointer;
+    color:#666;
+    font-size:16px;
+    padding:0 6px 0 3px;
+}
+
+.v-app-close:hover, .v-app-close:focus {
+	opacity:0.6;
 }
 
 button.action-close {
