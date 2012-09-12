@@ -225,7 +225,7 @@ public class DialogMigrationTask  extends AbstractTask {
             }else if(fieldNode.getProperty("controlType").getString().equals("uuidLink")){
                 if(fieldNode.hasProperty("repository") && !fieldNode.getProperty("repository").getString().equals("dms")) {
                     fieldNode.getProperty("controlType").remove();
-                    fieldNode.setProperty("uuid", "true");
+                    fieldNode.setProperty("identifier", "true");
                     if(fieldNode.getProperty("repository").getString().equals("website")) {
                         fieldNode.setProperty("appName", "pages");
                         fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.LinkFieldDefinition");
