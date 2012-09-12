@@ -6,4 +6,19 @@
   <inherits name="org.vaadin.rpc.WidgetRPC"/>
   <inherits name="info.magnolia.ui.widget.jquerywrapper.gwt.JQueryWrapperWidgetSet"/>
   <stylesheet src="editor/styles.css"/>
+
+
+    <!-- gecko handles Iframe loading and DOMContentLoaded event correctly-->
+    <replace-with class="info.magnolia.ui.widget.editor.gwt.client.jsni.GenericFrameEventHandler">
+        <when-type-is class="info.magnolia.ui.widget.editor.gwt.client.jsni.AbstractFrameEventHandler"/>
+    </replace-with>
+
+    <!-- webkit workaround for: https://bugs.webkit.org/show_bug.cgi?id=33604 -->
+    <replace-with class="info.magnolia.ui.widget.editor.gwt.client.jsni.WebkitFrameEventHandler">
+        <when-type-is class="info.magnolia.ui.widget.editor.gwt.client.jsni.AbstractFrameEventHandler"/>
+        <any>
+            <when-property-is name="user.agent" value="safari"/>
+        </any>
+    </replace-with>
+
 </module>

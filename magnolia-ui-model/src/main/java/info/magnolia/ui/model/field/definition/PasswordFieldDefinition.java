@@ -39,7 +39,8 @@ package info.magnolia.ui.model.field.definition;
 public class PasswordFieldDefinition extends ConfiguredFieldDefinition {
 
     private boolean verification = true;
-    private String width;
+    private String verificationMessage= "field.password.verificationMessage";
+    private String verificationErrorMessage = "field.password.verificationErrorMessage";
 
     public boolean isVerification() {
         return verification;
@@ -49,11 +50,20 @@ public class PasswordFieldDefinition extends ConfiguredFieldDefinition {
         this.verification = verification;
     }
 
-    public String getWidth() {
-        return width;
+    public String getVerificationMessage() {
+        return verificationMessage;
     }
 
-    public void setWidth(String width) {
-        this.width = width;
+    public void setVerificationMessage(String verificationMessage) {
+        this.verificationMessage = verificationMessage;
     }
+
+    public String getVerificationErrorMessage() {
+        return verificationErrorMessage;
+    }
+
+    public void setVerificationErrorMessage(String verificationErrorMessage) {
+        this.verificationErrorMessage = verificationErrorMessage;
+    }
+
 }

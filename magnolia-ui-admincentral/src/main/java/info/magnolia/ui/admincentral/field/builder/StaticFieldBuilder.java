@@ -53,7 +53,7 @@ public class StaticFieldBuilder extends AbstractFieldBuilder<StaticFieldDefiniti
     @Override
     protected Field buildField() {
         StaticField field = new StaticField();
-        field.getLabel().setCaption("Field not yet supported");
+        field.getLabel().setCaption(definition.getValue());
         return field;
     }
 

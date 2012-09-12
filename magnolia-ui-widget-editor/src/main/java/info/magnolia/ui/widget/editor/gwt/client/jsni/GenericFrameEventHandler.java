@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2011 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,43 +31,36 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.field.definition;
+package info.magnolia.ui.widget.editor.gwt.client.jsni;
+
+import com.google.gwt.event.dom.client.LoadEvent;
+import com.google.gwt.event.dom.client.LoadHandler;
+import com.google.gwt.user.client.ui.Frame;
 
 /**
- * Field definition for a date picker.
+ * GenericFrameEventHandler. The generic implementation to handle iFrame events. Used by firefox so far.
  */
-public class DateFieldDefinition extends ConfiguredFieldDefinition {
+public class GenericFrameEventHandler extends AbstractFrameEventHandler {
 
-    private boolean time = false;
-
-    private String dateFormat = "yyyy-MM-dd";
-
-    private String timeFormat = "HH:mm:ss";
-
-    public boolean isTime() {
-        return time;
+    @Override
+    public void init() {
+        registerLoadHandler();
     }
 
-    public void setTime(boolean time) {
-        this.time = time;
+    public void registerLoadHandler() {
+        Frame frame = getView().getFrame();
+        frame.addLoadHandler(new LoadHandler() {
+            @Override
+            public void onLoad(LoadEvent event) {
+                onFrameReady();
+            }
+        });
     }
 
-    public String getDateFormat() {
-        return dateFormat;
-    }
+    @Override
+    public void notifyUrlChange() {
 
-
-    public void setDateFormat(String dateFormat) {
-        this.dateFormat = dateFormat;
     }
 
 
-    public String getTimeFormat() {
-        return timeFormat;
-    }
-
-
-    public void setTimeFormat(String timeFormat) {
-        this.timeFormat = timeFormat;
-    }
 }
