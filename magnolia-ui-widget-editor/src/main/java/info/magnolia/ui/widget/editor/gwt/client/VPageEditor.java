@@ -33,6 +33,19 @@
  */
 package info.magnolia.ui.widget.editor.gwt.client;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.HeadElement;
+import com.google.gwt.dom.client.LinkElement;
+import com.google.gwt.dom.client.Node;
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.SimpleEventBus;
+import com.google.gwt.user.client.ui.Composite;
+import com.vaadin.terminal.gwt.client.ApplicationConnection;
+import com.vaadin.terminal.gwt.client.Paintable;
+import com.vaadin.terminal.gwt.client.UIDL;
+import com.vaadin.terminal.gwt.client.VConsole;
 import info.magnolia.ui.widget.editor.gwt.client.dom.Comment;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 import info.magnolia.ui.widget.editor.gwt.client.dom.processor.CommentProcessor;
@@ -51,43 +64,27 @@ import info.magnolia.ui.widget.editor.gwt.client.event.SelectElementEvent;
 import info.magnolia.ui.widget.editor.gwt.client.event.SelectElementEventHandler;
 import info.magnolia.ui.widget.editor.gwt.client.event.SortComponentEvent;
 import info.magnolia.ui.widget.editor.gwt.client.event.SortComponentEventHandler;
+import info.magnolia.ui.widget.editor.gwt.client.jsni.event.FrameLoadedEvent;
 import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 import info.magnolia.ui.widget.editor.gwt.client.model.ModelImpl;
 import info.magnolia.ui.widget.editor.gwt.client.model.focus.FocusModel;
 import info.magnolia.ui.widget.editor.gwt.client.model.focus.FocusModelImpl;
-
-import java.util.LinkedList;
-import java.util.List;
-
 import org.vaadin.rpc.client.ClientSideHandler;
 import org.vaadin.rpc.client.ClientSideProxy;
 import org.vaadin.rpc.client.Method;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.HeadElement;
-import com.google.gwt.dom.client.IFrameElement;
-import com.google.gwt.dom.client.LinkElement;
-import com.google.gwt.dom.client.Node;
-import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.event.shared.SimpleEventBus;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Frame;
-import com.vaadin.terminal.gwt.client.ApplicationConnection;
-import com.vaadin.terminal.gwt.client.Paintable;
-import com.vaadin.terminal.gwt.client.UIDL;
-import com.vaadin.terminal.gwt.client.VConsole;
+import java.util.LinkedList;
+import java.util.List;
 
 
 /**
  * Vaadin implementation of PageEditor client side.
- * TODO fgrilli: this class badly needs clean up and refactoring.
  */
 public class VPageEditor extends Composite implements VPageEditorView.Listener, Paintable, ClientSideHandler {
 
 
     private static final String PAGE_EDITOR_CSS = "/VAADIN/themes/admincentraltheme/pageeditor.css";
+
 
     private final VPageEditorView view;
     private final Model model;
@@ -103,14 +100,19 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
    
     public VPageEditor() {
         this.eventBus = new SimpleEventBus();
-        this.view = new VPageEditorViewImpl();
+
+        this.view = new VPageEditorViewImpl(eventBus);
         this.model = new ModelImpl();
         this.focusModel = new FocusModelImpl(eventBus, model);
 
-        view.setListener(this);
-        registerEventHandlers();
 
         initWidget(view.asWidget());
+
+        view.setListener(this);
+
+        registerDomEventHandlers();
+        registerEditorEventHandlers();
+
 
         
         proxy = new ClientSideProxy(this) {
@@ -156,7 +158,31 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
         proxy.update(this, uidl, client);
     }
 
-    private void registerEventHandlers() {
+    private void registerDomEventHandlers() {
+
+        eventBus.addHandler(FrameLoadedEvent.TYPE, new FrameLoadedEvent.Handler() {
+
+            @Override
+            public void handle(FrameLoadedEvent event) {
+                if (pageEditorParameters.isPreview()) {
+                    return;
+                }
+
+                view.initSelectionListener();
+
+                Document document = event.getFrameDocument();
+                process(event.getFrameDocument());
+
+                // fix this
+                if (model.getPageBar() != null) {
+                    model.getPageBar().setPageTitle(document.getTitle());
+                }
+                focusModel.selectPage();
+            }
+
+        });
+    }
+    private void registerEditorEventHandlers() {
 
         eventBus.addHandler(SelectElementEvent.TYPE, new SelectElementEventHandler() {
 
@@ -220,16 +246,6 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
         head.insertFirst(cssLink);
     }
 
-    private native void onPageEditorReady() /*-{
-        var callbacks = $wnd.mgnl.PageEditor.onPageEditorReadyCallbacks
-        if(typeof callbacks != 'undefined') {
-            for(var i=0; i < callbacks.length; i++) {
-                callbacks[i].apply();
-            }
-        }
-    }-*/;
-
-
     private void process(final Document document) {
         injectEditorStyles(document);
 
@@ -278,27 +294,6 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
                 }
             }
         }
-
-    }
-
-    @Override
-    public void onFrameLoaded(Frame iframe) {
-
-        if (pageEditorParameters.isPreview()) {
-            return;
-        }
-        Element element= iframe.getElement();
-
-        view.initNativeSelectionListener(element, this);
-
-        IFrameElement frameElement = IFrameElement.as(element);
-        Document contentDocument = frameElement.getContentDocument();
-        process(contentDocument);
-
-        // fix this
-        model.getPageBar().setPageTitle(contentDocument.getTitle());
-
-        focusModel.selectPage();
 
     }
 
