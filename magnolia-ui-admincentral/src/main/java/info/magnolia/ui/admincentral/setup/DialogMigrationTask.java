@@ -241,9 +241,11 @@ public class DialogMigrationTask  extends AbstractTask {
                     }
                 }else {
                     fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.StaticFieldDefinition");
+                    fieldNode.setProperty("value", "Field not yet supported");
                 }
             }else {
                 fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.StaticFieldDefinition");
+                fieldNode.setProperty("value", "Field not yet supported");
             }
         }else  {
             // Handle Field Extends/Reference
