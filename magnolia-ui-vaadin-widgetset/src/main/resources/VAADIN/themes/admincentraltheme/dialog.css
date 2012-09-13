@@ -90,15 +90,16 @@ button.btn-dialog {
 
 button.btn-dialog-select {
   margin-left: 2px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  width: 69px;
 }
 
 .btn-dialog-select span {
   font-family: DINWebPro !important;
   font-size: 12px !important;
   font-weight: bold !important;
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 55px !important;
 }
 
 button.btn-dialog-commit {
