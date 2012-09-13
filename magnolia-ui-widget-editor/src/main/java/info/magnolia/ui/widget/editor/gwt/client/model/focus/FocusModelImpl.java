@@ -104,12 +104,12 @@ public class FocusModelImpl implements FocusModel {
     @Override
     public void setPageSelection(boolean select) {
         MgnlElement page = model.getRootPage();
-        if (model.getEditBar(page) != null) {
+        if (page.getControlBar() != null) {
             if (select) {
-                model.getEditBar(page).setFocus(false);
+                page.getControlBar().setFocus(false);
             }
             else {
-                model.getEditBar(page).removeFocus();
+                page.getControlBar().removeFocus();
             }
         }
     }
@@ -125,12 +125,12 @@ public class FocusModelImpl implements FocusModel {
             return;
         }
         if (currentComponent != null) {
-            if (model.getEditBar(currentComponent) != null) {
-                model.getEditBar(currentComponent).removeFocus();
+            if (currentComponent.getControlBar() != null) {
+                currentComponent.getControlBar().removeFocus();
             }
         }
-        if (model.getEditBar(component) != null) {
-            model.getEditBar(component).setFocus(false);
+        if (component.getControlBar() != null) {
+            component.getControlBar().setFocus(false);
         }
         model.setSelectedMgnlComponentElement(component);
 
@@ -146,8 +146,8 @@ public class FocusModelImpl implements FocusModel {
 
         if (selectedArea != null) {
 
-            if (model.getEditBar(selectedArea) != null) {
-                model.getEditBar(selectedArea).removeFocus();
+            if (selectedArea.getControlBar() != null) {
+                selectedArea.getControlBar().removeFocus();
             }
 
             if (model.getAreaEndBar(selectedArea) != null) {
@@ -173,8 +173,8 @@ public class FocusModelImpl implements FocusModel {
             toggleAreaVisibility(area, true);
             toggleChildComponentVisibility(area, true);
 
-            if (model.getEditBar(area) != null) {
-                model.getEditBar(area).setFocus((currentComponent != null));
+            if (area.getControlBar() != null) {
+                area.getControlBar().setFocus((currentComponent != null));
             }
             if (model.getAreaEndBar(area) != null) {
                 model.getAreaEndBar(area).setFocus((currentComponent != null));
@@ -193,8 +193,8 @@ public class FocusModelImpl implements FocusModel {
         }
         // root areas are always visible
         if (!model.getRootAreas().contains(area)) {
-            if (model.getEditBar(area) != null) {
-                model.getEditBar(area).setVisible(visible);
+            if (area.getControlBar() != null) {
+                area.getControlBar().setVisible(visible);
             }
             if (model.getAreaEndBar(area) != null) {
                 model.getAreaEndBar(area).setVisible(visible);
@@ -213,8 +213,8 @@ public class FocusModelImpl implements FocusModel {
 /*                if (model.getAreaPlaceHolder(childArea) != null) {
                     model.getAreaPlaceHolder(childArea).setVisible(visible);
                 }*/
-                if (model.getEditBar(childArea) != null) {
-                    model.getEditBar(childArea).setVisible(visible);
+                if (childArea.getControlBar() != null) {
+                    childArea.getControlBar().setVisible(visible);
                 }
                 if (model.getAreaEndBar(childArea) != null) {
                     model.getAreaEndBar(childArea).setVisible(visible);
@@ -228,8 +228,8 @@ public class FocusModelImpl implements FocusModel {
         for (MgnlElement component : area.getComponents()) {
 
             // toggle all child-components editbar visibility - does this case occur?
-            if (model.getEditBar(component) != null) {
-                model.getEditBar(component).setVisible(visible);
+            if (component.getControlBar() != null) {
+                component.getControlBar().setVisible(visible);
             }
             if (model.getComponentPlaceHolder(area) != null) {
                 model.getComponentPlaceHolder(area).setVisible(visible);
@@ -240,8 +240,8 @@ public class FocusModelImpl implements FocusModel {
 /*                if (model.getAreaPlaceHolder(childArea) != null) {
                     model.getAreaPlaceHolder(childArea).setVisible(visible);
                 }*/
-                if (model.getEditBar(childArea) != null) {
-                    model.getEditBar(childArea).setVisible(visible);
+                if (childArea.getControlBar() != null) {
+                    childArea.getControlBar().setVisible(visible);
                 }
                 if (model.getAreaEndBar(childArea) != null) {
                     model.getAreaEndBar(childArea).setVisible(visible);
@@ -255,8 +255,8 @@ public class FocusModelImpl implements FocusModel {
 
         this.rootSelected = !this.rootSelected;
         for (MgnlElement root : model.getRootAreas()) {
-            if (model.getEditBar(root) != null) {
-                model.getEditBar(root).setVisible(visible);
+            if (root.getControlBar() != null) {
+                root.getControlBar().setVisible(visible);
             }
             if (model.getAreaEndBar(root) != null) {
                 model.getAreaEndBar(root).setVisible(visible);

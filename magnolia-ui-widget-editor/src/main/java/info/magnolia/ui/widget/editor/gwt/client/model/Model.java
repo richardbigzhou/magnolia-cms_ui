@@ -35,9 +35,7 @@ package info.magnolia.ui.widget.editor.gwt.client.model;
 
 import com.google.gwt.dom.client.Element;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
-import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.AbstractBar;
 import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.AreaEndBar;
-import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.PageBar;
 import info.magnolia.ui.widget.editor.gwt.client.widget.placeholder.ComponentPlaceHolder;
 
 import java.util.List;
@@ -46,10 +44,6 @@ import java.util.List;
  * Interface for the model storing all elements used across application.
  */
 public interface Model {
-
-    void addEditBar(MgnlElement mgnlElement, AbstractBar editBar);
-
-    AbstractBar getEditBar(MgnlElement mgnlElement);
 
     void addElement(MgnlElement mgnlElement, Element element);
 

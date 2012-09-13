@@ -173,8 +173,8 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
                 Document document = event.getFrameDocument();
                 process(event.getFrameDocument());
 
-                if (model.getEditBar(model.getRootPage()) != null) {
-                    ((PageBar)model.getEditBar(model.getRootPage())).setPageTitle(document.getTitle());
+                if (model.getRootPage().getControlBar() != null) {
+                    ((PageBar)model.getRootPage().getControlBar()).setPageTitle(document.getTitle());
                 }
                 focusModel.init();
             }

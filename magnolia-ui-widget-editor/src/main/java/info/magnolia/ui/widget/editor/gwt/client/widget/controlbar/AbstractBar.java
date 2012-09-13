@@ -194,8 +194,8 @@ public abstract class AbstractBar extends FlowPanel {
         MgnlElement parent = mgnlElement.getParent();
         if (parent != null) {
             for (MgnlElement component : parent.getComponents()) {
-                getModel().getEditBar(component).primaryButtons.setVisible(visible);
-                getModel().getEditBar(component).secondaryButtons.setVisible(visible);
+                component.getControlBar().primaryButtons.setVisible(visible);
+                component.getControlBar().secondaryButtons.setVisible(visible);
             }
         }
     }

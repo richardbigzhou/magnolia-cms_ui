@@ -34,6 +34,7 @@
 package info.magnolia.ui.widget.editor.gwt.client.dom;
 
 import com.google.gwt.dom.client.Element;
+import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.AbstractBar;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -59,10 +60,11 @@ public class MgnlElement {
     private Element areaElement;
     private Element editElement;
 
+    private AbstractBar controlBar;
+
     private CMSComment endComment;
 
     private Map<String, String> attributes;
-    private static final String[] INHERITED_ATTRIBUTES = {"editable"};
 
     /**
  * MgnlElement. Represents a node in the tree built on cms-tags.
@@ -81,6 +83,16 @@ public class MgnlElement {
                 }
             }
         }
+    }
+
+    private static final String[] INHERITED_ATTRIBUTES = {"editable"};
+
+    public AbstractBar getControlBar() {
+        return controlBar;
+    }
+
+    public void setControlBar(AbstractBar controlBar) {
+        this.controlBar = controlBar;
     }
 
 

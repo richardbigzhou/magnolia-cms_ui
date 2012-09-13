@@ -73,7 +73,7 @@ public class DragAndDropImpl {
                 MgnlElement area = bar.getMgnlElement().getParentArea();
                 if (area != null) {
                     for (MgnlElement component : area.getComponents()) {
-                        ComponentBar componentBar = (ComponentBar) getModel().getEditBar(component);
+                        ComponentBar componentBar = (ComponentBar) component.getControlBar();
                         if (componentBar != null && componentBar != bar) {
                             componentBar.setStyleName("moveTarget", true);
                         }
@@ -102,7 +102,7 @@ public class DragAndDropImpl {
                 MgnlElement area = bar.getMgnlElement().getParentArea();
                 if (area != null) {
                     for (MgnlElement component : area.getComponents()) {
-                        ComponentBar componentBar = (ComponentBar) getModel().getEditBar(component);
+                        ComponentBar componentBar = (ComponentBar) component.getControlBar();
                         if (componentBar != null && componentBar != bar) {
                             componentBar.setStyleName("moveTarget", false);
                         }

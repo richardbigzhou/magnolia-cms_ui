@@ -36,9 +36,7 @@ package info.magnolia.ui.widget.editor.gwt.client.model;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
-import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.AbstractBar;
 import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.AreaEndBar;
-import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.PageBar;
 import info.magnolia.ui.widget.editor.gwt.client.widget.placeholder.ComponentPlaceHolder;
 
 import java.util.HashMap;
@@ -51,8 +49,6 @@ import java.util.Map;
  * Singleton keeping the model.
  */
 public class ModelImpl implements Model {
-
-    private final Map<MgnlElement, AbstractBar> editBars = new HashMap<MgnlElement, AbstractBar>();
 
     private final Map<MgnlElement, List<Element>> elements = new HashMap<MgnlElement, List<Element>>();
 
@@ -69,16 +65,6 @@ public class ModelImpl implements Model {
     private MgnlElement selectedMgnlAreaElement = null;
 
     private MgnlElement selectedMgnlComponentElement = null;
-
-    @Override
-    public void addEditBar(MgnlElement mgnlElement, AbstractBar editBar) {
-        editBars.put(mgnlElement, editBar);
-    }
-
-    @Override
-    public AbstractBar getEditBar(MgnlElement mgnlElement) {
-        return editBars.get(mgnlElement);
-    }
 
     @Override
     public void addElement(MgnlElement mgnlElement, Element element) {

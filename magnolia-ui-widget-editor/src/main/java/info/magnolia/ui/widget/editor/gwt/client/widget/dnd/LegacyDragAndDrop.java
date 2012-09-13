@@ -59,7 +59,7 @@ public class LegacyDragAndDrop {
             MgnlElement area = bar.getMgnlElement().getParentArea();
             if (area != null) {
                 for (MgnlElement component : area.getComponents()) {
-                    ComponentBar componentBar = (ComponentBar) getModel().getEditBar(component);
+                    ComponentBar componentBar = (ComponentBar) component.getControlBar();
                     if (componentBar != null && componentBar != bar) {
                         componentBar.setDraggable(false);
                     }
@@ -129,7 +129,7 @@ public class LegacyDragAndDrop {
             MgnlElement area = sourceBar.getMgnlElement().getParentArea();
             if (area != null) {
                 for (MgnlElement component : area.getComponents()) {
-                    ComponentBar componentBar = (ComponentBar) getModel().getEditBar(component);
+                    ComponentBar componentBar = (ComponentBar) component.getControlBar();
                     if (componentBar != null && componentBar != sourceBar) {
                         componentBar.setDraggable(false);
                     }
@@ -149,7 +149,7 @@ public class LegacyDragAndDrop {
         MgnlElement area = bar.getMgnlElement().getParentArea();
         if (area != null) {
             for (MgnlElement component : area.getComponents()) {
-                ComponentBar componentBar = (ComponentBar) getModel().getEditBar(component);
+                ComponentBar componentBar = (ComponentBar) component.getControlBar();
                 if (componentBar != null && componentBar != bar) {
                     componentBar.setStyleName("moveTarget", isMove);
                     //moveOver style can be removed en bloc

@@ -94,7 +94,7 @@ public abstract class AbstractMgnlElementProcessor {
 
     protected void addToModel() {
         getModel().addElements(getMgnlElement(), getEditBar().getElement());
-        getModel().addEditBar(getMgnlElement(), getEditBar());
+        getMgnlElement().setControlBar(getEditBar());
     }
 
     public void setMgnlElement(MgnlElement mgnlElement) {
