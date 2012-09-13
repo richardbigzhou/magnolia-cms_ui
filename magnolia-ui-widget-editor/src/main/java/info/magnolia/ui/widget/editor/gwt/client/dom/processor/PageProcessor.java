@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,21 +31,42 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.editor.gwt.client.model.focus;
+package info.magnolia.ui.widget.editor.gwt.client.dom.processor;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
-
+import com.google.gwt.event.shared.EventBus;
+import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
+import info.magnolia.ui.widget.editor.gwt.client.model.Model;
+import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.PageBar;
 
 /**
- * Interface for Focus Model.
+ * PageProcessor.
  */
-public interface FocusModel {
+public class PageProcessor extends AbstractMgnlElementProcessor {
+    public PageProcessor(Model model, EventBus eventBus, MgnlElement mgnlElement) {
+        super(model, eventBus, mgnlElement);
+    }
 
-    void selectElement(Element element);
+    @Override
+    public void process() {
 
-    void toggleRootAreaBar(boolean visible);
+        GWT.log("element was detected as page edit bar. Injecting it...");
+        PageBar pageBarWidget = new PageBar(getModel(), getMgnlElement().getComment());
+        setEditBar(pageBarWidget);
+        attachWidget();
+    }
 
-    void setPageSelection(boolean select);
+    @Override
+    public void attach() {
 
-    void init();
+        // map null to pageelement??
+        Element body = getMgnlElement().getComment().getElement().getOwnerDocument().getBody();
+
+        body.insertFirst(getEditBar().getElement());
+
+        getEditBar().onAttach();
+    }
+
+
 }

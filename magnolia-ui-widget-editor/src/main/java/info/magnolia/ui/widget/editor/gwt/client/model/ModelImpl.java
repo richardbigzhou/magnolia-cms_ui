@@ -62,22 +62,13 @@ public class ModelImpl implements Model {
 
     private final Map<MgnlElement, AreaEndBar> areaEndBars = new HashMap<MgnlElement, AreaEndBar>();
 
-    public List<MgnlElement> rootElements = new LinkedList<MgnlElement>();
+    public MgnlElement rootPage;
+
+    public List<MgnlElement> rootAreas = new LinkedList<MgnlElement>();
 
     private MgnlElement selectedMgnlAreaElement = null;
 
     private MgnlElement selectedMgnlComponentElement = null;
-
-    @Override
-    public PageBar getPageBar() {
-        return pageBar;
-    }
-    @Override
-    public void setPageBar(PageBar pageBar) {
-        this.pageBar = pageBar;
-    }
-
-    private PageBar pageBar = null;
 
     @Override
     public void addEditBar(MgnlElement mgnlElement, AbstractBar editBar) {
@@ -140,13 +131,23 @@ public class ModelImpl implements Model {
     }
 
     @Override
-    public void addRoot(MgnlElement boundary) {
-        this.rootElements.add(boundary);
+    public MgnlElement getRootPage() {
+        return rootPage;
     }
 
     @Override
-    public List<MgnlElement> getRootElements() {
-        return rootElements;
+    public void setRootPage(MgnlElement rootPage) {
+        this.rootPage = rootPage;
+    }
+
+    @Override
+    public void addRootArea(MgnlElement area) {
+        this.rootAreas.add(area);
+    }
+
+    @Override
+    public List<MgnlElement> getRootAreas() {
+        return rootAreas;
     }
 
     @Override
@@ -184,15 +185,14 @@ public class ModelImpl implements Model {
 
         // remove all occurrences of the element
         if (mgnlElements.containsValue(mgnlElement)) {
-            while (mgnlElements.values().remove(mgnlElement))
-                ;
+            while (mgnlElements.values().remove(mgnlElement));
         }
         elements.remove(mgnlElement);
 
         // if the element is a root node, add all children to root list
-        if (rootElements.contains(mgnlElement)) {
-            rootElements.remove(mgnlElement);
-            rootElements.addAll(mgnlElement.getChildren());
+        if (rootAreas.contains(mgnlElement)) {
+            rootAreas.remove(mgnlElement);
+            rootAreas.addAll(mgnlElement.getChildren());
         }
     }
 

@@ -47,7 +47,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Float;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -258,13 +257,6 @@ public class PageBar extends AbstractBar {
         public void execute() {
             // PageEditor.enablePreview(true);
         }
-    }
-
-    public void attach(Element body) {
-        final Element bar = mainBarWrapper != null ? mainBarWrapper.getElement() : getElement();
-        body.insertFirst(bar);
-        getModel().setPageBar(this);
-        onAttach();
     }
 
     private class TabletPreviewCommand implements Command {

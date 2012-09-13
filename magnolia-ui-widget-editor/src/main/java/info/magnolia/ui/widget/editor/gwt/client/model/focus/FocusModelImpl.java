@@ -40,9 +40,7 @@ import com.google.gwt.json.client.JSONString;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 import info.magnolia.ui.widget.editor.gwt.client.event.SelectElementEvent;
 import info.magnolia.ui.widget.editor.gwt.client.model.Model;
-import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.AbstractBar;
 
-import java.util.HashMap;
 import java.util.Map;
 
 
@@ -71,59 +69,49 @@ public class FocusModelImpl implements FocusModel {
         MgnlElement area = null;
         MgnlElement component = null;
 
-
-        Map<String, String> attr;
-        String type;
-        if (mgnlElement != null) {
+        // if there is no mapping, we select the page
+        if (mgnlElement == null) {
+            mgnlElement = model.getRootPage();
+            setPageSelection(true);
+        }
+        else {
+            setPageSelection(false);
             if (mgnlElement.isComponent()) {
                 component = mgnlElement;
                 area = mgnlElement.getParentArea();
             }
-            else {
+            else if (mgnlElement.isArea()) {
                 area = mgnlElement;
             }
-
-            type = mgnlElement.getComment().getTagName();
-            attr = mgnlElement.getAttributes();
-
-            // remove together with selectPage ASAP
-            AbstractBar pageEditBar = model.getPageBar();
-            pageEditBar.removeFocus();
-
-            select(type, attr);
-
-
-        } else {
-            selectPage();
-
         }
-
-
         // first set the component, then set the area. the selected component is used for setting
         // the corrent area class.
         setComponentSelection(component);
         setAreaSelection(area);
 
+        select(mgnlElement);
+
+
     }
 
     @Override
-    public void selectPage() {
-        AbstractBar pageEditBar = model.getPageBar();
-
-        Map<String, String> attr;
-        String type;
-
-        pageEditBar.setFocus(false);
-        // ugly hack!!!
-        type = "cms:page";
-        attr = new HashMap<String, String>();
-        attr.put("workspace", pageEditBar.getWorkspace());
-        attr.put("path", pageEditBar.getPath());
-        attr.put("dialog", pageEditBar.getDialog());
-        select(type, attr);
-
+    public void init() {
         toggleRootAreaBar(true);
+        setPageSelection(true);
+        select(model.getRootPage());
+    }
 
+    @Override
+    public void setPageSelection(boolean select) {
+        MgnlElement page = model.getRootPage();
+        if (model.getEditBar(page) != null) {
+            if (select) {
+                model.getEditBar(page).setFocus(false);
+            }
+            else {
+                model.getEditBar(page).removeFocus();
+            }
+        }
     }
 
     /**
@@ -204,7 +192,7 @@ public class FocusModelImpl implements FocusModel {
 
         }
         // root areas are always visible
-        if (!model.getRootElements().contains(area)) {
+        if (!model.getRootAreas().contains(area)) {
             if (model.getEditBar(area) != null) {
                 model.getEditBar(area).setVisible(visible);
             }
@@ -266,7 +254,7 @@ public class FocusModelImpl implements FocusModel {
     public void toggleRootAreaBar(boolean visible) {
 
         this.rootSelected = !this.rootSelected;
-        for (MgnlElement root : model.getRootElements()) {
+        for (MgnlElement root : model.getRootAreas()) {
             if (model.getEditBar(root) != null) {
                 model.getEditBar(root).setVisible(visible);
             }
@@ -279,7 +267,11 @@ public class FocusModelImpl implements FocusModel {
         }
     }
 
-    private void select(String type, Map<String, String> attr) {
+    private void select(MgnlElement mgnlElement) {
+
+        Map<String, String> attr = mgnlElement.getAttributes();
+        String type = mgnlElement.getComment().getTagName();
+
         JSONObject json = new JSONObject();
 
         for ( String key : attr.keySet()) {

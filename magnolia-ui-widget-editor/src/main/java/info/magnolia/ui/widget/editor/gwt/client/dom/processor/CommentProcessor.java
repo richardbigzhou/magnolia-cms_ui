@@ -38,49 +38,78 @@ import com.google.gwt.dom.client.Node;
 import info.magnolia.ui.widget.editor.gwt.client.dom.CMSComment;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 import info.magnolia.ui.widget.editor.gwt.client.model.Model;
-import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.PageBar;
 
 /**
  * Processor for comment elements.
  */
 public class CommentProcessor {
 
-    public static MgnlElement process(Model model, Node node, MgnlElement parent) throws Exception {
+    private static final String CMS_PAGE = "cms:page";
+    private static final String CMS_AREA = "cms:area";
+    private static final String CMS_COMPONENT = "cms:component";
+
+    public static MgnlElement process(Model model, Node node, MgnlElement currentElement) throws IllegalArgumentException {
 
         CMSComment comment = CMSComment.as(node);
-        MgnlElement mgnlElement = null;
+        GWT.log("processing comment " + comment);
 
-                GWT.log("processing comment " + comment);
+        // in case we fail, we want to keep the currentElement as current.
+        MgnlElement mgnlElement = currentElement;
 
         if (!comment.isClosing()) {
 
-            if ("cms:page".equals(comment.getTagName())) {
-                GWT.log("element was detected as page edit bar. Injecting it...");
-                PageBar pageBarWidget = new PageBar(model, comment);
-                pageBarWidget.attach(node.getOwnerDocument().getBody());
+            try {
+                mgnlElement = createMgnlElement(comment, currentElement);
 
-
-            } else {
-                try {
-                    mgnlElement = new MgnlElement(comment, parent);
-
-                    if (mgnlElement.getParent() == null) {
-                        model.addRoot(mgnlElement);
-                    } else {
-                        mgnlElement.getParent().getChildren().add(mgnlElement);
-                    }
-
-                } catch (IllegalArgumentException e) {
-                    GWT.log("Not MgnlElement, skipping: " + e.toString());
+                if (mgnlElement.getParent() == null) {
+                    model.setRootPage(mgnlElement);
                 }
+                else if (mgnlElement.getParent().isPage()) {
+                    model.addRootArea(mgnlElement);
+                    mgnlElement.getParent().getChildren().add(mgnlElement);
+                }
+                else {
+                    mgnlElement.getParent().getChildren().add(mgnlElement);
+                }
+
+            } catch (IllegalArgumentException e) {
+                GWT.log("Not MgnlElement, skipping: " + e.toString());
             }
 
-        } else if (parent != null) {
-            parent.setEndComment(comment);
-            mgnlElement = parent.getParent();
+
+        }
+        // the cms:page tag should span throughout the page, but doesn't: kind of a hack.
+        else if (currentElement != null && !currentElement.isPage()) {
+            currentElement.setEndComment(comment);
+            mgnlElement = currentElement.getParent();
         }
 
         return mgnlElement;
+
+    }
+
+    private static MgnlElement createMgnlElement(CMSComment comment, MgnlElement parent) throws IllegalArgumentException {
+        String tagName = comment.getTagName();
+        MgnlElement mgnlElement;
+        if (CMS_PAGE.equals(tagName)) {
+            mgnlElement = new MgnlElement(comment, parent);
+            mgnlElement.setPage(true);
+        }
+        else if (CMS_AREA.equals(tagName)) {
+            mgnlElement = new MgnlElement(comment, parent);
+            mgnlElement.setArea(true);
+
+        }
+        else if (CMS_COMPONENT.equals(tagName)) {
+            mgnlElement = new MgnlElement(comment, parent);
+            mgnlElement.setComponent(true);
+        }
+        else {
+            throw new IllegalArgumentException("The tagname must be one of the defined marker Strings.");
+        }
+        return mgnlElement;
+
+
 
     }
 }

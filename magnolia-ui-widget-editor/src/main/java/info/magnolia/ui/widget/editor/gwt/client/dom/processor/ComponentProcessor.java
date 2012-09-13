@@ -56,7 +56,7 @@ public class ComponentProcessor extends AbstractMgnlElementProcessor {
             GWT.log("Component has edit bar. Injecting it..");
             ComponentBar editBarWidget = new ComponentBar(getModel(), getEventBus(), getMgnlElement());
             setEditBar(editBarWidget);
-            super.attachWidget();
+            attachWidget();
         }
         else {
             GWT.log("Component is inherited or not editable. Skipping..");

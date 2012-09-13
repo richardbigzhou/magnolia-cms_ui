@@ -69,11 +69,11 @@ import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 import info.magnolia.ui.widget.editor.gwt.client.model.ModelImpl;
 import info.magnolia.ui.widget.editor.gwt.client.model.focus.FocusModel;
 import info.magnolia.ui.widget.editor.gwt.client.model.focus.FocusModelImpl;
+import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.PageBar;
 import org.vaadin.rpc.client.ClientSideHandler;
 import org.vaadin.rpc.client.ClientSideProxy;
 import org.vaadin.rpc.client.Method;
 
-import java.util.LinkedList;
 import java.util.List;
 
 
@@ -173,11 +173,10 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
                 Document document = event.getFrameDocument();
                 process(event.getFrameDocument());
 
-                // fix this
-                if (model.getPageBar() != null) {
-                    model.getPageBar().setPageTitle(document.getTitle());
+                if (model.getEditBar(model.getRootPage()) != null) {
+                    ((PageBar)model.getEditBar(model.getRootPage())).setPageTitle(document.getTitle());
                 }
-                focusModel.selectPage();
+                focusModel.init();
             }
 
         });
@@ -258,6 +257,9 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
     }
 
     private void processDocument(Node node, MgnlElement mgnlElement) {
+        if (mgnlElement == null && model.getRootPage() != null) {
+            mgnlElement = model.getRootPage();
+        }
         for (int i = 0; i < node.getChildCount(); i++) {
             Node childNode = node.getChild(i);
             if (childNode.getNodeType() == Comment.COMMENT_NODE) {
@@ -269,7 +271,7 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
                 } catch (Exception e) {
                     GWT.log("Caught undefined exception: " + e.toString());
                 }
-            } else if (childNode.getNodeType() == Node.ELEMENT_NODE && mgnlElement != null) {
+            } else if (childNode.getNodeType() == Node.ELEMENT_NODE && mgnlElement != null && !mgnlElement.isPage()) {
                 ElementProcessor.process(model, childNode, mgnlElement);
             }
 
@@ -278,8 +280,8 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
 
     }
 
-    private void processMgnlElements() {
-        List<MgnlElement> rootElements = new LinkedList<MgnlElement>(getModel().getRootElements());
+/*    private void processMgnlElements() {
+        List<MgnlElement> rootElements = new LinkedList<MgnlElement>(getModel().getRootAreas());
         for (MgnlElement root : rootElements) {
             LinkedList<MgnlElement> elements = new LinkedList<MgnlElement>();
             elements.add(root);
@@ -295,6 +297,21 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
             }
         }
 
+    }*/
+
+    private void processMgnlElements() {
+        MgnlElement root = model.getRootPage();
+        List<MgnlElement> elements = root.getDescendants();
+        elements.add(root);
+        for (MgnlElement element : elements) {
+
+            try {
+                AbstractMgnlElementProcessor processor = MgnlElementProcessorFactory.getProcessor(model, eventBus, element);
+                processor.process();
+            } catch (IllegalArgumentException e) {
+                GWT.log("MgnlFactory could not instantiate class. The element is neither an area nor component.");
+            }
+        }
     }
 
 }

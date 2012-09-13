@@ -45,7 +45,10 @@ public class MgnlElementProcessorFactory {
     public static AbstractMgnlElementProcessor getProcessor(Model model, EventBus eventBus, MgnlElement mgnlElement) throws IllegalArgumentException {
         AbstractMgnlElementProcessor processor;
 
-        if (mgnlElement.isArea()) {
+        if (mgnlElement.isPage()) {
+            processor = new PageProcessor(model, eventBus, mgnlElement);
+        }
+        else if (mgnlElement.isArea()) {
             processor = new AreaProcessor(model, eventBus, mgnlElement);
         }
         else if (mgnlElement.isComponent()) {

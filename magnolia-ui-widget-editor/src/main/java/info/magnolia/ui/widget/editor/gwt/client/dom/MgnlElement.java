@@ -47,33 +47,28 @@ public class MgnlElement {
 
     private CMSComment comment;
     private MgnlElement parent;
+    private boolean isPage = false;
     private boolean isArea = false;
+
     private boolean isComponent = false;
-
     private Element firstElement;
-    private Element lastElement;
 
+    private Element lastElement;
     private LinkedList<MgnlElement> children = new LinkedList<MgnlElement>();
     private Element componentElement;
     private Element areaElement;
     private Element editElement;
+
     private CMSComment endComment;
 
     private Map<String, String> attributes;
-
-    private static final String MARKER_AREA = "cms:area";
-    private static final String MARKER_COMPONENT = "cms:component";
-
     private static final String[] INHERITED_ATTRIBUTES = {"editable"};
 
-/**
- * @throws IllegalArgumentException if comments tagname is not a defined marker.
+    /**
+ * MgnlElement. Represents a node in the tree built on cms-tags.
  */
-    public MgnlElement(CMSComment comment, MgnlElement parent) throws IllegalArgumentException {
+    public MgnlElement(CMSComment comment, MgnlElement parent) {
 
-        if (!isMgnlElement(comment.getTagName())) {
-            throw new IllegalArgumentException("The tagname must be one of the defined marker Strings.");
-        }
         this.comment = comment;
         this.parent = parent;
 
@@ -87,26 +82,7 @@ public class MgnlElement {
             }
         }
     }
-    public boolean isMgnlElement(String tagName) {
-        if (tagName.equals(MARKER_AREA)) {
-            this.isArea = true;
-            return true;
-        }
-        else if (tagName.equals(MARKER_COMPONENT)) {
-            this.isComponent = true;
-            return true;
-        }
 
-        return false;
-    }
-
-    public boolean isArea() {
-        return isArea;
-    }
-
-    public boolean isComponent() {
-        return isComponent;
-    }
 
     public MgnlElement getParent() {
         return parent;
@@ -141,7 +117,7 @@ public class MgnlElement {
         return ascendants;
     }
 
-    public MgnlElement getRootArea() {
+/*    public MgnlElement getRootArea() {
         MgnlElement rootArea = null;
         for (MgnlElement parent = this; parent != null; parent = parent.getParent()) {
             if (parent.isArea()) {
@@ -149,7 +125,7 @@ public class MgnlElement {
             }
         }
         return rootArea;
-    }
+    }*/
 
     public MgnlElement getParentArea() {
         MgnlElement parentArea = null;
@@ -176,6 +152,7 @@ public class MgnlElement {
         }
         return components;
     }
+
     public List<MgnlElement> getAreas() {
         List<MgnlElement> areas = new LinkedList<MgnlElement>();
         for (MgnlElement element : getChildren()) {
@@ -185,7 +162,6 @@ public class MgnlElement {
         }
         return areas;
     }
-
     public MgnlElement getRoot() {
         MgnlElement root = null;
         for (MgnlElement parent = this; parent != null; parent = parent.getParent()) {
@@ -263,12 +239,36 @@ public class MgnlElement {
     public boolean containsAttribute(String key) {
         return this.attributes.containsKey(key);
     }
+
     public Map<String, String> getAttributes() {
         return this.attributes;
     }
-
     @Override
     public String toString() {
         return comment.toString();
+    }
+
+    public void setPage(boolean isPage) {
+        this.isPage = isPage;
+    }
+
+    public void setArea(boolean isArea) {
+        this.isArea = isArea;
+    }
+
+    public void setComponent(boolean isComponent) {
+        this.isComponent = isComponent;
+    }
+
+    public boolean isPage() {
+        return isPage;
+    }
+
+    public boolean isArea() {
+        return isArea;
+    }
+
+    public boolean isComponent() {
+        return isComponent;
     }
 }

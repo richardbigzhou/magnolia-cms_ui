@@ -59,9 +59,9 @@ public interface Model {
 
     List<Element> getElements(MgnlElement mgnlElement);
 
-    void addRoot(MgnlElement boundary);
+    void addRootArea(MgnlElement boundary);
 
-    List<MgnlElement> getRootElements();
+    List<MgnlElement> getRootAreas();
 
     void setSelectedMgnlAreaElement(MgnlElement selectedMgnlAreaElement);
 
@@ -83,7 +83,7 @@ public interface Model {
 
     MgnlElement findMgnlElementByContentId(String contentId);
 
-    PageBar getPageBar();
+    void setRootPage(MgnlElement mgnlElement);
 
-    void setPageBar(PageBar pageBar);
+    MgnlElement getRootPage();
 }
