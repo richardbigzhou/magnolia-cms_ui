@@ -50,10 +50,12 @@ public class MessageEvent implements Event<MessageEventHandler> {
 
     @Override
     public void dispatch(MessageEventHandler handler) {
-        if (cleared)
+        if (cleared) {
             handler.messageCleared(this);
-        else
+        }
+        else {
             handler.messageSent(this);
+        }
     }
 
     public Message getMessage() {

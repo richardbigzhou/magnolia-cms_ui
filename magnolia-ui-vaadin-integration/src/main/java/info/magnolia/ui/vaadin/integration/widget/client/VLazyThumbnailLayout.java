@@ -284,8 +284,7 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
         int thumbnailsInRow = (int) (width / (thumbnailWidth + getHorizontalMargin()) * 1d);
         int rows = (int) Math.ceil(1d * totalHeight / (thumbnailHeight + getVerticalMargin()));
         int totalThumbnailsPossible = Math.min(thumbnailAmount, thumbnailsInRow * rows);
-        int thumbnailsNeeded = Math.max(totalThumbnailsPossible  - thumbnailStubs.size() - thumbnails.size(), 0);
-        return thumbnailsNeeded;
+        return Math.max(totalThumbnailsPossible  - thumbnailStubs.size() - thumbnails.size(), 0);
     }
 
     @Override

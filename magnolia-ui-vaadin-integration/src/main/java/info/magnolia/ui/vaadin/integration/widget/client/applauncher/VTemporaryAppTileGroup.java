@@ -36,9 +36,6 @@ package info.magnolia.ui.vaadin.integration.widget.client.applauncher;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.AnimationSettings;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper;
 
-import com.google.web.bindery.event.shared.EventBus;
-
-
 /**
  * The temporary app group.
  */
@@ -48,7 +45,7 @@ public class VTemporaryAppTileGroup extends VAppTileGroup {
 
     private static final int VISIBILITY_TOGGLE_SPEED = 200;
 
-    public VTemporaryAppTileGroup(EventBus eventBus, String color) {
+    public VTemporaryAppTileGroup(String color) {
         super(color);
         construct();
     }
@@ -57,11 +54,6 @@ public class VTemporaryAppTileGroup extends VAppTileGroup {
     protected void construct() {
         addStyleName("temporary");
         closeSection();
-    }
-
-    @Override
-    public void addAppTile(VAppTile tile) {
-        super.addAppTile(tile);
     }
 
     public void closeSection() {

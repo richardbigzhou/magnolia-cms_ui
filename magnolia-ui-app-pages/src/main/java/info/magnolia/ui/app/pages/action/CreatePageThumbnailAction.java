@@ -58,9 +58,9 @@ import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
 /**
- * ExportPageAction.
+ * CreatePageThumbnailAction.
  */
-public class ExportPageAction extends ActionBase<ExportPageActionDefinition> {
+public class CreatePageThumbnailAction extends ActionBase<CreatePageThumbnailActionDefinition> {
 
     private static final Logger log = LoggerFactory.getLogger(PreviewPageAction.class);
 
@@ -69,7 +69,7 @@ public class ExportPageAction extends ActionBase<ExportPageActionDefinition> {
 
     private static final String IMAGE_NODE_NAME = AbstractThumbnailProvider.ORIGINAL_IMAGE_NODE_NAME;
 
-    public ExportPageAction(ExportPageActionDefinition definition, RendererRegistry registry, Node nodeToExport) {
+    public CreatePageThumbnailAction(CreatePageThumbnailActionDefinition definition, RendererRegistry registry, Node nodeToExport) {
         super(definition);
         this.registry = registry;
         this.nodeToExport = nodeToExport;

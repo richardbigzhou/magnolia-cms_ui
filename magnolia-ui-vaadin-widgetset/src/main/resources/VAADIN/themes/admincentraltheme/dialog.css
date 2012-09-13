@@ -1,175 +1,187 @@
 .v-dialog-layout {
-	background-color: #E6E6E6;
-	margin-top: 25px;
+  background-color: #E6E6E6;
+  margin-top: 25px;
 }
 
 .v-dialog-layout {
-	background-color: #E6E6E6;
-	margin-top: 25px;
+  background-color: #E6E6E6;
+  margin-top: 25px;
 }
 
 .v-dialog-layout > .v-dialog-field-section, .v-dialog-field-label,
 .v-dialog-field, .validation-message-inline span, .help-message-inline span,
 .dialog-description * {
-	font-family: Verdana, Helvetica, sans-serif !important;
-	font-size: 12px !important;
+  font-family: Verdana, Helvetica, sans-serif !important;
+  font-size: 12px !important;
 }
 
 .v-dialog-layout .v-dialog-field {
-	display: inline-block;
-	width: 460px;
-	vertical-align: middle;
+  display: inline-block;
+  width:510px;
+  vertical-align: middle;
 }
 
 .dialog-header,.dialog-footer,.dialog-description,.dialog-error {
-	padding: 12px 16px 12px 24px;
+  padding: 12px 16px 12px 24px;
 }
 
 .dialog-description,.dialog-footer,.dialog-content,.dialog-error {
-	border-top: 2px solid black;
+  border-top: 2px solid black;
 }
 
 .dialog-header {
-	background-color: #666;
-	display: block;
-	height: 16px;
-	color: #AABF2F;
+  background-color: #666;
+  display: block;
+  height: 16px;
+  color: #AABF2F;
 }
 
 .dialog-header span {
-	font-family: DINWebPro;
-	font-size: 18px;
-	font-weight: bold;
-	line-height: 18px;
+  font-family: DINWebPro;
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 18px;
 }
 
 .dialog-description {
-	background: none repeat scroll 0px 0px #C1D8DF;
+  background: none repeat scroll 0px 0px #C1D8DF;
 }
 
 .dialog-error {
-	background: none repeat scroll 0px 0px #9A3333;
-	color: white;
+  background: none repeat scroll 0px 0px #9A3333;
+  color: white;
 }
 
 .dialog-description span {
-	margin-right: 35px;
+  margin-right: 35px;
 }
 
 .dialog-panel {
-	background: none repeat scroll 0px 0px #E6E6E6;
-	border: none;
-	left: 50%;
-	margin: auto auto auto -360px;
-	padding: 0;
-	position: absolute;
-	width: 720px;
+  background: none repeat scroll 0px 0px #E6E6E6;
+  border: none;
+  left: 50%;
+  margin: auto auto auto -360px;
+  padding: 0;
+  position: absolute;
+  width: 720px;
 }
 
 .dialog-footer {
-	background: none repeat scroll 0px 0px #CCCCCC;
-	text-align: right;
+  background: none repeat scroll 0px 0px #CCCCCC;
+  text-align: right;
 }
 
 .dialog-close,.dialog-help {
-	float: right;
-	margin-right: 0px;
+  float: right;
+  margin-right: 0px;
 }
 
 button.btn-dialog {
-	font-family: DINWebPro;
-	font-size: 12px;
-	font-weight: bold;
-	background: none repeat scroll 0px 0px #666666;
-	border: none;
-	color: #FFF;
-	cursor: pointer;
-	padding: 4px 12px;
-	text-transform: uppercase;
+  font-family: DINWebPro;
+  font-size: 12px;
+  font-weight: bold;
+  background: none repeat scroll 0px 0px #666666;
+  border: none;
+  color: #FFF;
+  cursor: pointer;
+  padding: 4px 12px;
+  text-transform: uppercase;
 }
 
 button.btn-dialog-select {
-	margin-left: 2px;
+  margin-left: 2px;
 }
 
 .btn-dialog-select span {
-	font-family: DINWebPro !important;
-	font-size: 12px !important;
-	font-weight: bold !important;
+  font-family: DINWebPro !important;
+  font-size: 12px !important;
+  font-weight: bold !important;
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 55px !important;
 }
 
 button.btn-dialog-commit {
-	background: none repeat scroll 0px 0px #689600;
-	margin-left:10px;
-	float: right;
+  background: none repeat scroll 0px 0px #689600;
+  margin-left:10px;
+  float: right;
 }
 
 button.btn-dialog-close {
-	background: url("img/icon-close-16.png") no-repeat scroll 0px 0px transparent;
-	border: none;
-	display: inline-block;
-	float: right;
-	height: 16px;
-	margin-left: 13px;
-	margin-top: 2px;
-	padding: 0;
-	width: 16px;
+  background: url("img/icon-close-16.png") no-repeat scroll 0px 0px transparent;
+  border: none;
+  display: inline-block;
+  float: right;
+  height: 16px;
+  margin-left: 13px;
+  margin-top: 2px;
+  padding: 0;
+  width: 16px;
 }
 
 button.btn-dialog-close.green {
-	background: url("img/icon-close-green-16.png") no-repeat scroll 0px 0px transparent;
+  background: url("img/icon-close-green-16.png") no-repeat scroll 0px 0px transparent;
 }
 
 button.btn-dialog-help {
-	background: url("img/icon-help.png") no-repeat scroll 1px 1px transparent;
-	border: none;
-	float: right;
-	height: 20px;
-	margin: 0;
-	padding: 0;
-	width: 20px;
+  background: url("img/icon-help.png") no-repeat scroll 1px 1px transparent;
+  border: none;
+  float: right;
+  height: 20px;
+  margin: 0;
+  padding: 0;
+  width: 20px;
 }
 
 .dialog-panel .field-container {
-	color: #999;
+  color: #999;
 }
 
-.dialog-panel input[type="text"],.dialog-panel textarea {
-	background: #FFF;
-	border-radius: 0px 0px 0px 0px;
-	border: 1px solid #999;
-	color: #000;
-	display: inline-block;
-	margin: 0px;
-	padding: 6px 7px 6px 7px;
-	width: 460px;
-	height: 14px;
+.v-dialog-field.v-customcomponent {
+    width:525px !important;
 }
-.dialog-panel textarea {
-	width: 460px !important;
-	overflow-y: auto;
+
+.v-dialog-field.v-customcomponent.text-and-content {
+    width: auto !important;
+}
+
+input[type="text"].v-dialog-field, .v-dialog-field.v-customcomponent input[type="text"], textarea.v-dialog-field {
+  background: #FFF;
+  border-radius: 0px;
+  border: 1px solid #999;
+  color: #000;
+  display: inline-block;
+  margin: 0px;
+  padding: 6px 7px 6px 7px;
+  height: 14px;
+}
+
+textarea.v-dialog-field {
+  overflow-y: auto;
+  height:auto;
 }
 .v-dialog-field-label {
-	display: inline-block;
-	text-align: right;
-	width: 140px;
-	margin-right: 12px;
-	color: #666;
+  display: inline-block;
+  text-align: right;
+  width: 140px;
+  margin-right: 12px;
+  color: #666;
 }
 
 .v-dialog-field-container {
-	display: block;
-	position: relative;
+  display: block;
+  position: relative;
 }
 
 .validation-hilight {
-	border: 2px solid #9A3333;
-	padding: 3px;
+  border: 2px solid #9A3333;
+  padding: 3px;
 }
 
 .v-dialog-field-section {
-	color: #000;
-	margin-bottom: 11px;
+  color: #000;
+  margin-bottom: 11px;
 }
 
 .triangle {
@@ -177,96 +189,102 @@ button.btn-dialog-help {
 }
 
 .validation-message-inline,.help-message-inline {
-	margin-bottom: 10px;
-	padding-top: 5px;
-	position: relative;
+  margin-bottom: 10px;
+  padding-top: 5px;
+  position: relative;
 }
 
 .validation-message,.help-message {
-	background: none repeat scroll 0px 0px #9A3333;
-	color: white;
-	display: block;
-	padding: 10px;
+  background: none repeat scroll 0px 0px #9A3333;
+  color: white;
+  display: block;
+  padding: 10px;
 }
 
 .help-message {
-	background: none repeat scroll 0px 0px #C1D8DF;
-	color: black;
+  background: none repeat scroll 0px 0px #C1D8DF;
+  color: black;
+}
+
+.help-message span {
+   vertical-align: middle;
+   margin-left: 3px;
 }
 
 .triangle.red path {
-	fill: #9A3333;
+  fill: #9A3333;
 }
 
 .triangle.blue path {
-	fill: #C1D8DF;
+  fill: #C1D8DF;
 }
 
 .triangle {
-	text-align: center;
+  text-align: center;
 }
 
 .icon-error-white {
-	background: url("img/icons/icon-error-white.png") no-repeat scroll 1px 1px transparent;
-	border: medium none;
-	display: inline-block;
-	height: 20px;
-	margin: 0px 6px 0px 0px;
-	padding: 1px;
-	vertical-align: middle;
-	width: 20px;
+  background: url("img/icons/icon-error-white.png") no-repeat scroll 1px 1px transparent;
+  border: medium none;
+  display: inline-block;
+  height: 20px;
+  margin: 0px 6px 0px 0px;
+  padding: 1px;
+  vertical-align: middle;
+  width: 20px;
 }
 
 select:focus,input[type="text"]:focus,input[type="password"]:focus,textarea:focus
-	{
-	border: 1px solid #4B8E9E;
-	box-shadow: 0px 0px 1px 0px #4B8E9E;
-	color: #777;
+  {
+  border: 1px solid #4B8E9E;
+  box-shadow: 0px 0px 1px 0px #4B8E9E;
+  color: #777;
 }
 
 .action-jump-to-next-error {
-	-moz-user-select: text;
-	background: none repeat scroll 0% 0% transparent;
-	border: medium none;
-	color: #999 !important;
-	display: inline;
-	padding-left: 5px;
+  -moz-user-select: text;
+  background: none repeat scroll 0% 0% transparent;
+  border: medium none;
+  color: #999 !important;
+  display: inline;
+  padding-left: 5px;
+  cursor: pointer;
 }
 
 .action-jump-to-next-error:hover {
-	color: #FFF ! important;
+  color: #FFF ! important;
 }
 
 .action-jump-to-next-error:focus {
-	outline-offset: -3px;
+  outline-offset: -3px;
 }
 
 .icon-error,.action-validation {
-	background: url("img/icons/icon-error-red.png") no-repeat scroll 1px 1px transparent;
-	border: none;
-	display: inline-block;
-	height: 16px;
-	margin: 0px 1px 0px 2px;
-	padding: 0px;
-	vertical-align: middle;
-	width: 19px;
+  background: url("img/icons/icon-error-red.png") no-repeat scroll 1px 1px transparent;
+  border: none;
+  display: inline-block;
+  height: 16px;
+  margin: 0px 1px 0px 2px;
+  padding: 0px;
+  vertical-align: middle;
+  width: 19px;
 }
 
 .action-dialog-help {
-	background: url("img/icons/icon-help.png") no-repeat scroll 1px 1px transparent;
-	border: none;
-	display: inline-block;
-	height: 20px;
-	margin: 0px 1px 0px 2px;
-	padding: 0px;
-	vertical-align: middle;
-	width: 20px;
+  background: url("img/icons/icon-help.png") no-repeat scroll 1px 1px transparent;
+  border: none;
+  display: inline-block;
+  height: 20px;
+  margin: 0px 1px 0px 2px;
+  padding: 0px;
+  vertical-align: middle;
+  width: 20px;
 }
 
 fieldset {
-	border: 0px none;
-	margin: 0;
-	padding: 0;
+  border: 0px none;
+  margin: 0;
+  padding: 0;
 }
 
 .v-dialog-field-container .v-datefield {
@@ -275,7 +293,7 @@ fieldset {
 }
 
 .v-dialog-field-container .v-datefield-button {
-	margin: 4px 0 0 3px;
+  margin: 4px 0 0 3px;
 }
 
 .v-dialog-field-label  span.requiredfield {
@@ -290,9 +308,12 @@ fieldset {
     margin:0px;
 }
 .content-view-field-wrapper .v-dialog-field-label {
-	display: none;
+  display: none;
 }
 
-.v-dialog-field.v-richtextarea {
-	width: 473px !important;
+/*
+* used by TextAndButtonField custom component.
+*/
+input[type="text"].small-textfield {
+  width:440px !important;
 }

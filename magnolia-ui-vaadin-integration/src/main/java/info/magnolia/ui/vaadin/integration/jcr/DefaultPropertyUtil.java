@@ -96,7 +96,7 @@ public class DefaultPropertyUtil {
                     try {
                         return hasDefaultValue ? new SimpleDateFormat(DateUtil.YYYY_MM_DD).parse(defaultValue) : new Date();
                     } catch (ParseException e) {
-                        throw new IllegalArgumentException(e.getMessage());
+                        throw new IllegalArgumentException(e);
                     }
                 case PropertyType.BOOLEAN:
                     return (BooleanUtils.toBoolean(hasDefaultValue ? defaultValue : ""));

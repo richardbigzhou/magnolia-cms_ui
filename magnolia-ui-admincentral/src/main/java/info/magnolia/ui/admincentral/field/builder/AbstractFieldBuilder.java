@@ -98,7 +98,8 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition> extends Ab
             Property property = getOrCreateProperty();
             setPropertyDataSource(property);
 
-            // Set style
+            //TODO fgrilli review: do we really want to provide users with the possibility
+            //of defining their custom styles risking that they screw up AdminCentral look&feel?
             if(StringUtils.isNotBlank(definition.getStyleName())) {
                 this.field.addStyleName(definition.getStyleName());
             }
@@ -106,7 +107,6 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition> extends Ab
             //Set label and required marker
             this.field.setCaption(getMessage(getFieldDefinition().getLabel()) + (getFieldDefinition().isRequired() ? "<span class=\"requiredfield\">*</span>" : ""));
 
-            // Set Constraints
             setConstraints();
 
         }
@@ -193,7 +193,7 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition> extends Ab
             if(validatorBuilder != null) {
                 this.field.addValidator(validatorBuilder.buildValidator());
             }else {
-                log.warn("Not able to create Validation for the following definition: "+definition.toString());
+                log.warn("Not able to create Validation for the following definition {}" , definition.toString());
             }
         }
         // Set Required
