@@ -35,7 +35,6 @@ package info.magnolia.ui.vaadin.integration.widget.client.applauncher;
 
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
-import com.google.web.bindery.event.shared.EventBus;
 
 /**
  * The permanent App Group.
@@ -47,7 +46,7 @@ public class VPermanentAppTileGroup extends VAppTileGroup {
     
     final Element sectionEl = DOM.createDiv();
 
-    public VPermanentAppTileGroup(EventBus eventBus, String caption, String color) {
+    public VPermanentAppTileGroup(String caption, String color) {
         super(color);
         this.caption = caption;
         construct();

@@ -840,12 +840,7 @@ public class VMagnoliaTreeTable extends VMagnoliaTable {
      */
     @Override
     protected String buildCaptionHtmlSnippet(UIDL uidl) {
-        if (uidl.getTag().equals("column")) {
-            return super.buildCaptionHtmlSnippet(uidl);
-        } else {
-            String s = uidl.getStringAttribute("caption");
-            return s;
-        }
+        return (uidl.getTag().equals("column")) ? super.buildCaptionHtmlSnippet(uidl) : uidl.getStringAttribute("caption");
     }
 
     @Override

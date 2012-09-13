@@ -65,12 +65,18 @@ public class LinkFieldSelectionBuilder extends AbstractFieldBuilder<LinkFieldSel
     private TextAndContentViewField textContent;
     private EventBus appEventBus;
     private ChooseDialogContentPresenter contentPresenter;
+    private final String propertyName;
 
     @Inject
     public LinkFieldSelectionBuilder(LinkFieldSelectionDefinition definition, Item relatedFieldItem, ChooseDialogContentPresenter contentPresenter,  @Named("choosedialog") final EventBus eventbus) {
         super(definition, relatedFieldItem);
         this.contentPresenter = contentPresenter;
         this.appEventBus = eventbus;
+        // Item is build by the LinkFieldBuilder and has only one property.
+        // This property has the name of property we are supposed to propagate.
+        propertyName = relatedFieldItem.getItemPropertyIds().iterator().next().toString();
+        // This will allow to set the selected value to the desired property name (handle by AbstractFieldBuilder.getOrCreateProperty())
+        definition.setName(propertyName);
     }
 
 
@@ -95,8 +101,8 @@ public class LinkFieldSelectionBuilder extends AbstractFieldBuilder<LinkFieldSel
                 Node selected = SessionUtil.getNode(event.getWorkspace(), event.getPath());
                 if(selected != null) {
                     try {
-                        if(StringUtils.isNotBlank(definition.getColumnName()) && selected.hasProperty(definition.getColumnName())) {
-                            textContent.setValue(selected.getProperty(definition.getColumnName()).getString());
+                        if(StringUtils.isNotBlank(propertyName) && !LinkFieldBuilder.PATH_PROPERTY_NAME.equals(propertyName) && selected.hasProperty(propertyName)) {
+                            textContent.setValue(selected.getProperty(propertyName).getString());
                         } else {
                             textContent.setValue(selected.getPath());
                         }
@@ -124,8 +130,8 @@ public class LinkFieldSelectionBuilder extends AbstractFieldBuilder<LinkFieldSel
      */
     private void setSelected(ContentWorkbenchViewImpl parentView) {
         String path = contentPresenter.getRootPath();
-        if(StringUtils.isBlank(definition.getColumnName()) && item.getItemProperty(LinkFieldBuilder.TRANSIENT_PROPERTY_NAME)!=null && StringUtils.isNotBlank(item.getItemProperty(LinkFieldBuilder.TRANSIENT_PROPERTY_NAME).getValue().toString())) {
-            path = item.getItemProperty(LinkFieldBuilder.TRANSIENT_PROPERTY_NAME).getValue().toString();
+        if(LinkFieldBuilder.PATH_PROPERTY_NAME.equals(propertyName) && StringUtils.isNotBlank(item.getItemProperty(propertyName).getValue().toString())) {
+            path = item.getItemProperty(propertyName).getValue().toString();
         }
         parentView.selectPath(path);
     }

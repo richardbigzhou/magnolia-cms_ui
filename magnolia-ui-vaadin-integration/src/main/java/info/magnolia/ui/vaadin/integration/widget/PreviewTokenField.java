@@ -53,8 +53,7 @@ public class PreviewTokenField extends TextField {
     public Long getValue() {
         final String strValue = String.valueOf(super.getValue()).replaceAll("-", "");
         try {
-            long value = Long.parseLong(strValue);
-            return value;
+            return Long.parseLong(strValue);
         } catch (NumberFormatException e) {
             return null;
         }

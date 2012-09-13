@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2011 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,43 +31,53 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.field.definition;
+package info.magnolia.ui.widget.editor.gwt.client.jsni.event;
+
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.IFrameElement;
+import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.user.client.ui.Frame;
+import com.google.web.bindery.event.shared.Event;
 
 /**
- * Field definition for a date picker.
+ * FrameLoadedEvent. Fired when the iFrame is loaded.
  */
-public class DateFieldDefinition extends ConfiguredFieldDefinition {
+public class FrameLoadedEvent extends Event<FrameLoadedEvent.Handler> {
 
-    private boolean time = false;
+    private Frame frame;
 
-    private String dateFormat = "yyyy-MM-dd";
-
-    private String timeFormat = "HH:mm:ss";
-
-    public boolean isTime() {
-        return time;
+    /**
+     * Handler.
+     */
+    public interface Handler extends EventHandler {
+        void handle(FrameLoadedEvent frameLoadedEvent);
     }
 
-    public void setTime(boolean time) {
-        this.time = time;
+    public static GwtEvent.Type<Handler> TYPE = new GwtEvent.Type<Handler>();
+
+    public FrameLoadedEvent(Frame frame) {
+        this.frame = frame;
     }
 
-    public String getDateFormat() {
-        return dateFormat;
+    @Override
+    public GwtEvent.Type<Handler> getAssociatedType() {
+        return TYPE;
     }
 
-
-    public void setDateFormat(String dateFormat) {
-        this.dateFormat = dateFormat;
+    @Override
+    protected void dispatch(Handler handler) {
+        handler.handle(this);
     }
 
-
-    public String getTimeFormat() {
-        return timeFormat;
+    public Frame getFrame() {
+        return frame;
     }
 
-
-    public void setTimeFormat(String timeFormat) {
-        this.timeFormat = timeFormat;
+    public Document getFrameDocument() {
+        Element element = frame.getElement();
+        IFrameElement iframeElement = IFrameElement.as(element);
+        return iframeElement.getContentDocument();
     }
 }

@@ -31,37 +31,43 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.editor.gwt.client;
+package info.magnolia.ui.admincentral.field.builder;
 
+import info.magnolia.ui.admincentral.field.PasswordFields;
+import info.magnolia.ui.model.field.definition.FieldDefinition;
+import info.magnolia.ui.model.field.definition.PasswordFieldDefinition;
 
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.ui.Frame;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+import org.apache.commons.lang.StringUtils;
+
+import com.vaadin.data.Item;
+import com.vaadin.ui.Field;
 
 /**
- * VPageEditorView.
+ * Creates and initializes an password field based on a field definition.
  */
-public interface VPageEditorView extends IsWidget {
+public class PasswordFieldBuilder extends AbstractFieldBuilder<PasswordFieldDefinition> {
 
-    void initSelectionListener();
 
-    Widget getContent();
-
-    /**
-     * Listener.
-     */
-    interface Listener {
-
-        void selectElement(Element element);
+    public PasswordFieldBuilder(PasswordFieldDefinition definition, Item relatedFieldItem) {
+        super(definition, relatedFieldItem);
     }
 
-    Frame getFrame();
+    @Override
+    protected Field buildField() {
+        String verificationErrorMessage = StringUtils.EMPTY;
+        String verificationMessage = StringUtils.EMPTY;
+        if(definition.isVerification()) {
+            verificationErrorMessage = getMessage(definition.getVerificationErrorMessage());
+            verificationMessage = getMessage(definition.getVerificationMessage());
+        }
+        // Create Field
+        return new PasswordFields(definition.isVerification(), verificationMessage, verificationErrorMessage);
+    }
 
-    void setListener(Listener listener);
 
-    void setUrl(String url);
-
-    void reload();
-
+    @Override
+    protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {
+        return String.class;
+    }
 }
+

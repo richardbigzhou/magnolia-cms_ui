@@ -41,19 +41,22 @@ public class LinkFieldDefinition extends ConfiguredFieldDefinition {
 
     // Define the target link workspace.
     private String workspace = "website";
-    private String extension;
     // Sub Dialog Name. Used by the LinkField to create the
     // sub dialog. like 'ui-admincentral:link'
     private String dialogName;
     // Target App Name used to create the ContentView.
     // 'pages'
     private String appName;
-
-    private String listView;
-    private String width = "100%";
-    private String buttonLabel = "Select";
-    // Define if we should store the UUID of the selected Item
-    private boolean uuid = false;
+    // Button Label displayed when no link is yet selected.
+    private String buttonSelectNewLabel = "field.link.select.new";
+    // Button Label displayed when a link is selected.
+    private String buttonSelectOtherLabel = "field.link.select.another";
+    // Define if we should store the Identifier of the selected Item
+    private boolean identifier = false;
+    // Name of the list property to populate.
+    // If empty, and identifier is false,  populate the Node path
+    // otherwise, populate the Identifier.
+    private String propertyName;
 
     public String getWorkspace() {
         return workspace;
@@ -63,44 +66,12 @@ public class LinkFieldDefinition extends ConfiguredFieldDefinition {
         this.workspace = workspace;
     }
 
-    public String getExtension() {
-        return extension;
+    public boolean isIdentifier() {
+        return identifier;
     }
 
-    public void setExtension(String extension) {
-        this.extension = extension;
-    }
-
-    public String getListView() {
-        return listView;
-    }
-
-    public void setListView(String listView) {
-        this.listView = listView;
-    }
-
-    public String getWidth() {
-        return width;
-    }
-
-    public void setWidth(String width) {
-        this.width = width;
-    }
-
-    public String getButtonLabel() {
-        return buttonLabel;
-    }
-
-    public void setButtonLabel(String buttonLabel) {
-        this.buttonLabel = buttonLabel;
-    }
-
-    public boolean isUuid() {
-        return uuid;
-    }
-
-    public void setUuid(boolean uuid) {
-        this.uuid = uuid;
+    public void setIdentifier(boolean identifier) {
+        this.identifier = identifier;
     }
 
     public String getDialogName() {
@@ -117,5 +88,29 @@ public class LinkFieldDefinition extends ConfiguredFieldDefinition {
 
     public void setAppName(String appName) {
         this.appName = appName;
+    }
+
+    public String getButtonSelectNewLabel() {
+        return buttonSelectNewLabel;
+    }
+
+    public void setButtonSelectNewLabel(String buttonSelectNewLabel) {
+        this.buttonSelectNewLabel = buttonSelectNewLabel;
+    }
+
+    public String getButtonSelectOtherLabel() {
+        return buttonSelectOtherLabel;
+    }
+
+    public void setButtonSelectOtherLabel(String buttonSelectOtherLabel) {
+        this.buttonSelectOtherLabel = buttonSelectOtherLabel;
+    }
+
+    public String getPropertyName() {
+        return propertyName;
+    }
+
+    public void setPropertyName(String propertyName) {
+        this.propertyName = propertyName;
     }
 }
