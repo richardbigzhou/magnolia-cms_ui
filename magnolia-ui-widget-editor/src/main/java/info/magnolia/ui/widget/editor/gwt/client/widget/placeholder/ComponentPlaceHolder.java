@@ -185,7 +185,7 @@ public class ComponentPlaceHolder extends AbstractPlaceHolder {
             parent.insertFirst(getElement());
         }
         onAttach();
-        getModel().addComponentPlaceHolder(getMgnlElement(), this);
+        getMgnlElement().setComponentPlaceHolder(this);
     }
 
     public void attach(MgnlElement mgnlElement) {

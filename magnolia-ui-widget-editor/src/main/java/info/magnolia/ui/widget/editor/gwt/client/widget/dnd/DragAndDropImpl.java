@@ -78,7 +78,7 @@ public class DragAndDropImpl {
                             componentBar.setStyleName("moveTarget", true);
                         }
                     }
-                    ComponentPlaceHolder placeholder = getModel().getComponentPlaceHolder(area);
+                    ComponentPlaceHolder placeholder = area.getComponentPlaceHolder();
                     if (placeholder != null) {
                         placeholder.setStyleName("moveOngoing", true);
                     }
@@ -107,7 +107,7 @@ public class DragAndDropImpl {
                             componentBar.setStyleName("moveTarget", false);
                         }
                     }
-                    ComponentPlaceHolder placeholder = getModel().getComponentPlaceHolder(area);
+                    ComponentPlaceHolder placeholder = area.getComponentPlaceHolder();
                     if (placeholder != null) {
                         placeholder.setStyleName("moveOngoing", false);
                     }

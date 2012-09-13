@@ -36,8 +36,6 @@ package info.magnolia.ui.widget.editor.gwt.client.model;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
-import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.AreaEndBar;
-import info.magnolia.ui.widget.editor.gwt.client.widget.placeholder.ComponentPlaceHolder;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -53,10 +51,6 @@ public class ModelImpl implements Model {
     private final Map<MgnlElement, List<Element>> elements = new HashMap<MgnlElement, List<Element>>();
 
     private final Map<Element, MgnlElement> mgnlElements = new HashMap<Element, MgnlElement>();
-
-    private final Map<MgnlElement, ComponentPlaceHolder> componentPlaceHolders = new HashMap<MgnlElement, ComponentPlaceHolder>();
-
-    private final Map<MgnlElement, AreaEndBar> areaEndBars = new HashMap<MgnlElement, AreaEndBar>();
 
     public MgnlElement rootPage;
 
@@ -144,26 +138,6 @@ public class ModelImpl implements Model {
     @Override
     public MgnlElement getSelectedMgnlAreaElement() {
         return selectedMgnlAreaElement;
-    }
-
-    @Override
-    public void addComponentPlaceHolder(MgnlElement mgnlElement, ComponentPlaceHolder placeHolder) {
-        componentPlaceHolders.put(mgnlElement, placeHolder);
-    }
-
-    @Override
-    public ComponentPlaceHolder getComponentPlaceHolder(MgnlElement mgnlElement) {
-        return componentPlaceHolders.get(mgnlElement);
-    }
-
-    @Override
-    public void addAreaEndBar(MgnlElement mgnlElement, AreaEndBar areaEndBar) {
-        areaEndBars.put(mgnlElement, areaEndBar);
-    }
-
-    @Override
-    public AreaEndBar getAreaEndBar(MgnlElement mgnlElement) {
-        return areaEndBars.get(mgnlElement);
     }
 
     @Override

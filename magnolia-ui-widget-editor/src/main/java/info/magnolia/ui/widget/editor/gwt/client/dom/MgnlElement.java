@@ -35,6 +35,8 @@ package info.magnolia.ui.widget.editor.gwt.client.dom;
 
 import com.google.gwt.dom.client.Element;
 import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.AbstractBar;
+import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.AreaEndBar;
+import info.magnolia.ui.widget.editor.gwt.client.widget.placeholder.ComponentPlaceHolder;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -61,6 +63,10 @@ public class MgnlElement {
     private Element editElement;
 
     private AbstractBar controlBar;
+
+    // only used in areas
+    ComponentPlaceHolder componentPlaceHolder;
+    AreaEndBar areaEndBar;
 
     private CMSComment endComment;
 
@@ -93,6 +99,21 @@ public class MgnlElement {
 
     public void setControlBar(AbstractBar controlBar) {
         this.controlBar = controlBar;
+    }
+    public ComponentPlaceHolder getComponentPlaceHolder() {
+        return componentPlaceHolder;
+    }
+
+    public void setComponentPlaceHolder(ComponentPlaceHolder componentPlaceHolder) {
+        this.componentPlaceHolder = componentPlaceHolder;
+    }
+
+    public AreaEndBar getAreaEndBar() {
+        return areaEndBar;
+    }
+
+    public void setAreaEndBar(AreaEndBar areaEndBar) {
+        this.areaEndBar = areaEndBar;
     }
 
 

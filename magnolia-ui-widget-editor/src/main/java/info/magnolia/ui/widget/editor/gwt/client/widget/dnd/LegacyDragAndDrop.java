@@ -160,7 +160,7 @@ public class LegacyDragAndDrop {
 
                 }
             }
-            ComponentPlaceHolder placeholder = getModel().getComponentPlaceHolder(area);
+            ComponentPlaceHolder placeholder = area.getComponentPlaceHolder();
             if (placeholder != null) {
                 placeholder.setStyleName("moveOngoing", isMove);
             }

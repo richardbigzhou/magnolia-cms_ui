@@ -35,8 +35,6 @@ package info.magnolia.ui.widget.editor.gwt.client.model;
 
 import com.google.gwt.dom.client.Element;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
-import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.AreaEndBar;
-import info.magnolia.ui.widget.editor.gwt.client.widget.placeholder.ComponentPlaceHolder;
 
 import java.util.List;
 
@@ -64,14 +62,6 @@ public interface Model {
     void setSelectedMgnlComponentElement(MgnlElement selectedMgnlComponentElement);
 
     MgnlElement getSelectedMgnlComponentElement();
-
-    void addComponentPlaceHolder(MgnlElement mgnlElement, ComponentPlaceHolder placeHolder);
-
-    ComponentPlaceHolder getComponentPlaceHolder(MgnlElement mgnlElement);
-
-    void addAreaEndBar(MgnlElement mgnlElement, AreaEndBar areaEndBar);
-
-    AreaEndBar getAreaEndBar(MgnlElement mgnlElement);
 
     void removeMgnlElement(MgnlElement mgnlElement);
 

@@ -92,7 +92,7 @@ public class AreaEndBar extends FlowPanel {
     @Override
     protected void onAttach() {
         getModel().addElements(mgnlElement, getElement());
-        getModel().addAreaEndBar(mgnlElement, this);
+        mgnlElement.setAreaEndBar(this);
         super.onAttach();
     }
 
