@@ -866,7 +866,7 @@
                   <sv:value>f0bcee7e-6087-4fe2-90c5-8545b427d961</sv:value>
                 </sv:property>
                 <sv:property sv:name="class" sv:type="String">
-                  <sv:value>info.magnolia.ui.app.pages.action.ExportPageActionDefinition</sv:value>
+                  <sv:value>info.magnolia.ui.app.pages.action.CreatePageThumbnailActionDefinition</sv:value>
                 </sv:property>
                 <sv:property sv:name="exportType" sv:type="String">
                   <sv:value>png</sv:value>

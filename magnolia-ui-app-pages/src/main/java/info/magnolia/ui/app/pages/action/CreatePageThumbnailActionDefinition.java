@@ -36,9 +36,10 @@ package info.magnolia.ui.app.pages.action;
 import info.magnolia.ui.model.action.ActionDefinition;
 
 /**
- * ExportPageActionDefinition.
+ * CreatePageThumbnailActionDefinition.
  */
-public class ExportPageActionDefinition implements ActionDefinition {
+public class CreatePageThumbnailActionDefinition implements ActionDefinition {
+
     private String exportType;
 
     public String getExportType() {
