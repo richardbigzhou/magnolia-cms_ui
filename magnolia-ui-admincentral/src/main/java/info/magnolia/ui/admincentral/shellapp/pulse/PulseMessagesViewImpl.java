@@ -37,7 +37,9 @@ import info.magnolia.ui.admincentral.shellapp.pulse.PulseMessageCategoryNavigato
 import info.magnolia.ui.admincentral.shellapp.pulse.PulseMessageCategoryNavigator.MessageCategoryChangedListener;
 import info.magnolia.ui.vaadin.integration.widget.grid.MagnoliaTable;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -110,7 +112,12 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
     @Override
     public void update(List<String> params) {
         if (params != null && !params.isEmpty()) {
-            messageTable.select(params.get(0));
+            final Set<Object> values = new HashSet<Object>();
+            String messageId = params.get(0);
+            values.add(messageId);
+            // This is a multi-select table, calling select would just add this message to the current
+            // set of selected rows so setting the value explicitly this way makes only this one selected.
+            messageTable.setValue(values);
         }
     }
 }
