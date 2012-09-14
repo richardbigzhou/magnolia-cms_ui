@@ -35,7 +35,7 @@ package info.magnolia.ui.admincentral.field.builder;
 
 import static org.junit.Assert.assertEquals;
 import info.magnolia.ui.admincentral.field.upload.AbstractUploadFileField.DefaultComponent;
-import info.magnolia.ui.admincentral.field.upload.UploadImageField;
+import info.magnolia.ui.admincentral.field.upload.UploadFileFieldImpl;
 import info.magnolia.ui.model.field.definition.FileUploadFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 
@@ -60,7 +60,7 @@ public class FileUploadFieldBuilderTest extends AbstractBuilderTest<FileUploadFi
         Field field = fileUploadBuilder.getField();
 
         // THEN
-        assertEquals(true, field instanceof UploadImageField);
+        assertEquals(true, field instanceof UploadFileFieldImpl);
         assertEquals(0, ((AbstractJcrNodeAdapter)baseItem).getChildren().size());
     }
 
@@ -69,7 +69,7 @@ public class FileUploadFieldBuilderTest extends AbstractBuilderTest<FileUploadFi
         // GIVEN
         fileUploadBuilder = new FileUploadFieldBuilder(definition, baseItem, null);
         fileUploadBuilder.setI18nContentSupport(i18nContentSupport);
-        UploadImageField field = (UploadImageField)fileUploadBuilder.getField();
+        UploadFileFieldImpl field = (UploadFileFieldImpl)fileUploadBuilder.getField();
 
         // WHEN
         field.buildUploadStartedLayout();

@@ -71,8 +71,6 @@ public interface VMagnoliaShellView extends HasWidgets, IsWidget {
     void shiftViewportsVertically(int shiftPx, boolean animated);
     
     void setPusher(VICEPush pusher);
-    
-    void updateShellAppIndication(ShellAppType type, int increment);
 
     void setShellAppIndication(ShellAppType type, int indication);
 

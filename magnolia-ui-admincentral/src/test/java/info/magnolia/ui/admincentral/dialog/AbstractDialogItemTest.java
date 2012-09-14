@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,72 +31,38 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.field.builder;
+package info.magnolia.ui.admincentral.dialog;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import info.magnolia.cms.i18n.DefaultI18nContentSupport;
+
+import java.util.Locale;
+
 import info.magnolia.cms.i18n.DefaultMessagesManager;
 import info.magnolia.cms.i18n.MessagesManager;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.context.SystemContext;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockContext;
-import info.magnolia.test.mock.jcr.MockSession;
-import info.magnolia.ui.model.field.definition.FieldDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-
-import java.util.Locale;
-
-import javax.jcr.Node;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
 
-import com.vaadin.data.Item;
+import static org.junit.Assert.*;
 
 
-/**
- * Abstract test class used to initialize the DialogField Tests.
- */
-public abstract class AbstractBuilderTest<D extends FieldDefinition> {
-    protected static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
-    protected DefaultI18nContentSupport i18nContentSupport;
-    protected final String workspaceName = "workspace";
-    protected MockSession session;
-    protected String propertyName = "propertyName";
-    protected String itemName = "item";
-    protected Node baseNode;
-    protected Item baseItem;
-    protected D definition;
+public class AbstractDialogItemTest {
 
     @Before
-    public void setUp() throws Exception {
-        // Init Message & Providers
+    public void setUp() {
         DefaultMessagesManager manager = new DefaultMessagesManager();
         ComponentsTestUtil.setInstance(MessagesManager.class, manager);
         SystemContext systemContext = mock(SystemContext.class);
-        when(systemContext.getLocale()).thenReturn(DEFAULT_LOCALE);
+        when(systemContext.getLocale()).thenReturn(Locale.ENGLISH);
         ComponentsTestUtil.setInstance(SystemContext.class, systemContext);
-
-        //Init Session
-        session = new MockSession(workspaceName);
         MockContext ctx = new MockContext();
-        ctx.addSession(workspaceName, session);
         MgnlContext.setInstance(ctx);
-
-        //Create ConfiguredField POJO
-        createConfiguredFieldDefinition();
-
-        //Init Node and Item.
-        Node rootNode = session.getRootNode();
-        baseNode = rootNode.addNode(itemName);
-        baseItem = new JcrNodeAdapter(baseNode);
-
-        // Init i18n
-        i18nContentSupport = new DefaultI18nContentSupport();
-        i18nContentSupport.setFallbackLocale(DEFAULT_LOCALE);
-
     }
 
     @After
@@ -105,9 +71,21 @@ public abstract class AbstractBuilderTest<D extends FieldDefinition> {
         ComponentsTestUtil.clear();
     }
 
-    /**
-     * Create the specific ConfiguredFieldDefinition or sub class.
-     */
-    protected abstract void createConfiguredFieldDefinition();
+    @Test
+    public void testEnsureMessagesContainsKeysDefinedByUIModules() throws Exception {
+         //GIVEN
+         AbstractDialogItem dummyDialogItem = new AbstractDialogItem() {
 
+            @Override
+            protected String getI18nBasename() {
+                return "dummy.basename";
+            }
+        };
+
+        //WHEN validation.message.required is a key defined by the ui-model module
+        String message = dummyDialogItem.getMessages().get("validation.message.required");
+
+        //THEN
+        assertFalse(message.startsWith("???"));
+    }
 }

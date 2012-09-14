@@ -300,11 +300,11 @@
             <sv:property sv:name="jcr:uuid" sv:type="String">
               <sv:value>b2ddcd1b-84de-4688-b8dd-4a7712890c05</sv:value>
             </sv:property>
+            <sv:property sv:name="allowedMimeType" sv:type="String">
+              <sv:value>image.*</sv:value>
+            </sv:property>
             <sv:property sv:name="class" sv:type="String">
               <sv:value>info.magnolia.ui.model.field.definition.FileUploadFieldDefinition</sv:value>
-            </sv:property>
-            <sv:property sv:name="fileDeletesAllowed" sv:type="String">
-              <sv:value>true</sv:value>
             </sv:property>
             <sv:property sv:name="imageNodeName" sv:type="String">
               <sv:value>photo</sv:value>
@@ -335,7 +335,7 @@
                 <sv:value>2012-07-19T10:27:24.907+02:00</sv:value>
               </sv:property>
               <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-                <sv:value>2012-08-30T08:59:54.958+02:00</sv:value>
+                <sv:value>2012-09-14T10:22:17.184+02:00</sv:value>
               </sv:property>
             </sv:node>
           </sv:node>

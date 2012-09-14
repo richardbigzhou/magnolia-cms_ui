@@ -375,11 +375,6 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
     }
 
     @Override
-    public void updateShellAppIndication(ShellAppType type, int increment) {
-        mainAppLauncher.updateIndication(type, increment);
-    }
-
-    @Override
     public void setShellAppIndication(ShellAppType type, int indication) {
         mainAppLauncher.setIndication(type, indication);
     }
