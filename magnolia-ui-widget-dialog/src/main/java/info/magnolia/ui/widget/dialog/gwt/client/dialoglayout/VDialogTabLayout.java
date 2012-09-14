@@ -44,6 +44,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -67,6 +68,8 @@ public class VDialogTabLayout extends FlowPanel implements Container, HelpAccess
 
     private Element fieldSet = DOM.createElement("fieldset");
 
+    private Element legend = DOM.createElement("legend");
+
     private boolean isValidationVisible = false;
 
     public VDialogTabLayout() {
@@ -81,6 +84,17 @@ public class VDialogTabLayout extends FlowPanel implements Container, HelpAccess
         }
 
         isValidationVisible = uidl.getBooleanAttribute("validationVisible");
+
+        if(uidl.hasAttribute("caption")) {
+            String caption = uidl.getStringAttribute("caption");
+
+            legend.setInnerText(caption);
+            //only displays when show all tab is active
+            legend.getStyle().setDisplay(Display.NONE);
+
+            fieldSet.appendChild(legend);
+        }
+
         final Iterator<?> it = uidl.getChildIterator();
         while (it.hasNext()) {
             final UIDL childUIdl = (UIDL) it.next();
@@ -98,6 +112,7 @@ public class VDialogTabLayout extends FlowPanel implements Container, HelpAccess
                 DialogFieldWrapper fieldSection = sections.get(w);
                 fieldSection.setHelpDescription(description);
             }
+
 
             p.updateFromUIDL(childUIdl.getChildUIDL(0), client);
             /**

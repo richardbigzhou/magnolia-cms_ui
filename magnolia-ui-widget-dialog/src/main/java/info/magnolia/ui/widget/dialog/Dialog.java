@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.widget.dialog;
 
+import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.vaadin.widget.tabsheet.ShellTabSheet;
 import info.magnolia.ui.widget.dialog.gwt.client.VDialog;
 
@@ -57,7 +58,7 @@ import com.vaadin.ui.Field;
 @ClientWidget(VDialog.class)
 public class Dialog extends ShellTabSheet implements MagnoliaDialogView, ServerSideHandler, Item.Editor {
 
-    private final String SHOW_ALL = "show all";
+    private final String SHOW_ALL = MessagesUtil.get("dialogs.show.all");
 
     private List<MagnoliaDialogTab> dialogTabs = new ArrayList<MagnoliaDialogTab>();
 
@@ -154,7 +155,7 @@ public class Dialog extends ShellTabSheet implements MagnoliaDialogView, ServerS
     @Override
     public void showValidation(boolean isVisible) {
         for (final MagnoliaDialogTab tab : dialogTabs) {
-            tab.setValidationVisibe(isVisible);
+            tab.setValidationVisible(isVisible);
         }
     }
 
