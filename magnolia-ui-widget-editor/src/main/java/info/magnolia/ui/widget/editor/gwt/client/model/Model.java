@@ -49,8 +49,6 @@ public interface Model {
 
     MgnlElement getMgnlElement(Element element);
 
-    List<Element> getElements(MgnlElement mgnlElement);
-
     void addRootArea(MgnlElement boundary);
 
     List<MgnlElement> getRootAreas();
@@ -64,8 +62,6 @@ public interface Model {
     MgnlElement getSelectedMgnlComponentElement();
 
     void removeMgnlElement(MgnlElement mgnlElement);
-
-    MgnlElement findMgnlElementByContentId(String contentId);
 
     void setRootPage(MgnlElement mgnlElement);
 

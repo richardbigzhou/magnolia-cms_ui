@@ -37,6 +37,7 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
+import info.magnolia.ui.widget.editor.gwt.client.dom.CmsNode;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 import info.magnolia.ui.widget.editor.gwt.client.event.SelectElementEvent;
 import info.magnolia.ui.widget.editor.gwt.client.model.Model;
@@ -78,7 +79,7 @@ public class FocusModelImpl implements FocusModel {
             setPageSelection(false);
             if (mgnlElement.isComponent()) {
                 component = mgnlElement;
-                area = mgnlElement.getParentArea();
+                area = mgnlElement.getParentArea().asMgnlElement();
             }
             else if (mgnlElement.isArea()) {
                 area = mgnlElement;
@@ -142,7 +143,7 @@ public class FocusModelImpl implements FocusModel {
      */
     private void setAreaSelection(MgnlElement area) {
         MgnlElement selectedArea = model.getSelectedMgnlAreaElement();
-        MgnlElement currentComponent = model.getSelectedMgnlComponentElement();
+        CmsNode currentComponent = model.getSelectedMgnlComponentElement();
 
         if (selectedArea != null) {
 
@@ -185,10 +186,10 @@ public class FocusModelImpl implements FocusModel {
 
     private void toggleAreaVisibility(MgnlElement area, boolean visible) {
 
-        MgnlElement parentArea = area.getParentArea();
+        CmsNode parentArea = area.getParentArea();
         if (parentArea != null) {
-            toggleAreaVisibility(parentArea, visible);
-            toggleChildComponentVisibility(parentArea, visible);
+            toggleAreaVisibility(parentArea.asMgnlElement(), visible);
+            toggleChildComponentVisibility(parentArea.asMgnlElement(), visible);
 
         }
         // root areas are always visible
@@ -208,16 +209,16 @@ public class FocusModelImpl implements FocusModel {
             }*/
 
             // toggle all direct child-areas placeholders visibility
-            for (MgnlElement childArea : area.getAreas()) {
+            for (CmsNode childArea : area.getAreas()) {
 
 /*                if (model.getAreaPlaceHolder(childArea) != null) {
                     model.getAreaPlaceHolder(childArea).setVisible(visible);
                 }*/
-                if (childArea.getControlBar() != null) {
-                    childArea.getControlBar().setVisible(visible);
+                if (childArea.asMgnlElement().getControlBar() != null) {
+                    childArea.asMgnlElement().getControlBar().setVisible(visible);
                 }
-                if (childArea.getAreaEndBar() != null) {
-                    childArea.getAreaEndBar().setVisible(visible);
+                if (childArea.asMgnlElement().getAreaEndBar() != null) {
+                    childArea.asMgnlElement().getAreaEndBar().setVisible(visible);
                 }
             }
         }
@@ -225,26 +226,26 @@ public class FocusModelImpl implements FocusModel {
     }
 
     private void toggleChildComponentVisibility(MgnlElement area, boolean visible) {
-        for (MgnlElement component : area.getComponents()) {
+        for (CmsNode component : area.getComponents()) {
 
             // toggle all child-components editbar visibility - does this case occur?
-            if (component.getControlBar() != null) {
-                component.getControlBar().setVisible(visible);
+            if (component.asMgnlElement().getControlBar() != null) {
+                component.asMgnlElement().getControlBar().setVisible(visible);
             }
             if (area.getComponentPlaceHolder() != null) {
                 area.getComponentPlaceHolder().setVisible(visible);
             }
             // toggle all child-components-area placeholder visibility
-            for (MgnlElement childArea : component.getAreas()) {
+            for (CmsNode childArea : component.getAreas()) {
 
 /*                if (model.getAreaPlaceHolder(childArea) != null) {
                     model.getAreaPlaceHolder(childArea).setVisible(visible);
                 }*/
-                if (childArea.getControlBar() != null) {
-                    childArea.getControlBar().setVisible(visible);
+                if (childArea.asMgnlElement().getControlBar() != null) {
+                    childArea.asMgnlElement().getControlBar().setVisible(visible);
                 }
-                if (childArea.getAreaEndBar() != null) {
-                    childArea.getAreaEndBar().setVisible(visible);
+                if (childArea.asMgnlElement().getAreaEndBar() != null) {
+                    childArea.asMgnlElement().getAreaEndBar().setVisible(visible);
                 }
             }
         }
@@ -254,15 +255,15 @@ public class FocusModelImpl implements FocusModel {
     public void toggleRootAreaBar(boolean visible) {
 
         this.rootSelected = !this.rootSelected;
-        for (MgnlElement root : model.getRootAreas()) {
-            if (root.getControlBar() != null) {
-                root.getControlBar().setVisible(visible);
+        for (CmsNode root : model.getRootAreas()) {
+            if (root.asMgnlElement().getControlBar() != null) {
+                root.asMgnlElement().getControlBar().setVisible(visible);
             }
-            if (root.getAreaEndBar() != null) {
-                root.getAreaEndBar().setVisible(visible);
+            if (root.asMgnlElement().getAreaEndBar() != null) {
+                root.asMgnlElement().getAreaEndBar().setVisible(visible);
             }
-            if (root.getComponentPlaceHolder() != null) {
-                root.getComponentPlaceHolder().setVisible(visible);
+            if (root.asMgnlElement().getComponentPlaceHolder() != null) {
+                root.asMgnlElement().getComponentPlaceHolder().setVisible(visible);
             }
         }
     }

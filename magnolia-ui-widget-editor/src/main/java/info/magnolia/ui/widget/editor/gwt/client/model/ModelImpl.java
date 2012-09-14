@@ -35,6 +35,7 @@ package info.magnolia.ui.widget.editor.gwt.client.model;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
+import info.magnolia.ui.widget.editor.gwt.client.dom.CmsNode;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 
 import java.util.HashMap;
@@ -97,17 +98,8 @@ public class ModelImpl implements Model {
 
     @Override
     public MgnlElement getMgnlElement(Element element) {
-        MgnlElement mgnlElement = mgnlElements.get(element);
-        while (mgnlElement == null && element.hasParentElement()) {
-            element = element.getParentElement();
-            mgnlElement = mgnlElements.get(element);
-        }
-        return mgnlElement;
-    }
+        return mgnlElements.get(element);
 
-    @Override
-    public List<Element> getElements(MgnlElement mgnlElement) {
-        return elements.get(mgnlElement);
     }
 
     @Override
@@ -152,18 +144,10 @@ public class ModelImpl implements Model {
         // if the element is a root node, add all children to root list
         if (rootAreas.contains(mgnlElement)) {
             rootAreas.remove(mgnlElement);
-            rootAreas.addAll(mgnlElement.getChildren());
-        }
-    }
-
-    @Override
-    public MgnlElement findMgnlElementByContentId(String contentId) {
-        for (MgnlElement element : elements.keySet()) {
-            if (contentId.equals(element.getAttribute("content"))) {
-                return element;
+            for (CmsNode childNode : mgnlElement.getChildren()) {
+                rootAreas.add(childNode.asMgnlElement());
             }
         }
-        return null;
     }
 
     @Override

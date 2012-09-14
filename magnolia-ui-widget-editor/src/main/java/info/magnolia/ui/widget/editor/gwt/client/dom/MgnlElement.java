@@ -38,26 +38,19 @@ import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.AbstractBar;
 import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.AreaEndBar;
 import info.magnolia.ui.widget.editor.gwt.client.widget.placeholder.ComponentPlaceHolder;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 /**
 * MgnlElement Constructor.
 *
 */
-public class MgnlElement {
+public class MgnlElement extends CmsNode {
 
     private CMSComment comment;
-    private MgnlElement parent;
-    private boolean isPage = false;
-    private boolean isArea = false;
 
-    private boolean isComponent = false;
     private Element firstElement;
 
     private Element lastElement;
-    private LinkedList<MgnlElement> children = new LinkedList<MgnlElement>();
     private Element componentElement;
     private Element areaElement;
     private Element editElement;
@@ -76,16 +69,16 @@ public class MgnlElement {
  * MgnlElement. Represents a node in the tree built on cms-tags.
  */
     public MgnlElement(CMSComment comment, MgnlElement parent) {
+        super(parent);
 
         this.comment = comment;
-        this.parent = parent;
 
         this.attributes = comment.getAttributes();
 
         if (this.parent != null) {
             for (String inheritedAttribute : INHERITED_ATTRIBUTES) {
-                if (this.parent.containsAttribute(inheritedAttribute)) {
-                    attributes.put(inheritedAttribute, this.parent.getAttribute(inheritedAttribute));
+                if (getParent().asMgnlElement().containsAttribute(inheritedAttribute)) {
+                    attributes.put(inheritedAttribute, getParent().asMgnlElement().getAttribute(inheritedAttribute));
                 }
             }
         }
@@ -117,40 +110,7 @@ public class MgnlElement {
     }
 
 
-    public MgnlElement getParent() {
-        return parent;
-    }
-
-    public void setParent(MgnlElement parent) {
-        this.parent = parent;
-    }
-
-    public LinkedList<MgnlElement> getChildren() {
-        return children;
-    }
-
-    public List<MgnlElement> getDescendants() {
-
-        List<MgnlElement> descendants = new LinkedList<MgnlElement>();
-
-        for (MgnlElement element : getChildren()) {
-            descendants.add(element);
-            descendants.addAll(element.getDescendants());
-        }
-        return descendants;
-    }
-
-    public List<MgnlElement> getAscendants() {
-        List<MgnlElement> ascendants = new LinkedList<MgnlElement>();
-        MgnlElement ascendant = parent;
-        while (ascendant != null) {
-            ascendants.add(ascendant);
-            ascendant = ascendant.getParent();
-        }
-        return ascendants;
-    }
-
-/*    public MgnlElement getRootArea() {
+    /*    public MgnlElement getRootArea() {
         MgnlElement rootArea = null;
         for (MgnlElement parent = this; parent != null; parent = parent.getParent()) {
             if (parent.isArea()) {
@@ -160,61 +120,9 @@ public class MgnlElement {
         return rootArea;
     }*/
 
-    public MgnlElement getParentArea() {
-        MgnlElement parentArea = null;
-        for (MgnlElement parent = getParent(); parent != null; parent = parent.getParent()) {
-            if (parent.isArea()) {
-                parentArea = parent;
-                break;
-            }
-        }
-        return parentArea;
-    }
-
     @Deprecated
     public CMSComment getComment() {
         return comment;
-    }
-
-    public List<MgnlElement> getComponents() {
-        List<MgnlElement> components = new LinkedList<MgnlElement>();
-        for (MgnlElement element : getChildren()) {
-            if (element.isComponent()) {
-                components.add(element);
-            }
-        }
-        return components;
-    }
-
-    public List<MgnlElement> getAreas() {
-        List<MgnlElement> areas = new LinkedList<MgnlElement>();
-        for (MgnlElement element : getChildren()) {
-            if (element.isArea()) {
-                areas.add(element);
-            }
-        }
-        return areas;
-    }
-    public MgnlElement getRoot() {
-        MgnlElement root = null;
-        for (MgnlElement parent = this; parent != null; parent = parent.getParent()) {
-                root = parent;
-        }
-        return root;
-    }
-
-    public boolean isRelated(MgnlElement relative) {
-
-        return relative != null && this.getRoot() == relative.getRoot();
-    }
-
-    public void delete() {
-        for (MgnlElement child : getChildren()) {
-            if (getParent() != null) {
-                getParent().getChildren().add(child);
-            }
-            child.setParent(getParent());
-        }
     }
 
     public Element getFirstElement() {
@@ -281,27 +189,4 @@ public class MgnlElement {
         return comment.toString();
     }
 
-    public void setPage(boolean isPage) {
-        this.isPage = isPage;
-    }
-
-    public void setArea(boolean isArea) {
-        this.isArea = isArea;
-    }
-
-    public void setComponent(boolean isComponent) {
-        this.isComponent = isComponent;
-    }
-
-    public boolean isPage() {
-        return isPage;
-    }
-
-    public boolean isArea() {
-        return isArea;
-    }
-
-    public boolean isComponent() {
-        return isComponent;
-    }
 }

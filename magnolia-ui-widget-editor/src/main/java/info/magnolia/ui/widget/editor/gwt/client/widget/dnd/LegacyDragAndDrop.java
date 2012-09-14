@@ -34,7 +34,7 @@
 package info.magnolia.ui.widget.editor.gwt.client.widget.dnd;
 
 import com.google.gwt.dom.client.Element;
-import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
+import info.magnolia.ui.widget.editor.gwt.client.dom.CmsNode;
 import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.ComponentBar;
 import info.magnolia.ui.widget.editor.gwt.client.widget.placeholder.ComponentPlaceHolder;
@@ -56,10 +56,10 @@ public class LegacyDragAndDrop {
 
             // reset native drag and drop
             bar.setDraggable(false);
-            MgnlElement area = bar.getMgnlElement().getParentArea();
+            CmsNode area = bar.getCmsNode().getParentArea();
             if (area != null) {
-                for (MgnlElement component : area.getComponents()) {
-                    ComponentBar componentBar = (ComponentBar) component.getControlBar();
+                for (CmsNode component : area.getComponents()) {
+                    ComponentBar componentBar = (ComponentBar) component.asMgnlElement().getControlBar();
                     if (componentBar != null && componentBar != bar) {
                         componentBar.setDraggable(false);
                     }
@@ -126,10 +126,10 @@ public class LegacyDragAndDrop {
 
             // reset native drag and drop
             sourceBar.setDraggable(true);
-            MgnlElement area = sourceBar.getMgnlElement().getParentArea();
+            CmsNode area = sourceBar.getCmsNode().getParentArea();
             if (area != null) {
-                for (MgnlElement component : area.getComponents()) {
-                    ComponentBar componentBar = (ComponentBar) component.getControlBar();
+                for (CmsNode component : area.getComponents()) {
+                    ComponentBar componentBar = (ComponentBar) component.asMgnlElement().getControlBar();
                     if (componentBar != null && componentBar != sourceBar) {
                         componentBar.setDraggable(false);
                     }
@@ -146,10 +146,10 @@ public class LegacyDragAndDrop {
 
         bar.setStyleName("moveSource", isMove);
 
-        MgnlElement area = bar.getMgnlElement().getParentArea();
+        CmsNode area = bar.getCmsNode().getParentArea();
         if (area != null) {
-            for (MgnlElement component : area.getComponents()) {
-                ComponentBar componentBar = (ComponentBar) component.getControlBar();
+            for (CmsNode component : area.getComponents()) {
+                ComponentBar componentBar = (ComponentBar) component.asMgnlElement().getControlBar();
                 if (componentBar != null && componentBar != bar) {
                     componentBar.setStyleName("moveTarget", isMove);
                     //moveOver style can be removed en bloc
@@ -160,7 +160,7 @@ public class LegacyDragAndDrop {
 
                 }
             }
-            ComponentPlaceHolder placeholder = area.getComponentPlaceHolder();
+            ComponentPlaceHolder placeholder = area.asMgnlElement().getComponentPlaceHolder();
             if (placeholder != null) {
                 placeholder.setStyleName("moveOngoing", isMove);
             }

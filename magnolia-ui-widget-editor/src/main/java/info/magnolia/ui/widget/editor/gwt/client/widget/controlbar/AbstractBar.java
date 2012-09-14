@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.widget.editor.gwt.client.widget.controlbar;
 
+import info.magnolia.ui.widget.editor.gwt.client.dom.CmsNode;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 import info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils;
 import info.magnolia.ui.widget.editor.gwt.client.model.Model;
@@ -63,7 +64,7 @@ public abstract class AbstractBar extends FlowPanel {
 
     private final FlowPanel buttonWrapper;
 
-    private MgnlElement mgnlElement;
+    private CmsNode cmsNode;
 
     private FlowPanel primaryButtons;
 
@@ -81,7 +82,7 @@ public abstract class AbstractBar extends FlowPanel {
         this.model = model;
         this.eventBus = eventBus;
 
-        this.setMgnlElement(mgnlElement);
+        this.setCmsNode(mgnlElement);
 
         buttonWrapper = new FlowPanel();
         buttonWrapper.setStylePrimaryName("mgnlEditorBarButtons");
@@ -182,20 +183,20 @@ public abstract class AbstractBar extends FlowPanel {
     }
 
 
-    public void setMgnlElement(MgnlElement mgnlElement) {
-        this.mgnlElement = mgnlElement;
+    public void setCmsNode(CmsNode cmsNode) {
+        this.cmsNode = cmsNode;
     }
 
-    public MgnlElement getMgnlElement() {
-        return mgnlElement;
+    public CmsNode getCmsNode() {
+        return cmsNode;
     }
 
     public void toggleButtons(boolean visible) {
-        MgnlElement parent = mgnlElement.getParent();
+        CmsNode parent = cmsNode.getParent();
         if (parent != null) {
-            for (MgnlElement component : parent.getComponents()) {
-                component.getControlBar().primaryButtons.setVisible(visible);
-                component.getControlBar().secondaryButtons.setVisible(visible);
+            for (CmsNode component : parent.getComponents()) {
+                component.asMgnlElement().getControlBar().primaryButtons.setVisible(visible);
+                component.asMgnlElement().getControlBar().secondaryButtons.setVisible(visible);
             }
         }
     }

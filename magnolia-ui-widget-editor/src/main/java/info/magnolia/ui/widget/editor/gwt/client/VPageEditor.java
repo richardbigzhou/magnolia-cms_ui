@@ -46,6 +46,7 @@ import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.Paintable;
 import com.vaadin.terminal.gwt.client.UIDL;
 import com.vaadin.terminal.gwt.client.VConsole;
+import info.magnolia.ui.widget.editor.gwt.client.dom.CmsNode;
 import info.magnolia.ui.widget.editor.gwt.client.dom.Comment;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 import info.magnolia.ui.widget.editor.gwt.client.dom.processor.AbstractMgnlElementProcessor;
@@ -300,13 +301,13 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
     }*/
 
     private void processMgnlElements() {
-        MgnlElement root = model.getRootPage();
-        List<MgnlElement> elements = root.getDescendants();
+        CmsNode root = model.getRootPage();
+        List<CmsNode> elements = root.getDescendants();
         elements.add(root);
-        for (MgnlElement element : elements) {
+        for (CmsNode element : elements) {
 
             try {
-                AbstractMgnlElementProcessor processor = MgnlElementProcessorFactory.getProcessor(model, eventBus, element);
+                AbstractMgnlElementProcessor processor = MgnlElementProcessorFactory.getProcessor(model, eventBus, element.asMgnlElement());
                 processor.process();
             } catch (IllegalArgumentException e) {
                 GWT.log("MgnlFactory could not instantiate class. The element is neither an area nor component.");

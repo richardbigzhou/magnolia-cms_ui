@@ -81,7 +81,7 @@ public class CommentProcessor {
         // the cms:page tag should span throughout the page, but doesn't: kind of a hack.
         else if (currentElement != null && !currentElement.isPage()) {
             currentElement.setEndComment(comment);
-            mgnlElement = currentElement.getParent();
+            mgnlElement = currentElement.getParent().asMgnlElement();
         }
 
         return mgnlElement;

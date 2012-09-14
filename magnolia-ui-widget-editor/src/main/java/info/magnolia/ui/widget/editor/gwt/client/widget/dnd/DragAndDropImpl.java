@@ -44,7 +44,7 @@ import com.google.gwt.event.dom.client.DragStartHandler;
 import com.google.gwt.event.dom.client.DropEvent;
 import com.google.gwt.event.dom.client.DropHandler;
 import com.google.gwt.event.shared.EventBus;
-import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
+import info.magnolia.ui.widget.editor.gwt.client.dom.CmsNode;
 import info.magnolia.ui.widget.editor.gwt.client.event.SortComponentEvent;
 import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.ComponentBar;
@@ -70,15 +70,15 @@ public class DragAndDropImpl {
 
                 bar.setStyleName("moveSource", true);
 
-                MgnlElement area = bar.getMgnlElement().getParentArea();
+                CmsNode area = bar.getCmsNode().getParentArea();
                 if (area != null) {
-                    for (MgnlElement component : area.getComponents()) {
-                        ComponentBar componentBar = (ComponentBar) component.getControlBar();
+                    for (CmsNode component : area.getComponents()) {
+                        ComponentBar componentBar = (ComponentBar) component.asMgnlElement().getControlBar();
                         if (componentBar != null && componentBar != bar) {
                             componentBar.setStyleName("moveTarget", true);
                         }
                     }
-                    ComponentPlaceHolder placeholder = area.getComponentPlaceHolder();
+                    ComponentPlaceHolder placeholder = area.asMgnlElement().getComponentPlaceHolder();
                     if (placeholder != null) {
                         placeholder.setStyleName("moveOngoing", true);
                     }
@@ -99,15 +99,15 @@ public class DragAndDropImpl {
 
                 bar.setStyleName("moveSource", false);
 
-                MgnlElement area = bar.getMgnlElement().getParentArea();
+                CmsNode area = bar.getCmsNode().getParentArea();
                 if (area != null) {
-                    for (MgnlElement component : area.getComponents()) {
-                        ComponentBar componentBar = (ComponentBar) component.getControlBar();
+                    for (CmsNode component : area.getComponents()) {
+                        ComponentBar componentBar = (ComponentBar) component.asMgnlElement().getControlBar();
                         if (componentBar != null && componentBar != bar) {
                             componentBar.setStyleName("moveTarget", false);
                         }
                     }
-                    ComponentPlaceHolder placeholder = area.getComponentPlaceHolder();
+                    ComponentPlaceHolder placeholder = area.asMgnlElement().getComponentPlaceHolder();
                     if (placeholder != null) {
                         placeholder.setStyleName("moveOngoing", false);
                     }
