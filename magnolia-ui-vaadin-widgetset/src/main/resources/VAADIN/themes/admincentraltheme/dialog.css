@@ -176,7 +176,8 @@ textarea.v-dialog-field {
 
 .validation-hilight {
   border: 2px solid #9A3333;
-  padding: 3px;
+  padding: 3px 0px;
+  background-color: white;
 }
 
 .v-dialog-field-section {
