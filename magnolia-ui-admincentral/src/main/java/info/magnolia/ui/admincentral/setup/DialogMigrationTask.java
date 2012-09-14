@@ -219,6 +219,7 @@ public class DialogMigrationTask  extends AbstractTask {
             }else if(fieldNode.getProperty("controlType").getString().equals("dam")){
                 fieldNode.getProperty("controlType").remove();
                 fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.FileUploadFieldDefinition");
+                fieldNode.setProperty("allowedMimeType", "image.*");
             }else if(fieldNode.getProperty("controlType").getString().equals("hidden")){
                 fieldNode.getProperty("controlType").remove();
                 fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.HiddenFieldDefinition");

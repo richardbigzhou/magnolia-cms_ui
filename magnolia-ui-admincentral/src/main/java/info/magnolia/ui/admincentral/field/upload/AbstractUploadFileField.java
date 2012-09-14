@@ -33,22 +33,15 @@
  */
 package info.magnolia.ui.admincentral.field.upload;
 
-import info.magnolia.cms.beans.runtime.FileProperties;
-import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.cms.i18n.MessagesUtil;
-import info.magnolia.cms.util.PathUtil;
+import info.magnolia.ui.admincentral.file.FileItemWrapper;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.OutputStream;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TimeZone;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vaadin.addon.customfield.CustomField;
@@ -57,7 +50,6 @@ import org.vaadin.easyuploads.FileBuffer;
 import org.vaadin.easyuploads.FileFactory;
 import org.vaadin.easyuploads.UploadField.FieldType;
 
-import com.vaadin.data.Property;
 import com.vaadin.event.dd.DragAndDropEvent;
 import com.vaadin.event.dd.DropHandler;
 import com.vaadin.event.dd.acceptcriteria.AcceptAll;
@@ -109,8 +101,9 @@ import com.vaadin.ui.Upload.StartedListener;
  *  <li>file storage mode: {@link org.vaadin.easyuploads.UploadField.StorageMode#FILE}
  *  <li>byte[] property ({@link org.vaadin.easyuploads.UploadField.FieldType#BYTE_ARRAY})
  *  </ul>
+ * @param <D> definition type
  */
-public abstract class AbstractUploadFileField extends CustomField implements StartedListener, FinishedListener, ProgressListener, FailedListener, DropHandler, UploadFileField {
+public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends CustomField implements StartedListener, FinishedListener, ProgressListener, FailedListener, DropHandler, UploadFileField {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractUploadFileField.class);
 
@@ -127,7 +120,8 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
     private String deleteFileCaption;
 
     // Define global variable used by this implementation
-    private JcrItemNodeAdapter item;
+    protected D fileItem;
+
     private FileBuffer receiver;
     private FileFactory fileFactory;
     private Map<DefaultComponent, Component> defaultComponent = new HashMap<DefaultComponent, Component>();
@@ -137,17 +131,12 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
     private Upload upload;
     private ProgressIndicatorComponent progress;
     private Label fileDetail;
-    private Embedded previewImage;
+    private Component previewComponent;
     private Button deleteButton;
     private Button cancelButton;
     private AbstractComponentContainer root;
     private DragAndDropWrapper dropZone;
 
-    // Define last successful Upload data
-    private byte[] lastBytesFile;
-    private String lastMimeType;
-    private String lastFileName;
-    private long lastFileSize;
     //Used to force the refresh of the Uploading view in case of Drag and Drop.
     private Shell shell;
 
@@ -155,8 +144,8 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
      * Basic constructor.
      * @param item used to store the File properties like binary data, file name, etc.
      */
-    public AbstractUploadFileField(JcrItemNodeAdapter item, Shell shell) {
-        this.item = item;
+    public AbstractUploadFileField(D fileItem, Shell shell) {
+        this.fileItem = fileItem;
         this.shell = shell;
         deleteFileCaption = MessagesUtil.get("field.upload.remove.file");
         setStorageMode();
@@ -172,7 +161,7 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
      * </ul>
      */
     protected void updateDisplay() {
-        if(getLastBytesFile()==null) {
+        if(this.fileItem.isEmpty()) {
             buildDefaultUploadLayout();
         } else {
             buildUploadDoneLayout();
@@ -314,10 +303,10 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
      * Sub class should override this method to define their own
      * preview display.
      */
-    public Embedded createPreview() {
-        this.previewImage = new Embedded(null);
-        defaultComponent.put(DefaultComponent.PREVIEW, this.previewImage);
-        return this.previewImage;
+    public Component createPreviewComponent() {
+        this.previewComponent = new Embedded(null);
+        defaultComponent.put(DefaultComponent.PREVIEW, this.previewComponent);
+        return this.previewComponent;
     }
     /**
      * The dropZone is a wrapper around a Component.
@@ -338,8 +327,8 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
             @Override
             public void buttonClick(ClickEvent event) {
                 //Remove link between item and parent. In this case the child File Item will not be persisted.
-                item.getParent().removeChild(item);
-                clearLastUploadData();
+                fileItem.unLinkItemFromParent();
+                fileItem.clearProperties();
                 updateDisplay();
             }
         });
@@ -453,10 +442,10 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
             uploadFailed((FailedEvent) event);
             return;
         }
-        setLastUploadData();
+        this.fileItem.updateProperties(receiver);
         buildUploadDoneLayout();
         fireValueChange(true);
-        populateItemProperty();
+        this.fileItem.populateJcrItemProperty();
     }
 
     public void buildUploadDoneLayout() {
@@ -496,40 +485,6 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
     }
 
 
-    /**
-     * Clear local Uploaded file Info.
-     * Mainly called by the Delete Action Button.
-     */
-    public void clearLastUploadData() {
-        setLastBytesFile(null);
-        setLastFileName(null);
-        setLastFileSize(-1);
-        setLastMimeType(null);
-    }
-
-
-    public void setLastUploadData() {
-        setLastBytesFile((byte[])receiver.getValue());
-        setLastFileName(receiver.getLastFileName());
-        setLastFileSize(receiver.getLastFileSize());
-        setLastMimeType(receiver.getLastMimeType());
-    }
-
-    /**
-     * Convenience method used to populate FileUpload informations
-     * coming from a previously stored File.
-     */
-    public void setLastUploadData(JcrItemNodeAdapter item) {
-        setLastFileName((String) item.getItemProperty(FileProperties.PROPERTY_FILENAME).getValue());
-
-        Property data = item.getItemProperty(MgnlNodeType.JCR_DATA);
-        if (data != null) {
-            byte[] binaryData = (byte[]) data.getValue();
-            setLastBytesFile(binaryData);
-            setLastFileSize((Long) item.getItemProperty(FileProperties.PROPERTY_SIZE).getValue());
-            setLastMimeType((String) item.getItemProperty(FileProperties.PROPERTY_CONTENTTYPE).getValue());
-        }
-    }
 
     /**
      * Default implementation returns always true.
@@ -539,56 +494,7 @@ public abstract class AbstractUploadFileField extends CustomField implements Sta
         return true;
     }
 
-    /**
-     * Populates the Item property (data/image name/...). Data is stored as a JCR Binary object.
-     */
-    protected void populateItemProperty() {
-        // Attach the Item to the parent in order to be stored.
-        item.getParent().addChild(item);
-        // Populate Data
-        Property data = item.getItemProperty(MgnlNodeType.JCR_DATA);
 
-        if (getLastBytesFile() != null) {
-            data.setValue(new ByteArrayInputStream(getLastBytesFile()) );
-        }
-        item.getItemProperty(FileProperties.PROPERTY_FILENAME).setValue(StringUtils.substringBefore(getLastFileName(), "."));
-        item.getItemProperty(FileProperties.PROPERTY_CONTENTTYPE).setValue(getLastMimeType());
-        item.getItemProperty(FileProperties.PROPERTY_LASTMODIFIED).setValue(new GregorianCalendar(TimeZone.getDefault()));
-        item.getItemProperty(FileProperties.PROPERTY_SIZE).setValue(getLastFileSize());
-        item.getItemProperty(FileProperties.PROPERTY_EXTENSION).setValue(PathUtil.getExtension(getLastFileName()));
-    }
-
-    public byte[] getLastBytesFile() {
-        return lastBytesFile;
-    }
-
-    public void setLastBytesFile(byte[] lastBytesFile) {
-        this.lastBytesFile = lastBytesFile;
-    }
-
-    public String getLastMimeType() {
-        return lastMimeType;
-    }
-
-    public void setLastMimeType(String lastMimeType) {
-        this.lastMimeType = lastMimeType;
-    }
-
-    public String getLastFileName() {
-        return lastFileName;
-    }
-
-    public void setLastFileName(String lastFileName) {
-        this.lastFileName = lastFileName;
-    }
-
-    public long getLastFileSize() {
-        return lastFileSize;
-    }
-
-    public void setLastFileSize(long lastFileSize) {
-        this.lastFileSize = lastFileSize;
-    }
     /**
      * Define the maximum file size in bite.
      */

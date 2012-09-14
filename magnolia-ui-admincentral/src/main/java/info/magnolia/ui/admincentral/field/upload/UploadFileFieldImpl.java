@@ -33,26 +33,17 @@
  */
 package info.magnolia.ui.admincentral.field.upload;
 
-import info.magnolia.cms.beans.runtime.FileProperties;
-import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.cms.i18n.MessagesUtil;
+import info.magnolia.ui.admincentral.file.FileItemWrapper;
 import info.magnolia.ui.admincentral.image.ImageSize;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
-
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.data.Property;
-import com.vaadin.terminal.Resource;
-import com.vaadin.terminal.Sizeable;
-import com.vaadin.terminal.StreamResource;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Upload.StartedEvent;
@@ -62,16 +53,15 @@ import com.vaadin.ui.Upload.StartedEvent;
  * Implementation of the Abstract {@link AbstractUploadFileField}.
  * <p>Define the Layout for
  * <ul>
- *  <li>Initial Display (no Images are yet uploaded)
+ *  <li>Initial Display (no File are yet uploaded)
  *  <li>Progress Display (ProgressBar / Cancel Button...)
  *  <li>Upload done Display (File Detail / Preview ...)
  * </ul>
  * Create the Preview Component.
- * Override update methods to add the specific images information to the Item (Width / Height).
  */
-public class UploadImageField extends AbstractUploadFileField {
+public class UploadFileFieldImpl extends AbstractUploadFileField<FileItemWrapper> {
 
-    private static final Logger log = LoggerFactory.getLogger(UploadImageField.class);
+    private static final Logger log = LoggerFactory.getLogger(UploadFileFieldImpl.class);
 
     private String selectImageCaption;
     private String chooseNewCaption;
@@ -80,16 +70,14 @@ public class UploadImageField extends AbstractUploadFileField {
     private String fileSizeCaption;
 
     private CssLayout layout;
-    private JcrItemNodeAdapter item;
-    private long imageWidth;
-    private long imageHeight;
+    private String mimeTypeRegExp;
+
 
     /**
      * Initialize basic components.
      */
-    public UploadImageField(JcrItemNodeAdapter item,  Shell shell) {
-        super(item, shell);
-        this.item = item;
+    public UploadFileFieldImpl(FileItemWrapper fileItem,  Shell shell) {
+        super(fileItem, shell);
 
         initMessages();
 
@@ -117,58 +105,17 @@ public class UploadImageField extends AbstractUploadFileField {
     @Override
     public void attach() {
         super.attach();
-
-        //Init values with existing data.
-        Property data =  item.getItemProperty(MgnlNodeType.JCR_DATA);
-        if(data !=null && data.getValue()!=null) {
-            setLastUploadData(item);
-        }
         updateDisplay();
     }
 
     /**
-     * Populate specific file informations to the Item.
-     */
-    @Override
-    protected void populateItemProperty() {
-        super.populateItemProperty();
-        item.getItemProperty(FileProperties.PROPERTY_WIDTH).setValue(imageWidth);
-        item.getItemProperty(FileProperties.PROPERTY_HEIGHT).setValue(imageHeight);
-    }
-    /**
-     * Clear specific file informations.
-     */
-    @Override
-    public void clearLastUploadData() {
-        super.clearLastUploadData();
-        imageWidth = -1;
-        imageHeight = -1;
-    }
-
-    @Override
-    public void setLastUploadData() {
-        super.setLastUploadData();
-        ImageSize imageSize;
-        imageSize = ImageSize.valueOf(new ByteArrayInputStream(getLastBytesFile()));
-        imageWidth = imageSize.getWidth();
-        imageHeight = imageSize.getHeight();
-    }
-
-    @Override
-    public void setLastUploadData(JcrItemNodeAdapter item) {
-        super.setLastUploadData(item);
-        ImageSize imageSize = new ImageSize((Long)item.getItemProperty(FileProperties.PROPERTY_WIDTH).getValue(), (Long)item.getItemProperty(FileProperties.PROPERTY_HEIGHT).getValue());
-        imageWidth = imageSize.getWidth();
-        imageHeight = imageSize.getHeight();
-    }
-
-    /**
      * Define the acceptance Upload Image criteria.
-     * The current implementation only check if the MimeType start with image.
+     * The current implementation only check if the MimeType match the desired regExp.
      */
     @Override
     public boolean isValidFile(StartedEvent event) {
-        return event.getMIMEType().startsWith("image/");
+        log.debug("evaluate following regExp: "+mimeTypeRegExp+" agains "+event.getMIMEType());
+        return event.getMIMEType().matches(mimeTypeRegExp);
     }
 
     @Override
@@ -208,14 +155,14 @@ public class UploadImageField extends AbstractUploadFileField {
         setUploadButtonCaption(chooseNewCaption);
         actionLayout.addComponent(getDefaultComponent(DefaultComponent.UPLOAD));
         // if an Image was already uploaded, give the ability to remove it.
-        if(item.getParent() != null && fileDeletion) {
+        if(fileItem.getJcrItem().getParent() != null && fileDeletion) {
             actionLayout.addComponent(getDefaultComponent(DefaultComponent.DELETE_BUTTON));
         }
         layout.addComponent(actionLayout);
 
         //Create preview Image
-        if(preview && getLastBytesFile() != null) {
-            Embedded preview = createPreview();
+        if(preview && !fileItem.isEmpty()) {
+            Component preview = fileItem.createPreview(getApplication());
             layout.addComponent(preview);
         }
         getRootLayout().addStyleName("upload");
@@ -242,35 +189,10 @@ public class UploadImageField extends AbstractUploadFileField {
 
 
     @Override
-    public Embedded createPreview() {
-        ImageSize scaledImageSize;
-        scaledImageSize = createImageSize().scaleToFitIfLarger(150, 150);
-
-        final byte[] pngData = (byte[]) getLastBytesFile();
-
-        @SuppressWarnings("serial")
-        Resource imageResource = new StreamResource(
-            new StreamResource.StreamSource() {
-                @Override
-                public InputStream getStream() {
-                    return new ByteArrayInputStream(pngData);
-                }
-            }, "", this.getApplication()){
-            @Override
-            public String getMIMEType() {
-                return getLastMimeType();
-            }
-        };
-
-        Embedded embedded = new Embedded(null, imageResource);
-        embedded.setType(Embedded.TYPE_IMAGE);
-        embedded.setWidth(scaledImageSize.getWidth(), Sizeable.UNITS_PIXELS);
-        embedded.setHeight(scaledImageSize.getHeight(), Sizeable.UNITS_PIXELS);
-        embedded.addStyleName("image");
-
-        getDefaultComponents().put(DefaultComponent.PREVIEW, embedded);
-
-        return embedded;
+    public Component createPreviewComponent() {
+        Component preview = this.fileItem.createPreview(getApplication());
+        getDefaultComponents().put(DefaultComponent.PREVIEW, preview);
+        return preview;
     }
 
     @Override
@@ -281,36 +203,23 @@ public class UploadImageField extends AbstractUploadFileField {
         sb.append(fileNameCaption);
         sb.append("</span>");
         sb.append("<span class=\"value\">");
-        sb.append(getLastFileName());
+        sb.append(this.fileItem.getFileName());
         sb.append("</span>");
-
         sb.append("</br>");
-
-        ImageSize imageSize = createImageSize();
         sb.append("<span class=\"key\">");
         sb.append(fileSizeCaption);
         sb.append("</span>");
         sb.append("<span class=\"value\">");
-        sb.append(imageSize.getWidth() + " x " + imageSize.getHeight() + ", ");
-        sb.append(FileUtils.byteCountToDisplaySize(getLastFileSize()));
+        if(this.fileItem.isImage()) {
+            ImageSize imageSize = this.fileItem.getImageSize();
+            sb.append(imageSize.getWidth() + " x " + imageSize.getHeight() + ", ");
+        }
+        sb.append(FileUtils.byteCountToDisplaySize(this.fileItem.getFileSize()));
         sb.append("</span>");
 
         return sb.toString();
     }
 
-    /**
-     * Best effort to create an ImageSize.
-     * If the ImageSize created based on the receiver is null
-     * try to create it from the Item property.
-     * @return: null if receiver and item don't have relevant information.
-     */
-    protected ImageSize createImageSize() {
-        ImageSize imageSize = ImageSize.valueOf(new ByteArrayInputStream(getLastBytesFile()));
-        if(imageSize == null && item.getItemProperty(FileProperties.PROPERTY_WIDTH) != null && item.getItemProperty(FileProperties.PROPERTY_HEIGHT) != null) {
-             imageSize = new ImageSize((Long)item.getItemProperty(FileProperties.PROPERTY_WIDTH).getValue(), (Long)item.getItemProperty(FileProperties.PROPERTY_HEIGHT).getValue());
-         }
-        return imageSize;
-    }
 
     private void initMessages() {
         selectImageCaption = MessagesUtil.get("field.upload.select.image");
@@ -318,5 +227,13 @@ public class UploadImageField extends AbstractUploadFileField {
         dragHintCaption = MessagesUtil.get("field.upload.drag.hint");
         fileNameCaption = MessagesUtil.get("field.upload.file.name");
         fileSizeCaption = MessagesUtil.get("field.upload.file.size");
+    }
+
+    /**
+     * Set regExp used to validate the uploaded mimeType.
+     * In case of the regExp do not match, interrupt the upload.
+     */
+    public void setMimeTypeRegExp(String regExp) {
+        this.mimeTypeRegExp = regExp;
     }
 }
