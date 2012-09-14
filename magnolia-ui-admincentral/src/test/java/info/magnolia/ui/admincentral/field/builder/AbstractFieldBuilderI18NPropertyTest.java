@@ -83,7 +83,7 @@ public class AbstractFieldBuilderI18NPropertyTest extends AbstractBuilderTest<Co
     @Test
     public void i18nPropertyNotDefined_CurrentIsNotDefault() throws Exception{
         // GIVEN
-        MgnlContext.getInstance().setLocale(new Locale("fr"));
+        MgnlContext.getInstance().setLocale(Locale.FRENCH);
         abstractDialogField = new AbstractFieldBuilderTest.TestDialogField(definition, baseItem);
         abstractDialogField.setI18nContentSupport(i18nContentSupport);
         Field field = abstractDialogField.getField();
@@ -115,7 +115,7 @@ public class AbstractFieldBuilderI18NPropertyTest extends AbstractBuilderTest<Co
     public void i18nPropertyDefined_CurrentIsNotDefault() throws Exception{
         // GIVEN
         this.definition.setI18n(true);
-        MgnlContext.getInstance().setLocale(new Locale("fr"));
+        MgnlContext.getInstance().setLocale(Locale.FRENCH);
         abstractDialogField = new AbstractFieldBuilderTest.TestDialogField(definition, baseItem);
         abstractDialogField.setI18nContentSupport(i18nContentSupport);
         Field field = abstractDialogField.getField();
@@ -140,7 +140,7 @@ public class AbstractFieldBuilderI18NPropertyTest extends AbstractBuilderTest<Co
         Node res = ((JcrNodeAdapter)baseItem).getNode();
         assertEquals(true, res.hasProperty(propertyName));
 
-        MgnlContext.getInstance().setLocale(new Locale("fr"));
+        MgnlContext.getInstance().setLocale(Locale.FRENCH);
         abstractDialogField = new AbstractFieldBuilderTest.TestDialogField(definition, baseItem);
         abstractDialogField.setI18nContentSupport(i18nContentSupport);
         field = abstractDialogField.getField();

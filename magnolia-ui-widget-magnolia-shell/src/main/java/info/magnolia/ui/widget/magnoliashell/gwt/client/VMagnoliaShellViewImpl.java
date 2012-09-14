@@ -113,18 +113,19 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
         if (Window.Location.getQueryString().indexOf("tablet=true") >= 0) {
             RootPanel.get().addStyleName("tablet");
         }
-        
+
         final IFrameElement iframe = Document.get().createIFrameElement();
         getElement().appendChild(iframe);
         iframe.setPropertyString("width", "100%");
         iframe.setPropertyString("height", "100%");
-        //iframe.setSrc("http://www.sport-express.ru");
+        iframe.getStyle().setProperty("border", "none");
+        // iframe.setSrc("http://www.sport-express.ru");
         iframe.getStyle().setPosition(Position.ABSOLUTE);
         iframe.getStyle().setLeft(0, Unit.PX);
         iframe.getStyle().setTop(0, Unit.PX);
         iframe.getStyle().setWidth(100, Unit.PCT);
         iframe.getStyle().setHeight(100, Unit.PCT);
-        //iframe.getStyle().setZIndex(1000);
+        // iframe.getStyle().setZIndex(1000);
     }
 
     private void bindEventHandlers() {
@@ -321,7 +322,7 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
     public void onViewportClose(ViewportCloseEvent event) {
         final VMagnoliaShell.ViewportType viewportType = event.getViewportType();
         if (viewportType == ViewportType.SHELL_APP_VIEWPORT) {
-            if ( getAppViewport().hasContent()){
+            if (getAppViewport().hasContent()) {
                 getShellAppViewport().setViewportHideAnimationDelegate(AnimationDelegate.SLIDING_DELEGATE);
             }
             presenter.closeCurrentShellApp();

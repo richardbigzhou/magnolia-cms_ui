@@ -128,8 +128,10 @@ public class TextAndButtonField extends CustomField {
     private void setButtonCaption(String value) {
         if(StringUtils.isNotBlank(value)) {
             selectButton.setCaption(buttonCaptionOther);
+            selectButton.setDescription(buttonCaptionOther);
         }else {
             selectButton.setCaption(buttonCaptionNew);
+            selectButton.setDescription(buttonCaptionNew);
         }
     }
 

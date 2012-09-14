@@ -33,10 +33,12 @@
  */
 package info.magnolia.ui.admincentral.dialog;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 
 import info.magnolia.cms.i18n.Messages;
-import info.magnolia.cms.i18n.MessagesManager;
 import info.magnolia.cms.i18n.MessagesUtil;
 
 /**
@@ -48,6 +50,19 @@ import info.magnolia.cms.i18n.MessagesUtil;
 public abstract class AbstractDialogItem implements DialogItem {
 
     private DialogItem parent;
+
+    private static String[] UI_BASENAMES;
+
+    static {
+        String uiPackagePrefix = "info.magnolia.ui.";
+        String[] uiModules = {"model", "framework", "widget.actionbar", "widget.dialog", "widget.editor",
+                "widget.magnoliashell", "widget.tabsheet", "vaadin.integration"};
+        List<String> basenames = new ArrayList<String>();
+        for(String module: uiModules) {
+            basenames.add(uiPackagePrefix + module + ".messages");
+        }
+        UI_BASENAMES = basenames.toArray(new String[]{});
+    }
 
     @Override
     public void setParent(DialogItem parent) {
@@ -61,12 +76,11 @@ public abstract class AbstractDialogItem implements DialogItem {
 
     @Override
     public Messages getMessages() {
-
-        Messages messages;
+        Messages messages = null;
         if (getParent() != null) {
             messages = getParent().getMessages();
         } else {
-            messages = MessagesManager.getMessages();
+            messages = MessagesUtil.chain(UI_BASENAMES);
         }
         if (StringUtils.isNotBlank(getI18nBasename())) {
             messages = MessagesUtil.chain(getI18nBasename(), messages);

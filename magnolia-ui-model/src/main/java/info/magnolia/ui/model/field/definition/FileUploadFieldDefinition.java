@@ -38,14 +38,14 @@ package info.magnolia.ui.model.field.definition;
  */
 public class FileUploadFieldDefinition extends ConfiguredFieldDefinition {
 
-    // Display Thumbnail
+    // Display upload file preview
     private boolean preview = true;
-    // Display Image Info
-    private boolean info = true;
     // Define the upload Binary Node name.
     private String imageNodeName = "imageBinary";
-    // Define If the Image can be removed (Display a delete Button)
-    private boolean fileDeletesAllowed = false;
+    // Define the maximum file size in bite.
+    private long maxUploadSize = Long.MAX_VALUE;
+    // Define allowed uploadMimeType
+    private String allowedMimeType = ".*";
 
     public boolean isPreview() {
         return preview;
@@ -53,14 +53,6 @@ public class FileUploadFieldDefinition extends ConfiguredFieldDefinition {
 
     public void setPreview(boolean preview) {
         this.preview = preview;
-    }
-
-    public boolean isInfo() {
-        return info;
-    }
-
-    public void setInfo(boolean info) {
-        this.info = info;
     }
 
     public String getImageNodeName() {
@@ -71,11 +63,19 @@ public class FileUploadFieldDefinition extends ConfiguredFieldDefinition {
         this.imageNodeName = imageNodeName;
     }
 
-    public boolean isFileDeletesAllowed() {
-        return fileDeletesAllowed;
+    public long getMaxUploadSize() {
+        return maxUploadSize;
     }
 
-    public void setFileDeletesAllowed(boolean fileDeletesAllowed) {
-        this.fileDeletesAllowed = fileDeletesAllowed;
+    public void setMaxUploadSize(long maxUploadSize) {
+        this.maxUploadSize = maxUploadSize;
+    }
+
+    public String getAllowedMimeType() {
+        return allowedMimeType;
+    }
+
+    public void setAllowedMimeType(String allowedMimeType) {
+        this.allowedMimeType = allowedMimeType;
     }
 }
