@@ -34,10 +34,11 @@
 package info.magnolia.ui.admincentral.field.builder;
 
 
-import info.magnolia.cms.beans.runtime.FileProperties;
 import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.ui.admincentral.MagnoliaShell;
-import info.magnolia.ui.admincentral.field.upload.UploadImageField;
+import info.magnolia.ui.admincentral.field.upload.UploadFileFieldImpl;
+import info.magnolia.ui.admincentral.file.FileItemWrapper;
+import info.magnolia.ui.admincentral.file.FileItemWrapperImpl;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.model.field.definition.FileUploadFieldDefinition;
@@ -84,12 +85,18 @@ public class FileUploadFieldBuilder extends AbstractFieldBuilder<FileUploadField
             property.setValue("upload");
         }
 
-
-        UploadImageField uploadField = new UploadImageField((JcrItemNodeAdapter)getOrCreateItem(), magnoliaShel);
+        //Get or create the File Node adapter.
+        JcrItemNodeAdapter item = getOrCreateItem();
+        //Create the File Wrapper.
+        FileItemWrapper fileItem = new FileItemWrapperImpl(item);
+        //Create Upload Filed.
+        UploadFileFieldImpl uploadField = new UploadFileFieldImpl(fileItem, magnoliaShel);
         uploadField.setInfo(true);
         uploadField.setProgressInfo(true);
         uploadField.setFileDeletion(true);
-        uploadField.setPreview(true);
+        uploadField.setPreview(definition.isPreview());
+        uploadField.setMaxUploadSize(definition.getMaxUploadSize());
+        uploadField.setMimeTypeRegExp(definition.getAllowedMimeType());
         return uploadField;
     }
 
@@ -98,7 +105,7 @@ public class FileUploadFieldBuilder extends AbstractFieldBuilder<FileUploadField
      * Get or Create the imageBinary Item.
      * If this Item doesn't exist yet, initialize all fields (as Property).
      */
-    public Item getOrCreateItem() {
+    public JcrItemNodeAdapter getOrCreateItem() {
         //Get the related Node
         Node node = getRelatedNode(item);
         JcrItemNodeAdapter child = null;
@@ -109,13 +116,11 @@ public class FileUploadFieldBuilder extends AbstractFieldBuilder<FileUploadField
             } else {
                 child = new JcrNewNodeAdapter(node, MgnlNodeType.NT_RESOURCE, definition.getImageNodeName());
                 child.setParent((JcrItemNodeAdapter)item);
-                initImageProperty(child);
             }
         }
         catch (RepositoryException e) {
             log.error("Could get or create item", e);
         }
-
         return child;
     }
 
@@ -127,20 +132,6 @@ public class FileUploadFieldBuilder extends AbstractFieldBuilder<FileUploadField
     public void setPropertyDataSource(Property property) {
     }
 
-    /**
-     * Init the Item property used to store the Uploaded image.
-     */
-    private void initImageProperty(JcrItemNodeAdapter child) {
-
-        child.addItemProperty(MgnlNodeType.JCR_DATA, DefaultPropertyUtil.newDefaultProperty(MgnlNodeType.JCR_DATA, "Binary", null));
-        child.addItemProperty(FileProperties.PROPERTY_FILENAME, DefaultPropertyUtil.newDefaultProperty(FileProperties.PROPERTY_FILENAME, "String", null));
-        child.addItemProperty(FileProperties.PROPERTY_CONTENTTYPE, DefaultPropertyUtil.newDefaultProperty(FileProperties.PROPERTY_CONTENTTYPE, "String", null));
-        child.addItemProperty(FileProperties.PROPERTY_LASTMODIFIED, DefaultPropertyUtil.newDefaultProperty(FileProperties.PROPERTY_LASTMODIFIED, "Date", null));
-        child.addItemProperty(FileProperties.PROPERTY_SIZE, DefaultPropertyUtil.newDefaultProperty(FileProperties.PROPERTY_SIZE, "Long", null));
-        child.addItemProperty(FileProperties.PROPERTY_EXTENSION, DefaultPropertyUtil.newDefaultProperty(FileProperties.PROPERTY_EXTENSION, "String", null));
-        child.addItemProperty(FileProperties.PROPERTY_WIDTH, DefaultPropertyUtil.newDefaultProperty(FileProperties.PROPERTY_WIDTH, "Long", null));
-        child.addItemProperty(FileProperties.PROPERTY_HEIGHT, DefaultPropertyUtil.newDefaultProperty(FileProperties.PROPERTY_HEIGHT, "Long", null));
-    }
 
     @Override
     protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {
