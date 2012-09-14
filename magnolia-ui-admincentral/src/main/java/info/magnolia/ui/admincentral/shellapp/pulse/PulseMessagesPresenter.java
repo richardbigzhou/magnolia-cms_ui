@@ -42,7 +42,6 @@ import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.inject.Inject;
@@ -53,19 +52,20 @@ import com.vaadin.data.Container.Filterable;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 
+
 /**
  * Presenter of {@link PulseMessagesView}.
  */
 @SuppressWarnings("serial")
 public class PulseMessagesPresenter implements Serializable {
 
-    private static final String[] order = new String[] { "new", "type", "text", "sender", "date", "quickdo" };
+    private static final String[] order = new String[]{"new", "type", "text", "sender", "date", "quickdo"};
 
     private Filterable container = null;
 
-    private MessagesManager messagesManager;
+    private final MessagesManager messagesManager;
 
-    private MagnoliaShell shell;
+    private final MagnoliaShell shell;
 
     @Inject
     public PulseMessagesPresenter(final MagnoliaShell magnoliaShell, final MessagesManager messagesManager) {
@@ -78,22 +78,22 @@ public class PulseMessagesPresenter implements Serializable {
             public void messageSent(Message message) {
                 addMessageAsItem(message);
                 if (message.getType().isSignificant()) {
-                    shell.updateShellAppIndication(VMainLauncher.ShellAppType.PULSE, 1);   
+                    shell.updateShellAppIndication(VMainLauncher.ShellAppType.PULSE, 1);
                 }
             }
 
             @Override
             public void messageCleared(Message message) {
                 assignPropertiesFromMessage(message, container.getItem(message.getId()));
-                if (message.getType().isSignificant() ) {
-                    shell.updateShellAppIndication(VMainLauncher.ShellAppType.PULSE, -1); 
+                if (message.getType().isSignificant()) {
+                    shell.updateShellAppIndication(VMainLauncher.ShellAppType.PULSE, -1);
                 }
             }
         });
 
         shell.setIndication(
-                VMainLauncher.ShellAppType.PULSE,
-                messagesManager.getNumberOfUnclearedMessagesForUser(MgnlContext.getUser().getName()));
+            VMainLauncher.ShellAppType.PULSE,
+            messagesManager.getNumberOfUnclearedMessagesForUser(MgnlContext.getUser().getName()));
     }
 
     public Container getMessageDataSource() {
@@ -109,7 +109,7 @@ public class PulseMessagesPresenter implements Serializable {
         container.addContainerProperty("type", MessageType.class, MessageType.UNKNOWN);
         container.addContainerProperty("text", String.class, null);
         container.addContainerProperty("sender", String.class, null);
-        container.addContainerProperty("date", String.class, null);
+        container.addContainerProperty("date", Date.class, null);
         container.addContainerProperty("quickdo", String.class, null);
         for (Message message : messagesManager.getMessagesForUser(MgnlContext.getUser().getName())) {
             addMessageAsItem(message);
@@ -130,7 +130,7 @@ public class PulseMessagesPresenter implements Serializable {
             item.getItemProperty("new").setValue(message.isCleared() ? "No" : "Yes");
             item.getItemProperty("type").setValue(message.getType());
             item.getItemProperty("text").setValue(message.getMessage());
-            item.getItemProperty("date").setValue(new SimpleDateFormat().format(new Date(message.getTimestamp())));   
+            item.getItemProperty("date").setValue(new Date(message.getTimestamp()));
         }
     }
 
@@ -150,16 +150,16 @@ public class PulseMessagesPresenter implements Serializable {
 
             @Override
             public boolean passesFilter(Object itemId, Item item) throws UnsupportedOperationException {
-                final MessageType type = (MessageType)item.getItemProperty("type").getValue();
+                final MessageType type = (MessageType) item.getItemProperty("type").getValue();
                 switch (category) {
-                case WORK_ITEM:
-                    return type == MessageType.WARNING;
-                case PROBLEM:
-                    return type == MessageType.ERROR;
-                case INFO:
-                    return type == MessageType.INFO;
-                default:
-                    return true;
+                    case WORK_ITEM :
+                        return type == MessageType.WARNING;
+                    case PROBLEM :
+                        return type == MessageType.ERROR;
+                    case INFO :
+                        return type == MessageType.INFO;
+                    default :
+                        return true;
                 }
             }
 
@@ -167,7 +167,7 @@ public class PulseMessagesPresenter implements Serializable {
             public boolean appliesToProperty(Object propertyId) {
                 return "type".equals(propertyId);
             }
-            
+
         };
         container.addContainerFilter(filter);
     }

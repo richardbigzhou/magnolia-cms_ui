@@ -37,32 +37,36 @@ import info.magnolia.ui.admincentral.shellapp.pulse.PulseMessageCategoryNavigato
 import info.magnolia.ui.admincentral.shellapp.pulse.PulseMessageCategoryNavigator.MessageCategoryChangedListener;
 import info.magnolia.ui.vaadin.integration.widget.grid.MagnoliaTable;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import com.vaadin.data.Property;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 
+
 /**
  * Implementation of {@link PulseMessagesView}.
  */
 @SuppressWarnings("serial")
 public class PulseMessagesViewImpl extends CustomComponent implements PulseMessagesView {
-    
-    private static final String[] headers = new String[] {
-           "New", "Type", "Message Text", "Sender", "Date", "Quick Do"
+
+    private static final String[] headers = new String[]{
+        "New", "Type", "Message Text", "Sender", "Date", "Quick Do"
     };
-    
+
     private final Table messageTable = new MagnoliaTable();
-   
-    private VerticalLayout root = new VerticalLayout();
-    
-    private PulseMessageCategoryNavigator navigator = new PulseMessageCategoryNavigator();
-    
+
+    private final VerticalLayout root = new VerticalLayout();
+
+    private final PulseMessageCategoryNavigator navigator = new PulseMessageCategoryNavigator();
+
     private final PulseMessagesPresenter presenter;
 
     @Inject
@@ -73,10 +77,11 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
         setCompositionRoot(root);
         construct();
     }
-    
+
     private void construct() {
         root.addComponent(navigator);
-        navigator.addCategoryChangeListener(new MessageCategoryChangedListener() {     
+        navigator.addCategoryChangeListener(new MessageCategoryChangedListener() {
+
             @Override
             public void messageCategoryChanged(CategoryChangedEvent event) {
                 presenter.filterByMessageCategory(event.getCategory());
@@ -89,15 +94,30 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
         root.addComponent(messageTable);
         root.setExpandRatio(messageTable, 1f);
         messageTable.setSizeFull();
+        messageTable.addGeneratedColumn("date", new Table.ColumnGenerator() {
+
+            @Override
+            public Object generateCell(Table source, Object itemId, Object columnId) {
+                Property prop = source.getItem(itemId).getItemProperty(columnId);
+                if (prop.getType().equals(Date.class)) {
+                    return new SimpleDateFormat().format(prop.getValue());
+                }
+                return null;
+            }
+
+        });
         messageTable.setContainerDataSource(presenter.getMessageDataSource());
         messageTable.setVisibleColumns(presenter.getColumnOrder());
+        messageTable.setSortContainerPropertyId("date");
+        messageTable.setSortAscending(false);
         messageTable.setColumnHeaders(headers);
+
         messageTable.addListener(new ItemClickEvent.ItemClickListener() {
 
             @Override
             public void itemClick(ItemClickEvent event) {
                 Object itemId = event.getItemId();
-                presenter.onMessageClicked((String)itemId);
+                presenter.onMessageClicked((String) itemId);
             }
         });
     }
