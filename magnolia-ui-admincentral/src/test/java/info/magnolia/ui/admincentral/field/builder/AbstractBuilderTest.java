@@ -60,7 +60,7 @@ import com.vaadin.data.Item;
  * Abstract test class used to initialize the DialogField Tests.
  */
 public abstract class AbstractBuilderTest<D extends FieldDefinition> {
-    protected static final Locale DEFAULT_LOCALE = new Locale("en");
+    protected static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
     protected DefaultI18nContentSupport i18nContentSupport;
     protected final String workspaceName = "workspace";
     protected MockSession session;

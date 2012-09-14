@@ -51,7 +51,7 @@ public abstract class AbstractDialogItem implements DialogItem {
 
     private DialogItem parent;
 
-    private static Messages messages;
+    private static String[] UI_BASENAMES;
 
     static {
         String uiPackagePrefix = "info.magnolia.ui.";
@@ -61,7 +61,7 @@ public abstract class AbstractDialogItem implements DialogItem {
         for(String module: uiModules) {
             basenames.add(uiPackagePrefix + module + ".messages");
         }
-        messages = MessagesUtil.chain(basenames.toArray(new String[]{}));
+        UI_BASENAMES = basenames.toArray(new String[]{});
     }
 
     @Override
@@ -76,8 +76,11 @@ public abstract class AbstractDialogItem implements DialogItem {
 
     @Override
     public Messages getMessages() {
+        Messages messages = null;
         if (getParent() != null) {
             messages = getParent().getMessages();
+        } else {
+            messages = MessagesUtil.chain(UI_BASENAMES);
         }
         if (StringUtils.isNotBlank(getI18nBasename())) {
             messages = MessagesUtil.chain(getI18nBasename(), messages);
