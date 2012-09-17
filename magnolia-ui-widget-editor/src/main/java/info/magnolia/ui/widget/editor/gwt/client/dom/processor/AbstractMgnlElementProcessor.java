@@ -86,7 +86,12 @@ public abstract class AbstractMgnlElementProcessor {
     public void attach(MgnlElement mgnlElement) {
         Element element = mgnlElement.getFirstElement();
         if (element != null) {
-            element.insertFirst(getEditBar().getElement());
+            if(element.hasTagName("DIV")){
+                element.insertFirst(getEditBar().getElement());
+            }else{
+                final Node parentNode = element.getParentNode();
+                parentNode.insertBefore(getEditBar().getElement(), element);
+            }
         }
     }
 

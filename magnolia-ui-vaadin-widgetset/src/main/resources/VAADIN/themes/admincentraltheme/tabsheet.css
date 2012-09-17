@@ -2,14 +2,14 @@
 .v-shell-tabsheet {background-color:#e6e6e6;}
 .v-shell-tabsheet .nav {background-color:#ccc; border-color:#999;}
 .v-shell-tabsheet .nav li {border-color:#999; color:#999;}
-.v-shell-tabsheet .nav li:hover {background-color:#e6e6e6;}
+.v-shell-tabsheet .nav li:hover {background-color:#999; color:#000;}
 .v-shell-tabsheet .nav li.show-all {border-color:transparent;}
 .v-shell-tabsheet .nav li.active {background-color:#e6e6e6; border-color:#999; color:#666;}
 
 .v-shell-tabsheet-light {background-color:#fff;}
 .v-shell-tabsheet-light .nav {background-color:#e6e6e6; border-color:#ccc;}
 .v-shell-tabsheet-light .nav li {border-color:#ccc;}
-.v-shell-tabsheet-light .nav li:hover {background-color:#fff;}
+.v-shell-tabsheet-light .nav li:hover {background-color:#ccc; color:#666;}
 .v-shell-tabsheet-light .nav li.active {background-color:#fff; border-color:#ccc;}
 
 .dialog-panel .v-shell-tabsheet .nav li.active {color:#000;}

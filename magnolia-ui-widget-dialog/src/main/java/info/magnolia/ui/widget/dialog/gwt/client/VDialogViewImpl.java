@@ -77,6 +77,8 @@ public class VDialogViewImpl extends FlowPanel implements VDialogView {
 
     private static final String CLASSNAME_BUTTON = "btn-dialog";
 
+    private static final String CLASSNAME_CONTENT_SHOW_ALL = "show-all";
+
     private final List<VDialogTab> dialogTabs = new ArrayList<VDialogTab>();
 
     private final Element content = DOM.createDiv();
@@ -177,7 +179,7 @@ public class VDialogViewImpl extends FlowPanel implements VDialogView {
                         if (nextTab.getProblematicFields().size() > 0) {
                             eventBus.fireEvent(new ActiveTabChangedEvent(nextTab));
                             lastShownProblematicField = null;
-                            jumpToNextError();      
+                            jumpToNextError();
                         }
                     }
                 }
@@ -278,6 +280,7 @@ public class VDialogViewImpl extends FlowPanel implements VDialogView {
     public void setActiveTab(VMagnoliaTab tab) {
         lastShownProblematicField = null;
         impl.setActiveTab(tab);
+        content.removeClassName(CLASSNAME_CONTENT_SHOW_ALL);
     }
 
     @Override
@@ -288,6 +291,7 @@ public class VDialogViewImpl extends FlowPanel implements VDialogView {
     @Override
     public void showAllTabContents(boolean visible) {
         impl.showAllTabContents(visible);
+        content.addClassName(CLASSNAME_CONTENT_SHOW_ALL);
     }
 
     @Override
@@ -316,7 +320,7 @@ public class VDialogViewImpl extends FlowPanel implements VDialogView {
     public void recalculateErrors() {
         int totalProblematicFields = 0;
         for (final VDialogTab tab : dialogTabs) {
-            totalProblematicFields += tab.getErorAmount();
+            totalProblematicFields += tab.getErrorAmount();
             final VDialogTab dialogTab = (VDialogTab) tab;
             for (final DialogFieldWrapper field : dialogTab.getFields()) {
                 field.addFocusHandler(problematicFieldFocusHandler);

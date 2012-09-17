@@ -33,50 +33,54 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse;
 
+import java.util.Iterator;
+
 import com.vaadin.ui.Component;
-import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.NativeButton;
+import com.vaadin.ui.themes.BaseTheme;
+
 
 /**
  * Message category navigation component in Pulse.
  */
 @SuppressWarnings("serial")
-public class PulseMessageCategoryNavigator extends CustomComponent {
-
-    /**
-     * Enumeration for the category types.
-     */
-    public enum MessageCategory {
-        ALL("ALL MESSAGES"), 
-        WORK_ITEM("WORK ITEMS"), 
-        PROBLEM("PROBLEMS"), 
-        INFO("INFO");
-        
-        private String caption;
-        
-        private MessageCategory(final String caption) {
-            this.caption = caption;
-        }
-        
-        public String getCaption() {
-            return caption;
-        }
-    }
-
-    private HorizontalLayout root = new HorizontalLayout();
+public class PulseMessageCategoryNavigator extends CssLayout {
 
     public PulseMessageCategoryNavigator() {
         super();
-        setCompositionRoot(root);
-        root.setSpacing(true);
-        root.setMargin(true);
+        setStyleName("navigator");
+        setMargin(true);
         construct();
     }
 
     private void construct() {
         for (final MessageCategory category : MessageCategory.values()) {
-            root.addComponent(new MessageCategoryButton(category));
+            MessageCategoryButton button = new MessageCategoryButton(category);
+            if (category.equals(MessageCategory.ALL)) {
+                button.setActive(true);
+            }
+            addComponent(button);
+        }
+    }
+
+    /**
+     * Enumeration for the category types.
+     */
+    public enum MessageCategory {
+        ALL("All messages"),
+        WORK_ITEM("Work items"),
+        PROBLEM("Problems"),
+        INFO("Info");
+
+        private String caption;
+
+        private MessageCategory(final String caption) {
+            this.caption = caption;
+        }
+
+        public String getCaption() {
+            return caption;
         }
     }
 
@@ -90,7 +94,7 @@ public class PulseMessageCategoryNavigator extends CustomComponent {
         static {
             try {
                 MESSAGE_CATEGORY_CHANGED = MessageCategoryChangedListener.class.getDeclaredMethod("messageCategoryChanged",
-                        new Class[] { CategoryChangedEvent.class });
+                    new Class[]{CategoryChangedEvent.class});
             } catch (final java.lang.NoSuchMethodException e) {
                 throw new java.lang.RuntimeException(e);
             }
@@ -112,6 +116,7 @@ public class PulseMessageCategoryNavigator extends CustomComponent {
      * MessageCategoryChangedListener.
      */
     public interface MessageCategoryChangedListener {
+
         public void messageCategoryChanged(final CategoryChangedEvent event);
     }
 
@@ -120,9 +125,14 @@ public class PulseMessageCategoryNavigator extends CustomComponent {
     }
 
     private void fireCategoryChangedEvent(MessageCategory category) {
+        Iterator<Component> iterator = getComponentIterator();
+        while (iterator.hasNext()) {
+            MessageCategoryButton button = (MessageCategoryButton) iterator.next();
+            button.setActive(button.category == category);
+        }
         fireEvent(new CategoryChangedEvent(this, category));
     }
-    
+
     /**
      * Message category button.
      */
@@ -132,15 +142,25 @@ public class PulseMessageCategoryNavigator extends CustomComponent {
 
         public MessageCategoryButton(MessageCategory category) {
             super();
+            setStyleName(BaseTheme.BUTTON_LINK);
             addStyleName("navigator-button");
             this.category = category;
             this.setCaption(category.getCaption());
             addListener(new ClickListener() {
+
                 @Override
                 public void buttonClick(ClickEvent event) {
                     fireCategoryChangedEvent(MessageCategoryButton.this.category);
                 }
             });
+        }
+
+        public void setActive(boolean active) {
+            if (active) {
+                addStyleName("active");
+            } else {
+                removeStyleName("active");
+            }
         }
     }
 }

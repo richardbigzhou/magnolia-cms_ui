@@ -46,7 +46,7 @@ import java.util.Map;
 
 
 /**
- * Default configured implementation for the WorkbenchDefinitionn.
+ * Default configured implementation for the WorkbenchDefinition.
  */
 public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
 
@@ -109,11 +109,12 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
 
     @Override
     public String getItemTypesFilter() {
-        String res = " ";
+        final StringBuilder builder = new StringBuilder(" ");
         for (ItemTypeDefinition item : itemTypes) {
-            res = res + " " + item.getItemType() + (itemTypes.indexOf(item) < itemTypes.size() - 1 ? " | " : "");
+            builder.append(" ")
+                    .append(item.getItemType() + (itemTypes.indexOf(item) < itemTypes.size() - 1 ? " | " : ""));
         }
-        return res;
+        return builder.toString();
     }
 
     @Override

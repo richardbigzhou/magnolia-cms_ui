@@ -91,7 +91,7 @@ public class VDialogTab extends VMagnoliaTab {
         return Util.findWidget(getElement(), VDialog.class);
     }
 
-    public int getErorAmount() {
+    public int getErrorAmount() {
         return content.getErrorAmount();
     }
 

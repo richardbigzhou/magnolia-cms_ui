@@ -48,16 +48,18 @@ import com.vaadin.ui.ClientWidget;
 public class MagnoliaDialogTab extends ShellTab {
 
     private final DialogLayout content;
-    
+
     public MagnoliaDialogTab(String caption, DialogLayout content) {
         super(caption, content);
         this.content = content;
+        //DialogLayout needs this info to display it when show all tab is active
+        this.content.setCaption(caption);
     }
 
-    public void setValidationVisibe(boolean isVisible) {
+    public void setValidationVisible(boolean isVisible) {
         content.setValidationVisible(isVisible);
     }
-    
+
     @Override
     public void paintContent(PaintTarget target) throws PaintException {
         setHasError(content.hasError());

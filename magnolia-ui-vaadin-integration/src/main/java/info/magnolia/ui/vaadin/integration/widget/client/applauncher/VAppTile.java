@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.vaadin.integration.widget.client.applauncher;
 
+import com.google.gwt.dom.client.Style;
 import info.magnolia.ui.vaadin.integration.widget.client.applauncher.event.AppActivationEvent;
 
 import com.google.gwt.event.dom.client.MouseOutEvent;
@@ -75,9 +76,6 @@ public class VAppTile extends Widget {
     private boolean isActive = false;
 
     private TouchDelegate touchDelegate = new TouchDelegate(this);
-
-    private final String colorItemHover = "#3f5900";
-    private final String colorSectionHover = "#3f5900";
 
     public VAppTile(EventBus eventBus, VAppTileJSO appTile) {
         super();
@@ -140,7 +138,7 @@ public class VAppTile extends Widget {
             public void onTouchStart(TouchStartEvent event) {
 
                 getElement().removeClassName("hover");
-                setColorsClick();
+                setColorsForClientGroup(false);
 
                 eventBus.fireEvent(new AppActivationEvent(appTileData.getName()));
             }
@@ -172,37 +170,32 @@ public class VAppTile extends Widget {
     }
 
     public void updateColors(){
-        if (!isActive()) {
-            setColorsOff();
+        if (isActive()) {
+            setColorsForClientGroup(true);
         } else {
-            setColorsActive();
+            setColorsOff();
         }
     }
 
     private void setColorsOff(){
-        getElement().getStyle().setProperty("backgroundColor", "");
-        getElement().getStyle().setProperty("color", "");
+        final Style style = getElement().getStyle();
+        style.setProperty("backgroundColor", "");
+        style.setProperty("color", "");
     }
 
-    private void setColorsClick(){
-        if (getParent().isClientGroup() ){
-            getElement().getStyle().setBackgroundColor(getParent().getColor());
-            getElement().getStyle().setColor("white");
-        }else{
-            getElement().getStyle().setColor(getParent().getColor());
-            getElement().getStyle().setBackgroundColor("white");
-
+    private void setColorsForClientGroup(boolean isActive){
+        final Style style = getElement().getStyle();
+        boolean setColorWhiteAndBackgroundFromParent = getParent().isClientGroup();
+        if (!isActive) {
+            setColorWhiteAndBackgroundFromParent = !setColorWhiteAndBackgroundFromParent;
         }
-    }
 
-    private void setColorsActive(){
-        // Active
-        if (getParent().isClientGroup() ){
-            getElement().getStyle().setColor(getParent().getColor());
-            getElement().getStyle().setBackgroundColor("white");
-        }else{
-            getElement().getStyle().setBackgroundColor(getParent().getColor());
-            getElement().getStyle().setColor("white");
+        if (setColorWhiteAndBackgroundFromParent){
+            style.setBackgroundColor(getParent().getColor());
+            style.setColor("white");
+        } else {
+            style.setColor(getParent().getColor());
+            style.setBackgroundColor("white");
         }
     }
 

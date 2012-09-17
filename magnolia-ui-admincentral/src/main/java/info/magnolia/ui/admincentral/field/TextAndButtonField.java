@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.field;
 
+import org.apache.commons.lang.StringUtils;
 import org.vaadin.addon.customfield.CustomField;
 import org.vaadin.addon.propertytranslator.PropertyTranslator;
 
@@ -54,17 +55,21 @@ public class TextAndButtonField extends CustomField {
     private Button selectButton;
     private TextField textField;
     private PropertyTranslator translator;
+    private String buttonCaptionNew;
+    private String buttonCaptionOther;
 
-    public TextAndButtonField(PropertyTranslator translator) {
+    public TextAndButtonField(PropertyTranslator translator, String buttonCaptionNew, String buttonCaptionOther) {
         this.translator = translator;
+        this.buttonCaptionNew = buttonCaptionNew;
+        this.buttonCaptionOther = buttonCaptionOther;
         textField = new TextField();
         textField.setSizeUndefined();
-        textField.addStyleName("v-dialog-field");
+        textField.addStyleName("small-textfield");
         selectButton = new NativeButton();
         selectButton.addStyleName("btn-dialog btn-dialog-select");
 
         HorizontalLayout layout = new HorizontalLayout();
-        layout.setSizeUndefined();
+        layout.setWidth("100%");
         layout.addComponent(textField);
         layout.addComponent(selectButton);
         layout.setComponentAlignment(selectButton, Alignment.MIDDLE_CENTER);
@@ -88,6 +93,7 @@ public class TextAndButtonField extends CustomField {
     @Override
     public void setValue(Object newValue) throws ReadOnlyException, ConversionException {
         textField.setValue(newValue);
+        setButtonCaption(newValue.toString());
     }
 
     /**
@@ -102,6 +108,7 @@ public class TextAndButtonField extends CustomField {
         } else {
             textField.setPropertyDataSource(newDataSource);
         }
+        setButtonCaption(newDataSource.getValue().toString());
     }
 
     @Override
@@ -116,6 +123,16 @@ public class TextAndButtonField extends CustomField {
     @Override
     public Class< ? > getType() {
         return getPropertyDataSource().getType();
+    }
+
+    private void setButtonCaption(String value) {
+        if(StringUtils.isNotBlank(value)) {
+            selectButton.setCaption(buttonCaptionOther);
+            selectButton.setDescription(buttonCaptionOther);
+        }else {
+            selectButton.setCaption(buttonCaptionNew);
+            selectButton.setDescription(buttonCaptionNew);
+        }
     }
 
 }

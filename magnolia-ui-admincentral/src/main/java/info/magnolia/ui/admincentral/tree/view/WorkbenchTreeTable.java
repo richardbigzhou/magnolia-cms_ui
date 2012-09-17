@@ -44,6 +44,7 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.widget.grid.MagnoliaTreeTable;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 
 import javax.jcr.RepositoryException;
@@ -183,7 +184,10 @@ public class WorkbenchTreeTable extends MagnoliaTreeTable {
             // finally expand the root else children won't be visibile.
             setCollapsed(parent, false);
         }
-        select((Object) itemId);
+        // Set this multi select component to have only this one item selected
+        HashSet<Object> set = new HashSet<Object>();
+        set.add(itemId);
+        setValue(set);
     }
 
     public void refresh() {

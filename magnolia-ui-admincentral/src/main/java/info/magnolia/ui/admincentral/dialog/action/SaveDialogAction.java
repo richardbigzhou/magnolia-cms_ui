@@ -73,7 +73,6 @@ public class SaveDialogAction extends ActionBase<SaveDialogActionDefinition> {
             final JcrNodeAdapter itemChanged = (JcrNodeAdapter) item;
             try {
                 final Node node = itemChanged.getNode();
-                //Update MetaData
                 MetaDataUtil.updateMetaData(node);
                 node.getSession().save();
             } catch (final RepositoryException e) {
@@ -82,7 +81,7 @@ public class SaveDialogAction extends ActionBase<SaveDialogActionDefinition> {
             presenter.getCallback().onSuccess(getDefinition().getName());
 
         } else {
-            log.warn("View is not valid. No save performed");
+            log.info("Validation error(s) occured. No save performed.");
         }
     }
 

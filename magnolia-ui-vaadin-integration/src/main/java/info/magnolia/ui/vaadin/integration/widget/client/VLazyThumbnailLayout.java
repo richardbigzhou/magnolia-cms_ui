@@ -76,23 +76,24 @@ import com.vaadin.terminal.gwt.client.VConsole;
 public class VLazyThumbnailLayout extends Composite implements Paintable, ClientSideHandler {
 
     private static final int QUERY_TIMER_DELAY = 250;
-    
+
     private int thumbnailWidth = 0;
 
     private int thumbnailHeight = 0;
 
     private int thumbnailAmount = 0;
 
-    private VThumbnail selectedThumbnail = null; 
-    
+    private VThumbnail selectedThumbnail = null;
+
     private final List<VThumbnail> thumbnails = new ArrayList<VThumbnail>();
 
     private final List<VThumbnail> thumbnailStubs = new ArrayList<VThumbnail>();
 
     private ScrollPanel scroller = new ScrollPanel();
 
-    private CSSRule thumbnailStyle = CSSRule.create(".thumbnail-image");
-    
+    private CSSRule thumbnailImageStyle = CSSRule.create(".thumbnail-image");
+    private CSSRule thumbnailStyle = CSSRule.create(".thumbnail");
+
     private FlowPanel imageContainer = new FlowPanel();
 
     private ClientSideProxy proxy = new ClientSideProxy(this) {
@@ -111,26 +112,26 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
                     setThumbnailAmount((Integer) params[0]);
                 }
             });
-            
+
             register("setThumbnailSize", new Method() {
                 @Override
                 public void invoke(String methodName, Object[] params) {
                     setThumbnailSize((Integer) params[0], (Integer) params[1]);
                 }
             });
-            
+
             register("clear", new Method() {
                 @Override
                 public void invoke(String methodName, Object[] params) {
                     reset();
                 }
-            });            
+            });
         }
     };
 
     public VLazyThumbnailLayout() {
         //TouchScrollDelegate.enableTouchScrolling(scroller, scroller.getElement());
-        thumbnailStyle.setProperty("margin", "10px");
+        thumbnailStyle.setProperty("margin", "3px");
         scroller.setWidget(imageContainer);
         initWidget(scroller);
         scroller.addStyleName("thumbnail-scroller");
@@ -140,7 +141,7 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
                 createStubsAndQueryThumbnails();
             }
         });
-        
+
 
         final TouchDelegate touchDelegate = new TouchDelegate(this);
         touchDelegate.addTouchHandler(new MagnoliaPinchRecognizer(touchDelegate, new UIObjectToOffsetProvider(scroller)));
@@ -150,13 +151,13 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
                 double scaleFactor = 1 / event.getScaleFactor();
                 int width = Math.max((int)(ComputedStyle.parseInt(thumbnailStyle.getProperty("width")) * scaleFactor), 25);
                 int height = Math.max((int)(ComputedStyle.parseInt(thumbnailStyle.getProperty("height")) * scaleFactor), 25);
-                
+
                 scroller.setVerticalScrollPosition((int)(scroller.getVerticalScrollPosition() * scaleFactor));
                 setThumbnailSize(width, height);
-                
+
             }
         }, MagnoliaPinchMoveEvent.TYPE);
-        
+
         addHandler(new MagnoliaPinchStartEvent.Handler() {
             @Override
             public void onPinchStart(MagnoliaPinchStartEvent event) {
@@ -165,9 +166,9 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
                 proxy.call("clear");
             }
         }, MagnoliaPinchStartEvent.TYPE);
-       
+
         DOM.sinkEvents(getElement(), Event.MOUSEEVENTS | Event.ONSCROLL);
-        
+
         addDomHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -183,7 +184,7 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
                 }
             }
         }, ClickEvent.getType());
-        
+
         addDomHandler(new DoubleClickHandler() {
             @Override
             public void onDoubleClick(DoubleClickEvent event) {
@@ -199,13 +200,13 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
         addStubs(thumbnailsNeeded);
         queryTimer.schedule(QUERY_TIMER_DELAY);
     }
-    
+
     private void addStubs(int thumbnailsNeeded) {
         for (int i = 0; i < thumbnailsNeeded; ++i) {
             addStub();
         }
     }
-    
+
     private void addStub() {
         final VThumbnail thumbnailStub = new VThumbnail();
         thumbnailStubs.add(thumbnailStub);
@@ -213,13 +214,20 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
     }
 
     private void setThumbnailSize(int width, int height) {
+        VConsole.log("Thumbnails: setThumbnailSize: " + width + " h:"+height );
+        //ApplicationConnection.getConsole()
         this.thumbnailHeight = height;
         this.thumbnailWidth = width;
         thumbnailStyle.setProperty("width", width + "px");
         thumbnailStyle.setProperty("height", height + "px");
+        // TODO: Christopher Zimmermann - Investigate further when ios6 is available with good debug tools - or when we have desktop resizer.
+        // This should work but the images are not resizing.
+        thumbnailImageStyle.setProperty("max-width", width + "px");
+        thumbnailImageStyle.setProperty("max-height", height + "px");
+
         createStubsAndQueryThumbnails();
     }
-    
+
     private Timer queryTimer = new Timer() {
         @Override
         public void run() {
@@ -230,7 +238,7 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
     private void addImages(JsArray<VThumbnailData> urls) {
         for (int i = 0; i < urls.length() && !thumbnailStubs.isEmpty(); ++i) {
             final VThumbnail thumbnail = thumbnailStubs.remove(0);
-            final VThumbnailData data = urls.get(i); 
+            final VThumbnailData data = urls.get(i);
             thumbnail.setData(data);
             thumbnails.add(thumbnail);
         }
@@ -247,7 +255,7 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
 
     private void doQueryThumbnails(int amount) {
         if (amount > 0) {
-            proxy.call("loadThumbnails", amount);   
+            proxy.call("loadThumbnails", amount);
         }
     }
 
@@ -277,15 +285,14 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
         addStubs(thumbnailsNeeded);
         doQueryThumbnails(thumbnailsNeeded);
     }
-    
+
     private int calculateThumbnailsNeeded() {
         int totalHeight = scroller.getVerticalScrollPosition() + getOffsetHeight();
         int width = getOffsetWidth();
         int thumbnailsInRow = (int) (width / (thumbnailWidth + getHorizontalMargin()) * 1d);
         int rows = (int) Math.ceil(1d * totalHeight / (thumbnailHeight + getVerticalMargin()));
         int totalThumbnailsPossible = Math.min(thumbnailAmount, thumbnailsInRow * rows);
-        int thumbnailsNeeded = Math.max(totalThumbnailsPossible  - thumbnailStubs.size() - thumbnails.size(), 0);
-        return thumbnailsNeeded;
+        return Math.max(totalThumbnailsPossible  - thumbnailStubs.size() - thumbnails.size(), 0);
     }
 
     @Override
@@ -301,16 +308,16 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
         addStubs(calculateThumbnailsNeeded());
         queryTimer.schedule(QUERY_TIMER_DELAY);
     }
-    
+
     public static native JsArray<VThumbnailData> parseStringArray(String json) /*-{
         return eval('(' + json + ')');
     }-*/;
-    
+
     private int getHorizontalMargin() {
-        return ComputedStyle.parseInt(thumbnailStyle.getProperty("marginTop")) * 2;
+        return  ComputedStyle.parseInt(thumbnailStyle.getProperty("marginTop")) * 2;
     }
-    
+
     private int getVerticalMargin() {
-        return ComputedStyle.parseInt(thumbnailStyle.getProperty("marginLeft")) * 2;
+        return  ComputedStyle.parseInt(thumbnailStyle.getProperty("marginLeft")) * 2;
     }
 }

@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.widget.magnoliashell;
 
-
 import info.magnolia.ui.framework.event.EventHandlerCollection;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.message.Message;
@@ -56,7 +55,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.vaadin.Application;
 import org.apache.commons.lang.mutable.MutableInt;
 import org.vaadin.artur.icepush.ICEPush;
 import org.vaadin.rpc.ServerSideHandler;
@@ -148,19 +146,20 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
     }
 
     public void updateShellAppIndication(ShellAppType type, int increment) {
-        synchronized (getApplication()) {
-            this.indications.get(type).add(increment);
-            proxy.call("updateIndication", type.name(), increment);
-            pusher.push();
+        this.indications.get(type).add(increment);
+        requestRepaint();
+        if (getApplication() != null) {
+            synchronized (getApplication()) {
+                pusher.push();
+            }
         }
     }
 
     public void setIndication(ShellAppType type, int indication) {
         this.indications.get(type).setValue(indication);
-        Application application = getApplication();
-        if (application != null) {
-            synchronized (application) {
-                proxy.call("setIndication", type.name(), indication);
+        requestRepaint();
+        if (getApplication() != null) {
+            synchronized (getApplication()) {
                 pusher.push();
             }
         }

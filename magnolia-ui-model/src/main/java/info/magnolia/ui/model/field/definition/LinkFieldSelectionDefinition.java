@@ -36,24 +36,13 @@ package info.magnolia.ui.model.field.definition;
 /**
  * Configuration definition for a LinkFieldSelection field Display.
  * This Definition allows to configure:
- *   - Column name. The value of the defined column will be propagated and display into the Input Text field.
  *   - Display the Input Text Field.
  *   - Position of the Input Text Field (before or after the ContentWorkbenchView)
  */
 public class LinkFieldSelectionDefinition extends ConfiguredFieldDefinition {
 
-
-    private String columnName;
     private boolean displayTextField = true;
     private boolean displayTextFieldOnTop = false;
-
-    public String getColumnName() {
-        return columnName;
-    }
-
-    public void setColumnName(String columnName) {
-        this.columnName = columnName;
-    }
 
     public boolean isDisplayTextField() {
         return displayTextField;
