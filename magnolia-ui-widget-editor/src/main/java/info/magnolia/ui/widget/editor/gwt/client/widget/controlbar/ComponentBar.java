@@ -33,16 +33,6 @@
  */
 package info.magnolia.ui.widget.editor.gwt.client.widget.controlbar;
 
-import static info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils.getI18nMessage;
-import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
-import info.magnolia.ui.widget.editor.gwt.client.event.DeleteComponentEvent;
-import info.magnolia.ui.widget.editor.gwt.client.event.EditComponentEvent;
-import info.magnolia.ui.widget.editor.gwt.client.model.Model;
-import info.magnolia.ui.widget.editor.gwt.client.widget.dnd.DragAndDrop;
-import info.magnolia.ui.widget.editor.gwt.client.widget.dnd.LegacyDragAndDrop;
-
-import java.util.Map;
-
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -57,6 +47,15 @@ import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PushButton;
+import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
+import info.magnolia.ui.widget.editor.gwt.client.event.DeleteComponentEvent;
+import info.magnolia.ui.widget.editor.gwt.client.event.EditComponentEvent;
+import info.magnolia.ui.widget.editor.gwt.client.widget.dnd.DragAndDrop;
+import info.magnolia.ui.widget.editor.gwt.client.widget.dnd.LegacyDragAndDrop;
+
+import java.util.Map;
+
+import static info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils.getI18nMessage;
 
 
 /**
@@ -72,9 +71,9 @@ public class ComponentBar extends AbstractBar {
 
     private boolean editable = true;
 
-    public ComponentBar(Model model, EventBus eventBus, MgnlElement mgnlElement) {
+    public ComponentBar(EventBus eventBus, MgnlElement mgnlElement) {
 
-        super(model, eventBus, mgnlElement);
+        super(eventBus, mgnlElement);
 
         setFields(mgnlElement.getAttributes());
         addStyleName("component");
@@ -106,11 +105,9 @@ public class ComponentBar extends AbstractBar {
     }
 
     private void setFields(Map<String, String> attributes) {
-        String content = attributes.get("content");
-        int i = content.indexOf(':');
 
-        setWorkspace(content.substring(0, i));
-        setPath(content.substring(i + 1));
+        setWorkspace(attributes.get("workspace"));
+        setPath(attributes.get("path"));
 
         this.nodeName = getPath().substring(getPath().lastIndexOf("/") + 1);
 
@@ -131,7 +128,7 @@ public class ComponentBar extends AbstractBar {
     }
 
     private void createDragAndDropHandlers() {
-        DragAndDrop.dragAndDrop(getModel(), getEventBus(), this);
+        DragAndDrop.dragAndDrop(getEventBus(), this);
     }
 
     private void createMouseEventsHandlers() {
@@ -184,7 +181,7 @@ public class ComponentBar extends AbstractBar {
             @Override
             public void onClick(ClickEvent event) {
                 toggleButtons(false);
-                LegacyDragAndDrop.moveComponentStart(getModel(), ComponentBar.this);
+                LegacyDragAndDrop.moveComponentStart(ComponentBar.this);
             }
         });
         move.setTitle(getI18nMessage("buttons.component.move.js"));

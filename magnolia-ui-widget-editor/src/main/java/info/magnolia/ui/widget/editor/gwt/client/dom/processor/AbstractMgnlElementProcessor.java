@@ -67,6 +67,7 @@ public abstract class AbstractMgnlElementProcessor {
 
 
     public void attach() {
+        // if there is a marker for the controlBar insert here
         if (getMgnlElement().getEditElement() != null) {
             Element parent = getMgnlElement().getEditElement();
             parent.insertFirst(getEditBar().getElement());
@@ -75,7 +76,9 @@ public abstract class AbstractMgnlElementProcessor {
             attach(getMgnlElement());
         }
         else {
-            attach(getMgnlElement().getComment().getElement());
+            String nodeData = getMgnlElement().getStartComment().getNodeValue();
+
+            attach(getMgnlElement().getStartComment());
         }
         getEditBar().onAttach();
     }
@@ -88,7 +91,7 @@ public abstract class AbstractMgnlElementProcessor {
     }
 
     public void attach(Element element) {
-        final Node parentNode = element.getParentNode();
+        Node parentNode = element.getParentNode();
         parentNode.insertAfter(getEditBar().getElement(), element);
     }
 

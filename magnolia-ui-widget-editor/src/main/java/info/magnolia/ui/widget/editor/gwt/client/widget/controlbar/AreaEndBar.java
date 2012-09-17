@@ -34,11 +34,8 @@
 package info.magnolia.ui.widget.editor.gwt.client.widget.controlbar;
 
 
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Node;
 import com.google.gwt.user.client.ui.FlowPanel;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
-import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 
 
 /**
@@ -46,14 +43,12 @@ import info.magnolia.ui.widget.editor.gwt.client.model.Model;
  */
 public class AreaEndBar extends FlowPanel {
 
-    private Model model;
     private MgnlElement mgnlElement;
 
     private final static String FOCUS_CLASSNAME = "focus";
     private final static String CHILD_FOCUS_CLASSNAME = "childFocus";
 
-    public AreaEndBar(Model model, MgnlElement mgnlElement) {
-        this.model = model;
+    public AreaEndBar(MgnlElement mgnlElement) {
 
         this.mgnlElement = mgnlElement;
         this.setStyleName("mgnlEditor mgnlEditorBar");
@@ -62,42 +57,12 @@ public class AreaEndBar extends FlowPanel {
 
         setVisible(false);
 
-        attach();
 
-    }
-
-    public void attach() {
-        if (mgnlElement.getFirstElement() != null && mgnlElement.getFirstElement() == mgnlElement.getLastElement()) {
-            attach(mgnlElement);
-        }
-        else {
-            attach(mgnlElement.getEndComment().getElement());
-        }
-    }
-
-    public void attach(MgnlElement mgnlElement) {
-        Element element = mgnlElement.getFirstElement();
-        if (element != null) {
-            element.appendChild(getElement());
-        }
-        onAttach();
-    }
-
-    public void attach(Element element) {
-        final Node parentNode = element.getParentNode();
-        parentNode.insertBefore(getElement(), element);
-        onAttach();
     }
 
     @Override
-    protected void onAttach() {
-        getModel().addElements(mgnlElement, getElement());
-        mgnlElement.setAreaEndBar(this);
+    public void onAttach() {
         super.onAttach();
-    }
-
-    public Model getModel() {
-        return model;
     }
 
     public void setFocus(boolean focus, boolean child) {

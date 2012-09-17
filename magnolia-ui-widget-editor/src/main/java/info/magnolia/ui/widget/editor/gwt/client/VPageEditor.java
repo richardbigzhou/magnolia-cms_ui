@@ -266,7 +266,8 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
             if (childNode.getNodeType() == Comment.COMMENT_NODE) {
 
                 try {
-                    mgnlElement = CommentProcessor.process(model, childNode, mgnlElement);
+                    CommentProcessor processor = new CommentProcessor();
+                    mgnlElement = processor.process(model, childNode, mgnlElement);
                 } catch (IllegalArgumentException e) {
                     GWT.log("Not CMSComment element, skipping: " + e.toString());
                 } catch (Exception e) {
@@ -280,25 +281,6 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
         }
 
     }
-
-/*    private void processMgnlElements() {
-        List<MgnlElement> rootElements = new LinkedList<MgnlElement>(getModel().getRootAreas());
-        for (MgnlElement root : rootElements) {
-            LinkedList<MgnlElement> elements = new LinkedList<MgnlElement>();
-            elements.add(root);
-            elements.addAll(root.getDescendants());
-
-            for (MgnlElement mgnlElement : elements) {
-                try {
-                    AbstractMgnlElementProcessor processor = MgnlElementProcessorFactory.getProcessor(model, eventBus, mgnlElement);
-                    processor.process();
-                } catch (IllegalArgumentException e) {
-                    GWT.log("MgnlFactory could not instantiate class. The element is neither an area nor component.");
-                }
-            }
-        }
-
-    }*/
 
     private void processMgnlElements() {
         CmsNode root = model.getRootPage();

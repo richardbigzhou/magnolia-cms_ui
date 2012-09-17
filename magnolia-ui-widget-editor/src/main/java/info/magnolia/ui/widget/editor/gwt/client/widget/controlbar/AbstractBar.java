@@ -33,17 +33,15 @@
  */
 package info.magnolia.ui.widget.editor.gwt.client.widget.controlbar;
 
-import info.magnolia.ui.widget.editor.gwt.client.dom.CmsNode;
-import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
-import info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils;
-import info.magnolia.ui.widget.editor.gwt.client.model.Model;
-
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Float;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import info.magnolia.ui.widget.editor.gwt.client.dom.CmsNode;
+import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
+import info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils;
 
 
 /**
@@ -70,16 +68,13 @@ public abstract class AbstractBar extends FlowPanel {
 
     private FlowPanel secondaryButtons;
 
-    private final Model model;
-
     private final EventBus eventBus;
 
     private final static String FOCUS_CLASSNAME = "focus";
 
     private final static String CHILD_FOCUS_CLASSNAME = "childFocus";
 
-    public AbstractBar(Model model, EventBus eventBus, MgnlElement mgnlElement) {
-        this.model = model;
+    public AbstractBar(EventBus eventBus, MgnlElement mgnlElement) {
         this.eventBus = eventBus;
 
         this.setCmsNode(mgnlElement);
@@ -199,10 +194,6 @@ public abstract class AbstractBar extends FlowPanel {
                 component.asMgnlElement().getControlBar().secondaryButtons.setVisible(visible);
             }
         }
-    }
-
-    public Model getModel() {
-        return model;
     }
 
     public EventBus getEventBus() {

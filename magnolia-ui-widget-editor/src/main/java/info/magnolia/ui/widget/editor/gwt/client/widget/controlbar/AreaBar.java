@@ -33,23 +33,21 @@
  */
 package info.magnolia.ui.widget.editor.gwt.client.widget.controlbar;
 
-import static info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils.getI18nMessage;
-
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PushButton;
 import info.magnolia.rendering.template.AreaDefinition;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 import info.magnolia.ui.widget.editor.gwt.client.event.DeleteComponentEvent;
 import info.magnolia.ui.widget.editor.gwt.client.event.EditComponentEvent;
 import info.magnolia.ui.widget.editor.gwt.client.event.NewAreaEvent;
-import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 
 import java.util.Map;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.ui.PushButton;
+import static info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils.getI18nMessage;
 
 
 /**
@@ -73,8 +71,8 @@ public class AreaBar extends AbstractBar {
 
     private static final String NODE_TYPE = "mgnl:area";
 
-    public AreaBar(Model model, EventBus eventBus, MgnlElement mgnlElement) {
-        super(model, eventBus, mgnlElement);
+    public AreaBar(EventBus eventBus, MgnlElement mgnlElement) {
+        super(eventBus, mgnlElement);
 
         setFields(mgnlElement.getAttributes());
 
@@ -191,13 +189,8 @@ public class AreaBar extends AbstractBar {
 
     private void setFields(Map<String, String> attributes) throws IllegalArgumentException {
 
-        String content = attributes.get("content");
-        if (content != null) {
-            int i = content.indexOf(':');
-
-            this.setWorkspace(content.substring(0, i));
-            this.setPath(content.substring(i + 1));
-        }
+        setWorkspace(attributes.get("workspace"));
+        setPath(attributes.get("path"));
 
         this.name = attributes.get("name");
         this.type = attributes.get("type");

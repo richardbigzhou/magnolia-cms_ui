@@ -43,6 +43,12 @@ import java.util.List;
  */
 public interface Model {
 
+    String CMS_TAG = "cms:";
+    String CMS_PAGE = "cms:page";
+    String CMS_AREA = "cms:area";
+    String CMS_COMPONENT = "cms:component";
+    String[] INHERITED_ATTRIBUTES = {"editable"};
+
     void addElement(MgnlElement mgnlElement, Element element);
 
     void addElements(MgnlElement mgnlElement, Element element);

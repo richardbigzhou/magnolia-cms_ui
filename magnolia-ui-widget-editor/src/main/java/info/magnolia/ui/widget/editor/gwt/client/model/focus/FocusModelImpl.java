@@ -35,15 +35,10 @@ package info.magnolia.ui.widget.editor.gwt.client.model.focus;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONString;
 import info.magnolia.ui.widget.editor.gwt.client.dom.CmsNode;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 import info.magnolia.ui.widget.editor.gwt.client.event.SelectElementEvent;
 import info.magnolia.ui.widget.editor.gwt.client.model.Model;
-
-import java.util.Map;
-
 
 /**
  * Helper class to keep track of selected items. Welcome to the MindTwister.
@@ -143,7 +138,7 @@ public class FocusModelImpl implements FocusModel {
      */
     private void setAreaSelection(MgnlElement area) {
         MgnlElement selectedArea = model.getSelectedMgnlAreaElement();
-        CmsNode currentComponent = model.getSelectedMgnlComponentElement();
+        MgnlElement currentComponent = model.getSelectedMgnlComponentElement();
 
         if (selectedArea != null) {
 
@@ -270,25 +265,8 @@ public class FocusModelImpl implements FocusModel {
 
     private void select(MgnlElement mgnlElement) {
 
-        Map<String, String> attr = mgnlElement.getAttributes();
-        String type = mgnlElement.getComment().getTagName();
-
-        JSONObject json = new JSONObject();
-
-        for ( String key : attr.keySet()) {
-            String value = attr.get(key);
-
-            // hack to get correct path and workspace
-            if (key.equals("content")) {
-                int i = value.indexOf(':');
-
-                json.put("workspace", new JSONString(value.substring(0, i)));
-                json.put("path", new JSONString(value.substring(i+1)));
-            }
-            else {
-                json.put(key, new JSONString(value));
-            }
-        }
+        String json = mgnlElement.getJsonAttributes();
+        String type = mgnlElement.getType();
         eventBus.fireEvent(new SelectElementEvent(type, json.toString()));
     }
 

@@ -34,6 +34,9 @@
 package info.magnolia.ui.widget.editor.gwt.client.dom;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONString;
+import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.AbstractBar;
 import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.AreaEndBar;
 import info.magnolia.ui.widget.editor.gwt.client.widget.placeholder.ComponentPlaceHolder;
@@ -46,45 +49,39 @@ import java.util.Map;
 */
 public class MgnlElement extends CmsNode {
 
-    private CMSComment comment;
+    private Map<String, String> attributes;
+
+    private Element startComment;
+    private Element endComment;
 
     private Element firstElement;
-
     private Element lastElement;
     private Element componentElement;
     private Element areaElement;
-    private Element editElement;
 
+    private Element editElement;
     private AbstractBar controlBar;
 
     // only used in areas
     ComponentPlaceHolder componentPlaceHolder;
     AreaEndBar areaEndBar;
 
-    private CMSComment endComment;
-
-    private Map<String, String> attributes;
 
     /**
  * MgnlElement. Represents a node in the tree built on cms-tags.
  */
-    public MgnlElement(CMSComment comment, MgnlElement parent) {
+    public MgnlElement(MgnlElement parent) {
         super(parent);
-
-        this.comment = comment;
-
-        this.attributes = comment.getAttributes();
-
-        if (this.parent != null) {
-            for (String inheritedAttribute : INHERITED_ATTRIBUTES) {
-                if (getParent().asMgnlElement().containsAttribute(inheritedAttribute)) {
-                    attributes.put(inheritedAttribute, getParent().asMgnlElement().getAttribute(inheritedAttribute));
-                }
-            }
-        }
     }
 
-    private static final String[] INHERITED_ATTRIBUTES = {"editable"};
+
+    public void setAttributes(Map<String, String> attributes) {
+        this.attributes = attributes;
+    }
+
+    public Map<String, String> getAttributes() {
+        return this.attributes;
+    }
 
     public AbstractBar getControlBar() {
         return controlBar;
@@ -107,22 +104,6 @@ public class MgnlElement extends CmsNode {
 
     public void setAreaEndBar(AreaEndBar areaEndBar) {
         this.areaEndBar = areaEndBar;
-    }
-
-
-    /*    public MgnlElement getRootArea() {
-        MgnlElement rootArea = null;
-        for (MgnlElement parent = this; parent != null; parent = parent.getParent()) {
-            if (parent.isArea()) {
-                rootArea = parent;
-            }
-        }
-        return rootArea;
-    }*/
-
-    @Deprecated
-    public CMSComment getComment() {
-        return comment;
     }
 
     public Element getFirstElement() {
@@ -165,14 +146,6 @@ public class MgnlElement extends CmsNode {
         return editElement;
     }
 
-    public void setEndComment(CMSComment endComment) {
-        this.endComment = endComment;
-    }
-
-    public CMSComment getEndComment() {
-        return this.endComment;
-    }
-
     public String getAttribute(String key) {
         return this.attributes.get(key);
     }
@@ -181,12 +154,42 @@ public class MgnlElement extends CmsNode {
         return this.attributes.containsKey(key);
     }
 
-    public Map<String, String> getAttributes() {
-        return this.attributes;
-    }
-    @Override
-    public String toString() {
-        return comment.toString();
+    public Element getStartComment() {
+        return startComment;
     }
 
+    public Element getEndComment() {
+        return this.endComment;
+    }
+
+    public void setStartComment(Element element) {
+        this.startComment = element;
+    }
+    public void setEndComment(Element element) {
+        this.endComment = element;
+    }
+
+    public String getType() {
+
+        if (isPage()) {
+            return Model.CMS_PAGE;
+        }
+        if (isArea()) {
+            return Model.CMS_AREA;
+        }
+        else {
+            return Model.CMS_COMPONENT;
+        }
+    }
+
+    public String getJsonAttributes() {
+
+        JSONObject json = new JSONObject();
+
+        for ( String key : attributes.keySet()) {
+            String value = attributes.get(key);
+            json.put(key, new JSONString(value));
+        }
+        return json.toString();
+    }
 }

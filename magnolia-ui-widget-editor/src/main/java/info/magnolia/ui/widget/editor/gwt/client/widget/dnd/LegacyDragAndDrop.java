@@ -35,7 +35,6 @@ package info.magnolia.ui.widget.editor.gwt.client.widget.dnd;
 
 import com.google.gwt.dom.client.Element;
 import info.magnolia.ui.widget.editor.gwt.client.dom.CmsNode;
-import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.ComponentBar;
 import info.magnolia.ui.widget.editor.gwt.client.widget.placeholder.ComponentPlaceHolder;
 
@@ -48,10 +47,8 @@ public class LegacyDragAndDrop {
 
     public static ComponentBar sourceBar;
     private static MoveWidget moveDiv;
-    private static Model model;
 
-    public static void moveComponentStart(Model model, ComponentBar bar) {
-        LegacyDragAndDrop.model = model;
+    public static void moveComponentStart(ComponentBar bar) {
         toggleStyles(bar, true);
 
             // reset native drag and drop
@@ -171,7 +168,4 @@ public class LegacyDragAndDrop {
         return sourceBar != null;
     }
 
-    public static Model getModel() {
-        return model;
-    }
 }

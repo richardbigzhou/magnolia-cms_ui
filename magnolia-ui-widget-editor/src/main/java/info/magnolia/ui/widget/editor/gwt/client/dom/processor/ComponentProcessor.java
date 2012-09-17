@@ -54,7 +54,7 @@ public class ComponentProcessor extends AbstractMgnlElementProcessor {
     public void process() {
         if (hasControlBar(getMgnlElement().getAttributes())) {
             GWT.log("Component has edit bar. Injecting it..");
-            ComponentBar editBarWidget = new ComponentBar(getModel(), getEventBus(), getMgnlElement());
+            ComponentBar editBarWidget = new ComponentBar(getEventBus(), getMgnlElement());
             setEditBar(editBarWidget);
             attachWidget();
         }
