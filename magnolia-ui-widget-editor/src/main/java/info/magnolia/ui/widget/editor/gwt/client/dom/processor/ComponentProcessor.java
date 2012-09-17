@@ -44,7 +44,7 @@ import java.util.Map;
 /**
  * Factory Class for MgnlElement processors.
  */
-public class ComponentProcessor extends MgnlElementProcessor {
+public class ComponentProcessor extends AbstractMgnlElementProcessor {
 
     public ComponentProcessor(Model model, EventBus eventBus, MgnlElement mgnlElement) {
         super(model, eventBus, mgnlElement);
@@ -54,7 +54,9 @@ public class ComponentProcessor extends MgnlElementProcessor {
     public void process() {
         if (hasControlBar(getMgnlElement().getAttributes())) {
             GWT.log("Component has edit bar. Injecting it..");
-            ComponentBar editBarWidget = new ComponentBar(getModel(), getEventBus(), getMgnlElement());
+            ComponentBar editBarWidget = new ComponentBar(getEventBus(), getMgnlElement());
+            setEditBar(editBarWidget);
+            attachWidget();
         }
         else {
             GWT.log("Component is inherited or not editable. Skipping..");

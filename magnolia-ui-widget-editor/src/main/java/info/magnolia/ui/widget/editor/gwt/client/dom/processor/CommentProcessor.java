@@ -34,53 +34,194 @@
 package info.magnolia.ui.widget.editor.gwt.client.dom.processor;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
-import info.magnolia.ui.widget.editor.gwt.client.dom.CMSComment;
+import com.google.gwt.regexp.shared.MatchResult;
+import com.google.gwt.regexp.shared.RegExp;
+import info.magnolia.ui.widget.editor.gwt.client.dom.Comment;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 import info.magnolia.ui.widget.editor.gwt.client.model.Model;
-import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.PageBar;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Processor for comment elements.
  */
 public class CommentProcessor {
 
-    public static MgnlElement process(Model model, Node node, MgnlElement parent) throws Exception {
 
-        CMSComment comment = CMSComment.as(node);
-        MgnlElement mgnlElement = null;
+    public MgnlElement process(Model model, Node node, MgnlElement currentElement) throws IllegalArgumentException {
 
-                GWT.log("processing comment " + comment);
+        CMSComment comment = getCmsComment(node);
+
+        // in case we fail, we want to keep the currentElement as current.
+        MgnlElement mgnlElement = currentElement;
 
         if (!comment.isClosing()) {
 
-            if ("cms:page".equals(comment.getTagName())) {
-                GWT.log("element was detected as page edit bar. Injecting it...");
-                PageBar pageBarWidget = new PageBar(model, comment);
-                pageBarWidget.attach(node.getOwnerDocument().getBody());
+            try {
 
+                mgnlElement = createMgnlElement(comment, currentElement);
+                String nodeData = node.getNodeValue();
+                mgnlElement.setStartComment((Element) node.cast());
 
-            } else {
-                try {
-                    mgnlElement = new MgnlElement(comment, parent);
-
-                    if (mgnlElement.getParent() == null) {
-                        model.addRoot(mgnlElement);
-                    } else {
-                        mgnlElement.getParent().getChildren().add(mgnlElement);
-                    }
-
-                } catch (IllegalArgumentException e) {
-                    GWT.log("Not MgnlElement, skipping: " + e.toString());
+                if (mgnlElement.getParent() == null) {
+                    model.setRootPage(mgnlElement);
                 }
+                else if (mgnlElement.getParent().isPage()) {
+                    model.addRootArea(mgnlElement);
+                    mgnlElement.getParent().getChildren().add(mgnlElement);
+                }
+                else {
+                    mgnlElement.getParent().getChildren().add(mgnlElement);
+                }
+
+            } catch (IllegalArgumentException e) {
+                GWT.log("Not MgnlElement, skipping: " + e.toString());
             }
 
-        } else if (parent != null) {
-            parent.setEndComment(comment);
-            mgnlElement = parent.getParent();
+
+        }
+        // the cms:page tag should span throughout the page, but doesn't: kind of a hack.
+        else if (currentElement != null && !currentElement.isPage()) {
+            currentElement.setEndComment((Element) node.cast());
+            mgnlElement = currentElement.getParent().asMgnlElement();
         }
 
         return mgnlElement;
 
+    }
+
+    private CMSComment getCmsComment(Node node) throws IllegalArgumentException {
+
+        CMSComment cmsComment = new CMSComment();
+
+        Comment domComment = node.cast();
+        String comment = domComment.getData().trim();
+
+        GWT.log("processing comment " + comment);
+
+        String tagName = "";
+        boolean isClosing = false;
+
+        int delimiter = comment.indexOf(" ");
+        String attributeString = "";
+
+        if (delimiter < 0){
+            tagName = comment;
+        }
+        else {
+            tagName = comment.substring(0, delimiter);
+            attributeString = comment.substring(delimiter + 1);
+        }
+
+        if (tagName.startsWith("/")) {
+            isClosing = true;
+            tagName = tagName.substring(1);
+        }
+
+
+        if (tagName.startsWith(Model.CMS_TAG)) {
+            cmsComment.setTagName(tagName);
+            cmsComment.setAttribute(attributeString);
+            cmsComment.setClosing(isClosing);
+
+        }
+        else {
+
+            throw new IllegalArgumentException("Tagname must start with +'" + Model.CMS_TAG + "'.");
+        }
+        return cmsComment;
+
+
+    }
+
+    private Map<String, String> getAttributes(String attributeString, MgnlElement parent) {
+        String[] keyValue;
+        Map<String, String> attributes = new HashMap<String, String>();
+
+        RegExp regExp = RegExp.compile("(\\S+=[\"'][^\"]*[\"'])", "g");
+        for (MatchResult matcher = regExp.exec(attributeString); matcher != null; matcher = regExp.exec(attributeString)) {
+            keyValue = matcher.getGroup(0).split("=");
+            if (keyValue[0].equals("content")) {
+                String content = keyValue[1].replace("\"", "");
+                int i = content.indexOf(':');
+                attributes.put("workspace", content.substring(0, i));
+                attributes.put("path", content.substring(i + 1));
+            }
+            else {
+                attributes.put(keyValue[0], keyValue[1].replace("\"", ""));
+            }
+        }
+        if (parent != null) {
+            for (String inheritedAttribute : Model.INHERITED_ATTRIBUTES) {
+                if (parent.asMgnlElement().containsAttribute(inheritedAttribute)) {
+                    attributes.put(inheritedAttribute, parent.asMgnlElement().getAttribute(inheritedAttribute));
+                }
+            }
+        }
+        return attributes;
+    }
+
+
+    private  MgnlElement createMgnlElement(CMSComment comment, MgnlElement parent) throws IllegalArgumentException {
+        String tagName = comment.getTagName();
+        MgnlElement mgnlElement;
+        if (Model.CMS_PAGE.equals(tagName)) {
+            mgnlElement = new MgnlElement(parent);
+            mgnlElement.setPage(true);
+        }
+        else if (Model.CMS_AREA.equals(tagName)) {
+            mgnlElement = new MgnlElement(parent);
+            mgnlElement.setArea(true);
+
+        }
+        else if (Model.CMS_COMPONENT.equals(tagName)) {
+            mgnlElement = new MgnlElement(parent);
+            mgnlElement.setComponent(true);
+        }
+        else {
+            throw new IllegalArgumentException("The tagname must be one of the defined marker Strings.");
+        }
+
+        mgnlElement.setAttributes(getAttributes(comment.getAttributes(), parent));
+
+        return mgnlElement;
+    }
+
+    /**
+     * CmsComment.
+     */
+    private class CMSComment {
+
+
+        private String tagName;
+        private String attributes;
+        private boolean isClosing = false;
+
+        public String getTagName() {
+            return tagName;
+        }
+
+        public void setTagName(String tagName) {
+            this.tagName = tagName;
+        }
+
+        public boolean isClosing() {
+            return isClosing;
+        }
+
+        public void setClosing(boolean isClosing) {
+            this.isClosing = isClosing;
+        }
+
+        public void setAttribute(String attributes) {
+            this.attributes = attributes;
+        }
+
+        public String getAttributes() {
+            return attributes;
+        }
     }
 }

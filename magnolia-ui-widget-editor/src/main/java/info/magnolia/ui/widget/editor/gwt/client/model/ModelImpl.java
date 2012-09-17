@@ -35,11 +35,8 @@ package info.magnolia.ui.widget.editor.gwt.client.model;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
+import info.magnolia.ui.widget.editor.gwt.client.dom.CmsNode;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
-import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.AbstractBar;
-import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.AreaEndBar;
-import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.PageBar;
-import info.magnolia.ui.widget.editor.gwt.client.widget.placeholder.ComponentPlaceHolder;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -52,42 +49,17 @@ import java.util.Map;
  */
 public class ModelImpl implements Model {
 
-    private final Map<MgnlElement, AbstractBar> editBars = new HashMap<MgnlElement, AbstractBar>();
-
     private final Map<MgnlElement, List<Element>> elements = new HashMap<MgnlElement, List<Element>>();
 
     private final Map<Element, MgnlElement> mgnlElements = new HashMap<Element, MgnlElement>();
 
-    private final Map<MgnlElement, ComponentPlaceHolder> componentPlaceHolders = new HashMap<MgnlElement, ComponentPlaceHolder>();
+    public MgnlElement rootPage;
 
-    private final Map<MgnlElement, AreaEndBar> areaEndBars = new HashMap<MgnlElement, AreaEndBar>();
-
-    public List<MgnlElement> rootElements = new LinkedList<MgnlElement>();
+    public List<MgnlElement> rootAreas = new LinkedList<MgnlElement>();
 
     private MgnlElement selectedMgnlAreaElement = null;
 
     private MgnlElement selectedMgnlComponentElement = null;
-
-    @Override
-    public PageBar getPageBar() {
-        return pageBar;
-    }
-    @Override
-    public void setPageBar(PageBar pageBar) {
-        this.pageBar = pageBar;
-    }
-
-    private PageBar pageBar = null;
-
-    @Override
-    public void addEditBar(MgnlElement mgnlElement, AbstractBar editBar) {
-        editBars.put(mgnlElement, editBar);
-    }
-
-    @Override
-    public AbstractBar getEditBar(MgnlElement mgnlElement) {
-        return editBars.get(mgnlElement);
-    }
 
     @Override
     public void addElement(MgnlElement mgnlElement, Element element) {
@@ -126,27 +98,28 @@ public class ModelImpl implements Model {
 
     @Override
     public MgnlElement getMgnlElement(Element element) {
-        MgnlElement mgnlElement = mgnlElements.get(element);
-        while (mgnlElement == null && element.hasParentElement()) {
-            element = element.getParentElement();
-            mgnlElement = mgnlElements.get(element);
-        }
-        return mgnlElement;
+        return mgnlElements.get(element);
+
     }
 
     @Override
-    public List<Element> getElements(MgnlElement mgnlElement) {
-        return elements.get(mgnlElement);
+    public MgnlElement getRootPage() {
+        return rootPage;
     }
 
     @Override
-    public void addRoot(MgnlElement boundary) {
-        this.rootElements.add(boundary);
+    public void setRootPage(MgnlElement rootPage) {
+        this.rootPage = rootPage;
     }
 
     @Override
-    public List<MgnlElement> getRootElements() {
-        return rootElements;
+    public void addRootArea(MgnlElement area) {
+        this.rootAreas.add(area);
+    }
+
+    @Override
+    public List<MgnlElement> getRootAreas() {
+        return rootAreas;
     }
 
     @Override
@@ -160,50 +133,21 @@ public class ModelImpl implements Model {
     }
 
     @Override
-    public void addComponentPlaceHolder(MgnlElement mgnlElement, ComponentPlaceHolder placeHolder) {
-        componentPlaceHolders.put(mgnlElement, placeHolder);
-    }
-
-    @Override
-    public ComponentPlaceHolder getComponentPlaceHolder(MgnlElement mgnlElement) {
-        return componentPlaceHolders.get(mgnlElement);
-    }
-
-    @Override
-    public void addAreaEndBar(MgnlElement mgnlElement, AreaEndBar areaEndBar) {
-        areaEndBars.put(mgnlElement, areaEndBar);
-    }
-
-    @Override
-    public AreaEndBar getAreaEndBar(MgnlElement mgnlElement) {
-        return areaEndBars.get(mgnlElement);
-    }
-
-    @Override
     public void removeMgnlElement(MgnlElement mgnlElement) {
 
         // remove all occurrences of the element
         if (mgnlElements.containsValue(mgnlElement)) {
-            while (mgnlElements.values().remove(mgnlElement))
-                ;
+            while (mgnlElements.values().remove(mgnlElement));
         }
         elements.remove(mgnlElement);
 
         // if the element is a root node, add all children to root list
-        if (rootElements.contains(mgnlElement)) {
-            rootElements.remove(mgnlElement);
-            rootElements.addAll(mgnlElement.getChildren());
-        }
-    }
-
-    @Override
-    public MgnlElement findMgnlElementByContentId(String contentId) {
-        for (MgnlElement element : elements.keySet()) {
-            if (contentId.equals(element.getAttribute("content"))) {
-                return element;
+        if (rootAreas.contains(mgnlElement)) {
+            rootAreas.remove(mgnlElement);
+            for (CmsNode childNode : mgnlElement.getChildren()) {
+                rootAreas.add(childNode.asMgnlElement());
             }
         }
-        return null;
     }
 
     @Override

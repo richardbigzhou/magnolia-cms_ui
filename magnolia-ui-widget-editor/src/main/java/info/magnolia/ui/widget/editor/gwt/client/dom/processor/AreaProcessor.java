@@ -34,6 +34,8 @@
 package info.magnolia.ui.widget.editor.gwt.client.dom.processor;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Node;
 import com.google.gwt.event.shared.EventBus;
 import info.magnolia.rendering.template.AreaDefinition;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
@@ -47,7 +49,7 @@ import java.util.Map;
 /**
  * Factory Class for MgnlElement processors.
  */
-public class AreaProcessor extends MgnlElementProcessor {
+public class AreaProcessor extends AbstractMgnlElementProcessor {
 
     public AreaProcessor(Model model, EventBus eventBus, MgnlElement mgnlElement) {
         super(model, eventBus, mgnlElement);
@@ -55,15 +57,22 @@ public class AreaProcessor extends MgnlElementProcessor {
 
     @Override
     public void process() {
-        AreaBar areaBar = null;
 
         if (hasControlBar(getMgnlElement().getAttributes())) {
-            areaBar = new AreaBar(getModel(), getEventBus(), getMgnlElement());
+            AreaBar areaBar = new AreaBar(getEventBus(), getMgnlElement());
+            setEditBar(areaBar);
+            attachWidget();
 
             if (hasComponentPlaceHolder(getMgnlElement().getAttributes())) {
-                new ComponentPlaceHolder(getModel(), getEventBus(), getMgnlElement());
+                ComponentPlaceHolder placeHolder = new ComponentPlaceHolder(getEventBus(), getMgnlElement());
+                attachComponentPlaceHolder(placeHolder);
+                addToModel(placeHolder);
             }
-            new AreaEndBar(getModel(), getMgnlElement());
+
+            AreaEndBar endBar = new AreaEndBar(getMgnlElement());
+            attachAreaEndBar(endBar);
+            addToModel(endBar);
+
         }
 
         else {
@@ -80,6 +89,16 @@ public class AreaProcessor extends MgnlElementProcessor {
             // remove it from the Model
             getModel().removeMgnlElement(getMgnlElement());
         }
+    }
+
+    private void addToModel(ComponentPlaceHolder placeHolder) {
+        getModel().addElements(getMgnlElement(), placeHolder.getElement());
+
+    }
+
+    private void addToModel(AreaEndBar endBar) {
+        getModel().addElements(getMgnlElement(), endBar.getElement());
+        getMgnlElement().setAreaEndBar(endBar);
     }
 
     private boolean hasComponentPlaceHolder(Map<String, String> attributes) {
@@ -149,6 +168,46 @@ public class AreaProcessor extends MgnlElementProcessor {
         }
 
         return false;
+    }
+
+    private void attachAreaEndBar(AreaEndBar controlBar) {
+        if (getMgnlElement().getFirstElement() != null && getMgnlElement().getFirstElement() == getMgnlElement().getLastElement()) {
+            Element element = getMgnlElement().getFirstElement();
+            if (element != null) {
+                element.appendChild(controlBar.getElement());
+            }
+        }
+        else {
+            Element element = getMgnlElement().getEndComment();
+            Node parentNode = element.getParentNode();
+            parentNode.insertBefore(controlBar.getElement(), element);
+
+            //attach(getMgnlElement().getEndComment());
+        }
+        controlBar.onAttach();
+    }
+
+    private void attachComponentPlaceHolder(ComponentPlaceHolder placeHolder) {
+        Element parent = getMgnlElement().getComponentElement();
+
+        if (parent == null) {
+            if (getMgnlElement().getLastElement() != null && getMgnlElement().getFirstElement() == getMgnlElement().getLastElement()) {
+                Element element = getMgnlElement().getFirstElement();
+                if (element != null) {
+                    element.appendChild(placeHolder.getElement());
+                }
+            }
+            else {
+                Element element = getMgnlElement().getEndComment();
+                Node parentNode = element.getParentNode();
+                parentNode.insertBefore(placeHolder.getElement(), element);
+            }
+        }
+        else {
+            parent.insertFirst(placeHolder.getElement());
+        }
+        placeHolder.onAttach();
+        getMgnlElement().setComponentPlaceHolder(placeHolder);
     }
 
 }
