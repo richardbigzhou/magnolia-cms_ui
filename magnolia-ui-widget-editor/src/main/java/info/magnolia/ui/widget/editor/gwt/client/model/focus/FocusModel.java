@@ -36,7 +36,6 @@ package info.magnolia.ui.widget.editor.gwt.client.model.focus;
 import com.google.gwt.dom.client.Element;
 
 
-
 /**
  * Interface for Focus Model.
  */
@@ -46,5 +45,7 @@ public interface FocusModel {
 
     void toggleRootAreaBar(boolean visible);
 
-    void selectPage();
+    void setPageSelection(boolean select);
+
+    void init();
 }

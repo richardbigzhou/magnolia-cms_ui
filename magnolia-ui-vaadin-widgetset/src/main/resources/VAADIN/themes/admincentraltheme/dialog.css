@@ -8,9 +8,9 @@
   margin-top: 25px;
 }
 
-.v-dialog-layout > .v-dialog-field-section, .v-dialog-field-label,
+.v-dialog-field-section, .v-dialog-field-label,
 .v-dialog-field, .validation-message-inline span, .help-message-inline span,
-.dialog-description * {
+.dialog-description {
   font-family: Verdana, Helvetica, sans-serif !important;
   font-size: 12px !important;
 }
@@ -146,7 +146,8 @@ button.btn-dialog-help {
     width: auto !important;
 }
 
-input[type="text"].v-dialog-field, .v-dialog-field.v-customcomponent input[type="text"], textarea.v-dialog-field {
+input[type="text"].v-dialog-field, .v-dialog-field.v-customcomponent input[type="text"],
+.v-datefield input[type="text"], textarea.v-dialog-field {
   background: #FFF;
   border-radius: 0px;
   border: 1px solid #999;
@@ -290,11 +291,6 @@ fieldset {
   padding: 0;
 }
 
-.dialog-content.show-all fieldset {
-  border-bottom: 1px solid black;
-  padding-bottom: 18px;
-}
-
 .dialog-content.show-all fieldset legend {
   font-family: Verdana, Arial, sans-serif;
   font-size: 12px;
@@ -304,13 +300,20 @@ fieldset {
   padding-bottom: 18px;
 }
 
+.dialog-content.show-all fieldset hr {
+    margin: 30px 24px 0px 24px;
+    border-top: 1px solid black;
+    border-bottom: 0px;
+    display:block !important;
+}
+
 .v-dialog-field-container .v-datefield {
   float: none;
   display: inline;
 }
 
 .v-dialog-field-container .v-datefield-button {
-  margin: 4px 0 0 3px;
+  margin: 2px 0 0 3px;
 }
 
 .v-dialog-field-label  span.requiredfield {

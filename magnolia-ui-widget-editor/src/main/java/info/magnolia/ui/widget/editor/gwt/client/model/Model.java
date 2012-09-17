@@ -35,10 +35,6 @@ package info.magnolia.ui.widget.editor.gwt.client.model;
 
 import com.google.gwt.dom.client.Element;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
-import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.AbstractBar;
-import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.AreaEndBar;
-import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.PageBar;
-import info.magnolia.ui.widget.editor.gwt.client.widget.placeholder.ComponentPlaceHolder;
 
 import java.util.List;
 
@@ -47,9 +43,11 @@ import java.util.List;
  */
 public interface Model {
 
-    void addEditBar(MgnlElement mgnlElement, AbstractBar editBar);
-
-    AbstractBar getEditBar(MgnlElement mgnlElement);
+    String CMS_TAG = "cms:";
+    String CMS_PAGE = "cms:page";
+    String CMS_AREA = "cms:area";
+    String CMS_COMPONENT = "cms:component";
+    String[] INHERITED_ATTRIBUTES = {"editable"};
 
     void addElement(MgnlElement mgnlElement, Element element);
 
@@ -57,11 +55,9 @@ public interface Model {
 
     MgnlElement getMgnlElement(Element element);
 
-    List<Element> getElements(MgnlElement mgnlElement);
+    void addRootArea(MgnlElement boundary);
 
-    void addRoot(MgnlElement boundary);
-
-    List<MgnlElement> getRootElements();
+    List<MgnlElement> getRootAreas();
 
     void setSelectedMgnlAreaElement(MgnlElement selectedMgnlAreaElement);
 
@@ -71,19 +67,9 @@ public interface Model {
 
     MgnlElement getSelectedMgnlComponentElement();
 
-    void addComponentPlaceHolder(MgnlElement mgnlElement, ComponentPlaceHolder placeHolder);
-
-    ComponentPlaceHolder getComponentPlaceHolder(MgnlElement mgnlElement);
-
-    void addAreaEndBar(MgnlElement mgnlElement, AreaEndBar areaEndBar);
-
-    AreaEndBar getAreaEndBar(MgnlElement mgnlElement);
-
     void removeMgnlElement(MgnlElement mgnlElement);
 
-    MgnlElement findMgnlElementByContentId(String contentId);
+    void setRootPage(MgnlElement mgnlElement);
 
-    PageBar getPageBar();
-
-    void setPageBar(PageBar pageBar);
+    MgnlElement getRootPage();
 }

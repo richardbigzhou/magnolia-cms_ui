@@ -36,7 +36,6 @@ package info.magnolia.ui.widget.editor.gwt.client.widget.placeholder;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.FlowPanel;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
-import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 
 /**
  * Abstract Widget for area and component placeholder.
@@ -44,12 +43,10 @@ import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 public class AbstractPlaceHolder extends FlowPanel {
 
     private MgnlElement mgnlElement;
-    private Model model;
     private EventBus eventBus;
 
-    public AbstractPlaceHolder(Model model, EventBus eventBus, MgnlElement mgnlElement) {
+    public AbstractPlaceHolder(EventBus eventBus, MgnlElement mgnlElement) {
         super();
-        this.model = model;
         this.eventBus = eventBus;
 
         this.setMgnlElement(mgnlElement);
@@ -63,8 +60,7 @@ public class AbstractPlaceHolder extends FlowPanel {
     }
 
     @Override
-    protected void onAttach() {
-        getModel().addElements(this.getMgnlElement(), getElement());
+    public void onAttach() {
         super.onAttach();
     }
 
@@ -74,10 +70,6 @@ public class AbstractPlaceHolder extends FlowPanel {
 
     public MgnlElement getMgnlElement() {
         return mgnlElement;
-    }
-
-    public Model getModel() {
-        return model;
     }
 
     public EventBus getEventBus() {

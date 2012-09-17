@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,41 +33,40 @@
  */
 package info.magnolia.ui.widget.editor.gwt.client.dom.processor;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.shared.EventBus;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 import info.magnolia.ui.widget.editor.gwt.client.model.Model;
+import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.PageBar;
 
 /**
- * Abstract Class for MgnlElement processors.
+ * PageProcessor.
  */
-public abstract class MgnlElementProcessor {
-
-    private MgnlElement mgnlElement;
-
-    private Model model;
-    private EventBus eventBus;
-
-    public MgnlElementProcessor(Model model, EventBus eventBus, MgnlElement mgnlElement) {
-        this.model = model;
-        this.eventBus = eventBus;
-        this.setMgnlElement(mgnlElement);
+public class PageProcessor extends AbstractMgnlElementProcessor {
+    public PageProcessor(Model model, EventBus eventBus, MgnlElement mgnlElement) {
+        super(model, eventBus, mgnlElement);
     }
 
-    public abstract void process();
+    @Override
+    public void process() {
 
-    public void setMgnlElement(MgnlElement mgnlElement) {
-        this.mgnlElement = mgnlElement;
+        GWT.log("element was detected as page edit bar. Injecting it...");
+        PageBar pageBarWidget = new PageBar(getModel(), getMgnlElement());
+        setEditBar(pageBarWidget);
+        attachWidget();
     }
 
-    public MgnlElement getMgnlElement() {
-        return mgnlElement;
+    @Override
+    public void attach() {
+
+        // map null to pageelement??
+        Element body = getMgnlElement().getStartComment().getOwnerDocument().getBody();
+
+        body.insertFirst(getEditBar().getElement());
+
+        getEditBar().onAttach();
     }
 
-    public Model getModel() {
-        return model;
-    }
 
-    protected EventBus getEventBus() {
-        return eventBus;
-    }
 }

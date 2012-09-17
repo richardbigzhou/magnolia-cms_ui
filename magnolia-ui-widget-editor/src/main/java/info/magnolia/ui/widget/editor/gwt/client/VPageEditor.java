@@ -46,11 +46,12 @@ import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.Paintable;
 import com.vaadin.terminal.gwt.client.UIDL;
 import com.vaadin.terminal.gwt.client.VConsole;
+import info.magnolia.ui.widget.editor.gwt.client.dom.CmsNode;
 import info.magnolia.ui.widget.editor.gwt.client.dom.Comment;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
+import info.magnolia.ui.widget.editor.gwt.client.dom.processor.AbstractMgnlElementProcessor;
 import info.magnolia.ui.widget.editor.gwt.client.dom.processor.CommentProcessor;
 import info.magnolia.ui.widget.editor.gwt.client.dom.processor.ElementProcessor;
-import info.magnolia.ui.widget.editor.gwt.client.dom.processor.MgnlElementProcessor;
 import info.magnolia.ui.widget.editor.gwt.client.dom.processor.MgnlElementProcessorFactory;
 import info.magnolia.ui.widget.editor.gwt.client.event.DeleteComponentEvent;
 import info.magnolia.ui.widget.editor.gwt.client.event.DeleteComponentEventHandler;
@@ -69,11 +70,11 @@ import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 import info.magnolia.ui.widget.editor.gwt.client.model.ModelImpl;
 import info.magnolia.ui.widget.editor.gwt.client.model.focus.FocusModel;
 import info.magnolia.ui.widget.editor.gwt.client.model.focus.FocusModelImpl;
+import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.PageBar;
 import org.vaadin.rpc.client.ClientSideHandler;
 import org.vaadin.rpc.client.ClientSideProxy;
 import org.vaadin.rpc.client.Method;
 
-import java.util.LinkedList;
 import java.util.List;
 
 
@@ -173,11 +174,10 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
                 Document document = event.getFrameDocument();
                 process(event.getFrameDocument());
 
-                // fix this
-                if (model.getPageBar() != null) {
-                    model.getPageBar().setPageTitle(document.getTitle());
+                if (model.getRootPage().getControlBar() != null) {
+                    ((PageBar)model.getRootPage().getControlBar()).setPageTitle(document.getTitle());
                 }
-                focusModel.selectPage();
+                focusModel.init();
             }
 
         });
@@ -258,18 +258,22 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
     }
 
     private void processDocument(Node node, MgnlElement mgnlElement) {
+        if (mgnlElement == null && model.getRootPage() != null) {
+            mgnlElement = model.getRootPage();
+        }
         for (int i = 0; i < node.getChildCount(); i++) {
             Node childNode = node.getChild(i);
             if (childNode.getNodeType() == Comment.COMMENT_NODE) {
 
                 try {
-                    mgnlElement = CommentProcessor.process(model, childNode, mgnlElement);
+                    CommentProcessor processor = new CommentProcessor();
+                    mgnlElement = processor.process(model, childNode, mgnlElement);
                 } catch (IllegalArgumentException e) {
                     GWT.log("Not CMSComment element, skipping: " + e.toString());
                 } catch (Exception e) {
                     GWT.log("Caught undefined exception: " + e.toString());
                 }
-            } else if (childNode.getNodeType() == Node.ELEMENT_NODE && mgnlElement != null) {
+            } else if (childNode.getNodeType() == Node.ELEMENT_NODE && mgnlElement != null && !mgnlElement.isPage()) {
                 ElementProcessor.process(model, childNode, mgnlElement);
             }
 
@@ -279,22 +283,18 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
     }
 
     private void processMgnlElements() {
-        List<MgnlElement> rootElements = new LinkedList<MgnlElement>(getModel().getRootElements());
-        for (MgnlElement root : rootElements) {
-            LinkedList<MgnlElement> elements = new LinkedList<MgnlElement>();
-            elements.add(root);
-            elements.addAll(root.getDescendants());
+        CmsNode root = model.getRootPage();
+        List<CmsNode> elements = root.getDescendants();
+        elements.add(root);
+        for (CmsNode element : elements) {
 
-            for (MgnlElement mgnlElement : elements) {
-                try {
-                    MgnlElementProcessor processor = MgnlElementProcessorFactory.getProcessor(model, eventBus, mgnlElement);
-                    processor.process();
-                } catch (IllegalArgumentException e) {
-                    GWT.log("MgnlFactory could not instantiate class. The element is neither an area nor component.");
-                }
+            try {
+                AbstractMgnlElementProcessor processor = MgnlElementProcessorFactory.getProcessor(model, eventBus, element.asMgnlElement());
+                processor.process();
+            } catch (IllegalArgumentException e) {
+                GWT.log("MgnlFactory could not instantiate class. The element is neither an area nor component.");
             }
         }
-
     }
 
 }
