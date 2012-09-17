@@ -70,11 +70,16 @@ public class VDialogTabLayout extends FlowPanel implements Container, HelpAccess
 
     private Element legend = DOM.createElement("legend");
 
+    private Element horizontalRule = DOM.createElement("hr");
+
     private boolean isValidationVisible = false;
 
     public VDialogTabLayout() {
         super();
         getElement().appendChild(fieldSet);
+        //both only display when show all tab is active
+        horizontalRule.getStyle().setDisplay(Display.NONE);
+        legend.getStyle().setDisplay(Display.NONE);
     }
 
     @Override
@@ -87,11 +92,7 @@ public class VDialogTabLayout extends FlowPanel implements Container, HelpAccess
 
         if(uidl.hasAttribute("caption")) {
             String caption = uidl.getStringAttribute("caption");
-
             legend.setInnerText(caption);
-            //only displays when show all tab is active
-            legend.getStyle().setDisplay(Display.NONE);
-
             fieldSet.appendChild(legend);
         }
 
@@ -113,12 +114,13 @@ public class VDialogTabLayout extends FlowPanel implements Container, HelpAccess
                 fieldSection.setHelpDescription(description);
             }
 
-
             p.updateFromUIDL(childUIdl.getChildUIDL(0), client);
             /**
              * TODO: Implement ALL the details of Paintable handling here.
              */
         }
+
+        fieldSet.appendChild(horizontalRule);
     }
 
     @Override
