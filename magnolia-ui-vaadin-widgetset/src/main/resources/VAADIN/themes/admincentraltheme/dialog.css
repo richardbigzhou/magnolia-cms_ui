@@ -146,7 +146,8 @@ button.btn-dialog-help {
     width: auto !important;
 }
 
-input[type="text"].v-dialog-field, .v-dialog-field.v-customcomponent input[type="text"], textarea.v-dialog-field {
+input[type="text"].v-dialog-field, .v-dialog-field.v-customcomponent input[type="text"],
+.v-datefield input[type="text"], textarea.v-dialog-field {
   background: #FFF;
   border-radius: 0px;
   border: 1px solid #999;
@@ -310,7 +311,7 @@ fieldset {
 }
 
 .v-dialog-field-container .v-datefield-button {
-  margin: 4px 0 0 3px;
+  margin: 2px 0 0 3px;
 }
 
 .v-dialog-field-label  span.requiredfield {
