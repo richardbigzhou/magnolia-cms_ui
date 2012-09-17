@@ -167,6 +167,9 @@ textarea.v-dialog-field {
   width: 140px;
   margin-right: 12px;
   color: #666;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .v-dialog-field-container {
@@ -284,8 +287,21 @@ select:focus,input[type="text"]:focus,input[type="password"]:focus,textarea:focu
 
 fieldset {
   border: 0px none;
-  margin: 0;
   padding: 0;
+}
+
+.dialog-content.show-all fieldset {
+  border-bottom: 1px solid black;
+  padding-bottom: 18px;
+}
+
+.dialog-content.show-all fieldset legend {
+  font-family: Verdana, Arial, sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  display: block !important;
+  margin-left: 24px;
+  padding-bottom: 18px;
 }
 
 .v-dialog-field-container .v-datefield {

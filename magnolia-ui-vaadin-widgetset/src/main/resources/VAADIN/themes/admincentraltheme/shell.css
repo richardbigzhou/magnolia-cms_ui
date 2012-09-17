@@ -130,7 +130,6 @@ button.action-close {
     filter: alpha(opacity = 50);
     opacity: 0.9;
     background: none repeat scroll 0 0 #77A42F;
-    height: 100%;
     right: 0;
     bottom: 0;
     top:60px;

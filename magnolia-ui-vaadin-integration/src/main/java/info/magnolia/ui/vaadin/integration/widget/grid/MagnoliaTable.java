@@ -41,6 +41,7 @@ import java.util.Map;
 import com.vaadin.ui.ClientWidget;
 import com.vaadin.ui.Table;
 
+
 /**
  * MagnoliaTable.
  */
@@ -51,17 +52,18 @@ public class MagnoliaTable extends Table {
         addStyleName("v-magnolia-table");
         setEditable(false);
         setSelectable(true);
-        setImmediate(true);
         setMultiSelect(true);
+        setDragMode(TableDragMode.NONE);
+        setImmediate(true);
     }
-    
+
     @Override
     public void changeVariables(Object source, Map<String, Object> variables) {
         super.changeVariables(source, variables);
         if (variables.containsKey("selectAll")) {
             boolean selectAll = (Boolean) variables.get("selectAll");
             if (selectAll) {
-                Collection<?> ids = getItemIds();
+                Collection< ? > ids = getItemIds();
                 for (final Object id : ids) {
                     select(id);
                 }
@@ -69,9 +71,9 @@ public class MagnoliaTable extends Table {
                 setValue(null);
             }
         }
-        
+
         if (variables.containsKey("toggleSelection")) {
-            boolean selected = (Boolean)variables.get("toggleSelection");
+            boolean selected = (Boolean) variables.get("toggleSelection");
             String key = String.valueOf(variables.get("toggledRowId"));
             final Object id = itemIdMapper.get(key);
             if (selected) {
