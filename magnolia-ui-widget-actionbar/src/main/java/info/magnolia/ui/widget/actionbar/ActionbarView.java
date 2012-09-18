@@ -82,6 +82,8 @@ public interface ActionbarView extends View {
 
     void hideSection(String sectionName);
 
+    boolean isSectionVisible(String sectionName);
+
     /**
      * Base interface for an action bar listener.
      */

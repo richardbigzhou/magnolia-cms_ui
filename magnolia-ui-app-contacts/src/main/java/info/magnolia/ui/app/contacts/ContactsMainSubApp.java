@@ -109,6 +109,8 @@ public class ContactsMainSubApp extends AbstractSubApp {
         if (selectedItemId == null || selectedItemId.equals("/")) {
             actionbar.disable("edit");
             actionbar.disable("delete");
+            actionbar.showSection("contactsActions");
+            actionbar.hideSection("folderActions");
         } else {
             actionbar.enable("edit");
             actionbar.enable("delete");

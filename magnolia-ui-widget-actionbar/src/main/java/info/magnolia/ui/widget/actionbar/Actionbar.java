@@ -408,6 +408,15 @@ public class Actionbar extends AbstractComponent implements ActionbarView, Serve
         }
     }
 
+    @Override
+    public boolean isSectionVisible(String sectionName) {
+        ActionbarSection section = sections.get(sectionName);
+        if (section != null) {
+            return section.isVisible();
+        }
+        return false;
+    }
+
     // SUPPORTING CLASSES ///////////////////////
 
     /**
