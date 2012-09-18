@@ -101,7 +101,7 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
             @Override
             public Object generateCell(Table source, Object itemId, Object columnId) {
                 Property prop = source.getItem(itemId).getItemProperty(columnId);
-                if (prop.getType().equals(Date.class)) {
+                if (prop.getType().equals(Date.class) && prop.getValue() != null) {
                     return new SimpleDateFormat().format(prop.getValue());
                 }
                 return null;
