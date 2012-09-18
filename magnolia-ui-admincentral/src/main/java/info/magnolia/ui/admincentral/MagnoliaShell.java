@@ -80,6 +80,7 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
     private final EventBus admincentralEventBus;
 
     private final AppController appController;
+    
     private final Provider<ShellAppController> shellAppControllerProvider;
 
     private final MessagesManager messagesManager;

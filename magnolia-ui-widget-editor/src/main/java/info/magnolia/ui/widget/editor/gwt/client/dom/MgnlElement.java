@@ -34,178 +34,76 @@
 package info.magnolia.ui.widget.editor.gwt.client.dom;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONString;
+import info.magnolia.ui.widget.editor.gwt.client.model.Model;
+import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.AbstractBar;
+import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.AreaEndBar;
+import info.magnolia.ui.widget.editor.gwt.client.widget.placeholder.ComponentPlaceHolder;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 /**
 * MgnlElement Constructor.
 *
 */
-public class MgnlElement {
-
-    private CMSComment comment;
-    private MgnlElement parent;
-    private boolean isArea = false;
-    private boolean isComponent = false;
-
-    private Element firstElement;
-    private Element lastElement;
-
-    private LinkedList<MgnlElement> children = new LinkedList<MgnlElement>();
-    private Element componentElement;
-    private Element areaElement;
-    private Element editElement;
-    private CMSComment endComment;
+public class MgnlElement extends CmsNode {
 
     private Map<String, String> attributes;
 
-    private static final String MARKER_AREA = "cms:area";
-    private static final String MARKER_COMPONENT = "cms:component";
+    private Element startComment;
+    private Element endComment;
 
-    private static final String[] INHERITED_ATTRIBUTES = {"editable"};
+    private Element firstElement;
+    private Element lastElement;
+    private Element componentElement;
+    private Element areaElement;
 
-/**
- * @throws IllegalArgumentException if comments tagname is not a defined marker.
+    private Element editElement;
+    private AbstractBar controlBar;
+
+    // only used in areas
+    ComponentPlaceHolder componentPlaceHolder;
+    AreaEndBar areaEndBar;
+
+
+    /**
+ * MgnlElement. Represents a node in the tree built on cms-tags.
  */
-    public MgnlElement(CMSComment comment, MgnlElement parent) throws IllegalArgumentException {
-
-        if (!isMgnlElement(comment.getTagName())) {
-            throw new IllegalArgumentException("The tagname must be one of the defined marker Strings.");
-        }
-        this.comment = comment;
-        this.parent = parent;
-
-        this.attributes = comment.getAttributes();
-
-        if (this.parent != null) {
-            for (String inheritedAttribute : INHERITED_ATTRIBUTES) {
-                if (this.parent.containsAttribute(inheritedAttribute)) {
-                    attributes.put(inheritedAttribute, this.parent.getAttribute(inheritedAttribute));
-                }
-            }
-        }
-    }
-    public boolean isMgnlElement(String tagName) {
-        if (tagName.equals(MARKER_AREA)) {
-            this.isArea = true;
-            return true;
-        }
-        else if (tagName.equals(MARKER_COMPONENT)) {
-            this.isComponent = true;
-            return true;
-        }
-
-        return false;
+    public MgnlElement(MgnlElement parent) {
+        super(parent);
     }
 
-    public boolean isArea() {
-        return isArea;
+
+    public void setAttributes(Map<String, String> attributes) {
+        this.attributes = attributes;
     }
 
-    public boolean isComponent() {
-        return isComponent;
+    public Map<String, String> getAttributes() {
+        return this.attributes;
     }
 
-    public MgnlElement getParent() {
-        return parent;
+    public AbstractBar getControlBar() {
+        return controlBar;
     }
 
-    public void setParent(MgnlElement parent) {
-        this.parent = parent;
+    public void setControlBar(AbstractBar controlBar) {
+        this.controlBar = controlBar;
+    }
+    public ComponentPlaceHolder getComponentPlaceHolder() {
+        return componentPlaceHolder;
     }
 
-    public LinkedList<MgnlElement> getChildren() {
-        return children;
+    public void setComponentPlaceHolder(ComponentPlaceHolder componentPlaceHolder) {
+        this.componentPlaceHolder = componentPlaceHolder;
     }
 
-    public List<MgnlElement> getDescendants() {
-
-        List<MgnlElement> descendants = new LinkedList<MgnlElement>();
-
-        for (MgnlElement element : getChildren()) {
-            descendants.add(element);
-            descendants.addAll(element.getDescendants());
-        }
-        return descendants;
+    public AreaEndBar getAreaEndBar() {
+        return areaEndBar;
     }
 
-    public List<MgnlElement> getAscendants() {
-        List<MgnlElement> ascendants = new LinkedList<MgnlElement>();
-        MgnlElement ascendant = parent;
-        while (ascendant != null) {
-            ascendants.add(ascendant);
-            ascendant = ascendant.getParent();
-        }
-        return ascendants;
-    }
-
-    public MgnlElement getRootArea() {
-        MgnlElement rootArea = null;
-        for (MgnlElement parent = this; parent != null; parent = parent.getParent()) {
-            if (parent.isArea()) {
-                rootArea = parent;
-            }
-        }
-        return rootArea;
-    }
-
-    public MgnlElement getParentArea() {
-        MgnlElement parentArea = null;
-        for (MgnlElement parent = getParent(); parent != null; parent = parent.getParent()) {
-            if (parent.isArea()) {
-                parentArea = parent;
-                break;
-            }
-        }
-        return parentArea;
-    }
-
-    @Deprecated
-    public CMSComment getComment() {
-        return comment;
-    }
-
-    public List<MgnlElement> getComponents() {
-        List<MgnlElement> components = new LinkedList<MgnlElement>();
-        for (MgnlElement element : getChildren()) {
-            if (element.isComponent()) {
-                components.add(element);
-            }
-        }
-        return components;
-    }
-    public List<MgnlElement> getAreas() {
-        List<MgnlElement> areas = new LinkedList<MgnlElement>();
-        for (MgnlElement element : getChildren()) {
-            if (element.isArea()) {
-                areas.add(element);
-            }
-        }
-        return areas;
-    }
-
-    public MgnlElement getRoot() {
-        MgnlElement root = null;
-        for (MgnlElement parent = this; parent != null; parent = parent.getParent()) {
-                root = parent;
-        }
-        return root;
-    }
-
-    public boolean isRelated(MgnlElement relative) {
-
-        return relative != null && this.getRoot() == relative.getRoot();
-    }
-
-    public void delete() {
-        for (MgnlElement child : getChildren()) {
-            if (getParent() != null) {
-                getParent().getChildren().add(child);
-            }
-            child.setParent(getParent());
-        }
+    public void setAreaEndBar(AreaEndBar areaEndBar) {
+        this.areaEndBar = areaEndBar;
     }
 
     public Element getFirstElement() {
@@ -248,14 +146,6 @@ public class MgnlElement {
         return editElement;
     }
 
-    public void setEndComment(CMSComment endComment) {
-        this.endComment = endComment;
-    }
-
-    public CMSComment getEndComment() {
-        return this.endComment;
-    }
-
     public String getAttribute(String key) {
         return this.attributes.get(key);
     }
@@ -263,12 +153,43 @@ public class MgnlElement {
     public boolean containsAttribute(String key) {
         return this.attributes.containsKey(key);
     }
-    public Map<String, String> getAttributes() {
-        return this.attributes;
+
+    public Element getStartComment() {
+        return startComment;
     }
 
-    @Override
-    public String toString() {
-        return comment.toString();
+    public Element getEndComment() {
+        return this.endComment;
+    }
+
+    public void setStartComment(Element element) {
+        this.startComment = element;
+    }
+    public void setEndComment(Element element) {
+        this.endComment = element;
+    }
+
+    public String getType() {
+
+        if (isPage()) {
+            return Model.CMS_PAGE;
+        }
+        if (isArea()) {
+            return Model.CMS_AREA;
+        }
+        else {
+            return Model.CMS_COMPONENT;
+        }
+    }
+
+    public String getJsonAttributes() {
+
+        JSONObject json = new JSONObject();
+
+        for ( String key : attributes.keySet()) {
+            String value = attributes.get(key);
+            json.put(key, new JSONString(value));
+        }
+        return json.toString();
     }
 }

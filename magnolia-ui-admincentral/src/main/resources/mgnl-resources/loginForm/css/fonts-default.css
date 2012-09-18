@@ -1,38 +1,19 @@
-/*
-For Webkit - we use the actual fonts - because this matches the design
-because we are also using 3d transforms everywhere to correct other problems.
-*/
+/* Anything not Webkit and IE */
 
-
-/*
-Note that we are using lighter fonts here
-to match the Fireworks Anti-Aliasing: "Smooth Anti-Alias" used by the designers.
-*/
-
-/* first for IE 4–8 */
 @font-face {
-    font-family: DINWebPro-Medium;
-    src: url("fonts/DINWebPro.eot");
-}
-/* then for WOFF-capable browsers */
-@font-face {
-    font-family: DINWebPro-Medium;
-    src: url("fonts/DINWebPro.woff") format("woff");
+    font-family:DINWebPro;
+    src:url("./fonts/DINWebPro-Light.eot");
+    src:url('./fonts/DINWebPro-Light.eot?#iefix') format('embedded-opentype'),
+    url('./fonts/DINWebPro-Light.woff') format('woff');
+    font-weight:normal;
+    font-style:normal;
 }
 
-/* first for IE 4–8 */
 @font-face {
-    font-family: DINWebPro;
-    src: url("fonts/DINWebPro-Light.eot");
+    font-family:DINWebPro;
+    src:url("./fonts/DINWebPro.eot");
+    src:url('./fonts/DINWebPro.eot?#iefix') format('embedded-opentype'),
+    url("./fonts/DINWebPro.woff") format("woff");
+    font-weight:bold;
+    font-style:normal;
 }
-/* then for WOFF-capable browsers */
-@font-face {
-    font-family: DINWebPro;
-    src: url("fonts/DINWebPro-Light.woff") format("woff");
-}
-
-/*
-body{
-    background-color:red;
-    background: -webkit-linear-gradient(top, red 0%, black 100%);
-}*/

@@ -152,6 +152,15 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
         createUpload();
     }
 
+    /**
+     * On Detach, clean Item, and interrupt upload.
+     */
+    @Override
+    public void detach() {
+        super.detach();
+        fileItem.clearProperties();
+        interruptUpload();
+    }
 
     /**
      * Set the Upload field Components layout based on the current state.
@@ -263,7 +272,7 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
                 }
 
                 @Override
-                public boolean isInterrupted() {
+                public synchronized boolean isInterrupted() {
                     return isDragAndDropUploadInterrupted();
                 }
 
@@ -274,7 +283,7 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
     // Used to handle Cancel / Interrupted upload in the DragAndDrop implementation.
     private boolean interruptedDragAndDropUpload = false;
 
-    private void setDragAndDropUploadInterrupted(boolean isInterrupetd) {
+    protected void setDragAndDropUploadInterrupted(boolean isInterrupetd) {
         interruptedDragAndDropUpload = isInterrupetd;
     }
     private boolean isDragAndDropUploadInterrupted() {
@@ -344,10 +353,7 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
         this.cancelButton = new NativeButton(null, new Button.ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
-                upload.interruptUpload();
-                // Also inform DragAndDrop
-                getRootLayout().removeStyleName("in-progress");
-                setDragAndDropUploadInterrupted(true);
+                interruptUpload();
             }
         });
         this.cancelButton.addStyleName("cancel");
@@ -470,10 +476,8 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
         if(isValidFile(event)) {
             buildUploadStartedLayout();
         } else {
-            setDragAndDropUploadInterrupted(true);
+            interruptUpload();
             getWindow().showNotification("Upload canceled due to unsupported file type "+ event.getMIMEType());
-            getRootLayout().removeStyleName("in-progress");
-            upload.interruptUpload();
         }
     }
 
@@ -484,7 +488,17 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
         }
     }
 
-
+    /**
+     * Interrupt upload.
+     */
+    public void interruptUpload() {
+        getRootLayout().removeStyleName("in-progress");
+        if(upload.isUploading()) {
+            upload.interruptUpload();
+        }else {
+            setDragAndDropUploadInterrupted(true);
+        }
+    }
 
     /**
      * Default implementation returns always true.

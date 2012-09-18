@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,21 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.editor.gwt.client.model.focus;
+package info.magnolia.ui.app.contacts.column;
 
-import com.google.gwt.dom.client.Element;
-
+import info.magnolia.ui.model.column.definition.AbstractColumnDefinition;
 
 /**
- * Interface for Focus Model.
+ * Definition of a column that displays the name of a contact or a folder.
  */
-public interface FocusModel {
-
-    void selectElement(Element element);
-
-    void toggleRootAreaBar(boolean visible);
-
-    void setPageSelection(boolean select);
-
-    void init();
+public class ContactNameColumnDefinition extends AbstractColumnDefinition {
 }

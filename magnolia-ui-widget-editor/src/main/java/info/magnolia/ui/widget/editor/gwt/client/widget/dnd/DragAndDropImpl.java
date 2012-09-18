@@ -44,9 +44,8 @@ import com.google.gwt.event.dom.client.DragStartHandler;
 import com.google.gwt.event.dom.client.DropEvent;
 import com.google.gwt.event.dom.client.DropHandler;
 import com.google.gwt.event.shared.EventBus;
-import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
+import info.magnolia.ui.widget.editor.gwt.client.dom.CmsNode;
 import info.magnolia.ui.widget.editor.gwt.client.event.SortComponentEvent;
-import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 import info.magnolia.ui.widget.editor.gwt.client.widget.controlbar.ComponentBar;
 import info.magnolia.ui.widget.editor.gwt.client.widget.placeholder.ComponentPlaceHolder;
 
@@ -55,11 +54,9 @@ import info.magnolia.ui.widget.editor.gwt.client.widget.placeholder.ComponentPla
  */
 public class DragAndDropImpl {
 
-    private Model model;
     private EventBus eventBus;
 
-    public void dragAndDrop (Model model, final EventBus eventBus, final ComponentBar bar) {
-        this.model = model;
+    public void dragAndDrop (final EventBus eventBus, final ComponentBar bar) {
         this.eventBus = eventBus;
 
         bar.setDraggable(true);
@@ -70,15 +67,15 @@ public class DragAndDropImpl {
 
                 bar.setStyleName("moveSource", true);
 
-                MgnlElement area = bar.getMgnlElement().getParentArea();
+                CmsNode area = bar.getCmsNode().getParentArea();
                 if (area != null) {
-                    for (MgnlElement component : area.getComponents()) {
-                        ComponentBar componentBar = (ComponentBar) getModel().getEditBar(component);
+                    for (CmsNode component : area.getComponents()) {
+                        ComponentBar componentBar = (ComponentBar) component.asMgnlElement().getControlBar();
                         if (componentBar != null && componentBar != bar) {
                             componentBar.setStyleName("moveTarget", true);
                         }
                     }
-                    ComponentPlaceHolder placeholder = getModel().getComponentPlaceHolder(area);
+                    ComponentPlaceHolder placeholder = area.asMgnlElement().getComponentPlaceHolder();
                     if (placeholder != null) {
                         placeholder.setStyleName("moveOngoing", true);
                     }
@@ -99,15 +96,15 @@ public class DragAndDropImpl {
 
                 bar.setStyleName("moveSource", false);
 
-                MgnlElement area = bar.getMgnlElement().getParentArea();
+                CmsNode area = bar.getCmsNode().getParentArea();
                 if (area != null) {
-                    for (MgnlElement component : area.getComponents()) {
-                        ComponentBar componentBar = (ComponentBar) getModel().getEditBar(component);
+                    for (CmsNode component : area.getComponents()) {
+                        ComponentBar componentBar = (ComponentBar) component.asMgnlElement().getControlBar();
                         if (componentBar != null && componentBar != bar) {
                             componentBar.setStyleName("moveTarget", false);
                         }
                     }
-                    ComponentPlaceHolder placeholder = getModel().getComponentPlaceHolder(area);
+                    ComponentPlaceHolder placeholder = area.asMgnlElement().getComponentPlaceHolder();
                     if (placeholder != null) {
                         placeholder.setStyleName("moveOngoing", false);
                     }
@@ -172,9 +169,5 @@ public class DragAndDropImpl {
             }
         }, DropEvent.getType());
 
-    }
-
-    public Model getModel() {
-        return model;
     }
 }

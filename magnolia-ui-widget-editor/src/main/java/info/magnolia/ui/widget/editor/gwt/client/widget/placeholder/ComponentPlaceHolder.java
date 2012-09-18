@@ -36,7 +36,6 @@ package info.magnolia.ui.widget.editor.gwt.client.widget.placeholder;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -49,7 +48,6 @@ import com.google.gwt.user.client.ui.PushButton;
 import info.magnolia.rendering.template.AreaDefinition;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
 import info.magnolia.ui.widget.editor.gwt.client.event.NewComponentEvent;
-import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 
 import java.util.Map;
 
@@ -71,13 +69,11 @@ public class ComponentPlaceHolder extends AbstractPlaceHolder {
     private FlowPanel buttonWrapper;
     private String label;
     private String labelString;
-    private Model model;
 
 
-    public ComponentPlaceHolder(Model model, EventBus eventBus, MgnlElement mgnlElement) throws IllegalArgumentException {
+    public ComponentPlaceHolder(EventBus eventBus, MgnlElement mgnlElement) throws IllegalArgumentException {
 
-        super(model, eventBus, mgnlElement);
-        this.model = model;
+        super(eventBus, mgnlElement);
 
         setFields(mgnlElement.getAttributes());
 
@@ -111,7 +107,6 @@ public class ComponentPlaceHolder extends AbstractPlaceHolder {
 
         setVisible(false);
         createControls();
-        attach();
     }
 
     private void createBoxPlaceHolder() {
@@ -170,45 +165,13 @@ public class ComponentPlaceHolder extends AbstractPlaceHolder {
         }
     }
 
-    public void attach() {
-        Element parent = getMgnlElement().getComponentElement();
-
-        if (parent == null) {
-            if (getMgnlElement().getLastElement() != null && getMgnlElement().getFirstElement() == getMgnlElement().getLastElement()) {
-                attach(getMgnlElement());
-            }
-            else {
-                attach(getMgnlElement().getEndComment().getElement());
-            }
-        }
-        else {
-            parent.insertFirst(getElement());
-        }
-        onAttach();
-        getModel().addComponentPlaceHolder(getMgnlElement(), this);
-    }
-
-    public void attach(MgnlElement mgnlElement) {
-        Element element = mgnlElement.getFirstElement();
-        if (element != null) {
-            element.appendChild(getElement());
-        }
-    }
-
-    public void attach(Element element) {
-        final Node parentNode = element.getParentNode();
-        parentNode.insertBefore(getElement(), element);
-    }
-
     private void setFields(Map<String, String> attributes) throws IllegalArgumentException {
 
         this.showAddButton = Boolean.parseBoolean(attributes.get("showAddButton"));
         this.type = attributes.get("type");
 
-        String areaContent = attributes.get("content");
-        int i = areaContent.indexOf(':');
-        this.areaWorkspace = areaContent.substring(0, i);
-        this.areaPath = areaContent.substring(i + 1);
+        this.areaWorkspace = attributes.get("workspace");
+        this.areaPath = attributes.get("path");
 
         this.label = getMgnlElement().getAttribute("label");
 
@@ -218,11 +181,6 @@ public class ComponentPlaceHolder extends AbstractPlaceHolder {
         else {
             this.availableComponents = attributes.get("availableComponents");
         }
-    }
-
-    @Override
-    public Model getModel() {
-        return model;
     }
 
 }

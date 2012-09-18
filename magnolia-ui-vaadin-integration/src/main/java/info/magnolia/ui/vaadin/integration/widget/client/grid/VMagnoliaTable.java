@@ -93,6 +93,10 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
+import com.googlecode.mgwt.dom.client.recognizer.tap.MultiTapEvent;
+import com.googlecode.mgwt.dom.client.recognizer.tap.MultiTapHandler;
+import com.googlecode.mgwt.dom.client.recognizer.tap.MultiTapRecognizer;
+import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.BrowserInfo;
 import com.vaadin.terminal.gwt.client.Container;
@@ -4564,6 +4568,28 @@ public class VMagnoliaTable extends FlowPanel implements Table, ScrollHandler, V
                 VMagnoliaTable.this.adopt(selectionCheckBox);
 
                 DOM.sinkEvents(getElement(), Event.MOUSEEVENTS | Event.TOUCHEVENTS | Event.ONDBLCLICK | Event.ONCONTEXTMENU | VTooltip.TOOLTIP_EVENTS);
+                
+                final TouchDelegate delegate = new TouchDelegate(this);
+                delegate.addTouchHandler(new MultiTapRecognizer(delegate, 1, 2));
+                addHandler(new MultiTapHandler() {
+                    @Override
+                    public void onMultiTap(MultiTapEvent event) {
+                        if (BrowserInfo.get().isTouchDevice()) {
+                            final NativeEvent doubleClickEvent = 
+                                    Document.get().createDblClickEvent(
+                                            0, 
+                                            event.getTouchStarts().get(0).get(0).getPageX(), 
+                                            event.getTouchStarts().get(0).get(0).getPageY(), 
+                                            event.getTouchStarts().get(0).get(0).getPageX(), 
+                                            event.getTouchStarts().get(0).get(0).getPageY(), 
+                                            false, 
+                                            false, 
+                                            false, 
+                                            false);
+                            getElement().dispatchEvent(doubleClickEvent);
+                        }
+                    }
+                }, MultiTapEvent.getType());
             }
 
             public VScrollTableRow(UIDL uidl, char[] aligns) {

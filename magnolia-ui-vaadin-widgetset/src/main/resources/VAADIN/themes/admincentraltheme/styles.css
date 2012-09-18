@@ -41,6 +41,12 @@ v2
 	border: 1px solid #F0F0F0;
 	display: inline-block;
 	margin: 3px;
+	padding: 5px;
+}
+
+.thumbnail-image{
+	display:block;
+	margin:auto;
 }
 
 .thumbnail.selected {

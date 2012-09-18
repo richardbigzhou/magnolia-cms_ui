@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,41 +31,43 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.tree.action;
-
-import info.magnolia.cms.core.MetaData;
-import info.magnolia.cms.core.Path;
-import info.magnolia.context.MgnlContext;
-import info.magnolia.jcr.util.MetaDataUtil;
-import info.magnolia.ui.framework.event.EventBus;
+package info.magnolia.ui.app.contacts.action;
 
 import javax.inject.Named;
 import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import info.magnolia.cms.core.MetaData;
+import info.magnolia.cms.core.Path;
+import info.magnolia.context.MgnlContext;
+import info.magnolia.jcr.util.MetaDataUtil;
+import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.ui.admincentral.tree.action.RepositoryOperationAction;
+import info.magnolia.ui.framework.event.EventBus;
 
 /**
- * Action for adding a new folder.
- *
- * TODO: add support for configuring supported itemTypes, maybe in base class where no config means all
+ * Creates a folder either as a child if the node given is itself a folder or as a child of the nearest ancestor that
+ * is a folder.
  */
-public class AddNodeAction extends RepositoryOperationAction<AddNodeActionDefinition> implements TreeAction {
+public class AddFolderAction extends RepositoryOperationAction<AddFolderActionDefinition> {
 
-    public AddNodeAction(AddNodeActionDefinition definition, Item item, @Named("admincentral") EventBus eventBus) {
+    public AddFolderAction(AddFolderActionDefinition definition, Item item, @Named("admincentral") EventBus eventBus) {
         super(definition, item, eventBus);
     }
 
     @Override
-    public boolean isAvailable(Item item) throws RepositoryException {
-        return item.isNode();
-    }
-
-    @Override
     protected void onExecute(Item item) throws RepositoryException {
+
         Node node = (Node) item;
-        String name = Path.getUniqueLabel(item.getSession(), item.getPath(), "untitled");
-        Node newNode = node.addNode(name, getDefinition().getNodeType());
+
+        node = findAncestorOfType(node, "mgnl:folder");
+        if (node == null) {
+            node = (Node) item.getAncestor(0);
+        }
+
+        String name = Path.getUniqueLabel(node.getSession(), node.getPath(), "untitled");
+        Node newNode = node.addNode(name, "mgnl:folder");
         postProcessNode(newNode);
     }
 
@@ -75,5 +77,15 @@ public class AddNodeAction extends RepositoryOperationAction<AddNodeActionDefini
         metaData.setAuthorId(MgnlContext.getUser().getName());
         metaData.setCreationDate();
         metaData.setModificationDate();
+    }
+
+    private Node findAncestorOfType(Node node, String nodeType) throws RepositoryException {
+        while (node.getDepth() > 0) {
+            if (NodeUtil.isNodeType(node, nodeType)) {
+                return node;
+            }
+            node = node.getParent();
+        }
+        return null;
     }
 }

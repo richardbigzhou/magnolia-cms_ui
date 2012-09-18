@@ -51,6 +51,11 @@ public class ElementProcessor {
             disableLink(element);
             removeHover(element);
         }
+
+        // we don't want to add every element to the page
+        if (mgnlElement.isPage()) {
+            return;
+        }
         model.addElement(mgnlElement, element);
 
         if (element.hasAttribute(AreaDefinition.CMS_ADD)) {

@@ -33,18 +33,15 @@
  */
 package info.magnolia.ui.widget.editor.gwt.client.widget.controlbar;
 
-import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
-import info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils;
-import info.magnolia.ui.widget.editor.gwt.client.model.Model;
-
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Float;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import info.magnolia.ui.widget.editor.gwt.client.dom.CmsNode;
+import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
+import info.magnolia.ui.widget.editor.gwt.client.jsni.JavascriptUtils;
 
 
 /**
@@ -65,13 +62,11 @@ public abstract class AbstractBar extends FlowPanel {
 
     private final FlowPanel buttonWrapper;
 
-    private MgnlElement mgnlElement;
+    private CmsNode cmsNode;
 
     private FlowPanel primaryButtons;
 
     private FlowPanel secondaryButtons;
-
-    private final Model model;
 
     private final EventBus eventBus;
 
@@ -79,11 +74,10 @@ public abstract class AbstractBar extends FlowPanel {
 
     private final static String CHILD_FOCUS_CLASSNAME = "childFocus";
 
-    public AbstractBar(Model model, EventBus eventBus, MgnlElement mgnlElement) {
-        this.model = model;
+    public AbstractBar(EventBus eventBus, MgnlElement mgnlElement) {
         this.eventBus = eventBus;
 
-        this.setMgnlElement(mgnlElement);
+        this.setCmsNode(mgnlElement);
 
         buttonWrapper = new FlowPanel();
         buttonWrapper.setStylePrimaryName("mgnlEditorBarButtons");
@@ -104,6 +98,11 @@ public abstract class AbstractBar extends FlowPanel {
         }
 
         setStyleName("mgnlEditor mgnlEditorBar");
+    }
+
+    @Override
+    public void onAttach() {
+        super.onAttach();
     }
 
     protected void setId(String id) {
@@ -172,73 +171,29 @@ public abstract class AbstractBar extends FlowPanel {
         return getElement().getStyle();
     }
 
-    /**
-     * TODO: we should not have to call onAttach ourself?
-     */
-    public void attach() {
-        if (getMgnlElement().getEditElement() != null) {
-            Element parent = getMgnlElement().getEditElement();
-            parent.insertFirst(getElement());
-            onAttach();
-        }
-        else if (getMgnlElement().getFirstElement() != null && getMgnlElement().getFirstElement() == getMgnlElement().getLastElement()) {
-            attach(getMgnlElement());
-        }
-        else {
-            attach(getMgnlElement().getComment().getElement());
-        }
-    }
 
-    public void attach(MgnlElement mgnlElement) {
-        Element element = mgnlElement.getFirstElement();
-        if (element != null) {
-            if(element.hasTagName("DIV")){
-                element.insertFirst(getElement());
-            }else{
-                final Node parentNode = element.getParentNode();
-                parentNode.insertBefore(getElement(), element);
-            }
-        }
-        onAttach();
-    }
-
-    public void attach(Element element) {
-        final Node parentNode = element.getParentNode();
-        parentNode.insertAfter(getElement(), element);
-        onAttach();
-    }
 
     public void toggleVisible() {
         setVisible(!isVisible());
     }
 
-    @Override
-    protected void onAttach() {
-        getModel().addElements(this.getMgnlElement(), getElement());
-        getModel().addEditBar(this.getMgnlElement(), this);
-        super.onAttach();
+
+    public void setCmsNode(CmsNode cmsNode) {
+        this.cmsNode = cmsNode;
     }
 
-    public void setMgnlElement(MgnlElement mgnlElement) {
-        this.mgnlElement = mgnlElement;
-    }
-
-    public MgnlElement getMgnlElement() {
-        return mgnlElement;
+    public CmsNode getCmsNode() {
+        return cmsNode;
     }
 
     public void toggleButtons(boolean visible) {
-        MgnlElement parent = mgnlElement.getParent();
+        CmsNode parent = cmsNode.getParent();
         if (parent != null) {
-            for (MgnlElement component : parent.getComponents()) {
-                getModel().getEditBar(component).primaryButtons.setVisible(visible);
-                getModel().getEditBar(component).secondaryButtons.setVisible(visible);
+            for (CmsNode component : parent.getComponents()) {
+                component.asMgnlElement().getControlBar().primaryButtons.setVisible(visible);
+                component.asMgnlElement().getControlBar().secondaryButtons.setVisible(visible);
             }
         }
-    }
-
-    public Model getModel() {
-        return model;
     }
 
     public EventBus getEventBus() {
