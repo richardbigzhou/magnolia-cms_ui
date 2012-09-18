@@ -298,12 +298,11 @@ fieldset {
 }
 
 .dialog-content.show-all fieldset hr {
-    margin-left: 24px;
-    margin-right:24px;
-    margin-bottom:0px;
-    margin-top:22px;
+    margin: 22px 24px 0px;
     border-top: 1px solid black;
     border-bottom: 0px;
+    border-right: 0px;
+    border-left: 0px;
     display:block !important;
     height: 0; /*needed by FF*/
 }
