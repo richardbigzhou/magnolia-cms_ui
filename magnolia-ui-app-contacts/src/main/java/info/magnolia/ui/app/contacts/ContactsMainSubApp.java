@@ -33,6 +33,9 @@
  */
 package info.magnolia.ui.app.contacts;
 
+import info.magnolia.cms.core.MgnlNodeType;
+import info.magnolia.context.MgnlContext;
+import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
@@ -48,14 +51,21 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
  * Sub app for the main tab in the contacts app.
  */
 public class ContactsMainSubApp extends AbstractSubApp {
+
+    private static final Logger log = LoggerFactory.getLogger(ContactsMainSubApp.class);
 
     private final ContactsView view;
 
@@ -93,14 +103,31 @@ public class ContactsMainSubApp extends AbstractSubApp {
 
     private void updateActions() {
         ActionbarPresenter actionbar = workbench.getActionbarPresenter();
+        String selectedItemId = workbench.getSelectedItemId();
 
         // actions disabled based on selection
-        if (workbench.getSelectedItemId() == null || workbench.getSelectedItemId().equals("/")) {
+        if (selectedItemId == null || selectedItemId.equals("/")) {
             actionbar.disable("edit");
             actionbar.disable("delete");
         } else {
             actionbar.enable("edit");
             actionbar.enable("delete");
+
+            try {
+
+                Session session = MgnlContext.getJCRSession("contacts");
+
+                Node node = session.getNode(selectedItemId);
+                if (NodeUtil.isNodeType(node, MgnlNodeType.NT_FOLDER)) {
+                    actionbar.hideSection("contactsActions");
+                    actionbar.showSection("folderActions");
+                } else {
+                    actionbar.showSection("contactsActions");
+                    actionbar.hideSection("folderActions");
+                }
+            } catch (RepositoryException e) {
+                log.warn("Unable to determine node type of {}", selectedItemId);
+            }
         }
     }
 

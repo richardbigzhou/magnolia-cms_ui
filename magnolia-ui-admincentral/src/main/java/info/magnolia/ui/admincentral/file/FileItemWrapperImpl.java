@@ -186,11 +186,8 @@ public class FileItemWrapperImpl implements FileItemWrapper {
      * Create an Embedded Image.
      */
     private Component createImagePreview(Application application) {
-        ImageSize scaledImageSize;
-        scaledImageSize = imageSize.scaleToFitIfLarger(150, 150);
-
+        ImageSize scaledImageSize = imageSize.scaleToFitIfLarger(150, 150);
         final byte[] pngData = (byte[]) getBinaryData();
-
         @SuppressWarnings("serial")
         Resource imageResource = new StreamResource(
             new StreamResource.StreamSource() {
@@ -253,7 +250,7 @@ public class FileItemWrapperImpl implements FileItemWrapper {
 
     @Override
     public boolean isImage() {
-        return mimeType.matches("image.*");
+        return mimeType!=null && mimeType.matches("image.*");
     }
 
     @Override

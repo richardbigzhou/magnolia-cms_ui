@@ -135,6 +135,12 @@ public class UploadFileFieldImpl extends AbstractUploadFileField<FileItemWrapper
     @Override
     public void refreshOnProgressUploadLayout(long readBytes, long contentLength) {
         super.refreshOnProgressUploadLayout(readBytes, contentLength);
+        try {
+            Thread.sleep(5);
+        }
+        catch (InterruptedException e) {
+            log.error("",e);
+        }
     }
 
     @Override
