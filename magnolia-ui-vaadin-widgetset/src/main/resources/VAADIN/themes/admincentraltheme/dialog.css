@@ -3,11 +3,6 @@
   margin-top: 25px;
 }
 
-.v-dialog-layout {
-  background-color: #E6E6E6;
-  margin-top: 25px;
-}
-
 .v-dialog-field-section, .v-dialog-field-label,
 .v-dialog-field, .validation-message-inline span, .help-message-inline span,
 .dialog-description {
@@ -171,6 +166,7 @@ textarea.v-dialog-field {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+  vertical-align: middle; /*needed by FF*/
 }
 
 .v-dialog-field-container {
@@ -295,16 +291,21 @@ fieldset {
   font-family: Verdana, Arial, sans-serif;
   font-size: 12px;
   font-weight: bold;
+  color: black;
   display: block !important;
-  margin-left: 24px;
+  padding-left: 27px;
   padding-bottom: 18px;
 }
 
 .dialog-content.show-all fieldset hr {
-    margin: 30px 24px 0px 24px;
+    margin-left: 24px;
+    margin-right:24px;
+    margin-bottom:0px;
+    margin-top:22px;
     border-top: 1px solid black;
     border-bottom: 0px;
     display:block !important;
+    height: 0; /*needed by FF*/
 }
 
 .v-dialog-field-container .v-datefield {
@@ -336,4 +337,8 @@ fieldset {
 */
 input[type="text"].small-textfield {
   width:440px !important;
+}
+
+.v-dialog-field.v-richtextarea {
+  width: 523px !important;
 }
