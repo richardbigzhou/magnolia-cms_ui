@@ -62,6 +62,9 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.googlecode.mgwt.dom.client.recognizer.pinch.UIObjectToOffsetProvider;
+import com.googlecode.mgwt.dom.client.recognizer.tap.MultiTapEvent;
+import com.googlecode.mgwt.dom.client.recognizer.tap.MultiTapHandler;
+import com.googlecode.mgwt.dom.client.recognizer.tap.MultiTapRecognizer;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.Paintable;
@@ -92,6 +95,7 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
     private ScrollPanel scroller = new ScrollPanel();
 
     private CSSRule thumbnailImageStyle = CSSRule.create(".thumbnail-image");
+    
     private CSSRule thumbnailStyle = CSSRule.create(".thumbnail");
 
     private FlowPanel imageContainer = new FlowPanel();
@@ -145,6 +149,18 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
 
         final TouchDelegate touchDelegate = new TouchDelegate(this);
         touchDelegate.addTouchHandler(new MagnoliaPinchRecognizer(touchDelegate, new UIObjectToOffsetProvider(scroller)));
+        MultiTapRecognizer multitapRecognizer = new MultiTapRecognizer(touchDelegate, 1, 2);
+        addHandler(new MultiTapHandler() {
+            @Override
+            public void onMultiTap(MultiTapEvent event) {
+                final Element element = Util.getElementFromPoint(event.getTouchStarts().get(0).get(0).getPageX(), event.getTouchStarts().get(0).get(0).getPageY());
+                final VThumbnail thumbnail = Util.findWidget(element, VThumbnail.class);
+                proxy.call("thumbnailDoubleClicked", thumbnail.getId());
+            }
+        }, MultiTapEvent.getType());
+        
+        touchDelegate.addTouchHandler(multitapRecognizer);
+        
         addHandler(new MagnoliaPinchMoveEvent.Handler() {
             @Override
             public void onPinchMove(MagnoliaPinchMoveEvent event) {
@@ -188,9 +204,7 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
         addDomHandler(new DoubleClickHandler() {
             @Override
             public void onDoubleClick(DoubleClickEvent event) {
-                final Element element = event.getNativeEvent().getEventTarget().cast();
-                final VThumbnail thumbnail = Util.findWidget(element, VThumbnail.class);
-                proxy.call("thumbnailDoubleClicked", thumbnail.getId());
+
             }
         }, DoubleClickEvent.getType());
     }
