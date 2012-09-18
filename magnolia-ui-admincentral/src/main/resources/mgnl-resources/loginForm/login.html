@@ -28,23 +28,31 @@
         </div>
       </div>
           
-      <form id="loginForm" action="" method="post" class="form-large">
+      <form id="loginForm" action="" method="post" class="mgnl-form">
           <div id="login-divet"></div>
-          <div style="height:35px;"></div>
-          <label>USER NAME</label>
+          <div style="height:28px;"></div>
+          <label>user name</label>
           <input type="text" value="" id="login-username" name="mgnlUserId" tabindex="1" autofocus autocorrect="off" autocapitalize="off">
           <br class="float-clear"/>
-          <label>PASSWORD</label>
+          <label>password</label>
           <input type="password" value="" name="mgnlUserPSWD" tabindex="2"><br class="float-clear"/>
-          <div style="height:10px;display:block"></div>
-          <label>&nbsp;</label>
-          <div style="width:300px;float:left;">
+          <div>
             <a href="" >Forgot your password?</a>
             <button class="btn-submit" id="login-button" style="float:right;" tabindex="3">LOGIN</button>
           </div>
           <br class="float-clear" />
       </form>
   </div>
+  <div id="footer">
+        [#if serviceContact?exists]
+        ${serviceContact?html}
+        <br/>
+        [/#if]
+        Magnolia is a registered trademark of Magnolia International Ltd.
+        <br/>
+         &copy; Copyright 2003-2012
+        <a href="http://www.magnolia-cms.com" id="externallink">Magnolia International Ltd.</a>
+      </div>
 </div>
 </body>
 </html>

@@ -1,0 +1,20 @@
+/* Currently used for Webkit and IE
+*/
+
+@font-face {
+    font-family:DINWebPro;
+    src:url("./fonts/DINWebPro.eot");
+    src:url('./fonts/DINWebPro.eot?#iefix') format('embedded-opentype'),
+    url('./fonts/DINWebPro.woff') format('woff');
+    font-weight:normal;
+    font-style:normal;
+}
+
+@font-face {
+    font-family:DINWebPro;
+    src:url("./fonts/DINWebPro-Medium.eot");
+    src:url('./fonts/DINWebPro-Medium.eot?#iefix') format('embedded-opentype'),
+    url("./fonts/DINWebPro-Medium.woff") format("woff");
+    font-weight:bold;
+    font-style:normal;
+}
