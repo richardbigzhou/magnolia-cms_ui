@@ -37,13 +37,14 @@ import info.magnolia.ui.admincentral.shellapp.pulse.PulseMessageCategoryNavigato
 import info.magnolia.ui.admincentral.shellapp.pulse.PulseMessageCategoryNavigator.MessageCategoryChangedListener;
 import info.magnolia.ui.vaadin.integration.widget.grid.MagnoliaTable;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import javax.inject.Inject;
+
+import org.apache.commons.lang.time.FastDateFormat;
 
 import com.vaadin.data.Property;
 import com.vaadin.event.ItemClickEvent;
@@ -70,6 +71,8 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
     private final PulseMessageCategoryNavigator navigator = new PulseMessageCategoryNavigator();
 
     private final PulseMessagesPresenter presenter;
+
+    private final FastDateFormat dateFormatter = FastDateFormat.getInstance();
 
     @Inject
     public PulseMessagesViewImpl(final PulseMessagesPresenter presenter) {
@@ -102,7 +105,7 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
             public Object generateCell(Table source, Object itemId, Object columnId) {
                 Property prop = source.getItem(itemId).getItemProperty(columnId);
                 if (prop.getType().equals(Date.class) && prop.getValue() != null) {
-                    return new SimpleDateFormat().format(prop.getValue());
+                    return dateFormatter.format(prop.getValue());
                 }
                 return null;
             }
