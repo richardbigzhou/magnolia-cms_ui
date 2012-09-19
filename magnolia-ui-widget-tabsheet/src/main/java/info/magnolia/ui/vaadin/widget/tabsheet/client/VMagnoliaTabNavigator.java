@@ -55,8 +55,8 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent;
-import com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler;
+import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
+import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 import com.vaadin.terminal.gwt.client.UIDL;
 
@@ -201,8 +201,8 @@ public class VMagnoliaTabNavigator extends ComplexPanel {
 
         private VMagnoliaTab tab;
 
-        private TouchDelegate touchDelegate = new TouchDelegate(this);
-        
+        private final TouchDelegate touchDelegate = new TouchDelegate(this);
+
         public VShellTabLabel() {
             super(DOM.createElement("li"));
 
@@ -237,10 +237,10 @@ public class VMagnoliaTabNavigator extends ComplexPanel {
         }
 
         private void bindHandlers() {
-            touchDelegate.addTouchStartHandler(new TouchStartHandler() {
-                
+            touchDelegate.addTouchEndHandler(new TouchEndHandler() {
+
                 @Override
-                public void onTouchStart(TouchStartEvent event) {
+                public void onTouchEnd(TouchEndEvent event) {
                     final Element target = (Element) event.getNativeEvent().getEventTarget().cast();
                     if (closeElement.isOrHasChild(target)) {
                         eventBus.fireEvent(new TabCloseEvent(tab));

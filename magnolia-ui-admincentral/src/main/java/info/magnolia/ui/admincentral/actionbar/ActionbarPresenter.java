@@ -226,7 +226,7 @@ public class ActionbarPresenter implements ActionbarView.Listener {
         // considering actionbar item name unique, returning first match
         if (!definition.getSections().isEmpty()) {
             for (ActionbarSectionDefinition sectionDef : definition.getSections()) {
-                if (!sectionDef.getGroups().isEmpty()) {
+                if (actionbar.isSectionVisible(sectionDef.getName()) && !sectionDef.getGroups().isEmpty()) {
                     for (ActionbarGroupDefinition groupDef : sectionDef.getGroups()) {
                         if (!groupDef.getItems().isEmpty()) {
                             for (ActionbarItemDefinition action : groupDef.getItems()) {

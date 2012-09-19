@@ -61,6 +61,7 @@ import javax.inject.Named;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import com.vaadin.Application;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.JcrConstants;
@@ -110,8 +111,10 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
 
     private final ActionbarPresenter actionbarPresenter;
 
+    private final Application application;
+
     @Inject
-    public ContentWorkbenchPresenter(final AppContext appContext, final ContentWorkbenchView view, @Named("admincentral") final EventBus admincentralEventBus, final @Named("subapp") EventBus subAppEventBus, final Shell shell, final WorkbenchActionFactory actionFactory, final ContentPresenter contentPresenter, final ActionbarPresenter actionbarPresenter) {
+    public ContentWorkbenchPresenter(final AppContext appContext, final ContentWorkbenchView view, @Named("admincentral") final EventBus admincentralEventBus, final @Named("subapp") EventBus subAppEventBus, final Shell shell, final WorkbenchActionFactory actionFactory, final ContentPresenter contentPresenter, final ActionbarPresenter actionbarPresenter, Application application) {
         this.view = view;
         this.admincentralEventBus = admincentralEventBus;
         this.subAppEventBus = subAppEventBus;
@@ -119,6 +122,7 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
         this.actionFactory = actionFactory;
         this.contentPresenter = contentPresenter;
         this.actionbarPresenter = actionbarPresenter;
+        this.application = application;
         this.workbenchDefinition = ((ContentAppDescriptor) appContext.getAppDescriptor()).getWorkbench();
 
         if (this.workbenchDefinition.getThumbnailProvider() != null) {
@@ -233,7 +237,7 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
                         public InputStream getStream() {
                             return new ByteArrayInputStream(pngData);
                         }
-                    }, "", ContentWorkbenchPresenter.this.getView().asVaadinComponent().getApplication()) {
+                    }, "", application) {
 
                     @Override
                     public String getMIMEType() {
