@@ -72,4 +72,6 @@ public interface Model {
     void setRootPage(MgnlElement mgnlElement);
 
     MgnlElement getRootPage();
+
+    void reset();
 }

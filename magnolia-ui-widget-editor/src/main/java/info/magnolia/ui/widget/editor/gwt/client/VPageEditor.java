@@ -165,6 +165,7 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
 
             @Override
             public void handle(FrameLoadedEvent event) {
+                model.reset();
                 if (pageEditorParameters.isPreview()) {
                     return;
                 }
@@ -182,6 +183,7 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
 
         });
     }
+
     private void registerEditorEventHandlers() {
 
         eventBus.addHandler(SelectElementEvent.TYPE, new SelectElementEventHandler() {
@@ -258,6 +260,7 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
     }
 
     private void processDocument(Node node, MgnlElement mgnlElement) {
+        boolean proceed = true;
         if (mgnlElement == null && model.getRootPage() != null) {
             mgnlElement = model.getRootPage();
         }
@@ -274,10 +277,11 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
                     GWT.log("Caught undefined exception: " + e.toString());
                 }
             } else if (childNode.getNodeType() == Node.ELEMENT_NODE && mgnlElement != null && !mgnlElement.isPage()) {
-                ElementProcessor.process(model, childNode, mgnlElement);
+                proceed = ElementProcessor.process(model, childNode, mgnlElement);
             }
-
-            processDocument(childNode, mgnlElement);
+            if (proceed) {
+                processDocument(childNode, mgnlElement);
+            }
         }
 
     }

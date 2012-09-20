@@ -52,7 +52,7 @@ public class PageProcessor extends AbstractMgnlElementProcessor {
     public void process() {
 
         GWT.log("element was detected as page edit bar. Injecting it...");
-        PageBar pageBarWidget = new PageBar(getModel(), getMgnlElement());
+        PageBar pageBarWidget = new PageBar(getMgnlElement());
         setEditBar(pageBarWidget);
         attachWidget();
     }
