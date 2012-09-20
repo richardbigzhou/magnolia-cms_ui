@@ -44,18 +44,26 @@ import info.magnolia.ui.widget.editor.gwt.client.model.Model;
  */
 public class ElementProcessor {
 
-    public static void process(Model model, Node node, MgnlElement mgnlElement) {
+    static final String NAVIGATION_ROLE = "navigation";
+
+    public static boolean process(Model model, Node node, MgnlElement mgnlElement) {
+
 
         Element element = node.cast();
+
+        if (element.getAttribute("role").equals(NAVIGATION_ROLE)) {
+            return false;
+        }
+        // we don't want to add every element to the page
+        if (mgnlElement.isPage()) {
+            return true;
+        }
+
         if (element.hasTagName("A")) {
             disableLink(element);
             removeHover(element);
         }
 
-        // we don't want to add every element to the page
-        if (mgnlElement.isPage()) {
-            return;
-        }
         model.addElement(mgnlElement, element);
 
         if (element.hasAttribute(AreaDefinition.CMS_ADD)) {
@@ -79,6 +87,7 @@ public class ElementProcessor {
                 mgnlElement.setLastElement(element);
             }
         }
+        return true;
 
     }
 
