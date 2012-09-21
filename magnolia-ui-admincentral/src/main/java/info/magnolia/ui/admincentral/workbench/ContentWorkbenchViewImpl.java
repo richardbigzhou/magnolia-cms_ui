@@ -127,7 +127,7 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
 
         searchbox.setInputPrompt(inputPrompt);
         searchbox.setSizeUndefined();
-        searchbox.addStyleName("basic-search");
+        searchbox.addStyleName("searchbox");
 
         searchbox.addShortcutListener(new ShortcutListener("", ShortcutAction.KeyCode.ENTER, null) {
 
@@ -193,7 +193,6 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
             }
         });
         button.setStyleName(BaseTheme.BUTTON_LINK);
-        // button.addStyleName(icon);
 
         button.setHtmlContentAllowed(true);
         button.setCaption("<span class=\"" + icon + "\"></span>");
@@ -219,7 +218,6 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
 
         c.setSizeFull();
         contentViewContainer.addComponent(c);
-        //contentViewContainer.setExpandRatio(c,  1f);
 
         this.currentViewType = type;
         refresh();

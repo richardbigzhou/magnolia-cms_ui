@@ -29,7 +29,7 @@
 
 .view-type-arrow.thumbs {left: 183px;}
 
-.basic-search {
+.searchbox {
     float: right;
     height: 24px !important;
     width: 250px;
@@ -39,7 +39,7 @@
     border-radius: 0 !important;
     color: #999;
 }
-.basic-search:focus {
+.searchbox:focus {
 	background-color: #fff !important;
 	box-shadow: none !important;
 }
