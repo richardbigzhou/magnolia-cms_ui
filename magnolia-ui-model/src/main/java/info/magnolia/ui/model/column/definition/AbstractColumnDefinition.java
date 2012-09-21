@@ -56,6 +56,8 @@ public abstract class AbstractColumnDefinition implements ColumnDefinition {
 
     private boolean displayInDialog = true;
 
+    private boolean searchable = true;
+
     @Override
     public String getPropertyName() {
         return propertyName;
@@ -144,5 +146,18 @@ public abstract class AbstractColumnDefinition implements ColumnDefinition {
 
     public void setExpandRatio(float expandRatio) {
         this.expandRatio = expandRatio;
+    }
+    /**
+     * {@inheritDoc}
+     * <p>
+     * @return <code>true</code> by default.
+     */
+    @Override
+    public boolean isSearchable() {
+        return searchable;
+    }
+
+    public void setSearchable(boolean searchable) {
+        this.searchable = searchable;
     }
 }

@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.workbench;
 
+import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.admincentral.content.view.ContentView;
 import info.magnolia.ui.admincentral.content.view.ContentView.ViewType;
 import info.magnolia.ui.widget.actionbar.ActionbarView;
@@ -41,6 +42,10 @@ import java.util.EnumMap;
 import java.util.Map;
 
 import com.vaadin.data.Item;
+import com.vaadin.event.FieldEvents;
+import com.vaadin.event.ShortcutAction;
+import com.vaadin.event.ShortcutListener;
+import com.vaadin.event.FieldEvents.BlurEvent;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Button;
@@ -51,7 +56,7 @@ import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.NativeButton;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.BaseTheme;
 
 
@@ -63,13 +68,15 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
 
     private final HorizontalLayout root = new HorizontalLayout();
 
-    private final VerticalLayout contentViewContainer = new VerticalLayout();
+    private final CssLayout contentViewContainer = new CssLayout();
 
     private final Button treeButton;
 
     private final Button listButton;
 
     private final Button thumbsButton;
+
+    private final TextField searchbox;
 
     private final Embedded viewTypeArrow;
 
@@ -80,6 +87,7 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
     private ViewType currentViewType = ViewType.TREE;
 
     private ContentWorkbenchView.Listener contentWorkbenchViewListener;
+
 
     public ContentWorkbenchViewImpl() {
         super();
@@ -101,6 +109,7 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
         listButton = buildButton(ViewType.LIST, "icon-view-list", false);
         thumbsButton = buildButton(ViewType.THUMBNAIL, "icon-view-thumbnails", false);
         viewTypeArrow = buildViewTypeArrow();
+        searchbox = buildBasicSearchbox();
 
         viewModes.addComponent(treeButton);
         viewModes.addComponent(listButton);
@@ -109,6 +118,36 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
         contentViewContainer.setSizeFull();
         contentViewContainer.addComponent(viewModes);
         contentViewContainer.addComponent(viewTypeArrow);
+        contentViewContainer.addComponent(searchbox);
+    }
+
+    private TextField buildBasicSearchbox() {
+        final TextField searchbox = new TextField();
+        final String inputPrompt = MessagesUtil.getWithDefault("toolbar.search.prompt", "Search");
+
+        searchbox.setInputPrompt(inputPrompt);
+        searchbox.setSizeUndefined();
+        searchbox.addStyleName("basic-search");
+
+        searchbox.addShortcutListener(new ShortcutListener("", ShortcutAction.KeyCode.ENTER, null) {
+
+            @Override
+            public void handleAction(Object sender, Object target) {
+               //open search view
+                System.out.println("searching " + searchbox.getValue());
+            }
+        });
+
+        searchbox.addListener(new FieldEvents.BlurListener() {
+
+            @Override
+            public void blur(BlurEvent event) {
+                searchbox.setValue("");
+                searchbox.setInputPrompt(inputPrompt);
+            }
+        });
+
+        return searchbox;
     }
 
     private Embedded buildViewTypeArrow() {
@@ -180,7 +219,7 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
 
         c.setSizeFull();
         contentViewContainer.addComponent(c);
-        contentViewContainer.setExpandRatio(c,  1f);
+        //contentViewContainer.setExpandRatio(c,  1f);
 
         this.currentViewType = type;
         refresh();
