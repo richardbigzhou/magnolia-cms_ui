@@ -49,9 +49,9 @@ import java.util.Map;
  */
 public class ModelImpl implements Model {
 
-    private final Map<MgnlElement, List<Element>> elements = new HashMap<MgnlElement, List<Element>>();
+    private Map<MgnlElement, List<Element>> elements = new HashMap<MgnlElement, List<Element>>();
 
-    private final Map<Element, MgnlElement> mgnlElements = new HashMap<Element, MgnlElement>();
+    private Map<Element, MgnlElement> mgnlElements = new HashMap<Element, MgnlElement>();
 
     public MgnlElement rootPage;
 
@@ -158,5 +158,18 @@ public class ModelImpl implements Model {
     @Override
     public void setSelectedMgnlComponentElement(MgnlElement selectedMgnlComponentElement) {
         this.selectedMgnlComponentElement = selectedMgnlComponentElement;
+    }
+
+    /**
+     * Reset the tree, e.g. when browsing inside the page editor.
+     */
+    @Override
+    public void reset() {
+        this.elements = new HashMap<MgnlElement, List<Element>>();
+        this.mgnlElements = new HashMap<Element, MgnlElement>();
+        this.rootPage = null;
+        this.rootAreas = new LinkedList<MgnlElement>();
+        this.selectedMgnlAreaElement = null;
+        this.selectedMgnlComponentElement = null;
     }
 }

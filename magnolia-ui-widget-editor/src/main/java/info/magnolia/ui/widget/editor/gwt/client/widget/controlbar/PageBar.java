@@ -35,7 +35,6 @@ package info.magnolia.ui.widget.editor.gwt.client.widget.controlbar;
 
 import com.google.gwt.user.client.ui.Label;
 import info.magnolia.ui.widget.editor.gwt.client.dom.MgnlElement;
-import info.magnolia.ui.widget.editor.gwt.client.model.Model;
 
 
 /**
@@ -62,12 +61,9 @@ public class PageBar extends AbstractBar {
 
     private final String dialog;
 
-    private final Model model;
 
-    public PageBar(Model model, MgnlElement mgnlElement) {
+    public PageBar(MgnlElement mgnlElement) {
         super(null, null);
-        this.model = model;
-
 
         setWorkspace(mgnlElement.getAttribute("workspace"));
         setPath(mgnlElement.getAttribute("path"));
