@@ -29,6 +29,9 @@
 
 .view-type-arrow.thumbs {left: 183px;}
 
+ /*FIXME fgrilli: just a temp workaround as moving the arrow beneath the search box (as per design) messes up the toolbar layout*/
+.view-type-arrow.search { display: none}
+
 .searchbox {
     float: right;
     height: 24px !important;
@@ -43,8 +46,8 @@
     padding: 2px !important;
 }
 .searchbox:focus {
-	background-color: #fff !important;
-	box-shadow: none !important;
+   background-color: #fff !important;
+   box-shadow: none !important;
 }
 
 .small-app {margin:0 auto;}

@@ -43,6 +43,7 @@ import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.admincentral.content.view.ContentView;
 import info.magnolia.ui.admincentral.content.view.ContentView.ViewType;
 import info.magnolia.ui.admincentral.list.view.ListView;
+import info.magnolia.ui.admincentral.search.view.SearchView;
 import info.magnolia.ui.admincentral.thumbnail.view.ThumbnailView;
 import info.magnolia.ui.admincentral.tree.view.TreeView;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
@@ -138,6 +139,19 @@ public class ConfiguredContentViewBuilderTest {
 
         // THEN
         assertTrue(result instanceof ThumbnailView);
+    }
+
+    @Test
+    @Ignore
+    public void testBuildingSearchView() {
+        // GIVEN all conditions in setUp
+
+        // WHEN
+        final ContentViewBuilderImpl builder = new ContentViewBuilderImpl(componentProvider);
+        final ContentView result = builder.build(workbenchDef, ViewType.SEARCH);
+
+        // THEN
+        assertTrue(result instanceof SearchView);
     }
 
     @After

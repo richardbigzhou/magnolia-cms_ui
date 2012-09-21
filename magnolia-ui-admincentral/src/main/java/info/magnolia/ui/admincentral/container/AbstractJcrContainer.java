@@ -483,50 +483,22 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     /**
      * Fetches a page from the data source based on the values of pageLength and currentOffset.
-     * Update the size.
+     * Internally it executes the following methods in this order:
+     * <ul>
+     * <li> {@link #constructPageQuery()}
+     * <li> {@link #executeQuery(String, String, long, long)}
+     * <li> {@link #updateItems(QueryResult)}
+     * </ul>
      */
-    protected void getPage() {
+    public final void getPage() {
+
+        final String stmt = constructPageQuery();
+
+        if(StringUtils.isEmpty(stmt)) {
+            return;
+        }
 
         try {
-            final StringBuilder stmt = new StringBuilder(SELECT_CONTENT);
-            if (sorters.isEmpty()) {
-                // no sorters set - apply default (sort by name)
-                stmt.append(ORDER_BY)
-                    .append(JCR_NAME_FUNCTION)
-                    .append(" asc");
-            } else {
-                // TODO one workaround to make this faster would be avoiding doing a join when we
-                // know for sure there are no properties from metadata to order by.
-                stmt.append(JOIN_METADATA)
-                    .append(ORDER_BY);
-                String sortOrder;
-                for (OrderBy orderBy : sorters) {
-                    sortOrder = orderBy.isAscending() ? " asc" : " desc";
-                    if (NAME_PROPERTY.equals(orderBy.getProperty())) {
-                        stmt.append(JCR_NAME_FUNCTION)
-                            .append(sortOrder)
-                            .append(", ");
-                        continue;
-                    }
-                    stmt.append(CONTENT_SELECTOR_NAME)
-                        .append(".[")
-                        .append(orderBy.getProperty())
-                        .append("]")
-                        .append(sortOrder)
-                        .append(", ");
-                    // TODO here we don't know to which primary type this prop belongs to. I would
-                    // tend not to clutter the column definition with yet another info about primary
-                    // type.
-                    stmt.append(METADATA_SELECTOR_NAME)
-                        .append(".[")
-                        .append(orderBy.getProperty())
-                        .append("]")
-                        .append(sortOrder)
-                        .append(", ");
-                }
-                stmt.delete(stmt.lastIndexOf(","), stmt.length() - 1);
-            }
-
             // FIXME sql2 query is much slower than its xpath/sql1 counterpart (on average 80 times
             // slower) see https://issues.apache.org/jira/browse/JCR-2830.
             // However xpath is deprecated and, although query execution is faster, it takes much
@@ -535,21 +507,9 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
             // "The SQL2/QOM implementation loads all matching rows into memory during the execute() call, so you'll see an expensive query.execute() but can then very quickly iterate over the query results.")
             // to the point that any benefit gained from faster query execution is lost and overall
             // performance gets worse.
-            final QueryResult queryResult = executeQuery(stmt.toString(), Query.JCR_SQL2, pageLength * cacheRatio, currentOffset);
+            final QueryResult queryResult = executeQuery(stmt, Query.JCR_SQL2, pageLength * cacheRatio, currentOffset);
 
-            long start = System.currentTimeMillis();
-            log.debug("Starting iterating over QueryResult");
-
-            final RowIterator iterator = queryResult.getRows();
-            long rowCount = currentOffset;
-            while (iterator.hasNext()) {
-                Node node = iterator.nextRow().getNode(CONTENT_SELECTOR_NAME);
-                final String id = node.getPath();
-                log.debug("Adding node {} to cached items.", id);
-                itemIndexes.put(rowCount++, id);
-            }
-
-            log.debug("Done in {} ms", System.currentTimeMillis() - start);
+            updateItems(queryResult);
 
         } catch (RepositoryException re) {
             throw new RuntimeRepositoryException(re);
@@ -557,10 +517,81 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     }
 
-    protected void updateSize() {
+    /**
+     * Updates this container by storing the items found in the query result passed as argument.
+     * @see #getPage()
+     */
+    protected void updateItems(final QueryResult queryResult) throws RepositoryException {
+        long start = System.currentTimeMillis();
+        log.debug("Starting iterating over QueryResult");
+
+        final RowIterator iterator = queryResult.getRows();
+        long rowCount = currentOffset;
+        while (iterator.hasNext()) {
+            Node node = iterator.nextRow().getNode(CONTENT_SELECTOR_NAME);
+            final String id = node.getPath();
+            log.debug("Adding node {} to cached items.", id);
+            itemIndexes.put(rowCount++, id);
+        }
+
+        log.debug("Done in {} ms", System.currentTimeMillis() - start);
+    }
+
+    /**
+     * @return a string representing a JCR statement to retrieve this container's items.
+     * @see AbstractJcrContainer#getPage()
+     */
+    protected String constructPageQuery() {
+        final StringBuilder stmt = new StringBuilder(SELECT_CONTENT);
+        if (sorters.isEmpty()) {
+            // no sorters set - apply default (sort by name)
+            stmt.append(ORDER_BY)
+                .append(JCR_NAME_FUNCTION)
+                .append(" asc");
+        } else {
+            // TODO one workaround to make this faster would be avoiding doing a join when we
+            // know for sure there are no properties from metadata to order by.
+            stmt.append(JOIN_METADATA)
+                .append(ORDER_BY);
+            String sortOrder;
+            for (OrderBy orderBy : sorters) {
+                sortOrder = orderBy.isAscending() ? " asc" : " desc";
+                if (NAME_PROPERTY.equals(orderBy.getProperty())) {
+                    stmt.append(JCR_NAME_FUNCTION)
+                        .append(sortOrder)
+                        .append(", ");
+                    continue;
+                }
+                stmt.append(CONTENT_SELECTOR_NAME)
+                    .append(".[")
+                    .append(orderBy.getProperty())
+                    .append("]")
+                    .append(sortOrder)
+                    .append(", ");
+                // TODO here we don't know to which primary type this prop belongs to. I would
+                // tend not to clutter the column definition with yet another info about primary
+                // type.
+                stmt.append(METADATA_SELECTOR_NAME)
+                    .append(".[")
+                    .append(orderBy.getProperty())
+                    .append("]")
+                    .append(sortOrder)
+                    .append(", ");
+            }
+            stmt.delete(stmt.lastIndexOf(","), stmt.length() - 1);
+        }
+        return stmt.toString();
+    }
+    /**
+     * @see #getPage().
+     */
+    public final void updateSize() {
         try {
+            if(constructPageQuery() == null) {
+                return;
+            }
             // query for all items in order to get the size
-            final QueryResult queryResult = executeQuery(SELECT_CONTENT, Query.JCR_SQL2, 0, 0);
+            final QueryResult queryResult = executeQuery(constructPageQuery(), Query.JCR_SQL2, 0, 0);
 
             final long pageSize = queryResult.getRows().getSize();
             updateCount((int) pageSize);

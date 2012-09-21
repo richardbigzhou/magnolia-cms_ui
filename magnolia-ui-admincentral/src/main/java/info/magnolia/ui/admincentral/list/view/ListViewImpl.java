@@ -76,7 +76,7 @@ public class ListViewImpl implements ListView {
 
     private static final Logger log = LoggerFactory.getLogger(ListViewImpl.class);
 
-    public ListViewImpl(WorkbenchDefinition workbenchDefinition, TreeModel treeModel, ComponentProvider componentProvider) {
+    public ListViewImpl(WorkbenchDefinition workbenchDefinition, TreeModel treeModel, ComponentProvider componentProvider, FlatJcrContainer container) {
         table = new MagnoliaTable();
         table.setSizeFull();
 
@@ -116,7 +116,7 @@ public class ListViewImpl implements ListView {
 
         table.setColumnReorderingAllowed(false);
 
-        container = new FlatJcrContainer(treeModel, workbenchDefinition);
+        this.container = container;
 
         buildColumns(workbenchDefinition, componentProvider);
 

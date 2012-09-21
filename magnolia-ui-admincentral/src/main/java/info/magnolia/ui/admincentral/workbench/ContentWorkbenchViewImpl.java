@@ -36,16 +36,20 @@ package info.magnolia.ui.admincentral.workbench;
 import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.admincentral.content.view.ContentView;
 import info.magnolia.ui.admincentral.content.view.ContentView.ViewType;
+import info.magnolia.ui.admincentral.search.view.SearchView;
 import info.magnolia.ui.widget.actionbar.ActionbarView;
 
 import java.util.EnumMap;
 import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.vaadin.data.Item;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.event.ShortcutListener;
 import com.vaadin.event.FieldEvents.BlurEvent;
+import com.vaadin.event.FieldEvents.FocusEvent;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Button;
@@ -133,8 +137,17 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
 
             @Override
             public void handleAction(Object sender, Object target) {
-               //open search view
-                System.out.println("searching " + searchbox.getValue());
+                ContentView view = contentViews.get(ViewType.SEARCH);
+                if(!(view instanceof SearchView)) {
+                    //TODO log error/warn
+                }
+                final SearchView searchView = (SearchView) view;
+                final String fullTextExpression = searchbox.getValue().toString();
+                if(StringUtils.isBlank(fullTextExpression)) {
+                    //TODO warn user?
+                    return;
+                }
+                searchView.search(fullTextExpression);
             }
         });
 
@@ -142,8 +155,15 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
 
             @Override
             public void blur(BlurEvent event) {
-                searchbox.setValue("");
                 searchbox.setInputPrompt(inputPrompt);
+            }
+        });
+
+        searchbox.addListener(new FieldEvents.FocusListener() {
+
+            @Override
+            public void focus(FocusEvent event) {
+                setViewType(ViewType.SEARCH);
             }
         });
 
@@ -164,32 +184,7 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
 
             @Override
             public void buttonClick(ClickEvent event) {
-                setGridType(viewType);
-
-                treeButton.removeStyleName("active");
-                listButton.removeStyleName("active");
-                thumbsButton.removeStyleName("active");
-
-                viewTypeArrow.removeStyleName("tree");
-                viewTypeArrow.removeStyleName("list");
-                viewTypeArrow.removeStyleName("thumbs");
-
-                switch (viewType) {
-                    case TREE :
-                        treeButton.addStyleName("active");
-                        viewTypeArrow.addStyleName("tree");
-                        break;
-                    case LIST :
-                        listButton.addStyleName("active");
-                        viewTypeArrow.addStyleName("list");
-                        break;
-                    case THUMBNAIL :
-                        thumbsButton.addStyleName("active");
-                        viewTypeArrow.addStyleName("thumbs");
-                        break;
-                    default :
-                        break;
-                }
+                setViewType(viewType);
             }
         });
         button.setStyleName(BaseTheme.BUTTON_LINK);
@@ -258,6 +253,38 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
     public void selectPath(String path) {
         for (ContentView contentView : contentViews.values()) {
             contentView.select(path);
+        }
+    }
+
+    private void setViewType(final ViewType viewType) {
+        setGridType(viewType);
+
+        treeButton.removeStyleName("active");
+        listButton.removeStyleName("active");
+        thumbsButton.removeStyleName("active");
+
+        viewTypeArrow.removeStyleName("tree");
+        viewTypeArrow.removeStyleName("list");
+        viewTypeArrow.removeStyleName("thumbs");
+        viewTypeArrow.removeStyleName("search");
+
+        switch (viewType) {
+            case TREE :
+                treeButton.addStyleName("active");
+                viewTypeArrow.addStyleName("tree");
+                break;
+            case LIST :
+                listButton.addStyleName("active");
+                viewTypeArrow.addStyleName("list");
+                break;
+            case THUMBNAIL :
+                thumbsButton.addStyleName("active");
+                viewTypeArrow.addStyleName("thumbs");
+                break;
+            case SEARCH :
+                viewTypeArrow.addStyleName("search");
+                break;
+            default :
         }
     }
 }

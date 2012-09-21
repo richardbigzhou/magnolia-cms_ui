@@ -49,7 +49,8 @@ public interface ContentView extends View {
     public enum ViewType {
         LIST("list"),
         TREE("tree"),
-        THUMBNAIL("thumbnail");
+        THUMBNAIL("thumbnail"),
+        SEARCH("search");
 
         private String text;
 
