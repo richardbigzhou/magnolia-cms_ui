@@ -33,11 +33,14 @@
     float: right;
     height: 24px !important;
     width: 250px;
+    font-family: Verdana,Helvetica,Arial,sans-serif !important;
+    font-size: 12px !important;
+    color: #999;
     background: url("img/icon-search.png") no-repeat 235px 7px #e6e6e6 !important;
     border-style: none !important;
     border-bottom: 1px solid #999 !important;
     border-radius: 0 !important;
-    color: #999;
+    padding: 2px !important;
 }
 .searchbox:focus {
 	background-color: #fff !important;
