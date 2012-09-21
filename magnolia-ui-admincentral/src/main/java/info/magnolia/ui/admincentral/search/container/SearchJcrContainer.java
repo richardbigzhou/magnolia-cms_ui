@@ -51,7 +51,7 @@ public class SearchJcrContainer extends FlatJcrContainer{
         if(getFullTextExpression() == null) {
             return null;
         }
-        return "select * from [mgnl:content] as content where contains(content.*,'" + getFullTextExpression() + "')";
+        return "select * from [mgnl:content] as content where contains(content.*,'" + getFullTextExpression() + "') order by name(content)";
     }
 
     public void setFullTextExpression(String fullTextExpression) {
