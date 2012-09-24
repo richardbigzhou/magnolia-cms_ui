@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.search.container;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,12 +55,12 @@ public class SearchJcrContainer extends FlatJcrContainer{
 
     @Override
     protected String constructJCRQuery() {
-        if(getFullTextExpression() == null) {
+        if(StringUtils.isBlank(getFullTextExpression())) {
             return null;
         }
 
         //See http://wiki.apache.org/jackrabbit/EncodingAndEscaping
-        final String escapedFullTextExpression = getFullTextExpression().replaceAll("'", "''");
+        final String escapedFullTextExpression = getFullTextExpression().replaceAll("'", "''").trim();
         final String stmt = "select * from [mgnl:content] as content where contains(content.*,'" + escapedFullTextExpression + "') order by name(content)";
         log.debug("JCR query statement is {}", stmt);
         return stmt;
