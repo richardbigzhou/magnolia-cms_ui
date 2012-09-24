@@ -33,6 +33,9 @@
  */
 package info.magnolia.ui.admincentral.search.container;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import info.magnolia.ui.admincentral.container.JcrContainerSource;
 import info.magnolia.ui.admincentral.list.container.FlatJcrContainer;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
@@ -40,6 +43,9 @@ import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
  * The jcr container backing the search view. It provides only the subset of items needed by the search performed.
  */
 public class SearchJcrContainer extends FlatJcrContainer{
+
+    private static final Logger log = LoggerFactory.getLogger(SearchJcrContainer.class);
+
     private String fullTextExpression;
 
     public SearchJcrContainer(JcrContainerSource jcrContainerSource, WorkbenchDefinition workbenchDefinition) {
@@ -51,7 +57,12 @@ public class SearchJcrContainer extends FlatJcrContainer{
         if(getFullTextExpression() == null) {
             return null;
         }
-        return "select * from [mgnl:content] as content where contains(content.*,'" + getFullTextExpression() + "') order by name(content)";
+
+        //See http://wiki.apache.org/jackrabbit/EncodingAndEscaping
+        final String escapedFullTextExpression = getFullTextExpression().replaceAll("'", "''");
+        final String stmt = "select * from [mgnl:content] as content where contains(content.*,'" + escapedFullTextExpression + "') order by name(content)";
+        log.debug("JCR query statement is {}", stmt);
+        return stmt;
     }
 
     public void setFullTextExpression(String fullTextExpression) {
