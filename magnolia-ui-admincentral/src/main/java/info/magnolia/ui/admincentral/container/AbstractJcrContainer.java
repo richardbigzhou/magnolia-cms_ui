@@ -485,14 +485,14 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
      * Fetches a page from the data source based on the values of pageLength and currentOffset.
      * Internally it executes the following methods in this order:
      * <ul>
-     * <li> {@link #constructPageQuery()}
+     * <li> {@link #constructJCRQuery()}
      * <li> {@link #executeQuery(String, String, long, long)}
      * <li> {@link #updateItems(QueryResult)}
      * </ul>
      */
     public final void getPage() {
 
-        final String stmt = constructPageQuery();
+        final String stmt = constructJCRQuery();
 
         if(StringUtils.isEmpty(stmt)) {
             return;
@@ -541,7 +541,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
      * @return a string representing a JCR statement to retrieve this container's items.
      * @see AbstractJcrContainer#getPage()
      */
-    protected String constructPageQuery() {
+    protected String constructJCRQuery() {
         final StringBuilder stmt = new StringBuilder(SELECT_CONTENT);
         if (sorters.isEmpty()) {
             // no sorters set - apply default (sort by name)
@@ -587,11 +587,11 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
      */
     public final void updateSize() {
         try {
-            if(constructPageQuery() == null) {
+            if(constructJCRQuery() == null) {
                 return;
             }
             // query for all items in order to get the size
-            final QueryResult queryResult = executeQuery(constructPageQuery(), Query.JCR_SQL2, 0, 0);
+            final QueryResult queryResult = executeQuery(constructJCRQuery(), Query.JCR_SQL2, 0, 0);
 
             final long pageSize = queryResult.getRows().getSize();
             updateCount((int) pageSize);

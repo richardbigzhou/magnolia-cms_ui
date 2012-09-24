@@ -143,11 +143,13 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
                 }
                 final SearchView searchView = (SearchView) view;
                 final String fullTextExpression = searchbox.getValue().toString();
+
                 if(StringUtils.isBlank(fullTextExpression)) {
-                    //TODO warn user?
-                    return;
+                    //clear last search results
+                    searchView.clear();
+                }else {
+                    searchView.search(fullTextExpression);
                 }
-                searchView.search(fullTextExpression);
             }
         });
 

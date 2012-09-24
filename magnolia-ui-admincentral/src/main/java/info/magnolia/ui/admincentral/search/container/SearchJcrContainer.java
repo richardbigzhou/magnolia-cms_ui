@@ -53,7 +53,7 @@ public class SearchJcrContainer extends FlatJcrContainer{
     }
 
     @Override
-    protected String constructPageQuery() {
+    protected String constructJCRQuery() {
         if(getFullTextExpression() == null) {
             return null;
         }

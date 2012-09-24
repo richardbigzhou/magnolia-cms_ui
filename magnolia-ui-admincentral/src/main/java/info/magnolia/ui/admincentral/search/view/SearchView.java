@@ -42,4 +42,5 @@ import info.magnolia.ui.admincentral.list.view.ListView;
 public interface SearchView extends ListView {
     void search(String queryTerms);
 
+    void clear();
 }
