@@ -123,6 +123,7 @@ public abstract class AbstractColumnDefinition implements ColumnDefinition {
     public Class<?> getType() {
         return String.class;
     }
+
     /**
      * By default returns <code>true</code>.
      */
@@ -147,10 +148,11 @@ public abstract class AbstractColumnDefinition implements ColumnDefinition {
     public void setExpandRatio(float expandRatio) {
         this.expandRatio = expandRatio;
     }
+
     /**
      * {@inheritDoc}
      * <p>
-     * @return <code>true</code> by default.
+     * By default returns <code>true</code>.
      */
     @Override
     public boolean isSearchable() {
