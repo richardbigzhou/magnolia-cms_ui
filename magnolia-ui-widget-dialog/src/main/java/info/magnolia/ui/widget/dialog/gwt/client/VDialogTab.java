@@ -36,10 +36,8 @@ package info.magnolia.ui.widget.dialog.gwt.client;
 import info.magnolia.ui.vaadin.widget.tabsheet.client.VMagnoliaTab;
 import info.magnolia.ui.widget.dialog.gwt.client.dialoglayout.DialogFieldWrapper;
 import info.magnolia.ui.widget.dialog.gwt.client.dialoglayout.VDialogTabLayout;
-
 import java.util.LinkedList;
 import java.util.List;
-
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.terminal.gwt.client.Util;
 
@@ -49,7 +47,8 @@ import com.vaadin.terminal.gwt.client.Util;
 public class VDialogTab extends VMagnoliaTab {
 
     private VDialogTabLayout content;
-    
+
+
     @Override
     public void setWidget(Widget w) {
         if (!(w instanceof VDialogTabLayout)) {
@@ -58,7 +57,8 @@ public class VDialogTab extends VMagnoliaTab {
         content = (VDialogTabLayout)w;
         super.setWidget(w);
     }
-    
+
+
     public List<DialogFieldWrapper> getFields() {
         if (content != null) {
             return content.getFields();
@@ -86,7 +86,7 @@ public class VDialogTab extends VMagnoliaTab {
             dialog.updateErrorAmount();
         }
     }
-   
+
     private VDialog getDialog() {
         return Util.findWidget(getElement(), VDialog.class);
     }

@@ -41,7 +41,7 @@ import org.vaadin.rpc.client.ClientSideHandler;
 import org.vaadin.rpc.client.ClientSideProxy;
 import org.vaadin.rpc.client.Method;
 
-import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.Container;
@@ -54,7 +54,7 @@ import com.vaadin.terminal.gwt.client.VConsole;
 /**
  * Tab class for a tabsheet.
  */
-public class VMagnoliaTab extends ScrollPanel implements Container, ClientSideHandler {
+public class VMagnoliaTab extends SimplePanel implements Container, ClientSideHandler {
 
     protected ApplicationConnection client;
 
