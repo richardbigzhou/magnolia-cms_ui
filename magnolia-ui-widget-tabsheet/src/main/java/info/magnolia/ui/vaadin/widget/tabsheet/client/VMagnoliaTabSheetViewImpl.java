@@ -53,6 +53,10 @@ import com.vaadin.terminal.gwt.client.Util;
 
 /**
  * VShellTabSheetViewImpl.
+ *
+ * Contains the tabs at the top (VMagnoliaTabNavigator), and the tabs themselves. The tabs are all contained in a ScrollPanel,
+ * this enables a single showing tab to be scrolled - or the contents of all the tabs to be scrolled together when they are stacked in the
+ * 'ShowAllTabs' mode.
  */
 public class VMagnoliaTabSheetViewImpl extends FlowPanel implements VMagnoliaTabSheetView {
 
