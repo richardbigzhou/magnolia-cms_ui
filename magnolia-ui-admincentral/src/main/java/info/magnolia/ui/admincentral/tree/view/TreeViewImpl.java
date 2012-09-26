@@ -104,7 +104,6 @@ public class TreeViewImpl implements TreeView {
                 } else {
                     //toggle will deselect
                     if(previousSelection == currentSelection) {
-                       presenterOnItemSelection(null);
                        jcrBrowser.setValue(null);
                     }
                 }
