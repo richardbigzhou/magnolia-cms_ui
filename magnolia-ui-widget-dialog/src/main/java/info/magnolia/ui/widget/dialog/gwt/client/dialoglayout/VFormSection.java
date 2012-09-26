@@ -58,7 +58,7 @@ import com.vaadin.terminal.gwt.client.UIDL;
 /**
  * Layout for the {@link DialogFieldWrapper} widgets.
  */
-public class VDialogTabLayout extends FlowPanel implements Container, HelpAccessibilityEvent.Handler {
+public class VFormSection extends FlowPanel implements Container, HelpAccessibilityEvent.Handler {
 
     private List<Widget> children = new LinkedList<Widget>();
 
@@ -74,7 +74,7 @@ public class VDialogTabLayout extends FlowPanel implements Container, HelpAccess
 
     private boolean isValidationVisible = false;
 
-    public VDialogTabLayout() {
+    public VFormSection() {
         super();
         getElement().appendChild(fieldSet);
         //both only display when show all tab is active

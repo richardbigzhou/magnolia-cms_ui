@@ -33,37 +33,39 @@
  */
 package info.magnolia.ui.widget.dialog;
 
-import info.magnolia.ui.vaadin.widget.tabsheet.MagnoliaTab;
-import info.magnolia.ui.widget.dialog.gwt.client.VDialogTab;
-
-import com.vaadin.terminal.PaintException;
-import com.vaadin.terminal.PaintTarget;
-import com.vaadin.ui.ClientWidget;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Label;
 
 /**
- * Dialog tab.
- *
+ * ConfirmationDialog.
  */
-@ClientWidget(VDialogTab.class)
-public class MagnoliaDialogTab extends MagnoliaTab {
-
-    private final FormSection content;
-
-    public MagnoliaDialogTab(String caption, FormSection content) {
-        super(caption, content);
-        this.content = content;
-        //DialogLayout needs this info to display it when show all tab is active
-        this.content.setCaption(caption);
+public class ConfirmationDialog extends BaseDialog {
+    
+    private String message;
+    
+    public ConfirmationDialog(final String message) {
+        setMessage(message);
     }
-
-    public void setValidationVisible(boolean isVisible) {
-        content.setValidationVisible(isVisible);
+    
+    public void setMessage(String message) {
+        this.message = message;
+        if (getContent() != null && getContent() instanceof Label) {
+            ((Label)getContent()).setValue(message);
+        }
     }
-
+    
+    public String getMessage() {
+        return message;
+    }
+    
     @Override
-    public void paintContent(PaintTarget target) throws PaintException {
-        setHasError(content.hasError());
-        super.paintContent(target);
+    public void setContent(Component content) {
+        if (content instanceof Label) {
+            super.setContent(content);   
+        }
     }
-
+    @Override
+    protected Component createDefaultContent() {
+        return new Label();
+    }
 }

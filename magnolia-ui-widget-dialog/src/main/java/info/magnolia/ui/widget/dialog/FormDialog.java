@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.widget.dialog;
 
-import info.magnolia.ui.vaadin.widget.tabsheet.ShellTabSheet;
+import info.magnolia.ui.vaadin.widget.tabsheet.MagnoliaTabSheet;
 import info.magnolia.ui.widget.dialog.gwt.client.dialoglayout.VFormDialog;
 
 import java.util.Iterator;
@@ -54,11 +54,11 @@ import com.vaadin.ui.Field;
 @ClientWidget(value = VFormDialog.class, loadStyle = LoadStyle.EAGER)
 public class FormDialog extends BaseDialog implements FormDialogView {
 
-    private ShellTabSheet tabSheet = new ShellTabSheet() {
+    private MagnoliaTabSheet tabSheet = new MagnoliaTabSheet() {
         @Override
         public MagnoliaDialogTab addTab(final String caption, final ComponentContainer c) {
-            if (c instanceof DialogLayout) {
-                final MagnoliaDialogTab tab = new MagnoliaDialogTab(caption, (DialogLayout)c);
+            if (c instanceof FormSection) {
+                final MagnoliaDialogTab tab = new MagnoliaDialogTab(caption, (FormSection)c);
                 tab.setSizeUndefined();
                 tab.setClosable(false);
                 doAddTab(tab);
@@ -102,8 +102,8 @@ public class FormDialog extends BaseDialog implements FormDialogView {
         final Iterator<Component> it = tabSheet.getComponentIterator();
         while (it.hasNext()) {
             final Component c = it.next();
-            if (c instanceof DialogLayout) {
-                ((DialogLayout)c).setValidationVisible(isVisible);
+            if (c instanceof FormSection) {
+                ((FormSection)c).setValidationVisible(isVisible);
             }
         }
     }
@@ -119,7 +119,7 @@ public class FormDialog extends BaseDialog implements FormDialogView {
     }
 
     @Override
-    public void addDialogSection(String tabName, DialogLayout inputFields) {
+    public void addDialogSection(String tabName, FormSection inputFields) {
         tabSheet.addTab(tabName, inputFields);
     }
     

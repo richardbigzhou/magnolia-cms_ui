@@ -36,7 +36,7 @@ package info.magnolia.ui.admincentral.dialog.action;
 import static org.junit.Assert.assertEquals;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.widget.dialog.DialogLayout;
+import info.magnolia.ui.widget.dialog.FormSection;
 import info.magnolia.ui.widget.dialog.FormDialog;
 import info.magnolia.ui.widget.dialog.FormDialogView;
 import info.magnolia.ui.widget.dialog.MagnoliaDialogPresenter;
@@ -177,7 +177,7 @@ public class CallbackDialogActionTest {
                 }
 
                 @Override
-                public void addDialogSection(String tabName, DialogLayout inputFields) {
+                public void addDialogSection(String tabName, FormSection inputFields) {
                 }
 
                 @Override
