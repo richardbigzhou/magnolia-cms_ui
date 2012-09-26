@@ -37,7 +37,6 @@ import info.magnolia.ui.model.tab.definition.TabDefinition;
 import info.magnolia.ui.widget.dialog.DialogLayout;
 
 import com.vaadin.ui.Component;
-import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.Field;
 
 /**
@@ -63,7 +62,7 @@ public class DialogTab extends AbstractDialogItem {
         this.container.addComponent(component);
     }
 
-    public ComponentContainer getContainer() {
+    public DialogLayout getContainer() {
         return container;
     }
 

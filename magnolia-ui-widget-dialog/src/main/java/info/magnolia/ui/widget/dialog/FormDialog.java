@@ -52,13 +52,15 @@ import com.vaadin.ui.Field;
  *
  */
 @ClientWidget(value = VFormDialog.class, loadStyle = LoadStyle.EAGER)
-public class FormDialog extends BaseDialog implements Item.Editor {
+public class FormDialog extends BaseDialog implements FormDialogView {
 
     private ShellTabSheet tabSheet = new ShellTabSheet() {
         @Override
         public MagnoliaDialogTab addTab(final String caption, final ComponentContainer c) {
             if (c instanceof DialogLayout) {
                 final MagnoliaDialogTab tab = new MagnoliaDialogTab(caption, (DialogLayout)c);
+                tab.setSizeUndefined();
+                tab.setClosable(false);
                 doAddTab(tab);
                 return tab;                    
             }
@@ -73,16 +75,20 @@ public class FormDialog extends BaseDialog implements Item.Editor {
     public FormDialog() { 
         super.setContent(tabSheet);
         tabSheet.showAllTab(true, "Show all");
+        tabSheet.setHeight("500px");
     }
     
+    @Override
     public void addField(Field field) {
         fields.add(field);
     }
 
+    @Override
     public List<Field> getFields() {
         return fields;
     }
     
+    @Override
     public boolean isValid() {
         boolean res = true;
         for (Field field : getFields()) {
@@ -92,16 +98,6 @@ public class FormDialog extends BaseDialog implements Item.Editor {
     }
     
     @Override
-    protected Component createDefaultContent() {
-        return tabSheet;
-    };
-   
-    
-    public void addDialogSection(final DialogLayout dl) {
-        tabSheet.addTab("Test", dl);
-    }
-    
-    
     public void showValidation(boolean isVisible) {
         final Iterator<Component> it = tabSheet.getComponentIterator();
         while (it.hasNext()) {
@@ -121,4 +117,25 @@ public class FormDialog extends BaseDialog implements Item.Editor {
     public Item getItemDataSource() {
         return itemDatasource;
     }
+
+    @Override
+    public void addDialogSection(String tabName, DialogLayout inputFields) {
+        tabSheet.addTab(tabName, inputFields);
+    }
+    
+    @Override
+    protected Component createDefaultContent() {
+        return tabSheet;
+    }
+
+    @Override
+    public FormDialog asVaadinComponent() {
+        return this;
+    }
+
+    @Override
+    public void setShowAllEnabled(boolean enabled) {
+        tabSheet.showAllTab(true, "Show All");
+    };
+    
 }

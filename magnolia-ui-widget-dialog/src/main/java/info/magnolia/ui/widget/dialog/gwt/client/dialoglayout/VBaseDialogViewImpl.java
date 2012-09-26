@@ -57,8 +57,6 @@ public class VBaseDialogViewImpl extends ComplexPanel implements VBaseDialogView
 
     private static final String CLASSNAME_BUTTON = "btn-dialog";
 
-    private static final String CLASSNAME_CONTENT_SHOW_ALL = "show-all";
-    
     private Presenter presenter;
     
     private Widget content;
@@ -164,5 +162,10 @@ public class VBaseDialogViewImpl extends ComplexPanel implements VBaseDialogView
     @Override
     public Widget getContent() {
         return content;
+    }
+    
+    
+    public Element getContentEl() {
+        return contentEl;
     }
 }

@@ -31,11 +31,28 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.dialog.gwt.client.dialoglayout;
+package info.magnolia.ui.widget.dialog;
+
+import java.util.List;
+
+import com.vaadin.data.Item;
+import com.vaadin.ui.Field;
 
 /**
- * VFormDialogView.
+ * FormDialogView.
+ *
  */
-public interface VFormDialogView extends VBaseDialogView, ValidationChangedEvent.Handler {
+public interface FormDialogView extends DialogView, Item.Editor {
+
+    void addDialogSection(String tabName, DialogLayout inputFields);
+
+    void addField(Field field);
+
+    void showValidation(boolean isVisible);
     
+    void setShowAllEnabled(boolean enabled);
+    
+    boolean isValid();
+
+    List<Field> getFields();
 }

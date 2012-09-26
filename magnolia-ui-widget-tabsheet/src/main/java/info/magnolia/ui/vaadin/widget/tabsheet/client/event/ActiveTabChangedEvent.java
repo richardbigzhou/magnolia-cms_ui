@@ -35,17 +35,35 @@ package info.magnolia.ui.vaadin.widget.tabsheet.client.event;
 
 import info.magnolia.ui.vaadin.widget.tabsheet.client.VMagnoliaTab;
 
+import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.event.shared.HandlerRegistration;
 
 /**
  * Event fired when the active tab in the tabsheet is changed.
  */
-public class ActiveTabChangedEvent extends GwtEvent<ActiveTabChangedHandler>{
+public class ActiveTabChangedEvent extends GwtEvent<ActiveTabChangedEvent.Handler>{
 
-    public final static Type<ActiveTabChangedHandler> TYPE = new Type<ActiveTabChangedHandler>();
+    public final static Type<ActiveTabChangedEvent.Handler> TYPE = new Type<ActiveTabChangedEvent.Handler>();
 
+    /**
+     * Handler.
+     */
+    public interface Handler extends EventHandler {
+        void onActiveTabChanged(ActiveTabChangedEvent event);
+    }
+
+    /**
+     * HasActiveTabChangeHandlers.
+     */
+    public interface HasActiveTabChangeHandlers {
+        HandlerRegistration addActiveTabChangedHandler(Handler handler);
+    }
+    
     private final VMagnoliaTab tab;
 
+    private boolean isShowingAllTabs = false;
+    
     private boolean notifyServer = true;
     
     public ActiveTabChangedEvent(final VMagnoliaTab tab) {
@@ -57,6 +75,16 @@ public class ActiveTabChangedEvent extends GwtEvent<ActiveTabChangedHandler>{
         this.notifyServer = notifyServer;
     }
     
+    public ActiveTabChangedEvent(boolean isShowingAll, boolean notifyServer) {
+        this.tab = null;
+        this.isShowingAllTabs = isShowingAll;
+        this.notifyServer = notifyServer;
+    }
+    
+    public boolean isShowingAllTabs() {
+        return isShowingAllTabs;
+    }
+    
     public boolean isNotifyServer() {
         return notifyServer;
     }
@@ -66,12 +94,12 @@ public class ActiveTabChangedEvent extends GwtEvent<ActiveTabChangedHandler>{
     }
 
     @Override
-    protected void dispatch(ActiveTabChangedHandler handler) {
+    protected void dispatch(ActiveTabChangedEvent.Handler handler) {
         handler.onActiveTabChanged(this);
     }
 
     @Override
-    public GwtEvent.Type<ActiveTabChangedHandler> getAssociatedType() {
+    public GwtEvent.Type<ActiveTabChangedEvent.Handler> getAssociatedType() {
         return TYPE;
     }
 }

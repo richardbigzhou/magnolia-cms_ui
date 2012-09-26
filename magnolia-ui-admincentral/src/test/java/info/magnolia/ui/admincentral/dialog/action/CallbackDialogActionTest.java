@@ -36,7 +36,9 @@ package info.magnolia.ui.admincentral.dialog.action;
 import static org.junit.Assert.assertEquals;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.widget.dialog.MagnoliaDialogView;
+import info.magnolia.ui.widget.dialog.DialogLayout;
+import info.magnolia.ui.widget.dialog.FormDialog;
+import info.magnolia.ui.widget.dialog.FormDialogView;
 import info.magnolia.ui.widget.dialog.MagnoliaDialogPresenter;
 
 import java.util.List;
@@ -45,8 +47,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.vaadin.data.Item;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.Field;
 
 /**
@@ -142,11 +142,11 @@ public class CallbackDialogActionTest {
         }
 
         @Override
-        public MagnoliaDialogView getView() {
-            return new MagnoliaDialogView() {
+        public FormDialogView getView() {
+            return new FormDialogView() {
 
                 @Override
-                public Component asVaadinComponent() {
+                public FormDialog asVaadinComponent() {
                     return null;
                 }
 
@@ -163,7 +163,7 @@ public class CallbackDialogActionTest {
                 }
 
                 @Override
-                public void setDescription(String description) {
+                public void setDialogDescription(String description) {
                 }
 
                 @Override
@@ -177,7 +177,7 @@ public class CallbackDialogActionTest {
                 }
 
                 @Override
-                public void addTab(ComponentContainer inputFields, String tabName) {
+                public void addDialogSection(String tabName, DialogLayout inputFields) {
                 }
 
                 @Override
@@ -197,6 +197,11 @@ public class CallbackDialogActionTest {
                 public void setCaption(String caption) {
 
                 }
+
+                @Override
+                public Item getItemDataSource() {
+                    return null;
+                }
             };
         }
 
@@ -211,7 +216,7 @@ public class CallbackDialogActionTest {
         }
 
         @Override
-        public MagnoliaDialogView start(Item item, Callback callback) {
+        public FormDialogView start(Item item, Callback callback) {
             return null;
         }
 

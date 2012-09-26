@@ -33,15 +33,36 @@
  */
 package info.magnolia.ui.widget.dialog;
 
+import info.magnolia.ui.framework.view.View;
+
 /**
- * Dialog interface.
- *
+ * DialogView.
  */
-public interface AbstractDialog {
+public interface DialogView extends View {
+
+    /**
+     * Base interface for an MagnoliaDialogView listener.
+     */
+    interface Listener {
+        /**
+         * Execute a specific action {@link info.magnolia.ui.model.action.Action}.
+         */
+        void executeAction(String actionName);
+
+        /**
+         * Close current Dialog.
+         */
+        void closeDialog();
+    }
     
     void addAction(String actionName, String actionLabel);
     
+    void setListener(Listener listener);
+    
     void setDialogDescription(String description);
     
+    void setCaption(String caption);
     
+    @Override
+    public BaseDialog asVaadinComponent();
 }

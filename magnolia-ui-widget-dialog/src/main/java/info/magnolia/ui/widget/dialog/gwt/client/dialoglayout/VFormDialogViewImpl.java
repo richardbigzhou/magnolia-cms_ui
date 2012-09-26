@@ -49,7 +49,6 @@ import java.util.List;
 
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.terminal.gwt.client.Util;
@@ -66,8 +65,6 @@ public class VFormDialogViewImpl extends VBaseDialogViewImpl implements VFormDia
     private final List<VDialogTab> dialogTabs = new ArrayList<VDialogTab>();
 
     private DialogFieldWrapper lastShownProblematicField = null;
-
-    private EventBus eventBus;
 
     private FocusHandler problematicFieldFocusHandler = new FocusHandler() {
 
@@ -111,11 +108,24 @@ public class VFormDialogViewImpl extends VBaseDialogViewImpl implements VFormDia
                     for (final VMagnoliaTab tab : tabs) {
                         if (tab instanceof VDialogTab) {
                             dialogTabs.add((VDialogTab) tab);
+                            ((VDialogTab)tab).addValidationChangeHandler(VFormDialogViewImpl.this);
                             final List<DialogFieldWrapper> fields = ((VDialogTab) tab).getFields();
                             for (final DialogFieldWrapper field : fields) {
                                 field.addFocusHandler(problematicFieldFocusHandler);
                             }
                         }
+                    }
+                }
+            });
+            
+            tabSheet.addActiveTabChangedHandler(new ActiveTabChangedEvent.Handler() {
+                @Override
+                public void onActiveTabChanged(ActiveTabChangedEvent event) {
+                    lastShownProblematicField = null;
+                    if (!event.isShowingAllTabs()) {
+                        getContentEl().removeClassName(CLASSNAME_CONTENT_SHOW_ALL);
+                    } else {
+                        getContentEl().addClassName(CLASSNAME_CONTENT_SHOW_ALL);
                     }
                 }
             });
@@ -170,7 +180,7 @@ public class VFormDialogViewImpl extends VBaseDialogViewImpl implements VFormDia
                         for (int i = 0; i < tabs.size() - 1; ++i) {
                             final VDialogTab nextTab = (VDialogTab)tabs.get(++tabIndex % tabs.size());
                             if (nextTab.getProblematicFields().size() > 0) {
-                                eventBus.fireEvent(new ActiveTabChangedEvent(nextTab));
+                                tabSheet.getEventBus().fireEvent(new ActiveTabChangedEvent(nextTab));
                                 lastShownProblematicField = null;
                                 jumpToNextError();
                             }
@@ -189,23 +199,9 @@ public class VFormDialogViewImpl extends VBaseDialogViewImpl implements VFormDia
         }
     }
 
-
-    /*@Override
-    public void setActiveTab(VMagnoliaTab tab) {
-        lastShownProblematicField = null;
-        impl.setActiveTab(tab);
-        content.removeClassName(CLASSNAME_CONTENT_SHOW_ALL);
-    }*/
-
-    /*@Override
-    public void showAllTabContents(boolean visible) {
-        impl.showAllTabContents(visible);
-        content.addClassName(CLASSNAME_CONTENT_SHOW_ALL);
-    }*/
-
     private void scrollTo(final DialogFieldWrapper field) {
         final int top = JQueryWrapper.select(field).position().top();
-        JQueryWrapper.select(tabSheet).children("v-shell-tabsheet-scroller").animate(500, new AnimationSettings() {
+        JQueryWrapper.select(tabSheet).children(".v-shell-tabsheet-scroller").animate(500, new AnimationSettings() {
             {
                 setProperty("scrollTop", top - 30);
                 addCallback(new JQueryCallback() {
