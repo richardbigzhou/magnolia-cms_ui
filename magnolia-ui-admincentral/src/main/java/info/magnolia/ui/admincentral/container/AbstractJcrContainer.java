@@ -610,7 +610,6 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
      */
     public void refresh() {
         currentOffset = 0;
-        getPage();
         itemIndexes.clear();
         updateSize();
     }
