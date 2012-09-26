@@ -33,45 +33,48 @@
  */
 package info.magnolia.ui.vaadin.widget.tabsheet.client;
 
-import java.util.List;
-
-import com.google.gwt.event.dom.client.HasScrollHandlers;
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.event.shared.HandlerRegistration;
 
 /**
- * VShellTabView.
+ * Fired when the set of TabSheet's tabs is changed.
  */
-public interface VMagnoliaTabSheetView extends HasWidgets, IsWidget, HasScrollHandlers {
+public class TabSetChangedEvent extends GwtEvent<TabSetChangedEvent.Handler> {
 
-    List<VMagnoliaTab> getTabs();
+    public static final Type<TabSetChangedEvent.Handler> TYPE = new Type<TabSetChangedEvent.Handler>();
     
-    void updateTab(VMagnoliaTab tab);
+    private VMagnoliaTabSheet tabSheet;
     
     /**
-     * Presenter.
+     *  HasTabSetChangedHandlers.
      */
-    public interface Presenter {
-        void updateLayout();
+    public interface HasTabSetChangedHandlers {
+        HandlerRegistration addTabSetChangedHandlers(Handler handler);
+    }
+    
+    /**
+     * Handler.
+     */
+    public interface Handler extends EventHandler {
+        void onTabSetChanged(final TabSetChangedEvent event);
     }
 
-    Widget getScroller();
+    public TabSetChangedEvent(final VMagnoliaTabSheet tabSheet) {
+        this.tabSheet = tabSheet;
+    }
     
-    VMagnoliaTabNavigator getTabContainer();
-
-    VMagnoliaTab getTabById(String tabId);
-
-    VMagnoliaTab getActiveTab();
+    public VMagnoliaTabSheet getTabSheet() {
+        return tabSheet;
+    }
     
-    void setShowActiveTabFullscreen(boolean isFullscreen);
-    
-    void setActiveTab(VMagnoliaTab tab);
+    @Override
+    public Type<Handler> getAssociatedType() {
+        return TYPE;
+    }
 
-    void removeTab(VMagnoliaTab tabToOrphan);
-
-    void showAllTabContents(boolean visible);
-
-    int getTabHeight(VMagnoliaTab child);
-    
+    @Override
+    protected void dispatch(Handler handler) {
+        handler.onTabSetChanged(this);
+    }
 }

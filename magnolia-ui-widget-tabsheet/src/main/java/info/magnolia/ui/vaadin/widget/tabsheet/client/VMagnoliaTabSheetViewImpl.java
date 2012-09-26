@@ -60,8 +60,6 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements VMagnoliaTab
     
     private FlowPanel tabPanel = new FlowPanel();
     
-    private final List<VMagnoliaTab> tabs = new LinkedList<VMagnoliaTab>();
-    
     private VMagnoliaTabNavigator tabContainer;
 
     private VMagnoliaTab activeTab = null;
@@ -69,6 +67,8 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements VMagnoliaTab
     private Presenter presenter;
     
     private boolean isActiveTabFullscreen = false;
+    
+    private final List<VMagnoliaTab> tabs = new LinkedList<VMagnoliaTab>();
     
     public VMagnoliaTabSheetViewImpl(EventBus eventBus, Presenter presenter) {
         super();
@@ -138,10 +138,11 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements VMagnoliaTab
     }
 
     @Override
-    public void addTab(VMagnoliaTab tab) {
+    public void updateTab(VMagnoliaTab tab) {
         if (!tabs.contains(tab)) {
             getTabs().add(tab);
-            tabPanel.add((Widget) tab);   
+            tabPanel.add((Widget) tab);
+            fireEvent(new TabSetChangedEvent((VMagnoliaTabSheet)presenter));
         }
     }
     
@@ -158,6 +159,12 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements VMagnoliaTab
         Util.runWebkitOverflowAutoFix(scroller.getElement());
     }
 
+    @Override
+    protected void onLoad() {
+        super.onLoad();
+        fireEvent(new TabSetChangedEvent((VMagnoliaTabSheet)presenter));
+    }
+    
     @Override
     public HandlerRegistration addScrollHandler(ScrollHandler handler) {
         return scroller.addScrollHandler(handler);
@@ -176,7 +183,6 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements VMagnoliaTab
     @Override
     public void setShowActiveTabFullscreen(boolean isFullscreen) {
         this.isActiveTabFullscreen = isFullscreen;
-
         // apply fullscreen style to top of dom tree so that all elements can react to it. ie main-launcher.
         if (isFullscreen) {
             RootPanel.get().addStyleName("fullscreen");

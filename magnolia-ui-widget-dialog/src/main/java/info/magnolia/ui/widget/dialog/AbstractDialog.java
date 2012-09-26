@@ -31,47 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.widget.tabsheet.client;
-
-import java.util.List;
-
-import com.google.gwt.event.dom.client.HasScrollHandlers;
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+package info.magnolia.ui.widget.dialog;
 
 /**
- * VShellTabView.
+ * Dialog interface.
+ *
  */
-public interface VMagnoliaTabSheetView extends HasWidgets, IsWidget, HasScrollHandlers {
-
-    List<VMagnoliaTab> getTabs();
+public interface AbstractDialog {
     
-    void updateTab(VMagnoliaTab tab);
+    void addAction(String actionName, String actionLabel);
     
-    /**
-     * Presenter.
-     */
-    public interface Presenter {
-        void updateLayout();
-    }
-
-    Widget getScroller();
+    void setDialogDescription(String description);
     
-    VMagnoliaTabNavigator getTabContainer();
-
-    VMagnoliaTab getTabById(String tabId);
-
-    VMagnoliaTab getActiveTab();
-    
-    void setShowActiveTabFullscreen(boolean isFullscreen);
-    
-    void setActiveTab(VMagnoliaTab tab);
-
-    void removeTab(VMagnoliaTab tabToOrphan);
-
-    void showAllTabContents(boolean visible);
-
-    int getTabHeight(VMagnoliaTab child);
     
 }

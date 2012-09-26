@@ -50,7 +50,6 @@ import com.vaadin.ui.ClientWidget;
 import com.vaadin.ui.ClientWidget.LoadStyle;
 import com.vaadin.ui.Component;
 
-
 /**
  * Dialog layout server side implementation.
  */

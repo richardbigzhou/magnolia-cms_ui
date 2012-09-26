@@ -31,47 +31,43 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.widget.tabsheet.client;
+package info.magnolia.ui.widget.dialog.gwt.client.dialoglayout;
 
-import java.util.List;
-
-import com.google.gwt.event.dom.client.HasScrollHandlers;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * VShellTabView.
+ * {@link VBaseDialogView}.
  */
-public interface VMagnoliaTabSheetView extends HasWidgets, IsWidget, HasScrollHandlers {
+public interface VBaseDialogView extends IsWidget, HasWidgets {
 
-    List<VMagnoliaTab> getTabs();
+    void addAction(String name, String label);
+
+    void setDescription(String description);
+
+    void setCaption(String caption);
+
+    int getContentWidth();
+
+    int getContentHeight();
+
+    void setContent(Widget contentWidget);
+
+    Widget getContent();
     
-    void updateTab(VMagnoliaTab tab);
+    void setPresenter(Presenter presenter);
+    
+    Presenter getPresenter();
     
     /**
      * Presenter.
      */
     public interface Presenter {
-        void updateLayout();
+        
+        void fireAction(String action);
+
+        void closeDialog();
     }
 
-    Widget getScroller();
-    
-    VMagnoliaTabNavigator getTabContainer();
-
-    VMagnoliaTab getTabById(String tabId);
-
-    VMagnoliaTab getActiveTab();
-    
-    void setShowActiveTabFullscreen(boolean isFullscreen);
-    
-    void setActiveTab(VMagnoliaTab tab);
-
-    void removeTab(VMagnoliaTab tabToOrphan);
-
-    void showAllTabContents(boolean visible);
-
-    int getTabHeight(VMagnoliaTab child);
-    
 }

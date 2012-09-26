@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.vaadin.widget.tabsheet.client;
 
+import info.magnolia.ui.vaadin.widget.tabsheet.client.TabSetChangedEvent.Handler;
+import info.magnolia.ui.vaadin.widget.tabsheet.client.TabSetChangedEvent.HasTabSetChangedHandlers;
 import info.magnolia.ui.vaadin.widget.tabsheet.client.event.ActiveTabChangedEvent;
 import info.magnolia.ui.vaadin.widget.tabsheet.client.event.ActiveTabChangedHandler;
 import info.magnolia.ui.vaadin.widget.tabsheet.client.event.ShowAllTabsEvent;
@@ -50,6 +52,7 @@ import org.vaadin.rpc.client.ClientSideProxy;
 import org.vaadin.rpc.client.Method;
 
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasWidgets;
@@ -65,7 +68,7 @@ import com.vaadin.terminal.gwt.client.VConsole;
  * Client side implementation of the simple tab sheet.
  */
 @SuppressWarnings("serial")
-public class VMagnoliaTabSheet extends Composite implements HasWidgets, VMagnoliaTabSheetView.Presenter, Container, ClientSideHandler {
+public class VMagnoliaTabSheet extends Composite implements HasWidgets, VMagnoliaTabSheetView.Presenter, Container, ClientSideHandler, HasTabSetChangedHandlers {
 
     protected String paintableId;
 
@@ -175,7 +178,7 @@ public class VMagnoliaTabSheet extends Composite implements HasWidgets, VMagnoli
         updateTabs(uidl);
         proxy.update(this, uidl, client);
     }
-
+    
     private void updateTabs(final UIDL uidl) {
         final UIDL tabsUidl = uidl.getChildByTagName("tabs");
         if (tabsUidl != null) {
@@ -184,7 +187,7 @@ public class VMagnoliaTabSheet extends Composite implements HasWidgets, VMagnoli
             while (it.hasNext()) {
                 final UIDL tabUidl = (UIDL) it.next();
                 final Paintable tab = client.getPaintable(tabUidl);
-                view.addTab((VMagnoliaTab) tab);
+                view.updateTab((VMagnoliaTab) tab);
                 tab.updateFromUIDL(tabUidl, client);
                 possibleTabsToOrphan.remove(tab);
             }
@@ -235,6 +238,14 @@ public class VMagnoliaTabSheet extends Composite implements HasWidgets, VMagnoli
         VConsole.error("Unhandled method call from the server: " + method);
     }
 
+    public List<VMagnoliaTab> getTabs() {
+        return view.getTabs();
+    }
+    
+    public VMagnoliaTab getActiveTab() {
+        return view.getActiveTab();
+    }
+    
     public EventBus getEventBus() {
         return eventBus;
     }
@@ -276,6 +287,11 @@ public class VMagnoliaTabSheet extends Composite implements HasWidgets, VMagnoli
     public void setHeight(String height) {
         super.setHeight(height);
         view.asWidget().setHeight(height);
+    }
+
+    @Override
+    public HandlerRegistration addTabSetChangedHandlers(Handler handler) {
+        return view.asWidget().addHandler(handler, TabSetChangedEvent.TYPE);
     }
 
 }

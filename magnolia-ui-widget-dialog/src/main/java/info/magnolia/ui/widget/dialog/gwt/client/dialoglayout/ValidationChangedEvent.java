@@ -31,47 +31,46 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.widget.tabsheet.client;
+package info.magnolia.ui.widget.dialog.gwt.client.dialoglayout;
 
-import java.util.List;
+import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.event.shared.HandlerRegistration;
 
-import com.google.gwt.event.dom.client.HasScrollHandlers;
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
- * VShellTabView.
+ * ValidationChangedEvent. Sent when the field validation happened.
+ *
  */
-public interface VMagnoliaTabSheetView extends HasWidgets, IsWidget, HasScrollHandlers {
-
-    List<VMagnoliaTab> getTabs();
+public class ValidationChangedEvent extends GwtEvent<ValidationChangedEvent.Handler> {
     
-    void updateTab(VMagnoliaTab tab);
     
     /**
-     * Presenter.
+     * Handler.
      */
-    public interface Presenter {
-        void updateLayout();
+    public interface Handler extends EventHandler {
+        void onValidationChanged(ValidationChangedEvent event);
+    }
+    
+    /**
+     * {@link HasValidationChangeHanlders}.
+     */
+    public interface HasValidationChangeHanlders {
+        
+        HandlerRegistration addValidationChangeHandler(Handler handler);
+    }
+    
+    public static final Type<ValidationChangedEvent.Handler> TYPE = new Type<ValidationChangedEvent.Handler>();
+    
+    @Override
+    public Type<Handler> getAssociatedType() {
+        return TYPE;
     }
 
-    Widget getScroller();
+    @Override
+    protected void dispatch(Handler handler) {
+        handler.onValidationChanged(this);
+    }
     
-    VMagnoliaTabNavigator getTabContainer();
 
-    VMagnoliaTab getTabById(String tabId);
-
-    VMagnoliaTab getActiveTab();
-    
-    void setShowActiveTabFullscreen(boolean isFullscreen);
-    
-    void setActiveTab(VMagnoliaTab tab);
-
-    void removeTab(VMagnoliaTab tabToOrphan);
-
-    void showAllTabContents(boolean visible);
-
-    int getTabHeight(VMagnoliaTab child);
-    
 }
