@@ -53,23 +53,27 @@ import com.vaadin.terminal.gwt.client.Util;
 
 /**
  * VShellTabSheetViewImpl.
+ *
+ * Contains the tabs at the top (VMagnoliaTabNavigator), and the tabs themselves. The tabs are all contained in a ScrollPanel,
+ * this enables a single showing tab to be scrolled - or the contents of all the tabs to be scrolled together when they are stacked in the
+ * 'ShowAllTabs' mode.
  */
 public class VMagnoliaTabSheetViewImpl extends FlowPanel implements VMagnoliaTabSheetView {
 
     private ScrollPanel scroller = new ScrollPanel();
-    
+
     private FlowPanel tabPanel = new FlowPanel();
-    
+
     private final List<VMagnoliaTab> tabs = new LinkedList<VMagnoliaTab>();
-    
+
     private VMagnoliaTabNavigator tabContainer;
 
     private VMagnoliaTab activeTab = null;
-    
+
     private Presenter presenter;
-    
+
     private boolean isActiveTabFullscreen = false;
-    
+
     public VMagnoliaTabSheetViewImpl(EventBus eventBus, Presenter presenter) {
         super();
         this.presenter = presenter;
@@ -86,7 +90,7 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements VMagnoliaTab
     public VMagnoliaTabNavigator getTabContainer() {
         return tabContainer;
     }
-    
+
     @Override
     public void removeTab(VMagnoliaTab tabToOrphan) {
         if (activeTab == tabToOrphan) {
@@ -141,17 +145,17 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements VMagnoliaTab
     public void addTab(VMagnoliaTab tab) {
         if (!tabs.contains(tab)) {
             getTabs().add(tab);
-            tabPanel.add((Widget) tab);   
+            tabPanel.add((Widget) tab);
         }
     }
-    
+
     @Override
     public void setHeight(String height) {
         super.setHeight(height);
         if (!isActiveTabFullscreen) {
             int heightPx = JQueryWrapper.parseInt(height);
             int scrollerHeight = Math.max(heightPx - tabContainer.getOffsetHeight(), 0);
-            scroller.setHeight(scrollerHeight + "px");   
+            scroller.setHeight(scrollerHeight + "px");
         } else {
             scroller.setHeight(RootPanel.get().getOffsetHeight() + "px");
         }
@@ -184,7 +188,7 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements VMagnoliaTab
         } else {
             RootPanel.get().removeStyleName("fullscreen");
             int scrollerHeight = getOffsetHeight() - tabContainer.getOffsetHeight();
-            scroller.setHeight(scrollerHeight + "px");   
+            scroller.setHeight(scrollerHeight + "px");
         }
     }
 
