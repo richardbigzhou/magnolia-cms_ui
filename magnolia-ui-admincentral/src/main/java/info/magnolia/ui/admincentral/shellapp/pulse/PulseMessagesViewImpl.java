@@ -37,6 +37,7 @@ import info.magnolia.ui.admincentral.shellapp.pulse.PulseMessageCategoryNavigato
 import info.magnolia.ui.admincentral.shellapp.pulse.PulseMessageCategoryNavigator.MessageCategoryChangedListener;
 import info.magnolia.ui.vaadin.integration.widget.grid.MagnoliaTable;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -46,12 +47,16 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang.time.FastDateFormat;
 
+import com.vaadin.data.Item;
 import com.vaadin.data.Property;
+import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Table.GeneratedRow;
+import com.vaadin.ui.Table.HeaderClickEvent;
 
 
 /**
@@ -111,6 +116,10 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
             }
 
         });
+        
+        messageTable.setRowGenerator(groupingRowGenerator);        
+        messageTable.addListener(onHeaderClick);
+        
         messageTable.setContainerDataSource(presenter.getMessageDataSource());
         messageTable.setVisibleColumns(presenter.getColumnOrder());
         messageTable.setSortContainerPropertyId("date");
@@ -126,6 +135,86 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
             }
         });
     }
+    
+    private Table.HeaderClickListener onHeaderClick = new Table.HeaderClickListener() {
+        
+        @Override
+        public void headerClick(HeaderClickEvent event) {            
+            //SCRUM-1539: Only type column should be grouped.
+            removeWithItemId("##SUBSECTION##");
+            if(!event.getPropertyId().equals("type")) {
+                return;
+            }
+ 
+            IndexedContainer source = (IndexedContainer)presenter.getMessageDataSource();
+
+            /* Insert special place holders to container which will be
+             * later painted as groups. Group section will be placed
+             * after each item that is different from previous.
+             */
+            Object prevItemId = null;
+            for(Object itemId: new ArrayList<Object>(source.getItemIds())) {
+                Object type = source.getItem(itemId).
+                        getItemProperty("type").
+                        getValue();
+                Object previousType = null; 
+                
+                if(prevItemId != null) {
+                    previousType = source.getItem(prevItemId).
+                            getItemProperty("type").
+                            getValue();
+                }
+
+                if(!type.equals(previousType)) {
+                    Item sectionItem = source.addItemAfter(
+                            prevItemId, 
+                            "##SUBSECTION##"+type
+                    );
+                    
+                    sectionItem.getItemProperty("type").setValue(type);
+                }
+                
+                prevItemId = itemId;
+            }
+
+        }
+        
+        private void removeWithItemId(Object itemId) {            
+        
+            List<Object> ids = new ArrayList<Object>(
+                    presenter.getMessageDataSource().getItemIds()
+            );
+            
+            for(Object id: ids) {
+                if(id.toString().startsWith(itemId.toString())) {
+                    presenter.getMessageDataSource().removeItem(id);
+                }
+            }            
+        }
+    };
+    
+    private Table.RowGenerator groupingRowGenerator = new Table.RowGenerator() {
+
+        @Override
+        public GeneratedRow generateRow(Table table, Object itemId) {
+           
+            /*
+             * When sorting by type special items are inserted into
+             * Container to acts as a placeholder for grouping
+             * sub section. This row generator must render those
+             * special items.
+             */
+            if(itemId.toString().startsWith("##SUBSECTION##")) {
+                Item item = table.getItem(itemId);
+                Property property = item.getItemProperty("type");
+
+                GeneratedRow generated = new GeneratedRow(property.getValue().toString());
+                return generated;
+            }
+
+            return null;
+        }
+    };
 
     @Override
     public ComponentContainer asVaadinComponent() {
