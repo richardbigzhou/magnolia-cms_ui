@@ -599,6 +599,8 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
             final QueryResult queryResult = executeQuery(constructJCRQuery(), Query.JCR_SQL2, 0, 0);
 
             final long pageSize = queryResult.getRows().getSize();
+            log.debug("Query resultset contains {} items", pageSize);
+
             updateCount((int) pageSize);
         } catch (RepositoryException e){
             throw new RuntimeRepositoryException(e);
@@ -615,7 +617,6 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
      */
     public void refresh() {
         currentOffset = 0;
-        getPage();
         itemIndexes.clear();
         updateSize();
     }
