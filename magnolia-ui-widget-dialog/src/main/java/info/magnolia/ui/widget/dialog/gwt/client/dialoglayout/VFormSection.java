@@ -58,7 +58,7 @@ import com.vaadin.terminal.gwt.client.UIDL;
 /**
  * Layout for the {@link DialogFieldWrapper} widgets.
  */
-public class VFormSection extends FlowPanel implements Container, HelpAccessibilityEvent.Handler {
+public class VFormSection extends FlowPanel implements Container {
 
     private List<Widget> children = new LinkedList<Widget>();
 
@@ -179,13 +179,6 @@ public class VFormSection extends FlowPanel implements Container, HelpAccessibil
             return new RenderSpace(fs.getFieldAreaWidth(), fs.getFieldAreaHeight());
         }
         return new RenderSpace();
-    }
-
-    @Override
-    public void onHelpAccessibilityChanged(HelpAccessibilityEvent event) {
-        for (final DialogFieldWrapper fs : sections.values()) {
-            fs.setHelpEnabled(event.isHelpAccesible());
-        }
     }
 
     public void setDescriptionVisible(boolean isAccessible) {
