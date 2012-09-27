@@ -109,10 +109,10 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements VMagnoliaTab
         new Timer() {
             @Override
             public void run() {
-                activeTab = tab;
                 tab.getElement().getStyle().setVisibility(Visibility.VISIBLE);
             }
         }.schedule(500);
+        activeTab = tab;
         fireEvent(new ActiveTabChangedEvent(tab));
     }
 

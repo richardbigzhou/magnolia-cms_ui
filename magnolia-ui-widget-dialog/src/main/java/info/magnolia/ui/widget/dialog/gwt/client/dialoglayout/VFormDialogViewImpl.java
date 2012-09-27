@@ -50,6 +50,7 @@ import java.util.List;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.terminal.gwt.client.Util;
 
@@ -183,6 +184,7 @@ public class VFormDialogViewImpl extends VBaseDialogViewImpl implements VFormDia
                                 tabSheet.getEventBus().fireEvent(new ActiveTabChangedEvent(nextTab));
                                 lastShownProblematicField = null;
                                 jumpToNextError();
+                                break;
                             }
                         }
                     }
@@ -207,7 +209,13 @@ public class VFormDialogViewImpl extends VBaseDialogViewImpl implements VFormDia
                 addCallback(new JQueryCallback() {
                     @Override
                     public void execute(JQueryWrapper query) {
-                        field.focusField();
+                        new Timer() {
+                            @Override
+                            public void run() {
+                                field.focusField();
+                            };
+                        }.schedule(500);
+                        
                     }
                 });
             }
