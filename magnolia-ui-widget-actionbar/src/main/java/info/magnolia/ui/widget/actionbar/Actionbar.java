@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.widget.actionbar;
 
+import com.vaadin.terminal.ExternalResource;
+import com.vaadin.ui.Embedded;
 import info.magnolia.ui.vaadin.integration.widget.serializer.ResourceSerializer;
 import info.magnolia.ui.widget.actionbar.gwt.client.VActionbar;
 
@@ -250,7 +252,11 @@ public class Actionbar extends AbstractComponent implements ActionbarView, Serve
     }
 
     @Override
-    public void setPreview(Component preview, String sectionName) {
+    public void setPreview(String previewPath, String sectionName) {
+        Resource resource = new ExternalResource(previewPath, "image/png");
+        Embedded preview = new Embedded("" , resource);
+        preview.setWidth("100%");
+
         ActionbarSection section = sections.get(sectionName);
         if (section != null) {
             final VerticalLayout previewContainer = new VerticalLayout();
@@ -544,7 +550,7 @@ public class Actionbar extends AbstractComponent implements ActionbarView, Serve
         private final Resource icon;
 
         /**
-         * Use {@link ActionbarItem#ActionbarItem(String, String, String, String)} instead.
+         * Use {@link ActionbarItem#ActionbarItem(String, String, String)} instead.
          */
         @Deprecated
         public ActionbarResourceItem(String name, String label, Resource icon, String groupName) {

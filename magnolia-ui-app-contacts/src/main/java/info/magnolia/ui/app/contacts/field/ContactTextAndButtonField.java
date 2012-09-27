@@ -34,7 +34,7 @@
 package info.magnolia.ui.app.contacts.field;
 
 import info.magnolia.ui.admincentral.field.TextAndButtonField;
-import info.magnolia.ui.admincentral.image.ImageThumbnailProvider;
+import info.magnolia.ui.model.thumbnail.ImageProvider;
 
 import org.vaadin.addon.customfield.CustomField;
 
@@ -51,12 +51,12 @@ public class ContactTextAndButtonField extends CustomField{
 
     private TextAndButtonField textAndButtonField;
 
-    public ContactTextAndButtonField(TextAndButtonField textAndButtonField, ImageThumbnailProvider imageThumbnailProvider, String workspace, int width, int height) {
+    public ContactTextAndButtonField(TextAndButtonField textAndButtonField, ImageProvider imageThumbnailProvider, String workspace) {
         //used to set the correct property and values
         this.textAndButtonField = textAndButtonField;
         HorizontalLayout layout = new HorizontalLayout();
         // Add Thumbnail Field
-        ContactThumbnailField thumbnail = new ContactThumbnailField(imageThumbnailProvider, workspace, width, height);
+        ContactThumbnailField thumbnail = new ContactThumbnailField(imageThumbnailProvider, workspace);
         thumbnail.ValueChangeListener(textAndButtonField.getTextField());
         layout.addComponent(thumbnail);
         // Add Select Field

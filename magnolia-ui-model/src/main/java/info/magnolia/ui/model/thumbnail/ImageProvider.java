@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,23 +31,44 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.thumbnail;
+package info.magnolia.ui.model.thumbnail;
 
-import info.magnolia.ui.model.thumbnail.AbstractThumbnailProvider;
-import info.magnolia.ui.model.thumbnail.ThumbnailUtility;
-
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 
 /**
- * PagesThumbnailProvider.
+ * Defines a provider for Thumbnail images.
  */
-public class PagesThumbnailProvider extends AbstractThumbnailProvider {
+public interface ImageProvider {
 
-    @Override
-    protected BufferedImage createThumbnail(Image image, String format, int width, int height, float quality) throws IOException {
-        return ThumbnailUtility.createThumbnail(image, format, width, height, quality);
-    }
+    static final String ORIGINAL_IMAGE_NODE_NAME = "originalImage";
+    static final String IMAGING_SERVLET_PATH = ".imaging";
+    static final String IMAGE_EXTENSION = "png";
 
+    String getPortraitPath(String path, String workspace);
+
+    String getThumbnailPath(String path, String workspace);
+
+    String getPortraitPathByUuid(String uuid, String workspace);
+
+    String getThumbnailPathByUuid(String uuid, String workspace);
+
+    /**
+     * Defaults to {@value #ORIGINAL_IMAGE_NODE_NAME}.
+     */
+    String getOriginalImageNodeName();
+
+    void setOriginalImageNodeName(String originalImageNodeName);
+
+    /**
+     * Defaults to {@value #IMAGING_SERVLET_PATH}.
+     */
+    String getImagingServletPath();
+
+    void setImagingServletPath(String imagingServletPath);
+
+    /**
+     * Defaults to {@value #IMAGE_EXTENSION}.
+     */
+    String getImageExtension();
+
+    void setImageExtension(String imageExtension);
 }

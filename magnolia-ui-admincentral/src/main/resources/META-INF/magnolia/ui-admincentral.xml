@@ -236,8 +236,8 @@
     </component>
 
     <component>
-      <type>info.magnolia.ui.admincentral.image.ImageThumbnailProvider</type>
-      <implementation>info.magnolia.ui.admincentral.image.ImageThumbnailProvider</implementation>
+      <type>info.magnolia.ui.model.thumbnail.ImageProvider</type>
+      <implementation>info.magnolia.ui.model.thumbnail.DefaultImageProvider</implementation>
     </component>
   </components>
 
