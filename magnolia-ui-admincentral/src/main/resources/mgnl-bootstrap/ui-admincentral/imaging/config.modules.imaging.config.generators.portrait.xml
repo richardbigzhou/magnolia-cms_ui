@@ -52,7 +52,7 @@
       <sv:value>admin</sv:value>
     </sv:property>
     <sv:property sv:name="quality" sv:type="Long">
-      <sv:value>1</sv:value>
+      <sv:value>80</sv:value>
     </sv:property>
     <sv:node sv:name="MetaData">
       <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -71,7 +71,7 @@
         <sv:value>2009-05-11T18:47:13.400+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-        <sv:value>2012-09-25T12:10:55.911+02:00</sv:value>
+        <sv:value>2012-09-27T19:15:27.939+02:00</sv:value>
       </sv:property>
     </sv:node>
   </sv:node>
@@ -162,7 +162,7 @@
         <sv:value>admin</sv:value>
       </sv:property>
       <sv:property sv:name="targetHeight" sv:type="String">
-        <sv:value>300</sv:value>
+        <sv:value>250</sv:value>
       </sv:property>
       <sv:property sv:name="targetWidth" sv:type="String">
         <sv:value>200</sv:value>
@@ -184,7 +184,7 @@
           <sv:value>2012-09-25T11:48:51.040+02:00</sv:value>
         </sv:property>
         <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-          <sv:value>2012-09-25T12:12:47.430+02:00</sv:value>
+          <sv:value>2012-09-27T19:18:30.810+02:00</sv:value>
         </sv:property>
       </sv:node>
     </sv:node>

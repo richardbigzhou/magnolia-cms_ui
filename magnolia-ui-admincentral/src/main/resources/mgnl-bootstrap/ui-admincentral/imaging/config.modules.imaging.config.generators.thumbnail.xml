@@ -156,10 +156,10 @@
         <sv:value>admin</sv:value>
       </sv:property>
       <sv:property sv:name="targetHeight" sv:type="String">
-        <sv:value>130</sv:value>
+        <sv:value>70</sv:value>
       </sv:property>
       <sv:property sv:name="targetWidth" sv:type="String">
-        <sv:value>80</sv:value>
+        <sv:value>70</sv:value>
       </sv:property>
       <sv:node sv:name="MetaData">
         <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -178,7 +178,7 @@
           <sv:value>2012-09-25T11:48:51.040+02:00</sv:value>
         </sv:property>
         <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-          <sv:value>2012-09-25T12:10:39.496+02:00</sv:value>
+          <sv:value>2012-09-27T19:18:44.380+02:00</sv:value>
         </sv:property>
       </sv:node>
     </sv:node>

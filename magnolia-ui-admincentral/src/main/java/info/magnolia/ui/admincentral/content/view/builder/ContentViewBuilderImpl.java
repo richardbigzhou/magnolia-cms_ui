@@ -72,7 +72,7 @@ public class ContentViewBuilderImpl implements ContentViewBuilder, Serializable 
         case LIST:
             return componentProvider.newInstance(ListViewImpl.class, workbenchDefinition, treeModel);
         case THUMBNAIL:
-            return componentProvider.newInstance(LazyThumbnailViewImpl.class, workbenchDefinition,workbenchDefinition.getThumbnailProvider());
+            return componentProvider.newInstance(LazyThumbnailViewImpl.class, workbenchDefinition,workbenchDefinition.getImageProvider());
         default:
             throw new RuntimeException("The provided view type ["+ type + "] is not valid.");
         }
