@@ -165,7 +165,9 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
 
             @Override
             public void focus(FocusEvent event) {
-                setViewType(ViewType.SEARCH);
+                if(currentViewType != ViewType.SEARCH) {
+                    setViewType(ViewType.SEARCH);
+                }
             }
         });
 
@@ -210,6 +212,7 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
 
     @Override
     public void setGridType(ViewType type) {
+
         contentViewContainer.removeComponent(contentViews.get(currentViewType).asVaadinComponent());
         final Component c = contentViews.get(type).asVaadinComponent();
 
