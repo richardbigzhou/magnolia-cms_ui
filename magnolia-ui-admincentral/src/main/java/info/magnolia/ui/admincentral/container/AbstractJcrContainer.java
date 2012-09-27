@@ -98,7 +98,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     /** Item and index caches. */
     private final Map<Long, String> itemIndexes = new HashMap<Long, String>();
 
-    private final Map<String, String> sortableProperties = new HashMap<String, String>();
+    private final List<String> sortableProperties = new ArrayList<String>();
 
     private final List<OrderBy> sorters = new ArrayList<OrderBy>();
 
@@ -121,6 +121,8 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     private static final String NAME_PROPERTY = "name";
 
+    private static final String META_DATA_PROPERTY_TO_BE_REPLACED_FOR_ORDER_BY = "MetaData/";
+
     // need to use name(..) function as name or jcr:name is not supported by JCR2.
     private static final String JCR_NAME_FUNCTION = "name(" + CONTENT_SELECTOR_NAME + ")";
 
@@ -137,12 +139,12 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
                 if (StringUtils.isBlank(propertyName)) {
                     propertyName = columnDefinition.getName();
-                    log.warn(
-                        "Column {} is sortable but no propertyName has been defined. Defaulting to column name (sorting may not work as expected).",
-                        columnDefinition.getName());
+                    log.debug(
+                            "Column {} is sortable but no propertyName has been defined. Defaulting to column name (sorting may not work as expected).",
+                            columnDefinition.getName());
                 }
 
-                sortableProperties.put(columnDefinition.getName(), propertyName);
+                sortableProperties.add(propertyName);
             }
         }
     }
@@ -408,8 +410,8 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     public void sort(Object[] propertyId, boolean[] ascending) {
         sorters.clear();
         for (int i = 0; i < propertyId.length; i++) {
-            if (sortableProperties.keySet().contains(propertyId[i])) {
-                OrderBy orderBy = new OrderBy(sortableProperties.get(propertyId[i]), ascending[i]);
+            if (sortableProperties.contains(propertyId[i])) {
+                OrderBy orderBy = new OrderBy((String) propertyId[i], ascending[i]);
                 sorters.add(orderBy);
             }
         }
@@ -418,7 +420,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     @Override
     public List<String> getSortableContainerPropertyIds() {
-        return Collections.unmodifiableList(new ArrayList<String>(sortableProperties.keySet()));
+        return Collections.unmodifiableList(sortableProperties);
     }
 
     @Override
@@ -534,7 +536,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
             itemIndexes.put(rowCount++, id);
         }
 
-        log.debug("Done in {} ms", System.currentTimeMillis() - start);
+        log.warn("Done in {} ms", System.currentTimeMillis() - start);
     }
 
     /**
@@ -546,37 +548,40 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
         if (sorters.isEmpty()) {
             // no sorters set - apply default (sort by name)
             stmt.append(ORDER_BY)
-                .append(JCR_NAME_FUNCTION)
-                .append(" asc");
+                    .append(JCR_NAME_FUNCTION)
+                    .append(" asc");
         } else {
             // TODO one workaround to make this faster would be avoiding doing a join when we
             // know for sure there are no properties from metadata to order by.
             stmt.append(JOIN_METADATA)
-                .append(ORDER_BY);
+                    .append(ORDER_BY);
             String sortOrder;
             for (OrderBy orderBy : sorters) {
+                String propertyName = orderBy.getProperty();
                 sortOrder = orderBy.isAscending() ? " asc" : " desc";
-                if (NAME_PROPERTY.equals(orderBy.getProperty())) {
+                if (NAME_PROPERTY.equals(propertyName)) {
                     stmt.append(JCR_NAME_FUNCTION)
-                        .append(sortOrder)
-                        .append(", ");
+                            .append(sortOrder)
+                            .append(", ");
                     continue;
                 }
-                stmt.append(CONTENT_SELECTOR_NAME)
-                    .append(".[")
-                    .append(orderBy.getProperty())
-                    .append("]")
-                    .append(sortOrder)
-                    .append(", ");
-                // TODO here we don't know to which primary type this prop belongs to. I would
-                // tend not to clutter the column definition with yet another info about primary
-                // type.
-                stmt.append(METADATA_SELECTOR_NAME)
-                    .append(".[")
-                    .append(orderBy.getProperty())
-                    .append("]")
-                    .append(sortOrder)
-                    .append(", ");
+
+                if (propertyName.startsWith(META_DATA_PROPERTY_TO_BE_REPLACED_FOR_ORDER_BY)) {
+                    propertyName = propertyName.substring(META_DATA_PROPERTY_TO_BE_REPLACED_FOR_ORDER_BY.length());
+
+                    // TODO here we don't know to which primary type this prop belongs to. I would
+                    // tend not to clutter the column definition with yet another info about primary
+                    // type.
+                    stmt.append(METADATA_SELECTOR_NAME);
+                } else {
+                    stmt.append(CONTENT_SELECTOR_NAME);
+                }
+                stmt.append(".[")
+                        .append(propertyName)
+                        .append("]")
+                        .append(sortOrder)
+                        .append(", ");
+
             }
             stmt.delete(stmt.lastIndexOf(","), stmt.length() - 1);
         }
@@ -630,14 +635,14 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
             if (offset >= 0) {
                 query.setOffset(offset);
             }
-            log.debug("Executing query against workspace [{}] with statement [{}] and limit {} and offset {}...", new Object[]{
-                getWorkspace(),
-                statement,
-                limit,
-                offset});
+            log.warn("Executing query against workspace [{}] with statement [{}] and limit {} and offset {}...", new Object[]{
+                    getWorkspace(),
+                    statement,
+                    limit,
+                    offset});
             long start = System.currentTimeMillis();
             final QueryResult result = query.execute();
-            log.debug("Query execution took {} ms", System.currentTimeMillis() - start);
+            log.warn("Query execution took {} ms", System.currentTimeMillis() - start);
 
             return result;
 
