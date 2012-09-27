@@ -153,7 +153,11 @@ public class VFormDialogViewImpl extends VBaseDialogViewImpl implements VFormDia
 
             @Override
             public void onDescriptionVisibilityChanged(boolean isVisible) {
-                setDescriptionVisible(isVisible);
+                if (dialogTabs != null) {
+                    for (final VDialogTab tab : dialogTabs) {
+                        tab.setDescriptionVisible(isVisible);
+                    }   
+                }
             }
 
             @Override
@@ -193,14 +197,6 @@ public class VFormDialogViewImpl extends VBaseDialogViewImpl implements VFormDia
         };
     };
 
-    void setDescriptionVisible(boolean isVisible) {
-        if (dialogTabs != null) {
-            for (final VDialogTab tab : dialogTabs) {
-                tab.setDescriptionVisible(isVisible);
-            }   
-        }
-    }
-
     private void scrollTo(final DialogFieldWrapper field) {
         final int top = JQueryWrapper.select(field).position().top();
         JQueryWrapper.select(tabSheet).children(".v-shell-tabsheet-scroller").animate(500, new AnimationSettings() {
@@ -215,7 +211,6 @@ public class VFormDialogViewImpl extends VBaseDialogViewImpl implements VFormDia
                                 field.focusField();
                             };
                         }.schedule(500);
-                        
                     }
                 });
             }
