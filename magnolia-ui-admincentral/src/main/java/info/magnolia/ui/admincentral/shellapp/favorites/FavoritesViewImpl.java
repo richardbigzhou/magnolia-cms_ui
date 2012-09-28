@@ -34,11 +34,12 @@
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
 import info.magnolia.ui.admincentral.components.SplitFeed;
+import info.magnolia.ui.widget.magnoliashell.CssLayoutMagnolia;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
 
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
+//import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Label;
 
 
@@ -102,7 +103,7 @@ public class FavoritesViewImpl extends SplitFeed implements FavoritesView {
     /**
      * Favorite entry.
      */
-    public static class FavoriteEntry extends CssLayout {
+    public static class FavoriteEntry extends CssLayoutMagnolia {
 
         private final Label textElement = new Label();
 
@@ -133,7 +134,7 @@ public class FavoritesViewImpl extends SplitFeed implements FavoritesView {
     /**
      * Favorite section.
      */
-    public static class FavoritesSection extends CssLayout {
+    public static class FavoritesSection extends CssLayoutMagnolia {
 
         public FavoritesSection() {
             addStyleName("favorites-section");
