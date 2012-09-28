@@ -31,39 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.dialog;
-
-import info.magnolia.ui.vaadin.widget.tabsheet.MagnoliaTab;
-import info.magnolia.ui.widget.dialog.gwt.client.VDialogTab;
-
-import com.vaadin.terminal.PaintException;
-import com.vaadin.terminal.PaintTarget;
-import com.vaadin.ui.ClientWidget;
+package info.magnolia.ui.widget.dialog.gwt.client.dialoglayout;
 
 /**
- * Dialog tab.
+ * {@link VAbstractDialog} interface.
  *
  */
-@ClientWidget(VDialogTab.class)
-public class MagnoliaDialogTab extends MagnoliaTab {
+public interface VAbstractDialog {
 
-    private final FormSection content;
-
-    public MagnoliaDialogTab(String caption, FormSection content) {
-        super(caption, content);
-        this.content = content;
-        //DialogLayout needs this info to display it when show all tab is active
-        this.content.setCaption(caption);
-    }
-
-    public void setValidationVisible(boolean isVisible) {
-        content.setValidationVisible(isVisible);
-    }
-
-    @Override
-    public void paintContent(PaintTarget target) throws PaintException {
-        setHasError(content.hasError());
-        super.paintContent(target);
-    }
+    void updateErrorAmount();
 
 }

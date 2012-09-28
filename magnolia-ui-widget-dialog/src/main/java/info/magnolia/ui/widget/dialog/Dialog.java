@@ -34,7 +34,7 @@
 package info.magnolia.ui.widget.dialog;
 
 import info.magnolia.cms.i18n.MessagesUtil;
-import info.magnolia.ui.vaadin.widget.tabsheet.ShellTabSheet;
+import info.magnolia.ui.vaadin.widget.tabsheet.MagnoliaTabSheet;
 import info.magnolia.ui.widget.dialog.gwt.client.VDialog;
 
 import java.util.ArrayList;
@@ -56,7 +56,7 @@ import com.vaadin.ui.Field;
  *
  */
 @ClientWidget(VDialog.class)
-public class Dialog extends ShellTabSheet implements MagnoliaDialogView, ServerSideHandler, Item.Editor {
+public class Dialog extends MagnoliaTabSheet implements MagnoliaDialogView, ServerSideHandler, Item.Editor {
 
     private final String SHOW_ALL = MessagesUtil.get("dialogs.show.all");
 
@@ -102,10 +102,10 @@ public class Dialog extends ShellTabSheet implements MagnoliaDialogView, ServerS
 
     @Override
     public void addTab(ComponentContainer cc, String caption) {
-        if (!(cc instanceof DialogLayout)) {
+        if (!(cc instanceof FormSection)) {
             throw new IllegalArgumentException();
         }
-        final MagnoliaDialogTab tab = new MagnoliaDialogTab(caption, (DialogLayout)cc);
+        final MagnoliaDialogTab tab = new MagnoliaDialogTab(caption, (FormSection)cc);
         dialogTabs.add(tab);
         tab.setSizeUndefined();
         tab.setClosable(false);

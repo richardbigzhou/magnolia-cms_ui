@@ -69,6 +69,7 @@ public class ContentViewBuilderImpl implements ContentViewBuilder, Serializable 
         // FIXME the model should be set by the presenter
         TreeModel treeModel = new TreeModel(workbenchDefinition, workbenchActionFactory);
         switch (type) {
+
             case TREE:
                 return componentProvider.newInstance(TreeViewImpl.class, workbenchDefinition, treeModel);
             case LIST:
@@ -78,7 +79,7 @@ public class ContentViewBuilderImpl implements ContentViewBuilder, Serializable 
                 final SearchJcrContainer searchContainer = new SearchJcrContainer(treeModel, workbenchDefinition);
                 return componentProvider.newInstance(SearchViewImpl.class, workbenchDefinition, treeModel, searchContainer);
             case THUMBNAIL:
-                return componentProvider.newInstance(LazyThumbnailViewImpl.class, workbenchDefinition,workbenchDefinition.getThumbnailProvider());
+                return componentProvider.newInstance(LazyThumbnailViewImpl.class, workbenchDefinition,workbenchDefinition.getImageProvider());
             default:
                 throw new RuntimeException("The provided view type ["+ type + "] is not valid.");
        }

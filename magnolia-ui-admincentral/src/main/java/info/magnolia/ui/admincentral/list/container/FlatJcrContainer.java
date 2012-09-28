@@ -49,7 +49,7 @@ import org.slf4j.LoggerFactory;
  * A flat implementation of {@link info.magnolia.ui.admincentral.container.AbstractJcrContainer} where relationships are not taken into account.
  */
 public class FlatJcrContainer extends AbstractJcrContainer {
-
+    
     private static final Logger log = LoggerFactory.getLogger(FlatJcrContainer.class);
     /**
      * Constructor for {@link FlatJcrContainer}.

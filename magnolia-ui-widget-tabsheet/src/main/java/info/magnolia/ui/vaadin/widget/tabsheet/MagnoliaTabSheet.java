@@ -60,19 +60,19 @@ import com.vaadin.ui.VerticalLayout;
  */
 @SuppressWarnings("serial")
 @ClientWidget(value = VMagnoliaTabSheet.class, loadStyle = LoadStyle.EAGER)
-public class ShellTabSheet extends AbstractComponentContainer implements ServerSideHandler {
+public class MagnoliaTabSheet extends AbstractComponentContainer implements ServerSideHandler {
 
     private final KeyMapper mapper = new KeyMapper();
 
-    private final List<ShellTab> tabs = new LinkedList<ShellTab>();
+    private final List<MagnoliaTab> tabs = new LinkedList<MagnoliaTab>();
 
-    private ShellTab activeTab = null;
+    private MagnoliaTab activeTab = null;
 
     protected ServerSideProxy proxy = createProxy();
 
     private boolean isFullscreen = false;
     
-    public ShellTabSheet() {
+    public MagnoliaTabSheet() {
         super();
         setImmediate(true);
     }
@@ -103,8 +103,8 @@ public class ShellTabSheet extends AbstractComponentContainer implements ServerS
         if (!(c instanceof ComponentContainer)) {
             throw new IllegalArgumentException("Content of the tab must be a ComponentContainer!");
         }
-        if (c instanceof ShellTab) {
-            doAddTab((ShellTab) c);
+        if (c instanceof MagnoliaTab) {
+            doAddTab((MagnoliaTab) c);
         } else {
             addTab("", (ComponentContainer) c);
         }
@@ -116,8 +116,8 @@ public class ShellTabSheet extends AbstractComponentContainer implements ServerS
         return c;
     }
 
-    public ShellTab addTab(final String caption, final ComponentContainer c) {
-        final ShellTab tab = new ShellTab(caption, c);
+    public MagnoliaTab addTab(final String caption, final ComponentContainer c) {
+        final MagnoliaTab tab = new MagnoliaTab(caption, c);
         doAddTab(tab);
         return tab;
     }
@@ -143,10 +143,10 @@ public class ShellTabSheet extends AbstractComponentContainer implements ServerS
     }
     
     protected void closeTab(final String tabId) {
-        final ShellTab tab = (ShellTab) mapper.get(tabId);
+        final MagnoliaTab tab = (MagnoliaTab) mapper.get(tabId);
         if (tab != null) {
             if (activeTab == tab) {
-                final ShellTab nextTab = getNextTab(tab);
+                final MagnoliaTab nextTab = getNextTab(tab);
                 if (nextTab != null && nextTab != tab) {
                     setActiveTab(nextTab);
                 }
@@ -155,7 +155,7 @@ public class ShellTabSheet extends AbstractComponentContainer implements ServerS
         }
     }
 
-    protected void doAddTab(final ShellTab tab) {
+    protected void doAddTab(final MagnoliaTab tab) {
         super.addComponent(tab);
         tab.setTabId(mapper.key(tab));
         tabs.add(tab);
@@ -165,12 +165,12 @@ public class ShellTabSheet extends AbstractComponentContainer implements ServerS
         requestRepaint();
     }
 
-    public ShellTab getActiveTab() {
+    public MagnoliaTab getActiveTab() {
         return activeTab;
     }
 
     public void onActiveTabSet(String tabId) {
-        final ShellTab shellTab = (ShellTab) mapper.get(tabId);
+        final MagnoliaTab shellTab = (MagnoliaTab) mapper.get(tabId);
         if (shellTab != null && shellTab != activeTab) {
             activeTab = shellTab;
         }
@@ -180,7 +180,7 @@ public class ShellTabSheet extends AbstractComponentContainer implements ServerS
     public Iterator<Component> getComponentIterator() {
         return new Iterator<Component>() {
 
-            private final Iterator<ShellTab> wrappedIt = tabs.iterator();
+            private final Iterator<MagnoliaTab> wrappedIt = tabs.iterator();
 
             @Override
             public boolean hasNext() {
@@ -189,7 +189,7 @@ public class ShellTabSheet extends AbstractComponentContainer implements ServerS
 
             @Override
             public Component next() {
-                final ShellTab tab = wrappedIt.next();
+                final MagnoliaTab tab = wrappedIt.next();
                 return tab.getContent();
             }
 
@@ -200,19 +200,19 @@ public class ShellTabSheet extends AbstractComponentContainer implements ServerS
         };
     }
 
-    protected ShellTab getNextTab(final ShellTab tab) {
+    protected MagnoliaTab getNextTab(final MagnoliaTab tab) {
         return CollectionUtil.getNext(tabs, tab);
     }
 
-    protected ShellTab getTabById(final String tabId) {
-        return (ShellTab)mapper.get(tabId);
+    protected MagnoliaTab getTabById(final String tabId) {
+        return (MagnoliaTab)mapper.get(tabId);
     }
 
     @Override
     public Object[] initRequestFromClient() {
         proxy.call("setActiveTab", activeTab.getTabId());
         proxy.call("setActiveTabFullscreen", isFullscreen);
-        for (final ShellTab tab : tabs) {
+        for (final MagnoliaTab tab : tabs) {
             if (tab.isClosable()) {
                 proxy.call("setTabClosable", tab.getTabId(), true);
             }
@@ -229,7 +229,7 @@ public class ShellTabSheet extends AbstractComponentContainer implements ServerS
 
     private void paintTabs(final PaintTarget target) throws PaintException {
         target.startTag("tabs");
-        final Iterator<ShellTab> it = tabs.iterator();
+        final Iterator<MagnoliaTab> it = tabs.iterator();
         while (it.hasNext()) {
             it.next().paint(target);
         }
@@ -246,8 +246,8 @@ public class ShellTabSheet extends AbstractComponentContainer implements ServerS
 
     @Override
     public void removeComponent(final Component c) {
-        if (c instanceof ShellTab) {
-            final ShellTab tab = (ShellTab) c;
+        if (c instanceof MagnoliaTab) {
+            final MagnoliaTab tab = (MagnoliaTab) c;
             super.removeComponent(c);
             tabs.remove(tab);
             mapper.remove(tab);
@@ -259,7 +259,7 @@ public class ShellTabSheet extends AbstractComponentContainer implements ServerS
 
     }
 
-    public void setActiveTab(final ShellTab tab) {
+    public void setActiveTab(final MagnoliaTab tab) {
         if (tabs.contains(tab)) {
             this.activeTab = tab;
             proxy.callOnce("setActiveTab", mapper.key(tab));
@@ -267,15 +267,15 @@ public class ShellTabSheet extends AbstractComponentContainer implements ServerS
         }
     };
 
-    public void setTabClosable(final ShellTab tab, boolean closable) {
+    public void setTabClosable(final MagnoliaTab tab, boolean closable) {
         tab.setClosable(closable);
     }
 
-    public void updateTabNotification(final ShellTab tab, final String text) {
+    public void updateTabNotification(final MagnoliaTab tab, final String text) {
         tab.setNotification(text);
     }
 
-    public void hideTabNotification(final ShellTab tab) {
+    public void hideTabNotification(final MagnoliaTab tab) {
         tab.hideNotification();
     }
 

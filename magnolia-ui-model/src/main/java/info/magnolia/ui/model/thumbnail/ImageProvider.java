@@ -31,39 +31,44 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.dialog;
+package info.magnolia.ui.model.thumbnail;
 
-import info.magnolia.ui.vaadin.widget.tabsheet.MagnoliaTab;
-import info.magnolia.ui.widget.dialog.gwt.client.VDialogTab;
-
-import com.vaadin.terminal.PaintException;
-import com.vaadin.terminal.PaintTarget;
-import com.vaadin.ui.ClientWidget;
 
 /**
- * Dialog tab.
- *
+ * Defines a provider for Thumbnail images.
  */
-@ClientWidget(VDialogTab.class)
-public class MagnoliaDialogTab extends MagnoliaTab {
+public interface ImageProvider {
 
-    private final FormSection content;
+    static final String ORIGINAL_IMAGE_NODE_NAME = "originalImage";
+    static final String IMAGING_SERVLET_PATH = ".imaging";
+    static final String IMAGE_EXTENSION = "png";
 
-    public MagnoliaDialogTab(String caption, FormSection content) {
-        super(caption, content);
-        this.content = content;
-        //DialogLayout needs this info to display it when show all tab is active
-        this.content.setCaption(caption);
-    }
+    String getPortraitPath(String workspace, String path);
 
-    public void setValidationVisible(boolean isVisible) {
-        content.setValidationVisible(isVisible);
-    }
+    String getThumbnailPath(String workspace, String path);
 
-    @Override
-    public void paintContent(PaintTarget target) throws PaintException {
-        setHasError(content.hasError());
-        super.paintContent(target);
-    }
+    String getPortraitPathByIdentifier(String workspace, String uuid);
 
+    String getThumbnailPathByIdentifier(String workspace, String uuid);
+
+    /**
+     * Defaults to {@value #ORIGINAL_IMAGE_NODE_NAME}.
+     */
+    String getOriginalImageNodeName();
+
+    void setOriginalImageNodeName(String originalImageNodeName);
+
+    /**
+     * Defaults to {@value #IMAGING_SERVLET_PATH}.
+     */
+    String getImagingServletPath();
+
+    void setImagingServletPath(String imagingServletPath);
+
+    /**
+     * Defaults to {@value #IMAGE_EXTENSION}.
+     */
+    String getImageExtension();
+
+    void setImageExtension(String imageExtension);
 }

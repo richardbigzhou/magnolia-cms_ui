@@ -31,39 +31,50 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.dialog;
+package info.magnolia.ui.vaadin.widget.tabsheet.client;
 
-import info.magnolia.ui.vaadin.widget.tabsheet.MagnoliaTab;
-import info.magnolia.ui.widget.dialog.gwt.client.VDialogTab;
-
-import com.vaadin.terminal.PaintException;
-import com.vaadin.terminal.PaintTarget;
-import com.vaadin.ui.ClientWidget;
+import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.event.shared.HandlerRegistration;
 
 /**
- * Dialog tab.
- *
+ * Fired when the set of TabSheet's tabs is changed.
  */
-@ClientWidget(VDialogTab.class)
-public class MagnoliaDialogTab extends MagnoliaTab {
+public class TabSetChangedEvent extends GwtEvent<TabSetChangedEvent.Handler> {
 
-    private final FormSection content;
-
-    public MagnoliaDialogTab(String caption, FormSection content) {
-        super(caption, content);
-        this.content = content;
-        //DialogLayout needs this info to display it when show all tab is active
-        this.content.setCaption(caption);
+    public static final Type<TabSetChangedEvent.Handler> TYPE = new Type<TabSetChangedEvent.Handler>();
+    
+    private VMagnoliaTabSheet tabSheet;
+    
+    /**
+     *  HasTabSetChangedHandlers.
+     */
+    public interface HasTabSetChangedHandlers {
+        HandlerRegistration addTabSetChangedHandlers(Handler handler);
+    }
+    
+    /**
+     * Handler.
+     */
+    public interface Handler extends EventHandler {
+        void onTabSetChanged(final TabSetChangedEvent event);
     }
 
-    public void setValidationVisible(boolean isVisible) {
-        content.setValidationVisible(isVisible);
+    public TabSetChangedEvent(final VMagnoliaTabSheet tabSheet) {
+        this.tabSheet = tabSheet;
+    }
+    
+    public VMagnoliaTabSheet getTabSheet() {
+        return tabSheet;
+    }
+    
+    @Override
+    public Type<Handler> getAssociatedType() {
+        return TYPE;
     }
 
     @Override
-    public void paintContent(PaintTarget target) throws PaintException {
-        setHasError(content.hasError());
-        super.paintContent(target);
+    protected void dispatch(Handler handler) {
+        handler.onTabSetChanged(this);
     }
-
 }

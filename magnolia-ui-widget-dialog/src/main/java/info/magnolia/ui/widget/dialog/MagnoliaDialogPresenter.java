@@ -64,7 +64,7 @@ public interface MagnoliaDialogPresenter {
 
         Callback getCallback();
 
-        MagnoliaDialogView getView();
+        FormDialogView getView();
 
         Item getItem();
 
@@ -73,7 +73,7 @@ public interface MagnoliaDialogPresenter {
         /**
          * Start create the dialog.
          */
-        MagnoliaDialogView start(Item item, Callback callback);
+        DialogView start(Item item, Callback callback);
 
         void showValidation(boolean isVisible);
 
