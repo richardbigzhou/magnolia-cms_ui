@@ -203,7 +203,7 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
     }
 
     public void removeDialog(BaseDialog dialog) {
-        removeDialog(dialog.asVaadinComponent());
+        super.removeDialog(dialog.asVaadinComponent());
     }
 
     @Override
