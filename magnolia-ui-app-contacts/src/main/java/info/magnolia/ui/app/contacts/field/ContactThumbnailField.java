@@ -34,7 +34,7 @@
 package info.magnolia.ui.app.contacts.field;
 
 import info.magnolia.ui.admincentral.field.ThumbnailField;
-import info.magnolia.ui.admincentral.image.ImageThumbnailProvider;
+import info.magnolia.ui.model.thumbnail.ImageProvider;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -45,8 +45,8 @@ import javax.jcr.RepositoryException;
  */
 public class ContactThumbnailField extends ThumbnailField{
 
-    public ContactThumbnailField(ImageThumbnailProvider imageThumbnailProvider, String workspace, int width, int height) {
-        super(imageThumbnailProvider, workspace, width, height);
+    public ContactThumbnailField(ImageProvider imageThumbnailProvider, String workspace) {
+        super(imageThumbnailProvider, workspace);
     }
 
     @Override

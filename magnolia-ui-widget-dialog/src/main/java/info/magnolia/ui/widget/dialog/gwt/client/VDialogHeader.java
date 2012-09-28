@@ -84,9 +84,9 @@ public class VDialogHeader extends FlowPanel {
     });
     
     
-    public VDialogHeader(final VDialogHeaderCallback callback) {
-        this.callback = callback;
-        callback.onDescriptionVisibilityChanged(false);
+    public VDialogHeader(final VDialogHeaderCallback vDialogHeaderCallback) {
+        this.callback = vDialogHeaderCallback;
+        vDialogHeaderCallback.onDescriptionVisibilityChanged(false);
         construct();
     }
 
@@ -123,7 +123,7 @@ public class VDialogHeader extends FlowPanel {
     /**
      * Callback interface for the Dialog header.
      */
-    interface VDialogHeaderCallback {
+    public interface VDialogHeaderCallback {
         
         void onCloseFired();
         

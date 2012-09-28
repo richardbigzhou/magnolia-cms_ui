@@ -60,7 +60,7 @@ import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.framework.view.ViewPort;
-import info.magnolia.ui.vaadin.widget.tabsheet.ShellTab;
+import info.magnolia.ui.vaadin.widget.tabsheet.MagnoliaTab;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -285,7 +285,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             private String subAppId;
             private SubApp subApp;
             private Location location;
-            private ShellTab tab;
+            private MagnoliaTab tab;
             private ComponentProvider subAppComponentProvider;
             public View view;
         }
@@ -346,7 +346,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
             View view = subApp.start(location);
 
-            ShellTab tab = appFrameView.addTab((ComponentContainer) view.asVaadinComponent(), subApp.getCaption(), false);
+            MagnoliaTab tab = appFrameView.addTab((ComponentContainer) view.asVaadinComponent(), subApp.getCaption(), false);
             if (!subAppContexts.isEmpty()) {
                 tab.setClosable(true);
             }
@@ -400,7 +400,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         }
 
         @Override
-        public void onActiveTabSet(ShellTab tab) {
+        public void onActiveTabSet(MagnoliaTab tab) {
             SubAppContext subAppContext = getSubAppContextForTab(tab);
             if (subAppContext != null) {
                 locationController.goTo(subAppContext.location);
@@ -408,7 +408,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         }
 
         @Override
-        public void onTabClosed(ShellTab tab) {
+        public void onTabClosed(MagnoliaTab tab) {
             SubAppContext subAppContext = getSubAppContextForTab(tab);
             if (subAppContext != null) {
                 subAppContexts.remove(subAppContext.subAppId);
@@ -480,11 +480,11 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         }
 
         private SubAppContext getActiveSubAppContext() {
-            ShellTab tab = appFrameView.getActiveTab();
+            MagnoliaTab tab = appFrameView.getActiveTab();
             return getSubAppContextForTab(tab);
         }
 
-        private SubAppContext getSubAppContextForTab(ShellTab tab) {
+        private SubAppContext getSubAppContextForTab(MagnoliaTab tab) {
             for (SubAppContext subAppContext : subAppContexts.values()) {
                 if (subAppContext.tab.equals(tab)) {
                     return subAppContext;

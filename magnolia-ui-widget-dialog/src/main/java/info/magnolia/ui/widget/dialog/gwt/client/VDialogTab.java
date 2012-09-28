@@ -35,27 +35,30 @@ package info.magnolia.ui.widget.dialog.gwt.client;
 
 import info.magnolia.ui.vaadin.widget.tabsheet.client.VMagnoliaTab;
 import info.magnolia.ui.widget.dialog.gwt.client.dialoglayout.DialogFieldWrapper;
-import info.magnolia.ui.widget.dialog.gwt.client.dialoglayout.VDialogTabLayout;
+import info.magnolia.ui.widget.dialog.gwt.client.dialoglayout.VFormSection;
+import info.magnolia.ui.widget.dialog.gwt.client.dialoglayout.ValidationChangedEvent;
+import info.magnolia.ui.widget.dialog.gwt.client.dialoglayout.ValidationChangedEvent.Handler;
+import info.magnolia.ui.widget.dialog.gwt.client.dialoglayout.ValidationChangedEvent.HasValidationChangeHanlders;
 
 import java.util.LinkedList;
 import java.util.List;
 
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Widget;
-import com.vaadin.terminal.gwt.client.Util;
 
 /**
  * Dialog tab.
  */
-public class VDialogTab extends VMagnoliaTab {
+public class VDialogTab extends VMagnoliaTab implements HasValidationChangeHanlders {
 
-    private VDialogTabLayout content;
+    private VFormSection content;
     
     @Override
     public void setWidget(Widget w) {
-        if (!(w instanceof VDialogTabLayout)) {
+        if (!(w instanceof VFormSection)) {
             throw new RuntimeException("Invalid type of tab content. Must be VDialogLayout. You have used: " + w.getClass());
         }
-        content = (VDialogTabLayout)w;
+        content = (VFormSection)w;
         super.setWidget(w);
     }
     
@@ -81,14 +84,7 @@ public class VDialogTab extends VMagnoliaTab {
     @Override
     public void setHasError(boolean hasError) {
         super.setHasError(hasError);
-        final VDialog dialog = getDialog();
-        if (dialog != null) {
-            dialog.updateErrorAmount();
-        }
-    }
-   
-    private VDialog getDialog() {
-        return Util.findWidget(getElement(), VDialog.class);
+        fireEvent(new ValidationChangedEvent());
     }
 
     public int getErrorAmount() {
@@ -97,6 +93,12 @@ public class VDialogTab extends VMagnoliaTab {
 
     public List<DialogFieldWrapper> getProblematicFields() {
         return content.getProblematicFields();
+    }
+
+
+    @Override
+    public HandlerRegistration addValidationChangeHandler(Handler handler) {
+        return addHandler(handler, ValidationChangedEvent.TYPE);
     }
 
 }

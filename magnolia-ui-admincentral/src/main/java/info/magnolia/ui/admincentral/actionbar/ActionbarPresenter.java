@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.actionbar;
 
+import com.google.inject.Inject;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.admincentral.actionbar.builder.ActionbarBuilder;
 import info.magnolia.ui.admincentral.event.ActionbarItemClickedEvent;
@@ -48,18 +49,14 @@ import info.magnolia.ui.model.actionbar.definition.ActionbarItemDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarSectionDefinition;
 import info.magnolia.ui.widget.actionbar.Actionbar;
 import info.magnolia.ui.widget.actionbar.ActionbarView;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Named;
 import javax.jcr.LoginException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.inject.Inject;
-import com.vaadin.ui.Component;
 
 
 /**
@@ -101,13 +98,12 @@ public class ActionbarPresenter implements ActionbarView.Listener {
         return actionbar;
     }
 
-    public void setPreview(final Component preview) {
-        if (preview != null) {
+    public void setPreview(final String imagePath) {
+        if (StringUtils.isNotBlank(imagePath)) {
             if (!((Actionbar) actionbar).getSections().containsKey(PREVIEW_SECTION_NAME)) {
                 actionbar.addSection(PREVIEW_SECTION_NAME, "Preview");
             }
-            preview.setWidth("100%");
-            actionbar.setPreview(preview, PREVIEW_SECTION_NAME);
+            actionbar.setPreview(imagePath, PREVIEW_SECTION_NAME);
         } else {
             if (((Actionbar) actionbar).getSections().containsKey(PREVIEW_SECTION_NAME)) {
                 actionbar.removeSection(PREVIEW_SECTION_NAME);

@@ -61,7 +61,7 @@ public class SearchJcrContainer extends FlatJcrContainer{
 
         //See http://wiki.apache.org/jackrabbit/EncodingAndEscaping
         final String escapedFullTextExpression = getFullTextExpression().replaceAll("'", "''").trim();
-        final String stmt = "select * from [mgnl:content] as content where contains(content.*,'" + escapedFullTextExpression + "') order by name(content)";
+        final String stmt = "select * from [mgnl:content] as content where contains(content.*,'" + escapedFullTextExpression + "') ";
         log.debug("JCR query statement is {}", stmt);
         return stmt;
     }
