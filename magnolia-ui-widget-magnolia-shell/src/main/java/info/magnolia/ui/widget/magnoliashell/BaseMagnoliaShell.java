@@ -105,8 +105,7 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Com
             indications.put(type, new MutableInt());
         }
 
-        getAppViewport().addStyleName("apps");
-        getShellAppViewport().addStyleName("shellapps");
+
     }
 
     public void navigateToApp(String prefix, String token) {

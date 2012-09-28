@@ -45,9 +45,10 @@ import com.vaadin.ui.ClientWidget.LoadStyle;
  */
 @ClientWidget(value = VAppsViewport.class, loadStyle = LoadStyle.EAGER)
 public class AppsViewport extends ShellViewport {
-    
+
     public AppsViewport(BaseMagnoliaShell shell) {
         super(shell);
+        setDebugId("apps");
     }
-   
+
 }

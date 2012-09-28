@@ -35,6 +35,7 @@ package info.magnolia.ui.admincentral.shellapp.pulse;
 
 import info.magnolia.ui.vaadin.widget.tabsheet.ShellTab;
 import info.magnolia.ui.vaadin.widget.tabsheet.ShellTabSheet;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
 
 import java.util.List;
 
@@ -52,6 +53,14 @@ import com.vaadin.ui.ComponentContainer;
  */
 @SuppressWarnings("serial")
 public class PulseViewImpl implements PulseView {
+
+
+    private String id= ShellAppType.PULSE.getClassId();
+
+    @Override
+    public String getId(){
+        return id;
+    }
 
     private final ShellTabSheet tabsheet = new ShellTabSheet() {
 
@@ -87,6 +96,8 @@ public class PulseViewImpl implements PulseView {
         tabsheet.addStyleName("v-pulse");
         tabsheet.setSizeFull();
         tabsheet.setWidth("900px");
+
+        tabsheet.setDebugId(id);
 
         m.put(PulseTabType.DASHBOARD, dashboard);
         m.put(PulseTabType.MESSAGES, messages);

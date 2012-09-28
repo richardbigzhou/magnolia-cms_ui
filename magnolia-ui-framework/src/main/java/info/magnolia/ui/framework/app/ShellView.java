@@ -40,4 +40,5 @@ import info.magnolia.ui.framework.view.View;
  */
 public interface ShellView extends View {
 
+    String getId();
 }

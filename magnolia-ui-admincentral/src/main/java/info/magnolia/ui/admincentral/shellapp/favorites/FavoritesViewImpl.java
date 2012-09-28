@@ -34,35 +34,42 @@
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
 import info.magnolia.ui.admincentral.components.SplitFeed;
-import info.magnolia.ui.admincentral.components.SplitFeed.FeedSection;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
 
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Label;
 
 
 /**
  * Default view implementation for favorites.
  */
-@SuppressWarnings("serial")
-public class FavoritesViewImpl extends CustomComponent implements FavoritesView {
 
-    private final SplitFeed splitPanel = new SplitFeed();
+public class FavoritesViewImpl extends SplitFeed implements FavoritesView {
+
+    //private final SplitFeed splitPanel = new SplitFeed();
+
+    private String id = ShellAppType.FAVORITE.getClassId();
+
+    @Override
+    public String getId(){
+        return id;
+    }
+
 
     public FavoritesViewImpl() {
         super();
+        addStyleName("favorites");
         setHeight("100%");
         setWidth("900px");
-        setCompositionRoot(splitPanel);
-        splitPanel.addStyleName("favorites");
+        this.setDebugId(id);
         construct();
     }
 
     private void construct() {
-        final FeedSection leftSide = splitPanel.getLeftContainer();
-        final FeedSection rightSide = splitPanel.getRightContainer();
+        final FeedSection leftSide = getLeftContainer();
+        final FeedSection rightSide = getRightContainer();
 
         FavoritesSection newPages = new FavoritesSection();
         newPages.setCaption("New Pages");
