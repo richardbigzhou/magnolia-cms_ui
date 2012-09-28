@@ -200,7 +200,7 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
             actionbarPresenter.setPreview(null);
         }
         else {
-            String imagePath = imageProvider.getPortraitPath(path, workspace);
+            String imagePath = imageProvider.getPortraitPath(workspace, path);
             actionbarPresenter.setPreview(imagePath);
         }
     }

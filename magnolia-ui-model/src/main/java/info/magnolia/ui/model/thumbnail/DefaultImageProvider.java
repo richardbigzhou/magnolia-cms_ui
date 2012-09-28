@@ -60,29 +60,29 @@ public class DefaultImageProvider implements ImageProvider {
 
 
     @Override
-    public String getPortraitPath(final String path, final String workspace) {
+    public String getPortraitPath(final String workspace, final String path) {
         Node node = SessionUtil.getNode(workspace, path);
 
         return getGeneratorImagePath(workspace, node, PORTRAIT_GENERATOR);
     }
 
     @Override
-    public String getThumbnailPath(final String path, final String workspace) {
+    public String getThumbnailPath(final String workspace, final String path) {
         Node node = SessionUtil.getNode(workspace, path);
 
         return getGeneratorImagePath(workspace, node, THUMBNAIL_GENERATOR);
     }
 
     @Override
-    public String getPortraitPathByUuid(String uuid, String workspace) {
-        Node node = SessionUtil.getNodeByIdentifier(workspace, uuid);
+    public String getPortraitPathByIdentifier(String workspace, String identifier) {
+        Node node = SessionUtil.getNodeByIdentifier(workspace, identifier);
 
         return getGeneratorImagePath(workspace, node, PORTRAIT_GENERATOR);
     }
 
     @Override
-    public String getThumbnailPathByUuid(String uuid, String workspace) {
-        Node node = SessionUtil.getNodeByIdentifier(workspace, uuid);
+    public String getThumbnailPathByIdentifier(String workspace, String identifier) {
+        Node node = SessionUtil.getNodeByIdentifier(workspace, identifier);
 
         return getGeneratorImagePath(workspace, node, THUMBNAIL_GENERATOR);
     }

@@ -83,7 +83,7 @@ public class DefaultImageProviderTest {
     public void testGetNonExistingParentNodeImagePath() throws Exception {
         ImageProvider provider = new DefaultImageProvider();
 
-        final String result = provider.getThumbnailPath(null, workspaceName);
+        final String result = provider.getThumbnailPath(workspaceName, null);
 
         assertNull(result);
     }
@@ -112,7 +112,7 @@ public class DefaultImageProviderTest {
         // WHEN
         final Node contactNode = root.getNode("myNode");
         final String imageNodeUuid = contactNode.getNode("originalImage").getIdentifier();
-        final String result = provider.getThumbnailPath(contactNode.getPath(), workspaceName);
+        final String result = provider.getThumbnailPath(workspaceName, contactNode.getPath());
 
         // THEN
         assertEquals("/foo/.imaging/thumbnail/test/"+ imageNodeUuid +"/MaxMustermann.png", result);
@@ -141,7 +141,7 @@ public class DefaultImageProviderTest {
         // WHEN
         final Node contactNode = root.getNode("myNode");
         final String imageNodeUuid = contactNode.getNode("originalImage").getIdentifier();
-        final String result = provider.getPortraitPathByUuid(contactNode.getIdentifier(), workspaceName);
+        final String result = provider.getPortraitPathByIdentifier(workspaceName, contactNode.getIdentifier());
 
         // THEN
         assertEquals("/foo/.imaging/portrait/test/"+ imageNodeUuid +"/MaxMustermann.png", result);
@@ -170,7 +170,7 @@ public class DefaultImageProviderTest {
         // WHEN
         final Node contactNode = root.getNode("myNode");
         final String imageNodeUuid = contactNode.getNode("originalImage").getIdentifier();
-        final String result = provider.getThumbnailPath(contactNode.getPath(), workspaceName);
+        final String result = provider.getThumbnailPath(workspaceName, contactNode.getPath());
 
         // THEN
         assertEquals("/foo/.imaging/thumbnail/test/"+ imageNodeUuid +"/myNode.png", result);
@@ -228,7 +228,7 @@ public class DefaultImageProviderTest {
         final Node contactNode = root.getNode("contact1");
         final String imageNodeUuid = contactNode.getNode("photo").getIdentifier();
 
-        final String result = provider.getPortraitPath(contactNode.getPath(), workspaceName);
+        final String result = provider.getPortraitPath(workspaceName, contactNode.getPath());
 
         // THEN
         assertEquals("/foo/.imaging/portrait/test/"+ imageNodeUuid +"/MaxMustermann.png", result);

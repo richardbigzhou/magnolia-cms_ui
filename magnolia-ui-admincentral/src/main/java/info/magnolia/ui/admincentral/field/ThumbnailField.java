@@ -105,7 +105,7 @@ public class ThumbnailField extends CustomField{
                         // Set Text info
                         label.setValue(createFieldDetail(parentNode));
                         // Set Thumbnail
-                        String path = imageThumbnailProvider.getPortraitPath(parentNode.getPath(), workspace);
+                        String path = imageThumbnailProvider.getPortraitPath(workspace, parentNode.getPath());
                         layout.removeComponent(embedded);
                         if(path != null) {
                             embedded = new Embedded("", new ExternalResource(path));

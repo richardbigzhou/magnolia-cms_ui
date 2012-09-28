@@ -162,7 +162,7 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Resour
 
         @Override
         public Resource getValue() {
-            final String path = imageProvider.getThumbnailPathByUuid(resourcePath, getWorkspaceName());
+            final String path = imageProvider.getThumbnailPathByIdentifier(getWorkspaceName(), resourcePath);
             return path == null ? null: new ExternalResource(path);
         }
 
