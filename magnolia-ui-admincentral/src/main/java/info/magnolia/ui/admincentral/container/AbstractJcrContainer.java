@@ -592,11 +592,12 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
      */
     public final void updateSize() {
         try {
-            if(constructJCRQuery() == null) {
+            final String query = constructJCRQuery();
+            if(query == null) {
                 return;
             }
             // query for all items in order to get the size
-            final QueryResult queryResult = executeQuery(constructJCRQuery(), Query.JCR_SQL2, 0, 0);
+            final QueryResult queryResult = executeQuery(query, Query.JCR_SQL2, 0, 0);
 
             final long pageSize = queryResult.getRows().getSize();
             log.debug("Query resultset contains {} items", pageSize);
