@@ -54,26 +54,11 @@ import com.vaadin.ui.VerticalLayout;
  * BaseDialog.
  */
 @ClientWidget(value = VBaseDialog.class, loadStyle = LoadStyle.EAGER)
-public class BaseDialog extends AbstractComponent implements ServerSideHandler, AbstractDialog {
-
-    /**
-     * Base interface for an MagnoliaDialogView listener.
-     */
-    public interface Listener {
-        /**
-         * Execute a specific action {@link info.magnolia.ui.model.action.Action}.
-         */
-        void executeAction(String actionName);
-
-        /**
-         * Close current Dialog.
-         */
-        void closeDialog();
-    }
+public class BaseDialog extends AbstractComponent implements ServerSideHandler, DialogView {
     
     private Component content; 
     
-    private Listener listener;
+    private DialogView.Listener listener;
     
     private ServerSideProxy proxy = new ServerSideProxy(this) {{
         register("fireAction", new Method() {
@@ -105,10 +90,6 @@ public class BaseDialog extends AbstractComponent implements ServerSideHandler, 
     }
 
     
-    public void setListener(Listener listener) {
-        this.listener = listener;
-    }
-    
     public void setContent(Component content) {
         final Component actualContent = content == null ? createDefaultContent() : content;
         if (actualContent != this.content) {
@@ -136,11 +117,7 @@ public class BaseDialog extends AbstractComponent implements ServerSideHandler, 
     public Component getContent() {
         return content;
     }
-    
-    @Override
-    public void setCaption(String caption) {
-        content.setCaption(caption);
-    }
+   
     
     @Override
     public void attach() {
@@ -172,6 +149,16 @@ public class BaseDialog extends AbstractComponent implements ServerSideHandler, 
         }
     }
     
+    @Override
+    public void setCaption(String caption) {
+        content.setCaption(caption);
+    }
+    
+    @Override
+    public void setListener(DialogView.Listener listener) {
+        this.listener = listener;
+    }
+    
     protected Component createDefaultContent() {
         return new VerticalLayout();
     }
@@ -190,6 +177,12 @@ public class BaseDialog extends AbstractComponent implements ServerSideHandler, 
     @Override
     public void callFromClient(String method, Object[] params) {
         throw new RuntimeException("Unknown call from client " + method);
+    }
+
+
+    @Override
+    public BaseDialog asVaadinComponent() {
+        return this;
     }
 
 }

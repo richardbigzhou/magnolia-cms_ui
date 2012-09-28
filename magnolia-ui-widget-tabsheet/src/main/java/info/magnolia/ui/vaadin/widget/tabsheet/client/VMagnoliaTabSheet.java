@@ -36,7 +36,7 @@ package info.magnolia.ui.vaadin.widget.tabsheet.client;
 import info.magnolia.ui.vaadin.widget.tabsheet.client.TabSetChangedEvent.Handler;
 import info.magnolia.ui.vaadin.widget.tabsheet.client.TabSetChangedEvent.HasTabSetChangedHandlers;
 import info.magnolia.ui.vaadin.widget.tabsheet.client.event.ActiveTabChangedEvent;
-import info.magnolia.ui.vaadin.widget.tabsheet.client.event.ActiveTabChangedHandler;
+import info.magnolia.ui.vaadin.widget.tabsheet.client.event.ActiveTabChangedEvent.HasActiveTabChangeHandlers;
 import info.magnolia.ui.vaadin.widget.tabsheet.client.event.ShowAllTabsEvent;
 import info.magnolia.ui.vaadin.widget.tabsheet.client.event.ShowAllTabsHandler;
 import info.magnolia.ui.vaadin.widget.tabsheet.client.event.TabCloseEvent;
@@ -68,7 +68,8 @@ import com.vaadin.terminal.gwt.client.VConsole;
  * Client side implementation of the simple tab sheet.
  */
 @SuppressWarnings("serial")
-public class VMagnoliaTabSheet extends Composite implements HasWidgets, VMagnoliaTabSheetView.Presenter, Container, ClientSideHandler, HasTabSetChangedHandlers {
+public class VMagnoliaTabSheet extends Composite implements HasWidgets, VMagnoliaTabSheetView.Presenter, 
+    Container, ClientSideHandler, HasTabSetChangedHandlers, HasActiveTabChangeHandlers {
 
     protected String paintableId;
 
@@ -92,7 +93,8 @@ public class VMagnoliaTabSheet extends Composite implements HasWidgets, VMagnoli
             }
         });
 
-        eventBus.addHandler(ActiveTabChangedEvent.TYPE, new ActiveTabChangedHandler() {
+        eventBus.addHandler(ActiveTabChangedEvent.TYPE, new ActiveTabChangedEvent.Handler() {
+            
             @Override
             public void onActiveTabChanged(ActiveTabChangedEvent event) {
                 view.setActiveTab(event.getTab());
@@ -292,6 +294,11 @@ public class VMagnoliaTabSheet extends Composite implements HasWidgets, VMagnoli
     @Override
     public HandlerRegistration addTabSetChangedHandlers(Handler handler) {
         return view.asWidget().addHandler(handler, TabSetChangedEvent.TYPE);
+    }
+
+    @Override
+    public HandlerRegistration addActiveTabChangedHandler(ActiveTabChangedEvent.Handler handler) {
+        return view.asWidget().addHandler(handler, ActiveTabChangedEvent.TYPE);
     }
 
 }

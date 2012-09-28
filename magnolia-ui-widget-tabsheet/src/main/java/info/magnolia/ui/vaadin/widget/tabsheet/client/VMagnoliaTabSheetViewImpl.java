@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.vaadin.widget.tabsheet.client;
 
+import info.magnolia.ui.vaadin.widget.tabsheet.client.event.ActiveTabChangedEvent;
 import info.magnolia.ui.vaadin.widget.tabsheet.client.util.CollectionUtil;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper;
 
@@ -108,10 +109,11 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements VMagnoliaTab
         new Timer() {
             @Override
             public void run() {
-                activeTab = tab;
                 tab.getElement().getStyle().setVisibility(Visibility.VISIBLE);
             }
         }.schedule(500);
+        activeTab = tab;
+        fireEvent(new ActiveTabChangedEvent(tab));
     }
 
     @Override
@@ -135,6 +137,9 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements VMagnoliaTab
         for (VMagnoliaTab tab : getTabs()) {
             tab.getElement().getStyle().setDisplay(display);
         }
+        if (visible) {
+            fireEvent(new ActiveTabChangedEvent(true, false));
+        }
     }
 
     @Override
@@ -149,7 +154,7 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements VMagnoliaTab
     @Override
     public void setHeight(String height) {
         super.setHeight(height);
-        if (!isActiveTabFullscreen) {
+        if (!isActiveTabFullscreen && !height.isEmpty()) {
             int heightPx = JQueryWrapper.parseInt(height);
             int scrollerHeight = Math.max(heightPx - tabContainer.getOffsetHeight(), 0);
             scroller.setHeight(scrollerHeight + "px");   

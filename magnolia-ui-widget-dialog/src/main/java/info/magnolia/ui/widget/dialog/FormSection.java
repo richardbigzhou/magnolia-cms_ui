@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.widget.dialog;
 
-import info.magnolia.ui.widget.dialog.gwt.client.dialoglayout.VDialogTabLayout;
+import info.magnolia.ui.widget.dialog.gwt.client.dialoglayout.VFormSection;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -53,8 +53,8 @@ import com.vaadin.ui.Component;
 /**
  * Dialog layout server side implementation.
  */
-@ClientWidget(value = VDialogTabLayout.class, loadStyle = LoadStyle.EAGER)
-public class DialogLayout extends AbstractLayout {
+@ClientWidget(value = VFormSection.class, loadStyle = LoadStyle.EAGER)
+public class FormSection extends AbstractLayout {
 
     private boolean isValidationVisible = false;
 
@@ -62,7 +62,7 @@ public class DialogLayout extends AbstractLayout {
 
     private final Map<Component, String> helpDescriptions = new HashMap<Component, String>();
 
-    public DialogLayout() {
+    public FormSection() {
         addStyleName("v-dialog-layout");
     }
 

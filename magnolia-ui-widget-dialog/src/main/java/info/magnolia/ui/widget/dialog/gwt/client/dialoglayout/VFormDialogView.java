@@ -37,5 +37,5 @@ package info.magnolia.ui.widget.dialog.gwt.client.dialoglayout;
  * VFormDialogView.
  */
 public interface VFormDialogView extends VBaseDialogView, ValidationChangedEvent.Handler {
-
+    
 }

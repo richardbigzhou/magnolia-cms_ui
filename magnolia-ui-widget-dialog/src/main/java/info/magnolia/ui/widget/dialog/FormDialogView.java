@@ -33,15 +33,26 @@
  */
 package info.magnolia.ui.widget.dialog;
 
+import java.util.List;
+
+import com.vaadin.data.Item;
+import com.vaadin.ui.Field;
+
 /**
- * Dialog interface.
+ * FormDialogView.
  *
  */
-public interface AbstractDialog {
+public interface FormDialogView extends DialogView, Item.Editor {
+
+    void addDialogSection(String tabName, FormSection inputFields);
+
+    void addField(Field field);
+
+    void showValidation(boolean isVisible);
     
-    void addAction(String actionName, String actionLabel);
+    void setShowAllEnabled(boolean enabled);
     
-    void setDialogDescription(String description);
-    
-    
+    boolean isValid();
+
+    List<Field> getFields();
 }
