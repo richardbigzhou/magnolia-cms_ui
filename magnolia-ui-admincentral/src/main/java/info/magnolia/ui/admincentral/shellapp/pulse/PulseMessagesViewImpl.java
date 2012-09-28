@@ -119,6 +119,7 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
         
         messageTable.setRowGenerator(groupingRowGenerator);        
         messageTable.addListener(onHeaderClick);
+        messageTable.setCellStyleGenerator(cellStyleGenerator);
         
         messageTable.setContainerDataSource(presenter.getMessageDataSource());
         messageTable.setVisibleColumns(presenter.getColumnOrder());
@@ -136,6 +137,18 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
         });
     }
     
+    private Table.CellStyleGenerator cellStyleGenerator = new Table.CellStyleGenerator() {
+        
+        @Override
+        public String getStyle(Object itemId, Object propertyId) {
+
+            if(propertyId != null && propertyId.equals("type")) {
+                return "v-cell-invisible";
+            }
+            return "";
+        }
+    };
+    
     private Table.HeaderClickListener onHeaderClick = new Table.HeaderClickListener() {
         
         @Override
@@ -147,6 +160,7 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
             }
  
             IndexedContainer source = (IndexedContainer)presenter.getMessageDataSource();
+
 
             /* Insert special place holders to container which will be
              * later painted as groups. Group section will be placed
@@ -208,7 +222,8 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
                 Item item = table.getItem(itemId);
                 Property property = item.getItemProperty("type");
 
-                GeneratedRow generated = new GeneratedRow(property.getValue().toString());
+                GeneratedRow generated = new GeneratedRow("", "", property.getValue().toString());
+                generated.setSpanColumns(false);
                 return generated;
             }
 
