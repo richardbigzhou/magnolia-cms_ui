@@ -31,39 +31,43 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.dialog;
+package info.magnolia.ui.widget.dialog.gwt.client.dialoglayout;
 
-import info.magnolia.ui.vaadin.widget.tabsheet.MagnoliaTab;
-import info.magnolia.ui.widget.dialog.gwt.client.VDialogTab;
-
-import com.vaadin.terminal.PaintException;
-import com.vaadin.terminal.PaintTarget;
-import com.vaadin.ui.ClientWidget;
+import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Dialog tab.
- *
+ * {@link VBaseDialogView}.
  */
-@ClientWidget(VDialogTab.class)
-public class MagnoliaDialogTab extends MagnoliaTab {
+public interface VBaseDialogView extends IsWidget, HasWidgets {
 
-    private final FormSection content;
+    void addAction(String name, String label);
 
-    public MagnoliaDialogTab(String caption, FormSection content) {
-        super(caption, content);
-        this.content = content;
-        //DialogLayout needs this info to display it when show all tab is active
-        this.content.setCaption(caption);
-    }
+    void setDescription(String description);
 
-    public void setValidationVisible(boolean isVisible) {
-        content.setValidationVisible(isVisible);
-    }
+    void setCaption(String caption);
 
-    @Override
-    public void paintContent(PaintTarget target) throws PaintException {
-        setHasError(content.hasError());
-        super.paintContent(target);
+    int getContentWidth();
+
+    int getContentHeight();
+
+    void setContent(Widget contentWidget);
+
+    Widget getContent();
+    
+    void setPresenter(Presenter presenter);
+    
+    Presenter getPresenter();
+    
+    /**
+     * Presenter.
+     */
+    public interface Presenter {
+        
+        void fireAction(String action);
+
+        void closeDialog();
     }
 
 }

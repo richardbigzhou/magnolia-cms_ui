@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,23 +31,46 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.thumbnail;
+package info.magnolia.ui.widget.dialog.gwt.client.dialoglayout;
 
-import info.magnolia.ui.model.thumbnail.AbstractThumbnailProvider;
-import info.magnolia.ui.model.thumbnail.ThumbnailUtility;
+import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.event.shared.HandlerRegistration;
 
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 
 /**
- * PagesThumbnailProvider.
+ * ValidationChangedEvent. Sent when the field validation happened.
+ *
  */
-public class PagesThumbnailProvider extends AbstractThumbnailProvider {
+public class ValidationChangedEvent extends GwtEvent<ValidationChangedEvent.Handler> {
+    
+    
+    /**
+     * Handler.
+     */
+    public interface Handler extends EventHandler {
+        void onValidationChanged(ValidationChangedEvent event);
+    }
+    
+    /**
+     * {@link HasValidationChangeHanlders}.
+     */
+    public interface HasValidationChangeHanlders {
+        
+        HandlerRegistration addValidationChangeHandler(Handler handler);
+    }
+    
+    public static final Type<ValidationChangedEvent.Handler> TYPE = new Type<ValidationChangedEvent.Handler>();
+    
+    @Override
+    public Type<Handler> getAssociatedType() {
+        return TYPE;
+    }
 
     @Override
-    protected BufferedImage createThumbnail(Image image, String format, int width, int height, float quality) throws IOException {
-        return ThumbnailUtility.createThumbnail(image, format, width, height, quality);
+    protected void dispatch(Handler handler) {
+        handler.onValidationChanged(this);
     }
+    
 
 }

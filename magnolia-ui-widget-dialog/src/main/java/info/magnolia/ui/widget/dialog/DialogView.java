@@ -33,37 +33,36 @@
  */
 package info.magnolia.ui.widget.dialog;
 
-import info.magnolia.ui.vaadin.widget.tabsheet.MagnoliaTab;
-import info.magnolia.ui.widget.dialog.gwt.client.VDialogTab;
-
-import com.vaadin.terminal.PaintException;
-import com.vaadin.terminal.PaintTarget;
-import com.vaadin.ui.ClientWidget;
+import info.magnolia.ui.framework.view.View;
 
 /**
- * Dialog tab.
- *
+ * DialogView.
  */
-@ClientWidget(VDialogTab.class)
-public class MagnoliaDialogTab extends MagnoliaTab {
+public interface DialogView extends View {
 
-    private final FormSection content;
+    /**
+     * Base interface for an MagnoliaDialogView listener.
+     */
+    interface Listener {
+        /**
+         * Execute a specific action {@link info.magnolia.ui.model.action.Action}.
+         */
+        void executeAction(String actionName);
 
-    public MagnoliaDialogTab(String caption, FormSection content) {
-        super(caption, content);
-        this.content = content;
-        //DialogLayout needs this info to display it when show all tab is active
-        this.content.setCaption(caption);
+        /**
+         * Close current Dialog.
+         */
+        void closeDialog();
     }
-
-    public void setValidationVisible(boolean isVisible) {
-        content.setValidationVisible(isVisible);
-    }
-
+    
+    void addAction(String actionName, String actionLabel);
+    
+    void setListener(Listener listener);
+    
+    void setDialogDescription(String description);
+    
+    void setCaption(String caption);
+    
     @Override
-    public void paintContent(PaintTarget target) throws PaintException {
-        setHasError(content.hasError());
-        super.paintContent(target);
-    }
-
+    public BaseDialog asVaadinComponent();
 }

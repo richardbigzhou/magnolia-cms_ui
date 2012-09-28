@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2003-2011 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,28 +31,16 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts.thumbnail;
-
-import info.magnolia.ui.model.thumbnail.AbstractThumbnailProvider;
-import info.magnolia.ui.model.thumbnail.ThumbnailUtility;
-
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
+package info.magnolia.ui.widget.dialog.gwt.client.dialoglayout;
 
 /**
- * Default implementation using ThumbnailUtility to create thumbnails.
+ * {@link VFormDialog}.
  */
-public class DefaultContactsThumbnailProvider extends AbstractThumbnailProvider {
-
-    protected static final String CONTACT_PHOTO_NODE_NAME = "photo";
-
-    public DefaultContactsThumbnailProvider() {
-        setOriginalImageNodeName(CONTACT_PHOTO_NODE_NAME);
-    }
-
+public class VFormDialog extends VBaseDialog {
+    
     @Override
-    protected BufferedImage createThumbnail(final Image contactImage, final String format, final int width, final int height, final float quality) throws IOException {
-        return ThumbnailUtility.createThumbnail(contactImage, format, width, height, quality);
+    protected VBaseDialogView createView() {
+        return new VFormDialogViewImpl();
     }
+
 }

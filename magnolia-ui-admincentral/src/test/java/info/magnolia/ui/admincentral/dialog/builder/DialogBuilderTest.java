@@ -33,13 +33,10 @@
  */
 package info.magnolia.ui.admincentral.dialog.builder;
 
-import java.util.Locale;
-
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
 import info.magnolia.cms.i18n.DefaultI18nContentSupport;
 import info.magnolia.cms.i18n.DefaultMessagesManager;
 import info.magnolia.cms.i18n.MessagesManager;
@@ -56,8 +53,10 @@ import info.magnolia.ui.model.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.model.field.definition.TextFieldDefinition;
 import info.magnolia.ui.model.tab.definition.ConfiguredTabDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.widget.dialog.Dialog;
-import info.magnolia.ui.widget.dialog.MagnoliaDialogView;
+import info.magnolia.ui.widget.dialog.DialogView;
+import info.magnolia.ui.widget.dialog.FormDialog;
+
+import java.util.Locale;
 
 import javax.jcr.Node;
 
@@ -98,10 +97,10 @@ public class DialogBuilderTest {
         // GIVEN
         final DialogBuilder builder = new DialogBuilder();
         final DialogDefinition def = new ConfiguredDialogDefinition();
-        final Dialog dialog = new Dialog();
+        final FormDialog dialog = new FormDialog();
 
         // WHEN
-        final MagnoliaDialogView result = builder.build(null, def, null, dialog);
+        final DialogView result = builder.build(null, def, null, dialog);
 
         // THEN
         assertEquals(result, dialog);
@@ -121,7 +120,7 @@ public class DialogBuilderTest {
         underlyingNode.setProperty(propertyName, propertyValue);
         final JcrNodeAdapter item = new JcrNodeAdapter(underlyingNode);
 
-        final Dialog dialog = new Dialog();
+        final FormDialog dialog = new FormDialog();
         final ConfiguredTabDefinition tabDef = new ConfiguredTabDefinition();
         final ConfiguredFieldDefinition fieldDef = new ConfiguredFieldDefinition();
         fieldDef.setName(propertyName);
@@ -136,7 +135,7 @@ public class DialogBuilderTest {
         when(dialogFieldFactory.create(same(fieldDef), same(item))).thenReturn(editField);
 
         // WHEN
-        final MagnoliaDialogView result = builder.build(dialogFieldFactory, dialogDef, item, dialog);
+        final DialogView result = builder.build(dialogFieldFactory, dialogDef, item, dialog);
 
         // THEN
         assertEquals(result, dialog);

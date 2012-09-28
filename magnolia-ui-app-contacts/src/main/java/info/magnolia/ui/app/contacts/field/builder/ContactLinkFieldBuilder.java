@@ -33,27 +33,26 @@
  */
 package info.magnolia.ui.app.contacts.field.builder;
 
+import com.vaadin.data.Item;
+import com.vaadin.ui.Field;
 import info.magnolia.ui.admincentral.field.TextAndButtonField;
 import info.magnolia.ui.admincentral.field.builder.LinkFieldBuilder;
-import info.magnolia.ui.admincentral.image.ImageThumbnailProvider;
 import info.magnolia.ui.app.contacts.field.ContactTextAndButtonField;
 import info.magnolia.ui.app.contacts.field.definition.ContactLinkFieldDefinition;
 import info.magnolia.ui.framework.app.AppController;
+import info.magnolia.ui.model.thumbnail.ImageProvider;
 
 import javax.inject.Inject;
-
-import com.vaadin.data.Item;
-import com.vaadin.ui.Field;
 
 /**
  * Creates and initializes a ContactLinkField field based on a field definition.
  */
 public class ContactLinkFieldBuilder extends LinkFieldBuilder<ContactLinkFieldDefinition>{
 
-    private ImageThumbnailProvider imageThumbnailProvider;
+    private ImageProvider imageThumbnailProvider;
 
     @Inject
-    public ContactLinkFieldBuilder(ImageThumbnailProvider imageThumbnailProvider, ContactLinkFieldDefinition definition, Item relatedFieldItem, AppController appController) {
+    public ContactLinkFieldBuilder(ImageProvider imageThumbnailProvider, ContactLinkFieldDefinition definition, Item relatedFieldItem, AppController appController) {
         super(definition, relatedFieldItem, appController);
         this.imageThumbnailProvider = imageThumbnailProvider;
     }
@@ -63,7 +62,7 @@ public class ContactLinkFieldBuilder extends LinkFieldBuilder<ContactLinkFieldDe
         TextAndButtonField textAndButton = (TextAndButtonField)super.buildField();
         //hide the TextField.
         textAndButton.getTextField().setVisible(false);
-        ContactTextAndButtonField field = new ContactTextAndButtonField(textAndButton,imageThumbnailProvider,definition.getWorkspace(),150,150);
+        ContactTextAndButtonField field = new ContactTextAndButtonField(textAndButton,imageThumbnailProvider,definition.getWorkspace());
         return field;
     }
 }
