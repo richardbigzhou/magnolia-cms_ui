@@ -34,7 +34,7 @@
 package info.magnolia.ui.admincentral.thumbnail.view;
 
 import info.magnolia.ui.admincentral.thumbnail.view.ThumbnailContainer.ThumbnailItem;
-import info.magnolia.ui.model.thumbnail.ThumbnailProvider;
+import info.magnolia.ui.model.thumbnail.ImageProvider;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -55,7 +55,7 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Resour
 
     public static final String THUMBNAIL_PROPERTY_ID = "thumbnail";
 
-    private ThumbnailProvider thumbnailProvider;
+    private ImageProvider imageProvider;
 
     private String workspaceName = "";
 
@@ -63,9 +63,9 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Resour
 
     private int thumbnailHeight = 0;
 
-    public ThumbnailContainer(ThumbnailProvider thumbnailProvider, List<String> uuids) {
+    public ThumbnailContainer(ImageProvider imageProvider, List<String> uuids) {
         super();
-        this.thumbnailProvider = thumbnailProvider;
+        this.imageProvider = imageProvider;
         getAllItemIds().addAll(uuids);
     }
 
@@ -162,7 +162,7 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Resour
 
         @Override
         public Resource getValue() {
-            final String path = thumbnailProvider.getPath(resourcePath, getWorkspaceName(), getThumbnailWidth(), getThumbnailHeight());
+            final String path = imageProvider.getThumbnailPathByUuid(resourcePath, getWorkspaceName());
             return path == null ? null: new ExternalResource(path);
         }
 

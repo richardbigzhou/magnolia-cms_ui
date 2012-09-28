@@ -31,23 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.image;
+package info.magnolia.ui.app.pages.thumbnail;
 
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-
-import info.magnolia.ui.model.thumbnail.AbstractThumbnailProvider;
-import info.magnolia.ui.model.thumbnail.ThumbnailUtility;
+import info.magnolia.ui.model.thumbnail.DefaultImageProvider;
 
 /**
- * Basic implementation of {@link AbstractThumbnailProvider} for Images.
+ * PagesImageProvider.
  */
-public class ImageThumbnailProvider extends AbstractThumbnailProvider  {
-
-    @Override
-    protected BufferedImage createThumbnail(Image image, String format, int width, int height, float quality) throws IOException {
-        return ThumbnailUtility.createThumbnail(image, format, width, height, quality);
-    }
+public class PagesImageProvider extends DefaultImageProvider {
 
 }

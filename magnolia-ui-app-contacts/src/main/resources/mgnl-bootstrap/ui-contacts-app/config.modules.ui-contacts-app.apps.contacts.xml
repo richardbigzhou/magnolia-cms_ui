@@ -203,7 +203,7 @@
         </sv:node>
       </sv:node>
     </sv:node>
-    <sv:node sv:name="thumbnailProvider">
+    <sv:node sv:name="imageProvider">
       <sv:property sv:name="jcr:primaryType" sv:type="Name">
         <sv:value>mgnl:contentNode</sv:value>
       </sv:property>
@@ -214,16 +214,13 @@
         <sv:value>4b7d9cb1-b1fc-40e9-8a3f-a7f880a314c8</sv:value>
       </sv:property>
       <sv:property sv:name="class" sv:type="String">
-        <sv:value>info.magnolia.ui.app.contacts.thumbnail.DefaultContactsThumbnailProvider</sv:value>
-      </sv:property>
-      <sv:property sv:name="format" sv:type="String">
-        <sv:value>jpg</sv:value>
+        <sv:value>info.magnolia.ui.model.thumbnail.DefaultImageProvider</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
       </sv:property>
-      <sv:property sv:name="quality" sv:type="String">
-        <sv:value>0.75</sv:value>
+      <sv:property sv:name="originalImageNodeName" sv:type="String">
+        <sv:value>photo</sv:value>
       </sv:property>
       <sv:node sv:name="MetaData">
         <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -239,7 +236,7 @@
           <sv:value>2012-07-24T13:12:26.224+02:00</sv:value>
         </sv:property>
         <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-          <sv:value>2012-07-30T13:08:16.846+02:00</sv:value>
+          <sv:value>2012-09-27T19:16:51.254+02:00</sv:value>
         </sv:property>
       </sv:node>
     </sv:node>

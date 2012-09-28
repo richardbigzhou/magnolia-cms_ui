@@ -51,7 +51,7 @@ import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionRegistry;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.column.definition.LabelColumnDefinition;
-import info.magnolia.ui.model.thumbnail.ThumbnailProvider;
+import info.magnolia.ui.model.thumbnail.ImageProvider;
 import info.magnolia.ui.model.workbench.definition.ConfiguredItemTypeDefinition;
 import info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition;
 import info.magnolia.ui.model.workbench.definition.ItemTypeDefinition;
@@ -83,13 +83,13 @@ public class ConfiguredContentViewBuilderTest {
         when(workbenchActionRegistry.getDefinitionToImplementationMappings()).thenReturn(new ArrayList<DefinitionToImplementationMapping<ActionDefinition,Action>>());
 
         componentProvider.setInstance(WorkbenchActionFactory.class, new WorkbenchActionFactoryImpl(null, workbenchActionRegistry));
-        final ThumbnailProvider thumbnailProvider = mock(ThumbnailProvider.class);
-        componentProvider.setInstance(ThumbnailProvider.class, thumbnailProvider);
+        final ImageProvider imageProvider = mock(ImageProvider.class);
+        componentProvider.setInstance(ImageProvider.class, imageProvider);
 
 
         workbenchDef.setWorkspace(workspace);
         workbenchDef.setPath("/");
-        workbenchDef.setThumbnailProvider(thumbnailProvider);
+        workbenchDef.setImageProvider(imageProvider);
 
         final ConfiguredItemTypeDefinition itemTypeDefinition = new ConfiguredItemTypeDefinition();
         itemTypeDefinition.setItemType("qux");
