@@ -59,7 +59,6 @@ import com.vaadin.terminal.gwt.client.Util;
  *
  */
 public class VFormDialogViewImpl extends VBaseDialogViewImpl implements VFormDialogView {
-    private VMagnoliaTabSheet tabSheet = null;
     
     private static final String CLASSNAME_CONTENT_SHOW_ALL = "show-all";
 
@@ -67,6 +66,8 @@ public class VFormDialogViewImpl extends VBaseDialogViewImpl implements VFormDia
 
     private DialogFieldWrapper lastShownProblematicField = null;
 
+    private VMagnoliaTabSheet tabSheet = null;
+    
     private FocusHandler problematicFieldFocusHandler = new FocusHandler() {
 
         @Override
