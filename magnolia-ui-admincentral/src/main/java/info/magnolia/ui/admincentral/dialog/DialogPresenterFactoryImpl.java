@@ -42,7 +42,7 @@ import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 import info.magnolia.ui.model.dialog.registry.DialogDefinitionRegistry;
-import info.magnolia.ui.widget.dialog.MagnoliaDialogView;
+import info.magnolia.ui.widget.dialog.FormDialogView;
 import info.magnolia.ui.widget.dialog.MagnoliaDialogPresenter;
 
 import javax.inject.Inject;
@@ -99,7 +99,7 @@ public class DialogPresenterFactoryImpl implements DialogPresenterFactory {
 
     @Override
     public MagnoliaDialogPresenter.Presenter getDialogPresenter(DialogDefinition definition) {
-        MagnoliaDialogView view = componentProvider.getComponent(MagnoliaDialogView.class);
+        FormDialogView view = componentProvider.getComponent(FormDialogView.class);
         return new DialogPresenter(view, dialogBuilder, dialogFieldFactory, definition, shell, eventBus, actionFactory);
 
 

@@ -34,11 +34,11 @@
 package info.magnolia.ui.admincentral.field;
 
 import info.magnolia.context.MgnlContext;
-import info.magnolia.ui.admincentral.image.ImageThumbnailProvider;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import info.magnolia.ui.model.thumbnail.ImageProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vaadin.addon.customfield.CustomField;
@@ -59,17 +59,15 @@ public class ThumbnailField extends CustomField{
     private Label label;
     private Embedded embedded;
 
-    private ImageThumbnailProvider imageThumbnailProvider;
+    private ImageProvider imageThumbnailProvider;
     private String workspace;
-    private int width;
-    private int height;
+
     private String currentIdentifier = "";
 
-    public ThumbnailField(ImageThumbnailProvider imageThumbnailProvider, String workspace, int width, int height) {
+    public ThumbnailField(ImageProvider imageThumbnailProvider, String workspace) {
         this.imageThumbnailProvider = imageThumbnailProvider;
         this.workspace = workspace;
-        this.height = height;
-        this.width = width;
+
         // Init layout
         label = new Label("", Label.CONTENT_XHTML);
         label.addStyleName("thumbnail-info");
@@ -101,13 +99,13 @@ public class ThumbnailField extends CustomField{
             public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
                 try {
                     Node parentNode = MgnlContext.getJCRSession(workspace).getNode(event.getProperty().getValue().toString());
-                    String identifier = parentNode.getIdentifier();
+                    String uuid = parentNode.getIdentifier();
 
-                    if(!currentIdentifier.equals(identifier)) {
+                    if(!currentIdentifier.equals(uuid)) {
                         // Set Text info
                         label.setValue(createFieldDetail(parentNode));
                         // Set Thumbnail
-                        String path = imageThumbnailProvider.getPath(identifier, workspace, width, height);
+                        String path = imageThumbnailProvider.getPortraitPath(workspace, parentNode.getPath());
                         layout.removeComponent(embedded);
                         if(path != null) {
                             embedded = new Embedded("", new ExternalResource(path));

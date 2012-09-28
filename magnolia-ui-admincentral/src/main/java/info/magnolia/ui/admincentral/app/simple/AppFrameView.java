@@ -34,8 +34,8 @@
 package info.magnolia.ui.admincentral.app.simple;
 
 import info.magnolia.ui.framework.view.View;
-import info.magnolia.ui.vaadin.widget.tabsheet.ShellTab;
-import info.magnolia.ui.vaadin.widget.tabsheet.ShellTabSheet;
+import info.magnolia.ui.vaadin.widget.tabsheet.MagnoliaTab;
+import info.magnolia.ui.vaadin.widget.tabsheet.MagnoliaTabSheet;
 
 import com.vaadin.ui.ComponentContainer;
 
@@ -51,12 +51,12 @@ public class AppFrameView implements View {
      */
     public interface Listener {
 
-        void onActiveTabSet(ShellTab tab);
+        void onActiveTabSet(MagnoliaTab tab);
 
-        void onTabClosed(ShellTab tab);
+        void onTabClosed(MagnoliaTab tab);
     }
 
-    private final ShellTabSheet tabsheet = new ShellTabSheet() {
+    private final MagnoliaTabSheet tabsheet = new MagnoliaTabSheet() {
 
         @Override
         public void onActiveTabSet(String tabId) {
@@ -66,7 +66,7 @@ public class AppFrameView implements View {
 
         @Override
         protected void closeTab(String tabId) {
-            ShellTab tab = super.getTabById(tabId);
+            MagnoliaTab tab = super.getTabById(tabId);
             super.closeTab(tabId);
             listener.onTabClosed(tab);
         }
@@ -84,8 +84,8 @@ public class AppFrameView implements View {
         this.listener = listener;
     }
 
-    public ShellTab addTab(ComponentContainer cc, String caption, boolean closable) {
-        final ShellTab tab = new ShellTab(caption, cc);
+    public MagnoliaTab addTab(ComponentContainer cc, String caption, boolean closable) {
+        final MagnoliaTab tab = new MagnoliaTab(caption, cc);
         tabsheet.addComponent(tab);
         tabsheet.setTabClosable(tab, closable);
         tabsheet.setActiveTab(tab);
@@ -97,15 +97,15 @@ public class AppFrameView implements View {
     }
 
     @Override
-    public ShellTabSheet asVaadinComponent() {
+    public MagnoliaTabSheet asVaadinComponent() {
         return tabsheet;
     }
 
-    public void setActiveTab(ShellTab tab) {
+    public void setActiveTab(MagnoliaTab tab) {
         tabsheet.setActiveTab(tab);
     }
 
-    public ShellTab getActiveTab() {
+    public MagnoliaTab getActiveTab() {
         return tabsheet.getActiveTab();
     }
 }

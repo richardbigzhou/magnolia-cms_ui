@@ -224,7 +224,7 @@ public class ComponentBar extends AbstractBar {
         move.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                getEventBus().fireEvent(new DeleteComponentEvent(getWorkspace(), getPath()));
+                getEventBus().fireEvent(new DeleteComponentEvent(getWorkspace(), getImagePathByNodePath()));
             }
         });
         addSecondaryButton(move);*/

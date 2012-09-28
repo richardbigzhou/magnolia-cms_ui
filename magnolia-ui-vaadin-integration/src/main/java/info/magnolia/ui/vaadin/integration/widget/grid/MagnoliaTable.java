@@ -83,4 +83,14 @@ public class MagnoliaTable extends Table {
             }
         }
     }
+    
+    @Override
+    public void sort() {
+        super.sort();
+    }
+    
+    @Override
+    public void sort(Object[] propertyId, boolean[] ascending) throws UnsupportedOperationException {
+        super.sort(propertyId, ascending);
+    }
 }

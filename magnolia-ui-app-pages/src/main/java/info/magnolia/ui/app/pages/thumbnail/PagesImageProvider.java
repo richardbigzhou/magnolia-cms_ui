@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,31 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.thumbnail;
+package info.magnolia.ui.app.pages.thumbnail;
 
+import info.magnolia.ui.model.thumbnail.DefaultImageProvider;
 
 /**
- * Defines a provider for Thumbnail images.
+ * PagesImageProvider.
  */
-public interface ThumbnailProvider {
+public class PagesImageProvider extends DefaultImageProvider {
 
-    static final String ORIGINAL_IMAGE_NODE_NAME = "originalImage";
-
-    static final String THUMBNAIL_NODE_NAME = "thumbnail";
-
-    /**
-     * Return a path to a thumbnail of the requested size representing the provided item. Depending on the implementation,
-     * this thumbnail may be retrieved from cache or created on the fly.
-     */
-    String getPath(String nodeIdentifier, String workspace, int width, int height);
-
-    /**
-     * Defaults to {@value #ORIGINAL_IMAGE_NODE_NAME}.
-     */
-    String getOriginalImageNodeName();
-
-    /**
-     * Defaults to {@value #THUMBNAIL_NODE_NAME}.
-     */
-    String getThumbnailNodeName();
 }

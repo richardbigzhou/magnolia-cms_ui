@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,23 +31,41 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.image;
+package info.magnolia.ui.widget.dialog;
 
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-
-import info.magnolia.ui.model.thumbnail.AbstractThumbnailProvider;
-import info.magnolia.ui.model.thumbnail.ThumbnailUtility;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Label;
 
 /**
- * Basic implementation of {@link AbstractThumbnailProvider} for Images.
+ * ConfirmationDialog.
  */
-public class ImageThumbnailProvider extends AbstractThumbnailProvider  {
-
-    @Override
-    protected BufferedImage createThumbnail(Image image, String format, int width, int height, float quality) throws IOException {
-        return ThumbnailUtility.createThumbnail(image, format, width, height, quality);
+public class ConfirmationDialog extends BaseDialog {
+    
+    private String message;
+    
+    public ConfirmationDialog(final String message) {
+        setMessage(message);
     }
-
+    
+    public void setMessage(String message) {
+        this.message = message;
+        if (getContent() != null && getContent() instanceof Label) {
+            ((Label)getContent()).setValue(message);
+        }
+    }
+    
+    public String getMessage() {
+        return message;
+    }
+    
+    @Override
+    public void setContent(Component content) {
+        if (content instanceof Label) {
+            super.setContent(content);   
+        }
+    }
+    @Override
+    protected Component createDefaultContent() {
+        return new Label();
+    }
 }
