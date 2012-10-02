@@ -35,6 +35,8 @@ package info.magnolia.ui.admincentral.shellapp.pulse;
 
 import java.util.Iterator;
 
+import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.NativeButton;
@@ -46,6 +48,8 @@ import com.vaadin.ui.themes.BaseTheme;
  */
 @SuppressWarnings("serial")
 public class PulseMessageCategoryNavigator extends CssLayout {
+    
+    private CheckBox groupByTypeCheckBox;
 
     public PulseMessageCategoryNavigator() {
         super();
@@ -62,6 +66,15 @@ public class PulseMessageCategoryNavigator extends CssLayout {
             }
             addComponent(button);
         }
+        
+        groupByTypeCheckBox = new CheckBox("group by type");
+        groupByTypeCheckBox.addStyleName("navigator-grouping");
+        groupByTypeCheckBox.setImmediate(true);
+        addComponent(groupByTypeCheckBox);
+    }
+    
+    public void addGroupingListener(ValueChangeListener listener) {
+        groupByTypeCheckBox.addListener(listener);
     }
 
     /**
@@ -127,8 +140,11 @@ public class PulseMessageCategoryNavigator extends CssLayout {
     private void fireCategoryChangedEvent(MessageCategory category) {
         Iterator<Component> iterator = getComponentIterator();
         while (iterator.hasNext()) {
-            MessageCategoryButton button = (MessageCategoryButton) iterator.next();
-            button.setActive(button.category == category);
+            Component component = iterator.next();
+            if(component instanceof MessageCategoryButton) {
+                MessageCategoryButton button = (MessageCategoryButton) component;
+                button.setActive(button.category == category);
+            }
         }
         fireEvent(new CategoryChangedEvent(this, category));
     }

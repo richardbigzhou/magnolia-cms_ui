@@ -143,3 +143,8 @@
 .v-pulse .v-table-cell-content-v-cell-invisible div {
 	display: none;
 }
+
+.v-pulse .navigator-grouping {
+	display: inline-block;
+	margin-left: 50px;
+}
