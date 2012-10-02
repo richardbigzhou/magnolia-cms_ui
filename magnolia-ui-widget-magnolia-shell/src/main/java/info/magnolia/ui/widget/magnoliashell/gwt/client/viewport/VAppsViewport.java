@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.widget.magnoliashell.gwt.client.viewport;
 
+import info.magnolia.ui.vaadin.integration.widget.client.icon.GwtLoadingIcon;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.AnimationSettings;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.Callbacks;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryCallback;
@@ -346,8 +347,17 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
 
             Element preloadingScreen = DOM.createDiv();
             preloadingScreen.addClassName("loading-screen");
-            preloadingScreen.setInnerHTML("<div class=\"loading-message-wrapper\"> "
-                + "<div class=\"loading-message\"><div class=\"spinner\"></div> Loading </div></div>");
+
+            Element loading = DOM.createSpan();
+            loading.setInnerText("Loading");
+            loading.addClassName("loading-text");
+
+            preloadingScreen.appendChild(new GwtLoadingIcon().getElement());
+            preloadingScreen.appendChild(DOM.createElement("br"));
+            preloadingScreen.appendChild(loading);
+            // preloadingScreen.setInnerHTML("<div class=\"loading-message-wrapper\"> "
+            // +
+            // "<div class=\"loading-message\"><div class=\"spinner\"></div> Loading </div></div>");
             root.appendChild(preloadingScreen);
         }
 
