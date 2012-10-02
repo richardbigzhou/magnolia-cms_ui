@@ -1,35 +1,52 @@
-/*
- * Copyright 2011 Vaadin Ltd.
+/**
+ * This file Copyright (c) 2010-2012 Magnolia International
+ * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * This file is dual-licensed under both the Magnolia
+ * Network Agreement and the GNU General Public License.
+ * You may elect to use one or the other of these licenses.
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
+ * This file is distributed in the hope that it will be
+ * useful, but AS-IS and WITHOUT ANY WARRANTY; without even the
+ * implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE, TITLE, or NONINFRINGEMENT.
+ * Redistribution, except as permitted by whichever of the GPL
+ * or MNA you select, is prohibited.
+ *
+ * 1. For the GPL license (GPL), you can redistribute and/or
+ * modify this file under the terms of the GNU General
+ * Public License, Version 3, as published by the Free Software
+ * Foundation.  You should have received a copy of the GNU
+ * General Public License, Version 3 along with this program;
+ * if not, write to the Free Software Foundation, Inc., 51
+ * Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ * 2. For the Magnolia Network Agreement (MNA), this file
+ * and the accompanying materials are made available under the
+ * terms of the MNA which accompanies this distribution, and
+ * is available at http://www.magnolia-cms.com/mna.html
+ *
+ * Any modifications to this file must keep this entire header
+ * intact.
+ *
  */
 
-package info.magnolia.ui.widget.magnoliashell.gwt.client;
+package info.magnolia.ui.vaadin.integration.widget.client.divlayout;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+//import java.util.Set;
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.DomEvent.Type;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.BrowserInfo;
@@ -37,7 +54,6 @@ import com.vaadin.terminal.gwt.client.Container;
 import com.vaadin.terminal.gwt.client.EventId;
 import com.vaadin.terminal.gwt.client.Paintable;
 import com.vaadin.terminal.gwt.client.RenderSpace;
-import com.vaadin.terminal.gwt.client.StyleConstants;
 import com.vaadin.terminal.gwt.client.UIDL;
 import com.vaadin.terminal.gwt.client.Util;
 import com.vaadin.terminal.gwt.client.VCaption;
@@ -46,20 +62,31 @@ import com.vaadin.terminal.gwt.client.ValueMap;
 import com.vaadin.terminal.gwt.client.ui.LayoutClickEventHandler;
 import com.vaadin.terminal.gwt.client.ui.VMarginInfo;
 
-public class VCssLayoutMagnolia extends SimplePanel implements Paintable, Container {
-    public static final String TAGNAME = "csslayoutMagnolia";
+/**
+ * DivLayout
+ *
+ * A custom layout intended to be as simple and fast as possible.
+ * It will most likely not support all typical Vaadin functionality
+ * It has one div.
+ *
+ * Currently based on CssLayout, but with no margin support.
+ */
+public class VDivLayout extends FlowPanel implements Paintable, Container {
+    public static final String TAGNAME = "divlayout";
     public static final String CLASSNAME = "v-" + TAGNAME;
 
-    private FlowPane panel = new FlowPane();
+    //private FlowPane panel = new FlowPane();
 
-    private Element margin = DOM.createDiv();
+    VDivLayout that = this;
 
     private LayoutClickEventHandler clickEventHandler = new LayoutClickEventHandler(
             this, EventId.LAYOUT_CLICK) {
 
+
         @Override
         protected Paintable getChildComponent(Element element) {
-            return panel.getComponent(element);
+            //return panel.getComponent(element);
+            return that.getComponent(element);
         }
 
         @Override
@@ -73,19 +100,20 @@ public class VCssLayoutMagnolia extends SimplePanel implements Paintable, Contai
     private boolean hasWidth;
     private boolean rendering;
 
-    public VCssLayoutMagnolia() {
+    public VDivLayout() {
         super();
         //getElement().appendChild(margin);
         setStyleName(CLASSNAME);
         //margin.setClassName(CLASSNAME + "-margin");
-        setWidget(panel);
+        //setWidget(panel);
     }
 
+    /*
     @Override
     protected Element getContainerElement() {
         //return margin;
         return this.getElement();
-    }
+    }*/
 
     @Override
     public void setWidth(String width) {
@@ -93,7 +121,7 @@ public class VCssLayoutMagnolia extends SimplePanel implements Paintable, Contai
         // panel.setWidth(width);
         hasWidth = width != null && !width.equals("");
         if (!rendering) {
-            panel.updateRelativeSizes();
+            updateRelativeSizes();
         }
     }
 
@@ -103,62 +131,35 @@ public class VCssLayoutMagnolia extends SimplePanel implements Paintable, Contai
         // panel.setHeight(height);
         hasHeight = height != null && !height.equals("");
         if (!rendering) {
-            panel.updateRelativeSizes();
+            updateRelativeSizes();
         }
     }
 
-    @Override
-    public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
-        rendering = true;
 
-        if (client.updateComponent(this, uidl, true)) {
-            rendering = false;
-            return;
-        }
-        clickEventHandler.handleEventHandlerRegistration(client);
 
-        final VMarginInfo margins = new VMarginInfo(
-                uidl.getIntAttribute("margins"));
-        setStyleName(margin, CLASSNAME + "-" + StyleConstants.MARGIN_TOP,
-                margins.hasTop());
-        setStyleName(margin, CLASSNAME + "-" + StyleConstants.MARGIN_RIGHT,
-                margins.hasRight());
-        setStyleName(margin, CLASSNAME + "-" + StyleConstants.MARGIN_BOTTOM,
-                margins.hasBottom());
-        setStyleName(margin, CLASSNAME + "-" + StyleConstants.MARGIN_LEFT,
-                margins.hasLeft());
 
-        setStyleName(margin, CLASSNAME + "-" + "spacing",
-                uidl.hasAttribute("spacing"));
-        panel.updateFromUIDL(uidl, client);
-        rendering = false;
-    }
 
-    @Override
-    public boolean hasChildComponent(Widget component) {
-        return panel.hasChildComponent(component);
-    }
 
-    @Override
-    public void replaceChildComponent(Widget oldComponent, Widget newComponent) {
-        panel.replaceChildComponent(oldComponent, newComponent);
-    }
 
-    @Override
-    public void updateCaption(Paintable component, UIDL uidl) {
-        panel.updateCaption(component, uidl);
-    }
 
-    public class FlowPane extends FlowPanel {
+
+
+
+
+
+
+
+
+    //public class FlowPane extends FlowPanel {
 
         private final HashMap<Widget, VCaption> widgetToCaption = new HashMap<Widget, VCaption>();
         private ApplicationConnection client;
         private int lastIndex;
 
-        public FlowPane() {
+        /*public FlowPane() {
             super();
             setStyleName(CLASSNAME + "-container");
-        }
+        }*/
 
         public void updateRelativeSizes() {
             for (Widget w : getChildren()) {
@@ -168,7 +169,37 @@ public class VCssLayoutMagnolia extends SimplePanel implements Paintable, Contai
             }
         }
 
+
+        @Override
         public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
+            rendering = true;
+
+            if (client.updateComponent(this, uidl, true)) {
+                rendering = false;
+                return;
+            }
+            clickEventHandler.handleEventHandlerRegistration(client);
+
+            final VMarginInfo margins = new VMarginInfo(
+                    uidl.getIntAttribute("margins"));
+            /*setStyleName(margin, CLASSNAME + "-" + StyleConstants.MARGIN_TOP,
+                    margins.hasTop());
+            setStyleName(margin, CLASSNAME + "-" + StyleConstants.MARGIN_RIGHT,
+                    margins.hasRight());
+            setStyleName(margin, CLASSNAME + "-" + StyleConstants.MARGIN_BOTTOM,
+                    margins.hasBottom());
+            setStyleName(margin, CLASSNAME + "-" + StyleConstants.MARGIN_LEFT,
+                    margins.hasLeft());
+
+            setStyleName(margin, CLASSNAME + "-" + "spacing",
+                    uidl.hasAttribute("spacing"));
+                    */
+            updateFromUIDLPanel(uidl, client);
+            rendering = false;
+        }
+
+
+        public void updateFromUIDLPanel(UIDL uidl, ApplicationConnection client) {
 
             // for later requests
             this.client = client;
@@ -252,10 +283,12 @@ public class VCssLayoutMagnolia extends SimplePanel implements Paintable, Contai
             insert(child, index);
         }
 
+        @Override
         public boolean hasChildComponent(Widget component) {
             return component.getParent() == this;
         }
 
+        @Override
         public void replaceChildComponent(Widget oldComponent,
                 Widget newComponent) {
             VCaption caption = widgetToCaption.get(oldComponent);
@@ -270,6 +303,7 @@ public class VCssLayoutMagnolia extends SimplePanel implements Paintable, Contai
             }
         }
 
+        @Override
         public void updateCaption(Paintable component, UIDL uidl) {
             VCaption caption = widgetToCaption.get(component);
             if (VCaption.isNeeded(uidl)) {
@@ -292,10 +326,19 @@ public class VCssLayoutMagnolia extends SimplePanel implements Paintable, Contai
 
         private Paintable getComponent(Element element) {
             return Util
-                    .getPaintableForElement(client, VCssLayoutMagnolia.this, element);
+                    .getPaintableForElement(client, VDivLayout.this, element);
         }
 
-    }
+
+
+
+
+
+
+
+
+
+
 
     private RenderSpace space;
 
@@ -305,27 +348,31 @@ public class VCssLayoutMagnolia extends SimplePanel implements Paintable, Contai
             space = new RenderSpace(-1, -1) {
                 @Override
                 public int getWidth() {
-                    if (BrowserInfo.get().isIE()) {
+                    /*if (BrowserInfo.get().isIE()) {
                         int width = getOffsetWidth();
                         int margins = margin.getOffsetWidth()
                                 - panel.getOffsetWidth();
                         return width - margins;
                     } else {
                         return panel.getOffsetWidth();
-                    }
+                    }*/
+                    return getOffsetWidth();
                 }
 
                 @Override
                 public int getHeight() {
-                    int height = getOffsetHeight();
+                    /*int height = getOffsetHeight();
                     int margins = margin.getOffsetHeight()
                             - panel.getOffsetHeight();
                     return height - margins;
+                    */
+                    return getOffsetHeight();
                 }
             };
         }
         return space;
     }
+
 
     @Override
     public boolean requestLayout(Set<Paintable> children) {
@@ -338,6 +385,7 @@ public class VCssLayoutMagnolia extends SimplePanel implements Paintable, Contai
             return false;
         }
     }
+
 
     private boolean hasSize() {
         return hasWidth && hasHeight;
@@ -360,4 +408,6 @@ public class VCssLayoutMagnolia extends SimplePanel implements Paintable, Contai
         }
         return cssProperty;
     }
+
+
 }
