@@ -31,20 +31,23 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.widget.divlayout;
-
-import info.magnolia.ui.vaadin.integration.widget.client.divlayout.VDivLayout;
-
-import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.ClientWidget;
+package info.magnolia.ui.vaadin.integration.widget.icon;
 
 /**
- * DivLayout
- *
- * See VDivLayout.
+ * The HelpIcon.
  */
-@ClientWidget(VDivLayout.class)
-public class DivLayout extends CssLayout  {
+@SuppressWarnings("serial")
+public class HelpIcon extends CompositeIcon {
 
+    public HelpIcon() {
+        this(Icon.SIZE_DEFAULT);
+    }
+
+    public HelpIcon(int size) {
+        super(
+            new Icon("shape-circle-plus", size, "#fff"),
+            new Icon("shape-circle", size, Icon.COLOR_HELP),
+            new Icon("help-mark", size, "#fff"));
+    }
 
 }

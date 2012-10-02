@@ -31,20 +31,22 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.widget.divlayout;
-
-import info.magnolia.ui.vaadin.integration.widget.client.divlayout.VDivLayout;
-
-import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.ClientWidget;
+package info.magnolia.ui.vaadin.integration.widget.icon;
 
 /**
- * DivLayout
- *
- * See VDivLayout.
+ * The ErrorIcon.
  */
-@ClientWidget(VDivLayout.class)
-public class DivLayout extends CssLayout  {
+@SuppressWarnings("serial")
+public class ErrorIcon extends CompositeIcon {
 
+    public ErrorIcon() {
+        this(Icon.SIZE_DEFAULT);
+    }
+
+    public ErrorIcon(int size) {
+        super(
+            new Icon("shape-triangle", size, Icon.COLOR_ERROR),
+            new Icon("error-mark", size, "#fff"));
+    }
 
 }

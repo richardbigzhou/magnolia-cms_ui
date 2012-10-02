@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,20 +31,35 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.widget.divlayout;
+package info.magnolia.ui.vaadin.integration.widget.client.icon;
 
-import info.magnolia.ui.vaadin.integration.widget.client.divlayout.VDivLayout;
+import com.vaadin.terminal.gwt.client.ApplicationConnection;
+import com.vaadin.terminal.gwt.client.Paintable;
+import com.vaadin.terminal.gwt.client.UIDL;
 
-import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.ClientWidget;
 
 /**
- * DivLayout
- *
- * See VDivLayout.
+ * The VLoadingIcon vaadin client-side proxy for the LoadingIcon component.
  */
-@ClientWidget(VDivLayout.class)
-public class DivLayout extends CssLayout  {
+public class VLoadingIcon extends GwtLoadingIcon implements Paintable {
 
+    private ApplicationConnection client;
+
+    private String paintableId;
+
+    public VLoadingIcon() {
+    }
+
+    @Override
+    public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
+        this.client = client;
+        this.paintableId = uidl.getId();
+        if (client.updateComponent(this, uidl, true)) {
+            return;
+        }
+        if (uidl.hasAttribute("size")) {
+            updateSize(uidl.getIntAttribute("size"));
+        }
+    }
 
 }

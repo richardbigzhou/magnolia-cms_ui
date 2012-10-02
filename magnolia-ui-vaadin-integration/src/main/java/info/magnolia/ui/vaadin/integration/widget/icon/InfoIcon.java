@@ -31,20 +31,22 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.widget.divlayout;
-
-import info.magnolia.ui.vaadin.integration.widget.client.divlayout.VDivLayout;
-
-import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.ClientWidget;
+package info.magnolia.ui.vaadin.integration.widget.icon;
 
 /**
- * DivLayout
- *
- * See VDivLayout.
+ * The InfoIcon.
  */
-@ClientWidget(VDivLayout.class)
-public class DivLayout extends CssLayout  {
+@SuppressWarnings("serial")
+public class InfoIcon extends CompositeIcon {
 
+    public InfoIcon() {
+        this(Icon.SIZE_DEFAULT);
+    }
+
+    public InfoIcon(int size) {
+        super(
+            new Icon("shape-circle", size, Icon.COLOR_INFO),
+            new Icon("info_mark", size, "#fff"));
+    }
 
 }

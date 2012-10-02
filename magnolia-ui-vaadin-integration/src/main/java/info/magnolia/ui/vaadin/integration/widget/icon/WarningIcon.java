@@ -31,20 +31,22 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.widget.divlayout;
-
-import info.magnolia.ui.vaadin.integration.widget.client.divlayout.VDivLayout;
-
-import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.ClientWidget;
+package info.magnolia.ui.vaadin.integration.widget.icon;
 
 /**
- * DivLayout
- *
- * See VDivLayout.
+ * The WarningIcon.
  */
-@ClientWidget(VDivLayout.class)
-public class DivLayout extends CssLayout  {
+@SuppressWarnings("serial")
+public class WarningIcon extends CompositeIcon {
 
+    public WarningIcon() {
+        this(Icon.SIZE_DEFAULT);
+    }
+
+    public WarningIcon(int size) {
+        super(
+            new Icon("shape-triangle", size, Icon.COLOR_WARNING),
+            new Icon("warning-mark", size, "#000"));
+    }
 
 }

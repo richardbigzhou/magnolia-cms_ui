@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,20 +31,22 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.widget.divlayout;
-
-import info.magnolia.ui.vaadin.integration.widget.client.divlayout.VDivLayout;
-
-import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.ClientWidget;
+package info.magnolia.ui.vaadin.integration.widget.client.icon;
 
 /**
- * DivLayout
- *
- * See VDivLayout.
+ * The GwtLoadingIcon widget.
  */
-@ClientWidget(VDivLayout.class)
-public class DivLayout extends CssLayout  {
+public class GwtLoadingIcon extends GwtIcon {
 
+    private static final String CLASSNAME = "spinner-icon";
+
+    public GwtLoadingIcon() {
+        setStylePrimaryName(CLASSNAME);
+        for (int i = 1; i <= 8; i++) {
+            GwtIcon bit = new GwtIcon();
+            bit.updateIconName("spinner-" + i);
+            getElement().appendChild(bit.getElement());
+        }
+    }
 
 }

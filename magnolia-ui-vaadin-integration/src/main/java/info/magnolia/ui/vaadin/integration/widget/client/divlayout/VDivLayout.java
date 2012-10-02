@@ -31,7 +31,6 @@
  * intact.
  *
  */
-
 package info.magnolia.ui.vaadin.integration.widget.client.divlayout;
 
 import java.util.Collection;

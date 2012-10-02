@@ -31,20 +31,43 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.widget.divlayout;
+package info.magnolia.ui.vaadin.integration.widget.icon;
 
-import info.magnolia.ui.vaadin.integration.widget.client.divlayout.VDivLayout;
+import info.magnolia.ui.vaadin.integration.widget.client.icon.VLoadingIcon;
 
-import com.vaadin.ui.CssLayout;
+import com.vaadin.terminal.PaintException;
+import com.vaadin.terminal.PaintTarget;
+import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.ClientWidget;
+import com.vaadin.ui.ClientWidget.LoadStyle;
+
 
 /**
- * DivLayout
- *
- * See VDivLayout.
+ * The LoadingIcon is a lightweight component that outputs the magnolia 5 loading icon as a simple
+ * scalable widget. The client-side implementation is based on the icon font technique and CSS3
+ * animations.
  */
-@ClientWidget(VDivLayout.class)
-public class DivLayout extends CssLayout  {
+@SuppressWarnings("serial")
+@ClientWidget(value = VLoadingIcon.class, loadStyle = LoadStyle.EAGER)
+public class LoadingIcon extends AbstractComponent {
 
+    private static final int SIZE_DEFAULT = 24;
+
+    private int size = SIZE_DEFAULT;
+
+    public LoadingIcon() {
+    }
+
+    public LoadingIcon(int size) {
+        this.size = size;
+    }
+
+    @Override
+    public void paintContent(PaintTarget target) throws PaintException {
+        super.paintContent(target);
+        if (size != SIZE_DEFAULT) {
+            target.addAttribute("size", size);
+        }
+    }
 
 }

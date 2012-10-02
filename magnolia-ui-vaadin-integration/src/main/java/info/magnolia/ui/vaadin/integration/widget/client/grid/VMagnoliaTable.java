@@ -4522,6 +4522,8 @@ public class VMagnoliaTable extends FlowPanel implements Table, ScrollHandler, V
                         if (wasSelected) {
                             removeRowFromUnsentSelectionRanges(row);
                         }
+                        
+                        sendSelectedRows(true);
                     }
                 }
             }

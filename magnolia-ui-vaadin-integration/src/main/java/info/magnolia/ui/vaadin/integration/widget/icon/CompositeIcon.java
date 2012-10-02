@@ -31,20 +31,45 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.widget.divlayout;
+package info.magnolia.ui.vaadin.integration.widget.icon;
 
-import info.magnolia.ui.vaadin.integration.widget.client.divlayout.VDivLayout;
+import info.magnolia.ui.vaadin.integration.widget.client.icon.VCompositeIcon;
 
-import com.vaadin.ui.CssLayout;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+
+import com.vaadin.terminal.PaintException;
+import com.vaadin.terminal.PaintTarget;
+import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.ClientWidget;
+import com.vaadin.ui.ClientWidget.LoadStyle;
+
 
 /**
- * DivLayout
- *
- * See VDivLayout.
+ * The CompositeIcon allows for layered icons, such as a warning sign, with optional outer shape
+ * outline. It mostly serves as the base class for preset composite icons such as InfoIcon,
+ * WarningIcon, etc.
  */
-@ClientWidget(VDivLayout.class)
-public class DivLayout extends CssLayout  {
+@SuppressWarnings("serial")
+@ClientWidget(value = VCompositeIcon.class, loadStyle = LoadStyle.EAGER)
+public abstract class CompositeIcon extends AbstractComponent {
 
+    private final List<Icon> icons = new LinkedList<Icon>();
+
+    protected CompositeIcon(Icon... icons) {
+        this.icons.addAll(Arrays.asList(icons));
+    }
+
+    @Override
+    public void paintContent(PaintTarget target) throws PaintException {
+        super.paintContent(target);
+
+        if (!icons.isEmpty()) {
+            for (Icon icon : icons) {
+                icon.paint(target);
+            }
+        }
+    }
 
 }
