@@ -108,6 +108,7 @@ public class ContentPresenter implements ContentView.Listener {
     public void onItemSelection(Item item) {
         if (item == null) {
             log.debug("Got null com.vaadin.data.Item. ItemSelectedEvent will be fired with null path.");
+            selectedItemId = null;
             subAppEventBus.fireEvent(new ItemSelectedEvent(workspaceName, null));
             return;
         }
