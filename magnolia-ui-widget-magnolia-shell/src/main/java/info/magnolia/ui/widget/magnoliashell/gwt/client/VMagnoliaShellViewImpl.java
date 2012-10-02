@@ -102,6 +102,8 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
 
     private VShellMessage hiPriorityMessage;
 
+    private VMagnoliaShellViewImpl that = this;
+
     public VMagnoliaShellViewImpl(final EventBus eventBus) {
         super();
         this.eventBus = eventBus;
@@ -308,7 +310,9 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
         }
     }
 
+
     private final ShellNavigationHandler navigationHandler = new ShellNavigationHandler() {
+
 
         @Override
         public void onAppActivated(AppActivatedEvent event) {
@@ -330,9 +334,9 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
                  typeInTransition = shellAppType;
                  tokenInTransition = event.getToken();
 
-                //Need to update some state in the main launcher
-                //mainAppLauncher.activateControl(shellAppType);
-                //mainAppLauncher.setNavigationLocked(false);
+                //Need to update state of button and divet in the main launcher
+                mainAppLauncher.activateControl(shellAppType);
+
 
             }else{
                 //Trigger server
