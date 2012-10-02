@@ -35,7 +35,7 @@ package info.magnolia.ui.admincentral.shellapp.pulse;
 
 import info.magnolia.ui.admincentral.shellapp.pulse.PulseMessageCategoryNavigator.CategoryChangedEvent;
 import info.magnolia.ui.admincentral.shellapp.pulse.PulseMessageCategoryNavigator.MessageCategoryChangedListener;
-import info.magnolia.ui.vaadin.integration.widget.grid.MagnoliaTable;
+import info.magnolia.ui.vaadin.integration.widget.grid.MagnoliaTreeTable;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -46,13 +46,17 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang.time.FastDateFormat;
 
+import com.vaadin.data.Item;
 import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.TreeTable;
 import com.vaadin.ui.VerticalLayout;
-
+import com.vaadin.ui.Table.GeneratedRow;
 
 /**
  * Implementation of {@link PulseMessagesView}.
@@ -64,7 +68,7 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
         "New", "Type", "Message Text", "Sender", "Date", "Quick Do"
     };
 
-    private final Table messageTable = new MagnoliaTable();
+    private final TreeTable messageTable = new MagnoliaTreeTable();
 
     private final VerticalLayout root = new VerticalLayout();
 
@@ -73,6 +77,8 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
     private final PulseMessagesPresenter presenter;
 
     private final FastDateFormat dateFormatter = FastDateFormat.getInstance();
+    
+    private boolean grouping = false;
 
     @Inject
     public PulseMessagesViewImpl(final PulseMessagesPresenter presenter) {
@@ -111,6 +117,11 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
             }
 
         });
+        
+        messageTable.setRowGenerator(groupingRowGenerator);
+        messageTable.setCellStyleGenerator(cellStyleGenerator);
+        navigator.addGroupingListener(groupingListener);
+        
         messageTable.setContainerDataSource(presenter.getMessageDataSource());
         messageTable.setVisibleColumns(presenter.getColumnOrder());
         messageTable.setSortContainerPropertyId("date");
@@ -126,6 +137,63 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
             }
         });
     }
+    
+    private ValueChangeListener groupingListener = new ValueChangeListener() {
+        
+        @Override
+        public void valueChange(ValueChangeEvent event) {
+            boolean checked = event.getProperty().getValue().equals(Boolean.TRUE);
+            presenter.setGrouping(checked);
+            grouping = checked;
+            
+            if(checked) {
+                for(Object itemId: messageTable.getItemIds()) {
+                    messageTable.setCollapsed(itemId, false);
+                }
+            }
+        }
+    };
+    
+    private Table.CellStyleGenerator cellStyleGenerator = new Table.CellStyleGenerator() {
+        
+        @Override
+        public String getStyle(Object itemId, Object propertyId) {
+
+            if( grouping &&
+                    propertyId != null && 
+                    propertyId.equals(PulseMessagesPresenter.GROUP_COLUMN)) {
+                return "v-cell-invisible";
+            }
+            return "";
+        }
+    };
+
+    
+    /* Row generator draws grouping headers if such are present in container
+     */
+    private Table.RowGenerator groupingRowGenerator = new Table.RowGenerator() {
+
+        @Override
+        public GeneratedRow generateRow(Table table, Object itemId) {
+           
+            /*
+             * When sorting by type special items are inserted into
+             * Container to acts as a placeholder for grouping
+             * sub section. This row generator must render those
+             * special items.
+             */
+            if(itemId.toString().startsWith(PulseMessagesPresenter.GROUP_PLACEHOLDER_ITEMID)) {
+                Item item = table.getItem(itemId);
+                Property property = item.getItemProperty(PulseMessagesPresenter.GROUP_COLUMN);
+
+                GeneratedRow generated = new GeneratedRow("", "", property.getValue().toString());
+                generated.setSpanColumns(false);
+                return generated;
+            }
+
+            return null;
+        }
+    };
 
     @Override
     public ComponentContainer asVaadinComponent() {
