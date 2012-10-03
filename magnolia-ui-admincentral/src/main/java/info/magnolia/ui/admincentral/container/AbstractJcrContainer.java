@@ -109,15 +109,15 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     private static final Long LONG_ZERO = Long.valueOf(0);
 
-    private static final String CONTENT_SELECTOR_NAME = "content";
+    private static final String CONTENT_SELECTOR_NAME = "[mgnl:content]";
 
     private static final String METADATA_SELECTOR_NAME = "metaData";
 
-    private static final String SELECT_CONTENT = "select * from [mgnl:content] as content ";
+    private static final String SELECT_CONTENT = "//element(*,mgnl:content) ";
 
     private static final String JOIN_METADATA = "inner join [mgnl:metaData] as metaData on ischildnode(metaData,content) ";
 
-    private static final String ORDER_BY = "order by ";
+    private static final String ORDER_BY = "order by";
 
     private static final String NAME_PROPERTY = "name";
 
@@ -130,21 +130,12 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
         this.jcrContainerSource = jcrContainerSource;
         workspace = workbenchDefinition.getWorkspace();
 
-        for (ColumnDefinition columnDefinition : workbenchDefinition.getColumns()) {
-            if (columnDefinition.isSortable()) {
-                log.debug("Configuring column [{}] as sortable", columnDefinition.getName());
+        for (ColumnDefinition column : workbenchDefinition.getColumns()) {
+            if (column.isSortable()) {
+                log.debug("Configuring column [{}] as sortable", column.getName());
+                final String columnProperty = (column.getPropertyName() == null) ?  column.getName() : column.getPropertyName();
 
-                String propertyName = columnDefinition.getPropertyName();
-                log.debug("propertyName is {}", propertyName);
-
-                if (StringUtils.isBlank(propertyName)) {
-                    propertyName = columnDefinition.getName();
-                    log.debug(
-                            "Column {} is sortable but no propertyName has been defined. Defaulting to column name (sorting may not work as expected).",
-                            columnDefinition.getName());
-                }
-
-                sortableProperties.add(propertyName);
+                sortableProperties.add(columnProperty);
             }
         }
     }
@@ -509,7 +500,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
             // "The SQL2/QOM implementation loads all matching rows into memory during the execute() call, so you'll see an expensive query.execute() but can then very quickly iterate over the query results.")
             // to the point that any benefit gained from faster query execution is lost and overall
             // performance gets worse.
-            final QueryResult queryResult = executeQuery(stmt, Query.JCR_SQL2, pageLength * cacheRatio, currentOffset);
+            final QueryResult queryResult = executeQuery(stmt, Query.XPATH, pageLength * cacheRatio, currentOffset);
 
             updateItems(queryResult);
 
@@ -527,16 +518,16 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
         long start = System.currentTimeMillis();
         log.debug("Starting iterating over QueryResult");
 
-        final RowIterator iterator = queryResult.getRows();
+        final javax.jcr.NodeIterator iterator = queryResult.getNodes();
         long rowCount = currentOffset;
         while (iterator.hasNext()) {
-            Node node = iterator.nextRow().getNode(CONTENT_SELECTOR_NAME);
+            Node node = iterator.nextNode();
             final String id = node.getPath();
             log.debug("Adding node {} to cached items.", id);
             itemIndexes.put(rowCount++, id);
         }
 
-        log.warn("Done in {} ms", System.currentTimeMillis() - start);
+        log.warn("Updating Items done in {} ms", System.currentTimeMillis() - start);
     }
 
     /**
@@ -548,37 +539,20 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
         if (sorters.isEmpty()) {
             // no sorters set - apply default (sort by name)
             stmt.append(ORDER_BY)
-                    .append(JCR_NAME_FUNCTION)
-                    .append(" asc");
+                    .append(" @jcrName")
+                    .append(" ascending");
         } else {
-            // TODO one workaround to make this faster would be avoiding doing a join when we
-            // know for sure there are no properties from metadata to order by.
-            stmt.append(JOIN_METADATA)
-                    .append(ORDER_BY);
+            stmt.append(ORDER_BY);
             String sortOrder;
             for (OrderBy orderBy : sorters) {
                 String propertyName = orderBy.getProperty();
-                sortOrder = orderBy.isAscending() ? " asc" : " desc";
-                if (NAME_PROPERTY.equals(propertyName)) {
-                    stmt.append(JCR_NAME_FUNCTION)
-                            .append(sortOrder)
-                            .append(", ");
-                    continue;
-                }
-
+                sortOrder = orderBy.isAscending() ? " ascending" : " descending";
                 if (propertyName.startsWith(META_DATA_PROPERTY_TO_BE_REPLACED_FOR_ORDER_BY)) {
-                    propertyName = propertyName.substring(META_DATA_PROPERTY_TO_BE_REPLACED_FOR_ORDER_BY.length());
-
-                    // TODO here we don't know to which primary type this prop belongs to. I would
-                    // tend not to clutter the column definition with yet another info about primary
-                    // type.
-                    stmt.append(METADATA_SELECTOR_NAME);
+                    propertyName = propertyName.replaceFirst(META_DATA_PROPERTY_TO_BE_REPLACED_FOR_ORDER_BY, META_DATA_PROPERTY_TO_BE_REPLACED_FOR_ORDER_BY + "@");
                 } else {
-                    stmt.append(CONTENT_SELECTOR_NAME);
+                    stmt.append("@");
                 }
-                stmt.append(".[")
-                        .append(propertyName)
-                        .append("]")
+                stmt.append(propertyName)
                         .append(sortOrder)
                         .append(", ");
 
@@ -597,7 +571,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
                 return;
             }
             // query for all items in order to get the size
-            final QueryResult queryResult = executeQuery(query, Query.JCR_SQL2, 0, 0);
+            final QueryResult queryResult = executeQuery(query, Query.XPATH, 0, 0);
 
             final long pageSize = queryResult.getRows().getSize();
             log.debug("Query resultset contains {} items", pageSize);
