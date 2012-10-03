@@ -56,8 +56,8 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
-import com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent;
-import com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler;
+import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
+import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.Container;
@@ -134,10 +134,10 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
 
 
     private void bindHandlers() {
-        delegate.addTouchStartHandler(new TouchStartHandler() {
+        delegate.addTouchEndHandler(new TouchEndHandler() {
 
             @Override
-            public void onTouchStart(TouchStartEvent event) {
+            public void onTouchEnd(TouchEndEvent event) {
                 final Element target = event.getNativeEvent().getEventTarget().cast();
                 if (target == getElement()) {
                     eventBus.fireEvent(new ViewportCloseEvent(VMagnoliaShell.ViewportType.SHELL_APP_VIEWPORT));

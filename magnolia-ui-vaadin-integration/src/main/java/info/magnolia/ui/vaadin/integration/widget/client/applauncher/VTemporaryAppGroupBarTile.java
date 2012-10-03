@@ -41,8 +41,8 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent;
-import com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler;
+import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
+import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 
 /**
@@ -110,10 +110,10 @@ public class VTemporaryAppGroupBarTile extends FlowPanel {
 
         final TouchDelegate touchDelegate = new TouchDelegate(this);
 
-        touchDelegate.addTouchStartHandler(new TouchStartHandler() {
+        touchDelegate.addTouchEndHandler(new TouchEndHandler() {
 
             @Override
-            public void onTouchStart(TouchStartEvent event) {
+            public void onTouchEnd(TouchEndEvent event) {
                 groupBar.handleTileClick((VTemporaryAppTileGroup)group, that);
             }
         });

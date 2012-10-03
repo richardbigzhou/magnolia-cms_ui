@@ -49,8 +49,6 @@ import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
 import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
 import com.googlecode.mgwt.dom.client.event.touch.TouchMoveEvent;
 import com.googlecode.mgwt.dom.client.event.touch.TouchMoveHandler;
-import com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent;
-import com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 
 /**
@@ -133,9 +131,9 @@ public class VAppTile extends Widget {
         });
         */
 
-        touchDelegate.addTouchStartHandler(new TouchStartHandler() {
+        touchDelegate.addTouchEndHandler(new TouchEndHandler() {
             @Override
-            public void onTouchStart(TouchStartEvent event) {
+            public void onTouchEnd(TouchEndEvent event) {
 
                 getElement().removeClassName("hover");
                 setColorsForClientGroup(false);
