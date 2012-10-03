@@ -82,9 +82,8 @@ public class LinkFieldSelectionBuilder extends AbstractFieldBuilder<LinkFieldSel
 
     @Override
     protected Field buildField() {
-        // create a new Field.
         textContent = new TextAndContentViewField(definition.isDisplayTextField(), definition.isDisplayTextFieldOnTop());
-        // create a new View
+
         ContentWorkbenchViewImpl parentView = new ContentWorkbenchViewImpl();
         contentPresenter.initContentView(parentView);
         textContent.setContentView(parentView);
@@ -92,10 +91,8 @@ public class LinkFieldSelectionBuilder extends AbstractFieldBuilder<LinkFieldSel
         // Set selected item.
         setSelected(parentView);
 
-        //AddHandler.
         // On a selected Item, propagate the specified Column Value to the TextField.
         appEventBus.addHandler(ItemSelectedEvent.class, new ItemSelectedEvent.Handler() {
-
             @Override
             public void onItemSelected(ItemSelectedEvent event) {
                 Node selected = SessionUtil.getNode(event.getWorkspace(), event.getPath());
@@ -111,9 +108,7 @@ public class LinkFieldSelectionBuilder extends AbstractFieldBuilder<LinkFieldSel
                         log.error("Not able to access the configured property. Value will not be set.",e);
                     }
                 }
-
             }
-
         });
         return textContent;
     }

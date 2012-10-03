@@ -78,29 +78,22 @@ public class DialogBuilder {
         }
 
         for (TabDefinition tabDefinition : dialogDefinition.getTabs()) {
-            DialogTab tab = new DialogTab(tabDefinition);
+            final DialogTab tab = new DialogTab(tabDefinition);
             tab.setParent(dialog);
-
             for (FieldDefinition fieldDefinition : tabDefinition.getFields()) {
-
                 FieldBuilder dialogField = dialogFieldFactory.create(fieldDefinition, item);
                 if(dialogField == null) {
-                    continue; //This happen in case of extends=override. fieldDefinition is ConfiguredFieldDefinition and of course no builder is linked to this.
+                    continue; //This can happen in case of extends/override. FieldDefinition is ConfiguredFieldDefinition and of course no builder is linked to this.
                 }
                 dialogField.setParent(tab);
-
                 Field field = dialogField.getField();
-
                 if (field instanceof AbstractComponent) {
                     ((AbstractComponent)field).setImmediate(true);
                 }
-
                 tab.addField(field);
-                //Set Help
                 if(StringUtils.isNotBlank(fieldDefinition.getDescription())) {
                     tab.setComponentHelpDescription(field, fieldDefinition.getDescription());
                 }
-
                 view.addField(field);
             }
             view.addDialogSection(tab.getMessage(tabDefinition.getLabel()), tab.getContainer());

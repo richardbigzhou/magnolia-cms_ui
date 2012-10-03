@@ -39,7 +39,7 @@ import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.widget.dialog.FormSection;
 import info.magnolia.ui.widget.dialog.FormDialog;
 import info.magnolia.ui.widget.dialog.FormDialogView;
-import info.magnolia.ui.widget.dialog.MagnoliaDialogPresenter;
+import info.magnolia.ui.widget.dialog.FormDialogPresenter;
 
 import java.util.List;
 
@@ -114,7 +114,7 @@ public class CallbackDialogActionTest {
         this.dialogActionDefinition.setSuccessActionName(successActionName!=null?successActionName:"success");
     }
 
-    public static class DialogPresenterTest implements MagnoliaDialogPresenter.Presenter {
+    public static class DialogPresenterTest implements FormDialogPresenter.Presenter {
 
         private String callbackActionCalled;
         public String getCallbackActionCalled() {

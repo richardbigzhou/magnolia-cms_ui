@@ -43,7 +43,7 @@ import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 import info.magnolia.ui.model.dialog.registry.DialogDefinitionRegistry;
 import info.magnolia.ui.widget.dialog.FormDialogView;
-import info.magnolia.ui.widget.dialog.MagnoliaDialogPresenter;
+import info.magnolia.ui.widget.dialog.FormDialogPresenter;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -64,7 +64,9 @@ public class DialogPresenterFactoryImpl implements DialogPresenterFactory {
     private ComponentProvider componentProvider;
 
     @Inject
-    public DialogPresenterFactoryImpl(ComponentProvider componentProvider, DialogDefinitionRegistry dialogDefinitionRegistry, DialogBuilder dialogBuilder, DialogFieldFactory dialogFieldFactory, Shell shell, @Named("admincentral") EventBus eventBus, final DialogActionFactory actionFactory) {
+    public DialogPresenterFactoryImpl(ComponentProvider componentProvider, 
+            DialogDefinitionRegistry dialogDefinitionRegistry, DialogBuilder dialogBuilder, 
+            DialogFieldFactory dialogFieldFactory, Shell shell, @Named("admincentral") EventBus eventBus, final DialogActionFactory actionFactory) {
         this.dialogDefinitionRegistry = dialogDefinitionRegistry;
         this.dialogBuilder = dialogBuilder;
         this.dialogFieldFactory = dialogFieldFactory;
@@ -75,7 +77,7 @@ public class DialogPresenterFactoryImpl implements DialogPresenterFactory {
     }
 
     @Override
-    public MagnoliaDialogPresenter.Presenter createDialog(String dialogName) {
+    public FormDialogPresenter createDialog(String dialogName) {
 
         DialogDefinition definition = getDialogDefinition(dialogName);
         return getDialogPresenter(definition);
@@ -98,9 +100,9 @@ public class DialogPresenterFactoryImpl implements DialogPresenterFactory {
     }
 
     @Override
-    public MagnoliaDialogPresenter.Presenter getDialogPresenter(DialogDefinition definition) {
+    public FormDialogPresenter getDialogPresenter(DialogDefinition definition) {
         FormDialogView view = componentProvider.getComponent(FormDialogView.class);
-        return new DialogPresenter(view, dialogBuilder, dialogFieldFactory, definition, shell, eventBus, actionFactory);
+        return new FormDialogPresenterImpl(view, dialogBuilder, dialogFieldFactory, definition, shell, eventBus, actionFactory);
 
 
     }

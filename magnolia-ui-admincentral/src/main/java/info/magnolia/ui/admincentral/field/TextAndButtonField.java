@@ -53,18 +53,24 @@ import com.vaadin.ui.TextField;
 public class TextAndButtonField extends CustomField {
 
     private Button selectButton;
+    
     private TextField textField;
+    
     private PropertyTranslator translator;
+    
     private String buttonCaptionNew;
+    
     private String buttonCaptionOther;
 
     public TextAndButtonField(PropertyTranslator translator, String buttonCaptionNew, String buttonCaptionOther) {
         this.translator = translator;
         this.buttonCaptionNew = buttonCaptionNew;
         this.buttonCaptionOther = buttonCaptionOther;
+        
         textField = new TextField();
         textField.setSizeUndefined();
         textField.addStyleName("small-textfield");
+        
         selectButton = new NativeButton();
         selectButton.addStyleName("btn-dialog btn-dialog-select");
 
@@ -73,6 +79,7 @@ public class TextAndButtonField extends CustomField {
         layout.addComponent(textField);
         layout.addComponent(selectButton);
         layout.setComponentAlignment(selectButton, Alignment.MIDDLE_CENTER);
+        
         setCompositionRoot(layout);
     }
 
@@ -121,7 +128,7 @@ public class TextAndButtonField extends CustomField {
     }
 
     @Override
-    public Class< ? > getType() {
+    public Class<?> getType() {
         return getPropertyDataSource().getType();
     }
 

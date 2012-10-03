@@ -46,7 +46,7 @@ import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 import info.magnolia.ui.widget.dialog.DialogView;
 import info.magnolia.ui.widget.dialog.FormDialogView;
-import info.magnolia.ui.widget.dialog.MagnoliaDialogPresenter;
+import info.magnolia.ui.widget.dialog.FormDialogPresenter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -56,7 +56,7 @@ import com.vaadin.data.Item;
 /**
  * Dialog Presenter and Listener implementation.
  */
-public class DialogPresenter implements MagnoliaDialogPresenter.Presenter,  DialogView.Listener{
+public class FormDialogPresenterImpl implements FormDialogPresenter,  DialogView.Listener{
 
     private final DialogBuilder dialogBuilder;
 
@@ -78,7 +78,7 @@ public class DialogPresenter implements MagnoliaDialogPresenter.Presenter,  Dial
 
     private Callback callback;
 
-    public DialogPresenter(final FormDialogView view, final DialogBuilder dialogBuilder, final DialogFieldFactory dialogFieldFactory, 
+    public FormDialogPresenterImpl(final FormDialogView view, final DialogBuilder dialogBuilder, final DialogFieldFactory dialogFieldFactory, 
             final DialogDefinition dialogDefinition, final Shell shell, final EventBus eventBus, final DialogActionFactory actionFactory) {
         this.view = view;
         this.dialogBuilder = dialogBuilder;
@@ -87,7 +87,6 @@ public class DialogPresenter implements MagnoliaDialogPresenter.Presenter,  Dial
         this.shell = (MagnoliaShell)shell;
         this.eventBus = eventBus;
         this.actionFactory = actionFactory;
-
         this.view.setListener(this);
 
         initActions(dialogDefinition);
@@ -110,7 +109,6 @@ public class DialogPresenter implements MagnoliaDialogPresenter.Presenter,  Dial
 
     @Override
     public void executeAction(final String actionName) {
-
         final ActionDefinition actionDefinition = actionMap.get(actionName);
         final Action action = actionFactory.createAction(actionDefinition, this);
         try {
@@ -121,7 +119,6 @@ public class DialogPresenter implements MagnoliaDialogPresenter.Presenter,  Dial
     }
 
     private void initActions(final DialogDefinition dialogDefinition) {
-
         for (final DialogActionDefinition action : dialogDefinition.getActions()) {
             actionMap.put(action.getName(), action.getActionDefinition());
         }

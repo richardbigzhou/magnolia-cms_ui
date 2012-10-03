@@ -38,7 +38,7 @@ import info.magnolia.ui.admincentral.content.view.builder.DefinitionToImplementa
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.builder.FactoryBase;
-import info.magnolia.ui.widget.dialog.MagnoliaDialogPresenter;
+import info.magnolia.ui.widget.dialog.FormDialogPresenter;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -60,7 +60,7 @@ public class DialogActionFactoryImpl extends FactoryBase<ActionDefinition, Actio
 
 
     @Override
-    public Action createAction(ActionDefinition actionDefinition, MagnoliaDialogPresenter.Presenter presenter) {
+    public Action createAction(ActionDefinition actionDefinition, FormDialogPresenter presenter) {
         return create(actionDefinition, presenter);
     }
 }

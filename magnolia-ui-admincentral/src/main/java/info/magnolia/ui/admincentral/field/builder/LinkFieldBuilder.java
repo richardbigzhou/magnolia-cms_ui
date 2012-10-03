@@ -42,7 +42,7 @@ import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.model.field.definition.LinkFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
-import info.magnolia.ui.widget.dialog.MagnoliaDialogPresenter;
+import info.magnolia.ui.widget.dialog.FormDialogPresenter;
 
 import javax.inject.Inject;
 
@@ -62,10 +62,13 @@ import com.vaadin.ui.Field;
  * @param <D> definition type
  */
 public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBuilder<LinkFieldDefinition> {
+    
     private static final Logger log = LoggerFactory.getLogger(LinkFieldBuilder.class);
+    
     public static final String PATH_PROPERTY_NAME = "transientPathProperty";
 
     private TextAndButtonField textButton;
+    
     private AppController appController;
 
     @Inject
@@ -101,47 +104,35 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
      * Create the Button click Listener.
      * On click: Create a Dialog and Initialize callback handling.
      */
-    @SuppressWarnings("serial")
     private Button.ClickListener createButtonClickListener(final String dialogName, final String appName) {
-        Button.ClickListener res = new Button.ClickListener() {
+        return new Button.ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
                 // Get the property name to propagate.
                 final String propertyName = getPropertyName();
-                // Get the specified App
-                App targetApp = appController.startIfNotAlreadyRunning(appName, new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appName, ""));
-                if(targetApp == null) {
-                    return;
-                }
-
-                // Create the Transient Item used to propagate the property between Dialogs.
-                final PropertysetItem item = new PropertysetItem();
-                Property property = DefaultPropertyUtil.newDefaultProperty(propertyName, null, (String)textButton.getTextField().getValue());
-                item.addItemProperty(propertyName, property);
-                // Create the call Back
-                MagnoliaDialogPresenter.Presenter.Callback callback = new MagnoliaDialogPresenter.Presenter.Callback() {
-                    @Override
-                    public void onSuccess(String actionName) {
-                        Property p = item.getItemProperty(propertyName);
-                        textButton.setValue(p.getValue());
-                        log.debug("Got following value from Sub Window {}", p.getValue());
+                final App targetApp = appController.startIfNotAlreadyRunning(appName, new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appName, ""));
+                if(targetApp != null) {
+                    // Create the Transient Item used to propagate the property between Dialogs.
+                    final PropertysetItem item = new PropertysetItem();
+                    final Property property = DefaultPropertyUtil.newDefaultProperty(propertyName, null, String.valueOf(textButton.getTextField().getValue()));
+                    item.addItemProperty(propertyName, property);
+                    final FormDialogPresenter.Callback callback = new FormDialogPresenter.Callback.Adapter() {
+                        @Override
+                        public void onSuccess(String actionName) {
+                            final Property p = item.getItemProperty(propertyName);
+                            textButton.setValue(p.getValue());
+                            log.debug("Got following value from Sub Window {}", p.getValue());
+                        }
+                    };
+                    if(targetApp instanceof AbstractContentApp) {
+                        ((AbstractContentApp)targetApp).openChooseDialog(dialogName, callback, item);
                     }
-                    @Override
-                    public void onCancel() {
-                        log.debug("Cancel from Sub Window");
-                    }
-                };
-
-                // Open the Select Dialog
-                if(targetApp instanceof AbstractContentApp) {
-                    ((AbstractContentApp)targetApp).openChooseDialog( dialogName, callback, item);
                 }
             }
         };
-        return res;
     }
 
     private String getPropertyName() {
-        return StringUtils.isEmpty(definition.getPropertyName())?PATH_PROPERTY_NAME:definition.getPropertyName();
+        return StringUtils.isEmpty(definition.getPropertyName()) ? PATH_PROPERTY_NAME:definition.getPropertyName();
     }
 }

@@ -37,20 +37,10 @@ import info.magnolia.ui.framework.event.EventBus;
 
 import com.vaadin.data.Item;
 
-/**
- * Definition of the Dialog Presenter (used to communicate with the outer world).
- * Also define a call back inner interface.
- */
-public interface MagnoliaDialogPresenter {
-
-
-    void setPresenter(MagnoliaDialogPresenter presenter);
-
     /**
      * DialogView.Presenter.
-     *
      */
-    public interface Presenter {
+    public interface FormDialogPresenter {
 
         /**
          * Callback interface for DialogView.Presenter.
@@ -60,6 +50,21 @@ public interface MagnoliaDialogPresenter {
             void onCancel();
 
             void onSuccess(String actionName);
+            
+            /**
+             * Dummy adapter class that allows to skip overriding e.g. onCancel method in actual
+             * implementors.
+             */
+            public static class Adapter implements Callback {
+                
+                @Override
+                public void onSuccess(String actionName) {}
+                
+                @Override
+                public void onCancel() {}
+                
+            }
+            
         }
 
         Callback getCallback();
@@ -70,9 +75,6 @@ public interface MagnoliaDialogPresenter {
 
         EventBus getEventBus();
 
-        /**
-         * Start create the dialog.
-         */
         DialogView start(Item item, Callback callback);
 
         void showValidation(boolean isVisible);
@@ -81,4 +83,4 @@ public interface MagnoliaDialogPresenter {
         void closeDialog();
 
     }
-}
+
