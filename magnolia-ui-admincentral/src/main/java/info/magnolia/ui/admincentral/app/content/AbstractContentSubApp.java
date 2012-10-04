@@ -81,6 +81,11 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
     private static String appName;
 
     public AbstractContentSubApp(final AppContext appContext, final ContentAppView view, final ContentWorkbenchPresenter workbench, final @Named("subapp") EventBus subAppEventBus) {
+
+        if(appContext == null || view == null || workbench == null || subAppEventBus == null) {
+            throw new IllegalArgumentException("Constructor does not allow for null args. Found AppContext = " + appContext + ", ContentAppView = " + view + ", ContentWorkbenchPresenter = " + workbench + ", EventBus = " + subAppEventBus);
+        }
+
         AbstractContentSubApp.appName = appContext.getName();
         this.view = view;
         this.workbench = workbench;
@@ -344,5 +349,4 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
             }
         });
     }
-
 }
