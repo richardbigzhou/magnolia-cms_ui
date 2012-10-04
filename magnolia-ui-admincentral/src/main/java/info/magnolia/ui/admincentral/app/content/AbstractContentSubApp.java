@@ -35,6 +35,7 @@ package info.magnolia.ui.admincentral.app.content;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.inject.Named;
 
@@ -88,7 +89,7 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
     }
 
     @Override
-    public View start(Location location) {
+    public View start(final Location location) {
         currentLocation = (DefaultLocation)location;
         view.setWorkbenchView(workbench.start());
         restoreWorkbench(location);
@@ -103,14 +104,14 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
      *   #app:myapp:main:/foo/bar:list
      * }
      * <p>
-     * this method will open <code>myapp:main</code>, select the path <code>/foo/bar</code> in the workspace used by the app, set the view type as <code>list</code> and finally update the available actions.
+     * this method will select the path <code>/foo/bar</code> in the workspace used by the app, set the view type as <code>list</code> and finally update the available actions.
      * <p>
-     * A search view is restored as well. For example, given the following URI fragment
+     * In case of a search view the URI fragment will look similar to the following one
      * {@code
      *   #app:myapp:main:/:search;qux
      * }
      * <p>
-     * this method will open <code>myapp:main</code>, select the root path, set the view type as <code>search</code>, perform a search for "qux" in the workspace used by the app and finally update the available actions.
+     * then this method will select the root path, set the view type as <code>search</code>, perform a search for "qux" in the workspace used by the app and finally update the available actions.
      * @see AbstractContentSubApp#updateActions()
      * @see AbstractContentSubApp#start(Location)
      * @see Location
@@ -143,7 +144,7 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
         }
     }
 
-    protected ContentWorkbenchPresenter getWorkbench() {
+    protected final ContentWorkbenchPresenter getWorkbench() {
         return workbench;
     }
 
@@ -158,7 +159,7 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
      * The default implementation selects the path in the current workspace and updates the available actions.
      */
     @Override
-    public void locationChanged(Location location) {
+    public void locationChanged(final Location location) {
         String selectedItemPath = getSelectedItemPath(location);
         if (selectedItemPath != null) {
             workbench.selectPath(selectedItemPath);
@@ -278,22 +279,24 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
 
     private static String replaceLocationToken(final DefaultLocation location, final String tokenPartToReplace, final TokenElementType type) {
         String newToken = null;
-        String q = getQuery(location);
+        String query = getQuery(location);
 
         switch(type) {
         case PATH :
             newToken = location.getToken().replaceFirst(getSelectedItemPath(location), tokenPartToReplace);
             break;
         case VIEW :
-            if(StringUtils.isNotEmpty(q)) {
-                newToken = location.getToken().replaceFirst(getSelectedView(location) + ";" + q, tokenPartToReplace);
+            if(StringUtils.isNotEmpty(query)) {
+                //here we need Pattern.quote() as the query might contain special chars such as the wildcard *, which in regex has a different meaning
+                //and would prevent the replace method from working properly.
+                newToken = location.getToken().replaceFirst(getSelectedView(location) + ";" + Pattern.quote(query), tokenPartToReplace);
             } else {
                 newToken = location.getToken().replaceFirst(getSelectedView(location), tokenPartToReplace);
             }
             break;
         case QUERY :
-            if(StringUtils.isNotEmpty(q)) {
-                newToken = location.getToken().replaceFirst(q, tokenPartToReplace);
+            if(StringUtils.isNotEmpty(query)) {
+                newToken = location.getToken().replaceFirst(query, tokenPartToReplace);
             } else {
                 newToken = location.getToken().replaceFirst(getSelectedView(location), getSelectedView(location) + ";" + tokenPartToReplace);
             }

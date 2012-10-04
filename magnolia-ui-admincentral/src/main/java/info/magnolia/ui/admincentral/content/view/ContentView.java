@@ -39,12 +39,18 @@ import info.magnolia.ui.admincentral.container.AbstractJcrContainer;
 import info.magnolia.ui.framework.view.View;
 
 /**
- * UI component that displays content (from Jcr).
+ * UI component that displays content (from JCR).
  */
 public interface ContentView extends View {
 
     /**
-     * Enumeration for view types.
+     * Enumeration for the default view types:
+     * <ul>
+     * <li>tree
+     * <li>list
+     * <li>thumbnail
+     * <li>search
+     * </ul>
      */
     public enum ViewType {
         LIST("list"),
