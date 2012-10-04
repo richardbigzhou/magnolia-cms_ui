@@ -83,7 +83,7 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
         AbstractContentSubApp.appName = appContext.getName();
         this.view = view;
         this.workbench = workbench;
-        registerSubEventsHandlers(appContext, subAppEventBus, this);
+        registerSubAppEventsHandlers(appContext, subAppEventBus, this);
 
     }
 
@@ -119,7 +119,7 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
         String path = getSelectedItemPath(location);
         String viewType = getSelectedView(location);
         String query = getQuery(location);
-        getWorkbench().restoreOnStart(path, ViewType.fromString(viewType), query);
+        getWorkbench().resynch(path, ViewType.fromString(viewType), query);
         updateActions();
     }
 
@@ -155,7 +155,7 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
     }
 
     /**
-     * The default implementation select the path in the current workspace and updates the available actions.
+     * The default implementation selects the path in the current workspace and updates the available actions.
      */
     @Override
     public void locationChanged(Location location) {
@@ -180,11 +180,12 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
      */
     public static final DefaultLocation createLocation(final String parameter, final DefaultLocation currentLocation, final TokenElementType type) {
         DefaultLocation location = createLocation();
-        String token = location.getToken();
         if (StringUtils.isNotBlank(parameter) && currentLocation != null && type != null) {
+            String token = location.getToken();
             token = replaceLocationToken(currentLocation, parameter, type);
+            return new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, getAppName(), token);
         }
-        return new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, getAppName(), token);
+        return location;
     }
 
     /**
@@ -309,7 +310,7 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
      * <li> {@link SearchEvent}
      * </ul>
      */
-    private void registerSubEventsHandlers(final AppContext appContext, final EventBus subAppEventBus, final AbstractContentSubApp subapp) {
+    private void registerSubAppEventsHandlers(final AppContext appContext, final EventBus subAppEventBus, final AbstractContentSubApp subapp) {
 
         subAppEventBus.addHandler(ItemSelectedEvent.class, new ItemSelectedEvent.Handler() {
 

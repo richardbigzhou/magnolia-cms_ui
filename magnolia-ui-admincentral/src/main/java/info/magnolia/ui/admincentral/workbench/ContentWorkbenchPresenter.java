@@ -220,8 +220,11 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
         this.view.selectPath(path);
     }
 
-    public void restoreOnStart(final String path, final ViewType viewType, final String query) {
-        this.view.restoreOnStart(path, viewType, query);
+    /**
+     * Synchronizes the underlying view to reflect the status extracted from the Location token, i.e. selected path, view type and optional query (in case of a search view).
+     */
+    public void resynch(final String path, final ViewType viewType, final String query) {
+        this.view.resynch(path, viewType, query);
     }
 
     private void refreshActionbarPreviewImage(final String path, final String workspace) {
