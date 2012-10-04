@@ -45,13 +45,9 @@ import com.vaadin.ui.ComponentContainer;
 
 
 /**
- * CompositeComponent provides simple implementation of Component interface for creation of new UI
- * components by composition of existing components.
- * <p>
- * The component is used by inheriting the CompositeComponent class and adding components to the
- * protected root layout inside the composite component. The root can contain more components, but
- * their interfaces are hidden from the users.
- * </p>
+ * The CompositeComponent is a lightened version of vaadin's CustomComponent. It still abstracts
+ * layout capabilities for server-side extending components, but has no client-side representation.
+ * Instead, it delegates the vaadin paint mechanism straight to its composition root.
  */
 @SuppressWarnings("serial")
 public class CompositeComponent extends AbstractComponentContainer {

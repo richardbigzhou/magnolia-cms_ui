@@ -48,18 +48,8 @@ import com.vaadin.ui.Layout;
 
 
 /**
- * LightLayout is a layout component consisting of one single div on client-side. Component layout
- * can then be adjusted with css.
- * <p>
- * In comparison to {@link com.vaadin.ui.CssLayout}
- * <ul>
- * <li>rather similar server side api
- * <li>no margins in the Vaadin sense.
- * <li>much simpler DOM that can be styled by skilled web developer
- * <li>no abstraction of browser differences (developer must ensure that the result works properly
- * on each browser)
- * <li>developers have to handle relative sizes on their own.
- * </ul>
+ * LightLayout is a lightened version of CssLayout whose client-side counterpart is a plain GWT
+ * FlowPanel (one single div, no vaadin margins).
  */
 @ClientWidget(VLightLayout.class)
 @SuppressWarnings("serial")
