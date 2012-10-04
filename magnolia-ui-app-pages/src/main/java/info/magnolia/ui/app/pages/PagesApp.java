@@ -68,7 +68,7 @@ public class PagesApp extends AbstractContentApp {
         if (PagesMainSubApp.supportsLocation(location)) {
             appContext.openSubApp("main", PagesMainSubApp.class, location, PagesMainSubApp.getSubAppId(location));
         } else {
-            DefaultLocation mainLocation = PagesMainSubApp.createLocation(null);
+            DefaultLocation mainLocation = PagesMainSubApp.createLocation(null, null, null);
             appContext.openSubApp("main", PagesMainSubApp.class, mainLocation, PagesMainSubApp.getSubAppId(mainLocation));
 
             if (PagesEditorSubApp.supportsLocation(location)) {

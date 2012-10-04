@@ -80,18 +80,20 @@ public interface ContentView extends View {
 
     void refresh();
 
-    void refreshItem(final Item item);
+    void refreshItem(Item item);
 
     AbstractJcrContainer getContainer();
+
+    ViewType getViewType();
 
     /**
      * Listener for the ContentView.
      */
     public interface Listener {
 
-        void onItemSelection(final Item item);
+        void onItemSelection(Item item);
 
-        void onDoubleClick(final Item item);
+        void onDoubleClick(Item item);
 
     }
 }

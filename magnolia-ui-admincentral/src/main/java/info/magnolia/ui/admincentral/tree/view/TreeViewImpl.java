@@ -63,14 +63,14 @@ public class TreeViewImpl implements TreeView {
     private ContentView.Listener listener;
 
     private Set<?> defaultValue = null;
-    
+
     public TreeViewImpl(WorkbenchDefinition workbenchDefinition, TreeModel treeModel,ComponentProvider componentProvider) {
 
         jcrBrowser = new WorkbenchTreeTable(workbenchDefinition, treeModel, componentProvider);
         jcrBrowser.setImmediate(true);
         jcrBrowser.setNullSelectionAllowed(false);
         jcrBrowser.setSizeFull();
-        
+
         jcrBrowser.addListener(new TreeTable.ValueChangeListener() {
 
             @Override
@@ -147,5 +147,10 @@ public class TreeViewImpl implements TreeView {
     @Override
     public void refreshItem(final Item item) {
         jcrBrowser.updateItem(item);
+    }
+
+    @Override
+    public ViewType getViewType() {
+        return ViewType.TREE;
     }
 }

@@ -61,7 +61,7 @@ public class ContactsApp extends AbstractContentApp {
         if (ContactsMainSubApp.supportsLocation(location)) {
             appContext.openSubApp("main", ContactsMainSubApp.class, location, ContactsMainSubApp.getSubAppId(location));
         } else {
-            Location mainLocation = ContactsMainSubApp.createLocation(null);
+            Location mainLocation = ContactsMainSubApp.createLocation(null, null, null);
             appContext.openSubApp("main", ContactsMainSubApp.class, mainLocation, ContactsMainSubApp.getSubAppId(mainLocation));
         }
     }
