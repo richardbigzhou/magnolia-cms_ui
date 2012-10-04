@@ -44,7 +44,7 @@ import info.magnolia.ui.framework.view.View;
 public interface ContentView extends View {
 
     /**
-     * Enumeration for the default view types:
+     * Enumeration for the default view types.
      * <ul>
      * <li>tree
      * <li>list
