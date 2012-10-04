@@ -527,7 +527,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
             itemIndexes.put(rowCount++, id);
         }
 
-        log.warn("Updating Items done in {} ms", System.currentTimeMillis() - start);
+        log.debug("Updating Items done in {} ms", System.currentTimeMillis() - start);
     }
 
     /**
@@ -611,14 +611,14 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
             if (offset >= 0) {
                 query.setOffset(offset);
             }
-            log.warn("Executing query against workspace [{}] with statement [{}] and limit {} and offset {}...", new Object[]{
+            log.debug("Executing query against workspace [{}] with statement [{}] and limit {} and offset {}...", new Object[]{
                     getWorkspace(),
                     statement,
                     limit,
                     offset});
             long start = System.currentTimeMillis();
             final QueryResult result = query.execute();
-            log.warn("Query execution took {} ms", System.currentTimeMillis() - start);
+            log.debug("Query execution took {} ms", System.currentTimeMillis() - start);
 
             return result;
 
