@@ -33,18 +33,10 @@
  */
 package info.magnolia.ui.admincentral.app.content;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Pattern;
-
-import javax.inject.Named;
-
-import org.apache.commons.lang.StringUtils;
-
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.content.view.ContentView.ViewType;
-import info.magnolia.ui.admincentral.event.SearchEvent;
 import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
+import info.magnolia.ui.admincentral.event.SearchEvent;
 import info.magnolia.ui.admincentral.event.ViewTypeChangedEvent;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
 import info.magnolia.ui.framework.app.AbstractSubApp;
@@ -53,6 +45,14 @@ import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.view.View;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
+
+import javax.inject.Named;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Abstract class providing common services to content subapps.
@@ -85,7 +85,6 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
         this.view = view;
         this.workbench = workbench;
         registerSubAppEventsHandlers(appContext, subAppEventBus, this);
-
     }
 
     @Override
@@ -112,7 +111,7 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
      * }
      * <p>
      * then this method will select the root path, set the view type as <code>search</code>, perform a search for "qux" in the workspace used by the app and finally update the available actions.
-     * @see AbstractContentSubApp#updateActions()
+     * @see AbstractContentSubApp#updateActionbar()
      * @see AbstractContentSubApp#start(Location)
      * @see Location
      */
@@ -121,21 +120,21 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
         String viewType = getSelectedView(location);
         String query = getQuery(location);
         getWorkbench().resynch(path, ViewType.fromString(viewType), query);
-        updateActions();
+        updateActionbar(getWorkbench().getActionbarPresenter());
     }
 
     /**
-     * This method updates the actions available in the action bar on the right hand side.
-     * Depending on the selected item or on other conditions specific to a concrete app, certain actions will be available or not.
+     * This method updates the actions available in the workbench's actionbar.
+     * Depending on the selected item or on other conditions specific to a concrete app, certain actions will be enabled or disabled.
      * By default if no path is selected in the workbench, namely root is selected, "delete" and "edit" actions are not available.
      * If some path other than root is selected, "edit" and "delete" actions become available.
      * @see #restoreWorkbench(Location)
      * @see #locationChanged(Location)
+     * @see ActionbarPresenter
      */
-    protected void updateActions() {
-        ActionbarPresenter actionbar = workbench.getActionbarPresenter();
+    protected void updateActionbar(final ActionbarPresenter actionbar) {
         // actions disabled based on selection
-        if (workbench.getSelectedItemId() == null || "/".equals(workbench.getSelectedItemId())) {
+        if (getWorkbench().getSelectedItemId() == null || "/".equals(getWorkbench().getSelectedItemId())) {
             actionbar.disable("delete");
             actionbar.disable("edit");
         } else {
@@ -162,9 +161,9 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
     public void locationChanged(final Location location) {
         String selectedItemPath = getSelectedItemPath(location);
         if (selectedItemPath != null) {
-            workbench.selectPath(selectedItemPath);
+            getWorkbench().selectPath(selectedItemPath);
         }
-        updateActions();
+        updateActionbar(getWorkbench().getActionbarPresenter());
     }
 
     /**
@@ -314,14 +313,14 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
      * </ul>
      */
     private void registerSubAppEventsHandlers(final AppContext appContext, final EventBus subAppEventBus, final AbstractContentSubApp subapp) {
-
+        final ActionbarPresenter actionbar = subapp.getWorkbench().getActionbarPresenter();
         subAppEventBus.addHandler(ItemSelectedEvent.class, new ItemSelectedEvent.Handler() {
 
             @Override
             public void onItemSelected(ItemSelectedEvent event) {
                 currentLocation = createLocation(event.getPath(), currentLocation, TokenElementType.PATH);
                 appContext.setSubAppLocation(subapp, currentLocation);
-                updateActions();
+                updateActionbar(actionbar);
             }
         });
 
@@ -331,7 +330,7 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
             public void onViewChanged(ViewTypeChangedEvent event) {
                 currentLocation = createLocation(event.getViewType().getText(), currentLocation, TokenElementType.VIEW);
                 appContext.setSubAppLocation(subapp, currentLocation);
-                updateActions();
+                updateActionbar(actionbar);
             }
         });
 
@@ -341,7 +340,7 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
             public void onSearch(SearchEvent event) {
                 currentLocation = createLocation(event.getSearchExpression(), currentLocation, TokenElementType.QUERY);
                 appContext.setSubAppLocation(subapp, currentLocation);
-                updateActions();
+                updateActionbar(actionbar);
             }
         });
     }

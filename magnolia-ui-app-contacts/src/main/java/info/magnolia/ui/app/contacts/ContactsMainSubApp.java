@@ -71,9 +71,8 @@ public class ContactsMainSubApp extends AbstractContentSubApp {
 
 
     @Override
-    public void updateActions() {
-        super.updateActions();
-        ActionbarPresenter actionbar = getWorkbench().getActionbarPresenter();
+    public void updateActionbar(final ActionbarPresenter actionbar) {
+        super.updateActionbar(actionbar);
         String selectedItemId = getWorkbench().getSelectedItemId();
 
         // actions disabled based on selection

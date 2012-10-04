@@ -69,9 +69,8 @@ public class PagesMainSubApp extends AbstractContentSubApp implements PagesMainV
     }
 
     @Override
-    public void updateActions() {
-        super.updateActions();
-        ActionbarPresenter actionbar = getWorkbench().getActionbarPresenter();
+    public void updateActionbar(final ActionbarPresenter actionbar) {
+        super.updateActionbar(actionbar);
 
         // actions currently always disabled
         actionbar.disable("move");
