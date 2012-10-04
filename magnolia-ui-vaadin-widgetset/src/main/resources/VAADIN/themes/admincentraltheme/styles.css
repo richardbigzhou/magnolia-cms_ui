@@ -84,4 +84,32 @@ button.btn-dialog-selectCallBack {
 	float: right;
 }
 
+/* Checkbox styles */
+.v-checkbox, 
+.gwt-CheckBox {	
+	cursor: pointer;
+}
 
+.v-checkbox > input[type="checkbox"],
+.gwt-CheckBox > input[type="checkbox"] {
+	opacity: 0;
+	width: 10px;
+	height: 10px;
+}
+
+.v-checkbox > label,
+.gwt-CheckBox > label {
+	position: relative;
+	left: -15px;
+    padding-left: 15px;
+}
+
+.v-checkbox > input[type="checkbox"]:checked + label,
+.gwt-CheckBox > input[type="checkbox"]:checked + label {
+	background: url('img/icon-checkbox_on.png') left center no-repeat;
+}
+
+.v-checkbox > input[type="checkbox"] + label,
+.gwt-CheckBox > input[type="checkbox"] + label {
+    background: url('img/icon-checkbox_off.png') left center no-repeat;
+}
