@@ -56,13 +56,14 @@ import info.magnolia.ui.framework.view.View;
 /**
  * Abstract class providing common services to content subapps.
  * TODO fgrilli write detailed javadoc.
+ * TODO fgrilli review the TokenElementType and all the methods for manipulating the location.
  *
  */
 public abstract class AbstractContentSubApp extends AbstractSubApp {
 
     public static final String MAIN_SUBAPP_ID = "main";
 
-    /*
+    /**
      * Token type element. I.e.
      * A token here is the URI fragment part made up by zero or more parameters.
      * In this case we will have
@@ -70,7 +71,7 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
      *   #app:<appName>:<subAppId>:<selectedPathToken>:<viewTypeToken>[;<queryToken>]
      * }
      */
-    private enum TokenElementType { PATH, VIEW, QUERY }
+    protected enum TokenElementType { PATH, VIEW, QUERY }
 
 
     private DefaultLocation currentLocation;
@@ -124,9 +125,11 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
 
     /**
      * This method updates the actions available in the action bar on the right hand side.
-     * Depending on the selected item or on other conditions specific to a concrete app, actions will be available or not.
+     * Depending on the selected item or on other conditions specific to a concrete app, certain actions will be available or not.
      * By default if no path is selected in the workbench, namely root is selected, "delete" and "edit" actions are not available.
      * If some path other than root is selected, "edit" and "delete" actions become available.
+     * @see #restoreWorkbench(Location)
+     * @see #locationChanged(Location)
      */
     protected void updateActions() {
         ActionbarPresenter actionbar = workbench.getActionbarPresenter();
@@ -151,6 +154,9 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
         return appName;
     }
 
+    /**
+     * The default implementation select the path in the current workspace and updates the available actions.
+     */
     @Override
     public void locationChanged(Location location) {
         String selectedItemPath = getSelectedItemPath(location);
@@ -160,17 +166,32 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
         updateActions();
     }
 
-    // Location token handling, format is main:<selectedItemPath>:<viewType>[;<query>]
+    /**
+     * Location token handling, format is {@code main:<selectedItemPath>:<viewType>[;<query>] } where <code>query</code> is present only if viewType is {@link ViewType#SEARCH}.
+     * @return <code>true</code> if this location has tokens (the part after main) and subapp id is <code>main</code>.
+     */
     public static final boolean supportsLocation(Location location) {
         List<String> parts = parseLocationToken(location);
         return parts.size() >= 1 && MAIN_SUBAPP_ID.equals(parts.get(0));
     }
 
-    public static final DefaultLocation createLocation(String parameter, DefaultLocation currentLocation, TokenElementType type) {
-        String token = MAIN_SUBAPP_ID +":/:" + ViewType.TREE.getText();
-        if (StringUtils.isNotEmpty(parameter)) {
+    /**
+     * Creates a location for the current subapp given the current location, the passed parameter and its type.
+     */
+    public static final DefaultLocation createLocation(final String parameter, final DefaultLocation currentLocation, final TokenElementType type) {
+        DefaultLocation location = createLocation();
+        String token = location.getToken();
+        if (StringUtils.isNotBlank(parameter) && currentLocation != null && type != null) {
             token = replaceLocationToken(currentLocation, parameter, type);
         }
+        return new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, getAppName(), token);
+    }
+
+    /**
+     * Creates a default location for the current subapp whose token has the form <code>main:/:tree</code>.
+     */
+    public static final DefaultLocation createLocation() {
+        String token = MAIN_SUBAPP_ID +":/:" + ViewType.TREE.getText();
         return new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, getAppName(), token);
     }
 
@@ -179,11 +200,17 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
         return parts.get(0);
     }
 
+    /**
+     * @return the selected item path as string or <code>/</code> (root) if none is present in the location.
+     */
     public static final String getSelectedItemPath(final Location location) {
         List<String> parts = parseLocationToken(location);
         return parts.size() >= 2 ? parts.get(1) : "/";
     }
 
+    /**
+     * @return the selected {@link ViewType} as string or {@link ViewType#TREE} if none is present in the location.
+     */
     public static final String getSelectedView(final Location location) {
         List<String> parts = parseLocationToken(location);
         if(parts.size() >= 3) {
@@ -195,14 +222,17 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
         }
         return ViewType.TREE.getText();
     }
-
+    /**
+     * @return the query if present and if the view is search, else an empty string.
+     */
     public static final String getQuery(final Location location) {
         List<String> parts = parseLocationToken(location);
         if(parts.size() >= 3) {
             if(parts.get(2).indexOf(';') == -1) {
                 return "";
             } else {
-                return parts.get(2).split(";")[1];
+                String[] view = parts.get(2).split(";");
+                return ViewType.SEARCH.getText().equals(view[0]) ? view[1] : "";
             }
         }
         return "";
