@@ -46,38 +46,32 @@ import info.magnolia.ui.framework.view.View;
  * SubApp for the main tab in showcase app.
  */
 @Singleton
-public class ShowcaseMainSubApp extends AbstractSubApp implements ShowcaseMainView.Listener {
+public class ShowcaseMainSubApp extends AbstractSubApp implements
+        ShowcaseMainView.Listener {
 
-    private ShowcaseMainView showcaseMainView;
-    private NavigationPresenter navigationPresenter;
-    private ContentDisplayPresenter contentDisplayPresenter;
+    private ShowcaseMainView view;
+    private FormsPresenter formPresenter;
+    private VaadinPresenter vaadinPresenter;
+    private UnsupportedPresenter unsupportedPresenter;
 
     @Inject
-    public ShowcaseMainSubApp(@Named("app") EventBus appEventBus, ShowcaseMainView showcaseMainView, NavigationPresenter navigationPresenter, final ContentDisplayPresenter contentDisplayPresenter) {
-        this.showcaseMainView = showcaseMainView;
-        this.contentDisplayPresenter = contentDisplayPresenter;
-        this.navigationPresenter = navigationPresenter;
-
-        appEventBus.addHandler(ContentItemSelectedEvent.class, new ContentItemSelectedEvent.Handler() {
-
-            @Override
-            public void onContentItemSelected(String name) {
-                contentDisplayPresenter.setResourceToDisplay(name);
-            }
-        });
+    public ShowcaseMainSubApp(@Named("app") EventBus appEventBus,
+            FormsPresenter formsPresenter, VaadinPresenter vaadinPresenter,
+            UnsupportedPresenter unsupportedPresenter,
+            ShowcaseMainView showcaseMainView) {
+        this.view = showcaseMainView;
+        this.formPresenter = formsPresenter;
+        this.vaadinPresenter = vaadinPresenter;
+        this.unsupportedPresenter = unsupportedPresenter;
     }
 
     @Override
     public View start(Location location) {
-
-        ContentDisplayView contentDisplayView = contentDisplayPresenter.start();
-
-        NavigationView navigationView = navigationPresenter.start();
-
-        showcaseMainView.setListener(this);
-        showcaseMainView.setLeftView(navigationView);
-        showcaseMainView.setRightView(contentDisplayView);
-        return showcaseMainView;
+        view.setListener(this);
+        view.setFormFieldView(formPresenter.start());
+        view.setVaadinView(vaadinPresenter.start());
+        view.setUnsupportedVaadinView(unsupportedPresenter.start());
+        return view;
     }
 
     @Override

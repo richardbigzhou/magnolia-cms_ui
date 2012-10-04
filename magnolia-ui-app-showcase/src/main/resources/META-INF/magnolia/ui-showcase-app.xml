@@ -25,32 +25,28 @@
       <implementation>info.magnolia.ui.app.showcase.main.ShowcaseMainViewImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.app.showcase.main.NavigationView</type>
-      <implementation>info.magnolia.ui.app.showcase.main.NavigationViewImpl</implementation>
+      <type>info.magnolia.ui.app.showcase.main.VaadinPresenter</type>
+      <implementation>info.magnolia.ui.app.showcase.main.VaadinPresenter</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.app.showcase.main.ContentDisplayView</type>
-      <implementation>info.magnolia.ui.app.showcase.main.ContentDisplayViewImpl</implementation>
+      <type>info.magnolia.ui.app.showcase.main.VaadinView</type>
+      <implementation>info.magnolia.ui.app.showcase.main.VaadinViewImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.app.showcase.main.NavigationPresenter</type>
-      <implementation>info.magnolia.ui.app.showcase.main.NavigationPresenter</implementation>
+      <type>info.magnolia.ui.app.showcase.main.UnsupportedPresenter</type>
+      <implementation>info.magnolia.ui.app.showcase.main.UnsupportedPresenter</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.app.showcase.main.ContentDisplayPresenter</type>
-      <implementation>info.magnolia.ui.app.showcase.main.ContentDisplayPresenter</implementation>
-    </component>
-  </components>
-
-  <components>
-    <id>app-showcase-editor</id>
-    <component>
-      <type>info.magnolia.ui.app.showcase.editor.ShowcaseEditorSubApp</type>
-      <implementation>info.magnolia.ui.app.showcase.editor.ShowcaseEditorSubApp</implementation>
+      <type>info.magnolia.ui.app.showcase.main.UnsupportedView</type>
+      <implementation>info.magnolia.ui.app.showcase.main.UnsupportedViewImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.app.showcase.editor.ShowcaseEditorView</type>
-      <implementation>info.magnolia.ui.app.showcase.editor.ShowcaseEditorViewImpl</implementation>
+      <type>info.magnolia.ui.app.showcase.main.FormsPresenter</type>
+      <implementation>info.magnolia.ui.app.showcase.main.FormsPresenter</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.app.showcase.main.FormsView</type>
+      <implementation>info.magnolia.ui.app.showcase.main.FormsViewImpl</implementation>
     </component>
   </components>
 

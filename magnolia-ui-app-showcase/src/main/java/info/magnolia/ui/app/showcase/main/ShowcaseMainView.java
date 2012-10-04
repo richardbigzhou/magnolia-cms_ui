@@ -41,14 +41,16 @@ import info.magnolia.ui.framework.view.View;
 public interface ShowcaseMainView extends View {
 
     /**
-     * Listener for showcaseMainView.
+     * Listener for ShowcaseMainView.
      */
     public interface Listener {
     }
 
     void setListener(Listener listener);
 
-    void setLeftView(View left);
+    void setFormFieldView(View forms);
 
-    void setRightView(View right);
+    void setVaadinView(View vaadincomponents);
+
+    void setUnsupportedVaadinView(View unsupported);
 }

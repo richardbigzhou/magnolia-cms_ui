@@ -35,13 +35,9 @@ package info.magnolia.ui.app.showcase;
 
 import javax.inject.Inject;
 
-import org.apache.commons.lang.StringUtils;
-
-import info.magnolia.ui.app.showcase.editor.ShowcaseEditorSubApp;
 import info.magnolia.ui.app.showcase.main.ShowcaseMainSubApp;
 import info.magnolia.ui.framework.app.AbstractApp;
 import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 
 /**
@@ -58,7 +54,8 @@ public class ShowcaseApp extends AbstractApp {
 
     @Override
     public void start(Location location) {
-        appContext.openSubApp("main", ShowcaseMainSubApp.class, location, "main");
+        appContext.openSubApp("main", ShowcaseMainSubApp.class, location,
+                "main");
     }
 
     @Override
@@ -67,13 +64,6 @@ public class ShowcaseApp extends AbstractApp {
 
     @Override
     public void locationChanged(Location location) {
-        String token = ((DefaultLocation) location).getToken();
-        if (StringUtils.isNotBlank(token)) {
-            openNewEditor(token, location);
-        }
-    }
 
-    private void openNewEditor(String name, Location location) {
-        appContext.openSubApp("editor", ShowcaseEditorSubApp.class, location, name);
     }
 }

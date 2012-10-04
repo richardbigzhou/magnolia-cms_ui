@@ -36,22 +36,31 @@ package info.magnolia.ui.app.showcase.main;
 import javax.inject.Inject;
 
 import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalSplitPanel;
+import com.vaadin.ui.ComponentContainer;
 
 import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.vaadin.widget.tabsheet.ShellTabSheet;
 
 /**
  * View implementation of the main tab in showcase app.
  */
 public class ShowcaseMainViewImpl implements ShowcaseMainView {
 
+    private static final long serialVersionUID = 1832253846080472161L;
+
     private Listener listener;
-    private HorizontalSplitPanel layout;
+    private ShellTabSheet tabsheet;
+    private ComponentContainer tabForms;
+    private ComponentContainer tabVaadin;
+    private ComponentContainer tabUnsupported;
 
     @Inject
     public ShowcaseMainViewImpl() {
-        layout = new HorizontalSplitPanel();
-        layout.setSplitPosition(50);
+        tabsheet = new ShellTabSheet();
+        tabsheet.setSizeFull();
+        tabForms = tabsheet.addTab("Form Fields");
+        tabVaadin = tabsheet.addTab("Vaadin Fields");
+        tabUnsupported = tabsheet.addTab("Unsupported Vaadin Fields");
     }
 
     @Override
@@ -61,16 +70,21 @@ public class ShowcaseMainViewImpl implements ShowcaseMainView {
 
     @Override
     public Component asVaadinComponent() {
-        return layout;
+        return tabsheet;
     }
 
     @Override
-    public void setLeftView(View left) {
-        layout.setFirstComponent(left.asVaadinComponent());
+    public void setFormFieldView(View forms) {
+        tabForms.addComponent(forms.asVaadinComponent());
     }
 
     @Override
-    public void setRightView(View right) {
-        layout.setSecondComponent(right.asVaadinComponent());
+    public void setVaadinView(View vaadincomponents) {
+        tabVaadin.addComponent(vaadincomponents.asVaadinComponent());
+    }
+
+    @Override
+    public void setUnsupportedVaadinView(View unsupported) {
+        tabUnsupported.addComponent(unsupported.asVaadinComponent());
     }
 }
