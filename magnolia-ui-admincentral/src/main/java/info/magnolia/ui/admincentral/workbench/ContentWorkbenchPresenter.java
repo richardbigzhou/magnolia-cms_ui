@@ -173,7 +173,7 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
 
             @Override
             public void onSearch(SearchEvent event) {
-                doFullTextSearch(event);
+                doSearch(event);
             }
         });
     }
@@ -236,19 +236,19 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
         }
     }
 
-    private void doFullTextSearch(SearchEvent event) {
+    private void doSearch(SearchEvent event) {
         if(view.getSelectedView().getViewType() != ViewType.SEARCH) {
             log.warn("Expected view type {} but is {} instead.", ViewType.SEARCH.name(), view.getSelectedView().getViewType().name());
             return;
         }
         final SearchView searchView = (SearchView) view.getSelectedView();
-        final String fullTextExpression = event.getSearchExpression();
+        final String searchExpression = event.getSearchExpression();
 
-        if(StringUtils.isBlank(fullTextExpression)) {
+        if(StringUtils.isBlank(searchExpression)) {
             //clear last search results
             searchView.clear();
         } else {
-            searchView.search(fullTextExpression);
+            searchView.search(searchExpression);
         }
     }
 
