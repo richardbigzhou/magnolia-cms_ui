@@ -111,7 +111,7 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
      * }
      * <p>
      * then this method will select the root path, set the view type as <code>search</code>, perform a search for "qux" in the workspace used by the app and finally update the available actions.
-     * @see AbstractContentSubApp#updateActionbar()
+     * @see AbstractContentSubApp#updateActionbar(ActionbarPresenter)
      * @see AbstractContentSubApp#start(Location)
      * @see Location
      */
@@ -124,7 +124,7 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
     }
 
     /**
-     * This method updates the actions available in the workbench's actionbar.
+     * Updates the actions available in the workbench's actionbar.
      * Depending on the selected item or on other conditions specific to a concrete app, certain actions will be enabled or disabled.
      * By default if no path is selected in the workbench, namely root is selected, "delete" and "edit" actions are not available.
      * If some path other than root is selected, "edit" and "delete" actions become available.
@@ -305,7 +305,7 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
     }
 
     /*
-     * By default registers general purpose handlers for the following events:
+     * Registers general purpose handlers for the following events:
      * <ul>
      * <li> {@link ItemSelectedEvent}
      * <li> {@link ViewTypeChangedEvent}
