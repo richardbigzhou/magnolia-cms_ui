@@ -38,6 +38,7 @@ import info.magnolia.ui.widget.jquerywrapper.gwt.client.Callbacks;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryCallback;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShell;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.event.ShellTransitionCompleteEvent;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.event.ViewportCloseEvent;
 
 import java.util.LinkedList;
@@ -55,8 +56,8 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
-import com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent;
-import com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler;
+import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
+import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.Container;
@@ -113,19 +114,30 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
 
     private final TouchDelegate delegate = new TouchDelegate(this);
 
+    private final Element loadingIndicator = DOM.createDiv();
+
+    private boolean bTransitioning;
+
+
     public VShellViewport() {
         super();
         setElement(container);
         addStyleName("v-shell-viewport");
         DOM.sinkEvents(this.getElement(), Event.TOUCHEVENTS);
         bindHandlers();
+
+        loadingIndicator.addClassName("loading-indicator");
+        this.getElement().appendChild(loadingIndicator);
+        hideLoadingIndicator();
     }
 
+
+
     private void bindHandlers() {
-        delegate.addTouchStartHandler(new TouchStartHandler() {
+        delegate.addTouchEndHandler(new TouchEndHandler() {
 
             @Override
-            public void onTouchStart(TouchStartEvent event) {
+            public void onTouchEnd(TouchEndEvent event) {
                 final Element target = event.getNativeEvent().getEventTarget().cast();
                 if (target == getElement()) {
                     eventBus.fireEvent(new ViewportCloseEvent(VMagnoliaShell.ViewportType.SHELL_APP_VIEWPORT));
@@ -329,8 +341,17 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
     /* SHOW-HIDE ONE WIDGET INSIDE THE VIEWPORT */
 
     private void showWidget(final Widget w) {
+
+        final JQueryCallback callback = new JQueryCallback() {
+            @Override
+            public void execute(JQueryWrapper query) {
+
+                updateShellAppFromServer();
+            }
+        };
+
         if (active && contentShowAnimationDelegate != null && !animatingViewport) {
-            contentShowAnimationDelegate.show(w, Callbacks.create());
+            contentShowAnimationDelegate.show(w, Callbacks.create(callback));
         } else {
             w.getElement().getStyle().setVisibility(Visibility.VISIBLE);
             w.getElement().getStyle().setZIndex(Z_INDEX_HI);
@@ -347,8 +368,15 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
         }
     }
 
+    public void updateShellAppFromServer(){
+        eventBus.fireEvent(new ShellTransitionCompleteEvent());
+    }
+
+
+
     @Override
     public void updateFromUIDL(final UIDL uidl, final ApplicationConnection client) {
+
         this.paintableId = uidl.getId();
         this.client = client;
         if (!client.updateComponent(this, uidl, true)) {
@@ -363,6 +391,7 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
                     final Widget w = (Widget) paintable;
                     updatePosition(w);
                     paintable.updateFromUIDL(childUIdl, client);
+
                     if (forceContentAlign) {
                         alignChild(w);
                     }
@@ -392,6 +421,8 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
                 }
             }
         }
+
+        hideLoadingIndicator();
     }
 
     private void alignChild(Widget w) {
@@ -410,6 +441,15 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
         }
         return result;
     }
+
+    public void hideLoadingIndicator(){
+        loadingIndicator.getStyle().setVisibility(Visibility.HIDDEN);
+    }
+
+    public void showLoadingIndicator(){
+        loadingIndicator.getStyle().setVisibility(Visibility.VISIBLE);
+    }
+
 
     /* CONTAINER INTERFACE IMPL */
 

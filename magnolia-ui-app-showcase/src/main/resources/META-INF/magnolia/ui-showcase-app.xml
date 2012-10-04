@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module SYSTEM "module.dtd">
+<module>
+  <name>ui-showcase-app</name>
+  <displayName>UI Showcase app</displayName>
+  <description>UI Showcase app</description>
+  <versionHandler>info.magnolia.ui.app.showcase.setup.ShowcaseAppModuleVersionHandler</versionHandler>
+  <version>${project.version}</version>
+
+	<!-- App components definition. -->
+	<!-- id of the components should be app-'appname'. 'appname' is the name of the app configured
+	     in the apps configuration repository of the admin central. (config/module/apps/appname/name:appname) -->
+  <components>
+    <id>app-showcase</id>
+  </components>
+
+  <components>
+    <id>app-showcase-main</id>
+    <component>
+      <type>info.magnolia.ui.app.showcase.main.ShowcaseMainSubApp</type>
+      <implementation>info.magnolia.ui.app.showcase.main.ShowcaseMainSubApp</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.app.showcase.main.ShowcaseMainView</type>
+      <implementation>info.magnolia.ui.app.showcase.main.ShowcaseMainViewImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.app.showcase.main.NavigationView</type>
+      <implementation>info.magnolia.ui.app.showcase.main.NavigationViewImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.app.showcase.main.ContentDisplayView</type>
+      <implementation>info.magnolia.ui.app.showcase.main.ContentDisplayViewImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.app.showcase.main.NavigationPresenter</type>
+      <implementation>info.magnolia.ui.app.showcase.main.NavigationPresenter</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.app.showcase.main.ContentDisplayPresenter</type>
+      <implementation>info.magnolia.ui.app.showcase.main.ContentDisplayPresenter</implementation>
+    </component>
+  </components>
+
+  <components>
+    <id>app-showcase-editor</id>
+    <component>
+      <type>info.magnolia.ui.app.showcase.editor.ShowcaseEditorSubApp</type>
+      <implementation>info.magnolia.ui.app.showcase.editor.ShowcaseEditorSubApp</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.app.showcase.editor.ShowcaseEditorView</type>
+      <implementation>info.magnolia.ui.app.showcase.editor.ShowcaseEditorViewImpl</implementation>
+    </component>
+  </components>
+
+  <dependencies>
+    <dependency>
+      <name>ui-admincentral</name>
+      <version>5.0/*</version>
+    </dependency>
+  </dependencies>
+</module>

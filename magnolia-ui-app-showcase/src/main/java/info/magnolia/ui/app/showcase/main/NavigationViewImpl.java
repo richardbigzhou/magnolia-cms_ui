@@ -31,14 +31,53 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app;
+package info.magnolia.ui.app.showcase.main;
 
-import info.magnolia.ui.framework.view.View;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.VerticalLayout;
 
 /**
- * View used within MagnoliaShell.
+ * View implementation of navigation view.
  */
-public interface ShellView extends View {
+public class NavigationViewImpl implements NavigationView {
 
-    String getId();
+    private Listener listener;
+    private VerticalLayout layout;
+
+    public NavigationViewImpl() {
+    }
+
+    @Override
+    public void setListener(Listener listener) {
+        this.listener = listener;
+    }
+
+    @Override
+    public Component asVaadinComponent() {
+        if (layout == null) {
+            layout = new VerticalLayout();
+            layout.setMargin(true);
+            layout.setSpacing(true);
+            layout.addComponent(new Label("NAVIGATION"));
+
+            layout.addComponent(createButton("Alpha"));
+            layout.addComponent(createButton("Bravo"));
+            layout.addComponent(createButton("Charlie"));
+            layout.addComponent(createButton("Delta"));
+            layout.addComponent(createButton("Echo"));
+        }
+        return layout;
+    }
+
+    private Button createButton(final String name) {
+        return new Button("Select " + name, new Button.ClickListener() {
+
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                listener.onItemSelected(name);
+            }
+        });
+    }
 }

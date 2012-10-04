@@ -145,6 +145,22 @@ button.action-close {
     z-index:499 !important;
 }
 
+.loading-indicator{
+	position:absolute;
+	width:100px;
+	height:100px;
+	background:#ff00ff;
+	left:50%;
+	top:100px;
+	margin-left:-50px;
+	z-index:1000;
+
+}
+
+	.loading-indicator:before {
+  content: "Loading Indicator";
+}
+
 .zoom-out {
     -moz-animation-duration: 0.5s;
     /*-moz-animation-timing-function: ease-out;*/

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,23 +31,36 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.magnoliashell.viewport;
+package info.magnolia.ui.app.showcase.editor;
 
-import com.vaadin.ui.ClientWidget;
-import com.vaadin.ui.ClientWidget.LoadStyle;
+import javax.inject.Inject;
 
-import info.magnolia.ui.widget.magnoliashell.BaseMagnoliaShell;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.VShellAppsViewport;
+import info.magnolia.ui.framework.app.AbstractSubApp;
+import info.magnolia.ui.framework.location.DefaultLocation;
+import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.framework.view.View;
 
 /**
- * Shell apps viewport.
+ * SubApp for editor tabs in showcase app.
  */
-@ClientWidget(value = VShellAppsViewport.class, loadStyle = LoadStyle.EAGER)
-public class ShellAppsViewport extends ShellViewport {
+public class ShowcaseEditorSubApp extends AbstractSubApp implements ShowcaseEditorView.Listener {
 
-    public ShellAppsViewport(BaseMagnoliaShell shell) {
-        super(shell);
-        setDebugId("shellapps");
+    private final ShowcaseEditorView view;
+
+    @Inject
+    public ShowcaseEditorSubApp(ShowcaseEditorView view) {
+        this.view = view;
     }
 
+    @Override
+    public String getCaption() {
+        return "Editor " + view.getName();
+    }
+
+    @Override
+    public View start(Location location) {
+        this.view.setName(((DefaultLocation) location).getToken());
+        this.view.setListener(this);
+        return view;
+    }
 }

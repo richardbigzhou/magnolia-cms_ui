@@ -60,8 +60,8 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.HandlerRegistration;
-import com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent;
-import com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler;
+import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
+import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchPanel;
 
@@ -113,10 +113,10 @@ public class VMainLauncher extends FlowPanel {
             root.appendChild(indicator.getElement());
 
             DOM.sinkEvents(getElement(), Event.TOUCHEVENTS);
-            delegate.addTouchStartHandler(new com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler() {
+            delegate.addTouchEndHandler(new com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler() {
 
                 @Override
-                public void onTouchStart(com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent event) {
+                public void onTouchEnd(com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent event) {
                     if (!navigationLocked) {
                         setNavigationLocked(true);
                         // Has user clicked on the active shell app?
@@ -233,10 +233,10 @@ public class VMainLauncher extends FlowPanel {
     private void bindHandlers() {
         DOM.sinkEvents(getElement(), Event.TOUCHEVENTS);
 
-        logo.addTouchStartHandler(new TouchStartHandler() {
+        logo.addTouchEndHandler(new TouchEndHandler() {
 
             @Override
-            public void onTouchStart(TouchStartEvent event) {
+            public void onTouchEnd(TouchEndEvent event) {
                 emergencyRestartApplication();
             }
         });

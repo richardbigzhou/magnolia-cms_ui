@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,23 +31,24 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.magnoliashell.viewport;
+package info.magnolia.ui.app.showcase.main;
 
-import com.vaadin.ui.ClientWidget;
-import com.vaadin.ui.ClientWidget.LoadStyle;
-
-import info.magnolia.ui.widget.magnoliashell.BaseMagnoliaShell;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.VShellAppsViewport;
+import info.magnolia.ui.framework.view.View;
 
 /**
- * Shell apps viewport.
+ * View for the main tab of showcase app.
  */
-@ClientWidget(value = VShellAppsViewport.class, loadStyle = LoadStyle.EAGER)
-public class ShellAppsViewport extends ShellViewport {
+public interface ShowcaseMainView extends View {
 
-    public ShellAppsViewport(BaseMagnoliaShell shell) {
-        super(shell);
-        setDebugId("shellapps");
+    /**
+     * Listener for showcaseMainView.
+     */
+    public interface Listener {
     }
 
+    void setListener(Listener listener);
+
+    void setLeftView(View left);
+
+    void setRightView(View right);
 }

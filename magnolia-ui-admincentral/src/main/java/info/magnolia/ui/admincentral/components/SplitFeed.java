@@ -37,7 +37,6 @@ import java.util.Iterator;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeButton;
@@ -48,9 +47,7 @@ import com.vaadin.ui.themes.BaseTheme;
  * Split panel that displays two column feed.
  */
 @SuppressWarnings("serial")
-public class SplitFeed extends CustomComponent {
-
-    private final HorizontalSplitPanel splitPanel = new HorizontalSplitPanel();
+public class SplitFeed extends HorizontalSplitPanel {
 
     private final FeedSection leftContainer = new FeedSection();
 
@@ -60,10 +57,8 @@ public class SplitFeed extends CustomComponent {
         super();
         addStyleName("v-split-feed");
         setSizeFull();
-        splitPanel.setSizeFull();
-        splitPanel.setSplitPosition(50);
-        splitPanel.setLocked(true);
-        setCompositionRoot(splitPanel);
+        setSplitPosition(50);
+        setLocked(true);
         construct();
     }
 
@@ -72,8 +67,8 @@ public class SplitFeed extends CustomComponent {
         rightContainer.setSizeFull();
         leftContainer.setMargin(true);
         rightContainer.setMargin(true);
-        splitPanel.setFirstComponent(leftContainer);
-        splitPanel.setSecondComponent(rightContainer);
+        setFirstComponent(leftContainer);
+        setSecondComponent(rightContainer);
     }
 
     public FeedSection getLeftContainer() {

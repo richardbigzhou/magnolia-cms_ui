@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,23 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.magnoliashell.viewport;
+package info.magnolia.ui.app.showcase.main;
 
-import com.vaadin.ui.ClientWidget;
-import com.vaadin.ui.ClientWidget.LoadStyle;
-
-import info.magnolia.ui.widget.magnoliashell.BaseMagnoliaShell;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.VShellAppsViewport;
+import info.magnolia.ui.framework.event.Event;
+import info.magnolia.ui.framework.event.EventHandler;
 
 /**
- * Shell apps viewport.
+ * Event fired when an item is selected in the navigation view.
+ *
+ * @see NavigationPresenter
  */
-@ClientWidget(value = VShellAppsViewport.class, loadStyle = LoadStyle.EAGER)
-public class ShellAppsViewport extends ShellViewport {
+public class ContentItemSelectedEvent implements Event<ContentItemSelectedEvent.Handler> {
 
-    public ShellAppsViewport(BaseMagnoliaShell shell) {
-        super(shell);
-        setDebugId("shellapps");
+    /**
+     * Handler.
+     */
+    public interface Handler extends EventHandler {
+
+        void onContentItemSelected(String name);
     }
 
+    private final String name;
+
+    public ContentItemSelectedEvent(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public void dispatch(Handler handler) {
+        handler.onContentItemSelected(this.name);
+    }
 }

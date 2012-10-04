@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,23 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.magnoliashell.viewport;
+package info.magnolia.ui.app.showcase.main;
 
-import com.vaadin.ui.ClientWidget;
-import com.vaadin.ui.ClientWidget.LoadStyle;
+import javax.inject.Inject;
+import javax.inject.Named;
 
-import info.magnolia.ui.widget.magnoliashell.BaseMagnoliaShell;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.VShellAppsViewport;
+import info.magnolia.ui.framework.event.EventBus;
 
 /**
- * Shell apps viewport.
+ * Presenter for the navigation.
  */
-@ClientWidget(value = VShellAppsViewport.class, loadStyle = LoadStyle.EAGER)
-public class ShellAppsViewport extends ShellViewport {
+public class NavigationPresenter implements NavigationView.Listener {
 
-    public ShellAppsViewport(BaseMagnoliaShell shell) {
-        super(shell);
-        setDebugId("shellapps");
+    private EventBus appEventBus;
+    private NavigationView view;
+
+    @Inject
+    public NavigationPresenter(@Named("app") EventBus appEventBus, NavigationView view) {
+        this.appEventBus = appEventBus;
+        this.view = view;
     }
 
+    public NavigationView start() {
+        view.setListener(this);
+        return view;
+    }
+
+    @Override
+    public void onItemSelected(String name) {
+        appEventBus.fireEvent(new ContentItemSelectedEvent(name));
+    }
 }

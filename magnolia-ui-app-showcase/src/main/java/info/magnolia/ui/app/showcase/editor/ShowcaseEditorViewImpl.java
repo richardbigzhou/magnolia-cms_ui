@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,23 +31,48 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.magnoliashell.viewport;
+package info.magnolia.ui.app.showcase.editor;
 
-import com.vaadin.ui.ClientWidget;
-import com.vaadin.ui.ClientWidget.LoadStyle;
+import javax.inject.Inject;
 
-import info.magnolia.ui.widget.magnoliashell.BaseMagnoliaShell;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.VShellAppsViewport;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.VerticalLayout;
 
 /**
- * Shell apps viewport.
+ * View implementation of an editor tab in showcase app.
  */
-@ClientWidget(value = VShellAppsViewport.class, loadStyle = LoadStyle.EAGER)
-public class ShellAppsViewport extends ShellViewport {
+public class ShowcaseEditorViewImpl implements ShowcaseEditorView {
 
-    public ShellAppsViewport(BaseMagnoliaShell shell) {
-        super(shell);
-        setDebugId("shellapps");
+    private Listener listener;
+    private String name;
+    private VerticalLayout layout;
+
+    @Inject
+    public ShowcaseEditorViewImpl() {
     }
 
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public void setListener(Listener listener) {
+        this.listener = listener;
+    }
+
+    @Override
+    public Component asVaadinComponent() {
+        if (layout == null) {
+            layout = new VerticalLayout();
+            layout.addComponent(new Label("<center>showcase Editor " + name + "</center>", Label.CONTENT_XHTML));
+        }
+        return layout;
+    }
 }

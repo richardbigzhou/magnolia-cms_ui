@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,23 +31,46 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.magnoliashell.viewport;
+package info.magnolia.ui.app.showcase.main;
 
-import com.vaadin.ui.ClientWidget;
-import com.vaadin.ui.ClientWidget.LoadStyle;
+import javax.inject.Inject;
 
-import info.magnolia.ui.widget.magnoliashell.BaseMagnoliaShell;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.VShellAppsViewport;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalSplitPanel;
+
+import info.magnolia.ui.framework.view.View;
 
 /**
- * Shell apps viewport.
+ * View implementation of the main tab in showcase app.
  */
-@ClientWidget(value = VShellAppsViewport.class, loadStyle = LoadStyle.EAGER)
-public class ShellAppsViewport extends ShellViewport {
+public class ShowcaseMainViewImpl implements ShowcaseMainView {
 
-    public ShellAppsViewport(BaseMagnoliaShell shell) {
-        super(shell);
-        setDebugId("shellapps");
+    private Listener listener;
+    private HorizontalSplitPanel layout;
+
+    @Inject
+    public ShowcaseMainViewImpl() {
+        layout = new HorizontalSplitPanel();
+        layout.setSplitPosition(50);
     }
 
+    @Override
+    public void setListener(Listener listener) {
+        this.listener = listener;
+    }
+
+    @Override
+    public Component asVaadinComponent() {
+        return layout;
+    }
+
+    @Override
+    public void setLeftView(View left) {
+        layout.setFirstComponent(left.asVaadinComponent());
+    }
+
+    @Override
+    public void setRightView(View right) {
+        layout.setSecondComponent(right.asVaadinComponent());
+    }
 }

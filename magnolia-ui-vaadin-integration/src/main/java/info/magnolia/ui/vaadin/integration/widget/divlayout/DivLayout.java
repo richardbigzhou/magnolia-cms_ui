@@ -31,23 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.magnoliashell.viewport;
+package info.magnolia.ui.vaadin.integration.widget.divlayout;
 
+import info.magnolia.ui.vaadin.integration.widget.client.divlayout.VDivLayout;
+
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.ClientWidget;
-import com.vaadin.ui.ClientWidget.LoadStyle;
-
-import info.magnolia.ui.widget.magnoliashell.BaseMagnoliaShell;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.VShellAppsViewport;
 
 /**
- * Shell apps viewport.
+ * DivLayout
+ *
+ * See VDivLayout.
  */
-@ClientWidget(value = VShellAppsViewport.class, loadStyle = LoadStyle.EAGER)
-public class ShellAppsViewport extends ShellViewport {
+@ClientWidget(VDivLayout.class)
+public class DivLayout extends CssLayout  {
 
-    public ShellAppsViewport(BaseMagnoliaShell shell) {
-        super(shell);
-        setDebugId("shellapps");
-    }
 
 }

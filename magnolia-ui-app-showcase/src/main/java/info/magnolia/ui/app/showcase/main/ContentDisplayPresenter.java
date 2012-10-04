@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,23 +31,40 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.magnoliashell.viewport;
+package info.magnolia.ui.app.showcase.main;
 
-import com.vaadin.ui.ClientWidget;
-import com.vaadin.ui.ClientWidget.LoadStyle;
+import javax.inject.Inject;
 
-import info.magnolia.ui.widget.magnoliashell.BaseMagnoliaShell;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.VShellAppsViewport;
+import info.magnolia.ui.framework.location.DefaultLocation;
+import info.magnolia.ui.framework.location.LocationController;
 
 /**
- * Shell apps viewport.
+ * Presenter for the content display.
  */
-@ClientWidget(value = VShellAppsViewport.class, loadStyle = LoadStyle.EAGER)
-public class ShellAppsViewport extends ShellViewport {
+public class ContentDisplayPresenter implements ContentDisplayView.Listener {
 
-    public ShellAppsViewport(BaseMagnoliaShell shell) {
-        super(shell);
-        setDebugId("shellapps");
+    private ContentDisplayView view;
+    private LocationController locationController;
+    private String name;
+
+    @Inject
+    public ContentDisplayPresenter(ContentDisplayView view, LocationController locationController) {
+        this.view = view;
+        this.locationController = locationController;
     }
 
+    public ContentDisplayView start() {
+        view.setListener(this);
+        return view;
+    }
+
+    public void setResourceToDisplay(String name) {
+        this.name = name;
+        view.setResource(name);
+    }
+
+    @Override
+    public void onOpenInNewEditor() {
+        locationController.goTo(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "showcase", name));
+    }
 }

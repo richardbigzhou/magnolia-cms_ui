@@ -31,23 +31,19 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.magnoliashell.viewport;
+package info.magnolia.ui.widget.magnoliashell.gwt.client.event.handler;
 
-import com.vaadin.ui.ClientWidget;
-import com.vaadin.ui.ClientWidget.LoadStyle;
+//import info.magnolia.ui.widget.magnoliashell.gwt.client.event.AppActivatedEvent;
+//import info.magnolia.ui.widget.magnoliashell.gwt.client.event.ShellAppNavigationEvent;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.event.ShellTransitionCompleteEvent;
 
-import info.magnolia.ui.widget.magnoliashell.BaseMagnoliaShell;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.VShellAppsViewport;
+import com.google.gwt.event.shared.EventHandler;
 
 /**
- * Shell apps viewport.
+ * Event handler for the header controls events.
  */
-@ClientWidget(value = VShellAppsViewport.class, loadStyle = LoadStyle.EAGER)
-public class ShellAppsViewport extends ShellViewport {
+public interface ShellTransitionCompleteHandler extends EventHandler {
 
-    public ShellAppsViewport(BaseMagnoliaShell shell) {
-        super(shell);
-        setDebugId("shellapps");
-    }
+    void onShellTransitionComplete(final ShellTransitionCompleteEvent event);
 
 }

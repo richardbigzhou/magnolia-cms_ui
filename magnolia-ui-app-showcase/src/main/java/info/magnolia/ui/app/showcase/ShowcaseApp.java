@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,23 +31,49 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.magnoliashell.viewport;
+package info.magnolia.ui.app.showcase;
 
-import com.vaadin.ui.ClientWidget;
-import com.vaadin.ui.ClientWidget.LoadStyle;
+import javax.inject.Inject;
 
-import info.magnolia.ui.widget.magnoliashell.BaseMagnoliaShell;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.VShellAppsViewport;
+import org.apache.commons.lang.StringUtils;
+
+import info.magnolia.ui.app.showcase.editor.ShowcaseEditorSubApp;
+import info.magnolia.ui.app.showcase.main.ShowcaseMainSubApp;
+import info.magnolia.ui.framework.app.AbstractApp;
+import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.framework.location.DefaultLocation;
+import info.magnolia.ui.framework.location.Location;
 
 /**
- * Shell apps viewport.
+ * showcase app.
  */
-@ClientWidget(value = VShellAppsViewport.class, loadStyle = LoadStyle.EAGER)
-public class ShellAppsViewport extends ShellViewport {
+public class ShowcaseApp extends AbstractApp {
 
-    public ShellAppsViewport(BaseMagnoliaShell shell) {
-        super(shell);
-        setDebugId("shellapps");
+    private AppContext appContext;
+
+    @Inject
+    public ShowcaseApp(AppContext appContext) {
+        this.appContext = appContext;
     }
 
+    @Override
+    public void start(Location location) {
+        appContext.openSubApp("main", ShowcaseMainSubApp.class, location, "main");
+    }
+
+    @Override
+    public void stop() {
+    }
+
+    @Override
+    public void locationChanged(Location location) {
+        String token = ((DefaultLocation) location).getToken();
+        if (StringUtils.isNotBlank(token)) {
+            openNewEditor(token, location);
+        }
+    }
+
+    private void openNewEditor(String name, Location location) {
+        appContext.openSubApp("editor", ShowcaseEditorSubApp.class, location, name);
+    }
 }
