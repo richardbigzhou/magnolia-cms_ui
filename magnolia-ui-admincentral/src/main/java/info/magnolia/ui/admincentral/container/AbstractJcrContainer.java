@@ -109,33 +109,45 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     private static final Long LONG_ZERO = Long.valueOf(0);
 
-    private static final String CONTENT_SELECTOR_NAME = "[mgnl:content]";
+    private static final String CONTENT_SELECTOR_NAME = "content";
 
     private static final String METADATA_SELECTOR_NAME = "metaData";
 
-    private static final String SELECT_CONTENT = "//element(*,mgnl:content) ";
+    private static final String SELECT_CONTENT = "//element(*,mgnl:content)";
+    
+    private static final String XPATH_ASCENDING = " ascending";
+    private static final String XPATH_DESCENDING = " descending";
 
-    private static final String JOIN_METADATA = "inner join [mgnl:metaData] as metaData on ischildnode(metaData,content) ";
+    /**
+     * Hint: we consciously decided to use XPATH as JCR_JQOM implementation in JR 2.4.x is by magnitudes slower.
+     */
+    private static final String QUERY_LANGUAGE = Query.XPATH;
 
-    private static final String ORDER_BY = "order by";
-
-    private static final String NAME_PROPERTY = "name";
+    private static final String ORDER_BY = " order by ";
 
     private static final String META_DATA_PROPERTY_TO_BE_REPLACED_FOR_ORDER_BY = "MetaData/";
 
-    // need to use name(..) function as name or jcr:name is not supported by JCR2.
-    private static final String JCR_NAME_FUNCTION = "name(" + CONTENT_SELECTOR_NAME + ")";
+    private static final String DEFAULT_ORDER = " @name" + XPATH_ASCENDING;
 
     public AbstractJcrContainer(JcrContainerSource jcrContainerSource, WorkbenchDefinition workbenchDefinition) {
         this.jcrContainerSource = jcrContainerSource;
         workspace = workbenchDefinition.getWorkspace();
 
-        for (ColumnDefinition column : workbenchDefinition.getColumns()) {
-            if (column.isSortable()) {
-                log.debug("Configuring column [{}] as sortable", column.getName());
-                final String columnProperty = (column.getPropertyName() == null) ?  column.getName() : column.getPropertyName();
+        for (ColumnDefinition columnDefinition : workbenchDefinition.getColumns()) {
+            if (columnDefinition.isSortable()) {
+                log.debug("Configuring column [{}] as sortable", columnDefinition.getName());
 
-                sortableProperties.add(columnProperty);
+                String propertyName = columnDefinition.getPropertyName();
+                log.debug("propertyName is {}", propertyName);
+
+                if (StringUtils.isBlank(propertyName)) {
+                    propertyName = columnDefinition.getName();
+                    log.debug(
+                            "Column {} is sortable but no propertyName has been defined. Defaulting to column name (sorting may not work as expected).",
+                            columnDefinition.getName());
+                }
+
+                sortableProperties.add(propertyName);
             }
         }
     }
@@ -478,29 +490,20 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
      * Fetches a page from the data source based on the values of pageLength and currentOffset.
      * Internally it executes the following methods in this order:
      * <ul>
-     * <li> {@link #constructJCRQuery()}
+     * <li> {@link #constructJCRQuery(boolean)}
      * <li> {@link #executeQuery(String, String, long, long)}
      * <li> {@link #updateItems(QueryResult)}
      * </ul>
      */
     public final void getPage() {
 
-        final String stmt = constructJCRQuery();
-
+        final String stmt = constructJCRQuery(true);
         if(StringUtils.isEmpty(stmt)) {
             return;
         }
 
         try {
-            // FIXME sql2 query is much slower than its xpath/sql1 counterpart (on average 80 times
-            // slower) see https://issues.apache.org/jira/browse/JCR-2830.
-            // However xpath is deprecated and, although query execution is faster, it takes much
-            // longer to iterate over the results (for an explanation see comment here
-            // https://issues.apache.org/jira/browse/JCR-2715?focusedCommentId=12965273&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-12965273
-            // "The SQL2/QOM implementation loads all matching rows into memory during the execute() call, so you'll see an expensive query.execute() but can then very quickly iterate over the query results.")
-            // to the point that any benefit gained from faster query execution is lost and overall
-            // performance gets worse.
-            final QueryResult queryResult = executeQuery(stmt, Query.XPATH, pageLength * cacheRatio, currentOffset);
+            final QueryResult queryResult = executeQuery(stmt, QUERY_LANGUAGE, pageLength * cacheRatio, currentOffset);
 
             updateItems(queryResult);
 
@@ -517,7 +520,6 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     protected void updateItems(final QueryResult queryResult) throws RepositoryException {
         long start = System.currentTimeMillis();
         log.debug("Starting iterating over QueryResult");
-
         final javax.jcr.NodeIterator iterator = queryResult.getNodes();
         long rowCount = currentOffset;
         while (iterator.hasNext()) {
@@ -527,37 +529,37 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
             itemIndexes.put(rowCount++, id);
         }
 
-        log.debug("Updating Items done in {} ms", System.currentTimeMillis() - start);
+        log.debug("Done in {} ms", System.currentTimeMillis() - start);
     }
 
     /**
      * @return a string representing a JCR statement to retrieve this container's items.
      * @see AbstractJcrContainer#getPage()
      */
-    protected String constructJCRQuery() {
+    protected String constructJCRQuery(final boolean considerSorting) {
         final StringBuilder stmt = new StringBuilder(SELECT_CONTENT);
-        if (sorters.isEmpty()) {
-            // no sorters set - apply default (sort by name)
-            stmt.append(ORDER_BY)
-                    .append(" @jcrName")
-                    .append(" ascending");
-        } else {
-            stmt.append(ORDER_BY);
-            String sortOrder;
-            for (OrderBy orderBy : sorters) {
-                String propertyName = orderBy.getProperty();
-                sortOrder = orderBy.isAscending() ? " ascending" : " descending";
-                if (propertyName.startsWith(META_DATA_PROPERTY_TO_BE_REPLACED_FOR_ORDER_BY)) {
-                    propertyName = propertyName.replaceFirst(META_DATA_PROPERTY_TO_BE_REPLACED_FOR_ORDER_BY, META_DATA_PROPERTY_TO_BE_REPLACED_FOR_ORDER_BY + "@");
-                } else {
-                    stmt.append("@");
+        if (considerSorting) {
+            if (sorters.isEmpty()) {
+                // no sorters set - apply default (sort by name)
+                stmt.append(ORDER_BY)
+                     .append(DEFAULT_ORDER);
+            } else {
+                stmt.append(ORDER_BY);
+                String sortOrder;
+                for (OrderBy orderBy : sorters) {
+                    String propertyName = orderBy.getProperty();
+                    sortOrder = orderBy.isAscending() ? XPATH_ASCENDING : XPATH_DESCENDING;
+                    if (propertyName.startsWith(META_DATA_PROPERTY_TO_BE_REPLACED_FOR_ORDER_BY)) {
+                        propertyName = propertyName.replaceFirst(META_DATA_PROPERTY_TO_BE_REPLACED_FOR_ORDER_BY, META_DATA_PROPERTY_TO_BE_REPLACED_FOR_ORDER_BY + "@");
+                    } else {
+                        stmt.append("@");
+                    }
+                    stmt.append(propertyName)
+                            .append(sortOrder)
+                            .append(", ");
                 }
-                stmt.append(propertyName)
-                        .append(sortOrder)
-                        .append(", ");
-
+                stmt.delete(stmt.lastIndexOf(","), stmt.length() - 1);
             }
-            stmt.delete(stmt.lastIndexOf(","), stmt.length() - 1);
         }
         return stmt.toString();
     }
@@ -566,12 +568,12 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
      */
     public final void updateSize() {
         try {
-            final String query = constructJCRQuery();
-            if(query == null) {
+            final String stmt = constructJCRQuery(false);
+            if(stmt == null) {
                 return;
             }
             // query for all items in order to get the size
-            final QueryResult queryResult = executeQuery(query, Query.XPATH, 0, 0);
+            final QueryResult queryResult = executeQuery(stmt, QUERY_LANGUAGE, 0, 0);
 
             final long pageSize = queryResult.getRows().getSize();
             log.debug("Query resultset contains {} items", pageSize);
