@@ -1,7 +1,14 @@
 package info.magnolia.ui.app.showcase.main;
 
+import java.util.Date;
+
+import info.magnolia.ui.vaadin.integration.widget.grid.MagnoliaTable;
+import info.magnolia.ui.vaadin.integration.widget.grid.MagnoliaTreeTable;
+import info.magnolia.ui.vaadin.widget.tabsheet.ShellTabSheet;
+
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
+import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.terminal.UserError;
@@ -10,6 +17,7 @@ import com.vaadin.ui.AbstractSplitPanel;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Label;
@@ -47,6 +55,8 @@ public class VaadinViewImpl implements VaadinView {
         layout.addComponent(getButtonPreviews());
         layout.addComponent(getTextFieldPreviews());
         layout.addComponent(getCheckboxPreviews());
+//        layout.addComponent(getMagnoliaTabSheetPreviews());
+        layout.addComponent(getMagnoliaPreviews());
         layout.addComponent(getTreePreviews());
         layout.addComponent(getSliderPreviews());
         layout.addComponent(getPanelPreviews());
@@ -59,6 +69,51 @@ public class VaadinViewImpl implements VaadinView {
         return layout;
     }
     
+    Layout getMagnoliaTabSheetPreviews() {
+        Layout grid = getPreviewLayout("Magnolia tabsheet");
+        
+        ShellTabSheet tabsheet = new ShellTabSheet();
+        tabsheet.setSizeFull();
+
+        ComponentContainer tab1 = tabsheet.addTab("first tab");
+        ComponentContainer tab2 = tabsheet.addTab("second tab");
+        tab1.addComponent(new Label("Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."));
+        tab2.addComponent(new Label("Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."));
+        grid.addComponent(tabsheet);
+        return grid;
+    }
+    
+    Layout getMagnoliaPreviews() {
+        Layout grid = getPreviewLayout("Magnolia tables and trees");
+        MagnoliaTable table = new MagnoliaTable();
+        table.addContainerProperty("first", String.class, "first");
+        table.addContainerProperty("second", Integer.class, 1);
+        table.addContainerProperty("thid", Date.class, new Date());
+        for(int loop=0; loop < 3; loop++) {
+            table.addItem();
+        }
+        table.setHeight("200px");
+        grid.addComponent(table);
+        
+        MagnoliaTreeTable tree = new MagnoliaTreeTable();
+        HierarchicalContainer container = new HierarchicalContainer();
+        
+        container.addContainerProperty("first", String.class, "first");
+        container.addContainerProperty("second", Integer.class, 1);
+        container.addContainerProperty("thid", Date.class, new Date());
+
+        tree.setContainerDataSource(container);
+        Object root = container.addItem();
+        for(int loop=0; loop < 3; loop++) {
+            Object itemId = container.addItem();
+            container.setParent(itemId, root);            
+        }
+        tree.setCollapsed(root, false);
+        tree.setHeight("200px");
+        grid.addComponent(tree);
+        
+        return grid;
+    }
 
     Layout getPopupViewPreviews() {
         Layout grid = getPreviewLayout("Popup views");
