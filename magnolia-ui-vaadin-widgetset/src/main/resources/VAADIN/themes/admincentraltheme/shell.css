@@ -145,20 +145,34 @@ button.action-close {
     z-index:499 !important;
 }
 
-.loading-indicator{
+.loading-modality-curtain{
 	position:absolute;
-	width:100px;
-	height:100px;
-	background:#ff00ff;
-	left:50%;
-	top:100px;
-	margin-left:-50px;
+	top:0;
+	bottom:0;
+	left:0;
+	right:0;
+	filter: alpha(opacity = 0);
+    opacity: 0.0;
+    background: none repeat scroll 0 0 #000000;
 	z-index:1000;
+}
+.loading-icon-positioner{
+	position:absolute;
+	top:0;
+	bottom:0;
+	left:0;
+	right:0;
+	text-align:center;
+	padding-top:0px;
 
+	z-index:1001;
 }
 
-	.loading-indicator:before {
-  content: "Loading Indicator";
+.loading-icon-panel{
+	display:inline-block;
+	background:#666666;
+	margin:auto;
+	padding:5px;
 }
 
 .zoom-out {

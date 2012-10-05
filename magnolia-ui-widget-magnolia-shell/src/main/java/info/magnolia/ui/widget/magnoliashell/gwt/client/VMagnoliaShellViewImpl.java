@@ -354,7 +354,7 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
         @Override
         public void onShellTransitionComplete(ShellTransitionCompleteEvent event) {
             if (typeInTransition != null){
-                getShellAppViewport().showLoadingIndicator();
+                getShellAppViewport().showLoadingPane();
                 presenter.loadShellApp(typeInTransition, tokenInTransition);
                 typeInTransition = null;
                 tokenInTransition = "";
