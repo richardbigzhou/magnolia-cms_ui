@@ -55,9 +55,31 @@ import javax.inject.Named;
 import org.apache.commons.lang.StringUtils;
 
 /**
- * Abstract class providing common services to content subapps.
- * TODO fgrilli write detailed javadoc.
+ * Abstract class providing a sensible implementation for services shared by all content subapps.
+ * Out-of-the-box it will handle the following
+ * <ul>
+ * <li>location updates when switching views, selecting items or performing searches: see {@link #locationChanged(Location)} and {@link #createLocation()}
+ * <li>restoring the workbench app status when i.e. coming from a bookmark: see {@link #start(Location)}
+ * </ul>
+ * In order to perform those tasks this class registers non-overridable handlers for the following events:
+ * <ul>
+ * <li> {@link ItemSelectedEvent}
+ * <li> {@link ViewTypeChangedEvent}
+ * <li> {@link SearchEvent}
+ * </ul>
+ * Subclasses can augment the default behavior and perform additional tasks by overriding the following methods:
+ * <ul>
+ * <li>{@link #onSubAppStart()}
+ * <li>{@link #locationChanged(Location)}
+ * <li>{@link #updateActionbar(ActionbarPresenter)}
+ * </ul>
+ * A number of static utility methods for handling with the {@link Location} object is also provided.
  *
+ * @see ContentWorkbenchPresenter
+ * @see ContentAppView
+ * @see AppContext
+ * @see AbstractContentApp
+ * @see DefaultLocation
  */
 public abstract class AbstractContentSubApp extends AbstractSubApp {
 
@@ -173,7 +195,7 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
     }
 
     /**
-     * The default implementation selects the path in the current workspace and updates the available actions.
+     * The default implementation selects the path in the current workspace and updates the available actions in the actionbar.
      */
     @Override
     public void locationChanged(final Location location) {
