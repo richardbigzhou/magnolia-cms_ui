@@ -246,7 +246,7 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
         return null;
     }
 
-    protected static final List<String> parseLocationToken(final Location location) {
+    public static final List<String> parseLocationToken(final Location location) {
 
         ArrayList<String> parts = new ArrayList<String>();
 
