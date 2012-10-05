@@ -228,7 +228,7 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
     public void resynch(final String path, final ViewType viewType, final String query) {
         boolean itemExists = itemExists(path);
         if(!itemExists) {
-            log.warn("Trying to resynch workbench with no longer existing path {} at workspace. Will reset path to root.", path, workbenchDefinition.getWorkspace());
+            log.warn("Trying to resynch workbench with no longer existing path {} at workspace {}. Will reset path to root.", path, workbenchDefinition.getWorkspace());
         }
         this.view.resynch(itemExists? path : "/", viewType, query);
     }
