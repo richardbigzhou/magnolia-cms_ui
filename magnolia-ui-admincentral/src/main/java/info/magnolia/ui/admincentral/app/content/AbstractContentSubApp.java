@@ -57,7 +57,6 @@ import org.apache.commons.lang.StringUtils;
 /**
  * Abstract class providing common services to content subapps.
  * TODO fgrilli write detailed javadoc.
- * TODO fgrilli review the TokenElementType and all the methods for manipulating the location.
  *
  */
 public abstract class AbstractContentSubApp extends AbstractSubApp {
@@ -247,7 +246,7 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
         return null;
     }
 
-    private static List<String> parseLocationToken(final Location location) {
+    protected static final List<String> parseLocationToken(final Location location) {
 
         ArrayList<String> parts = new ArrayList<String>();
 
@@ -292,7 +291,7 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
      *   #app:<appName>:<subAppId>:<selectedPathToken>:<viewTypeToken>[;<queryToken>]
      * }
      */
-    protected enum TokenElementType { PATH, VIEW, QUERY }
+    private enum TokenElementType { PATH, VIEW, QUERY }
 
     /*
      * Creates a location for the current subapp given the current location, the passed parameter and its type.
