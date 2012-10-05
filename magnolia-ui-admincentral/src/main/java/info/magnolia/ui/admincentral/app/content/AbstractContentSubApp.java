@@ -73,7 +73,7 @@ import org.apache.commons.lang.StringUtils;
  * <li>{@link #locationChanged(Location)}
  * <li>{@link #updateActionbar(ActionbarPresenter)}
  * </ul>
- * A number of static utility methods for handling with the {@link Location} object is also provided.
+ * A number of static utility methods for dealing with the {@link Location} object is also provided.
  *
  * @see ContentWorkbenchPresenter
  * @see ContentAppView
@@ -108,7 +108,7 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
      * <ul>
      * <li>setting the current location
      * <li>setting the workbench view
-     * <li>restoring the workbench status
+     * <li>restoring the workbench status: see {@link #restoreWorkbench(Location)}
      * <li>calling {@link #onSubAppStart()} a hook-up method subclasses can override to perform additional work.
      * </ul>
      */
@@ -207,8 +207,7 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
     }
 
     /**
-     * Location token handling, format is {@code main:<selectedItemPath>:<viewType>[;<query>] } where <code>query</code> is present only if viewType is {@link ViewType#SEARCH}.
-     * @return <code>true</code> if this location has tokens (the part after main) and subapp id is <code>main</code>.
+     * @return <code>true</code> if subapp id is <code>main</code>.
      */
     public static final boolean supportsLocation(Location location) {
         List<String> parts = parseLocationToken(location);
@@ -268,6 +267,9 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
         return null;
     }
 
+    /**
+     * Location token handling, format is {@code main:<selectedItemPath>:<viewType>[;<query>] } where <code>query</code> is present only if <code>viewType</code> is {@link ViewType#SEARCH}.
+     */
     public static final List<String> parseLocationToken(final Location location) {
 
         ArrayList<String> parts = new ArrayList<String>();
