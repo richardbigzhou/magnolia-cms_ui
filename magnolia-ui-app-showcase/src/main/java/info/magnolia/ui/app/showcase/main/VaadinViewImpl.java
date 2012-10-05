@@ -1,21 +1,32 @@
 package info.magnolia.ui.app.showcase.main;
 
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.terminal.UserError;
-import com.vaadin.ui.AbstractComponent;
+import com.vaadin.ui.AbstractSelect;
+import com.vaadin.ui.AbstractSplitPanel;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.OptionGroup;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.PasswordField;
+import com.vaadin.ui.PopupView;
 import com.vaadin.ui.ProgressIndicator;
+import com.vaadin.ui.RichTextArea;
+import com.vaadin.ui.Slider;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.Tree;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.VerticalSplitPanel;
+import com.vaadin.ui.Slider.ValueOutOfBoundsException;
 
 public class VaadinViewImpl implements VaadinView {
 
@@ -30,6 +41,11 @@ public class VaadinViewImpl implements VaadinView {
         layout.addComponent(getButtonPreviews());
         layout.addComponent(getTextFieldPreviews());
         layout.addComponent(getCheckboxPreviews());
+        layout.addComponent(getTreePreviews());
+        layout.addComponent(getSliderPreviews());
+        layout.addComponent(getPanelPreviews());
+        layout.addComponent(getSplitPreviews());
+        layout.addComponent(getPopupViewPreviews());
     }
 
     @Override
@@ -37,9 +53,20 @@ public class VaadinViewImpl implements VaadinView {
         return layout;
     }
     
+
+    Layout getPopupViewPreviews() {
+        Layout grid = getPreviewLayout("Popup views");
+
+        Label content = new Label("Simple popup content");
+        content.setSizeUndefined();
+        PopupView pv = new PopupView("Default popup", content);
+        grid.addComponent(pv);
+
+        return grid;
+    }
+    
     private Layout getCheckboxPreviews() {
         Layout grid = getPreviewLayout("Checkboxes and radiobuttons");
-        CheckBox checkbox = new CheckBox();
         CheckBox checkboxcaption = new CheckBox("with caption text");
         
         OptionGroup group = new OptionGroup("Option group");
@@ -52,96 +79,144 @@ public class VaadinViewImpl implements VaadinView {
         checkGroup.addItem("First");
         checkGroup.addItem("Second");
         checkGroup.addItem("Third");
-        
-        grid.addComponent(checkbox);
+
         grid.addComponent(checkboxcaption);
         grid.addComponent(group);
         grid.addComponent(checkGroup);
         return grid;
     }
     
+
+    private Layout getSplitPreviews() {
+        Layout grid = getPreviewLayout("Split panels");
+
+        AbstractSplitPanel panel = new VerticalSplitPanel();
+        panel.setWidth("230px");
+        panel.setHeight("130px");
+        grid.addComponent(panel);
+
+        panel = new VerticalSplitPanel();
+        panel.setWidth("230px");
+        panel.setHeight("130px");
+        panel.setStyleName("small");
+        grid.addComponent(panel);
+
+        panel = new HorizontalSplitPanel();
+        panel.setWidth("230px");
+        panel.setHeight("130px");
+        grid.addComponent(panel);
+
+        return grid;
+    }
+    
+    class DemoPanel extends Panel {
+
+        private static final long serialVersionUID = 1215861781775905773L;
+
+        DemoPanel() {
+            super();
+            setWidth("230px");
+            setHeight("120px");
+            addComponent(new Label(
+                    "<h4>Panel content</h4>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin malesuada volutpat vestibulum. Quisque elementum quam sed sem ultrices lobortis. Pellentesque non ligula ac dolor posuere tincidunt sed eu mi. Integer mattis fringilla nulla, ut cursus mauris scelerisque eu. Etiam bibendum placerat euismod. Nam egestas adipiscing orci sed tristique. Sed vitae enim nisi. Sed ac vehicula ipsum. Nulla quis quam nisi. Proin interdum lacus ipsum, at tristique nibh. Curabitur at ipsum sem. Donec venenatis aliquet neque, sit amet cursus lectus condimentum et. In mattis egestas erat, non cursus metus consectetur ac. Pellentesque eget nisl tellus.",
+                    Label.CONTENT_XHTML));
+        }
+
+        DemoPanel(String caption) {
+            this();
+            setCaption(caption);
+        }
+    }
+    
+    private Layout getPanelPreviews() {
+        Layout grid = getPreviewLayout("Panels");
+
+        Panel panel = new DemoPanel("Panel");
+        panel.setIcon(new ThemeResource("../runo/icons/16/document.png"));
+        grid.addComponent(panel);
+
+        panel = new DemoPanel();
+        grid.addComponent(panel);
+
+        panel = new DemoPanel();
+        panel.setStyleName("borderless");
+        grid.addComponent(panel);
+
+
+        return grid;
+    }
+    
+    Layout getSliderPreviews() {
+        Layout grid = getPreviewLayout("Sliders");
+
+        Slider s = new Slider();
+        s.setWidth("200px");
+        try {
+            s.setValue(50);
+            grid.addComponent(s);
+            
+            s = new Slider();
+            s.setOrientation(Slider.ORIENTATION_VERTICAL);
+            s.setHeight("70px");
+            s.setValue(50);
+        }
+        catch (ValueOutOfBoundsException e) {
+           
+        }
+        grid.addComponent(s);
+        
+
+        return grid;
+    }
+    
+    Tree tree;
+    Layout getTreePreviews() {
+        Layout grid = getPreviewLayout("Trees");
+        tree = new Tree();
+        tree.setImmediate(true);
+        tree.setSizeFull();
+        // we'll use a property for caption instead of the item id ("value"),
+        // so that multiple items can have the same caption
+        tree.addContainerProperty("caption", String.class, "");
+        tree.setItemCaptionMode(AbstractSelect.ITEM_CAPTION_MODE_PROPERTY);
+        tree.setItemCaptionPropertyId("caption");
+        for (int i = 1; i <= 3; i++) {
+            final Object id = addCaptionedItem("Division " + i, null);
+            tree.expandItem(id);
+            addCaptionedItem("Team A", id);
+            addCaptionedItem("Team B", id);
+            tree.setItemIcon(id, new ThemeResource(
+                    "../runo/icons/16/folder.png"));
+        }
+        grid.addComponent(tree);
+        return grid;
+    }
+    
+    private Object addCaptionedItem(String caption, Object parent) {
+        // add item, let tree decide id
+        final Object id = tree.addItem();
+        // get the created item
+        final Item item = tree.getItem(id);
+        // set our "caption" property
+        final Property p = item.getItemProperty("caption");
+        p.setValue(caption);
+        if (parent != null) {
+            tree.setChildrenAllowed(parent, true);
+            tree.setParent(id, parent);
+            tree.setChildrenAllowed(id, false);
+        }
+        return id;
+    }
+    
     private Layout getLabelPreviews() {
         Layout grid = getPreviewLayout("Labels");
 
         Label label = new Label(
-                "<h4>Paragraph Header</h4>Plain text, lorem ipsum dolor sit amet consectetur amit.",
-                Label.CONTENT_XHTML);
-        label.setWidth("200px");
+                "Plain text, lorem ipsum dolor sit amet consectetur amit.");
+
         grid.addComponent(label);
 
-        label = new Label(
-                "Big plain text, lorem ipsum dolor sit amet consectetur amit.");
-        label.setWidth("200px");
-        label.setStyleName("big");
-        grid.addComponent(label);
-
-        label = new Label(
-                "Small plain text, lorem ipsum dolor sit amet consectetur amit.");
-        label.setWidth("200px");
-        label.setStyleName("small");
-        grid.addComponent(label);
-
-        label = new Label(
-                "Tiny plain text, lorem ipsum dolor sit amet consectetur amit.");
-        label.setWidth("200px");
-        label.setStyleName("tiny");
-        grid.addComponent(label);
-
-        label = new Label("<h1>Top Level Header</h1>", Label.CONTENT_XHTML);
-        label.setSizeUndefined();
-        grid.addComponent(label);
-        label.setDescription("Label.addStyleName(\"h1\");<br>or<br>new Label(\"&lt;h1&gt;Top Level Header&lt;/h1&gt;\", Label.CONTENT_XHTML);");
-
-        label = new Label("<h2>Second Header</h2>", Label.CONTENT_XHTML);
-        label.setSizeUndefined();
-        grid.addComponent(label);
-        label.setDescription("Label.addStyleName(\"h2\");<br>or<br>new Label(\"&lt;h2&gt;Second Header&lt;/h2&gt;\", Label.CONTENT_XHTML);");
-
-        label = new Label("<h3>Subtitle</h3>", Label.CONTENT_XHTML);
-        label.setSizeUndefined();
-        grid.addComponent(label);
-        label.setDescription("Label.addStyleName(\"h3\");<br>or<br>new Label(\"&lt;h3&gt;Subtitle&lt;/h3&gt;\", Label.CONTENT_XHTML);");
-
-        label = new Label(
-                "<h4>Paragraph Header</h4>Plain text, lorem ipsum dolor sit amet consectetur amit.",
-                Label.CONTENT_XHTML);
-        label.setWidth("200px");
-        label.setStyleName("color");
-        grid.addComponent(label);
-
-        label = new Label(
-                "Big plain text, lorem ipsum dolor sit amet consectetur amit.");
-        label.setWidth("200px");
-        label.setStyleName("big color");
-        grid.addComponent(label);
-
-        label = new Label(
-                "Small plain text, lorem ipsum dolor sit amet consectetur amit.");
-        label.setWidth("200px");
-        label.setStyleName("small color");
-        grid.addComponent(label);
-
-        label = new Label(
-                "Tiny plain text, lorem ipsum dolor sit amet consectetur amit.");
-        label.setWidth("200px");
-        label.setStyleName("tiny color");
-        grid.addComponent(label);
-
-        label = new Label("Top Level Header");
-        label.setSizeUndefined();
-        label.setStyleName("h1 color");
-        grid.addComponent(label);
-
-        label = new Label("Second Header");
-        label.setSizeUndefined();
-        label.setStyleName("h2 color");
-        grid.addComponent(label);
-
-        label = new Label("Subtitle");
-        label.setSizeUndefined();
-        label.setStyleName("h3 color");
-        grid.addComponent(label);
-
+       
         label = new Label("Warning text, lorem ipsum dolor sit.");
         label.setStyleName("warning");
         grid.addComponent(label);
@@ -150,18 +225,7 @@ public class VaadinViewImpl implements VaadinView {
         label.setStyleName("error");
         grid.addComponent(label);
 
-        label = new Label("Big warning text");
-        label.setStyleName("big warning");
-        grid.addComponent(label);
-
-        label = new Label("Big error text");
-        label.setStyleName("big error");
-        grid.addComponent(label);
-
-        label = new Label("Loading text...");
-        label.setStyleName("h3 loading");
-        grid.addComponent(label);
-
+      
         return grid;
     }
     
@@ -175,63 +239,10 @@ public class VaadinViewImpl implements VaadinView {
 
         pi = new ProgressIndicator(0.5f);
         pi.setPollingInterval(100000000);
-        pi.setCaption("ProgressIndicator.setStyleName(\"small\")");
-        pi.setStyleName("small");
-        grid.addComponent(pi);
-
-        pi = new ProgressIndicator(0.5f);
-        pi.setPollingInterval(100000000);
-        pi.setCaption("ProgressIndicator.setStyleName(\"big\")");
-        pi.setStyleName("big");
-        grid.addComponent(pi);
-
-        pi = new ProgressIndicator(0.5f);
-        pi.setPollingInterval(100000000);
-        pi.setIndeterminate(true);
-        pi.setCaption("Indeterminate, style \"bar\"");
-        pi.setStyleName("bar");
-        grid.addComponent(pi);
-
-        pi = new ProgressIndicator(0.5f);
-        pi.setPollingInterval(100000000);
-        pi.setIndeterminate(true);
-        pi.setCaption("Indeterminate, style \"small bar\"");
-        pi.setStyleName("small bar");
-        grid.addComponent(pi);
-
-        pi = new ProgressIndicator(0.5f);
-        pi.setPollingInterval(100000000);
-        pi.setIndeterminate(true);
-        pi.setCaption("Indeterminate, style \"big bar\"");
-        pi.setStyleName("big bar");
-        grid.addComponent(pi);
-
-        pi = new ProgressIndicator(0.5f);
-        pi.setPollingInterval(100000000);
-        pi.setCaption("Indeterminate, default style");
+        pi.setCaption("Indeterminate");
         pi.setIndeterminate(true);
         grid.addComponent(pi);
 
-        pi = new ProgressIndicator(0.5f);
-        pi.setPollingInterval(100000000);
-        pi.setCaption("Indeterminate, style \"big\"");
-        pi.setStyleName("big");
-        pi.setIndeterminate(true);
-        grid.addComponent(pi);
-
-        pi = new ProgressIndicator(0.5f);
-        pi.setPollingInterval(100000000);
-        pi.setCaption("Disabled");
-        pi.setEnabled(false);
-        grid.addComponent(pi);
-
-        pi = new ProgressIndicator(0.5f);
-        pi.setPollingInterval(100000000);
-        pi.setCaption("Indeterminate bar disabled");
-        pi.setIndeterminate(true);
-        pi.setStyleName("bar");
-        pi.setEnabled(false);
-        grid.addComponent(pi);
 
         return grid;
     }
@@ -242,150 +253,21 @@ public class VaadinViewImpl implements VaadinView {
         Button button = new Button("Button");
         grid.addComponent(button);
 
-        button = new Button("Default");
-        button.setStyleName("default");
-        grid.addComponent(button);
-
-        button = new Button("Small");
-        button.setStyleName("small");
-        grid.addComponent(button);
-
-        button = new Button("Small Default");
-        button.setStyleName("small default");
-        grid.addComponent(button);
-
-        button = new Button("Big");
-        button.setStyleName("big");
-        grid.addComponent(button);
-
-        button = new Button("Big Default");
-        button.setStyleName("big default");
-        grid.addComponent(button);
-
-        button = new Button("Disabled");
-        button.setEnabled(false);
-        grid.addComponent(button);
-
-        button = new Button("Disabled default");
-        button.setEnabled(false);
-        button.setStyleName("default");
-        grid.addComponent(button);
+      
 
         button = new Button("Link style");
         button.setStyleName(Button.STYLE_LINK);
         grid.addComponent(button);
 
-        button = new Button("Disabled link");
-        button.setStyleName(Button.STYLE_LINK);
-        button.setEnabled(false);
-        grid.addComponent(button);
-
-        button = new Button("120px overflows out of the button");
-        button.setIcon(new ThemeResource("../runo/icons/16/document.png"));
-        button.setWidth("120px");
-        grid.addComponent(button);
-
-        button = new Button("Small");
-        button.setStyleName("small");
-        button.setIcon(new ThemeResource("../runo/icons/16/document.png"));
-        grid.addComponent(button);
-
-        button = new Button("Big");
-        button.setStyleName("big");
-        button.setIcon(new ThemeResource("../runo/icons/16/document.png"));
-        grid.addComponent(button);
-
-        button = new Button("Big Default");
-        button.setStyleName("big default");
-        button.setIcon(new ThemeResource("../runo/icons/32/document-txt.png"));
-        grid.addComponent(button);
-
-        button = new Button("Big link");
-        button.setStyleName(Button.STYLE_LINK + " big");
-        button.setIcon(new ThemeResource("../runo/icons/32/document.png"));
-        grid.addComponent(button);
-
-        button = new Button("Borderless");
-        button.setStyleName("borderless");
-        button.setIcon(new ThemeResource("../runo/icons/32/note.png"));
-        grid.addComponent(button);
-
-        button = new Button("Borderless icon on top");
-        button.setStyleName("borderless icon-on-top");
-        button.setIcon(new ThemeResource("../runo/icons/32/note.png"));
-        grid.addComponent(button);
-
-        button = new Button("Icon on top");
-        button.setStyleName("icon-on-top");
-        button.setIcon(new ThemeResource("../runo/icons/32/users.png"));
-        grid.addComponent(button);
-
-        button = new Button("Wide Default");
-        button.setStyleName("wide default");
-        grid.addComponent(button);
-
-        button = new Button("Wide");
-        button.setStyleName("wide");
-        grid.addComponent(button);
-
-        button = new Button("Tall");
-        button.setStyleName("tall");
-        grid.addComponent(button);
-
-        button = new Button("Wide, Tall & Big");
-        button.setStyleName("wide tall big");
-        grid.addComponent(button);
-
-        button = new Button("Icon on right");
-        button.setStyleName("icon-on-right");
-        button.setIcon(new ThemeResource("../runo/icons/16/document.png"));
-        grid.addComponent(button);
-
-        button = new Button("Big icon");
-        button.setStyleName("icon-on-right big");
-        button.setIcon(new ThemeResource("../runo/icons/16/document.png"));
-        grid.addComponent(button);
-
-        button = new Button("Toggle (down)");
-        button.addListener(new Button.ClickListener() {
-            public void buttonClick(ClickEvent event) {
-                if (event.getButton().getStyleName().endsWith("down")) {
-                    event.getButton().removeStyleName("down");
-                } else {
-                    event.getButton().addStyleName("down");
-                }
-            }
-        });
-        button.addStyleName("down");
-        grid.addComponent(button);
-        button.setDescription(button.getDescription()
-                + "<br><strong>Stylename switching logic must be done separately</strong>");
-
+     
         button = new Button();
-        button.addListener(new Button.ClickListener() {
-            public void buttonClick(ClickEvent event) {
-                if (event.getButton().getStyleName().endsWith("down")) {
-                    event.getButton().removeStyleName("down");
-                } else {
-                    event.getButton().addStyleName("down");
-                }
-            }
-        });
-        button.addStyleName("icon-only");
-        button.addStyleName("down");
         button.setIcon(new ThemeResource("../runo/icons/16/user.png"));
         grid.addComponent(button);
-        button.setDescription(button.getDescription()
-                + "<br><strong>Stylename switching logic must be done separately</strong>");
 
         Link l = new Link("Link: vaadin.com", new ExternalResource(
                 "http://vaadin.com"));
         grid.addComponent(l);
 
-        l = new Link("Link: vaadin.com", new ExternalResource(
-                "http://vaadin.com"));
-        l.setIcon(new ThemeResource("../runo/icons/32/globe.png"));
-        grid.addComponent(l);
 
         return grid;
     }
@@ -397,63 +279,28 @@ public class VaadinViewImpl implements VaadinView {
         tf.setValue("Text field");
         grid.addComponent(tf);
 
-        tf = new TextField();
-        tf.setValue("Small field");
-        tf.setStyleName("small");
-        grid.addComponent(tf);
-
-        tf = new TextField();
-        tf.setValue("Big field");
-        tf.setStyleName("big");
-        tf.setComponentError(new UserError("Test error"));
-        grid.addComponent(tf);
-
+      
         tf = new TextField();
         tf.setInputPrompt("Search field");
         tf.setStyleName("search");
-        grid.addComponent(tf);
-
-        tf = new TextField();
-        tf.setInputPrompt("Small search");
-        tf.setStyleName("search small");
-        grid.addComponent(tf);
-
-        tf = new TextField();
-        tf.setInputPrompt("Big search");
-        tf.setStyleName("search big");
-        grid.addComponent(tf);
-
-        tf = new TextField("Error");
-        tf.setComponentError(new UserError("Test error"));
-        grid.addComponent(tf);
+        grid.addComponent(tf);       
 
         tf = new TextField();
         tf.setInputPrompt("Error");
         tf.setComponentError(new UserError("Test error"));
         grid.addComponent(tf);
-
-        tf = new TextField();
-        tf.setInputPrompt("Small error");
-        tf.setStyleName("small");
-        tf.setComponentError(new UserError("Test error"));
-        grid.addComponent(tf);
+        
+        PasswordField pw = new PasswordField();
+        pw.setInputPrompt("Password");
+        grid.addComponent(pw);
 
         tf = new TextField();
         tf.setInputPrompt("Multiline");
         tf.setRows(4);
         grid.addComponent(tf);
-
-        tf = new TextField();
-        tf.setInputPrompt("Small multiline");
-        tf.setStyleName("small");
-        tf.setRows(4);
-        grid.addComponent(tf);
-
-        tf = new TextField();
-        tf.setInputPrompt("Big multiline");
-        tf.setStyleName("big");
-        tf.setRows(4);
-        grid.addComponent(tf);
+        
+        RichTextArea rich = new RichTextArea("Rich text area");
+        grid.addComponent(rich);
 
         return grid;
     }
