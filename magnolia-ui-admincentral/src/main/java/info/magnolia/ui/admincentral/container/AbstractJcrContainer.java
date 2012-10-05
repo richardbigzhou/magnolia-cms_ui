@@ -109,25 +109,23 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     private static final Long LONG_ZERO = Long.valueOf(0);
 
-    private static final String CONTENT_SELECTOR_NAME = "content";
-
-    private static final String METADATA_SELECTOR_NAME = "metaData";
-
-    private static final String SELECT_CONTENT = "//element(*,mgnl:content)";
+    protected static final String SELECT_CONTENT = "//element(*,mgnl:content)";
     
-    private static final String XPATH_ASCENDING = " ascending";
-    private static final String XPATH_DESCENDING = " descending";
+    protected static final String XPATH_ASCENDING = " ascending";
+    protected static final String XPATH_DESCENDING = " descending";
 
     /**
      * Hint: we consciously decided to use XPATH as JCR_JQOM implementation in JR 2.4.x is by magnitudes slower.
      */
     private static final String QUERY_LANGUAGE = Query.XPATH;
 
-    private static final String ORDER_BY = " order by ";
+    protected static final String ORDER_BY = " order by";
 
-    private static final String META_DATA_PROPERTY_TO_BE_REPLACED_FOR_ORDER_BY = "MetaData/";
+    protected static final String META_DATA_PROPERTY_TO_BE_REPLACED_FOR_ORDER_BY = "MetaData/";
 
-    private static final String DEFAULT_ORDER = " @name" + XPATH_ASCENDING;
+    protected static final String XPATH_PROPERTY_PREFIX = "@";
+
+    protected static final String DEFAULT_ORDER = " " + XPATH_PROPERTY_PREFIX + "name" + XPATH_ASCENDING;
 
     public AbstractJcrContainer(JcrContainerSource jcrContainerSource, WorkbenchDefinition workbenchDefinition) {
         this.jcrContainerSource = jcrContainerSource;
@@ -544,21 +542,21 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
                 stmt.append(ORDER_BY)
                      .append(DEFAULT_ORDER);
             } else {
-                stmt.append(ORDER_BY);
+                stmt.append(ORDER_BY).append(" ");
                 String sortOrder;
                 for (OrderBy orderBy : sorters) {
                     String propertyName = orderBy.getProperty();
                     sortOrder = orderBy.isAscending() ? XPATH_ASCENDING : XPATH_DESCENDING;
                     if (propertyName.startsWith(META_DATA_PROPERTY_TO_BE_REPLACED_FOR_ORDER_BY)) {
-                        propertyName = propertyName.replaceFirst(META_DATA_PROPERTY_TO_BE_REPLACED_FOR_ORDER_BY, META_DATA_PROPERTY_TO_BE_REPLACED_FOR_ORDER_BY + "@");
+                        propertyName = propertyName.replaceFirst(META_DATA_PROPERTY_TO_BE_REPLACED_FOR_ORDER_BY, META_DATA_PROPERTY_TO_BE_REPLACED_FOR_ORDER_BY + XPATH_PROPERTY_PREFIX);
                     } else {
-                        stmt.append("@");
+                        stmt.append(XPATH_PROPERTY_PREFIX);
                     }
                     stmt.append(propertyName)
                             .append(sortOrder)
                             .append(", ");
                 }
-                stmt.delete(stmt.lastIndexOf(","), stmt.length() - 1);
+                stmt.delete(stmt.lastIndexOf(","), stmt.length());
             }
         }
         return stmt.toString();
