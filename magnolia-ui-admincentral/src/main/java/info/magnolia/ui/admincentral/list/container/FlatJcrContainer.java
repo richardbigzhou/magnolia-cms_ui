@@ -38,10 +38,6 @@ import info.magnolia.ui.admincentral.container.AbstractJcrContainer;
 import info.magnolia.ui.admincentral.container.JcrContainerSource;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import javax.jcr.query.RowIterator;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,23 +53,5 @@ public class FlatJcrContainer extends AbstractJcrContainer {
     public FlatJcrContainer(JcrContainerSource jcrContainerSource, WorkbenchDefinition workbenchDefinition) {
         super(jcrContainerSource, workbenchDefinition);
 
-    }
-
-    @Override
-    public long update(RowIterator iterator) throws RepositoryException {
-        log.debug("updating container...");
-        getItemIndexes().clear();
-
-        long rowCount = 0;
-        while(iterator.hasNext()){
-            final Node node = iterator.nextRow().getNode("content");
-            final String id = node.getPath();
-            /* Cache item */
-            getItemIndexes().put(rowCount++, id);
-
-        }
-        setSize(Long.valueOf(rowCount).intValue());
-        super.fireItemSetChange();
-        return rowCount;
     }
 }

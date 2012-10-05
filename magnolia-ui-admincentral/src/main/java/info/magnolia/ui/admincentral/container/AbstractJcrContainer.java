@@ -49,12 +49,12 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
-import javax.jcr.query.RowIterator;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -121,6 +121,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     protected static final String ORDER_BY = " order by";
 
+    // TODO dlipp - this will got with SCRUM-1834
     protected static final String META_DATA_PROPERTY_TO_BE_REPLACED_FOR_ORDER_BY = "MetaData/";
 
     protected static final String XPATH_PROPERTY_PREFIX = "@";
@@ -149,13 +150,6 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
             }
         }
     }
-
-    /**
-     * Updates the container with the items pointed to by the {@link RowIterator} passed as
-     * argument.
-     * @return the number of rows updated
-     */
-    public abstract long update(RowIterator iterator) throws RepositoryException;
 
     @Override
     public void addListener(ItemSetChangeListener listener) {
@@ -518,7 +512,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     protected void updateItems(final QueryResult queryResult) throws RepositoryException {
         long start = System.currentTimeMillis();
         log.debug("Starting iterating over QueryResult");
-        final javax.jcr.NodeIterator iterator = queryResult.getNodes();
+        final NodeIterator iterator = queryResult.getNodes();
         long rowCount = currentOffset;
         while (iterator.hasNext()) {
             Node node = iterator.nextNode();
