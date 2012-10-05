@@ -64,17 +64,6 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
 
     public static final String MAIN_SUBAPP_ID = "main";
 
-    /**
-     * Token type element. I.e.
-     * A token here is the URI fragment part made up by zero or more parameters.
-     * In this case we will have
-     * {@code
-     *   #app:<appName>:<subAppId>:<selectedPathToken>:<viewTypeToken>[;<queryToken>]
-     * }
-     */
-    protected enum TokenElementType { PATH, VIEW, QUERY }
-
-
     private DefaultLocation currentLocation;
     private ContentWorkbenchPresenter workbench;
     private ContentAppView view;
@@ -92,13 +81,30 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
         registerSubAppEventsHandlers(appContext, subAppEventBus, this);
     }
 
+    /**
+     * Performs some routine tasks needed by all content subapps before the view is displayed.
+     * The tasks are:
+     * <ul>
+     * <li>setting the current location
+     * <li>setting the workbench view
+     * <li>restoring the workbench status
+     * <li>calling {@link #onSubAppStart()} a hook-up method subclasses can override to perform additional work.
+     * </ul>
+     */
     @Override
-    public View start(final Location location) {
+    public final View start(final Location location) {
         currentLocation = (DefaultLocation)location;
         view.setWorkbenchView(workbench.start());
         restoreWorkbench(location);
+        onSubAppStart();
         return view;
     }
+
+    /**
+     * This hook-up method is called on {@link #start(Location)} and enables subclasses to perform additional work before the view is displayed.
+     * The default implementation does nothing.
+     */
+    protected void onSubAppStart() { }
 
     /**
      * Restores the workbench status based on the information available in the location object. This is used e.g. when starting a subapp based on a
@@ -122,9 +128,9 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
      */
     protected final void restoreWorkbench(final Location location) {
         String path = getSelectedItemPath(location);
-        String viewType = getSelectedView(location);
+        ViewType viewType = getSelectedView(location);
         String query = getQuery(location);
-        getWorkbench().resynch(path, ViewType.fromString(viewType), query);
+        getWorkbench().resynch(path, viewType, query);
         updateActionbar(getWorkbench().getActionbarPresenter());
     }
 
@@ -138,7 +144,7 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
      * @see ActionbarPresenter
      */
     protected void updateActionbar(final ActionbarPresenter actionbar) {
-        // actions disabled based on selection
+
         if (getWorkbench().getSelectedItemId() == null || "/".equals(getWorkbench().getSelectedItemId())) {
             actionbar.disable("delete");
             actionbar.disable("edit");
@@ -150,6 +156,14 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
 
     protected final ContentWorkbenchPresenter getWorkbench() {
         return workbench;
+    }
+
+    protected final DefaultLocation getCurrentLocation() {
+        return currentLocation;
+    }
+
+    protected final ContentAppView getView() {
+        return view;
     }
 
     /**
@@ -181,19 +195,6 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
     }
 
     /**
-     * Creates a location for the current subapp given the current location, the passed parameter and its type.
-     */
-    public static final DefaultLocation createLocation(final String parameter, final DefaultLocation currentLocation, final TokenElementType type) {
-        DefaultLocation location = createLocation();
-        if (StringUtils.isNotBlank(parameter) && currentLocation != null && type != null) {
-            String token = location.getToken();
-            token = replaceLocationToken(currentLocation, parameter, type);
-            return new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, getAppName(), token);
-        }
-        return location;
-    }
-
-    /**
      * Creates a default location for the current subapp whose token has the form <code>main:/:tree</code>.
      */
     public static final DefaultLocation createLocation() {
@@ -215,33 +216,35 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
     }
 
     /**
-     * @return the selected {@link ViewType} as string or {@link ViewType#TREE} if none is present in the location.
+     * @return the selected {@link ViewType}. Defaults to {@link ViewType#TREE} if no view type is present in the location.
      */
-    public static final String getSelectedView(final Location location) {
+    public static final ViewType getSelectedView(final Location location) {
+
         List<String> parts = parseLocationToken(location);
         if(parts.size() >= 3) {
             if(parts.get(2).indexOf(';') == -1) {
-                return parts.get(2);
+                return ViewType.fromString(parts.get(2));
             } else {
-                return parts.get(2).split(";")[0];
+                return ViewType.fromString(parts.get(2).split(";")[0]);
             }
         }
-        return ViewType.TREE.getText();
+        return ViewType.TREE;
     }
     /**
-     * @return the query if present and if the view is search, else an empty string.
+     * @return the query text if present and if the view is search, else null.
      */
     public static final String getQuery(final Location location) {
+
         List<String> parts = parseLocationToken(location);
         if(parts.size() >= 3) {
             if(parts.get(2).indexOf(';') == -1) {
-                return "";
+                return null;
             } else {
                 String[] view = parts.get(2).split(";");
-                return ViewType.SEARCH.getText().equals(view[0]) ? view[1] : "";
+                return ViewType.SEARCH.getText().equals(view[0]) ? view[1] : null;
             }
         }
-        return "";
+        return null;
     }
 
     private static List<String> parseLocationToken(final Location location) {
@@ -281,31 +284,57 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
         return parts;
     }
 
+    /*
+     * Token type element. I.e.
+     * A token here is the URI fragment part made up by zero or more parameters.
+     * In this case we will have
+     * {@code
+     *   #app:<appName>:<subAppId>:<selectedPathToken>:<viewTypeToken>[;<queryToken>]
+     * }
+     */
+    protected enum TokenElementType { PATH, VIEW, QUERY }
+
+    /*
+     * Creates a location for the current subapp given the current location, the passed parameter and its type.
+     */
+    private static final DefaultLocation createLocation(final String parameter, final DefaultLocation currentLocation, final TokenElementType type) {
+        DefaultLocation location = createLocation();
+        if (StringUtils.isNotBlank(parameter) && currentLocation != null && type != null) {
+            String token = location.getToken();
+            token = replaceLocationToken(currentLocation, parameter, type);
+            return new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, getAppName(), token);
+        }
+        return location;
+    }
+
     private static String replaceLocationToken(final DefaultLocation location, final String tokenPartToReplace, final TokenElementType type) {
         String newToken = null;
         String query = getQuery(location);
+        String viewType = getSelectedView(location).getText();
 
         switch(type) {
-        case PATH :
-            newToken = location.getToken().replaceFirst(getSelectedItemPath(location), tokenPartToReplace);
-            break;
-        case VIEW :
-            if(StringUtils.isNotEmpty(query)) {
-                //here we need Pattern.quote() as the query might contain special chars such as the wildcard *, which in regex has a different meaning
-                //and would prevent the replace method from working properly.
-                newToken = location.getToken().replaceFirst(getSelectedView(location) + ";" + Pattern.quote(query), tokenPartToReplace);
-            } else {
-                newToken = location.getToken().replaceFirst(getSelectedView(location), tokenPartToReplace);
+            case PATH :
+                newToken = location.getToken().replaceFirst(getSelectedItemPath(location), tokenPartToReplace);
+                break;
+            case VIEW :
+                if(StringUtils.isNotEmpty(query)) {
+                    //here we need Pattern.quote() as the query might contain special chars such as the wildcard *, which in regex has a different meaning
+                    //and would prevent the replace method from working properly.
+                    newToken = location.getToken().replaceFirst(viewType + ";" + Pattern.quote(query), tokenPartToReplace);
+                } else {
+                    newToken = location.getToken().replaceFirst(viewType, tokenPartToReplace);
+                }
+                break;
+            case QUERY :
+                if(StringUtils.isNotEmpty(query)) {
+                    newToken = location.getToken().replaceFirst(query, tokenPartToReplace);
+                } else {
+                    newToken = location.getToken().replaceFirst(viewType, viewType + ";" + tokenPartToReplace);
+                }
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown token type " + type);
             }
-            break;
-        case QUERY :
-            if(StringUtils.isNotEmpty(query)) {
-                newToken = location.getToken().replaceFirst(query, tokenPartToReplace);
-            } else {
-                newToken = location.getToken().replaceFirst(getSelectedView(location), getSelectedView(location) + ";" + tokenPartToReplace);
-            }
-            break;
-        }
         return newToken == null? location.getToken() : newToken;
     }
 
