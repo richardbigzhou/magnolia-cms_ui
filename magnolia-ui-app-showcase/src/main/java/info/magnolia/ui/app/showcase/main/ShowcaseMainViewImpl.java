@@ -35,8 +35,11 @@ package info.magnolia.ui.app.showcase.main;
 
 import javax.inject.Inject;
 
+import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.Label;
 
 import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.vaadin.widget.tabsheet.ShellTabSheet;
@@ -49,18 +52,29 @@ public class ShowcaseMainViewImpl implements ShowcaseMainView {
     private static final long serialVersionUID = 1832253846080472161L;
 
     private Listener listener;
-    private ShellTabSheet tabsheet;
     private ComponentContainer tabForms;
     private ComponentContainer tabVaadin;
     private ComponentContainer tabUnsupported;
+    private CssLayout root;
 
     @Inject
     public ShowcaseMainViewImpl() {
-        tabsheet = new ShellTabSheet();
+        root = new CssLayout();
+        root.setSizeFull();
+        root.setWidth(900, Sizeable.UNITS_PIXELS);
+        root.setStyleName("small-app");
+        
+        ShellTabSheet tabsheet = new ShellTabSheet();
         tabsheet.setSizeFull();
         tabForms = tabsheet.addTab("Form Fields");
         tabVaadin = tabsheet.addTab("Vaadin Fields");
         tabUnsupported = tabsheet.addTab("Unsupported Vaadin Fields");
+        
+        tabsheet.addStyleName("small-app-panel");
+        
+        Label explanation = new Label("Showcase app shows what components there are available for app developers");
+        root.addComponent(explanation);
+        root.addComponent(tabsheet);
     }
 
     @Override
@@ -70,7 +84,7 @@ public class ShowcaseMainViewImpl implements ShowcaseMainView {
 
     @Override
     public Component asVaadinComponent() {
-        return tabsheet;
+        return root;
     }
 
     @Override

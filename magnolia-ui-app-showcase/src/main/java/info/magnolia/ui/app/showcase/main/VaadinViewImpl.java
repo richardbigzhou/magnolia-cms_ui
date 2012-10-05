@@ -36,6 +36,12 @@ public class VaadinViewImpl implements VaadinView {
     
     public VaadinViewImpl() {
         layout = new VerticalLayout();
+        layout.addComponent(new Label(
+                "The UI elements available in the Vaadin framework that " +
+                "are recommended for use with Magnolia. These fields " +
+                "can be easily added to your app and support Vaadin " +
+                "interaction. Many of these elements are also available " +
+                "within Magnolia Forms/Dialogs."));
         layout.addComponent(getLabelPreviews());
         layout.addComponent(getProgressIndicatorPreviews());
         layout.addComponent(getButtonPreviews());
