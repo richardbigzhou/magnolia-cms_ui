@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.workbench;
 
+import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.app.content.ContentAppDescriptor;
 import info.magnolia.ui.admincentral.content.view.ContentPresenter;
@@ -56,6 +57,7 @@ import info.magnolia.ui.widget.actionbar.ActionbarView;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -224,7 +226,11 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
      * Synchronizes the underlying view to reflect the status extracted from the Location token, i.e. selected path, view type and optional query (in case of a search view).
      */
     public void resynch(final String path, final ViewType viewType, final String query) {
-        this.view.resynch(path, viewType, query);
+        boolean itemExists = itemExists(path);
+        if(!itemExists) {
+            log.warn("Trying to resynch workbench with no longer existing path {} at workspace. Will reset path to root.", path, workbenchDefinition.getWorkspace());
+        }
+        this.view.resynch(itemExists? path : "/", viewType, query);
     }
 
     private void refreshActionbarPreviewImage(final String path, final String workspace) {
@@ -250,6 +256,15 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
         } else {
             searchView.search(searchExpression);
         }
+    }
+
+    private boolean itemExists(String path) {
+        try {
+            return StringUtils.isNotBlank(path) && MgnlContext.getJCRSession(workbenchDefinition.getWorkspace()).itemExists(path);
+        } catch (RepositoryException e) {
+            log.warn("", e);
+        }
+        return false;
     }
 
 }
