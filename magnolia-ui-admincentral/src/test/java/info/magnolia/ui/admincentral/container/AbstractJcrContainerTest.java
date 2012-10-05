@@ -63,7 +63,6 @@ import javax.jcr.Session;
 import javax.jcr.ValueFormatException;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
-import javax.jcr.query.RowIterator;
 import javax.jcr.version.VersionException;
 
 import org.junit.Before;
@@ -451,11 +450,5 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
         public JcrContainerTestImpl(JcrContainerSource jcrContainerSource, WorkbenchDefinition workbenchDefinition) {
             super(jcrContainerSource, workbenchDefinition);
         }
-
-        @Override
-        public long update(RowIterator iterator) throws RepositoryException {
-            return 0;
-        }
-
     }
 }
