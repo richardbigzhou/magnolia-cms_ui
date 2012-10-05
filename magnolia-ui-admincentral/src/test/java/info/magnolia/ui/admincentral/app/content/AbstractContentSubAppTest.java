@@ -134,6 +134,26 @@ public class AbstractContentSubAppTest {
     }
 
     @Test
+    public void testParseLocationTokenWithAdditionalElements() throws Exception {
+        //GIVEN
+        String addionalElem1 = "baz";
+        String addionalElem2 = "qux;blah";
+        DefaultLocation location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, DUMMY_APPNAME, AbstractContentSubApp.MAIN_SUBAPP_ID + ":" + path + ":" + ViewType.LIST.getText() + ":" + addionalElem1 + ":" + addionalElem2);
+
+        //WHEN
+        List<String> tokens = AbstractContentSubApp.parseLocationToken(location);
+
+        //THEN
+        assertEquals(5, tokens.size());
+        assertEquals(AbstractContentSubApp.MAIN_SUBAPP_ID, tokens.get(0));
+        assertEquals(path, tokens.get(1));
+        assertEquals(ViewType.LIST.getText(), tokens.get(2));
+        assertEquals(addionalElem1, tokens.get(3));
+        assertEquals(addionalElem2, tokens.get(4));
+
+    }
+
+    @Test
     public void testGetQuery() throws Exception {
         //GIVEN
         DefaultLocation location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, DUMMY_APPNAME, AbstractContentSubApp.MAIN_SUBAPP_ID + ":" + path + ":" + ViewType.SEARCH.getText() + ";" + query);
