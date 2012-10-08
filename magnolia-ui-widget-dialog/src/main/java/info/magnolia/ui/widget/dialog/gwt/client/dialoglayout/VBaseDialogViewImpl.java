@@ -36,6 +36,9 @@ package info.magnolia.ui.widget.dialog.gwt.client.dialoglayout;
 import info.magnolia.ui.widget.dialog.gwt.client.VDialogHeader;
 import info.magnolia.ui.widget.dialog.gwt.client.VDialogHeader.VDialogHeaderCallback;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
@@ -67,6 +70,8 @@ public class VBaseDialogViewImpl extends ComplexPanel implements VBaseDialogView
     
     private final Element footerEl = DOM.createDiv();
     
+    private final Map<String, Button> actionMap = new HashMap<String, Button>();
+    
     public VBaseDialogViewImpl() {
         final Element root = DOM.createDiv();
         root.addClassName("dialog-root");
@@ -82,20 +87,33 @@ public class VBaseDialogViewImpl extends ComplexPanel implements VBaseDialogView
     
     @Override
     public void addAction(final String name, String label) {
-        final Button button = new Button(label);
-        button.setStyleName(CLASSNAME_BUTTON);
-        button.addStyleDependentName(name);
-        button.addClickHandler(new ClickHandler() {
+        final Button control =  actionMap.get(name);
+        if (control == null) {
+            final Button button = new Button(label);
+            button.setStyleName(CLASSNAME_BUTTON);
+            button.addStyleDependentName(name);
+            button.addClickHandler(new ClickHandler() {
 
-            @Override
-            public void onClick(final ClickEvent event) {
-                getPresenter().fireAction(name);
-            }
+                @Override
+                public void onClick(final ClickEvent event) {
+                    getPresenter().fireAction(name);
+                }
 
-        });
-        add(button, footerEl);
+            });
+            add(button, footerEl);
+        } else {
+            control.setHTML(label);
+        }
     }
 
+    @Override
+    public void setActionLabel(String actionName, String label) {
+        final Button control = actionMap.get(actionName);
+        if (control != null) {
+            control.setHTML(label);
+        }
+    }
+    
     @Override
     public void setPresenter(final Presenter presenter) {
         this.presenter = presenter;

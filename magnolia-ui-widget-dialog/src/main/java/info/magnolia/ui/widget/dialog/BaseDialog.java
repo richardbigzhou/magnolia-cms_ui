@@ -147,6 +147,10 @@ public class BaseDialog extends AbstractComponent implements ServerSideHandler, 
             proxy.call("addAction", actionName, actionLabel);
         }
     }
+    
+    public void setActionLabel(String actionName, String newLabel) {
+        proxy.call("setActionLabel", actionName, newLabel);
+    }
 
     @Override
     public void setDialogDescription(String description) {
