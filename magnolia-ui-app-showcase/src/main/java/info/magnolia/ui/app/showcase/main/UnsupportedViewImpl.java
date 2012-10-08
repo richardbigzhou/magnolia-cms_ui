@@ -6,6 +6,7 @@ import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -15,92 +16,92 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.TreeTable;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.Button.ClickEvent;
+
 
 public class UnsupportedViewImpl implements UnsupportedView {
 
     private static final long serialVersionUID = 4074959561953183899L;
 
     VerticalLayout layout = new VerticalLayout();
-    
+
     public UnsupportedViewImpl() {
         layout.setMargin(true, true, false, true);
         layout.setSpacing(true);
         layout.addComponent(new Label("The UI elements in the Vaadin framework" +
-        		" that are not recommended for use with Magnolia. These elements" +
-        		" may not perform well on touch devices, and the look and feel" +
-        		" may not match the Magnolia interface. Use of these elements" +
-        		" is not supported by Magnolia."));
-        
+            " that are not recommended for use with Magnolia. These elements" +
+            " may not perform well on touch devices, and the look and feel" +
+            " may not match the Magnolia interface. Use of these elements" +
+            " is not supported by Magnolia."));
+
         layout.addComponent(getAccordionPreviews());
         layout.addComponent(getMenuBarPreviews());
         layout.addComponent(getWindowPreviews());
         layout.addComponent(getTableAndTreeTable());
     }
-    
+
     Layout getTableAndTreeTable() {
         Layout grid = getPreviewLayout("Tables and trees");
         Table table = new Table();
         table.addContainerProperty("first", String.class, "first");
         table.addContainerProperty("second", Integer.class, 1);
         table.addContainerProperty("thid", Date.class, new Date());
-        for(int loop=0; loop < 3; loop++) {
+        for (int loop = 0; loop < 3; loop++) {
             table.addItem();
         }
         table.setHeight("200px");
         grid.addComponent(table);
-        
+
         TreeTable tree = new TreeTable();
         HierarchicalContainer container = new HierarchicalContainer();
-        
+
         container.addContainerProperty("first", String.class, "first");
         container.addContainerProperty("second", Integer.class, 1);
         container.addContainerProperty("thid", Date.class, new Date());
 
         tree.setContainerDataSource(container);
         Object root = container.addItem();
-        for(int loop=0; loop < 3; loop++) {
+        for (int loop = 0; loop < 3; loop++) {
             Object itemId = container.addItem();
-            container.setParent(itemId, root);            
+            container.setParent(itemId, root);
         }
         tree.setCollapsed(root, false);
         tree.setHeight("200px");
         grid.addComponent(tree);
-        
+
         return grid;
     }
-    
+
     Layout getWindowPreviews() {
         final Layout grid = getPreviewLayout("Windows");
 
         Button win = new Button("Open normal sub-window",
-                new Button.ClickListener() {
-                    /**
-                     * 
-                     */
-                    private static final long serialVersionUID = -5643160479156903516L;
+            new Button.ClickListener() {
 
-                    public void buttonClick(ClickEvent event) {
-                        grid.getApplication().getMainWindow().addWindow(new Window("Normal window"));
-                    }
-                });
+                /**
+                     *
+                     */
+                private static final long serialVersionUID = -5643160479156903516L;
+
+                @Override
+                public void buttonClick(ClickEvent event) {
+                    grid.getApplication().getMainWindow().addWindow(new Window("Normal window"));
+                }
+            });
         grid.addComponent(win);
         win.setDescription("new Window()");
 
-
         return grid;
     }
-    
+
     private Layout getAccordionPreviews() {
         Layout grid = getPreviewLayout("Accordions");
 
         Accordion tabs = new DemoAccordion(false);
         grid.addComponent(tabs);
 
-
         return grid;
     }
-    
+
     Layout getMenuBarPreviews() {
         Layout grid = getPreviewLayout("Menu bars");
 
@@ -155,8 +156,8 @@ public class UnsupportedViewImpl implements UnsupportedView {
         return grid;
     }
 
-    
     class DemoAccordion extends Accordion {
+
         private static final long serialVersionUID = 4615829029016072624L;
 
         DemoAccordion(boolean closable) {
@@ -170,7 +171,8 @@ public class UnsupportedViewImpl implements UnsupportedView {
                 t.setCaption("Sheet " + i);
                 t.setClosable(closable);
                 if (i == 1) {
-                    l.addComponent(new Label(
+                    l
+                        .addComponent(new Label(
                             "<h4>Accordion content</h4>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin malesuada volutpat vestibulum. Quisque elementum quam sed sem ultrices lobortis. Pellentesque non ligula ac dolor posuere tincidunt sed eu mi. Integer mattis fringilla nulla, ut cursus mauris scelerisque eu. Etiam bibendum placerat euismod. Nam egestas adipiscing orci sed tristique. Sed vitae enim nisi. Sed ac vehicula ipsum. Nulla quis quam nisi. Proin interdum lacus ipsum, at tristique nibh. Curabitur at ipsum sem. Donec venenatis aliquet neque, sit amet cursus lectus condimentum et. In mattis egestas erat, non cursus metus consectetur ac. Pellentesque eget nisl tellus.",
                             Label.CONTENT_XHTML));
                 }
@@ -184,10 +186,10 @@ public class UnsupportedViewImpl implements UnsupportedView {
         public void setStyleName(String style) {
             super.setStyleName(style);
             Label l = new Label(
-                    "<h4>"
-                            + style
-                            + " accordion content</h4>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin malesuada volutpat vestibulum.",
-                    Label.CONTENT_XHTML);
+                "<h4>"
+                    + style
+                    + " accordion content</h4>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin malesuada volutpat vestibulum.",
+                Label.CONTENT_XHTML);
             l.setDescription("Accordion.setStyleName(\"" + style + "\")");
             ((VerticalLayout) getSelectedTab()).removeAllComponents();
             ((VerticalLayout) getSelectedTab()).addComponent(l);

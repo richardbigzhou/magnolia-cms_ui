@@ -34,52 +34,33 @@
 package info.magnolia.ui.app.pages.main;
 
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
-import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
+import info.magnolia.ui.admincentral.app.content.AbstractContentSubApp;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
-import info.magnolia.ui.framework.app.AbstractSubApp;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.instantpreview.InstantPreviewDispatcher;
-import info.magnolia.ui.framework.location.DefaultLocation;
-import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.view.View;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-
-import org.apache.commons.lang.StringUtils;
 
 
 /**
  * PagesMainSubApp.
  */
-public class PagesMainSubApp extends AbstractSubApp implements PagesMainView.Listener {
+public class PagesMainSubApp extends AbstractContentSubApp implements PagesMainView.Listener {
 
     private static final String CAPTION = "Pages";
 
     private final PagesMainView view;
 
-    private final ContentWorkbenchPresenter workbench;
-
     private final InstantPreviewDispatcher dispatcher;
 
     @Inject
     public PagesMainSubApp(final AppContext appContext, PagesMainView view, ContentWorkbenchPresenter workbench, @Named("subapp") EventBus subAppEventBus, InstantPreviewDispatcher dispatcher) {
+        super(appContext,view, workbench, subAppEventBus);
         this.view = view;
-        this.dispatcher = dispatcher;
         this.view.setListener(this);
-        this.workbench = workbench;
-        subAppEventBus.addHandler(ItemSelectedEvent.class, new ItemSelectedEvent.Handler() {
-
-            @Override
-            public void onItemSelected(ItemSelectedEvent event) {
-                appContext.setSubAppLocation(PagesMainSubApp.this, createLocation(event.getPath()));
-                updateActions();
-            }
-        });
+        this.dispatcher = dispatcher;
     }
 
     @Override
@@ -88,46 +69,23 @@ public class PagesMainSubApp extends AbstractSubApp implements PagesMainView.Lis
     }
 
     @Override
-    public View start(Location location) {
-        view.setWorkbenchView(workbench.start());
-        String selectedItemPath = getSelectedItemPath(location);
-        if (selectedItemPath != null) {
-            workbench.selectPath(selectedItemPath);
-        }
-        updateActions();
-        return view;
-    }
-
-    private void updateActions() {
-        ActionbarPresenter actionbar = workbench.getActionbarPresenter();
+    public void updateActionbar(final ActionbarPresenter actionbar) {
+        super.updateActionbar(actionbar);
 
         // actions currently always disabled
         actionbar.disable("move");
         actionbar.disable("duplicate");
 
         // actions disabled based on selection
-        if (workbench.getSelectedItemId() == null || workbench.getSelectedItemId().equals("/")) {
-            actionbar.disable("delete");
+        if (getWorkbench().getSelectedItemId() == null || getWorkbench().getSelectedItemId().equals("/")) {
             actionbar.disable("preview");
-            actionbar.disable("edit");
             actionbar.disable("editProperties");
             actionbar.disable("export");
         } else {
-            actionbar.enable("delete");
             actionbar.enable("preview");
-            actionbar.enable("edit");
             actionbar.enable("editProperties");
             actionbar.enable("export");
         }
-    }
-
-    @Override
-    public void locationChanged(Location location) {
-        String selectedItemPath = getSelectedItemPath(location);
-        if (selectedItemPath != null) {
-            workbench.selectPath(selectedItemPath);
-        }
-        updateActions();
     }
 
     @Override
@@ -138,62 +96,5 @@ public class PagesMainSubApp extends AbstractSubApp implements PagesMainView.Lis
     @Override
     public void subscribe(String hostId) {
         dispatcher.subscribeTo(hostId);
-    }
-
-    // Location token handling, format is main:<selectedItemPath>
-
-    public static boolean supportsLocation(Location location) {
-        List<String> parts = parseLocationToken(location);
-        return parts.size() >= 1 && parts.get(0).equals("main");
-    }
-
-    public static DefaultLocation createLocation(String selectedItemPath) {
-        String token = "main";
-        if (StringUtils.isNotEmpty(selectedItemPath)) {
-            token = token + ":" + selectedItemPath;
-        }
-        return new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages", token);
-    }
-
-    public static String getSubAppId(Location location) {
-        List<String> parts = parseLocationToken(location);
-        return parts.get(0);
-    }
-
-    public static String getSelectedItemPath(Location location) {
-        List<String> parts = parseLocationToken(location);
-        return parts.size() >= 2 ? parts.get(1) : null;
-    }
-
-    private static List<String> parseLocationToken(Location location) {
-
-        ArrayList<String> parts = new ArrayList<String>();
-
-        DefaultLocation l = (DefaultLocation) location;
-        String token = l.getToken();
-
-        // "main"
-        int i = token.indexOf(':');
-        if (i == -1) {
-            if (!token.equals("main")) {
-                return new ArrayList<String>();
-            }
-            parts.add(token);
-            return parts;
-        }
-
-        String subAppName = token.substring(0, i);
-        if (!subAppName.equals("main")) {
-            return new ArrayList<String>();
-        }
-        parts.add(subAppName);
-        token = token.substring(i + 1);
-
-        // selectedItemPath
-        if (token.length() > 0) {
-            parts.add(token);
-        }
-
-        return parts;
     }
 }

@@ -33,6 +33,9 @@
  */
 package info.magnolia.ui.app.showcase.main;
 
+import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.vaadin.widget.tabsheet.MagnoliaTabSheet;
+
 import javax.inject.Inject;
 
 import com.vaadin.terminal.Sizeable;
@@ -42,8 +45,6 @@ import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
 
-import info.magnolia.ui.framework.view.View;
-import info.magnolia.ui.vaadin.widget.tabsheet.ShellTabSheet;
 
 /**
  * View implementation of the main tab in showcase app.
@@ -53,10 +54,14 @@ public class ShowcaseMainViewImpl implements ShowcaseMainView {
     private static final long serialVersionUID = 1832253846080472161L;
 
     private Listener listener;
-    private ComponentContainer tabForms;
-    private ComponentContainer tabVaadin;
-    private ComponentContainer tabUnsupported;
-    private Layout root;
+
+    private final ComponentContainer tabForms;
+
+    private final ComponentContainer tabVaadin;
+
+    private final ComponentContainer tabUnsupported;
+
+    private final Layout root;
 
     @Inject
     public ShowcaseMainViewImpl() {
@@ -64,15 +69,15 @@ public class ShowcaseMainViewImpl implements ShowcaseMainView {
         root.setSizeFull();
         root.setWidth(900, Sizeable.UNITS_PIXELS);
         root.setStyleName("small-app");
-        
-        ShellTabSheet tabsheet = new ShellTabSheet();
+
+        MagnoliaTabSheet tabsheet = new MagnoliaTabSheet();
         tabsheet.setSizeFull();
         tabForms = tabsheet.addTab("Form Fields");
         tabVaadin = tabsheet.addTab("Vaadin Fields");
         tabUnsupported = tabsheet.addTab("Unsupported Vaadin Fields");
-        
+
         tabsheet.addStyleName("small-app-panel");
-        
+
         Label explanation = new Label("Showcase app shows what components there are available for app developers");
         root.addComponent(explanation);
         root.addComponent(tabsheet);

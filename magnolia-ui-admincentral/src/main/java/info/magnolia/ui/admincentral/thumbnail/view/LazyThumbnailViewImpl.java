@@ -36,7 +36,7 @@ package info.magnolia.ui.admincentral.thumbnail.view;
 import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.admincentral.container.AbstractJcrContainer;
-import info.magnolia.ui.model.thumbnail.ThumbnailProvider;
+import info.magnolia.ui.model.thumbnail.ImageProvider;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.widget.LazyThumbnailLayout;
@@ -76,16 +76,16 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
 
     private LazyThumbnailLayout layout;
 
-    private ThumbnailProvider thumbnailProvider;
+    private ImageProvider imageProvider;
 
     private String jcrSQL2QueryStatement;
 
     private VerticalLayout margin = new VerticalLayout();
 
-    public LazyThumbnailViewImpl(final WorkbenchDefinition definition, final ThumbnailProvider thumbnailProvider) {
+    public LazyThumbnailViewImpl(final WorkbenchDefinition definition, final ImageProvider imageProvider) {
         this.workbenchDefinition = definition;
         this.layout = new LazyThumbnailLayout();
-        this.thumbnailProvider = thumbnailProvider;
+        this.imageProvider = imageProvider;
         layout.setSizeFull();
         layout.addStyleName("mgnl-workbench-thumbnail-view");
 
@@ -125,7 +125,7 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
     @Override
     public final void refresh() {
         final List<String> uuids = getAllIdentifiers(workbenchDefinition.getWorkspace(), workbenchDefinition.getPath());
-        final ThumbnailContainer container = new ThumbnailContainer(thumbnailProvider, uuids);
+        final ThumbnailContainer container = new ThumbnailContainer(imageProvider, uuids);
         container.setWorkspaceName(workbenchDefinition.getWorkspace());
         container.setThumbnailHeight(73);
         container.setThumbnailWidth(73);
@@ -217,5 +217,10 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
             log.error(e.getMessage());
         }
         return null;
+    }
+
+    @Override
+    public ViewType getViewType() {
+        return ViewType.THUMBNAIL;
     }
 }

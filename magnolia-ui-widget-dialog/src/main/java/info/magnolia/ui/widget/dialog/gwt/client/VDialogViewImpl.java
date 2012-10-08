@@ -273,12 +273,12 @@ public class VDialogViewImpl extends FlowPanel implements VDialogView {
     }
 
     @Override
-    public void addTab(VMagnoliaTab tab) {
+    public void updateTab(VMagnoliaTab tab) {
         if (!(tab instanceof VDialogTab)) {
             throw new RuntimeException("Tab must be of VDialogTab type. You have used: " + tab.getClass());
         }
         dialogTabs.add((VDialogTab) tab);
-        impl.addTab(tab);
+        impl.updateTab(tab);
         final List<DialogFieldWrapper> fields = ((VDialogTab) tab).getFields();
         for (final DialogFieldWrapper field : fields) {
             field.addFocusHandler(problematicFieldFocusHandler);

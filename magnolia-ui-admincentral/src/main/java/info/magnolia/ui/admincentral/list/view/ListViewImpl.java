@@ -76,7 +76,7 @@ public class ListViewImpl implements ListView {
 
     private static final Logger log = LoggerFactory.getLogger(ListViewImpl.class);
 
-    public ListViewImpl(WorkbenchDefinition workbenchDefinition, TreeModel treeModel, ComponentProvider componentProvider) {
+    public ListViewImpl(WorkbenchDefinition workbenchDefinition, TreeModel treeModel, ComponentProvider componentProvider, FlatJcrContainer container) {
         table = new MagnoliaTable();
         table.setSizeFull();
 
@@ -86,7 +86,7 @@ public class ListViewImpl implements ListView {
         table.setNullSelectionAllowed(false);
         // table.setMultiSelectMode(MultiSelectMode.DEFAULT);
         table.setMultiSelect(false);
-
+        table.setSortDisabled(false);
         // Important do not set page length and cache ratio on the Table, rather set them by using
         // AbstractJcrContainer corresponding methods. Setting
         // those value explicitly on the Table will cause the same jcr query to be repeated twice
@@ -116,7 +116,7 @@ public class ListViewImpl implements ListView {
 
         table.setColumnReorderingAllowed(false);
 
-        container = new FlatJcrContainer(treeModel, workbenchDefinition);
+        this.container = container;
 
         buildColumns(workbenchDefinition, componentProvider);
 
@@ -185,12 +185,8 @@ public class ListViewImpl implements ListView {
                 continue;
             }
             String columnName = column.getName();
-            String columnProperty = "";
-            if (column.getPropertyName() != null) {
-                columnProperty = column.getPropertyName();
-            } else {
-                columnProperty = columnName;
-            }
+            final String columnProperty = (column.getPropertyName() != null) ? column.getPropertyName() : columnName;
+
             //FIXME fgrilli workaround for conference
             //when setting cols width in dialogs we are forced to use explicit px value instead of expand ratios, which for some reason don't work
             if(workbenchDefinition.isDialogWorkbench()) {
@@ -219,5 +215,10 @@ public class ListViewImpl implements ListView {
         table.setContainerDataSource(container);
         //Set Column order
         table.setVisibleColumns(columnOrder.toArray());
+    }
+
+    @Override
+    public ViewType getViewType() {
+        return ViewType.LIST;
     }
 }

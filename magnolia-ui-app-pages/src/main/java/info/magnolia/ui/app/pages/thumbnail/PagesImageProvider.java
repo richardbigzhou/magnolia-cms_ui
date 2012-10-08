@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,40 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.dialog.gwt.client.dialoglayout;
+package info.magnolia.ui.app.pages.thumbnail;
 
-import info.magnolia.ui.widget.dialog.gwt.client.dialoglayout.HelpAccessibilityEvent.Handler;
-
-import com.google.web.bindery.event.shared.EventBus;
-import com.google.web.bindery.event.shared.HandlerRegistration;
-import com.google.web.bindery.event.shared.SimpleEventBus;
+import info.magnolia.ui.model.thumbnail.DefaultImageProvider;
 
 /**
- * Notifier of help accessibility changes. 
+ * PagesImageProvider.
  */
-public interface VHelpAccessibilityNotifier {
-    
-    /**
-     * Implementor of {@link VHelpAccessibilityNotifier}.
-     */
-    public static class Delegate implements VHelpAccessibilityNotifier {
-   
-        private EventBus internalEventBus = new SimpleEventBus();
-        
-        @Override
-        public HandlerRegistration addHelpAccessibilityHandler(HelpAccessibilityEvent.Handler handler) {
-            return internalEventBus.addHandler(HelpAccessibilityEvent.TYPE, handler);
-        }
-        
-        @Override
-        public void changeHelpAccessibility(boolean isEnabled) {
-            internalEventBus.fireEvent(new HelpAccessibilityEvent(isEnabled));
-        }
-        
-    };
-   
-    public HandlerRegistration addHelpAccessibilityHandler(Handler handler);
-    
-    void changeHelpAccessibility(boolean isEnabled);
-    
+public class PagesImageProvider extends DefaultImageProvider {
+
 }

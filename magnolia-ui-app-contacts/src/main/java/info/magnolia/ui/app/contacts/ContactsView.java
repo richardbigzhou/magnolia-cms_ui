@@ -33,13 +33,12 @@
  */
 package info.magnolia.ui.app.contacts;
 
-import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.admincentral.app.content.ContentAppView;
 
 
 /**
  * View for the Contacts app.
  */
-public interface ContactsView extends View {
+public interface ContactsView extends ContentAppView {
 
-    void setWorkbenchView(View workbenchView);
 }

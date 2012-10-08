@@ -42,7 +42,8 @@ import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.model.tab.definition.TabDefinition;
-import info.magnolia.ui.widget.dialog.MagnoliaDialogView;
+import info.magnolia.ui.widget.dialog.DialogView;
+import info.magnolia.ui.widget.dialog.FormDialogView;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -58,7 +59,7 @@ public class DialogBuilder {
     /**
      * @return DialogView populated with values from DialogDefinition and Item.
      */
-    public MagnoliaDialogView build(DialogFieldFactory dialogFieldFactory, DialogDefinition dialogDefinition, Item item, MagnoliaDialogView view) {
+    public DialogView build(DialogFieldFactory dialogFieldFactory, DialogDefinition dialogDefinition, Item item, FormDialogView view) {
 
         Dialog dialog = new Dialog(dialogDefinition);
         view.setItemDataSource(item);
@@ -69,7 +70,7 @@ public class DialogBuilder {
 
         if (StringUtils.isNotBlank(description)) {
             String i18nDescription = MessagesUtil.getWithDefault(description, description, basename);
-            view.setDescription(i18nDescription);
+            view.setDialogDescription(i18nDescription);
         }
         if (StringUtils.isNotBlank(label)) {
             String i18nLabel = MessagesUtil.getWithDefault(label, label, basename);
@@ -102,8 +103,7 @@ public class DialogBuilder {
 
                 view.addField(field);
             }
-
-            view.addTab(tab.getContainer(), tab.getMessage(tabDefinition.getLabel()));
+            view.addDialogSection(tab.getMessage(tabDefinition.getLabel()), tab.getContainer());
         }
 
         if(dialogDefinition.getTabs().size() <=1) {
