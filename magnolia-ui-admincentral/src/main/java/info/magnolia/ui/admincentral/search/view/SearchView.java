@@ -31,24 +31,16 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.main;
+package info.magnolia.ui.admincentral.search.view;
 
-import info.magnolia.ui.admincentral.app.content.ContentAppView;
+import info.magnolia.ui.admincentral.list.view.ListView;
 
 /**
- * View for the Pages app.
+ * The search view interface.
+ *
  */
-public interface PagesMainView extends ContentAppView {
+public interface SearchView extends ListView {
+    void search(String queryTerms);
 
-    /**
-     * Listener.
-     */
-    public interface Listener {
-        void share();
-
-        void subscribe(String hostId);
-    }
-
-    void setListener(Listener listener);
-
+    void clear();
 }

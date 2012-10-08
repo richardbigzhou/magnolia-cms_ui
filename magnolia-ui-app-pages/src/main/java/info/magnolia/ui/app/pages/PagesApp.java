@@ -34,8 +34,9 @@
 package info.magnolia.ui.app.pages;
 
 import info.magnolia.ui.admincentral.app.content.AbstractContentApp;
-import info.magnolia.ui.admincentral.dialog.FormDialogPresenterFactory;
+import info.magnolia.ui.admincentral.app.content.AbstractContentSubApp;
 import info.magnolia.ui.admincentral.dialog.ChooseDialogFactory;
+import info.magnolia.ui.admincentral.dialog.FormDialogPresenterFactory;
 import info.magnolia.ui.app.pages.editor.PagesEditorSubApp;
 import info.magnolia.ui.app.pages.main.PagesMainSubApp;
 import info.magnolia.ui.framework.app.AppContext;
@@ -67,10 +68,10 @@ public class PagesApp extends AbstractContentApp {
     public void start(Location location) {
 
         if (PagesMainSubApp.supportsLocation(location)) {
-            appContext.openSubApp("main", PagesMainSubApp.class, location, PagesMainSubApp.getSubAppId(location));
+            appContext.openSubApp(AbstractContentSubApp.MAIN_SUBAPP_ID, PagesMainSubApp.class, location, PagesMainSubApp.getSubAppId(location));
         } else {
-            DefaultLocation mainLocation = PagesMainSubApp.createLocation(null);
-            appContext.openSubApp("main", PagesMainSubApp.class, mainLocation, PagesMainSubApp.getSubAppId(mainLocation));
+            DefaultLocation mainLocation = PagesMainSubApp.createLocation();
+            appContext.openSubApp(AbstractContentSubApp.MAIN_SUBAPP_ID, PagesMainSubApp.class, mainLocation, PagesMainSubApp.getSubAppId(mainLocation));
 
             if (PagesEditorSubApp.supportsLocation(location)) {
                 appContext.openSubApp(EDITOR_TOKEN, PagesEditorSubApp.class, location, PagesEditorSubApp.getSubAppId(location));

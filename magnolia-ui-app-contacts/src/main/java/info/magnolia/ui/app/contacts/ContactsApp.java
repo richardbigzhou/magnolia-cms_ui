@@ -34,6 +34,7 @@
 package info.magnolia.ui.app.contacts;
 
 import info.magnolia.ui.admincentral.app.content.AbstractContentApp;
+import info.magnolia.ui.admincentral.app.content.AbstractContentSubApp;
 import info.magnolia.ui.admincentral.dialog.ChooseDialogFactory;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.location.Location;
@@ -59,10 +60,10 @@ public class ContactsApp extends AbstractContentApp {
     public void start(Location location) {
 
         if (ContactsMainSubApp.supportsLocation(location)) {
-            appContext.openSubApp("main", ContactsMainSubApp.class, location, ContactsMainSubApp.getSubAppId(location));
+            appContext.openSubApp(AbstractContentSubApp.MAIN_SUBAPP_ID, ContactsMainSubApp.class, location, ContactsMainSubApp.getSubAppId(location));
         } else {
-            Location mainLocation = ContactsMainSubApp.createLocation(null);
-            appContext.openSubApp("main", ContactsMainSubApp.class, mainLocation, ContactsMainSubApp.getSubAppId(mainLocation));
+            Location mainLocation = ContactsMainSubApp.createLocation();
+            appContext.openSubApp(AbstractContentSubApp.MAIN_SUBAPP_ID, ContactsMainSubApp.class, mainLocation, ContactsMainSubApp.getSubAppId(mainLocation));
         }
     }
 }

@@ -31,24 +31,39 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.main;
+package info.magnolia.ui.admincentral.event;
 
-import info.magnolia.ui.admincentral.app.content.ContentAppView;
+import info.magnolia.ui.admincentral.content.view.ContentView.ViewType;
+import info.magnolia.ui.framework.event.Event;
+import info.magnolia.ui.framework.event.EventHandler;
+
 
 /**
- * View for the Pages app.
+ * This event is fired when switching views, i.e. from tree view to list view.
  */
-public interface PagesMainView extends ContentAppView {
+public class ViewTypeChangedEvent implements Event<ViewTypeChangedEvent.Handler> {
 
     /**
-     * Listener.
+     * Handles {@link ViewTypeChangedEvent} events.
      */
-    public interface Listener {
-        void share();
+    public interface Handler extends EventHandler {
 
-        void subscribe(String hostId);
+        void onViewChanged(ViewTypeChangedEvent event);
     }
 
-    void setListener(Listener listener);
+    private ViewType viewType;
+
+    public ViewTypeChangedEvent(ViewType viewType) {
+        this.viewType = viewType;
+    }
+
+    public ViewType getViewType() {
+        return viewType;
+    }
+
+    @Override
+    public void dispatch(Handler handler) {
+        handler.onViewChanged(this);
+    }
 
 }

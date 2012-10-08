@@ -36,7 +36,10 @@ package info.magnolia.ui.admincentral.content.view.builder;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.content.view.ContentView;
 import info.magnolia.ui.admincentral.content.view.ContentView.ViewType;
+import info.magnolia.ui.admincentral.list.container.FlatJcrContainer;
 import info.magnolia.ui.admincentral.list.view.ListViewImpl;
+import info.magnolia.ui.admincentral.search.container.SearchJcrContainer;
+import info.magnolia.ui.admincentral.search.view.SearchViewImpl;
 import info.magnolia.ui.admincentral.thumbnail.view.LazyThumbnailViewImpl;
 import info.magnolia.ui.admincentral.tree.model.TreeModel;
 import info.magnolia.ui.admincentral.tree.view.TreeViewImpl;
@@ -66,15 +69,19 @@ public class ContentViewBuilderImpl implements ContentViewBuilder, Serializable 
         // FIXME the model should be set by the presenter
         final TreeModel treeModel = new TreeModel(workbenchDefinition, workbenchActionFactory);
         switch (type) {
-        case TREE:
-            return componentProvider.newInstance(TreeViewImpl.class, workbenchDefinition, treeModel);
-        case LIST:
-            return componentProvider.newInstance(ListViewImpl.class, workbenchDefinition, treeModel);
-        case THUMBNAIL:
-            return componentProvider.newInstance(LazyThumbnailViewImpl.class, workbenchDefinition,workbenchDefinition.getImageProvider());
-        default:
-            throw new RuntimeException("The provided view type ["+ type + "] is not valid.");
-        }
 
+            case TREE:
+                return componentProvider.newInstance(TreeViewImpl.class, workbenchDefinition, treeModel);
+            case LIST:
+                final FlatJcrContainer container = new FlatJcrContainer(treeModel, workbenchDefinition);
+                return componentProvider.newInstance(ListViewImpl.class, workbenchDefinition, treeModel, container);
+            case SEARCH:
+                final SearchJcrContainer searchContainer = new SearchJcrContainer(treeModel, workbenchDefinition);
+                return componentProvider.newInstance(SearchViewImpl.class, workbenchDefinition, treeModel, searchContainer);
+            case THUMBNAIL:
+                return componentProvider.newInstance(LazyThumbnailViewImpl.class, workbenchDefinition,workbenchDefinition.getImageProvider());
+            default:
+                throw new RuntimeException("The provided view type ["+ type + "] is not valid.");
+       }
     }
 }

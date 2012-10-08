@@ -295,6 +295,9 @@
         <sv:property sv:name="label" sv:type="String">
           <sv:value>Name</sv:value>
         </sv:property>
+        <sv:property sv:name="sortable" sv:type="String">
+          <sv:value>true</sv:value>
+        </sv:property>
         <sv:node sv:name="MetaData">
           <sv:property sv:name="jcr:primaryType" sv:type="Name">
             <sv:value>mgnl:metaData</sv:value>
@@ -312,7 +315,7 @@
             <sv:value>2010-09-08T11:44:25.527+02:00</sv:value>
           </sv:property>
           <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-            <sv:value>2012-09-17T14:13:35.677+02:00</sv:value>
+            <sv:value>2012-09-21T14:59:36.630+02:00</sv:value>
           </sv:property>
         </sv:node>
       </sv:node>
@@ -338,6 +341,9 @@
         <sv:property sv:name="label" sv:type="String">
           <sv:value>Email</sv:value>
         </sv:property>
+        <sv:property sv:name="sortable" sv:type="String">
+          <sv:value>true</sv:value>
+        </sv:property>
         <sv:property sv:name="width" sv:type="Long">
           <sv:value>180</sv:value>
         </sv:property>
@@ -358,7 +364,7 @@
             <sv:value>2010-09-08T11:44:25.527+02:00</sv:value>
           </sv:property>
           <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-            <sv:value>2012-08-31T21:58:28.017+02:00</sv:value>
+            <sv:value>2012-09-21T14:32:24.528+02:00</sv:value>
           </sv:property>
         </sv:node>
       </sv:node>
@@ -387,6 +393,9 @@
         <sv:property sv:name="label" sv:type="String">
           <sv:value>Status</sv:value>
         </sv:property>
+        <sv:property sv:name="sortable" sv:type="String">
+          <sv:value>true</sv:value>
+        </sv:property>
         <sv:property sv:name="width" sv:type="Long">
           <sv:value>50</sv:value>
         </sv:property>
@@ -407,7 +416,7 @@
             <sv:value>2010-09-08T11:44:25.527+02:00</sv:value>
           </sv:property>
           <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-            <sv:value>2012-08-31T12:23:21.236+02:00</sv:value>
+            <sv:value>2012-09-21T15:56:20.726+02:00</sv:value>
           </sv:property>
         </sv:node>
       </sv:node>
@@ -436,6 +445,9 @@
         <sv:property sv:name="propertyName" sv:type="String">
           <sv:value>MetaData/mgnl:lastmodified</sv:value>
         </sv:property>
+        <sv:property sv:name="sortable" sv:type="String">
+          <sv:value>true</sv:value>
+        </sv:property>
         <sv:property sv:name="width" sv:type="Long">
           <sv:value>200</sv:value>
         </sv:property>
@@ -456,7 +468,7 @@
             <sv:value>2010-09-08T11:44:25.527+02:00</sv:value>
           </sv:property>
           <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-            <sv:value>2012-08-31T21:58:18.685+02:00</sv:value>
+            <sv:value>2012-09-21T15:06:26.139+02:00</sv:value>
           </sv:property>
         </sv:node>
       </sv:node>

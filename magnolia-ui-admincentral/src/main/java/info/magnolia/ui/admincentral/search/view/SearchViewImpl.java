@@ -31,24 +31,39 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.main;
+package info.magnolia.ui.admincentral.search.view;
 
-import info.magnolia.ui.admincentral.app.content.ContentAppView;
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.admincentral.list.view.ListViewImpl;
+import info.magnolia.ui.admincentral.search.container.SearchJcrContainer;
+import info.magnolia.ui.admincentral.tree.model.TreeModel;
+import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 
 /**
- * View for the Pages app.
+ * Search view implementation is just a special case of list view.
  */
-public interface PagesMainView extends ContentAppView {
+public class SearchViewImpl extends ListViewImpl implements SearchView {
 
-    /**
-     * Listener.
-     */
-    public interface Listener {
-        void share();
-
-        void subscribe(String hostId);
+    public SearchViewImpl(WorkbenchDefinition workbenchDefinition, TreeModel treeModel, ComponentProvider componentProvider, SearchJcrContainer container) {
+        super(workbenchDefinition, treeModel, componentProvider, container);
     }
 
-    void setListener(Listener listener);
+    @Override
+    public void search(String fulltextExpr) {
+        SearchJcrContainer container = ((SearchJcrContainer)getContainer());
+        container.setFullTextExpression(fulltextExpr);
+        refresh();
+    }
 
+    @Override
+    public void clear() {
+        SearchJcrContainer container = ((SearchJcrContainer)getContainer());
+        container.setFullTextExpression(null);
+        refresh();
+    }
+
+    @Override
+    public ViewType getViewType() {
+        return ViewType.SEARCH;
+    }
 }
