@@ -51,7 +51,7 @@ public class ConfirmationDialog extends BaseDialog {
     
     public ConfirmationDialog(final String message) {
         setMessage(message);
-        addAction("DIALOG_ACTION_CONFIRM", "OK", new DialogActionCallback() {
+        addAction(CONFIRM_ACTION, "OK", new DialogActionCallback() {
             
             @Override
             public void onActionExecuted() {
@@ -59,12 +59,20 @@ public class ConfirmationDialog extends BaseDialog {
             }
         });
         
-        addAction("DIALOG_ACTION_REJECT", "OK", new DialogActionCallback() {
+        addAction(REJECT_ACTION, "Cancel", new DialogActionCallback() {
             @Override
             public void onActionExecuted() {
                 fireEvent(new ConfirmationEvent(ConfirmationDialog.this, false));
             }
         });
+    }
+    
+    public void setConfirmActionLabel(final String label) {
+        setActionLabel(CONFIRM_ACTION, label);
+    }
+    
+    public void setRejectActionLabel(final String label) {
+        setActionLabel(REJECT_ACTION, label);
     }
     
     public void setMessage(String message) {
