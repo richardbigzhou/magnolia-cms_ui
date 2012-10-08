@@ -311,9 +311,9 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
 
 
     //Some of the following class members have default visibility scope for the sake of testability.
-    /*
-     * Token type element. I.e.
-     * A token here is the URI fragment part made up by zero or more parameters.
+    /**
+     * Token type element.
+     * A token here is the URI fragment part made up by zero or more elements.
      * In this case we will have
      * {@code
      *   #app:<appName>:<subAppId>:<selectedPathToken>:<viewTypeToken>[;<queryToken>]
