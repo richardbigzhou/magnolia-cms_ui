@@ -11,14 +11,12 @@ import com.vaadin.data.Property;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.ThemeResource;
-import com.vaadin.terminal.UserError;
 import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.AbstractSplitPanel;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
-import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
@@ -46,6 +44,7 @@ public class VaadinViewImpl implements VaadinView {
     
     public VaadinViewImpl() {
         layout = new VerticalLayout();
+        layout.setWidth("100%");
         layout.setMargin(true, true, false, true);
         layout.addComponent(new Label(
                 "The UI elements available in the Vaadin framework that " +
@@ -329,19 +328,16 @@ public class VaadinViewImpl implements VaadinView {
         Button button = new Button("Button");
         grid.addComponent(button);
 
-      
-
         button = new Button("Link style");
         button.setStyleName(Button.STYLE_LINK);
         grid.addComponent(button);
-
-     
+   
         button = new Button();
         button.setIcon(new ThemeResource("../runo/icons/16/user.png"));
         grid.addComponent(button);
 
-        Link l = new Link("Link: vaadin.com", new ExternalResource(
-                "http://vaadin.com"));
+        Link l = new Link("Link: magnolia-cms.com", new ExternalResource(
+                "http://www.magnolia-cms.com"));
         grid.addComponent(l);
 
 
@@ -353,17 +349,6 @@ public class VaadinViewImpl implements VaadinView {
 
         TextField tf = new TextField();
         tf.setValue("Text field");
-        grid.addComponent(tf);
-
-      
-        tf = new TextField();
-        tf.setInputPrompt("Search field");
-        tf.setStyleName("search");
-        grid.addComponent(tf);       
-
-        tf = new TextField();
-        tf.setInputPrompt("Error");
-        tf.setComponentError(new UserError("Test error"));
         grid.addComponent(tf);
         
         PasswordField pw = new PasswordField();
@@ -381,7 +366,7 @@ public class VaadinViewImpl implements VaadinView {
         return grid;
     }
     
-    private GridLayout getPreviewLayout(String caption) {
+    private Layout getPreviewLayout(String caption) {
         GridLayout grid = new GridLayout(3, 1);
         grid.setWidth("100%");
         grid.setSpacing(true);

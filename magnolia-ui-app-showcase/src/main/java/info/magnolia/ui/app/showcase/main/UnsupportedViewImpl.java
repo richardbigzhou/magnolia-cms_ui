@@ -7,7 +7,7 @@ import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.MenuBar;
@@ -198,10 +198,9 @@ public class UnsupportedViewImpl implements UnsupportedView {
         return layout;
     }
 
-    private GridLayout getPreviewLayout(String caption) {
-        GridLayout grid = new GridLayout(3, 1);
+    private Layout getPreviewLayout(String caption) {
+        Layout grid = new HorizontalLayout();
         grid.setWidth("100%");
-        grid.setSpacing(true);
         grid.setMargin(true);
         grid.setCaption(caption);
         return grid;

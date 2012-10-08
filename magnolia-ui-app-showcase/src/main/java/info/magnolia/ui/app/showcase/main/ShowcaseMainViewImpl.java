@@ -40,6 +40,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Layout;
 
 import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.vaadin.widget.tabsheet.ShellTabSheet;
@@ -55,7 +56,7 @@ public class ShowcaseMainViewImpl implements ShowcaseMainView {
     private ComponentContainer tabForms;
     private ComponentContainer tabVaadin;
     private ComponentContainer tabUnsupported;
-    private CssLayout root;
+    private Layout root;
 
     @Inject
     public ShowcaseMainViewImpl() {
