@@ -15,6 +15,7 @@ import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.AbstractSplitPanel;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.Embedded;
@@ -23,6 +24,7 @@ import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.Link;
+import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.PasswordField;
@@ -30,6 +32,7 @@ import com.vaadin.ui.PopupView;
 import com.vaadin.ui.ProgressIndicator;
 import com.vaadin.ui.RichTextArea;
 import com.vaadin.ui.Slider;
+import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.VerticalLayout;
@@ -58,6 +61,7 @@ public class VaadinViewImpl implements VaadinView {
         layout.addComponent(getButtonPreviews());
         layout.addComponent(getTextFieldPreviews());
         layout.addComponent(getCheckboxPreviews());
+        layout.addComponent(getSelectPreviews());
 //        layout.addComponent(getMagnoliaTabSheetPreviews());
         layout.addComponent(getMagnoliaPreviews());
         layout.addComponent(getTreePreviews());
@@ -158,6 +162,30 @@ public class VaadinViewImpl implements VaadinView {
         grid.addComponent(checkboxcaption);
         grid.addComponent(group);
         grid.addComponent(checkGroup);
+        return grid;
+    }
+    
+    static void addSelectItems(AbstractSelect s, boolean selectFirst, int num) {
+        s.setNullSelectionAllowed(false);
+        for (int i = 0; i < num; i++) {
+            s.addItem("Item " + i);
+        }
+        if (selectFirst) {
+            s.select(s.getItemIds().iterator().next());
+        }
+    }
+    
+    private Layout getSelectPreviews() {
+        Layout grid = getPreviewLayout("Selects");
+
+        ComboBox combo = new ComboBox();
+        addSelectItems(combo, true, 100);
+        grid.addComponent(combo);
+     
+        NativeSelect s = new NativeSelect();
+        addSelectItems(s, true, 10);
+        grid.addComponent(s);
+
         return grid;
     }
     
@@ -355,10 +383,9 @@ public class VaadinViewImpl implements VaadinView {
         pw.setInputPrompt("Password");
         grid.addComponent(pw);
 
-        tf = new TextField();
-        tf.setInputPrompt("Multiline");
-        tf.setRows(4);
-        grid.addComponent(tf);
+        TextArea ta = new TextArea();
+        ta.setInputPrompt("Multiline");
+        grid.addComponent(ta);
         
         RichTextArea rich = new RichTextArea("Rich text area");
         grid.addComponent(rich);
