@@ -47,7 +47,7 @@ import com.vaadin.ui.ComponentContainer;
  * actions associated with it.
  */
 public interface ContentWorkbenchView extends ComponentContainer, View {
-
+    
     /**
      * TODO dlipp - ActionBarPresenter should be a proper type as well.
      */

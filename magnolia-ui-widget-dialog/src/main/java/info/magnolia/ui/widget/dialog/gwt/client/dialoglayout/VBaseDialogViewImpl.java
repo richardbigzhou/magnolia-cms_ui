@@ -116,7 +116,7 @@ public class VBaseDialogViewImpl extends ComplexPanel implements VBaseDialogView
             
             @Override
             public void onCloseFired() {
-                
+                presenter.closeDialog();
             }
             
             @Override

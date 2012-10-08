@@ -48,15 +48,14 @@ import com.rits.cloning.Cloner;
 
 /**
  * ChooseDialog ContentPresenter.
- * Used to inject a specific EventBuss, and to handle specific ChooseDialog logic.
+ * Used to inject a specific EventBus, and to handle specific ChooseDialog logic.
  */
-public class ChooseDialogContentPresenter extends ContentPresenter {
+public class PickerDialogContentPresenter extends ContentPresenter {
 
     @Inject
-    public ChooseDialogContentPresenter(ContentViewBuilder contentViewBuilder, AppContext context, @Named("choosedialog") EventBus subAppEventBus, Shell shell) {
+    public PickerDialogContentPresenter(ContentViewBuilder contentViewBuilder, AppContext context, @Named("choosedialog") EventBus subAppEventBus, Shell shell) {
         super(contentViewBuilder, context, subAppEventBus, shell);
-        Cloner cloner = new Cloner();
-        workbenchDefinition = cloner.deepClone(workbenchDefinition);
+        workbenchDefinition = new Cloner().deepClone(workbenchDefinition);
         ((ConfiguredWorkbenchDefinition)workbenchDefinition).setDialogWorkbench(true);
     }
 

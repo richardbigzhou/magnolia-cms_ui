@@ -31,38 +31,39 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.content;
+package info.magnolia.ui.admincentral.content.view;
 
-import com.rits.cloning.Cloner;
+import info.magnolia.ui.admincentral.dialog.PickerDialogView;
+import info.magnolia.ui.admincentral.workbench.ContentWorkbenchView;
+import info.magnolia.ui.widget.dialog.BaseDialog;
 
-import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
-import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
-
+import javax.inject.Inject;
 
 /**
- * Base implementation for content app descriptor.
- * 
+ * Picks value from a workbench.
+ *
  */
-@SuppressWarnings("serial")
-public class ConfiguredContentAppDescriptor extends ConfiguredAppDescriptor implements ContentAppDescriptor {
+public class WorkbenchValuePickerDialog extends BaseDialog implements PickerDialogView {
 
-    private WorkbenchDefinition workbench;
+    private ContentWorkbenchView view;
+    
+    @Inject
+    public WorkbenchValuePickerDialog(ContentWorkbenchView view) {
+        this.view = view;
+        addStyleName("content-view-field-wrapper");
+        setContent(this.view.asVaadinComponent());
+        addAction("cancel", "Cancel");
+        addAction("select", "Choose");
+    }
+    
+    @Override
+    public void setCancelActionCaption(String caption) {
+        
+    }
 
     @Override
-    public WorkbenchDefinition getWorkbench() {
-        return workbench;
+    public void setSelectionActionCaption(String caption) {
+        
     }
-
-    public void setWorkbench(WorkbenchDefinition workbench) {
-        this.workbench = workbench;
-    }
-
-    @Override
-    public WorkbenchDefinition getWorkbenchCopy() {
-        if (workbench != null) {
-            return new Cloner().deepClone(workbench);
-        }
-        return null;
-    }
-
+    
 }

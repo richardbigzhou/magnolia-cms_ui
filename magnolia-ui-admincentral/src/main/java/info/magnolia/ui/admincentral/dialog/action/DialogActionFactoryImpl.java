@@ -35,32 +35,37 @@ package info.magnolia.ui.admincentral.dialog.action;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.content.view.builder.DefinitionToImplementationMapping;
+import info.magnolia.ui.admincentral.dialog.DialogPresenter;
+import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.builder.FactoryBase;
-import info.magnolia.ui.widget.dialog.FormDialogPresenter;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 /**
- * Creates an action based on an {@link info.magnolia.ui.model.action.ActionDefinition}.
+ * Creates an action based on an
+ * {@link info.magnolia.ui.model.action.ActionDefinition}.
  */
 @Singleton
 public class DialogActionFactoryImpl extends FactoryBase<ActionDefinition, Action> implements DialogActionFactory {
-
-   @Inject
-   public DialogActionFactoryImpl(ComponentProvider componentProvider, DialogActionRegistry dialogActionRegistry) {
+    private final EventBus eventBus;
+    
+    @Inject
+    public DialogActionFactoryImpl(ComponentProvider componentProvider, DialogActionRegistry dialogActionRegistry,
+            @Named("admincentral") EventBus eventBus) {
         super(componentProvider);
-
-        for (DefinitionToImplementationMapping<ActionDefinition, Action> definitionToImplementationMapping : dialogActionRegistry.getDefinitionToImplementationMappings()) {
+        this.eventBus = eventBus;
+        for (DefinitionToImplementationMapping<ActionDefinition, Action> definitionToImplementationMapping : dialogActionRegistry
+                .getDefinitionToImplementationMappings()) {
             addMapping(definitionToImplementationMapping.getDefinition(), definitionToImplementationMapping.getImplementation());
         }
     }
 
-
     @Override
-    public Action createAction(ActionDefinition actionDefinition, FormDialogPresenter presenter) {
-        return create(actionDefinition, presenter);
+    public Action createAction(ActionDefinition actionDefinition, DialogPresenter presenter) {
+        return create(actionDefinition, presenter, eventBus);
     }
 }

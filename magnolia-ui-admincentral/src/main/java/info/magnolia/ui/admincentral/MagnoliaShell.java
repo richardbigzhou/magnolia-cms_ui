@@ -35,6 +35,8 @@ package info.magnolia.ui.admincentral;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.admincentral.app.simple.ShellAppController;
+import info.magnolia.ui.admincentral.dialog.BaseDialogPresenter;
+import info.magnolia.ui.admincentral.dialog.DialogPresenter.DialogCloseEvent;
 import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventHandler;
@@ -198,8 +200,14 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
         messagesManager.clearMessage(MgnlContext.getUser().getName(), messageId);
     }
 
-    public void openDialog(BaseDialog component) {
-        addDialog(component.asVaadinComponent());
+    public void openDialog(final BaseDialogPresenter dialogPresenter) {
+        dialogPresenter.addDialogCloseListener(new DialogCloseEvent.Handler() {
+            @Override
+            public void onDialogClose(DialogCloseEvent event) {
+                removeDialog(dialogPresenter.getView().asVaadinComponent());
+            }
+        });
+        addDialog(dialogPresenter.getView().asVaadinComponent());
     }
 
     public void removeDialog(BaseDialog dialog) {

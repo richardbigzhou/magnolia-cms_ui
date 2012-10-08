@@ -46,6 +46,8 @@ import info.magnolia.ui.vaadin.integration.widget.grid.MagnoliaTreeTable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import javax.jcr.RepositoryException;
 
@@ -91,13 +93,10 @@ public class WorkbenchTreeTable extends MagnoliaTreeTable {
         buildColumns(workbenchDefinition, componentProvider);
     }
 
-    /**
-     * Add Drag and Drop functionality to the provided TreeTable.
-     */
     private void addDragAndDrop() {
         setDragMode(TableDragMode.ROW);
         setDropHandler(new DropHandler() {
-
+            
             @Override
             public void drop(DragAndDropEvent event) {
 
@@ -185,7 +184,7 @@ public class WorkbenchTreeTable extends MagnoliaTreeTable {
             setCollapsed(parent, false);
         }
         // Set this multi select component to have only this one item selected
-        HashSet<Object> set = new HashSet<Object>();
+        final Set<Object> set = new HashSet<Object>();
         set.add(itemId);
         setValue(set);
     }
@@ -206,40 +205,35 @@ public class WorkbenchTreeTable extends MagnoliaTreeTable {
 
     private void buildColumns(WorkbenchDefinition workbenchDefinition, ComponentProvider componentProvider) {
         final Iterator<ColumnDefinition> iterator = workbenchDefinition.getColumns().iterator();
-        ArrayList<String> columnOrder = new ArrayList<String>();
-
+        final List<String> columnOrder = new ArrayList<String>();
         while (iterator.hasNext()) {
-            ColumnDefinition column = iterator.next();
-            if(workbenchDefinition.isDialogWorkbench() && !column.isDisplayInDialog()) {
+            final ColumnDefinition column = iterator.next();
+            if (workbenchDefinition.isDialogWorkbench() && !column.isDisplayInDialog()) {
                 continue;
             }
-            String columnName = column.getName();
-            String columnProperty = "";
-            if (column.getPropertyName() != null) {
-                columnProperty = column.getPropertyName();
-            } else {
-                columnProperty = columnName;
-            }
-            //FIXME fgrilli workaround for conference
-            //when setting cols width in dialogs we are forced to use explicit px value instead of expand ratios, which for some reason don't work
-            if(workbenchDefinition.isDialogWorkbench()) {
+            final String columnProperty = column.getPropertyName() != null ? column.getPropertyName() : column.getName();
+            // FIXME fgrilli workaround for conference
+            // when setting cols width in dialogs we are forced to use explicit
+            // px value instead of expand ratios, which for some reason don't
+            // work
+            if (workbenchDefinition.isDialogWorkbench()) {
                 setColumnWidth(columnProperty, 300);
             } else {
-                if(column.getWidth() > 0 ) {
+                if (column.getWidth() > 0) {
                     setColumnWidth(columnProperty, column.getWidth());
                 } else {
                     setColumnExpandRatio(columnProperty, column.getExpandRatio());
                 }
             }
-
             setColumnHeader(columnProperty, column.getLabel());
             container.addContainerProperty(columnProperty, column.getType(), "");
-            //Set Formatter
-            if(StringUtils.isNotBlank(column.getFormatterClass())) {
+            // Set Formatter
+            if (StringUtils.isNotBlank(column.getFormatterClass())) {
                 try {
-                    addGeneratedColumn(columnProperty, (ColumnFormatter)componentProvider.newInstance(Class.forName(column.getFormatterClass()),column));
+                    addGeneratedColumn(columnProperty,
+                            (ColumnFormatter) componentProvider.newInstance(Class.forName(column.getFormatterClass()), column));
                 } catch (ClassNotFoundException e) {
-                    log.error("Not able to create the Formatter",e);
+                    log.error("Not able to create the Formatter", e);
                 }
             } else {
                 container.addContainerProperty(columnProperty, column.getType(), "");
@@ -247,7 +241,6 @@ public class WorkbenchTreeTable extends MagnoliaTreeTable {
             columnOrder.add(columnProperty);
         }
         setContainerDataSource(container);
-        //Set Column order
         setVisibleColumns(columnOrder.toArray());
     }
 

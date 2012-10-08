@@ -34,12 +34,15 @@
 package info.magnolia.ui.admincentral.dialog.action;
 
 import static org.junit.Assert.assertEquals;
+import info.magnolia.ui.admincentral.dialog.DialogPresenter.DialogCloseEvent.Handler;
+import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
 import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.event.HandlerRegistration;
 import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.widget.dialog.FormSection;
+import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.widget.dialog.FormDialog;
 import info.magnolia.ui.widget.dialog.FormDialogView;
-import info.magnolia.ui.widget.dialog.FormDialogPresenter;
+import info.magnolia.ui.widget.dialog.FormSection;
 
 import java.util.List;
 
@@ -114,7 +117,7 @@ public class CallbackDialogActionTest {
         this.dialogActionDefinition.setSuccessActionName(successActionName!=null?successActionName:"success");
     }
 
-    public static class DialogPresenterTest implements FormDialogPresenter.Presenter {
+    public static class DialogPresenterTest implements FormDialogPresenter {
 
         private String callbackActionCalled;
         public String getCallbackActionCalled() {
@@ -202,11 +205,23 @@ public class CallbackDialogActionTest {
                 public Item getItemDataSource() {
                     return null;
                 }
+
+                @Override
+                public void addAction(String actionName, String actionLabel, DialogActionCallback callback) {
+                    // TODO Auto-generated method stub
+                    
+                }
+
+                @Override
+                public void addActionCallback(String actionName, DialogActionCallback callback) {
+                    // TODO Auto-generated method stub
+                    
+                }
             };
         }
 
         @Override
-        public Item getItem() {
+        public Item getItemDataSource() {
             return item;
         }
 
@@ -226,6 +241,19 @@ public class CallbackDialogActionTest {
 
         @Override
         public void closeDialog() {
+        }
+
+        @Override
+        public void addActionFromDefinition(DialogActionDefinition actionDefinition) {
+            // TODO Auto-generated method stub
+            
+        }
+        
+
+        @Override
+        public HandlerRegistration addDialogCloseListener(Handler listener) {
+            // TODO Auto-generated method stub
+            return null;
         }
 
     }

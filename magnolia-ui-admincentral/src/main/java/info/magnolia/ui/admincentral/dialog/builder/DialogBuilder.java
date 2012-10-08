@@ -38,7 +38,6 @@ import info.magnolia.ui.admincentral.dialog.Dialog;
 import info.magnolia.ui.admincentral.dialog.DialogTab;
 import info.magnolia.ui.admincentral.field.FieldBuilder;
 import info.magnolia.ui.admincentral.field.builder.DialogFieldFactory;
-import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.model.tab.definition.TabDefinition;
@@ -55,13 +54,12 @@ import com.vaadin.ui.Field;
  * Builder for Dialogs.
  */
 public class DialogBuilder {
-
     /**
      * @return DialogView populated with values from DialogDefinition and Item.
      */
-    public DialogView build(DialogFieldFactory dialogFieldFactory, DialogDefinition dialogDefinition, Item item, FormDialogView view) {
+    public DialogView buildFormDialog(DialogFieldFactory dialogFieldFactory, DialogDefinition dialogDefinition, Item item, FormDialogView view) {
 
-        Dialog dialog = new Dialog(dialogDefinition);
+        final Dialog dialog = new Dialog(dialogDefinition);
         view.setItemDataSource(item);
 
         final String description = dialogDefinition.getDescription();
@@ -72,6 +70,7 @@ public class DialogBuilder {
             String i18nDescription = MessagesUtil.getWithDefault(description, description, basename);
             view.setDialogDescription(i18nDescription);
         }
+        
         if (StringUtils.isNotBlank(label)) {
             String i18nLabel = MessagesUtil.getWithDefault(label, label, basename);
             view.setCaption(i18nLabel);
@@ -80,34 +79,25 @@ public class DialogBuilder {
         for (TabDefinition tabDefinition : dialogDefinition.getTabs()) {
             final DialogTab tab = new DialogTab(tabDefinition);
             tab.setParent(dialog);
-            for (FieldDefinition fieldDefinition : tabDefinition.getFields()) {
-                FieldBuilder dialogField = dialogFieldFactory.create(fieldDefinition, item);
-                if(dialogField == null) {
-                    continue; //This can happen in case of extends/override. FieldDefinition is ConfiguredFieldDefinition and of course no builder is linked to this.
-                }
-                dialogField.setParent(tab);
-                Field field = dialogField.getField();
-                if (field instanceof AbstractComponent) {
-                    ((AbstractComponent)field).setImmediate(true);
-                }
-                tab.addField(field);
-                if(StringUtils.isNotBlank(fieldDefinition.getDescription())) {
-                    tab.setComponentHelpDescription(field, fieldDefinition.getDescription());
-                }
-                view.addField(field);
+            for (final FieldDefinition fieldDefinition : tabDefinition.getFields()) {
+                final FieldBuilder dialogField = dialogFieldFactory.create(fieldDefinition, item);
+                if (dialogField != null) {
+                    dialogField.setParent(tab);
+                    final Field field = dialogField.getField();
+                    if (field instanceof AbstractComponent) {
+                        ((AbstractComponent)field).setImmediate(true);
+                    }
+                    tab.addField(field);
+                    if(StringUtils.isNotBlank(fieldDefinition.getDescription())) {
+                        tab.setComponentHelpDescription(field, fieldDefinition.getDescription());
+                    }
+                    view.addField(field);
+                } //This can happen in case of extends/override. FieldDefinition is ConfiguredFieldDefinition and of course no builder is linked to this.
             }
             view.addDialogSection(tab.getMessage(tabDefinition.getLabel()), tab.getContainer());
         }
-
-        if(dialogDefinition.getTabs().size() <=1) {
-            view.setShowAllEnabled(false);
-        } else {
-            view.setShowAllEnabled(true);
-        }
-
-        for (DialogActionDefinition action : dialogDefinition.getActions()) {
-            view.addAction(action.getName(), action.getLabel());
-        }
+        
+        view.setShowAllEnabled(dialogDefinition.getTabs().size() > 1);
         return view;
     }
 }

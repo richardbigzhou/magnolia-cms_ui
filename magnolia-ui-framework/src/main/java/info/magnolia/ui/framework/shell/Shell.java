@@ -57,4 +57,5 @@ public interface Shell {
     void registerApps(List<String> appNames);
     
     void pushToClient();
+    
 }

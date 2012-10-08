@@ -100,7 +100,7 @@ public class DialogBuilderTest {
         final FormDialog dialog = new FormDialog();
 
         // WHEN
-        final DialogView result = builder.build(null, def, null, dialog);
+        final DialogView result = builder.buildFormDialog(null, def, null, dialog);
 
         // THEN
         assertEquals(result, dialog);
@@ -135,7 +135,7 @@ public class DialogBuilderTest {
         when(dialogFieldFactory.create(same(fieldDef), same(item))).thenReturn(editField);
 
         // WHEN
-        final DialogView result = builder.build(dialogFieldFactory, dialogDef, item, dialog);
+        final DialogView result = builder.buildFormDialog(dialogFieldFactory, dialogDef, item, dialog);
 
         // THEN
         assertEquals(result, dialog);

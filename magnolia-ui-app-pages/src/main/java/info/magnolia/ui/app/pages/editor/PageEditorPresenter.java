@@ -40,7 +40,8 @@ import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.rendering.template.TemplateDefinition;
 import info.magnolia.rendering.template.registry.TemplateDefinitionRegistry;
-import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
+import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
+import info.magnolia.ui.admincentral.dialog.FormDialogPresenterFactory;
 import info.magnolia.ui.admincentral.event.ContentChangedEvent;
 import info.magnolia.ui.app.pages.field.ComponentSelectorDefinition;
 import info.magnolia.ui.app.pages.field.TemplateSelectorField;
@@ -52,7 +53,6 @@ import info.magnolia.ui.model.tab.definition.TabDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.widget.dialog.FormDialogPresenter;
 import info.magnolia.ui.widget.editor.PageEditor;
 import info.magnolia.ui.widget.editor.PageEditorParameters;
 import info.magnolia.ui.widget.editor.PageEditorView;
@@ -84,7 +84,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
     private final EventBus eventBus;
 
-    private final DialogPresenterFactory dialogPresenterFactory;
+    private final FormDialogPresenterFactory dialogPresenterFactory;
 
     private final TemplateDefinitionRegistry templateDefinitionRegistry;
 
@@ -93,7 +93,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
     private PageEditor.AbstractElement selectedElement;
 
     @Inject
-    public PageEditorPresenter(PageEditorView view, @Named("subapp") EventBus eventBus, DialogPresenterFactory dialogPresenterFactory, TemplateDefinitionRegistry templateDefinitionRegistry) {
+    public PageEditorPresenter(PageEditorView view, @Named("subapp") EventBus eventBus, FormDialogPresenterFactory dialogPresenterFactory, TemplateDefinitionRegistry templateDefinitionRegistry) {
         this.view = view;
         this.eventBus = eventBus;
         this.dialogPresenterFactory = dialogPresenterFactory;
@@ -116,7 +116,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
     @Override
     public void editComponent(String workspace, String path, String dialog) {
-        final FormDialogPresenter dialogPresenter = dialogPresenterFactory.createDialog(dialog);
+        final FormDialogPresenter dialogPresenter = dialogPresenterFactory.createDialogPresenterByName(dialog);
 
         try {
             Session session = MgnlContext.getJCRSession(workspace);
@@ -134,7 +134,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
     @Override
     public void newComponent(String workspace, String path, String availableComponents) {
         updateDialogDefinition(availableComponents);
-        final FormDialogPresenter dialogPresenter = dialogPresenterFactory.getDialogPresenter(dialogDefinition);
+        final FormDialogPresenter dialogPresenter = dialogPresenterFactory.createDialogPresenterByDefinition(dialogDefinition);
         try {
             Session session = MgnlContext.getJCRSession(workspace);
 
@@ -158,7 +158,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
                     try {
                         TemplateDefinition templateDef = templateDefinitionRegistry.getTemplateDefinition(templateId);
                         String dialog = templateDef.getDialog();
-                        final FormDialogPresenter dialogPresenter = dialogPresenterFactory.createDialog(dialog);
+                        final FormDialogPresenter dialogPresenter = dialogPresenterFactory.createDialogPresenterByName(dialog);
                         createDialogAction(item, dialogPresenter);
                     } catch (RegistrationException e) {
                         log.error("Exception caught: {}", e.getMessage(), e);

@@ -34,7 +34,7 @@
 package info.magnolia.ui.admincentral.field.builder;
 
 import info.magnolia.jcr.util.SessionUtil;
-import info.magnolia.ui.admincentral.content.view.ChooseDialogContentPresenter;
+import info.magnolia.ui.admincentral.content.view.PickerDialogContentPresenter;
 import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.admincentral.field.TextAndContentViewField;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchViewImpl;
@@ -55,57 +55,58 @@ import com.vaadin.data.Item;
 import com.vaadin.ui.Field;
 
 /**
- * Creates and initializes a {@link TextAndContentViewField} field based on a field definition.
- * This field is used to create an Input text field with a large ContentView area.
- * The column value to handle is coming from the definition. If this value is not set, or the column is not part of the
- * row elements, the <b>Node Path is used</b>.
+ * Creates and initializes a {@link TextAndContentViewField} field based on a
+ * field definition. This field is used to create an Input text field with a
+ * large ContentView area. The column value to handle is coming from the
+ * definition. If this value is not set, or the column is not part of the row
+ * elements, the <b>Node Path is used</b>.
  */
 public class LinkFieldSelectionBuilder extends AbstractFieldBuilder<LinkFieldSelectionDefinition> {
+
     private static final Logger log = LoggerFactory.getLogger(LinkFieldSelectionBuilder.class);
-    private TextAndContentViewField textContent;
-    private EventBus appEventBus;
-    private ChooseDialogContentPresenter contentPresenter;
+
+    private final EventBus appEventBus;
+
+    private final PickerDialogContentPresenter contentPresenter;
+
     private final String propertyName;
 
+    private TextAndContentViewField textContent;
+    
     @Inject
-    public LinkFieldSelectionBuilder(LinkFieldSelectionDefinition definition, Item relatedFieldItem, ChooseDialogContentPresenter contentPresenter,  @Named("choosedialog") final EventBus eventbus) {
+    public LinkFieldSelectionBuilder(LinkFieldSelectionDefinition definition, Item relatedFieldItem,
+            PickerDialogContentPresenter contentPresenter, @Named("choosedialog") final EventBus eventbus) {
         super(definition, relatedFieldItem);
         this.contentPresenter = contentPresenter;
         this.appEventBus = eventbus;
         // Item is build by the LinkFieldBuilder and has only one property.
         // This property has the name of property we are supposed to propagate.
-        propertyName = relatedFieldItem.getItemPropertyIds().iterator().next().toString();
-        // This will allow to set the selected value to the desired property name (handle by AbstractFieldBuilder.getOrCreateProperty())
+        propertyName = String.valueOf(relatedFieldItem.getItemPropertyIds().iterator().next());
+        // This will allow to set the selected value to the desired property
+        // name (handle by AbstractFieldBuilder.getOrCreateProperty())
         definition.setName(propertyName);
     }
 
-
     @Override
     protected Field buildField() {
+        final ContentWorkbenchViewImpl parentView = new ContentWorkbenchViewImpl();
         textContent = new TextAndContentViewField(definition.isDisplayTextField(), definition.isDisplayTextFieldOnTop());
-
-        ContentWorkbenchViewImpl parentView = new ContentWorkbenchViewImpl();
         contentPresenter.initContentView(parentView);
         textContent.setContentView(parentView);
-
         // Set selected item.
-        setSelected(parentView);
-
+        restoreContentSelection();
         // On a selected Item, propagate the specified Column Value to the TextField.
         appEventBus.addHandler(ItemSelectedEvent.class, new ItemSelectedEvent.Handler() {
             @Override
             public void onItemSelected(ItemSelectedEvent event) {
-                Node selected = SessionUtil.getNode(event.getWorkspace(), event.getPath());
-                if(selected != null) {
+                final Node selected = SessionUtil.getNode(event.getWorkspace(), event.getPath());
+                if (selected != null) {
                     try {
-                        if(StringUtils.isNotBlank(propertyName) && !LinkFieldBuilder.PATH_PROPERTY_NAME.equals(propertyName) && selected.hasProperty(propertyName)) {
-                            textContent.setValue(selected.getProperty(propertyName).getString());
-                        } else {
-                            textContent.setValue(selected.getPath());
-                        }
-                    }
-                    catch (RepositoryException e) {
-                        log.error("Not able to access the configured property. Value will not be set.",e);
+                        boolean isPropertyExisting = StringUtils.isNotBlank(propertyName)
+                                && !LinkFieldBuilder.PATH_PROPERTY_NAME.equals(propertyName) && selected.hasProperty(propertyName);
+                        textContent.setValue(isPropertyExisting ? selected.getProperty(propertyName).getString() : selected.getPath());
+                    } catch (RepositoryException e) {
+                        log.error("Not able to access the configured property. Value will not be set.", e);
                     }
                 }
             }
@@ -113,21 +114,18 @@ public class LinkFieldSelectionBuilder extends AbstractFieldBuilder<LinkFieldSel
         return textContent;
     }
 
-
     @Override
-    protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {
+    protected Class<String> getDefaultFieldType(FieldDefinition fieldDefinition) {
         return String.class;
     }
 
     /**
-     * Set the selected item <b> only </b> if the
-     * property is the Item id (node path).
+     * Set the selected item <b> only </b> if the property is the Item id (node path).
      */
-    private void setSelected(ContentWorkbenchViewImpl parentView) {
-        String path = contentPresenter.getRootPath();
-        if(LinkFieldBuilder.PATH_PROPERTY_NAME.equals(propertyName) && StringUtils.isNotBlank(item.getItemProperty(propertyName).getValue().toString())) {
-            path = item.getItemProperty(propertyName).getValue().toString();
-        }
-        parentView.selectPath(path);
+    private void restoreContentSelection() {
+        final String propertyValue = String.valueOf(item.getItemProperty(propertyName).getValue());
+        final String path = LinkFieldBuilder.PATH_PROPERTY_NAME.equals(propertyName) && StringUtils.isNotBlank(propertyValue) ? propertyValue
+                : contentPresenter.getRootPath();
+        textContent.getContentView().selectPath(path);
     }
 }

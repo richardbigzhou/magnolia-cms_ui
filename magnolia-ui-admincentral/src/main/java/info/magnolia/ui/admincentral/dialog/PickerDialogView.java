@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,38 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.content;
+package info.magnolia.ui.admincentral.dialog;
 
-import com.rits.cloning.Cloner;
-
-import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
-import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
-
+import info.magnolia.ui.widget.dialog.DialogView;
 
 /**
- * Base implementation for content app descriptor.
- * 
+ * View interface of Value Selection Dialog.
  */
-@SuppressWarnings("serial")
-public class ConfiguredContentAppDescriptor extends ConfiguredAppDescriptor implements ContentAppDescriptor {
-
-    private WorkbenchDefinition workbench;
-
-    @Override
-    public WorkbenchDefinition getWorkbench() {
-        return workbench;
-    }
-
-    public void setWorkbench(WorkbenchDefinition workbench) {
-        this.workbench = workbench;
-    }
-
-    @Override
-    public WorkbenchDefinition getWorkbenchCopy() {
-        if (workbench != null) {
-            return new Cloner().deepClone(workbench);
-        }
-        return null;
-    }
-
+public interface PickerDialogView extends DialogView {
+    
+    void setCancelActionCaption(final String caption);
+    
+    void setSelectionActionCaption(final String caption);
+    
 }

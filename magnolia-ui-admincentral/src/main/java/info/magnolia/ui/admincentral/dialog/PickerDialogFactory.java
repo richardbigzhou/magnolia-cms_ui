@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,56 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.widget.dialog;
+package info.magnolia.ui.admincentral.dialog;
 
-import info.magnolia.ui.framework.event.EventBus;
 
-import com.vaadin.data.Item;
+/**
+ * Factory interface for creating Value Picker Dialogs.
+ */
+public interface PickerDialogFactory {
 
-    /**
-     * DialogView.Presenter.
-     */
-    public interface FormDialogPresenter {
-
-        /**
-         * Callback interface for DialogView.Presenter.
-         */
-        public interface Callback {
-
-            void onCancel();
-
-            void onSuccess(String actionName);
-            
-            /**
-             * Dummy adapter class that allows to skip overriding e.g. onCancel method in actual
-             * implementors.
-             */
-            public static class Adapter implements Callback {
-                
-                @Override
-                public void onSuccess(String actionName) {}
-                
-                @Override
-                public void onCancel() {}
-                
-            }
-            
-        }
-
-        Callback getCallback();
-
-        FormDialogView getView();
-
-        Item getItem();
-
-        EventBus getEventBus();
-
-        DialogView start(Item item, Callback callback);
-
-        void showValidation(boolean isVisible);
-
-        //FIXME Should it still be called so?
-        void closeDialog();
-
-    }
-
+    public WorkbenchPickerDialogPresenter createWorkbenchValuePickerDialog();
+}

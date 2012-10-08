@@ -81,7 +81,7 @@ public class PagesMainSubApp extends AbstractSubApp implements PagesMainView.Lis
             }
         });
     }
-
+    
     @Override
     public String getCaption() {
         return CAPTION;

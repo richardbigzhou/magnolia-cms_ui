@@ -41,21 +41,22 @@ import info.magnolia.ui.framework.view.View;
 public interface DialogView extends View {
 
     /**
+     * Action execution callback.
+     */
+    interface DialogActionCallback {
+        
+        void onActionExecuted();
+    }
+    
+    /**
      * Base interface for an MagnoliaDialogView listener.
      */
     interface Listener {
-        /**
-         * Execute a specific action {@link info.magnolia.ui.model.action.Action}.
-         */
-        void executeAction(String actionName);
-
         /**
          * Close current Dialog.
          */
         void closeDialog();
     }
-    
-    void addAction(String actionName, String actionLabel);
     
     void setListener(Listener listener);
     

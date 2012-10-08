@@ -31,38 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.content;
+package info.magnolia.ui.admincentral.dialog;
 
-import com.rits.cloning.Cloner;
-
-import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
-import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.admincentral.dialog.ValuePickListener.HasValuePickListener;
 
 
 /**
- * Base implementation for content app descriptor.
- * 
+ * Base Dialog that allows to pick value.
+ * @param <T> Value type
  */
-@SuppressWarnings("serial")
-public class ConfiguredContentAppDescriptor extends ConfiguredAppDescriptor implements ContentAppDescriptor {
-
-    private WorkbenchDefinition workbench;
-
+public interface ValuePickerDialogPresenter<T> extends DialogPresenter, HasValuePickListener<T> {
+    
+    public T getValue();
+    
     @Override
-    public WorkbenchDefinition getWorkbench() {
-        return workbench;
-    }
-
-    public void setWorkbench(WorkbenchDefinition workbench) {
-        this.workbench = workbench;
-    }
-
-    @Override
-    public WorkbenchDefinition getWorkbenchCopy() {
-        if (workbench != null) {
-            return new Cloner().deepClone(workbench);
-        }
-        return null;
-    }
+    public PickerDialogView getView();
 
 }

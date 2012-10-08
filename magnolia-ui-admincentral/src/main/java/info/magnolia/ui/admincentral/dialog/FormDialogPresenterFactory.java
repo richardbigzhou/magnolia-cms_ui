@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,38 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.content;
+package info.magnolia.ui.admincentral.dialog;
 
-import com.rits.cloning.Cloner;
-
-import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
-import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
-
+import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 
 /**
- * Base implementation for content app descriptor.
- * 
+ * Creates {@link FormDialogPresenterImpl} instances that are use to display a dialog.
  */
-@SuppressWarnings("serial")
-public class ConfiguredContentAppDescriptor extends ConfiguredAppDescriptor implements ContentAppDescriptor {
+public interface FormDialogPresenterFactory {
 
-    private WorkbenchDefinition workbench;
+    FormDialogPresenter createDialogPresenterByName(String dialogName);
 
-    @Override
-    public WorkbenchDefinition getWorkbench() {
-        return workbench;
-    }
+    FormDialogPresenter createDialogPresenterByDefinition(DialogDefinition definition);
 
-    public void setWorkbench(WorkbenchDefinition workbench) {
-        this.workbench = workbench;
-    }
-
-    @Override
-    public WorkbenchDefinition getWorkbenchCopy() {
-        if (workbench != null) {
-            return new Cloner().deepClone(workbench);
-        }
-        return null;
-    }
-
+    DialogDefinition getDialogDefinition(String dialogName) throws RuntimeException;
 }

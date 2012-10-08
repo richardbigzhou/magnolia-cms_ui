@@ -35,6 +35,7 @@ package info.magnolia.ui.admincentral.event;
 
 import info.magnolia.ui.framework.event.Event;
 import info.magnolia.ui.framework.event.EventHandler;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
 
 /**
@@ -53,11 +54,11 @@ public class ItemSelectedEvent implements Event<ItemSelectedEvent.Handler> {
 
     private String workspace;
 
-    private String path;
+    private JcrItemAdapter item;
 
-    public ItemSelectedEvent(String workspace, String path) {
+    public ItemSelectedEvent(String workspace, JcrItemAdapter item) {
         this.workspace = workspace;
-        this.path = path;
+        this.item = item;
     }
 
     public String getWorkspace() {
@@ -65,7 +66,11 @@ public class ItemSelectedEvent implements Event<ItemSelectedEvent.Handler> {
     }
 
     public String getPath() {
-        return path;
+        return item != null ? item.getItemId() : null;
+    }
+    
+    public JcrItemAdapter getItem() {
+        return item;
     }
 
     @Override

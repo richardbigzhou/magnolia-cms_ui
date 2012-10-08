@@ -34,10 +34,10 @@
 package info.magnolia.ui.admincentral.dialog.action;
 
 import info.magnolia.jcr.util.MetaDataUtil;
+import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.widget.dialog.FormDialogPresenter;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -53,16 +53,17 @@ import com.vaadin.data.Item;
  * @see SaveDialogActionDefinition
  */
 public class SaveDialogAction extends ActionBase<SaveDialogActionDefinition> {
-
+   
     private static final Logger log = LoggerFactory.getLogger(SaveDialogAction.class);
 
     private Item item;
+    
     private FormDialogPresenter presenter;
 
     public SaveDialogAction(SaveDialogActionDefinition definition, FormDialogPresenter presenter) {
         super(definition);
         this.presenter = presenter;
-        this.item = presenter.getItem();
+        this.item = presenter.getItemDataSource();
     }
 
     @Override

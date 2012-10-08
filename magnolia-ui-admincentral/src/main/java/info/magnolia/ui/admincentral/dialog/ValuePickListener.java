@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,17 +33,25 @@
  */
 package info.magnolia.ui.admincentral.dialog;
 
-import info.magnolia.ui.model.dialog.definition.DialogDefinition;
-import info.magnolia.ui.widget.dialog.FormDialogPresenter;
-
 /**
- * Creates {@link FormDialogPresenterImpl} instances that are use to display a dialog.
+ * Interface for value selection providers.
+ * @param <VT> Value Type.
  */
-public interface DialogPresenterFactory {
+public interface ValuePickListener<VT> {
 
-    FormDialogPresenter createDialog(String dialogName);
-
-    FormDialogPresenter getDialogPresenter(DialogDefinition definition);
-
-    DialogDefinition getDialogDefinition(String dialogName) throws RuntimeException;
+    void onValueSelected(VT pickedValue);
+    
+    void selectionCanceled();
+    
+    /**
+     * Indicates that the implementor can accept {@link ValuePickListener}.
+     * @param <VT>
+     */
+    interface HasValuePickListener<VT> {
+        
+        void addValuePickListener(final ValuePickListener<VT> listener);
+        
+        void removeValuePickListener(final ValuePickListener<VT> listener);
+    }
+    
 }

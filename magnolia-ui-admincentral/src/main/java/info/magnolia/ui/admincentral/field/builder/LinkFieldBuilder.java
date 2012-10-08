@@ -34,6 +34,8 @@
 package info.magnolia.ui.admincentral.field.builder;
 
 import info.magnolia.ui.admincentral.app.content.AbstractContentApp;
+import info.magnolia.ui.admincentral.dialog.ValuePickListener;
+import info.magnolia.ui.admincentral.dialog.ValuePickerDialogPresenter;
 import info.magnolia.ui.admincentral.field.TextAndButtonField;
 import info.magnolia.ui.admincentral.field.translator.IdentifierToPathTranslator;
 import info.magnolia.ui.framework.app.App;
@@ -41,18 +43,17 @@ import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.model.field.definition.LinkFieldDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
-import info.magnolia.ui.widget.dialog.FormDialogPresenter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
 import javax.inject.Inject;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
-import com.vaadin.data.Property;
-import com.vaadin.data.util.PropertysetItem;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Field;
@@ -72,7 +73,7 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
     private AppController appController;
 
     @Inject
-    public LinkFieldBuilder(LinkFieldDefinition definition, Item relatedFieldItem, AppController appController ) {
+    public LinkFieldBuilder(LinkFieldDefinition definition, Item relatedFieldItem, AppController appController) {
         super(definition, relatedFieldItem);
         this.appController = appController;
     }
@@ -81,11 +82,11 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
     protected Field buildField() {
         // Create Translator if we need to store the Identifier
         IdentifierToPathTranslator translator = null;
-        if(definition.isIdentifier()) {
+        if (definition.isIdentifier()) {
             translator = new IdentifierToPathTranslator(definition.getWorkspace());
         }
         textButton = new TextAndButtonField(translator, getMessage(definition.getButtonSelectNewLabel()), getMessage(definition.getButtonSelectOtherLabel()));
-        Button selectButton = textButton.getSelectButton();
+        final Button selectButton = textButton.getSelectButton();
 
         if(StringUtils.isNotBlank(definition.getDialogName()) || StringUtils.isNotBlank(definition.getAppName())) {
             selectButton.addListener(createButtonClickListener(definition.getDialogName(), definition.getAppName()));
@@ -112,20 +113,32 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
                 final String propertyName = getPropertyName();
                 final App targetApp = appController.startIfNotAlreadyRunning(appName, new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appName, ""));
                 if(targetApp != null) {
-                    // Create the Transient Item used to propagate the property between Dialogs.
-                    final PropertysetItem item = new PropertysetItem();
-                    final Property property = DefaultPropertyUtil.newDefaultProperty(propertyName, null, String.valueOf(textButton.getTextField().getValue()));
-                    item.addItemProperty(propertyName, property);
-                    final FormDialogPresenter.Callback callback = new FormDialogPresenter.Callback.Adapter() {
-                        @Override
-                        public void onSuccess(String actionName) {
-                            final Property p = item.getItemProperty(propertyName);
-                            textButton.setValue(p.getValue());
-                            log.debug("Got following value from Sub Window {}", p.getValue());
-                        }
-                    };
-                    if(targetApp instanceof AbstractContentApp) {
-                        ((AbstractContentApp)targetApp).openChooseDialog(dialogName, callback, item);
+                    if (targetApp instanceof AbstractContentApp) {
+                        final ValuePickerDialogPresenter<Item> pickerPresenter = ((AbstractContentApp) targetApp).openWorkbenchPickerDialog();
+                        pickerPresenter.addValuePickListener(new ValuePickListener<Item>() {
+
+                            @Override
+                            public void onValueSelected(Item pickedValue) {
+                                javax.jcr.Item jcrItem = ((JcrItemAdapter)pickedValue).getJcrItem();
+                                if (jcrItem.isNode()) {
+                                    final Node selected = (Node)jcrItem;
+                                    try {
+                                        boolean isPropertyExisting = StringUtils.isNotBlank(propertyName) && 
+                                                !PATH_PROPERTY_NAME.equals(propertyName) &&
+                                                selected.hasProperty(propertyName);
+                                        textButton.setValue(isPropertyExisting ? selected.getProperty(propertyName).getString() : selected.getPath());
+                                    } catch (RepositoryException e) {
+                                        log.error("Not able to access the configured property. Value will not be set.", e);
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void selectionCanceled() {
+                                
+                            }
+
+                        });
                     }
                 }
             }

@@ -202,9 +202,20 @@
     </configurer>
 
     <component>
-      <type>info.magnolia.ui.admincentral.dialog.DialogPresenterFactory</type>
-      <implementation>info.magnolia.ui.admincentral.dialog.DialogPresenterFactoryImpl</implementation>
+      <type>info.magnolia.ui.admincentral.dialog.FormDialogPresenterFactory</type>
+      <implementation>info.magnolia.ui.admincentral.dialog.FormDialogPresenterFactoryImpl</implementation>
     </component>
+	
+	<component>
+      <type>info.magnolia.ui.admincentral.dialog.PickerDialogFactory</type>
+      <implementation>info.magnolia.ui.admincentral.dialog.PickerDialogFactoryImpl</implementation>
+    </component>
+
+	<component>
+      <type>info.magnolia.ui.admincentral.content.view.WorkbenchValuePickerDialog</type>
+      <implementation>info.magnolia.ui.admincentral.content.view.WorkbenchValuePickerDialog</implementation>
+    </component>
+        
     <component>
       <type>info.magnolia.ui.widget.dialog.MagnoliaDialogView</type>
       <implementation>info.magnolia.ui.widget.dialog.Dialog</implementation>
@@ -241,15 +252,42 @@
       <implementation>info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactoryImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.content.view.ChooseDialogContentPresenter</type>
-      <implementation>info.magnolia.ui.admincentral.content.view.ChooseDialogContentPresenter</implementation>
+      <type>info.magnolia.ui.admincentral.content.view.PickerDialogContentPresenter</type>
+      <implementation>info.magnolia.ui.admincentral.content.view.PickerDialogContentPresenter</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.content.view.WorkbenchValuePickerDialog</type>
+      <implementation>info.magnolia.ui.admincentral.content.view.WorkbenchValuePickerDialog</implementation>
+    </component>
+
+    <component>
+      <type>info.magnolia.ui.admincentral.content.view.WorkbenchValuePickerDialog</type>
+      <implementation>info.magnolia.ui.admincentral.content.view.WorkbenchValuePickerDialog</implementation>
+    </component>
+    
+    <component>
+      <type>info.magnolia.ui.admincentral.dialog.PickerDialogView</type>
+      <implementation>info.magnolia.ui.admincentral.content.view.WorkbenchValuePickerDialog</implementation>
     </component>
 
     <component>
       <type>info.magnolia.ui.model.thumbnail.ImageProvider</type>
       <implementation>info.magnolia.ui.model.thumbnail.DefaultImageProvider</implementation>
     </component>
+    
+      <component>
+      <type>info.magnolia.ui.admincentral.content.view.WorkbenchValuePickerDialog</type>
+      <implementation>info.magnolia.ui.admincentral.content.view.WorkbenchValuePickerDialog</implementation>
+    </component>
+    
+      <component>
+      <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchView</type>
+      <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbenchViewImpl</implementation>
+    </component>    
+    
   </components>
+  
+
 
   <components>
     <id>subapp</id>

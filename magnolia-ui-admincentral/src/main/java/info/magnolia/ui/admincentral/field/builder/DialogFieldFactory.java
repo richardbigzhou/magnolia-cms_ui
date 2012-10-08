@@ -55,7 +55,7 @@ import com.vaadin.data.Item;
  * @see FieldBuilder
  */
 public class DialogFieldFactory extends FactoryBase<FieldDefinition, FieldBuilder> implements Serializable {
-
+    
     private ValidatorFieldFactory validatorFieldFactory;
     private I18nContentSupport i18nContentSupport;
 

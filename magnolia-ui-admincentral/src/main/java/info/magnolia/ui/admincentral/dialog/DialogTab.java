@@ -46,7 +46,7 @@ import com.vaadin.ui.Field;
  * @see info.magnolia.ui.admincentral.field.FieldBuilder
  */
 public class DialogTab extends AbstractDialogItem {
-
+    
     //private static final String FIELD_CONTAINER_STYLE_NAME = "field-container";
 
     private TabDefinition definition;

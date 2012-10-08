@@ -70,7 +70,7 @@ public class ContactsMainSubApp extends AbstractSubApp {
     private final ContactsView view;
 
     private final ContentWorkbenchPresenter workbench;
-
+    
     @Inject
     public ContactsMainSubApp(final AppContext appContext, ContactsView view, ContentWorkbenchPresenter workbench, @Named("subapp") EventBus subAppEventBus) {
         this.view = view;

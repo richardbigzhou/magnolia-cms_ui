@@ -39,56 +39,41 @@ import info.magnolia.ui.admincentral.dialog.builder.DialogBuilder;
 import info.magnolia.ui.admincentral.field.builder.DialogFieldFactory;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.model.action.Action;
-import info.magnolia.ui.model.action.ActionDefinition;
-import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 import info.magnolia.ui.widget.dialog.DialogView;
 import info.magnolia.ui.widget.dialog.FormDialogView;
-import info.magnolia.ui.widget.dialog.FormDialogPresenter;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import com.vaadin.data.Item;
 
 /**
  * Dialog Presenter and Listener implementation.
  */
-public class FormDialogPresenterImpl implements FormDialogPresenter,  DialogView.Listener{
+public class FormDialogPresenterImpl extends BaseDialogPresenter implements FormDialogPresenter {
 
     private final DialogBuilder dialogBuilder;
-
+    
     private final DialogFieldFactory dialogFieldFactory;
 
     private final DialogDefinition dialogDefinition;
 
     private final MagnoliaShell shell;
 
-    private final EventBus eventBus;
-
     private final FormDialogView view;
-
-    private final DialogActionFactory actionFactory;
-
-    private final Map<String, ActionDefinition> actionMap = new HashMap<String, ActionDefinition>();
-
+    
     private Item item;
 
     private Callback callback;
 
     public FormDialogPresenterImpl(final FormDialogView view, final DialogBuilder dialogBuilder, final DialogFieldFactory dialogFieldFactory, 
-            final DialogDefinition dialogDefinition, final Shell shell, final EventBus eventBus, final DialogActionFactory actionFactory) {
+            final DialogDefinition dialogDefinition, final Shell shell, EventBus eventBus, final DialogActionFactory actionFactory) {
+        super(actionFactory, view, eventBus);
         this.view = view;
         this.dialogBuilder = dialogBuilder;
         this.dialogFieldFactory = dialogFieldFactory;
         this.dialogDefinition = dialogDefinition;
         this.shell = (MagnoliaShell)shell;
-        this.eventBus = eventBus;
-        this.actionFactory = actionFactory;
         this.view.setListener(this);
-
         initActions(dialogDefinition);
     }
 
@@ -96,8 +81,8 @@ public class FormDialogPresenterImpl implements FormDialogPresenter,  DialogView
     public DialogView start(final Item item, Callback callback) {
         this.item = item;
         this.callback = callback;
-        dialogBuilder.build(dialogFieldFactory, dialogDefinition, item, view);
-        shell.openDialog(view.asVaadinComponent());
+        dialogBuilder.buildFormDialog(dialogFieldFactory, dialogDefinition, item, view);
+        shell.openDialog(this);
         return view;
     }
 
@@ -107,20 +92,9 @@ public class FormDialogPresenterImpl implements FormDialogPresenter,  DialogView
         // clear the view!
     }
 
-    @Override
-    public void executeAction(final String actionName) {
-        final ActionDefinition actionDefinition = actionMap.get(actionName);
-        final Action action = actionFactory.createAction(actionDefinition, this);
-        try {
-            action.execute();
-        } catch (final ActionExecutionException e) {
-            e.printStackTrace();
-        }
-    }
-
     private void initActions(final DialogDefinition dialogDefinition) {
         for (final DialogActionDefinition action : dialogDefinition.getActions()) {
-            actionMap.put(action.getName(), action.getActionDefinition());
+            addActionFromDefinition(action);
         }
     }
 
@@ -129,20 +103,14 @@ public class FormDialogPresenterImpl implements FormDialogPresenter,  DialogView
         view.showValidation(isVisible);
     }
 
-
     @Override
     public FormDialogView getView() {
         return view;
     }
 
     @Override
-    public Item getItem() {
+    public Item getItemDataSource() {
         return item;
-    }
-
-    @Override
-    public EventBus getEventBus() {
-        return eventBus;
     }
 
     @Override
