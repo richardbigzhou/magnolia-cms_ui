@@ -85,6 +85,8 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
 
     public static final String MAIN_SUBAPP_ID = "main";
 
+    private static final String DEFAULT_TOKEN = MAIN_SUBAPP_ID +":/:" + ViewType.TREE.getText();
+
     private DefaultLocation currentLocation;
     private ContentWorkbenchPresenter workbench;
     private ContentAppView view;
@@ -218,8 +220,7 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
      * Creates a default location for the current subapp whose token has the form <code>main:/:tree</code>.
      */
     public static final DefaultLocation createLocation() {
-        String token = MAIN_SUBAPP_ID +":/:" + ViewType.TREE.getText();
-        return new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, getAppName(), token);
+        return new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, getAppName(), DEFAULT_TOKEN);
     }
 
     public static final String getSubAppId(final Location location) {
