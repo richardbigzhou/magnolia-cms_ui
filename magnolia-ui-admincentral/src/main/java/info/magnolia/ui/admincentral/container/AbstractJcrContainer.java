@@ -75,8 +75,6 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     private static final Logger log = LoggerFactory.getLogger(AbstractJcrContainer.class);
 
-    public static final String ITEM_ICON_PROPERTY_ID = "mgnl_item_icon";
-
     private Set<ItemSetChangeListener> itemSetChangeListeners;
 
     private Set<PropertySetChangeListener> propertySetChangeListeners;
@@ -102,7 +100,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     private final List<OrderBy> sorters = new ArrayList<OrderBy>();
 
-    private final String workspace;
+    private final WorkbenchDefinition workbenchDefinition;
 
     /** Starting row number of the currently fetched page. */
     private int currentOffset;
@@ -121,16 +119,13 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     protected static final String ORDER_BY = " order by";
 
-    // TODO dlipp - this will got with SCRUM-1834
-    protected static final String META_DATA_PROPERTY_TO_BE_REPLACED_FOR_ORDER_BY = "MetaData/";
+    protected static final String SUBNODE_SEPARATOR = "/";
 
     protected static final String XPATH_PROPERTY_PREFIX = "@";
 
-    protected static final String DEFAULT_ORDER = " " + XPATH_PROPERTY_PREFIX + "name" + XPATH_ASCENDING;
-
     public AbstractJcrContainer(JcrContainerSource jcrContainerSource, WorkbenchDefinition workbenchDefinition) {
         this.jcrContainerSource = jcrContainerSource;
-        workspace = workbenchDefinition.getWorkspace();
+        this.workbenchDefinition = workbenchDefinition;
 
         for (ColumnDefinition columnDefinition : workbenchDefinition.getColumns()) {
             if (columnDefinition.isSortable()) {
@@ -201,7 +196,6 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     }
 
     public void firePropertySetChange() {
-
         log.debug("Firing property set changed");
         if (propertySetChangeListeners != null && !propertySetChangeListeners.isEmpty()) {
             final Container.PropertySetChangeEvent event = new AbstractContainer.PropertySetChangeEvent();
@@ -243,7 +237,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
             return null;
         }
         try {
-            final Session jcrSession = MgnlContext.getJCRSession(workspace);
+            final Session jcrSession = MgnlContext.getJCRSession(getWorkspace());
             if(!jcrSession.itemExists((String) itemId)) {
                 return null;
             }
@@ -286,7 +280,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
         }
 
         try {
-            final Session jcrSession = MgnlContext.getJCRSession(workspace);
+            final Session jcrSession = MgnlContext.getJCRSession(getWorkspace());
             return jcrSession.nodeExists((String) itemId);
         } catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);
@@ -474,7 +468,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
      */
     private void updateCount(long newSize) {
         if (newSize != size) {
-            size = (int) newSize;
+            setSize((int) newSize);
         }
     }
 
@@ -533,16 +527,21 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
         if (considerSorting) {
             if (sorters.isEmpty()) {
                 // no sorters set - apply default (sort by name)
-                stmt.append(ORDER_BY)
-                     .append(DEFAULT_ORDER);
+                String defaultOrder = workbenchDefinition.getDefaultOrder();
+                if (!StringUtils.isBlank(defaultOrder)) {
+                    defaultOrder = defaultOrder.replaceAll(",", "," + XPATH_PROPERTY_PREFIX);
+                    stmt.append(ORDER_BY)
+                        .append(XPATH_PROPERTY_PREFIX)
+                        .append(defaultOrder);
+                }
             } else {
                 stmt.append(ORDER_BY).append(" ");
                 String sortOrder;
                 for (OrderBy orderBy : sorters) {
                     String propertyName = orderBy.getProperty();
                     sortOrder = orderBy.isAscending() ? XPATH_ASCENDING : XPATH_DESCENDING;
-                    if (propertyName.startsWith(META_DATA_PROPERTY_TO_BE_REPLACED_FOR_ORDER_BY)) {
-                        propertyName = propertyName.replaceFirst(META_DATA_PROPERTY_TO_BE_REPLACED_FOR_ORDER_BY, META_DATA_PROPERTY_TO_BE_REPLACED_FOR_ORDER_BY + XPATH_PROPERTY_PREFIX);
+                    if (propertyName.contains(SUBNODE_SEPARATOR)) {
+                        propertyName = propertyName.replaceFirst(SUBNODE_SEPARATOR, SUBNODE_SEPARATOR + XPATH_PROPERTY_PREFIX);
                     } else {
                         stmt.append(XPATH_PROPERTY_PREFIX);
                     }
@@ -555,6 +554,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
         }
         return stmt.toString();
     }
+
     /**
      * @see #getPage().
      */
@@ -577,7 +577,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     }
 
     public String getWorkspace() {
-        return workspace;
+        return workbenchDefinition.getWorkspace();
     }
 
     /**
@@ -596,7 +596,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     protected QueryResult executeQuery(String statement, String language, long limit, long offset) {
         try {
-            final Session jcrSession = MgnlContext.getJCRSession(workspace);
+            final Session jcrSession = MgnlContext.getJCRSession(getWorkspace());
             final QueryManager jcrQueryManager = jcrSession.getWorkspace().getQueryManager();
             final Query query = jcrQueryManager.createQuery(statement, language);
             if (limit > 0) {

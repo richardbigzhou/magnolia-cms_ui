@@ -56,6 +56,8 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
 
     private String path;
 
+    private String defaultOrder;
+
     private List<ItemTypeDefinition> itemTypes = new ArrayList<ItemTypeDefinition>();
 
     private final Map<String, ColumnDefinition> columns = new LinkedHashMap<String, ColumnDefinition>();
@@ -169,4 +171,12 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
         this.dialogWorkbench = dialogWorkbench;
     }
 
+    @Override
+    public String getDefaultOrder() {
+        return defaultOrder;
+    }
+
+    public void setDefaultOrder(String defaultOrder) {
+        this.defaultOrder = defaultOrder;
+    }
 }

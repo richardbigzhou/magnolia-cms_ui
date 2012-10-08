@@ -109,19 +109,17 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
         configuredWorkbench.addColumn(colDef1);
         configuredWorkbench.addColumn(colDef2);
 
+        configuredWorkbench.setDefaultOrder(colName2);
+
         treeModel = new TreeModel(configuredWorkbench, workbenchActionFactory);
 
         jcrContainer = new JcrContainerTestImpl(treeModel, configuredWorkbench);
         workbenchDefinition = configuredWorkbench;
 
-
         //Init session
         session = MgnlContext.getSystemContext().getJCRSession(workspace);
         rootNode = session.getRootNode();
     }
-
-
-
 
     @Test
     public void testInit() {
@@ -392,14 +390,14 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
     }
 
     @Test
-    public void testConstructJCRQueryWithoutDefaultSort() {
+    public void testConstructJCRQueryWithDefaultSort() {
         // GIVEN
 
         // WHEN
         final String result = jcrContainer.constructJCRQuery(true);
 
         // THEN
-        assertEquals(AbstractJcrContainer.SELECT_CONTENT + AbstractJcrContainer.ORDER_BY + AbstractJcrContainer.DEFAULT_ORDER, result);
+        assertEquals(AbstractJcrContainer.SELECT_CONTENT + AbstractJcrContainer.ORDER_BY + AbstractJcrContainer.XPATH_PROPERTY_PREFIX + colName2, result);
     }
 
 
@@ -424,7 +422,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
         final String result = jcrContainer.constructJCRQuery(true);
 
         // THEN
-        assertEquals(AbstractJcrContainer.SELECT_CONTENT + AbstractJcrContainer.ORDER_BY + AbstractJcrContainer.DEFAULT_ORDER, result);
+        assertEquals(AbstractJcrContainer.SELECT_CONTENT + AbstractJcrContainer.ORDER_BY + AbstractJcrContainer.XPATH_PROPERTY_PREFIX + colName2, result);
     }
 
     /**
