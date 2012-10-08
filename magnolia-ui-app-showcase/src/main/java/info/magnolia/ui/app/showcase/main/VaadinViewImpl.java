@@ -43,10 +43,11 @@ public class VaadinViewImpl implements VaadinView {
 
     private static final long serialVersionUID = 4937209277244291844L;
     
-    Layout layout;
+    VerticalLayout layout;
     
     public VaadinViewImpl() {
         layout = new VerticalLayout();
+        layout.setSpacing(true);
         layout.setWidth("100%");
         layout.setMargin(true, true, false, true);
         layout.addComponent(new Label(
@@ -102,7 +103,7 @@ public class VaadinViewImpl implements VaadinView {
     }
     
     private Layout getMagnoliaPreviews() {
-        Layout grid = getPreviewLayout("Magnolia tables and trees");
+        Layout grid = getPreviewLayout("Magnolia table and tree table");
         MagnoliaTable table = new MagnoliaTable();
         table.addContainerProperty("first", String.class, "first");
         table.addContainerProperty("second", Integer.class, 1);
@@ -198,12 +199,6 @@ public class VaadinViewImpl implements VaadinView {
         panel.setHeight("130px");
         grid.addComponent(panel);
 
-        panel = new VerticalSplitPanel();
-        panel.setWidth("230px");
-        panel.setHeight("130px");
-        panel.setStyleName("small");
-        grid.addComponent(panel);
-
         panel = new HorizontalSplitPanel();
         panel.setWidth("230px");
         panel.setHeight("130px");
@@ -234,17 +229,8 @@ public class VaadinViewImpl implements VaadinView {
     private Layout getPanelPreviews() {
         Layout grid = getPreviewLayout("Panels");
 
-        Panel panel = new DemoPanel("Panel");
-        panel.setIcon(new ThemeResource("../runo/icons/16/document.png"));
+        DemoPanel panel = new DemoPanel();
         grid.addComponent(panel);
-
-        panel = new DemoPanel();
-        grid.addComponent(panel);
-
-        panel = new DemoPanel();
-        panel.setStyleName("borderless");
-        grid.addComponent(panel);
-
 
         return grid;
     }
@@ -312,7 +298,7 @@ public class VaadinViewImpl implements VaadinView {
     }
     
     private Layout getLabelPreviews() {
-        Layout grid = getPreviewLayout("Labels");
+        Layout grid = getPreviewLayout("Static text");
 
         Label label = new Label(
                 "Plain text, lorem ipsum dolor sit amet consectetur amit.");
@@ -386,9 +372,6 @@ public class VaadinViewImpl implements VaadinView {
         TextArea ta = new TextArea();
         ta.setInputPrompt("Multiline");
         grid.addComponent(ta);
-        
-        RichTextArea rich = new RichTextArea("Rich text area");
-        grid.addComponent(rich);
 
         return grid;
     }

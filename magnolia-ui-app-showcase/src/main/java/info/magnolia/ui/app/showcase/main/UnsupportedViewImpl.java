@@ -21,10 +21,11 @@ public class UnsupportedViewImpl implements UnsupportedView {
 
     private static final long serialVersionUID = 4074959561953183899L;
 
-    Layout layout = new VerticalLayout();
+    VerticalLayout layout = new VerticalLayout();
     
     public UnsupportedViewImpl() {
         layout.setMargin(true, true, false, true);
+        layout.setSpacing(true);
         layout.addComponent(new Label("The UI elements in the Vaadin framework" +
         		" that are not recommended for use with Magnolia. These elements" +
         		" may not perform well on touch devices, and the look and feel" +
