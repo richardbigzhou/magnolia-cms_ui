@@ -269,6 +269,7 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
 
     /**
      * Location token handling, format is {@code main:<selectedItemPath>:<viewType>[;<query>] } where <code>query</code> is present only if <code>viewType</code> is {@link ViewType#SEARCH}.
+     * @see ViewType
      */
     public static final List<String> parseLocationToken(final Location location) {
 
