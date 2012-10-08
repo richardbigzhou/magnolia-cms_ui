@@ -262,7 +262,7 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
                 return null;
             } else {
                 String[] view = parts.get(2).split(";");
-                return ViewType.SEARCH.getText().equals(view[0]) ? view[1] : null;
+                return (view.length == 2 && ViewType.SEARCH.getText().equals(view[0])) ? view[1] : null;
             }
         }
         return null;
@@ -309,6 +309,8 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
         return parts;
     }
 
+
+     //Some of the following class members have default visibility scope for the sake of testability.
     /*
      * Token type element. I.e.
      * A token here is the URI fragment part made up by zero or more parameters.
@@ -317,14 +319,14 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
      *   #app:<appName>:<subAppId>:<selectedPathToken>:<viewTypeToken>[;<queryToken>]
      * }
      */
-    private enum TokenElementType { PATH, VIEW, QUERY }
+   enum TokenElementType { PATH, VIEW, QUERY }
 
     /*
      * Creates a location for the current subapp given the current location, the passed parameter and its type.
      */
-    private static final DefaultLocation createLocation(final String parameter, final DefaultLocation currentLocation, final TokenElementType type) {
+   private final DefaultLocation createLocation(final String parameter, final DefaultLocation currentLocation, final TokenElementType type) {
         DefaultLocation location = createLocation();
-        if (StringUtils.isNotBlank(parameter) && currentLocation != null && type != null) {
+        if (currentLocation != null && type != null) {
             String token = location.getToken();
             token = replaceLocationToken(currentLocation, parameter, type);
             return new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, getAppName(), token);
@@ -332,7 +334,7 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
         return location;
     }
 
-    private static String replaceLocationToken(final DefaultLocation location, final String tokenPartToReplace, final TokenElementType type) {
+    static String replaceLocationToken(final DefaultLocation location, final String tokenPartToReplace, final TokenElementType type) {
         String newToken = null;
         String query = getQuery(location);
         String viewType = getSelectedView(location).getText();
@@ -352,9 +354,10 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
                 break;
             case QUERY :
                 if(StringUtils.isNotEmpty(query)) {
-                    newToken = location.getToken().replaceFirst(query, tokenPartToReplace);
+                    //searchbox can be emptied after having performed a query. This means that we must keep the view and discard the query only
+                    newToken = location.getToken().replaceFirst(StringUtils.isBlank(tokenPartToReplace) ? (";" + Pattern.quote(query)): Pattern.quote(query), tokenPartToReplace);
                 } else {
-                    newToken = location.getToken().replaceFirst(viewType, viewType + ";" + tokenPartToReplace);
+                    newToken = location.getToken().replaceFirst(viewType, StringUtils.isBlank(tokenPartToReplace) ? viewType : (viewType + ";" + tokenPartToReplace));
                 }
                 break;
             default:
