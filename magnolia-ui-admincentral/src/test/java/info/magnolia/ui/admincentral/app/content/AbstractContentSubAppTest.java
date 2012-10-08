@@ -366,19 +366,6 @@ public class AbstractContentSubAppTest {
     }
 
     @Test
-    public void testReplaceLocationSubstitutesEmptyPathWithCurrentOne() throws Exception {
-        //GIVEN
-        String token = AbstractContentSubApp.MAIN_SUBAPP_ID + ":"+ path +"tree";
-        DefaultLocation currentLocation = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, DUMMY_APPNAME, token);
-
-        //WHEN
-        String newToken = AbstractContentSubApp.replaceLocationToken(currentLocation, null, AbstractContentSubApp.TokenElementType.PATH);
-
-        //THEN
-        assertEquals(token, newToken);
-    }
-
-    @Test
     public void testReplaceLocationWithEmptyPathReturnsCurrentToken() throws Exception {
         //GIVEN
         String token = AbstractContentSubApp.MAIN_SUBAPP_ID + ":"+ path +"tree";
