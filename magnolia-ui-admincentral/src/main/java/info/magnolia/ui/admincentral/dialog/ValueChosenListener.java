@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,15 +33,25 @@
  */
 package info.magnolia.ui.admincentral.dialog;
 
-import info.magnolia.ui.widget.dialog.DialogView;
-
 /**
- * View interface of Value Selection Dialog.
+ * Interface for value selection providers.
+ * @param <VT> Value Type.
  */
-public interface PickerDialogView extends DialogView {
+public interface ValueChosenListener<VT> {
+
+    void onValueSelected(VT pickedValue);
     
-    void setCancelActionCaption(final String caption);
+    void selectionCanceled();
     
-    void setSelectionActionCaption(final String caption);
+    /**
+     * Indicates that the implementor can accept {@link ValueChosenListener}.
+     * @param <VT>
+     */
+    interface HasValueChosenListener<VT> {
+        
+        void addValuePickListener(final ValueChosenListener<VT> listener);
+        
+        void removeValuePickListener(final ValueChosenListener<VT> listener);
+    }
     
 }

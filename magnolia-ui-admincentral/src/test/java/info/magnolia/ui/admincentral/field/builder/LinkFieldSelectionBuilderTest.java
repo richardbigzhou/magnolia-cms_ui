@@ -35,7 +35,7 @@ package info.magnolia.ui.admincentral.field.builder;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
-import info.magnolia.ui.admincentral.content.view.PickerDialogContentPresenter;
+import info.magnolia.ui.admincentral.content.view.ChooseDialogContentPresenter;
 import info.magnolia.ui.admincentral.field.TextAndContentViewField;
 import info.magnolia.ui.framework.event.SimpleEventBus;
 import info.magnolia.ui.model.field.definition.LinkFieldSelectionDefinition;
@@ -58,7 +58,7 @@ public class LinkFieldSelectionBuilderTest extends AbstractBuilderTest<LinkField
     @Test
     public void buildFieldSimpleTest() {
         // GIVEN
-        PickerDialogContentPresenter presenter = mock(PickerDialogContentPresenter.class);
+        ChooseDialogContentPresenter presenter = mock(ChooseDialogContentPresenter.class);
         SimpleEventBus eventBus = new SimpleEventBus();
         baseItem.addItemProperty(LinkFieldBuilder.PATH_PROPERTY_NAME, DefaultPropertyUtil.newDefaultProperty(LinkFieldBuilder.PATH_PROPERTY_NAME, null, null));
         builder = new LinkFieldSelectionBuilder(definition, baseItem, presenter, eventBus);
@@ -74,7 +74,7 @@ public class LinkFieldSelectionBuilderTest extends AbstractBuilderTest<LinkField
     @Test
     public void fieldEventTest() throws RepositoryException {
         // GIVEN
-        PickerDialogContentPresenter presenter = mock(PickerDialogContentPresenter.class);
+        ChooseDialogContentPresenter presenter = mock(ChooseDialogContentPresenter.class);
         SimpleEventBus eventBus = new SimpleEventBus();
         baseItem.addItemProperty(LinkFieldBuilder.PATH_PROPERTY_NAME, DefaultPropertyUtil.newDefaultProperty(LinkFieldBuilder.PATH_PROPERTY_NAME, null, null));
         builder = new LinkFieldSelectionBuilder(definition, baseItem, presenter, eventBus);
@@ -91,7 +91,7 @@ public class LinkFieldSelectionBuilderTest extends AbstractBuilderTest<LinkField
     @Test
     public void fieldEventCustomPropertyTest() throws RepositoryException {
         // GIVEN
-        PickerDialogContentPresenter presenter = mock(PickerDialogContentPresenter.class);
+        ChooseDialogContentPresenter presenter = mock(ChooseDialogContentPresenter.class);
         SimpleEventBus eventBus = new SimpleEventBus();
         baseNode.setProperty("newProperty", "initial");
         baseItem = new JcrNodeAdapter(baseNode);

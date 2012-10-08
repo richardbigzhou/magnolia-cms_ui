@@ -31,39 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.content.view;
+package info.magnolia.ui.admincentral.dialog;
 
-import info.magnolia.ui.admincentral.dialog.PickerDialogView;
-import info.magnolia.ui.admincentral.workbench.ContentWorkbenchView;
-import info.magnolia.ui.widget.dialog.BaseDialog;
+import info.magnolia.ui.admincentral.dialog.ValueChosenListener.HasValueChosenListener;
 
-import javax.inject.Inject;
 
 /**
- * Picks value from a workbench.
- *
+ * Base Dialog that allows to pick value.
+ * @param <T> Value type
  */
-public class WorkbenchValuePickerDialog extends BaseDialog implements PickerDialogView {
-
-    private ContentWorkbenchView view;
+public interface ChooseDialogPresenter<T> extends DialogPresenter, HasValueChosenListener<T> {
     
-    @Inject
-    public WorkbenchValuePickerDialog(ContentWorkbenchView view) {
-        this.view = view;
-        addStyleName("content-view-field-wrapper");
-        setContent(this.view.asVaadinComponent());
-        addAction("cancel", "Cancel");
-        addAction("select", "Choose");
-    }
+    public T getValue();
     
     @Override
-    public void setCancelActionCaption(String caption) {
-        
-    }
+    public ChooseDialogView getView();
 
-    @Override
-    public void setSelectionActionCaption(String caption) {
-        
-    }
-    
 }

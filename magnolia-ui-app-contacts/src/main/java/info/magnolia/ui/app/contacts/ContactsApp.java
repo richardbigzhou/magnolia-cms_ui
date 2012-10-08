@@ -34,7 +34,7 @@
 package info.magnolia.ui.app.contacts;
 
 import info.magnolia.ui.admincentral.app.content.AbstractContentApp;
-import info.magnolia.ui.admincentral.dialog.PickerDialogFactory;
+import info.magnolia.ui.admincentral.dialog.ChooseDialogFactory;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.location.Location;
 
@@ -50,7 +50,7 @@ public class ContactsApp extends AbstractContentApp {
     private final AppContext appContext;
 
     @Inject
-    public ContactsApp(AppContext appContext, PickerDialogFactory pickerDialogFactory) {
+    public ContactsApp(AppContext appContext, ChooseDialogFactory pickerDialogFactory) {
         super(pickerDialogFactory);
         this.appContext = appContext;
     }

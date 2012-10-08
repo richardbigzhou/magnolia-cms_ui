@@ -34,7 +34,7 @@
 package info.magnolia.ui.admincentral.dialog;
 
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.admincentral.content.view.PickerDialogContentPresenter;
+import info.magnolia.ui.admincentral.content.view.ChooseDialogContentPresenter;
 import info.magnolia.ui.admincentral.dialog.action.DialogActionFactory;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchView;
 import info.magnolia.ui.framework.event.EventBus;
@@ -45,11 +45,11 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 /**
- * Implemetation of {@link PickerDialogFactory}.
+ * Implemetation of {@link ChooseDialogFactory}.
  * 
  */
 @Singleton
-public class PickerDialogFactoryImpl implements PickerDialogFactory {
+public class ChooseDialogFactoryImpl implements ChooseDialogFactory {
 
     private final ComponentProvider componentProvider;
 
@@ -58,7 +58,7 @@ public class PickerDialogFactoryImpl implements PickerDialogFactory {
     private final EventBus chooseDialogEventBus;
 
     @Inject
-    public PickerDialogFactoryImpl(final ComponentProvider componentProvider, final DialogActionFactory actionFactory,
+    public ChooseDialogFactoryImpl(final ComponentProvider componentProvider, final DialogActionFactory actionFactory,
             final @Named("choosedialog") EventBus chooseDialogEventBus) {
         this.componentProvider = componentProvider;
         this.actionFactory = actionFactory;
@@ -66,12 +66,12 @@ public class PickerDialogFactoryImpl implements PickerDialogFactory {
     }
 
     @Override
-    public WorkbenchPickerDialogPresenter createWorkbenchValuePickerDialog() {
-        final PickerDialogView selectionDialogView = componentProvider.getComponent(PickerDialogView.class);
-        final WorkbenchPickerDialogPresenter workbenchPickerDialogPresenter = componentProvider.newInstance(
-                WorkbenchPickerDialogPresenter.class, actionFactory, selectionDialogView, chooseDialogEventBus);
+    public WorkbenchChooseDialogPresenter createWorkbenchValuePickerDialog() {
+        final ChooseDialogView selectionDialogView = componentProvider.getComponent(ChooseDialogView.class);
+        final WorkbenchChooseDialogPresenter workbenchPickerDialogPresenter = componentProvider.newInstance(
+                WorkbenchChooseDialogPresenter.class, actionFactory, selectionDialogView, chooseDialogEventBus);
 
-        final PickerDialogContentPresenter presenter = componentProvider.getComponent(PickerDialogContentPresenter.class);
+        final ChooseDialogContentPresenter presenter = componentProvider.getComponent(ChooseDialogContentPresenter.class);
         final BaseDialog dialog = (BaseDialog) workbenchPickerDialogPresenter.getView();
         presenter.initContentView((ContentWorkbenchView) dialog.getContent());
         dialog.setHeight("500px");

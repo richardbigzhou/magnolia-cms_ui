@@ -39,7 +39,7 @@ import info.magnolia.ui.framework.view.View;
  * DialogView.
  */
 public interface DialogView extends View {
-
+    
     /**
      * Action execution callback.
      */

@@ -33,13 +33,6 @@
  */
 package info.magnolia.ui.admincentral.app.simple;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.shellapp.applauncher.AppLauncherShellApp;
 import info.magnolia.ui.admincentral.shellapp.favorites.FavoritesShellApp;
@@ -56,16 +49,23 @@ import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.framework.view.ViewPort;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 /**
  * Manages the shell apps and raises callbacks to the app.
  */
 @Singleton
 public class ShellAppController implements LocationChangedEvent.Handler, LocationChangeRequestedEvent.Handler {
 
-    private ComponentProvider componentProvider;
-    private Shell shell;
+    private final ComponentProvider componentProvider;
+    private final Shell shell;
     private ViewPort viewPort;
-    private LocationController locationController;
+    private final LocationController locationController;
 
     private final Map<String, ShellAppContextImpl> contexts = new HashMap<String, ShellAppContextImpl>();
 
@@ -74,7 +74,7 @@ public class ShellAppController implements LocationChangedEvent.Handler, Locatio
         this.componentProvider = componentProvider;
         this.shell = shell;
         this.locationController = locationController;
-
+        
         addShellApp("applauncher", AppLauncherShellApp.class);
         addShellApp("pulse", PulseShellApp.class);
         addShellApp("favorite", FavoritesShellApp.class);
@@ -124,7 +124,7 @@ public class ShellAppController implements LocationChangedEvent.Handler, Locatio
 
     private class ShellAppContextImpl implements ShellAppContext {
 
-        private String name;
+        private final String name;
         private ShellApp shellApp;
         private View view;
         private Location currentLocation;

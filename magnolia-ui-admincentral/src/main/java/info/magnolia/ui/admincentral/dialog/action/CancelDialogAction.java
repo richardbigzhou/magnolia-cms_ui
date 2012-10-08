@@ -44,7 +44,7 @@ import info.magnolia.ui.model.action.ActionExecutionException;
  */
 public class CancelDialogAction extends ActionBase<CancelDialogActionDefinition> {
 
-    private FormDialogPresenter presenter;
+    private final FormDialogPresenter presenter;
 
     public CancelDialogAction(CancelDialogActionDefinition definition, FormDialogPresenter presenter) {
         super(definition);

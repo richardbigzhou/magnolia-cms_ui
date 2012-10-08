@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,39 +31,41 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.content.view;
+package info.magnolia.ui.admincentral.dialog;
 
-import info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilder;
-import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition;
+import info.magnolia.ui.admincentral.workbench.ContentWorkbenchView;
+import info.magnolia.ui.widget.dialog.BaseDialog;
 
 import javax.inject.Inject;
-import javax.inject.Named;
-
-import org.apache.commons.lang.StringUtils;
-
-import com.rits.cloning.Cloner;
 
 /**
- * ChooseDialog ContentPresenter.
- * Used to inject a specific EventBus, and to handle specific ChooseDialog logic.
+ * Picks value from a workbench.
+ *
  */
-public class PickerDialogContentPresenter extends ContentPresenter {
+public class WorkbenchValueChooseDialog extends BaseDialog implements ChooseDialogView {
 
+    public static final String CHOOSE_ACTION_NAME = "commit";
+    public static final String CANCEL_ACTION_NAME = "cancel";
+    
+    private final ContentWorkbenchView view;
+    
     @Inject
-    public PickerDialogContentPresenter(ContentViewBuilder contentViewBuilder, AppContext context, @Named("choosedialog") EventBus subAppEventBus, Shell shell) {
-        super(contentViewBuilder, context, subAppEventBus, shell);
-        workbenchDefinition = new Cloner().deepClone(workbenchDefinition);
-        ((ConfiguredWorkbenchDefinition)workbenchDefinition).setDialogWorkbench(true);
+    public WorkbenchValueChooseDialog(ContentWorkbenchView view) {
+        this.view = view;
+        addStyleName("content-view-field-wrapper");
+        setContent(this.view.asVaadinComponent());
+        addAction(CHOOSE_ACTION_NAME, "Choose");
+        addAction(CANCEL_ACTION_NAME, "Cancel");
+    }
+    
+    @Override
+    public void setCancelActionLabel(String newLabel) {
+        setActionLabel(CANCEL_ACTION_NAME, newLabel);
     }
 
-    /**
-     * Return the Root path.
-     */
-    public String getRootPath() {
-        return StringUtils.defaultIfEmpty(workbenchDefinition.getPath(), "/");
+    @Override
+    public void setSelectionActionLabel(String newLabel) {
+        setActionLabel(CANCEL_ACTION_NAME, newLabel);
     }
-
+    
 }

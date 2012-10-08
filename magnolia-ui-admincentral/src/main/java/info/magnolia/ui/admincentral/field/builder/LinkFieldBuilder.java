@@ -34,8 +34,8 @@
 package info.magnolia.ui.admincentral.field.builder;
 
 import info.magnolia.ui.admincentral.app.content.AbstractContentApp;
-import info.magnolia.ui.admincentral.dialog.ValuePickListener;
-import info.magnolia.ui.admincentral.dialog.ValuePickerDialogPresenter;
+import info.magnolia.ui.admincentral.dialog.ValueChosenListener;
+import info.magnolia.ui.admincentral.dialog.ChooseDialogPresenter;
 import info.magnolia.ui.admincentral.field.TextAndButtonField;
 import info.magnolia.ui.admincentral.field.translator.IdentifierToPathTranslator;
 import info.magnolia.ui.framework.app.App;
@@ -72,7 +72,7 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
 
     private TextAndButtonField textButton;
 
-    private AppController appController;
+    private final AppController appController;
 
     @Inject
     public LinkFieldBuilder(LinkFieldDefinition definition, Item relatedFieldItem, AppController appController) {
@@ -114,12 +114,12 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
             public void buttonClick(ClickEvent event) {
                 // Get the property name to propagate.
                 final String propertyName = getPropertyName();
-                final App targetApp = appController.startIfNotAlreadyRunning(appName, new DefaultLocation(
-                        DefaultLocation.LOCATION_TYPE_APP, appName, ""));
+                final App targetApp = appController.startIfNotAlreadyRunning(appName, new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appName, ""));
                 if (targetApp != null) {
                     if (targetApp instanceof AbstractContentApp) {
-                        final ValuePickerDialogPresenter<Item> pickerPresenter = ((AbstractContentApp) targetApp).openWorkbenchPickerDialog();
-                        pickerPresenter.addValuePickListener(new ValuePickListener<Item>() {
+                        final ChooseDialogPresenter<Item> pickerPresenter = ((AbstractContentApp) targetApp).openWorkbenchPickerDialog();
+                        pickerPresenter.getView().setCaption("Select a contact");
+                        pickerPresenter.addValuePickListener(new ValueChosenListener<Item>() {
                             @Override
                             public void onValueSelected(Item pickedValue) {
                                 javax.jcr.Item jcrItem = ((JcrItemAdapter) pickedValue).getJcrItem();

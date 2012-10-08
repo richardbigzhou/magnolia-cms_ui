@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,18 +33,11 @@
  */
 package info.magnolia.ui.admincentral.dialog;
 
-import info.magnolia.ui.admincentral.dialog.ValuePickListener.HasValuePickListener;
-
 
 /**
- * Base Dialog that allows to pick value.
- * @param <T> Value type
+ * Factory interface for creating Value Picker Dialogs.
  */
-public interface ValuePickerDialogPresenter<T> extends DialogPresenter, HasValuePickListener<T> {
-    
-    public T getValue();
-    
-    @Override
-    public PickerDialogView getView();
+public interface ChooseDialogFactory {
 
+    public WorkbenchChooseDialogPresenter createWorkbenchValuePickerDialog();
 }

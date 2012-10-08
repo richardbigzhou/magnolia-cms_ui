@@ -45,7 +45,7 @@ import info.magnolia.ui.model.action.ActionExecutionException;
  */
 public class CallbackDialogAction extends ActionBase<CallbackDialogActionDefinition> {
 
-    private FormDialogPresenter presenter;
+    private final FormDialogPresenter presenter;
 
     public CallbackDialogAction(CallbackDialogActionDefinition definition, FormDialogPresenter presenter) {
         super(definition);

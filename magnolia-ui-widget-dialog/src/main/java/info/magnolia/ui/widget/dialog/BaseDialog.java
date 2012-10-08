@@ -70,7 +70,7 @@ public class BaseDialog extends AbstractComponent implements ServerSideHandler, 
 
     private String description;
 
-    private ServerSideProxy proxy = new ServerSideProxy(this) {
+    private final ServerSideProxy proxy = new ServerSideProxy(this) {
         {
             register("fireAction", new Method() {
 
@@ -213,7 +213,7 @@ public class BaseDialog extends AbstractComponent implements ServerSideHandler, 
     /**
      * DialogCloseEvent. 
      */
-    public static class DialogCloseEvent extends Component.Event {
+    public static class DialogCloseEvent extends com.vaadin.ui.Component.Event {
         
         /**
          * Handler.

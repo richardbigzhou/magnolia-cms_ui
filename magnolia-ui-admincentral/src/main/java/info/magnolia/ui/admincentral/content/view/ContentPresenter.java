@@ -73,7 +73,7 @@ public class ContentPresenter implements ContentView.Listener {
     protected WorkbenchDefinition workbenchDefinition;
 
     private String selectedItemId;
-
+    
     @Inject
     public ContentPresenter(final ContentViewBuilder contentViewBuilder, final AppContext context, @Named("subapp") final EventBus subAppEventBus, final Shell shell) {
         this.contentViewBuilder = contentViewBuilder;

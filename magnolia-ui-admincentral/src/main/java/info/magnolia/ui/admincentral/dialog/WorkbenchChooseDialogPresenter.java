@@ -43,13 +43,13 @@ import com.vaadin.data.Item;
 /**
  * WorkbenchPickerDialogPresenter.
  */
-public class WorkbenchPickerDialogPresenter extends BaseDialogPresenter implements ValuePickerDialogPresenter<Item> {
+public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implements ChooseDialogPresenter<Item> {
 
     private Item currentValue = null;
     
-    private PickerDialogView pickerView;
+    private final ChooseDialogView pickerView;
     
-    public WorkbenchPickerDialogPresenter(DialogActionFactory actionFactory, PickerDialogView view, EventBus eventBus) {
+    public WorkbenchChooseDialogPresenter(DialogActionFactory actionFactory, ChooseDialogView view, EventBus eventBus) {
         super(actionFactory, view, eventBus);
         this.pickerView = view;
         eventBus.addHandler(ItemSelectedEvent.class, new ItemSelectedEvent.Handler() {
@@ -59,22 +59,31 @@ public class WorkbenchPickerDialogPresenter extends BaseDialogPresenter implemen
             }
         });
         
-        addActionCallback("select", new DialogActionCallback() {
+        addActionCallback(WorkbenchValueChooseDialog.CANCEL_ACTION_NAME, new DialogActionCallback() {
             @Override
             public void onActionExecuted() {
                 closeDialog();
             }
         });
+        
+        addActionCallback(WorkbenchValueChooseDialog.CHOOSE_ACTION_NAME, new DialogActionCallback() {
+            @Override
+            public void onActionExecuted() {
+                // Selection is stored in the current value - can close Dialog.
+                closeDialog();
+            }
+        });
+        
     }
 
     @Override
-    public PickerDialogView getView() {
+    public ChooseDialogView getView() {
         return pickerView;
     }
     
     @Override
-    public void addValuePickListener(final ValuePickListener<Item> listener) {
-        addActionCallback("select", new DialogActionCallback() {
+    public void addValuePickListener(final ValueChosenListener<Item> listener) {
+        addActionCallback(WorkbenchValueChooseDialog.CHOOSE_ACTION_NAME, new DialogActionCallback() {
             @Override
             public void onActionExecuted() {
                 listener.onValueSelected(currentValue);
@@ -83,7 +92,7 @@ public class WorkbenchPickerDialogPresenter extends BaseDialogPresenter implemen
     }
 
     @Override
-    public void removeValuePickListener(ValuePickListener<Item> listener) {
+    public void removeValuePickListener(ValueChosenListener<Item> listener) {
         //FIXME implement or remove forever!
     }
 

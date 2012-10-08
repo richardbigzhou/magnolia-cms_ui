@@ -115,9 +115,6 @@ public class VDialogViewImpl extends FlowPanel implements VDialogView {
         }
     };
 
-
-
-
     private final VDialogHeader dialogHeader = new VDialogHeader(new VDialogHeaderCallback() {
 
         @Override

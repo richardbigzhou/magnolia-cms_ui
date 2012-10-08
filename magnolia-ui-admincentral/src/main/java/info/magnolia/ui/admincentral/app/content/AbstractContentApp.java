@@ -34,9 +34,9 @@
 package info.magnolia.ui.admincentral.app.content;
 
 import info.magnolia.ui.admincentral.MagnoliaShell;
-import info.magnolia.ui.admincentral.dialog.PickerDialogFactory;
-import info.magnolia.ui.admincentral.dialog.ValuePickerDialogPresenter;
-import info.magnolia.ui.admincentral.dialog.WorkbenchPickerDialogPresenter;
+import info.magnolia.ui.admincentral.dialog.ChooseDialogFactory;
+import info.magnolia.ui.admincentral.dialog.ChooseDialogPresenter;
+import info.magnolia.ui.admincentral.dialog.WorkbenchChooseDialogPresenter;
 import info.magnolia.ui.framework.app.AbstractApp;
 import info.magnolia.ui.framework.shell.Shell;
 
@@ -50,18 +50,18 @@ import com.vaadin.data.Item;
  */
 public abstract class AbstractContentApp extends AbstractApp {
 
-    private PickerDialogFactory pickerDialogFactory;
+    private ChooseDialogFactory pickerDialogFactory;
 
     @Inject
     private Shell shell;
     
     @Inject
-    public AbstractContentApp(PickerDialogFactory pickerDialogFactory) {
+    public AbstractContentApp(ChooseDialogFactory pickerDialogFactory) {
         this.pickerDialogFactory = pickerDialogFactory;
     }
 
-    public ValuePickerDialogPresenter<Item> openWorkbenchPickerDialog() {
-        final WorkbenchPickerDialogPresenter picker = pickerDialogFactory.createWorkbenchValuePickerDialog();
+    public ChooseDialogPresenter<Item> openWorkbenchPickerDialog() {
+        final WorkbenchChooseDialogPresenter picker = pickerDialogFactory.createWorkbenchValuePickerDialog();
         ((MagnoliaShell)shell).openDialog(picker);
         return picker;
     }

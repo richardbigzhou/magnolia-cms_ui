@@ -54,14 +54,14 @@ import javax.inject.Singleton;
 @Singleton
 public class FormDialogPresenterFactoryImpl implements FormDialogPresenterFactory {
 
-    private Shell shell;
-    private EventBus eventBus;
-    private DialogActionFactory actionFactory;
-    private ComponentProvider componentProvider;
+    private final Shell shell;
+    private final EventBus eventBus;
+    private final DialogActionFactory actionFactory;
+    private final ComponentProvider componentProvider;
 
-    private DialogBuilder dialogBuilder;
-    private DialogFieldFactory dialogFieldFactory;
-    private DialogDefinitionRegistry dialogDefinitionRegistry;
+    private final DialogBuilder dialogBuilder;
+    private final DialogFieldFactory dialogFieldFactory;
+    private final DialogDefinitionRegistry dialogDefinitionRegistry;
     
     @Inject
     public FormDialogPresenterFactoryImpl(ComponentProvider componentProvider, 
