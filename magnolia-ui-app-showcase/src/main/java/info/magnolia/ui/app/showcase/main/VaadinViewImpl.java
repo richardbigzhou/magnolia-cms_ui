@@ -18,6 +18,8 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.Embedded;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Label;
@@ -44,6 +46,7 @@ public class VaadinViewImpl implements VaadinView {
     
     public VaadinViewImpl() {
         layout = new VerticalLayout();
+        layout.setMargin(true, true, false, true);
         layout.addComponent(new Label(
                 "The UI elements available in the Vaadin framework that " +
                 "are recommended for use with Magnolia. These fields " +
@@ -52,6 +55,7 @@ public class VaadinViewImpl implements VaadinView {
                 "within Magnolia Forms/Dialogs."));
         layout.addComponent(getLabelPreviews());
         layout.addComponent(getProgressIndicatorPreviews());
+        layout.addComponent(getImagePreviews());
         layout.addComponent(getButtonPreviews());
         layout.addComponent(getTextFieldPreviews());
         layout.addComponent(getCheckboxPreviews());
@@ -69,7 +73,18 @@ public class VaadinViewImpl implements VaadinView {
         return layout;
     }
     
-    Layout getMagnoliaTabSheetPreviews() {
+    private Layout getImagePreviews() {
+        Layout layout = new VerticalLayout();
+        layout.setCaption("External resources");
+        Embedded image = new Embedded("", new ThemeResource("img/logo-magnolia.svg"));
+        image.setWidth("300px");
+        image.setHeight("100px");
+
+        layout.addComponent(image);
+        return layout;
+    }
+    
+    private Layout getMagnoliaTabSheetPreviews() {
         Layout grid = getPreviewLayout("Magnolia tabsheet");
         
         ShellTabSheet tabsheet = new ShellTabSheet();
@@ -83,7 +98,7 @@ public class VaadinViewImpl implements VaadinView {
         return grid;
     }
     
-    Layout getMagnoliaPreviews() {
+    private Layout getMagnoliaPreviews() {
         Layout grid = getPreviewLayout("Magnolia tables and trees");
         MagnoliaTable table = new MagnoliaTable();
         table.addContainerProperty("first", String.class, "first");
@@ -115,7 +130,7 @@ public class VaadinViewImpl implements VaadinView {
         return grid;
     }
 
-    Layout getPopupViewPreviews() {
+    private Layout getPopupViewPreviews() {
         Layout grid = getPreviewLayout("Popup views");
 
         Label content = new Label("Simple popup content");
@@ -207,7 +222,7 @@ public class VaadinViewImpl implements VaadinView {
         return grid;
     }
     
-    Layout getSliderPreviews() {
+    private Layout getSliderPreviews() {
         Layout grid = getPreviewLayout("Sliders");
 
         Slider s = new Slider();
@@ -231,7 +246,7 @@ public class VaadinViewImpl implements VaadinView {
     }
     
     Tree tree;
-    Layout getTreePreviews() {
+    private Layout getTreePreviews() {
         Layout grid = getPreviewLayout("Trees");
         tree = new Tree();
         tree.setImmediate(true);
@@ -290,7 +305,7 @@ public class VaadinViewImpl implements VaadinView {
         return grid;
     }
     
-    Layout getProgressIndicatorPreviews() {
+    private Layout getProgressIndicatorPreviews() {
         Layout grid = getPreviewLayout("Progress Indicators");
 
         ProgressIndicator pi = new ProgressIndicator(0.5f);
@@ -366,7 +381,7 @@ public class VaadinViewImpl implements VaadinView {
         return grid;
     }
     
-    GridLayout getPreviewLayout(String caption) {
+    private GridLayout getPreviewLayout(String caption) {
         GridLayout grid = new GridLayout(3, 1);
         grid.setWidth("100%");
         grid.setSpacing(true);
