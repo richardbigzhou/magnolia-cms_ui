@@ -48,18 +48,6 @@ public interface DialogView extends View {
         void onActionExecuted();
     }
     
-    /**
-     * Base interface for an MagnoliaDialogView listener.
-     */
-    interface Listener {
-        /**
-         * Close current Dialog.
-         */
-        void closeDialog();
-    }
-    
-    void setListener(Listener listener);
-    
     void setDialogDescription(String description);
     
     void setCaption(String caption);

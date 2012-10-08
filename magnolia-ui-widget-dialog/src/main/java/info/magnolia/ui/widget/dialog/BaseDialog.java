@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.widget.dialog;
 
+import info.magnolia.ui.widget.dialog.BaseDialog.DialogCloseEvent.Handler;
 import info.magnolia.ui.widget.dialog.gwt.client.dialoglayout.VBaseDialog;
 
 import java.util.HashMap;
@@ -61,8 +62,6 @@ public class BaseDialog extends AbstractComponent implements ServerSideHandler, 
 
     private final ListMultimap<String, DialogActionCallback> actionCallbackMap = ArrayListMultimap.<String, DialogActionCallback> create();
 
-    private DialogView.Listener listener;
-
     private Component content;
 
     private final Map<String, String> actionMap = new HashMap<String, String>();
@@ -88,7 +87,7 @@ public class BaseDialog extends AbstractComponent implements ServerSideHandler, 
 
                 @Override
                 public void invoke(String methodName, Object[] params) {
-                    listener.closeDialog();
+                    closeSelf();
                 }
             });
         }
@@ -141,6 +140,10 @@ public class BaseDialog extends AbstractComponent implements ServerSideHandler, 
         content.detach();
     }
 
+    public void closeSelf() {
+        fireEvent(new DialogCloseEvent(this, this));
+    }
+    
     public void addAction(String actionName, String actionLabel) {
         actionMap.put(actionName, actionLabel);
         if (isAttached) {
@@ -163,15 +166,6 @@ public class BaseDialog extends AbstractComponent implements ServerSideHandler, 
     @Override
     public void setCaption(String caption) {
         content.setCaption(caption);
-    }
-
-    @Override
-    public void setListener(DialogView.Listener listener) {
-        this.listener = listener;
-    }
-
-    protected DialogView.Listener getListener() {
-        return listener;
     }
 
     protected Component createDefaultContent() {
@@ -206,6 +200,49 @@ public class BaseDialog extends AbstractComponent implements ServerSideHandler, 
 
     public void addActionCallback(String actionName, DialogActionCallback callback) {
         actionCallbackMap.put(actionName, callback);
+    }
+
+    public void addDialogCloseHandler(Handler handler) {
+        addListener("dialogCloseEvent", DialogCloseEvent.class, handler, DialogCloseEvent.ON_DIALOG_CLOSE);
+    }
+    
+    public void removeDialogCloseHandler(Handler handler) {
+        removeListener("dialogCloseEvent", DialogCloseEvent.class, handler);
+    }
+    
+    /**
+     * DialogCloseEvent. 
+     */
+    public static class DialogCloseEvent extends Component.Event {
+        
+        /**
+         * Handler.
+         */
+        public interface Handler {
+            void onClose(DialogCloseEvent event);
+        }
+        
+        public static final java.lang.reflect.Method ON_DIALOG_CLOSE;
+
+        public DialogView view;
+        
+        static {
+            try {
+                ON_DIALOG_CLOSE = DialogCloseEvent.Handler.class.getDeclaredMethod(
+                        "onClose", new Class[] { DialogCloseEvent.class });
+            } catch (final java.lang.NoSuchMethodException e) {
+                throw new java.lang.RuntimeException(e);
+            }
+        }
+
+        public DialogCloseEvent(Component source, DialogView view) {
+            super(source);
+            this.view = view;
+        }
+
+        public DialogView getView() {
+            return view;
+        }
     }
 
 }

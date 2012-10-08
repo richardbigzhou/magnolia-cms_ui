@@ -73,7 +73,6 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
         this.dialogFieldFactory = dialogFieldFactory;
         this.dialogDefinition = dialogDefinition;
         this.shell = (MagnoliaShell)shell;
-        this.view.setListener(this);
         initActions(dialogDefinition);
     }
 
@@ -84,12 +83,6 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
         dialogBuilder.buildFormDialog(dialogFieldFactory, dialogDefinition, item, view);
         shell.openDialog(this);
         return view;
-    }
-
-    @Override
-    public void closeDialog() {
-        shell.removeDialog(view.asVaadinComponent());
-        // clear the view!
     }
 
     private void initActions(final DialogDefinition dialogDefinition) {

@@ -73,7 +73,6 @@ public class PickerDialogFactoryImpl implements PickerDialogFactory {
 
         final PickerDialogContentPresenter presenter = componentProvider.getComponent(PickerDialogContentPresenter.class);
         final BaseDialog dialog = (BaseDialog) workbenchPickerDialogPresenter.getView();
-        workbenchPickerDialogPresenter.getView().setListener(workbenchPickerDialogPresenter);
         presenter.initContentView((ContentWorkbenchView) dialog.getContent());
         dialog.setHeight("500px");
         return workbenchPickerDialogPresenter;

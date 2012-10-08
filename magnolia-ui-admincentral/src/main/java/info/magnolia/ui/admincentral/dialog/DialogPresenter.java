@@ -34,18 +34,16 @@
 package info.magnolia.ui.admincentral.dialog;
 
 
-import info.magnolia.ui.framework.event.Event;
 import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.event.EventHandler;
-import info.magnolia.ui.framework.event.HandlerRegistration;
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
+import info.magnolia.ui.widget.dialog.BaseDialog.DialogCloseEvent;
 import info.magnolia.ui.widget.dialog.DialogView;
 import info.magnolia.ui.widget.dialog.DialogView.DialogActionCallback;
 
 /**
  * Base Dialog presenter.
  */
-public interface DialogPresenter extends DialogView.Listener {
+public interface DialogPresenter {
 
     Callback getCallback();
 
@@ -53,42 +51,15 @@ public interface DialogPresenter extends DialogView.Listener {
 
     EventBus getEventBus();
     
-    HandlerRegistration addDialogCloseListener(final DialogCloseEvent.Handler listener);
+    void closeDialog();
+    
+    void addDialogCloseHandler(final DialogCloseEvent.Handler listener);
     
     void addActionFromDefinition(final DialogActionDefinition actionDefinition);
     
     void addAction(String actionName, String actionLabel, DialogActionCallback callback);
     
     void addActionCallback(String actionName, DialogActionCallback callback);
-    
-    /**
-     * DialogCloseEvent. 
-     */
-    class DialogCloseEvent implements Event<DialogCloseEvent.Handler> {
-        
-        /**
-         * Handler.
-         */
-        public interface Handler extends EventHandler {
-            
-            void onDialogClose(DialogCloseEvent event);
-        }
-        
-        private DialogPresenter dialogPresenter;
-        
-        public DialogCloseEvent(DialogPresenter dialogPresenter) {
-            this.dialogPresenter = dialogPresenter;
-        }
-
-        public DialogPresenter getDialogPresenter() {
-            return dialogPresenter;
-        }
-        
-        @Override
-        public void dispatch(Handler handler) {
-            handler.onDialogClose(this);
-        }
-    }
     
     /**
      * Callback interface for DialogView.Presenter.

@@ -35,12 +35,11 @@ package info.magnolia.ui.admincentral.dialog;
 
 import info.magnolia.ui.admincentral.dialog.action.DialogActionFactory;
 import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.event.HandlerRegistration;
-import info.magnolia.ui.framework.event.SimpleEventBus;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
+import info.magnolia.ui.widget.dialog.BaseDialog.DialogCloseEvent;
 import info.magnolia.ui.widget.dialog.DialogView;
 import info.magnolia.ui.widget.dialog.DialogView.DialogActionCallback;
 
@@ -52,8 +51,6 @@ import javax.inject.Named;
  * Base implementation of {@link DialogPresenter}.
  */
 public class BaseDialogPresenter implements DialogPresenter {
-        
-    private EventBus eventBus = new SimpleEventBus();
    
     private DialogActionFactory actionFactory;
     
@@ -84,11 +81,6 @@ public class BaseDialogPresenter implements DialogPresenter {
     }
 
     @Override
-    public void closeDialog() {
-        eventBus.fireEvent(new DialogCloseEvent(this));
-    }
-
-    @Override
     public void addActionFromDefinition(final DialogActionDefinition dialogActionDefinition) {
         addAction(dialogActionDefinition.getName(), dialogActionDefinition.getLabel(), new DialogActionCallback() {    
             @Override
@@ -105,8 +97,8 @@ public class BaseDialogPresenter implements DialogPresenter {
     }
 
     @Override
-    public HandlerRegistration addDialogCloseListener(DialogCloseEvent.Handler handler) {
-        return eventBus.addHandler(DialogCloseEvent.class, handler);
+    public void addDialogCloseHandler(DialogCloseEvent.Handler handler) {
+        view.asVaadinComponent().addDialogCloseHandler(handler);
     }
 
     @Override
@@ -118,6 +110,11 @@ public class BaseDialogPresenter implements DialogPresenter {
     @Override
     public void addActionCallback(String actionName, DialogActionCallback callback) {
         view.asVaadinComponent().addActionCallback(actionName, callback);
+    }
+
+    @Override
+    public void closeDialog() {
+        view.asVaadinComponent().closeSelf();
     }
 
 }

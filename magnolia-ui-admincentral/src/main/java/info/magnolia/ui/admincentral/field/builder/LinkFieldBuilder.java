@@ -60,16 +60,18 @@ import com.vaadin.ui.Field;
 
 /**
  * Creates and initializes a LinkField field based on a field definition.
- * @param <D> definition type
+ * 
+ * @param <D>
+ *            definition type
  */
 public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBuilder<LinkFieldDefinition> {
-    
+
     private static final Logger log = LoggerFactory.getLogger(LinkFieldBuilder.class);
-    
+
     public static final String PATH_PROPERTY_NAME = "transientPathProperty";
 
     private TextAndButtonField textButton;
-    
+
     private AppController appController;
 
     @Inject
@@ -85,10 +87,11 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
         if (definition.isIdentifier()) {
             translator = new IdentifierToPathTranslator(definition.getWorkspace());
         }
-        textButton = new TextAndButtonField(translator, getMessage(definition.getButtonSelectNewLabel()), getMessage(definition.getButtonSelectOtherLabel()));
+        textButton = new TextAndButtonField(translator, getMessage(definition.getButtonSelectNewLabel()),
+                getMessage(definition.getButtonSelectOtherLabel()));
         final Button selectButton = textButton.getSelectButton();
 
-        if(StringUtils.isNotBlank(definition.getDialogName()) || StringUtils.isNotBlank(definition.getAppName())) {
+        if (StringUtils.isNotBlank(definition.getDialogName()) || StringUtils.isNotBlank(definition.getAppName())) {
             selectButton.addListener(createButtonClickListener(definition.getDialogName(), definition.getAppName()));
         } else {
             selectButton.setCaption(getMessage("field.link.select.error"));
@@ -102,8 +105,8 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
     }
 
     /**
-     * Create the Button click Listener.
-     * On click: Create a Dialog and Initialize callback handling.
+     * Create the Button click Listener. On click: Create a Dialog and
+     * Initialize callback handling.
      */
     private Button.ClickListener createButtonClickListener(final String dialogName, final String appName) {
         return new Button.ClickListener() {
@@ -111,22 +114,22 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
             public void buttonClick(ClickEvent event) {
                 // Get the property name to propagate.
                 final String propertyName = getPropertyName();
-                final App targetApp = appController.startIfNotAlreadyRunning(appName, new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appName, ""));
-                if(targetApp != null) {
+                final App targetApp = appController.startIfNotAlreadyRunning(appName, new DefaultLocation(
+                        DefaultLocation.LOCATION_TYPE_APP, appName, ""));
+                if (targetApp != null) {
                     if (targetApp instanceof AbstractContentApp) {
                         final ValuePickerDialogPresenter<Item> pickerPresenter = ((AbstractContentApp) targetApp).openWorkbenchPickerDialog();
                         pickerPresenter.addValuePickListener(new ValuePickListener<Item>() {
-
                             @Override
                             public void onValueSelected(Item pickedValue) {
-                                javax.jcr.Item jcrItem = ((JcrItemAdapter)pickedValue).getJcrItem();
+                                javax.jcr.Item jcrItem = ((JcrItemAdapter) pickedValue).getJcrItem();
                                 if (jcrItem.isNode()) {
-                                    final Node selected = (Node)jcrItem;
+                                    final Node selected = (Node) jcrItem;
                                     try {
-                                        boolean isPropertyExisting = StringUtils.isNotBlank(propertyName) && 
-                                                !PATH_PROPERTY_NAME.equals(propertyName) &&
-                                                selected.hasProperty(propertyName);
-                                        textButton.setValue(isPropertyExisting ? selected.getProperty(propertyName).getString() : selected.getPath());
+                                        boolean isPropertyExisting = StringUtils.isNotBlank(propertyName)
+                                                && !PATH_PROPERTY_NAME.equals(propertyName) && selected.hasProperty(propertyName);
+                                        textButton.setValue(isPropertyExisting ? selected.getProperty(propertyName).getString() : selected
+                                                .getPath());
                                     } catch (RepositoryException e) {
                                         log.error("Not able to access the configured property. Value will not be set.", e);
                                     }
@@ -135,7 +138,7 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
 
                             @Override
                             public void selectionCanceled() {
-                                
+
                             }
 
                         });
@@ -146,6 +149,6 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
     }
 
     private String getPropertyName() {
-        return StringUtils.isEmpty(definition.getPropertyName()) ? PATH_PROPERTY_NAME:definition.getPropertyName();
+        return StringUtils.isEmpty(definition.getPropertyName()) ? PATH_PROPERTY_NAME : definition.getPropertyName();
     }
 }

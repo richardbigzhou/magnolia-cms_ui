@@ -251,7 +251,7 @@ public class CallbackDialogActionTest {
         
 
         @Override
-        public HandlerRegistration addDialogCloseListener(Handler listener) {
+        public HandlerRegistration addDialogCloseHandler(Handler listener) {
             // TODO Auto-generated method stub
             return null;
         }
