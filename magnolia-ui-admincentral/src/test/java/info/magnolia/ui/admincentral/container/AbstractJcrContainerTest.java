@@ -37,6 +37,8 @@ package info.magnolia.ui.admincentral.container;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.admincentral.content.view.builder.DefinitionToImplementationMapping;
@@ -61,7 +63,6 @@ import javax.jcr.Session;
 import javax.jcr.ValueFormatException;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
-import javax.jcr.query.RowIterator;
 import javax.jcr.version.VersionException;
 
 import org.junit.Before;
@@ -108,19 +109,17 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
         configuredWorkbench.addColumn(colDef1);
         configuredWorkbench.addColumn(colDef2);
 
+        configuredWorkbench.setDefaultOrder(colName2);
+
         treeModel = new TreeModel(configuredWorkbench, workbenchActionFactory);
 
         jcrContainer = new JcrContainerTestImpl(treeModel, configuredWorkbench);
         workbenchDefinition = configuredWorkbench;
 
-
         //Init session
         session = MgnlContext.getSystemContext().getJCRSession(workspace);
         rootNode = session.getRootNode();
     }
-
-
-
 
     @Test
     public void testInit() {
@@ -141,7 +140,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
     @Test
     public void testGetItem() throws Exception {
         // GIVEN
-        final Node node1 = createNode(rootNode, "node1", "mgnl:content", "name", "name1");
+        final Node node1 = createNode(rootNode, "node1", MgnlNodeType.NT_CONTENT, "name", "name1");
         node1.getSession().save();
         final String containerItemId = node1.getPath();
 
@@ -155,7 +154,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
     @Test
     public void testGetItemAfterNodeDeletionReturnsNull() throws Exception {
         // GIVEN
-        final Node node1 = createNode(rootNode, "node1", "mgnl:content", "name", "name1");
+        final Node node1 = createNode(rootNode, "node1", MgnlNodeType.NT_CONTENT, "name", "name1");
         node1.getSession().save();
         final String containerItemId = node1.getPath();
         com.vaadin.data.Item item = jcrContainer.getItem(containerItemId);
@@ -175,8 +174,8 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
     @Test
     public void testNextItemId() throws Exception {
         // GIVEN
-        Node node1 = createNode(rootNode, "node1", "mgnl:content", "name", "name1");
-        Node node2 = createNode(rootNode, "node2", "mgnl:content", "name", "name2");
+        Node node1 = createNode(rootNode, "node1", MgnlNodeType.NT_CONTENT, "name", "name1");
+        Node node2 = createNode(rootNode, "node2", MgnlNodeType.NT_CONTENT, "name", "name2");
         node1.getSession().save();
         String containerItemId1 = node1.getPath();
         String containerItemId2 = node2.getPath();
@@ -194,8 +193,8 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
     @Test
     public void testPrevItemId() throws Exception {
         // GIVEN
-        Node node1 = createNode(rootNode, "node1", "mgnl:content", "name", "name1");
-        Node node2 = createNode(rootNode, "node2", "mgnl:content", "name", "name2");
+        Node node1 = createNode(rootNode, "node1", MgnlNodeType.NT_CONTENT, "name", "name1");
+        Node node2 = createNode(rootNode, "node2", MgnlNodeType.NT_CONTENT, "name", "name2");
         node1.getSession().save();
         String containerItemId1 = node1.getPath();
         String containerItemId2 = node2.getPath();
@@ -212,8 +211,8 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
     @Test
     public void testFirstItemId() throws Exception {
         // GIVEN
-        Node node1 = createNode(rootNode, "node1", "mgnl:content", "name", "name1");
-        createNode(rootNode, "node2", "mgnl:content", "name", "name2");
+        Node node1 = createNode(rootNode, "node1", MgnlNodeType.NT_CONTENT, "name", "name1");
+        createNode(rootNode, "node2", MgnlNodeType.NT_CONTENT, "name", "name2");
         node1.getSession().save();
         String containerItemId1 = node1.getPath();
         setSorter("name",true);
@@ -230,8 +229,8 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
     @Test
     public void testLastItemId() throws Exception {
         // GIVEN
-        final Node node1 = createNode(rootNode, "node1", "mgnl:content", "name", "name1");
-        final Node node2 = createNode(rootNode, "node2", "mgnl:content", "name", "name2");
+        final Node node1 = createNode(rootNode, "node1", MgnlNodeType.NT_CONTENT, "name", "name1");
+        final Node node2 = createNode(rootNode, "node2", MgnlNodeType.NT_CONTENT, "name", "name2");
         node1.getSession().save();
         final String containerItemId1 = node1.getPath();
         final String containerItemId2 = node2.getPath();
@@ -249,8 +248,8 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
     @Test
     public void testIsFirstId() throws Exception {
         // GIVEN
-        Node node1 = createNode(rootNode, "node1", "mgnl:content", "name", "name1");
-        Node node2 = createNode(rootNode, "node2", "mgnl:content", "name", "name2");
+        Node node1 = createNode(rootNode, "node1", MgnlNodeType.NT_CONTENT, "name", "name1");
+        Node node2 = createNode(rootNode, "node2", MgnlNodeType.NT_CONTENT, "name", "name2");
         node1.getSession().save();
         String containerItemId1 = node1.getPath();
         String containerItemId2 = node2.getPath();
@@ -270,8 +269,8 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
     @Test
     public void testIsLastId() throws Exception {
         // GIVEN
-        Node node1 = createNode(rootNode, "node1", "mgnl:content", "name", "name1");
-        Node node2 = createNode(rootNode, "node2", "mgnl:content", "name", "name2");
+        Node node1 = createNode(rootNode, "node1", MgnlNodeType.NT_CONTENT, "name", "name1");
+        Node node2 = createNode(rootNode, "node2", MgnlNodeType.NT_CONTENT, "name", "name2");
         node1.getSession().save();
         String containerItemId1 = node1.getPath();
         String containerItemId2 = node2.getPath();
@@ -291,7 +290,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
     @Test
     public void testAddItem() throws Exception {
         // GIVEN
-        Node node1 = rootNode.addNode("node1","mgnl:content");
+        Node node1 = rootNode.addNode("node1",MgnlNodeType.NT_CONTENT);
         String containerItemId = node1.getPath();
         node1.getSession().save();
         // WHEN
@@ -305,7 +304,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
     @Test
     public void testGetContainerProperty() throws Exception {
         // GIVEN
-        Node node1 = createNode(rootNode, "node1", "mgnl:content", "name", "name1");
+        Node node1 = createNode(rootNode, "node1", MgnlNodeType.NT_CONTENT, "name", "name1");
         String containerItemId = node1.getPath();
         node1.getSession().save();
         // WHEN
@@ -320,8 +319,8 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
     @Test
     public void testSort_ascending() throws Exception {
         // GIVEN
-        Node node1 = createNode(rootNode, "node1", "mgnl:content", "name", "name1");
-        createNode(rootNode, "node2", "mgnl:content", "name", "name2");
+        Node node1 = createNode(rootNode, "node1", MgnlNodeType.NT_CONTENT, "name", "name1");
+        createNode(rootNode, "node2", MgnlNodeType.NT_CONTENT, "name", "name2");
         node1.getSession().save();
         String containerItemId1 = node1.getPath();
         boolean[] ascending = {true};
@@ -336,8 +335,8 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
     @Test
     public void testSort_descending() throws Exception {
         // GIVEN
-        Node node1 = createNode(rootNode, "node1", "mgnl:content", "name", "name1");
-        Node node2 = createNode(rootNode, "node2", "mgnl:content", "name", "name2");
+        Node node1 = createNode(rootNode, "node1", MgnlNodeType.NT_CONTENT, "name", "name1");
+        Node node2 = createNode(rootNode, "node2", MgnlNodeType.NT_CONTENT, "name", "name2");
         node1.getSession().save();
         String containerItemId2 = node2.getPath();
         boolean[] ascending = {false};
@@ -371,7 +370,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
     public void testContainsId() throws Exception{
         // GIVEN
         final String existingKey = "existing";
-        final Node node1 = createNode(rootNode, existingKey, "mgnl:content", "name", "name1");
+        final Node node1 = createNode(rootNode, existingKey, MgnlNodeType.NT_CONTENT, "name", "name1");
         node1.getSession().save();
 
         // WHEN
@@ -379,6 +378,51 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
 
         // THEN
         assertTrue(result);
+    }
+
+    @Test
+    public void testConstructJCRQueryWithoutSort() {
+        // WHEN
+        final String result = jcrContainer.constructJCRQuery(false);
+
+        // THEN
+        assertEquals(AbstractJcrContainer.SELECT_CONTENT, result);
+    }
+
+    @Test
+    public void testConstructJCRQueryWithDefaultSort() {
+        // GIVEN
+
+        // WHEN
+        final String result = jcrContainer.constructJCRQuery(true);
+
+        // THEN
+        assertEquals(AbstractJcrContainer.SELECT_CONTENT + AbstractJcrContainer.ORDER_BY + AbstractJcrContainer.XPATH_PROPERTY_PREFIX + colName2, result);
+    }
+
+
+    @Test
+    public void testConstructJCRQuerySortBySortableColumn() {
+        // GIVEN
+        jcrContainer.sort(new String[]{colName1}, new boolean[]{true});
+
+        // WHEN
+        final String result = jcrContainer.constructJCRQuery(true);
+
+        // THEN
+        assertEquals(AbstractJcrContainer.SELECT_CONTENT + AbstractJcrContainer.ORDER_BY + " " + AbstractJcrContainer.XPATH_PROPERTY_PREFIX + colName1 + AbstractJcrContainer.XPATH_ASCENDING, result);
+    }
+
+    @Test
+    public void testConstructJCRQuerySortByNonSortableColumn() {
+        // GIVEN
+        jcrContainer.sort(new String[]{colName2}, new boolean[]{true});
+
+        // WHEN
+        final String result = jcrContainer.constructJCRQuery(true);
+
+        // THEN
+        assertEquals(AbstractJcrContainer.SELECT_CONTENT + AbstractJcrContainer.ORDER_BY + AbstractJcrContainer.XPATH_PROPERTY_PREFIX + colName2, result);
     }
 
     /**
@@ -404,11 +448,5 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
         public JcrContainerTestImpl(JcrContainerSource jcrContainerSource, WorkbenchDefinition workbenchDefinition) {
             super(jcrContainerSource, workbenchDefinition);
         }
-
-        @Override
-        public long update(RowIterator iterator) throws RepositoryException {
-            return 0;
-        }
-
     }
 }

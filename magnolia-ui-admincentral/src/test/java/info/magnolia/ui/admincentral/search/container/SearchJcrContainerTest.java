@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.admincentral.search.container;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import info.magnolia.context.MgnlContext;
@@ -107,7 +107,7 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
         jcrContainer.setFullTextExpression(null);
 
         //WHEN
-        String stmt = jcrContainer.constructJCRQuery();
+        String stmt = jcrContainer.constructJCRQuery(true);
 
         //THEN
         assertNull(stmt);
@@ -116,7 +116,7 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
         jcrContainer.setFullTextExpression("");
 
         //WHEN
-        stmt = jcrContainer.constructJCRQuery();
+        stmt = jcrContainer.constructJCRQuery(true);
 
         //THEN
         assertNull(stmt);
@@ -128,10 +128,10 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
         jcrContainer.setFullTextExpression("foo");
 
         //WHEN
-        String stmt = jcrContainer.constructJCRQuery();
+        String stmt = jcrContainer.constructJCRQuery(true);
 
         //THEN
-        assertTrue(stmt.contains("contains(content.*,'foo')"));
+        assertEquals("//element(*,mgnl:content) [jcr:contains(.,'foo')]", stmt);
     }
 
     @Test
@@ -140,10 +140,10 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
         jcrContainer.setFullTextExpression("foo OR 'baz bar'   ");
 
         //WHEN
-        String stmt = jcrContainer.constructJCRQuery();
+        String stmt = jcrContainer.constructJCRQuery(true);
 
         //THEN
-        assertTrue(stmt.contains("contains(content.*,'foo OR ''baz bar''')"));
+        assertEquals("//element(*,mgnl:content) [jcr:contains(.,'foo OR ''baz bar''')]", stmt);
     }
 
 }
