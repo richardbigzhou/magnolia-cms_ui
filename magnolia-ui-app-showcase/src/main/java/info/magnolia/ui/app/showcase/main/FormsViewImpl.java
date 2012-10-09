@@ -1,8 +1,14 @@
 package info.magnolia.ui.app.showcase.main;
 
+import info.magnolia.ui.widget.dialog.BaseDialog;
+import info.magnolia.ui.widget.dialog.DialogView;
+import info.magnolia.ui.widget.dialog.FormDialog;
+import info.magnolia.ui.widget.dialog.FormSection;
+
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Component;
 
+import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.DateField;
@@ -16,12 +22,16 @@ import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.Select;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.Button.ClickEvent;
 
 public class FormsViewImpl implements FormsView {
 
     private static final long serialVersionUID = -6955085822490659756L;
     
     CssLayout layout = new CssLayout();
+    FormDialog dlg = new FormDialog();
+
+    private Listener listener;
     
     public FormsViewImpl() {
         layout.setMargin(true, true, false, true);
@@ -29,6 +39,47 @@ public class FormsViewImpl implements FormsView {
         layout.addComponent(new Label("The fields available in a Magnolia" +
         		" Form or Dialog. Configurable by repository or code."));
         
+        layout.addComponent(new Button("View in dialog", new Button.ClickListener() {
+            
+            @Override
+            public void buttonClick(ClickEvent event) {
+                listener.onViewInDialog();
+            }
+        }));
+        
+        createComponents(layout);
+        createDialog();
+    }
+
+    private void createDialog() {
+        dlg.setListener(new DialogView.Listener(){
+
+            @Override
+            public void executeAction(String actionName) {
+                
+            }
+
+            @Override
+            public void closeDialog() {
+                listener.onCloseDialog();
+            }
+            
+        });
+        
+        dlg.setDialogDescription("Components in a dialog");
+        CssLayout layout = new CssLayout();
+        createComponents(layout);
+
+        dlg.addDialogSection("", createSection(layout));
+    }
+    
+    private FormSection createSection(Component component) {
+        FormSection section = new FormSection();
+        section.addComponent(component);
+        return section;
+    }
+    
+    private void createComponents(Layout layout) {
         layout.addComponent(createRow("Static text", 
                 new Label("Lorem ipsum dolor sit amet, consectetur adipisicing elit"))
         );
@@ -106,6 +157,16 @@ public class FormsViewImpl implements FormsView {
         layout.setMargin(true);
         layout.addComponent(new Label(caption));
         return layout;
+    }
+
+    @Override
+    public void setListener(Listener listener) {
+        this.listener = listener;
+    }
+
+    @Override
+    public BaseDialog asBaseDialog() {
+        return dlg;
     }
     
 }
