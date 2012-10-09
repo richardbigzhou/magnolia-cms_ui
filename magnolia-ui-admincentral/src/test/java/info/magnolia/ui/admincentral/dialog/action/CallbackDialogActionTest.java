@@ -39,7 +39,7 @@ import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.widget.dialog.BaseDialog.DialogCloseEvent;
-import info.magnolia.ui.widget.dialog.DialogView.DialogActionCallback;
+import info.magnolia.ui.widget.dialog.DialogView.DialogActionListener;
 import info.magnolia.ui.widget.dialog.FormDialog;
 import info.magnolia.ui.widget.dialog.FormDialogView;
 import info.magnolia.ui.widget.dialog.FormSection;
@@ -235,13 +235,13 @@ public class CallbackDialogActionTest {
         }
 
         @Override
-        public void addAction(String actionName, String actionLabel, DialogActionCallback callback) {
+        public void addAction(String actionName, String actionLabel, DialogActionListener callback) {
             // TODO Auto-generated method stub
             
         }
 
         @Override
-        public void addActionCallback(String actionName, DialogActionCallback callback) {
+        public void addActionCallback(String actionName, DialogActionListener callback) {
             // TODO Auto-generated method stub
             
         }

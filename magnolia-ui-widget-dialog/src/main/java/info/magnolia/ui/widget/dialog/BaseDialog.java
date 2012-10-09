@@ -60,7 +60,7 @@ import com.vaadin.ui.VerticalLayout;
 @ClientWidget(value = VBaseDialog.class, loadStyle = LoadStyle.EAGER)
 public class BaseDialog extends AbstractComponent implements ServerSideHandler, DialogView {
 
-    private final ListMultimap<String, DialogActionCallback> actionCallbackMap = ArrayListMultimap.<String, DialogActionCallback> create();
+    private final ListMultimap<String, DialogActionListener> actionCallbackMap = ArrayListMultimap.<String, DialogActionListener> create();
 
     private Component content;
 
@@ -77,7 +77,7 @@ public class BaseDialog extends AbstractComponent implements ServerSideHandler, 
                 @Override
                 public void invoke(String methodName, Object[] params) {
                     final String actionName = String.valueOf(params[0]);
-                    final Iterator<DialogActionCallback> it = actionCallbackMap.get(actionName).iterator();
+                    final Iterator<DialogActionListener> it = actionCallbackMap.get(actionName).iterator();
                     while (it.hasNext()) {
                         it.next().onActionExecuted();
                     }
@@ -193,12 +193,12 @@ public class BaseDialog extends AbstractComponent implements ServerSideHandler, 
         return this;
     }
 
-    public void addAction(String actionName, String actionLabel, DialogActionCallback callback) {
+    public void addAction(String actionName, String actionLabel, DialogActionListener callback) {
         addAction(actionName, actionLabel);
         addActionCallback(actionName, callback);
     }
 
-    public void addActionCallback(String actionName, DialogActionCallback callback) {
+    public void addActionCallback(String actionName, DialogActionListener callback) {
         actionCallbackMap.put(actionName, callback);
     }
 

@@ -60,8 +60,8 @@ public abstract class AbstractContentApp extends AbstractApp {
         this.pickerDialogFactory = pickerDialogFactory;
     }
 
-    public ChooseDialogPresenter<Item> openWorkbenchPickerDialog() {
-        final WorkbenchChooseDialogPresenter picker = pickerDialogFactory.createWorkbenchValuePickerDialog();
+    public ChooseDialogPresenter<Item> openChooseDialog() {
+        final WorkbenchChooseDialogPresenter picker = pickerDialogFactory.createWorkbenchChooseDialog();
         ((MagnoliaShell)shell).openDialog(picker);
         return picker;
     }

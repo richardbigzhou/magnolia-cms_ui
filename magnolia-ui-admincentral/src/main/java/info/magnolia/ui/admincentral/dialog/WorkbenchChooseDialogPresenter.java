@@ -36,7 +36,7 @@ package info.magnolia.ui.admincentral.dialog;
 import info.magnolia.ui.admincentral.dialog.action.DialogActionFactory;
 import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.widget.dialog.DialogView.DialogActionCallback;
+import info.magnolia.ui.widget.dialog.DialogView.DialogActionListener;
 
 import com.vaadin.data.Item;
 
@@ -59,14 +59,14 @@ public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implemen
             }
         });
         
-        addActionCallback(WorkbenchValueChooseDialog.CANCEL_ACTION_NAME, new DialogActionCallback() {
+        addActionCallback(WorkbenchValueChooseDialog.CANCEL_ACTION_NAME, new DialogActionListener() {
             @Override
             public void onActionExecuted() {
                 closeDialog();
             }
         });
         
-        addActionCallback(WorkbenchValueChooseDialog.CHOOSE_ACTION_NAME, new DialogActionCallback() {
+        addActionCallback(WorkbenchValueChooseDialog.CHOOSE_ACTION_NAME, new DialogActionListener() {
             @Override
             public void onActionExecuted() {
                 // Selection is stored in the current value - can close Dialog.
@@ -83,10 +83,10 @@ public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implemen
     
     @Override
     public void addValuePickListener(final ValueChosenListener<Item> listener) {
-        addActionCallback(WorkbenchValueChooseDialog.CHOOSE_ACTION_NAME, new DialogActionCallback() {
+        addActionCallback(WorkbenchValueChooseDialog.CHOOSE_ACTION_NAME, new DialogActionListener() {
             @Override
             public void onActionExecuted() {
-                listener.onValueSelected(currentValue);
+                listener.onValueChosen(currentValue);
             }
         });
     }

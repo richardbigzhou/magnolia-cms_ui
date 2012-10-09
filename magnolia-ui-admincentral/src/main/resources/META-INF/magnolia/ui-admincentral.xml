@@ -212,11 +212,6 @@
 		</component>
 
 		<component>
-			<type>info.magnolia.ui.admincentral.content.view.WorkbenchValuePickerDialog</type>
-			<implementation>info.magnolia.ui.admincentral.content.view.WorkbenchValuePickerDialog</implementation>
-		</component>
-
-		<component>
 			<type>info.magnolia.ui.widget.dialog.MagnoliaDialogView</type>
 			<implementation>info.magnolia.ui.widget.dialog.Dialog</implementation>
 		</component>
@@ -256,13 +251,18 @@
 			<implementation>info.magnolia.ui.admincentral.content.view.ChooseDialogContentPresenter</implementation>
 		</component>
 		<component>
-			<type>info.magnolia.ui.admincentral.content.view.WorkbenchValueChooseDialog</type>
-			<implementation>info.magnolia.ui.admincentral.content.view.WorkbenchValueChooseDialog</implementation>
+			<type>info.magnolia.ui.admincentral.dialog.WorkbenchValueChooseDialog</type>
+			<implementation>info.magnolia.ui.admincentral.dialog.WorkbenchValueChooseDialog</implementation>
 		</component>
 
 		<component>
 			<type>info.magnolia.ui.admincentral.dialog.ChooseDialogView</type>
-			<implementation>info.magnolia.ui.admincentral.content.view.WorkbenchValueChooseDialog</implementation>
+			<implementation>info.magnolia.ui.admincentral.dialog.WorkbenchValueChooseDialog</implementation>
+		</component>
+
+		<component>
+			<type>info.magnolia.ui.admincentral.dialog.WorkbenchValueChooseDialog</type>
+			<implementation>info.magnolia.ui.admincentral.dialog.WorkbenchValueChooseDialog</implementation>
 		</component>
 
 		<component>

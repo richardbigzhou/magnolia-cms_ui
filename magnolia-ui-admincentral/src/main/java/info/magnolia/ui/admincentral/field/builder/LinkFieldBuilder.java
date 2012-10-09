@@ -117,11 +117,11 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
                 final App targetApp = appController.startIfNotAlreadyRunning(appName, new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appName, ""));
                 if (targetApp != null) {
                     if (targetApp instanceof AbstractContentApp) {
-                        final ChooseDialogPresenter<Item> pickerPresenter = ((AbstractContentApp) targetApp).openWorkbenchPickerDialog();
+                        final ChooseDialogPresenter<Item> pickerPresenter = ((AbstractContentApp) targetApp).openChooseDialog();
                         pickerPresenter.getView().setCaption("Select a contact");
                         pickerPresenter.addValuePickListener(new ValueChosenListener<Item>() {
                             @Override
-                            public void onValueSelected(Item pickedValue) {
+                            public void onValueChosen(Item pickedValue) {
                                 javax.jcr.Item jcrItem = ((JcrItemAdapter) pickedValue).getJcrItem();
                                 if (jcrItem.isNode()) {
                                     final Node selected = (Node) jcrItem;

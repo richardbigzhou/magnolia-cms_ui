@@ -38,7 +38,7 @@ import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.widget.dialog.BaseDialog.DialogCloseEvent;
 import info.magnolia.ui.widget.dialog.DialogView;
-import info.magnolia.ui.widget.dialog.DialogView.DialogActionCallback;
+import info.magnolia.ui.widget.dialog.DialogView.DialogActionListener;
 
 /**
  * Base Dialog presenter.
@@ -54,12 +54,18 @@ public interface DialogPresenter {
     void closeDialog();
     
     void addDialogCloseHandler(final DialogCloseEvent.Handler listener);
-    
+
+    /**
+     * TODO get rid of this method - convert to Util methods.
+     */
     void addActionFromDefinition(final DialogActionDefinition actionDefinition);
     
-    void addAction(String actionName, String actionLabel, DialogActionCallback callback);
+    void addAction(String actionName, String actionLabel, DialogActionListener callback);
     
-    void addActionCallback(String actionName, DialogActionCallback callback);
+    /**
+     * TODO get rid of this method - convert to Util methods.
+     */
+    void addActionCallback(String actionName, DialogActionListener callback);
     
     /**
      * Callback interface for DialogView.Presenter.

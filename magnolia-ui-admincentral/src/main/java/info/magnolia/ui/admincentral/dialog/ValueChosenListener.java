@@ -39,7 +39,7 @@ package info.magnolia.ui.admincentral.dialog;
  */
 public interface ValueChosenListener<VT> {
 
-    void onValueSelected(VT pickedValue);
+    void onValueChosen(VT chosenValue);
     
     void selectionCanceled();
     

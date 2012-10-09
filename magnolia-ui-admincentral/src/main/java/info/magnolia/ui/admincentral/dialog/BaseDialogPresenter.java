@@ -41,7 +41,7 @@ import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.widget.dialog.BaseDialog.DialogCloseEvent;
 import info.magnolia.ui.widget.dialog.DialogView;
-import info.magnolia.ui.widget.dialog.DialogView.DialogActionCallback;
+import info.magnolia.ui.widget.dialog.DialogView.DialogActionListener;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -82,7 +82,7 @@ public class BaseDialogPresenter implements DialogPresenter {
 
     @Override
     public void addActionFromDefinition(final DialogActionDefinition dialogActionDefinition) {
-        addAction(dialogActionDefinition.getName(), dialogActionDefinition.getLabel(), new DialogActionCallback() {    
+        addAction(dialogActionDefinition.getName(), dialogActionDefinition.getLabel(), new DialogActionListener() {    
             @Override
             public void onActionExecuted() {
                 final ActionDefinition actionDefinition = dialogActionDefinition.getActionDefinition();
@@ -102,13 +102,13 @@ public class BaseDialogPresenter implements DialogPresenter {
     }
 
     @Override
-    public void addAction(String actionName, String actionLabel, DialogActionCallback callback) {
+    public void addAction(String actionName, String actionLabel, DialogActionListener callback) {
         view.asVaadinComponent().addAction(actionName, actionLabel, callback);
         
     }
 
     @Override
-    public void addActionCallback(String actionName, DialogActionCallback callback) {
+    public void addActionCallback(String actionName, DialogActionListener callback) {
         view.asVaadinComponent().addActionCallback(actionName, callback);
     }
 

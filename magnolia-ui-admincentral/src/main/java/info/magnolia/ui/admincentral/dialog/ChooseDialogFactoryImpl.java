@@ -35,8 +35,10 @@ package info.magnolia.ui.admincentral.dialog;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.content.view.ChooseDialogContentPresenter;
+import info.magnolia.ui.admincentral.content.view.ContentView.ViewType;
 import info.magnolia.ui.admincentral.dialog.action.DialogActionFactory;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchView;
+import info.magnolia.ui.admincentral.workbench.ContentWorkbenchView.Listener;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.widget.dialog.BaseDialog;
 
@@ -66,13 +68,25 @@ public class ChooseDialogFactoryImpl implements ChooseDialogFactory {
     }
 
     @Override
-    public WorkbenchChooseDialogPresenter createWorkbenchValuePickerDialog() {
+    public WorkbenchChooseDialogPresenter createWorkbenchChooseDialog() {
         final ChooseDialogView selectionDialogView = componentProvider.getComponent(ChooseDialogView.class);
         final WorkbenchChooseDialogPresenter workbenchPickerDialogPresenter = componentProvider.newInstance(
                 WorkbenchChooseDialogPresenter.class, actionFactory, selectionDialogView, chooseDialogEventBus);
 
         final ChooseDialogContentPresenter presenter = componentProvider.getComponent(ChooseDialogContentPresenter.class);
         final BaseDialog dialog = (BaseDialog) workbenchPickerDialogPresenter.getView();
+        ((ContentWorkbenchView) dialog.getContent()).setListener(new Listener() {
+            
+            @Override
+            public void onViewTypeChanged(ViewType viewType) {
+                
+            }
+            
+            @Override
+            public void onSearch(String searchExpression) {
+                
+            }
+        });
         presenter.initContentView((ContentWorkbenchView) dialog.getContent());
         dialog.setHeight("500px");
         return workbenchPickerDialogPresenter;
