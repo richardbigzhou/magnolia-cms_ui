@@ -251,7 +251,7 @@ public class AbstractContentSubAppTest {
     }
 
     @Test
-    public void testSubAppSupportsLocationReturnsFalse() throws Exception {
+    public void testSubAppSupportsLocationReturnsFalseIfSubAppIdIsNotMain() throws Exception {
         //GIVEN
         DefaultLocation location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, DUMMY_APPNAME, "foo");
 
@@ -263,7 +263,7 @@ public class AbstractContentSubAppTest {
     }
 
     @Test
-    public void testSubAppSupportsLocationReturnsTrue() throws Exception {
+    public void testSubAppSupportsLocationReturnsTrueIfSubAppIdMain() throws Exception {
         //GIVEN
         DefaultLocation location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, DUMMY_APPNAME, AbstractContentSubApp.MAIN_SUBAPP_ID);
 
