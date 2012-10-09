@@ -45,7 +45,6 @@ import java.util.List;
 
 import javax.jcr.Item;
 import javax.jcr.RepositoryException;
-import javax.jcr.query.RowIterator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -139,12 +138,6 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
         catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);
         }
-    }
-
-    @Override
-    public long update(RowIterator iterator) throws RepositoryException, UnsupportedOperationException {
-        throw new UnsupportedOperationException(getClass().getName() + " does not support this operation.");
-
     }
 
     protected Collection<String> createContainerIds(Collection<Item> children) throws RepositoryException {
