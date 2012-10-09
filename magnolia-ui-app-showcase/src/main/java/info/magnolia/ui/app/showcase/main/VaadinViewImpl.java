@@ -1,8 +1,40 @@
+/**
+ * This file Copyright (c) 2012 Magnolia International
+ * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
+ *
+ *
+ * This file is dual-licensed under both the Magnolia
+ * Network Agreement and the GNU General Public License.
+ * You may elect to use one or the other of these licenses.
+ *
+ * This file is distributed in the hope that it will be
+ * useful, but AS-IS and WITHOUT ANY WARRANTY; without even the
+ * implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE, TITLE, or NONINFRINGEMENT.
+ * Redistribution, except as permitted by whichever of the GPL
+ * or MNA you select, is prohibited.
+ *
+ * 1. For the GPL license (GPL), you can redistribute and/or
+ * modify this file under the terms of the GNU General
+ * Public License, Version 3, as published by the Free Software
+ * Foundation.  You should have received a copy of the GNU
+ * General Public License, Version 3 along with this program;
+ * if not, write to the Free Software Foundation, Inc., 51
+ * Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ * 2. For the Magnolia Network Agreement (MNA), this file
+ * and the accompanying materials are made available under the
+ * terms of the MNA which accompanies this distribution, and
+ * is available at http://www.magnolia-cms.com/mna.html
+ *
+ * Any modifications to this file must keep this entire header
+ * intact.
+ *
+ */
 package info.magnolia.ui.app.showcase.main;
 
 import info.magnolia.ui.vaadin.integration.widget.grid.MagnoliaTable;
 import info.magnolia.ui.vaadin.integration.widget.grid.MagnoliaTreeTable;
-import info.magnolia.ui.vaadin.widget.tabsheet.MagnoliaTabSheet;
 
 import java.util.Date;
 
@@ -17,7 +49,6 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
@@ -32,13 +63,16 @@ import com.vaadin.ui.PopupView;
 import com.vaadin.ui.ProgressIndicator;
 import com.vaadin.ui.Slider;
 import com.vaadin.ui.Slider.ValueOutOfBoundsException;
+import com.vaadin.ui.themes.BaseTheme;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.VerticalSplitPanel;
 
-
+/**
+ * Implementation for Vaadin component showcase view.
+ */
 public class VaadinViewImpl implements VaadinView {
 
     private static final long serialVersionUID = 4937209277244291844L;
@@ -88,20 +122,23 @@ public class VaadinViewImpl implements VaadinView {
         return layout;
     }
 
-    private Layout getMagnoliaTabSheetPreviews() {
-        Layout grid = getPreviewLayout("Magnolia tabsheet");
-
-        MagnoliaTabSheet tabsheet = new MagnoliaTabSheet();
-        tabsheet.setSizeFull();
-
-        ComponentContainer tab1 = tabsheet.addTab("first tab");
-        ComponentContainer tab2 = tabsheet.addTab("second tab");
-        tab1.addComponent(new Label(
-            "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."));
-        tab2.addComponent(new Label("Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."));
-        grid.addComponent(tabsheet);
-        return grid;
-    }
+    /*
+     * Does not work correctly inside tab sheet
+     */
+//    private Layout getMagnoliaTabSheetPreviews() {
+//        Layout grid = getPreviewLayout("Magnolia tabsheet");
+//
+//        MagnoliaTabSheet tabsheet = new MagnoliaTabSheet();
+//        tabsheet.setSizeFull();
+//
+//        ComponentContainer tab1 = tabsheet.addTab("first tab");
+//        ComponentContainer tab2 = tabsheet.addTab("second tab");
+//        tab1.addComponent(new Label(
+//            "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."));
+//        tab2.addComponent(new Label("Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."));
+//        grid.addComponent(tabsheet);
+//        return grid;
+//    }
 
     private Layout getMagnoliaPreviews() {
         Layout grid = getPreviewLayout("Magnolia table and tree table");
@@ -207,7 +244,10 @@ public class VaadinViewImpl implements VaadinView {
         return grid;
     }
 
-    class DemoPanel extends Panel {
+    /**
+     * Private class to show custom panel content.
+     */
+    private class DemoPanel extends Panel {
 
         private static final long serialVersionUID = 1215861781775905773L;
 
@@ -218,11 +258,6 @@ public class VaadinViewImpl implements VaadinView {
             addComponent(new Label(
                 "<h4>Panel content</h4>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin malesuada volutpat vestibulum. Quisque elementum quam sed sem ultrices lobortis. Pellentesque non ligula ac dolor posuere tincidunt sed eu mi. Integer mattis fringilla nulla, ut cursus mauris scelerisque eu. Etiam bibendum placerat euismod. Nam egestas adipiscing orci sed tristique. Sed vitae enim nisi. Sed ac vehicula ipsum. Nulla quis quam nisi. Proin interdum lacus ipsum, at tristique nibh. Curabitur at ipsum sem. Donec venenatis aliquet neque, sit amet cursus lectus condimentum et. In mattis egestas erat, non cursus metus consectetur ac. Pellentesque eget nisl tellus.",
                 Label.CONTENT_XHTML));
-        }
-
-        DemoPanel(String caption) {
-            this();
-            setCaption(caption);
         }
     }
 
@@ -338,8 +373,8 @@ public class VaadinViewImpl implements VaadinView {
         Button button = new Button("Button");
         grid.addComponent(button);
 
-        button = new Button("Link style");
-        button.setStyleName(Button.STYLE_LINK);
+        button = new Button("Button with link style");
+        button.setStyleName(BaseTheme.BUTTON_LINK);
         grid.addComponent(button);
 
         button = new Button();

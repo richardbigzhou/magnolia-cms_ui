@@ -53,6 +53,7 @@ public class ShowcaseMainViewImpl implements ShowcaseMainView {
 
     private static final long serialVersionUID = 1832253846080472161L;
 
+    @SuppressWarnings("unused")
     private Listener listener;
 
     private final ComponentContainer tabForms;
