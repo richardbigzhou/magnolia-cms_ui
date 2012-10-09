@@ -31,31 +31,46 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.thumbnail;
+package info.magnolia.ui.widget.dialog.gwt.client.dialoglayout;
+
+import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.event.shared.HandlerRegistration;
 
 
 /**
- * Defines a provider for Thumbnail images.
+ * ValidationChangedEvent. Sent when the field validation happened.
+ *
  */
-public interface ThumbnailProvider {
-
-    static final String ORIGINAL_IMAGE_NODE_NAME = "originalImage";
-
-    static final String THUMBNAIL_NODE_NAME = "thumbnail";
-
+public class ValidationChangedEvent extends GwtEvent<ValidationChangedEvent.Handler> {
+    
+    
     /**
-     * Return a path to a thumbnail of the requested size representing the provided item. Depending on the implementation,
-     * this thumbnail may be retrieved from cache or created on the fly.
+     * Handler.
      */
-    String getPath(String nodeIdentifier, String workspace, int width, int height);
-
+    public interface Handler extends EventHandler {
+        void onValidationChanged(ValidationChangedEvent event);
+    }
+    
     /**
-     * Defaults to {@value #ORIGINAL_IMAGE_NODE_NAME}.
+     * {@link HasValidationChangeHanlders}.
      */
-    String getOriginalImageNodeName();
+    public interface HasValidationChangeHanlders {
+        
+        HandlerRegistration addValidationChangeHandler(Handler handler);
+    }
+    
+    public static final Type<ValidationChangedEvent.Handler> TYPE = new Type<ValidationChangedEvent.Handler>();
+    
+    @Override
+    public Type<Handler> getAssociatedType() {
+        return TYPE;
+    }
 
-    /**
-     * Defaults to {@value #THUMBNAIL_NODE_NAME}.
-     */
-    String getThumbnailNodeName();
+    @Override
+    protected void dispatch(Handler handler) {
+        handler.onValidationChanged(this);
+    }
+    
+
 }

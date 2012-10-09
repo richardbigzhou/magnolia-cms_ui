@@ -54,6 +54,7 @@ import com.vaadin.terminal.gwt.client.Container;
 import com.vaadin.terminal.gwt.client.Paintable;
 import com.vaadin.terminal.gwt.client.RenderSpace;
 import com.vaadin.terminal.gwt.client.UIDL;
+import com.vaadin.terminal.gwt.client.Util;
 import com.vaadin.terminal.gwt.client.ui.Icon;
 
 
@@ -315,7 +316,7 @@ public class VActionbar extends Composite implements Paintable, Container, Clien
 
     @Override
     public void forceLayout() {
-        client.forceLayout();
+        Util.notifyParentOfSizeChange(this,false);
     }
 
     @Override

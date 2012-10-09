@@ -1,61 +1,103 @@
+/**
+ * This file Copyright (c) 2012 Magnolia International
+ * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
+ *
+ *
+ * This file is dual-licensed under both the Magnolia
+ * Network Agreement and the GNU General Public License.
+ * You may elect to use one or the other of these licenses.
+ *
+ * This file is distributed in the hope that it will be
+ * useful, but AS-IS and WITHOUT ANY WARRANTY; without even the
+ * implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE, TITLE, or NONINFRINGEMENT.
+ * Redistribution, except as permitted by whichever of the GPL
+ * or MNA you select, is prohibited.
+ *
+ * 1. For the GPL license (GPL), you can redistribute and/or
+ * modify this file under the terms of the GNU General
+ * Public License, Version 3, as published by the Free Software
+ * Foundation.  You should have received a copy of the GNU
+ * General Public License, Version 3 along with this program;
+ * if not, write to the Free Software Foundation, Inc., 51
+ * Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ * 2. For the Magnolia Network Agreement (MNA), this file
+ * and the accompanying materials are made available under the
+ * terms of the MNA which accompanies this distribution, and
+ * is available at http://www.magnolia-cms.com/mna.html
+ *
+ * Any modifications to this file must keep this entire header
+ * intact.
+ *
+ */
 package info.magnolia.ui.app.showcase.main;
-
-import java.util.Date;
 
 import info.magnolia.ui.vaadin.integration.widget.grid.MagnoliaTable;
 import info.magnolia.ui.vaadin.integration.widget.grid.MagnoliaTreeTable;
-import info.magnolia.ui.vaadin.widget.tabsheet.ShellTabSheet;
+
+import java.util.Date;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.ThemeResource;
-import com.vaadin.terminal.UserError;
 import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.AbstractSplitPanel;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.Embedded;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.Link;
+import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.PopupView;
 import com.vaadin.ui.ProgressIndicator;
-import com.vaadin.ui.RichTextArea;
 import com.vaadin.ui.Slider;
+import com.vaadin.ui.Slider.ValueOutOfBoundsException;
+import com.vaadin.ui.themes.BaseTheme;
+import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.VerticalSplitPanel;
-import com.vaadin.ui.Slider.ValueOutOfBoundsException;
 
+/**
+ * Implementation for Vaadin component showcase view.
+ */
 public class VaadinViewImpl implements VaadinView {
 
     private static final long serialVersionUID = 4937209277244291844L;
-    
-    Layout layout;
-    
+
+    VerticalLayout layout;
+
     public VaadinViewImpl() {
         layout = new VerticalLayout();
+        layout.setSpacing(true);
+        layout.setWidth("100%");
+        layout.setMargin(true, true, false, true);
         layout.addComponent(new Label(
-                "The UI elements available in the Vaadin framework that " +
+            "The UI elements available in the Vaadin framework that " +
                 "are recommended for use with Magnolia. These fields " +
                 "can be easily added to your app and support Vaadin " +
                 "interaction. Many of these elements are also available " +
                 "within Magnolia Forms/Dialogs."));
         layout.addComponent(getLabelPreviews());
         layout.addComponent(getProgressIndicatorPreviews());
+        layout.addComponent(getImagePreviews());
         layout.addComponent(getButtonPreviews());
         layout.addComponent(getTextFieldPreviews());
         layout.addComponent(getCheckboxPreviews());
-//        layout.addComponent(getMagnoliaTabSheetPreviews());
+        layout.addComponent(getSelectPreviews());
+        // layout.addComponent(getMagnoliaTabSheetPreviews());
         layout.addComponent(getMagnoliaPreviews());
         layout.addComponent(getTreePreviews());
         layout.addComponent(getSliderPreviews());
@@ -68,54 +110,69 @@ public class VaadinViewImpl implements VaadinView {
     public Component asVaadinComponent() {
         return layout;
     }
-    
-    Layout getMagnoliaTabSheetPreviews() {
-        Layout grid = getPreviewLayout("Magnolia tabsheet");
-        
-        ShellTabSheet tabsheet = new ShellTabSheet();
-        tabsheet.setSizeFull();
 
-        ComponentContainer tab1 = tabsheet.addTab("first tab");
-        ComponentContainer tab2 = tabsheet.addTab("second tab");
-        tab1.addComponent(new Label("Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."));
-        tab2.addComponent(new Label("Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."));
-        grid.addComponent(tabsheet);
-        return grid;
+    private Layout getImagePreviews() {
+        Layout layout = new VerticalLayout();
+        layout.setCaption("External resources");
+        Embedded image = new Embedded("", new ThemeResource("img/logo-magnolia.svg"));
+        image.setWidth("300px");
+        image.setHeight("100px");
+
+        layout.addComponent(image);
+        return layout;
     }
-    
-    Layout getMagnoliaPreviews() {
-        Layout grid = getPreviewLayout("Magnolia tables and trees");
+
+    /*
+     * Does not work correctly inside tab sheet
+     */
+//    private Layout getMagnoliaTabSheetPreviews() {
+//        Layout grid = getPreviewLayout("Magnolia tabsheet");
+//
+//        MagnoliaTabSheet tabsheet = new MagnoliaTabSheet();
+//        tabsheet.setSizeFull();
+//
+//        ComponentContainer tab1 = tabsheet.addTab("first tab");
+//        ComponentContainer tab2 = tabsheet.addTab("second tab");
+//        tab1.addComponent(new Label(
+//            "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."));
+//        tab2.addComponent(new Label("Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."));
+//        grid.addComponent(tabsheet);
+//        return grid;
+//    }
+
+    private Layout getMagnoliaPreviews() {
+        Layout grid = getPreviewLayout("Magnolia table and tree table");
         MagnoliaTable table = new MagnoliaTable();
         table.addContainerProperty("first", String.class, "first");
         table.addContainerProperty("second", Integer.class, 1);
         table.addContainerProperty("thid", Date.class, new Date());
-        for(int loop=0; loop < 3; loop++) {
+        for (int loop = 0; loop < 3; loop++) {
             table.addItem();
         }
         table.setHeight("200px");
         grid.addComponent(table);
-        
+
         MagnoliaTreeTable tree = new MagnoliaTreeTable();
         HierarchicalContainer container = new HierarchicalContainer();
-        
+
         container.addContainerProperty("first", String.class, "first");
         container.addContainerProperty("second", Integer.class, 1);
         container.addContainerProperty("thid", Date.class, new Date());
 
         tree.setContainerDataSource(container);
         Object root = container.addItem();
-        for(int loop=0; loop < 3; loop++) {
+        for (int loop = 0; loop < 3; loop++) {
             Object itemId = container.addItem();
-            container.setParent(itemId, root);            
+            container.setParent(itemId, root);
         }
         tree.setCollapsed(root, false);
         tree.setHeight("200px");
         grid.addComponent(tree);
-        
+
         return grid;
     }
 
-    Layout getPopupViewPreviews() {
+    private Layout getPopupViewPreviews() {
         Layout grid = getPreviewLayout("Popup views");
 
         Label content = new Label("Simple popup content");
@@ -125,16 +182,16 @@ public class VaadinViewImpl implements VaadinView {
 
         return grid;
     }
-    
+
     private Layout getCheckboxPreviews() {
         Layout grid = getPreviewLayout("Checkboxes and radiobuttons");
         CheckBox checkboxcaption = new CheckBox("with caption text");
-        
+
         OptionGroup group = new OptionGroup("Option group");
         group.addItem("First");
         group.addItem("Second");
         group.addItem("Third");
-        
+
         OptionGroup checkGroup = new OptionGroup("Option group with multi select");
         checkGroup.setMultiSelect(true);
         checkGroup.addItem("First");
@@ -146,7 +203,30 @@ public class VaadinViewImpl implements VaadinView {
         grid.addComponent(checkGroup);
         return grid;
     }
-    
+
+    static void addSelectItems(AbstractSelect s, boolean selectFirst, int num) {
+        s.setNullSelectionAllowed(false);
+        for (int i = 0; i < num; i++) {
+            s.addItem("Item " + i);
+        }
+        if (selectFirst) {
+            s.select(s.getItemIds().iterator().next());
+        }
+    }
+
+    private Layout getSelectPreviews() {
+        Layout grid = getPreviewLayout("Selects");
+
+        ComboBox combo = new ComboBox();
+        addSelectItems(combo, true, 100);
+        grid.addComponent(combo);
+
+        NativeSelect s = new NativeSelect();
+        addSelectItems(s, true, 10);
+        grid.addComponent(s);
+
+        return grid;
+    }
 
     private Layout getSplitPreviews() {
         Layout grid = getPreviewLayout("Split panels");
@@ -156,12 +236,6 @@ public class VaadinViewImpl implements VaadinView {
         panel.setHeight("130px");
         grid.addComponent(panel);
 
-        panel = new VerticalSplitPanel();
-        panel.setWidth("230px");
-        panel.setHeight("130px");
-        panel.setStyleName("small");
-        grid.addComponent(panel);
-
         panel = new HorizontalSplitPanel();
         panel.setWidth("230px");
         panel.setHeight("130px");
@@ -169,8 +243,11 @@ public class VaadinViewImpl implements VaadinView {
 
         return grid;
     }
-    
-    class DemoPanel extends Panel {
+
+    /**
+     * Private class to show custom panel content.
+     */
+    private class DemoPanel extends Panel {
 
         private static final long serialVersionUID = 1215861781775905773L;
 
@@ -179,35 +256,21 @@ public class VaadinViewImpl implements VaadinView {
             setWidth("230px");
             setHeight("120px");
             addComponent(new Label(
-                    "<h4>Panel content</h4>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin malesuada volutpat vestibulum. Quisque elementum quam sed sem ultrices lobortis. Pellentesque non ligula ac dolor posuere tincidunt sed eu mi. Integer mattis fringilla nulla, ut cursus mauris scelerisque eu. Etiam bibendum placerat euismod. Nam egestas adipiscing orci sed tristique. Sed vitae enim nisi. Sed ac vehicula ipsum. Nulla quis quam nisi. Proin interdum lacus ipsum, at tristique nibh. Curabitur at ipsum sem. Donec venenatis aliquet neque, sit amet cursus lectus condimentum et. In mattis egestas erat, non cursus metus consectetur ac. Pellentesque eget nisl tellus.",
-                    Label.CONTENT_XHTML));
-        }
-
-        DemoPanel(String caption) {
-            this();
-            setCaption(caption);
+                "<h4>Panel content</h4>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin malesuada volutpat vestibulum. Quisque elementum quam sed sem ultrices lobortis. Pellentesque non ligula ac dolor posuere tincidunt sed eu mi. Integer mattis fringilla nulla, ut cursus mauris scelerisque eu. Etiam bibendum placerat euismod. Nam egestas adipiscing orci sed tristique. Sed vitae enim nisi. Sed ac vehicula ipsum. Nulla quis quam nisi. Proin interdum lacus ipsum, at tristique nibh. Curabitur at ipsum sem. Donec venenatis aliquet neque, sit amet cursus lectus condimentum et. In mattis egestas erat, non cursus metus consectetur ac. Pellentesque eget nisl tellus.",
+                Label.CONTENT_XHTML));
         }
     }
-    
+
     private Layout getPanelPreviews() {
         Layout grid = getPreviewLayout("Panels");
 
-        Panel panel = new DemoPanel("Panel");
-        panel.setIcon(new ThemeResource("../runo/icons/16/document.png"));
+        DemoPanel panel = new DemoPanel();
         grid.addComponent(panel);
-
-        panel = new DemoPanel();
-        grid.addComponent(panel);
-
-        panel = new DemoPanel();
-        panel.setStyleName("borderless");
-        grid.addComponent(panel);
-
 
         return grid;
     }
-    
-    Layout getSliderPreviews() {
+
+    private Layout getSliderPreviews() {
         Layout grid = getPreviewLayout("Sliders");
 
         Slider s = new Slider();
@@ -215,23 +278,22 @@ public class VaadinViewImpl implements VaadinView {
         try {
             s.setValue(50);
             grid.addComponent(s);
-            
+
             s = new Slider();
             s.setOrientation(Slider.ORIENTATION_VERTICAL);
             s.setHeight("70px");
             s.setValue(50);
-        }
-        catch (ValueOutOfBoundsException e) {
-           
+        } catch (ValueOutOfBoundsException e) {
+
         }
         grid.addComponent(s);
-        
 
         return grid;
     }
-    
+
     Tree tree;
-    Layout getTreePreviews() {
+
+    private Layout getTreePreviews() {
         Layout grid = getPreviewLayout("Trees");
         tree = new Tree();
         tree.setImmediate(true);
@@ -247,12 +309,12 @@ public class VaadinViewImpl implements VaadinView {
             addCaptionedItem("Team A", id);
             addCaptionedItem("Team B", id);
             tree.setItemIcon(id, new ThemeResource(
-                    "../runo/icons/16/folder.png"));
+                "../runo/icons/16/folder.png"));
         }
         grid.addComponent(tree);
         return grid;
     }
-    
+
     private Object addCaptionedItem(String caption, Object parent) {
         // add item, let tree decide id
         final Object id = tree.addItem();
@@ -268,16 +330,15 @@ public class VaadinViewImpl implements VaadinView {
         }
         return id;
     }
-    
+
     private Layout getLabelPreviews() {
-        Layout grid = getPreviewLayout("Labels");
+        Layout grid = getPreviewLayout("Static text");
 
         Label label = new Label(
-                "Plain text, lorem ipsum dolor sit amet consectetur amit.");
+            "Plain text, lorem ipsum dolor sit amet consectetur amit.");
 
         grid.addComponent(label);
 
-       
         label = new Label("Warning text, lorem ipsum dolor sit.");
         label.setStyleName("warning");
         grid.addComponent(label);
@@ -286,11 +347,10 @@ public class VaadinViewImpl implements VaadinView {
         label.setStyleName("error");
         grid.addComponent(label);
 
-      
         return grid;
     }
-    
-    Layout getProgressIndicatorPreviews() {
+
+    private Layout getProgressIndicatorPreviews() {
         Layout grid = getPreviewLayout("Progress Indicators");
 
         ProgressIndicator pi = new ProgressIndicator(0.5f);
@@ -304,35 +364,30 @@ public class VaadinViewImpl implements VaadinView {
         pi.setIndeterminate(true);
         grid.addComponent(pi);
 
-
         return grid;
     }
-    
+
     private Layout getButtonPreviews() {
         Layout grid = getPreviewLayout("Buttons");
 
         Button button = new Button("Button");
         grid.addComponent(button);
 
-      
-
-        button = new Button("Link style");
-        button.setStyleName(Button.STYLE_LINK);
+        button = new Button("Button with link style");
+        button.setStyleName(BaseTheme.BUTTON_LINK);
         grid.addComponent(button);
 
-     
         button = new Button();
         button.setIcon(new ThemeResource("../runo/icons/16/user.png"));
         grid.addComponent(button);
 
-        Link l = new Link("Link: vaadin.com", new ExternalResource(
-                "http://vaadin.com"));
+        Link l = new Link("Link: magnolia-cms.com", new ExternalResource(
+            "http://www.magnolia-cms.com"));
         grid.addComponent(l);
-
 
         return grid;
     }
-    
+
     private Layout getTextFieldPreviews() {
         Layout grid = getPreviewLayout("Text fields");
 
@@ -340,33 +395,18 @@ public class VaadinViewImpl implements VaadinView {
         tf.setValue("Text field");
         grid.addComponent(tf);
 
-      
-        tf = new TextField();
-        tf.setInputPrompt("Search field");
-        tf.setStyleName("search");
-        grid.addComponent(tf);       
-
-        tf = new TextField();
-        tf.setInputPrompt("Error");
-        tf.setComponentError(new UserError("Test error"));
-        grid.addComponent(tf);
-        
         PasswordField pw = new PasswordField();
         pw.setInputPrompt("Password");
         grid.addComponent(pw);
 
-        tf = new TextField();
-        tf.setInputPrompt("Multiline");
-        tf.setRows(4);
-        grid.addComponent(tf);
-        
-        RichTextArea rich = new RichTextArea("Rich text area");
-        grid.addComponent(rich);
+        TextArea ta = new TextArea();
+        ta.setInputPrompt("Multiline");
+        grid.addComponent(ta);
 
         return grid;
     }
-    
-    GridLayout getPreviewLayout(String caption) {
+
+    private Layout getPreviewLayout(String caption) {
         GridLayout grid = new GridLayout(3, 1);
         grid.setWidth("100%");
         grid.setSpacing(true);

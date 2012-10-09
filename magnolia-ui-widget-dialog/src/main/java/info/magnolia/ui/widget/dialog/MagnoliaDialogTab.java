@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.widget.dialog;
 
-import info.magnolia.ui.vaadin.widget.tabsheet.ShellTab;
+import info.magnolia.ui.vaadin.widget.tabsheet.MagnoliaTab;
 import info.magnolia.ui.widget.dialog.gwt.client.VDialogTab;
 
 import com.vaadin.terminal.PaintException;
@@ -45,11 +45,11 @@ import com.vaadin.ui.ClientWidget;
  *
  */
 @ClientWidget(VDialogTab.class)
-public class MagnoliaDialogTab extends ShellTab {
+public class MagnoliaDialogTab extends MagnoliaTab {
 
-    private final DialogLayout content;
+    private final FormSection content;
 
-    public MagnoliaDialogTab(String caption, DialogLayout content) {
+    public MagnoliaDialogTab(String caption, FormSection content) {
         super(caption, content);
         this.content = content;
         //DialogLayout needs this info to display it when show all tab is active

@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.workbench;
 
+import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.admincentral.content.view.ContentView;
 import info.magnolia.ui.admincentral.content.view.ContentView.ViewType;
 import info.magnolia.ui.widget.actionbar.ActionbarView;
@@ -40,7 +41,13 @@ import info.magnolia.ui.widget.actionbar.ActionbarView;
 import java.util.EnumMap;
 import java.util.Map;
 
-import com.vaadin.data.Item;
+import org.apache.commons.lang.StringUtils;
+
+import com.vaadin.event.FieldEvents;
+import com.vaadin.event.FieldEvents.BlurEvent;
+import com.vaadin.event.FieldEvents.FocusEvent;
+import com.vaadin.event.ShortcutAction;
+import com.vaadin.event.ShortcutListener;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Button;
@@ -51,7 +58,7 @@ import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.NativeButton;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.BaseTheme;
 
 
@@ -63,13 +70,15 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
 
     private final HorizontalLayout root = new HorizontalLayout();
 
-    private final VerticalLayout contentViewContainer = new VerticalLayout();
+    private final CssLayout contentViewContainer = new CssLayout();
 
     private final Button treeButton;
 
     private final Button listButton;
 
     private final Button thumbsButton;
+
+    private final TextField searchbox;
 
     private final Embedded viewTypeArrow;
 
@@ -80,6 +89,7 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
     private ViewType currentViewType = ViewType.TREE;
 
     private ContentWorkbenchView.Listener contentWorkbenchViewListener;
+
 
     public ContentWorkbenchViewImpl() {
         super();
@@ -101,6 +111,7 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
         listButton = buildButton(ViewType.LIST, "icon-view-list", false);
         thumbsButton = buildButton(ViewType.THUMBNAIL, "icon-view-thumbnails", false);
         viewTypeArrow = buildViewTypeArrow();
+        searchbox = buildBasicSearchbox();
 
         viewModes.addComponent(treeButton);
         viewModes.addComponent(listButton);
@@ -109,6 +120,44 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
         contentViewContainer.setSizeFull();
         contentViewContainer.addComponent(viewModes);
         contentViewContainer.addComponent(viewTypeArrow);
+        contentViewContainer.addComponent(searchbox);
+    }
+
+    private TextField buildBasicSearchbox() {
+        final TextField searchbox = new TextField();
+        final String inputPrompt = MessagesUtil.getWithDefault("toolbar.search.prompt", "Search");
+
+        searchbox.setInputPrompt(inputPrompt);
+        searchbox.setSizeUndefined();
+        searchbox.addStyleName("searchbox");
+
+        searchbox.addShortcutListener(new ShortcutListener("", ShortcutAction.KeyCode.ENTER, null) {
+
+            @Override
+            public void handleAction(Object sender, Object target) {
+                contentWorkbenchViewListener.onSearch(searchbox.getValue().toString());
+            }
+        });
+
+        searchbox.addListener(new FieldEvents.BlurListener() {
+
+            @Override
+            public void blur(BlurEvent event) {
+                searchbox.setInputPrompt(inputPrompt);
+            }
+        });
+
+        searchbox.addListener(new FieldEvents.FocusListener() {
+
+            @Override
+            public void focus(FocusEvent event) {
+                if(currentViewType != ViewType.SEARCH) {
+                    setViewType(ViewType.SEARCH);
+                }
+            }
+        });
+
+        return searchbox;
     }
 
     private Embedded buildViewTypeArrow() {
@@ -125,36 +174,10 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
 
             @Override
             public void buttonClick(ClickEvent event) {
-                setGridType(viewType);
-
-                treeButton.removeStyleName("active");
-                listButton.removeStyleName("active");
-                thumbsButton.removeStyleName("active");
-
-                viewTypeArrow.removeStyleName("tree");
-                viewTypeArrow.removeStyleName("list");
-                viewTypeArrow.removeStyleName("thumbs");
-
-                switch (viewType) {
-                    case TREE :
-                        treeButton.addStyleName("active");
-                        viewTypeArrow.addStyleName("tree");
-                        break;
-                    case LIST :
-                        listButton.addStyleName("active");
-                        viewTypeArrow.addStyleName("list");
-                        break;
-                    case THUMBNAIL :
-                        thumbsButton.addStyleName("active");
-                        viewTypeArrow.addStyleName("thumbs");
-                        break;
-                    default :
-                        break;
-                }
+                setViewType(viewType);
             }
         });
         button.setStyleName(BaseTheme.BUTTON_LINK);
-        // button.addStyleName(icon);
 
         button.setHtmlContentAllowed(true);
         button.setCaption("<span class=\"" + icon + "\"></span>");
@@ -174,21 +197,18 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
     }
 
     @Override
-    public void setGridType(ViewType type) {
+    public void setViewType(final ViewType type) {
+
         contentViewContainer.removeComponent(contentViews.get(currentViewType).asVaadinComponent());
         final Component c = contentViews.get(type).asVaadinComponent();
 
         c.setSizeFull();
         contentViewContainer.addComponent(c);
-        contentViewContainer.setExpandRatio(c,  1f);
 
         this.currentViewType = type;
+        setViewTypeStyling(currentViewType);
         refresh();
-    }
-
-    @Override
-    public void refreshItem(Item item) {
-        contentViews.get(currentViewType).refreshItem(item);
+        this.contentWorkbenchViewListener.onViewTypeChanged(currentViewType);
     }
 
     @Override
@@ -223,4 +243,51 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
             contentView.select(path);
         }
     }
+
+    @Override
+    public ContentView getSelectedView() {
+        return contentViews.get(currentViewType);
+    }
+
+    private void setViewTypeStyling(final ViewType viewType) {
+        treeButton.removeStyleName("active");
+        listButton.removeStyleName("active");
+        thumbsButton.removeStyleName("active");
+
+        viewTypeArrow.removeStyleName("tree");
+        viewTypeArrow.removeStyleName("list");
+        viewTypeArrow.removeStyleName("thumbs");
+        viewTypeArrow.removeStyleName("search");
+
+        switch (viewType) {
+            case TREE :
+                treeButton.addStyleName("active");
+                viewTypeArrow.addStyleName("tree");
+                break;
+            case LIST :
+                listButton.addStyleName("active");
+                viewTypeArrow.addStyleName("list");
+                break;
+            case THUMBNAIL :
+                thumbsButton.addStyleName("active");
+                viewTypeArrow.addStyleName("thumbs");
+                break;
+            case SEARCH :
+                viewTypeArrow.addStyleName("search");
+                break;
+            default :
+        }
+    }
+
+    @Override
+    public void resynch(final String path, final ViewType viewType, final String query) {
+          selectPath(path);
+          setViewType(viewType);
+          if(StringUtils.isNotBlank(query) && viewType == ViewType.SEARCH) {
+              searchbox.setValue(query);
+              searchbox.focus();
+              contentWorkbenchViewListener.onSearch(query);
+          }
+    }
+
 }

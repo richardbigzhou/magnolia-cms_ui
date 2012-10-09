@@ -2,7 +2,7 @@
 .workbench .v-horizontallayout-margin {padding-top:20px; padding-left:40px; padding-bottom:40px;}
 .workbench .v-horizontallayout-spacing-on {padding-left:25px;}
 
-.view-modes {padding-left:21px; padding-bottom:20px;}
+.view-modes {padding-left:21px; padding-bottom:20px; display: inline-block;}
 .view-modes .v-nativebutton {font-style:normal; font-size:24px; color:#989898; line-height:1.0; padding:0 14px; border-left:1px solid #bbb;}
 .view-modes .v-nativebutton:first-child {border-left:none;}
 .view-modes .v-nativebutton:hover, .view-modes .v-nativebutton:focus, .view-modes .v-nativebutton-active {color:#fff;}
@@ -29,6 +29,26 @@
 
 .view-type-arrow.thumbs {left: 183px;}
 
+ /*FIXME fgrilli: just a temp workaround as moving the arrow beneath the search box (as per design) messes up the toolbar layout*/
+.view-type-arrow.search { display: none}
+
+.searchbox {
+    float: right;
+    height: 24px !important;
+    width: 250px;
+    font-family: Verdana,Helvetica,Arial,sans-serif !important;
+    font-size: 12px !important;
+    color: #999;
+    background: url("img/icon-search.png") no-repeat 235px 7px #e6e6e6 !important;
+    border-style: none !important;
+    border-bottom: 1px solid #999 !important;
+    border-radius: 0 !important;
+    padding: 2px !important;
+}
+.searchbox:focus {
+   background-color: #fff !important;
+   box-shadow: none !important;
+}
 
 .small-app {margin:0 auto;}
 .small-app .v-label-intro {padding-top:23px; padding-bottom:30px; font-family:Verdana, sans-serif; font-size:12px; color:#000;}

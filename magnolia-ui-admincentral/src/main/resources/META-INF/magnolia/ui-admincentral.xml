@@ -210,6 +210,16 @@
       <implementation>info.magnolia.ui.widget.dialog.Dialog</implementation>
     </component>
 
+	<component>
+      <type>info.magnolia.ui.widget.dialog.DialogView</type>
+      <implementation>info.magnolia.ui.widget.dialog.BaseDialog</implementation>
+    </component>
+    
+    <component>
+      <type>info.magnolia.ui.widget.dialog.FormDialogView</type>
+      <implementation>info.magnolia.ui.widget.dialog.FormDialog</implementation>
+    </component>
+    
     <component>
       <type>info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilder</type>
       <implementation>info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilderImpl</implementation>
@@ -236,8 +246,8 @@
     </component>
 
     <component>
-      <type>info.magnolia.ui.admincentral.image.ImageThumbnailProvider</type>
-      <implementation>info.magnolia.ui.admincentral.image.ImageThumbnailProvider</implementation>
+      <type>info.magnolia.ui.model.thumbnail.ImageProvider</type>
+      <implementation>info.magnolia.ui.model.thumbnail.DefaultImageProvider</implementation>
     </component>
   </components>
 

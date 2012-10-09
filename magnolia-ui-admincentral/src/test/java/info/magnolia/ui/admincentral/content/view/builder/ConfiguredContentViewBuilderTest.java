@@ -43,6 +43,7 @@ import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.admincentral.content.view.ContentView;
 import info.magnolia.ui.admincentral.content.view.ContentView.ViewType;
 import info.magnolia.ui.admincentral.list.view.ListView;
+import info.magnolia.ui.admincentral.search.view.SearchView;
 import info.magnolia.ui.admincentral.thumbnail.view.ThumbnailView;
 import info.magnolia.ui.admincentral.tree.view.TreeView;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
@@ -51,7 +52,7 @@ import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionRegistry;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.column.definition.LabelColumnDefinition;
-import info.magnolia.ui.model.thumbnail.ThumbnailProvider;
+import info.magnolia.ui.model.thumbnail.ImageProvider;
 import info.magnolia.ui.model.workbench.definition.ConfiguredItemTypeDefinition;
 import info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition;
 import info.magnolia.ui.model.workbench.definition.ItemTypeDefinition;
@@ -83,13 +84,13 @@ public class ConfiguredContentViewBuilderTest {
         when(workbenchActionRegistry.getDefinitionToImplementationMappings()).thenReturn(new ArrayList<DefinitionToImplementationMapping<ActionDefinition,Action>>());
 
         componentProvider.setInstance(WorkbenchActionFactory.class, new WorkbenchActionFactoryImpl(null, workbenchActionRegistry));
-        final ThumbnailProvider thumbnailProvider = mock(ThumbnailProvider.class);
-        componentProvider.setInstance(ThumbnailProvider.class, thumbnailProvider);
+        final ImageProvider imageProvider = mock(ImageProvider.class);
+        componentProvider.setInstance(ImageProvider.class, imageProvider);
 
 
         workbenchDef.setWorkspace(workspace);
         workbenchDef.setPath("/");
-        workbenchDef.setThumbnailProvider(thumbnailProvider);
+        workbenchDef.setImageProvider(imageProvider);
 
         final ConfiguredItemTypeDefinition itemTypeDefinition = new ConfiguredItemTypeDefinition();
         itemTypeDefinition.setItemType("qux");
@@ -138,6 +139,19 @@ public class ConfiguredContentViewBuilderTest {
 
         // THEN
         assertTrue(result instanceof ThumbnailView);
+    }
+
+    @Test
+    @Ignore
+    public void testBuildingSearchView() {
+        // GIVEN all conditions in setUp
+
+        // WHEN
+        final ContentViewBuilderImpl builder = new ContentViewBuilderImpl(componentProvider);
+        final ContentView result = builder.build(workbenchDef, ViewType.SEARCH);
+
+        // THEN
+        assertTrue(result instanceof SearchView);
     }
 
     @After

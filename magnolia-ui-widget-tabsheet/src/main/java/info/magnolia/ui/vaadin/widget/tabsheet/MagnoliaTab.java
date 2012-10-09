@@ -51,7 +51,7 @@ import com.vaadin.ui.ComponentContainer;
  */
 @SuppressWarnings("serial")
 @ClientWidget(value=VMagnoliaTab.class, loadStyle = LoadStyle.EAGER)
-public class ShellTab extends SimplePanel implements ServerSideHandler {
+public class MagnoliaTab extends SimplePanel implements ServerSideHandler {
 
     private String tabId = null;
     
@@ -63,7 +63,7 @@ public class ShellTab extends SimplePanel implements ServerSideHandler {
 
     private ServerSideProxy proxy = new ServerSideProxy(this);
     
-    public ShellTab(final String caption, final ComponentContainer c) {
+    public MagnoliaTab(final String caption, final ComponentContainer c) {
         super(c);
         setSizeFull();
         setImmediate(true);
