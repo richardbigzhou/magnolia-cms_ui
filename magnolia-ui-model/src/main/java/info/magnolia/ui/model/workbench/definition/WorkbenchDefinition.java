@@ -82,4 +82,8 @@ public interface WorkbenchDefinition extends Serializable {
      */
     boolean isDialogWorkbench();
 
+    /**
+     * @return the property (or comma separated list of properties) to be applied when no other order is requested.
+     */
+    String getDefaultOrder();
 }
