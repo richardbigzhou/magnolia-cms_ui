@@ -54,14 +54,15 @@ public class ConfirmationDialog extends BaseDialog {
         addAction(CONFIRM_ACTION, "OK", new DialogActionListener() {
             
             @Override
-            public void onActionExecuted() {
+            public void onActionExecuted(String actionName) {
                 fireEvent(new ConfirmationEvent(ConfirmationDialog.this, true));
             }
+
         });
         
         addAction(REJECT_ACTION, "Cancel", new DialogActionListener() {
             @Override
-            public void onActionExecuted() {
+            public void onActionExecuted(String actionName) {
                 fireEvent(new ConfirmationEvent(ConfirmationDialog.this, false));
             }
         });
@@ -128,7 +129,7 @@ public class ConfirmationDialog extends BaseDialog {
             }
         }
 
-        private boolean isConfirmed;
+        private final boolean isConfirmed;
 
         public ConfirmationEvent(Component source, boolean isConfirmed) {
             super(source);
