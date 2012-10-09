@@ -35,6 +35,13 @@ package info.magnolia.ui.app.showcase.main;
 
 import info.magnolia.ui.vaadin.integration.widget.grid.MagnoliaTable;
 import info.magnolia.ui.vaadin.integration.widget.grid.MagnoliaTreeTable;
+import info.magnolia.ui.vaadin.integration.widget.icon.BadgeIcon;
+import info.magnolia.ui.vaadin.integration.widget.icon.ErrorIcon;
+import info.magnolia.ui.vaadin.integration.widget.icon.HelpIcon;
+import info.magnolia.ui.vaadin.integration.widget.icon.Icon;
+import info.magnolia.ui.vaadin.integration.widget.icon.InfoIcon;
+import info.magnolia.ui.vaadin.integration.widget.icon.LoadingIcon;
+import info.magnolia.ui.vaadin.integration.widget.icon.WarningIcon;
 
 import java.util.Date;
 
@@ -42,6 +49,7 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.terminal.ExternalResource;
+import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.AbstractSplitPanel;
@@ -49,6 +57,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
@@ -63,12 +72,13 @@ import com.vaadin.ui.PopupView;
 import com.vaadin.ui.ProgressIndicator;
 import com.vaadin.ui.Slider;
 import com.vaadin.ui.Slider.ValueOutOfBoundsException;
-import com.vaadin.ui.themes.BaseTheme;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.VerticalSplitPanel;
+import com.vaadin.ui.themes.BaseTheme;
+
 
 /**
  * Implementation for Vaadin component showcase view.
@@ -91,6 +101,7 @@ public class VaadinViewImpl implements VaadinView {
                 "interaction. Many of these elements are also available " +
                 "within Magnolia Forms/Dialogs."));
         layout.addComponent(getLabelPreviews());
+        layout.addComponent(getIconsPreview());
         layout.addComponent(getProgressIndicatorPreviews());
         layout.addComponent(getImagePreviews());
         layout.addComponent(getButtonPreviews());
@@ -125,20 +136,21 @@ public class VaadinViewImpl implements VaadinView {
     /*
      * Does not work correctly inside tab sheet
      */
-//    private Layout getMagnoliaTabSheetPreviews() {
-//        Layout grid = getPreviewLayout("Magnolia tabsheet");
-//
-//        MagnoliaTabSheet tabsheet = new MagnoliaTabSheet();
-//        tabsheet.setSizeFull();
-//
-//        ComponentContainer tab1 = tabsheet.addTab("first tab");
-//        ComponentContainer tab2 = tabsheet.addTab("second tab");
-//        tab1.addComponent(new Label(
-//            "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."));
-//        tab2.addComponent(new Label("Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."));
-//        grid.addComponent(tabsheet);
-//        return grid;
-//    }
+    // private Layout getMagnoliaTabSheetPreviews() {
+    // Layout grid = getPreviewLayout("Magnolia tabsheet");
+    //
+    // MagnoliaTabSheet tabsheet = new MagnoliaTabSheet();
+    // tabsheet.setSizeFull();
+    //
+    // ComponentContainer tab1 = tabsheet.addTab("first tab");
+    // ComponentContainer tab2 = tabsheet.addTab("second tab");
+    // tab1.addComponent(new Label(
+    // "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."));
+    // tab2.addComponent(new
+    // Label("Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."));
+    // grid.addComponent(tabsheet);
+    // return grid;
+    // }
 
     private Layout getMagnoliaPreviews() {
         Layout grid = getPreviewLayout("Magnolia table and tree table");
@@ -329,6 +341,83 @@ public class VaadinViewImpl implements VaadinView {
             tree.setChildrenAllowed(id, false);
         }
         return id;
+    }
+
+    private Layout getIconsPreview() {
+        Layout layout = getPreviewLayout("Magnolia Icons");
+
+        CssLayout layout1 = new CssLayout();
+        Label label1 = new Label("<h4>icon css class</h4>", Label.CONTENT_XHTML);
+        label1.setWidth(150, Sizeable.UNITS_PIXELS);
+        layout1.addComponent(label1);
+        layout1.addComponent(new Icon("view"));
+        layout1.addComponent(new Icon("edit"));
+        layout1.addComponent(new Icon("search"));
+
+        CssLayout layout2 = new CssLayout();
+        Label label2 = new Label("<h4>icon size</h4>", Label.CONTENT_XHTML);
+        label2.setWidth(150, Sizeable.UNITS_PIXELS);
+        layout2.addComponent(label2);
+        layout2.addComponent(new Icon("search", 16));
+        layout2.addComponent(new Icon("search"));
+        layout2.addComponent(new Icon("search", 48));
+
+        CssLayout layout3 = new CssLayout();
+        Label label3 = new Label("<h4>icon color</h4>", Label.CONTENT_XHTML);
+        label3.setWidth(150, Sizeable.UNITS_PIXELS);
+        layout3.addComponent(label3);
+        layout3.addComponent(new Icon("search", Icon.COLOR_INFO));
+        layout3.addComponent(new Icon("search", Icon.COLOR_GREEN_BADGE));
+        layout3.addComponent(new Icon("search", Icon.COLOR_HELP));
+        layout3.addComponent(new Icon("search", Icon.COLOR_WARNING));
+        layout3.addComponent(new Icon("search", Icon.COLOR_ERROR));
+        layout3.addComponent(new Icon("search", "#c09"));
+
+        CssLayout layout4 = new CssLayout();
+        Label label4 = new Label("<h4>composite icons</h4>", Label.CONTENT_XHTML);
+        label4.setWidth(150, Sizeable.UNITS_PIXELS);
+        layout4.addComponent(label4);
+        layout4.addComponent(new InfoIcon());
+        layout4.addComponent(new WarningIcon());
+        layout4.addComponent(new ErrorIcon());
+        layout4.addComponent(new HelpIcon());
+
+        CssLayout layout5 = new CssLayout();
+        Label label5 = new Label("<h4>badge icon</h4>", Label.CONTENT_XHTML);
+        label5.setWidth(150, Sizeable.UNITS_PIXELS);
+        layout5.addComponent(label5);
+        for (int m = 0; m <= 12; m++) {
+            BadgeIcon badge;
+            if (m % 2 == 0) {
+                badge = new BadgeIcon();
+            } else {
+                badge = new BadgeIcon(BadgeIcon.SIZE_DEFAULT, "#fff", Icon.COLOR_GREEN_BADGE, true);
+            }
+            badge.setValue(fib(m));
+            layout5.addComponent(badge);
+        }
+
+        CssLayout layout6 = new CssLayout();
+        Label label6 = new Label("<h4>spinner icon</h4>", Label.CONTENT_XHTML);
+        label6.setWidth(150, Sizeable.UNITS_PIXELS);
+        layout6.addComponent(label6);
+        layout6.addComponent(new LoadingIcon());
+
+        layout.addComponent(layout1);
+        layout.addComponent(layout2);
+        layout.addComponent(layout3);
+        layout.addComponent(layout4);
+        layout.addComponent(layout5);
+        layout.addComponent(layout6);
+        return layout;
+    }
+
+    private int fib(int n) {
+        if (n <= 1) {
+            return n;
+        } else {
+            return fib(n - 1) + fib(n - 2);
+        }
     }
 
     private Layout getLabelPreviews() {
