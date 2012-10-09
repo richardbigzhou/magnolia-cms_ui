@@ -34,7 +34,11 @@
 package info.magnolia.ui.admincentral.dialog;
 
 
+import info.magnolia.ui.admincentral.dialog.action.DialogActionFactory;
 import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.model.action.Action;
+import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.widget.dialog.BaseDialog.DialogCloseEvent;
 import info.magnolia.ui.widget.dialog.DialogView;
@@ -54,17 +58,9 @@ public interface DialogPresenter {
     void closeDialog();
     
     void addDialogCloseHandler(final DialogCloseEvent.Handler listener);
-
-    /**
-     * TODO get rid of this method - convert to Util methods.
-     */
-    void addActionFromDefinition(final DialogActionDefinition actionDefinition);
     
     void addAction(String actionName, String actionLabel, DialogActionListener callback);
     
-    /**
-     * TODO get rid of this method - convert to Util methods.
-     */
     void addActionCallback(String actionName, DialogActionListener callback);
     
     /**
@@ -90,5 +86,26 @@ public interface DialogPresenter {
             
         }
         
+    }
+   
+    /**
+     * A Helper class for operations with {@link DialogPresenter}.
+     */
+    public class DialogPresenterUtil {
+        
+        public static void addActionFromDefinition(final DialogPresenter presenter, final DialogActionDefinition definition, final DialogActionFactory factory) {
+            presenter.addAction(definition.getName(), definition.getLabel(), new DialogActionListener() {    
+                @Override
+                public void onActionExecuted(final String actionName) {
+                    final ActionDefinition actionDefinition = definition.getActionDefinition();
+                    final Action action = factory.createAction(actionDefinition, presenter);
+                    try {
+                        action.execute();
+                    } catch (final ActionExecutionException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
     }
 }

@@ -50,7 +50,7 @@ public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implemen
     private final ChooseDialogView pickerView;
     
     public WorkbenchChooseDialogPresenter(DialogActionFactory actionFactory, ChooseDialogView view, EventBus eventBus) {
-        super(actionFactory, view, eventBus);
+        super(view, eventBus);
         this.pickerView = view;
         eventBus.addHandler(ItemSelectedEvent.class, new ItemSelectedEvent.Handler() {
             @Override
@@ -61,15 +61,14 @@ public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implemen
         
         addActionCallback(WorkbenchValueChooseDialog.CANCEL_ACTION_NAME, new DialogActionListener() {
             @Override
-            public void onActionExecuted() {
+            public void onActionExecuted(final String actionName) {
                 closeDialog();
             }
         });
         
         addActionCallback(WorkbenchValueChooseDialog.CHOOSE_ACTION_NAME, new DialogActionListener() {
             @Override
-            public void onActionExecuted() {
-                // Selection is stored in the current value - can close Dialog.
+            public void onActionExecuted(final String actionName) {
                 closeDialog();
             }
         });
@@ -85,7 +84,7 @@ public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implemen
     public void addValuePickListener(final ValueChosenListener<Item> listener) {
         addActionCallback(WorkbenchValueChooseDialog.CHOOSE_ACTION_NAME, new DialogActionListener() {
             @Override
-            public void onActionExecuted() {
+            public void onActionExecuted(final String actionName) {
                 listener.onValueChosen(currentValue);
             }
         });

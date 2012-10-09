@@ -33,12 +33,7 @@
  */
 package info.magnolia.ui.admincentral.dialog;
 
-import info.magnolia.ui.admincentral.dialog.action.DialogActionFactory;
 import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.model.action.Action;
-import info.magnolia.ui.model.action.ActionDefinition;
-import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.widget.dialog.BaseDialog.DialogCloseEvent;
 import info.magnolia.ui.widget.dialog.DialogView;
 import info.magnolia.ui.widget.dialog.DialogView.DialogActionListener;
@@ -51,16 +46,13 @@ import javax.inject.Named;
  * Base implementation of {@link DialogPresenter}.
  */
 public class BaseDialogPresenter implements DialogPresenter {
-   
-    private DialogActionFactory actionFactory;
     
     private final DialogView view;
     
     private final EventBus adminCentralEventBus;
     
     @Inject
-    public BaseDialogPresenter(final DialogActionFactory actionFactory, DialogView view, @Named("admincentral") EventBus eventBus) {
-        this.actionFactory = actionFactory;
+    public BaseDialogPresenter(DialogView view, @Named("admincentral") EventBus eventBus) {
         this.view = view;
         this.adminCentralEventBus = eventBus;
     }
@@ -78,22 +70,6 @@ public class BaseDialogPresenter implements DialogPresenter {
     @Override
     public EventBus getEventBus() {
         return adminCentralEventBus;
-    }
-
-    @Override
-    public void addActionFromDefinition(final DialogActionDefinition dialogActionDefinition) {
-        addAction(dialogActionDefinition.getName(), dialogActionDefinition.getLabel(), new DialogActionListener() {    
-            @Override
-            public void onActionExecuted() {
-                final ActionDefinition actionDefinition = dialogActionDefinition.getActionDefinition();
-                final Action action = actionFactory.createAction(actionDefinition, BaseDialogPresenter.this);
-                try {
-                    action.execute();
-                } catch (final ActionExecutionException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
     }
 
     @Override

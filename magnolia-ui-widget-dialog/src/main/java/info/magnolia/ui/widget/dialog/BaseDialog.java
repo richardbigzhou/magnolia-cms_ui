@@ -79,7 +79,7 @@ public class BaseDialog extends AbstractComponent implements ServerSideHandler, 
                     final String actionName = String.valueOf(params[0]);
                     final Iterator<DialogActionListener> it = actionCallbackMap.get(actionName).iterator();
                     while (it.hasNext()) {
-                        it.next().onActionExecuted();
+                        it.next().onActionExecuted(actionName);
                     }
                 }
             });

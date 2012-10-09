@@ -65,14 +65,17 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
 
     private Callback callback;
 
+    private final  DialogActionFactory dialogActionFactory;
+    
     public FormDialogPresenterImpl(final FormDialogView view, final DialogBuilder dialogBuilder, final DialogFieldFactory dialogFieldFactory, 
             final DialogDefinition dialogDefinition, final Shell shell, EventBus eventBus, final DialogActionFactory actionFactory) {
-        super(actionFactory, view, eventBus);
+        super(view, eventBus);
         this.view = view;
         this.dialogBuilder = dialogBuilder;
         this.dialogFieldFactory = dialogFieldFactory;
         this.dialogDefinition = dialogDefinition;
         this.shell = (MagnoliaShell)shell;
+        this.dialogActionFactory = actionFactory;
         initActions(dialogDefinition);
     }
 
@@ -87,7 +90,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
 
     private void initActions(final DialogDefinition dialogDefinition) {
         for (final DialogActionDefinition action : dialogDefinition.getActions()) {
-            addActionFromDefinition(action);
+            DialogPresenterUtil.addActionFromDefinition(this, action, dialogActionFactory);
         }
     }
 

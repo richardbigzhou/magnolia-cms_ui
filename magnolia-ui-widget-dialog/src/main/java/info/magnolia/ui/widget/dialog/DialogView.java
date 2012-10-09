@@ -42,11 +42,10 @@ public interface DialogView extends View {
     
     /**
      * Action execution callback.
-     * FIXME: add action name param
      */
     interface DialogActionListener {
         
-        void onActionExecuted();
+        void onActionExecuted(final String actionName);
     }
     
     void setDialogDescription(String description);

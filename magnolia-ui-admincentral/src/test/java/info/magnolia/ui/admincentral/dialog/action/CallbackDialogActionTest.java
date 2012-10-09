@@ -37,7 +37,6 @@ import static org.junit.Assert.assertEquals;
 import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.widget.dialog.BaseDialog.DialogCloseEvent;
 import info.magnolia.ui.widget.dialog.DialogView.DialogActionListener;
 import info.magnolia.ui.widget.dialog.FormDialog;
@@ -221,12 +220,6 @@ public class CallbackDialogActionTest {
 
         @Override
         public void closeDialog() {
-        }
-
-        @Override
-        public void addActionFromDefinition(DialogActionDefinition actionDefinition) {
-            // TODO Auto-generated method stub
-            
         }
         
 
