@@ -31,24 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.main;
+package info.magnolia.ui.admincentral.app.content;
 
-import info.magnolia.ui.admincentral.app.content.ContentAppView;
+import info.magnolia.ui.framework.view.View;
 
 /**
- * View for the Pages app.
+ * View for content apps.
  */
-public interface PagesMainView extends ContentAppView {
+public interface ContentAppView extends View {
 
-    /**
-     * Listener.
-     */
-    public interface Listener {
-        void share();
-
-        void subscribe(String hostId);
-    }
-
-    void setListener(Listener listener);
-
+    void setWorkbenchView(View workbenchView);
 }

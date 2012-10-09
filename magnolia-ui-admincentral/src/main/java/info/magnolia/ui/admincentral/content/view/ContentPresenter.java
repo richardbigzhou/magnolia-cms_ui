@@ -101,7 +101,7 @@ public class ContentPresenter implements ContentView.Listener {
                 + " workbench definition must specify a workspace to connect to. Please, check your configuration.");
         }
 
-        parentView.setGridType(ViewType.TREE);
+        parentView.setViewType(ViewType.TREE);
     }
 
     @Override

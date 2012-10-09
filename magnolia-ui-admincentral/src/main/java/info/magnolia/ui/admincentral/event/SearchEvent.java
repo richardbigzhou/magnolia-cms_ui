@@ -31,24 +31,38 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.main;
+package info.magnolia.ui.admincentral.event;
 
-import info.magnolia.ui.admincentral.app.content.ContentAppView;
+import info.magnolia.ui.framework.event.Event;
+import info.magnolia.ui.framework.event.EventHandler;
+
 
 /**
- * View for the Pages app.
+ * This event is fired when a search is launched, i.e. by hitting the ENTER key in the search box in the UI.
  */
-public interface PagesMainView extends ContentAppView {
+public class SearchEvent implements Event<SearchEvent.Handler> {
 
     /**
-     * Listener.
+     * Handles {@link SearchEvent} events.
      */
-    public interface Listener {
-        void share();
+    public interface Handler extends EventHandler {
 
-        void subscribe(String hostId);
+        void onSearch(SearchEvent event);
     }
 
-    void setListener(Listener listener);
+    private String searchExpression;
+
+    public SearchEvent(String searchExpression) {
+        this.searchExpression = searchExpression;
+    }
+
+    public String getSearchExpression() {
+        return searchExpression;
+    }
+
+    @Override
+    public void dispatch(Handler handler) {
+        handler.onSearch(this);
+    }
 
 }

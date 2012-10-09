@@ -43,6 +43,7 @@ import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
  * Search view implementation is just a special case of list view.
  */
 public class SearchViewImpl extends ListViewImpl implements SearchView {
+
     public SearchViewImpl(WorkbenchDefinition workbenchDefinition, TreeModel treeModel, ComponentProvider componentProvider, SearchJcrContainer container) {
         super(workbenchDefinition, treeModel, componentProvider, container);
     }
@@ -59,5 +60,10 @@ public class SearchViewImpl extends ListViewImpl implements SearchView {
         SearchJcrContainer container = ((SearchJcrContainer)getContainer());
         container.setFullTextExpression(null);
         refresh();
+    }
+
+    @Override
+    public ViewType getViewType() {
+        return ViewType.SEARCH;
     }
 }

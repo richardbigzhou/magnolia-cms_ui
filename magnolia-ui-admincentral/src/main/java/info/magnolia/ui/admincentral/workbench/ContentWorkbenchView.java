@@ -38,7 +38,6 @@ import info.magnolia.ui.admincentral.content.view.ContentView.ViewType;
 import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.widget.actionbar.ActionbarView;
 
-import com.vaadin.data.Item;
 import com.vaadin.ui.ComponentContainer;
 
 
@@ -47,25 +46,22 @@ import com.vaadin.ui.ComponentContainer;
  * actions associated with it.
  */
 public interface ContentWorkbenchView extends ComponentContainer, View {
-
     /**
-     * TODO dlipp - ActionBarPresenter should be a proper type as well.
+     * Listener interface for events concerning the workbench.
      */
-    public interface Listener {
+    interface Listener {
+        void onSearch(String searchExpression);
+
+        void onViewTypeChanged(ViewType viewType);
     }
 
     void setListener(Listener listener);
 
-    void setGridType(ContentView.ViewType type);
+    void setViewType(ContentView.ViewType type);
+
 
     /**
-     * Causes a view refresh only if the current node exists in the repository.
-     */
-    void refreshItem(Item item);
-
-    /**
-     * TODO review the for two methods to perform the view refresh. Had to add this one to refresh
-     * the view in case of item deletion. Refreshes the view.
+     * Refreshes the current view.
      */
     void refresh();
 
@@ -80,4 +76,12 @@ public interface ContentWorkbenchView extends ComponentContainer, View {
     void setActionbarView(ActionbarView actionbar);
 
     void selectPath(String path);
+    /**
+     * Synchronize the view status to reflect the information extracted from the Location token,
+     * i.e. selected path, view type and optional query (in case of a 'search' view).
+     */
+    void resynch(String path, ViewType viewType, String query);
+
+    ContentView getSelectedView();
+
 }

@@ -135,7 +135,7 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testJCRQueryReturnsEscapesQuotesInFullTextSearchExpression() throws Exception {
+    public void testJCRQueryEscapesQuotesInFullTextSearchExpression() throws Exception {
         //GIVEN
         jcrContainer.setFullTextExpression("foo OR 'baz bar'   ");
 

@@ -39,12 +39,18 @@ import info.magnolia.ui.admincentral.container.AbstractJcrContainer;
 import info.magnolia.ui.framework.view.View;
 
 /**
- * UI component that displays content (from Jcr).
+ * UI component that displays content (from JCR).
  */
 public interface ContentView extends View {
 
     /**
-     * Enumeration for view types.
+     * Enumeration for the default view types.
+     * <ul>
+     * <li>tree
+     * <li>list
+     * <li>thumbnail
+     * <li>search
+     * </ul>
      */
     public enum ViewType {
         LIST("list"),
@@ -80,18 +86,20 @@ public interface ContentView extends View {
 
     void refresh();
 
-    void refreshItem(final Item item);
+    void refreshItem(Item item);
 
     AbstractJcrContainer getContainer();
+
+    ViewType getViewType();
 
     /**
      * Listener for the ContentView.
      */
     public interface Listener {
 
-        void onItemSelection(final Item item);
+        void onItemSelection(Item item);
 
-        void onDoubleClick(final Item item);
+        void onDoubleClick(Item item);
 
     }
 }

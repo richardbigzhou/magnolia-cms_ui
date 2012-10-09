@@ -218,4 +218,9 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
         }
         return null;
     }
+
+    @Override
+    public ViewType getViewType() {
+        return ViewType.THUMBNAIL;
+    }
 }
