@@ -47,7 +47,7 @@ public interface VMagnoliaTabSheetView extends HasWidgets, IsWidget, HasScrollHa
 
     List<VMagnoliaTab> getTabs();
 
-    void addTab(VMagnoliaTab tab);
+    void updateTab(VMagnoliaTab tab);
 
     /**
      * Presenter.

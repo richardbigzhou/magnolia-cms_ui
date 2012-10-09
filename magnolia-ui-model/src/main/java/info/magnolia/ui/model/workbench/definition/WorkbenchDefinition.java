@@ -36,7 +36,7 @@ package info.magnolia.ui.model.workbench.definition;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.model.column.definition.ColumnDefinition;
-import info.magnolia.ui.model.thumbnail.ThumbnailProvider;
+import info.magnolia.ui.model.thumbnail.ImageProvider;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -74,7 +74,7 @@ public interface WorkbenchDefinition extends Serializable {
     ComponentProviderConfiguration getComponents();
 
 
-    ThumbnailProvider getThumbnailProvider();
+    ImageProvider getImageProvider();
 
     /**
      * Define if this workbench is used for Dialog.
@@ -82,4 +82,8 @@ public interface WorkbenchDefinition extends Serializable {
      */
     boolean isDialogWorkbench();
 
+    /**
+     * @return the property (or comma separated list of properties) to be applied when no other order is requested.
+     */
+    String getDefaultOrder();
 }

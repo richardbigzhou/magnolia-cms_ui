@@ -34,7 +34,6 @@
 package info.magnolia.ui.vaadin.widget.tabsheet.client;
 
 import info.magnolia.ui.vaadin.widget.tabsheet.client.event.ActiveTabChangedEvent;
-import info.magnolia.ui.vaadin.widget.tabsheet.client.event.ActiveTabChangedHandler;
 import info.magnolia.ui.vaadin.widget.tabsheet.client.event.ShowAllTabsEvent;
 import info.magnolia.ui.vaadin.widget.tabsheet.client.event.ShowAllTabsHandler;
 import info.magnolia.ui.vaadin.widget.tabsheet.client.event.TabCloseEvent;
@@ -93,7 +92,7 @@ public class VMagnoliaTabNavigator extends ComplexPanel {
 
     private void bindHandlers() {
 
-        eventBus.addHandler(ActiveTabChangedEvent.TYPE, new ActiveTabChangedHandler() {
+        eventBus.addHandler(ActiveTabChangedEvent.TYPE, new ActiveTabChangedEvent.Handler() {
 
             @Override
             public void onActiveTabChanged(final ActiveTabChangedEvent event) {

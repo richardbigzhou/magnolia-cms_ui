@@ -33,44 +33,37 @@
  */
 package info.magnolia.ui.admincentral.workbench;
 
-import info.magnolia.cms.beans.runtime.FileProperties;
-import info.magnolia.jcr.util.SessionUtil;
+import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.app.content.ContentAppDescriptor;
 import info.magnolia.ui.admincentral.content.view.ContentPresenter;
+import info.magnolia.ui.admincentral.content.view.ContentView.ViewType;
 import info.magnolia.ui.admincentral.event.ActionbarItemClickedEvent;
 import info.magnolia.ui.admincentral.event.ContentChangedEvent;
+import info.magnolia.ui.admincentral.event.SearchEvent;
 import info.magnolia.ui.admincentral.event.ItemDoubleClickedEvent;
 import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
+import info.magnolia.ui.admincentral.event.ViewTypeChangedEvent;
+import info.magnolia.ui.admincentral.search.view.SearchView;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.model.thumbnail.ThumbnailProvider;
+import info.magnolia.ui.model.thumbnail.ImageProvider;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.widget.actionbar.ActionbarView;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
-import com.vaadin.Application;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.JcrConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.terminal.Resource;
-import com.vaadin.terminal.StreamResource;
-import com.vaadin.ui.Embedded;
+import com.vaadin.Application;
 
 
 /**
@@ -83,15 +76,13 @@ import com.vaadin.ui.Embedded;
  * <li>a configurable action bar on the right hand side, showing the available operations for the
  * given workspace and the selected item.
  * </ul>
- * 
+ *
  * <p>
  * Its main configuration point is the {@link WorkbenchDefinition} through which one defines the JCR
  * workspace to connect to, the columns/properties to display, the available actions and so on.
  */
 @SuppressWarnings("serial")
 public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener {
-
-    protected static String IMAGE_NODE_NAME = ThumbnailProvider.ORIGINAL_IMAGE_NODE_NAME;
 
     private static final Logger log = LoggerFactory.getLogger(ContentWorkbenchPresenter.class);
 
@@ -113,6 +104,8 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
 
     private final Application application;
 
+    private final ImageProvider imageProvider;
+
     @Inject
     public ContentWorkbenchPresenter(final AppContext appContext, final ContentWorkbenchView view, @Named("admincentral") final EventBus admincentralEventBus, final @Named("subapp") EventBus subAppEventBus, final Shell shell, final WorkbenchActionFactory actionFactory, final ContentPresenter contentPresenter, final ActionbarPresenter actionbarPresenter, Application application) {
         this.view = view;
@@ -124,16 +117,13 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
         this.actionbarPresenter = actionbarPresenter;
         this.application = application;
         this.workbenchDefinition = ((ContentAppDescriptor) appContext.getAppDescriptor()).getWorkbench();
+        this.imageProvider = workbenchDefinition.getImageProvider();
 
-        if (this.workbenchDefinition.getThumbnailProvider() != null) {
-            IMAGE_NODE_NAME = this.workbenchDefinition.getThumbnailProvider().getOriginalImageNodeName();
-            log.debug("Original image node name is {}", IMAGE_NODE_NAME);
-        }
     }
 
     public ContentWorkbenchView start() {
-        contentPresenter.initContentView(view);
         view.setListener(this);
+        contentPresenter.initContentView(view);
 
         ActionbarView actionbar = actionbarPresenter.start(workbenchDefinition.getActionbar(), actionFactory);
         view.setActionbarView(actionbar);
@@ -180,6 +170,14 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
                 executeDefaultAction();
             }
         });
+
+        subAppEventBus.addHandler(SearchEvent.class, new SearchEvent.Handler() {
+
+            @Override
+            public void onSearch(SearchEvent event) {
+                doSearch(event);
+            }
+        });
     }
 
     /**
@@ -209,49 +207,64 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
         }
     }
 
-    public void selectPath(String path) {
+
+    @Override
+    public void onSearch(final String searchExpression) {
+        subAppEventBus.fireEvent(new SearchEvent(searchExpression));
+    }
+
+    @Override
+    public void onViewTypeChanged(final ViewType viewType) {
+        subAppEventBus.fireEvent(new ViewTypeChangedEvent(viewType));
+    }
+
+    public void selectPath(final String path) {
         this.view.selectPath(path);
+    }
+
+    /**
+     * Synchronizes the underlying view to reflect the status extracted from the Location token, i.e. selected path, view type and optional query (in case of a search view).
+     */
+    public void resynch(final String path, final ViewType viewType, final String query) {
+        boolean itemExists = itemExists(path);
+        if(!itemExists) {
+            log.warn("Trying to resynch workbench with no longer existing path {} at workspace {}. Will reset path to root.", path, workbenchDefinition.getWorkspace());
+        }
+        this.view.resynch(itemExists? path : "/", viewType, query);
     }
 
     private void refreshActionbarPreviewImage(final String path, final String workspace) {
         if (StringUtils.isBlank(path)) {
             actionbarPresenter.setPreview(null);
         } else {
-
-            final Node parentNode = SessionUtil.getNode(workspace, path);
-
-            try {
-                if (parentNode == null || !parentNode.hasNode(IMAGE_NODE_NAME)) {
-                    actionbarPresenter.setPreview(null);
-                    return;
-                }
-
-                final Node node = parentNode.getNode(IMAGE_NODE_NAME);
-                final byte[] pngData = IOUtils.toByteArray(node.getProperty(JcrConstants.JCR_DATA).getBinary().getStream());
-                final String nodeType = node.getProperty(FileProperties.CONTENT_TYPE).getString();
-
-                Resource imageResource = new StreamResource(
-                    new StreamResource.StreamSource() {
-
-                        @Override
-                        public InputStream getStream() {
-                            return new ByteArrayInputStream(pngData);
-                        }
-                    }, "", application) {
-
-                    @Override
-                    public String getMIMEType() {
-                        return nodeType;
-                    }
-                };
-
-                Embedded preview = new Embedded(null, imageResource);
-                actionbarPresenter.setPreview(preview);
-            } catch (RepositoryException e) {
-                log.error(e.getMessage(), e);
-            } catch (IOException e) {
-                log.error(e.getMessage(), e);
-            }
+            String imagePath = imageProvider.getPortraitPath(workspace, path);
+            actionbarPresenter.setPreview(imagePath);
         }
     }
+
+    private void doSearch(SearchEvent event) {
+        if(view.getSelectedView().getViewType() != ViewType.SEARCH) {
+            log.warn("Expected view type {} but is {} instead.", ViewType.SEARCH.name(), view.getSelectedView().getViewType().name());
+            return;
+        }
+        final SearchView searchView = (SearchView) view.getSelectedView();
+        final String searchExpression = event.getSearchExpression();
+
+        if(StringUtils.isBlank(searchExpression)) {
+            //clear last search results
+            searchView.clear();
+        } else {
+            searchView.search(searchExpression);
+        }
+    }
+
+    private boolean itemExists(String path) {
+        try {
+            return StringUtils.isNotBlank(path) && MgnlContext.getJCRSession(workbenchDefinition.getWorkspace()).itemExists(path);
+        } catch (RepositoryException e) {
+            log.warn("", e);
+        }
+        return false;
+    }
+
 }

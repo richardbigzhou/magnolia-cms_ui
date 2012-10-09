@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse;
 
-import info.magnolia.ui.vaadin.widget.tabsheet.ShellTab;
-import info.magnolia.ui.vaadin.widget.tabsheet.ShellTabSheet;
+import info.magnolia.ui.vaadin.widget.tabsheet.MagnoliaTab;
+import info.magnolia.ui.vaadin.widget.tabsheet.MagnoliaTabSheet;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
 
 import java.util.List;
@@ -62,7 +62,7 @@ public class PulseViewImpl implements PulseView {
         return id;
     }
 
-    private final ShellTabSheet tabsheet = new ShellTabSheet() {
+    private final MagnoliaTabSheet tabsheet = new MagnoliaTabSheet() {
 
         @Override
         public void onActiveTabSet(String tabId) {
@@ -90,8 +90,8 @@ public class PulseViewImpl implements PulseView {
 
         this.messagesView = messagesView;
         tabsheet.addStyleName("v-shell-tabsheet-light");
-        final ShellTab dashboard = tabsheet.addTab("Dashboard", (ComponentContainer) dashboardView.asVaadinComponent());
-        final ShellTab messages = tabsheet.addTab("Messages", (ComponentContainer) messagesView.asVaadinComponent());
+        final MagnoliaTab dashboard = tabsheet.addTab("Dashboard", (ComponentContainer) dashboardView.asVaadinComponent());
+        final MagnoliaTab messages = tabsheet.addTab("Messages", (ComponentContainer) messagesView.asVaadinComponent());
 
         tabsheet.addStyleName("v-pulse");
         tabsheet.setSizeFull();
@@ -118,7 +118,7 @@ public class PulseViewImpl implements PulseView {
             type = PulseTabType.getDefault();
             finalDisplayedTabId = type.name().toLowerCase();
         }
-        final ShellTab tab = (ShellTab) m.get(type);
+        final MagnoliaTab tab = (MagnoliaTab) m.get(type);
         if (tab != null) {
             tabsheet.setActiveTab(tab);
         }

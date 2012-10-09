@@ -36,7 +36,7 @@ package info.magnolia.ui.model.workbench.definition;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.model.column.definition.ColumnDefinition;
-import info.magnolia.ui.model.thumbnail.ThumbnailProvider;
+import info.magnolia.ui.model.thumbnail.ImageProvider;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -56,6 +56,8 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
 
     private String path;
 
+    private String defaultOrder;
+
     private List<ItemTypeDefinition> itemTypes = new ArrayList<ItemTypeDefinition>();
 
     private final Map<String, ColumnDefinition> columns = new LinkedHashMap<String, ColumnDefinition>();
@@ -66,7 +68,7 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
     //Default is always False.
     private boolean dialogWorkbench = false;
 
-    private ThumbnailProvider thumbnailProvider;
+    private ImageProvider imageProvider;
     @Override
     public String getName() {
         return name;
@@ -147,16 +149,16 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
     }
 
     @Override
-    public ThumbnailProvider getThumbnailProvider() {
-        return thumbnailProvider;
+    public ImageProvider getImageProvider() {
+        return imageProvider;
     }
 
     public void setComponents(ComponentProviderConfiguration components) {
         this.components = components;
     }
 
-    public void setThumbnailProvider(ThumbnailProvider thumbnailProvider) {
-        this.thumbnailProvider = thumbnailProvider;
+    public void setImageProvider(ImageProvider imageProvider) {
+        this.imageProvider = imageProvider;
     }
 
 
@@ -169,4 +171,12 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
         this.dialogWorkbench = dialogWorkbench;
     }
 
+    @Override
+    public String getDefaultOrder() {
+        return defaultOrder;
+    }
+
+    public void setDefaultOrder(String defaultOrder) {
+        this.defaultOrder = defaultOrder;
+    }
 }

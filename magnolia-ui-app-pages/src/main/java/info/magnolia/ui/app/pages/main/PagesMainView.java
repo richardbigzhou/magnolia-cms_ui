@@ -33,12 +33,12 @@
  */
 package info.magnolia.ui.app.pages.main;
 
-import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.admincentral.app.content.ContentAppView;
 
 /**
  * View for the Pages app.
  */
-public interface PagesMainView extends View {
+public interface PagesMainView extends ContentAppView {
 
     /**
      * Listener.
@@ -51,6 +51,4 @@ public interface PagesMainView extends View {
 
     void setListener(Listener listener);
 
-    void setWorkbenchView(View workbenchView);
-    
 }

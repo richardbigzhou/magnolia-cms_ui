@@ -35,6 +35,7 @@ package info.magnolia.ui.vaadin.widget.tabsheet.client;
 
 
 import info.magnolia.ui.vaadin.integration.widget.client.loading.LoadingPane;
+import info.magnolia.ui.vaadin.widget.tabsheet.client.event.ActiveTabChangedEvent;
 import info.magnolia.ui.vaadin.widget.tabsheet.client.util.CollectionUtil;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper;
 
@@ -65,8 +66,6 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements VMagnoliaTab
 
     private FlowPanel tabPanel = new FlowPanel();
 
-    private final List<VMagnoliaTab> tabs = new LinkedList<VMagnoliaTab>();
-
     private VMagnoliaTabNavigator tabContainer;
 
     private VMagnoliaTab activeTab = null;
@@ -74,6 +73,8 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements VMagnoliaTab
     private Presenter presenter;
 
     private boolean isActiveTabFullscreen = false;
+
+	private final List<VMagnoliaTab> tabs = new LinkedList<VMagnoliaTab>();
 
     private final LoadingPane loadingPane = new LoadingPane();
 
@@ -131,8 +132,11 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements VMagnoliaTab
             public void run() {
                 presenter.updateLayoutOfActiveTab();
                 loadingPane.hide();
+                fireEvent(new ActiveTabChangedEvent(tab));
             }
         }.schedule(10);
+
+
 
     }
 
@@ -159,20 +163,24 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements VMagnoliaTab
         for (VMagnoliaTab tab : getTabs()) {
             tab.getElement().getStyle().setDisplay(display);
         }
+        if (visible) {
+            fireEvent(new ActiveTabChangedEvent(true, false));
+        }
     }
 
     @Override
-    public void addTab(VMagnoliaTab tab) {
+    public void updateTab(VMagnoliaTab tab) {
         if (!tabs.contains(tab)) {
             getTabs().add(tab);
             tabPanel.add((Widget) tab);
+            fireEvent(new TabSetChangedEvent((VMagnoliaTabSheet)presenter));
         }
     }
 
     @Override
     public void setHeight(String height) {
         super.setHeight(height);
-        if (!isActiveTabFullscreen) {
+        if (!isActiveTabFullscreen && !height.isEmpty()) {
             int heightPx = JQueryWrapper.parseInt(height);
             int scrollerHeight = Math.max(heightPx - tabContainer.getOffsetHeight(), 0);
             scroller.setHeight(scrollerHeight + "px");
@@ -180,6 +188,12 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements VMagnoliaTab
             scroller.setHeight(RootPanel.get().getOffsetHeight() + "px");
         }
         Util.runWebkitOverflowAutoFix(scroller.getElement());
+    }
+
+    @Override
+    protected void onLoad() {
+        super.onLoad();
+        fireEvent(new TabSetChangedEvent((VMagnoliaTabSheet)presenter));
     }
 
     @Override
@@ -200,7 +214,6 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements VMagnoliaTab
     @Override
     public void setShowActiveTabFullscreen(boolean isFullscreen) {
         this.isActiveTabFullscreen = isFullscreen;
-
         // apply fullscreen style to top of dom tree so that all elements can react to it. ie main-launcher.
         if (isFullscreen) {
             RootPanel.get().addStyleName("fullscreen");

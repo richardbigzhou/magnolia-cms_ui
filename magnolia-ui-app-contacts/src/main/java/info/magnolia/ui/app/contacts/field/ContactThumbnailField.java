@@ -34,7 +34,7 @@
 package info.magnolia.ui.app.contacts.field;
 
 import info.magnolia.ui.admincentral.field.ThumbnailField;
-import info.magnolia.ui.admincentral.image.ImageThumbnailProvider;
+import info.magnolia.ui.model.thumbnail.ImageProvider;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -45,13 +45,13 @@ import javax.jcr.RepositoryException;
  */
 public class ContactThumbnailField extends ThumbnailField{
 
-    public ContactThumbnailField(ImageThumbnailProvider imageThumbnailProvider, String workspace, int width, int height) {
-        super(imageThumbnailProvider, workspace, width, height);
+    public ContactThumbnailField(ImageProvider imageThumbnailProvider, String workspace) {
+        super(imageThumbnailProvider, workspace);
     }
 
     @Override
     public String createFieldDetail(Node parentNode) throws RepositoryException {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append("<ul><li><span class=\"left\">Last name: </span><span class=\"center\">"+parentNode.getProperty("lastName").getString() +"</span></li>");
         sb.append("<li><span class=\"left\">First name: </span><span class=\"center\">"+parentNode.getProperty("firstName").getString() +"</span></li>");
         sb.append("<li><span class=\"left\">Organization: </span><span class=\"center\">"+parentNode.getProperty("organizationName").getString() +"</span></li>");

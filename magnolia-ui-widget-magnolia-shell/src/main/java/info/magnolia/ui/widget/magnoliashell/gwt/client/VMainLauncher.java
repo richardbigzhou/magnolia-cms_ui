@@ -59,7 +59,6 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
-import com.google.web.bindery.event.shared.HandlerRegistration;
 import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
 import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
@@ -76,8 +75,6 @@ public class VMainLauncher extends FlowPanel {
     private final static String ID = "main-launcher";
 
     private boolean navigationLocked = false;
-
-    private HandlerRegistration activationHandlerRegistration;
 
     private final ShellNavigationHandler navigationHandler = new ShellNavigationAdapter() {
 
@@ -264,15 +261,7 @@ public class VMainLauncher extends FlowPanel {
                 setProperty("top", 0);
             }
         });
-        activationHandlerRegistration = eventBus.addHandler(AppActivatedEvent.TYPE, navigationHandler);
-    }
-
-    @Override
-    protected void onUnload() {
-        super.onUnload();
-        if (activationHandlerRegistration != null) {
-            activationHandlerRegistration.removeHandler();
-        }
+        eventBus.addHandler(AppActivatedEvent.TYPE, navigationHandler);
     }
 
     public final void updateDivet() {
