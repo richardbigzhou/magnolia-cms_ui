@@ -58,6 +58,8 @@ public interface VBaseDialogView extends IsWidget, HasWidgets {
     
     void setPresenter(Presenter presenter);
     
+    void setActionLabel(String actionName, String label);
+    
     Presenter getPresenter();
     
     /**

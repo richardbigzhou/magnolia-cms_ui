@@ -43,28 +43,31 @@ import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 import info.magnolia.ui.model.dialog.registry.DialogDefinitionRegistry;
 import info.magnolia.ui.widget.dialog.FormDialogView;
-import info.magnolia.ui.widget.dialog.MagnoliaDialogPresenter;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
 /**
- * Implementation of {@link DialogPresenterFactory}.
+ * Implementation of {@link FormDialogPresenterFactory}.
  */
 @Singleton
-public class DialogPresenterFactoryImpl implements DialogPresenterFactory {
+public class FormDialogPresenterFactoryImpl implements FormDialogPresenterFactory {
 
-    private DialogDefinitionRegistry dialogDefinitionRegistry;
-    private Shell shell;
-    private DialogBuilder dialogBuilder;
-    private EventBus eventBus;
-    private DialogActionFactory actionFactory;
-    private DialogFieldFactory dialogFieldFactory;
-    private ComponentProvider componentProvider;
+    private final Shell shell;
+    private final EventBus eventBus;
+    private final DialogActionFactory actionFactory;
+    private final ComponentProvider componentProvider;
 
+    private final DialogBuilder dialogBuilder;
+    private final DialogFieldFactory dialogFieldFactory;
+    private final DialogDefinitionRegistry dialogDefinitionRegistry;
+    
     @Inject
-    public DialogPresenterFactoryImpl(ComponentProvider componentProvider, DialogDefinitionRegistry dialogDefinitionRegistry, DialogBuilder dialogBuilder, DialogFieldFactory dialogFieldFactory, Shell shell, @Named("admincentral") EventBus eventBus, final DialogActionFactory actionFactory) {
+    public FormDialogPresenterFactoryImpl(ComponentProvider componentProvider, 
+            DialogDefinitionRegistry dialogDefinitionRegistry, DialogBuilder dialogBuilder, 
+            DialogFieldFactory dialogFieldFactory, Shell shell, 
+            @Named("admincentral") EventBus eventBus, final DialogActionFactory actionFactory) {
         this.dialogDefinitionRegistry = dialogDefinitionRegistry;
         this.dialogBuilder = dialogBuilder;
         this.dialogFieldFactory = dialogFieldFactory;
@@ -75,11 +78,9 @@ public class DialogPresenterFactoryImpl implements DialogPresenterFactory {
     }
 
     @Override
-    public MagnoliaDialogPresenter.Presenter createDialog(String dialogName) {
-
-        DialogDefinition definition = getDialogDefinition(dialogName);
-        return getDialogPresenter(definition);
-
+    public FormDialogPresenter createDialogPresenterByName(String dialogName) {
+        final DialogDefinition definition = getDialogDefinition(dialogName);
+        return createDialogPresenterByDefinition(definition);
     }
 
     @Override
@@ -98,9 +99,9 @@ public class DialogPresenterFactoryImpl implements DialogPresenterFactory {
     }
 
     @Override
-    public MagnoliaDialogPresenter.Presenter getDialogPresenter(DialogDefinition definition) {
+    public FormDialogPresenter createDialogPresenterByDefinition(DialogDefinition definition) {
         FormDialogView view = componentProvider.getComponent(FormDialogView.class);
-        return new DialogPresenter(view, dialogBuilder, dialogFieldFactory, definition, shell, eventBus, actionFactory);
+        return new FormDialogPresenterImpl(view, dialogBuilder, dialogFieldFactory, definition, shell, eventBus, actionFactory);
 
 
     }

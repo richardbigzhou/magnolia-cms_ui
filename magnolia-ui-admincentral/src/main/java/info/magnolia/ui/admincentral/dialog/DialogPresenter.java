@@ -33,124 +33,56 @@
  */
 package info.magnolia.ui.admincentral.dialog;
 
-import info.magnolia.ui.admincentral.MagnoliaShell;
-import info.magnolia.ui.admincentral.dialog.action.DialogActionFactory;
-import info.magnolia.ui.admincentral.dialog.builder.DialogBuilder;
-import info.magnolia.ui.admincentral.field.builder.DialogFieldFactory;
+
 import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.model.action.Action;
-import info.magnolia.ui.model.action.ActionDefinition;
-import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
-import info.magnolia.ui.model.dialog.definition.DialogDefinition;
+import info.magnolia.ui.widget.dialog.BaseDialog.DialogCloseEvent;
 import info.magnolia.ui.widget.dialog.DialogView;
-import info.magnolia.ui.widget.dialog.FormDialogView;
-import info.magnolia.ui.widget.dialog.MagnoliaDialogPresenter;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import com.vaadin.data.Item;
+import info.magnolia.ui.widget.dialog.DialogView.DialogActionCallback;
 
 /**
- * Dialog Presenter and Listener implementation.
+ * Base Dialog presenter.
  */
-public class DialogPresenter implements MagnoliaDialogPresenter.Presenter,  DialogView.Listener{
+public interface DialogPresenter {
 
-    private final DialogBuilder dialogBuilder;
+    Callback getCallback();
 
-    private final DialogFieldFactory dialogFieldFactory;
+    DialogView getView();
 
-    private final DialogDefinition dialogDefinition;
+    EventBus getEventBus();
+    
+    void closeDialog();
+    
+    void addDialogCloseHandler(final DialogCloseEvent.Handler listener);
+    
+    void addActionFromDefinition(final DialogActionDefinition actionDefinition);
+    
+    void addAction(String actionName, String actionLabel, DialogActionCallback callback);
+    
+    void addActionCallback(String actionName, DialogActionCallback callback);
+    
+    /**
+     * Callback interface for DialogView.Presenter.
+     */
+    interface Callback {
 
-    private final MagnoliaShell shell;
+        void onCancel();
 
-    private final EventBus eventBus;
-
-    private final FormDialogView view;
-
-    private final DialogActionFactory actionFactory;
-
-    private final Map<String, ActionDefinition> actionMap = new HashMap<String, ActionDefinition>();
-
-    private Item item;
-
-    private Callback callback;
-
-    public DialogPresenter(final FormDialogView view, final DialogBuilder dialogBuilder, final DialogFieldFactory dialogFieldFactory, 
-            final DialogDefinition dialogDefinition, final Shell shell, final EventBus eventBus, final DialogActionFactory actionFactory) {
-        this.view = view;
-        this.dialogBuilder = dialogBuilder;
-        this.dialogFieldFactory = dialogFieldFactory;
-        this.dialogDefinition = dialogDefinition;
-        this.shell = (MagnoliaShell)shell;
-        this.eventBus = eventBus;
-        this.actionFactory = actionFactory;
-
-        this.view.setListener(this);
-
-        initActions(dialogDefinition);
-    }
-
-    @Override
-    public DialogView start(final Item item, Callback callback) {
-        this.item = item;
-        this.callback = callback;
-        dialogBuilder.build(dialogFieldFactory, dialogDefinition, item, view);
-        shell.openDialog(view.asVaadinComponent());
-        return view;
-    }
-
-    @Override
-    public void closeDialog() {
-        shell.removeDialog(view.asVaadinComponent());
-        // clear the view!
-    }
-
-    @Override
-    public void executeAction(final String actionName) {
-
-        final ActionDefinition actionDefinition = actionMap.get(actionName);
-        final Action action = actionFactory.createAction(actionDefinition, this);
-        try {
-            action.execute();
-        } catch (final ActionExecutionException e) {
-            e.printStackTrace();
+        void onSuccess(String actionName);
+        
+        /**
+         * Dummy adapter class that allows to skip overriding e.g. onCancel method in actual
+         * implementors.
+         */
+        public static class Adapter implements Callback {
+            
+            @Override
+            public void onSuccess(String actionName) {}
+            
+            @Override
+            public void onCancel() {}
+            
         }
+        
     }
-
-    private void initActions(final DialogDefinition dialogDefinition) {
-
-        for (final DialogActionDefinition action : dialogDefinition.getActions()) {
-            actionMap.put(action.getName(), action.getActionDefinition());
-        }
-    }
-
-    @Override
-    public void showValidation(boolean isVisible) {
-        view.showValidation(isVisible);
-    }
-
-
-    @Override
-    public FormDialogView getView() {
-        return view;
-    }
-
-    @Override
-    public Item getItem() {
-        return item;
-    }
-
-    @Override
-    public EventBus getEventBus() {
-        return eventBus;
-    }
-
-    @Override
-    public Callback getCallback() {
-        return this.callback;
-    }
-
 }

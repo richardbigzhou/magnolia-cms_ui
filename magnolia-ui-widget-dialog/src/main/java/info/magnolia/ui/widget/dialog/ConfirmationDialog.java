@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.widget.dialog;
 
+
+
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 
@@ -40,11 +42,37 @@ import com.vaadin.ui.Label;
  * ConfirmationDialog.
  */
 public class ConfirmationDialog extends BaseDialog {
+
+    public static final String CONFIRM_ACTION = "DIALOG_ACTION_CONFIRM";
+    
+    public static final String REJECT_ACTION = "DIALOG_ACTION_REJECT";
     
     private String message;
     
     public ConfirmationDialog(final String message) {
         setMessage(message);
+        addAction(CONFIRM_ACTION, "OK", new DialogActionCallback() {
+            
+            @Override
+            public void onActionExecuted() {
+                fireEvent(new ConfirmationEvent(ConfirmationDialog.this, true));
+            }
+        });
+        
+        addAction(REJECT_ACTION, "Cancel", new DialogActionCallback() {
+            @Override
+            public void onActionExecuted() {
+                fireEvent(new ConfirmationEvent(ConfirmationDialog.this, false));
+            }
+        });
+    }
+    
+    public void setConfirmActionLabel(final String label) {
+        setActionLabel(CONFIRM_ACTION, label);
+    }
+    
+    public void setRejectActionLabel(final String label) {
+        setActionLabel(REJECT_ACTION, label);
     }
     
     public void setMessage(String message) {
@@ -67,5 +95,48 @@ public class ConfirmationDialog extends BaseDialog {
     @Override
     protected Component createDefaultContent() {
         return new Label();
+    }
+    
+    public void addConfirmationHandler(ConfirmationEvent.Handler handler) {
+        addListener("confirmation_event", ConfirmationEvent.class, handler, ConfirmationEvent.ON_CONFIRMATION);
+    }
+    
+    public void removeConfirmationHandler(ConfirmationEvent.Handler handler) {
+        removeListener("confirmation_event", ConfirmationEvent.class, handler);
+    }
+    
+    /**
+     * ConfirmationEvent.
+     */
+    public static class ConfirmationEvent extends Component.Event {
+        
+        /**
+         * Handler.
+         */
+        public interface Handler {
+            void onConfirmation(ConfirmationEvent event);
+        }
+        
+        public static final java.lang.reflect.Method ON_CONFIRMATION;
+
+        static {
+            try {
+                ON_CONFIRMATION = ConfirmationEvent.Handler.class.getDeclaredMethod(
+                        "onConfirmation", new Class[] { ConfirmationEvent.class });
+            } catch (final java.lang.NoSuchMethodException e) {
+                throw new java.lang.RuntimeException(e);
+            }
+        }
+
+        private boolean isConfirmed;
+
+        public ConfirmationEvent(Component source, boolean isConfirmed) {
+            super(source);
+            this.isConfirmed = isConfirmed;
+        }
+
+        public boolean isConfirmed() {
+            return isConfirmed;
+        }
     }
 }

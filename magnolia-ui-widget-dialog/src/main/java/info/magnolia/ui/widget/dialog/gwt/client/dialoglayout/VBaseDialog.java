@@ -82,6 +82,15 @@ public class VBaseDialog extends Composite implements VAbstractDialog, Container
                 getView().setCaption(caption);
             }
         }); 
+        
+        register("setActionLabel", new Method() {
+            @Override
+            public void invoke(String methodName, Object[] params) {
+                final String actionName = String.valueOf(params[0]);
+                final String label = String.valueOf(params[1]);
+                getView().setActionLabel(actionName, label);
+            }
+        }); 
     }};
     
     

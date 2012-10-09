@@ -331,6 +331,11 @@ fieldset {
   display: none;
 }
 
+.content-view-field-wrapper .view-type-arrow {
+  top: 96px;
+}
+
+
 /*
 * used by TextAndButtonField custom component.
 */

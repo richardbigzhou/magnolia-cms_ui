@@ -63,10 +63,11 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
     private ActionbarDefinition actionbar;
 
     private ComponentProviderConfiguration components;
-    //Default is always False.
+
     private boolean dialogWorkbench = false;
 
     private ImageProvider imageProvider;
+    
     @Override
     public String getName() {
         return name;

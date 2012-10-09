@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.workbench;
 
+
 import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.app.content.ContentAppDescriptor;
@@ -40,9 +41,9 @@ import info.magnolia.ui.admincentral.content.view.ContentPresenter;
 import info.magnolia.ui.admincentral.content.view.ContentView.ViewType;
 import info.magnolia.ui.admincentral.event.ActionbarItemClickedEvent;
 import info.magnolia.ui.admincentral.event.ContentChangedEvent;
-import info.magnolia.ui.admincentral.event.SearchEvent;
 import info.magnolia.ui.admincentral.event.ItemDoubleClickedEvent;
 import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
+import info.magnolia.ui.admincentral.event.SearchEvent;
 import info.magnolia.ui.admincentral.event.ViewTypeChangedEvent;
 import info.magnolia.ui.admincentral.search.view.SearchView;
 import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
@@ -62,8 +63,6 @@ import javax.jcr.RepositoryException;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.vaadin.Application;
 
 
 /**
@@ -102,12 +101,12 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
 
     private final ActionbarPresenter actionbarPresenter;
 
-    private final Application application;
-
     private final ImageProvider imageProvider;
-
+    
     @Inject
-    public ContentWorkbenchPresenter(final AppContext appContext, final ContentWorkbenchView view, @Named("admincentral") final EventBus admincentralEventBus, final @Named("subapp") EventBus subAppEventBus, final Shell shell, final WorkbenchActionFactory actionFactory, final ContentPresenter contentPresenter, final ActionbarPresenter actionbarPresenter, Application application) {
+    public ContentWorkbenchPresenter(final AppContext appContext, final ContentWorkbenchView view, @Named("admincentral") final EventBus admincentralEventBus, 
+            final @Named("subapp") EventBus subAppEventBus, final Shell shell, final WorkbenchActionFactory actionFactory, final ContentPresenter contentPresenter, 
+            final ActionbarPresenter actionbarPresenter) {
         this.view = view;
         this.admincentralEventBus = admincentralEventBus;
         this.subAppEventBus = subAppEventBus;
@@ -115,16 +114,13 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
         this.actionFactory = actionFactory;
         this.contentPresenter = contentPresenter;
         this.actionbarPresenter = actionbarPresenter;
-        this.application = application;
         this.workbenchDefinition = ((ContentAppDescriptor) appContext.getAppDescriptor()).getWorkbench();
         this.imageProvider = workbenchDefinition.getImageProvider();
-
     }
 
     public ContentWorkbenchView start() {
         view.setListener(this);
         contentPresenter.initContentView(view);
-
         ActionbarView actionbar = actionbarPresenter.start(workbenchDefinition.getActionbar(), actionFactory);
         view.setActionbarView(actionbar);
 
@@ -147,7 +143,7 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
             @Override
             public void onActionbarItemClicked(ActionbarItemClickedEvent event) {
                 try {
-                    ActionDefinition actionDefinition = event.getActionDefinition();
+                    final ActionDefinition actionDefinition = event.getActionDefinition();
                     actionbarPresenter.createAndExecuteAction(actionDefinition, workbenchDefinition.getWorkspace(), getSelectedItemId());
                 } catch (ActionExecutionException e) {
                     log.error("An error occurred while executing an action.", e);

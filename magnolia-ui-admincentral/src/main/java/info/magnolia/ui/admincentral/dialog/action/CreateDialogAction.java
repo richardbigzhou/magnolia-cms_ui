@@ -33,14 +33,14 @@
  */
 package info.magnolia.ui.admincentral.dialog.action;
 
-import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
+import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
+import info.magnolia.ui.admincentral.dialog.FormDialogPresenterFactory;
 import info.magnolia.ui.admincentral.event.ContentChangedEvent;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.widget.dialog.MagnoliaDialogPresenter;
 
 import javax.jcr.Node;
 
@@ -51,10 +51,11 @@ import javax.jcr.Node;
  */
 public class CreateDialogAction extends ActionBase<CreateDialogActionDefinition> {
 
-    private DialogPresenterFactory dialogPresenterFactory;
+    private FormDialogPresenterFactory dialogPresenterFactory;
+    
     private Node parent;
 
-    public CreateDialogAction(CreateDialogActionDefinition definition, Node parent, DialogPresenterFactory dialogPresenterFactory) {
+    public CreateDialogAction(CreateDialogActionDefinition definition, Node parent, FormDialogPresenterFactory dialogPresenterFactory) {
         super(definition);
         this.parent = parent;
         this.dialogPresenterFactory = dialogPresenterFactory;
@@ -62,11 +63,11 @@ public class CreateDialogAction extends ActionBase<CreateDialogActionDefinition>
 
     @Override
     public void execute() throws ActionExecutionException {
-        final MagnoliaDialogPresenter.Presenter dialogPresenter = dialogPresenterFactory.createDialog(getDefinition().getDialogName());
+        final FormDialogPresenter dialogPresenter = dialogPresenterFactory.createDialogPresenterByName(getDefinition().getDialogName());
 
         final EventBus eventBus = dialogPresenter.getEventBus();
         final JcrNodeAdapter item = new JcrNewNodeAdapter(parent, getDefinition().getNodeType());
-        dialogPresenter.start(new JcrNewNodeAdapter(parent, getDefinition().getNodeType()), new MagnoliaDialogPresenter.Presenter.Callback() {
+        dialogPresenter.start(new JcrNewNodeAdapter(parent, getDefinition().getNodeType()), new FormDialogPresenter.Callback() {
 
             @Override
             public void onSuccess(String actionName) {

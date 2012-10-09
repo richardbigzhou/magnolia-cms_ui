@@ -41,6 +41,7 @@ import info.magnolia.ui.admincentral.field.TextAndContentViewField;
 import info.magnolia.ui.framework.event.SimpleEventBus;
 import info.magnolia.ui.model.field.definition.LinkFieldSelectionDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.jcr.RepositoryException;
@@ -82,7 +83,7 @@ public class LinkFieldSelectionBuilderTest extends AbstractBuilderTest<LinkField
         builder.setI18nContentSupport(i18nContentSupport);
         Field field = builder.getField();
         // WHEN
-        eventBus.fireEvent(new ItemSelectedEvent(baseNode.getSession().getWorkspace().getName(), baseNode.getPath()));
+        eventBus.fireEvent(new ItemSelectedEvent(baseNode.getSession().getWorkspace().getName(), (JcrItemAdapter)baseItem));
 
         // THEN
         // as No columnName defined return the Item path as Value property
@@ -102,7 +103,7 @@ public class LinkFieldSelectionBuilderTest extends AbstractBuilderTest<LinkField
         Field field = builder.getField();
 
         // WHEN
-        eventBus.fireEvent(new ItemSelectedEvent(baseNode.getSession().getWorkspace().getName(), baseNode.getPath()));
+        eventBus.fireEvent(new ItemSelectedEvent(baseNode.getSession().getWorkspace().getName(), (JcrItemAdapter)baseItem));
 
         // THEN
         assertEquals("initial", field.getValue());

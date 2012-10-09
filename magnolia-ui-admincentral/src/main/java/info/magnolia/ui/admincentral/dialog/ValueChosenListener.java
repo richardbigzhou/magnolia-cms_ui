@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,39 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.content.view;
-
-import info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilder;
-import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import org.apache.commons.lang.StringUtils;
-
-import com.rits.cloning.Cloner;
+package info.magnolia.ui.admincentral.dialog;
 
 /**
- * ChooseDialog ContentPresenter.
- * Used to inject a specific EventBus, and to handle specific ChooseDialog logic.
+ * Interface for value selection providers.
+ * @param <VT> Value Type.
  */
-public class ChooseDialogContentPresenter extends ContentPresenter {
+public interface ValueChosenListener<VT> {
 
-    @Inject
-    public ChooseDialogContentPresenter(ContentViewBuilder contentViewBuilder, AppContext context, @Named("choosedialog") EventBus subAppEventBus, Shell shell) {
-        super(contentViewBuilder, context, subAppEventBus, shell);
-        workbenchDefinition = new Cloner().deepClone(workbenchDefinition);
-        ((ConfiguredWorkbenchDefinition)workbenchDefinition).setDialogWorkbench(true);
-    }
-
+    void onValueSelected(VT pickedValue);
+    
+    void selectionCanceled();
+    
     /**
-     * Return the Root path.
+     * Indicates that the implementor can accept {@link ValueChosenListener}.
+     * @param <VT>
      */
-    public String getRootPath() {
-        return StringUtils.defaultIfEmpty(workbenchDefinition.getPath(), "/");
+    interface HasValueChosenListener<VT> {
+        
+        void addValuePickListener(final ValueChosenListener<VT> listener);
+        
+        void removeValuePickListener(final ValueChosenListener<VT> listener);
     }
     
 }

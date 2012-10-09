@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.admincentral.app.content;
 
+import com.rits.cloning.Cloner;
+
 import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 
@@ -53,6 +55,14 @@ public class ConfiguredContentAppDescriptor extends ConfiguredAppDescriptor impl
 
     public void setWorkbench(WorkbenchDefinition workbench) {
         this.workbench = workbench;
+    }
+
+    @Override
+    public WorkbenchDefinition getWorkbenchCopy() {
+        if (workbench != null) {
+            return new Cloner().deepClone(workbench);
+        }
+        return null;
     }
 
 }

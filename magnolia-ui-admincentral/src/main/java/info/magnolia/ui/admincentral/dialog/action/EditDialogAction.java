@@ -33,13 +33,11 @@
  */
 package info.magnolia.ui.admincentral.dialog.action;
 
-import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
-import info.magnolia.ui.admincentral.event.ContentChangedEvent;
-import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
+import info.magnolia.ui.admincentral.dialog.FormDialogPresenterFactory;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.widget.dialog.MagnoliaDialogPresenter;
 
 import javax.jcr.Node;
 
@@ -50,10 +48,11 @@ import javax.jcr.Node;
  */
 public class EditDialogAction extends ActionBase<EditDialogActionDefinition> {
 
-    private DialogPresenterFactory dialogPresenterFactory;
+    private FormDialogPresenterFactory dialogPresenterFactory;
+    
     private Node nodeToEdit;
 
-    public EditDialogAction(EditDialogActionDefinition definition, Node nodeToEdit, DialogPresenterFactory dialogPresenterFactory) {
+    public EditDialogAction(EditDialogActionDefinition definition, Node nodeToEdit, FormDialogPresenterFactory dialogPresenterFactory) {
         super(definition);
         this.nodeToEdit = nodeToEdit;
         this.dialogPresenterFactory = dialogPresenterFactory;
@@ -61,15 +60,14 @@ public class EditDialogAction extends ActionBase<EditDialogActionDefinition> {
 
     @Override
     public void execute() throws ActionExecutionException {
-        final MagnoliaDialogPresenter.Presenter dialogPresenter = dialogPresenterFactory.createDialog(getDefinition().getDialogName());
-
-        final EventBus eventBus = dialogPresenter.getEventBus();
+        final FormDialogPresenter dialogPresenter = dialogPresenterFactory.createDialogPresenterByName(getDefinition().getDialogName());
+        //final EventBus eventBus = dialogPresenter.getEventBus();
         final JcrNodeAdapter item = new JcrNodeAdapter(nodeToEdit);
-        dialogPresenter.start(item, new MagnoliaDialogPresenter.Presenter.Callback() {
+        dialogPresenter.start(item, new FormDialogPresenter.Callback() {
 
             @Override
             public void onSuccess(String actionName) {
-                eventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), item.getItemId()));
+                //eventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), item.getItemId()));
                 dialogPresenter.closeDialog();
             }
 

@@ -58,7 +58,7 @@ public class ContactNameColumnFormatter extends AbstractColumnFormatter<ContactN
     public ContactNameColumnFormatter(ContactNameColumnDefinition definition) {
         super(definition);
     }
-
+    
     @Override
     public Object generateCell(Table source, Object itemId, Object columnId) {
         JcrItemAdapter item = (JcrItemAdapter) source.getItem(itemId);

@@ -43,7 +43,7 @@ import com.vaadin.ui.Field;
  *
  */
 public interface FormDialogView extends DialogView, Item.Editor {
-
+    
     void addDialogSection(String tabName, FormSection inputFields);
 
     void addField(Field field);

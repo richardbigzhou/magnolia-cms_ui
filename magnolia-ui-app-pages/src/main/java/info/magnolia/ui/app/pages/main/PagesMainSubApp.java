@@ -62,7 +62,7 @@ public class PagesMainSubApp extends AbstractContentSubApp implements PagesMainV
         this.view.setListener(this);
         this.dispatcher = dispatcher;
     }
-
+    
     @Override
     public String getCaption() {
         return CAPTION;

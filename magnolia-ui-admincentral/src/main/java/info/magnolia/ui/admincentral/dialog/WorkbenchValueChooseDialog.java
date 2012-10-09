@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,17 +33,39 @@
  */
 package info.magnolia.ui.admincentral.dialog;
 
-import info.magnolia.ui.model.dialog.definition.DialogDefinition;
-import info.magnolia.ui.widget.dialog.MagnoliaDialogPresenter;
+import info.magnolia.ui.admincentral.workbench.ContentWorkbenchView;
+import info.magnolia.ui.widget.dialog.BaseDialog;
+
+import javax.inject.Inject;
 
 /**
- * Creates {@link DialogPresenter} instances that are use to display a dialog.
+ * Picks value from a workbench.
+ *
  */
-public interface DialogPresenterFactory {
+public class WorkbenchValueChooseDialog extends BaseDialog implements ChooseDialogView {
 
-    MagnoliaDialogPresenter.Presenter createDialog(String dialogName);
+    public static final String CHOOSE_ACTION_NAME = "commit";
+    public static final String CANCEL_ACTION_NAME = "cancel";
+    
+    private final ContentWorkbenchView view;
+    
+    @Inject
+    public WorkbenchValueChooseDialog(ContentWorkbenchView view) {
+        this.view = view;
+        addStyleName("content-view-field-wrapper");
+        setContent(this.view.asVaadinComponent());
+        addAction(CHOOSE_ACTION_NAME, "Choose");
+        addAction(CANCEL_ACTION_NAME, "Cancel");
+    }
+    
+    @Override
+    public void setCancelActionLabel(String newLabel) {
+        setActionLabel(CANCEL_ACTION_NAME, newLabel);
+    }
 
-    MagnoliaDialogPresenter.Presenter getDialogPresenter(DialogDefinition definition);
-
-    DialogDefinition getDialogDefinition(String dialogName) throws RuntimeException;
+    @Override
+    public void setSelectionActionLabel(String newLabel) {
+        setActionLabel(CANCEL_ACTION_NAME, newLabel);
+    }
+    
 }

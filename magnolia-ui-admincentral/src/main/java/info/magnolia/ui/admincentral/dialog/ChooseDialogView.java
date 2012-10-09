@@ -31,39 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.content.view;
+package info.magnolia.ui.admincentral.dialog;
 
-import info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilder;
-import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import org.apache.commons.lang.StringUtils;
-
-import com.rits.cloning.Cloner;
+import info.magnolia.ui.widget.dialog.DialogView;
 
 /**
- * ChooseDialog ContentPresenter.
- * Used to inject a specific EventBus, and to handle specific ChooseDialog logic.
+ * View interface of Value Selection Dialog.
  */
-public class ChooseDialogContentPresenter extends ContentPresenter {
-
-    @Inject
-    public ChooseDialogContentPresenter(ContentViewBuilder contentViewBuilder, AppContext context, @Named("choosedialog") EventBus subAppEventBus, Shell shell) {
-        super(contentViewBuilder, context, subAppEventBus, shell);
-        workbenchDefinition = new Cloner().deepClone(workbenchDefinition);
-        ((ConfiguredWorkbenchDefinition)workbenchDefinition).setDialogWorkbench(true);
-    }
-
-    /**
-     * Return the Root path.
-     */
-    public String getRootPath() {
-        return StringUtils.defaultIfEmpty(workbenchDefinition.getPath(), "/");
-    }
+public interface ChooseDialogView extends DialogView {
+    
+    void setCancelActionLabel(final String caption);
+    
+    void setSelectionActionLabel(final String caption);
     
 }

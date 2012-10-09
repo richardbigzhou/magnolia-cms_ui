@@ -54,8 +54,11 @@ import com.vaadin.ui.VerticalLayout;
 public class TextAndContentViewField extends CustomField {
 
     private ContentWorkbenchView contentView;
+    
     private VerticalLayout layout;
+    
     private TextField textField;
+    
     private boolean displayTextFieldOnTop;
 
     public TextAndContentViewField(boolean displayTextField, boolean displayTextFieldOnTop) {
@@ -123,13 +126,10 @@ public class TextAndContentViewField extends CustomField {
     }
 
     @Override
-    public Class< ? > getType() {
+    public Class<?> getType() {
         return getPropertyDataSource().getType();
     }
 
-    /**
-     * Do not allowed to set Caption.
-     */
     @Override
     public void setCaption(String caption) {
         super.setCaption(null);

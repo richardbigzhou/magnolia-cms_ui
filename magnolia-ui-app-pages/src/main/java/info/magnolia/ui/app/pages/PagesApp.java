@@ -35,7 +35,8 @@ package info.magnolia.ui.app.pages;
 
 import info.magnolia.ui.admincentral.app.content.AbstractContentApp;
 import info.magnolia.ui.admincentral.app.content.AbstractContentSubApp;
-import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
+import info.magnolia.ui.admincentral.dialog.ChooseDialogFactory;
+import info.magnolia.ui.admincentral.dialog.FormDialogPresenterFactory;
 import info.magnolia.ui.app.pages.editor.PagesEditorSubApp;
 import info.magnolia.ui.app.pages.main.PagesMainSubApp;
 import info.magnolia.ui.framework.app.AppContext;
@@ -58,8 +59,8 @@ public class PagesApp extends AbstractContentApp {
     private final AppContext appContext;
 
     @Inject
-    public PagesApp(AppContext context, DialogPresenterFactory dialogPresenterFactory) {
-        super(dialogPresenterFactory);
+    public PagesApp(AppContext context, FormDialogPresenterFactory dialogPresenterFactory, ChooseDialogFactory pickerDialogFactory) {
+        super(pickerDialogFactory);
         this.appContext = context;
     }
 

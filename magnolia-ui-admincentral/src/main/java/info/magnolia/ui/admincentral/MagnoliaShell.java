@@ -35,6 +35,7 @@ package info.magnolia.ui.admincentral;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.admincentral.app.simple.ShellAppController;
+import info.magnolia.ui.admincentral.dialog.BaseDialogPresenter;
 import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventHandler;
@@ -52,6 +53,7 @@ import info.magnolia.ui.framework.shell.ConfirmationHandler;
 import info.magnolia.ui.framework.shell.FragmentChangedHandler;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.widget.dialog.BaseDialog;
+import info.magnolia.ui.widget.dialog.BaseDialog.DialogCloseEvent;
 import info.magnolia.ui.widget.magnoliashell.BaseMagnoliaShell;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
 import info.magnolia.ui.widget.magnoliashell.viewport.ShellViewport;
@@ -198,8 +200,15 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
         messagesManager.clearMessage(MgnlContext.getUser().getName(), messageId);
     }
 
-    public void openDialog(BaseDialog component) {
-        addDialog(component.asVaadinComponent());
+    public void openDialog(final BaseDialogPresenter dialogPresenter) {
+        dialogPresenter.addDialogCloseHandler(new DialogCloseEvent.Handler() {
+            @Override
+            public void onClose(DialogCloseEvent event) {
+                removeDialog(event.getView().asVaadinComponent());
+                event.getView().asVaadinComponent().removeDialogCloseHandler(this);
+            }
+        });
+        addDialog(dialogPresenter.getView().asVaadinComponent());
     }
 
     public void removeDialog(BaseDialog dialog) {

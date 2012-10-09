@@ -33,13 +33,16 @@
  */
 package info.magnolia.ui.admincentral.app.content;
 
+import info.magnolia.ui.admincentral.MagnoliaShell;
+import info.magnolia.ui.admincentral.dialog.ChooseDialogFactory;
+import info.magnolia.ui.admincentral.dialog.ChooseDialogPresenter;
+import info.magnolia.ui.admincentral.dialog.WorkbenchChooseDialogPresenter;
+import info.magnolia.ui.framework.app.AbstractApp;
+import info.magnolia.ui.framework.shell.Shell;
+
 import javax.inject.Inject;
 
 import com.vaadin.data.Item;
-
-import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
-import info.magnolia.ui.framework.app.AbstractApp;
-import info.magnolia.ui.widget.dialog.MagnoliaDialogPresenter.Presenter;
 
 
 /**
@@ -47,16 +50,20 @@ import info.magnolia.ui.widget.dialog.MagnoliaDialogPresenter.Presenter;
  */
 public abstract class AbstractContentApp extends AbstractApp {
 
-    private DialogPresenterFactory dialogPresenterFactory;
+    private ChooseDialogFactory pickerDialogFactory;
 
     @Inject
-    public AbstractContentApp(DialogPresenterFactory dialogPresenterFactory) {
-        this.dialogPresenterFactory = dialogPresenterFactory;
+    private Shell shell;
+    
+    @Inject
+    public AbstractContentApp(ChooseDialogFactory pickerDialogFactory) {
+        this.pickerDialogFactory = pickerDialogFactory;
     }
 
-    public void openChooseDialog(String dialogName, Presenter.Callback callback, Item item) {
-        Presenter dialogPresenter = dialogPresenterFactory.createDialog(dialogName);
-        dialogPresenter.start(item, callback);
+    public ChooseDialogPresenter<Item> openWorkbenchPickerDialog() {
+        final WorkbenchChooseDialogPresenter picker = pickerDialogFactory.createWorkbenchValuePickerDialog();
+        ((MagnoliaShell)shell).openDialog(picker);
+        return picker;
     }
 
 }

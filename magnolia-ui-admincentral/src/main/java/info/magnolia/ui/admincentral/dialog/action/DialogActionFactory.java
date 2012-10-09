@@ -33,15 +33,15 @@
  */
 package info.magnolia.ui.admincentral.dialog.action;
 
+import info.magnolia.ui.admincentral.dialog.DialogPresenter;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
-import info.magnolia.ui.widget.dialog.MagnoliaDialogPresenter;
 
 /**
  * Creates an action based on an {@link ActionDefinition}.
  */
 public interface DialogActionFactory {
 
-    Action createAction(ActionDefinition actionDefinition, MagnoliaDialogPresenter.Presenter dialogPresenter);
+    Action createAction(ActionDefinition actionDefinition, DialogPresenter dialogPresenter);
 
 }

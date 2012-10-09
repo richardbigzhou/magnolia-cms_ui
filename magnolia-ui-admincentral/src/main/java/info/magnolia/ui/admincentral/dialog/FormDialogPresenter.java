@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,39 +31,24 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.content.view;
+package info.magnolia.ui.admincentral.dialog;
 
-import info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilder;
-import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition;
+import info.magnolia.ui.widget.dialog.DialogView;
+import info.magnolia.ui.widget.dialog.FormDialogView;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import org.apache.commons.lang.StringUtils;
-
-import com.rits.cloning.Cloner;
+import com.vaadin.data.Item;
 
 /**
- * ChooseDialog ContentPresenter.
- * Used to inject a specific EventBus, and to handle specific ChooseDialog logic.
+ * DialogView.Presenter.
  */
-public class ChooseDialogContentPresenter extends ContentPresenter {
+public interface FormDialogPresenter extends DialogPresenter {
 
-    @Inject
-    public ChooseDialogContentPresenter(ContentViewBuilder contentViewBuilder, AppContext context, @Named("choosedialog") EventBus subAppEventBus, Shell shell) {
-        super(contentViewBuilder, context, subAppEventBus, shell);
-        workbenchDefinition = new Cloner().deepClone(workbenchDefinition);
-        ((ConfiguredWorkbenchDefinition)workbenchDefinition).setDialogWorkbench(true);
-    }
+    void showValidation(boolean isVisible);
 
-    /**
-     * Return the Root path.
-     */
-    public String getRootPath() {
-        return StringUtils.defaultIfEmpty(workbenchDefinition.getPath(), "/");
-    }
+    DialogView start(Item item, Callback callback);
     
+    Item getItemDataSource();
+    
+    @Override
+    FormDialogView getView();
 }

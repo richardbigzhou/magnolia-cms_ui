@@ -44,4 +44,6 @@ import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 public interface ContentAppDescriptor extends AppDescriptor {
 
     WorkbenchDefinition getWorkbench();
+    
+    WorkbenchDefinition getWorkbenchCopy();
 }

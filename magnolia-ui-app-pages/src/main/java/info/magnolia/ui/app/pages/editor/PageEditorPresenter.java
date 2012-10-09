@@ -40,7 +40,8 @@ import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.rendering.template.TemplateDefinition;
 import info.magnolia.rendering.template.registry.TemplateDefinitionRegistry;
-import info.magnolia.ui.admincentral.dialog.DialogPresenterFactory;
+import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
+import info.magnolia.ui.admincentral.dialog.FormDialogPresenterFactory;
 import info.magnolia.ui.admincentral.event.ContentChangedEvent;
 import info.magnolia.ui.app.pages.field.ComponentSelectorDefinition;
 import info.magnolia.ui.app.pages.field.TemplateSelectorField;
@@ -52,7 +53,6 @@ import info.magnolia.ui.model.tab.definition.TabDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.widget.dialog.MagnoliaDialogPresenter;
 import info.magnolia.ui.widget.editor.PageEditor;
 import info.magnolia.ui.widget.editor.PageEditorParameters;
 import info.magnolia.ui.widget.editor.PageEditorView;
@@ -84,7 +84,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
     private final EventBus eventBus;
 
-    private final DialogPresenterFactory dialogPresenterFactory;
+    private final FormDialogPresenterFactory dialogPresenterFactory;
 
     private final TemplateDefinitionRegistry templateDefinitionRegistry;
 
@@ -93,7 +93,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
     private PageEditor.AbstractElement selectedElement;
 
     @Inject
-    public PageEditorPresenter(PageEditorView view, @Named("subapp") EventBus eventBus, DialogPresenterFactory dialogPresenterFactory, TemplateDefinitionRegistry templateDefinitionRegistry) {
+    public PageEditorPresenter(PageEditorView view, @Named("subapp") EventBus eventBus, FormDialogPresenterFactory dialogPresenterFactory, TemplateDefinitionRegistry templateDefinitionRegistry) {
         this.view = view;
         this.eventBus = eventBus;
         this.dialogPresenterFactory = dialogPresenterFactory;
@@ -116,17 +116,15 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
     @Override
     public void editComponent(String workspace, String path, String dialog) {
-        final MagnoliaDialogPresenter.Presenter dialogPresenter = dialogPresenterFactory.createDialog(dialog);
+        final FormDialogPresenter dialogPresenter = dialogPresenterFactory.createDialogPresenterByName(dialog);
 
         try {
             Session session = MgnlContext.getJCRSession(workspace);
-
             if (path == null || !session.itemExists(path)) {
                 path = "/";
             }
             final Node node = session.getNode(path);
             final JcrNodeAdapter item = new JcrNodeAdapter(node);
-
             createDialogAction(item, dialogPresenter);
         } catch (RepositoryException e) {
             log.error("Exception caught: {}", e.getMessage(), e);
@@ -135,11 +133,8 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
     @Override
     public void newComponent(String workspace, String path, String availableComponents) {
-
         updateDialogDefinition(availableComponents);
-
-        final MagnoliaDialogPresenter.Presenter dialogPresenter = dialogPresenterFactory.getDialogPresenter(dialogDefinition);
-
+        final FormDialogPresenter dialogPresenter = dialogPresenterFactory.createDialogPresenterByDefinition(dialogDefinition);
         try {
             Session session = MgnlContext.getJCRSession(workspace);
 
@@ -151,11 +146,11 @@ public class PageEditorPresenter implements PageEditorView.Listener {
             Node parentNode = session.getNode(path);
 
             final JcrNodeAdapter item = new JcrNewNodeAdapter(parentNode, MgnlNodeType.NT_COMPONENT);
-            DefaultProperty property = new DefaultProperty(item.JCR_NAME, "0");
-            item.addItemProperty(item.JCR_NAME, property);
+            DefaultProperty property = new DefaultProperty(JcrNodeAdapter.JCR_NAME, "0");
+            item.addItemProperty(JcrNodeAdapter.JCR_NAME, property);
 
             // perform custom chaining of dialogs
-            dialogPresenter.start(item, new MagnoliaDialogPresenter.Presenter.Callback() {
+            dialogPresenter.start(item, new FormDialogPresenter.Callback() {
 
                 @Override
                 public void onSuccess(String actionName) {
@@ -163,7 +158,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
                     try {
                         TemplateDefinition templateDef = templateDefinitionRegistry.getTemplateDefinition(templateId);
                         String dialog = templateDef.getDialog();
-                        final MagnoliaDialogPresenter.Presenter dialogPresenter = dialogPresenterFactory.createDialog(dialog);
+                        final FormDialogPresenter dialogPresenter = dialogPresenterFactory.createDialogPresenterByName(dialog);
                         createDialogAction(item, dialogPresenter);
                     } catch (RegistrationException e) {
                         log.error("Exception caught: {}", e.getMessage(), e);
@@ -187,8 +182,8 @@ public class PageEditorPresenter implements PageEditorView.Listener {
     /**
      * Create a Dialog and define the call back actions.
      */
-    private void createDialogAction(final JcrNodeAdapter item, final MagnoliaDialogPresenter.Presenter dialogPresenter) {
-        dialogPresenter.start(item, new MagnoliaDialogPresenter.Presenter.Callback() {
+    private void createDialogAction(final JcrNodeAdapter item, final FormDialogPresenter dialogPresenter) {
+        dialogPresenter.start(item, new FormDialogPresenter.Callback() {
 
             @Override
             public void onSuccess(String actionName) {

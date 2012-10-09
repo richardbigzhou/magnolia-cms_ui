@@ -59,15 +59,15 @@ public class ContentViewBuilderImpl implements ContentViewBuilder, Serializable 
     private final ComponentProvider componentProvider;
 
     @Inject
-    public ContentViewBuilderImpl(ComponentProvider componentProvider) {
+    public ContentViewBuilderImpl(final ComponentProvider componentProvider) {
         this.componentProvider = componentProvider;
     }
 
     @Override
-    public ContentView build(WorkbenchDefinition workbenchDefinition, ViewType type) {
+    public ContentView build(final WorkbenchDefinition workbenchDefinition, ViewType type) {
         final WorkbenchActionFactory workbenchActionFactory = componentProvider.getComponent(WorkbenchActionFactory.class);
         // FIXME the model should be set by the presenter
-        TreeModel treeModel = new TreeModel(workbenchDefinition, workbenchActionFactory);
+        final TreeModel treeModel = new TreeModel(workbenchDefinition, workbenchActionFactory);
         switch (type) {
 
             case TREE:

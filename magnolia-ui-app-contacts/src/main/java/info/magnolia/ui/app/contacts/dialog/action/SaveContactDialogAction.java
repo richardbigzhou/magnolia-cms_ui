@@ -35,10 +35,10 @@ package info.magnolia.ui.app.contacts.dialog.action;
 
 import info.magnolia.jcr.util.MetaDataUtil;
 import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
 import info.magnolia.ui.admincentral.dialog.action.SaveDialogAction;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.widget.dialog.MagnoliaDialogPresenter.Presenter;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -49,10 +49,10 @@ import javax.jcr.RepositoryException;
  */
 public class SaveContactDialogAction extends SaveDialogAction {
 
-    public SaveContactDialogAction(final SaveContactDialogActionDefinition definition, final Presenter presenter) {
+    public SaveContactDialogAction(final SaveContactDialogActionDefinition definition, final FormDialogPresenter presenter) {
         super(definition, presenter);
     }
-
+    
     @Override
     public void execute() throws ActionExecutionException {
         // First Validate
