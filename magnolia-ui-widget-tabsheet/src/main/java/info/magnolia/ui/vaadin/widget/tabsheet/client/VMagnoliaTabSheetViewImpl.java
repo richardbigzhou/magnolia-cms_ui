@@ -74,7 +74,7 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements VMagnoliaTab
 
     private boolean isActiveTabFullscreen = false;
 
-	private final List<VMagnoliaTab> tabs = new LinkedList<VMagnoliaTab>();
+    private final List<VMagnoliaTab> tabs = new LinkedList<VMagnoliaTab>();
 
     private final LoadingPane loadingPane = new LoadingPane();
 
