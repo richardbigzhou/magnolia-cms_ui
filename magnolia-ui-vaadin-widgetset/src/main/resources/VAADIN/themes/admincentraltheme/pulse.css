@@ -18,8 +18,15 @@
 
 .v-dashboard-entry {
 	border-bottom: 1px solid #CCCCCC;
+	margin-bottom: 10px;
 	font-size:15px;
 }
+
+/* Clearfix */
+.v-dashboard-entry:before, .v-dashboard-entry:after { content: ""; display: table; }
+.v-dashboard-entry:after { clear: both; }
+.v-dashboard-entry { *zoom: 1; }
+
 
 .v-dashboard-entry .v-csslayout-margin-top {padding-top:10px;}
 .v-dashboard-entry .v-csslayout-margin-bottom {padding-bottom:5px;}
@@ -41,6 +48,7 @@
 .v-dashboard-entry .content {
 	margin-left:-40px;
 	float:right;
+	width:350px !important
 }
 
 .v-dashboard-entry .content .v-csslayout-margin-left {
@@ -67,6 +75,7 @@
 .v-dashboard-entry .v-label-date {
 	color:#cccccc;
 	text-align:right;
+	width:340px !important;
 }
 
 .v-pulse .v-feed-title-link {
