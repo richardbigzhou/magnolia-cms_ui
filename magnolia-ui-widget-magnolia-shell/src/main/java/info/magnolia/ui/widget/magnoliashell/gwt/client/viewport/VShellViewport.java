@@ -34,7 +34,7 @@
 package info.magnolia.ui.widget.magnoliashell.gwt.client.viewport;
 
 
-import info.magnolia.ui.vaadin.integration.widget.client.icon.GwtLoadingIcon;
+import info.magnolia.ui.vaadin.integration.widget.client.loading.LoadingPane;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.AnimationSettings;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.Callbacks;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryCallback;
@@ -132,45 +132,6 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
 
         loadingPane.appendTo(this);
     }
-
-    /**
-     * Displays a loading indicator at the top of the middle of the viewport.
-     * Also inhibits interaction by covering the viewport with a div.
-     * Also could dim the viewport.
-     */
-    private class LoadingPane{
-
-       private final GwtLoadingIcon loadingIcon = new GwtLoadingIcon();
-       private final Element iconPanel = DOM.createDiv();
-       private final Element loadingIconPositioner = DOM.createDiv();
-       private final Element loadingModalityCurtain = DOM.createDiv();
-
-        public LoadingPane(){
-            super();
-            loadingModalityCurtain.setClassName("loading-modality-curtain");
-            loadingIconPositioner.setClassName("loading-icon-positioner");
-            iconPanel.setClassName("loading-icon-panel");
-
-            iconPanel.appendChild(loadingIcon.getElement());
-            loadingIconPositioner.appendChild(iconPanel);
-        }
-
-        public void appendTo(Widget parent){
-            parent.getElement().appendChild(loadingModalityCurtain);
-            parent.getElement().appendChild(loadingIconPositioner);
-        }
-
-        public void hide(){
-            loadingModalityCurtain.getStyle().setVisibility(Visibility.HIDDEN);
-            loadingIconPositioner.getStyle().setVisibility(Visibility.HIDDEN);
-        }
-
-        public void show(){
-            loadingModalityCurtain.getStyle().setVisibility(Visibility.VISIBLE);
-            loadingIconPositioner.getStyle().setVisibility(Visibility.VISIBLE);
-        }
-
-    };
 
 
     public void showLoadingPane(){

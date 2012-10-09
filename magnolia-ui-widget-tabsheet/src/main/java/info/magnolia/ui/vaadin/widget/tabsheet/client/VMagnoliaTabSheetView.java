@@ -46,26 +46,27 @@ import com.google.gwt.user.client.ui.Widget;
 public interface VMagnoliaTabSheetView extends HasWidgets, IsWidget, HasScrollHandlers {
 
     List<VMagnoliaTab> getTabs();
-    
+
     void addTab(VMagnoliaTab tab);
-    
+
     /**
      * Presenter.
      */
     public interface Presenter {
         void updateLayout();
+        void updateLayoutOfActiveTab();
     }
 
     Widget getScroller();
-    
+
     VMagnoliaTabNavigator getTabContainer();
 
     VMagnoliaTab getTabById(String tabId);
 
     VMagnoliaTab getActiveTab();
-    
+
     void setShowActiveTabFullscreen(boolean isFullscreen);
-    
+
     void setActiveTab(VMagnoliaTab tab);
 
     void removeTab(VMagnoliaTab tabToOrphan);
@@ -73,5 +74,5 @@ public interface VMagnoliaTabSheetView extends HasWidgets, IsWidget, HasScrollHa
     void showAllTabContents(boolean visible);
 
     int getTabHeight(VMagnoliaTab child);
-    
+
 }

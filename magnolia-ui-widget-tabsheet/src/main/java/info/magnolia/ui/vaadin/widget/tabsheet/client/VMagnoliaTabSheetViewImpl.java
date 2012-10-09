@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.vaadin.widget.tabsheet.client;
 
+
+import info.magnolia.ui.vaadin.integration.widget.client.loading.LoadingPane;
 import info.magnolia.ui.vaadin.widget.tabsheet.client.util.CollectionUtil;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper;
 
@@ -40,7 +42,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.google.gwt.dom.client.Style.Display;
-import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -74,6 +75,8 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements VMagnoliaTab
 
     private boolean isActiveTabFullscreen = false;
 
+    private final LoadingPane loadingPane = new LoadingPane();
+
     public VMagnoliaTabSheetViewImpl(EventBus eventBus, Presenter presenter) {
         super();
         this.presenter = presenter;
@@ -84,7 +87,14 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements VMagnoliaTab
         add(tabContainer);
         add(scroller);
         scroller.setWidget(tabPanel);
+
+        loadingPane.appendTo(tabPanel);
+        loadingPane.hide();
     }
+
+
+
+
 
     @Override
     public VMagnoliaTabNavigator getTabContainer() {
@@ -103,20 +113,30 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements VMagnoliaTab
         tabPanel.remove(tabToOrphan);
     }
 
+    //private int count = 0;
+
     @Override
     public void setActiveTab(final VMagnoliaTab tab) {
+        loadingPane.show();
+
+        // Hide all tabs
         showAllTabContents(false);
+
         tab.getElement().getStyle().setDisplay(Display.BLOCK);
-        tab.getElement().getStyle().setVisibility(Visibility.HIDDEN);
-        presenter.updateLayout();
+        activeTab = tab;
+
+        // updateLayout in a 10ms Timer so that the browser has a chance to show the indicator before the processing begins.
         new Timer() {
             @Override
             public void run() {
-                activeTab = tab;
-                tab.getElement().getStyle().setVisibility(Visibility.VISIBLE);
+                presenter.updateLayoutOfActiveTab();
+                loadingPane.hide();
             }
-        }.schedule(500);
+        }.schedule(10);
+
     }
+
+
 
     @Override
     public VMagnoliaTab getTabById(String tabId) {
