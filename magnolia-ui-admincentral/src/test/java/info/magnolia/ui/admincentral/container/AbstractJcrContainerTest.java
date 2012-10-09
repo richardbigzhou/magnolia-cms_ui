@@ -397,20 +397,20 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
         final String result = jcrContainer.constructJCRQuery(true);
 
         // THEN
-        assertEquals(AbstractJcrContainer.SELECT_CONTENT + AbstractJcrContainer.ORDER_BY + AbstractJcrContainer.XPATH_PROPERTY_PREFIX + colName2, result);
+        assertEquals(AbstractJcrContainer.SELECT_CONTENT + AbstractJcrContainer.ORDER_BY + AbstractJcrContainer.CONTENT_SELECTOR_NAME + ".[" + colName2 + "]" + AbstractJcrContainer.ASCENDING_KEYWORD, result);
     }
 
 
     @Test
     public void testConstructJCRQuerySortBySortableColumn() {
         // GIVEN
-        jcrContainer.sort(new String[]{colName1}, new boolean[]{true});
+        jcrContainer.sort(new String[]{"jcrName"}, new boolean[]{true});
 
         // WHEN
         final String result = jcrContainer.constructJCRQuery(true);
 
         // THEN
-        assertEquals(AbstractJcrContainer.SELECT_CONTENT + AbstractJcrContainer.ORDER_BY + " " + AbstractJcrContainer.XPATH_PROPERTY_PREFIX + colName1 + AbstractJcrContainer.XPATH_ASCENDING, result);
+        assertEquals(AbstractJcrContainer.SELECT_CONTENT + AbstractJcrContainer.ORDER_BY + AbstractJcrContainer.CONTENT_SELECTOR_NAME + ".[" + colName2 + "]" + AbstractJcrContainer.ASCENDING_KEYWORD, result);
     }
 
     @Test
@@ -422,7 +422,19 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
         final String result = jcrContainer.constructJCRQuery(true);
 
         // THEN
-        assertEquals(AbstractJcrContainer.SELECT_CONTENT + AbstractJcrContainer.ORDER_BY + AbstractJcrContainer.XPATH_PROPERTY_PREFIX + colName2, result);
+        assertEquals(AbstractJcrContainer.SELECT_CONTENT + AbstractJcrContainer.ORDER_BY + AbstractJcrContainer.CONTENT_SELECTOR_NAME + ".[" + colName2 + "]" + AbstractJcrContainer.ASCENDING_KEYWORD, result);
+    }
+
+    @Test
+    public void testQueryRequiresJoinWhenNoJoinIsRequired() {
+        // GIVEN
+        jcrContainer.sort(new String[]{colName2}, new boolean[]{true});
+
+        // WHEN
+        final boolean result = jcrContainer.queryRequiresJoin();
+
+        // THEN
+        assertFalse(result);
     }
 
     /**
