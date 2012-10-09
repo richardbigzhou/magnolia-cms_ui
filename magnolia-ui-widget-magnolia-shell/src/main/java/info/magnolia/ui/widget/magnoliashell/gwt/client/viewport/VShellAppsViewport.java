@@ -89,7 +89,7 @@ public class VShellAppsViewport extends VShellViewport {
     public boolean setVisibleWidgetByShellAppType(ShellAppType shellAppType) {
         // Get Widget w, based on shellAppType
         Widget w = getWidgetFromShellAppType(shellAppType);
-        if (w != null){
+        if (w != null && w!=getVisibleWidget()){
             super.setVisibleWidget(w);
             return true;
         }

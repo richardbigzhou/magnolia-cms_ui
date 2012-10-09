@@ -323,7 +323,6 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
         @Override
         public void onShellAppNavigation(final ShellAppNavigationEvent event) {
 
-
           // If possible perform transition to ShellApp via the client.
 
             ShellAppType shellAppType = event.getType();
