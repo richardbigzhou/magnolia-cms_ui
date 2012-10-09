@@ -35,6 +35,7 @@ package info.magnolia.ui.admincentral.shellapp.pulse;
 
 import info.magnolia.ui.admincentral.components.SplitFeed;
 import info.magnolia.ui.admincentral.components.SplitFeed.FeedSection;
+import info.magnolia.ui.vaadin.integration.widget.divlayout.DivLayout;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -44,7 +45,7 @@ import java.util.List;
 
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
+//import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Label;
 
@@ -179,7 +180,7 @@ public class PulseDashboardViewImpl extends CustomComponent implements PulseDash
     /**
      * The Class DashboardSection.
      */
-    public static class DashboardSection extends CssLayout {
+    public static class DashboardSection extends DivLayout {
 
         public DashboardSection() {
             addStyleName("pulse-dashboard-section");
@@ -190,11 +191,11 @@ public class PulseDashboardViewImpl extends CustomComponent implements PulseDash
     /**
      * The Class DashboardEntry.
      */
-    public static class DashboardEntry extends CssLayout {
+    public static class DashboardEntry extends DivLayout {
 
         private final Label iconElement = new Label();
 
-        private final CssLayout wrapper = new CssLayout();
+        private final DivLayout wrapper = new DivLayout();
 
         private final Label textElement = new Label();
 

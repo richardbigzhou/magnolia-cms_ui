@@ -35,6 +35,7 @@ package info.magnolia.ui.admincentral;
 
 import info.magnolia.ui.framework.view.View;
 
+
 /**
  * Interface of the main MagnoliaShell view.
  */
@@ -42,7 +43,8 @@ public interface MagnoliaShellView extends View {
 
     void setPresenter(Presenter presenter);
 
-    MagnoliaShell getRoot();
+    @Override
+    public MagnoliaShell asVaadinComponent();
 
     /**
      * Presenter interface that interacts with MagnoliaShell view.
@@ -51,4 +53,3 @@ public interface MagnoliaShellView extends View {
 
     }
 }
-

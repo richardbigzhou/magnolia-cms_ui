@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.vaadin.widget.tabsheet.client;
 
+
+import info.magnolia.ui.vaadin.integration.widget.client.loading.LoadingPane;
 import info.magnolia.ui.vaadin.widget.tabsheet.client.event.ActiveTabChangedEvent;
 import info.magnolia.ui.vaadin.widget.tabsheet.client.util.CollectionUtil;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper;
@@ -41,7 +43,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.google.gwt.dom.client.Style.Display;
-import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -54,23 +55,29 @@ import com.vaadin.terminal.gwt.client.Util;
 
 /**
  * VShellTabSheetViewImpl.
+ *
+ * Contains the tabs at the top (VMagnoliaTabNavigator), and the tabs themselves. The tabs are all contained in a ScrollPanel,
+ * this enables a single showing tab to be scrolled - or the contents of all the tabs to be scrolled together when they are stacked in the
+ * 'ShowAllTabs' mode.
  */
 public class VMagnoliaTabSheetViewImpl extends FlowPanel implements VMagnoliaTabSheetView {
 
     private ScrollPanel scroller = new ScrollPanel();
-    
+
     private FlowPanel tabPanel = new FlowPanel();
-    
+
     private VMagnoliaTabNavigator tabContainer;
 
     private VMagnoliaTab activeTab = null;
-    
+
     private Presenter presenter;
-    
+
     private boolean isActiveTabFullscreen = false;
-    
+
     private final List<VMagnoliaTab> tabs = new LinkedList<VMagnoliaTab>();
-    
+
+    private final LoadingPane loadingPane = new LoadingPane();
+
     public VMagnoliaTabSheetViewImpl(EventBus eventBus, Presenter presenter) {
         super();
         this.presenter = presenter;
@@ -81,13 +88,20 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements VMagnoliaTab
         add(tabContainer);
         add(scroller);
         scroller.setWidget(tabPanel);
+
+        loadingPane.appendTo(tabPanel);
+        loadingPane.hide();
     }
+
+
+
+
 
     @Override
     public VMagnoliaTabNavigator getTabContainer() {
         return tabContainer;
     }
-    
+
     @Override
     public void removeTab(VMagnoliaTab tabToOrphan) {
         if (activeTab == tabToOrphan) {
@@ -100,21 +114,33 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements VMagnoliaTab
         tabPanel.remove(tabToOrphan);
     }
 
+    //private int count = 0;
+
     @Override
     public void setActiveTab(final VMagnoliaTab tab) {
+        loadingPane.show();
+
+        // Hide all tabs
         showAllTabContents(false);
+
         tab.getElement().getStyle().setDisplay(Display.BLOCK);
-        tab.getElement().getStyle().setVisibility(Visibility.HIDDEN);
-        presenter.updateLayout();
+        activeTab = tab;
+
+        // updateLayout in a 10ms Timer so that the browser has a chance to show the indicator before the processing begins.
         new Timer() {
             @Override
             public void run() {
-                tab.getElement().getStyle().setVisibility(Visibility.VISIBLE);
+                presenter.updateLayoutOfActiveTab();
+                loadingPane.hide();
+                fireEvent(new ActiveTabChangedEvent(tab));
             }
-        }.schedule(500);
-        activeTab = tab;
-        fireEvent(new ActiveTabChangedEvent(tab));
+        }.schedule(10);
+
+
+
     }
+
+
 
     @Override
     public VMagnoliaTab getTabById(String tabId) {
@@ -150,14 +176,14 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements VMagnoliaTab
             fireEvent(new TabSetChangedEvent((VMagnoliaTabSheet)presenter));
         }
     }
-    
+
     @Override
     public void setHeight(String height) {
         super.setHeight(height);
         if (!isActiveTabFullscreen && !height.isEmpty()) {
             int heightPx = JQueryWrapper.parseInt(height);
             int scrollerHeight = Math.max(heightPx - tabContainer.getOffsetHeight(), 0);
-            scroller.setHeight(scrollerHeight + "px");   
+            scroller.setHeight(scrollerHeight + "px");
         } else {
             scroller.setHeight(RootPanel.get().getOffsetHeight() + "px");
         }
@@ -169,7 +195,7 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements VMagnoliaTab
         super.onLoad();
         fireEvent(new TabSetChangedEvent((VMagnoliaTabSheet)presenter));
     }
-    
+
     @Override
     public HandlerRegistration addScrollHandler(ScrollHandler handler) {
         return scroller.addScrollHandler(handler);
@@ -195,7 +221,7 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements VMagnoliaTab
         } else {
             RootPanel.get().removeStyleName("fullscreen");
             int scrollerHeight = getOffsetHeight() - tabContainer.getOffsetHeight();
-            scroller.setHeight(scrollerHeight + "px");   
+            scroller.setHeight(scrollerHeight + "px");
         }
     }
 

@@ -51,34 +51,34 @@ import com.google.gwt.user.client.ui.HTML;
  * Simple notification object that pops up when warnings/errors occur.
  */
 public abstract class VShellMessage extends HTML {
-    
+
     /**
      * Enumeration of possible message types.
      */
     public enum MessageType {
         WARNING, ERROR, INFO
     }
-    
+
     private static final String STYLE_NAME = "v-shell-notification";
-    
+
     private HandlerRegistration eventPreviewReg = null;
 
     private final VMagnoliaShellView shell;
-    
+
     private Element messageTypeEl = DOM.createElement("b");
-    
+
     private Element header = DOM.createDiv();
 
     private Element topicEl = DOM.createSpan();
-    
+
     private Element closeEl = DOM.createDiv();
-    
+
     private final String id;
-    
+
     private final String message;
-    
+
     private final String topic;
-    
+
     public VShellMessage(VMagnoliaShellView shell, String topic, String message, String id) {
         super();
         this.topic = topic;
@@ -97,7 +97,7 @@ public abstract class VShellMessage extends HTML {
             }
         });
     }
-    
+
     @Override
     protected void onLoad() {
         super.onLoad();
@@ -105,11 +105,11 @@ public abstract class VShellMessage extends HTML {
         construct();
         show();
     }
-    
+
     protected void onMessageClicked(Element targetEl) {
         close();
     }
-    
+
     protected void close() {
         hide();
         getShell().closeMessageEager(getId());
@@ -119,15 +119,15 @@ public abstract class VShellMessage extends HTML {
         topicEl.setInnerText(topic);
         header.appendChild(messageTypeEl);
         header.appendChild(topicEl);
-        
+
         addStyleName(STYLE_NAME);
-        
+
         header.setClassName("header");
         getElement().appendChild(header);
 
         applyCloseIconStyles(closeEl);
         header.appendChild(closeEl);
-        
+
         messageTypeEl.setInnerHTML(getMessageTypeCaption());
     }
 
@@ -140,12 +140,12 @@ public abstract class VShellMessage extends HTML {
     protected int getHeaderHeight() {
         return JQueryWrapper.select(header).cssInt("height");
     }
-    
+
     public void show() {
         getElement().getStyle().setDisplay(Display.NONE);
         JQueryWrapper.select(this).slideDown(300, null);
     }
-    
+
     public void hide() {
         JQueryWrapper.select(this).slideUp(300, Callbacks.create(new JQueryCallback() {
             @Override
@@ -163,14 +163,14 @@ public abstract class VShellMessage extends HTML {
     public void onBrowserEvent(Event event) {
         super.onBrowserEvent(event);
         int eventCode = event.getTypeInt();
-        if (eventCode == Event.ONTOUCHSTART) {
+        if (eventCode == Event.ONTOUCHEND) {
             final Element target = event.getEventTarget().cast();
             if (target == closeEl) {
                 close();
             }
         }
     }
-    
+
     @Override
     protected void onUnload() {
         super.onUnload();
@@ -178,27 +178,27 @@ public abstract class VShellMessage extends HTML {
             eventPreviewReg.removeHandler();
         }
     }
-    
+
     public Element getHeader() {
         return header;
     }
-    
+
     protected final VMagnoliaShellView getShell() {
         return shell;
     }
-    
+
     public String getMessage() {
         return message;
     }
-    
+
     public String getId() {
         return id;
     }
-    
+
     public String getTopic() {
         return topic;
     }
-    
-    
+
+
 }
 

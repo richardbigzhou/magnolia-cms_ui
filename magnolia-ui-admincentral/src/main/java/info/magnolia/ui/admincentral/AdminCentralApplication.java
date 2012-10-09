@@ -48,7 +48,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.Application;
-import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Window;
 
 
@@ -64,7 +63,7 @@ public class AdminCentralApplication extends Application {
 
     private Window window;
 
-    public boolean getIsDeviceOverrideTablet(){
+    public boolean getIsDeviceOverrideTablet() {
         return isDeviceOverrideTablet;
     }
 
@@ -86,13 +85,11 @@ public class AdminCentralApplication extends Application {
         builder.withConfiguration(configuration);
         builder.withParent((GuiceComponentProvider) Components.getComponentProvider());
         GuiceComponentProvider componentProvider = builder.build();
+        final MagnoliaShellPresenter presenter = componentProvider.newInstance(MagnoliaShellPresenter.class);
 
         window = new Window("Magnolia 5.0");
-        window.setContent(new CssLayout());
-        window.getContent().setSizeFull();
-        ((CssLayout) window.getContent()).setMargin(false);
+        window.setContent(((MagnoliaShellView) presenter.start()).asVaadinComponent());
+
         setMainWindow(window);
-        final MagnoliaShellPresenter presenter = componentProvider.newInstance(MagnoliaShellPresenter.class);
-        presenter.start(window);
     }
 }

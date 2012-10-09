@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.widget.magnoliashell.gwt.client;
 
+import info.magnolia.ui.vaadin.integration.widget.client.icon.GwtBadgeIcon;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.AnimationSettings;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.event.AppActivatedEvent;
@@ -48,10 +49,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.vaadin.gwtgraphics.client.DrawingArea;
-
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
@@ -61,8 +59,8 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
-import com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent;
-import com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler;
+import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
+import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchPanel;
 
@@ -95,34 +93,27 @@ public class VMainLauncher extends FlowPanel {
 
     private class NavigatorButton extends FlowPanel {
 
-        private final Element indicator = DOM.createDiv();
-
-        private final Element buttonWrapper;
-
-        private int indication = 0;
-
-        private final DrawingArea indicatorPad = new DrawingArea(0, 0);
+        private final GwtBadgeIcon indicator = new GwtBadgeIcon();
 
         private final TouchDelegate delegate = new TouchDelegate(this);
 
         public NavigatorButton(final ShellAppType type) {
             super();
-            buttonWrapper = getElement();
             addStyleName("btn-shell");
-            indicator.addClassName("indicator");
-            indicator.getStyle().setDisplay(Display.NONE);
-            indicator.appendChild(DOM.createSpan());
-            buttonWrapper.appendChild(indicator);
-            buttonWrapper.setId("btn-" + type.getClassId());
-            buttonWrapper.addClassName("icon-" + type.getClassId());
-            indicatorPad.addStyleName("pad");
+            Element root = getElement();
+            root.setId("btn-" + type.getClassId());
+            root.addClassName("icon-" + type.getClassId());
+
+            indicator.updateFillColor("#fff");
+            indicator.updateStrokeColor("#689600");
+            indicator.updateOutline(true);
+            root.appendChild(indicator.getElement());
 
             DOM.sinkEvents(getElement(), Event.TOUCHEVENTS);
-
-            delegate.addTouchStartHandler(new com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler() {
+            delegate.addTouchEndHandler(new com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler() {
 
                 @Override
-                public void onTouchStart(com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent event) {
+                public void onTouchEnd(com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent event) {
                     if (!navigationLocked) {
                         setNavigationLocked(true);
                         // Has user clicked on the active shell app?
@@ -142,18 +133,7 @@ public class VMainLauncher extends FlowPanel {
         }
 
         public void setIndication(int indication) {
-            this.indication = indication;
-            ((Element) indicator.getFirstChild().cast()).setInnerText(String.valueOf(indication));
-            if (indication <= 0) {
-                indicator.getStyle().setDisplay(Display.NONE);
-            } else {
-                if (getWidgetIndex(indicatorPad) < 0) {
-                    add(indicatorPad, indicator);
-                }
-                indicator.getStyle().setDisplay(Display.BLOCK);
-                IndicationBubbleFactory.createBubbleForValue(indication, indicatorPad);
-                indicator.getStyle().setWidth(indicatorPad.getWidth(), Unit.PX);
-            }
+            indicator.updateValue(indication);
         }
     };
 
@@ -202,6 +182,7 @@ public class VMainLauncher extends FlowPanel {
     private final Element divetWrapper = DOM.createDiv();
 
     private final TouchPanel logo = new TouchPanel();
+
     private final Element logoImg = DOM.createImg();
 
     private final Image divet = new Image(VShellImageBundle.BUNDLE.getDivetGreen());
@@ -227,7 +208,7 @@ public class VMainLauncher extends FlowPanel {
     private void construct() {
         divetWrapper.setId("divet");
 
-        //logo
+        // logo
 
         logoImg.setId("logo");
         String baseUrl = GWT.getModuleBaseURL().replace("widgetsets/" + GWT.getModuleName() + "/", "");
@@ -246,13 +227,13 @@ public class VMainLauncher extends FlowPanel {
         divet.setVisible(false);
     }
 
-    private void bindHandlers(){
+    private void bindHandlers() {
         DOM.sinkEvents(getElement(), Event.TOUCHEVENTS);
 
-        logo.addTouchStartHandler(new TouchStartHandler() {
+        logo.addTouchEndHandler(new TouchEndHandler() {
 
             @Override
-            public void onTouchStart(TouchStartEvent event) {
+            public void onTouchEnd(TouchEndEvent event) {
                 emergencyRestartApplication();
             }
         });
@@ -260,11 +241,11 @@ public class VMainLauncher extends FlowPanel {
     }
 
     /**
-     * Restart the application by appending the &restartApplication querystring to the URL.
-     * This is handy as the application is not totally stable yet.
-     * TODO: Christopher Zimmermann CLZ Developer Preview feature.
+     * Restart the application by appending the &restartApplication querystring to the URL. This is
+     * handy as the application is not totally stable yet. TODO: Christopher Zimmermann CLZ
+     * Developer Preview feature.
      */
-    private void emergencyRestartApplication(){
+    private void emergencyRestartApplication() {
         String newHref = Window.Location.getPath() + "?restartApplication";
         Window.Location.assign(newHref);
     }

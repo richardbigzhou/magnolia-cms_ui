@@ -40,8 +40,10 @@ import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShell.ViewportT
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.event.AppActivatedEvent;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.event.ShellAppNavigationEvent;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.event.ShellTransitionCompleteEvent;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.event.ViewportCloseEvent;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.event.handler.ShellNavigationHandler;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.event.handler.ShellTransitionCompleteHandler;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.event.handler.ViewportCloseHandler;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VInfoMessage;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VShellErrorMessage;
@@ -100,6 +102,8 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
 
     private VShellMessage hiPriorityMessage;
 
+    private VMagnoliaShellViewImpl that = this;
+
     public VMagnoliaShellViewImpl(final EventBus eventBus) {
         super();
         this.eventBus = eventBus;
@@ -132,6 +136,8 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
         eventBus.addHandler(ViewportCloseEvent.TYPE, this);
         eventBus.addHandler(ShellAppNavigationEvent.TYPE, navigationHandler);
         eventBus.addHandler(AppActivatedEvent.TYPE, navigationHandler);
+        eventBus.addHandler(ShellTransitionCompleteEvent.TYPE, transitionCompleteHandler);
+
         History.addValueChangeHandler(new ValueChangeHandler<String>() {
 
             @Override
@@ -304,7 +310,9 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
         }
     }
 
+
     private final ShellNavigationHandler navigationHandler = new ShellNavigationHandler() {
+
 
         @Override
         public void onAppActivated(AppActivatedEvent event) {
@@ -313,8 +321,43 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
         }
 
         @Override
-        public void onShellAppNavigation(ShellAppNavigationEvent event) {
-            presenter.loadShellApp(event.getType(), event.getToken());
+        public void onShellAppNavigation(final ShellAppNavigationEvent event) {
+
+          // If possible perform transition to ShellApp via the client.
+
+            ShellAppType shellAppType = event.getType();
+            boolean clientTransitionStarted = getShellAppViewport().setVisibleWidgetByShellAppType(shellAppType);
+
+             if (clientTransitionStarted){
+                 // Transition has started.
+                 typeInTransition = shellAppType;
+                 tokenInTransition = event.getToken();
+
+                //Need to update state of button and divet in the main launcher
+                mainAppLauncher.activateControl(shellAppType);
+
+
+            }else{
+                //Trigger server
+                presenter.loadShellApp(event.getType(), event.getToken());
+            }
+
+        }
+    };
+
+     ShellAppType typeInTransition;
+     String tokenInTransition;
+
+    private final ShellTransitionCompleteHandler transitionCompleteHandler = new ShellTransitionCompleteHandler() {
+
+        @Override
+        public void onShellTransitionComplete(ShellTransitionCompleteEvent event) {
+            if (typeInTransition != null){
+                getShellAppViewport().showLoadingPane();
+                presenter.loadShellApp(typeInTransition, tokenInTransition);
+                typeInTransition = null;
+                tokenInTransition = "";
+            }
         }
     };
 
