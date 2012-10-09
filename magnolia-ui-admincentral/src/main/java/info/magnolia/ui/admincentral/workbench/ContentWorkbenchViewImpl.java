@@ -36,7 +36,6 @@ package info.magnolia.ui.admincentral.workbench;
 import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.admincentral.content.view.ContentView;
 import info.magnolia.ui.admincentral.content.view.ContentView.ViewType;
-import info.magnolia.ui.admincentral.search.view.SearchView;
 import info.magnolia.ui.widget.actionbar.ActionbarView;
 
 import java.util.EnumMap;
@@ -44,12 +43,11 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.vaadin.data.Item;
 import com.vaadin.event.FieldEvents;
-import com.vaadin.event.ShortcutAction;
-import com.vaadin.event.ShortcutListener;
 import com.vaadin.event.FieldEvents.BlurEvent;
 import com.vaadin.event.FieldEvents.FocusEvent;
+import com.vaadin.event.ShortcutAction;
+import com.vaadin.event.ShortcutListener;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Button;
@@ -137,19 +135,7 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
 
             @Override
             public void handleAction(Object sender, Object target) {
-                ContentView view = contentViews.get(ViewType.SEARCH);
-                if(!(view instanceof SearchView)) {
-                    //TODO log error/warn
-                }
-                final SearchView searchView = (SearchView) view;
-                final String fullTextExpression = searchbox.getValue().toString();
-
-                if(StringUtils.isBlank(fullTextExpression)) {
-                    //clear last search results
-                    searchView.clear();
-                }else {
-                    searchView.search(fullTextExpression);
-                }
+                contentWorkbenchViewListener.onSearch(searchbox.getValue().toString());
             }
         });
 
@@ -211,7 +197,7 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
     }
 
     @Override
-    public void setGridType(ViewType type) {
+    public void setViewType(final ViewType type) {
 
         contentViewContainer.removeComponent(contentViews.get(currentViewType).asVaadinComponent());
         final Component c = contentViews.get(type).asVaadinComponent();
@@ -220,12 +206,9 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
         contentViewContainer.addComponent(c);
 
         this.currentViewType = type;
+        setViewTypeStyling(currentViewType);
         refresh();
-    }
-
-    @Override
-    public void refreshItem(Item item) {
-        contentViews.get(currentViewType).refreshItem(item);
+        this.contentWorkbenchViewListener.onViewTypeChanged(currentViewType);
     }
 
     @Override
@@ -261,9 +244,12 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
         }
     }
 
-    private void setViewType(final ViewType viewType) {
-        setGridType(viewType);
+    @Override
+    public ContentView getSelectedView() {
+        return contentViews.get(currentViewType);
+    }
 
+    private void setViewTypeStyling(final ViewType viewType) {
         treeButton.removeStyleName("active");
         listButton.removeStyleName("active");
         thumbsButton.removeStyleName("active");
@@ -292,4 +278,16 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
             default :
         }
     }
+
+    @Override
+    public void resynch(final String path, final ViewType viewType, final String query) {
+          selectPath(path);
+          setViewType(viewType);
+          if(StringUtils.isNotBlank(query) && viewType == ViewType.SEARCH) {
+              searchbox.setValue(query);
+              searchbox.focus();
+              contentWorkbenchViewListener.onSearch(query);
+          }
+    }
+
 }

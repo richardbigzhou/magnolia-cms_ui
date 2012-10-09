@@ -216,4 +216,9 @@ public class ListViewImpl implements ListView {
         //Set Column order
         table.setVisibleColumns(columnOrder.toArray());
     }
+
+    @Override
+    public ViewType getViewType() {
+        return ViewType.LIST;
+    }
 }
