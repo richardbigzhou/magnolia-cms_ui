@@ -35,7 +35,6 @@ package info.magnolia.ui.admincentral;
 
 import javax.inject.Inject;
 
-import com.vaadin.ui.Component;
 
 /**
  * Implementation of MagnoliaShellView.
@@ -45,16 +44,11 @@ public class MagnoliaShellViewImpl implements MagnoliaShellView {
 
     private Presenter presenter;
 
-    private MagnoliaShell shell;
+    private final MagnoliaShell shell;
 
     @Inject
     public MagnoliaShellViewImpl(MagnoliaShell shell) {
         this.shell = shell;
-    }
-
-    @Override
-    public MagnoliaShell getRoot() {
-        return shell;
     }
 
     @Override
@@ -67,7 +61,7 @@ public class MagnoliaShellViewImpl implements MagnoliaShellView {
     }
 
     @Override
-    public Component asVaadinComponent() {
-        return getRoot();
+    public MagnoliaShell asVaadinComponent() {
+        return shell;
     }
 }

@@ -68,37 +68,44 @@ import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.ClientWidget;
 import com.vaadin.ui.ClientWidget.LoadStyle;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.ComponentContainer;
+
 
 /**
  * Server side implementation of the MagnoliaShell container.
  */
 @SuppressWarnings("serial")
-@ClientWidget(value=VMagnoliaShell.class, loadStyle = LoadStyle.EAGER)
-public abstract class BaseMagnoliaShell extends AbstractComponent implements ServerSideHandler {
+@ClientWidget(value = VMagnoliaShell.class, loadStyle = LoadStyle.EAGER)
+public abstract class BaseMagnoliaShell extends AbstractComponent implements ComponentContainer, ServerSideHandler {
 
-    private EventHandlerCollection<FragmentChangedHandler> handlers = new EventHandlerCollection<FragmentChangedHandler>();
+    private final EventHandlerCollection<FragmentChangedHandler> handlers = new EventHandlerCollection<FragmentChangedHandler>();
 
-    private Map<ViewportType, ShellViewport> viewports = new EnumMap<ViewportType, ShellViewport>(ViewportType.class) {{
-        put(ViewportType.SHELL_APP_VIEWPORT, new ShellAppsViewport(BaseMagnoliaShell.this));
-        put(ViewportType.APP_VIEWPORT, new AppsViewport(BaseMagnoliaShell.this));
-        put(ViewportType.DIALOG_VIEWPORT, new DialogViewport(BaseMagnoliaShell.this));
-    }};
-    
+    private final Map<ViewportType, ShellViewport> viewports = new EnumMap<ViewportType, ShellViewport>(ViewportType.class) {
+
+        {
+            put(ViewportType.SHELL_APP_VIEWPORT, new ShellAppsViewport(BaseMagnoliaShell.this));
+            put(ViewportType.APP_VIEWPORT, new AppsViewport(BaseMagnoliaShell.this));
+            put(ViewportType.DIALOG_VIEWPORT, new DialogViewport(BaseMagnoliaShell.this));
+        }
+    };
+
     private ShellViewport activeViewport = null;
-    
-    private ICEPush pusher = new ICEPush();
-    
-    private List<String> registeredApps = new ArrayList<String>();
-    
-    private List<String> runningApps = new ArrayList<String>();
 
-    private Map<ShellAppType, MutableInt> indications = new HashMap<ShellAppType, MutableInt>();
+    private final ICEPush pusher = new ICEPush();
+
+    private final List<String> registeredApps = new ArrayList<String>();
+
+    private final List<String> runningApps = new ArrayList<String>();
+
+    private final Map<ShellAppType, MutableInt> indications = new HashMap<ShellAppType, MutableInt>();
 
     public BaseMagnoliaShell() {
         setImmediate(true);
         for (ShellAppType type : ShellAppType.values()) {
             indications.put(type, new MutableInt());
         }
+
+
     }
 
     public void navigateToApp(String prefix, String token) {
@@ -106,10 +113,10 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
     }
 
     public void navigateToShellApp(final String prefix, String token) {
-        doNavigateWithinViewport(getShellAppViewport(), DefaultLocation.LOCATION_TYPE_SHELL_APP, prefix , token);
+        doNavigateWithinViewport(getShellAppViewport(), DefaultLocation.LOCATION_TYPE_SHELL_APP, prefix, token);
     }
 
-    public void doNavigateWithinViewport(final ShellViewport viewport, String type,  String prefix, String token) {
+    public void doNavigateWithinViewport(final ShellViewport viewport, String type, String prefix, String token) {
         viewport.setCurrentShellFragment(prefix + ":" + token);
         setActiveViewport(viewport);
         notifyOnFragmentChanged(type + ":" + prefix + ":" + token);
@@ -123,7 +130,7 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
             pusher.push();
         }
     }
-    
+
     public void showError(Message message) {
         synchronized (getApplication()) {
             proxy.call("showMessage", MessageType.ERROR.name(), message.getSubject(), message.getMessage(), message.getId());
@@ -177,8 +184,9 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
 
     public abstract void closeCurrentShellApp();
 
-    public void removeMessage(String messageId) {}
-    
+    public void removeMessage(String messageId) {
+    }
+
     public void closeCurrentApp() {
         getAppViewport().pop();
     }
@@ -194,7 +202,7 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
             }
         }
     }
-    
+
     public ShellViewport getAppViewport() {
         return viewports.get(ViewportType.APP_VIEWPORT);
     }
@@ -210,7 +218,7 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
     public ShellViewport getActiveViewport() {
         return activeViewport;
     }
-    
+
     @Override
     public void paintContent(PaintTarget target) throws PaintException {
         super.paintContent(target);
@@ -224,7 +232,7 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
             target.startTag(tagName);
             entry.getValue().paint(target);
             if (entry.getValue() == activeViewport) {
-                target.addAttribute("active", entry.getKey().name());    
+                target.addAttribute("active", entry.getKey().name());
             }
             target.endTag(tagName);
         }
@@ -262,11 +270,11 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
             viewport.detach();
         }
     }
-    
+
     private void notifyOnFragmentChanged(final String fragment) {
         handlers.dispatch(new FragmentChangedEvent(fragment));
     }
-    
+
     @Override
     public Object[] initRequestFromClient() {
         proxy.call("registerApps", new Gson().toJson(registeredApps));
@@ -279,9 +287,9 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
                     proxy.call("activeViewportChanged", type.name());
                     break;
                 }
-            }   
-        } 
-        return new Object[] {};
+            }
+        }
+        return new Object[]{};
     }
 
     @Override
@@ -296,63 +304,127 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Ser
     public void removeFragmentChangedHanlder(final FragmentChangedHandler handler) {
         handlers.remove(handler);
     }
-    
+
     protected ICEPush getPusher() {
-        return pusher; 
+        return pusher;
     }
-    
+
     protected void doRegisterApps(List<String> appNames) {
         registeredApps.clear();
         registeredApps.addAll(appNames);
         proxy.call("registerApps", new Gson().toJson(appNames));
     }
-    
+
     protected void onAppStarted(String appName) {
         proxy.call("onAppStarted", appName);
         if (!runningApps.contains(appName)) {
             runningApps.add(appName);
         }
     }
-    
+
     protected void onAppStopped(String appName) {
         proxy.call("onAppStopped", appName);
         runningApps.remove(appName);
     }
-    
-    protected ServerSideProxy proxy = new ServerSideProxy(this) {{
-        register("activateShellApp", new Method() {
-            @Override
-            public void invoke(String methodName, Object[] params) {
-                navigateToShellApp(String.valueOf(params[0]), String.valueOf(params[1]));
-            }
-        });
 
-        register("activateApp", new Method() {
-            @Override
-            public void invoke(String methodName, Object[] params) {
-                navigateToApp(String.valueOf(params[0]), String.valueOf(params[1]));
-            }
-        });
-        
-        register("removeMessage", new Method() {
-            @Override
-            public void invoke(String methodName, Object[] params) {
-                removeMessage(String.valueOf(params[0]));
-            }
-        });
+    protected ServerSideProxy proxy = new ServerSideProxy(this) {
 
-        register("closeCurrentApp", new Method() {
-            @Override
-            public void invoke(String methodName, Object[] params) {
-                closeCurrentApp();
-            }
-        });
+        {
+            register("activateShellApp", new Method() {
 
-        register("closeCurrentShellApp", new Method() {
-            @Override
-            public void invoke(String methodName, Object[] params) {
-                closeCurrentShellApp();
-            }
-        });
-    }};
+                @Override
+                public void invoke(String methodName, Object[] params) {
+                    navigateToShellApp(String.valueOf(params[0]), String.valueOf(params[1]));
+                }
+            });
+
+            register("activateApp", new Method() {
+
+                @Override
+                public void invoke(String methodName, Object[] params) {
+                    navigateToApp(String.valueOf(params[0]), String.valueOf(params[1]));
+                }
+            });
+
+            register("removeMessage", new Method() {
+
+                @Override
+                public void invoke(String methodName, Object[] params) {
+                    removeMessage(String.valueOf(params[0]));
+                }
+            });
+
+            register("closeCurrentApp", new Method() {
+
+                @Override
+                public void invoke(String methodName, Object[] params) {
+                    closeCurrentApp();
+                }
+            });
+
+            register("closeCurrentShellApp", new Method() {
+
+                @Override
+                public void invoke(String methodName, Object[] params) {
+                    closeCurrentShellApp();
+                }
+            });
+        }
+    };
+
+    //
+    // ComponentContainer void implementation so that the MagnoliaShell can be
+    // added as root of the Application Window.
+    //
+
+    @Override
+    public void addComponent(Component c) {
+        throw new UnsupportedOperationException("BaseMagnoliaShell doesn't support manipulating components.");
+    }
+
+    @Override
+    public void removeComponent(Component c) {
+        throw new UnsupportedOperationException("BaseMagnoliaShell doesn't support manipulating components.");
+    }
+
+    @Override
+    public void removeAllComponents() {
+        throw new UnsupportedOperationException("BaseMagnoliaShell doesn't support manipulating components.");
+    }
+
+    @Override
+    public void replaceComponent(Component oldComponent, Component newComponent) {
+        throw new UnsupportedOperationException("BaseMagnoliaShell doesn't support manipulating components.");
+    }
+
+    @Override
+    public Iterator<Component> getComponentIterator() {
+        throw new UnsupportedOperationException("BaseMagnoliaShell doesn't support manipulating components.");
+    }
+
+    @Override
+    public void requestRepaintAll() {
+        throw new UnsupportedOperationException("BaseMagnoliaShell doesn't support manipulating components.");
+    }
+
+    @Override
+    public void moveComponentsFrom(ComponentContainer source) {
+        throw new UnsupportedOperationException("BaseMagnoliaShell doesn't support manipulating components.");
+    }
+
+    @Override
+    public void addListener(ComponentAttachListener listener) {
+    }
+
+    @Override
+    public void removeListener(ComponentAttachListener listener) {
+    }
+
+    @Override
+    public void addListener(ComponentDetachListener listener) {
+    }
+
+    @Override
+    public void removeListener(ComponentDetachListener listener) {
+    }
 }

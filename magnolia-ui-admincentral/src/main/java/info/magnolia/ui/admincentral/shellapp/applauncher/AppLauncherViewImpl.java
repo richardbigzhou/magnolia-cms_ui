@@ -38,6 +38,7 @@ import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroup;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroupEntry;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayout;
 import info.magnolia.ui.vaadin.integration.widget.AppLauncher;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
 
 import com.vaadin.ui.Component;
 
@@ -53,7 +54,15 @@ import com.vaadin.ui.Component;
  *
  */
 @SuppressWarnings("serial")
-public class AppLauncherViewImpl implements AppLauncherView {
+public class AppLauncherViewImpl  implements AppLauncherView {
+
+
+    private String id=ShellAppType.APPLAUNCHER.getClassId();
+
+    @Override
+    public String getId(){
+        return id;
+    }
 
     private Presenter presenter;
 
@@ -62,6 +71,9 @@ public class AppLauncherViewImpl implements AppLauncherView {
     public AppLauncherViewImpl() {
         appLauncher.setHeight("100%");
         appLauncher.setWidth("720px");
+
+        appLauncher.setDebugId(id);
+
     }
 
     @Override

@@ -18,8 +18,15 @@
 
 .v-dashboard-entry {
 	border-bottom: 1px solid #CCCCCC;
+	margin-bottom: 10px;
 	font-size:15px;
 }
+
+/* Clearfix */
+.v-dashboard-entry:before, .v-dashboard-entry:after { content: ""; display: table; }
+.v-dashboard-entry:after { clear: both; }
+.v-dashboard-entry { *zoom: 1; }
+
 
 .v-dashboard-entry .v-csslayout-margin-top {padding-top:10px;}
 .v-dashboard-entry .v-csslayout-margin-bottom {padding-bottom:5px;}
@@ -41,6 +48,7 @@
 .v-dashboard-entry .content {
 	margin-left:-40px;
 	float:right;
+	width:350px !important
 }
 
 .v-dashboard-entry .content .v-csslayout-margin-left {
@@ -67,6 +75,7 @@
 .v-dashboard-entry .v-label-date {
 	color:#cccccc;
 	text-align:right;
+	width:340px !important;
 }
 
 .v-pulse .v-feed-title-link {
@@ -126,3 +135,25 @@
 .v-pulse .v-nativebutton-active {color:#666;}
 .v-pulse .v-nativebutton::-moz-focus-inner {padding:0; border:0}
 .v-pulse .navigator-button .v-nativebutton-caption {text-decoration:none;}
+
+.v-pulse .v-table-generated-row {
+	background: transparent;
+}
+.v-pulse .v-table-generated-row .v-table-cell-content {
+	border-bottom: 1px solid #888;
+	font-weight: bold;
+	color: #CCC;
+	padding-top: 20px;
+	padding-bottom: 0px;
+}
+.v-pulse .v-table-cell-content-v-cell-invisible {
+	background: #E6E6E6;
+}
+.v-pulse .v-table-cell-content-v-cell-invisible div {
+	display: none;
+}
+
+.v-pulse .navigator-grouping {
+	display: inline-block;
+	margin-left: 50px;
+}

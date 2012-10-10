@@ -46,22 +46,23 @@ import java.util.List;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Widget;
 
+
 /**
  * Dialog tab.
  */
 public class VDialogTab extends VMagnoliaTab implements HasValidationChangeHanlders {
 
     private VFormSection content;
-    
+
     @Override
     public void setWidget(Widget w) {
         if (!(w instanceof VFormSection)) {
             throw new RuntimeException("Invalid type of tab content. Must be VDialogLayout. You have used: " + w.getClass());
         }
-        content = (VFormSection)w;
+        content = (VFormSection) w;
         super.setWidget(w);
     }
-    
+
     public List<DialogFieldWrapper> getFields() {
         if (content != null) {
             return content.getFields();
@@ -94,7 +95,6 @@ public class VDialogTab extends VMagnoliaTab implements HasValidationChangeHanld
     public List<DialogFieldWrapper> getProblematicFields() {
         return content.getProblematicFields();
     }
-
 
     @Override
     public HandlerRegistration addValidationChangeHandler(Handler handler) {

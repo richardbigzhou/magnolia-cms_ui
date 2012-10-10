@@ -1,0 +1,21 @@
+.contentapplayout {
+	position:relative;
+	height:100%;
+}
+
+.contentapplayout .contentview {
+	position:absolute;
+	top:68px;
+	right:300px;
+	bottom:40px;
+	left:38px;
+	background-color:#fff;
+	padding:8px 12px;
+}
+
+.contentapplayout .v-actionbar {
+	position:absolute;
+	top:22px;
+	right:0px;
+	bottom:40px;
+}

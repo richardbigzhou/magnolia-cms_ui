@@ -41,7 +41,6 @@ import info.magnolia.ui.admincentral.container.JcrContainerSource;
 import info.magnolia.ui.admincentral.list.container.FlatJcrContainer;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 
-
 /**
  * The jcr container backing the search view. It provides only the subset of items returned by the current search.
  */

@@ -68,7 +68,7 @@ public class TreeViewImpl implements TreeView {
 
         jcrBrowser = new WorkbenchTreeTable(workbenchDefinition, treeModel, componentProvider);
         jcrBrowser.setImmediate(true);
-        jcrBrowser.setNullSelectionAllowed(false);
+        jcrBrowser.setNullSelectionAllowed(true);
         jcrBrowser.setSizeFull();
 
         jcrBrowser.addListener(new TreeTable.ValueChangeListener() {
@@ -86,17 +86,29 @@ public class TreeViewImpl implements TreeView {
                     set.removeAll(defaultValue);
                     if (set.size() == 1) {
                         presenterOnItemSelection(String.valueOf(set.iterator().next()));
+                    } else if(set.size() == 0) {
+                        presenterOnItemSelection(null);
+                        jcrBrowser.setValue(null);
                     }
                 }
             }
         });
         jcrBrowser.addListener(new ItemClickEvent.ItemClickListener() {
-
+            private Object previousSelection;
+        
             @Override
             public void itemClick(ItemClickEvent event) {
+                Object currentSelection = event.getItemId();
                 if(event.isDoubleClick()) {
                     presenterOnDoubleClick(String.valueOf(event.getItemId()));
+                } else {
+                    //toggle will deselect
+                    if(previousSelection == currentSelection) {
+                       jcrBrowser.setValue(null);
+                    }
                 }
+                
+                previousSelection = currentSelection;
             }
         });
         margin.setSizeFull();

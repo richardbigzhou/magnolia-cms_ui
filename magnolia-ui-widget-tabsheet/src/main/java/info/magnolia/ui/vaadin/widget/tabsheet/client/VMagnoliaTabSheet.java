@@ -85,7 +85,7 @@ public class VMagnoliaTabSheet extends Composite implements HasWidgets, VMagnoli
         super();
         this.view = createView();
         this.proxy = createProxy();
-        
+
         eventBus.addHandler(TabCloseEvent.TYPE, new TabCloseEventHandler() {
             @Override
             public void onTabClosed(TabCloseEvent event) {
@@ -99,7 +99,7 @@ public class VMagnoliaTabSheet extends Composite implements HasWidgets, VMagnoli
             public void onActiveTabChanged(ActiveTabChangedEvent event) {
                 view.setActiveTab(event.getTab());
                 if (event.isNotifyServer()) {
-                    proxy.call("activateTab", event.getTab().getTabId());   
+                    proxy.call("activateTab", event.getTab().getTabId());
                 }
             }
         });
@@ -118,7 +118,7 @@ public class VMagnoliaTabSheet extends Composite implements HasWidgets, VMagnoli
     }
 
     protected VMagnoliaTabSheetView createView() {
-        return new VMagnoliaTabSheetViewImpl(eventBus, this); 
+        return new VMagnoliaTabSheetViewImpl(eventBus, this);
     }
 
     protected ClientSideProxy createProxy() {
@@ -149,7 +149,7 @@ public class VMagnoliaTabSheet extends Composite implements HasWidgets, VMagnoli
                         client.runDescendentsLayout(VMagnoliaTabSheet.this);
                     }
                 });
-                
+
                 register("addShowAllTab", new Method() {
                     @Override
                     public void invoke(String methodName, Object[] params) {
@@ -161,7 +161,7 @@ public class VMagnoliaTabSheet extends Composite implements HasWidgets, VMagnoli
 
             }};
     }
-    
+
     protected void closeTab(final VMagnoliaTab tab) {
         if (tab != null) {
             client.unregisterPaintable(tab);
@@ -259,7 +259,7 @@ public class VMagnoliaTabSheet extends Composite implements HasWidgets, VMagnoli
     protected ClientSideProxy getProxy() {
         return proxy;
     }
-    
+
     @Override
     public void add(Widget w) {
         view.add(w);
@@ -284,7 +284,12 @@ public class VMagnoliaTabSheet extends Composite implements HasWidgets, VMagnoli
     public void updateLayout() {
         client.runDescendentsLayout(VMagnoliaTabSheet.this);
     }
-    
+
+    @Override
+    public void updateLayoutOfActiveTab() {
+        client.runDescendentsLayout(view.getActiveTab());
+    }
+
     @Override
     public void setHeight(String height) {
         super.setHeight(height);

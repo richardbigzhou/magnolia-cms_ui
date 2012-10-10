@@ -50,7 +50,7 @@ import com.vaadin.data.Container;
 import com.vaadin.data.Container.Filter;
 import com.vaadin.data.Container.Filterable;
 import com.vaadin.data.Item;
-import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.data.util.HierarchicalContainer;
 
 
 /**
@@ -59,13 +59,19 @@ import com.vaadin.data.util.IndexedContainer;
 @SuppressWarnings("serial")
 public class PulseMessagesPresenter implements Serializable {
 
+    public static final String GROUP_PLACEHOLDER_ITEMID = "##SUBSECTION##";
+    
+    public static final String GROUP_COLUMN = "type";
+
     private static final String[] order = new String[]{"new", "type", "text", "sender", "date", "quickdo"};
 
-    private Filterable container = null;
+    private HierarchicalContainer container = null;
 
     private final MessagesManager messagesManager;
 
     private final MagnoliaShell shell;
+    
+    private boolean grouping = false;
 
     @Inject
     public PulseMessagesPresenter(final MagnoliaShell magnoliaShell, final MessagesManager messagesManager) {
@@ -77,6 +83,11 @@ public class PulseMessagesPresenter implements Serializable {
             @Override
             public void messageSent(Message message) {
                 addMessageAsItem(message);
+                
+                if(grouping) {
+                    buildTree();
+                }
+                
                 if (message.getType().isSignificant()) {
                     shell.updateShellAppIndication(VMainLauncher.ShellAppType.PULSE, 1);
                 }
@@ -104,23 +115,112 @@ public class PulseMessagesPresenter implements Serializable {
     }
 
     private Filterable createMessageDataSource() {
-        container = new IndexedContainer();
+        container = new HierarchicalContainer();
         container.addContainerProperty("new", String.class, null);
         container.addContainerProperty("type", MessageType.class, MessageType.UNKNOWN);
         container.addContainerProperty("text", String.class, null);
         container.addContainerProperty("sender", String.class, null);
         container.addContainerProperty("date", Date.class, null);
         container.addContainerProperty("quickdo", String.class, null);
+        
+        createSuperItems();
+        
         for (Message message : messagesManager.getMessagesForUser(MgnlContext.getUser().getName())) {
             addMessageAsItem(message);
         }
+        
+        container.addContainerFilter(sectionFilter);
+
         return container;
+    }
+    
+    private void createSuperItems() {
+        for(MessageType type: MessageType.values()) {
+            Item item = container.addItem(getSuperItem(type));
+            item.getItemProperty(GROUP_COLUMN).setValue(type);
+            container.setChildrenAllowed(getSuperItem(type), true);
+        }
+    }
+    
+    private void clearSuperItemFromMessages() {
+        for(Object itemId: container.getItemIds()) {
+            container.setParent(itemId, null);
+        }
+    }
+    
+    private Object getSuperItem(MessageType type) {
+        return GROUP_PLACEHOLDER_ITEMID+type;
+    }
+    
+    /*
+     * Sets the grouping of messages
+     */
+    public void setGrouping(boolean checked) {
+        grouping = checked;
+        
+        clearSuperItemFromMessages();
+        container.removeContainerFilter(sectionFilter);
+
+        if(checked) {
+            buildTree();
+        }
+        
+        container.addContainerFilter(sectionFilter);
+    }
+    
+    /*
+     * This filter hides grouping titles when
+     * grouping is not on or group would be empty 
+     */
+    private Filter sectionFilter = new Filter() {
+
+        @Override
+        public boolean passesFilter(Object itemId, Item item)
+                throws UnsupportedOperationException {
+            if(itemId.toString().startsWith(GROUP_PLACEHOLDER_ITEMID) && 
+                    (!grouping ||
+                    isTypeGroupEmpty(itemId))) {
+                return false;
+            }
+            
+            return true;
+        }
+
+        @Override
+        public boolean appliesToProperty(Object propertyId) {
+            return "type".equals(propertyId);
+        }
+        
+        private boolean isTypeGroupEmpty(Object typeId) {
+            return container.getChildren(typeId) == null ||
+                    container.getChildren(typeId).isEmpty();
+        }
+        
+    };
+    
+    /*
+     * Assign messages under correct parents so that
+     * grouping works.
+     */
+    private void buildTree() {        
+        for(Object itemId: container.getItemIds()) {
+            //Skip super items
+            if(!itemId.toString().startsWith(GROUP_PLACEHOLDER_ITEMID)) {
+                Item item = container.getItem(itemId);
+                MessageType type = (MessageType)item.getItemProperty("type").getValue();
+                Item parentItem = container.getItem(getSuperItem(type));
+                if(parentItem != null) {
+                    container.setParent(itemId, getSuperItem(type));
+                }
+            }
+        }
     }
 
     private void addMessageAsItem(Message message) {
         // filter out local messages that have id == null
         if (message.getId() != null) {
             final Item item = container.addItem(message.getId());
+            container.setChildrenAllowed(message.getId(), false);
             assignPropertiesFromMessage(message, item);
         }
     }
@@ -141,6 +241,7 @@ public class PulseMessagesPresenter implements Serializable {
     public void filterByMessageCategory(MessageCategory category) {
         if (container != null) {
             container.removeAllContainerFilters();
+            container.addContainerFilter(sectionFilter);
             applyCategoryFilter(category);
         }
     }
@@ -149,8 +250,9 @@ public class PulseMessagesPresenter implements Serializable {
         final Filter filter = new Filter() {
 
             @Override
-            public boolean passesFilter(Object itemId, Item item) throws UnsupportedOperationException {
+            public boolean passesFilter(Object itemId, Item item) throws UnsupportedOperationException {                
                 final MessageType type = (MessageType) item.getItemProperty("type").getValue();
+
                 switch (category) {
                     case WORK_ITEM :
                         return type == MessageType.WARNING;
