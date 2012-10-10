@@ -205,6 +205,7 @@
 		<!-- temporarily disabled see SCRUM-1670
 		<module>magnolia-ui-app-instant-preview</module>
 		-->
+                <module>magnolia-ui-app-showcase</module>
 	</modules>
 
 	<distributionManagement>
