@@ -61,7 +61,7 @@
       <sv:value>ac15d1ca-1b41-4a1d-bf0b-4232ffa7d7ec</sv:value>
     </sv:property>
     <sv:property sv:name="defaultOrder" sv:type="String">
-      <sv:value>firstName,lastName</sv:value>
+      <sv:value>jcrName</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -89,7 +89,7 @@
         <sv:value>2010-09-08T11:41:04.409+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-        <sv:value>2012-10-05T15:56:03.117+02:00</sv:value>
+        <sv:value>2012-10-09T18:29:44.558+02:00</sv:value>
       </sv:property>
     </sv:node>
     <sv:node sv:name="itemTypes">
@@ -299,7 +299,7 @@
           <sv:value>Name</sv:value>
         </sv:property>
         <sv:property sv:name="propertyName" sv:type="String">
-          <sv:value>firstName</sv:value>
+          <sv:value>jcrName</sv:value>
         </sv:property>
         <sv:property sv:name="sortable" sv:type="String">
           <sv:value>true</sv:value>
@@ -321,7 +321,7 @@
             <sv:value>2010-09-08T11:44:25.527+02:00</sv:value>
           </sv:property>
           <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-            <sv:value>2012-09-21T14:59:36.630+02:00</sv:value>
+            <sv:value>2012-10-09T18:29:38.348+02:00</sv:value>
           </sv:property>
         </sv:node>
       </sv:node>

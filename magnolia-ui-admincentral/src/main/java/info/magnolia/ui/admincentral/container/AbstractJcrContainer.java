@@ -49,12 +49,12 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.jcr.Node;
-import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
+import javax.jcr.query.RowIterator;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -74,6 +74,8 @@ import com.vaadin.data.Property;
 public abstract class AbstractJcrContainer extends AbstractContainer implements Container.Sortable, Container.Indexed, Container.ItemSetChangeNotifier, Container.PropertySetChangeNotifier {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractJcrContainer.class);
+
+    public static final String ITEM_ICON_PROPERTY_ID = "mgnl_item_icon";
 
     private Set<ItemSetChangeListener> itemSetChangeListeners;
 
@@ -107,21 +109,30 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     private static final Long LONG_ZERO = Long.valueOf(0);
 
-    protected static final String SELECT_CONTENT = "//element(*,mgnl:content)";
-    
-    protected static final String XPATH_ASCENDING = " ascending";
-    protected static final String XPATH_DESCENDING = " descending";
+    private static final String QUERY_LANGUAGE = Query.JCR_JQOM;
+
+    protected static final String CONTENT_SELECTOR_NAME = "content";
+
+    protected static final String SELECT_CONTENT = "select * from [mgnl:content] as " + CONTENT_SELECTOR_NAME;
+
+    protected static final String ORDER_BY = " order by ";
+
+    protected static final String ASCENDING_KEYWORD = " asc";
+
+    protected static final String DESCENDING_KEYWORD = " desc";
+
+    protected static final String JOIN_METADATA = " inner join [mgnl:metaData] as metaData on ischildnode(metaData,content) ";
+
+    protected static final String METADATA_SELECTOR_NAME = "metaData";
 
     /**
-     * Hint: we consciously decided to use XPATH as JCR_JQOM implementation in JR 2.4.x is by magnitudes slower.
+     * Caution: this property gets special treatment as we'll have to call a function to be able to order by it.
      */
-    private static final String QUERY_LANGUAGE = Query.XPATH;
+    protected static final String NAME_PROPERTY = "jcrName";
 
-    protected static final String ORDER_BY = " order by";
+    protected static final String JCR_NAME_FUNCTION = "name(" + CONTENT_SELECTOR_NAME + ")";
 
-    protected static final String SUBNODE_SEPARATOR = "/";
-
-    protected static final String XPATH_PROPERTY_PREFIX = "@";
+    protected static final String METADATA_NODE_NAME = "MetaData/";
 
     public AbstractJcrContainer(JcrContainerSource jcrContainerSource, WorkbenchDefinition workbenchDefinition) {
         this.jcrContainerSource = jcrContainerSource;
@@ -183,7 +194,6 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     }
 
     public void fireItemSetChange() {
-
         log.debug("Firing item set changed");
         if (itemSetChangeListeners != null && !itemSetChangeListeners.isEmpty()) {
             final Container.ItemSetChangeEvent event = new AbstractContainer.ItemSetChangeEvent();
@@ -259,10 +269,10 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
         final Item item = getItem(itemId);
         if (item != null) {
             return item.getItemProperty(propertyId);
-        } else {
-            log.error("Couldn't find item {} so property {} can't be retrieved!", itemId, propertyId);
-            return null;
         }
+
+        log.error("Couldn't find item {} so property {} can't be retrieved!", itemId, propertyId);
+        return null;
     }
 
     /**
@@ -506,16 +516,29 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     protected void updateItems(final QueryResult queryResult) throws RepositoryException {
         long start = System.currentTimeMillis();
         log.debug("Starting iterating over QueryResult");
-        final NodeIterator iterator = queryResult.getNodes();
+        final RowIterator iterator = queryResult.getRows();
         long rowCount = currentOffset;
         while (iterator.hasNext()) {
-            Node node = iterator.nextNode();
+            Node node = iterator.nextRow().getNode(CONTENT_SELECTOR_NAME);
             final String id = node.getPath();
             log.debug("Adding node {} to cached items.", id);
             itemIndexes.put(rowCount++, id);
         }
 
         log.debug("Done in {} ms", System.currentTimeMillis() - start);
+    }
+
+    /**
+     * @return whether the jcr query requires a join or not. A join is required as soon as there's one or more order by's
+     * for a property hosted on the MetaData node.
+     */
+    protected boolean queryRequiresJoin() {
+        for (OrderBy orderBy : sorters) {
+          if (orderBy.getProperty().startsWith(METADATA_NODE_NAME)) {
+              return true;
+          }
+        }
+        return false;
     }
 
     /**
@@ -526,31 +549,34 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
         final StringBuilder stmt = new StringBuilder(SELECT_CONTENT);
         if (considerSorting) {
             if (sorters.isEmpty()) {
-                // no sorters set - apply default (sort by name)
+                // no sorters set - use defaultOrder (always ascending)
                 String defaultOrder = workbenchDefinition.getDefaultOrder();
-                if (!StringUtils.isBlank(defaultOrder)) {
-                    defaultOrder = defaultOrder.replaceAll(",", "," + XPATH_PROPERTY_PREFIX);
-                    stmt.append(ORDER_BY)
-                        .append(XPATH_PROPERTY_PREFIX)
-                        .append(defaultOrder);
+                String[] defaultOrders = defaultOrder.split(",");
+                for (String current : defaultOrders) {
+                    sorters.add(new OrderBy(current, true));
                 }
-            } else {
-                stmt.append(ORDER_BY).append(" ");
-                String sortOrder;
-                for (OrderBy orderBy : sorters) {
-                    String propertyName = orderBy.getProperty();
-                    sortOrder = orderBy.isAscending() ? XPATH_ASCENDING : XPATH_DESCENDING;
-                    if (propertyName.contains(SUBNODE_SEPARATOR)) {
-                        propertyName = propertyName.replaceFirst(SUBNODE_SEPARATOR, SUBNODE_SEPARATOR + XPATH_PROPERTY_PREFIX);
-                    } else {
-                        stmt.append(XPATH_PROPERTY_PREFIX);
-                    }
-                    stmt.append(propertyName)
-                            .append(sortOrder)
-                            .append(", ");
-                }
-                stmt.delete(stmt.lastIndexOf(","), stmt.length());
             }
+            if (queryRequiresJoin()) {
+                stmt.append(JOIN_METADATA);
+            }
+            stmt.append(ORDER_BY);
+            String sortOrder;
+            for (OrderBy orderBy : sorters) {
+                String propertyName = orderBy.getProperty();
+                sortOrder = orderBy.isAscending() ? ASCENDING_KEYWORD : DESCENDING_KEYWORD;
+                if (NAME_PROPERTY.equals(propertyName)) {
+                    stmt.append(JCR_NAME_FUNCTION).append(sortOrder).append(", ");
+                    continue;
+                }
+                if (propertyName.startsWith(METADATA_NODE_NAME)) {
+                    propertyName = propertyName.substring(METADATA_NODE_NAME.length());
+                    stmt.append(METADATA_SELECTOR_NAME);
+                } else {
+                    stmt.append(CONTENT_SELECTOR_NAME);
+                }
+                stmt.append(".[").append(propertyName).append("]").append(sortOrder).append(", ");
+            }
+            stmt.delete(stmt.lastIndexOf(","), stmt.length());
         }
         return stmt.toString();
     }

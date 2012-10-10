@@ -69,6 +69,9 @@
     <sv:property sv:name="workspace" sv:type="String">
       <sv:value>website</sv:value>
     </sv:property>
+    <sv:property sv:name="defaultOrder" sv:type="String">
+      <sv:value>jcrName</sv:value>
+    </sv:property>
     <sv:node sv:name="MetaData">
       <sv:property sv:name="jcr:primaryType" sv:type="Name">
         <sv:value>mgnl:metaData</sv:value>
