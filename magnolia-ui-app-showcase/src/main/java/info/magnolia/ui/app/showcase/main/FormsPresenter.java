@@ -61,7 +61,7 @@ public class FormsPresenter implements FormsView.Listener {
     @Override
     public void onViewInDialog() {
 
-        shell.openDialog(view.asBaseDialog());
+        shell.addDialog(view.asBaseDialog().asVaadinComponent());
     }
 
     @Override

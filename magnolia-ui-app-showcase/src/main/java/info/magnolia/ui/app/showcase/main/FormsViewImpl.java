@@ -34,7 +34,7 @@
 package info.magnolia.ui.app.showcase.main;
 
 import info.magnolia.ui.widget.dialog.BaseDialog;
-import info.magnolia.ui.widget.dialog.DialogView;
+import info.magnolia.ui.widget.dialog.BaseDialog.DialogCloseEvent;
 import info.magnolia.ui.widget.dialog.FormDialog;
 import info.magnolia.ui.widget.dialog.FormSection;
 
@@ -90,15 +90,10 @@ public class FormsViewImpl implements FormsView {
     }
 
     private void createDialog() {
-        dlg.setListener(new DialogView.Listener(){
+        dlg.addDialogCloseHandler(new DialogCloseEvent.Handler() {
 
             @Override
-            public void executeAction(String actionName) {
-                
-            }
-
-            @Override
-            public void closeDialog() {
+            public void onClose(DialogCloseEvent event) {
                 listener.onCloseDialog();
             }
             
