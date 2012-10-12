@@ -48,7 +48,7 @@ public class SearchJcrContainer extends FlatJcrContainer{
 
     private static final Logger log = LoggerFactory.getLogger(SearchJcrContainer.class);
 
-    protected static final String QUERY_STRING = "//element(*,mgnl:content) [jcr:contains(.,'%s')]";
+    protected static final String QUERY_STRING = "SELECT * FROM [mgnl:content] as content WHERE CONTAINS(content.*, '%s')";
 
     private String fullTextExpression;
 
