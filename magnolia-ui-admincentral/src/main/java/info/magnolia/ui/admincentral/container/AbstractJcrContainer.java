@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.admincentral.container;
 
+import info.magnolia.cms.core.MetaData;
+import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.ui.model.column.definition.ColumnDefinition;
@@ -113,7 +115,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     protected static final String CONTENT_SELECTOR_NAME = "content";
 
-    protected static final String SELECT_CONTENT = "select * from [mgnl:content] as " + CONTENT_SELECTOR_NAME;
+    protected static final String SELECT_CONTENT = "select * from [" + MgnlNodeType.NT_CONTENT + "] as " + CONTENT_SELECTOR_NAME;
 
     protected static final String ORDER_BY = " order by ";
 
@@ -121,7 +123,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     protected static final String DESCENDING_KEYWORD = " desc";
 
-    protected static final String JOIN_METADATA = " inner join [mgnl:metaData] as metaData on ischildnode(metaData,content) ";
+    protected static final String JOIN_METADATA = " inner join [" + MgnlNodeType.NT_METADATA + "] as metaData on ischildnode(metaData,content) ";
 
     protected static final String METADATA_SELECTOR_NAME = "metaData";
 
@@ -132,7 +134,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     protected static final String JCR_NAME_FUNCTION = "name(" + CONTENT_SELECTOR_NAME + ")";
 
-    protected static final String METADATA_NODE_NAME = "MetaData/";
+    protected static final String METADATA_NODE_NAME = MetaData.DEFAULT_META_NODE + "/";
 
     public AbstractJcrContainer(JcrContainerSource jcrContainerSource, WorkbenchDefinition workbenchDefinition) {
         this.jcrContainerSource = jcrContainerSource;
