@@ -74,11 +74,6 @@
       <groupId>org.vaadin.addons</groupId>
       <artifactId>super-dev-mode-for-vaadin-6</artifactId>
     </dependency>
-    <!-- validation-api dep is needed by GWT during gwt compilation -->
-    <dependency>
-      <groupId>javax.validation</groupId>
-      <artifactId>validation-api</artifactId>
-    </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
@@ -98,9 +93,6 @@
         <artifactId>gwt-maven-plugin</artifactId>
         <version>${gwtVersion}</version>
         <configuration>
-          <compileSourcesArtifacts>
-            <compileSourcesArtifact>javax.validation:validation-api</compileSourcesArtifact>
-          </compileSourcesArtifacts>
           <!-- put the created resources on the classpath -->
           <webappDirectory>target/classes/VAADIN/widgetsets</webappDirectory>
           <!-- the target/classes directory is cleaned regularly. You can use
@@ -121,19 +113,6 @@
             </goals>
           </execution>
         </executions>
-        <!-- Tell what GWT version to use -->
-        <dependencies>
-          <dependency>
-            <groupId>com.google.gwt</groupId>
-            <artifactId>gwt-user</artifactId>
-            <version>${gwtVersion}</version>
-          </dependency>
-          <dependency>
-            <groupId>com.google.gwt</groupId>
-            <artifactId>gwt-dev</artifactId>
-            <version>${gwtVersion}</version>
-          </dependency>
-        </dependencies>
       </plugin>
       <plugin>
         <groupId>com.atlassian.maven.plugins</groupId>
