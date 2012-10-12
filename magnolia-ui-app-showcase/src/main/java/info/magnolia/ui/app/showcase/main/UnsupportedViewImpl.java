@@ -35,6 +35,10 @@ package info.magnolia.ui.app.showcase.main;
 
 import java.util.Date;
 
+import org.vaadin.openesignforms.ckeditor.CKEditorTextField;
+
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Accordion;
@@ -45,6 +49,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.MenuBar;
+import com.vaadin.ui.RichTextArea;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TreeTable;
 import com.vaadin.ui.VerticalLayout;
@@ -72,6 +77,35 @@ public class UnsupportedViewImpl implements UnsupportedView {
         layout.addComponent(getMenuBarPreviews());
         layout.addComponent(getWindowPreviews());
         layout.addComponent(getTableAndTreeTable());
+        layout.addComponent(getRichTextField());
+        layout.addComponent(getCKEditor());
+    }
+    
+    Layout getCKEditor() {
+        Layout grid = getPreviewLayout("CKEditor");
+        CKEditorTextField ckeditor = new CKEditorTextField();
+        
+        grid.addComponent(ckeditor);
+        return grid;
+    }
+    
+    private RichTextArea rt;
+    private Property.ValueChangeListener valuechangelistener = new Property.ValueChangeListener() {
+        
+        @Override
+        public void valueChange(ValueChangeEvent event) {
+            System.out.println(rt.getValue());
+            
+        }
+    };
+    Layout getRichTextField() {
+        Layout grid = getPreviewLayout("Rich text field");
+        rt = new RichTextArea();
+        
+        rt.addListener(valuechangelistener);
+        
+        grid.addComponent(rt);
+        return grid;
     }
 
     Layout getTableAndTreeTable() {
