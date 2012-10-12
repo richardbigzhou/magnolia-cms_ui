@@ -409,6 +409,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     /***********************************************/
     @Override
     public void sort(Object[] propertyId, boolean[] ascending) {
+        resetOffset();
         sorters.clear();
         for (int i = 0; i < propertyId.length; i++) {
             if (sortableProperties.contains(propertyId[i])) {
@@ -470,7 +471,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
         }
         currentOffset = (index / (pageLength * cacheRatio)) * (pageLength * cacheRatio);
         if (currentOffset < 0) {
-            currentOffset = 0;
+            resetOffset();
         }
         getPage();
     }
@@ -613,9 +614,17 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
      * sorting or filtering rules!
      */
     public void refresh() {
-        currentOffset = 0;
+        resetOffset();
         itemIndexes.clear();
         updateSize();
+    }
+
+    protected void resetOffset() {
+        currentOffset = 0;
+    }
+
+    protected int getCurrentOffset() {
+        return currentOffset;
     }
 
     protected void setSize(int size) {
