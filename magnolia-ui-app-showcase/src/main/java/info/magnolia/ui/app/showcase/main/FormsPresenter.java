@@ -75,7 +75,7 @@ public class FormsPresenter implements FormsView.Listener {
         try {
         String workspace = "website";
         String path = "/";
-        FormDialogPresenter formPresenter = formFactory.createDialogPresenterByName("ui-showcase-app:contact");
+        FormDialogPresenter formPresenter = formFactory.createDialogPresenterByName("ui-showcase-app:showcasedialog");
         Session session = MgnlContext.getJCRSession(workspace);
 
         Node parentNode = session.getNode(path);
