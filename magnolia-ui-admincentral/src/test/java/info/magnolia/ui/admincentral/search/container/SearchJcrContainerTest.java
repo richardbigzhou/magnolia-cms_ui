@@ -131,7 +131,7 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
         String stmt = jcrContainer.constructJCRQuery(true);
 
         //THEN
-        assertEquals("//element(*,mgnl:content) [jcr:contains(.,'foo')]", stmt);
+        assertEquals("SELECT * FROM [mgnl:content] as content WHERE CONTAINS(content.*, 'foo')", stmt);
     }
 
     @Test
@@ -143,7 +143,7 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
         String stmt = jcrContainer.constructJCRQuery(true);
 
         //THEN
-        assertEquals("//element(*,mgnl:content) [jcr:contains(.,'foo OR ''baz bar''')]", stmt);
+        assertEquals("SELECT * FROM [mgnl:content] as content WHERE CONTAINS(content.*, 'foo OR ''baz bar''')", stmt);
     }
 
 }
