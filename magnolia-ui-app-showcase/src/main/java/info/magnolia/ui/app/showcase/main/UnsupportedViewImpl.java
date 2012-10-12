@@ -80,31 +80,49 @@ public class UnsupportedViewImpl implements UnsupportedView {
         layout.addComponent(getRichTextField());
         layout.addComponent(getCKEditor());
     }
+
+    private Property.ValueChangeListener ckvaluechanged = new Property.ValueChangeListener() {
+        
+        @Override
+        public void valueChange(ValueChangeEvent event) {
+            System.out.println("ck: "+event.getProperty().toString());
+            ckContent.setValue(event.getProperty().toString());
+        }
+    };
     
+    Label ckContent;
     Layout getCKEditor() {
         Layout grid = getPreviewLayout("CKEditor");
         CKEditorTextField ckeditor = new CKEditorTextField();
+        ckContent = new Label("", Label.CONTENT_RAW);
+        ckeditor.setImmediate(true);
+        ckeditor.addListener(ckvaluechanged);
         
         grid.addComponent(ckeditor);
+        grid.addComponent(ckContent);
         return grid;
     }
-    
-    private RichTextArea rt;
+
     private Property.ValueChangeListener valuechangelistener = new Property.ValueChangeListener() {
         
         @Override
         public void valueChange(ValueChangeEvent event) {
-            System.out.println(rt.getValue());
-            
+            System.out.println("vaadin: "+event.getProperty().toString());
+            rtContent.setValue(event.getProperty().toString());
         }
     };
+    
+    Label rtContent;
     Layout getRichTextField() {
         Layout grid = getPreviewLayout("Rich text field");
-        rt = new RichTextArea();
+        RichTextArea rt = new RichTextArea();
+        rtContent = new Label("", Label.CONTENT_RAW);
+        rt.setImmediate(true);
         
         rt.addListener(valuechangelistener);
         
         grid.addComponent(rt);
+        grid.addComponent(rtContent);
         return grid;
     }
 
