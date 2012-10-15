@@ -33,11 +33,12 @@
  */
 package info.magnolia.ui.widget.magnoliashell.viewport;
 
+import info.magnolia.ui.widget.magnoliashell.BaseMagnoliaShell;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.VShellAppsViewport;
+
 import com.vaadin.ui.ClientWidget;
 import com.vaadin.ui.ClientWidget.LoadStyle;
 
-import info.magnolia.ui.widget.magnoliashell.BaseMagnoliaShell;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.VShellAppsViewport;
 
 /**
  * Shell apps viewport.
@@ -47,7 +48,7 @@ public class ShellAppsViewport extends ShellViewport {
 
     public ShellAppsViewport(BaseMagnoliaShell shell) {
         super(shell);
-        setDebugId("shellapps");
+        addStyleName("shellapps");
     }
 
 }

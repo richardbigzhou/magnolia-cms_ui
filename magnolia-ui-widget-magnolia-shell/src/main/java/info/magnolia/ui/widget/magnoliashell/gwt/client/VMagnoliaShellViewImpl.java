@@ -40,17 +40,14 @@ import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShell.ViewportT
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.event.AppActivatedEvent;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.event.ShellAppNavigationEvent;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.event.ShellTransitionCompleteEvent;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.event.ViewportCloseEvent;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.event.handler.ShellNavigationHandler;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.event.handler.ShellTransitionCompleteHandler;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.event.handler.ViewportCloseHandler;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VInfoMessage;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VShellErrorMessage;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VShellMessage;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VShellMessage.MessageType;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.shellmessage.VWarningMessage;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.AnimationDelegate;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.VAppsViewport;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.VAppsViewport.PreloaderCallback;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.VDialogViewport;
@@ -102,7 +99,7 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
 
     private VShellMessage hiPriorityMessage;
 
-    private VMagnoliaShellViewImpl that = this;
+    // private final VMagnoliaShellViewImpl that = this;
 
     public VMagnoliaShellViewImpl(final EventBus eventBus) {
         super();
@@ -136,7 +133,7 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
         eventBus.addHandler(ViewportCloseEvent.TYPE, this);
         eventBus.addHandler(ShellAppNavigationEvent.TYPE, navigationHandler);
         eventBus.addHandler(AppActivatedEvent.TYPE, navigationHandler);
-        eventBus.addHandler(ShellTransitionCompleteEvent.TYPE, transitionCompleteHandler);
+        // eventBus.addHandler(ShellTransitionCompleteEvent.TYPE, transitionCompleteHandler);
 
         History.addValueChangeHandler(new ValueChangeHandler<String>() {
 
@@ -160,7 +157,7 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
     }
 
     @Override
-    public void changeActiveViewport(final ViewportType type) {
+    public void setActiveViewport(final ViewportType type) {
         if (activeViewportType != type) {
             final VShellViewport shellAppViewport = getShellAppViewport();
             final VShellViewport appViewport = getAppViewport();
@@ -168,12 +165,6 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
             boolean appViewportActive = type.equals(ViewportType.APP_VIEWPORT);
             if (appViewportActive) {
                 mainAppLauncher.deactivateControls();
-            } else {
-                if (appViewport.hasContent()) {
-                    shellAppViewport.setCurtainVisible(true);
-                } else {
-                    shellAppViewport.setCurtainVisible(false);
-                }
             }
             shellAppViewport.setActive(!appViewportActive);
             appViewport.setActive(appViewportActive);
@@ -278,22 +269,6 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
         lowPriorityMessage = null;
     }
 
-    protected void switchViewports(boolean appViewportOnTop) {
-        final VShellViewport shellAppViewport = getShellAppViewport();
-        final VShellViewport appViewport = getAppViewport();
-        shellAppViewport.setActive(!appViewportOnTop);
-        appViewport.setActive(appViewportOnTop);
-        if (appViewportOnTop) {
-            mainAppLauncher.deactivateControls();
-        } else {
-            if (appViewport.hasContent()) {
-                shellAppViewport.showCurtain();
-            } else {
-                shellAppViewport.hideCurtain();
-            }
-        }
-    }
-
     private final Timer mainLauncherUnlockTimer = new Timer() {
 
         @Override
@@ -310,9 +285,7 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
         }
     }
 
-
     private final ShellNavigationHandler navigationHandler = new ShellNavigationHandler() {
-
 
         @Override
         public void onAppActivated(AppActivatedEvent event) {
@@ -323,57 +296,57 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
         @Override
         public void onShellAppNavigation(final ShellAppNavigationEvent event) {
 
-          // If possible perform transition to ShellApp via the client.
+            // If possible perform transition to ShellApp via the client.
 
-            ShellAppType shellAppType = event.getType();
-            boolean clientTransitionStarted = getShellAppViewport().setVisibleWidgetByShellAppType(shellAppType);
+            // ShellAppType shellAppType = event.getType();
+            // boolean clientTransitionStarted =
+            // getShellAppViewport().setVisibleWidgetByShellAppType(shellAppType);
 
-             if (clientTransitionStarted){
-                 // Transition has started.
-                 typeInTransition = shellAppType;
-                 tokenInTransition = event.getToken();
+            // if (clientTransitionStarted){
+            // Transition has started.
+            // typeInTransition = shellAppType;
+            // tokenInTransition = event.getToken();
 
-                //Need to update state of button and divet in the main launcher
-                mainAppLauncher.activateControl(shellAppType);
+            // Need to update state of button and divet in the main launcher
+            // mainAppLauncher.activateControl(shellAppType);
 
-
-            }else{
-                //Trigger server
-                presenter.loadShellApp(event.getType(), event.getToken());
-            }
-
+            // }else{
+            // Trigger server
+            presenter.loadShellApp(event.getType(), event.getToken());
+            // }
         }
     };
 
-     ShellAppType typeInTransition;
-     String tokenInTransition;
-
-    private final ShellTransitionCompleteHandler transitionCompleteHandler = new ShellTransitionCompleteHandler() {
-
-        @Override
-        public void onShellTransitionComplete(ShellTransitionCompleteEvent event) {
-            if (typeInTransition != null){
-                getShellAppViewport().showLoadingPane();
-                presenter.loadShellApp(typeInTransition, tokenInTransition);
-                typeInTransition = null;
-                tokenInTransition = "";
-            }
-        }
-    };
+    // ShellAppType typeInTransition;
+    // String tokenInTransition;
+    //
+    // private final ShellTransitionCompleteHandler transitionCompleteHandler = new
+    // ShellTransitionCompleteHandler() {
+    //
+    // @Override
+    // public void onShellTransitionComplete(ShellTransitionCompleteEvent event) {
+    // if (typeInTransition != null){
+    // getShellAppViewport().showLoadingPane();
+    // presenter.loadShellApp(typeInTransition, tokenInTransition);
+    // typeInTransition = null;
+    // tokenInTransition = "";
+    // }
+    // }
+    // };
 
     @Override
     public void onViewportClose(ViewportCloseEvent event) {
         final VMagnoliaShell.ViewportType viewportType = event.getViewportType();
         if (viewportType == ViewportType.SHELL_APP_VIEWPORT) {
-            if (getAppViewport().hasContent()) {
-                getShellAppViewport().setViewportHideAnimationDelegate(AnimationDelegate.SLIDING_DELEGATE);
-            }
+            // if (getAppViewport().hasContent()) {
+            // getShellAppViewport().setViewportHideAnimationDelegate(AnimationDelegate.SLIDING_DELEGATE);
+            // }
             presenter.closeCurrentShellApp();
 
         } else if (viewportType == ViewportType.APP_VIEWPORT) {
-            if (!getAppViewport().hasContent()) {
-                getAppViewport().setViewportHideAnimationDelegate(AnimationDelegate.ZOOMING_DELEGATE);
-            }
+            // if (!getAppViewport().hasContent()) {
+            // getAppViewport().setViewportHideAnimationDelegate(AnimationDelegate.ZOOMING_DELEGATE);
+            // }
             presenter.closeCurrentApp();
         }
     }
@@ -442,8 +415,8 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
     @Override
     public void showAppPreloader(String prefix, PreloaderCallback preloaderCallback) {
         // make sure shell apps viewport hide transition occurs immediately
-        getShellAppViewport().setActive(false);
-        getAppViewport().setVisibleWidget(null);
+        setActiveViewport(ViewportType.APP_VIEWPORT);
+        // getAppViewport().setVisibleApp(null);
         getAppViewport().showAppPreloader(prefix, preloaderCallback);
     }
 }

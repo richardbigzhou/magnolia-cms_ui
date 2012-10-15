@@ -47,64 +47,65 @@ import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
+
 /**
  * The view interface for MagnoliaShell (implemented by GWT part of MagnoliaShell).
  */
 public interface VMagnoliaShellView extends HasWidgets, IsWidget {
-    
+
     int getViewportHeight();
 
     int getViewportWidth();
-    
-    void changeActiveViewport(ViewportType viewportType);
-    
+
+    void setActiveViewport(ViewportType viewportType);
+
     void updateViewport(VShellViewport viewport, ViewportType type);
 
     void setPresenter(final Presenter presenter);
-    
+
     void showMessage(final MessageType type, String text, String message, String id);
 
     void hideAllMessages();
 
     void navigate(String prefix, String token);
-    
+
     void shiftViewportsVertically(int shiftPx, boolean animated);
-    
+
     void setPusher(VICEPush pusher);
 
     void setShellAppIndication(ShellAppType type, int indication);
 
     Presenter getPresenter();
-    
+
     Collection<VShellViewport> getViewports();
-    
+
     void closeMessageEager(String id);
-    
+
     void navigateToMessageDetails(String id);
-    
+
     void showAppPreloader(String prefix, PreloaderCallback preloaderCallback);
 
     /**
      * Presenter. Meant for Vaadin part of MagnoliaShell.
      */
     interface Presenter {
-        
+
         void loadApp(String prefix, String token);
-        
+
         void loadShellApp(ShellAppType shellAppType, String token);
 
         void updateViewportLayout(VShellViewport activeViewport);
-        
+
         void destroyChild(final Widget child);
 
         void closeCurrentApp();
-        
+
         void closeCurrentShellApp();
 
         void removeMessage(String id);
 
         boolean isAppRegistered(String appName);
-        
+
         boolean isAppRunning(String appName);
 
         void startApp(String appName, String token);

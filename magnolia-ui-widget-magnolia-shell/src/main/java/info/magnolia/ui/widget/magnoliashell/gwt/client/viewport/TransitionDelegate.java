@@ -33,42 +33,40 @@
  */
 package info.magnolia.ui.widget.magnoliashell.gwt.client.viewport;
 
-import com.google.gwt.dom.client.Style.Visibility;
+import info.magnolia.ui.widget.jquerywrapper.gwt.client.Callbacks;
+
+import com.google.gwt.user.client.ui.Widget;
 
 
 /**
- * Dialogs viewport.
- * 
+ * Viewports might have different ways of displaying the content. This interface helps to define
+ * them from outside.
  */
-public class VDialogViewport extends VShellViewport {
+public interface TransitionDelegate {
 
-    public VDialogViewport() {
-        setStyleName("v-dialog-viewport");
-        getElement().getStyle().setVisibility(Visibility.HIDDEN);
-        // getModalityCurtain().addClassName("black-modality-curtain");
-        // setContentShowAnimationDelegate(AnimationDelegate.FADING_DELEGATE);
-        // setContentHideAnimationDelegate(AnimationDelegate.FADING_DELEGATE);
-        // setViewportHideAnimationDelegate(AnimationDelegate.FADING_DELEGATE);
-        // setCurtainVisible(true);
-        // setCurtainAnimated(true);
-    }
+    Callbacks setActive(final VShellViewport viewport, boolean active);
 
-    // @Override
-    // public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
-    // super.updateFromUIDL(uidl, client);
-    //
-    // if (!hasContent()) {
-    // setActive(false);
-    // } else {
-    // setActive(true);
-    // }
-    // }
-    //
-    // @Override
-    // public void setVisibleWidget(Widget w) {
-    // if (w != null) {
-    // setActive(true);
-    // }
-    // super.setVisibleWidget(w);
-    // }
+    Callbacks setVisibleApp(final Widget app);
+
+    boolean isBusy();
+
+    final static TransitionDelegate SHELL_APPS_TRANSITION_DELEGATE = new TransitionDelegate() {
+
+        @Override
+        public Callbacks setActive(VShellViewport viewport, boolean active) {
+            return null;
+        }
+
+        @Override
+        public Callbacks setVisibleApp(Widget app) {
+            return null;
+        }
+
+        @Override
+        public boolean isBusy() {
+            return false;
+        };
+
+    };
+
 }

@@ -48,6 +48,10 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public interface AnimationDelegate {
 
+    static final int Z_INDEX_HI = 300;
+
+    static final int Z_INDEX_LO = 100;
+
     final static int FADE_SPEED = 600;
 
     final static int SLIDE_IN_SPEED = 600;
@@ -71,7 +75,7 @@ public interface AnimationDelegate {
 
             // only then set it visible
             w.getElement().getStyle().setVisibility(Visibility.VISIBLE);
-            w.getElement().getStyle().setZIndex(VShellViewport.Z_INDEX_HI);
+            w.getElement().getStyle().setZIndex(Z_INDEX_HI);
 
             jq.animate(SLIDE_IN_SPEED, new AnimationSettings() {
 
@@ -94,7 +98,7 @@ public interface AnimationDelegate {
         @Override
         public void hide(final Widget w, final Callbacks callbacks) {
             // keep z-index top-most because other viewport may immediately take z-index hi
-            w.getElement().getStyle().setZIndex(VShellViewport.Z_INDEX_HI + 10);
+            w.getElement().getStyle().setZIndex(Z_INDEX_HI + 10);
 
             final JQueryWrapper jq = JQueryWrapper.select(w);
             jq.animate(SLIDE_OUT_SPEED, new AnimationSettings() {
@@ -107,7 +111,7 @@ public interface AnimationDelegate {
                         public void execute(JQueryWrapper query) {
                             // set hidden once animation complete
                             w.getElement().getStyle().setVisibility(Visibility.HIDDEN);
-                            w.getElement().getStyle().setZIndex(VShellViewport.Z_INDEX_LO);
+                            w.getElement().getStyle().setZIndex(Z_INDEX_LO);
                         }
 
                     });
@@ -130,7 +134,7 @@ public interface AnimationDelegate {
             jq.setCss("opacity", "0");
 
             w.getElement().getStyle().setVisibility(Visibility.VISIBLE);
-            w.getElement().getStyle().setZIndex(VShellViewport.Z_INDEX_HI);
+            w.getElement().getStyle().setZIndex(Z_INDEX_HI);
 
             jq.animate(FADE_SPEED, new AnimationSettings() {
 
@@ -144,7 +148,7 @@ public interface AnimationDelegate {
         @Override
         public void hide(final Widget w, final Callbacks callbacks) {
             // keep z-index top-most because other viewport may immediately take z-index hi
-            w.getElement().getStyle().setZIndex(VShellViewport.Z_INDEX_HI + 10);
+            w.getElement().getStyle().setZIndex(Z_INDEX_HI + 10);
 
             JQueryWrapper.select(w).animate(FADE_SPEED, new AnimationSettings() {
 
@@ -156,7 +160,7 @@ public interface AnimationDelegate {
                         public void execute(JQueryWrapper query) {
                             // set hidden once animation complete
                             w.getElement().getStyle().setVisibility(Visibility.HIDDEN);
-                            w.getElement().getStyle().setZIndex(VShellViewport.Z_INDEX_LO);
+                            w.getElement().getStyle().setZIndex(Z_INDEX_LO);
                         }
 
                     });
@@ -176,7 +180,7 @@ public interface AnimationDelegate {
         @Override
         public void show(final Widget w, final Callbacks callbacks) {
             w.getElement().getStyle().setVisibility(Visibility.VISIBLE);
-            w.getElement().getStyle().setZIndex(VShellViewport.Z_INDEX_HI);
+            w.getElement().getStyle().setZIndex(Z_INDEX_HI);
 
             w.removeStyleName("zoom-out");
             w.addStyleName("zoom-in");
@@ -186,7 +190,7 @@ public interface AnimationDelegate {
         @Override
         public void hide(final Widget w, final Callbacks callbacks) {
             // keep z-index top-most because other viewport may immediately take z-index hi
-            w.getElement().getStyle().setZIndex(VShellViewport.Z_INDEX_HI + 10);
+            w.getElement().getStyle().setZIndex(Z_INDEX_HI + 10);
 
             w.removeStyleName("zoom-in");
             w.addStyleName("zoom-out");
@@ -196,7 +200,7 @@ public interface AnimationDelegate {
                 public void execute(JQueryWrapper query) {
                     // set hidden once animation complete
                     w.getElement().getStyle().setVisibility(Visibility.HIDDEN);
-                    w.getElement().getStyle().setZIndex(VShellViewport.Z_INDEX_LO);
+                    w.getElement().getStyle().setZIndex(Z_INDEX_LO);
                 }
 
             });
