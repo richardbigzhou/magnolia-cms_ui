@@ -58,14 +58,6 @@
       <artifactId>magnolia-rendering</artifactId>
     </dependency>
     <dependency>
-      <groupId>info.magnolia.dam</groupId>
-      <artifactId>magnolia-module-dam</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>info.magnolia.dam</groupId>
-      <artifactId>magnolia-module-dam-app-assets</artifactId>
-    </dependency>
-    <dependency>
       <groupId>info.magnolia</groupId>
       <artifactId>magnolia-module-imaging</artifactId>
     </dependency>
