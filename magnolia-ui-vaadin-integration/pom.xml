@@ -40,7 +40,7 @@
       <artifactId>vaadin</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.vaadin.addons</groupId>
+      <groupId>org.vaadin.addon</groupId>
       <artifactId>confirmdialog</artifactId>
     </dependency>
     <dependency>
