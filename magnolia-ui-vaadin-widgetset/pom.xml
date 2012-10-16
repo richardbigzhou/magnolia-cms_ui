@@ -15,35 +15,9 @@
       <artifactId>magnolia-ui-vaadin-integration</artifactId>
       <version>${project.version}</version>
     </dependency>
-    <dependency>
-      <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-widget-magnolia-shell</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-widget-tabsheet</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-widget-jquery-wrapper</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-widget-dialog</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-widget-actionbar</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-widget-editor</artifactId>
-      <version>${project.version}</version>
+        <dependency>
+      <groupId>info.magnolia</groupId>
+      <artifactId>magnolia-rendering</artifactId>
     </dependency>
     <dependency>
       <groupId>com.google.gwt</groupId>
@@ -74,14 +48,39 @@
       <artifactId>super-dev-mode-for-vaadin-6</artifactId>
     </dependency>
     <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <scope>provided</scope>
+      <groupId>org.vaadin.addons</groupId>
+      <artifactId>widget-rpc</artifactId>
     </dependency>
     <dependency>
       <groupId>org.vaadin.addons</groupId>
       <artifactId>autoreplacefield</artifactId>
     </dependency>
+    <dependency>
+       <groupId>com.googlecode.mgwt</groupId>
+	   <artifactId>mgwt</artifactId>
+    </dependency>
+    <dependency>
+	  <groupId>org.vaadin.addons</groupId>
+	  <artifactId>gwt-graphics</artifactId>
+	</dependency>
+	<dependency>
+      <groupId>org.vaadin.addons</groupId>
+      <artifactId>css-tools</artifactId>
+    </dependency>
+	<dependency>
+	 	<groupId>org.vaadin.addons</groupId>
+		<artifactId>customfield</artifactId>
+	</dependency>
+	<dependency>
+	 	<groupId>org.vaadin.addon</groupId>
+		<artifactId>propertytranslator</artifactId>
+	</dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
   </dependencies>
   <build>
     <plugins>
@@ -98,8 +97,9 @@
           <warSourceDirectory>src/main/resources/VAADIN/widgetsets</warSourceDirectory>
           <!-- this is not a webapp -->
           <noServer>true</noServer>
-          <module>info.magnolia.ui.vaadin.widgetset.MagnoliaWidgetSet</module>
+          <module>info.magnolia.ui.vaadin.gwt.MagnoliaWidgetSet</module>
           <runTarget>.magnolia/admincentral</runTarget>
+          <draftCompile>true</draftCompile>
         </configuration>
         <executions>
           <execution>

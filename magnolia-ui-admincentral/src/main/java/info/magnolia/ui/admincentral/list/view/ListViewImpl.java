@@ -42,7 +42,7 @@ import info.magnolia.ui.admincentral.tree.model.TreeModel;
 import info.magnolia.ui.model.column.definition.ColumnDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
-import info.magnolia.ui.vaadin.integration.widget.grid.MagnoliaTable;
+import info.magnolia.ui.vaadin.grid.MagnoliaTable;
 
 import java.util.ArrayList;
 import java.util.Iterator;

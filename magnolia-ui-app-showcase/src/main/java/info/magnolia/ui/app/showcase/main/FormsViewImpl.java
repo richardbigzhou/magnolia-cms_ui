@@ -33,10 +33,10 @@
  */
 package info.magnolia.ui.app.showcase.main;
 
-import info.magnolia.ui.widget.dialog.BaseDialog;
-import info.magnolia.ui.widget.dialog.BaseDialog.DialogCloseEvent;
-import info.magnolia.ui.widget.dialog.FormDialog;
-import info.magnolia.ui.widget.dialog.FormSection;
+import info.magnolia.ui.vaadin.dialog.BaseDialog;
+import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
+import info.magnolia.ui.vaadin.dialog.FormDialog;
+import info.magnolia.ui.vaadin.dialog.FormSection;
 
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Component;

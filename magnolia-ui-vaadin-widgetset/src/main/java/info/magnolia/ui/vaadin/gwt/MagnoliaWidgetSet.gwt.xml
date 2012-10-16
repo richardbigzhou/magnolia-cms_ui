@@ -1,0 +1,66 @@
+<module>
+
+    <!-- WS Compiler: manually edited -->
+    <inherits name="com.vaadin.terminal.gwt.DefaultWidgetSet" />
+
+    <inherits name="org.vaadin.autoreplacefield.AutoreplacefieldWidgetset" />
+    <inherits name="org.vaadin.artur.icepush.IcepushaddonWidgetset" />
+    <inherits name='org.vaadin.gwtgraphics.GWTGraphics' />
+    <inherits name="org.vaadin.csstools.CssToolsWidgetset" />
+    <inherits name='org.vaadin.artur.superdevmode.SuperdevmodeaddonWidgetset' />
+    <inherits name="org.vaadin.rpc.WidgetRPC"/>
+
+    <inherits name='com.googlecode.mgwt.dom.DOM' />
+    <inherits name='com.googlecode.mgwt.ui.UI' />
+
+    <inherits name="com.google.gwt.json.JSON" />
+
+    <source path ="client"/>
+
+     <!-- gecko handles Iframe loading and DOMContentLoaded event correctly-->
+    <replace-with class="info.magnolia.ui.vaadin.gwt.client.editor.jsni.GenericFrameEventHandler">
+        <when-type-is class="info.magnolia.ui.vaadin.gwt.client.editor.jsni.AbstractFrameEventHandler"/>
+    </replace-with>
+
+    <!-- webkit workaround for: https://bugs.webkit.org/show_bug.cgi?id=33604 -->
+    <replace-with class="info.magnolia.ui.vaadin.gwt.client.editor.jsni.WebkitFrameEventHandler">
+        <when-type-is class="info.magnolia.ui.vaadin.gwt.client.editor.jsni.AbstractFrameEventHandler"/>
+        <any>
+            <when-property-is name="user.agent" value="safari"/>
+        </any>
+    </replace-with>
+
+    <replace-with
+		class="info.magnolia.ui.vaadin.gwt.client.touchwidget.MobileSafariTouchWidgetImplProxy">
+		<when-type-is
+			class="com.googlecode.mgwt.ui.client.widget.touch.TouchWidgetImpl" />
+		<all>
+			<when-property-is name="mobile.user.agent" value="mobilesafari" />
+		</all>
+	</replace-with>
+
+	<replace-with
+		class="info.magnolia.ui.vaadin.gwt.client.touchwidget.MobileSafariVView">
+		<when-type-is
+			class="com.vaadin.terminal.gwt.client.ui.VView" />
+		<all>
+			<when-property-is name="mobile.user.agent" value="mobilesafari" />
+		</all>
+	</replace-with>
+
+	<replace-with
+		class="info.magnolia.ui.vaadin.gwt.client.touchwidget.DesktopVView">
+		<when-type-is
+			class="com.vaadin.terminal.gwt.client.ui.VView" />
+		<all>
+			<when-property-is name="mgwt.os" value="desktop" />
+		</all>
+	</replace-with>
+
+    <add-linker name="xsiframe" />
+    <set-configuration-property name="devModeRedirectEnabled" value="true" />
+    <set-property name="user.agent" value="gecko1_8,safari" />
+    <!--  for debugging - this will produce less permutations. -->
+    <set-property name="mgwt.os" value="ipad,ipad_retina,desktop" />
+    <!--<set-property name="mgwt.os" value="iphone,retina,ipad,ipad_retina,android,android_tablet,desktop" /> -->
+</module>

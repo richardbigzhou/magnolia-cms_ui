@@ -34,8 +34,8 @@
 package info.magnolia.ui.app.pages.editor;
 
 import info.magnolia.ui.framework.view.View;
-import info.magnolia.ui.widget.actionbar.ActionbarView;
-import info.magnolia.ui.widget.editor.PageEditorView;
+import info.magnolia.ui.vaadin.actionbar.ActionbarView;
+import info.magnolia.ui.vaadin.editor.PageEditorView;
 
 
 /**

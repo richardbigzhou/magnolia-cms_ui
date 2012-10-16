@@ -54,9 +54,9 @@ import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
-import info.magnolia.ui.widget.actionbar.ActionbarView;
-import info.magnolia.ui.widget.editor.PageEditor;
-import info.magnolia.ui.widget.editor.PageEditorParameters;
+import info.magnolia.ui.vaadin.actionbar.ActionbarView;
+import info.magnolia.ui.vaadin.editor.PageEditor;
+import info.magnolia.ui.vaadin.editor.PageEditorParameters;
 
 import java.util.ArrayList;
 import java.util.List;

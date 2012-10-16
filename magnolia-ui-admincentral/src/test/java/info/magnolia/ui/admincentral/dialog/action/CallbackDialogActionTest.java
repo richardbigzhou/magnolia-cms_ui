@@ -37,11 +37,11 @@ import static org.junit.Assert.assertEquals;
 import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.widget.dialog.BaseDialog.DialogCloseEvent;
-import info.magnolia.ui.widget.dialog.DialogView.DialogActionListener;
-import info.magnolia.ui.widget.dialog.FormDialog;
-import info.magnolia.ui.widget.dialog.FormDialogView;
-import info.magnolia.ui.widget.dialog.FormSection;
+import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
+import info.magnolia.ui.vaadin.dialog.DialogView.DialogActionListener;
+import info.magnolia.ui.vaadin.dialog.FormDialog;
+import info.magnolia.ui.vaadin.dialog.FormDialogView;
+import info.magnolia.ui.vaadin.dialog.FormSection;
 
 import java.util.List;
 

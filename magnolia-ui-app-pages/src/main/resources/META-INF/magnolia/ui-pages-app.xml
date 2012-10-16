@@ -44,8 +44,8 @@
       <implementation>info.magnolia.ui.app.pages.editor.PagesEditorSubAppViewImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.widget.editor.PageEditorView</type>
-      <implementation>info.magnolia.ui.widget.editor.PageEditor</implementation>
+      <type>info.magnolia.ui.vaadin.editor.PageEditorView</type>
+      <implementation>info.magnolia.ui.vaadin.editor.PageEditor</implementation>
     </component>
   </components>
 

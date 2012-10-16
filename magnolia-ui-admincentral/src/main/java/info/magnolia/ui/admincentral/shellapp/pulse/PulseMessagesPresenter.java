@@ -39,7 +39,7 @@ import info.magnolia.ui.admincentral.shellapp.pulse.PulseMessageCategoryNavigato
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.framework.message.MessagesManager;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.VMainLauncher;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -60,7 +60,7 @@ import com.vaadin.data.util.HierarchicalContainer;
 public class PulseMessagesPresenter implements Serializable {
 
     public static final String GROUP_PLACEHOLDER_ITEMID = "##SUBSECTION##";
-    
+
     public static final String GROUP_COLUMN = "type";
 
     private static final String[] order = new String[]{"new", "type", "text", "sender", "date", "quickdo"};
@@ -70,7 +70,7 @@ public class PulseMessagesPresenter implements Serializable {
     private final MessagesManager messagesManager;
 
     private final MagnoliaShell shell;
-    
+
     private boolean grouping = false;
 
     @Inject
@@ -83,11 +83,11 @@ public class PulseMessagesPresenter implements Serializable {
             @Override
             public void messageSent(Message message) {
                 addMessageAsItem(message);
-                
+
                 if(grouping) {
                     buildTree();
                 }
-                
+
                 if (message.getType().isSignificant()) {
                     shell.updateShellAppIndication(VMainLauncher.ShellAppType.PULSE, 1);
                 }
@@ -122,18 +122,18 @@ public class PulseMessagesPresenter implements Serializable {
         container.addContainerProperty("sender", String.class, null);
         container.addContainerProperty("date", Date.class, null);
         container.addContainerProperty("quickdo", String.class, null);
-        
+
         createSuperItems();
-        
+
         for (Message message : messagesManager.getMessagesForUser(MgnlContext.getUser().getName())) {
             addMessageAsItem(message);
         }
-        
+
         container.addContainerFilter(sectionFilter);
 
         return container;
     }
-    
+
     private void createSuperItems() {
         for(MessageType type: MessageType.values()) {
             Item item = container.addItem(getSuperItem(type));
@@ -141,48 +141,48 @@ public class PulseMessagesPresenter implements Serializable {
             container.setChildrenAllowed(getSuperItem(type), true);
         }
     }
-    
+
     private void clearSuperItemFromMessages() {
         for(Object itemId: container.getItemIds()) {
             container.setParent(itemId, null);
         }
     }
-    
+
     private Object getSuperItem(MessageType type) {
         return GROUP_PLACEHOLDER_ITEMID+type;
     }
-    
+
     /*
      * Sets the grouping of messages
      */
     public void setGrouping(boolean checked) {
         grouping = checked;
-        
+
         clearSuperItemFromMessages();
         container.removeContainerFilter(sectionFilter);
 
         if(checked) {
             buildTree();
         }
-        
+
         container.addContainerFilter(sectionFilter);
     }
-    
+
     /*
      * This filter hides grouping titles when
-     * grouping is not on or group would be empty 
+     * grouping is not on or group would be empty
      */
     private Filter sectionFilter = new Filter() {
 
         @Override
         public boolean passesFilter(Object itemId, Item item)
                 throws UnsupportedOperationException {
-            if(itemId.toString().startsWith(GROUP_PLACEHOLDER_ITEMID) && 
+            if(itemId.toString().startsWith(GROUP_PLACEHOLDER_ITEMID) &&
                     (!grouping ||
                     isTypeGroupEmpty(itemId))) {
                 return false;
             }
-            
+
             return true;
         }
 
@@ -190,19 +190,19 @@ public class PulseMessagesPresenter implements Serializable {
         public boolean appliesToProperty(Object propertyId) {
             return "type".equals(propertyId);
         }
-        
+
         private boolean isTypeGroupEmpty(Object typeId) {
             return container.getChildren(typeId) == null ||
                     container.getChildren(typeId).isEmpty();
         }
-        
+
     };
-    
+
     /*
      * Assign messages under correct parents so that
      * grouping works.
      */
-    private void buildTree() {        
+    private void buildTree() {
         for(Object itemId: container.getItemIds()) {
             //Skip super items
             if(!itemId.toString().startsWith(GROUP_PLACEHOLDER_ITEMID)) {
@@ -250,7 +250,7 @@ public class PulseMessagesPresenter implements Serializable {
         final Filter filter = new Filter() {
 
             @Override
-            public boolean passesFilter(Object itemId, Item item) throws UnsupportedOperationException {                
+            public boolean passesFilter(Object itemId, Item item) throws UnsupportedOperationException {
                 final MessageType type = (MessageType) item.getItemProperty("type").getValue();
 
                 switch (category) {

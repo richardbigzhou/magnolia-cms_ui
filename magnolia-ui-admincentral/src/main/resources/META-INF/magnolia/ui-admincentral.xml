@@ -212,18 +212,18 @@
 		</component>
 
 		<component>
-			<type>info.magnolia.ui.widget.dialog.MagnoliaDialogView</type>
-			<implementation>info.magnolia.ui.widget.dialog.Dialog</implementation>
+			<type>info.magnolia.ui.vaadin.dialog.MagnoliaDialogView</type>
+			<implementation>info.magnolia.ui.vaadin.dialog.Dialog</implementation>
 		</component>
 
 		<component>
-			<type>info.magnolia.ui.widget.dialog.DialogView</type>
-			<implementation>info.magnolia.ui.widget.dialog.BaseDialog</implementation>
+			<type>info.magnolia.ui.vaadin.dialog.DialogView</type>
+			<implementation>info.magnolia.ui.vaadin.dialog.BaseDialog</implementation>
 		</component>
 
 		<component>
-			<type>info.magnolia.ui.widget.dialog.FormDialogView</type>
-			<implementation>info.magnolia.ui.widget.dialog.FormDialog</implementation>
+			<type>info.magnolia.ui.vaadin.dialog.FormDialogView</type>
+			<implementation>info.magnolia.ui.vaadin.dialog.FormDialog</implementation>
 		</component>
 
 		<component>
@@ -506,7 +506,7 @@
 				</param>
 				<param>
 					<name>widgetset</name>
-					<value>info.magnolia.ui.vaadin.widgetset.MagnoliaWidgetSet</value>
+					<value>info.magnolia.ui.vaadin.gwt.MagnoliaWidgetSet</value>
 				</param>
 				<param>
 					<name>caption</name>

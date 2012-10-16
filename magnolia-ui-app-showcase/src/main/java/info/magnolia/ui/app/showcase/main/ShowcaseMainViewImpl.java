@@ -34,7 +34,7 @@
 package info.magnolia.ui.app.showcase.main;
 
 import info.magnolia.ui.framework.view.View;
-import info.magnolia.ui.vaadin.widget.tabsheet.MagnoliaTabSheet;
+import info.magnolia.ui.vaadin.tabsheet.MagnoliaTabSheet;
 
 import javax.inject.Inject;
 

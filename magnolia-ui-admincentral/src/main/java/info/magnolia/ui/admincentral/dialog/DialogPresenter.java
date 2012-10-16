@@ -40,9 +40,9 @@ import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
-import info.magnolia.ui.widget.dialog.BaseDialog.DialogCloseEvent;
-import info.magnolia.ui.widget.dialog.DialogView;
-import info.magnolia.ui.widget.dialog.DialogView.DialogActionListener;
+import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
+import info.magnolia.ui.vaadin.dialog.DialogView;
+import info.magnolia.ui.vaadin.dialog.DialogView.DialogActionListener;
 
 /**
  * Base Dialog presenter.

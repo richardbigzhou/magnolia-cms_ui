@@ -54,7 +54,7 @@ import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.thumbnail.ImageProvider;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.widget.actionbar.ActionbarView;
+import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 
 import javax.inject.Inject;
 import javax.inject.Named;

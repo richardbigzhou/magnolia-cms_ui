@@ -39,9 +39,9 @@ import info.magnolia.ui.admincentral.container.AbstractJcrContainer;
 import info.magnolia.ui.model.thumbnail.ImageProvider;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.vaadin.integration.widget.LazyThumbnailLayout;
-import info.magnolia.ui.vaadin.integration.widget.LazyThumbnailLayout.ThumbnailDblClickListener;
-import info.magnolia.ui.vaadin.integration.widget.LazyThumbnailLayout.ThumbnailSelectionListener;
+import info.magnolia.ui.vaadin.layout.LazyThumbnailLayout;
+import info.magnolia.ui.vaadin.layout.LazyThumbnailLayout.ThumbnailDblClickListener;
+import info.magnolia.ui.vaadin.layout.LazyThumbnailLayout.ThumbnailSelectionListener;
 
 import java.util.ArrayList;
 import java.util.List;

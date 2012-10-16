@@ -34,7 +34,7 @@
 package info.magnolia.ui.app.showcase.main;
 
 import info.magnolia.ui.framework.view.View;
-import info.magnolia.ui.widget.dialog.BaseDialog;
+import info.magnolia.ui.vaadin.dialog.BaseDialog;
 
 /**
  * View for forms usage example.
