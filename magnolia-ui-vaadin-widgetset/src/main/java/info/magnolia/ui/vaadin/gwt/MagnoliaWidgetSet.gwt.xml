@@ -15,8 +15,6 @@
 
     <inherits name="com.google.gwt.json.JSON" />
 
-    <source path ="client"/>
-
      <!-- gecko handles Iframe loading and DOMContentLoaded event correctly-->
     <replace-with class="info.magnolia.ui.vaadin.gwt.client.editor.jsni.GenericFrameEventHandler">
         <when-type-is class="info.magnolia.ui.vaadin.gwt.client.editor.jsni.AbstractFrameEventHandler"/>
