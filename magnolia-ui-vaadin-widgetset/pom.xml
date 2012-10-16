@@ -99,7 +99,7 @@
           <noServer>true</noServer>
           <module>info.magnolia.ui.vaadin.gwt.MagnoliaWidgetSet</module>
           <runTarget>.magnolia/admincentral</runTarget>
-          <draftCompile>true</draftCompile>
+          <!-- draftCompile>true</draftCompile-->
         </configuration>
         <executions>
           <execution>
