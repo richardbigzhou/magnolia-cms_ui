@@ -290,13 +290,6 @@
 
 	<!-- Declaring dummy view for all fake apps -->
 	<components>
-		<id>app-assets-main</id>
-		<component>
-			<type>info.magnolia.ui.admincentral.app.dummy.DummyView</type>
-			<implementation>info.magnolia.ui.admincentral.app.dummy.DummyViewImpl</implementation>
-		</component>
-	</components>
-	<components>
 		<id>app-documents-main</id>
 		<component>
 			<type>info.magnolia.ui.admincentral.app.dummy.DummyView</type>

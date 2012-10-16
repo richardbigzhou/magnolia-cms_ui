@@ -31,7 +31,7 @@
 		<tag>HEAD</tag>
 	</scm>
 
-	<dependencyManagement>
+  <dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>info.magnolia</groupId>
@@ -41,6 +41,16 @@
       <dependency>
         <groupId>info.magnolia.pageexport</groupId>
         <artifactId>magnolia-module-page-export</artifactId>
+        <version>1.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>info.magnolia.dam</groupId>
+        <artifactId>magnolia-module-dam</artifactId>
+        <version>1.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>info.magnolia.dam</groupId>
+        <artifactId>magnolia-module-dam-app-assets</artifactId>
         <version>1.0-SNAPSHOT</version>
       </dependency>
       <dependency>
@@ -164,18 +174,18 @@
         <artifactId>cloning</artifactId>
         <version>1.8.2</version>
       </dependency>
-	<dependency>
-		<groupId>javax.validation</groupId>
-		<artifactId>validation-api</artifactId>
-		<version>1.0.0.GA</version>
-	</dependency>
-	<dependency>
-		<groupId>javax.validation</groupId>
-		<artifactId>validation-api</artifactId>
-		<classifier>sources</classifier>
-		<version>1.0.0.GA</version>
-	</dependency>
-    <dependency>
+      <dependency>
+        <groupId>javax.validation</groupId>
+        <artifactId>validation-api</artifactId>
+        <version>1.0.0.GA</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.validation</groupId>
+        <artifactId>validation-api</artifactId>
+        <classifier>sources</classifier>
+        <version>1.0.0.GA</version>
+      </dependency>
+      <dependency>
         <groupId>junit</groupId>
         <artifactId>junit-dep</artifactId>
         <version>4.10</version>
@@ -195,27 +205,26 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-
-  <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.zeroturnaround</groupId>
-          <artifactId>jrebel-maven-plugin</artifactId>
-          <version>1.1.3</version>
-          <executions>
-            <execution>
-              <id>generate-rebel-xml</id>
-              <phase>process-resources</phase>
-              <goals>
-                <goal>generate</goal>
-              </goals>
-            </execution>
-          </executions>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-  </build>
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.zeroturnaround</groupId>
+					<artifactId>jrebel-maven-plugin</artifactId>
+					<version>1.1.1</version>
+					<executions>
+						<execution>
+							<id>generate-rebel-xml</id>
+							<phase>process-resources</phase>
+							<goals>
+								<goal>generate</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
 
 	<modules>
 		<module>magnolia-ui-framework</module>
