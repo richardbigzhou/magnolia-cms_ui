@@ -37,10 +37,6 @@ import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.ui.model.action.Action;
-import info.magnolia.ui.model.action.ActionDefinition;
-import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.model.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.model.workbench.definition.ItemTypeDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 
@@ -69,12 +65,10 @@ import org.slf4j.LoggerFactory;
 public class TreeModel implements JcrContainerSource {
 
     private static final Logger log = LoggerFactory.getLogger(TreeModel.class);
-    private WorkbenchActionFactory actionFactory;
     private WorkbenchDefinition workbenchDefinition;
 
-    public TreeModel(WorkbenchDefinition workbenchDefinition,  WorkbenchActionFactory actionFactory) {
+    public TreeModel(WorkbenchDefinition workbenchDefinition) {
         this.workbenchDefinition = workbenchDefinition;
-        this.actionFactory = actionFactory;
     }
 
     @Override
@@ -166,27 +160,6 @@ public class TreeModel implements JcrContainerSource {
         return item.isNode() && !getChildren(item).isEmpty();
     }
 
-
-    @Override
-    public String getItemIcon(Item item) throws RepositoryException {
-        for (ItemTypeDefinition itemType : workbenchDefinition.getItemTypes()) {
-            if (!item.isNode() && itemType.getItemType().equals(ItemTypeDefinition.ITEM_TYPE_PROPERTY)) {
-                return itemType.getIcon();
-            } else if (item.isNode()) {
-                Node node = (Node) item;
-                if (itemType.getItemType().equals(node.getPrimaryNodeType().getName())) {
-                    return itemType.getIcon();
-                }
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public Node getNodeByIdentifier(String nodeIdentifier) throws RepositoryException {
-        return getSession().getNodeByIdentifier(nodeIdentifier);
-    }
-
     @Override
     public Item getItemByPath(String path) throws RepositoryException {
         String absolutePath = getPathInWorkspace(path);
@@ -245,8 +218,10 @@ public class TreeModel implements JcrContainerSource {
         return !target.getPath().startsWith(source.getPath());
     }
 
-
-    public String getPathInTree(Item item) throws RepositoryException {
+   /**
+    * Only used in tests.
+    */
+   String getPathInTree(Item item) throws RepositoryException {
         String base = workbenchDefinition.getPath();
         if ("/".equals(base)) {
             return item.getPath();
@@ -254,12 +229,6 @@ public class TreeModel implements JcrContainerSource {
             return StringUtils.substringAfter(item.getPath(), base);
         }
     }
-
-    public void execute(ActionDefinition actionDefinition, Item item) throws ActionExecutionException {
-        Action action = actionFactory.createAction(actionDefinition, item, null);
-        action.execute();
-    }
-
 
     private Session getSession() throws LoginException, RepositoryException {
         return MgnlContext.getJCRSession(workbenchDefinition.getWorkspace());

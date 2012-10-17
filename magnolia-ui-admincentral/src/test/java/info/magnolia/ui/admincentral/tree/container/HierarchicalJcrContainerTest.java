@@ -122,7 +122,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
 
         workbenchDefinition = configuredWorkbench;
 
-        treeModel = new TreeModel(workbenchDefinition, workbenchActionFactory);
+        treeModel = new TreeModel(workbenchDefinition);
 
         hierarchicalJcrContainer = new HierarchicalJcrContainer(treeModel, workbenchDefinition);
 

@@ -43,8 +43,6 @@ import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.builder.DefinitionToImplementationMapping;
 import info.magnolia.ui.model.column.definition.PropertyTypeColumnDefinition;
-import info.magnolia.ui.model.workbench.action.WorkbenchActionFactory;
-import info.magnolia.ui.model.workbench.action.WorkbenchActionFactoryImpl;
 import info.magnolia.ui.model.workbench.action.WorkbenchActionRegistry;
 import info.magnolia.ui.model.workbench.definition.ConfiguredItemTypeDefinition;
 import info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition;
@@ -91,7 +89,6 @@ public class TreeModelTest extends RepositoryTestCase {
         super.setUp();
         WorkbenchActionRegistry workbenchActionRegistry = mock(WorkbenchActionRegistry.class);
         when(workbenchActionRegistry.getDefinitionToImplementationMappings()).thenReturn(new ArrayList<DefinitionToImplementationMapping<ActionDefinition,Action>>());
-        WorkbenchActionFactory workbenchActionFactory = new WorkbenchActionFactoryImpl(null, workbenchActionRegistry);
         ConfiguredWorkbenchDefinition configuredWorkbench = new ConfiguredWorkbenchDefinition();
         configuredWorkbench.setWorkspace(workspace);
         configuredWorkbench.setPath("/");
@@ -116,7 +113,7 @@ public class TreeModelTest extends RepositoryTestCase {
         configuredWorkbench.addColumn(colDef1);
         configuredWorkbench.addColumn(colDef2);
 
-        treeModel = new TreeModel(configuredWorkbench, workbenchActionFactory);
+        treeModel = new TreeModel(configuredWorkbench);
         workbenchDefinition = configuredWorkbench;
 
         // Init session
@@ -186,20 +183,6 @@ public class TreeModelTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testGetItemIcon_Node() throws RepositoryException {
-        // GIVEN
-        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", "mgnl:content", colName1, "name1");
-        node1.getSession().save();
-
-        // WHEN
-        String icone = treeModel.getItemIcon(node1);
-
-        // THEN
-        assertNotNull(icone);
-        assertEquals("icone1", icone);
-    }
-
-    @Test
     public void testGetItemIcon_Property() {
         // TODO
         // GIVEN
@@ -207,20 +190,6 @@ public class TreeModelTest extends RepositoryTestCase {
         // WHEN
 
         // THEN
-    }
-
-    @Test
-    public void testGetNodeByIdentifier() throws RepositoryException {
-        // GIVEN
-        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", "mgnl:content", colName1, "name1");
-        node1.getSession().save();
-
-        // WHEN
-        Node res = treeModel.getNodeByIdentifier(node1.getIdentifier());
-
-        // THEN
-        assertNotNull(res);
-        assertEquals(node1.getPath(), res.getPath());
     }
 
     @Test

@@ -92,7 +92,7 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
         configuredWorkbench.addColumn(colDef1);
         configuredWorkbench.addColumn(colDef2);
 
-        treeModel = new TreeModel(configuredWorkbench, workbenchActionFactory);
+        treeModel = new TreeModel(configuredWorkbench);
 
         jcrContainer = new SearchJcrContainer(treeModel, configuredWorkbench);
 

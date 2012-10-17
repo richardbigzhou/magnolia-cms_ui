@@ -36,7 +36,6 @@ package info.magnolia.ui.vaadin.integration.jcr.container;
 import java.util.Collection;
 
 import javax.jcr.Item;
-import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 
@@ -53,9 +52,5 @@ public interface JcrContainerSource {
 
     boolean hasChildren(Item item) throws RepositoryException;
 
-    String getItemIcon(Item item) throws RepositoryException;
-
     Item getItemByPath(String path) throws RepositoryException;
-
-    Node getNodeByIdentifier(String nodeIdentifier) throws RepositoryException;
 }

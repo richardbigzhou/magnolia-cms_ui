@@ -34,10 +34,13 @@
 package info.magnolia.ui.vaadin.integration.jcr.container;
 
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
 import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.RepositoryTestCase;
@@ -45,8 +48,6 @@ import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.builder.DefinitionToImplementationMapping;
 import info.magnolia.ui.model.column.definition.PropertyTypeColumnDefinition;
-import info.magnolia.ui.model.workbench.action.WorkbenchActionFactory;
-import info.magnolia.ui.model.workbench.action.WorkbenchActionFactoryImpl;
 import info.magnolia.ui.model.workbench.action.WorkbenchActionRegistry;
 import info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
@@ -94,7 +95,6 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
         //Init workBench
         WorkbenchActionRegistry workbenchActionRegistry = mock(WorkbenchActionRegistry.class);
         when(workbenchActionRegistry.getDefinitionToImplementationMappings()).thenReturn(new ArrayList<DefinitionToImplementationMapping<ActionDefinition,Action>>());
-        WorkbenchActionFactory workbenchActionFactory = new WorkbenchActionFactoryImpl(null, workbenchActionRegistry);
         //Init col
         PropertyTypeColumnDefinition colDef1 = new PropertyTypeColumnDefinition();
         colDef1.setSortable(true);
@@ -110,7 +110,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
 
         configuredWorkbench.setDefaultOrder(colName2);
 
-        treeModel = new TreeModel(configuredWorkbench, workbenchActionFactory);
+        treeModel = new TreeModel(configuredWorkbench);
 
         jcrContainer = new JcrContainerTestImpl(treeModel, configuredWorkbench);
         workbenchDefinition = configuredWorkbench;
