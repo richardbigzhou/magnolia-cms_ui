@@ -33,16 +33,13 @@
  */
 package info.magnolia.ui.model.workbench.definition;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.model.column.definition.ColumnDefinition;
 import info.magnolia.ui.model.thumbnail.ImageProvider;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -69,7 +66,7 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
     private boolean dialogWorkbench = false;
 
     private ImageProvider imageProvider;
-    
+
     @Override
     public String getName() {
         return name;
