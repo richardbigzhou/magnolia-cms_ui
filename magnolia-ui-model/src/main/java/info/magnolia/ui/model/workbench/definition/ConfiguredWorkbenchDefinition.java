@@ -60,7 +60,7 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
 
     private List<ItemTypeDefinition> itemTypes = new ArrayList<ItemTypeDefinition>();
 
-    private final Map<String, ColumnDefinition> columns = new LinkedHashMap<String, ColumnDefinition>();
+    private final List<ColumnDefinition> columns = new ArrayList<ColumnDefinition>();
 
     private ActionbarDefinition actionbar;
 
@@ -121,18 +121,12 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
     }
 
     @Override
-    public ColumnDefinition getColumn(String columnId) {
-        return columns.get(columnId);
+    public List<ColumnDefinition> getColumns() {
+        return columns;
     }
 
-    @Override
-    public Collection<ColumnDefinition> getColumns() {
-        return columns.values();
-    }
-
-
-    public void addColumn(ColumnDefinition treeColumn) {
-        columns.put(treeColumn.getLabel(), treeColumn);
+    public void addColumn(ColumnDefinition columnDefinition) {
+        columns.add(columnDefinition);
     }
 
     @Override

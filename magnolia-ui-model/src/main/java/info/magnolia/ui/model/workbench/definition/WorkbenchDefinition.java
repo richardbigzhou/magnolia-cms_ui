@@ -39,7 +39,6 @@ import info.magnolia.ui.model.column.definition.ColumnDefinition;
 import info.magnolia.ui.model.thumbnail.ImageProvider;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.List;
 
 
@@ -62,9 +61,7 @@ public interface WorkbenchDefinition extends Serializable {
      */
     String getItemTypesFilter();
 
-    ColumnDefinition getColumn(String columnId);
-
-    Collection<ColumnDefinition> getColumns();
+    List<ColumnDefinition> getColumns();
 
     /**
      * Gets the definition for the action bar related to this workbench.
