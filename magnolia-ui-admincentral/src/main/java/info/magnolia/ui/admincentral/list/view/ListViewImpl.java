@@ -45,7 +45,6 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.widget.grid.MagnoliaTable;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
