@@ -40,10 +40,8 @@ import com.google.inject.Inject;
 
 import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.context.MgnlContext;
-import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
 import info.magnolia.ui.admincentral.dialog.FormDialogPresenterFactory;
-import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
@@ -55,13 +53,11 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 public class FormsPresenter implements FormsView.Listener {
 
     private FormsView view;
-    private MagnoliaShell shell;
     private FormDialogPresenterFactory formFactory;
 
     @Inject
-    public FormsPresenter(FormsView formsView, Shell shell, FormDialogPresenterFactory formFactory) {
+    public FormsPresenter(FormsView formsView, FormDialogPresenterFactory formFactory) {
         this.view = formsView;
-        this.shell = (MagnoliaShell) shell;
         this.formFactory = formFactory;
     }
 
@@ -75,7 +71,7 @@ public class FormsPresenter implements FormsView.Listener {
         try {
         String workspace = "website";
         String path = "/";
-        FormDialogPresenter formPresenter = formFactory.createDialogPresenterByName("ui-showcase-app:showcasedialog");
+        final FormDialogPresenter formPresenter = formFactory.createDialogPresenterByName("ui-showcase-app:showcasedialog");
         Session session = MgnlContext.getJCRSession(workspace);
 
         Node parentNode = session.getNode(path);
@@ -88,26 +84,18 @@ public class FormsPresenter implements FormsView.Listener {
 
             @Override
             public void onCancel() {
-                // TODO Auto-generated method stub
-                
+                formPresenter.closeDialog();
             }
 
             @Override
             public void onSuccess(String actionName) {
-                // TODO Auto-generated method stub
-                
+                formPresenter.closeDialog();
             }
             
         });
         } catch(Exception e) {
             
         }
-        //shell.addDialog(view.asBaseDialog().asVaadinComponent());
-    }
-
-    @Override
-    public void onCloseDialog() {
-        shell.removeDialog(view.asBaseDialog());
     }
 }
 

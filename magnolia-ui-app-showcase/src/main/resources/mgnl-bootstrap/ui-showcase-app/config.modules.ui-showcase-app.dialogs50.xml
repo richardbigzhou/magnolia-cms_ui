@@ -1423,7 +1423,7 @@
             <sv:value>2012-06-18T13:15:27.740+02:00</sv:value>
           </sv:property>
           <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-            <sv:value>2012-10-12T12:35:00.188+03:00</sv:value>
+            <sv:value>2012-10-17T08:38:01.633+03:00</sv:value>
           </sv:property>
         </sv:node>
         <sv:node sv:name="actionDefinition">
@@ -1437,7 +1437,7 @@
             <sv:value>1cd170fd-c6b8-4154-af00-c86b4e718eb7</sv:value>
           </sv:property>
           <sv:property sv:name="class" sv:type="String">
-            <sv:value>info.magnolia.ui.app.contacts.dialog.action.SaveContactDialogActionDefinition</sv:value>
+            <sv:value>info.magnolia.ui.app.showcase.dialog.action.SaveShowcaseDialogActionDefinition</sv:value>
           </sv:property>
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
@@ -1456,7 +1456,7 @@
               <sv:value>2012-06-18T13:19:19.449+02:00</sv:value>
             </sv:property>
             <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-              <sv:value>2012-08-30T08:59:54.985+02:00</sv:value>
+              <sv:value>2012-10-17T08:28:12.927+03:00</sv:value>
             </sv:property>
           </sv:node>
         </sv:node>
