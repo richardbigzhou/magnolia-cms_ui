@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.admincentral.container;
 
+import info.magnolia.cms.core.MetaData;
+import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.ui.model.column.definition.ColumnDefinition;
@@ -113,7 +115,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     protected static final String CONTENT_SELECTOR_NAME = "content";
 
-    protected static final String SELECT_CONTENT = "select * from [mgnl:content] as " + CONTENT_SELECTOR_NAME;
+    protected static final String SELECT_CONTENT = "select * from [" + MgnlNodeType.NT_CONTENT + "] as " + CONTENT_SELECTOR_NAME;
 
     protected static final String ORDER_BY = " order by ";
 
@@ -121,7 +123,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     protected static final String DESCENDING_KEYWORD = " desc";
 
-    protected static final String JOIN_METADATA = " inner join [mgnl:metaData] as metaData on ischildnode(metaData,content) ";
+    protected static final String JOIN_METADATA = " inner join [" + MgnlNodeType.NT_METADATA + "] as metaData on ischildnode(metaData,content) ";
 
     protected static final String METADATA_SELECTOR_NAME = "metaData";
 
@@ -132,7 +134,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     protected static final String JCR_NAME_FUNCTION = "name(" + CONTENT_SELECTOR_NAME + ")";
 
-    protected static final String METADATA_NODE_NAME = "MetaData/";
+    protected static final String METADATA_NODE_NAME = MetaData.DEFAULT_META_NODE + "/";
 
     public AbstractJcrContainer(JcrContainerSource jcrContainerSource, WorkbenchDefinition workbenchDefinition) {
         this.jcrContainerSource = jcrContainerSource;
@@ -407,6 +409,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     /***********************************************/
     @Override
     public void sort(Object[] propertyId, boolean[] ascending) {
+        resetOffset();
         sorters.clear();
         for (int i = 0; i < propertyId.length; i++) {
             if (sortableProperties.contains(propertyId[i])) {
@@ -468,7 +471,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
         }
         currentOffset = (index / (pageLength * cacheRatio)) * (pageLength * cacheRatio);
         if (currentOffset < 0) {
-            currentOffset = 0;
+            resetOffset();
         }
         getPage();
     }
@@ -611,9 +614,17 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
      * sorting or filtering rules!
      */
     public void refresh() {
-        currentOffset = 0;
+        resetOffset();
         itemIndexes.clear();
         updateSize();
+    }
+
+    protected void resetOffset() {
+        currentOffset = 0;
+    }
+
+    protected int getCurrentOffset() {
+        return currentOffset;
     }
 
     protected void setSize(int size) {

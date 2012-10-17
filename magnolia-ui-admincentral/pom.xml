@@ -110,19 +110,6 @@
     </dependency>
 
     <dependency>
-      <groupId>javax.validation</groupId>
-      <artifactId>validation-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>javax.validation</groupId>
-      <artifactId>validation-api</artifactId>
-      <classifier>sources</classifier>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
    		<groupId>org.vaadin.addons</groupId>
    		<artifactId>icepush</artifactId>
 	</dependency>
@@ -139,29 +126,24 @@
 	<dependency>
 	 	<groupId>org.vaadin.addon</groupId>
 		<artifactId>propertytranslator</artifactId>
-		<version>0.0.2</version>
 	</dependency>
 
 	<dependency>
    		<groupId>org.vaadin.addons</groupId>
    		<artifactId>easyuploads</artifactId>
-   		<version>0.5.1</version>
 	</dependency>
 		<dependency>
    		<groupId>org.vaadin.addons</groupId>
    		<artifactId>ckeditor-wrapper-for-vaadin</artifactId>
-   		<version>1.6.5</version>
 	</dependency>
 
 	<dependency>
 	  <groupId>org.devlib.schmidt</groupId>
 	  <artifactId>imageinfo</artifactId>
-	  <version>1.9</version>
 	</dependency>
 	<dependency>
       <groupId>uk.com.robust-it</groupId>
       <artifactId>cloning</artifactId>
-      <version>1.8.2</version>
     </dependency>
     <!-- For Test -->
      <dependency>

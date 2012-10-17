@@ -31,23 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.showcase.main;
+package info.magnolia.ui.app.showcase.dialog.action;
 
-import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition;
 
 /**
- * View for forms usage example.
+ * Action definition for showcase dialog.
  */
-public interface FormsView extends View {
-    /**
-     * Listener interface for FormsView.
-     */
-    public interface Listener {
-
-        void onViewInDialog();
-
-    }
-
-    void setListener(Listener listener);
+public class SaveShowcaseDialogActionDefinition extends SaveDialogActionDefinition {
 
 }
