@@ -35,10 +35,6 @@ package info.magnolia.ui.app.showcase.main;
 
 import java.util.Date;
 
-import org.vaadin.openesignforms.ckeditor.CKEditorTextField;
-
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Accordion;
@@ -49,7 +45,6 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.MenuBar;
-import com.vaadin.ui.RichTextArea;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TreeTable;
 import com.vaadin.ui.VerticalLayout;
@@ -77,53 +72,6 @@ public class UnsupportedViewImpl implements UnsupportedView {
         layout.addComponent(getMenuBarPreviews());
         layout.addComponent(getWindowPreviews());
         layout.addComponent(getTableAndTreeTable());
-        layout.addComponent(getRichTextField());
-        layout.addComponent(getCKEditor());
-    }
-
-    private Property.ValueChangeListener ckvaluechanged = new Property.ValueChangeListener() {
-        
-        @Override
-        public void valueChange(ValueChangeEvent event) {
-            System.out.println("ck: "+event.getProperty().toString());
-            ckContent.setValue(event.getProperty().toString());
-        }
-    };
-    
-    Label ckContent;
-    Layout getCKEditor() {
-        Layout grid = getPreviewLayout("CKEditor");
-        CKEditorTextField ckeditor = new CKEditorTextField();
-        ckContent = new Label("", Label.CONTENT_RAW);
-        ckeditor.setImmediate(true);
-        ckeditor.addListener(ckvaluechanged);
-        
-        grid.addComponent(ckeditor);
-        grid.addComponent(ckContent);
-        return grid;
-    }
-
-    private Property.ValueChangeListener valuechangelistener = new Property.ValueChangeListener() {
-        
-        @Override
-        public void valueChange(ValueChangeEvent event) {
-            System.out.println("vaadin: "+event.getProperty().toString());
-            rtContent.setValue(event.getProperty().toString());
-        }
-    };
-    
-    Label rtContent;
-    Layout getRichTextField() {
-        Layout grid = getPreviewLayout("Rich text field");
-        RichTextArea rt = new RichTextArea();
-        rtContent = new Label("", Label.CONTENT_RAW);
-        rt.setImmediate(true);
-        
-        rt.addListener(valuechangelistener);
-        
-        grid.addComponent(rt);
-        grid.addComponent(rtContent);
-        return grid;
     }
 
     Layout getTableAndTreeTable() {

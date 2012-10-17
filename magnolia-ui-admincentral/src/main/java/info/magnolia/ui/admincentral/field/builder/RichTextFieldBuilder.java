@@ -33,12 +33,13 @@
  */
 package info.magnolia.ui.admincentral.field.builder;
 
+import org.vaadin.openesignforms.ckeditor.CKEditorTextField;
+
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.model.field.definition.RichTextFieldDefinition;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.Field;
-import com.vaadin.ui.RichTextArea;
 
 /**
  * Creates and initializes an edit field based on a field definition.
@@ -52,7 +53,7 @@ public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefi
     @Override
     protected Field buildField() {
         RichTextFieldDefinition editDefinition = definition;
-        return new RichTextArea();
+        return new CKEditorTextField();
 
     }
 
