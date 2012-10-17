@@ -1512,7 +1512,7 @@ public class VMagnoliaTable extends FlowPanel implements Table, ScrollHandler, V
                         + "-" + scrollBody.getLastRendered() + " rendered!");
             }
         }
-        //discardRowsOutsideOf(firstRowToKeep, lastRowToKeep);
+        discardRowsOutsideOf(firstRowToKeep, lastRowToKeep);
 
         scrollBody.fixSpacers();
 

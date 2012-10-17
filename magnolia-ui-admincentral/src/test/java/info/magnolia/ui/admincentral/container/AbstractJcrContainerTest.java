@@ -349,6 +349,30 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
     }
 
     @Test
+    public void testOffestIsResetAfterSort() throws Exception {
+        // GIVEN
+        // set mini pageLength to not have to create tons of items
+        jcrContainer.setPageLength(1);
+        Node node1 = createNode(rootNode, "node0", MgnlNodeType.NT_CONTENT, "name", "name0");
+        for (int i = 1; i <= 5; i++) {
+            createNode(rootNode, "node" + i, MgnlNodeType.NT_CONTENT, "name", "name" + i);
+        }
+        node1.getSession().save();
+
+        // trigger an update of the currentOffset
+        jcrContainer.updateSize();
+        jcrContainer.lastItemId();
+        assertEquals(4, jcrContainer.getCurrentOffset());
+
+        // WHEN
+        jcrContainer.sort(Arrays.asList("name").toArray(), new boolean[] {true});
+
+        // THEN
+        assertEquals(0, jcrContainer.getCurrentOffset());
+    }
+
+
+    @Test
     public void testContainsIdWithNull() {
         // WHEN
         final boolean result = jcrContainer.containsId(null);
