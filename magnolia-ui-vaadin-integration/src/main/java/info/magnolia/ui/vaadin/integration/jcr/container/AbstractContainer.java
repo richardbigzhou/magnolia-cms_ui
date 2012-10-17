@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.container;
+package info.magnolia.ui.vaadin.integration.jcr.container;
 
 
 

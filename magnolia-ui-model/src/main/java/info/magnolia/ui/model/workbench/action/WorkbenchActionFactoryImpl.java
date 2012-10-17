@@ -31,43 +31,39 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.workbench.action;
+package info.magnolia.ui.model.workbench.action;
 
-import info.magnolia.ui.admincentral.content.view.builder.DefinitionToImplementationMapping;
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.model.action.AbstractActionFactory;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.builder.DefinitionToImplementationMapping;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.jcr.Item;
 
 
 /**
- * Dialog WorkbenchAction Registry. This registry currently listen to changes
- * coming from the following path: /modules/ui-admincentral/workbenchActionRegistry
+ * Creates an action based on an {@link info.magnolia.ui.model.action.ActionDefinition}.
  */
 @Singleton
-public class WorkbenchActionRegistry implements Serializable {
+public class WorkbenchActionFactoryImpl extends AbstractActionFactory<ActionDefinition, Action> implements WorkbenchActionFactory, Serializable {
 
-    private List<DefinitionToImplementationMapping<ActionDefinition, Action>> definitionToImplementationMappings = new ArrayList<DefinitionToImplementationMapping<ActionDefinition, Action>>();
+    @Inject
+    public WorkbenchActionFactoryImpl(ComponentProvider componentProvider, WorkbenchActionRegistry workbenchActionRegistry) {
+        super(componentProvider);
 
-    public WorkbenchActionRegistry() {
-        super();
+        for (DefinitionToImplementationMapping<ActionDefinition, Action> definitionToImplementationMapping : workbenchActionRegistry.getDefinitionToImplementationMappings()) {
+            addMapping(definitionToImplementationMapping.getDefinition(), definitionToImplementationMapping.getImplementation());
+        }
     }
 
-    public List<DefinitionToImplementationMapping<ActionDefinition, Action>> getDefinitionToImplementationMappings() {
-        return this.definitionToImplementationMappings;
-    }
-
-    public void setDefinitionToImplementationMappings(
-        List<DefinitionToImplementationMapping<ActionDefinition, Action>> definitionToImplementationMappings) {
-        this.definitionToImplementationMappings = definitionToImplementationMappings;
-    }
-
-    public void addDefinitionToImplementationMapping(DefinitionToImplementationMapping<ActionDefinition, Action> mapping) {
-        this.definitionToImplementationMappings.add(mapping);
+    @Override
+    public Action createAction(final ActionDefinition actionDefinition, final Item item) {
+        return create(actionDefinition, item);
     }
 
 }

@@ -41,10 +41,10 @@ import info.magnolia.ui.admincentral.list.view.ListViewImpl;
 import info.magnolia.ui.admincentral.search.container.SearchJcrContainer;
 import info.magnolia.ui.admincentral.search.view.SearchViewImpl;
 import info.magnolia.ui.admincentral.thumbnail.view.LazyThumbnailViewImpl;
-import info.magnolia.ui.admincentral.tree.model.TreeModel;
 import info.magnolia.ui.admincentral.tree.view.TreeViewImpl;
-import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
+import info.magnolia.ui.model.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.container.TreeModel;
 
 import java.io.Serializable;
 

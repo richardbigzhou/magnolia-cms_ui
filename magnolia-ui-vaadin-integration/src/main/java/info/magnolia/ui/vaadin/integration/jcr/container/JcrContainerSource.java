@@ -31,26 +31,31 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.container;
+package info.magnolia.ui.vaadin.integration.jcr.container;
+
+import java.util.Collection;
+
+import javax.jcr.Item;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
 
 /**
- * Represents a sorting rule to be applied to a query.
+ * Backing implementation for AbstractJcrContainer.
  */
-public class OrderBy {
+public interface JcrContainerSource {
 
-    private String property;
-    private boolean isAscending;
+    Collection<Item> getChildren(Item item) throws RepositoryException;
 
-    public OrderBy(String property, boolean isAscending) {
-       this.property = property;
-       this.isAscending = isAscending;
-    }
+    Collection<Item> getRootItemIds() throws RepositoryException;
 
-    public String getProperty() {
-        return property;
-    }
+    boolean isRoot(Item item) throws RepositoryException;
 
-    public boolean isAscending() {
-        return isAscending;
-    }
+    boolean hasChildren(Item item) throws RepositoryException;
+
+    String getItemIcon(Item item) throws RepositoryException;
+
+    Item getItemByPath(String path) throws RepositoryException;
+
+    Node getNodeByIdentifier(String nodeIdentifier) throws RepositoryException;
 }

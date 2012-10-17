@@ -31,38 +31,26 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.content.view.builder;
+package info.magnolia.ui.vaadin.integration.jcr.container;
 
 /**
- * Defines a Mapping from a Definition to an specific implementation.
- * @param <D> class of the definition
- * @param <I> class of the implementation
+ * Represents a sorting rule to be applied to a query.
  */
-public class DefinitionToImplementationMapping<D,I> {
+public class OrderBy {
 
-    /**
-     * Class-name of definition.
-     */
-    private Class<D> definition;
+    private String property;
+    private boolean isAscending;
 
-    /**
-     * Class-name of implementation.
-     */
-    private Class<I> implementation;
-
-    public void setDefinition(Class<D> definition) {
-        this.definition = definition;
+    public OrderBy(String property, boolean isAscending) {
+       this.property = property;
+       this.isAscending = isAscending;
     }
 
-    public Class<D> getDefinition() {
-        return definition;
+    public String getProperty() {
+        return property;
     }
 
-    public void setImplementation(Class<I> implementation) {
-        this.implementation = implementation;
-    }
-
-    public Class<I> getImplementation() {
-        return implementation;
+    public boolean isAscending() {
+        return isAscending;
     }
 }

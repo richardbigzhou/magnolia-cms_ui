@@ -31,17 +31,16 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.tree.model;
+package info.magnolia.ui.vaadin.integration.jcr.container;
 
 import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.ui.admincentral.container.JcrContainerSource;
-import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.model.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.model.workbench.definition.ItemTypeDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 
@@ -246,8 +245,6 @@ public class TreeModel implements JcrContainerSource {
         return !target.getPath().startsWith(source.getPath());
     }
 
-
-    // Used by JcrBrowser and VaadinTreeView
 
     public String getPathInTree(Item item) throws RepositoryException {
         String base = workbenchDefinition.getPath();

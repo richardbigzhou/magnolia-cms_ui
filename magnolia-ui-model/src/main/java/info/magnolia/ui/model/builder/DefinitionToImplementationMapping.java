@@ -31,31 +31,38 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.container;
-
-import java.util.Collection;
-
-import javax.jcr.Item;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
+package info.magnolia.ui.model.builder;
 
 /**
- * Backing implementation for AbstractJcrContainer.
+ * Defines a Mapping from a Definition to an specific implementation.
+ * @param <D> class of the definition
+ * @param <I> class of the implementation
  */
-public interface JcrContainerSource {
+public class DefinitionToImplementationMapping<D,I> {
 
-    Collection<Item> getChildren(Item item) throws RepositoryException;
+    /**
+     * Class-name of definition.
+     */
+    private Class<D> definition;
 
-    Collection<Item> getRootItemIds() throws RepositoryException;
+    /**
+     * Class-name of implementation.
+     */
+    private Class<I> implementation;
 
-    boolean isRoot(Item item) throws RepositoryException;
+    public void setDefinition(Class<D> definition) {
+        this.definition = definition;
+    }
 
-    boolean hasChildren(Item item) throws RepositoryException;
+    public Class<D> getDefinition() {
+        return definition;
+    }
 
-    String getItemIcon(Item item) throws RepositoryException;
+    public void setImplementation(Class<I> implementation) {
+        this.implementation = implementation;
+    }
 
-    Item getItemByPath(String path) throws RepositoryException;
-
-    Node getNodeByIdentifier(String nodeIdentifier) throws RepositoryException;
+    public Class<I> getImplementation() {
+        return implementation;
+    }
 }

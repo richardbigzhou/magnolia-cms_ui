@@ -35,13 +35,13 @@ package info.magnolia.ui.admincentral.list.view;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.column.ColumnFormatter;
-import info.magnolia.ui.admincentral.container.AbstractJcrContainer;
 import info.magnolia.ui.admincentral.content.view.ContentView;
 import info.magnolia.ui.admincentral.list.container.FlatJcrContainer;
-import info.magnolia.ui.admincentral.tree.model.TreeModel;
 import info.magnolia.ui.model.column.definition.ColumnDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.container.AbstractJcrContainer;
+import info.magnolia.ui.vaadin.integration.jcr.container.TreeModel;
 import info.magnolia.ui.vaadin.grid.MagnoliaTable;
 
 import java.util.ArrayList;

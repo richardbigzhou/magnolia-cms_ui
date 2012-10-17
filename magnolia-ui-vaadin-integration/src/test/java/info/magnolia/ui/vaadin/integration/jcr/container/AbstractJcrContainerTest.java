@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.container;
+package info.magnolia.ui.vaadin.integration.jcr.container;
 
 
 import static org.junit.Assert.*;
@@ -41,14 +41,13 @@ import static org.mockito.Mockito.when;
 import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.RepositoryTestCase;
-import info.magnolia.ui.admincentral.content.view.builder.DefinitionToImplementationMapping;
-import info.magnolia.ui.admincentral.tree.model.TreeModel;
-import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
-import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactoryImpl;
-import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionRegistry;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.builder.DefinitionToImplementationMapping;
 import info.magnolia.ui.model.column.definition.PropertyTypeColumnDefinition;
+import info.magnolia.ui.model.workbench.action.WorkbenchActionFactory;
+import info.magnolia.ui.model.workbench.action.WorkbenchActionFactoryImpl;
+import info.magnolia.ui.model.workbench.action.WorkbenchActionRegistry;
 import info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
@@ -95,7 +94,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
         //Init workBench
         WorkbenchActionRegistry workbenchActionRegistry = mock(WorkbenchActionRegistry.class);
         when(workbenchActionRegistry.getDefinitionToImplementationMappings()).thenReturn(new ArrayList<DefinitionToImplementationMapping<ActionDefinition,Action>>());
-         WorkbenchActionFactory workbenchActionFactory = new WorkbenchActionFactoryImpl(null, workbenchActionRegistry);
+        WorkbenchActionFactory workbenchActionFactory = new WorkbenchActionFactoryImpl(null, workbenchActionRegistry);
         //Init col
         PropertyTypeColumnDefinition colDef1 = new PropertyTypeColumnDefinition();
         colDef1.setSortable(true);

@@ -12,11 +12,33 @@
   <properties>
     <cloverCoverageThreshold>4</cloverCoverageThreshold>
   </properties>
+
+   <build>
+	<plugins>
+	  <plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-jar-plugin</artifactId>
+		<executions>
+		  <execution>
+			<goals>
+				<goal>test-jar</goal>
+			</goals>
+		  </execution>
+		</executions>
+	  </plugin>
+	</plugins>
+  </build>
+
   <dependencies>
     <dependency>
       <groupId>info.magnolia</groupId>
       <artifactId>magnolia-core</artifactId>
       <version>${magnoliaVersion}</version>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-model</artifactId>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
