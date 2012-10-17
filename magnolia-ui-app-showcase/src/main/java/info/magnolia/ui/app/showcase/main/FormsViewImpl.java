@@ -33,11 +33,6 @@
  */
 package info.magnolia.ui.app.showcase.main;
 
-import info.magnolia.ui.widget.dialog.BaseDialog;
-import info.magnolia.ui.widget.dialog.BaseDialog.DialogCloseEvent;
-import info.magnolia.ui.widget.dialog.FormDialog;
-import info.magnolia.ui.widget.dialog.FormSection;
-
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Component;
 
@@ -65,7 +60,6 @@ public class FormsViewImpl implements FormsView {
     private static final long serialVersionUID = -6955085822490659756L;
     
     CssLayout layout = new CssLayout();
-    FormDialog dlg = new FormDialog();
 
     private Listener listener;
     
@@ -86,30 +80,6 @@ public class FormsViewImpl implements FormsView {
         }));
         
         createComponents(layout);
-        createDialog();
-    }
-
-    private void createDialog() {
-        dlg.addDialogCloseHandler(new DialogCloseEvent.Handler() {
-
-            @Override
-            public void onClose(DialogCloseEvent event) {
-                listener.onCloseDialog();
-            }
-            
-        });
-        
-        dlg.setDialogDescription("Components in a dialog");
-        CssLayout layout = new CssLayout();
-        createComponents(layout);
-
-        dlg.addDialogSection("", createSection(layout));
-    }
-    
-    private FormSection createSection(Component component) {
-        FormSection section = new FormSection();
-        section.addComponent(component);
-        return section;
     }
     
     private void createComponents(Layout layout) {
@@ -197,9 +167,4 @@ public class FormsViewImpl implements FormsView {
         this.listener = listener;
     }
 
-    @Override
-    public BaseDialog asBaseDialog() {
-        return dlg;
-    }
-    
 }
