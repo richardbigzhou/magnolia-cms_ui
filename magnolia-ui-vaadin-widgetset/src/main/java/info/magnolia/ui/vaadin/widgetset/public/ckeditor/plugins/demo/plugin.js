@@ -31,40 +31,21 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.field.builder;
 
-import org.vaadin.openesignforms.ckeditor.CKEditorConfig;
-import org.vaadin.openesignforms.ckeditor.CKEditorTextField;
+(function() {
+	CKEDITOR.plugins.add('demo', {
+		init: function(editor) {
+			editor.addCommand('demo', {
+				exec: function(editor) {
+					alert("This is the demo plugin in action");
+				}
+			});
 
-import info.magnolia.ui.model.field.definition.FieldDefinition;
-import info.magnolia.ui.model.field.definition.RichTextFieldDefinition;
-
-import com.vaadin.data.Item;
-import com.vaadin.ui.Field;
-
-/**
- * Creates and initializes an edit field based on a field definition.
- */
-public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefinition> {
-
-    public RichTextFieldBuilder(RichTextFieldDefinition definition, Item relatedFieldItem) {
-        super(definition, relatedFieldItem);
-    }
-
-    @Override
-    protected Field buildField() {
-        RichTextFieldDefinition editDefinition = definition;
-        CKEditorConfig config = new CKEditorConfig();
-        config.addToExtraPlugins("demo");
-        config.addCustomToolbarLine("{ name: 'styles', items : ['Demo','Format','Font','FontSize','TextColor','BGColor','Maximize', 'ShowBlocks','-','About'] }");
-        CKEditorTextField richtexteditor = new CKEditorTextField(config);
-        return richtexteditor;
-
-    }
-
-    @Override
-    protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {
-        return String.class;
-    }
-}
-
+			editor.ui.addButton('Demo', {
+				label: 'Demo thing',
+				command: 'demo',
+				icon: "../images/disk.png"
+			});
+		}
+	});
+})();
