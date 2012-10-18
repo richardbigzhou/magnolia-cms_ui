@@ -11,6 +11,7 @@ target
 .metadata
 .clover
 Servers
+**rebel.xml
 
 src/main/java/META-INF
 
