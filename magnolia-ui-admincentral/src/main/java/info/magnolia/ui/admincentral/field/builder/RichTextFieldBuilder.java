@@ -57,10 +57,11 @@ public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefi
         CKEditorConfig config = new CKEditorConfig();
 //        config.addToExtraPlugins("demo");
         StringBuilder strbuilder = new StringBuilder();
-        strbuilder.append("{ name: 'basicstyles', items: ['Bold','Italic','Underline','SpecialChar','-','RemoveFormat'] },");
+        strbuilder.append("{ name: 'basicstyles', items: ['Bold','Italic','Underline','SpecialChar'] },");
         strbuilder.append("{ name: 'paragraph', items: ['NumberedList','BulletedList'] },");
-        strbuilder.append("{ name: 'insert', items: ['Image','Link','Table'] },");
+        strbuilder.append("{ name: 'insert', items: ['Link','Unlink'] },");
         strbuilder.append("{ name: 'clipboard', items: ['Cut','Copy','Paste','PasteText','PasteFromWord'] },");
+        strbuilder.append("{ name: 'objects', items: ['Image','Table'] },");
         strbuilder.append("{ name: 'special', items: ['Undo','Redo'] }");
         config.addCustomToolbarLine(strbuilder.toString());
         
