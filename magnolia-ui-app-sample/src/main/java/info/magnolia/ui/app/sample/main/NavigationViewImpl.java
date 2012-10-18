@@ -33,6 +33,13 @@
  */
 package info.magnolia.ui.app.sample.main;
 
+import info.magnolia.ui.admincentral.app.content.AbstractContentApp;
+import info.magnolia.ui.framework.app.App;
+import info.magnolia.ui.framework.app.AppController;
+import info.magnolia.ui.framework.location.DefaultLocation;
+
+import javax.inject.Inject;
+
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
@@ -44,9 +51,14 @@ import com.vaadin.ui.VerticalLayout;
 public class NavigationViewImpl implements NavigationView {
 
     private Listener listener;
+    
     private VerticalLayout layout;
 
-    public NavigationViewImpl() {
+    private final AppController appController;
+    
+    @Inject
+    public NavigationViewImpl(AppController appController) {
+        this.appController = appController;
     }
 
     @Override
@@ -77,6 +89,10 @@ public class NavigationViewImpl implements NavigationView {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 listener.onItemSelected(name);
+                final App targetApp = 
+                        appController.startIfNotAlreadyRunning("assets", 
+                                new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "assets", ""));
+                ((AbstractContentApp)targetApp).openChooseDialog();
             }
         });
     }

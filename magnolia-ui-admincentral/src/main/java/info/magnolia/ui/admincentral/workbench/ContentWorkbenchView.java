@@ -50,6 +50,7 @@ public interface ContentWorkbenchView extends ComponentContainer, View {
      * Listener interface for events concerning the workbench.
      */
     interface Listener {
+        
         void onSearch(String searchExpression);
 
         void onViewTypeChanged(ViewType viewType);

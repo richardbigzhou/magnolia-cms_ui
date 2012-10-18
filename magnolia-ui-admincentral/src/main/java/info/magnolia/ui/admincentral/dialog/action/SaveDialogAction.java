@@ -56,9 +56,9 @@ public class SaveDialogAction extends ActionBase<SaveDialogActionDefinition> {
    
     private static final Logger log = LoggerFactory.getLogger(SaveDialogAction.class);
 
-    private Item item;
+    private final Item item;
     
-    private FormDialogPresenter presenter;
+    private final FormDialogPresenter presenter;
 
     public SaveDialogAction(SaveDialogActionDefinition definition, FormDialogPresenter presenter) {
         super(definition);
@@ -80,7 +80,6 @@ public class SaveDialogAction extends ActionBase<SaveDialogActionDefinition> {
                 throw new ActionExecutionException(e);
             }
             presenter.getCallback().onSuccess(getDefinition().getName());
-
         } else {
             log.info("Validation error(s) occured. No save performed.");
         }

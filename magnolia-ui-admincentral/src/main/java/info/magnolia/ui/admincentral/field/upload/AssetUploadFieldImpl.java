@@ -31,47 +31,19 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.sample.main;
+package info.magnolia.ui.admincentral.field.upload;
 
-import info.magnolia.ui.framework.view.View;
-
-import javax.inject.Inject;
-
-import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalSplitPanel;
+import info.magnolia.ui.admincentral.file.FileItemWrapper;
+import info.magnolia.ui.framework.shell.Shell;
 
 /**
- * View implementation of the main tab in sample app.
+ * AssetUploadFieldImpl. 
+ *
  */
-public class SampleMainViewImpl implements SampleMainView {
+public class AssetUploadFieldImpl extends UploadFileFieldImpl {
 
-    private Listener listener;
-    
-    private final HorizontalSplitPanel layout;
-
-    @Inject
-    public SampleMainViewImpl() {
-        layout = new HorizontalSplitPanel();
-        layout.setSplitPosition(50);
+    public AssetUploadFieldImpl(FileItemWrapper fileItem, Shell shell) {
+        super(fileItem, shell);
     }
 
-    @Override
-    public void setListener(Listener listener) {
-        this.listener = listener;
-    }
-
-    @Override
-    public Component asVaadinComponent() {
-        return layout;
-    }
-
-    @Override
-    public void setLeftView(View left) {
-        layout.setFirstComponent(left.asVaadinComponent());
-    }
-
-    @Override
-    public void setRightView(View right) {
-        layout.setSecondComponent(right.asVaadinComponent());
-    }
 }

@@ -47,7 +47,7 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 /**
- * Implemetation of {@link ChooseDialogFactory}.
+ * Implementation of {@link ChooseDialogFactory}.
  * 
  */
 @Singleton
@@ -70,8 +70,8 @@ public class ChooseDialogFactoryImpl implements ChooseDialogFactory {
     @Override
     public WorkbenchChooseDialogPresenter createWorkbenchChooseDialog() {
         final ChooseDialogView selectionDialogView = componentProvider.getComponent(ChooseDialogView.class);
-        final WorkbenchChooseDialogPresenter workbenchPickerDialogPresenter = componentProvider.newInstance(
-                WorkbenchChooseDialogPresenter.class, actionFactory, selectionDialogView, chooseDialogEventBus);
+        final WorkbenchChooseDialogPresenter workbenchPickerDialogPresenter = 
+                new WorkbenchChooseDialogPresenter(actionFactory, selectionDialogView, chooseDialogEventBus);
 
         final ChooseDialogContentPresenter presenter = componentProvider.getComponent(ChooseDialogContentPresenter.class);
         final BaseDialog dialog = (BaseDialog) workbenchPickerDialogPresenter.getView();
