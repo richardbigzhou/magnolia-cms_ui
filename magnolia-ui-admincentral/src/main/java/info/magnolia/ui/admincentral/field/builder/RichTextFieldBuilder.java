@@ -56,6 +56,7 @@ public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefi
         RichTextFieldDefinition editDefinition = definition;
         CKEditorConfig config = new CKEditorConfig();
 //        config.addToExtraPlugins("demo");
+        config.addToRemovePlugins("elementspath");
         StringBuilder strbuilder = new StringBuilder();
         strbuilder.append("{ name: 'basicstyles', items: ['Bold','Italic','Underline','SpecialChar'] },");
         strbuilder.append("{ name: 'paragraph', items: ['NumberedList','BulletedList'] },");
