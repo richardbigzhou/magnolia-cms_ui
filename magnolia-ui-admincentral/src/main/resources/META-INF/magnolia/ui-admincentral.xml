@@ -2,7 +2,7 @@
 <!DOCTYPE module SYSTEM "module.dtd">
 <module>
 	<name>ui-admincentral</name>
-	<displayName>Magnolia Admin Central</displayName>
+	<displayName>Magnolia AdminCentral</displayName>
 	<description>New Magnolia Administration GUI</description>
 	<class>info.magnolia.ui.admincentral.module.AdminCentralModule</class>
 	<versionHandler>info.magnolia.ui.admincentral.setup.AdminCentralModuleVersionHandler</versionHandler>
@@ -519,19 +519,6 @@
 				<param>
 					<name>codeBasePath</name>
 					<value>/.magnolia/admincentral</value>
-				</param>
-			</params>
-		</servlet>
-		<servlet>
-			<name>VaadinClasspathResourcesSpool</name>
-			<class>info.magnolia.cms.servlets.ClasspathSpool</class>
-			<mappings>
-				<mapping>/VAADIN/*</mapping>
-			</mappings>
-			<params>
-				<param>
-					<name>resourcesRoot</name>
-					<value>/VAADIN</value>
 				</param>
 			</params>
 		</servlet>

@@ -2,8 +2,8 @@
 <!DOCTYPE module SYSTEM "module.dtd">
 <module>
     <name>ui-pages-app</name>
-    <displayName>UI pages app</displayName>
-    <description>UI pages app</description>
+    <displayName>UI Pages app</displayName>
+    <description>UI Pages app</description>
     <version>${project.version}</version>
 
     <!-- App components definition. -->
