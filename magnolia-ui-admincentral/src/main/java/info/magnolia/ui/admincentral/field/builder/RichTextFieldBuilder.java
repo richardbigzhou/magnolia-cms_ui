@@ -58,10 +58,9 @@ public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefi
 //        config.addToExtraPlugins("demo");
         StringBuilder strbuilder = new StringBuilder();
         strbuilder.append("{ name: 'basicstyles', items: ['Bold','Italic','Underline','SpecialChar','-','RemoveFormat'] },");
-        strbuilder.append("{ name: 'paragraph', items: ['NumberedList','BulletedList','-','Outdent','Indent'] },");
-        strbuilder.append("{ name: 'insert', items: ['Image','Link','Unlink'] },");
+        strbuilder.append("{ name: 'paragraph', items: ['NumberedList','BulletedList'] },");
+        strbuilder.append("{ name: 'insert', items: ['Image','Link','Table'] },");
         strbuilder.append("{ name: 'clipboard', items: ['Cut','Copy','Paste','PasteText','PasteFromWord'] },");
-        strbuilder.append("{ name: 'table', items: ['Table'] },");
         strbuilder.append("{ name: 'special', items: ['Undo','Redo'] }");
         config.addCustomToolbarLine(strbuilder.toString());
         
