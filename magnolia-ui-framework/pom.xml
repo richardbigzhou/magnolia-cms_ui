@@ -10,7 +10,7 @@
 	<artifactId>magnolia-ui-framework</artifactId>
 	<name>magnolia-ui-framework</name>
 	<properties>
-		<cloverCoverageThreshold>62</cloverCoverageThreshold>
+		<cloverCoverageThreshold>80</cloverCoverageThreshold>
 	</properties>
 	<build>
 		<plugins>
@@ -27,7 +27,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- let's also attach the test sources -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
