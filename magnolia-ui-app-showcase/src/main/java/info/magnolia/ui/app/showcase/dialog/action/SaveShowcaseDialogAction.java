@@ -31,23 +31,25 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.showcase.main;
+package info.magnolia.ui.app.showcase.dialog.action;
 
-import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
+import info.magnolia.ui.admincentral.dialog.action.SaveDialogAction;
+import info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition;
+import info.magnolia.ui.model.action.ActionExecutionException;
 
 /**
- * View for forms usage example.
+ * Save action for showcase app form dialog.
  */
-public interface FormsView extends View {
-    /**
-     * Listener interface for FormsView.
-     */
-    public interface Listener {
-
-        void onViewInDialog();
-
+public class SaveShowcaseDialogAction extends SaveDialogAction {
+    
+    public SaveShowcaseDialogAction(final SaveDialogActionDefinition definition, final FormDialogPresenter presenter) {
+        super(definition, presenter);
     }
-
-    void setListener(Listener listener);
+    
+    @Override
+    public void execute() throws ActionExecutionException {
+        getPresenter().getCallback().onSuccess("");
+    }
 
 }

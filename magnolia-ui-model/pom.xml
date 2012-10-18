@@ -12,6 +12,8 @@
   <properties>
     <cloverCoverageThreshold>21</cloverCoverageThreshold>
   </properties>
+
+
   <dependencies>
     <dependency>
       <groupId>info.magnolia</groupId>
