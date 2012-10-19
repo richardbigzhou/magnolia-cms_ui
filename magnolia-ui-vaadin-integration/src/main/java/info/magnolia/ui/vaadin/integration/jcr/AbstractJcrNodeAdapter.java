@@ -42,7 +42,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.jcr.LoginException;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
@@ -245,9 +244,6 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
                 }
             }
             return node;
-        }
-        catch (LoginException e) {
-            throw new RuntimeRepositoryException(e);
         }
         catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);

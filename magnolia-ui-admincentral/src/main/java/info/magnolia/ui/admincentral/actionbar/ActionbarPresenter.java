@@ -54,7 +54,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Named;
-import javax.jcr.LoginException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
@@ -262,8 +261,6 @@ public class ActionbarPresenter implements ActionbarView.Listener {
                 throw new ActionExecutionException("Could not create action from actionDefinition. Action is null.");
             }
             action.execute();
-        } catch (LoginException e) {
-            throw new ActionExecutionException(e);
         } catch (RepositoryException e) {
             throw new ActionExecutionException(e);
         }

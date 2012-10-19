@@ -46,10 +46,8 @@ import info.magnolia.ui.vaadin.layout.LazyThumbnailLayout.ThumbnailSelectionList
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.jcr.LoginException;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
-import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.query.Query;
@@ -172,10 +170,6 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
 
             log.debug("Done collecting {} nodes in {}ms", uuids.size(), System.currentTimeMillis() - start);
 
-        } catch (PathNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (LoginException e) {
-            throw new RuntimeException(e);
         } catch (RepositoryException e) {
             throw new RuntimeException(e);
         }
@@ -211,8 +205,6 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
             Session session = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace());
             final Node imageNode = session.getNodeByIdentifier(thumbnailId);
             return new JcrNodeAdapter(imageNode);
-        } catch (LoginException e) {
-            log.error(e.getMessage());
         } catch (RepositoryException e) {
             log.error(e.getMessage());
         }
