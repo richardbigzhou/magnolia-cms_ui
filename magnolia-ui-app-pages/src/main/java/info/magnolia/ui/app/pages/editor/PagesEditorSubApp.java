@@ -63,7 +63,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.jcr.LoginException;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -183,9 +182,6 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
             Session session = MgnlContext.getJCRSession(appDescriptor.getWorkbench().getWorkspace());
             Node node = session.getNode(path);
             caption = node.getProperty("title").getString();
-
-        } catch (LoginException e) {
-            log.error("Exception caught: {}", e.getMessage(), e);
         } catch (RepositoryException e) {
             log.error("Exception caught: {}", e.getMessage(), e);
         }
