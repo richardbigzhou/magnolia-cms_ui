@@ -35,6 +35,7 @@ package info.magnolia.ui.admincentral.thumbnail.view;
 
 import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.ui.model.thumbnail.ImageProvider;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -171,7 +172,7 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
             log.debug("Done collecting {} nodes in {}ms", uuids.size(), System.currentTimeMillis() - start);
 
         } catch (RepositoryException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeRepositoryException(e);
         }
         return uuids;
     }
