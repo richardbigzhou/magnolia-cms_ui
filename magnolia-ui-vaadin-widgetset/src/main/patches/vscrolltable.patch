@@ -1,0 +1,5 @@
+--- com/vaadin/terminal/gwt/client/ui/VScrollTable.java
++++ com/vaadin/terminal/gwt/client/ui/VScrollTable.java
+@@ -130,1 +130,1 @@
+-    private static final String ROW_HEADER_COLUMN_KEY = "0";
++    protected static final String ROW_HEADER_COLUMN_KEY = "0";
