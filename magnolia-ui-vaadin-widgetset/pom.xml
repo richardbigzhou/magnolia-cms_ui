@@ -9,13 +9,14 @@
   </parent>
   <artifactId>magnolia-ui-vaadin-widgetset</artifactId>
   <name>magnolia-ui-vaadin-widgetset</name>
+
   <dependencies>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
       <artifactId>magnolia-ui-vaadin-integration</artifactId>
       <version>${project.version}</version>
     </dependency>
-        <dependency>
+    <dependency>
       <groupId>info.magnolia</groupId>
       <artifactId>magnolia-rendering</artifactId>
     </dependency>
@@ -56,35 +57,36 @@
       <artifactId>autoreplacefield</artifactId>
     </dependency>
     <dependency>
-       <groupId>com.googlecode.mgwt</groupId>
-	   <artifactId>mgwt</artifactId>
+      <groupId>com.googlecode.mgwt</groupId>
+      <artifactId>mgwt</artifactId>
     </dependency>
     <dependency>
-	  <groupId>org.vaadin.addons</groupId>
-	  <artifactId>gwt-graphics</artifactId>
-	</dependency>
-	<dependency>
+      <groupId>org.vaadin.addons</groupId>
+      <artifactId>gwt-graphics</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.vaadin.addons</groupId>
       <artifactId>css-tools</artifactId>
     </dependency>
-	<dependency>
-	 	<groupId>org.vaadin.addons</groupId>
-		<artifactId>customfield</artifactId>
-	</dependency>
-	<dependency>
-	 	<groupId>org.vaadin.addon</groupId>
-		<artifactId>propertytranslator</artifactId>
-	</dependency>
+    <dependency>
+      <groupId>org.vaadin.addons</groupId>
+      <artifactId>customfield</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.vaadin.addon</groupId>
+      <artifactId>propertytranslator</artifactId>
+    </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
       <scope>provided</scope>
     </dependency>
-
   </dependencies>
+
   <build>
     <plugins>
-      <!-- Compile custom GWT components or widget dependencies with the GWT compiler -->
+      <!-- Compile custom GWT components or widget dependencies with the GWT
+        compiler -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
@@ -99,7 +101,7 @@
           <noServer>true</noServer>
           <module>info.magnolia.ui.vaadin.gwt.MagnoliaWidgetSet</module>
           <runTarget>.magnolia/admincentral</runTarget>
-          <!-- draftCompile>true</draftCompile-->
+          <!-- draftCompile>true</draftCompile -->
         </configuration>
         <executions>
           <execution>

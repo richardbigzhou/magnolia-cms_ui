@@ -25,10 +25,6 @@
       <artifactId>magnolia-ui-vaadin-widgetset</artifactId>
       <version>${project.version}</version>
     </dependency>
-    <dependency>
-      <groupId>com.vaadin</groupId>
-      <artifactId>vaadin</artifactId>
-    </dependency>
   </dependencies>
     <build>
         <plugins>
