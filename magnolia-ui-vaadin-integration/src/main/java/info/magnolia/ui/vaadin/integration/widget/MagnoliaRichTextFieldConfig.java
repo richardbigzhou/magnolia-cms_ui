@@ -33,51 +33,51 @@
  */
 package info.magnolia.ui.vaadin.integration.widget;
 
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
-import info.magnolia.ui.vaadin.integration.widget.client.VMagnoliaRichTextField;
+import org.vaadin.openesignforms.ckeditor.CKEditorConfig;
 
-import org.vaadin.openesignforms.ckeditor.CKEditorTextField;
-
-import com.vaadin.terminal.PaintException;
-import com.vaadin.terminal.PaintTarget;
+import com.google.gson.Gson;
 
 /**
- * Extended CKEditorTextField for custom made Magnolia plugins.
- * By default CKEditor wrapper for Vaadin does not allow
- * custom events between CKEditor plugins and server.
+ * Extends CKEditorConfig by defining more
+ * coherent toolbar API.
  */
-@com.vaadin.ui.ClientWidget(VMagnoliaRichTextField.class)
-public class MagnoliaRichTextField extends CKEditorTextField{
+public class MagnoliaRichTextFieldConfig extends CKEditorConfig {
 
-    private static final long serialVersionUID = -5194325714251243359L;
-    
-    private String externalLink = null;
+    private static final long serialVersionUID = 9993500103615659L;
 
-    public MagnoliaRichTextField() {
-        super();
+    public MagnoliaRichTextFieldConfig() {
+        addToExtraPlugins("demo");
+        addToRemovePlugins("elementspath");
     }
     
-    public MagnoliaRichTextField(MagnoliaRichTextFieldConfig config) {
-        super(config);
-    }
-
-    @Override
-    public void changeVariables(Object source, Map<String, Object> variables) {
-        super.changeVariables(source, variables);
-        if(variables.containsKey(VMagnoliaRichTextField.VAR_EXTERNAL_LINK)) {
-            externalLink = "/aeinstein"; //obtain this from real source
-            requestRepaint();
-        }
+    /**
+     * Adds list of toolbar groups. Groups are placed in one
+     * row if space allows. 
+     * @param toolbars
+     */
+    public void addToolbarLine(List<ToolbarGroup> toolbars) {
+        Gson gson = new Gson();
+        String json = gson.toJson(toolbars);
+        addCustomToolbarLine(json.substring(1, json.length()-1));
     }
     
-    
-    @Override
-    public void paintContent(PaintTarget target) throws PaintException {
-        super.paintContent(target);
-        if(externalLink != null) {
-            target.addAttribute(VMagnoliaRichTextField.VAR_EXTERNAL_LINK, externalLink);
-            externalLink = null;
+    /**
+     * Bean class for toolbar group
+     */
+    public static class ToolbarGroup {        
+        @SuppressWarnings("unused")
+        private String name;
+        private List<String> items;
+        
+        public ToolbarGroup(String groupname, String[] toolbarbuttons) {
+            this.name = groupname;
+            this.items = new ArrayList<String>();
+            for(String item: toolbarbuttons) {
+                this.items.add(item);
+            }
         }
     }
 }

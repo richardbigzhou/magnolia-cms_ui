@@ -33,11 +33,14 @@
  */
 package info.magnolia.ui.admincentral.field.builder;
 
-import org.vaadin.openesignforms.ckeditor.CKEditorConfig;
+import java.util.ArrayList;
+import java.util.List;
 
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.model.field.definition.RichTextFieldDefinition;
 import info.magnolia.ui.vaadin.integration.widget.MagnoliaRichTextField;
+import info.magnolia.ui.vaadin.integration.widget.MagnoliaRichTextFieldConfig;
+import info.magnolia.ui.vaadin.integration.widget.MagnoliaRichTextFieldConfig.ToolbarGroup;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.Field;
@@ -45,30 +48,36 @@ import com.vaadin.ui.Field;
 /**
  * Creates and initializes an edit field based on a field definition.
  */
-public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefinition> {
+public class RichTextFieldBuilder extends
+        AbstractFieldBuilder<RichTextFieldDefinition> {
 
-    public RichTextFieldBuilder(RichTextFieldDefinition definition, Item relatedFieldItem) {
+    public RichTextFieldBuilder(RichTextFieldDefinition definition,
+            Item relatedFieldItem) {
         super(definition, relatedFieldItem);
     }
 
     @Override
     protected Field buildField() {
-//        RichTextFieldDefinition editDefinition = definition;
-        CKEditorConfig config = new CKEditorConfig();
-        config.addToExtraPlugins("demo");
-        config.addToRemovePlugins("elementspath");
-        StringBuilder strbuilder = new StringBuilder();
-        strbuilder.append("{ name: 'basicstyles', items: ['Bold','Italic','Underline','SpecialChar'] },");
-        strbuilder.append("{ name: 'paragraph', items: ['NumberedList','BulletedList'] },");
-        strbuilder.append("{ name: 'insert', items: ['Link','Unlink'] },");
-        strbuilder.append("{ name: 'clipboard', items: ['Cut','Copy','Paste','PasteText','PasteFromWord'] },");
-        strbuilder.append("{ name: 'objects', items: ['Image','Table'] },");
-        strbuilder.append("{ name: 'special', items: ['Undo','Redo','Demo'] }");
-        config.addCustomToolbarLine(strbuilder.toString());
-        
+        // RichTextFieldDefinition editDefinition = definition;
+        MagnoliaRichTextFieldConfig config = new MagnoliaRichTextFieldConfig();
+
+        List<ToolbarGroup> toolbars = new ArrayList<ToolbarGroup>();
+        toolbars.add(new ToolbarGroup("basictyles", new String[] { "Bold",
+                "Italic", "Underline", "SpecialChar" }));
+        toolbars.add(new ToolbarGroup("paragraph", new String[] {
+                "NumberedList", "BulletedList" }));
+        toolbars.add(new ToolbarGroup("insert",
+                new String[] { "Link", "Unlink" }));
+        toolbars.add(new ToolbarGroup("clipboard", new String[] { "Cut",
+                "Copy", "Paste", "PasteText", "PasteFromWord" }));
+        toolbars.add(new ToolbarGroup("objects", new String[] { "Image",
+                "Table" }));
+        toolbars.add(new ToolbarGroup("special", new String[] { "Undo", "Redo",
+                "Demo" }));
+        config.addToolbarLine(toolbars);
+
         MagnoliaRichTextField richtexteditor = new MagnoliaRichTextField(config);
         return richtexteditor;
-
     }
 
     @Override
@@ -76,4 +85,3 @@ public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefi
         return String.class;
     }
 }
-
