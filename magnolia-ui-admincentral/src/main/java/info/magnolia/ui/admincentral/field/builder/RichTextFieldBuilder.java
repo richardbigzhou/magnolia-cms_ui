@@ -34,10 +34,10 @@
 package info.magnolia.ui.admincentral.field.builder;
 
 import org.vaadin.openesignforms.ckeditor.CKEditorConfig;
-import org.vaadin.openesignforms.ckeditor.CKEditorTextField;
 
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.model.field.definition.RichTextFieldDefinition;
+import info.magnolia.ui.vaadin.integration.widget.MagnoliaRichTextField;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.Field;
@@ -53,9 +53,9 @@ public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefi
 
     @Override
     protected Field buildField() {
-        RichTextFieldDefinition editDefinition = definition;
+//        RichTextFieldDefinition editDefinition = definition;
         CKEditorConfig config = new CKEditorConfig();
-//        config.addToExtraPlugins("demo");
+        config.addToExtraPlugins("demo");
         config.addToRemovePlugins("elementspath");
         StringBuilder strbuilder = new StringBuilder();
         strbuilder.append("{ name: 'basicstyles', items: ['Bold','Italic','Underline','SpecialChar'] },");
@@ -63,10 +63,10 @@ public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefi
         strbuilder.append("{ name: 'insert', items: ['Link','Unlink'] },");
         strbuilder.append("{ name: 'clipboard', items: ['Cut','Copy','Paste','PasteText','PasteFromWord'] },");
         strbuilder.append("{ name: 'objects', items: ['Image','Table'] },");
-        strbuilder.append("{ name: 'special', items: ['Undo','Redo'] }");
+        strbuilder.append("{ name: 'special', items: ['Undo','Redo','Demo'] }");
         config.addCustomToolbarLine(strbuilder.toString());
         
-        CKEditorTextField richtexteditor = new CKEditorTextField(config);
+        MagnoliaRichTextField richtexteditor = new MagnoliaRichTextField(config);
         return richtexteditor;
 
     }

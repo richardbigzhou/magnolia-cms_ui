@@ -31,22 +31,42 @@
  * intact.
  *
  */
+package info.magnolia.ui.vaadin.integration.widget;
 
-(function() {
-	CKEDITOR.plugins.add('demo', {
-		init: function(editor) {
-			editor.addCommand('demo', {
-				exec: function(editor) {
-					alert("This is the demo plugin in action");
-					editor.fire('demoevent');
-				}
-			});
+import java.util.Map;
 
-			editor.ui.addButton('Demo', {
-				label: 'Demo thing',
-				command: 'demo',
-				icon: "../images/disk.png"
-			});
-		}
-	});
-})();
+import info.magnolia.ui.vaadin.integration.widget.client.VMagnoliaRichTextField;
+
+import org.vaadin.openesignforms.ckeditor.CKEditorConfig;
+import org.vaadin.openesignforms.ckeditor.CKEditorTextField;
+
+import com.vaadin.terminal.PaintException;
+import com.vaadin.terminal.PaintTarget;
+
+/**
+ * Extended CKEditorTextField.
+ */
+@com.vaadin.ui.ClientWidget(VMagnoliaRichTextField.class)
+public class MagnoliaRichTextField extends CKEditorTextField{
+
+    private static final long serialVersionUID = -5194325714251243359L;
+
+    public MagnoliaRichTextField() {
+        super();
+    }
+    
+    public MagnoliaRichTextField(CKEditorConfig config) {
+        super(config);
+    }
+
+    @Override
+    public void changeVariables(Object source, Map<String, Object> variables) {
+        super.changeVariables(source, variables);
+    }
+    
+    
+    @Override
+    public void paintContent(PaintTarget target) throws PaintException {
+        super.paintContent(target);
+    }
+}
