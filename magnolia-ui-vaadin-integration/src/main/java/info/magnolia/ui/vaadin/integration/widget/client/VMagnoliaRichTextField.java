@@ -33,57 +33,88 @@
  */
 package info.magnolia.ui.vaadin.integration.widget.client;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.RepeatingCommand;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.Window;
 
+import org.vaadin.openesignforms.ckeditor.widgetset.client.ui.CKEditorService;
 import org.vaadin.openesignforms.ckeditor.widgetset.client.ui.VCKEditorTextField;
 
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.UIDL;
 
 /**
- * Magnolia rich text field adds an ability to custom plugins to communicate 
- * with the server. This was not possible with the add-on.
+ * Magnolia rich text field adds an ability to custom plugins to communicate
+ * with the server. This was not possible with the add-on out of the box.
  */
 public class VMagnoliaRichTextField extends VCKEditorTextField {
-    
+
+    private static final String EVENT_DEMO = "demoevent";
     public static final String VAR_EXTERNAL_LINK = "externalLink";
 
     public VMagnoliaRichTextField() {
         super();
+        loadCKEditor();
     }
-    
+
     public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
         super.updateFromUIDL(uidl, client);
-        Scheduler.get().scheduleFixedDelay(new RepeatingCommand() {             
-            @Override
-            public boolean execute() {
-                return !register(VMagnoliaRichTextField.this);
-            }
-        }, 50);
-        
-        if(uidl.hasAttribute(VAR_EXTERNAL_LINK)) {
+
+        if (uidl.hasAttribute(VAR_EXTERNAL_LINK)) {
             Window.alert(uidl.getStringAttribute(VAR_EXTERNAL_LINK));
+        }        
+    }
+
+    /**
+     * Initializes CKEditor if not done already and add event listeners.
+     */
+    private void loadCKEditor() {
+        if(!CKEditorService.libraryReady()) {
+            CKEditorService.loadLibrary(new ScheduledCommand() {
+                @Override
+                public void execute() {
+                    registerEventHandlers();
+                }
+            });
+        } else {
+            registerEventHandlers();
         }
     }
-    
-    public void onEvent() {
+
+    private void onEvent(String eventName) {
         clientToServer.updateVariable(paintableId, VAR_EXTERNAL_LINK, "", true);
     }
     
-    public native boolean register(VMagnoliaRichTextField listener)
+    private String getPaintableId() {
+        return paintableId;
+    }
+    
+    private void registerEventHandlers() {
+        register(EVENT_DEMO, this);
+    }
+
+    /*
+     * This method hides a hack. Base class owns privately an instance of 
+     * CKEditor editor field. Editor object needs to be accessed or else it
+     * would not be possible to handle events from custom made CKEditor
+     * plugins. As a workaround this method adds a listener for creation of
+     * editor objects and if an editor is created inside DIV element with id
+     * matching paintableId member of this class, then this editor is the one 
+     * from the base class => we got access to the private member we need.
+     */
+    private static native void register(final String eventName, final VMagnoliaRichTextField listener)
     /*-{
-        if($wnd.CKEDITOR) {
-            for(var key in $wnd.CKEDITOR.instances) {
-                var editor = $wnd.CKEDITOR.instances[key];
-                editor.on('demoevent', function( ev ) {
-                    ev.listenerData.@info.magnolia.ui.vaadin.integration.widget.client.VMagnoliaRichTextField::onEvent()();
-                }, null, listener);
+        var eventHandler = function(ev) {
+            ev.listenerData.@info.magnolia.ui.vaadin.integration.widget.client.VMagnoliaRichTextField::onEvent(Ljava/lang/String;)(eventName);
+        };
+        
+        var createdEvent = function(e) {
+            var listenerInstanceId = listener.@info.magnolia.ui.vaadin.integration.widget.client.VMagnoliaRichTextField::getPaintableId()();
+            var editorInstanceId = e.editor.element.getId();
+            if(listenerInstanceId == editorInstanceId) {
+                e.editor.on(eventName, eventHandler, null, listener);
             }
-            return true;
-        } else {
-            return false;
-        }
+        };
+
+        $wnd.CKEDITOR.on('instanceCreated', createdEvent);
      }-*/;
 }

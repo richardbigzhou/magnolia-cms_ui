@@ -65,7 +65,7 @@ public class MagnoliaRichTextFieldConfig extends CKEditorConfig {
     }
     
     /**
-     * Bean class for toolbar group
+     * Bean class for toolbar group.
      */
     public static class ToolbarGroup {        
         @SuppressWarnings("unused")

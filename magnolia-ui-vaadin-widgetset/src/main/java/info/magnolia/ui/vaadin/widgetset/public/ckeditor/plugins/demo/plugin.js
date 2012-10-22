@@ -37,7 +37,6 @@
 		init: function(editor) {
 			editor.addCommand('demo', {
 				exec: function(editor) {
-					alert("This is the demo plugin in action");
 					editor.fire('demoevent');
 				}
 			});
