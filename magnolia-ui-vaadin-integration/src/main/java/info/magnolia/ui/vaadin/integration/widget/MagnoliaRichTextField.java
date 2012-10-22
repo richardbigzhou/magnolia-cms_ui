@@ -51,8 +51,6 @@ import com.vaadin.terminal.PaintTarget;
 public class MagnoliaRichTextField extends CKEditorTextField{
 
     private static final long serialVersionUID = -5194325714251243359L;
-    
-    private String externalLink = null;
 
     public MagnoliaRichTextField() {
         super();
@@ -66,18 +64,12 @@ public class MagnoliaRichTextField extends CKEditorTextField{
     public void changeVariables(Object source, Map<String, Object> variables) {
         super.changeVariables(source, variables);
         if(variables.containsKey(VMagnoliaRichTextField.VAR_EXTERNAL_LINK)) {
-            externalLink = "/aeinstein"; //obtain this from real source
-            requestRepaint();
+            insertText("/aeinstein");
         }
     }
-    
     
     @Override
     public void paintContent(PaintTarget target) throws PaintException {
         super.paintContent(target);
-        if(externalLink != null) {
-            target.addAttribute(VMagnoliaRichTextField.VAR_EXTERNAL_LINK, externalLink);
-            externalLink = null;
-        }
     }
 }

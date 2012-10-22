@@ -34,7 +34,6 @@
 package info.magnolia.ui.vaadin.integration.widget.client;
 
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.user.client.Window;
 
 import org.vaadin.openesignforms.ckeditor.widgetset.client.ui.CKEditorService;
 import org.vaadin.openesignforms.ckeditor.widgetset.client.ui.VCKEditorTextField;
@@ -57,11 +56,7 @@ public class VMagnoliaRichTextField extends VCKEditorTextField {
     }
 
     public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
-        super.updateFromUIDL(uidl, client);
-
-        if (uidl.hasAttribute(VAR_EXTERNAL_LINK)) {
-            Window.alert(uidl.getStringAttribute(VAR_EXTERNAL_LINK));
-        }        
+        super.updateFromUIDL(uidl, client);      
     }
 
     /**
@@ -81,7 +76,10 @@ public class VMagnoliaRichTextField extends VCKEditorTextField {
     }
 
     private void onEvent(String eventName) {
-        clientToServer.updateVariable(paintableId, VAR_EXTERNAL_LINK, "", true);
+        if(eventName.equals(EVENT_DEMO)) {
+            onSave();
+            clientToServer.updateVariable(paintableId, VAR_EXTERNAL_LINK, "", true);
+        }
     }
     
     private String getPaintableId() {
