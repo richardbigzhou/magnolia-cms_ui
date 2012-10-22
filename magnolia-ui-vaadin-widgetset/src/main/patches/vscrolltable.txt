@@ -1,0 +1,11 @@
+--- com/vaadin/terminal/gwt/client/ui/VScrollTable.java	2012-10-22 16:40:52.000000000 +0200
++++ com/vaadin/terminal/gwt/client/ui/VScrollTable.java	2012-10-22 16:28:16.000000000 +0200
+@@ -118,7 +118,7 @@
+ public class VScrollTable extends FlowPanel implements Table, ScrollHandler,
+         VHasDropHandler, FocusHandler, BlurHandler, Focusable, ActionOwner {
+ 
+-    public static final String ATTRIBUTE_PAGEBUFFER_FIRST = "pb-ft";
++    protected static final String ATTRIBUTE_PAGEBUFFER_FIRST = "pb-ft";
+     public static final String ATTRIBUTE_PAGEBUFFER_LAST = "pb-l";
+ 
+     /**
