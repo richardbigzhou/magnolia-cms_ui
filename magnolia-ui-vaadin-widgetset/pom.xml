@@ -129,8 +129,16 @@
           <relativePath>../${basedir}</relativePath>
           <rootPath>$${admincentral.root}</rootPath>
         </configuration>
-      </plugin>
-    </plugins>
+    </plugin>
+    <!-- do not apply Magnolia's checkstyle constraints to the patched Vaadin class.-->
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-checkstyle-plugin</artifactId>
+      <configuration>
+        <excludes>**\/*VScrollTable.java</excludes>
+      </configuration>
+    </plugin>
+   </plugins>
   </build>
 
   <profiles>
@@ -142,7 +150,6 @@
       Here what we do is
         1) remove the currently patched VScrollTable.java sources and replace them with a fresh copy from the vaadin jar dependency.
         2) apply our own patch (see src/main/patches/vscrolltable.txt) to the class's original sources.
-        3) do not apply Magnolia's checkstyle constraints to the patched Vaadin class.
       -->
       <id>patch-vaadin-vscrolltable</id>
       <build>
@@ -191,13 +198,6 @@
                 </goals>
               </execution>
             </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-checkstyle-plugin</artifactId>
-            <configuration>
-              <excludes>**\/*VScrollTable.java</excludes>
-            </configuration>
           </plugin>
         </plugins>
       </build>
