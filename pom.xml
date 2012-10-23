@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>info.magnolia</groupId>
-    <artifactId>magnolia-parent-pom-ce</artifactId>
-    <version>24</version>
-  </parent>
-  <groupId>info.magnolia.ui</groupId>
-  <artifactId>magnolia-ui-project</artifactId>
-  <version>5.0-SNAPSHOT</version>
-  <name>magnolia-ui-project</name>
-  <packaging>pom</packaging>
+     <groupId>info.magnolia</groupId>
+     <artifactId>magnolia-parent-pom-ce</artifactId>
+     <version>25-SNAPSHOT</version>
+   </parent>
+   <groupId>info.magnolia.ui</groupId>
+   <artifactId>magnolia-ui-project</artifactId>
+   <version>5.0-SNAPSHOT</version>
+   <name>magnolia-ui-project</name>
+   <packaging>pom</packaging>
 
   <properties>
     <magnoliaEdition>Community Edition</magnoliaEdition>
