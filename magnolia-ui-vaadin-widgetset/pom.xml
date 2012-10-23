@@ -144,12 +144,12 @@
   <profiles>
     <profile>
     <!--
-      This profile has to be run (i.e. mvn clean install -Ppatch-vaadin-vscrolltable) only when the need for patching Vaadin's VScrollTable arises.
       We currently need to maintain a patched version of it due to some limitations regarding extensibility
       in the original class and which Vaadin cannot handle at the moment (TODO add Vaadin tickets raised by Magnolia about this, if any).
       Here what we do is
         1) remove the currently patched VScrollTable.java sources and replace them with a fresh copy from the vaadin jar dependency.
         2) apply our own patch (see src/main/patches/vscrolltable.txt) to the class's original sources.
+        3) rename the original VScrollTable.java to VScrollTablePatched.java which our code will use instead of the original.
       -->
       <id>patch-vaadin-vscrolltable</id>
       <build>
@@ -160,7 +160,6 @@
             <executions>
               <execution>
                 <id>unpack-vaadin-treetable-src</id>
-                <phase>process-sources</phase>
                 <goals>
                   <goal>unpack</goal>
                 </goals>
@@ -180,7 +179,7 @@
                 </configuration>
               </execution>
             </executions>
-          </plugin>
+           </plugin>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-patch-plugin</artifactId>
@@ -196,6 +195,30 @@
                 <goals>
                   <goal>apply</goal>
                 </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>groovy-maven-plugin</artifactId>
+            <version>1.4</version>
+            <executions>
+              <execution>
+                <phase>process-sources</phase>
+                <goals>
+                  <goal>execute</goal>
+                </goals>
+                <!-- Rename patched VScrollTable.java -->
+                <configuration>
+                  <source>
+                    def path = "${project.build.sourceDirectory}/com/vaadin/terminal/gwt/client/ui/"
+                    println "path is $path"
+                    def originalFile = new java.io.File(path + "VScrollTable.java")
+                    def renamedFile = new java.io.File(path + "VScrollTablePatched.java")
+                    println "Renaming ${originalFile.name} to ${renamedFile.name}..."
+                    originalFile.renameTo(renamedFile)
+                  </source>
+                </configuration>
               </execution>
             </executions>
           </plugin>
