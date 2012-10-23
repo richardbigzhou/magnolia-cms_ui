@@ -98,6 +98,7 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
     @Inject
     public PagesEditorSubApp(final AppContext appContext, final PagesEditorSubAppView view, final @Named("subapp") EventBus eventBus,
         final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final WorkbenchActionFactory actionFactory) {
+        super(appContext, view, eventBus);
 
         this.view = view;
         this.view.setListener(this);
@@ -290,10 +291,10 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
 
     // Location token handling, format is editor;<editorPath>:<previewMode>
 
-    public static boolean supportsLocation(Location location) {
+/*    public static boolean supportsLocation(Location location) {
         List<String> parts = parseLocationToken(location);
         return parts.size() >= 1 && parts.get(0).equals("editor");
-    }
+    }*/
 
     public static DefaultLocation createLocation(String editorPath, String previewToken) {
         String token = "editor;" + editorPath;
@@ -303,7 +304,7 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
         return new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages", token);
     }
 
-    public static String getSubAppId(Location location) {
+    public String getSubAppId(Location location) {
         List<String> parts = parseLocationToken(location);
         return parts.get(0) + ";" + parts.get(1);
     }
@@ -316,7 +317,7 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
         return locationTokens.size() >= 3 ? locationTokens.get(2).equals(PagesApp.PREVIEW_TOKEN) : false;
     }
 
-    private static List<String> parseLocationToken(Location location) {
+/*    private static List<String> parseLocationToken(Location location) {
 
         ArrayList<String> parts = new ArrayList<String>();
 
@@ -353,5 +354,5 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
         }
 
         return parts;
-    }
+    }*/
 }

@@ -61,6 +61,7 @@ public class AbstractContentSubAppTest {
     private ContentAppView view;
     private ContentWorkbenchPresenter workbench;
     private EventBus subAppEventBus;
+    private DummyContentSubApp subApp;
 
     @Before
     public void setUp() throws Exception {
@@ -72,6 +73,7 @@ public class AbstractContentSubAppTest {
         when(workbench.getActionbarPresenter()).thenReturn(actionbar);
 
         subAppEventBus = mock(EventBus.class);
+        this.subApp = new DummyContentSubApp(appContext,view, workbench, subAppEventBus);
     }
 
     private class DummyContentSubApp extends AbstractContentSubApp {
@@ -95,13 +97,13 @@ public class AbstractContentSubAppTest {
     @Test
     public void testParseLocationToken() throws Exception {
         //GIVEN
-        DefaultLocation location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, DUMMY_APPNAME, AbstractContentSubApp.MAIN_SUBAPP_ID + ":" + path + ":" + ViewType.LIST.getText());
+        DefaultLocation location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, DUMMY_APPNAME, subApp.getSubAppName() + ":" + path + ":" + ViewType.LIST.getText());
 
         //WHEN
-        List<String> tokens = AbstractContentSubApp.parseLocationToken(location);
+        List<String> tokens = subApp.parseLocationToken(location);
 
         //THEN
-        assertEquals(AbstractContentSubApp.MAIN_SUBAPP_ID, tokens.get(0));
+        assertEquals(subApp.getSubAppName(), tokens.get(0));
         assertEquals(path, tokens.get(1));
         assertEquals(ViewType.LIST.getText(), tokens.get(2));
 
@@ -110,10 +112,10 @@ public class AbstractContentSubAppTest {
     @Test
     public void testParseLocationTokenSearchViewNoQuery() throws Exception {
         //GIVEN
-        DefaultLocation location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, DUMMY_APPNAME, AbstractContentSubApp.MAIN_SUBAPP_ID + ":" + path + ":" + ViewType.SEARCH.getText());
+        DefaultLocation location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, DUMMY_APPNAME, subApp.getSubAppName()+ ":" + path + ":" + ViewType.SEARCH.getText());
 
         //WHEN
-        List<String> tokens = AbstractContentSubApp.parseLocationToken(location);
+        List<String> tokens = subApp.parseLocationToken(location);
 
         //THEN
         assertEquals(ViewType.SEARCH.getText(), tokens.get(2));
@@ -123,10 +125,10 @@ public class AbstractContentSubAppTest {
     @Test
     public void testParseLocationTokenSearchViewWithQuery() throws Exception {
         //GIVEN
-        DefaultLocation location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, DUMMY_APPNAME, AbstractContentSubApp.MAIN_SUBAPP_ID + ":" + path + ":" + ViewType.SEARCH.getText() + ";" + query);
+        DefaultLocation location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, DUMMY_APPNAME, subApp.getSubAppName() + ":" + path + ":" + ViewType.SEARCH.getText() + ";" + query);
 
         //WHEN
-        List<String> tokens = AbstractContentSubApp.parseLocationToken(location);
+        List<String> tokens = subApp.parseLocationToken(location);
 
         //THEN
         assertEquals(ViewType.SEARCH.getText()+";"+query, tokens.get(2));
@@ -138,14 +140,14 @@ public class AbstractContentSubAppTest {
         //GIVEN
         String additionalElem1 = "baz";
         String additionalElem2 = "qux;blah";
-        DefaultLocation location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, DUMMY_APPNAME, AbstractContentSubApp.MAIN_SUBAPP_ID + ":" + path + ":" + ViewType.LIST.getText() + ":" + additionalElem1 + ":" + additionalElem2);
+        DefaultLocation location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, DUMMY_APPNAME, subApp.getSubAppName() + ":" + path + ":" + ViewType.LIST.getText() + ":" + additionalElem1 + ":" + additionalElem2);
 
         //WHEN
-        List<String> tokens = AbstractContentSubApp.parseLocationToken(location);
+        List<String> tokens = subApp.parseLocationToken(location);
 
         //THEN
         assertEquals(5, tokens.size());
-        assertEquals(AbstractContentSubApp.MAIN_SUBAPP_ID, tokens.get(0));
+        assertEquals(subApp.getSubAppName(), tokens.get(0));
         assertEquals(path, tokens.get(1));
         assertEquals(ViewType.LIST.getText(), tokens.get(2));
         assertEquals(additionalElem1, tokens.get(3));
@@ -156,10 +158,10 @@ public class AbstractContentSubAppTest {
     @Test
     public void testGetQuery() throws Exception {
         //GIVEN
-        DefaultLocation location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, DUMMY_APPNAME, AbstractContentSubApp.MAIN_SUBAPP_ID + ":" + path + ":" + ViewType.SEARCH.getText() + ";" + query);
+        DefaultLocation location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, DUMMY_APPNAME, subApp.getSubAppName() + ":" + path + ":" + ViewType.SEARCH.getText() + ";" + query);
 
         //WHEN
-        String retVal = AbstractContentSubApp.getQuery(location);
+        String retVal = subApp.getQuery(location);
 
         //THEN
         assertEquals(query, retVal);
@@ -169,10 +171,10 @@ public class AbstractContentSubAppTest {
     @Test
     public void testGetQueryReturnsNullIfNoneIsPresent() throws Exception {
         //GIVEN
-        DefaultLocation location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, DUMMY_APPNAME, AbstractContentSubApp.MAIN_SUBAPP_ID + ":" + path + ":" + ViewType.SEARCH.getText());
+        DefaultLocation location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, DUMMY_APPNAME, subApp.getSubAppName() + ":" + path + ":" + ViewType.SEARCH.getText());
 
         //WHEN
-        String retVal = AbstractContentSubApp.getQuery(location);
+        String retVal = subApp.getQuery(location);
 
         //THEN
         assertNull(retVal);
@@ -181,10 +183,10 @@ public class AbstractContentSubAppTest {
     @Test
     public void testGetQueryReturnsNullIfQueryIsPresentButViewIsNotSearch() throws Exception {
         //GIVEN
-        DefaultLocation location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, DUMMY_APPNAME, AbstractContentSubApp.MAIN_SUBAPP_ID + ":" + path + ":" + ViewType.LIST.getText() + ";" + query);
+        DefaultLocation location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, DUMMY_APPNAME, subApp.getSubAppName() + ":" + path + ":" + ViewType.LIST.getText() + ";" + query);
 
         //WHEN
-        String retVal = AbstractContentSubApp.getQuery(location);
+        String retVal = subApp.getQuery(location);
 
         //THEN
         assertNull(retVal);
@@ -193,10 +195,10 @@ public class AbstractContentSubAppTest {
     @Test
     public void testGetSelectedItemPath() throws Exception {
         //GIVEN
-        DefaultLocation location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, DUMMY_APPNAME, AbstractContentSubApp.MAIN_SUBAPP_ID + ":" + path + ":" + ViewType.TREE.getText());
+        DefaultLocation location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, DUMMY_APPNAME, subApp.getSubAppName() + ":" + path + ":" + ViewType.TREE.getText());
 
         //WHEN
-        String retVal = AbstractContentSubApp.getSelectedItemPath(location);
+        String retVal = subApp.getSelectedItemPath(location);
 
         //THEN
         assertEquals(path, retVal);
@@ -205,10 +207,10 @@ public class AbstractContentSubAppTest {
     @Test
     public void testGetSelectedItemPathReturnsRootIfNoneIsPresent() throws Exception {
         //GIVEN
-        DefaultLocation location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, DUMMY_APPNAME, AbstractContentSubApp.MAIN_SUBAPP_ID);
+        DefaultLocation location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, DUMMY_APPNAME, subApp.getSubAppName());
 
         //WHEN
-        String retVal = AbstractContentSubApp.getSelectedItemPath(location);
+        String retVal = subApp.getSelectedItemPath(location);
 
         //THEN
         assertEquals("/", retVal);
@@ -217,22 +219,22 @@ public class AbstractContentSubAppTest {
     @Test
     public void testGetSubAppId() throws Exception {
         //GIVEN
-        DefaultLocation location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, DUMMY_APPNAME, AbstractContentSubApp.MAIN_SUBAPP_ID + ":" + path + ":" + ViewType.TREE.getText());
+        DefaultLocation location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, DUMMY_APPNAME, subApp.getSubAppName() + ":" + path + ":" + ViewType.TREE.getText());
 
         //WHEN
-        String retVal = AbstractContentSubApp.getSubAppId(location);
+        String retVal = subApp.getSubAppId(location);
 
         //THEN
-        assertEquals(AbstractContentSubApp.MAIN_SUBAPP_ID , retVal);
+        assertEquals(subApp.getSubAppName() , retVal);
     }
 
     @Test
     public void testGetSelectedView() throws Exception {
         //GIVEN
-        DefaultLocation location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, DUMMY_APPNAME, AbstractContentSubApp.MAIN_SUBAPP_ID + ":" + path + ":" + ViewType.THUMBNAIL.getText());
+        DefaultLocation location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, DUMMY_APPNAME, subApp.getSubAppName() + ":" + path + ":" + ViewType.THUMBNAIL.getText());
 
         //WHEN
-        ViewType retVal = AbstractContentSubApp.getSelectedView(location);
+        ViewType retVal = subApp.getSelectedView(location);
 
         //THEN
         assertEquals(ViewType.THUMBNAIL, retVal);
@@ -241,10 +243,10 @@ public class AbstractContentSubAppTest {
     @Test
     public void testGetSelectedViewReturnsTreeViewIfNoneIsPresent() throws Exception {
         //GIVEN
-        DefaultLocation location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, DUMMY_APPNAME, AbstractContentSubApp.MAIN_SUBAPP_ID);
+        DefaultLocation location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, DUMMY_APPNAME, subApp.getSubAppName());
 
         //WHEN
-        ViewType retVal = AbstractContentSubApp.getSelectedView(location);
+        ViewType retVal = subApp.getSelectedView(location);
 
         //THEN
         assertEquals(ViewType.TREE, retVal);
@@ -256,7 +258,7 @@ public class AbstractContentSubAppTest {
         DefaultLocation location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, DUMMY_APPNAME, "foo");
 
         //WHEN
-        boolean retVal = AbstractContentSubApp.supportsLocation(location);
+        boolean retVal = subApp.supportsLocation(location);
 
         //THEN
         assertFalse(retVal);
@@ -265,10 +267,10 @@ public class AbstractContentSubAppTest {
     @Test
     public void testSupportsLocationReturnsTrueOnlyIfSubAppIdIsMain() throws Exception {
         //GIVEN
-        DefaultLocation location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, DUMMY_APPNAME, AbstractContentSubApp.MAIN_SUBAPP_ID);
+        DefaultLocation location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, DUMMY_APPNAME, subApp.getSubAppName());
 
         //WHEN
-        boolean retVal = AbstractContentSubApp.supportsLocation(location);
+        boolean retVal = subApp.supportsLocation(location);
 
         //THEN
         assertTrue(retVal);
@@ -279,12 +281,12 @@ public class AbstractContentSubAppTest {
         //GIVEN
 
         //WHEN
-        DefaultLocation location = AbstractContentSubApp.createLocation();
+        DefaultLocation location = subApp.createLocation();
 
         //THEN
-        assertEquals(AbstractContentSubApp.MAIN_SUBAPP_ID, AbstractContentSubApp.getSubAppId(location));
-        assertEquals("/", AbstractContentSubApp.getSelectedItemPath(location));
-        assertEquals(ViewType.TREE, AbstractContentSubApp.getSelectedView(location));
+        assertEquals(subApp.getSubAppName(), subApp.getSubAppId(location));
+        assertEquals("/", subApp.getSelectedItemPath(location));
+        assertEquals(ViewType.TREE, subApp.getSelectedView(location));
     }
 
     @Test
@@ -294,7 +296,7 @@ public class AbstractContentSubAppTest {
         assertTrue(subApp.foo == 0);
 
         //WHEN
-        subApp.start(AbstractContentSubApp.createLocation());
+        subApp.start(subApp.createLocation());
 
         //THEN
         assertTrue(subApp.foo == 1);
@@ -303,76 +305,76 @@ public class AbstractContentSubAppTest {
     @Test
     public void testReplaceLocationSubstitutesQueryWithWildcard() throws Exception {
         //GIVEN
-        String token = AbstractContentSubApp.MAIN_SUBAPP_ID + ":/:search;foo*";
+        String token = subApp.getSubAppName() + ":/:search;foo*";
         DefaultLocation currentLocation = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, DUMMY_APPNAME, token);
 
         //WHEN
-        String newToken = AbstractContentSubApp.replaceLocationToken(currentLocation, "baz", AbstractContentSubApp.TokenElementType.QUERY);
+        String newToken = subApp.replaceLocationToken(currentLocation, "baz", DummyContentSubApp.TokenElementType.QUERY);
 
         //THEN
-        assertEquals(AbstractContentSubApp.MAIN_SUBAPP_ID + ":/:search;baz", newToken);
+        assertEquals(subApp.getSubAppName() + ":/:search;baz", newToken);
     }
 
     @Test
     public void testReplaceLocationSubstitutesQueryNoWildcard() throws Exception {
         //GIVEN
-        String token = AbstractContentSubApp.MAIN_SUBAPP_ID + ":/:search;foo";
+        String token = subApp.getSubAppName() + ":/:search;foo";
         DefaultLocation currentLocation = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, DUMMY_APPNAME, token);
 
         //WHEN
-        String newToken = AbstractContentSubApp.replaceLocationToken(currentLocation, "baz", AbstractContentSubApp.TokenElementType.QUERY);
+        String newToken = subApp.replaceLocationToken(currentLocation, "baz", DummyContentSubApp.TokenElementType.QUERY);
 
         //THEN
-        assertEquals(AbstractContentSubApp.MAIN_SUBAPP_ID + ":/:search;baz", newToken);
+        assertEquals(subApp.getSubAppName() + ":/:search;baz", newToken);
     }
 
     @Test
     public void testReplaceLocationSubstitutesExistingQueryWithAnEmptyOne() throws Exception {
         //GIVEN
-        String token = AbstractContentSubApp.MAIN_SUBAPP_ID + ":/:search;foo";
+        String token = subApp.getSubAppName() + ":/:search;foo";
         DefaultLocation currentLocation = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, DUMMY_APPNAME, token);
 
         //WHEN
-        String newToken = AbstractContentSubApp.replaceLocationToken(currentLocation, "", AbstractContentSubApp.TokenElementType.QUERY);
+        String newToken = subApp.replaceLocationToken(currentLocation, "", DummyContentSubApp.TokenElementType.QUERY);
 
         //THEN
-        assertEquals(AbstractContentSubApp.MAIN_SUBAPP_ID + ":/:search", newToken);
+        assertEquals(subApp.getSubAppName() + ":/:search", newToken);
     }
 
     @Test
     public void testReplaceLocationSubstitutesPath() throws Exception {
         //GIVEN
-        String token = AbstractContentSubApp.MAIN_SUBAPP_ID + ":/:tree";
+        String token = subApp.getSubAppName() + ":/:tree";
         DefaultLocation currentLocation = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, DUMMY_APPNAME, token);
 
         //WHEN
-        String newToken = AbstractContentSubApp.replaceLocationToken(currentLocation, "/baz/qux", AbstractContentSubApp.TokenElementType.PATH);
+        String newToken = subApp.replaceLocationToken(currentLocation, "/baz/qux", DummyContentSubApp.TokenElementType.PATH);
 
         //THEN
-        assertEquals(AbstractContentSubApp.MAIN_SUBAPP_ID + ":/baz/qux:tree", newToken);
+        assertEquals(subApp.getSubAppName() + ":/baz/qux:tree", newToken);
     }
 
     @Test
     public void testReplaceLocationSubstitutesViewType() throws Exception {
         //GIVEN
-        String token = AbstractContentSubApp.MAIN_SUBAPP_ID + ":/baz/qux:tree";
+        String token = subApp.getSubAppName() + ":/baz/qux:tree";
         DefaultLocation currentLocation = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, DUMMY_APPNAME, token);
 
         //WHEN
-        String newToken = AbstractContentSubApp.replaceLocationToken(currentLocation, "list", AbstractContentSubApp.TokenElementType.VIEW);
+        String newToken = subApp.replaceLocationToken(currentLocation, "list", DummyContentSubApp.TokenElementType.VIEW);
 
         //THEN
-        assertEquals(AbstractContentSubApp.MAIN_SUBAPP_ID + ":/baz/qux:list", newToken);
+        assertEquals(subApp.getSubAppName() + ":/baz/qux:list", newToken);
     }
 
     @Test
     public void testReplaceLocationWithEmptyPathReturnsCurrentToken() throws Exception {
         //GIVEN
-        String token = AbstractContentSubApp.MAIN_SUBAPP_ID + ":"+ path +"tree";
+        String token = subApp.getSubAppName() + ":"+ path +"tree";
         DefaultLocation currentLocation = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, DUMMY_APPNAME, token);
 
         //WHEN
-        String newToken = AbstractContentSubApp.replaceLocationToken(currentLocation, null, AbstractContentSubApp.TokenElementType.PATH);
+        String newToken = subApp.replaceLocationToken(currentLocation, null, DummyContentSubApp.TokenElementType.PATH);
 
         //THEN
         assertEquals(token, newToken);
@@ -381,11 +383,11 @@ public class AbstractContentSubAppTest {
     @Test
     public void testReplaceLocationWithEmptyViewTypeReturnsCurrentToken() throws Exception {
         //GIVEN
-        String token = AbstractContentSubApp.MAIN_SUBAPP_ID + ":"+ path +"tree";
+        String token = subApp.getSubAppName() + ":"+ path +"tree";
         DefaultLocation currentLocation = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, DUMMY_APPNAME, token);
 
         //WHEN
-        String newToken = AbstractContentSubApp.replaceLocationToken(currentLocation, null, AbstractContentSubApp.TokenElementType.VIEW);
+        String newToken = subApp.replaceLocationToken(currentLocation, null, DummyContentSubApp.TokenElementType.VIEW);
 
         //THEN
         assertEquals(token, newToken);

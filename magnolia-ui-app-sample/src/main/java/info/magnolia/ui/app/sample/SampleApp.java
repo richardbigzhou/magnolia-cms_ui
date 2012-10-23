@@ -49,11 +49,9 @@ import info.magnolia.ui.framework.location.Location;
  */
 public class SampleApp extends AbstractApp {
 
-    private AppContext appContext;
-
     @Inject
     public SampleApp(AppContext appContext) {
-        this.appContext = appContext;
+        super(appContext);
     }
 
     @Override

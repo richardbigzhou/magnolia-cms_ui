@@ -34,14 +34,9 @@
 package info.magnolia.ui.app.pages;
 
 import info.magnolia.ui.admincentral.app.content.AbstractContentApp;
-import info.magnolia.ui.admincentral.app.content.AbstractContentSubApp;
 import info.magnolia.ui.admincentral.dialog.ChooseDialogFactory;
 import info.magnolia.ui.admincentral.dialog.FormDialogPresenterFactory;
-import info.magnolia.ui.app.pages.editor.PagesEditorSubApp;
-import info.magnolia.ui.app.pages.main.PagesMainSubApp;
 import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.location.DefaultLocation;
-import info.magnolia.ui.framework.location.Location;
 
 import javax.inject.Inject;
 
@@ -56,14 +51,11 @@ public class PagesApp extends AbstractContentApp {
 
     public static final String PREVIEW_TOKEN = "preview";
 
-    private final AppContext appContext;
-
     @Inject
-    public PagesApp(AppContext context, FormDialogPresenterFactory dialogPresenterFactory, ChooseDialogFactory pickerDialogFactory) {
-        super(pickerDialogFactory);
-        this.appContext = context;
+    public PagesApp(AppContext appContext, FormDialogPresenterFactory dialogPresenterFactory, ChooseDialogFactory pickerDialogFactory) {
+        super(appContext, pickerDialogFactory);
     }
-
+/*
     @Override
     public void start(Location location) {
 
@@ -77,15 +69,15 @@ public class PagesApp extends AbstractContentApp {
                 appContext.openSubApp(EDITOR_TOKEN, PagesEditorSubApp.class, location, PagesEditorSubApp.getSubAppId(location));
             }
         }
-    }
+    }*/
 
-    @Override
+/*    @Override
     public void locationChanged(Location location) {
 
         if (PagesEditorSubApp.supportsLocation(location)) {
             appContext.openSubApp(EDITOR_TOKEN, PagesEditorSubApp.class, location, PagesEditorSubApp.getSubAppId(location));
         }
-    }
+    }*/
 
     @Override
     public void stop() {

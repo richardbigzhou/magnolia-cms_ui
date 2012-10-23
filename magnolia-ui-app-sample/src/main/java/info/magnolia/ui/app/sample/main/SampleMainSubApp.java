@@ -46,7 +46,7 @@ import info.magnolia.ui.framework.view.View;
  * SubApp for the main tab in sample app.
  */
 @Singleton
-public class SampleMainSubApp extends AbstractSubApp implements SampleMainView.Listener {
+public class SampleMainSubApp implements SampleMainView.Listener {
 
     private SampleMainView sampleMainView;
     private NavigationPresenter navigationPresenter;
@@ -54,6 +54,7 @@ public class SampleMainSubApp extends AbstractSubApp implements SampleMainView.L
 
     @Inject
     public SampleMainSubApp(@Named("app") EventBus appEventBus, SampleMainView sampleMainView, NavigationPresenter navigationPresenter, final ContentDisplayPresenter contentDisplayPresenter) {
+        super();
         this.sampleMainView = sampleMainView;
         this.contentDisplayPresenter = contentDisplayPresenter;
         this.navigationPresenter = navigationPresenter;
@@ -78,6 +79,11 @@ public class SampleMainSubApp extends AbstractSubApp implements SampleMainView.L
         sampleMainView.setLeftView(navigationView);
         sampleMainView.setRightView(contentDisplayView);
         return sampleMainView;
+    }
+
+    @Override
+    public void locationChanged(Location location) {
+
     }
 
     @Override

@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.admincentral.app.dummy;
 
-import info.magnolia.ui.framework.app.AbstractSubApp;
 import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.view.View;
 
@@ -44,7 +44,7 @@ import javax.inject.Inject;
 /**
  * Sub app for the main tab in a dummy app.
  */
-public class DummyMainSubApp extends AbstractSubApp {
+public class DummyMainSubApp implements SubApp {
 
     private final DummyView dummyView;
 
@@ -64,5 +64,10 @@ public class DummyMainSubApp extends AbstractSubApp {
     @Override
     public View start(Location location) {
         return dummyView;
+    }
+
+    @Override
+    public void locationChanged(Location location) {
+
     }
 }

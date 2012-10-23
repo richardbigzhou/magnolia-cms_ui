@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,25 +31,71 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.sample.main;
+package info.magnolia.ui.framework.app.registry;
 
 import info.magnolia.ui.framework.app.SubApp;
-import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.framework.app.SubAppDescriptor;
 
 /**
- * View for the main tab of sample app.
+ * ConfiguredSubAppDescriptor.
  */
-public interface SampleMainView extends View {
+public class ConfiguredSubAppDescriptor implements SubAppDescriptor {
 
     /**
-     * Listener for SampleMainView.
+     * unique identifier.
      */
-    public interface Listener extends SubApp {
+    private String name;
+
+    private String label;
+
+    private boolean enabled = true;
+
+    private String icon;
+
+    private Class<? extends SubApp> subAppClass;
+
+    @Override
+    public String getName() {
+        return name;
     }
 
-    void setListener(Listener listener);
+    @Override
+    public String getLabel() {
+        return label;
+    }
 
-    void setLeftView(View left);
+    @Override
+    public boolean isEnabled() {
+        return enabled;
+    }
 
-    void setRightView(View right);
+    @Override
+    public String getIcon() {
+        return icon;
+    }
+
+    @Override
+    public Class<? extends SubApp> getSubAppClass() {
+        return subAppClass;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+
+    public void setSubAppClass(Class<? extends SubApp> subAppClass) {
+        this.subAppClass = subAppClass;
+    }
 }

@@ -45,11 +45,10 @@ import javax.inject.Inject;
  */
 public class DummyApp extends AbstractApp {
 
-    private final AppContext appContext;
 
     @Inject
     public DummyApp(AppContext appContext) {
-        this.appContext = appContext;
+        super(appContext);
     }
 
     @Override

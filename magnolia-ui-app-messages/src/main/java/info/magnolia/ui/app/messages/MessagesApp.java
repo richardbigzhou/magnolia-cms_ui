@@ -44,11 +44,9 @@ import javax.inject.Inject;
  */
 public class MessagesApp extends AbstractApp {
 
-    private AppContext appContext;
-
     @Inject
     public MessagesApp(AppContext appContext) {
-        this.appContext = appContext;
+        super(appContext);
     }
 
     @Override

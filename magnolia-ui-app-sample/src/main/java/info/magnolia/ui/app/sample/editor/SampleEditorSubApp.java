@@ -34,8 +34,11 @@
 package info.magnolia.ui.app.sample.editor;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import info.magnolia.ui.framework.app.AbstractSubApp;
+import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.view.View;
@@ -48,7 +51,8 @@ public class SampleEditorSubApp extends AbstractSubApp implements SampleEditorVi
     private final SampleEditorView view;
 
     @Inject
-    public SampleEditorSubApp(SampleEditorView view) {
+    public SampleEditorSubApp(final AppContext appContext, final SampleEditorView view, final @Named("subapp") EventBus subAppEventBus) {
+        super(appContext, view, subAppEventBus);
         this.view = view;
     }
 
@@ -62,5 +66,10 @@ public class SampleEditorSubApp extends AbstractSubApp implements SampleEditorVi
         this.view.setName(((DefaultLocation) location).getToken());
         this.view.setListener(this);
         return view;
+    }
+
+    @Override
+    public void locationChanged(Location location) {
+
     }
 }

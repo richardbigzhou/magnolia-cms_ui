@@ -35,6 +35,8 @@ package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.framework.location.Location;
 
+import java.util.List;
+
 
 /**
  * Abstract implementation with default behavior suitable for most apps.
@@ -43,8 +45,26 @@ import info.magnolia.ui.framework.location.Location;
  */
 public abstract class AbstractApp implements App {
 
+    protected AppContext appContext;
+
+    protected AbstractApp(AppContext appContext) {
+        this.appContext = appContext;
+    }
+
     @Override
     public void locationChanged(Location location) {
+    }
+
+    @Override
+    public void start(Location location) {
+
+        List<SubAppDescriptor> subAppDescriptors = appContext.getAppDescriptor().getSubApps();
+
+        for (SubAppDescriptor subAppDescriptor : subAppDescriptors) {
+
+            appContext.openSubApp(subAppDescriptor.getName(), subAppDescriptor.getSubAppClass(), location, subAppDescriptor.getName());
+            break;
+        }
     }
 
     @Override

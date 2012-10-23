@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,25 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.sample.main;
-
-import info.magnolia.ui.framework.app.SubApp;
-import info.magnolia.ui.framework.view.View;
+package info.magnolia.ui.framework.app;
 
 /**
- * View for the main tab of sample app.
+ * SubAppDescriptor.
  */
-public interface SampleMainView extends View {
+public interface SubAppDescriptor {
 
-    /**
-     * Listener for SampleMainView.
-     */
-    public interface Listener extends SubApp {
-    }
+    String getName();
 
-    void setListener(Listener listener);
+    String getLabel();
 
-    void setLeftView(View left);
+    boolean isEnabled();
 
-    void setRightView(View right);
+    String getIcon();
+
+    Class<? extends SubApp> getSubAppClass();
 }

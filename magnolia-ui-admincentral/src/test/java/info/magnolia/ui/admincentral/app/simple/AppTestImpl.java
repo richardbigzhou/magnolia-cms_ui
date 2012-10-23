@@ -64,7 +64,7 @@ public class AppTestImpl extends AbstractApp {
 
     @Inject
     public AppTestImpl(AppContext ctx, AppTestSubApp subApp) {
-        this.ctx = ctx;
+        super(ctx);
         this.subApp = subApp;
         res.put("TestPageApp"+appNumber, this);
         appNumber +=1;

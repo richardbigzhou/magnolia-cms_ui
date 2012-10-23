@@ -45,11 +45,9 @@ import info.magnolia.ui.framework.location.Location;
  */
 public class ShowcaseApp extends AbstractApp {
 
-    private AppContext appContext;
-
     @Inject
     public ShowcaseApp(AppContext appContext) {
-        this.appContext = appContext;
+        super(appContext);
     }
 
     @Override

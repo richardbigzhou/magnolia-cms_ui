@@ -45,7 +45,7 @@ import info.magnolia.ui.framework.view.View;
 /**
  * Sub app for the main tab in the message app.
  */
-public class MessagesAppMainSubApp extends AbstractSubApp implements MessagesView.Listener {
+public class MessagesAppMainSubApp implements MessagesView.Listener {
 
     private AppContext appContext;
     private MessagesView view;
@@ -65,6 +65,11 @@ public class MessagesAppMainSubApp extends AbstractSubApp implements MessagesVie
     @Override
     public View start(Location location) {
         return view;
+    }
+
+    @Override
+    public void locationChanged(Location location) {
+
     }
 
     @Override
