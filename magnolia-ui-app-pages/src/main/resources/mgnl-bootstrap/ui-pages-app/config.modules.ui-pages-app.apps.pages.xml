@@ -70,7 +70,7 @@
       <sv:value>website</sv:value>
     </sv:property>
     <sv:property sv:name="defaultOrder" sv:type="String">
-      <sv:value>name</sv:value>
+      <sv:value>jcrName</sv:value>
     </sv:property>
     <sv:node sv:name="MetaData">
       <sv:property sv:name="jcr:primaryType" sv:type="Name">
