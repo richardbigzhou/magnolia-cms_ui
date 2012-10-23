@@ -190,7 +190,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             appContext = new AppContextImpl(descriptor);
 
             if (location == null) {
-                location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, name, "main");
+                location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, name, "", "main");
             }
 
             appContext.start(location);
@@ -269,7 +269,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     private AppDescriptor getAppForLocation(Location newLocation) {
         if (newLocation instanceof DefaultLocation) {
             DefaultLocation appLocation = (DefaultLocation) newLocation;
-            return getAppDescriptor(appLocation.getPrefix());
+            return getAppDescriptor(appLocation.getAppId());
         }
         return null;
     }
@@ -370,7 +370,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
          */
         public void onLocationUpdate(Location location) {
 
-            String subAppId = extractSubAppId(((DefaultLocation) location).getToken());
+            String subAppId = extractSubAppId(((DefaultLocation) location).getParameter());
 
             // The location targets the current display state, update the fragment only
             if (subAppId.length() == 0) {
@@ -430,7 +430,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             if (subAppContext != null) {
                 return subAppContext.location;
             }
-            return new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appDescriptor.getName(), "");
+            return new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appDescriptor.getName(), "", "");
         }
 
         @Override

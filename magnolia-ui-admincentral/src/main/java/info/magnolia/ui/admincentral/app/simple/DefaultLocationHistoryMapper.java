@@ -61,14 +61,14 @@ public class DefaultLocationHistoryMapper implements LocationHistoryMapper {
             return null;
         }
 
-        return new DefaultLocation(type, prefix, token);
+        return new DefaultLocation(type, prefix, "", token);
     }
 
     @Override
     public String getFragment(Location location) {
         DefaultLocation defaultLocation = (DefaultLocation) location;
 
-        if (!supported(defaultLocation.getType(), defaultLocation.getPrefix(), defaultLocation.getToken())) {
+        if (!supported(defaultLocation.getAppType(), defaultLocation.getAppId(), defaultLocation.getParameter())) {
             return null;
         }
 

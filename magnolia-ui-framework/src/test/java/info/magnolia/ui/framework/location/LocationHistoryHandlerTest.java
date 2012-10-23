@@ -58,19 +58,19 @@ public class LocationHistoryHandlerTest {
 
     @Test
     public void testUpdatesFragmentOnLocationChange() {
-        assertSetsFragmentToOnLocationChange(new DefaultLocation("app", "foo", "/some/path"), "app:foo:/some/path");
+        assertSetsFragmentToOnLocationChange(new DefaultLocation("app", "foo", "", "/some/path"), "app:foo:/some/path");
     }
 
     @Test
     public void testSetsFragmentToEmptyOnLocationChangeWhenMapperDoesntRecognizeTheLocation() {
-        assertSetsFragmentToOnLocationChange(new DefaultLocation("app", "bar", "/some/path"), "");
+        assertSetsFragmentToOnLocationChange(new DefaultLocation("app", "bar", "", "/some/path"), "");
     }
 
     // location change as result of fragment change
 
     @Test
     public void testCallsLocationControllerOnFragmentChange() {
-        assertFragmentChangeCausesLocationChangeTo("app:foo:/some/path", new DefaultLocation("app", "foo", "/some/path"));
+        assertFragmentChangeCausesLocationChangeTo("app:foo:/some/path", new DefaultLocation("app", "foo", "", "/some/path"));
     }
 
     @Test
@@ -102,7 +102,7 @@ public class LocationHistoryHandlerTest {
 
     @Test
     public void testHandleCurrentHistoryNavigatesToDefaultLocation() {
-        assertCallsLocationControllerWhenCurrentHistoryIs("app:foo:/some/path", new DefaultLocation("app", "foo", "/some/path"));
+        assertCallsLocationControllerWhenCurrentHistoryIs("app:foo:/some/path", new DefaultLocation("app", "foo", "", "/some/path"));
     }
 
     @Test
@@ -186,7 +186,7 @@ public class LocationHistoryHandlerTest {
             String token = DefaultLocation.extractToken(fragment);
 
             if (type.equals("app") && prefix.equals("foo")) {
-                return new DefaultLocation(type, prefix, token);
+                return new DefaultLocation(type, prefix, "", token);
             }
 
             return null;
@@ -195,7 +195,7 @@ public class LocationHistoryHandlerTest {
         @Override
         public String getFragment(Location location) {
             DefaultLocation defaultLocation = (DefaultLocation) location;
-            if (defaultLocation.getType().equals("app") && defaultLocation.getPrefix().equals("foo")) {
+            if (defaultLocation.getAppType().equals("app") && defaultLocation.getAppId().equals("foo")) {
                 return location.toString();
             }
             return null;

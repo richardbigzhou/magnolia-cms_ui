@@ -65,7 +65,7 @@ public class SampleApp extends AbstractApp {
 
     @Override
     public void locationChanged(Location location) {
-        String token = ((DefaultLocation) location).getToken();
+        String token = ((DefaultLocation) location).getParameter();
         if (StringUtils.isNotBlank(token)) {
             openNewEditor(token, location);
         }

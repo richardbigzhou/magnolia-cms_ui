@@ -298,7 +298,7 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
         if (StringUtils.isNotEmpty(previewToken)) {
             token += ":" + previewToken;
         }
-        return new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages", token);
+        return new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages", "", token);
     }
 
     public String getSubAppId(Location location) {
@@ -319,7 +319,7 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
         ArrayList<String> parts = new ArrayList<String>();
 
         DefaultLocation l = (DefaultLocation) location;
-        String token = l.getToken();
+        String token = l.getParameter();
 
         // "editor"
         int i = token.indexOf(';');

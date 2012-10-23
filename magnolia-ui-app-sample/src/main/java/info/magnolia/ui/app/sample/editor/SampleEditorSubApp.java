@@ -63,7 +63,7 @@ public class SampleEditorSubApp extends AbstractSubApp implements SampleEditorVi
 
     @Override
     public View start(Location location) {
-        this.view.setName(((DefaultLocation) location).getToken());
+        this.view.setName(((DefaultLocation) location).getParameter());
         this.view.setListener(this);
         return view;
     }

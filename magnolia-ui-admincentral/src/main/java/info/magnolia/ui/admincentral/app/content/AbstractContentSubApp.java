@@ -236,7 +236,7 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
         ArrayList<String> parts = new ArrayList<String>();
 
         DefaultLocation l = (DefaultLocation) location;
-        String token = l.getToken();
+        String token = l.getParameter();
 
         // "main"
         int i = token.indexOf(':');
@@ -287,9 +287,9 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
     protected final DefaultLocation createLocation(final String parameter, final DefaultLocation currentLocation, final TokenElementType type) {
         DefaultLocation location = createLocation();
         if (currentLocation != null && type != null) {
-            String token = location.getToken();
+            String token = location.getParameter();
             //token = replaceLocationToken(currentLocation, parameter, type);
-            return new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, getAppName(), token);
+            return new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, getAppName(), "", token);
         }
         return location;
     }
@@ -306,7 +306,7 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
         switch(type) {
             case PATH:
                 if(StringUtils.isNotBlank(tokenPartToReplace)) {
-                    newToken = location.getToken().replaceFirst(getSelectedItemPath(location), tokenPartToReplace);
+                    newToken = location.getParameter().replaceFirst(getSelectedItemPath(location), tokenPartToReplace);
                 }
                 break;
             case VIEW :
@@ -314,23 +314,23 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
                     if(StringUtils.isNotEmpty(query)) {
                         //here we need Pattern.quote() as the query might contain special chars such as the wildcard *, which in regex has a different meaning
                         //and would prevent the replace method from working properly.
-                        newToken = location.getToken().replaceFirst(viewType + ";" + Pattern.quote(query), tokenPartToReplace);
+                        newToken = location.getParameter().replaceFirst(viewType + ";" + Pattern.quote(query), tokenPartToReplace);
                     } else {
-                        newToken = location.getToken().replaceFirst(viewType, tokenPartToReplace);
+                        newToken = location.getParameter().replaceFirst(viewType, tokenPartToReplace);
                     }}
                 break;
             case QUERY :
                 //searchbox can be emptied after having performed a query. This means that we must keep the view and discard the query only
                 if(StringUtils.isNotEmpty(query)) {
-                    newToken = location.getToken().replaceFirst(StringUtils.isBlank(tokenPartToReplace) ? (";" + Pattern.quote(query)): Pattern.quote(query), tokenPartToReplace);
+                    newToken = location.getParameter().replaceFirst(StringUtils.isBlank(tokenPartToReplace) ? (";" + Pattern.quote(query)): Pattern.quote(query), tokenPartToReplace);
                 } else {
-                    newToken = location.getToken().replaceFirst(viewType, StringUtils.isBlank(tokenPartToReplace) ? viewType : (viewType + ";" + tokenPartToReplace));
+                    newToken = location.getParameter().replaceFirst(viewType, StringUtils.isBlank(tokenPartToReplace) ? viewType : (viewType + ";" + tokenPartToReplace));
                 }
                 break;
             default:
                 throw new IllegalArgumentException("Unknown token type " + type);
         }
-        return newToken == null? location.getToken() : newToken;
+        return newToken == null? location.getParameter() : newToken;
     }
 
     /*

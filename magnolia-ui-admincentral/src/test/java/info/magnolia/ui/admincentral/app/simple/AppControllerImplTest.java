@@ -108,7 +108,7 @@ public class AppControllerImplTest {
         String appName = appName_1 + "_name";
 
         // WHEN
-        App app = appController.startIfNotAlreadyRunning(appName, new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appName, ""));
+        App app = appController.startIfNotAlreadyRunning(appName, new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appName, "", ""));
 
         // THEN
         //Check Events
@@ -134,7 +134,7 @@ public class AppControllerImplTest {
         String appName = appName_1 + "_name";
 
         // WHEN
-        appController.startIfNotAlreadyRunningThenFocus(appName, new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appName, ""));
+        appController.startIfNotAlreadyRunningThenFocus(appName, new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appName, "", ""));
 
         // THEN
         //Check Events
@@ -154,7 +154,7 @@ public class AppControllerImplTest {
     public void testStopApp_oneApp() {
         // GIVEN
         String appName = appName_1 + "_name";
-        appController.startIfNotAlreadyRunningThenFocus(appName, new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appName, ""));
+        appController.startIfNotAlreadyRunningThenFocus(appName, new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appName, "", ""));
         //Check
         assertEquals(true, AppTestImpl.res.containsKey("TestPageApp0"));
         AppTestImpl pageApp = (AppTestImpl) AppTestImpl.res.get("TestPageApp0");
@@ -179,14 +179,14 @@ public class AppControllerImplTest {
         // GIVEN
         //Start first App
         String appName1 = appName_1 + "_name";
-        appController.startIfNotAlreadyRunningThenFocus(appName1, new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appName1, ""));
+        appController.startIfNotAlreadyRunningThenFocus(appName1, new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appName1, "", ""));
         //Check
         assertEquals(true, AppTestImpl.res.containsKey("TestPageApp0"));
         AppTestImpl pageApp1 = (AppTestImpl) AppTestImpl.res.get("TestPageApp0");
 
         //Start second App
         String appName2 = appName_2 + "_name";
-        appController.startIfNotAlreadyRunningThenFocus(appName2, new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appName2, ""));
+        appController.startIfNotAlreadyRunningThenFocus(appName2, new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appName2, "", ""));
         //Check
         assertEquals(true, AppTestImpl.res.containsKey("TestPageApp1"));
         AppTestImpl pageApp2 = (AppTestImpl) AppTestImpl.res.get("TestPageApp1");
@@ -215,14 +215,14 @@ public class AppControllerImplTest {
         // GIVEN
         //Start first App
         String appName1 = appName_1 + "_name";
-        appController.startIfNotAlreadyRunningThenFocus(appName1, new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appName1, ""));
+        appController.startIfNotAlreadyRunningThenFocus(appName1, new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appName1, "", ""));
         //Check
         assertEquals(true, AppTestImpl.res.containsKey("TestPageApp0"));
         AppTestImpl.res.get("TestPageApp0");
 
         //Start second App
         String appName2 = appName_2 + "_name";
-        appController.startIfNotAlreadyRunningThenFocus(appName2, new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appName2, ""));
+        appController.startIfNotAlreadyRunningThenFocus(appName2, new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appName2, "", ""));
         //Check
         assertEquals(true, AppTestImpl.res.containsKey("TestPageApp1"));
         AppTestImpl pageApp2 = (AppTestImpl) AppTestImpl.res.get("TestPageApp1");
@@ -243,7 +243,7 @@ public class AppControllerImplTest {
         //Check
         assertEquals(false, appController.isAppStarted(appName1));
         //Start App
-        appController.startIfNotAlreadyRunningThenFocus(appName1, new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appName1, ""));
+        appController.startIfNotAlreadyRunningThenFocus(appName1, new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appName1, "", ""));
         //Check
         assertEquals(true, appController.isAppStarted(appName1));
 

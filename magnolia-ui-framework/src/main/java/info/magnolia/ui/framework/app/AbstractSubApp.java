@@ -90,7 +90,7 @@ public abstract class AbstractSubApp implements SubApp {
      * Creates a default location for the current subapp whose token has the form <code>main:/:tree</code>.
      */
     public final DefaultLocation createLocation() {
-        return new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, getAppName(), getDefaultToken());
+        return new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, getAppName(), "", getDefaultToken());
     }
 
     public String getDefaultToken() {
@@ -106,7 +106,7 @@ public abstract class AbstractSubApp implements SubApp {
         ArrayList<String> parts = new ArrayList<String>();
 
         DefaultLocation l = (DefaultLocation) location;
-        String token = l.getToken();
+        String token = l.getParameter();
 
         // "subAppId"
         int i = token.indexOf(';');
@@ -180,9 +180,9 @@ public abstract class AbstractSubApp implements SubApp {
     protected final DefaultLocation createLocation(final String parameter, final DefaultLocation currentLocation) {
         DefaultLocation location = createLocation();
         if (currentLocation != null) {
-            String token = location.getToken();
+            String token = location.getParameter();
             //token = replaceLocationToken(currentLocation, parameter, type);
-            return new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, getAppName(), token);
+            return new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, getAppName(), "", token);
         }
         return location;
     }

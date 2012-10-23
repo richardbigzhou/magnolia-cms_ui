@@ -43,13 +43,13 @@ public class DefaultLocationTest {
 
     @Test
     public void testToString() {
-        assertEquals("type:prefix:token", new DefaultLocation("type", "prefix", "token").toString());
-        assertEquals("type:prefix", new DefaultLocation("type", "prefix", "").toString());
-        assertEquals("type:prefix", new DefaultLocation("type", "prefix", null).toString());
-        assertEquals("type", new DefaultLocation("type", "", "").toString());
-        assertEquals("type", new DefaultLocation("type", null, null).toString());
-        assertEquals("", new DefaultLocation("", "", "").toString());
-        assertEquals("", new DefaultLocation(null, null, null).toString());
+        assertEquals("type:prefix:token", new DefaultLocation("type", "prefix", "", "token").toString());
+        assertEquals("type:prefix", new DefaultLocation("type", "prefix", "", "").toString());
+        assertEquals("type:prefix", new DefaultLocation("type", "prefix", "", null).toString());
+        assertEquals("type", new DefaultLocation("type", "", "", "").toString());
+        assertEquals("type", new DefaultLocation("type", null, "", null).toString());
+        assertEquals("", new DefaultLocation("", "", "", "").toString());
+        assertEquals("", new DefaultLocation(null, null, "", null).toString());
     }
 
     @Test

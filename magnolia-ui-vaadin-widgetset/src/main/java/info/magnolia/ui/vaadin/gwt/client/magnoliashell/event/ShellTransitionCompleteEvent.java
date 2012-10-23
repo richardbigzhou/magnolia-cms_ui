@@ -68,11 +68,11 @@ public class ShellTransitionCompleteEvent extends GwtEvent<ShellTransitionComple
         return TYPE;
     }
 /*
-    public ShellAppType getType() {
+    public ShellAppType getAppType() {
         return type;
     }
 
-    public String getToken() {
+    public String getParameter() {
         return token;
     }
 

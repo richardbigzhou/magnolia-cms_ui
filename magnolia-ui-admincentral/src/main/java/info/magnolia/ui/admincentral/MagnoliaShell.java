@@ -118,7 +118,7 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
                 setActiveViewport(getAppViewport());
                 final String appName = String.valueOf(params[0]);
                 final String token = String.valueOf(params[1]);
-                locationControllerProvider.get().goTo(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appName, token));
+                locationControllerProvider.get().goTo(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appName, "", token));
             }
         });
 
@@ -247,9 +247,9 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
 
             Location location = appController.getCurrentLocation(prefix);
             if (location == null) {
-                location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, prefix, token);
+                location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, prefix, "", token);
             }
-            super.navigateToApp(prefix, ((DefaultLocation) location).getToken());
+            super.navigateToApp(prefix, ((DefaultLocation) location).getParameter());
 
         } else {
             super.navigateToApp(prefix, token);
@@ -262,9 +262,9 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
 
             Location location = shellAppControllerProvider.get().getCurrentLocation(prefix);
             if (location == null) {
-                location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_SHELL_APP, prefix, token);
+                location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_SHELL_APP, prefix, "", token);
             }
-            super.navigateToShellApp(prefix, ((DefaultLocation) location).getToken());
+            super.navigateToShellApp(prefix, ((DefaultLocation) location).getParameter());
 
         } else {
             super.navigateToShellApp(prefix, token);

@@ -41,26 +41,32 @@ public class DefaultLocation implements Location {
     public static final String LOCATION_TYPE_APP = "app";
     public static final String LOCATION_TYPE_SHELL_APP = "shell";
 
-    private String type;
-    private String prefix;
-    private String token;
+    private String appType;
+    private String appId;
+    private String subAppId;
+    private String parameter;
 
-    public DefaultLocation(String type, String prefix, String token) {
-        this.type = type;
-        this.prefix = prefix;
-        this.token = token;
+    public DefaultLocation(String appType, String appId, String subAppId, String parameter) {
+        this.appType = appType;
+        this.appId = appId;
+        this.subAppId = subAppId;
+        this.parameter = parameter;
     }
 
-    public String getType() {
-        return type;
+    public String getAppType() {
+        return appType;
     }
 
-    public String getPrefix() {
-        return prefix;
+    public String getAppId() {
+        return appId;
     }
 
-    public String getToken() {
-        return token;
+    public String getSubAppId() {
+        return subAppId;
+    }
+
+    public String getParameter() {
+        return parameter;
     }
 
     @Override
@@ -74,13 +80,13 @@ public class DefaultLocation implements Location {
 
         DefaultLocation that = (DefaultLocation) o;
 
-        if (prefix != null ? !prefix.equals(that.prefix) : that.prefix != null) {
+        if (appId != null ? !appId.equals(that.appId) : that.appId != null) {
             return false;
         }
-        if (token != null ? !token.equals(that.token) : that.token != null) {
+        if (parameter != null ? !parameter.equals(that.parameter) : that.parameter != null) {
             return false;
         }
-        if (type != null ? !type.equals(that.type) : that.type != null) {
+        if (appType != null ? !appType.equals(that.appType) : that.appType != null) {
             return false;
         }
 
@@ -89,21 +95,21 @@ public class DefaultLocation implements Location {
 
     @Override
     public int hashCode() {
-        int result = type != null ? type.hashCode() : 0;
-        result = 31 * result + (prefix != null ? prefix.hashCode() : 0);
-        result = 31 * result + (token != null ? token.hashCode() : 0);
+        int result = appType != null ? appType.hashCode() : 0;
+        result = 31 * result + (appId != null ? appId.hashCode() : 0);
+        result = 31 * result + (parameter != null ? parameter.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        if (type != null && type.length() != 0) {
-            sb.append(type);
-            if (prefix != null && prefix.length() != 0) {
-                sb.append(":").append(prefix);
-                if (token != null && token.length() != 0) {
-                    sb.append(":").append(token);
+        if (appType != null && appType.length() != 0) {
+            sb.append(appType);
+            if (appId != null && appId.length() != 0) {
+                sb.append(":").append(appId);
+                if (parameter != null && parameter.length() != 0) {
+                    sb.append(":").append(parameter);
                 }
             }
         }

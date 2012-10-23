@@ -101,7 +101,7 @@ public abstract class AbstractApp implements App {
     private String getSubAppId(Location location) {
 
         DefaultLocation l = (DefaultLocation) location;
-        String token = l.getToken();
+        String token = l.getParameter();
 
         // "subAppId"
         int i = token.indexOf(';');

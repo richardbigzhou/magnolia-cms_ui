@@ -65,6 +65,6 @@ public class ContentDisplayPresenter implements ContentDisplayView.Listener {
 
     @Override
     public void onOpenInNewEditor() {
-        locationController.goTo(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "sample", name));
+        locationController.goTo(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "sample", "", name));
     }
 }
