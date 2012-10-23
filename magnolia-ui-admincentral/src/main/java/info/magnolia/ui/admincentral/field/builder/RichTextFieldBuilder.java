@@ -75,8 +75,17 @@ public class RichTextFieldBuilder extends
         toolbars.add(new ToolbarGroup("special", new String[] { "Undo", "Redo",
                 "Demo" }));
         config.addToolbarLine(toolbars);
+        config.addListenedEvent("demoevent");
 
-        MagnoliaRichTextField richtexteditor = new MagnoliaRichTextField(config);
+        final MagnoliaRichTextField richtexteditor = new MagnoliaRichTextField(config);
+        richtexteditor.addListener(new MagnoliaRichTextField.PluginListener() {
+            
+            @Override
+            public void onPluginEvent(String eventName, String value) {
+                richtexteditor.firePluginEvent("customevent", value);
+            }
+        });
+        
         return richtexteditor;
     }
 

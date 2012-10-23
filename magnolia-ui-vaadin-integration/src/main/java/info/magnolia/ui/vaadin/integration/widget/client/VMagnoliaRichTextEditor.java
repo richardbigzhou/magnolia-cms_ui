@@ -31,28 +31,31 @@
  * intact.
  *
  */
+package info.magnolia.ui.vaadin.integration.widget.client;
 
-(function() {
-	CKEDITOR.plugins.add('demo', {
-		init: function(editor) {
-			editor.addCommand('demo', {
-				exec: function(editor) {
-					editor.fire('demoevent', 'with some parameter to server');
-				}
-			});
-			
-			editor.on('customevent', function(e) {
-				alert('got custom event');
-				if(e.data) {
-					alert('with data: '+e.data);
-				}
-			});
+import org.vaadin.openesignforms.ckeditor.widgetset.client.ui.CKEditor;
 
-			editor.ui.addButton('Demo', {
-				label: 'Demo thing',
-				command: 'demo',
-				icon: "../images/disk.png"
-			});
-		}
-	});
-})();
+/**
+ * Add support for handling custom plugins to CKEditor instance.
+ */
+public class VMagnoliaRichTextEditor extends CKEditor {
+    protected VMagnoliaRichTextEditor() {
+    }
+    
+    public final native void addListener(final Listener listener, final String eventName) /*-{
+        this.on( eventName, function( ev ) {
+            ev.listenerData.@info.magnolia.ui.vaadin.integration.widget.client.VMagnoliaRichTextEditor.Listener::onPluginEvent(Ljava/lang/String;Ljava/lang/String;)(eventName, ev.data);
+        }, null, listener);
+    }-*/;
+    
+    public final native void fire(final String eventName, final String value) /*-{
+        this.fire(eventName, value);
+    }-*/;
+    
+    /**
+     * Listener interface for plugin events.
+     */
+    public interface Listener {
+        void onPluginEvent(String eventName, String data);
+    }
+}

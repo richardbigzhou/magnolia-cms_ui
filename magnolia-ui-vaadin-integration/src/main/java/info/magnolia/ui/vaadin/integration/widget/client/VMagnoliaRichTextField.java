@@ -33,6 +33,11 @@
  */
 package info.magnolia.ui.vaadin.integration.widget.client;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 
 import org.vaadin.openesignforms.ckeditor.widgetset.client.ui.CKEditorService;
@@ -45,49 +50,72 @@ import com.vaadin.terminal.gwt.client.UIDL;
  * Magnolia rich text field adds an ability to custom plugins to communicate
  * with the server. This was not possible with the add-on out of the box.
  */
-public class VMagnoliaRichTextField extends VCKEditorTextField {
-
-    private static final String EVENT_DEMO = "demoevent";
-    public static final String VAR_EXTERNAL_LINK = "externalLink";
+public class VMagnoliaRichTextField extends VCKEditorTextField implements VMagnoliaRichTextEditor.Listener {
+    public static final String VAR_EVENTNAMES = "eventnames";
+    public static final String VAR_EVENT_PREFIX = "pluginEvent:";
+    public static final String VAR_FIRE_PLUGIN_EVENT = "firePluginEvent";
+    public static final String VAR_FIRE_PLUGIN_EVENT_VALUE = "firePluginEventValue";
+    protected VMagnoliaRichTextEditor editor;
+    public List<String> pluginEvents;
 
     public VMagnoliaRichTextField() {
         super();
+        pluginEvents = new ArrayList<String>();
         loadCKEditor();
     }
 
     public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
-        super.updateFromUIDL(uidl, client);      
+        super.updateFromUIDL(uidl, client);
+        
+        //list of plugin events that server is interested of handling.
+        if(uidl.hasAttribute(VAR_EVENTNAMES)) {
+            pluginEvents = Arrays.asList(
+                    uidl.getStringArrayAttribute(VAR_EVENTNAMES)
+                    );
+            
+            for(String eventName: pluginEvents) {
+                this.editor.addListener(this, eventName);
+            }
+        }
+        
+        //Server wants to send an event to a plugin.
+        if(uidl.hasAttribute(VAR_FIRE_PLUGIN_EVENT)) {
+            this.editor.fire(
+                    uidl.getStringAttribute(VAR_FIRE_PLUGIN_EVENT), 
+                    uidl.getStringAttribute(VAR_FIRE_PLUGIN_EVENT_VALUE)
+                    );
+        }
     }
-
+    
     /**
-     * Initializes CKEditor if not done already and add event listeners.
+     * Will be invoked from CK plugins.
+     */
+    @Override
+    public void onPluginEvent(String eventName, String data) {
+        if(pluginEvents.contains(eventName)) {
+            clientToServer.updateVariable(paintableId, VAR_EVENT_PREFIX+eventName, data, true);
+        }
+    }
+    
+    /**
+     * Initializes CKEditor if not done already and get editor instance
+     * injected.
      */
     private void loadCKEditor() {
         if(!CKEditorService.libraryReady()) {
             CKEditorService.loadLibrary(new ScheduledCommand() {
                 @Override
                 public void execute() {
-                    registerEventHandlers();
+                    injectEditorTo(VMagnoliaRichTextField.this);
                 }
             });
         } else {
-            registerEventHandlers();
+            injectEditorTo(this);
         }
     }
 
-    private void onEvent(String eventName) {
-        if(eventName.equals(EVENT_DEMO)) {
-            onSave();
-            clientToServer.updateVariable(paintableId, VAR_EXTERNAL_LINK, "", true);
-        }
-    }
-    
-    private String getPaintableId() {
-        return paintableId;
-    }
-    
-    private void registerEventHandlers() {
-        register(EVENT_DEMO, this);
+    protected void setEditor(JavaScriptObject editor) {
+        this.editor = (VMagnoliaRichTextEditor)editor;        
     }
 
     /*
@@ -99,20 +127,24 @@ public class VMagnoliaRichTextField extends VCKEditorTextField {
      * matching paintableId member of this class, then this editor is the one 
      * from the base class => we got access to the private member we need.
      */
-    private static native void register(final String eventName, final VMagnoliaRichTextField listener)
+    private static native void injectEditorTo(final VMagnoliaRichTextField listener)
     /*-{
-        var eventHandler = function(ev) {
-            ev.listenerData.@info.magnolia.ui.vaadin.integration.widget.client.VMagnoliaRichTextField::onEvent(Ljava/lang/String;)(eventName);
-        };
-        
+
         var createdEvent = function(e) {
             var listenerInstanceId = listener.@info.magnolia.ui.vaadin.integration.widget.client.VMagnoliaRichTextField::getPaintableId()();
             var editorInstanceId = e.editor.element.getId();
             if(listenerInstanceId == editorInstanceId) {
-                e.editor.on(eventName, eventHandler, null, listener);
+                listener.@info.magnolia.ui.vaadin.integration.widget.client.VMagnoliaRichTextField::setEditor(Lcom/google/gwt/core/client/JavaScriptObject;)(e.editor);
             }
         };
 
         $wnd.CKEDITOR.on('instanceCreated', createdEvent);
      }-*/;
+    
+    /*
+     * Needed by the hack above
+     */
+    private String getPaintableId() {
+        return paintableId;
+    }
 }

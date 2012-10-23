@@ -33,11 +33,14 @@
  */
 package info.magnolia.ui.vaadin.integration.widget;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import info.magnolia.ui.vaadin.integration.widget.client.VMagnoliaRichTextField;
 
 import org.vaadin.openesignforms.ckeditor.CKEditorTextField;
+import org.vaadin.openesignforms.ckeditor.widgetset.client.ui.VCKEditorTextField;
 
 import com.vaadin.terminal.PaintException;
 import com.vaadin.terminal.PaintTarget;
@@ -51,25 +54,92 @@ import com.vaadin.terminal.PaintTarget;
 public class MagnoliaRichTextField extends CKEditorTextField{
 
     private static final long serialVersionUID = -5194325714251243359L;
+    
+    private String fireEvent = null;
+    private String fireEventValue = null;
+    private String[] customEvents = null;
+    private List<PluginListener> listeners = new ArrayList<PluginListener>();
+    private MagnoliaRichTextFieldConfig config = null;
 
     public MagnoliaRichTextField() {
         super();
     }
     
+    public void addListener(PluginListener listener) {
+        listeners.add(listener);
+    }
+    
     public MagnoliaRichTextField(MagnoliaRichTextFieldConfig config) {
         super(config);
+        this.config = config;
     }
 
     @Override
     public void changeVariables(Object source, Map<String, Object> variables) {
         super.changeVariables(source, variables);
-        if(variables.containsKey(VMagnoliaRichTextField.VAR_EXTERNAL_LINK)) {
-            insertText("/aeinstein");
+        
+        if(config != null && config.getListenedEvents().length > 0) {
+            //Editor is ready
+            if(variables.containsKey(VCKEditorTextField.VAR_VERSION)) {
+                customEvents = config.getListenedEvents();
+                requestRepaint();
+            }
+            
+            //See if client sends events
+            for(String eventName: config.getListenedEvents()) {
+                String eventNameResolved = VMagnoliaRichTextField.VAR_EVENT_PREFIX+eventName;
+                if(variables.containsKey(eventNameResolved)) {
+                    for(PluginListener listener: listeners) {
+                        listener.onPluginEvent(eventName, variables.get(eventNameResolved).toString());
+                    }
+                }
+            }
         }
     }
     
+    /**
+     * Send event to CKEditor instance.
+     * @param event Event name that plugin can attach with editor.on('event', function() {...})
+     * @param value Additional event data. Client can access this by e.data
+     */
+    public void firePluginEvent(String event, String value) {
+        fireEvent = event;
+        fireEventValue = value;
+        requestRepaint();
+    }
+    
+    /**
+     * Send event to CKEditor instance. 
+     * @param event Event name that plugin can attach with editor.on('event', function() {...})
+     */
+    public void firePluginEvent(String event) {
+        firePluginEvent(event, "");
+    }
+
     @Override
     public void paintContent(PaintTarget target) throws PaintException {
         super.paintContent(target);
+        
+        //tell client that server is interested of these events
+        if(customEvents != null) {
+            target.addAttribute(VMagnoliaRichTextField.VAR_EVENTNAMES, customEvents);
+            customEvents = null;
+        }
+        
+        //send event to plugin
+        if(fireEvent != null && fireEventValue != null) {
+            target.addAttribute(VMagnoliaRichTextField.VAR_FIRE_PLUGIN_EVENT, fireEvent);
+            target.addAttribute(VMagnoliaRichTextField.VAR_FIRE_PLUGIN_EVENT_VALUE, fireEventValue);
+            fireEvent = null;
+            fireEventValue = null;
+        }
     }
+    
+    /**
+     * Event handler listener for plugin connectivity.
+     */    
+    public interface PluginListener {
+        void onPluginEvent(String eventName, String value);
+    }
+
 }

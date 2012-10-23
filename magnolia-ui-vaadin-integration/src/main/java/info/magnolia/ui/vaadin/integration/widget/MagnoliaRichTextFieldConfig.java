@@ -42,11 +42,12 @@ import com.google.gson.Gson;
 
 /**
  * Extends CKEditorConfig by defining more
- * coherent toolbar API.
+ * coherent toolbar API and configuring custom plugins.
  */
 public class MagnoliaRichTextFieldConfig extends CKEditorConfig {
 
     private static final long serialVersionUID = 9993500103615659L;
+    private List<String> events = new ArrayList<String>();
 
     public MagnoliaRichTextFieldConfig() {
         addToExtraPlugins("demo");
@@ -62,6 +63,19 @@ public class MagnoliaRichTextFieldConfig extends CKEditorConfig {
         Gson gson = new Gson();
         String json = gson.toJson(toolbars);
         addCustomToolbarLine(json.substring(1, json.length()-1));
+    }
+    
+    /**
+     * Add CKEditor event name that server side will listen. 
+     * Only event names added to configuration will be listened.
+     * @param eventName This must match in client side. e.g: editor.fire('eventName')
+     */
+    public void addListenedEvent(String eventName) {
+        events.add(eventName);
+    }
+    
+    String[] getListenedEvents() {
+        return events.toArray(new String[0]);
     }
     
     /**
