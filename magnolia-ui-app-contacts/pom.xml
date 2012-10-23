@@ -30,10 +30,6 @@
 			<artifactId>magnolia-ui-admincentral</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>com.vaadin</groupId>
-			<artifactId>vaadin</artifactId>
-		</dependency>
 
 		<!-- For Test -->
 		<dependency>

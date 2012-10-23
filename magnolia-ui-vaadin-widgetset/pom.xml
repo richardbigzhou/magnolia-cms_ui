@@ -9,13 +9,14 @@
   </parent>
   <artifactId>magnolia-ui-vaadin-widgetset</artifactId>
   <name>magnolia-ui-vaadin-widgetset</name>
+
   <dependencies>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
       <artifactId>magnolia-ui-vaadin-integration</artifactId>
       <version>${project.version}</version>
     </dependency>
-        <dependency>
+    <dependency>
       <groupId>info.magnolia</groupId>
       <artifactId>magnolia-rendering</artifactId>
     </dependency>
@@ -56,35 +57,36 @@
       <artifactId>autoreplacefield</artifactId>
     </dependency>
     <dependency>
-       <groupId>com.googlecode.mgwt</groupId>
-	   <artifactId>mgwt</artifactId>
+      <groupId>com.googlecode.mgwt</groupId>
+      <artifactId>mgwt</artifactId>
     </dependency>
     <dependency>
-	  <groupId>org.vaadin.addons</groupId>
-	  <artifactId>gwt-graphics</artifactId>
-	</dependency>
-	<dependency>
+      <groupId>org.vaadin.addons</groupId>
+      <artifactId>gwt-graphics</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.vaadin.addons</groupId>
       <artifactId>css-tools</artifactId>
     </dependency>
-	<dependency>
-	 	<groupId>org.vaadin.addons</groupId>
-		<artifactId>customfield</artifactId>
-	</dependency>
-	<dependency>
-	 	<groupId>org.vaadin.addon</groupId>
-		<artifactId>propertytranslator</artifactId>
-	</dependency>
+    <dependency>
+      <groupId>org.vaadin.addons</groupId>
+      <artifactId>customfield</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.vaadin.addon</groupId>
+      <artifactId>propertytranslator</artifactId>
+    </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
       <scope>provided</scope>
     </dependency>
-
   </dependencies>
+
   <build>
     <plugins>
-      <!-- Compile custom GWT components or widget dependencies with the GWT compiler -->
+      <!-- Compile custom GWT components or widget dependencies with the GWT
+        compiler -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
@@ -99,7 +101,7 @@
           <noServer>true</noServer>
           <module>info.magnolia.ui.vaadin.gwt.MagnoliaWidgetSet</module>
           <runTarget>.magnolia/admincentral</runTarget>
-          <!-- draftCompile>true</draftCompile-->
+          <!-- draftCompile>true</draftCompile -->
         </configuration>
         <executions>
           <execution>
@@ -127,7 +129,79 @@
           <relativePath>../${basedir}</relativePath>
           <rootPath>$${admincentral.root}</rootPath>
         </configuration>
-      </plugin>
-    </plugins>
+    </plugin>
+    <!-- do not apply Magnolia's checkstyle constraints to the patched Vaadin class.-->
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-checkstyle-plugin</artifactId>
+      <configuration>
+        <excludes>**\/*VScrollTable.java</excludes>
+      </configuration>
+    </plugin>
+   </plugins>
   </build>
+
+  <profiles>
+    <profile>
+    <!--
+      This profile has to be run (i.e. mvn clean install -Ppatch-vaadin-vscrolltable) only when the need for patching Vaadin's VScrollTable arises.
+      We currently need to maintain a patched version of it due to some limitations regarding extensibility
+      in the original class and which Vaadin cannot handle at the moment (TODO add Vaadin tickets raised by Magnolia about this, if any).
+      Here what we do is
+        1) remove the currently patched VScrollTable.java sources and replace them with a fresh copy from the vaadin jar dependency.
+        2) apply our own patch (see src/main/patches/vscrolltable.txt) to the class's original sources.
+      -->
+      <id>patch-vaadin-vscrolltable</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>unpack-vaadin-treetable-src</id>
+                <phase>process-sources</phase>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>com.vaadin</groupId>
+                      <artifactId>vaadin</artifactId>
+                      <version>${vaadinVersion}</version>
+                      <type>jar</type>
+                      <classifier>sources</classifier>
+                      <overWrite>true</overWrite>
+                      <outputDirectory>${project.build.sourceDirectory}</outputDirectory>
+                    </artifactItem>
+                  </artifactItems>
+                  <includes>**\/*VScrollTable.java</includes>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-patch-plugin</artifactId>
+            <version>1.1.1</version>
+            <configuration>
+              <patches>
+                <patch>vscrolltable.txt</patch>
+              </patches>
+            </configuration>
+            <executions>
+              <execution>
+                <id>patch</id>
+                <goals>
+                  <goal>apply</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
 </project>
