@@ -52,8 +52,8 @@ public class ShowcaseApp extends AbstractApp {
 
     @Override
     public void start(Location location) {
-        appContext.openSubApp("main", ShowcaseMainSubApp.class, location,
-                "main");
+        appContext.openSubApp("main", ShowcaseMainSubApp.class, location
+        );
     }
 
     @Override

@@ -51,6 +51,6 @@ public class MessagesApp extends AbstractApp {
 
     @Override
     public void start(Location location) {
-        appContext.openSubApp("main", MessagesAppMainSubApp.class, location, "main");
+        appContext.openSubApp("main", MessagesAppMainSubApp.class, location);
     }
 }

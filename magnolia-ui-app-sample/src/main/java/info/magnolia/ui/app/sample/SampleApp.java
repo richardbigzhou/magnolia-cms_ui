@@ -56,7 +56,7 @@ public class SampleApp extends AbstractApp {
 
     @Override
     public void start(Location location) {
-        appContext.openSubApp("main", SampleMainSubApp.class, location, "main");
+        appContext.openSubApp("main", SampleMainSubApp.class, location);
     }
 
     @Override
@@ -72,6 +72,6 @@ public class SampleApp extends AbstractApp {
     }
 
     private void openNewEditor(String name, Location location) {
-        appContext.openSubApp("editor", SampleEditorSubApp.class, location, name);
+        appContext.openSubApp("editor", SampleEditorSubApp.class, location);
     }
 }

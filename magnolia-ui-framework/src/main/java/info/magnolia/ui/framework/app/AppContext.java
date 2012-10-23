@@ -44,12 +44,11 @@ public interface AppContext {
 
     /**
      *
-     * @param name name of the sub app
+     * @param subAppId name of the sub app
      * @param subAppClass
      * @param location
-     * @param subAppId uniquely identifies the sub app instance within the app
      */
-    void openSubApp(String name, Class<? extends SubApp> subAppClass, Location location, String subAppId);
+    void openSubApp(String subAppId, Class<? extends SubApp> subAppClass, Location location);
 
     void enterFullScreenMode();
 

@@ -62,7 +62,7 @@ public abstract class AbstractApp implements App {
 
         for (SubAppDescriptor subAppDescriptor : subAppDescriptors) {
 
-            appContext.openSubApp(subAppDescriptor.getName(), subAppDescriptor.getSubAppClass(), location, subAppDescriptor.getName());
+            appContext.openSubApp(subAppDescriptor.getName(), subAppDescriptor.getSubAppClass(), location);
             break;
         }
     }

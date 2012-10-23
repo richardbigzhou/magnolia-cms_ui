@@ -53,6 +53,6 @@ public class DummyApp extends AbstractApp {
 
     @Override
     public void start(Location location) {
-        appContext.openSubApp("main", DummyMainSubApp.class, location, "main");
+        appContext.openSubApp("main", DummyMainSubApp.class, location);
     }
 }

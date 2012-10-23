@@ -334,13 +334,13 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             app.start(location);
         }
 
-        private SubAppContext startSubApp(String name, Class<? extends SubApp> subAppClass, Location location, String subAppId) {
+        private SubAppContext startSubApp(String subAppId, Class<? extends SubApp> subAppClass, Location location) {
 
             if (subAppContexts.containsKey(subAppId)) {
                 throw new IllegalStateException("Sub app already exists with sub app id " + subAppId);
             }
 
-            ComponentProvider subAppComponentProvider = createSubAppComponentProvider(appDescriptor.getName(), name, appComponentProvider);
+            ComponentProvider subAppComponentProvider = createSubAppComponentProvider(appDescriptor.getName(), subAppId, appComponentProvider);
 
             SubApp subApp = subAppComponentProvider.newInstance(subAppClass);
 
@@ -433,8 +433,8 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         }
 
         @Override
-        public void openSubApp(String name, Class<? extends SubApp> subAppClass, Location location, String subAppId) {
-            startSubApp(name, subAppClass, location, subAppId);
+        public void openSubApp(String subAppId, Class<? extends SubApp> subAppClass, Location location) {
+            startSubApp(subAppId, subAppClass, location);
         }
 
         @Override
