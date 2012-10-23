@@ -33,14 +33,13 @@
  */
 package info.magnolia.ui.app.messages;
 
-import javax.inject.Inject;
-
-import info.magnolia.ui.framework.app.AbstractSubApp;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.framework.view.View;
+
+import javax.inject.Inject;
 
 /**
  * Sub app for the main tab in the message app.

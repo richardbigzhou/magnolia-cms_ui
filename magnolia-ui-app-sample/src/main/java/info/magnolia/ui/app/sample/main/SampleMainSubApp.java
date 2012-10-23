@@ -33,14 +33,13 @@
  */
 package info.magnolia.ui.app.sample.main;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
-import info.magnolia.ui.framework.app.AbstractSubApp;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.view.View;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 
 /**
  * SubApp for the main tab in sample app.
