@@ -47,6 +47,7 @@ import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.view.View;
 import org.apache.commons.lang.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -224,6 +225,75 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
         }
         updateActionbar(getWorkbench().getActionbarPresenter());
     }
+
+    /**
+     * Location token handling, format is {@code main:<selectedItemPath>:<viewType>[;<query>] } where <code>query</code> is present only if <code>viewType</code> is {@link ViewType#SEARCH}.
+     * @see ViewType
+     */
+    @Override
+    public final List<String> parseLocationToken(final Location location) {
+
+        ArrayList<String> parts = new ArrayList<String>();
+
+        DefaultLocation l = (DefaultLocation) location;
+        String token = l.getToken();
+
+        // "main"
+        int i = token.indexOf(':');
+        if (i == -1) {
+            if (!getSubAppId().equals(token)) {
+                return new ArrayList<String>();
+            }
+            parts.add(token);
+            return parts;
+        }
+
+        String subAppName = token.substring(0, i);
+        if (!getSubAppId().equals(subAppName)) {
+            return new ArrayList<String>();
+        }
+        parts.add(subAppName);
+        token = token.substring(i + 1);
+
+        // selectedItemPath
+        if (token.length() > 0 && token.indexOf(':') == -1) {
+            parts.add(token);
+        } else {
+            // viewType and, if view type == search, its related query
+            String[] tokenParts = token.split(":");
+            for(String part: tokenParts) {
+                parts.add(part);
+            }
+        }
+        return parts;
+    }
+
+
+    //Some of the following class members have default visibility scope for the sake of testability.
+    /**
+     * Token type element.
+     * A token here is the URI fragment part made up by zero or more elements.
+     * In this case we will have
+     * {@code
+     *   #app:<appName>:<subAppId>:<selectedPathToken>:<viewTypeToken>[;<queryToken>]
+     * }
+     */
+    enum TokenElementType { PATH, VIEW, QUERY }
+
+
+    /*
+    * Creates a location for the current subapp given the current location, the passed parameter and its type.
+    */
+    protected final DefaultLocation createLocation(final String parameter, final DefaultLocation currentLocation, final TokenElementType type) {
+        DefaultLocation location = createLocation();
+        if (currentLocation != null && type != null) {
+            String token = location.getToken();
+            //token = replaceLocationToken(currentLocation, parameter, type);
+            return new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, getAppName(), token);
+        }
+        return location;
+    }
+
 
     /*
     * If type is PATH or VIEW and token to replace is null/empty it returns the current token. Only in case of QUERY the token to replace can be null/empty

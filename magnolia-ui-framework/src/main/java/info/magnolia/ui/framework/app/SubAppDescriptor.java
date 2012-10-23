@@ -44,6 +44,8 @@ public interface SubAppDescriptor {
 
     boolean isEnabled();
 
+    boolean isDefault();
+
     String getIcon();
 
     Class<? extends SubApp> getSubAppClass();

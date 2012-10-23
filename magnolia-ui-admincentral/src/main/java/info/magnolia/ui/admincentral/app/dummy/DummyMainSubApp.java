@@ -33,41 +33,28 @@
  */
 package info.magnolia.ui.admincentral.app.dummy;
 
+import info.magnolia.ui.framework.app.AbstractSubApp;
 import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.app.SubApp;
+import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.view.View;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 
 /**
  * Sub app for the main tab in a dummy app.
  */
-public class DummyMainSubApp implements SubApp {
+public class DummyMainSubApp extends AbstractSubApp {
 
-    private final DummyView dummyView;
 
-    private final AppContext appContext;
 
     @Inject
-    public DummyMainSubApp(DummyView dummyView, AppContext appContext) {
-        this.dummyView = dummyView;
-        this.appContext = appContext;
-    }
-
-    @Override
-    public String getCaption() {
-        return appContext.getAppDescriptor().getLabel();
-    }
-
-    @Override
-    public View start(Location location) {
-        return dummyView;
+    public DummyMainSubApp(AppContext appContext, DummyView dummyView, final @Named("subapp") EventBus subAppEventBus) {
+        super(appContext, dummyView, subAppEventBus);
     }
 
     @Override
     public void locationChanged(Location location) {
-
     }
 }

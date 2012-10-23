@@ -343,6 +343,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             ComponentProvider subAppComponentProvider = createSubAppComponentProvider(appDescriptor.getName(), subAppId, appComponentProvider);
 
             SubApp subApp = subAppComponentProvider.newInstance(subAppClass);
+            subApp.setSubAppId(subAppId);
 
             View view = subApp.start(location);
 
@@ -369,7 +370,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
          */
         public void onLocationUpdate(Location location) {
 
-            String subAppId = extractSubAppSubAppId(((DefaultLocation) location).getToken());
+            String subAppId = extractSubAppId(((DefaultLocation) location).getToken());
 
             // The location targets the current display state, update the fragment only
             if (subAppId.length() == 0) {
@@ -394,8 +395,8 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             app.locationChanged(location);
         }
 
-        private String extractSubAppSubAppId(final String token) {
-            int i = token.indexOf(':');
+        private String extractSubAppId(final String token) {
+            int i = token.indexOf(';');
             return i != -1 ? token.substring(0, i) : token;
         }
 

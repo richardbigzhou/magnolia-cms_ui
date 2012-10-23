@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,25 +33,22 @@
  */
 package info.magnolia.ui.framework.app;
 
-import java.io.Serializable;
-import java.util.Map;
+import info.magnolia.ui.framework.location.Location;
 
 /**
- * Describes an app.
+ * AbstractSimpleSubApp.
  */
-public interface AppDescriptor extends Serializable {
+abstract public class AbstractSimpleSubApp implements SubApp
+{
 
-    String getCategoryName();
+    private String subAppId;
 
-    String getName();
+    @Override
+    public void locationChanged(Location location) {
+    }
 
-    String getLabel();
-
-    boolean isEnabled();
-
-    String getIcon();
-
-    Class<? extends App> getAppClass();
-
-    Map<String, SubAppDescriptor> getSubApps();
+    @Override
+    public void setSubAppId(String subAppId) {
+        this.subAppId = subAppId;
+    }
 }

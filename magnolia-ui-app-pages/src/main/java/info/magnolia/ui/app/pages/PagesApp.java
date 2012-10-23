@@ -71,14 +71,6 @@ public class PagesApp extends AbstractContentApp {
         }
     }*/
 
-/*    @Override
-    public void locationChanged(Location location) {
-
-        if (PagesEditorSubApp.supportsLocation(location)) {
-            appContext.openSubApp(EDITOR_TOKEN, PagesEditorSubApp.class, location, PagesEditorSubApp.getSubAppId(location));
-        }
-    }*/
-
     @Override
     public void stop() {
     }

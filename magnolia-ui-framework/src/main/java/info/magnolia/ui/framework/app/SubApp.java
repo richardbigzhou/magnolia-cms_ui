@@ -46,4 +46,6 @@ public interface SubApp {
     View start(Location location);
 
     void locationChanged(Location location);
+
+    void setSubAppId(String subAppId);
 }

@@ -33,16 +33,16 @@
  */
 package info.magnolia.ui.admincentral.app.simple;
 
-import javax.inject.Inject;
-
-import info.magnolia.ui.framework.app.SubApp;
+import info.magnolia.ui.framework.app.AbstractSimpleSubApp;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.view.View;
+
+import javax.inject.Inject;
 
 /**
  *
  */
-public class AppTestSubApp implements SubApp {
+public class AppTestSubApp extends AbstractSimpleSubApp {
 
     private AppTestView view;
 
@@ -64,4 +64,5 @@ public class AppTestSubApp implements SubApp {
     @Override
     public void locationChanged(Location location) {
     }
+
 }

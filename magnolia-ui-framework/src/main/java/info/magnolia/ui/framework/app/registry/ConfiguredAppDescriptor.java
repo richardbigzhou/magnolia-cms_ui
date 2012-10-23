@@ -37,8 +37,8 @@ import info.magnolia.ui.framework.app.App;
 import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.SubAppDescriptor;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Describes an app.
@@ -62,7 +62,7 @@ public class ConfiguredAppDescriptor implements AppDescriptor {
 
     private Class<? extends App> appClass;
 
-    private List<SubAppDescriptor> subApps = new ArrayList<SubAppDescriptor>();
+    private Map<String, SubAppDescriptor> subApps = new HashMap<String, SubAppDescriptor>();
 
     @Override
     public String getName() {
@@ -110,16 +110,16 @@ public class ConfiguredAppDescriptor implements AppDescriptor {
     }
 
     @Override
-    public List<SubAppDescriptor> getSubApps() {
+    public Map<String, SubAppDescriptor> getSubApps() {
         return subApps;
     }
 
-    public void setSubApps(List<SubAppDescriptor> subApps) {
+    public void setSubApps(Map<String, SubAppDescriptor> subApps) {
         this.subApps = subApps;
     }
 
     public void addSubApp(SubAppDescriptor subApp) {
-        subApps.add(subApp);
+        subApps.put(subApp.getName(), subApp);
     }
 
     @Override

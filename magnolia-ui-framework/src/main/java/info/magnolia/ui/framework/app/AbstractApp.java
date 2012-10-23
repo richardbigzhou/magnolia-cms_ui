@@ -33,9 +33,10 @@
  */
 package info.magnolia.ui.framework.app;
 
+import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 
-import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -53,18 +54,61 @@ public abstract class AbstractApp implements App {
 
     @Override
     public void locationChanged(Location location) {
+
+        SubAppDescriptor subAppDescriptor = null;
+
+        String subAppId = getSubAppId(location);
+        subAppDescriptor = getAppDescriptorById(subAppId);
+        if (subAppDescriptor == null) {
+            subAppDescriptor = getDefaultAppDescriptor();
+        }
+        appContext.openSubApp(subAppDescriptor.getName(), subAppDescriptor.getSubAppClass(), location);
+
     }
 
-    @Override
+
+        @Override
     public void start(Location location) {
+        SubAppDescriptor subAppDescriptor = null;
 
-        List<SubAppDescriptor> subAppDescriptors = appContext.getAppDescriptor().getSubApps();
-
-        for (SubAppDescriptor subAppDescriptor : subAppDescriptors) {
-
-            appContext.openSubApp(subAppDescriptor.getName(), subAppDescriptor.getSubAppClass(), location);
-            break;
+        String subAppId = getSubAppId(location);
+        subAppDescriptor = getAppDescriptorById(subAppId);
+        if (subAppDescriptor == null) {
+            subAppDescriptor = getDefaultAppDescriptor();
         }
+
+        appContext.openSubApp(subAppDescriptor.getName(), subAppDescriptor.getSubAppClass(), location);
+    }
+
+    private SubAppDescriptor getDefaultAppDescriptor() {
+        Map<String, SubAppDescriptor> subAppDescriptors = appContext.getAppDescriptor().getSubApps();
+
+        SubAppDescriptor defaultSubAppDescriptor = null;
+        for (SubAppDescriptor subAppDescriptor : subAppDescriptors.values()) {
+            if (subAppDescriptor.isDefault()) {
+                defaultSubAppDescriptor = subAppDescriptor;
+                break;
+            }
+        }
+        return defaultSubAppDescriptor;
+    }
+
+    private SubAppDescriptor getAppDescriptorById(String subAppId) {
+        Map<String, SubAppDescriptor> subAppDescriptors = appContext.getAppDescriptor().getSubApps();
+        return subAppDescriptors.get(subAppId);
+    }
+
+    private String getSubAppId(Location location) {
+
+        DefaultLocation l = (DefaultLocation) location;
+        String token = l.getToken();
+
+        // "subAppId"
+        int i = token.indexOf(';');
+        if (i > -1) {
+            return token.substring(0, i);
+        }
+        else return "";
     }
 
     @Override
