@@ -13,73 +13,13 @@
   <dependencies>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-vaadin-integration</artifactId>
+      <artifactId>magnolia-ui-vaadin-widgets</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>info.magnolia</groupId>
-      <artifactId>magnolia-rendering</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-user</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.vaadin</groupId>
-      <artifactId>vaadin</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.vaadin.addons</groupId>
-      <artifactId>icepush</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.icefaces</groupId>
-      <artifactId>icepush</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.icepush</groupId>
-      <artifactId>icepush-gwt</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.vaadin.addon</groupId>
-      <artifactId>confirmdialog</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.vaadin.addons</groupId>
-      <artifactId>super-dev-mode-for-vaadin-6</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.vaadin.addons</groupId>
-      <artifactId>widget-rpc</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.vaadin.addons</groupId>
-      <artifactId>autoreplacefield</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.googlecode.mgwt</groupId>
-      <artifactId>mgwt</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.vaadin.addons</groupId>
-      <artifactId>gwt-graphics</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.vaadin.addons</groupId>
-      <artifactId>css-tools</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.vaadin.addons</groupId>
-      <artifactId>customfield</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.vaadin.addon</groupId>
-      <artifactId>propertytranslator</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <scope>provided</scope>
+      <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-widget-editor</artifactId>
+      <version>${project.version}</version>
     </dependency>
   </dependencies>
 
@@ -129,52 +69,6 @@
           <relativePath>../${basedir}</relativePath>
           <rootPath>$${admincentral.root}</rootPath>
         </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>unpack-vaadin-treetable-src</id>
-            <phase>process-sources</phase>
-            <goals>
-              <!-- use copy-dependencies instead if you don't want to explode the sources -->
-              <goal>unpack</goal>
-            </goals>
-            <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>com.vaadin</groupId>
-                  <artifactId>vaadin</artifactId>
-                  <version>${vaadinVersion}</version>
-                  <type>jar</type>
-                  <classifier>sources</classifier>
-                  <overWrite>true</overWrite>
-                  <outputDirectory>src/main/java</outputDirectory>
-                </artifactItem>
-              </artifactItems>
-             <includes>**\/*VScrollTable.java</includes>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-patch-plugin</artifactId>
-        <version>1.1.1</version>
-        <configuration>
-          <patches>
-            <patch>vscrolltable.patch</patch>
-          </patches>
-        </configuration>
-        <executions>
-          <execution>
-            <id>patch</id>
-            <goals>
-              <goal>apply</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>

@@ -215,12 +215,30 @@
         </plugin>
       </plugins>
     </pluginManagement>
+    <resources>
+<resource>
+<directory>src/main/java</directory>
+<includes>
+<include>**/*.java</include>
+<include>**/*.gwt.xml</include>
+</includes>
+</resource>
+<resource>
+<directory>src/main/resources</directory>
+<includes>
+<include>**/*</include>
+
+</includes>
+</resource>
+</resources>
   </build>
 
 	<modules>
 		<module>magnolia-ui-framework</module>
 		<module>magnolia-ui-model</module>
 		<module>magnolia-ui-vaadin-integration</module>
+		<module>magnolia-ui-vaadin-widgets</module>
+		<module>magnolia-ui-widget-editor</module>
 		<module>magnolia-ui-vaadin-widgetset</module>
 		<module>magnolia-ui-admincentral</module>
 		<module>magnolia-ui-app-sample</module>
