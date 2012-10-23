@@ -61,7 +61,7 @@
       <sv:value>ac15d1ca-1b41-4a1d-bf0b-4232ffa7d7ec</sv:value>
     </sv:property>
     <sv:property sv:name="defaultOrder" sv:type="String">
-      <sv:value>jcrName</sv:value>
+      <sv:value>name</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>

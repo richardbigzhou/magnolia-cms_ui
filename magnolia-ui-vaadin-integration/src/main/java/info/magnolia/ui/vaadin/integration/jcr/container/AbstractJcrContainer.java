@@ -100,7 +100,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     /** Item and index caches. */
     private final Map<Long, String> itemIndexes = new HashMap<Long, String>();
 
-    private final List<String> sortableProperties = new ArrayList<String>();
+    private final List<String> sortableColumns = new ArrayList<String>();
 
     private final List<OrderBy> sorters = new ArrayList<OrderBy>();
 
@@ -142,19 +142,9 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
         for (ColumnDefinition columnDefinition : workbenchDefinition.getColumns()) {
             if (columnDefinition.isSortable()) {
-                log.debug("Configuring column [{}] as sortable", columnDefinition.getName());
-
-                String propertyName = columnDefinition.getPropertyName();
-                log.debug("propertyName is {}", propertyName);
-
-                if (StringUtils.isBlank(propertyName)) {
-                    propertyName = columnDefinition.getName();
-                    log.debug(
-                            "Column {} is sortable but no propertyName has been defined. Defaulting to column name (sorting may not work as expected).",
-                            columnDefinition.getName());
-                }
-
-                sortableProperties.add(propertyName);
+                final String sortableColumnName = columnDefinition.getName();
+                log.debug("Configuring column [{}] as sortable", sortableColumnName);
+                sortableColumns.add(sortableColumnName);
             }
         }
     }
@@ -263,7 +253,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     @Override
     public Collection<String> getItemIds() {
-        throw new UnsupportedOperationException(getClass().getName() + " does not support this method.");
+        throw new UnsupportedOperationException(AbstractJcrContainer.class.getName() + " does not support this method.");
     }
 
     @Override
@@ -411,9 +401,13 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     public void sort(Object[] propertyId, boolean[] ascending) {
         resetOffset();
         sorters.clear();
+        String propertyName;
+        String columnName;
         for (int i = 0; i < propertyId.length; i++) {
-            if (sortableProperties.contains(propertyId[i])) {
-                OrderBy orderBy = new OrderBy((String) propertyId[i], ascending[i]);
+            columnName = (String) propertyId[i];
+            if (sortableColumns.contains(columnName)) {
+                propertyName = getPropertyNameFromColumn(columnName);
+                OrderBy orderBy = new OrderBy(propertyName, ascending[i]);
                 sorters.add(orderBy);
             }
         }
@@ -422,7 +416,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     @Override
     public List<String> getSortableContainerPropertyIds() {
-        return Collections.unmodifiableList(sortableProperties);
+        return Collections.unmodifiableList(sortableColumns);
     }
 
     @Override
@@ -555,8 +549,12 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
                 // no sorters set - use defaultOrder (always ascending)
                 String defaultOrder = workbenchDefinition.getDefaultOrder();
                 String[] defaultOrders = defaultOrder.split(",");
+                String property;
                 for (String current : defaultOrders) {
-                    sorters.add(new OrderBy(current, true));
+                    property = getPropertyNameFromColumn(current);
+                    if (property != null) {
+                        sorters.add(new OrderBy(property, true));
+                    }
                 }
             }
             if (queryRequiresJoin()) {
@@ -579,9 +577,24 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
                 }
                 stmt.append(".[").append(propertyName).append("]").append(sortOrder).append(", ");
             }
-            stmt.delete(stmt.lastIndexOf(","), stmt.length());
+            if (stmt.lastIndexOf(",") < 0) {
+                stmt.delete(stmt.lastIndexOf(ORDER_BY), stmt.length());
+            } else {
+                stmt.delete(stmt.lastIndexOf(","), stmt.length());
+            }
         }
         return stmt.toString();
+    }
+
+    protected String getPropertyNameFromColumn(String columnName) {
+        final ColumnDefinition column = workbenchDefinition.getColumn(columnName);
+        String propertyName = null;
+        if (column == null) {
+            log.warn("Can't extract requested property from unknown column '{}'", columnName);
+        } else {
+            propertyName = column.getPropertyName() == null ? column.getName() : column.getPropertyName();
+        }
+        return propertyName;
     }
 
     /**
