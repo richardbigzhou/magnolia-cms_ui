@@ -159,7 +159,7 @@
             <artifactId>maven-dependency-plugin</artifactId>
             <executions>
               <execution>
-                <id>unpack-vaadin-treetable-src</id>
+                <id>unpack-vaadin-scrolltable-src</id>
                 <goals>
                   <goal>unpack</goal>
                 </goals>
@@ -212,7 +212,7 @@
                 <configuration>
                   <source>
                     def path = "${project.build.sourceDirectory}/com/vaadin/terminal/gwt/client/ui/"
-                    println "path is $path"
+                    //println "path is $path"
                     def originalFile = new java.io.File(path + "VScrollTable.java")
                     def renamedFile = new java.io.File(path + "VScrollTablePatched.java")
                     println "Renaming ${originalFile.name} to ${renamedFile.name}..."
