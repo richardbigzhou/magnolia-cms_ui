@@ -99,8 +99,8 @@ public class MagnoliaRichTextField extends CKEditorTextField{
     
     /**
      * Send event to CKEditor instance.
-     * @param event Event name that plugin can attach with editor.on('event', function() {...})
-     * @param value Additional event data. Client can access this by e.data
+     * @param event Event name that plugin can attach with: editor.on('event', function(e) {...});
+     * @param value Additional event data. Plugin can access this by e.data
      */
     public void firePluginEvent(String event, String value) {
         fireEvent = event;
@@ -109,8 +109,7 @@ public class MagnoliaRichTextField extends CKEditorTextField{
     }
     
     /**
-     * Send event to CKEditor instance. 
-     * @param event Event name that plugin can attach with editor.on('event', function() {...})
+     * Send event to CKEditor instance. Only event. No additional event data.
      */
     public void firePluginEvent(String event) {
         firePluginEvent(event, "");

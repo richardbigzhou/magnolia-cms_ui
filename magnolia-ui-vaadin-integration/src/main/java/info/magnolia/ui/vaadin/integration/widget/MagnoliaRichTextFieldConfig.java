@@ -50,7 +50,7 @@ public class MagnoliaRichTextFieldConfig extends CKEditorConfig {
     private List<String> events = new ArrayList<String>();
 
     public MagnoliaRichTextFieldConfig() {
-        addToExtraPlugins("demo");
+        addToExtraPlugins("magnolialink");
         addToRemovePlugins("elementspath");
     }
     

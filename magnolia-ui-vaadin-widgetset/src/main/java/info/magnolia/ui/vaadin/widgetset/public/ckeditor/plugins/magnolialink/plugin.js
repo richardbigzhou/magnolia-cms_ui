@@ -33,24 +33,22 @@
  */
 
 (function() {
-	CKEDITOR.plugins.add('demo', {
+	CKEDITOR.plugins.add('magnolialink', {
 		init: function(editor) {
-			editor.addCommand('demo', {
+		    
+			editor.addCommand('magnolialink', {
 				exec: function(editor) {
-					editor.fire('demoevent', 'with some parameter to server');
+					editor.fire('reqMagnoliaLink');
 				}
 			});
 			
-			editor.on('customevent', function(e) {
-				alert('got custom event');
-				if(e.data) {
-					alert('with data: '+e.data);
-				}
+			editor.on('sendMagnoliaLink', function(e) {
+			    editor.insertText(e.data);
 			});
 
-			editor.ui.addButton('Demo', {
-				label: 'Demo thing',
-				command: 'demo',
+			editor.ui.addButton('InternalLink', {
+				label: 'Link to Magnolia page',
+				command: 'magnolialink',
 				icon: "../images/disk.png"
 			});
 		}

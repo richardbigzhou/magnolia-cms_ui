@@ -36,12 +36,23 @@ package info.magnolia.ui.admincentral.field.builder;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
+import info.magnolia.ui.admincentral.app.content.AbstractContentApp;
+import info.magnolia.ui.admincentral.dialog.ChooseDialogPresenter;
+import info.magnolia.ui.admincentral.dialog.ValueChosenListener;
+import info.magnolia.ui.framework.app.App;
+import info.magnolia.ui.framework.app.AppController;
+import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.model.field.definition.RichTextFieldDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.widget.MagnoliaRichTextField;
 import info.magnolia.ui.vaadin.integration.widget.MagnoliaRichTextFieldConfig;
 import info.magnolia.ui.vaadin.integration.widget.MagnoliaRichTextFieldConfig.ToolbarGroup;
 
+import com.google.inject.Inject;
 import com.vaadin.data.Item;
 import com.vaadin.ui.Field;
 
@@ -51,9 +62,14 @@ import com.vaadin.ui.Field;
 public class RichTextFieldBuilder extends
         AbstractFieldBuilder<RichTextFieldDefinition> {
 
+    private final AppController appController;
+    private MagnoliaRichTextField richtexteditor;
+    
+    @Inject
     public RichTextFieldBuilder(RichTextFieldDefinition definition,
-            Item relatedFieldItem) {
+            Item relatedFieldItem, AppController appController) {
         super(definition, relatedFieldItem);
+        this.appController = appController;
     }
 
     @Override
@@ -67,26 +83,55 @@ public class RichTextFieldBuilder extends
         toolbars.add(new ToolbarGroup("paragraph", new String[] {
                 "NumberedList", "BulletedList" }));
         toolbars.add(new ToolbarGroup("insert",
-                new String[] { "Link", "Unlink" }));
+                new String[] { "Link", "Unlink", "InternalLink" }));
         toolbars.add(new ToolbarGroup("clipboard", new String[] { "Cut",
                 "Copy", "Paste", "PasteText", "PasteFromWord" }));
         toolbars.add(new ToolbarGroup("objects", new String[] { "Image",
                 "Table" }));
-        toolbars.add(new ToolbarGroup("special", new String[] { "Undo", "Redo",
-                "Demo" }));
+        toolbars.add(new ToolbarGroup("special", new String[] { "Undo", "Redo"}));
         config.addToolbarLine(toolbars);
-        config.addListenedEvent("demoevent");
+        config.addListenedEvent("reqMagnoliaLink");
 
-        final MagnoliaRichTextField richtexteditor = new MagnoliaRichTextField(config);
+        richtexteditor = new MagnoliaRichTextField(config);
         richtexteditor.addListener(new MagnoliaRichTextField.PluginListener() {
             
             @Override
             public void onPluginEvent(String eventName, String value) {
-                richtexteditor.firePluginEvent("customevent", value);
+                if(eventName.equals("reqMagnoliaLink")) {
+                    openLinkDialog();
+                }
             }
         });
         
         return richtexteditor;
+    }
+    
+    private void openLinkDialog() {
+        // Get the property name to propagate.
+        App targetApp = appController.startIfNotAlreadyRunning("pages", new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages", ""));
+        if (targetApp != null && targetApp instanceof AbstractContentApp) {
+            ChooseDialogPresenter<Item> pickerPresenter = ((AbstractContentApp) targetApp).openChooseDialog();
+            pickerPresenter.getView().setCaption("Select a page");
+            pickerPresenter.addValuePickListener(new ValueChosenListener<Item>() {
+                @Override
+                public void onValueChosen(Item pickedValue) {
+                    javax.jcr.Item jcrItem = ((JcrItemAdapter) pickedValue).getJcrItem();
+                    if (jcrItem.isNode()) {
+                        final Node selected = (Node) jcrItem;
+                        try {
+                            richtexteditor.firePluginEvent("sendMagnoliaLink", selected.getPath());
+                        } catch (RepositoryException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+                @Override
+                public void selectionCanceled() {
+
+                }
+            });
+        }
     }
 
     @Override

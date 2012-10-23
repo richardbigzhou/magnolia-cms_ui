@@ -93,7 +93,11 @@ public class VMagnoliaRichTextField extends VCKEditorTextField implements VMagno
     @Override
     public void onPluginEvent(String eventName, String data) {
         if(pluginEvents.contains(eventName)) {
-            clientToServer.updateVariable(paintableId, VAR_EVENT_PREFIX+eventName, data, true);
+            clientToServer.updateVariable(
+                    paintableId, 
+                    VAR_EVENT_PREFIX+eventName, 
+                    data==null?"":data, 
+                    true);
         }
     }
     
