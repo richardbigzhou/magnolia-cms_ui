@@ -173,8 +173,8 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
     @Override
     public void setFragment(String fragment) {
 
-        String prefix = DefaultLocation.extractPrefix(fragment);
-        String token = DefaultLocation.extractToken(fragment);
+        String prefix = DefaultLocation.extractAppId(fragment);
+        String token = DefaultLocation.extractParameter(fragment);
 
         final ShellViewport activeViewport = getActiveViewport();
         activeViewport.setCurrentShellFragment(prefix + ":" + token);

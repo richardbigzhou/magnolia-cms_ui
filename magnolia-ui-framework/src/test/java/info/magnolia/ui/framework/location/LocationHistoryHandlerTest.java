@@ -181,9 +181,9 @@ public class LocationHistoryHandlerTest {
 
         @Override
         public Location getLocation(String fragment) {
-            String type = DefaultLocation.extractType(fragment);
-            String prefix = DefaultLocation.extractPrefix(fragment);
-            String token = DefaultLocation.extractToken(fragment);
+            String type = DefaultLocation.extractAppType(fragment);
+            String prefix = DefaultLocation.extractAppId(fragment);
+            String token = DefaultLocation.extractParameter(fragment);
 
             if (type.equals("app") && prefix.equals("foo")) {
                 return new DefaultLocation(type, prefix, "", token);

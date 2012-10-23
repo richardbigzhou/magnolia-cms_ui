@@ -53,9 +53,9 @@ public class DefaultLocationHistoryMapper implements LocationHistoryMapper {
     @Override
     public Location getLocation(String fragment) {
 
-        String type = DefaultLocation.extractType(fragment);
-        String prefix = DefaultLocation.extractPrefix(fragment);
-        String token = DefaultLocation.extractToken(fragment);
+        String type = DefaultLocation.extractAppType(fragment);
+        String prefix = DefaultLocation.extractAppId(fragment);
+        String token = DefaultLocation.extractParameter(fragment);
 
         if (!supported(type, prefix, token)) {
             return null;

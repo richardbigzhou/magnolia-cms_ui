@@ -35,6 +35,7 @@ package info.magnolia.ui.framework.location;
 
 /**
  * Default location implementation.
+ * appType:appId:subAppId;some/parameter
  */
 public class DefaultLocation implements Location {
 
@@ -80,13 +81,16 @@ public class DefaultLocation implements Location {
 
         DefaultLocation that = (DefaultLocation) o;
 
+        if (appType != null ? !appType.equals(that.appType) : that.appType != null) {
+            return false;
+        }
         if (appId != null ? !appId.equals(that.appId) : that.appId != null) {
             return false;
         }
-        if (parameter != null ? !parameter.equals(that.parameter) : that.parameter != null) {
+        if (subAppId != null ? !subAppId.equals(that.subAppId) : that.subAppId != null) {
             return false;
         }
-        if (appType != null ? !appType.equals(that.appType) : that.appType != null) {
+        if (parameter != null ? !parameter.equals(that.parameter) : that.parameter != null) {
             return false;
         }
 
@@ -97,6 +101,7 @@ public class DefaultLocation implements Location {
     public int hashCode() {
         int result = appType != null ? appType.hashCode() : 0;
         result = 31 * result + (appId != null ? appId.hashCode() : 0);
+        result = 31 * result + (subAppId != null ? subAppId.hashCode() : 0);
         result = 31 * result + (parameter != null ? parameter.hashCode() : 0);
         return result;
     }
@@ -108,20 +113,23 @@ public class DefaultLocation implements Location {
             sb.append(appType);
             if (appId != null && appId.length() != 0) {
                 sb.append(":").append(appId);
+                if (subAppId != null && subAppId.length() != 0) {
+                    sb.append(":").append(subAppId);
+                }
                 if (parameter != null && parameter.length() != 0) {
-                    sb.append(":").append(parameter);
+                    sb.append(";").append(parameter);
                 }
             }
         }
         return sb.toString();
     }
 
-    public static String extractType(String fragment) {
+    public static String extractAppType(String fragment) {
         int i = fragment.indexOf(':');
         return i != -1 ? fragment.substring(0, i) : fragment;
     }
 
-    public static String extractPrefix(String fragment) {
+    public static String extractAppId(String fragment) {
         int i = fragment.indexOf(':');
         if (i == -1) {
             return "";
@@ -130,7 +138,7 @@ public class DefaultLocation implements Location {
         return j != -1 ? fragment.substring(i + 1, j) : fragment.substring(i + 1);
     }
 
-    public static String extractToken(String fragment) {
+    public static String extractSubAppId(String fragment) {
         int i = fragment.indexOf(':');
         if (i == -1) {
             return "";
@@ -140,5 +148,21 @@ public class DefaultLocation implements Location {
             return "";
         }
         return fragment.substring(j + 1);
+    }
+
+    public static String extractParameter(String fragment) {
+        int i = fragment.indexOf(':');
+        if (i == -1) {
+            return "";
+        }
+        int j = fragment.indexOf(':', i + 1);
+        if (j == -1) {
+            return "";
+        }
+        int k = fragment.indexOf(';', j + 1);
+        if (k == -1) {
+            return "";
+        }
+        return fragment.substring(k + 1);
     }
 }

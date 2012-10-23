@@ -55,40 +55,40 @@ public class DefaultLocationTest {
     @Test
     public void testExtractType() {
 
-        assertEquals("type", DefaultLocation.extractType("type:prefix:token:more"));
-        assertEquals("type", DefaultLocation.extractType("type:prefix:token"));
-        assertEquals("type", DefaultLocation.extractType("type:prefix"));
-        assertEquals("type", DefaultLocation.extractType("type:prefix:"));
-        assertEquals("type", DefaultLocation.extractType("type:"));
-        assertEquals("type", DefaultLocation.extractType("type"));
+        assertEquals("type", DefaultLocation.extractAppType("type:prefix:token:more"));
+        assertEquals("type", DefaultLocation.extractAppType("type:prefix:token"));
+        assertEquals("type", DefaultLocation.extractAppType("type:prefix"));
+        assertEquals("type", DefaultLocation.extractAppType("type:prefix:"));
+        assertEquals("type", DefaultLocation.extractAppType("type:"));
+        assertEquals("type", DefaultLocation.extractAppType("type"));
 
-        assertEquals("", DefaultLocation.extractType(""));
+        assertEquals("", DefaultLocation.extractAppType(""));
     }
 
     @Test
     public void testExtractPrefix() {
 
-        assertEquals("prefix", DefaultLocation.extractPrefix("type:prefix:token:more"));
-        assertEquals("prefix", DefaultLocation.extractPrefix("type:prefix:token"));
-        assertEquals("prefix", DefaultLocation.extractPrefix("type:prefix"));
-        assertEquals("prefix", DefaultLocation.extractPrefix("type:prefix:"));
+        assertEquals("prefix", DefaultLocation.extractAppId("type:prefix:token:more"));
+        assertEquals("prefix", DefaultLocation.extractAppId("type:prefix:token"));
+        assertEquals("prefix", DefaultLocation.extractAppId("type:prefix"));
+        assertEquals("prefix", DefaultLocation.extractAppId("type:prefix:"));
 
-        assertEquals("", DefaultLocation.extractPrefix("type:"));
-        assertEquals("", DefaultLocation.extractPrefix("type"));
-        assertEquals("", DefaultLocation.extractPrefix(""));
+        assertEquals("", DefaultLocation.extractAppId("type:"));
+        assertEquals("", DefaultLocation.extractAppId("type"));
+        assertEquals("", DefaultLocation.extractAppId(""));
     }
 
     @Test
     public void testExtractToken() {
 
-        assertEquals("token:more", DefaultLocation.extractToken("type:prefix:token:more"));
+        assertEquals("token:more", DefaultLocation.extractParameter("type:prefix:token:more"));
 
-        assertEquals("token", DefaultLocation.extractToken("type:prefix:token"));
+        assertEquals("token", DefaultLocation.extractParameter("type:prefix:token"));
 
-        assertEquals("", DefaultLocation.extractToken("type:prefix"));
-        assertEquals("", DefaultLocation.extractToken("type:prefix:"));
-        assertEquals("", DefaultLocation.extractToken("type:"));
-        assertEquals("", DefaultLocation.extractToken("type"));
-        assertEquals("", DefaultLocation.extractToken(""));
+        assertEquals("", DefaultLocation.extractParameter("type:prefix"));
+        assertEquals("", DefaultLocation.extractParameter("type:prefix:"));
+        assertEquals("", DefaultLocation.extractParameter("type:"));
+        assertEquals("", DefaultLocation.extractParameter("type"));
+        assertEquals("", DefaultLocation.extractParameter(""));
     }
 }
