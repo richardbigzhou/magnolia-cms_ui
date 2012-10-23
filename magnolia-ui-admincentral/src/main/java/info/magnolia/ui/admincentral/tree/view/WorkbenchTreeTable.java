@@ -211,7 +211,7 @@ public class WorkbenchTreeTable extends MagnoliaTreeTable {
             if (workbenchDefinition.isDialogWorkbench() && !column.isDisplayInDialog()) {
                 continue;
             }
-            final String columnProperty = column.getName();
+            final String columnProperty = column.getPropertyName() != null ? column.getPropertyName() : column.getName();
             // FIXME fgrilli workaround for conference
             // when setting cols width in dialogs we are forced to use explicit
             // px value instead of expand ratios, which for some reason don't
