@@ -36,7 +36,7 @@ package info.magnolia.ui.admincentral.workbench;
 import info.magnolia.ui.admincentral.content.view.ContentView;
 import info.magnolia.ui.admincentral.content.view.ContentView.ViewType;
 import info.magnolia.ui.framework.view.View;
-import info.magnolia.ui.widget.actionbar.ActionbarView;
+import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 
 import com.vaadin.ui.ComponentContainer;
 

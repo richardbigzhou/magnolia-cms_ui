@@ -12,35 +12,19 @@
   <artifactId>magnolia-ui-admincentral</artifactId>
   <packaging>jar</packaging>
   <name>magnolia-ui-admincentral</name>
+
   <properties>
-  	<cloverCoverageThreshold>26</cloverCoverageThreshold>
+    <cloverCoverageThreshold>26</cloverCoverageThreshold>
   </properties>
 
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.mortbay.jetty</groupId>
-        <artifactId>jetty-maven-plugin</artifactId>
+        <groupId>org.zeroturnaround</groupId>
+        <artifactId>jrebel-maven-plugin</artifactId>
         <configuration>
-          <stopPort>9966</stopPort>
-          <stopKey>ui-admincentral</stopKey>
-          <scanIntervalSeconds>0</scanIntervalSeconds>
-          <reload>manual</reload>
-          <webAppConfig>
-            <contextPath>/ui-admincentral</contextPath>
-          </webAppConfig>
-        </configuration>
-      </plugin>
-      <plugin>
-          <groupId>org.zeroturnaround</groupId>
-          <artifactId>jrebel-maven-plugin</artifactId>
-          <configuration>
-            <relativePath>../${basedir}</relativePath>
-            <rootPath>$${admincentral.root}</rootPath>
+          <relativePath>../${basedir}</relativePath>
+          <rootPath>$${admincentral.root}</rootPath>
         </configuration>
       </plugin>
     </plugins>
@@ -58,10 +42,10 @@
       <artifactId>magnolia-rendering</artifactId>
     </dependency>
 
-      <dependency>
-          <groupId>info.magnolia</groupId>
-          <artifactId>magnolia-module-imaging</artifactId>
-      </dependency>
+    <dependency>
+      <groupId>info.magnolia</groupId>
+      <artifactId>magnolia-module-imaging</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>info.magnolia.ui</groupId>
@@ -70,37 +54,8 @@
     </dependency>
 
     <dependency>
-      <groupId>com.vaadin</groupId>
-      <artifactId>vaadin</artifactId>
-    </dependency>
-
-	<dependency>
-		<groupId>commons-lang</groupId>
-		<artifactId>commons-lang</artifactId>
-		<version>2.4</version>
-	</dependency>
-
-    <dependency>
       <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-widget-magnolia-shell</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-widget-tabsheet</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-widget-dialog</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-widget-actionbar</artifactId>
+      <artifactId>magnolia-ui-vaadin-widgetset</artifactId>
       <version>${project.version}</version>
     </dependency>
 
@@ -110,65 +65,61 @@
     </dependency>
 
     <dependency>
-   		<groupId>org.vaadin.addons</groupId>
-   		<artifactId>icepush</artifactId>
-	</dependency>
-	<dependency>
-		<groupId>org.icefaces</groupId>
-		<artifactId>icepush</artifactId>
-	</dependency>
+      <groupId>org.vaadin.addons</groupId>
+      <artifactId>easyuploads</artifactId>
+    </dependency>
 
-	<dependency>
-	 	<groupId>org.vaadin.addons</groupId>
-		<artifactId>customfield</artifactId>
-	</dependency>
+    <dependency>
+      <groupId>org.vaadin.addons</groupId>
+      <artifactId>ckeditor-wrapper-for-vaadin</artifactId>
+    </dependency>
 
-	<dependency>
-	 	<groupId>org.vaadin.addon</groupId>
-		<artifactId>propertytranslator</artifactId>
-	</dependency>
+    <dependency>
+      <groupId>org.devlib.schmidt</groupId>
+      <artifactId>imageinfo</artifactId>
+    </dependency>
 
-	<dependency>
-   		<groupId>org.vaadin.addons</groupId>
-   		<artifactId>easyuploads</artifactId>
-	</dependency>
-		<dependency>
-   		<groupId>org.vaadin.addons</groupId>
-   		<artifactId>ckeditor-wrapper-for-vaadin</artifactId>
-	</dependency>
-
-	<dependency>
-	  <groupId>org.devlib.schmidt</groupId>
-	  <artifactId>imageinfo</artifactId>
-	</dependency>
-	<dependency>
+    <dependency>
       <groupId>uk.com.robust-it</groupId>
       <artifactId>cloning</artifactId>
     </dependency>
-    <!-- For Test -->
-     <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit-dep</artifactId>
-		<scope>provided</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.mockito</groupId>
-        <artifactId>mockito-core</artifactId>
-		<scope>provided</scope>
-      </dependency>
-       <dependency>
-            <groupId>info.magnolia</groupId>
-            <artifactId>magnolia-core</artifactId>
-            <type>test-jar</type>
-            <version>${magnoliaVersion}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>info.magnolia.ui</groupId>
-            <artifactId>magnolia-ui-framework</artifactId>
-            <type>test-jar</type>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
+
+    <!-- For tests -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit-dep</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>info.magnolia</groupId>
+      <artifactId>magnolia-core</artifactId>
+      <type>test-jar</type>
+      <version>${magnoliaVersion}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-framework</artifactId>
+      <type>test-jar</type>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-vaadin-integration</artifactId>
+      <type>test-jar</type>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 </project>

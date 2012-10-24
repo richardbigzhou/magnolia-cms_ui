@@ -34,7 +34,7 @@
 package info.magnolia.ui.admincentral.dialog;
 
 import info.magnolia.ui.model.tab.definition.TabDefinition;
-import info.magnolia.ui.widget.dialog.FormSection;
+import info.magnolia.ui.vaadin.dialog.FormSection;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;

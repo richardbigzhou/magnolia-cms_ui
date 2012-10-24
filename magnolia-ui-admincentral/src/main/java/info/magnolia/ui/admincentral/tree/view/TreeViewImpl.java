@@ -34,10 +34,10 @@
 package info.magnolia.ui.admincentral.tree.view;
 
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.admincentral.container.AbstractJcrContainer;
 import info.magnolia.ui.admincentral.content.view.ContentView;
-import info.magnolia.ui.admincentral.tree.model.TreeModel;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.container.AbstractJcrContainer;
+import info.magnolia.ui.vaadin.integration.jcr.container.TreeModel;
 
 import java.util.HashSet;
 import java.util.Set;

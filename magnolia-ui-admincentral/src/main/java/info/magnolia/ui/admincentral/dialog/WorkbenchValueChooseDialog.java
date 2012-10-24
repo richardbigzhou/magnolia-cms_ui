@@ -34,7 +34,7 @@
 package info.magnolia.ui.admincentral.dialog;
 
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchView;
-import info.magnolia.ui.widget.dialog.BaseDialog;
+import info.magnolia.ui.vaadin.dialog.BaseDialog;
 
 import javax.inject.Inject;
 

@@ -41,8 +41,8 @@ import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
-import info.magnolia.ui.widget.dialog.DialogView;
-import info.magnolia.ui.widget.dialog.FormDialogView;
+import info.magnolia.ui.vaadin.dialog.DialogView;
+import info.magnolia.ui.vaadin.dialog.FormDialogView;
 
 import com.vaadin.data.Item;
 

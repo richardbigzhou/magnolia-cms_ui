@@ -52,11 +52,11 @@ import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.ConfirmationHandler;
 import info.magnolia.ui.framework.shell.FragmentChangedHandler;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.widget.dialog.BaseDialog;
-import info.magnolia.ui.widget.dialog.BaseDialog.DialogCloseEvent;
-import info.magnolia.ui.widget.magnoliashell.BaseMagnoliaShell;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
-import info.magnolia.ui.widget.magnoliashell.viewport.ShellViewport;
+import info.magnolia.ui.vaadin.dialog.BaseDialog;
+import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
+import info.magnolia.ui.vaadin.magnoliashell.BaseMagnoliaShell;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.VMainLauncher.ShellAppType;
+import info.magnolia.ui.vaadin.magnoliashell.viewport.ShellViewport;
 
 import java.util.List;
 
@@ -82,7 +82,7 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
     private final EventBus admincentralEventBus;
 
     private final AppController appController;
-    
+
     private final Provider<ShellAppController> shellAppControllerProvider;
 
     private final MessagesManager messagesManager;

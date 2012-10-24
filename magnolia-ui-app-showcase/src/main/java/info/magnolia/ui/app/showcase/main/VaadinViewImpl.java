@@ -33,15 +33,15 @@
  */
 package info.magnolia.ui.app.showcase.main;
 
-import info.magnolia.ui.vaadin.integration.widget.grid.MagnoliaTable;
-import info.magnolia.ui.vaadin.integration.widget.grid.MagnoliaTreeTable;
-import info.magnolia.ui.vaadin.integration.widget.icon.BadgeIcon;
-import info.magnolia.ui.vaadin.integration.widget.icon.ErrorIcon;
-import info.magnolia.ui.vaadin.integration.widget.icon.HelpIcon;
-import info.magnolia.ui.vaadin.integration.widget.icon.Icon;
-import info.magnolia.ui.vaadin.integration.widget.icon.InfoIcon;
-import info.magnolia.ui.vaadin.integration.widget.icon.LoadingIcon;
-import info.magnolia.ui.vaadin.integration.widget.icon.WarningIcon;
+import info.magnolia.ui.vaadin.grid.MagnoliaTable;
+import info.magnolia.ui.vaadin.grid.MagnoliaTreeTable;
+import info.magnolia.ui.vaadin.icon.BadgeIcon;
+import info.magnolia.ui.vaadin.icon.ErrorIcon;
+import info.magnolia.ui.vaadin.icon.HelpIcon;
+import info.magnolia.ui.vaadin.icon.Icon;
+import info.magnolia.ui.vaadin.icon.InfoIcon;
+import info.magnolia.ui.vaadin.icon.LoadingIcon;
+import info.magnolia.ui.vaadin.icon.WarningIcon;
 
 import java.util.Date;
 

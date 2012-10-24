@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.dialog;
 
-import info.magnolia.ui.widget.dialog.DialogView;
+import info.magnolia.ui.vaadin.dialog.DialogView;
 
 /**
  * View interface of Value Selection Dialog.
