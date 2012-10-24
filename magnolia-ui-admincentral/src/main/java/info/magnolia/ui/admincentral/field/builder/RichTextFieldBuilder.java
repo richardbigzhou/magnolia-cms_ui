@@ -39,6 +39,9 @@ import java.util.List;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import info.magnolia.ui.admincentral.app.content.AbstractContentApp;
 import info.magnolia.ui.admincentral.dialog.ChooseDialogPresenter;
 import info.magnolia.ui.admincentral.dialog.ValueChosenListener;
@@ -64,6 +67,7 @@ public class RichTextFieldBuilder extends
 
     private final AppController appController;
     private MagnoliaRichTextField richtexteditor;
+    private static final Logger log = LoggerFactory.getLogger(LinkFieldBuilder.class);
     
     @Inject
     public RichTextFieldBuilder(RichTextFieldDefinition definition,
@@ -121,7 +125,7 @@ public class RichTextFieldBuilder extends
                         try {
                             richtexteditor.firePluginEvent("sendMagnoliaLink", selected.getPath());
                         } catch (RepositoryException e) {
-                            e.printStackTrace();
+                            log.error("Not able to access the configured property. Value will not be set.", e);
                         }
                     }
                 }
