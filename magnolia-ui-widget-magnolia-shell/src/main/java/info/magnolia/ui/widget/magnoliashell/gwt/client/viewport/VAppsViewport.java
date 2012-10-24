@@ -144,7 +144,6 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
 
     @Override
     public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
-        preloader.getElement().getStyle().setZIndex(299);
         super.updateFromUIDL(uidl, client);
         if (RootPanel.get().getWidgetIndex(preloader) >= 0) {
             new Timer() {
@@ -336,8 +335,8 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
     public void showAppPreloader(final String appName, final PreloaderCallback callback) {
         // hideEntireContents();
         preloader.setCaption(appName);
-        RootPanel.get().add(preloader);
         preloader.addStyleName("zoom-in");
+        RootPanel.get().add(preloader);
         new Timer() {
 
             @Override
@@ -358,44 +357,36 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
 
         private final Element tab = DOM.createElement("li");
 
-        private final Element captionSpan = DOM.createSpan();
+        private final Element tabCaption = DOM.createSpan();
 
         public VAppPreloader() {
             super();
             setElement(root);
-            setStyleName("v-shell-viewport v-shell-tabsheet");
+            setStyleName("v-app-preloader v-viewport v-shell-tabsheet app");
             navigator.addClassName("nav nav-tabs single-tab");
             tab.addClassName("clearfix active");
-            captionSpan.setClassName("tab-title");
+            tabCaption.setClassName("tab-title");
 
-            tab.appendChild(captionSpan);
+            tab.appendChild(tabCaption);
             navigator.appendChild(tab);
             root.appendChild(navigator);
 
-            Element preloadingScreen = DOM.createDiv();
-            preloadingScreen.addClassName("loading-screen");
+            Element preloader = DOM.createDiv();
+            preloader.addClassName("v-preloader");
 
             Element loading = DOM.createSpan();
+            loading.addClassName("v-caption");
             loading.setInnerText("Loading");
-            loading.addClassName("loading-text");
 
-            preloadingScreen.appendChild(new GwtLoadingIcon().getElement());
-            preloadingScreen.appendChild(DOM.createElement("br"));
-            preloadingScreen.appendChild(loading);
-            // preloadingScreen.setInnerHTML("<div class=\"loading-message-wrapper\"> "
-            // +
-            // "<div class=\"loading-message\"><div class=\"spinner\"></div> Loading </div></div>");
-            root.appendChild(preloadingScreen);
-        }
+            preloader.appendChild(new GwtLoadingIcon().getElement());
+            preloader.appendChild(DOM.createElement("br"));
+            preloader.appendChild(loading);
 
-        @Override
-        protected void onLoad() {
-            super.onLoad();
-            getElement().getStyle().setZIndex(301);
+            root.appendChild(preloader);
         }
 
         public void setCaption(String caption) {
-            captionSpan.setInnerHTML(caption);
+            tabCaption.setInnerHTML(caption);
         }
     }
 

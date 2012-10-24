@@ -108,13 +108,8 @@ button.action-close {
 	z-index:100;
 }
 
-.v-viewport-apps > .app {
-	position:absolute;
-	top:0;
-	bottom:0;
-}
-
-.v-viewport > div {
+.v-viewport-apps > .app,
+.v-viewport-shellapps > div {
 	position:absolute;
 	top:0;
 	bottom:0;
@@ -139,29 +134,26 @@ button.action-close {
 	text-align: center;
 }
 
-.green-modality-curtain {
-    position: absolute;
-    filter: alpha(opacity = 50);
-    opacity: 0.9;
-    background: none repeat scroll 0 0 #77A42F;
+.v-curtain {
+    position:absolute;
+    top:60px;
     right: 0;
     bottom: 0;
-    top:60px;
     left:0;
     z-index:200;
 }
 
-.black-modality-curtain {
-    position: absolute;
-    filter: alpha(opacity = 80);
-    opacity: 0.8;
-    background: none repeat scroll 0 0 #000000;
-    height: 100%;
-    right: 0;
-    bottom: 0;
-    top: 0;
-    left:0;
-    z-index:499 !important;
+.v-curtain-green {
+    background-color:#77A42F;
+    opacity:0.9;
+    filter:alpha(opacity = 90);
+}
+
+.v-curtain-black {
+    top:0;
+    background-color:#000;
+    opacity:0.8;
+    filter:alpha(opacity = 80);
 }
 
 .loading-modality-curtain{
