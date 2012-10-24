@@ -84,5 +84,4 @@ public interface ContentWorkbenchView extends ComponentContainer, View {
     void resynch(String path, ViewType viewType, String query);
 
     ContentView getSelectedView();
-
 }

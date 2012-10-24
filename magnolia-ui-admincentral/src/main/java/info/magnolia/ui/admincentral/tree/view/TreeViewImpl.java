@@ -93,6 +93,7 @@ public class TreeViewImpl implements TreeView {
                 }
             }
         });
+        
         jcrBrowser.addListener(new ItemClickEvent.ItemClickListener() {
             private Object previousSelection;
         

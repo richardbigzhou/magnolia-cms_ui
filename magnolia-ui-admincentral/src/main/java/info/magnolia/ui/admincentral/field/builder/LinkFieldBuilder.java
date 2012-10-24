@@ -34,8 +34,8 @@
 package info.magnolia.ui.admincentral.field.builder;
 
 import info.magnolia.ui.admincentral.app.content.AbstractContentApp;
-import info.magnolia.ui.admincentral.dialog.ValueChosenListener;
 import info.magnolia.ui.admincentral.dialog.ChooseDialogPresenter;
+import info.magnolia.ui.admincentral.dialog.ValueChosenListener;
 import info.magnolia.ui.admincentral.field.TextAndButtonField;
 import info.magnolia.ui.admincentral.field.translator.IdentifierToPathTranslator;
 import info.magnolia.ui.framework.app.App;
@@ -126,10 +126,9 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
                                 if (jcrItem.isNode()) {
                                     final Node selected = (Node) jcrItem;
                                     try {
-                                        boolean isPropertyExisting = StringUtils.isNotBlank(propertyName)
-                                                && !PATH_PROPERTY_NAME.equals(propertyName) && selected.hasProperty(propertyName);
-                                        textButton.setValue(isPropertyExisting ? selected.getProperty(propertyName).getString() : selected
-                                                .getPath());
+                                        boolean isPropertyExisting = StringUtils.isNotBlank(propertyName) && 
+                                                !PATH_PROPERTY_NAME.equals(propertyName) && selected.hasProperty(propertyName);
+                                        textButton.setValue(isPropertyExisting ? selected.getProperty(propertyName).getString() : selected.getPath());
                                     } catch (RepositoryException e) {
                                         log.error("Not able to access the configured property. Value will not be set.", e);
                                     }
