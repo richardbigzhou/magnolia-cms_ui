@@ -165,18 +165,18 @@
         <artifactId>cloning</artifactId>
         <version>1.8.2</version>
       </dependency>
-  <dependency>
-    <groupId>javax.validation</groupId>
-    <artifactId>validation-api</artifactId>
-    <version>1.0.0.GA</version>
-  </dependency>
-  <dependency>
-    <groupId>javax.validation</groupId>
-    <artifactId>validation-api</artifactId>
-    <classifier>sources</classifier>
-    <version>1.0.0.GA</version>
-  </dependency>
-    <dependency>
+      <dependency>
+        <groupId>javax.validation</groupId>
+        <artifactId>validation-api</artifactId>
+        <version>1.0.0.GA</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.validation</groupId>
+        <artifactId>validation-api</artifactId>
+        <classifier>sources</classifier>
+        <version>1.0.0.GA</version>
+      </dependency>
+      <dependency>
         <groupId>junit</groupId>
         <artifactId>junit-dep</artifactId>
         <version>4.10</version>
@@ -213,33 +213,26 @@
               </goals>
             </execution>
           </executions>
-        </plugin>
+         </plugin>
+         <plugin>
+           <groupId>org.apache.maven.plugins</groupId>
+           <artifactId>maven-patch-plugin</artifactId>
+           <version>1.1.1</version>
+         </plugin>
+         <plugin>
+           <groupId>org.codehaus.mojo</groupId>
+           <artifactId>groovy-maven-plugin</artifactId>
+           <version>1.4</version>
+         </plugin>
       </plugins>
     </pluginManagement>
-    <resources>
-      <resource>
-        <directory>src/main/java</directory>
-        <includes>
-          <include>**/*.java</include>
-          <!-- include widgetsets -->
-          <include>**/*.gwt.xml</include>
-        </includes>
-      </resource>
-      <resource>
-        <directory>src/main/resources</directory>
-        <includes>
-          <!-- include public resources -->
-          <include>**/*</include>
-        </includes>
-      </resource>
-    </resources>
   </build>
 
   <modules>
     <module>magnolia-ui-framework</module>
     <module>magnolia-ui-model</module>
     <module>magnolia-ui-vaadin-integration</module>
-    <module>magnolia-ui-vaadin-widgets</module>
+    <module>magnolia-ui-vaadin-common-widgets</module>
     <module>magnolia-ui-widget-editor</module>
     <module>magnolia-ui-vaadin-widgetset</module>
     <module>magnolia-ui-admincentral</module>
@@ -250,7 +243,7 @@
     <!-- temporarily disabled see SCRUM-1670
     <module>magnolia-ui-app-instant-preview</module>
     -->
-        <module>magnolia-ui-app-showcase</module>
+    <module>magnolia-ui-app-showcase</module>
   </modules>
 
   <distributionManagement>

@@ -31,28 +31,23 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.magnoliashell;
+package info.magnolia.ui.vaadin.gwt.client.layout;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
 
-
 /**
- * Image bundle.
+ * ImageBundle for the lazy thumbnail layout.
+ *
  */
-public interface VShellImageBundle extends ClientBundle {
+public interface LazyThumbnailLayoutImageBundle extends ClientBundle {
 
-    final static String imgPath = "info/magnolia/ui/vaadin/public/img/";
 
-    final static VShellImageBundle BUNDLE = GWT.create(VShellImageBundle.class);
+    final static String imgPath = "info/magnolia/ui/vaadin/gwt/public/img/";
 
-    @Source(imgPath + "logo-magnolia-120x30.png")
-    public ImageResource getLogo();
+    public static LazyThumbnailLayoutImageBundle INSTANCE = GWT.create(LazyThumbnailLayoutImageBundle.class);
 
-    @Source(imgPath + "style-divet-header-up-white.png")
-    public ImageResource getDivetWhite();
-
-    @Source(imgPath + "style-divet-header-up-green.png")
-    public ImageResource getDivetGreen();
+    @Source(imgPath + "thumbnail-placeholder.gif")
+    ImageResource getStubImage();
 }
