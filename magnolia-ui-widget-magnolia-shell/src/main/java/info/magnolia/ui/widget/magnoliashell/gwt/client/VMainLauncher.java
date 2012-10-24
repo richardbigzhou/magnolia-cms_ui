@@ -74,8 +74,6 @@ public class VMainLauncher extends FlowPanel {
 
     private final static String ID = "main-launcher";
 
-    private boolean navigationLocked = false;
-
     private final ShellNavigationHandler navigationHandler = new ShellNavigationAdapter() {
 
         @Override
@@ -85,11 +83,6 @@ public class VMainLauncher extends FlowPanel {
             }
         }
     };
-
-    public void setNavigationLocked(boolean isNavigationLocked) {
-        log("Lock set to " + isNavigationLocked);
-        this.navigationLocked = isNavigationLocked;
-    }
 
     private class NavigatorButton extends FlowPanel {
 
@@ -114,19 +107,14 @@ public class VMainLauncher extends FlowPanel {
 
                 @Override
                 public void onTouchEnd(com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent event) {
-                    if (!navigationLocked) {
-                        setNavigationLocked(true);
-                        // Has user clicked on the active shell app?
-                        if (type == getActiveShellType()) {
-                            // if open then close it.
-                            eventBus.fireEvent(new ViewportCloseEvent(VMagnoliaShell.ViewportType.SHELL_APP_VIEWPORT));
-                        } else {
-                            log("Going to " + type);
-                            // If closed, then open it.
-                            navigateToShellApp(type);
-                        }
+                    // Has user clicked on the active shell app?
+                    if (type == getActiveShellType()) {
+                        // if open then close it.
+                        eventBus.fireEvent(new ViewportCloseEvent(VMagnoliaShell.ViewportType.SHELL_APP_VIEWPORT));
                     } else {
-                        log("Nav rejected");
+                        log("Going to " + type);
+                        // If closed, then open it.
+                        navigateToShellApp(type);
                     }
                 }
             });

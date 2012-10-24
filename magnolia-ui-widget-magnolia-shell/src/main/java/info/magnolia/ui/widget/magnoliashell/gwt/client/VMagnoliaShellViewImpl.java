@@ -70,7 +70,6 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -269,20 +268,9 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
         lowPriorityMessage = null;
     }
 
-    private final Timer mainLauncherUnlockTimer = new Timer() {
-
-        @Override
-        public void run() {
-            mainAppLauncher.setNavigationLocked(false);
-        }
-    };
-
     @Override
     public void updateViewport(VShellViewport viewport, ViewportType type) {
         doUpdateViewport(viewport, type);
-        if (type == ViewportType.SHELL_APP_VIEWPORT) {
-            mainLauncherUnlockTimer.schedule(500);
-        }
     }
 
     private final ShellNavigationHandler navigationHandler = new ShellNavigationHandler() {
@@ -339,12 +327,8 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
     public void onViewportClose(ViewportCloseEvent event) {
         final VMagnoliaShell.ViewportType viewportType = event.getViewportType();
         if (viewportType == ViewportType.SHELL_APP_VIEWPORT) {
-            // if (getAppViewport().hasContent()) {
-            // getShellAppViewport().setViewportHideAnimationDelegate(AnimationDelegate.SLIDING_DELEGATE);
-            // }
             getShellAppViewport().setClosing(true);
             presenter.closeCurrentShellApp();
-
         } else if (viewportType == ViewportType.APP_VIEWPORT) {
             // if (!getAppViewport().hasContent()) {
             // getAppViewport().setViewportHideAnimationDelegate(AnimationDelegate.ZOOMING_DELEGATE);
@@ -416,9 +400,7 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
 
     @Override
     public void showAppPreloader(String prefix, PreloaderCallback preloaderCallback) {
-        // make sure shell apps viewport hide transition occurs immediately
         setActiveViewport(ViewportType.APP_VIEWPORT);
-        // getAppViewport().setVisibleApp(null);
         getAppViewport().showAppPreloader(prefix, preloaderCallback);
     }
 }
