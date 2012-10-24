@@ -44,7 +44,6 @@ import org.slf4j.LoggerFactory;
 import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.admincentral.column.AbstractColumnFormatter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
 /**
  * Column formatter that displays either the name of a contact or a folder.
@@ -61,8 +60,7 @@ public class ContactNameColumnFormatter extends AbstractColumnFormatter<ContactN
     
     @Override
     public Object generateCell(Table source, Object itemId, Object columnId) {
-        JcrItemAdapter item = (JcrItemAdapter) source.getItem(itemId);
-        Item jcrItem = item.getJcrItem();
+        final Item jcrItem = getJcrItem(source, itemId);
         if (jcrItem != null && jcrItem.isNode()) {
             Node node = (Node) jcrItem;
 
