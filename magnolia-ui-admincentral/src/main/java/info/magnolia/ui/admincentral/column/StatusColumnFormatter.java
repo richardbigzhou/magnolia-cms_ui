@@ -63,8 +63,7 @@ public class StatusColumnFormatter extends AbstractColumnFormatter<StatusColumnD
     @Override
     public Object generateCell(Table source, Object itemId, Object columnId) {
 
-        final JcrItemAdapter item = (JcrItemAdapter)source.getItem(itemId);
-        Item jcrItem = item.getJcrItem();
+        final Item jcrItem = getJcrItem(source, itemId);
         if(jcrItem != null && jcrItem.isNode()) {
             Node node = (Node) jcrItem;
             Integer status;
