@@ -3,12 +3,12 @@
     <!-- WS Compiler: manually edited -->
     <inherits name="info.magnolia.ui.vaadin.gwt.CommonWidgetSet" />
 
-
-     <!-- Magnolia indipendent modules -->
+    <!-- Magnolia independent widgets (not part of magnolia-ui-common-widgets) -->
     <inherits name="info.magnolia.ui.vaadin.editor.gwt.PageEditorWidgetSet" />
 
     <!-- put custom modules here -->
 
+    <!-- end custom modules -->
     <add-linker name="xsiframe" />
     <set-configuration-property name="devModeRedirectEnabled" value="true" />
     <set-property name="user.agent" value="gecko1_8,safari" />

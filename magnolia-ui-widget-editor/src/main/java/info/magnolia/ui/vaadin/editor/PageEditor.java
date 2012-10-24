@@ -56,10 +56,6 @@ import java.util.Map;
 @ClientWidget(value = VPageEditor.class, loadStyle = ClientWidget.LoadStyle.EAGER)
 public class PageEditor extends AbstractComponent implements PageEditorView, ServerSideHandler {
 
-    /**
-     * Source of the embedded object.
-     */
-
     private boolean preview = false;
 
     private PageEditorView.Listener listener;

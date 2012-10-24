@@ -40,6 +40,17 @@
         </configuration>
       </plugin>
     </plugins>
+     <resources>
+      <resource>
+        <directory>src/main/java</directory>
+        <includes>
+          <!-- include sources -->
+          <include>**/*.java</include>
+          <!-- include widgetsets -->
+          <include>**/*.gwt.xml</include>
+        </includes>
+      </resource>
+    </resources>
   </build>
   <dependencies>
      <dependency>
