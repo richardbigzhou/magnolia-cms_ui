@@ -60,6 +60,7 @@ public class ShellViewport extends DeckLayout implements ViewPort {
 
     public ShellViewport(final BaseMagnoliaShell shell) {
         super();
+        setSizeFull();
         display(null);
         this.parentShell = shell;
     }
