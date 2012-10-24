@@ -36,7 +36,6 @@ package info.magnolia.ui.admincentral.column;
 import info.magnolia.cms.core.MetaData;
 import info.magnolia.jcr.util.MetaDataUtil;
 import info.magnolia.ui.model.column.definition.StatusColumnDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
 import javax.inject.Inject;
 import javax.jcr.Item;
