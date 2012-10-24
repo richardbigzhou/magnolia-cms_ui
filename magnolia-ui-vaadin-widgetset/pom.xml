@@ -83,7 +83,7 @@
       </properties>
     </profile>
     <profile>
-      <id>gwt-compile-test</id>
+      <id>gwt-compile-draft-inplace</id>
       <properties>
         <draftCompile>true</draftCompile>
         <inplace>true</inplace>
