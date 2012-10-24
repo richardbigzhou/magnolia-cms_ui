@@ -102,6 +102,7 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
         super();
         addDomHandler(closeHandler, ClickEvent.getType());
         bindTouchHandlers();
+        setTransitionDelegate(TransitionDelegate.APPS_TRANSITION_DELEGATE);
     }
 
     // @Override
@@ -122,14 +123,12 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
         return curtain;
     }
 
-    private void showCurtain() {
-        DOM.setStyleAttribute(getCurtain(), "zIndex",
-            "" + (Integer.parseInt(DOM.getStyleAttribute(getElement(), "z-index"))) + 99);
-        DOM.appendChild(getElement(), getCurtain());
-    }
-
-    private void hideCurtain() {
-        DOM.removeChild(getElement(), curtain);
+    public void setCurtainVisible(boolean visible) {
+        if (visible) {
+            getElement().appendChild(getCurtain());
+        } else {
+            getElement().removeChild(getCurtain());
+        }
     }
 
     // @Override

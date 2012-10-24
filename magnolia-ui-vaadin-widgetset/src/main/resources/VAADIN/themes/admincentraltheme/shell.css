@@ -112,7 +112,13 @@ button.action-close {
 	position:absolute;
 	top:0;
 	bottom:0;
-	width:100%;
+}
+
+.v-viewport > div {
+	position:absolute;
+	top:0;
+	bottom:0;
+	height:auto !important;
 }
 
 .v-dialog-viewport {

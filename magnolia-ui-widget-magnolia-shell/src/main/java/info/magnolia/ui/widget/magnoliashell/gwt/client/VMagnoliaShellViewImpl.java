@@ -315,6 +315,7 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
             presenter.loadShellApp(event.getType(), event.getToken());
             // }
         }
+
     };
 
     // ShellAppType typeInTransition;
@@ -341,6 +342,7 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
             // if (getAppViewport().hasContent()) {
             // getShellAppViewport().setViewportHideAnimationDelegate(AnimationDelegate.SLIDING_DELEGATE);
             // }
+            getShellAppViewport().setClosing(true);
             presenter.closeCurrentShellApp();
 
         } else if (viewportType == ViewportType.APP_VIEWPORT) {

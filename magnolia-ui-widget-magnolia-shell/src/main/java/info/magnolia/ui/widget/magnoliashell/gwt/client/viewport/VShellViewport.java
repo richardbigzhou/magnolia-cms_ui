@@ -42,7 +42,6 @@ import java.util.Iterator;
 import java.util.Set;
 
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
@@ -68,7 +67,7 @@ public class VShellViewport extends ComplexPanel implements Container, Container
 
     private ApplicationConnection client;
 
-    // private boolean closingWidget;
+    private boolean closing;
 
     private Widget visibleApp = null;
 
@@ -80,7 +79,7 @@ public class VShellViewport extends ComplexPanel implements Container, Container
 
     private final TouchDelegate delegate = new TouchDelegate(this);
 
-    private TransitionDelegate animator;
+    private TransitionDelegate transitionDelegate;
 
     // private final LoadingPane loadingPane = new LoadingPane();
 
@@ -125,17 +124,21 @@ public class VShellViewport extends ComplexPanel implements Container, Container
         this.eventBus = eventBus;
     }
 
-    // protected void setClosingWidget(boolean closingWidget) {
-    // this.closingWidget = closingWidget;
-    // }
+    public boolean isClosing() {
+        return closing;
+    }
+
+    public void setClosing(boolean closing) {
+        this.closing = closing;
+    }
 
     public boolean isActive() {
         return active;
     }
 
     public void setActive(boolean active) {
-        if (animator != null && !animator.isBusy()) {
-            animator.setActive(this, active);
+        if (transitionDelegate != null && !transitionDelegate.bypass()) {
+            transitionDelegate.setActive(this, active);
         } else {
             if (active) {
                 setVisible(true);
@@ -152,8 +155,8 @@ public class VShellViewport extends ComplexPanel implements Container, Container
 
     public void setVisibleApp(Widget w) {
         if (w != visibleApp) {
-            if (animator != null && !animator.isBusy()) {
-                animator.setVisibleApp(w);
+            if (transitionDelegate != null && !transitionDelegate.bypass()) {
+                transitionDelegate.setVisibleApp(this, w);
             } else {
                 if (visibleApp != null) {
                     visibleApp.setVisible(false);
@@ -184,12 +187,12 @@ public class VShellViewport extends ComplexPanel implements Container, Container
     // eventBus.fireEvent(new ShellTransitionCompleteEvent());
     // }
 
-    public TransitionDelegate getAnimator() {
-        return animator;
+    public TransitionDelegate getTransitionDelegate() {
+        return transitionDelegate;
     }
 
-    public void setAnimator(TransitionDelegate animator) {
-        this.animator = animator;
+    public void setTransitionDelegate(TransitionDelegate transitionDelegate) {
+        this.transitionDelegate = transitionDelegate;
     }
 
     @Override
@@ -205,24 +208,32 @@ public class VShellViewport extends ComplexPanel implements Container, Container
 
             // Widget formerWidget = visibleWidget;
             if (uidl.getChildCount() > 0) {
-                int idx = 0;
-                for (; idx < uidl.getChildCount(); ++idx) {
-                    final UIDL childUIdl = uidl.getChildUIDL(idx);
+                Widget app = null;
+                for (int i = 0; i < uidl.getChildCount(); i++) {
+                    final UIDL childUIdl = uidl.getChildUIDL(i);
                     final Paintable paintable = client.getPaintable(childUIdl);
                     oldWidgets.remove(paintable);
                     final Widget w = (Widget) paintable;
-                    updatePosition(w);
-                    paintable.updateFromUIDL(childUIdl, client);
+                    if (i == 0) {
+                        app = w;
+                    }
+                    if (w.getParent() != this) {
+                        add(w, getElement());
+                    }
 
+                    // make sure handling of visibility is left to viewport
+                    boolean visible = w.isVisible();
+                    paintable.updateFromUIDL(childUIdl, client);
                     if (forceContentAlign) {
                         alignChild(w);
                     }
-                    if (idx == 0) {
-                        setVisibleApp(w);
-                    } else {
-                        w.getElement().getStyle().setProperty("zIndex", "");
-                    }
+                    w.setVisible(visible);
+
                 }
+                if (app != null) {
+                    setVisibleApp(app);
+                }
+
             } else {
                 visibleApp = null;
             }
@@ -264,14 +275,6 @@ public class VShellViewport extends ComplexPanel implements Container, Container
         }
     }
 
-    private boolean updatePosition(Widget w) {
-        boolean result = !hasChildComponent(w);
-        if (result) {
-            add(w, getElement());
-        }
-        return result;
-    }
-
     /* CONTAINER INTERFACE IMPL */
 
     @Override
@@ -298,14 +301,6 @@ public class VShellViewport extends ComplexPanel implements Container, Container
 
     @Override
     public void replaceChildComponent(Widget oldComponent, Widget newComponent) {
-    }
-
-    @Override
-    protected void add(final Widget child, Element container) {
-        if (child instanceof Paintable) {
-            child.getElement().getStyle().setPosition(Position.ABSOLUTE);
-        }
-        super.add(child, container);
     }
 
     public void setForceContentAlign(boolean forceContentAlign) {

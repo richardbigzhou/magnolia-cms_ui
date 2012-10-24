@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.widget.magnoliashell.gwt.client.viewport;
 
-
-
 /**
  * Shell apps viewport client side.
  */
@@ -45,22 +43,8 @@ public class VShellAppsViewport extends VShellViewport {
     public VShellAppsViewport() {
         super();
         setForceContentAlign(true);
-
-        // setViewportShowAnimationDelegate(AnimationDelegate.SLIDING_DELEGATE);
-        // setViewportHideAnimationDelegate(AnimationDelegate.FADING_DELEGATE);
-        // setContentShowAnimationDelegate(AnimationDelegate.FADING_DELEGATE);
-        // setContentHideAnimationDelegate(AnimationDelegate.FADING_DELEGATE);
-        // setCurtainAnimated(true);
+        setTransitionDelegate(TransitionDelegate.SHELL_APPS_TRANSITION_DELEGATE);
     }
-
-    // @Override
-    // public void setActive(boolean active) {
-    // if (active) {
-    // // reset to fade out transition if closing shell app turned it to slide out
-    // setViewportHideAnimationDelegate(AnimationDelegate.FADING_DELEGATE);
-    // }
-    // super.setActive(active);
-    // }
 
     // @Override
     // /**

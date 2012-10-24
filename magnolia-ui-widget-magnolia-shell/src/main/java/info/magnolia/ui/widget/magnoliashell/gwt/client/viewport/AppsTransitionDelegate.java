@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,55 +34,25 @@
 package info.magnolia.ui.widget.magnoliashell.gwt.client.viewport;
 
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.Callbacks;
-
-import com.google.gwt.user.client.ui.Widget;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.TransitionDelegate.BaseTransitionDelegate;
 
 
 /**
- * Viewports might have different ways of displaying the content. This interface helps to define
- * them from outside.
+ * The AppsTransitionDelegate provides custom transition logic when launching, closing an app, or
+ * switching between apps.
  */
-interface TransitionDelegate {
-
-    static final int SLIDE_DURATION = 3600;
-
-    static final int FADE_DURATION = 3600;
-
-    Callbacks setActive(VShellViewport viewport, boolean active);
-
-    Callbacks setVisibleApp(VShellViewport viewport, Widget app);
-
-    boolean bypass();
-
-    final static TransitionDelegate SHELL_APPS_TRANSITION_DELEGATE = new ShellAppsTransitionDelegate();
-
-    final static TransitionDelegate APPS_TRANSITION_DELEGATE = new AppsTransitionDelegate();
+class AppsTransitionDelegate extends BaseTransitionDelegate {
 
     /**
-     * The Class BaseTransitionDelegate with the bypass mechanism.
+     * Slides down if active, fades out if inactive - expect if the viewport is closing.
      */
-    static abstract class BaseTransitionDelegate implements TransitionDelegate {
-
-        protected boolean bypass;
-
-        @Override
-        public Callbacks setActive(VShellViewport viewport, boolean active) {
-            bypass = true;
-            viewport.setActive(active);
-            return null;
-        }
-
-        @Override
-        public Callbacks setVisibleApp(VShellViewport viewport, Widget app) {
-            bypass = true;
-            viewport.setVisibleApp(app);
-            return null;
-        }
-
-        @Override
-        public boolean bypass() {
-            return bypass && !(bypass = false);
-        }
-    };
-
+    @Override
+    public Callbacks setActive(final VShellViewport viewport, boolean active) {
+        Callbacks callbacks = null;
+        // if (active) {
+        // viewport.
+        // } else {
+        // }
+        return callbacks;
+    }
 }
