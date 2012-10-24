@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse;
 
-import info.magnolia.ui.vaadin.widget.tabsheet.MagnoliaTab;
-import info.magnolia.ui.vaadin.widget.tabsheet.MagnoliaTabSheet;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
+import info.magnolia.ui.vaadin.tabsheet.MagnoliaTab;
+import info.magnolia.ui.vaadin.tabsheet.MagnoliaTabSheet;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.VMainLauncher.ShellAppType;
 
 import java.util.List;
 

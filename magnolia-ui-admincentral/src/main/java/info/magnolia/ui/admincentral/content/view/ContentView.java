@@ -35,8 +35,8 @@ package info.magnolia.ui.admincentral.content.view;
 
 import com.vaadin.data.Item;
 
-import info.magnolia.ui.admincentral.container.AbstractJcrContainer;
 import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.vaadin.integration.jcr.container.AbstractJcrContainer;
 
 /**
  * UI component that displays content (from JCR).

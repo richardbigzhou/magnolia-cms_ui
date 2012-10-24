@@ -33,8 +33,11 @@
  */
 package info.magnolia.ui.admincentral.column;
 
+import com.vaadin.ui.Table;
 import info.magnolia.ui.model.column.definition.ColumnDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
+import javax.jcr.Item;
 
 
 /**
@@ -48,5 +51,15 @@ public abstract class AbstractColumnFormatter <D extends ColumnDefinition> imple
 
     public AbstractColumnFormatter(D definition) {
         this.definition = definition;
+    }
+
+    /**
+     * @param source table to get jcrItem from
+     * @param itemId id of the item to get
+     * @return the jcrItem with the provided id
+     */
+    protected Item getJcrItem(Table source, Object itemId) {
+        final JcrItemAdapter item = (JcrItemAdapter)source.getItem(itemId);
+        return item.getJcrItem();
     }
 }

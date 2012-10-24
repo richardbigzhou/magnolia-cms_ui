@@ -60,7 +60,7 @@ import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.framework.view.ViewPort;
-import info.magnolia.ui.vaadin.widget.tabsheet.MagnoliaTab;
+import info.magnolia.ui.vaadin.tabsheet.MagnoliaTab;
 
 import java.util.HashMap;
 import java.util.LinkedList;

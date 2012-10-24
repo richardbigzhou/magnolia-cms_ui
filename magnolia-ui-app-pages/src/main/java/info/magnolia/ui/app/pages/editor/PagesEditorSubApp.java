@@ -38,7 +38,6 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.event.ActionbarItemClickedEvent;
 import info.magnolia.ui.admincentral.tree.action.DeleteItemActionDefinition;
-import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.app.pages.PagesApp;
 import info.magnolia.ui.app.pages.PagesAppDescriptor;
 import info.magnolia.ui.app.pages.action.AddComponentActionDefinition;
@@ -54,16 +53,16 @@ import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
-import info.magnolia.ui.widget.actionbar.ActionbarView;
-import info.magnolia.ui.widget.editor.PageEditor;
-import info.magnolia.ui.widget.editor.PageEditorParameters;
+import info.magnolia.ui.model.workbench.action.WorkbenchActionFactory;
+import info.magnolia.ui.vaadin.actionbar.ActionbarView;
+import info.magnolia.ui.vaadin.editor.PageEditor;
+import info.magnolia.ui.vaadin.editor.PageEditorParameters;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.jcr.LoginException;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -183,9 +182,6 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
             Session session = MgnlContext.getJCRSession(appDescriptor.getWorkbench().getWorkspace());
             Node node = session.getNode(path);
             caption = node.getProperty("title").getString();
-
-        } catch (LoginException e) {
-            log.error("Exception caught: {}", e.getMessage(), e);
         } catch (RepositoryException e) {
             log.error("Exception caught: {}", e.getMessage(), e);
         }

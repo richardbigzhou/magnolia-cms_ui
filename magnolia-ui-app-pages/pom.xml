@@ -22,12 +22,8 @@
     </dependency>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-widget-editor</artifactId>
+      <artifactId>magnolia-ui-vaadin-widgetset</artifactId>
       <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.vaadin</groupId>
-      <artifactId>vaadin</artifactId>
     </dependency>
   </dependencies>
     <build>

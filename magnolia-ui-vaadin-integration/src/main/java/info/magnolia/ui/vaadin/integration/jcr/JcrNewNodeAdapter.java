@@ -41,7 +41,6 @@ import info.magnolia.jcr.util.MetaDataUtil;
 import javax.jcr.AccessDeniedException;
 import javax.jcr.Item;
 import javax.jcr.ItemNotFoundException;
-import javax.jcr.LoginException;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
@@ -152,9 +151,6 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter{
             }
 
             return node;
-        }
-        catch (LoginException e) {
-            throw new RuntimeRepositoryException(e);
         } catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);
         }

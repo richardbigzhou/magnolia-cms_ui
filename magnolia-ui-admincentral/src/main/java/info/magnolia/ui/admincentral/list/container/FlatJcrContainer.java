@@ -34,15 +34,15 @@
 package info.magnolia.ui.admincentral.list.container;
 
 
-import info.magnolia.ui.admincentral.container.AbstractJcrContainer;
-import info.magnolia.ui.admincentral.container.JcrContainerSource;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.container.AbstractJcrContainer;
+import info.magnolia.ui.vaadin.integration.jcr.container.JcrContainerSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A flat implementation of {@link info.magnolia.ui.admincentral.container.AbstractJcrContainer} where relationships are not taken into account.
+ * A flat implementation of {@link info.magnolia.ui.vaadin.integration.jcr.container.AbstractJcrContainer} where relationships are not taken into account.
  */
 public class FlatJcrContainer extends AbstractJcrContainer {
     

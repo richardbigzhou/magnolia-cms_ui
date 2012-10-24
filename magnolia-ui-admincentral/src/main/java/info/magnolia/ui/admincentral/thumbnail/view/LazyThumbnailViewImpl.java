@@ -35,21 +35,20 @@ package info.magnolia.ui.admincentral.thumbnail.view;
 
 import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.context.MgnlContext;
-import info.magnolia.ui.admincentral.container.AbstractJcrContainer;
+import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.ui.model.thumbnail.ImageProvider;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.vaadin.integration.widget.LazyThumbnailLayout;
-import info.magnolia.ui.vaadin.integration.widget.LazyThumbnailLayout.ThumbnailDblClickListener;
-import info.magnolia.ui.vaadin.integration.widget.LazyThumbnailLayout.ThumbnailSelectionListener;
+import info.magnolia.ui.vaadin.integration.jcr.container.AbstractJcrContainer;
+import info.magnolia.ui.vaadin.layout.LazyThumbnailLayout;
+import info.magnolia.ui.vaadin.layout.LazyThumbnailLayout.ThumbnailDblClickListener;
+import info.magnolia.ui.vaadin.layout.LazyThumbnailLayout.ThumbnailSelectionListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.jcr.LoginException;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
-import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.query.Query;
@@ -172,12 +171,8 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
 
             log.debug("Done collecting {} nodes in {}ms", uuids.size(), System.currentTimeMillis() - start);
 
-        } catch (PathNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (LoginException e) {
-            throw new RuntimeException(e);
         } catch (RepositoryException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeRepositoryException(e);
         }
         return uuids;
     }
@@ -211,8 +206,6 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
             Session session = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace());
             final Node imageNode = session.getNodeByIdentifier(thumbnailId);
             return new JcrNodeAdapter(imageNode);
-        } catch (LoginException e) {
-            log.error(e.getMessage());
         } catch (RepositoryException e) {
             log.error(e.getMessage());
         }

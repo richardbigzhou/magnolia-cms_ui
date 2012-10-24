@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.app.pages.editor;
 
-import info.magnolia.ui.widget.actionbar.ActionbarView;
-import info.magnolia.ui.widget.editor.PageEditorView;
+import info.magnolia.ui.vaadin.actionbar.ActionbarView;
+import info.magnolia.ui.vaadin.editor.PageEditorView;
 
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Component;

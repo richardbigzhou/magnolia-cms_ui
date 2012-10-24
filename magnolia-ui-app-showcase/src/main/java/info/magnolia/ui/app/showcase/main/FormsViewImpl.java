@@ -33,11 +33,6 @@
  */
 package info.magnolia.ui.app.showcase.main;
 
-import info.magnolia.ui.widget.dialog.BaseDialog;
-import info.magnolia.ui.widget.dialog.BaseDialog.DialogCloseEvent;
-import info.magnolia.ui.widget.dialog.FormDialog;
-import info.magnolia.ui.widget.dialog.FormSection;
-
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Component;
 
@@ -63,18 +58,17 @@ import com.vaadin.ui.Button.ClickEvent;
 public class FormsViewImpl implements FormsView {
 
     private static final long serialVersionUID = -6955085822490659756L;
-    
+
     CssLayout layout = new CssLayout();
-    FormDialog dlg = new FormDialog();
 
     private Listener listener;
-    
+
     public FormsViewImpl() {
         layout.setMargin(true, true, false, true);
         layout.setSizeFull();
         layout.addComponent(new Label("The fields available in a Magnolia" +
                 " Form or Dialog. Configurable by repository or code."));
-        
+
         layout.addComponent(new Button("View in dialog", new Button.ClickListener() {
 
             private static final long serialVersionUID = 3728932069745421056L;
@@ -84,36 +78,12 @@ public class FormsViewImpl implements FormsView {
                 listener.onViewInDialog();
             }
         }));
-        
+
         createComponents(layout);
-        createDialog();
     }
 
-    private void createDialog() {
-        dlg.addDialogCloseHandler(new DialogCloseEvent.Handler() {
-
-            @Override
-            public void onClose(DialogCloseEvent event) {
-                listener.onCloseDialog();
-            }
-            
-        });
-        
-        dlg.setDialogDescription("Components in a dialog");
-        CssLayout layout = new CssLayout();
-        createComponents(layout);
-
-        dlg.addDialogSection("", createSection(layout));
-    }
-    
-    private FormSection createSection(Component component) {
-        FormSection section = new FormSection();
-        section.addComponent(component);
-        return section;
-    }
-    
     private void createComponents(Layout layout) {
-        layout.addComponent(createRow("Static text", 
+        layout.addComponent(createRow("Static text",
                 new Label("Lorem ipsum dolor sit amet, consectetur adipisicing elit"))
         );
         layout.addComponent(createRow("Commit button in a form", createSendButton()));
@@ -121,7 +91,7 @@ public class FormsViewImpl implements FormsView {
         layout.addComponent(
             createRow("Link",
                 new Link(
-                    "magnolia-cms.com", 
+                    "magnolia-cms.com",
                     new ExternalResource(
                             "http://www.magnolia-cms.com"
                     )
@@ -144,7 +114,7 @@ public class FormsViewImpl implements FormsView {
         group.addItem("Second");
         group.addItem("Third");
         group.setMultiSelect(multiSelect);
-        
+
         return group;
     }
 
@@ -177,12 +147,12 @@ public class FormsViewImpl implements FormsView {
         resetButton.addStyleName("btn-dialog-cancel");
         return resetButton;
     }
-    
+
     @Override
     public Component asVaadinComponent() {
         return layout;
     }
-    
+
     private Layout getPreviewLayout(String caption) {
         GridLayout layout = new GridLayout(2, 1);
         layout.setWidth("100%");
@@ -197,9 +167,4 @@ public class FormsViewImpl implements FormsView {
         this.listener = listener;
     }
 
-    @Override
-    public BaseDialog asBaseDialog() {
-        return dlg;
-    }
-    
 }

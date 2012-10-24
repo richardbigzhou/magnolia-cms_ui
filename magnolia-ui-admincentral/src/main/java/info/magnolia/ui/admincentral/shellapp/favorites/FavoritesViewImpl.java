@@ -34,8 +34,8 @@
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
 import info.magnolia.ui.admincentral.components.SplitFeed;
-import info.magnolia.ui.vaadin.integration.widget.divlayout.DivLayout;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
+import info.magnolia.ui.vaadin.layout.DivLayout;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.VMainLauncher.ShellAppType;
 
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Component;

@@ -34,9 +34,9 @@
 package info.magnolia.ui.admincentral.dialog;
 
 import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.widget.dialog.BaseDialog.DialogCloseEvent;
-import info.magnolia.ui.widget.dialog.DialogView;
-import info.magnolia.ui.widget.dialog.DialogView.DialogActionListener;
+import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
+import info.magnolia.ui.vaadin.dialog.DialogView;
+import info.magnolia.ui.vaadin.dialog.DialogView.DialogActionListener;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -46,17 +46,17 @@ import javax.inject.Named;
  * Base implementation of {@link DialogPresenter}.
  */
 public class BaseDialogPresenter implements DialogPresenter {
-    
+
     private final DialogView view;
-    
+
     private final EventBus adminCentralEventBus;
-    
+
     @Inject
     public BaseDialogPresenter(DialogView view, @Named("admincentral") EventBus eventBus) {
         this.view = view;
         this.adminCentralEventBus = eventBus;
     }
-    
+
     @Override
     public Callback getCallback() {
         return null;
@@ -80,7 +80,7 @@ public class BaseDialogPresenter implements DialogPresenter {
     @Override
     public void addAction(String actionName, String actionLabel, DialogActionListener callback) {
         view.asVaadinComponent().addAction(actionName, actionLabel, callback);
-        
+
     }
 
     @Override
