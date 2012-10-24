@@ -17,19 +17,6 @@
     <cloverCoverageThreshold>26</cloverCoverageThreshold>
   </properties>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.zeroturnaround</groupId>
-        <artifactId>jrebel-maven-plugin</artifactId>
-        <configuration>
-          <relativePath>../${basedir}</relativePath>
-          <rootPath>$${admincentral.root}</rootPath>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-
   <dependencies>
     <dependency>
       <groupId>info.magnolia</groupId>

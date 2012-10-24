@@ -60,14 +60,6 @@
           <skip>true</skip>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.zeroturnaround</groupId>
-        <artifactId>jrebel-maven-plugin</artifactId>
-        <configuration>
-          <relativePath>../${basedir}</relativePath>
-          <rootPath>$${admincentral.root}</rootPath>
-        </configuration>
-      </plugin>
    </plugins>
   </build>
 
@@ -82,6 +74,7 @@
         <inplace>false</inplace>
       </properties>
     </profile>
+
     <profile>
       <id>gwt-compile-draft-inplace</id>
       <properties>

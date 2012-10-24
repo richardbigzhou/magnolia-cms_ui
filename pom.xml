@@ -227,6 +227,10 @@
           <plugin>
             <groupId>org.zeroturnaround</groupId>
             <artifactId>jrebel-maven-plugin</artifactId>
+            <configuration>
+              <relativePath>../${basedir}</relativePath>
+              <rootPath>$${admincentral.root}</rootPath>
+            </configuration>
             <executions>
               <execution>
                 <id>generate-rebel-xml</id>

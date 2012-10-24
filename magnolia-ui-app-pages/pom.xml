@@ -26,16 +26,4 @@
       <version>${project.version}</version>
     </dependency>
   </dependencies>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.zeroturnaround</groupId>
-                <artifactId>jrebel-maven-plugin</artifactId>
-                <configuration>
-                    <relativePath>../${basedir}</relativePath>
-                    <rootPath>$${admincentral.root}</rootPath>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 </project>
