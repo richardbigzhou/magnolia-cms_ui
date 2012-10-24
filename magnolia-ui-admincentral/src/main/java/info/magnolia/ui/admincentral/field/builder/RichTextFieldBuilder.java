@@ -67,8 +67,9 @@ public class RichTextFieldBuilder extends
 
     private final AppController appController;
     private MagnoliaRichTextField richtexteditor;
-    private static final Logger log = LoggerFactory.getLogger(LinkFieldBuilder.class);
-    
+    private static final Logger log = LoggerFactory
+            .getLogger(LinkFieldBuilder.class);
+
     @Inject
     public RichTextFieldBuilder(RichTextFieldDefinition definition,
             Item relatedFieldItem, AppController appController) {
@@ -86,55 +87,65 @@ public class RichTextFieldBuilder extends
                 "Italic", "Underline", "SpecialChar" }));
         toolbars.add(new ToolbarGroup("paragraph", new String[] {
                 "NumberedList", "BulletedList" }));
-        toolbars.add(new ToolbarGroup("insert",
-                new String[] { "Link", "Unlink", "InternalLink" }));
+        toolbars.add(new ToolbarGroup("insert", new String[] { "Link",
+                "Unlink", "InternalLink" }));
         toolbars.add(new ToolbarGroup("clipboard", new String[] { "Cut",
                 "Copy", "Paste", "PasteText", "PasteFromWord" }));
         toolbars.add(new ToolbarGroup("objects", new String[] { "Image",
                 "Table" }));
-        toolbars.add(new ToolbarGroup("special", new String[] { "Undo", "Redo"}));
+        toolbars.add(new ToolbarGroup("special",
+                new String[] { "Undo", "Redo" }));
         config.addToolbarLine(toolbars);
         config.addListenedEvent("reqMagnoliaLink");
 
         richtexteditor = new MagnoliaRichTextField(config);
         richtexteditor.addListener(new MagnoliaRichTextField.PluginListener() {
-            
+
             @Override
             public void onPluginEvent(String eventName, String value) {
-                if(eventName.equals("reqMagnoliaLink")) {
+                if (eventName.equals("reqMagnoliaLink")) {
                     openLinkDialog();
                 }
             }
         });
-        
+
         return richtexteditor;
     }
-    
+
     private void openLinkDialog() {
         // Get the property name to propagate.
-        App targetApp = appController.startIfNotAlreadyRunning("pages", new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages", ""));
+        App targetApp = appController.startIfNotAlreadyRunning("pages",
+                new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages",
+                        ""));
         if (targetApp != null && targetApp instanceof AbstractContentApp) {
-            ChooseDialogPresenter<Item> pickerPresenter = ((AbstractContentApp) targetApp).openChooseDialog();
+            ChooseDialogPresenter<Item> pickerPresenter = ((AbstractContentApp) targetApp)
+                    .openChooseDialog();
             pickerPresenter.getView().setCaption("Select a page");
-            pickerPresenter.addValuePickListener(new ValueChosenListener<Item>() {
-                @Override
-                public void onValueChosen(Item pickedValue) {
-                    javax.jcr.Item jcrItem = ((JcrItemAdapter) pickedValue).getJcrItem();
-                    if (jcrItem.isNode()) {
-                        final Node selected = (Node) jcrItem;
-                        try {
-                            richtexteditor.firePluginEvent("sendMagnoliaLink", selected.getPath());
-                        } catch (RepositoryException e) {
-                            log.error("Not able to access the configured property. Value will not be set.", e);
+            pickerPresenter
+                    .addValuePickListener(new ValueChosenListener<Item>() {
+                        @Override
+                        public void onValueChosen(Item pickedValue) {
+                            javax.jcr.Item jcrItem = ((JcrItemAdapter) pickedValue)
+                                    .getJcrItem();
+                            if (jcrItem.isNode()) {
+                                final Node selected = (Node) jcrItem;
+                                try {
+                                    richtexteditor.firePluginEvent(
+                                            "sendMagnoliaLink",
+                                            selected.getPath());
+                                } catch (RepositoryException e) {
+                                    log.error(
+                                            "Not able to access the configured property. Value will not be set.",
+                                            e);
+                                }
+                            }
                         }
-                    }
-                }
 
-                @Override
-                public void selectionCanceled() {
+                        @Override
+                        public void selectionCanceled() {
 
-                }
-            });
+                        }
+                    });
         }
     }
 
