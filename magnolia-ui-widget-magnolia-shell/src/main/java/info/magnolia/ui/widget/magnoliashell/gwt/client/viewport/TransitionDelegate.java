@@ -44,10 +44,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 interface TransitionDelegate {
 
-    static final int SLIDE_DURATION = 3600;
-
-    static final int FADE_DURATION = 3600;
-
     Callbacks setActive(VShellViewport viewport, boolean active);
 
     Callbacks setVisibleApp(VShellViewport viewport, Widget app);

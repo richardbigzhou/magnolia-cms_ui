@@ -52,9 +52,9 @@ import com.google.gwt.user.client.ui.Widget;
  */
 class ShellAppsTransitionDelegate extends BaseTransitionDelegate {
 
-    private final static int SLIDE_DURATION = 1600;
+    private final static int SLIDE_DURATION = 600;
 
-    private final static int FADE_DURATION = 1600;
+    private final static int FADE_DURATION = 600;
 
     private final static int ALPHA_MIN = 0;
 
