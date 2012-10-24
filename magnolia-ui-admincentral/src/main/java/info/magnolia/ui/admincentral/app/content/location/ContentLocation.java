@@ -1,0 +1,96 @@
+/**
+ * This file Copyright (c) 2010-2012 Magnolia International
+ * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
+ *
+ *
+ * This file is dual-licensed under both the Magnolia
+ * Network Agreement and the GNU General Public License.
+ * You may elect to use one or the other of these licenses.
+ *
+ * This file is distributed in the hope that it will be
+ * useful, but AS-IS and WITHOUT ANY WARRANTY; without even the
+ * implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE, TITLE, or NONINFRINGEMENT.
+ * Redistribution, except as permitted by whichever of the GPL
+ * or MNA you select, is prohibited.
+ *
+ * 1. For the GPL license (GPL), you can redistribute and/or
+ * modify this file under the terms of the GNU General
+ * Public License, Version 3, as published by the Free Software
+ * Foundation.  You should have received a copy of the GNU
+ * General Public License, Version 3 along with this program;
+ * if not, write to the Free Software Foundation, Inc., 51
+ * Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ * 2. For the Magnolia Network Agreement (MNA), this file
+ * and the accompanying materials are made available under the
+ * terms of the MNA which accompanies this distribution, and
+ * is available at http://www.magnolia-cms.com/mna.html
+ *
+ * Any modifications to this file must keep this entire header
+ * intact.
+ *
+ */
+package info.magnolia.ui.admincentral.app.content.location;
+
+import info.magnolia.ui.admincentral.content.view.ContentView;
+import info.magnolia.ui.framework.location.DefaultLocation;
+
+
+/**
+ * ContentLocation.
+ */
+public class ContentLocation extends DefaultLocation {
+
+    private String nodePath;
+    private ContentView.ViewType view;
+
+    private String query;
+
+    public ContentLocation(String appId, String subAppId, String parameter) {
+        super(LOCATION_TYPE_APP, appId, subAppId, parameter);
+
+        this.nodePath = extractNodePath(parameter);
+        this.view = extractView(parameter);
+        this.query = extractQuery(parameter);
+    }
+
+    private String extractNodePath(String parameter) {
+        int i = parameter.indexOf(':');
+        return i != -1 ? parameter.substring(0, i) : parameter;
+    }
+
+    private ContentView.ViewType extractView(String parameter) {
+        int i = parameter.indexOf(':');
+        String view = i != -1 ? parameter.substring(i+1) : parameter;
+        return ContentView.ViewType.fromString(view);
+    }
+
+    private String extractQuery(String parameter) {
+        int i = parameter.indexOf(':');
+        if (i == -1) {
+            return "";
+        }
+        int j = parameter.indexOf(':', i + 1);
+        if (j == -1) {
+            return "";
+        }
+        return parameter.substring(j + 1);
+    }
+
+    public String getNodePath() {
+        return nodePath;
+    }
+
+    public ContentView.ViewType getView() {
+        return view;
+    }
+
+    public String getQuery() {
+        return query;
+    }
+
+    public static ContentLocation wrap(DefaultLocation location) {
+        return new ContentLocation(location.getAppId(), location.getSubAppId(), location.getParameter());
+    }
+}

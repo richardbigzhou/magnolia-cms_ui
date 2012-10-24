@@ -369,8 +369,8 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
          * Called when a location change occurs and the app is already running.
          */
         public void onLocationUpdate(Location location) {
-
-            String subAppId = extractSubAppId(((DefaultLocation) location).getParameter());
+            DefaultLocation l = (DefaultLocation) location;
+            String subAppId = l.getSubAppId();
 
             // The location targets the current display state, update the fragment only
             if (subAppId.length() == 0) {

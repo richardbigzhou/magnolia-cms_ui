@@ -38,8 +38,8 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.event.ActionbarItemClickedEvent;
 import info.magnolia.ui.admincentral.tree.action.DeleteItemActionDefinition;
-import info.magnolia.ui.app.pages.PagesApp;
 import info.magnolia.ui.app.pages.PagesAppDescriptor;
+import info.magnolia.ui.app.pages.PagesLocation;
 import info.magnolia.ui.app.pages.action.AddComponentActionDefinition;
 import info.magnolia.ui.app.pages.action.EditElementActionDefinition;
 import info.magnolia.ui.app.pages.action.EditPageActionDefinition;
@@ -66,7 +66,6 @@ import javax.inject.Named;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import java.util.List;
 
 
 /**
@@ -144,10 +143,10 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
     }
 
     private void goToLocation(Location location) {
-        List<String> locationTokens = parseLocationToken(location);
+        PagesLocation l = (PagesLocation) location;
 
-        if (isLocationChanged(locationTokens)) {
-            setPageEditorParameters(locationTokens);
+        if (isLocationChanged(l)) {
+            setPageEditorParameters(l);
             if (parameters.isPreview()) {
                 showPreview();
             } else {
@@ -156,17 +155,17 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
         }
     }
 
-    private void setPageEditorParameters(List<String> locationTokens) {
-        boolean isPreview = isPreview(locationTokens);
-        String path = getEditorPath(locationTokens);
+    private void setPageEditorParameters(PagesLocation location) {
+        boolean isPreview = location.getMode().equals("preview");
+        String path = location.getNodePath();
 
         this.parameters = new PageEditorParameters(MgnlContext.getContextPath(), path, isPreview);
         this.caption = getPageTitle(path);
     }
 
-    private boolean isLocationChanged(List<String> locationTokens) {
-        boolean isPreview = isPreview(locationTokens);
-        String path = getEditorPath(locationTokens);
+    private boolean isLocationChanged(PagesLocation location) {
+        boolean isPreview = location.getMode().equals("preview");
+        String path = location.getNodePath();
 
         if (parameters != null && (parameters.getNodePath().equals(path) && parameters.isPreview() == isPreview)) {
             return false;
@@ -286,70 +285,14 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
         });
     }
 
-    // Location token handling, format is editor;<editorPath>:<previewMode>
-
-/*    public static boolean supportsLocation(Location location) {
-        List<String> parts = parseLocationToken(location);
-        return parts.size() >= 1 && parts.get(0).equals("editor");
-    }*/
 
     public static DefaultLocation createLocation(String editorPath, String previewToken) {
-        String token = "editor;" + editorPath;
+        String token = editorPath ;
         if (StringUtils.isNotEmpty(previewToken)) {
             token += ":" + previewToken;
         }
-        return new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages", "", token);
+
+        return new PagesLocation(token);
     }
 
-    public String getSubAppId(Location location) {
-        List<String> parts = parseLocationToken(location);
-        return parts.get(0) + ";" + parts.get(1);
-    }
-
-    public static String getEditorPath(List<String> locationTokens) {
-        return locationTokens.size() >= 2 ? locationTokens.get(1) : "";
-    }
-
-    public static boolean isPreview(List<String> locationTokens) {
-        return locationTokens.size() >= 3 ? locationTokens.get(2).equals(PagesApp.PREVIEW_TOKEN) : false;
-    }
-
-/*    private static List<String> parseLocationToken(Location location) {
-
-        ArrayList<String> parts = new ArrayList<String>();
-
-        DefaultLocation l = (DefaultLocation) location;
-        String token = l.getParameter();
-
-        // "editor"
-        int i = token.indexOf(';');
-        if (i == -1) {
-            return new ArrayList<String>();
-        }
-        String subAppName = token.substring(0, i);
-        if (!subAppName.equals(PagesApp.EDITOR_TOKEN)) {
-            return new ArrayList<String>();
-        }
-        parts.add(subAppName);
-        token = token.substring(i + 1);
-
-        // editorPath
-        i = token.indexOf(':');
-        if (i == -1) {
-            if (token.length() == 0) {
-                return new ArrayList<String>();
-            }
-            parts.add(token);
-            return parts;
-        }
-        parts.add(token.substring(0, i));
-        token = token.substring(i + 1);
-
-        // previewMode
-        if (token.length() > 0) {
-            parts.add(token);
-        }
-
-        return parts;
-    }*/
 }

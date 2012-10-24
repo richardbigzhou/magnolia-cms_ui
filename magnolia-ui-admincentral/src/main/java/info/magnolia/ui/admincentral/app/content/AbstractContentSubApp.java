@@ -34,6 +34,7 @@
 package info.magnolia.ui.admincentral.app.content;
 
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
+import info.magnolia.ui.admincentral.app.content.location.ContentLocation;
 import info.magnolia.ui.admincentral.content.view.ContentView.ViewType;
 import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.admincentral.event.SearchEvent;
@@ -47,11 +48,8 @@ import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.view.View;
 import org.apache.commons.lang.StringUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Pattern;
-
 import javax.inject.Named;
+import java.util.regex.Pattern;
 
 /**
  * Abstract class providing a sensible implementation for services shared by all content subapps.
@@ -100,15 +98,16 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
      * <ul>
      * <li>setting the current location
      * <li>setting the workbench view
-     * <li>restoring the workbench status: see {@link #restoreWorkbench(Location)}
+     * <li>restoring the workbench status: see {@link #restoreWorkbench(ContentLocation)}
      * <li>calling {@link #onSubAppStart()} a hook-up method subclasses can override to perform additional work.
      * </ul>
      */
     @Override
     public final View start(final Location location) {
-        super.start(location);
+        ContentLocation l = ContentLocation.wrap((DefaultLocation)location);
+        super.start(l);
         getView().setWorkbenchView(workbench.start());
-        restoreWorkbench(location);
+        restoreWorkbench(l);
         return getView();
     }
 
@@ -132,10 +131,10 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
      * @see AbstractContentSubApp#start(Location)
      * @see Location
      */
-    protected final void restoreWorkbench(final Location location) {
-        String path = getSelectedItemPath(location);
-        ViewType viewType = getSelectedView(location);
-        String query = getQuery(location);
+    protected final void restoreWorkbench(final ContentLocation location) {
+        String path = location.getNodePath();
+        ViewType viewType = location.getView();
+        String query = location.getQuery();
         getWorkbench().resynch(path, viewType, query);
         updateActionbar(getWorkbench().getActionbarPresenter());
     }
@@ -145,7 +144,7 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
      * Depending on the selected item or on other conditions specific to a concrete app, certain actions will be enabled or disabled.
      * By default if no path is selected in the workbench, namely root is selected, "delete" and "edit" actions are not available.
      * If some path other than root is selected, "edit" and "delete" actions become available.
-     * @see #restoreWorkbench(Location)
+     * @see #restoreWorkbench(ContentLocation)
      * @see #locationChanged(Location)
      * @see ActionbarPresenter
      */
@@ -169,103 +168,17 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
         return (ContentAppView) super.getView();
     }
 
-    public final String getSubAppId(final Location location) {
-        List<String> parts = parseLocationToken(location);
-        return parts.get(0);
-    }
-
-    /**
-     * @return the selected item path as string or <code>/</code> (root) if none is present in the location.
-     */
-    public final String getSelectedItemPath(final Location location) {
-        List<String> parts = parseLocationToken(location);
-        return parts.size() >= 2 ? parts.get(1) : "/";
-    }
-
-    /**
-     * @return the selected {@link ViewType}. Defaults to {@link ViewType#TREE} if no view type is present in the location.
-     */
-    public final ViewType getSelectedView(final Location location) {
-
-        List<String> parts = parseLocationToken(location);
-        if(parts.size() >= 3) {
-            if(parts.get(2).indexOf(';') == -1) {
-                return ViewType.fromString(parts.get(2));
-            } else {
-                return ViewType.fromString(parts.get(2).split(";")[0]);
-            }
-        }
-        return ViewType.TREE;
-    }
-    /**
-     * @return the query text if present and if the view is search, else null.
-     */
-    public final String getQuery(final Location location) {
-
-        List<String> parts = parseLocationToken(location);
-        if(parts.size() >= 3) {
-            if(parts.get(2).indexOf(';') == -1) {
-                return null;
-            } else {
-                String[] view = parts.get(2).split(";");
-                return (view.length == 2 && ViewType.SEARCH.getText().equals(view[0])) ? view[1] : null;
-            }
-        }
-        return null;
-    }
-
     /**
      * The default implementation selects the path in the current workspace and updates the available actions in the actionbar.
      */
     @Override
     public void locationChanged(final Location location) {
-        String selectedItemPath = getSelectedItemPath(location);
+        ContentLocation contentLocation = (ContentLocation) location;
+        String selectedItemPath = contentLocation.getNodePath();
         if (selectedItemPath != null) {
             getWorkbench().selectPath(selectedItemPath);
         }
         updateActionbar(getWorkbench().getActionbarPresenter());
-    }
-
-    /**
-     * Location token handling, format is {@code main:<selectedItemPath>:<viewType>[;<query>] } where <code>query</code> is present only if <code>viewType</code> is {@link ViewType#SEARCH}.
-     * @see ViewType
-     */
-    @Override
-    public final List<String> parseLocationToken(final Location location) {
-
-        ArrayList<String> parts = new ArrayList<String>();
-
-        DefaultLocation l = (DefaultLocation) location;
-        String token = l.getParameter();
-
-        // "main"
-        int i = token.indexOf(':');
-        if (i == -1) {
-            if (!getSubAppId().equals(token)) {
-                return new ArrayList<String>();
-            }
-            parts.add(token);
-            return parts;
-        }
-
-        String subAppName = token.substring(0, i);
-        if (!getSubAppId().equals(subAppName)) {
-            return new ArrayList<String>();
-        }
-        parts.add(subAppName);
-        token = token.substring(i + 1);
-
-        // selectedItemPath
-        if (token.length() > 0 && token.indexOf(':') == -1) {
-            parts.add(token);
-        } else {
-            // viewType and, if view type == search, its related query
-            String[] tokenParts = token.split(":");
-            for(String part: tokenParts) {
-                parts.add(part);
-            }
-        }
-        return parts;
     }
 
 
@@ -284,12 +197,12 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
     /*
     * Creates a location for the current subapp given the current location, the passed parameter and its type.
     */
-    protected final DefaultLocation createLocation(final String parameter, final DefaultLocation currentLocation, final TokenElementType type) {
+    protected final DefaultLocation createLocation(final String parameter, final ContentLocation currentLocation, final TokenElementType type) {
         DefaultLocation location = createLocation();
         if (currentLocation != null && type != null) {
             String token = location.getParameter();
-            //token = replaceLocationToken(currentLocation, parameter, type);
-            return new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, getAppName(), "", token);
+            token = replaceLocationToken(currentLocation, parameter, type);
+            return new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, getAppName(), getSubAppId(), token);
         }
         return location;
     }
@@ -298,15 +211,15 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
     /*
     * If type is PATH or VIEW and token to replace is null/empty it returns the current token. Only in case of QUERY the token to replace can be null/empty
     */
-    String replaceLocationToken(final DefaultLocation location, final String tokenPartToReplace, final TokenElementType type) {
+    String replaceLocationToken(final ContentLocation location, final String tokenPartToReplace, final TokenElementType type) {
         String newToken = null;
-        String query = getQuery(location);
-        String viewType = getSelectedView(location).getText();
+        String query = location.getQuery();
+        String viewType = location.getView().getText();
 
         switch(type) {
             case PATH:
                 if(StringUtils.isNotBlank(tokenPartToReplace)) {
-                    newToken = location.getParameter().replaceFirst(getSelectedItemPath(location), tokenPartToReplace);
+                    newToken = location.getParameter().replaceFirst(location.getNodePath(), tokenPartToReplace);
                 }
                 break;
             case VIEW :
@@ -333,6 +246,11 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
         return newToken == null? location.getParameter() : newToken;
     }
 
+    @Override
+    public ContentLocation getCurrentLocation() {
+        return (ContentLocation) super.getCurrentLocation();
+    }
+
     /*
      * Registers general purpose handlers for the following events:
      * <ul>
@@ -347,7 +265,7 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
 
             @Override
             public void onItemSelected(ItemSelectedEvent event) {
-                currentLocation = createLocation(event.getPath(), currentLocation, TokenElementType.PATH);
+                currentLocation = createLocation(event.getPath(), getCurrentLocation(), TokenElementType.PATH);
                 appContext.setSubAppLocation(subApp, currentLocation);
                 updateActionbar(actionbar);
             }
@@ -357,7 +275,7 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
 
             @Override
             public void onViewChanged(ViewTypeChangedEvent event) {
-                currentLocation = createLocation(event.getViewType().getText(), currentLocation, TokenElementType.VIEW);
+                currentLocation = createLocation(event.getViewType().getText(), getCurrentLocation(), TokenElementType.VIEW);
                 appContext.setSubAppLocation(subApp, currentLocation);
                 updateActionbar(actionbar);
             }
@@ -367,7 +285,7 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
 
             @Override
             public void onSearch(SearchEvent event) {
-                currentLocation = createLocation(event.getSearchExpression(), currentLocation, TokenElementType.QUERY);
+                currentLocation = createLocation(event.getSearchExpression(), getCurrentLocation(), TokenElementType.QUERY);
                 appContext.setSubAppLocation(subApp, currentLocation);
                 updateActionbar(actionbar);
             }

@@ -51,7 +51,7 @@ import java.util.List;
 public abstract class AbstractSubApp implements SubApp {
 
 
-    protected DefaultLocation currentLocation;
+    protected Location currentLocation;
 
     private final AppContext appContext;
     private final EventBus subAppEventBus;
@@ -72,7 +72,7 @@ public abstract class AbstractSubApp implements SubApp {
 
     @Override
     public View start(Location location) {
-        currentLocation = (DefaultLocation)location;
+        currentLocation = location;
         onSubAppStart();
         return view;
     }
@@ -82,19 +82,15 @@ public abstract class AbstractSubApp implements SubApp {
      * @return <code>true</code> if subapp id is <code>main</code>.
      */
     public final boolean supportsLocation(Location location) {
-        List<String> parts = parseLocationToken(location);
-        return parts.size() >= 1 && subAppId.equals(parts.get(0));
+        DefaultLocation l = (DefaultLocation) location;
+        return subAppId.equals(l.getSubAppId());
     }
 
     /**
      * Creates a default location for the current subapp whose token has the form <code>main:/:tree</code>.
      */
     public final DefaultLocation createLocation() {
-        return new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, getAppName(), "", getDefaultToken());
-    }
-
-    public String getDefaultToken() {
-        return getSubAppId() +":/:" + "tree";
+        return new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, getAppName(), getSubAppId(), "");
     }
 
     /**
@@ -170,7 +166,7 @@ public abstract class AbstractSubApp implements SubApp {
         return getAppContext().getAppDescriptor().getLabel();
     }
 
-    protected final DefaultLocation getCurrentLocation() {
+    protected Location getCurrentLocation() {
         return currentLocation;
     }
 
