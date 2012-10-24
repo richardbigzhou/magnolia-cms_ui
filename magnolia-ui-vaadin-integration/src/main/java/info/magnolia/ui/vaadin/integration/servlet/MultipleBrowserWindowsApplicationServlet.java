@@ -56,22 +56,27 @@ import com.vaadin.terminal.gwt.server.AbstractApplicationServlet;
 import com.vaadin.terminal.gwt.server.CommunicationManager;
 import com.vaadin.ui.Window;
 
+
 /**
- * Vaadin ApplicationServlet that supports running a unique Application per browser window. The applications are
- * identified in the URIs used by UIDL requests and file downloads. The browser keeps track of which application is
- * being used for the browser window (or tab) using the document.name property.
+ * Vaadin ApplicationServlet that supports running a unique Application per browser window. The
+ * applications are identified in the URIs used by UIDL requests and file downloads. The browser
+ * keeps track of which application is being used for the browser window (or tab) using the
+ * document.name property.
  */
 public class MultipleBrowserWindowsApplicationServlet extends MagnoliaIcePushServlet {
 
     private static final String ATTRIBUTE_APPLICATION_ID = MultipleBrowserWindowsApplicationServlet.class.getName() + ".applicationId";
+
     private static final String ATTRIBUTE_FORCE_APPLICATION_ID = MultipleBrowserWindowsApplicationServlet.class.getName() + ".forceApplicationId";
 
-    private Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private String caption;
+
     private String theme;
 
-    // Implementations of Window and Application that are used only to provide the kick start page with the details it
+    // Implementations of Window and Application that are used only to provide the kick start page
+    // with the details it
     // needs. They're reused between requests too reduce overhead.
     private final Window kickStartWindow = new Window() {
 
@@ -113,8 +118,10 @@ public class MultipleBrowserWindowsApplicationServlet extends MagnoliaIcePushSer
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        // For normal requests (not ajax, not file upload, etc) we serve the browser a customized kick start page. If
-        // there's an application id in the uri then we let it pass through because it's probably a request for
+        // For normal requests (not ajax, not file upload, etc) we serve the browser a customized
+        // kick start page. If
+        // there's an application id in the uri then we let it pass through because it's probably a
+        // request for
         // downloading an application resource.
         if (getRequestType(request) == RequestType.OTHER && getApplicationIdFromRequestPath(request) == null) {
 
@@ -123,7 +130,8 @@ public class MultipleBrowserWindowsApplicationServlet extends MagnoliaIcePushSer
 
             logger.debug("Suggesting application id: " + applicationId + " for request to " + request.getRequestURI());
 
-            // If the 'restartApplication' parameter is present we force the client to start using this application id
+            // If the 'restartApplication' parameter is present we force the client to start using
+            // this application id
             boolean forceApplicationId = request.getParameter("restartApplication") != null;
 
             writeCustomAjaxPage(request, response, applicationId, forceApplicationId);
@@ -138,7 +146,8 @@ public class MultipleBrowserWindowsApplicationServlet extends MagnoliaIcePushSer
 
     private void writeCustomAjaxPage(HttpServletRequest request, HttpServletResponse response, String applicationId, boolean forceApplicationId) throws IOException, ServletException {
 
-        // Set the arguments as request attributes so they can be found later on when writing the custom script
+        // Set the arguments as request attributes so they can be found later on when writing the
+        // custom script
         request.setAttribute(ATTRIBUTE_APPLICATION_ID, applicationId);
         request.setAttribute(ATTRIBUTE_FORCE_APPLICATION_ID, forceApplicationId);
 
@@ -146,15 +155,16 @@ public class MultipleBrowserWindowsApplicationServlet extends MagnoliaIcePushSer
     }
 
     @Override
-    protected void writeAjaxPageHtmlVaadinScripts(Window window, String themeName, Application application, BufferedWriter page, String appUrl, String themeUri, String appId, HttpServletRequest request) throws ServletException, IOException {
+    protected void writeAjaxPageHtmlVaadinScripts(Window window, String themeName, Application application, BufferedWriter page, String appUrl,
+        String themeUri, String appId, HttpServletRequest request) throws ServletException, IOException {
         super.writeAjaxPageHtmlVaadinScripts(window, themeName, application, page, appUrl, themeUri, appId, request);
 
         String applicationId = (String) request.getAttribute(ATTRIBUTE_APPLICATION_ID);
         boolean forceApplicationId = (Boolean) request.getAttribute(ATTRIBUTE_FORCE_APPLICATION_ID);
-        
+
         page.write("<script type=\"text/javascript\">\n");
         page.write("//<![CDATA[\n");
-        page.write("document.write(\"<script language='javascript' src='../VAADIN/js/jquery-1.7.1.js'><\\/script>\");\n");
+        page.write("document.write(\"<script language='javascript' src='../VAADIN/js/jquery-1.7.2.min.js'><\\/script>\");\n");
         page.write("document.write(\"<script language='javascript' src='../VAADIN/js/jquery.transition.js'><\\/script>\");\n");
         if (forceApplicationId) {
             page.write("  window.name = \"" + applicationId + "\";\n");
@@ -170,7 +180,7 @@ public class MultipleBrowserWindowsApplicationServlet extends MagnoliaIcePushSer
 
     @Override
     protected void writeAjaxPageHtmlHeader(BufferedWriter page, String title, String themeUri, HttpServletRequest request)
-            throws IOException {
+        throws IOException {
         super.writeAjaxPageHtmlHeader(page, title, themeUri, request);
         page.write("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no\" />");
 
@@ -191,7 +201,7 @@ public class MultipleBrowserWindowsApplicationServlet extends MagnoliaIcePushSer
         page.write("document.write(\"<script language='javascript' src='../VAADIN/js/conditional-css-include.js'><\\/script>\");\n");
         page.write("//]]>\n</script>\n");
     }
-    
+
     @Override
     protected URL getApplicationUrl(HttpServletRequest request) throws MalformedURLException {
 
@@ -202,13 +212,13 @@ public class MultipleBrowserWindowsApplicationServlet extends MagnoliaIcePushSer
         }
 
         final URL reqURL = new URL(
-                (request.isSecure() ? "https://" : "http://")
-                        + request.getServerName()
-                        + ((request.isSecure() && request.getServerPort() == 443)
-                        || (!request.isSecure() && request
+            (request.isSecure() ? "https://" : "http://")
+                + request.getServerName()
+                + ((request.isSecure() && request.getServerPort() == 443)
+                    || (!request.isSecure() && request
                         .getServerPort() == 80) ? "" : ":"
-                        + request.getServerPort())
-                        + path);
+                    + request.getServerPort())
+                + path);
         return reqURL;
     }
 
@@ -258,10 +268,13 @@ public class MultipleBrowserWindowsApplicationServlet extends MagnoliaIcePushSer
         }
 
         @Override
-        public void handleUidlRequest(HttpServletRequest request, HttpServletResponse response, AbstractApplicationServlet applicationServlet, Window window) throws IOException, ServletException, InvalidUIDLSecurityKeyException {
+        public void handleUidlRequest(HttpServletRequest request, HttpServletResponse response, AbstractApplicationServlet applicationServlet,
+            Window window) throws IOException, ServletException, InvalidUIDLSecurityKeyException {
 
-            // Terminal is normally set on the first request after starting the application and before serving the kick
-            // start page. Because we don't go down that code path for the first request we need to do it here so it
+            // Terminal is normally set on the first request after starting the application and
+            // before serving the kick
+            // start page. Because we don't go down that code path for the first request we need to
+            // do it here so it
             // happens on the first UIDL request.
             if (window.getTerminal() == null) {
                 window.setTerminal(MultipleBrowserWindowsApplicationServlet.this.getApplicationContext(request.getSession()).getBrowser());
@@ -283,8 +296,10 @@ public class MultipleBrowserWindowsApplicationServlet extends MagnoliaIcePushSer
                 @Override
                 public String getRequestPathInfo(Request request) {
 
-                    // We override the behavior here to return the part of the request uri after the application id,
-                    // otherwise it would have returned it with the application id and the resource would not be found.
+                    // We override the behavior here to return the part of the request uri after the
+                    // application id,
+                    // otherwise it would have returned it with the application id and the resource
+                    // would not be found.
                     return getPathAfterApplicationId((HttpServletRequest) request.getWrappedRequest());
                 }
 
@@ -304,7 +319,9 @@ public class MultipleBrowserWindowsApplicationServlet extends MagnoliaIcePushSer
     private static final String DEFAULT_CHARACTER_ENCODING = "ISO-8859-1";
 
     private static final String INCLUDE_REQUEST_URI_ATTRIBUTE = "javax.servlet.include.request_uri";
+
     private static final String INCLUDE_CONTEXT_PATH_ATTRIBUTE = "javax.servlet.include.context_path";
+
     private static final String INCLUDE_SERVLET_PATH_ATTRIBUTE = "javax.servlet.include.servlet_path";
 
     /**
@@ -329,8 +346,8 @@ public class MultipleBrowserWindowsApplicationServlet extends MagnoliaIcePushSer
     }
 
     /**
-     * Returns the request uri for the request. If the request is an include it will return the uri being included. The
-     * returned uri is not decoded.
+     * Returns the request uri for the request. If the request is an include it will return the uri
+     * being included. The returned uri is not decoded.
      */
     private String getRequestUri(HttpServletRequest request) {
         if (request.getAttribute(INCLUDE_REQUEST_URI_ATTRIBUTE) != null) {
@@ -340,9 +357,9 @@ public class MultipleBrowserWindowsApplicationServlet extends MagnoliaIcePushSer
     }
 
     /**
-     * The servlet container is supposed to not include the part of the request uri following a semicolon but some
-     * containers (Jetty) leaves it in. This method removes it if it's there.
-     *
+     * The servlet container is supposed to not include the part of the request uri following a
+     * semicolon but some containers (Jetty) leaves it in. This method removes it if it's there.
+     * 
      * @param uri a decoded request uri
      */
     private static String cleanRequestUri(String uri) {
@@ -354,8 +371,8 @@ public class MultipleBrowserWindowsApplicationServlet extends MagnoliaIcePushSer
     }
 
     /**
-     * Returns the decoded context path or empty if running as the root context. The context path always starts with a
-     * slash and never ends with a trailing slash.
+     * Returns the decoded context path or empty if running as the root context. The context path
+     * always starts with a slash and never ends with a trailing slash.
      */
     private String getContextPath(HttpServletRequest request) {
         String contextPath = (String) request.getAttribute(INCLUDE_CONTEXT_PATH_ATTRIBUTE);
@@ -370,8 +387,8 @@ public class MultipleBrowserWindowsApplicationServlet extends MagnoliaIcePushSer
     }
 
     /**
-     * Returns the part of the request uri used to match the servlet being called. The servlet path has already been
-     * decoded by the servlet container.
+     * Returns the part of the request uri used to match the servlet being called. The servlet path
+     * has already been decoded by the servlet container.
      */
     private String getServletPath(HttpServletRequest request) {
         String servletPath = (String) request.getAttribute(INCLUDE_SERVLET_PATH_ATTRIBUTE);
