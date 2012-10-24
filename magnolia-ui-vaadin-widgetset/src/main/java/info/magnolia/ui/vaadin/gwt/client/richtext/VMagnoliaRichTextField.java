@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.widget.client;
+package info.magnolia.ui.vaadin.gwt.client.richtext;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -135,10 +135,10 @@ public class VMagnoliaRichTextField extends VCKEditorTextField implements VMagno
     /*-{
 
         var createdEvent = function(e) {
-            var listenerInstanceId = listener.@info.magnolia.ui.vaadin.integration.widget.client.VMagnoliaRichTextField::getPaintableId()();
+            var listenerInstanceId = listener.@info.magnolia.ui.vaadin.gwt.client.richtext.VMagnoliaRichTextField::getPaintableId()();
             var editorInstanceId = e.editor.element.getId();
             if(listenerInstanceId == editorInstanceId) {
-                listener.@info.magnolia.ui.vaadin.integration.widget.client.VMagnoliaRichTextField::setEditor(Lcom/google/gwt/core/client/JavaScriptObject;)(e.editor);
+                listener.@info.magnolia.ui.vaadin.gwt.client.richtext.VMagnoliaRichTextField::setEditor(Lcom/google/gwt/core/client/JavaScriptObject;)(e.editor);
             }
         };
 

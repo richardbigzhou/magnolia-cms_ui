@@ -14,6 +14,7 @@
     <inherits name='com.googlecode.mgwt.ui.UI' />
 
     <inherits name="com.google.gwt.json.JSON" />
+    <inherits name='org.vaadin.openesignforms.ckeditor.widgetset.VaadinCKEditorWidgetset' />
 
      <!-- gecko handles Iframe loading and DOMContentLoaded event correctly-->
     <replace-with class="info.magnolia.ui.vaadin.gwt.client.editor.jsni.GenericFrameEventHandler">

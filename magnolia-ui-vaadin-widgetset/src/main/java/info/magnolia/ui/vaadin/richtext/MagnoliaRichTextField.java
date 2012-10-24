@@ -31,13 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.widget;
+package info.magnolia.ui.vaadin.richtext;
+
+import info.magnolia.ui.vaadin.gwt.client.richtext.VMagnoliaRichTextField;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import info.magnolia.ui.vaadin.integration.widget.client.VMagnoliaRichTextField;
 
 import org.vaadin.openesignforms.ckeditor.CKEditorTextField;
 import org.vaadin.openesignforms.ckeditor.widgetset.client.ui.VCKEditorTextField;
@@ -51,7 +52,7 @@ import com.vaadin.terminal.PaintTarget;
  * custom events between CKEditor plugins and server.
  */
 @com.vaadin.ui.ClientWidget(VMagnoliaRichTextField.class)
-public class MagnoliaRichTextField extends CKEditorTextField{
+public class MagnoliaRichTextField extends CKEditorTextField {
 
     private static final long serialVersionUID = -5194325714251243359L;
     

@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.widget;
+package info.magnolia.ui.vaadin.richtext;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.widget.client;
+package info.magnolia.ui.vaadin.gwt.client.richtext;
 
 import org.vaadin.openesignforms.ckeditor.widgetset.client.ui.CKEditor;
 
@@ -44,7 +44,7 @@ public class VMagnoliaRichTextEditor extends CKEditor {
     
     public final native void addListener(final Listener listener, final String eventName) /*-{
         this.on( eventName, function( ev ) {
-            ev.listenerData.@info.magnolia.ui.vaadin.integration.widget.client.VMagnoliaRichTextEditor.Listener::onPluginEvent(Ljava/lang/String;Ljava/lang/String;)(eventName, ev.data);
+            ev.listenerData.@info.magnolia.ui.vaadin.gwt.client.richtext.VMagnoliaRichTextEditor.Listener::onPluginEvent(Ljava/lang/String;Ljava/lang/String;)(eventName, ev.data);
         }, null, listener);
     }-*/;
     

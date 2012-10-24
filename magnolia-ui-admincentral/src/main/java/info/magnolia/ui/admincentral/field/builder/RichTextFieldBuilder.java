@@ -48,9 +48,9 @@ import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.model.field.definition.RichTextFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
-import info.magnolia.ui.vaadin.integration.widget.MagnoliaRichTextField;
-import info.magnolia.ui.vaadin.integration.widget.MagnoliaRichTextFieldConfig;
-import info.magnolia.ui.vaadin.integration.widget.MagnoliaRichTextFieldConfig.ToolbarGroup;
+import info.magnolia.ui.vaadin.richtext.MagnoliaRichTextField;
+import info.magnolia.ui.vaadin.richtext.MagnoliaRichTextFieldConfig;
+import info.magnolia.ui.vaadin.richtext.MagnoliaRichTextFieldConfig.ToolbarGroup;
 
 import com.google.inject.Inject;
 import com.vaadin.data.Item;
