@@ -36,7 +36,6 @@ package info.magnolia.ui.admincentral.column;
 import info.magnolia.cms.core.MetaData;
 import info.magnolia.jcr.util.MetaDataUtil;
 import info.magnolia.ui.model.column.definition.StatusColumnDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
 import javax.inject.Inject;
 import javax.jcr.Item;
@@ -62,9 +61,7 @@ public class StatusColumnFormatter extends AbstractColumnFormatter<StatusColumnD
 
     @Override
     public Object generateCell(Table source, Object itemId, Object columnId) {
-
-        final JcrItemAdapter item = (JcrItemAdapter)source.getItem(itemId);
-        Item jcrItem = item.getJcrItem();
+        final Item jcrItem = getJcrItem(source, itemId);
         if(jcrItem != null && jcrItem.isNode()) {
             Node node = (Node) jcrItem;
             Integer status;
@@ -96,9 +93,6 @@ public class StatusColumnFormatter extends AbstractColumnFormatter<StatusColumnD
                     permissionStatus = new Label();
                     permissionStatus.setSizeUndefined();
                     permissionStatus.setStyleName("icon-edit");
-                    // TODO dlipp: verify, this shows the same behavior as old Content-API based
-                    // implementation:
-                    // if (permissions && !node.isGranted(info.magnolia.cms.security.Permission.WRITE))
                     node.getSession().checkPermission(node.getPath(), Session.ACTION_SET_PROPERTY);
                     permissionStatus.addStyleName("color-blue");
                 }
