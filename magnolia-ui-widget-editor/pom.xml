@@ -31,18 +31,33 @@
           </archive>
         </configuration>
       </plugin>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-resources</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+              <resources>
+                  <resource>
+                    <directory>src/main/java</directory>
+                    <includes>
+                      <!-- include sources -->
+                      <include>**/*.java</include>
+                      <!-- include widgetset -->
+                      <include>**/*.gwt.xml</include>
+                    </includes>
+                  </resource>
+             </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
-     <resources>
-      <resource>
-        <directory>src/main/java</directory>
-        <includes>
-          <!-- include sources -->
-          <include>**/*.java</include>
-          <!-- include widgetsets -->
-          <include>**/*.gwt.xml</include>
-        </includes>
-      </resource>
-    </resources>
   </build>
   <dependencies>
      <dependency>

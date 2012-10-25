@@ -221,7 +221,7 @@
 
   <profiles>
     <profile>
-      <id>generate-rebel-xml</id>
+      <id>jrebel</id>
       <build>
         <plugins>
           <plugin>

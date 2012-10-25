@@ -37,7 +37,7 @@
         <version>${gwtVersion}</version>
         <configuration>
           <!-- put the created resources on the classpath -->
-          <webappDirectory>target/classes/VAADIN/widgetsets</webappDirectory>
+          <webappDirectory>${project.build.outputDirectory}/VAADIN/widgetsets</webappDirectory>
           <warSourceDirectory>src/main/resources/VAADIN/widgetsets</warSourceDirectory>
           <inplace>${inplace}</inplace>
           <!-- this is not a webapp -->
