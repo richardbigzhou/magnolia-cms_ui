@@ -195,10 +195,12 @@
                 <!-- Rename patched VScrollTable.java -->
                 <configuration>
                   <source>
+                    import java.io.File
+
                     def path = "${project.build.sourceDirectory}/com/vaadin/terminal/gwt/client/ui/"
                     //println "path is $path"
-                    def originalFile = new java.io.File(path + "VScrollTable.java")
-                    def renamedFile = new java.io.File(path + "VScrollTablePatched.java")
+                    def originalFile = new File(path + "VScrollTable.java")
+                    def renamedFile = new File(path + "VScrollTablePatched.java")
                     println "Renaming ${originalFile.name} to ${renamedFile.name}..."
                     originalFile.renameTo(renamedFile)
                   </source>

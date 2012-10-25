@@ -31,14 +31,6 @@
           </archive>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.zeroturnaround</groupId>
-        <artifactId>jrebel-maven-plugin</artifactId>
-        <configuration>
-          <relativePath>../${basedir}</relativePath>
-          <rootPath>$${admincentral.root}</rootPath>
-        </configuration>
-      </plugin>
     </plugins>
      <resources>
       <resource>

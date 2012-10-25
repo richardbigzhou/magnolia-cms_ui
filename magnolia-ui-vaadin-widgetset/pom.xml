@@ -21,6 +21,11 @@
       <artifactId>magnolia-ui-widget-editor</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <!-- explicit dep on gwt-user is needed else we get lots of skipped invalid unit errors during gwt compilation-->
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-user</artifactId>
+     </dependency>
   </dependencies>
 
   <build>
