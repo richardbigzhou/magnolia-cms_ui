@@ -61,6 +61,7 @@ public class StatusColumnFormatter extends AbstractColumnFormatter<StatusColumnD
 
     @Override
     public Object generateCell(Table source, Object itemId, Object columnId) {
+
         final Item jcrItem = getJcrItem(source, itemId);
         if(jcrItem != null && jcrItem.isNode()) {
             Node node = (Node) jcrItem;
@@ -93,6 +94,9 @@ public class StatusColumnFormatter extends AbstractColumnFormatter<StatusColumnD
                     permissionStatus = new Label();
                     permissionStatus.setSizeUndefined();
                     permissionStatus.setStyleName("icon-edit");
+                    // TODO dlipp: verify, this shows the same behavior as old Content-API based
+                    // implementation:
+                    // if (permissions && !node.isGranted(info.magnolia.cms.security.Permission.WRITE))
                     node.getSession().checkPermission(node.getPath(), Session.ACTION_SET_PROPERTY);
                     permissionStatus.addStyleName("color-blue");
                 }

@@ -130,8 +130,9 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
         return columns.values();
     }
 
+
     public void addColumn(ColumnDefinition treeColumn) {
-        columns.put(treeColumn.getName(), treeColumn);
+        columns.put(treeColumn.getLabel(), treeColumn);
     }
 
     @Override
