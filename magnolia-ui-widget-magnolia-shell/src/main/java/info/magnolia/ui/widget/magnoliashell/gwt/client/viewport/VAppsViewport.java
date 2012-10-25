@@ -89,7 +89,7 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
         public void onClick(ClickEvent event) {
             final Element target = (Element) event.getNativeEvent().getEventTarget().cast();
             if (target.getClassName().contains(CLOSE_CLASSNAME)) {
-                // setClosingWidget(true);
+                setClosing(true);
                 getEventBus().fireEvent(new ViewportCloseEvent(VMagnoliaShell.ViewportType.APP_VIEWPORT));
             }
         }
@@ -106,12 +106,27 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
     }
 
     @Override
+    public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
+        super.updateFromUIDL(uidl, client);
+        if (RootPanel.get().getWidgetIndex(preloader) >= 0) {
+            new Timer() {
+
+                @Override
+                public void run() {
+                    RootPanel.get().remove(preloader);
+                }
+            }.schedule(500);
+        }
+    }
+
+    /* CURTAIN INTEGRATION */
+
+    @Override
     public void doSetActive(boolean active) {
         if (active) {
             setCurtainVisible(false);
         } else {
-            boolean hasChildren = getChildren().size() > 0;
-            if (hasChildren) {
+            if (hasChildren()) {
                 setCurtainVisible(true);
             }
         }
@@ -142,29 +157,36 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
         }
     }
 
-    // @Override
-    // protected void setClosingWidget(boolean closingWidget) {
-    // if (!closingWidget) {
-    // // setViewportHideAnimationDelegate(null);
-    // // setContentHideAnimationDelegate(null);
-    // } else {
-    // // setContentHideAnimationDelegate(AnimationDelegate.ZOOMING_DELEGATE);
-    // }
-    // super.setClosingWidget(closingWidget);
-    // }
+    private boolean hasChildren() {
+        return getWidgetCount() - (isClosing() ? 1 : 0) > 0;
+    }
+
+    /* APP CLOSING */
 
     @Override
-    public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
-        super.updateFromUIDL(uidl, client);
-        if (RootPanel.get().getWidgetIndex(preloader) >= 0) {
-            new Timer() {
-
-                @Override
-                public void run() {
-                    RootPanel.get().remove(preloader);
-                }
-            }.schedule(500);
+    void doSetVisibleApp(Widget w) {
+        if (getVisibleApp() != null) {
+            // do not hide app if closing
+            if (!isClosing()) {
+                getVisibleApp().setVisible(false);
+            }
         }
+        w.setVisible(true);
+    }
+
+    @Override
+    protected void removeWidget(final Widget w) {
+        if (getTransitionDelegate() != null) {
+            ((AppsTransitionDelegate) getTransitionDelegate()).removeWidget(this, w);
+        } else {
+            doRemoveWidget(w);
+        }
+    }
+
+    @Override
+    void doRemoveWidget(Widget w) {
+        super.doRemoveWidget(w);
+        setClosing(false);
     }
 
     /* SWIPE GESTURES */
@@ -316,15 +338,15 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
         return addHandler(handler, SwipeEndEvent.getType());
     }
 
-    /* APPENDING CLOSE BUTTON */
+    /* APPEND CLOSE BUTTON */
 
     @Override
     protected void add(Widget child, Element container) {
         super.add(child, container);
-        child.getElement().appendChild(appendCloseButton());
+        child.getElement().appendChild(createCloseButton());
     }
 
-    private Element appendCloseButton() {
+    private Element createCloseButton() {
         final Element closeElement = DOM.createSpan();
         closeElement.setClassName(CLOSE_CLASSNAME);
         // TODO mge: remove this classname when checking the styles
@@ -333,7 +355,7 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
         return closeElement;
     }
 
-    /* SHOW PRELOADER */
+    /* APP PRELOADER */
 
     /**
      * Called when the transition of preloader is finished.

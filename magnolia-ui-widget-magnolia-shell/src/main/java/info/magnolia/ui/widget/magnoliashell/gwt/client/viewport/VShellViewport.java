@@ -67,17 +67,17 @@ public class VShellViewport extends ComplexPanel implements Container, Container
 
     private ApplicationConnection client;
 
-    private boolean closing;
+    private boolean active;
 
-    private Widget visibleApp = null;
+    private Widget visibleApp;
 
     private boolean forceContentAlign;
 
+    private boolean closing;
+
     private EventBus eventBus;
 
-    private boolean active = false;
-
-    private final TouchDelegate delegate = new TouchDelegate(this);
+    private final TouchDelegate touchDelegate = new TouchDelegate(this);
 
     private TransitionDelegate transitionDelegate;
 
@@ -104,7 +104,7 @@ public class VShellViewport extends ComplexPanel implements Container, Container
     // loadingIndicator.addClassName("loading-indicator");
 
     private void bindHandlers() {
-        delegate.addTouchEndHandler(new TouchEndHandler() {
+        touchDelegate.addTouchEndHandler(new TouchEndHandler() {
 
             @Override
             public void onTouchEnd(TouchEndEvent event) {
@@ -132,6 +132,16 @@ public class VShellViewport extends ComplexPanel implements Container, Container
         this.closing = closing;
     }
 
+    public TransitionDelegate getTransitionDelegate() {
+        return transitionDelegate;
+    }
+
+    public void setTransitionDelegate(TransitionDelegate transitionDelegate) {
+        this.transitionDelegate = transitionDelegate;
+    }
+
+    /* VIEWPORT ACTIVATION */
+
     public boolean isActive() {
         return active;
     }
@@ -152,6 +162,8 @@ public class VShellViewport extends ComplexPanel implements Container, Container
             setVisible(false);
         }
     }
+
+    /* CHANGING VISIBLE APP */
 
     public Widget getVisibleApp() {
         return visibleApp;
@@ -175,33 +187,9 @@ public class VShellViewport extends ComplexPanel implements Container, Container
         w.setVisible(true);
     }
 
-    /* SHOW-HIDE VIEWPORT & CURTAIN */
-
-    // getElement().getStyle().setZIndex(Z_INDEX_HI);
-    // getElement().getStyle().clearOpacity();
-    // getElement().getStyle().clearVisibility();
-    // getElement().getStyle().setZIndex(Z_INDEX_LO);
-
-    /* SHOW-HIDE ONE WIDGET INSIDE THE VIEWPORT */
-
-    // w.getElement().getStyle().setVisibility(Visibility.VISIBLE);
-    // w.getElement().getStyle().setZIndex(Z_INDEX_HI);
-    // w.getElement().getStyle().setProperty("opacity", "");
-
-    // w.getElement().getStyle().setVisibility(Visibility.HIDDEN);
-    // w.getElement().getStyle().setZIndex(Z_INDEX_LO);
-
     // public void updateShellAppFromServer() {
     // eventBus.fireEvent(new ShellTransitionCompleteEvent());
     // }
-
-    public TransitionDelegate getTransitionDelegate() {
-        return transitionDelegate;
-    }
-
-    public void setTransitionDelegate(TransitionDelegate transitionDelegate) {
-        this.transitionDelegate = transitionDelegate;
-    }
 
     @Override
     public void updateFromUIDL(final UIDL uidl, final ApplicationConnection client) {
@@ -241,37 +229,28 @@ public class VShellViewport extends ComplexPanel implements Container, Container
                 if (app != null) {
                     setVisibleApp(app);
                 }
-
             } else {
                 visibleApp = null;
             }
 
             for (Widget w : oldWidgets) {
-                remove(w);
-                if (w instanceof Paintable) {
-                    final Paintable p = (Paintable) w;
-                    client.unregisterPaintable(p);
-                }
+                removeWidget(w);
             }
-            // for (final Widget paintable : oldWidgets) {
-            // client.unregisterPaintable(paintable);
-            // if (closingWidget && formerWidget == paintable) {
-            // new Timer() {
-            //
-            // @Override
-            // public void run() {
-            // remove((Widget) paintable);
-            // setClosingWidget(false);
-            // }
-            // }.schedule(500);
-            // } else {
-            // remove((Widget) paintable);
-            // }
-            // }
         }
 
         // loadingPane.hide();
         // hideLoadingIndicator();
+    }
+
+    protected void removeWidget(Widget w) {
+        doRemoveWidget(w);
+    }
+
+    void doRemoveWidget(Widget w) {
+        remove(w);
+        if (w instanceof Paintable) {
+            client.unregisterPaintable((Paintable) w);
+        }
     }
 
     private void alignChild(Widget w) {
@@ -314,10 +293,6 @@ public class VShellViewport extends ComplexPanel implements Container, Container
     public void setForceContentAlign(boolean forceContentAlign) {
         this.forceContentAlign = forceContentAlign;
     }
-
-    // public boolean hasContent() {
-    // return getWidgetCount() - (closingWidget ? 1 : 0) > 0;
-    // }
 
     @Override
     public void iLayout() {

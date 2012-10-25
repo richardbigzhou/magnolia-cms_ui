@@ -41,6 +41,7 @@ import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.TransitionDeleg
 
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.Widget;
 
 
 /**
@@ -84,6 +85,19 @@ class AppsTransitionDelegate extends BaseTransitionDelegate {
             }.schedule(CURTAIN_FADE_OUT_DELAY);
         }
         return callbacks;
+    }
+
+    public void removeWidget(final VAppsViewport viewport, final Widget w) {
+        // if (closingWidget && formerWidget == paintable) {
+        w.addStyleName("zoom-out");
+        new Timer() {
+
+            @Override
+            public void run() {
+                viewport.doRemoveWidget(w);
+                viewport.setClosing(false);
+            }
+        }.schedule(1000);
     }
 
     /**

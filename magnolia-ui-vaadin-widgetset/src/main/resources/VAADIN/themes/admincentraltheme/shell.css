@@ -189,14 +189,14 @@ button.action-close {
 	z-index:300 !important;
 
     -moz-animation-duration: 0.5s;
-    /*-moz-animation-timing-function: ease-out;*/
     -moz-animation-name: zoom-out;
     -moz-transform:scale(0);
+/*     -moz-animation-timing-function: ease-out; */
 
     -webkit-animation-duration: 0.5s;
-    /*-webkit-animation-timing-function: ease-out;*/
     -webkit-animation-name: zoom-out;
     -webkit-transform:scale(0);
+    /*-webkit-animation-timing-function: ease-out;*/
 }
 
 .zoom-in {
