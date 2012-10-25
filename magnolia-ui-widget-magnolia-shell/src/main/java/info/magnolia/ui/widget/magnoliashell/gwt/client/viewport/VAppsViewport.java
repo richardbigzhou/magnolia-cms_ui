@@ -231,7 +231,8 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
                                     query.setCss("left", "");
                                     query.setCss("opacity", "0");
                                     query.setCss("visibility", "hidden");
-                                    setVisibleApp(newVisibleWidget);
+                                    // do not trigger transitions
+                                    doSetVisibleApp(newVisibleWidget);
                                     dropZIndeces();
                                 }
                             }));

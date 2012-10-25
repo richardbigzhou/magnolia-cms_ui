@@ -58,6 +58,29 @@ class AppsTransitionDelegate extends BaseTransitionDelegate {
 
     private static final int CURTAIN_FADE_OUT_DELAY = 200;
 
+    @Override
+    public Callbacks setVisibleApp(VShellViewport viewport, final Widget app) {
+
+        // zoom-in if switching to a different running app, from appslauncher only
+        // closing an app doesn't zoom-in the next app
+        // running apps are all hidden explicitely except current one
+        if (!viewport.isClosing() && !app.isVisible()) {
+            viewport.doSetVisibleApp(app);
+            app.addStyleName("zoom-in");
+            new Timer() {
+
+                @Override
+                public void run() {
+                    app.removeStyleName("zoom-in");
+                }
+            }.schedule(500);
+        } else {
+            viewport.doSetVisibleApp(app);
+        }
+
+        return null;
+    }
+
     public Callbacks setCurtainVisible(final VAppsViewport viewport, boolean visible) {
         final Callbacks callbacks = Callbacks.create();
         final Element curtain = viewport.getCurtain();
@@ -97,7 +120,7 @@ class AppsTransitionDelegate extends BaseTransitionDelegate {
                 viewport.doRemoveWidget(w);
                 viewport.setClosing(false);
             }
-        }.schedule(1000);
+        }.schedule(500);
     }
 
     /**
