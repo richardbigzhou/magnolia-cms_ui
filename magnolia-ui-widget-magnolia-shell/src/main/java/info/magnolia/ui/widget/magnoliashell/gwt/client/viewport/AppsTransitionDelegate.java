@@ -33,8 +33,14 @@
  */
 package info.magnolia.ui.widget.magnoliashell.gwt.client.viewport;
 
+import info.magnolia.ui.widget.jquerywrapper.gwt.client.AnimationSettings;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.Callbacks;
+import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryCallback;
+import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.TransitionDelegate.BaseTransitionDelegate;
+
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Timer;
 
 
 /**
@@ -43,16 +49,106 @@ import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.TransitionDeleg
  */
 class AppsTransitionDelegate extends BaseTransitionDelegate {
 
+    private static final double CURTAIN_ALPHA = 0.9;
+
+    private static final int CURTAIN_FADE_IN_DURATION = 500;
+
+    private static final int CURTAIN_FADE_OUT_DURATION = 400;
+
+    private static final int CURTAIN_FADE_OUT_DELAY = 200;
+
+    public Callbacks setCurtainVisible(final VAppsViewport viewport, boolean visible) {
+        final Callbacks callbacks = Callbacks.create();
+        final Element curtain = viewport.getCurtain();
+
+        if (visible) {
+            // show curtain immediately
+            viewport.doSetCurtainVisible(visible);
+            fadeIn(curtain);
+        } else {
+            // fade out after 200ms then remove curtain
+            new Timer() {
+
+                @Override
+                public void run() {
+                    Callbacks fadeOutCallback = fadeOut(curtain);
+                    fadeOutCallback.add(new JQueryCallback() {
+
+                        @Override
+                        public void execute(JQueryWrapper jq) {
+                            viewport.doSetCurtainVisible(false);
+                            callbacks.fire();
+                        }
+                    });
+                }
+            }.schedule(CURTAIN_FADE_OUT_DELAY);
+        }
+        return callbacks;
+    }
+
     /**
-     * Slides down if active, fades out if inactive - expect if the viewport is closing.
+     * FADE IN TRANSITION
+     * 
+     * @param el the curtain element
+     * @return the jquery callbacks
      */
-    @Override
-    public Callbacks setActive(final VShellViewport viewport, boolean active) {
-        Callbacks callbacks = null;
-        // if (active) {
-        // viewport.
-        // } else {
-        // }
+    private Callbacks fadeIn(final Element el) {
+        JQueryWrapper jq = JQueryWrapper.select(el);
+
+        // init
+        if (jq.is(":animated")) {
+            jq.stop();
+        } else {
+            el.getStyle().setOpacity(0);
+        }
+
+        // callback
+        final Callbacks callbacks = Callbacks.create();
+        callbacks.add(new JQueryCallback() {
+
+            @Override
+            public void execute(JQueryWrapper query) {
+                el.getStyle().clearOpacity();
+            }
+
+        });
+
+        // animate
+        jq.animate(CURTAIN_FADE_IN_DURATION, new AnimationSettings() {
+
+            {
+                setProperty("opacity", CURTAIN_ALPHA);
+                setCallbacks(callbacks);
+            }
+        });
+        return callbacks;
+    }
+
+    /**
+     * FADE OUT TRANSITION
+     * 
+     * @param el the curtain element
+     * @return the jquery callbacks
+     */
+    private Callbacks fadeOut(final Element el) {
+        JQueryWrapper jq = JQueryWrapper.select(el);
+
+        // init
+        if (jq.is(":animated")) {
+            jq.stop();
+        }
+
+        // callback
+        final Callbacks callbacks = Callbacks.create();
+
+        // animate
+        jq.animate(CURTAIN_FADE_OUT_DURATION, new AnimationSettings() {
+
+            {
+                setProperty("opacity", 0);
+                setCallbacks(callbacks);
+            }
+        });
         return callbacks;
     }
 }

@@ -37,7 +37,6 @@ import info.magnolia.ui.widget.jquerywrapper.gwt.client.AnimationSettings;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.Callbacks;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryCallback;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper;
-import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.TransitionDelegate.BaseTransitionDelegate;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
@@ -50,7 +49,7 @@ import com.google.gwt.user.client.ui.Widget;
  * because it might animate other CSS properties and can then result in CSS3 transitions through the
  * jquery.transition.js plugin.
  */
-class ShellAppsTransitionDelegate extends BaseTransitionDelegate {
+class ShellAppsTransitionDelegate implements TransitionDelegate {
 
     private final static int SLIDE_DURATION = 600;
 
@@ -61,7 +60,7 @@ class ShellAppsTransitionDelegate extends BaseTransitionDelegate {
     private final static int ALPHA_MAX = 1;
 
     /**
-     * Slides down if active, fades out if inactive - expect if the viewport is closing.
+     * Slides down if active, fades out if inactive - except if the viewport is closing.
      */
     @Override
     public Callbacks setActive(final VShellViewport viewport, boolean active) {
@@ -98,8 +97,7 @@ class ShellAppsTransitionDelegate extends BaseTransitionDelegate {
         Callbacks callbacks = null;
         if (viewport.getVisibleApp() == null || !viewport.isActive()) {
             // do not fade if first widget or viewport not active yet
-            bypass = true;
-            viewport.setVisibleApp(app);
+            viewport.doSetVisibleApp(app);
         } else {
             fadeOut(viewport.getVisibleApp());
             callbacks = fadeIn(app);

@@ -137,16 +137,20 @@ public class VShellViewport extends ComplexPanel implements Container, Container
     }
 
     public void setActive(boolean active) {
-        if (transitionDelegate != null && !transitionDelegate.bypass()) {
+        if (transitionDelegate != null) {
             transitionDelegate.setActive(this, active);
         } else {
-            if (active) {
-                setVisible(true);
-            } else {
-                setVisible(false);
-            }
+            doSetActive(active);
         }
         this.active = active;
+    }
+
+    void doSetActive(boolean active) {
+        if (active) {
+            setVisible(true);
+        } else {
+            setVisible(false);
+        }
     }
 
     public Widget getVisibleApp() {
@@ -155,16 +159,20 @@ public class VShellViewport extends ComplexPanel implements Container, Container
 
     public void setVisibleApp(Widget w) {
         if (w != visibleApp) {
-            if (transitionDelegate != null && !transitionDelegate.bypass()) {
+            if (transitionDelegate != null) {
                 transitionDelegate.setVisibleApp(this, w);
             } else {
-                if (visibleApp != null) {
-                    visibleApp.setVisible(false);
-                }
-                w.setVisible(true);
+                doSetVisibleApp(w);
             }
             visibleApp = w;
         }
+    }
+
+    void doSetVisibleApp(Widget w) {
+        if (visibleApp != null) {
+            visibleApp.setVisible(false);
+        }
+        w.setVisible(true);
     }
 
     /* SHOW-HIDE VIEWPORT & CURTAIN */

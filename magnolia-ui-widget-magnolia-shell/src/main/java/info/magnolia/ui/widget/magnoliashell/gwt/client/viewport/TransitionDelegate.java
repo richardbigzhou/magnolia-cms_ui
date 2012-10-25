@@ -48,8 +48,6 @@ interface TransitionDelegate {
 
     Callbacks setVisibleApp(VShellViewport viewport, Widget app);
 
-    boolean bypass();
-
     final static TransitionDelegate SHELL_APPS_TRANSITION_DELEGATE = new ShellAppsTransitionDelegate();
 
     final static TransitionDelegate APPS_TRANSITION_DELEGATE = new AppsTransitionDelegate();
@@ -59,26 +57,16 @@ interface TransitionDelegate {
      */
     static abstract class BaseTransitionDelegate implements TransitionDelegate {
 
-        protected boolean bypass;
-
         @Override
         public Callbacks setActive(VShellViewport viewport, boolean active) {
-            bypass = true;
-            viewport.setActive(active);
+            viewport.doSetActive(active);
             return null;
         }
 
         @Override
         public Callbacks setVisibleApp(VShellViewport viewport, Widget app) {
-            bypass = true;
-            viewport.setVisibleApp(app);
+            viewport.doSetVisibleApp(app);
             return null;
         }
-
-        @Override
-        public boolean bypass() {
-            return bypass && !(bypass = false);
-        }
     };
-
 }

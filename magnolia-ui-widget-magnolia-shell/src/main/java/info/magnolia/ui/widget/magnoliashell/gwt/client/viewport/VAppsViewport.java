@@ -105,28 +105,39 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
         setTransitionDelegate(TransitionDelegate.APPS_TRANSITION_DELEGATE);
     }
 
-    // @Override
-    // public void setActive(boolean active) {
-    // super.setActive(active);
-    // if (active) {
-    // hideCurtain();
-    // } else {
-    // showCurtain();
-    // }
-    // }
+    @Override
+    public void doSetActive(boolean active) {
+        if (active) {
+            setCurtainVisible(false);
+        } else {
+            boolean hasChildren = getChildren().size() > 0;
+            if (hasChildren) {
+                setCurtainVisible(true);
+            }
+        }
+    }
 
-    private Element getCurtain() {
+    public Element getCurtain() {
         if (curtain == null) {
             curtain = DOM.createDiv();
-            curtain.setClassName(getStylePrimaryName() + "-curtain");
+            curtain.setClassName("v-curtain v-curtain-green");
         }
         return curtain;
     }
 
     public void setCurtainVisible(boolean visible) {
-        if (visible) {
-            getElement().appendChild(getCurtain());
+        AppsTransitionDelegate transitionDelegate = (AppsTransitionDelegate) getTransitionDelegate();
+        if (transitionDelegate != null) {
+            transitionDelegate.setCurtainVisible(this, visible);
         } else {
+            doSetCurtainVisible(visible);
+        }
+    }
+
+    void doSetCurtainVisible(boolean visible) {
+        if (visible && getCurtain().getParentElement() != getElement()) {
+            getElement().appendChild(getCurtain());
+        } else if (!visible && getCurtain().getParentElement() == getElement()) {
             getElement().removeChild(getCurtain());
         }
     }

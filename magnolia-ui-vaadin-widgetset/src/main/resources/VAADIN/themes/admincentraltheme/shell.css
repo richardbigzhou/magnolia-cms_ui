@@ -136,9 +136,9 @@ button.action-close {
 
 .v-curtain {
     position:absolute;
-    top:60px;
-    right: 0;
-    bottom: 0;
+    top:0;
+    right:0;
+    bottom:0;
     left:0;
     z-index:200;
 }
@@ -150,7 +150,6 @@ button.action-close {
 }
 
 .v-curtain-black {
-    top:0;
     background-color:#000;
     opacity:0.8;
     filter:alpha(opacity = 80);
