@@ -54,30 +54,29 @@ public abstract class AbstractApp implements App {
 
     @Override
     public void locationChanged(Location location) {
-
-        SubAppDescriptor subAppDescriptor = null;
-
-        String subAppId = getSubAppId(location);
-        subAppDescriptor = getAppDescriptorById(subAppId);
-        if (subAppDescriptor == null) {
-            subAppDescriptor = getDefaultAppDescriptor();
-        }
-        appContext.openSubApp(subAppDescriptor.getName(), subAppDescriptor.getSubAppClass(), location);
-
+        openSubApp(location);
     }
 
-
-        @Override
+    @Override
     public void start(Location location) {
-        SubAppDescriptor subAppDescriptor = null;
+         openSubApp(location);
+    }
 
-        String subAppId = getSubAppId(location);
+    private void openSubApp(Location location) {
+
+        DefaultLocation l = (DefaultLocation) location;
+        String subAppId = l.getSubAppId();
+
+        SubAppDescriptor subAppDescriptor;
+
         subAppDescriptor = getAppDescriptorById(subAppId);
         if (subAppDescriptor == null) {
             subAppDescriptor = getDefaultAppDescriptor();
         }
 
-        appContext.openSubApp(subAppDescriptor.getName(), subAppDescriptor.getSubAppClass(), location);
+        DefaultLocation newLocation = new DefaultLocation(l.getAppType(), l.getAppId(), subAppDescriptor.getName(), l.getParameter());
+
+        appContext.openSubApp(subAppDescriptor.getName(), subAppDescriptor.getSubAppClass(), newLocation);
     }
 
     private SubAppDescriptor getDefaultAppDescriptor() {
@@ -98,10 +97,8 @@ public abstract class AbstractApp implements App {
         return subAppDescriptors.get(subAppId);
     }
 
-    private String getSubAppId(Location location) {
-
-        DefaultLocation l = (DefaultLocation) location;
-        return l.getSubAppId();
+    public AppContext getAppContext() {
+        return appContext;
     }
 
     @Override

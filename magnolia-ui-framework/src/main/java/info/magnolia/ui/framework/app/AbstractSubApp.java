@@ -33,14 +33,9 @@
  */
 package info.magnolia.ui.framework.app;
 
-import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.view.View;
-
-import javax.inject.Named;
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -54,19 +49,17 @@ public abstract class AbstractSubApp implements SubApp {
     protected Location currentLocation;
 
     private final AppContext appContext;
-    private final EventBus subAppEventBus;
     private final View view;
 
     private String subAppId;
     private String appName;
 
-    protected AbstractSubApp(final AppContext appContext, final View view, final @Named("subapp") EventBus subAppEventBus) {
-        if(appContext == null || view == null ||  subAppEventBus == null) {
-            throw new IllegalArgumentException("Constructor does not allow for null args. Found AppContext = " + appContext + ", ContentAppView = " + view + ", EventBus = " + subAppEventBus);
+    protected AbstractSubApp(final AppContext appContext, final View view) {
+        if(appContext == null || view == null) {
+            throw new IllegalArgumentException("Constructor does not allow for null args. Found AppContext = " + appContext + ", ContentAppView = " + view);
         }
         this.appContext = appContext;
         this.view = view;
-        this.subAppEventBus = subAppEventBus;
         this.appName = appContext.getName();
     }
 
@@ -77,13 +70,20 @@ public abstract class AbstractSubApp implements SubApp {
         return view;
     }
 
+    @Override
+    public void locationChanged(Location location) {
+        currentLocation = location;
+    }
 
     /**
-     * @return <code>true</code> if subapp id is <code>main</code>.
+     * This method is being called by the AppController when iterating over opened subApps.
+     * The subApp itself decides whether it supports the current location based on parameters or
+     * whether the appController should launch a new instance of the subApp.
      */
-    public final boolean supportsLocation(Location location) {
-        DefaultLocation l = (DefaultLocation) location;
-        return subAppId.equals(l.getSubAppId());
+
+    @Override
+    public boolean supportsLocation(Location location) {
+        return true;
     }
 
     /**
@@ -94,63 +94,19 @@ public abstract class AbstractSubApp implements SubApp {
     }
 
     /**
-     * Generic Location token handling, format is {@code subAppId;<someParameters> }. Overwrite this method for more handling parameters.
-     */
-
-    public List<String> parseLocationToken(final Location location) {
-
-        ArrayList<String> parts = new ArrayList<String>();
-
-        DefaultLocation l = (DefaultLocation) location;
-        String token = l.getParameter();
-
-        // "subAppId"
-        int i = token.indexOf(';');
-        if (i == -1) {
-            if (!subAppId.equals(token)) {
-                return new ArrayList<String>();
-            }
-            parts.add(token);
-            return parts;
-        }
-
-        String subAppNameFromLocation = token.substring(0, i);
-        if (!subAppId.equals(subAppNameFromLocation)) {
-            return new ArrayList<String>();
-        }
-        parts.add(subAppNameFromLocation);
-        token = token.substring(i + 1);
-
-        // parameters
-        if (token.length() > 0) {
-
-            if ( token.contains(":")) {
-                // pagesApp preview
-                String[] tokenParts = token.split(":");
-                for(String part : tokenParts) {
-                    parts.add(part);
-                }
-            }
-            else {
-                parts.add(token);
-            }
-        }
-        return parts;
-    }
-
-    /**
      * This hook-up method is called on {@link #start(info.magnolia.ui.framework.location.Location)} and enables subclasses to perform additional work before the view is displayed.
      * The default implementation does nothing.
      */
     protected void onSubAppStart() { }
 
     @Override
-    public void setSubAppId(String subAppId) {
-        this.subAppId = subAppId;
-    }
-
     public String getSubAppId() {
         return subAppId;
+    }
+
+    @Override
+    public void setSubAppId(String subAppId) {
+        this.subAppId = subAppId;
     }
 
     public View getView() {
@@ -170,24 +126,10 @@ public abstract class AbstractSubApp implements SubApp {
         return currentLocation;
     }
 
-    /*
-    * Creates a location for the current subapp given the current location, the passed parameter and its type.
-    */
-    protected final DefaultLocation createLocation(final String parameter, final DefaultLocation currentLocation) {
-        DefaultLocation location = createLocation();
-        if (currentLocation != null) {
-            String token = location.getParameter();
-            //token = replaceLocationToken(currentLocation, parameter, type);
-            return new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, getAppName(), "", token);
-        }
-        return location;
-    }
-
     /**
      * @return the app name as returned by {@link AppContext#getName()}.
      */
     public final String getAppName() {
         return appName;
     }
-
 }

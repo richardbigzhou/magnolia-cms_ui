@@ -39,7 +39,7 @@ import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.event.ActionbarItemClickedEvent;
 import info.magnolia.ui.admincentral.tree.action.DeleteItemActionDefinition;
 import info.magnolia.ui.app.pages.PagesAppDescriptor;
-import info.magnolia.ui.app.pages.PagesLocation;
+import info.magnolia.ui.app.pages.editor.location.PagesLocation;
 import info.magnolia.ui.app.pages.action.AddComponentActionDefinition;
 import info.magnolia.ui.app.pages.action.EditElementActionDefinition;
 import info.magnolia.ui.app.pages.action.EditPageActionDefinition;
@@ -94,7 +94,7 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
     @Inject
     public PagesEditorSubApp(final AppContext appContext, final PagesEditorSubAppView view, final @Named("subapp") EventBus eventBus,
         final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final WorkbenchActionFactory actionFactory) {
-        super(appContext, view, eventBus);
+        super(appContext, view);
 
         this.view = view;
         this.view.setListener(this);
@@ -114,13 +114,15 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
 
     @Override
     public View start(Location location) {
+        PagesLocation pagesLocation = PagesLocation.wrap(location);
+        super.start(pagesLocation);
 
         ActionbarDefinition actionbarDefinition = appDescriptor.getEditor().getActionbar();
         ActionbarView actionbar = actionbarPresenter.start(actionbarDefinition, actionFactory);
         view.setActionbarView(actionbar);
         view.setPageEditorView(pageEditorPresenter.start());
 
-        goToLocation(location);
+        goToLocation(pagesLocation);
         updateActions();
         return view;
     }
@@ -137,16 +139,27 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
     }
 
     @Override
+    public boolean supportsLocation(Location location) {
+        return getCurrentLocation().getNodePath().equals(PagesLocation.wrap(location).getNodePath());
+    }
+
+    @Override
+    protected PagesLocation getCurrentLocation() {
+        return PagesLocation.wrap(currentLocation);
+    }
+
+    @Override
     public void locationChanged(Location location) {
-        goToLocation(location);
+        PagesLocation pagesLocation = PagesLocation.wrap(location);
+        super.locationChanged(pagesLocation);
+        goToLocation(pagesLocation);
         updateActions();
     }
 
-    private void goToLocation(Location location) {
-        PagesLocation l = (PagesLocation) location;
+    private void goToLocation(PagesLocation location) {
 
-        if (isLocationChanged(l)) {
-            setPageEditorParameters(l);
+        if (isLocationChanged(location)) {
+            setPageEditorParameters(location);
             if (parameters.isPreview()) {
                 showPreview();
             } else {

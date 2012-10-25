@@ -76,14 +76,14 @@ public interface ContentView extends View {
                     }
                 }
             }
-            else if (text.isEmpty()) {
+            else {
                 return defaultViewType();
             }
             throw new IllegalArgumentException("No view type could be found for " + text);
         }
 
         private static ViewType defaultViewType() {
-            return LIST;
+            return TREE;
         }
     }
 

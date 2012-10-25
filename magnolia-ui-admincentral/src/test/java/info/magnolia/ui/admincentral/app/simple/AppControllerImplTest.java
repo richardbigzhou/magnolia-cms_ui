@@ -122,7 +122,7 @@ public class AppControllerImplTest {
         assertEquals(1, pageApp.events.size());
         assertEquals(true, pageApp.events.get(0).startsWith("start()"));
         //Check injection
-        assertNotNull(pageApp.ctx);
+        assertNotNull(pageApp.getAppContext());
         assertNotNull(pageApp.subApp);
         //Check AppContext
         assertEquals("app:app1_name", pageApp.getDefaultLocation().toString());

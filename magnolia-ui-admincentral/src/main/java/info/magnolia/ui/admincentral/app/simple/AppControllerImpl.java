@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.admincentral.app.simple;
 
+import com.google.common.collect.HashMultimap;
+import com.vaadin.ui.ComponentContainer;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.model.ModuleDefinition;
 import info.magnolia.objectfactory.ComponentProvider;
@@ -61,20 +63,17 @@ import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.framework.view.ViewPort;
 import info.magnolia.ui.vaadin.tabsheet.MagnoliaTab;
-
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.vaadin.ui.ComponentContainer;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -190,7 +189,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             appContext = new AppContextImpl(descriptor);
 
             if (location == null) {
-                location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, name, "", "main");
+                location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, name, "", "");
             }
 
             appContext.start(location);
@@ -283,6 +282,11 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         private class SubAppContext {
 
             private String subAppId;
+
+            public SubApp getSubApp() {
+                return subApp;
+            }
+
             private SubApp subApp;
             private Location location;
             private MagnoliaTab tab;
@@ -290,7 +294,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             public View view;
         }
 
-        private Map<String, SubAppContext> subAppContexts = new HashMap<String, SubAppContext>();
+        private HashMultimap<String, SubAppContext> subAppContexts = HashMultimap.create();
 
         private final AppDescriptor appDescriptor;
 
@@ -336,10 +340,6 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
         private SubAppContext startSubApp(String subAppId, Class<? extends SubApp> subAppClass, Location location) {
 
-            if (subAppContexts.containsKey(subAppId)) {
-                throw new IllegalStateException("Sub app already exists with sub app id " + subAppId);
-            }
-
             ComponentProvider subAppComponentProvider = createSubAppComponentProvider(appDescriptor.getName(), subAppId, appComponentProvider);
 
             SubApp subApp = subAppComponentProvider.newInstance(subAppClass);
@@ -382,7 +382,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             }
 
             // If the location targets an existing sub app then activate it and update its location
-            SubAppContext subAppContext = subAppContexts.get(subAppId);
+            SubAppContext subAppContext = getSupportingSubAppContext(location);
             if (subAppContext != null) {
                 subAppContext.location = location;
                 subAppContext.subApp.locationChanged(location);
@@ -412,7 +412,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         public void onTabClosed(MagnoliaTab tab) {
             SubAppContext subAppContext = getSubAppContextForTab(tab);
             if (subAppContext != null) {
-                subAppContexts.remove(subAppContext.subAppId);
+                subAppContexts.remove(subAppContext.subAppId, subAppContext);
             }
             onActiveTabSet(this.appFrameView.getActiveTab());
         }
@@ -494,12 +494,30 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             return null;
         }
 
+        // Same instance?!
         private SubAppContext getSubAppContextForSubApp(SubApp subApp) {
-            for (SubAppContext subAppContext : subAppContexts.values()) {
+            for (SubAppContext subAppContext : getSubAppContexts(subApp.getSubAppId())) {
                 if (subAppContext.subApp == subApp)
                     return subAppContext;
             }
             return null;
+        }
+
+        private Set<SubAppContext> getSubAppContexts(String subAppId) {
+            return subAppContexts.get(subAppId);
+        }
+
+        private SubAppContext getSupportingSubAppContext(Location location) {
+            DefaultLocation l = (DefaultLocation) location;
+            SubAppContext supportingContext = null;
+            Set<SubAppContext> subApps = subAppContexts.get(l.getSubAppId());
+            for (SubAppContext context : subApps) {
+                if (context.getSubApp().supportsLocation(l)) {
+                    supportingContext = context;
+                    break;
+                }
+            }
+            return supportingContext;
         }
 
     }

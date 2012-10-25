@@ -65,4 +65,14 @@ public class AppTestSubApp extends AbstractSimpleSubApp {
     public void locationChanged(Location location) {
     }
 
+    @Override
+    public String getSubAppId() {
+        return null;
+    }
+
+    @Override
+    public boolean supportsLocation(Location location) {
+        return true;
+    }
+
 }

@@ -33,6 +33,10 @@
  */
 package info.magnolia.ui.framework.location;
 
+import org.apache.commons.lang.StringUtils;
+
+import java.util.StringTokenizer;
+
 /**
  * Default location implementation.
  * appType:appId:subAppId;some/parameter
@@ -45,6 +49,7 @@ public class DefaultLocation implements Location {
     private String appType;
     private String appId;
     private String subAppId;
+
     private String parameter;
 
     public DefaultLocation(String appType, String appId) {
@@ -57,6 +62,23 @@ public class DefaultLocation implements Location {
         this.appId = appId;
         this.subAppId = subAppId;
         this.parameter = parameter;
+    }
+
+    public DefaultLocation(String fragment) {
+        parseLocation(fragment);
+    }
+
+    private void parseLocation(String fragment) {
+        String[] split = StringUtils.split(";");
+        setAppParams(split[0]);
+        this.parameter = split[1];
+    }
+
+    private void setAppParams(String appParams) {
+        StringTokenizer tokenizer = new StringTokenizer(appParams, ":");
+        this.appType = (tokenizer.hasMoreTokens()) ? tokenizer.nextToken() : "";
+        this.appId = (tokenizer.hasMoreTokens()) ? tokenizer.nextToken() : "";
+        this.subAppId = (tokenizer.hasMoreTokens()) ? tokenizer.nextToken() : "";
     }
 
     public String getAppType() {
@@ -75,13 +97,14 @@ public class DefaultLocation implements Location {
         return parameter;
     }
 
+    public void setParameter(String parameter) {
+        this.parameter = parameter;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
         }
 
         DefaultLocation that = (DefaultLocation) o;
@@ -118,12 +141,12 @@ public class DefaultLocation implements Location {
             sb.append(appType);
             if (appId != null && appId.length() != 0) {
                 sb.append(":").append(appId);
-                if (subAppId != null && subAppId.length() != 0) {
-                    sb.append(":").append(subAppId);
-                }
-                if (parameter != null && parameter.length() != 0) {
-                    sb.append(";").append(parameter);
-                }
+            }
+            if (subAppId != null && subAppId.length() != 0) {
+                sb.append(":").append(subAppId);
+            }
+            if (parameter != null && parameter.length() != 0) {
+                sb.append(";").append(parameter);
             }
         }
         return sb.toString();
@@ -135,6 +158,7 @@ public class DefaultLocation implements Location {
     }
 
     public static String extractAppId(String fragment) {
+        fragment = removeParameter(fragment);
         int i = fragment.indexOf(':');
         if (i == -1) {
             return "";
@@ -144,6 +168,8 @@ public class DefaultLocation implements Location {
     }
 
     public static String extractSubAppId(String fragment) {
+        fragment = removeParameter(fragment);
+
         int i = fragment.indexOf(':');
         if (i == -1) {
             return "";
@@ -156,18 +182,16 @@ public class DefaultLocation implements Location {
     }
 
     public static String extractParameter(String fragment) {
-        int i = fragment.indexOf(':');
+        int i = fragment.indexOf(';');
         if (i == -1) {
             return "";
         }
-        int j = fragment.indexOf(':', i + 1);
-        if (j == -1) {
-            return "";
-        }
-        int k = fragment.indexOf(';', j + 1);
-        if (k == -1) {
-            return "";
-        }
-        return fragment.substring(k + 1);
+         return fragment.substring(i + 1);
     }
+
+    private static String removeParameter(String fragment) {
+        int i = fragment.indexOf(';');
+        return i != -1 ? fragment.substring(0, i) : fragment;
+    }
+
 }

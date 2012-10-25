@@ -48,7 +48,18 @@ abstract public class AbstractSimpleSubApp implements SubApp
     }
 
     @Override
+    public String getSubAppId() {
+        return subAppId;
+    }
+
+    @Override
     public void setSubAppId(String subAppId) {
         this.subAppId = subAppId;
     }
+
+    @Override
+    public boolean supportsLocation(Location location) {
+        return true;
+    }
+
 }

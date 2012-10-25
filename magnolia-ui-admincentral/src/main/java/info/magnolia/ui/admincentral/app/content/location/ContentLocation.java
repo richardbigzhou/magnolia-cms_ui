@@ -35,24 +35,53 @@ package info.magnolia.ui.admincentral.app.content.location;
 
 import info.magnolia.ui.admincentral.content.view.ContentView;
 import info.magnolia.ui.framework.location.DefaultLocation;
+import info.magnolia.ui.framework.location.Location;
 
 
 /**
- * ContentLocation.
+ * ContentLocation used in ContentSubApps. Extends the Default Location by adding fields for the nodePath, viewType and query.
  */
 public class ContentLocation extends DefaultLocation {
 
-    private String nodePath;
-    private ContentView.ViewType view;
 
+    private String nodePath;
+    private ContentView.ViewType viewType;
     private String query;
 
     public ContentLocation(String appId, String subAppId, String parameter) {
         super(LOCATION_TYPE_APP, appId, subAppId, parameter);
 
-        this.nodePath = extractNodePath(parameter);
-        this.view = extractView(parameter);
-        this.query = extractQuery(parameter);
+        setNodePath(extractNodePath(parameter));
+        setViewType(extractView(parameter));
+        setQuery(extractQuery(parameter));
+    }
+
+
+    public String getNodePath() {
+        return nodePath;
+    }
+
+    /**
+     * If the node path is empty, assume root path
+     */
+    private void setNodePath(String nodePath) {
+        this.nodePath = (nodePath.isEmpty()) ?  "/" : nodePath;
+    }
+
+    public ContentView.ViewType getViewType() {
+        return viewType;
+    }
+
+    private void setViewType(ContentView.ViewType viewType) {
+        this.viewType = viewType;
+    }
+
+    public String getQuery() {
+        return query;
+    }
+
+    private void setQuery(String query) {
+        this.query = query;
     }
 
     private String extractNodePath(String parameter) {
@@ -61,36 +90,59 @@ public class ContentLocation extends DefaultLocation {
     }
 
     private ContentView.ViewType extractView(String parameter) {
+        String view = "";
+        // nodePath
         int i = parameter.indexOf(':');
-        String view = i != -1 ? parameter.substring(i+1) : parameter;
+        if (i != -1) {
+            // view
+            int j = parameter.indexOf(':', i + 1);
+            view = (j != -1) ? parameter.substring(i + 1, j) : parameter.substring(i + 1);
+        }
         return ContentView.ViewType.fromString(view);
     }
 
-    private String extractQuery(String parameter) {
-        int i = parameter.indexOf(':');
+    public static String extractQuery(String fragment) {
+        // nodePath
+        int i = fragment.indexOf(':');
         if (i == -1) {
             return "";
         }
-        int j = parameter.indexOf(':', i + 1);
+        // view
+        int j = fragment.indexOf(':', i + 1);
         if (j == -1) {
             return "";
         }
-        return parameter.substring(j + 1);
+        // query
+        return fragment.substring(j + 1);
     }
 
-    public String getNodePath() {
-        return nodePath;
+    protected void updateParameter() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(nodePath);
+        sb.append(":");
+        sb.append(viewType.getText());
+        sb.append(":");
+        sb.append(query);
+        super.setParameter(sb.toString());
     }
 
-    public ContentView.ViewType getView() {
-        return view;
+    public static ContentLocation wrap(Location location) {
+        DefaultLocation l = (DefaultLocation) location;
+        return new ContentLocation(l.getAppId(), l.getSubAppId(), l.getParameter());
     }
 
-    public String getQuery() {
-        return query;
+    public void updateNodePath(String newNodePath) {
+        setNodePath(newNodePath);
+        updateParameter();
     }
 
-    public static ContentLocation wrap(DefaultLocation location) {
-        return new ContentLocation(location.getAppId(), location.getSubAppId(), location.getParameter());
+    public void updateViewType(ContentView.ViewType newViewType) {
+        setViewType(newViewType);
+        updateParameter();
+    }
+
+    public void updateQuery(String newQuery) {
+        setQuery(newQuery);
+        updateParameter();
     }
 }

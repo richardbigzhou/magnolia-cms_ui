@@ -52,7 +52,7 @@ public class SampleEditorSubApp extends AbstractSubApp implements SampleEditorVi
 
     @Inject
     public SampleEditorSubApp(final AppContext appContext, final SampleEditorView view, final @Named("subapp") EventBus subAppEventBus) {
-        super(appContext, view, subAppEventBus);
+        super(appContext, view);
         this.view = view;
     }
 

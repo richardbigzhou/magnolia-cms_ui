@@ -31,9 +31,10 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages;
+package info.magnolia.ui.app.pages.editor.location;
 
 import info.magnolia.ui.framework.location.DefaultLocation;
+import info.magnolia.ui.framework.location.Location;
 
 /**
  * PagesLocation.
@@ -70,5 +71,9 @@ public class PagesLocation extends DefaultLocation {
 
     public String getMode() {
         return mode;
+    }
+
+    public static PagesLocation wrap(Location location) {
+        return new PagesLocation(((DefaultLocation)location).getParameter());
     }
 }

@@ -51,7 +51,7 @@ public class DummyMainSubApp extends AbstractSubApp {
 
     @Inject
     public DummyMainSubApp(AppContext appContext, DummyView dummyView, final @Named("subapp") EventBus subAppEventBus) {
-        super(appContext, dummyView, subAppEventBus);
+        super(appContext, dummyView);
     }
 
     @Override
