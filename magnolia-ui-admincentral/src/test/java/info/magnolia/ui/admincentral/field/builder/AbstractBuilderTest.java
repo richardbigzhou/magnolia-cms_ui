@@ -40,6 +40,11 @@ import info.magnolia.cms.i18n.DefaultMessagesManager;
 import info.magnolia.cms.i18n.MessagesManager;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.context.SystemContext;
+import info.magnolia.jcr.node2bean.Node2BeanProcessor;
+import info.magnolia.jcr.node2bean.Node2BeanTransformer;
+import info.magnolia.jcr.node2bean.impl.Node2BeanProcessorImpl;
+import info.magnolia.jcr.node2bean.impl.Node2BeanTransformerImpl;
+import info.magnolia.jcr.node2bean.impl.TypeMappingImpl;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
@@ -72,6 +77,11 @@ public abstract class AbstractBuilderTest<D extends FieldDefinition> {
 
     @Before
     public void setUp() throws Exception {
+        // Node2Bean setup
+        TypeMappingImpl typeMapping = new TypeMappingImpl();
+        Node2BeanTransformer transformer = new Node2BeanTransformerImpl();
+        ComponentsTestUtil.setInstance(Node2BeanProcessor.class, new Node2BeanProcessorImpl(typeMapping, transformer));
+
         // Init Message & Providers
         DefaultMessagesManager manager = new DefaultMessagesManager();
         ComponentsTestUtil.setInstance(MessagesManager.class, manager);
