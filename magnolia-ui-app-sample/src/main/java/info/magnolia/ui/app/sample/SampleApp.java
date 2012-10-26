@@ -33,16 +33,10 @@
  */
 package info.magnolia.ui.app.sample;
 
-import javax.inject.Inject;
-
-import org.apache.commons.lang.StringUtils;
-
-import info.magnolia.ui.app.sample.editor.SampleEditorSubApp;
-import info.magnolia.ui.app.sample.main.SampleMainSubApp;
 import info.magnolia.ui.framework.app.AbstractApp;
 import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.location.DefaultLocation;
-import info.magnolia.ui.framework.location.Location;
+
+import javax.inject.Inject;
 
 /**
  * Sample app.
@@ -52,26 +46,5 @@ public class SampleApp extends AbstractApp {
     @Inject
     public SampleApp(AppContext appContext) {
         super(appContext);
-    }
-
-    @Override
-    public void start(Location location) {
-        appContext.openSubApp("main", SampleMainSubApp.class, location);
-    }
-
-    @Override
-    public void stop() {
-    }
-
-    @Override
-    public void locationChanged(Location location) {
-        String token = ((DefaultLocation) location).getParameter();
-        if (StringUtils.isNotBlank(token)) {
-            openNewEditor(token, location);
-        }
-    }
-
-    private void openNewEditor(String name, Location location) {
-        appContext.openSubApp("editor", SampleEditorSubApp.class, location);
     }
 }

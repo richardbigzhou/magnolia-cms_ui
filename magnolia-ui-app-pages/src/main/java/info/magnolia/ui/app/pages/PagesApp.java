@@ -55,23 +55,5 @@ public class PagesApp extends AbstractContentApp {
     public PagesApp(AppContext appContext, FormDialogPresenterFactory dialogPresenterFactory, ChooseDialogFactory pickerDialogFactory) {
         super(appContext, pickerDialogFactory);
     }
-/*
-    @Override
-    public void start(Location location) {
 
-        if (PagesMainSubApp.supportsLocation(location)) {
-            appContext.openSubApp(AbstractContentSubApp.MAIN_SUBAPP_ID, PagesMainSubApp.class, location, PagesMainSubApp.getSubAppId(location));
-        } else {
-            DefaultLocation mainLocation = PagesMainSubApp.createLocation();
-            appContext.openSubApp(AbstractContentSubApp.MAIN_SUBAPP_ID, PagesMainSubApp.class, mainLocation, PagesMainSubApp.getSubAppId(mainLocation));
-
-            if (PagesEditorSubApp.supportsLocation(location)) {
-                appContext.openSubApp(EDITOR_TOKEN, PagesEditorSubApp.class, location, PagesEditorSubApp.getSubAppId(location));
-            }
-        }
-    }*/
-
-    @Override
-    public void stop() {
-    }
 }

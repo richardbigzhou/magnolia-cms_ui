@@ -48,7 +48,7 @@ public interface AppContext {
      * @param subAppClass
      * @param location
      */
-    void openSubApp(String subAppId, Class<? extends SubApp> subAppClass, Location location);
+    void openSubApp(Location location);
 
     void enterFullScreenMode();
 

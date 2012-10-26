@@ -49,7 +49,5 @@ public interface SubApp {
 
     String getSubAppId();
 
-    void setSubAppId(String subAppId);
-
     boolean supportsLocation(Location location);
 }

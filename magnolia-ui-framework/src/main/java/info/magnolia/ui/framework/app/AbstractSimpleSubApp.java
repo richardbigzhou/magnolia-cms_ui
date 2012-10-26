@@ -33,33 +33,10 @@
  */
 package info.magnolia.ui.framework.app;
 
-import info.magnolia.ui.framework.location.Location;
-
 /**
  * AbstractSimpleSubApp.
  */
-abstract public class AbstractSimpleSubApp implements SubApp
-{
+abstract public class AbstractSimpleSubApp implements SubApp {
 
-    private String subAppId;
-
-    @Override
-    public void locationChanged(Location location) {
-    }
-
-    @Override
-    public String getSubAppId() {
-        return subAppId;
-    }
-
-    @Override
-    public void setSubAppId(String subAppId) {
-        this.subAppId = subAppId;
-    }
-
-    @Override
-    public boolean supportsLocation(Location location) {
-        return true;
-    }
 
 }

@@ -34,9 +34,8 @@
 package info.magnolia.ui.admincentral.app.dummy;
 
 import info.magnolia.ui.framework.app.AbstractSubApp;
-import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.location.Location;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -47,14 +46,9 @@ import javax.inject.Named;
  */
 public class DummyMainSubApp extends AbstractSubApp {
 
-
-
     @Inject
-    public DummyMainSubApp(AppContext appContext, DummyView dummyView, final @Named("subapp") EventBus subAppEventBus) {
-        super(appContext, dummyView);
+    public DummyMainSubApp(SubAppContext subAppContext, DummyView dummyView, final @Named("subapp") EventBus subAppEventBus) {
+        super(subAppContext, dummyView);
     }
 
-    @Override
-    public void locationChanged(Location location) {
-    }
 }

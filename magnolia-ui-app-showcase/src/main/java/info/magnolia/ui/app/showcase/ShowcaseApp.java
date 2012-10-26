@@ -33,12 +33,10 @@
  */
 package info.magnolia.ui.app.showcase;
 
-import javax.inject.Inject;
-
-import info.magnolia.ui.app.showcase.main.ShowcaseMainSubApp;
 import info.magnolia.ui.framework.app.AbstractApp;
 import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.location.Location;
+
+import javax.inject.Inject;
 
 /**
  * showcase app.
@@ -50,18 +48,4 @@ public class ShowcaseApp extends AbstractApp {
         super(appContext);
     }
 
-    @Override
-    public void start(Location location) {
-        appContext.openSubApp("main", ShowcaseMainSubApp.class, location
-        );
-    }
-
-    @Override
-    public void stop() {
-    }
-
-    @Override
-    public void locationChanged(Location location) {
-
-    }
 }

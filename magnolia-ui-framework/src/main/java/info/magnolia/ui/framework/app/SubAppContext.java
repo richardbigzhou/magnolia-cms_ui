@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,23 +31,32 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.dummy;
+package info.magnolia.ui.framework.app;
 
-import info.magnolia.ui.framework.app.AbstractSubApp;
-import info.magnolia.ui.framework.app.SubAppContext;
-
-import javax.inject.Inject;
-
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.framework.location.Location;
 
 /**
- * A dummy app.
+ * SubAppContext.
  */
-public class DummyApp extends AbstractSubApp {
+public interface SubAppContext {
+    String getSubAppId();
 
+    SubApp getSubApp();
 
-    @Inject
-    public DummyApp(SubAppContext subAppContext, DummyView view) {
-        super(subAppContext, view);
-    }
+    AppContext getAppContext();
 
+    void setAppContext(AppContext appContext);
+
+    void setLocation(Location location);
+
+    void setSubApp(SubApp subApp);
+
+    void setSubAppComponentProvider(ComponentProvider subAppComponentProvider);
+
+    void setTabId(String tabId);
+
+    String getTabId();
+
+    Location getLocation();
 }

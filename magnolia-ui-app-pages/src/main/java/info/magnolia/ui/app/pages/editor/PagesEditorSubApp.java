@@ -39,13 +39,13 @@ import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.event.ActionbarItemClickedEvent;
 import info.magnolia.ui.admincentral.tree.action.DeleteItemActionDefinition;
 import info.magnolia.ui.app.pages.PagesAppDescriptor;
-import info.magnolia.ui.app.pages.editor.location.PagesLocation;
 import info.magnolia.ui.app.pages.action.AddComponentActionDefinition;
 import info.magnolia.ui.app.pages.action.EditElementActionDefinition;
 import info.magnolia.ui.app.pages.action.EditPageActionDefinition;
 import info.magnolia.ui.app.pages.action.PreviewPageActionDefinition;
+import info.magnolia.ui.app.pages.editor.location.PagesLocation;
 import info.magnolia.ui.framework.app.AbstractSubApp;
-import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
@@ -87,21 +87,18 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
 
     private String caption;
 
-    private final PagesAppDescriptor appDescriptor;
-
     private final WorkbenchActionFactory actionFactory;
 
     @Inject
-    public PagesEditorSubApp(final AppContext appContext, final PagesEditorSubAppView view, final @Named("subapp") EventBus eventBus,
+    public PagesEditorSubApp(final SubAppContext subAppContext, final PagesEditorSubAppView view, final @Named("subapp") EventBus eventBus,
         final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final WorkbenchActionFactory actionFactory) {
-        super(appContext, view);
+        super(subAppContext, view);
 
         this.view = view;
         this.view.setListener(this);
         this.eventBus = eventBus;
         this.pageEditorPresenter = pageEditorPresenter;
         this.actionbarPresenter = actionbarPresenter;
-        this.appDescriptor = (PagesAppDescriptor) appContext.getAppDescriptor();
         this.actionFactory = actionFactory;
 
         bindHandlers();
@@ -117,7 +114,7 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
         PagesLocation pagesLocation = PagesLocation.wrap(location);
         super.start(pagesLocation);
 
-        ActionbarDefinition actionbarDefinition = appDescriptor.getEditor().getActionbar();
+        ActionbarDefinition actionbarDefinition = ((PagesAppDescriptor) getAppContext().getAppDescriptor()).getEditor().getActionbar();
         ActionbarView actionbar = actionbarPresenter.start(actionbarDefinition, actionFactory);
         view.setActionbarView(actionbar);
         view.setPageEditorView(pageEditorPresenter.start());
@@ -189,7 +186,7 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
     private String getPageTitle(String path) {
         String caption = null;
         try {
-            Session session = MgnlContext.getJCRSession(appDescriptor.getWorkbench().getWorkspace());
+            Session session = MgnlContext.getJCRSession(((PagesAppDescriptor) getAppContext().getAppDescriptor()).getWorkbench().getWorkspace());
             Node node = session.getNode(path);
             caption = node.getProperty("title").getString();
         } catch (RepositoryException e) {
@@ -230,28 +227,28 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
                     ActionDefinition actionDefinition = event.getActionDefinition();
                     if (actionDefinition instanceof EditElementActionDefinition) {
                         pageEditorPresenter.editComponent(
-                            appDescriptor.getWorkbench().getWorkspace(),
+                                ((PagesAppDescriptor) getAppContext().getAppDescriptor()).getWorkbench().getWorkspace(),
                             pageEditorPresenter.getSelectedElement().getPath(),
                             pageEditorPresenter.getSelectedElement().getDialog());
                     } else if (actionDefinition instanceof AddComponentActionDefinition) {
                         // casting to AreaElement, because this action is only defined for areas
                         pageEditorPresenter.newComponent(
-                            appDescriptor.getWorkbench().getWorkspace(),
+                                ((PagesAppDescriptor) getAppContext().getAppDescriptor()).getWorkbench().getWorkspace(),
                             pageEditorPresenter.getSelectedElement().getPath(),
                             ((PageEditor.AreaElement) pageEditorPresenter.getSelectedElement()).getAvailableComponents());
                     } else if (actionDefinition instanceof DeleteItemActionDefinition) {
-                        pageEditorPresenter.deleteComponent(appDescriptor.getWorkbench().getWorkspace(), pageEditorPresenter
+                        pageEditorPresenter.deleteComponent(((PagesAppDescriptor) getAppContext().getAppDescriptor()).getWorkbench().getWorkspace(), pageEditorPresenter
                             .getSelectedElement()
                             .getPath());
                     } else if (actionDefinition instanceof PreviewPageActionDefinition || actionDefinition instanceof EditPageActionDefinition) {
                         actionbarPresenter.createAndExecuteAction(
                             actionDefinition,
-                            appDescriptor.getWorkbench().getWorkspace(),
+                                ((PagesAppDescriptor) getAppContext().getAppDescriptor()).getWorkbench().getWorkspace(),
                             parameters.getNodePath());
                     } else {
                         actionbarPresenter.createAndExecuteAction(
                             actionDefinition,
-                            appDescriptor.getWorkbench().getWorkspace(),
+                                ((PagesAppDescriptor) getAppContext().getAppDescriptor()).getWorkbench().getWorkspace(),
                             pageEditorPresenter.getSelectedElement().getPath());
                     }
 

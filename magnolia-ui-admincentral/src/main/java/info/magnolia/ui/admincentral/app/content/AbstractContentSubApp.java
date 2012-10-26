@@ -42,6 +42,7 @@ import info.magnolia.ui.admincentral.event.ViewTypeChangedEvent;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
 import info.magnolia.ui.framework.app.AbstractSubApp;
 import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.view.View;
@@ -73,20 +74,20 @@ import javax.inject.Named;
  * @see ContentAppView
  * @see AppContext
  * @see AbstractContentApp
- * @see DefaultLocation
+ * @see ContentLocation
  */
 public abstract class AbstractContentSubApp extends AbstractSubApp {
 
     private ContentWorkbenchPresenter workbench;
 
-    public AbstractContentSubApp(final AppContext appContext, final ContentAppView view, final ContentWorkbenchPresenter workbench, final @Named("subapp") EventBus subAppEventBus) {
+    public AbstractContentSubApp(final SubAppContext subAppContext, final ContentAppView view, final ContentWorkbenchPresenter workbench, final @Named("subapp") EventBus subAppEventBus) {
 
-        super(appContext, view);
-        if(appContext == null || view == null || workbench == null || subAppEventBus == null) {
-            throw new IllegalArgumentException("Constructor does not allow for null args. Found AppContext = " + appContext + ", ContentAppView = " + view + ", ContentWorkbenchPresenter = " + workbench + ", EventBus = " + subAppEventBus);
+        super(subAppContext, view);
+        if(subAppContext == null || view == null || workbench == null || subAppEventBus == null) {
+            throw new IllegalArgumentException("Constructor does not allow for null args. Found AppContext = " + subAppContext + ", ContentAppView = " + view + ", ContentWorkbenchPresenter = " + workbench + ", EventBus = " + subAppEventBus);
         }
         this.workbench = workbench;
-        registerSubAppEventsHandlers(appContext, subAppEventBus, this);
+        registerSubAppEventsHandlers(subAppEventBus, this);
     }
 
     /**
@@ -170,6 +171,7 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
      */
     @Override
     public void locationChanged(final Location location) {
+        super.locationChanged(location);
         ContentLocation contentLocation = ContentLocation.wrap(location);
         String selectedItemPath = contentLocation.getNodePath();
         if (selectedItemPath != null) {
@@ -178,7 +180,10 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
         updateActionbar(getWorkbench().getActionbarPresenter());
     }
 
-
+    /**
+     * Wraps the current DefaultLocation in a ContentLocation. Providing getter and setters for used parameters.
+     * @return
+     */
     @Override
     public ContentLocation getCurrentLocation() {
         return ContentLocation.wrap(super.getCurrentLocation());
@@ -192,7 +197,7 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
      * <li> {@link SearchEvent}
      * </ul>
      */
-    private void registerSubAppEventsHandlers(final AppContext appContext, final EventBus subAppEventBus, final AbstractContentSubApp subApp) {
+    private void registerSubAppEventsHandlers(final EventBus subAppEventBus, final AbstractContentSubApp subApp) {
         final ActionbarPresenter actionbar = subApp.getWorkbench().getActionbarPresenter();
         subAppEventBus.addHandler(ItemSelectedEvent.class, new ItemSelectedEvent.Handler() {
 
@@ -200,7 +205,9 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
             public void onItemSelected(ItemSelectedEvent event) {
                 ContentLocation location = getCurrentLocation();
                 location.updateNodePath(event.getPath());
-                appContext.setSubAppLocation(subApp, location);
+                currentLocation = location;
+                getAppContext().setSubAppLocation(subApp, location);
+                updateActionbar(actionbar);
             }
         });
 
@@ -210,7 +217,9 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
             public void onViewChanged(ViewTypeChangedEvent event) {
                 ContentLocation location = getCurrentLocation();
                 location.updateViewType(event.getViewType());
-                appContext.setSubAppLocation(subApp, currentLocation);
+                currentLocation = location;
+                getAppContext().setSubAppLocation(subApp, currentLocation);
+                updateActionbar(actionbar);
             }
         });
 
@@ -220,7 +229,9 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
             public void onSearch(SearchEvent event) {
                 ContentLocation location = getCurrentLocation();
                 location.updateQuery(event.getSearchExpression());
-                appContext.setSubAppLocation(subApp, currentLocation);
+                currentLocation = location;
+                getAppContext().setSubAppLocation(subApp, currentLocation);
+                updateActionbar(actionbar);
             }
         });
     }

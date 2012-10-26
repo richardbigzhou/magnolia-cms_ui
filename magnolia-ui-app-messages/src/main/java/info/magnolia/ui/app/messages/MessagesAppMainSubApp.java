@@ -33,27 +33,23 @@
  */
 package info.magnolia.ui.app.messages;
 
-import info.magnolia.ui.framework.app.AbstractSimpleSubApp;
-import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.framework.app.AbstractSubApp;
+import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessageType;
-import info.magnolia.ui.framework.view.View;
 
 import javax.inject.Inject;
 
 /**
  * Sub app for the main tab in the message app.
  */
-public class MessagesAppMainSubApp extends AbstractSimpleSubApp implements MessagesView.Listener {
+public class MessagesAppMainSubApp extends AbstractSubApp implements MessagesView.Listener {
 
-    private AppContext appContext;
-    private MessagesView view;
 
     @Inject
-    public MessagesAppMainSubApp(AppContext appContext, MessagesView view) {
-        this.appContext = appContext;
-        this.view = view;
+    public MessagesAppMainSubApp(SubAppContext subAppContext, MessagesView view) {
+        super(subAppContext, view);
         view.setListener(this);
     }
 
@@ -63,33 +59,28 @@ public class MessagesAppMainSubApp extends AbstractSimpleSubApp implements Messa
     }
 
     @Override
-    public View start(Location location) {
-        return view;
-    }
-
-    @Override
     public void locationChanged(Location location) {
 
     }
 
     @Override
     public void showConfirmationMessage(String message) {
-        appContext.showConfirmationMessage(message);
+        getAppContext().showConfirmationMessage(message);
     }
 
     @Override
     public void handleUserMessage(String user, MessageType type, String subject, String message) {
-        appContext.sendUserMessage(user, createMessage(type, subject, message));
+        getAppContext().sendUserMessage(user, createMessage(type, subject, message));
     }
 
     @Override
     public void handleLocalMessage(MessageType type, String subject, String message) {
-        appContext.sendLocalMessage(createMessage(type, subject, message));
+        getAppContext().sendLocalMessage(createMessage(type, subject, message));
     }
 
     @Override
     public void handleGlobalMessage(MessageType type, String subject, String message) {
-        appContext.broadcastMessage(createMessage(type, subject, message));
+        getAppContext().broadcastMessage(createMessage(type, subject, message));
     }
 
     private Message createMessage(MessageType type, String subject, String message) {

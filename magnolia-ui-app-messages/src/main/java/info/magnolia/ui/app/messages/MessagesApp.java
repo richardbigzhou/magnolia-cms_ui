@@ -35,7 +35,6 @@ package info.magnolia.ui.app.messages;
 
 import info.magnolia.ui.framework.app.AbstractApp;
 import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.location.Location;
 
 import javax.inject.Inject;
 
@@ -49,8 +48,4 @@ public class MessagesApp extends AbstractApp {
         super(appContext);
     }
 
-    @Override
-    public void start(Location location) {
-        appContext.openSubApp("main", MessagesAppMainSubApp.class, location);
-    }
 }

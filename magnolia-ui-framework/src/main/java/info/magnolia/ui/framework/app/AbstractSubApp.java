@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.framework.app;
 
-import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.view.View;
 
@@ -47,20 +46,15 @@ public abstract class AbstractSubApp implements SubApp {
 
 
     protected Location currentLocation;
-
-    private final AppContext appContext;
+    private final SubAppContext subAppContext;
     private final View view;
 
-    private String subAppId;
-    private String appName;
-
-    protected AbstractSubApp(final AppContext appContext, final View view) {
-        if(appContext == null || view == null) {
-            throw new IllegalArgumentException("Constructor does not allow for null args. Found AppContext = " + appContext + ", ContentAppView = " + view);
+    protected AbstractSubApp(final SubAppContext subAppContext, final View view) {
+        if(subAppContext == null || view == null) {
+            throw new IllegalArgumentException("Constructor does not allow for null args. Found SubAppContext = " + subAppContext + ", ContentAppView = " + view);
         }
-        this.appContext = appContext;
+        this.subAppContext = subAppContext;
         this.view = view;
-        this.appName = appContext.getName();
     }
 
     @Override
@@ -87,26 +81,18 @@ public abstract class AbstractSubApp implements SubApp {
     }
 
     /**
-     * Creates a default location for the current subapp whose token has the form <code>main:/:tree</code>.
-     */
-    public final DefaultLocation createLocation() {
-        return new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, getAppName(), getSubAppId(), "");
-    }
-
-    /**
      * This hook-up method is called on {@link #start(info.magnolia.ui.framework.location.Location)} and enables subclasses to perform additional work before the view is displayed.
      * The default implementation does nothing.
      */
     protected void onSubAppStart() { }
 
-    @Override
-    public String getSubAppId() {
-        return subAppId;
+    public SubAppContext getSubAppContext() {
+        return subAppContext;
     }
 
     @Override
-    public void setSubAppId(String subAppId) {
-        this.subAppId = subAppId;
+    public String getSubAppId() {
+        return subAppContext.getSubAppId();
     }
 
     public View getView() {
@@ -114,7 +100,7 @@ public abstract class AbstractSubApp implements SubApp {
     }
 
     public AppContext getAppContext() {
-        return appContext;
+        return subAppContext.getAppContext();
     }
 
     @Override
@@ -126,10 +112,4 @@ public abstract class AbstractSubApp implements SubApp {
         return currentLocation;
     }
 
-    /**
-     * @return the app name as returned by {@link AppContext#getName()}.
-     */
-    public final String getAppName() {
-        return appName;
-    }
 }

@@ -33,10 +33,7 @@
  */
 package info.magnolia.ui.framework.app;
 
-import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
-
-import java.util.Map;
 
 
 /**
@@ -54,47 +51,12 @@ public abstract class AbstractApp implements App {
 
     @Override
     public void locationChanged(Location location) {
-        openSubApp(location);
+        appContext.openSubApp(location);
     }
 
     @Override
     public void start(Location location) {
-         openSubApp(location);
-    }
-
-    private void openSubApp(Location location) {
-
-        DefaultLocation l = (DefaultLocation) location;
-        String subAppId = l.getSubAppId();
-
-        SubAppDescriptor subAppDescriptor;
-
-        subAppDescriptor = getAppDescriptorById(subAppId);
-        if (subAppDescriptor == null) {
-            subAppDescriptor = getDefaultAppDescriptor();
-        }
-
-        DefaultLocation newLocation = new DefaultLocation(l.getAppType(), l.getAppId(), subAppDescriptor.getName(), l.getParameter());
-
-        appContext.openSubApp(subAppDescriptor.getName(), subAppDescriptor.getSubAppClass(), newLocation);
-    }
-
-    private SubAppDescriptor getDefaultAppDescriptor() {
-        Map<String, SubAppDescriptor> subAppDescriptors = appContext.getAppDescriptor().getSubApps();
-
-        SubAppDescriptor defaultSubAppDescriptor = null;
-        for (SubAppDescriptor subAppDescriptor : subAppDescriptors.values()) {
-            if (subAppDescriptor.isDefault()) {
-                defaultSubAppDescriptor = subAppDescriptor;
-                break;
-            }
-        }
-        return defaultSubAppDescriptor;
-    }
-
-    private SubAppDescriptor getAppDescriptorById(String subAppId) {
-        Map<String, SubAppDescriptor> subAppDescriptors = appContext.getAppDescriptor().getSubApps();
-        return subAppDescriptors.get(subAppId);
+        appContext.openSubApp(location);
     }
 
     public AppContext getAppContext() {

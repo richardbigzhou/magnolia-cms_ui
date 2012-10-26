@@ -36,6 +36,7 @@ package info.magnolia.ui.admincentral.app.content;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
 import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.EventBus;
 import org.junit.Before;
 
@@ -56,10 +57,13 @@ public class AbstractContentSubAppTest {
     private ContentWorkbenchPresenter workbench;
     private EventBus subAppEventBus;
     private DummyContentSubApp subApp;
+    private SubAppContext subAppContext;
 
     @Before
     public void setUp() throws Exception {
         appContext = mock(AppContext.class);
+        subAppContext = mock(SubAppContext.class);
+
         view = mock(ContentAppView.class);
         workbench = mock(ContentWorkbenchPresenter.class);
 
@@ -67,14 +71,14 @@ public class AbstractContentSubAppTest {
         when(workbench.getActionbarPresenter()).thenReturn(actionbar);
 
         subAppEventBus = mock(EventBus.class);
-        this.subApp = new DummyContentSubApp(appContext,view, workbench, subAppEventBus);
+        this.subApp = new DummyContentSubApp(subAppContext,view, workbench, subAppEventBus);
     }
 
     private class DummyContentSubApp extends AbstractContentSubApp {
         public int foo = 0;
 
-        public DummyContentSubApp(AppContext appContext, ContentAppView view, ContentWorkbenchPresenter workbench, EventBus subAppEventBus) {
-            super(appContext, view, workbench, subAppEventBus);
+        public DummyContentSubApp(SubAppContext subAppContext, ContentAppView view, ContentWorkbenchPresenter workbench, EventBus subAppEventBus) {
+            super(subAppContext, view, workbench, subAppEventBus);
         }
 
         @Override

@@ -50,6 +50,8 @@ import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventType;
 import info.magnolia.ui.framework.app.SubApp;
+import info.magnolia.ui.framework.app.SubAppContext;
+import info.magnolia.ui.framework.app.SubAppDescriptor;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.location.DefaultLocation;
@@ -62,7 +64,6 @@ import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.framework.view.ViewPort;
-import info.magnolia.ui.vaadin.tabsheet.MagnoliaTab;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -277,21 +278,72 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         return appLauncherLayoutManager.getLayoutForCurrentUser().getAppDescriptor(name);
     }
 
+
     private class AppContextImpl implements AppContext, AppFrameView.Listener {
 
-        private class SubAppContext {
+        private class SubAppContextImpl implements SubAppContext {
 
-            private String subAppId;
+            private SubApp subApp;
+            private Location location;
+            private ComponentProvider subAppComponentProvider;
+            private SubAppDescriptor subAppDescriptor;
+            private AppContext appContext;
+            private String tabId;
 
+
+            private SubAppContextImpl(SubAppDescriptor subAppDescriptor) {
+                this.subAppDescriptor = subAppDescriptor;
+            }
+
+            @Override
+            public AppContext getAppContext() {
+                return appContext;
+            }
+
+            @Override
+            public void setAppContext(AppContext appContext) {
+                this.appContext = appContext;
+            }
+
+            @Override
             public SubApp getSubApp() {
                 return subApp;
             }
 
-            private SubApp subApp;
-            private Location location;
-            private MagnoliaTab tab;
-            private ComponentProvider subAppComponentProvider;
-            public View view;
+            @Override
+            public void setSubApp(SubApp subApp) {
+                this.subApp = subApp;
+            }
+
+            @Override
+            public String getSubAppId() {
+               return subAppDescriptor.getName();
+            }
+
+            @Override
+            public Location getLocation() {
+                return location;
+            }
+
+            @Override
+            public void setLocation(Location location) {
+                this.location = location;
+            }
+
+            @Override
+            public void setTabId(String tabId) {
+                this.tabId = tabId;
+            }
+
+            @Override
+            public String getTabId() {
+                return tabId;
+            }
+
+            @Override
+            public void setSubAppComponentProvider(ComponentProvider subAppComponentProvider) {
+                this.subAppComponentProvider = subAppComponentProvider;
+            }
         }
 
         private HashMultimap<String, SubAppContext> subAppContexts = HashMultimap.create();
@@ -318,6 +370,25 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             return appDescriptor;
         }
 
+        private SubAppDescriptor getDefaultSubAppDescriptor() {
+            Map<String, SubAppDescriptor> subAppDescriptors = getAppDescriptor().getSubApps();
+
+            SubAppDescriptor defaultSubAppDescriptor = null;
+            for (SubAppDescriptor subAppDescriptor : subAppDescriptors.values()) {
+                if (subAppDescriptor.isDefault()) {
+                    defaultSubAppDescriptor = subAppDescriptor;
+                    break;
+                }
+            }
+            return defaultSubAppDescriptor;
+        }
+
+        private SubAppDescriptor getSubAppDescriptorById(String subAppId) {
+            Map<String, SubAppDescriptor> subAppDescriptors = getAppDescriptor().getSubApps();
+            return subAppDescriptors.get(subAppId);
+        }
+
+
         public View getView() {
             return appFrameView;
         }
@@ -338,32 +409,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             app.start(location);
         }
 
-        private SubAppContext startSubApp(String subAppId, Class<? extends SubApp> subAppClass, Location location) {
 
-            ComponentProvider subAppComponentProvider = createSubAppComponentProvider(appDescriptor.getName(), subAppId, appComponentProvider);
-
-            SubApp subApp = subAppComponentProvider.newInstance(subAppClass);
-            subApp.setSubAppId(subAppId);
-
-            View view = subApp.start(location);
-
-            MagnoliaTab tab = appFrameView.addTab((ComponentContainer) view.asVaadinComponent(), subApp.getCaption(), false);
-            if (!subAppContexts.isEmpty()) {
-                tab.setClosable(true);
-            }
-
-            SubAppContext subAppContext = new SubAppContext();
-            subAppContext.subApp = subApp;
-            subAppContext.subAppId = subAppId;
-            subAppContext.tab = tab;
-            subAppContext.location = location;
-            subAppContext.view = view;
-            subAppContext.subAppComponentProvider = subAppComponentProvider;
-
-            subAppContexts.put(subAppContext.subAppId, subAppContext);
-
-            return subAppContext;
-        }
 
         /**
          * Called when a location change occurs and the app is already running.
@@ -376,45 +422,31 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             if (subAppId.length() == 0) {
                 SubAppContext subAppContext = getActiveSubAppContext();
                 if (subAppContext != null) {
-                    shell.setFragment(subAppContext.location.toString());
+                    shell.setFragment(subAppContext.getLocation().toString());
                 }
                 return;
             }
 
-            // If the location targets an existing sub app then activate it and update its location
-            SubAppContext subAppContext = getSupportingSubAppContext(location);
-            if (subAppContext != null) {
-                subAppContext.location = location;
-                subAppContext.subApp.locationChanged(location);
-                if (subAppContext.tab != appFrameView.getActiveTab()) {
-                    appFrameView.setActiveTab(subAppContext.tab);
-                }
-                return;
-            }
+            openSubApp(location);
 
             app.locationChanged(location);
         }
 
-        private String extractSubAppId(final String token) {
-            int i = token.indexOf(';');
-            return i != -1 ? token.substring(0, i) : token;
-        }
-
         @Override
-        public void onActiveTabSet(MagnoliaTab tab) {
-            SubAppContext subAppContext = getSubAppContextForTab(tab);
+        public void onActiveTabSet(String tabId) {
+            SubAppContext subAppContext = getSubAppContextForTab(tabId);
             if (subAppContext != null) {
-                locationController.goTo(subAppContext.location);
+                locationController.goTo(subAppContext.getLocation());
             }
         }
 
         @Override
-        public void onTabClosed(MagnoliaTab tab) {
-            SubAppContext subAppContext = getSubAppContextForTab(tab);
+        public void onTabClosed(String tabId) {
+            SubAppContext subAppContext = getSubAppContextForTab(tabId);
             if (subAppContext != null) {
-                subAppContexts.remove(subAppContext.subAppId, subAppContext);
+                subAppContexts.remove(subAppContext.getSubAppId(), subAppContext);
             }
-            onActiveTabSet(this.appFrameView.getActiveTab());
+            onActiveTabSet(this.appFrameView.getActiveTabId());
         }
 
         public String mayStop() {
@@ -428,22 +460,72 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         public Location getCurrentLocation() {
             SubAppContext subAppContext = getActiveSubAppContext();
             if (subAppContext != null) {
-                return subAppContext.location;
+                return subAppContext.getLocation();
             }
             return new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appDescriptor.getName(), "", "");
         }
 
         @Override
-        public void openSubApp(String subAppId, Class<? extends SubApp> subAppClass, Location location) {
-            startSubApp(subAppId, subAppClass, location);
+        public void openSubApp(Location location) {
+            // If the location targets an existing sub app then activate it and update its location
+            // launch running subapp
+            SubAppContext subAppContext = getSupportingSubAppContext(location);
+            if (subAppContext != null) {
+                // check if location actually changed
+                //if (!subAppContext.getLocation().equals(location)) {
+                subAppContext.setLocation(location);
+                subAppContext.getSubApp().locationChanged(location);
+                //}
+                if (subAppContext.getTabId() != appFrameView.getActiveTab().getTabId()) {
+                    appFrameView.setActiveTabId(subAppContext.getTabId());
+                }
+            }
+            else {
+            // else start new subApp
+            // startSubApp
+
+                subAppContext = startSubApp(location);
+                subAppContexts.put(subAppContext.getSubAppId(), subAppContext);
+
+            }
+
+        }
+
+        private SubAppContext startSubApp(Location location) {
+
+            DefaultLocation l = (DefaultLocation) location;
+
+            SubAppDescriptor subAppDescriptor = getSubAppDescriptorById(l.getSubAppId());
+
+            if (subAppDescriptor == null) {
+                subAppDescriptor = getDefaultSubAppDescriptor();
+            }
+            SubAppContext subAppContext = new SubAppContextImpl(subAppDescriptor);
+
+
+            ComponentProvider subAppComponentProvider = createSubAppComponentProvider(appDescriptor.getName(), subAppContext.getSubAppId(), subAppContext, appComponentProvider);
+
+            SubApp subApp = subAppComponentProvider.newInstance(subAppDescriptor.getSubAppClass());
+
+
+
+            subAppContext.setAppContext(this);
+            subAppContext.setLocation(location);
+            subAppContext.setSubApp(subApp);
+            subAppContext.setSubAppComponentProvider(subAppComponentProvider);
+
+            View view = subApp.start(location);
+            String tabId = appFrameView.addTab((ComponentContainer) view.asVaadinComponent(), subApp.getCaption(), !subAppContexts.isEmpty());
+            subAppContext.setTabId(tabId);
+
+            return subAppContext;
         }
 
         @Override
         public void setSubAppLocation(SubApp subApp, Location location) {
             SubAppContext subAppContext = getSubAppContextForSubApp(subApp);
             if (subAppContext != null) {
-                subAppContext.location = location;
-                subAppContext.subApp.locationChanged(location);
+                subAppContext.setLocation(location);
                 if (currentApp == this && getActiveSubAppContext() == subAppContext) {
                     shell.setFragment(location.toString());
                 }
@@ -482,13 +564,12 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         }
 
         private SubAppContext getActiveSubAppContext() {
-            MagnoliaTab tab = appFrameView.getActiveTab();
-            return getSubAppContextForTab(tab);
+            return getSubAppContextForTab(appFrameView.getActiveTabId());
         }
 
-        private SubAppContext getSubAppContextForTab(MagnoliaTab tab) {
+        private SubAppContext getSubAppContextForTab(String tabId) {
             for (SubAppContext subAppContext : subAppContexts.values()) {
-                if (subAppContext.tab.equals(tab)) {
+                if (subAppContext.getTabId().equals(tabId)) {
                     return subAppContext;
                 }
             }
@@ -498,7 +579,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         // Same instance?!
         private SubAppContext getSubAppContextForSubApp(SubApp subApp) {
             for (SubAppContext subAppContext : getSubAppContexts(subApp.getSubAppId())) {
-                if (subAppContext.subApp == subApp)
+                if (subAppContext.getSubApp() == subApp)
                     return subAppContext;
             }
             return null;
@@ -555,12 +636,12 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         return builder.build();
     }
 
-    private ComponentProvider createSubAppComponentProvider(String appName, String subAppName, ComponentProvider parent) {
+    private ComponentProvider createSubAppComponentProvider(String appName, String subAppName, SubAppContext subAppContext, ComponentProvider parent) {
 
         ComponentProviderConfigurationBuilder configurationBuilder = new ComponentProviderConfigurationBuilder();
         List<ModuleDefinition> moduleDefinitions = moduleRegistry.getModuleDefinitions();
 
-        // Get components common to all apps
+        // Get components common to all sub apps
         ComponentProviderConfiguration configuration = configurationBuilder.getComponentsFromModules(COMMON_SUB_APP_COMPONENTS_ID, moduleDefinitions);
 
         // Get components for this specific sub app
@@ -569,6 +650,9 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         ComponentProviderConfiguration subAppComponents = configurationBuilder.getComponentsFromModules(componentsId, moduleDefinitions);
 
         configuration.combine(subAppComponents);
+
+        // Add the SubAppContext instance into the component provider.
+        configuration.addComponent(InstanceConfiguration.valueOf(SubAppContext.class, subAppContext));
 
         log.debug("Creating component provider for sub app " + subAppName);
         GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();

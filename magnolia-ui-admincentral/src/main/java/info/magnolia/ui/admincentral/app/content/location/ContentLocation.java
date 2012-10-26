@@ -65,7 +65,7 @@ public class ContentLocation extends DefaultLocation {
      * If the node path is empty, assume root path.
      */
     private void setNodePath(String nodePath) {
-        this.nodePath = (nodePath.isEmpty()) ?  "/" : nodePath;
+        this.nodePath = (nodePath == null || nodePath.isEmpty()) ?  "/" : nodePath;
     }
 
     public ContentView.ViewType getViewType() {
