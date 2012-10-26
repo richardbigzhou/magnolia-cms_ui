@@ -73,7 +73,9 @@ public abstract class AbstractBuilderTest<D extends FieldDefinition> {
     @Before
     public void setUp() throws Exception {
         // Init Message & Providers
-        DefaultMessagesManager manager = new DefaultMessagesManager());
+
+        DefaultMessagesManager manager = new DefaultMessagesManager();
+
         ComponentsTestUtil.setInstance(MessagesManager.class, manager);
         SystemContext systemContext = mock(SystemContext.class);
         when(systemContext.getLocale()).thenReturn(DEFAULT_LOCALE);

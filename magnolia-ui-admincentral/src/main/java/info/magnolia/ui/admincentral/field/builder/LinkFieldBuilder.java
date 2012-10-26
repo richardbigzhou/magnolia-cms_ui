@@ -121,7 +121,7 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
                         pickerPresenter.getView().setCaption("Select a contact");
                         pickerPresenter.addValuePickListener(new ValueChosenListener<Item>() {
                             @Override
-                            public void onValueChosen(Item pickedValue) {
+                            public void onValueChosen(final Item pickedValue) {
                                 javax.jcr.Item jcrItem = ((JcrItemAdapter) pickedValue).getJcrItem();
                                 if (jcrItem.isNode()) {
                                     final Node selected = (Node) jcrItem;
@@ -129,6 +129,10 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
                                         boolean isPropertyExisting = StringUtils.isNotBlank(propertyName) && 
                                                 !PATH_PROPERTY_NAME.equals(propertyName) && selected.hasProperty(propertyName);
                                         textButton.setValue(isPropertyExisting ? selected.getProperty(propertyName).getString() : selected.getPath());
+                                        
+                                        if ("assets".equals(appName)) {
+                                            selected.setProperty("image", "dms");
+                                        }
                                     } catch (RepositoryException e) {
                                         log.error("Not able to access the configured property. Value will not be set.", e);
                                     }
@@ -147,7 +151,7 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
         };
     }
 
-    private String getPropertyName() {
+    private String getCustomPropertyName() {
         return StringUtils.isEmpty(definition.getPropertyName()) ? PATH_PROPERTY_NAME : definition.getPropertyName();
     }
 }
