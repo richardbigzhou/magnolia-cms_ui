@@ -40,7 +40,6 @@ import info.magnolia.ui.model.thumbnail.ImageProvider;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Contains all elements which define a workbench configuration.
@@ -54,12 +53,13 @@ public interface WorkbenchDefinition extends Serializable {
     String getPath();
 
     /**
-     * @deprecated dlipp - remove before merging back to master...
+     * @return the grouping ItemType used in the tree view.
      */
-    List<ItemTypeDefinition> getItemTypes();
-
     ItemTypeDefinition getGroupingItemType();
 
+    /**
+     * @return the main ItemType. Used in all views.
+     */
     ItemTypeDefinition getMainItemType();
 
     /**
