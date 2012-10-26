@@ -38,11 +38,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import info.magnolia.jcr.node2bean.Node2BeanProcessor;
-import info.magnolia.jcr.node2bean.TypeMapping;
-import info.magnolia.jcr.node2bean.impl.Node2BeanProcessorImpl;
-import info.magnolia.jcr.node2bean.impl.Node2BeanTransformerImpl;
-import info.magnolia.jcr.node2bean.impl.TypeMappingImpl;
+import info.magnolia.content2bean.Content2BeanProcessor;
+import info.magnolia.content2bean.TypeMapping;
+import info.magnolia.content2bean.impl.Content2BeanProcessorImpl;
+import info.magnolia.content2bean.impl.TypeMappingImpl;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.repository.RepositoryConstants;
@@ -113,8 +112,7 @@ public class ConfiguredDialogDefinitionManagerTest {
         dialogRegistry = new DialogDefinitionRegistry();
 
         TypeMappingImpl typeMapping = new TypeMappingImpl();
-        Node2BeanTransformerImpl transformer = new Node2BeanTransformerImpl();
-        ComponentsTestUtil.setInstance(Node2BeanProcessor.class, new Node2BeanProcessorImpl(typeMapping, transformer));
+        ComponentsTestUtil.setInstance(Content2BeanProcessor.class, new Content2BeanProcessorImpl(typeMapping));
         ComponentsTestUtil.setImplementation(TypeMapping.class, TypeMappingImpl.class);
     }
 
