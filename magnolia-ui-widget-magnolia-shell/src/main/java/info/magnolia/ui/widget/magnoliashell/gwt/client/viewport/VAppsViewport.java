@@ -149,6 +149,9 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
         }
     }
 
+    /**
+     * Default non-transitioning behavior, accessible to transition delegates as a fall back.
+     */
     void doSetCurtainVisible(boolean visible) {
         if (visible && getCurtain().getParentElement() != getElement()) {
             getElement().appendChild(getCurtain());
@@ -350,8 +353,6 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
     private Element createCloseButton() {
         final Element closeElement = DOM.createSpan();
         closeElement.setClassName(CLOSE_CLASSNAME);
-        // TODO mge: remove this classname when checking the styles
-        closeElement.addClassName("close");
         closeElement.addClassName("icon-close");
         return closeElement;
     }

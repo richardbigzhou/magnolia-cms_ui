@@ -155,6 +155,9 @@ public class VShellViewport extends ComplexPanel implements Container, Container
         this.active = active;
     }
 
+    /**
+     * Default non-transitioning behavior, accessible to transition delegates as a fall back.
+     */
     void doSetActive(boolean active) {
         if (active) {
             setVisible(true);
@@ -180,6 +183,9 @@ public class VShellViewport extends ComplexPanel implements Container, Container
         }
     }
 
+    /**
+     * Default non-transitioning behavior, accessible to transition delegates as a fall back.
+     */
     void doSetVisibleApp(Widget w) {
         if (visibleApp != null) {
             visibleApp.setVisible(false);
@@ -246,6 +252,9 @@ public class VShellViewport extends ComplexPanel implements Container, Container
         doRemoveWidget(w);
     }
 
+    /**
+     * Default non-transitioning behavior, accessible to transition delegates as a fall back.
+     */
     void doRemoveWidget(Widget w) {
         remove(w);
         if (w instanceof Paintable) {
