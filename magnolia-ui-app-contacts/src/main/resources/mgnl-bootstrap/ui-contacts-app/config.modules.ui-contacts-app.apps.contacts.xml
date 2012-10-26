@@ -92,120 +92,6 @@
         <sv:value>2012-10-09T18:29:44.558+02:00</sv:value>
       </sv:property>
     </sv:node>
-    <sv:node sv:name="itemTypes">
-      <sv:property sv:name="jcr:primaryType" sv:type="Name">
-        <sv:value>mgnl:contentNode</sv:value>
-      </sv:property>
-      <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
-        <sv:value>mix:lockable</sv:value>
-      </sv:property>
-      <sv:property sv:name="jcr:uuid" sv:type="String">
-        <sv:value>4bf80f43-8da3-489b-8795-95a7e9793e0f</sv:value>
-      </sv:property>
-      <sv:property sv:name="jcr:createdBy" sv:type="String">
-        <sv:value>admin</sv:value>
-      </sv:property>
-      <sv:node sv:name="MetaData">
-        <sv:property sv:name="jcr:primaryType" sv:type="Name">
-          <sv:value>mgnl:metaData</sv:value>
-        </sv:property>
-        <sv:property sv:name="jcr:createdBy" sv:type="String">
-          <sv:value>admin</sv:value>
-        </sv:property>
-        <sv:property sv:name="mgnl:activated" sv:type="Boolean">
-          <sv:value>false</sv:value>
-        </sv:property>
-        <sv:property sv:name="mgnl:authorid" sv:type="String">
-          <sv:value>superuser</sv:value>
-        </sv:property>
-        <sv:property sv:name="mgnl:creationdate" sv:type="Date">
-          <sv:value>2010-09-08T11:43:18.124+02:00</sv:value>
-        </sv:property>
-        <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-          <sv:value>2012-07-09T13:23:48.532+02:00</sv:value>
-        </sv:property>
-      </sv:node>
-      <sv:node sv:name="folder">
-        <sv:property sv:name="jcr:primaryType" sv:type="Name">
-          <sv:value>mgnl:contentNode</sv:value>
-        </sv:property>
-        <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
-          <sv:value>mix:lockable</sv:value>
-        </sv:property>
-        <sv:property sv:name="jcr:uuid" sv:type="String">
-          <sv:value>89cd9d69-bb99-4bef-9c29-3d86060be6b6</sv:value>
-        </sv:property>
-        <sv:property sv:name="icon" sv:type="String">
-          <sv:value>/.resources/icons/16/folders.gif</sv:value>
-        </sv:property>
-        <sv:property sv:name="itemType" sv:type="String">
-          <sv:value>mgnl:folder</sv:value>
-        </sv:property>
-        <sv:property sv:name="jcr:createdBy" sv:type="String">
-          <sv:value>admin</sv:value>
-        </sv:property>
-        <sv:node sv:name="MetaData">
-          <sv:property sv:name="jcr:primaryType" sv:type="Name">
-            <sv:value>mgnl:metaData</sv:value>
-          </sv:property>
-          <sv:property sv:name="jcr:createdBy" sv:type="String">
-            <sv:value>admin</sv:value>
-          </sv:property>
-          <sv:property sv:name="mgnl:activated" sv:type="Boolean">
-            <sv:value>false</sv:value>
-          </sv:property>
-          <sv:property sv:name="mgnl:authorid" sv:type="String">
-            <sv:value>superuser</sv:value>
-          </sv:property>
-          <sv:property sv:name="mgnl:creationdate" sv:type="Date">
-            <sv:value>2010-09-08T11:43:28.310+02:00</sv:value>
-          </sv:property>
-          <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-            <sv:value>2012-07-09T13:23:48.539+02:00</sv:value>
-          </sv:property>
-        </sv:node>
-      </sv:node>
-      <sv:node sv:name="contact">
-        <sv:property sv:name="jcr:primaryType" sv:type="Name">
-          <sv:value>mgnl:contentNode</sv:value>
-        </sv:property>
-        <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
-          <sv:value>mix:lockable</sv:value>
-        </sv:property>
-        <sv:property sv:name="jcr:uuid" sv:type="String">
-          <sv:value>76aa3573-4dbd-4040-baf8-2165250acc8c</sv:value>
-        </sv:property>
-        <sv:property sv:name="icon" sv:type="String">
-          <sv:value>/.resources/icons/16/pawn_glass_yellow.gif</sv:value>
-        </sv:property>
-        <sv:property sv:name="itemType" sv:type="String">
-          <sv:value>mgnl:contact</sv:value>
-        </sv:property>
-        <sv:property sv:name="jcr:createdBy" sv:type="String">
-          <sv:value>admin</sv:value>
-        </sv:property>
-        <sv:node sv:name="MetaData">
-          <sv:property sv:name="jcr:primaryType" sv:type="Name">
-            <sv:value>mgnl:metaData</sv:value>
-          </sv:property>
-          <sv:property sv:name="jcr:createdBy" sv:type="String">
-            <sv:value>admin</sv:value>
-          </sv:property>
-          <sv:property sv:name="mgnl:activated" sv:type="Boolean">
-            <sv:value>false</sv:value>
-          </sv:property>
-          <sv:property sv:name="mgnl:authorid" sv:type="String">
-            <sv:value>superuser</sv:value>
-          </sv:property>
-          <sv:property sv:name="mgnl:creationdate" sv:type="Date">
-            <sv:value>2010-09-08T11:43:28.310+02:00</sv:value>
-          </sv:property>
-          <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-            <sv:value>2012-07-09T13:23:48.541+02:00</sv:value>
-          </sv:property>
-        </sv:node>
-      </sv:node>
-    </sv:node>
     <sv:node sv:name="imageProvider">
       <sv:property sv:name="jcr:primaryType" sv:type="Name">
         <sv:value>mgnl:contentNode</sv:value>
@@ -1566,6 +1452,86 @@
             </sv:node>
           </sv:node>
         </sv:node>
+      </sv:node>
+    </sv:node>
+    <sv:node sv:name="groupingItemType">
+      <sv:property sv:name="jcr:primaryType" sv:type="Name">
+        <sv:value>mgnl:contentNode</sv:value>
+      </sv:property>
+      <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
+        <sv:value>mix:lockable</sv:value>
+      </sv:property>
+      <sv:property sv:name="jcr:uuid" sv:type="String">
+        <sv:value>2d2fecdc-d093-4ba0-b131-8e69574d3abf</sv:value>
+      </sv:property>
+      <sv:property sv:name="icon" sv:type="String">
+        <sv:value>/.resources/icons/16/folders.gif</sv:value>
+      </sv:property>
+      <sv:property sv:name="itemType" sv:type="String">
+        <sv:value>mgnl:folder</sv:value>
+      </sv:property>
+      <sv:property sv:name="jcr:createdBy" sv:type="String">
+        <sv:value>admin</sv:value>
+      </sv:property>
+      <sv:node sv:name="MetaData">
+        <sv:property sv:name="jcr:primaryType" sv:type="Name">
+          <sv:value>mgnl:metaData</sv:value>
+        </sv:property>
+        <sv:property sv:name="jcr:createdBy" sv:type="String">
+          <sv:value>admin</sv:value>
+        </sv:property>
+        <sv:property sv:name="mgnl:activated" sv:type="Boolean">
+          <sv:value>false</sv:value>
+        </sv:property>
+        <sv:property sv:name="mgnl:authorid" sv:type="String">
+          <sv:value>superuser</sv:value>
+        </sv:property>
+        <sv:property sv:name="mgnl:creationdate" sv:type="Date">
+          <sv:value>2010-09-08T11:43:28.310+02:00</sv:value>
+        </sv:property>
+        <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
+          <sv:value>2012-10-26T13:28:50.000+02:00</sv:value>
+        </sv:property>
+      </sv:node>
+    </sv:node>
+    <sv:node sv:name="mainItemType">
+      <sv:property sv:name="jcr:primaryType" sv:type="Name">
+        <sv:value>mgnl:contentNode</sv:value>
+      </sv:property>
+      <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
+        <sv:value>mix:lockable</sv:value>
+      </sv:property>
+      <sv:property sv:name="jcr:uuid" sv:type="String">
+        <sv:value>0e9af6d5-38b3-434f-8ab4-530df906cda2</sv:value>
+      </sv:property>
+      <sv:property sv:name="icon" sv:type="String">
+        <sv:value>/.resources/icons/16/pawn_glass_yellow.gif</sv:value>
+      </sv:property>
+      <sv:property sv:name="itemType" sv:type="String">
+        <sv:value>mgnl:contact</sv:value>
+      </sv:property>
+      <sv:property sv:name="jcr:createdBy" sv:type="String">
+        <sv:value>admin</sv:value>
+      </sv:property>
+      <sv:node sv:name="MetaData">
+        <sv:property sv:name="jcr:primaryType" sv:type="Name">
+          <sv:value>mgnl:metaData</sv:value>
+        </sv:property>
+        <sv:property sv:name="jcr:createdBy" sv:type="String">
+          <sv:value>admin</sv:value>
+        </sv:property>
+        <sv:property sv:name="mgnl:activated" sv:type="Boolean">
+          <sv:value>false</sv:value>
+        </sv:property>
+        <sv:property sv:name="mgnl:authorid" sv:type="String">
+          <sv:value>superuser</sv:value>
+        </sv:property>
+        <sv:property sv:name="mgnl:creationdate" sv:type="Date">
+          <sv:value>2010-09-08T11:43:28.310+02:00</sv:value>
+        </sv:property>
+        <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
+          <sv:value>2012-10-26T13:28:08.874+02:00</sv:value>
+        </sv:property>
       </sv:node>
     </sv:node>
   </sv:node>
