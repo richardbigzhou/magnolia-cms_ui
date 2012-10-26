@@ -33,14 +33,14 @@
  */
 package info.magnolia.ui.framework.app.registry;
 
-import info.magnolia.jcr.node2bean.Node2BeanException;
-import info.magnolia.jcr.node2bean.Node2BeanProcessor;
-import info.magnolia.objectfactory.Components;
+import info.magnolia.cms.core.Content;
+import info.magnolia.cms.util.ContentUtil;
+import info.magnolia.content2bean.Content2BeanException;
+import info.magnolia.content2bean.Content2BeanUtil;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.framework.app.AppDescriptor;
 
 import javax.jcr.Node;
-import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -56,11 +56,13 @@ public class ConfiguredAppDescriptorProvider implements AppDescriptorProvider{
 
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
-    private final ConfiguredAppDescriptor appDescriptor;
+    private ConfiguredAppDescriptor appDescriptor;
 
-    public ConfiguredAppDescriptorProvider(Node configNode) throws Node2BeanException, RepositoryException {
+    @SuppressWarnings("deprecation")
+    public ConfiguredAppDescriptorProvider(Node configNode) throws Content2BeanException {
         super();
-        this.appDescriptor = (ConfiguredAppDescriptor) Components.getComponent(Node2BeanProcessor.class).toBean(configNode, ConfiguredAppDescriptor.class);
+        Content content = ContentUtil.asContent(configNode);
+        this.appDescriptor = (ConfiguredAppDescriptor) Content2BeanUtil.toBean(content, true, ConfiguredAppDescriptor.class);
 
         // Minimal check
         validate();
