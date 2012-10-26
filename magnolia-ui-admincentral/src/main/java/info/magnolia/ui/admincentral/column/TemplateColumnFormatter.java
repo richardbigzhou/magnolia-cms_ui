@@ -40,7 +40,6 @@ import info.magnolia.registry.RegistrationException;
 import info.magnolia.rendering.template.TemplateDefinition;
 import info.magnolia.rendering.template.registry.TemplateDefinitionRegistry;
 import info.magnolia.ui.model.column.definition.TemplateColumnDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
 import javax.jcr.Item;
 import javax.jcr.Node;
@@ -67,8 +66,7 @@ public class TemplateColumnFormatter extends AbstractColumnFormatter<TemplateCol
 
     @Override
     public Object generateCell(Table source, Object itemId, Object columnId) {
-        JcrItemAdapter item = (JcrItemAdapter)source.getItem(itemId);
-        Item jcrItem = item.getJcrItem();
+        final Item jcrItem = getJcrItem(source, itemId);
         if(jcrItem != null && jcrItem.isNode()) {
             Node node = (Node) jcrItem;
             // Get template Name
