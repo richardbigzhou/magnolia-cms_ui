@@ -33,32 +33,34 @@
  */
 package info.magnolia.ui.framework.app.registry;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import javax.jcr.RepositoryException;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-
-import info.magnolia.content2bean.Content2BeanException;
-import info.magnolia.content2bean.Content2BeanProcessor;
-import info.magnolia.content2bean.impl.Content2BeanProcessorImpl;
-import info.magnolia.content2bean.impl.TypeMappingImpl;
+import info.magnolia.jcr.node2bean.Node2BeanException;
+import info.magnolia.jcr.node2bean.Node2BeanProcessor;
+import info.magnolia.jcr.node2bean.impl.Node2BeanProcessorImpl;
+import info.magnolia.jcr.node2bean.impl.Node2BeanTransformerImpl;
+import info.magnolia.jcr.node2bean.impl.TypeMappingImpl;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.jcr.MockNode;
 import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.event.SimpleEventBus;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+
+import javax.jcr.RepositoryException;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Main Test class for {@link AppDescriptorRegistry}.
@@ -78,7 +80,8 @@ public class AppDescriptorRegistryTest {
         appDescriptorRegistry = new AppDescriptorRegistry(eventBus);
 
         TypeMappingImpl typeMapping = new TypeMappingImpl();
-        ComponentsTestUtil.setInstance(Content2BeanProcessor.class, new Content2BeanProcessorImpl(typeMapping));
+        Node2BeanTransformerImpl transformer = new Node2BeanTransformerImpl();
+        ComponentsTestUtil.setInstance(Node2BeanProcessor.class, new Node2BeanProcessorImpl(typeMapping, transformer));
         ComponentsTestUtil.setImplementation(AppDescriptor.class, ConfiguredAppDescriptor.class);
     }
 
@@ -88,7 +91,7 @@ public class AppDescriptorRegistryTest {
     }
 
     @Test
-    public void testGetAppDescriptors() throws Content2BeanException, RepositoryException, RegistrationException {
+    public void testGetAppDescriptors() throws Node2BeanException, RepositoryException, RegistrationException {
 
         // GIVEN
         String addId = "app1";
@@ -107,7 +110,7 @@ public class AppDescriptorRegistryTest {
     }
 
     @Test
-    public void testGetAppDescriptor() throws Content2BeanException, RepositoryException, RegistrationException {
+    public void testGetAppDescriptor() throws Node2BeanException, RepositoryException, RegistrationException {
 
         // GIVEN
         String addId = "app1";
@@ -125,7 +128,7 @@ public class AppDescriptorRegistryTest {
     }
 
     @Test(expected = RegistrationException.class)
-    public void testGetAppDescriptorThrowsExceptionWhenAppNotFound() throws Content2BeanException, RepositoryException, RegistrationException {
+    public void testGetAppDescriptorThrowsExceptionWhenAppNotFound() throws Node2BeanException, RepositoryException, RegistrationException {
 
         // GIVEN
         String addId = "app1";
@@ -138,7 +141,7 @@ public class AppDescriptorRegistryTest {
     }
 
     @Test
-    public void testUnregisterAndRegisterWhenEmpty() throws Content2BeanException, RepositoryException, RegistrationException {
+    public void testUnregisterAndRegisterWhenEmpty() throws Node2BeanException, RepositoryException, RegistrationException {
 
         // GIVEN
         String addId = "app1";
@@ -157,7 +160,7 @@ public class AppDescriptorRegistryTest {
     }
 
     @Test
-    public void testUnregisterAndRegisterWhenAdding() throws Content2BeanException, RepositoryException, RegistrationException {
+    public void testUnregisterAndRegisterWhenAdding() throws Node2BeanException, RepositoryException, RegistrationException {
 
         // GIVEN
         String appName1 = "app1";
@@ -182,7 +185,7 @@ public class AppDescriptorRegistryTest {
     }
 
     @Test
-    public void testUnregisterAndRegisterWhenRemoving() throws Content2BeanException, RepositoryException, RegistrationException {
+    public void testUnregisterAndRegisterWhenRemoving() throws Node2BeanException, RepositoryException, RegistrationException {
 
         // GIVEN
         String appName1 = "app1";
@@ -216,7 +219,7 @@ public class AppDescriptorRegistryTest {
     }
 
     @Test
-    public void TestUnregisterAndRegisterWhenUpdating() throws Content2BeanException, RepositoryException, RegistrationException {
+    public void TestUnregisterAndRegisterWhenUpdating() throws Node2BeanException, RepositoryException, RegistrationException {
 
         // GIVEN
         String appName = "app1";
@@ -242,7 +245,7 @@ public class AppDescriptorRegistryTest {
     }
 
     @Test
-    public void testUnregisterAndRegisterInComplexCase() throws RepositoryException, Content2BeanException, RegistrationException {
+    public void testUnregisterAndRegisterInComplexCase() throws RepositoryException, Node2BeanException, RegistrationException {
 
         // GIVEN
         AppDescriptorProvider appThatStays = createAppDescriptorProvider("appThatStays", "category", true);
@@ -274,7 +277,7 @@ public class AppDescriptorRegistryTest {
     }
 
     @Test
-    public void testUnregisterAndRegisterWhenAddingFromMultipleSources() throws Content2BeanException, RepositoryException, RegistrationException {
+    public void testUnregisterAndRegisterWhenAddingFromMultipleSources() throws Node2BeanException, RepositoryException, RegistrationException {
 
         // GIVEN
         String appName1 = "app1";
@@ -301,7 +304,7 @@ public class AppDescriptorRegistryTest {
     }
 
     @Test
-    public void testRegister() throws RepositoryException, Content2BeanException, RegistrationException {
+    public void testRegister() throws RepositoryException, Node2BeanException, RegistrationException {
 
         // GIVEN
         String appName = "app1";
@@ -317,7 +320,7 @@ public class AppDescriptorRegistryTest {
     }
 
     @Test
-    public void testUnregister() throws RepositoryException, Content2BeanException, RegistrationException {
+    public void testUnregister() throws RepositoryException, Node2BeanException, RegistrationException {
 
         // GIVEN
         String appName = "app1";
@@ -336,7 +339,7 @@ public class AppDescriptorRegistryTest {
         assertFalse(appDescriptorRegistry.isAppDescriptorRegistered(appName));
     }
 
-    private AppDescriptorProvider createAppDescriptorProvider(String name, String categoryName, boolean enabled) throws RepositoryException, Content2BeanException {
+    private AppDescriptorProvider createAppDescriptorProvider(String name, String categoryName, boolean enabled) throws RepositoryException, Node2BeanException {
         MockNode node = new MockNode("name");
         node.setProperty("name", name);
         node.setProperty("categoryName", categoryName);
