@@ -49,7 +49,7 @@
 			editor.ui.addButton('InternalLink', {
 				label: 'Link to Magnolia page',
 				command: 'magnolialink',
-				icon: "../images/disk.png"
+				icon: "mlink.png"
 			});
 		}
 	});
