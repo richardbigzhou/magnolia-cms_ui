@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral.thumbnail.view;
 
-import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.ui.model.thumbnail.ImageProvider;
@@ -180,12 +179,19 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
     private String prepareJcrSQL2Query(){
         final String[] itemTypes = getItemTypes(workbenchDefinition);
         String stmt = null;
+        if(itemTypes == null && itemTypes.length != 1) {
+            log.warn("Workbench definition contains {} item types. Defaulting to {}", (itemTypes != null ? itemTypes.length : 0), itemTypes[0]);
+        }
+        stmt = "select * from ["+itemTypes[0]+"] as t order by name(t)";
+
+        /*
         if(itemTypes != null && itemTypes.length == 1) {
             stmt = "select * from ["+itemTypes[0]+"] as t order by name(t)";
         } else {
             log.warn("Workbench definition contains {} item types. Defaulting to {}", (itemTypes != null ? itemTypes.length : 0), MgnlNodeType.NT_CONTENT);
             stmt = "select * from ["+MgnlNodeType.NT_CONTENT+"] as t order by name(t)";
-        }
+        }*/
+
         return stmt;
     }
 

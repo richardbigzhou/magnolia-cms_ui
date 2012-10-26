@@ -43,9 +43,13 @@ public interface ImageProvider {
     static final String IMAGING_SERVLET_PATH = ".imaging";
     static final String IMAGE_EXTENSION = "png";
 
+    String getLargePath(String workspace, String path);
+
     String getPortraitPath(String workspace, String path);
 
     String getThumbnailPath(String workspace, String path);
+
+    String getLargePathByIdentifier(String workspace, String uuid);
 
     String getPortraitPathByIdentifier(String workspace, String uuid);
 
