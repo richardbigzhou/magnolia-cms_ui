@@ -45,6 +45,7 @@ import info.magnolia.jcr.node2bean.Node2BeanTransformer;
 import info.magnolia.jcr.node2bean.impl.Node2BeanProcessorImpl;
 import info.magnolia.jcr.node2bean.impl.Node2BeanTransformerImpl;
 import info.magnolia.jcr.node2bean.impl.TypeMappingImpl;
+import info.magnolia.objectfactory.Components;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockContext;
 
@@ -64,7 +65,7 @@ public class AbstractDialogItemTest {
         Node2BeanTransformer transformer = new Node2BeanTransformerImpl();
         ComponentsTestUtil.setInstance(Node2BeanProcessor.class, new Node2BeanProcessorImpl(typeMapping, transformer));
 
-        DefaultMessagesManager manager = new DefaultMessagesManager();
+        DefaultMessagesManager manager = new DefaultMessagesManager(Components.getComponent(Node2BeanProcessor.class));
         ComponentsTestUtil.setInstance(MessagesManager.class, manager);
         SystemContext systemContext = mock(SystemContext.class);
         when(systemContext.getLocale()).thenReturn(Locale.ENGLISH);
