@@ -34,7 +34,10 @@
 package info.magnolia.ui.vaadin.richtext;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.vaadin.openesignforms.ckeditor.CKEditorConfig;
 
@@ -48,9 +51,10 @@ public class MagnoliaRichTextFieldConfig extends CKEditorConfig {
 
     private static final long serialVersionUID = 9993500103615659L;
     private List<String> events = new ArrayList<String>();
+    private Map<String, String> serverSidePlugins = new HashMap<String, String>();
 
     public MagnoliaRichTextFieldConfig() {
-        addToExtraPlugins("magnolialink");
+//        addToExtraPlugins("magnolialink");
         addToRemovePlugins("elementspath");
     }
     
@@ -93,5 +97,13 @@ public class MagnoliaRichTextFieldConfig extends CKEditorConfig {
                 this.items.add(item);
             }
         }
+    }
+
+    public void addPlugin(String pluginName, String source) {
+        this.serverSidePlugins.put(pluginName, source);
+    }
+    
+    Map<String, String> getServerPlugins() {
+        return Collections.unmodifiableMap(this.serverSidePlugins);
     }
 }

@@ -96,8 +96,9 @@ public class RichTextFieldBuilder extends
         toolbars.add(new ToolbarGroup("special",
                 new String[] { "Undo", "Redo" }));
         config.addToolbarLine(toolbars);
+        config.addPlugin("magnolialink", "/VAADIN/js/ckeditor/plugins/magnolialink/");
         config.addListenedEvent("reqMagnoliaLink");
-
+        
         richtexteditor = new MagnoliaRichTextField(config);
         richtexteditor.addListener(new MagnoliaRichTextField.PluginListener() {
 
@@ -108,6 +109,7 @@ public class RichTextFieldBuilder extends
                 }
             }
         });
+        
 
         return richtexteditor;
     }

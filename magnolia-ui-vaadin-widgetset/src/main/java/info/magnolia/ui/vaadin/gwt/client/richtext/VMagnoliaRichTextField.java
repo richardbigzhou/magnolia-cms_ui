@@ -39,12 +39,14 @@ import java.util.List;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.user.client.Window;
 
 import org.vaadin.openesignforms.ckeditor.widgetset.client.ui.CKEditorService;
 import org.vaadin.openesignforms.ckeditor.widgetset.client.ui.VCKEditorTextField;
 
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.UIDL;
+import com.vaadin.terminal.gwt.client.ValueMap;
 
 /**
  * Magnolia rich text field adds an ability to custom plugins to communicate
@@ -52,6 +54,7 @@ import com.vaadin.terminal.gwt.client.UIDL;
  */
 public class VMagnoliaRichTextField extends VCKEditorTextField implements VMagnoliaRichTextEditor.Listener {
     public static final String VAR_EVENTNAMES = "eventnames";
+    public static final String VAR_SERVERPLUGINS = "serverplugins";
     public static final String VAR_EVENT_PREFIX = "pluginEvent:";
     public static final String VAR_FIRE_PLUGIN_EVENT = "firePluginEvent";
     public static final String VAR_FIRE_PLUGIN_EVENT_VALUE = "firePluginEventValue";
@@ -77,6 +80,14 @@ public class VMagnoliaRichTextField extends VCKEditorTextField implements VMagno
                 this.editor.addListener(this, eventName);
             }
         }
+
+        if(uidl.hasAttribute(VAR_SERVERPLUGINS)) {
+            ValueMap plugins = uidl.getMapAttribute(VAR_SERVERPLUGINS);
+            for(String key: plugins.getKeySet()) {
+                Window.alert("loading: "+key+" , "+plugins.getString(key));
+                //loadExternalPlugin(key, plugins.getString(key));                
+            }
+        }
         
         //Server wants to send an event to a plugin.
         if(uidl.hasAttribute(VAR_FIRE_PLUGIN_EVENT)) {
@@ -87,6 +98,10 @@ public class VMagnoliaRichTextField extends VCKEditorTextField implements VMagno
         }
     }
     
+    private static native void loadExternalPlugin(String pluginName, String path) /*-{        
+       $wnd.CKEDITOR.plugins.addExternal( pluginName, path );
+    }-*/;
+
     /**
      * Will be invoked from CK plugins.
      */
@@ -133,8 +148,10 @@ public class VMagnoliaRichTextField extends VCKEditorTextField implements VMagno
      */
     private static native void injectEditorTo(final VMagnoliaRichTextField listener)
     /*-{
-
-        var createdEvent = function(e) {
+        alert('f1');
+        $wnd.CKEDITOR.plugins.addExternal('magnolialink', '/VAADIN/js/ckeditor/plugins/magnolialink/', 'plugin.js' );
+        alert('f2');
+        var createdEvent = function(e) {            
             var listenerInstanceId = listener.@info.magnolia.ui.vaadin.gwt.client.richtext.VMagnoliaRichTextField::getPaintableId()();
             var editorInstanceId = e.editor.element.getId();
             if(listenerInstanceId == editorInstanceId) {
