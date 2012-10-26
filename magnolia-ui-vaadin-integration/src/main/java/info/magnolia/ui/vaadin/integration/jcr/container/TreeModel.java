@@ -37,7 +37,6 @@ import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.ui.model.workbench.definition.ItemTypeDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 
 import java.util.ArrayList;
@@ -64,6 +63,17 @@ import org.slf4j.LoggerFactory;
  */
 public class TreeModel implements JcrContainerSource {
 
+    private static class ItemNameComparator implements Comparator<Item> {
+        @Override
+        public int compare(Item lhs, Item rhs) {
+            try {
+                return lhs.getName().compareTo(rhs.getName());
+            } catch (RepositoryException e) {
+                throw new RuntimeRepositoryException(e);
+            }
+        }
+    }
+
     private static final Logger log = LoggerFactory.getLogger(TreeModel.class);
     private WorkbenchDefinition workbenchDefinition;
 
@@ -79,42 +89,34 @@ public class TreeModel implements JcrContainerSource {
 
         Node node = (Node) item;
 
-        ArrayList<Item> c = new ArrayList<Item>();
+        ArrayList<Item> items = new ArrayList<Item>();
 
-        for (ItemTypeDefinition itemType : workbenchDefinition.getItemTypes()) {
-            ArrayList<Node> nodes = new ArrayList<Node>();
-            NodeIterator iterator = node.getNodes();
-            while (iterator.hasNext()) {
-                Node next = (Node) iterator.next();
-                if (itemType.getItemType().equals(next.getPrimaryNodeType().getName())) {
-                    nodes.add(next);
-                }
+        ArrayList<Node> mainItemTypeNodes = new ArrayList<Node>();
+        ArrayList<Node> groupingItemTypeNodes = new ArrayList<Node>();
+        NodeIterator iterator = node.getNodes();
+        final String mainItemTypeName = workbenchDefinition.getMainItemType().getItemType();
+        final String groupingItemTypeName = workbenchDefinition.getGroupingItemType() == null ? null : workbenchDefinition.getGroupingItemType().getItemType();
+        String currentNodeTypeName;
+        while (iterator.hasNext()) {
+            Node next = iterator.nextNode();
+            currentNodeTypeName = next.getPrimaryNodeType().getName();
+            if (mainItemTypeName.equals(currentNodeTypeName)) {
+                mainItemTypeNodes.add(next);
             }
-            // TODO This behaviour is optional in old AdminCentral, you can set a custom comparator.
-            Collections.sort(nodes, new Comparator<Node>() {
-                @Override
-                public int compare(Node lhs, Node rhs) {
-                    try {
-                        return lhs.getName().compareTo(rhs.getName());
-                    } catch (RepositoryException e) {
-                        throw new RuntimeRepositoryException(e);
-                    }
-                }
-            });
-            for (Node n : nodes) {
-                c.add(n);
+            if (groupingItemTypeName != null && groupingItemTypeName.equals(currentNodeTypeName)) {
+                groupingItemTypeNodes.add(next);
             }
         }
+        // TODO This behaviour is optional in old AdminCentral, you can set a custom comparator.
+        ItemNameComparator itemNameComparator = new ItemNameComparator();
+        Collections.sort(mainItemTypeNodes, itemNameComparator);
 
-        boolean includeProperties = false;
-        for (ItemTypeDefinition itemType : workbenchDefinition.getItemTypes()) {
-            if (itemType.getItemType().equals(ItemTypeDefinition.ITEM_TYPE_PROPERTY)) {
-                includeProperties = true;
-                break;
-            }
-        }
+        Collections.sort(groupingItemTypeNodes, itemNameComparator);
 
-        if (includeProperties) {
+        items.addAll(mainItemTypeNodes);
+        items.addAll(groupingItemTypeNodes);
+
+        if (workbenchDefinition.includeProperties()) {
             ArrayList<Property> properties = new ArrayList<Property>();
             PropertyIterator propertyIterator = node.getProperties();
             while (propertyIterator.hasNext()) {
@@ -123,22 +125,11 @@ public class TreeModel implements JcrContainerSource {
                     properties.add(property);
                 }
             }
-            Collections.sort(properties, new Comparator<Property>() {
-                @Override
-                public int compare(Property lhs, Property rhs) {
-                    try {
-                        return lhs.getName().compareTo(rhs.getName());
-                    } catch (RepositoryException e) {
-                        throw new RuntimeRepositoryException(e);
-                    }
-                }
-            });
-            for (Property p : properties) {
-                c.add(p);
-            }
+            Collections.sort(properties, itemNameComparator);
+            items.addAll(properties);
         }
 
-        return Collections.unmodifiableCollection(c);
+        return Collections.unmodifiableCollection(items);
     }
 
     @Override

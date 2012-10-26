@@ -40,8 +40,6 @@ import info.magnolia.ui.model.thumbnail.ImageProvider;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.List;
-
 
 /**
  * Contains all elements which define a workbench configuration.
@@ -54,13 +52,20 @@ public interface WorkbenchDefinition extends Serializable {
 
     String getPath();
 
-    List<ItemTypeDefinition> getItemTypes();
+    /**
+     * @return the grouping ItemType used in the tree view.
+     */
+    ItemTypeDefinition getGroupingItemType();
 
     /**
-     * Return the itemType filter criteria in order to be used for searching nodes. like:
-     * "jcr:* | myapp:report | my doc"
+     * @return the main ItemType. Used in all views.
      */
-    String getItemTypesFilter();
+    ItemTypeDefinition getMainItemType();
+
+    /**
+     * @return whether properties should be displayed as well (or just nodes)
+     */
+    boolean includeProperties();
 
     ColumnDefinition getColumn(String columnId);
 

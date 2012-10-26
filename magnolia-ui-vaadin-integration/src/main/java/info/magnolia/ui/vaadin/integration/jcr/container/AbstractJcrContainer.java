@@ -58,6 +58,7 @@ import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 import javax.jcr.query.RowIterator;
 
+import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -253,8 +254,8 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
             if(!jcrSession.itemExists((String) itemId)) {
                 return null;
             }
-            Node node = (Node) jcrSession.getItem((String) itemId);
-            return new JcrNodeAdapter(node);
+            javax.jcr.Item item = jcrSession.getItem((String) itemId);
+            return item.isNode() ? new JcrNodeAdapter((Node) item) : new JcrPropertyAdapter((javax.jcr.Property) item);
         } catch (RepositoryException e) {
             log.error("", e);
             return null;
