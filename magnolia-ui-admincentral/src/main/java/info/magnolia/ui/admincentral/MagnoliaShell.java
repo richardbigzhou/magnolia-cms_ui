@@ -116,9 +116,10 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
             @Override
             public void invoke(String methodName, Object[] params) {
                 setActiveViewport(getAppViewport());
-                final String appName = String.valueOf(params[0]);
-                final String token = String.valueOf(params[1]);
-                locationControllerProvider.get().goTo(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appName, "", token));
+                final String appId = String.valueOf(params[0]);
+                final String subAppId = String.valueOf(params[1]);
+                final String parameter = String.valueOf(params[2]);
+                locationControllerProvider.get().goTo(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appId, subAppId, parameter));
             }
         });
 
@@ -173,13 +174,14 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
     @Override
     public void setFragment(String fragment) {
 
-        String prefix = DefaultLocation.extractAppId(fragment);
-        String token = DefaultLocation.extractParameter(fragment);
+        String appId = DefaultLocation.extractAppId(fragment);
+        String subAppId = DefaultLocation.extractSubAppId(fragment);
+        String parameter = DefaultLocation.extractParameter(fragment);
 
         final ShellViewport activeViewport = getActiveViewport();
-        activeViewport.setCurrentShellFragment(prefix + ":" + token);
+        activeViewport.setCurrentShellFragment(appId + ":" + subAppId + ";" + parameter);
 
-        proxy.call("navigate", prefix, token);
+        proxy.call("navigate", appId, subAppId, parameter);
     }
 
     @Override
@@ -242,32 +244,32 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
     }
 
     @Override
-    public void navigateToApp(String prefix, String token) {
-        if (StringUtils.isEmpty(token)) {
+    public void navigateToApp(String appId, String subAppId, String parameter) {
+        if (StringUtils.isEmpty(parameter)) {
 
-            Location location = appController.getCurrentLocation(prefix);
+            Location location = appController.getCurrentLocation(appId);
             if (location == null) {
-                location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, prefix, "", token);
+                location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appId, subAppId, parameter);
             }
-            super.navigateToApp(prefix, ((DefaultLocation) location).getParameter());
+            super.navigateToApp(appId, subAppId, ((DefaultLocation) location).getParameter());
 
         } else {
-            super.navigateToApp(prefix, token);
+            super.navigateToApp(appId, subAppId, parameter);
         }
     }
 
     @Override
-    public void navigateToShellApp(String prefix, String token) {
-        if (StringUtils.isEmpty(token)) {
+    public void navigateToShellApp(String shellAppId, String parameter) {
+        if (StringUtils.isEmpty(parameter)) {
 
-            Location location = shellAppControllerProvider.get().getCurrentLocation(prefix);
+            Location location = shellAppControllerProvider.get().getCurrentLocation(shellAppId);
             if (location == null) {
-                location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_SHELL_APP, prefix, "", token);
+                location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_SHELL_APP, shellAppId, "", parameter);
             }
-            super.navigateToShellApp(prefix, ((DefaultLocation) location).getParameter());
+            super.navigateToShellApp(shellAppId, ((DefaultLocation) location).getParameter());
 
         } else {
-            super.navigateToShellApp(prefix, token);
+            super.navigateToShellApp(shellAppId, parameter);
         }
     }
 

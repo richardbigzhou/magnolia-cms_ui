@@ -43,7 +43,6 @@ import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
 import info.magnolia.ui.framework.app.AbstractSubApp;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.view.View;
 
@@ -202,7 +201,6 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
                 ContentLocation location = getCurrentLocation();
                 location.updateNodePath(event.getPath());
                 appContext.setSubAppLocation(subApp, location);
-                updateActionbar(actionbar);
             }
         });
 
@@ -213,7 +211,6 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
                 ContentLocation location = getCurrentLocation();
                 location.updateViewType(event.getViewType());
                 appContext.setSubAppLocation(subApp, currentLocation);
-                updateActionbar(actionbar);
             }
         });
 
@@ -224,7 +221,6 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
                 ContentLocation location = getCurrentLocation();
                 location.updateQuery(event.getSearchExpression());
                 appContext.setSubAppLocation(subApp, currentLocation);
-                updateActionbar(actionbar);
             }
         });
     }

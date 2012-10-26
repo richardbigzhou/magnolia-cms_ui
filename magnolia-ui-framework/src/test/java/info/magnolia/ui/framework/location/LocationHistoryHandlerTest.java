@@ -58,7 +58,7 @@ public class LocationHistoryHandlerTest {
 
     @Test
     public void testUpdatesFragmentOnLocationChange() {
-        assertSetsFragmentToOnLocationChange(new DefaultLocation("app", "foo", "", "/some/path"), "app:foo:/some/path");
+        assertSetsFragmentToOnLocationChange(new DefaultLocation("app", "foo", "subAppId", "/some/path"), "app:foo:subAppId;/some/path");
     }
 
     @Test
@@ -70,7 +70,7 @@ public class LocationHistoryHandlerTest {
 
     @Test
     public void testCallsLocationControllerOnFragmentChange() {
-        assertFragmentChangeCausesLocationChangeTo("app:foo:/some/path", new DefaultLocation("app", "foo", "", "/some/path"));
+        assertFragmentChangeCausesLocationChangeTo("app:foo:subAppId;/some/path", new DefaultLocation("app", "foo", "subAppId", "/some/path"));
     }
 
     @Test
@@ -102,7 +102,7 @@ public class LocationHistoryHandlerTest {
 
     @Test
     public void testHandleCurrentHistoryNavigatesToDefaultLocation() {
-        assertCallsLocationControllerWhenCurrentHistoryIs("app:foo:/some/path", new DefaultLocation("app", "foo", "", "/some/path"));
+        assertCallsLocationControllerWhenCurrentHistoryIs("app:foo;/some/path", new DefaultLocation("app", "foo", "", "/some/path"));
     }
 
     @Test
@@ -182,11 +182,12 @@ public class LocationHistoryHandlerTest {
         @Override
         public Location getLocation(String fragment) {
             String type = DefaultLocation.extractAppType(fragment);
-            String prefix = DefaultLocation.extractAppId(fragment);
-            String token = DefaultLocation.extractParameter(fragment);
+            String appId = DefaultLocation.extractAppId(fragment);
+            String subAppId = DefaultLocation.extractSubAppId(fragment);
+            String parameter = DefaultLocation.extractParameter(fragment);
 
-            if (type.equals("app") && prefix.equals("foo")) {
-                return new DefaultLocation(type, prefix, "", token);
+            if (type.equals("app") && appId.equals("foo")) {
+                return new DefaultLocation(type, appId, subAppId, parameter);
             }
 
             return null;

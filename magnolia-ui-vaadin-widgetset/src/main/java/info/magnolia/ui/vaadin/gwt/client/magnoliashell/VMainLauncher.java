@@ -81,7 +81,7 @@ public class VMainLauncher extends FlowPanel {
         @Override
         public void onAppActivated(AppActivatedEvent event) {
             if (event.isShellApp()) {
-                activateControl(ShellAppType.valueOf(event.getPrefix().toUpperCase()));
+                activateControl(ShellAppType.valueOf(event.getAppId().toUpperCase()));
             }
         }
     };

@@ -67,4 +67,5 @@ public interface AppContext {
     String getName();
 
     void setSubAppLocation(SubApp subApp, Location location);
+
 }

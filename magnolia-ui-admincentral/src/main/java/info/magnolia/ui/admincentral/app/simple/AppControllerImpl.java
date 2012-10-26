@@ -443,6 +443,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             SubAppContext subAppContext = getSubAppContextForSubApp(subApp);
             if (subAppContext != null) {
                 subAppContext.location = location;
+                subAppContext.subApp.locationChanged(location);
                 if (currentApp == this && getActiveSubAppContext() == subAppContext) {
                     shell.setFragment(location.toString());
                 }
