@@ -42,7 +42,6 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
-
 /**
  * Contains all elements which define a workbench configuration.
  */
@@ -54,13 +53,19 @@ public interface WorkbenchDefinition extends Serializable {
 
     String getPath();
 
+    /**
+     * @deprecated dlipp - remove before merging back to master...
+     */
     List<ItemTypeDefinition> getItemTypes();
 
+    ItemTypeDefinition getGroupingItemType();
+
+    ItemTypeDefinition getMainItemType();
+
     /**
-     * Return the itemType filter criteria in order to be used for searching nodes. like:
-     * "jcr:* | myapp:report | my doc"
+     * @return whether properties should be displayed as well (or just nodes)
      */
-    String getItemTypesFilter();
+    boolean includeProperties();
 
     ColumnDefinition getColumn(String columnId);
 

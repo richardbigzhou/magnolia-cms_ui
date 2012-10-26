@@ -44,7 +44,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-
 /**
  * Default configured implementation for the WorkbenchDefinition.
  */
@@ -58,7 +57,9 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
 
     private String defaultOrder;
 
-    private List<ItemTypeDefinition> itemTypes = new ArrayList<ItemTypeDefinition>();
+    private ItemTypeDefinition mainItemType;
+
+    private ItemTypeDefinition groupingItemType;
 
     private final Map<String, ColumnDefinition> columns = new LinkedHashMap<String, ColumnDefinition>();
 
@@ -69,6 +70,8 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
     private boolean dialogWorkbench = false;
 
     private ImageProvider imageProvider;
+
+    private boolean includeProperties = false;
     
     @Override
     public String getName() {
@@ -77,6 +80,33 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public ItemTypeDefinition getMainItemType() {
+        return mainItemType;
+    }
+
+    @Override
+    public boolean includeProperties() {
+        return includeProperties;
+    }
+
+    public void setIncludeProperties(boolean includeProperties) {
+        this.includeProperties = includeProperties;
+    }
+
+    public void setMainItemType(ItemTypeDefinition mainItemType) {
+        this.mainItemType = mainItemType;
+    }
+
+    @Override
+    public ItemTypeDefinition getGroupingItemType() {
+        return groupingItemType;
+    }
+
+    public void setGroupingItemType(ItemTypeDefinition groupingItemType) {
+        this.groupingItemType = groupingItemType;
     }
 
     @Override
@@ -93,31 +123,20 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
         return path;
     }
 
-    public void setPath(String path) {
-        this.path = path;
-    }
-
     @Override
     public List<ItemTypeDefinition> getItemTypes() {
+        List itemTypes = new ArrayList<ItemTypeDefinition>();
+        if (getMainItemType() != null) {
+            itemTypes.add(getMainItemType());
+        }
+        if (getGroupingItemType() != null) {
+            itemTypes.add(getGroupingItemType());
+        }
         return itemTypes;
     }
 
-    public void setItemTypes(List<ItemTypeDefinition> itemTypes) {
-        this.itemTypes = itemTypes;
-    }
-
-    public boolean addItemType(ItemTypeDefinition itemTypeDefinition) {
-        return itemTypes.add(itemTypeDefinition);
-    }
-
-    @Override
-    public String getItemTypesFilter() {
-        final StringBuilder builder = new StringBuilder(" ");
-        for (ItemTypeDefinition item : itemTypes) {
-            builder.append(" ")
-                    .append(item.getItemType() + (itemTypes.indexOf(item) < itemTypes.size() - 1 ? " | " : ""));
-        }
-        return builder.toString();
+    public void setPath(String path) {
+        this.path = path;
     }
 
     @Override

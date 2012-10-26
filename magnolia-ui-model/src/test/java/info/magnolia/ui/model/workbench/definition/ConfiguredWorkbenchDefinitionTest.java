@@ -36,6 +36,8 @@ package info.magnolia.ui.model.workbench.definition;
 import info.magnolia.test.RepositoryTestCase;
 import org.junit.Test;
 
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
 
 
@@ -44,20 +46,20 @@ import static org.junit.Assert.assertEquals;
  */
 public class ConfiguredWorkbenchDefinitionTest extends RepositoryTestCase {
     @Test
-    public void testGetItemTypesFilter() throws Exception {
+    public void testGetItemTypes() throws Exception {
         // GIVEN
         ConfiguredWorkbenchDefinition def = new ConfiguredWorkbenchDefinition();
         ConfiguredItemTypeDefinition itemDef = new ConfiguredItemTypeDefinition();
         itemDef.setItemType("oneItemType");
-        def.addItemType(itemDef);
+        def.setMainItemType(itemDef);
         ConfiguredItemTypeDefinition anotherItemDef = new ConfiguredItemTypeDefinition();
         anotherItemDef.setItemType("anotherItemType");
-        def.addItemType(anotherItemDef);
+        def.setGroupingItemType(anotherItemDef);
 
         // WHEN
-        final String result = def.getItemTypesFilter();
+        final List<ItemTypeDefinition> result = def.getItemTypes();
 
         // THEN
-        assertEquals("  oneItemType |  anotherItemType", result);
+        assertEquals(2, result.size());
     }
 }

@@ -106,15 +106,7 @@ public class TreeModel implements JcrContainerSource {
             }
         }
 
-        boolean includeProperties = false;
-        for (ItemTypeDefinition itemType : workbenchDefinition.getItemTypes()) {
-            if (itemType.getItemType().equals(ItemTypeDefinition.ITEM_TYPE_PROPERTY)) {
-                includeProperties = true;
-                break;
-            }
-        }
-
-        if (includeProperties) {
+        if (workbenchDefinition.includeProperties()) {
             ArrayList<Property> properties = new ArrayList<Property>();
             PropertyIterator propertyIterator = node.getProperties();
             while (propertyIterator.hasNext()) {

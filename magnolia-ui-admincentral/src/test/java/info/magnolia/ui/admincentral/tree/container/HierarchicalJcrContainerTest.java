@@ -54,7 +54,6 @@ import info.magnolia.ui.vaadin.integration.jcr.container.AbstractJcrContainerTes
 import info.magnolia.ui.vaadin.integration.jcr.container.TreeModel;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 
 import javax.jcr.Node;
@@ -118,7 +117,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
 
         ItemTypeDefinition itemType = new ConfiguredItemTypeDefinition();
         ((ConfiguredItemTypeDefinition) itemType).setItemType("mgnl:content");
-        configuredWorkbench.setItemTypes(Arrays.asList(itemType));
+        configuredWorkbench.setMainItemType(itemType);
 
         workbenchDefinition = configuredWorkbench;
 
