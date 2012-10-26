@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.vaadin.dialog;
 
-import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout.VFormDialog;
 import info.magnolia.ui.vaadin.tabsheet.MagnoliaTabSheet;
 
@@ -55,8 +54,6 @@ import com.vaadin.ui.Field;
 @ClientWidget(value = VFormDialog.class, loadStyle = LoadStyle.EAGER)
 public class FormDialog extends BaseDialog implements FormDialogView {
 
-    private final String SHOW_ALL = MessagesUtil.get("dialogs.show.all");
-
     private MagnoliaTabSheet tabSheet = new MagnoliaTabSheet() {
         @Override
         public MagnoliaDialogTab addTab(final String caption, final ComponentContainer c) {
@@ -65,22 +62,22 @@ public class FormDialog extends BaseDialog implements FormDialogView {
                 tab.setSizeUndefined();
                 tab.setClosable(false);
                 doAddTab(tab);
-                return tab;
+                return tab;                    
             }
             return null;
         }
     };
-
+    
     private Item itemDatasource;
-
+    
     private List<Field> fields = new LinkedList<Field>();
-
-    public FormDialog() {
+    
+    public FormDialog() { 
         super.setContent(tabSheet);
-        tabSheet.showAllTab(true, SHOW_ALL);
+        tabSheet.showAllTab(true, "Show all");
         tabSheet.setHeight("500px");
     }
-
+    
     @Override
     public void addField(Field field) {
         fields.add(field);
@@ -90,7 +87,7 @@ public class FormDialog extends BaseDialog implements FormDialogView {
     public List<Field> getFields() {
         return fields;
     }
-
+    
     @Override
     public boolean isValid() {
         boolean res = true;
@@ -99,7 +96,7 @@ public class FormDialog extends BaseDialog implements FormDialogView {
         }
         return res;
     }
-
+    
     @Override
     public void showValidation(boolean isVisible) {
         final Iterator<Component> it = tabSheet.getComponentIterator();
@@ -110,7 +107,7 @@ public class FormDialog extends BaseDialog implements FormDialogView {
             }
         }
     }
-
+    
     @Override
     public void setItemDataSource(Item newDataSource) {
         this.itemDatasource = newDataSource;
@@ -125,7 +122,7 @@ public class FormDialog extends BaseDialog implements FormDialogView {
     public void addDialogSection(String tabName, FormSection inputFields) {
         tabSheet.addTab(tabName, inputFields);
     }
-
+    
     @Override
     protected Component createDefaultContent() {
         return tabSheet;
@@ -138,7 +135,7 @@ public class FormDialog extends BaseDialog implements FormDialogView {
 
     @Override
     public void setShowAllEnabled(boolean enabled) {
-        tabSheet.showAllTab(enabled, SHOW_ALL);
+        tabSheet.showAllTab(true, "Show All");
     };
-
+    
 }
