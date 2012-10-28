@@ -41,7 +41,6 @@ import info.magnolia.ui.admincentral.event.SearchEvent;
 import info.magnolia.ui.admincentral.event.ViewTypeChangedEvent;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
 import info.magnolia.ui.framework.app.AbstractSubApp;
-import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.location.Location;
@@ -53,7 +52,7 @@ import javax.inject.Named;
  * Abstract class providing a sensible implementation for services shared by all content subapps.
  * Out-of-the-box it will handle the following
  * <ul>
- * <li>location updates when switching views, selecting items or performing searches: see {@link #locationChanged(Location)} and {@link #createLocation()}
+ * <li>location updates when switching views, selecting items or performing searches: see {@link #locationChanged(Location)}}
  * <li>restoring the workbench app status when i.e. coming from a bookmark: see {@link #start(Location)}
  * </ul>
  * In order to perform those tasks this class registers non-overridable handlers for the following events:
@@ -72,7 +71,6 @@ import javax.inject.Named;
  *
  * @see ContentWorkbenchPresenter
  * @see ContentAppView
- * @see AppContext
  * @see AbstractContentApp
  * @see ContentLocation
  */
