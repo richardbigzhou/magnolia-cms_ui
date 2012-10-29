@@ -33,59 +33,27 @@
  */
 package info.magnolia.ui.app.contacts.cconf.app;
 
-import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
+import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor;
 
 /**
- * Builder used to build an app descriptor.
+ * Builder used to build a sub app descriptor.
  */
-public class AppBuilder {
+public class SubAppBuilder {
 
-    private ConfiguredAppDescriptor descriptor;
+    private ConfiguredSubAppDescriptor descriptor;
 
-    public AppBuilder() {
-        descriptor = new ConfiguredAppDescriptor();
+    public SubAppBuilder(ConfiguredSubAppDescriptor descriptor) {
+        this.descriptor = descriptor;
     }
 
-    public AppBuilder(String name) {
-        descriptor = new ConfiguredAppDescriptor();
-        descriptor.setName(name);
-    }
-
-    public AppBuilder label(String label) {
-        descriptor.setLabel(label);
+    public SubAppBuilder subAppClass(Class<? extends SubApp> subAppClass) {
+        descriptor.setSubAppClass(subAppClass);
         return this;
     }
 
-    public AppBuilder icon(String icon) {
-        descriptor.setIcon(icon);
+    public SubAppBuilder defaultSubApp() {
+        descriptor.setDefault(true);
         return this;
-    }
-
-    public AppBuilder appClass(Class<? extends info.magnolia.ui.framework.app.App> appClass) {
-        descriptor.setAppClass(appClass);
-        return this;
-    }
-
-    public AppBuilder categoryName(String categoryName) {
-        descriptor.setCategoryName(categoryName);
-        return this;
-    }
-
-    public AppBuilder enabled(boolean enabled) {
-        descriptor.setEnabled(enabled);
-        return this;
-    }
-
-    public SubAppBuilder subApp(String name) {
-        ConfiguredSubAppDescriptor subAppDescriptor = new ConfiguredSubAppDescriptor();
-        subAppDescriptor.setName(name);
-        descriptor.addSubApp(subAppDescriptor);
-        return new SubAppBuilder(subAppDescriptor);
-    }
-
-    public AppDescriptor exec() {
-        return descriptor;
     }
 }

@@ -65,13 +65,6 @@ public class WorkbenchBuilder {
         return this;
     }
 
-    public WorkbenchBuilder types(ItemTypeBuilder... types) {
-        for (ItemTypeBuilder type : types) {
-            definition.addItemType(type.exec());
-        }
-        return this;
-    }
-
     public WorkbenchBuilder columns(ColumnBuilder... columns) {
         for (ColumnBuilder column : columns) {
             definition.addColumn(column.exec());
@@ -89,10 +82,17 @@ public class WorkbenchBuilder {
         return definition;
     }
 
-    public ItemTypeBuilder type(String itemType) {
+    public ItemTypeBuilder groupingItemType(String itemType) {
         ConfiguredItemTypeDefinition itemTypeDefinition = new ConfiguredItemTypeDefinition();
         itemTypeDefinition.setItemType(itemType);
-        definition.addItemType(itemTypeDefinition);
+        definition.setGroupingItemType(itemTypeDefinition);
+        return new ItemTypeBuilder(itemTypeDefinition);
+    }
+
+    public ItemTypeBuilder mainItemType(String itemType) {
+        ConfiguredItemTypeDefinition itemTypeDefinition = new ConfiguredItemTypeDefinition();
+        itemTypeDefinition.setItemType(itemType);
+        definition.setMainItemType(itemTypeDefinition);
         return new ItemTypeBuilder(itemTypeDefinition);
     }
 

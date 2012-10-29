@@ -93,12 +93,12 @@ public class ContactsModule implements ModuleLifecycle {
         app.label("Contacts").icon("icon-people").appClass(ContactsApp.class).categoryName("MANAGE");
 
         WorkbenchBuilder workbench = app.workbench().workspace("contacts").root("/").defaultOrder("jcrName");
-        workbench.type("mgnl:folder").icon("/.resources/icons/16/folders.gif");
-        workbench.type("mgnl:contact").icon("/.resources/icons/16/pawn_glass_yellow.gif");
+        workbench.groupingItemType("mgnl:folder").icon("/.resources/icons/16/folders.gif");
+        workbench.mainItemType("mgnl:contact").icon("/.resources/icons/16/pawn_glass_yellow.gif");
         workbench.column(new ContactNameColumnDefinition()).name("name").label("Name").sortable(true).propertyName("jcrName").formatterClass(ContactNameColumnFormatter.class);
         workbench.column(new PropertyColumnDefinition()).name("email").label("Email").sortable(true).width(180).displayInDialog(false);
         workbench.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(50);
-        workbench.column(new MetaDataColumnDefinition()).name("moddate").label("Mod. Date").propertyName("MetaData/mgnl:lastmodified").displayInDialog(false).width(200);
+        workbench.column(new MetaDataColumnDefinition()).name("moddate").label("Mod. Date").propertyName("MetaData/mgnl:lastmodified").displayInDialog(false).width(200).sortable(true);
 
         DefaultImageProvider imageProvider = new DefaultImageProvider();
         imageProvider.setOriginalImageNodeName("photo");
@@ -128,6 +128,9 @@ public class ContactsModule implements ModuleLifecycle {
         editFolderAction.setDialogName("ui-contacts-app:folder");
         folderEditActions.item("edit").label("Edit folder").icon("icon-edit").action(editFolderAction);
         folderEditActions.item("delete").label("Delete folder").icon("icon-delete").action(new DeleteItemActionDefinition());
+
+        app.subApp("main").subAppClass(ContactsMainSubApp.class).defaultSubApp();
+        app.subApp("detail").subAppClass(ContactsMainSubApp.class);
     }
 
     @Dialog("ui-contacts-app:folder")

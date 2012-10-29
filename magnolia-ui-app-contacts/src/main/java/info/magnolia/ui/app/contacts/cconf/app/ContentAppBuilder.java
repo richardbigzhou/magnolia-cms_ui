@@ -36,6 +36,7 @@ package info.magnolia.ui.app.contacts.cconf.app;
 import info.magnolia.ui.admincentral.app.content.ConfiguredContentAppDescriptor;
 import info.magnolia.ui.app.contacts.cconf.workbench.WorkbenchBuilder;
 import info.magnolia.ui.framework.app.AppDescriptor;
+import info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor;
 import info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition;
 
 /**
@@ -83,6 +84,13 @@ public class ContentAppBuilder {
         ConfiguredWorkbenchDefinition workbenchDefinition = new ConfiguredWorkbenchDefinition();
         descriptor.setWorkbench(workbenchDefinition);
         return new WorkbenchBuilder(workbenchDefinition);
+    }
+
+    public SubAppBuilder subApp(String name) {
+        ConfiguredSubAppDescriptor subAppDescriptor = new ConfiguredSubAppDescriptor();
+        subAppDescriptor.setName(name);
+        descriptor.addSubApp(subAppDescriptor);
+        return new SubAppBuilder(subAppDescriptor);
     }
 
     public AppDescriptor exec() {
