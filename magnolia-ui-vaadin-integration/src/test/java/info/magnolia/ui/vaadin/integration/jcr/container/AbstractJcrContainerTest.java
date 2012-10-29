@@ -49,6 +49,7 @@ import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.builder.DefinitionToImplementationMapping;
 import info.magnolia.ui.model.column.definition.PropertyTypeColumnDefinition;
 import info.magnolia.ui.model.workbench.action.WorkbenchActionRegistry;
+import info.magnolia.ui.model.workbench.definition.ConfiguredItemTypeDefinition;
 import info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
@@ -71,31 +72,35 @@ import org.junit.Test;
 import com.vaadin.data.Property;
 
 /**
- * Main test class for {AbstractJcrContainer}.
+ * Tests for AbstractJcrContainer.
  */
 public class AbstractJcrContainerTest extends RepositoryTestCase{
 
     private JcrContainerTestImpl jcrContainer;
-    private WorkbenchDefinition workbenchDefinition;
+    private ConfiguredWorkbenchDefinition workbenchDefinition;
     private TreeModel treeModel;
     private String workspace = "config";
     private String colName1 = "name";
     private String colName2 = "shortname";
     private Session session;
-    Node rootNode;
+    private Node rootNode;
 
     @Override
     @Before
     public void setUp() throws Exception{
         super.setUp();
-        //Init
+
         ConfiguredWorkbenchDefinition configuredWorkbench = new ConfiguredWorkbenchDefinition();
         configuredWorkbench.setWorkspace(workspace);
         configuredWorkbench.setPath("/");
-        //Init workBench
+
+        ConfiguredItemTypeDefinition mainItemType = new ConfiguredItemTypeDefinition();
+        mainItemType.setItemType(MgnlNodeType.NT_CONTENT);
+        configuredWorkbench.setMainItemType(mainItemType);
+
         WorkbenchActionRegistry workbenchActionRegistry = mock(WorkbenchActionRegistry.class);
         when(workbenchActionRegistry.getDefinitionToImplementationMappings()).thenReturn(new ArrayList<DefinitionToImplementationMapping<ActionDefinition,Action>>());
-        //Init col
+
         PropertyTypeColumnDefinition colDef1 = new PropertyTypeColumnDefinition();
         colDef1.setSortable(true);
         colDef1.setName(colName1);
@@ -409,7 +414,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
         final String result = jcrContainer.constructJCRQuery(false);
 
         // THEN
-        assertEquals(AbstractJcrContainer.SELECT_CONTENT, result);
+        assertEquals(String.format(AbstractJcrContainer.SELECT_TEMPLATE, MgnlNodeType.NT_CONTENT), result);
     }
 
     @Test
@@ -420,7 +425,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
         final String result = jcrContainer.constructJCRQuery(true);
 
         // THEN
-        assertEquals(AbstractJcrContainer.SELECT_CONTENT + AbstractJcrContainer.ORDER_BY + AbstractJcrContainer.CONTENT_SELECTOR_NAME + ".[" + colName2 + "]" + AbstractJcrContainer.ASCENDING_KEYWORD, result);
+        assertEquals(String.format(AbstractJcrContainer.SELECT_TEMPLATE, MgnlNodeType.NT_CONTENT) + AbstractJcrContainer.ORDER_BY + AbstractJcrContainer.SELECTOR_NAME + ".[" + colName2 + "]" + AbstractJcrContainer.ASCENDING_KEYWORD, result);
     }
 
 
@@ -433,7 +438,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
         final String result = jcrContainer.constructJCRQuery(true);
 
         // THEN
-        assertEquals(AbstractJcrContainer.SELECT_CONTENT + AbstractJcrContainer.ORDER_BY + AbstractJcrContainer.CONTENT_SELECTOR_NAME + ".[" + colName2 + "]" + AbstractJcrContainer.ASCENDING_KEYWORD, result);
+        assertEquals(String.format(AbstractJcrContainer.SELECT_TEMPLATE, MgnlNodeType.NT_CONTENT) + AbstractJcrContainer.ORDER_BY + AbstractJcrContainer.SELECTOR_NAME + ".[" + colName2 + "]" + AbstractJcrContainer.ASCENDING_KEYWORD, result);
     }
 
     @Test
@@ -445,7 +450,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
         final String result = jcrContainer.constructJCRQuery(true);
 
         // THEN
-        assertEquals(AbstractJcrContainer.SELECT_CONTENT + AbstractJcrContainer.ORDER_BY + AbstractJcrContainer.CONTENT_SELECTOR_NAME + ".[" + colName2 + "]" + AbstractJcrContainer.ASCENDING_KEYWORD, result);
+        assertEquals(String.format(AbstractJcrContainer.SELECT_TEMPLATE, MgnlNodeType.NT_CONTENT) + AbstractJcrContainer.ORDER_BY + AbstractJcrContainer.SELECTOR_NAME + ".[" + colName2 + "]" + AbstractJcrContainer.ASCENDING_KEYWORD, result);
     }
 
     @Test
@@ -458,6 +463,34 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
 
         // THEN
         assertFalse(result);
+    }
+
+    @Test
+    public void testGetMainItemType() {
+        // GIVEN
+        final String testItemType = "mgnl:test";
+        ConfiguredItemTypeDefinition def = new ConfiguredItemTypeDefinition();
+        def.setItemType(testItemType);
+        workbenchDefinition.setMainItemType(def);
+
+        // WHEN
+        final String result = jcrContainer.getMainItemTypeAsString();
+
+        // THEN
+        assertEquals(testItemType, result);
+    }
+
+    @Test
+    public void testGetMainItemTypeWhenNotDefinedProperly() {
+        // GIVEN
+        ConfiguredItemTypeDefinition defWithoutItemType = new ConfiguredItemTypeDefinition();
+        workbenchDefinition.setMainItemType(defWithoutItemType);
+
+        // WHEN
+        final String result = jcrContainer.getMainItemTypeAsString();
+
+        // THEN
+        assertEquals(AbstractJcrContainer.DEFAULT_MAIN_ITEM_TYPE, result);
     }
 
     /**
