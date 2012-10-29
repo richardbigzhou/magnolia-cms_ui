@@ -110,7 +110,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     private static final Long LONG_ZERO = Long.valueOf(0);
 
-    /** Item type to use if no other is properly defained **/
+    /** Item type to use if no other is properly defined. **/
     protected static final String DEFAULT_MAIN_ITEM_TYPE = MgnlNodeType.NT_CONTENT;
 
     private static final String QUERY_LANGUAGE = Query.JCR_JQOM;
