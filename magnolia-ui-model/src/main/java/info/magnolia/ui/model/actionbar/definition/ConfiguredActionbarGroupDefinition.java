@@ -45,7 +45,7 @@ public class ConfiguredActionbarGroupDefinition implements ActionbarGroupDefinit
 
     private String name;
 
-    private final List<ActionbarItemDefinition> items = new ArrayList<ActionbarItemDefinition>();
+    private List<ActionbarItemDefinition> items = new ArrayList<ActionbarItemDefinition>();
 
     @Override
     public String getName() {
@@ -64,6 +64,10 @@ public class ConfiguredActionbarGroupDefinition implements ActionbarGroupDefinit
     @Override
     public List<ActionbarItemDefinition> getItems() {
         return Collections.unmodifiableList(items);
+    }
+
+    public void setItems(List<ActionbarItemDefinition> items) {
+        this.items = items;
     }
 
     /**
