@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.widget.magnoliashell.gwt.client.viewport;
 
+import info.magnolia.ui.vaadin.integration.widget.client.loading.LoadingPane;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.VMagnoliaShell;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.event.ViewportCloseEvent;
 
@@ -65,7 +66,7 @@ import com.vaadin.terminal.gwt.client.UIDL;
  */
 public class VShellViewport extends ComplexPanel implements Container, ContainerResizedListener {
 
-    private ApplicationConnection client;
+    protected ApplicationConnection client;
 
     private boolean active;
 
@@ -81,11 +82,7 @@ public class VShellViewport extends ComplexPanel implements Container, Container
 
     private TransitionDelegate transitionDelegate;
 
-    // private final LoadingPane loadingPane = new LoadingPane();
-
-    // private boolean bTransitioning;
-
-    // private final Element loadingIndicator = DOM.createDiv();
+    private final LoadingPane loadingPane = new LoadingPane();
 
     public VShellViewport() {
         super();
@@ -94,14 +91,12 @@ public class VShellViewport extends ComplexPanel implements Container, Container
         DOM.sinkEvents(this.getElement(), Event.TOUCHEVENTS);
         bindHandlers();
 
-        // loadingPane.appendTo(this);
+        loadingPane.appendTo(this);
     }
 
     public void showLoadingPane() {
-        // loadingPane.show();
+        loadingPane.show();
     }
-
-    // loadingIndicator.addClassName("loading-indicator");
 
     private void bindHandlers() {
         touchDelegate.addTouchEndHandler(new TouchEndHandler() {
@@ -193,10 +188,6 @@ public class VShellViewport extends ComplexPanel implements Container, Container
         w.setVisible(true);
     }
 
-    // public void updateShellAppFromServer() {
-    // eventBus.fireEvent(new ShellTransitionCompleteEvent());
-    // }
-
     @Override
     public void updateFromUIDL(final UIDL uidl, final ApplicationConnection client) {
 
@@ -244,8 +235,7 @@ public class VShellViewport extends ComplexPanel implements Container, Container
             }
         }
 
-        // loadingPane.hide();
-        // hideLoadingIndicator();
+        loadingPane.hide();
     }
 
     protected void removeWidget(Widget w) {

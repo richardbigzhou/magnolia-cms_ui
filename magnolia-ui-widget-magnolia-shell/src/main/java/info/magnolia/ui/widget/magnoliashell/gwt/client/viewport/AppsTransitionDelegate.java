@@ -59,59 +59,58 @@ class AppsTransitionDelegate extends BaseTransitionDelegate {
     private static final int CURTAIN_FADE_OUT_DELAY = 200;
 
     @Override
-    public Callbacks setVisibleApp(VShellViewport viewport, final Widget app) {
+    public void setVisibleApp(VShellViewport viewport, final Widget app) {
+        final Callbacks callbacks = Callbacks.create();
 
         // zoom-in if switching to a different running app, from appslauncher only
         // closing an app doesn't zoom-in the next app
         // running apps are all hidden explicitely except current one
         if (!viewport.isClosing() && !app.isVisible()) {
             viewport.doSetVisibleApp(app);
+
             app.addStyleName("zoom-in");
             new Timer() {
 
                 @Override
                 public void run() {
+                    callbacks.fire();
                     app.removeStyleName("zoom-in");
                 }
             }.schedule(500);
         } else {
             viewport.doSetVisibleApp(app);
+            callbacks.fire();
         }
-
-        return null;
     }
 
-    public Callbacks setCurtainVisible(final VAppsViewport viewport, boolean visible) {
-        final Callbacks callbacks = Callbacks.create();
+    public void setCurtainVisible(final VAppsViewport viewport, boolean visible) {
         final Element curtain = viewport.getCurtain();
+        final Callbacks callbacks = Callbacks.create();
 
         if (visible) {
             // show curtain immediately
             viewport.doSetCurtainVisible(visible);
-            fadeIn(curtain);
+            fadeIn(curtain, callbacks);
         } else {
             // fade out after 200ms then remove curtain
             new Timer() {
 
                 @Override
                 public void run() {
-                    Callbacks fadeOutCallback = fadeOut(curtain);
-                    fadeOutCallback.add(new JQueryCallback() {
+                    callbacks.add(new JQueryCallback() {
 
                         @Override
                         public void execute(JQueryWrapper jq) {
                             viewport.doSetCurtainVisible(false);
-                            callbacks.fire();
                         }
                     });
+                    fadeOut(curtain, callbacks);
                 }
             }.schedule(CURTAIN_FADE_OUT_DELAY);
         }
-        return callbacks;
     }
 
     public void removeWidget(final VAppsViewport viewport, final Widget w) {
-        // if (closingWidget && formerWidget == paintable) {
         w.addStyleName("zoom-out");
         new Timer() {
 
@@ -124,12 +123,12 @@ class AppsTransitionDelegate extends BaseTransitionDelegate {
     }
 
     /**
-     * FADE IN TRANSITION
+     * FADE IN TRANSITION.
      * 
      * @param el the curtain element
-     * @return the jquery callbacks
+     * @param callbacks the callbacks
      */
-    private Callbacks fadeIn(final Element el) {
+    private void fadeIn(final Element el, final Callbacks callbacks) {
         JQueryWrapper jq = JQueryWrapper.select(el);
 
         // init
@@ -140,7 +139,6 @@ class AppsTransitionDelegate extends BaseTransitionDelegate {
         }
 
         // callback
-        final Callbacks callbacks = Callbacks.create();
         callbacks.add(new JQueryCallback() {
 
             @Override
@@ -158,16 +156,15 @@ class AppsTransitionDelegate extends BaseTransitionDelegate {
                 setCallbacks(callbacks);
             }
         });
-        return callbacks;
     }
 
     /**
-     * FADE OUT TRANSITION
+     * FADE OUT TRANSITION.
      * 
      * @param el the curtain element
-     * @return the jquery callbacks
+     * @param callbacks the callbacks
      */
-    private Callbacks fadeOut(final Element el) {
+    private void fadeOut(final Element el, final Callbacks callbacks) {
         JQueryWrapper jq = JQueryWrapper.select(el);
 
         // init
@@ -176,7 +173,6 @@ class AppsTransitionDelegate extends BaseTransitionDelegate {
         }
 
         // callback
-        final Callbacks callbacks = Callbacks.create();
 
         // animate
         jq.animate(CURTAIN_FADE_OUT_DURATION, new AnimationSettings() {
@@ -186,6 +182,5 @@ class AppsTransitionDelegate extends BaseTransitionDelegate {
                 setCallbacks(callbacks);
             }
         });
-        return callbacks;
     }
 }

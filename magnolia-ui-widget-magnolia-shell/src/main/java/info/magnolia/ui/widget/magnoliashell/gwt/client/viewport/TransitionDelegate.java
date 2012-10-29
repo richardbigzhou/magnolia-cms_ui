@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.widget.magnoliashell.gwt.client.viewport;
 
-import info.magnolia.ui.widget.jquerywrapper.gwt.client.Callbacks;
-
 import com.google.gwt.user.client.ui.Widget;
 
 
@@ -44,9 +42,9 @@ import com.google.gwt.user.client.ui.Widget;
  */
 interface TransitionDelegate {
 
-    Callbacks setActive(VShellViewport viewport, boolean active);
+    void setActive(VShellViewport viewport, boolean active);
 
-    Callbacks setVisibleApp(VShellViewport viewport, Widget app);
+    void setVisibleApp(VShellViewport viewport, Widget app);
 
     final static TransitionDelegate SHELL_APPS_TRANSITION_DELEGATE = new ShellAppsTransitionDelegate();
 
@@ -58,15 +56,13 @@ interface TransitionDelegate {
     static abstract class BaseTransitionDelegate implements TransitionDelegate {
 
         @Override
-        public Callbacks setActive(VShellViewport viewport, boolean active) {
+        public void setActive(VShellViewport viewport, boolean active) {
             viewport.doSetActive(active);
-            return null;
         }
 
         @Override
-        public Callbacks setVisibleApp(VShellViewport viewport, Widget app) {
+        public void setVisibleApp(VShellViewport viewport, Widget app) {
             viewport.doSetVisibleApp(app);
-            return null;
         }
     };
 }

@@ -98,8 +98,6 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
 
     private VShellMessage hiPriorityMessage;
 
-    // private final VMagnoliaShellViewImpl that = this;
-
     public VMagnoliaShellViewImpl(final EventBus eventBus) {
         super();
         this.eventBus = eventBus;
@@ -132,7 +130,6 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
         eventBus.addHandler(ViewportCloseEvent.TYPE, this);
         eventBus.addHandler(ShellAppNavigationEvent.TYPE, navigationHandler);
         eventBus.addHandler(AppActivatedEvent.TYPE, navigationHandler);
-        // eventBus.addHandler(ShellTransitionCompleteEvent.TYPE, transitionCompleteHandler);
 
         History.addValueChangeHandler(new ValueChangeHandler<String>() {
 
@@ -284,44 +281,33 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
         @Override
         public void onShellAppNavigation(final ShellAppNavigationEvent event) {
 
-            // If possible perform transition to ShellApp via the client.
+            VShellAppsViewport viewport = getShellAppViewport();
+            Widget shellApp = viewport.getShellAppByType(event.getType());
+            ShellAppNavigationEvent refreshEvent = viewport.getRefreshEvent();
 
-            // ShellAppType shellAppType = event.getType();
-            // boolean clientTransitionStarted =
-            // getShellAppViewport().setVisibleWidgetByShellAppType(shellAppType);
+            // if interrupting to another shell app before refresh event comes
+            if (!event.equals(refreshEvent)) {
+                refreshEvent = null;
+            }
+            if (shellApp != null && refreshEvent == null) {
+                viewport.setRefreshEvent(event);
 
-            // if (clientTransitionStarted){
-            // Transition has started.
-            // typeInTransition = shellAppType;
-            // tokenInTransition = event.getToken();
+                // Need to update state of button and divet in the main launcher
+                mainAppLauncher.activateControl(event.getType());
 
-            // Need to update state of button and divet in the main launcher
-            // mainAppLauncher.activateControl(shellAppType);
-
-            // }else{
-            // Trigger server
-            presenter.loadShellApp(event.getType(), event.getToken());
-            // }
+                viewport.setVisibleApp(shellApp);
+                // trigger viewport active transition if it was not.
+                if (!viewport.isActive()) {
+                    setActiveViewport(ViewportType.SHELL_APP_VIEWPORT);
+                }
+            } else {
+                viewport.setRefreshEvent(null);
+                getShellAppViewport().showLoadingPane();
+                presenter.loadShellApp(event.getType(), event.getToken());
+            }
         }
 
     };
-
-    // ShellAppType typeInTransition;
-    // String tokenInTransition;
-    //
-    // private final ShellTransitionCompleteHandler transitionCompleteHandler = new
-    // ShellTransitionCompleteHandler() {
-    //
-    // @Override
-    // public void onShellTransitionComplete(ShellTransitionCompleteEvent event) {
-    // if (typeInTransition != null){
-    // getShellAppViewport().showLoadingPane();
-    // presenter.loadShellApp(typeInTransition, tokenInTransition);
-    // typeInTransition = null;
-    // tokenInTransition = "";
-    // }
-    // }
-    // };
 
     @Override
     public void onViewportClose(ViewportCloseEvent event) {
@@ -330,9 +316,6 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
             getShellAppViewport().setClosing(true);
             presenter.closeCurrentShellApp();
         } else if (viewportType == ViewportType.APP_VIEWPORT) {
-            // if (!getAppViewport().hasContent()) {
-            // getAppViewport().setViewportHideAnimationDelegate(AnimationDelegate.ZOOMING_DELEGATE);
-            // }
             presenter.closeCurrentApp();
         }
     }
@@ -393,9 +376,11 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
 
     private void doUpdateViewport(VShellViewport viewport, ViewportType shellAppViewport) {
         final VShellViewport oldViewport = viewports.get(shellAppViewport);
-        replaceWidget(oldViewport, viewport);
-        viewport.setEventBus(eventBus);
-        viewports.put(shellAppViewport, viewport);
+        if (oldViewport != viewport) {
+            replaceWidget(oldViewport, viewport);
+            viewport.setEventBus(eventBus);
+            viewports.put(shellAppViewport, viewport);
+        }
     }
 
     @Override

@@ -33,12 +33,18 @@
  */
 package info.magnolia.ui.widget.magnoliashell.gwt.client.viewport;
 
+import info.magnolia.ui.widget.magnoliashell.gwt.client.VMainLauncher.ShellAppType;
+import info.magnolia.ui.widget.magnoliashell.gwt.client.event.ShellAppNavigationEvent;
+
+import com.google.gwt.user.client.ui.Widget;
+
+
 /**
  * Shell apps viewport client side.
  */
 public class VShellAppsViewport extends VShellViewport {
 
-    // private final Map<String, Widget> shellAppWidgets = new HashMap<String, Widget>();
+    private ShellAppNavigationEvent refreshEvent;
 
     public VShellAppsViewport() {
         super();
@@ -46,39 +52,47 @@ public class VShellAppsViewport extends VShellViewport {
         setTransitionDelegate(TransitionDelegate.SHELL_APPS_TRANSITION_DELEGATE);
     }
 
-    // @Override
-    // /**
-    // * Get a map of widgets so that we can launch them from client side on demand.
-    // */
-    // public void setVisibleWidget(Widget w) {
-    // super.setVisibleWidget(w);
-    //
-    // String id = w.getElement().getId();
-    // //Add it to a map of widgets if its not already there.
-    // if (shellAppWidgets.get(id) == null){
-    // shellAppWidgets.put(id, w);
-    // }
-    // }
+    /**
+     * Gets a shell app widget if it has already been loaded in the viewport.
+     * 
+     * @param type the shell app type
+     * @return the shell app widget
+     */
+    public Widget getShellAppByType(ShellAppType type) {
+        return (Widget) client.getPaintable("PID_S" + type.getClassId());
+    }
 
-    // /**
-    // * @param shellAppType
-    // * returns true if it was able to find the widget
-    // */
-    // public boolean setVisibleWidgetByShellAppType(ShellAppType shellAppType) {
-    // // Get Widget w, based on shellAppType
-    // Widget w = getWidgetFromShellAppType(shellAppType);
-    // if (w != null && w!=getVisibleWidget()){
-    // super.setVisibleWidget(w);
-    // return true;
-    // }
-    // return false;
-    //
-    // }
+    /* SERVER REFRESH AFTER CLIENT TRANSITIONS */
 
-    // private Widget getWidgetFromShellAppType(ShellAppType shellAppType){
-    // Widget w = null;
-    // w = shellAppWidgets.get(shellAppType.getClassId());
-    // return w;
-    // }
+    public ShellAppNavigationEvent getRefreshEvent() {
+        return refreshEvent;
+    }
+
+    public void setRefreshEvent(ShellAppNavigationEvent event) {
+        this.refreshEvent = event;
+    }
+
+    public void refreshShellApp() {
+        if (refreshEvent != null) {
+            getEventBus().fireEvent(refreshEvent);
+        }
+    }
+
+    @Override
+    void doSetActive(boolean active) {
+        super.doSetActive(active);
+        if (getTransitionDelegate() == null && active) {
+            refreshShellApp();
+        }
+    }
+
+    @Override
+    void doSetVisibleApp(Widget w) {
+        super.doSetVisibleApp(w);
+        iLayout();
+        if (getTransitionDelegate() == null) {
+            refreshShellApp();
+        }
+    }
 
 }
