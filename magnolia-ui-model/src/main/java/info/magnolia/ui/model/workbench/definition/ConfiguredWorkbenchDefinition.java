@@ -69,7 +69,7 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
     private boolean dialogWorkbench = false;
 
     private ImageProvider imageProvider;
-    
+
     @Override
     public String getName() {
         return name;
@@ -130,6 +130,11 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
         return columns.values();
     }
 
+    public void setColumns(Collection<ColumnDefinition> columns) {
+        for (ColumnDefinition treeColumn : columns) {
+            this.addColumn(treeColumn);
+        }
+    }
 
     public void addColumn(ColumnDefinition treeColumn) {
         columns.put(treeColumn.getLabel(), treeColumn);
