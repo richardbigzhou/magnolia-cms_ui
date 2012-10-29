@@ -67,6 +67,9 @@ public class SimplePanel extends AbstractComponentContainer {
                 super.removeComponent(this.content);
             }
             if (content != null) {
+                if (content.getParent() != null) {
+                    content.setParent(null);
+                }
                 super.addComponent(content);   
             }
             this.content = content;
