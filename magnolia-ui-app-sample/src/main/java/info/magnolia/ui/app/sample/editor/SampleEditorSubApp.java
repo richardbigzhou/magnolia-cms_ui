@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.app.sample.editor;
 
+import info.magnolia.ui.app.sample.editor.location.EditorLocation;
 import info.magnolia.ui.framework.app.AbstractSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.EventBus;
@@ -69,4 +70,15 @@ public class SampleEditorSubApp extends AbstractSubApp implements SampleEditorVi
         return view;
     }
 
+    /**
+     * Overwrite supportsLocation to implement custom handling of subApp opening.
+     * Will take care of the location change in case the current view name equals the new view name.
+     * @param location the new location
+     * @return true if current SubApp should handle the location update
+     */
+    @Override
+    public boolean supportsLocation(Location location) {
+        EditorLocation newLocation = EditorLocation.wrap(location);
+        return  view.getName().equals(newLocation.getViewName());
+    }
 }

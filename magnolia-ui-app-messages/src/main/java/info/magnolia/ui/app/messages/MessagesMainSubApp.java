@@ -44,11 +44,11 @@ import javax.inject.Inject;
 /**
  * Sub app for the main tab in the message app.
  */
-public class MessagesAppMainSubApp extends AbstractSubApp implements MessagesView.Listener {
+public class MessagesMainSubApp extends AbstractSubApp implements MessagesView.Listener {
 
 
     @Inject
-    public MessagesAppMainSubApp(SubAppContext subAppContext, MessagesView view) {
+    public MessagesMainSubApp(SubAppContext subAppContext, MessagesView view) {
         super(subAppContext, view);
         view.setListener(this);
     }

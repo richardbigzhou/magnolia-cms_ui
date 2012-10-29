@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,41 +31,30 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.sample.main;
+package info.magnolia.ui.app.sample.editor.location;
 
-import javax.inject.Inject;
-
-import info.magnolia.ui.app.sample.editor.location.EditorLocation;
 import info.magnolia.ui.framework.location.DefaultLocation;
-import info.magnolia.ui.framework.location.LocationController;
+import info.magnolia.ui.framework.location.Location;
 
 /**
- * Presenter for the content display.
+ * EditorLocation.
  */
-public class ContentDisplayPresenter implements ContentDisplayView.Listener {
+public class EditorLocation extends DefaultLocation {
 
-    private ContentDisplayView view;
-    private LocationController locationController;
-    private String name;
+    private String viewName;
 
-    @Inject
-    public ContentDisplayPresenter(ContentDisplayView view, LocationController locationController) {
-        this.view = view;
-        this.locationController = locationController;
+    public EditorLocation(String appType, String appId, String subAppId, String parameter) {
+        super(appType, appId, subAppId, parameter);
+        this.viewName = parameter;
     }
 
-    public ContentDisplayView start() {
-        view.setListener(this);
-        return view;
+    public String getViewName() {
+        return viewName;
     }
 
-    public void setResourceToDisplay(String name) {
-        this.name = name;
-        view.setResource(name);
+    public static EditorLocation wrap (Location location) {
+        DefaultLocation defaultLocation = (DefaultLocation) location;
+        return new EditorLocation(defaultLocation.getAppType(), defaultLocation.getAppId(), defaultLocation.getSubAppId(), defaultLocation.getParameter());
     }
 
-    @Override
-    public void onOpenInNewEditor() {
-        locationController.goTo(new EditorLocation(DefaultLocation.LOCATION_TYPE_APP, "sample", "editor", name));
-    }
 }

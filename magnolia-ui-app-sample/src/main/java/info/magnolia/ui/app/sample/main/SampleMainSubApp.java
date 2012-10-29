@@ -81,11 +81,6 @@ public class SampleMainSubApp extends AbstractSubApp implements SampleMainView.L
     }
 
     @Override
-    public void locationChanged(Location location) {
-
-    }
-
-    @Override
     public String getCaption() {
         return "Sample";
     }

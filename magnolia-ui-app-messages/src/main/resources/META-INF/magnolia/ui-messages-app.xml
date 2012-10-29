@@ -16,8 +16,8 @@
   <components>
     <id>app-messages-main</id>
     <component>
-      <type>info.magnolia.ui.app.messages.MessagesAppMainSubApp</type>
-      <implementation>info.magnolia.ui.app.messages.MessagesAppMainSubApp</implementation>
+      <type>info.magnolia.ui.app.messages.MessagesMainSubApp</type>
+      <implementation>info.magnolia.ui.app.messages.MessagesMainSubApp</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.app.messages.MessagesView</type>
