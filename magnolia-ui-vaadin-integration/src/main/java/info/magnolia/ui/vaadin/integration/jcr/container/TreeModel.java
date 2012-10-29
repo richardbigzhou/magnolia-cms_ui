@@ -113,8 +113,8 @@ public class TreeModel implements JcrContainerSource {
 
         Collections.sort(groupingItemTypeNodes, itemNameComparator);
 
-        items.addAll(mainItemTypeNodes);
         items.addAll(groupingItemTypeNodes);
+        items.addAll(mainItemTypeNodes);
 
         if (workbenchDefinition.includeProperties()) {
             ArrayList<Property> properties = new ArrayList<Property>();
