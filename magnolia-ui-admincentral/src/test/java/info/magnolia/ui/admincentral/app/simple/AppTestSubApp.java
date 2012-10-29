@@ -35,8 +35,6 @@ package info.magnolia.ui.admincentral.app.simple;
 
 import info.magnolia.ui.framework.app.AbstractSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.view.View;
 
 import javax.inject.Inject;
 
