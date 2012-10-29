@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.admincentral.app.dummy;
 
-import info.magnolia.ui.framework.app.AbstractSubApp;
-import info.magnolia.ui.framework.app.SubAppContext;
+import info.magnolia.ui.framework.app.AbstractApp;
+import info.magnolia.ui.framework.app.AppContext;
 
 import javax.inject.Inject;
 
@@ -42,12 +42,12 @@ import javax.inject.Inject;
 /**
  * A dummy app.
  */
-public class DummyApp extends AbstractSubApp {
+public class DummyApp extends AbstractApp {
 
 
     @Inject
-    public DummyApp(SubAppContext subAppContext, DummyView view) {
-        super(subAppContext, view);
+    public DummyApp(AppContext appContext) {
+        super(appContext);
     }
 
 }
