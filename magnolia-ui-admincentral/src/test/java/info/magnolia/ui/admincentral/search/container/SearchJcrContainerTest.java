@@ -47,11 +47,9 @@ import info.magnolia.ui.model.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.model.workbench.action.WorkbenchActionFactoryImpl;
 import info.magnolia.ui.model.workbench.action.WorkbenchActionRegistry;
 import info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.container.TreeModel;
 
 import java.util.ArrayList;
 
-import javax.jcr.Node;
 import javax.jcr.Session;
 
 import org.junit.Before;
@@ -60,12 +58,10 @@ import org.junit.Test;
 public class SearchJcrContainerTest extends RepositoryTestCase {
 
     private SearchJcrContainer jcrContainer;
-    private TreeModel treeModel;
     private String workspace = "config";
     private String colName1 = "name";
     private String colName2 = "shortname";
     private Session session;
-    private Node rootNode;
 
     @Override
     @Before
@@ -92,31 +88,31 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
         configuredWorkbench.addColumn(colDef1);
         configuredWorkbench.addColumn(colDef2);
 
-        treeModel = new TreeModel(configuredWorkbench);
-
-        jcrContainer = new SearchJcrContainer(treeModel, configuredWorkbench);
+        jcrContainer = new SearchJcrContainer(null, configuredWorkbench);
 
         //Init session
-        session = MgnlContext.getSystemContext().getJCRSession(workspace);
-        rootNode = session.getRootNode();
+        session = MgnlContext.getJCRSession(workspace);
     }
 
     @Test
     public void testJCRQueryReturnsNullWhenFullTextExpressionIsBlank() throws Exception {
         //GIVEN
-        jcrContainer.setFullTextExpression(null);
+        jcrContainer.setFullTextExpression("");
 
         //WHEN
         String stmt = jcrContainer.constructJCRQuery(true);
 
         //THEN
         assertNull(stmt);
+    }
 
+    @Test
+    public void testJCRQueryReturnsNullWhenFullTextExpressionIsNull() throws Exception {
         //GIVEN
-        jcrContainer.setFullTextExpression("");
+        jcrContainer.setFullTextExpression(null);
 
         //WHEN
-        stmt = jcrContainer.constructJCRQuery(true);
+        String stmt = jcrContainer.constructJCRQuery(true);
 
         //THEN
         assertNull(stmt);
@@ -131,7 +127,7 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
         String stmt = jcrContainer.constructJCRQuery(true);
 
         //THEN
-        assertEquals("SELECT * FROM [mgnl:content] as content WHERE CONTAINS(content.*, 'foo')", stmt);
+        assertEquals("select * from [mgnl:content] as t where contains(t.*, 'foo')", stmt);
     }
 
     @Test
@@ -143,7 +139,7 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
         String stmt = jcrContainer.constructJCRQuery(true);
 
         //THEN
-        assertEquals("SELECT * FROM [mgnl:content] as content WHERE CONTAINS(content.*, 'foo OR ''baz bar''')", stmt);
+        assertEquals("select * from [mgnl:content] as t where contains(t.*, 'foo OR ''baz bar''')", stmt);
     }
 
 }
