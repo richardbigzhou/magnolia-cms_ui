@@ -38,9 +38,12 @@ import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.model.column.definition.ColumnDefinition;
 import info.magnolia.ui.model.thumbnail.ImageProvider;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+
 
 /**
  * Default configured implementation for the WorkbenchDefinition.
@@ -135,6 +138,11 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
         return columns.values();
     }
 
+    public void setColumns(Collection<ColumnDefinition> columns) {
+        for (ColumnDefinition treeColumn : columns) {
+            this.addColumn(treeColumn);
+        }
+    }
 
     public void addColumn(ColumnDefinition treeColumn) {
         columns.put(treeColumn.getLabel(), treeColumn);
