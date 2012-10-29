@@ -60,26 +60,24 @@ public class AppTestImpl extends AbstractApp {
     public Location currentLocation;
     public static Map<String, Object> res = new HashMap<String, Object>();
     public static int appNumber = 0;
-    public final AppTestSubApp subApp;
 
     @Inject
-    public AppTestImpl(AppContext ctx, AppTestSubApp subApp) {
+    public AppTestImpl(AppContext ctx) {
         super(ctx);
-        this.subApp = subApp;
         res.put("TestPageApp"+appNumber, this);
         appNumber +=1;
     }
 
     @Override
     public void start(Location location) {
+        super.start(location);
         events.add("start() with location "+location);
-        currentLocation = location;
     }
 
     @Override
     public void locationChanged(Location location) {
+        super.locationChanged(location);
         events.add("locationChanged() for location "+location);
-        currentLocation = location;
     }
 
     @Override

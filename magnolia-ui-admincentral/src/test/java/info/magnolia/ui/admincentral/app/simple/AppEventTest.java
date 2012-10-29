@@ -35,7 +35,9 @@ package info.magnolia.ui.admincentral.app.simple;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
+import info.magnolia.ui.framework.app.SubAppDescriptor;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -80,6 +82,7 @@ public class AppEventTest {
     private AppControllerImpl appController = null;
     private AppEventCollector eventCollector = null;
     private String name = "app";
+    private String subAppName_1 = "subApp1";
 
     @Before
     public void setUp() throws Exception {
@@ -170,8 +173,12 @@ public class AppEventTest {
     private void setAppLayoutManager() {
 
         appLauncherLayoutManager = mock(AppLauncherLayoutManagerImpl.class);
+        // create subapps
+        Map<String, SubAppDescriptor> subApps = new HashMap<String, SubAppDescriptor>();
+        subApps.put(subAppName_1, AppTestUtility.createSubAppDescriptor(subAppName_1, AppTestSubApp.class, true));
+
         //Set cat1 with App1
-        AppDescriptor app = AppTestUtility.createAppDescriptor(name, AppEventTestImpl.class);
+        AppDescriptor app = AppTestUtility.createAppDescriptorWithSubApps(name, AppEventTestImpl.class, subApps);
         AppLauncherGroup cat = AppTestUtility.createAppGroup("cat", app);
         AppLauncherGroupEntry entry = new AppLauncherGroupEntry();
         entry.setName(name);
