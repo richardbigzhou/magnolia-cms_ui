@@ -31,41 +31,52 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.column.definition;
+package info.magnolia.ui.app.contacts.cconf.actionbar;
+
+import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarItemDefinition;
 
 /**
- * Interface for a column definition.
+ * Builder for building an actionbar item definition.
  */
-public interface ColumnDefinition {
+public class ActionbarItemBuilder {
 
-    String getName();
+    private ConfiguredActionbarItemDefinition definition;
 
-    String getPropertyName();
+    public ActionbarItemBuilder() {
+        this.definition = new ConfiguredActionbarItemDefinition();
+    }
 
-    String getLabel();
+    public ActionbarItemBuilder(ConfiguredActionbarItemDefinition definition) {
+        this.definition = definition;
+    }
 
-    /**
-     * Sets columns width (in pixels). See {@link #getExpandRatio()}.
-     */
-    int getWidth();
+    public ConfiguredActionbarItemDefinition exec() {
+        return definition;
+    }
 
-    /**
-     * Expand ratios can be defined to customize the way how excess space is divided among columns.
-     * A table can have excess space if it has its width defined and there is horizontally more space than columns consume naturally.
-     * Excess space is the space that is not used by columns with explicit width (see {@link #getWidth()}) or with natural width (no width nor expand ratio).
-     */
-    float getExpandRatio();
+    public ActionbarItemBuilder label(String label) {
+        definition.setLabel(label);
+        return this;
+    }
 
-    boolean isSortable();
+    public ActionbarItemBuilder i18nBasename(String i18nBasename) {
+        definition.setI18nBasename(i18nBasename);
+        return this;
+    }
 
-    String getFormatterClass();
+    public ActionbarItemBuilder icon(String icon) {
+        definition.setIcon(icon);
+        return this;
+    }
 
-    Class<?> getType();
+    public ActionbarItemBuilder description(String description) {
+        definition.setDescription(description);
+        return this;
+    }
 
-    boolean isDisplayInDialog();
-
-    /**
-     * Returns whether this column and therefore the underlying JCR property it represents is to be included in searches.
-     */
-    boolean isSearchable();
+    public ActionbarItemBuilder action(ActionDefinition actionDefinition) {
+        definition.setActionDefinition(actionDefinition);
+        return this;
+    }
 }

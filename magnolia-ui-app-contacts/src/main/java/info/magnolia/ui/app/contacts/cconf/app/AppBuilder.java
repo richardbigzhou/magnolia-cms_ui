@@ -31,41 +31,53 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.column.definition;
+package info.magnolia.ui.app.contacts.cconf.app;
+
+import info.magnolia.ui.framework.app.AppDescriptor;
+import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
 
 /**
- * Interface for a column definition.
+ * Builder used to build an app descriptor.
  */
-public interface ColumnDefinition {
+public class AppBuilder {
 
-    String getName();
+    private ConfiguredAppDescriptor descriptor;
 
-    String getPropertyName();
+    public AppBuilder() {
+        descriptor = new ConfiguredAppDescriptor();
+    }
 
-    String getLabel();
+    public AppBuilder(String name) {
+        descriptor = new ConfiguredAppDescriptor();
+        descriptor.setName(name);
+    }
 
-    /**
-     * Sets columns width (in pixels). See {@link #getExpandRatio()}.
-     */
-    int getWidth();
+    public AppBuilder label(String label) {
+        descriptor.setLabel(label);
+        return this;
+    }
 
-    /**
-     * Expand ratios can be defined to customize the way how excess space is divided among columns.
-     * A table can have excess space if it has its width defined and there is horizontally more space than columns consume naturally.
-     * Excess space is the space that is not used by columns with explicit width (see {@link #getWidth()}) or with natural width (no width nor expand ratio).
-     */
-    float getExpandRatio();
+    public AppBuilder icon(String icon) {
+        descriptor.setIcon(icon);
+        return this;
+    }
 
-    boolean isSortable();
+    public AppBuilder appClass(Class<? extends info.magnolia.ui.framework.app.App> appClass) {
+        descriptor.setAppClass(appClass);
+        return this;
+    }
 
-    String getFormatterClass();
+    public AppBuilder categoryName(String categoryName) {
+        descriptor.setCategoryName(categoryName);
+        return this;
+    }
 
-    Class<?> getType();
+    public AppBuilder enabled(boolean enabled) {
+        descriptor.setEnabled(enabled);
+        return this;
+    }
 
-    boolean isDisplayInDialog();
-
-    /**
-     * Returns whether this column and therefore the underlying JCR property it represents is to be included in searches.
-     */
-    boolean isSearchable();
+    public AppDescriptor exec() {
+        return descriptor;
+    }
 }

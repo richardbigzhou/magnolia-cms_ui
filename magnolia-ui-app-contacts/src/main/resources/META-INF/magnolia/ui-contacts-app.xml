@@ -4,6 +4,7 @@
   <name>ui-contacts-app</name>
   <displayName>UI Contacts App</displayName>
   <description>UI Contacts App</description>
+  <class>info.magnolia.ui.app.contacts.ContactsModule</class>
   <versionHandler>info.magnolia.ui.app.contacts.ContactsAppModuleVersionHandler</versionHandler>
   <version>${project.version}</version>
 

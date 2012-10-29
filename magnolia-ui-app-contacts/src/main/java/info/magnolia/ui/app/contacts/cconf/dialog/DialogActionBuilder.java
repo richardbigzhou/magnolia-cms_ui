@@ -31,41 +31,29 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.column.definition;
+package info.magnolia.ui.app.contacts.cconf.dialog;
+
+import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.dialog.action.ConfiguredDialogActionDefinition;
 
 /**
- * Interface for a column definition.
+ * Builder for building a dialog action.
  */
-public interface ColumnDefinition {
+public class DialogActionBuilder {
 
-    String getName();
+    private final ConfiguredDialogActionDefinition definition;
 
-    String getPropertyName();
+    public DialogActionBuilder(ConfiguredDialogActionDefinition definition) {
+        this.definition = definition;
+    }
 
-    String getLabel();
+    public DialogActionBuilder label(String label) {
+        definition.setLabel(label);
+        return this;
+    }
 
-    /**
-     * Sets columns width (in pixels). See {@link #getExpandRatio()}.
-     */
-    int getWidth();
-
-    /**
-     * Expand ratios can be defined to customize the way how excess space is divided among columns.
-     * A table can have excess space if it has its width defined and there is horizontally more space than columns consume naturally.
-     * Excess space is the space that is not used by columns with explicit width (see {@link #getWidth()}) or with natural width (no width nor expand ratio).
-     */
-    float getExpandRatio();
-
-    boolean isSortable();
-
-    String getFormatterClass();
-
-    Class<?> getType();
-
-    boolean isDisplayInDialog();
-
-    /**
-     * Returns whether this column and therefore the underlying JCR property it represents is to be included in searches.
-     */
-    boolean isSearchable();
+    public DialogActionBuilder action(ActionDefinition actionDefinition) {
+        definition.setActionDefinition(actionDefinition);
+        return this;
+    }
 }

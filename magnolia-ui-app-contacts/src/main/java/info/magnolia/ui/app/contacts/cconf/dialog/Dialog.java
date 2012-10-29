@@ -31,41 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.column.definition;
+package info.magnolia.ui.app.contacts.cconf.dialog;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Interface for a column definition.
+ * Annotation used on methods on a module class that provides a dialog definition.
  */
-public interface ColumnDefinition {
+@Target(ElementType.METHOD)
+@Retention(RUNTIME)
+public @interface Dialog {
 
-    String getName();
-
-    String getPropertyName();
-
-    String getLabel();
-
-    /**
-     * Sets columns width (in pixels). See {@link #getExpandRatio()}.
-     */
-    int getWidth();
-
-    /**
-     * Expand ratios can be defined to customize the way how excess space is divided among columns.
-     * A table can have excess space if it has its width defined and there is horizontally more space than columns consume naturally.
-     * Excess space is the space that is not used by columns with explicit width (see {@link #getWidth()}) or with natural width (no width nor expand ratio).
-     */
-    float getExpandRatio();
-
-    boolean isSortable();
-
-    String getFormatterClass();
-
-    Class<?> getType();
-
-    boolean isDisplayInDialog();
-
-    /**
-     * Returns whether this column and therefore the underlying JCR property it represents is to be included in searches.
-     */
-    boolean isSearchable();
+    String value();
 }

@@ -31,41 +31,39 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.column.definition;
+package info.magnolia.ui.app.contacts.cconf.workbench;
+
+import info.magnolia.ui.model.workbench.definition.ConfiguredItemTypeDefinition;
+import info.magnolia.ui.model.workbench.definition.ItemTypeDefinition;
 
 /**
- * Interface for a column definition.
+ * Builder for building an item type definition.
+ *
+ * @see WorkbenchBuilder
  */
-public interface ColumnDefinition {
+public class ItemTypeBuilder {
 
-    String getName();
+    private ConfiguredItemTypeDefinition definition;
 
-    String getPropertyName();
+    public ItemTypeBuilder() {
+        definition = new ConfiguredItemTypeDefinition();
+    }
 
-    String getLabel();
+    public ItemTypeBuilder(ConfiguredItemTypeDefinition definition) {
+        this.definition = definition;
+    }
 
-    /**
-     * Sets columns width (in pixels). See {@link #getExpandRatio()}.
-     */
-    int getWidth();
+    public ItemTypeBuilder(String itemType) {
+        definition = new ConfiguredItemTypeDefinition();
+        definition.setItemType(itemType);
+    }
 
-    /**
-     * Expand ratios can be defined to customize the way how excess space is divided among columns.
-     * A table can have excess space if it has its width defined and there is horizontally more space than columns consume naturally.
-     * Excess space is the space that is not used by columns with explicit width (see {@link #getWidth()}) or with natural width (no width nor expand ratio).
-     */
-    float getExpandRatio();
+    public ItemTypeBuilder icon(String icon) {
+        definition.setIcon(icon);
+        return this;
+    }
 
-    boolean isSortable();
-
-    String getFormatterClass();
-
-    Class<?> getType();
-
-    boolean isDisplayInDialog();
-
-    /**
-     * Returns whether this column and therefore the underlying JCR property it represents is to be included in searches.
-     */
-    boolean isSearchable();
+    public ItemTypeDefinition exec() {
+        return definition;
+    }
 }

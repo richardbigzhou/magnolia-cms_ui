@@ -38,10 +38,9 @@ import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.model.column.definition.ColumnDefinition;
 import info.magnolia.ui.model.thumbnail.ImageProvider;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
+import java.util.List;
 
 /**
  * Default configured implementation for the WorkbenchDefinition.
@@ -60,7 +59,7 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
 
     private ItemTypeDefinition groupingItemType;
 
-    private final Map<String, ColumnDefinition> columns = new LinkedHashMap<String, ColumnDefinition>();
+    private final List<ColumnDefinition> columns = new ArrayList<ColumnDefinition>();
 
     private ActionbarDefinition actionbar;
 
@@ -127,23 +126,18 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
     }
 
     @Override
-    public ColumnDefinition getColumn(String columnId) {
-        return columns.get(columnId);
+    public List<ColumnDefinition> getColumns() {
+        return columns;
     }
 
-    @Override
-    public Collection<ColumnDefinition> getColumns() {
-        return columns.values();
+    public void addColumn(ColumnDefinition columnDefinition) {
+        columns.add(columnDefinition);
     }
 
     public void setColumns(Collection<ColumnDefinition> columns) {
         for (ColumnDefinition treeColumn : columns) {
             this.addColumn(treeColumn);
         }
-    }
-
-    public void addColumn(ColumnDefinition treeColumn) {
-        columns.put(treeColumn.getLabel(), treeColumn);
     }
 
     @Override
