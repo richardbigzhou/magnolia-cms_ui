@@ -133,9 +133,11 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
                 @Override
                 public void invoke(String methodName, Object[] params) {
                     if (proxy.isClientInitialized()) {
-                        final String prefix = String.valueOf(params[0]);
-                        final String token = params.length > 1 ? String.valueOf(params[1]) : "";
-                        view.navigate(prefix, token);
+                        final String appId = String.valueOf(params[0]);
+                        final String subAppId = params.length > 1 ? String.valueOf(params[1]) : "";
+                        final String parameters = params.length > 2 ? String.valueOf(params[2]) : "";
+
+                        view.navigate(appId, subAppId, parameters);
                     }
                 }
             });
@@ -239,8 +241,8 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
     }
 
     @Override
-    public void loadApp(String prefix, String token) {
-        proxy.call("activateApp", prefix, token);
+    public void loadApp(String appId, String subAppId, String parameter) {
+        proxy.call("activateApp", appId, subAppId, parameter);
     }
 
     @Override
@@ -366,8 +368,8 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
     }
 
     @Override
-    public void startApp(String appName, String token) {
-        proxy.call("startApp", appName, token);
+    public void startApp(String appId, String subAppId, String parameter) {
+        proxy.call("startApp", appId, subAppId, parameter);
     }
 
     private void registerApps(JsArrayString appNames) {
@@ -383,25 +385,26 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
             return;
         }
         final FragmentDTO dto = FragmentDTO.fromFragment(fragment);
-        if (dto.getType() == FragmentType.SHELL_APP) {
-            eventBus.fireEvent(new ShellAppNavigationEvent(ShellAppType.resolveType(dto.getPrefix()), dto.getToken()));
+        if (dto.getAppType() == FragmentType.SHELL_APP) {
+            eventBus.fireEvent(new ShellAppNavigationEvent(ShellAppType.resolveType(dto.getAppId()), dto.getParameter()));
         } else {
-            final String prefix = dto.getPrefix();
-            final String token = dto.getToken();
-            if (isAppRegistered(prefix)) {
-                if (!isAppRunning(prefix)) {
-                    view.showAppPreloader(prefix, new PreloaderCallback() {
+            final String appId = dto.getAppId();
+            final String subAppId = dto.getSubAppId();
+            final String parameter = dto.getParameter();
+            if (isAppRegistered(appId)) {
+                if (!isAppRunning(appId)) {
+                    view.showAppPreloader(appId, new PreloaderCallback() {
 
                         @Override
                         public void onPreloaderShown(String appName) {
-                            startApp(appName, token);
+                            startApp(appName, subAppId, parameter);
                         }
                     });
                 } else {
-                    loadApp(prefix, token);
+                    loadApp(appId, "", parameter);
                 }
             } else {
-                eventBus.fireEvent(new ShellAppNavigationEvent(ShellAppType.APPLAUNCHER, dto.getToken()));
+                eventBus.fireEvent(new ShellAppNavigationEvent(ShellAppType.APPLAUNCHER, dto.getParameter()));
             }
         }
     }

@@ -169,6 +169,10 @@ public class MagnoliaTabSheet extends AbstractComponentContainer implements Serv
         return activeTab;
     }
 
+    public String getActiveTabId() {
+        return activeTab.getTabId();
+    }
+
     public void onActiveTabSet(String tabId) {
         final MagnoliaTab shellTab = (MagnoliaTab) mapper.get(tabId);
         if (shellTab != null && shellTab != activeTab) {
@@ -259,12 +263,20 @@ public class MagnoliaTabSheet extends AbstractComponentContainer implements Serv
 
     }
 
+    public void setActiveTabId(final String tabId) {
+        Object tab = mapper.get(tabId);
+        if (tab != null) {
+            setActiveTab((MagnoliaTab)tab);
+        }
+    }
+
     public void setActiveTab(final MagnoliaTab tab) {
         if (tabs.contains(tab)) {
             this.activeTab = tab;
-            proxy.callOnce("setActiveTab", mapper.key(tab));
-            requestRepaint();
+        proxy.callOnce("setActiveTab", mapper.key(tab));
+        requestRepaint();
         }
+
     };
 
     public void setTabClosable(final MagnoliaTab tab, boolean closable) {
@@ -278,5 +290,4 @@ public class MagnoliaTabSheet extends AbstractComponentContainer implements Serv
     public void hideTabNotification(final MagnoliaTab tab) {
         tab.hideNotification();
     }
-
 }

@@ -48,50 +48,57 @@ public class FragmentDTO {
         SHELL_APP
     }
     
-    private FragmentType type = FragmentType.SHELL_APP;
-    
-    private String prefix = "";
-    
-    private String token = "";
-    
+    private FragmentType appType = FragmentType.SHELL_APP;
+
+    private String appId = "";
+
+    private String subAppId = "";
+
+    private String parameter = "";
+
     protected FragmentDTO() {
     }
-    
+
     public static FragmentDTO fromFragment(final String fragment) {
         final FragmentDTO dto = new FragmentDTO();
-        String type = extractType(fragment);
+        String type = extractAppType(fragment);
         if (type.equals("shell")) {
-            dto.type = FragmentType.SHELL_APP;
-            dto.prefix = ShellAppType.getTypeByFragmentId(extractPrefix(fragment));
-            dto.token = extractToken(fragment);
+            dto.appType = FragmentType.SHELL_APP;
+            dto.appId = ShellAppType.getTypeByFragmentId(extractAppId(fragment));
+            dto.parameter = extractSubAppId(fragment);
         } else if (type.equals("app")) {
-            dto.type = FragmentType.APP;
-            dto.prefix = extractPrefix(fragment);
-            dto.token = extractToken(fragment);
+            dto.appType = FragmentType.APP;
+            dto.appId = extractAppId(fragment);
+            dto.parameter = extractParameter(fragment);
         }
         return dto;
     }
 
-    public FragmentType getType() {
-        return type;
+    public FragmentType getAppType() {
+        return appType;
     }
 
-    public String getPrefix() {
-        return prefix;
+    public String getAppId() {
+        return appId;
     }
 
-    public String getToken() {
-        return token;
+    public String getSubAppId() {
+        return subAppId;
+    }
+
+    public String getParameter() {
+        return parameter;
     }
 
     // These methods are duplicated from info.magnolia.ui.framework.location.DefaultLocation
 
-    public static String extractType(String fragment) {
+    public static String extractAppType(String fragment) {
         int i = fragment.indexOf(':');
         return i != -1 ? fragment.substring(0, i) : fragment;
     }
 
-    public static String extractPrefix(String fragment) {
+    public static String extractAppId(String fragment) {
+        fragment = removeParameter(fragment);
         int i = fragment.indexOf(':');
         if (i == -1) {
             return "";
@@ -100,7 +107,9 @@ public class FragmentDTO {
         return j != -1 ? fragment.substring(i + 1, j) : fragment.substring(i + 1);
     }
 
-    public static String extractToken(String fragment) {
+    public static String extractSubAppId(String fragment) {
+        fragment = removeParameter(fragment);
+
         int i = fragment.indexOf(':');
         if (i == -1) {
             return "";
@@ -110,5 +119,18 @@ public class FragmentDTO {
             return "";
         }
         return fragment.substring(j + 1);
+    }
+
+    public static String extractParameter(String fragment) {
+        int i = fragment.indexOf(';');
+        if (i == -1) {
+            return "";
+        }
+        return fragment.substring(i + 1);
+    }
+
+    private static String removeParameter(String fragment) {
+        int i = fragment.indexOf(';');
+        return i != -1 ? fragment.substring(0, i) : fragment;
     }
 }

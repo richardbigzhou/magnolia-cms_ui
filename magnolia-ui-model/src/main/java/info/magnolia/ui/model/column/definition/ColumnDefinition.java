@@ -43,10 +43,12 @@ public interface ColumnDefinition {
     String getPropertyName();
 
     String getLabel();
+
     /**
      * Sets columns width (in pixels). See {@link #getExpandRatio()}.
      */
     int getWidth();
+
     /**
      * Expand ratios can be defined to customize the way how excess space is divided among columns.
      * A table can have excess space if it has its width defined and there is horizontally more space than columns consume naturally.
@@ -61,6 +63,7 @@ public interface ColumnDefinition {
     Class<?> getType();
 
     boolean isDisplayInDialog();
+
     /**
      * Returns whether this column and therefore the underlying JCR property it represents is to be included in searches.
      */

@@ -49,7 +49,7 @@ public class ConfiguredActionbarSectionDefinition implements ActionbarSectionDef
 
     private String i18nBasename;
 
-    private final List<ActionbarGroupDefinition> groups = new ArrayList<ActionbarGroupDefinition>();
+    private List<ActionbarGroupDefinition> groups = new ArrayList<ActionbarGroupDefinition>();
 
     @Override
     public String getName() {
@@ -81,6 +81,10 @@ public class ConfiguredActionbarSectionDefinition implements ActionbarSectionDef
     @Override
     public List<ActionbarGroupDefinition> getGroups() {
         return Collections.unmodifiableList(groups);
+    }
+
+    public void setGroups(List<ActionbarGroupDefinition> groups) {
+        this.groups = groups;
     }
 
     /**

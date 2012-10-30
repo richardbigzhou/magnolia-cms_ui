@@ -316,7 +316,7 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
 
         @Override
         public void onAppActivated(AppActivatedEvent event) {
-            final String fragment = activeViewportType.getFragmentPrefix() + event.getPrefix() + ":" + event.getToken();
+            final String fragment = activeViewportType.getFragmentPrefix() + event.getAppId() + ":"+ event.getSubAppId() + ";" + event.getParameter();
             History.newItem(fragment, false);
         }
 
@@ -379,8 +379,8 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
     }
 
     @Override
-    public void navigate(String prefix, String token) {
-        eventBus.fireEvent(new AppActivatedEvent(activeViewportType == ViewportType.SHELL_APP_VIEWPORT, prefix, token));
+    public void navigate(String appId, String subAppId, String parameter) {
+        eventBus.fireEvent(new AppActivatedEvent(activeViewportType == ViewportType.SHELL_APP_VIEWPORT, appId, subAppId, parameter));
     }
 
     @Override

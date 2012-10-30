@@ -33,12 +33,16 @@
  */
 package info.magnolia.ui.app.sample.editor;
 
-import javax.inject.Inject;
-
+import info.magnolia.ui.app.sample.editor.location.EditorLocation;
 import info.magnolia.ui.framework.app.AbstractSubApp;
+import info.magnolia.ui.framework.app.SubAppContext;
+import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.view.View;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  * SubApp for editor tabs in sample app.
@@ -48,7 +52,8 @@ public class SampleEditorSubApp extends AbstractSubApp implements SampleEditorVi
     private final SampleEditorView view;
 
     @Inject
-    public SampleEditorSubApp(SampleEditorView view) {
+    public SampleEditorSubApp(final SubAppContext subAppContext, final SampleEditorView view, final @Named("subapp") EventBus subAppEventBus) {
+        super(subAppContext, view);
         this.view = view;
     }
 
@@ -59,8 +64,21 @@ public class SampleEditorSubApp extends AbstractSubApp implements SampleEditorVi
 
     @Override
     public View start(Location location) {
-        this.view.setName(((DefaultLocation) location).getToken());
+        super.start(location);
+        this.view.setName(((DefaultLocation) location).getParameter());
         this.view.setListener(this);
         return view;
+    }
+
+    /**
+     * Overwrite supportsLocation to implement custom handling of subApp opening.
+     * Will take care of the location change in case the current view name equals the new view name.
+     * @param location the new location
+     * @return true if current SubApp should handle the location update
+     */
+    @Override
+    public boolean supportsLocation(Location location) {
+        EditorLocation newLocation = EditorLocation.wrap(location);
+        return  view.getName().equals(newLocation.getViewName());
     }
 }
