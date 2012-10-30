@@ -46,13 +46,13 @@
       <sv:value>cb847257-c7c4-4d26-8efb-5b92b9df8da8</sv:value>
     </sv:property>
     <sv:property sv:name="formatName" sv:type="String">
-      <sv:value>png</sv:value>
+      <sv:value>jpg</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
     </sv:property>
     <sv:property sv:name="quality" sv:type="Long">
-      <sv:value>1</sv:value>
+      <sv:value>90</sv:value>
     </sv:property>
     <sv:node sv:name="MetaData">
       <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -71,7 +71,7 @@
         <sv:value>2009-05-11T18:47:13.400+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-        <sv:value>2012-09-21T16:11:58.056+02:00</sv:value>
+        <sv:value>2012-10-26T10:58:51.208+02:00</sv:value>
       </sv:property>
     </sv:node>
   </sv:node>
@@ -150,15 +150,15 @@
         <sv:value>e73468b5-c613-4899-87e5-72576560ed8a</sv:value>
       </sv:property>
       <sv:property sv:name="class" sv:type="String">
-        <sv:value>info.magnolia.imaging.operations.cropresize.AutoCropAndResize</sv:value>
+        <sv:value>info.magnolia.imaging.operations.cropresize.BoundedResize</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
       </sv:property>
-      <sv:property sv:name="targetHeight" sv:type="String">
+      <sv:property sv:name="maxHeight" sv:type="String">
         <sv:value>70</sv:value>
       </sv:property>
-      <sv:property sv:name="targetWidth" sv:type="String">
+      <sv:property sv:name="maxWidth" sv:type="String">
         <sv:value>70</sv:value>
       </sv:property>
       <sv:node sv:name="MetaData">
@@ -178,7 +178,7 @@
           <sv:value>2012-09-25T11:48:51.040+02:00</sv:value>
         </sv:property>
         <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-          <sv:value>2012-09-27T19:18:44.380+02:00</sv:value>
+          <sv:value>2012-10-25T17:58:42.681+02:00</sv:value>
         </sv:property>
       </sv:node>
     </sv:node>
