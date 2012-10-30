@@ -35,7 +35,7 @@ package info.magnolia.ui.admincentral.shellapp.pulse;
 
 import info.magnolia.ui.admincentral.shellapp.pulse.PulseMessageCategoryNavigator.CategoryChangedEvent;
 import info.magnolia.ui.admincentral.shellapp.pulse.PulseMessageCategoryNavigator.MessageCategoryChangedListener;
-import info.magnolia.ui.vaadin.integration.widget.grid.MagnoliaTreeTable;
+import info.magnolia.ui.vaadin.grid.MagnoliaTreeTable;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -77,7 +77,7 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
     private final PulseMessagesPresenter presenter;
 
     private final FastDateFormat dateFormatter = FastDateFormat.getInstance();
-    
+
     private boolean grouping = false;
 
     @Inject
@@ -117,11 +117,11 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
             }
 
         });
-        
+
         messageTable.setRowGenerator(groupingRowGenerator);
         messageTable.setCellStyleGenerator(cellStyleGenerator);
         navigator.addGroupingListener(groupingListener);
-        
+
         messageTable.setContainerDataSource(presenter.getMessageDataSource());
         messageTable.setVisibleColumns(presenter.getColumnOrder());
         messageTable.setSortContainerPropertyId("date");
@@ -137,15 +137,15 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
             }
         });
     }
-    
+
     private ValueChangeListener groupingListener = new ValueChangeListener() {
-        
+
         @Override
         public void valueChange(ValueChangeEvent event) {
             boolean checked = event.getProperty().getValue().equals(Boolean.TRUE);
             presenter.setGrouping(checked);
             grouping = checked;
-            
+
             if(checked) {
                 for(Object itemId: messageTable.getItemIds()) {
                     messageTable.setCollapsed(itemId, false);
@@ -153,14 +153,14 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
             }
         }
     };
-    
+
     private Table.CellStyleGenerator cellStyleGenerator = new Table.CellStyleGenerator() {
-        
+
         @Override
         public String getStyle(Object itemId, Object propertyId) {
 
             if( grouping &&
-                    propertyId != null && 
+                    propertyId != null &&
                     propertyId.equals(PulseMessagesPresenter.GROUP_COLUMN)) {
                 return "v-cell-invisible";
             }
@@ -168,14 +168,14 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
         }
     };
 
-    
+
     /* Row generator draws grouping headers if such are present in container
      */
     private Table.RowGenerator groupingRowGenerator = new Table.RowGenerator() {
 
         @Override
         public GeneratedRow generateRow(Table table, Object itemId) {
-           
+
             /*
              * When sorting by type special items are inserted into
              * Container to acts as a placeholder for grouping

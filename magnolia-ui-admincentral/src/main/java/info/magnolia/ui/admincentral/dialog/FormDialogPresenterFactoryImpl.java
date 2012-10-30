@@ -42,7 +42,7 @@ import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 import info.magnolia.ui.model.dialog.registry.DialogDefinitionRegistry;
-import info.magnolia.ui.widget.dialog.FormDialogView;
+import info.magnolia.ui.vaadin.dialog.FormDialogView;
 
 import javax.inject.Inject;
 import javax.inject.Named;

@@ -35,7 +35,6 @@ package info.magnolia.ui.admincentral.app.dummy;
 
 import info.magnolia.ui.framework.app.AbstractApp;
 import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.location.Location;
 
 import javax.inject.Inject;
 
@@ -45,15 +44,10 @@ import javax.inject.Inject;
  */
 public class DummyApp extends AbstractApp {
 
-    private final AppContext appContext;
 
     @Inject
     public DummyApp(AppContext appContext) {
-        this.appContext = appContext;
+        super(appContext);
     }
 
-    @Override
-    public void start(Location location) {
-        appContext.openSubApp("main", DummyMainSubApp.class, location, "main");
-    }
 }

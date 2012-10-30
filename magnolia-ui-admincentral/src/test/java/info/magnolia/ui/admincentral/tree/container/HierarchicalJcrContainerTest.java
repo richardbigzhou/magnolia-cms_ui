@@ -38,23 +38,20 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.RepositoryTestCase;
-import info.magnolia.ui.admincentral.container.AbstractJcrContainerTest;
-import info.magnolia.ui.admincentral.content.view.builder.DefinitionToImplementationMapping;
-import info.magnolia.ui.admincentral.tree.model.TreeModel;
-import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory;
-import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactoryImpl;
-import info.magnolia.ui.admincentral.workbench.action.WorkbenchActionRegistry;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.builder.DefinitionToImplementationMapping;
 import info.magnolia.ui.model.column.definition.PropertyTypeColumnDefinition;
+import info.magnolia.ui.model.workbench.action.WorkbenchActionRegistry;
 import info.magnolia.ui.model.workbench.definition.ConfiguredItemTypeDefinition;
 import info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition;
 import info.magnolia.ui.model.workbench.definition.ItemTypeDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.container.AbstractJcrContainerTest;
+import info.magnolia.ui.vaadin.integration.jcr.container.TreeModel;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 
 import javax.jcr.Node;
@@ -70,7 +67,7 @@ import org.junit.Test;
 
 
 /**
- * Main test class for {HierarchicalJcrContainer}
+ * Tests for HierarchicalJcrContainer.
  */
 public class HierarchicalJcrContainerTest extends RepositoryTestCase {
 
@@ -88,22 +85,20 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
 
     private Session session;
 
-    Node rootNode;
+    private Node rootNode;
 
-    @SuppressWarnings("deprecation")
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        // Init
+
         ConfiguredWorkbenchDefinition configuredWorkbench = new ConfiguredWorkbenchDefinition();
         configuredWorkbench.setWorkspace(workspace);
         configuredWorkbench.setPath("/");
-        // Init workBench
+
         WorkbenchActionRegistry workbenchActionRegistry = mock(WorkbenchActionRegistry.class);
         when(workbenchActionRegistry.getDefinitionToImplementationMappings()).thenReturn(new ArrayList<DefinitionToImplementationMapping<ActionDefinition,Action>>());
-        WorkbenchActionFactory workbenchActionFactory = new WorkbenchActionFactoryImpl(null,workbenchActionRegistry);
-        // Init col
+
         PropertyTypeColumnDefinition colDef1 = new PropertyTypeColumnDefinition();
         colDef1.setSortable(true);
         colDef1.setName(colName1);
@@ -118,16 +113,16 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
 
         ItemTypeDefinition itemType = new ConfiguredItemTypeDefinition();
         ((ConfiguredItemTypeDefinition) itemType).setItemType("mgnl:content");
-        configuredWorkbench.setItemTypes(Arrays.asList(itemType));
+        configuredWorkbench.setMainItemType(itemType);
 
         workbenchDefinition = configuredWorkbench;
 
-        treeModel = new TreeModel(workbenchDefinition, workbenchActionFactory);
+        treeModel = new TreeModel(workbenchDefinition);
 
         hierarchicalJcrContainer = new HierarchicalJcrContainer(treeModel, workbenchDefinition);
 
         // Init session
-        session = MgnlContext.getSystemContext().getJCRSession(workspace);
+        session = MgnlContext.getJCRSession(workspace);
         rootNode = session.getRootNode();
     }
 

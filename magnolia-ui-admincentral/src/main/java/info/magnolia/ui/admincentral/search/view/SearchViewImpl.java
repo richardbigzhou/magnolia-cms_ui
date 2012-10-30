@@ -36,8 +36,8 @@ package info.magnolia.ui.admincentral.search.view;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.list.view.ListViewImpl;
 import info.magnolia.ui.admincentral.search.container.SearchJcrContainer;
-import info.magnolia.ui.admincentral.tree.model.TreeModel;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.container.TreeModel;
 
 /**
  * Search view implementation is just a special case of list view.

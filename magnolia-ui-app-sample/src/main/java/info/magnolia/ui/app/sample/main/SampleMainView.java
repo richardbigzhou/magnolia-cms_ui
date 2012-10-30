@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.app.sample.main;
 
+import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.view.View;
 
 /**
@@ -43,7 +44,7 @@ public interface SampleMainView extends View {
     /**
      * Listener for SampleMainView.
      */
-    public interface Listener {
+    public interface Listener extends SubApp {
     }
 
     void setListener(Listener listener);

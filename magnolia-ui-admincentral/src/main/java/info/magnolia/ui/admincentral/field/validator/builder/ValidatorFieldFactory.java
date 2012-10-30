@@ -34,8 +34,8 @@
 package info.magnolia.ui.admincentral.field.validator.builder;
 
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.admincentral.content.view.builder.DefinitionToImplementationMapping;
 import info.magnolia.ui.admincentral.field.validator.FieldValidatorBuilder;
+import info.magnolia.ui.model.builder.DefinitionToImplementationMapping;
 import info.magnolia.ui.model.builder.FactoryBase;
 import info.magnolia.ui.model.field.validation.definition.FieldValidatorDefinition;
 

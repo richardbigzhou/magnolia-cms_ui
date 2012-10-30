@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.app.messages;
 
+import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.framework.view.View;
 
@@ -44,7 +45,7 @@ public interface MessagesView extends View {
     /**
      * Listener interface for MessagesView.
      */
-    public interface Listener {
+    public interface Listener extends SubApp {
 
         void handleUserMessage(String user, MessageType type, String subject, String message);
 

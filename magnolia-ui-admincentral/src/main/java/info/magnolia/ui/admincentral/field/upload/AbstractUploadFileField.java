@@ -74,36 +74,46 @@ import com.vaadin.ui.Upload.ProgressListener;
 import com.vaadin.ui.Upload.StartedEvent;
 import com.vaadin.ui.Upload.StartedListener;
 
-
-
 /**
- * Main implementation of the UploadFile field.
- * This implementation used some features of {@link org.vaadin.easyuploads.UploadField} and associated classes.
- *<p>
- * This class handle Upload features (Open file chooser/drag and drop) and components (progress bar, cancel/delete button...),
- * and expose functions that allows to customize the 3 main upload states:
+ * Main implementation of the UploadFile field. This implementation used some
+ * features of {@link org.vaadin.easyuploads.UploadField} and associated
+ * classes.
+ * <p>
+ * This class handles Upload features (Open file chooser/drag and drop) and
+ * components (progress bar, cancel/delete button...), and expose functions that
+ * allows to customize the 3 main upload states:
  * <ul>
- *   <li>on {@link StartedEvent}:   buildStartUploadLayout() is called and allows to initialize the upload progress view.
- *   <li>on {@link FinishedEvent}:  buildFinishUploadLayout() is used to initialize the success Upload view (preview image, File summary..)
- *   <li>on Initialization, implement abstract buildDefaultUploadLayout() to initialize the initial Upload view (Upload Button...)
+ * <li>on {@link StartedEvent}: buildStartUploadLayout() is called and allows to
+ * initialize the upload progress view.
+ * <li>on {@link FinishedEvent}: buildFinishUploadLayout() is used to initialize
+ * the success Upload view (preview image, File summary..)
+ * <li>on Initialization, implement abstract buildDefaultUploadLayout() to
+ * initialize the initial Upload view (Upload Button...)
  * </ul>
- * In addition, this class create basic components defined by {@link DefaultComponent}.
- * From your code: calling createCancelButton(), will add the button to the defaultComponent Map,
- * and later to access this button, just perform a getDefaultComponent(DefaultComponent defaultComponent).
- *<p>
- * {@link org.vaadin.easyuploads.FileFactory} is defined based on the UploadFileDirectory set.
- *  If this directory is null, {@link org.vaadin.easyuploads.TempFileFactory} is used.
- *  Else {@link org.vaadin.easyuploads.DirectoryFileFactory} is used.
- *<p>
- * <b>Restriction:</b>
- *  Unlike {@link org.vaadin.easyuploads.UploadField} we only support
- *  <ul>
- *  <li>file storage mode: {@link org.vaadin.easyuploads.UploadField.StorageMode#FILE}
- *  <li>byte[] property ({@link org.vaadin.easyuploads.UploadField.FieldType#BYTE_ARRAY})
- *  </ul>
- * @param <D> definition type
+ * In addition, this class create basic components defined by
+ * {@link DefaultComponent}. From your code: calling createCancelButton(), will
+ * add the button to the defaultComponent Map, and later to access this button,
+ * just perform a getDefaultComponent(DefaultComponent defaultComponent).
+ * <p>
+ * {@link org.vaadin.easyuploads.FileFactory} is defined based on the
+ * UploadFileDirectory set. If this directory is null,
+ * {@link org.vaadin.easyuploads.TempFileFactory} is used. Else
+ * {@link org.vaadin.easyuploads.DirectoryFileFactory} is used.
+ * <p>
+ * <b>Restriction:</b> Unlike {@link org.vaadin.easyuploads.UploadField} we only
+ * support
+ * <ul>
+ * <li>file storage mode:
+ * {@link org.vaadin.easyuploads.UploadField.StorageMode#FILE}
+ * <li>byte[] property (
+ * {@link org.vaadin.easyuploads.UploadField.FieldType#BYTE_ARRAY})
+ * </ul>
+ * 
+ * @param <D>
+ *            definition type
  */
-public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends CustomField implements StartedListener, FinishedListener, ProgressListener, FailedListener, DropHandler, UploadFileField {
+public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends CustomField implements StartedListener, FinishedListener,
+        ProgressListener, FailedListener, DropHandler, UploadFileField {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractUploadFileField.class);
 
@@ -113,19 +123,17 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
     protected boolean fileDeletion = true;
     protected boolean dragAndDrop = true;
 
-
     // Define global variable used by UploadFileField
     private File directory;
     private long maxUploadSize = Long.MAX_VALUE;
-    private String deleteFileCaption;
+    private final String deleteFileCaption;
 
     // Define global variable used by this implementation
     protected D fileItem;
 
     private FileBuffer receiver;
     private FileFactory fileFactory;
-    private Map<DefaultComponent, Component> defaultComponent = new HashMap<DefaultComponent, Component>();
-
+    private final Map<DefaultComponent, Component> defaultComponent = new HashMap<DefaultComponent, Component>();
 
     // Define default component
     private Upload upload;
@@ -137,12 +145,15 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
     private AbstractComponentContainer root;
     private DragAndDropWrapper dropZone;
 
-    //Used to force the refresh of the Uploading view in case of Drag and Drop.
-    private Shell shell;
+    // Used to force the refresh of the Uploading view in case of Drag and Drop.
+    private final Shell shell;
 
     /**
      * Basic constructor.
-     * @param item used to store the File properties like binary data, file name, etc.
+     * 
+     * @param item
+     *            used to store the File properties like binary data, file name,
+     *            etc.
      */
     public AbstractUploadFileField(D fileItem, Shell shell) {
         this.fileItem = fileItem;
@@ -165,12 +176,12 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
     /**
      * Set the Upload field Components layout based on the current state.
      * <ul>
-     * <li>- Initial:  --> buildDefaultUploadLayout()
+     * <li>- Initial: --> buildDefaultUploadLayout()
      * <li>- Complete: --> buildDoneUploadLayout()
      * </ul>
      */
     protected void updateDisplay() {
-        if(this.fileItem.isEmpty()) {
+        if (fileItem.isEmpty()) {
             buildDefaultUploadLayout();
         } else {
             buildUploadDoneLayout();
@@ -191,6 +202,7 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
             public FileFactory getFileFactory() {
                 return AbstractUploadFileField.this.getFileFactory();
             }
+
             @Override
             public FieldType getFieldType() {
                 return FieldType.BYTE_ARRAY;
@@ -199,21 +211,20 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
     }
 
     /**
-     * Define the FileFactory to Use.
-     * <b>If no directory set, use the TempFileFactory.</b>
+     * Define the FileFactory to Use. <b>If no directory set, use the
+     * TempFileFactory.</b>
      */
     public FileFactory getFileFactory() {
         if (this.directory != null && fileFactory == null) {
             fileFactory = new DirectoryFileFactory(directory);
-        }
-        else {
+        } else {
             fileFactory = new DefaultFileFactory();
         }
         return fileFactory;
     }
 
     @Override
-    public Class< ? > getType() {
+    public Class<?> getType() {
         return Byte[].class;
     }
 
@@ -223,13 +234,13 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
     @Override
     public void drop(DragAndDropEvent event) {
         DragAndDropWrapper.WrapperTransferable transferable = (WrapperTransferable) event.getTransferable();
-        Html5File[] files = transferable.getFiles();
-        if(files == null) {
+        final Html5File[] files = transferable.getFiles();
+        if (files == null) {
             return;
         }
         for (final Html5File html5File : files) {
             html5File.setStreamVariable(new StreamVariable() {
-
+                
                 private String name;
                 private String mime;
 
@@ -245,7 +256,7 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
 
                 @Override
                 public void onProgress(StreamingProgressEvent event) {
-                    updateProgress((long) event.getBytesReceived(), (long) event.getContentLength());
+                    updateProgress(event.getBytesReceived(), event.getContentLength());
                 }
 
                 @Override
@@ -258,10 +269,10 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
                     shell.pushToClient();
                 }
 
-
                 @Override
                 public void streamingFinished(StreamingEndEvent event) {
-                    FinishedEvent uploadEvent = new FinishedEvent(upload, event.getFileName(), event.getMimeType(), event.getContentLength());
+                    FinishedEvent uploadEvent = new FinishedEvent(upload, event.getFileName(), event.getMimeType(), event
+                            .getContentLength());
                     uploadFinished(uploadEvent);
                 }
 
@@ -280,12 +291,14 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
         }
     }
 
-    // Used to handle Cancel / Interrupted upload in the DragAndDrop implementation.
+    // Used to handle Cancel / Interrupted upload in the DragAndDrop
+    // implementation.
     private boolean interruptedDragAndDropUpload = false;
 
     protected void setDragAndDropUploadInterrupted(boolean isInterrupetd) {
         interruptedDragAndDropUpload = isInterrupetd;
     }
+
     private boolean isDragAndDropUploadInterrupted() {
         return interruptedDragAndDropUpload;
     }
@@ -308,19 +321,19 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
     }
 
     /**
-     * Create a dummy Preview component.
-     * Sub class should override this method to define their own
-     * preview display.
+     * Create a dummy Preview component. Sub class should override this method
+     * to define their own preview display.
      */
-    public Component createPreviewComponent() {
+    protected Component createPreviewComponent() {
         this.previewComponent = new Embedded(null);
         defaultComponent.put(DefaultComponent.PREVIEW, this.previewComponent);
         return this.previewComponent;
     }
+
     /**
      * The dropZone is a wrapper around a Component.
      */
-    public DragAndDropWrapper createDropZone(Component c) {
+    protected DragAndDropWrapper createDropZone(Component c) {
         dropZone = new DragAndDropWrapper(c);
         dropZone.setDropHandler(this);
         defaultComponent.put(DefaultComponent.DROP_ZONE, this.dropZone);
@@ -330,12 +343,13 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
     /**
      * Create Delete button.
      */
-    public Button createDeleteButton() {
+    protected Button createDeleteButton() {
         this.deleteButton = new Button(deleteFileCaption);
         this.deleteButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
-                //Remove link between item and parent. In this case the child File Item will not be persisted.
+                // Remove link between item and parent. In this case the child
+                // File Item will not be persisted.
                 fileItem.unLinkItemFromParent();
                 fileItem.clearProperties();
                 updateDisplay();
@@ -349,7 +363,7 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
     /**
      * Create Cancel button.
      */
-    public Button createCancelButton() {
+    protected Button createCancelButton() {
         this.cancelButton = new NativeButton(null, new Button.ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
@@ -377,7 +391,7 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
      */
     public ProgressIndicatorComponent createProgressIndicator() {
         progress = new ProgressIndicatorComponentDefaultImpl();
-        defaultComponent.put(DefaultComponent.PROGRESS_BAR, (Component)this.progress);
+        defaultComponent.put(DefaultComponent.PROGRESS_BAR, (Component) this.progress);
         return this.progress;
     }
 
@@ -414,9 +428,8 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
     }
 
     /**
-     * Update the Progress Component.
-     * At the same time, check if the uploaded File
-     * is not bigger as expected. Interrupt the Upload in this case.
+     * Update the Progress Component. At the same time, check if the uploaded
+     * File is not bigger as expected. Interrupt the Upload in this case.
      */
     @Override
     public void updateProgress(long readBytes, long contentLength) {
@@ -434,13 +447,12 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
     }
 
     /**
-     * Handle the {@link FinishedEvent}.
-     * In case of success:
-     *  - Populate the Uploaded Information to the local variables used in the later steps.
-     *  - Build the Finish Upload Layout.
-     *  - Populate the Uploaded data to the Item (Binary / File name / size...)
-     *  In case of {@link FailedEvent} (this event is send on a Cancel upload)
-     *  - Do not populate data and call indirectly updateDisplay().
+     * Handle the {@link FinishedEvent}. In case of success: - Populate the
+     * Uploaded Information to the local variables used in the later steps. -
+     * Build the Finish Upload Layout. - Populate the Uploaded data to the Item
+     * (Binary / File name / size...) In case of {@link FailedEvent} (this event
+     * is send on a Cancel upload) - Do not populate data and call indirectly
+     * updateDisplay().
      */
     @Override
     public void uploadFinished(FinishedEvent event) {
@@ -461,27 +473,28 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
     }
 
     /**
-     * @return a string representing relevant file info. By default returns an empty string.
+     * @return a string representing relevant file info. By default returns an
+     *         empty string.
      **/
     protected String getDisplayDetails() {
         return "";
     }
 
     /**
-     * Start Upload if the file is supported.
-     * In case of not supported file, interrupt the Upload.
+     * Start Upload if the file is supported. In case of not supported file,
+     * interrupt the Upload.
      */
     @Override
     public void uploadStarted(StartedEvent event) {
-        if(isValidFile(event)) {
+        if (isValidFile(event)) {
             buildUploadStartedLayout();
         } else {
             interruptUpload();
-            getWindow().showNotification("Upload canceled due to unsupported file type "+ event.getMIMEType());
+            getWindow().showNotification("Upload canceled due to unsupported file type " + event.getMIMEType());
         }
     }
 
-    public void buildUploadStartedLayout() {
+    protected void buildUploadStartedLayout() {
         if (this.progress != null) {
             this.progress.setVisible(true);
             this.progress.setProgressIndicatorValue(0);
@@ -493,21 +506,20 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
      */
     public void interruptUpload() {
         getRootLayout().removeStyleName("in-progress");
-        if(upload.isUploading()) {
+        if (upload.isUploading()) {
             upload.interruptUpload();
-        }else {
+        } else {
             setDragAndDropUploadInterrupted(true);
         }
     }
 
     /**
-     * Default implementation returns always true.
-     * Extending classes should always override this method.
+     * Default implementation returns always true. Extending classes should
+     * always override this method.
      */
     public boolean isValidFile(StartedEvent event) {
         return true;
     }
-
 
     /**
      * Define the maximum file size in bite.
@@ -516,6 +528,7 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
     public void setMaxUploadSize(long maxUploadSize) {
         this.maxUploadSize = maxUploadSize;
     }
+
     /**
      * Set the caption of the Upload Button.
      */

@@ -116,8 +116,8 @@ public class OptionGroupFieldBuilderTest extends AbstractBuilderTest<OptionGroup
 
         // THEN
         assertEquals(2, ((Collection)field.getValue()).toArray().length);
-        assertEquals("3", ((Collection)field.getValue()).toArray()[0]);
-        assertEquals("1", ((Collection)field.getValue()).toArray()[1]);
+        assertEquals("1", ((Collection)field.getValue()).toArray()[0]);
+        assertEquals("3", ((Collection)field.getValue()).toArray()[1]);
     }
 
 

@@ -38,6 +38,7 @@ import info.magnolia.ui.admincentral.dialog.ChooseDialogFactory;
 import info.magnolia.ui.admincentral.dialog.ChooseDialogPresenter;
 import info.magnolia.ui.admincentral.dialog.WorkbenchChooseDialogPresenter;
 import info.magnolia.ui.framework.app.AbstractApp;
+import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.shell.Shell;
 
 import javax.inject.Inject;
@@ -50,13 +51,15 @@ import com.vaadin.data.Item;
  */
 public abstract class AbstractContentApp extends AbstractApp {
 
-    private ChooseDialogFactory chooseDialogFactory;
+    private final ChooseDialogFactory chooseDialogFactory;
 
     @Inject
     private Shell shell;
     
     @Inject
-    public AbstractContentApp(ChooseDialogFactory pickerDialogFactory) {
+
+    public AbstractContentApp(AppContext appContext, ChooseDialogFactory pickerDialogFactory) {
+        super(appContext);
         this.chooseDialogFactory = pickerDialogFactory;
     }
 

@@ -36,7 +36,7 @@ package info.magnolia.ui.admincentral.workbench;
 import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.admincentral.content.view.ContentView;
 import info.magnolia.ui.admincentral.content.view.ContentView.ViewType;
-import info.magnolia.ui.widget.actionbar.ActionbarView;
+import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -82,7 +82,7 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
 
     private final Embedded viewTypeArrow;
 
-    private final Map<ViewType, ContentView> contentViews = new EnumMap<ViewType, ContentView>(ViewType.class);
+    private Map<ViewType, ContentView> contentViews = new EnumMap<ViewType, ContentView>(ViewType.class);
 
     private ActionbarView actionbar;
 
@@ -214,6 +214,10 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
     @Override
     public void refresh() {
         contentViews.get(currentViewType).refresh();
+    }
+
+    public void setContentViews(Map<ViewType, ContentView> contentViews) {
+        this.contentViews = contentViews;
     }
 
     @Override

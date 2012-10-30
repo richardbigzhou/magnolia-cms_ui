@@ -33,11 +33,19 @@
  */
 package info.magnolia.ui.app.showcase.main;
 
+import javax.jcr.Node;
+import javax.jcr.Session;
+
 import com.google.inject.Inject;
 
-import info.magnolia.ui.admincentral.MagnoliaShell;
-import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.cms.core.MgnlNodeType;
+import info.magnolia.context.MgnlContext;
+import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
+import info.magnolia.ui.admincentral.dialog.FormDialogPresenterFactory;
 import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 /**
  * Presenter for form showcase.
@@ -45,12 +53,12 @@ import info.magnolia.ui.framework.view.View;
 public class FormsPresenter implements FormsView.Listener {
 
     private FormsView view;
-    private MagnoliaShell shell;
+    private FormDialogPresenterFactory formFactory;
 
     @Inject
-    public FormsPresenter(FormsView formsView, Shell shell) {
+    public FormsPresenter(FormsView formsView, FormDialogPresenterFactory formFactory) {
         this.view = formsView;
-        this.shell = (MagnoliaShell) shell;
+        this.formFactory = formFactory;
     }
 
     public View start() {
@@ -60,12 +68,34 @@ public class FormsPresenter implements FormsView.Listener {
 
     @Override
     public void onViewInDialog() {
+        try {
+        String workspace = "website";
+        String path = "/";
+        final FormDialogPresenter formPresenter = formFactory.createDialogPresenterByName("ui-showcase-app:showcasedialog");
+        Session session = MgnlContext.getJCRSession(workspace);
 
-        shell.addDialog(view.asBaseDialog().asVaadinComponent());
-    }
+        Node parentNode = session.getNode(path);
 
-    @Override
-    public void onCloseDialog() {
-        shell.removeDialog(view.asBaseDialog());
+        final JcrNodeAdapter item = new JcrNewNodeAdapter(parentNode, MgnlNodeType.NT_COMPONENT);
+        DefaultProperty property = new DefaultProperty(JcrNodeAdapter.JCR_NAME, "0");
+        item.addItemProperty(JcrNodeAdapter.JCR_NAME, property);
+        
+        formPresenter.start(item, new FormDialogPresenter.Callback() {
+
+            @Override
+            public void onCancel() {
+                formPresenter.closeDialog();
+            }
+
+            @Override
+            public void onSuccess(String actionName) {
+                formPresenter.closeDialog();
+            }
+            
+        });
+        } catch(Exception e) {
+            
+        }
     }
 }
+

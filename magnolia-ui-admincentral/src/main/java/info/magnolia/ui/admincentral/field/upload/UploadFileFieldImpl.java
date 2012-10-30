@@ -68,9 +68,9 @@ public class UploadFileFieldImpl extends AbstractUploadFileField<FileItemWrapper
     private String dragHintCaption;
     private String fileNameCaption;
     private String fileSizeCaption;
-
-    private CssLayout layout;
     private String mimeTypeRegExp;
+    
+    private final CssLayout layout;
 
 
     /**

@@ -42,10 +42,10 @@ import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarDefinition
 import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarGroupDefinition;
 import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarItemDefinition;
 import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarSectionDefinition;
-import info.magnolia.ui.widget.actionbar.Actionbar;
-import info.magnolia.ui.widget.actionbar.Actionbar.ActionbarItem;
-import info.magnolia.ui.widget.actionbar.Actionbar.ActionbarSection;
-import info.magnolia.ui.widget.actionbar.ActionbarView;
+import info.magnolia.ui.vaadin.actionbar.Actionbar;
+import info.magnolia.ui.vaadin.actionbar.Actionbar.ActionbarItem;
+import info.magnolia.ui.vaadin.actionbar.Actionbar.ActionbarSection;
+import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 
 import java.util.Iterator;
 import java.util.List;

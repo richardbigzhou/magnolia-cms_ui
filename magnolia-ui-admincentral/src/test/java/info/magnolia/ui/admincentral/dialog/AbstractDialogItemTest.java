@@ -33,11 +33,9 @@
  */
 package info.magnolia.ui.admincentral.dialog;
 
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
-import java.util.Locale;
-
 import info.magnolia.cms.i18n.DefaultMessagesManager;
 import info.magnolia.cms.i18n.MessagesManager;
 import info.magnolia.context.MgnlContext;
@@ -45,11 +43,11 @@ import info.magnolia.context.SystemContext;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockContext;
 
+import java.util.Locale;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 
 public class AbstractDialogItemTest {

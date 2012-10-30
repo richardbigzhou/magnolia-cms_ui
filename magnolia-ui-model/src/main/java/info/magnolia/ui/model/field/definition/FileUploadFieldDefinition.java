@@ -38,6 +38,9 @@ package info.magnolia.ui.model.field.definition;
  */
 public class FileUploadFieldDefinition extends ConfiguredFieldDefinition {
 
+    /**
+     * TODO Define the workspace here so we could instruct to save into the DAM (DMS) workspace if needed.
+     */
     // Display upload file preview
     private boolean preview = true;
     // Define the upload Binary Node name.

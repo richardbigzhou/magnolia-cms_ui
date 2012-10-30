@@ -40,14 +40,14 @@ import info.magnolia.ui.admincentral.dialog.action.DialogActionFactory;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchView;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchView.Listener;
 import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.widget.dialog.BaseDialog;
+import info.magnolia.ui.vaadin.dialog.BaseDialog;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
 /**
- * Implemetation of {@link ChooseDialogFactory}.
+ * Implementation of {@link ChooseDialogFactory}.
  * 
  */
 @Singleton
@@ -70,8 +70,8 @@ public class ChooseDialogFactoryImpl implements ChooseDialogFactory {
     @Override
     public WorkbenchChooseDialogPresenter createWorkbenchChooseDialog() {
         final ChooseDialogView selectionDialogView = componentProvider.getComponent(ChooseDialogView.class);
-        final WorkbenchChooseDialogPresenter workbenchPickerDialogPresenter = componentProvider.newInstance(
-                WorkbenchChooseDialogPresenter.class, actionFactory, selectionDialogView, chooseDialogEventBus);
+        final WorkbenchChooseDialogPresenter workbenchPickerDialogPresenter = 
+                new WorkbenchChooseDialogPresenter(actionFactory, selectionDialogView, chooseDialogEventBus);
 
         final ChooseDialogContentPresenter presenter = componentProvider.getComponent(ChooseDialogContentPresenter.class);
         final BaseDialog dialog = (BaseDialog) workbenchPickerDialogPresenter.getView();

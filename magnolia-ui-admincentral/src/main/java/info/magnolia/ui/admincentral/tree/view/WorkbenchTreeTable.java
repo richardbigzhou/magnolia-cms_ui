@@ -37,11 +37,11 @@ import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.column.ColumnFormatter;
 import info.magnolia.ui.admincentral.tree.container.HierarchicalJcrContainer;
-import info.magnolia.ui.admincentral.tree.model.TreeModel;
 import info.magnolia.ui.model.column.definition.ColumnDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
-import info.magnolia.ui.vaadin.integration.widget.grid.MagnoliaTreeTable;
+import info.magnolia.ui.vaadin.integration.jcr.container.TreeModel;
+import info.magnolia.ui.vaadin.grid.MagnoliaTreeTable;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -89,71 +89,65 @@ public class WorkbenchTreeTable extends MagnoliaTreeTable {
         addDragAndDrop();
 
         container = new HierarchicalJcrContainer(treeModel, workbenchDefinition);
-
         buildColumns(workbenchDefinition, componentProvider);
     }
 
     private void addDragAndDrop() {
         setDragMode(TableDragMode.ROW);
         setDropHandler(new DropHandler() {
-            
+
             @Override
             public void drop(DragAndDropEvent event) {
 
                 try {
-
                     // Wrapper for the object that is dragged
-                    Transferable t = event.getTransferable();
+                    final Transferable t = event.getTransferable();
 
                     // Make sure the drag source is the same tree
-                    if (t.getSourceComponent() != WorkbenchTreeTable.this) {
-                        return;
-                    }
+                    if (t.getSourceComponent() == WorkbenchTreeTable.this) {
+                        AbstractSelectTargetDetails target = (AbstractSelectTargetDetails) event.getTargetDetails();
+                        // Get ids of the dragged item and the target item
+                        Object sourceItemId = t.getData("itemId");
+                        Object targetItemId = target.getItemIdOver();
+                        // On which side of the target the item was dropped
+                        VerticalDropLocation location = target.getDropLocation();
 
-                    AbstractSelectTargetDetails target = (AbstractSelectTargetDetails) event.getTargetDetails();
-                    // Get ids of the dragged item and the target item
-                    Object sourceItemId = t.getData("itemId");
-                    Object targetItemId = target.getItemIdOver();
-                    // On which side of the target the item was dropped
-                    VerticalDropLocation location = target.getDropLocation();
+                        if (location != null) {
+                            log.debug("DropLocation is null. Do nothing.");
+                            log.debug("DropLocation: {}", location.name());
 
-                    if (location == null) {
-                        log.debug("DropLocation is null. Do nothing.");
-                        return;
-                    }
-
-                    log.debug("DropLocation: {}", location.name());
-
-                    HierarchicalJcrContainer containerWrapper = (HierarchicalJcrContainer) getContainerDataSource();
-                    // Drop right on an item -> make it a child -
-                    if (location == VerticalDropLocation.MIDDLE) {
-                        JcrItemAdapter sourceItem = (JcrItemAdapter) container.getItem(sourceItemId);
-                        JcrItemAdapter targetItem = (JcrItemAdapter) container.getItem(targetItemId);
-                        if (treeModel.moveItem(sourceItem.getJcrItem(), targetItem.getJcrItem())) {
-                            setParent(sourceItemId, targetItemId);
-                        }
-                    }
-                    // Drop at the top of a subtree -> make it previous
-                    else if (location == VerticalDropLocation.TOP) {
-                        Object parentId = containerWrapper.getParent(targetItemId);
-                        if (parentId != null) {
-                            log.debug("Parent: {}", containerWrapper.getItem(parentId));
-                            JcrItemAdapter sourceItem = (JcrItemAdapter) container.getItem(sourceItemId);
-                            JcrItemAdapter targetItem = (JcrItemAdapter) container.getItem(targetItemId);
-                            if (treeModel.moveItemBefore(sourceItem.getJcrItem(), targetItem.getJcrItem())) {
-                                setParent(sourceItemId, targetItemId);
+                            HierarchicalJcrContainer containerWrapper = (HierarchicalJcrContainer) getContainerDataSource();
+                            // Drop right on an item -> make it a child -
+                            if (location == VerticalDropLocation.MIDDLE) {
+                                JcrItemAdapter sourceItem = (JcrItemAdapter) container.getItem(sourceItemId);
+                                JcrItemAdapter targetItem = (JcrItemAdapter) container.getItem(targetItemId);
+                                if (treeModel.moveItem(sourceItem.getJcrItem(), targetItem.getJcrItem())) {
+                                    setParent(sourceItemId, targetItemId);
+                                }
                             }
-                        }
-                    }
+                            // Drop at the top of a subtree -> make it previous
+                            else if (location == VerticalDropLocation.TOP) {
+                                Object parentId = containerWrapper.getParent(targetItemId);
+                                if (parentId != null) {
+                                    log.debug("Parent: {}", containerWrapper.getItem(parentId));
+                                    JcrItemAdapter sourceItem = (JcrItemAdapter) container.getItem(sourceItemId);
+                                    JcrItemAdapter targetItem = (JcrItemAdapter) container.getItem(targetItemId);
+                                    if (treeModel.moveItemBefore(sourceItem.getJcrItem(), targetItem.getJcrItem())) {
+                                        setParent(sourceItemId, targetItemId);
+                                    }
+                                }
+                            }
 
-                    // Drop below another item -> make it next
-                    else if (location == VerticalDropLocation.BOTTOM) {
-                        Object parentId = containerWrapper.getParent(targetItemId);
-                        if (parentId != null) {
-                            JcrItemAdapter sourceItem = (JcrItemAdapter) container.getItem(sourceItemId);
-                            JcrItemAdapter targetItem = (JcrItemAdapter) container.getItem(targetItemId);
-                            if (treeModel.moveItemAfter(sourceItem.getJcrItem(), targetItem.getJcrItem())) {
-                                setParent(sourceItemId, targetItemId);
+                            // Drop below another item -> make it next
+                            else if (location == VerticalDropLocation.BOTTOM) {
+                                Object parentId = containerWrapper.getParent(targetItemId);
+                                if (parentId != null) {
+                                    JcrItemAdapter sourceItem = (JcrItemAdapter) container.getItem(sourceItemId);
+                                    JcrItemAdapter targetItem = (JcrItemAdapter) container.getItem(targetItemId);
+                                    if (treeModel.moveItemAfter(sourceItem.getJcrItem(), targetItem.getJcrItem())) {
+                                        setParent(sourceItemId, targetItemId);
+                                    }
+                                }
                             }
                         }
                     }
@@ -164,16 +158,12 @@ public class WorkbenchTreeTable extends MagnoliaTreeTable {
 
             @Override
             public AcceptCriterion getAcceptCriterion() {
-
-                // FIXME: Use com.vaadin.ui.Table.TableDropCriterion
-
                 return AcceptAll.get();
             }
         });
     }
 
     public void select(String itemId) {
-
         if (!container.isRoot(itemId)) {
             String parent = container.getParent(itemId);
             while (!container.isRoot(parent)) {
@@ -194,13 +184,12 @@ public class WorkbenchTreeTable extends MagnoliaTreeTable {
     }
 
     public void updateItem(final Item item) {
-        String itemId = ((JcrItemAdapter) item).getItemId();
+        final String itemId = ((JcrItemAdapter) item).getItemId();
         if (container.containsId(itemId)) {
             container.fireItemSetChange();
         } else {
             log.warn("No item found for id [{}]", itemId);
         }
-
     }
 
     private void buildColumns(WorkbenchDefinition workbenchDefinition, ComponentProvider componentProvider) {
@@ -230,8 +219,7 @@ public class WorkbenchTreeTable extends MagnoliaTreeTable {
             // Set Formatter
             if (StringUtils.isNotBlank(column.getFormatterClass())) {
                 try {
-                    addGeneratedColumn(columnProperty,
-                            (ColumnFormatter) componentProvider.newInstance(Class.forName(column.getFormatterClass()), column));
+                    addGeneratedColumn(columnProperty,(ColumnFormatter) componentProvider.newInstance(Class.forName(column.getFormatterClass()), column));
                 } catch (ClassNotFoundException e) {
                     log.error("Not able to create the Formatter", e);
                 }

@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral.field.builder;
 
-
 import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.admincentral.field.upload.UploadFileFieldImpl;
@@ -66,31 +65,32 @@ import com.vaadin.ui.Field;
 public class FileUploadFieldBuilder extends AbstractFieldBuilder<FileUploadFieldDefinition> {
 
     private static final Logger log = LoggerFactory.getLogger(FileUploadFieldBuilder.class);
-    private MagnoliaShell magnoliaShel;
+    
+    private final MagnoliaShell magnoliaShell;
 
     @Inject
     public FileUploadFieldBuilder(FileUploadFieldDefinition definition, Item relatedFieldItem, Shell shell) {
         super(definition, relatedFieldItem);
-        this.magnoliaShel = (MagnoliaShell)shell;
+        this.magnoliaShell = (MagnoliaShell) shell;
     }
 
     @Override
     protected Field buildField() {
-        //Temp Solution as long as we don't support DMS
+        // Temp Solution as long as we don't support DMS
         DefaultProperty property = (DefaultProperty) item.getItemProperty("image");
         if (property == null) {
             property = DefaultPropertyUtil.newDefaultProperty("image", null, "upload");
             item.addItemProperty("image", property);
-        }else {
+        } else {
             property.setValue("upload");
         }
 
-        //Get or create the File Node adapter.
+        // Get or create the File Node adapter.
         JcrItemNodeAdapter item = getOrCreateItem();
-        //Create the File Wrapper.
+        // Create the File Wrapper.
         FileItemWrapper fileItem = new FileItemWrapperImpl(item);
-        //Create Upload Filed.
-        UploadFileFieldImpl uploadField = new UploadFileFieldImpl(fileItem, magnoliaShel);
+        // Create Upload Filed.
+        UploadFileFieldImpl uploadField = new UploadFileFieldImpl(fileItem, magnoliaShell);
         uploadField.setInfo(true);
         uploadField.setProgressInfo(true);
         uploadField.setFileDeletion(true);
@@ -100,38 +100,35 @@ public class FileUploadFieldBuilder extends AbstractFieldBuilder<FileUploadField
         return uploadField;
     }
 
-
     /**
-     * Get or Create the imageBinary Item.
-     * If this Item doesn't exist yet, initialize all fields (as Property).
+     * Get or Create the imageBinary Item. If this Item doesn't exist yet,
+     * initialize all fields (as Property).
      */
     public JcrItemNodeAdapter getOrCreateItem() {
-        //Get the related Node
+        // Get the related Node
         Node node = getRelatedNode(item);
         JcrItemNodeAdapter child = null;
         try {
-            if(node.hasNode(definition.getImageNodeName()) && !(item instanceof JcrNewNodeAdapter)) {
+            if (node.hasNode(definition.getImageNodeName()) && !(item instanceof JcrNewNodeAdapter)) {
                 child = new JcrNodeAdapter(node.getNode(definition.getImageNodeName()));
-                child.setParent((JcrItemNodeAdapter)item);
+                child.setParent((JcrItemNodeAdapter) item);
             } else {
                 child = new JcrNewNodeAdapter(node, MgnlNodeType.NT_RESOURCE, definition.getImageNodeName());
-                child.setParent((JcrItemNodeAdapter)item);
+                child.setParent((JcrItemNodeAdapter) item);
             }
-        }
-        catch (RepositoryException e) {
+        } catch (RepositoryException e) {
             log.error("Could get or create item", e);
         }
         return child;
     }
 
     /**
-     * Do not link a DataSource to the Upload Field.
-     * Upload Field will handle the creation of the appropriate property.
+     * Do not link a DataSource to the Upload Field. Upload Field will handle
+     * the creation of the appropriate property.
      */
     @Override
     public void setPropertyDataSource(Property property) {
     }
-
 
     @Override
     protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {

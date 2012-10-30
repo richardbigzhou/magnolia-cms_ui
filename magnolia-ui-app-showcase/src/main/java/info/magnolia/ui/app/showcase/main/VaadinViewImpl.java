@@ -33,15 +33,15 @@
  */
 package info.magnolia.ui.app.showcase.main;
 
-import info.magnolia.ui.vaadin.integration.widget.grid.MagnoliaTable;
-import info.magnolia.ui.vaadin.integration.widget.grid.MagnoliaTreeTable;
-import info.magnolia.ui.vaadin.integration.widget.icon.BadgeIcon;
-import info.magnolia.ui.vaadin.integration.widget.icon.ErrorIcon;
-import info.magnolia.ui.vaadin.integration.widget.icon.HelpIcon;
-import info.magnolia.ui.vaadin.integration.widget.icon.Icon;
-import info.magnolia.ui.vaadin.integration.widget.icon.InfoIcon;
-import info.magnolia.ui.vaadin.integration.widget.icon.LoadingIcon;
-import info.magnolia.ui.vaadin.integration.widget.icon.WarningIcon;
+import info.magnolia.ui.vaadin.grid.MagnoliaTable;
+import info.magnolia.ui.vaadin.grid.MagnoliaTreeTable;
+import info.magnolia.ui.vaadin.icon.BadgeIcon;
+import info.magnolia.ui.vaadin.icon.ErrorIcon;
+import info.magnolia.ui.vaadin.icon.HelpIcon;
+import info.magnolia.ui.vaadin.icon.Icon;
+import info.magnolia.ui.vaadin.icon.InfoIcon;
+import info.magnolia.ui.vaadin.icon.LoadingIcon;
+import info.magnolia.ui.vaadin.icon.WarningIcon;
 
 import java.util.Date;
 
@@ -87,8 +87,8 @@ public class VaadinViewImpl implements VaadinView {
 
     private static final long serialVersionUID = 4937209277244291844L;
 
-    VerticalLayout layout;
-
+    private final VerticalLayout layout;
+   
     public VaadinViewImpl() {
         layout = new VerticalLayout();
         layout.setSpacing(true);
@@ -461,6 +461,7 @@ public class VaadinViewImpl implements VaadinView {
 
         Button button = new Button("Button");
         grid.addComponent(button);
+
 
         button = new Button("Button with link style");
         button.setStyleName(BaseTheme.BUTTON_LINK);

@@ -2,7 +2,7 @@
 <!DOCTYPE module SYSTEM "module.dtd">
 <module>
 	<name>ui-admincentral</name>
-	<displayName>Magnolia Velvet Admin Central</displayName>
+	<displayName>Magnolia AdminCentral</displayName>
 	<description>New Magnolia Administration GUI</description>
 	<class>info.magnolia.ui.admincentral.module.AdminCentralModule</class>
 	<versionHandler>info.magnolia.ui.admincentral.setup.AdminCentralModuleVersionHandler</versionHandler>
@@ -54,6 +54,10 @@
 			<type>info.magnolia.ui.admincentral.app.content.ContentAppDescriptor</type>
 			<implementation>info.magnolia.ui.admincentral.app.content.ConfiguredContentAppDescriptor</implementation>
 		</type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.framework.app.SubAppDescriptor</type>
+      <implementation>info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor</implementation>
+    </type-mapping>
 		<type-mapping>
 			<type>info.magnolia.ui.model.workbench.definition.WorkbenchDefinition</type>
 			<implementation>info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition</implementation>
@@ -115,7 +119,7 @@
 			<class>info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer</class>
 		</configurer>
 		<component>
-			<type>info.magnolia.ui.admincentral.workbench.action.WorkbenchActionRegistry</type>
+			<type>info.magnolia.ui.model.workbench.action.WorkbenchActionRegistry</type>
 			<workspace>config</workspace>
 			<path>/modules/ui-admincentral/workbenchActionRegistry</path>
 			<observed>true</observed>
@@ -212,18 +216,18 @@
 		</component>
 
 		<component>
-			<type>info.magnolia.ui.widget.dialog.MagnoliaDialogView</type>
-			<implementation>info.magnolia.ui.widget.dialog.Dialog</implementation>
+			<type>info.magnolia.ui.vaadin.dialog.MagnoliaDialogView</type>
+			<implementation>info.magnolia.ui.vaadin.dialog.Dialog</implementation>
 		</component>
 
 		<component>
-			<type>info.magnolia.ui.widget.dialog.DialogView</type>
-			<implementation>info.magnolia.ui.widget.dialog.BaseDialog</implementation>
+			<type>info.magnolia.ui.vaadin.dialog.DialogView</type>
+			<implementation>info.magnolia.ui.vaadin.dialog.BaseDialog</implementation>
 		</component>
 
 		<component>
-			<type>info.magnolia.ui.widget.dialog.FormDialogView</type>
-			<implementation>info.magnolia.ui.widget.dialog.FormDialog</implementation>
+			<type>info.magnolia.ui.vaadin.dialog.FormDialogView</type>
+			<implementation>info.magnolia.ui.vaadin.dialog.FormDialog</implementation>
 		</component>
 
 		<component>
@@ -243,8 +247,8 @@
 			<implementation>info.magnolia.ui.admincentral.dialog.action.DialogActionFactoryImpl</implementation>
 		</component>
 		<component>
-			<type>info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactory</type>
-			<implementation>info.magnolia.ui.admincentral.workbench.action.WorkbenchActionFactoryImpl</implementation>
+			<type>info.magnolia.ui.model.workbench.action.WorkbenchActionFactory</type>
+			<implementation>info.magnolia.ui.model.workbench.action.WorkbenchActionFactoryImpl</implementation>
 		</component>
 		<component>
 			<type>info.magnolia.ui.admincentral.content.view.ChooseDialogContentPresenter</type>
@@ -289,13 +293,6 @@
 
 
 	<!-- Declaring dummy view for all fake apps -->
-	<components>
-		<id>app-assets-main</id>
-		<component>
-			<type>info.magnolia.ui.admincentral.app.dummy.DummyView</type>
-			<implementation>info.magnolia.ui.admincentral.app.dummy.DummyViewImpl</implementation>
-		</component>
-	</components>
 	<components>
 		<id>app-documents-main</id>
 		<component>
@@ -506,7 +503,7 @@
 				</param>
 				<param>
 					<name>widgetset</name>
-					<value>info.magnolia.ui.vaadin.widgetset.MagnoliaWidgetSet</value>
+					<value>info.magnolia.ui.vaadin.gwt.MagnoliaWidgetSet</value>
 				</param>
 				<param>
 					<name>caption</name>
@@ -519,19 +516,6 @@
 				<param>
 					<name>codeBasePath</name>
 					<value>/.magnolia/admincentral</value>
-				</param>
-			</params>
-		</servlet>
-		<servlet>
-			<name>VaadinClasspathResourcesSpool</name>
-			<class>info.magnolia.cms.servlets.ClasspathSpool</class>
-			<mappings>
-				<mapping>/VAADIN/*</mapping>
-			</mappings>
-			<params>
-				<param>
-					<name>resourcesRoot</name>
-					<value>/VAADIN</value>
 				</param>
 			</params>
 		</servlet>

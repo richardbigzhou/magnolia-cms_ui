@@ -48,8 +48,8 @@ public class AppEventTestImpl extends AppTestImpl {
     public InvocationCountingTestEventHandler handler;
 
     @Inject
-    public AppEventTestImpl(AppContext ctx, AppTestSubApp subApp, @Named("app") EventBus eventBus) {
-        super(ctx, subApp);
+    public AppEventTestImpl(AppContext ctx, @Named("app") EventBus eventBus) {
+        super(ctx);
         this.eventBus = eventBus;
 
         //Register

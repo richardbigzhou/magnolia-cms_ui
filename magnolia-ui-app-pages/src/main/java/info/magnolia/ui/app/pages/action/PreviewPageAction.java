@@ -87,7 +87,7 @@ public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
 
             DefaultLocation location = PagesEditorSubApp.createLocation(pageNodePath, PagesApp.PREVIEW_TOKEN);
 
-            log.debug("token is {}", location.getToken());
+            log.debug("token is {}", location.getParameter());
 
             locationController.goTo(location);
 

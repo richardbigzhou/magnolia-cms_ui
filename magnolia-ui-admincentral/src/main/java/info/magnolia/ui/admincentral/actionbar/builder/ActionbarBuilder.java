@@ -37,8 +37,8 @@ import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarGroupDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarItemDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarSectionDefinition;
-import info.magnolia.ui.widget.actionbar.Actionbar;
-import info.magnolia.ui.widget.actionbar.ActionbarView;
+import info.magnolia.ui.vaadin.actionbar.Actionbar;
+import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 
 import java.util.ArrayList;
 import java.util.List;

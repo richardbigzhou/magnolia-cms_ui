@@ -33,6 +33,10 @@
  */
 package info.magnolia.ui.app.sample.main;
 
+import info.magnolia.ui.framework.app.AppController;
+
+import javax.inject.Inject;
+
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
@@ -44,9 +48,14 @@ import com.vaadin.ui.VerticalLayout;
 public class NavigationViewImpl implements NavigationView {
 
     private Listener listener;
+    
     private VerticalLayout layout;
 
-    public NavigationViewImpl() {
+    private final AppController appController;
+    
+    @Inject
+    public NavigationViewImpl(AppController appController) {
+        this.appController = appController;
     }
 
     @Override

@@ -35,7 +35,7 @@ package info.magnolia.ui.admincentral.shellapp.pulse;
 
 import info.magnolia.ui.admincentral.components.SplitFeed;
 import info.magnolia.ui.admincentral.components.SplitFeed.FeedSection;
-import info.magnolia.ui.vaadin.integration.widget.divlayout.DivLayout;
+import info.magnolia.ui.vaadin.layout.DivLayout;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.admincentral.dialog;
 
-import info.magnolia.ui.widget.dialog.DialogView;
-import info.magnolia.ui.widget.dialog.FormDialogView;
+import info.magnolia.ui.vaadin.dialog.DialogView;
+import info.magnolia.ui.vaadin.dialog.FormDialogView;
 
 import com.vaadin.data.Item;
 

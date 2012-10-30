@@ -33,34 +33,72 @@
  */
 package info.magnolia.ui.framework.location;
 
+import org.apache.commons.lang.StringUtils;
+
+import java.util.StringTokenizer;
+
 /**
  * Default location implementation.
+ * appType:appId:subAppId;some/parameter
  */
 public class DefaultLocation implements Location {
 
     public static final String LOCATION_TYPE_APP = "app";
     public static final String LOCATION_TYPE_SHELL_APP = "shell";
 
-    private String type;
-    private String prefix;
-    private String token;
+    private String appType;
+    private String appId;
+    private String subAppId;
 
-    public DefaultLocation(String type, String prefix, String token) {
-        this.type = type;
-        this.prefix = prefix;
-        this.token = token;
+    private String parameter;
+
+    public DefaultLocation(String appType, String appId) {
+        this.appType = appType;
+        this.appId = appId;
     }
 
-    public String getType() {
-        return type;
+    public DefaultLocation(String appType, String appId, String subAppId, String parameter) {
+        this.appType = appType;
+        this.appId = appId;
+        this.subAppId = subAppId;
+        this.parameter = parameter;
     }
 
-    public String getPrefix() {
-        return prefix;
+    public DefaultLocation(String fragment) {
+        parseLocation(fragment);
     }
 
-    public String getToken() {
-        return token;
+    private void parseLocation(String fragment) {
+        String[] split = StringUtils.split(";");
+        setAppParams(split[0]);
+        this.parameter = split[1];
+    }
+
+    private void setAppParams(String appParams) {
+        StringTokenizer tokenizer = new StringTokenizer(appParams, ":");
+        this.appType = (tokenizer.hasMoreTokens()) ? tokenizer.nextToken() : "";
+        this.appId = (tokenizer.hasMoreTokens()) ? tokenizer.nextToken() : "";
+        this.subAppId = (tokenizer.hasMoreTokens()) ? tokenizer.nextToken() : "";
+    }
+
+    public String getAppType() {
+        return appType;
+    }
+
+    public String getAppId() {
+        return appId;
+    }
+
+    public String getSubAppId() {
+        return subAppId;
+    }
+
+    public String getParameter() {
+        return parameter;
+    }
+
+    public void setParameter(String parameter) {
+        this.parameter = parameter;
     }
 
     @Override
@@ -68,19 +106,19 @@ public class DefaultLocation implements Location {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
 
         DefaultLocation that = (DefaultLocation) o;
 
-        if (prefix != null ? !prefix.equals(that.prefix) : that.prefix != null) {
+        if (appType != null ? !appType.equals(that.appType) : that.appType != null) {
             return false;
         }
-        if (token != null ? !token.equals(that.token) : that.token != null) {
+        if (appId != null ? !appId.equals(that.appId) : that.appId != null) {
             return false;
         }
-        if (type != null ? !type.equals(that.type) : that.type != null) {
+        if (subAppId != null ? !subAppId.equals(that.subAppId) : that.subAppId != null) {
+            return false;
+        }
+        if (parameter != null ? !parameter.equals(that.parameter) : that.parameter != null) {
             return false;
         }
 
@@ -89,33 +127,38 @@ public class DefaultLocation implements Location {
 
     @Override
     public int hashCode() {
-        int result = type != null ? type.hashCode() : 0;
-        result = 31 * result + (prefix != null ? prefix.hashCode() : 0);
-        result = 31 * result + (token != null ? token.hashCode() : 0);
+        int result = appType != null ? appType.hashCode() : 0;
+        result = 31 * result + (appId != null ? appId.hashCode() : 0);
+        result = 31 * result + (subAppId != null ? subAppId.hashCode() : 0);
+        result = 31 * result + (parameter != null ? parameter.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        if (type != null && type.length() != 0) {
-            sb.append(type);
-            if (prefix != null && prefix.length() != 0) {
-                sb.append(":").append(prefix);
-                if (token != null && token.length() != 0) {
-                    sb.append(":").append(token);
-                }
+        if (appType != null && appType.length() != 0) {
+            sb.append(appType);
+            if (appId != null && appId.length() != 0) {
+                sb.append(":").append(appId);
+            }
+            if (subAppId != null && subAppId.length() != 0) {
+                sb.append(":").append(subAppId);
+            }
+            if (parameter != null && parameter.length() != 0) {
+                sb.append(";").append(parameter);
             }
         }
         return sb.toString();
     }
 
-    public static String extractType(String fragment) {
+    public static String extractAppType(String fragment) {
         int i = fragment.indexOf(':');
         return i != -1 ? fragment.substring(0, i) : fragment;
     }
 
-    public static String extractPrefix(String fragment) {
+    public static String extractAppId(String fragment) {
+        fragment = removeParameter(fragment);
         int i = fragment.indexOf(':');
         if (i == -1) {
             return "";
@@ -124,7 +167,9 @@ public class DefaultLocation implements Location {
         return j != -1 ? fragment.substring(i + 1, j) : fragment.substring(i + 1);
     }
 
-    public static String extractToken(String fragment) {
+    public static String extractSubAppId(String fragment) {
+        fragment = removeParameter(fragment);
+
         int i = fragment.indexOf(':');
         if (i == -1) {
             return "";
@@ -135,4 +180,18 @@ public class DefaultLocation implements Location {
         }
         return fragment.substring(j + 1);
     }
+
+    public static String extractParameter(String fragment) {
+        int i = fragment.indexOf(';');
+        if (i == -1) {
+            return "";
+        }
+         return fragment.substring(i + 1);
+    }
+
+    private static String removeParameter(String fragment) {
+        int i = fragment.indexOf(';');
+        return i != -1 ? fragment.substring(0, i) : fragment;
+    }
+
 }
