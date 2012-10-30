@@ -40,7 +40,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * JQuery library wrapper. The functionality covered is ruled by 
+ * JQuery library wrapper. The functionality covered is ruled by
  * the needs of MagnoliaShell (and its parts) implementation.
  */
 public class JQueryWrapper extends JavaScriptObject {
@@ -74,14 +74,18 @@ public class JQueryWrapper extends JavaScriptObject {
         });
     }-*/;
 
+    public final native boolean is(String selector) /*-{
+        return this.is(selector);
+    }-*/;
+
     public final native JQueryWrapper children(String selector) /*-{
         return this.children(selector);
     }-*/;
-    
+
     public final native JQueryWrapper find(String selector) /*-{
         return this.find(selector);
     }-*/;
-    
+
     public final native void on(String eventId, String selector, Callbacks callbacks) /*-{
         this.on(
               eventId, selector,
@@ -103,6 +107,11 @@ public class JQueryWrapper extends JavaScriptObject {
                                    .fire(jq);
                     }
                });
+    }-*/;
+
+    public final native JQueryWrapper stop() /*-{
+          this.stop();
+          return this;
     }-*/;
 
     public final native void fadeIn(int duration, Callbacks callbacks) /*-{
@@ -178,6 +187,14 @@ public class JQueryWrapper extends JavaScriptObject {
           });
     }-*/;
 
+    public final native String attr(final String property) /*-{
+          return this.attr(property);
+    }-*/;
+
+    public final native void setAttr(final String property, final String value) /*-{
+          this.attr(property, value);
+    }-*/;
+
     public final native String css(final String property) /*-{
           return this.css(property);
     }-*/;
@@ -207,8 +224,8 @@ public class JQueryWrapper extends JavaScriptObject {
 
     public final native Position position() /*-{
         return this.position();
-    }-*/; 
-    
+    }-*/;
+
     public native final Element get(int index) /*-{
           return this.get(index);
     }-*/;

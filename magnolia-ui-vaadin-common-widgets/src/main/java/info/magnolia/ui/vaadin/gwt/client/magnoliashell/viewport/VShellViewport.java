@@ -33,29 +33,21 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport;
 
-
-import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings;
-import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.Callbacks;
-import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
-import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
 import info.magnolia.ui.vaadin.gwt.client.loading.LoadingPane;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.VMagnoliaShell;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellTransitionCompleteEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ViewportCloseEvent;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
-import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
@@ -72,74 +64,42 @@ import com.vaadin.terminal.gwt.client.UIDL;
 /**
  * An overlay that displays the open app in the shell on top of each other.
  */
-public class VShellViewport extends VPanelWithCurtain implements Container, ContainerResizedListener {
+public class VShellViewport extends ComplexPanel implements Container, ContainerResizedListener {
 
-    private static int CURTAIN_FADE_IN_SPEED = 500;
+    protected ApplicationConnection client;
 
-    private static int CURTAIN_FADE_OUT_SPEED = 400;
+    private boolean active;
 
-    public static int Z_INDEX_HI = 300;
+    private Widget visibleApp;
 
-    public static int Z_INDEX_LO = 100;
+    private boolean forceContentAlign;
 
-    private String paintableId;
-
-    private ApplicationConnection client;
-
-    private final Element container = DOM.createDiv();
-
-    private boolean closingWidget;
-
-    private Widget visibleWidget = null;
-
-    private final List<Paintable> paintables = new LinkedList<Paintable>();
-
-    private AnimationDelegate viewportShowAnimationDelegate;
-
-    private AnimationDelegate viewportHideAnimationDelegate;
-
-    private AnimationDelegate contentShowAnimationDelegate;
-
-    private AnimationDelegate contentHideAnimationDelegate;
-
-    private boolean forceContentAlign = true;
+    private boolean closing;
 
     private EventBus eventBus;
 
-    private boolean active = false;
+    private final TouchDelegate touchDelegate = new TouchDelegate(this);
 
-    private boolean curtainVisible = false;
-
-    private boolean curtainAnimated = false;
-
-    private boolean animatingViewport = false;
-
-    private final TouchDelegate delegate = new TouchDelegate(this);
+    private TransitionDelegate transitionDelegate;
 
     private final LoadingPane loadingPane = new LoadingPane();
 
-
-    private boolean bTransitioning;
-
-
-
     public VShellViewport() {
         super();
-        setElement(container);
-        addStyleName("v-shell-viewport");
+        setElement(DOM.createDiv());
+        addStyleName("v-viewport");
         DOM.sinkEvents(this.getElement(), Event.TOUCHEVENTS);
         bindHandlers();
 
         loadingPane.appendTo(this);
     }
 
-
-    public void showLoadingPane(){
+    public void showLoadingPane() {
         loadingPane.show();
     }
 
     private void bindHandlers() {
-        delegate.addTouchEndHandler(new TouchEndHandler() {
+        touchDelegate.addTouchEndHandler(new TouchEndHandler() {
 
             @Override
             public void onTouchEnd(TouchEndEvent event) {
@@ -159,275 +119,137 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
         this.eventBus = eventBus;
     }
 
-    protected void setClosingWidget(boolean closingWidget) {
-        this.closingWidget = closingWidget;
+    public boolean isClosing() {
+        return closing;
     }
 
-    public void setViewportShowAnimationDelegate(AnimationDelegate animationDelegate) {
-        GWT.log((curtainAnimated ? "SHELL" : "APPS") + ": setting viewport show animation delegate to " + animationDelegate);
-        this.viewportShowAnimationDelegate = animationDelegate;
+    public void setClosing(boolean closing) {
+        this.closing = closing;
     }
 
-    public void setViewportHideAnimationDelegate(AnimationDelegate animationDelegate) {
-        GWT.log((curtainAnimated ? "SHELL" : "APPS") + ": setting viewport hide animation delegate to " + animationDelegate);
-        this.viewportHideAnimationDelegate = animationDelegate;
+    public TransitionDelegate getTransitionDelegate() {
+        return transitionDelegate;
     }
 
-    public void setContentShowAnimationDelegate(AnimationDelegate animationDelegate) {
-        GWT.log((curtainAnimated ? "SHELL" : "APPS") + ": setting content show animation delegate to " + animationDelegate);
-        this.contentShowAnimationDelegate = animationDelegate;
+    public void setTransitionDelegate(TransitionDelegate transitionDelegate) {
+        this.transitionDelegate = transitionDelegate;
     }
 
-    public void setContentHideAnimationDelegate(AnimationDelegate animationDelegate) {
-        GWT.log((curtainAnimated ? "SHELL" : "APPS") + ": setting content hide animation delegate to " + animationDelegate);
-        this.contentHideAnimationDelegate = animationDelegate;
-    }
-
-    public boolean isCurtainVisible() {
-        return curtainVisible;
-    }
-
-    public void setCurtainVisible(boolean curtainVisible) {
-        this.curtainVisible = curtainVisible;
-    }
-
-    public boolean isCurtainAnimated() {
-        return curtainAnimated;
-    }
-
-    public void setCurtainAnimated(boolean curtainAnimated) {
-        this.curtainAnimated = curtainAnimated;
-    }
+    /* VIEWPORT ACTIVATION */
 
     public boolean isActive() {
         return active;
     }
 
     public void setActive(boolean active) {
-        GWT.log((curtainAnimated ? "SHELL" : "APPS") + ": setting " + (active ? "active" : "inactive"));
-        if (this.active != active) {
-            if (active) {
-                showViewport();
-            } else {
-                hideViewport();
-            }
+        if (transitionDelegate != null) {
+            transitionDelegate.setActive(this, active);
+        } else {
+            doSetActive(active);
         }
         this.active = active;
     }
 
-    public Widget getVisibleWidget() {
-        return visibleWidget;
-    }
-
-    public void setVisibleWidget(Widget w) {
-        GWT.log((curtainAnimated ? "SHELL" : "APPS") + ": setting visible widget to" + w);
-        if (w != visibleWidget) {
-            if (visibleWidget != null) {
-                hideWidget(visibleWidget);
-            }
-            if (w != null) {
-                showWidget(w);
-            }
+    /**
+     * Default non-transitioning behavior, accessible to transition delegates as a fall back.
+     */
+    void doSetActive(boolean active) {
+        if (active) {
+            setVisible(true);
+        } else {
+            setVisible(false);
         }
-        this.visibleWidget = w;
     }
 
-    /* SHOW-HIDE VIEWPORT & CURTAIN */
+    /* CHANGING VISIBLE APP */
 
-    private void showViewport() {
-        if (viewportShowAnimationDelegate != null) {
-            animatingViewport = true;
-            Callbacks callback = Callbacks.create(new JQueryCallback() {
+    public Widget getVisibleApp() {
+        return visibleApp;
+    }
 
-                @Override
-                public void execute(JQueryWrapper query) {
-                    animatingViewport = false;
-                }
-            });
-
-            if (curtainVisible && curtainAnimated) {
-
-                getModalityCurtain().getStyle().setProperty("opacity", "");
-                JQueryWrapper jq = JQueryWrapper.select(getModalityCurtain());
-                final double initialOpacity = Double.valueOf(jq.css("opacity"));
-                jq.setCss("opacity", "0");
-                showCurtain();
-                jq.animate(CURTAIN_FADE_IN_SPEED, new AnimationSettings() {
-
-                    {
-                        setProperty("opacity", initialOpacity);
-                    }
-                });
-                viewportShowAnimationDelegate.show(VShellViewport.this, callback);
-
+    public void setVisibleApp(Widget w) {
+        if (w != visibleApp) {
+            if (transitionDelegate != null) {
+                transitionDelegate.setVisibleApp(this, w);
             } else {
-                if (curtainVisible) {
-                    showCurtain();
-                }
-                viewportShowAnimationDelegate.show(this, callback);
+                doSetVisibleApp(w);
             }
-        } else {
-            if (curtainVisible) {
-                if (curtainAnimated) {
-                    getModalityCurtain().getStyle().setProperty("opacity", "");
-                    JQueryWrapper jq = JQueryWrapper.select(getModalityCurtain());
-                    final double initialOpacity = Double.valueOf(jq.css("opacity"));
-                    jq.setCss("opacity", "0");
-                    showCurtain();
-                    jq.animate(CURTAIN_FADE_IN_SPEED, new AnimationSettings() {
-
-                        {
-                            setProperty("opacity", initialOpacity);
-                        }
-                    });
-                } else {
-                    showCurtain();
-                }
-            }
-            getElement().getStyle().setZIndex(Z_INDEX_HI);
-            getElement().getStyle().setProperty("opacity", "");
-            getElement().getStyle().setVisibility(Visibility.VISIBLE);
+            visibleApp = w;
         }
     }
 
-    private void hideViewport() {
-        if (viewportHideAnimationDelegate != null) {
-            animatingViewport = true;
-            Callbacks callbacks = Callbacks.create(new JQueryCallback() {
-
-                @Override
-                public void execute(JQueryWrapper query) {
-                    animatingViewport = false;
-                }
-
-            });
-            if (curtainAnimated) {
-                if (viewportHideAnimationDelegate != AnimationDelegate.FADING_DELEGATE) {
-                    getModalityCurtain().getStyle().setZIndex(Z_INDEX_HI + 9);
-                }
-                final JQueryCallback callback = new JQueryCallback() {
-
-                    @Override
-                    public void execute(JQueryWrapper query) {
-                        JQueryWrapper.select(getModalityCurtain()).animate(CURTAIN_FADE_OUT_SPEED, new AnimationSettings() {
-
-                            {
-                                setProperty("opacity", "0");
-                                setCallbacks(Callbacks.create(new JQueryCallback() {
-
-                                    @Override
-                                    public void execute(JQueryWrapper query) {
-                                        hideCurtain();
-                                    }
-                                }));
-                            }
-                        });
-                    }
-                };
-                if (viewportHideAnimationDelegate == AnimationDelegate.SLIDING_DELEGATE) {
-                    JQueryWrapper.select(getModalityCurtain()).animate(200, new AnimationSettings() {
-
-                        {
-                            setProperty("text-indent", "-200px");
-                            setCallbacks(Callbacks.create(callback));
-                        }
-                    });
-                } else {
-                    callback.execute(JQueryWrapper.select(getModalityCurtain()));
-                }
-            }
-            viewportHideAnimationDelegate.hide(this, callbacks);
-        } else {
-            hideCurtain();
-            getElement().getStyle().setZIndex(Z_INDEX_LO);
+    /**
+     * Default non-transitioning behavior, accessible to transition delegates as a fall back.
+     */
+    void doSetVisibleApp(Widget w) {
+        if (visibleApp != null) {
+            visibleApp.setVisible(false);
         }
+        w.setVisible(true);
     }
-
-    /* SHOW-HIDE ONE WIDGET INSIDE THE VIEWPORT */
-
-    private void showWidget(final Widget w) {
-
-        final JQueryCallback callback = new JQueryCallback() {
-            @Override
-            public void execute(JQueryWrapper query) {
-
-                updateShellAppFromServer();
-            }
-        };
-
-        if (active && contentShowAnimationDelegate != null && !animatingViewport) {
-            contentShowAnimationDelegate.show(w, Callbacks.create(callback));
-        } else {
-            w.getElement().getStyle().setVisibility(Visibility.VISIBLE);
-            w.getElement().getStyle().setZIndex(Z_INDEX_HI);
-            w.getElement().getStyle().setProperty("opacity", "");
-        }
-    }
-
-    private void hideWidget(final Widget w) {
-        if (active && contentHideAnimationDelegate != null && !animatingViewport) {
-            contentHideAnimationDelegate.hide(w, Callbacks.create());
-        } else {
-            w.getElement().getStyle().setVisibility(Visibility.HIDDEN);
-            w.getElement().getStyle().setZIndex(Z_INDEX_LO);
-        }
-    }
-
-    public void updateShellAppFromServer(){
-        eventBus.fireEvent(new ShellTransitionCompleteEvent());
-    }
-
-
 
     @Override
     public void updateFromUIDL(final UIDL uidl, final ApplicationConnection client) {
 
-        this.paintableId = uidl.getId();
         this.client = client;
         if (!client.updateComponent(this, uidl, true)) {
-            final List<Paintable> orpanCandidates = new LinkedList<Paintable>(paintables);
-            Widget formerWidget = visibleWidget;
-            if (uidl.getChildCount() > 0) {
-                int idx = 0;
-                for (; idx < uidl.getChildCount(); ++idx) {
-                    final UIDL childUIdl = uidl.getChildUIDL(idx);
-                    final Paintable paintable = client.getPaintable(childUIdl);
-                    orpanCandidates.remove(paintable);
-                    final Widget w = (Widget) paintable;
-                    updatePosition(w);
-                    paintable.updateFromUIDL(childUIdl, client);
 
+            final Collection<Widget> oldWidgets = new HashSet<Widget>();
+            for (final Iterator<Widget> iterator = iterator(); iterator.hasNext();) {
+                oldWidgets.add(iterator.next());
+            }
+
+            // Widget formerWidget = visibleWidget;
+            if (uidl.getChildCount() > 0) {
+                Widget app = null;
+                for (int i = 0; i < uidl.getChildCount(); i++) {
+                    final UIDL childUIdl = uidl.getChildUIDL(i);
+                    final Paintable paintable = client.getPaintable(childUIdl);
+                    oldWidgets.remove(paintable);
+                    final Widget w = (Widget) paintable;
+                    if (i == 0) {
+                        app = w;
+                    }
+                    if (w.getParent() != this) {
+                        add(w, getElement());
+                    }
+
+                    // make sure handling of visibility is left to viewport
+                    boolean visible = w.isVisible();
+                    paintable.updateFromUIDL(childUIdl, client);
                     if (forceContentAlign) {
                         alignChild(w);
                     }
-                    if (idx == 0) {
-                        setVisibleWidget(w);
-                    } else {
-                        w.getElement().getStyle().setProperty("zIndex", "");
-                    }
+                    w.setVisible(visible);
+
+                }
+                if (app != null) {
+                    setVisibleApp(app);
                 }
             } else {
-                visibleWidget = null;
+                visibleApp = null;
             }
 
-            for (final Paintable paintable : orpanCandidates) {
-                client.unregisterPaintable(paintable);
-                if (closingWidget && formerWidget == paintable) {
-                    new Timer() {
-
-                        @Override
-                        public void run() {
-                            remove((Widget) paintable);
-                            setClosingWidget(false);
-                        }
-                    }.schedule(500);
-                } else {
-                    remove((Widget) paintable);
-                }
+            for (Widget w : oldWidgets) {
+                removeWidget(w);
             }
         }
 
         loadingPane.hide();
+    }
+
+    protected void removeWidget(Widget w) {
+        doRemoveWidget(w);
+    }
+
+    /**
+     * Default non-transitioning behavior, accessible to transition delegates as a fall back.
+     */
+    void doRemoveWidget(Widget w) {
+        remove(w);
+        if (w instanceof Paintable) {
+            client.unregisterPaintable((Paintable) w);
+        }
     }
 
     private void alignChild(Widget w) {
@@ -438,17 +260,6 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
             style.setMarginLeft(-el.getOffsetWidth() / 2, Unit.PX);
         }
     }
-
-    private boolean updatePosition(Widget w) {
-        boolean result = !hasChildComponent(w);
-        if (result) {
-            add(w, container);
-        }
-        return result;
-    }
-
-
-
 
     /* CONTAINER INTERFACE IMPL */
 
@@ -478,35 +289,8 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
     public void replaceChildComponent(Widget oldComponent, Widget newComponent) {
     }
 
-    @Override
-    public void clear() {
-        super.clear();
-        paintables.clear();
-    }
-
-    @Override
-    protected void insert(Widget child, Element container, int beforeIndex, boolean domInsert) {
-        super.insert(child, container, beforeIndex, domInsert);
-        if (child instanceof Paintable) {
-            paintables.add((Paintable) child);
-        }
-    }
-
-    @Override
-    protected void add(final Widget child, Element container) {
-        if (child instanceof Paintable) {
-            child.getElement().getStyle().setPosition(Position.ABSOLUTE);
-            paintables.add((Paintable) child);
-        }
-        super.add(child, container);
-    }
-
     public void setForceContentAlign(boolean forceContentAlign) {
         this.forceContentAlign = forceContentAlign;
-    }
-
-    public boolean hasContent() {
-        return getWidgetCount() - (closingWidget ? 1 : 0) > 0;
     }
 
     @Override
@@ -517,4 +301,5 @@ public class VShellViewport extends VPanelWithCurtain implements Container, Cont
             }
         }
     }
+
 }

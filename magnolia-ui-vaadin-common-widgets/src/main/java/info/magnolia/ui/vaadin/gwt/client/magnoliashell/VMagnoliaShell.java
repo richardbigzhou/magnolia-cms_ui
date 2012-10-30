@@ -147,7 +147,7 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
                 @Override
                 public void invoke(String methodName, Object[] params) {
                     ViewportType type = params.length > 0 ? ViewportType.valueOf(String.valueOf(params[0])) : ViewportType.SHELL_APP_VIEWPORT;
-                    view.changeActiveViewport(type);
+                    view.setActiveViewport(type);
                 }
             });
 
@@ -201,7 +201,6 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
                         view.updateViewport(viewport, viewportType);
                         if (tagUidl.hasAttribute("active")) {
                             explicitActiveViewportType = ViewportType.valueOf(tagUidl.getStringAttribute("active"));
-                            viewport.getElement().getStyle().setZIndex(300);
                             p.updateFromUIDL(viewportUidl, client);
                         } else {
                             postponedViewportUidls.put(p, viewportUidl);
@@ -215,7 +214,7 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
             }
 
             if (explicitActiveViewportType != null) {
-                view.changeActiveViewport(explicitActiveViewportType);
+                view.setActiveViewport(explicitActiveViewportType);
             }
             updatePusher(uidl);
 

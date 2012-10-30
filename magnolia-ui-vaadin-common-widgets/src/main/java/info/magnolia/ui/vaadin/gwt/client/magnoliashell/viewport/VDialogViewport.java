@@ -34,6 +34,8 @@
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport;
 
 import com.google.gwt.dom.client.Style.Visibility;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.UIDL;
@@ -45,22 +47,17 @@ import com.vaadin.terminal.gwt.client.UIDL;
  */
 public class VDialogViewport extends VShellViewport {
 
+    private Element curtain;
+
     public VDialogViewport() {
-        setStyleName("v-dialog-viewport");
         getElement().getStyle().setVisibility(Visibility.HIDDEN);
-        getModalityCurtain().addClassName("black-modality-curtain");
-        setContentShowAnimationDelegate(AnimationDelegate.FADING_DELEGATE);
-        setContentHideAnimationDelegate(AnimationDelegate.FADING_DELEGATE);
-        setViewportHideAnimationDelegate(AnimationDelegate.FADING_DELEGATE);
-        setCurtainVisible(true);
-        setCurtainAnimated(true);
     }
 
     @Override
     public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
         super.updateFromUIDL(uidl, client);
 
-        if (!hasContent()) {
+        if (getWidgetCount() < 1) {
             setActive(false);
         } else {
             setActive(true);
@@ -68,10 +65,48 @@ public class VDialogViewport extends VShellViewport {
     }
 
     @Override
-    public void setVisibleWidget(Widget w) {
+    void doSetActive(boolean active) {
+        super.doSetActive(active);
+        if (active) {
+            getElement().getStyle().clearVisibility();
+            setCurtainVisible(true);
+        } else {
+            getElement().getStyle().setVisibility(Visibility.HIDDEN);
+            setCurtainVisible(false);
+        }
+    }
+
+    @Override
+    public void doSetVisibleApp(Widget w) {
         if (w != null) {
             setActive(true);
         }
-        super.setVisibleWidget(w);
+        super.doSetVisibleApp(w);
+    }
+
+    /* CURTAIN */
+
+    public Element getCurtain() {
+        if (curtain == null) {
+            curtain = DOM.createDiv();
+            curtain.setClassName("v-curtain v-curtain-black");
+        }
+        return curtain;
+    }
+
+    public void setCurtainVisible(boolean visible) {
+        // NO EFFORT HERE FOR TRANSITION DELEGATES SINCE DIALOG VIEWPORT IS TO GO
+        doSetCurtainVisible(visible);
+    }
+
+    /**
+     * Default non-transitioning behavior, accessible to transition delegates as a fall back.
+     */
+    void doSetCurtainVisible(boolean visible) {
+        if (visible && getCurtain().getParentElement() != getElement()) {
+            getElement().appendChild(getCurtain());
+        } else if (!visible && getCurtain().getParentElement() == getElement()) {
+            getElement().removeChild(getCurtain());
+        }
     }
 }

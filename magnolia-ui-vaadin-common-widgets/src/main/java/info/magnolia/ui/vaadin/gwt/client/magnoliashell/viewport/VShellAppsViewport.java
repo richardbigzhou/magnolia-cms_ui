@@ -33,13 +33,10 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.VMainLauncher.ShellAppType;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppNavigationEvent;
 
 import com.google.gwt.user.client.ui.Widget;
-
 
 
 /**
@@ -47,62 +44,55 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class VShellAppsViewport extends VShellViewport {
 
-    private final Map<String, Widget> shellAppWidgets = new HashMap<String, Widget>();
+    private ShellAppNavigationEvent refreshEvent;
 
     public VShellAppsViewport() {
         super();
         setForceContentAlign(true);
-
-        setViewportShowAnimationDelegate(AnimationDelegate.SLIDING_DELEGATE);
-        setViewportHideAnimationDelegate(AnimationDelegate.FADING_DELEGATE);
-        setContentShowAnimationDelegate(AnimationDelegate.FADING_DELEGATE);
-        setContentHideAnimationDelegate(AnimationDelegate.FADING_DELEGATE);
-        setCurtainAnimated(true);
-    }
-
-    @Override
-    public void setActive(boolean active) {
-        if (active) {
-            // reset to fade out transition if closing shell app turned it to slide out
-            setViewportHideAnimationDelegate(AnimationDelegate.FADING_DELEGATE);
-        }
-        super.setActive(active);
-    }
-
-    @Override
-    /**
-     * Get a map of widgets so that we can launch them from client side on demand.
-     */
-    public void setVisibleWidget(Widget w) {
-        super.setVisibleWidget(w);
-
-        String id = w.getElement().getId();
-        //Add it to a map of widgets if its not already there.
-        if (shellAppWidgets.get(id) == null){
-            shellAppWidgets.put(id, w);
-        }
+        setTransitionDelegate(TransitionDelegate.SHELL_APPS_TRANSITION_DELEGATE);
     }
 
     /**
-     * @param shellAppType
-     * returns true if it was able to find the widget
+     * Gets a shell app widget if it has already been loaded in the viewport.
+     * 
+     * @param type the shell app type
+     * @return the shell app widget
      */
-    public boolean setVisibleWidgetByShellAppType(ShellAppType shellAppType) {
-        // Get Widget w, based on shellAppType
-        Widget w = getWidgetFromShellAppType(shellAppType);
-        if (w != null && w!=getVisibleWidget()){
-            super.setVisibleWidget(w);
-            return true;
+    public Widget getShellAppByType(ShellAppType type) {
+        return (Widget) client.getPaintable("PID_S" + type.getClassId());
+    }
+
+    /* SERVER REFRESH AFTER CLIENT TRANSITIONS */
+
+    public ShellAppNavigationEvent getRefreshEvent() {
+        return refreshEvent;
+    }
+
+    public void setRefreshEvent(ShellAppNavigationEvent event) {
+        this.refreshEvent = event;
+    }
+
+    public void refreshShellApp() {
+        if (refreshEvent != null) {
+            getEventBus().fireEvent(refreshEvent);
         }
-        return false;
-
     }
 
-    private Widget getWidgetFromShellAppType(ShellAppType shellAppType){
-        Widget w = null;
-        w = shellAppWidgets.get(shellAppType.getClassId());
-        return w;
+    @Override
+    void doSetActive(boolean active) {
+        super.doSetActive(active);
+        if (getTransitionDelegate() == null && active) {
+            refreshShellApp();
+        }
     }
 
+    @Override
+    void doSetVisibleApp(Widget w) {
+        super.doSetVisibleApp(w);
+        iLayout();
+        if (getTransitionDelegate() == null) {
+            refreshShellApp();
+        }
+    }
 
 }

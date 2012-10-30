@@ -39,8 +39,8 @@ import info.magnolia.ui.framework.shell.Shell;
 import javax.inject.Inject;
 
 import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
 
 
 /**
@@ -49,7 +49,7 @@ import com.vaadin.ui.VerticalLayout;
 @SuppressWarnings("serial")
 public class DummyViewImpl implements DummyView {
 
-    private final VerticalLayout layout = new VerticalLayout();
+    private final CssLayout layout = new CssLayout();
 
     private Listener listener;
 

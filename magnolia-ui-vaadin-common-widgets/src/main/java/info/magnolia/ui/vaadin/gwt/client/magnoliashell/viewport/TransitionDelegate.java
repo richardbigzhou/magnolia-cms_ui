@@ -31,19 +31,38 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.handler;
+package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport;
 
-//import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.AppActivatedEvent;
-//import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppNavigationEvent;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellTransitionCompleteEvent;
+import com.google.gwt.user.client.ui.Widget;
 
-import com.google.gwt.event.shared.EventHandler;
 
 /**
- * Event handler for the header controls events.
+ * Viewports might have different ways of displaying the content. This interface helps to define
+ * them from outside.
  */
-public interface ShellTransitionCompleteHandler extends EventHandler {
+interface TransitionDelegate {
 
-    void onShellTransitionComplete(final ShellTransitionCompleteEvent event);
+    void setActive(VShellViewport viewport, boolean active);
 
+    void setVisibleApp(VShellViewport viewport, Widget app);
+
+    final static TransitionDelegate SHELL_APPS_TRANSITION_DELEGATE = new ShellAppsTransitionDelegate();
+
+    final static TransitionDelegate APPS_TRANSITION_DELEGATE = new AppsTransitionDelegate();
+
+    /**
+     * The Class BaseTransitionDelegate with the bypass mechanism.
+     */
+    static abstract class BaseTransitionDelegate implements TransitionDelegate {
+
+        @Override
+        public void setActive(VShellViewport viewport, boolean active) {
+            viewport.doSetActive(active);
+        }
+
+        @Override
+        public void setVisibleApp(VShellViewport viewport, Widget app) {
+            viewport.doSetVisibleApp(app);
+        }
+    };
 }

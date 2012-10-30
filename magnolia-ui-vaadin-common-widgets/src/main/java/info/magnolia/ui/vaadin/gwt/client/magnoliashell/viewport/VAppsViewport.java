@@ -79,6 +79,8 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
 
     private final VAppPreloader preloader = new VAppPreloader();
 
+    private Element curtain;
+
     private final TouchDelegate delegate = new TouchDelegate(this);
 
     private final ClickHandler closeHandler = new ClickHandler() {
@@ -87,7 +89,7 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
         public void onClick(ClickEvent event) {
             final Element target = (Element) event.getNativeEvent().getEventTarget().cast();
             if (target.getClassName().contains(CLOSE_CLASSNAME)) {
-                setClosingWidget(true);
+                setClosing(true);
                 getEventBus().fireEvent(new ViewportCloseEvent(VMagnoliaShell.ViewportType.APP_VIEWPORT));
             }
         }
@@ -98,26 +100,13 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
      */
     public VAppsViewport() {
         super();
-        setForceContentAlign(false);
         addDomHandler(closeHandler, ClickEvent.getType());
-
         bindTouchHandlers();
-    }
-
-    @Override
-    protected void setClosingWidget(boolean closingWidget) {
-        if (!closingWidget) {
-            setViewportHideAnimationDelegate(null);
-            setContentHideAnimationDelegate(null);
-        } else {
-            setContentHideAnimationDelegate(AnimationDelegate.ZOOMING_DELEGATE);
-        }
-        super.setClosingWidget(closingWidget);
+        setTransitionDelegate(TransitionDelegate.APPS_TRANSITION_DELEGATE);
     }
 
     @Override
     public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
-        preloader.getElement().getStyle().setZIndex(299);
         super.updateFromUIDL(uidl, client);
         if (RootPanel.get().getWidgetIndex(preloader) >= 0) {
             new Timer() {
@@ -128,6 +117,80 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
                 }
             }.schedule(500);
         }
+    }
+
+    /* CURTAIN INTEGRATION */
+
+    @Override
+    public void doSetActive(boolean active) {
+        if (active) {
+            setCurtainVisible(false);
+        } else {
+            if (hasChildren()) {
+                setCurtainVisible(true);
+            }
+        }
+    }
+
+    public Element getCurtain() {
+        if (curtain == null) {
+            curtain = DOM.createDiv();
+            curtain.setClassName("v-curtain v-curtain-green");
+        }
+        return curtain;
+    }
+
+    public void setCurtainVisible(boolean visible) {
+        AppsTransitionDelegate transitionDelegate = (AppsTransitionDelegate) getTransitionDelegate();
+        if (transitionDelegate != null) {
+            transitionDelegate.setCurtainVisible(this, visible);
+        } else {
+            doSetCurtainVisible(visible);
+        }
+    }
+
+    /**
+     * Default non-transitioning behavior, accessible to transition delegates as a fall back.
+     */
+    void doSetCurtainVisible(boolean visible) {
+        if (visible && getCurtain().getParentElement() != getElement()) {
+            getElement().appendChild(getCurtain());
+        } else if (!visible && getCurtain().getParentElement() == getElement()) {
+            getElement().removeChild(getCurtain());
+        }
+    }
+
+    private boolean hasChildren() {
+        return getWidgetCount() - (isClosing() ? 1 : 0) > 0;
+    }
+
+    /* APP CLOSING */
+
+    @Override
+    void doSetVisibleApp(Widget w) {
+        if (getVisibleApp() != null) {
+            // do not hide app if closing
+            if (!isClosing()) {
+                getVisibleApp().getElement().getStyle().setVisibility(Visibility.HIDDEN);
+            }
+        }
+        w.setVisible(true);
+        w.getElement().getStyle().clearVisibility();
+    }
+
+    @Override
+    protected void removeWidget(final Widget w) {
+        if (getTransitionDelegate() != null) {
+            ((AppsTransitionDelegate) getTransitionDelegate()).removeWidget(this, w);
+        } else {
+            doRemoveWidget(w);
+        }
+    }
+
+    @Override
+    void doRemoveWidget(Widget w) {
+        super.doRemoveWidget(w);
+        setClosing(false);
     }
 
     /* SWIPE GESTURES */
@@ -159,7 +222,7 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
                 final DIRECTION direction = event.getDirection();
                 final Widget newVisibleWidget = direction == DIRECTION.LEFT_TO_RIGHT ? getPreviousWidget() : getNextWidget();
                 if (event.isDistanceReached() && getWidgetCount() > 1) {
-                    final JQueryWrapper jq = JQueryWrapper.select(getVisibleWidget());
+                    final JQueryWrapper jq = JQueryWrapper.select(getVisibleApp());
                     jq.animate(450, new AnimationSettings() {
 
                         {
@@ -170,9 +233,10 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
                                 public void execute(JQueryWrapper query) {
                                     query.setCss("-webkit-transform", "");
                                     query.setCss("left", "");
-                                    query.setCss("opacity", "0");
-                                    query.setCss("visibility", "hidden");
-                                    setVisibleWidget(newVisibleWidget);
+                                    // query.setCss("opacity", "0");
+                                    // query.setCss("visibility", "hidden");
+                                    // do not trigger transitions
+                                    setVisibleApp(newVisibleWidget);
                                     dropZIndeces();
                                 }
                             }));
@@ -192,7 +256,7 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
                         }.schedule(500);
                     }
                 } else {
-                    final JQueryWrapper jq = JQueryWrapper.select(getVisibleWidget());
+                    final JQueryWrapper jq = JQueryWrapper.select(getVisibleApp());
                     jq.setCssPx("left", jq.position().left());
                     jq.setCss("-webkit-transform", "");
                     jq.animate(500, new AnimationSettings() {
@@ -209,14 +273,14 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
 
             @Override
             public void onTouchCanceled(TouchCancelEvent event) {
-                JQueryWrapper.select(getVisibleWidget()).setCss("-webkit-transform", "");
+                JQueryWrapper.select(getVisibleApp()).setCss("-webkit-transform", "");
                 dropZIndeces();
             }
         });
     }
 
     private void processSwipe(int translationValue) {
-        JQueryWrapper.select(getVisibleWidget()).setCss("-webkit-transform", "translate3d(" + translationValue + "px,0,0)");
+        JQueryWrapper.select(getVisibleApp()).setCss("-webkit-transform", "translate3d(" + translationValue + "px,0,0)");
         if (getWidgetCount() > 1) {
             showCandidateApp(translationValue);
         }
@@ -228,31 +292,30 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
         boolean isNext = translationValue < 0;
         if (isNext) {
             nextWidget.getElement().getStyle().setZIndex(250);
-            getVisibleWidget().getElement().getStyle().setZIndex(251);
+            getVisibleApp().getElement().getStyle().setZIndex(251);
         } else {
             previousWidget.getElement().getStyle().setZIndex(250);
-            getVisibleWidget().getElement().getStyle().setZIndex(251);
+            getVisibleApp().getElement().getStyle().setZIndex(251);
         }
 
         if (isNext && getWidgetCount() > 2) {
             JQueryWrapper.select(nextWidget).setCss(
                 "-webkit-transform",
-                "translate3d(" + (translationValue + getVisibleWidget().getOffsetWidth()) + "px,0,0)");
+                "translate3d(" + (translationValue + getVisibleApp().getOffsetWidth()) + "px,0,0)");
         }
-        nextWidget.getElement().getStyle().setVisibility(isNext || nextWidget == previousWidget ? Visibility.VISIBLE : Visibility.HIDDEN);
-        previousWidget.getElement().getStyle().setVisibility(!isNext || nextWidget == previousWidget ? Visibility.VISIBLE : Visibility.HIDDEN);
-
-        nextWidget.getElement().getStyle().setOpacity(isNext || nextWidget == previousWidget ? 1 : 0);
-        previousWidget.getElement().getStyle().setOpacity(!isNext || nextWidget == previousWidget ? 1 : 0);
+        nextWidget.getElement().getStyle().setVisibility(isNext || nextWidget == previousWidget ?
+            Visibility.VISIBLE : Visibility.HIDDEN);
+        previousWidget.getElement().getStyle().setVisibility(!isNext || nextWidget ==
+            previousWidget ? Visibility.VISIBLE : Visibility.HIDDEN);
     }
 
     private Widget getNextWidget() {
-        int index = getWidgetIndex(getVisibleWidget());
+        int index = getWidgetIndex(getVisibleApp());
         return getWidget((index + 1) % getWidgetCount());
     }
 
     private Widget getPreviousWidget() {
-        int index = getWidgetIndex(getVisibleWidget());
+        int index = getWidgetIndex(getVisibleApp());
         int count = getWidgetCount();
         return getWidget((index + (count - 1)) % count);
     }
@@ -260,7 +323,7 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
     private void dropZIndeces() {
         final Iterator<Widget> it = iterator();
         while (it.hasNext()) {
-            it.next().getElement().getStyle().setProperty("zIndex", "");
+            it.next().getElement().getStyle().clearZIndex();
         }
     }
 
@@ -279,24 +342,22 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
         return addHandler(handler, SwipeEndEvent.getType());
     }
 
-    /* APPENDING CLOSE BUTTON */
+    /* APPEND CLOSE BUTTON */
 
     @Override
     protected void add(Widget child, Element container) {
         super.add(child, container);
-        child.getElement().appendChild(appendCloseButton());
+        child.getElement().appendChild(createCloseButton());
     }
 
-    private Element appendCloseButton() {
+    private Element createCloseButton() {
         final Element closeElement = DOM.createSpan();
         closeElement.setClassName(CLOSE_CLASSNAME);
-        // TODO mge: remove this classname when checking the styles
-        closeElement.addClassName("close");
         closeElement.addClassName("icon-close");
         return closeElement;
     }
 
-    /* SHOW PRELOADER */
+    /* APP PRELOADER */
 
     /**
      * Called when the transition of preloader is finished.
@@ -309,8 +370,8 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
     public void showAppPreloader(final String appName, final PreloaderCallback callback) {
         // hideEntireContents();
         preloader.setCaption(appName);
-        RootPanel.get().add(preloader);
         preloader.addStyleName("zoom-in");
+        RootPanel.get().add(preloader);
         new Timer() {
 
             @Override
@@ -331,44 +392,36 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
 
         private final Element tab = DOM.createElement("li");
 
-        private final Element captionSpan = DOM.createSpan();
+        private final Element tabCaption = DOM.createSpan();
 
         public VAppPreloader() {
             super();
             setElement(root);
-            setStyleName("v-shell-viewport v-shell-tabsheet");
+            setStyleName("v-app-preloader v-viewport v-shell-tabsheet app");
             navigator.addClassName("nav nav-tabs single-tab");
             tab.addClassName("clearfix active");
-            captionSpan.setClassName("tab-title");
+            tabCaption.setClassName("tab-title");
 
-            tab.appendChild(captionSpan);
+            tab.appendChild(tabCaption);
             navigator.appendChild(tab);
             root.appendChild(navigator);
 
-            Element preloadingScreen = DOM.createDiv();
-            preloadingScreen.addClassName("loading-screen");
+            Element preloader = DOM.createDiv();
+            preloader.addClassName("v-preloader");
 
             Element loading = DOM.createSpan();
+            loading.addClassName("v-caption");
             loading.setInnerText("Loading");
-            loading.addClassName("loading-text");
 
-            preloadingScreen.appendChild(new GwtLoadingIcon().getElement());
-            preloadingScreen.appendChild(DOM.createElement("br"));
-            preloadingScreen.appendChild(loading);
-            // preloadingScreen.setInnerHTML("<div class=\"loading-message-wrapper\"> "
-            // +
-            // "<div class=\"loading-message\"><div class=\"spinner\"></div> Loading </div></div>");
-            root.appendChild(preloadingScreen);
-        }
+            preloader.appendChild(new GwtLoadingIcon().getElement());
+            preloader.appendChild(DOM.createElement("br"));
+            preloader.appendChild(loading);
 
-        @Override
-        protected void onLoad() {
-            super.onLoad();
-            getElement().getStyle().setZIndex(301);
+            root.appendChild(preloader);
         }
 
         public void setCaption(String caption) {
-            captionSpan.setInnerHTML(caption);
+            tabCaption.setInnerHTML(caption);
         }
     }
 

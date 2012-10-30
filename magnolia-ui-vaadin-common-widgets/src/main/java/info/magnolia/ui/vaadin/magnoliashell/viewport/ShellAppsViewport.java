@@ -33,21 +33,23 @@
  */
 package info.magnolia.ui.vaadin.magnoliashell.viewport;
 
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.VShellAppsViewport;
+import info.magnolia.ui.vaadin.magnoliashell.BaseMagnoliaShell;
+
 import com.vaadin.ui.ClientWidget;
 import com.vaadin.ui.ClientWidget.LoadStyle;
 
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.VShellAppsViewport;
-import info.magnolia.ui.vaadin.magnoliashell.BaseMagnoliaShell;
 
 /**
  * Shell apps viewport.
  */
+@SuppressWarnings("serial")
 @ClientWidget(value = VShellAppsViewport.class, loadStyle = LoadStyle.EAGER)
 public class ShellAppsViewport extends ShellViewport {
 
     public ShellAppsViewport(BaseMagnoliaShell shell) {
         super(shell);
-        setDebugId("shellapps");
+        addStyleName("shellapps");
     }
 
 }

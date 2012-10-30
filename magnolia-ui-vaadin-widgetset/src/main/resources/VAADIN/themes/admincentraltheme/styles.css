@@ -6,6 +6,7 @@
 @import url(shellmessage.css);
 @import url(workbench.css);
 @import url(hybridselectiontreetable.css);
+@import url(app-preloader.css);
 @import url(applauncher.css);
 @import url(pulse.css);
 @import url(favorites.css);
@@ -85,8 +86,8 @@ button.btn-dialog-selectCallBack {
 }
 
 /* Checkbox styles */
-.v-checkbox, 
-.gwt-CheckBox {	
+.v-checkbox,
+.gwt-CheckBox {
 	cursor: pointer;
 }
 
