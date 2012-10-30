@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<sv:node sv:name="portrait" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<sv:node sv:name="large" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <sv:property sv:name="jcr:primaryType" sv:type="Name">
     <sv:value>mgnl:contentNode</sv:value>
   </sv:property>
@@ -7,7 +7,7 @@
     <sv:value>mix:lockable</sv:value>
   </sv:property>
   <sv:property sv:name="jcr:uuid" sv:type="String">
-    <sv:value>33742634-6fbe-414a-850d-5cc6bdfc1bfa</sv:value>
+    <sv:value>9a3795f7-54b1-4eec-99b2-9ad37b9f69da</sv:value>
   </sv:property>
   <sv:property sv:name="class" sv:type="String">
     <sv:value>info.magnolia.imaging.operations.ImageOperationChain</sv:value>
@@ -32,7 +32,7 @@
       <sv:value>2009-04-30T20:15:56.284+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-      <sv:value>2012-09-25T12:11:06.048+02:00</sv:value>
+      <sv:value>2012-10-26T10:56:39.444+02:00</sv:value>
     </sv:property>
   </sv:node>
   <sv:node sv:name="outputFormat">
@@ -43,7 +43,7 @@
       <sv:value>mix:lockable</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:uuid" sv:type="String">
-      <sv:value>b9c6dd35-dd6f-4603-a87a-a9a7e2edc55d</sv:value>
+      <sv:value>e2b21827-1e30-4b9d-8af4-ab5d4588eb83</sv:value>
     </sv:property>
     <sv:property sv:name="formatName" sv:type="String">
       <sv:value>jpg</sv:value>
@@ -71,7 +71,7 @@
         <sv:value>2009-05-11T18:47:13.400+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-        <sv:value>2012-10-26T11:57:47.812+02:00</sv:value>
+        <sv:value>2012-10-26T10:56:50.944+02:00</sv:value>
       </sv:property>
     </sv:node>
   </sv:node>
@@ -83,7 +83,7 @@
       <sv:value>mix:lockable</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:uuid" sv:type="String">
-      <sv:value>55a7417e-fb89-4536-b999-2331cd31be3d</sv:value>
+      <sv:value>50c656a5-0b15-41d1-b83c-15f9c78ce2b4</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -105,7 +105,7 @@
         <sv:value>2012-09-25T11:48:43.056+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-        <sv:value>2012-09-25T12:10:55.911+02:00</sv:value>
+        <sv:value>2012-10-26T10:56:35.382+02:00</sv:value>
       </sv:property>
     </sv:node>
     <sv:node sv:name="load">
@@ -116,7 +116,7 @@
         <sv:value>mix:lockable</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:uuid" sv:type="String">
-        <sv:value>134e80bc-0840-4a2c-9a7a-f32bb51a3827</sv:value>
+        <sv:value>8e55c6d7-7341-4381-8d88-b81ccc8e38df</sv:value>
       </sv:property>
       <sv:property sv:name="class" sv:type="String">
         <sv:value>info.magnolia.imaging.operations.load.FromBinaryNode</sv:value>
@@ -141,7 +141,7 @@
           <sv:value>2012-09-25T11:48:51.040+02:00</sv:value>
         </sv:property>
         <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-          <sv:value>2012-09-25T12:10:55.913+02:00</sv:value>
+          <sv:value>2012-10-26T10:56:35.383+02:00</sv:value>
         </sv:property>
       </sv:node>
     </sv:node>
@@ -153,7 +153,7 @@
         <sv:value>mix:lockable</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:uuid" sv:type="String">
-        <sv:value>c65d0435-ae4b-475b-8cc6-13146641515d</sv:value>
+        <sv:value>1f5d89ef-7b16-42b1-9aa5-b3a466d862f9</sv:value>
       </sv:property>
       <sv:property sv:name="class" sv:type="String">
         <sv:value>info.magnolia.imaging.operations.cropresize.BoundedResize</sv:value>
@@ -162,10 +162,10 @@
         <sv:value>admin</sv:value>
       </sv:property>
       <sv:property sv:name="maxHeight" sv:type="String">
-        <sv:value>300</sv:value>
+        <sv:value>500</sv:value>
       </sv:property>
       <sv:property sv:name="maxWidth" sv:type="String">
-        <sv:value>230</sv:value>
+        <sv:value>500</sv:value>
       </sv:property>
       <sv:node sv:name="MetaData">
         <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -184,7 +184,7 @@
           <sv:value>2012-09-25T11:48:51.040+02:00</sv:value>
         </sv:property>
         <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-          <sv:value>2012-10-30T17:25:10.223+01:00</sv:value>
+          <sv:value>2012-10-26T10:57:06.238+02:00</sv:value>
         </sv:property>
       </sv:node>
     </sv:node>
@@ -197,7 +197,7 @@
       <sv:value>mix:lockable</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:uuid" sv:type="String">
-      <sv:value>e7b2f101-ddf8-4164-ade2-ae278cbc391c</sv:value>
+      <sv:value>ac035298-673a-4742-815d-e656ca6a5553</sv:value>
     </sv:property>
     <sv:property sv:name="class" sv:type="String">
       <sv:value>info.magnolia.imaging.parameters.BinaryNodeParameterProviderFactory</sv:value>
@@ -222,7 +222,7 @@
         <sv:value>2009-05-08T03:47:46.661+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-        <sv:value>2012-09-25T12:10:55.915+02:00</sv:value>
+        <sv:value>2012-10-26T10:56:35.384+02:00</sv:value>
       </sv:property>
     </sv:node>
   </sv:node>
