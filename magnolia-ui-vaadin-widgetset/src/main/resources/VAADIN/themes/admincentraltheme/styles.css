@@ -2,6 +2,7 @@
 @import url(splitfeed.css);
 @import url(dialog.css);
 @import url(actionbar.css);
+@import url(lightbox.css);
 @import url(tabsheet.css);
 @import url(shellmessage.css);
 @import url(workbench.css);
@@ -85,8 +86,8 @@ button.btn-dialog-selectCallBack {
 }
 
 /* Checkbox styles */
-.v-checkbox, 
-.gwt-CheckBox {	
+.v-checkbox,
+.gwt-CheckBox {
 	cursor: pointer;
 }
 
