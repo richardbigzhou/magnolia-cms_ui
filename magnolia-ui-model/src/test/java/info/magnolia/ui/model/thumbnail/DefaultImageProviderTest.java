@@ -43,11 +43,9 @@ import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.test.mock.jcr.MockSession;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.jcr.Node;
-import javax.jcr.PathNotFoundException;
 import java.io.ByteArrayInputStream;
 
 import static org.junit.Assert.assertEquals;
