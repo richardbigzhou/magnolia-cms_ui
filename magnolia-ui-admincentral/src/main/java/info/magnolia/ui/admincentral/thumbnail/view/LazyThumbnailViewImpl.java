@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral.thumbnail.view;
 
-import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.ui.model.thumbnail.ImageProvider;
@@ -178,27 +177,8 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
     }
 
     private String prepareJcrSQL2Query(){
-        final String[] itemTypes = getItemTypes(workbenchDefinition);
-        String stmt = null;
-        if(itemTypes != null && itemTypes.length == 1) {
-            stmt = "select * from ["+itemTypes[0]+"] as t order by name(t)";
-        } else {
-            log.warn("Workbench definition contains {} item types. Defaulting to {}", (itemTypes != null ? itemTypes.length : 0), MgnlNodeType.NT_CONTENT);
-            stmt = "select * from ["+MgnlNodeType.NT_CONTENT+"] as t order by name(t)";
-        }
-        return stmt;
-    }
-
-    private String[] getItemTypes(final WorkbenchDefinition definition) {
-        if(definition.getItemTypes() == null) {
-            return null;
-        }
-        final String[] itemTypes = new String[definition.getItemTypes().size()];
-        for(int i = 0; i < definition.getItemTypes().size(); i++) {
-            itemTypes[i] = definition.getItemTypes().get(i).getItemType();
-            log.debug("Adding node filter item type [{}]", itemTypes[i]);
-        }
-        return itemTypes;
+        final String itemType = workbenchDefinition.getMainItemType().getItemType();
+        return "select * from [" + itemType + "] as t order by name(t)";
     }
 
     private JcrNodeAdapter getThumbnailNodeAdapterByIdentifier(final String thumbnailId) {

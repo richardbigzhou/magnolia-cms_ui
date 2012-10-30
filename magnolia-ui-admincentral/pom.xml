@@ -17,19 +17,6 @@
     <cloverCoverageThreshold>26</cloverCoverageThreshold>
   </properties>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.zeroturnaround</groupId>
-        <artifactId>jrebel-maven-plugin</artifactId>
-        <configuration>
-          <relativePath>../${basedir}</relativePath>
-          <rootPath>$${admincentral.root}</rootPath>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-
   <dependencies>
     <dependency>
       <groupId>info.magnolia</groupId>
@@ -67,11 +54,6 @@
     <dependency>
       <groupId>org.vaadin.addons</groupId>
       <artifactId>easyuploads</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.vaadin.addons</groupId>
-      <artifactId>ckeditor-wrapper-for-vaadin</artifactId>
     </dependency>
 
     <dependency>

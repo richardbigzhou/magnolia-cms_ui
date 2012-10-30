@@ -43,8 +43,24 @@ import info.magnolia.ui.framework.location.Location;
  */
 public abstract class AbstractApp implements App {
 
+    protected AppContext appContext;
+
+    protected AbstractApp(AppContext appContext) {
+        this.appContext = appContext;
+    }
+
     @Override
     public void locationChanged(Location location) {
+        appContext.openSubApp(location);
+    }
+
+    @Override
+    public void start(Location location) {
+        appContext.openSubApp(location);
+    }
+
+    public AppContext getAppContext() {
+        return appContext;
     }
 
     @Override

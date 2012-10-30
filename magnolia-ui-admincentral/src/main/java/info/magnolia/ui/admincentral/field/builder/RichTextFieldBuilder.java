@@ -116,7 +116,7 @@ public class RichTextFieldBuilder extends
         // Get the property name to propagate.
         App targetApp = appController.startIfNotAlreadyRunning("pages",
                 new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages",
-                        ""));
+                        "", ""));
         if (targetApp != null && targetApp instanceof AbstractContentApp) {
             ChooseDialogPresenter<Item> pickerPresenter = ((AbstractContentApp) targetApp)
                     .openChooseDialog();

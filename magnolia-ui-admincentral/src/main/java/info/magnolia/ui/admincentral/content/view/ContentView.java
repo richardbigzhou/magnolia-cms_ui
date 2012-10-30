@@ -69,14 +69,21 @@ public interface ContentView extends View {
         }
 
         public static ViewType fromString(String text) {
-            if (text != null) {
+            if (text != null && !text.isEmpty()) {
                 for (ViewType type : ViewType.values()) {
                     if (text.equalsIgnoreCase(type.text)) {
                         return type;
                     }
                 }
             }
+            else {
+                return defaultViewType();
+            }
             throw new IllegalArgumentException("No view type could be found for " + text);
+        }
+
+        private static ViewType defaultViewType() {
+            return TREE;
         }
     }
 

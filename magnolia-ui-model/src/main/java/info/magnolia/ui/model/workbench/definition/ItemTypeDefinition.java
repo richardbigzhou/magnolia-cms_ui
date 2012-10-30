@@ -40,8 +40,6 @@ package info.magnolia.ui.model.workbench.definition;
  */
 public interface ItemTypeDefinition {
 
-    public static final String ITEM_TYPE_PROPERTY = "mgnl:property";
-
     String getItemType();
 
     String getIcon();
