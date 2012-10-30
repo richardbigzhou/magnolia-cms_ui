@@ -66,6 +66,10 @@ public class DialogDefinitionRegistry {
         return provider.getDialogDefinition();
     }
 
+    public void register(DialogDefinitionProvider provider) {
+        registry.put(provider);
+    }
+
     public Set<String> unregisterAndRegister(Set<String> registeredIds, List<DialogDefinitionProvider> providers) {
         return registry.removeAndPutAll(registeredIds, providers);
     }

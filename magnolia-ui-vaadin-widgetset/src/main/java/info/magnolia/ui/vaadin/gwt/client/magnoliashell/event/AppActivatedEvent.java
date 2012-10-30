@@ -46,25 +46,31 @@ public class AppActivatedEvent extends GwtEvent<ShellNavigationHandler>{
     public static final Type<ShellNavigationHandler> TYPE = new Type<ShellNavigationHandler>();
     
     private final boolean isShellApp;
-    private final String prefix;
-    private final String token;
+    private final String appId;
+    private String subAppId;
+    private final String parameter;
 
-    public AppActivatedEvent(boolean shellApp, String prefix, String token) {
+    public AppActivatedEvent(boolean shellApp, String appId, String subAppId, String parameter) {
         isShellApp = shellApp;
-        this.prefix = prefix;
-        this.token = token;
+        this.appId = appId;
+        this.subAppId = subAppId;
+        this.parameter = parameter;
     }
 
     public boolean isShellApp() {
         return isShellApp;
     }
 
-    public String getPrefix() {
-        return prefix;
+    public String getAppId() {
+        return appId;
     }
 
-    public String getToken() {
-        return token;
+    public String getSubAppId() {
+        return subAppId;
+    }
+
+    public String getParameter() {
+        return parameter;
     }
 
     @Override
@@ -80,8 +86,8 @@ public class AppActivatedEvent extends GwtEvent<ShellNavigationHandler>{
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("[App Activated event]");
-        sb.append("type: ").append(isShellApp ? "SHELLAPP" : "APP").append(" token: ").append(token).append(" prefix: ").append(prefix);
-        
+        sb.append("type: ").append(isShellApp ? "SHELLAPP" : "APP").append(" parameter: ").append(parameter).append(" appId: ").append(appId);
+
         return sb.toString();
     }
 }

@@ -35,9 +35,14 @@ package info.magnolia.ui.admincentral.app.simple;
 
 import info.magnolia.ui.framework.app.App;
 import info.magnolia.ui.framework.app.AppDescriptor;
+import info.magnolia.ui.framework.app.SubApp;
+import info.magnolia.ui.framework.app.SubAppDescriptor;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroup;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroupEntry;
 import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
+import info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor;
+
+import java.util.Map;
 
 /**
  * Utility Class for the App TestCases.
@@ -67,5 +72,24 @@ public class AppTestUtility {
             group.addApp(entry);
         }
         return group;
+    }
+
+    /**
+     * Create a AppDescriptor.
+     */
+    public static SubAppDescriptor createSubAppDescriptor(String startLibell, Class<? extends SubApp> subAppClass, boolean isDefault) {
+        ConfiguredSubAppDescriptor descriptor = new ConfiguredSubAppDescriptor();
+        descriptor.setSubAppClass(subAppClass);
+        descriptor.setIcon(startLibell + "_icon");
+        descriptor.setLabel(startLibell + "_label");
+        descriptor.setName(startLibell + "_name");
+        descriptor.setDefault(isDefault);
+        return descriptor;
+    }
+
+    public static AppDescriptor createAppDescriptorWithSubApps(String startLibell, Class<? extends App> appClass, Map<String, SubAppDescriptor> subApps) {
+        ConfiguredAppDescriptor appDescriptor = (ConfiguredAppDescriptor) createAppDescriptor(startLibell, appClass);
+        appDescriptor.setSubApps(subApps);
+        return appDescriptor;
     }
 }

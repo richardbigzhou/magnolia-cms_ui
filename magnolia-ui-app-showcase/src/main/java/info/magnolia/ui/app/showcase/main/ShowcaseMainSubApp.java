@@ -33,14 +33,15 @@
  */
 package info.magnolia.ui.app.showcase.main;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
 import info.magnolia.ui.framework.app.AbstractSubApp;
+import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.view.View;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 
 /**
  * SubApp for the main tab in showcase app.
@@ -55,11 +56,11 @@ public class ShowcaseMainSubApp extends AbstractSubApp implements
     private UnsupportedPresenter unsupportedPresenter;
 
     @Inject
-    public ShowcaseMainSubApp(@Named("app") EventBus appEventBus,
+    public ShowcaseMainSubApp(final SubAppContext subAppContext, @Named("app") EventBus subAppEventBus, ShowcaseMainView view,
             FormsPresenter formsPresenter, VaadinPresenter vaadinPresenter,
-            UnsupportedPresenter unsupportedPresenter,
-            ShowcaseMainView showcaseMainView) {
-        this.view = showcaseMainView;
+            UnsupportedPresenter unsupportedPresenter) {
+        super(subAppContext, view);
+        this.view = view;
         this.formPresenter = formsPresenter;
         this.vaadinPresenter = vaadinPresenter;
         this.unsupportedPresenter = unsupportedPresenter;
@@ -72,6 +73,11 @@ public class ShowcaseMainSubApp extends AbstractSubApp implements
         view.setVaadinView(vaadinPresenter.start());
         view.setUnsupportedVaadinView(unsupportedPresenter.start());
         return view;
+    }
+
+    @Override
+    public void locationChanged(Location location) {
+
     }
 
     @Override

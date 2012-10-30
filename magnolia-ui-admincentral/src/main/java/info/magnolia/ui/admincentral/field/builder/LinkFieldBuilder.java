@@ -114,7 +114,7 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
             public void buttonClick(ClickEvent event) {
                 // Get the property name to propagate.
                 final String propertyName = getPropertyName();
-                final App targetApp = appController.startIfNotAlreadyRunning(appName, new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appName, ""));
+                final App targetApp = appController.startIfNotAlreadyRunning(appName, new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appName, "", ""));
                 if (targetApp != null) {
                     if (targetApp instanceof AbstractContentApp) {
                         final ChooseDialogPresenter<Item> pickerPresenter = ((AbstractContentApp) targetApp).openChooseDialog();

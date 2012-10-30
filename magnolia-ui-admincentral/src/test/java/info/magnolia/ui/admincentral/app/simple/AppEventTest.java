@@ -35,7 +35,9 @@ package info.magnolia.ui.admincentral.app.simple;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
+import info.magnolia.ui.framework.app.SubAppDescriptor;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -80,6 +82,7 @@ public class AppEventTest {
     private AppControllerImpl appController = null;
     private AppEventCollector eventCollector = null;
     private String name = "app";
+    private String subAppName_1 = "subApp1";
 
     @Before
     public void setUp() throws Exception {
@@ -125,7 +128,7 @@ public class AppEventTest {
         // GIVEN
         String appName = name + "_name";
         // Start an App that has the AppBuss injected and that also add a dumy handler
-        appController.startIfNotAlreadyRunningThenFocus(appName, new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appName, ""));
+        appController.startIfNotAlreadyRunningThenFocus(appName, new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appName, "", ""));
 
         // Initial check
         assertEquals(2, eventCollector.appLifecycleEvent.size());
@@ -147,7 +150,7 @@ public class AppEventTest {
         appController.stopCurrentApp();
 
         // Start app again
-        appController.startIfNotAlreadyRunningThenFocus(appName, new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appName, ""));
+        appController.startIfNotAlreadyRunningThenFocus(appName, new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appName, "", ""));
 
         assertEquals(true, AppTestImpl.res.containsKey("TestPageApp1"));
         AppEventTestImpl secondAppInstance = (AppEventTestImpl) AppTestImpl.res.get("TestPageApp1");
@@ -170,8 +173,12 @@ public class AppEventTest {
     private void setAppLayoutManager() {
 
         appLauncherLayoutManager = mock(AppLauncherLayoutManagerImpl.class);
+        // create subapps
+        Map<String, SubAppDescriptor> subApps = new HashMap<String, SubAppDescriptor>();
+        subApps.put(subAppName_1, AppTestUtility.createSubAppDescriptor(subAppName_1, AppTestSubApp.class, true));
+
         //Set cat1 with App1
-        AppDescriptor app = AppTestUtility.createAppDescriptor(name, AppEventTestImpl.class);
+        AppDescriptor app = AppTestUtility.createAppDescriptorWithSubApps(name, AppEventTestImpl.class, subApps);
         AppLauncherGroup cat = AppTestUtility.createAppGroup("cat", app);
         AppLauncherGroupEntry entry = new AppLauncherGroupEntry();
         entry.setName(name);

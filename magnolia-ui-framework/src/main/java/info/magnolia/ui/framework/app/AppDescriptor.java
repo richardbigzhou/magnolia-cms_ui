@@ -34,6 +34,7 @@
 package info.magnolia.ui.framework.app;
 
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  * Describes an app.
@@ -51,4 +52,6 @@ public interface AppDescriptor extends Serializable {
     String getIcon();
 
     Class<? extends App> getAppClass();
+
+    Map<String, SubAppDescriptor> getSubApps();
 }

@@ -56,10 +56,8 @@ import info.magnolia.ui.model.workbench.action.WorkbenchActionFactoryImpl;
 import info.magnolia.ui.model.workbench.action.WorkbenchActionRegistry;
 import info.magnolia.ui.model.workbench.definition.ConfiguredItemTypeDefinition;
 import info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition;
-import info.magnolia.ui.model.workbench.definition.ItemTypeDefinition;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
@@ -95,9 +93,7 @@ public class ConfiguredContentViewBuilderTest {
 
         final ConfiguredItemTypeDefinition itemTypeDefinition = new ConfiguredItemTypeDefinition();
         itemTypeDefinition.setItemType("qux");
-        final List<ItemTypeDefinition> itemTypeDefs = new ArrayList<ItemTypeDefinition>();
-        itemTypeDefs.add(itemTypeDefinition);
-        workbenchDef.setItemTypes(itemTypeDefs);
+        workbenchDef.setMainItemType(itemTypeDefinition);
         final LabelColumnDefinition def = new LabelColumnDefinition();
         def.setName("foo");
         workbenchDef.addColumn(def);

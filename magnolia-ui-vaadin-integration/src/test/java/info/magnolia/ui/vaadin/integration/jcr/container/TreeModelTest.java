@@ -37,6 +37,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.model.action.Action;
@@ -46,8 +48,6 @@ import info.magnolia.ui.model.column.definition.PropertyTypeColumnDefinition;
 import info.magnolia.ui.model.workbench.action.WorkbenchActionRegistry;
 import info.magnolia.ui.model.workbench.definition.ConfiguredItemTypeDefinition;
 import info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition;
-import info.magnolia.ui.model.workbench.definition.ItemTypeDefinition;
-import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -80,9 +80,8 @@ public class TreeModelTest extends RepositoryTestCase {
 
     private Node rootNode;
 
-    private WorkbenchDefinition workbenchDefinition;
+    private ConfiguredWorkbenchDefinition workbenchDefinition;
 
-    @SuppressWarnings("deprecation")
     @Override
     @Before
     public void setUp() throws Exception {
@@ -96,7 +95,7 @@ public class TreeModelTest extends RepositoryTestCase {
         ConfiguredItemTypeDefinition type1 = new ConfiguredItemTypeDefinition();
         type1.setItemType("mgnl:content");
         type1.setIcon("icone1");http://wiki.magnolia-cms.com/download/attachments/54001974/02_Uploading_image.png
-        configuredWorkbench.addItemType(type1);
+        configuredWorkbench.setMainItemType(type1);
         // Init col
 
         PropertyTypeColumnDefinition colDef1 = new PropertyTypeColumnDefinition();
@@ -141,7 +140,7 @@ public class TreeModelTest extends RepositoryTestCase {
         assertEquals(node2.getPath(), ((Node) res.toArray()[0]).getPath());
 
         // WHEN
-        ((ConfiguredWorkbenchDefinition) workbenchDefinition).setPath("/node2");
+        workbenchDefinition.setPath("/node2");
         res = treeModel.getRootItemIds();
 
         // THEN
@@ -269,36 +268,17 @@ public class TreeModelTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testGetChildren_OnlyNode_twoNodeType() throws RepositoryException {
-        // GIVEN
-        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", "mgnl:content", "name", "name1");
-        Node node2 = AbstractJcrContainerTest.createNode(rootNode, "node2", "mgnl:contentNode", "name", "name2");
-        AbstractJcrContainerTest.createNode(node2, "node2_1", "mgnl:contentNode", "name", "name2_1");
-        node1.getSession().save();
-        ConfiguredItemTypeDefinition type1 = new ConfiguredItemTypeDefinition();
-        type1.setItemType("mgnl:contentNode");
-        ((ConfiguredWorkbenchDefinition) workbenchDefinition).addItemType(type1);
-        // WHEN
-        Collection<Item> res = treeModel.getChildren(rootNode);
-
-        // THEN
-
-        assertEquals(2, res.size());
-        assertEquals(node1.getPath(), ((Node) res.toArray()[0]).getPath());
-        assertEquals(node2.getPath(), ((Node) res.toArray()[1]).getPath());
-    }
-
-    @Test
     public void testGetChildren_NodeAndProperty() throws RepositoryException {
         // GIVEN
-        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", "mgnl:content", "name", "name1");
-        Node node2 = AbstractJcrContainerTest.createNode(rootNode, "node2", "mgnl:content", "name", "name2");
+        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", MgnlNodeType.NT_CONTENT, "name", "name1");
+        Node node2 = AbstractJcrContainerTest.createNode(rootNode, "node2", MgnlNodeType.NT_CONTENT, "name", "name2");
         rootNode.setProperty("jcr:name", "excluded");
         rootNode.setProperty("name", "included");
         node1.getSession().save();
         ConfiguredItemTypeDefinition type1 = new ConfiguredItemTypeDefinition();
-        type1.setItemType(ItemTypeDefinition.ITEM_TYPE_PROPERTY);
-        ((ConfiguredWorkbenchDefinition) workbenchDefinition).addItemType(type1);
+        type1.setItemType(MgnlNodeType.NT_CONTENT);
+        workbenchDefinition.setMainItemType(type1);
+        workbenchDefinition.setIncludeProperties(true);
         // WHEN
         Collection<Item> res = treeModel.getChildren(rootNode);
 
@@ -319,7 +299,7 @@ public class TreeModelTest extends RepositoryTestCase {
         assertEquals("/node1", treeModel.getPathInTree(node1));
 
         // WHEN
-        ((ConfiguredWorkbenchDefinition) workbenchDefinition).setPath("/node1");
+        workbenchDefinition.setPath("/node1");
 
         // THEN
         assertEquals("", treeModel.getPathInTree(node1));

@@ -66,7 +66,7 @@ public interface VMagnoliaShellView extends HasWidgets, IsWidget {
 
     void hideAllMessages();
 
-    void navigate(String prefix, String token);
+    void navigate(String appId, String subAppId, String parameter);
     
     void shiftViewportsVertically(int shiftPx, boolean animated);
     
@@ -89,7 +89,7 @@ public interface VMagnoliaShellView extends HasWidgets, IsWidget {
      */
     interface Presenter {
         
-        void loadApp(String prefix, String token);
+        void loadApp(String appId, String subAppId, String parameter);
         
         void loadShellApp(ShellAppType shellAppType, String token);
 
@@ -107,7 +107,7 @@ public interface VMagnoliaShellView extends HasWidgets, IsWidget {
         
         boolean isAppRunning(String appName);
 
-        void startApp(String appName, String token);
+        void startApp(String appId, String subAppId, String parameter);
 
         void handleHistoryChange(String fragment);
     }

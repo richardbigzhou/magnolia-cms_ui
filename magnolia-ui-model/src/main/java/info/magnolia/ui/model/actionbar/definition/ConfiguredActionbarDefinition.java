@@ -47,7 +47,7 @@ public class ConfiguredActionbarDefinition implements ActionbarDefinition {
 
     private String defaultAction;
 
-    private final List<ActionbarSectionDefinition> sections = new ArrayList<ActionbarSectionDefinition>();
+    private List<ActionbarSectionDefinition> sections = new ArrayList<ActionbarSectionDefinition>();
 
     @Override
     public String getName() {
@@ -70,6 +70,10 @@ public class ConfiguredActionbarDefinition implements ActionbarDefinition {
     @Override
     public List<ActionbarSectionDefinition> getSections() {
         return Collections.unmodifiableList(sections);
+    }
+
+    public void setSections(List<ActionbarSectionDefinition> def) {
+        this.sections = def;
     }
 
     public void addSection(ActionbarSectionDefinition sectionDefinition) {
