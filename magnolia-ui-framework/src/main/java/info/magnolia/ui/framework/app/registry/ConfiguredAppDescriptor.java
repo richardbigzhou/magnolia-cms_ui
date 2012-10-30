@@ -35,6 +35,10 @@ package info.magnolia.ui.framework.app.registry;
 
 import info.magnolia.ui.framework.app.App;
 import info.magnolia.ui.framework.app.AppDescriptor;
+import info.magnolia.ui.framework.app.SubAppDescriptor;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Describes an app.
@@ -57,6 +61,8 @@ public class ConfiguredAppDescriptor implements AppDescriptor {
     private String icon;
 
     private Class<? extends App> appClass;
+
+    private Map<String, SubAppDescriptor> subApps = new HashMap<String, SubAppDescriptor>();
 
     @Override
     public String getName() {
@@ -104,6 +110,19 @@ public class ConfiguredAppDescriptor implements AppDescriptor {
     }
 
     @Override
+    public Map<String, SubAppDescriptor> getSubApps() {
+        return subApps;
+    }
+
+    public void setSubApps(Map<String, SubAppDescriptor> subApps) {
+        this.subApps = subApps;
+    }
+
+    public void addSubApp(SubAppDescriptor subApp) {
+        subApps.put(subApp.getName(), subApp);
+    }
+
+    @Override
     public String getCategoryName() {
         return categoryName;
     }
@@ -116,8 +135,10 @@ public class ConfiguredAppDescriptor implements AppDescriptor {
     public boolean equals(Object o) {
         return o instanceof ConfiguredAppDescriptor && this.getName().equals(((ConfiguredAppDescriptor) o).getName());
     }
+
     @Override
     public int hashCode() {
         return (this.getName() == null) ? 0 : this.getName().hashCode();
-     }
+    }
+
 }

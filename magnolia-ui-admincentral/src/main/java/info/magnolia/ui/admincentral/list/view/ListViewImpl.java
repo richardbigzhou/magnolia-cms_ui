@@ -45,7 +45,6 @@ import info.magnolia.ui.vaadin.integration.jcr.container.TreeModel;
 import info.magnolia.ui.vaadin.grid.MagnoliaTable;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -176,23 +175,24 @@ public class ListViewImpl implements ListView {
     }
 
     private void buildColumns(WorkbenchDefinition workbenchDefinition, ComponentProvider componentProvider) {
-        final Iterator<ColumnDefinition> iterator = workbenchDefinition.getColumns().iterator();
 
         ArrayList<String> columnOrder = new ArrayList<String>();
-        while (iterator.hasNext()) {
-            ColumnDefinition column = iterator.next();
-            if(workbenchDefinition.isDialogWorkbench() && ! column.isDisplayInDialog()) {
+
+        for (ColumnDefinition column : workbenchDefinition.getColumns()) {
+
+            if (workbenchDefinition.isDialogWorkbench() && !column.isDisplayInDialog()) {
                 continue;
             }
+
             String columnName = column.getName();
             final String columnProperty = (column.getPropertyName() != null) ? column.getPropertyName() : columnName;
 
             //FIXME fgrilli workaround for conference
             //when setting cols width in dialogs we are forced to use explicit px value instead of expand ratios, which for some reason don't work
-            if(workbenchDefinition.isDialogWorkbench()) {
+            if (workbenchDefinition.isDialogWorkbench()) {
                 table.setColumnWidth(columnProperty, 300);
             } else {
-                if(column.getWidth() > 0 ) {
+                if (column.getWidth() > 0) {
                     table.setColumnWidth(columnProperty, column.getWidth());
                 } else {
                     table.setColumnExpandRatio(columnProperty, column.getExpandRatio());
@@ -201,19 +201,20 @@ public class ListViewImpl implements ListView {
 
             table.setColumnHeader(columnProperty, column.getLabel());
             container.addContainerProperty(columnProperty, column.getType(), "");
-            //Set Formatter
-            if(StringUtils.isNotBlank(column.getFormatterClass())) {
+            //Set formatter
+            if (StringUtils.isNotBlank(column.getFormatterClass())) {
                 try {
-                    table.addGeneratedColumn(columnProperty, (ColumnFormatter)componentProvider.newInstance(Class.forName(column.getFormatterClass()),column));
-               } catch (ClassNotFoundException e) {
-                    log.error("Not able to create the Formatter",e);
-               }
+                    table.addGeneratedColumn(columnProperty, (ColumnFormatter) componentProvider.newInstance(Class.forName(column.getFormatterClass()), column));
+                } catch (ClassNotFoundException e) {
+                    log.error("Not able to create the Formatter", e);
+                }
             }
             columnOrder.add(columnProperty);
-
         }
+
         table.setContainerDataSource(container);
-        //Set Column order
+
+        //Set column order
         table.setVisibleColumns(columnOrder.toArray());
     }
 

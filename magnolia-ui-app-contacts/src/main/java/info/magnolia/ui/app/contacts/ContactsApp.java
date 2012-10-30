@@ -34,10 +34,8 @@
 package info.magnolia.ui.app.contacts;
 
 import info.magnolia.ui.admincentral.app.content.AbstractContentApp;
-import info.magnolia.ui.admincentral.app.content.AbstractContentSubApp;
 import info.magnolia.ui.admincentral.dialog.ChooseDialogFactory;
 import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.location.Location;
 
 import javax.inject.Inject;
 
@@ -48,22 +46,9 @@ import javax.inject.Inject;
  */
 public class ContactsApp extends AbstractContentApp {
 
-    private final AppContext appContext;
 
     @Inject
     public ContactsApp(AppContext appContext, ChooseDialogFactory pickerDialogFactory) {
-        super(pickerDialogFactory);
-        this.appContext = appContext;
-    }
-
-    @Override
-    public void start(Location location) {
-
-        if (ContactsMainSubApp.supportsLocation(location)) {
-            appContext.openSubApp(AbstractContentSubApp.MAIN_SUBAPP_ID, ContactsMainSubApp.class, location, ContactsMainSubApp.getSubAppId(location));
-        } else {
-            Location mainLocation = ContactsMainSubApp.createLocation();
-            appContext.openSubApp(AbstractContentSubApp.MAIN_SUBAPP_ID, ContactsMainSubApp.class, mainLocation, ContactsMainSubApp.getSubAppId(mainLocation));
-        }
+        super(appContext, pickerDialogFactory);
     }
 }

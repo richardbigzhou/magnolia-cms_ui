@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2011 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,33 +31,49 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.workbench.definition;
+package info.magnolia.ui.app.pages.editor.location;
 
-import info.magnolia.test.RepositoryTestCase;
-import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-
+import info.magnolia.ui.framework.location.DefaultLocation;
+import info.magnolia.ui.framework.location.Location;
 
 /**
- * Tests.
+ * PagesLocation.
  */
-public class ConfiguredWorkbenchDefinitionTest extends RepositoryTestCase {
-    @Test
-    public void testGetItemTypesFilter() throws Exception {
-        // GIVEN
-        ConfiguredWorkbenchDefinition def = new ConfiguredWorkbenchDefinition();
-        ConfiguredItemTypeDefinition itemDef = new ConfiguredItemTypeDefinition();
-        itemDef.setItemType("oneItemType");
-        def.addItemType(itemDef);
-        ConfiguredItemTypeDefinition anotherItemDef = new ConfiguredItemTypeDefinition();
-        anotherItemDef.setItemType("anotherItemType");
-        def.addItemType(anotherItemDef);
+public class PagesLocation extends DefaultLocation {
 
-        // WHEN
-        final String result = def.getItemTypesFilter();
+    public static final String APP_ID = "pages";
+    public static final String SUB_APP_ID = "editor";
 
-        // THEN
-        assertEquals("  oneItemType |  anotherItemType", result);
+    private String nodePath;
+
+    private String mode;
+
+    public PagesLocation(String parameter) {
+        super(LOCATION_TYPE_APP, APP_ID, SUB_APP_ID, parameter);
+
+        this.nodePath = extractNodePath(parameter);
+        this.mode = extractMode(parameter);
+    }
+
+    private String extractNodePath(String parameter) {
+        int i = parameter.indexOf(':');
+        return i != -1 ? parameter.substring(0, i) : parameter;
+    }
+
+    private String extractMode(String parameter) {
+        int i = parameter.indexOf(':');
+        return i != -1 ? parameter.substring(i+1) : parameter;
+    }
+
+    public String getNodePath() {
+        return nodePath;
+    }
+
+    public String getMode() {
+        return mode;
+    }
+
+    public static PagesLocation wrap(Location location) {
+        return new PagesLocation(((DefaultLocation)location).getParameter());
     }
 }

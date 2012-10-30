@@ -108,18 +108,19 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Com
 
     }
 
-    public void navigateToApp(String prefix, String token) {
-        doNavigateWithinViewport(getAppViewport(), DefaultLocation.LOCATION_TYPE_APP, prefix, token);
+    public void navigateToApp(final String appId, final String subAppId, final String parameter) {
+        doNavigateWithinViewport(getAppViewport(), DefaultLocation.LOCATION_TYPE_APP, appId, subAppId, parameter);
     }
 
-    public void navigateToShellApp(final String prefix, String token) {
-        doNavigateWithinViewport(getShellAppViewport(), DefaultLocation.LOCATION_TYPE_SHELL_APP, prefix, token);
+    public void navigateToShellApp(final String shellAppId, final String parameter) {
+        doNavigateWithinViewport(getShellAppViewport(), DefaultLocation.LOCATION_TYPE_SHELL_APP, shellAppId, "", parameter);
     }
 
-    public void doNavigateWithinViewport(final ShellViewport viewport, String type, String prefix, String token) {
-        viewport.setCurrentShellFragment(prefix + ":" + token);
+    // the fragment generation should not be hardcoded. Create a util method in DefaultLocation.
+    public void doNavigateWithinViewport(final ShellViewport viewport, String appType, String appId, String subAppId, String parameter) {
+        viewport.setCurrentShellFragment(appId + ":" + subAppId + ";" + parameter);
         setActiveViewport(viewport);
-        notifyOnFragmentChanged(type + ":" + prefix + ":" + token);
+        notifyOnFragmentChanged(appType + ":" + appId + ":" + subAppId + ";" + parameter);
         viewport.requestRepaint();
         requestRepaint();
     }
@@ -342,7 +343,7 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Com
 
                 @Override
                 public void invoke(String methodName, Object[] params) {
-                    navigateToApp(String.valueOf(params[0]), String.valueOf(params[1]));
+                    navigateToApp(String.valueOf(params[0]), String.valueOf(params[1]), String.valueOf(params[2]));
                 }
             });
 
