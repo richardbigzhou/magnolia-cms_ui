@@ -125,9 +125,9 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     protected static final String DESCENDING_KEYWORD = " desc";
 
-    protected static final String JOIN_METADATA = " inner join [" + MgnlNodeType.NT_METADATA + "] as metaData on ischildnode(metaData,content) ";
-
     protected static final String METADATA_SELECTOR_NAME = "metaData";
+
+    protected static final String JOIN_METADATA = " inner join [" + MgnlNodeType.NT_METADATA + "] as "+ METADATA_SELECTOR_NAME +" on ischildnode("+ METADATA_SELECTOR_NAME +"," + SELECTOR_NAME + ") ";
 
     /**
      * Caution: this property gets special treatment as we'll have to call a function to be able to order by it.
